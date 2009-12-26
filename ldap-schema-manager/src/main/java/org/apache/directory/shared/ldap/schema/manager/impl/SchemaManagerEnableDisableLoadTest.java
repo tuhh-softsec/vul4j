@@ -34,10 +34,9 @@ import java.util.List;
 import javax.naming.NamingException;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.directory.shared.ldap.schema.manager.impl.DefaultSchemaManager;
 import org.apache.directory.shared.ldap.schema.SchemaManager;
-import org.apache.directory.shared.ldap.schema.ldif.extractor.impl.DefaultSchemaLdifExtractor;
 import org.apache.directory.shared.ldap.schema.ldif.extractor.SchemaLdifExtractor;
+import org.apache.directory.shared.ldap.schema.ldif.extractor.impl.DefaultSchemaLdifExtractor;
 import org.apache.directory.shared.ldap.schema.loader.ldif.LdifSchemaLoader;
 import org.apache.directory.shared.ldap.schema.registries.Schema;
 import org.junit.AfterClass;
@@ -123,41 +122,41 @@ public class SchemaManagerEnableDisableLoadTest
     @Test
     public void testLoadAllEnabled() throws Exception
     {
-        Assert.assertTrue( schemaManager.getEnabled().isEmpty() );
-        Assert.assertTrue( schemaManager.loadAllEnabled() );
+        assertTrue( schemaManager.getEnabled().isEmpty() );
+        assertTrue( schemaManager.loadAllEnabled() );
 
         for ( String schemaName : allSchemas )
         {
-            Assert.assertTrue( schemaManager.isSchemaLoaded( schemaName ) );
+            assertTrue( schemaManager.isSchemaLoaded( schemaName ) );
         }
 
         // The enabled schemas
         List<Schema> enabled = schemaManager.getEnabled();
 
-        Assert.assertEquals( enabled.size(), enabledSchemas.size() );
+        assertEquals( enabled.size(), enabledSchemas.size() );
 
         for ( Schema schema : enabled )
         {
-            Assert.assertTrue( enabledSchemas.contains( schema.getSchemaName().toLowerCase() ) );
+            assertTrue( enabledSchemas.contains( schema.getSchemaName().toLowerCase() ) );
         }
 
         // The disabled schemas
         List<Schema> disabled = schemaManager.getDisabled();
 
-        Assert.assertEquals( 0, disabled.size() );
+        assertEquals( 0, disabled.size() );
 
-        Assert.assertTrue( schemaManager.getErrors().isEmpty() );
-        Assert.assertEquals( 261, schemaManager.getAttributeTypeRegistry().size() );
-        Assert.assertEquals( 48, schemaManager.getComparatorRegistry().size() );
-        Assert.assertEquals( 48, schemaManager.getMatchingRuleRegistry().size() );
-        Assert.assertEquals( 50, schemaManager.getNormalizerRegistry().size() );
-        Assert.assertEquals( 88, schemaManager.getObjectClassRegistry().size() );
-        Assert.assertEquals( 66, schemaManager.getSyntaxCheckerRegistry().size() );
-        Assert.assertEquals( 71, schemaManager.getLdapSyntaxRegistry().size() );
-        Assert.assertEquals( 468, schemaManager.getGlobalOidRegistry().size() );
+        assertTrue( schemaManager.getErrors().isEmpty() );
+        assertEquals( 261, schemaManager.getAttributeTypeRegistry().size() );
+        assertEquals( 48, schemaManager.getComparatorRegistry().size() );
+        assertEquals( 48, schemaManager.getMatchingRuleRegistry().size() );
+        assertEquals( 50, schemaManager.getNormalizerRegistry().size() );
+        assertEquals( 88, schemaManager.getObjectClassRegistry().size() );
+        assertEquals( 66, schemaManager.getSyntaxCheckerRegistry().size() );
+        assertEquals( 71, schemaManager.getLdapSyntaxRegistry().size() );
+        assertEquals( 468, schemaManager.getGlobalOidRegistry().size() );
 
-        Assert.assertEquals( 10, schemaManager.getRegistries().getLoadedSchemas().size() );
-        Assert.assertNull( schemaManager.getRegistries().getLoadedSchema( "nis" ) );
+        assertEquals( 10, schemaManager.getRegistries().getLoadedSchemas().size() );
+        assertNull( schemaManager.getRegistries().getLoadedSchema( "nis" ) );
     }
 
 
@@ -172,9 +171,9 @@ public class SchemaManagerEnableDisableLoadTest
     {
         schemaManager.loadAllEnabled();
 
-        Assert.assertTrue( schemaManager.isEnabled( "core" ) );
-        Assert.assertTrue( schemaManager.enable( "core" ) );
-        Assert.assertTrue( schemaManager.isEnabled( "core" ) );
+        assertTrue( schemaManager.isEnabled( "core" ) );
+        assertTrue( schemaManager.enable( "core" ) );
+        assertTrue( schemaManager.isEnabled( "core" ) );
     }
 
 
@@ -186,23 +185,23 @@ public class SchemaManagerEnableDisableLoadTest
     {
         schemaManager.loadAllEnabled();
 
-        Assert.assertTrue( schemaManager.enable( "nis" ) );
-        Assert.assertTrue( schemaManager.isEnabled( "nis" ) );
+        assertTrue( schemaManager.enable( "nis" ) );
+        assertTrue( schemaManager.isEnabled( "nis" ) );
 
-        Assert.assertNotNull( schemaManager.lookupAttributeTypeRegistry( "gecos" ) );
+        assertNotNull( schemaManager.lookupAttributeTypeRegistry( "gecos" ) );
 
-        Assert.assertTrue( schemaManager.getErrors().isEmpty() );
-        Assert.assertEquals( 288, schemaManager.getAttributeTypeRegistry().size() );
-        Assert.assertEquals( 49, schemaManager.getComparatorRegistry().size() );
-        Assert.assertEquals( 49, schemaManager.getMatchingRuleRegistry().size() );
-        Assert.assertEquals( 51, schemaManager.getNormalizerRegistry().size() );
-        Assert.assertEquals( 101, schemaManager.getObjectClassRegistry().size() );
-        Assert.assertEquals( 68, schemaManager.getSyntaxCheckerRegistry().size() );
-        Assert.assertEquals( 73, schemaManager.getLdapSyntaxRegistry().size() );
-        Assert.assertEquals( 511, schemaManager.getGlobalOidRegistry().size() );
+        assertTrue( schemaManager.getErrors().isEmpty() );
+        assertEquals( 288, schemaManager.getAttributeTypeRegistry().size() );
+        assertEquals( 49, schemaManager.getComparatorRegistry().size() );
+        assertEquals( 49, schemaManager.getMatchingRuleRegistry().size() );
+        assertEquals( 51, schemaManager.getNormalizerRegistry().size() );
+        assertEquals( 101, schemaManager.getObjectClassRegistry().size() );
+        assertEquals( 68, schemaManager.getSyntaxCheckerRegistry().size() );
+        assertEquals( 73, schemaManager.getLdapSyntaxRegistry().size() );
+        assertEquals( 511, schemaManager.getGlobalOidRegistry().size() );
 
-        Assert.assertEquals( 11, schemaManager.getRegistries().getLoadedSchemas().size() );
-        Assert.assertNotNull( schemaManager.getRegistries().getLoadedSchema( "nis" ) );
+        assertEquals( 11, schemaManager.getRegistries().getLoadedSchemas().size() );
+        assertNotNull( schemaManager.getRegistries().getLoadedSchema( "nis" ) );
     }
 
 
@@ -214,35 +213,35 @@ public class SchemaManagerEnableDisableLoadTest
     {
         schemaManager.loadAllEnabled();
 
-        Assert.assertTrue( schemaManager.enable( "nis" ) );
-        Assert.assertTrue( schemaManager.isEnabled( "nis" ) );
+        assertTrue( schemaManager.enable( "nis" ) );
+        assertTrue( schemaManager.isEnabled( "nis" ) );
 
-        Assert.assertEquals( 11, schemaManager.getRegistries().getLoadedSchemas().size() );
+        assertEquals( 11, schemaManager.getRegistries().getLoadedSchemas().size() );
 
-        Assert.assertTrue( schemaManager.disable( "nis" ) );
+        assertTrue( schemaManager.disable( "nis" ) );
 
         try
         {
             schemaManager.lookupAttributeTypeRegistry( "gecos" );
-            Assert.fail();
+            fail();
         }
         catch ( NamingException ne )
         {
             // Expected
         }
 
-        Assert.assertTrue( schemaManager.getErrors().isEmpty() );
-        Assert.assertEquals( 261, schemaManager.getAttributeTypeRegistry().size() );
-        Assert.assertEquals( 48, schemaManager.getComparatorRegistry().size() );
-        Assert.assertEquals( 48, schemaManager.getMatchingRuleRegistry().size() );
-        Assert.assertEquals( 50, schemaManager.getNormalizerRegistry().size() );
-        Assert.assertEquals( 88, schemaManager.getObjectClassRegistry().size() );
-        Assert.assertEquals( 66, schemaManager.getSyntaxCheckerRegistry().size() );
-        Assert.assertEquals( 71, schemaManager.getLdapSyntaxRegistry().size() );
-        Assert.assertEquals( 468, schemaManager.getGlobalOidRegistry().size() );
+        assertTrue( schemaManager.getErrors().isEmpty() );
+        assertEquals( 261, schemaManager.getAttributeTypeRegistry().size() );
+        assertEquals( 48, schemaManager.getComparatorRegistry().size() );
+        assertEquals( 48, schemaManager.getMatchingRuleRegistry().size() );
+        assertEquals( 50, schemaManager.getNormalizerRegistry().size() );
+        assertEquals( 88, schemaManager.getObjectClassRegistry().size() );
+        assertEquals( 66, schemaManager.getSyntaxCheckerRegistry().size() );
+        assertEquals( 71, schemaManager.getLdapSyntaxRegistry().size() );
+        assertEquals( 468, schemaManager.getGlobalOidRegistry().size() );
 
-        Assert.assertEquals( 10, schemaManager.getRegistries().getLoadedSchemas().size() );
-        Assert.assertNull( schemaManager.getRegistries().getLoadedSchema( "nis" ) );
+        assertEquals( 10, schemaManager.getRegistries().getLoadedSchemas().size() );
+        assertNull( schemaManager.getRegistries().getLoadedSchema( "nis" ) );
 
     }
 

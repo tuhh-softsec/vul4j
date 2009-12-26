@@ -27,10 +27,9 @@ import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.directory.shared.ldap.schema.manager.impl.DefaultSchemaManager;
 import org.apache.directory.shared.ldap.schema.SchemaManager;
-import org.apache.directory.shared.ldap.schema.ldif.extractor.impl.DefaultSchemaLdifExtractor;
 import org.apache.directory.shared.ldap.schema.ldif.extractor.SchemaLdifExtractor;
+import org.apache.directory.shared.ldap.schema.ldif.extractor.impl.DefaultSchemaLdifExtractor;
 import org.apache.directory.shared.ldap.schema.loader.ldif.LdifSchemaLoader;
 import org.apache.directory.shared.ldap.util.ExceptionUtils;
 import org.junit.AfterClass;
@@ -87,9 +86,9 @@ public class LdifSchemaLoaderTest
         
         if ( !loaded )
         {
-            Assert.fail( "Schema load failed : " + ExceptionUtils.printErrors( sm.getErrors() ) );
+            fail( "Schema load failed : " + ExceptionUtils.printErrors( sm.getErrors() ) );
         }
         
-        Assert.assertTrue( sm.getRegistries().getAttributeTypeRegistry().contains( "cn" ) );
+        assertTrue( sm.getRegistries().getAttributeTypeRegistry().contains( "cn" ) );
     }
 }

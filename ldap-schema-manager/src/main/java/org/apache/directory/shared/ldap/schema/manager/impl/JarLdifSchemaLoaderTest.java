@@ -23,7 +23,6 @@ package org.apache.directory.shared.ldap.schema.manager.impl;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.apache.directory.shared.ldap.schema.manager.impl.DefaultSchemaManager;
 import org.apache.directory.shared.ldap.schema.SchemaManager;
 import org.apache.directory.shared.ldap.schema.loader.ldif.JarLdifSchemaLoader;
 import org.junit.Test;
@@ -45,11 +44,11 @@ public class JarLdifSchemaLoaderTest
 
         sm.loadWithDeps( "system" );
         
-        Assert.assertTrue( sm.getRegistries().getAttributeTypeRegistry().contains( "cn" ) );
-        Assert.assertFalse( sm.getRegistries().getAttributeTypeRegistry().contains( "m-aux" ) );
+        assertTrue( sm.getRegistries().getAttributeTypeRegistry().contains( "cn" ) );
+        assertFalse( sm.getRegistries().getAttributeTypeRegistry().contains( "m-aux" ) );
         
         sm.loadWithDeps( "apachemeta" );
 
-        Assert.assertTrue( sm.getRegistries().getAttributeTypeRegistry().contains( "m-aux" ) );
+        assertTrue( sm.getRegistries().getAttributeTypeRegistry().contains( "m-aux" ) );
     }
 }

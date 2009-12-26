@@ -39,7 +39,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.directory.shared.ldap.exception.LdapOperationNotSupportedException;
 import org.apache.directory.shared.ldap.exception.LdapSchemaViolationException;
 import org.apache.directory.shared.ldap.schema.AttributeType;
-import org.apache.directory.shared.ldap.schema.manager.impl.DefaultSchemaManager;
 import org.apache.directory.shared.ldap.schema.LdapComparator;
 import org.apache.directory.shared.ldap.schema.LdapSyntax;
 import org.apache.directory.shared.ldap.schema.MatchingRule;
@@ -52,8 +51,8 @@ import org.apache.directory.shared.ldap.schema.UsageEnum;
 import org.apache.directory.shared.ldap.schema.comparators.BooleanComparator;
 import org.apache.directory.shared.ldap.schema.comparators.ComparableComparator;
 import org.apache.directory.shared.ldap.schema.comparators.CsnComparator;
-import org.apache.directory.shared.ldap.schema.ldif.extractor.impl.DefaultSchemaLdifExtractor;
 import org.apache.directory.shared.ldap.schema.ldif.extractor.SchemaLdifExtractor;
+import org.apache.directory.shared.ldap.schema.ldif.extractor.impl.DefaultSchemaLdifExtractor;
 import org.apache.directory.shared.ldap.schema.loader.ldif.LdifSchemaLoader;
 import org.apache.directory.shared.ldap.schema.normalizers.NoOpNormalizer;
 import org.apache.directory.shared.ldap.schema.syntaxCheckers.OctetStringSyntaxChecker;
@@ -235,17 +234,17 @@ public class SchemaManagerAddTest
         attributeType.setSubstringOid( null );
 
         // It should fail
-        Assert.assertFalse( schemaManager.add( attributeType ) );
+        assertFalse( schemaManager.add( attributeType ) );
 
         List<Throwable> errors = schemaManager.getErrors();
-        Assert.assertEquals( 1, errors.size() );
+        assertEquals( 1, errors.size() );
         Throwable error = errors.get( 0 );
 
-        Assert.assertTrue( error instanceof LdapSchemaViolationException );
+        assertTrue( error instanceof LdapSchemaViolationException );
 
-        Assert.assertFalse( isATPresent( schemaManager, "1.1.0" ) );
-        Assert.assertEquals( atrSize, schemaManager.getAttributeTypeRegistry().size() );
-        Assert.assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
+        assertFalse( isATPresent( schemaManager, "1.1.0" ) );
+        assertEquals( atrSize, schemaManager.getAttributeTypeRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -268,11 +267,11 @@ public class SchemaManagerAddTest
         attributeType.setCollective( true );
 
         // It should not fail
-        Assert.assertTrue( schemaManager.add( attributeType ) );
+        assertTrue( schemaManager.add( attributeType ) );
 
-        Assert.assertTrue( isATPresent( schemaManager, "1.1.0" ) );
-        Assert.assertEquals( atrSize + 1, schemaManager.getAttributeTypeRegistry().size() );
-        Assert.assertEquals( goidSize + 1, schemaManager.getGlobalOidRegistry().size() );
+        assertTrue( isATPresent( schemaManager, "1.1.0" ) );
+        assertEquals( atrSize + 1, schemaManager.getAttributeTypeRegistry().size() );
+        assertEquals( goidSize + 1, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -295,17 +294,17 @@ public class SchemaManagerAddTest
         attributeType.setCollective( true );
 
         // It should fail
-        Assert.assertFalse( schemaManager.add( attributeType ) );
+        assertFalse( schemaManager.add( attributeType ) );
 
         List<Throwable> errors = schemaManager.getErrors();
-        Assert.assertEquals( 1, errors.size() );
+        assertEquals( 1, errors.size() );
         Throwable error = errors.get( 0 );
 
-        Assert.assertTrue( error instanceof LdapSchemaViolationException );
+        assertTrue( error instanceof LdapSchemaViolationException );
 
-        Assert.assertFalse( isATPresent( schemaManager, "1.1.0" ) );
-        Assert.assertEquals( atrSize, schemaManager.getAttributeTypeRegistry().size() );
-        Assert.assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
+        assertFalse( isATPresent( schemaManager, "1.1.0" ) );
+        assertEquals( atrSize, schemaManager.getAttributeTypeRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -328,17 +327,17 @@ public class SchemaManagerAddTest
         attributeType.setUserModifiable( false );
 
         // It should fail
-        Assert.assertFalse( schemaManager.add( attributeType ) );
+        assertFalse( schemaManager.add( attributeType ) );
 
         List<Throwable> errors = schemaManager.getErrors();
-        Assert.assertEquals( 1, errors.size() );
+        assertEquals( 1, errors.size() );
         Throwable error = errors.get( 0 );
 
-        Assert.assertTrue( error instanceof LdapSchemaViolationException );
+        assertTrue( error instanceof LdapSchemaViolationException );
 
-        Assert.assertFalse( isATPresent( schemaManager, "1.1.0" ) );
-        Assert.assertEquals( atrSize, schemaManager.getAttributeTypeRegistry().size() );
-        Assert.assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
+        assertFalse( isATPresent( schemaManager, "1.1.0" ) );
+        assertEquals( atrSize, schemaManager.getAttributeTypeRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -361,11 +360,11 @@ public class SchemaManagerAddTest
         attributeType.setUserModifiable( false );
 
         // It should not fail
-        Assert.assertTrue( schemaManager.add( attributeType ) );
+        assertTrue( schemaManager.add( attributeType ) );
 
-        Assert.assertTrue( isATPresent( schemaManager, "1.1.0" ) );
-        Assert.assertEquals( atrSize + 1, schemaManager.getAttributeTypeRegistry().size() );
-        Assert.assertEquals( goidSize + 1, schemaManager.getGlobalOidRegistry().size() );
+        assertTrue( isATPresent( schemaManager, "1.1.0" ) );
+        assertEquals( atrSize + 1, schemaManager.getAttributeTypeRegistry().size() );
+        assertEquals( goidSize + 1, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -387,17 +386,17 @@ public class SchemaManagerAddTest
         attributeType.setUsage( UsageEnum.USER_APPLICATIONS );
 
         // It should fail
-        Assert.assertFalse( schemaManager.add( attributeType ) );
+        assertFalse( schemaManager.add( attributeType ) );
 
         List<Throwable> errors = schemaManager.getErrors();
-        Assert.assertEquals( 1, errors.size() );
+        assertEquals( 1, errors.size() );
         Throwable error = errors.get( 0 );
 
-        Assert.assertTrue( error instanceof LdapSchemaViolationException );
+        assertTrue( error instanceof LdapSchemaViolationException );
 
-        Assert.assertFalse( isATPresent( schemaManager, "1.1.0" ) );
-        Assert.assertEquals( atrSize, schemaManager.getAttributeTypeRegistry().size() );
-        Assert.assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
+        assertFalse( isATPresent( schemaManager, "1.1.0" ) );
+        assertEquals( atrSize, schemaManager.getAttributeTypeRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -419,17 +418,17 @@ public class SchemaManagerAddTest
         attributeType.setUsage( UsageEnum.USER_APPLICATIONS );
 
         // It should fail
-        Assert.assertFalse( schemaManager.add( attributeType ) );
+        assertFalse( schemaManager.add( attributeType ) );
 
         List<Throwable> errors = schemaManager.getErrors();
-        Assert.assertEquals( 1, errors.size() );
+        assertEquals( 1, errors.size() );
         Throwable error = errors.get( 0 );
 
-        Assert.assertTrue( error instanceof LdapSchemaViolationException );
+        assertTrue( error instanceof LdapSchemaViolationException );
 
-        Assert.assertFalse( isATPresent( schemaManager, "1.1.0" ) );
-        Assert.assertEquals( atrSize, schemaManager.getAttributeTypeRegistry().size() );
-        Assert.assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
+        assertFalse( isATPresent( schemaManager, "1.1.0" ) );
+        assertEquals( atrSize, schemaManager.getAttributeTypeRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -451,17 +450,17 @@ public class SchemaManagerAddTest
         attributeType.setUsage( UsageEnum.USER_APPLICATIONS );
 
         // It should fail
-        Assert.assertFalse( schemaManager.add( attributeType ) );
+        assertFalse( schemaManager.add( attributeType ) );
 
         List<Throwable> errors = schemaManager.getErrors();
-        Assert.assertEquals( 1, errors.size() );
+        assertEquals( 1, errors.size() );
         Throwable error = errors.get( 0 );
 
-        Assert.assertTrue( error instanceof LdapSchemaViolationException );
+        assertTrue( error instanceof LdapSchemaViolationException );
 
-        Assert.assertFalse( isATPresent( schemaManager, "1.1.0" ) );
-        Assert.assertEquals( atrSize, schemaManager.getAttributeTypeRegistry().size() );
-        Assert.assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
+        assertFalse( isATPresent( schemaManager, "1.1.0" ) );
+        assertEquals( atrSize, schemaManager.getAttributeTypeRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -483,11 +482,11 @@ public class SchemaManagerAddTest
         attributeType.setUsage( UsageEnum.USER_APPLICATIONS );
 
         // It should not fail
-        Assert.assertTrue( schemaManager.add( attributeType ) );
+        assertTrue( schemaManager.add( attributeType ) );
 
-        Assert.assertTrue( isATPresent( schemaManager, "1.1.0" ) );
-        Assert.assertEquals( atrSize + 1, schemaManager.getAttributeTypeRegistry().size() );
-        Assert.assertEquals( goidSize + 1, schemaManager.getGlobalOidRegistry().size() );
+        assertTrue( isATPresent( schemaManager, "1.1.0" ) );
+        assertEquals( atrSize + 1, schemaManager.getAttributeTypeRegistry().size() );
+        assertEquals( goidSize + 1, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -507,22 +506,22 @@ public class SchemaManagerAddTest
         attributeType.setSubstringOid( "2.5.13.1" );
 
         // It should fail
-        Assert.assertFalse( schemaManager.add( attributeType ) );
+        assertFalse( schemaManager.add( attributeType ) );
 
         List<Throwable> errors = schemaManager.getErrors();
-        Assert.assertEquals( 1, errors.size() );
+        assertEquals( 1, errors.size() );
         Throwable error = errors.get( 0 );
 
-        Assert.assertTrue( error instanceof LdapSchemaViolationException );
+        assertTrue( error instanceof LdapSchemaViolationException );
 
         // The AT must be there
-        Assert.assertTrue( isATPresent( schemaManager, "2.5.18.4" ) );
+        assertTrue( isATPresent( schemaManager, "2.5.18.4" ) );
 
         // Check that it hasen't changed
         AttributeType original = schemaManager.lookupAttributeTypeRegistry( "2.5.18.4" );
-        Assert.assertEquals( "distinguishedNameMatch", original.getEqualityOid() );
-        Assert.assertEquals( atrSize, schemaManager.getAttributeTypeRegistry().size() );
-        Assert.assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
+        assertEquals( "distinguishedNameMatch", original.getEqualityOid() );
+        assertEquals( atrSize, schemaManager.getAttributeTypeRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -544,19 +543,19 @@ public class SchemaManagerAddTest
         attributeType.setNames( "Test", "cn" );
 
         // It should fail
-        Assert.assertFalse( schemaManager.add( attributeType ) );
+        assertFalse( schemaManager.add( attributeType ) );
 
         List<Throwable> errors = schemaManager.getErrors();
-        Assert.assertEquals( 1, errors.size() );
+        assertEquals( 1, errors.size() );
         Throwable error = errors.get( 0 );
 
-        Assert.assertTrue( error instanceof LdapSchemaViolationException );
+        assertTrue( error instanceof LdapSchemaViolationException );
 
         // The AT must not be there
-        Assert.assertFalse( isATPresent( schemaManager, "1.1.1.0" ) );
+        assertFalse( isATPresent( schemaManager, "1.1.1.0" ) );
 
-        Assert.assertEquals( atrSize, schemaManager.getAttributeTypeRegistry().size() );
-        Assert.assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
+        assertEquals( atrSize, schemaManager.getAttributeTypeRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -578,21 +577,21 @@ public class SchemaManagerAddTest
         attributeType.setNames( "Test", "referral" );
 
         // It should be ok
-        Assert.assertTrue( schemaManager.add( attributeType ) );
+        assertTrue( schemaManager.add( attributeType ) );
 
         List<Throwable> errors = schemaManager.getErrors();
-        Assert.assertEquals( 0, errors.size() );
+        assertEquals( 0, errors.size() );
 
         // The AT must be present
-        Assert.assertTrue( isATPresent( schemaManager, "1.1.1.0" ) );
+        assertTrue( isATPresent( schemaManager, "1.1.1.0" ) );
 
-        Assert.assertEquals( atrSize + 1, schemaManager.getAttributeTypeRegistry().size() );
-        Assert.assertEquals( goidSize + 1, schemaManager.getGlobalOidRegistry().size() );
+        assertEquals( atrSize + 1, schemaManager.getAttributeTypeRegistry().size() );
+        assertEquals( goidSize + 1, schemaManager.getGlobalOidRegistry().size() );
 
         AttributeType added = schemaManager.lookupAttributeTypeRegistry( "referral" );
-        Assert.assertNotNull( added );
-        Assert.assertEquals( "1.1.1.0", added.getOid() );
-        Assert.assertTrue( added.getNames().contains( "referral" ) );
+        assertNotNull( added );
+        assertEquals( "1.1.1.0", added.getOid() );
+        assertTrue( added.getNames().contains( "referral" ) );
     }
 
 
@@ -618,14 +617,14 @@ public class SchemaManagerAddTest
         attributeType.setUsage( UsageEnum.DIRECTORY_OPERATION );
 
         // It should not fail
-        Assert.assertTrue( schemaManager.add( attributeType ) );
+        assertTrue( schemaManager.add( attributeType ) );
 
         AttributeType result = schemaManager.lookupAttributeTypeRegistry( "1.1.0" );
 
-        Assert.assertEquals( "1.3.6.1.4.1.1466.115.121.1.12", result.getSyntaxOid() );
-        Assert.assertEquals( "2.5.13.1", result.getEqualityOid() );
-        Assert.assertEquals( atrSize + 1, schemaManager.getAttributeTypeRegistry().size() );
-        Assert.assertEquals( goidSize + 1, schemaManager.getGlobalOidRegistry().size() );
+        assertEquals( "1.3.6.1.4.1.1466.115.121.1.12", result.getSyntaxOid() );
+        assertEquals( "2.5.13.1", result.getEqualityOid() );
+        assertEquals( atrSize + 1, schemaManager.getAttributeTypeRegistry().size() );
+        assertEquals( goidSize + 1, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -647,17 +646,17 @@ public class SchemaManagerAddTest
         attributeType.setUsage( UsageEnum.DISTRIBUTED_OPERATION );
 
         // It should fail
-        Assert.assertFalse( schemaManager.add( attributeType ) );
+        assertFalse( schemaManager.add( attributeType ) );
 
         List<Throwable> errors = schemaManager.getErrors();
-        Assert.assertEquals( 1, errors.size() );
+        assertEquals( 1, errors.size() );
         Throwable error = errors.get( 0 );
 
-        Assert.assertTrue( error instanceof LdapSchemaViolationException );
+        assertTrue( error instanceof LdapSchemaViolationException );
 
-        Assert.assertFalse( isATPresent( schemaManager, "1.1.0" ) );
-        Assert.assertEquals( atrSize, schemaManager.getAttributeTypeRegistry().size() );
-        Assert.assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
+        assertFalse( isATPresent( schemaManager, "1.1.0" ) );
+        assertEquals( atrSize, schemaManager.getAttributeTypeRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -679,17 +678,17 @@ public class SchemaManagerAddTest
         attributeType.setUsage( UsageEnum.DISTRIBUTED_OPERATION );
 
         // It should fail
-        Assert.assertFalse( schemaManager.add( attributeType ) );
+        assertFalse( schemaManager.add( attributeType ) );
 
         List<Throwable> errors = schemaManager.getErrors();
-        Assert.assertEquals( 1, errors.size() );
+        assertEquals( 1, errors.size() );
         Throwable error = errors.get( 0 );
 
-        Assert.assertTrue( error instanceof LdapSchemaViolationException );
+        assertTrue( error instanceof LdapSchemaViolationException );
 
-        Assert.assertFalse( isATPresent( schemaManager, "1.1.0" ) );
-        Assert.assertEquals( atrSize, schemaManager.getAttributeTypeRegistry().size() );
-        Assert.assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
+        assertFalse( isATPresent( schemaManager, "1.1.0" ) );
+        assertEquals( atrSize, schemaManager.getAttributeTypeRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -711,17 +710,17 @@ public class SchemaManagerAddTest
         attributeType.setUsage( UsageEnum.DISTRIBUTED_OPERATION );
 
         // It should fail
-        Assert.assertFalse( schemaManager.add( attributeType ) );
+        assertFalse( schemaManager.add( attributeType ) );
 
         List<Throwable> errors = schemaManager.getErrors();
-        Assert.assertEquals( 1, errors.size() );
+        assertEquals( 1, errors.size() );
         Throwable error = errors.get( 0 );
 
-        Assert.assertTrue( error instanceof LdapSchemaViolationException );
+        assertTrue( error instanceof LdapSchemaViolationException );
 
-        Assert.assertFalse( isATPresent( schemaManager, "1.1.0" ) );
-        Assert.assertEquals( atrSize, schemaManager.getAttributeTypeRegistry().size() );
-        Assert.assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
+        assertFalse( isATPresent( schemaManager, "1.1.0" ) );
+        assertEquals( atrSize, schemaManager.getAttributeTypeRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -738,18 +737,18 @@ public class SchemaManagerAddTest
         String oid = "0.0.0";
         LdapComparator<?> lc = new BooleanComparator( oid );
 
-        Assert.assertTrue( schemaManager.add( lc ) );
+        assertTrue( schemaManager.add( lc ) );
 
         List<Throwable> errors = schemaManager.getErrors();
-        Assert.assertEquals( 0, errors.size() );
+        assertEquals( 0, errors.size() );
 
-        Assert.assertEquals( ctrSize + 1, schemaManager.getComparatorRegistry().size() );
-        Assert.assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
+        assertEquals( ctrSize + 1, schemaManager.getComparatorRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
 
         LdapComparator<?> added = schemaManager.lookupComparatorRegistry( oid );
 
-        Assert.assertNotNull( added );
-        Assert.assertEquals( lc.getClass().getName(), added.getFqcn() );
+        assertNotNull( added );
+        assertEquals( lc.getClass().getName(), added.getFqcn() );
     }
 
 
@@ -763,32 +762,32 @@ public class SchemaManagerAddTest
         String oid = "0.0.0";
         LdapComparator<?> bc = new BooleanComparator( oid );
 
-        Assert.assertTrue( schemaManager.add( bc ) );
+        assertTrue( schemaManager.add( bc ) );
 
         LdapComparator<?> added = schemaManager.lookupComparatorRegistry( oid );
 
-        Assert.assertNotNull( added );
-        Assert.assertEquals( bc.getClass().getName(), added.getFqcn() );
+        assertNotNull( added );
+        assertEquals( bc.getClass().getName(), added.getFqcn() );
 
         List<Throwable> errors = schemaManager.getErrors();
-        Assert.assertEquals( 0, errors.size() );
-        Assert.assertEquals( ctrSize + 1, schemaManager.getComparatorRegistry().size() );
-        Assert.assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
+        assertEquals( 0, errors.size() );
+        assertEquals( ctrSize + 1, schemaManager.getComparatorRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
 
         LdapComparator<?> lc = new CsnComparator( oid );
 
-        Assert.assertFalse( schemaManager.add( lc ) );
+        assertFalse( schemaManager.add( lc ) );
 
         errors = schemaManager.getErrors();
-        Assert.assertEquals( 1, errors.size() );
+        assertEquals( 1, errors.size() );
 
-        Assert.assertEquals( ctrSize + 1, schemaManager.getComparatorRegistry().size() );
-        Assert.assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
+        assertEquals( ctrSize + 1, schemaManager.getComparatorRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
 
         added = schemaManager.lookupComparatorRegistry( oid );
 
-        Assert.assertNotNull( added );
-        Assert.assertEquals( bc.getClass().getName(), added.getFqcn() );
+        assertNotNull( added );
+        assertEquals( bc.getClass().getName(), added.getFqcn() );
     }
 
 
@@ -809,23 +808,23 @@ public class SchemaManagerAddTest
         // in ADS, as the FQCN is not the one expected
         lc.setFqcn( "java.sql.ResultSet" );
 
-        Assert.assertFalse( schemaManager.add( lc ) );
+        assertFalse( schemaManager.add( lc ) );
 
         List<Throwable> errors = schemaManager.getErrors();
-        Assert.assertEquals( 1, errors.size() );
+        assertEquals( 1, errors.size() );
 
-        Assert.assertEquals( ctrSize, schemaManager.getComparatorRegistry().size() );
-        Assert.assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
+        assertEquals( ctrSize, schemaManager.getComparatorRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
 
         try
         {
             schemaManager.lookupComparatorRegistry( oid );
-            Assert.fail();
+            fail();
         }
         catch ( Exception e )
         {
             // Expected
-            Assert.assertTrue( true );
+            assertTrue( true );
         }
     }
 
@@ -857,18 +856,18 @@ public class SchemaManagerAddTest
         matchingRule.setSyntaxOid( "1.3.6.1.4.1.1466.115.121.1.26" );
 
         // It should not fail
-        Assert.assertTrue( schemaManager.add( matchingRule ) );
+        assertTrue( schemaManager.add( matchingRule ) );
 
-        Assert.assertTrue( isMRPresent( schemaManager, "1.1.0" ) );
+        assertTrue( isMRPresent( schemaManager, "1.1.0" ) );
 
         // The C and N must have default values
         MatchingRule added = schemaManager.lookupMatchingRuleRegistry( "1.1.0" );
 
-        Assert.assertEquals( NoOpNormalizer.class.getName(), added.getNormalizer().getClass().getName() );
-        Assert.assertEquals( ComparableComparator.class.getName(), added.getLdapComparator().getClass().getName() );
+        assertEquals( NoOpNormalizer.class.getName(), added.getNormalizer().getClass().getName() );
+        assertEquals( ComparableComparator.class.getName(), added.getLdapComparator().getClass().getName() );
 
-        Assert.assertEquals( mrrSize + 1, schemaManager.getMatchingRuleRegistry().size() );
-        Assert.assertEquals( goidSize + 1, schemaManager.getGlobalOidRegistry().size() );
+        assertEquals( mrrSize + 1, schemaManager.getMatchingRuleRegistry().size() );
+        assertEquals( goidSize + 1, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -885,18 +884,18 @@ public class SchemaManagerAddTest
         MatchingRule matchingRule = new MatchingRule( "1.1.0" );
 
         // It should fail (no syntax)
-        Assert.assertFalse( schemaManager.add( matchingRule ) );
+        assertFalse( schemaManager.add( matchingRule ) );
 
         List<Throwable> errors = schemaManager.getErrors();
 
-        Assert.assertEquals( 1, errors.size() );
+        assertEquals( 1, errors.size() );
         Throwable error = errors.get( 0 );
-        Assert.assertTrue( error instanceof LdapSchemaViolationException );
+        assertTrue( error instanceof LdapSchemaViolationException );
 
-        Assert.assertFalse( isMRPresent( schemaManager, "1.1.0" ) );
+        assertFalse( isMRPresent( schemaManager, "1.1.0" ) );
 
-        Assert.assertEquals( mrrSize, schemaManager.getMatchingRuleRegistry().size() );
-        Assert.assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
+        assertEquals( mrrSize, schemaManager.getMatchingRuleRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -914,22 +913,22 @@ public class SchemaManagerAddTest
         matchingRule.setSyntaxOid( "1.3.6.1.4.1.1466.115.121.1.26" );
 
         // It should fail (oid already registered)
-        Assert.assertFalse( schemaManager.add( matchingRule ) );
+        assertFalse( schemaManager.add( matchingRule ) );
 
         List<Throwable> errors = schemaManager.getErrors();
 
-        Assert.assertEquals( 1, errors.size() );
+        assertEquals( 1, errors.size() );
         Throwable error = errors.get( 0 );
-        Assert.assertTrue( error instanceof LdapSchemaViolationException );
+        assertTrue( error instanceof LdapSchemaViolationException );
 
         // Check that the existing MR has not been replaced
-        Assert.assertTrue( isMRPresent( schemaManager, "2.5.13.0" ) );
+        assertTrue( isMRPresent( schemaManager, "2.5.13.0" ) );
         MatchingRule existing = schemaManager.lookupMatchingRuleRegistry( "2.5.13.0" );
 
-        Assert.assertEquals( "objectIdentifierMatch", existing.getName() );
+        assertEquals( "objectIdentifierMatch", existing.getName() );
 
-        Assert.assertEquals( mrrSize, schemaManager.getMatchingRuleRegistry().size() );
-        Assert.assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
+        assertEquals( mrrSize, schemaManager.getMatchingRuleRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -948,16 +947,16 @@ public class SchemaManagerAddTest
         matchingRule.setSyntaxOid( "1.3.6.1.4.1.1466.115.121.1.26" );
 
         // It should fail (name already registered)
-        Assert.assertFalse( schemaManager.add( matchingRule ) );
+        assertFalse( schemaManager.add( matchingRule ) );
 
         List<Throwable> errors = schemaManager.getErrors();
 
-        Assert.assertEquals( 1, errors.size() );
+        assertEquals( 1, errors.size() );
         Throwable error = errors.get( 0 );
-        Assert.assertTrue( error instanceof LdapSchemaViolationException );
+        assertTrue( error instanceof LdapSchemaViolationException );
 
-        Assert.assertEquals( mrrSize, schemaManager.getMatchingRuleRegistry().size() );
-        Assert.assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
+        assertEquals( mrrSize, schemaManager.getMatchingRuleRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -976,21 +975,21 @@ public class SchemaManagerAddTest
         matchingRule.setSyntaxOid( "1.3.6.1.4.1.1466.115.121.1.26" );
 
         // It should not fail
-        Assert.assertTrue( schemaManager.add( matchingRule ) );
+        assertTrue( schemaManager.add( matchingRule ) );
 
         List<Throwable> errors = schemaManager.getErrors();
 
-        Assert.assertEquals( 0, errors.size() );
+        assertEquals( 0, errors.size() );
 
         // Check that the new MR has been injected
-        Assert.assertTrue( isMRPresent( schemaManager, "1.1.0" ) );
+        assertTrue( isMRPresent( schemaManager, "1.1.0" ) );
         MatchingRule added = schemaManager.lookupMatchingRuleRegistry( "1.1.0" );
 
-        Assert.assertTrue( added.getNames().contains( "cn" ) );
-        Assert.assertTrue( added.getNames().contains( "Test" ) );
+        assertTrue( added.getNames().contains( "cn" ) );
+        assertTrue( added.getNames().contains( "Test" ) );
 
-        Assert.assertEquals( mrrSize + 1, schemaManager.getMatchingRuleRegistry().size() );
-        Assert.assertEquals( goidSize + 1, schemaManager.getGlobalOidRegistry().size() );
+        assertEquals( mrrSize + 1, schemaManager.getMatchingRuleRegistry().size() );
+        assertEquals( goidSize + 1, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -1009,16 +1008,16 @@ public class SchemaManagerAddTest
         matchingRule.setSyntaxOid( "1.1.1" );
 
         // It should fail
-        Assert.assertFalse( schemaManager.add( matchingRule ) );
+        assertFalse( schemaManager.add( matchingRule ) );
 
         List<Throwable> errors = schemaManager.getErrors();
 
-        Assert.assertEquals( 1, errors.size() );
+        assertEquals( 1, errors.size() );
         Throwable error = errors.get( 0 );
-        Assert.assertTrue( error instanceof LdapSchemaViolationException );
+        assertTrue( error instanceof LdapSchemaViolationException );
 
-        Assert.assertEquals( mrrSize, schemaManager.getMatchingRuleRegistry().size() );
-        Assert.assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
+        assertEquals( mrrSize, schemaManager.getMatchingRuleRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -1038,19 +1037,19 @@ public class SchemaManagerAddTest
         matchingRule.setSchemaName( "bad" );
 
         // It should fail
-        Assert.assertFalse( schemaManager.add( matchingRule ) );
+        assertFalse( schemaManager.add( matchingRule ) );
 
         List<Throwable> errors = schemaManager.getErrors();
 
-        Assert.assertEquals( 1, errors.size() );
+        assertEquals( 1, errors.size() );
         Throwable error = errors.get( 0 );
-        Assert.assertTrue( error instanceof LdapOperationNotSupportedException );
+        assertTrue( error instanceof LdapOperationNotSupportedException );
 
         // Check that the new MR has been injected
-        Assert.assertFalse( isMRPresent( schemaManager, "1.1.0" ) );
+        assertFalse( isMRPresent( schemaManager, "1.1.0" ) );
 
-        Assert.assertEquals( mrrSize, schemaManager.getMatchingRuleRegistry().size() );
-        Assert.assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
+        assertEquals( mrrSize, schemaManager.getMatchingRuleRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -1077,18 +1076,18 @@ public class SchemaManagerAddTest
         String oid = "0.0.0";
         Normalizer normalizer = new NoOpNormalizer( oid );
 
-        Assert.assertTrue( schemaManager.add( normalizer ) );
+        assertTrue( schemaManager.add( normalizer ) );
 
         List<Throwable> errors = schemaManager.getErrors();
-        Assert.assertEquals( 0, errors.size() );
+        assertEquals( 0, errors.size() );
 
-        Assert.assertEquals( nrSize + 1, schemaManager.getNormalizerRegistry().size() );
-        Assert.assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
+        assertEquals( nrSize + 1, schemaManager.getNormalizerRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
 
         Normalizer added = schemaManager.lookupNormalizerRegistry( oid );
 
-        Assert.assertNotNull( added );
-        Assert.assertEquals( normalizer.getClass().getName(), added.getFqcn() );
+        assertNotNull( added );
+        assertEquals( normalizer.getClass().getName(), added.getFqcn() );
     }
 
 
@@ -1102,32 +1101,32 @@ public class SchemaManagerAddTest
         String oid = "0.0.0";
         Normalizer normalizer = new NoOpNormalizer( oid );
 
-        Assert.assertTrue( schemaManager.add( normalizer ) );
+        assertTrue( schemaManager.add( normalizer ) );
 
         Normalizer added = schemaManager.lookupNormalizerRegistry( oid );
 
-        Assert.assertNotNull( added );
-        Assert.assertEquals( normalizer.getClass().getName(), added.getFqcn() );
+        assertNotNull( added );
+        assertEquals( normalizer.getClass().getName(), added.getFqcn() );
 
         List<Throwable> errors = schemaManager.getErrors();
-        Assert.assertEquals( 0, errors.size() );
-        Assert.assertEquals( nrSize + 1, schemaManager.getNormalizerRegistry().size() );
-        Assert.assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
+        assertEquals( 0, errors.size() );
+        assertEquals( nrSize + 1, schemaManager.getNormalizerRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
 
         Normalizer normalizer2 = new NoOpNormalizer( oid );
 
-        Assert.assertFalse( schemaManager.add( normalizer2 ) );
+        assertFalse( schemaManager.add( normalizer2 ) );
 
         errors = schemaManager.getErrors();
-        Assert.assertEquals( 1, errors.size() );
+        assertEquals( 1, errors.size() );
 
-        Assert.assertEquals( nrSize + 1, schemaManager.getNormalizerRegistry().size() );
-        Assert.assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
+        assertEquals( nrSize + 1, schemaManager.getNormalizerRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
 
         added = schemaManager.lookupNormalizerRegistry( oid );
 
-        Assert.assertNotNull( added );
-        Assert.assertEquals( normalizer.getClass().getName(), added.getFqcn() );
+        assertNotNull( added );
+        assertEquals( normalizer.getClass().getName(), added.getFqcn() );
     }
 
 
@@ -1148,24 +1147,24 @@ public class SchemaManagerAddTest
         // in ADS, as the FQCN is not the one expected
         normalizer.setFqcn( "java.sql.ResultSet" );
 
-        Assert.assertFalse( schemaManager.add( normalizer ) );
+        assertFalse( schemaManager.add( normalizer ) );
 
         List<Throwable> errors = schemaManager.getErrors();
         errors = schemaManager.getErrors();
-        Assert.assertEquals( 1, errors.size() );
+        assertEquals( 1, errors.size() );
 
-        Assert.assertEquals( nrSize, schemaManager.getNormalizerRegistry().size() );
-        Assert.assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
+        assertEquals( nrSize, schemaManager.getNormalizerRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
 
         try
         {
             schemaManager.lookupNormalizerRegistry( oid );
-            Assert.fail();
+            fail();
         }
         catch ( Exception e )
         {
             // Expected
-            Assert.assertTrue( true );
+            assertTrue( true );
         }
     }
 
@@ -1188,16 +1187,16 @@ public class SchemaManagerAddTest
 
         ObjectClass objectClass = new ObjectClass( "1.1.1" );
 
-        Assert.assertTrue( schemaManager.add( objectClass ) );
+        assertTrue( schemaManager.add( objectClass ) );
 
-        Assert.assertEquals( 0, schemaManager.getErrors().size() );
+        assertEquals( 0, schemaManager.getErrors().size() );
 
         ObjectClass added = schemaManager.lookupObjectClassRegistry( "1.1.1" );
 
-        Assert.assertNotNull( added );
+        assertNotNull( added );
 
-        Assert.assertEquals( ocrSize + 1, schemaManager.getObjectClassRegistry().size() );
-        Assert.assertEquals( goidSize + 1, schemaManager.getGlobalOidRegistry().size() );
+        assertEquals( ocrSize + 1, schemaManager.getObjectClassRegistry().size() );
+        assertEquals( goidSize + 1, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -1213,19 +1212,19 @@ public class SchemaManagerAddTest
 
         ObjectClass objectClass = new ObjectClass( "2.5.17.0" );
 
-        Assert.assertFalse( schemaManager.add( objectClass ) );
+        assertFalse( schemaManager.add( objectClass ) );
 
-        Assert.assertEquals( 1, schemaManager.getErrors().size() );
+        assertEquals( 1, schemaManager.getErrors().size() );
         Throwable error = schemaManager.getErrors().get( 0 );
 
-        Assert.assertTrue( error instanceof LdapSchemaViolationException );
+        assertTrue( error instanceof LdapSchemaViolationException );
 
         ObjectClass added = schemaManager.lookupObjectClassRegistry( "2.5.17.0" );
 
-        Assert.assertNotNull( added );
+        assertNotNull( added );
 
-        Assert.assertEquals( ocrSize, schemaManager.getObjectClassRegistry().size() );
-        Assert.assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
+        assertEquals( ocrSize, schemaManager.getObjectClassRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -1242,17 +1241,17 @@ public class SchemaManagerAddTest
         ObjectClass objectClass = new ObjectClass( "1.1.0" );
         objectClass.setNames( "Test", "referral" );
 
-        Assert.assertFalse( schemaManager.add( objectClass ) );
+        assertFalse( schemaManager.add( objectClass ) );
 
-        Assert.assertEquals( 1, schemaManager.getErrors().size() );
+        assertEquals( 1, schemaManager.getErrors().size() );
         Throwable error = schemaManager.getErrors().get( 0 );
 
-        Assert.assertTrue( error instanceof LdapSchemaViolationException );
+        assertTrue( error instanceof LdapSchemaViolationException );
 
-        Assert.assertFalse( isOCPresent( schemaManager, "1.1.0" ) );
+        assertFalse( isOCPresent( schemaManager, "1.1.0" ) );
 
-        Assert.assertEquals( ocrSize, schemaManager.getObjectClassRegistry().size() );
-        Assert.assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
+        assertEquals( ocrSize, schemaManager.getObjectClassRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -1269,18 +1268,18 @@ public class SchemaManagerAddTest
         ObjectClass objectClass = new ObjectClass( "1.1.1" );
         objectClass.setNames( "Test", "cn" );
 
-        Assert.assertTrue( schemaManager.add( objectClass ) );
+        assertTrue( schemaManager.add( objectClass ) );
 
-        Assert.assertEquals( 0, schemaManager.getErrors().size() );
+        assertEquals( 0, schemaManager.getErrors().size() );
 
         ObjectClass added = schemaManager.lookupObjectClassRegistry( "1.1.1" );
 
-        Assert.assertNotNull( added );
-        Assert.assertTrue( added.getNames().contains( "Test" ) );
-        Assert.assertTrue( added.getNames().contains( "cn" ) );
+        assertNotNull( added );
+        assertTrue( added.getNames().contains( "Test" ) );
+        assertTrue( added.getNames().contains( "cn" ) );
 
-        Assert.assertEquals( ocrSize + 1, schemaManager.getObjectClassRegistry().size() );
-        Assert.assertEquals( goidSize + 1, schemaManager.getGlobalOidRegistry().size() );
+        assertEquals( ocrSize + 1, schemaManager.getObjectClassRegistry().size() );
+        assertEquals( goidSize + 1, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -1297,17 +1296,17 @@ public class SchemaManagerAddTest
         ObjectClass objectClass = new ObjectClass( "1.1.1" );
         objectClass.addMayAttributeTypeOids( "cn", "none", "sn" );
 
-        Assert.assertFalse( schemaManager.add( objectClass ) );
+        assertFalse( schemaManager.add( objectClass ) );
 
-        Assert.assertEquals( 1, schemaManager.getErrors().size() );
+        assertEquals( 1, schemaManager.getErrors().size() );
         Throwable error = schemaManager.getErrors().get( 0 );
 
-        Assert.assertTrue( error instanceof LdapSchemaViolationException );
+        assertTrue( error instanceof LdapSchemaViolationException );
 
-        Assert.assertFalse( isOCPresent( schemaManager, "1.1.1" ) );
+        assertFalse( isOCPresent( schemaManager, "1.1.1" ) );
 
-        Assert.assertEquals( ocrSize, schemaManager.getObjectClassRegistry().size() );
-        Assert.assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
+        assertEquals( ocrSize, schemaManager.getObjectClassRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -1324,17 +1323,17 @@ public class SchemaManagerAddTest
         ObjectClass objectClass = new ObjectClass( "1.1.1" );
         objectClass.addMustAttributeTypeOids( "cn", "none", "sn" );
 
-        Assert.assertFalse( schemaManager.add( objectClass ) );
+        assertFalse( schemaManager.add( objectClass ) );
 
-        Assert.assertEquals( 1, schemaManager.getErrors().size() );
+        assertEquals( 1, schemaManager.getErrors().size() );
         Throwable error = schemaManager.getErrors().get( 0 );
 
-        Assert.assertTrue( error instanceof LdapSchemaViolationException );
+        assertTrue( error instanceof LdapSchemaViolationException );
 
-        Assert.assertFalse( isOCPresent( schemaManager, "1.1.1" ) );
+        assertFalse( isOCPresent( schemaManager, "1.1.1" ) );
 
-        Assert.assertEquals( ocrSize, schemaManager.getObjectClassRegistry().size() );
-        Assert.assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
+        assertEquals( ocrSize, schemaManager.getObjectClassRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -1351,15 +1350,15 @@ public class SchemaManagerAddTest
         ObjectClass objectClass = new ObjectClass( "1.1.1" );
         objectClass.addMayAttributeTypeOids( "cn", "ref", "commonName" );
 
-        Assert.assertFalse( schemaManager.add( objectClass ) );
+        assertFalse( schemaManager.add( objectClass ) );
 
-        Assert.assertEquals( 1, schemaManager.getErrors().size() );
-        Assert.assertTrue( schemaManager.getErrors().get( 0 ) instanceof LdapSchemaViolationException );
+        assertEquals( 1, schemaManager.getErrors().size() );
+        assertTrue( schemaManager.getErrors().get( 0 ) instanceof LdapSchemaViolationException );
 
-        Assert.assertFalse( isOCPresent( schemaManager, "1.1.1" ) );
+        assertFalse( isOCPresent( schemaManager, "1.1.1" ) );
 
-        Assert.assertEquals( ocrSize, schemaManager.getObjectClassRegistry().size() );
-        Assert.assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
+        assertEquals( ocrSize, schemaManager.getObjectClassRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -1376,15 +1375,15 @@ public class SchemaManagerAddTest
         ObjectClass objectClass = new ObjectClass( "1.1.1" );
         objectClass.addMustAttributeTypeOids( "cn", "ref", "2.5.4.3" );
 
-        Assert.assertFalse( schemaManager.add( objectClass ) );
+        assertFalse( schemaManager.add( objectClass ) );
 
-        Assert.assertEquals( 1, schemaManager.getErrors().size() );
-        Assert.assertTrue( schemaManager.getErrors().get( 0 ) instanceof LdapSchemaViolationException );
+        assertEquals( 1, schemaManager.getErrors().size() );
+        assertTrue( schemaManager.getErrors().get( 0 ) instanceof LdapSchemaViolationException );
 
-        Assert.assertFalse( isOCPresent( schemaManager, "1.1.1" ) );
+        assertFalse( isOCPresent( schemaManager, "1.1.1" ) );
 
-        Assert.assertEquals( ocrSize, schemaManager.getObjectClassRegistry().size() );
-        Assert.assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
+        assertEquals( ocrSize, schemaManager.getObjectClassRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -1403,15 +1402,15 @@ public class SchemaManagerAddTest
         objectClass.addMayAttributeTypeOids( "2.5.4.3" );
 
         // Same AT i MAY and MUST : should fail
-        Assert.assertFalse( schemaManager.add( objectClass ) );
+        assertFalse( schemaManager.add( objectClass ) );
 
-        Assert.assertEquals( 1, schemaManager.getErrors().size() );
-        Assert.assertTrue( schemaManager.getErrors().get( 0 ) instanceof LdapSchemaViolationException );
+        assertEquals( 1, schemaManager.getErrors().size() );
+        assertTrue( schemaManager.getErrors().get( 0 ) instanceof LdapSchemaViolationException );
 
-        Assert.assertFalse( isOCPresent( schemaManager, "1.1.1" ) );
+        assertFalse( isOCPresent( schemaManager, "1.1.1" ) );
 
-        Assert.assertEquals( ocrSize, schemaManager.getObjectClassRegistry().size() );
-        Assert.assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
+        assertEquals( ocrSize, schemaManager.getObjectClassRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -1433,16 +1432,16 @@ public class SchemaManagerAddTest
         objectClass.setType( ObjectClassTypeEnum.STRUCTURAL );
         objectClass.addSuperiorOids( "alias", "referral", "top" );
 
-        Assert.assertTrue( schemaManager.add( objectClass ) );
+        assertTrue( schemaManager.add( objectClass ) );
 
-        Assert.assertEquals( 0, schemaManager.getErrors().size() );
+        assertEquals( 0, schemaManager.getErrors().size() );
 
         ObjectClass added = schemaManager.lookupObjectClassRegistry( "1.1.1" );
 
-        Assert.assertNotNull( added );
-        Assert.assertTrue( added.getNames().contains( "Test" ) );
-        Assert.assertNotNull( added.getSuperiors() );
-        Assert.assertEquals( 3, added.getSuperiors().size() );
+        assertNotNull( added );
+        assertTrue( added.getNames().contains( "Test" ) );
+        assertNotNull( added.getSuperiors() );
+        assertEquals( 3, added.getSuperiors().size() );
 
         Set<String> expectedSups = new HashSet<String>();
         expectedSups.add( "alias" );
@@ -1451,12 +1450,12 @@ public class SchemaManagerAddTest
 
         for ( ObjectClass addedOC : added.getSuperiors() )
         {
-            Assert.assertTrue( expectedSups.contains( addedOC.getName() ) );
+            assertTrue( expectedSups.contains( addedOC.getName() ) );
             expectedSups.remove( addedOC.getName() );
         }
 
-        Assert.assertEquals( ocrSize + 1, schemaManager.getObjectClassRegistry().size() );
-        Assert.assertEquals( goidSize + 1, schemaManager.getGlobalOidRegistry().size() );
+        assertEquals( ocrSize + 1, schemaManager.getObjectClassRegistry().size() );
+        assertEquals( goidSize + 1, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -1475,14 +1474,14 @@ public class SchemaManagerAddTest
         objectClass.setType( ObjectClassTypeEnum.STRUCTURAL );
         objectClass.addSuperiorOids( "alias", "Test", "referral" );
 
-        Assert.assertFalse( schemaManager.add( objectClass ) );
+        assertFalse( schemaManager.add( objectClass ) );
 
-        Assert.assertTrue( schemaManager.getErrors().get( 0 ) instanceof LdapSchemaViolationException );
+        assertTrue( schemaManager.getErrors().get( 0 ) instanceof LdapSchemaViolationException );
 
-        Assert.assertFalse( isOCPresent( schemaManager, "1.1.1" ) );
+        assertFalse( isOCPresent( schemaManager, "1.1.1" ) );
 
-        Assert.assertEquals( ocrSize, schemaManager.getObjectClassRegistry().size() );
-        Assert.assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
+        assertEquals( ocrSize, schemaManager.getObjectClassRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -1501,14 +1500,14 @@ public class SchemaManagerAddTest
         objectClass.setType( ObjectClassTypeEnum.STRUCTURAL );
         objectClass.addSuperiorOids( "alias", "referral", "2.5.6.1" );
 
-        Assert.assertFalse( schemaManager.add( objectClass ) );
+        assertFalse( schemaManager.add( objectClass ) );
 
-        Assert.assertTrue( schemaManager.getErrors().get( 0 ) instanceof LdapSchemaViolationException );
+        assertTrue( schemaManager.getErrors().get( 0 ) instanceof LdapSchemaViolationException );
 
-        Assert.assertFalse( isOCPresent( schemaManager, "1.1.1" ) );
+        assertFalse( isOCPresent( schemaManager, "1.1.1" ) );
 
-        Assert.assertEquals( ocrSize, schemaManager.getObjectClassRegistry().size() );
-        Assert.assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
+        assertEquals( ocrSize, schemaManager.getObjectClassRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -1527,14 +1526,14 @@ public class SchemaManagerAddTest
         objectClass.setType( ObjectClassTypeEnum.STRUCTURAL );
         objectClass.addSuperiorOids( "alias", "refessal" );
 
-        Assert.assertFalse( schemaManager.add( objectClass ) );
+        assertFalse( schemaManager.add( objectClass ) );
 
-        Assert.assertTrue( schemaManager.getErrors().get( 0 ) instanceof LdapSchemaViolationException );
+        assertTrue( schemaManager.getErrors().get( 0 ) instanceof LdapSchemaViolationException );
 
-        Assert.assertFalse( isOCPresent( schemaManager, "1.1.1" ) );
+        assertFalse( isOCPresent( schemaManager, "1.1.1" ) );
 
-        Assert.assertEquals( ocrSize, schemaManager.getObjectClassRegistry().size() );
-        Assert.assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
+        assertEquals( ocrSize, schemaManager.getObjectClassRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -1553,14 +1552,14 @@ public class SchemaManagerAddTest
         objectClass.setType( ObjectClassTypeEnum.ABSTRACT );
         objectClass.addSuperiorOids( "extensibleObject" );
 
-        Assert.assertFalse( schemaManager.add( objectClass ) );
+        assertFalse( schemaManager.add( objectClass ) );
 
-        Assert.assertTrue( schemaManager.getErrors().get( 0 ) instanceof LdapSchemaViolationException );
+        assertTrue( schemaManager.getErrors().get( 0 ) instanceof LdapSchemaViolationException );
 
-        Assert.assertFalse( isOCPresent( schemaManager, "1.1.1" ) );
+        assertFalse( isOCPresent( schemaManager, "1.1.1" ) );
 
-        Assert.assertEquals( ocrSize, schemaManager.getObjectClassRegistry().size() );
-        Assert.assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
+        assertEquals( ocrSize, schemaManager.getObjectClassRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -1579,14 +1578,14 @@ public class SchemaManagerAddTest
         objectClass.setType( ObjectClassTypeEnum.ABSTRACT );
         objectClass.addSuperiorOids( "referral" );
 
-        Assert.assertFalse( schemaManager.add( objectClass ) );
+        assertFalse( schemaManager.add( objectClass ) );
 
-        Assert.assertTrue( schemaManager.getErrors().get( 0 ) instanceof LdapSchemaViolationException );
+        assertTrue( schemaManager.getErrors().get( 0 ) instanceof LdapSchemaViolationException );
 
-        Assert.assertFalse( isOCPresent( schemaManager, "1.1.1" ) );
+        assertFalse( isOCPresent( schemaManager, "1.1.1" ) );
 
-        Assert.assertEquals( ocrSize, schemaManager.getObjectClassRegistry().size() );
-        Assert.assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
+        assertEquals( ocrSize, schemaManager.getObjectClassRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -1605,14 +1604,14 @@ public class SchemaManagerAddTest
         objectClass.setType( ObjectClassTypeEnum.AUXILIARY );
         objectClass.addSuperiorOids( "referral" );
 
-        Assert.assertFalse( schemaManager.add( objectClass ) );
+        assertFalse( schemaManager.add( objectClass ) );
 
-        Assert.assertTrue( schemaManager.getErrors().get( 0 ) instanceof LdapSchemaViolationException );
+        assertTrue( schemaManager.getErrors().get( 0 ) instanceof LdapSchemaViolationException );
 
-        Assert.assertFalse( isOCPresent( schemaManager, "1.1.1" ) );
+        assertFalse( isOCPresent( schemaManager, "1.1.1" ) );
 
-        Assert.assertEquals( ocrSize, schemaManager.getObjectClassRegistry().size() );
-        Assert.assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
+        assertEquals( ocrSize, schemaManager.getObjectClassRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -1631,14 +1630,14 @@ public class SchemaManagerAddTest
         objectClass.setType( ObjectClassTypeEnum.STRUCTURAL );
         objectClass.addSuperiorOids( "extensibleObject" );
 
-        Assert.assertFalse( schemaManager.add( objectClass ) );
+        assertFalse( schemaManager.add( objectClass ) );
 
-        Assert.assertTrue( schemaManager.getErrors().get( 0 ) instanceof LdapSchemaViolationException );
+        assertTrue( schemaManager.getErrors().get( 0 ) instanceof LdapSchemaViolationException );
 
-        Assert.assertFalse( isOCPresent( schemaManager, "1.1.1" ) );
+        assertFalse( isOCPresent( schemaManager, "1.1.1" ) );
 
-        Assert.assertEquals( ocrSize, schemaManager.getObjectClassRegistry().size() );
-        Assert.assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
+        assertEquals( ocrSize, schemaManager.getObjectClassRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -1659,16 +1658,16 @@ public class SchemaManagerAddTest
         objectClass.addSuperiorOids( "alias", "OpenLDAProotDSE" );
         objectClass.addMustAttributeTypeOids( "aliasedObjectName", "cn" );
 
-        Assert.assertTrue( schemaManager.add( objectClass ) );
+        assertTrue( schemaManager.add( objectClass ) );
 
-        Assert.assertEquals( 0, schemaManager.getErrors().size() );
+        assertEquals( 0, schemaManager.getErrors().size() );
 
         ObjectClass added = schemaManager.lookupObjectClassRegistry( "1.1.1" );
 
-        Assert.assertNotNull( added );
-        Assert.assertTrue( added.getNames().contains( "Test" ) );
-        Assert.assertNotNull( added.getSuperiors() );
-        Assert.assertEquals( 2, added.getSuperiors().size() );
+        assertNotNull( added );
+        assertTrue( added.getNames().contains( "Test" ) );
+        assertNotNull( added.getSuperiors() );
+        assertEquals( 2, added.getSuperiors().size() );
 
         Set<String> expectedSups = new HashSet<String>();
         expectedSups.add( "alias" );
@@ -1676,12 +1675,12 @@ public class SchemaManagerAddTest
 
         for ( ObjectClass addedOC : added.getSuperiors() )
         {
-            Assert.assertTrue( expectedSups.contains( addedOC.getName() ) );
+            assertTrue( expectedSups.contains( addedOC.getName() ) );
             expectedSups.remove( addedOC.getName() );
         }
 
-        Assert.assertEquals( ocrSize + 1, schemaManager.getObjectClassRegistry().size() );
-        Assert.assertEquals( goidSize + 1, schemaManager.getGlobalOidRegistry().size() );
+        assertEquals( ocrSize + 1, schemaManager.getObjectClassRegistry().size() );
+        assertEquals( goidSize + 1, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -1702,16 +1701,16 @@ public class SchemaManagerAddTest
         objectClass.addSuperiorOids( "alias", "OpenLDAProotDSE" );
         objectClass.addMayAttributeTypeOids( "aliasedObjectName", "cn" );
 
-        Assert.assertFalse( schemaManager.add( objectClass ) );
+        assertFalse( schemaManager.add( objectClass ) );
 
-        Assert.assertEquals( 1, schemaManager.getErrors().size() );
+        assertEquals( 1, schemaManager.getErrors().size() );
 
-        Assert.assertTrue( schemaManager.getErrors().get( 0 ) instanceof LdapSchemaViolationException );
+        assertTrue( schemaManager.getErrors().get( 0 ) instanceof LdapSchemaViolationException );
 
-        Assert.assertFalse( isOCPresent( schemaManager, "1.1.1" ) );
+        assertFalse( isOCPresent( schemaManager, "1.1.1" ) );
 
-        Assert.assertEquals( ocrSize, schemaManager.getObjectClassRegistry().size() );
-        Assert.assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
+        assertEquals( ocrSize, schemaManager.getObjectClassRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -1732,19 +1731,19 @@ public class SchemaManagerAddTest
         LdapSyntax syntax = new LdapSyntax( "1.1.0" );
 
         // It should not fail
-        Assert.assertTrue( schemaManager.add( syntax ) );
+        assertTrue( schemaManager.add( syntax ) );
 
         LdapSyntax added = schemaManager.lookupLdapSyntaxRegistry( "1.1.0" );
 
-        Assert.assertNotNull( added );
-        Assert.assertEquals( OctetStringSyntaxChecker.class.getName(), added.getSyntaxChecker().getClass().getName() );
+        assertNotNull( added );
+        assertEquals( OctetStringSyntaxChecker.class.getName(), added.getSyntaxChecker().getClass().getName() );
 
         List<Throwable> errors = schemaManager.getErrors();
-        Assert.assertEquals( 0, errors.size() );
+        assertEquals( 0, errors.size() );
 
-        Assert.assertTrue( isSyntaxPresent( schemaManager, "1.1.0" ) );
-        Assert.assertEquals( sSize + 1, schemaManager.getLdapSyntaxRegistry().size() );
-        Assert.assertEquals( goidSize + 1, schemaManager.getGlobalOidRegistry().size() );
+        assertTrue( isSyntaxPresent( schemaManager, "1.1.0" ) );
+        assertEquals( sSize + 1, schemaManager.getLdapSyntaxRegistry().size() );
+        assertEquals( goidSize + 1, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -1761,15 +1760,15 @@ public class SchemaManagerAddTest
         LdapSyntax syntax = new LdapSyntax( "2.5.4.3" );
 
         // It should fail
-        Assert.assertFalse( schemaManager.add( syntax ) );
+        assertFalse( schemaManager.add( syntax ) );
 
         List<Throwable> errors = schemaManager.getErrors();
-        Assert.assertEquals( 1, errors.size() );
+        assertEquals( 1, errors.size() );
         Throwable error = errors.get( 0 );
 
-        Assert.assertTrue( error instanceof LdapSchemaViolationException );
-        Assert.assertEquals( sSize, schemaManager.getLdapSyntaxRegistry().size() );
-        Assert.assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
+        assertTrue( error instanceof LdapSchemaViolationException );
+        assertEquals( sSize, schemaManager.getLdapSyntaxRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -1786,18 +1785,18 @@ public class SchemaManagerAddTest
         String oid = "0.0.0";
         SyntaxChecker syntaxChecker = new RegexSyntaxChecker( oid );
 
-        Assert.assertTrue( schemaManager.add( syntaxChecker ) );
+        assertTrue( schemaManager.add( syntaxChecker ) );
 
         List<Throwable> errors = schemaManager.getErrors();
-        Assert.assertEquals( 0, errors.size() );
+        assertEquals( 0, errors.size() );
 
-        Assert.assertEquals( nrSize + 1, schemaManager.getSyntaxCheckerRegistry().size() );
-        Assert.assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
+        assertEquals( nrSize + 1, schemaManager.getSyntaxCheckerRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
 
         SyntaxChecker added = schemaManager.lookupSyntaxCheckerRegistry( oid );
 
-        Assert.assertNotNull( added );
-        Assert.assertEquals( syntaxChecker.getClass().getName(), added.getFqcn() );
+        assertNotNull( added );
+        assertEquals( syntaxChecker.getClass().getName(), added.getFqcn() );
     }
 
 
@@ -1811,32 +1810,32 @@ public class SchemaManagerAddTest
         String oid = "0.0.0";
         SyntaxChecker syntaxChecker = new RegexSyntaxChecker( oid );
 
-        Assert.assertTrue( schemaManager.add( syntaxChecker ) );
+        assertTrue( schemaManager.add( syntaxChecker ) );
 
         SyntaxChecker added = schemaManager.lookupSyntaxCheckerRegistry( oid );
 
-        Assert.assertNotNull( added );
-        Assert.assertEquals( syntaxChecker.getClass().getName(), added.getFqcn() );
+        assertNotNull( added );
+        assertEquals( syntaxChecker.getClass().getName(), added.getFqcn() );
 
         List<Throwable> errors = schemaManager.getErrors();
-        Assert.assertEquals( 0, errors.size() );
-        Assert.assertEquals( nrSize + 1, schemaManager.getSyntaxCheckerRegistry().size() );
-        Assert.assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
+        assertEquals( 0, errors.size() );
+        assertEquals( nrSize + 1, schemaManager.getSyntaxCheckerRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
 
         SyntaxChecker syntaxChecker2 = new RegexSyntaxChecker( oid );
 
-        Assert.assertFalse( schemaManager.add( syntaxChecker2 ) );
+        assertFalse( schemaManager.add( syntaxChecker2 ) );
 
         errors = schemaManager.getErrors();
-        Assert.assertEquals( 1, errors.size() );
+        assertEquals( 1, errors.size() );
 
-        Assert.assertEquals( nrSize + 1, schemaManager.getSyntaxCheckerRegistry().size() );
-        Assert.assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
+        assertEquals( nrSize + 1, schemaManager.getSyntaxCheckerRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
 
         added = schemaManager.lookupSyntaxCheckerRegistry( oid );
 
-        Assert.assertNotNull( added );
-        Assert.assertEquals( syntaxChecker.getClass().getName(), added.getFqcn() );
+        assertNotNull( added );
+        assertEquals( syntaxChecker.getClass().getName(), added.getFqcn() );
     }
 
 
@@ -1857,24 +1856,24 @@ public class SchemaManagerAddTest
         // in ADS, as the FQCN is not the one expected
         syntaxChecker.setFqcn( "java.sql.ResultSet" );
 
-        Assert.assertFalse( schemaManager.add( syntaxChecker ) );
+        assertFalse( schemaManager.add( syntaxChecker ) );
 
         List<Throwable> errors = schemaManager.getErrors();
         errors = schemaManager.getErrors();
-        Assert.assertEquals( 1, errors.size() );
+        assertEquals( 1, errors.size() );
 
-        Assert.assertEquals( nrSize, schemaManager.getSyntaxCheckerRegistry().size() );
-        Assert.assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
+        assertEquals( nrSize, schemaManager.getSyntaxCheckerRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
 
         try
         {
             schemaManager.lookupSyntaxCheckerRegistry( oid );
-            Assert.fail();
+            fail();
         }
         catch ( Exception e )
         {
             // Expected
-            Assert.assertTrue( true );
+            assertTrue( true );
         }
     }
 }
