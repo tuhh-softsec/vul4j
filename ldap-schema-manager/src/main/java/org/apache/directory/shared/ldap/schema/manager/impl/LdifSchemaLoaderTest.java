@@ -17,7 +17,7 @@
  *  under the License.
  *
  */
-package org.apache.directory.shared.ldap.schema;
+package org.apache.directory.shared.ldap.schema.manager.impl;
 
 
 import static org.junit.Assert.assertTrue;
@@ -27,7 +27,7 @@ import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.directory.shared.ldap.schema.DefaultSchemaManager;
+import org.apache.directory.shared.ldap.schema.manager.impl.DefaultSchemaManager;
 import org.apache.directory.shared.ldap.schema.SchemaManager;
 import org.apache.directory.shared.ldap.schema.ldif.extractor.impl.DefaultSchemaLdifExtractor;
 import org.apache.directory.shared.ldap.schema.ldif.extractor.SchemaLdifExtractor;
@@ -87,9 +87,9 @@ public class LdifSchemaLoaderTest
         
         if ( !loaded )
         {
-            fail( "Schema load failed : " + ExceptionUtils.printErrors( sm.getErrors() ) );
+            Assert.fail( "Schema load failed : " + ExceptionUtils.printErrors( sm.getErrors() ) );
         }
         
-        assertTrue( sm.getRegistries().getAttributeTypeRegistry().contains( "cn" ) );
+        Assert.assertTrue( sm.getRegistries().getAttributeTypeRegistry().contains( "cn" ) );
     }
 }
