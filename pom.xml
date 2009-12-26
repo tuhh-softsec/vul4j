@@ -56,7 +56,6 @@
     <module>ldap-constants</module>
     <module>ldap-schema</module>
     <module>ldap-schema-loader</module>
-    <module>ldap-schema-manager</module>
     <module>asn1-codec</module>
     <module>ldap-convert</module>
     <module>ldap-client-api</module>
@@ -70,18 +69,6 @@
         <groupId>commons-collections</groupId>
         <artifactId>commons-collections</artifactId>
         <version>3.2.1</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>org.apache.felix.ipojo</artifactId>
-        <version>1.4.0</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>org.apache.felix.ipojo.annotations</artifactId>
-        <version>1.4.0</version>
       </dependency>
 
       <dependency>
@@ -158,12 +145,6 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-    </dependency>
-
-    <!-- common logging interface -->
-    <dependency>
-      <groupId>org.apache.felix</groupId>
-      <artifactId>org.apache.felix.ipojo.annotations</artifactId>
     </dependency>
 
     <!-- logging implementation used for unit tests -->
