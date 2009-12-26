@@ -126,7 +126,7 @@ public class DefaultSchemaManager implements SchemaManager
     /**
      * Creates a new instance of DefaultSchemaManager with the default schema schemaLoader
      *
-     * @param schemaLoader
+     * @param loader The schema loader to use
      */
     public DefaultSchemaManager( SchemaLoader loader ) throws Exception
     {
@@ -144,6 +144,7 @@ public class DefaultSchemaManager implements SchemaManager
      * Creates a new instance of DefaultSchemaManager, for a specific
      * naming context
      *
+     * @param loader The schema loader to use
      * @param namingContext The associated NamingContext
      */
     public DefaultSchemaManager( SchemaLoader loader, LdapDN namingContext ) throws Exception
@@ -626,11 +627,6 @@ public class DefaultSchemaManager implements SchemaManager
      * Load the schema in the registries. We will load everything accordingly to the two flags :
      * - isRelaxed
      * - disabledAccepted
-     *
-     * @param registries
-     * @param schemas
-     * @return
-     * @throws Exception
      */
     private boolean load( Registries registries, Schema schema ) throws Exception
     {
@@ -694,11 +690,6 @@ public class DefaultSchemaManager implements SchemaManager
      * Unload the schema from the registries. We will unload everything accordingly to the two flags :
      * - isRelaxed
      * - disabledAccepted
-     *
-     * @param registries
-     * @param schemas
-     * @return
-     * @throws Exception
      */
     private boolean unload( Registries registries, Schema schema ) throws Exception
     {
