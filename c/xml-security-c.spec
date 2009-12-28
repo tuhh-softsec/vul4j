@@ -1,8 +1,7 @@
 Name:           xml-security-c
 Version:        1.5.1
-Release:        1
+Release:        2
 Summary:        Apache XML security C++ library
-
 Group:          System Environment/Libraries
 License:        Apache Software License
 URL:            http://santuario.apache.org/c/
@@ -13,7 +12,7 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 BuildRequires:  libXerces-c-devel >= 2.8
 %{?_with_xalan:BuildRequires: Xalan-c-devel >= 1.6}
 %else
-BuildRequires:  xerces%{?xercesver}-c-devel >= 2.8
+BuildRequires:  libxerces-c-devel >= 2.8
 %{?_with_xalan:BuildRequires: xalan-c-devel >= 1.6}
 %endif
 BuildRequires:  openssl-devel gcc-c++ pkgconfig
@@ -27,11 +26,23 @@ and Encryption specifications. The library makes use of the Apache XML project's
 Xerces-C XML Parser and Xalan-C XSLT processor. The latter is used for processing
 XPath and XSLT transforms.
 
-%if 0%{?suse_version} > 1030
+%package -n xml-security-c-bin
+Summary:    Utilities for XML security C++ library
+Group:      Development/Libraries
+
+%description -n xml-security-c-bin
+The xml-security-c library is a C++ implementation of the XML Digital Signature
+and Encryption specifications. The library makes use of the Apache XML project's
+Xerces-C XML Parser and Xalan-C XSLT processor. The latter is used for processing
+XPath and XSLT transforms.
+
+This package contains the utility programs.
+
 %package -n libxml-security-c15
 Summary:    Apache XML security C++ library
 Group:      Development/Libraries
 Provides:   xml-security-c = %{version}
+Obsoletes:  xml-security-c
 
 %description -n libxml-security-c15
 The xml-security-c library is a C++ implementation of the XML Digital Signature
@@ -40,15 +51,21 @@ Xerces-C XML Parser and Xalan-C XSLT processor. The latter is used for processin
 XPath and XSLT transforms.
 
 This package contains just the shared library.
-%endif
 
-%if 0%{?suse_version} > 1030
 %package -n libxml-security-c-devel
-Summary:        Development files for the Apache C++ XML security library
-Group:          Development/Libraries
-Requires:       libxml-security-c15 = %{version}
-Requires:       libXerces-c-devel openssl-devel
+Summary:	Development files for the Apache C++ XML security library
+Group:		Development/Libraries
+Requires:	libxml-security-c15 = %{version}
+Requires:	openssl-devel
+%if 0%{?suse_version} > 1030
+Requires:	libXerces-c-devel
 %{?_with_xalan:Requires: Xalan-c-devel}
+%else
+Requires:	libxerces-c-devel
+%{?_with_xalan:Requires: xalan-c-devel}
+%endif
+Provides:   xml-security-c-devel = %{version}
+Obsoletes:  xml-security-c-devel
 
 %description -n libxml-security-c-devel
 The xml-security-c library is a C++ implementation of the XML Digital Signature
@@ -57,22 +74,6 @@ Xerces-C XML Parser and Xalan-C XSLT processor. The latter is used for processin
 XPath and XSLT transforms.
 
 This package includes files needed for development with xml-security-c.
-%else
-%package        devel
-Summary:        Development files for the Apache C++ XML security library
-Group:          Development/Libraries
-Requires:       %{name} = %{version}-%{release}
-Requires:       xerces%{?xercesver}-c-devel openssl-devel
-%{?_with_xalan:Requires: xalan-c-devel}
-
-%description    devel
-The xml-security-c library is a C++ implementation of the XML Digital Signature
-and Encryption specifications. The library makes use of the Apache XML project's
-Xerces-C XML Parser and Xalan-C XSLT processor. The latter is used for processing
-XPath and XSLT transforms.
-
-This package includes files needed for development with xml-security-c.
-%endif
 
 %prep
 %setup -q
@@ -89,35 +90,22 @@ This package includes files needed for development with xml-security-c.
 
 
 %ifnos solaris2.8 solaris2.9 solaris2.10
-%if 0%{?suse_version} > 1030
 %post -n libxml-security-c15 -p /sbin/ldconfig
-%else
-%post -p /sbin/ldconfig
-%endif
 %endif
 
 %ifnos solaris2.8 solaris2.9 solaris2.10
-%if 0%{?suse_version} > 1030
 %postun -n libxml-security-c15 -p /sbin/ldconfig
-%else
-%postun -p /sbin/ldconfig
-%endif
 %endif
 
-%files
+%files -n xml-security-c-bin
 %defattr(-,root,root,-)
 %{_bindir}/*
-%if 0%{?suse_version} > 1030
+
 %files -n libxml-security-c15
 %defattr(-,root,root,-)
-%endif
 %{_libdir}/*.so.*
 
-%if 0%{?suse_version} > 1030
 %files -n libxml-security-c-devel
-%else
-%files devel
-%endif
 %defattr(-,root,root,-)
 %{_includedir}/*
 %{_libdir}/*.so
@@ -125,18 +113,27 @@ This package includes files needed for development with xml-security-c.
 %exclude %{_libdir}/*.la
 
 %changelog
+* Mon Dec 28 2009 Scott Cantor <cantor.2@osu.edu> 1.5.1-2
+- Sync package names for side by side installation
+
 * Wed Aug 5 2009   Scott Cantor  <cantor.2@osu.edu> 1.5.1-1
 - update to 1.5.1 and add SuSE conventions
+
 * Sat Dec 6 2008   Scott Cantor  <cantor.2@osu.edu> 1.5-1
 - update to 1.5
 - fix Xerces dependency name on SUSE
+
 * Wed Aug 15 2007   Scott Cantor  <cantor.2@osu.edu> 1.4.0-1
 - update to 1.4.0
+
 * Mon Jun 11 2007   Scott Cantor  <cantor.2@osu.edu> 1.3.1-1
 - update to 1.3.1
+
 * Thu Mar 23 2006   Ian Young     <ian@iay.org.uk> - 1.2.0-2
 - patch to remove extra qualifications for compat with g++ 4.1
+
 * Sun Jul 03 2005   Scott Cantor  <cantor.2@osu.edu> - 1.2.0-1
 - Updated version.
+
 * Mon Oct 19 2004   Derek Atkins  <derek@ihtfp.com> - 1.1.1-1
 - First Package.
