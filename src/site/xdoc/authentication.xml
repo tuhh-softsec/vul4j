@@ -5,8 +5,45 @@
 		<author email="fxbonnet@users.sourceforge.net">Francois-Xavier Bonnet</author>
 	</properties>
 	<body>
-		<p>
-			TODO
-		</p>
+		<section name="Authentication">
+			<p>
+				User authentication consists in two different things :
+				<ol>
+					<li>authenticating user requests</li>
+					<li>forwarding user information to the providers</li>
+				</ol>
+				This is made by the
+				<a
+					href="webassembletool-core/apidocs/net/webassembletool/authentication/AuthenticationHandler.html">AuthenticationHandler</a>
+				interface. Every provider has its own AuthenticationHandler.
+			</p>
+		</section>
+		<section name="Default authentication handler">
+			<p>
+				The default AuthenticationHandler is
+				<a
+					href="webassembletool-core/apidocs/net/webassembletool/authentication/RemoteUserAuthenticationHandler.html">RemoteUserAuthenticationHandler</a>
+				implementation. This implementation tries to retrieve the user by
+				calling the
+				method request.getRemoteUser() from the container. If
+				this method
+				returns a user name, the name is forwarded to the
+				provider in the
+				"X_REMOTE_USER" HTTP header.
+			</p>
+		</section>
+		<section name="CAS authentication">
+			<p>
+				There is also an AuthenticationHandler for CAS Single Sign On. See
+				<a href="cas.html">CAS</a>
+				for more information.
+			</p>
+		</section>
+		<section name="Custom authentication">
+			<p>
+				Any other authentication method can be implementing by writing a
+				class that implements the AutenticationHandler interface.
+			</p>
+		</section>
 	</body>
 </document>

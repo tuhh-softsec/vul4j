@@ -89,6 +89,12 @@
 	&lt;url-pattern&gt;/*&lt;/url-pattern&gt;
 &lt;/filter-mapping&gt;
 </source>
+	In addition, you must configure the AuthenticationHandler in
+	driver.properties file for each provider&nbsp;:
+<source>
+authenticationHandler=net.webassembletool.cas.CasAuthenticationHandler
+aggregated2.authenticationHandler=net.webassembletool.cas.CasAuthenticationHandler
+</source>
 		</section>
 		<section
 			name="Configuring CAS on the aggregated or provider

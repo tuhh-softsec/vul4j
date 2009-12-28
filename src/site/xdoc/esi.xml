@@ -1,12 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document>
 	<properties>
-		<title>Reverse proxy</title>
+		<title>Edge Side Include</title>
 		<author email="fxbonnet@users.sourceforge.net">Francois-Xavier Bonnet</author>
 	</properties>
 	<body>
-		<p>
-			TODO
-		</p>
+		<section name="Edge Side Include (ESI)">
+			<p>
+				Currently aggregator servlet supports ESI include and comment
+				tags.
+				In a near future, the complete
+				<a href="http://www.w3.org/TR/esi-lang">ESI language specification</a>
+				should be supported.
+			</p>
+		</section>
 	</body>
 </document>
