@@ -323,11 +323,11 @@ public interface SchemaLoader
     /**
      * Add a new schema to the schema's list
      */
-    public void addSchema( Schema schema );
+    void addSchema( Schema schema );
 
     
     /**
      * Remove a schema from the schema's list
      */
-    public void removeSchema( Schema schema );
+    void removeSchema( Schema schema );
 }
