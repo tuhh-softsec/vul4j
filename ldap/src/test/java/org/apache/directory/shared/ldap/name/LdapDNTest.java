@@ -20,12 +20,6 @@
 package org.apache.directory.shared.ldap.name;
 
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -47,12 +41,20 @@ import javax.naming.Name;
 import javax.naming.NamingException;
 import javax.naming.ldap.LdapName;
 
-import org.apache.directory.shared.ldap.constants.SchemaConstants;
+import org.apache.directory.shared.ldap.name.LdapDN;
+import org.apache.directory.shared.ldap.name.LdapDnParser;
+import org.apache.directory.shared.ldap.name.Rdn;
 import org.apache.directory.shared.ldap.schema.normalizers.DeepTrimToLowerNormalizer;
 import org.apache.directory.shared.ldap.schema.normalizers.OidNormalizer;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.fail;
+import static org.junit.Assert.assertSame;
 
 
 /**
@@ -75,32 +77,25 @@ public class LdapDNTest
     {
         oids = new HashMap<String, OidNormalizer>();
 
-        // DC normalizer
-        OidNormalizer dcOidNormalizer = new OidNormalizer( SchemaConstants.DOMAIN_COMPONENT_AT_OID,
-            new DeepTrimToLowerNormalizer( SchemaConstants.DOMAIN_COMPONENT_AT_OID ) );
-        
-        oids.put( "dc", dcOidNormalizer );
-        oids.put( "domaincomponent", dcOidNormalizer );
-        oids.put( "0.9.2342.19200300.100.1.25", dcOidNormalizer );
+        oids.put( "dc", new OidNormalizer( "dc", new DeepTrimToLowerNormalizer() ) );
+        oids.put( "domaincomponent", new OidNormalizer( "dc", new DeepTrimToLowerNormalizer() ) );
+        oids.put( "0.9.2342.19200300.100.1.25", new OidNormalizer( "dc", new DeepTrimToLowerNormalizer() ) );
 
-        // OU normalizer
-        OidNormalizer ouOidNormalizer = new OidNormalizer( SchemaConstants.OU_AT_OID,
-            new DeepTrimToLowerNormalizer( SchemaConstants.OU_AT_OID ) );
-        
-        oids.put( "ou", ouOidNormalizer );
-        oids.put( "organizationalUnitName", ouOidNormalizer );
-        oids.put( "2.5.4.11", ouOidNormalizer );
+        oids.put( "ou", new OidNormalizer( "ou", new DeepTrimToLowerNormalizer() ) );
+        oids.put( "organizationalUnitName", new OidNormalizer( "ou", new DeepTrimToLowerNormalizer() ) );
+        oids.put( "2.5.4.11", new OidNormalizer( "ou", new DeepTrimToLowerNormalizer() ) );
 
         // Another map where we store OIDs instead of names.
         oidOids = new HashMap<String, OidNormalizer>();
 
-        oidOids.put( "dc", dcOidNormalizer );
-        oidOids.put( "domaincomponent", dcOidNormalizer );
-        oidOids.put( "0.9.2342.19200300.100.1.25", dcOidNormalizer );
-
-        oidOids.put( "ou", ouOidNormalizer );
-        oidOids.put( "organizationalUnitName", ouOidNormalizer );
-        oidOids.put( "2.5.4.11", ouOidNormalizer );
+        oidOids.put( "dc", new OidNormalizer( "0.9.2342.19200300.100.1.25", new DeepTrimToLowerNormalizer() ) );
+        oidOids.put( "domaincomponent", new OidNormalizer( "0.9.2342.19200300.100.1.25",
+            new DeepTrimToLowerNormalizer() ) );
+        oidOids.put( "0.9.2342.19200300.100.1.25", new OidNormalizer( "0.9.2342.19200300.100.1.25",
+            new DeepTrimToLowerNormalizer() ) );
+        oidOids.put( "ou", new OidNormalizer( "2.5.4.11", new DeepTrimToLowerNormalizer() ) );
+        oidOids.put( "organizationalUnitName", new OidNormalizer( "2.5.4.11", new DeepTrimToLowerNormalizer() ) );
+        oidOids.put( "2.5.4.11", new OidNormalizer( "2.5.4.11", new DeepTrimToLowerNormalizer() ) );
     }
 
 
@@ -724,22 +719,6 @@ public class LdapDNTest
         assertEquals( 3, dn.size() );
     }
 
-    
-    @Test
-    public void testLdapDNAddVarargs() throws InvalidNameException
-    {
-        String c = "C";
-        String dd = "D = D";
-        
-        LdapDN dn = new LdapDN( 
-            "a = A", 
-            "b", "B",
-            "c", c,
-            dd );
-        
-        assertEquals( "a=A,b=B,c=C,d=D", dn.toString() );
-        assertEquals( "a = A,b=B,c=C,D = D", dn.getUpName() );
-    }
 
     /**
      * test Add a composite RDN to an existing LdapDN
@@ -2539,9 +2518,9 @@ public class LdapDNTest
 
         assertTrue( name.getUpName().equals( "ou= Some   People   ,dc = eXample,dc= cOm" ) );
 
-        LdapDN result = LdapDN.normalize( name, oids );
+        Name result = LdapDN.normalize( name, oids );
 
-        assertEquals( "2.5.4.11=some people,0.9.2342.19200300.100.1.25=example,0.9.2342.19200300.100.1.25=com", result.getNormName() );
+        assertTrue( result.toString().equals( "ou=some people,dc=example,dc=com" ) );
     }
 
 
@@ -3527,26 +3506,6 @@ public class LdapDNTest
         assertEquals( "cn=loopback+iphostnumber=\\#127.0.0.1 Z,ou=Hosts,dc=mygfs,dc=com", dn4.getNormName() );
         assertEquals( "cn=loopback+ipHostNumber=\\#127.0.0.1 Z", dn4.getRdn().getUpName() );
         assertEquals( "cn=loopback+iphostnumber=\\#127.0.0.1 Z", dn4.getRdn().getNormName() );
-    }
-
-    
-    /**
-     * test case for DIRSERVER-1442
-     * 
-     * This test shows that the parser has no issues with escaped + 
-     */
-    @Test
-    public void testAddAttributeWithEscapedPlusCharacter()
-    {
-        try
-        {
-            LdapDN dn = new LdapDN( "cn=John\\+Doe" );
-            assertTrue( true );
-        }
-        catch( Exception e )
-        {
-            fail();
-        }
     }
 
 }
