@@ -972,7 +972,7 @@ public class Rdn implements Cloneable, Comparable, Externalizable, Iterable<Attr
                 return atav.getNormValue().getString();
 
             default:
-                return ( ( TreeSet<AttributeTypeAndValue> ) atavs ).first().getNormName();
+                return ( ( TreeSet<AttributeTypeAndValue> ) atavs ).first().getNormValue().getString();
         }
     }
 

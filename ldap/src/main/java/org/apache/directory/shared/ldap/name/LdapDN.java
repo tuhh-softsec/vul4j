@@ -423,6 +423,7 @@ public class LdapDN implements Name, Externalizable
      * getNormName method
      *
      * @return A String representing the normalized DN
+     * @TODO : use the getName() method instead
      */
     public String toString()
     {
