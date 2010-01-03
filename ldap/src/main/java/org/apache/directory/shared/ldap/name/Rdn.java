@@ -936,27 +936,6 @@ public class Rdn implements Cloneable, Comparable, Externalizable, Iterable<Attr
 
 
     /**
-     * Return the value, or the first one of we have more than one (the lowest)
-     *
-     * @return The first value of this RDN
-     */
-    public Object getValue()
-    {
-        switch ( nbAtavs )
-        {
-            case 0:
-                return null;
-
-            case 1:
-                return atav.getNormValue().get();
-
-            default:
-                return ( ( TreeSet<AttributeTypeAndValue> ) atavs ).first().getNormValue().get();
-        }
-    }
-
-
-    /**
      * Return the User Provided value
      * 
      * @return The first User provided value of this RDN

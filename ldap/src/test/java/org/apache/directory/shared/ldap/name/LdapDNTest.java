@@ -20,6 +20,12 @@
 package org.apache.directory.shared.ldap.name;
 
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -41,20 +47,11 @@ import javax.naming.Name;
 import javax.naming.NamingException;
 import javax.naming.ldap.LdapName;
 
-import org.apache.directory.shared.ldap.name.LdapDN;
-import org.apache.directory.shared.ldap.name.LdapDnParser;
-import org.apache.directory.shared.ldap.name.Rdn;
 import org.apache.directory.shared.ldap.schema.normalizers.DeepTrimToLowerNormalizer;
 import org.apache.directory.shared.ldap.schema.normalizers.OidNormalizer;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.fail;
-import static org.junit.Assert.assertSame;
 
 
 /**
@@ -3508,4 +3505,31 @@ public class LdapDNTest
         assertEquals( "cn=loopback+iphostnumber=\\#127.0.0.1 Z", dn4.getRdn().getNormName() );
     }
 
+    @Test
+    public void testNorm() throws Exception
+    {
+        LdapDN dn = new LdapDN( "  ou  =  Ex\\+mple ,  ou  =  COM " );
+        
+        dn.normalize( oidOids );
+        assertEquals( "2.5.4.11=ex\\+mple,2.5.4.11=com", dn.getNormName() );
+        assertEquals( "  ou  =  Ex\\+mple ,  ou  =  COM ", dn.getUpName() );
+        
+        Rdn rdn = dn.getRdn();
+        assertEquals( "2.5.4.11", rdn.getNormType() );
+        assertEquals( "ex+mple",rdn.getNormValue() );
+        assertEquals( "2.5.4.11=ex\\+mple", rdn.getNormName() );
+        assertEquals( "ou", rdn.getUpType() );
+        assertEquals( "Ex\\+mple",rdn.getUpValue() );
+        assertEquals( "  ou  =  Ex\\+mple ", rdn.getUpName() );
+        
+        AttributeTypeAndValue atav = rdn.getAtav();
+        
+        assertEquals( "2.5.4.11=ex+mple", atav.getNormalizedValue() );
+        assertEquals( "2.5.4.11", atav.getNormType() );
+        assertEquals( "ex+mple", atav.getNormValue().get() );
+        
+        assertEquals( "ou", atav.getUpType() );
+        assertEquals( "Ex\\+mple", atav.getUpValue().get() );
+        assertEquals( "  ou =  Ex\\+mple ", atav.getUpName() );
+    }
 }
