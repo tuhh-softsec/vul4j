@@ -1502,14 +1502,16 @@ public class LdapDN implements Name, Externalizable
     {
         String upValue = rdn.getUpValue();
         String upType = rdn.getUpType();
+        String upName = rdn.getUpName();
         rdn.clear();
         String normStringValue = DefaultStringNormalizer.normalizeString( ( String ) upValue );
         String normValue = oidNormalizer.getNormalizer().normalize( normStringValue );
 
-        rdn.addAttributeTypeAndValue( upType, oidNormalizer.getAttributeTypeOid(), 
-            new ClientStringValue( upValue ), 
-            new ClientStringValue( normValue ) );
+        AttributeTypeAndValue atav = new AttributeTypeAndValue( upType, oidNormalizer.getAttributeTypeOid(),
+            new ClientStringValue( upValue ), new ClientStringValue( normValue ), upName );
+        rdn.addAttributeTypeAndValue( atav );
     }
+
 
     /**
      * Transform a RDN by changing the value to its OID counterpart and
