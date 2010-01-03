@@ -345,11 +345,11 @@ public class AttributeTypeAndValue implements Cloneable, Comparable, Externaliza
     }
 
     /**
-     * Get the normalized Value of a AttributeTypeAndValue
+     * Get the normalized Name of a AttributeTypeAndValue
      *
-     * @return The value
+     * @return The name
      */
-    public String getNormalizedValue()
+    public String getNormName()
     {
         return normalize();
     }

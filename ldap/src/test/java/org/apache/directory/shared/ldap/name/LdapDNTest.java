@@ -3526,7 +3526,7 @@ public class LdapDNTest
         
         AttributeTypeAndValue atav = rdn.getAtav();
         
-        assertEquals( "2.5.4.11=ex+mple", atav.getNormalizedValue() );
+        assertEquals( "2.5.4.11=ex+mple", atav.getNormName() );
         assertEquals( "2.5.4.11", atav.getNormType() );
         assertEquals( "ex+mple", atav.getNormValue().get() );
         

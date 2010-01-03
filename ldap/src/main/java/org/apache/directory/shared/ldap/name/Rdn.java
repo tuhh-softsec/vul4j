@@ -355,7 +355,7 @@ public class Rdn implements Cloneable, Comparable, Externalizable, Iterable<Attr
                 // We will trim and lowercase type and value.
                 if ( !atav.getNormValue().isBinary() )
                 {
-                    normName = atav.getNormalizedValue();
+                    normName = atav.getNormName();
                 }
                 else
                 {
@@ -972,7 +972,7 @@ public class Rdn implements Cloneable, Comparable, Externalizable, Iterable<Attr
                 return atav.getNormValue().getString();
 
             default:
-                return ( ( TreeSet<AttributeTypeAndValue> ) atavs ).first().getNormalizedValue();
+                return ( ( TreeSet<AttributeTypeAndValue> ) atavs ).first().getNormName();
         }
     }
 
