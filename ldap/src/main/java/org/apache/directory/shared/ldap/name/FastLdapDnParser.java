@@ -133,17 +133,16 @@ public enum FastLdapDnParser implements NameParser
         {
             throw new InvalidNameException( "RDN must not be empty" );
         }
+        if( rdn == null )
+        {
+            throw new InvalidNameException( "RDN must not be null" );
+        }
 
         Position pos = new Position();
         pos.start = 0;
         pos.length = name.length();
 
         parseRdnInternal( name, pos, rdn );
-
-        if ( !hasMoreChars( pos ) )
-        {
-            throw new InvalidNameException( "Expected no more characters at position " + pos.start );
-        }
     }
 
 
