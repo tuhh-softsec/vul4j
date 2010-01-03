@@ -310,7 +310,7 @@ public class SchemaEntityFactory implements EntityFactory
         if ( !schemaManager.isSchemaLoaded( schemaName ) )
         {
             // The schema is not loaded. We can't create the requested Normalizer
-            String msg = "Cannot add the SyntaxChecker " + entry.getDn().getUpName() + ", as the associated schema ("
+            String msg = "Cannot add the SyntaxChecker " + entry.getDn().getName() + ", as the associated schema ("
                 + schemaName + " is not loaded";
             LOG.warn( msg );
             throw new LdapOperationNotSupportedException( msg, ResultCodeEnum.UNWILLING_TO_PERFORM );
@@ -321,7 +321,7 @@ public class SchemaEntityFactory implements EntityFactory
         if ( schema == null )
         {
             // The schema is disabled. We still have to update the backend
-            String msg = "Cannot add the SyntaxChecker " + entry.getDn().getUpName() + " into the registries, "
+            String msg = "Cannot add the SyntaxChecker " + entry.getDn().getName() + " into the registries, "
                 + "as the associated schema (" + schemaName + ") is disabled";
             LOG.info( msg );
             schema = schemaManager.getLoadedSchema( schemaName );
@@ -496,7 +496,7 @@ public class SchemaEntityFactory implements EntityFactory
         if ( !schemaManager.isSchemaLoaded( schemaName ) )
         {
             // The schema is not loaded. We can't create the requested Comparator
-            String msg = "Cannot add the Comparator " + entry.getDn().getUpName() + ", as the associated schema ("
+            String msg = "Cannot add the Comparator " + entry.getDn().getName() + ", as the associated schema ("
                 + schemaName + " is not loaded";
             LOG.warn( msg );
             throw new LdapOperationNotSupportedException( msg, ResultCodeEnum.UNWILLING_TO_PERFORM );
@@ -507,7 +507,7 @@ public class SchemaEntityFactory implements EntityFactory
         if ( schema == null )
         {
             // The schema is disabled. We still have to update the backend
-            String msg = "Cannot add the Comparator " + entry.getDn().getUpName() + " into the registries, "
+            String msg = "Cannot add the Comparator " + entry.getDn().getName() + " into the registries, "
                 + "as the associated schema (" + schemaName + ") is disabled";
             LOG.info( msg );
             schema = schemaManager.getLoadedSchema( schemaName );
@@ -623,7 +623,7 @@ public class SchemaEntityFactory implements EntityFactory
         if ( !schemaManager.isSchemaLoaded( schemaName ) )
         {
             // The schema is not loaded. We can't create the requested Normalizer
-            String msg = "Cannot add the Normalizer " + entry.getDn().getUpName() + ", as the associated schema ("
+            String msg = "Cannot add the Normalizer " + entry.getDn().getName() + ", as the associated schema ("
                 + schemaName + " is not loaded";
             LOG.warn( msg );
             throw new LdapOperationNotSupportedException( msg, ResultCodeEnum.UNWILLING_TO_PERFORM );
@@ -634,7 +634,7 @@ public class SchemaEntityFactory implements EntityFactory
         if ( schema == null )
         {
             // The schema is disabled. We still have to update the backend
-            String msg = "Cannot add the Normalizer " + entry.getDn().getUpName() + " into the registries, "
+            String msg = "Cannot add the Normalizer " + entry.getDn().getName() + " into the registries, "
                 + "as the associated schema (" + schemaName + ") is disabled";
             LOG.info( msg );
             schema = schemaManager.getLoadedSchema( schemaName );
@@ -708,7 +708,7 @@ public class SchemaEntityFactory implements EntityFactory
         if ( !schemaManager.isSchemaLoaded( schemaName ) )
         {
             // The schema is not loaded. We can't create the requested Syntax
-            String msg = "Cannot add the Syntax " + entry.getDn().getUpName() + ", as the associated schema ("
+            String msg = "Cannot add the Syntax " + entry.getDn().getName() + ", as the associated schema ("
                 + schemaName + " is not loaded";
             LOG.warn( msg );
             throw new LdapOperationNotSupportedException( msg, ResultCodeEnum.UNWILLING_TO_PERFORM );
@@ -719,7 +719,7 @@ public class SchemaEntityFactory implements EntityFactory
         if ( schema == null )
         {
             // The schema is disabled. We still have to update the backend
-            String msg = "Cannot add the SyntaxChecker " + entry.getDn().getUpName() + " into the registries, "
+            String msg = "Cannot add the SyntaxChecker " + entry.getDn().getName() + " into the registries, "
                 + "as the associated schema (" + schemaName + ") is disabled";
             LOG.info( msg );
             schema = schemaManager.getLoadedSchema( schemaName );
@@ -759,7 +759,7 @@ public class SchemaEntityFactory implements EntityFactory
         if ( !schemaManager.isSchemaLoaded( schemaName ) )
         {
             // The schema is not loaded. We can't create the requested MatchingRule
-            String msg = "Cannot add the MatchingRule " + entry.getDn().getUpName() + ", as the associated schema ("
+            String msg = "Cannot add the MatchingRule " + entry.getDn().getName() + ", as the associated schema ("
                 + schemaName + " is not loaded";
             LOG.warn( msg );
             throw new LdapOperationNotSupportedException( msg, ResultCodeEnum.UNWILLING_TO_PERFORM );
@@ -770,7 +770,7 @@ public class SchemaEntityFactory implements EntityFactory
         if ( schema == null )
         {
             // The schema is disabled. We still have to update the backend
-            String msg = "Cannot add the MatchingRule " + entry.getDn().getUpName() + " into the registries, "
+            String msg = "Cannot add the MatchingRule " + entry.getDn().getName() + " into the registries, "
                 + "as the associated schema (" + schemaName + ") is disabled";
             LOG.info( msg );
             schema = schemaManager.getLoadedSchema( schemaName );
@@ -832,7 +832,7 @@ public class SchemaEntityFactory implements EntityFactory
         if ( !schemaManager.isSchemaLoaded( schemaName ) )
         {
             // The schema is not loaded. We can't create the requested ObjectClass
-            String msg = "Cannot add the ObjectClass " + entry.getDn().getUpName() + ", as the associated schema ("
+            String msg = "Cannot add the ObjectClass " + entry.getDn().getName() + ", as the associated schema ("
                 + schemaName + " is not loaded";
             LOG.warn( msg );
             throw new LdapOperationNotSupportedException( msg, ResultCodeEnum.UNWILLING_TO_PERFORM );
@@ -843,7 +843,7 @@ public class SchemaEntityFactory implements EntityFactory
         if ( schema == null )
         {
             // The schema is disabled. We still have to update the backend
-            String msg = "Cannot add the ObjectClass " + entry.getDn().getUpName() + " into the registries, "
+            String msg = "Cannot add the ObjectClass " + entry.getDn().getName() + " into the registries, "
                 + "as the associated schema (" + schemaName + ") is disabled";
             LOG.info( msg );
             schema = schemaManager.getLoadedSchema( schemaName );
@@ -907,7 +907,7 @@ public class SchemaEntityFactory implements EntityFactory
         if ( !schemaManager.isSchemaLoaded( schemaName ) )
         {
             // The schema is not loaded, this is an error
-            String msg = "Cannot add the AttributeType " + entry.getDn().getUpName() + ", as the associated schema ("
+            String msg = "Cannot add the AttributeType " + entry.getDn().getName() + ", as the associated schema ("
                 + schemaName + " is not loaded";
             LOG.warn( msg );
             throw new LdapOperationNotSupportedException( msg, ResultCodeEnum.UNWILLING_TO_PERFORM );
@@ -918,7 +918,7 @@ public class SchemaEntityFactory implements EntityFactory
         if ( schema == null )
         {
             // The schema is disabled. We still have to update the backend
-            String msg = "Cannot add the AttributeType " + entry.getDn().getUpName() + " into the registries, "
+            String msg = "Cannot add the AttributeType " + entry.getDn().getName() + " into the registries, "
                 + "as the associated schema (" + schemaName + ") is disabled";
             LOG.info( msg );
             schema = schemaManager.getLoadedSchema( schemaName );

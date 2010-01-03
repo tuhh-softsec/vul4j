@@ -415,7 +415,7 @@ public class LdifUtilsTest
         assertEquals( 1, reverseds.size() );
         
         LdifEntry reversed = reverseds.get( 0 );
-        assertEquals( "cn=jack doe,ou=system", reversed.getDn().getUpName() );
+        assertEquals( "cn=jack doe,ou=system", reversed.getDn().getName() );
         assertEquals( ChangeType.ModRdn, reversed.getChangeType() );
         assertFalse( reversed.isDeleteOldRdn() );
         assertEquals( "cn=john doe", reversed.getNewRdn() );
@@ -447,7 +447,7 @@ public class LdifUtilsTest
         assertEquals( 1, reverseds.size() );
         
         LdifEntry reversed = reverseds.get( 0 );
-        assertEquals( "cn=jack doe,ou=system", reversed.getDn().getUpName() );
+        assertEquals( "cn=jack doe,ou=system", reversed.getDn().getName() );
         assertEquals( ChangeType.ModRdn, reversed.getChangeType() );
         assertTrue( reversed.isDeleteOldRdn() );
         assertEquals( "cn=john doe", reversed.getNewRdn() );

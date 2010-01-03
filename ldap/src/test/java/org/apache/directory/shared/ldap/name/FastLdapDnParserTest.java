@@ -51,7 +51,7 @@ public class FastLdapDnParserTest
     public void testLdapDNEmpty() throws NamingException
     {
         NameParser dnParser = FastLdapDnParser.getNameParser();
-        assertEquals( "", ( ( LdapDN ) dnParser.parse( "" ) ).getUpName() );
+        assertEquals( "", ( ( LdapDN ) dnParser.parse( "" ) ).getName() );
     }
 
 
@@ -158,7 +158,7 @@ public class FastLdapDnParserTest
     public void testLdapDNSimple() throws NamingException
     {
         NameParser dnParser = FastLdapDnParser.getNameParser();
-        assertEquals( "a = b", ( ( LdapDN ) dnParser.parse( "a = b" ) ).getUpName() );
+        assertEquals( "a = b", ( ( LdapDN ) dnParser.parse( "a = b" ) ).getName() );
         assertEquals( "a=b", ( ( LdapDN ) dnParser.parse( "a = b" ) ).toString() );
     }
 
@@ -172,7 +172,7 @@ public class FastLdapDnParserTest
         NameParser dnParser = FastLdapDnParser.getNameParser();
         LdapDN dn = ( LdapDN ) dnParser.parse( "a = b, c = d" );
         assertEquals( "a=b,c=d", dn.toString() );
-        assertEquals( "a = b, c = d", dn.getUpName() );
+        assertEquals( "a = b, c = d", dn.getName() );
     }
 
 
@@ -185,7 +185,7 @@ public class FastLdapDnParserTest
         NameParser dnParser = FastLdapDnParser.getNameParser();
         LdapDN dn = ( LdapDN ) dnParser.parse( "a=b, a =b, a= b, a = b, a  =  b" );
         assertEquals( "a=b,a=b,a=b,a=b,a=b", dn.toString() );
-        assertEquals( "a=b, a =b, a= b, a = b, a  =  b", dn.getUpName() );
+        assertEquals( "a=b, a =b, a= b, a = b, a  =  b", dn.getName() );
     }
 
 
@@ -199,7 +199,7 @@ public class FastLdapDnParserTest
         NameParser dnParser = FastLdapDnParser.getNameParser();
         LdapDN dn = ( LdapDN ) dnParser.parse( "a=b;c=d,e=f" );
         assertEquals( "a=b,c=d,e=f", dn.toString() );
-        assertEquals( "a=b;c=d,e=f", dn.getUpName() );
+        assertEquals( "a=b;c=d,e=f", dn.getName() );
     }
 
 
@@ -290,7 +290,7 @@ public class FastLdapDnParserTest
         NameParser dnParser = FastLdapDnParser.getNameParser();
         LdapDN dn = ( LdapDN ) dnParser.parse( "12.34.56 = azerty" );
         assertEquals( "12.34.56=azerty", dn.toString() );
-        assertEquals( "12.34.56 = azerty", dn.getUpName() );
+        assertEquals( "12.34.56 = azerty", dn.getName() );
     }
 
 
@@ -304,7 +304,7 @@ public class FastLdapDnParserTest
         NameParser dnParser = FastLdapDnParser.getNameParser();
         LdapDN dn = ( LdapDN ) dnParser.parse( "12.34.56 = azerty; 7.8 = test" );
         assertEquals( "12.34.56=azerty,7.8=test", dn.toString() );
-        assertEquals( "12.34.56 = azerty; 7.8 = test", dn.getUpName() );
+        assertEquals( "12.34.56 = azerty; 7.8 = test", dn.getName() );
     }
 
 
@@ -410,7 +410,7 @@ public class FastLdapDnParserTest
         NameParser dnParser = FastLdapDnParser.getNameParser();
         LdapDN name = ( LdapDN ) dnParser.parse( dn );
 
-        assertEquals( dn, name.getUpName() );
+        assertEquals( dn, name.getName() );
         assertEquals( "cn=Emmanuel  L\u00e9charny", name.toString() );
     }
 
@@ -424,7 +424,7 @@ public class FastLdapDnParserTest
         NameParser dnParser = FastLdapDnParser.getNameParser();
         LdapDN name = ( LdapDN ) dnParser.parse( dn );
 
-        assertEquals( dn, name.getUpName() );
+        assertEquals( dn, name.getName() );
         assertEquals( "c=E\u00e9c", name.toString() );
     }
 
@@ -511,7 +511,7 @@ public class FastLdapDnParserTest
 
         assertEquals( "RFC1779_1 : ",
             "CN=Marshall T. Rose, O=Dover Beach Consulting, L=Santa Clara, ST=California, C=US",
-            ( ( LdapDN ) nameRFC1779_1 ).getUpName() );
+            ( ( LdapDN ) nameRFC1779_1 ).getName() );
         assertEquals( "RFC1779_1 : ", "cn=Marshall T. Rose,o=Dover Beach Consulting,l=Santa Clara,st=California,c=US",
             nameRFC1779_1.toString() );
     }
@@ -530,7 +530,7 @@ public class FastLdapDnParserTest
 
         Name nameRFC2253_1 = parser.parse( "CN=Steve Kille,O=Isode limited,C=GB" );
 
-        assertEquals( "RFC2253_1 : ", "CN=Steve Kille,O=Isode limited,C=GB", ( ( LdapDN ) nameRFC2253_1 ).getUpName() );
+        assertEquals( "RFC2253_1 : ", "CN=Steve Kille,O=Isode limited,C=GB", ( ( LdapDN ) nameRFC2253_1 ).getName() );
     }
 
 

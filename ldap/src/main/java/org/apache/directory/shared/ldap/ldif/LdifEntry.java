@@ -356,7 +356,7 @@ public class LdifEntry implements Cloneable, Externalizable
     {
         if ( "dn".equalsIgnoreCase( attributeId ) )
         {
-            return new DefaultClientAttribute( "dn", entry.getDn().getUpName() );
+            return new DefaultClientAttribute( "dn", entry.getDn().getName() );
         }
 
         return entry.get( attributeId );

@@ -242,7 +242,7 @@ public class SearchResultEntryCodec extends LdapMessageCodec
      */
     public int computeLength()
     {
-        objectNameBytes = StringTools.getBytesUtf8( entry.getDn().getUpName() );
+        objectNameBytes = StringTools.getBytesUtf8( entry.getDn().getName() );
 
         // The entry
         searchResultEntryLength = 1 + TLV.getNbBytes( objectNameBytes.length ) + objectNameBytes.length;

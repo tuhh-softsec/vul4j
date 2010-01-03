@@ -916,7 +916,7 @@ public class LdapConnection  extends IoHandlerAdapter
         {
             LOG.debug( "Unauthenticated Bind request : {}", name );
 
-            return bind( name.getUpName(), StringTools.EMPTY_BYTES );
+            return bind( name.getName(), StringTools.EMPTY_BYTES );
         }
     }
 
@@ -955,7 +955,7 @@ public class LdapConnection  extends IoHandlerAdapter
         }
         else
         {
-            return bind( name.getUpName(), StringTools.getBytesUtf8( credentials ) );
+            return bind( name.getName(), StringTools.getBytesUtf8( credentials ) );
         }
     }
 
@@ -971,7 +971,7 @@ public class LdapConnection  extends IoHandlerAdapter
     {
         LOG.debug( "Bind request : {}", name );
 
-        return bind( name.getUpName(), credentials );
+        return bind( name.getName(), credentials );
     }
 
     
@@ -2139,7 +2139,7 @@ public class LdapConnection  extends IoHandlerAdapter
      */
     private DeleteResponse deleteRecursive( LdapDN dn, Map<LdapDN, Cursor<SearchResponse>> cursorMap, DeleteListener listener ) throws LdapException
     {
-        LOG.debug( "searching for {}", dn.getUpName() );
+        LOG.debug( "searching for {}", dn.getName() );
         DeleteResponse delResponse = null;
         Cursor<SearchResponse> cursor = null;
         
@@ -2154,14 +2154,14 @@ public class LdapConnection  extends IoHandlerAdapter
             
             if( cursor == null )
             {
-                cursor = search( dn.getUpName(), "(objectClass=*)", SearchScope.ONELEVEL, (String[])null ); 
-                LOG.debug( "putting curosr for {}", dn.getUpName() );
+                cursor = search( dn.getName(), "(objectClass=*)", SearchScope.ONELEVEL, (String[])null ); 
+                LOG.debug( "putting curosr for {}", dn.getName() );
                 cursorMap.put( dn, cursor );
             }
             
             if( ! cursor.next() ) // if this is a leaf entry's DN
             {
-                LOG.debug( "deleting {}", dn.getUpName() );
+                LOG.debug( "deleting {}", dn.getName() );
                 cursorMap.remove( dn );
                 cursor.close();
                 delResponse = delete( new DeleteRequest( dn ), listener );
@@ -2182,13 +2182,13 @@ public class LdapConnection  extends IoHandlerAdapter
                 
                 cursorMap.remove( dn );
                 cursor.close();
-                LOG.debug( "deleting {}", dn.getUpName() );
+                LOG.debug( "deleting {}", dn.getName() );
                 delResponse = delete( new DeleteRequest( dn ), listener );
             }
         }
         catch( Exception e )
         {
-            String msg = "Failed to delete child entries under the DN " + dn.getUpName();
+            String msg = "Failed to delete child entries under the DN " + dn.getName();
             LOG.error( msg, e );
             throw new LdapException( msg, e );
         }

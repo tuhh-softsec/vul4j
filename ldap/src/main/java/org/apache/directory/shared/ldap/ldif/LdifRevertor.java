@@ -280,7 +280,7 @@ public class LdifRevertor
         entry.setChangeType( ChangeType.ModDn );
         entry.setDn( newDn );
         entry.setNewRdn( currentRdn.getUpName() );
-        entry.setNewSuperior( currentParent.getUpName() );
+        entry.setNewSuperior( currentParent.getName() );
         entry.setDeleteOldRdn( false );
         return entry;
     }
@@ -322,7 +322,7 @@ public class LdifRevertor
             LdapDN oldSuperior = ( LdapDN ) entry.getDn().clone();
 
             oldSuperior.remove( oldSuperior.size() - 1 );
-            reverted.setNewSuperior( oldSuperior.getUpName() );
+            reverted.setNewSuperior( oldSuperior.getName() );
         }
 
         return reverted;
@@ -388,7 +388,7 @@ public class LdifRevertor
             LdapDN oldSuperior = ( LdapDN ) newDn.clone();
 
             oldSuperior.remove( oldSuperior.size() - 1 );
-            reverted.setNewSuperior( oldSuperior.getUpName() );
+            reverted.setNewSuperior( oldSuperior.getName() );
         }
         
         // Delete the newRDN values

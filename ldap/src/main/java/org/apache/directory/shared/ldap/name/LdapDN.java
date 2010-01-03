@@ -426,7 +426,7 @@ public class LdapDN implements Name, Externalizable
      */
     public String toString()
     {
-        return normName == null ? "" : normName;
+        return getNormName();
     }
 
 
@@ -588,9 +588,21 @@ public class LdapDN implements Name, Externalizable
 
 
     /**
+     * Get the initial DN
+     *
+     * @return The DN as a String
+     */
+    public String getName()
+    {
+        return ( upName == null ? "" : upName );
+    }
+
+
+    /**
      * Get the initial DN (without normalization)
      *
      * @return The DN as a String
+     * @deprecated
      */
     public String getUpName()
     {
@@ -1165,7 +1177,7 @@ public class LdapDN implements Name, Externalizable
                 {
                     normName = dn.getNormName() + "," + normName;
                     bytes = StringTools.getBytesUtf8( normName );
-                    upName = dn.getUpName() + "," + upName;
+                    upName = dn.getName() + "," + upName;
                 }
             }
             else

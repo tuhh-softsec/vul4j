@@ -107,7 +107,7 @@ public class LdapDNTest
     public void testLdapDNNull()
     {
         LdapDN dn = new LdapDN();
-        assertEquals( "", dn.getUpName() );
+        assertEquals( "", dn.getName() );
         assertTrue( dn.isEmpty() );
     }
 
@@ -119,7 +119,7 @@ public class LdapDNTest
     public void testLdapDNEmpty() throws InvalidNameException
     {
         LdapDN dn = new LdapDN( "" );
-        assertEquals( "", dn.getUpName() );
+        assertEquals( "", dn.getName() );
         assertTrue( dn.isEmpty() );
     }
 
@@ -133,7 +133,7 @@ public class LdapDNTest
         LdapDN dn = new LdapDN( "a = b" );
 
         assertTrue( LdapDN.isValid( "a = b" ) );
-        assertEquals( "a = b", dn.getUpName() );
+        assertEquals( "a = b", dn.getName() );
         assertEquals( "a=b", dn.toString() );
     }
 
@@ -147,7 +147,7 @@ public class LdapDNTest
         LdapDN dn = new LdapDN( "a = b  " );
 
         assertTrue( LdapDN.isValid( "a = b  " ) );
-        assertEquals( "a = b  ", dn.getUpName() );
+        assertEquals( "a = b  ", dn.getName() );
         assertEquals( "a=b", dn.toString() );
     }
 
@@ -162,7 +162,7 @@ public class LdapDNTest
 
         assertTrue( LdapDN.isValid( "a = b, c = d" ) );
         assertEquals( "a=b,c=d", dn.toString() );
-        assertEquals( "a = b, c = d", dn.getUpName() );
+        assertEquals( "a = b, c = d", dn.getName() );
     }
 
 
@@ -176,7 +176,7 @@ public class LdapDNTest
 
         assertTrue( LdapDN.isValid( "a = b  , c = d" ) );
         assertEquals( "a=b,c=d", dn.toString() );
-        assertEquals( "a = b  , c = d", dn.getUpName() );
+        assertEquals( "a = b  , c = d", dn.getName() );
     }
 
 
@@ -190,7 +190,7 @@ public class LdapDNTest
 
         assertTrue( LdapDN.isValid( "a=b, a =b, a= b, a = b, a  =  b" ) );
         assertEquals( "a=b,a=b,a=b,a=b,a=b", dn.toString() );
-        assertEquals( "a=b, a =b, a= b, a = b, a  =  b", dn.getUpName() );
+        assertEquals( "a=b, a =b, a= b, a = b, a  =  b", dn.getName() );
     }
 
 
@@ -205,7 +205,7 @@ public class LdapDNTest
 
         assertTrue( LdapDN.isValid( "a=b;c=d,e=f" ) );
         assertEquals( "a=b,c=d,e=f", dn.toString() );
-        assertEquals( "a=b;c=d,e=f", dn.getUpName() );
+        assertEquals( "a=b;c=d,e=f", dn.getName() );
     }
 
 
@@ -219,7 +219,7 @@ public class LdapDNTest
 
         assertTrue( LdapDN.isValid( "a = b + c = d" ) );
         assertEquals( "a=b+c=d", dn.toString() );
-        assertEquals( "a = b + c = d", dn.getUpName() );
+        assertEquals( "a = b + c = d", dn.getName() );
     }
 
 
@@ -234,7 +234,7 @@ public class LdapDNTest
 
         assertTrue( LdapDN.isValid( "a=b+c=d, e=f + g=h + i=j" ) );
         assertEquals( "a=b+c=d,e=f+g=h+i=j", dn.toString() );
-        assertEquals( "a=b+c=d, e=f + g=h + i=j", dn.getUpName() );
+        assertEquals( "a=b+c=d, e=f + g=h + i=j", dn.getName() );
     }
 
 
@@ -250,7 +250,7 @@ public class LdapDNTest
         assertTrue( LdapDN.isValid( "cn=Kate Bush+sn=Bush,ou=system" ) );
         target.addAll( target.size(), dn );
         assertEquals( "cn=Kate Bush+sn=Bush,ou=system", target.toString() );
-        assertEquals( "cn=Kate Bush+sn=Bush,ou=system", target.getUpName() );
+        assertEquals( "cn=Kate Bush+sn=Bush,ou=system", target.getName() );
     }
 
 
@@ -264,7 +264,7 @@ public class LdapDNTest
 
         assertTrue( LdapDN.isValid( "OID.12.34.56 = azerty" ) );
         assertEquals( "oid.12.34.56=azerty", dn.toString() );
-        assertEquals( "OID.12.34.56 = azerty", dn.getUpName() );
+        assertEquals( "OID.12.34.56 = azerty", dn.getName() );
     }
 
 
@@ -278,7 +278,7 @@ public class LdapDNTest
 
         assertTrue( LdapDN.isValid( "oid.12.34.56 = azerty" ) );
         assertEquals( "oid.12.34.56=azerty", dn.toString() );
-        assertEquals( "oid.12.34.56 = azerty", dn.getUpName() );
+        assertEquals( "oid.12.34.56 = azerty", dn.getName() );
     }
 
 
@@ -293,7 +293,7 @@ public class LdapDNTest
 
         assertTrue( LdapDN.isValid( "12.34.56 = azerty" ) );
         assertEquals( "12.34.56=azerty", dn.toString() );
-        assertEquals( "12.34.56 = azerty", dn.getUpName() );
+        assertEquals( "12.34.56 = azerty", dn.getName() );
     }
 
 
@@ -308,7 +308,7 @@ public class LdapDNTest
 
         assertTrue( LdapDN.isValid( "12.34.56 = azerty; 7.8 = test" ) );
         assertEquals( "12.34.56=azerty,7.8=test", dn.toString() );
-        assertEquals( "12.34.56 = azerty; 7.8 = test", dn.getUpName() );
+        assertEquals( "12.34.56 = azerty; 7.8 = test", dn.getName() );
     }
 
 
@@ -322,7 +322,7 @@ public class LdapDNTest
 
         assertTrue( LdapDN.isValid( "a = \\,\\=\\+\\<\\>\\#\\;\\\\\\\"\\C4\\8D" ) );
         assertEquals( "a=\\,=\\+\\<\\>#\\;\\\\\\\"\u010D", dn.toString() );
-        assertEquals( "a = \\,\\=\\+\\<\\>\\#\\;\\\\\\\"\\C4\\8D", dn.getUpName() );
+        assertEquals( "a = \\,\\=\\+\\<\\>\\#\\;\\\\\\\"\\C4\\8D", dn.getName() );
     }
 
 
@@ -336,7 +336,7 @@ public class LdapDNTest
 
         assertTrue( LdapDN.isValid( "SN=Lu\\C4\\8Di\\C4\\87" ) );
         assertEquals( "sn=Lu\u010Di\u0107", dn.toString() );
-        assertEquals( "SN=Lu\\C4\\8Di\\C4\\87", dn.getUpName() );
+        assertEquals( "SN=Lu\\C4\\8Di\\C4\\87", dn.getName() );
     }
 
 
@@ -350,7 +350,7 @@ public class LdapDNTest
 
         assertTrue( LdapDN.isValid( "a = #0010A0AAFF" ) );
         assertEquals( "a=#0010A0AAFF", dn.toString() );
-        assertEquals( "a = #0010A0AAFF", dn.getUpName() );
+        assertEquals( "a = #0010A0AAFF", dn.getName() );
     }
 
 
@@ -367,7 +367,7 @@ public class LdapDNTest
 
         assertTrue( LdapDN.isValid( "a = \\#123456" ) );
         assertEquals( "a=\\#123456", dn.toString() );
-        assertEquals( "a = \\#123456", dn.getUpName() );
+        assertEquals( "a = \\#123456", dn.getName() );
 
         Rdn rdn = dn.getRdn();
         assertEquals( "a = \\#123456", rdn.getUpName() );
@@ -394,7 +394,7 @@ public class LdapDNTest
 
         assertTrue( LdapDN.isValid( "a = \\#this is a sharp" ) );
         assertEquals( "a=\\#this is a sharp", dn.toString() );
-        assertEquals( "a = \\#this is a sharp", dn.getUpName() );
+        assertEquals( "a = \\#this is a sharp", dn.getName() );
 
         Rdn rdn = dn.getRdn();
         assertEquals( "a = \\#this is a sharp", rdn.getUpName() );
@@ -411,12 +411,12 @@ public class LdapDNTest
 
         assertTrue( LdapDN.isValid( "ou = \\#this is a sharp" ) );
         assertEquals( "ou=\\#this is a sharp", dn.toString() );
-        assertEquals( "ou = \\#this is a sharp", dn.getUpName() );
+        assertEquals( "ou = \\#this is a sharp", dn.getName() );
 
         // Check the normalization now
         LdapDN ndn = dn.normalize( oidOids );
 
-        assertEquals( "ou = \\#this is a sharp", ndn.getUpName() );
+        assertEquals( "ou = \\#this is a sharp", ndn.getName() );
         assertEquals( "2.5.4.11=\\#this is a sharp", ndn.toString() );
     }
 
@@ -431,11 +431,11 @@ public class LdapDNTest
         LdapDN dn = new LdapDN( "ou = AC\\\\DC" );
         assertTrue( LdapDN.isValid( "ou = AC\\\\DC" ) );
         assertEquals( "ou=AC\\\\DC", dn.toString() );
-        assertEquals( "ou = AC\\\\DC", dn.getUpName() );
+        assertEquals( "ou = AC\\\\DC", dn.getName() );
 
         // Check the normalization now
         LdapDN ndn = dn.normalize( oidOids );
-        assertEquals( "ou = AC\\\\DC", ndn.getUpName() );
+        assertEquals( "ou = AC\\\\DC", ndn.getName() );
         assertEquals( "2.5.4.11=ac\\\\dc", ndn.toString() );
     }
 
@@ -489,7 +489,7 @@ public class LdapDNTest
 
         assertTrue( LdapDN.isValid( "a = quoted \\\"value\\\"" ) );
         assertEquals( "a=quoted \\\"value\\\"", dn.toString() );
-        assertEquals( "a = quoted \\\"value\\\"", dn.getUpName() );
+        assertEquals( "a = quoted \\\"value\\\"", dn.getName() );
     }
 
 
@@ -503,7 +503,7 @@ public class LdapDNTest
 
         assertTrue( LdapDN.isValid( "a = \\\" quoted value \\\"" ) );
         assertEquals( "a=\\\" quoted value \\\"", dn.toString() );
-        assertEquals( "a = \\\" quoted value \\\"", dn.getUpName() );
+        assertEquals( "a = \\\" quoted value \\\"", dn.getName() );
     }
 
 
@@ -541,7 +541,7 @@ public class LdapDNTest
         assertTrue( LdapDN.isValid( "a=b, c=d, e=f" ) );
         assertEquals( "e=f", dn.remove( 0 ).toString() );
         assertEquals( "a=b,c=d", dn.toString() );
-        assertEquals( "a=b, c=d", dn.getUpName() );
+        assertEquals( "a=b, c=d", dn.getName() );
     }
 
 
@@ -555,7 +555,7 @@ public class LdapDNTest
 
         assertTrue( LdapDN.isValid( "a=b, c=d, e=f" ) );
         assertEquals( "c=d", dn.remove( 1 ).toString() );
-        assertEquals( "a=b, e=f", dn.getUpName() );
+        assertEquals( "a=b, e=f", dn.getName() );
     }
 
 
@@ -569,7 +569,7 @@ public class LdapDNTest
 
         assertTrue( LdapDN.isValid( "a=b, c=d, e=f" ) );
         assertEquals( "a=b", dn.remove( 2 ).toString() );
-        assertEquals( " c=d, e=f", dn.getUpName() );
+        assertEquals( " c=d, e=f", dn.getName() );
     }
 
 
@@ -583,7 +583,7 @@ public class LdapDNTest
 
         assertTrue( LdapDN.isValid( "a=b, c=d; e=f" ) );
         assertEquals( "c=d", dn.remove( 1 ).toString() );
-        assertEquals( "a=b, e=f", dn.getUpName() );
+        assertEquals( "a=b, e=f", dn.getName() );
     }
 
 
@@ -697,7 +697,7 @@ public class LdapDNTest
 
         dn.add( "e = f" );
         assertEquals( "e=f", dn.toString() );
-        assertEquals( "e = f", dn.getUpName() );
+        assertEquals( "e = f", dn.getName() );
         assertEquals( 1, dn.size() );
     }
 
@@ -712,7 +712,7 @@ public class LdapDNTest
 
         dn.add( "e = f" );
         assertEquals( "e=f,a=b,c=d", dn.toString() );
-        assertEquals( "e = f,a=b, c=d", dn.getUpName() );
+        assertEquals( "e = f,a=b, c=d", dn.getName() );
         assertEquals( 3, dn.size() );
     }
 
@@ -744,7 +744,7 @@ public class LdapDNTest
         LdapDN dn = new LdapDN( "a=b, c=d" );
 
         dn.add( dn.size(), "e = f" );
-        assertEquals( "e = f,a=b, c=d", dn.getUpName() );
+        assertEquals( "e = f,a=b, c=d", dn.getName() );
         assertEquals( 3, dn.size() );
     }
 
@@ -758,7 +758,7 @@ public class LdapDNTest
         LdapDN dn = new LdapDN( "a=b, c=d" );
 
         dn.add( 0, "e = f" );
-        assertEquals( "a=b, c=d,e = f", dn.getUpName() );
+        assertEquals( "a=b, c=d,e = f", dn.getName() );
         assertEquals( 3, dn.size() );
     }
 
@@ -772,7 +772,7 @@ public class LdapDNTest
         LdapDN dn = new LdapDN( "a=b, c=d" );
 
         dn.add( 1, "e = f" );
-        assertEquals( "a=b,e = f, c=d", dn.getUpName() );
+        assertEquals( "a=b,e = f, c=d", dn.getName() );
         assertEquals( 3, dn.size() );
     }
 
@@ -789,7 +789,7 @@ public class LdapDNTest
         LdapDN dn = new LdapDN( "a = b" );
         LdapDN dn2 = new LdapDN( "c = d" );
         dn.addAll( dn2 );
-        assertEquals( "c = d,a = b", dn.getUpName() );
+        assertEquals( "c = d,a = b", dn.getName() );
     }
 
 
@@ -805,7 +805,7 @@ public class LdapDNTest
         LdapDN dn2 = new LdapDN();
         dn.addAll( dn2 );
         assertEquals( "a=b", dn.toString() );
-        assertEquals( "a = b", dn.getUpName() );
+        assertEquals( "a = b", dn.getName() );
     }
 
 
@@ -820,7 +820,7 @@ public class LdapDNTest
         LdapDN dn = new LdapDN();
         LdapDN dn2 = new LdapDN( "a = b" );
         dn.addAll( dn2 );
-        assertEquals( "a = b", dn.getUpName() );
+        assertEquals( "a = b", dn.getName() );
     }
 
 
@@ -835,7 +835,7 @@ public class LdapDNTest
         LdapDN dn = new LdapDN( "a = b" );
         LdapDN dn2 = new LdapDN( "c = d" );
         dn.addAll( 0, dn2 );
-        assertEquals( "a = b,c = d", dn.getUpName() );
+        assertEquals( "a = b,c = d", dn.getName() );
     }
 
 
@@ -850,7 +850,7 @@ public class LdapDNTest
         LdapDN dn = new LdapDN( "a = b" );
         LdapDN dn2 = new LdapDN( "c = d" );
         dn.addAll( 1, dn2 );
-        assertEquals( "c = d,a = b", dn.getUpName() );
+        assertEquals( "c = d,a = b", dn.getName() );
     }
 
 
@@ -865,7 +865,7 @@ public class LdapDNTest
         LdapDN dn = new LdapDN( "a = b, c = d" );
         LdapDN dn2 = new LdapDN( "e = f" );
         dn.addAll( 1, dn2 );
-        assertEquals( "a = b,e = f, c = d", dn.getUpName() );
+        assertEquals( "a = b,e = f, c = d", dn.getName() );
     }
 
 
@@ -881,7 +881,7 @@ public class LdapDNTest
         LdapDN dn2 = new LdapDN();
         dn.addAll( 0, dn2 );
         assertEquals( "a=b", dn.toString() );
-        assertEquals( "a = b", dn.getUpName() );
+        assertEquals( "a = b", dn.getName() );
     }
 
 
@@ -896,7 +896,7 @@ public class LdapDNTest
         LdapDN dn = new LdapDN();
         LdapDN dn2 = new LdapDN( "a = b" );
         dn.addAll( 0, dn2 );
-        assertEquals( "a = b", dn.getUpName() );
+        assertEquals( "a = b", dn.getName() );
     }
 
 
@@ -909,7 +909,7 @@ public class LdapDNTest
     {
         LdapDN dn = new LdapDN( "a=b, c=d,e = f" );
         LdapDN newDn = ( ( LdapDN ) dn.getPrefix( 0 ) );
-        assertEquals( "", newDn.getUpName() );
+        assertEquals( "", newDn.getName() );
     }
 
 
@@ -921,7 +921,7 @@ public class LdapDNTest
     {
         LdapDN dn = new LdapDN( "a=b, c=d,e = f" );
         LdapDN newDn = ( ( LdapDN ) dn.getPrefix( 1 ) );
-        assertEquals( "e = f", newDn.getUpName() );
+        assertEquals( "e = f", newDn.getName() );
     }
 
 
@@ -933,7 +933,7 @@ public class LdapDNTest
     {
         LdapDN dn = new LdapDN( "a=b, c=d,e = f" );
         LdapDN newDn = ( ( LdapDN ) dn.getPrefix( 2 ) );
-        assertEquals( " c=d,e = f", newDn.getUpName() );
+        assertEquals( " c=d,e = f", newDn.getName() );
     }
 
 
@@ -945,7 +945,7 @@ public class LdapDNTest
     {
         LdapDN dn = new LdapDN( "a=b, c=d,e = f" );
         LdapDN newDn = ( ( LdapDN ) dn.getPrefix( 3 ) );
-        assertEquals( "a=b, c=d,e = f", newDn.getUpName() );
+        assertEquals( "a=b, c=d,e = f", newDn.getName() );
     }
 
 
@@ -978,7 +978,7 @@ public class LdapDNTest
     {
         LdapDN dn = new LdapDN();
         LdapDN newDn = ( ( LdapDN ) dn.getPrefix( 0 ) );
-        assertEquals( "", newDn.getUpName() );
+        assertEquals( "", newDn.getName() );
     }
 
 
@@ -991,7 +991,7 @@ public class LdapDNTest
     {
         LdapDN dn = new LdapDN( "a=b, c=d,e = f" );
         LdapDN newDn = ( ( LdapDN ) dn.getSuffix( 0 ) );
-        assertEquals( "a=b, c=d,e = f", newDn.getUpName() );
+        assertEquals( "a=b, c=d,e = f", newDn.getName() );
     }
 
 
@@ -1003,7 +1003,7 @@ public class LdapDNTest
     {
         LdapDN dn = new LdapDN( "a=b, c=d,e = f" );
         LdapDN newDn = ( ( LdapDN ) dn.getSuffix( 1 ) );
-        assertEquals( "a=b, c=d", newDn.getUpName() );
+        assertEquals( "a=b, c=d", newDn.getName() );
     }
 
 
@@ -1015,7 +1015,7 @@ public class LdapDNTest
     {
         LdapDN dn = new LdapDN( "a=b, c=d,e = f" );
         LdapDN newDn = ( ( LdapDN ) dn.getSuffix( 2 ) );
-        assertEquals( "a=b", newDn.getUpName() );
+        assertEquals( "a=b", newDn.getName() );
     }
 
 
@@ -1027,7 +1027,7 @@ public class LdapDNTest
     {
         LdapDN dn = new LdapDN( "a=b, c=d,e = f" );
         LdapDN newDn = ( ( LdapDN ) dn.getSuffix( 3 ) );
-        assertEquals( "", newDn.getUpName() );
+        assertEquals( "", newDn.getName() );
     }
 
 
@@ -1060,7 +1060,7 @@ public class LdapDNTest
     {
         LdapDN dn = new LdapDN();
         LdapDN newDn = ( ( LdapDN ) dn.getSuffix( 0 ) );
-        assertEquals( "", newDn.getUpName() );
+        assertEquals( "", newDn.getName() );
     }
 
 
@@ -1349,7 +1349,7 @@ public class LdapDNTest
         LdapDN dn = new LdapDN();
         LdapDN clone = ( LdapDN ) dn.clone();
 
-        assertEquals( "", clone.getUpName() );
+        assertEquals( "", clone.getName() );
     }
 
 
@@ -1362,9 +1362,9 @@ public class LdapDNTest
         LdapDN dn = new LdapDN( "a=b" );
         LdapDN clone = ( LdapDN ) dn.clone();
 
-        assertEquals( "a=b", clone.getUpName() );
+        assertEquals( "a=b", clone.getName() );
         dn.remove( 0 );
-        assertEquals( "a=b", clone.getUpName() );
+        assertEquals( "a=b", clone.getName() );
     }
 
 
@@ -1377,9 +1377,9 @@ public class LdapDNTest
         LdapDN dn = new LdapDN( "e=f+g=h,a=b,c=d" );
         LdapDN clone = ( LdapDN ) dn.clone();
 
-        assertEquals( "e=f+g=h,a=b,c=d", clone.getUpName() );
+        assertEquals( "e=f+g=h,a=b,c=d", clone.getName() );
         dn.remove( 2 );
-        assertEquals( "e=f+g=h,a=b,c=d", clone.getUpName() );
+        assertEquals( "e=f+g=h,a=b,c=d", clone.getName() );
     }
 
 
@@ -1577,7 +1577,7 @@ public class LdapDNTest
 
         Name name = LdapDnParser.getNameParser().parse( dn );
 
-        assertEquals( dn, ( ( LdapDN ) name ).getUpName() );
+        assertEquals( dn, ( ( LdapDN ) name ).getName() );
         assertEquals( "cn=Emmanuel  L\u00E9charny", name.toString() );
     }
 
@@ -2513,7 +2513,7 @@ public class LdapDNTest
         list.add( "dc= cOm" );
         LdapDN name = new LdapDN( list.iterator() );
 
-        assertTrue( name.getUpName().equals( "ou= Some   People   ,dc = eXample,dc= cOm" ) );
+        assertTrue( name.getName().equals( "ou= Some   People   ,dc = eXample,dc= cOm" ) );
 
         Name result = LdapDN.normalize( name, oids );
 
@@ -2530,7 +2530,7 @@ public class LdapDNTest
         list.add( "dc= cOm" );
         LdapDN name = new LdapDN( list.iterator() );
 
-        assertTrue( name.getUpName().equals( "ou= Some   People   ,dc = eXample,dc= cOm" ) );
+        assertTrue( name.getName().equals( "ou= Some   People   ,dc = eXample,dc= cOm" ) );
 
         Rdn rdn = name.getRdn();
 
@@ -2542,7 +2542,7 @@ public class LdapDNTest
 
         assertTrue( result.getNormName().equals(
             "2.5.4.11=some people,0.9.2342.19200300.100.1.25=example,0.9.2342.19200300.100.1.25=com" ) );
-        assertTrue( name.getUpName().equals( "ou= Some   People   ,dc = eXample,dc= cOm" ) );
+        assertTrue( name.getName().equals( "ou= Some   People   ,dc = eXample,dc= cOm" ) );
 
         Rdn rdn2 = result.getRdn();
 
@@ -2580,7 +2580,7 @@ public class LdapDNTest
             result.toString(),
             "0.9.2342.19200300.100.1.25=and some animals+2.5.4.11=some people,0.9.2342.19200300.100.1.25=example,0.9.2342.19200300.100.1.25=com" );
         assertTrue( ( ( LdapDN ) result )
-            .getUpName()
+            .getName()
             .equals(
                 "2.5.4.11= Some   People   + 0.9.2342.19200300.100.1.25=  And   Some anImAls,0.9.2342.19200300.100.1.25 = eXample,dc= cOm" ) );
     }
@@ -2602,7 +2602,7 @@ public class LdapDNTest
             .equals(
                 "0.9.2342.19200300.100.1.25=and some animals+2.5.4.11=some people,0.9.2342.19200300.100.1.25=example,0.9.2342.19200300.100.1.25=com" ) );
         assertTrue( result
-            .getUpName()
+            .getName()
             .equals(
                 "2.5.4.11= Some   People   + domainComponent=  And   Some anImAls,DomainComponent = eXample,0.9.2342.19200300.100.1.25= cOm" ) );
     }
@@ -2936,7 +2936,7 @@ public class LdapDNTest
     {
         LdapDN dn = new LdapDN( "cn=\" Kylie Minogue \",dc=example,dc=com" );
 
-        assertEquals( "cn=\" Kylie Minogue \",dc=example,dc=com", dn.getUpName() );
+        assertEquals( "cn=\" Kylie Minogue \",dc=example,dc=com", dn.getName() );
         assertEquals( "cn=\\ Kylie Minogue\\ ,dc=example,dc=com", dn.toString() );
     }
 
@@ -2950,7 +2950,7 @@ public class LdapDNTest
     {
         LdapDN dn = new LdapDN( "a=\"b,c\"" );
 
-        assertEquals( "a=\"b,c\"", dn.getUpName() );
+        assertEquals( "a=\"b,c\"", dn.getName() );
         assertEquals( "a=b\\,c", dn.toString() );
     }
 
@@ -2965,7 +2965,7 @@ public class LdapDNTest
         LdapDN name = new LdapDN( "dn= \\ four spaces leading and 3 trailing \\  " );
 
         assertEquals( "dn=\\ four spaces leading and 3 trailing \\ ", name.toString() );
-        assertEquals( "dn= \\ four spaces leading and 3 trailing \\  ", name.getUpName() );
+        assertEquals( "dn= \\ four spaces leading and 3 trailing \\  ", name.getName() );
     }
 
 
@@ -3015,7 +3015,7 @@ public class LdapDNTest
         LdapDN name = new LdapDN( "dn=\\# a leading pound" );
 
         assertEquals( "dn=\\# a leading pound", name.toString() );
-        assertEquals( "dn=\\# a leading pound", name.getUpName() );
+        assertEquals( "dn=\\# a leading pound", name.getName() );
     }
 
 
@@ -3029,7 +3029,7 @@ public class LdapDNTest
         LdapDN name = new LdapDN( "dn=a middle \\# pound" );
 
         assertEquals( "dn=a middle # pound", name.toString() );
-        assertEquals( "dn=a middle \\# pound", name.getUpName() );
+        assertEquals( "dn=a middle \\# pound", name.getName() );
     }
 
 
@@ -3043,7 +3043,7 @@ public class LdapDNTest
         LdapDN name = new LdapDN( "dn=a trailing pound \\#" );
 
         assertEquals( "dn=a trailing pound #", name.toString() );
-        assertEquals( "dn=a trailing pound \\#", name.getUpName() );
+        assertEquals( "dn=a trailing pound \\#", name.getName() );
     }
 
 
@@ -3089,7 +3089,7 @@ public class LdapDNTest
         LdapDN name = new LdapDN( "cn=Bush\\, Kate,dc=example,dc=com" );
 
         assertEquals( "cn=Bush\\, Kate,dc=example,dc=com", name.toString() );
-        assertEquals( "cn=Bush\\, Kate,dc=example,dc=com", name.getUpName() );
+        assertEquals( "cn=Bush\\, Kate,dc=example,dc=com", name.getName() );
 
     }
 
@@ -3109,7 +3109,7 @@ public class LdapDNTest
                 .toString() );
         assertEquals(
             "0.9.2342.19200300.100.1.1=00123456789+2.5.4.3=pablo picasso,2.5.4.11=search,2.5.4.10=imc,2.5.4.6=us", name
-                .getUpName() );
+                .getName() );
     }
 
 
@@ -3443,25 +3443,25 @@ public class LdapDNTest
     public void testTrailingEscapedSpace() throws Exception
     {
         LdapDN dn1 = new LdapDN( "ou=A\\ ,ou=system" );
-        assertEquals( "ou=A\\ ,ou=system", dn1.getUpName() );
+        assertEquals( "ou=A\\ ,ou=system", dn1.getName() );
         assertEquals( "ou=A\\ ,ou=system", dn1.getNormName() );
         assertEquals( "ou=A\\ ", dn1.getRdn().getUpName() );
         assertEquals( "ou=A\\ ", dn1.getRdn().getNormName() );
 
         LdapDN dn2 = new LdapDN( "ou=A\\20,ou=system" );
-        assertEquals( "ou=A\\20,ou=system", dn2.getUpName() );
+        assertEquals( "ou=A\\20,ou=system", dn2.getName() );
         assertEquals( "ou=A\\ ,ou=system", dn2.getNormName() );
         assertEquals( "ou=A\\20", dn2.getRdn().getUpName() );
         assertEquals( "ou=A\\ ", dn2.getRdn().getNormName() );
         
         LdapDN dn3 = new LdapDN( "ou=\\ ,ou=system" );
-        assertEquals( "ou=\\ ,ou=system", dn3.getUpName() );
+        assertEquals( "ou=\\ ,ou=system", dn3.getName() );
         assertEquals( "ou=\\ ,ou=system", dn3.getNormName() );
         assertEquals( "ou=\\ ", dn3.getRdn().getUpName() );
         assertEquals( "ou=\\ ", dn3.getRdn().getNormName() );
         
         LdapDN dn4 = new LdapDN( "ou=\\20,ou=system" );
-        assertEquals( "ou=\\20,ou=system", dn4.getUpName() );
+        assertEquals( "ou=\\20,ou=system", dn4.getName() );
         assertEquals( "ou=\\ ,ou=system", dn4.getNormName() );
         assertEquals( "ou=\\20", dn4.getRdn().getUpName() );
         assertEquals( "ou=\\ ", dn4.getRdn().getNormName() );
@@ -3477,7 +3477,7 @@ public class LdapDNTest
     {
         // numeric OID only
         LdapDN dn1 = new LdapDN( "cn=loopback+ipHostNumber=127.0.0.1,ou=Hosts,dc=mygfs,dc=com" );
-        assertEquals( "cn=loopback+ipHostNumber=127.0.0.1,ou=Hosts,dc=mygfs,dc=com", dn1.getUpName() );
+        assertEquals( "cn=loopback+ipHostNumber=127.0.0.1,ou=Hosts,dc=mygfs,dc=com", dn1.getName() );
         assertEquals( "cn=loopback+iphostnumber=127.0.0.1,ou=Hosts,dc=mygfs,dc=com", dn1.getNormName() );
         assertEquals( "cn=loopback+ipHostNumber=127.0.0.1", dn1.getRdn().getUpName() );
         assertEquals( "cn=loopback+iphostnumber=127.0.0.1", dn1.getRdn().getNormName() );
@@ -3485,21 +3485,21 @@ public class LdapDNTest
         
         // numeric OID with suffix
         LdapDN dn2 = new LdapDN( "cn=loopback+ipHostNumber=X127.0.0.1,ou=Hosts,dc=mygfs,dc=com" );
-        assertEquals( "cn=loopback+ipHostNumber=X127.0.0.1,ou=Hosts,dc=mygfs,dc=com", dn2.getUpName() );
+        assertEquals( "cn=loopback+ipHostNumber=X127.0.0.1,ou=Hosts,dc=mygfs,dc=com", dn2.getName() );
         assertEquals( "cn=loopback+iphostnumber=X127.0.0.1,ou=Hosts,dc=mygfs,dc=com", dn2.getNormName() );
         assertEquals( "cn=loopback+ipHostNumber=X127.0.0.1", dn2.getRdn().getUpName() );
         assertEquals( "cn=loopback+iphostnumber=X127.0.0.1", dn2.getRdn().getNormName() );
 
         // numeric OID with prefix
         LdapDN dn3 = new LdapDN( "cn=loopback+ipHostNumber=127.0.0.1Y,ou=Hosts,dc=mygfs,dc=com" );
-        assertEquals( "cn=loopback+ipHostNumber=127.0.0.1Y,ou=Hosts,dc=mygfs,dc=com", dn3.getUpName() );
+        assertEquals( "cn=loopback+ipHostNumber=127.0.0.1Y,ou=Hosts,dc=mygfs,dc=com", dn3.getName() );
         assertEquals( "cn=loopback+iphostnumber=127.0.0.1Y,ou=Hosts,dc=mygfs,dc=com", dn3.getNormName() );
         assertEquals( "cn=loopback+ipHostNumber=127.0.0.1Y", dn3.getRdn().getUpName() );
         assertEquals( "cn=loopback+iphostnumber=127.0.0.1Y", dn3.getRdn().getNormName() );
 
         // numeric OID with special characters
         LdapDN dn4 = new LdapDN( "cn=loopback+ipHostNumber=\\#127.0.0.1 Z,ou=Hosts,dc=mygfs,dc=com" );
-        assertEquals( "cn=loopback+ipHostNumber=\\#127.0.0.1 Z,ou=Hosts,dc=mygfs,dc=com", dn4.getUpName() );
+        assertEquals( "cn=loopback+ipHostNumber=\\#127.0.0.1 Z,ou=Hosts,dc=mygfs,dc=com", dn4.getName() );
         assertEquals( "cn=loopback+iphostnumber=\\#127.0.0.1 Z,ou=Hosts,dc=mygfs,dc=com", dn4.getNormName() );
         assertEquals( "cn=loopback+ipHostNumber=\\#127.0.0.1 Z", dn4.getRdn().getUpName() );
         assertEquals( "cn=loopback+iphostnumber=\\#127.0.0.1 Z", dn4.getRdn().getNormName() );
@@ -3513,7 +3513,7 @@ public class LdapDNTest
         
         dn.normalize( oidOids );
         assertEquals( "2.5.4.11=example,2.5.4.11=com", dn.getNormName() );
-        assertEquals( "  ou  =  Example ,  ou  =  COM ", dn.getUpName() );
+        assertEquals( "  ou  =  Example ,  ou  =  COM ", dn.getName() );
         
         Rdn rdn = dn.getRdn();
         assertEquals( "2.5.4.11", rdn.getNormType() );
@@ -3533,7 +3533,7 @@ public class LdapDNTest
         assertEquals( "Example", atav.getUpValue().get() );
         
         // Wrong !!! TODO : fix me
-        //assertEquals( "  ou =  Example ", atav.getUpName() );
+        assertEquals( "  ou =  Example ", atav.getUpName() );
     }
 
     
@@ -3544,12 +3544,12 @@ public class LdapDNTest
         
         dn.normalize( oidOids );
         assertEquals( "2.5.4.11=example+2.5.4.11=test,2.5.4.11=com", dn.getNormName() );
-        assertEquals( "  ou  =  Example + ou = TEST ,  ou  =  COM ", dn.getUpName() );
+        assertEquals( "  ou  =  Example + ou = TEST ,  ou  =  COM ", dn.getName() );
         
         Rdn rdn = dn.getRdn();
         assertEquals( "2.5.4.11", rdn.getNormType() );
         // TODO: Wrong !!! Fixme
-        // assertEquals( "example",rdn.getNormValue() );
+        assertEquals( "example",rdn.getNormValue() );
         assertEquals( "2.5.4.11=example+2.5.4.11=test", rdn.getNormName() );
         assertEquals( "ou", rdn.getUpType() );
         assertEquals( "Example",rdn.getUpValue() );
@@ -3566,7 +3566,7 @@ public class LdapDNTest
         assertEquals( "Example", atav.getUpValue().get() );
         
         // Wrong !!! TODO : fix me
-        //assertEquals( "  ou =  Example ", atav.getUpName() );
+        assertEquals( "  ou =  Example ", atav.getUpName() );
         
         assertEquals( 2, rdn.getNbAtavs() );
         
@@ -3597,7 +3597,7 @@ public class LdapDNTest
         
         dn.normalize( oidOids );
         assertEquals( "2.5.4.11=ex\\+mple,2.5.4.11=com", dn.getNormName() );
-        assertEquals( "  ou  =  Ex\\+mple ,  ou  =  COM ", dn.getUpName() );
+        assertEquals( "  ou  =  Ex\\+mple ,  ou  =  COM ", dn.getName() );
         
         Rdn rdn = dn.getRdn();
         assertEquals( "2.5.4.11", rdn.getNormType() );
@@ -3617,7 +3617,7 @@ public class LdapDNTest
         assertEquals( "Ex\\+mple", atav.getUpValue().get() );
         
         // Wrong !!! TODO : fix me
-        //assertEquals( "  ou =  Ex\\+mple ", atav.getUpName() );
+        assertEquals( "  ou =  Ex\\+mple ", atav.getUpName() );
     }
 
     
@@ -3628,12 +3628,12 @@ public class LdapDNTest
         
         dn.normalize( oidOids );
         assertEquals( "2.5.4.11=ex\\+mple+2.5.4.11=t\\+st,2.5.4.11=com", dn.getNormName() );
-        assertEquals( "  ou  =  Ex\\+mple + ou = T\\+ST ,  ou  =  COM ", dn.getUpName() );
+        assertEquals( "  ou  =  Ex\\+mple + ou = T\\+ST ,  ou  =  COM ", dn.getName() );
         
         Rdn rdn = dn.getRdn();
         assertEquals( "2.5.4.11", rdn.getNormType() );
         // TODO: Wrong !!! Fixme
-        //assertEquals( "ex+mple",rdn.getNormValue() );
+        assertEquals( "ex+mple",rdn.getNormValue() );
         assertEquals( "2.5.4.11=ex\\+mple+2.5.4.11=t\\+st", rdn.getNormName() );
         assertEquals( "ou", rdn.getUpType() );
         assertEquals( "Ex\\+mple",rdn.getUpValue() );
@@ -3643,7 +3643,7 @@ public class LdapDNTest
         AttributeTypeAndValue atav = rdn.getAtav();
         
         // TODO: Wrong !!! Fixme
-        //assertEquals( "2.5.4.11=ex+mple", atav.getNormName() );
+        assertEquals( "2.5.4.11=ex+mple", atav.getNormName() );
         assertEquals( "2.5.4.11", atav.getNormType() );
         assertEquals( "ex+mple", atav.getNormValue().get() );
         
@@ -3651,7 +3651,7 @@ public class LdapDNTest
         assertEquals( "Ex\\+mple", atav.getUpValue().get() );
         
         // Wrong !!! TODO : fix me
-        //assertEquals( "  ou =  Ex\\+mple ", atav.getUpName() );
+        assertEquals( "  ou =  Ex\\+mple ", atav.getUpName() );
         
         assertEquals( 2, rdn.getNbAtavs() );
         
