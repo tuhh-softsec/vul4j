@@ -3533,7 +3533,7 @@ public class LdapDNTest
         assertEquals( "Example", atav.getUpValue().get() );
         
         // Wrong !!! TODO : fix me
-        assertEquals( "  ou =  Example ", atav.getUpName() );
+        assertEquals( "  ou  =  Example ", atav.getUpName() );
     }
 
     
