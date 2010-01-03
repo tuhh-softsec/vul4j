@@ -490,7 +490,7 @@ public class Rdn implements Cloneable, Comparable, Externalizable, Iterable<Attr
         {
             case 0:
                 // This is the first AttributeTypeAndValue. Just stores it.
-                this.atav = value;
+                atav = value;
                 nbAtavs = 1;
                 atavType = normalizedType;
                 return;
@@ -502,9 +502,9 @@ public class Rdn implements Cloneable, Comparable, Externalizable, Iterable<Attr
                 atavs = new TreeSet<AttributeTypeAndValue>();
 
                 // and store the existing AttributeTypeAndValue into it.
-                atavs.add( this.atav );
+                atavs.add( atav );
                 atavTypes = new MultiValueMap();
-                atavTypes.put( atavType, this.atav );
+                atavTypes.put( atavType, atav );
 
                 this.atav = null;
 

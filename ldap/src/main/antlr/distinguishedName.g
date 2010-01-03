@@ -148,6 +148,7 @@ options    {
     }
     static class UpAndNormValue
     {
+        String name = "";
         String upValue = "";
         Object normValue = "";
         String trailingSpaces = "";
@@ -299,19 +300,31 @@ attributeTypeAndValue [Rdn rdn] returns [String upName = ""]
         {
             try
             {
+                upName += value.name;
+                AttributeTypeAndValue ava = null;
+            
                 if ( value.normValue instanceof String )
                 {
-                    rdn.addAttributeTypeAndValue( type, type, 
+                    ava = new AttributeTypeAndValue(
+                        type,
+                        type,
                         new ClientStringValue( value.upValue ), 
-                        new ClientStringValue( (String)value.normValue ) );
+                        new ClientStringValue( (String)value.normValue ),
+                        upName
+                    );
                 }
                 else
                 {
-                    rdn.addAttributeTypeAndValue( type, type, 
+                    ava = new AttributeTypeAndValue(
+                        type,
+                        type,
                         new ClientStringValue( value.upValue ), 
-                        new ClientBinaryValue( (byte[])value.normValue ) );
+                        new ClientBinaryValue( (byte[])value.normValue ),
+                        upName
+                    );
                 }
-                { upName += value.upValue + value.trailingSpaces; }
+           
+                rdn.addAttributeTypeAndValue( ava );
             }
             catch ( InvalidNameException e )
             {
@@ -502,12 +515,14 @@ string [UpAndNormValue value]
             tmp = lutf1 
             { 
                 value.upValue += tmp;
+                value.name += tmp;
                 bb.append( StringTools.getBytesUtf8( tmp ) ); 
             }
             |
             tmp = utfmb 
             {
                 value.upValue += tmp;
+                value.name += tmp;
                 bb.append( StringTools.getBytesUtf8( tmp ) );
             }
             |
@@ -517,12 +532,14 @@ string [UpAndNormValue value]
             tmp = sutf1
             {
                 value.upValue += tmp;
+                value.name += tmp;
                 bb.append( StringTools.getBytesUtf8( tmp ) ); 
             }
             |
             tmp = utfmb 
             {
                 value.upValue += tmp;
+                value.name += tmp;
                 bb.append( StringTools.getBytesUtf8( tmp ) ); 
             }
             |
@@ -658,7 +675,8 @@ pair [UpAndNormValue value] returns [byte[] pair]
     (
         ESCESC 
         { 
-            value.upValue += "\\\\";
+            value.upValue += "\\";
+            value.name += "\\\\";
             pair = StringTools.getBytesUtf8( "\\" );
         } 
     )
@@ -666,16 +684,18 @@ pair [UpAndNormValue value] returns [byte[] pair]
     (
         ESCSHARP 
         { 
-            value.upValue += "\\#";
+            value.upValue += "#";
+            value.name += "\\#";
             pair = StringTools.getBytesUtf8( "#" );
         } 
     )
     |
     ( 
-        ESC { value.upValue += "\\"; }
+        ESC
         tmp = special 
         { 
             value.upValue += tmp;
+            value.name += "\\" + tmp;
             pair = StringTools.getBytesUtf8( tmp ); 
         }
     )
@@ -683,7 +703,8 @@ pair [UpAndNormValue value] returns [byte[] pair]
     ( 
         hexpair:HEXPAIR 
         { 
-            value.upValue += "\\" + hexpair.getText(); 
+            value.upValue += hexpair.getText();
+            value.name += "\\" + hexpair.getText();
             pair = StringTools.toByteArray( hexpair.getText() ); 
         } 
     )
@@ -724,11 +745,3 @@ special returns [String special]
     )
     ;
 
-
-
-
-
-
-    
-    
-    

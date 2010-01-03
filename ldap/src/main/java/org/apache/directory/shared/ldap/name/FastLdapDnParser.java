@@ -82,7 +82,7 @@ public enum FastLdapDnParser implements NameParser
     
     void parseDn( String name, List<Rdn> rdns ) throws InvalidNameException
     {
-        if ( name == null || name.trim().length() == 0 )
+        if ( ( name == null ) || ( name.trim().length() == 0 ) )
         {
             // We have an empty DN, just get out of the function.
             return;

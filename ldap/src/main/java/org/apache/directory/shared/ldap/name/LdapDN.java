@@ -402,7 +402,7 @@ public class LdapDN implements Name, Externalizable
                     sb.append( ',' );
                 }
 
-                sb.append( rdn );
+                sb.append( rdn.getNormName() );
             }
 
             String newNormName = sb.toString();
@@ -1462,13 +1462,16 @@ public class LdapDN implements Name, Externalizable
             }
             else
             {
-                OidNormalizer oidNormalizer = oidsMap.get( type );
+                OidNormalizer oidNormalizer = oidsMap.get( type.toLowerCase() );
 
                 if ( oidNormalizer != null )
                 {
-                    return new AttributeTypeAndValue( atav.getUpType(), oidNormalizer.getAttributeTypeOid(), 
-                            atav.getUpValue(),
-                            oidNormalizer.getNormalizer().normalize( atav.getNormValue() ) );
+                    return new AttributeTypeAndValue( 
+                        atav.getUpType(), 
+                        oidNormalizer.getAttributeTypeOid(), 
+                        atav.getUpValue(),
+                        oidNormalizer.getNormalizer().normalize( atav.getNormValue() ),
+                        atav.getUpName() );
 
                 }
                 else
@@ -1530,7 +1533,7 @@ public class LdapDN implements Name, Externalizable
             for ( AttributeTypeAndValue val:rdnCopy )
             {
                 AttributeTypeAndValue newAtav = atavOidToName( val, oidsMap );
-                rdn.addAttributeTypeAndValue( val.getUpType(), newAtav.getNormType(), val.getUpValue(), newAtav.getNormValue() );
+                rdn.addAttributeTypeAndValue( newAtav );
             }
 
         }
