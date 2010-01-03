@@ -216,6 +216,63 @@ public class AttributeTypeAndValue implements Cloneable, Comparable, Externaliza
      * @param normType The normalized type
      * @param upValue The User Provided value
      * @param normValue The normalized value
+     * @param upName The User Provided name (may be escaped)
+     */
+    public AttributeTypeAndValue( String upType, String normType, Value<?> upValue, Value<?> normValue, String upName )
+        throws InvalidNameException
+    {
+        String upTypeTrimmed = StringTools.trim( upType );
+        String normTypeTrimmed = StringTools.trim( normType );
+
+        if ( StringTools.isEmpty( upTypeTrimmed ) )
+        {
+            if ( StringTools.isEmpty( normTypeTrimmed ) )
+            {
+                String message = "The type cannot be empty or null";
+                LOG.error( message );
+                throw new InvalidNameException( message );
+            }
+            else
+            {
+                // In this case, we will use the normType instead
+                this.normType = StringTools.lowerCaseAscii( normTypeTrimmed );
+                this.upType = normType;
+            }
+        }
+        else if ( StringTools.isEmpty( normTypeTrimmed ) )
+        {
+            // In this case, we will use the upType instead
+            this.normType = StringTools.lowerCaseAscii( upTypeTrimmed );
+            this.upType = upType;
+        }
+        else
+        {
+            this.normType = StringTools.lowerCaseAscii( normTypeTrimmed );
+            this.upType = upType;
+
+        }
+
+        this.normValue = normValue;
+        this.upValue = upValue;
+
+        this.upName = upName;
+        start = 0;
+        length = upName.length();
+    }
+
+
+    /**
+     * Construct an AttributeTypeAndValue. The type and value are normalized :
+     * <li> the type is trimmed and lowercased </li>
+     * <li> the value is trimmed </li>
+     * <p>
+     * Note that the upValue should <b>not</b> be null or empty, or resolved
+     * to an empty string after having trimmed it. 
+     *
+     * @param upType The User Provided type
+     * @param normType The normalized type
+     * @param upValue The User Provided value
+     * @param normValue The normalized value
      * @param start Start of this ATAV in the RDN
      * @param length Length of this ATAV
      * @param upName The user provided name
