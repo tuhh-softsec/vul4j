@@ -3444,9 +3444,9 @@ public class LdapDNTest
     {
         LdapDN dn1 = new LdapDN( "ou=A\\ ,ou=system" );
         assertEquals( "ou=A\\ ,ou=system", dn1.getName() );
-        assertEquals( "ou=A\\ ,ou=system", dn1.getNormName() );
-        assertEquals( "ou=A\\ ", dn1.getRdn().getUpName() );
-        assertEquals( "ou=A\\ ", dn1.getRdn().getNormName() );
+        assertEquals( "ou=A ,ou=system", dn1.getNormName() );
+        assertEquals( "ou=A ", dn1.getRdn().getUpName() );
+        assertEquals( "ou=A ", dn1.getRdn().getNormName() );
 
         LdapDN dn2 = new LdapDN( "ou=A\\20,ou=system" );
         assertEquals( "ou=A\\20,ou=system", dn2.getName() );
@@ -3618,33 +3618,71 @@ public class LdapDNTest
 
     
     @Test
-    public void testNormalizeAsciiCompositeWithEscaped() throws Exception
+    public void testNormalizeCompositeWithEscaped() throws Exception
     {
-        LdapDN dn = new LdapDN( "  OU  =  Ex\\+mple + ou = T\\+ST ,  ou  =  COM " );
+        LdapDN dn = new LdapDN( "  OU  =  Ex\\+mple + ou = T\\+ST\\  ,  ou  =  COM " );
         
+        // ------------------------------------------------------------------
         // Before normalization
-        assertEquals( "  OU  =  Ex\\+mple + ou = T\\+ST ,  ou  =  COM ", dn.getName() );
-        assertEquals( "ou=Ex\\+mple+ou=T\\+ST,ou=COM", dn.getNormName() );
+        assertEquals( "  OU  =  Ex\\+mple + ou = T\\+ST\\  ,  ou  =  COM ", dn.getName() );
+        assertEquals( "ou=Ex\\+mple+ou=T\\+ST\\ ,ou=COM", dn.getNormName() );
         
         // Check the first RDN
         Rdn rdn = dn.getRdn();
+        assertEquals( "  OU  =  Ex\\+mple + ou = T\\+ST\\  ", rdn.getUpName() );
+        assertEquals( "ou=Ex\\+mple+ou=T\\+ST\\ ", rdn.getNormName() );
+
         assertEquals( "OU", rdn.getUpType() );
         assertEquals( "ou", rdn.getNormType() );
         
         assertEquals( "Ex+mple",rdn.getUpValue() );
         assertEquals( "Ex+mple",rdn.getNormValue() );
         
+        // The first ATAV
+        AttributeTypeAndValue atav = rdn.getAtav();
+        
+        assertEquals( "  OU  =  Ex\\+mple ", atav.getUpName() );
+        assertEquals( "ou=Ex\\+mple", atav.getNormName() );
+        
+        assertEquals( "ou", atav.getNormType() );
+        assertEquals( "OU", atav.getUpType() );
+        
+        assertEquals( "Ex+mple", atav.getUpValue().get() );
+        assertEquals( "Ex+mple", atav.getNormValue().get() );
+        
+        assertEquals( 2, rdn.getNbAtavs() );
+        
+        // The second ATAV
+        for ( AttributeTypeAndValue ava : rdn )
+        {
+            if ( "Ex+mple".equals( ava.getNormValue().get() ) )
+            {
+                // Skip the first one
+                continue;
+            }
+            
+            assertEquals( " ou = T\\+ST\\  ", ava.getUpName() );
+            assertEquals( "ou=T\\+ST\\ ", ava.getNormName() );
+
+            assertEquals( "ou", ava.getUpType() );
+            assertEquals( "ou", ava.getNormType() );
+            
+            assertEquals( "T+ST ", ava.getUpValue().get() );
+            assertEquals( "T+ST ", ava.getNormValue().get() );
+        }
+
+        // ------------------------------------------------------------------
         // Now normalize the DN
         dn.normalize( oidOids );
         
-        assertEquals( "  OU  =  Ex\\+mple + ou = T\\+ST ,  ou  =  COM ", dn.getName() );
-        assertEquals( "2.5.4.11=ex\\+mple+2.5.4.11=t\\+st,2.5.4.11=com", dn.getNormName() );
+        assertEquals( "  OU  =  Ex\\+mple + ou = T\\+ST\\  ,  ou  =  COM ", dn.getName() );
+        assertEquals( "2.5.4.11=ex\\+mple+2.5.4.11=t\\+st\\ ,2.5.4.11=com", dn.getNormName() );
         
-        rdn = dn.getRdn();
-        assertEquals( "  OU  =  Ex\\+mple + ou = T\\+ST ", rdn.getUpName() );
-        assertEquals( "2.5.4.11=ex\\+mple+2.5.4.11=t\\+st", rdn.getNormName() );
-
         // Check the first RDN
+        rdn = dn.getRdn();
+        assertEquals( "  OU  =  Ex\\+mple + ou = T\\+ST\\  ", rdn.getUpName() );
+        assertEquals( "2.5.4.11=ex\\+mple+2.5.4.11=t\\+st\\ ", rdn.getNormName() );
+
         assertEquals( "OU", rdn.getUpType() );
         assertEquals( "2.5.4.11", rdn.getNormType() );
         
@@ -3652,9 +3690,9 @@ public class LdapDNTest
         assertEquals( "ex+mple",rdn.getNormValue() );
         
         // The first ATAV
-        AttributeTypeAndValue atav = rdn.getAtav();
+        atav = rdn.getAtav();
         
-        assertEquals( "OU  =  Ex\\+mple ", atav.getUpName() );
+        assertEquals( "  OU  =  Ex\\+mple ", atav.getUpName() );
         assertEquals( "2.5.4.11=ex\\+mple", atav.getNormName() );
         
         assertEquals( "2.5.4.11", atav.getNormType() );
@@ -3668,20 +3706,20 @@ public class LdapDNTest
         // The second ATAV
         for ( AttributeTypeAndValue ava : rdn )
         {
-            if ( "ex+mple".equals( atav.getNormValue().get() ) )
+            if ( "ex+mple".equals( ava.getNormValue().get() ) )
             {
                 // Skip the first one
                 continue;
             }
             
-            assertEquals( "ou = T\\+ST ", atav.getUpName() );
-            assertEquals( "2.5.4.11=t\\+st", atav.getNormName() );
+            assertEquals( " ou = T\\+ST\\  ", ava.getUpName() );
+            assertEquals( "2.5.4.11=t\\+st\\ ", ava.getNormName() );
 
-            assertEquals( "ou", atav.getUpType() );
-            assertEquals( "2.5.4.11", atav.getNormType() );
+            assertEquals( "ou", ava.getUpType() );
+            assertEquals( "2.5.4.11", ava.getNormType() );
             
-            assertEquals( "T+ST", atav.getUpValue().get() );
-            assertEquals( "t+st", atav.getNormValue().get() );
+            assertEquals( "T+ST ", ava.getUpValue().get() );
+            assertEquals( "t+st ", ava.getNormValue().get() );
         }
     }
 }

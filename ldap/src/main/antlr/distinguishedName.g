@@ -253,14 +253,12 @@ relativeDistinguishedName [Rdn initialRdn] returns [Rdn rdn]
     }
     :
     (
-        ( SPACE { upName += " "; } )*
         tmp = attributeTypeAndValue[rdn] 
         { 
             upName += tmp;
         }
         (
             PLUS { upName += "+"; }
-            ( SPACE { upName += " "; } )*
             tmp = attributeTypeAndValue[rdn] 
             { 
                 upName += tmp;
@@ -290,6 +288,7 @@ attributeTypeAndValue [Rdn rdn] returns [String upName = ""]
     }
     :
     (
+        ( SPACE { upName += " "; } )*
         type = attributeType { upName += type; }
         ( SPACE { upName += " "; } )*
         EQUALS { upName += "="; }
