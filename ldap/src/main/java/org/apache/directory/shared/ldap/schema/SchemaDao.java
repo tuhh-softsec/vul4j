@@ -17,6 +17,12 @@ import org.apache.directory.shared.ldap.schema.registries.Schema;
 public interface SchemaDao
 {
 
+    /**
+     * Gets a Map of Schemas managed by a schema store.
+     *
+     * @return a Map of Schemas using the name of the Schema as the key
+     * @throws Exception if there is some problem accessing the schema data
+     */
     Map<String, Schema> getSchemas() throws Exception;
 
 
