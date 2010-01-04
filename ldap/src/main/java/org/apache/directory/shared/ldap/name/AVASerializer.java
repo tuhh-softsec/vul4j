@@ -23,6 +23,8 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
+import javax.naming.InvalidNameException;
+
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.entry.client.ClientBinaryValue;
 import org.apache.directory.shared.ldap.entry.client.ClientStringValue;
@@ -158,32 +160,40 @@ public class AVASerializer
         String normType = in.readUTF();
         
         boolean isHR = in.readBoolean();
-        
-        if ( isHR )
+
+        try
         {
-            Value<String> upValue = new ClientStringValue( in.readUTF() );
-            Value<String> normValue = new ClientStringValue( in.readUTF() );
-            AVA atav = 
-                new AVA( upType, normType, upValue, normValue, start, length, upName );
-            
-            return atav;
+            if ( isHR )
+            {
+                Value<String> upValue = new ClientStringValue( in.readUTF() );
+                Value<String> normValue = new ClientStringValue( in.readUTF() );
+                
+                AVA atav = 
+                    new AVA( upType, normType, upValue, normValue, upName );
+                
+                return atav;
+            }
+            else
+            {
+                int upValueLength = in.readInt();
+                byte[] upValue = new byte[upValueLength];
+                in.readFully( upValue );
+    
+                int valueLength = in.readInt();
+                byte[] normValue = new byte[valueLength];
+                in.readFully( normValue );
+    
+                AVA atav = 
+                    new AVA( upType, normType, 
+                        new ClientBinaryValue( upValue) , 
+                        new ClientBinaryValue( normValue ), upName );
+                
+                return atav;
+            }
         }
-        else
+        catch ( InvalidNameException ine )
         {
-            int upValueLength = in.readInt();
-            byte[] upValue = new byte[upValueLength];
-            in.readFully( upValue );
-
-            int valueLength = in.readInt();
-            byte[] normValue = new byte[valueLength];
-            in.readFully( normValue );
-
-            AVA atav = 
-                new AVA( upType, normType, 
-                    new ClientBinaryValue( upValue) , 
-                    new ClientBinaryValue( normValue ), start, length, upName );
-            
-            return atav;
+            throw new IOException( ine.getMessage() );
         }
     }
 }

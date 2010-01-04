@@ -78,7 +78,7 @@ public class AVA implements Cloneable, Comparable, Externalizable
     /** The name user provided value. It can be a String or a byte array */
     private Value<?> upValue;
 
-    /** The user provided atav */
+    /** The user provided AVA */
     private String upName;
 
     /** The starting position of this atav in the given string from which
@@ -95,7 +95,7 @@ public class AVA implements Cloneable, Comparable, Externalizable
 
 
     /**
-     * Construct an empty AttributeTypeAndValue
+     * Construct an empty AVA
      */
     public AVA()
     {
@@ -110,7 +110,7 @@ public class AVA implements Cloneable, Comparable, Externalizable
 
     
     /**
-     * Construct an AttributeTypeAndValue. The type and value are normalized :
+     * Construct an AVA. The type and value are normalized :
      * <li> the type is trimmed and lowercased </li>
      * <li> the value is trimmed </li>
      * <p>
@@ -131,7 +131,7 @@ public class AVA implements Cloneable, Comparable, Externalizable
 
     
     /**
-     * Construct an AttributeTypeAndValue. The type and value are normalized :
+     * Construct an AVA. The type and value are normalized :
      * <li> the type is trimmed and lowercased </li>
      * <li> the value is trimmed </li>
      * <p>
@@ -150,7 +150,7 @@ public class AVA implements Cloneable, Comparable, Externalizable
 
 
     /**
-     * Construct an AttributeTypeAndValue. The type and value are normalized :
+     * Construct an AVA. The type and value are normalized :
      * <li> the type is trimmed and lowercased </li>
      * <li> the value is trimmed </li>
      * <p>
@@ -205,7 +205,7 @@ public class AVA implements Cloneable, Comparable, Externalizable
 
 
     /**
-     * Construct an AttributeTypeAndValue. The type and value are normalized :
+     * Construct an AVA. The type and value are normalized :
      * <li> the type is trimmed and lowercased </li>
      * <li> the value is trimmed </li>
      * <p>
@@ -262,42 +262,7 @@ public class AVA implements Cloneable, Comparable, Externalizable
 
 
     /**
-     * Construct an AttributeTypeAndValue. The type and value are normalized :
-     * <li> the type is trimmed and lowercased </li>
-     * <li> the value is trimmed </li>
-     * <p>
-     * Note that the upValue should <b>not</b> be null or empty, or resolved
-     * to an empty string after having trimmed it. 
-     *
-     * @param upType The User Provided type
-     * @param normType The normalized type
-     * @param upValue The User Provided value
-     * @param normValue The normalized value
-     * @param start Start of this ATAV in the RDN
-     * @param length Length of this ATAV
-     * @param upName The user provided name
-     */
-    AVA( 
-                            String upType, 
-                            String normType, 
-                            Value<?> upValue, 
-                            Value<?> normValue,
-                            int start, 
-                            int length, 
-                            String upName )
-    {
-        this.upType = upType;
-        this.normType = normType;
-        this.upValue = upValue;
-        this.normValue = normValue;
-        this.start = start;
-        this.length = length;
-        this.upName = upName;
-    }
-
-    
-    /**
-     * Get the normalized type of a AttributeTypeAndValue
+     * Get the normalized type of a AVA
      *
      * @return The normalized type
      */
@@ -307,7 +272,7 @@ public class AVA implements Cloneable, Comparable, Externalizable
     }
 
     /**
-     * Get the user provided type of a AttributeTypeAndValue
+     * Get the user provided type of a AVA
      *
      * @return The user provided type
      */
@@ -320,8 +285,8 @@ public class AVA implements Cloneable, Comparable, Externalizable
     /**
      * Store a new type
      *
-     * @param upType The AttributeTypeAndValue User Provided type
-     * @param type The AttributeTypeAndValue type
+     * @param upType The AVA User Provided type
+     * @param type The AVA type
      * 
      * @throws InvalidNameException if the type or upType are empty or null.
      * If the upName is invalid.
@@ -362,15 +327,14 @@ public class AVA implements Cloneable, Comparable, Externalizable
     /**
      * Store the type, after having trimmed and lowercased it.
      *
-     * @param type
-     *            The AttributeTypeAndValue type
+     * @param type The AVA type
      */
     public void setTypeNormalized( String type ) throws InvalidNameException
     {
         if ( StringTools.isEmpty( type ) || StringTools.isEmpty( type.trim() ) )
         {
             LOG.error( "The type cannot be empty or null" );
-            throw new InvalidNameException( "The AttributeTypeAndValue type cannot be null or empty " );
+            throw new InvalidNameException( "The AVA type cannot be null or empty " );
         }
 
         normType = type.trim().toLowerCase();
@@ -382,7 +346,7 @@ public class AVA implements Cloneable, Comparable, Externalizable
 
 
     /**
-     * Get the Value of a AttributeTypeAndValue
+     * Get the Value of a AVA
      *
      * @return The value
      */
@@ -392,7 +356,7 @@ public class AVA implements Cloneable, Comparable, Externalizable
     }
 
     /**
-     * Get the User Provided Value of a AttributeTypeAndValue
+     * Get the User Provided Value of a AVA
      *
      * @return The value
      */
@@ -402,7 +366,7 @@ public class AVA implements Cloneable, Comparable, Externalizable
     }
 
     /**
-     * Get the normalized Name of a AttributeTypeAndValue
+     * Get the normalized Name of a AVA
      *
      * @return The name
      */
@@ -413,9 +377,9 @@ public class AVA implements Cloneable, Comparable, Externalizable
 
 
     /**
-     * Store the value of a AttributeTypeAndValue.
+     * Store the value of a AVA.
      *
-     * @param value The user provided value of the AttributeTypeAndValue
+     * @param value The user provided value of the AVA
      * @param normValue The normalized value
      */
     public void setValue( Value<?> upValue, Value<?> normValue )
@@ -462,10 +426,9 @@ public class AVA implements Cloneable, Comparable, Externalizable
 
 
     /**
-     * Store the value of a AttributeTypeAndValue, after having trimmed it.
+     * Store the value of a AVA, after having trimmed it.
      *
-     * @param value
-     *            The value of the AttributeTypeAndValue
+     * @param value The value of the AVA
      */
     public void setValueNormalized( String value )
     {
@@ -575,10 +538,8 @@ public class AVA implements Cloneable, Comparable, Externalizable
     /**
      * Compare two types, trimed and case insensitive
      *
-     * @param val1
-     *            First String
-     * @param val2
-     *            Second String
+     * @param val1 First String
+     * @param val2 Second String
      * @return true if both strings are equals or null.
      */
     private int compareType( String val1, String val2 )
@@ -663,13 +624,80 @@ public class AVA implements Cloneable, Comparable, Externalizable
         false, false, false, false, false, false, false, false, // 0x70 -> 0x77
         false, false, false, false, false, false, false, false, // 0x78 -> 0x7F
         };
+    
+    
+    public String normalizeValue()
+    {
+        // The result will be gathered in a stringBuilder
+        StringBuilder sb = new StringBuilder();
+        
+        String normalizedValue =  normValue.getString();
+        int valueLength = normalizedValue.length();
+
+        if ( normalizedValue.length() > 0 )
+        {
+            char[] chars = normalizedValue.toCharArray();
+
+            // Here, we have a char to escape. Start again the loop...
+            for ( int i = 0; i < valueLength; i++ )
+            {
+                char c = chars[i];
+
+                if ( ( c >= 0 ) && ( c < DN_ESCAPED_CHARS.length ) && DN_ESCAPED_CHARS[ c ] ) 
+                {
+                    // Some chars need to be escaped even if they are US ASCII
+                    // Just prefix them with a '\'
+                    // Special cases are ' ' (space), '#') which need a special
+                    // treatment.
+                    switch ( c )
+                    {
+                        case ' ' :
+                            if ( ( i == 0 ) || ( i == valueLength - 1 ) )
+                            {
+                                sb.append( "\\ " );
+                            }
+                            else
+                            {
+                                sb.append( ' ' );
+                            }
+    
+                            break;
+                            
+                        case '#' :
+                            if ( i == 0 )
+                            {
+                                sb.append( "\\#" );
+                                continue;
+                            }
+                            else
+                            {
+                                sb.append( '#' );
+                            }
+                        
+                            break;
+
+                        default :
+                            sb.append( '\\' ).append( c );
+                    }
+                }
+                else
+                {
+                    // Standard ASCII chars are just appended
+                    sb.append( c );
+                }
+            }
+        }
+        
+        return sb.toString();
+    }
 
     /**
-     * A Normalized String representation of a AttributeTypeAndValue : - type is
-     * trimed and lowercased - value is trimed and lowercased, and special characters
+     * A Normalized String representation of a AVA : 
+     * - type is trimed and lowercased 
+     * - value is trimed and lowercased, and special characters
      * are escaped if needed.
      *
-     * @return A normalized string representing a AttributeTypeAndValue
+     * @return A normalized string representing a AVA
      */
     public String normalize()
     {
@@ -681,82 +709,11 @@ public class AVA implements Cloneable, Comparable, Externalizable
             // First, store the type and the '=' char
             sb.append( normType ).append( '=' );
             
-            String normalizedValue =  normValue.getString();
-            int valueLength = normalizedValue.length();
-            boolean escaped = false;
+            String normalizedValue = normValue.getString();
             
             if ( normalizedValue.length() > 0 )
             {
-                char[] chars = normalizedValue.toCharArray();
-
-                // Loop first assuming the DN won't contain any
-                // char needing to be escaped. This is the case
-                // for 99.99% of all DN (blind bet, of course ...) 
-                for ( char c:chars )
-                {
-                    if ( ( c >= 0 ) && ( c < DN_ESCAPED_CHARS.length ) && DN_ESCAPED_CHARS[ c ] )
-                    {
-                        escaped = true;
-                        break;
-                    }
-                }
-
-                // Here, we have a char to escape. Start again the loop...
-                if ( escaped )
-                {
-                    for ( int i = 0; i < valueLength; i++ )
-                    {
-                        char c = chars[i];
-
-                        if ( ( c >= 0 ) && ( c < DN_ESCAPED_CHARS.length ) && DN_ESCAPED_CHARS[ c ] ) 
-                        {
-                            // Some chars need to be escaped even if they are US ASCII
-                            // Just prefix them with a '\'
-                            // Special cases are ' ' (space), '#') which need a special
-                            // treatment.
-                            if ( c == ' ' )
-                            {
-                                if ( ( i == 0 ) || ( i == valueLength - 1 ) )
-                                {
-                                    sb.append( '\\' ).append(  c  );
-                                }
-                                else
-                                {
-                                    sb.append( ' ' );
-                                }
-    
-                                continue;
-                            }
-                            else if ( c == '#' )
-                            {
-                                if ( i == 0 )
-                                {
-                                    sb.append( "\\#" );
-                                    continue;
-                                }
-                                else
-                                {
-                                    sb.append( '#' );
-                                }
-                                
-                                continue;
-                            }
-    
-                            sb.append( '\\' ).append( c );
-                        }
-                        else
-                        {
-                            // Standard ASCII chars are just appended
-                            sb.append( c );
-                        }
-                    }
-                }
-                else
-                {
-                    // The String does not contain any escaped char : 
-                    // just append it. 
-                    sb.append( normalizedValue );
-                }
+                sb.append( normalizeValue() );
             }
             
             return sb.toString();
@@ -833,7 +790,7 @@ public class AVA implements Cloneable, Comparable, Externalizable
     /**
      * @see Externalizable#readExternal(ObjectInput)<p>
      * 
-     * An AttributeTypeAndValue is composed of  a type and a value.
+     * An AVA is composed of  a type and a value.
      * The data are stored following the structure :
      * 
      * <li>upName</li> The User provided ATAV
@@ -961,9 +918,9 @@ public class AVA implements Cloneable, Comparable, Externalizable
     
     
     /**
-     * A String representation of a AttributeTypeAndValue.
+     * A String representation of a AVA.
      *
-     * @return A string representing a AttributeTypeAndValue
+     * @return A string representing a AVA
      */
     public String toString()
     {
