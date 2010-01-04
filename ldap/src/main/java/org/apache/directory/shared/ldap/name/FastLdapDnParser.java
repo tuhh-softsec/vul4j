@@ -174,13 +174,14 @@ public enum FastLdapDnParser implements NameParser
         // SPACE*
         matchSpaces( name, pos );
 
-        rdn.addAttributeTypeAndValue( type, type, 
-            new ClientStringValue( upValue ), 
-            new ClientStringValue( value ) );
+        String upName = name.substring( rdnStart, pos.start );
 
-        rdn.setUpName( name.substring( rdnStart, pos.start ) );
+        AttributeTypeAndValue ava = new AttributeTypeAndValue( type, type, new ClientStringValue( upValue ),
+            new ClientStringValue( value ), upName );
+        rdn.addAttributeTypeAndValue( ava );
+
+        rdn.setUpName( upName );
         rdn.normalize();
-
     }
 
 
