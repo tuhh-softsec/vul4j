@@ -90,7 +90,7 @@
 &lt;/filter-mapping&gt;
 </source>
 	In addition, you must configure the AuthenticationHandler in
-	driver.properties file for each provider&nbsp;:
+	driver.properties file for each provider:
 <source>
 authenticationHandler=net.webassembletool.cas.CasAuthenticationHandler
 aggregated2.authenticationHandler=net.webassembletool.cas.CasAuthenticationHandler

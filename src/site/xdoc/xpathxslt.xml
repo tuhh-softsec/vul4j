@@ -22,7 +22,7 @@
 				<a
 					href="webassembletool-core/apidocs/net/webassembletool/xml/XsltRenderer.html">XsltRenderer</a>
 				classes.
-				Example&nbsp;:
+				Example:
 <source>
 package net.webassembletool.aggregator;
 
