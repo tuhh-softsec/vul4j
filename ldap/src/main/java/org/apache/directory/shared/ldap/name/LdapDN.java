@@ -36,8 +36,6 @@ import javax.naming.InvalidNameException;
 import javax.naming.Name;
 import javax.naming.NamingException;
 
-import org.apache.directory.shared.ldap.entry.client.ClientStringValue;
-import org.apache.directory.shared.ldap.schema.normalizers.DefaultStringNormalizer;
 import org.apache.directory.shared.ldap.schema.normalizers.OidNormalizer;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
@@ -1472,7 +1470,6 @@ public class LdapDN implements Name, Externalizable
                         atav.getUpValue(),
                         oidNormalizer.getNormalizer().normalize( atav.getNormValue() ),
                         atav.getUpName() );
-
                 }
                 else
                 {
@@ -1487,29 +1484,6 @@ public class LdapDN implements Name, Externalizable
             LOG.error( "Empty type not allowed in a DN" );
             throw new InvalidNameException( "Empty type not allowed in a DN" );
         }
-
-    }
-
-    /**
-     * This private method is used to normalize the value, when we have found a normalizer.
-     * This method deals with RDN having one single ATAV.
-     * 
-     * @param rdn the RDN we want to normalize. It will contain the resulting normalized RDN
-     * @param oidNormalizer the normalizer to use for the RDN
-     * @throws NamingException If something went wrong.
-     */
-    private static void oidNormalize( Rdn rdn, OidNormalizer oidNormalizer ) throws NamingException
-    {
-        String upValue = rdn.getUpValue();
-        String upType = rdn.getUpType();
-        String upName = rdn.getUpName();
-        rdn.clear();
-        String normStringValue = DefaultStringNormalizer.normalizeString( ( String ) upValue );
-        String normValue = oidNormalizer.getNormalizer().normalize( normStringValue );
-
-        AVA atav = new AVA( upType, oidNormalizer.getAttributeTypeOid(),
-            new ClientStringValue( upValue ), new ClientStringValue( normValue ), upName );
-        rdn.addAttributeTypeAndValue( atav );
     }
 
 
@@ -1537,61 +1511,13 @@ public class LdapDN implements Name, Externalizable
                 AVA newAtav = atavOidToName( val, oidsMap );
                 rdn.addAttributeTypeAndValue( newAtav );
             }
-
         }
         else
         {
-            String type = rdn.getNormType();
-
-            if ( StringTools.isNotEmpty( type ) )
-            {
-                if ( oidsMap == null )
-                {
-                    return;
-                }
-                else
-                {
-                    OidNormalizer oidNormalizer = oidsMap.get( type );
-
-                    if ( oidNormalizer != null )
-                    {
-                        oidNormalize( rdn, oidNormalizer );
-                    }
-                    else
-                    {
-                        // May be the oidNormalizer was null because the type starts with OID
-                        if ( ( type.startsWith( "oid." ) ) || ( type.startsWith( "OID." ) ) )
-                        {
-                            type = type.substring( 4 );
-                            oidNormalizer = oidsMap.get( type );
-                            
-                            if ( oidNormalizer != null )
-                            {
-                                // Ok, just normalize after having removed the 4 first chars
-                                oidNormalize( rdn, oidNormalizer );
-                            }
-                            else
-                            {
-                                // We don't have a normalizer for this OID : just do
-                                // nothing.
-                                return;
-                            }
-                        }
-                        else
-                        {
-                            // We don't have a normalizer for this OID : just do
-                            // nothing.
-                            return;
-                        }
-                    }
-                }
-            }
-            else
-            {
-                // The type is empty : this is not possible...
-                LOG.error( "We should not have an empty DN" );
-                throw new InvalidNameException( "Empty type not allowed in a DN" );
-            }
+            AVA val = rdn.getAtav();
+            rdn.clear();
+            AVA newAtav = atavOidToName( val, oidsMap );
+            rdn.addAttributeTypeAndValue( newAtav );
         }
     }
 
