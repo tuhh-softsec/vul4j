@@ -26,12 +26,12 @@
     <artifactId>shared-parent</artifactId>
     <version>0.9.18-SNAPSHOT</version>
   </parent>
-  <artifactId>shared-ldap-schema-manager</artifactId>
-  <name>Apache Directory Shared LDAP Schema Manager</name>
+  <artifactId>shared-ldap-schema-dao</artifactId>
+  <name>Apache Directory Shared LDAP Schema DAO</name>
   <packaging>jar</packaging>
 
   <description>
-    SchemaManager implementation bundle.
+    File based schema data access object for managing schema data.
   </description>
   
   <dependencies>
