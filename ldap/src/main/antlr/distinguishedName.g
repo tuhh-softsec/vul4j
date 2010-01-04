@@ -298,11 +298,11 @@ attributeTypeAndValue [Rdn rdn] returns [String upName = ""]
             try
             {
                 upName += value.rawValue;
-                AttributeTypeAndValue ava = null;
+                AVA ava = null;
             
                 if ( value.value instanceof String )
                 {
-                    ava = new AttributeTypeAndValue(
+                    ava = new AVA(
                         type,
                         type,
                         new ClientStringValue( (String)value.value ), 
@@ -312,7 +312,7 @@ attributeTypeAndValue [Rdn rdn] returns [String upName = ""]
                 }
                 else
                 {
-                    ava = new AttributeTypeAndValue(
+                    ava = new AVA(
                         type,
                         type,
                         new ClientBinaryValue( (byte[])value.value ), 
