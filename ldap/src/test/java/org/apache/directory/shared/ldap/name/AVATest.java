@@ -43,7 +43,7 @@ import org.junit.Test;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$, 
  */
-public class AttributeTypeAndValueTest
+public class AVATest
 {
     // ~ Methods
     // ------------------------------------------------------------------------------------
@@ -53,7 +53,7 @@ public class AttributeTypeAndValueTest
     @Test
     public void testAttributeTypeAndValueNull()
     {
-        AttributeTypeAndValue atav = new AttributeTypeAndValue();
+        AVA atav = new AVA();
         assertEquals( "", atav.toString() );
         assertEquals( "", atav.getUpName() );
         assertEquals( -1, atav.getStart() );
@@ -69,7 +69,7 @@ public class AttributeTypeAndValueTest
     {
         try
         {
-            new AttributeTypeAndValue( null, null, (String)null, (String)null );
+            new AVA( null, null, (String)null, (String)null );
             fail();
         }
         catch ( InvalidNameException ine )
@@ -87,7 +87,7 @@ public class AttributeTypeAndValueTest
     {
         try
         {
-            new AttributeTypeAndValue( "  ", " ", (String)null, (String)null );
+            new AVA( "  ", " ", (String)null, (String)null );
             fail();
         }
         catch ( InvalidNameException ine )
@@ -103,19 +103,19 @@ public class AttributeTypeAndValueTest
     @Test
     public void testAttributeTypeAndValueValidType() throws InvalidNameException
     {
-        AttributeTypeAndValue atav = new AttributeTypeAndValue( "A", "a", (String)null, (String)null );
+        AVA atav = new AVA( "A", "a", (String)null, (String)null );
         assertEquals( "a=", atav.toString() );
         assertEquals( "A=", atav.getUpName() );
         
-        atav = new AttributeTypeAndValue( "  A  ", "a", (String)null, (String)null );
+        atav = new AVA( "  A  ", "a", (String)null, (String)null );
         assertEquals( "a=", atav.toString() );
         assertEquals( "  A  =", atav.getUpName() );
         
-        atav = new AttributeTypeAndValue( "  A  ", null, (String)null, (String)null );
+        atav = new AVA( "  A  ", null, (String)null, (String)null );
         assertEquals( "a=", atav.toString() );
         assertEquals( "  A  =", atav.getUpName() );
         
-        atav = new AttributeTypeAndValue( null, "a", (String)null, (String)null );
+        atav = new AVA( null, "a", (String)null, (String)null );
         assertEquals( "a=", atav.toString() );
         assertEquals( "a=", atav.getUpName() );
         
@@ -129,7 +129,7 @@ public class AttributeTypeAndValueTest
     {
         try
         {
-            new AttributeTypeAndValue( "", "", "", "" );
+            new AVA( "", "", "", "" );
             fail( "Should not occurs ... " );
         }
         catch ( InvalidNameException ine )
@@ -145,7 +145,7 @@ public class AttributeTypeAndValueTest
     @Test
     public void testLdapRDNSimple() throws InvalidNameException
     {
-        AttributeTypeAndValue atav = new AttributeTypeAndValue( "a", "a", "b", "b" );
+        AVA atav = new AVA( "a", "a", "b", "b" );
         assertEquals( "a=b", atav.toString() );
         assertEquals( "a=b", atav.getUpName() );
         assertEquals( 0, atav.getStart() );
@@ -159,8 +159,8 @@ public class AttributeTypeAndValueTest
     @Test
     public void testCompareToEquals() throws InvalidNameException
     {
-        AttributeTypeAndValue atav1 = new AttributeTypeAndValue( "a", "a","b", "b" );
-        AttributeTypeAndValue atav2 = new AttributeTypeAndValue( "a", "a","b", "b" );
+        AVA atav1 = new AVA( "a", "a","b", "b" );
+        AVA atav2 = new AVA( "a", "a","b", "b" );
 
         assertEquals( 0, atav1.compareTo( atav2 ) );
     }
@@ -172,8 +172,8 @@ public class AttributeTypeAndValueTest
     @Test
     public void testCompareToEqualsCase() throws InvalidNameException
     {
-        AttributeTypeAndValue atav1 = new AttributeTypeAndValue( "a", "a", "b", "b" );
-        AttributeTypeAndValue atav2 = new AttributeTypeAndValue( "A", "A", "b", "b" );
+        AVA atav1 = new AVA( "a", "a", "b", "b" );
+        AVA atav2 = new AVA( "A", "A", "b", "b" );
 
         assertEquals( 0, atav1.compareTo( atav2 ) );
     }
@@ -186,9 +186,9 @@ public class AttributeTypeAndValueTest
     @Test
     public void testCompareAtav1TypeSuperior() throws InvalidNameException
     {
-        AttributeTypeAndValue atav1 = new AttributeTypeAndValue( "b", "b", "b", "b" );
+        AVA atav1 = new AVA( "b", "b", "b", "b" );
             
-        AttributeTypeAndValue atav2 = new AttributeTypeAndValue( "a", "a", "b", "b" );
+        AVA atav2 = new AVA( "a", "a", "b", "b" );
 
         assertEquals( 1, atav1.compareTo( atav2 ) );
     }
@@ -201,8 +201,8 @@ public class AttributeTypeAndValueTest
     @Test
     public void testCompareAtav2TypeSuperior() throws InvalidNameException
     {
-        AttributeTypeAndValue atav1 = new AttributeTypeAndValue( "a", "a", "b", "b" );
-        AttributeTypeAndValue atav2 = new AttributeTypeAndValue( "b", "b", "b", "b" );
+        AVA atav1 = new AVA( "a", "a", "b", "b" );
+        AVA atav2 = new AVA( "b", "b", "b", "b" );
 
         assertEquals( -1, atav1.compareTo( atav2 ) );
     }
@@ -215,8 +215,8 @@ public class AttributeTypeAndValueTest
     @Test
     public void testCompareAtav1ValueSuperior() throws InvalidNameException
     {
-        AttributeTypeAndValue atav1 = new AttributeTypeAndValue( "a", "a", "b", "b" );
-        AttributeTypeAndValue atav2 = new AttributeTypeAndValue( "a", "a", "a", "a" );
+        AVA atav1 = new AVA( "a", "a", "b", "b" );
+        AVA atav2 = new AVA( "a", "a", "a", "a" );
 
         assertEquals( 1, atav1.compareTo( atav2 ) );
     }
@@ -229,8 +229,8 @@ public class AttributeTypeAndValueTest
     @Test
     public void testCompareAtav2ValueSuperior() throws InvalidNameException
     {
-        AttributeTypeAndValue atav1 = new AttributeTypeAndValue( "a", "a", "a", "a" );
-        AttributeTypeAndValue atav2 = new AttributeTypeAndValue( "a", "a", "b", "b" );
+        AVA atav1 = new AVA( "a", "a", "a", "a" );
+        AVA atav2 = new AVA( "a", "a", "b", "b" );
 
         assertEquals( -1, atav1.compareTo( atav2 ) );
     }
@@ -239,7 +239,7 @@ public class AttributeTypeAndValueTest
     @Test
     public void testNormalize() throws InvalidNameException
     {
-        AttributeTypeAndValue atav = new AttributeTypeAndValue( " A ", " A ", "a", "a" );
+        AVA atav = new AVA( " A ", " A ", "a", "a" );
 
         assertEquals( "a=a", atav.normalize() );
 
@@ -254,7 +254,7 @@ public class AttributeTypeAndValueTest
     @Test
     public void testStringAtavSerialization() throws NamingException, IOException, ClassNotFoundException
     {
-        AttributeTypeAndValue atav = new AttributeTypeAndValue( "cn", "CN", "test", "Test" );
+        AVA atav = new AVA( "cn", "CN", "test", "Test" );
 
         atav.normalize();
 
@@ -268,7 +268,7 @@ public class AttributeTypeAndValueTest
         byte[] data = baos.toByteArray();
         in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        AttributeTypeAndValue atav2 = (AttributeTypeAndValue)in.readObject();
+        AVA atav2 = (AVA)in.readObject();
 
         assertEquals( atav, atav2 );
     }
@@ -280,7 +280,7 @@ public class AttributeTypeAndValueTest
         byte[] upValue = StringTools.getBytesUtf8( "  Test  " );
         byte[] normValue = StringTools.getBytesUtf8( "Test" );
 
-        AttributeTypeAndValue atav = new AttributeTypeAndValue( "cn", "CN", upValue, normValue );
+        AVA atav = new AVA( "cn", "CN", upValue, normValue );
 
         atav.normalize();
 
@@ -294,7 +294,7 @@ public class AttributeTypeAndValueTest
         byte[] data = baos.toByteArray();
         in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        AttributeTypeAndValue atav2 = (AttributeTypeAndValue)in.readObject();
+        AVA atav2 = (AVA)in.readObject();
 
         assertEquals( atav, atav2 );
     }
@@ -306,7 +306,7 @@ public class AttributeTypeAndValueTest
     @Test
     public void testNullAtavSerialization() throws NamingException, IOException, ClassNotFoundException
     {
-        AttributeTypeAndValue atav = new AttributeTypeAndValue();
+        AVA atav = new AVA();
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
@@ -326,7 +326,7 @@ public class AttributeTypeAndValueTest
     @Test
     public void testNullNormValueSerialization() throws NamingException, IOException, ClassNotFoundException
     {
-        AttributeTypeAndValue atav = new AttributeTypeAndValue( "CN", "cn", "test", (String)null );
+        AVA atav = new AVA( "CN", "cn", "test", (String)null );
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
@@ -347,7 +347,7 @@ public class AttributeTypeAndValueTest
     @Test
     public void testNullUpValueSerialization() throws NamingException, IOException, ClassNotFoundException
     {
-        AttributeTypeAndValue atav = new AttributeTypeAndValue( "CN", "cn", null, "test" );
+        AVA atav = new AVA( "CN", "cn", null, "test" );
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
@@ -368,7 +368,7 @@ public class AttributeTypeAndValueTest
     @Test
     public void testEmptyNormValueSerialization() throws NamingException, IOException, ClassNotFoundException
     {
-        AttributeTypeAndValue atav = new AttributeTypeAndValue( "CN", "cn", "test", "" );
+        AVA atav = new AVA( "CN", "cn", "test", "" );
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
@@ -380,7 +380,7 @@ public class AttributeTypeAndValueTest
         byte[] data = baos.toByteArray();
         in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        AttributeTypeAndValue atav2 = (AttributeTypeAndValue)in.readObject();
+        AVA atav2 = (AVA)in.readObject();
 
         assertEquals( atav, atav2 );
     }
@@ -389,7 +389,7 @@ public class AttributeTypeAndValueTest
     @Test
     public void testEmptyUpValueSerialization() throws NamingException, IOException, ClassNotFoundException
     {
-        AttributeTypeAndValue atav = new AttributeTypeAndValue( "CN", "cn", "", "test" );
+        AVA atav = new AVA( "CN", "cn", "", "test" );
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
@@ -401,7 +401,7 @@ public class AttributeTypeAndValueTest
         byte[] data = baos.toByteArray();
         in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        AttributeTypeAndValue atav2 = (AttributeTypeAndValue)in.readObject();
+        AVA atav2 = (AVA)in.readObject();
 
         assertEquals( atav, atav2 );
     }
@@ -413,14 +413,14 @@ public class AttributeTypeAndValueTest
     @Test
     public void testStringAtavStaticSerialization() throws NamingException, IOException, ClassNotFoundException
     {
-        AttributeTypeAndValue atav = new AttributeTypeAndValue( "cn", "CN", "test", "Test" );
+        AVA atav = new AVA( "cn", "CN", "test", "Test" );
 
         atav.normalize();
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
 
-        AtavSerializer.serialize( atav, out );
+        AVASerializer.serialize( atav, out );
         out.flush();
 
         ObjectInputStream in = null;
@@ -428,7 +428,7 @@ public class AttributeTypeAndValueTest
         byte[] data = baos.toByteArray();
         in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        AttributeTypeAndValue atav2 = AtavSerializer.deserialize( in );
+        AVA atav2 = AVASerializer.deserialize( in );
 
         assertEquals( atav, atav2 );
     }
@@ -440,14 +440,14 @@ public class AttributeTypeAndValueTest
         byte[] upValue = StringTools.getBytesUtf8( "  Test  " );
         byte[] normValue = StringTools.getBytesUtf8( "Test" );
 
-        AttributeTypeAndValue atav = new AttributeTypeAndValue( "cn", "CN", upValue, normValue );
+        AVA atav = new AVA( "cn", "CN", upValue, normValue );
 
         atav.normalize();
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
 
-        AtavSerializer.serialize( atav, out );
+        AVASerializer.serialize( atav, out );
         out.flush();
 
         ObjectInputStream in = null;
@@ -455,7 +455,7 @@ public class AttributeTypeAndValueTest
         byte[] data = baos.toByteArray();
         in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        AttributeTypeAndValue atav2 = AtavSerializer.deserialize( in );
+        AVA atav2 = AVASerializer.deserialize( in );
 
         assertEquals( atav, atav2 );
     }
@@ -467,14 +467,14 @@ public class AttributeTypeAndValueTest
     @Test
     public void testNullAtavStaticSerialization() throws NamingException, IOException, ClassNotFoundException
     {
-        AttributeTypeAndValue atav = new AttributeTypeAndValue();
+        AVA atav = new AVA();
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
 
         try
         {
-            AtavSerializer.serialize( atav, out );
+            AVASerializer.serialize( atav, out );
             fail();
         }
         catch ( IOException ioe )
@@ -487,14 +487,14 @@ public class AttributeTypeAndValueTest
     @Test
     public void testNullNormValueStaticSerialization() throws NamingException, IOException, ClassNotFoundException
     {
-        AttributeTypeAndValue atav = new AttributeTypeAndValue( "CN", "cn", "test", (String)null );
+        AVA atav = new AVA( "CN", "cn", "test", (String)null );
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
 
         try
         {
-            AtavSerializer.serialize( atav, out );
+            AVASerializer.serialize( atav, out );
             fail();
         }
         catch ( IOException ioe )
@@ -508,14 +508,14 @@ public class AttributeTypeAndValueTest
     @Test
     public void testNullUpValueStaticSerialization() throws NamingException, IOException, ClassNotFoundException
     {
-        AttributeTypeAndValue atav = new AttributeTypeAndValue( "CN", "cn", null, "test" );
+        AVA atav = new AVA( "CN", "cn", null, "test" );
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
 
         try
         {
-            AtavSerializer.serialize( atav, out );
+            AVASerializer.serialize( atav, out );
             fail();
         }
         catch ( IOException ioe )
@@ -529,12 +529,12 @@ public class AttributeTypeAndValueTest
     @Test
     public void testEmptyNormValueStaticSerialization() throws NamingException, IOException, ClassNotFoundException
     {
-        AttributeTypeAndValue atav = new AttributeTypeAndValue( "CN", "cn", "test", "" );
+        AVA atav = new AVA( "CN", "cn", "test", "" );
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
 
-        AtavSerializer.serialize( atav, out );
+        AVASerializer.serialize( atav, out );
         out.flush();
 
         ObjectInputStream in = null;
@@ -542,7 +542,7 @@ public class AttributeTypeAndValueTest
         byte[] data = baos.toByteArray();
         in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        AttributeTypeAndValue atav2 = AtavSerializer.deserialize( in );
+        AVA atav2 = AVASerializer.deserialize( in );
 
         assertEquals( atav, atav2 );
     }
@@ -551,12 +551,12 @@ public class AttributeTypeAndValueTest
     @Test
     public void testEmptyUpValueStaticSerialization() throws NamingException, IOException, ClassNotFoundException
     {
-        AttributeTypeAndValue atav = new AttributeTypeAndValue( "CN", "cn", "", "test" );
+        AVA atav = new AVA( "CN", "cn", "", "test" );
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
 
-        AtavSerializer.serialize( atav, out );
+        AVASerializer.serialize( atav, out );
         out.flush();
 
         ObjectInputStream in = null;
@@ -564,7 +564,7 @@ public class AttributeTypeAndValueTest
         byte[] data = baos.toByteArray();
         in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        AttributeTypeAndValue atav2 = AtavSerializer.deserialize( in );
+        AVA atav2 = AVASerializer.deserialize( in );
 
         assertEquals( atav, atav2 );
     }

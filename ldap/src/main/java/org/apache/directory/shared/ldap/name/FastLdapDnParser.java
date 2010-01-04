@@ -176,7 +176,7 @@ public enum FastLdapDnParser implements NameParser
 
         String upName = name.substring( rdnStart, pos.start );
 
-        AttributeTypeAndValue ava = new AttributeTypeAndValue( type, type, new ClientStringValue( upValue ),
+        AVA ava = new AVA( type, type, new ClientStringValue( upValue ),
             new ClientStringValue( value ), upName );
         rdn.addAttributeTypeAndValue( ava );
 

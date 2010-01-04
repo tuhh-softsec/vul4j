@@ -3398,14 +3398,14 @@ public class LdapDNTest
         // antlr parser: string value with trailing spaces
         LdapDN dn1 = new LdapDN( " cn = Amos\\,Tori , ou=system " );
         assertEquals( " cn = Amos\\,Tori ", dn1.getRdn().getUpName() );
-        AttributeTypeAndValue atav1 = dn1.getRdn().getAtav();
+        AVA atav1 = dn1.getRdn().getAtav();
         assertEquals( "cn", atav1.getUpType() );
         assertEquals( "Amos,Tori", atav1.getUpValue().getString() );
 
         // antlr parser: hexstring with trailing spaces
         LdapDN dn3 = new LdapDN( " cn = #414243 , ou=system " );
         assertEquals( " cn = #414243 ", dn3.getRdn().getUpName() );
-        AttributeTypeAndValue atav3 = dn3.getRdn().getAtav();
+        AVA atav3 = dn3.getRdn().getAtav();
         assertEquals( "cn", atav3.getUpType() );
         assertEquals( "ABC", atav3.getUpValue().getString() );
         assertTrue( Arrays.equals( StringTools.getBytesUtf8( "ABC" ),atav3.getNormValue().getBytes() ) );
@@ -3413,7 +3413,7 @@ public class LdapDNTest
         // antlr parser: 
         LdapDN dn4 = new LdapDN( " cn = \\41\\42\\43 , ou=system " );
         assertEquals( " cn = \\41\\42\\43 ", dn4.getRdn().getUpName() );
-        AttributeTypeAndValue atav4 = dn4.getRdn().getAtav();
+        AVA atav4 = dn4.getRdn().getAtav();
         assertEquals( "cn", atav4.getUpType() );
         assertEquals( "ABC", atav4.getUpValue().getString() );
         assertEquals( "ABC", atav4.getNormValue().getString() );
@@ -3421,7 +3421,7 @@ public class LdapDNTest
         // antlr parser: quotestring with trailing spaces
         LdapDN dn5 = new LdapDN( " cn = \"ABC\" , ou=system " );
         assertEquals( " cn = \"ABC\" ", dn5.getRdn().getUpName() );
-        AttributeTypeAndValue atav5 = dn5.getRdn().getAtav();
+        AVA atav5 = dn5.getRdn().getAtav();
         assertEquals( "cn", atav5.getUpType() );
         assertEquals( "ABC", atav5.getUpValue().getString() );
         assertEquals( "ABC", atav5.getNormValue().getString() );
@@ -3429,7 +3429,7 @@ public class LdapDNTest
         // fast parser: string value with trailing spaces 
         LdapDN dn2 = new LdapDN( " cn = Amos Tori , ou=system " );
         assertEquals( " cn = Amos Tori ", dn2.getRdn().getUpName() );
-        AttributeTypeAndValue atav2 = dn2.getRdn().getAtav();
+        AVA atav2 = dn2.getRdn().getAtav();
         assertEquals( "cn", atav2.getUpType() );
         assertEquals( "Amos Tori", atav2.getUpValue().getString() );
     }
@@ -3523,7 +3523,7 @@ public class LdapDNTest
         assertEquals( "Example",rdn.getUpValue() );
         assertEquals( "  ou  =  Example ", rdn.getUpName() );
         
-        AttributeTypeAndValue atav = rdn.getAtav();
+        AVA atav = rdn.getAtav();
         
         assertEquals( "2.5.4.11=example", atav.getNormName() );
         assertEquals( "2.5.4.11", atav.getNormType() );
@@ -3554,7 +3554,7 @@ public class LdapDNTest
         assertEquals( "  ou  =  Example + ou = TEST ", rdn.getUpName() );
         
         // The first ATAV
-        AttributeTypeAndValue atav = rdn.getAtav();
+        AVA atav = rdn.getAtav();
         
         assertEquals( "2.5.4.11=example", atav.getNormName() );
         assertEquals( "2.5.4.11", atav.getNormType() );
@@ -3568,7 +3568,7 @@ public class LdapDNTest
         assertEquals( 2, rdn.getNbAtavs() );
         
         // The second ATAV
-        for ( AttributeTypeAndValue ava : rdn )
+        for ( AVA ava : rdn )
         {
             if ( "example".equals( atav.getNormValue().get() ) )
             {
@@ -3604,7 +3604,7 @@ public class LdapDNTest
         assertEquals( "Ex+mple",rdn.getUpValue() );
         assertEquals( "  ou  =  Ex\\+mple ", rdn.getUpName() );
         
-        AttributeTypeAndValue atav = rdn.getAtav();
+        AVA atav = rdn.getAtav();
         
         assertEquals( "2.5.4.11=ex\\+mple", atav.getNormName() );
         assertEquals( "2.5.4.11", atav.getNormType() );
@@ -3639,7 +3639,7 @@ public class LdapDNTest
         assertEquals( "Ex+mple",rdn.getNormValue() );
         
         // The first ATAV
-        AttributeTypeAndValue atav = rdn.getAtav();
+        AVA atav = rdn.getAtav();
         
         assertEquals( "  OU  =  Ex\\+mple ", atav.getUpName() );
         assertEquals( "ou=Ex\\+mple", atav.getNormName() );
@@ -3653,7 +3653,7 @@ public class LdapDNTest
         assertEquals( 2, rdn.getNbAtavs() );
         
         // The second ATAV
-        for ( AttributeTypeAndValue ava : rdn )
+        for ( AVA ava : rdn )
         {
             if ( "Ex+mple".equals( ava.getNormValue().get() ) )
             {
@@ -3704,7 +3704,7 @@ public class LdapDNTest
         assertEquals( 2, rdn.getNbAtavs() );
         
         // The second ATAV
-        for ( AttributeTypeAndValue ava : rdn )
+        for ( AVA ava : rdn )
         {
             if ( "ex+mple".equals( ava.getNormValue().get() ) )
             {

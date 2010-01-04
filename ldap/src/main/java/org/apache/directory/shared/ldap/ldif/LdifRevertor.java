@@ -34,7 +34,7 @@ import org.apache.directory.shared.ldap.entry.Modification;
 import org.apache.directory.shared.ldap.entry.ModificationOperation;
 import org.apache.directory.shared.ldap.entry.client.ClientModification;
 import org.apache.directory.shared.ldap.entry.client.DefaultClientAttribute;
-import org.apache.directory.shared.ldap.name.AttributeTypeAndValue;
+import org.apache.directory.shared.ldap.name.AVA;
 import org.apache.directory.shared.ldap.name.LdapDN;
 import org.apache.directory.shared.ldap.name.Rdn;
 import org.apache.directory.shared.ldap.util.AttributeUtils;
@@ -341,7 +341,7 @@ public class LdifRevertor
         // been renamed
         restored.setDn( parentDn );
 
-        for ( AttributeTypeAndValue ava:newRdn )
+        for ( AVA ava:newRdn )
         {
             // No need to add something which has already been added
             // in the previous modification
@@ -485,7 +485,7 @@ public class LdifRevertor
                 
                 // Does it overlap ?
                 // Is the new RDN AVAs contained into the entry?
-                for ( AttributeTypeAndValue atav:newRdn )
+                for ( AVA atav:newRdn )
                 {
                     if ( atav.equals( oldRdn.getAtav() ) )
                     {
@@ -558,17 +558,17 @@ public class LdifRevertor
                 boolean overlapping = false;
                 boolean existInEntry = false;
                 
-                Set<AttributeTypeAndValue> oldAtavs = new HashSet<AttributeTypeAndValue>();
+                Set<AVA> oldAtavs = new HashSet<AVA>();
 
                 // We first build a set with all the oldRDN ATAVs 
-                for ( AttributeTypeAndValue atav:oldRdn )
+                for ( AVA atav:oldRdn )
                 {
                     oldAtavs.add( atav );
                 }
                 
                 // Now we loop on the newRDN ATAVs to evaluate if the Rdns are overlaping
                 // and if the newRdn ATAVs are present in the entry
-                for ( AttributeTypeAndValue atav:newRdn )
+                for ( AVA atav:newRdn )
                 {
                     if ( oldAtavs.contains( atav ) )
                     {

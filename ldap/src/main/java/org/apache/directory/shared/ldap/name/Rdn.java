@@ -108,7 +108,7 @@ import org.slf4j.LoggerFactory;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public class Rdn implements Cloneable, Comparable, Externalizable, Iterable<AttributeTypeAndValue>
+public class Rdn implements Cloneable, Comparable, Externalizable, Iterable<AVA>
 {
     /** The LoggerFactory used by this class */
     protected static final Logger LOG = LoggerFactory.getLogger( Rdn.class );
@@ -141,7 +141,7 @@ public class Rdn implements Cloneable, Comparable, Externalizable, Iterable<Attr
      * because we want the ATAVs to be sorted. An atav may contain more than one
      * value. In this case, the values are String stored in a List.
      */
-    private Set<AttributeTypeAndValue> atavs = null;
+    private Set<AVA> atavs = null;
 
     /**
      * We also keep a set of types, in order to use manipulations. A type is
@@ -163,7 +163,7 @@ public class Rdn implements Cloneable, Comparable, Externalizable, Iterable<Attr
      * case where we only have a single type=value. This will be 99.99% the
      * case. This avoids the creation of a HashMap.
      */
-    protected AttributeTypeAndValue atav = null;
+    protected AVA atav = null;
 
     /**
      * The number of atavs. We store this number here to avoid complex
@@ -313,17 +313,17 @@ public class Rdn implements Cloneable, Comparable, Externalizable, Iterable<Attr
                 return;
 
             case 1:
-                this.atav = ( AttributeTypeAndValue ) rdn.atav.clone();
+                this.atav = ( AVA ) rdn.atav.clone();
                 return;
 
             default:
                 // We must duplicate the treeSet and the hashMap
-                atavs = new TreeSet<AttributeTypeAndValue>();
+                atavs = new TreeSet<AVA>();
                 atavTypes = new MultiValueMap();
 
-                for ( AttributeTypeAndValue currentAtav : rdn.atavs )
+                for ( AVA currentAtav : rdn.atavs )
                 {
-                    atavs.add( ( AttributeTypeAndValue ) currentAtav.clone() );
+                    atavs.add( ( AVA ) currentAtav.clone() );
                     atavTypes.put( currentAtav.getNormType(), currentAtav );
                 }
 
@@ -370,7 +370,7 @@ public class Rdn implements Cloneable, Comparable, Externalizable, Iterable<Attr
 
                 boolean isFirst = true;
 
-                for ( AttributeTypeAndValue ata : atavs )
+                for ( AVA ata : atavs )
                 {
                     if ( isFirst )
                     {
@@ -438,7 +438,7 @@ public class Rdn implements Cloneable, Comparable, Externalizable, Iterable<Attr
         {
             case 0:
                 // This is the first AttributeTypeAndValue. Just stores it.
-                atav = new AttributeTypeAndValue( upType, type, upValue, normalizedValue );
+                atav = new AVA( upType, type, upValue, normalizedValue );
                 nbAtavs = 1;
                 atavType = normalizedType;
                 return;
@@ -447,7 +447,7 @@ public class Rdn implements Cloneable, Comparable, Externalizable, Iterable<Attr
                 // We already have an atav. We have to put it in the HashMap
                 // before adding a new one.
                 // First, create the HashMap,
-                atavs = new TreeSet<AttributeTypeAndValue>();
+                atavs = new TreeSet<AVA>();
 
                 // and store the existing AttributeTypeAndValue into it.
                 atavs.add( atav );
@@ -461,7 +461,7 @@ public class Rdn implements Cloneable, Comparable, Externalizable, Iterable<Attr
 
             default:
                 // add a new AttributeTypeAndValue
-                AttributeTypeAndValue newAtav = new AttributeTypeAndValue( upType, type, upValue, normalizedValue );
+                AVA newAtav = new AVA( upType, type, upValue, normalizedValue );
                 atavs.add( newAtav );
                 atavTypes.put( normalizedType, newAtav );
 
@@ -482,7 +482,7 @@ public class Rdn implements Cloneable, Comparable, Externalizable, Iterable<Attr
     // from outside this package.
     @SuppressWarnings(
         { "unchecked" })
-    /* Unspecified protection */void addAttributeTypeAndValue( AttributeTypeAndValue value )
+    /* Unspecified protection */void addAttributeTypeAndValue( AVA value )
     {
         String normalizedType = value.getNormType();
 
@@ -499,7 +499,7 @@ public class Rdn implements Cloneable, Comparable, Externalizable, Iterable<Attr
                 // We already have an atav. We have to put it in the HashMap
                 // before adding a new one.
                 // First, create the HashMap,
-                atavs = new TreeSet<AttributeTypeAndValue>();
+                atavs = new TreeSet<AVA>();
 
                 // and store the existing AttributeTypeAndValue into it.
                 atavs.add( atav );
@@ -570,11 +570,11 @@ public class Rdn implements Cloneable, Comparable, Externalizable, Iterable<Attr
             default:
                 if ( atavTypes.containsKey( normalizedType ) )
                 {
-                    Collection<AttributeTypeAndValue> atavList = ( Collection<AttributeTypeAndValue> ) atavTypes.get( normalizedType );
+                    Collection<AVA> atavList = ( Collection<AVA> ) atavTypes.get( normalizedType );
                     StringBuffer sb = new StringBuffer();
                     boolean isFirst = true;
 
-                    for ( AttributeTypeAndValue elem : atavList )
+                    for ( AVA elem : atavList )
                     {
                         if ( isFirst )
                         {
@@ -627,7 +627,7 @@ public class Rdn implements Cloneable, Comparable, Externalizable, Iterable<Attr
      *            The type of the NameArgument to be returned
      * @return The AttributeTypeAndValue, of null if none is found.
      */
-    public AttributeTypeAndValue getAttributeTypeAndValue( String type )
+    public AVA getAttributeTypeAndValue( String type )
     {
         // First, let's normalize the type
         String normalizedType = StringTools.lowerCaseAscii( StringTools.trim( type ) );
@@ -648,7 +648,7 @@ public class Rdn implements Cloneable, Comparable, Externalizable, Iterable<Attr
             default:
                 if ( atavTypes.containsKey( normalizedType ) )
                 {
-                    Collection<AttributeTypeAndValue> atavList = ( Collection<AttributeTypeAndValue> ) atavTypes.get( normalizedType );
+                    Collection<AVA> atavList = ( Collection<AVA> ) atavTypes.get( normalizedType );
                     return atavList.iterator().next();
                 }
 
@@ -664,11 +664,11 @@ public class Rdn implements Cloneable, Comparable, Externalizable, Iterable<Attr
      *
      * @return an iterator of the components of this RDN, each an AttributeTypeAndValue
      */
-    public Iterator<AttributeTypeAndValue> iterator()
+    public Iterator<AVA> iterator()
     {
         if ( nbAtavs == 1 || nbAtavs == 0 )
         {
-            return new Iterator<AttributeTypeAndValue>()
+            return new Iterator<AVA>()
             {
                 private boolean hasMoreElement = nbAtavs == 1;
 
@@ -679,9 +679,9 @@ public class Rdn implements Cloneable, Comparable, Externalizable, Iterable<Attr
                 }
 
 
-                public AttributeTypeAndValue next()
+                public AVA next()
                 {
-                    AttributeTypeAndValue obj = atav;
+                    AVA obj = atav;
                     hasMoreElement = false;
                     return obj;
                 }
@@ -719,18 +719,18 @@ public class Rdn implements Cloneable, Comparable, Externalizable, Iterable<Attr
                     break;
 
                 case 1:
-                    rdn.atav = ( AttributeTypeAndValue ) this.atav.clone();
+                    rdn.atav = ( AVA ) this.atav.clone();
                     rdn.atavTypes = atavTypes;
                     break;
 
                 default:
                     // We must duplicate the treeSet and the hashMap
                     rdn.atavTypes = new MultiValueMap();
-                    rdn.atavs = new TreeSet<AttributeTypeAndValue>();
+                    rdn.atavs = new TreeSet<AVA>();
 
-                    for ( AttributeTypeAndValue currentAtav : this.atavs )
+                    for ( AVA currentAtav : this.atavs )
                     {
-                        rdn.atavs.add( ( AttributeTypeAndValue ) currentAtav.clone() );
+                        rdn.atavs.add( ( AVA ) currentAtav.clone() );
                         rdn.atavTypes.put( currentAtav.getNormType(), currentAtav );
                     }
 
@@ -792,8 +792,8 @@ public class Rdn implements Cloneable, Comparable, Externalizable, Iterable<Attr
 
                     // the types are already normalized and sorted in the atavs TreeSet
                     // so we could compare the 1st with the 1st, then the 2nd with the 2nd, etc.
-                    Iterator<AttributeTypeAndValue> localIterator = atavs.iterator();
-                    Iterator<AttributeTypeAndValue> paramIterator = rdn.atavs.iterator();
+                    Iterator<AVA> localIterator = atavs.iterator();
+                    Iterator<AVA> paramIterator = rdn.atavs.iterator();
 
                     while ( localIterator.hasNext() || paramIterator.hasNext() )
                     {
@@ -806,8 +806,8 @@ public class Rdn implements Cloneable, Comparable, Externalizable, Iterable<Attr
                             return INFERIOR;
                         }
 
-                        AttributeTypeAndValue localAtav = localIterator.next();
-                        AttributeTypeAndValue paramAtav = paramIterator.next();
+                        AVA localAtav = localIterator.next();
+                        AVA paramAtav = paramIterator.next();
                         int result = localAtav.compareTo( paramAtav );
                         if ( result != EQUAL )
                         {
@@ -877,7 +877,7 @@ public class Rdn implements Cloneable, Comparable, Externalizable, Iterable<Attr
      *
      * @return The first AttributeTypeAndValue of this RDN
      */
-    public AttributeTypeAndValue getAtav()
+    public AVA getAtav()
     {
         switch ( nbAtavs )
         {
@@ -888,7 +888,7 @@ public class Rdn implements Cloneable, Comparable, Externalizable, Iterable<Attr
                 return atav;
 
             default:
-                return ( ( TreeSet<AttributeTypeAndValue> ) atavs ).first();
+                return ( ( TreeSet<AVA> ) atavs ).first();
         }
     }
 
@@ -909,7 +909,7 @@ public class Rdn implements Cloneable, Comparable, Externalizable, Iterable<Attr
                 return atav.getUpType();
 
             default:
-                return ( ( TreeSet<AttributeTypeAndValue> ) atavs ).first().getUpType();
+                return ( ( TreeSet<AVA> ) atavs ).first().getUpType();
         }
     }
 
@@ -930,7 +930,7 @@ public class Rdn implements Cloneable, Comparable, Externalizable, Iterable<Attr
                 return atav.getNormType();
 
             default:
-                return ( ( TreeSet<AttributeTypeAndValue> ) atavs ).first().getNormType();
+                return ( ( TreeSet<AVA> ) atavs ).first().getNormType();
         }
     }
 
@@ -951,7 +951,7 @@ public class Rdn implements Cloneable, Comparable, Externalizable, Iterable<Attr
                 return atav.getUpValue().getString();
 
             default:
-                return ( ( TreeSet<AttributeTypeAndValue> ) atavs ).first().getUpValue().getString();
+                return ( ( TreeSet<AVA> ) atavs ).first().getUpValue().getString();
         }
     }
 
@@ -972,7 +972,7 @@ public class Rdn implements Cloneable, Comparable, Externalizable, Iterable<Attr
                 return atav.getNormValue().getString();
 
             default:
-                return ( ( TreeSet<AttributeTypeAndValue> ) atavs ).first().getNormValue().getString();
+                return ( ( TreeSet<AVA> ) atavs ).first().getNormValue().getString();
         }
     }
 
@@ -1344,7 +1344,7 @@ public class Rdn implements Cloneable, Comparable, Externalizable, Iterable<Attr
             default:
                 // We have more than one AttributeTypeAndValue
 
-                for ( AttributeTypeAndValue ata : atavs )
+                for ( AVA ata : atavs )
                 {
                     result = result * 17 + ata.hashCode();
                 }
@@ -1404,7 +1404,7 @@ public class Rdn implements Cloneable, Comparable, Externalizable, Iterable<Attr
                 break;
 
             default:
-                for ( AttributeTypeAndValue value : atavs )
+                for ( AVA value : atavs )
                 {
                     out.writeObject( value );
                 }
@@ -1451,19 +1451,19 @@ public class Rdn implements Cloneable, Comparable, Externalizable, Iterable<Attr
                 break;
 
             case 1:
-                atav = ( AttributeTypeAndValue ) in.readObject();
+                atav = ( AVA ) in.readObject();
                 atavType = atav.getNormType();
 
                 break;
 
             default:
-                atavs = new TreeSet<AttributeTypeAndValue>();
+                atavs = new TreeSet<AVA>();
 
                 atavTypes = new MultiValueMap();
 
                 for ( int i = 0; i < nbAtavs; i++ )
                 {
-                    AttributeTypeAndValue value = ( AttributeTypeAndValue ) in.readObject();
+                    AVA value = ( AVA ) in.readObject();
                     atavs.add( value );
                     atavTypes.put( value.getNormType(), value );
                 }

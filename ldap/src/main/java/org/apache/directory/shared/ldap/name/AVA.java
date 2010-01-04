@@ -52,7 +52,7 @@ import org.slf4j.LoggerFactory;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public class AttributeTypeAndValue implements Cloneable, Comparable, Externalizable
+public class AVA implements Cloneable, Comparable, Externalizable
 {
     /**
      * Declares the Serial Version Uid.
@@ -64,7 +64,7 @@ public class AttributeTypeAndValue implements Cloneable, Comparable, Externaliza
     private static final long serialVersionUID = 1L;
 
     /** The LoggerFactory used by this class */
-    private static Logger LOG = LoggerFactory.getLogger( AttributeTypeAndValue.class );
+    private static Logger LOG = LoggerFactory.getLogger( AVA.class );
 
     /** The normalized Name type */
     private String normType;
@@ -97,7 +97,7 @@ public class AttributeTypeAndValue implements Cloneable, Comparable, Externaliza
     /**
      * Construct an empty AttributeTypeAndValue
      */
-    public AttributeTypeAndValue()
+    public AVA()
     {
         normType = null;
         upType = null;
@@ -122,7 +122,7 @@ public class AttributeTypeAndValue implements Cloneable, Comparable, Externaliza
      * @param upValue The User Provided value
      * @param normValue The normalized value
      */
-    public AttributeTypeAndValue( String upType, String normType, String upValue, String normValue ) throws InvalidNameException
+    public AVA( String upType, String normType, String upValue, String normValue ) throws InvalidNameException
     {
         this( upType, normType, new ClientStringValue( upValue ), new ClientStringValue( normValue ) );
     }
@@ -143,7 +143,7 @@ public class AttributeTypeAndValue implements Cloneable, Comparable, Externaliza
      * @param upValue The User Provided value
      * @param normValue The normalized value
      */
-    public AttributeTypeAndValue( String upType, String normType, byte[] upValue, byte[] normValue ) throws InvalidNameException
+    public AVA( String upType, String normType, byte[] upValue, byte[] normValue ) throws InvalidNameException
     {
         this( upType, normType, new ClientBinaryValue( upValue ), new ClientBinaryValue( normValue ) );
     }
@@ -162,7 +162,7 @@ public class AttributeTypeAndValue implements Cloneable, Comparable, Externaliza
      * @param upValue The User Provided value
      * @param normValue The normalized value
      */
-    public AttributeTypeAndValue( String upType, String normType, Value<?> upValue, Value<?> normValue ) throws InvalidNameException
+    public AVA( String upType, String normType, Value<?> upValue, Value<?> normValue ) throws InvalidNameException
     {
         String upTypeTrimmed = StringTools.trim( upType );
         String normTypeTrimmed = StringTools.trim( normType );
@@ -218,7 +218,7 @@ public class AttributeTypeAndValue implements Cloneable, Comparable, Externaliza
      * @param normValue The normalized value
      * @param upName The User Provided name (may be escaped)
      */
-    public AttributeTypeAndValue( String upType, String normType, Value<?> upValue, Value<?> normValue, String upName )
+    public AVA( String upType, String normType, Value<?> upValue, Value<?> normValue, String upName )
         throws InvalidNameException
     {
         String upTypeTrimmed = StringTools.trim( upType );
@@ -277,7 +277,7 @@ public class AttributeTypeAndValue implements Cloneable, Comparable, Externaliza
      * @param length Length of this ATAV
      * @param upName The user provided name
      */
-    /**No protection*/ AttributeTypeAndValue( 
+    AVA( 
                             String upType, 
                             String normType, 
                             Value<?> upValue, 
@@ -516,9 +516,9 @@ public class AttributeTypeAndValue implements Cloneable, Comparable, Externaliza
      */
     public int compareTo( Object object )
     {
-        if ( object instanceof AttributeTypeAndValue )
+        if ( object instanceof AVA )
         {
-            AttributeTypeAndValue nc = ( AttributeTypeAndValue ) object;
+            AVA nc = ( AVA ) object;
 
             int res = compareType( normType, nc.normType );
 
@@ -550,9 +550,9 @@ public class AttributeTypeAndValue implements Cloneable, Comparable, Externaliza
      */
     public int compareToIgnoreCase( Object object )
     {
-        if ( object instanceof AttributeTypeAndValue )
+        if ( object instanceof AVA )
         {
-            AttributeTypeAndValue nc = ( AttributeTypeAndValue ) object;
+            AVA nc = ( AVA ) object;
 
             int res = compareType( normType, nc.normType );
 
@@ -795,12 +795,12 @@ public class AttributeTypeAndValue implements Cloneable, Comparable, Externaliza
             return true;
         }
         
-        if ( !( obj instanceof AttributeTypeAndValue ) )
+        if ( !( obj instanceof AVA ) )
         {
             return false;
         }
         
-        AttributeTypeAndValue instance = (AttributeTypeAndValue)obj;
+        AVA instance = (AVA)obj;
      
         // Compare the type
         if ( normType == null )
@@ -927,7 +927,7 @@ public class AttributeTypeAndValue implements Cloneable, Comparable, Externaliza
      * @see Externalizable#readExternal(ObjectInput)
      * 
      * We read back the data to create a new ATAV. The structure 
-     * read is exposed in the {@link AttributeTypeAndValue#writeExternal(ObjectOutput)} 
+     * read is exposed in the {@link AVA#writeExternal(ObjectOutput)} 
      * method<p>
      */
     public void readExternal( ObjectInput in ) throws IOException, ClassNotFoundException

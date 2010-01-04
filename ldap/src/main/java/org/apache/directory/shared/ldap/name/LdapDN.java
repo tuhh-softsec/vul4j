@@ -1444,7 +1444,7 @@ public class LdapDN implements Name, Externalizable
     }
 
 
-    private static AttributeTypeAndValue atavOidToName( AttributeTypeAndValue atav, Map<String, OidNormalizer> oidsMap )
+    private static AVA atavOidToName( AVA atav, Map<String, OidNormalizer> oidsMap )
         throws InvalidNameException, NamingException
     {
         String type = StringTools.trim( atav.getNormType() );
@@ -1466,7 +1466,7 @@ public class LdapDN implements Name, Externalizable
 
                 if ( oidNormalizer != null )
                 {
-                    return new AttributeTypeAndValue( 
+                    return new AVA( 
                         atav.getUpType(), 
                         oidNormalizer.getAttributeTypeOid(), 
                         atav.getUpValue(),
@@ -1507,7 +1507,7 @@ public class LdapDN implements Name, Externalizable
         String normStringValue = DefaultStringNormalizer.normalizeString( ( String ) upValue );
         String normValue = oidNormalizer.getNormalizer().normalize( normStringValue );
 
-        AttributeTypeAndValue atav = new AttributeTypeAndValue( upType, oidNormalizer.getAttributeTypeOid(),
+        AVA atav = new AVA( upType, oidNormalizer.getAttributeTypeOid(),
             new ClientStringValue( upValue ), new ClientStringValue( normValue ), upName );
         rdn.addAttributeTypeAndValue( atav );
     }
@@ -1532,9 +1532,9 @@ public class LdapDN implements Name, Externalizable
             Rdn rdnCopy = ( Rdn ) rdn.clone();
             rdn.clear();
 
-            for ( AttributeTypeAndValue val:rdnCopy )
+            for ( AVA val:rdnCopy )
             {
-                AttributeTypeAndValue newAtav = atavOidToName( val, oidsMap );
+                AVA newAtav = atavOidToName( val, oidsMap );
                 rdn.addAttributeTypeAndValue( newAtav );
             }
 

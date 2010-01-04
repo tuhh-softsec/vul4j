@@ -844,7 +844,7 @@ public class RdnTest
     public void testMultiValuedIterator() throws InvalidNameException
     {
         Rdn rdn = new Rdn( "cn=Kate Bush+sn=Bush" );
-        Iterator<AttributeTypeAndValue> iterator = rdn.iterator();
+        Iterator<AVA> iterator = rdn.iterator();
         assertNotNull( iterator );
         assertTrue( iterator.hasNext() );
         assertNotNull( iterator.next() );
@@ -858,7 +858,7 @@ public class RdnTest
     public void testSingleValuedIterator() throws InvalidNameException
     {
         Rdn rdn = new Rdn( "cn=Kate Bush" );
-        Iterator<AttributeTypeAndValue> iterator = rdn.iterator();
+        Iterator<AVA> iterator = rdn.iterator();
         assertNotNull( iterator );
         assertTrue( iterator.hasNext() );
         assertNotNull( iterator.next() );
@@ -870,7 +870,7 @@ public class RdnTest
     public void testEmptyIterator()
     {
         Rdn rdn = new Rdn();
-        Iterator<AttributeTypeAndValue> iterator = rdn.iterator();
+        Iterator<AVA> iterator = rdn.iterator();
         assertNotNull( iterator );
         assertFalse( iterator.hasNext() );
     }

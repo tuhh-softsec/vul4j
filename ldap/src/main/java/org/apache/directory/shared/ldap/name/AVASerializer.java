@@ -36,10 +36,10 @@ import org.slf4j.LoggerFactory;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public class AtavSerializer
+public class AVASerializer
 {
     /** The LoggerFactory used by this class */
-    protected static final Logger LOG = LoggerFactory.getLogger( AtavSerializer.class );
+    protected static final Logger LOG = LoggerFactory.getLogger( AVASerializer.class );
 
     /**
      * Serialize an AttributeTypeAndValue object.
@@ -68,7 +68,7 @@ public class AtavSerializer
      * @param out the OutputStream in which the atav will be serialized
      * @throws IOException If we can't serialize the atav
      */
-    public static void serialize( AttributeTypeAndValue atav, ObjectOutput out ) throws IOException
+    public static void serialize( AVA atav, ObjectOutput out ) throws IOException
     {
         if ( StringTools.isEmpty( atav.getUpName() ) || 
              StringTools.isEmpty( atav.getUpType() ) ||
@@ -142,14 +142,14 @@ public class AtavSerializer
      * Deserialize an AttributeTypeAndValue object
      * 
      * We read back the data to create a new ATAV. The structure 
-     * read is exposed in the {@link AttributeTypeAndValue#writeExternal(ObjectOutput)} 
+     * read is exposed in the {@link AVA#writeExternal(ObjectOutput)} 
      * method<p>
      * 
      * @param in the input stream
      * @throws IOException If the input stream can't be read
      * @return The constructed AttributeTypeAndValue
      */
-    public static AttributeTypeAndValue deserialize( ObjectInput in ) throws IOException
+    public static AVA deserialize( ObjectInput in ) throws IOException
     {
         String upName = in.readUTF();
         int start = in.readInt();
@@ -163,8 +163,8 @@ public class AtavSerializer
         {
             Value<String> upValue = new ClientStringValue( in.readUTF() );
             Value<String> normValue = new ClientStringValue( in.readUTF() );
-            AttributeTypeAndValue atav = 
-                new AttributeTypeAndValue( upType, normType, upValue, normValue, start, length, upName );
+            AVA atav = 
+                new AVA( upType, normType, upValue, normValue, start, length, upName );
             
             return atav;
         }
@@ -178,8 +178,8 @@ public class AtavSerializer
             byte[] normValue = new byte[valueLength];
             in.readFully( normValue );
 
-            AttributeTypeAndValue atav = 
-                new AttributeTypeAndValue( upType, normType, 
+            AVA atav = 
+                new AVA( upType, normType, 
                     new ClientBinaryValue( upValue) , 
                     new ClientBinaryValue( normValue ), start, length, upName );
             
