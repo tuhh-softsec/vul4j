@@ -158,8 +158,22 @@ public class FastLdapDnParserTest
     public void testLdapDNSimple() throws NamingException
     {
         NameParser dnParser = FastLdapDnParser.getNameParser();
-        assertEquals( "a = b", ( ( LdapDN ) dnParser.parse( "a = b" ) ).getName() );
-        assertEquals( "a=b", ( ( LdapDN ) dnParser.parse( "a = b" ) ).toString() );
+        LdapDN dn = ( LdapDN ) dnParser.parse( "a = b" );
+
+        assertEquals( "a = b", dn.getName() );
+        assertEquals( "a=b", dn.getNormName() );
+        assertEquals( "a=b", dn.toString() );
+
+        assertEquals( "a = b", dn.getRdn().getUpName() );
+        assertEquals( "a=b", dn.getRdn().getNormName() );
+
+        assertEquals( "a = b", dn.getRdn().getAtav().getUpName() );
+        assertEquals( "a=b", dn.getRdn().getAtav().getNormName() );
+
+        assertEquals( "a", dn.getRdn().getAtav().getUpType() );
+        assertEquals( "a", dn.getRdn().getAtav().getNormType() );
+        assertEquals( "b", dn.getRdn().getAtav().getUpValue().get() );
+        assertEquals( "b", dn.getRdn().getAtav().getNormValue().get() );
     }
 
 
