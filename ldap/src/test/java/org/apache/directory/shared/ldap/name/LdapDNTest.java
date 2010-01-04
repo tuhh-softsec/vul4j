@@ -3443,28 +3443,32 @@ public class LdapDNTest
     public void testTrailingEscapedSpace() throws Exception
     {
         LdapDN dn1 = new LdapDN( "ou=A\\ ,ou=system" );
+        dn1.normalize( oids );
         assertEquals( "ou=A\\ ,ou=system", dn1.getName() );
-        assertEquals( "ou=A ,ou=system", dn1.getNormName() );
-        assertEquals( "ou=A ", dn1.getRdn().getUpName() );
-        assertEquals( "ou=A ", dn1.getRdn().getNormName() );
+        assertEquals( "ou=a,ou=system", dn1.getNormName() );
+        assertEquals( "ou=A\\ ", dn1.getRdn().getUpName() );
+        assertEquals( "ou=a", dn1.getRdn().getNormName() );
 
         LdapDN dn2 = new LdapDN( "ou=A\\20,ou=system" );
+        dn2.normalize( oids );
         assertEquals( "ou=A\\20,ou=system", dn2.getName() );
-        assertEquals( "ou=A\\ ,ou=system", dn2.getNormName() );
+        assertEquals( "ou=a,ou=system", dn2.getNormName() );
         assertEquals( "ou=A\\20", dn2.getRdn().getUpName() );
-        assertEquals( "ou=A\\ ", dn2.getRdn().getNormName() );
+        assertEquals( "ou=a", dn2.getRdn().getNormName() );
         
         LdapDN dn3 = new LdapDN( "ou=\\ ,ou=system" );
+        dn3.normalize( oids );
         assertEquals( "ou=\\ ,ou=system", dn3.getName() );
-        assertEquals( "ou=\\ ,ou=system", dn3.getNormName() );
+        assertEquals( "ou=,ou=system", dn3.getNormName() );
         assertEquals( "ou=\\ ", dn3.getRdn().getUpName() );
-        assertEquals( "ou=\\ ", dn3.getRdn().getNormName() );
+        assertEquals( "ou=", dn3.getRdn().getNormName() );
         
         LdapDN dn4 = new LdapDN( "ou=\\20,ou=system" );
+        dn4.normalize( oids );
         assertEquals( "ou=\\20,ou=system", dn4.getName() );
-        assertEquals( "ou=\\ ,ou=system", dn4.getNormName() );
+        assertEquals( "ou=,ou=system", dn4.getNormName() );
         assertEquals( "ou=\\20", dn4.getRdn().getUpName() );
-        assertEquals( "ou=\\ ", dn4.getRdn().getNormName() );
+        assertEquals( "ou=", dn4.getRdn().getNormName() );
     }
 
 
@@ -3563,7 +3567,7 @@ public class LdapDNTest
         assertEquals( "ou", atav.getUpType() );
         assertEquals( "Example", atav.getUpValue().get() );
         
-        assertEquals( "ou  =  Example ", atav.getUpName() );
+        assertEquals( "  ou  =  Example ", atav.getUpName() );
         
         assertEquals( 2, rdn.getNbAtavs() );
         
@@ -3676,12 +3680,12 @@ public class LdapDNTest
         dn.normalize( oidOids );
         
         assertEquals( "  OU  =  Ex\\+mple + ou = T\\+ST\\  ,  ou  =  COM ", dn.getName() );
-        assertEquals( "2.5.4.11=ex\\+mple+2.5.4.11=t\\+st\\ ,2.5.4.11=com", dn.getNormName() );
+        assertEquals( "2.5.4.11=ex\\+mple+2.5.4.11=t\\+st,2.5.4.11=com", dn.getNormName() );
         
         // Check the first RDN
         rdn = dn.getRdn();
         assertEquals( "  OU  =  Ex\\+mple + ou = T\\+ST\\  ", rdn.getUpName() );
-        assertEquals( "2.5.4.11=ex\\+mple+2.5.4.11=t\\+st\\ ", rdn.getNormName() );
+        assertEquals( "2.5.4.11=ex\\+mple+2.5.4.11=t\\+st", rdn.getNormName() );
 
         assertEquals( "OU", rdn.getUpType() );
         assertEquals( "2.5.4.11", rdn.getNormType() );
@@ -3713,13 +3717,13 @@ public class LdapDNTest
             }
             
             assertEquals( " ou = T\\+ST\\  ", ava.getUpName() );
-            assertEquals( "2.5.4.11=t\\+st\\ ", ava.getNormName() );
+            assertEquals( "2.5.4.11=t\\+st", ava.getNormName() );
 
             assertEquals( "ou", ava.getUpType() );
             assertEquals( "2.5.4.11", ava.getNormType() );
             
             assertEquals( "T+ST ", ava.getUpValue().get() );
-            assertEquals( "t+st ", ava.getNormValue().get() );
+            assertEquals( "t+st", ava.getNormValue().get() );
         }
     }
 }
