@@ -64,16 +64,6 @@ public class DefaultStringNormalizer extends Normalizer
             return new ClientStringValue( str );
         }
         
-        if ( str.charAt( 0 ) == '#' )
-        {
-            return new ClientStringValue( StringTools.decodeHexString( str ) );
-        }
-        
-        if ( str.indexOf( '\\' ) != -1 )
-        {
-            return new ClientStringValue( StringTools.decodeEscapedHex( str ) );
-        }
-        
         return new ClientStringValue( str );
     }
 
@@ -86,16 +76,6 @@ public class DefaultStringNormalizer extends Normalizer
         if ( StringTools.isEmpty( value ) )
         {
             return value;
-        }
-        
-        if ( value.charAt( 0 ) == '#' )
-        {
-            return StringTools.decodeHexString( value );
-        }
-        
-        if ( value.indexOf( '\\' ) != -1 )
-        {
-            return StringTools.decodeEscapedHex( value );
         }
         
         return value;

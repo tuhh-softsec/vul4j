@@ -3407,7 +3407,7 @@ public class LdapDNTest
         assertEquals( " cn = #414243 ", dn3.getRdn().getUpName() );
         AttributeTypeAndValue atav3 = dn3.getRdn().getAtav();
         assertEquals( "cn", atav3.getUpType() );
-        assertEquals( "#414243", atav3.getUpValue().getString() );
+        assertEquals( "ABC", atav3.getUpValue().getString() );
         assertTrue( Arrays.equals( StringTools.getBytesUtf8( "ABC" ),atav3.getNormValue().getBytes() ) );
 
         // antlr parser: 
@@ -3415,7 +3415,7 @@ public class LdapDNTest
         assertEquals( " cn = \\41\\42\\43 ", dn4.getRdn().getUpName() );
         AttributeTypeAndValue atav4 = dn4.getRdn().getAtav();
         assertEquals( "cn", atav4.getUpType() );
-        assertEquals( "\\41\\42\\43", atav4.getUpValue().getString() );
+        assertEquals( "ABC", atav4.getUpValue().getString() );
         assertEquals( "ABC", atav4.getNormValue().getString() );
 
         // antlr parser: quotestring with trailing spaces
@@ -3423,7 +3423,7 @@ public class LdapDNTest
         assertEquals( " cn = \"ABC\" ", dn5.getRdn().getUpName() );
         AttributeTypeAndValue atav5 = dn5.getRdn().getAtav();
         assertEquals( "cn", atav5.getUpType() );
-        assertEquals( "\"ABC\"", atav5.getUpValue().getString() );
+        assertEquals( "ABC", atav5.getUpValue().getString() );
         assertEquals( "ABC", atav5.getNormValue().getString() );
 
         // fast parser: string value with trailing spaces 
@@ -3613,8 +3613,7 @@ public class LdapDNTest
         assertEquals( "ou", atav.getUpType() );
         assertEquals( "Ex+mple", atav.getUpValue().get() );
         
-        // Wrong !!! TODO : fix me
-        assertEquals( "ou  =  Ex\\+mple", atav.getUpName() );
+        assertEquals( "  ou  =  Ex\\+mple ", atav.getUpName() );
     }
 
     
