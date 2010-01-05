@@ -8,16 +8,26 @@ import net.webassembletool.HttpErrorPage;
 import net.webassembletool.MockDriver;
 
 public class EsiRendererTest extends TestCase {
+	private MockDriver provider;
 
 	@Override
 	protected void setUp() throws Exception {
-		MockDriver provider = new MockDriver("mock");
+		provider = new MockDriver("mock");
 		provider.addResource("/test", "test");
+		provider.addResource("http://www.foo.com/test", "test");
 	}
 
 	public void testInclude() throws IOException, HttpErrorPage {
 		String page = "before <esi:include src=\"$PROVIDER({mock})/test\" /> after";
-		EsiRenderer tested = new EsiRenderer(null, null);
+		EsiRenderer tested = new EsiRenderer(null, null, provider);
+		StringWriter out = new StringWriter();
+		tested.render(page, out);
+		assertEquals("before test after", out.toString());
+	}
+	
+	public void testIncludeAbsolute() throws IOException, HttpErrorPage {
+		String page = "before <esi:include src=\"http://www.foo.com/test\" /> after";
+		EsiRenderer tested = new EsiRenderer(null, null, provider);
 		StringWriter out = new StringWriter();
 		tested.render(page, out);
 		assertEquals("before test after", out.toString());
@@ -25,7 +35,7 @@ public class EsiRendererTest extends TestCase {
 
 	public void testEsiComment() throws IOException, HttpErrorPage {
 		String page = "begin <!--esi<sometag> some text</sometag>--> end";
-		EsiRenderer tested = new EsiRenderer(null, null);
+		EsiRenderer tested = new EsiRenderer(null, null, provider);
 		StringWriter out = new StringWriter();
 		tested.render(page, out);
 		assertEquals("begin <sometag> some text</sometag> end", out.toString());

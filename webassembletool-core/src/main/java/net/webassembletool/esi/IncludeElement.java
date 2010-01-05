@@ -5,7 +5,6 @@ import java.io.IOException;
 import net.webassembletool.Driver;
 import net.webassembletool.DriverFactory;
 import net.webassembletool.HttpErrorPage;
-import net.webassembletool.aggregator.AggregationSyntaxException;
 import net.webassembletool.parser.Element;
 import net.webassembletool.parser.ElementStack;
 import net.webassembletool.parser.ElementType;
@@ -43,18 +42,21 @@ public class IncludeElement implements Element {
 		Tag includeTag = new Tag(tag);
 		String src = includeTag.getAttributes().get("src");
 		closed = includeTag.isOpenClosed();
-		int idx = src.indexOf("$PROVIDER({");
-		if (idx < 0) {
-			throw new AggregationSyntaxException(
-					"PROVIDER variable is missing: " + src);
-		}
-		int startIdx = idx + "$PROVIDER({".length();
-		int endIndex = src.indexOf("})", startIdx);
-		String provider = src.substring(startIdx, endIndex);
-		String page = src.substring(endIndex + "})".length());
-		Driver driver = DriverFactory.getInstance(provider);
 		EsiRenderer esiRenderer = stack.findAncestorWithClass(this,
 				EsiRenderer.class);
+		Driver driver;
+		String page;
+		int idx = src.indexOf("$PROVIDER({");
+		if (idx < 0) {
+			page = src;
+			driver = esiRenderer.getDriver();
+		} else {
+			int startIdx = idx + "$PROVIDER({".length();
+			int endIndex = src.indexOf("})", startIdx);
+			String provider = src.substring(startIdx, endIndex);
+			page = src.substring(endIndex + "})".length());
+			driver = DriverFactory.getInstance(provider);
+		}
 		driver.render(page, null, out, esiRenderer.getRequest(), esiRenderer
 				.getResponse(), new BlockRenderer(null, page));
 	}

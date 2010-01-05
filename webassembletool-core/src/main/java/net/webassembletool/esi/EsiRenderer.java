@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.webassembletool.Driver;
 import net.webassembletool.HttpErrorPage;
 import net.webassembletool.Renderer;
 import net.webassembletool.parser.Parser;
@@ -27,10 +28,13 @@ public class EsiRenderer implements Renderer, Appendable {
 	private Writer out;
 	private final HttpServletRequest request;
 	private final HttpServletResponse response;
+	private final Driver driver;
 
-	public EsiRenderer(HttpServletRequest request, HttpServletResponse response) {
+	public EsiRenderer(HttpServletRequest request,
+			HttpServletResponse response, Driver driver) {
 		this.request = request;
 		this.response = response;
+		this.driver = driver;
 	}
 
 	/** {@inheritDoc} */
@@ -64,5 +68,9 @@ public class EsiRenderer implements Renderer, Appendable {
 
 	public HttpServletResponse getResponse() {
 		return response;
+	}
+
+	public Driver getDriver() {
+		return driver;
 	}
 }
