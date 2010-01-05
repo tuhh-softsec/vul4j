@@ -25,6 +25,10 @@ public class AggregateRendererTest extends TestCase {
 				.addResource(
 						"/testTemplateParams",
 						"before <!--$begintemplate$mytemplate$-->some text <!--$beginparam$param1$-->To be replaced<!--$endparam$param1$--> goes here<!--$endtemplate$mytemplate$--> after");
+		provider
+				.addResource(
+						"",
+						"before <!--$beginblock$myblock$-->some text goes here<!--$endblock$myblock$--> after");
 	}
 
 	public void testIncludeBlockNoBlockName() throws IOException, HttpErrorPage {
@@ -37,6 +41,14 @@ public class AggregateRendererTest extends TestCase {
 
 	public void testIncludeBlock() throws IOException, HttpErrorPage {
 		String page = "content <!--$includeblock$mock$/testBlock$myblock$--> some text <!--$endincludeblock$--> end";
+		AggregateRenderer tested = new AggregateRenderer(null, null);
+		StringWriter out = new StringWriter();
+		tested.render(page, out);
+		assertEquals("content some text goes here end", out.toString());
+	}
+
+	public void testIncludeBlockRoot() throws IOException, HttpErrorPage {
+		String page = "content <!--$includeblock$mock$$myblock$--> some text <!--$endincludeblock$--> end";
 		AggregateRenderer tested = new AggregateRenderer(null, null);
 		StringWriter out = new StringWriter();
 		tested.render(page, out);
