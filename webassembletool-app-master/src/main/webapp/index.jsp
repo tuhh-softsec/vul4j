@@ -23,6 +23,7 @@
 	<li><a href="images/redirect.jsp">Redirect thru proxy servlet example</a></li>
 	<li><a href="xml.jsp">xslt and xpath example</a></li>
 	<li><a href="images/host.jsp">preserveHost example</a></li>
+	<li><a href="blockabsolute.jsp">Block example with absolute url</a></li>
 </ul>
 </body>
 </html>

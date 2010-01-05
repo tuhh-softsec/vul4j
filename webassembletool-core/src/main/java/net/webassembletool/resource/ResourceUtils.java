@@ -5,7 +5,10 @@ import java.net.URLEncoder;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.servlet.http.HttpSession;
+
 import net.webassembletool.ResourceContext;
+import net.webassembletool.http.RewriteUtils;
 
 /**
  * Utility class to generate URL and path for Resources
@@ -19,21 +22,27 @@ public class ResourceUtils {
 			String charset = target.getOriginalRequest().getCharacterEncoding();
 			if (charset == null)
 				charset = "ISO-8859-1";
-			String qs = target.getOriginalRequest().getQueryString();
-			if (target.isProxy())
-				if (qs != null && !qs.equals(""))
-					// Should encode parameters here !
-					queryString.append(qs).append("&");
-			if (qs != null && qs.length() > 0)
-				// queryString.append(qs).append("&");
-				// remove jsessionid from request if it is present
-				ResourceUtils.removeJsessionId(queryString);
+			String originalQuerystring = target.getOriginalRequest()
+					.getQueryString();
+			if (target.isProxy() && originalQuerystring != null) {
+				// Remove jsessionid from request if it is present
+				// As we are in a java application, the container might add
+				// jsessionid to the querystring. We must not forward it to
+				// included applications.
+				String jsessionid = null;
+				HttpSession session = target.getOriginalRequest().getSession(
+						false);
+				if (session != null)
+					jsessionid = session.getId();
+				if (jsessionid != null)
+					originalQuerystring = RewriteUtils.removeSessionId(
+							jsessionid, originalQuerystring);
+				queryString.append(originalQuerystring);
+			}
 			if (target.getParameters() != null)
 				ResourceUtils.appendParameters(queryString, charset, target
 						.getParameters());
-			if (queryString.length() == 0)
-				return "";
-			return queryString.substring(0, queryString.length() - 1);
+			return queryString.toString();
 		} catch (UnsupportedEncodingException e) {
 			throw new RuntimeException(e);
 		}
@@ -58,36 +67,15 @@ public class ResourceUtils {
 			return false;
 	}
 
-	/**
-	 * Removes <code>;jsessionid=value</code> sequence from the provided string
-	 * source
-	 */
-	static void removeJsessionId(StringBuilder queryString) {
-		int startIdx = queryString.indexOf("jsessionid=");
-		if (startIdx == -1)
-			return;
-		else if (startIdx > 0 && queryString.charAt(startIdx - 1) == ';')
-			startIdx--;
-		int idx1 = queryString.indexOf("?", startIdx);
-		int idx2 = queryString.indexOf("&", startIdx);
-		int endIdx;
-		if (idx1 == -1 && idx2 == -1)
-			endIdx = queryString.length();
-		else if (idx1 == -1)
-			endIdx = idx2;
-		else if (idx2 == -1)
-			endIdx = idx1;
-		else
-			endIdx = Math.min(idx1, idx2);
-		queryString.replace(startIdx, endIdx, "");
-	}
-
 	private static void appendParameters(StringBuilder buf, String charset,
 			Map<String, String> params) throws UnsupportedEncodingException {
-		for (Entry<String, String> temp : params.entrySet())
-			buf.append(URLEncoder.encode(temp.getKey(), charset)).append("=")
-					.append(URLEncoder.encode(temp.getValue(), charset))
-					.append("&");
+		for (Entry<String, String> param : params.entrySet()) {
+			if (buf.length() > 0)
+				buf.append("&");
+			buf.append(URLEncoder.encode(param.getKey(), charset));
+			buf.append("=");
+			buf.append(URLEncoder.encode(param.getValue(), charset));
+		}
 	}
 
 	private final static String concatUrl(String baseUrl, String relUrl) {
@@ -102,35 +90,26 @@ public class ResourceUtils {
 		return url.toString();
 	}
 
-	private final static String encodeSpecialChars(String input) {
-		// One might think that we should URL-encode everything, this could have
-		// been done in getHttpUrlWithQueryString; Actually, we have encountred
-		// cases of tools that do not like url encodings for all characters (in
-		// some jahia servlets !)! Thus, only special chars not accepted by
-		// javax.net.URI ar urlencoded for HTTPClient.
-		return input.replaceAll(" ", "%20").replaceAll("\\|", "%7C");
-	}
-
 	public final static String getHttpUrlWithQueryString(ResourceContext target) {
-
-		String url = concatUrl(target.getDriver().getBaseURL(), target
-				.getRelUrl());
+		String url = target.getRelUrl();
+		if (!url.startsWith("http://") && !url.startsWith("https://")) {
+			// Relative URL, we need to add the driver base url
+			url = concatUrl(target.getDriver().getBaseURL(), url);
+		}
 		String queryString = ResourceUtils.buildQueryString(target);
 		if (queryString.length() == 0)
-			return encodeSpecialChars(url);
+			return url;
 		else
-			return encodeSpecialChars(url + "?" + queryString);
-	}
-
-	public final static String getHttpUrl(ResourceContext target) {
-		String url = ResourceUtils.concatUrl(target.getDriver().getBaseURL(),
-				target.getRelUrl());
-		return encodeSpecialChars(url);
+			return url + "?" + queryString;
 	}
 
 	public final static String getFileUrl(String localBase,
 			ResourceContext target) {
-		String url = ResourceUtils.concatUrl(localBase, target.getRelUrl());
+		String url = target.getRelUrl();
+		// Remove ":" and "//" for absolute urls
+		url = url.replaceAll(":", "_");
+		url = url.replaceAll("//", "__");
+		url = ResourceUtils.concatUrl(localBase, target.getRelUrl());
 		// Append queryString hashcode to supply different cache
 		// filenames
 		String queryString = ResourceUtils.buildQueryString(target);

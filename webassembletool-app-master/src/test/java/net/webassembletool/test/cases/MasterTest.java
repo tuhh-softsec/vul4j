@@ -153,4 +153,8 @@ public class MasterTest extends TestCase {
 				resp.getText());
 	}
 
+	public void testBlockAbsolute() throws Exception {
+		doSimpleTest("blockabsolute.jsp", "block.jsp");
+	}
+
 }

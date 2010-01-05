@@ -1,25 +1,52 @@
 package net.webassembletool.resource;
 
+import java.util.Properties;
+
+import javax.servlet.http.HttpServletRequest;
+
 import junit.framework.TestCase;
+import net.webassembletool.Driver;
+import net.webassembletool.ResourceContext;
+
+import org.easymock.EasyMock;
 
 public class ResourceUtilsTest extends TestCase {
 
-    public void testRemoveJsessionId() {
-        String expected[] = { "/base/path/?param=pvalue", "/base/path/",
-                "/base/path/?param=pvalue", "/base/path/&param=pvalue",
-                "/base/path/?param=pvalue&",
-                "/base/path/?param=pvalue&&param=pvalue", };
-        String tested[] = { "/base/path/?param=pvalue",
-                "/base/path/;jsessionid=value",
-                "/base/path/;jsessionid=value?param=pvalue",
-                "/base/path/;jsessionid=value&param=pvalue",
-                "/base/path/?param=pvalue&;jsessionid=value",
-                "/base/path/?param=pvalue&;jsessionid=value&param=pvalue", };
-        for (int i = 0; i < tested.length; i++) {
-            StringBuilder actual = new StringBuilder(tested[i]);
-            ResourceUtils.removeJsessionId(actual);
-            assertEquals("failed for string[" + i + "] '" + tested[i] + "'",
-                    expected[i], actual.toString());
-        }
-    }
+	public void testGetHttpUrlWithQueryString() {
+		Properties props = new Properties();
+		props.put("remoteUrlBase", "http://www.foo.com/");
+		props.put("localBase", "/temp/");
+		Driver driver = new Driver("test", props);
+		HttpServletRequest request = EasyMock
+				.createMock(HttpServletRequest.class);
+		EasyMock.expect(request.getCharacterEncoding()).andStubReturn(
+				"ISO-8859-1");
+		EasyMock.expect(request.getQueryString()).andReturn(null);
+		EasyMock.expect(request.getSession(false)).andReturn(null);
+		ResourceContext resourceContext = new ResourceContext(driver, "/test",
+				null, request, null);
+		resourceContext.setProxy(true);
+		EasyMock.replay(request);
+		assertEquals("http://www.foo.com/test", ResourceUtils
+				.getHttpUrlWithQueryString(resourceContext));
+	}
+	public void testGetHttpUrlWithQueryStringAbsoluteurl() {
+		Properties props = new Properties();
+		props.put("remoteUrlBase", "http://www.foo.com/");
+		props.put("localBase", "/temp/");
+		Driver driver = new Driver("test", props);
+		HttpServletRequest request = EasyMock
+				.createMock(HttpServletRequest.class);
+		EasyMock.expect(request.getCharacterEncoding()).andStubReturn(
+				"ISO-8859-1");
+		EasyMock.expect(request.getQueryString()).andReturn(null);
+		EasyMock.expect(request.getSession(false)).andReturn(null);
+		ResourceContext resourceContext = new ResourceContext(driver, "http://www.bar.com/test",
+				null, request, null);
+		resourceContext.setProxy(true);
+		EasyMock.replay(request);
+		assertEquals("http://www.bar.com/test", ResourceUtils
+				.getHttpUrlWithQueryString(resourceContext));
+	}
+
 }
