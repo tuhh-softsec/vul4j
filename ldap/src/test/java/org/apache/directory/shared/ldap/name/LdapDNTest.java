@@ -3574,19 +3574,19 @@ public class LdapDNTest
         // The second ATAV
         for ( AVA ava : rdn )
         {
-            if ( "example".equals( atav.getNormValue().get() ) )
+            if ( "example".equals( ava.getNormValue().get() ) )
             {
                 // Skip the first one
                 continue;
             }
             
-            assertEquals( "2.5.4.11=test", atav.getNormName() );
-            assertEquals( "2.5.4.11", atav.getNormType() );
-            assertEquals( "test", atav.getNormValue().get() );
+            assertEquals( "2.5.4.11=test", ava.getNormName() );
+            assertEquals( "2.5.4.11", ava.getNormType() );
+            assertEquals( "test", ava.getNormValue().get() );
             
-            assertEquals( "ou", atav.getUpType() );
-            assertEquals( "TEST", atav.getUpValue().get() );
-            assertEquals( "  ou =  TEST ", atav.getUpName() );
+            assertEquals( "ou", ava.getUpType() );
+            assertEquals( "TEST", ava.getUpValue().get() );
+            assertEquals( " ou = TEST ", ava.getUpName() );
         }
     }
 

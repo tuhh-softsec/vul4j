@@ -19,21 +19,14 @@
  */
 package org.apache.directory.shared.ldap.ldif;
 
-import org.apache.directory.shared.ldap.entry.Entry;
-import org.apache.directory.shared.ldap.entry.EntryAttribute;
-import org.apache.directory.shared.ldap.entry.client.DefaultClientAttribute;
-import org.apache.directory.shared.ldap.entry.client.DefaultClientEntry;
-import org.apache.directory.shared.ldap.name.LdapDN;
-import org.apache.directory.shared.ldap.name.Rdn;
-import org.apache.directory.shared.ldap.util.StringTools;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import org.junit.Test;
+import java.util.List;
 
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
@@ -41,7 +34,14 @@ import javax.naming.directory.Attributes;
 import javax.naming.directory.BasicAttribute;
 import javax.naming.directory.BasicAttributes;
 
-import java.util.List;
+import org.apache.directory.shared.ldap.entry.Entry;
+import org.apache.directory.shared.ldap.entry.EntryAttribute;
+import org.apache.directory.shared.ldap.entry.client.DefaultClientAttribute;
+import org.apache.directory.shared.ldap.entry.client.DefaultClientEntry;
+import org.apache.directory.shared.ldap.name.LdapDN;
+import org.apache.directory.shared.ldap.name.Rdn;
+import org.apache.directory.shared.ldap.util.StringTools;
+import org.junit.Test;
 
 
 /**
@@ -336,18 +336,6 @@ public class LdifUtilsTest
     @Test
     public void testConvertToLdif() throws NamingException
     {
-        String expected = 
-            "dn:: Y249U2Fhcm\n" +
-            " Jyw7xja2VuLCBk\n" +
-            " Yz1leGFtcGxlLC\n" +
-            " BkYz1jb20=\n" +
-            "changeType: Add\n" +
-            "sn: test\n" +
-            "cn:: U2FhcmJyw7\n xja2Vu\n" +
-            "objectClass: to\n p\n" +
-            "objectClass: pe\n rson\n" +
-            "objectClass: in\n etorgPerson\n\n";
-        
         LdifEntry entry = new LdifEntry();
         entry.setDn( "cn=Saarbr\u00FCcken, dc=example, dc=com" );
         entry.setChangeType( ChangeType.Add );
@@ -360,7 +348,7 @@ public class LdifUtilsTest
         entry.addAttribute( "cn", "Saarbr\u00FCcken" );
         entry.addAttribute( "sn", "test" );
 
-        String ldif = LdifUtils.convertToLdif( entry, 15 );
+        LdifUtils.convertToLdif( entry, 15 );
         //Attributes result = LdifUtils.convertFromLdif( ldif );
         //assertEquals( entry, result );
     }

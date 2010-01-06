@@ -45,7 +45,6 @@ import org.apache.directory.shared.ldap.entry.client.DefaultClientAttribute;
 import org.apache.directory.shared.ldap.entry.client.DefaultClientEntry;
 import org.apache.directory.shared.ldap.name.LdapDN;
 import org.apache.directory.shared.ldap.name.Rdn;
-import org.apache.directory.shared.ldap.util.DNUtils;
 import org.apache.directory.shared.ldap.util.StringTools;
 
 

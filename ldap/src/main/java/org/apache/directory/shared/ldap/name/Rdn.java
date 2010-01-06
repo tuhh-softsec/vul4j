@@ -149,8 +149,6 @@ public class Rdn implements Cloneable, Comparable, Externalizable, Iterable<AVA>
      * 
      * Note : there is no Generic available classes in commons-collection...
      */
-    @SuppressWarnings(
-        { "unchecked" })
     private MultiMap atavTypes = new MultiValueMap();
 
     /**
@@ -297,8 +295,6 @@ public class Rdn implements Cloneable, Comparable, Externalizable, Iterable<AVA>
      * @param rdn
      *            The non-null Rdn to be copied.
      */
-    @SuppressWarnings(
-        { "unchecked" })
     public Rdn( Rdn rdn )
     {
         nbAtavs = rdn.getNbAtavs();
@@ -425,8 +421,6 @@ public class Rdn implements Cloneable, Comparable, Externalizable, Iterable<AVA>
     // WARNING : The protection level is left unspecified intentionally.
     // We need this method to be visible from the DnParser class, but not
     // from outside this package.
-    @SuppressWarnings(
-        { "unchecked" })
     /* Unspecified protection */void addAttributeTypeAndValue( String upType, String type, Value<?> upValue,
         Value<?> value ) throws InvalidNameException
     {
@@ -480,8 +474,6 @@ public class Rdn implements Cloneable, Comparable, Externalizable, Iterable<AVA>
     // WARNING : The protection level is left unspecified intentionnaly.
     // We need this method to be visible from the DnParser class, but not
     // from outside this package.
-    @SuppressWarnings(
-        { "unchecked" })
     /* Unspecified protection */void addAttributeTypeAndValue( AVA value )
     {
         String normalizedType = value.getNormType();

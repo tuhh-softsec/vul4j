@@ -79,7 +79,6 @@ import org.apache.directory.shared.ldap.client.api.messages.SearchResponse;
 import org.apache.directory.shared.ldap.client.api.messages.SearchResultDone;
 import org.apache.directory.shared.ldap.client.api.messages.SearchResultEntry;
 import org.apache.directory.shared.ldap.client.api.messages.SearchResultReference;
-import org.apache.directory.shared.ldap.client.api.messages.future.BindFuture;
 import org.apache.directory.shared.ldap.client.api.messages.future.ResponseFuture;
 import org.apache.directory.shared.ldap.client.api.protocol.LdapProtocolCodecFactory;
 import org.apache.directory.shared.ldap.codec.ControlCodec;
