@@ -99,6 +99,7 @@
 		<module>webassembletool-taglib</module>
 		<module>webassembletool-taglib-helper</module>
 		<module>webassembletool-jsf</module>
+		<module>webassembletool-wicket</module>
 		<module>webassembletool-cas</module>
 		<module>webassembletool-app-provider</module>
 		<module>webassembletool-app-master</module>
