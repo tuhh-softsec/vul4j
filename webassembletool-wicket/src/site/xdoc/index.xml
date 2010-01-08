@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+	<body>
+		<section name="About">
+			<p>
+				This module contains a proof of concept (POC) of <a href="http://wicket.apache.org/" >Wicket</a> support. 
+				It is similar to the JSF tag lib, but tags are defined in the code, keeping the html code clean.
+			</p>
+		</section>
+		<section name="Features">
+		<p>Only templating is implemented because this is the most tricky part. Block includes are simple to implement in almost every framework .
+		</p>
+		<table>
+		<tr><th>Tag</th><th>Status</th><th></th></tr>
+		<tr><td>includeTemplate</td><td>Partial</td><td><strong>page</strong> is the only attribute supported</td></tr>  
+		<tr><td>includeParam</td><td>Partial</td><td><strong>name</strong> is the only attribute supported</td></tr>  
+		</table>
+
+		</section>
+				<section name="Usage">
+			<p>
+			 Template and parameters are defined in the Page object, using containers :  
+			</p>
+			<pre>
+			
+public ExamplePage(final PageParameters parameters) {
+    // Define template 
+	WATTemplate template = new WATTemplate("watTemplate", "/template.html");
+	add(template);
+	
+	// Define Param
+	WATParam param = new WATParam("wat-main", "main");
+	param.add(param);
+	
+	// All content must be added in the 'param' container.
+		
+    // Add a label
+	param.add(new Label("message", "If you see this message wicket and WAT are properly configured and running"));
+}
+</pre>
+
+<p>HTML code only uses divs :</p>
+<pre>
+<![CDATA[
+<div wicket:id="watTemplate"  xmlns:wicket="http://wicket.apache.org/dtds.data/wicket-xhtml1.4-strict.dtd">
+	<div wicket:id="wat-main" >
+		<h1>WAT / Wicket Demo</h1>
+
+		<span wicket:id="message">message will be here</span>
+	</div>
+</div> 
+]]>
+</pre>
+		</section>
+		<section name="Feedback">
+		    All feedback is welcome, please use the <a href="https://sourceforge.net/tracker/?group_id=209844&amp;atid=1011350">tracker</a> or the <a href="https://lists.sourceforge.net/lists/listinfo/webassembletool-users">mailing list</a> on sourceforge.
+		</section>
+	</body>
+</document>
