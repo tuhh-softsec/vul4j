@@ -28,14 +28,14 @@ public ExamplePage(final PageParameters parameters) {
 	WATTemplate template = new WATTemplate("watTemplate", "/template.html");
 	add(template);
 	
-	// Define Param
-	WATParam param = new WATParam("wat-main", "main");
-	param.add(param);
+	// Define Parameter 'main'
+	WATParam mainBlock = new WATParam("wat-main", "main");
+	template.add(mainBlock);
 	
-	// All content must be added in the 'param' container.
+	// All content must be added in the 'mainBlock' container.
 		
     // Add a label
-	param.add(new Label("message", "If you see this message wicket and WAT are properly configured and running"));
+	mainBlock.add(new Label("message", "If you see this message wicket and WAT are properly configured and running"));
 }
 </pre>
 
