@@ -27,7 +27,7 @@ import org.apache.commons.functor.Predicate;
  * or "conditional" operator (<code>&#x3F; &#x3A;</code>).
  * Given a {@link Predicate predicate}
  * <i>p</i> and {@link Function functions}
- * <i>f</i> and <i>g</i>, {@link #evaluate evalautes}
+ * <i>f</i> and <i>g</i>, {@link #evaluate evaluates}
  * to
  * <code>p.test() ? f.evaluate() : g.evaluate()</code>.
  * <p>

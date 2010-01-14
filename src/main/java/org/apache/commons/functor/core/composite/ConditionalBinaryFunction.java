@@ -27,7 +27,7 @@ import org.apache.commons.functor.BinaryPredicate;
  * or "conditional" operator (<code>&#x3F; &#x3A;</code>).
  * Given a {@link BinaryPredicate predicate}
  * <i>p</i> and {@link BinaryFunction functions}
- * <i>f</i> and <i>g</i>, {@link #evaluate evalautes}
+ * <i>f</i> and <i>g</i>, {@link #evaluate evaluates}
  * to
  * <code>p.test(x,y) ? f.evaluate(x,y) : g.evaluate(x,y)</code>.
  * <p>
