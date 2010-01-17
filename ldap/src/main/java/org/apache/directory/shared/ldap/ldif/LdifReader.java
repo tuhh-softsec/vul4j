@@ -1881,6 +1881,7 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
     {
         if ( reader != null )
         {
+            position = new Position();
             reader.close();
         }
     }
