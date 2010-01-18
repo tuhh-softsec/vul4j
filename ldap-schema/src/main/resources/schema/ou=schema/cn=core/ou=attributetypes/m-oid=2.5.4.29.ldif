@@ -1,7 +1,7 @@
+version: 1
 dn: m-oid=2.5.4.29,ou=attributeTypes,cn=core,ou=schema
 createtimestamp: 20090818022729Z
 m-singlevalue: TRUE
-entryuuid:: /ll5ZvpnRsuPxP8VyFDsxw==
 m-obsolete: FALSE
 m-description: RFC2256: presentation address
 m-usage: USER_APPLICATIONS
@@ -16,3 +16,4 @@ objectclass: metaTop
 objectclass: top
 m-name: presentationAddress
 m-equality: presentationAddressMatch
+

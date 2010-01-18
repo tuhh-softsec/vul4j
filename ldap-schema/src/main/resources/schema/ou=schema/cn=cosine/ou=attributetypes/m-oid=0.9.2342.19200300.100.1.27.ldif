@@ -1,7 +1,7 @@
+version: 1
 dn: m-oid=0.9.2342.19200300.100.1.27,ou=attributeTypes,cn=cosine,ou=schema
 createtimestamp: 20090818022730Z
 m-singlevalue: FALSE
-entryuuid:: BXUt44jESROTjZhgWr7UiA==
 m-obsolete: FALSE
 m-usage: USER_APPLICATIONS
 creatorsname: uid=admin,ou=system
@@ -15,3 +15,4 @@ objectclass: metaTop
 objectclass: top
 m-name: mDRecord
 m-equality: caseIgnoreIA5Match
+

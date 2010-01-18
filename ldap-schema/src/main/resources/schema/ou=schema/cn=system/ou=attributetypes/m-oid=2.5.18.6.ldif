@@ -1,7 +1,7 @@
+version: 1
 dn: m-oid=2.5.18.6,ou=attributeTypes,cn=system,ou=schema
 createtimestamp: 20090818022729Z
 m-singlevalue: TRUE
-entryuuid:: EguH/mrhR0K87QSIrRYNUg==
 m-obsolete: FALSE
 m-usage: DIRECTORY_OPERATION
 creatorsname: uid=admin,ou=system
@@ -14,3 +14,4 @@ objectclass: metaTop
 objectclass: top
 m-syntax: 1.3.6.1.4.1.1466.115.121.1.45
 m-name: subtreeSpecification
+

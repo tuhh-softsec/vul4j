@@ -1,7 +1,7 @@
+version: 1
 dn: m-oid=2.5.4.17.1,ou=attributeTypes,cn=collective,ou=schema
 createtimestamp: 20090818022729Z
 m-singlevalue: FALSE
-entryuuid:: 0rZ6YvL3QwiB3LsDY75tuQ==
 m-obsolete: FALSE
 m-usage: USER_APPLICATIONS
 creatorsname: uid=admin,ou=system
@@ -17,3 +17,4 @@ objectclass: metaTop
 objectclass: top
 m-name: c-PostalCode
 m-equality: caseIgnoreMatch
+

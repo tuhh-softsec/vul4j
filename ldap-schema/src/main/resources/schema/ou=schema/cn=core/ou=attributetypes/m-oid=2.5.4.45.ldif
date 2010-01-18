@@ -1,7 +1,7 @@
+version: 1
 dn: m-oid=2.5.4.45,ou=attributeTypes,cn=core,ou=schema
 createtimestamp: 20090818022732Z
 m-singlevalue: FALSE
-entryuuid:: AYdJeIN2T9+Y7BSCdPy1og==
 m-obsolete: FALSE
 m-description: RFC2256: X.500 unique identifier
 m-usage: USER_APPLICATIONS
@@ -16,3 +16,4 @@ objectclass: metaTop
 objectclass: top
 m-name: x500UniqueIdentifier
 m-equality: bitStringMatch
+

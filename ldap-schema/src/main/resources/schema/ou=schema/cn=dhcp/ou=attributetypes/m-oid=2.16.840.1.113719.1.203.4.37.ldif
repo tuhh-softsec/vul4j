@@ -1,7 +1,7 @@
+version: 1
 dn: m-oid=2.16.840.1.113719.1.203.4.37,ou=attributeTypes,cn=dhcp,ou=schema
 createtimestamp: 20090818022732Z
 m-singlevalue: TRUE
-entryuuid:: gnKcCwkoQ5uuFN142x9z2Q==
 m-obsolete: FALSE
 m-description: Maximum Client Lead Time configuration in seconds, as defined in 
  DHCP Failover Protocol [FAILOVR]
@@ -17,3 +17,4 @@ objectclass: metaTop
 objectclass: top
 m-name: dhcpMaxClientLeadTime
 m-equality: integerMatch
+

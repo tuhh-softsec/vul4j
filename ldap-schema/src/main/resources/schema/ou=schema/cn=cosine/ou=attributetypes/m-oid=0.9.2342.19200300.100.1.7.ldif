@@ -1,7 +1,7 @@
+version: 1
 dn: m-oid=0.9.2342.19200300.100.1.7,ou=attributeTypes,cn=cosine,ou=schema
 createtimestamp: 20090818022731Z
 m-singlevalue: FALSE
-entryuuid:: 8urIU9X7SEK01LWmpw1aVw==
 m-obsolete: FALSE
 m-description: RFC1274: photo (G3 fax)
 m-usage: USER_APPLICATIONS
@@ -15,3 +15,4 @@ objectclass: metaAttributeType
 objectclass: metaTop
 objectclass: top
 m-name: photo
+

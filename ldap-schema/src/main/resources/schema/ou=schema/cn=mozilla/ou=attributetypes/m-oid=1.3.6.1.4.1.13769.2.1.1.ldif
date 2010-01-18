@@ -1,7 +1,7 @@
+version: 1
 dn: m-oid=1.3.6.1.4.1.13769.2.1.1,ou=attributeTypes,cn=mozilla,ou=schema
 createtimestamp: 20090818022729Z
 m-singlevalue: FALSE
-entryuuid:: J28pmMZxRs6R7pQHjERmMg==
 m-obsolete: FALSE
 m-usage: USER_APPLICATIONS
 creatorsname: uid=admin,ou=system
@@ -18,3 +18,4 @@ objectclass: top
 m-name: xmozillanickname
 m-name: mozillaNickname
 m-equality: caseIgnoreMatch
+

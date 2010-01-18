@@ -1,7 +1,7 @@
+version: 1
 dn: m-oid=2.16.840.1.113719.1.203.4.4,ou=attributeTypes,cn=dhcp,ou=schema
 createtimestamp: 20090818022730Z
 m-singlevalue: FALSE
-entryuuid:: pYhLHgYZRXGVMYvT+fAPqA==
 m-obsolete: FALSE
 m-description: The starting & ending IP Addresses in the range (inclusive), sepa
  rated by a hyphen; if the range only contains one address, then just the addres
@@ -18,3 +18,4 @@ objectclass: metaTop
 objectclass: top
 m-name: dhcpRange
 m-equality: caseIgnoreIA5Match
+

@@ -1,7 +1,7 @@
+version: 1
 dn: m-oid=2.16.840.1.113719.1.203.4.7,ou=attributeTypes,cn=dhcp,ou=schema
 createtimestamp: 20090818022729Z
 m-singlevalue: FALSE
-entryuuid:: v541Z0u1TjCralsvE82OKw==
 m-obsolete: FALSE
 m-description: Encoded option values to be sent to clients.  Each value represen
  ts a single option and contains (OptionTag, Length, OptionValue) encoded in the
@@ -18,3 +18,4 @@ objectclass: metaTop
 objectclass: top
 m-name: dhcpOption
 m-equality: caseIgnoreIA5Match
+

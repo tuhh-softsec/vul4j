@@ -1,8 +1,8 @@
+version: 1
 dn: m-oid=2.5.6.6,ou=objectClasses,cn=core,ou=schema
 createtimestamp: 20090818022732Z
 m-must: sn
 m-must: cn
-entryuuid:: R1JqhOJhS/Wt9+caoQoHzw==
 m-obsolete: FALSE
 m-description: RFC2256: a person
 creatorsname: uid=admin,ou=system
@@ -18,3 +18,4 @@ objectclass: metaTop
 objectclass: top
 m-name: person
 m-typeobjectclass: STRUCTURAL
+

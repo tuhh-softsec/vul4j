@@ -1,7 +1,7 @@
+version: 1
 dn: m-oid=2.16.840.1.113719.1.203.4.6,ou=attributeTypes,cn=dhcp,ou=schema
 createtimestamp: 20090818022731Z
 m-singlevalue: TRUE
-entryuuid:: GqaI4vx+TTiNyhZEjWgwAg==
 m-obsolete: FALSE
 m-description: The subnet mask length for the subnet.  The mask can be easily co
  mputed from this length.
@@ -17,3 +17,4 @@ objectclass: metaTop
 objectclass: top
 m-name: dhcpNetMask
 m-equality: integerMatch
+

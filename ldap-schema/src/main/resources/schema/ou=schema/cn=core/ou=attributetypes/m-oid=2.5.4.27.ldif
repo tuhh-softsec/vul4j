@@ -1,7 +1,7 @@
+version: 1
 dn: m-oid=2.5.4.27,ou=attributeTypes,cn=core,ou=schema
 createtimestamp: 20090818022730Z
 m-singlevalue: FALSE
-entryuuid:: emQ1DP4kTUixb0ccVPFPxg==
 m-obsolete: FALSE
 m-description: RFC2256: destination indicator
 m-usage: USER_APPLICATIONS
@@ -17,3 +17,4 @@ objectclass: metaTop
 objectclass: top
 m-name: destinationIndicator
 m-equality: caseIgnoreMatch
+

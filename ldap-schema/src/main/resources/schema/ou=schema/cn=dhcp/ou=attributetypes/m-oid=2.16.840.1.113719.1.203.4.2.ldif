@@ -1,7 +1,7 @@
+version: 1
 dn: m-oid=2.16.840.1.113719.1.203.4.2,ou=attributeTypes,cn=dhcp,ou=schema
 createtimestamp: 20090818022730Z
 m-singlevalue: FALSE
-entryuuid:: G+43VBkfTI6k9GFO8OOLPA==
 m-obsolete: FALSE
 m-description: The DN of dhcpServer(s) which provide backup service for the conf
  iguration.
@@ -17,3 +17,4 @@ objectclass: metaTop
 objectclass: top
 m-name: dhcpSecondaryDN
 m-equality: distinguishedNameMatch
+

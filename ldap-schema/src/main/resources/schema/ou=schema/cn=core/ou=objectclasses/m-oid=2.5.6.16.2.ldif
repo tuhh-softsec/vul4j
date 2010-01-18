@@ -1,6 +1,6 @@
+version: 1
 dn: m-oid=2.5.6.16.2,ou=objectClasses,cn=core,ou=schema
 createtimestamp: 20090818022732Z
-entryuuid:: VoREPbkpRuGmi4n0ujdJuQ==
 m-obsolete: FALSE
 creatorsname: uid=admin,ou=system
 m-may: deltaRevocationList
@@ -12,3 +12,4 @@ objectclass: metaTop
 objectclass: top
 m-name: certificationAuthority-V2
 m-typeobjectclass: AUXILIARY
+

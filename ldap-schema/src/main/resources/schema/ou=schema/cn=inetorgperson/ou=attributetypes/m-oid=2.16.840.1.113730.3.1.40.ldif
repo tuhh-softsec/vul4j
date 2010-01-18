@@ -1,7 +1,7 @@
+version: 1
 dn: m-oid=2.16.840.1.113730.3.1.40,ou=attributeTypes,cn=inetorgperson,ou=schema
 createtimestamp: 20090818022731Z
 m-singlevalue: FALSE
-entryuuid:: b49MMvMoSSuaKduAAeIquQ==
 m-obsolete: FALSE
 m-description: RFC2798: PKCS#7 SignedData used to support S/MIME
 m-usage: USER_APPLICATIONS
@@ -15,3 +15,4 @@ objectclass: metaAttributeType
 objectclass: metaTop
 objectclass: top
 m-name: userSMIMECertificate
+

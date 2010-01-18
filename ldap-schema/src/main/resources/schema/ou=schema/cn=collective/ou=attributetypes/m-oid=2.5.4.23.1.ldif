@@ -1,7 +1,7 @@
+version: 1
 dn: m-oid=2.5.4.23.1,ou=attributeTypes,cn=collective,ou=schema
 createtimestamp: 20090818022731Z
 m-singlevalue: FALSE
-entryuuid:: 0jrgkj/mQ7i5Pxf7Zjr5Zw==
 m-obsolete: FALSE
 m-usage: USER_APPLICATIONS
 creatorsname: uid=admin,ou=system
@@ -15,3 +15,4 @@ objectclass: metaAttributeType
 objectclass: metaTop
 objectclass: top
 m-name: c-FacsimileTelephoneNumber
+

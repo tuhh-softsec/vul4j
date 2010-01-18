@@ -1,7 +1,7 @@
+version: 1
 dn: m-oid=1.3.6.1.4.1.18060.0.4.0.3.11,ou=objectClasses,cn=apachemeta,ou=schema
 createtimestamp: 20090818022732Z
 m-must: cn
-entryuuid:: 4qLqaVG0RpqONug2kPGAGQ==
 m-obsolete: FALSE
 m-description: A schema object under which meta schema definitions are found
 creatorsname: uid=admin,ou=system
@@ -15,3 +15,4 @@ objectclass: metaTop
 objectclass: top
 m-name: metaSchema
 m-typeobjectclass: STRUCTURAL
+

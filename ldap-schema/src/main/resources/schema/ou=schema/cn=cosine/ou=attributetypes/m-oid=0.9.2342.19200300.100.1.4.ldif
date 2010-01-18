@@ -1,7 +1,7 @@
+version: 1
 dn: m-oid=0.9.2342.19200300.100.1.4,ou=attributeTypes,cn=cosine,ou=schema
 createtimestamp: 20090818022732Z
 m-singlevalue: FALSE
-entryuuid:: G4R1/ZjhRumd0E/n35AieA==
 m-obsolete: FALSE
 m-description: RFC1274: general information
 m-usage: USER_APPLICATIONS
@@ -17,3 +17,4 @@ objectclass: metaTop
 objectclass: top
 m-name: info
 m-equality: caseIgnoreMatch
+

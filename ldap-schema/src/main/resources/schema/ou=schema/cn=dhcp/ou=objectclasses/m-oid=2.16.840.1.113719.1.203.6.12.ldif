@@ -1,8 +1,8 @@
+version: 1
 dn: m-oid=2.16.840.1.113719.1.203.6.12,ou=objectClasses,cn=dhcp,ou=schema
 createtimestamp: 20090818022732Z
 m-must: cn
 m-must: dhcpServiceDN
-entryuuid:: qfb42CbNQIK+ovwE4vAfMA==
 m-obsolete: FALSE
 m-description: DHCP Server Object
 creatorsname: uid=admin,ou=system
@@ -21,3 +21,4 @@ objectclass: metaTop
 objectclass: top
 m-name: dhcpServer
 m-typeobjectclass: STRUCTURAL
+

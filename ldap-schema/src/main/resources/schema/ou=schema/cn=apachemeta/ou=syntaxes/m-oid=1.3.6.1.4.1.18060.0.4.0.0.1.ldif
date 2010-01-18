@@ -1,6 +1,6 @@
+version: 1
 dn: m-oid=1.3.6.1.4.1.18060.0.4.0.0.1,ou=syntaxes,cn=apachemeta,ou=schema
 createtimestamp: 20090818022727Z
-entryuuid:: zCyDe1HDREuVzJHdR9Hq/w==
 m-oid: 1.3.6.1.4.1.18060.0.4.0.0.1
 x-humanreadable: TRUE
 m-obsolete: FALSE
@@ -11,3 +11,4 @@ objectclass: metaTop
 objectclass: top
 m-description: objectClassType
 creatorsname: uid=admin,ou=system
+

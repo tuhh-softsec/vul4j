@@ -1,7 +1,7 @@
+version: 1
 dn: m-oid=2.16.840.1.113719.1.203.4.25,ou=attributeTypes,cn=dhcp,ou=schema
 createtimestamp: 20090818022730Z
 m-singlevalue: TRUE
-entryuuid:: Cq7TXGqZTRqi/+aQyU6cUg==
 m-obsolete: FALSE
 m-description: This is the last time a valid DHCP packet was received from the c
  lient.
@@ -17,3 +17,4 @@ objectclass: metaTop
 objectclass: top
 m-name: dhcpLastTransactionTime
 m-equality: integerMatch
+

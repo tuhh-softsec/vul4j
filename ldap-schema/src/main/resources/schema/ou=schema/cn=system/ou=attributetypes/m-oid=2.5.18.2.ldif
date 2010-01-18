@@ -1,7 +1,7 @@
+version: 1
 dn: m-oid=2.5.18.2,ou=attributeTypes,cn=system,ou=schema
 createtimestamp: 20090818022731Z
 m-singlevalue: TRUE
-entryuuid:: N2H3IqV1QC6oSarghq3HCg==
 m-obsolete: FALSE
 m-description: RFC2252: time which object was last modified
 m-usage: DIRECTORY_OPERATION
@@ -17,3 +17,4 @@ objectclass: metaTop
 objectclass: top
 m-name: modifyTimestamp
 m-equality: generalizedTimeMatch
+

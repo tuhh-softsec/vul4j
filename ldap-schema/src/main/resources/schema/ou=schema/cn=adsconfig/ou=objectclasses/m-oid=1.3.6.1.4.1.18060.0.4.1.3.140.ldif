@@ -1,8 +1,8 @@
+version: 1
 dn: m-oid=1.3.6.1.4.1.18060.0.4.1.3.140, ou=objectClasses, cn=adsconfig, ou=sche
  ma
 createtimestamp: 20100111145217Z
 m-must: ads-journalFileName
-entryuuid:: 77+977+9Ju+/vQ8YRTHvv707f++/ve+/ve+/vQ==
 m-oid: 1.3.6.1.4.1.18060.0.4.1.3.140
 entrycsn: 20100111202217.934000Z#000000#000#000000
 m-description: The Journal
@@ -15,3 +15,4 @@ m-may: ads-journalWorkingDir
 m-may: ads-journalRotation
 m-may: ads-journalEnabled
 m-may: ads-enabled
+

@@ -1,7 +1,7 @@
+version: 1
 dn: m-oid=2.5.4.3,ou=attributeTypes,cn=system,ou=schema
 createtimestamp: 20090818022730Z
 m-singlevalue: FALSE
-entryuuid:: F2pdBRZLSPSDK69QqOupJA==
 m-obsolete: FALSE
 m-description: RFC2256: common name(s) for which the entity is known by
 m-usage: USER_APPLICATIONS
@@ -19,3 +19,4 @@ objectclass: top
 m-name: cn
 m-name: commonName
 m-equality: caseIgnoreMatch
+

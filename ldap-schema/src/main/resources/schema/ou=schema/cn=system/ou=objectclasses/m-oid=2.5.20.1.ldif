@@ -1,6 +1,6 @@
+version: 1
 dn: m-oid=2.5.20.1,ou=objectClasses,cn=system,ou=schema
 createtimestamp: 20090818022732Z
-entryuuid:: Bh3PtKdPSgCc3zEWSP61ag==
 m-oid: 2.5.20.1
 m-obsolete: FALSE
 entrycsn: 20090818052732.818000Z#000000#000#000000
@@ -18,3 +18,4 @@ m-may: objectClasses
 m-may: attributeTypes
 m-may: matchingRules
 m-may: matchingRuleUse
+

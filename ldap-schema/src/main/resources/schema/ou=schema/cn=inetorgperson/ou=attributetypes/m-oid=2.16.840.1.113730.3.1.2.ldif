@@ -1,7 +1,7 @@
+version: 1
 dn: m-oid=2.16.840.1.113730.3.1.2,ou=attributeTypes,cn=inetorgperson,ou=schema
 createtimestamp: 20090818022731Z
 m-singlevalue: FALSE
-entryuuid:: 9ZAzcCNXR8GGujSyJhVMKA==
 m-obsolete: FALSE
 m-description: RFC2798: identifies a department within an organization
 m-usage: USER_APPLICATIONS
@@ -17,3 +17,4 @@ objectclass: metaTop
 objectclass: top
 m-name: departmentNumber
 m-equality: caseIgnoreMatch
+

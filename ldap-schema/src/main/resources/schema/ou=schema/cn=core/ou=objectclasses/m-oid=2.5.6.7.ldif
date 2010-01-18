@@ -1,6 +1,6 @@
+version: 1
 dn: m-oid=2.5.6.7,ou=objectClasses,cn=core,ou=schema
 createtimestamp: 20090818022732Z
-entryuuid:: Oa9TWTLTSNKjuisJ4OwORw==
 m-oid: 2.5.6.7
 m-obsolete: FALSE
 entrycsn: 20090818052732.676000Z#000000#000#000000
@@ -30,3 +30,4 @@ m-may: physicalDeliveryOfficeName
 m-may: ou
 m-may: st
 m-may: l
+

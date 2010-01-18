@@ -1,7 +1,7 @@
+version: 1
 dn: m-oid=0.9.2342.19200300.100.1.1,ou=attributeTypes,cn=core,ou=schema
 createtimestamp: 20090818022732Z
 m-singlevalue: FALSE
-entryuuid:: 2ApdTIVYSE+NvhOGDMLH7Q==
 m-obsolete: FALSE
 m-description: RFC1274: user identifier
 m-usage: USER_APPLICATIONS
@@ -18,3 +18,4 @@ objectclass: top
 m-name: uid
 m-name: userid
 m-equality: caseIgnoreMatch
+

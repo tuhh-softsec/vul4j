@@ -1,3 +1,4 @@
+version: 1
 dn: m-oid=0.9.2342.19200300.100.4.14, ou=objectClasses, cn=cosine, ou=schema
 objectclass: metaObjectClass
 objectclass: metaTop
@@ -24,6 +25,6 @@ m-may: destinationIndicator
 m-may: registeredAddress
 m-may: x121Address
 createtimestamp: 20090818022732Z
-entryuuid:: wHnK/pNXQZOKqFOYzAo92g==
 entrycsn: 20090818052732.821000Z#000000#000#000000
 creatorsname: uid=admin,ou=system
+

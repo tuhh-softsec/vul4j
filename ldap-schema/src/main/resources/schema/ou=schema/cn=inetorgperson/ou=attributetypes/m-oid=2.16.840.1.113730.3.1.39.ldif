@@ -1,7 +1,7 @@
+version: 1
 dn: m-oid=2.16.840.1.113730.3.1.39,ou=attributeTypes,cn=inetorgperson,ou=schema
 createtimestamp: 20090818022728Z
 m-singlevalue: TRUE
-entryuuid:: BoM5BxOIRpi6OrXyX6EDjQ==
 m-obsolete: FALSE
 m-description: RFC2798: preferred written or spoken language for a person
 m-usage: USER_APPLICATIONS
@@ -17,3 +17,4 @@ objectclass: metaTop
 objectclass: top
 m-name: preferredLanguage
 m-equality: caseIgnoreMatch
+

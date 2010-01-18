@@ -1,7 +1,7 @@
+version: 1
 dn: m-oid=2.5.4.46,ou=attributeTypes,cn=core,ou=schema
 createtimestamp: 20090818022732Z
 m-singlevalue: FALSE
-entryuuid:: vLNKho6/SJym7gq9ULKV6Q==
 m-obsolete: FALSE
 m-description: RFC2256: DN qualifier
 m-usage: USER_APPLICATIONS
@@ -18,3 +18,4 @@ objectclass: metaTop
 objectclass: top
 m-name: dnQualifier
 m-equality: caseIgnoreMatch
+

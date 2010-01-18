@@ -1,7 +1,7 @@
+version: 1
 dn: m-oid=1.3.6.1.1.1.1.26,ou=attributeTypes,cn=nis,ou=schema
 createtimestamp: 20090818022729Z
 m-singlevalue: FALSE
-entryuuid:: pnhq0U+1Sw2BdLOHQFFpTw==
 m-obsolete: FALSE
 m-usage: USER_APPLICATIONS
 creatorsname: uid=admin,ou=system
@@ -17,3 +17,4 @@ objectclass: metaTop
 objectclass: top
 m-name: nisMapName
 m-equality: caseIgnoreMatch
+

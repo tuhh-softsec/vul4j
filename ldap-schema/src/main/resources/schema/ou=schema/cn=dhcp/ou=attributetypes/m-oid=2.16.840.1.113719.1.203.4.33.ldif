@@ -1,7 +1,7 @@
+version: 1
 dn: m-oid=2.16.840.1.113719.1.203.4.33,ou=attributeTypes,cn=dhcp,ou=schema
 createtimestamp: 20090818022731Z
 m-singlevalue: TRUE
-entryuuid:: N9ATgjwqRTaWa4JUXdttiA==
 m-obsolete: FALSE
 m-description: If the client request was received via a relay agent, this contai
  ns information about the relay agent that was available from the DHCP request. 
@@ -18,3 +18,4 @@ objectclass: metaTop
 objectclass: top
 m-name: dhcpRelayAgentInfo
 m-equality: caseIgnoreIA5Match
+

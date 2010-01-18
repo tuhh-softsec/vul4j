@@ -1,7 +1,7 @@
+version: 1
 dn: m-oid=2.16.840.1.113719.1.203.4.38,ou=attributeTypes,cn=dhcp,ou=schema
 createtimestamp: 20090818022731Z
 m-singlevalue: TRUE
-entryuuid:: TG6RmCI+TdSSPFTsUf1c/g==
 m-obsolete: FALSE
 m-description: Server (Failover Endpoint) state, as defined in DHCP Failover Pro
  tocol [FAILOVR]
@@ -17,3 +17,4 @@ objectclass: metaTop
 objectclass: top
 m-name: dhcpFailOverEndpointState
 m-equality: integerMatch
+

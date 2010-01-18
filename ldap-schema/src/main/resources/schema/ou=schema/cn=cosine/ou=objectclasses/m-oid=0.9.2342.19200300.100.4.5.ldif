@@ -1,7 +1,7 @@
+version: 1
 dn: m-oid=0.9.2342.19200300.100.4.5,ou=objectClasses,cn=cosine,ou=schema
 m-must: uid
 createtimestamp: 20090818022732Z
-entryuuid:: EWEzfu8jRUSIZMei+eXPpQ==
 m-oid: 0.9.2342.19200300.100.4.5
 m-obsolete: FALSE
 entrycsn: 20090818052732.495000Z#000000#000#000000
@@ -18,3 +18,4 @@ m-may: l
 m-may: o
 m-may: ou
 m-may: host
+

@@ -1,7 +1,7 @@
+version: 1
 dn: m-oid=2.16.840.1.113730.3.1.34,ou=attributeTypes,cn=system,ou=schema
 createtimestamp: 20090818022731Z
 m-singlevalue: FALSE
-entryuuid:: MLMYeK2aTQqUt0kHoemMxA==
 m-obsolete: FALSE
 m-description: namedref: subordinate referral URL
 m-usage: DISTRIBUTED_OPERATION
@@ -16,3 +16,4 @@ objectclass: metaTop
 objectclass: top
 m-name: ref
 m-equality: caseExactMatch
+

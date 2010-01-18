@@ -1,7 +1,7 @@
+version: 1
 dn: m-oid=1.3.6.1.4.1.4203.1.3.5,ou=attributeTypes,cn=system,ou=schema
 createtimestamp: 20090818022729Z
 m-singlevalue: FALSE
-entryuuid:: 98f5/nuOS56tc9Wpk/UI4A==
 m-obsolete: FALSE
 m-usage: DSA_OPERATION
 creatorsname: uid=admin,ou=system
@@ -15,3 +15,4 @@ objectclass: metaTop
 objectclass: top
 m-name: supportedFeatures
 m-equality: objectIdentifierMatch
+

@@ -1,7 +1,7 @@
+version: 1
 dn: m-oid=0.9.2342.19200300.100.1.43,ou=attributeTypes,cn=cosine,ou=schema
 createtimestamp: 20090818022730Z
 m-singlevalue: FALSE
-entryuuid:: NRBcqFPARf2mg+F1IyjHGg==
 m-obsolete: FALSE
 m-description: RFC1274: friendly country name
 m-usage: USER_APPLICATIONS
@@ -18,3 +18,4 @@ objectclass: top
 m-name: co
 m-name: friendlyCountryName
 m-equality: caseIgnoreMatch
+

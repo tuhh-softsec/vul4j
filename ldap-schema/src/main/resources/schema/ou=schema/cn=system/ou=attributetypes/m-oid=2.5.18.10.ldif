@@ -1,7 +1,7 @@
+version: 1
 dn: m-oid=2.5.18.10,ou=attributeTypes,cn=system,ou=schema
 createtimestamp: 20090818022730Z
 m-singlevalue: TRUE
-entryuuid:: veOZvc+PQpiHC4RxZkQrgA==
 m-obsolete: FALSE
 m-description: RFC2252: name of controlling subschema entry
 m-usage: DIRECTORY_OPERATION
@@ -16,3 +16,4 @@ objectclass: metaTop
 objectclass: top
 m-name: subschemaSubentry
 m-equality: distinguishedNameMatch
+

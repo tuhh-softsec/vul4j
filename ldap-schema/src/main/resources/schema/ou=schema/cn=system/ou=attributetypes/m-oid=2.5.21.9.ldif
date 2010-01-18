@@ -1,7 +1,7 @@
+version: 1
 dn: m-oid=2.5.21.9,ou=attributeTypes,cn=system,ou=schema
 createtimestamp: 20090818022730Z
 m-singlevalue: TRUE
-entryuuid:: d+Bet9WZSdyXhHAq1ci3Bg==
 m-obsolete: FALSE
 m-description: X.500(93): structural object class of entry
 m-usage: DIRECTORY_OPERATION
@@ -16,3 +16,4 @@ objectclass: metaTop
 objectclass: top
 m-name: structuralObjectClass
 m-equality: objectIdentifierMatch
+

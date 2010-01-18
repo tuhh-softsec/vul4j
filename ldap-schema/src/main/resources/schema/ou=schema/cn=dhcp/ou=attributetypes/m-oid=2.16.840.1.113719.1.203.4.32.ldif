@@ -1,7 +1,7 @@
+version: 1
 dn: m-oid=2.16.840.1.113719.1.203.4.32,ou=attributeTypes,cn=dhcp,ou=schema
 createtimestamp: 20090818022729Z
 m-singlevalue: TRUE
-entryuuid:: lU76QGJ9TSivcxfYlFFZ/Q==
 m-obsolete: FALSE
 m-description: This is the distinguished name of a "dhcpClient" that an address 
  is currently assigned to.  This attribute is only present in the class when the
@@ -18,3 +18,4 @@ objectclass: metaTop
 objectclass: top
 m-name: dhcpAssignedToClient
 m-equality: distinguishedNameMatch
+

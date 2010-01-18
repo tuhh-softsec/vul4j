@@ -1,6 +1,6 @@
+version: 1
 dn: m-oid=2.5.13.20,ou=matchingRules,cn=system,ou=schema
 createtimestamp: 20090818022728Z
-entryuuid:: +9pSf+80QhOz9pMISLhbng==
 m-oid: 2.5.13.20
 m-obsolete: FALSE
 entrycsn: 20090818052728.429000Z#000000#000#000000
@@ -10,3 +10,4 @@ objectclass: metaTop
 objectclass: top
 m-name: telephoneNumberMatch
 creatorsname: uid=admin,ou=system
+

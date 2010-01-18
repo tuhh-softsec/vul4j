@@ -1,7 +1,7 @@
+version: 1
 dn: m-oid=2.16.840.1.113719.1.203.4.19,ou=attributeTypes,cn=dhcp,ou=schema
 createtimestamp: 20090818022730Z
 m-singlevalue: FALSE
-entryuuid:: OgKEnOBnSg67Lz8KBWx8MQ==
 m-obsolete: FALSE
 m-description: The DN of dhcpService object(s)which contain the configuration in
  formation. Each dhcpServer object has this attribute identifying the DHCP confi
@@ -18,3 +18,4 @@ objectclass: metaTop
 objectclass: top
 m-name: dhcpServiceDN
 m-equality: distinguishedNameMatch
+

@@ -1,7 +1,7 @@
+version: 1
 dn: m-oid=2.5.6.8,ou=objectClasses,cn=core,ou=schema
 createtimestamp: 20090818022732Z
 m-must: cn
-entryuuid:: 6PS5uW43RxC4GtgI82oLnw==
 m-obsolete: FALSE
 m-description: RFC2256: an organizational role
 creatorsname: uid=admin,ou=system
@@ -33,3 +33,4 @@ objectclass: metaTop
 objectclass: top
 m-name: organizationalRole
 m-typeobjectclass: STRUCTURAL
+

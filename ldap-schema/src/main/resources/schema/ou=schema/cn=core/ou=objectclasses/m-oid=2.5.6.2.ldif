@@ -1,6 +1,6 @@
+version: 1
 dn: m-oid=2.5.6.2,ou=objectClasses,cn=core,ou=schema
 createtimestamp: 20090818022732Z
-entryuuid:: hXc7IUxaQy247RVNSy+54g==
 m-obsolete: FALSE
 m-description: RFC2256: a country
 creatorsname: uid=admin,ou=system
@@ -15,3 +15,4 @@ objectclass: metaTop
 objectclass: top
 m-name: country
 m-typeobjectclass: STRUCTURAL
+

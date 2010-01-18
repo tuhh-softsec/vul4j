@@ -1,6 +1,6 @@
+version: 1
 dn: cn=java,ou=schema
 createtimestamp: 20090818022726Z
-entryuuid:: gsN7zeIzTNypC7Jq8+q5qw==
 cn: java
 entrycsn: 20090818052726.390000Z#000000#000#000000
 objectclass: metaSchema
@@ -8,3 +8,4 @@ objectclass: top
 m-dependencies: system
 m-dependencies: core
 creatorsname: uid=admin,ou=system
+

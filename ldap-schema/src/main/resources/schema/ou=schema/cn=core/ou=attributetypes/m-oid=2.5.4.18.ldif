@@ -1,7 +1,7 @@
+version: 1
 dn: m-oid=2.5.4.18,ou=attributeTypes,cn=core,ou=schema
 createtimestamp: 20090818022732Z
 m-singlevalue: FALSE
-entryuuid:: 95O0FiIRQIKVsacUhMAlug==
 m-obsolete: FALSE
 m-description: RFC2256: Post Office Box
 m-usage: USER_APPLICATIONS
@@ -17,3 +17,4 @@ objectclass: metaTop
 objectclass: top
 m-name: postOfficeBox
 m-equality: caseIgnoreMatch
+

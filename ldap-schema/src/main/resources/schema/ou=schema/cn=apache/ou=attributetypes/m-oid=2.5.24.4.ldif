@@ -1,7 +1,7 @@
+version: 1
 dn: m-oid=2.5.24.4,ou=attributeTypes,cn=apache,ou=schema
 createtimestamp: 20090818022730Z
 m-singlevalue: FALSE
-entryuuid:: O9jXek4aRY+OGf9EWdZKNg==
 m-obsolete: FALSE
 m-description: Access control information that applies to a set of entries
 m-usage: DIRECTORY_OPERATION
@@ -16,3 +16,4 @@ objectclass: metaTop
 objectclass: top
 m-name: prescriptiveACI
 m-equality: directoryStringFirstComponentMatch
+

@@ -1,7 +1,7 @@
+version: 1
 dn: m-oid=2.5.4.30,ou=attributeTypes,cn=core,ou=schema
 createtimestamp: 20090818022732Z
 m-singlevalue: FALSE
-entryuuid:: Xm41nu1lRJayBdmtvWMdNw==
 m-obsolete: FALSE
 m-description: RFC2256: supported application context
 m-usage: USER_APPLICATIONS
@@ -16,3 +16,4 @@ objectclass: metaTop
 objectclass: top
 m-name: supportedApplicationContext
 m-equality: objectIdentifierMatch
+

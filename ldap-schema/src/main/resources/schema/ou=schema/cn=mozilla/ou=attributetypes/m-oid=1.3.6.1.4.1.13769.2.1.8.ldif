@@ -1,7 +1,7 @@
+version: 1
 dn: m-oid=1.3.6.1.4.1.13769.2.1.8,ou=attributeTypes,cn=mozilla,ou=schema
 createtimestamp: 20090818022732Z
 m-singlevalue: FALSE
-entryuuid:: C4DiUeZcR5OlkhtaeTqm9A==
 m-obsolete: FALSE
 m-usage: USER_APPLICATIONS
 creatorsname: uid=admin,ou=system
@@ -16,3 +16,4 @@ objectclass: metaTop
 objectclass: top
 m-name: mozillaHomePostalCode
 m-equality: caseIgnoreMatch
+

@@ -1,7 +1,7 @@
+version: 1
 dn: m-oid=2.5.21.2,ou=attributeTypes,cn=system,ou=schema
 createtimestamp: 20090818022731Z
 m-singlevalue: FALSE
-entryuuid:: 7afEIGjCSWy50HwyQgLunw==
 m-obsolete: FALSE
 m-description: RFC2252: DIT content rules
 m-usage: DIRECTORY_OPERATION
@@ -16,3 +16,4 @@ objectclass: metaTop
 objectclass: top
 m-name: dITContentRules
 m-equality: objectIdentifierFirstComponentMatch
+

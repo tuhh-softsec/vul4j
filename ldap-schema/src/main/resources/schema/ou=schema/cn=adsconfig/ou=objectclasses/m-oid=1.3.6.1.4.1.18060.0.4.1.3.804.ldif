@@ -1,8 +1,8 @@
+version: 1
 dn: m-oid=1.3.6.1.4.1.18060.0.4.1.3.804, ou=objectClasses, cn=adsconfig, ou=sche
  ma
 createtimestamp: 20100116052129Z
 m-must: ads-serverId
-entryuuid:: V++/vTTvv73vv70FTO+/vSMxAwcXVO+/vQ==
 m-oid: 1.3.6.1.4.1.18060.0.4.1.3.804
 entrycsn: 20100116105129.573000Z#000000#000#000000
 m-description: integrated jetty http server
@@ -15,3 +15,4 @@ m-may: ads-systemPort
 m-may: ads-httpWebApps
 m-may: ads-httpConfFile
 m-may: ads-enabled
+

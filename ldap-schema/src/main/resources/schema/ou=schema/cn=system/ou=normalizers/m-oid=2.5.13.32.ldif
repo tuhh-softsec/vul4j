@@ -1,6 +1,6 @@
+version: 1
 dn: m-oid=2.5.13.32,ou=normalizers,cn=system,ou=schema
 createtimestamp: 20090818022727Z
-entryuuid:: oitUPV7pRrGd+IhTiGXWgg==
 m-oid: 2.5.13.32
 entrycsn: 20090818052727.933000Z#000000#000#000000
 m-fqcn: org.apache.directory.shared.ldap.schema.normalizers.NoOpNormalizer
@@ -8,3 +8,4 @@ objectclass: metaNormalizer
 objectclass: metaTop
 objectclass: top
 creatorsname: uid=admin,ou=system
+

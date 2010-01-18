@@ -1,8 +1,8 @@
+version: 1
 dn: m-oid=0.9.2342.19200300.100.1.60,ou=attributeTypes,cn=inetorgperson,ou=schem
  a
 createtimestamp: 20090818022731Z
 m-singlevalue: FALSE
-entryuuid:: 8Qv09qOYSFSvf899c8NIVw==
 m-obsolete: FALSE
 m-description: RFC2798: a JPEG image
 m-usage: USER_APPLICATIONS
@@ -16,3 +16,4 @@ objectclass: metaAttributeType
 objectclass: metaTop
 objectclass: top
 m-name: jpegPhoto
+

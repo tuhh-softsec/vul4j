@@ -1,7 +1,7 @@
+version: 1
 dn: m-oid=2.16.840.1.113719.1.203.4.3,ou=attributeTypes,cn=dhcp,ou=schema
 createtimestamp: 20090818022731Z
 m-singlevalue: FALSE
-entryuuid:: rqQg5gXCRPSl+9hxwjx95g==
 m-obsolete: FALSE
 m-description: Flexible storage for specific data depending on what object this 
  exists in. Like conditional statements, server parameters, etc. This allows the
@@ -18,3 +18,4 @@ objectclass: metaTop
 objectclass: top
 m-name: dhcpStatements
 m-equality: caseIgnoreIA5Match
+

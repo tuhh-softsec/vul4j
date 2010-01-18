@@ -1,7 +1,7 @@
+version: 1
 dn: m-oid=2.5.4.9,ou=attributeTypes,cn=core,ou=schema
 createtimestamp: 20090818022731Z
 m-singlevalue: FALSE
-entryuuid:: tWoqHwr0R821ElgK7uxeFQ==
 m-obsolete: FALSE
 m-description: RFC2256: street address of this object
 m-usage: USER_APPLICATIONS
@@ -18,3 +18,4 @@ objectclass: top
 m-name: street
 m-name: streetAddress
 m-equality: caseIgnoreMatch
+

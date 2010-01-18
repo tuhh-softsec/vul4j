@@ -1,3 +1,4 @@
+version: 1
 dn: m-oid=2.16.840.1.113719.1.203.6.11, ou=objectClasses, cn=dhcp, ou=schema
 objectclass: metaObjectClass
 objectclass: metaTop
@@ -24,6 +25,6 @@ m-may: dhcpRelayAgentInfo
 m-may: dhcpHWAddress
 m-may: dhcpErrorLog
 createtimestamp: 20090818022732Z
-entryuuid:: aEHur3T+QP6wIfTCG7nxUA==
 entrycsn: 20090818052732.821000Z#000000#000#000000
 creatorsname: uid=admin,ou=system
+

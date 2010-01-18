@@ -1,7 +1,7 @@
+version: 1
 dn: m-oid=2.5.21.5,ou=attributeTypes,cn=system,ou=schema
 createtimestamp: 20090818022729Z
 m-singlevalue: FALSE
-entryuuid:: B2BRKb01RBWuBpVg4oSARw==
 m-obsolete: FALSE
 m-description: RFC2252: attribute types
 m-usage: DIRECTORY_OPERATION
@@ -16,3 +16,4 @@ objectclass: metaTop
 objectclass: top
 m-name: attributeTypes
 m-equality: objectIdentifierFirstComponentMatch
+

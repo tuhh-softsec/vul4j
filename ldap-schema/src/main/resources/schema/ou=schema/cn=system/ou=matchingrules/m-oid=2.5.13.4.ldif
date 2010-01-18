@@ -1,6 +1,6 @@
+version: 1
 dn: m-oid=2.5.13.4,ou=matchingRules,cn=system,ou=schema
 createtimestamp: 20090818022728Z
-entryuuid:: E2TixJLQQ+y/JKsR1Nwiag==
 m-oid: 2.5.13.4
 m-obsolete: FALSE
 entrycsn: 20090818052728.540000Z#000000#000#000000
@@ -10,3 +10,4 @@ objectclass: metaTop
 objectclass: top
 m-name: caseIgnoreSubstringsMatch
 creatorsname: uid=admin,ou=system
+

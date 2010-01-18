@@ -1,5 +1,5 @@
+version: 1
 dn: m-oid=2.16.840.1.113730.3.2.2, ou=objectClasses, cn=inetorgperson, ou=schema
-entryuuid:: 4r9qZ5A4RTyqxL7hgJBQMg==
 m-oid: 2.16.840.1.113730.3.2.2
 entrycsn: 20090818052731.979000Z#000000#000#000000
 m-supobjectclass: organizationalPerson
@@ -35,3 +35,4 @@ m-may: x500UniqueIdentifier
 m-may: preferredLanguage
 m-may: userSMIMECertificate
 m-may: userPKCS12
+

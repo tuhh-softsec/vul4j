@@ -1,7 +1,7 @@
+version: 1
 dn: m-oid=2.16.840.1.113719.1.203.4.15,ou=attributeTypes,cn=dhcp,ou=schema
 createtimestamp: 20090818022728Z
 m-singlevalue: FALSE
-entryuuid:: yT38qF87TN+GuIQa2OD5sg==
 m-obsolete: FALSE
 m-description: The distinguished name(s) client addresses.
 m-usage: USER_APPLICATIONS
@@ -16,3 +16,4 @@ objectclass: metaTop
 objectclass: top
 m-name: dhcpLeasesDN
 m-equality: distinguishedNameMatch
+

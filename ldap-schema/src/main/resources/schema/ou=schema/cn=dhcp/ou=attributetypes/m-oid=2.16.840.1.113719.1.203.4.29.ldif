@@ -1,7 +1,7 @@
+version: 1
 dn: m-oid=2.16.840.1.113719.1.203.4.29,ou=attributeTypes,cn=dhcp,ou=schema
 createtimestamp: 20090818022732Z
 m-singlevalue: TRUE
-entryuuid:: nNnu0hQWQDCe99FGvZ1+Wg==
 m-obsolete: FALSE
 m-description: This is the hostname that was requested by the client.
 m-usage: USER_APPLICATIONS
@@ -16,3 +16,4 @@ objectclass: metaTop
 objectclass: top
 m-name: dhcpRequestedHostName
 m-equality: caseIgnoreIA5Match
+

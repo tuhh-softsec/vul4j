@@ -1,7 +1,7 @@
+version: 1
 dn: m-oid=1.3.6.1.4.1.18060.0.4.1.3.300, ou=objectClasses, cn=adsconfig, ou=sche
  ma
 createtimestamp: 20100111145218Z
-entryuuid:: HjYYVk01Sk/vv70C77+9dxvvv71XfQ==
 m-oid: 1.3.6.1.4.1.18060.0.4.1.3.300
 entrycsn: 20100111202218.120000Z#000000#000#000000
 m-supobjectclass: ads-catalogBasedServer
@@ -20,3 +20,4 @@ m-may: ads-ldapServerSaslPrincipal
 m-may: ads-ldapServerSaslRealms
 m-may: ads-ldapServerKeystoreFile
 m-may: ads-ldapServerCertificatePassword
+

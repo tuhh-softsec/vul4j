@@ -1,7 +1,7 @@
+version: 1
 dn: m-oid=2.5.18.7,ou=attributeTypes,cn=system,ou=schema
 createtimestamp: 20090818022732Z
 m-singlevalue: FALSE
-entryuuid:: JM5PlJ34RieeU2tT8MxQkA==
 m-obsolete: FALSE
 m-usage: DIRECTORY_OPERATION
 creatorsname: uid=admin,ou=system
@@ -15,3 +15,4 @@ objectclass: metaTop
 objectclass: top
 m-name: collectiveExclusions
 m-equality: objectIdentifierMatch
+

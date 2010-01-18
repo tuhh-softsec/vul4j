@@ -1,7 +1,7 @@
+version: 1
 dn: m-oid=2.16.840.1.113730.3.1.4,ou=attributeTypes,cn=inetorgperson,ou=schema
 createtimestamp: 20090818022732Z
 m-singlevalue: FALSE
-entryuuid:: NN1wVZu/S4KpKzuFUFAorg==
 m-obsolete: FALSE
 m-description: RFC2798: type of employment for a person
 m-usage: USER_APPLICATIONS
@@ -17,3 +17,4 @@ objectclass: metaTop
 objectclass: top
 m-name: employeeType
 m-equality: caseIgnoreMatch
+

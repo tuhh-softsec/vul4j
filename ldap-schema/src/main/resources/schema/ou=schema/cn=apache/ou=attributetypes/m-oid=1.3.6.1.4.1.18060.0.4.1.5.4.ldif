@@ -1,7 +1,7 @@
+version: 1
 dn: m-oid=1.3.6.1.4.1.18060.0.4.1.5.4,ou=attributeTypes,cn=apache,ou=schema
 createtimestamp: 20090818022732Z
 m-singlevalue: TRUE
-entryuuid:: wvv58ZLSS5KMszC8Xry6Fw==
 m-obsolete: FALSE
 m-usage: USER_APPLICATIONS
 creatorsname: uid=admin,ou=system
@@ -14,3 +14,4 @@ objectclass: metaTop
 objectclass: top
 m-syntax: 1.3.6.1.4.1.1466.115.121.1.5
 m-name: javaByteCode
+

@@ -1,7 +1,7 @@
+version: 1
 dn: m-oid=2.5.4.47,ou=attributeTypes,cn=core,ou=schema
 createtimestamp: 20090818022730Z
 m-singlevalue: FALSE
-entryuuid:: 3WeWKNMQSkK2l+6ia7XDVw==
 m-obsolete: FALSE
 m-description: RFC2256: enhanced search guide
 m-usage: USER_APPLICATIONS
@@ -15,3 +15,4 @@ objectclass: metaAttributeType
 objectclass: metaTop
 objectclass: top
 m-name: enhancedSearchGuide
+

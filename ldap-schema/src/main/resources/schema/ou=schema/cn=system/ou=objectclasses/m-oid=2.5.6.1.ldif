@@ -1,7 +1,7 @@
+version: 1
 dn: m-oid=2.5.6.1,ou=objectClasses,cn=system,ou=schema
 m-must: aliasedObjectName
 createtimestamp: 20090818022732Z
-entryuuid:: +1rrC6AWSNix62H9lWTrMg==
 m-oid: 2.5.6.1
 m-obsolete: FALSE
 entrycsn: 20090818052732.490000Z#000000#000#000000
@@ -13,3 +13,4 @@ objectclass: top
 m-name: alias
 m-typeobjectclass: STRUCTURAL
 creatorsname: uid=admin,ou=system
+

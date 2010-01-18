@@ -1,7 +1,7 @@
+version: 1
 dn: m-oid=2.5.4.19,ou=attributeTypes,cn=core,ou=schema
 createtimestamp: 20090818022731Z
 m-singlevalue: FALSE
-entryuuid:: X9pfvW/JSKi7rriCp2J57g==
 m-obsolete: FALSE
 m-description: RFC2256: Physical Delivery Office Name
 m-usage: USER_APPLICATIONS
@@ -17,3 +17,4 @@ objectclass: metaTop
 objectclass: top
 m-name: physicalDeliveryOfficeName
 m-equality: caseIgnoreMatch
+

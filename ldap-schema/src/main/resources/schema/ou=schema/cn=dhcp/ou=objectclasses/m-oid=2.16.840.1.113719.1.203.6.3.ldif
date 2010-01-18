@@ -1,3 +1,4 @@
+version: 1
 dn: m-oid=2.16.840.1.113719.1.203.6.3, ou=objectClasses, cn=dhcp, ou=schema
 objectclass: metaObjectClass
 objectclass: metaTop
@@ -17,6 +18,6 @@ m-may: dhcpLeasesDN
 m-may: dhcpOptionsDN
 m-may: dhcpStatements
 createtimestamp: 20090818022732Z
-entryuuid:: 9sKLC/vQS5WB8YLi0IvVTg==
 entrycsn: 20090818052732.821000Z#000000#000#000000
 creatorsname: uid=admin,ou=system
+

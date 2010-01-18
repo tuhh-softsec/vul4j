@@ -1,7 +1,7 @@
+version: 1
 dn: m-oid=1.3.6.1.4.1.13769.2.1.9,ou=attributeTypes,cn=mozilla,ou=schema
 createtimestamp: 20090818022730Z
 m-singlevalue: TRUE
-entryuuid:: HwuoYG7JRMGuiUEwM/ulEA==
 m-obsolete: FALSE
 m-usage: USER_APPLICATIONS
 creatorsname: uid=admin,ou=system
@@ -17,3 +17,4 @@ objectclass: metaTop
 objectclass: top
 m-name: mozillaHomeCountryName
 m-equality: caseIgnoreMatch
+

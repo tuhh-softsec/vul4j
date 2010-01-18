@@ -1,7 +1,7 @@
+version: 1
 dn: m-oid=2.16.840.1.113719.1.203.4.16,ou=attributeTypes,cn=dhcp,ou=schema
 createtimestamp: 20090818022730Z
 m-singlevalue: FALSE
-entryuuid:: 4AgEOY/FQwePyAeuDz4i8A==
 m-obsolete: FALSE
 m-description: The distinguished name(s) of a class(es) in a subclass.
 m-usage: USER_APPLICATIONS
@@ -16,3 +16,4 @@ objectclass: metaTop
 objectclass: top
 m-name: dhcpClassesDN
 m-equality: distinguishedNameMatch
+

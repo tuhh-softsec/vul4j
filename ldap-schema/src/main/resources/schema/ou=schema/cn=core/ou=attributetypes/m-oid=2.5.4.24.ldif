@@ -1,7 +1,7 @@
+version: 1
 dn: m-oid=2.5.4.24,ou=attributeTypes,cn=core,ou=schema
 createtimestamp: 20090818022732Z
 m-singlevalue: FALSE
-entryuuid:: kFp3s9jQRTKGYzIC+RdXGw==
 m-obsolete: FALSE
 m-description: RFC2256: X.121 Address
 m-usage: USER_APPLICATIONS
@@ -17,3 +17,4 @@ objectclass: metaTop
 objectclass: top
 m-name: x121Address
 m-equality: numericStringMatch
+

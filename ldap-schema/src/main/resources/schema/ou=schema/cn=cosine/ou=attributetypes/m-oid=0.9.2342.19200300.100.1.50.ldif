@@ -1,7 +1,7 @@
+version: 1
 dn: m-oid=0.9.2342.19200300.100.1.50,ou=attributeTypes,cn=cosine,ou=schema
 createtimestamp: 20090818022729Z
 m-singlevalue: TRUE
-entryuuid:: TW8fmMtHRRaH2ry2+/x8UA==
 m-obsolete: FALSE
 m-description: RFC1274: Single Level Quality
 m-usage: USER_APPLICATIONS
@@ -15,3 +15,4 @@ objectclass: metaAttributeType
 objectclass: metaTop
 objectclass: top
 m-name: singleLevelQuality
+

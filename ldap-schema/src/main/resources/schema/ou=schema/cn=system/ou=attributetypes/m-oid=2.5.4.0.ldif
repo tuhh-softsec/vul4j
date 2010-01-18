@@ -1,7 +1,7 @@
+version: 1
 dn: m-oid=2.5.4.0,ou=attributeTypes,cn=system,ou=schema
 createtimestamp: 20090818022732Z
 m-singlevalue: FALSE
-entryuuid:: BbTej57vQZ2paGGSQgCZfA==
 m-obsolete: FALSE
 m-description: RFC2256: object classes of the entity
 m-usage: USER_APPLICATIONS
@@ -16,3 +16,4 @@ objectclass: metaTop
 objectclass: top
 m-name: objectClass
 m-equality: objectIdentifierMatch
+
