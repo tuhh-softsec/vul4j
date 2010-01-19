@@ -86,7 +86,7 @@ public class StringTools
     private static final int UTF8_SIX_BYTES = 0x00FC;
 
     /** &lt;alpha> ::= [0x41-0x5A] | [0x61-0x7A] */
-    private static final boolean[] ALPHA =
+    public static final boolean[] ALPHA =
         { 
             false, false, false, false, false, false, false, false, 
             false, false, false, false, false, false, false, false, 
@@ -107,7 +107,7 @@ public class StringTools
         };
 
     /** &lt;alpha-lower-case> ::= [0x61-0x7A] */
-    private static final boolean[] ALPHA_LOWER_CASE =
+    public static final boolean[] ALPHA_LOWER_CASE =
         { 
             false, false, false, false, false, false, false, false, 
             false, false, false, false, false, false, false, false, 
@@ -128,7 +128,7 @@ public class StringTools
         };
 
     /** &lt;alpha-upper-case> ::= [0x41-0x5A] */
-    private static final boolean[] ALPHA_UPPER_CASE =
+    public static final boolean[] ALPHA_UPPER_CASE =
         { 
             false, false, false, false, false, false, false, false, 
             false, false, false, false, false, false, false, false, 
@@ -149,7 +149,7 @@ public class StringTools
         };
 
     /** &lt;alpha-digit> | &lt;digit> */
-    private static final boolean[] ALPHA_DIGIT =
+    public static final boolean[] ALPHA_DIGIT =
         { 
             false, false, false, false, false, false, false, false, 
             false, false, false, false, false, false, false, false, 
@@ -170,7 +170,7 @@ public class StringTools
         };
 
     /** &lt;alpha> | &lt;digit> | '-' */
-    private static final boolean[] CHAR =
+    public static final boolean[] CHAR =
         { 
             false, false, false, false, false, false, false, false, 
             false, false, false, false, false, false, false, false, 
