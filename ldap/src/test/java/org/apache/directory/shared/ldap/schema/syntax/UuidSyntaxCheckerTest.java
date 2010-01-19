@@ -69,7 +69,7 @@ public class UuidSyntaxCheckerTest
             array[ i ] = (byte)i;
         }
 
-        assertTrue( checker.isValidSyntax( array ) );
+        assertTrue( checker.isValidSyntax( StringTools.uuidToString( array ) ) );
     }
 
 

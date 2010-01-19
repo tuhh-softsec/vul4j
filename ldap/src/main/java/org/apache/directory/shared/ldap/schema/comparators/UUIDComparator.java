@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public class UUIDComparator extends LdapComparator<byte[]>
+public class UUIDComparator extends LdapComparator<String>
 {
     /** A logger for this class */
     private static final Logger LOG = LoggerFactory.getLogger( UUIDComparator.class );
@@ -53,10 +53,9 @@ public class UUIDComparator extends LdapComparator<byte[]>
     /**
      * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
      */
-    public int compare( byte[] uuid1, byte[] uuid2 )
+    public int compare( String uuid1, String uuid2 )
     {
-        LOG.debug( "comparing UUID objects '{}' with '{}'", 
-            StringTools.dumpBytes( uuid1 ), StringTools.dumpBytes( uuid2 ) );
+        LOG.debug( "comparing UUID objects '{}' with '{}'", uuid1, uuid2 );
 
         // -------------------------------------------------------------------
         // Handle some basis cases
@@ -71,32 +70,6 @@ public class UUIDComparator extends LdapComparator<byte[]>
             return 1;
         }
         
-        if ( uuid1.length < uuid2.length )
-        {
-            return -1;
-        }
-        else if ( uuid1.length > uuid2.length )
-        { 
-            return 1;
-        }
-        
-        for ( int pos = 0; pos < uuid1.length; pos++ )
-        {
-            if ( uuid1[pos] == uuid2[pos ] )
-            {
-                continue;
-            }
-            
-            if ( uuid1[pos] < uuid2[pos] )
-            {
-                return -1;
-            }
-            else
-            {
-                return 1;
-            }
-        }
-        
-        return 0;
+        return uuid1.compareTo( uuid2 );
     }
 }

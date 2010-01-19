@@ -36,6 +36,7 @@ import java.util.regex.PatternSyntaxException;
 
 import javax.naming.InvalidNameException;
 
+import org.apache.directory.shared.asn1.codec.binary.Hex;
 import org.apache.directory.shared.ldap.entry.client.ClientBinaryValue;
 import org.apache.directory.shared.ldap.entry.client.ClientStringValue;
 
@@ -3721,4 +3722,34 @@ public class StringTools
     {
         return ( ( c > 127 ) || UNICODE_SUBSET[c] );
     }
+
+
+    /**
+     * converts the bytes of a UUID to string
+     *  
+     * @param bytes bytes of a UUID
+     * @return UUID in string format
+     */
+    public static String uuidToString( byte[] bytes )
+    {
+        if ( bytes == null || bytes.length != 16 )
+        {
+            return "Invalid UUID";
+        }
+
+        char[] hex = Hex.encodeHex( bytes );
+        StringBuffer sb = new StringBuffer();
+        sb.append( hex, 0, 8 );
+        sb.append( '-' );
+        sb.append( hex, 8, 4 );
+        sb.append( '-' );
+        sb.append( hex, 12, 4 );
+        sb.append( '-' );
+        sb.append( hex, 16, 4 );
+        sb.append( '-' );
+        sb.append( hex, 20, 12 );
+
+        return sb.toString().toLowerCase();
+    }
+
 }

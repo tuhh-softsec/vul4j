@@ -41,6 +41,8 @@ public class UuidSyntaxChecker extends SyntaxChecker
     /** The serialVersionUID */
     private static final long serialVersionUID = 1L;
 
+    private static final String UUID_REGEX = "^[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}$";
+    
     /**
      * Creates a new instance of UUIDSyntaxChecker.
      */
@@ -60,17 +62,15 @@ public class UuidSyntaxChecker extends SyntaxChecker
             LOG.debug( "Syntax invalid for '{}'", value );
             return false;
         }
-        
-        if ( ! ( value instanceof byte[] ) )
+ 
+        if ( ! ( value instanceof String ) )
         {
             LOG.debug( "Syntax invalid for '{}'", value );
             return false;
         }
-        
-        byte[] uuid = (byte[])value;
-        
-        // The UUID must have a length of 16 bytes
-        if ( uuid.length != 16 )
+
+        String uuid = ( String ) value;
+        if ( ! uuid.matches( UUID_REGEX ) )
         {
             LOG.debug( "Syntax invalid for '{}'", value );
             return false;
