@@ -1698,4 +1698,32 @@ public class LdifReaderTest
         attr = entry.get( "prescriptiveACI" );
         assertTrue( attr.contains( "{ identificationTag \"browseRoot\", precedence 100, authenticationLevel none, itemOrUserFirst userFirst: { userClasses { allUsers }, userPermissions { { protectedItems {entry}, grantsAndDenials { grantReturnDN, grantBrowse } } } } }" ) );
     }
+    
+    
+    @Test
+    public void testRemoveAttribute() throws Exception
+    {
+        String ldif = 
+            "version: 1\n" + 
+            "dn: cn=Horatio Jensen, ou=Product Testing, dc=airius, dc=com\n" + 
+            "objectclass: top\n" + 
+            "objectclass: person\n" + 
+            "objectclass: organizationalPerson\n" + 
+            "cn: Horatio Jensen\n" + 
+            "cn: Horatio N Jensen\n" + 
+            "sn: Jensen\n" + 
+            "uid: hjensen\n" + 
+            "telephonenumber: +1 408 555 1212\n" + 
+            "jpegphoto:< file:" + HJENSEN_JPEG_FILE.getAbsolutePath() + "\n";
+
+        LdifReader reader = new LdifReader();
+        List<LdifEntry> entries = reader.parseLdif( ldif );
+        reader.close();
+        
+        LdifEntry entry = entries.get( 0 );
+        
+        assertNotNull( entry.get( "uid" ) );
+        assertNotNull( entry.removeAttribute( "uid" ) );
+        assertNull( entry.get( "uid" ) );
+    }
 }

@@ -274,6 +274,25 @@ public class LdifEntry implements Cloneable, Externalizable
             entry.add( id, (byte[])value );
         }
     }
+    
+    
+    /**
+     * Remove a list of Attributes from the LdifEntry
+     *
+     * @param ids The Attributes to remove
+     * @return The list of removed EntryAttributes
+     */
+    public List<EntryAttribute> removeAttribute( String... ids )
+    {
+        if ( entry.containsAttribute( ids ) )
+        {
+            return entry.removeAttributes( ids );
+        }
+        else
+        {
+            return null;
+        }
+    }
 
     /**
      * Add an attribute value to an existing attribute
