@@ -85,7 +85,7 @@ public enum LdapDnParser implements NameParser
      * @param rdns The list that will contain the RDNs
      * @throws InvalidNameException If the DN is invalid
      */
-    public static void parseInternal( String name, List<Rdn> rdns ) throws InvalidNameException
+    public static void parseInternal( String name, List<RDN> rdns ) throws InvalidNameException
     {
         try
         {

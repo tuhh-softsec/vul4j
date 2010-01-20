@@ -33,7 +33,7 @@ import org.apache.directory.shared.ldap.message.InternalModifyDnRequest;
 import org.apache.directory.shared.ldap.message.ModifyDnRequestImpl;
 import org.apache.directory.shared.ldap.message.InternalResultResponse;
 import org.apache.directory.shared.ldap.name.LdapDN;
-import org.apache.directory.shared.ldap.name.Rdn;
+import org.apache.directory.shared.ldap.name.RDN;
 import org.junit.Test;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -63,7 +63,7 @@ public class ModifyDnRequestImplTest
         try
         {
             request.setName( new LdapDN( "dc=admins,dc=apache,dc=org" ) );
-            request.setNewRdn( new Rdn( "dc=administrators" ) );
+            request.setNewRdn( new RDN( "dc=administrators" ) );
             request.setNewSuperior( new LdapDN( "dc=groups,dc=apache,dc=org" ) );
         }
         catch ( InvalidNameException ine )
@@ -182,10 +182,10 @@ public class ModifyDnRequestImplTest
     public void testNotEqualDiffNewRdn() throws InvalidNameException
     {
         ModifyDnRequestImpl req0 = getRequest();
-        req0.setNewRdn( new Rdn( "cn=admin0" ) );
+        req0.setNewRdn( new RDN( "cn=admin0" ) );
 
         ModifyDnRequestImpl req1 = getRequest();
-        req1.setNewRdn( new Rdn( "cn=admin1" ) );
+        req1.setNewRdn( new RDN( "cn=admin1" ) );
 
         assertFalse( req0.equals( req1 ) );
         assertFalse( req1.equals( req0 ) );
@@ -219,11 +219,11 @@ public class ModifyDnRequestImplTest
             }
 
 
-            public Rdn getNewRdn()
+            public RDN getNewRdn()
             {
                 try
                 {
-                    return new Rdn( "dc=administrators" );
+                    return new RDN( "dc=administrators" );
                 }
                 catch ( InvalidNameException ine )
                 {
@@ -233,7 +233,7 @@ public class ModifyDnRequestImplTest
             }
 
 
-            public void setNewRdn( Rdn newRdn )
+            public void setNewRdn( RDN newRdn )
             {
             }
 

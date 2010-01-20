@@ -80,7 +80,7 @@ public enum FastLdapDnParser implements NameParser
         dn.normalizeInternal();
     }
     
-    void parseDn( String name, List<Rdn> rdns ) throws InvalidNameException
+    void parseDn( String name, List<RDN> rdns ) throws InvalidNameException
     {
         if ( ( name == null ) || ( name.trim().length() == 0 ) )
         {
@@ -94,7 +94,7 @@ public enum FastLdapDnParser implements NameParser
 
         while ( true )
         {
-            Rdn rdn = new Rdn();
+            RDN rdn = new RDN();
             parseRdnInternal( name, pos, rdn );
             rdns.add( rdn );
 
@@ -127,7 +127,7 @@ public enum FastLdapDnParser implements NameParser
      * 
      * @throws InvalidNameException the invalid name exception
      */
-    public void parseRdn( String name, Rdn rdn ) throws InvalidNameException
+    public void parseRdn( String name, RDN rdn ) throws InvalidNameException
     {
         if ( name == null || name.length() == 0 )
         {
@@ -146,7 +146,7 @@ public enum FastLdapDnParser implements NameParser
     }
 
 
-    private void parseRdnInternal( String name, Position pos, Rdn rdn ) throws InvalidNameException
+    private void parseRdnInternal( String name, Position pos, RDN rdn ) throws InvalidNameException
     {
         int rdnStart = pos.start;
 

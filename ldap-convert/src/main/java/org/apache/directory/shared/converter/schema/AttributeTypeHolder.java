@@ -27,7 +27,7 @@ import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.client.DefaultClientEntry;
 import org.apache.directory.shared.ldap.ldif.LdifUtils;
 import org.apache.directory.shared.ldap.name.LdapDN;
-import org.apache.directory.shared.ldap.name.Rdn;
+import org.apache.directory.shared.ldap.name.RDN;
 import org.apache.directory.shared.ldap.schema.UsageEnum;
 
 
@@ -420,7 +420,7 @@ public class AttributeTypeHolder extends SchemaElementImpl
     {
         StringBuilder sb = new StringBuilder();
 
-        String dn = "m-oid=" + oid + ", " + SchemaConstants.ATTRIBUTES_TYPE_PATH + ", cn=" + Rdn.escapeValue( schemaName ) + ", ou=schema";
+        String dn = "m-oid=" + oid + ", " + SchemaConstants.ATTRIBUTES_TYPE_PATH + ", cn=" + RDN.escapeValue( schemaName ) + ", ou=schema";
 
         // First dump the DN only
         Entry entry = new DefaultClientEntry( new LdapDN( dn ) );

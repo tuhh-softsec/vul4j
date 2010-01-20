@@ -54,7 +54,7 @@ import org.apache.directory.shared.ldap.entry.ModificationOperation;
 import org.apache.directory.shared.ldap.entry.client.DefaultClientAttribute;
 import org.apache.directory.shared.ldap.name.LdapDN;
 import org.apache.directory.shared.ldap.name.LdapDnParser;
-import org.apache.directory.shared.ldap.name.Rdn;
+import org.apache.directory.shared.ldap.name.RDN;
 import org.apache.directory.shared.ldap.util.Base64;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
@@ -571,7 +571,7 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
         // Check that the DN is valid. If not, an exception will be thrown
         try
         {
-            LdapDnParser.parseInternal( dn, new ArrayList<Rdn>() );
+            LdapDnParser.parseInternal( dn, new ArrayList<RDN>() );
         }
         catch ( InvalidNameException ine )
         {

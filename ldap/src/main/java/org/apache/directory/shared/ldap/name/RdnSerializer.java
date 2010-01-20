@@ -60,7 +60,7 @@ public class RdnSerializer
      * @param out the stream in which the RDN will be serialized
      * @throws IOException If we can't write in this stream
      */
-    public static void serialize( Rdn rdn, ObjectOutput out ) throws IOException
+    public static void serialize( RDN rdn, ObjectOutput out ) throws IOException
     {
         out.writeInt( rdn.getNbAtavs() );
         out.writeUTF( rdn.getUpName() );
@@ -92,14 +92,14 @@ public class RdnSerializer
      * Deserialize a RDN instance
      * 
      * We read back the data to create a new RDB. The structure 
-     * read is exposed in the {@link Rdn#writeExternal(ObjectOutput)} 
+     * read is exposed in the {@link RDN#writeExternal(ObjectOutput)} 
      * method<p>
      * 
      * @param in The input stream from which the RDN is read
      * @return a deserialized RDN
      * @throws IOException If the stream can't be read
      */
-    public static Rdn deserialize( ObjectInput in ) throws IOException
+    public static RDN deserialize( ObjectInput in ) throws IOException
     {
         // Read the ATAV number
         int nbAtavs = in.readInt();
@@ -120,7 +120,7 @@ public class RdnSerializer
         int length = in.readInt();
         
         // Now creates the RDN
-        Rdn rdn = new Rdn( length, start, upName, normName );
+        RDN rdn = new RDN( length, start, upName, normName );
 
         // Read through the Atavs
         switch ( nbAtavs )

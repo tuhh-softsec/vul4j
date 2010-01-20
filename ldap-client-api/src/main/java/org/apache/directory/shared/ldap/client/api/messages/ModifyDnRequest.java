@@ -22,7 +22,7 @@ package org.apache.directory.shared.ldap.client.api.messages;
 
 
 import org.apache.directory.shared.ldap.name.LdapDN;
-import org.apache.directory.shared.ldap.name.Rdn;
+import org.apache.directory.shared.ldap.name.RDN;
 
 
 /**
@@ -37,7 +37,7 @@ public class ModifyDnRequest extends AbstractRequest implements RequestWithRespo
     private LdapDN entryDn;
 
     /** the new RDN */
-    private Rdn newRdn;
+    private RDN newRdn;
 
     /** target entry's new parent DN */
     private LdapDN newSuperior;
@@ -64,13 +64,13 @@ public class ModifyDnRequest extends AbstractRequest implements RequestWithRespo
     }
 
 
-    public Rdn getNewRdn()
+    public RDN getNewRdn()
     {
         return newRdn;
     }
 
 
-    public void setNewRdn( Rdn newRdn )
+    public void setNewRdn( RDN newRdn )
     {
         this.newRdn = newRdn;
     }

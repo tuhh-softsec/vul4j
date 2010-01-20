@@ -177,14 +177,14 @@ options    {
 distinguishedName [LdapDN dn]
     {
         matchedProduction( "distinguishedName()" );
-        Rdn rdn = null;
+        RDN rdn = null;
     }
     :
     (
-        rdn = relativeDistinguishedName[new Rdn()] { dn.add( rdn ); rdn=null; }
+        rdn = relativeDistinguishedName[new RDN()] { dn.add( rdn ); rdn=null; }
         (
             ( COMMA | SEMI )
-            rdn = relativeDistinguishedName[new Rdn()] { dn.add( rdn ); rdn=null; }
+            rdn = relativeDistinguishedName[new RDN()] { dn.add( rdn ); rdn=null; }
         )*
         EOF
     )?
@@ -212,17 +212,17 @@ distinguishedName [LdapDN dn]
      * <optional-space> ::= ( <CR> ) *( " " )
      *
      */
-relativeDistinguishedNames [List<Rdn> rdns]
+relativeDistinguishedNames [List<RDN> rdns]
     {
         matchedProduction( "relativeDistinguishedNames()" );
-        Rdn rdn = null;
+        RDN rdn = null;
     }
     :
     (
-        rdn = relativeDistinguishedName[new Rdn()] { rdns.add( rdn ); }
+        rdn = relativeDistinguishedName[new RDN()] { rdns.add( rdn ); }
         (
             ( COMMA | SEMI )
-            rdn = relativeDistinguishedName[new Rdn()] { rdns.add( rdn ); }
+            rdn = relativeDistinguishedName[new RDN()] { rdns.add( rdn ); }
         )*
         EOF
     )?
@@ -244,7 +244,7 @@ relativeDistinguishedNames [List<Rdn> rdns]
      *       <optional-space> <name-component>
      *
      */
-relativeDistinguishedName [Rdn initialRdn] returns [Rdn rdn]
+relativeDistinguishedName [RDN initialRdn] returns [RDN rdn]
     {
         matchedProduction( "relativeDistinguishedName()" );
         rdn = initialRdn;
@@ -280,7 +280,7 @@ relativeDistinguishedName [Rdn initialRdn] returns [Rdn rdn]
      * attributeTypeAndValue = attributeType "=" attributeValue
      *
      */
-attributeTypeAndValue [Rdn rdn] returns [String upName = ""]
+attributeTypeAndValue [RDN rdn] returns [String upName = ""]
     {
         matchedProduction( "attributeTypeAndValue()" );
         String type = null;

@@ -93,7 +93,7 @@ public class LdapDNSerializer
         out.writeInt( dn.size() );
         
         // Loop on the RDNs
-        for ( Rdn rdn:dn.getRdns() )
+        for ( RDN rdn:dn.getRdns() )
         {
             RdnSerializer.serialize( rdn, out );
         }
@@ -137,7 +137,7 @@ public class LdapDNSerializer
         
         for ( int i = 0; i < nbRdns; i++ )
         {
-            Rdn rdn = RdnSerializer.deserialize( in );
+            RDN rdn = RdnSerializer.deserialize( in );
             dn.add( 0, rdn );
         }
     

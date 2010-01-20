@@ -44,7 +44,7 @@ import org.apache.directory.shared.ldap.entry.client.ClientStringValue;
 import org.apache.directory.shared.ldap.entry.client.DefaultClientAttribute;
 import org.apache.directory.shared.ldap.entry.client.DefaultClientEntry;
 import org.apache.directory.shared.ldap.name.LdapDN;
-import org.apache.directory.shared.ldap.name.Rdn;
+import org.apache.directory.shared.ldap.name.RDN;
 import org.apache.directory.shared.ldap.util.StringTools;
 
 
@@ -872,8 +872,8 @@ public class LdifEntry implements Cloneable, Externalizable
                 // Check the newRdn value
                 try
                 {
-                    Rdn thisNewRdn = new Rdn( newRdn );
-                    Rdn entryNewRdn = new Rdn( otherEntry.newRdn );
+                    RDN thisNewRdn = new RDN( newRdn );
+                    RDN entryNewRdn = new RDN( otherEntry.newRdn );
 
                     if ( !thisNewRdn.equals( entryNewRdn ) )
                     {

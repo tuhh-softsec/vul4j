@@ -45,7 +45,7 @@ public class DnParserDIRSERVER_584_Test
    {
        try
        {
-           LdapDnParser.parseInternal( "ou=test+testing", new ArrayList<Rdn>() );
+           LdapDnParser.parseInternal( "ou=test+testing", new ArrayList<RDN>() );
            fail( "should never get here" );
        }
        catch ( InvalidNameException e )
@@ -62,6 +62,6 @@ public class DnParserDIRSERVER_584_Test
     @Test
     public void testb() throws Exception
    {
-       LdapDnParser.parseInternal( "ou=system", new ArrayList<Rdn>() );
+       LdapDnParser.parseInternal( "ou=system", new ArrayList<RDN>() );
    }
 }

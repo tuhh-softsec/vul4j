@@ -125,7 +125,7 @@ import org.apache.directory.shared.ldap.filter.SearchScope;
 import org.apache.directory.shared.ldap.message.AliasDerefMode;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.name.LdapDN;
-import org.apache.directory.shared.ldap.name.Rdn;
+import org.apache.directory.shared.ldap.name.RDN;
 import org.apache.directory.shared.ldap.util.LdapURL;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.apache.mina.core.filterchain.IoFilter;
@@ -1857,22 +1857,22 @@ public class LdapConnection  extends IoHandlerAdapter
     
     /**
      * renames the given entryDn with new RDN and deletes the old RDN.
-     * @see #rename(LdapDN, Rdn, boolean)
+     * @see #rename(LdapDN, RDN, boolean)
      */
-    public ModifyDnResponse rename( LdapDN entryDn, Rdn newRdn ) throws LdapException
+    public ModifyDnResponse rename( LdapDN entryDn, RDN newRdn ) throws LdapException
     {
         return rename( entryDn, newRdn, true );
     }
     
     
     /**
-     * @see #rename(LdapDN, Rdn, boolean)
+     * @see #rename(LdapDN, RDN, boolean)
      */
     public ModifyDnResponse rename( String entryDn, String newRdn, boolean deleteOldRdn ) throws LdapException
     {
         try
         {
-            return rename( new LdapDN( entryDn ), new Rdn( newRdn ), deleteOldRdn );
+            return rename( new LdapDN( entryDn ), new RDN( newRdn ), deleteOldRdn );
         }
         catch( InvalidNameException e )
         {
@@ -1893,7 +1893,7 @@ public class LdapConnection  extends IoHandlerAdapter
      * @return modifyDn operations response
      * @throws LdapException
      */
-    public ModifyDnResponse rename( LdapDN entryDn, Rdn newRdn, boolean deleteOldRdn ) throws LdapException
+    public ModifyDnResponse rename( LdapDN entryDn, RDN newRdn, boolean deleteOldRdn ) throws LdapException
     {
         ModifyDnRequest modDnRequest = new ModifyDnRequest();
         modDnRequest.setEntryDn( entryDn );

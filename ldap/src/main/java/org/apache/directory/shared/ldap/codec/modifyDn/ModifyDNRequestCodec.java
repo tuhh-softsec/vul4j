@@ -29,7 +29,7 @@ import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.name.LdapDN;
-import org.apache.directory.shared.ldap.name.Rdn;
+import org.apache.directory.shared.ldap.name.RDN;
 import org.apache.directory.shared.ldap.util.StringTools;
 
 
@@ -53,7 +53,7 @@ public class ModifyDNRequestCodec extends LdapMessageCodec
     private LdapDN entry;
 
     /** The new RDN to be added to the RDN or to the new superior, if present */
-    private Rdn newRDN;
+    private RDN newRDN;
 
     /** If the previous RDN is to be deleted, this flag will be set to true */
     private boolean deleteOldRDN;
@@ -140,7 +140,7 @@ public class ModifyDNRequestCodec extends LdapMessageCodec
      * 
      * @return Returns the newRDN.
      */
-    public Rdn getNewRDN()
+    public RDN getNewRDN()
     {
         return newRDN;
     }
@@ -151,7 +151,7 @@ public class ModifyDNRequestCodec extends LdapMessageCodec
      * 
      * @param newRDN The newRDN to set.
      */
-    public void setNewRDN( Rdn newRDN )
+    public void setNewRDN( RDN newRDN )
     {
         this.newRDN = newRDN;
     }

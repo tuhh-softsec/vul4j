@@ -36,7 +36,7 @@ import org.apache.directory.shared.ldap.entry.client.ClientModification;
 import org.apache.directory.shared.ldap.entry.client.DefaultClientAttribute;
 import org.apache.directory.shared.ldap.name.AVA;
 import org.apache.directory.shared.ldap.name.LdapDN;
-import org.apache.directory.shared.ldap.name.Rdn;
+import org.apache.directory.shared.ldap.name.RDN;
 import org.apache.directory.shared.ldap.util.AttributeUtils;
 
 
@@ -252,7 +252,7 @@ public class LdifRevertor
     {
         LdifEntry entry = new LdifEntry();
         LdapDN currentParent = null;
-        Rdn currentRdn = null;
+        RDN currentRdn = null;
         LdapDN newDn = null;
 
         if ( newSuperiorDn == null )
@@ -290,7 +290,7 @@ public class LdifRevertor
      * A small helper class to compute the simple revert.
      */
     private static LdifEntry revertEntry( List<LdifEntry> entries, Entry entry, LdapDN newDn, 
-        LdapDN newSuperior, Rdn oldRdn, Rdn newRdn ) throws InvalidNameException
+        LdapDN newSuperior, RDN oldRdn, RDN newRdn ) throws InvalidNameException
     {
         LdifEntry reverted = new LdifEntry();
         
@@ -332,7 +332,7 @@ public class LdifRevertor
     /**
      * A helper method to generate the modified attribute after a rename.
      */
-    private static LdifEntry generateModify( LdapDN parentDn, Entry entry, Rdn oldRdn, Rdn newRdn )
+    private static LdifEntry generateModify( LdapDN parentDn, Entry entry, RDN oldRdn, RDN newRdn )
     {
         LdifEntry restored = new LdifEntry();
         restored.setChangeType( ChangeType.Modify );
@@ -365,8 +365,8 @@ public class LdifRevertor
     /**
      * A helper method which generates a reverted entry
      */
-    private static LdifEntry generateReverted( LdapDN newSuperior, Rdn newRdn, LdapDN newDn, 
-        Rdn oldRdn, boolean deleteOldRdn ) throws InvalidNameException
+    private static LdifEntry generateReverted( LdapDN newSuperior, RDN newRdn, LdapDN newDn, 
+        RDN oldRdn, boolean deleteOldRdn ) throws InvalidNameException
     {
         LdifEntry reverted = new LdifEntry();
         reverted.setChangeType( ChangeType.ModRdn );
@@ -409,7 +409,7 @@ public class LdifRevertor
      * @return A list of LDIF reverted entries 
      * @throws NamingException If the name reverting failed
      */
-    public static List<LdifEntry> reverseRename( Entry entry, Rdn newRdn, boolean deleteOldRdn ) throws NamingException
+    public static List<LdifEntry> reverseRename( Entry entry, RDN newRdn, boolean deleteOldRdn ) throws NamingException
     {
         return reverseMoveAndRename( entry, null, newRdn, deleteOldRdn );
     }
@@ -427,7 +427,7 @@ public class LdifRevertor
      * @return A list of LDIF reverted entries 
      * @throws NamingException If the name reverting failed
      */
-    public static List<LdifEntry> reverseMoveAndRename( Entry entry, LdapDN newSuperior, Rdn newRdn, boolean deleteOldRdn ) throws NamingException
+    public static List<LdifEntry> reverseMoveAndRename( Entry entry, LdapDN newSuperior, RDN newRdn, boolean deleteOldRdn ) throws NamingException
     {
         LdapDN parentDn = entry.getDn();
         LdapDN newDn = null;
@@ -448,7 +448,7 @@ public class LdifRevertor
         }
 
         parentDn = ( LdapDN ) entry.getDn().clone();
-        Rdn oldRdn = parentDn.getRdn();
+        RDN oldRdn = parentDn.getRdn();
 
         newDn = ( LdapDN ) parentDn.clone();
         newDn.remove( newDn.size() - 1 );

@@ -90,7 +90,7 @@ public class LdapDN implements Name, Externalizable
      * NOTE THAT THESE ARE IN THE OPPOSITE ORDER FROM THAT IMPLIED BY THE JAVADOC!
      * Rdn[0] is rdns.get(n) and Rdn[n] is rdns.get(0)
      */
-    protected List<Rdn> rdns = new ArrayList<Rdn>( 5 );
+    protected List<RDN> rdns = new ArrayList<RDN>( 5 );
 
     /** The user provided name */
     private String upName;
@@ -274,12 +274,12 @@ public class LdapDN implements Name, Externalizable
         {
             LdapDN newDn = new LdapDN( name );
 
-            Enumeration<Rdn> rdns = newDn.getAllRdn();
+            Enumeration<RDN> rdns = newDn.getAllRdn();
 
             // Loop on all RDNs
             while ( rdns.hasMoreElements() )
             {
-                Rdn rdn = rdns.nextElement();
+                RDN rdn = rdns.nextElement();
                 String upName = rdn.getUpName();
                 rdnOidToName( rdn, oidsMap );
                 rdn.normalize();
@@ -324,7 +324,7 @@ public class LdapDN implements Name, Externalizable
             StringBuffer sb = new StringBuffer();
             boolean isFirst = true;
 
-            for ( Rdn rdn : rdns )
+            for ( RDN rdn : rdns )
             {
                 if ( isFirst )
                 {
@@ -380,7 +380,7 @@ public class LdapDN implements Name, Externalizable
             StringBuffer sb = new StringBuffer();
             boolean isFirst = true;
 
-            for ( Rdn rdn : rdns )
+            for ( RDN rdn : rdns )
             {
                 if ( isFirst )
                 {
@@ -512,7 +512,7 @@ public class LdapDN implements Name, Externalizable
     {
         int result = 37;
 
-        for ( Rdn rdn : rdns )
+        for ( RDN rdn : rdns )
         {
             result = result * 17 + rdn.hashCode();
         }
@@ -629,8 +629,8 @@ public class LdapDN implements Name, Externalizable
 
             for ( int i = nameDN.size() - 1; i >= 0; i-- )
             {
-                Rdn nameRdn = nameDN.rdns.get( nameDN.rdns.size() - i - 1 );
-                Rdn ldapRdn = rdns.get( rdns.size() - i - 1 );
+                RDN nameRdn = nameDN.rdns.get( nameDN.rdns.size() - i - 1 );
+                RDN ldapRdn = rdns.get( rdns.size() - i - 1 );
 
                 if ( nameRdn.compareTo( ldapRdn ) != 0 )
                 {
@@ -659,12 +659,12 @@ public class LdapDN implements Name, Externalizable
 
             for ( int i = name.size() - 1; i >= 0; i-- )
             {
-                Rdn ldapRdn = rdns.get( i + starting );
-                Rdn nameRdn = null;
+                RDN ldapRdn = rdns.get( i + starting );
+                RDN nameRdn = null;
 
                 try
                 {
-                    nameRdn = new Rdn( name.get( name.size() - i - 1 ) );
+                    nameRdn = new RDN( name.get( name.size() - i - 1 ) );
                 }
                 catch ( InvalidNameException e )
                 {
@@ -724,8 +724,8 @@ public class LdapDN implements Name, Externalizable
             // Ok, iterate through all the RDN of the name
             for ( int i = 0; i < nameDN.size(); i++ )
             {
-                Rdn nameRdn = nameDN.rdns.get( i );
-                Rdn ldapRdn = rdns.get( i );
+                RDN nameRdn = nameDN.rdns.get( i );
+                RDN ldapRdn = rdns.get( i );
 
                 if ( nameRdn.compareTo( ldapRdn ) != 0 )
                 {
@@ -753,12 +753,12 @@ public class LdapDN implements Name, Externalizable
             
             for ( int i = name.size() - 1; i >= 0; i-- )
             {
-                Rdn ldapRdn = rdns.get( nameSize - i - 1 );
-                Rdn nameRdn = null;
+                RDN ldapRdn = rdns.get( nameSize - i - 1 );
+                RDN nameRdn = null;
 
                 try
                 {
-                    nameRdn = new Rdn( name.get( i ) );
+                    nameRdn = new RDN( name.get( i ) );
                 }
                 catch ( InvalidNameException e )
                 {
@@ -797,7 +797,7 @@ public class LdapDN implements Name, Externalizable
         }
         else
         {
-            Rdn rdn = rdns.get( rdns.size() - posn - 1 );
+            RDN rdn = rdns.get( rdns.size() - posn - 1 );
 
             return rdn.toString();
         }
@@ -814,7 +814,7 @@ public class LdapDN implements Name, Externalizable
      * @throws ArrayIndexOutOfBoundsException
      *             if posn is outside the specified range
      */
-    public Rdn getRdn( int posn )
+    public RDN getRdn( int posn )
     {
         if ( rdns.size() == 0 )
         {
@@ -822,7 +822,7 @@ public class LdapDN implements Name, Externalizable
         }
         else
         {
-            Rdn rdn = rdns.get( rdns.size() - posn - 1 );
+            RDN rdn = rdns.get( rdns.size() - posn - 1 );
 
             return rdn;
         }
@@ -834,7 +834,7 @@ public class LdapDN implements Name, Externalizable
      *
      * @return the last component of this DN
      */
-    public Rdn getRdn()
+    public RDN getRdn()
     {
         if ( rdns.size() == 0 )
         {
@@ -852,14 +852,14 @@ public class LdapDN implements Name, Externalizable
      *
      * @return All the components
      */
-    public List<Rdn> getRdns()
+    public List<RDN> getRdns()
     {
-        List<Rdn> newRdns = new ArrayList<Rdn>();
+        List<RDN> newRdns = new ArrayList<RDN>();
 
         // We will clone the list, to avoid user modifications
-        for ( Rdn rdn : rdns )
+        for ( RDN rdn : rdns )
         {
-            newRdns.add( ( Rdn ) rdn.clone() );
+            newRdns.add( ( RDN ) rdn.clone() );
         }
 
         return newRdns;
@@ -896,7 +896,7 @@ public class LdapDN implements Name, Externalizable
                     throw new NoSuchElementException();
                 }
 
-                Rdn rdn = rdns.get( rdns.size() - pos - 1 );
+                RDN rdn = rdns.get( rdns.size() - pos - 1 );
                 pos++;
                 return rdn.toString();
             }
@@ -912,7 +912,7 @@ public class LdapDN implements Name, Externalizable
      *
      * @return an enumeration of the components of this name, as Rdn
      */
-    public Enumeration<Rdn> getAllRdn()
+    public Enumeration<RDN> getAllRdn()
     {
         /*
          * Note that by accessing the name component using the get() method on
@@ -920,7 +920,7 @@ public class LdapDN implements Name, Externalizable
          * right to left with increasing index values. LdapName.get() does the
          * index translation on m_list for us.
          */
-        return new Enumeration<Rdn>()
+        return new Enumeration<RDN>()
         {
             private int pos;
 
@@ -931,7 +931,7 @@ public class LdapDN implements Name, Externalizable
             }
 
 
-            public Rdn nextElement()
+            public RDN nextElement()
             {
                 if ( pos >= rdns.size() )
                 {
@@ -939,7 +939,7 @@ public class LdapDN implements Name, Externalizable
                     throw new NoSuchElementException();
                 }
 
-                Rdn rdn = rdns.get( rdns.size() - pos - 1 );
+                RDN rdn = rdns.get( rdns.size() - pos - 1 );
                 pos++;
                 return rdn;
             }
@@ -969,7 +969,7 @@ public class LdapDN implements Name, Externalizable
         for ( int i = rdns.size() - posn; i < rdns.size(); i++ )
         {
             // Don't forget to clone the rdns !
-            newLdapDN.rdns.add( ( Rdn ) rdns.get( i ).clone() );
+            newLdapDN.rdns.add( ( RDN ) rdns.get( i ).clone() );
         }
 
         newLdapDN.normName = newLdapDN.toNormName();
@@ -1001,7 +1001,7 @@ public class LdapDN implements Name, Externalizable
         for ( int i = 0; i < size() - posn; i++ )
         {
             // Don't forget to clone the rdns !
-            newLdapDN.rdns.add( ( Rdn ) rdns.get( i ).clone() );
+            newLdapDN.rdns.add( ( RDN ) rdns.get( i ).clone() );
         }
 
         newLdapDN.normName = newLdapDN.toNormName();
@@ -1063,7 +1063,7 @@ public class LdapDN implements Name, Externalizable
 
             for ( int i = name.size() - 1; i >= 0; i-- )
             {
-                Rdn rdn = new Rdn( name.get( i ) );
+                RDN rdn = new RDN( name.get( i ) );
                 rdns.add( size() - posn, rdn );
             }
 
@@ -1129,7 +1129,7 @@ public class LdapDN implements Name, Externalizable
 
             for ( int i = name.size() - 1; i >= 0; i-- )
             {
-                Rdn rdn = new Rdn( name.get( i ) );
+                RDN rdn = new RDN( name.get( i ) );
                 rdns.add( size() - posn, rdn );
             }
 
@@ -1152,7 +1152,7 @@ public class LdapDN implements Name, Externalizable
         }
 
         // We have to parse the nameComponent which is given as an argument
-        Rdn newRdn = new Rdn( comp );
+        RDN newRdn = new RDN( comp );
 
         rdns.add( 0, newRdn );
         normalizeInternal();
@@ -1168,7 +1168,7 @@ public class LdapDN implements Name, Externalizable
      * @param newRdn the RDN to add
      * @return the updated name (not a new one)
      */
-    public Name add( Rdn newRdn )
+    public Name add( RDN newRdn )
     {
         rdns.add( 0, newRdn );
         
@@ -1186,7 +1186,7 @@ public class LdapDN implements Name, Externalizable
      * @param pos The position where we want to add the Rdn
      * @return the updated name (not a new one)
      */
-    public Name add( int pos, Rdn newRdn )
+    public Name add( int pos, RDN newRdn )
     {
         rdns.add( newRdn );
         
@@ -1203,7 +1203,7 @@ public class LdapDN implements Name, Externalizable
      * @param newRdn the RDN to add
      * @return the updated name (not a new one)
      */
-    public Name addNormalized( Rdn newRdn )
+    public Name addNormalized( RDN newRdn )
     {
         rdns.add( 0, newRdn );
         
@@ -1241,7 +1241,7 @@ public class LdapDN implements Name, Externalizable
         }
 
         // We have to parse the nameComponent which is given as an argument
-        Rdn newRdn = new Rdn( comp );
+        RDN newRdn = new RDN( comp );
 
         int realPos = size() - posn;
         rdns.add( realPos, newRdn );
@@ -1271,7 +1271,7 @@ public class LdapDN implements Name, Externalizable
         }
 
         int realPos = size() - posn - 1;
-        Rdn rdn = rdns.remove( realPos );
+        RDN rdn = rdns.remove( realPos );
 
         normalizeInternal();
         toUpName();
@@ -1288,11 +1288,11 @@ public class LdapDN implements Name, Externalizable
         try
         {
             LdapDN dn = ( LdapDN ) super.clone();
-            dn.rdns = new ArrayList<Rdn>();
+            dn.rdns = new ArrayList<RDN>();
 
-            for ( Rdn rdn : rdns )
+            for ( RDN rdn : rdns )
             {
-                dn.rdns.add( ( Rdn ) rdn.clone() );
+                dn.rdns.add( ( RDN ) rdn.clone() );
             }
 
             return dn;
@@ -1358,8 +1358,8 @@ public class LdapDN implements Name, Externalizable
 
             for ( int i = rdns.size(); i > 0; i-- )
             {
-                Rdn rdn1 = rdns.get( i - 1 );
-                Rdn rdn2 = dn.rdns.get( i - 1 );
+                RDN rdn1 = rdns.get( i - 1 );
+                RDN rdn2 = dn.rdns.get( i - 1 );
                 int res = rdn1.compareTo( rdn2 );
 
                 if ( res != 0 )
@@ -1431,14 +1431,14 @@ public class LdapDN implements Name, Externalizable
      * @throws InvalidNameException If the RDN is invalid.
      * @throws NamingException If something went wrong.
      */
-    /** No qualifier */ static void rdnOidToName( Rdn rdn, Map<String, OidNormalizer> oidsMap ) throws InvalidNameException,
+    /** No qualifier */ static void rdnOidToName( RDN rdn, Map<String, OidNormalizer> oidsMap ) throws InvalidNameException,
         NamingException
     {
         if ( rdn.getNbAtavs() > 1 )
         {
             // We have more than one ATAV for this RDN. We will loop on all
             // ATAVs
-            Rdn rdnCopy = ( Rdn ) rdn.clone();
+            RDN rdnCopy = ( RDN ) rdn.clone();
             rdn.clear();
 
             for ( AVA val:rdnCopy )
@@ -1481,12 +1481,12 @@ public class LdapDN implements Name, Externalizable
             return dn;
         }
 
-        Enumeration<Rdn> rdns = dn.getAllRdn();
+        Enumeration<RDN> rdns = dn.getAllRdn();
 
         // Loop on all RDNs
         while ( rdns.hasMoreElements() )
         {
-            Rdn rdn = rdns.nextElement();
+            RDN rdn = rdns.nextElement();
             String upName = rdn.getUpName();
             rdnOidToName( rdn, oidsMap );
             rdn.normalize();
@@ -1529,12 +1529,12 @@ public class LdapDN implements Name, Externalizable
             return this;
         }
 
-        Enumeration<Rdn> localRdns = getAllRdn();
+        Enumeration<RDN> localRdns = getAllRdn();
 
         // Loop on all RDNs
         while ( localRdns.hasMoreElements() )
         {
-            Rdn rdn = localRdns.nextElement();
+            RDN rdn = localRdns.nextElement();
             String localUpName = rdn.getUpName();
             rdnOidToName( rdn, oidsMap );
             rdn.normalize();
@@ -1623,7 +1623,7 @@ public class LdapDN implements Name, Externalizable
         out.writeInt( rdns.size() );
 
         // Loop on the RDNs
-        for ( Rdn rdn:rdns )
+        for ( RDN rdn:rdns )
         {
             out.writeObject( rdn );
         }
@@ -1665,11 +1665,11 @@ public class LdapDN implements Name, Externalizable
         
         // Read the RDNs. Is it's null, the number will be -1.
         int nbRdns = in.readInt();
-        rdns = new ArrayList<Rdn>( nbRdns );
+        rdns = new ArrayList<RDN>( nbRdns );
         
         for ( int i = 0; i < nbRdns; i++ )
         {
-            Rdn rdn = (Rdn)in.readObject();
+            RDN rdn = (RDN)in.readObject();
             rdns.add( rdn );
         }
     }

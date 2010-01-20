@@ -68,7 +68,7 @@ import org.apache.directory.shared.ldap.entry.client.ClientBinaryValue;
 import org.apache.directory.shared.ldap.entry.client.ClientStringValue;
 import org.apache.directory.shared.ldap.filter.SearchScope;
 import org.apache.directory.shared.ldap.name.LdapDN;
-import org.apache.directory.shared.ldap.name.Rdn;
+import org.apache.directory.shared.ldap.name.RDN;
 import org.apache.directory.shared.ldap.util.Base64;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.xmlpull.v1.XmlPullParser;
@@ -1647,7 +1647,7 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
             {
                 try
                 {
-                    modifyDNRequest.setNewRDN( new Rdn( attributeValue ) );
+                    modifyDNRequest.setNewRDN( new RDN( attributeValue ) );
                 }
                 catch ( InvalidNameException e )
                 {

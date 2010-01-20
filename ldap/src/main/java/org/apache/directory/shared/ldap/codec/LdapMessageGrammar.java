@@ -105,7 +105,7 @@ import org.apache.directory.shared.ldap.message.ModifyResponseImpl;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.message.SearchResponseDoneImpl;
 import org.apache.directory.shared.ldap.name.LdapDN;
-import org.apache.directory.shared.ldap.name.Rdn;
+import org.apache.directory.shared.ldap.name.RDN;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -2313,7 +2313,7 @@ public class LdapMessageGrammar extends AbstractGrammar
 
                     // We have to handle the special case of a 0 length matched
                     // newDN
-                    Rdn newRdn = null;
+                    RDN newRdn = null;
 
                     if ( tlv.getLength() == 0 )
                     {

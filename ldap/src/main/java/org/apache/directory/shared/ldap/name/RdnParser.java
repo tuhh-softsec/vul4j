@@ -96,7 +96,7 @@ public class RdnParser
      *            AttributeTypeAndValue will be added.
      * @throws InvalidNameException If the NameComponent is invalid
      */
-    public static void parse( String dn, Rdn rdn ) throws InvalidNameException
+    public static void parse( String dn, RDN rdn ) throws InvalidNameException
     {
         try
         {
@@ -122,7 +122,7 @@ public class RdnParser
      */
     public static boolean isValid( String dn )
     {
-        Rdn rdn = new Rdn();
+        RDN rdn = new RDN();
         try
         {
             parse( dn, rdn );

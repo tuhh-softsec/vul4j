@@ -20,7 +20,7 @@
 package org.apache.directory.shared.ldap.message;
 
 import org.apache.directory.shared.ldap.name.LdapDN;
-import org.apache.directory.shared.ldap.name.Rdn;
+import org.apache.directory.shared.ldap.name.RDN;
 
 
 /**
@@ -37,7 +37,7 @@ public class ModifyDnRequestImpl extends AbstractAbandonableRequest implements I
     private LdapDN name;
 
     /** PDU's <b>newrdn</b> relative distinguished name property */
-    private Rdn newRdn;
+    private RDN newRdn;
 
     /** PDU's <b>newSuperior</b> distinguished name property */
     private LdapDN newSuperior;
@@ -145,7 +145,7 @@ public class ModifyDnRequestImpl extends AbstractAbandonableRequest implements I
      * 
      * @return the relative dn with one component
      */
-    public Rdn getNewRdn()
+    public RDN getNewRdn()
     {
         return newRdn;
     }
@@ -158,7 +158,7 @@ public class ModifyDnRequestImpl extends AbstractAbandonableRequest implements I
      * @param newRdn
      *            the relative dn with one component
      */
-    public void setNewRdn( Rdn newRdn )
+    public void setNewRdn( RDN newRdn )
     {
         this.newRdn = newRdn;
     }

@@ -369,7 +369,7 @@ public class LdapDNTest
         assertEquals( "a=\\#123456", dn.toString() );
         assertEquals( "a = \\#123456", dn.getName() );
 
-        Rdn rdn = dn.getRdn();
+        RDN rdn = dn.getRdn();
         assertEquals( "a = \\#123456", rdn.getUpName() );
 
         assertTrue( LdapDN.isValid( "a = \\#00" ) );
@@ -396,7 +396,7 @@ public class LdapDNTest
         assertEquals( "a=\\#this is a sharp", dn.toString() );
         assertEquals( "a = \\#this is a sharp", dn.getName() );
 
-        Rdn rdn = dn.getRdn();
+        RDN rdn = dn.getRdn();
         assertEquals( "a = \\#this is a sharp", rdn.getUpName() );
     }
 
@@ -1959,12 +1959,12 @@ public class LdapDNTest
     {
         LdapDN name = new LdapDN( "cn=Airline,cn=Website,cn=HomeDir,cn=John,ou=Marketing,ou=West" );
 
-        Enumeration<Rdn> rdns = name.getAllRdn();
+        Enumeration<RDN> rdns = name.getAllRdn();
         assertEquals( true, rdns.hasMoreElements() );
 
         for ( int i = 0; rdns.hasMoreElements(); i++ )
         {
-            Rdn element = ( Rdn ) rdns.nextElement();
+            RDN element = ( RDN ) rdns.nextElement();
 
             if ( i == 0 )
             {
@@ -2494,7 +2494,7 @@ public class LdapDNTest
 
         assertTrue( name.getName().equals( "ou= Some   People   ,dc = eXample,dc= cOm" ) );
 
-        Rdn rdn = name.getRdn();
+        RDN rdn = name.getRdn();
 
         assertEquals( "ou= Some   People   ", rdn.getUpName() );
         assertEquals( "ou", rdn.getNormType() );
@@ -2506,7 +2506,7 @@ public class LdapDNTest
             "2.5.4.11=some people,0.9.2342.19200300.100.1.25=example,0.9.2342.19200300.100.1.25=com" ) );
         assertTrue( name.getName().equals( "ou= Some   People   ,dc = eXample,dc= cOm" ) );
 
-        Rdn rdn2 = result.getRdn();
+        RDN rdn2 = result.getRdn();
 
         assertEquals( "ou= Some   People   ", rdn2.getUpName() );
         assertEquals( "2.5.4.11", rdn2.getNormType() );
@@ -3481,7 +3481,7 @@ public class LdapDNTest
         assertEquals( "2.5.4.11=example,2.5.4.11=com", dn.getNormName() );
         assertEquals( "  ou  =  Example ,  ou  =  COM ", dn.getName() );
         
-        Rdn rdn = dn.getRdn();
+        RDN rdn = dn.getRdn();
         assertEquals( "2.5.4.11", rdn.getNormType() );
         assertEquals( "example",rdn.getNormValue() );
         assertEquals( "2.5.4.11=example", rdn.getNormName() );
@@ -3511,7 +3511,7 @@ public class LdapDNTest
         assertEquals( "2.5.4.11=example+2.5.4.11=test,2.5.4.11=com", dn.getNormName() );
         assertEquals( "  ou  =  Example + ou = TEST ,  ou  =  COM ", dn.getName() );
         
-        Rdn rdn = dn.getRdn();
+        RDN rdn = dn.getRdn();
         assertEquals( "2.5.4.11", rdn.getNormType() );
         assertEquals( "example",rdn.getNormValue() );
         assertEquals( "2.5.4.11=example+2.5.4.11=test", rdn.getNormName() );
@@ -3562,7 +3562,7 @@ public class LdapDNTest
         assertEquals( "2.5.4.11=ex\\+mple,2.5.4.11=com", dn.getNormName() );
         assertEquals( "  ou  =  Ex\\+mple ,  ou  =  COM ", dn.getName() );
         
-        Rdn rdn = dn.getRdn();
+        RDN rdn = dn.getRdn();
         assertEquals( "2.5.4.11", rdn.getNormType() );
         assertEquals( "ex+mple",rdn.getNormValue() );
         assertEquals( "2.5.4.11=ex\\+mple", rdn.getNormName() );
@@ -3594,7 +3594,7 @@ public class LdapDNTest
         assertEquals( "ou=Ex\\+mple+ou=T\\+ST\\ ,ou=COM", dn.getNormName() );
         
         // Check the first RDN
-        Rdn rdn = dn.getRdn();
+        RDN rdn = dn.getRdn();
         assertEquals( "  OU  =  Ex\\+mple + ou = T\\+ST\\  ", rdn.getUpName() );
         assertEquals( "ou=Ex\\+mple+ou=T\\+ST\\ ", rdn.getNormName() );
 

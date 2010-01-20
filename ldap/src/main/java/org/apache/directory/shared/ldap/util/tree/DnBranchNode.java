@@ -27,7 +27,7 @@ import java.util.Map;
 import javax.naming.NamingException;
 
 import org.apache.directory.shared.ldap.name.LdapDN;
-import org.apache.directory.shared.ldap.name.Rdn;
+import org.apache.directory.shared.ldap.name.RDN;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -239,7 +239,7 @@ public class DnBranchNode<N> implements DnNode<N>
      */
     public boolean hasParentElement( LdapDN dn )
     {
-        Enumeration<Rdn> rdns = dn.getAllRdn();
+        Enumeration<RDN> rdns = dn.getAllRdn();
         
         // This is synchronized so that we can't read the
         // partitionList when it is modified.
@@ -250,7 +250,7 @@ public class DnBranchNode<N> implements DnNode<N>
             // Iterate through all the RDN until we find the associated partition
             while ( rdns.hasMoreElements() )
             {
-                Rdn rdn = rdns.nextElement();
+                RDN rdn = rdns.nextElement();
 
                 if ( currentNode == null )
                 {

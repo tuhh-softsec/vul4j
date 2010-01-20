@@ -108,10 +108,10 @@ import org.slf4j.LoggerFactory;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public class Rdn implements Cloneable, Comparable, Externalizable, Iterable<AVA>
+public class RDN implements Cloneable, Comparable, Externalizable, Iterable<AVA>
 {
     /** The LoggerFactory used by this class */
-    protected static final Logger LOG = LoggerFactory.getLogger( Rdn.class );
+    protected static final Logger LOG = LoggerFactory.getLogger( RDN.class );
 
     /**
     * Declares the Serial Version Uid.
@@ -185,7 +185,7 @@ public class Rdn implements Cloneable, Comparable, Externalizable, Iterable<AVA>
     /**
      * A empty constructor.
      */
-    public Rdn()
+    public RDN()
     {
         // Don't waste space... This is not so often we have multiple
         // name-components in a RDN... So we won't initialize the Map and the
@@ -201,7 +201,7 @@ public class Rdn implements Cloneable, Comparable, Externalizable, Iterable<AVA>
      * @param rdn The String containing the RDN to parse
      * @throws InvalidNameException If the RDN is invalid
      */
-    public Rdn( String rdn ) throws InvalidNameException
+    public RDN( String rdn ) throws InvalidNameException
     {
         start = 0;
 
@@ -237,7 +237,7 @@ public class Rdn implements Cloneable, Comparable, Externalizable, Iterable<AVA>
      * @param normValue The normalized provided value of the RDN
      * @throws InvalidNameException If the RDN is invalid
      */
-    public Rdn( String upType, String normType, String upValue, String normValue ) throws InvalidNameException
+    public RDN( String upType, String normType, String upValue, String normValue ) throws InvalidNameException
     {
         addAttributeTypeAndValue( upType, normType, new ClientStringValue( upValue ), new ClientStringValue( normValue ) );
 
@@ -259,7 +259,7 @@ public class Rdn implements Cloneable, Comparable, Externalizable, Iterable<AVA>
      * @param upValue The user provided value of the RDN
      * @throws InvalidNameException If the RDN is invalid
      */
-    public Rdn( String upType, String upValue ) throws InvalidNameException
+    public RDN( String upType, String upValue ) throws InvalidNameException
     {
         addAttributeTypeAndValue( upType, upType, new ClientStringValue( upValue ), new ClientStringValue( upValue ) );
 
@@ -279,7 +279,7 @@ public class Rdn implements Cloneable, Comparable, Externalizable, Iterable<AVA>
      * @param upName The user provided name
      * @param normName the normalized name
      */
-    /* No protection */Rdn( int start, int length, String upName, String normName )
+    RDN( int start, int length, String upName, String normName )
     {
         this.start = 0;
         this.length = length;
@@ -295,7 +295,7 @@ public class Rdn implements Cloneable, Comparable, Externalizable, Iterable<AVA>
      * @param rdn
      *            The non-null Rdn to be copied.
      */
-    public Rdn( Rdn rdn )
+    public RDN( RDN rdn )
     {
         nbAtavs = rdn.getNbAtavs();
         this.normName = rdn.normName;
@@ -395,7 +395,7 @@ public class Rdn implements Cloneable, Comparable, Externalizable, Iterable<AVA>
      * @throws InvalidNameException If the RDN is invalid.
      * @throws NamingException If something went wrong.
      */
-    public Rdn normalize( Map<String, OidNormalizer> oidsMap ) throws InvalidNameException, NamingException
+    public RDN normalize( Map<String, OidNormalizer> oidsMap ) throws InvalidNameException, NamingException
     {
         String upName = getUpName();
         LdapDN.rdnOidToName( this, oidsMap );
@@ -701,7 +701,7 @@ public class Rdn implements Cloneable, Comparable, Externalizable, Iterable<AVA>
     {
         try
         {
-            Rdn rdn = ( Rdn ) super.clone();
+            RDN rdn = ( RDN ) super.clone();
 
             // The AttributeTypeAndValue is immutable. We won't clone it
 
@@ -758,9 +758,9 @@ public class Rdn implements Cloneable, Comparable, Externalizable, Iterable<AVA>
             return SUPERIOR;
         }
 
-        if ( object instanceof Rdn )
+        if ( object instanceof RDN )
         {
-            Rdn rdn = ( Rdn ) object;
+            RDN rdn = ( RDN ) object;
 
             if ( rdn.nbAtavs != nbAtavs )
             {
@@ -986,7 +986,7 @@ public class Rdn implements Cloneable, Comparable, Externalizable, Iterable<AVA>
             return true;
         }
 
-        if ( !( rdn instanceof Rdn ) )
+        if ( !( rdn instanceof RDN ) )
         {
             return false;
         }
@@ -1410,7 +1410,7 @@ public class Rdn implements Cloneable, Comparable, Externalizable, Iterable<AVA>
      * @see Externalizable#readExternal(ObjectInput)
      * 
      * We read back the data to create a new RDB. The structure 
-     * read is exposed in the {@link Rdn#writeExternal(ObjectOutput)} 
+     * read is exposed in the {@link RDN#writeExternal(ObjectOutput)} 
      * method<p>
      * 
      * @param in The input stream from which the RDN will be read

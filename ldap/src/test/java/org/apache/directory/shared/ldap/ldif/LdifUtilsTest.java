@@ -39,7 +39,7 @@ import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.client.DefaultClientAttribute;
 import org.apache.directory.shared.ldap.entry.client.DefaultClientEntry;
 import org.apache.directory.shared.ldap.name.LdapDN;
-import org.apache.directory.shared.ldap.name.Rdn;
+import org.apache.directory.shared.ldap.name.RDN;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
 
@@ -397,7 +397,7 @@ public class LdifUtilsTest
         entry.add( "sn", "doe" );
         entry.add( "uid", "jdoe" );
 
-        List<LdifEntry> reverseds = LdifRevertor.reverseMoveAndRename( entry, newSuperior, new Rdn( "cn=jack doe" ), false );
+        List<LdifEntry> reverseds = LdifRevertor.reverseMoveAndRename( entry, newSuperior, new RDN( "cn=jack doe" ), false );
 
         assertNotNull( reverseds );
         assertEquals( 1, reverseds.size() );
@@ -429,7 +429,7 @@ public class LdifUtilsTest
         entry.add( "sn", "doe" );
         entry.add( "uid", "jdoe" );
 
-        List<LdifEntry> reverseds = LdifRevertor.reverseMoveAndRename( entry, newSuperior, new Rdn( "cn=jack doe" ), false );
+        List<LdifEntry> reverseds = LdifRevertor.reverseMoveAndRename( entry, newSuperior, new RDN( "cn=jack doe" ), false );
 
         assertNotNull( reverseds );
         assertEquals( 1, reverseds.size() );

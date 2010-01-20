@@ -43,7 +43,7 @@ public class ComplexLdapDnParser
      * 
      * @throws InvalidNameException the invalid name exception
      */
-    public void parseDn( String name, List<Rdn> rdns ) throws InvalidNameException
+    public void parseDn( String name, List<RDN> rdns ) throws InvalidNameException
     {
         AntlrDnParser dnParser = new AntlrDnParser( new AntlrDnLexer( new StringReader( name ) ) );
         
@@ -68,7 +68,7 @@ public class ComplexLdapDnParser
      * 
      * @throws InvalidNameException the invalid name exception
      */
-    public void parseRdn( String name, Rdn rdn ) throws InvalidNameException
+    public void parseRdn( String name, RDN rdn ) throws InvalidNameException
     {
         AntlrDnParser dnParser = new AntlrDnParser( new AntlrDnLexer( new StringReader( name ) ) );
         try

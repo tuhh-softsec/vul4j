@@ -41,7 +41,7 @@ import org.apache.directory.shared.ldap.entry.client.ClientModification;
 import org.apache.directory.shared.ldap.entry.client.DefaultClientAttribute;
 import org.apache.directory.shared.ldap.entry.client.DefaultClientEntry;
 import org.apache.directory.shared.ldap.name.LdapDN;
-import org.apache.directory.shared.ldap.name.Rdn;
+import org.apache.directory.shared.ldap.name.RDN;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
 
@@ -648,7 +648,7 @@ public class LdifRevertorTest
     {
         LdapDN dn = new LdapDN( "cn=john doe, dc=example, dc=com" );
         LdapDN newSuperior = new LdapDN( "ou=system" );
-        Rdn rdn = new Rdn( "cn=john doe" );
+        RDN rdn = new RDN( "cn=john doe" );
 
         Attributes attrs = new BasicAttributes( "objectClass", "person", true );
         attrs.get( "objectClass" ).add( "uidObject" );
@@ -691,8 +691,8 @@ public class LdifRevertorTest
     public void test11ReverseRenameSimpleSimpleNotOverlappingKeepOldRdnDontExistInEntry() throws NamingException
     {
         LdapDN dn = new LdapDN( "cn=test,ou=system" );
-        Rdn oldRdn = new Rdn( "cn=test" );
-        Rdn newRdn = new Rdn( "cn=joe" );
+        RDN oldRdn = new RDN( "cn=test" );
+        RDN newRdn = new RDN( "cn=joe" );
 
         Entry entry = new DefaultClientEntry( dn );
         entry.put( "cn", "test" );
@@ -735,8 +735,8 @@ public class LdifRevertorTest
     public void test12ReverseRenameSimpleSimpleNotOverlappingKeepOldRdnExistInEntry() throws NamingException
     {
         LdapDN dn = new LdapDN( "cn=test,ou=system" );
-        Rdn oldRdn = new Rdn( "cn=test" );
-        Rdn newRdn = new Rdn( "cn=small" );
+        RDN oldRdn = new RDN( "cn=test" );
+        RDN newRdn = new RDN( "cn=small" );
 
         Entry entry = new DefaultClientEntry( dn );
         entry.put( "cn", "test", "small" );
@@ -778,8 +778,8 @@ public class LdifRevertorTest
     public void test21ReverseRenameSimpleSimpleNotOverlappingDeleteOldRdnDontExistInEntry() throws NamingException
     {
         LdapDN dn = new LdapDN( "cn=test,ou=system" );
-        Rdn oldRdn = new Rdn( "cn=test" );
-        Rdn newRdn = new Rdn( "cn=joe" );
+        RDN oldRdn = new RDN( "cn=test" );
+        RDN newRdn = new RDN( "cn=joe" );
 
         Entry entry = new DefaultClientEntry( dn );
         entry.put( "cn", "test" );
@@ -822,8 +822,8 @@ public class LdifRevertorTest
     public void test22ReverseRenameSimpleSimpleNotOverlappingDeleteOldRdnExistInEntry() throws NamingException
     {
         LdapDN dn = new LdapDN( "cn=test,ou=system" );
-        Rdn oldRdn = new Rdn( "cn=test" );
-        Rdn newRdn = new Rdn( "cn=small" );
+        RDN oldRdn = new RDN( "cn=test" );
+        RDN newRdn = new RDN( "cn=small" );
 
         Entry entry = new DefaultClientEntry( dn );
         entry.put( "cn", "test", "small" );
@@ -867,8 +867,8 @@ public class LdifRevertorTest
     public void test3ReverseRenameCompositeSimpleNotOverlappingKeepOldRdnDontExistInEntry() throws NamingException
     {
         LdapDN dn = new LdapDN( "cn=small+cn=test,ou=system" );
-        Rdn oldRdn = new Rdn( "cn=small+cn=test" );
-        Rdn newRdn = new Rdn( "cn=joe" );
+        RDN oldRdn = new RDN( "cn=small+cn=test" );
+        RDN newRdn = new RDN( "cn=joe" );
 
         Entry entry = new DefaultClientEntry( dn );
         entry.put( "cn", "test", "small" );
@@ -913,8 +913,8 @@ public class LdifRevertorTest
     public void test3ReverseRenameCompositeSimpleNotOverlappingKeepOldRdnExistsInEntry() throws NamingException
     {
         LdapDN dn = new LdapDN( "cn=small+cn=test,ou=system" );
-        Rdn oldRdn = new Rdn( "cn=small+cn=test" );
-        Rdn newRdn = new Rdn( "cn=big" );
+        RDN oldRdn = new RDN( "cn=small+cn=test" );
+        RDN newRdn = new RDN( "cn=big" );
 
         Entry entry = new DefaultClientEntry( dn );
         entry.put( "cn", "test", "small", "big" );
@@ -958,8 +958,8 @@ public class LdifRevertorTest
     public void test4ReverseRenameCompositeSimpleNotOverlappingDeleteOldRdnDontExistsInEntry() throws NamingException
     {
         LdapDN dn = new LdapDN( "cn=small+cn=test,ou=system" );
-        Rdn oldRdn = new Rdn( "cn=small+cn=test" );
-        Rdn newRdn = new Rdn( "cn=joe" );
+        RDN oldRdn = new RDN( "cn=small+cn=test" );
+        RDN newRdn = new RDN( "cn=joe" );
 
         Entry entry = new DefaultClientEntry( dn );
         entry.put( "cn", "test", "small" );
@@ -1004,8 +1004,8 @@ public class LdifRevertorTest
     public void test4ReverseRenameCompositeSimpleNotOverlappingDeleteOldRdnExistInEntry() throws NamingException
     {
         LdapDN dn = new LdapDN( "cn=small+cn=test,ou=system" );
-        Rdn oldRdn = new Rdn( "cn=small+cn=test" );
-        Rdn newRdn = new Rdn( "cn=big" );
+        RDN oldRdn = new RDN( "cn=small+cn=test" );
+        RDN newRdn = new RDN( "cn=big" );
 
         Entry entry = new DefaultClientEntry( dn );
         entry.put( "cn", "test", "small", "big" );
@@ -1048,8 +1048,8 @@ public class LdifRevertorTest
     public void test5ReverseRenameCompositeSimpleOverlappingKeepOldRdn() throws NamingException
     {
         LdapDN dn = new LdapDN( "cn=small+cn=test,ou=system" );
-        Rdn oldRdn = new Rdn( "cn=small+cn=test" );
-        Rdn newRdn = new Rdn( "cn=test" );
+        RDN oldRdn = new RDN( "cn=small+cn=test" );
+        RDN newRdn = new RDN( "cn=test" );
 
         Entry entry = new DefaultClientEntry( dn );
         entry.put( "cn", "test", "small" );
@@ -1092,8 +1092,8 @@ public class LdifRevertorTest
     public void test5ReverseRenameCompositeSimpleOverlappingDeleteOldRdn() throws NamingException
     {
         LdapDN dn = new LdapDN( "cn=small+cn=test,ou=system" );
-        Rdn oldRdn = new Rdn( "cn=small+cn=test" );
-        Rdn newRdn = new Rdn( "cn=test" );
+        RDN oldRdn = new RDN( "cn=small+cn=test" );
+        RDN newRdn = new RDN( "cn=test" );
 
         Entry entry = new DefaultClientEntry( dn );
         entry.put( "cn", "test", "small" );
@@ -1137,8 +1137,8 @@ public class LdifRevertorTest
     public void test61ReverseRenameSimpleCompositeNotOverlappingKeepOldRdnDontExistInEntry() throws NamingException
     {
         LdapDN dn = new LdapDN( "cn=test,ou=system" );
-        Rdn oldRdn = new Rdn( "cn=test" );
-        Rdn newRdn = new Rdn( "cn=joe+cn=plumber" );
+        RDN oldRdn = new RDN( "cn=test" );
+        RDN newRdn = new RDN( "cn=joe+cn=plumber" );
 
         Entry entry = new DefaultClientEntry( dn );
         entry.put( "cn", "test", "small" );
@@ -1182,8 +1182,8 @@ public class LdifRevertorTest
     public void test62ReverseRenameSimpleCompositeNotOverlappingKeepOldRdnDontExistInEntry() throws NamingException
     {
         LdapDN dn = new LdapDN( "cn=test,ou=system" );
-        Rdn oldRdn = new Rdn( "cn=test" );
-        Rdn newRdn = new Rdn( "cn=joe+cn=small" );
+        RDN oldRdn = new RDN( "cn=test" );
+        RDN newRdn = new RDN( "cn=joe+cn=small" );
 
         Entry entry = new DefaultClientEntry( dn );
         entry.put( "cn", "test", "small" );
@@ -1240,8 +1240,8 @@ public class LdifRevertorTest
     public void test71ReverseRenameSimpleCompositeNotOverlappingDeleteOldRdnDontExistInEntry() throws NamingException
     {
         LdapDN dn = new LdapDN( "cn=test,ou=system" );
-        Rdn oldRdn = new Rdn( "cn=test" );
-        Rdn newRdn = new Rdn( "cn=joe+cn=plumber" );
+        RDN oldRdn = new RDN( "cn=test" );
+        RDN newRdn = new RDN( "cn=joe+cn=plumber" );
 
         Entry entry = new DefaultClientEntry( dn );
         entry.put( "cn", "test", "small" );
@@ -1285,8 +1285,8 @@ public class LdifRevertorTest
     public void test72ReverseRenameSimpleCompositeNotOverlappingDeleteOldRdnExistInEntry() throws NamingException
     {
         LdapDN dn = new LdapDN( "cn=test,ou=system" );
-        Rdn oldRdn = new Rdn( "cn=test" );
-        Rdn newRdn = new Rdn( "cn=joe+cn=small" );
+        RDN oldRdn = new RDN( "cn=test" );
+        RDN newRdn = new RDN( "cn=joe+cn=small" );
 
         Entry entry = new DefaultClientEntry( dn );
         entry.put( "cn", "test", "small" );
@@ -1343,8 +1343,8 @@ public class LdifRevertorTest
     public void test81ReverseRenameSimpleCompositeOverlappingKeepOldRdnDontExistInEntry() throws NamingException
     {
         LdapDN dn = new LdapDN( "cn=test,ou=system" );
-        Rdn oldRdn = new Rdn( "cn=test" );
-        Rdn newRdn = new Rdn( "cn=small+cn=test" );
+        RDN oldRdn = new RDN( "cn=test" );
+        RDN newRdn = new RDN( "cn=small+cn=test" );
 
         Entry entry = new DefaultClientEntry( dn );
         entry.put( "cn", "test", "big" );
@@ -1390,8 +1390,8 @@ public class LdifRevertorTest
     public void test82ReverseRenameSimpleCompositeOverlappingKeepOldRdnExistInEntry() throws NamingException
     {
         LdapDN dn = new LdapDN( "cn=test,ou=system" );
-        Rdn oldRdn = new Rdn( "cn=test" );
-        Rdn newRdn = new Rdn( "cn=small+cn=test+cn=big" );
+        RDN oldRdn = new RDN( "cn=test" );
+        RDN newRdn = new RDN( "cn=small+cn=test+cn=big" );
 
         Entry entry = new DefaultClientEntry( dn );
         entry.put( "cn", "test", "big" );
@@ -1448,8 +1448,8 @@ public class LdifRevertorTest
     public void test91ReverseRenameSimpleCompositeOverlappingDeleteOldRdnDontExistInEntry() throws NamingException
     {
         LdapDN dn = new LdapDN( "cn=test,ou=system" );
-        Rdn oldRdn = new Rdn( "cn=test" );
-        Rdn newRdn = new Rdn( "cn=small+cn=test" );
+        RDN oldRdn = new RDN( "cn=test" );
+        RDN newRdn = new RDN( "cn=small+cn=test" );
 
         Entry entry = new DefaultClientEntry( dn );
         entry.put( "cn", "test", "big" );
@@ -1493,8 +1493,8 @@ public class LdifRevertorTest
     public void test92ReverseRenameSimpleCompositeOverlappingDeleteOldRdnDontExistInEntry() throws NamingException
     {
         LdapDN dn = new LdapDN( "cn=test,ou=system" );
-        Rdn oldRdn = new Rdn( "cn=test" );
-        Rdn newRdn = new Rdn( "cn=small+cn=test+cn=big" );
+        RDN oldRdn = new RDN( "cn=test" );
+        RDN newRdn = new RDN( "cn=small+cn=test+cn=big" );
 
         Entry entry = new DefaultClientEntry( dn );
         entry.put( "cn", "test", "big" );
@@ -1552,8 +1552,8 @@ public class LdifRevertorTest
     public void test101ReverseRenameCompositeCompositeNotOverlappingKeepOldRdnDontExistInEntry() throws NamingException
     {
         LdapDN dn = new LdapDN( "cn=small+cn=test,ou=system" );
-        Rdn oldRdn = new Rdn( "cn=small+cn=test" );
-        Rdn newRdn = new Rdn( "cn=joe+cn=plumber" );
+        RDN oldRdn = new RDN( "cn=small+cn=test" );
+        RDN newRdn = new RDN( "cn=joe+cn=plumber" );
 
         Entry entry = new DefaultClientEntry( dn );
         entry.put( "cn", "test", "big", "small" );
@@ -1598,8 +1598,8 @@ public class LdifRevertorTest
     public void test102ReverseRenameCompositeCompositeNotOverlappingKeepOldRdnExistInEntry() throws NamingException
     {
         LdapDN dn = new LdapDN( "cn=small+cn=test,ou=system" );
-        Rdn oldRdn = new Rdn( "cn=small+cn=test" );
-        Rdn newRdn = new Rdn( "cn=joe+cn=big" );
+        RDN oldRdn = new RDN( "cn=small+cn=test" );
+        RDN newRdn = new RDN( "cn=joe+cn=big" );
 
         Entry entry = new DefaultClientEntry( dn );
         entry.put( "cn", "test", "big", "small" );
@@ -1657,8 +1657,8 @@ public class LdifRevertorTest
     public void test111ReverseRenameCompositeCompositeNotOverlappingDeleteOldRdnDontExistInEntry() throws NamingException
     {
         LdapDN dn = new LdapDN( "cn=small+cn=test,ou=system" );
-        Rdn oldRdn = new Rdn( "cn=small+cn=test" );
-        Rdn newRdn = new Rdn( "cn=joe+cn=plumber" );
+        RDN oldRdn = new RDN( "cn=small+cn=test" );
+        RDN newRdn = new RDN( "cn=joe+cn=plumber" );
 
         Entry entry = new DefaultClientEntry( dn );
         entry.put( "cn", "test", "big", "small" );
@@ -1703,8 +1703,8 @@ public class LdifRevertorTest
     public void test112ReverseRenameCompositeCompositeNotOverlappingDeleteOldRdnExistInEntry() throws NamingException
     {
         LdapDN dn = new LdapDN( "cn=small+cn=test,ou=system" );
-        Rdn oldRdn = new Rdn( "cn=small+cn=test" );
-        Rdn newRdn = new Rdn( "cn=joe+cn=big" );
+        RDN oldRdn = new RDN( "cn=small+cn=test" );
+        RDN newRdn = new RDN( "cn=joe+cn=big" );
 
         Entry entry = new DefaultClientEntry( dn );
         entry.put( "cn", "test", "big", "small" );
@@ -1762,8 +1762,8 @@ public class LdifRevertorTest
     public void test121ReverseRenameCompositeCompositeOverlappingKeepOldRdnDontExistInEntry() throws NamingException
     {
         LdapDN dn = new LdapDN( "cn=small+cn=test,ou=system" );
-        Rdn oldRdn = new Rdn( "cn=small+cn=test" );
-        Rdn newRdn = new Rdn( "cn=joe+cn=test" );
+        RDN oldRdn = new RDN( "cn=small+cn=test" );
+        RDN newRdn = new RDN( "cn=joe+cn=test" );
 
         Entry entry = new DefaultClientEntry( dn );
         entry.put( "cn", "test", "big", "small" );
@@ -1808,8 +1808,8 @@ public class LdifRevertorTest
     public void test122ReverseRenameCompositeCompositeOverlappingKeepOldRdnExistInEntry() throws NamingException
     {
         LdapDN dn = new LdapDN( "cn=small+cn=test,ou=system" );
-        Rdn oldRdn = new Rdn( "cn=small+cn=test" );
-        Rdn newRdn = new Rdn( "cn=big+cn=test" );
+        RDN oldRdn = new RDN( "cn=small+cn=test" );
+        RDN newRdn = new RDN( "cn=big+cn=test" );
 
         Entry entry = new DefaultClientEntry( dn );
         entry.put( "cn", "test", "big", "small" );
@@ -1854,8 +1854,8 @@ public class LdifRevertorTest
     public void test131ReverseRenameCompositeCompositeOverlappingDeleteOldRdnDontExistInEntry() throws NamingException
     {
         LdapDN dn = new LdapDN( "cn=small+cn=test,ou=system" );
-        Rdn oldRdn = new Rdn( "cn=small+cn=test" );
-        Rdn newRdn = new Rdn( "cn=joe+cn=test" );
+        RDN oldRdn = new RDN( "cn=small+cn=test" );
+        RDN newRdn = new RDN( "cn=joe+cn=test" );
 
         Entry entry = new DefaultClientEntry( dn );
         entry.put( "cn", "test", "big", "small" );
@@ -1900,8 +1900,8 @@ public class LdifRevertorTest
     public void test132ReverseRenameCompositeCompositeOverlappingDeleteOldRdnExistInEntry() throws NamingException
     {
         LdapDN dn = new LdapDN( "cn=small+cn=test,ou=system" );
-        Rdn oldRdn = new Rdn( "cn=small+cn=test" );
-        Rdn newRdn = new Rdn( "cn=big+cn=test" );
+        RDN oldRdn = new RDN( "cn=small+cn=test" );
+        RDN newRdn = new RDN( "cn=big+cn=test" );
 
         Entry entry = new DefaultClientEntry( dn );
         entry.put( "cn", "test", "big", "small" );

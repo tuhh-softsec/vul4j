@@ -20,7 +20,7 @@
 package org.apache.directory.shared.ldap.message;
 
 import org.apache.directory.shared.ldap.name.LdapDN;
-import org.apache.directory.shared.ldap.name.Rdn;
+import org.apache.directory.shared.ldap.name.RDN;
 
 
 /**
@@ -99,7 +99,7 @@ public interface InternalModifyDnRequest extends SingleReplyRequest, InternalAba
      * 
      * @return the relative dn with one component
      */
-    Rdn getNewRdn();
+    RDN getNewRdn();
 
 
     /**
@@ -109,7 +109,7 @@ public interface InternalModifyDnRequest extends SingleReplyRequest, InternalAba
      * @param newRdn
      *            the relative dn with one component
      */
-    void setNewRdn( Rdn newRdn );
+    void setNewRdn( RDN newRdn );
 
 
     /**

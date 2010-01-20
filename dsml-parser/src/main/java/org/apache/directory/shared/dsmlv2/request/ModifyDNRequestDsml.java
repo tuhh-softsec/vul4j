@@ -22,7 +22,7 @@ package org.apache.directory.shared.dsmlv2.request;
 
 import org.apache.directory.shared.ldap.codec.modifyDn.ModifyDNRequestCodec;
 import org.apache.directory.shared.ldap.name.LdapDN;
-import org.apache.directory.shared.ldap.name.Rdn;
+import org.apache.directory.shared.ldap.name.RDN;
 import org.dom4j.Element;
 
 
@@ -147,7 +147,7 @@ public class ModifyDNRequestDsml extends AbstractRequestDsml
      * 
      * @return Returns the newRDN.
      */
-    public Rdn getNewRDN()
+    public RDN getNewRDN()
     {
         return ( ( ModifyDNRequestCodec ) instance ).getNewRDN();
     }
@@ -158,7 +158,7 @@ public class ModifyDNRequestDsml extends AbstractRequestDsml
      * 
      * @param newRDN The newRDN to set.
      */
-    public void setNewRDN( Rdn newRDN )
+    public void setNewRDN( RDN newRDN )
     {
         ( ( ModifyDNRequestCodec ) instance ).setNewRDN( newRDN );
     }
