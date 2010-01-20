@@ -384,6 +384,17 @@ public class LdapConnection  extends IoHandlerAdapter
         searchResultEntry.setMessageId( searchEntryResultCodec.getMessageId() );
         searchResultEntry.setEntry( searchEntryResultCodec.getEntry() );
         
+        ControlCodec cc = searchEntryResultCodec.getCurrentControl();
+        Control control = new BasicControl( cc.getControlType(), cc.getCriticality(), cc.getEncodedValue() );
+        try
+        {
+            searchResultEntry.add( control );
+        }
+        catch( Exception e )
+        {
+            //shouldn't happen
+        }
+        
         return searchResultEntry;
     }
 
