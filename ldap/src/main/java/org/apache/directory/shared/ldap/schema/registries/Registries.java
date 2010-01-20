@@ -1519,7 +1519,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
         LOG.debug( "Registering {}:{}", schemaObject.getObjectType(), schemaObject.getOid() );
 
         // Check that the SchemaObject is not already registered
-        if ( !( schemaObject instanceof LoadableSchemaObject ) )
+        if ( schemaObject instanceof LoadableSchemaObject )
         {
             // TODO : Check for existing Loadable SchemaObject
         }
