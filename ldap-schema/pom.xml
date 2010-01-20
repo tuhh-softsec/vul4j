@@ -26,6 +26,7 @@
     <artifactId>shared-parent</artifactId>
     <version>0.9.18-SNAPSHOT</version>
   </parent>
+  
   <artifactId>shared-ldap-schema</artifactId>
   <name>Apache Directory Shared LDAP Schema</name>
   <packaging>jar</packaging>
@@ -41,6 +42,18 @@
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
       <scope>test</scope>
+    </dependency>
+    
+        <dependency>
+      <groupId>${pom.groupId}</groupId>
+      <artifactId>shared-ldap</artifactId>
+      <version>${pom.version}</version>
+    </dependency>
+
+        <dependency>
+      <groupId>${pom.groupId}</groupId>
+      <artifactId>shared-ldap-constants</artifactId>
+      <version>${pom.version}</version>
     </dependency>
   </dependencies>
 

@@ -20,21 +20,26 @@
 package org.apache.directory.shared.ldap.schema.ldif.extractor.impl;
 
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InvalidObjectException;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.Map;
 import java.util.Stack;
+import java.util.UUID;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
+import javax.naming.NamingException;
+
+import org.apache.directory.shared.ldap.constants.SchemaConstants;
+import org.apache.directory.shared.ldap.ldif.LdifEntry;
+import org.apache.directory.shared.ldap.ldif.LdifReader;
 import org.apache.directory.shared.ldap.schema.ldif.extractor.SchemaLdifExtractor;
 import org.apache.directory.shared.ldap.schema.ldif.extractor.UniqueResourceException;
 import org.slf4j.Logger;
@@ -187,20 +192,60 @@ public class DefaultSchemaLdifExtractor implements SchemaLdifExtractor
         if ( ! source.getParentFile().exists() )
         {
             throw new FileNotFoundException( "Cannot copy non-existant " +
-            		"source file " + source.getAbsolutePath() );
+                "source file " + source.getAbsolutePath() );
         }
         
         FileWriter out = new FileWriter( destination );
-        BufferedReader in = new BufferedReader( new FileReader( source ) );
-        String line;
-        while ( null != ( line = in.readLine() ) )
-        {
-            out.write( line + "\n" ); 
-        }
         
-        in.close();
-        out.flush();
-        out.close();
+        try
+        {
+            LdifReader ldifReader = new LdifReader( source );
+            boolean first = true;
+            LdifEntry ldifEntry = null;
+            
+            while ( ldifReader.hasNext() )
+            {
+                if ( first )
+                {
+                    ldifEntry = ldifReader.next();
+                    
+                    if ( ldifEntry.get( SchemaConstants.ENTRY_UUID_AT ) == null )
+                    {
+                        // No UUID, let's create one
+                        UUID entryUuid = UUID.randomUUID();
+                        ldifEntry.addAttribute( SchemaConstants.ENTRY_UUID_AT, entryUuid.toString() );
+                    }
+                    
+                    first = false;
+                }
+                else
+                {
+                    // throw an exception : we should not have more than one entry per schema ldif file
+                    String msg = "Cannot have more than one entry in a schema ldif file : " + source;
+                    LOG.error( msg );
+                    throw new InvalidObjectException( msg );
+                }
+            }
+
+            ldifReader.close();
+            
+            // Add the version at the first line, to avoid a warning
+            String ldifString = "version: 1\n" + ldifEntry.toString();
+            
+            out.write( ldifString );
+            out.flush();
+        }
+        catch ( NamingException ne )
+        {
+            // throw an exception : we should not have more than one entry per schema ldif file
+            String msg = "Excepion occured while parsing the ldif file " + source + " : " + ne.getMessage();
+            LOG.error( msg );
+            throw new InvalidObjectException( msg );
+        }
+        finally
+        {
+            out.close();
+        }
     }
 
     
@@ -338,7 +383,7 @@ public class DefaultSchemaLdifExtractor implements SchemaLdifExtractor
 
         try
         {
-        	File destination = new File( outputDirectory, resource );
+            File destination = new File( outputDirectory, resource );
 
             /*
              * Do not overwrite an LDIF file if it has already been extracted.
@@ -347,12 +392,12 @@ public class DefaultSchemaLdifExtractor implements SchemaLdifExtractor
             {
                 return;
             }
-        	
-        	if ( ! destination.getParentFile().exists() )
-        	{
-        		destination.getParentFile().mkdirs();
-        	}
-        	
+        
+            if ( ! destination.getParentFile().exists() )
+            {
+                destination.getParentFile().mkdirs();
+            }
+            
             FileOutputStream out = new FileOutputStream( destination );
             try
             {
