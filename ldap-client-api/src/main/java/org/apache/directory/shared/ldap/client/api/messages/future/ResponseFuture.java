@@ -28,7 +28,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import org.apache.directory.shared.ldap.client.api.messages.AbstractResponseWithResult;
-import org.apache.directory.shared.ldap.client.api.messages.Response;
 
 
 /**
@@ -37,17 +36,17 @@ import org.apache.directory.shared.ldap.client.api.messages.Response;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public class ResponseFuture implements Future<Response>
+public class ResponseFuture<R> implements Future<R>
 {
     /** the blocking queue holding LDAP responses */
-    private final BlockingQueue<Response> responseQueue;
+    protected BlockingQueue<R> responseQueue;
 
     /** flag to determine if this future is cancelled */
     private boolean cancelled = false;
 
     /** an object to indicate a cancelled/abandoned operation */
-    // 'poision pill shutdown' refer p. 155-156 Java Concurrency in Practice - Brian Goetz
-    private static final Response CANCEL_POISION = new AbstractResponseWithResult(){};
+    // 'poison pill shutdown' refer p. 155-156 Java Concurrency in Practice - Brian Goetz
+    private static AbstractResponseWithResult CANCEL_POISON = new AbstractResponseWithResult(){};
 
 
     /**
@@ -55,7 +54,7 @@ public class ResponseFuture implements Future<Response>
      *
      * @param responseQueue a non-null blocking queue
      */
-    public ResponseFuture( final BlockingQueue responseQueue )
+    public ResponseFuture( BlockingQueue<R> responseQueue )
     {
         if ( responseQueue == null )
         {
@@ -77,7 +76,7 @@ public class ResponseFuture implements Future<Response>
         }
         
         cancelled = true;
-        responseQueue.add( CANCEL_POISION );
+        //responseQueue.add( (Response)CANCEL_POISON );
         
         return cancelled;
     }
@@ -87,11 +86,11 @@ public class ResponseFuture implements Future<Response>
      * {@inheritDoc}
      * @throws InterruptedException if the operation has been cancelled by client
      */
-    public Response get() throws InterruptedException, ExecutionException
+    public R get() throws InterruptedException, ExecutionException
     {
-        Response resp = responseQueue.poll();
+        R resp = responseQueue.poll();
         
-        if( resp == CANCEL_POISION )
+        if ( resp == CANCEL_POISON )
         {
             throw new InterruptedException( "cancelled" );
         }
@@ -104,12 +103,12 @@ public class ResponseFuture implements Future<Response>
      * {@inheritDoc}
      * @throws InterruptedException if the operation has been cancelled by client
      */
-    public Response get( long timeout, TimeUnit unit ) throws InterruptedException, ExecutionException,
+    public R get( long timeout, TimeUnit unit ) throws InterruptedException, ExecutionException,
         TimeoutException
     {
-        Response resp = responseQueue.poll( timeout, unit );
+        R resp = (R)responseQueue.poll( timeout, unit );
         
-        if( resp == CANCEL_POISION )
+        if( resp == CANCEL_POISON )
         {
             throw new InterruptedException( "cancelled" );
         }

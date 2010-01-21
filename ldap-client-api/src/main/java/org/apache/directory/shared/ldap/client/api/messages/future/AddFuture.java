@@ -24,25 +24,25 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import org.apache.directory.shared.ldap.client.api.messages.SearchResponse;
+import org.apache.directory.shared.ldap.client.api.messages.AddResponse;
 
 /**
- * A Future to manage SerachRequest
+ * A Future to manage AddRequests
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public class SearchFuture extends ResponseFuture<SearchResponse>
+public class AddFuture extends ResponseFuture<AddResponse>
 {
     /**
      * 
-     * Creates a new instance of SearchFuture.
+     * Creates a new instance of AddFuture.
      *
-     * @param searchResponseQueue The associated SearchResponse queue
+     * @param addResponseQueue The associated AddResponse queue
      */
-    public SearchFuture( BlockingQueue<SearchResponse> searchResponseQueue )
+    public AddFuture( BlockingQueue<AddResponse> addResponseQueue )
     {
-        super( searchResponseQueue );
+        super( addResponseQueue );
     }
     
     
@@ -56,27 +56,25 @@ public class SearchFuture extends ResponseFuture<SearchResponse>
 
     
     /**
-     * Get the SearchResponse, blocking until one is received.
-     * It can be either a SearchResultEntry, a SearchResultReference
-     * or a SearchResultDone, the last of all the SearchResponse.
+     * Get the AddResponse, blocking until one is received.
      * 
-     * @return The SearchResponse
+     * @return The AddResponse
      */
-    public SearchResponse get() throws InterruptedException, ExecutionException
+    public AddResponse get() throws InterruptedException, ExecutionException
     {
         return responseQueue.poll();
     }
 
     
     /**
-     * Get the SearchResponse, blocking until one is received, or until the
+     * Get the AddResponse, blocking until one is received, or until the
      * given timeout is reached.
      * 
      * @param timeout Number of TimeUnit to wait
      * @param unit The TimeUnit
-     * @return The SearchResponse The SearchResponse found
+     * @return The AddResponse The AddResponse found
      */
-    public SearchResponse get( long timeout, TimeUnit unit ) throws InterruptedException, ExecutionException,
+    public AddResponse get( long timeout, TimeUnit unit ) throws InterruptedException, ExecutionException,
         TimeoutException
     {
         return responseQueue.poll( timeout, unit );        

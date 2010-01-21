@@ -33,7 +33,7 @@ public abstract class AbstractResponseWithResult extends AbstractMessage impleme
     
     /**
      * Creates a new instance of AbstractResponseWithResult.
-     */
+     *
     public AbstractResponseWithResult()
     {
         super();

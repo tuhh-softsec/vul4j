@@ -130,6 +130,7 @@ import org.apache.directory.shared.ldap.util.LdapURL;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.apache.mina.core.filterchain.IoFilter;
 import org.apache.mina.core.future.ConnectFuture;
+import org.apache.mina.core.future.WriteFuture;
 import org.apache.mina.core.service.IoConnector;
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IoEventType;
@@ -551,10 +552,11 @@ public class LdapConnection  extends IoHandlerAdapter
      * @return <code>true</code> if the connection is established, false otherwise
      * @throws LdapException if some error has occured
      */
-    private boolean connect() throws LdapException
+    public boolean connect() throws LdapException, IOException
     {
         if ( ( ldapSession != null ) && ldapSession.isConnected() ) 
         {
+            // No need to connect if we already have a connected session
             return true;
         }
 
@@ -587,6 +589,9 @@ public class LdapConnection  extends IoHandlerAdapter
                 }
             }
             
+            // Add an executor so that this connection can be used
+            // for handling more than one request (mainly because
+            // we may have to handle some abandon request)
             connector.getFilterChain().addLast( "executor", 
                 new ExecutorFilter( 
                     new UnorderedThreadPoolExecutor( 10 ),
@@ -608,7 +613,15 @@ public class LdapConnection  extends IoHandlerAdapter
         if ( !connectionFuture.isConnected() ) 
         {
             // disposing connector if not connected
-            connector.dispose();
+            try
+            {
+                close();
+            }
+            catch ( IOException ioe )
+            {
+                // Nothing to do
+            }
+            
             return false;
         }
         
@@ -667,6 +680,7 @@ public class LdapConnection  extends IoHandlerAdapter
         {
             // Release the connector
             connector.dispose();
+            connector = null;
         }
         
         return true;
@@ -883,7 +897,7 @@ public class LdapConnection  extends IoHandlerAdapter
      *
      * @return The BindResponse LdapResponse 
      */
-    public BindResponse bind() throws LdapException
+    public BindResponse bind() throws LdapException, IOException
     {
         LOG.debug( "Anonymous Bind request" );
 
@@ -939,7 +953,7 @@ public class LdapConnection  extends IoHandlerAdapter
      * @param credentials The password. It can't be null 
      * @return The BindResponse LdapResponse 
      */
-    public BindResponse bind( String name, String credentials ) throws LdapException
+    public BindResponse bind( String name, String credentials ) throws LdapException, IOException
     {
         LOG.debug( "Bind request : {}", name );
 
@@ -955,7 +969,7 @@ public class LdapConnection  extends IoHandlerAdapter
      * @param credentials The password. It can't be null 
      * @return The BindResponse LdapResponse 
      */
-    public BindResponse bind( LdapDN name, String credentials ) throws LdapException
+    public BindResponse bind( LdapDN name, String credentials ) throws LdapException, IOException
     {
         LOG.debug( "Bind request : {}", name );
 
@@ -977,7 +991,7 @@ public class LdapConnection  extends IoHandlerAdapter
      * @param credentials The password.
      * @return The BindResponse LdapResponse 
      */
-    public BindResponse bind( LdapDN name, byte[] credentials )  throws LdapException
+    public BindResponse bind( LdapDN name, byte[] credentials )  throws LdapException, IOException
     {
         LOG.debug( "Bind request : {}", name );
 
@@ -993,7 +1007,7 @@ public class LdapConnection  extends IoHandlerAdapter
      * @param credentials The password.
      * @return The BindResponse LdapResponse 
      */
-    public BindResponse bind( String name, byte[] credentials )  throws LdapException
+    public BindResponse bind( String name, byte[] credentials )  throws LdapException, IOException
     {
         LOG.debug( "Bind request : {}", name );
 
@@ -1027,7 +1041,7 @@ public class LdapConnection  extends IoHandlerAdapter
      * parameters 
      * @return A LdapResponse containing the result
      */
-    public BindResponse bind( BindRequest bindRequest ) throws LdapException
+    public BindResponse bind( BindRequest bindRequest ) throws LdapException, IOException
     {
         ResponseFuture responseFuture = bind( bindRequest, null );
         
@@ -1082,7 +1096,7 @@ public class LdapConnection  extends IoHandlerAdapter
      * @param listener The listener 
      * @return ResponseFuture A future
      */
-    public ResponseFuture bind( BindRequest bindRequest, BindListener bindListener ) throws LdapException 
+    public ResponseFuture bind( BindRequest bindRequest, BindListener bindListener ) throws LdapException, IOException 
     {
         // First try to connect, if we aren't already connected.
         connect();
@@ -1163,15 +1177,15 @@ public class LdapConnection  extends IoHandlerAdapter
         ResponseFuture responseFuture = new ResponseFuture( bindResponseQueue );
         futureMap.put( newId, responseFuture );
 
-        // Send the request to the server
-        ldapSession.write( bindMessage );
-        
         if ( bindListener != null )
         {
             // If this is an asynchronous operation, associate the ID
             // with the operation listener
             listenerMap.put( newId, bindListener );
         }
+
+        // Send the request to the server
+        ldapSession.write( bindMessage );
         
         return responseFuture;
     }
@@ -1423,9 +1437,6 @@ public class LdapConnection  extends IoHandlerAdapter
      */
     public void unBind() throws Exception
     {
-        // First try to connect, if we aren't already connected.
-        connect();
-        
         // If the session has not been establish, or is closed, we get out immediately
         checkSession();
         
@@ -1447,10 +1458,12 @@ public class LdapConnection  extends IoHandlerAdapter
         LOG.debug( "Sending Unbind request \n{}", unbindMessage );
         
         // Send the request to the server
-        ldapSession.write( unbindMessage );
+        WriteFuture unbindFuture = ldapSession.write( unbindMessage );
+        
+        unbindFuture.awaitUninterruptibly();
         
         //  We now have to close the connection
-        close();
+        //close();
 
         // And get out
         LOG.debug( "Unbind successful" );

@@ -21,7 +21,6 @@ package org.apache.directory.shared.ldap.client.api.messages.future;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -33,12 +32,8 @@ import org.apache.directory.shared.ldap.client.api.messages.BindResponse;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public class BindFuture implements Future<BindResponse>
+public class BindFuture extends ResponseFuture<BindResponse>
 {
-    /** The queue where BindResponse are stored */
-    private BlockingQueue<BindResponse> bindResponseQueue;
-    
-   
     /**
      * 
      * Creates a new instance of BindFuture.
@@ -47,7 +42,7 @@ public class BindFuture implements Future<BindResponse>
      */
     public BindFuture( BlockingQueue<BindResponse> bindResponseQueue )
     {
-        this.bindResponseQueue = bindResponseQueue;
+        super( bindResponseQueue );
     }
     
     
@@ -67,7 +62,7 @@ public class BindFuture implements Future<BindResponse>
      */
     public BindResponse get() throws InterruptedException, ExecutionException
     {
-        return bindResponseQueue.poll();
+        return responseQueue.poll();
     }
 
     
@@ -82,7 +77,7 @@ public class BindFuture implements Future<BindResponse>
     public BindResponse get( long timeout, TimeUnit unit ) throws InterruptedException, ExecutionException,
         TimeoutException
     {
-        return bindResponseQueue.poll( timeout, unit );        
+        return responseQueue.poll( timeout, unit );        
     }
 
     
