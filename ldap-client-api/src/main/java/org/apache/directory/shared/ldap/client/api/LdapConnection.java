@@ -57,6 +57,7 @@ import org.apache.directory.shared.ldap.client.api.listeners.ModifyListener;
 import org.apache.directory.shared.ldap.client.api.listeners.OperationResponseListener;
 import org.apache.directory.shared.ldap.client.api.listeners.SearchListener;
 import org.apache.directory.shared.ldap.client.api.messages.AbandonRequest;
+import org.apache.directory.shared.ldap.client.api.messages.AbstractMessage;
 import org.apache.directory.shared.ldap.client.api.messages.AddRequest;
 import org.apache.directory.shared.ldap.client.api.messages.AddResponse;
 import org.apache.directory.shared.ldap.client.api.messages.BindRequest;
@@ -384,18 +385,8 @@ public class LdapConnection  extends IoHandlerAdapter
         
         searchResultEntry.setMessageId( searchEntryResultCodec.getMessageId() );
         searchResultEntry.setEntry( searchEntryResultCodec.getEntry() );
-        
-        ControlCodec cc = searchEntryResultCodec.getCurrentControl();
-        Control control = new BasicControl( cc.getControlType(), cc.getCriticality(), cc.getEncodedValue() );
-        try
-        {
-            searchResultEntry.add( control );
-        }
-        catch( Exception e )
-        {
-            //shouldn't happen
-        }
-        
+        addControls( searchEntryResultCodec, searchResultEntry );
+
         return searchResultEntry;
     }
 
@@ -409,7 +400,8 @@ public class LdapConnection  extends IoHandlerAdapter
         
         searchResultDone.setMessageId( searchResultDoneCodec.getMessageId() );
         searchResultDone.setLdapResult( convert( searchResultDoneCodec.getLdapResult() ) );
-        
+        addControls( searchResultDoneCodec, searchResultDone );
+
         return searchResultDone;
     }
 
@@ -435,7 +427,8 @@ public class LdapConnection  extends IoHandlerAdapter
         }
         
         searchResultReference.setReferral( referral );
-
+        addControls( searchEntryReferenceCodec, searchResultReference );
+        
         return searchResultReference;
     }
 
@@ -2820,5 +2813,19 @@ public class LdapConnection  extends IoHandlerAdapter
     {
         return config;
     }
+
     
+    private void addControls( LdapMessageCodec codec, AbstractMessage message )
+    {
+        List<ControlCodec> ccList = codec.getControls();
+     
+        if( ccList != null )
+        {
+            for( ControlCodec cc : ccList )
+            {
+                Control control = new BasicControl( cc.getControlType(), cc.getCriticality(), cc.getEncodedValue() );
+                message.add( control );
+            }
+        }
+    }
 }

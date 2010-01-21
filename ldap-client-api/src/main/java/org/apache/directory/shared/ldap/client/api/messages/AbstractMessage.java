@@ -79,7 +79,7 @@ public abstract class AbstractMessage implements Message
     /**
      * {@inheritDoc}
      */
-    public Message add( Control... controls ) throws LdapException
+    public Message add( Control... controls )
     {
         if ( this.controls == null )
         {

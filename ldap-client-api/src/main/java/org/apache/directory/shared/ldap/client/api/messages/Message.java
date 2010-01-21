@@ -80,10 +80,8 @@ public interface Message
      * Adds controls to this Message.
      * 
      * @param controls the controls to add.
-     * @throws MessageException if controls cannot be added to this Message 
-     * or the control is not known etc.
      */
-    Message add( Control... controls ) throws LdapException;
+    Message add( Control... controls );
 
 
     /**
