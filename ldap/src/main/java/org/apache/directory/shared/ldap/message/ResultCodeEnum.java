@@ -680,6 +680,14 @@ public enum ResultCodeEnum
      * -  operations which abandon or cancel other operations.
      */
     CANNOT_CANCEL( 121 ),
+
+    /**
+     * The server may return this result code on the initial content poll
+     * if it is safe to do so when it is unable to perform the operation
+     * due to various reasons. For more detailed explanation refer 
+     * <a href="http://www.faqs.org/rfcs/rfc4533.html">RFC 4533 (a.k.a syncrepl)</a>
+     */
+    E_SYNC_REFRESH_REQUIRED( 4096 ),
     
     /**
      * A unknown result code to cover all the other cases
@@ -1061,6 +1069,7 @@ public enum ResultCodeEnum
         set.add( ResultCodeEnum.ALIAS_DEREFERENCING_PROBLEM );
         set.add( ResultCodeEnum.UNAVAILABLE_CRITICAL_EXTENSION );
         set.add( ResultCodeEnum.CANCELED );
+        set.add( ResultCodeEnum.E_SYNC_REFRESH_REQUIRED );
         SEARCH_CODES = Collections.unmodifiableSet( set );
     }
 
@@ -1536,6 +1545,7 @@ public enum ResultCodeEnum
         set.add( ResultCodeEnum.TOO_LATE );
         set.add( ResultCodeEnum.NO_SUCH_OPERATION );
         set.add( ResultCodeEnum.CANCELED );
+        set.add( ResultCodeEnum.E_SYNC_REFRESH_REQUIRED );
         ALL_CODES = Collections.unmodifiableSet( set );
     }
 
@@ -1599,6 +1609,7 @@ public enum ResultCodeEnum
             case 129: return NO_SUCH_OPERATION;
             case 120: return TOO_LATE;
             case 121: return CANNOT_CANCEL;
+            case 4096: return E_SYNC_REFRESH_REQUIRED;
             default : return UNKNOWN;
         }
     }
