@@ -52,11 +52,13 @@ public class ResourceMap
     {
         HashMap<String,Boolean> retval = new HashMap<String,Boolean>();
         String classPath = System.getProperty( "java.class.path", "." );
-        String[] classPathElements = classPath.split( ":" );
+        String[] classPathElements = classPath.split( File.pathSeparator );
+        
         for ( String element : classPathElements )
         {
             getResources( retval, element, pattern );
         }
+        
         return retval;
     }
 
@@ -65,6 +67,7 @@ public class ResourceMap
         String element, Pattern pattern )
     {
         File file = new File( element );
+        
         if ( file.isDirectory() )
         {
             getResourcesFromDirectory( map, file, pattern );
@@ -80,6 +83,7 @@ public class ResourceMap
         File file, Pattern pattern )
     {
         ZipFile zf;
+        
         try
         {
             zf = new ZipFile( file );
@@ -94,11 +98,13 @@ public class ResourceMap
         }
         
         Enumeration<? extends ZipEntry> e = zf.entries();
+        
         while ( e.hasMoreElements() )
         {
             ZipEntry ze = e.nextElement();
             String fileName = ze.getName();
             boolean accept = pattern.matcher( fileName ).matches();
+        
             if ( accept )
             {
                 map.put( fileName, Boolean.TRUE );
@@ -119,6 +125,7 @@ public class ResourceMap
         HashMap<String,Boolean> map, File directory, Pattern pattern )
     {
         File[] fileList = directory.listFiles();
+        
         for ( File file : fileList )
         {
             if ( file.isDirectory() )
@@ -131,6 +138,7 @@ public class ResourceMap
                 {
                     String fileName = file.getCanonicalPath();
                     boolean accept = pattern.matcher( fileName ).matches();
+        
                     if ( accept )
                     {
                         map.put( fileName, Boolean.FALSE );
