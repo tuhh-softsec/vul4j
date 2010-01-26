@@ -158,7 +158,7 @@ public class ArchiveEntry
         }
         catch ( IOException e )
         {
-            throw new ArchiverException( "Failed to read filesystem attributes for: " + file );
+            throw new ArchiverException( "Failed to read filesystem attributes for: " + file, e );
         }
         
         final PlexusIoFileResource res =  new PlexusIoFileResource( file, attrs );
@@ -190,7 +190,7 @@ public class ArchiveEntry
         }
         catch ( IOException e )
         {
-            throw new ArchiverException( "Failed to read filesystem attributes for: " + file );
+            throw new ArchiverException( "Failed to read filesystem attributes for: " + file, e );
         }
         
         final PlexusIoFileResource res = new PlexusIoFileResource( file, attrs );
