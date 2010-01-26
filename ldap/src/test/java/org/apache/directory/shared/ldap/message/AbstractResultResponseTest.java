@@ -20,19 +20,14 @@
 package org.apache.directory.shared.ldap.message;
 
 
-import javax.naming.InvalidNameException;
-
-import org.apache.directory.shared.ldap.message.InternalAbstractResultResponse;
-import org.apache.directory.shared.ldap.message.InternalControl;
-import org.apache.directory.shared.ldap.message.InternalLdapResult;
-import org.apache.directory.shared.ldap.message.MessageTypeEnum;
-import org.apache.directory.shared.ldap.message.InternalReferral;
-import org.apache.directory.shared.ldap.message.ReferralImpl;
-import org.apache.directory.shared.ldap.message.ResultCodeEnum;
-import org.apache.directory.shared.ldap.name.LdapDN;
-import org.junit.Test;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+
+import javax.naming.InvalidNameException;
+
+import org.apache.directory.shared.ldap.message.control.ControlImpl;
+import org.apache.directory.shared.ldap.name.LdapDN;
+import org.junit.Test;
 
 
 /**
@@ -186,16 +181,18 @@ public class AbstractResultResponseTest
     {
         InternalAbstractResultResponse msg0;
         InternalAbstractResultResponse msg1;
+        
         msg0 = new InternalAbstractResultResponse( 5, MessageTypeEnum.BIND_REQUEST )
         {
             private static final long serialVersionUID = 1L;
         };
-        msg0.add( new InternalControl()
+        
+        msg0.add( new ControlImpl( "0.0" )
         {
             private static final long serialVersionUID = 1L;
 
 
-            public void setID( String a_oid )
+            public void setOid( String oid )
             {
             }
 
@@ -206,22 +203,23 @@ public class AbstractResultResponseTest
             }
 
 
-            public void setCritical( boolean a_isCritical )
+            public void setCritical( boolean isCritical )
             {
             }
 
 
-            public byte[] getEncodedValue()
+            public byte[] getValue()
             {
                 return null;
             }
 
 
-            public String getID()
+            public String getOid()
             {
                 return null;
             }
         } );
+        
         msg1 = new InternalAbstractResultResponse( 5, MessageTypeEnum.BIND_REQUEST )
         {
             private static final long serialVersionUID = 1L;

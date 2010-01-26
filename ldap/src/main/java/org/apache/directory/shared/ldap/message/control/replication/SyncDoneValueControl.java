@@ -22,7 +22,7 @@ package org.apache.directory.shared.ldap.message.control.replication;
 
 import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.ldap.codec.controls.replication.syncDoneValue.SyncDoneValueControlCodec;
-import org.apache.directory.shared.ldap.message.control.InternalAbstractControl;
+import org.apache.directory.shared.ldap.message.control.AbstractControl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,7 +41,7 @@ import org.slf4j.LoggerFactory;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public class SyncDoneValueControl extends InternalAbstractControl
+public class SyncDoneValueControl extends AbstractControl
 {
     /** As this class is serializable, defined its serialVersionUID */
     private static final long serialVersionUID = 1L;
@@ -57,6 +57,12 @@ public class SyncDoneValueControl extends InternalAbstractControl
 
     /** the refreshDeletes flag */
     private boolean refreshDeletes;
+
+
+    public SyncDoneValueControl()
+    {
+        super( CONTROL_OID );
+    }
 
 
     /**
@@ -99,7 +105,7 @@ public class SyncDoneValueControl extends InternalAbstractControl
      * {@inheritDoc}
      */
     @Override
-    public String getID()
+    public String getOid()
     {
         return CONTROL_OID;
     }
@@ -108,7 +114,7 @@ public class SyncDoneValueControl extends InternalAbstractControl
     /**
      * {@inheritDoc}
      */
-    public byte[] getEncodedValue()
+    public byte[] getValue()
     {
         SyncDoneValueControlCodec codec = new SyncDoneValueControlCodec();
         codec.setCookie( cookie );

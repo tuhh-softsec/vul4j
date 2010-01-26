@@ -17,34 +17,19 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.message;
-
-
-import javax.naming.ldap.Control;
+package org.apache.directory.shared.ldap.message.control;
 
 
 /**
- * Protocol request and response altering control interface. Any number of
- * controls may be associated with a protocol message.
- * 
+ * A Control implementation to instanciate new Control.
+ *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
+ * @version $Rev$, $Date$
  */
-public interface InternalControl extends Control
+public class ControlImpl extends AbstractControl
 {
-    /**
-     * Sets the OID of the Control to identify the control type.
-     * 
-     * @param oid the OID of this Control.
-     */
-    void setID( String oid );
-
-    /**
-     * Sets the critical flag which determines whether or not this control is
-     * critical for the correct operation of a request or response message. The
-     * default for this value should be false.
-     * 
-     * @param isCritical true if the control is critical false otherwise.
-     */
-    void setCritical( boolean isCritical );
+    public ControlImpl( String oid )
+    {
+        super( oid );
+    }
 }

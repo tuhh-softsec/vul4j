@@ -20,12 +20,11 @@
 package org.apache.directory.shared.ldap.message;
 
 
-import org.apache.directory.shared.ldap.message.InternalAbstractMessage;
-import org.apache.directory.shared.ldap.message.InternalControl;
-import org.apache.directory.shared.ldap.message.MessageTypeEnum;
-import org.junit.Test;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+
+import org.apache.directory.shared.ldap.message.control.ControlImpl;
+import org.junit.Test;
 
 
 /**
@@ -122,42 +121,45 @@ public class AbstractMessageTest
     {
         InternalAbstractMessage msg0;
         InternalAbstractMessage msg1;
+        
         msg0 = new InternalAbstractMessage( 5, MessageTypeEnum.BIND_REQUEST )
         {
             private static final long serialVersionUID = 1L;
         };
-        msg0.add( new InternalControl()
+        
+        msg0.add( new ControlImpl( "0.0" )
         {
             private static final long serialVersionUID = 1L;
 
 
-            public void setID( String a_oid )
+            public void setOid( String oid )
             {
             }
 
-
+            
             public boolean isCritical()
             {
                 return false;
             }
 
 
-            public void setCritical( boolean a_isCritical )
+            public void setCritical( boolean isCritical )
             {
             }
 
 
-            public byte[] getEncodedValue()
+            public byte[] getValue()
             {
                 return null;
             }
 
 
-            public String getID()
+            public String getOid()
             {
                 return null;
             }
         } );
+        
         msg1 = new InternalAbstractMessage( 5, MessageTypeEnum.BIND_REQUEST )
         {
             private static final long serialVersionUID = 1L;

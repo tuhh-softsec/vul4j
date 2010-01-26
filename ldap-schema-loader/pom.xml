@@ -26,6 +26,7 @@
     <artifactId>shared-parent</artifactId>
     <version>0.9.18-SNAPSHOT</version>
   </parent>
+  
   <artifactId>shared-ldap-schema-loader</artifactId>
   <name>Apache Directory Shared LDAP Schema Loader</name>
   <packaging>jar</packaging>
@@ -38,14 +39,20 @@
   <dependencies>
     <dependency>
       <artifactId>shared-ldap</artifactId>
-      <groupId>${pom.groupId}</groupId>
-      <version>${pom.version}</version>
+      <groupId>${groupId}</groupId>
+      <version>${version}</version>
     </dependency>
 
     <dependency>
+      <artifactId>shared-ldif</artifactId>
+      <groupId>${groupId}</groupId>
+      <version>${version}</version>
+    </dependency> 
+
+    <dependency>
       <artifactId>shared-ldap-schema</artifactId>
-      <groupId>${pom.groupId}</groupId>
-      <version>${pom.version}</version>
+      <groupId>${groupId}</groupId>
+      <version>${version}</version>
     </dependency> 
   </dependencies>
 

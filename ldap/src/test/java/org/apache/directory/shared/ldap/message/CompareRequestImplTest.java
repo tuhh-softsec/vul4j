@@ -20,23 +20,18 @@
 package org.apache.directory.shared.ldap.message;
 
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.naming.InvalidNameException;
-import javax.naming.ldap.Control;
 
 import org.apache.directory.shared.ldap.entry.Value;
-import org.apache.directory.shared.ldap.message.AbandonListener;
-import org.apache.directory.shared.ldap.message.InternalCompareRequest;
-import org.apache.directory.shared.ldap.message.CompareRequestImpl;
-import org.apache.directory.shared.ldap.message.MessageException;
-import org.apache.directory.shared.ldap.message.MessageTypeEnum;
-import org.apache.directory.shared.ldap.message.InternalResultResponse;
+import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.name.LdapDN;
 import org.junit.Test;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 
 /**

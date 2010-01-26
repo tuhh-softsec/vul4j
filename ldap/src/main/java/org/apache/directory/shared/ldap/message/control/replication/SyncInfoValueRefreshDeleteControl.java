@@ -21,7 +21,7 @@ package org.apache.directory.shared.ldap.message.control.replication;
 
 import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.ldap.codec.controls.replication.syncInfoValue.SyncInfoValueControlCodec;
-import org.apache.directory.shared.ldap.message.control.InternalAbstractControl;
+import org.apache.directory.shared.ldap.message.control.AbstractControl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,7 +44,7 @@ import org.slf4j.LoggerFactory;
  * @version $Rev: $
  *
  */
-public class SyncInfoValueRefreshDeleteControl extends InternalAbstractControl implements SyncInfoValueControl 
+public class SyncInfoValueRefreshDeleteControl extends AbstractControl implements SyncInfoValueControl 
 {
     /** As this class is serializable, defined its serialVersionUID */ 
     private static final long serialVersionUID = 1L;
@@ -58,6 +58,12 @@ public class SyncInfoValueRefreshDeleteControl extends InternalAbstractControl i
     
     /** The refreshDone flag, default to true */
     private boolean refreshDone = true;
+    
+    
+    public SyncInfoValueRefreshDeleteControl()
+    {
+        super( CONTROL_OID );
+    }
     
     
     /**
@@ -100,7 +106,7 @@ public class SyncInfoValueRefreshDeleteControl extends InternalAbstractControl i
      * {@inheritDoc}
      */
     @Override
-    public String getID()
+    public String getOid()
     {
         return CONTROL_OID;
     }
@@ -109,7 +115,7 @@ public class SyncInfoValueRefreshDeleteControl extends InternalAbstractControl i
     /**
      * {@inheritDoc}
      */
-    public byte[] getEncodedValue()
+    public byte[] getValue()
     {
         SyncInfoValueControlCodec syncInfoValueCtlCodec = 
             new SyncInfoValueControlCodec( SynchronizationInfoEnum.REFRESH_DELETE );

@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import javax.naming.ldap.Control;
+import org.apache.directory.shared.ldap.message.control.Control;
 
 
 
@@ -114,7 +114,7 @@ public abstract class InternalAbstractMessage implements InternalMessage
      */
     public void add( Control control ) throws MessageException
     {
-        controls.put( control.getID(), control );
+        controls.put( control.getOid(), control );
     }
 
 
@@ -129,7 +129,7 @@ public abstract class InternalAbstractMessage implements InternalMessage
      */
     public void remove( Control control ) throws MessageException
     {
-        controls.remove( control.getID() );
+        controls.remove( control.getOid() );
     }
 
 
@@ -256,7 +256,7 @@ public abstract class InternalAbstractMessage implements InternalMessage
     {
         for ( Control c : controls )
         {
-            this.controls.put( c.getID(), c );
+            this.controls.put( c.getOid(), c );
         }
     }
 }

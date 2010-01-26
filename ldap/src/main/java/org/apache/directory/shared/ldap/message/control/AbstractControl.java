@@ -19,34 +19,59 @@
  */
 package org.apache.directory.shared.ldap.message.control;
 
-import org.apache.directory.shared.ldap.message.InternalControl;
 
 
 /**
  * Control implementation.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
+ * @version $Rev: 762512 $
  */
-public abstract class InternalAbstractControl implements InternalControl
+public abstract class AbstractControl implements Control
 {
     /** Unique object identifier for this control */
     private String oid;
 
     /** Flag for control criticality */
     private boolean isCritical;
+    
+    /** The encoded value */
+    private byte[] value;
 
 
+    /**
+     * Creates a new instance of AbstractControl.
+     *
+     * @param oid The control's OID
+     */
+    public AbstractControl( String oid )
+    {
+        this.oid = oid;
+        value = null;
+        isCritical = false;
+    }
+    
+    
+    /**
+     * Creates a new instance of AbstractControl.
+     *
+     * @param oid The control's OID
+     * @param isCritical A flag telling if the control is critical or not
+     * @param value The encoded value
+     */
+    public AbstractControl( String oid, boolean isCritical, byte[] value )
+    {
+        this.oid = oid;
+        this.value = value;
+        this.isCritical = isCritical;
+    }
+    
+    
     // ------------------------------------------------------------------------
     // Control Interface Method Implementations
     // ------------------------------------------------------------------------
-
     /**
-     * Determines whether or not this control is critical for the correct
-     * operation of a request or response message. The default for this value
-     * should be false.
-     * 
-     * @return true if the control is critical false otherwise.
+     * {@inheritDoc}
      */
     public boolean isCritical()
     {
@@ -55,12 +80,7 @@ public abstract class InternalAbstractControl implements InternalControl
 
 
     /**
-     * Sets the critical flag which determines whether or not this control is
-     * critical for the correct operation of a request or response message. The
-     * default for this value should be false.
-     * 
-     * @param isCritical
-     *            true if the control is critical false otherwise.
+     * {@inheritDoc}
      */
     public void setCritical( boolean isCritical )
     {
@@ -69,24 +89,43 @@ public abstract class InternalAbstractControl implements InternalControl
 
 
     /**
-     * Sets the OID of the Control to identify the control type.
-     * 
-     * @param oid
-     *            the OID of this Control.
+     * {@inheritDoc}
      */
-    public void setID( String oid )
+    public void setOid( String oid )
     {
         this.oid = oid;
     }
 
 
     /**
-     * Retrieves the object identifier assigned for the LDAP control.
-     * 
-     * @return The non-null object identifier string.
+     * {@inheritDoc}
      */
-    public String getID()
+    public String getOid()
     {
         return this.oid;
+    }
+    
+    
+    /**
+     * {@inheritDoc}
+     */
+    public byte[] getValue()
+    {
+        return value;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setValue( byte[] value )
+    {
+        this.value = value;
+    }
+    
+    
+    public boolean hasValue()
+    {
+        return value != null;
     }
 }

@@ -20,20 +20,14 @@
 package org.apache.directory.shared.ldap.message;
 
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.naming.ldap.Control;
-
-import org.apache.directory.shared.ldap.message.MessageException;
-import org.apache.directory.shared.ldap.message.MessageTypeEnum;
-import org.apache.directory.shared.ldap.message.InternalReferral;
-import org.apache.directory.shared.ldap.message.ReferralImpl;
-import org.apache.directory.shared.ldap.message.InternalSearchResponseReference;
-import org.apache.directory.shared.ldap.message.SearchResponseReferenceImpl;
+import org.apache.directory.shared.ldap.message.control.Control;
 import org.junit.Test;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 
 /**

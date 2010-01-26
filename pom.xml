@@ -54,6 +54,7 @@
     <module>asn1</module>
     <module>ldap</module>
     <module>ldap-jndi</module>
+    <module>ldap-ldif</module>
     <module>ldap-constants</module>
     <module>ldap-schema</module>
     <module>ldap-schema-loader</module>

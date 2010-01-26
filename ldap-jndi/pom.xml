@@ -26,6 +26,7 @@
     <artifactId>shared-parent</artifactId>
     <version>0.9.18-SNAPSHOT</version>
   </parent>
+  
   <artifactId>shared-ldap-jndi</artifactId>
   <name>Apache Directory Shared JNDI</name>
   <packaging>jar</packaging>  
@@ -34,5 +35,13 @@
     Shared libraries for client side JNDI handling that may be used 
     both in the server and in studio.
   </description>
+
+  <dependencies>
+    <dependency>
+      <artifactId>shared-ldap</artifactId>
+      <groupId>${groupId}</groupId>
+      <version>${version}</version>
+    </dependency>
+  </dependencies>
 </project>
 

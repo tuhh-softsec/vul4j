@@ -22,7 +22,6 @@ package org.apache.directory.shared.ldap.message.control;
 
 import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.ldap.codec.search.controls.subEntry.SubEntryControlCodec;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,7 +66,7 @@ import org.slf4j.LoggerFactory;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public class SubentriesControl extends InternalAbstractControl
+public class SubentriesControl extends AbstractControl
 {
     private static final long serialVersionUID = -2356861450876343999L;
 
@@ -81,8 +80,7 @@ public class SubentriesControl extends InternalAbstractControl
 
     public SubentriesControl()
     {
-        super();
-        setID( CONTROL_OID );
+        super( CONTROL_OID );
     }
 
 
@@ -98,7 +96,10 @@ public class SubentriesControl extends InternalAbstractControl
     }
 
 
-    public byte[] getEncodedValue()
+    /**
+     * {@inheritDoc}
+     */
+    public byte[] getValue()
     {
         SubEntryControlCodec ctl = new SubEntryControlCodec();
         ctl.setVisibility( isVisible() );

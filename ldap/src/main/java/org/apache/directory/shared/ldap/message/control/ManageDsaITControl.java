@@ -19,7 +19,6 @@
  */
 package org.apache.directory.shared.ldap.message.control;
 
-import org.apache.directory.shared.ldap.util.StringTools;
 
 
 /**
@@ -60,30 +59,18 @@ import org.apache.directory.shared.ldap.util.StringTools;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public class ManageDsaITControl extends InternalAbstractControl
+public class ManageDsaITControl extends AbstractControl
 {
     public static final String CONTROL_OID = "2.16.840.1.113730.3.4.2";
 
     private static final long serialVersionUID = -8844249964346248321L;
 
-    /**
-     * Returns an empty byte[] every time.
-     */
-    public byte[] getEncodedValue()
+    public ManageDsaITControl()
     {
-        return StringTools.EMPTY_BYTES;
+        super( CONTROL_OID );
     }
-
-
-    /**
-     * Returns an empty byte[] every time.
-     */
-    public byte[] getValue()
-    {
-        return StringTools.EMPTY_BYTES;
-    }
-
-
+    
+    
     /**
      * Returns "2.16.840.1.113730.3.4.2" every time.
      */
@@ -96,7 +83,7 @@ public class ManageDsaITControl extends InternalAbstractControl
     /**
      * Returns "2.16.840.1.113730.3.4.2" every time.
      */
-    public String getID()
+    public String getOid()
     {
         return CONTROL_OID;
     }

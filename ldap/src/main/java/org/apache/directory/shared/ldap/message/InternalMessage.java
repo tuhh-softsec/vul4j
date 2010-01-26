@@ -22,7 +22,7 @@ package org.apache.directory.shared.ldap.message;
 
 import java.util.Map;
 
-import javax.naming.ldap.Control;
+import org.apache.directory.shared.ldap.message.control.Control;
 
 
 /**

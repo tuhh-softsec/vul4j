@@ -44,7 +44,7 @@ import org.slf4j.LoggerFactory;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public class PersistentSearchControl extends InternalAbstractControl
+public class PersistentSearchControl extends AbstractControl
 {
     /** As this class is serializable, defined its serialVersionUID */ 
     private static final long serialVersionUID = -2356861450876343999L;
@@ -92,8 +92,7 @@ public class PersistentSearchControl extends InternalAbstractControl
 
     public PersistentSearchControl()
     {
-        super();
-        setID( CONTROL_OID );
+        super( CONTROL_OID );
     }
 
 
@@ -146,10 +145,9 @@ public class PersistentSearchControl extends InternalAbstractControl
 
 
     /**
-     * @return The encoded byte[] for this persistentSearch control
-     * 
+     * {@inheritDoc}
      */
-    public byte[] getEncodedValue()
+    public byte[] getValue()
     {
         PSearchControlCodec psearchCtlCodec = new PSearchControlCodec();
         psearchCtlCodec.setChangesOnly( changesOnly );

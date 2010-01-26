@@ -45,15 +45,21 @@
     </dependency>
     
     <dependency>
-      <groupId>${pom.groupId}</groupId>
+      <groupId>${groupId}</groupId>
       <artifactId>shared-ldap</artifactId>
-      <version>${pom.version}</version>
+      <version>${version}</version>
     </dependency>
 
-        <dependency>
-      <groupId>${pom.groupId}</groupId>
+    <dependency>
+      <artifactId>shared-ldif</artifactId>
+      <groupId>${groupId}</groupId>
+      <version>${version}</version>
+    </dependency> 
+
+    <dependency>
+      <groupId>${groupId}</groupId>
       <artifactId>shared-ldap-constants</artifactId>
-      <version>${pom.version}</version>
+      <version>${version}</version>
     </dependency>
   </dependencies>
 
