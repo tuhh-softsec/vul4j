@@ -570,95 +570,95 @@ public class DigesterTestCase extends TestCase {
     
     /** Utility class for method testStackAction */
     private static class TrackingStackAction implements StackAction {
-    	public ArrayList<String> events = new ArrayList<String>();
-    	public Object onPush(Digester d, String stackName, Object o) {
-    		String msg = "push:" + stackName + ":" + o.toString();
-    		events.add(msg);
-    		
-    		String str = o.toString();
-    		if (str.startsWith("replpush")) {
-    			return new String(str);
-    		} else {
-    			return o;
-    		}
-    	}
-    	public Object onPop(Digester d, String stackName, Object o) {
-    		String msg = "pop:" + stackName + ":" + o.toString();
-    		events.add(msg);
-    		String str = o.toString();
-    		if (str.startsWith("replpop")) {
-    			return new String(str);
-    		} else {
-    			return o;
-    		}
-    	}
+        public ArrayList<String> events = new ArrayList<String>();
+        public Object onPush(Digester d, String stackName, Object o) {
+            String msg = "push:" + stackName + ":" + o.toString();
+            events.add(msg);
+            
+            String str = o.toString();
+            if (str.startsWith("replpush")) {
+                return new String(str);
+            } else {
+                return o;
+            }
+        }
+        public Object onPop(Digester d, String stackName, Object o) {
+            String msg = "pop:" + stackName + ":" + o.toString();
+            events.add(msg);
+            String str = o.toString();
+            if (str.startsWith("replpop")) {
+                return new String(str);
+            } else {
+                return o;
+            }
+        }
     }
 
     /**
      * Test custom StackAction subclasses.
      */
     public void testStackAction() {
-    	TrackingStackAction action = new TrackingStackAction();
-    	
-    	Object obj1 = new String("obj1");
-    	Object obj2 = new String("obj2");
-    	Object obj3 = new String("replpop.obj3");
-    	Object obj4 = new String("replpush.obj4");
+        TrackingStackAction action = new TrackingStackAction();
+        
+        Object obj1 = new String("obj1");
+        Object obj2 = new String("obj2");
+        Object obj3 = new String("replpop.obj3");
+        Object obj4 = new String("replpush.obj4");
 
-    	Object obj8 = new String("obj8");
-    	Object obj9 = new String("obj9");
+        Object obj8 = new String("obj8");
+        Object obj9 = new String("obj9");
 
-    	Digester d = new Digester();
-    	d.setStackAction(action);
+        Digester d = new Digester();
+        d.setStackAction(action);
 
-    	assertEquals(0, action.events.size());
-    	d.push(obj1);
-    	d.push(obj2);
-    	d.push(obj3);
-    	d.push(obj4);
+        assertEquals(0, action.events.size());
+        d.push(obj1);
+        d.push(obj2);
+        d.push(obj3);
+        d.push(obj4);
 
-    	assertNotNull(d.peek(0));
-    	// for obj4, a copy should have been pushed
-    	assertFalse(obj4 == d.peek(0));
-    	assertEquals(obj4, d.peek(0));
-    	// for obj3, replacement only occurs on pop
-    	assertSame(obj3, d.peek(1));
-    	assertSame(obj2, d.peek(2));
-    	assertSame(obj1, d.peek(3));
+        assertNotNull(d.peek(0));
+        // for obj4, a copy should have been pushed
+        assertFalse(obj4 == d.peek(0));
+        assertEquals(obj4, d.peek(0));
+        // for obj3, replacement only occurs on pop
+        assertSame(obj3, d.peek(1));
+        assertSame(obj2, d.peek(2));
+        assertSame(obj1, d.peek(3));
 
-    	Object obj4a = d.pop();
-    	Object obj3a = d.pop();
-    	Object obj2a = d.pop();
-    	Object obj1a = d.pop();
-    	
-    	assertFalse(obj4 == obj4a);
-    	assertEquals(obj4, obj4a);
-    	assertFalse(obj3 == obj4a);
-    	assertEquals(obj3, obj3a);
-    	assertSame(obj2, obj2a);
-    	assertSame(obj1, obj1a);
+        Object obj4a = d.pop();
+        Object obj3a = d.pop();
+        Object obj2a = d.pop();
+        Object obj1a = d.pop();
+        
+        assertFalse(obj4 == obj4a);
+        assertEquals(obj4, obj4a);
+        assertFalse(obj3 == obj4a);
+        assertEquals(obj3, obj3a);
+        assertSame(obj2, obj2a);
+        assertSame(obj1, obj1a);
 
-    	d.push("stack1", obj8);
-    	d.push("stack1", obj9);
-    	Object obj9a = d.pop("stack1");
-    	Object obj8a = d.pop("stack1");
+        d.push("stack1", obj8);
+        d.push("stack1", obj9);
+        Object obj9a = d.pop("stack1");
+        Object obj8a = d.pop("stack1");
 
-    	assertSame(obj8, obj8a);
-    	assertSame(obj9, obj9a);
+        assertSame(obj8, obj8a);
+        assertSame(obj9, obj9a);
 
-    	assertEquals(12, action.events.size());
-    	assertEquals("push:null:obj1", action.events.get(0));
-    	assertEquals("push:null:obj2", action.events.get(1));
-    	assertEquals("push:null:replpop.obj3", action.events.get(2));
-    	assertEquals("push:null:replpush.obj4", action.events.get(3));
-    	assertEquals("pop:null:replpush.obj4", action.events.get(4));
-    	assertEquals("pop:null:replpop.obj3", action.events.get(5));
-    	assertEquals("pop:null:obj2", action.events.get(6));
-    	assertEquals("pop:null:obj1", action.events.get(7));
+        assertEquals(12, action.events.size());
+        assertEquals("push:null:obj1", action.events.get(0));
+        assertEquals("push:null:obj2", action.events.get(1));
+        assertEquals("push:null:replpop.obj3", action.events.get(2));
+        assertEquals("push:null:replpush.obj4", action.events.get(3));
+        assertEquals("pop:null:replpush.obj4", action.events.get(4));
+        assertEquals("pop:null:replpop.obj3", action.events.get(5));
+        assertEquals("pop:null:obj2", action.events.get(6));
+        assertEquals("pop:null:obj1", action.events.get(7));
 
-    	assertEquals("push:stack1:obj8", action.events.get(8));
-    	assertEquals("push:stack1:obj9", action.events.get(9));
-    	assertEquals("pop:stack1:obj9", action.events.get(10));
-    	assertEquals("pop:stack1:obj8", action.events.get(11));
+        assertEquals("push:stack1:obj8", action.events.get(8));
+        assertEquals("push:stack1:obj9", action.events.get(9));
+        assertEquals("pop:stack1:obj9", action.events.get(10));
+        assertEquals("pop:stack1:obj8", action.events.get(11));
     }
 }

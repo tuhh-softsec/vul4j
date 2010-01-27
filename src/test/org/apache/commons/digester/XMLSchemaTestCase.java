@@ -78,14 +78,14 @@ public class XMLSchemaTestCase extends TestCase {
         digester = new Digester();
 
         // Use the test schema
-    	digester.setNamespaceAware(true);
-    	Schema test13schema = SchemaFactory.
-    	    newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI).
-    	    newSchema(this.getClass().getClassLoader().
-    	        getResource("org/apache/commons/digester/Test13.xsd"));
-    	digester.setXMLSchema(test13schema);
+        digester.setNamespaceAware(true);
+        Schema test13schema = SchemaFactory.
+            newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI).
+            newSchema(this.getClass().getClassLoader().
+                getResource("org/apache/commons/digester/Test13.xsd"));
+        digester.setXMLSchema(test13schema);
 
-    	// Configure the digester as required
+        // Configure the digester as required
         digester.addObjectCreate("employee", Employee.class);
         digester.addCallMethod("employee/firstName", "setFirstName", 0);
         digester.addCallMethod("employee/lastName", "setLastName", 0);
@@ -128,9 +128,9 @@ public class XMLSchemaTestCase extends TestCase {
      */
     public void testGoodDocument() throws SAXException, IOException {
 
-    	// Listen to validation errors
-    	TestErrorHandler teh = new TestErrorHandler();
-    	digester.setErrorHandler(teh);
+        // Listen to validation errors
+        TestErrorHandler teh = new TestErrorHandler();
+        digester.setErrorHandler(teh);
 
         // Parse our test input
         Employee employee = (Employee) digester.parse(getInputStream("Test13-01.xml"));
@@ -147,12 +147,12 @@ public class XMLSchemaTestCase extends TestCase {
 
     public void testBadDocument() throws SAXException, IOException {
 
-    	// Listen to validation errors
-    	TestErrorHandler teh = new TestErrorHandler();
-    	digester.setErrorHandler(teh);
+        // Listen to validation errors
+        TestErrorHandler teh = new TestErrorHandler();
+        digester.setErrorHandler(teh);
 
         // Parse our test input
-    	digester.parse(getInputStream("Test13-02.xml"));
+        digester.parse(getInputStream("Test13-02.xml"));
         assertFalse("Test13-02 should generate errors in Schema validation", teh.clean);
 
     }
@@ -176,17 +176,17 @@ public class XMLSchemaTestCase extends TestCase {
     }
 
     static final class TestErrorHandler implements ErrorHandler {
-    	public boolean clean = true;
-    	public TestErrorHandler() { }
-    	public void error(SAXParseException exception) {
-    		clean = false;
-    	}
-    	public void fatalError(SAXParseException exception) {
-    		clean = false;
-    	}
-    	public void warning(SAXParseException exception) {
-    		clean = false;
-    	}
+        public boolean clean = true;
+        public TestErrorHandler() { }
+        public void error(SAXParseException exception) {
+            clean = false;
+        }
+        public void fatalError(SAXParseException exception) {
+            clean = false;
+        }
+        public void warning(SAXParseException exception) {
+            clean = false;
+        }
     }
 
 }

@@ -36,49 +36,49 @@ import org.xml.sax.Locator;
  */
 
 public class LocationTrackerTestCase extends TestCase {
-	
-	private static class LocationTracker implements StackAction {
-		public Map<Object, String> locations = new HashMap<Object, String>();
 
-    	public Object onPush(Digester d, String stackName, Object o) {
-    		if (stackName == null) {
-    			// we only care about the real object stack
-	    		
-	    		// note that a Locator object can also provide 
-	    		// publicId and systemId info.
-	    		Locator l = d.getDocumentLocator();
-	    		StringBuffer locn = new StringBuffer();
-	    		locn.append("line=");
-	    		locn.append(l.getLineNumber());
-	    		locations.put(o, locn.toString());
-    		}
-    		return o;
-    	}
+    private static class LocationTracker implements StackAction {
+        public Map<Object, String> locations = new HashMap<Object, String>();
 
-    	public Object onPop(Digester d, String stackName, Object o) {
-    		return o;
-    	}
-	}
+        public Object onPush(Digester d, String stackName, Object o) {
+            if (stackName == null) {
+                // we only care about the real object stack
+                
+                // note that a Locator object can also provide 
+                // publicId and systemId info.
+                Locator l = d.getDocumentLocator();
+                StringBuffer locn = new StringBuffer();
+                locn.append("line=");
+                locn.append(l.getLineNumber());
+                locations.put(o, locn.toString());
+            }
+            return o;
+        }
 
-	public void testAll() throws Exception {
-	    final String TEST_XML =
-	        "<?xml version='1.0'?>\n"
-	    	+ "<box id='root'>\n"
-	    	+ "  <subBox id='box1'/>\n" 
-	    	+ "  <ignoreme/>\n"
-	    	+ "  <subBox id='box2'/> <subBox id='box3'/>\n" 
-	    	+ "</box>";
-	    
-	    LocationTracker locnTracker = new LocationTracker();
+        public Object onPop(Digester d, String stackName, Object o) {
+            return o;
+        }
+    }
 
-	    Digester digester = new Digester();
-	    digester.setStackAction(locnTracker);
+    public void testAll() throws Exception {
+        final String TEST_XML =
+            "<?xml version='1.0'?>\n"
+            + "<box id='root'>\n"
+            + "  <subBox id='box1'/>\n" 
+            + "  <ignoreme/>\n"
+            + "  <subBox id='box2'/> <subBox id='box3'/>\n" 
+            + "</box>";
+        
+        LocationTracker locnTracker = new LocationTracker();
+
+        Digester digester = new Digester();
+        digester.setStackAction(locnTracker);
         digester.addObjectCreate("box", Box.class);
         digester.addSetProperties("box");
         digester.addObjectCreate("box/subBox", Box.class);
         digester.addSetProperties("box/subBox");
         digester.addSetNext("box/subBox", "addChild");
-	    
+
         Object result = digester.parse(new StringReader(TEST_XML));
         assertNotNull(result);
         Box root = (Box) result;

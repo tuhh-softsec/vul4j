@@ -103,9 +103,9 @@ public class XIncludeTestCase extends TestCase {
      */
     public void testXInclude() throws SAXException, IOException {
 
-    	// Turn on XInclude processing
-    	digester.setNamespaceAware(true);
-    	digester.setXIncludeAware(true);
+        // Turn on XInclude processing
+        digester.setNamespaceAware(true);
+        digester.setXIncludeAware(true);
 
         // Configure the digester as required
         digester.addObjectCreate("employee", Employee.class);
