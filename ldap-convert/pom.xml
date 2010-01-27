@@ -26,6 +26,7 @@
     <artifactId>shared-parent</artifactId>
     <version>0.9.18-SNAPSHOT</version>
   </parent>
+  
   <artifactId>shared-ldap-converter</artifactId>
   <name>Apache Directory Shared Ldap Converters</name>
   <inceptionYear>2007</inceptionYear>
@@ -47,8 +48,8 @@
     </dependency> 
 
     <dependency>
-      <groupId>${groupId}</groupId>
       <artifactId>shared-ldap</artifactId>
+      <groupId>${groupId}</groupId>
       <version>${version}</version>
     </dependency>
   </dependencies>

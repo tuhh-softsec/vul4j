@@ -26,6 +26,7 @@
     <artifactId>shared-parent</artifactId>
     <version>0.9.18-SNAPSHOT</version>
   </parent>
+  
   <artifactId>shared-ldap</artifactId>
   <name>Apache Directory Shared Ldap</name>
   <inceptionYear>2004</inceptionYear>
@@ -43,28 +44,31 @@
     <dependency>
       <groupId>commons-lang</groupId>
       <artifactId>commons-lang</artifactId>
+      <version>${commons.lang.version}</version>
     </dependency>
 
     <dependency>
       <groupId>commons-collections</groupId>
       <artifactId>commons-collections</artifactId>
+      <version>${commons.collections.version}</version>
     </dependency>
 
     <dependency>
-      <groupId>${pom.groupId}</groupId>
       <artifactId>shared-asn1</artifactId>
-      <version>${pom.version}</version>
+      <groupId>${groupId}</groupId>
+      <version>${version}</version>
     </dependency>
 
     <dependency>
-      <groupId>${pom.groupId}</groupId>
       <artifactId>shared-ldap-constants</artifactId>
-      <version>${pom.version}</version>
+      <groupId>${groupId}</groupId>
+      <version>${version}</version>
     </dependency>
 
     <dependency>
       <groupId>antlr</groupId>
       <artifactId>antlr</artifactId>
+      <version>${antlr.version}</version>
     </dependency>
   </dependencies>
 

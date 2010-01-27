@@ -26,6 +26,7 @@
     <artifactId>shared-parent</artifactId>
     <version>0.9.18-SNAPSHOT</version>
   </parent>
+  
   <artifactId>shared-ldif</artifactId>
   <name>Apache Directory Shared LDIF</name>
   <inceptionYear>2010</inceptionYear>
@@ -43,11 +44,13 @@
     <dependency>
       <groupId>commons-lang</groupId>
       <artifactId>commons-lang</artifactId>
+      <version>${commons.lang.version}</version>
     </dependency>
 
     <dependency>
       <groupId>commons-collections</groupId>
       <artifactId>commons-collections</artifactId>
+      <version>${commons.collections.version}</version>
     </dependency>
 
     <dependency>

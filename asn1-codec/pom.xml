@@ -26,6 +26,7 @@
     <artifactId>shared-parent</artifactId>
     <version>0.9.18-SNAPSHOT</version>
   </parent>
+  
   <artifactId>shared-asn1-codec</artifactId>
   <name>Apache Directory Shared ASN.1 Codec</name>
   <packaging>jar</packaging>
@@ -33,17 +34,16 @@
   <dependencies>
     
     <dependency>
-      <groupId>org.apache.directory.shared</groupId>
       <artifactId>shared-asn1</artifactId>
-      <version>${pom.version}</version>
+      <groupId>${groupId}</groupId>
+      <version>${version}</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.mina</groupId>
       <artifactId>mina-core</artifactId>
+      <version>${mina.core.version}</version>
     </dependency>
-
   </dependencies>
-
 </project>
 

@@ -33,80 +33,80 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.apache.directory.shared</groupId>
       <artifactId>shared-asn1</artifactId>
+      <groupId>${groupId}</groupId>
       <version>${version}</version>
     </dependency>
 
     <dependency>
-      <groupId>org.apache.directory.shared</groupId>
       <artifactId>shared-asn1-codec</artifactId>
+      <groupId>${groupId}</groupId>
       <version>${version}</version>
     </dependency>
 
     <dependency>
-      <groupId>org.apache.directory.shared</groupId>
       <artifactId>shared-cursor</artifactId>
+      <groupId>${groupId}</groupId>
       <version>${version}</version>
     </dependency>
 
     <dependency>
-      <groupId>org.apache.directory.shared</groupId>
       <artifactId>shared-dsml-parser</artifactId>
+      <groupId>${groupId}</groupId>
       <version>${version}</version>
     </dependency>
 
     <dependency>
-      <groupId>org.apache.directory.shared</groupId>
       <artifactId>shared-ldap</artifactId>
+      <groupId>${groupId}</groupId>
       <version>${version}</version>
     </dependency>
 
     <dependency>
-      <groupId>org.apache.directory.shared</groupId>
       <artifactId>shared-ldif</artifactId>
+      <groupId>${groupId}</groupId>
       <version>${version}</version>
     </dependency>
 
     <dependency>
-      <groupId>org.apache.directory.shared</groupId>
       <artifactId>shared-ldap-constants</artifactId>
+      <groupId>${groupId}</groupId>
       <version>${version}</version>
     </dependency>
 
     <dependency>
-      <groupId>org.apache.directory.shared</groupId>
       <artifactId>shared-ldap-converter</artifactId>
+      <groupId>${groupId}</groupId>
       <version>${version}</version>
     </dependency>
 
     <dependency>
-      <groupId>org.apache.directory.shared</groupId>
       <artifactId>shared-ldap-jndi</artifactId>
+      <groupId>${groupId}</groupId>
       <version>${version}</version>
     </dependency>
 
     <dependency>
-      <groupId>org.apache.directory.shared</groupId>
       <artifactId>shared-ldap-schema</artifactId>
+      <groupId>${groupId}</groupId>
       <version>${version}</version>
     </dependency>
 
     <dependency>
-      <groupId>org.apache.directory.shared</groupId>
       <artifactId>shared-ldap-schema-dao</artifactId>
+      <groupId>${groupId}</groupId>
       <version>${version}</version>
     </dependency>
 
     <dependency>
-      <groupId>org.apache.directory.shared</groupId>
       <artifactId>shared-ldap-schema-loader</artifactId>
+      <groupId>${groupId}</groupId>
       <version>${version}</version>
     </dependency>
 
     <dependency>
-      <groupId>org.apache.directory.shared</groupId>
       <artifactId>shared-ldap-schema-manager</artifactId>
+      <groupId>${groupId}</groupId>
       <version>${version}</version>
     </dependency>
   </dependencies>

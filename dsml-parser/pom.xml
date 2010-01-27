@@ -35,9 +35,9 @@
 
   <dependencies>
     <dependency>
+      <artifactId>shared-ldap</artifactId>
       <groupId>${groupId}</groupId>
       <version>${version}</version>
-      <artifactId>shared-ldap</artifactId>
     </dependency>
     
     <dependency>
@@ -49,12 +49,13 @@
     <dependency>
       <groupId>dom4j</groupId>
       <artifactId>dom4j</artifactId>
+      <version>${dom4j.version}</version>
     </dependency>
     
     <dependency>
       <groupId>xpp3</groupId>
       <artifactId>xpp3</artifactId>
+      <version>${xpp3.version}</version>
     </dependency>
   </dependencies>
-
 </project>
