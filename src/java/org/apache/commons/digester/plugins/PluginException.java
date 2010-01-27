@@ -57,6 +57,7 @@ public class PluginException extends Exception {
     /**
      * @return the underlying exception that caused this to be thrown
      */
+    @Override
     public Throwable getCause() {
         return cause;
     }

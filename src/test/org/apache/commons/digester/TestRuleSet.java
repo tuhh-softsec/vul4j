@@ -98,6 +98,7 @@ public class TestRuleSet extends RuleSetBase {
      * @param digester Digester instance to which the new Rule instances
      *  should be added.
      */
+    @Override
     public void addRuleInstances(Digester digester) {
 
         digester.addObjectCreate(prefix + "employee", Employee.class);

@@ -50,6 +50,7 @@ public class BetaBean implements Nameable {
         return child;
     }
     
+    @Override
     public String toString()
     {
         return "[BetaBean] name=" + name + " child=" + child;

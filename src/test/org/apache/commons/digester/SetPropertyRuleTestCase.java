@@ -86,6 +86,7 @@ public class SetPropertyRuleTestCase extends TestCase {
     /**
      * Set up instance variables required by this test case.
      */
+    @Override
     public void setUp() {
 
         digester = new Digester();
@@ -106,6 +107,7 @@ public class SetPropertyRuleTestCase extends TestCase {
     /**
      * Tear down instance variables required by this test case.
      */
+    @Override
     public void tearDown() {
 
         digester = null;

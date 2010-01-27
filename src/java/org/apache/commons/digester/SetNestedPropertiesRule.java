@@ -194,6 +194,7 @@ public class SetNestedPropertiesRule extends Rule {
     // --------------------------------------------------------- Public Methods
 
     /** Invoked when rule is added to digester. */
+    @Override
     public void setDigester(Digester digester) {
         super.setDigester(digester);
         log = digester.getLogger();
@@ -243,6 +244,7 @@ public class SetNestedPropertiesRule extends Rule {
      * @param name is the name of the current xml element
      * @param attributes is the attribute list of this element
      */
+    @Override
     public void begin(String namespace, String name, Attributes attributes) 
                       throws Exception {
         Rules oldRules = digester.getRules();
@@ -258,6 +260,7 @@ public class SetNestedPropertiesRule extends Rule {
      * so we can remove the custom Rules object that does the 
      * child-element-matching.
      */
+    @Override
     public void body(String bodyText) throws Exception {
         AnyChildRules newRules = (AnyChildRules) digester.getRules();
         digester.setRules(newRules.getOldRules());
@@ -278,6 +281,7 @@ public class SetNestedPropertiesRule extends Rule {
     /**
      * Render a printable version of this Rule.
      */
+    @Override
     public String toString() {
         StringBuffer sb = new StringBuffer("SetNestedPropertiesRule[");
         sb.append("allowUnknownChildElements=");
@@ -384,6 +388,7 @@ public class SetNestedPropertiesRule extends Rule {
         private String currChildNamespaceURI = null;
         private String currChildElementName = null;
         
+        @Override
         public void begin(String namespaceURI, String name, 
                               Attributes attributes) throws Exception {
     
@@ -391,6 +396,7 @@ public class SetNestedPropertiesRule extends Rule {
             currChildElementName = name;
         }
         
+        @Override
         public void body(String value) throws Exception {
             String propName = currChildElementName;
             if (elementNames.containsKey(currChildElementName)) {
@@ -458,6 +464,7 @@ public class SetNestedPropertiesRule extends Rule {
             }
         }
     
+        @Override
         public void end(String namespace, String name) throws Exception {
             currChildElementName = null;
         }

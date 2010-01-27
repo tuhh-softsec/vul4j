@@ -137,6 +137,7 @@ public class FromXmlRuleSet extends RuleSetBase {
      * XML file for this rule set.
      * @see org.apache.commons.digester.RuleSetBase
      */
+    @Override
     public void addRuleInstances(org.apache.commons.digester.Digester digester) throws XmlLoadException {
         addRuleInstances(digester, null);
     }
@@ -192,6 +193,7 @@ public class FromXmlRuleSet extends RuleSetBase {
             this.url = url;
         }
         
+        @Override
         public void loadRules() throws XmlLoadException {
             try {
                 rulesDigester.parse(url.openStream());
@@ -208,6 +210,7 @@ public class FromXmlRuleSet extends RuleSetBase {
             this.inputSource = inputSource;
         }
         
+        @Override
         public void loadRules() throws XmlLoadException {
             try {
                 rulesDigester.parse(inputSource);

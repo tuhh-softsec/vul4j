@@ -90,6 +90,7 @@ public class FinderFromClass extends RuleFinder {
      * that class provided it has the correct prototype) as the source of
      * dynamic rules for the plugged-in class.
      */
+    @Override
     public RuleLoader findLoader(Digester digester, Class<?> pluginClass, 
                         Properties p) throws PluginException {
 

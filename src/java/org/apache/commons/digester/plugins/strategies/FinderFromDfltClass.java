@@ -69,6 +69,7 @@ public class FinderFromDfltClass extends RuleFinder {
      * target method is expected to have the following prototype:
      * <code> public static void xxxxx(Digester d, String patternPrefix); </code>
      */
+    @Override
     public RuleLoader findLoader(Digester digester, Class<?> pluginClass, Properties p)
                             throws PluginException {
 

@@ -63,6 +63,7 @@ public class FinderFromMethod extends RuleFinder {
      * target method is expected to have the following prototype:
      * <code> public static void xxxxx(Digester d, String patternPrefix); </code>
      */
+    @Override
     public RuleLoader findLoader(Digester d, Class<?> pluginClass, Properties p)
                         throws PluginException {
 

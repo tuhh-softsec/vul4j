@@ -40,6 +40,7 @@ public class TestConfigurablePluginAttributes extends TestCase {
     }
 
     /** Set up instance variables required by this test case. */
+    @Override
     public void setUp() {}
 
     /** Return the tests included in this test suite. */
@@ -50,6 +51,7 @@ public class TestConfigurablePluginAttributes extends TestCase {
     }
 
     /** Tear down instance variables required by this test case.*/
+    @Override
     public void tearDown() {}
         
     // --------------------------------------------------------------- Test cases

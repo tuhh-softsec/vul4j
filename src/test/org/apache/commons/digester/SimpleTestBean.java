@@ -70,6 +70,7 @@ public class SimpleTestBean {
         setBeta(beta);
     }
 
+    @Override
     public String toString() {
         StringBuffer sb = new StringBuffer("[SimpleTestBean]");
         sb.append(" alpha=");

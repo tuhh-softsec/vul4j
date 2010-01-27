@@ -43,6 +43,7 @@ public class NamespaceSnapshotTestCase extends TestCase {
         /**
          * @see Rule#begin(String, String, Attributes)
          */
+        @Override
         public final void begin(final String namespace, final String name,
                 final Attributes attributes) {
             Digester d = getDigester();

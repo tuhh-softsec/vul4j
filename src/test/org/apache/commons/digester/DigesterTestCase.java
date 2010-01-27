@@ -94,6 +94,7 @@ public class DigesterTestCase extends TestCase {
     /**
      * Set up instance variables required by this test case.
      */
+    @Override
     public void setUp() {
 
         digester = new Digester();
@@ -115,6 +116,7 @@ public class DigesterTestCase extends TestCase {
     /**
      * Tear down instance variables required by this test case.
      */
+    @Override
     public void tearDown() {
 
         digester = null;
@@ -388,6 +390,7 @@ public class DigesterTestCase extends TestCase {
             public int called=0;
             public TestConfigureDigester() {}
             
+            @Override
             protected void initialize() {
                 called++;
             }
@@ -406,10 +409,12 @@ public class DigesterTestCase extends TestCase {
             public String body;
             public Attributes attributes;
             
+            @Override
             public void begin(String namespace, String name, Attributes attributes) {
                 this.attributes = new AttributesImpl(attributes);
             }
             
+            @Override
             public void body(String namespace, String name, String text) {
                 this.body = text;
             }
@@ -432,12 +437,14 @@ public class DigesterTestCase extends TestCase {
 
         digester.setSubstitutor(
             new Substitutor() {
+                @Override
                 public Attributes substitute(Attributes attributes) {
                     AttributesImpl results = new AttributesImpl();
                     results.addAttribute("", "python", "python", "CDATA", "Cleese");
                     return results;
                 }   
                 
+                @Override
                 public String substitute(String bodyText) {
                     return "And now for something completely different...";
                 }

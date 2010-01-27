@@ -93,6 +93,7 @@ public class ObjectParamRule extends Rule {
      *
      * @param attributes The attribute list for this element
      */
+    @Override
     public void begin(String namespace, String name,
                       Attributes attributes) throws Exception {
         Object anAttribute = null;
@@ -113,6 +114,7 @@ public class ObjectParamRule extends Rule {
     /**
      * Render a printable version of this Rule.
      */
+    @Override
     public String toString() {
         StringBuffer sb = new StringBuffer("ObjectParamRule[");
         sb.append("paramIndex=");

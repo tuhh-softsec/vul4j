@@ -54,6 +54,7 @@ public class AlphaBean implements Nameable {
         return child;
     }
     
+    @Override
     public String toString()
     {
         return "[AlphaBean] name=" + name + " child=" + child;

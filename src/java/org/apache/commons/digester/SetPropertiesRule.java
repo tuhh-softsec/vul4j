@@ -162,6 +162,7 @@ public class SetPropertiesRule extends Rule {
      *
      * @param attributes The attribute list of this element
      */
+    @Override
     public void begin(Attributes attributes) throws Exception {
         
         // Build a set of attribute names and corresponding values
@@ -295,6 +296,7 @@ public class SetPropertiesRule extends Rule {
     /**
      * Render a printable version of this Rule.
      */
+    @Override
     public String toString() {
 
         StringBuffer sb = new StringBuffer("SetPropertiesRule[");

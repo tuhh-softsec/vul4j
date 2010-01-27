@@ -64,6 +64,7 @@ public class FinderFromResource extends RuleFinder {
      * The returned object (when non-null) will add the selected rules to
      * the digester whenever its addRules method is invoked.
      */
+    @Override
     public RuleLoader findLoader(Digester d, Class<?> pluginClass, Properties p)
                         throws PluginException {
 

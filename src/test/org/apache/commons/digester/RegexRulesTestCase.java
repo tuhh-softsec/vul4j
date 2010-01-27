@@ -41,6 +41,7 @@ public class RegexRulesTestCase extends TestCase {
         // set up which should match every rule
         RegexRules rules = new RegexRules(
             new RegexMatcher() {
+                @Override
                 public boolean match(String pathPattern, String rulePattern) {
                     return true;
                 }
@@ -70,6 +71,7 @@ public class RegexRulesTestCase extends TestCase {
         // set up which should match every rule
         RegexRules rules = new RegexRules(
             new RegexMatcher() {
+                @Override
                 public boolean match(String pathPattern, String rulePattern) {
                     return false;
                 }
@@ -93,6 +95,7 @@ public class RegexRulesTestCase extends TestCase {
         // set up which should match every rule
         RegexRules rules = new RegexRules(
             new RegexMatcher() {
+                @Override
                 public boolean match(String pathPattern, String rulePattern) {
                     return (rulePattern.equals("/match/me"));
                 }
@@ -117,6 +120,7 @@ public class RegexRulesTestCase extends TestCase {
         // set up which should match every rule
         RegexRules rules = new RegexRules(
             new RegexMatcher() {
+                @Override
                 public boolean match(String pathPattern, String rulePattern) {
                     return true;
                 }

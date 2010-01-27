@@ -183,6 +183,7 @@ public class SetNextRule extends Rule {
     /**
      * Process the end of this element.
      */
+    @Override
     public void end() throws Exception {
 
         // Identify the objects to be used
@@ -226,6 +227,7 @@ public class SetNextRule extends Rule {
     /**
      * Render a printable version of this Rule.
      */
+    @Override
     public String toString() {
 
         StringBuffer sb = new StringBuffer("SetNextRule[");

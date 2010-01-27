@@ -197,6 +197,7 @@ public class ExtendedBaseRules extends RulesBase {
      * @param pattern Nesting pattern to be matched for this Rule
      * @param rule Rule instance to be registered
      */
+    @Override
     public void add(String pattern, Rule rule) {
         super.add(pattern, rule);
         counter++;
@@ -213,6 +214,7 @@ public class ExtendedBaseRules extends RulesBase {
      *
      * @param pattern Nesting pattern to be matched
      */
+    @Override
     public List<Rule> match(String namespace, String pattern) {
         // calculate the pattern of the parent
         // (if the element has one)

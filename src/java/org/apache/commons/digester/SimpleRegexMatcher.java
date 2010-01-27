@@ -70,6 +70,7 @@ public class SimpleRegexMatcher extends RegexMatcher {
      * @param regexPattern the regex pattern the path will be tested against
      * @return true if the given pattern matches the given path
      */
+    @Override
     public boolean match(String basePattern, String regexPattern) {
         // check for nulls
         if (basePattern == null || regexPattern == null) {

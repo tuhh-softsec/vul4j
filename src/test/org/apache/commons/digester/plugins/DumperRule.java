@@ -24,6 +24,7 @@ import org.apache.commons.digester.Rule;
  * Demonstrates the behaviour of the Delegate interface.
  */
 public class DumperRule extends Rule {
+    @Override
     public void begin(String namespace, String name, Attributes attributes)
     throws Exception {
         System.out.print("<");
@@ -43,11 +44,13 @@ public class DumperRule extends Rule {
         System.out.println(">");
     }
     
+    @Override
     public void body(String namespace, String name, String text)
     throws Exception {
         System.out.print(text);
     }
     
+    @Override
     public void end(String namespace, String name)
     throws Exception {
         System.out.print("</");

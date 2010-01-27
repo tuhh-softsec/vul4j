@@ -83,6 +83,7 @@ public class RegexRules extends AbstractRulesImpl {
      * @param pattern Nesting pattern to be matched for this Rule
      * @param rule Rule instance to be registered
      */
+    @Override
     protected void registerRule(String pattern, Rule rule) {
         registeredRules.add(new RegisteredRule(pattern, rule));
     }
@@ -90,6 +91,7 @@ public class RegexRules extends AbstractRulesImpl {
     /**
      * Clear all existing Rule instance registrations.
      */
+    @Override
     public void clear() {
         registeredRules.clear();
     }
@@ -104,6 +106,7 @@ public class RegexRules extends AbstractRulesImpl {
      * @param pattern Nesting pattern to be matched
      * @return a list of matching <code>Rule</code>'s
      */
+    @Override
     public List<Rule> match(String namespaceURI, String pattern) {
         //
         // not a particularly quick implementation
@@ -130,6 +133,7 @@ public class RegexRules extends AbstractRulesImpl {
      * in the order originally registered through the <code>add()</code>
      * method.
      */
+    @Override
     public List<Rule> rules() {
         ArrayList<Rule> rules = new ArrayList<Rule>(registeredRules.size());
         for (RegisteredRule rr : registeredRules) {

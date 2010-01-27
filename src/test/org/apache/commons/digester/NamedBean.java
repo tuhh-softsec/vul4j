@@ -47,6 +47,7 @@ public class NamedBean {
         setName(name);
     }
     
+    @Override
     public String toString() {
         return "NamedBean[" + getName() + "]";
     }

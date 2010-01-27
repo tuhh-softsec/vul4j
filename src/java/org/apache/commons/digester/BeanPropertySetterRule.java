@@ -132,6 +132,7 @@ public class BeanPropertySetterRule extends Rule {
      *   the element name otherwise
      * @param text The text of the body of this element
      */
+    @Override
     public void body(String namespace, String name, String text)
         throws Exception {
 
@@ -158,6 +159,7 @@ public class BeanPropertySetterRule extends Rule {
      * @exception NoSuchMethodException if the bean does not
      *  have a writeable property of the specified name
      */
+    @Override
     public void end(String namespace, String name) throws Exception {
 
         String property = propertyName;
@@ -205,6 +207,7 @@ public class BeanPropertySetterRule extends Rule {
     /**
      * Clean up after parsing is complete.
      */
+    @Override
     public void finish() throws Exception {
 
         bodyText = null;
@@ -215,6 +218,7 @@ public class BeanPropertySetterRule extends Rule {
     /**
      * Render a printable version of this Rule.
      */
+    @Override
     public String toString() {
 
         StringBuffer sb = new StringBuffer("BeanPropertySetterRule[");

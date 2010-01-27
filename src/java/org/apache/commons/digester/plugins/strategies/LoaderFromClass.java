@@ -64,6 +64,7 @@ public class LoaderFromClass extends RuleLoader {
     /**
      * Just invoke the target method.
      */
+    @Override
     public void addRules(Digester d, String path) throws PluginException {
         Log log = d.getLogger();
         boolean debug = log.isDebugEnabled();

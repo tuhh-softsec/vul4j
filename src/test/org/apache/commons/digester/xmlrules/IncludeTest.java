@@ -36,6 +36,7 @@ public class IncludeTest extends TestCase {
         public void getRules(Digester digester) {
             digester.addRule("bar", 
                 new Rule() {
+                    @Override
                     public void body(String namespace, String name, String text) {
                         ((ArrayList<String>) this.digester.peek()).add(text);
                     }

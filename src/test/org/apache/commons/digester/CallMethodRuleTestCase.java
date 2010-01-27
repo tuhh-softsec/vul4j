@@ -74,6 +74,7 @@ public class CallMethodRuleTestCase extends TestCase {
     /**
      * Set up instance variables required by this test case.
      */
+    @Override
     public void setUp() {
 
         digester = new Digester();
@@ -94,6 +95,7 @@ public class CallMethodRuleTestCase extends TestCase {
     /**
      * Tear down instance variables required by this test case.
      */
+    @Override
     public void tearDown() {
 
         digester = null;
@@ -541,6 +543,7 @@ public class CallMethodRuleTestCase extends TestCase {
             {
                 super(methodName, paramCount);
             }
+            @Override
             protected void processMethodCallResult(Object result) {
                 this.result = result;
             }

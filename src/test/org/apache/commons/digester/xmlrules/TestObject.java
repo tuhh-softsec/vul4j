@@ -45,6 +45,7 @@ public class TestObject {
     public TestObject() {
     }
 
+    @Override
     public String toString() {
         String str = value;
         for (Object o : children) {

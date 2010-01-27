@@ -49,6 +49,7 @@ public class DigesterPatternStackTest extends TestCase {
 
     private DigesterRuleParser parser;
 
+    @Override
     public void setUp() {
         parser = new DigesterRuleParser();
     }

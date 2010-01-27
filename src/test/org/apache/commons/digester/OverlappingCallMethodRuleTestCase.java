@@ -55,6 +55,7 @@ public class OverlappingCallMethodRuleTestCase extends TestCase {
     /**
      * Set up instance variables required by this test case.
      */
+    @Override
     public void setUp() {
     }
 
@@ -70,6 +71,7 @@ public class OverlappingCallMethodRuleTestCase extends TestCase {
     /**
      * Tear down instance variables required by this test case.
      */
+    @Override
     public void tearDown() {
     }
 

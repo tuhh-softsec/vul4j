@@ -81,6 +81,7 @@ public class TestRule extends Rule {
     /**
      * 'Begin' call.
      */
+    @Override
     public void begin(Attributes attributes) {
         appendCall();
     }
@@ -89,6 +90,7 @@ public class TestRule extends Rule {
     /**
      * 'Body' call.
      */
+    @Override
     public void body(String text) {
         this.bodyText = text;
         appendCall();
@@ -98,6 +100,7 @@ public class TestRule extends Rule {
     /**
      * 'End' call.
      */
+    @Override
     public void end() {
         appendCall();
     }
@@ -150,6 +153,7 @@ public class TestRule extends Rule {
     /**
      * Return the identifier.
      */
+    @Override
     public String toString() {
         return identifier;
     }

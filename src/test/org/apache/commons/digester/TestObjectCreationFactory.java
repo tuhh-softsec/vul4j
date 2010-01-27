@@ -32,6 +32,7 @@ public class TestObjectCreationFactory extends AbstractObjectCreationFactory {
     public boolean called = false;
     public Attributes attributes;
     
+    @Override
     public Object createObject(Attributes attributes) {
         this.attributes = new AttributesImpl(attributes);
         called = true;

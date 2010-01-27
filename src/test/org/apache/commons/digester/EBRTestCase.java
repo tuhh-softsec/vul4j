@@ -58,6 +58,7 @@ public class EBRTestCase extends RulesBaseTestCase {
      *
      * @return the matching rules to be tested.
      */
+    @Override
     protected Rules createMatchingRulesForTest() {
 
         return new ExtendedBaseRules();

@@ -73,6 +73,7 @@ public class XMLSchemaTestCase extends TestCase {
     /**
      * Set up instance variables required by this test case.
      */
+    @Override
     public void setUp() throws SAXException {
 
         digester = new Digester();
@@ -112,6 +113,7 @@ public class XMLSchemaTestCase extends TestCase {
     /**
      * Tear down instance variables required by this test case.
      */
+    @Override
     public void tearDown() {
 
         digester = null;

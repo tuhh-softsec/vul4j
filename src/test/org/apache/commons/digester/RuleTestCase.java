@@ -72,6 +72,7 @@ public class RuleTestCase extends TestCase {
     /**
      * Set up instance variables required by this test case.
      */
+    @Override
     public void setUp() {
 
         digester = new Digester();
@@ -92,6 +93,7 @@ public class RuleTestCase extends TestCase {
     /**
      * Tear down instance variables required by this test case.
      */
+    @Override
     public void tearDown() {
 
         digester = null;

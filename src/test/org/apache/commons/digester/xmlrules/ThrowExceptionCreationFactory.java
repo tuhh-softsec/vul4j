@@ -29,6 +29,7 @@ import org.xml.sax.Attributes;
 
 public class ThrowExceptionCreationFactory extends AbstractObjectCreationFactory {
     
+    @Override
     public Object createObject(Attributes attributes) throws Exception {
         throw new RuntimeException();
     }

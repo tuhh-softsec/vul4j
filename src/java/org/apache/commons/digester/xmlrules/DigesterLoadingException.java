@@ -61,6 +61,7 @@ public class DigesterLoadingException extends Exception {
      * 
      * @since 1.8
      */
+    @Override
     public Throwable getCause() {
         return cause;
     }

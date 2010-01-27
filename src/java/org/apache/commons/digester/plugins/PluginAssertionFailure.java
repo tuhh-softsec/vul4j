@@ -80,6 +80,7 @@ public class PluginAssertionFailure extends RuntimeException {
      * 
      * @since 1.8
      */
+    @Override
     public Throwable getCause() {
         return cause;
     }

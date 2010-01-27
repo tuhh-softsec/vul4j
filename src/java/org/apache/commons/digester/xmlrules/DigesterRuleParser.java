@@ -87,6 +87,7 @@ public class DigesterRuleParser extends RuleSetBase {
 
         private static final long serialVersionUID = 1L;
 
+        @Override
         public String toString() {
             StringBuffer str = new StringBuffer();
             for (int i = 0; i < size(); i++) {
@@ -217,6 +218,7 @@ public class DigesterRuleParser extends RuleSetBase {
      * should of this method should call this implementation first: i.e.
      * <code>super.addRuleInstances(digester);</code>
      */
+    @Override
     public void addRuleInstances(Digester digester) {
         final String ruleClassName = Rule.class.getName();
         digester.register(DIGESTER_PUBLIC_ID, getDigesterRulesDTD());
@@ -307,6 +309,7 @@ public class DigesterRuleParser extends RuleSetBase {
          * If a pattern is defined for the attribute, push it onto the
          * pattern stack.
          */
+        @Override
         public void begin(Attributes attributes) {
             pattern = attributes.getValue(attrName);
             if (pattern != null) {
@@ -318,6 +321,7 @@ public class DigesterRuleParser extends RuleSetBase {
          * If there was a pattern for this element, pop it off the pattern
          * stack.
          */
+        @Override
         public void end() {
             if (pattern != null) {
                 patternStack.pop();
@@ -345,6 +349,7 @@ public class DigesterRuleParser extends RuleSetBase {
          * pattern stack and the target Digester to the new rule set, and
          * tell the Digester to parse the file.
          */
+        @Override
         public void begin(Attributes attributes) throws Exception {
             // The path attribute gives the URI to another digester rules xml file
             String fileName = attributes.getValue("path");
@@ -525,6 +530,7 @@ public class DigesterRuleParser extends RuleSetBase {
      * Factory for creating a BeanPropertySetterRule.
      */
     private class BeanPropertySetterRuleFactory extends AbstractObjectCreationFactory {
+        @Override
         public Object createObject(Attributes attributes) throws Exception {
             Rule beanPropertySetterRule = null;
             String propertyname = attributes.getValue("propertyname");
@@ -545,6 +551,7 @@ public class DigesterRuleParser extends RuleSetBase {
      * Factory for creating a CallMethodRule.
      */
     protected class CallMethodRuleFactory extends AbstractObjectCreationFactory {
+        @Override
         public Object createObject(Attributes attributes) {
             Rule callMethodRule = null;
             String methodName = attributes.getValue("methodname");
@@ -602,6 +609,7 @@ public class DigesterRuleParser extends RuleSetBase {
      */
     protected class CallParamRuleFactory extends AbstractObjectCreationFactory {
     
+        @Override
         public Object createObject(Attributes attributes) {
             // create callparamrule
             int paramIndex = Integer.parseInt(attributes.getValue("paramnumber"));
@@ -637,6 +645,7 @@ public class DigesterRuleParser extends RuleSetBase {
      * Factory for creating a ObjectParamRule
      */
     protected class ObjectParamRuleFactory extends AbstractObjectCreationFactory {
+        @Override
         public Object createObject(Attributes attributes) throws Exception {
             // create callparamrule
             int paramIndex = Integer.parseInt(attributes.getValue("paramnumber"));
@@ -674,6 +683,7 @@ public class DigesterRuleParser extends RuleSetBase {
          */
     protected class NodeCreateRuleFactory extends AbstractObjectCreationFactory {
 
+        @Override
         public Object createObject(Attributes attributes) throws Exception {
 
             String nodeType = attributes.getValue("type");
@@ -701,6 +711,7 @@ public class DigesterRuleParser extends RuleSetBase {
      * Factory for creating a FactoryCreateRule
      */
     protected class FactoryCreateRuleFactory extends AbstractObjectCreationFactory {
+        @Override
         public Object createObject(Attributes attributes) {
             String className = attributes.getValue("classname");
             String attrName = attributes.getValue("attrname");
@@ -716,6 +727,7 @@ public class DigesterRuleParser extends RuleSetBase {
      * Factory for creating a ObjectCreateRule
      */
     protected class ObjectCreateRuleFactory extends AbstractObjectCreationFactory {
+        @Override
         public Object createObject(Attributes attributes) {
             String className = attributes.getValue("classname");
             String attrName = attributes.getValue("attrname");
@@ -729,6 +741,7 @@ public class DigesterRuleParser extends RuleSetBase {
      * Factory for creating a SetPropertiesRule
      */
     protected class SetPropertiesRuleFactory extends AbstractObjectCreationFactory {
+        @Override
         public Object createObject(Attributes attributes) {
                 return new SetPropertiesRule();
         }
@@ -738,6 +751,7 @@ public class DigesterRuleParser extends RuleSetBase {
      * Factory for creating a SetPropertyRule
      */
     protected class SetPropertyRuleFactory extends AbstractObjectCreationFactory {
+        @Override
         public Object createObject(Attributes attributes) {
             String name = attributes.getValue("name");
             String value = attributes.getValue("value");
@@ -749,6 +763,7 @@ public class DigesterRuleParser extends RuleSetBase {
      * Factory for creating a SetNestedPropertiesRule
      */
     protected class SetNestedPropertiesRuleFactory extends AbstractObjectCreationFactory {
+        @Override
         public Object createObject(Attributes attributes) {
            boolean allowUnknownChildElements = 
                 "true".equalsIgnoreCase(attributes.getValue("allow-unknown-child-elements"));
@@ -762,6 +777,7 @@ public class DigesterRuleParser extends RuleSetBase {
      * Factory for creating a SetTopRuleFactory
      */
     protected class SetTopRuleFactory extends AbstractObjectCreationFactory {
+        @Override
         public Object createObject(Attributes attributes) {
             String methodName = attributes.getValue("methodname");
             String paramType = attributes.getValue("paramtype");
@@ -775,6 +791,7 @@ public class DigesterRuleParser extends RuleSetBase {
      * Factory for creating a SetNextRuleFactory
      */
     protected class SetNextRuleFactory extends AbstractObjectCreationFactory {
+        @Override
         public Object createObject(Attributes attributes) {
             String methodName = attributes.getValue("methodname");
             String paramType = attributes.getValue("paramtype");
@@ -788,6 +805,7 @@ public class DigesterRuleParser extends RuleSetBase {
      * Factory for creating a SetRootRuleFactory
      */
     protected class SetRootRuleFactory extends AbstractObjectCreationFactory {
+        @Override
         public Object createObject(Attributes attributes) {
             String methodName = attributes.getValue("methodname");
             String paramType = attributes.getValue("paramtype");
@@ -814,6 +832,7 @@ public class DigesterRuleParser extends RuleSetBase {
          * Add the alias to the SetPropertiesRule object created by the
          * enclosing <set-properties-rule> tag.
          */
+        @Override
         public void begin(Attributes attributes) {
             String attrName = attributes.getValue("attr-name");
             String propName = attributes.getValue("prop-name");
@@ -840,6 +859,7 @@ public class DigesterRuleParser extends RuleSetBase {
          * Add the alias to the SetNestedPropertiesRule object created by the
          * enclosing <set-nested-properties-rule> tag.
          */
+        @Override
         public void begin(Attributes attributes) {
             String attrName = attributes.getValue("attr-name");
             String propName = attributes.getValue("prop-name");

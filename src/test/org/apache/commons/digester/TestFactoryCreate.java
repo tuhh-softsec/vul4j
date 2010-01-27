@@ -42,6 +42,7 @@ public class TestFactoryCreate extends TestCase {
     }
 
     /** Set up instance variables required by this test case. */
+    @Override
     public void setUp() {}
 
     /** Return the tests included in this test suite. */
@@ -52,6 +53,7 @@ public class TestFactoryCreate extends TestCase {
     }
 
     /** Tear down instance variables required by this test case.*/
+    @Override
     public void tearDown() {}
         
     // --------------------------------------------------------------- Test cases
@@ -62,6 +64,7 @@ public class TestFactoryCreate extends TestCase {
     
         // only used with this method
         class ThrowExceptionCreateRule extends AbstractObjectCreationFactory {
+            @Override
             public Object createObject(Attributes attributes) throws Exception {
                 throw new RuntimeException();
             }

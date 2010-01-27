@@ -71,6 +71,7 @@ public class LoaderFromStream extends RuleLoader {
      * Add the rules previously loaded from the input stream into the
      * specified digester.
      */
+    @Override
     public void addRules(Digester d, String path) throws PluginException {
         Log log = d.getLogger();
         boolean debug = log.isDebugEnabled();

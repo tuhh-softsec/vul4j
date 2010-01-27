@@ -47,6 +47,7 @@ public class Box {
         return children;
     }
     
+    @Override
     public String toString()
     {
         StringBuffer buf = new StringBuffer();

@@ -39,6 +39,7 @@ public class LoaderSetProperties extends RuleLoader {
     /**
      * Just add a SetPropertiesRule at the specified path.
      */
+    @Override
     public void addRules(Digester digester, String path) {
         Log log = digester.getLogger();
         boolean debug = log.isDebugEnabled();

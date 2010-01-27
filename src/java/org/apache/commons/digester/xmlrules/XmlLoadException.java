@@ -51,6 +51,7 @@ public class XmlLoadException extends RuntimeException {
      * Returns the cause of this throwable or null if the cause is 
      * nonexistent or unknown. 
      */
+    @Override
     public Throwable getCause() {
         return cause;
     }

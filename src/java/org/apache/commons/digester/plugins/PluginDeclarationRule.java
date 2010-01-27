@@ -61,6 +61,7 @@ public class PluginDeclarationRule extends Rule {
      *@exception java.lang.Exception
      */
 
+    @Override
     public void begin(String namespace, String name,
                       org.xml.sax.Attributes attributes)
                       throws java.lang.Exception {

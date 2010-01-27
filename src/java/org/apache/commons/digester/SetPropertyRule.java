@@ -102,6 +102,7 @@ public class SetPropertyRule extends Rule {
      * @exception NoSuchMethodException if the bean does not
      *  have a writeable property of the specified name
      */
+    @Override
     public void begin(Attributes attributes) throws Exception {
 
         if (attributes.getLength() == 0 ) {
@@ -164,6 +165,7 @@ public class SetPropertyRule extends Rule {
     /**
      * Render a printable version of this Rule.
      */
+    @Override
     public String toString() {
 
         StringBuffer sb = new StringBuffer("SetPropertyRule[");

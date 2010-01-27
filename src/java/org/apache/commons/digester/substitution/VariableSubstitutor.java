@@ -79,6 +79,7 @@ public class VariableSubstitutor extends Substitutor {
      * Substitutes the attributes (before they are passed to the 
      * <code>Rule</code> implementations's)
      */
+    @Override
     public Attributes substitute(Attributes attributes) {
         Attributes results = attributes;
         if (attributesExpander != null) {
@@ -96,6 +97,7 @@ public class VariableSubstitutor extends Substitutor {
      * @param bodyText the body text (as passed to <code>Digester</code>)
      * @return the body text to be passed to the <code>Rule</code> implementations
      */
+    @Override
     public String substitute(String bodyText) {
         String result = bodyText;
         if (bodyTextExpander != null) {

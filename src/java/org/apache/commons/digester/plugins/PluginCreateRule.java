@@ -299,6 +299,7 @@ public class PluginCreateRule extends Rule implements InitializableRule {
      * @throws PluginInvalidInputException
      * @throws PluginConfigurationException
      */
+    @Override
     public void begin(String namespace, String name,
                       org.xml.sax.Attributes attributes)
                       throws java.lang.Exception {
@@ -422,6 +423,7 @@ public class PluginCreateRule extends Rule implements InitializableRule {
      *
      * @param text The body text of this element
      */
+    @Override
     public void body(String namespace, String name, String text)
         throws Exception {
 
@@ -455,6 +457,7 @@ public class PluginCreateRule extends Rule implements InitializableRule {
      *
      * @see #begin
      */
+    @Override
     public void end(String namespace, String name)
                     throws Exception {
 
