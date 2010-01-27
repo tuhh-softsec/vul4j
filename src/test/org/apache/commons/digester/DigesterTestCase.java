@@ -34,7 +34,6 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import org.xml.sax.Attributes;
-import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.helpers.AttributesImpl;
 
