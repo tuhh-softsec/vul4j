@@ -87,11 +87,12 @@ public class DigesterLoaderTest extends TestCase {
         assertNotNull("The test could not locate testrules.xml", rules);
         assertNotNull("The test could not locate test.xml", input);
         Object root = DigesterLoader.load(rules, classLoader, input, new ArrayList<Object>());
-        if (!(root instanceof ArrayList)) {
+        if (!(root instanceof ArrayList<?>)) {
             fail("Unexpected object returned from DigesterLoader. Expected ArrayList; got " + root.getClass().getName());
         }
         assertEquals( "[foo1 baz1 foo2, foo3 foo4]",root.toString());
 
+        @SuppressWarnings("unchecked") // root is an ArrayList
         ArrayList<Object> al = (ArrayList<Object>)root;
         Object obj = al.get(0);
         if (! (obj instanceof TestObject)) {
@@ -111,9 +112,10 @@ public class DigesterLoaderTest extends TestCase {
         URL rules = getClass().getClassLoader().getResource("org/apache/commons/digester/xmlrules/testrules.xml");
         InputStream input = getClass().getClassLoader().getResource("org/apache/commons/digester/xmlrules/test.xml").openStream();
         Object root = DigesterLoader.load(rules, getClass().getClassLoader(), input, new ArrayList<Object>());
-        if (!(root instanceof ArrayList)) {
+        if (!(root instanceof ArrayList<?>)) {
             fail("Unexpected object returned from DigesterLoader. Expected ArrayList; got " + root.getClass().getName());
         }
+        @SuppressWarnings("unchecked") // root is an ArrayList
         ArrayList<Object> list = (ArrayList<Object>) root;
         assertEquals(root.toString(), "[foo1 baz1 foo2, foo3 foo4]");
         assertEquals("Wrong number of classes created", 2 , list.size());
@@ -152,12 +154,13 @@ public class DigesterLoaderTest extends TestCase {
                                         input, 
                                         new ArrayList<Address>());
                                         
-        if (!(obj instanceof ArrayList)) {
+        if (!(obj instanceof ArrayList<?>)) {
             fail(
                 "Unexpected object returned from DigesterLoader. Expected ArrayList; got " 
                 + obj.getClass().getName());
         }
         
+        @SuppressWarnings("unchecked") // root is an ArrayList of Address
         ArrayList<Address> root = (ArrayList<Address>) obj;                
         
         assertEquals("Wrong array size", 4, root.size());
@@ -201,12 +204,13 @@ public class DigesterLoaderTest extends TestCase {
                                         new StringReader(xml), 
                                         new ArrayList<TestObjectCreationFactory>());
                                         
-        if (!(obj instanceof ArrayList)) {
+        if (!(obj instanceof ArrayList<?>)) {
             fail(
                 "Unexpected object returned from DigesterLoader. Expected ArrayList; got " 
                 + obj.getClass().getName());
         }
         
+        @SuppressWarnings("unchecked") // root is an ArrayList of TestObjectCreationFactory
         ArrayList<TestObjectCreationFactory> list = (ArrayList<TestObjectCreationFactory>) obj;                
          
         assertEquals("List should contain only the factory object", list.size() , 1);
@@ -322,6 +326,7 @@ public class DigesterLoaderTest extends TestCase {
         Object root = digester.parse(input.openStream());
 
         assertNotNull("root was null", root);
+        @SuppressWarnings("unchecked") // if the assumption is incorrect, the test will fail
         List<Node> nlist = (List<Node>) root;
         assertTrue("no nodes were captured.", nlist.size() > 0);
         Node[] nodeArray = nlist.toArray(new Node[0]);
