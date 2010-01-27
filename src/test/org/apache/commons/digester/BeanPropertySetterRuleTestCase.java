@@ -327,7 +327,7 @@ public class BeanPropertySetterRuleTestCase extends TestCase {
                 Throwable t =
                     ((InvocationTargetException) e).getTargetException();
                 if (t instanceof NoSuchMethodException) {
-                    ; // Expected result
+                    // Expected result
                 } else {
                     fail("Should have thrown NoSuchMethodException, threw " + t);
                 }

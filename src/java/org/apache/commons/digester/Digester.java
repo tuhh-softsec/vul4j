@@ -501,7 +501,7 @@ public class Digester extends DefaultHandler {
     @Deprecated
     public void setDebug(int debug) {
 
-        ; // No action is taken
+        // No action is taken
 
     }
 
@@ -1413,7 +1413,7 @@ public class Digester extends DefaultHandler {
                     new String(buffer, start, len) + ")");
         }
 
-        ;   // No processing required
+        // No processing required
 
     }
 
@@ -1440,7 +1440,7 @@ public class Digester extends DefaultHandler {
             saxLog.debug("processingInstruction('" + target + "','" + data + "')");
         }
 
-        ;   // No processing is required
+        // No processing is required
 
     }
 
@@ -1487,7 +1487,7 @@ public class Digester extends DefaultHandler {
             saxLog.debug("skippedEntity(" + name + ")");
         }
 
-        ; // No processing required
+        // No processing required
 
     }
 
@@ -3160,7 +3160,7 @@ public class Digester extends DefaultHandler {
             try {
                 source.getByteStream().close();
             } catch (IOException e) {
-                ; // Fall through so we get them all
+                // Fall through so we get them all
             }
         }
         inputSources.clear();
@@ -3219,7 +3219,7 @@ public class Digester extends DefaultHandler {
     protected void initialize() {
 
         // Perform lazy initialization as needed
-        ; // Nothing required by default
+        // Nothing required by default
 
     }    
 

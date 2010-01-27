@@ -167,12 +167,12 @@ public class SetPropertyRuleTestCase extends TestCase {
             assertNotNull(bean); // just to prevent compiler warning on unused var
         } catch (Exception e) {
             if (e instanceof NoSuchMethodException) {
-                ; // Expected result
+                // Expected result
             } else if (e instanceof InvocationTargetException) {
                 Throwable t =
                     ((InvocationTargetException) e).getTargetException();
                 if (t instanceof NoSuchMethodException) {
-                    ; // Expected result
+                    // Expected result
                 } else {
                     fail("Should have thrown ITE->NoSuchMethodException, threw " + t);
                 }
@@ -180,7 +180,7 @@ public class SetPropertyRuleTestCase extends TestCase {
                 Exception ee = ((SAXException) e).getException();
                 if (ee != null) {
                     if (ee instanceof NoSuchMethodException) {
-                        ; // Expected result
+                        // Expected result
                     } else {
                         fail("Should have thrown SE->NoSuchMethodException, threw " + ee);
                     }

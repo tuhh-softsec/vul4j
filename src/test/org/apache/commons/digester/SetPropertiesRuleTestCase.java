@@ -199,7 +199,7 @@ public class SetPropertiesRuleTestCase extends TestCase {
                 Exception ee = ((SAXException) e).getException();
                 if (ee != null) {
                     if (ee instanceof NoSuchMethodException) {
-                        ; // Expected result
+                        // Expected result
                     } else {
                         fail("Should have thrown SE->NoSuchMethodException, threw " + ee);
                     }

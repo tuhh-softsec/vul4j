@@ -151,7 +151,7 @@ public abstract class Rule {
     @Deprecated
     public void begin(Attributes attributes) throws Exception {
 
-        ;  // The default implementation does nothing
+        // The default implementation does nothing
 
     }
 
@@ -192,7 +192,7 @@ public abstract class Rule {
     @Deprecated
     public void body(String text) throws Exception {
 
-        ;  // The default implementation does nothing
+        // The default implementation does nothing
 
     }
 
@@ -232,7 +232,7 @@ public abstract class Rule {
     @Deprecated
     public void end() throws Exception {
 
-        ;  // The default implementation does nothing
+        // The default implementation does nothing
 
     }
 
@@ -265,7 +265,7 @@ public abstract class Rule {
      */
     public void finish() throws Exception {
 
-        ;  // The default implementation does nothing
+        // The default implementation does nothing
 
     }
 

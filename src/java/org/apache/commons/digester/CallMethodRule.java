@@ -550,7 +550,6 @@ public class CallMethodRule extends Rule {
             // When paramCount is zero and paramTypes.length is zero it
             // means that we truly are calling a method with no parameters.
             // Nothing special needs to be done here.
-            ;
         }
 
         // Construct the parameter values array we will need
