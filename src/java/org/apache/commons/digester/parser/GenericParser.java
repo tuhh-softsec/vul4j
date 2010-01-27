@@ -42,6 +42,7 @@ import org.xml.sax.SAXNotRecognizedException;
  *             {@link Digester#setXMLSchema(Schema)} for validation.
  */
 
+@Deprecated
 public class GenericParser{
 
     /**

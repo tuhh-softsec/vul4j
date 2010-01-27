@@ -44,6 +44,7 @@ import org.xml.sax.SAXNotSupportedException;
  *             {@link Digester} constructor, or use
  *             {@link Digester#setXMLSchema(Schema)} for validation.
  */
+@Deprecated
 public class ParserFeatureSetterFactory {
 
     /**

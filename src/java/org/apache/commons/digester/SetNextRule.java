@@ -59,6 +59,7 @@ public class SetNextRule extends Rule {
      * @deprecated The digester instance is now set in the {@link Digester#addRule} method. 
      * Use {@link #SetNextRule(String methodName)} instead.
      */
+    @Deprecated
     public SetNextRule(Digester digester, String methodName) {
 
         this(methodName);
@@ -79,6 +80,7 @@ public class SetNextRule extends Rule {
      * @deprecated The digester instance is now set in the {@link Digester#addRule} method. 
      * Use {@link #SetNextRule(String methodName,String paramType)} instead.
      */
+    @Deprecated
     public SetNextRule(Digester digester, String methodName,
                        String paramType) {
 

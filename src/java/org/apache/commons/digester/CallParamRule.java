@@ -64,6 +64,7 @@ public class CallParamRule extends Rule {
      * @deprecated The digester instance is now set in the {@link Digester#addRule} method. 
      * Use {@link #CallParamRule(int paramIndex)} instead.
      */
+    @Deprecated
     public CallParamRule(Digester digester, int paramIndex) {
 
         this(paramIndex);
@@ -82,6 +83,7 @@ public class CallParamRule extends Rule {
      * @deprecated The digester instance is now set in the {@link Digester#addRule} method. 
      * Use {@link #CallParamRule(int paramIndex, String attributeName)} instead.
      */
+    @Deprecated
     public CallParamRule(Digester digester, int paramIndex,
                          String attributeName) {
 

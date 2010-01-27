@@ -58,6 +58,7 @@ public class FactoryCreateRule extends Rule {
      * @deprecated The digester instance is now set in the {@link Digester#addRule} method. 
      * Use {@link #FactoryCreateRule(String className)} instead.
      */
+    @Deprecated
     public FactoryCreateRule(Digester digester, String className) {
 
         this(className);
@@ -76,6 +77,7 @@ public class FactoryCreateRule extends Rule {
      * @deprecated The digester instance is now set in the {@link Digester#addRule} method. 
      * Use {@link #FactoryCreateRule(Class clazz)} instead.
      */
+    @Deprecated
     public FactoryCreateRule(Digester digester, Class<?> clazz) {
 
         this(clazz);
@@ -97,6 +99,7 @@ public class FactoryCreateRule extends Rule {
      * @deprecated The digester instance is now set in the {@link Digester#addRule} method. 
      * Use {@link #FactoryCreateRule(String className, String attributeName)} instead.
      */
+    @Deprecated
     public FactoryCreateRule(Digester digester,
                              String className, String attributeName) {
 
@@ -119,6 +122,7 @@ public class FactoryCreateRule extends Rule {
      * @deprecated The digester instance is now set in the {@link Digester#addRule} method. 
      * Use {@link #FactoryCreateRule(Class clazz, String attributeName)} instead.
      */
+    @Deprecated
     public FactoryCreateRule(Digester digester,
                              Class<?> clazz, String attributeName) {
 
@@ -137,6 +141,7 @@ public class FactoryCreateRule extends Rule {
      * @deprecated The digester instance is now set in the {@link Digester#addRule} method. 
      * Use {@link #FactoryCreateRule(ObjectCreationFactory creationFactory)} instead.
      */
+    @Deprecated
     public FactoryCreateRule(Digester digester,
                              ObjectCreationFactory creationFactory) {
 

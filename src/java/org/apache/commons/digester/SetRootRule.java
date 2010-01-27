@@ -51,6 +51,7 @@ public class SetRootRule extends Rule {
      * @deprecated The digester instance is now set in the {@link Digester#addRule} method. 
      * Use {@link #SetRootRule(String methodName)} instead.
      */
+    @Deprecated
     public SetRootRule(Digester digester, String methodName) {
 
         this(methodName);
@@ -71,6 +72,7 @@ public class SetRootRule extends Rule {
      * @deprecated The digester instance is now set in the {@link Digester#addRule} method. 
      * Use {@link #SetRootRule(String methodName,String paramType)} instead.
      */
+    @Deprecated
     public SetRootRule(Digester digester, String methodName,
                        String paramType) {
 

@@ -195,6 +195,7 @@ public class RulesBase implements Rules {
      *
      * @deprecated Call match(namespaceURI,pattern) instead.
      */
+    @Deprecated
     public List<Rule> match(String pattern) {
 
         return (match(null, pattern));

@@ -347,6 +347,7 @@ public class PluginRules implements Rules {
      *
      * @deprecated Call match(namespaceURI,pattern) instead.
      */
+    @Deprecated
     public List<Rule> match(String path) {
         return (match(null, path));
     }

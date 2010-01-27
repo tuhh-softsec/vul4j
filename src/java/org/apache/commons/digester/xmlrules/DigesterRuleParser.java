@@ -481,6 +481,7 @@ public class DigesterRuleParser extends RuleSetBase {
         /**
          * @deprecated Call match(namespaceURI,pattern) instead.
          */
+        @Deprecated
         public List<Rule> match(String pattern) {
             return delegate.match(pattern);
         }

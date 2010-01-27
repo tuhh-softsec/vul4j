@@ -44,6 +44,7 @@ public class ObjectCreateRule extends Rule {
      * @deprecated The digester instance is now set in the {@link Digester#addRule} method. 
      * Use {@link #ObjectCreateRule(String className)} instead.
      */
+    @Deprecated
     public ObjectCreateRule(Digester digester, String className) {
 
         this(className);
@@ -60,6 +61,7 @@ public class ObjectCreateRule extends Rule {
      * @deprecated The digester instance is now set in the {@link Digester#addRule} method. 
      * Use {@link #ObjectCreateRule(Class clazz)} instead.
      */
+    @Deprecated
     public ObjectCreateRule(Digester digester, Class<?> clazz) {
 
         this(clazz);
@@ -79,6 +81,7 @@ public class ObjectCreateRule extends Rule {
      * @deprecated The digester instance is now set in the {@link Digester#addRule} method. 
      * Use {@link #ObjectCreateRule(String className, String attributeName)} instead.
      */
+    @Deprecated
     public ObjectCreateRule(Digester digester, String className,
                             String attributeName) {
 
@@ -99,6 +102,7 @@ public class ObjectCreateRule extends Rule {
      * @deprecated The digester instance is now set in the {@link Digester#addRule} method. 
      * Use {@link #ObjectCreateRule(String attributeName, Class clazz)} instead.
      */
+    @Deprecated
     public ObjectCreateRule(Digester digester,
                             String attributeName,
                             Class<?> clazz) {

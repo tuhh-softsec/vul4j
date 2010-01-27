@@ -109,6 +109,7 @@ public class CallMethodRule extends Rule {
      * @deprecated The digester instance is now set in the {@link Digester#addRule} method. 
      * Use {@link #CallMethodRule(String methodName,int paramCount)} instead.
      */
+    @Deprecated
     public CallMethodRule(Digester digester, String methodName,
                           int paramCount) {
 
@@ -132,6 +133,7 @@ public class CallMethodRule extends Rule {
      * @deprecated The digester instance is now set in the {@link Digester#addRule} method. 
      * Use {@link #CallMethodRule(String methodName,int paramCount, String [] paramTypes)} instead.
      */
+    @Deprecated
     public CallMethodRule(Digester digester, String methodName,
                           int paramCount, String paramTypes[]) {
 
@@ -156,6 +158,7 @@ public class CallMethodRule extends Rule {
      * @deprecated The digester instance is now set in the {@link Digester#addRule} method. 
      * Use {@link #CallMethodRule(String methodName,int paramCount, Class [] paramTypes)} instead.
      */
+    @Deprecated
     public CallMethodRule(Digester digester, String methodName,
                           int paramCount, Class<?> paramTypes[]) {
 

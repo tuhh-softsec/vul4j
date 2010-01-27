@@ -98,6 +98,7 @@ public interface Rules {
      *
      * @deprecated Call match(namespaceURI,pattern) instead.
      */
+    @Deprecated
     public List<Rule> match(String pattern);
 
 

@@ -208,6 +208,7 @@ public class Digester extends DefaultHandler {
     /**
      * @deprecated This is now managed by {@link ParserFeatureSetterFactory}
      */
+    @Deprecated
     protected String JAXP_SCHEMA_LANGUAGE =
         "http://java.sun.com/xml/jaxp/properties/schemaLanguage";
     
@@ -296,6 +297,7 @@ public class Digester extends DefaultHandler {
      *
      * @deprecated Use {@link Schema} support instead.
      */
+    @Deprecated
     protected String schemaLanguage = W3C_XML_SCHEMA;
     
         
@@ -304,6 +306,7 @@ public class Digester extends DefaultHandler {
      *
      * @deprecated Use {@link Schema} support instead.
      */
+    @Deprecated
     protected String schemaLocation = null;
     
     
@@ -477,6 +480,7 @@ public class Digester extends DefaultHandler {
      * jakarta commons-logging library; see the documentation for that library
      * for more information.
      */
+    @Deprecated
     public int getDebug() {
 
         return (0);
@@ -494,6 +498,7 @@ public class Digester extends DefaultHandler {
      * the apache jakarta comons-logging library; see the documentation
      * for that library for more information.
      */
+    @Deprecated
     public void setDebug(int debug) {
 
         ; // No action is taken
@@ -845,6 +850,7 @@ public class Digester extends DefaultHandler {
      * @deprecated Use getXMLReader() instead, which can throw a
      *  SAXException if the reader cannot be instantiated
      */
+    @Deprecated
     public XMLReader getReader() {
 
         try {
@@ -894,6 +900,7 @@ public class Digester extends DefaultHandler {
      * @see #getXMLSchema()
      * @see #setXMLSchema(Schema)
      */
+    @Deprecated
     public String getSchema() {
 
         return (this.schemaLocation);
@@ -933,6 +940,7 @@ public class Digester extends DefaultHandler {
      * @see #getXMLSchema()
      * @see #setXMLSchema(Schema)
      */
+    @Deprecated
     public void setSchema(String schemaLocation){
 
         this.schemaLocation = schemaLocation;
@@ -947,6 +955,7 @@ public class Digester extends DefaultHandler {
      * @see #getXMLSchema()
      * @see #setXMLSchema(Schema)
      */
+    @Deprecated
     public String getSchemaLanguage() {
 
         return (this.schemaLanguage);
@@ -962,6 +971,7 @@ public class Digester extends DefaultHandler {
      * @see #getXMLSchema()
      * @see #setXMLSchema(Schema)
      */
+    @Deprecated
     public void setSchemaLanguage(String schemaLanguage){
 
         this.schemaLanguage = schemaLanguage;
@@ -1801,6 +1811,7 @@ public class Digester extends DefaultHandler {
      * @param message The message to be logged
      * @deprecated Call getLogger() and use it's logging methods
      */
+    @Deprecated
     public void log(String message) {
 
         log.info(message);
@@ -1814,6 +1825,7 @@ public class Digester extends DefaultHandler {
      * @param message The message to be logged
      * @deprecated Call getLogger() and use it's logging methods
      */
+    @Deprecated
     public void log(String message, Throwable exception) {
 
         log.error(message, exception);
@@ -3220,6 +3232,7 @@ public class Digester extends DefaultHandler {
      * @deprecated Call <code>match()</code> on the <code>Rules</code>
      *  implementation returned by <code>getRules()</code>
      */
+    @Deprecated
     List<Rule> getRules(String match) {
 
         return (getRules().match(match));

@@ -47,6 +47,7 @@ import org.xml.sax.SAXNotSupportedException;
  *             {@link Digester#setXMLSchema(Schema)} for validation.
  */
 
+@Deprecated
 public class XercesParser{
 
     /**

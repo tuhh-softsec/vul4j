@@ -56,6 +56,7 @@ public class BeanPropertySetterRule extends Rule {
      * @deprecated The digester instance is now set in the {@link Digester#addRule} method. 
      * Use {@link #BeanPropertySetterRule(String propertyName)} instead.
      */
+    @Deprecated
     public BeanPropertySetterRule(Digester digester, String propertyName) {
 
         this(propertyName);
@@ -73,6 +74,7 @@ public class BeanPropertySetterRule extends Rule {
      * @deprecated The digester instance is now set in the {@link Digester#addRule} method. 
      * Use {@link #BeanPropertySetterRule()} instead.
      */
+    @Deprecated
     public BeanPropertySetterRule(Digester digester) {
 
         this();
