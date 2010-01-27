@@ -81,13 +81,13 @@ public class TestLocalRules extends TestCase {
         
         Object child;
         List<Widget> children = root.getChildren();
-        assertTrue(children != null);
+        assertNotNull(children);
         assertEquals(3, children.size());
         
         // min/max rules should be in effect
         // setproperties should be in effect
         child = children.get(0);
-        assertTrue(child != null);
+        assertNotNull(child);
         assertEquals(Slider.class, child.getClass());
         Slider slider1 = (Slider) child;
         assertEquals("slider1", slider1.getLabel());
@@ -97,7 +97,7 @@ public class TestLocalRules extends TestCase {
         // range rules should not be in effect
         // setproperties should be in effect
         child = children.get(1);
-        assertTrue(child != null);
+        assertNotNull(child);
         assertEquals(Slider.class, child.getClass());
         Slider slider2 = (Slider) child;
         assertEquals("slider2", slider2.getLabel());
@@ -106,7 +106,7 @@ public class TestLocalRules extends TestCase {
         
         // setproperties should be working on text label
         child = children.get(2);
-        assertTrue(child != null);
+        assertNotNull(child);
         assertEquals(TextLabel.class, child.getClass());
         assertEquals("text1", ((TextLabel)child).getLabel());
     }
@@ -144,13 +144,13 @@ public class TestLocalRules extends TestCase {
         
         Object child;
         List<Widget> children = root.getChildren();
-        assertTrue(children != null);
+        assertNotNull(children);
         assertEquals(3, children.size());
         
         // min/max rules should not  be in effect
         // setproperties should not be in effect
         child = children.get(0);
-        assertTrue(child != null);
+        assertNotNull(child);
         assertEquals(Slider.class, child.getClass());
         Slider slider1 = (Slider) child;
         assertEquals("nolabel", slider1.getLabel());
@@ -160,7 +160,7 @@ public class TestLocalRules extends TestCase {
         // range rules should be in effect
         // setproperties should not be in effect
         child = children.get(1);
-        assertTrue(child != null);
+        assertNotNull(child);
         assertEquals(Slider.class, child.getClass());
         Slider slider2 = (Slider) child;
         assertEquals("nolabel", slider2.getLabel());
@@ -169,7 +169,7 @@ public class TestLocalRules extends TestCase {
         
         // setproperties should be working on text label
         child = children.get(2);
-        assertTrue(child != null);
+        assertNotNull(child);
         assertEquals(TextLabel.class, child.getClass());
         assertEquals("text1", ((TextLabel)child).getLabel());
     }

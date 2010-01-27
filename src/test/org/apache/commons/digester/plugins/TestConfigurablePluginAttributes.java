@@ -88,7 +88,7 @@ public class TestConfigurablePluginAttributes extends TestCase {
         }
 
         List<Widget> widgets = root.getWidgets();
-        assertTrue(widgets != null);
+        assertNotNull(widgets);
         assertEquals(4, widgets.size());
 
         assertEquals(TextLabel.class, widgets.get(0).getClass());
@@ -97,7 +97,7 @@ public class TestConfigurablePluginAttributes extends TestCase {
         assertEquals(TextLabel.class, widgets.get(3).getClass());
         
         List<Widget> gadgets = root.getGadgets();
-        assertTrue(gadgets != null);
+        assertNotNull(gadgets);
         assertEquals(4, gadgets.size());
 
         assertEquals(TextLabel.class, gadgets.get(0).getClass());
@@ -145,7 +145,7 @@ public class TestConfigurablePluginAttributes extends TestCase {
         }
 
         List<Widget> widgets = root.getWidgets();
-        assertTrue(widgets != null);
+        assertNotNull(widgets);
         assertEquals(4, widgets.size());
 
         assertEquals(Slider.class, widgets.get(0).getClass());
@@ -154,7 +154,7 @@ public class TestConfigurablePluginAttributes extends TestCase {
         assertEquals(Slider.class, widgets.get(3).getClass());
         
         List<Widget> gadgets = root.getGadgets();
-        assertTrue(gadgets != null);
+        assertNotNull(gadgets);
         assertEquals(4, gadgets.size());
 
         assertEquals(Slider.class, gadgets.get(0).getClass());
@@ -203,7 +203,7 @@ public class TestConfigurablePluginAttributes extends TestCase {
         }
 
         List<Widget> widgets = root.getWidgets();
-        assertTrue(widgets != null);
+        assertNotNull(widgets);
         assertEquals(4, widgets.size());
 
         assertEquals(TextLabel2.class, widgets.get(0).getClass());
@@ -212,7 +212,7 @@ public class TestConfigurablePluginAttributes extends TestCase {
         assertEquals(TextLabel2.class, widgets.get(3).getClass());
         
         List<Widget> gadgets = root.getGadgets();
-        assertTrue(gadgets != null);
+        assertNotNull(gadgets);
         assertEquals(4, gadgets.size());
 
         assertEquals(TextLabel.class, gadgets.get(0).getClass());

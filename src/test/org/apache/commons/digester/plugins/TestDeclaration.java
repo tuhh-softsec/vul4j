@@ -81,16 +81,16 @@ public class TestDeclaration extends TestCase {
         
         Object child;
         List<Widget> children = root.getChildren();
-        assertTrue(children != null);
+        assertNotNull(children);
         assertEquals(2, children.size());
         
         child = children.get(0);
-        assertTrue(child != null);
+        assertNotNull(child);
         assertEquals(TextLabel.class, child.getClass());
         assertEquals("label1", ((TextLabel)child).getLabel());
         
         child = children.get(1);
-        assertTrue(child != null);
+        assertNotNull(child);
         assertEquals(TextLabel.class, child.getClass());
         assertEquals("label2", ((TextLabel)child).getLabel());
     }

@@ -82,18 +82,18 @@ public class TestInline extends TestCase {
         
         Object child;
         List<Widget> children = root.getChildren();
-        assertTrue(children != null);
+        assertNotNull(children);
         assertEquals(2, children.size());
         
         child = children.get(0);
-        assertTrue(child != null);
+        assertNotNull(child);
         assertEquals(TextLabel.class, child.getClass());
         TextLabel label1 = (TextLabel) child;
         assertEquals("anonymous", label1.getId());
         assertEquals("1", label1.getLabel());
         
         child = children.get(1);
-        assertTrue(child != null);
+        assertNotNull(child);
         assertEquals(TextLabel.class, child.getClass());
         TextLabel label2 = (TextLabel) child;
         assertEquals("L1", label2.getId());
@@ -128,18 +128,18 @@ public class TestInline extends TestCase {
         
         Object child;
         List<Widget> children = root.getChildren();
-        assertTrue(children != null);
+        assertNotNull(children);
         assertEquals(2, children.size());
         
         child = children.get(0);
-        assertTrue(child != null);
+        assertNotNull(child);
         assertEquals(TextLabel.class, child.getClass());
         TextLabel label1 = (TextLabel) child;
         assertEquals("anonymous", label1.getId());
         assertEquals("1", label1.getLabel());
         
         child = children.get(1);
-        assertTrue(child != null);
+        assertNotNull(child);
         assertEquals(TextLabel.class, child.getClass());
         TextLabel label2 = (TextLabel) child;
         assertEquals("L1", label2.getId());

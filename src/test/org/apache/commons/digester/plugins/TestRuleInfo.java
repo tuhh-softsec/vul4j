@@ -83,11 +83,11 @@ public class TestRuleInfo extends TestCase {
 
         Object child;
         List<Widget> children = root.getChildren();
-        assertTrue(children != null);
+        assertNotNull(children);
         assertEquals(1, children.size());
         
         child = children.get(0);
-        assertTrue(child != null);
+        assertNotNull(child);
         assertEquals(TextLabel2.class, child.getClass());
         TextLabel2 label = (TextLabel2) child;
         
@@ -125,11 +125,11 @@ public class TestRuleInfo extends TestCase {
 
         Object child;
         List<Widget> children = root.getChildren();
-        assertTrue(children != null);
+        assertNotNull(children);
         assertEquals(1, children.size());
         
         child = children.get(0);
-        assertTrue(child != null);
+        assertNotNull(child);
         assertEquals(TextLabel2.class, child.getClass());
         TextLabel2 label = (TextLabel2) child;
         
@@ -167,11 +167,11 @@ public class TestRuleInfo extends TestCase {
 
         Object child;
         List<Widget> children = root.getChildren();
-        assertTrue(children != null);
+        assertNotNull(children);
         assertEquals(1, children.size());
         
         child = children.get(0);
-        assertTrue(child != null);
+        assertNotNull(child);
         assertEquals(TextLabel2.class, child.getClass());
         TextLabel2 label = (TextLabel2) child;
         

@@ -84,23 +84,23 @@ public class TestDefaultPlugin extends TestCase {
         
         Object child;
         List<Widget> children = root.getChildren();
-        assertTrue(children != null);
+        assertNotNull(children);
         assertEquals(3, children.size());
         
         child = children.get(0);
-        assertTrue(child != null);
+        assertNotNull(child);
         assertEquals(TextLabel.class, child.getClass());
         TextLabel label1 = (TextLabel) child;
         assertEquals("label1", label1.getLabel());
         
         child = children.get(1);
-        assertTrue(child != null);
+        assertNotNull(child);
         assertEquals(TextLabel.class, child.getClass());
         TextLabel label2 = (TextLabel) child;
         assertEquals("label2", label2.getLabel());
         
         child = children.get(2);
-        assertTrue(child != null);
+        assertNotNull(child);
         assertEquals(Slider.class, child.getClass());
         Slider slider1 = (Slider) child;
         assertEquals("slider1", slider1.getLabel());
@@ -134,7 +134,7 @@ public class TestDefaultPlugin extends TestCase {
             digester.setLogger(oldLog);
         }
         
-        assertTrue(exception != null);
+        assertNotNull(exception);
         assertEquals(SAXParseException.class, exception.getClass());
         assertEquals(
             PluginInvalidInputException.class, 
@@ -169,7 +169,7 @@ public class TestDefaultPlugin extends TestCase {
             digester.setLogger(oldLog);
         }
         
-        assertTrue(exception != null);
+        assertNotNull(exception);
         assertEquals(SAXParseException.class, exception.getClass());
         assertEquals(
             PluginConfigurationException.class, 
