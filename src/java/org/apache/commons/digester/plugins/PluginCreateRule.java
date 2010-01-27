@@ -509,7 +509,7 @@ public class PluginCreateRule extends Rule implements InitializableRule {
             boolean debug = log.isDebugEnabled();
             for (int i = 0; i < rules.size(); i++) {
                 try {
-                    Rule rule = (Rule) rules.get(i);
+                    Rule rule = rules.get(i);
                     if (debug) {
                         log.debug("  Fire begin() for " + rule);
                     }
@@ -538,7 +538,7 @@ public class PluginCreateRule extends Rule implements InitializableRule {
             boolean debug = log.isDebugEnabled();
             for (int i = 0; i < rules.size(); i++) {
                 try {
-                    Rule rule = (Rule) rules.get(i);
+                    Rule rule = rules.get(i);
                     if (debug) {
                         log.debug("  Fire body() for " + rule);
                     }
@@ -569,7 +569,7 @@ public class PluginCreateRule extends Rule implements InitializableRule {
             for (int i = 0; i < rules.size(); i++) {
                 int j = (rules.size() - i) - 1;
                 try {
-                    Rule rule = (Rule) rules.get(j);
+                    Rule rule = rules.get(j);
                     if (debug) {
                         log.debug("  Fire end() for " + rule);
                     }

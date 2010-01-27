@@ -219,13 +219,13 @@ public class VariableExpansionTestCase extends TestCase {
         assertEquals(2, this.simpleTestBeans.size());
 
         {
-        SimpleTestBean bean = (SimpleTestBean) this.simpleTestBeans.get(0);
+        SimpleTestBean bean = this.simpleTestBeans.get(0);
         assertEquals("source1.attr1", bean.getAlpha());
         assertEquals("source2.attr1", bean.getBeta());
         }
 
         {
-        SimpleTestBean bean = (SimpleTestBean) this.simpleTestBeans.get(1);
+        SimpleTestBean bean = this.simpleTestBeans.get(1);
         assertEquals("source1.attr2", bean.getAlpha());
         assertEquals("source2.attr2", bean.getBeta());
         }
@@ -331,7 +331,7 @@ public class VariableExpansionTestCase extends TestCase {
         digester.parse(input);
 
         assertEquals(1, simpleTestBeans.size());
-        SimpleTestBean bean = (SimpleTestBean) simpleTestBeans.get(0);
+        SimpleTestBean bean = simpleTestBeans.get(0);
         assertEquals("prop.value", bean.getAlpha());
     }
 
@@ -364,7 +364,7 @@ public class VariableExpansionTestCase extends TestCase {
         digester.parse(input);
 
         assertEquals(1, simpleTestBeans.size());
-        SimpleTestBean bean = (SimpleTestBean) simpleTestBeans.get(0);
+        SimpleTestBean bean = simpleTestBeans.get(0);
         assertEquals("substituted-prop.value1", bean.getAlpha());
     }
 

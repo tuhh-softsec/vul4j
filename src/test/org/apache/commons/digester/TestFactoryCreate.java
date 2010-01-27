@@ -154,7 +154,7 @@ public class TestFactoryCreate extends TestCase {
         digester.parse(new StringReader(xml));
         
         assertEquals("List should contain only the factory object", list.size() , 1);
-        factory = (TestObjectCreationFactory) list.get(0);
+        factory = list.get(0);
         assertEquals("Object create not called(2)[" + propagateExceptions + "]", factory.called , true);
         assertEquals(
                     "Attribute not passed (4)[" + propagateExceptions + "]", 
@@ -184,7 +184,7 @@ public class TestFactoryCreate extends TestCase {
         digester.parse(new StringReader(xml));
         
         assertEquals("List should contain only the factory object", list.size() , 1);
-        factory = (TestObjectCreationFactory) list.get(0);
+        factory = list.get(0);
         assertEquals("Object create not called(3)[" + propagateExceptions + "]", factory.called , true);
         assertEquals(
                     "Attribute not passed (7)[" + propagateExceptions + "]", 
@@ -215,7 +215,7 @@ public class TestFactoryCreate extends TestCase {
         digester.parse(new StringReader(xml));
         
         assertEquals("List should contain only the factory object", list.size() , 1);
-        factory = (TestObjectCreationFactory) list.get(0);
+        factory = list.get(0);
         assertEquals(
                     "Attribute Override Failed (1)", 
                     factory.getClass().getName() , 
@@ -248,7 +248,7 @@ public class TestFactoryCreate extends TestCase {
         digester.parse(new StringReader(xml));
         
         assertEquals("List should contain only the factory object", list.size() , 1);
-        factory = (TestObjectCreationFactory) list.get(0);
+        factory = list.get(0);
         assertEquals("Object create not called(5)[" + propagateExceptions + "]", factory.called , true);
         assertEquals(
                     "Attribute not passed (13)[" + propagateExceptions + "]", 
@@ -279,7 +279,7 @@ public class TestFactoryCreate extends TestCase {
         digester.parse(new StringReader(xml));
         
         assertEquals("List should contain only the factory object", list.size() , 1);
-        factory = (TestObjectCreationFactory) list.get(0);
+        factory = list.get(0);
         assertEquals(
                     "Attribute Override Failed (2)", 
                     factory.getClass().getName() , 

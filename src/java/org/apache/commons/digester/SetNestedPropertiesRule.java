@@ -401,7 +401,7 @@ public class SetNestedPropertiesRule extends Rule {
             String propName = currChildElementName;
             if (elementNames.containsKey(currChildElementName)) {
                 // overide propName
-                propName = (String) elementNames.get(currChildElementName);
+                propName = elementNames.get(currChildElementName);
                 if (propName == null) {
                     // user wants us to ignore this element
                     return;

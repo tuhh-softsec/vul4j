@@ -206,7 +206,7 @@ public class DigesterTestCase extends TestCase {
 
         assertNull("Initial error handler is null",
                 digester.getErrorHandler());
-        digester.setErrorHandler((ErrorHandler) digester);
+        digester.setErrorHandler(digester);
         assertTrue("Set error handler is digester",
                 digester.getErrorHandler() == digester);
         digester.setErrorHandler(null);

@@ -596,7 +596,7 @@ public class DigesterRuleParser extends RuleSetBase {
                 while (tokens.hasMoreTokens()) {
                     paramTypesList.add(tokens.nextToken());
                 }
-                paramTypesArray = (String[])paramTypesList.toArray(new String[0]);
+                paramTypesArray = paramTypesList.toArray(new String[0]);
             } else {
                 paramTypesArray = new String[0];
             }

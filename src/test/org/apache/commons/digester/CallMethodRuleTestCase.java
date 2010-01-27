@@ -644,10 +644,10 @@ public class CallMethodRuleTestCase extends TestCase {
         assertNotNull(map);
         Set<String> keys = map.keySet();
         assertEquals(2, keys.size());
-        Address home = (Address) map.get("home");
+        Address home = map.get("home");
         assertNotNull(home);
         assertEquals("HmZip", home.getZipCode());
-        Address office = (Address) map.get("office");
+        Address office = map.get("office");
         assertNotNull(office);
         assertEquals("OfZip", office.getZipCode());
     }
@@ -673,10 +673,10 @@ public class CallMethodRuleTestCase extends TestCase {
         assertNotNull(map);
         Set<String> keys = map.keySet();
         assertEquals(2, keys.size());
-        Address home = (Address) map.get("home");
+        Address home = map.get("home");
         assertNotNull(home);
         assertEquals("HmZip", home.getZipCode());
-        Address office = (Address) map.get("office");
+        Address office = map.get("office");
         assertNotNull(office);
         assertEquals("OfZip", office.getZipCode());
     }

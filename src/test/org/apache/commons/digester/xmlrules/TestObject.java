@@ -86,7 +86,7 @@ public class TestObject {
     }
 
     public String getMapValue( String name ) {
-        return (String) this.mapValue.get( name );
+        return this.mapValue.get( name );
     }
 
     public String getProperty() {

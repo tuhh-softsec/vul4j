@@ -111,7 +111,7 @@ public class PluginManager {
      */
     public Declaration getDeclarationByClass(String className) {
         Declaration decl = 
-            (Declaration) declarationsByClass.get(className);
+            declarationsByClass.get(className);
             
         if ((decl == null) && (parent != null)) {
             decl = parent.getDeclarationByClass(className);
@@ -128,7 +128,7 @@ public class PluginManager {
      *@return The declaration value
      */
     public Declaration getDeclarationById(String id) {
-        Declaration decl = (Declaration) declarationsById.get(id);
+        Declaration decl = declarationsById.get(id);
 
         if ((decl == null) && (parent != null)) {
             decl = parent.getDeclarationById(id);
@@ -162,7 +162,7 @@ public class PluginManager {
             for(Iterator<RuleFinder> i = ruleFinders.iterator(); 
                 i.hasNext() && ruleLoader == null; ) {
                     
-                RuleFinder finder = (RuleFinder) i.next();
+                RuleFinder finder = i.next();
                 if (debug) {
                     log.debug("checking finder of type " + finder.getClass().getName());
                 }

@@ -219,8 +219,8 @@ public class NodeCreateRuleTestCase extends TestCase {
         assertTrue(result instanceof Element);
         Element element = (Element)result;
         assertEquals("alpha", element.getNodeName());
-        assertNull(((Element)element).getLocalName());
-        assertNull(((Element)element).getNamespaceURI());
+        assertNull(element.getLocalName());
+        assertNull(element.getNamespaceURI());
         assertEquals(1, element.getChildNodes().getLength());
         assertEquals("ALPHA BODY", element.getFirstChild().getNodeValue());
 
@@ -482,8 +482,8 @@ public class NodeCreateRuleTestCase extends TestCase {
         assertTrue(result instanceof Element);
         Element element = (Element)result;
         assertEquals("alpha", element.getNodeName());
-        assertNull(((Element)element).getLocalName());
-        assertNull(((Element)element).getNamespaceURI());
+        assertNull(element.getLocalName());
+        assertNull(element.getNamespaceURI());
         assertEquals(1, element.getChildNodes().getLength());
         assertEquals("A A", element.getFirstChild().getNodeValue());
     }
