@@ -20,6 +20,10 @@
 package org.apache.directory.shared.ldap.codec.search;
 
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.nio.ByteBuffer;
 import java.util.List;
 
@@ -30,17 +34,12 @@ import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.ldap.codec.ControlCodec;
-import org.apache.directory.shared.ldap.codec.LdapDecoder;
 import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
-import org.apache.directory.shared.ldap.codec.search.SearchResultEntryCodec;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 
 /**
@@ -56,7 +55,7 @@ public class SearchResultEntryTest
     @Test
     public void testDecodeSearchResultEntrySuccess() throws NamingException
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x50 );
 
@@ -145,7 +144,7 @@ public class SearchResultEntryTest
     @Test
     public void testDecodeSearchResultEntry2AttrsSuccess() throws NamingException
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x7b );
 
@@ -243,7 +242,7 @@ public class SearchResultEntryTest
     @Test
     public void testDecodeSearchResultEntrySuccessWithFollowingMessage() throws NamingException
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x66 );
 
@@ -353,7 +352,7 @@ public class SearchResultEntryTest
     @Test
     public void testDecodeSearchResultEntryEmpty()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x07 );
 
@@ -391,7 +390,7 @@ public class SearchResultEntryTest
     @Test
     public void testDecodeSearchResultEntryEmptyObjectName()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x09 );
 
@@ -431,7 +430,7 @@ public class SearchResultEntryTest
     @Test
     public void testDecodeSearchResultEntryObjectNameAlone()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x24 );
 
@@ -472,7 +471,7 @@ public class SearchResultEntryTest
     @Test
     public void testDecodeSearchResultEntryEmptyAttributes()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x26 );
 
@@ -541,7 +540,7 @@ public class SearchResultEntryTest
     @Test
     public void testDecodeSearchResultEntryEmptyAttributeList()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x28 );
 
@@ -584,7 +583,7 @@ public class SearchResultEntryTest
     @Test
     public void testDecodeSearchResultEntryEmptyAttributeListWithControls()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x45 );
 
@@ -634,7 +633,7 @@ public class SearchResultEntryTest
     @Test
     public void testDecodeSearchResultEntryEmptyType()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x2A );
 
@@ -680,7 +679,7 @@ public class SearchResultEntryTest
     @Test
     public void testDecodeSearchResultEntryTypeAlone()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x35 );
 
@@ -726,7 +725,7 @@ public class SearchResultEntryTest
     @Test
     public void testDecodeSearchResultEntryEmptyVals() throws NamingException
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x37 );
 
@@ -807,7 +806,7 @@ public class SearchResultEntryTest
     @Test
     public void testDecodeSearchResultEntryEmptyVals2() throws NamingException
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x48 );
 
@@ -890,7 +889,7 @@ public class SearchResultEntryTest
     @Test
     public void testDecodeSearchResultEntryEmptyValsWithControls() throws NamingException
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x54 );
 
@@ -984,7 +983,7 @@ public class SearchResultEntryTest
     @Test
     public void testDecodeSearchResultEntryEmptyAttributeValue() throws NamingException
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x39 );
 
@@ -1069,7 +1068,7 @@ public class SearchResultEntryTest
     @Test
     public void testDecodeSearchResultEntryEmptyAttributeValueWithControls() throws NamingException
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x56 );
 

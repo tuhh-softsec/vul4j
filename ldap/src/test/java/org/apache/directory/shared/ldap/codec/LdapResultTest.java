@@ -20,23 +20,21 @@
 package org.apache.directory.shared.ldap.codec;
 
 
-import org.apache.directory.shared.asn1.ber.Asn1Decoder;
-import org.apache.directory.shared.asn1.ber.IAsn1Container;
-import org.apache.directory.shared.asn1.codec.DecoderException;
-import org.apache.directory.shared.asn1.codec.EncoderException;
-import org.apache.directory.shared.ldap.codec.LdapDecoder;
-import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
-import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
-import org.apache.directory.shared.ldap.codec.add.AddResponseCodec;
-import org.apache.directory.shared.ldap.message.ResultCodeEnum;
-import org.apache.directory.shared.ldap.util.LdapURL;
-import org.apache.directory.shared.ldap.util.StringTools;
-import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.nio.ByteBuffer;
+
+import org.apache.directory.shared.asn1.ber.Asn1Decoder;
+import org.apache.directory.shared.asn1.ber.IAsn1Container;
+import org.apache.directory.shared.asn1.codec.DecoderException;
+import org.apache.directory.shared.asn1.codec.EncoderException;
+import org.apache.directory.shared.ldap.codec.add.AddResponseCodec;
+import org.apache.directory.shared.ldap.message.ResultCodeEnum;
+import org.apache.directory.shared.ldap.util.LdapURL;
+import org.apache.directory.shared.ldap.util.StringTools;
+import org.junit.Test;
 
 
 /**
@@ -56,7 +54,7 @@ public class LdapResultTest
     @Test
     public void testDecodeAddResponseEmptyResultCode()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x10 );
 
@@ -93,7 +91,7 @@ public class LdapResultTest
     @Test
     public void testDecodeAddResponseEmptyResultCodeAbove90()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x10 );
 
@@ -130,7 +128,7 @@ public class LdapResultTest
     @Test
     public void testDecodeAddResponseEmptyResultCodesOK()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x0E );
 
@@ -175,7 +173,7 @@ public class LdapResultTest
     @Test
     public void testDecodeAddResponseEmptyResultCodeNoMatchedDN()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x0A );
 
@@ -212,7 +210,7 @@ public class LdapResultTest
     @Test
     public void testDecodeAddResponseEmptyResultCodeNoErrorMsg()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x0C );
 
@@ -250,7 +248,7 @@ public class LdapResultTest
     @Test
     public void testDecodeAddResponseEmptyResultCodeOK()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x0E );
 
@@ -314,7 +312,7 @@ public class LdapResultTest
     @Test
     public void testDecodeAddResponseEmptyResultCodeOKReferral()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x1A );
 
@@ -384,7 +382,7 @@ public class LdapResultTest
     @Test
     public void testDecodeAddResponseEmptyResultCodeOKReferrals()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x24 );
 
@@ -460,7 +458,7 @@ public class LdapResultTest
     @Test
     public void testDecodeAddResponseEmptyResultCodeEmptyReferral()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x1C );
 
@@ -535,7 +533,7 @@ public class LdapResultTest
     @Test
     public void testDecodeAddResponseEmptyResultCodeEmptyReferrals()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x10 );
 

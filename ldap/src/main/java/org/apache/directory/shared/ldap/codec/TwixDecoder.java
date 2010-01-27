@@ -75,7 +75,7 @@ public class TwixDecoder implements ProviderDecoder
     {
         this.provider = provider;
         ldapMessageContainer = new LdapMessageContainer( binaryAttributeDetector );
-        ldapDecoder = new LdapDecoder();
+        ldapDecoder = new Asn1Decoder();
         
         ldapMessageContainer.setMaxPDUSize( maxPDUSize );
     }

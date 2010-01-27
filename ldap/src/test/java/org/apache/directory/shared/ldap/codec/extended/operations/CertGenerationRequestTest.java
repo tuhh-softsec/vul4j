@@ -20,17 +20,15 @@
 package org.apache.directory.shared.ldap.codec.extended.operations;
 
 
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-
 
 import java.nio.ByteBuffer;
 
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.codec.EncoderException;
-import org.apache.directory.shared.ldap.codec.LdapDecoder;
 import org.apache.directory.shared.ldap.codec.extended.operations.certGeneration.CertGenerationContainer;
 import org.apache.directory.shared.ldap.codec.extended.operations.certGeneration.CertGenerationObject;
 import org.apache.directory.shared.ldap.util.StringTools;
@@ -56,7 +54,7 @@ public class CertGenerationRequestTest
         String dn = "uid=admin,ou=system";
         String keyAlgo = "RSA";
 
-        Asn1Decoder decoder = new LdapDecoder();
+        Asn1Decoder decoder = new Asn1Decoder();
 
         int dnLen = dn.length();
 
@@ -129,7 +127,7 @@ public class CertGenerationRequestTest
     @Test
     public void testCertGenerationDecodeTargetDN()
     {
-        Asn1Decoder decoder = new LdapDecoder();
+        Asn1Decoder decoder = new Asn1Decoder();
 
         ByteBuffer bb = ByteBuffer.allocate( 5 );
 
@@ -177,7 +175,7 @@ public class CertGenerationRequestTest
     @Test
     public void testCertGenerationDecodeIssuerDN()
     {
-        Asn1Decoder decoder = new LdapDecoder();
+        Asn1Decoder decoder = new Asn1Decoder();
         
         ByteBuffer bb = ByteBuffer.allocate( 11 );
 
@@ -224,7 +222,7 @@ public class CertGenerationRequestTest
     @Test
     public void testCertGenerationDecodeWithoutSubjectDN()
     {
-        Asn1Decoder decoder = new LdapDecoder();
+        Asn1Decoder decoder = new Asn1Decoder();
         
         ByteBuffer bb = ByteBuffer.allocate( 17 );
 
@@ -273,7 +271,7 @@ public class CertGenerationRequestTest
     @Test
     public void testDecodeEmptySequence()
     {
-        Asn1Decoder decoder = new LdapDecoder();
+        Asn1Decoder decoder = new Asn1Decoder();
         
         ByteBuffer bb = ByteBuffer.allocate( 2 );
 

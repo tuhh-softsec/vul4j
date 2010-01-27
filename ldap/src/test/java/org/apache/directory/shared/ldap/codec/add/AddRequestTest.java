@@ -20,6 +20,10 @@
 package org.apache.directory.shared.ldap.codec.add;
 
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -34,11 +38,9 @@ import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.ldap.codec.ControlCodec;
-import org.apache.directory.shared.ldap.codec.LdapDecoder;
 import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.ResponseCarryingException;
-import org.apache.directory.shared.ldap.codec.add.AddRequestCodec;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Value;
@@ -47,9 +49,6 @@ import org.apache.directory.shared.ldap.message.InternalMessage;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 
 /**
@@ -65,7 +64,7 @@ public class AddRequestTest
     @Test
     public void testDecodeAddRequestSuccess() throws NamingException
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x59 );
 
@@ -179,7 +178,7 @@ public class AddRequestTest
     @Test
     public void testDecodeAddRequestNullBody()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x07 );
 
@@ -216,7 +215,7 @@ public class AddRequestTest
     @Test
     public void testDecodeAddRequestNullEntry()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x39 );
 
@@ -275,7 +274,7 @@ public class AddRequestTest
     @Test
     public void testDecodeAddRequestbadDN()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x59 );
 
@@ -336,7 +335,7 @@ public class AddRequestTest
     @Test
     public void testDecodeAddRequestNullAttributes()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x2B );
 
@@ -380,7 +379,7 @@ public class AddRequestTest
     @Test
     public void testDecodeAddRequestNullAttributeList()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x2D );
 
@@ -425,7 +424,7 @@ public class AddRequestTest
     @Test
     public void testDecodeAddRequestNullType()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x2F );
 
@@ -474,7 +473,7 @@ public class AddRequestTest
     @Test
     public void testDecodeAddRequestNoVals()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x30 );
 
@@ -520,7 +519,7 @@ public class AddRequestTest
     @Test
     public void testDecodeAddRequestNullVals()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x32 );
 
@@ -567,7 +566,7 @@ public class AddRequestTest
     @Test
     public void testDecodeAddRequestEmptyAttributeValue() throws NamingException
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x34 );
 
@@ -653,7 +652,7 @@ public class AddRequestTest
     @Test
     public void testDecodeAddRequestEmptyAttributeValueWithControl() throws NamingException
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x51 );
 

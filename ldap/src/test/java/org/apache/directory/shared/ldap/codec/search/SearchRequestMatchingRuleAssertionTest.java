@@ -20,6 +20,13 @@
 package org.apache.directory.shared.ldap.codec.search;
 
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.List;
@@ -30,11 +37,8 @@ import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
-import org.apache.directory.shared.ldap.codec.LdapDecoder;
 import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
-import org.apache.directory.shared.ldap.codec.search.ExtensibleMatchFilter;
-import org.apache.directory.shared.ldap.codec.search.SearchRequestCodec;
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.filter.SearchScope;
@@ -43,12 +47,6 @@ import org.apache.directory.shared.ldap.schema.normalizers.OidNormalizer;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 
 
 /**
@@ -94,7 +92,7 @@ public class SearchRequestMatchingRuleAssertionTest
     @Test
     public void testDecodeSearchRequestExtensibleMatch()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x63 );
         stream.put( new byte[]
@@ -215,7 +213,7 @@ public class SearchRequestMatchingRuleAssertionTest
                 0x04, 0x00 
             };
 
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( asn1BER.length );
         stream.put( asn1BER );
@@ -265,7 +263,7 @@ public class SearchRequestMatchingRuleAssertionTest
                   0x04, 0x00 
             };
 
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( asn1BER.length );
         stream.put( asn1BER );
@@ -315,7 +313,7 @@ public class SearchRequestMatchingRuleAssertionTest
                   0x04, 0x00 
             };
 
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( asn1BER.length );
         stream.put( asn1BER );
@@ -366,7 +364,7 @@ public class SearchRequestMatchingRuleAssertionTest
                   0x04, 0x00 
             };
 
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( asn1BER.length );
         stream.put( asn1BER );
@@ -439,7 +437,7 @@ public class SearchRequestMatchingRuleAssertionTest
                 0x04, 0x00 
             };
 
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( asn1BER.length );
         stream.put( asn1BER );
@@ -506,7 +504,7 @@ public class SearchRequestMatchingRuleAssertionTest
                    0x04, 0x05, 'a', 't', 't', 'r', '2'
             };
 
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( asn1BER.length );
         stream.put( asn1BER );
@@ -555,7 +553,7 @@ public class SearchRequestMatchingRuleAssertionTest
                 0x04, 0x00 
             };
 
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( asn1BER.length );
         stream.put( asn1BER );
@@ -604,7 +602,7 @@ public class SearchRequestMatchingRuleAssertionTest
                 0x04, 0x00 
             };
 
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( asn1BER.length );
         stream.put( asn1BER );
@@ -654,7 +652,7 @@ public class SearchRequestMatchingRuleAssertionTest
                   0x04, 0x00 
             };
 
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( asn1BER.length );
         stream.put( asn1BER );

@@ -58,7 +58,6 @@ import org.apache.directory.shared.dsmlv2.request.BatchRequest.Processing;
 import org.apache.directory.shared.dsmlv2.request.BatchRequest.ResponseOrder;
 import org.apache.directory.shared.ldap.codec.ControlCodec;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
-import org.apache.directory.shared.ldap.codec.LdapDecoder;
 import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.LdapResponseCodec;
@@ -100,7 +99,7 @@ public class Dsmlv2Engine
     private String user;
     private String password;
 
-    private Asn1Decoder ldapDecoder = new LdapDecoder();
+    private Asn1Decoder ldapDecoder = new Asn1Decoder();
 
     private IAsn1Container ldapMessageContainer = new LdapMessageContainer();
 

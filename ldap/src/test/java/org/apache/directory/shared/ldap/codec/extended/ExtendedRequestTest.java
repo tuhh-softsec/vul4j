@@ -20,6 +20,10 @@
 package org.apache.directory.shared.ldap.codec.extended;
 
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.nio.ByteBuffer;
 import java.util.List;
 
@@ -28,16 +32,10 @@ import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.ldap.codec.ControlCodec;
-import org.apache.directory.shared.ldap.codec.LdapDecoder;
 import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
-import org.apache.directory.shared.ldap.codec.extended.ExtendedRequestCodec;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-import static org.junit.Assert.assertTrue;
 
 
 /**
@@ -53,7 +51,7 @@ public class ExtendedRequestTest
     @Test
     public void testDecodeExtendedRequestSuccess()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x1D );
 
@@ -120,7 +118,7 @@ public class ExtendedRequestTest
     @Test
     public void testDecodeExtendedRequestWithControls()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x3A );
 
@@ -202,7 +200,7 @@ public class ExtendedRequestTest
     @Test
     public void testDecodeExtendedRequestNoValueWithControls()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x33 );
 
@@ -283,7 +281,7 @@ public class ExtendedRequestTest
     @Test
     public void testDecodeExtendedRequestEmpty()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x07 );
 
@@ -319,7 +317,7 @@ public class ExtendedRequestTest
     @Test
     public void testDecodeEmptyOID()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x09 );
 
@@ -355,7 +353,7 @@ public class ExtendedRequestTest
     @Test
     public void testDecodeExtendedBadRequestName()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x16 );
 
@@ -393,7 +391,7 @@ public class ExtendedRequestTest
     @Test
     public void testDecodeExtendedRequestName()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x16 );
 
@@ -458,7 +456,7 @@ public class ExtendedRequestTest
     @Test
     public void testDecodeExtendedRequestEmptyName()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x18 );
 

@@ -20,6 +20,11 @@
 package org.apache.directory.shared.ldap.codec.abandon;
 
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.nio.ByteBuffer;
 import java.util.List;
 
@@ -28,16 +33,10 @@ import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.ldap.codec.ControlCodec;
-import org.apache.directory.shared.ldap.codec.LdapDecoder;
 import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
-import org.apache.directory.shared.ldap.codec.abandon.AbandonRequestCodec;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.junit.Assert.assertFalse;
 
 
 /**
@@ -53,7 +52,7 @@ public class AbandonRequestTest
     @Test
     public void testDecodeAbandonRequestWithControls()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x64 );
         stream.put( new byte[]
@@ -162,7 +161,7 @@ public class AbandonRequestTest
     @Test
     public void testDecodeAbandonRequestNoControlsHighMessageId()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x0A );
         stream.put( new byte[]
@@ -225,7 +224,7 @@ public class AbandonRequestTest
     @Test
     public void testDecodeAbandonRequestNoMessageId()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x0A );
         stream.put( new byte[]
@@ -261,7 +260,7 @@ public class AbandonRequestTest
     @Test
     public void testDecodeAbandonRequestBadMessageId()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x0B );
         stream.put( new byte[]

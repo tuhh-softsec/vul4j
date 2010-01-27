@@ -20,20 +20,19 @@
 package org.apache.directory.shared.ldap.codec.extended.operations;
 
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.nio.ByteBuffer;
 
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.codec.EncoderException;
-import org.apache.directory.shared.ldap.codec.LdapDecoder;
 import org.apache.directory.shared.ldap.codec.extended.operations.gracefulShutdown.GracefulShutdown;
 import org.apache.directory.shared.ldap.codec.extended.operations.gracefulShutdown.GracefulShutdownContainer;
 import org.apache.directory.shared.ldap.util.StringTools;
-
 import org.junit.Test;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 
 /**
@@ -49,7 +48,7 @@ public class GracefulShutdownTest
     @Test
     public void testDecodeGracefulShutdownSuccess()
     {
-        Asn1Decoder decoder = new LdapDecoder();
+        Asn1Decoder decoder = new Asn1Decoder();
         ByteBuffer bb = ByteBuffer.allocate( 0x08 );
         bb.put( new byte[]
             { 0x30, 0x06, // GracefulShutdown ::= SEQUENCE {
@@ -104,7 +103,7 @@ public class GracefulShutdownTest
     @Test
     public void testDecodeGracefulShutdownTimeOffline()
     {
-        Asn1Decoder decoder = new LdapDecoder();
+        Asn1Decoder decoder = new Asn1Decoder();
         ByteBuffer bb = ByteBuffer.allocate( 0x05 );
         bb.put( new byte[]
             { 0x30, 0x03, // GracefulShutdown ::= SEQUENCE {
@@ -156,7 +155,7 @@ public class GracefulShutdownTest
     @Test
     public void testDecodeGracefulShutdownDelay()
     {
-        Asn1Decoder decoder = new LdapDecoder();
+        Asn1Decoder decoder = new Asn1Decoder();
         ByteBuffer bb = ByteBuffer.allocate( 0x05 );
         bb.put( new byte[]
             { 0x30, 0x03, // GracefulShutdown ::= SEQUENCE {
@@ -209,7 +208,7 @@ public class GracefulShutdownTest
     @Test
     public void testDecodeGracefulShutdownEmpty()
     {
-        Asn1Decoder decoder = new LdapDecoder();
+        Asn1Decoder decoder = new Asn1Decoder();
         ByteBuffer bb = ByteBuffer.allocate( 0x02 );
         bb.put( new byte[]
             { 0x30, 0x00 // GracefulShutdown ::= SEQUENCE {
@@ -260,7 +259,7 @@ public class GracefulShutdownTest
     @Test
     public void testDecodeGracefulShutdownDelayHigh()
     {
-        Asn1Decoder decoder = new LdapDecoder();
+        Asn1Decoder decoder = new Asn1Decoder();
         ByteBuffer bb = ByteBuffer.allocate( 0x06 );
         bb.put( new byte[]
             { 0x30, 0x04, // GracefulShutdown ::= SEQUENCE {
@@ -314,7 +313,7 @@ public class GracefulShutdownTest
     @Test
     public void testDecodeGracefulShutdownDelay32767()
     {
-        Asn1Decoder decoder = new LdapDecoder();
+        Asn1Decoder decoder = new Asn1Decoder();
         ByteBuffer bb = ByteBuffer.allocate( 0x06 );
         bb.put( new byte[]
             { 0x30, 0x04, // GracefulShutdown ::= SEQUENCE {
@@ -368,7 +367,7 @@ public class GracefulShutdownTest
     @Test
     public void testDecodeGracefulShutdownDelay32768()
     {
-        Asn1Decoder decoder = new LdapDecoder();
+        Asn1Decoder decoder = new Asn1Decoder();
         ByteBuffer bb = ByteBuffer.allocate( 0x07 );
         bb.put( new byte[]
             { 0x30, 0x05, // GracefulShutdown ::= SEQUENCE {
@@ -426,7 +425,7 @@ public class GracefulShutdownTest
     @Test
     public void testDecodeGracefulShutdownTimeOfflineOffLimit()
     {
-        Asn1Decoder decoder = new LdapDecoder();
+        Asn1Decoder decoder = new Asn1Decoder();
         ByteBuffer bb = ByteBuffer.allocate( 0x06 );
         bb.put( new byte[]
             { 0x30, 0x04, // GracefulShutdown ::= SEQUENCE {
@@ -457,7 +456,7 @@ public class GracefulShutdownTest
     @Test
     public void testDecodeGracefulShutdownDelayOffLimit()
     {
-        Asn1Decoder decoder = new LdapDecoder();
+        Asn1Decoder decoder = new Asn1Decoder();
         ByteBuffer bb = ByteBuffer.allocate( 0x0b );
         bb.put( new byte[]
             { 0x30, 0x05, // GracefulShutdown ::= SEQUENCE {
@@ -491,7 +490,7 @@ public class GracefulShutdownTest
     @Test
     public void testDecodeGracefulShutdownTimeOfflineEmpty()
     {
-        Asn1Decoder decoder = new LdapDecoder();
+        Asn1Decoder decoder = new Asn1Decoder();
         ByteBuffer bb = ByteBuffer.allocate( 0x0b );
         bb.put( new byte[]
             { 0x30, 0x02, // GracefulShutdown ::= SEQUENCE {
@@ -521,7 +520,7 @@ public class GracefulShutdownTest
     @Test
     public void testDecodeGracefulShutdownDelayEmpty()
     {
-        Asn1Decoder decoder = new LdapDecoder();
+        Asn1Decoder decoder = new Asn1Decoder();
         ByteBuffer bb = ByteBuffer.allocate( 0x0b );
         bb.put( new byte[]
             { 0x30, 0x02, // GracefulShutdown ::= SEQUENCE {

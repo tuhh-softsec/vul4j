@@ -20,22 +20,19 @@
 package org.apache.directory.shared.ldap.codec;
 
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
+import java.nio.ByteBuffer;
+
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.ber.tlv.TLVStateEnum;
 import org.apache.directory.shared.asn1.codec.DecoderException;
-import org.apache.directory.shared.ldap.codec.LdapDecoder;
-import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
-import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.bind.BindRequestCodec;
 import org.apache.directory.shared.ldap.codec.bind.SimpleAuthentication;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
-
-import java.nio.ByteBuffer;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 
 /**
@@ -55,7 +52,7 @@ public class LdapDecoderTest
     public void testDecodeFull()
     {
 
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x35 );
         stream.put( new byte[]
@@ -108,7 +105,7 @@ public class LdapDecoderTest
     public void testDecodePartial()
     {
 
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 16 );
         stream.put( new byte[]
@@ -156,7 +153,7 @@ public class LdapDecoderTest
     public void testDecodeSplittedPDU()
     {
 
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 16 );
         stream.put( new byte[]
@@ -232,7 +229,7 @@ public class LdapDecoderTest
     public void testDecodeBadLengthTooSmall()
     {
 
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x35 );
         stream.put( new byte[]
@@ -279,7 +276,7 @@ public class LdapDecoderTest
     public void testDecodeBadPrimitiveLengthTooBig()
     {
 
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x35 );
         stream.put( new byte[]
@@ -326,7 +323,7 @@ public class LdapDecoderTest
     public void testDecodeBadTagTransition()
     {
 
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x35 );
         stream.put( new byte[]
@@ -373,7 +370,7 @@ public class LdapDecoderTest
     public void testDecodeSplittedLength()
     {
 
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 3 );
         stream.put( new byte[]

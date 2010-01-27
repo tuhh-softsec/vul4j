@@ -20,6 +20,11 @@
 package org.apache.directory.shared.ldap.codec.search;
 
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -35,32 +40,21 @@ import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.ldap.codec.AttributeValueAssertion;
 import org.apache.directory.shared.ldap.codec.ControlCodec;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
-import org.apache.directory.shared.ldap.codec.LdapDecoder;
 import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.ResponseCarryingException;
-import org.apache.directory.shared.ldap.codec.search.AndFilter;
-import org.apache.directory.shared.ldap.codec.search.AttributeValueAssertionFilter;
-import org.apache.directory.shared.ldap.codec.search.NotFilter;
-import org.apache.directory.shared.ldap.codec.search.OrFilter;
-import org.apache.directory.shared.ldap.codec.search.PresentFilter;
-import org.apache.directory.shared.ldap.codec.search.SearchRequestCodec;
 import org.apache.directory.shared.ldap.codec.search.controls.subEntry.SubEntryControlCodec;
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
-import org.apache.directory.shared.ldap.message.InternalMessage;
-import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.filter.SearchScope;
+import org.apache.directory.shared.ldap.message.InternalMessage;
+import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.message.SearchResponseDoneImpl;
 import org.apache.directory.shared.ldap.schema.normalizers.DeepTrimToLowerNormalizer;
 import org.apache.directory.shared.ldap.schema.normalizers.OidNormalizer;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.fail;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 
 /**
@@ -108,7 +102,7 @@ public class SearchRequestTest
     @Test
     public void testDecodeSearchRequestGlobalNoControls()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x90 );
         stream.put( new byte[]
@@ -274,7 +268,7 @@ public class SearchRequestTest
     @Test
     public void testDecodeSearchRequestCompareFiltersNoControls()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x90 );
         stream.put( new byte[]
@@ -443,7 +437,7 @@ public class SearchRequestTest
     @Test
     public void testDecodeSearchRequestPresentNoControls()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x7B );
         stream.put( new byte[]
@@ -610,7 +604,7 @@ public class SearchRequestTest
     @Test
     public void testDecodeSearchRequestNoAttributes()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x40 );
         stream.put( new byte[]
@@ -710,7 +704,7 @@ public class SearchRequestTest
     @Test
     public void testDecodeSearchRequestOneEmptyAttribute()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x3F );
         stream.put( new byte[]
@@ -793,7 +787,7 @@ public class SearchRequestTest
     @Test
     public void testDecodeSearchRequestWithStarAndAttr()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x40 );
         stream.put( new byte[]
@@ -887,7 +881,7 @@ public class SearchRequestTest
     @Test
     public void testDecodeSearchRequestOrFilters()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x96 );
         stream.put( new byte[]
@@ -1072,7 +1066,7 @@ public class SearchRequestTest
                       '1', '3', '7', '3', '0', '.', '3', '.', '4', '.', '2',
             };
 
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( asn1BER.length );
         stream.put( asn1BER );
@@ -1142,7 +1136,7 @@ public class SearchRequestTest
     @Test
     public void testDecodeSearchRequestGlobalNoControlsOidAndAlias()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0xA1 );
         stream.put( new byte[]
@@ -1331,7 +1325,7 @@ public class SearchRequestTest
                     0x01, 0x01, ( byte ) 0xFF   // SubEntry visibility
             };
 
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( asn1BER.length );
         stream.put( asn1BER );
@@ -1400,7 +1394,7 @@ public class SearchRequestTest
             { 0x30, 0x05, 0x02, 0x01, 0x04, // messageID
                 0x63, 0x00 };
 
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( asn1BER.length );
         stream.put( asn1BER );
@@ -1438,7 +1432,7 @@ public class SearchRequestTest
                 0x04, 0x00 
             };
 
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( asn1BER.length );
         stream.put( asn1BER );
@@ -1468,7 +1462,7 @@ public class SearchRequestTest
     @Test
     public void testDecodeSearchRequestEmptyBaseDnNoControls()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x6F );
         stream.put( new byte[]
@@ -1629,7 +1623,7 @@ public class SearchRequestTest
     @Test
     public void testDecodeSearchRequestGlobalBadObjectBase()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x90 );
         stream.put( new byte[]
@@ -1723,7 +1717,7 @@ public class SearchRequestTest
                 0x0A, 0x00 
             };
 
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( asn1BER.length );
         stream.put( asn1BER );
@@ -1752,7 +1746,7 @@ public class SearchRequestTest
     @Test
     public void testDecodeSearchRequestGlobalBadScope()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x90 );
         stream.put( new byte[]
@@ -1838,7 +1832,7 @@ public class SearchRequestTest
                 'u', 'i', 'd', '=', 'a', 'k', 'a', 'r', 'a', 's', 'u', 'l', 'u', ',', 'd', 'c', '=', 'e', 'x', 'a',
                 'm', 'p', 'l', 'e', ',', 'd', 'c', '=', 'c', 'o', 'm', 0x0A, 0x01, 0x00, 0x0A, 0x00 };
 
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( asn1BER.length );
         stream.put( asn1BER );
@@ -1867,7 +1861,7 @@ public class SearchRequestTest
     @Test
     public void testDecodeSearchRequestGlobalBadDerefAlias()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x90 );
         stream.put( new byte[]
@@ -1954,7 +1948,7 @@ public class SearchRequestTest
                 'u', 'i', 'd', '=', 'a', 'k', 'a', 'r', 'a', 's', 'u', 'l', 'u', ',', 'd', 'c', '=', 'e', 'x', 'a',
                 'm', 'p', 'l', 'e', ',', 'd', 'c', '=', 'c', 'o', 'm', 0x0A, 0x01, 0x00, 0x0A, 0x01, 0x00, 0x02, 0x00 };
 
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( asn1BER.length );
         stream.put( asn1BER );
@@ -1983,7 +1977,7 @@ public class SearchRequestTest
     @Test
     public void testDecodeSearchRequestGlobalBadSizeLimit()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x8F );
         stream.put( new byte[]
@@ -2070,7 +2064,7 @@ public class SearchRequestTest
                 'm', 'p', 'l', 'e', ',', 'd', 'c', '=', 'c', 'o', 'm', 0x0A, 0x01, 0x00, 0x0A, 0x01, 0x00, 0x02, 0x01,
                 0x00, 0x02, 0x00 };
 
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( asn1BER.length );
         stream.put( asn1BER );
@@ -2099,7 +2093,7 @@ public class SearchRequestTest
     @Test
     public void testDecodeSearchRequestGlobalBadTimeLimit()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x8F );
         stream.put( new byte[]
@@ -2193,7 +2187,7 @@ public class SearchRequestTest
               0x01, 0x00 
             };
 
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( asn1BER.length );
         stream.put( asn1BER );
@@ -2230,7 +2224,7 @@ public class SearchRequestTest
                 'm', 'p', 'l', 'e', ',', 'd', 'c', '=', 'c', 'o', 'm', 0x0A, 0x01, 0x00, 0x0A, 0x01, 0x00, 0x02, 0x01,
                 0x00, 0x02, 0x01, 0x00, 0x01, 0x01, ( byte ) 0xFF, ( byte ) 0xA0, 0x00 };
 
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( asn1BER.length );
         stream.put( asn1BER );
@@ -2277,7 +2271,7 @@ public class SearchRequestTest
                     0x01, 0x01, ( byte ) 0xFF, 
                     ( byte ) 0x87, 0x00 };
 
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( asn1BER.length );
         stream.put( asn1BER );
@@ -2314,7 +2308,7 @@ public class SearchRequestTest
                 'm', 'p', 'l', 'e', ',', 'd', 'c', '=', 'c', 'o', 'm', 0x0A, 0x01, 0x00, 0x0A, 0x01, 0x00, 0x02, 0x01,
                 0x00, 0x02, 0x01, 0x00, 0x01, 0x01, ( byte ) 0xFF, ( byte ) 0xA3, 0x00 };
 
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( asn1BER.length );
         stream.put( asn1BER );
@@ -2351,7 +2345,7 @@ public class SearchRequestTest
                 'm', 'p', 'l', 'e', ',', 'd', 'c', '=', 'c', 'o', 'm', 0x0A, 0x01, 0x00, 0x0A, 0x01, 0x00, 0x02, 0x01,
                 0x00, 0x02, 0x01, 0x00, 0x01, 0x01, ( byte ) 0xFF, ( byte ) 0xA5, 0x00 };
 
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( asn1BER.length );
         stream.put( asn1BER );
@@ -2388,7 +2382,7 @@ public class SearchRequestTest
                 'm', 'p', 'l', 'e', ',', 'd', 'c', '=', 'c', 'o', 'm', 0x0A, 0x01, 0x00, 0x0A, 0x01, 0x00, 0x02, 0x01,
                 0x00, 0x02, 0x01, 0x00, 0x01, 0x01, ( byte ) 0xFF, ( byte ) 0xA6, 0x00 };
 
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( asn1BER.length );
         stream.put( asn1BER );
@@ -2425,7 +2419,7 @@ public class SearchRequestTest
                 'm', 'p', 'l', 'e', ',', 'd', 'c', '=', 'c', 'o', 'm', 0x0A, 0x01, 0x00, 0x0A, 0x01, 0x00, 0x02, 0x01,
                 0x00, 0x02, 0x01, 0x00, 0x01, 0x01, ( byte ) 0xFF, ( byte ) 0xA8, 0x00 };
 
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( asn1BER.length );
         stream.put( asn1BER );
@@ -2472,7 +2466,7 @@ public class SearchRequestTest
                 0x04, 0x00 
             };
 
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( asn1BER.length );
         stream.put( asn1BER );
@@ -2525,7 +2519,7 @@ public class SearchRequestTest
                                         // OF AttributeDescription
             };
 
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( asn1BER.length );
         stream.put( asn1BER );
@@ -2608,7 +2602,7 @@ public class SearchRequestTest
                                         // OF AttributeDescription
                 0x04, 0x01, '*' };
 
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( asn1BER.length );
         stream.put( asn1BER );
@@ -2704,7 +2698,7 @@ public class SearchRequestTest
                   0x04, 0x00 
             };
 
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( asn1BER.length );
         stream.put( asn1BER );
@@ -2770,7 +2764,7 @@ public class SearchRequestTest
                                                                                                     // AttributeDescription
                 0x04, 0x00 };
 
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( asn1BER.length );
         stream.put( asn1BER );
@@ -2812,7 +2806,7 @@ public class SearchRequestTest
                                                                                                     // AttributeDescription
                 0x04, 0x00 };
 
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( asn1BER.length );
         stream.put( asn1BER );
@@ -2854,7 +2848,7 @@ public class SearchRequestTest
                                                                                                     // AttributeDescription
                 0x04, 0x00 };
 
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( asn1BER.length );
         stream.put( asn1BER );
@@ -2895,7 +2889,7 @@ public class SearchRequestTest
                         // AttributeDescription
                 0x04, 0x00 };
 
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( asn1BER.length );
         stream.put( asn1BER );
@@ -2953,7 +2947,7 @@ public class SearchRequestTest
                   0x30, 0x00
             };
 
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( asn1BER.length );
         stream.put( asn1BER );
@@ -3036,7 +3030,7 @@ public class SearchRequestTest
     @Test
     public void testDecodeSearchRequestEq()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x25 );
         stream.put( new byte[]
@@ -3137,7 +3131,7 @@ public class SearchRequestTest
     @Test
     public void testDecodeSearchRequestAndEq()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x27 );
         stream.put( new byte[]
@@ -3246,7 +3240,7 @@ public class SearchRequestTest
     @Test
     public void testDecodeSearchRequestAndEqEq()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x2F );
         stream.put( new byte[]
@@ -3370,7 +3364,7 @@ public class SearchRequestTest
     @Test
     public void testDecodeSearchRequestAndAndEq()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x29 );
         stream.put( new byte[]
@@ -3485,7 +3479,7 @@ public class SearchRequestTest
     @Test
     public void testDecodeSearchRequestAndAndEqEq()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x31 );
         stream.put( new byte[]
@@ -3616,7 +3610,7 @@ public class SearchRequestTest
     @Test
     public void testDecodeSearchRequestAnd_AndEq_Eq()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x31 );
         stream.put( new byte[]
@@ -3747,7 +3741,7 @@ public class SearchRequestTest
     @Test
     public void testDecodeSearchRequestAnd_AndEqEq_Eq()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x39 );
         stream.put( new byte[]
@@ -3894,7 +3888,7 @@ public class SearchRequestTest
     @Test
     public void testDecodeSearchRequestAndEq_OrEqEq()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x39 );
         stream.put( new byte[]
@@ -4039,7 +4033,7 @@ public class SearchRequestTest
     @Test
     public void testDecodeSearchRequestAnd_AndEq_AndEq()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x33 );
         stream.put( new byte[]
@@ -4177,7 +4171,7 @@ public class SearchRequestTest
     @Test
     public void testDecodeSearchRequestAnd_AndEqEq_AndEq()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x3B );
         stream.put( new byte[]
@@ -4329,7 +4323,7 @@ public class SearchRequestTest
     @Test
     public void testDecodeSearchRequestAnd_OrPrPr_NotGEq()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x3B );
         stream.put( new byte[]
@@ -4467,7 +4461,7 @@ public class SearchRequestTest
     @Test
     public void testDecodeSearchRequestRootDSE()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x33 );
         stream.put( new byte[]
@@ -4529,7 +4523,7 @@ public class SearchRequestTest
     @Test
     public void testDecodeSearchRequestDIRSERVER_810()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x6B );
         stream.put( new byte[]
@@ -4625,7 +4619,7 @@ public class SearchRequestTest
     @Test
     public void testDecodeSearchRequestComplexFilter()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
     
         ByteBuffer stream = ByteBuffer.allocate( 0x77 );
         stream.put( new byte[]

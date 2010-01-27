@@ -20,6 +20,10 @@
 package org.apache.directory.shared.ldap.codec.bind;
 
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.nio.ByteBuffer;
 import java.util.List;
 
@@ -28,22 +32,14 @@ import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.ldap.codec.ControlCodec;
-import org.apache.directory.shared.ldap.codec.LdapDecoder;
 import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.ResponseCarryingException;
-import org.apache.directory.shared.ldap.codec.bind.BindRequestCodec;
-import org.apache.directory.shared.ldap.codec.bind.SaslCredentials;
-import org.apache.directory.shared.ldap.codec.bind.SimpleAuthentication;
 import org.apache.directory.shared.ldap.message.BindResponseImpl;
 import org.apache.directory.shared.ldap.message.InternalMessage;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 
 /**
@@ -59,7 +55,7 @@ public class BindRequestTest
     @Test
     public void testDecodeBindRequestSimpleNoControlsPerf()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x52 );
         stream.put( new byte[]
@@ -157,7 +153,7 @@ public class BindRequestTest
     @Test
     public void testDecodeBindRequestSimpleWithControls()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x35 );
         stream.put( new byte[]
@@ -230,7 +226,7 @@ public class BindRequestTest
     @Test
     public void testDecodeBindRequestBadDN()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x35 );
         stream.put( new byte[]
@@ -279,7 +275,7 @@ public class BindRequestTest
     @Test
     public void testDecodeBindRequestSimpleNoName()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x15 );
         stream.put( new byte[]
@@ -322,7 +318,7 @@ public class BindRequestTest
     @Test
     public void testDecodeBindRequestSimpleEmptyName()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x16 );
         stream.put( new byte[]
@@ -395,7 +391,7 @@ public class BindRequestTest
     @Test
     public void testDecodeBindRequestSaslNoCredsNoControls()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x3A );
         stream.put( new byte[]
@@ -472,7 +468,7 @@ public class BindRequestTest
     @Test
     public void testDecodeBindRequestSaslCredsNoControls()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x42 );
         stream.put( new byte[]
@@ -558,7 +554,7 @@ public class BindRequestTest
     @Test
     public void testDecodeBindRequestSaslNoNameCredsNoControls()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x23 );
         stream.put( new byte[]
@@ -641,7 +637,7 @@ public class BindRequestTest
     @Test
     public void testDecodeBindRequestEmptyBody()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x07 );
         stream.put( new byte[]
@@ -677,7 +673,7 @@ public class BindRequestTest
     @Test
     public void testDecodeBindRequestEmptyVersion()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x09 );
         stream.put( new byte[]
@@ -714,7 +710,7 @@ public class BindRequestTest
     @Test
     public void testDecodeBindRequestBadVersion0()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x0A );
         stream.put( new byte[]
@@ -751,7 +747,7 @@ public class BindRequestTest
     @Test
     public void testDecodeBindRequestBadVersion4()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x0A );
         stream.put( new byte[]
@@ -788,7 +784,7 @@ public class BindRequestTest
     @Test
     public void testDecodeBindRequestBadVersion128()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x0C );
         stream.put( new byte[]
@@ -826,7 +822,7 @@ public class BindRequestTest
     @Test
     public void testDecodeBindRequestNoName()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x0A );
         stream.put( new byte[]
@@ -863,7 +859,7 @@ public class BindRequestTest
     @Test
     public void testDecodeBindRequestEmptyName()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x0C );
         stream.put( new byte[]
@@ -900,7 +896,7 @@ public class BindRequestTest
     @Test
     public void testDecodeBindRequestEmptysimple()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x0E );
         stream.put( new byte[]
@@ -964,7 +960,7 @@ public class BindRequestTest
     @Test
     public void testDecodeBindRequestEmptySasl()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x0E );
         stream.put( new byte[]
@@ -1006,7 +1002,7 @@ public class BindRequestTest
     @Test
     public void testDecodeBindRequestEmptyMechanism()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x10 );
         stream.put( new byte[]
@@ -1074,7 +1070,7 @@ public class BindRequestTest
     @Test
     public void testDecodeBindRequestBadMechanism()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x11 );
         stream.put( new byte[]
@@ -1117,7 +1113,7 @@ public class BindRequestTest
     @Test
     public void testDecodeBindRequestEmptyCredentials()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x12 );
         stream.put( new byte[]
@@ -1186,7 +1182,7 @@ public class BindRequestTest
     @Test
     public void testDecodeBindRequestEmptyCredentialsWithControls()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x2F );
         stream.put( new byte[]
@@ -1267,7 +1263,7 @@ public class BindRequestTest
     @Test
     public void testDecodeBindRequestEmptyMechanismWithControls()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x2D );
         stream.put( new byte[]

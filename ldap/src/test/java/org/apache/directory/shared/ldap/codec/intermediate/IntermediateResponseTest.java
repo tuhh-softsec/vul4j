@@ -20,6 +20,10 @@
 package org.apache.directory.shared.ldap.codec.intermediate;
 
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.nio.ByteBuffer;
 import java.util.List;
 
@@ -28,14 +32,10 @@ import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.ldap.codec.ControlCodec;
-import org.apache.directory.shared.ldap.codec.LdapDecoder;
 import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 
 /**
@@ -51,7 +51,7 @@ public class IntermediateResponseTest
     @Test
     public void testDecodeIntermediateResponseSuccess()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x1D );
 
@@ -118,7 +118,7 @@ public class IntermediateResponseTest
     @Test
     public void testDecodeIntermediateResponseWithControls()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x3A );
 
@@ -200,7 +200,7 @@ public class IntermediateResponseTest
     @Test
     public void testDecodeIntermediateResponseNoValueWithControls()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x33 );
 
@@ -281,7 +281,7 @@ public class IntermediateResponseTest
     @Test
     public void testDecodeIntermediateResponseEmpty()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x07 );
 
@@ -317,7 +317,7 @@ public class IntermediateResponseTest
     @Test
     public void testDecodeEmptyOID()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x09 );
 
@@ -353,7 +353,7 @@ public class IntermediateResponseTest
     @Test
     public void testDecodeExtendedBadRequestName()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x16 );
 
@@ -391,7 +391,7 @@ public class IntermediateResponseTest
     @Test
     public void testDecodeIntermediateResponseName()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x16 );
 
@@ -456,7 +456,7 @@ public class IntermediateResponseTest
     @Test
     public void testDecodeIntermediateResponseEmptyValue()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x18 );
 
@@ -523,7 +523,7 @@ public class IntermediateResponseTest
     @Test
     public void testDecodeIntermediateResponseNoName()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x0E );
 
@@ -588,7 +588,7 @@ public class IntermediateResponseTest
     @Test
     public void testDecodeIntermediateResponseNoValue()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x16 );
 

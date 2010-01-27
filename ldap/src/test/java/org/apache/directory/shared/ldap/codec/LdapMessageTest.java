@@ -20,20 +20,18 @@
 package org.apache.directory.shared.ldap.codec;
 
 
-import org.apache.directory.shared.asn1.ber.Asn1Decoder;
-import org.apache.directory.shared.asn1.ber.IAsn1Container;
-import org.apache.directory.shared.asn1.codec.DecoderException;
-import org.apache.directory.shared.asn1.codec.EncoderException;
-import org.apache.directory.shared.ldap.codec.LdapDecoder;
-import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
-import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
-import org.apache.directory.shared.ldap.util.StringTools;
-import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.nio.ByteBuffer;
+
+import org.apache.directory.shared.asn1.ber.Asn1Decoder;
+import org.apache.directory.shared.asn1.ber.IAsn1Container;
+import org.apache.directory.shared.asn1.codec.DecoderException;
+import org.apache.directory.shared.asn1.codec.EncoderException;
+import org.apache.directory.shared.ldap.util.StringTools;
+import org.junit.Test;
 
 
 /**
@@ -53,7 +51,7 @@ public class LdapMessageTest
     public void testDecodeMessageLengthNull()
     {
 
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x02 );
         stream.put( new byte[]
@@ -88,7 +86,7 @@ public class LdapMessageTest
     public void testDecodeMessageIdLengthNull()
     {
 
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x04 );
         stream.put( new byte[]
@@ -124,7 +122,7 @@ public class LdapMessageTest
     public void testDecodeMessageIdMinusOne()
     {
 
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x05 );
         stream.put( new byte[]
@@ -160,7 +158,7 @@ public class LdapMessageTest
     public void testDecodeMessageIdMaxInt()
     {
 
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x08 );
         stream.put( new byte[]
@@ -204,7 +202,7 @@ public class LdapMessageTest
               0x42, 0x00                // ProtocolOp
             };
 
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x07 );
 
@@ -280,7 +278,7 @@ public class LdapMessageTest
     @Test
     public void testDecodeUnBindRequestNoControls()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x08 );
         stream.put( new byte[]

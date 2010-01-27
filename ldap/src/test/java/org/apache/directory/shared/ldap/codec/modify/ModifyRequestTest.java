@@ -20,6 +20,10 @@
 package org.apache.directory.shared.ldap.codec.modify;
 
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.nio.ByteBuffer;
 import java.util.List;
 
@@ -30,11 +34,9 @@ import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.ldap.codec.ControlCodec;
-import org.apache.directory.shared.ldap.codec.LdapDecoder;
 import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.ResponseCarryingException;
-import org.apache.directory.shared.ldap.codec.modify.ModifyRequestCodec;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Modification;
 import org.apache.directory.shared.ldap.message.InternalMessage;
@@ -42,9 +44,6 @@ import org.apache.directory.shared.ldap.message.ModifyResponseImpl;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 
 /**
@@ -60,7 +59,7 @@ public class ModifyRequestTest
     @Test
     public void testDecodeModifyRequest2AttrsSuccess() throws NamingException
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x54 );
 
@@ -168,7 +167,7 @@ public class ModifyRequestTest
     @Test
     public void testDecodeModifyRequestBadDN()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x54 );
 
@@ -235,7 +234,7 @@ public class ModifyRequestTest
     @Test
     public void testDecodeModifyRequestManyOperations() throws NamingException
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x18C );
 
@@ -353,7 +352,7 @@ public class ModifyRequestTest
     @Test
     public void testDecodeModifyRequestManyOperations2() throws NamingException
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x18C );
 
@@ -486,7 +485,7 @@ public class ModifyRequestTest
     @Test
     public void testDecodeModifyRequest2Attrs3valsSuccess() throws NamingException
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x5C );
 
@@ -600,7 +599,7 @@ public class ModifyRequestTest
     @Test
     public void testDecodeModifyRequestEmptyBody()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x07 );
 
@@ -635,7 +634,7 @@ public class ModifyRequestTest
     @Test
     public void testDecodeModifyRequestEmptyObject()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x09 );
 
@@ -671,7 +670,7 @@ public class ModifyRequestTest
     @Test
     public void testDecodeModifyRequestObjectAlone()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x29 );
 
@@ -709,7 +708,7 @@ public class ModifyRequestTest
     @Test
     public void testDecodeModifyRequestEmptyModification()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x2B );
 
@@ -748,7 +747,7 @@ public class ModifyRequestTest
     @Test
     public void testDecodeModifyRequestEmptyOperation()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x2D );
 
@@ -788,7 +787,7 @@ public class ModifyRequestTest
     @Test
     public void testDecodeModifyRequestWrongOperationEmpty()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x2F );
 
@@ -829,7 +828,7 @@ public class ModifyRequestTest
     @Test
     public void testDecodeModifyRequestWrongOperation()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x30 );
 
@@ -871,7 +870,7 @@ public class ModifyRequestTest
     @Test
     public void testDecodeModifyRequestAddOperationEnd()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x30 );
 
@@ -913,7 +912,7 @@ public class ModifyRequestTest
     @Test
     public void testDecodeModifyRequestAddOperationEmptyModification()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x32 );
 
@@ -956,7 +955,7 @@ public class ModifyRequestTest
     @Test
     public void testDecodeModifyRequestAddOperationModificationEmptyType()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x34 );
 
@@ -1004,7 +1003,7 @@ public class ModifyRequestTest
     @Test
     public void testDecodeModifyRequestAddOperationModificationTypeNoVals()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x35 );
 
@@ -1048,7 +1047,7 @@ public class ModifyRequestTest
     @Test
     public void testDecodeModifyRequestAddOperationModificationTypeEmptyVals()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x37 );
 
@@ -1129,7 +1128,7 @@ public class ModifyRequestTest
     @Test
     public void testDecodeModifyRequestAddOperationModificationTypeEmptyValsWithControls()
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x54 );
 
@@ -1222,7 +1221,7 @@ public class ModifyRequestTest
     @Test
     public void testDecodeModifyRequestAddOperationModificationType2Vals() throws NamingException
     {
-        Asn1Decoder ldapDecoder = new LdapDecoder();
+        Asn1Decoder ldapDecoder = new Asn1Decoder();
 
         ByteBuffer stream = ByteBuffer.allocate( 0x3D );
 
