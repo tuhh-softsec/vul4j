@@ -588,7 +588,7 @@ public class TwixTransformer
      * @param exprNode The filter to be transformed
      * @return A Codec filter
      */
-    private static Filter transformFilter( ExprNode exprNode )
+    public static Filter transformFilter( ExprNode exprNode )
     {
         if ( exprNode != null )
         {
