@@ -527,7 +527,7 @@ public class SetNestedPropertiesRuleTestCase extends TestCase {
     /**
      * Get input stream from {@link #TEST_XML}.
      */
-    private Reader xmlTestReader() throws IOException {
+    private Reader xmlTestReader() {
         return new StringReader(TEST_XML);
     }
 

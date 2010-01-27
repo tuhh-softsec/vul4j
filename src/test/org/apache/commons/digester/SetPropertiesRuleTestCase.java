@@ -20,7 +20,6 @@
 package org.apache.commons.digester;
 
 
-import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 
@@ -247,7 +246,7 @@ public class SetPropertiesRuleTestCase extends TestCase {
     /**
      * Get input stream from specified String containing XML data.
      */
-    private Reader xmlTestReader(String xml) throws IOException {
+    private Reader xmlTestReader(String xml) {
         return new StringReader(xml);
     }
 

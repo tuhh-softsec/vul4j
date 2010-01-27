@@ -20,7 +20,6 @@
 package org.apache.commons.digester;
 
 
-import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.lang.reflect.InvocationTargetException;
@@ -199,7 +198,7 @@ public class SetPropertyRuleTestCase extends TestCase {
     /**
      * Get input stream from specified String containing XML data.
      */
-    private Reader xmlTestReader(String xml) throws IOException {
+    private Reader xmlTestReader(String xml) {
         return new StringReader(xml);
     }
 
@@ -215,6 +214,7 @@ public class SetPropertyRuleTestCase extends TestCase {
         digester.addSetProperty("root/set", "name", "value");
 
         // Parse the input - should not throw an exception
+        @SuppressWarnings("unused")
         SimpleTestBean bean = (SimpleTestBean) digester.parse(xmlTestReader(TEST_XML_3));
     } 
 

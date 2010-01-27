@@ -129,8 +129,6 @@ public class URLTestCase extends TestCase {
     // Test parsing a resource, using a registered DTD, both passed with URLs
     public void testResource() throws Exception {
 
-        Object root = null;
-
         // Register the Digester Rules DTD
         URL dtd = URLTestCase.class.getResource(DIGESTER_RULES_SYSTEM_ID);
         assertNotNull(dtd);
@@ -140,8 +138,8 @@ public class URLTestCase extends TestCase {
         // the same Digester instance
         URL xml = URLTestCase.class.getResource(TEST_INPUT_SYSTEM_ID);
         assertNotNull(xml);
-        root = digester.parse(xml);
-        root = digester.parse(xml);
+        digester.parse(xml);
+        digester.parse(xml);
 
     }
 

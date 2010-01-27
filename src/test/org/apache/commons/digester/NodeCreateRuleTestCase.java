@@ -125,8 +125,7 @@ public class NodeCreateRuleTestCase extends TestCase {
      * Tests simple element construction, using the {@link #TEST_XML}
      * XML input data.
      */
-    public void testInvalidNodeTypes()
-        throws SAXException, ParserConfigurationException, IOException {
+    public void testInvalidNodeTypes() throws Exception {
 
         try {
             Rule rule = new NodeCreateRule(Node.ATTRIBUTE_NODE);
@@ -290,7 +289,7 @@ public class NodeCreateRuleTestCase extends TestCase {
         Object result = digester.parse(getInputStream("Test4.xml"));
 
         assertNotNull(result);
-        assertTrue(result instanceof List);
+        assertTrue(result instanceof List<?>);
         List<?> list = (List<?>)result;
         assertEquals(2, list.size());
 
