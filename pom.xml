@@ -35,6 +35,15 @@
     <distMgmtSiteUrl>scpexe://people.apache.org/www/directory.apache.org/shared/gen-docs/${version}/</distMgmtSiteUrl>
     <skin.version>1.0.1</skin.version>
     <org.apache.directory.shared.version>0.9.18-SNAPSHOT</org.apache.directory.shared.version>
+    
+    <!-- Jar's version -->
+    <antlr.version>2.7.7</antlr.version>
+    <commons.collections.version>3.2.1</commons.collections.version>
+    <commons.io.version>1.4</commons.io.version>
+    <commons.lang.version>2.4</commons.lang.version>
+    <dom4j.version>1.6.1</dom4j.version>
+    <mina.core.version>2.0.0-RC1</mina.core.version>
+    <xpp3.version>1.1.4c</xpp3.version>
   </properties>
   
   <distributionManagement>
