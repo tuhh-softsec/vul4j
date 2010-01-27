@@ -39,19 +39,19 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * Twix LDAP BER provider's encoder.
+ * LDAP BER provider's encoder.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public class TwixEncoder implements ProviderEncoder
+public class LdapEncoder implements ProviderEncoder
 {
     //TM private static long cumul = 0L;
     //TM private static long count = 0L;
     //TM private Object lock = new Object();
 
     /** The logger */
-    private static Logger log = LoggerFactory.getLogger( TwixEncoder.class );
+    private static Logger log = LoggerFactory.getLogger( LdapEncoder.class );
 
     /** A speedup for logger */
     private static final boolean IS_DEBUG = log.isDebugEnabled();
@@ -64,11 +64,11 @@ public class TwixEncoder implements ProviderEncoder
 
 
     /**
-     * Creates an instance of a Twix Encoder implementation.
+     * Creates an instance of a Ldap Encoder implementation.
      * 
      * @param provider The associated Provider
      */
-    public TwixEncoder( Provider provider )
+    public LdapEncoder( Provider provider )
     {
         this.provider = provider;
         encodeCallback = new OutputCallback();
@@ -97,8 +97,8 @@ public class TwixEncoder implements ProviderEncoder
         }
         catch ( EncoderException e )
         {
-            log.error( "Twix encoder failed to encode object: " + obj + ", error : " + e.getMessage() );
-            ProviderException pe = new ProviderException( provider, "Twix encoder failed to encode object: " + obj
+            log.error( "Ldap encoder failed to encode object: " + obj + ", error : " + e.getMessage() );
+            ProviderException pe = new ProviderException( provider, "Ldap encoder failed to encode object: " + obj
                 + ", error : " + e.getMessage() );
             throw pe;
         }
@@ -134,8 +134,8 @@ public class TwixEncoder implements ProviderEncoder
         }
         catch ( EncoderException e )
         {
-            log.error( "Twix encoder failed to encode object: " + obj + ", error : " + e.getMessage() );
-            ProviderException pe = new ProviderException( provider, "Twix encoder failed to encode object: " + obj
+            log.error( "Ldap encoder failed to encode object: " + obj + ", error : " + e.getMessage() );
+            ProviderException pe = new ProviderException( provider, "Ldap encoder failed to encode object: " + obj
                 + ", error : " + e.getMessage() );
             throw pe;
         }
@@ -170,8 +170,8 @@ public class TwixEncoder implements ProviderEncoder
         }
         catch ( EncoderException e )
         {
-            log.error( "Twix encoder failed to encode object: " + obj + ", error : " + e.getMessage() );
-            ProviderException pe = new ProviderException( provider, "Twix encoder failed to encode object: " + obj
+            log.error( "Ldap encoder failed to encode object: " + obj + ", error : " + e.getMessage() );
+            ProviderException pe = new ProviderException( provider, "Ldap encoder failed to encode object: " + obj
                 + ", error : " + e.getMessage() );
             throw pe;
         }
@@ -262,7 +262,7 @@ public class TwixEncoder implements ProviderEncoder
             catch ( IOException e )
             {
                 ProviderException pe = new ProviderException( provider,
-                    "Twix encoder failed to encode object, error : " + e.getMessage() );
+                    "Ldap encoder failed to encode object, error : " + e.getMessage() );
                 throw pe;
             }
         }

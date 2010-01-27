@@ -26,7 +26,7 @@ import java.nio.ByteBuffer;
 import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.asn1.codec.stateful.EncoderCallback;
 import org.apache.directory.shared.asn1.codec.stateful.EncoderMonitor;
-import org.apache.directory.shared.ldap.codec.TwixTransformer;
+import org.apache.directory.shared.ldap.codec.LdapTransformer;
 import org.apache.directory.shared.ldap.message.spi.Provider;
 import org.apache.directory.shared.ldap.message.spi.ProviderEncoder;
 import org.apache.directory.shared.ldap.message.spi.ProviderException;
@@ -71,7 +71,7 @@ public final class MessageEncoder implements ProviderEncoder
     public void encodeBlocking( Object lock, OutputStream out, Object obj ) throws ProviderException
     {
         // transform to build provider specific intermediate envelope
-        Object providerEnvelope = TwixTransformer.transform( ( InternalMessage ) obj );
+        Object providerEnvelope = LdapTransformer.transform( ( InternalMessage ) obj );
 
         // now encode provider's intermediate stub into a PDU onto stream
         this.encoder.encodeBlocking( lock, out, providerEnvelope );
@@ -84,7 +84,7 @@ public final class MessageEncoder implements ProviderEncoder
     public ByteBuffer encodeBlocking( Object obj ) throws ProviderException
     {
         // transform to build provider specific intermediate envelope
-        Object providerEnvelope = TwixTransformer.transform( ( InternalMessage ) obj );
+        Object providerEnvelope = LdapTransformer.transform( ( InternalMessage ) obj );
 
         // now encode provider's intermediate stub into PDU in a byte buffer
         return this.encoder.encodeBlocking( providerEnvelope );
@@ -118,7 +118,7 @@ public final class MessageEncoder implements ProviderEncoder
     public void encode( Object obj ) throws EncoderException
     {
         // transform to build provider specific intermediate envelope
-        Object providerEnvelope = TwixTransformer.transform( ( InternalMessage ) obj );
+        Object providerEnvelope = LdapTransformer.transform( ( InternalMessage ) obj );
 
         // now give intermediate envelope to provider's encoder
         this.encoder.encode( providerEnvelope );

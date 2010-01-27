@@ -38,15 +38,15 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * The TwixDecoder decodes ASN.1 BER encoded PDUs.
+ * The LdapDecoder decodes ASN.1 BER encoded PDUs.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$, 
  */
-public class TwixDecoder implements ProviderDecoder
+public class LdapDecoder implements ProviderDecoder
 {
     /** The logger */
-    private static Logger log = LoggerFactory.getLogger( TwixDecoder.class );
+    private static Logger log = LoggerFactory.getLogger( LdapDecoder.class );
 
     /** A speedup for logger */
     private static final boolean IS_DEBUG = log.isDebugEnabled();
@@ -65,13 +65,13 @@ public class TwixDecoder implements ProviderDecoder
 
 
     /**
-     * Creates an instance of a Twix Decoder implementation.
+     * Creates an instance of a Ldap Decoder implementation.
      * 
      * @param provider the owning provider.
      * @param binaryAttributeDetector checks for binary attributes 
      * @param maxPDUSize the maximum size a PDU can be
      */
-    public TwixDecoder( Provider provider, BinaryAttributeDetector binaryAttributeDetector, int maxPDUSize )
+    public LdapDecoder( Provider provider, BinaryAttributeDetector binaryAttributeDetector, int maxPDUSize )
     {
         this.provider = provider;
         ldapMessageContainer = new LdapMessageContainer( binaryAttributeDetector );
@@ -182,8 +182,8 @@ public class TwixDecoder implements ProviderDecoder
         }
         catch ( Exception e )
         {
-            log.error( "Twix decoder failure : " + e.getMessage() );
-            ProviderException pe = new ProviderException( provider, "Twix decoder failure!" );
+            log.error( "Ldap decoder failure : " + e.getMessage() );
+            ProviderException pe = new ProviderException( provider, "Ldap decoder failure!" );
             pe.addThrowable( e );
             throw pe;
         }
@@ -215,8 +215,8 @@ public class TwixDecoder implements ProviderDecoder
             }
             else
             {
-                log.error( "Twix decoder failure, PDU does not contain enough data" );
-                ProviderException pe = new ProviderException( provider, "Twix decoder failure!" );
+                log.error( "Ldap decoder failure, PDU does not contain enough data" );
+                ProviderException pe = new ProviderException( provider, "Ldap decoder failure!" );
                 //noinspection ThrowableInstanceNeverThrown
                 pe.addThrowable( new DecoderException( "The input stream does not contain a full PDU" ) );
                 throw pe;
@@ -238,8 +238,8 @@ public class TwixDecoder implements ProviderDecoder
             }
             catch ( Exception e )
             {
-                log.error( "Twix decoder failure : " + e.getMessage() );
-                ProviderException pe = new ProviderException( provider, "Twix decoder failure!" );
+                log.error( "Ldap decoder failure : " + e.getMessage() );
+                ProviderException pe = new ProviderException( provider, "Ldap decoder failure!" );
                 pe.addThrowable( e );
                 throw pe;
             }
@@ -255,8 +255,8 @@ public class TwixDecoder implements ProviderDecoder
             }
             else
             {
-                log.error( "Twix decoder failure : The input stream does not contain a full PDU" );
-                ProviderException pe = new ProviderException( provider, "Twix decoder failure!" );
+                log.error( "Ldap decoder failure : The input stream does not contain a full PDU" );
+                ProviderException pe = new ProviderException( provider, "Ldap decoder failure!" );
                 //noinspection ThrowableInstanceNeverThrown
                 pe.addThrowable( new DecoderException( "The input stream does not contain a full PDU" ) );
                 throw pe;

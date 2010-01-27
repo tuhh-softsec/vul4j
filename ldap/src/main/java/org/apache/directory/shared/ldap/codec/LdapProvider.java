@@ -26,30 +26,28 @@ import org.apache.directory.shared.ldap.message.spi.ProviderEncoder;
 import org.apache.directory.shared.ldap.message.spi.ProviderException;
 
 
-
-
 /**
- * The Twix specific BER provider for LDAP.
+ * The specific BER provider for LDAP.
  * 
  * @author <a href="mailto:dev@directory.apache.org"> Apache Directory Project</a>
  *         $Rev$
  */
-public class TwixProvider extends Provider
+public class LdapProvider extends Provider
 {
     /**
-     * Creates an instance of a Twix based LDAP BER Provider.
+     * Creates an instance of a LDAP BER Provider.
      */
-    private TwixProvider()
+    private LdapProvider()
     {
-        super( "Twix LDAP BER Provider", "Apache Directory Project" );
+        super( "LDAP LDAP BER Provider", "Apache Directory Project" );
     }
 
-    /** the singleton TwixProvider instance */
-    private static TwixProvider singleton;
+    /** the singleton LdapProvider instance */
+    private static LdapProvider singleton;
 
 
     /**
-     * Gets a handle on the singleton TwixProvider. Only one instance should
+     * Gets a handle on the singleton LdapProvider. Only one instance should
      * have to be instantiated for the entire jvm.
      * 
      * @return the singleton SnaccProvider instance
@@ -58,7 +56,7 @@ public class TwixProvider extends Provider
     {
         if ( singleton == null )
         {
-            singleton = new TwixProvider();
+            singleton = new LdapProvider();
         }
 
         return singleton;
@@ -74,7 +72,7 @@ public class TwixProvider extends Provider
      */
     public ProviderEncoder getEncoder() throws ProviderException
     {
-        return new TwixEncoder( this );
+        return new LdapEncoder( this );
     }
 
 
@@ -87,6 +85,6 @@ public class TwixProvider extends Provider
      */
     public ProviderDecoder getDecoder( BinaryAttributeDetector binaryAttributeDetector, int maxPDUSize ) throws ProviderException
     {
-        return new TwixDecoder( this, binaryAttributeDetector, maxPDUSize );
+        return new LdapDecoder( this, binaryAttributeDetector, maxPDUSize );
     }
 }

@@ -26,7 +26,7 @@ import org.apache.directory.shared.asn1.codec.stateful.DecoderCallback;
 import org.apache.directory.shared.asn1.codec.stateful.DecoderMonitor;
 import org.apache.directory.shared.asn1.codec.stateful.StatefulDecoder;
 import org.apache.directory.shared.ldap.codec.ResponseCarryingException;
-import org.apache.directory.shared.ldap.codec.TwixTransformer;
+import org.apache.directory.shared.ldap.codec.LdapTransformer;
 import org.apache.directory.shared.ldap.message.spi.BinaryAttributeDetector;
 import org.apache.directory.shared.ldap.message.spi.Provider;
 import org.apache.directory.shared.ldap.message.spi.ProviderDecoder;
@@ -88,7 +88,7 @@ public final class MessageDecoder implements ProviderDecoder
             {
                 if ( decoded instanceof Asn1Object )
                 {
-                    cb.decodeOccurred( decoder, TwixTransformer.transform( decoded ) );
+                    cb.decodeOccurred( decoder, LdapTransformer.transform( decoded ) );
                 }
                 else
                 {
@@ -140,7 +140,7 @@ public final class MessageDecoder implements ProviderDecoder
         }
 
         // Call on transformer to convert stub based PDU into Message based PDU
-        return TwixTransformer.transform( providerEnvelope );
+        return LdapTransformer.transform( providerEnvelope );
     }
 
 

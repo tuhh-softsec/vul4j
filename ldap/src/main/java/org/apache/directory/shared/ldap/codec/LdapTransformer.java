@@ -138,10 +138,10 @@ import org.slf4j.LoggerFactory;
  * @author <a href="mailto:dev@directory.apache.org"> Apache Directory Project</a>
  * @version $Rev$, $Date$, 
  */
-public class TwixTransformer
+public class LdapTransformer
 {
     /** The logger */
-    private static Logger LOG = LoggerFactory.getLogger( TwixTransformer.class );
+    private static Logger LOG = LoggerFactory.getLogger( LdapTransformer.class );
 
     /** A speedup for logger */
     private static final boolean IS_DEBUG = LOG.isDebugEnabled();
