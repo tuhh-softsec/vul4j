@@ -22,9 +22,10 @@ package org.apache.directory.shared.ldap.message.spi;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-
-import java.util.Properties;
 import java.util.Hashtable;
+import java.util.Properties;
+
+import org.apache.directory.shared.ldap.codec.LdapProvider;
 
 
 /**
@@ -37,7 +38,7 @@ import java.util.Hashtable;
 public abstract class Provider
 {
     /** Default BER Library provider class name */
-    public static final String DEFAULT_PROVIDER = "org.apache.directory.shared.ldap.codec.TwixProvider";
+    public static final String DEFAULT_PROVIDER = LdapProvider.class.getName();
 
     /** BER Library provider class name property */
     public static final String BERLIB_PROVIDER = "asn.1.berlib.provider";
