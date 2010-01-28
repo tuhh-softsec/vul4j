@@ -28,84 +28,65 @@ package org.apache.directory.shared.ldap.message;
 public enum MessageTypeEnum
 {
     /** Bind request protocol message type value */
-    BIND_REQUEST( 0x40000000 ),
+    BIND_REQUEST,
 
     /** Bind response protocol message type value */
-    BIND_RESPONSE( 0x40000001 ),
+    BIND_RESPONSE,
 
     /** Unbind request protocol message type value */
-    UNBIND_REQUEST( 0x40000002 ),
+    UNBIND_REQUEST,
 
     /** Search request protocol message type value */
-    SEARCH_REQUEST( 0x40000003 ),
+    SEARCH_REQUEST,
 
     /** Search entry response protocol message type value */
-    SEARCH_RES_ENTRY( 0x40000004 ),
+    SEARCH_RES_ENTRY,
 
     /** Search done response protocol message type value */
-    SEARCH_RES_DONE( 0x40000005 ),
+    SEARCH_RES_DONE,
 
     /** Search reference response protocol message type value */
-    SEARCH_RES_REF( 0x40000013 ),
+    SEARCH_RES_REF,
 
     /** Modify request protocol message type value */
-    MODIFY_REQUEST( 0x40000006 ),
+    MODIFY_REQUEST,
 
     /** Modify response protocol message type value */
-    MODIFY_RESPONSE( 0x40000007 ),
+    MODIFY_RESPONSE,
 
     /** Add request protocol message type value */
-    ADD_REQUEST( 0x40000008 ),
+    ADD_REQUEST,
 
     /** Add response protocol message type value */
-    ADD_RESPONSE( 0x40000009 ),
+    ADD_RESPONSE,
 
     /** Delete request protocol message type value */
-    DEL_REQUEST( 0x4000000 ),
+    DEL_REQUEST,
 
     /** Delete response protocol message type value */
-    DEL_RESPONSE( 0x4000000b ),
+    DEL_RESPONSE,
 
     /** Modify DN request protocol message type value */
-    MOD_DN_REQUEST( 0x4000000c ),
+    MOD_DN_REQUEST,
 
     /** Modify DN response protocol message type value */
-    MOD_DN_RESPONSE( 0x4000000d ),
+    MOD_DN_RESPONSE,
 
     /** Compare request protocol message type value */
-    COMPARE_REQUEST( 0x4000000e ),
+    COMPARE_REQUEST,
 
     /** Compare response protocol message type value */
-    COMPARE_RESPONSE( 0x4000000f ),
+    COMPARE_RESPONSE,
 
     /** Abandon request protocol message type value */
-    ABANDON_REQUEST( 0x40000010 ),
+    ABANDON_REQUEST,
 
     /** Extended request protocol message type value */
-    EXTENDED_REQ( 0x40000017 ),
+    EXTENDED_REQ,
 
     /** Extended response protocol message type value */
-    EXTENDED_RESP( 0x40000018 );
+    EXTENDED_RESP,
     
-    private int messageType;
-
-    /**
-     * Private construct so no other instances can be created other than the
-     * public static constants in this class.
-     * 
-     * @param messageType
-     *            the integer value of the enumeration.
-     */
-    private MessageTypeEnum( int messageType )
-    {
-        this.messageType = messageType;
-    }
-    
-    /**
-     * @return The integer associated with the result code
-     */
-    public int getMessageType()
-    {
-        return messageType;
-    }
+    /** Intermediate response message type */
+    INTERMEDIATE_RESP;
 }
