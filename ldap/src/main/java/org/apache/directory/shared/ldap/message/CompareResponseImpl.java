@@ -19,6 +19,9 @@
  */
 package org.apache.directory.shared.ldap.message;
 
+import org.apache.directory.shared.ldap.message.internal.InternalAbstractResultResponse;
+import org.apache.directory.shared.ldap.message.internal.InternalCompareResponse;
+
 
 /**
  * CompareResponse implementation.

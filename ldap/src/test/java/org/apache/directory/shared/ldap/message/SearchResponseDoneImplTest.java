@@ -29,6 +29,8 @@ import java.util.Map;
 import javax.naming.InvalidNameException;
 
 import org.apache.directory.shared.ldap.message.control.Control;
+import org.apache.directory.shared.ldap.message.internal.InternalLdapResult;
+import org.apache.directory.shared.ldap.message.internal.InternalSearchResponseDone;
 import org.apache.directory.shared.ldap.name.LdapDN;
 import org.junit.Test;
 

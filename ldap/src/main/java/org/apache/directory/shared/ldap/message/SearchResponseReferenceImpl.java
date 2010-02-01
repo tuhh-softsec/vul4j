@@ -19,6 +19,10 @@
  */
 package org.apache.directory.shared.ldap.message;
 
+import org.apache.directory.shared.ldap.message.internal.InternalAbstractResponse;
+import org.apache.directory.shared.ldap.message.internal.InternalReferral;
+import org.apache.directory.shared.ldap.message.internal.InternalSearchResponseReference;
+
 
 /**
  * SearchResponseReference implementation

@@ -19,6 +19,9 @@
  */
 package org.apache.directory.shared.ldap.message;
 
+import org.apache.directory.shared.ldap.message.internal.InternalAbstractRequest;
+import org.apache.directory.shared.ldap.message.internal.InternalUnbindRequest;
+
 
 /**
  * Lockable UnbindRequest implementation.

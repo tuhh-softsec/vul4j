@@ -19,6 +19,8 @@
  */
 package org.apache.directory.shared.ldap.message;
 
+import org.apache.directory.shared.ldap.message.internal.InternalResultResponseRequest;
+
 
 /**
  * Super interface for all request messages returning only one type of response.

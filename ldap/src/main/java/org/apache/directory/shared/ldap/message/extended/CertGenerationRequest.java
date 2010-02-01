@@ -28,7 +28,7 @@ import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.ldap.codec.extended.operations.certGeneration.CertGenerationDecoder;
 import org.apache.directory.shared.ldap.codec.extended.operations.certGeneration.CertGenerationObject;
 import org.apache.directory.shared.ldap.message.ExtendedRequestImpl;
-import org.apache.directory.shared.ldap.message.InternalResultResponse;
+import org.apache.directory.shared.ldap.message.internal.InternalResultResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -19,6 +19,8 @@
  */
 package org.apache.directory.shared.ldap.message;
 
+import org.apache.directory.shared.ldap.message.internal.InternalAbandonableRequest;
+
 
 /**
  * A listener interested in abandon operations performed on requests.

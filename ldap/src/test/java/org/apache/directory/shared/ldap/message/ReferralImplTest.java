@@ -23,8 +23,8 @@ package org.apache.directory.shared.ldap.message;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.apache.directory.shared.ldap.message.InternalReferral;
 import org.apache.directory.shared.ldap.message.ReferralImpl;
+import org.apache.directory.shared.ldap.message.internal.InternalReferral;
 import org.junit.Test;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;

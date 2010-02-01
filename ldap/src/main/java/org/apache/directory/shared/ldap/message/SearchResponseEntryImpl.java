@@ -21,6 +21,8 @@ package org.apache.directory.shared.ldap.message;
 
 
 import org.apache.directory.shared.ldap.entry.Entry;
+import org.apache.directory.shared.ldap.message.internal.InternalAbstractResponse;
+import org.apache.directory.shared.ldap.message.internal.InternalSearchResponseEntry;
 import org.apache.directory.shared.ldap.name.LdapDN;
 
 

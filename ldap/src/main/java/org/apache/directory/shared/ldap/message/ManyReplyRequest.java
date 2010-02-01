@@ -19,6 +19,8 @@
  */
 package org.apache.directory.shared.ldap.message;
 
+import org.apache.directory.shared.ldap.message.internal.InternalResultResponseRequest;
+
 
 /**
  * A request that can generate zero, one, or more heterogenous responses for a

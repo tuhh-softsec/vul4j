@@ -26,6 +26,9 @@ import static org.junit.Assert.assertTrue;
 import javax.naming.InvalidNameException;
 
 import org.apache.directory.shared.ldap.codec.controls.ControlImpl;
+import org.apache.directory.shared.ldap.message.internal.InternalAbstractResultResponse;
+import org.apache.directory.shared.ldap.message.internal.InternalLdapResult;
+import org.apache.directory.shared.ldap.message.internal.InternalReferral;
 import org.apache.directory.shared.ldap.name.LdapDN;
 import org.junit.Test;
 

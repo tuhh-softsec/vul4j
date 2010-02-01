@@ -22,6 +22,7 @@ package org.apache.directory.shared.ldap.message;
 
 
 import org.apache.directory.shared.ldap.RuntimeMultiException;
+import org.apache.directory.shared.ldap.message.internal.InternalMessage;
 
 
 /**

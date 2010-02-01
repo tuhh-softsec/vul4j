@@ -19,6 +19,9 @@
  */
 package org.apache.directory.shared.ldap.message;
 
+import org.apache.directory.shared.ldap.message.internal.InternalAbandonRequest;
+import org.apache.directory.shared.ldap.message.internal.InternalAbstractRequest;
+
 
 /**
  * Implementation of an AbandonRequest.
