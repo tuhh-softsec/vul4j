@@ -22,9 +22,10 @@ package org.apache.directory.shared.ldap.codec;
 
 import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
-
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.directory.shared.asn1.AbstractAsn1Object;
 import org.apache.directory.shared.asn1.Asn1Object;
@@ -39,6 +40,12 @@ import org.apache.directory.shared.ldap.codec.bind.BindRequestCodec;
 import org.apache.directory.shared.ldap.codec.bind.BindResponseCodec;
 import org.apache.directory.shared.ldap.codec.compare.CompareRequestCodec;
 import org.apache.directory.shared.ldap.codec.compare.CompareResponseCodec;
+import org.apache.directory.shared.ldap.codec.controls.CodecControl;
+import org.apache.directory.shared.ldap.codec.controls.ManageDsaITControlCodec;
+import org.apache.directory.shared.ldap.codec.controls.replication.syncDoneValue.SyncDoneValueControlCodec;
+import org.apache.directory.shared.ldap.codec.controls.replication.syncInfoValue.SyncInfoValueControlCodec;
+import org.apache.directory.shared.ldap.codec.controls.replication.syncRequestValue.SyncRequestValueControlCodec;
+import org.apache.directory.shared.ldap.codec.controls.replication.syncStateValue.SyncStateValueControlCodec;
 import org.apache.directory.shared.ldap.codec.del.DelRequestCodec;
 import org.apache.directory.shared.ldap.codec.del.DelResponseCodec;
 import org.apache.directory.shared.ldap.codec.extended.ExtendedRequestCodec;
@@ -52,7 +59,11 @@ import org.apache.directory.shared.ldap.codec.search.SearchRequestCodec;
 import org.apache.directory.shared.ldap.codec.search.SearchResultDoneCodec;
 import org.apache.directory.shared.ldap.codec.search.SearchResultEntryCodec;
 import org.apache.directory.shared.ldap.codec.search.SearchResultReferenceCodec;
+import org.apache.directory.shared.ldap.codec.search.controls.pagedSearch.PagedResultsControlCodec;
+import org.apache.directory.shared.ldap.codec.search.controls.persistentSearch.PersistentSearchControlCodec;
+import org.apache.directory.shared.ldap.codec.search.controls.subentries.SubentriesControlCodec;
 import org.apache.directory.shared.ldap.codec.unbind.UnBindRequestCodec;
+import org.apache.directory.shared.ldap.message.control.replication.SynchronizationInfoEnum;
 
 
 /**
@@ -74,10 +85,10 @@ public class LdapMessageCodec extends AbstractAsn1Object
     private Asn1Object protocolOp;
 
     /** The controls */
-    private List<ControlCodec> controls;
+    private List<CodecControl> controls;
 
     /** The current control */
-    private ControlCodec currentControl;
+    private CodecControl currentControl;
 
     /** The LdapMessage length */
     private int ldapMessageLength;
@@ -87,6 +98,8 @@ public class LdapMessageCodec extends AbstractAsn1Object
 
     /** The controls sequence length */
     private int controlsSequenceLength;
+
+    private Map<String, CodecControl> codecControls = new HashMap<String,CodecControl>();
 
 
     // ~ Constructors
@@ -99,6 +112,40 @@ public class LdapMessageCodec extends AbstractAsn1Object
     {
         super();
         // We should not create this kind of object directly
+        
+        // Initialize the different known Controls
+        CodecControl control = new PersistentSearchControlCodec();
+        codecControls.put( control.getOid(), control );
+
+        control = new ManageDsaITControlCodec();
+        codecControls.put( control.getOid(), control );
+
+        control = new SubentriesControlCodec();
+        codecControls.put( control.getOid(), control );
+
+        control = new PagedResultsControlCodec();
+        codecControls.put( control.getOid(), control );
+        
+        control = new SyncDoneValueControlCodec();
+        codecControls.put( control.getOid(), control );
+        
+        control = new SyncInfoValueControlCodec( SynchronizationInfoEnum.NEW_COOKIE );
+        codecControls.put( control.getOid(), control );
+        
+        control = new SyncInfoValueControlCodec( SynchronizationInfoEnum.REFRESH_DELETE );
+        codecControls.put( control.getOid(), control );
+        
+        control = new SyncInfoValueControlCodec( SynchronizationInfoEnum.REFRESH_PRESENT );
+        codecControls.put( control.getOid(), control );
+        
+        control = new SyncInfoValueControlCodec( SynchronizationInfoEnum.SYNC_ID_SET );
+        codecControls.put( control.getOid(), control );
+        
+        control = new SyncRequestValueControlCodec();
+        codecControls.put( control.getOid(), control );
+        
+        control = new SyncStateValueControlCodec();
+        codecControls.put( control.getOid(), control );
     }
 
 
@@ -111,7 +158,7 @@ public class LdapMessageCodec extends AbstractAsn1Object
      * @param i The index of the Control Object to get
      * @return The selected Control Object
      */
-    public ControlCodec getControls( int i )
+    public CodecControl getControls( int i )
     {
         if ( controls != null )
         {
@@ -129,7 +176,7 @@ public class LdapMessageCodec extends AbstractAsn1Object
      * 
      * @return The Control Objects
      */
-    public List<ControlCodec> getControls()
+    public List<CodecControl> getControls()
     {
         return controls;
     }
@@ -140,9 +187,15 @@ public class LdapMessageCodec extends AbstractAsn1Object
      * 
      * @return The current Control Object
      */
-    public ControlCodec getCurrentControl()
+    public CodecControl getCurrentControl()
     {
         return currentControl;
+    }
+    
+    
+    public CodecControl getCodecControl( String oid )
+    {
+        return codecControls.get( oid );
     }
 
 
@@ -151,13 +204,13 @@ public class LdapMessageCodec extends AbstractAsn1Object
      * 
      * @param control The Control to add
      */
-    public void addControl( ControlCodec control )
+    public void addControl( CodecControl control )
     {
         currentControl = control;
         
         if ( controls == null )
         {
-            controls = new ArrayList<ControlCodec>();
+            controls = new ArrayList<CodecControl>();
         }
         
         controls.add( control );
@@ -170,7 +223,7 @@ public class LdapMessageCodec extends AbstractAsn1Object
      * 
      * @param controls The list of Controls to set or add
      */
-    public void addControls( List<ControlCodec> controls )
+    public void addControls( List<CodecControl> controls )
     {
         if( this.controls == null )
         {
@@ -188,7 +241,7 @@ public class LdapMessageCodec extends AbstractAsn1Object
      */
     public void initControls()
     {
-        controls = new ArrayList<ControlCodec>();
+        controls = new ArrayList<CodecControl>();
     }
 
 
@@ -628,7 +681,7 @@ public class LdapMessageCodec extends AbstractAsn1Object
             controlsSequenceLength = 0;
 
             // We may have more than one control. ControlsLength is L4.
-            for ( ControlCodec control:controls )
+            for ( CodecControl control:controls )
             {
                 controlsSequenceLength += control.computeLength();
             }
@@ -657,6 +710,7 @@ public class LdapMessageCodec extends AbstractAsn1Object
      * global PDU length 
      * - second, we produce the PDU. 
      * 
+     * <pre>
      * 0x30 L1 
      *   | 
      *   +--> 0x02 L2 MessageId  
@@ -666,6 +720,7 @@ public class LdapMessageCodec extends AbstractAsn1Object
      * L2 = Length(MessageId)
      * L1 = Length(0x02) + Length(L2) + L2 + Length(ProtocolOp) + Length(Controls)
      * LdapMessageLength = Length(0x30) + Length(L1) + L1
+     * </pre>
      * 
      * @param buffer The encoded PDU
      * @return A ByteBuffer that contaons the PDU
@@ -703,7 +758,7 @@ public class LdapMessageCodec extends AbstractAsn1Object
             bb.put( TLV.getBytes( controlsLength ) );
 
             // Encode each control
-            for ( ControlCodec control:controls )
+            for ( CodecControl control:controls )
             {
                 control.encode( bb );
             }
@@ -728,7 +783,7 @@ public class LdapMessageCodec extends AbstractAsn1Object
 
         if ( controls != null )
         {
-            for ( ControlCodec control:controls )
+            for ( CodecControl control:controls )
             {
                 sb.append( control );
             }

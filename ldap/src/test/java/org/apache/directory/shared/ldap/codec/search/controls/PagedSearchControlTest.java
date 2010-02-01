@@ -20,20 +20,21 @@
 package org.apache.directory.shared.ldap.codec.search.controls;
 
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.codec.DecoderException;
-import org.apache.directory.shared.ldap.codec.search.controls.pagedSearch.PagedSearchControlCodec;
-import org.apache.directory.shared.ldap.codec.search.controls.pagedSearch.PagedSearchControlContainer;
-import org.apache.directory.shared.ldap.codec.search.controls.pagedSearch.PagedSearchControlDecoder;
+import org.apache.directory.shared.ldap.codec.search.controls.pagedSearch.PagedResultsControlCodec;
+import org.apache.directory.shared.ldap.codec.search.controls.pagedSearch.PagedResultsControlContainer;
+import org.apache.directory.shared.ldap.codec.search.controls.pagedSearch.PagedResultsControlDecoder;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.junit.Assert.assertNotNull;
 
 
 /**
@@ -49,17 +50,18 @@ public class PagedSearchControlTest
     @Test
     public void testEncodePagedSearchControl() throws Exception
     {
-        Asn1Decoder decoder = new PagedSearchControlDecoder();
-        ByteBuffer bb = ByteBuffer.allocate( 0x0b );
+        Asn1Decoder decoder = new PagedResultsControlDecoder();
+        ByteBuffer bb = ByteBuffer.allocate( 0x2A );
         bb.put( new byte[]
             { 
-              0x30, 0x09,           // realSearchControlValue ::= SEQUENCE {
-                0x02, 0x01, 0x20,   // size INTEGER,
-                0x04, 0x04, 't', 'e', 's', 't'   // cookie OCTET STRING,
+                0x30, 0x09,                        // realSearchControlValue ::= SEQUENCE {
+                  0x02, 0x01, 0x20,                // size INTEGER,
+                  0x04, 0x04, 't', 'e', 's', 't'   // cookie OCTET STRING,
             } );
         bb.flip();
 
-        PagedSearchControlContainer container = new PagedSearchControlContainer();
+        PagedResultsControlContainer container = new PagedResultsControlContainer();
+        container.setPagedSearchControl( new PagedResultsControlCodec() );
         
         try
         {
@@ -71,19 +73,35 @@ public class PagedSearchControlTest
             fail( de.getMessage() );
         }
 
-        PagedSearchControlCodec pagedSearch = container.getPagedSearchControl();
+        PagedResultsControlCodec pagedSearch = container.getPagedSearchControl();
         assertEquals( 32, pagedSearch.getSize() );
         assertTrue( Arrays.equals( StringTools.getBytesUtf8( "test" ), 
             pagedSearch.getCookie() ) );
             
-        String expected = StringTools.dumpBytes( bb.array() );
         bb.flip();
 
-        PagedSearchControlCodec ctrl = new PagedSearchControlCodec();
+        ByteBuffer buffer = ByteBuffer.allocate( 0x27 );
+        buffer.put( new byte[]
+            { 
+              0x30, 0x25,                            // Control
+                0x04, 0x16,                          // OID (PagedSearch)
+                  '1', '.', '2', '.', '8', '4', '0', '.', 
+                  '1', '1', '3', '5', '5', '6', '.', '1', 
+                  '.', '4', '.', '3', '1', '9',
+                0x04, 0x0B,
+                  0x30, 0x09,                        // realSearchControlValue ::= SEQUENCE {
+                    0x02, 0x01, 0x20,                // size INTEGER,
+                    0x04, 0x04, 't', 'e', 's', 't'   // cookie OCTET STRING,
+            } );
+        buffer.flip();
+
+        PagedResultsControlCodec ctrl = new PagedResultsControlCodec();
         ctrl.setSize( 32 );
         ctrl.setCookie( StringTools.getBytesUtf8( "test" ) );
-        bb = ctrl.encode( null );
+
+        bb = ctrl.encode( ByteBuffer.allocate( ctrl.computeLength() ) );
         String decoded = StringTools.dumpBytes( bb.array() );
+        String expected = StringTools.dumpBytes( buffer.array() );
         assertEquals( expected, decoded );
     }
     
@@ -94,7 +112,7 @@ public class PagedSearchControlTest
     @Test
     public void testDecodePagedSearchRequestNoCookie()
     {
-        Asn1Decoder decoder = new PagedSearchControlDecoder();
+        Asn1Decoder decoder = new PagedResultsControlDecoder();
         ByteBuffer bb = ByteBuffer.allocate( 0x05 );
         bb.put( new byte[]
             { 
@@ -103,7 +121,8 @@ public class PagedSearchControlTest
             } );
         bb.flip();
 
-        PagedSearchControlContainer container = new PagedSearchControlContainer();
+        PagedResultsControlContainer container = new PagedResultsControlContainer();
+        container.setPagedSearchControl( new PagedResultsControlCodec() );
         
         try
         {
@@ -123,16 +142,17 @@ public class PagedSearchControlTest
     @Test
     public void testDecodePagedSearchRequestNoSize()
     {
-        Asn1Decoder decoder = new PagedSearchControlDecoder();
+        Asn1Decoder decoder = new PagedResultsControlDecoder();
         ByteBuffer bb = ByteBuffer.allocate( 0x08 );
         bb.put( new byte[]
             { 
-            0x30, 0x06,         // realSearchControlValue ::= SEQUENCE {
+            0x30, 0x06,                       // realSearchControlValue ::= SEQUENCE {
               0x04, 0x04, 't', 'e', 's', 't'  // cookie OCTET STRING,
             } );
         bb.flip();
 
-        PagedSearchControlContainer container = new PagedSearchControlContainer();
+        PagedResultsControlContainer container = new PagedResultsControlContainer();
+        container.setPagedSearchControl( new PagedResultsControlCodec() );
         
         try
         {
@@ -152,7 +172,7 @@ public class PagedSearchControlTest
     @Test
     public void testDecodePagedSearchRequestNoSizeNoCookie()
     {
-        Asn1Decoder decoder = new PagedSearchControlDecoder();
+        Asn1Decoder decoder = new PagedResultsControlDecoder();
         ByteBuffer bb = ByteBuffer.allocate( 0x02 );
         bb.put( new byte[]
             { 
@@ -160,7 +180,8 @@ public class PagedSearchControlTest
             } );
         bb.flip();
 
-        PagedSearchControlContainer container = new PagedSearchControlContainer();
+        PagedResultsControlContainer container = new PagedResultsControlContainer();
+        container.setPagedSearchControl( new PagedResultsControlCodec() );
         
         try
         {
@@ -180,17 +201,18 @@ public class PagedSearchControlTest
     @Test
     public void testEncodePagedSearchControlNegativeSize() throws Exception
     {
-        Asn1Decoder decoder = new PagedSearchControlDecoder();
+        Asn1Decoder decoder = new PagedResultsControlDecoder();
         ByteBuffer bb = ByteBuffer.allocate( 0x0b );
         bb.put( new byte[]
             { 
-              0x30, 0x09,           // realSearchControlValue ::= SEQUENCE {
-                0x02, 0x01, (byte)0xFF,   // size INTEGER,
+              0x30, 0x09,                        // realSearchControlValue ::= SEQUENCE {
+                0x02, 0x01, (byte)0xFF,          // size INTEGER,
                 0x04, 0x04, 't', 'e', 's', 't'   // cookie OCTET STRING,
             } );
         bb.flip();
 
-        PagedSearchControlContainer container = new PagedSearchControlContainer();
+        PagedResultsControlContainer container = new PagedResultsControlContainer();
+        container.setPagedSearchControl( new PagedResultsControlCodec() );
         
         try
         {
@@ -202,19 +224,36 @@ public class PagedSearchControlTest
             fail( de.getMessage() );
         }
 
-        PagedSearchControlCodec pagedSearch = container.getPagedSearchControl();
+        PagedResultsControlCodec pagedSearch = container.getPagedSearchControl();
         assertEquals( Integer.MAX_VALUE, pagedSearch.getSize() );
         assertTrue( Arrays.equals( StringTools.getBytesUtf8( "test" ), 
             pagedSearch.getCookie() ) );
             
-        String expected = StringTools.dumpBytes( bb.array() );
         bb.flip();
 
-        PagedSearchControlCodec ctrl = new PagedSearchControlCodec();
+
+        ByteBuffer buffer = ByteBuffer.allocate( 0x27 );
+        buffer.put( new byte[]
+            { 
+              0x30, 0x25,                            // Control
+                0x04, 0x16,                          // OID (PagedSearch)
+                  '1', '.', '2', '.', '8', '4', '0', '.', 
+                  '1', '1', '3', '5', '5', '6', '.', '1', 
+                  '.', '4', '.', '3', '1', '9',
+                0x04, 0x0B,
+                  0x30, 0x09,                        // realSearchControlValue ::= SEQUENCE {
+                    0x02, 0x01, (byte)0xFF,          // size INTEGER,
+                    0x04, 0x04, 't', 'e', 's', 't'   // cookie OCTET STRING,
+            } );
+        buffer.flip();
+
+        PagedResultsControlCodec ctrl = new PagedResultsControlCodec();
         ctrl.setSize( -1 );
         ctrl.setCookie( StringTools.getBytesUtf8( "test" ) );
-        bb = ctrl.encode( null );
+
+        bb = ctrl.encode( ByteBuffer.allocate( ctrl.computeLength() ) );
         String decoded = StringTools.dumpBytes( bb.array() );
+        String expected = StringTools.dumpBytes( buffer.array() );
         assertEquals( expected, decoded );
     }
     
@@ -225,18 +264,19 @@ public class PagedSearchControlTest
     @Test
     public void testEncodePagedSearchControlEmptySize() throws Exception
     {
-        Asn1Decoder decoder = new PagedSearchControlDecoder();
+        Asn1Decoder decoder = new PagedResultsControlDecoder();
         ByteBuffer bb = ByteBuffer.allocate( 0x0a );
         bb.put( new byte[]
             { 
-              0x30, 0x08,           // realSearchControlValue ::= SEQUENCE {
-                0x02, 0x00,         // size INTEGER,
+              0x30, 0x08,                        // realSearchControlValue ::= SEQUENCE {
+                0x02, 0x00,                      // size INTEGER,
                 0x04, 0x04, 't', 'e', 's', 't'   // cookie OCTET STRING,
             } );
         bb.flip();
 
-        PagedSearchControlContainer container = new PagedSearchControlContainer();
-        
+        PagedResultsControlContainer container = new PagedResultsControlContainer();
+        container.setPagedSearchControl( new PagedResultsControlCodec() );
+
         try
         {
             decoder.decode( bb, container );
@@ -255,7 +295,7 @@ public class PagedSearchControlTest
     @Test
     public void testEncodePagedSearchControlEmptyCookie() throws Exception
     {
-        Asn1Decoder decoder = new PagedSearchControlDecoder();
+        Asn1Decoder decoder = new PagedResultsControlDecoder();
         ByteBuffer bb = ByteBuffer.allocate( 0x07 );
         bb.put( new byte[]
             { 
@@ -264,10 +304,10 @@ public class PagedSearchControlTest
                 0x04, 0x00          // cookie OCTET STRING,
             } );
         bb.flip();
-        String expected = StringTools.dumpBytes( bb.array() );
 
-        PagedSearchControlContainer container = new PagedSearchControlContainer();
-        
+        PagedResultsControlContainer container = new PagedResultsControlContainer();
+        container.setPagedSearchControl( new PagedResultsControlCodec() );
+
         try
         {
             decoder.decode( bb, container );
@@ -278,16 +318,34 @@ public class PagedSearchControlTest
             fail( de.getMessage() );
         }
 
-        PagedSearchControlCodec pagedSearch = container.getPagedSearchControl();
+        PagedResultsControlCodec pagedSearch = container.getPagedSearchControl();
         assertEquals( 32, pagedSearch.getSize() );
         assertNotNull( pagedSearch.getCookie() );
         assertEquals( StringTools.EMPTY_BYTES, pagedSearch.getCookie() );
             
-        PagedSearchControlCodec ctrl = new PagedSearchControlCodec();
+        ByteBuffer buffer = ByteBuffer.allocate( 0x23 );
+        buffer.put( new byte[]
+            { 
+              0x30, 0x21,                            // Control
+                0x04, 0x16,                          // OID (PagedSearch)
+                  '1', '.', '2', '.', '8', '4', '0', '.', 
+                  '1', '1', '3', '5', '5', '6', '.', '1', 
+                  '.', '4', '.', '3', '1', '9',
+                0x04, 0x07,
+                  0x30, 0x05,                        // realSearchControlValue ::= SEQUENCE {
+                    0x02, 0x01, 0x20,                // size INTEGER,
+                    0x04, 0x00                       // cookie OCTET STRING,
+            } );
+        buffer.flip();
+
+        PagedResultsControlCodec ctrl = new PagedResultsControlCodec();
         ctrl.setSize( 32 );
         ctrl.setCookie( null );
-        bb = ctrl.encode( null );
+
+        bb = ctrl.encode( ByteBuffer.allocate( ctrl.computeLength() ) );
         String decoded = StringTools.dumpBytes( bb.array() );
+        String expected = StringTools.dumpBytes( buffer.array() );
         assertEquals( expected, decoded );
+
     }
 }

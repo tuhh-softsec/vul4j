@@ -40,13 +40,14 @@ import org.apache.directory.shared.dsmlv2.IGrammar;
 import org.apache.directory.shared.dsmlv2.ParserUtils;
 import org.apache.directory.shared.dsmlv2.Tag;
 import org.apache.directory.shared.dsmlv2.reponse.ErrorResponse.ErrorResponseType;
-import org.apache.directory.shared.ldap.codec.ControlCodec;
 import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.LdapResponseCodec;
 import org.apache.directory.shared.ldap.codec.LdapResultCodec;
 import org.apache.directory.shared.ldap.codec.add.AddResponseCodec;
 import org.apache.directory.shared.ldap.codec.bind.BindResponseCodec;
 import org.apache.directory.shared.ldap.codec.compare.CompareResponseCodec;
+import org.apache.directory.shared.ldap.codec.controls.CodecControl;
+import org.apache.directory.shared.ldap.codec.controls.CodecControlImpl;
 import org.apache.directory.shared.ldap.codec.del.DelResponseCodec;
 import org.apache.directory.shared.ldap.codec.extended.ExtendedResponseCodec;
 import org.apache.directory.shared.ldap.codec.modify.ModifyResponseCodec;
@@ -54,11 +55,11 @@ import org.apache.directory.shared.ldap.codec.modifyDn.ModifyDNResponseCodec;
 import org.apache.directory.shared.ldap.codec.search.SearchResultDoneCodec;
 import org.apache.directory.shared.ldap.codec.search.SearchResultEntryCodec;
 import org.apache.directory.shared.ldap.codec.search.SearchResultReferenceCodec;
-import org.apache.directory.shared.ldap.util.LdapURL;
 import org.apache.directory.shared.ldap.codec.util.LdapURLEncodingException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.name.LdapDN;
 import org.apache.directory.shared.ldap.util.Base64;
+import org.apache.directory.shared.ldap.util.LdapURL;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -1167,9 +1168,7 @@ public class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGrammar
      */
     private void createAndAddControl( Dsmlv2Container container, LdapMessageCodec parent ) throws XmlPullParserException
     {
-        ControlCodec control = new ControlCodec();
-
-        parent.addControl( control );
+        CodecControl control = null;
 
         XmlPullParser xpp = container.getParser();
 
@@ -1177,13 +1176,16 @@ public class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGrammar
         String attributeValue;
         // TYPE
         attributeValue = xpp.getAttributeValue( "", "type" );
+        
         if ( attributeValue != null )
         {
             if ( !OID.isOID( attributeValue ) )
             {
                 throw new XmlPullParserException( "Incorrect value for 'type' attribute. This is not an OID.", xpp, null );
             }
-            control.setControlType( attributeValue );
+            
+            control = new CodecControlImpl( attributeValue );
+            parent.addControl( control );
         }
         else
         {
@@ -1191,15 +1193,16 @@ public class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGrammar
         }
         // CRITICALITY
         attributeValue = xpp.getAttributeValue( "", "criticality" );
+        
         if ( attributeValue != null )
         {
             if ( attributeValue.equals( "true" ) )
             {
-                control.setCriticality( true );
+                control.setCritical( true );
             }
             else if ( attributeValue.equals( "false" ) )
             {
-                control.setCriticality( false );
+                control.setCritical( false );
             }
             else
             {
@@ -1264,7 +1267,7 @@ public class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGrammar
     private void createAndAddControlValue( Dsmlv2Container container, LdapMessageCodec parent )
         throws XmlPullParserException
     {
-        ControlCodec control = parent.getCurrentControl();
+        CodecControl control = parent.getCurrentControl();
 
         XmlPullParser xpp = container.getParser();
         try
@@ -1274,15 +1277,16 @@ public class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGrammar
             
             // Getting the value
             String nextText = xpp.nextText();
+            
             if ( !nextText.equals( "" ) )
             {
                 if ( ParserUtils.isBase64BinaryValue( xpp, typeValue ) )
                 {
-                    control.setControlValue( Base64.decode( nextText.trim().toCharArray() ) );
+                    control.setValue( Base64.decode( nextText.trim().toCharArray() ) );
                 }
                 else
                 {
-                    control.setControlValue( nextText.trim() );
+                    control.setValue( nextText.trim().getBytes() );
                 }
             }
         }

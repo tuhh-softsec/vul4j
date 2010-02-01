@@ -31,9 +31,9 @@ import java.util.List;
 
 import org.apache.directory.shared.dsmlv2.AbstractResponseTest;
 import org.apache.directory.shared.dsmlv2.Dsmlv2ResponseParser;
-import org.apache.directory.shared.ldap.codec.ControlCodec;
 import org.apache.directory.shared.ldap.codec.LdapResultCodec;
 import org.apache.directory.shared.ldap.codec.bind.BindResponseCodec;
+import org.apache.directory.shared.ldap.codec.controls.CodecControl;
 import org.apache.directory.shared.ldap.codec.util.LdapURLEncodingException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.util.LdapURL;
@@ -111,13 +111,13 @@ public class AuthResponseTest extends AbstractResponseTest
 
         assertEquals( 1, bindResponse.getControls().size() );
 
-        ControlCodec control = bindResponse.getCurrentControl();
+        CodecControl control = bindResponse.getCurrentControl();
 
-        assertTrue( control.getCriticality() );
+        assertTrue( control.isCritical() );
 
-        assertEquals( "1.2.840.113556.1.4.643", control.getControlType() );
+        assertEquals( "1.2.840.113556.1.4.643", control.getOid() );
 
-        assertEquals( "Some text", StringTools.utf8ToString( ( byte[] ) control.getControlValue() ) );
+        assertEquals( "Some text", StringTools.utf8ToString( ( byte[] ) control.getValue() ) );
     }
 
 
@@ -143,12 +143,12 @@ public class AuthResponseTest extends AbstractResponseTest
         }
 
         BindResponseCodec bindResponse = ( BindResponseCodec ) parser.getBatchResponse().getCurrentResponse();
-        ControlCodec control = bindResponse.getCurrentControl();
+        CodecControl control = bindResponse.getCurrentControl();
 
         assertEquals( 1, bindResponse.getControls().size() );
-        assertTrue( control.getCriticality() );
-        assertEquals( "1.2.840.113556.1.4.643", control.getControlType() );
-        assertEquals( StringTools.EMPTY_BYTES, ( byte[] ) control.getControlValue() );
+        assertTrue( control.isCritical() );
+        assertEquals( "1.2.840.113556.1.4.643", control.getOid() );
+        assertFalse( control.hasValue() );
     }
 
 
@@ -177,13 +177,13 @@ public class AuthResponseTest extends AbstractResponseTest
 
         assertEquals( 2, bindResponse.getControls().size() );
 
-        ControlCodec control = bindResponse.getCurrentControl();
+        CodecControl control = bindResponse.getCurrentControl();
 
-        assertFalse( control.getCriticality() );
+        assertFalse( control.isCritical() );
 
-        assertEquals( "1.2.840.113556.1.4.789", control.getControlType() );
+        assertEquals( "1.2.840.113556.1.4.789", control.getOid() );
 
-        assertEquals( "Some other text", StringTools.utf8ToString( ( byte[] ) control.getControlValue() ) );
+        assertEquals( "Some other text", StringTools.utf8ToString( ( byte[] ) control.getValue() ) );
     }
 
 
@@ -212,13 +212,13 @@ public class AuthResponseTest extends AbstractResponseTest
 
         assertEquals( 3, bindResponse.getControls().size() );
 
-        ControlCodec control = bindResponse.getCurrentControl();
+        CodecControl control = bindResponse.getCurrentControl();
 
-        assertTrue( control.getCriticality() );
+        assertTrue( control.isCritical() );
 
-        assertEquals( "1.2.840.113556.1.4.456", control.getControlType() );
+        assertEquals( "1.2.840.113556.1.4.456", control.getOid() );
 
-        assertEquals( StringTools.EMPTY_BYTES, control.getControlValue() );
+        assertFalse( control.hasValue() );
     }
 
 

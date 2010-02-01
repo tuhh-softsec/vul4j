@@ -23,7 +23,7 @@ package org.apache.directory.shared.ldap.message;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.apache.directory.shared.ldap.message.control.ControlImpl;
+import org.apache.directory.shared.ldap.codec.controls.CodecControlImpl;
 import org.junit.Test;
 
 
@@ -127,16 +127,11 @@ public class AbstractMessageTest
             private static final long serialVersionUID = 1L;
         };
         
-        msg0.add( new ControlImpl( "0.0" )
+        msg0.add( new CodecControlImpl( "0.0" )
         {
             private static final long serialVersionUID = 1L;
 
 
-            public void setOid( String oid )
-            {
-            }
-
-            
             public boolean isCritical()
             {
                 return false;

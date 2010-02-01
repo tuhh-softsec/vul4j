@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.codec.search.controls.pagedSearch;
+package org.apache.directory.shared.ldap.codec.search.controls.persistentSearch;
 
 
 import org.apache.directory.shared.asn1.ber.grammar.IGrammar;
@@ -25,49 +25,53 @@ import org.apache.directory.shared.asn1.ber.grammar.IStates;
 
 
 /**
- * This class store the PagedSearchControl's grammar constants. It is also used for
+ * This class store the PSearchControl's grammar constants. It is also used for
  * debugging purposes.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev: 664290 $, $Date: 2008-06-07 08:28:06 +0200 (Sat, 07 Jun 2008) $, 
+ * @version $Rev$, $Date$, 
  */
-public class PagedSearchControlStatesEnum implements IStates
+public class PersistentSearchControlStatesEnum implements IStates
 {
     // ~ Static fields/initializers
     // -----------------------------------------------------------------
 
     // =========================================================================
-    // Paged search control grammar states
+    // Persistent search control grammar states
     // =========================================================================
     /** Initial state */
     public static final int START_STATE = 0;
 
     /** Sequence Value */
-    public static final int PAGED_SEARCH_SEQUENCE_STATE = 1;
+    public static final int PSEARCH_SEQUENCE_STATE = 1;
 
-    /** Size Value */
-    public static final int SIZE_STATE = 3;
+    /** changeTypes Value */
+    public static final int CHANGE_TYPES_STATE = 2;
     
-    /** Cookie Value */
-    public static final int COOKIE_STATE = 5;
+    /** changesOnly Value */
+    public static final int CHANGES_ONLY_STATE = 3;
+
+    /** returnECs Value */
+    public static final int RETURN_ECS_STATE = 4;
 
     /** terminal state */
-    public static final int LAST_PAGED_SEARCH_STATE = 8;
+    public static final int LAST_PSEARCH_STATE = 5;
 
     // =========================================================================
     // States debug strings
     // =========================================================================
     /** A string representation of all the states */
-    private static String[] PagedSearchString = new String[]
+    private static String[] PSearchString = new String[]
         { 
         "START_STATE", 
-        "PAGED_SEARCH_SEQUENCE_VALUE", 
-        "SIZE_STATE",
-        "COOKIE_STATE" 
+        "PSEARCH_SEQUENCE_VALUE", 
+        "CHANGE_TYPES_STATE",
+        "CHANGES_ONLY_STATE", 
+        "RETURN_ECS_STATE" 
         };
 
     /** The instance */
-    private static PagedSearchControlStatesEnum instance = new PagedSearchControlStatesEnum();
+    private static PersistentSearchControlStatesEnum instance = new PersistentSearchControlStatesEnum();
 
 
     // ~ Constructors
@@ -76,7 +80,7 @@ public class PagedSearchControlStatesEnum implements IStates
     /**
      * This is a private constructor. This class is a singleton
      */
-    private PagedSearchControlStatesEnum()
+    private PersistentSearchControlStatesEnum()
     {
     }
 
@@ -103,7 +107,7 @@ public class PagedSearchControlStatesEnum implements IStates
      */
     public String getGrammarName( int grammar )
     {
-        return "PAGED_SEARCH_GRAMMAR";
+        return "PSEARCH_GRAMMAR";
     }
 
 
@@ -115,9 +119,9 @@ public class PagedSearchControlStatesEnum implements IStates
      */
     public String getGrammarName( IGrammar grammar )
     {
-        if ( grammar instanceof PagedSearchControlGrammar )
+        if ( grammar instanceof PersistentSearchControlGrammar )
         {
-            return "PAGEDSEARCH_GRAMMAR";
+            return "PSEARCH_GRAMMAR";
         }
 
         return "UNKNOWN GRAMMAR";
@@ -132,6 +136,6 @@ public class PagedSearchControlStatesEnum implements IStates
      */
     public String getState( int state )
     {
-        return ( ( state == GRAMMAR_END ) ? "PAGED_SEARCH_END_STATE" : PagedSearchString[state] );
+        return ( ( state == GRAMMAR_END ) ? "PSEARCH_END_STATE" : PSearchString[state] );
     }
 }

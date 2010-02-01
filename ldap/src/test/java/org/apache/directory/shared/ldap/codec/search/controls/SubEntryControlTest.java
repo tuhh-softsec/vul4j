@@ -20,18 +20,21 @@
 package org.apache.directory.shared.ldap.codec.search.controls;
 
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.nio.ByteBuffer;
 
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
-import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.codec.DecoderException;
-import org.apache.directory.shared.ldap.codec.search.controls.subEntry.SubEntryControlCodec;
-import org.apache.directory.shared.ldap.codec.search.controls.subEntry.SubEntryControlContainer;
-import org.apache.directory.shared.ldap.codec.search.controls.subEntry.SubEntryControlDecoder;
+import org.apache.directory.shared.asn1.codec.EncoderException;
+import org.apache.directory.shared.ldap.codec.search.controls.subentries.SubentriesControlCodec;
+import org.apache.directory.shared.ldap.codec.search.controls.subentries.SubentriesControlContainer;
+import org.apache.directory.shared.ldap.codec.search.controls.subentries.SubentriesControlDecoder;
+import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.junit.Assert.assertFalse;
 
 
 /**
@@ -47,14 +50,17 @@ public class SubEntryControlTest
     @Test
     public void testDecodeSubEntryVisibilityTrue()
     {
-        Asn1Decoder decoder = new SubEntryControlDecoder();
+        Asn1Decoder decoder = new SubentriesControlDecoder();
         ByteBuffer bb = ByteBuffer.allocate( 0x03 );
         bb.put( new byte[]
-            { 0x01, 0x01, ( byte ) 0xFF // Visibility ::= BOOLEAN
+            { 
+              0x01, 0x01, ( byte ) 0xFF // Visibility ::= BOOLEAN
             } );
         bb.flip();
 
-        SubEntryControlContainer container = new SubEntryControlContainer();
+        SubentriesControlContainer container = new SubentriesControlContainer();
+        container.setSubEntryControl( new SubentriesControlCodec() );
+        
         try
         {
             decoder.decode( bb, container );
@@ -65,8 +71,34 @@ public class SubEntryControlTest
             fail( de.getMessage() );
         }
 
-        SubEntryControlCodec control = container.getSubEntryControl();
+        SubentriesControlCodec control = container.getSubEntryControl();
         assertTrue( control.isVisible() );
+        // test encoding
+        try
+        {
+            ByteBuffer buffer = ByteBuffer.allocate( 0x20 );
+            buffer.put( new byte[]
+                { 
+                0x30, 0x1E,                            // Control
+                  0x04, 0x17,                          // OID (Subentries)
+                    '1', '.', '3', '.', '6', '.', '1', '.', 
+                    '4', '.', '1', '.', '4', '2', '0', '3', 
+                    '.', '1', '.', '1', '0', '.', '1',
+                  0x04, 0x03,
+                    0x01, 0x01, (byte)0xFF // Visibility ::= BOOLEAN
+                } );
+
+            buffer.flip();
+
+            bb = control.encode( ByteBuffer.allocate( control.computeLength() ) );
+            String expected = StringTools.dumpBytes( buffer.array() );
+            String decoded = StringTools.dumpBytes( bb.array() );
+            assertEquals( expected, decoded );
+        }
+        catch( EncoderException e )
+        {
+            fail( e.getMessage() );
+        }
     }
 
 
@@ -76,14 +108,17 @@ public class SubEntryControlTest
     @Test
     public void testDecodeSubEntryVisibilityFalse()
     {
-        Asn1Decoder decoder = new SubEntryControlDecoder();
+        Asn1Decoder decoder = new SubentriesControlDecoder();
         ByteBuffer bb = ByteBuffer.allocate( 0x03 );
         bb.put( new byte[]
-            { 0x01, 0x01, 0x00 // Visibility ::= BOOLEAN
+            { 
+              0x01, 0x01, 0x00 // Visibility ::= BOOLEAN
             } );
         bb.flip();
 
-        SubEntryControlContainer container = new SubEntryControlContainer();
+        SubentriesControlContainer container = new SubentriesControlContainer();
+        container.setSubEntryControl( new SubentriesControlCodec() );
+
         try
         {
             decoder.decode( bb, container );
@@ -94,8 +129,35 @@ public class SubEntryControlTest
             fail( de.getMessage() );
         }
 
-        SubEntryControlCodec control = container.getSubEntryControl();
+        SubentriesControlCodec control = container.getSubEntryControl();
         assertFalse( control.isVisible() );
+        
+        // test encoding
+        try
+        {
+            ByteBuffer buffer = ByteBuffer.allocate( 0x20 );
+            buffer.put( new byte[]
+                { 
+                0x30, 0x1E,                            // Control
+                  0x04, 0x17,                          // OID (Subentries)
+                    '1', '.', '3', '.', '6', '.', '1', '.', 
+                    '4', '.', '1', '.', '4', '2', '0', '3', 
+                    '.', '1', '.', '1', '0', '.', '1',
+                  0x04, 0x03,
+                    0x01, 0x01, 0x00 // Visibility ::= BOOLEAN
+                } );
+
+            buffer.flip();
+
+            bb = control.encode( ByteBuffer.allocate( control.computeLength() ) );
+            String expected = StringTools.dumpBytes( buffer.array() );
+            String decoded = StringTools.dumpBytes( bb.array() );
+            assertEquals( expected, decoded );
+        }
+        catch( EncoderException e )
+        {
+            fail( e.getMessage() );
+        }
     }
 
 
@@ -105,17 +167,19 @@ public class SubEntryControlTest
     @Test
     public void testDecodeSubEntryEmptyVisibility()
     {
-        Asn1Decoder decoder = new SubEntryControlDecoder();
+        Asn1Decoder decoder = new SubentriesControlDecoder();
         ByteBuffer bb = ByteBuffer.allocate( 0x02 );
 
         bb.put( new byte[]
-            { 0x01, 0x00 // Visibility ::= BOOLEAN
+            { 
+              0x01, 0x00 // Visibility ::= BOOLEAN
             } );
 
         bb.flip();
 
         // Allocate a LdapMessage Container
-        IAsn1Container container = new SubEntryControlContainer();
+        SubentriesControlContainer container = new SubentriesControlContainer();
+        container.setSubEntryControl( new SubentriesControlCodec() );
 
         // Decode a SubEntryControl PDU
         try
@@ -136,17 +200,19 @@ public class SubEntryControlTest
     @Test
     public void testDecodeSubEntryBad()
     {
-        Asn1Decoder decoder = new SubEntryControlDecoder();
+        Asn1Decoder decoder = new SubentriesControlDecoder();
         ByteBuffer bb = ByteBuffer.allocate( 0x03 );
 
         bb.put( new byte[]
-            { 0x02, 0x01, 0x01 // Visibility ::= BOOLEAN
+            { 
+              0x02, 0x01, 0x01 // Visibility ::= BOOLEAN
             } );
 
         bb.flip();
 
         // Allocate a LdapMessage Container
-        IAsn1Container container = new SubEntryControlContainer();
+        SubentriesControlContainer container = new SubentriesControlContainer();
+        container.setSubEntryControl( new SubentriesControlCodec() );
 
         // Decode a SubEntryControl PDU
         try

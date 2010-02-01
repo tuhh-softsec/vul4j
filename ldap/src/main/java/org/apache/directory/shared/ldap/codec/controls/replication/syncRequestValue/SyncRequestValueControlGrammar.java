@@ -93,15 +93,7 @@ public class SyncRequestValueControlGrammar extends AbstractGrammar
             new GrammarTransition( IStates.INIT_GRAMMAR_STATE, 
                                     SyncRequestValueControlStatesEnum.SYNC_REQUEST_VALUE_SEQUENCE_STATE, 
                                     UniversalTag.SEQUENCE_TAG, 
-                new GrammarAction( "Init SyncRequestValueControl" )
-            {
-                public void action( IAsn1Container container )
-                {
-                    SyncRequestValueControlContainer SyncRequestValueContainer = ( SyncRequestValueControlContainer ) container;
-                    SyncRequestValueControlCodec control = new SyncRequestValueControlCodec();
-                    SyncRequestValueContainer.setSyncRequestValueControl( control );
-                }
-            } );
+                null );
 
 
         /** 

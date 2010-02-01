@@ -21,17 +21,18 @@
 package org.apache.directory.shared.dsmlv2.compareRequest;
 
 
-import org.apache.directory.shared.dsmlv2.AbstractTest;
-import org.apache.directory.shared.dsmlv2.Dsmlv2Parser;
-import org.apache.directory.shared.ldap.codec.ControlCodec;
-import org.apache.directory.shared.ldap.codec.compare.CompareRequestCodec;
-import org.apache.directory.shared.ldap.util.StringTools;
-import org.junit.Test;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import org.apache.directory.shared.dsmlv2.AbstractTest;
+import org.apache.directory.shared.dsmlv2.Dsmlv2Parser;
+import org.apache.directory.shared.ldap.codec.compare.CompareRequestCodec;
+import org.apache.directory.shared.ldap.codec.controls.CodecControl;
+import org.apache.directory.shared.ldap.util.StringTools;
+import org.junit.Test;
 
 /**
  * Tests for the Compare Request parsing
@@ -140,13 +141,13 @@ public class CompareRequestTest extends AbstractTest
 
         assertEquals( 1, compareRequest.getControls().size() );
 
-        ControlCodec control = compareRequest.getCurrentControl();
+        CodecControl control = compareRequest.getCurrentControl();
 
-        assertTrue( control.getCriticality() );
+        assertTrue( control.isCritical() );
 
-        assertEquals( "1.2.840.113556.1.4.643", control.getControlType() );
+        assertEquals( "1.2.840.113556.1.4.643", control.getOid() );
 
-        assertEquals( "Some text", StringTools.utf8ToString( ( byte[] ) control.getControlValue() ) );
+        assertEquals( "Some text", StringTools.utf8ToString( ( byte[] ) control.getValue() ) );
     }
 
 
@@ -175,13 +176,13 @@ public class CompareRequestTest extends AbstractTest
 
         assertEquals( 1, compareRequest.getControls().size() );
 
-        ControlCodec control = compareRequest.getCurrentControl();
+        CodecControl control = compareRequest.getCurrentControl();
 
-        assertTrue( control.getCriticality() );
+        assertTrue( control.isCritical() );
 
-        assertEquals( "1.2.840.113556.1.4.643", control.getControlType() );
+        assertEquals( "1.2.840.113556.1.4.643", control.getOid() );
 
-        assertEquals( "Some text", StringTools.utf8ToString( ( byte[] ) control.getControlValue() ) );
+        assertEquals( "Some text", StringTools.utf8ToString( ( byte[] ) control.getValue() ) );
     }
 
 
@@ -210,13 +211,13 @@ public class CompareRequestTest extends AbstractTest
 
         assertEquals( 1, compareRequest.getControls().size() );
 
-        ControlCodec control = compareRequest.getCurrentControl();
+        CodecControl control = compareRequest.getCurrentControl();
 
-        assertTrue( control.getCriticality() );
+        assertTrue( control.isCritical() );
 
-        assertEquals( "1.2.840.113556.1.4.643", control.getControlType() );
+        assertEquals( "1.2.840.113556.1.4.643", control.getOid() );
 
-        assertEquals( StringTools.EMPTY_BYTES, control.getControlValue() );
+        assertFalse( control.hasValue() );
     }
 
 
@@ -245,13 +246,13 @@ public class CompareRequestTest extends AbstractTest
 
         assertEquals( 2, compareRequest.getControls().size() );
 
-        ControlCodec control = compareRequest.getCurrentControl();
+        CodecControl control = compareRequest.getCurrentControl();
 
-        assertFalse( control.getCriticality() );
+        assertFalse( control.isCritical() );
 
-        assertEquals( "1.2.840.113556.1.4.789", control.getControlType() );
+        assertEquals( "1.2.840.113556.1.4.789", control.getOid() );
 
-        assertEquals( "Some other text", StringTools.utf8ToString( ( byte[] ) control.getControlValue() ) );
+        assertEquals( "Some other text", StringTools.utf8ToString( ( byte[] ) control.getValue() ) );
     }
 
 
@@ -280,13 +281,13 @@ public class CompareRequestTest extends AbstractTest
 
         assertEquals( 3, compareRequest.getControls().size() );
 
-        ControlCodec control = compareRequest.getCurrentControl();
+        CodecControl control = compareRequest.getCurrentControl();
 
-        assertTrue( control.getCriticality() );
+        assertTrue( control.isCritical() );
 
-        assertEquals( "1.2.840.113556.1.4.456", control.getControlType() );
+        assertEquals( "1.2.840.113556.1.4.456", control.getOid() );
 
-        assertEquals( StringTools.EMPTY_BYTES, control.getControlValue() );
+        assertFalse( control.hasValue() );
     }
 
 

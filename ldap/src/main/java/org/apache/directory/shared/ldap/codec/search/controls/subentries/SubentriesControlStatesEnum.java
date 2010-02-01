@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.codec.search.controls.subEntry;
+package org.apache.directory.shared.ldap.codec.search.controls.subentries;
 
 
 import org.apache.directory.shared.asn1.ber.grammar.IGrammar;
@@ -31,7 +31,7 @@ import org.apache.directory.shared.asn1.ber.grammar.IStates;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$, 
  */
-public class SubEntryControlStatesEnum implements IStates
+public class SubentriesControlStatesEnum implements IStates
 {
     // ~ Static fields/initializers
     // -----------------------------------------------------------------
@@ -60,7 +60,7 @@ public class SubEntryControlStatesEnum implements IStates
         };
 
     /** The instance */
-    private static SubEntryControlStatesEnum instance = new SubEntryControlStatesEnum();
+    private static SubentriesControlStatesEnum instance = new SubentriesControlStatesEnum();
 
 
     // ~ Constructors
@@ -69,7 +69,7 @@ public class SubEntryControlStatesEnum implements IStates
     /**
      * This is a private constructor. This class is a singleton
      */
-    private SubEntryControlStatesEnum()
+    private SubentriesControlStatesEnum()
     {
     }
 
@@ -108,7 +108,7 @@ public class SubEntryControlStatesEnum implements IStates
      */
     public String getGrammarName( IGrammar grammar )
     {
-        if ( grammar instanceof SubEntryControlGrammar )
+        if ( grammar instanceof SubentriesControlGrammar )
         {
             return "SUB_ENTRY_GRAMMAR";
         }

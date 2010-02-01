@@ -17,39 +17,41 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.codec.search.controls.pSearch;
+package org.apache.directory.shared.ldap.codec.search.controls.pagedSearch;
 
 
 import org.apache.directory.shared.asn1.ber.AbstractContainer;
 
 
 /**
+ * A container for the Paged Search Control.
+ * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$, 
+ * @version $Rev: 664290 $, $Date: 2008-06-07 08:28:06 +0200 (Sat, 07 Jun 2008) $, 
  */
-public class PSearchControlContainer extends AbstractContainer
+public class PagedResultsControlContainer extends AbstractContainer
 {
-    /** PSearchControl */
-    private PSearchControlCodec control;
+    /** PagedSearchControl */
+    private PagedResultsControlCodec control;
 
 
     /**
-     * Creates a new PSearchControlContainer object. We will store one grammar,
+     * Creates a new PagedSearchControl container object. We will store one grammar,
      * it's enough ...
      */
-    public PSearchControlContainer()
+    public PagedResultsControlContainer()
     {
         super();
         stateStack = new int[1];
-        grammar = PSearchControlGrammar.getInstance();
-        states = PSearchControlStatesEnum.getInstance();
+        grammar = PagedResultsControlGrammar.getInstance();
+        states = PagedResultsControlStatesEnum.getInstance();
     }
 
 
     /**
-     * @return Returns the persistent search control.
+     * @return Returns the paged search control.
      */
-    public PSearchControlCodec getPSearchControl()
+    public PagedResultsControlCodec getPagedSearchControl()
     {
 
         return control;
@@ -57,12 +59,12 @@ public class PSearchControlContainer extends AbstractContainer
 
 
     /**
-     * Set a PSearchControl Object into the container. It will be completed by
+     * Set a PagedSearchControl Object into the container. It will be completed by
      * the ldapDecoder.
      * 
-     * @param control the PSearchControl to set.
+     * @param control the PagedSearchControl to set.
      */
-    public void setPSearchControl( PSearchControlCodec control )
+    public void setPagedSearchControl( PagedResultsControlCodec control )
     {
         this.control = control;
     }

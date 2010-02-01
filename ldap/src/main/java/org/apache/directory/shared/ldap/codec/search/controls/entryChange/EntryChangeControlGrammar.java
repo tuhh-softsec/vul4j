@@ -81,16 +81,7 @@ public class EntryChangeControlGrammar extends AbstractGrammar
         super.transitions[EntryChangeControlStatesEnum.START_STATE][UniversalTag.SEQUENCE_TAG] = 
             new GrammarTransition( EntryChangeControlStatesEnum.START_STATE, 
                                     EntryChangeControlStatesEnum.EC_SEQUENCE_STATE, 
-                                    UniversalTag.SEQUENCE_TAG,
-                new GrammarAction( "Init EntryChangeControl" )
-            {
-                public void action( IAsn1Container container )
-                {
-                    EntryChangeControlContainer entryChangeContainer = ( EntryChangeControlContainer ) container;
-                    EntryChangeControlCodec control = new EntryChangeControlCodec();
-                    entryChangeContainer.setEntryChangeControl( control );
-                }
-            } );
+                                    UniversalTag.SEQUENCE_TAG, null );
 
         // ============================================================================================
         // transition from Entry Change sequence to Change Type

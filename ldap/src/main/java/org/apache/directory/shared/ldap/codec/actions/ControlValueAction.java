@@ -20,28 +20,16 @@
 package org.apache.directory.shared.ldap.codec.actions;
 
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.asn1.codec.DecoderException;
-import org.apache.directory.shared.ldap.codec.ControlCodec;
-import org.apache.directory.shared.ldap.codec.ControlDecoder;
 import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
-import org.apache.directory.shared.ldap.codec.controls.ManageDsaITControlDecoder;
-import org.apache.directory.shared.ldap.codec.controls.replication.syncDoneValue.SyncDoneValueControlDecoder;
-import org.apache.directory.shared.ldap.codec.controls.replication.syncInfoValue.SyncInfoValueControlDecoder;
-import org.apache.directory.shared.ldap.codec.controls.replication.syncRequestValue.SyncRequestValueControlDecoder;
-import org.apache.directory.shared.ldap.codec.controls.replication.syncStateValue.SyncStateValueControlDecoder;
-import org.apache.directory.shared.ldap.codec.search.controls.pSearch.PSearchControlDecoder;
-import org.apache.directory.shared.ldap.codec.search.controls.pagedSearch.PagedSearchControlDecoder;
-import org.apache.directory.shared.ldap.codec.search.controls.subEntry.SubEntryControlDecoder;
+import org.apache.directory.shared.ldap.codec.controls.CodecControl;
+import org.apache.directory.shared.ldap.codec.controls.ControlDecoder;
 import org.apache.directory.shared.ldap.util.StringTools;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,39 +50,6 @@ public class ControlValueAction extends GrammarAction
     /** Speedup for logs */
     private static final boolean IS_DEBUG = log.isDebugEnabled();
 
-    private static Map<String, ControlDecoder> controlDecoders = new HashMap<String, ControlDecoder>();
-
-
-    public ControlValueAction()
-    {
-        super( "Sets the control value" );
-
-        ControlDecoder decoder;
-        decoder = new PSearchControlDecoder();
-        controlDecoders.put( decoder.getControlType(), decoder );
-
-        decoder = new ManageDsaITControlDecoder();
-        controlDecoders.put( decoder.getControlType(), decoder );
-
-        decoder = new SubEntryControlDecoder();
-        controlDecoders.put( decoder.getControlType(), decoder );
-
-        decoder = new PagedSearchControlDecoder();
-        controlDecoders.put( decoder.getControlType(), decoder );
-        
-        decoder = new SyncDoneValueControlDecoder();
-        controlDecoders.put( decoder.getControlType(), decoder );
-        
-        decoder = new SyncInfoValueControlDecoder();
-        controlDecoders.put( decoder.getControlType(), decoder );
-        
-        decoder = new SyncRequestValueControlDecoder();
-        controlDecoders.put( decoder.getControlType(), decoder );
-        
-        decoder = new SyncStateValueControlDecoder();
-        controlDecoders.put( decoder.getControlType(), decoder );
-    }
-
 
     public void action( IAsn1Container container ) throws DecoderException
     {
@@ -103,32 +58,27 @@ public class ControlValueAction extends GrammarAction
         LdapMessageCodec message = ldapMessageContainer.getLdapMessage();
 
         // Get the current control
-        ControlCodec control = message.getCurrentControl();
+        CodecControl control = message.getCurrentControl();
         Value value = tlv.getValue();
 
-        ControlDecoder decoder = controlDecoders.get( control.getControlType() );
+        ControlDecoder decoder = control.getDecoder();
 
         // Store the value - have to handle the special case of a 0 length value
         if ( tlv.getLength() == 0 )
         {
-            control.setControlValue( new byte[]
-                {} );
+            control.setValue( StringTools.EMPTY_BYTES );
         }
         else
         {
-            Object decoded;
-
-            if ( decoder != null )
+            if ( decoder == null )
             {
-                decoded = decoder.decode( value.getData() );
+                // No decoder : store the raw value
+                control.setValue( value.getData() );
             }
             else
             {
-                decoded = value.getData();
+                decoder.decode( value.getData(), control );
             }
-
-            control.setEncodedValue( value.getData() );
-            control.setControlValue( decoded );
         }
 
         // We can have an END transition
@@ -136,18 +86,7 @@ public class ControlValueAction extends GrammarAction
 
         if ( IS_DEBUG )
         {
-            if ( control.getControlValue() instanceof byte[] )
-            {
-                log.debug( "Control value : " + StringTools.dumpBytes( ( byte[] ) control.getControlValue() ) );
-            }
-            else if ( control.getControlValue() instanceof String )
-            {
-                log.debug( "Control value : " + ( String ) control.getControlValue() );
-            }
-            else
-            {
-                log.debug( "Control value : " + control.getControlValue() );
-            }
+            log.debug( "Control value : " + StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
         }
     }
 }

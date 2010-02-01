@@ -20,10 +20,6 @@
 package org.apache.directory.shared.ldap.codec.controls;
 
 
-import java.nio.ByteBuffer;
-
-import org.apache.directory.shared.asn1.AbstractAsn1Object;
-import org.apache.directory.shared.asn1.codec.EncoderException;
 
 
 /**
@@ -64,9 +60,10 @@ import org.apache.directory.shared.asn1.codec.EncoderException;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public class ManageDsaITControlCodec extends AbstractAsn1Object
+public class ManageDsaITControlCodec  extends AbstractControlCodec
 {
-    private static final ByteBuffer EMPTY_BUFFER = ByteBuffer.allocate( 0 );
+    /** This control OID */
+    public static final String CONTROL_OID = "2.16.840.1.113730.3.4.2";
 
     /**
      * Default constructor
@@ -74,23 +71,32 @@ public class ManageDsaITControlCodec extends AbstractAsn1Object
      */
     public ManageDsaITControlCodec()
     {
-        super();
+        super( CONTROL_OID );
+        
+        decoder = new ManageDsaITControlDecoder();
     }
 
     /**
-     * Returns 0 everytime.
+     * Returns 0 every time.
      */
     public int computeLength()
     {
-        return 0;
+        // Call the super class to compute the global control length
+        return super.computeLength( 0 );
     }
 
 
     /**
-     * Encodes the control: does nothing but returns an empty buffer.
+     * Return a String representing this ManageDsaIt Control.
      */
-    public ByteBuffer encode( ByteBuffer buffer ) throws EncoderException
+    public String toString()
     {
-        return EMPTY_BUFFER;
+        StringBuffer sb = new StringBuffer();
+
+        sb.append( "    ManageDsaIt Control\n" );
+        sb.append( "        oid : " ).append( getOid() ).append( '\n' );
+        sb.append( "        critical : " ).append( isCritical() ).append( '\n' );
+        
+        return sb.toString();
     }
 }

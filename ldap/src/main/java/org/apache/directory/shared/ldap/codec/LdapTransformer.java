@@ -38,11 +38,7 @@ import org.apache.directory.shared.ldap.codec.bind.SaslCredentials;
 import org.apache.directory.shared.ldap.codec.bind.SimpleAuthentication;
 import org.apache.directory.shared.ldap.codec.compare.CompareRequestCodec;
 import org.apache.directory.shared.ldap.codec.compare.CompareResponseCodec;
-import org.apache.directory.shared.ldap.codec.controls.CascadeControlCodec;
-import org.apache.directory.shared.ldap.codec.controls.replication.syncDoneValue.SyncDoneValueControlCodec;
-import org.apache.directory.shared.ldap.codec.controls.replication.syncInfoValue.SyncInfoValueControlCodec;
-import org.apache.directory.shared.ldap.codec.controls.replication.syncRequestValue.SyncRequestValueControlCodec;
-import org.apache.directory.shared.ldap.codec.controls.replication.syncStateValue.SyncStateValueControlCodec;
+import org.apache.directory.shared.ldap.codec.controls.CodecControl;
 import org.apache.directory.shared.ldap.codec.del.DelRequestCodec;
 import org.apache.directory.shared.ldap.codec.del.DelResponseCodec;
 import org.apache.directory.shared.ldap.codec.extended.ExtendedRequestCodec;
@@ -64,9 +60,6 @@ import org.apache.directory.shared.ldap.codec.search.SearchResultDoneCodec;
 import org.apache.directory.shared.ldap.codec.search.SearchResultEntryCodec;
 import org.apache.directory.shared.ldap.codec.search.SearchResultReferenceCodec;
 import org.apache.directory.shared.ldap.codec.search.SubstringFilter;
-import org.apache.directory.shared.ldap.codec.search.controls.pSearch.PSearchControlCodec;
-import org.apache.directory.shared.ldap.codec.search.controls.pagedSearch.PagedSearchControlCodec;
-import org.apache.directory.shared.ldap.codec.search.controls.subEntry.SubEntryControlCodec;
 import org.apache.directory.shared.ldap.codec.util.LdapURLEncodingException;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Modification;
@@ -111,19 +104,7 @@ import org.apache.directory.shared.ldap.message.SearchResponseDoneImpl;
 import org.apache.directory.shared.ldap.message.SearchResponseEntryImpl;
 import org.apache.directory.shared.ldap.message.SearchResponseReferenceImpl;
 import org.apache.directory.shared.ldap.message.UnbindRequestImpl;
-import org.apache.directory.shared.ldap.message.control.CascadeControl;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.message.control.ControlImpl;
-import org.apache.directory.shared.ldap.message.control.PagedSearchControl;
-import org.apache.directory.shared.ldap.message.control.PersistentSearchControl;
-import org.apache.directory.shared.ldap.message.control.SubentriesControl;
-import org.apache.directory.shared.ldap.message.control.replication.SyncDoneValueControl;
-import org.apache.directory.shared.ldap.message.control.replication.SyncInfoValueNewCookieControl;
-import org.apache.directory.shared.ldap.message.control.replication.SyncInfoValueRefreshDeleteControl;
-import org.apache.directory.shared.ldap.message.control.replication.SyncInfoValueRefreshPresentControl;
-import org.apache.directory.shared.ldap.message.control.replication.SyncInfoValueSyncIdSetControl;
-import org.apache.directory.shared.ldap.message.control.replication.SyncRequestValueControl;
-import org.apache.directory.shared.ldap.message.control.replication.SyncStateValueControl;
 import org.apache.directory.shared.ldap.message.extended.GracefulShutdownRequest;
 import org.apache.directory.shared.ldap.name.LdapDN;
 import org.apache.directory.shared.ldap.util.LdapURL;
@@ -883,7 +864,7 @@ public class LdapTransformer
             case ( LdapConstants.EXTENDED_REQUEST  ):
                 internalMessage = transformExtendedRequest( codecMessage, messageId );
                 break;
-
+                
             case ( LdapConstants.BIND_RESPONSE  ):
                 internalMessage = transformBindResponse( codecMessage, messageId );
                 break;
@@ -901,165 +882,13 @@ public class LdapTransformer
                 // Nothing to do !
                 break;
 
+
             default:
                 throw new IllegalStateException( "shouldn't happen - if it does then we have issues" );
         }
 
         // Transform the controls, too
-        List<ControlCodec> codecControls = codecMessage.getControls();
-
-        if ( codecControls != null )
-        {
-            for ( final ControlCodec codecControl:codecControls )
-            {
-                Control neutralControl = null;
-
-                if ( codecControl.getControlValue() instanceof CascadeControlCodec )
-                {
-                    neutralControl = new CascadeControl();
-                    neutralControl.setCritical( codecControl.getCriticality() );
-                }
-                else if ( codecControl.getControlValue() instanceof PSearchControlCodec )
-                {
-                    PersistentSearchControl neutralPsearch = new PersistentSearchControl();
-                    neutralControl = neutralPsearch;
-                    PSearchControlCodec codecPsearch = ( PSearchControlCodec ) codecControl.getControlValue();
-                    neutralPsearch.setChangeTypes( codecPsearch.getChangeTypes() );
-                    neutralPsearch.setChangesOnly( codecPsearch.isChangesOnly() );
-                    neutralPsearch.setReturnECs( codecPsearch.isReturnECs() );
-                    neutralPsearch.setCritical( codecControl.getCriticality() );
-                }
-                else if ( codecControl.getControlValue() instanceof SubEntryControlCodec )
-                {
-                    SubentriesControl neutralSubentriesControl = new SubentriesControl();
-                    SubEntryControlCodec codecSubentriesControl = ( SubEntryControlCodec ) codecControl.getControlValue();
-                    neutralControl = neutralSubentriesControl;
-                    neutralSubentriesControl.setVisibility( codecSubentriesControl.isVisible() );
-                    neutralSubentriesControl.setCritical( codecControl.getCriticality() );
-                }
-                else if ( codecControl.getControlValue() instanceof PagedSearchControlCodec )
-                {
-                    PagedSearchControl neutralPagedSearchControl = new PagedSearchControl();
-                    neutralControl = neutralPagedSearchControl;
-                    PagedSearchControlCodec codecPagedSearchControl = (PagedSearchControlCodec)codecControl.getControlValue();
-                    neutralPagedSearchControl.setCookie( codecPagedSearchControl.getCookie() );
-                    neutralPagedSearchControl.setSize( codecPagedSearchControl.getSize() );
-                    neutralPagedSearchControl.setCritical( codecControl.getCriticality() );
-                }
-                else if ( codecControl.getControlValue() instanceof SyncDoneValueControlCodec )
-                {
-                    SyncDoneValueControl neutralSyncDoneValueControl = new SyncDoneValueControl();
-                    SyncDoneValueControlCodec codecSyncDoneValueControl = (SyncDoneValueControlCodec)codecControl.getControlValue();
-                    neutralControl = neutralSyncDoneValueControl;
-                    neutralSyncDoneValueControl.setCritical( codecControl.getCriticality() );
-                    neutralSyncDoneValueControl.setCookie( codecSyncDoneValueControl.getCookie() );
-                    neutralSyncDoneValueControl.setRefreshDeletes( codecSyncDoneValueControl.isRefreshDeletes() );
-                }
-                else if ( codecControl.getControlValue() instanceof SyncInfoValueControlCodec )
-                {
-                    SyncInfoValueControlCodec codecSyncInfoValueControlCodec = (SyncInfoValueControlCodec)codecControl.getControlValue();
-                    
-                    switch ( codecSyncInfoValueControlCodec.getType() )
-                    {
-                        case NEW_COOKIE :
-                            SyncInfoValueNewCookieControl neutralSyncInfoValueNewCookieControl = new SyncInfoValueNewCookieControl();
-                            neutralControl = neutralSyncInfoValueNewCookieControl; 
-                            neutralSyncInfoValueNewCookieControl.setCritical( codecControl.getCriticality() );
-                            neutralSyncInfoValueNewCookieControl.setCookie( codecSyncInfoValueControlCodec.getCookie() );
-                            
-                            break;
-                            
-                        case REFRESH_DELETE :
-                            SyncInfoValueRefreshDeleteControl neutralSyncInfoValueRefreshDeleteControl = new SyncInfoValueRefreshDeleteControl();
-                            neutralControl = neutralSyncInfoValueRefreshDeleteControl; 
-                            neutralSyncInfoValueRefreshDeleteControl.setCritical( codecControl.getCriticality() );
-                            neutralSyncInfoValueRefreshDeleteControl.setCookie( codecSyncInfoValueControlCodec.getCookie() );
-                            neutralSyncInfoValueRefreshDeleteControl.setRefreshDone( codecSyncInfoValueControlCodec.isRefreshDone() );
-                            
-                            break;
-                            
-                        case REFRESH_PRESENT :
-                            SyncInfoValueRefreshPresentControl neutralSyncInfoValueRefreshPresentControl = new SyncInfoValueRefreshPresentControl();
-                            neutralControl = neutralSyncInfoValueRefreshPresentControl; 
-                            neutralSyncInfoValueRefreshPresentControl.setCritical( codecControl.getCriticality() );
-                            neutralSyncInfoValueRefreshPresentControl.setCookie( codecSyncInfoValueControlCodec.getCookie() );
-                            neutralSyncInfoValueRefreshPresentControl.setRefreshDone( codecSyncInfoValueControlCodec.isRefreshDone() );
-                            
-                            break;
-                            
-                        case SYNC_ID_SET :
-                            SyncInfoValueSyncIdSetControl neutralSyncInfoValueSyncIdSetControl = new SyncInfoValueSyncIdSetControl();
-                            neutralControl = neutralSyncInfoValueSyncIdSetControl; 
-                            neutralSyncInfoValueSyncIdSetControl.setCritical( codecControl.getCriticality() );
-                            neutralSyncInfoValueSyncIdSetControl.setCookie( codecSyncInfoValueControlCodec.getCookie() );
-                            neutralSyncInfoValueSyncIdSetControl.setRefreshDeletes( codecSyncInfoValueControlCodec.isRefreshDeletes() );
-                            
-                            List<byte[]> uuids = codecSyncInfoValueControlCodec.getSyncUUIDs();
-                            
-                            if ( uuids != null )
-                            {
-                                for ( byte[] uuid:uuids )
-                                {
-                                    neutralSyncInfoValueSyncIdSetControl.addSyncUUID( uuid );
-                                }
-                            }
-                            
-                            break;
-                    }
-                }
-                else if ( codecControl.getControlValue() instanceof SyncRequestValueControlCodec )
-                {
-                    SyncRequestValueControl neutralSyncRequestValueControl = new SyncRequestValueControl();
-                    SyncRequestValueControlCodec codecSyncDoneValueControlCodec = (SyncRequestValueControlCodec)codecControl.getControlValue();
-                    neutralControl = neutralSyncRequestValueControl;
-                    neutralSyncRequestValueControl.setCritical( codecControl.getCriticality() );
-                    neutralSyncRequestValueControl.setMode( codecSyncDoneValueControlCodec.getMode() );
-                    neutralSyncRequestValueControl.setCookie( codecSyncDoneValueControlCodec.getCookie() );
-                    neutralSyncRequestValueControl.setReloadHint( codecSyncDoneValueControlCodec.isReloadHint() );
-                }
-                else if ( codecControl.getControlValue() instanceof SyncStateValueControl )
-                {
-                    SyncStateValueControl neutralSyncStateValueControl = new SyncStateValueControl();
-                    SyncStateValueControlCodec codecSyncStateValueControlCodec = (SyncStateValueControlCodec)codecControl.getControlValue();
-                    neutralControl = neutralSyncStateValueControl;
-                    neutralSyncStateValueControl.setCritical( codecControl.getCriticality() );
-                    neutralSyncStateValueControl.setSyncStateType( codecSyncStateValueControlCodec.getSyncStateType() );
-                    neutralSyncStateValueControl.setEntryUUID( codecSyncStateValueControlCodec.getEntryUUID() );
-                    neutralSyncStateValueControl.setCookie( codecSyncStateValueControlCodec.getCookie() );
-                }
-                else if ( codecControl.getControlValue() instanceof byte[] )
-                {
-                    neutralControl = new ControlImpl( codecControl.getControlType() )
-                    {
-                        public byte[] getValue()
-                        {
-                            return ( byte[] ) codecControl.getControlValue();
-                        }
-                    };
-
-                    // Codec : boolean criticality -> Internal : boolean
-                    // m_isCritical
-                    neutralControl.setCritical( codecControl.getCriticality() );
-                }
-                else if ( codecControl.getControlValue() == null )
-                {
-                    neutralControl = new ControlImpl( codecControl.getControlType() )
-                    {
-                        public byte[] getValue()
-                        {
-                            return ( byte[] ) codecControl.getControlValue();
-                        }
-                    };
-
-                    // Codec : boolean criticality -> Internal : boolean
-                    // m_isCritical
-                    neutralControl.setCritical( codecControl.getCriticality() );
-                }
-                
-
-                internalMessage.add( neutralControl );
-            }
-        }
+        transformControlsCodecToInternal( codecMessage, internalMessage );
 
         return internalMessage;
     }
@@ -1460,12 +1289,15 @@ public class LdapTransformer
                 transformExtendedResponse( codecMessage, msg );
                 break;
                 
+            case INTERMEDIATE_RESP :
+                //transformIntermediateResponse( codecMessage, msg );
+                break;
         }
 
         // We also have to transform the controls...
         if ( !msg.getControls().isEmpty() )
         {
-            transformControls( codecMessage, msg );
+            transformControlsInternalToCodec( codecMessage, msg );
         }
 
         if ( IS_DEBUG )
@@ -1478,22 +1310,22 @@ public class LdapTransformer
 
 
     /**
-     * TODO finish this implementation.  Takes Codec Controls, transforming 
+     * TODO finish this implementation. Takes Codec Controls, transforming 
      * them to Internal Controls and populates the Internal message with them.
      *
      * @param codecMessage the Codec message
      * @param msg the Internal message
      */
-    private static void transformControlsCodecToInternal( LdapMessageCodec codecMessage, InternalMessage msg )
+    private static void transformControlsCodecToInternal( LdapMessageCodec codecMessage, InternalMessage internalMessage )
     {
         if ( codecMessage.getControls() == null )
         {
             return;
         }
         
-        for ( ControlCodec control:codecMessage.getControls() )
+        for ( final CodecControl codecControl:codecMessage.getControls() )
         {
-            LOG.debug( "Not decoding response control: {}", control );
+            internalMessage.add( codecControl );
         }
     }
     
@@ -1501,21 +1333,18 @@ public class LdapTransformer
     /**
      * Transforms the controls
      * @param codecMessage The Codec SearchResultReference to produce
-     * @param msg The incoming Internal SearchResponseReference
+     * @param msg The incoming Internal Message
      */
-    private static void transformControls( LdapMessageCodec codecMessage, InternalMessage msg )
+    private static void transformControlsInternalToCodec( LdapMessageCodec codecMessage, InternalMessage internalMessage )
     {
-        for ( Control control:msg.getControls().values() )
+        if ( internalMessage.getControls() == null )
         {
-            ControlCodec codecControl = new ControlCodec();
-            codecMessage.addControl( codecControl );
-            codecControl.setCriticality( control.isCritical() );
-            
-            byte[] encodedValue = control.getValue();
-            codecControl.setControlValue( encodedValue );
-            codecControl.setEncodedValue( encodedValue );
-            codecControl.setControlType( control.getOid() );
-            codecControl.setParent( codecMessage );
+            return;
+        }
+        
+        for ( Control control:internalMessage.getControls().values() )
+        {
+            codecMessage.addControl( (CodecControl)control );
         }
     }
 }

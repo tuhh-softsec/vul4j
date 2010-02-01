@@ -22,11 +22,12 @@ package org.apache.directory.shared.ldap.codec.search.controls.pagedSearch;
 
 import java.nio.ByteBuffer;
 
-import org.apache.directory.shared.asn1.AbstractAsn1Object;
+import org.apache.directory.shared.asn1.Asn1Object;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.asn1.codec.EncoderException;
+import org.apache.directory.shared.ldap.codec.controls.AbstractControlCodec;
 import org.apache.directory.shared.ldap.util.StringTools;
 
 
@@ -62,8 +63,11 @@ import org.apache.directory.shared.ldap.util.StringTools;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev:  $
  */
-public class PagedSearchControlCodec extends AbstractAsn1Object
+public class PagedResultsControlCodec extends AbstractControlCodec
 {
+    /** The Paged Search Control OID */
+    public static final String CONTROL_OID = "1.2.840.113556.1.4.319";
+
     /** The number of entries to return, or returned */
     private int size;
     
@@ -73,27 +77,33 @@ public class PagedSearchControlCodec extends AbstractAsn1Object
     /** The entry change global length */
     private int pscSeqLength;
 
-
     /**
      * @see Asn1Object#Asn1Object
      */
-    public PagedSearchControlCodec()
+    public PagedResultsControlCodec()
     {
-        super();
+        super( CONTROL_OID );
+        
+        decoder = new PagedResultsControlDecoder();
     }
 
     
     /**
-     * Compute the PagedSearchControl length 
+     * Compute the PagedSearchControl length, which is the sum
+     * of the control length and the value length.
+     * 
+     * <pre>
+     * PagedSearchControl value length :
      * 
      * 0x30 L1 
      *   | 
      *   +--> 0x02 0x0(1-4) [0..2^63-1] (size) 
-     *   +--> 0x04 L2 (cookie) 
+     *   +--> 0x04 L2 (cookie)
+     * </pre> 
      */
     public int computeLength()
     {
-        int sizeLength = 1 + 1 + Value.getNbBytes( size );;
+        int sizeLength = 1 + 1 + Value.getNbBytes( size );
 
         int cookieLength = 0;
         
@@ -107,8 +117,10 @@ public class PagedSearchControlCodec extends AbstractAsn1Object
         }
 
         pscSeqLength = sizeLength + cookieLength;
+        valueLength = 1 + TLV.getNbBytes( pscSeqLength ) + pscSeqLength;
 
-        return 1 + TLV.getNbBytes( pscSeqLength ) + pscSeqLength;
+        // Call the super class to compute the global control length
+        return super.computeLength( valueLength );
     }
 
 
@@ -121,30 +133,57 @@ public class PagedSearchControlCodec extends AbstractAsn1Object
      */
     public ByteBuffer encode( ByteBuffer buffer ) throws EncoderException
     {
-        // Allocate the bytes buffer.
-        ByteBuffer bb = ByteBuffer.allocate( computeLength() );
-        bb.put( UniversalTag.SEQUENCE_TAG );
-        bb.put( TLV.getBytes( pscSeqLength ) );
+        if ( buffer == null )
+        {
+            throw new EncoderException( "Cannot put a PDU in a null buffer !" );
+        }
 
-        Value.encode( bb, size );
-        Value.encode( bb, cookie );
+        // Encode the Control envelop
+        super.encode( buffer );
         
-        return bb;
+        // Encode the OCTET_STRING tag
+        buffer.put( UniversalTag.OCTET_STRING_TAG );
+        buffer.put( TLV.getBytes( valueLength ) );
+        
+        // Now encode the PagedSearch specific part
+        buffer.put( UniversalTag.SEQUENCE_TAG );
+        buffer.put( TLV.getBytes( pscSeqLength ) );
+
+        Value.encode( buffer, size );
+        Value.encode( buffer, cookie );
+        
+        return buffer;
     }
-
-
+    
+    
     /**
-     * Return a String representing this PagedSearchControl.
+     * {@inheritDoc}
      */
-    public String toString()
+    public byte[] getValue()
     {
-        StringBuffer sb = new StringBuffer();
+        if ( value == null )
+        {
+            try
+            { 
+                computeLength();
+                ByteBuffer buffer = ByteBuffer.allocate( valueLength );
+                
+                // Now encode the PagedSearch specific part
+                buffer.put( UniversalTag.SEQUENCE_TAG );
+                buffer.put( TLV.getBytes( pscSeqLength ) );
 
-        sb.append( "    Paged Search Control\n" );
-        sb.append( "        size   : '" ).append( size ).append( "'\n" );
-        sb.append( "        cookie   : '" ).append( StringTools.dumpBytes( cookie ) ).append( "'\n" );
+                Value.encode( buffer, size );
+                Value.encode( buffer, cookie );
+                
+                value = buffer.array();
+            }
+            catch ( Exception e )
+            {
+                return null;
+            }
+        }
         
-        return sb.toString();
+        return value;
     }
 
 
@@ -185,5 +224,33 @@ public class PagedSearchControlCodec extends AbstractAsn1Object
     public void setCookie( byte[] cookie )
     {
         this.cookie = cookie;
+    }
+
+    
+    /**
+     * @return The integer value for the current cookie
+     */
+    public int getCookieValue()
+    {
+        int value = ((cookie[0]&0x00FF)<<24) + ((cookie[1]&0x00FF)<<16) + ((cookie[2]&0x00FF)<<8) + (cookie[3]&0x00FF);
+        
+        return value;
+    }
+    
+    
+    /**
+     * Return a String representing this PagedSearchControl.
+     */
+    public String toString()
+    {
+        StringBuffer sb = new StringBuffer();
+
+        sb.append( "    Paged Search Control\n" );
+        sb.append( "        oid : " ).append( getOid() ).append( '\n' );
+        sb.append( "        critical : " ).append( isCritical() ).append( '\n' );
+        sb.append( "        size   : '" ).append( size ).append( "'\n" );
+        sb.append( "        cookie   : '" ).append( StringTools.dumpBytes( cookie ) ).append( "'\n" );
+        
+        return sb.toString();
     }
 }

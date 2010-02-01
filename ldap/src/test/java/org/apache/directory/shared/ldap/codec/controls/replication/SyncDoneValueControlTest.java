@@ -27,7 +27,6 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.nio.ByteBuffer;
-import java.util.Arrays;
 
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.codec.EncoderException;
@@ -57,13 +56,14 @@ public class SyncDoneValueControlTest
         bb.put( new byte[]
             { 
               0x30, 0x09, 
-              0x04, 0x04, 'x', 'k', 'c', 'd', // the cookie 
-              0x01, 0x01, ( byte ) 0xFF // refreshDeletes flag TRUE
+                0x04, 0x04, 'x', 'k', 'c', 'd', // the cookie 
+                0x01, 0x01, ( byte ) 0xFF       // refreshDeletes flag TRUE
             } );
 
         bb.flip();
 
         SyncDoneValueControlContainer container = new SyncDoneValueControlContainer();
+        container.setSyncDoneValueControl( new SyncDoneValueControlCodec() );
 
         try
         {
@@ -81,11 +81,26 @@ public class SyncDoneValueControlTest
         // test encoding
         try
         {
-            ByteBuffer encodedBuf = control.encode( null );
-            encodedBuf.flip();
-            bb.flip();
-            
-            assertTrue( Arrays.equals( encodedBuf.array(), bb.array() ) );
+            ByteBuffer buffer = ByteBuffer.allocate( 0x29 );
+            buffer.put( new byte[]
+                { 
+                0x30, 0x27,                            // Control
+                  0x04, 0x18,                          // OID (SyncRequestValue)
+                    '1', '.', '3', '.', '6', '.', '1', '.', 
+                    '4', '.', '1', '.', '4', '2', '0', '3', 
+                    '.', '1', '.', '9', '.', '1', '.', '3',
+                  0x04, 0x0B,
+                    0x30, 0x09, 
+                      0x04, 0x04, 'x', 'k', 'c', 'd',  // the cookie 
+                      0x01, 0x01, ( byte ) 0xFF        // refreshDeletes flag TRUE
+                } );
+
+            buffer.flip();
+
+            bb = control.encode( ByteBuffer.allocate( control.computeLength() ) );
+            String expected = StringTools.dumpBytes( buffer.array() );
+            String decoded = StringTools.dumpBytes( bb.array() );
+            assertEquals( expected, decoded );
         }
         catch( EncoderException e )
         {
@@ -104,12 +119,13 @@ public class SyncDoneValueControlTest
             { 
               0x30, 0x03, 
               // null cookie
-              0x01, 0x01, 0x00 // refreshDeletes flag FALSE
+                0x01, 0x01, 0x10 // refreshDeletes flag TRUE
             } );
 
         bb.flip();
 
         SyncDoneValueControlContainer container = new SyncDoneValueControlContainer();
+        container.setSyncDoneValueControl( new SyncDoneValueControlCodec() );
 
         try
         {
@@ -122,16 +138,30 @@ public class SyncDoneValueControlTest
 
         SyncDoneValueControlCodec control = container.getSyncDoneValueControl();
         assertNull( control.getCookie() );
-        assertFalse( control.isRefreshDeletes() );
+        assertTrue( control.isRefreshDeletes() );
 
         // test encoding
         try
         {
-            ByteBuffer encodedBuf = control.encode( null );
-            encodedBuf.flip();
-            bb.flip();
-            
-            assertTrue( Arrays.equals( encodedBuf.array(), bb.array() ) );
+            ByteBuffer buffer = ByteBuffer.allocate( 0x23 );
+            buffer.put( new byte[]
+                { 
+                0x30, 0x21,                            // Control
+                  0x04, 0x18,                          // OID (SyncRequestValue)
+                    '1', '.', '3', '.', '6', '.', '1', '.', 
+                    '4', '.', '1', '.', '4', '2', '0', '3', 
+                    '.', '1', '.', '9', '.', '1', '.', '3',
+                  0x04, 0x05,
+                    0x30, 0x03, 
+                      0x01, 0x01, ( byte ) 0xFF        // refreshDeletes flag TRUE
+                } );
+
+            buffer.flip();
+
+            bb = control.encode( ByteBuffer.allocate( control.computeLength() ) );
+            String expected = StringTools.dumpBytes( buffer.array() );
+            String decoded = StringTools.dumpBytes( bb.array() );
+            assertEquals( expected, decoded );
         }
         catch( EncoderException e )
         {
@@ -154,6 +184,7 @@ public class SyncDoneValueControlTest
         bb.flip();
 
         SyncDoneValueControlContainer container = new SyncDoneValueControlContainer();
+        container.setSyncDoneValueControl( new SyncDoneValueControlCodec() );
 
         try
         {
@@ -179,13 +210,14 @@ public class SyncDoneValueControlTest
         bb.put( new byte[]
             { 
               0x30, 0x05, 
-              0x04, 0x00,      // empty cookie
-              0x01, 0x01, 0x00 // refreshDeletes flag FALSE
+                0x04, 0x00,      // empty cookie
+                0x01, 0x01, 0x00 // refreshDeletes flag FALSE
             } );
 
         bb.flip();
 
         SyncDoneValueControlContainer container = new SyncDoneValueControlContainer();
+        container.setSyncDoneValueControl( new SyncDoneValueControlCodec() );
 
         try
         {
@@ -203,15 +235,24 @@ public class SyncDoneValueControlTest
         // test encoding
         try
         {
-            ByteBuffer encodedBuf = control.encode( null );
-            encodedBuf.flip();
-            bb.flip();
-            
-            decoder.decode( encodedBuf, container );
-            SyncDoneValueControlCodec redecoded = container.getSyncDoneValueControl();
-            
-            assertEquals( control.isRefreshDeletes(), redecoded.isRefreshDeletes() );
-            assertTrue( Arrays.equals( control.getCookie(), redecoded.getCookie() ) );
+            ByteBuffer buffer = ByteBuffer.allocate( 0x20 );
+            buffer.put( new byte[]
+                { 
+                0x30, 0x1E,                            // Control
+                  0x04, 0x18,                          // OID (SyncRequestValue)
+                    '1', '.', '3', '.', '6', '.', '1', '.', 
+                    '4', '.', '1', '.', '4', '2', '0', '3', 
+                    '.', '1', '.', '9', '.', '1', '.', '3',
+                  0x04, 0x02,
+                    0x30, 0x00
+                } );
+
+            buffer.flip();
+
+            bb = control.encode( ByteBuffer.allocate( control.computeLength() ) );
+            String expected = StringTools.dumpBytes( buffer.array() );
+            String decoded = StringTools.dumpBytes( bb.array() );
+            assertEquals( expected, decoded );
         }
         catch( Exception e )
         {

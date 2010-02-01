@@ -21,21 +21,22 @@
 package org.apache.directory.shared.dsmlv2.searchResponse.searchResultReference;
 
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.List;
 
 import org.apache.directory.shared.dsmlv2.AbstractResponseTest;
 import org.apache.directory.shared.dsmlv2.Dsmlv2ResponseParser;
 import org.apache.directory.shared.dsmlv2.reponse.SearchResponse;
-import org.apache.directory.shared.ldap.codec.ControlCodec;
+import org.apache.directory.shared.ldap.codec.controls.CodecControl;
 import org.apache.directory.shared.ldap.codec.search.SearchResultReferenceCodec;
-import org.apache.directory.shared.ldap.util.LdapURL;
 import org.apache.directory.shared.ldap.codec.util.LdapURLEncodingException;
+import org.apache.directory.shared.ldap.util.LdapURL;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.junit.Assert.assertFalse;
 
 /**
  * Tests for the Search Result Reference Response parsing
@@ -71,13 +72,13 @@ public class SearchResultReferenceTest extends AbstractResponseTest
 
         assertEquals( 1, searchResultReference.getControls().size() );
 
-        ControlCodec control = searchResultReference.getCurrentControl();
+        CodecControl control = searchResultReference.getCurrentControl();
 
-        assertTrue( control.getCriticality() );
+        assertTrue( control.isCritical() );
 
-        assertEquals( "1.2.840.113556.1.4.643", control.getControlType() );
+        assertEquals( "1.2.840.113556.1.4.643", control.getOid() );
 
-        assertEquals( "Some text", StringTools.utf8ToString( ( byte[] ) control.getControlValue() ) );
+        assertEquals( "Some text", StringTools.utf8ToString( ( byte[] ) control.getValue() ) );
     }
 
 
@@ -107,13 +108,13 @@ public class SearchResultReferenceTest extends AbstractResponseTest
 
         assertEquals( 1, searchResultReference.getControls().size() );
 
-        ControlCodec control = searchResultReference.getCurrentControl();
+        CodecControl control = searchResultReference.getCurrentControl();
 
-        assertTrue( control.getCriticality() );
+        assertTrue( control.isCritical() );
 
-        assertEquals( "1.2.840.113556.1.4.643", control.getControlType() );
+        assertEquals( "1.2.840.113556.1.4.643", control.getOid() );
 
-        assertEquals( StringTools.EMPTY_BYTES, ( byte[] ) control.getControlValue() );
+        assertFalse( control.hasValue() );
     }
 
 
@@ -143,13 +144,13 @@ public class SearchResultReferenceTest extends AbstractResponseTest
 
         assertEquals( 2, searchResultReference.getControls().size() );
 
-        ControlCodec control = searchResultReference.getCurrentControl();
+        CodecControl control = searchResultReference.getCurrentControl();
 
-        assertFalse( control.getCriticality() );
+        assertFalse( control.isCritical() );
 
-        assertEquals( "1.2.840.113556.1.4.789", control.getControlType() );
+        assertEquals( "1.2.840.113556.1.4.789", control.getOid() );
 
-        assertEquals( "Some other text", StringTools.utf8ToString( ( byte[] ) control.getControlValue() ) );
+        assertEquals( "Some other text", StringTools.utf8ToString( ( byte[] ) control.getValue() ) );
     }
 
 
@@ -179,13 +180,13 @@ public class SearchResultReferenceTest extends AbstractResponseTest
 
         assertEquals( 3, searchResultReference.getControls().size() );
 
-        ControlCodec control = searchResultReference.getCurrentControl();
+        CodecControl control = searchResultReference.getCurrentControl();
 
-        assertTrue( control.getCriticality() );
+        assertTrue( control.isCritical() );
 
-        assertEquals( "1.2.840.113556.1.4.456", control.getControlType() );
+        assertEquals( "1.2.840.113556.1.4.456", control.getOid() );
 
-        assertEquals( StringTools.EMPTY_BYTES, control.getControlValue() );
+        assertFalse( control.hasValue() );
     }
 
 

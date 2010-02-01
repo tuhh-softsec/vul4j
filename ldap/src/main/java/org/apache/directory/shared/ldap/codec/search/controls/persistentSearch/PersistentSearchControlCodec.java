@@ -17,16 +17,17 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.codec.search.controls.pSearch;
+package org.apache.directory.shared.ldap.codec.search.controls.persistentSearch;
 
 
 import java.nio.ByteBuffer;
 
-import org.apache.directory.shared.asn1.AbstractAsn1Object;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.asn1.codec.EncoderException;
+import org.apache.directory.shared.ldap.codec.controls.AbstractControlCodec;
+import org.apache.directory.shared.ldap.codec.search.controls.ChangeType;
 
 
 /**
@@ -35,20 +36,23 @@ import org.apache.directory.shared.asn1.codec.EncoderException;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$, 
  */
-public class PSearchControlCodec extends AbstractAsn1Object
+public class PersistentSearchControlCodec extends AbstractControlCodec
 {
+    /** This control OID */
+    public static final String CONTROL_OID = "2.16.840.1.113730.3.4.3";
+
     /**
      * If changesOnly is TRUE, the server MUST NOT return any existing entries
      * that match the search criteria. Entries are only returned when they are
      * changed (added, modified, deleted, or subject to a modifyDN operation).
      */
-    private boolean changesOnly;
+    private boolean changesOnly = true;
 
     /**
      * If returnECs is TRUE, the server MUST return an Entry Change Notification
      * control with each entry returned as the result of changes.
      */
-    private boolean returnECs;
+    private boolean returnECs = false;
 
     /**
      * As changes are made to the server, the effected entries MUST be returned
@@ -60,7 +64,7 @@ public class PSearchControlCodec extends AbstractAsn1Object
      * modify (4), 
      * modDN  (8).
      */
-    private int changeTypes;
+    private int changeTypes = CHANGE_TYPES_MAX;
     
     /** Definition of the change types */
     public static final int CHANGE_TYPE_ADD     = 1;
@@ -79,9 +83,11 @@ public class PSearchControlCodec extends AbstractAsn1Object
      * Default constructor
      *
      */
-    public PSearchControlCodec()
+    public PersistentSearchControlCodec()
     {
-        super();
+        super( CONTROL_OID );
+        
+        decoder = new PersistentSearchControlDecoder();
     }
 
     public void setChangesOnly( boolean changesOnly )
@@ -120,12 +126,18 @@ public class PSearchControlCodec extends AbstractAsn1Object
     }
 
     /**
-     * Compute the PSearchControl length 
+     * Compute the PagedSearchControl length, which is the sum
+     * of the control length and the value length.
+     * 
+     * <pre>
+     * PersistentSearchControl value length :
+     * 
      * 0x30 L1 
      *   | 
      *   +--> 0x02 0x0(1-4) [0..2^31-1] (changeTypes) 
      *   +--> 0x01 0x01 [0x00 | 0xFF] (changeOnly) 
      *   +--> 0x01 0x01 [0x00 | 0xFF] (returnRCs)
+     * </pre> 
      */
     public int computeLength()
     {
@@ -134,8 +146,10 @@ public class PSearchControlCodec extends AbstractAsn1Object
         int returnRCsLength = 1 + 1 + 1;
 
         psearchSeqLength = changeTypesLength + changesOnlyLength + returnRCsLength;
+        int valueLength = 1 + TLV.getNbBytes( psearchSeqLength ) + psearchSeqLength;
 
-        return 1 + TLV.getNbBytes( psearchSeqLength ) + psearchSeqLength;
+        // Call the super class to compute the global control length
+        return super.computeLength( valueLength );
     }
 
 
@@ -148,15 +162,71 @@ public class PSearchControlCodec extends AbstractAsn1Object
      */
     public ByteBuffer encode( ByteBuffer buffer ) throws EncoderException
     {
-        // Allocate the bytes buffer.
-        ByteBuffer bb = ByteBuffer.allocate( computeLength() );
-        bb.put( UniversalTag.SEQUENCE_TAG );
-        bb.put( TLV.getBytes( psearchSeqLength ) );
+        if ( buffer == null )
+        {
+            throw new EncoderException( "Cannot put a PDU in a null buffer !" );
+        }
 
-        Value.encode( bb, changeTypes );
-        Value.encode( bb, changesOnly );
-        Value.encode( bb, returnECs );
-        return bb;
+        // Encode the Control envelop
+        super.encode( buffer );
+        
+        // Encode the OCTET_STRING tag
+        buffer.put( UniversalTag.OCTET_STRING_TAG );
+        buffer.put( TLV.getBytes( valueLength ) );
+
+        // Now encode the PagedSearch specific part
+        buffer.put( UniversalTag.SEQUENCE_TAG );
+        buffer.put( TLV.getBytes( psearchSeqLength ) );
+
+        Value.encode( buffer, changeTypes );
+        Value.encode( buffer, changesOnly );
+        Value.encode( buffer, returnECs );
+        
+        return buffer;
+    }
+    
+    
+    /**
+     * {@inheritDoc}
+     */
+    public byte[] getValue()
+    {
+        if ( value == null )
+        {
+            try
+            { 
+                computeLength();
+                ByteBuffer buffer = ByteBuffer.allocate( valueLength );
+                
+                // Now encode the PagedSearch specific part
+                buffer.put( UniversalTag.SEQUENCE_TAG );
+                buffer.put( TLV.getBytes( psearchSeqLength ) );
+
+                Value.encode( buffer, changeTypes );
+                Value.encode( buffer, changesOnly );
+                Value.encode( buffer, returnECs );
+                
+                value = buffer.array();
+            }
+            catch ( Exception e )
+            {
+                return null;
+            }
+        }
+        
+        return value;
+    }
+
+    
+    public boolean isNotificationEnabled( ChangeType changeType )
+    {
+        return ( changeType.getValue() & changeTypes ) > 0;
+    }
+
+
+    public void enableNotification( ChangeType changeType )
+    {
+        changeTypes |= changeType.getValue();
     }
 
 
@@ -168,6 +238,8 @@ public class PSearchControlCodec extends AbstractAsn1Object
         StringBuffer sb = new StringBuffer();
 
         sb.append( "    Persistant Search Control\n" );
+        sb.append( "        oid : " ).append( getOid() ).append( '\n' );
+        sb.append( "        critical : " ).append( isCritical() ).append( '\n' );
         sb.append( "        changeTypes : '" ).append( changeTypes ).append( "'\n" );
         sb.append( "        changesOnly : '" ).append( changesOnly ).append( "'\n" );
         sb.append( "        returnECs   : '" ).append( returnECs ).append( "'\n" );

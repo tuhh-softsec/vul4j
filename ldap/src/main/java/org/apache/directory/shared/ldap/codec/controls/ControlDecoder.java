@@ -17,19 +17,28 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.message.control;
+package org.apache.directory.shared.ldap.codec.controls;
+
+
+import org.apache.directory.shared.asn1.Asn1Object;
+import org.apache.directory.shared.asn1.codec.DecoderException;
 
 
 /**
- * A Control implementation to instanciate new Control.
- *
+ * An interface for decoders of controls.
+ * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
+ * @version $Rev$, $Date$, 
  */
-public class ControlImpl extends AbstractControl
+public interface ControlDecoder
 {
-    public ControlImpl( String oid )
-    {
-        super( oid );
-    }
+    /**
+     * Decodes raw ASN.1 encoded bytes into an Asn1Object for the control.
+     * 
+     * @param controlBytes the encoded control bytes
+     * @param control The control to feed
+     * @return the decoded Asn1Object for the control
+     * @throws DecoderException if anything goes wrong
+     */
+    Asn1Object decode( byte[] controlBytes, CodecControl control ) throws DecoderException;
 }

@@ -22,8 +22,9 @@ package org.apache.directory.shared.ldap.jndi;
 import javax.naming.NamingException;
 import javax.naming.ldap.BasicControl;
 
+import org.apache.directory.shared.ldap.codec.controls.CodecControl;
+import org.apache.directory.shared.ldap.codec.controls.CodecControlImpl;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.message.control.ControlImpl;
 
 /**
  * An utility class to convert back and forth JNDI classes to ADS classes.
@@ -35,7 +36,7 @@ public class JndiUtils
 {
     public static javax.naming.ldap.Control toJndiControl( Control control )
     {
-        byte[] value = control.getValue();
+        byte[] value = ((CodecControl)control).getValue();
         javax.naming.ldap.Control jndiControl = new BasicControl( control.getOid(), control.isCritical(), value );
         
         return jndiControl;
@@ -65,9 +66,8 @@ public class JndiUtils
     
     public static Control fromJndiControl( javax.naming.ldap.Control jndiControl )
     {
-        Control control = new ControlImpl( jndiControl.getID() );
+        Control control = new CodecControlImpl( jndiControl.getID() );
         
-        control.setOid( jndiControl.getID() );
         control.setValue( jndiControl.getEncodedValue() );
 
         return control;

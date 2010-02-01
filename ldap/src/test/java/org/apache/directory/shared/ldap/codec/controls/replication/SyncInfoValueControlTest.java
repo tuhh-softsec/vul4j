@@ -19,8 +19,12 @@
  */
 package org.apache.directory.shared.ldap.codec.controls.replication;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.nio.ByteBuffer;
-import java.util.Arrays;
 
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.codec.DecoderException;
@@ -30,12 +34,7 @@ import org.apache.directory.shared.ldap.codec.controls.replication.syncInfoValue
 import org.apache.directory.shared.ldap.codec.controls.replication.syncInfoValue.SyncInfoValueControlDecoder;
 import org.apache.directory.shared.ldap.message.control.replication.SynchronizationInfoEnum;
 import org.apache.directory.shared.ldap.util.StringTools;
-
 import org.junit.Test;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 /**
  * Test the SyncInfoControlValue codec
@@ -63,6 +62,8 @@ public class SyncInfoValueControlTest
         bb.flip();
 
         SyncInfoValueControlContainer container = new SyncInfoValueControlContainer();
+        container.setSyncInfoValueControl( new SyncInfoValueControlCodec( SynchronizationInfoEnum.NEW_COOKIE ) );
+
         try
         {
             decoder.decode( bb, container );
@@ -80,10 +81,22 @@ public class SyncInfoValueControlTest
         // Check the encoding
         try
         {
-            ByteBuffer encoded = syncInfoValue.encode( null );
-            encoded.flip();
-            bb.flip();
-            assertTrue( Arrays.equals( bb.array(), encoded.array() ) );
+            ByteBuffer buffer = ByteBuffer.allocate( 0x23 );
+            buffer.put( new byte[]
+                { 
+                  0x30, 0x21,                            // Control
+                    0x04, 0x18,                          // OID (SyncInfoValue)
+                      '1', '.', '3', '.', '6', '.', '1', '.', 
+                      '4', '.', '1', '.', '4', '2', '0', '3',
+                      '.', '1', '.', '9', '.', '1', '.', '4',
+                    0x04, 0x05,
+                      (byte)0x80, 0x03,                  // syncInfoValue ::= CHOICE {
+                        'a', 'b', 'c'                    //     newCookie [0] syncCookie
+                } );
+            buffer.flip();
+
+            ByteBuffer encoded = syncInfoValue.encode( ByteBuffer.allocate( syncInfoValue.computeLength() ) );
+            assertEquals( StringTools.dumpBytes( buffer.array() ), StringTools.dumpBytes( encoded.array() ) );
         }
         catch ( EncoderException ee )
         {
@@ -108,6 +121,8 @@ public class SyncInfoValueControlTest
         bb.flip();
 
         SyncInfoValueControlContainer container = new SyncInfoValueControlContainer();
+        container.setSyncInfoValueControl( new SyncInfoValueControlCodec( SynchronizationInfoEnum.NEW_COOKIE ) );
+        
         try
         {
             decoder.decode( bb, container );
@@ -125,10 +140,21 @@ public class SyncInfoValueControlTest
         // Check the encoding
         try
         {
-            ByteBuffer encoded = syncInfoValue.encode( null );
-            encoded.flip();
-            bb.flip();
-            assertTrue( Arrays.equals( bb.array(), encoded.array() ) );
+            ByteBuffer buffer = ByteBuffer.allocate( 0x20 );
+            buffer.put( new byte[]
+                { 
+                  0x30, 0x1E,                            // Control
+                    0x04, 0x18,                          // OID (SyncInfoValue)
+                      '1', '.', '3', '.', '6', '.', '1', '.', 
+                      '4', '.', '1', '.', '4', '2', '0', '3',
+                      '.', '1', '.', '9', '.', '1', '.', '4',
+                    0x04, 0x02,
+                      (byte)0x80, 0x00                   // syncInfoValue ::= CHOICE {
+                } );
+            buffer.flip();
+
+            ByteBuffer encoded = syncInfoValue.encode( ByteBuffer.allocate( syncInfoValue.computeLength() ) );
+            assertEquals( StringTools.dumpBytes( buffer.array() ), StringTools.dumpBytes( encoded.array() ) );
         }
         catch ( EncoderException ee )
         {
@@ -159,6 +185,7 @@ public class SyncInfoValueControlTest
         bb.flip();
 
         SyncInfoValueControlContainer container = new SyncInfoValueControlContainer();
+        container.setSyncInfoValueControl( new SyncInfoValueControlCodec( SynchronizationInfoEnum.REFRESH_DELETE ) );
         
         try
         {
@@ -178,10 +205,23 @@ public class SyncInfoValueControlTest
         // Check the encoding
         try
         {
-            ByteBuffer encoded = syncInfoValue.encode( null );
-            encoded.flip();
-            bb.flip();
-            assertTrue( Arrays.equals( bb.array(), encoded.array() ) );
+            ByteBuffer buffer = ByteBuffer.allocate( 0x25 );
+            buffer.put( new byte[]
+                { 
+                  0x30, 0x23,                            // Control
+                    0x04, 0x18,                          // OID (SyncInfoValue)
+                      '1', '.', '3', '.', '6', '.', '1', '.', 
+                      '4', '.', '1', '.', '4', '2', '0', '3',
+                      '.', '1', '.', '9', '.', '1', '.', '4',
+                    0x04, 0x07,
+                      (byte)0xA1, 0x05,                  // syncInfoValue ::= CHOICE {
+                                                         //     refreshDelete [1] SEQUENCE {
+                        0x04, 0x03, 'a', 'b', 'c'        //         cookie       syncCookie OPTIONAL,
+                } );
+            buffer.flip();
+
+            ByteBuffer encoded = syncInfoValue.encode( ByteBuffer.allocate( syncInfoValue.computeLength() ) );
+            assertEquals( StringTools.dumpBytes( buffer.array() ), StringTools.dumpBytes( encoded.array() ) );
         }
         catch ( EncoderException ee )
         {
@@ -209,7 +249,8 @@ public class SyncInfoValueControlTest
         bb.flip();
 
         SyncInfoValueControlContainer container = new SyncInfoValueControlContainer();
-        
+        container.setSyncInfoValueControl( new SyncInfoValueControlCodec( SynchronizationInfoEnum.REFRESH_DELETE ) );
+
         try
         {
             decoder.decode( bb, container );
@@ -228,10 +269,24 @@ public class SyncInfoValueControlTest
         // Check the encoding
         try
         {
-            ByteBuffer encoded = syncInfoValue.encode( null );
-            encoded.flip();
-            bb.flip();
-            assertTrue( Arrays.equals( bb.array(), encoded.array() ) );
+            ByteBuffer buffer = ByteBuffer.allocate( 0x28 );
+            buffer.put( new byte[]
+                { 
+                  0x30, 0x26,                            // Control
+                    0x04, 0x18,                          // OID (SyncInfoValue)
+                      '1', '.', '3', '.', '6', '.', '1', '.', 
+                      '4', '.', '1', '.', '4', '2', '0', '3',
+                      '.', '1', '.', '9', '.', '1', '.', '4',
+                    0x04, 0x0A,
+                      (byte)0xA1, 0x08,                  // syncInfoValue ::= CHOICE {
+                                                         //     refreshDelete [1] SEQUENCE {
+                        0x04, 0x03, 'a', 'b', 'c',       //         cookie       syncCookie OPTIONAL,
+                        0x01, 0x01, (byte)0x00           //         refreshDone  BOOLEAN DEFAULT TRUE
+                } );
+            buffer.flip();
+
+            ByteBuffer encoded = syncInfoValue.encode( ByteBuffer.allocate( syncInfoValue.computeLength() ) );
+            assertEquals( StringTools.dumpBytes( buffer.array() ), StringTools.dumpBytes( encoded.array() ) );
         }
         catch ( EncoderException ee )
         {
@@ -258,7 +313,8 @@ public class SyncInfoValueControlTest
         bb.flip();
 
         SyncInfoValueControlContainer container = new SyncInfoValueControlContainer();
-        
+        container.setSyncInfoValueControl( new SyncInfoValueControlCodec( SynchronizationInfoEnum.REFRESH_DELETE ) );
+
         try
         {
             decoder.decode( bb, container );
@@ -277,26 +333,23 @@ public class SyncInfoValueControlTest
         // Check the encoding
         try
         {
-            ByteBuffer encoded = syncInfoValue.encode( null );
-            encoded.flip();
-            bb.flip();
-            
-            container.clean();
-            
-            try
-            {
-                decoder.decode( encoded, container );
-            }
-            catch ( DecoderException de )
-            {
-                de.printStackTrace();
-                fail( de.getMessage() );
-            }
-            
-            SyncInfoValueControlCodec redecoded = container.getSyncInfoValueControl();
-            
-            assertTrue( Arrays.equals( syncInfoValue.getCookie(), redecoded.getCookie() ) );
-            assertEquals( syncInfoValue.isRefreshDone(), redecoded.isRefreshDone() );
+            ByteBuffer buffer = ByteBuffer.allocate( 0x25 );
+            buffer.put( new byte[]
+                { 
+                  0x30, 0x23,                            // Control
+                    0x04, 0x18,                          // OID (SyncInfoValue)
+                      '1', '.', '3', '.', '6', '.', '1', '.', 
+                      '4', '.', '1', '.', '4', '2', '0', '3',
+                      '.', '1', '.', '9', '.', '1', '.', '4',
+                    0x04, 0x07,
+                      (byte)0xA1, 0x05,                  // syncInfoValue ::= CHOICE {
+                                                         //     refreshDelete [1] SEQUENCE {
+                        0x04, 0x03, 'a', 'b', 'c',       //         cookie       syncCookie OPTIONAL,
+                } );
+            buffer.flip();
+
+            ByteBuffer encoded = syncInfoValue.encode( ByteBuffer.allocate( syncInfoValue.computeLength() ) );
+            assertEquals( StringTools.dumpBytes( buffer.array() ), StringTools.dumpBytes( encoded.array() ) );
         }
         catch ( EncoderException ee )
         {
@@ -323,7 +376,8 @@ public class SyncInfoValueControlTest
         bb.flip();
 
         SyncInfoValueControlContainer container = new SyncInfoValueControlContainer();
-        
+        container.setSyncInfoValueControl( new SyncInfoValueControlCodec( SynchronizationInfoEnum.REFRESH_DELETE ) );
+
         try
         {
             decoder.decode( bb, container );
@@ -342,26 +396,23 @@ public class SyncInfoValueControlTest
         // Check the encoding
         try
         {
-            ByteBuffer encoded = syncInfoValue.encode( null );
-            encoded.flip();
-            bb.flip();
-            
-            container.clean();
-            
-            try
-            {
-                decoder.decode( encoded, container );
-            }
-            catch ( DecoderException de )
-            {
-                de.printStackTrace();
-                fail( de.getMessage() );
-            }
-            
-            SyncInfoValueControlCodec redecoded = container.getSyncInfoValueControl();
-            
-            assertTrue( Arrays.equals( syncInfoValue.getCookie(), redecoded.getCookie() ) );
-            assertEquals( syncInfoValue.isRefreshDone(), redecoded.isRefreshDone() );
+            ByteBuffer buffer = ByteBuffer.allocate( 0x23 );
+            buffer.put( new byte[]
+                { 
+                  0x30, 0x21,                            // Control
+                    0x04, 0x18,                          // OID (SyncInfoValue)
+                      '1', '.', '3', '.', '6', '.', '1', '.', 
+                      '4', '.', '1', '.', '4', '2', '0', '3',
+                      '.', '1', '.', '9', '.', '1', '.', '4',
+                    0x04, 0x05,
+                      (byte)0xA1, 0x03,                  // syncInfoValue ::= CHOICE {
+                                                         //     refreshDelete [1] SEQUENCE {
+                        0x01, 0x01, 0x00                 //         refreshDone  BOOLEAN DEFAULT TRUE
+                } );
+            buffer.flip();
+
+            ByteBuffer encoded = syncInfoValue.encode( ByteBuffer.allocate( syncInfoValue.computeLength() ) );
+            assertEquals( StringTools.dumpBytes( buffer.array() ), StringTools.dumpBytes( encoded.array() ) );
         }
         catch ( EncoderException ee )
         {
@@ -386,7 +437,8 @@ public class SyncInfoValueControlTest
         bb.flip();
 
         SyncInfoValueControlContainer container = new SyncInfoValueControlContainer();
-        
+        container.setSyncInfoValueControl( new SyncInfoValueControlCodec( SynchronizationInfoEnum.REFRESH_DELETE ) );
+
         try
         {
             decoder.decode( bb, container );
@@ -405,26 +457,21 @@ public class SyncInfoValueControlTest
         // Check the encoding
         try
         {
-            ByteBuffer encoded = syncInfoValue.encode( null );
-            encoded.flip();
-            bb.flip();
-            
-            container.clean();
-            
-            try
-            {
-                decoder.decode( encoded, container );
-            }
-            catch ( DecoderException de )
-            {
-                de.printStackTrace();
-                fail( de.getMessage() );
-            }
-            
-            SyncInfoValueControlCodec redecoded = container.getSyncInfoValueControl();
-            
-            assertTrue( Arrays.equals( syncInfoValue.getCookie(), redecoded.getCookie() ) );
-            assertEquals( syncInfoValue.isRefreshDone(), redecoded.isRefreshDone() );
+            ByteBuffer buffer = ByteBuffer.allocate( 0x20 );
+            buffer.put( new byte[]
+                { 
+                  0x30, 0x1E,                            // Control
+                    0x04, 0x18,                          // OID (SyncInfoValue)
+                      '1', '.', '3', '.', '6', '.', '1', '.', 
+                      '4', '.', '1', '.', '4', '2', '0', '3',
+                      '.', '1', '.', '9', '.', '1', '.', '4',
+                    0x04, 0x02,
+                      (byte)0xA1, 0x00,                  // syncInfoValue ::= CHOICE {
+                } );
+            buffer.flip();
+
+            ByteBuffer encoded = syncInfoValue.encode( ByteBuffer.allocate( syncInfoValue.computeLength() ) );
+            assertEquals( StringTools.dumpBytes( buffer.array() ), StringTools.dumpBytes( encoded.array() ) );
         }
         catch ( EncoderException ee )
         {
@@ -455,7 +502,8 @@ public class SyncInfoValueControlTest
         bb.flip();
 
         SyncInfoValueControlContainer container = new SyncInfoValueControlContainer();
-        
+        container.setSyncInfoValueControl( new SyncInfoValueControlCodec( SynchronizationInfoEnum.REFRESH_PRESENT ) );
+
         try
         {
             decoder.decode( bb, container );
@@ -474,10 +522,23 @@ public class SyncInfoValueControlTest
         // Check the encoding
         try
         {
-            ByteBuffer encoded = syncInfoValue.encode( null );
-            encoded.flip();
-            bb.flip();
-            assertTrue( Arrays.equals( bb.array(), encoded.array() ) );
+            ByteBuffer buffer = ByteBuffer.allocate( 0x25 );
+            buffer.put( new byte[]
+                { 
+                  0x30, 0x23,                            // Control
+                    0x04, 0x18,                          // OID (SyncInfoValue)
+                      '1', '.', '3', '.', '6', '.', '1', '.', 
+                      '4', '.', '1', '.', '4', '2', '0', '3',
+                      '.', '1', '.', '9', '.', '1', '.', '4',
+                    0x04, 0x07,
+                      (byte)0xA2, 0x05,                  // syncInfoValue ::= CHOICE {
+                                                         //     refreshPresent [2] SEQUENCE {
+                        0x04, 0x03, 'a', 'b', 'c'        //         cookie       syncCookie OPTIONAL,
+                } );
+            buffer.flip();
+
+            ByteBuffer encoded = syncInfoValue.encode( ByteBuffer.allocate( syncInfoValue.computeLength() ) );
+            assertEquals( StringTools.dumpBytes( buffer.array() ), StringTools.dumpBytes( encoded.array() ) );
         }
         catch ( EncoderException ee )
         {
@@ -505,7 +566,8 @@ public class SyncInfoValueControlTest
         bb.flip();
 
         SyncInfoValueControlContainer container = new SyncInfoValueControlContainer();
-        
+        container.setSyncInfoValueControl( new SyncInfoValueControlCodec( SynchronizationInfoEnum.REFRESH_PRESENT ) );
+
         try
         {
             decoder.decode( bb, container );
@@ -524,10 +586,24 @@ public class SyncInfoValueControlTest
         // Check the encoding
         try
         {
-            ByteBuffer encoded = syncInfoValue.encode( null );
-            encoded.flip();
-            bb.flip();
-            assertTrue( Arrays.equals( bb.array(), encoded.array() ) );
+            ByteBuffer buffer = ByteBuffer.allocate( 0x28 );
+            buffer.put( new byte[]
+                { 
+                  0x30, 0x26,                            // Control
+                    0x04, 0x18,                          // OID (SyncInfoValue)
+                      '1', '.', '3', '.', '6', '.', '1', '.', 
+                      '4', '.', '1', '.', '4', '2', '0', '3',
+                      '.', '1', '.', '9', '.', '1', '.', '4',
+                    0x04, 0x0A,
+                      (byte)0xA2, 0x08,                  // syncInfoValue ::= CHOICE {
+                                                         //     refreshPresent [2] SEQUENCE {
+                        0x04, 0x03, 'a', 'b', 'c',       //         cookie       syncCookie OPTIONAL,
+                        0x01, 0x01, (byte)0x00           //         refreshDone  BOOLEAN DEFAULT TRUE
+                } );
+            buffer.flip();
+
+            ByteBuffer encoded = syncInfoValue.encode( ByteBuffer.allocate( syncInfoValue.computeLength() ) );
+            assertEquals( StringTools.dumpBytes( buffer.array() ), StringTools.dumpBytes( encoded.array() ) );
         }
         catch ( EncoderException ee )
         {
@@ -554,7 +630,8 @@ public class SyncInfoValueControlTest
         bb.flip();
 
         SyncInfoValueControlContainer container = new SyncInfoValueControlContainer();
-        
+        container.setSyncInfoValueControl( new SyncInfoValueControlCodec( SynchronizationInfoEnum.REFRESH_PRESENT ) );
+
         try
         {
             decoder.decode( bb, container );
@@ -573,26 +650,23 @@ public class SyncInfoValueControlTest
         // Check the encoding
         try
         {
-            ByteBuffer encoded = syncInfoValue.encode( null );
-            encoded.flip();
-            bb.flip();
-            
-            container.clean();
-            
-            try
-            {
-                decoder.decode( encoded, container );
-            }
-            catch ( DecoderException de )
-            {
-                de.printStackTrace();
-                fail( de.getMessage() );
-            }
-            
-            SyncInfoValueControlCodec redecoded = container.getSyncInfoValueControl();
-            
-            assertTrue( Arrays.equals( syncInfoValue.getCookie(), redecoded.getCookie() ) );
-            assertEquals( syncInfoValue.isRefreshDone(), redecoded.isRefreshDone() );
+            ByteBuffer buffer = ByteBuffer.allocate( 0x25 );
+            buffer.put( new byte[]
+                { 
+                  0x30, 0x23,                            // Control
+                    0x04, 0x18,                          // OID (SyncInfoValue)
+                      '1', '.', '3', '.', '6', '.', '1', '.', 
+                      '4', '.', '1', '.', '4', '2', '0', '3',
+                      '.', '1', '.', '9', '.', '1', '.', '4',
+                    0x04, 0x07,
+                      (byte)0xA2, 0x05,                  // syncInfoValue ::= CHOICE {
+                                                         //     refreshPresent [2] SEQUENCE {
+                        0x04, 0x03, 'a', 'b', 'c',       //         cookie       syncCookie OPTIONAL,
+                } );
+            buffer.flip();
+
+            ByteBuffer encoded = syncInfoValue.encode( ByteBuffer.allocate( syncInfoValue.computeLength() ) );
+            assertEquals( StringTools.dumpBytes( buffer.array() ), StringTools.dumpBytes( encoded.array() ) );
         }
         catch ( EncoderException ee )
         {
@@ -619,7 +693,8 @@ public class SyncInfoValueControlTest
         bb.flip();
 
         SyncInfoValueControlContainer container = new SyncInfoValueControlContainer();
-        
+        container.setSyncInfoValueControl( new SyncInfoValueControlCodec( SynchronizationInfoEnum.REFRESH_PRESENT ) );
+
         try
         {
             decoder.decode( bb, container );
@@ -638,26 +713,23 @@ public class SyncInfoValueControlTest
         // Check the encoding
         try
         {
-            ByteBuffer encoded = syncInfoValue.encode( null );
-            encoded.flip();
-            bb.flip();
-            
-            container.clean();
-            
-            try
-            {
-                decoder.decode( encoded, container );
-            }
-            catch ( DecoderException de )
-            {
-                de.printStackTrace();
-                fail( de.getMessage() );
-            }
-            
-            SyncInfoValueControlCodec redecoded = container.getSyncInfoValueControl();
-            
-            assertTrue( Arrays.equals( syncInfoValue.getCookie(), redecoded.getCookie() ) );
-            assertEquals( syncInfoValue.isRefreshDone(), redecoded.isRefreshDone() );
+            ByteBuffer buffer = ByteBuffer.allocate( 0x23 );
+            buffer.put( new byte[]
+                { 
+                  0x30, 0x21,                            // Control
+                    0x04, 0x18,                          // OID (SyncInfoValue)
+                      '1', '.', '3', '.', '6', '.', '1', '.', 
+                      '4', '.', '1', '.', '4', '2', '0', '3',
+                      '.', '1', '.', '9', '.', '1', '.', '4',
+                    0x04, 0x05,
+                      (byte)0xA2, 0x03,                  // syncInfoValue ::= CHOICE {
+                                                         //     refreshPresent [2] SEQUENCE {
+                        0x01, 0x01, 0x00                 //        refreshDone  BOOLEAN DEFAULT TRUE
+                } );
+            buffer.flip();
+
+            ByteBuffer encoded = syncInfoValue.encode( ByteBuffer.allocate( syncInfoValue.computeLength() ) );
+            assertEquals( StringTools.dumpBytes( buffer.array() ), StringTools.dumpBytes( encoded.array() ) );
         }
         catch ( EncoderException ee )
         {
@@ -682,7 +754,8 @@ public class SyncInfoValueControlTest
         bb.flip();
 
         SyncInfoValueControlContainer container = new SyncInfoValueControlContainer();
-        
+        container.setSyncInfoValueControl( new SyncInfoValueControlCodec( SynchronizationInfoEnum.REFRESH_PRESENT ) );
+
         try
         {
             decoder.decode( bb, container );
@@ -701,26 +774,21 @@ public class SyncInfoValueControlTest
         // Check the encoding
         try
         {
-            ByteBuffer encoded = syncInfoValue.encode( null );
-            encoded.flip();
-            bb.flip();
-            
-            container.clean();
-            
-            try
-            {
-                decoder.decode( encoded, container );
-            }
-            catch ( DecoderException de )
-            {
-                de.printStackTrace();
-                fail( de.getMessage() );
-            }
-            
-            SyncInfoValueControlCodec redecoded = container.getSyncInfoValueControl();
-            
-            assertTrue( Arrays.equals( syncInfoValue.getCookie(), redecoded.getCookie() ) );
-            assertEquals( syncInfoValue.isRefreshDone(), redecoded.isRefreshDone() );
+            ByteBuffer buffer = ByteBuffer.allocate( 0x20 );
+            buffer.put( new byte[]
+                { 
+                  0x30, 0x1E,                            // Control
+                    0x04, 0x18,                          // OID (SyncInfoValue)
+                      '1', '.', '3', '.', '6', '.', '1', '.', 
+                      '4', '.', '1', '.', '4', '2', '0', '3',
+                      '.', '1', '.', '9', '.', '1', '.', '4',
+                    0x04, 0x02,
+                      (byte)0xA2, 0x00,                  // syncInfoValue ::= CHOICE {
+                } );
+            buffer.flip();
+
+            ByteBuffer encoded = syncInfoValue.encode( ByteBuffer.allocate( syncInfoValue.computeLength() ) );
+            assertEquals( StringTools.dumpBytes( buffer.array() ), StringTools.dumpBytes( encoded.array() ) );
         }
         catch ( EncoderException ee )
         {
@@ -748,7 +816,8 @@ public class SyncInfoValueControlTest
         bb.flip();
 
         SyncInfoValueControlContainer container = new SyncInfoValueControlContainer();
-        
+        container.setSyncInfoValueControl( new SyncInfoValueControlCodec( SynchronizationInfoEnum.SYNC_ID_SET ) );
+
         try
         {
             decoder.decode( bb, container );
@@ -779,7 +848,8 @@ public class SyncInfoValueControlTest
         bb.flip();
 
         SyncInfoValueControlContainer container = new SyncInfoValueControlContainer();
-        
+        container.setSyncInfoValueControl( new SyncInfoValueControlCodec( SynchronizationInfoEnum.SYNC_ID_SET ) );
+
         try
         {
             decoder.decode( bb, container );
@@ -810,7 +880,8 @@ public class SyncInfoValueControlTest
         bb.flip();
 
         SyncInfoValueControlContainer container = new SyncInfoValueControlContainer();
-        
+        container.setSyncInfoValueControl( new SyncInfoValueControlCodec( SynchronizationInfoEnum.SYNC_ID_SET ) );
+
         try
         {
             decoder.decode( bb, container );
@@ -842,7 +913,8 @@ public class SyncInfoValueControlTest
         bb.flip();
 
         SyncInfoValueControlContainer container = new SyncInfoValueControlContainer();
-        
+        container.setSyncInfoValueControl( new SyncInfoValueControlCodec( SynchronizationInfoEnum.SYNC_ID_SET ) );
+
         try
         {
             decoder.decode( bb, container );
@@ -873,7 +945,8 @@ public class SyncInfoValueControlTest
         bb.flip();
 
         SyncInfoValueControlContainer container = new SyncInfoValueControlContainer();
-        
+        container.setSyncInfoValueControl( new SyncInfoValueControlCodec( SynchronizationInfoEnum.SYNC_ID_SET ) );
+
         try
         {
             decoder.decode( bb, container );
@@ -883,6 +956,7 @@ public class SyncInfoValueControlTest
             de.printStackTrace();
             fail( de.getMessage() );
         }
+        
         SyncInfoValueControlCodec syncInfoValue = container.getSyncInfoValueControl();
         assertEquals( SynchronizationInfoEnum.SYNC_ID_SET, syncInfoValue.getType() );
         assertEquals( "", StringTools.utf8ToString( syncInfoValue.getCookie() ) );
@@ -892,27 +966,23 @@ public class SyncInfoValueControlTest
         // Check the encoding
         try
         {
-            ByteBuffer encoded = syncInfoValue.encode( null );
-            encoded.flip();
-            bb.flip();
-            
-            container.clean();
-            
-            try
-            {
-                decoder.decode( encoded, container );
-            }
-            catch ( DecoderException de )
-            {
-                de.printStackTrace();
-                fail( de.getMessage() );
-            }
-            
-            SyncInfoValueControlCodec redecoded = container.getSyncInfoValueControl();
-            
-            assertTrue( Arrays.equals( syncInfoValue.getCookie(), redecoded.getCookie() ) );
-            assertEquals( syncInfoValue.isRefreshDeletes(), redecoded.isRefreshDeletes() );
-            assertEquals( 0, redecoded.getSyncUUIDs().size() );
+            ByteBuffer buffer = ByteBuffer.allocate( 0x22 );
+            buffer.put( new byte[]
+                { 
+                  0x30, 0x20,                            // Control
+                    0x04, 0x18,                          // OID (SyncInfoValue)
+                      '1', '.', '3', '.', '6', '.', '1', '.', 
+                      '4', '.', '1', '.', '4', '2', '0', '3',
+                      '.', '1', '.', '9', '.', '1', '.', '4',
+                    0x04, 0x04,
+                      (byte)0xA3, 0x02,                  // syncInfoValue ::= CHOICE {
+                                                         //     syncIdSet [3] SEQUENCE {
+                        0x31, 0x00,                      //         syncUUIDs SET OF syncUUID
+                } );
+            buffer.flip();
+
+            ByteBuffer encoded = syncInfoValue.encode( ByteBuffer.allocate( syncInfoValue.computeLength() ) );
+            assertEquals( StringTools.dumpBytes( buffer.array() ), StringTools.dumpBytes( encoded.array() ) );
         }
         catch ( EncoderException ee )
         {
@@ -948,7 +1018,8 @@ public class SyncInfoValueControlTest
         bb.flip();
 
         SyncInfoValueControlContainer container = new SyncInfoValueControlContainer();
-        
+        container.setSyncInfoValueControl( new SyncInfoValueControlCodec( SynchronizationInfoEnum.SYNC_ID_SET ) );
+
         try
         {
             decoder.decode( bb, container );
@@ -977,37 +1048,32 @@ public class SyncInfoValueControlTest
         // Check the encoding
         try
         {
-            ByteBuffer encoded = syncInfoValue.encode( null );
-            encoded.flip();
-            bb.flip();
-            
-            container.clean();
-            
-            try
-            {
-                decoder.decode( encoded, container );
-            }
-            catch ( DecoderException de )
-            {
-                de.printStackTrace();
-                fail( de.getMessage() );
-            }
-            
-            SyncInfoValueControlCodec redecoded = container.getSyncInfoValueControl();
-            
-            assertTrue( Arrays.equals( syncInfoValue.getCookie(), redecoded.getCookie() ) );
-            assertEquals( syncInfoValue.isRefreshDeletes(), redecoded.isRefreshDeletes() );
-            assertEquals( 3, redecoded.getSyncUUIDs().size() );
-            
-            for ( int i = 0; i < 3; i++ )
-            {
-                byte[] uuid = redecoded.getSyncUUIDs().get( i );
-                
-                for ( int j = 0; j < 16; j++ )
-                {
-                    assertEquals( i + 1, uuid[j] );
-                }
-            }
+            ByteBuffer buffer = ByteBuffer.allocate( 0x58 );
+            buffer.put( new byte[]
+                { 
+                  0x30, 0x56,                            // Control
+                    0x04, 0x18,                          // OID (SyncInfoValue)
+                      '1', '.', '3', '.', '6', '.', '1', '.', 
+                      '4', '.', '1', '.', '4', '2', '0', '3',
+                      '.', '1', '.', '9', '.', '1', '.', '4',
+                    0x04, 0x3A,
+                      (byte)0xA3, 0x38,                  // syncInfoValue ::= CHOICE {
+                                                         //     syncIdSet [3] SEQUENCE {
+                        0x31, 0x36,                      //         syncUUIDs SET OF syncUUID
+                          0x04, 0x10,                    // syncUUID
+                            0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01,
+                            0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01,
+                          0x04, 0x10,                    // syncUUID
+                            0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02,
+                            0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02,
+                          0x04, 0x10,                    // syncUUID
+                            0x03, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03,
+                            0x03, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03
+                } );
+            buffer.flip();
+
+            ByteBuffer encoded = syncInfoValue.encode( ByteBuffer.allocate( syncInfoValue.computeLength() ) );
+            assertEquals( StringTools.dumpBytes( buffer.array() ), StringTools.dumpBytes( encoded.array() ) );
         }
         catch ( EncoderException ee )
         {
@@ -1035,7 +1101,8 @@ public class SyncInfoValueControlTest
         bb.flip();
 
         SyncInfoValueControlContainer container = new SyncInfoValueControlContainer();
-        
+        container.setSyncInfoValueControl( new SyncInfoValueControlCodec( SynchronizationInfoEnum.SYNC_ID_SET ) );
+
         try
         {
             decoder.decode( bb, container );
@@ -1054,27 +1121,24 @@ public class SyncInfoValueControlTest
         // Check the encoding
         try
         {
-            ByteBuffer encoded = syncInfoValue.encode( null );
-            encoded.flip();
-            bb.flip();
-            
-            container.clean();
-            
-            try
-            {
-                decoder.decode( encoded, container );
-            }
-            catch ( DecoderException de )
-            {
-                de.printStackTrace();
-                fail( de.getMessage() );
-            }
-            
-            SyncInfoValueControlCodec redecoded = container.getSyncInfoValueControl();
-            
-            assertTrue( Arrays.equals( syncInfoValue.getCookie(), redecoded.getCookie() ) );
-            assertEquals( syncInfoValue.isRefreshDeletes(), redecoded.isRefreshDeletes() );
-            assertEquals( 0, redecoded.getSyncUUIDs().size() );
+            ByteBuffer buffer = ByteBuffer.allocate( 0x27 );
+            buffer.put( new byte[]
+                { 
+                  0x30, 0x25,                            // Control
+                    0x04, 0x18,                          // OID (SyncInfoValue)
+                      '1', '.', '3', '.', '6', '.', '1', '.', 
+                      '4', '.', '1', '.', '4', '2', '0', '3',
+                      '.', '1', '.', '9', '.', '1', '.', '4',
+                    0x04, 0x09,
+                      (byte)0xA3, 0x07,                  // syncInfoValue ::= CHOICE {
+                                                         //     syncIdSet [3] SEQUENCE {
+                        0X04, 0X03, 'a', 'b', 'c',       //         cookie         syncCookie OPTIONAL,
+                        0x31, 0x00,                      //         syncUUIDs SET OF syncUUID
+                } );
+            buffer.flip();
+
+            ByteBuffer encoded = syncInfoValue.encode( ByteBuffer.allocate( syncInfoValue.computeLength() ) );
+            assertEquals( StringTools.dumpBytes( buffer.array() ), StringTools.dumpBytes( encoded.array() ) );
         }
         catch ( EncoderException ee )
         {
@@ -1111,7 +1175,8 @@ public class SyncInfoValueControlTest
         bb.flip();
 
         SyncInfoValueControlContainer container = new SyncInfoValueControlContainer();
-        
+        container.setSyncInfoValueControl( new SyncInfoValueControlCodec( SynchronizationInfoEnum.SYNC_ID_SET ) );
+
         try
         {
             decoder.decode( bb, container );
@@ -1121,6 +1186,7 @@ public class SyncInfoValueControlTest
             de.printStackTrace();
             fail( de.getMessage() );
         }
+        
         SyncInfoValueControlCodec syncInfoValue = container.getSyncInfoValueControl();
         assertEquals( SynchronizationInfoEnum.SYNC_ID_SET, syncInfoValue.getType() );
         assertEquals( "abc", StringTools.utf8ToString( syncInfoValue.getCookie() ) );
@@ -1140,37 +1206,33 @@ public class SyncInfoValueControlTest
         // Check the encoding
         try
         {
-            ByteBuffer encoded = syncInfoValue.encode( null );
-            encoded.flip();
-            bb.flip();
-            
-            container.clean();
-            
-            try
-            {
-                decoder.decode( encoded, container );
-            }
-            catch ( DecoderException de )
-            {
-                de.printStackTrace();
-                fail( de.getMessage() );
-            }
-            
-            SyncInfoValueControlCodec redecoded = container.getSyncInfoValueControl();
-            
-            assertTrue( Arrays.equals( syncInfoValue.getCookie(), redecoded.getCookie() ) );
-            assertEquals( syncInfoValue.isRefreshDeletes(), redecoded.isRefreshDeletes() );
-            assertEquals( 3, redecoded.getSyncUUIDs().size() );
-            
-            for ( int i = 0; i < 3; i++ )
-            {
-                byte[] uuid = redecoded.getSyncUUIDs().get( i );
-                
-                for ( int j = 0; j < 16; j++ )
-                {
-                    assertEquals( i + 1, uuid[j] );
-                }
-            }
+            ByteBuffer buffer = ByteBuffer.allocate( 0x5D );
+            buffer.put( new byte[]
+                { 
+                  0x30, 0x5B,                            // Control
+                    0x04, 0x18,                          // OID (SyncInfoValue)
+                      '1', '.', '3', '.', '6', '.', '1', '.', 
+                      '4', '.', '1', '.', '4', '2', '0', '3',
+                      '.', '1', '.', '9', '.', '1', '.', '4',
+                    0x04, 0x3F,
+                      (byte)0xA3, 0x3D,                  // syncInfoValue ::= CHOICE {
+                                                         //     syncIdSet [3] SEQUENCE {
+                        0X04, 0X03, 'a', 'b', 'c',       //         cookie         syncCookie OPTIONAL,
+                        0x31, 0x36,                      //         syncUUIDs SET OF syncUUID
+                          0x04, 0x10,                    // syncUUID
+                            0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01,
+                            0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01,
+                          0x04, 0x10,                    // syncUUID
+                            0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02,
+                            0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02,
+                          0x04, 0x10,                    // syncUUID
+                            0x03, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03,
+                            0x03, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03
+                } );
+            buffer.flip();
+
+            ByteBuffer encoded = syncInfoValue.encode( ByteBuffer.allocate( syncInfoValue.computeLength() ) );
+            assertEquals( StringTools.dumpBytes( buffer.array() ), StringTools.dumpBytes( encoded.array() ) );
         }
         catch ( EncoderException ee )
         {
@@ -1198,7 +1260,8 @@ public class SyncInfoValueControlTest
         bb.flip();
 
         SyncInfoValueControlContainer container = new SyncInfoValueControlContainer();
-        
+        container.setSyncInfoValueControl( new SyncInfoValueControlCodec( SynchronizationInfoEnum.SYNC_ID_SET ) );
+
         try
         {
             decoder.decode( bb, container );
@@ -1217,27 +1280,24 @@ public class SyncInfoValueControlTest
         // Check the encoding
         try
         {
-            ByteBuffer encoded = syncInfoValue.encode( null );
-            encoded.flip();
-            bb.flip();
-            
-            container.clean();
-            
-            try
-            {
-                decoder.decode( encoded, container );
-            }
-            catch ( DecoderException de )
-            {
-                de.printStackTrace();
-                fail( de.getMessage() );
-            }
-            
-            SyncInfoValueControlCodec redecoded = container.getSyncInfoValueControl();
-            
-            assertTrue( Arrays.equals( syncInfoValue.getCookie(), redecoded.getCookie() ) );
-            assertEquals( syncInfoValue.isRefreshDeletes(), redecoded.isRefreshDeletes() );
-            assertEquals( 0, redecoded.getSyncUUIDs().size() );
+            ByteBuffer buffer = ByteBuffer.allocate( 0x25 );
+            buffer.put( new byte[]
+                { 
+                  0x30, 0x23,                            // Control
+                    0x04, 0x18,                          // OID (SyncInfoValue)
+                      '1', '.', '3', '.', '6', '.', '1', '.', 
+                      '4', '.', '1', '.', '4', '2', '0', '3',
+                      '.', '1', '.', '9', '.', '1', '.', '4',
+                    0x04, 0x07,
+                      (byte)0xA3, 0x05,                  // syncInfoValue ::= CHOICE {
+                                                         //     syncIdSet [3] SEQUENCE {
+                        0X01, 0X01, (byte)0xFF,          //         refreshDeletes BOOLEAN DEFAULT FALSE,
+                        0x31, 0x00,                      //         syncUUIDs SET OF syncUUID
+                } );
+            buffer.flip();
+
+            ByteBuffer encoded = syncInfoValue.encode( ByteBuffer.allocate( syncInfoValue.computeLength() ) );
+            assertEquals( StringTools.dumpBytes( buffer.array() ), StringTools.dumpBytes( encoded.array() ) );
         }
         catch ( EncoderException ee )
         {
@@ -1274,7 +1334,8 @@ public class SyncInfoValueControlTest
         bb.flip();
 
         SyncInfoValueControlContainer container = new SyncInfoValueControlContainer();
-        
+        container.setSyncInfoValueControl( new SyncInfoValueControlCodec( SynchronizationInfoEnum.SYNC_ID_SET ) );
+
         try
         {
             decoder.decode( bb, container );
@@ -1303,37 +1364,33 @@ public class SyncInfoValueControlTest
         // Check the encoding
         try
         {
-            ByteBuffer encoded = syncInfoValue.encode( null );
-            encoded.flip();
-            bb.flip();
-            
-            container.clean();
-            
-            try
-            {
-                decoder.decode( encoded, container );
-            }
-            catch ( DecoderException de )
-            {
-                de.printStackTrace();
-                fail( de.getMessage() );
-            }
-            
-            SyncInfoValueControlCodec redecoded = container.getSyncInfoValueControl();
-            
-            assertTrue( Arrays.equals( syncInfoValue.getCookie(), redecoded.getCookie() ) );
-            assertEquals( syncInfoValue.isRefreshDeletes(), redecoded.isRefreshDeletes() );
-            assertEquals( 3, redecoded.getSyncUUIDs().size() );
-            
-            for ( int i = 0; i < 3; i++ )
-            {
-                byte[] uuid = redecoded.getSyncUUIDs().get( i );
-                
-                for ( int j = 0; j < 16; j++ )
-                {
-                    assertEquals( i + 1, uuid[j] );
-                }
-            }
+            ByteBuffer buffer = ByteBuffer.allocate( 0x5B );
+            buffer.put( new byte[]
+                { 
+                  0x30, 0x59,                            // Control
+                    0x04, 0x18,                          // OID (SyncInfoValue)
+                      '1', '.', '3', '.', '6', '.', '1', '.', 
+                      '4', '.', '1', '.', '4', '2', '0', '3',
+                      '.', '1', '.', '9', '.', '1', '.', '4',
+                    0x04, 0x3D,
+                      (byte)0xA3, 0x3B,                  // syncInfoValue ::= CHOICE {
+                                                         //     syncIdSet [3] SEQUENCE {
+                        0X01, 0X01, (byte)0xFF,          //         refreshDeletes BOOLEAN DEFAULT FALSE,
+                        0x31, 0x36,                      //         syncUUIDs SET OF syncUUID
+                          0x04, 0x10,                    // syncUUID
+                            0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01,
+                            0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01,
+                          0x04, 0x10,                    // syncUUID
+                            0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02,
+                            0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02,
+                          0x04, 0x10,                    // syncUUID
+                            0x03, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03,
+                            0x03, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03
+                } );
+            buffer.flip();
+
+            ByteBuffer encoded = syncInfoValue.encode( ByteBuffer.allocate( syncInfoValue.computeLength() ) );
+            assertEquals( StringTools.dumpBytes( buffer.array() ), StringTools.dumpBytes( encoded.array() ) );
         }
         catch ( EncoderException ee )
         {
@@ -1362,7 +1419,8 @@ public class SyncInfoValueControlTest
         bb.flip();
 
         SyncInfoValueControlContainer container = new SyncInfoValueControlContainer();
-        
+        container.setSyncInfoValueControl( new SyncInfoValueControlCodec( SynchronizationInfoEnum.SYNC_ID_SET ) );
+
         try
         {
             decoder.decode( bb, container );
@@ -1381,27 +1439,25 @@ public class SyncInfoValueControlTest
         // Check the encoding
         try
         {
-            ByteBuffer encoded = syncInfoValue.encode( null );
-            encoded.flip();
-            bb.flip();
-            
-            container.clean();
-            
-            try
-            {
-                decoder.decode( encoded, container );
-            }
-            catch ( DecoderException de )
-            {
-                de.printStackTrace();
-                fail( de.getMessage() );
-            }
-            
-            SyncInfoValueControlCodec redecoded = container.getSyncInfoValueControl();
-            
-            assertTrue( Arrays.equals( syncInfoValue.getCookie(), redecoded.getCookie() ) );
-            assertEquals( syncInfoValue.isRefreshDeletes(), redecoded.isRefreshDeletes() );
-            assertEquals( 0, redecoded.getSyncUUIDs().size() );
+            ByteBuffer buffer = ByteBuffer.allocate( 0x2A );
+            buffer.put( new byte[]
+                { 
+                  0x30, 0x28,                            // Control
+                    0x04, 0x18,                          // OID (SyncInfoValue)
+                      '1', '.', '3', '.', '6', '.', '1', '.', 
+                      '4', '.', '1', '.', '4', '2', '0', '3',
+                      '.', '1', '.', '9', '.', '1', '.', '4',
+                    0x04, 0x0C,
+                      (byte)0xA3, 0x0A,                  // syncInfoValue ::= CHOICE {
+                                                         //     syncIdSet [3] SEQUENCE {
+                        0X04, 0X03, 'a', 'b', 'c',       //         cookie         syncCookie OPTIONAL,
+                        0X01, 0X01, (byte)0xFF,          //         refreshDeletes BOOLEAN DEFAULT FALSE,
+                        0x31, 0x00,                      //         syncUUIDs SET OF syncUUID
+                } );
+            buffer.flip();
+
+            ByteBuffer encoded = syncInfoValue.encode( ByteBuffer.allocate( syncInfoValue.computeLength() ) );
+            assertEquals( StringTools.dumpBytes( buffer.array() ), StringTools.dumpBytes( encoded.array() ) );
         }
         catch ( EncoderException ee )
         {
@@ -1439,7 +1495,8 @@ public class SyncInfoValueControlTest
         bb.flip();
 
         SyncInfoValueControlContainer container = new SyncInfoValueControlContainer();
-        
+        container.setSyncInfoValueControl( new SyncInfoValueControlCodec( SynchronizationInfoEnum.SYNC_ID_SET ) );
+
         try
         {
             decoder.decode( bb, container );
@@ -1449,6 +1506,7 @@ public class SyncInfoValueControlTest
             de.printStackTrace();
             fail( de.getMessage() );
         }
+        
         SyncInfoValueControlCodec syncInfoValue = container.getSyncInfoValueControl();
         assertEquals( SynchronizationInfoEnum.SYNC_ID_SET, syncInfoValue.getType() );
         assertEquals( "abc", StringTools.utf8ToString( syncInfoValue.getCookie() ) );
@@ -1468,37 +1526,34 @@ public class SyncInfoValueControlTest
         // Check the encoding
         try
         {
-            ByteBuffer encoded = syncInfoValue.encode( null );
-            encoded.flip();
-            bb.flip();
-            
-            container.clean();
-            
-            try
-            {
-                decoder.decode( encoded, container );
-            }
-            catch ( DecoderException de )
-            {
-                de.printStackTrace();
-                fail( de.getMessage() );
-            }
-            
-            SyncInfoValueControlCodec redecoded = container.getSyncInfoValueControl();
-            
-            assertTrue( Arrays.equals( syncInfoValue.getCookie(), redecoded.getCookie() ) );
-            assertEquals( syncInfoValue.isRefreshDeletes(), redecoded.isRefreshDeletes() );
-            assertEquals( 3, redecoded.getSyncUUIDs().size() );
-            
-            for ( int i = 0; i < 3; i++ )
-            {
-                byte[] uuid = redecoded.getSyncUUIDs().get( i );
-                
-                for ( int j = 0; j < 16; j++ )
-                {
-                    assertEquals( i + 1, uuid[j] );
-                }
-            }
+            ByteBuffer buffer = ByteBuffer.allocate( 0x60 );
+            buffer.put( new byte[]
+                { 
+                  0x30, 0x5E,                            // Control
+                    0x04, 0x18,                          // OID (SyncInfoValue)
+                      '1', '.', '3', '.', '6', '.', '1', '.', 
+                      '4', '.', '1', '.', '4', '2', '0', '3',
+                      '.', '1', '.', '9', '.', '1', '.', '4',
+                    0x04, 0x42,
+                      (byte)0xA3, 0x40,                  // syncInfoValue ::= CHOICE {
+                                                         //     syncIdSet [3] SEQUENCE {
+                        0X04, 0X03, 'a', 'b', 'c',       //         cookie         syncCookie OPTIONAL,
+                        0x01, 0x01, (byte)0xFF,          //         refreshDeletes BOOLEAN DEFAULT FALSE,
+                        0x31, 0x36,                      //         syncUUIDs SET OF syncUUID
+                          0x04, 0x10,                    // syncUUID
+                            0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01,
+                            0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01,
+                          0x04, 0x10,                    // syncUUID
+                            0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02,
+                            0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02,
+                          0x04, 0x10,                    // syncUUID
+                            0x03, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03,
+                            0x03, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03
+                } );
+            buffer.flip();
+
+            ByteBuffer encoded = syncInfoValue.encode( ByteBuffer.allocate( syncInfoValue.computeLength() ) );
+            assertEquals( StringTools.dumpBytes( buffer.array() ), StringTools.dumpBytes( encoded.array() ) );
         }
         catch ( EncoderException ee )
         {
@@ -1530,7 +1585,8 @@ public class SyncInfoValueControlTest
         bb.flip();
 
         SyncInfoValueControlContainer container = new SyncInfoValueControlContainer();
-        
+        container.setSyncInfoValueControl( new SyncInfoValueControlCodec( SynchronizationInfoEnum.SYNC_ID_SET ) );
+
         try
         {
             decoder.decode( bb, container );
@@ -1567,7 +1623,8 @@ public class SyncInfoValueControlTest
         bb.flip();
 
         SyncInfoValueControlContainer container = new SyncInfoValueControlContainer();
-        
+        container.setSyncInfoValueControl( new SyncInfoValueControlCodec( SynchronizationInfoEnum.SYNC_ID_SET ) );
+
         try
         {
             decoder.decode( bb, container );

@@ -22,10 +22,13 @@ package org.apache.directory.shared.ldap.codec.search.controls.entryChange;
 
 import java.nio.ByteBuffer;
 
+import javax.naming.NamingException;
+
 import org.apache.directory.shared.asn1.Asn1Object;
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.codec.DecoderException;
-import org.apache.directory.shared.ldap.codec.ControlDecoder;
+import org.apache.directory.shared.ldap.codec.controls.CodecControl;
+import org.apache.directory.shared.ldap.codec.controls.ControlDecoder;
 
 
 /**
@@ -36,19 +39,8 @@ import org.apache.directory.shared.ldap.codec.ControlDecoder;
  */
 public class EntryChangeControlDecoder extends Asn1Decoder implements ControlDecoder
 {
-    /** The entry change OID */
-    private final static String CONTROL_TYPE_OID = "2.16.840.1.113730.3.4.7";
-
     /** An instance of this decoder */
     private static final Asn1Decoder decoder = new Asn1Decoder();
-
-    /**
-     * @return The Entry Change controm OID
-     */
-    public String getControlType()
-    {
-        return CONTROL_TYPE_OID;
-    }
 
     /**
      * Decode the entry change control
@@ -61,10 +53,11 @@ public class EntryChangeControlDecoder extends Asn1Decoder implements ControlDec
      * @throws NamingException It will never be throw by this method
      */
     
-    public Asn1Object decode( byte[] controlBytes ) throws DecoderException
+    public Asn1Object decode( byte[] controlBytes, CodecControl control ) throws DecoderException
     {
         ByteBuffer bb = ByteBuffer.wrap( controlBytes );
         EntryChangeControlContainer container = new EntryChangeControlContainer();
+        container.setEntryChangeControl( (EntryChangeControlCodec)control );
         decoder.decode( bb, container );
         return container.getEntryChangeControl();
     }

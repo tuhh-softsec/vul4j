@@ -31,8 +31,8 @@ import java.util.List;
 
 import org.apache.directory.shared.dsmlv2.AbstractResponseTest;
 import org.apache.directory.shared.dsmlv2.Dsmlv2ResponseParser;
-import org.apache.directory.shared.ldap.codec.ControlCodec;
 import org.apache.directory.shared.ldap.codec.LdapResultCodec;
+import org.apache.directory.shared.ldap.codec.controls.CodecControl;
 import org.apache.directory.shared.ldap.codec.modify.ModifyResponseCodec;
 import org.apache.directory.shared.ldap.codec.util.LdapURLEncodingException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
@@ -112,13 +112,13 @@ public class ModifyResponseTest extends AbstractResponseTest
 
         assertEquals( 1, modifyResponse.getControls().size() );
 
-        ControlCodec control = modifyResponse.getCurrentControl();
+        CodecControl control = modifyResponse.getCurrentControl();
 
-        assertTrue( control.getCriticality() );
+        assertTrue( control.isCritical() );
 
-        assertEquals( "1.2.840.113556.1.4.643", control.getControlType() );
+        assertEquals( "1.2.840.113556.1.4.643", control.getOid() );
 
-        assertEquals( "Some text", StringTools.utf8ToString( ( byte[] ) control.getControlValue() ) );
+        assertEquals( "Some text", StringTools.utf8ToString( ( byte[] ) control.getValue() ) );
     }
 
 
@@ -144,12 +144,12 @@ public class ModifyResponseTest extends AbstractResponseTest
         }
 
         ModifyResponseCodec modifyResponse = ( ModifyResponseCodec ) parser.getBatchResponse().getCurrentResponse();
-        ControlCodec control = modifyResponse.getCurrentControl();
+        CodecControl control = modifyResponse.getCurrentControl();
 
         assertEquals( 1, modifyResponse.getControls().size() );
-        assertTrue( control.getCriticality() );
-        assertEquals( "1.2.840.113556.1.4.643", control.getControlType() );
-        assertEquals( StringTools.EMPTY_BYTES, ( byte[] ) control.getControlValue() );
+        assertTrue( control.isCritical() );
+        assertEquals( "1.2.840.113556.1.4.643", control.getOid() );
+        assertFalse( control.hasValue() );
     }
 
 
@@ -178,13 +178,13 @@ public class ModifyResponseTest extends AbstractResponseTest
 
         assertEquals( 2, modifyResponse.getControls().size() );
 
-        ControlCodec control = modifyResponse.getCurrentControl();
+        CodecControl control = modifyResponse.getCurrentControl();
 
-        assertFalse( control.getCriticality() );
+        assertFalse( control.isCritical() );
 
-        assertEquals( "1.2.840.113556.1.4.789", control.getControlType() );
+        assertEquals( "1.2.840.113556.1.4.789", control.getOid() );
 
-        assertEquals( "Some other text", StringTools.utf8ToString( ( byte[] ) control.getControlValue() ) );
+        assertEquals( "Some other text", StringTools.utf8ToString( ( byte[] ) control.getValue() ) );
     }
 
 
@@ -213,13 +213,13 @@ public class ModifyResponseTest extends AbstractResponseTest
 
         assertEquals( 3, modifyResponse.getControls().size() );
 
-        ControlCodec control = modifyResponse.getCurrentControl();
+        CodecControl control = modifyResponse.getCurrentControl();
 
-        assertTrue( control.getCriticality() );
+        assertTrue( control.isCritical() );
 
-        assertEquals( "1.2.840.113556.1.4.456", control.getControlType() );
+        assertEquals( "1.2.840.113556.1.4.456", control.getOid() );
 
-        assertEquals( StringTools.EMPTY_BYTES, control.getControlValue() );
+        assertFalse( control.hasValue() );
     }
 
 

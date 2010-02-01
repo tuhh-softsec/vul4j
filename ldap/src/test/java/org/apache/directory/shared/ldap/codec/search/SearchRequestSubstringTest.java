@@ -34,10 +34,10 @@ import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.codec.EncoderException;
-import org.apache.directory.shared.ldap.codec.ControlCodec;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
+import org.apache.directory.shared.ldap.codec.controls.CodecControl;
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.filter.SearchScope;
@@ -253,8 +253,11 @@ public class SearchRequestSubstringTest
                 0x04, 0x05, 'a', 't', 't', 'r', '2', // AttributeDescription
                                                         // ::= LDAPString
                 ( byte ) 0xA0, 0x1B, // A control
-                0x30, 0x19, 0x04, 0x17, 0x32, 0x2E, 0x31, 0x36, 0x2E, 0x38, 0x34, 0x30, 0x2E, 0x31, 0x2E, 0x31, 0x31,
-                0x33, 0x37, 0x33, 0x30, 0x2E, 0x33, 0x2E, 0x34, 0x2E, 0x32 } );
+                  0x30, 0x19, 
+                    0x04, 0x17, 
+                      0x32, 0x2E, 0x31, 0x36, 0x2E, 0x38, 0x34, 0x30, 
+                      0x2E, 0x31, 0x2E, 0x31, 0x31, 0x33, 0x37, 0x33, 
+                      0x30, 0x2E, 0x33, 0x2E, 0x34, 0x2E, 0x32 } );
 
         String decodedPdu = StringTools.dumpBytes( stream.array() );
         stream.flip();
@@ -299,13 +302,13 @@ public class SearchRequestSubstringTest
         }
 
         // Check the Control
-        List<ControlCodec> controls = message.getControls();
+        List<CodecControl> controls = message.getControls();
 
         assertEquals( 1, controls.size() );
 
-        ControlCodec control = message.getControls( 0 );
-        assertEquals( "2.16.840.1.113730.3.4.2", control.getControlType() );
-        assertEquals( "", StringTools.dumpBytes( ( byte[] ) control.getControlValue() ) );
+        CodecControl control = message.getControls( 0 );
+        assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
+        assertEquals( "", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
 
         // Check the length
         assertEquals( 0x0081, message.computeLength() );
@@ -344,39 +347,46 @@ public class SearchRequestSubstringTest
                 0x02, 0x01, 0x01, // messageID MessageID
                 0x63, 0x5D, // CHOICE { ..., searchRequest SearchRequest, ...
                 // SearchRequest ::= APPLICATION[3] SEQUENCE {
-                0x04, 0x1F, // baseObject LDAPDN,
-                'u', 'i', 'd', '=', 'a', 'k', 'a', 'r', 'a', 's', 'u', 'l', 'u', ',', 'd', 'c', '=', 'e', 'x', 'a',
-                'm', 'p', 'l', 'e', ',', 'd', 'c', '=', 'c', 'o', 'm', 0x0A, 0x01, 0x01, // scope
+                  0x04, 0x1F, // baseObject LDAPDN,
+                    'u', 'i', 'd', '=', 'a', 'k', 'a', 'r', 'a', 's', 'u', 'l', 'u', ',', 'd', 'c', '=', 'e', 'x', 'a',
+                    'm', 'p', 'l', 'e', ',', 'd', 'c', '=', 'c', 'o', 'm', 
+                  0x0A, 0x01, 0x01, // scope
                                                                                             // ENUMERATED
                                                                                             // {
                 // baseObject (0),
                 // singleLevel (1),
                 // wholeSubtree (2) },
-                0x0A, 0x01, 0x03, // derefAliases ENUMERATED {
+                  0x0A, 0x01, 0x03, // derefAliases ENUMERATED {
                 // neverDerefAliases (0),
                 // derefInSearching (1),
                 // derefFindingBaseObj (2),
                 // derefAlways (3) },
                 // sizeLimit INTEGER (0 .. maxInt), (1000)
-                0x02, 0x02, 0x03, ( byte ) 0xE8,
+                  0x02, 0x02, 0x03, ( byte ) 0xE8,
                 // timeLimit INTEGER (0 .. maxInt), (1000)
-                0x02, 0x02, 0x03, ( byte ) 0xE8, 0x01, 0x01, ( byte ) 0xFF, // typesOnly
+                  0x02, 0x02, 0x03, ( byte ) 0xE8, 
+                  0x01, 0x01, ( byte ) 0xFF, // typesOnly
                                                                             // BOOLEAN,
                                                                             // (TRUE)
                 // filter Filter,
-                ( byte ) 0xA4, 0x12, // Filter ::= CHOICE {
+                  ( byte ) 0xA4, 0x12, // Filter ::= CHOICE {
                 // substrings [4] SubstringFilter
                 // }
                 // SubstringFilter ::= SEQUENCE {
-                0x04, 0x0B, // type AttributeDescription,
-                'o', 'b', 'j', 'e', 'c', 't', 'c', 'l', 'a', 's', 's', 0x30, 0x03, ( byte ) 0x81, 0x01, 't', //
-                0x30, 0x15, // AttributeDescriptionList ::= SEQUENCE OF
+                    0x04, 0x0B, // type AttributeDescription,
+                      'o', 'b', 'j', 'e', 'c', 't', 'c', 'l', 'a', 's', 's', 
+                    0x30, 0x03, 
+                      ( byte ) 0x81, 0x01, 't', //
+                      0x30, 0x15, // AttributeDescriptionList ::= SEQUENCE OF
                             // AttributeDescription
-                0x04, 0x05, 'a', 't', 't', 'r', '0', // AttributeDescription
+                        0x04, 0x05, 
+                          'a', 't', 't', 'r', '0', // AttributeDescription
                                                         // ::= LDAPString
-                0x04, 0x05, 'a', 't', 't', 'r', '1', // AttributeDescription
+                        0x04, 0x05, 
+                          'a', 't', 't', 'r', '1', // AttributeDescription
                                                         // ::= LDAPString
-                0x04, 0x05, 'a', 't', 't', 'r', '2' // AttributeDescription ::=
+                        0x04, 0x05, 
+                          'a', 't', 't', 'r', '2' // AttributeDescription ::=
                                                     // LDAPString
             } );
 

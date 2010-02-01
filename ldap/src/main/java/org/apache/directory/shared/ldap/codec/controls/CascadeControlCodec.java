@@ -20,10 +20,6 @@
 package org.apache.directory.shared.ldap.codec.controls;
 
 
-import java.nio.ByteBuffer;
-
-import org.apache.directory.shared.asn1.AbstractAsn1Object;
-import org.apache.directory.shared.asn1.codec.EncoderException;
 
 
 /**
@@ -31,9 +27,10 @@ import org.apache.directory.shared.asn1.codec.EncoderException;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public class CascadeControlCodec extends AbstractAsn1Object
+public class CascadeControlCodec  extends AbstractControlCodec
 {
-    private static final ByteBuffer EMPTY_BUFFER = ByteBuffer.allocate( 0 );
+    /** The cascade control OID */
+    public static final String CONTROL_OID = "1.3.6.1.4.1.18060.0.0.1";
 
     /**
      * Default constructor
@@ -41,23 +38,33 @@ public class CascadeControlCodec extends AbstractAsn1Object
      */
     public CascadeControlCodec()
     {
-        super();
+        super( CONTROL_OID );
+        
+        decoder = new CascadeControlDecoder();
     }
 
+    
     /**
-     * Returns 0 everytime.
+     * Returns the default control length.
      */
     public int computeLength()
     {
-        return 0;
+        // Call the super class to compute the global control length
+        return super.computeLength( 0 );
     }
 
-
+    
     /**
-     * Encodes the control: does nothing but returns an empty buffer.
+     * Return a String representing this Cascade Control.
      */
-    public ByteBuffer encode( ByteBuffer buffer ) throws EncoderException
+    public String toString()
     {
-        return EMPTY_BUFFER;
+        StringBuffer sb = new StringBuffer();
+
+        sb.append( "    Cascade Control\n" );
+        sb.append( "        oid : " ).append( getOid() ).append( '\n' );
+        sb.append( "        critical : " ).append( isCritical() ).append( '\n' );
+        
+        return sb.toString();
     }
 }

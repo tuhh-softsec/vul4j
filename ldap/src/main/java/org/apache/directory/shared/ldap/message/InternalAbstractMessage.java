@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.apache.directory.shared.ldap.codec.controls.CodecControl;
 import org.apache.directory.shared.ldap.message.control.Control;
 
 
@@ -86,7 +87,7 @@ public abstract class InternalAbstractMessage implements InternalMessage
      * Gets the controls associated with this message mapped by OID.
      * 
      * @return Map of OID strings to Control object instances.
-     * @see InternalControl
+     * @see CodecControl
      */
     public Map<String, Control> getControls()
     {

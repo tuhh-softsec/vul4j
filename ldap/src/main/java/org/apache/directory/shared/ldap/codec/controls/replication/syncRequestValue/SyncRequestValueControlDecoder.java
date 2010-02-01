@@ -22,11 +22,13 @@ package org.apache.directory.shared.ldap.codec.controls.replication.syncRequestV
 
 import java.nio.ByteBuffer;
 
+import javax.naming.NamingException;
+
 import org.apache.directory.shared.asn1.Asn1Object;
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.codec.DecoderException;
-import org.apache.directory.shared.ldap.codec.ControlDecoder;
-import org.apache.directory.shared.ldap.message.control.replication.SyncRequestValueControl;
+import org.apache.directory.shared.ldap.codec.controls.CodecControl;
+import org.apache.directory.shared.ldap.codec.controls.ControlDecoder;
 
 
 /**
@@ -41,16 +43,6 @@ public class SyncRequestValueControlDecoder extends Asn1Decoder implements Contr
     private static final Asn1Decoder decoder = new Asn1Decoder();
 
     /**
-     * Return the syncRequestValue OID
-     * 
-     * @see org.apache.directory.shared.ldap.codec.ControlDecoder#getControlType()
-     */
-    public String getControlType()
-    {
-        return SyncRequestValueControl.CONTROL_OID;
-    }
-
-    /**
      * Decode the syncRequestValue control
      * 
      * @param controlBytes The bytes array which contains the encoded syncRequestValue
@@ -60,10 +52,12 @@ public class SyncRequestValueControlDecoder extends Asn1Decoder implements Contr
      * @throws DecoderException If the decoding found an error
      * @throws NamingException It will never be throw by this method
      */
-    public Asn1Object decode( byte[] controlBytes ) throws DecoderException
+    public Asn1Object decode( byte[] controlBytes, CodecControl control ) throws DecoderException
     {
         ByteBuffer bb = ByteBuffer.wrap( controlBytes );
         SyncRequestValueControlContainer container = new SyncRequestValueControlContainer();
+        container.setSyncRequestValueControl( (SyncRequestValueControlCodec)control );
+
         decoder.decode( bb, container );
         return container.getSyncRequestValueControl();
     }

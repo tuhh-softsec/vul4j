@@ -22,6 +22,7 @@ package org.apache.directory.shared.ldap.message;
 
 import java.util.Map;
 
+import org.apache.directory.shared.ldap.codec.controls.CodecControl;
 import org.apache.directory.shared.ldap.message.control.Control;
 
 
@@ -47,7 +48,7 @@ public interface InternalMessage
      * Gets the controls associated with this message mapped by OID.
      * 
      * @return Map of OID strings to Control object instances.
-     * @see InternalControl
+     * @see CodecControl
      */
     Map<String, Control> getControls();
 

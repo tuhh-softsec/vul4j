@@ -79,6 +79,8 @@ import org.apache.directory.shared.ldap.codec.bind.SaslCredentials;
 import org.apache.directory.shared.ldap.codec.bind.SimpleAuthentication;
 import org.apache.directory.shared.ldap.codec.compare.CompareRequestCodec;
 import org.apache.directory.shared.ldap.codec.compare.CompareResponseCodec;
+import org.apache.directory.shared.ldap.codec.controls.CodecControl;
+import org.apache.directory.shared.ldap.codec.controls.CodecControlImpl;
 import org.apache.directory.shared.ldap.codec.del.DelRequestCodec;
 import org.apache.directory.shared.ldap.codec.del.DelResponseCodec;
 import org.apache.directory.shared.ldap.codec.extended.ExtendedRequestCodec;
@@ -3470,7 +3472,6 @@ public class LdapMessageGrammar extends AbstractGrammar
             public void action( IAsn1Container container ) throws DecoderException
             {
                 LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-                LdapMessageCodec message = ldapMessageContainer.getLdapMessage();
 
                 TLV tlv = ldapMessageContainer.getCurrentTLV();
                 int expectedLength = tlv.getLength();
@@ -3483,12 +3484,6 @@ public class LdapMessageGrammar extends AbstractGrammar
                     // This will generate a PROTOCOL_ERROR
                     throw new DecoderException( "The length of a control must not be null" );
                 }
-
-                // Create a new control
-                ControlCodec control = new ControlCodec();
-
-                // Store the control into the container
-                message.addControl( control );
             }
         };
 
@@ -3522,7 +3517,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
                     // Get the current control
-                    ControlCodec control = message.getCurrentControl();
+                    CodecControl control = null;
 
                     // Store the type
                     // We have to handle the special case of a 0 length OID
@@ -3533,34 +3528,37 @@ public class LdapMessageGrammar extends AbstractGrammar
                         // This will generate a PROTOCOL_ERROR
                         throw new DecoderException( "The OID must not be null" );
                     }
-                    else
+
+                    byte[] value = tlv.getValue().getData();
+                    String oidValue = StringTools.asciiBytesToString( value );
+
+                    // The OID is encoded as a String, not an Object Id
+                    if ( !OID.isOID( oidValue ) )
                     {
-                        byte[] value = tlv.getValue().getData();
-                        String oidValue = StringTools.asciiBytesToString( value );
+                        log.error( "The control type " + StringTools.dumpBytes( value ) + " is not a valid OID" );
 
-                        // The OID is encoded as a String, not an Object Id
-                        try
-                        {
-                            new OID( oidValue );
-                        }
-                        catch ( DecoderException de )
-                        {
-                            log.error( "The control type " + StringTools.dumpBytes( value ) + " is not a valid OID : "
-                                + de.getMessage() );
-
-                            // This will generate a PROTOCOL_ERROR
-                            throw de;
-                        }
-
-                        control.setControlType( oidValue );
+                        // This will generate a PROTOCOL_ERROR
+                        throw new DecoderException( "Invalid control OID : " + oidValue );
                     }
+                    
+                    // get the Control for this OID
+                    control = message.getCodecControl( oidValue );
+                    
+                    if ( control == null )
+                    {
+                        // This control is unknown, we will create a neutral control
+                        control = new CodecControlImpl( oidValue );
+                    }
+                    
+                    // The control may be null, if not known
+                    message.addControl( control );
 
                     // We can have an END transition
                     ldapMessageContainer.grammarEndAllowed( true );
 
                     if ( IS_DEBUG )
                     {
-                        log.debug( "Control OID : " + control.getControlType() );
+                        log.debug( "Control OID : " + control.getOid() );
                     }
                 }
             } );
@@ -3586,7 +3584,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
                     // Get the current control
-                    ControlCodec control = message.getCurrentControl();
+                    CodecControl control = message.getCurrentControl();
 
                     // Store the criticality
                     // We get the value. If it's a 0, it's a FALSE. If it's
@@ -3599,7 +3597,7 @@ public class LdapMessageGrammar extends AbstractGrammar
 
                     try
                     {
-                        control.setCriticality( BooleanDecoder.parse( value ) );
+                        control.setCritical( BooleanDecoder.parse( value ) );
                     }
                     catch ( BooleanDecoderException bde )
                     {
@@ -3615,7 +3613,7 @@ public class LdapMessageGrammar extends AbstractGrammar
 
                     if ( IS_DEBUG )
                     {
-                        log.debug( "Control criticality : " + control.getCriticality() );
+                        log.debug( "Control criticality : " + control.isCritical() );
                     }
                 }
             } );

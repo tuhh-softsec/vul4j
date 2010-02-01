@@ -43,13 +43,14 @@ import org.apache.directory.shared.dsmlv2.request.BatchRequest.OnError;
 import org.apache.directory.shared.dsmlv2.request.BatchRequest.Processing;
 import org.apache.directory.shared.dsmlv2.request.BatchRequest.ResponseOrder;
 import org.apache.directory.shared.ldap.codec.AttributeValueAssertion;
-import org.apache.directory.shared.ldap.codec.ControlCodec;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.codec.abandon.AbandonRequestCodec;
 import org.apache.directory.shared.ldap.codec.add.AddRequestCodec;
 import org.apache.directory.shared.ldap.codec.bind.BindRequestCodec;
 import org.apache.directory.shared.ldap.codec.bind.SimpleAuthentication;
 import org.apache.directory.shared.ldap.codec.compare.CompareRequestCodec;
+import org.apache.directory.shared.ldap.codec.controls.CodecControl;
+import org.apache.directory.shared.ldap.codec.controls.CodecControlImpl;
 import org.apache.directory.shared.ldap.codec.del.DelRequestCodec;
 import org.apache.directory.shared.ldap.codec.extended.ExtendedRequestCodec;
 import org.apache.directory.shared.ldap.codec.modify.ModifyRequestCodec;
@@ -2644,8 +2645,7 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            ControlCodec control = new ControlCodec();
-            container.getBatchRequest().getCurrentRequest().addControl( control );
+            CodecControl control = null;
 
             XmlPullParser xpp = container.getParser();
 
@@ -2653,6 +2653,7 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
             String attributeValue;
             // TYPE
             attributeValue = xpp.getAttributeValue( "", "type" );
+            
             if ( attributeValue != null )
             {
                 if ( !OID.isOID( attributeValue ) )
@@ -2660,23 +2661,27 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
                     throw new XmlPullParserException( "Incorrect value for 'type' attribute. This is not an OID.", xpp,
                         null );
                 }
-                control.setControlType( attributeValue );
+                
+                control = new CodecControlImpl( attributeValue );
+                container.getBatchRequest().getCurrentRequest().addControl( control );
             }
             else
             {
                 throw new XmlPullParserException( "type attribute is required", xpp, null );
             }
+            
             // CRITICALITY
             attributeValue = xpp.getAttributeValue( "", "criticality" );
+            
             if ( attributeValue != null )
             {
                 if ( attributeValue.equals( "true" ) )
                 {
-                    control.setCriticality( true );
+                    control.setCritical( true );
                 }
                 else if ( attributeValue.equals( "false" ) )
                 {
-                    control.setCriticality( false );
+                    control.setCritical( false );
                 }
                 else
                 {
@@ -2693,7 +2698,7 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            ControlCodec control = container.getBatchRequest().getCurrentRequest().getCurrentControl();
+            CodecControl control = container.getBatchRequest().getCurrentRequest().getCurrentControl();
 
             XmlPullParser xpp = container.getParser();
             try
@@ -2703,15 +2708,16 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
 
                 // Getting the value
                 String nextText = xpp.nextText();
+                
                 if ( !nextText.equals( "" ) )
                 {
                     if ( ParserUtils.isBase64BinaryValue( xpp, typeValue ) )
                     {
-                        control.setControlValue( Base64.decode( nextText.trim().toCharArray() ) );
+                        control.setValue( Base64.decode( nextText.trim().toCharArray() ) );
                     }
                     else
                     {
-                        control.setControlValue( nextText.trim() );
+                        control.setValue( nextText.trim().getBytes() );
                     }
                 }
             }

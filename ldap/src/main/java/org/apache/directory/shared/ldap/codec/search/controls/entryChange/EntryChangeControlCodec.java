@@ -22,11 +22,12 @@ package org.apache.directory.shared.ldap.codec.search.controls.entryChange;
 
 import java.nio.ByteBuffer;
 
-import org.apache.directory.shared.asn1.AbstractAsn1Object;
+import org.apache.directory.shared.asn1.Asn1Object;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.asn1.codec.EncoderException;
+import org.apache.directory.shared.ldap.codec.controls.AbstractControlCodec;
 import org.apache.directory.shared.ldap.codec.search.controls.ChangeType;
 import org.apache.directory.shared.ldap.name.LdapDN;
 import org.apache.directory.shared.ldap.util.StringTools;
@@ -80,8 +81,11 @@ import org.apache.directory.shared.ldap.util.StringTools;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$, 
  */
-public class EntryChangeControlCodec extends AbstractAsn1Object
+public class EntryChangeControlCodec extends AbstractControlCodec
 {
+    /** The EntryChange control */
+    public static final String CONTROL_OID = "2.16.840.1.113730.3.4.7";
+
     public static final int UNDEFINED_CHANGE_NUMBER = -1;
 
     private ChangeType changeType = ChangeType.ADD;
@@ -103,7 +107,9 @@ public class EntryChangeControlCodec extends AbstractAsn1Object
      */
     public EntryChangeControlCodec()
     {
-        super();
+        super( CONTROL_OID );
+        
+        decoder = new EntryChangeControlDecoder();
     }
 
     
@@ -135,8 +141,10 @@ public class EntryChangeControlCodec extends AbstractAsn1Object
         }
 
         eccSeqLength = changeTypesLength + previousDnLength + changeNumberLength;
+        valueLength = 1 + TLV.getNbBytes( eccSeqLength ) + eccSeqLength;
 
-        return 1 + TLV.getNbBytes( eccSeqLength ) + eccSeqLength;
+        // Call the super class to compute the global control length
+        return super.computeLength( valueLength );
     }
 
 
@@ -149,59 +157,94 @@ public class EntryChangeControlCodec extends AbstractAsn1Object
      */
     public ByteBuffer encode( ByteBuffer buffer ) throws EncoderException
     {
-        // Allocate the bytes buffer.
-        ByteBuffer bb = ByteBuffer.allocate( computeLength() );
-        bb.put( UniversalTag.SEQUENCE_TAG );
-        bb.put( TLV.getBytes( eccSeqLength ) );
+        if ( buffer == null )
+        {
+            throw new EncoderException( "Cannot put a PDU in a null buffer !" );
+        }
 
-        bb.put( UniversalTag.ENUMERATED_TAG );
-        bb.put( ( byte ) 1 );
-        bb.put( Value.getBytes( changeType.getValue() ) );
+        // Encode the Control envelop
+        super.encode( buffer );
+        
+        // Encode the OCTET_STRING tag
+        buffer.put( UniversalTag.OCTET_STRING_TAG );
+        buffer.put( TLV.getBytes( valueLength ) );
+
+        buffer.put( UniversalTag.SEQUENCE_TAG );
+        buffer.put( TLV.getBytes( eccSeqLength ) );
+
+        buffer.put( UniversalTag.ENUMERATED_TAG );
+        buffer.put( ( byte ) 1 );
+        buffer.put( Value.getBytes( changeType.getValue() ) );
 
         if ( previousDn != null )
         {
-            Value.encode( bb, previousDnBytes );
+            Value.encode( buffer, previousDnBytes );
         }
         
         if ( changeNumber != UNDEFINED_CHANGE_NUMBER )
         {
-            Value.encode( bb, changeNumber );
+            Value.encode( buffer, changeNumber );
         }
         
-        return bb;
+        return buffer;
+    }
+    
+    
+    /**
+     * {@inheritDoc}
+     */
+    public byte[] getValue()
+    {
+        if ( value == null )
+        {
+            try
+            { 
+                computeLength();
+                ByteBuffer buffer = ByteBuffer.allocate( valueLength );
+                
+                buffer.put( UniversalTag.SEQUENCE_TAG );
+                buffer.put( TLV.getBytes( eccSeqLength ) );
+        
+                buffer.put( UniversalTag.ENUMERATED_TAG );
+                buffer.put( ( byte ) 1 );
+                buffer.put( Value.getBytes( changeType.getValue() ) );
+        
+                if ( previousDn != null )
+                {
+                    Value.encode( buffer, previousDnBytes );
+                }
+                
+                if ( changeNumber != UNDEFINED_CHANGE_NUMBER )
+                {
+                    Value.encode( buffer, changeNumber );
+                }
+                
+                value = buffer.array();
+            }
+            catch ( Exception e )
+            {
+                return null;
+            }
+        }
+        
+        return value;
     }
 
 
     /**
-     * Return a String representing this EntryChangeControl.
+     * @return The ChangeType
      */
-    public String toString()
-    {
-        StringBuffer sb = new StringBuffer();
-
-        sb.append( "    Entry Change Control\n" );
-        sb.append( "        changeType   : '" ).append( changeType ).append( "'\n" );
-        sb.append( "        previousDN   : '" ).append( previousDn ).append( "'\n" );
-        
-        if ( changeNumber == UNDEFINED_CHANGE_NUMBER )
-        {
-            sb.append( "        changeNumber : '" ).append( "UNDEFINED" ).append( "'\n" );
-        }
-        else
-        {
-            sb.append( "        changeNumber : '" ).append( changeNumber ).append( "'\n" );
-        }
-        
-        return sb.toString();
-    }
-
-
     public ChangeType getChangeType()
     {
         return changeType;
     }
 
 
+    /**
+     * Set the ChangeType
+     *
+     * @param changeType Add, Delete; Modify or ModifyDN
+     */
     public void setChangeType( ChangeType changeType )
     {
         this.changeType = changeType;
@@ -229,5 +272,31 @@ public class EntryChangeControlCodec extends AbstractAsn1Object
     public void setChangeNumber( long changeNumber )
     {
         this.changeNumber = changeNumber;
+    }
+
+
+    /**
+     * Return a String representing this EntryChangeControl.
+     */
+    public String toString()
+    {
+        StringBuffer sb = new StringBuffer();
+
+        sb.append( "    Entry Change Control\n" );
+        sb.append( "        oid : " ).append( getOid() ).append( '\n' );
+        sb.append( "        critical : " ).append( isCritical() ).append( '\n' );
+        sb.append( "        changeType   : '" ).append( changeType ).append( "'\n" );
+        sb.append( "        previousDN   : '" ).append( previousDn ).append( "'\n" );
+        
+        if ( changeNumber == UNDEFINED_CHANGE_NUMBER )
+        {
+            sb.append( "        changeNumber : '" ).append( "UNDEFINED" ).append( "'\n" );
+        }
+        else
+        {
+            sb.append( "        changeNumber : '" ).append( changeNumber ).append( "'\n" );
+        }
+        
+        return sb.toString();
     }
 }

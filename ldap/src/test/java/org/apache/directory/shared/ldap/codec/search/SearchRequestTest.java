@@ -38,12 +38,12 @@ import org.apache.directory.shared.asn1.ber.tlv.TLVStateEnum;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.ldap.codec.AttributeValueAssertion;
-import org.apache.directory.shared.ldap.codec.ControlCodec;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.ResponseCarryingException;
-import org.apache.directory.shared.ldap.codec.search.controls.subEntry.SubEntryControlCodec;
+import org.apache.directory.shared.ldap.codec.controls.CodecControl;
+import org.apache.directory.shared.ldap.codec.search.controls.subentries.SubentriesControlCodec;
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.filter.SearchScope;
@@ -1050,20 +1050,21 @@ public class SearchRequestTest
                 ( byte ) 0x87, 0x0b,            // Present filter: (objectClass=*)
                   'o', 'b', 'j', 'e', 'c', 't', 'C', 'l', 'a', 's', 's',
                   0x30, 0x00,                   // Attributes = '*'
-                ( byte ) 0xa0, 0x45,            // controls
-                  0x30, 0x28, 
-                    0x04, 0x16,                 // control
-                      '1', '.', '2', '.', '8', '4', '0', '.', '1', '1', '3', 
-                      '5', '5', '6', '.', '1', '.', '4', '.', '3', '1', '9',
-                    0x01, 0x01, ( byte ) 0xff, // criticality: false
-                    0x04, 0x0b, 
-                      0x30, 0x09, 
-                        0x02, 0x01, 0x02, 
-                        0x04, 0x04, 0x47, 0x00, 0x00, 0x00, // value: pageSize=2
-                  0x30, 0x19, 
-                    0x04, 0x17, // control
-                      '2', '.', '1', '6', '.', '8', '4', '0', '.', '1', '.', '1',
-                      '1', '3', '7', '3', '0', '.', '3', '.', '4', '.', '2',
+              ( byte ) 0xa0, 0x45,            // controls
+                0x30, 0x28, 
+                  0x04, 0x16,                 // control
+                    '1', '.', '2', '.', '8', '4', '0', '.', '1', '1', '3', 
+                    '5', '5', '6', '.', '1', '.', '4', '.', '3', '1', '9',
+                  0x01, 0x01, ( byte ) 0xff, // criticality: false
+                  0x04, 0x0b, 
+                    0x30, 0x09, 
+                      0x02, 0x01, 0x02, 
+                      0x04, 0x04, 
+                        0x47, 0x00, 0x00, 0x00, // value: pageSize=2
+                0x30, 0x19, 
+                  0x04, 0x17, // control
+                    '2', '.', '1', '6', '.', '8', '4', '0', '.', '1', '.', '1',
+                    '1', '3', '7', '3', '0', '.', '3', '.', '4', '.', '2',
             };
 
         Asn1Decoder ldapDecoder = new Asn1Decoder();
@@ -1093,14 +1094,14 @@ public class SearchRequestTest
 
         // this is a constant in Java 5 API
         String pagedResultsControlOID = "1.2.840.113556.1.4.319";
-        ControlCodec pagedResultsControl = message.getControls( 0 );
-        assertEquals( pagedResultsControlOID, pagedResultsControl.getControlType() );
-        assertTrue( pagedResultsControl.getCriticality() );
+        CodecControl pagedResultsControl = message.getControls( 0 );
+        assertEquals( pagedResultsControlOID, pagedResultsControl.getOid() );
+        assertTrue( pagedResultsControl.isCritical() );
 
         // this is a constant in Java 5 API
         String manageReferralControlOID = "2.16.840.1.113730.3.4.2";
-        ControlCodec manageReferralControl = message.getControls( 1 );
-        assertEquals( manageReferralControlOID, manageReferralControl.getControlType() );
+        CodecControl manageReferralControl = message.getControls( 1 );
+        assertEquals( manageReferralControlOID, manageReferralControl.getOid() );
 
         SearchRequestCodec sr = message.getSearchRequest();
         assertEquals( "dc=my-domain,dc=com", sr.getBaseObject().toString() );
@@ -1118,7 +1119,7 @@ public class SearchRequestTest
         {
             ByteBuffer bb = message.encode( null );
             String encodedPdu = StringTools.dumpBytes( bb.array() );
-            assertEquals( encodedPdu, decodedPdu );
+            assertEquals( decodedPdu, encodedPdu );
         }
         catch ( EncoderException ee )
         {
@@ -1352,10 +1353,11 @@ public class SearchRequestTest
 
         // SubEntry Control
         String subEntryControlOID = "1.3.6.1.4.1.4203.1.10.1";
-        ControlCodec subEntryControl = message.getControls( 0 );
-        assertEquals( subEntryControlOID, subEntryControl.getControlType() );
-        assertTrue( subEntryControl.getCriticality() );
-        assertTrue( ( ( SubEntryControlCodec ) subEntryControl.getControlValue() ).isVisible() );
+        CodecControl subEntryControl = message.getControls( 0 );
+        assertEquals( subEntryControlOID, subEntryControl.getOid() );
+        assertTrue( subEntryControl.isCritical() );
+        assertTrue( subEntryControl instanceof SubentriesControlCodec );
+        assertTrue( ((SubentriesControlCodec)subEntryControl).isVisible() );
 
         SearchRequestCodec sr = message.getSearchRequest();
         assertEquals( "dc=my-domain,dc=com", sr.getBaseObject().toString() );
@@ -1373,7 +1375,7 @@ public class SearchRequestTest
         {
             ByteBuffer bb = message.encode( null );
             String encodedPdu = StringTools.dumpBytes( bb.array() );
-            assertEquals( encodedPdu, decodedPdu );
+            assertEquals( decodedPdu, encodedPdu );
         }
         catch ( EncoderException ee )
         {

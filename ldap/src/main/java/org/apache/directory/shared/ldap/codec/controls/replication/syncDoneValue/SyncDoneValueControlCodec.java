@@ -22,11 +22,11 @@ package org.apache.directory.shared.ldap.codec.controls.replication.syncDoneValu
 
 import java.nio.ByteBuffer;
 
-import org.apache.directory.shared.asn1.AbstractAsn1Object;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.asn1.codec.EncoderException;
+import org.apache.directory.shared.ldap.codec.controls.AbstractControlCodec;
 import org.apache.directory.shared.ldap.util.StringTools;
 
 
@@ -37,8 +37,11 @@ import org.apache.directory.shared.ldap.util.StringTools;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public class SyncDoneValueControlCodec extends AbstractAsn1Object
+public class SyncDoneValueControlCodec extends AbstractControlCodec
 {
+    /** This control OID */
+    public static final String CONTROL_OID = "1.3.6.1.4.1.4203.1.9.1.3";
+
     /** The Sync cookie */
     private byte[] cookie;
 
@@ -48,6 +51,16 @@ public class SyncDoneValueControlCodec extends AbstractAsn1Object
     /** The global length for this control */
     private int syncDoneValueLength;
 
+    /**
+     * Creates a new instance of SyncDoneValueControlCodec.
+     */
+    public SyncDoneValueControlCodec()
+    {
+        super( CONTROL_OID );
+
+        decoder = new SyncDoneValueControlDecoder();
+    }
+    
 
     /**
      * Compute the syncDoneValue length.
@@ -66,9 +79,15 @@ public class SyncDoneValueControlCodec extends AbstractAsn1Object
         }
 
         // the refreshDeletes flag length
-        syncDoneValueLength += 1 + 1 + 1;
+        if ( refreshDeletes )
+        {
+            syncDoneValueLength += 1 + 1 + 1;
+        }
 
-        return 1 + TLV.getNbBytes( syncDoneValueLength ) + syncDoneValueLength;
+        valueLength = 1 + TLV.getNbBytes( syncDoneValueLength ) + syncDoneValueLength;
+
+        // Call the super class to compute the global control length
+        return super.computeLength( valueLength );
     }
 
 
@@ -82,18 +101,71 @@ public class SyncDoneValueControlCodec extends AbstractAsn1Object
     @Override
     public ByteBuffer encode( ByteBuffer buffer ) throws EncoderException
     {
-        ByteBuffer bb = ByteBuffer.allocate( computeLength() );
-        bb.put( UniversalTag.SEQUENCE_TAG );
-        bb.put( TLV.getBytes( syncDoneValueLength ) );
+        if ( buffer == null )
+        {
+            throw new EncoderException( "Cannot put a PDU in a null buffer !" );
+        }
+
+        // Encode the Control envelop
+        super.encode( buffer );
+
+        // Encode the OCTET_STRING tag
+        buffer.put( UniversalTag.OCTET_STRING_TAG );
+        buffer.put( TLV.getBytes( valueLength ) );
+
+        // Encode the SEQ 
+        buffer.put( UniversalTag.SEQUENCE_TAG );
+        buffer.put( TLV.getBytes( syncDoneValueLength ) );
 
         if ( cookie != null )
         {
-            Value.encode( bb, cookie );
+            Value.encode( buffer, cookie );
         }
 
-        Value.encode( bb, refreshDeletes );
+        if ( refreshDeletes )
+        {  
+            Value.encode( buffer, refreshDeletes );
+        }
 
-        return bb;
+        return buffer;
+    }
+    
+    
+    /**
+     * {@inheritDoc}
+     */
+    public byte[] getValue()
+    {
+        if ( value == null )
+        {
+            try
+            { 
+                computeLength();
+                ByteBuffer buffer = ByteBuffer.allocate( valueLength );
+                
+                // Encode the SEQ 
+                buffer.put( UniversalTag.SEQUENCE_TAG );
+                buffer.put( TLV.getBytes( syncDoneValueLength ) );
+
+                if ( cookie != null )
+                {
+                    Value.encode( buffer, cookie );
+                }
+
+                if ( refreshDeletes )
+                {  
+                    Value.encode( buffer, refreshDeletes );
+                }
+                
+                value = buffer.array();
+            }
+            catch ( Exception e )
+            {
+                return null;
+            }
+        }
+        
+        return value;
     }
 
 
@@ -111,7 +183,16 @@ public class SyncDoneValueControlCodec extends AbstractAsn1Object
      */
     public void setCookie( byte[] cookie )
     {
-        this.cookie = cookie;
+        // Copy the bytes
+        if ( cookie != null )
+        {
+            this.cookie = new byte[cookie.length];
+            System.arraycopy( cookie, 0, this.cookie, 0, cookie.length );
+        }
+        else
+        {
+            this.cookie = null;
+        }
     }
 
 
@@ -141,6 +222,8 @@ public class SyncDoneValueControlCodec extends AbstractAsn1Object
         StringBuilder sb = new StringBuilder();
 
         sb.append( "    SyncDoneValue control :\n" );
+        sb.append( "        oid : " ).append( getOid() ).append( '\n' );
+        sb.append( "        critical : " ).append( isCritical() ).append( '\n' );
         sb.append( "        cookie            : '" ).append( StringTools.dumpBytes( cookie ) ).append( "'\n" );
         sb.append( "        refreshDeletes : '" ).append( refreshDeletes ).append( "'\n" );
 

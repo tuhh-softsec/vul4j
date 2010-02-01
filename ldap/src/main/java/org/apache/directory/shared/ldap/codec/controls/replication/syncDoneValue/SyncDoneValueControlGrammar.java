@@ -86,17 +86,16 @@ public class SyncDoneValueControlGrammar extends AbstractGrammar
          */
         super.transitions[IStates.INIT_GRAMMAR_STATE][UniversalTag.SEQUENCE_TAG] = new GrammarTransition(
             IStates.INIT_GRAMMAR_STATE, SyncDoneValueControlStatesEnum.SYNC_DONE_VALUE_SEQUENCE_STATE, UniversalTag.SEQUENCE_TAG,
-            new GrammarAction( "Init SyncDoneValueControl" )
+            new GrammarAction( "Initiaization" )
             {
                 public void action( IAsn1Container container ) throws DecoderException
                 {
                     SyncDoneValueControlContainer syncDoneValueContainer = ( SyncDoneValueControlContainer ) container;
-                    SyncDoneValueControlCodec control = new SyncDoneValueControlCodec();
-                    syncDoneValueContainer.setSyncDoneValueControl( control );
-                    
+
+                    // As all the values are optional or defaulted, we can end here
                     syncDoneValueContainer.grammarEndAllowed( true );
                 }
-            } );
+            }  );
 
         /**
          * transition from start to cookie

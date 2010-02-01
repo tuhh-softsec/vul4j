@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.codec.search.controls.subEntry;
+package org.apache.directory.shared.ldap.codec.search.controls.subentries;
 
 
 import org.apache.directory.shared.asn1.ber.IAsn1Container;
@@ -43,36 +43,35 @@ import org.slf4j.LoggerFactory;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$, 
  */
-public class SubEntryControlGrammar extends AbstractGrammar
+public class SubentriesControlGrammar extends AbstractGrammar
 {
     /** The logger */
-    static final Logger log = LoggerFactory.getLogger( SubEntryControlGrammar.class );
+    static final Logger log = LoggerFactory.getLogger( SubentriesControlGrammar.class );
 
     /** The instance of grammar. SubEntryControlGrammar is a singleton */
-    private static IGrammar instance = new SubEntryControlGrammar();
+    private static IGrammar instance = new SubentriesControlGrammar();
 
 
     /**
      * Creates a new SubEntryGrammar object.
      */
-    private SubEntryControlGrammar()
+    private SubentriesControlGrammar()
     {
-        name = SubEntryControlGrammar.class.getName();
-        statesEnum = SubEntryControlStatesEnum.getInstance();
+        name = SubentriesControlGrammar.class.getName();
+        statesEnum = SubentriesControlStatesEnum.getInstance();
 
         // Create the transitions table
-        super.transitions = new GrammarTransition[SubEntryControlStatesEnum.LAST_SUB_ENTRY_STATE][256];
+        super.transitions = new GrammarTransition[SubentriesControlStatesEnum.LAST_SUB_ENTRY_STATE][256];
 
-        super.transitions[SubEntryControlStatesEnum.START_STATE][UniversalTag.BOOLEAN_TAG] = 
-            new GrammarTransition( SubEntryControlStatesEnum.START_STATE, 
-                                    SubEntryControlStatesEnum.SUB_ENTRY_VISIBILITY_STATE, UniversalTag.BOOLEAN_TAG, 
+        super.transitions[SubentriesControlStatesEnum.START_STATE][UniversalTag.BOOLEAN_TAG] = 
+            new GrammarTransition( SubentriesControlStatesEnum.START_STATE, 
+                                    SubentriesControlStatesEnum.SUB_ENTRY_VISIBILITY_STATE, UniversalTag.BOOLEAN_TAG, 
                 new GrammarAction( "SubEntryControl visibility" )
             {
                 public void action( IAsn1Container container ) throws DecoderException
                 {
-                    SubEntryControlContainer subEntryContainer = ( SubEntryControlContainer ) container;
-                    SubEntryControlCodec control = new SubEntryControlCodec();
-                    subEntryContainer.setSubEntryControl( control );
+                    SubentriesControlContainer subEntryContainer = ( SubentriesControlContainer ) container;
+                    SubentriesControlCodec control = subEntryContainer.getSubEntryControl();
 
                     TLV tlv = subEntryContainer.getCurrentTLV();
 

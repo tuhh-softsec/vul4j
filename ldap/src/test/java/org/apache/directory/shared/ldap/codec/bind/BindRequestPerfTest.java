@@ -30,9 +30,10 @@ import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.codec.EncoderException;
-import org.apache.directory.shared.ldap.codec.ControlCodec;
 import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
+import org.apache.directory.shared.ldap.codec.controls.CodecControl;
+import org.apache.directory.shared.ldap.codec.controls.CodecControlImpl;
 import org.apache.directory.shared.ldap.name.LdapDN;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
@@ -116,13 +117,13 @@ public class BindRequestPerfTest
             .getSimple() ) );
 
         // Check the Control
-        List<ControlCodec> controls = message.getControls();
+        List<CodecControl> controls = message.getControls();
 
         assertEquals( 1, controls.size() );
 
-        ControlCodec control = message.getControls( 0 );
-        assertEquals( "2.16.840.1.113730.3.4.2", control.getControlType() );
-        assertEquals( "", StringTools.dumpBytes( ( byte[] ) control.getControlValue() ) );
+        CodecControl control = message.getControls( 0 );
+        assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
+        assertEquals( "", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
 
         // Check the length
         assertEquals( 0x52, message.computeLength() );
@@ -163,8 +164,7 @@ public class BindRequestPerfTest
             BindRequestCodec br = new BindRequestCodec();
             br.setName( name );
             
-            ControlCodec control = new ControlCodec();
-            control.setControlType( "2.16.840.1.113730.3.4.2" );
+            CodecControl control = new CodecControlImpl( "2.16.840.1.113730.3.4.2" );
 
             LdapAuthentication authentication = new SimpleAuthentication();
             ((SimpleAuthentication)authentication).setSimple( StringTools.getBytesUtf8( "password" ) );

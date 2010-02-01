@@ -50,49 +50,40 @@ import org.slf4j.LoggerFactory;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev: 664290 $, $Date: 2008-06-07 08:28:06 +0200 (Sat, 07 Jun 2008) $, 
  */
-public class PagedSearchControlGrammar extends AbstractGrammar
+public class PagedResultsControlGrammar extends AbstractGrammar
 {
     /** The logger */
-    static final Logger log = LoggerFactory.getLogger( PagedSearchControlGrammar.class );
+    static final Logger log = LoggerFactory.getLogger( PagedResultsControlGrammar.class );
 
     /** Speedup for logs */
     static final boolean IS_DEBUG = log.isDebugEnabled();
 
     /** The instance of grammar. PagedSearchControlGrammar is a singleton */
-    private static IGrammar instance = new PagedSearchControlGrammar();
+    private static IGrammar instance = new PagedResultsControlGrammar();
 
 
     /**
      * Creates a new PagedSearchControlGrammar object.
      */
-    private PagedSearchControlGrammar()
+    private PagedResultsControlGrammar()
     {
-        name = PagedSearchControlGrammar.class.getName();
-        statesEnum = PagedSearchControlStatesEnum.getInstance();
+        name = PagedResultsControlGrammar.class.getName();
+        statesEnum = PagedResultsControlStatesEnum.getInstance();
 
         // Create the transitions table
-        super.transitions = new GrammarTransition[PagedSearchControlStatesEnum.LAST_PAGED_SEARCH_STATE][256];
+        super.transitions = new GrammarTransition[PagedResultsControlStatesEnum.LAST_PAGED_SEARCH_STATE][256];
 
         /** 
          * Transition from initial state to PagedSearch sequence
          * realSearchControlValue ::= SEQUENCE OF {
          *     ...
          *     
-         * Initialize the persistence search object
+         * Nothing to do
          */
         super.transitions[IStates.INIT_GRAMMAR_STATE][UniversalTag.SEQUENCE_TAG] = 
             new GrammarTransition( IStates.INIT_GRAMMAR_STATE, 
-                                    PagedSearchControlStatesEnum.PAGED_SEARCH_SEQUENCE_STATE, 
-                                    UniversalTag.SEQUENCE_TAG, 
-                new GrammarAction( "Init PagedSearchControl" )
-            {
-                public void action( IAsn1Container container )
-                {
-                    PagedSearchControlContainer pagedSearchContainer = ( PagedSearchControlContainer ) container;
-                    PagedSearchControlCodec control = new PagedSearchControlCodec();
-                    pagedSearchContainer.setPagedSearchControl( control );
-                }
-            } );
+                                    PagedResultsControlStatesEnum.PAGED_SEARCH_SEQUENCE_STATE, 
+                                    UniversalTag.SEQUENCE_TAG, null );
 
 
         /** 
@@ -104,15 +95,15 @@ public class PagedSearchControlGrammar extends AbstractGrammar
          *     
          * Stores the size value
          */
-        super.transitions[PagedSearchControlStatesEnum.PAGED_SEARCH_SEQUENCE_STATE][UniversalTag.INTEGER_TAG] = 
-            new GrammarTransition( PagedSearchControlStatesEnum.PAGED_SEARCH_SEQUENCE_STATE, 
-                PagedSearchControlStatesEnum.SIZE_STATE, 
+        super.transitions[PagedResultsControlStatesEnum.PAGED_SEARCH_SEQUENCE_STATE][UniversalTag.INTEGER_TAG] = 
+            new GrammarTransition( PagedResultsControlStatesEnum.PAGED_SEARCH_SEQUENCE_STATE, 
+                PagedResultsControlStatesEnum.SIZE_STATE, 
                 UniversalTag.INTEGER_TAG,
                 new GrammarAction( "Set PagedSearchControl size" )
             {
                 public void action( IAsn1Container container ) throws DecoderException
                 {
-                    PagedSearchControlContainer pagedSearchContainer = ( PagedSearchControlContainer ) container;
+                    PagedResultsControlContainer pagedSearchContainer = ( PagedResultsControlContainer ) container;
                     Value value = pagedSearchContainer.getCurrentTLV().getValue();
 
                     try
@@ -152,14 +143,14 @@ public class PagedSearchControlGrammar extends AbstractGrammar
          *     
          * Stores the cookie flag
          */
-        super.transitions[PagedSearchControlStatesEnum.SIZE_STATE][UniversalTag.OCTET_STRING_TAG] = 
-            new GrammarTransition( PagedSearchControlStatesEnum.SIZE_STATE,
-                                    PagedSearchControlStatesEnum.COOKIE_STATE, UniversalTag.OCTET_STRING_TAG,
+        super.transitions[PagedResultsControlStatesEnum.SIZE_STATE][UniversalTag.OCTET_STRING_TAG] = 
+            new GrammarTransition( PagedResultsControlStatesEnum.SIZE_STATE,
+                                    PagedResultsControlStatesEnum.COOKIE_STATE, UniversalTag.OCTET_STRING_TAG,
                 new GrammarAction( "Set PagedSearchControl cookie" )
             {
                 public void action( IAsn1Container container ) throws DecoderException
                 {
-                    PagedSearchControlContainer pagedSearchContainer = ( PagedSearchControlContainer ) container;
+                    PagedResultsControlContainer pagedSearchContainer = ( PagedResultsControlContainer ) container;
                     Value value = pagedSearchContainer.getCurrentTLV().getValue();
 
                     if ( pagedSearchContainer.getCurrentTLV().getLength() == 0 )

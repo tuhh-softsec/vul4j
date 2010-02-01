@@ -20,21 +20,21 @@
 package org.apache.directory.shared.ldap.codec.search.controls;
 
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.nio.ByteBuffer;
 
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.codec.DecoderException;
-import org.apache.directory.shared.ldap.codec.search.controls.ChangeType;
 import org.apache.directory.shared.ldap.codec.search.controls.entryChange.EntryChangeControlCodec;
 import org.apache.directory.shared.ldap.codec.search.controls.entryChange.EntryChangeControlContainer;
 import org.apache.directory.shared.ldap.codec.search.controls.entryChange.EntryChangeControlDecoder;
 import org.apache.directory.shared.ldap.name.LdapDN;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.junit.Assert.assertNull;
 
 
 /**
@@ -64,6 +64,8 @@ public class EntryChangeControlTest
         bb.flip();
 
         EntryChangeControlContainer container = new EntryChangeControlContainer();
+        container.setEntryChangeControl( new EntryChangeControlCodec() );
+        
         try
         {
             decoder.decode( bb, container );
@@ -102,6 +104,8 @@ public class EntryChangeControlTest
         bb.flip();
 
         EntryChangeControlContainer container = new EntryChangeControlContainer();
+        container.setEntryChangeControl( new EntryChangeControlCodec() );
+        
         try
         {
             decoder.decode( bb, container );
@@ -139,6 +143,8 @@ public class EntryChangeControlTest
         bb.flip();
 
         EntryChangeControlContainer container = new EntryChangeControlContainer();
+        container.setEntryChangeControl( new EntryChangeControlCodec() );
+        
         try
         {
             decoder.decode( bb, container );
@@ -179,7 +185,8 @@ public class EntryChangeControlTest
         bb.flip();
 
         EntryChangeControlContainer container = new EntryChangeControlContainer();
-
+        container.setEntryChangeControl( new EntryChangeControlCodec() );
+        
         try
         {
             decoder.decode( bb, container );
@@ -214,7 +221,8 @@ public class EntryChangeControlTest
         bb.flip();
 
         EntryChangeControlContainer container = new EntryChangeControlContainer();
-
+        container.setEntryChangeControl( new EntryChangeControlCodec() );
+        
         try
         {
             decoder.decode( bb, container );
@@ -252,7 +260,8 @@ public class EntryChangeControlTest
         bb.flip();
 
         EntryChangeControlContainer container = new EntryChangeControlContainer();
-
+        container.setEntryChangeControl( new EntryChangeControlCodec() );
+        
         try
         {
             decoder.decode( bb, container );
@@ -290,7 +299,8 @@ public class EntryChangeControlTest
         bb.flip();
 
         EntryChangeControlContainer container = new EntryChangeControlContainer();
-
+        container.setEntryChangeControl( new EntryChangeControlCodec() );
+        
         try
         {
             decoder.decode( bb, container );
@@ -312,15 +322,21 @@ public class EntryChangeControlTest
     @Test
     public void testEncodeEntryChangeControl() throws Exception
     {
-        ByteBuffer bb = ByteBuffer.allocate( 0x0D );
+        ByteBuffer bb = ByteBuffer.allocate( 0x2A );
         bb.put( new byte[]
             { 
-            0x30, 0x0B,                     // EntryChangeNotification ::= SEQUENCE {
-              0x0A, 0x01, 0x08,             //     changeType ENUMERATED {
-                                            //         modDN (8)
-                                            //     }
-              0x04, 0x03, 'a', '=', 'b',    //     previousDN LDAPDN OPTIONAL, -- modifyDN ops. only
-              0x02, 0x01, 0x10              //     changeNumber INTEGER OPTIONAL -- if supported
+            0x30, 0x28,                            // Control
+              0x04, 0x17,                          // OID (SyncRequestValue)
+                '2', '.', '1', '6', '.', '8', '4', '0', 
+                '.', '1', '.', '1', '1', '3', '7', '3', 
+                '0', '.', '3', '.', '4', '.', '7',
+              0x04, 0x0D,
+                0x30, 0x0B,                        // EntryChangeNotification ::= SEQUENCE {
+                  0x0A, 0x01, 0x08,                //     changeType ENUMERATED {
+                                                   //         modDN (8)
+                                                   //     }
+                  0x04, 0x03, 'a', '=', 'b',       //     previousDN LDAPDN OPTIONAL, -- modifyDN ops. only
+                  0x02, 0x01, 0x10,                //     changeNumber INTEGER OPTIONAL -- if supported
             } );
 
         String expected = StringTools.dumpBytes( bb.array() );
@@ -330,7 +346,7 @@ public class EntryChangeControlTest
         entry.setChangeType( ChangeType.MODDN );
         entry.setChangeNumber( 16 );
         entry.setPreviousDn( new LdapDN( "a=b" ) );
-        bb = entry.encode( null );
+        bb = entry.encode( ByteBuffer.allocate( entry.computeLength() ) );
         String decoded = StringTools.dumpBytes( bb.array() );
         assertEquals( expected, decoded );
     }
@@ -342,16 +358,22 @@ public class EntryChangeControlTest
     @Test
     public void testEncodeEntryChangeControlLong() throws Exception
     {
-        ByteBuffer bb = ByteBuffer.allocate( 0x13 );
+        ByteBuffer bb = ByteBuffer.allocate( 0x30 );
         bb.put( new byte[]
             { 
-            0x30, 0x11,                     // EntryChangeNotification ::= SEQUENCE {
-              0x0A, 0x01, 0x08,             //     changeType ENUMERATED {
-                                            //         modDN (8)
-                                            //     }
-              0x04, 0x03, 'a', '=', 'b',    //     previousDN LDAPDN OPTIONAL, -- modifyDN ops. only
-              0x02, 0x07,                   //     changeNumber INTEGER OPTIONAL -- if supported
-                0x12, 0x34, 0x56, 0x78, (byte)0x9a, (byte)0xbc, (byte)0xde
+            0x30, 0x2E,                            // Control
+              0x04, 0x17,                          // OID (SyncRequestValue)
+                '2', '.', '1', '6', '.', '8', '4', '0', 
+                '.', '1', '.', '1', '1', '3', '7', '3', 
+                '0', '.', '3', '.', '4', '.', '7',
+              0x04, 0x13,
+                0x30, 0x11,                        // EntryChangeNotification ::= SEQUENCE {
+                  0x0A, 0x01, 0x08,                //     changeType ENUMERATED {
+                                                   //         modDN (8)
+                                                   //     }
+                  0x04, 0x03, 'a', '=', 'b',       //     previousDN LDAPDN OPTIONAL, -- modifyDN ops. only
+                  0x02, 0x07,                      //     changeNumber INTEGER OPTIONAL -- if supported
+                    0x12, 0x34, 0x56, 0x78, (byte)0x9a, (byte)0xbc, (byte)0xde
             } );
 
         String expected = StringTools.dumpBytes( bb.array() );
@@ -361,7 +383,7 @@ public class EntryChangeControlTest
         entry.setChangeType( ChangeType.MODDN );
         entry.setChangeNumber( 5124095576030430L );
         entry.setPreviousDn( new LdapDN( "a=b" ) );
-        bb = entry.encode( null );
+        bb = entry.encode( ByteBuffer.allocate( entry.computeLength() ) );
         String decoded = StringTools.dumpBytes( bb.array() );
         assertEquals( expected, decoded );
     }

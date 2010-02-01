@@ -89,15 +89,7 @@ public class SyncStateValueControlGrammar extends AbstractGrammar
          */
         super.transitions[IStates.INIT_GRAMMAR_STATE][UniversalTag.SEQUENCE_TAG] = new GrammarTransition(
             IStates.INIT_GRAMMAR_STATE, SyncStateValueControlStatesEnum.SYNC_STATE_VALUE_SEQUENCE_STATE,
-            UniversalTag.SEQUENCE_TAG, new GrammarAction( "Init SyncStateValueControl" )
-            {
-                public void action( IAsn1Container container )
-                {
-                    SyncStateValueControlContainer syncStateValueContainer = ( SyncStateValueControlContainer ) container;
-                    SyncStateValueControlCodec control = new SyncStateValueControlCodec();
-                    syncStateValueContainer.setSyncStateValueControl( control );
-                }
-            } );
+            UniversalTag.SEQUENCE_TAG, null );
 
         /** 
          * Transition from SyncStateValue sequence to state type enum

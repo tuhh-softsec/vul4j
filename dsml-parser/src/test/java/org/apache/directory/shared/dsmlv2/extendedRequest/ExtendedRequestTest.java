@@ -21,17 +21,18 @@
 package org.apache.directory.shared.dsmlv2.extendedRequest;
 
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import org.apache.directory.shared.dsmlv2.AbstractTest;
 import org.apache.directory.shared.dsmlv2.Dsmlv2Parser;
-import org.apache.directory.shared.ldap.codec.ControlCodec;
+import org.apache.directory.shared.ldap.codec.controls.CodecControl;
 import org.apache.directory.shared.ldap.codec.extended.ExtendedRequestCodec;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
 
 /**
  * Tests for the Extended Request parsing
@@ -100,12 +101,12 @@ public class ExtendedRequestTest extends AbstractTest
         }
 
         ExtendedRequestCodec extendedRequest = ( ExtendedRequestCodec ) parser.getBatchRequest().getCurrentRequest();
-        ControlCodec control = extendedRequest.getCurrentControl();
+        CodecControl control = extendedRequest.getCurrentControl();
 
         assertEquals( 1, extendedRequest.getControls().size() );
-        assertTrue( control.getCriticality() );
-        assertEquals( "1.2.840.113556.1.4.643", control.getControlType() );
-        assertEquals( "Some text", StringTools.utf8ToString( ( byte[] ) control.getControlValue() ) );
+        assertTrue( control.isCritical() );
+        assertEquals( "1.2.840.113556.1.4.643", control.getOid() );
+        assertEquals( "Some text", StringTools.utf8ToString( ( byte[] ) control.getValue() ) );
     }
 
 
@@ -131,12 +132,12 @@ public class ExtendedRequestTest extends AbstractTest
         }
 
         ExtendedRequestCodec extendedRequest = ( ExtendedRequestCodec ) parser.getBatchRequest().getCurrentRequest();
-        ControlCodec control = extendedRequest.getCurrentControl();
+        CodecControl control = extendedRequest.getCurrentControl();
 
         assertEquals( 1, extendedRequest.getControls().size() );
-        assertTrue( control.getCriticality() );
-        assertEquals( "1.2.840.113556.1.4.643", control.getControlType() );
-        assertEquals( "DSMLv2.0 rocks!!", StringTools.utf8ToString( ( byte[] ) control.getControlValue() ) );
+        assertTrue( control.isCritical() );
+        assertEquals( "1.2.840.113556.1.4.643", control.getOid() );
+        assertEquals( "DSMLv2.0 rocks!!", StringTools.utf8ToString( ( byte[] ) control.getValue() ) );
     }
 
 
@@ -162,12 +163,12 @@ public class ExtendedRequestTest extends AbstractTest
         }
 
         ExtendedRequestCodec extendedRequest = ( ExtendedRequestCodec ) parser.getBatchRequest().getCurrentRequest();
-        ControlCodec control = extendedRequest.getCurrentControl();
+        CodecControl control = extendedRequest.getCurrentControl();
 
         assertEquals( 1, extendedRequest.getControls().size() );
-        assertTrue( control.getCriticality() );
-        assertEquals( "1.2.840.113556.1.4.643", control.getControlType() );
-        assertEquals( StringTools.EMPTY_BYTES, control.getControlValue() );
+        assertTrue( control.isCritical() );
+        assertEquals( "1.2.840.113556.1.4.643", control.getOid() );
+        assertFalse( control.hasValue() );
     }
 
 
@@ -193,12 +194,12 @@ public class ExtendedRequestTest extends AbstractTest
         }
 
         ExtendedRequestCodec extendedRequest = ( ExtendedRequestCodec ) parser.getBatchRequest().getCurrentRequest();
-        ControlCodec control = extendedRequest.getCurrentControl();
+        CodecControl control = extendedRequest.getCurrentControl();
 
         assertEquals( 2, extendedRequest.getControls().size() );
-        assertFalse( control.getCriticality() );
-        assertEquals( "1.2.840.113556.1.4.789", control.getControlType() );
-        assertEquals( "Some other text", StringTools.utf8ToString( ( byte[] ) control.getControlValue() ) );
+        assertFalse( control.isCritical() );
+        assertEquals( "1.2.840.113556.1.4.789", control.getOid() );
+        assertEquals( "Some other text", StringTools.utf8ToString( ( byte[] ) control.getValue() ) );
     }
 
 
@@ -224,12 +225,12 @@ public class ExtendedRequestTest extends AbstractTest
         }
 
         ExtendedRequestCodec extendedRequest = ( ExtendedRequestCodec ) parser.getBatchRequest().getCurrentRequest();
-        ControlCodec control = extendedRequest.getCurrentControl();
+        CodecControl control = extendedRequest.getCurrentControl();
 
         assertEquals( 3, extendedRequest.getControls().size() );
-        assertTrue( control.getCriticality() );
-        assertEquals( "1.2.840.113556.1.4.456", control.getControlType() );
-        assertEquals( StringTools.EMPTY_BYTES, control.getControlValue() );
+        assertTrue( control.isCritical() );
+        assertEquals( "1.2.840.113556.1.4.456", control.getOid() );
+        assertFalse( control.hasValue() );
     }
 
 

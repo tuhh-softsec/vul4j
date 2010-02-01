@@ -23,11 +23,11 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.directory.shared.asn1.AbstractAsn1Object;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.asn1.codec.EncoderException;
+import org.apache.directory.shared.ldap.codec.controls.AbstractControlCodec;
 import org.apache.directory.shared.ldap.message.control.replication.SynchronizationInfoEnum;
 import org.apache.directory.shared.ldap.util.StringTools;
 
@@ -37,8 +37,11 @@ import org.apache.directory.shared.ldap.util.StringTools;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev:$, $Date: 
  */
-public class SyncInfoValueControlCodec extends AbstractAsn1Object
+public class SyncInfoValueControlCodec extends AbstractControlCodec
 {
+    /** This control OID */
+    public static final String CONTROL_OID = "1.3.6.1.4.1.4203.1.9.1.4";
+
     /** The kind of syncInfoValue we are dealing with */
     private SynchronizationInfoEnum type;
     
@@ -65,6 +68,9 @@ public class SyncInfoValueControlCodec extends AbstractAsn1Object
      */
     public SyncInfoValueControlCodec( SynchronizationInfoEnum type )
     {
+        super( CONTROL_OID );
+
+        decoder = new SyncInfoValueControlDecoder();
         this.type = type;
         
         // Initialize the arrayList if needed
@@ -168,6 +174,17 @@ public class SyncInfoValueControlCodec extends AbstractAsn1Object
     {
         this.syncUUIDs = syncUUIDs;
     }
+    
+    
+    /**
+     * @param syncUUIDs the syncUUIDs to set
+     */
+    public void addSyncUUID( byte[] syncUUID )
+    {
+        syncUUIDs.add( syncUUID );
+    }
+
+    
 
     
     /**
@@ -216,7 +233,10 @@ public class SyncInfoValueControlCodec extends AbstractAsn1Object
                     syncInfoValueLength = 1 + 1;
                 }
                 
-                return syncInfoValueLength;
+                valueLength = syncInfoValueLength;
+
+                // Call the super class to compute the global control length
+                return super.computeLength( valueLength );
                 
             case REFRESH_DELETE :
             case REFRESH_PRESENT :
@@ -225,9 +245,16 @@ public class SyncInfoValueControlCodec extends AbstractAsn1Object
                     syncInfoValueLength = 1 + TLV.getNbBytes( cookie.length ) + cookie.length;
                 }
                 
-                // The refreshDone flag
-                syncInfoValueLength += 1 + 1 + 1;
-                break;
+                // The refreshDone flag, only if not true, as it default to true
+                if ( !refreshDone )
+                {
+                    syncInfoValueLength += 1 + 1 + 1;
+                }
+                
+                valueLength = 1 + TLV.getNbBytes( syncInfoValueLength ) + syncInfoValueLength;
+                
+                // Call the super class to compute the global control length
+                return super.computeLength( valueLength );
                 
             case SYNC_ID_SET :
                 if ( cookie != null )
@@ -235,8 +262,11 @@ public class SyncInfoValueControlCodec extends AbstractAsn1Object
                     syncInfoValueLength = 1 + TLV.getNbBytes( cookie.length ) + cookie.length;
                 }
                 
-                // The refreshDeletes flag
-                syncInfoValueLength += 1 + 1 + 1;
+                // The refreshDeletes flag, default to false
+                if ( refreshDeletes )
+                {
+                    syncInfoValueLength += 1 + 1 + 1;
+                }
 
                 // The syncUUIDs if any
                 syncUUIDsLength = 0;
@@ -247,16 +277,15 @@ public class SyncInfoValueControlCodec extends AbstractAsn1Object
                     {
                         int uuidLength = 1 + TLV.getNbBytes( syncUUID.length ) + syncUUID.length;
                         
-                        syncUUIDsLength += 1 + TLV.getNbBytes( uuidLength ) + uuidLength;
+                        syncUUIDsLength += uuidLength;
                     }
-                    
-                    // Add the tag and compute the length
-                    syncUUIDsLength += 1 + TLV.getNbBytes( syncUUIDsLength ) + syncUUIDsLength;
                 }
                 
                 syncInfoValueLength += 1 + TLV.getNbBytes( syncUUIDsLength ) + syncUUIDsLength;
+                valueLength = 1 + TLV.getNbBytes( syncInfoValueLength ) + syncInfoValueLength;
 
-                break;
+                // Call the super class to compute the global control length
+                return super.computeLength( valueLength );
         }
         
         return 1 + TLV.getNbBytes( syncInfoValueLength ) + syncInfoValueLength;
@@ -270,95 +299,225 @@ public class SyncInfoValueControlCodec extends AbstractAsn1Object
      * @return A ByteBuffer that contains the encoded PDU
      * @throws EncoderException If anything goes wrong.
      */
-    public ByteBuffer encode( ByteBuffer bb ) throws EncoderException
+    public ByteBuffer encode( ByteBuffer buffer ) throws EncoderException
     {
-        // Allocate the bytes buffer.
-        if ( bb == null )
+        if ( buffer == null )
         {
-            bb = ByteBuffer.allocate( computeLength() );
+            throw new EncoderException( "Cannot put a PDU in a null buffer !" );
         }
+
+        // Encode the Control envelop
+        super.encode( buffer );
         
+        // Encode the OCTET_STRING tag
+        buffer.put( UniversalTag.OCTET_STRING_TAG );
+        buffer.put( TLV.getBytes( valueLength ) );
+
         switch ( type )
         {
             case NEW_COOKIE :
                 // The first case : newCookie
-                bb.put( (byte)SyncInfoValueTags.NEW_COOKIE_TAG.getValue() );
+                buffer.put( (byte)SyncInfoValueTags.NEW_COOKIE_TAG.getValue() );
 
                 // As the OCTET_STRING is absorbed by the Application tag,
                 // we have to store the L and V separately
                 if ( ( cookie == null ) || ( cookie.length == 0 ) )
                 {
-                    bb.put( ( byte ) 0 );
+                    buffer.put( ( byte ) 0 );
                 }
                 else
                 {
-                    bb.put( TLV.getBytes( cookie.length ) );
-                    bb.put( cookie );
+                    buffer.put( TLV.getBytes( cookie.length ) );
+                    buffer.put( cookie );
                 }
 
                 break;
                 
             case REFRESH_DELETE :
                 // The second case : refreshDelete
-                bb.put( (byte)SyncInfoValueTags.REFRESH_DELETE_TAG.getValue() );
-                bb.put( TLV.getBytes( syncInfoValueLength ) );
+                buffer.put( (byte)SyncInfoValueTags.REFRESH_DELETE_TAG.getValue() );
+                buffer.put( TLV.getBytes( syncInfoValueLength ) );
 
                 // The cookie, if any
                 if ( cookie != null )
                 {
-                    Value.encode( bb, cookie );
+                    Value.encode( buffer, cookie );
                 }
                 
                 // The refreshDone flag
-                Value.encode( bb, refreshDone );
+                if ( !refreshDone )
+                {
+                    Value.encode( buffer, refreshDone );
+                }
+                
                 break;
                 
             case REFRESH_PRESENT :
                 // The third case : refreshPresent
-                bb.put( (byte)SyncInfoValueTags.REFRESH_PRESENT_TAG.getValue() );
-                bb.put( TLV.getBytes( syncInfoValueLength ) );
+                buffer.put( (byte)SyncInfoValueTags.REFRESH_PRESENT_TAG.getValue() );
+                buffer.put( TLV.getBytes( syncInfoValueLength ) );
 
                 // The cookie, if any
                 if ( cookie != null )
                 {
-                    Value.encode( bb, cookie );
+                    Value.encode( buffer, cookie );
                 }
                 
                 // The refreshDone flag
-                Value.encode( bb, refreshDone );
+                if ( !refreshDone )
+                {
+                    Value.encode( buffer, refreshDone );
+                }
+
                 break;
                 
             case SYNC_ID_SET :
                 // The last case : syncIdSet
-                bb.put( (byte)SyncInfoValueTags.SYNC_ID_SET_TAG.getValue() );
-                bb.put( TLV.getBytes( syncInfoValueLength ) );
+                buffer.put( (byte)SyncInfoValueTags.SYNC_ID_SET_TAG.getValue() );
+                buffer.put( TLV.getBytes( syncInfoValueLength ) );
 
                 // The cookie, if any
                 if ( cookie != null )
                 {
-                    Value.encode( bb, cookie );
+                    Value.encode( buffer, cookie );
                 }
                 
-                // The refreshDeletes flag
-                Value.encode( bb, refreshDeletes );
+                // The refreshDeletes flag if not false
+                if ( refreshDeletes )
+                {
+                    Value.encode( buffer, refreshDeletes );
+                }
                 
                 // The syncUUIDs
-                bb.put( UniversalTag.SET_TAG );
-                bb.put( TLV.getBytes( syncUUIDsLength ) );
+                buffer.put( UniversalTag.SET_TAG );
+                buffer.put( TLV.getBytes( syncUUIDsLength ) );
                 
                 // Loop on the UUIDs if any
                 if ( syncUUIDs.size() != 0 )
                 {
                     for ( byte[] syncUUID:syncUUIDs )
                     {
-                        Value.encode( bb , syncUUID );
+                        Value.encode( buffer , syncUUID );
                     }
                 }
         }
 
-        return bb;
+        return buffer;
     }
     
+    
+    /**
+     * {@inheritDoc}
+     */
+    public byte[] getValue()
+    {
+        if ( value == null )
+        {
+            try
+            { 
+                computeLength();
+                ByteBuffer buffer = ByteBuffer.allocate( valueLength );
+                
+                switch ( type )
+                {
+                    case NEW_COOKIE :
+                        // The first case : newCookie
+                        buffer.put( (byte)SyncInfoValueTags.NEW_COOKIE_TAG.getValue() );
+
+                        // As the OCTET_STRING is absorbed by the Application tag,
+                        // we have to store the L and V separately
+                        if ( ( cookie == null ) || ( cookie.length == 0 ) )
+                        {
+                            buffer.put( ( byte ) 0 );
+                        }
+                        else
+                        {
+                            buffer.put( TLV.getBytes( cookie.length ) );
+                            buffer.put( cookie );
+                        }
+
+                        break;
+                        
+                    case REFRESH_DELETE :
+                        // The second case : refreshDelete
+                        buffer.put( (byte)SyncInfoValueTags.REFRESH_DELETE_TAG.getValue() );
+                        buffer.put( TLV.getBytes( syncInfoValueLength ) );
+
+                        // The cookie, if any
+                        if ( cookie != null )
+                        {
+                            Value.encode( buffer, cookie );
+                        }
+                        
+                        // The refreshDone flag
+                        if ( !refreshDone )
+                        {
+                            Value.encode( buffer, refreshDone );
+                        }
+                        
+                        break;
+                        
+                    case REFRESH_PRESENT :
+                        // The third case : refreshPresent
+                        buffer.put( (byte)SyncInfoValueTags.REFRESH_PRESENT_TAG.getValue() );
+                        buffer.put( TLV.getBytes( syncInfoValueLength ) );
+
+                        // The cookie, if any
+                        if ( cookie != null )
+                        {
+                            Value.encode( buffer, cookie );
+                        }
+                        
+                        // The refreshDone flag
+                        if ( !refreshDone )
+                        {
+                            Value.encode( buffer, refreshDone );
+                        }
+
+                        break;
+                        
+                    case SYNC_ID_SET :
+                        // The last case : syncIdSet
+                        buffer.put( (byte)SyncInfoValueTags.SYNC_ID_SET_TAG.getValue() );
+                        buffer.put( TLV.getBytes( syncInfoValueLength ) );
+
+                        // The cookie, if any
+                        if ( cookie != null )
+                        {
+                            Value.encode( buffer, cookie );
+                        }
+                        
+                        // The refreshDeletes flag if not false
+                        if ( refreshDeletes )
+                        {
+                            Value.encode( buffer, refreshDeletes );
+                        }
+                        
+                        // The syncUUIDs
+                        buffer.put( UniversalTag.SET_TAG );
+                        buffer.put( TLV.getBytes( syncUUIDsLength ) );
+                        
+                        // Loop on the UUIDs if any
+                        if ( syncUUIDs.size() != 0 )
+                        {
+                            for ( byte[] syncUUID:syncUUIDs )
+                            {
+                                Value.encode( buffer , syncUUID );
+                            }
+                        }
+                }
+                
+                value = buffer.array();
+            }
+            catch ( Exception e )
+            {
+                return null;
+            }
+        }
+        
+        return value;
+    }
+
     
     /**
      * @see Object#toString()
@@ -368,7 +527,9 @@ public class SyncInfoValueControlCodec extends AbstractAsn1Object
         StringBuilder sb = new StringBuilder();
         
         sb.append( "    SyncInfoValue control :\n" );
-        
+        sb.append( "        oid : " ).append( getOid() ).append( '\n' );
+        sb.append( "        critical : " ).append( isCritical() ).append( '\n' );
+
         switch ( type )
         {
             case NEW_COOKIE :

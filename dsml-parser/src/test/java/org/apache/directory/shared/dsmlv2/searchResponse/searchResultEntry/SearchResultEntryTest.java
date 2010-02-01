@@ -21,23 +21,24 @@
 package org.apache.directory.shared.dsmlv2.searchResponse.searchResultEntry;
 
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.UnsupportedEncodingException;
 import java.util.Iterator;
 
 import org.apache.directory.shared.dsmlv2.AbstractResponseTest;
 import org.apache.directory.shared.dsmlv2.Dsmlv2ResponseParser;
 import org.apache.directory.shared.dsmlv2.reponse.SearchResponse;
-import org.apache.directory.shared.ldap.codec.ControlCodec;
+import org.apache.directory.shared.ldap.codec.controls.CodecControl;
 import org.apache.directory.shared.ldap.codec.search.SearchResultEntryCodec;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.junit.Assert.assertFalse;
 
 /**
  * Tests for the Search Result Entry Response parsing
@@ -73,13 +74,13 @@ public class SearchResultEntryTest extends AbstractResponseTest
 
         assertEquals( 1, searchResultEntry.getControls().size() );
 
-        ControlCodec control = searchResultEntry.getCurrentControl();
+        CodecControl control = searchResultEntry.getCurrentControl();
 
-        assertTrue( control.getCriticality() );
+        assertTrue( control.isCritical() );
 
-        assertEquals( "1.2.840.113556.1.4.643", control.getControlType() );
+        assertEquals( "1.2.840.113556.1.4.643", control.getOid() );
 
-        assertEquals( "Some text", StringTools.utf8ToString( ( byte[] ) control.getControlValue() ) );
+        assertEquals( "Some text", StringTools.utf8ToString( ( byte[] ) control.getValue() ) );
     }
 
 
@@ -106,12 +107,12 @@ public class SearchResultEntryTest extends AbstractResponseTest
 
         SearchResultEntryCodec searchResultEntry = ( ( SearchResponse ) parser.getBatchResponse().getCurrentResponse() )
             .getCurrentSearchResultEntry();
-        ControlCodec control = searchResultEntry.getCurrentControl();
+        CodecControl control = searchResultEntry.getCurrentControl();
 
         assertEquals( 1, searchResultEntry.getControls().size() );
-        assertTrue( control.getCriticality() );
-        assertEquals( "1.2.840.113556.1.4.643", control.getControlType() );
-        assertEquals( StringTools.EMPTY_BYTES, ( byte[] ) control.getControlValue() );
+        assertTrue( control.isCritical() );
+        assertEquals( "1.2.840.113556.1.4.643", control.getOid() );
+        assertFalse( control.hasValue() );
     }
 
 
@@ -141,13 +142,13 @@ public class SearchResultEntryTest extends AbstractResponseTest
 
         assertEquals( 2, searchResultEntry.getControls().size() );
 
-        ControlCodec control = searchResultEntry.getCurrentControl();
+        CodecControl control = searchResultEntry.getCurrentControl();
 
-        assertFalse( control.getCriticality() );
+        assertFalse( control.isCritical() );
 
-        assertEquals( "1.2.840.113556.1.4.789", control.getControlType() );
+        assertEquals( "1.2.840.113556.1.4.789", control.getOid() );
 
-        assertEquals( "Some other text", StringTools.utf8ToString( ( byte[] ) control.getControlValue() ) );
+        assertEquals( "Some other text", StringTools.utf8ToString( ( byte[] ) control.getValue() ) );
     }
 
 
@@ -177,13 +178,13 @@ public class SearchResultEntryTest extends AbstractResponseTest
 
         assertEquals( 3, searchResultEntry.getControls().size() );
 
-        ControlCodec control = searchResultEntry.getCurrentControl();
+        CodecControl control = searchResultEntry.getCurrentControl();
 
-        assertTrue( control.getCriticality() );
+        assertTrue( control.isCritical() );
 
-        assertEquals( "1.2.840.113556.1.4.456", control.getControlType() );
+        assertEquals( "1.2.840.113556.1.4.456", control.getOid() );
 
-        assertEquals( StringTools.EMPTY_BYTES, control.getControlValue() );
+        assertFalse( control.hasValue() );
     }
 
 

@@ -21,6 +21,7 @@ package org.apache.directory.shared.ldap.codec;
 
 
 import org.apache.directory.shared.asn1.ber.AbstractContainer;
+import org.apache.directory.shared.ldap.codec.controls.AbstractControlCodec;
 import org.apache.directory.shared.ldap.message.spi.BinaryAttributeDetector;
 
 
@@ -47,7 +48,7 @@ public class LdapMessageContainer extends AbstractContainer
     private int messageId;
     
     /** The current control */
-    private ControlCodec currentControl;
+    private AbstractControlCodec currentControl;
 
     // ~ Constructors
     // -------------------------------------------------------------------------------
@@ -147,7 +148,7 @@ public class LdapMessageContainer extends AbstractContainer
     /**
      * @return the current control being created
      */
-    public ControlCodec getCurrentControl()
+    public AbstractControlCodec getCurrentControl()
     {
         return currentControl;
     }
@@ -156,7 +157,7 @@ public class LdapMessageContainer extends AbstractContainer
      * Store a newly created control
      * @param currentControl The control to store
      */
-    public void setCurrentControl( ControlCodec currentControl )
+    public void setCurrentControl( AbstractControlCodec currentControl )
     {
         this.currentControl = currentControl;
     }

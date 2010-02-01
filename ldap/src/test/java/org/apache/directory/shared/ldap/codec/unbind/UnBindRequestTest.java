@@ -31,9 +31,9 @@ import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.codec.EncoderException;
-import org.apache.directory.shared.ldap.codec.ControlCodec;
 import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
+import org.apache.directory.shared.ldap.codec.controls.CodecControl;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
 
@@ -142,13 +142,13 @@ public class UnBindRequestTest
         assertEquals( 1, ldapMessage.getMessageId() );
 
         // Check the Control
-        List<ControlCodec> controls = ldapMessage.getControls();
+        List<CodecControl> controls = ldapMessage.getControls();
 
         assertEquals( 1, controls.size() );
 
-        ControlCodec control = ldapMessage.getControls( 0 );
-        assertEquals( "2.16.840.1.113730.3.4.2", control.getControlType() );
-        assertEquals( "", StringTools.dumpBytes( ( byte[] ) control.getControlValue() ) );
+        CodecControl control = ldapMessage.getControls( 0 );
+        assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
+        assertEquals( "", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
 
         // Check the length
         assertEquals( 0x24, ldapMessage.computeLength() );

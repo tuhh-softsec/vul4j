@@ -17,33 +17,40 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.codec.search.controls.subEntry;
+package org.apache.directory.shared.ldap.codec.search.controls.subentries;
 
 
 import java.nio.ByteBuffer;
 
-import org.apache.directory.shared.asn1.AbstractAsn1Object;
+import org.apache.directory.shared.asn1.ber.tlv.TLV;
+import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.asn1.codec.EncoderException;
+import org.apache.directory.shared.ldap.codec.controls.AbstractControlCodec;
 
 
 /**
- * A searchRequest control : SubEntry
+ * A searchRequest control : Subentries
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public class SubEntryControlCodec extends AbstractAsn1Object
+public class SubentriesControlCodec extends AbstractControlCodec
 {
+    /** Ths control OID */
+    public static final String CONTROL_OID = "1.3.6.1.4.1.4203.1.10.1";
+
     private boolean visibility = false;
 
     /**
      * Default constructor
      *
      */
-    public SubEntryControlCodec()
+    public SubentriesControlCodec()
     {
-        super();
+        super( CONTROL_OID );
+        
+        decoder = new SubentriesControlDecoder();
     }
 
     /**
@@ -73,12 +80,16 @@ public class SubEntryControlCodec extends AbstractAsn1Object
      */
     public int computeLength()
     {
-        return 1 + 1 + 1;
+        int subentriesLength =  1 + 1 + 1;
+        int valueLength = subentriesLength;
+
+        // Call the super class to compute the global control length
+        return super.computeLength( valueLength );
     }
 
 
     /**
-     * Encodes the subEntry control.
+     * Encodes the Subentries control.
      * 
      * @param buffer The encoded sink
      * @return A ByteBuffer that contains the encoded PDU
@@ -86,11 +97,49 @@ public class SubEntryControlCodec extends AbstractAsn1Object
      */
     public ByteBuffer encode( ByteBuffer buffer ) throws EncoderException
     {
-        // Allocate the bytes buffer.
-        ByteBuffer bb = ByteBuffer.allocate( computeLength() );
-        Value.encode( bb, visibility );
+        if ( buffer == null )
+        {
+            throw new EncoderException( "Cannot put a PDU in a null buffer !" );
+        }
 
-        return bb;
+        // Encode the Control envelop
+        super.encode( buffer );
+        
+        // Encode the OCTET_STRING tag
+        buffer.put( UniversalTag.OCTET_STRING_TAG );
+        buffer.put( TLV.getBytes( valueLength ) );
+
+        // Now encode the Subentries specific part
+        Value.encode( buffer, visibility );
+
+        return buffer;
+    }
+    
+    
+    /**
+     * {@inheritDoc}
+     */
+    public byte[] getValue()
+    {
+        if ( value == null )
+        {
+            try
+            { 
+                computeLength();
+                ByteBuffer buffer = ByteBuffer.allocate( valueLength );
+                
+                // Now encode the Subentries specific part
+                Value.encode( buffer, visibility );
+                
+                value = buffer.array();
+            }
+            catch ( Exception e )
+            {
+                return null;
+            }
+        }
+        
+        return value;
     }
 
 
@@ -101,7 +150,9 @@ public class SubEntryControlCodec extends AbstractAsn1Object
     {
         StringBuffer sb = new StringBuffer();
 
-        sb.append( "    SubEntry Control\n" );
+        sb.append( "    Subentries Control\n" );
+        sb.append( "        oid : " ).append( getOid() ).append( '\n' );
+        sb.append( "        critical : " ).append( isCritical() ).append( '\n' );
         sb.append( "        Visibility   : '" ).append( visibility ).append( "'\n" );
 
         return sb.toString();

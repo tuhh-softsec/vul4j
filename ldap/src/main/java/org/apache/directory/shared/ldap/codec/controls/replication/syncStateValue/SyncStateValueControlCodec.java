@@ -22,11 +22,11 @@ package org.apache.directory.shared.ldap.codec.controls.replication.syncStateVal
 
 import java.nio.ByteBuffer;
 
-import org.apache.directory.shared.asn1.AbstractAsn1Object;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.asn1.codec.EncoderException;
+import org.apache.directory.shared.ldap.codec.controls.AbstractControlCodec;
 import org.apache.directory.shared.ldap.message.control.replication.SyncStateTypeEnum;
 import org.apache.directory.shared.ldap.util.StringTools;
 
@@ -37,8 +37,11 @@ import org.apache.directory.shared.ldap.util.StringTools;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev:$, $Date: 
  */
-public class SyncStateValueControlCodec extends AbstractAsn1Object
+public class SyncStateValueControlCodec  extends AbstractControlCodec
 {
+    /** This control OID */
+    public static final String CONTROL_OID = "1.3.6.1.4.1.4203.1.9.1.2";
+
     /** The syncStateEnum type */
     private SyncStateTypeEnum syncStateType;
 
@@ -49,8 +52,14 @@ public class SyncStateValueControlCodec extends AbstractAsn1Object
     private byte[] entryUUID;
 
     /** global length for the control */
-    private int syncStateValueLength;
+    private int syncStateSeqLength;
 
+    public SyncStateValueControlCodec()
+    {
+        super( CONTROL_OID );
+        
+        decoder = new SyncStateValueControlDecoder();
+    }
 
     /**
      * @return the cookie
@@ -124,17 +133,19 @@ public class SyncStateValueControlCodec extends AbstractAsn1Object
     public int computeLength()
     {
         // The sync state type length
-        syncStateValueLength = 1 + 1 + 1;
+        syncStateSeqLength = 1 + 1 + 1;
 
-        syncStateValueLength += 1 + TLV.getNbBytes( entryUUID.length ) + entryUUID.length;
+        syncStateSeqLength += 1 + TLV.getNbBytes( entryUUID.length ) + entryUUID.length;
 
         // The cookie length, if we have a cookie
         if ( cookie != null )
         {
-            syncStateValueLength += 1 + TLV.getNbBytes( cookie.length ) + cookie.length;
+            syncStateSeqLength += 1 + TLV.getNbBytes( cookie.length ) + cookie.length;
         }
+        
+        valueLength = 1 + TLV.getNbBytes( syncStateSeqLength ) + syncStateSeqLength;
 
-        return 1 + TLV.getNbBytes( syncStateValueLength ) + syncStateValueLength;
+        return super.computeLength( valueLength );
     }
 
 
@@ -147,26 +158,79 @@ public class SyncStateValueControlCodec extends AbstractAsn1Object
      */
     public ByteBuffer encode( ByteBuffer buffer ) throws EncoderException
     {
-        // Allocate the bytes buffer.
-        ByteBuffer bb = ByteBuffer.allocate( computeLength() );
-        bb.put( UniversalTag.SEQUENCE_TAG );
-        bb.put( TLV.getBytes( syncStateValueLength ) );
+        if ( buffer == null )
+        {
+            throw new EncoderException( "Cannot put a PDU in a null buffer !" );
+        }
+        
+        // Encode the Control envelop
+        super.encode( buffer );
+        
+        // Encode the OCTET_STRING tag
+        buffer.put( UniversalTag.OCTET_STRING_TAG );
+        buffer.put( TLV.getBytes( valueLength ) );
+
+        // Encode the SEQ 
+        buffer.put( UniversalTag.SEQUENCE_TAG );
+        buffer.put( TLV.getBytes( syncStateSeqLength ) );
 
         // The mode
-        bb.put( UniversalTag.ENUMERATED_TAG );
-        bb.put( ( byte ) 0x01 );
-        bb.put( Value.getBytes( syncStateType.getValue() ) );
+        buffer.put( UniversalTag.ENUMERATED_TAG );
+        buffer.put( ( byte ) 0x01 );
+        buffer.put( Value.getBytes( syncStateType.getValue() ) );
 
         // the entryUUID
-        Value.encode( bb, entryUUID );
+        Value.encode( buffer, entryUUID );
 
         // The cookie
         if ( cookie != null )
         {
-            Value.encode( bb, cookie );
+            Value.encode( buffer, cookie );
         }
 
-        return bb;
+        return buffer;
+    }
+    
+    
+    /**
+     * {@inheritDoc}
+     */
+    public byte[] getValue()
+    {
+        if ( value == null )
+        {
+            try
+            { 
+                computeLength();
+                ByteBuffer buffer = ByteBuffer.allocate( valueLength );
+                
+                // Encode the SEQ 
+                buffer.put( UniversalTag.SEQUENCE_TAG );
+                buffer.put( TLV.getBytes( syncStateSeqLength ) );
+
+                // The mode
+                buffer.put( UniversalTag.ENUMERATED_TAG );
+                buffer.put( ( byte ) 0x01 );
+                buffer.put( Value.getBytes( syncStateType.getValue() ) );
+
+                // the entryUUID
+                Value.encode( buffer, entryUUID );
+
+                // The cookie
+                if ( cookie != null )
+                {
+                    Value.encode( buffer, cookie );
+                }
+
+                value = buffer.array();
+            }
+            catch ( Exception e )
+            {
+                return null;
+            }
+        }
+        
+        return value;
     }
 
 
@@ -178,6 +242,8 @@ public class SyncStateValueControlCodec extends AbstractAsn1Object
         StringBuilder sb = new StringBuilder();
 
         sb.append( "    SyncStateValue control :\n" );
+        sb.append( "        oid : " ).append( getOid() ).append( '\n' );
+        sb.append( "        critical : " ).append( isCritical() ).append( '\n' );
         sb.append( "        syncStateType     : '" ).append( syncStateType ).append( "'\n" );
         sb.append( "        entryUUID         : '" ).append( StringTools.dumpBytes( entryUUID ) ).append( "'\n" );
         sb.append( "        cookie            : '" ).append( StringTools.dumpBytes( cookie ) ).append( "'\n" );

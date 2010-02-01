@@ -32,10 +32,10 @@ import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.codec.EncoderException;
-import org.apache.directory.shared.ldap.codec.ControlCodec;
 import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
-import org.apache.directory.shared.ldap.codec.search.controls.pagedSearch.PagedSearchControlCodec;
+import org.apache.directory.shared.ldap.codec.controls.CodecControl;
+import org.apache.directory.shared.ldap.codec.search.controls.pagedSearch.PagedResultsControlCodec;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
@@ -186,15 +186,15 @@ public class BindResponseTest
         assertEquals( 0x3C, message.computeLength() );
 
         // Check the Control
-        List<ControlCodec> controls = message.getControls();
+        List<CodecControl> controls = message.getControls();
 
         assertEquals( 1, controls.size() );
 
-        ControlCodec control = message.getControls( 0 );
-        assertEquals( "1.2.840.113556.1.4.319", control.getControlType() );
-        assertTrue( control.getControlValue() instanceof PagedSearchControlCodec );
+        CodecControl control = message.getControls( 0 );
+        assertEquals( "1.2.840.113556.1.4.319", control.getOid() );
+        assertTrue( control instanceof PagedResultsControlCodec );
         
-        PagedSearchControlCodec pagedSearchControl = (PagedSearchControlCodec)control.getControlValue();
+        PagedResultsControlCodec pagedSearchControl = (PagedResultsControlCodec)control;
         
         assertEquals( 5, pagedSearchControl.getSize() );
         assertTrue( Arrays.equals( "abcdef".getBytes(), pagedSearchControl.getCookie() ) );
@@ -348,13 +348,13 @@ public class BindResponseTest
         assertEquals( "", StringTools.utf8ToString( br.getServerSaslCreds() ) );
 
         // Check the Control
-        List<ControlCodec> controls = message.getControls();
+        List<CodecControl> controls = message.getControls();
 
         assertEquals( 1, controls.size() );
 
-        ControlCodec control = message.getControls( 0 );
-        assertEquals( "2.16.840.1.113730.3.4.2", control.getControlType() );
-        assertEquals( "", StringTools.dumpBytes( ( byte[] ) control.getControlValue() ) );
+        CodecControl control = message.getControls( 0 );
+        assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
+        assertEquals( "", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
 
         // Check the length
         assertEquals( 0x2D, message.computeLength() );

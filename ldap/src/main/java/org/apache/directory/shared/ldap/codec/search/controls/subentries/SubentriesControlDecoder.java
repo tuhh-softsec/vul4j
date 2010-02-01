@@ -17,56 +17,48 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.codec.search.controls.pSearch;
+package org.apache.directory.shared.ldap.codec.search.controls.subentries;
 
 
 import java.nio.ByteBuffer;
 
+import javax.naming.NamingException;
+
 import org.apache.directory.shared.asn1.Asn1Object;
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.codec.DecoderException;
-import org.apache.directory.shared.ldap.codec.ControlDecoder;
+import org.apache.directory.shared.ldap.codec.controls.CodecControl;
+import org.apache.directory.shared.ldap.codec.controls.ControlDecoder;
 
 
 /**
- * A decoder for PSearchControls.
+ * A decoder for SubEntryControls.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$, 
  */
-public class PSearchControlDecoder extends Asn1Decoder implements ControlDecoder
+public class SubentriesControlDecoder extends Asn1Decoder implements ControlDecoder
 {
-    /** The persistence search OID */
-    private final static String CONTROL_TYPE_OID = "2.16.840.1.113730.3.4.3";
-
-    /** An instance of this decoder */
+    /** The sub entry decoder */
     private static final Asn1Decoder decoder = new Asn1Decoder();
 
     /**
-     * Return the persistence search OID
+     * Decode the sub entry control
      * 
-     * @see org.apache.directory.shared.ldap.codec.ControlDecoder#getControlType()
-     */
-    public String getControlType()
-    {
-        return CONTROL_TYPE_OID;
-    }
-
-    /**
-     * Decode the persistence search control
+     * @param controlBytes The bytes array which contains the encoded sub entry
      * 
-     * @param controlBytes The bytes array which contains the encoded persistence search
-     * 
-     * @return A valid PersistenceSearch object
+     * @return A valid SubEntry object
      * 
      * @throws DecoderException If the decoding found an error
      * @throws NamingException It will never be throw by this method
      */
-    public Asn1Object decode( byte[] controlBytes ) throws DecoderException
+    public Asn1Object decode( byte[] controlBytes, CodecControl control ) throws DecoderException
     {
         ByteBuffer bb = ByteBuffer.wrap( controlBytes );
-        PSearchControlContainer container = new PSearchControlContainer();
+        SubentriesControlContainer container = new SubentriesControlContainer();
+        container.setSubEntryControl( (SubentriesControlCodec)control );
+
         decoder.decode( bb, container );
-        return container.getPSearchControl();
+        return container.getSubEntryControl();
     }
 }

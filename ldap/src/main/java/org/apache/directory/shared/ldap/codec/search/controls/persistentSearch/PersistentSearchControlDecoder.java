@@ -17,56 +17,48 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.codec.search.controls.pagedSearch;
+package org.apache.directory.shared.ldap.codec.search.controls.persistentSearch;
 
 
 import java.nio.ByteBuffer;
 
+import javax.naming.NamingException;
+
 import org.apache.directory.shared.asn1.Asn1Object;
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.codec.DecoderException;
-import org.apache.directory.shared.ldap.codec.ControlDecoder;
+import org.apache.directory.shared.ldap.codec.controls.CodecControl;
+import org.apache.directory.shared.ldap.codec.controls.ControlDecoder;
 
 
 /**
- * A decoder for PagedSearchControls.
+ * A decoder for PSearchControls.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev: 664290 $, $Date: 2008-06-07 08:28:06 +0200 (Sat, 07 Jun 2008) $, 
+ * @version $Rev$, $Date$, 
  */
-public class PagedSearchControlDecoder extends Asn1Decoder implements ControlDecoder
+public class PersistentSearchControlDecoder extends Asn1Decoder implements ControlDecoder
 {
-    /** The paged search OID */
-    private final static String CONTROL_TYPE_OID = "1.2.840.113556.1.4.319";
-
     /** An instance of this decoder */
     private static final Asn1Decoder decoder = new Asn1Decoder();
 
     /**
-     * Return the paged search OID
+     * Decode the persistence search control
      * 
-     * @see org.apache.directory.shared.ldap.codec.ControlDecoder#getControlType()
-     */
-    public String getControlType()
-    {
-        return CONTROL_TYPE_OID;
-    }
-
-    /**
-     * Decode the paged search control
+     * @param controlBytes The bytes array which contains the encoded persistence search
      * 
-     * @param controlBytes The bytes array which contains the encoded paged search
-     * 
-     * @return A valid PagedSearch object
+     * @return A valid PersistenceSearch object
      * 
      * @throws DecoderException If the decoding found an error
      * @throws NamingException It will never be throw by this method
      */
-    public Asn1Object decode( byte[] controlBytes ) throws DecoderException
+    public Asn1Object decode( byte[] controlBytes, CodecControl control ) throws DecoderException
     {
         ByteBuffer bb = ByteBuffer.wrap( controlBytes );
-        PagedSearchControlContainer container = new PagedSearchControlContainer();
+        PersistentSearchControlContainer container = new PersistentSearchControlContainer();
+        container.setPSearchControl( (PersistentSearchControlCodec)control );
+
         decoder.decode( bb, container );
-        return container.getPagedSearchControl();
+        return container.getPSearchControl();
     }
 }

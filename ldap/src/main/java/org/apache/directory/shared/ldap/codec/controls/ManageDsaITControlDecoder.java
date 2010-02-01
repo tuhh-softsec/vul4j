@@ -22,8 +22,6 @@ package org.apache.directory.shared.ldap.codec.controls;
 
 import org.apache.directory.shared.asn1.Asn1Object;
 import org.apache.directory.shared.asn1.codec.DecoderException;
-import org.apache.directory.shared.ldap.codec.ControlDecoder;
-import org.apache.directory.shared.ldap.message.control.ManageDsaITControl;
 
 
 /**
@@ -34,13 +32,7 @@ import org.apache.directory.shared.ldap.message.control.ManageDsaITControl;
  */
 public class ManageDsaITControlDecoder implements ControlDecoder
 {
-    public String getControlType()
-    {
-        return ManageDsaITControl.CONTROL_OID;
-    }
-
-
-    public Asn1Object decode( byte[] controlBytes ) throws DecoderException
+    public Asn1Object decode( byte[] controlBytes, CodecControl control ) throws DecoderException
     {
         return new ManageDsaITControlCodec();
     }

@@ -36,14 +36,6 @@ public interface Control
     
     
     /**
-     * Sets the OID of the Control to identify the control type.
-     * 
-     * @param oid the OID of this Control.
-     */
-    void setOid( String oid );
-
-    
-    /**
      * Tells if the control is critical or not.
      *
      * @return <code>true/code> if the control is critical, <code>false</code> otherwise 

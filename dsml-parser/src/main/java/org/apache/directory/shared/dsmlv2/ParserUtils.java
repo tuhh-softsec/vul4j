@@ -33,7 +33,7 @@ import org.apache.directory.shared.dsmlv2.engine.Dsmlv2Engine;
 import org.apache.directory.shared.dsmlv2.request.BatchRequest;
 import org.apache.directory.shared.dsmlv2.request.BatchRequest.Processing;
 import org.apache.directory.shared.dsmlv2.request.BatchRequest.ResponseOrder;
-import org.apache.directory.shared.ldap.codec.ControlCodec;
+import org.apache.directory.shared.ldap.codec.controls.CodecControl;
 import org.apache.directory.shared.ldap.ldif.LdifUtils;
 import org.apache.directory.shared.ldap.util.Base64;
 import org.apache.directory.shared.ldap.util.StringTools;
@@ -197,27 +197,28 @@ public class ParserUtils
      * @param controls
      *      a List of Controls
      */
-    public static void addControls( Element element, List<ControlCodec> controls )
+    public static void addControls( Element element, List<CodecControl> controls )
     {
         if ( controls != null )
         {
             for ( int i = 0; i < controls.size(); i++ )
             {
-                ControlCodec control = controls.get( i );
+                CodecControl control = controls.get( i );
 
                 Element controlElement = element.addElement( "control" );
 
-                if ( control.getControlType() != null )
+                if ( control.getOid() != null )
                 {
-                    controlElement.addAttribute( "type", control.getControlType() );
+                    controlElement.addAttribute( "type", control.getOid() );
                 }
 
-                if ( control.getCriticality() )
+                if ( control.isCritical() )
                 {
                     controlElement.addAttribute( "criticality", "true" );
                 }
 
-                Object value = control.getControlValue();
+                Object value = control.getValue();
+                
                 if ( value != null )
                 {
                     if ( ParserUtils.needsBase64Encoding( value ) )

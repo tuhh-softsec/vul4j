@@ -21,11 +21,11 @@ package org.apache.directory.shared.ldap.codec.controls.replication.syncRequestV
 
 import java.nio.ByteBuffer;
 
-import org.apache.directory.shared.asn1.AbstractAsn1Object;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.asn1.codec.EncoderException;
+import org.apache.directory.shared.ldap.codec.controls.AbstractControlCodec;
 import org.apache.directory.shared.ldap.message.control.replication.SynchronizationModeEnum;
 import org.apache.directory.shared.ldap.util.StringTools;
 
@@ -35,8 +35,11 @@ import org.apache.directory.shared.ldap.util.StringTools;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev:$, $Date: 
  */
-public class SyncRequestValueControlCodec extends AbstractAsn1Object
+public class SyncRequestValueControlCodec  extends AbstractControlCodec
 {
+    /** This control OID */
+    public static final String CONTROL_OID = "1.3.6.1.4.1.4203.1.9.1.1";
+
     /** The synchronization type */
     private SynchronizationModeEnum mode;
     
@@ -48,6 +51,13 @@ public class SyncRequestValueControlCodec extends AbstractAsn1Object
     
     /** The global length for this control */
     private int syncRequestValueLength;
+    
+    public SyncRequestValueControlCodec()
+    {
+        super( CONTROL_OID );
+
+        decoder = new SyncRequestValueControlDecoder();
+    }
 
     /**
      * @return the mode
@@ -124,10 +134,16 @@ public class SyncRequestValueControlCodec extends AbstractAsn1Object
             syncRequestValueLength += 1 + TLV.getNbBytes( cookie.length ) + cookie.length;
         }
         
-        // The reloadHint length
-        syncRequestValueLength += 1 + 1 + 1;
+        // The reloadHint length, default to false
+        if ( reloadHint )
+        {
+            syncRequestValueLength += 1 + 1 + 1;
+        }
 
-        return 1 + TLV.getNbBytes( syncRequestValueLength ) + syncRequestValueLength;
+        valueLength =  1 + TLV.getNbBytes( syncRequestValueLength ) + syncRequestValueLength;
+
+        // Call the super class to compute the global control length
+        return super.computeLength( valueLength );
     }
     
     
@@ -140,28 +156,88 @@ public class SyncRequestValueControlCodec extends AbstractAsn1Object
      */
     public ByteBuffer encode( ByteBuffer buffer ) throws EncoderException
     {
-        // Allocate the bytes buffer.
-        ByteBuffer bb = ByteBuffer.allocate( computeLength() );
-        bb.put( UniversalTag.SEQUENCE_TAG );
-        bb.put( TLV.getBytes( syncRequestValueLength ) );
+        if ( buffer == null )
+        {
+            throw new EncoderException( "Cannot put a PDU in a null buffer !" );
+        }
+
+        // Encode the Control envelop
+        super.encode( buffer );
+        
+        // Encode the OCTET_STRING tag
+        buffer.put( UniversalTag.OCTET_STRING_TAG );
+        buffer.put( TLV.getBytes( valueLength ) );
+
+        // Encode the SEQ 
+        buffer.put( UniversalTag.SEQUENCE_TAG );
+        buffer.put( TLV.getBytes( syncRequestValueLength ) );
 
         // The mode
-        bb.put(  UniversalTag.ENUMERATED_TAG );
-        bb.put( (byte)0x01 );
-        bb.put( Value.getBytes( mode.getValue() ) );
+        buffer.put(  UniversalTag.ENUMERATED_TAG );
+        buffer.put( (byte)0x01 );
+        buffer.put( Value.getBytes( mode.getValue() ) );
 
         // The cookie
         if ( cookie != null )
         {
-            Value.encode( bb, cookie );
+            Value.encode( buffer, cookie );
         }
         
-        Value.encode( bb, reloadHint );
+        // The reloadHint if not false
+        if ( reloadHint )
+        {
+            Value.encode( buffer, reloadHint );
+        }
         
-        return bb;
+        return buffer;
     }
     
     
+    /**
+     * {@inheritDoc}
+     */
+    public byte[] getValue()
+    {
+        if ( value == null )
+        {
+            try
+            { 
+                computeLength();
+                ByteBuffer buffer = ByteBuffer.allocate( valueLength );
+                
+                // Encode the SEQ 
+                buffer.put( UniversalTag.SEQUENCE_TAG );
+                buffer.put( TLV.getBytes( syncRequestValueLength ) );
+
+                // The mode
+                buffer.put(  UniversalTag.ENUMERATED_TAG );
+                buffer.put( (byte)0x01 );
+                buffer.put( Value.getBytes( mode.getValue() ) );
+
+                // The cookie
+                if ( cookie != null )
+                {
+                    Value.encode( buffer, cookie );
+                }
+                
+                // The reloadHint if not false
+                if ( reloadHint )
+                {
+                    Value.encode( buffer, reloadHint );
+                }
+
+                value = buffer.array();
+            }
+            catch ( Exception e )
+            {
+                return null;
+            }
+        }
+        
+        return value;
+    }
+
+
     /**
      * @see Object#toString()
      */
@@ -170,6 +246,8 @@ public class SyncRequestValueControlCodec extends AbstractAsn1Object
         StringBuilder sb = new StringBuilder();
         
         sb.append( "    SyncRequestValue control :\n" );
+        sb.append( "        oid : " ).append( getOid() ).append( '\n' );
+        sb.append( "        critical : " ).append( isCritical() ).append( '\n' );
         sb.append( "        mode              : '" ).append( mode ).append( "'\n" );
         sb.append( "        cookie            : '" ).
             append( StringTools.dumpBytes( cookie ) ).append( "'\n" );

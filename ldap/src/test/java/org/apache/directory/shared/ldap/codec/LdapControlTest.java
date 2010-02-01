@@ -32,6 +32,7 @@ import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.ldap.codec.abandon.AbandonRequestCodec;
+import org.apache.directory.shared.ldap.codec.controls.CodecControl;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
 
@@ -105,29 +106,29 @@ public class LdapControlTest
         assertEquals( 2, abandonRequest.getAbandonedMessageId() );
 
         // Check the Controls
-        List<ControlCodec> controls = message.getControls();
+        List<CodecControl> controls = message.getControls();
 
         assertEquals( 4, controls.size() );
 
-        ControlCodec control = message.getControls( 0 );
-        assertEquals( "1.3.6.1.5.5.1", control.getControlType() );
-        assertEquals( "0x61 0x62 0x63 0x64 0x65 0x66 ", StringTools.dumpBytes( ( byte[] ) control.getControlValue() ) );
-        assertTrue( control.getCriticality() );
+        CodecControl control = message.getControls( 0 );
+        assertEquals( "1.3.6.1.5.5.1", control.getOid() );
+        assertEquals( "0x61 0x62 0x63 0x64 0x65 0x66 ", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
+        assertTrue( control.isCritical() );
 
         control = message.getControls( 1 );
-        assertEquals( "1.3.6.1.5.5.2", control.getControlType() );
-        assertEquals( "0x67 0x68 0x69 0x6A 0x6B 0x6C ", StringTools.dumpBytes( ( byte[] ) control.getControlValue() ) );
-        assertFalse( control.getCriticality() );
+        assertEquals( "1.3.6.1.5.5.2", control.getOid() );
+        assertEquals( "0x67 0x68 0x69 0x6A 0x6B 0x6C ", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
+        assertFalse( control.isCritical() );
 
         control = message.getControls( 2 );
-        assertEquals( "1.3.6.1.5.5.3", control.getControlType() );
-        assertEquals( "", StringTools.dumpBytes( ( byte[] ) control.getControlValue() ) );
-        assertTrue( control.getCriticality() );
+        assertEquals( "1.3.6.1.5.5.3", control.getOid() );
+        assertEquals( "", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
+        assertTrue( control.isCritical() );
 
         control = message.getControls( 3 );
-        assertEquals( "1.3.6.1.5.5.4", control.getControlType() );
-        assertEquals( "", StringTools.dumpBytes( ( byte[] ) control.getControlValue() ) );
-        assertFalse( control.getCriticality() );
+        assertEquals( "1.3.6.1.5.5.4", control.getOid() );
+        assertEquals( "", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
+        assertFalse( control.isCritical() );
 
         // Check the length
         assertEquals( 0x64, message.computeLength() );
