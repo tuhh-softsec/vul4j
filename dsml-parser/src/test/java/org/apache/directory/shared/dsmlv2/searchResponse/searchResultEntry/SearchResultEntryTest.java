@@ -32,11 +32,11 @@ import java.util.Iterator;
 import org.apache.directory.shared.dsmlv2.AbstractResponseTest;
 import org.apache.directory.shared.dsmlv2.Dsmlv2ResponseParser;
 import org.apache.directory.shared.dsmlv2.reponse.SearchResponse;
-import org.apache.directory.shared.ldap.codec.controls.CodecControl;
 import org.apache.directory.shared.ldap.codec.search.SearchResultEntryCodec;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Value;
+import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
 
@@ -74,7 +74,7 @@ public class SearchResultEntryTest extends AbstractResponseTest
 
         assertEquals( 1, searchResultEntry.getControls().size() );
 
-        CodecControl control = searchResultEntry.getCurrentControl();
+        Control control = searchResultEntry.getCurrentControl();
 
         assertTrue( control.isCritical() );
 
@@ -107,7 +107,7 @@ public class SearchResultEntryTest extends AbstractResponseTest
 
         SearchResultEntryCodec searchResultEntry = ( ( SearchResponse ) parser.getBatchResponse().getCurrentResponse() )
             .getCurrentSearchResultEntry();
-        CodecControl control = searchResultEntry.getCurrentControl();
+        Control control = searchResultEntry.getCurrentControl();
 
         assertEquals( 1, searchResultEntry.getControls().size() );
         assertTrue( control.isCritical() );
@@ -142,7 +142,7 @@ public class SearchResultEntryTest extends AbstractResponseTest
 
         assertEquals( 2, searchResultEntry.getControls().size() );
 
-        CodecControl control = searchResultEntry.getCurrentControl();
+        Control control = searchResultEntry.getCurrentControl();
 
         assertFalse( control.isCritical() );
 
@@ -178,7 +178,7 @@ public class SearchResultEntryTest extends AbstractResponseTest
 
         assertEquals( 3, searchResultEntry.getControls().size() );
 
-        CodecControl control = searchResultEntry.getCurrentControl();
+        Control control = searchResultEntry.getCurrentControl();
 
         assertTrue( control.isCritical() );
 

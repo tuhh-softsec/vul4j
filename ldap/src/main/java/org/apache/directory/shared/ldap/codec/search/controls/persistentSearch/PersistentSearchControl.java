@@ -26,7 +26,7 @@ import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.asn1.codec.EncoderException;
-import org.apache.directory.shared.ldap.codec.controls.AbstractControlCodec;
+import org.apache.directory.shared.ldap.codec.controls.AbstractControl;
 import org.apache.directory.shared.ldap.codec.search.controls.ChangeType;
 
 
@@ -36,7 +36,7 @@ import org.apache.directory.shared.ldap.codec.search.controls.ChangeType;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$, 
  */
-public class PersistentSearchControlCodec extends AbstractControlCodec
+public class PersistentSearchControl extends AbstractControl
 {
     /** This control OID */
     public static final String CONTROL_OID = "2.16.840.1.113730.3.4.3";
@@ -83,7 +83,7 @@ public class PersistentSearchControlCodec extends AbstractControlCodec
      * Default constructor
      *
      */
-    public PersistentSearchControlCodec()
+    public PersistentSearchControl()
     {
         super( CONTROL_OID );
         

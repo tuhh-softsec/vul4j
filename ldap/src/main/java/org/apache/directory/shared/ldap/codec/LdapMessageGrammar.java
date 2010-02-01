@@ -79,8 +79,7 @@ import org.apache.directory.shared.ldap.codec.bind.SaslCredentials;
 import org.apache.directory.shared.ldap.codec.bind.SimpleAuthentication;
 import org.apache.directory.shared.ldap.codec.compare.CompareRequestCodec;
 import org.apache.directory.shared.ldap.codec.compare.CompareResponseCodec;
-import org.apache.directory.shared.ldap.codec.controls.CodecControl;
-import org.apache.directory.shared.ldap.codec.controls.CodecControlImpl;
+import org.apache.directory.shared.ldap.codec.controls.ControlImpl;
 import org.apache.directory.shared.ldap.codec.del.DelRequestCodec;
 import org.apache.directory.shared.ldap.codec.del.DelResponseCodec;
 import org.apache.directory.shared.ldap.codec.extended.ExtendedRequestCodec;
@@ -106,6 +105,7 @@ import org.apache.directory.shared.ldap.message.ModifyDnResponseImpl;
 import org.apache.directory.shared.ldap.message.ModifyResponseImpl;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.message.SearchResponseDoneImpl;
+import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.name.LdapDN;
 import org.apache.directory.shared.ldap.name.RDN;
 import org.apache.directory.shared.ldap.util.StringTools;
@@ -3517,7 +3517,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
                     // Get the current control
-                    CodecControl control = null;
+                    Control control = null;
 
                     // Store the type
                     // We have to handle the special case of a 0 length OID
@@ -3547,7 +3547,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                     if ( control == null )
                     {
                         // This control is unknown, we will create a neutral control
-                        control = new CodecControlImpl( oidValue );
+                        control = new ControlImpl( oidValue );
                     }
                     
                     // The control may be null, if not known
@@ -3584,7 +3584,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
                     // Get the current control
-                    CodecControl control = message.getCurrentControl();
+                    Control control = message.getCurrentControl();
 
                     // Store the criticality
                     // We get the value. If it's a 0, it's a FALSE. If it's

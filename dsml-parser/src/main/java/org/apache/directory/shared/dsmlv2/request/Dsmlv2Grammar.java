@@ -49,8 +49,7 @@ import org.apache.directory.shared.ldap.codec.add.AddRequestCodec;
 import org.apache.directory.shared.ldap.codec.bind.BindRequestCodec;
 import org.apache.directory.shared.ldap.codec.bind.SimpleAuthentication;
 import org.apache.directory.shared.ldap.codec.compare.CompareRequestCodec;
-import org.apache.directory.shared.ldap.codec.controls.CodecControl;
-import org.apache.directory.shared.ldap.codec.controls.CodecControlImpl;
+import org.apache.directory.shared.ldap.codec.controls.ControlImpl;
 import org.apache.directory.shared.ldap.codec.del.DelRequestCodec;
 import org.apache.directory.shared.ldap.codec.extended.ExtendedRequestCodec;
 import org.apache.directory.shared.ldap.codec.modify.ModifyRequestCodec;
@@ -68,6 +67,7 @@ import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.entry.client.ClientBinaryValue;
 import org.apache.directory.shared.ldap.entry.client.ClientStringValue;
 import org.apache.directory.shared.ldap.filter.SearchScope;
+import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.name.LdapDN;
 import org.apache.directory.shared.ldap.name.RDN;
 import org.apache.directory.shared.ldap.util.Base64;
@@ -2645,7 +2645,7 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            CodecControl control = null;
+            Control control = null;
 
             XmlPullParser xpp = container.getParser();
 
@@ -2662,7 +2662,7 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
                         null );
                 }
                 
-                control = new CodecControlImpl( attributeValue );
+                control = new ControlImpl( attributeValue );
                 container.getBatchRequest().getCurrentRequest().addControl( control );
             }
             else
@@ -2698,7 +2698,7 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            CodecControl control = container.getBatchRequest().getCurrentRequest().getCurrentControl();
+            Control control = container.getBatchRequest().getCurrentRequest().getCurrentControl();
 
             XmlPullParser xpp = container.getParser();
             try

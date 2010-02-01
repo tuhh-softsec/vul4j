@@ -34,10 +34,10 @@ import org.apache.directory.shared.asn1.primitives.OID;
 import org.apache.directory.shared.dsmlv2.AbstractResponseTest;
 import org.apache.directory.shared.dsmlv2.Dsmlv2ResponseParser;
 import org.apache.directory.shared.ldap.codec.LdapResultCodec;
-import org.apache.directory.shared.ldap.codec.controls.CodecControl;
 import org.apache.directory.shared.ldap.codec.extended.ExtendedResponseCodec;
 import org.apache.directory.shared.ldap.codec.util.LdapURLEncodingException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
+import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.util.LdapURL;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
@@ -114,7 +114,7 @@ public class ExtendedResponseTest extends AbstractResponseTest
 
         assertEquals( 1, extendedResponse.getControls().size() );
 
-        CodecControl control = extendedResponse.getCurrentControl();
+        Control control = extendedResponse.getCurrentControl();
 
         assertTrue( control.isCritical() );
 
@@ -146,7 +146,7 @@ public class ExtendedResponseTest extends AbstractResponseTest
         }
 
         ExtendedResponseCodec extendedResponse = ( ExtendedResponseCodec ) parser.getBatchResponse().getCurrentResponse();
-        CodecControl control = extendedResponse.getCurrentControl();
+        Control control = extendedResponse.getCurrentControl();
 
         assertEquals( 1, extendedResponse.getControls().size() );
         assertTrue( control.isCritical() );
@@ -180,7 +180,7 @@ public class ExtendedResponseTest extends AbstractResponseTest
 
         assertEquals( 2, extendedResponse.getControls().size() );
 
-        CodecControl control = extendedResponse.getCurrentControl();
+        Control control = extendedResponse.getCurrentControl();
 
         assertFalse( control.isCritical() );
 
@@ -215,7 +215,7 @@ public class ExtendedResponseTest extends AbstractResponseTest
 
         assertEquals( 3, extendedResponse.getControls().size() );
 
-        CodecControl control = extendedResponse.getCurrentControl();
+        Control control = extendedResponse.getCurrentControl();
 
         assertTrue( control.isCritical() );
 

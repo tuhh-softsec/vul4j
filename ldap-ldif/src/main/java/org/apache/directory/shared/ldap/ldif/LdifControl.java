@@ -20,7 +20,7 @@
 
 package org.apache.directory.shared.ldap.ldif;
 
-import org.apache.directory.shared.ldap.codec.controls.AbstractControlCodec;
+import org.apache.directory.shared.ldap.codec.controls.AbstractControl;
 import org.apache.directory.shared.ldap.util.StringTools;
 
 /**
@@ -30,7 +30,7 @@ import org.apache.directory.shared.ldap.util.StringTools;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public class LdifControl extends AbstractControlCodec
+public class LdifControl extends AbstractControl
 {
     private static final long serialVersionUID = 1L;
 

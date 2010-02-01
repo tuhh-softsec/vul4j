@@ -17,8 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.codec.controls.replication.syncStateValue;
-
+package org.apache.directory.shared.ldap.codec.controls.replication.syncRequestValue;
 
 import java.nio.ByteBuffer;
 
@@ -26,41 +25,58 @@ import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.asn1.codec.EncoderException;
-import org.apache.directory.shared.ldap.codec.controls.AbstractControlCodec;
-import org.apache.directory.shared.ldap.message.control.replication.SyncStateTypeEnum;
+import org.apache.directory.shared.ldap.codec.controls.AbstractControl;
+import org.apache.directory.shared.ldap.message.control.replication.SynchronizationModeEnum;
 import org.apache.directory.shared.ldap.util.StringTools;
 
-
 /**
- * A syncStateValue object, as defined in RFC 4533
+ * A syncRequestValue object, as defined in RFC 4533
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev:$, $Date: 
  */
-public class SyncStateValueControlCodec  extends AbstractControlCodec
+public class SyncRequestValueControl  extends AbstractControl
 {
     /** This control OID */
-    public static final String CONTROL_OID = "1.3.6.1.4.1.4203.1.9.1.2";
+    public static final String CONTROL_OID = "1.3.6.1.4.1.4203.1.9.1.1";
 
-    /** The syncStateEnum type */
-    private SyncStateTypeEnum syncStateType;
-
+    /** The synchronization type */
+    private SynchronizationModeEnum mode;
+    
     /** The Sync cookie */
     private byte[] cookie;
-
-    /** The entryUUID */
-    private byte[] entryUUID;
-
-    /** global length for the control */
-    private int syncStateSeqLength;
-
-    public SyncStateValueControlCodec()
+    
+    /** The reloadHint flag */
+    private boolean reloadHint;
+    
+    /** The global length for this control */
+    private int syncRequestValueLength;
+    
+    public SyncRequestValueControl()
     {
         super( CONTROL_OID );
-        
-        decoder = new SyncStateValueControlDecoder();
+
+        decoder = new SyncRequestValueControlDecoder();
     }
 
+    /**
+     * @return the mode
+     */
+    public SynchronizationModeEnum getMode()
+    {
+        return mode;
+    }
+
+    
+    /**
+     * @param syncMode the syncMode to set
+     */
+    public void setMode( SynchronizationModeEnum mode )
+    {
+        this.mode = mode;
+    }
+
+    
     /**
      * @return the cookie
      */
@@ -69,7 +85,7 @@ public class SyncStateValueControlCodec  extends AbstractControlCodec
         return cookie;
     }
 
-
+    
     /**
      * @param cookie the cookie to set
      */
@@ -78,79 +94,61 @@ public class SyncStateValueControlCodec  extends AbstractControlCodec
         this.cookie = cookie;
     }
 
-
+    
     /**
-     * @return the syncState's type
+     * @return the reloadHint
      */
-    public SyncStateTypeEnum getSyncStateType()
+    public boolean isReloadHint()
     {
-        return syncStateType;
+        return reloadHint;
     }
 
+    
+    /**
+     * @param reloadHint the reloadHint to set
+     */
+    public void setReloadHint( boolean reloadHint )
+    {
+        this.reloadHint = reloadHint;
+    }
 
     /**
-     * set the syncState's type
+     * Compute the SyncRequestValue length.
      * 
-     * @param syncStateType the syncState's type
-     */
-    public void setSyncStateType( SyncStateTypeEnum syncStateType )
-    {
-        this.syncStateType = syncStateType;
-    }
-
-
-    /**
-     * @return the entryUUID
-     */
-    public byte[] getEntryUUID()
-    {
-        return entryUUID;
-    }
-
-
-    /**
-     * set the entryUUID
-     * 
-     * @param entryUUID the entryUUID
-     */
-    public void setEntryUUID( byte[] entryUUID )
-    {
-        this.entryUUID = entryUUID;
-    }
-
-
-    /**
-     * Compute the SyncStateValue length.
-     * 
-     * SyncStateValue :
+     * SyncRequestValue :
      * 0x30 L1
      *  | 
-     *  +--> 0x0A 0x01 [0x00|0x01|0x02|0x03] (type)
-     * [+--> 0x04 L2 abcd...                 (entryUUID)
-     * [+--> 0x04 L3 abcd...                 (cookie)
+     *  +--> 0x0A 0x01 [0x00|0x01|0x02|0x03] (mode)
+     * [+--> 0x04 L2 abcd...                 (cookie)
+     *  +--> 0x01 0x01 [0x00|0xFF]           (reloadHint)
      *   
      */
     public int computeLength()
     {
-        // The sync state type length
-        syncStateSeqLength = 1 + 1 + 1;
-
-        syncStateSeqLength += 1 + TLV.getNbBytes( entryUUID.length ) + entryUUID.length;
-
+        // The mode length
+        syncRequestValueLength = 1 + 1 + 1;
+        
         // The cookie length, if we have a cookie
         if ( cookie != null )
         {
-            syncStateSeqLength += 1 + TLV.getNbBytes( cookie.length ) + cookie.length;
+            syncRequestValueLength += 1 + TLV.getNbBytes( cookie.length ) + cookie.length;
         }
         
-        valueLength = 1 + TLV.getNbBytes( syncStateSeqLength ) + syncStateSeqLength;
+        // The reloadHint length, default to false
+        if ( reloadHint )
+        {
+            syncRequestValueLength += 1 + 1 + 1;
+        }
 
+        valueLength =  1 + TLV.getNbBytes( syncRequestValueLength ) + syncRequestValueLength;
+
+        // Call the super class to compute the global control length
         return super.computeLength( valueLength );
     }
-
-
+    
+    
     /**
-     * Encode the SyncStateValue control
+     * Encode the SyncRequestValue control
      * 
      * @param buffer The encoded sink
      * @return A ByteBuffer that contains the encoded PDU
@@ -162,7 +160,7 @@ public class SyncStateValueControlCodec  extends AbstractControlCodec
         {
             throw new EncoderException( "Cannot put a PDU in a null buffer !" );
         }
-        
+
         // Encode the Control envelop
         super.encode( buffer );
         
@@ -172,22 +170,25 @@ public class SyncStateValueControlCodec  extends AbstractControlCodec
 
         // Encode the SEQ 
         buffer.put( UniversalTag.SEQUENCE_TAG );
-        buffer.put( TLV.getBytes( syncStateSeqLength ) );
+        buffer.put( TLV.getBytes( syncRequestValueLength ) );
 
         // The mode
-        buffer.put( UniversalTag.ENUMERATED_TAG );
-        buffer.put( ( byte ) 0x01 );
-        buffer.put( Value.getBytes( syncStateType.getValue() ) );
-
-        // the entryUUID
-        Value.encode( buffer, entryUUID );
+        buffer.put(  UniversalTag.ENUMERATED_TAG );
+        buffer.put( (byte)0x01 );
+        buffer.put( Value.getBytes( mode.getValue() ) );
 
         // The cookie
         if ( cookie != null )
         {
             Value.encode( buffer, cookie );
         }
-
+        
+        // The reloadHint if not false
+        if ( reloadHint )
+        {
+            Value.encode( buffer, reloadHint );
+        }
+        
         return buffer;
     }
     
@@ -206,20 +207,23 @@ public class SyncStateValueControlCodec  extends AbstractControlCodec
                 
                 // Encode the SEQ 
                 buffer.put( UniversalTag.SEQUENCE_TAG );
-                buffer.put( TLV.getBytes( syncStateSeqLength ) );
+                buffer.put( TLV.getBytes( syncRequestValueLength ) );
 
                 // The mode
-                buffer.put( UniversalTag.ENUMERATED_TAG );
-                buffer.put( ( byte ) 0x01 );
-                buffer.put( Value.getBytes( syncStateType.getValue() ) );
-
-                // the entryUUID
-                Value.encode( buffer, entryUUID );
+                buffer.put(  UniversalTag.ENUMERATED_TAG );
+                buffer.put( (byte)0x01 );
+                buffer.put( Value.getBytes( mode.getValue() ) );
 
                 // The cookie
                 if ( cookie != null )
                 {
                     Value.encode( buffer, cookie );
+                }
+                
+                // The reloadHint if not false
+                if ( reloadHint )
+                {
+                    Value.encode( buffer, reloadHint );
                 }
 
                 value = buffer.array();
@@ -240,13 +244,14 @@ public class SyncStateValueControlCodec  extends AbstractControlCodec
     public String toString()
     {
         StringBuilder sb = new StringBuilder();
-
-        sb.append( "    SyncStateValue control :\n" );
+        
+        sb.append( "    SyncRequestValue control :\n" );
         sb.append( "        oid : " ).append( getOid() ).append( '\n' );
         sb.append( "        critical : " ).append( isCritical() ).append( '\n' );
-        sb.append( "        syncStateType     : '" ).append( syncStateType ).append( "'\n" );
-        sb.append( "        entryUUID         : '" ).append( StringTools.dumpBytes( entryUUID ) ).append( "'\n" );
-        sb.append( "        cookie            : '" ).append( StringTools.dumpBytes( cookie ) ).append( "'\n" );
+        sb.append( "        mode              : '" ).append( mode ).append( "'\n" );
+        sb.append( "        cookie            : '" ).
+            append( StringTools.dumpBytes( cookie ) ).append( "'\n" );
+        sb.append( "        refreshAndPersist : '" ).append( reloadHint ).append( "'\n" );
 
         return sb.toString();
     }

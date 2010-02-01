@@ -60,7 +60,7 @@ package org.apache.directory.shared.ldap.codec.controls;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public class ManageDsaITControlCodec  extends AbstractControlCodec
+public class ManageDsaITControl  extends AbstractControl
 {
     /** This control OID */
     public static final String CONTROL_OID = "2.16.840.1.113730.3.4.2";
@@ -69,7 +69,7 @@ public class ManageDsaITControlCodec  extends AbstractControlCodec
      * Default constructor
      *
      */
-    public ManageDsaITControlCodec()
+    public ManageDsaITControl()
     {
         super( CONTROL_OID );
         

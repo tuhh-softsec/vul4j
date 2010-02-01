@@ -42,14 +42,14 @@ import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.ResponseCarryingException;
-import org.apache.directory.shared.ldap.codec.controls.CodecControl;
-import org.apache.directory.shared.ldap.codec.search.controls.subentries.SubentriesControlCodec;
+import org.apache.directory.shared.ldap.codec.search.controls.subentries.SubentriesControl;
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.filter.SearchScope;
 import org.apache.directory.shared.ldap.message.InternalMessage;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.message.SearchResponseDoneImpl;
+import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.schema.normalizers.DeepTrimToLowerNormalizer;
 import org.apache.directory.shared.ldap.schema.normalizers.OidNormalizer;
 import org.apache.directory.shared.ldap.util.StringTools;
@@ -1094,13 +1094,13 @@ public class SearchRequestTest
 
         // this is a constant in Java 5 API
         String pagedResultsControlOID = "1.2.840.113556.1.4.319";
-        CodecControl pagedResultsControl = message.getControls( 0 );
+        Control pagedResultsControl = message.getControls( 0 );
         assertEquals( pagedResultsControlOID, pagedResultsControl.getOid() );
         assertTrue( pagedResultsControl.isCritical() );
 
         // this is a constant in Java 5 API
         String manageReferralControlOID = "2.16.840.1.113730.3.4.2";
-        CodecControl manageReferralControl = message.getControls( 1 );
+        Control manageReferralControl = message.getControls( 1 );
         assertEquals( manageReferralControlOID, manageReferralControl.getOid() );
 
         SearchRequestCodec sr = message.getSearchRequest();
@@ -1353,11 +1353,11 @@ public class SearchRequestTest
 
         // SubEntry Control
         String subEntryControlOID = "1.3.6.1.4.1.4203.1.10.1";
-        CodecControl subEntryControl = message.getControls( 0 );
+        Control subEntryControl = message.getControls( 0 );
         assertEquals( subEntryControlOID, subEntryControl.getOid() );
         assertTrue( subEntryControl.isCritical() );
-        assertTrue( subEntryControl instanceof SubentriesControlCodec );
-        assertTrue( ((SubentriesControlCodec)subEntryControl).isVisible() );
+        assertTrue( subEntryControl instanceof SubentriesControl );
+        assertTrue( ((SubentriesControl)subEntryControl).isVisible() );
 
         SearchRequestCodec sr = message.getSearchRequest();
         assertEquals( "dc=my-domain,dc=com", sr.getBaseObject().toString() );

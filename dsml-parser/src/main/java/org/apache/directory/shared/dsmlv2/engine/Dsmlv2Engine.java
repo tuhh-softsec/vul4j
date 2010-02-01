@@ -66,7 +66,6 @@ import org.apache.directory.shared.ldap.codec.bind.BindResponseCodec;
 import org.apache.directory.shared.ldap.codec.bind.LdapAuthentication;
 import org.apache.directory.shared.ldap.codec.bind.SimpleAuthentication;
 import org.apache.directory.shared.ldap.codec.compare.CompareResponseCodec;
-import org.apache.directory.shared.ldap.codec.controls.CodecControl;
 import org.apache.directory.shared.ldap.codec.del.DelResponseCodec;
 import org.apache.directory.shared.ldap.codec.extended.ExtendedResponseCodec;
 import org.apache.directory.shared.ldap.codec.modify.ModifyResponseCodec;
@@ -75,6 +74,7 @@ import org.apache.directory.shared.ldap.codec.search.SearchResultDoneCodec;
 import org.apache.directory.shared.ldap.codec.search.SearchResultEntryCodec;
 import org.apache.directory.shared.ldap.codec.search.SearchResultReferenceCodec;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
+import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.name.LdapDN;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.xmlpull.v1.XmlPullParserException;
@@ -465,7 +465,7 @@ public class Dsmlv2Engine
     {
         to.setMessageId( from.getMessageId() );
         
-        for ( CodecControl control : from.getControls() )
+        for ( Control control : from.getControls() )
         {
             to.addControl( control );
         }

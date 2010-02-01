@@ -29,7 +29,7 @@ import java.nio.ByteBuffer;
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.codec.EncoderException;
-import org.apache.directory.shared.ldap.codec.controls.replication.syncInfoValue.SyncInfoValueControlCodec;
+import org.apache.directory.shared.ldap.codec.controls.replication.syncInfoValue.SyncInfoValueControl;
 import org.apache.directory.shared.ldap.codec.controls.replication.syncInfoValue.SyncInfoValueControlContainer;
 import org.apache.directory.shared.ldap.codec.controls.replication.syncInfoValue.SyncInfoValueControlDecoder;
 import org.apache.directory.shared.ldap.message.control.replication.SynchronizationInfoEnum;
@@ -62,7 +62,7 @@ public class SyncInfoValueControlTest
         bb.flip();
 
         SyncInfoValueControlContainer container = new SyncInfoValueControlContainer();
-        container.setSyncInfoValueControl( new SyncInfoValueControlCodec( SynchronizationInfoEnum.NEW_COOKIE ) );
+        container.setSyncInfoValueControl( new SyncInfoValueControl( SynchronizationInfoEnum.NEW_COOKIE ) );
 
         try
         {
@@ -74,7 +74,7 @@ public class SyncInfoValueControlTest
             fail( de.getMessage() );
         }
 
-        SyncInfoValueControlCodec syncInfoValue = container.getSyncInfoValueControl();
+        SyncInfoValueControl syncInfoValue = container.getSyncInfoValueControl();
         assertEquals( SynchronizationInfoEnum.NEW_COOKIE, syncInfoValue.getType() );
         assertEquals( "abc", StringTools.utf8ToString( syncInfoValue.getCookie() ) );
         
@@ -121,7 +121,7 @@ public class SyncInfoValueControlTest
         bb.flip();
 
         SyncInfoValueControlContainer container = new SyncInfoValueControlContainer();
-        container.setSyncInfoValueControl( new SyncInfoValueControlCodec( SynchronizationInfoEnum.NEW_COOKIE ) );
+        container.setSyncInfoValueControl( new SyncInfoValueControl( SynchronizationInfoEnum.NEW_COOKIE ) );
         
         try
         {
@@ -133,7 +133,7 @@ public class SyncInfoValueControlTest
             fail( de.getMessage() );
         }
 
-        SyncInfoValueControlCodec syncInfoValue = container.getSyncInfoValueControl();
+        SyncInfoValueControl syncInfoValue = container.getSyncInfoValueControl();
         assertEquals( SynchronizationInfoEnum.NEW_COOKIE, syncInfoValue.getType() );
         assertEquals( "", StringTools.utf8ToString( syncInfoValue.getCookie() ) );
         
@@ -185,7 +185,7 @@ public class SyncInfoValueControlTest
         bb.flip();
 
         SyncInfoValueControlContainer container = new SyncInfoValueControlContainer();
-        container.setSyncInfoValueControl( new SyncInfoValueControlCodec( SynchronizationInfoEnum.REFRESH_DELETE ) );
+        container.setSyncInfoValueControl( new SyncInfoValueControl( SynchronizationInfoEnum.REFRESH_DELETE ) );
         
         try
         {
@@ -197,7 +197,7 @@ public class SyncInfoValueControlTest
             fail( de.getMessage() );
         }
 
-        SyncInfoValueControlCodec syncInfoValue = container.getSyncInfoValueControl();
+        SyncInfoValueControl syncInfoValue = container.getSyncInfoValueControl();
         assertEquals( SynchronizationInfoEnum.REFRESH_DELETE, syncInfoValue.getType() );
         assertEquals( "abc", StringTools.utf8ToString( syncInfoValue.getCookie() ) );
         assertTrue( syncInfoValue.isRefreshDone() );
@@ -249,7 +249,7 @@ public class SyncInfoValueControlTest
         bb.flip();
 
         SyncInfoValueControlContainer container = new SyncInfoValueControlContainer();
-        container.setSyncInfoValueControl( new SyncInfoValueControlCodec( SynchronizationInfoEnum.REFRESH_DELETE ) );
+        container.setSyncInfoValueControl( new SyncInfoValueControl( SynchronizationInfoEnum.REFRESH_DELETE ) );
 
         try
         {
@@ -261,7 +261,7 @@ public class SyncInfoValueControlTest
             fail( de.getMessage() );
         }
 
-        SyncInfoValueControlCodec syncInfoValue = container.getSyncInfoValueControl();
+        SyncInfoValueControl syncInfoValue = container.getSyncInfoValueControl();
         assertEquals( SynchronizationInfoEnum.REFRESH_DELETE, syncInfoValue.getType() );
         assertEquals( "abc", StringTools.utf8ToString( syncInfoValue.getCookie() ) );
         assertFalse( syncInfoValue.isRefreshDone() );
@@ -313,7 +313,7 @@ public class SyncInfoValueControlTest
         bb.flip();
 
         SyncInfoValueControlContainer container = new SyncInfoValueControlContainer();
-        container.setSyncInfoValueControl( new SyncInfoValueControlCodec( SynchronizationInfoEnum.REFRESH_DELETE ) );
+        container.setSyncInfoValueControl( new SyncInfoValueControl( SynchronizationInfoEnum.REFRESH_DELETE ) );
 
         try
         {
@@ -325,7 +325,7 @@ public class SyncInfoValueControlTest
             fail( de.getMessage() );
         }
 
-        SyncInfoValueControlCodec syncInfoValue = container.getSyncInfoValueControl();
+        SyncInfoValueControl syncInfoValue = container.getSyncInfoValueControl();
         assertEquals( SynchronizationInfoEnum.REFRESH_DELETE, syncInfoValue.getType() );
         assertEquals( "abc", StringTools.utf8ToString( syncInfoValue.getCookie() ) );
         assertTrue( syncInfoValue.isRefreshDone() );
@@ -376,7 +376,7 @@ public class SyncInfoValueControlTest
         bb.flip();
 
         SyncInfoValueControlContainer container = new SyncInfoValueControlContainer();
-        container.setSyncInfoValueControl( new SyncInfoValueControlCodec( SynchronizationInfoEnum.REFRESH_DELETE ) );
+        container.setSyncInfoValueControl( new SyncInfoValueControl( SynchronizationInfoEnum.REFRESH_DELETE ) );
 
         try
         {
@@ -388,7 +388,7 @@ public class SyncInfoValueControlTest
             fail( de.getMessage() );
         }
 
-        SyncInfoValueControlCodec syncInfoValue = container.getSyncInfoValueControl();
+        SyncInfoValueControl syncInfoValue = container.getSyncInfoValueControl();
         assertEquals( SynchronizationInfoEnum.REFRESH_DELETE, syncInfoValue.getType() );
         assertEquals( "", StringTools.utf8ToString( syncInfoValue.getCookie() ) );
         assertFalse( syncInfoValue.isRefreshDone() );
@@ -437,7 +437,7 @@ public class SyncInfoValueControlTest
         bb.flip();
 
         SyncInfoValueControlContainer container = new SyncInfoValueControlContainer();
-        container.setSyncInfoValueControl( new SyncInfoValueControlCodec( SynchronizationInfoEnum.REFRESH_DELETE ) );
+        container.setSyncInfoValueControl( new SyncInfoValueControl( SynchronizationInfoEnum.REFRESH_DELETE ) );
 
         try
         {
@@ -449,7 +449,7 @@ public class SyncInfoValueControlTest
             fail( de.getMessage() );
         }
 
-        SyncInfoValueControlCodec syncInfoValue = container.getSyncInfoValueControl();
+        SyncInfoValueControl syncInfoValue = container.getSyncInfoValueControl();
         assertEquals( SynchronizationInfoEnum.REFRESH_DELETE, syncInfoValue.getType() );
         assertEquals( "", StringTools.utf8ToString( syncInfoValue.getCookie() ) );
         assertTrue( syncInfoValue.isRefreshDone() );
@@ -502,7 +502,7 @@ public class SyncInfoValueControlTest
         bb.flip();
 
         SyncInfoValueControlContainer container = new SyncInfoValueControlContainer();
-        container.setSyncInfoValueControl( new SyncInfoValueControlCodec( SynchronizationInfoEnum.REFRESH_PRESENT ) );
+        container.setSyncInfoValueControl( new SyncInfoValueControl( SynchronizationInfoEnum.REFRESH_PRESENT ) );
 
         try
         {
@@ -514,7 +514,7 @@ public class SyncInfoValueControlTest
             fail( de.getMessage() );
         }
 
-        SyncInfoValueControlCodec syncInfoValue = container.getSyncInfoValueControl();
+        SyncInfoValueControl syncInfoValue = container.getSyncInfoValueControl();
         assertEquals( SynchronizationInfoEnum.REFRESH_PRESENT, syncInfoValue.getType() );
         assertEquals( "abc", StringTools.utf8ToString( syncInfoValue.getCookie() ) );
         assertTrue( syncInfoValue.isRefreshDone() );
@@ -566,7 +566,7 @@ public class SyncInfoValueControlTest
         bb.flip();
 
         SyncInfoValueControlContainer container = new SyncInfoValueControlContainer();
-        container.setSyncInfoValueControl( new SyncInfoValueControlCodec( SynchronizationInfoEnum.REFRESH_PRESENT ) );
+        container.setSyncInfoValueControl( new SyncInfoValueControl( SynchronizationInfoEnum.REFRESH_PRESENT ) );
 
         try
         {
@@ -578,7 +578,7 @@ public class SyncInfoValueControlTest
             fail( de.getMessage() );
         }
 
-        SyncInfoValueControlCodec syncInfoValue = container.getSyncInfoValueControl();
+        SyncInfoValueControl syncInfoValue = container.getSyncInfoValueControl();
         assertEquals( SynchronizationInfoEnum.REFRESH_PRESENT, syncInfoValue.getType() );
         assertEquals( "abc", StringTools.utf8ToString( syncInfoValue.getCookie() ) );
         assertFalse( syncInfoValue.isRefreshDone() );
@@ -630,7 +630,7 @@ public class SyncInfoValueControlTest
         bb.flip();
 
         SyncInfoValueControlContainer container = new SyncInfoValueControlContainer();
-        container.setSyncInfoValueControl( new SyncInfoValueControlCodec( SynchronizationInfoEnum.REFRESH_PRESENT ) );
+        container.setSyncInfoValueControl( new SyncInfoValueControl( SynchronizationInfoEnum.REFRESH_PRESENT ) );
 
         try
         {
@@ -642,7 +642,7 @@ public class SyncInfoValueControlTest
             fail( de.getMessage() );
         }
 
-        SyncInfoValueControlCodec syncInfoValue = container.getSyncInfoValueControl();
+        SyncInfoValueControl syncInfoValue = container.getSyncInfoValueControl();
         assertEquals( SynchronizationInfoEnum.REFRESH_PRESENT, syncInfoValue.getType() );
         assertEquals( "abc", StringTools.utf8ToString( syncInfoValue.getCookie() ) );
         assertTrue( syncInfoValue.isRefreshDone() );
@@ -693,7 +693,7 @@ public class SyncInfoValueControlTest
         bb.flip();
 
         SyncInfoValueControlContainer container = new SyncInfoValueControlContainer();
-        container.setSyncInfoValueControl( new SyncInfoValueControlCodec( SynchronizationInfoEnum.REFRESH_PRESENT ) );
+        container.setSyncInfoValueControl( new SyncInfoValueControl( SynchronizationInfoEnum.REFRESH_PRESENT ) );
 
         try
         {
@@ -705,7 +705,7 @@ public class SyncInfoValueControlTest
             fail( de.getMessage() );
         }
 
-        SyncInfoValueControlCodec syncInfoValue = container.getSyncInfoValueControl();
+        SyncInfoValueControl syncInfoValue = container.getSyncInfoValueControl();
         assertEquals( SynchronizationInfoEnum.REFRESH_PRESENT, syncInfoValue.getType() );
         assertEquals( "", StringTools.utf8ToString( syncInfoValue.getCookie() ) );
         assertFalse( syncInfoValue.isRefreshDone() );
@@ -754,7 +754,7 @@ public class SyncInfoValueControlTest
         bb.flip();
 
         SyncInfoValueControlContainer container = new SyncInfoValueControlContainer();
-        container.setSyncInfoValueControl( new SyncInfoValueControlCodec( SynchronizationInfoEnum.REFRESH_PRESENT ) );
+        container.setSyncInfoValueControl( new SyncInfoValueControl( SynchronizationInfoEnum.REFRESH_PRESENT ) );
 
         try
         {
@@ -766,7 +766,7 @@ public class SyncInfoValueControlTest
             fail( de.getMessage() );
         }
 
-        SyncInfoValueControlCodec syncInfoValue = container.getSyncInfoValueControl();
+        SyncInfoValueControl syncInfoValue = container.getSyncInfoValueControl();
         assertEquals( SynchronizationInfoEnum.REFRESH_PRESENT, syncInfoValue.getType() );
         assertEquals( "", StringTools.utf8ToString( syncInfoValue.getCookie() ) );
         assertTrue( syncInfoValue.isRefreshDone() );
@@ -816,7 +816,7 @@ public class SyncInfoValueControlTest
         bb.flip();
 
         SyncInfoValueControlContainer container = new SyncInfoValueControlContainer();
-        container.setSyncInfoValueControl( new SyncInfoValueControlCodec( SynchronizationInfoEnum.SYNC_ID_SET ) );
+        container.setSyncInfoValueControl( new SyncInfoValueControl( SynchronizationInfoEnum.SYNC_ID_SET ) );
 
         try
         {
@@ -848,7 +848,7 @@ public class SyncInfoValueControlTest
         bb.flip();
 
         SyncInfoValueControlContainer container = new SyncInfoValueControlContainer();
-        container.setSyncInfoValueControl( new SyncInfoValueControlCodec( SynchronizationInfoEnum.SYNC_ID_SET ) );
+        container.setSyncInfoValueControl( new SyncInfoValueControl( SynchronizationInfoEnum.SYNC_ID_SET ) );
 
         try
         {
@@ -880,7 +880,7 @@ public class SyncInfoValueControlTest
         bb.flip();
 
         SyncInfoValueControlContainer container = new SyncInfoValueControlContainer();
-        container.setSyncInfoValueControl( new SyncInfoValueControlCodec( SynchronizationInfoEnum.SYNC_ID_SET ) );
+        container.setSyncInfoValueControl( new SyncInfoValueControl( SynchronizationInfoEnum.SYNC_ID_SET ) );
 
         try
         {
@@ -913,7 +913,7 @@ public class SyncInfoValueControlTest
         bb.flip();
 
         SyncInfoValueControlContainer container = new SyncInfoValueControlContainer();
-        container.setSyncInfoValueControl( new SyncInfoValueControlCodec( SynchronizationInfoEnum.SYNC_ID_SET ) );
+        container.setSyncInfoValueControl( new SyncInfoValueControl( SynchronizationInfoEnum.SYNC_ID_SET ) );
 
         try
         {
@@ -945,7 +945,7 @@ public class SyncInfoValueControlTest
         bb.flip();
 
         SyncInfoValueControlContainer container = new SyncInfoValueControlContainer();
-        container.setSyncInfoValueControl( new SyncInfoValueControlCodec( SynchronizationInfoEnum.SYNC_ID_SET ) );
+        container.setSyncInfoValueControl( new SyncInfoValueControl( SynchronizationInfoEnum.SYNC_ID_SET ) );
 
         try
         {
@@ -957,7 +957,7 @@ public class SyncInfoValueControlTest
             fail( de.getMessage() );
         }
         
-        SyncInfoValueControlCodec syncInfoValue = container.getSyncInfoValueControl();
+        SyncInfoValueControl syncInfoValue = container.getSyncInfoValueControl();
         assertEquals( SynchronizationInfoEnum.SYNC_ID_SET, syncInfoValue.getType() );
         assertEquals( "", StringTools.utf8ToString( syncInfoValue.getCookie() ) );
         assertFalse( syncInfoValue.isRefreshDeletes() );
@@ -1018,7 +1018,7 @@ public class SyncInfoValueControlTest
         bb.flip();
 
         SyncInfoValueControlContainer container = new SyncInfoValueControlContainer();
-        container.setSyncInfoValueControl( new SyncInfoValueControlCodec( SynchronizationInfoEnum.SYNC_ID_SET ) );
+        container.setSyncInfoValueControl( new SyncInfoValueControl( SynchronizationInfoEnum.SYNC_ID_SET ) );
 
         try
         {
@@ -1029,7 +1029,7 @@ public class SyncInfoValueControlTest
             de.printStackTrace();
             fail( de.getMessage() );
         }
-        SyncInfoValueControlCodec syncInfoValue = container.getSyncInfoValueControl();
+        SyncInfoValueControl syncInfoValue = container.getSyncInfoValueControl();
         assertEquals( SynchronizationInfoEnum.SYNC_ID_SET, syncInfoValue.getType() );
         assertEquals( "", StringTools.utf8ToString( syncInfoValue.getCookie() ) );
         assertFalse( syncInfoValue.isRefreshDeletes() );
@@ -1101,7 +1101,7 @@ public class SyncInfoValueControlTest
         bb.flip();
 
         SyncInfoValueControlContainer container = new SyncInfoValueControlContainer();
-        container.setSyncInfoValueControl( new SyncInfoValueControlCodec( SynchronizationInfoEnum.SYNC_ID_SET ) );
+        container.setSyncInfoValueControl( new SyncInfoValueControl( SynchronizationInfoEnum.SYNC_ID_SET ) );
 
         try
         {
@@ -1112,7 +1112,7 @@ public class SyncInfoValueControlTest
             de.printStackTrace();
             fail( de.getMessage() );
         }
-        SyncInfoValueControlCodec syncInfoValue = container.getSyncInfoValueControl();
+        SyncInfoValueControl syncInfoValue = container.getSyncInfoValueControl();
         assertEquals( SynchronizationInfoEnum.SYNC_ID_SET, syncInfoValue.getType() );
         assertEquals( "abc", StringTools.utf8ToString( syncInfoValue.getCookie() ) );
         assertFalse( syncInfoValue.isRefreshDeletes() );
@@ -1175,7 +1175,7 @@ public class SyncInfoValueControlTest
         bb.flip();
 
         SyncInfoValueControlContainer container = new SyncInfoValueControlContainer();
-        container.setSyncInfoValueControl( new SyncInfoValueControlCodec( SynchronizationInfoEnum.SYNC_ID_SET ) );
+        container.setSyncInfoValueControl( new SyncInfoValueControl( SynchronizationInfoEnum.SYNC_ID_SET ) );
 
         try
         {
@@ -1187,7 +1187,7 @@ public class SyncInfoValueControlTest
             fail( de.getMessage() );
         }
         
-        SyncInfoValueControlCodec syncInfoValue = container.getSyncInfoValueControl();
+        SyncInfoValueControl syncInfoValue = container.getSyncInfoValueControl();
         assertEquals( SynchronizationInfoEnum.SYNC_ID_SET, syncInfoValue.getType() );
         assertEquals( "abc", StringTools.utf8ToString( syncInfoValue.getCookie() ) );
         assertFalse( syncInfoValue.isRefreshDeletes() );
@@ -1260,7 +1260,7 @@ public class SyncInfoValueControlTest
         bb.flip();
 
         SyncInfoValueControlContainer container = new SyncInfoValueControlContainer();
-        container.setSyncInfoValueControl( new SyncInfoValueControlCodec( SynchronizationInfoEnum.SYNC_ID_SET ) );
+        container.setSyncInfoValueControl( new SyncInfoValueControl( SynchronizationInfoEnum.SYNC_ID_SET ) );
 
         try
         {
@@ -1271,7 +1271,7 @@ public class SyncInfoValueControlTest
             de.printStackTrace();
             fail( de.getMessage() );
         }
-        SyncInfoValueControlCodec syncInfoValue = container.getSyncInfoValueControl();
+        SyncInfoValueControl syncInfoValue = container.getSyncInfoValueControl();
         assertEquals( SynchronizationInfoEnum.SYNC_ID_SET, syncInfoValue.getType() );
         assertEquals( "", StringTools.utf8ToString( syncInfoValue.getCookie() ) );
         assertTrue( syncInfoValue.isRefreshDeletes() );
@@ -1334,7 +1334,7 @@ public class SyncInfoValueControlTest
         bb.flip();
 
         SyncInfoValueControlContainer container = new SyncInfoValueControlContainer();
-        container.setSyncInfoValueControl( new SyncInfoValueControlCodec( SynchronizationInfoEnum.SYNC_ID_SET ) );
+        container.setSyncInfoValueControl( new SyncInfoValueControl( SynchronizationInfoEnum.SYNC_ID_SET ) );
 
         try
         {
@@ -1345,7 +1345,7 @@ public class SyncInfoValueControlTest
             de.printStackTrace();
             fail( de.getMessage() );
         }
-        SyncInfoValueControlCodec syncInfoValue = container.getSyncInfoValueControl();
+        SyncInfoValueControl syncInfoValue = container.getSyncInfoValueControl();
         assertEquals( SynchronizationInfoEnum.SYNC_ID_SET, syncInfoValue.getType() );
         assertEquals( "", StringTools.utf8ToString( syncInfoValue.getCookie() ) );
         assertTrue( syncInfoValue.isRefreshDeletes() );
@@ -1419,7 +1419,7 @@ public class SyncInfoValueControlTest
         bb.flip();
 
         SyncInfoValueControlContainer container = new SyncInfoValueControlContainer();
-        container.setSyncInfoValueControl( new SyncInfoValueControlCodec( SynchronizationInfoEnum.SYNC_ID_SET ) );
+        container.setSyncInfoValueControl( new SyncInfoValueControl( SynchronizationInfoEnum.SYNC_ID_SET ) );
 
         try
         {
@@ -1430,7 +1430,7 @@ public class SyncInfoValueControlTest
             de.printStackTrace();
             fail( de.getMessage() );
         }
-        SyncInfoValueControlCodec syncInfoValue = container.getSyncInfoValueControl();
+        SyncInfoValueControl syncInfoValue = container.getSyncInfoValueControl();
         assertEquals( SynchronizationInfoEnum.SYNC_ID_SET, syncInfoValue.getType() );
         assertEquals( "abc", StringTools.utf8ToString( syncInfoValue.getCookie() ) );
         assertTrue( syncInfoValue.isRefreshDeletes() );
@@ -1495,7 +1495,7 @@ public class SyncInfoValueControlTest
         bb.flip();
 
         SyncInfoValueControlContainer container = new SyncInfoValueControlContainer();
-        container.setSyncInfoValueControl( new SyncInfoValueControlCodec( SynchronizationInfoEnum.SYNC_ID_SET ) );
+        container.setSyncInfoValueControl( new SyncInfoValueControl( SynchronizationInfoEnum.SYNC_ID_SET ) );
 
         try
         {
@@ -1507,7 +1507,7 @@ public class SyncInfoValueControlTest
             fail( de.getMessage() );
         }
         
-        SyncInfoValueControlCodec syncInfoValue = container.getSyncInfoValueControl();
+        SyncInfoValueControl syncInfoValue = container.getSyncInfoValueControl();
         assertEquals( SynchronizationInfoEnum.SYNC_ID_SET, syncInfoValue.getType() );
         assertEquals( "abc", StringTools.utf8ToString( syncInfoValue.getCookie() ) );
         assertTrue( syncInfoValue.isRefreshDeletes() );
@@ -1585,7 +1585,7 @@ public class SyncInfoValueControlTest
         bb.flip();
 
         SyncInfoValueControlContainer container = new SyncInfoValueControlContainer();
-        container.setSyncInfoValueControl( new SyncInfoValueControlCodec( SynchronizationInfoEnum.SYNC_ID_SET ) );
+        container.setSyncInfoValueControl( new SyncInfoValueControl( SynchronizationInfoEnum.SYNC_ID_SET ) );
 
         try
         {
@@ -1623,7 +1623,7 @@ public class SyncInfoValueControlTest
         bb.flip();
 
         SyncInfoValueControlContainer container = new SyncInfoValueControlContainer();
-        container.setSyncInfoValueControl( new SyncInfoValueControlCodec( SynchronizationInfoEnum.SYNC_ID_SET ) );
+        container.setSyncInfoValueControl( new SyncInfoValueControl( SynchronizationInfoEnum.SYNC_ID_SET ) );
 
         try
         {

@@ -28,8 +28,8 @@ import static org.junit.Assert.fail;
 
 import org.apache.directory.shared.dsmlv2.AbstractTest;
 import org.apache.directory.shared.dsmlv2.Dsmlv2Parser;
-import org.apache.directory.shared.ldap.codec.controls.CodecControl;
 import org.apache.directory.shared.ldap.codec.del.DelRequestCodec;
+import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
 
@@ -136,7 +136,7 @@ public class DelRequestTest extends AbstractTest
         }
 
         DelRequestCodec delRequest = ( DelRequestCodec ) parser.getBatchRequest().getCurrentRequest();
-        CodecControl control = delRequest.getCurrentControl();
+        Control control = delRequest.getCurrentControl();
 
         assertEquals( 1, delRequest.getControls().size() );
         assertTrue( control.isCritical() );
@@ -167,7 +167,7 @@ public class DelRequestTest extends AbstractTest
         }
 
         DelRequestCodec delRequest = ( DelRequestCodec ) parser.getBatchRequest().getCurrentRequest();
-        CodecControl control = delRequest.getCurrentControl();
+        Control control = delRequest.getCurrentControl();
 
         assertEquals( 1, delRequest.getControls().size() );
         assertTrue( control.isCritical() );
@@ -198,7 +198,7 @@ public class DelRequestTest extends AbstractTest
         }
 
         DelRequestCodec delRequest = ( DelRequestCodec ) parser.getBatchRequest().getCurrentRequest();
-        CodecControl control = delRequest.getCurrentControl();
+        Control control = delRequest.getCurrentControl();
 
         assertEquals( 1, delRequest.getControls().size() );
         assertTrue( control.isCritical() );
@@ -228,7 +228,7 @@ public class DelRequestTest extends AbstractTest
         }
 
         DelRequestCodec delRequest = ( DelRequestCodec ) parser.getBatchRequest().getCurrentRequest();
-        CodecControl control = delRequest.getCurrentControl();
+        Control control = delRequest.getCurrentControl();
 
         assertEquals( 2, delRequest.getControls().size() );
         assertFalse( control.isCritical() );
@@ -259,7 +259,7 @@ public class DelRequestTest extends AbstractTest
         }
 
         DelRequestCodec delRequest = ( DelRequestCodec ) parser.getBatchRequest().getCurrentRequest();
-        CodecControl control = delRequest.getCurrentControl();
+        Control control = delRequest.getCurrentControl();
 
         assertEquals( 3, delRequest.getControls().size() );
         assertTrue( control.isCritical() );

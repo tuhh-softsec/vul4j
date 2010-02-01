@@ -27,7 +27,7 @@ import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.asn1.codec.EncoderException;
-import org.apache.directory.shared.ldap.codec.controls.AbstractControlCodec;
+import org.apache.directory.shared.ldap.codec.controls.AbstractControl;
 import org.apache.directory.shared.ldap.util.StringTools;
 
 
@@ -63,7 +63,7 @@ import org.apache.directory.shared.ldap.util.StringTools;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev:  $
  */
-public class PagedResultsControlCodec extends AbstractControlCodec
+public class PagedResultsControl extends AbstractControl
 {
     /** The Paged Search Control OID */
     public static final String CONTROL_OID = "1.2.840.113556.1.4.319";
@@ -80,7 +80,7 @@ public class PagedResultsControlCodec extends AbstractControlCodec
     /**
      * @see Asn1Object#Asn1Object
      */
-    public PagedResultsControlCodec()
+    public PagedResultsControl()
     {
         super( CONTROL_OID );
         

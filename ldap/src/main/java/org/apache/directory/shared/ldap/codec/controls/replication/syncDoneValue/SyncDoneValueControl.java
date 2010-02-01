@@ -26,7 +26,7 @@ import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.asn1.codec.EncoderException;
-import org.apache.directory.shared.ldap.codec.controls.AbstractControlCodec;
+import org.apache.directory.shared.ldap.codec.controls.AbstractControl;
 import org.apache.directory.shared.ldap.util.StringTools;
 
 
@@ -37,7 +37,7 @@ import org.apache.directory.shared.ldap.util.StringTools;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public class SyncDoneValueControlCodec extends AbstractControlCodec
+public class SyncDoneValueControl extends AbstractControl
 {
     /** This control OID */
     public static final String CONTROL_OID = "1.3.6.1.4.1.4203.1.9.1.3";
@@ -54,7 +54,7 @@ public class SyncDoneValueControlCodec extends AbstractControlCodec
     /**
      * Creates a new instance of SyncDoneValueControlCodec.
      */
-    public SyncDoneValueControlCodec()
+    public SyncDoneValueControl()
     {
         super( CONTROL_OID );
 

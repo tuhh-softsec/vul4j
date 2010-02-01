@@ -30,7 +30,7 @@ import static org.junit.Assert.fail;
 import org.apache.directory.shared.dsmlv2.AbstractTest;
 import org.apache.directory.shared.dsmlv2.Dsmlv2Parser;
 import org.apache.directory.shared.ldap.codec.compare.CompareRequestCodec;
-import org.apache.directory.shared.ldap.codec.controls.CodecControl;
+import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
 
@@ -141,7 +141,7 @@ public class CompareRequestTest extends AbstractTest
 
         assertEquals( 1, compareRequest.getControls().size() );
 
-        CodecControl control = compareRequest.getCurrentControl();
+        Control control = compareRequest.getCurrentControl();
 
         assertTrue( control.isCritical() );
 
@@ -176,7 +176,7 @@ public class CompareRequestTest extends AbstractTest
 
         assertEquals( 1, compareRequest.getControls().size() );
 
-        CodecControl control = compareRequest.getCurrentControl();
+        Control control = compareRequest.getCurrentControl();
 
         assertTrue( control.isCritical() );
 
@@ -211,7 +211,7 @@ public class CompareRequestTest extends AbstractTest
 
         assertEquals( 1, compareRequest.getControls().size() );
 
-        CodecControl control = compareRequest.getCurrentControl();
+        Control control = compareRequest.getCurrentControl();
 
         assertTrue( control.isCritical() );
 
@@ -246,7 +246,7 @@ public class CompareRequestTest extends AbstractTest
 
         assertEquals( 2, compareRequest.getControls().size() );
 
-        CodecControl control = compareRequest.getCurrentControl();
+        Control control = compareRequest.getCurrentControl();
 
         assertFalse( control.isCritical() );
 
@@ -281,7 +281,7 @@ public class CompareRequestTest extends AbstractTest
 
         assertEquals( 3, compareRequest.getControls().size() );
 
-        CodecControl control = compareRequest.getCurrentControl();
+        Control control = compareRequest.getCurrentControl();
 
         assertTrue( control.isCritical() );
 

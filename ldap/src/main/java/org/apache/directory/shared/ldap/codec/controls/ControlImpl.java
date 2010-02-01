@@ -33,12 +33,12 @@ import org.apache.directory.shared.ldap.util.StringTools;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev: 764131 $, $Date: 2009-04-11 03:03:00 +0200 (Sat, 11 Apr 2009) $, 
  */
-public class CodecControlImpl extends AbstractControlCodec 
+public class ControlImpl extends AbstractControl 
 {
     /**
      * Default constructor.
      */
-    public CodecControlImpl( String oid )
+    public ControlImpl( String oid )
     {
         super( oid );
         

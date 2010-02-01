@@ -27,8 +27,8 @@ import javax.naming.NamingException;
 import org.apache.directory.shared.asn1.Asn1Object;
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.codec.DecoderException;
-import org.apache.directory.shared.ldap.codec.controls.CodecControl;
 import org.apache.directory.shared.ldap.codec.controls.ControlDecoder;
+import org.apache.directory.shared.ldap.message.control.Control;
 
 
 /**
@@ -53,11 +53,11 @@ public class EntryChangeControlDecoder extends Asn1Decoder implements ControlDec
      * @throws NamingException It will never be throw by this method
      */
     
-    public Asn1Object decode( byte[] controlBytes, CodecControl control ) throws DecoderException
+    public Asn1Object decode( byte[] controlBytes, Control control ) throws DecoderException
     {
         ByteBuffer bb = ByteBuffer.wrap( controlBytes );
         EntryChangeControlContainer container = new EntryChangeControlContainer();
-        container.setEntryChangeControl( (EntryChangeControlCodec)control );
+        container.setEntryChangeControl( (EntryChangeControl)control );
         decoder.decode( bb, container );
         return container.getEntryChangeControl();
     }

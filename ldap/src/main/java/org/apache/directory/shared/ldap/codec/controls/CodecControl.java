@@ -22,7 +22,6 @@ package org.apache.directory.shared.ldap.codec.controls;
 import java.nio.ByteBuffer;
 
 import org.apache.directory.shared.asn1.codec.EncoderException;
-import org.apache.directory.shared.ldap.message.control.Control;
 
 /**
  * Define the transform method to be implemented by all the codec Controls
@@ -30,7 +29,7 @@ import org.apache.directory.shared.ldap.message.control.Control;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public interface CodecControl extends Control
+public interface CodecControl
 {
     /**
      * Generate the PDU which contains the Control.

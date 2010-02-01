@@ -27,8 +27,8 @@ import javax.naming.NamingException;
 import org.apache.directory.shared.asn1.Asn1Object;
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.codec.DecoderException;
-import org.apache.directory.shared.ldap.codec.controls.CodecControl;
 import org.apache.directory.shared.ldap.codec.controls.ControlDecoder;
+import org.apache.directory.shared.ldap.message.control.Control;
 
 
 /**
@@ -55,11 +55,11 @@ public class SyncDoneValueControlDecoder extends Asn1Decoder implements ControlD
      * @throws DecoderException If the decoding found an error
      * @throws NamingException It will never be throw by this method
      */
-    public Asn1Object decode( byte[] controlBytes, CodecControl control ) throws DecoderException
+    public Asn1Object decode( byte[] controlBytes, Control control ) throws DecoderException
     {
         ByteBuffer bb = ByteBuffer.wrap( controlBytes );
         SyncDoneValueControlContainer container = new SyncDoneValueControlContainer();
-        container.setSyncDoneValueControl( (SyncDoneValueControlCodec)control );
+        container.setSyncDoneValueControl( (SyncDoneValueControl)control );
 
         decoder.decode( bb, container );
         return container.getSyncDoneValueControl();

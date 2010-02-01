@@ -30,7 +30,7 @@ import java.nio.ByteBuffer;
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.codec.EncoderException;
-import org.apache.directory.shared.ldap.codec.search.controls.subentries.SubentriesControlCodec;
+import org.apache.directory.shared.ldap.codec.search.controls.subentries.SubentriesControl;
 import org.apache.directory.shared.ldap.codec.search.controls.subentries.SubentriesControlContainer;
 import org.apache.directory.shared.ldap.codec.search.controls.subentries.SubentriesControlDecoder;
 import org.apache.directory.shared.ldap.util.StringTools;
@@ -59,7 +59,7 @@ public class SubEntryControlTest
         bb.flip();
 
         SubentriesControlContainer container = new SubentriesControlContainer();
-        container.setSubEntryControl( new SubentriesControlCodec() );
+        container.setSubEntryControl( new SubentriesControl() );
         
         try
         {
@@ -71,7 +71,7 @@ public class SubEntryControlTest
             fail( de.getMessage() );
         }
 
-        SubentriesControlCodec control = container.getSubEntryControl();
+        SubentriesControl control = container.getSubEntryControl();
         assertTrue( control.isVisible() );
         // test encoding
         try
@@ -117,7 +117,7 @@ public class SubEntryControlTest
         bb.flip();
 
         SubentriesControlContainer container = new SubentriesControlContainer();
-        container.setSubEntryControl( new SubentriesControlCodec() );
+        container.setSubEntryControl( new SubentriesControl() );
 
         try
         {
@@ -129,7 +129,7 @@ public class SubEntryControlTest
             fail( de.getMessage() );
         }
 
-        SubentriesControlCodec control = container.getSubEntryControl();
+        SubentriesControl control = container.getSubEntryControl();
         assertFalse( control.isVisible() );
         
         // test encoding
@@ -179,7 +179,7 @@ public class SubEntryControlTest
 
         // Allocate a LdapMessage Container
         SubentriesControlContainer container = new SubentriesControlContainer();
-        container.setSubEntryControl( new SubentriesControlCodec() );
+        container.setSubEntryControl( new SubentriesControl() );
 
         // Decode a SubEntryControl PDU
         try
@@ -212,7 +212,7 @@ public class SubEntryControlTest
 
         // Allocate a LdapMessage Container
         SubentriesControlContainer container = new SubentriesControlContainer();
-        container.setSubEntryControl( new SubentriesControlCodec() );
+        container.setSubEntryControl( new SubentriesControl() );
 
         // Decode a SubEntryControl PDU
         try

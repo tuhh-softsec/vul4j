@@ -29,6 +29,7 @@ import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.controls.CodecControl;
 import org.apache.directory.shared.ldap.codec.controls.ControlDecoder;
+import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,10 +59,10 @@ public class ControlValueAction extends GrammarAction
         LdapMessageCodec message = ldapMessageContainer.getLdapMessage();
 
         // Get the current control
-        CodecControl control = message.getCurrentControl();
+        Control control = message.getCurrentControl();
         Value value = tlv.getValue();
 
-        ControlDecoder decoder = control.getDecoder();
+        ControlDecoder decoder = ((CodecControl)control).getDecoder();
 
         // Store the value - have to handle the special case of a 0 length value
         if ( tlv.getLength() == 0 )

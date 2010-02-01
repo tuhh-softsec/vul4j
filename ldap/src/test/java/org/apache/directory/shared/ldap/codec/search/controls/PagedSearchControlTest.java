@@ -30,7 +30,7 @@ import java.util.Arrays;
 
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.codec.DecoderException;
-import org.apache.directory.shared.ldap.codec.search.controls.pagedSearch.PagedResultsControlCodec;
+import org.apache.directory.shared.ldap.codec.search.controls.pagedSearch.PagedResultsControl;
 import org.apache.directory.shared.ldap.codec.search.controls.pagedSearch.PagedResultsControlContainer;
 import org.apache.directory.shared.ldap.codec.search.controls.pagedSearch.PagedResultsControlDecoder;
 import org.apache.directory.shared.ldap.util.StringTools;
@@ -61,7 +61,7 @@ public class PagedSearchControlTest
         bb.flip();
 
         PagedResultsControlContainer container = new PagedResultsControlContainer();
-        container.setPagedSearchControl( new PagedResultsControlCodec() );
+        container.setPagedSearchControl( new PagedResultsControl() );
         
         try
         {
@@ -73,7 +73,7 @@ public class PagedSearchControlTest
             fail( de.getMessage() );
         }
 
-        PagedResultsControlCodec pagedSearch = container.getPagedSearchControl();
+        PagedResultsControl pagedSearch = container.getPagedSearchControl();
         assertEquals( 32, pagedSearch.getSize() );
         assertTrue( Arrays.equals( StringTools.getBytesUtf8( "test" ), 
             pagedSearch.getCookie() ) );
@@ -95,7 +95,7 @@ public class PagedSearchControlTest
             } );
         buffer.flip();
 
-        PagedResultsControlCodec ctrl = new PagedResultsControlCodec();
+        PagedResultsControl ctrl = new PagedResultsControl();
         ctrl.setSize( 32 );
         ctrl.setCookie( StringTools.getBytesUtf8( "test" ) );
 
@@ -122,7 +122,7 @@ public class PagedSearchControlTest
         bb.flip();
 
         PagedResultsControlContainer container = new PagedResultsControlContainer();
-        container.setPagedSearchControl( new PagedResultsControlCodec() );
+        container.setPagedSearchControl( new PagedResultsControl() );
         
         try
         {
@@ -152,7 +152,7 @@ public class PagedSearchControlTest
         bb.flip();
 
         PagedResultsControlContainer container = new PagedResultsControlContainer();
-        container.setPagedSearchControl( new PagedResultsControlCodec() );
+        container.setPagedSearchControl( new PagedResultsControl() );
         
         try
         {
@@ -181,7 +181,7 @@ public class PagedSearchControlTest
         bb.flip();
 
         PagedResultsControlContainer container = new PagedResultsControlContainer();
-        container.setPagedSearchControl( new PagedResultsControlCodec() );
+        container.setPagedSearchControl( new PagedResultsControl() );
         
         try
         {
@@ -212,7 +212,7 @@ public class PagedSearchControlTest
         bb.flip();
 
         PagedResultsControlContainer container = new PagedResultsControlContainer();
-        container.setPagedSearchControl( new PagedResultsControlCodec() );
+        container.setPagedSearchControl( new PagedResultsControl() );
         
         try
         {
@@ -224,7 +224,7 @@ public class PagedSearchControlTest
             fail( de.getMessage() );
         }
 
-        PagedResultsControlCodec pagedSearch = container.getPagedSearchControl();
+        PagedResultsControl pagedSearch = container.getPagedSearchControl();
         assertEquals( Integer.MAX_VALUE, pagedSearch.getSize() );
         assertTrue( Arrays.equals( StringTools.getBytesUtf8( "test" ), 
             pagedSearch.getCookie() ) );
@@ -247,7 +247,7 @@ public class PagedSearchControlTest
             } );
         buffer.flip();
 
-        PagedResultsControlCodec ctrl = new PagedResultsControlCodec();
+        PagedResultsControl ctrl = new PagedResultsControl();
         ctrl.setSize( -1 );
         ctrl.setCookie( StringTools.getBytesUtf8( "test" ) );
 
@@ -275,7 +275,7 @@ public class PagedSearchControlTest
         bb.flip();
 
         PagedResultsControlContainer container = new PagedResultsControlContainer();
-        container.setPagedSearchControl( new PagedResultsControlCodec() );
+        container.setPagedSearchControl( new PagedResultsControl() );
 
         try
         {
@@ -306,7 +306,7 @@ public class PagedSearchControlTest
         bb.flip();
 
         PagedResultsControlContainer container = new PagedResultsControlContainer();
-        container.setPagedSearchControl( new PagedResultsControlCodec() );
+        container.setPagedSearchControl( new PagedResultsControl() );
 
         try
         {
@@ -318,7 +318,7 @@ public class PagedSearchControlTest
             fail( de.getMessage() );
         }
 
-        PagedResultsControlCodec pagedSearch = container.getPagedSearchControl();
+        PagedResultsControl pagedSearch = container.getPagedSearchControl();
         assertEquals( 32, pagedSearch.getSize() );
         assertNotNull( pagedSearch.getCookie() );
         assertEquals( StringTools.EMPTY_BYTES, pagedSearch.getCookie() );
@@ -338,7 +338,7 @@ public class PagedSearchControlTest
             } );
         buffer.flip();
 
-        PagedResultsControlCodec ctrl = new PagedResultsControlCodec();
+        PagedResultsControl ctrl = new PagedResultsControl();
         ctrl.setSize( 32 );
         ctrl.setCookie( null );
 

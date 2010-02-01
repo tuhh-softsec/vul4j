@@ -32,7 +32,7 @@ import org.apache.directory.shared.asn1.ber.AbstractContainer;
 public class PagedResultsControlContainer extends AbstractContainer
 {
     /** PagedSearchControl */
-    private PagedResultsControlCodec control;
+    private PagedResultsControl control;
 
 
     /**
@@ -51,7 +51,7 @@ public class PagedResultsControlContainer extends AbstractContainer
     /**
      * @return Returns the paged search control.
      */
-    public PagedResultsControlCodec getPagedSearchControl()
+    public PagedResultsControl getPagedSearchControl()
     {
 
         return control;
@@ -64,7 +64,7 @@ public class PagedResultsControlContainer extends AbstractContainer
      * 
      * @param control the PagedSearchControl to set.
      */
-    public void setPagedSearchControl( PagedResultsControlCodec control )
+    public void setPagedSearchControl( PagedResultsControl control )
     {
         this.control = control;
     }

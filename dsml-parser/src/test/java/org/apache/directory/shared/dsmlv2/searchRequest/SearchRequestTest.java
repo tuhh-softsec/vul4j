@@ -35,7 +35,6 @@ import org.apache.directory.shared.dsmlv2.AbstractTest;
 import org.apache.directory.shared.dsmlv2.Dsmlv2Parser;
 import org.apache.directory.shared.ldap.codec.AttributeValueAssertion;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
-import org.apache.directory.shared.ldap.codec.controls.CodecControl;
 import org.apache.directory.shared.ldap.codec.search.AndFilter;
 import org.apache.directory.shared.ldap.codec.search.AttributeValueAssertionFilter;
 import org.apache.directory.shared.ldap.codec.search.ExtensibleMatchFilter;
@@ -47,6 +46,7 @@ import org.apache.directory.shared.ldap.codec.search.SearchRequestCodec;
 import org.apache.directory.shared.ldap.codec.search.SubstringFilter;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.filter.SearchScope;
+import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
 
@@ -153,7 +153,7 @@ public class SearchRequestTest extends AbstractTest
         }
 
         SearchRequestCodec searchRequest = ( SearchRequestCodec ) parser.getBatchRequest().getCurrentRequest();
-        CodecControl control = searchRequest.getCurrentControl();
+        Control control = searchRequest.getCurrentControl();
 
         assertEquals( 1, searchRequest.getControls().size() );
         assertTrue( control.isCritical() );
@@ -184,7 +184,7 @@ public class SearchRequestTest extends AbstractTest
         }
 
         SearchRequestCodec searchRequest = ( SearchRequestCodec ) parser.getBatchRequest().getCurrentRequest();
-        CodecControl control = searchRequest.getCurrentControl();
+        Control control = searchRequest.getCurrentControl();
 
         assertEquals( 1, searchRequest.getControls().size() );
         assertTrue( control.isCritical() );
@@ -215,7 +215,7 @@ public class SearchRequestTest extends AbstractTest
         }
 
         SearchRequestCodec searchRequest = ( SearchRequestCodec ) parser.getBatchRequest().getCurrentRequest();
-        CodecControl control = searchRequest.getCurrentControl();
+        Control control = searchRequest.getCurrentControl();
 
         assertEquals( 1, searchRequest.getControls().size() );
         assertTrue( control.isCritical() );
@@ -246,7 +246,7 @@ public class SearchRequestTest extends AbstractTest
         }
 
         SearchRequestCodec searchRequest = ( SearchRequestCodec ) parser.getBatchRequest().getCurrentRequest();
-        CodecControl control = searchRequest.getCurrentControl();
+        Control control = searchRequest.getCurrentControl();
 
         assertEquals( 2, searchRequest.getControls().size() );
         assertFalse( control.isCritical() );
@@ -277,7 +277,7 @@ public class SearchRequestTest extends AbstractTest
         }
 
         SearchRequestCodec searchRequest = ( SearchRequestCodec ) parser.getBatchRequest().getCurrentRequest();
-        CodecControl control = searchRequest.getCurrentControl();
+        Control control = searchRequest.getCurrentControl();
 
         assertEquals( 3, searchRequest.getControls().size() );
         assertTrue( control.isCritical() );

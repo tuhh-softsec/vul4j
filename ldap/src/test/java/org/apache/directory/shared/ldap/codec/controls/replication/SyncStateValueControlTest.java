@@ -30,7 +30,7 @@ import java.nio.ByteBuffer;
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.codec.EncoderException;
-import org.apache.directory.shared.ldap.codec.controls.replication.syncStateValue.SyncStateValueControlCodec;
+import org.apache.directory.shared.ldap.codec.controls.replication.syncStateValue.SyncStateValueControl;
 import org.apache.directory.shared.ldap.codec.controls.replication.syncStateValue.SyncStateValueControlContainer;
 import org.apache.directory.shared.ldap.codec.controls.replication.syncStateValue.SyncStateValueControlDecoder;
 import org.apache.directory.shared.ldap.message.control.replication.SyncStateTypeEnum;
@@ -65,7 +65,7 @@ public class SyncStateValueControlTest
         bb.flip();
 
         SyncStateValueControlContainer container = new SyncStateValueControlContainer();
-        container.setSyncStateValueControl( new SyncStateValueControlCodec() );
+        container.setSyncStateValueControl( new SyncStateValueControl() );
 
         try
         {
@@ -77,7 +77,7 @@ public class SyncStateValueControlTest
             fail( de.getMessage() );
         }
 
-        SyncStateValueControlCodec syncStateValue = container.getSyncStateValueControl();
+        SyncStateValueControl syncStateValue = container.getSyncStateValueControl();
         assertEquals( SyncStateTypeEnum.PRESENT, syncStateValue.getSyncStateType() );
         assertEquals( "abc", StringTools.utf8ToString( syncStateValue.getEntryUUID() ) );
         assertEquals( "xkcd", StringTools.utf8ToString( syncStateValue.getCookie() ) );
@@ -131,7 +131,7 @@ public class SyncStateValueControlTest
         bb.flip();
 
         SyncStateValueControlContainer container = new SyncStateValueControlContainer();
-        container.setSyncStateValueControl( new SyncStateValueControlCodec() );
+        container.setSyncStateValueControl( new SyncStateValueControl() );
 
         try
         {
@@ -142,7 +142,7 @@ public class SyncStateValueControlTest
             fail( de.getMessage() );
         }
 
-        SyncStateValueControlCodec syncStateValue = container.getSyncStateValueControl();
+        SyncStateValueControl syncStateValue = container.getSyncStateValueControl();
         assertEquals( SyncStateTypeEnum.ADD, syncStateValue.getSyncStateType() );
         assertEquals( "abc", StringTools.utf8ToString( syncStateValue.getEntryUUID() ) );
         assertNull( syncStateValue.getCookie() );
@@ -196,7 +196,7 @@ public class SyncStateValueControlTest
         bb.flip();
 
         SyncStateValueControlContainer container = new SyncStateValueControlContainer();
-        container.setSyncStateValueControl( new SyncStateValueControlCodec() );
+        container.setSyncStateValueControl( new SyncStateValueControl() );
 
         try
         {
@@ -208,7 +208,7 @@ public class SyncStateValueControlTest
             fail( de.getMessage() );
         }
 
-        SyncStateValueControlCodec syncStateValue = container.getSyncStateValueControl();
+        SyncStateValueControl syncStateValue = container.getSyncStateValueControl();
         assertEquals( SyncStateTypeEnum.MODIFY, syncStateValue.getSyncStateType() );
         assertEquals( "abc", StringTools.utf8ToString( syncStateValue.getEntryUUID() ) );
         assertEquals( "", StringTools.utf8ToString( syncStateValue.getCookie() ) );
@@ -257,7 +257,7 @@ public class SyncStateValueControlTest
         bb.flip();
 
         SyncStateValueControlContainer container = new SyncStateValueControlContainer();
-        container.setSyncStateValueControl( new SyncStateValueControlCodec() );
+        container.setSyncStateValueControl( new SyncStateValueControl() );
 
         try
         {
@@ -286,7 +286,7 @@ public class SyncStateValueControlTest
         bb.flip();
 
         SyncStateValueControlContainer container = new SyncStateValueControlContainer();
-        container.setSyncStateValueControl( new SyncStateValueControlCodec() );
+        container.setSyncStateValueControl( new SyncStateValueControl() );
 
         try
         {
@@ -317,7 +317,7 @@ public class SyncStateValueControlTest
         bb.flip();
 
         SyncStateValueControlContainer container = new SyncStateValueControlContainer();
-        container.setSyncStateValueControl( new SyncStateValueControlCodec() );
+        container.setSyncStateValueControl( new SyncStateValueControl() );
 
         try
         {

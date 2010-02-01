@@ -38,7 +38,6 @@ import org.apache.directory.shared.ldap.codec.bind.SaslCredentials;
 import org.apache.directory.shared.ldap.codec.bind.SimpleAuthentication;
 import org.apache.directory.shared.ldap.codec.compare.CompareRequestCodec;
 import org.apache.directory.shared.ldap.codec.compare.CompareResponseCodec;
-import org.apache.directory.shared.ldap.codec.controls.CodecControl;
 import org.apache.directory.shared.ldap.codec.del.DelRequestCodec;
 import org.apache.directory.shared.ldap.codec.del.DelResponseCodec;
 import org.apache.directory.shared.ldap.codec.extended.ExtendedRequestCodec;
@@ -1323,7 +1322,7 @@ public class LdapTransformer
             return;
         }
         
-        for ( final CodecControl codecControl:codecMessage.getControls() )
+        for ( final Control codecControl:codecMessage.getControls() )
         {
             internalMessage.add( codecControl );
         }
@@ -1344,7 +1343,7 @@ public class LdapTransformer
         
         for ( Control control:internalMessage.getControls().values() )
         {
-            codecMessage.addControl( (CodecControl)control );
+            codecMessage.addControl( control );
         }
     }
 }

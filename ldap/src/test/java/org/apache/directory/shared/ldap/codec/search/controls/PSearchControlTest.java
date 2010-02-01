@@ -28,7 +28,7 @@ import java.nio.ByteBuffer;
 
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.codec.DecoderException;
-import org.apache.directory.shared.ldap.codec.search.controls.persistentSearch.PersistentSearchControlCodec;
+import org.apache.directory.shared.ldap.codec.search.controls.persistentSearch.PersistentSearchControl;
 import org.apache.directory.shared.ldap.codec.search.controls.persistentSearch.PersistentSearchControlContainer;
 import org.apache.directory.shared.ldap.codec.search.controls.persistentSearch.PersistentSearchControlDecoder;
 import org.apache.directory.shared.ldap.util.StringTools;
@@ -66,7 +66,7 @@ public class PSearchControlTest
         String expected = StringTools.dumpBytes( bb.array() );
         bb.flip();
 
-        PersistentSearchControlCodec ctrl = new PersistentSearchControlCodec();
+        PersistentSearchControl ctrl = new PersistentSearchControl();
         ctrl.setChangesOnly( false );
         ctrl.setReturnECs( false );
         ctrl.setChangeTypes( 1 );
@@ -93,7 +93,7 @@ public class PSearchControlTest
         bb.flip();
 
         PersistentSearchControlContainer container = new PersistentSearchControlContainer();
-        container.setPSearchControl( new PersistentSearchControlCodec() );
+        container.setPSearchControl( new PersistentSearchControl() );
 
         try
         {
@@ -104,10 +104,10 @@ public class PSearchControlTest
             fail( de.getMessage() );
         }
 
-        PersistentSearchControlCodec control = container.getPSearchControl();
+        PersistentSearchControl control = container.getPSearchControl();
         int changeTypes = control.getChangeTypes();
-        assertEquals( PersistentSearchControlCodec.CHANGE_TYPE_ADD, changeTypes & PersistentSearchControlCodec.CHANGE_TYPE_ADD );
-        assertEquals( PersistentSearchControlCodec.CHANGE_TYPE_MODDN, changeTypes & PersistentSearchControlCodec.CHANGE_TYPE_MODDN );
+        assertEquals( PersistentSearchControl.CHANGE_TYPE_ADD, changeTypes & PersistentSearchControl.CHANGE_TYPE_ADD );
+        assertEquals( PersistentSearchControl.CHANGE_TYPE_MODDN, changeTypes & PersistentSearchControl.CHANGE_TYPE_MODDN );
         assertEquals( false, control.isChangesOnly() );
         assertEquals( false, control.isReturnECs() );
     }
@@ -131,7 +131,7 @@ public class PSearchControlTest
         bb.flip();
 
         PersistentSearchControlContainer container = new PersistentSearchControlContainer();
-        container.setPSearchControl( new PersistentSearchControlCodec() );
+        container.setPSearchControl( new PersistentSearchControl() );
         
         try
         {
@@ -163,7 +163,7 @@ public class PSearchControlTest
         bb.flip();
 
         PersistentSearchControlContainer container = new PersistentSearchControlContainer();
-        container.setPSearchControl( new PersistentSearchControlCodec() );
+        container.setPSearchControl( new PersistentSearchControl() );
 
         try
         {
@@ -191,7 +191,7 @@ public class PSearchControlTest
         bb.flip();
 
         PersistentSearchControlContainer container = new PersistentSearchControlContainer();
-        container.setPSearchControl( new PersistentSearchControlCodec() );
+        container.setPSearchControl( new PersistentSearchControl() );
 
         try
         {
@@ -221,7 +221,7 @@ public class PSearchControlTest
         bb.flip();
 
         PersistentSearchControlContainer container = new PersistentSearchControlContainer();
-        container.setPSearchControl( new PersistentSearchControlCodec() );
+        container.setPSearchControl( new PersistentSearchControl() );
 
         try
         {
@@ -251,7 +251,7 @@ public class PSearchControlTest
         bb.flip();
 
         PersistentSearchControlContainer container = new PersistentSearchControlContainer();
-        container.setPSearchControl( new PersistentSearchControlCodec() );
+        container.setPSearchControl( new PersistentSearchControl() );
 
         try
         {
@@ -281,7 +281,7 @@ public class PSearchControlTest
         bb.flip();
 
         PersistentSearchControlContainer container = new PersistentSearchControlContainer();
-        container.setPSearchControl( new PersistentSearchControlCodec() );
+        container.setPSearchControl( new PersistentSearchControl() );
 
         try
         {

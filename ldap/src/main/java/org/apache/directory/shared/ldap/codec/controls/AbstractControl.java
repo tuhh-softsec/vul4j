@@ -28,6 +28,7 @@ import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.asn1.codec.EncoderException;
+import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.util.StringTools;
 
 
@@ -37,7 +38,7 @@ import org.apache.directory.shared.ldap.util.StringTools;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$, 
  */
-public abstract class AbstractControlCodec extends AbstractAsn1Object implements CodecControl
+public abstract class AbstractControl extends AbstractAsn1Object implements Control, CodecControl
 {
     // ~ Instance fields
     // ----------------------------------------------------------------------------
@@ -64,7 +65,7 @@ public abstract class AbstractControlCodec extends AbstractAsn1Object implements
     /**
      * Default constructor.
      */
-    public AbstractControlCodec( String oid )
+    public AbstractControl( String oid )
     {
         this.oid = oid;
     }

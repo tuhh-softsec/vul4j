@@ -35,9 +35,9 @@ import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
-import org.apache.directory.shared.ldap.codec.controls.CodecControl;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
+import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
 
@@ -949,11 +949,11 @@ public class SearchResultEntryTest
         }
 
         // Check the Control
-        List<CodecControl> controls = message.getControls();
+        List<Control> controls = message.getControls();
 
         assertEquals( 1, controls.size() );
 
-        CodecControl control = message.getControls( 0 );
+        Control control = message.getControls( 0 );
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
         assertEquals( "", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
 
@@ -1129,11 +1129,11 @@ public class SearchResultEntryTest
         }
 
         // Check the Control
-        List<CodecControl> controls = message.getControls();
+        List<Control> controls = message.getControls();
 
         assertEquals( 1, controls.size() );
 
-        CodecControl control = message.getControls( 0 );
+        Control control = message.getControls( 0 );
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
         assertEquals( "", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
 

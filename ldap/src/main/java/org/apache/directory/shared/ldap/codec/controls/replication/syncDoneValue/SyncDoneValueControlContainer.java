@@ -33,7 +33,7 @@ import org.apache.directory.shared.asn1.ber.AbstractContainer;
 public class SyncDoneValueControlContainer extends AbstractContainer
 {
     /** syncDoneValue*/
-    private SyncDoneValueControlCodec control;
+    private SyncDoneValueControl control;
 
 
     /**
@@ -53,7 +53,7 @@ public class SyncDoneValueControlContainer extends AbstractContainer
     /**
      * @return the SyncDoneValueControlCodec object
      */
-    public SyncDoneValueControlCodec getSyncDoneValueControl()
+    public SyncDoneValueControl getSyncDoneValueControl()
     {
         return control;
     }
@@ -65,7 +65,7 @@ public class SyncDoneValueControlContainer extends AbstractContainer
      * 
      * @param control the SyncDoneValueControlCodec to set.
      */
-    public void setSyncDoneValueControl( SyncDoneValueControlCodec control )
+    public void setSyncDoneValueControl( SyncDoneValueControl control )
     {
         this.control = control;
     }

@@ -32,7 +32,7 @@ import org.apache.directory.shared.asn1.ber.AbstractContainer;
 public class SyncRequestValueControlContainer extends AbstractContainer
 {
     /** SyncRequestValueControl */
-    private SyncRequestValueControlCodec control;
+    private SyncRequestValueControl control;
 
 
     /**
@@ -51,7 +51,7 @@ public class SyncRequestValueControlContainer extends AbstractContainer
     /**
      * @return Returns the syncRequestValue control.
      */
-    public SyncRequestValueControlCodec getSyncRequestValueControl()
+    public SyncRequestValueControl getSyncRequestValueControl()
     {
         return control;
     }
@@ -63,7 +63,7 @@ public class SyncRequestValueControlContainer extends AbstractContainer
      * 
      * @param control the SyncRequestValueControl to set.
      */
-    public void setSyncRequestValueControl( SyncRequestValueControlCodec control )
+    public void setSyncRequestValueControl( SyncRequestValueControl control )
     {
         this.control = control;
     }

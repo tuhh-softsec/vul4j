@@ -33,9 +33,9 @@ import org.apache.directory.shared.dsmlv2.AbstractResponseTest;
 import org.apache.directory.shared.dsmlv2.Dsmlv2ResponseParser;
 import org.apache.directory.shared.ldap.codec.LdapResultCodec;
 import org.apache.directory.shared.ldap.codec.add.AddResponseCodec;
-import org.apache.directory.shared.ldap.codec.controls.CodecControl;
 import org.apache.directory.shared.ldap.codec.util.LdapURLEncodingException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
+import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.util.LdapURL;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
@@ -111,7 +111,7 @@ public class AddResponseTest extends AbstractResponseTest
 
         assertEquals( 1, addResponse.getControls().size() );
 
-        CodecControl control = addResponse.getCurrentControl();
+        Control control = addResponse.getCurrentControl();
 
         assertTrue( control.isCritical() );
 
@@ -143,7 +143,7 @@ public class AddResponseTest extends AbstractResponseTest
         }
 
         AddResponseCodec addResponse = ( AddResponseCodec ) parser.getBatchResponse().getCurrentResponse();
-        CodecControl control = addResponse.getCurrentControl();
+        Control control = addResponse.getCurrentControl();
 
         assertEquals( 1, addResponse.getControls().size() );
         assertTrue( control.isCritical() );
@@ -176,7 +176,7 @@ public class AddResponseTest extends AbstractResponseTest
 
         assertEquals( 2, addResponse.getControls().size() );
 
-        CodecControl control = addResponse.getCurrentControl();
+        Control control = addResponse.getCurrentControl();
 
         assertFalse( control.isCritical() );
 
@@ -211,7 +211,7 @@ public class AddResponseTest extends AbstractResponseTest
 
         assertEquals( 3, addResponse.getControls().size() );
 
-        CodecControl control = addResponse.getCurrentControl();
+        Control control = addResponse.getCurrentControl();
 
         assertTrue( control.isCritical() );
 

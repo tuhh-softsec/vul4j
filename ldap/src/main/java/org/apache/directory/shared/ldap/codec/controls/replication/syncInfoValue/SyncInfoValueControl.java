@@ -27,7 +27,7 @@ import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.asn1.codec.EncoderException;
-import org.apache.directory.shared.ldap.codec.controls.AbstractControlCodec;
+import org.apache.directory.shared.ldap.codec.controls.AbstractControl;
 import org.apache.directory.shared.ldap.message.control.replication.SynchronizationInfoEnum;
 import org.apache.directory.shared.ldap.util.StringTools;
 
@@ -37,7 +37,7 @@ import org.apache.directory.shared.ldap.util.StringTools;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev:$, $Date: 
  */
-public class SyncInfoValueControlCodec extends AbstractControlCodec
+public class SyncInfoValueControl extends AbstractControl
 {
     /** This control OID */
     public static final String CONTROL_OID = "1.3.6.1.4.1.4203.1.9.1.4";
@@ -66,7 +66,7 @@ public class SyncInfoValueControlCodec extends AbstractControlCodec
      * @param type The kind of syncInfo we will store. Can be newCookie, 
      * refreshPresent, refreshDelete or syncIdSet
      */
-    public SyncInfoValueControlCodec( SynchronizationInfoEnum type )
+    public SyncInfoValueControl( SynchronizationInfoEnum type )
     {
         super( CONTROL_OID );
 

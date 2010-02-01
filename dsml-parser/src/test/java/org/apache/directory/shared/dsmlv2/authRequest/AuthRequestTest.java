@@ -29,7 +29,7 @@ import static org.junit.Assert.fail;
 import org.apache.directory.shared.dsmlv2.AbstractTest;
 import org.apache.directory.shared.dsmlv2.Dsmlv2Parser;
 import org.apache.directory.shared.ldap.codec.bind.BindRequestCodec;
-import org.apache.directory.shared.ldap.codec.controls.CodecControl;
+import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
 
@@ -136,7 +136,7 @@ public class AuthRequestTest extends AbstractTest
         }
 
         BindRequestCodec abandonRequest = ( BindRequestCodec ) parser.getBatchRequest().getCurrentRequest();
-        CodecControl control = abandonRequest.getCurrentControl();
+        Control control = abandonRequest.getCurrentControl();
 
         assertEquals( 1, abandonRequest.getControls().size() );
         assertTrue( control.isCritical() );
@@ -167,7 +167,7 @@ public class AuthRequestTest extends AbstractTest
         }
 
         BindRequestCodec abandonRequest = ( BindRequestCodec ) parser.getBatchRequest().getCurrentRequest();
-        CodecControl control = abandonRequest.getCurrentControl();
+        Control control = abandonRequest.getCurrentControl();
 
         assertEquals( 1, abandonRequest.getControls().size() );
         assertTrue( control.isCritical() );
@@ -198,7 +198,7 @@ public class AuthRequestTest extends AbstractTest
         }
 
         BindRequestCodec abandonRequest = ( BindRequestCodec ) parser.getBatchRequest().getCurrentRequest();
-        CodecControl control = abandonRequest.getCurrentControl();
+        Control control = abandonRequest.getCurrentControl();
 
         assertEquals( 1, abandonRequest.getControls().size() );
         assertTrue( control.isCritical() );
@@ -228,7 +228,7 @@ public class AuthRequestTest extends AbstractTest
         }
 
         BindRequestCodec abandonRequest = ( BindRequestCodec ) parser.getBatchRequest().getCurrentRequest();
-        CodecControl control = abandonRequest.getCurrentControl();
+        Control control = abandonRequest.getCurrentControl();
 
         assertEquals( 2, abandonRequest.getControls().size() );
         assertFalse( control.isCritical() );
@@ -259,7 +259,7 @@ public class AuthRequestTest extends AbstractTest
         }
 
         BindRequestCodec abandonRequest = ( BindRequestCodec ) parser.getBatchRequest().getCurrentRequest();
-        CodecControl control = abandonRequest.getCurrentControl();
+        Control control = abandonRequest.getCurrentControl();
 
         assertEquals( 3, abandonRequest.getControls().size() );
         assertTrue( control.isCritical() );

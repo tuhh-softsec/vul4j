@@ -46,8 +46,7 @@ import org.apache.directory.shared.ldap.codec.LdapResultCodec;
 import org.apache.directory.shared.ldap.codec.add.AddResponseCodec;
 import org.apache.directory.shared.ldap.codec.bind.BindResponseCodec;
 import org.apache.directory.shared.ldap.codec.compare.CompareResponseCodec;
-import org.apache.directory.shared.ldap.codec.controls.CodecControl;
-import org.apache.directory.shared.ldap.codec.controls.CodecControlImpl;
+import org.apache.directory.shared.ldap.codec.controls.ControlImpl;
 import org.apache.directory.shared.ldap.codec.del.DelResponseCodec;
 import org.apache.directory.shared.ldap.codec.extended.ExtendedResponseCodec;
 import org.apache.directory.shared.ldap.codec.modify.ModifyResponseCodec;
@@ -57,6 +56,7 @@ import org.apache.directory.shared.ldap.codec.search.SearchResultEntryCodec;
 import org.apache.directory.shared.ldap.codec.search.SearchResultReferenceCodec;
 import org.apache.directory.shared.ldap.codec.util.LdapURLEncodingException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
+import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.name.LdapDN;
 import org.apache.directory.shared.ldap.util.Base64;
 import org.apache.directory.shared.ldap.util.LdapURL;
@@ -1168,7 +1168,7 @@ public class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGrammar
      */
     private void createAndAddControl( Dsmlv2Container container, LdapMessageCodec parent ) throws XmlPullParserException
     {
-        CodecControl control = null;
+        Control control = null;
 
         XmlPullParser xpp = container.getParser();
 
@@ -1184,7 +1184,7 @@ public class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGrammar
                 throw new XmlPullParserException( "Incorrect value for 'type' attribute. This is not an OID.", xpp, null );
             }
             
-            control = new CodecControlImpl( attributeValue );
+            control = new ControlImpl( attributeValue );
             parent.addControl( control );
         }
         else
@@ -1267,7 +1267,7 @@ public class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGrammar
     private void createAndAddControlValue( Dsmlv2Container container, LdapMessageCodec parent )
         throws XmlPullParserException
     {
-        CodecControl control = parent.getCurrentControl();
+        Control control = parent.getCurrentControl();
 
         XmlPullParser xpp = container.getParser();
         try

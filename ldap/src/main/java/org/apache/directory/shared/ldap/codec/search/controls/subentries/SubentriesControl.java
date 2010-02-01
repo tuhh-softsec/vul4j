@@ -26,7 +26,7 @@ import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.asn1.codec.EncoderException;
-import org.apache.directory.shared.ldap.codec.controls.AbstractControlCodec;
+import org.apache.directory.shared.ldap.codec.controls.AbstractControl;
 
 
 /**
@@ -35,7 +35,7 @@ import org.apache.directory.shared.ldap.codec.controls.AbstractControlCodec;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public class SubentriesControlCodec extends AbstractControlCodec
+public class SubentriesControl extends AbstractControl
 {
     /** Ths control OID */
     public static final String CONTROL_OID = "1.3.6.1.4.1.4203.1.10.1";
@@ -46,7 +46,7 @@ public class SubentriesControlCodec extends AbstractControlCodec
      * Default constructor
      *
      */
-    public SubentriesControlCodec()
+    public SubentriesControl()
     {
         super( CONTROL_OID );
         

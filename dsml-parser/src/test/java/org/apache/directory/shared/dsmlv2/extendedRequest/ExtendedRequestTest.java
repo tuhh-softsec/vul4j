@@ -29,8 +29,8 @@ import static org.junit.Assert.fail;
 
 import org.apache.directory.shared.dsmlv2.AbstractTest;
 import org.apache.directory.shared.dsmlv2.Dsmlv2Parser;
-import org.apache.directory.shared.ldap.codec.controls.CodecControl;
 import org.apache.directory.shared.ldap.codec.extended.ExtendedRequestCodec;
+import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
 
@@ -101,7 +101,7 @@ public class ExtendedRequestTest extends AbstractTest
         }
 
         ExtendedRequestCodec extendedRequest = ( ExtendedRequestCodec ) parser.getBatchRequest().getCurrentRequest();
-        CodecControl control = extendedRequest.getCurrentControl();
+        Control control = extendedRequest.getCurrentControl();
 
         assertEquals( 1, extendedRequest.getControls().size() );
         assertTrue( control.isCritical() );
@@ -132,7 +132,7 @@ public class ExtendedRequestTest extends AbstractTest
         }
 
         ExtendedRequestCodec extendedRequest = ( ExtendedRequestCodec ) parser.getBatchRequest().getCurrentRequest();
-        CodecControl control = extendedRequest.getCurrentControl();
+        Control control = extendedRequest.getCurrentControl();
 
         assertEquals( 1, extendedRequest.getControls().size() );
         assertTrue( control.isCritical() );
@@ -163,7 +163,7 @@ public class ExtendedRequestTest extends AbstractTest
         }
 
         ExtendedRequestCodec extendedRequest = ( ExtendedRequestCodec ) parser.getBatchRequest().getCurrentRequest();
-        CodecControl control = extendedRequest.getCurrentControl();
+        Control control = extendedRequest.getCurrentControl();
 
         assertEquals( 1, extendedRequest.getControls().size() );
         assertTrue( control.isCritical() );
@@ -194,7 +194,7 @@ public class ExtendedRequestTest extends AbstractTest
         }
 
         ExtendedRequestCodec extendedRequest = ( ExtendedRequestCodec ) parser.getBatchRequest().getCurrentRequest();
-        CodecControl control = extendedRequest.getCurrentControl();
+        Control control = extendedRequest.getCurrentControl();
 
         assertEquals( 2, extendedRequest.getControls().size() );
         assertFalse( control.isCritical() );
@@ -225,7 +225,7 @@ public class ExtendedRequestTest extends AbstractTest
         }
 
         ExtendedRequestCodec extendedRequest = ( ExtendedRequestCodec ) parser.getBatchRequest().getCurrentRequest();
-        CodecControl control = extendedRequest.getCurrentControl();
+        Control control = extendedRequest.getCurrentControl();
 
         assertEquals( 3, extendedRequest.getControls().size() );
         assertTrue( control.isCritical() );

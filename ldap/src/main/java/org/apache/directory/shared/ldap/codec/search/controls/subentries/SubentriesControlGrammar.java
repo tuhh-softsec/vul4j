@@ -71,7 +71,7 @@ public class SubentriesControlGrammar extends AbstractGrammar
                 public void action( IAsn1Container container ) throws DecoderException
                 {
                     SubentriesControlContainer subEntryContainer = ( SubentriesControlContainer ) container;
-                    SubentriesControlCodec control = subEntryContainer.getSubEntryControl();
+                    SubentriesControl control = subEntryContainer.getSubEntryControl();
 
                     TLV tlv = subEntryContainer.getCurrentTLV();
 

@@ -32,7 +32,7 @@ import org.apache.directory.shared.asn1.ber.AbstractContainer;
 public class SyncStateValueControlContainer extends AbstractContainer
 {
     /** SyncStateValueControl */
-    private SyncStateValueControlCodec control;
+    private SyncStateValueControl control;
 
 
     /**
@@ -51,7 +51,7 @@ public class SyncStateValueControlContainer extends AbstractContainer
     /**
      * @return Returns the syncStateValue control.
      */
-    public SyncStateValueControlCodec getSyncStateValueControl()
+    public SyncStateValueControl getSyncStateValueControl()
     {
         return control;
     }
@@ -63,7 +63,7 @@ public class SyncStateValueControlContainer extends AbstractContainer
      * 
      * @param control the SyncStateValueControl to set.
      */
-    public void setSyncStateValueControl( SyncStateValueControlCodec control )
+    public void setSyncStateValueControl( SyncStateValueControl control )
     {
         this.control = control;
     }

@@ -30,7 +30,7 @@ import org.apache.directory.shared.asn1.ber.AbstractContainer;
 public class PersistentSearchControlContainer extends AbstractContainer
 {
     /** PSearchControl */
-    private PersistentSearchControlCodec control;
+    private PersistentSearchControl control;
 
 
     /**
@@ -49,7 +49,7 @@ public class PersistentSearchControlContainer extends AbstractContainer
     /**
      * @return Returns the persistent search control.
      */
-    public PersistentSearchControlCodec getPSearchControl()
+    public PersistentSearchControl getPSearchControl()
     {
 
         return control;
@@ -62,7 +62,7 @@ public class PersistentSearchControlContainer extends AbstractContainer
      * 
      * @param control the PSearchControl to set.
      */
-    public void setPSearchControl( PersistentSearchControlCodec control )
+    public void setPSearchControl( PersistentSearchControl control )
     {
         this.control = control;
     }

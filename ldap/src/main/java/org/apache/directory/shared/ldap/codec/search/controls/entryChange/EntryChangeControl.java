@@ -27,7 +27,7 @@ import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.asn1.codec.EncoderException;
-import org.apache.directory.shared.ldap.codec.controls.AbstractControlCodec;
+import org.apache.directory.shared.ldap.codec.controls.AbstractControl;
 import org.apache.directory.shared.ldap.codec.search.controls.ChangeType;
 import org.apache.directory.shared.ldap.name.LdapDN;
 import org.apache.directory.shared.ldap.util.StringTools;
@@ -81,7 +81,7 @@ import org.apache.directory.shared.ldap.util.StringTools;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$, 
  */
-public class EntryChangeControlCodec extends AbstractControlCodec
+public class EntryChangeControl extends AbstractControl
 {
     /** The EntryChange control */
     public static final String CONTROL_OID = "2.16.840.1.113730.3.4.7";
@@ -105,7 +105,7 @@ public class EntryChangeControlCodec extends AbstractControlCodec
     /**
      * @see Asn1Object#Asn1Object
      */
-    public EntryChangeControlCodec()
+    public EntryChangeControl()
     {
         super( CONTROL_OID );
         

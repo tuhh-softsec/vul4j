@@ -30,7 +30,7 @@ import org.apache.directory.shared.asn1.ber.AbstractContainer;
 public class SubentriesControlContainer extends AbstractContainer
 {
     /** PSearchControl */
-    private SubentriesControlCodec control;
+    private SubentriesControl control;
 
 
     /**
@@ -48,7 +48,7 @@ public class SubentriesControlContainer extends AbstractContainer
     /**
      * @return Returns the persistent search control.
      */
-    public SubentriesControlCodec getSubEntryControl()
+    public SubentriesControl getSubEntryControl()
     {
         return control;
     }
@@ -60,7 +60,7 @@ public class SubentriesControlContainer extends AbstractContainer
      * 
      * @param control the SubEntryControl to set.
      */
-    public void setSubEntryControl( SubentriesControlCodec control )
+    public void setSubEntryControl( SubentriesControl control )
     {
         this.control = control;
     }

@@ -22,6 +22,7 @@ package org.apache.directory.shared.ldap.codec.controls;
 
 import org.apache.directory.shared.asn1.Asn1Object;
 import org.apache.directory.shared.asn1.codec.DecoderException;
+import org.apache.directory.shared.ldap.message.control.Control;
 
 
 /**
@@ -40,5 +41,5 @@ public interface ControlDecoder
      * @return the decoded Asn1Object for the control
      * @throws DecoderException if anything goes wrong
      */
-    Asn1Object decode( byte[] controlBytes, CodecControl control ) throws DecoderException;
+    Asn1Object decode( byte[] controlBytes, Control control ) throws DecoderException;
 }

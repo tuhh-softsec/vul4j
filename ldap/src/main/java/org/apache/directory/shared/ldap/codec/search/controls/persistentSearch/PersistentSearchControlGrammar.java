@@ -117,8 +117,8 @@ public class PersistentSearchControlGrammar extends AbstractGrammar
                     {
                         // Check that the value is into the allowed interval
                         int changeTypes = IntegerDecoder.parse( value, 
-                            PersistentSearchControlCodec.CHANGE_TYPES_MIN, 
-                            PersistentSearchControlCodec.CHANGE_TYPES_MAX );
+                            PersistentSearchControl.CHANGE_TYPES_MIN, 
+                            PersistentSearchControl.CHANGE_TYPES_MAX );
                         
                         if ( IS_DEBUG )
                         {

@@ -33,8 +33,8 @@ import org.apache.directory.shared.dsmlv2.engine.Dsmlv2Engine;
 import org.apache.directory.shared.dsmlv2.request.BatchRequest;
 import org.apache.directory.shared.dsmlv2.request.BatchRequest.Processing;
 import org.apache.directory.shared.dsmlv2.request.BatchRequest.ResponseOrder;
-import org.apache.directory.shared.ldap.codec.controls.CodecControl;
 import org.apache.directory.shared.ldap.ldif.LdifUtils;
+import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.util.Base64;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.dom4j.Document;
@@ -197,13 +197,13 @@ public class ParserUtils
      * @param controls
      *      a List of Controls
      */
-    public static void addControls( Element element, List<CodecControl> controls )
+    public static void addControls( Element element, List<Control> controls )
     {
         if ( controls != null )
         {
             for ( int i = 0; i < controls.size(); i++ )
             {
-                CodecControl control = controls.get( i );
+                Control control = controls.get( i );
 
                 Element controlElement = element.addElement( "control" );
 

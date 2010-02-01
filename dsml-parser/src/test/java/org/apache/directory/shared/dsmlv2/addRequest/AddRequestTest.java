@@ -31,10 +31,10 @@ import java.util.Iterator;
 import org.apache.directory.shared.dsmlv2.AbstractTest;
 import org.apache.directory.shared.dsmlv2.Dsmlv2Parser;
 import org.apache.directory.shared.ldap.codec.add.AddRequestCodec;
-import org.apache.directory.shared.ldap.codec.controls.CodecControl;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Value;
+import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
 
@@ -143,7 +143,7 @@ public class AddRequestTest extends AbstractTest
 
         assertEquals( 1, addRequest.getControls().size() );
 
-        CodecControl control = addRequest.getCurrentControl();
+        Control control = addRequest.getCurrentControl();
 
         assertTrue( control.isCritical() );
 
@@ -175,7 +175,7 @@ public class AddRequestTest extends AbstractTest
         }
 
         AddRequestCodec addRequest = ( AddRequestCodec ) parser.getBatchRequest().getCurrentRequest();
-        CodecControl control = addRequest.getCurrentControl();
+        Control control = addRequest.getCurrentControl();
 
         assertEquals( 1, addRequest.getControls().size() );
         assertTrue( control.isCritical() );
@@ -206,7 +206,7 @@ public class AddRequestTest extends AbstractTest
         }
 
         AddRequestCodec addRequest = ( AddRequestCodec ) parser.getBatchRequest().getCurrentRequest();
-        CodecControl control = addRequest.getCurrentControl();
+        Control control = addRequest.getCurrentControl();
 
         assertEquals( 1, addRequest.getControls().size() );
         assertTrue( control.isCritical() );
@@ -236,7 +236,7 @@ public class AddRequestTest extends AbstractTest
         }
 
         AddRequestCodec addRequest = ( AddRequestCodec ) parser.getBatchRequest().getCurrentRequest();
-        CodecControl control = addRequest.getCurrentControl();
+        Control control = addRequest.getCurrentControl();
 
         assertEquals( 2, addRequest.getControls().size() );
         assertFalse( control.isCritical() );
@@ -267,7 +267,7 @@ public class AddRequestTest extends AbstractTest
         }
 
         AddRequestCodec addRequest = ( AddRequestCodec ) parser.getBatchRequest().getCurrentRequest();
-        CodecControl control = addRequest.getCurrentControl();
+        Control control = addRequest.getCurrentControl();
 
         assertEquals( 3, addRequest.getControls().size() );
         assertTrue( control.isCritical() );

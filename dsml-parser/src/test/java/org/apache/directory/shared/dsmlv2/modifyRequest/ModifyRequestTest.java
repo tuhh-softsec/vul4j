@@ -34,10 +34,10 @@ import javax.naming.NamingException;
 import org.apache.directory.shared.dsmlv2.AbstractTest;
 import org.apache.directory.shared.dsmlv2.Dsmlv2Parser;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
-import org.apache.directory.shared.ldap.codec.controls.CodecControl;
 import org.apache.directory.shared.ldap.codec.modify.ModifyRequestCodec;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Modification;
+import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
 
@@ -107,7 +107,7 @@ public class ModifyRequestTest extends AbstractTest
         }
 
         ModifyRequestCodec modifyRequest = ( ModifyRequestCodec ) parser.getBatchRequest().getCurrentRequest();
-        CodecControl control = modifyRequest.getCurrentControl();
+        Control control = modifyRequest.getCurrentControl();
 
         assertEquals( 1, modifyRequest.getControls().size() );
         assertTrue( control.isCritical() );
@@ -138,7 +138,7 @@ public class ModifyRequestTest extends AbstractTest
         }
 
         ModifyRequestCodec modifyRequest = ( ModifyRequestCodec ) parser.getBatchRequest().getCurrentRequest();
-        CodecControl control = modifyRequest.getCurrentControl();
+        Control control = modifyRequest.getCurrentControl();
 
         assertEquals( 1, modifyRequest.getControls().size() );
         assertTrue( control.isCritical() );
@@ -169,7 +169,7 @@ public class ModifyRequestTest extends AbstractTest
         }
 
         ModifyRequestCodec modifyRequest = ( ModifyRequestCodec ) parser.getBatchRequest().getCurrentRequest();
-        CodecControl control = modifyRequest.getCurrentControl();
+        Control control = modifyRequest.getCurrentControl();
 
         assertEquals( 1, modifyRequest.getControls().size() );
         assertTrue( control.isCritical() );
@@ -200,7 +200,7 @@ public class ModifyRequestTest extends AbstractTest
         }
 
         ModifyRequestCodec modifyRequest = ( ModifyRequestCodec ) parser.getBatchRequest().getCurrentRequest();
-        CodecControl control = modifyRequest.getCurrentControl();
+        Control control = modifyRequest.getCurrentControl();
 
         assertEquals( 2, modifyRequest.getControls().size() );
         assertFalse( control.isCritical() );
@@ -231,7 +231,7 @@ public class ModifyRequestTest extends AbstractTest
         }
 
         ModifyRequestCodec modifyRequest = ( ModifyRequestCodec ) parser.getBatchRequest().getCurrentRequest();
-        CodecControl control = modifyRequest.getCurrentControl();
+        Control control = modifyRequest.getCurrentControl();
 
         assertEquals( 3, modifyRequest.getControls().size() );
         assertTrue( control.isCritical() );

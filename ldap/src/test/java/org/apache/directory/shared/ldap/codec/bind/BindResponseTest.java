@@ -34,9 +34,9 @@ import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
-import org.apache.directory.shared.ldap.codec.controls.CodecControl;
-import org.apache.directory.shared.ldap.codec.search.controls.pagedSearch.PagedResultsControlCodec;
+import org.apache.directory.shared.ldap.codec.search.controls.pagedSearch.PagedResultsControl;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
+import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
 
@@ -186,15 +186,15 @@ public class BindResponseTest
         assertEquals( 0x3C, message.computeLength() );
 
         // Check the Control
-        List<CodecControl> controls = message.getControls();
+        List<Control> controls = message.getControls();
 
         assertEquals( 1, controls.size() );
 
-        CodecControl control = message.getControls( 0 );
+        Control control = message.getControls( 0 );
         assertEquals( "1.2.840.113556.1.4.319", control.getOid() );
-        assertTrue( control instanceof PagedResultsControlCodec );
+        assertTrue( control instanceof PagedResultsControl );
         
-        PagedResultsControlCodec pagedSearchControl = (PagedResultsControlCodec)control;
+        PagedResultsControl pagedSearchControl = (PagedResultsControl)control;
         
         assertEquals( 5, pagedSearchControl.getSize() );
         assertTrue( Arrays.equals( "abcdef".getBytes(), pagedSearchControl.getCookie() ) );
@@ -348,11 +348,11 @@ public class BindResponseTest
         assertEquals( "", StringTools.utf8ToString( br.getServerSaslCreds() ) );
 
         // Check the Control
-        List<CodecControl> controls = message.getControls();
+        List<Control> controls = message.getControls();
 
         assertEquals( 1, controls.size() );
 
-        CodecControl control = message.getControls( 0 );
+        Control control = message.getControls( 0 );
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
         assertEquals( "", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
 

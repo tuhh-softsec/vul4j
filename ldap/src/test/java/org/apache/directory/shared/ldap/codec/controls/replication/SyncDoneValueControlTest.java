@@ -30,7 +30,7 @@ import java.nio.ByteBuffer;
 
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.codec.EncoderException;
-import org.apache.directory.shared.ldap.codec.controls.replication.syncDoneValue.SyncDoneValueControlCodec;
+import org.apache.directory.shared.ldap.codec.controls.replication.syncDoneValue.SyncDoneValueControl;
 import org.apache.directory.shared.ldap.codec.controls.replication.syncDoneValue.SyncDoneValueControlContainer;
 import org.apache.directory.shared.ldap.codec.controls.replication.syncDoneValue.SyncDoneValueControlDecoder;
 import org.apache.directory.shared.ldap.util.StringTools;
@@ -63,7 +63,7 @@ public class SyncDoneValueControlTest
         bb.flip();
 
         SyncDoneValueControlContainer container = new SyncDoneValueControlContainer();
-        container.setSyncDoneValueControl( new SyncDoneValueControlCodec() );
+        container.setSyncDoneValueControl( new SyncDoneValueControl() );
 
         try
         {
@@ -74,7 +74,7 @@ public class SyncDoneValueControlTest
             fail( e.getMessage() );
         }
 
-        SyncDoneValueControlCodec control = container.getSyncDoneValueControl();
+        SyncDoneValueControl control = container.getSyncDoneValueControl();
         assertEquals( "xkcd", StringTools.utf8ToString( control.getCookie() ) );
         assertTrue( control.isRefreshDeletes() );
         
@@ -125,7 +125,7 @@ public class SyncDoneValueControlTest
         bb.flip();
 
         SyncDoneValueControlContainer container = new SyncDoneValueControlContainer();
-        container.setSyncDoneValueControl( new SyncDoneValueControlCodec() );
+        container.setSyncDoneValueControl( new SyncDoneValueControl() );
 
         try
         {
@@ -136,7 +136,7 @@ public class SyncDoneValueControlTest
             fail( e.getMessage() );
         }
 
-        SyncDoneValueControlCodec control = container.getSyncDoneValueControl();
+        SyncDoneValueControl control = container.getSyncDoneValueControl();
         assertNull( control.getCookie() );
         assertTrue( control.isRefreshDeletes() );
 
@@ -184,7 +184,7 @@ public class SyncDoneValueControlTest
         bb.flip();
 
         SyncDoneValueControlContainer container = new SyncDoneValueControlContainer();
-        container.setSyncDoneValueControl( new SyncDoneValueControlCodec() );
+        container.setSyncDoneValueControl( new SyncDoneValueControl() );
 
         try
         {
@@ -195,7 +195,7 @@ public class SyncDoneValueControlTest
             fail( "shouldn't reach this" );
         }
 
-        SyncDoneValueControlCodec control = container.getSyncDoneValueControl();
+        SyncDoneValueControl control = container.getSyncDoneValueControl();
         assertNull( control.getCookie() );
         assertFalse( control.isRefreshDeletes() );
     }
@@ -217,7 +217,7 @@ public class SyncDoneValueControlTest
         bb.flip();
 
         SyncDoneValueControlContainer container = new SyncDoneValueControlContainer();
-        container.setSyncDoneValueControl( new SyncDoneValueControlCodec() );
+        container.setSyncDoneValueControl( new SyncDoneValueControl() );
 
         try
         {
@@ -228,7 +228,7 @@ public class SyncDoneValueControlTest
             fail( e.getMessage() );
         }
 
-        SyncDoneValueControlCodec control = container.getSyncDoneValueControl();
+        SyncDoneValueControl control = container.getSyncDoneValueControl();
         assertEquals( "", StringTools.utf8ToString( control.getCookie() ) );
         assertFalse( control.isRefreshDeletes() );
 

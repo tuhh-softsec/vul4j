@@ -104,8 +104,8 @@ public class SyncInfoValueControlGrammar extends AbstractGrammar
                 {
                     SyncInfoValueControlContainer syncInfoValueContainer = 
                         ( SyncInfoValueControlContainer ) container;
-                    SyncInfoValueControlCodec control = 
-                        new SyncInfoValueControlCodec( SynchronizationInfoEnum.NEW_COOKIE);
+                    SyncInfoValueControl control = 
+                        new SyncInfoValueControl( SynchronizationInfoEnum.NEW_COOKIE);
                     
                     Value value = syncInfoValueContainer.getCurrentTLV().getValue();
 
@@ -145,8 +145,8 @@ public class SyncInfoValueControlGrammar extends AbstractGrammar
                 {
                     SyncInfoValueControlContainer syncInfoValueContainer = 
                         ( SyncInfoValueControlContainer ) container;
-                    SyncInfoValueControlCodec control = 
-                        new SyncInfoValueControlCodec( SynchronizationInfoEnum.REFRESH_DELETE);
+                    SyncInfoValueControl control = 
+                        new SyncInfoValueControl( SynchronizationInfoEnum.REFRESH_DELETE);
                     
                     syncInfoValueContainer.setSyncInfoValueControl( control );
 
@@ -174,7 +174,7 @@ public class SyncInfoValueControlGrammar extends AbstractGrammar
                 {
                     SyncInfoValueControlContainer syncInfoValueContainer = 
                         ( SyncInfoValueControlContainer ) container;
-                    SyncInfoValueControlCodec control = syncInfoValueContainer.getSyncInfoValueControl();
+                    SyncInfoValueControl control = syncInfoValueContainer.getSyncInfoValueControl();
                     
                     Value value = syncInfoValueContainer.getCurrentTLV().getValue();
 
@@ -213,7 +213,7 @@ public class SyncInfoValueControlGrammar extends AbstractGrammar
                 {
                     SyncInfoValueControlContainer syncInfoValueContainer = 
                         ( SyncInfoValueControlContainer ) container;
-                    SyncInfoValueControlCodec control = syncInfoValueContainer.getSyncInfoValueControl();
+                    SyncInfoValueControl control = syncInfoValueContainer.getSyncInfoValueControl();
                     
                     Value value = syncInfoValueContainer.getCurrentTLV().getValue();
 
@@ -266,7 +266,7 @@ public class SyncInfoValueControlGrammar extends AbstractGrammar
                 {
                     SyncInfoValueControlContainer syncInfoValueContainer = 
                         ( SyncInfoValueControlContainer ) container;
-                    SyncInfoValueControlCodec control = syncInfoValueContainer.getSyncInfoValueControl();
+                    SyncInfoValueControl control = syncInfoValueContainer.getSyncInfoValueControl();
                     
                     Value value = syncInfoValueContainer.getCurrentTLV().getValue();
 
@@ -319,8 +319,8 @@ public class SyncInfoValueControlGrammar extends AbstractGrammar
                 {
                     SyncInfoValueControlContainer syncInfoValueContainer = 
                         ( SyncInfoValueControlContainer ) container;
-                    SyncInfoValueControlCodec control = 
-                        new SyncInfoValueControlCodec( SynchronizationInfoEnum.REFRESH_PRESENT);
+                    SyncInfoValueControl control = 
+                        new SyncInfoValueControl( SynchronizationInfoEnum.REFRESH_PRESENT);
                     
                     syncInfoValueContainer.setSyncInfoValueControl( control );
 
@@ -348,7 +348,7 @@ public class SyncInfoValueControlGrammar extends AbstractGrammar
                 {
                     SyncInfoValueControlContainer syncInfoValueContainer = 
                         ( SyncInfoValueControlContainer ) container;
-                    SyncInfoValueControlCodec control = syncInfoValueContainer.getSyncInfoValueControl();
+                    SyncInfoValueControl control = syncInfoValueContainer.getSyncInfoValueControl();
                     
                     Value value = syncInfoValueContainer.getCurrentTLV().getValue();
 
@@ -389,7 +389,7 @@ public class SyncInfoValueControlGrammar extends AbstractGrammar
                 {
                     SyncInfoValueControlContainer syncInfoValueContainer = 
                         ( SyncInfoValueControlContainer ) container;
-                    SyncInfoValueControlCodec control = syncInfoValueContainer.getSyncInfoValueControl();
+                    SyncInfoValueControl control = syncInfoValueContainer.getSyncInfoValueControl();
                     
                     Value value = syncInfoValueContainer.getCurrentTLV().getValue();
 
@@ -442,7 +442,7 @@ public class SyncInfoValueControlGrammar extends AbstractGrammar
                 {
                     SyncInfoValueControlContainer syncInfoValueContainer = 
                         ( SyncInfoValueControlContainer ) container;
-                    SyncInfoValueControlCodec control = syncInfoValueContainer.getSyncInfoValueControl();
+                    SyncInfoValueControl control = syncInfoValueContainer.getSyncInfoValueControl();
                     
                     Value value = syncInfoValueContainer.getCurrentTLV().getValue();
 
@@ -494,8 +494,8 @@ public class SyncInfoValueControlGrammar extends AbstractGrammar
                 {
                     SyncInfoValueControlContainer syncInfoValueContainer = 
                         ( SyncInfoValueControlContainer ) container;
-                    SyncInfoValueControlCodec control = 
-                        new SyncInfoValueControlCodec( SynchronizationInfoEnum.SYNC_ID_SET);
+                    SyncInfoValueControl control = 
+                        new SyncInfoValueControl( SynchronizationInfoEnum.SYNC_ID_SET);
                     
                     syncInfoValueContainer.setSyncInfoValueControl( control );
                 }
@@ -520,7 +520,7 @@ public class SyncInfoValueControlGrammar extends AbstractGrammar
                 {
                     SyncInfoValueControlContainer syncInfoValueContainer = 
                         ( SyncInfoValueControlContainer ) container;
-                    SyncInfoValueControlCodec control = syncInfoValueContainer.getSyncInfoValueControl();
+                    SyncInfoValueControl control = syncInfoValueContainer.getSyncInfoValueControl();
                     
                     Value value = syncInfoValueContainer.getCurrentTLV().getValue();
 
@@ -556,7 +556,7 @@ public class SyncInfoValueControlGrammar extends AbstractGrammar
                 {
                     SyncInfoValueControlContainer syncInfoValueContainer = 
                         ( SyncInfoValueControlContainer ) container;
-                    SyncInfoValueControlCodec control = syncInfoValueContainer.getSyncInfoValueControl();
+                    SyncInfoValueControl control = syncInfoValueContainer.getSyncInfoValueControl();
                     
                     Value value = syncInfoValueContainer.getCurrentTLV().getValue();
 
@@ -602,7 +602,7 @@ public class SyncInfoValueControlGrammar extends AbstractGrammar
                 {
                     SyncInfoValueControlContainer syncInfoValueContainer = 
                         ( SyncInfoValueControlContainer ) container;
-                    SyncInfoValueControlCodec control = syncInfoValueContainer.getSyncInfoValueControl();
+                    SyncInfoValueControl control = syncInfoValueContainer.getSyncInfoValueControl();
                     
                     Value value = syncInfoValueContainer.getCurrentTLV().getValue();
 
@@ -726,7 +726,7 @@ public class SyncInfoValueControlGrammar extends AbstractGrammar
                 {
                     SyncInfoValueControlContainer syncInfoValueContainer = 
                         ( SyncInfoValueControlContainer ) container;
-                    SyncInfoValueControlCodec control = syncInfoValueContainer.getSyncInfoValueControl();
+                    SyncInfoValueControl control = syncInfoValueContainer.getSyncInfoValueControl();
                     
                     Value value = syncInfoValueContainer.getCurrentTLV().getValue();
 
@@ -773,7 +773,7 @@ public class SyncInfoValueControlGrammar extends AbstractGrammar
                 {
                     SyncInfoValueControlContainer syncInfoValueContainer = 
                         ( SyncInfoValueControlContainer ) container;
-                    SyncInfoValueControlCodec control = syncInfoValueContainer.getSyncInfoValueControl();
+                    SyncInfoValueControl control = syncInfoValueContainer.getSyncInfoValueControl();
                     
                     Value value = syncInfoValueContainer.getCurrentTLV().getValue();
 

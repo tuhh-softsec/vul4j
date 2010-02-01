@@ -32,10 +32,10 @@ import java.util.List;
 import org.apache.directory.shared.dsmlv2.AbstractResponseTest;
 import org.apache.directory.shared.dsmlv2.Dsmlv2ResponseParser;
 import org.apache.directory.shared.ldap.codec.LdapResultCodec;
-import org.apache.directory.shared.ldap.codec.controls.CodecControl;
 import org.apache.directory.shared.ldap.codec.modify.ModifyResponseCodec;
 import org.apache.directory.shared.ldap.codec.util.LdapURLEncodingException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
+import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.util.LdapURL;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
@@ -112,7 +112,7 @@ public class ModifyResponseTest extends AbstractResponseTest
 
         assertEquals( 1, modifyResponse.getControls().size() );
 
-        CodecControl control = modifyResponse.getCurrentControl();
+        Control control = modifyResponse.getCurrentControl();
 
         assertTrue( control.isCritical() );
 
@@ -144,7 +144,7 @@ public class ModifyResponseTest extends AbstractResponseTest
         }
 
         ModifyResponseCodec modifyResponse = ( ModifyResponseCodec ) parser.getBatchResponse().getCurrentResponse();
-        CodecControl control = modifyResponse.getCurrentControl();
+        Control control = modifyResponse.getCurrentControl();
 
         assertEquals( 1, modifyResponse.getControls().size() );
         assertTrue( control.isCritical() );
@@ -178,7 +178,7 @@ public class ModifyResponseTest extends AbstractResponseTest
 
         assertEquals( 2, modifyResponse.getControls().size() );
 
-        CodecControl control = modifyResponse.getCurrentControl();
+        Control control = modifyResponse.getCurrentControl();
 
         assertFalse( control.isCritical() );
 
@@ -213,7 +213,7 @@ public class ModifyResponseTest extends AbstractResponseTest
 
         assertEquals( 3, modifyResponse.getControls().size() );
 
-        CodecControl control = modifyResponse.getCurrentControl();
+        Control control = modifyResponse.getCurrentControl();
 
         assertTrue( control.isCritical() );
 

@@ -32,10 +32,10 @@ import java.util.List;
 import org.apache.directory.shared.dsmlv2.AbstractResponseTest;
 import org.apache.directory.shared.dsmlv2.Dsmlv2ResponseParser;
 import org.apache.directory.shared.ldap.codec.LdapResultCodec;
-import org.apache.directory.shared.ldap.codec.controls.CodecControl;
 import org.apache.directory.shared.ldap.codec.del.DelResponseCodec;
 import org.apache.directory.shared.ldap.codec.util.LdapURLEncodingException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
+import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.util.LdapURL;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
@@ -112,7 +112,7 @@ public class DelResponseTest extends AbstractResponseTest
 
         assertEquals( 1, delResponse.getControls().size() );
 
-        CodecControl control = delResponse.getCurrentControl();
+        Control control = delResponse.getCurrentControl();
 
         assertTrue( control.isCritical() );
 
@@ -144,7 +144,7 @@ public class DelResponseTest extends AbstractResponseTest
         }
 
         DelResponseCodec delResponse = ( DelResponseCodec ) parser.getBatchResponse().getCurrentResponse();
-        CodecControl control = delResponse.getCurrentControl();
+        Control control = delResponse.getCurrentControl();
 
         assertEquals( 1, delResponse.getControls().size() );
         assertTrue( control.isCritical() );
@@ -177,7 +177,7 @@ public class DelResponseTest extends AbstractResponseTest
 
         assertEquals( 2, delResponse.getControls().size() );
 
-        CodecControl control = delResponse.getCurrentControl();
+        Control control = delResponse.getCurrentControl();
 
         assertFalse( control.isCritical() );
 
@@ -212,7 +212,7 @@ public class DelResponseTest extends AbstractResponseTest
 
         assertEquals( 3, delResponse.getControls().size() );
 
-        CodecControl control = delResponse.getCurrentControl();
+        Control control = delResponse.getCurrentControl();
 
         assertTrue( control.isCritical() );
 

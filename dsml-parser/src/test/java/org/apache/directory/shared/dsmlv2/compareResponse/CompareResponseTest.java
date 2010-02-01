@@ -33,9 +33,9 @@ import org.apache.directory.shared.dsmlv2.AbstractResponseTest;
 import org.apache.directory.shared.dsmlv2.Dsmlv2ResponseParser;
 import org.apache.directory.shared.ldap.codec.LdapResultCodec;
 import org.apache.directory.shared.ldap.codec.compare.CompareResponseCodec;
-import org.apache.directory.shared.ldap.codec.controls.CodecControl;
 import org.apache.directory.shared.ldap.codec.util.LdapURLEncodingException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
+import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.util.LdapURL;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
@@ -112,7 +112,7 @@ public class CompareResponseTest extends AbstractResponseTest
 
         assertEquals( 1, compareResponse.getControls().size() );
 
-        CodecControl control = compareResponse.getCurrentControl();
+        Control control = compareResponse.getCurrentControl();
 
         assertTrue( control.isCritical() );
 
@@ -144,7 +144,7 @@ public class CompareResponseTest extends AbstractResponseTest
         }
 
         CompareResponseCodec compareResponse = ( CompareResponseCodec ) parser.getBatchResponse().getCurrentResponse();
-        CodecControl control = compareResponse.getCurrentControl();
+        Control control = compareResponse.getCurrentControl();
 
         assertEquals( 1, compareResponse.getControls().size() );
         assertTrue( control.isCritical() );
@@ -178,7 +178,7 @@ public class CompareResponseTest extends AbstractResponseTest
 
         assertEquals( 2, compareResponse.getControls().size() );
 
-        CodecControl control = compareResponse.getCurrentControl();
+        Control control = compareResponse.getCurrentControl();
 
         assertFalse( control.isCritical() );
 
@@ -213,7 +213,7 @@ public class CompareResponseTest extends AbstractResponseTest
 
         assertEquals( 3, compareResponse.getControls().size() );
 
-        CodecControl control = compareResponse.getCurrentControl();
+        Control control = compareResponse.getCurrentControl();
 
         assertTrue( control.isCritical() );
 

@@ -37,7 +37,6 @@ import org.apache.directory.shared.ldap.codec.bind.BindRequestCodec;
 import org.apache.directory.shared.ldap.codec.bind.BindResponseCodec;
 import org.apache.directory.shared.ldap.codec.compare.CompareRequestCodec;
 import org.apache.directory.shared.ldap.codec.compare.CompareResponseCodec;
-import org.apache.directory.shared.ldap.codec.controls.CodecControl;
 import org.apache.directory.shared.ldap.codec.del.DelRequestCodec;
 import org.apache.directory.shared.ldap.codec.del.DelResponseCodec;
 import org.apache.directory.shared.ldap.codec.extended.ExtendedRequestCodec;
@@ -51,6 +50,7 @@ import org.apache.directory.shared.ldap.codec.search.SearchResultDoneCodec;
 import org.apache.directory.shared.ldap.codec.search.SearchResultEntryCodec;
 import org.apache.directory.shared.ldap.codec.search.SearchResultReferenceCodec;
 import org.apache.directory.shared.ldap.codec.unbind.UnBindRequestCodec;
+import org.apache.directory.shared.ldap.message.control.Control;
 
 
 /**
@@ -82,7 +82,7 @@ public abstract class LdapMessageDecorator extends LdapMessageCodec
      * @see org.apache.directory.shared.ldap.codec.LdapMessageCodec#addControl(org.apache.directory.shared.ldap.codec.Control)
      */
     @Override
-    public void addControl( CodecControl control )
+    public void addControl( Control control )
     {
         instance.addControl( control );
     }
@@ -182,7 +182,7 @@ public abstract class LdapMessageDecorator extends LdapMessageCodec
      * @see org.apache.directory.shared.ldap.codec.LdapMessageCodec#getControls()
      */
     @Override
-    public List<CodecControl> getControls()
+    public List<Control> getControls()
     {
         return instance.getControls();
     }
@@ -192,7 +192,7 @@ public abstract class LdapMessageDecorator extends LdapMessageCodec
      * @see org.apache.directory.shared.ldap.codec.LdapMessageCodec#getControls(int)
      */
     @Override
-    public CodecControl getControls( int i )
+    public Control getControls( int i )
     {
         return instance.getControls( i );
     }
@@ -202,7 +202,7 @@ public abstract class LdapMessageDecorator extends LdapMessageCodec
      * @see org.apache.directory.shared.ldap.codec.LdapMessageCodec#getCurrentControl()
      */
     @Override
-    public CodecControl getCurrentControl()
+    public Control getCurrentControl()
     {
         return instance.getCurrentControl();
     }
