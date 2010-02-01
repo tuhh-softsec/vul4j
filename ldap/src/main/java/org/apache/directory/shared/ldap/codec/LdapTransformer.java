@@ -42,6 +42,7 @@ import org.apache.directory.shared.ldap.codec.del.DelRequestCodec;
 import org.apache.directory.shared.ldap.codec.del.DelResponseCodec;
 import org.apache.directory.shared.ldap.codec.extended.ExtendedRequestCodec;
 import org.apache.directory.shared.ldap.codec.extended.ExtendedResponseCodec;
+import org.apache.directory.shared.ldap.codec.intermediate.IntermediateResponseCodec;
 import org.apache.directory.shared.ldap.codec.modify.ModifyRequestCodec;
 import org.apache.directory.shared.ldap.codec.modify.ModifyResponseCodec;
 import org.apache.directory.shared.ldap.codec.modifyDn.ModifyDNRequestCodec;
@@ -89,6 +90,7 @@ import org.apache.directory.shared.ldap.message.DeleteRequestImpl;
 import org.apache.directory.shared.ldap.message.DeleteResponseImpl;
 import org.apache.directory.shared.ldap.message.ExtendedRequestImpl;
 import org.apache.directory.shared.ldap.message.ExtendedResponseImpl;
+import org.apache.directory.shared.ldap.message.IntermediateResponseImpl;
 import org.apache.directory.shared.ldap.message.LdapResultImpl;
 import org.apache.directory.shared.ldap.message.ModifyDnRequestImpl;
 import org.apache.directory.shared.ldap.message.ModifyDnResponseImpl;
@@ -1100,6 +1102,40 @@ public class LdapTransformer
 
 
     /**
+     * Transform a Internal IntermediateResponse to a Codec IntermediateResponse
+     * 
+     * @param codecMessage The Codec IntermediateResponse to produce
+     * @param internalMessage The incoming Internal IntermediateResponse
+     */
+    private static void transformIntermediateResponse( LdapMessageCodec codecMessage, InternalMessage internalMessage )
+    {
+        IntermediateResponseImpl internalIntermediateResponse = (IntermediateResponseImpl) internalMessage;
+        IntermediateResponseCodec intermediateResponse = new IntermediateResponseCodec();
+
+        // Internal : String oid -> Codec : String responseName
+        try
+        {
+            intermediateResponse.setResponseName( new OID( internalIntermediateResponse.getResponseName() ) );
+        }
+        catch ( DecoderException de )
+        {
+            LOG.warn( "The OID " + internalIntermediateResponse.getResponseName() + " is invalid : " + de.getMessage() );
+            intermediateResponse.setResponseName( null );
+        }
+
+        // Internal : byte [] value -> Codec : byte[] value
+        intermediateResponse.setResponseValue( internalIntermediateResponse.getResponseValue() );
+
+        // Transform the ldapResult
+        intermediateResponse.setLdapResult( transformLdapResult( ( LdapResultImpl ) internalIntermediateResponse
+            .getLdapResult() ) );
+
+        // Set the operation into the LdapMessage
+        codecMessage.setProtocolOP( intermediateResponse );
+    }
+
+
+    /**
      * Transform a Internal ModifyResponse to a Codec ModifyResponse
      * 
      * @param codecMessage The Codec ModifyResponse to produce
@@ -1289,7 +1325,7 @@ public class LdapTransformer
                 break;
                 
             case INTERMEDIATE_RESP :
-                //transformIntermediateResponse( codecMessage, msg );
+                transformIntermediateResponse( codecMessage, msg );
                 break;
         }
 
