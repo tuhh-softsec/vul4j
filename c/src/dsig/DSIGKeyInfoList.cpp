@@ -290,13 +290,13 @@ bool DSIGKeyInfoList::loadListFromXML(DOMNode * node) {
 				Janitor<TXFMChain> j_chain(chain);
 
 				// Now check for transforms
-				tmpKI = tmpKI->getFirstChild();
+				DOMNode * tmpTran = tmpKI->getFirstChild();
 
-				while (tmpKI != 0 && (tmpKI->getNodeType() != DOMNode::ELEMENT_NODE))
+				while (tmpTran != 0 && (tmpTran->getNodeType() != DOMNode::ELEMENT_NODE))
 					// Skip text and comments
-					tmpKI = tmpKI->getNextSibling();
+				    tmpTran = tmpTran->getNextSibling();
 
-				if (tmpKI != 0 && strEquals(getDSIGLocalName(tmpKI), "Transforms")) {
+				if (tmpTran != 0 && strEquals(getDSIGLocalName(tmpTran), "Transforms")) {
 
 
 					// Process the transforms using the static function.
@@ -304,7 +304,7 @@ bool DSIGKeyInfoList::loadListFromXML(DOMNode * node) {
 					// Just built the transform list, process it and then destroy it.
 
 					DSIGTransformList * l = DSIGReference::loadTransforms(
-						tmpKI,
+					    tmpTran,
 						mp_env->getSBFormatter(),
 						mp_env);
 
@@ -353,7 +353,7 @@ bool DSIGKeyInfoList::loadListFromXML(DOMNode * node) {
 					while (element != NULL) {
 
 						// Try to add each element - just call KeyInfoList add as it will
-						// do the check to see if it is a valud KeyInfo
+						// do the check to see if it is a valid KeyInfo
 
 						addXMLKeyInfo((DOMNode *) element);
 						element = lst.getNextNode();
