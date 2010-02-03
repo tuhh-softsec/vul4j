@@ -21,11 +21,11 @@
 package org.apache.directory.shared.ldap.aci;
 
 
+import static org.junit.Assert.fail;
+
 import java.text.ParseException;
 
-import org.apache.directory.shared.ldap.aci.ACIItemChecker;
 import org.junit.Test;
-import static org.junit.Assert.fail;
 
 
 /**
@@ -40,9 +40,6 @@ public class ACIItemChekerTest
     /** the ACIItem checker wrapper */
     ACIItemChecker checker;
 
-
-    // /** holds multithreaded success value */
-    // boolean isSuccessMultithreaded = true;
 
     /**
      * Creates a ACIItemParserTest instance.

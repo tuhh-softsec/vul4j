@@ -353,7 +353,6 @@ public class LdapResultCodec extends AbstractAsn1Object
      */
     public String toString()
     {
-
         StringBuffer sb = new StringBuffer();
 
         sb.append( "        Ldap Result\n" );
