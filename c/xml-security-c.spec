@@ -1,6 +1,6 @@
 Name:           xml-security-c
-Version:        1.5.1
-Release:        2
+Version:        1.6.0
+Release:        1
 Summary:        Apache XML security C++ library
 Group:          System Environment/Libraries
 License:        Apache Software License
@@ -38,13 +38,13 @@ XPath and XSLT transforms.
 
 This package contains the utility programs.
 
-%package -n libxml-security-c15
+%package -n libxml-security-c16
 Summary:    Apache XML security C++ library
 Group:      Development/Libraries
 Provides:   xml-security-c = %{version}
 Obsoletes:  xml-security-c
 
-%description -n libxml-security-c15
+%description -n libxml-security-c16
 The xml-security-c library is a C++ implementation of the XML Digital Signature
 and Encryption specifications. The library makes use of the Apache XML project's
 Xerces-C XML Parser and Xalan-C XSLT processor. The latter is used for processing
@@ -55,7 +55,7 @@ This package contains just the shared library.
 %package -n libxml-security-c-devel
 Summary:	Development files for the Apache C++ XML security library
 Group:		Development/Libraries
-Requires:	libxml-security-c15 = %{version}
+Requires:	libxml-security-c16 = %{version}
 Requires:	openssl-devel
 %if 0%{?suse_version} > 1030
 Requires:	libXerces-c-devel
@@ -90,18 +90,18 @@ This package includes files needed for development with xml-security-c.
 
 
 %ifnos solaris2.8 solaris2.9 solaris2.10
-%post -n libxml-security-c15 -p /sbin/ldconfig
+%post -n libxml-security-c16 -p /sbin/ldconfig
 %endif
 
 %ifnos solaris2.8 solaris2.9 solaris2.10
-%postun -n libxml-security-c15 -p /sbin/ldconfig
+%postun -n libxml-security-c16 -p /sbin/ldconfig
 %endif
 
 %files -n xml-security-c-bin
 %defattr(-,root,root,-)
 %{_bindir}/*
 
-%files -n libxml-security-c15
+%files -n libxml-security-c16
 %defattr(-,root,root,-)
 %{_libdir}/*.so.*
 
@@ -113,6 +113,9 @@ This package includes files needed for development with xml-security-c.
 %exclude %{_libdir}/*.la
 
 %changelog
+* Wed Feb 3 2010 Scott Cantor <cantor.2@osu.edu> 1.6.0-1
+- update to 1.6.0
+
 * Mon Dec 28 2009 Scott Cantor <cantor.2@osu.edu> 1.5.1-2
 - Sync package names for side by side installation
 

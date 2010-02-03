@@ -19,12 +19,12 @@
 
 # Process this file with autoconf to produce a configure script
 
-AC_INIT([[XML-Security-C]], [1.5.1], [security-dev@xml.apache.org], [xml-security-c])
+AC_INIT([[XML-Security-C]], [1.6.0], [security-dev@xml.apache.org], [xml-security-c])
 AC_CONFIG_AUX_DIR([config])
 
 # kick off automake
 
-AM_INIT_AUTOMAKE(xml-security-c, 1.5.1)
+AM_INIT_AUTOMAKE(xml-security-c, 1.6.0)
 sinclude(m4/acx_pthread.m4)
 AM_PROG_LIBTOOL
 

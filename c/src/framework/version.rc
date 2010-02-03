@@ -54,8 +54,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,5,1,0
- PRODUCTVERSION 1,5,1,0
+ FILEVERSION 1,6,0,0
+ PRODUCTVERSION 1,6,0,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -73,22 +73,22 @@ BEGIN
             VALUE "Comments", "\0"
             VALUE "CompanyName", "The Apache Software Foundation\0"
             VALUE "FileDescription", "XML Security C++ Library\0"
-            VALUE "FileVersion", "1, 5, 1, 0\0"
+            VALUE "FileVersion", "1, 6, 0, 0\0"
 #ifdef _DEBUG
-            VALUE "InternalName", "xsec_1_5D\0"
+            VALUE "InternalName", "xsec_1_6D\0"
 #else
-            VALUE "InternalName", "xsec_1_5\0"
+            VALUE "InternalName", "xsec_1_6\0"
 #endif
-            VALUE "LegalCopyright", "Copyright © 2002-2009 The Apache Software Foundation\0"
+            VALUE "LegalCopyright", "Copyright © 2002-2010 The Apache Software Foundation\0"
             VALUE "LegalTrademarks", "\0"
 #ifdef _DEBUG
-            VALUE "OriginalFilename", "xsec_1_5D.dll\0"
+            VALUE "OriginalFilename", "xsec_1_6D.dll\0"
 #else
-            VALUE "OriginalFilename", "xsec_1_5.dll\0"
+            VALUE "OriginalFilename", "xsec_1_6.dll\0"
 #endif
             VALUE "PrivateBuild", "\0"
             VALUE "ProductName", "XML-Security-C - C++ XML Security Library\0"
-            VALUE "ProductVersion", "1, 5, 1, 0\0"
+            VALUE "ProductVersion", "1, 6, 0, 0\0"
             VALUE "SpecialBuild", "\0"
         END
     END
