@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2005 The Apache Software Foundation.
+ * Copyright 2002-2010 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -319,19 +319,26 @@ XSECBinTXFMInputStream * DSIGSignature::makeBinInputStream(void) const {
 
 }
 
+
 // --------------------------------------------------------------------------------
 //           Get the list of references
 // --------------------------------------------------------------------------------
 
 DSIGReferenceList * DSIGSignature::getReferenceList(void) {
 
-	return mp_signedInfo->getReferenceList();
+	return mp_signedInfo ? mp_signedInfo->getReferenceList() : NULL;
 
 }
 
 const DSIGReferenceList * DSIGSignature::getReferenceList(void) const {
 
-	return mp_signedInfo->getReferenceList();
+	return mp_signedInfo ? mp_signedInfo->getReferenceList() : NULL;
+
+}
+
+const XMLCh * DSIGSignature::getAlgorithmURI() const {
+
+    return mp_signedInfo ? mp_signedInfo->getAlgorithmURI() : NULL;
 
 }
 

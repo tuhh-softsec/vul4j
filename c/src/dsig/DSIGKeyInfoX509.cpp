@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2005 The Apache Software Foundation.
+ * Copyright 2002-2010 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,18 +45,16 @@ DSIGKeyInfo(env),
 mp_X509IssuerName(NULL),
 mp_X509SerialNumber(NULL),
 mp_X509SubjectName(NULL),
-mp_X509CRL(NULL),
 mp_X509SKI(NULL),
 mp_rawRetrievalURI(NULL),
 mp_X509SubjectNameTextNode(0),
 mp_X509IssuerNameTextNode(0),
 mp_X509SerialNumberTextNode(0),
-mp_X509CRLTextNode(0),
 mp_X509SKITextNode(0) {
 
 	mp_keyInfoDOMNode = X509Data;
 	m_X509List.clear();
-
+	m_X509CRLList.clear();
 }
 
 DSIGKeyInfoX509::DSIGKeyInfoX509(const XSECEnv * env) :
@@ -64,18 +62,16 @@ DSIGKeyInfo(env),
 mp_X509IssuerName(NULL),
 mp_X509SerialNumber(NULL),
 mp_X509SubjectName(NULL),
-mp_X509CRL(NULL),
 mp_X509SKI(NULL),
 mp_rawRetrievalURI(NULL),
 mp_X509SubjectNameTextNode(0),
 mp_X509IssuerNameTextNode(0),
 mp_X509SerialNumberTextNode(0),
-mp_X509CRLTextNode(0),
 mp_X509SKITextNode(0) {
 
 	mp_keyInfoDOMNode = 0;
 	m_X509List.clear();
-
+    m_X509CRLList.clear();
 }
 
 
@@ -101,6 +97,7 @@ DSIGKeyInfoX509::~DSIGKeyInfoX509() {
 	}
 
 	m_X509List.clear();
+    m_X509CRLList.clear();
 
 	if (mp_rawRetrievalURI != NULL)
 		XSEC_RELEASE_XMLCH(mp_rawRetrievalURI);
@@ -238,17 +235,14 @@ void DSIGKeyInfoX509::load(void) {
 
 			else if (strEquals(getDSIGLocalName(tmpElt), "X509CRL")) {
 
-				child = findFirstChildOfType(tmpElt, DOMNode::TEXT_NODE);
+                DOMNode *crlElt = findFirstChildOfType(tmpElt, DOMNode::TEXT_NODE);
 
-				if (child == NULL) {
+                if (crlElt != 0) {
 
-					throw XSECException(XSECException::ExpectedDSIGChildNotFound,
-						"Expected TEXT_NODE child of <X509CRL>");
+                    // Add to the list
+                    m_X509CRLList.push_back(crlElt->getNodeValue());
 
-				}
-
-				mp_X509CRLTextNode = child;
-				mp_X509CRL = child->getNodeValue();
+                }
 
 			}
 			else if (strEquals(getDSIGLocalName(tmpElt), "X509SKI")) {
@@ -299,7 +293,23 @@ const XMLCh * DSIGKeyInfoX509::getX509IssuerName(void) const {
 
 const XMLCh * DSIGKeyInfoX509::getX509CRL(void) const {
 
-	return mp_X509CRL;
+	return m_X509CRLList.empty() ? NULL : m_X509CRLList.front();
+
+}
+
+int DSIGKeyInfoX509::getX509CRLListSize(void) const {
+
+    return (int) m_X509CRLList.size();
+
+}
+
+
+const XMLCh * DSIGKeyInfoX509::getX509CRLItem(int item) const {
+
+    if (item >=0 && (unsigned int) item < m_X509CRLList.size())
+        return m_X509CRLList[item];
+
+    return 0;
 
 }
 
@@ -320,8 +330,6 @@ int DSIGKeyInfoX509::getCertificateListSize(void) const {
 	return (int) m_X509List.size();
 
 }
-
-
 
 const XMLCh * DSIGKeyInfoX509::getCertificateItem(int item) const {
 
@@ -377,33 +385,27 @@ DOMElement * DSIGKeyInfoX509::createBlankX509Data(void) {
 }
 
 void DSIGKeyInfoX509::setX509CRL(const XMLCh * crl) {
+    appendX509CRL(crl);
+}
 
-	if (mp_X509CRLTextNode == 0) {
+void DSIGKeyInfoX509::appendX509CRL(const XMLCh * crl) {
 
-		safeBuffer str;
-		DOMDocument *doc = mp_env->getParentDocument();
-		const XMLCh * prefix = mp_env->getDSIGNSPrefix();
+    safeBuffer str;
+    DOMDocument *doc = mp_env->getParentDocument();
+    const XMLCh * prefix = mp_env->getDSIGNSPrefix();
 
-		makeQName(str, prefix, "X509CRL");
+    makeQName(str, prefix, "X509CRL");
 
-		DOMElement * s = doc->createElementNS(DSIGConstants::s_unicodeStrURIDSIG, str.rawXMLChBuffer());
-		mp_X509CRLTextNode = doc->createTextNode(crl);
-		s->appendChild(mp_X509CRLTextNode);
+    DOMElement * s = doc->createElementNS(DSIGConstants::s_unicodeStrURIDSIG, str.rawXMLChBuffer());
+    DOMNode * b64Txt = doc->createTextNode(crl);
+    s->appendChild(b64Txt);
 
-		// Add to the over-arching node
-		mp_keyInfoDOMNode->appendChild(s);
-		mp_env->doPrettyPrint(mp_keyInfoDOMNode);
+    mp_keyInfoDOMNode->appendChild(s);
+    mp_env->doPrettyPrint(mp_keyInfoDOMNode);
 
-	}
+    // Add to the list
 
-	else {
-
-		mp_X509CRLTextNode->setNodeValue(crl);
-
-	}
-
-	mp_X509CRL = mp_X509CRLTextNode->getNodeValue();
-
+    m_X509CRLList.push_back(b64Txt->getNodeValue());
 }
 
 void DSIGKeyInfoX509::setX509SKI(const XMLCh * ski) {

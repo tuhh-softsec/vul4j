@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2005 The Apache Software Foundation.
+ * Copyright 2002-2010 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -534,6 +534,15 @@ public:
 	{return (mp_signedInfo != NULL ? 
 			 mp_signedInfo->getCanonicalizationMethod() : CANON_NONE);}
 
+
+    /**
+     * \brief Get the Algorithm URI
+     *
+     * @returns the URI associated with the Algorithm used to generate
+     * the signature
+     */
+
+    const XMLCh * getAlgorithmURI() const;
 
 	/**
 	 * \brief Get the hash method

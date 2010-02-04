@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2005 The Apache Software Foundation.
+ * Copyright 2002-2010 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -62,8 +62,10 @@ public:
 
 #if defined(XSEC_NO_NAMESPACES)
 	typedef vector<X509Holder *>			X509ListType;
+    typedef vector<const XMLCh *>           X509CRLListType;
 #else
 	typedef std::vector<X509Holder *>		X509ListType;
+    typedef std::vector<const XMLCh *>      X509CRLListType;
 #endif
 
 #if defined(XSEC_SIZE_T_IN_NAMESPACE_STD)
@@ -168,16 +170,38 @@ public:
 	const XMLCh * getX509IssuerSerialNumber(void) const;
 
 	/**
-	 * \brief Get any associated CRL
+	 * \brief Get the first associated CRL
 	 *
 	 * Return the string containing the base64 encoded CRL that was held in
-	 * the X509CRL node
+	 * the first X509CRL node
 	 *
 	 * @returns A pointer to the string containing the CRL
 	 * (0 if not set)
 	 */
 
 	const XMLCh * getX509CRL(void) const;
+
+    /**
+     * \brief Find the number of CRLs held
+     *
+     * Find the number of CRLs held in the X509Data structures.
+     *
+     * @returns The number of CRLs
+     */
+
+    int getX509CRLListSize(void) const;
+
+    /**
+     * \brief Get the DER encoded CRL pointed to in the list.
+     *
+     * Use the index to find the required CRL and return a pointer
+     * to the buffer containing the encoded CRL.
+     *
+     * @returns A pointer to the buffer containing the CRL or 0 if
+     * no CRL exists at that point in the list.
+     */
+
+    const XMLCh * getX509CRLItem(int item) const;
 
 	/**
 	 * \brief Get the SKI value (if set)
@@ -300,15 +324,28 @@ public:
 	void setX509IssuerSerial(const XMLCh * name, const XMLCh * serial);
 
 	/**
-	 * \brief Set the CRL element
+     * \brief Add a CRL.
 	 *
-	 * If an X509CRL exists, replace the value with that provided,
-	 * otherwise create a new element and set the value appropriately.
+     * Append an X509CRL element to the list of CRLs
+     * stored at the end of this KeyInfo element.
 	 *
-	 * @param crl The base64 encoded string containing the CRL
+     * @param crl A pointer to the base64 encoded CRL,
+     * exactly as it will appear in the XML structure.
 	 */
 
 	void setX509CRL(const XMLCh * crl);
+
+    /**
+     * \brief Add a CRL.
+     *
+     * Append an X509CRL element to the list of CRLs
+     * stored at the end of this KeyInfo element.
+     *
+     * @param crl A pointer to the base64 encoded CRL,
+     * exactly as it will appear in the XML structure.
+     */
+
+    void appendX509CRL(const XMLCh * crl);
 	
 	/**
 	 * \brief Set the SKI element
@@ -356,10 +393,10 @@ private:
 	DSIGKeyInfoX509();
 
 	X509ListType		m_X509List;				// The X509 structures
+	X509CRLListType     m_X509CRLList;          // The X509CRL list
 	XMLCh 				* mp_X509IssuerName;	// Parameters from KeyInfo (not cert)
 	const XMLCh 		* mp_X509SerialNumber;
 	XMLCh 				* mp_X509SubjectName;
-	const XMLCh			* mp_X509CRL;
 	const XMLCh			* mp_X509SKI;
 	XMLCh				* mp_rawRetrievalURI;
 
@@ -368,7 +405,6 @@ private:
 	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode	* mp_X509SubjectNameTextNode;
 	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode	* mp_X509IssuerNameTextNode;
 	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode	* mp_X509SerialNumberTextNode;
-	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode	* mp_X509CRLTextNode;
 	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode	* mp_X509SKITextNode;
 
 };
