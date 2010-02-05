@@ -94,7 +94,7 @@ public :
 	 * to perform the actual crypo work.
 	 *
 	 * @note The provider should only be added to via the
-	 * XSECPlatformUtils::addAlgorithmHandler() call.
+	 * XSECPlatformUtils::registerAlgorithmHandler() call.
 	 *
 	 * @see #addAlgorithmHandler()
 	 */
