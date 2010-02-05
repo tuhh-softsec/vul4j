@@ -312,6 +312,17 @@ public:
 		return me_hashMethod;
 	}
 
+    /**
+     * \brief Get the Digest Algorithm URI
+     *
+     * @returns the URI associated with the Algorithm used to generate
+     * the digest
+     */
+
+    const XMLCh * getAlgorithmURI() const {
+        return mp_algorithmURI;
+    }
+
 	/**
 	 * \brief Obtain the transforms for this reference
 	 *

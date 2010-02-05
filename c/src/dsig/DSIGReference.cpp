@@ -122,6 +122,7 @@ DSIGReference::DSIGReference(const XSECEnv * env, DOMNode *dom) {
 	mp_transformList = NULL;
 	mp_URI = NULL;
 	m_isManifest = false;
+	mp_algorithmURI = NULL;
 	m_loaded = false;
 
 }
@@ -141,6 +142,7 @@ DSIGReference::DSIGReference(const XSECEnv * env) {
 	me_hashMethod = HASH_NONE;
 	mp_URI = NULL;
 	m_isManifest = false;
+	mp_algorithmURI = NULL;
 	m_loaded = false;
 
 };
