@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2005 The Apache Software Foundation.
+ * Copyright 2002-2010 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -153,6 +153,28 @@ public :
 	 */
 
 	static void registerAlgorithmHandler(const XMLCh * uri, const XSECAlgorithmHandler & handler);
+
+    /**
+     * \brief Indicate an algorithm is approved for use, implying others are not.
+     *
+     * @see XSECAlgorithmHandler
+     * @note This is <b>not</b> thread safe.  Algorithms should
+     * be whitelisted prior to any processing of signatures etc.
+     * @param URI algorithm to whitelist
+     */
+
+	static void whitelistAlgorithm(const XMLCh* URI);
+
+    /**
+     * \brief Indicate an algorithm is not approved for use, implying others are.
+     *
+     * @see XSECAlgorithmHandler
+     * @note This is <b>not</b> thread safe.  Algorithms should
+     * be blacklisted prior to any processing of signatures etc.
+     * @param URI algorithm to blacklist
+     */
+
+    static void blacklistAlgorithm(const XMLCh* URI);
 
 	/**
 	 * \brief Terminate

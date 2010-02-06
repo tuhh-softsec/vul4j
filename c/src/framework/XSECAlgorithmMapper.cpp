@@ -1,5 +1,5 @@
 /*
- * Copyright 2003-2005 The Apache Software Foundation.
+ * Copyright 2003-2010 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -85,11 +85,23 @@ XSECAlgorithmMapper::~XSECAlgorithmMapper() {
 
 	m_mapping.clear();
 
+	XMLCh* ptr;
+	for (WhitelistVectorType::const_iterator i = m_whitelist.begin(); i != m_whitelist.end(); ++i) {
+	    ptr = *i;
+	    XSEC_RELEASE_XMLCH(ptr);
+	}
+	m_whitelist.clear();
+
+    for (WhitelistVectorType::const_iterator i = m_blacklist.begin(); i != m_blacklist.end(); ++i) {
+        ptr = *i;
+        XSEC_RELEASE_XMLCH(ptr);
+    }
+    m_blacklist.clear();
 }
 
 XSECAlgorithmMapper::MapperEntry * XSECAlgorithmMapper::findEntry(const XMLCh * URI) const {
 
-	MapperEntryVectorType::iterator it = m_mapping.begin();
+	MapperEntryVectorType::const_iterator it = m_mapping.begin();
 
 	while (it != m_mapping.end()) {
 		
@@ -108,6 +120,30 @@ XSECAlgorithmMapper::MapperEntry * XSECAlgorithmMapper::findEntry(const XMLCh * 
 
 XSECAlgorithmHandler * XSECAlgorithmMapper::mapURIToHandler(const XMLCh * URI) const {
 
+    bool allowed = true;
+    if (!m_whitelist.empty()) {
+        allowed = false;
+        for (WhitelistVectorType::const_iterator i = m_whitelist.begin(); !allowed && i != m_whitelist.end(); ++i) {
+            if (XMLString::equals(URI, *i))
+                allowed = true;
+        }
+    }
+
+    if (allowed && !m_blacklist.empty()) {
+        for (WhitelistVectorType::const_iterator i = m_blacklist.begin(); allowed && i != m_blacklist.end(); ++i) {
+            if (XMLString::equals(URI, *i))
+                allowed = false;
+        }
+    }
+
+    if (!allowed) {
+        safeBuffer output;
+        output.sbTranscodeIn("XSECAlgorithmMapper::mapURIToHandler - URI ");
+        output.sbXMLChCat(URI);
+        output.sbXMLChCat(" disallowed by whitelist/blacklist policy");
+        throw XSECException(XSECException::AlgorithmMapperError,
+            output.rawXMLChBuffer());
+    }
 
 	MapperEntry * entry = findEntry(URI);
 
@@ -143,3 +179,12 @@ void XSECAlgorithmMapper::registerHandler(const XMLCh * URI, const XSECAlgorithm
 
 }
 
+void XSECAlgorithmMapper::whitelistAlgorithm(const XMLCh* URI)
+{
+    m_whitelist.push_back(XMLString::replicate(URI));
+}
+
+void XSECAlgorithmMapper::blacklistAlgorithm(const XMLCh* URI)
+{
+    m_blacklist.push_back(XMLString::replicate(URI));
+}
