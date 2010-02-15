@@ -31,7 +31,6 @@ import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.codec.EncoderException;
-import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.util.StringTools;
@@ -85,20 +84,19 @@ public class ExtendedRequestTest
         }
 
         // Check the decoded ExtendedRequest PDU
-        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        ExtendedRequestCodec extendedRequest = message.getExtendedRequest();
+        ExtendedRequestCodec extendedRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getExtendedRequest();
 
-        assertEquals( 1, message.getMessageId() );
+        assertEquals( 1, extendedRequest.getMessageId() );
         assertEquals( "1.3.6.1.5.5.2", extendedRequest.getRequestName() );
         assertEquals( "value", StringTools.utf8ToString( extendedRequest.getRequestValue() ) );
 
         // Check the length
-        assertEquals( 0x1D, message.computeLength() );
+        assertEquals( 0x1D, extendedRequest.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = message.encode( null );
+            ByteBuffer bb = extendedRequest.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -157,29 +155,28 @@ public class ExtendedRequestTest
         }
 
         // Check the decoded ExtendedRequest PDU
-        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        ExtendedRequestCodec extendedRequest = message.getExtendedRequest();
+        ExtendedRequestCodec extendedRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getExtendedRequest();
 
-        assertEquals( 1, message.getMessageId() );
+        assertEquals( 1, extendedRequest.getMessageId() );
         assertEquals( "1.3.6.1.5.5.2", extendedRequest.getRequestName() );
         assertEquals( "value", StringTools.utf8ToString( extendedRequest.getRequestValue() ) );
 
         // Check the Control
-        List<Control> controls = message.getControls();
+        List<Control> controls = extendedRequest.getControls();
 
         assertEquals( 1, controls.size() );
 
-        Control control = message.getControls( 0 );
+        Control control = extendedRequest.getControls( 0 );
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
         assertEquals( "", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
 
         // Check the length
-        assertEquals( 0x3A, message.computeLength() );
+        assertEquals( 0x3A, extendedRequest.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = message.encode( null );
+            ByteBuffer bb = extendedRequest.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -239,29 +236,28 @@ public class ExtendedRequestTest
         }
 
         // Check the decoded ExtendedRequest PDU
-        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        ExtendedRequestCodec extendedRequest = message.getExtendedRequest();
+        ExtendedRequestCodec extendedRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getExtendedRequest();
 
-        assertEquals( 1, message.getMessageId() );
+        assertEquals( 1, extendedRequest.getMessageId() );
         assertEquals( "1.3.6.1.5.5.2", extendedRequest.getRequestName() );
         assertEquals( "", StringTools.utf8ToString( extendedRequest.getRequestValue() ) );
 
         // Check the Control
-        List<Control> controls = message.getControls();
+        List<Control> controls = extendedRequest.getControls();
 
         assertEquals( 1, controls.size() );
 
-        Control control = message.getControls( 0 );
+        Control control = extendedRequest.getControls( 0 );
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
         assertEquals( "", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
 
         // Check the length
-        assertEquals( 0x33, message.computeLength() );
+        assertEquals( 0x33, extendedRequest.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = message.encode( null );
+            ByteBuffer bb = extendedRequest.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -424,19 +420,18 @@ public class ExtendedRequestTest
         }
 
         // Check the decoded ExtendedRequest PDU
-        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        ExtendedRequestCodec extendedRequest = message.getExtendedRequest();
+        ExtendedRequestCodec extendedRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getExtendedRequest();
 
-        assertEquals( 1, message.getMessageId() );
+        assertEquals( 1, extendedRequest.getMessageId() );
         assertEquals( "1.3.6.1.5.5.2", extendedRequest.getRequestName() );
 
         // Check the length
-        assertEquals( 0x16, message.computeLength() );
+        assertEquals( 0x16, extendedRequest.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = message.encode( null );
+            ByteBuffer bb = extendedRequest.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -490,20 +485,19 @@ public class ExtendedRequestTest
         }
 
         // Check the decoded ExtendedRequest PDU
-        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        ExtendedRequestCodec extendedRequest = message.getExtendedRequest();
+        ExtendedRequestCodec extendedRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getExtendedRequest();
 
-        assertEquals( 1, message.getMessageId() );
+        assertEquals( 1, extendedRequest.getMessageId() );
         assertEquals( "1.3.6.1.5.5.2", extendedRequest.getRequestName() );
         assertEquals( "", StringTools.utf8ToString( extendedRequest.getRequestValue() ) );
 
         // Check the length
-        assertEquals( 0x18, message.computeLength() );
+        assertEquals( 0x18, extendedRequest.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = message.encode( null );
+            ByteBuffer bb = extendedRequest.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 

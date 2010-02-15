@@ -29,7 +29,6 @@ import org.apache.directory.shared.ldap.codec.search.SearchResultReferenceCodec;
 import org.apache.directory.shared.ldap.codec.util.LdapURLEncodingException;
 import org.apache.directory.shared.ldap.util.LdapURL;
 import org.apache.directory.shared.ldap.util.StringTools;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,8 +60,7 @@ public class StoreReferenceAction extends GrammarAction
 
         LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
-        SearchResultReferenceCodec searchResultReference = ldapMessageContainer.getLdapMessage()
-            .getSearchResultReference();
+        SearchResultReferenceCodec searchResultReference = ldapMessageContainer.getSearchResultReference();
 
         // Get the Value and store it in the BindRequest
         TLV tlv = ldapMessageContainer.getCurrentTLV();

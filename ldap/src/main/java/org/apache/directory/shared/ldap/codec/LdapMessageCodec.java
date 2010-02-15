@@ -28,41 +28,19 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.directory.shared.asn1.AbstractAsn1Object;
-import org.apache.directory.shared.asn1.Asn1Object;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.asn1.codec.EncoderException;
-import org.apache.directory.shared.ldap.codec.abandon.AbandonRequestCodec;
-import org.apache.directory.shared.ldap.codec.add.AddRequestCodec;
-import org.apache.directory.shared.ldap.codec.add.AddResponseCodec;
-import org.apache.directory.shared.ldap.codec.bind.BindRequestCodec;
-import org.apache.directory.shared.ldap.codec.bind.BindResponseCodec;
-import org.apache.directory.shared.ldap.codec.compare.CompareRequestCodec;
-import org.apache.directory.shared.ldap.codec.compare.CompareResponseCodec;
 import org.apache.directory.shared.ldap.codec.controls.CodecControl;
 import org.apache.directory.shared.ldap.codec.controls.ManageDsaITControl;
 import org.apache.directory.shared.ldap.codec.controls.replication.syncDoneValue.SyncDoneValueControl;
 import org.apache.directory.shared.ldap.codec.controls.replication.syncInfoValue.SyncInfoValueControl;
 import org.apache.directory.shared.ldap.codec.controls.replication.syncRequestValue.SyncRequestValueControl;
 import org.apache.directory.shared.ldap.codec.controls.replication.syncStateValue.SyncStateValueControl;
-import org.apache.directory.shared.ldap.codec.del.DelRequestCodec;
-import org.apache.directory.shared.ldap.codec.del.DelResponseCodec;
-import org.apache.directory.shared.ldap.codec.extended.ExtendedRequestCodec;
-import org.apache.directory.shared.ldap.codec.extended.ExtendedResponseCodec;
-import org.apache.directory.shared.ldap.codec.intermediate.IntermediateResponseCodec;
-import org.apache.directory.shared.ldap.codec.modify.ModifyRequestCodec;
-import org.apache.directory.shared.ldap.codec.modify.ModifyResponseCodec;
-import org.apache.directory.shared.ldap.codec.modifyDn.ModifyDNRequestCodec;
-import org.apache.directory.shared.ldap.codec.modifyDn.ModifyDNResponseCodec;
-import org.apache.directory.shared.ldap.codec.search.SearchRequestCodec;
-import org.apache.directory.shared.ldap.codec.search.SearchResultDoneCodec;
-import org.apache.directory.shared.ldap.codec.search.SearchResultEntryCodec;
-import org.apache.directory.shared.ldap.codec.search.SearchResultReferenceCodec;
 import org.apache.directory.shared.ldap.codec.search.controls.pagedSearch.PagedResultsControl;
 import org.apache.directory.shared.ldap.codec.search.controls.persistentSearch.PersistentSearchControl;
 import org.apache.directory.shared.ldap.codec.search.controls.subentries.SubentriesControl;
-import org.apache.directory.shared.ldap.codec.unbind.UnBindRequestCodec;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.message.control.replication.SynchronizationInfoEnum;
 
@@ -74,16 +52,13 @@ import org.apache.directory.shared.ldap.message.control.replication.Synchronizat
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$, 
  */
-public class LdapMessageCodec extends AbstractAsn1Object
+public abstract class LdapMessageCodec extends AbstractAsn1Object
 {
     // ~ Instance fields
     // ----------------------------------------------------------------------------
 
     /** The message ID */
     private int messageId;
-
-    /** The request or response being carried by the message */
-    private Asn1Object protocolOp;
 
     /** The controls */
     private List<Control> controls;
@@ -92,7 +67,7 @@ public class LdapMessageCodec extends AbstractAsn1Object
     private Control currentControl;
 
     /** The LdapMessage length */
-    private int ldapMessageLength;
+    protected int ldapMessageLength;
 
     /** The controls length */
     private int controlsLength;
@@ -273,10 +248,7 @@ public class LdapMessageCodec extends AbstractAsn1Object
      * 
      * @return The message type
      */
-    public int getMessageType()
-    {
-        return ( ( LdapMessageCodec ) protocolOp ).getMessageType();
-    }
+    public abstract MessageTypeEnum getMessageType();
 
 
     /**
@@ -284,353 +256,12 @@ public class LdapMessageCodec extends AbstractAsn1Object
      * 
      * @return The message type name
      */
-    public String getMessageTypeName()
-    {
-        switch ( ( ( LdapMessageCodec ) protocolOp ).getMessageType() )
-        {
-            case LdapConstants.ABANDON_REQUEST:
-                return "ABANDON_REQUEST";
-                
-            case LdapConstants.ADD_REQUEST:
-                return "ADD_REQUEST";
-                
-            case LdapConstants.ADD_RESPONSE:
-                return "ADD_RESPONSE";
-                
-            case LdapConstants.BIND_REQUEST:
-                return "BIND_REQUEST";
-                
-            case LdapConstants.BIND_RESPONSE:
-                return "BIND_RESPONSE";
-                
-            case LdapConstants.COMPARE_REQUEST:
-                return "COMPARE_REQUEST";
-                
-            case LdapConstants.COMPARE_RESPONSE:
-                return "COMPARE_RESPONSE";
-                
-            case LdapConstants.DEL_REQUEST:
-                return "DEL_REQUEST";
-                
-            case LdapConstants.DEL_RESPONSE:
-                return "DEL_RESPONSE";
-                
-            case LdapConstants.EXTENDED_REQUEST:
-                return "EXTENDED_REQUEST";
-                
-            case LdapConstants.EXTENDED_RESPONSE:
-                return "EXTENDED_RESPONSE";
-                
-            case LdapConstants.INTERMEDIATE_RESPONSE:
-                return "INTERMEDIATE_RESPONSE";
-                
-            case LdapConstants.MODIFYDN_REQUEST:
-                return "MODIFYDN_REQUEST";
-                
-            case LdapConstants.MODIFYDN_RESPONSE:
-                return "MODIFYDN_RESPONSE";
-                
-            case LdapConstants.MODIFY_REQUEST:
-                return "MODIFY_REQUEST";
-                
-            case LdapConstants.MODIFY_RESPONSE:
-                return "MODIFY_RESPONSE";
-                
-            case LdapConstants.SEARCH_REQUEST:
-                return "SEARCH_REQUEST";
-                
-            case LdapConstants.SEARCH_RESULT_DONE:
-                return "SEARCH_RESULT_DONE";
-                
-            case LdapConstants.SEARCH_RESULT_ENTRY:
-                return "SEARCH_RESULT_ENTRY";
-                
-            case LdapConstants.SEARCH_RESULT_REFERENCE:
-                return "SEARCH_RESULT_REFERENCE";
-                
-            case LdapConstants.UNBIND_REQUEST:
-                return "UNBIND_REQUEST";
-                
-            default:
-                return "UNKNOWN";
-        }
-    }
+    public abstract String getMessageTypeName();
 
+    
+    protected abstract int computeLengthProtocolOp();
 
-    /**
-     * Get the encapsulated Ldap response.
-     * 
-     * @return Returns the Ldap response.
-     */
-    public LdapResponseCodec getLdapResponse()
-    {
-        return ( LdapResponseCodec ) protocolOp;
-    }
-
-
-    /**
-     * Get a AbandonRequest ldapObject, assuming that the caller knows that it
-     * is the LdapMessage exact type.
-     * 
-     * @return Returns the AbandonRequest ldapObject.
-     */
-    public AbandonRequestCodec getAbandonRequest()
-    {
-        return ( AbandonRequestCodec ) protocolOp;
-    }
-
-
-    /**
-     * Get a AddRequest ldapObject, assuming that the caller knows that it is
-     * the LdapMessage exact type.
-     * 
-     * @return Returns the AddRequest ldapObject.
-     */
-    public AddRequestCodec getAddRequest()
-    {
-        return ( AddRequestCodec ) protocolOp;
-    }
-
-
-    /**
-     * Get a AddResponse ldapObject, assuming that the caller knows that it is
-     * the LdapMessage exact type.
-     * 
-     * @return Returns the AddResponse ldapObject.
-     */
-    public AddResponseCodec getAddResponse()
-    {
-        return ( AddResponseCodec ) protocolOp;
-    }
-
-
-    /**
-     * Get a BindRequest ldapObject, assuming that the caller knows that it is
-     * the LdapMessage exact type.
-     * 
-     * @return Returns the BindRequest ldapObject.
-     */
-    public BindRequestCodec getBindRequest()
-    {
-        return ( BindRequestCodec ) protocolOp;
-    }
-
-
-    /**
-     * Get a BindResponse ldapObject, assuming that the caller knows that it is
-     * the LdapMessage exact type.
-     * 
-     * @return Returns the BindResponse ldapObject.
-     */
-    public BindResponseCodec getBindResponse()
-    {
-        return ( BindResponseCodec ) protocolOp;
-    }
-
-
-    /**
-     * Get a CompareRequest ldapObject, assuming that the caller knows that it
-     * is the LdapMessage exact type.
-     * 
-     * @return Returns the CompareRequest ldapObject.
-     */
-    public CompareRequestCodec getCompareRequest()
-    {
-        return ( CompareRequestCodec ) protocolOp;
-    }
-
-
-    /**
-     * Get a CompareResponse ldapObject, assuming that the caller knows that it
-     * is the LdapMessage exact type.
-     * 
-     * @return Returns the CompareResponse ldapObject.
-     */
-    public CompareResponseCodec getCompareResponse()
-    {
-        return ( CompareResponseCodec ) protocolOp;
-    }
-
-
-    /**
-     * Get a DelRequest ldapObject, assuming that the caller knows that it is
-     * the LdapMessage exact type.
-     * 
-     * @return Returns the DelRequest ldapObject.
-     */
-    public DelRequestCodec getDelRequest()
-    {
-        return ( DelRequestCodec ) protocolOp;
-    }
-
-
-    /**
-     * Get a DelResponse ldapObject, assuming that the caller knows that it is
-     * the LdapMessage exact type.
-     * 
-     * @return Returns the DelResponse ldapObject.
-     */
-    public DelResponseCodec getDelResponse()
-    {
-        return ( DelResponseCodec ) protocolOp;
-    }
-
-
-    /**
-     * Get a ExtendedRequest ldapObject, assuming that the caller knows that it
-     * is the LdapMessage exact type.
-     * 
-     * @return Returns the ExtendedRequest ldapObject.
-     */
-    public ExtendedRequestCodec getExtendedRequest()
-    {
-        return ( ExtendedRequestCodec ) protocolOp;
-    }
-
-
-    /**
-     * Get a ExtendedResponse ldapObject, assuming that the caller knows that it
-     * is the LdapMessage exact type.
-     * 
-     * @return Returns the ExtendedResponse ldapObject.
-     */
-    public ExtendedResponseCodec getExtendedResponse()
-    {
-        return ( ExtendedResponseCodec ) protocolOp;
-    }
-
-
-    /**
-     * Get a IntermediateResponse ldapObject, assuming that the caller knows that it
-     * is the LdapMessage exact type.
-     * 
-     * @return Returns the IntermediateResponse ldapObject.
-     */
-    public IntermediateResponseCodec getIntermediateResponse()
-    {
-        return ( IntermediateResponseCodec ) protocolOp;
-    }
-
-
-    /**
-     * Get a ModifyDNRequest ldapObject, assuming that the caller knows that it
-     * is the LdapMessage exact type.
-     * 
-     * @return Returns the ModifyDNRequest ldapObject.
-     */
-    public ModifyDNRequestCodec getModifyDNRequest()
-    {
-        return ( ModifyDNRequestCodec ) protocolOp;
-    }
-
-
-    /**
-     * Get a ModifyDNResponse ldapObject, assuming that the caller knows that it
-     * is the LdapMessage exact type.
-     * 
-     * @return Returns the ModifyDNResponse ldapObject.
-     */
-    public ModifyDNResponseCodec getModifyDNResponse()
-    {
-        return ( ModifyDNResponseCodec ) protocolOp;
-    }
-
-
-    /**
-     * Get a ModifyRequest ldapObject, assuming that the caller knows that it is
-     * the LdapMessage exact type.
-     * 
-     * @return Returns the ModifyRequest ldapObject.
-     */
-    public ModifyRequestCodec getModifyRequest()
-    {
-        return ( ModifyRequestCodec ) protocolOp;
-    }
-
-
-    /**
-     * Get a ModifyResponse ldapObject, assuming that the caller knows that it
-     * is the LdapMessage exact type.
-     * 
-     * @return Returns the ModifyResponse ldapObject.
-     */
-    public ModifyResponseCodec getModifyResponse()
-    {
-        return ( ModifyResponseCodec ) protocolOp;
-    }
-
-
-    /**
-     * Get a SearchRequest ldapObject, assuming that the caller knows that it is
-     * the LdapMessage exact type.
-     * 
-     * @return Returns the SearchRequest ldapObject.
-     */
-    public SearchRequestCodec getSearchRequest()
-    {
-        return ( SearchRequestCodec ) protocolOp;
-    }
-
-
-    /**
-     * Get a SearchResultDone ldapObject, assuming that the caller knows that it
-     * is the LdapMessage exact type.
-     * 
-     * @return Returns the SearchRequestDone ldapObject.
-     */
-    public SearchResultDoneCodec getSearchResultDone()
-    {
-        return ( SearchResultDoneCodec ) protocolOp;
-    }
-
-
-    /**
-     * Get a SearchResultEntry ldapObject, assuming that the caller knows that
-     * it is the LdapMessage exact type.
-     * 
-     * @return Returns the SearchResultEntry ldapObject.
-     */
-    public SearchResultEntryCodec getSearchResultEntry()
-    {
-        return ( SearchResultEntryCodec ) protocolOp;
-    }
-
-
-    /**
-     * Get a SearchResultReference ldapObject, assuming that the caller knows
-     * that it is the LdapMessage exact type.
-     * 
-     * @return Returns the SearchResultReference ldapObject.
-     */
-    public SearchResultReferenceCodec getSearchResultReference()
-    {
-        return ( SearchResultReferenceCodec ) protocolOp;
-    }
-
-
-    /**
-     * Get a UnBindRequest ldapObject, assuming that the caller knows that it is
-     * the LdapMessage exact type.
-     * 
-     * @return Returns the UnBindRequest ldapObject.
-     */
-    public UnBindRequestCodec getUnBindRequest()
-    {
-        return ( UnBindRequestCodec ) protocolOp;
-    }
-
-
-    /**
-     * Set the ProtocolOP
-     * 
-     * @param protocolOp The protocolOp to set.
-     */
-    public void setProtocolOP( Asn1Object protocolOp )
-    {
-        this.protocolOp = protocolOp;
-    }
-
-
+    
     /**
      * Compute the LdapMessage length LdapMessage : 
      * 0x30 L1 
@@ -652,7 +283,7 @@ public class LdapMessageCodec extends AbstractAsn1Object
         ldapMessageLength = 1 + 1 + Value.getNbBytes( messageId );
 
         // Get the protocolOp length
-        int protocolOpLength = protocolOp.computeLength();
+        int protocolOpLength = computeLengthProtocolOp();
 
         // Add the protocol length to the message length
         ldapMessageLength += protocolOpLength;
@@ -702,6 +333,8 @@ public class LdapMessageCodec extends AbstractAsn1Object
         return 1 + ldapMessageLength + TLV.getNbBytes( ldapMessageLength );
     }
 
+    
+    protected abstract void encodeProtocolOp( ByteBuffer buffer ) throws EncoderException;
 
     /**
      * Generate the PDU which contains the encoded object. 
@@ -727,7 +360,7 @@ public class LdapMessageCodec extends AbstractAsn1Object
      * @return A ByteBuffer that contaons the PDU
      * @throws EncoderException If anything goes wrong.
      */
-    public ByteBuffer encode( ByteBuffer buffer ) throws EncoderException
+    public ByteBuffer encode() throws EncoderException
     {
         // Allocate the bytes buffer.
         ByteBuffer bb = ByteBuffer.allocate( computeLength() );
@@ -749,7 +382,7 @@ public class LdapMessageCodec extends AbstractAsn1Object
         Value.encode( bb, messageId );
 
         // Add the protocolOp part
-        protocolOp.encode( bb );
+        encodeProtocolOp( bb );
 
         // Do the same thing for Controls, if any.
         if ( controls != null )
@@ -774,13 +407,14 @@ public class LdapMessageCodec extends AbstractAsn1Object
      * 
      * @return A LdapMessage String
      */
-    public String toString()
+    protected String toString( String protocolOp )
     {
         StringBuffer sb = new StringBuffer();
 
         sb.append( "LdapMessage\n" );
         sb.append( "    message Id : " ).append( messageId ).append( '\n' );
-        sb.append( protocolOp );
+        
+        sb.append( protocolOp ).append( '\n' );
 
         if ( controls != null )
         {

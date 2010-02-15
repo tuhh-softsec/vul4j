@@ -30,7 +30,6 @@ import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.codec.EncoderException;
-import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.controls.ControlImpl;
 import org.apache.directory.shared.ldap.message.control.Control;
@@ -85,7 +84,7 @@ public class BindRequestPerfTest
         try
         {
             int nbLoops = 1;
-            long t0 = System.currentTimeMillis();
+            //long t0 = System.currentTimeMillis();
             
             for ( int i = 0; i < nbLoops; i++ )
             {
@@ -94,7 +93,7 @@ public class BindRequestPerfTest
                 stream.flip();
             }
             
-            long t1 = System.currentTimeMillis();
+            //long t1 = System.currentTimeMillis();
             //System.out.println( "testDecodeBindRequestSimpleNoControlsPerf, " + nbLoops + " loops, Delta = " + ( t1 - t0 ) );
             
             ldapDecoder.decode( stream, ldapMessageContainer );
@@ -106,32 +105,31 @@ public class BindRequestPerfTest
         }
 
         // Check the decoded BindRequest
-        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        BindRequestCodec br = message.getBindRequest();
+        BindRequestCodec bindRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getBindRequest();
 
-        assertEquals( 1, message.getMessageId() );
-        assertEquals( 3, br.getVersion() );
-        assertEquals( "uid=akarasulu,dc=example,dc=com", br.getName().toString() );
-        assertEquals( true, ( br.getAuthentication() instanceof SimpleAuthentication ) );
-        assertEquals( "password", StringTools.utf8ToString( ( ( SimpleAuthentication ) br.getAuthentication() )
+        assertEquals( 1, bindRequest.getMessageId() );
+        assertEquals( 3, bindRequest.getVersion() );
+        assertEquals( "uid=akarasulu,dc=example,dc=com", bindRequest.getName().toString() );
+        assertEquals( true, ( bindRequest.getAuthentication() instanceof SimpleAuthentication ) );
+        assertEquals( "password", StringTools.utf8ToString( ( ( SimpleAuthentication ) bindRequest.getAuthentication() )
             .getSimple() ) );
 
         // Check the Control
-        List<Control> controls = message.getControls();
+        List<Control> controls = bindRequest.getControls();
 
         assertEquals( 1, controls.size() );
 
-        Control control = message.getControls( 0 );
+        Control control = bindRequest.getControls( 0 );
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
         assertEquals( "", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
 
         // Check the length
-        assertEquals( 0x52, message.computeLength() );
+        assertEquals( 0x52, bindRequest.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = message.encode( null );
+            ByteBuffer bb = bindRequest.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -158,25 +156,23 @@ public class BindRequestPerfTest
         for ( int i = 0; i< nbLoops; i++)
         {
             // Check the decoded BindRequest
-            LdapMessageCodec message = new LdapMessageCodec();
-            message.setMessageId( 1 );
+            BindRequestCodec bindRequest = new BindRequestCodec();
+            bindRequest.setMessageId( 1 );
             
-            BindRequestCodec br = new BindRequestCodec();
-            br.setName( name );
+            bindRequest.setName( name );
             
             Control control = new ControlImpl( "2.16.840.1.113730.3.4.2" );
 
             LdapAuthentication authentication = new SimpleAuthentication();
             ((SimpleAuthentication)authentication).setSimple( StringTools.getBytesUtf8( "password" ) );
 
-            message.addControl( control );
-            br.setAuthentication( authentication );
-            message.setProtocolOP( br );
+            bindRequest.addControl( control );
+            bindRequest.setAuthentication( authentication );
     
             // Check the encoding
             try
             {
-                message.encode( null );
+                bindRequest.encode();
             }
             catch ( EncoderException ee )
             {

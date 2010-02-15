@@ -25,7 +25,6 @@ import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.ldap.codec.AttributeValueAssertion;
-import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.search.AttributeValueAssertionFilter;
 import org.apache.directory.shared.ldap.codec.search.SearchRequestCodec;
@@ -33,7 +32,6 @@ import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.entry.client.ClientBinaryValue;
 import org.apache.directory.shared.ldap.entry.client.ClientStringValue;
 import org.apache.directory.shared.ldap.util.StringTools;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,8 +61,7 @@ public class InitAssertionValueFilterAction extends GrammarAction
     public void action( IAsn1Container container ) throws DecoderException
     {
         LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-        LdapMessageCodec ldapMessage = ldapMessageContainer.getLdapMessage();
-        SearchRequestCodec searchRequest = ldapMessage.getSearchRequest();
+        SearchRequestCodec searchRequest = ldapMessageContainer.getSearchRequest();
 
         TLV tlv = ldapMessageContainer.getCurrentTLV();
 

@@ -86,14 +86,13 @@ public class LdapDecoderTest
         }
 
         // Check the decoded PDU
-        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        BindRequestCodec br = message.getBindRequest();
+        BindRequestCodec bindRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getBindRequest();
 
-        assertEquals( 1, message.getMessageId() );
-        assertEquals( 3, br.getVersion() );
-        assertEquals( "uid=akarasulu,dc=example,dc=com", br.getName().toString() );
-        assertEquals( true, ( br.getAuthentication() instanceof SimpleAuthentication ) );
-        assertEquals( "password", StringTools.utf8ToString( ( ( SimpleAuthentication ) br.getAuthentication() )
+        assertEquals( 1, bindRequest.getMessageId() );
+        assertEquals( 3, bindRequest.getVersion() );
+        assertEquals( "uid=akarasulu,dc=example,dc=com", bindRequest.getName().toString() );
+        assertEquals( true, ( bindRequest.getAuthentication() instanceof SimpleAuthentication ) );
+        assertEquals( "password", StringTools.utf8ToString( ( ( SimpleAuthentication ) bindRequest.getAuthentication() )
             .getSimple() ) );
     }
 
@@ -136,13 +135,12 @@ public class LdapDecoderTest
         assertEquals( TLVStateEnum.VALUE_STATE_PENDING, ldapMessageContainer.getState() );
 
         // Check the decoded PDU
-        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        BindRequestCodec br = message.getBindRequest();
+        BindRequestCodec bindRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getBindRequest();
 
-        assertEquals( 1, message.getMessageId() );
-        assertEquals( 3, br.getVersion() );
-        assertEquals( null, br.getName() );
-        assertEquals( false, ( br.getAuthentication() instanceof SimpleAuthentication ) );
+        assertEquals( 1, bindRequest.getMessageId() );
+        assertEquals( 3, bindRequest.getVersion() );
+        assertEquals( null, bindRequest.getName() );
+        assertEquals( false, ( bindRequest.getAuthentication() instanceof SimpleAuthentication ) );
     }
 
 
@@ -209,14 +207,13 @@ public class LdapDecoderTest
         assertEquals( ldapMessageContainer.getState(), TLVStateEnum.PDU_DECODED );
 
         // Check the decoded PDU
-        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        BindRequestCodec br = message.getBindRequest();
+        BindRequestCodec bindRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getBindRequest();
 
-        assertEquals( 1, message.getMessageId() );
-        assertEquals( 3, br.getVersion() );
-        assertEquals( "uid=akarasulu,dc=example,dc=com", br.getName().toString() );
-        assertEquals( true, ( br.getAuthentication() instanceof SimpleAuthentication ) );
-        assertEquals( "password", StringTools.utf8ToString( ( ( SimpleAuthentication ) br.getAuthentication() )
+        assertEquals( 1, bindRequest.getMessageId() );
+        assertEquals( 3, bindRequest.getVersion() );
+        assertEquals( "uid=akarasulu,dc=example,dc=com", bindRequest.getName().toString() );
+        assertEquals( true, ( bindRequest.getAuthentication() instanceof SimpleAuthentication ) );
+        assertEquals( "password", StringTools.utf8ToString( ( ( SimpleAuthentication ) bindRequest.getAuthentication() )
             .getSimple() ) );
     }
 

@@ -19,7 +19,7 @@
  */
 package org.apache.directory.shared.ldap.message.internal;
 
-import org.apache.directory.shared.ldap.message.MessageTypeEnum;
+import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.message.SingleReplyRequest;
 
 
@@ -59,7 +59,7 @@ import org.apache.directory.shared.ldap.message.SingleReplyRequest;
 public interface InternalExtendedRequest extends SingleReplyRequest, javax.naming.ldap.ExtendedRequest
 {
     /** Extended request message type enumeration value */
-    MessageTypeEnum TYPE = MessageTypeEnum.EXTENDED_REQ;
+    MessageTypeEnum TYPE = MessageTypeEnum.EXTENDED_REQUEST;
 
     /** Extended response message type enumeration value */
     MessageTypeEnum RESP_TYPE = InternalExtendedResponse.TYPE;

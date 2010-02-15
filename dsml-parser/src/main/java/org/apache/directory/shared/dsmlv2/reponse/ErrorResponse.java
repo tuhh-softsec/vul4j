@@ -21,8 +21,12 @@
 package org.apache.directory.shared.dsmlv2.reponse;
 
 
+import java.nio.ByteBuffer;
+
+import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.dsmlv2.DsmlDecorator;
 import org.apache.directory.shared.ldap.codec.LdapResponseCodec;
+import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.dom4j.Element;
 
 
@@ -239,5 +243,32 @@ public class ErrorResponse extends LdapResponseCodec implements DsmlDecorator
     public void setType( ErrorResponseType type )
     {
         this.type = type;
+    }
+
+
+    @Override
+    protected int computeLengthProtocolOp()
+    {
+        return 0;
+    }
+
+
+    @Override
+    protected void encodeProtocolOp( ByteBuffer buffer ) throws EncoderException
+    {
+    }
+
+
+    @Override
+    public MessageTypeEnum getMessageType()
+    {
+        return null;
+    }
+
+
+    @Override
+    public String getMessageTypeName()
+    {
+        return null;
     }
 }

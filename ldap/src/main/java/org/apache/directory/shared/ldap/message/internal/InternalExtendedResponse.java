@@ -19,7 +19,7 @@
  */
 package org.apache.directory.shared.ldap.message.internal;
 
-import org.apache.directory.shared.ldap.message.MessageTypeEnum;
+import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 
 
 /**
@@ -32,7 +32,7 @@ import org.apache.directory.shared.ldap.message.MessageTypeEnum;
 public interface InternalExtendedResponse extends InternalResultResponse, javax.naming.ldap.ExtendedResponse
 {
     /** Extended response message type enumeration value */
-    MessageTypeEnum TYPE = MessageTypeEnum.EXTENDED_RESP;
+    MessageTypeEnum TYPE = MessageTypeEnum.EXTENDED_RESPONSE;
 
 
     /**

@@ -23,6 +23,7 @@ package org.apache.directory.shared.ldap.codec.bind;
 import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
 
+import org.apache.directory.shared.asn1.Asn1Object;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.asn1.codec.EncoderException;
@@ -226,17 +227,16 @@ public class SaslCredentials extends LdapAuthentication
      */
     public String toString()
     {
-
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
 
         sb.append( "        Sasl credentials\n" );
-        sb.append( "            Mechanism :'" ).append( mechanism ).append( "'\n" );
+        sb.append( "            Mechanism :'" ).append( mechanism ).append( '\'' );
 
         if ( credentials != null )
         {
-            sb.append( "            Credentials :'" ).
+            sb.append( "\n            Credentials :'" ).
                 append( StringTools.dumpBytes(  credentials ) ).
-                append( "'\n" );
+                append( '\'' );
         }
 
         return sb.toString();

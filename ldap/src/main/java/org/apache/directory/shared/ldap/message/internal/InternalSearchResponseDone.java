@@ -19,7 +19,7 @@
  */
 package org.apache.directory.shared.ldap.message.internal;
 
-import org.apache.directory.shared.ldap.message.MessageTypeEnum;
+import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 
 
 /**
@@ -32,5 +32,5 @@ import org.apache.directory.shared.ldap.message.MessageTypeEnum;
 public interface InternalSearchResponseDone extends InternalResultResponse
 {
     /** Search done response message type enumeration value */
-    MessageTypeEnum TYPE = MessageTypeEnum.SEARCH_RES_DONE;
+    MessageTypeEnum TYPE = MessageTypeEnum.SEARCH_RESULT_DONE;
 }

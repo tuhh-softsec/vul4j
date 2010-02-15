@@ -28,6 +28,7 @@ import java.util.Map;
 
 import javax.naming.InvalidNameException;
 
+import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.message.internal.InternalLdapResult;
 import org.apache.directory.shared.ldap.message.internal.InternalSearchResponseDone;
@@ -133,7 +134,7 @@ public class SearchResponseDoneImplTest
 
             public MessageTypeEnum getType()
             {
-                return MessageTypeEnum.SEARCH_RES_DONE;
+                return MessageTypeEnum.SEARCH_RESULT_DONE;
             }
 
 

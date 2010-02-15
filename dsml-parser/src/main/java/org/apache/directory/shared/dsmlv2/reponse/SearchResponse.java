@@ -21,10 +21,13 @@
 package org.apache.directory.shared.dsmlv2.reponse;
 
 
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.ldap.codec.LdapResponseCodec;
+import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.codec.search.SearchResultDoneCodec;
 import org.apache.directory.shared.ldap.codec.search.SearchResultEntryCodec;
 import org.apache.directory.shared.ldap.codec.search.SearchResultReferenceCodec;
@@ -169,5 +172,32 @@ public class SearchResponse extends LdapResponseCodec
     public void setSearchResultDone( SearchResultDoneCodec searchResultDone )
     {
         this.searchResultDone = searchResultDone;
+    }
+
+
+    @Override
+    protected int computeLengthProtocolOp()
+    {
+        return 0;
+    }
+
+
+    @Override
+    protected void encodeProtocolOp( ByteBuffer buffer ) throws EncoderException
+    {
+    }
+
+
+    @Override
+    public MessageTypeEnum getMessageType()
+    {
+        return null;
+    }
+
+
+    @Override
+    public String getMessageTypeName()
+    {
+        return null;
     }
 }

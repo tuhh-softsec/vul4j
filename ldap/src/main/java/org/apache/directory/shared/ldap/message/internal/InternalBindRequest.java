@@ -19,7 +19,7 @@
  */
 package org.apache.directory.shared.ldap.message.internal;
 
-import org.apache.directory.shared.ldap.message.MessageTypeEnum;
+import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.message.SingleReplyRequest;
 import org.apache.directory.shared.ldap.name.LdapDN;
 

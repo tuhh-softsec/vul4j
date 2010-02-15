@@ -314,7 +314,7 @@ public class LdapMessageTest
 
         try
         {
-            ByteBuffer bb = message.encode( null );
+            ByteBuffer bb = message.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 

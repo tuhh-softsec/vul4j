@@ -30,6 +30,7 @@ import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
+import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.util.LdapURL;
 
 
@@ -73,9 +74,18 @@ public class SearchResultReferenceCodec extends LdapMessageCodec
      * 
      * @return Returns the type.
      */
-    public int getMessageType()
+    public MessageTypeEnum getMessageType()
     {
-        return LdapConstants.SEARCH_RESULT_REFERENCE;
+        return MessageTypeEnum.SEARCH_RESULT_REFERENCE;
+    }
+
+    
+    /**
+     * {@inheritDoc}
+     */
+    public String getMessageTypeName()
+    {
+        return "SEARCH_RESULT_REFERENCE";
     }
 
 
@@ -105,7 +115,7 @@ public class SearchResultReferenceCodec extends LdapMessageCodec
      * Compute the SearchResultReference length
      * 
      * SearchResultReference :
-     * 
+     * <pre>
      * 0x73 L1
      *  |
      *  +--> 0x04 L2 reference
@@ -118,8 +128,9 @@ public class SearchResultReferenceCodec extends LdapMessageCodec
      * L1 = n*Length(0x04) + sum(Length(Li)) + sum(Length(reference[i]))
      * 
      * Length(SearchResultReference) = Length(0x73 + Length(L1) + L1
+     * </pre>
      */
-    public int computeLength()
+    protected int computeLengthProtocolOp()
     {
         searchResultReferenceLength = 0;
 
@@ -138,21 +149,16 @@ public class SearchResultReferenceCodec extends LdapMessageCodec
      * Encode the SearchResultReference message to a PDU.
      * 
      * SearchResultReference :
-     * 
+     * <pre>
      * 0x73 LL
      *   0x04 LL reference
      *   [0x04 LL reference]*
-     * 
+     * </pre>
      * @param buffer The buffer where to put the PDU
      * @return The PDU.
      */
-    public ByteBuffer encode( ByteBuffer buffer ) throws EncoderException
+    protected void encodeProtocolOp( ByteBuffer buffer ) throws EncoderException
     {
-        if ( buffer == null )
-        {
-            throw new EncoderException( "Cannot put a PDU in a null buffer !" );
-        }
-
         try
         {
             // The SearchResultReference Tag
@@ -170,8 +176,6 @@ public class SearchResultReferenceCodec extends LdapMessageCodec
         {
             throw new EncoderException( "The PDU buffer size is too small !" );
         }
-
-        return buffer;
     }
 
 

@@ -116,10 +116,9 @@ public class ModifyRequestTest
         }
 
         // Check the decoded PDU
-        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        ModifyRequestCodec modifyRequest = message.getModifyRequest();
+        ModifyRequestCodec modifyRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getModifyRequest();
 
-        assertEquals( 1, message.getMessageId() );
+        assertEquals( 1, modifyRequest.getMessageId() );
         assertEquals( "cn=testModify,ou=users,ou=system", modifyRequest.getObject().toString() );
 
         List<Modification> modifications = modifyRequest.getModifications();
@@ -143,12 +142,12 @@ public class ModifyRequestTest
         }
 
         // Check the length
-        assertEquals( 0x54, message.computeLength() );
+        assertEquals( 0x54, modifyRequest.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = message.encode( null );
+            ByteBuffer bb = modifyRequest.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -286,10 +285,9 @@ public class ModifyRequestTest
         }
 
         // Check the decoded PDU
-        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        ModifyRequestCodec modifyRequest = message.getModifyRequest();
+        ModifyRequestCodec modifyRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getModifyRequest();
 
-        assertEquals( 21, message.getMessageId() );
+        assertEquals( 21, modifyRequest.getMessageId() );
         assertEquals( "cn=Tori Amos,ou=playground,dc=apache,dc=org", modifyRequest.getObject().toString() );
 
         List<Modification> modifications = modifyRequest.getModifications();
@@ -313,12 +311,12 @@ public class ModifyRequestTest
         assertEquals( "XXX", attrValue );
 
         // Check the length
-        assertEquals( 0x8C, message.computeLength() );
+        assertEquals( 0x8C, modifyRequest.computeLength() );
 
         // Check the encoding, by decoding and re-encoding the result
         try
         {
-            ByteBuffer bb = message.encode( null );
+            ByteBuffer bb = modifyRequest.encode();
             String decodedPdu1 = StringTools.dumpBytes( bb.array() );
 
             try
@@ -333,7 +331,7 @@ public class ModifyRequestTest
 
             LdapMessageCodec message2 = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
 
-            ByteBuffer bb2 = message2.encode( null );
+            ByteBuffer bb2 = message2.encode();
             String decodedPdu2 = StringTools.dumpBytes( bb2.array() );
 
             assertEquals( decodedPdu1, decodedPdu2 );
@@ -410,10 +408,9 @@ public class ModifyRequestTest
         }
 
         // Check the decoded PDU
-        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        ModifyRequestCodec modifyRequest = message.getModifyRequest();
+        ModifyRequestCodec modifyRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getModifyRequest();
 
-        assertEquals( 49, message.getMessageId() );
+        assertEquals( 49, modifyRequest.getMessageId() );
         assertEquals( "cn=Tori Amos,ou=playground,dc=apache,dc=org", modifyRequest.getObject().toString() );
 
         List<Modification> modifications = modifyRequest.getModifications();
@@ -446,12 +443,12 @@ public class ModifyRequestTest
         assertEquals( "01234567890", attrValue );
 
         // Check the length
-        assertEquals( 0xB9, message.computeLength() );
+        assertEquals( 0xB9, modifyRequest.computeLength() );
 
         // Check the encoding, by decoding and re-encoding the result
         try
         {
-            ByteBuffer bb = message.encode( null );
+            ByteBuffer bb = modifyRequest.encode();
             String decodedPdu1 = StringTools.dumpBytes( bb.array() );
 
             try
@@ -466,7 +463,7 @@ public class ModifyRequestTest
 
             LdapMessageCodec message2 = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
 
-            ByteBuffer bb2 = message2.encode( null );
+            ByteBuffer bb2 = message2.encode();
             String decodedPdu2 = StringTools.dumpBytes( bb2.array() );
 
             assertEquals( decodedPdu1, decodedPdu2 );
@@ -542,10 +539,9 @@ public class ModifyRequestTest
         }
 
         // Check the decoded PDU
-        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        ModifyRequestCodec modifyRequest = message.getModifyRequest();
+        ModifyRequestCodec modifyRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getModifyRequest();
 
-        assertEquals( 1, message.getMessageId() );
+        assertEquals( 1, modifyRequest.getMessageId() );
         assertEquals( "cn=testModify,ou=users,ou=system", modifyRequest.getObject().toString() );
 
         List<Modification> modifications = modifyRequest.getModifications();
@@ -572,12 +568,12 @@ public class ModifyRequestTest
         assertEquals( "test", attrValue );
 
         // Check the length
-        assertEquals( 0x5C, message.computeLength() );
+        assertEquals( 0x5C, modifyRequest.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = message.encode( null );
+            ByteBuffer bb = modifyRequest.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -1085,10 +1081,9 @@ public class ModifyRequestTest
         }
 
         // Check the decoded PDU
-        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        ModifyRequestCodec modifyRequest = message.getModifyRequest();
+        ModifyRequestCodec modifyRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getModifyRequest();
 
-        assertEquals( 49, message.getMessageId() );
+        assertEquals( 49, modifyRequest.getMessageId() );
         assertEquals( "cn=testModify,ou=users,ou=system", modifyRequest.getObject().toString() );
 
         List<Modification> modifications = modifyRequest.getModifications();
@@ -1102,12 +1097,12 @@ public class ModifyRequestTest
         assertEquals( 0, attributeValue.size() );
 
         // Check the length
-        assertEquals( 0x37, message.computeLength() );
+        assertEquals( 0x37, modifyRequest.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = message.encode( null );
+            ByteBuffer bb = modifyRequest.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -1169,10 +1164,9 @@ public class ModifyRequestTest
         }
 
         // Check the decoded PDU
-        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        ModifyRequestCodec modifyRequest = message.getModifyRequest();
+        ModifyRequestCodec modifyRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getModifyRequest();
 
-        assertEquals( 49, message.getMessageId() );
+        assertEquals( 49, modifyRequest.getMessageId() );
         assertEquals( "cn=testModify,ou=users,ou=system", modifyRequest.getObject().toString() );
 
         List<Modification> modifications = modifyRequest.getModifications();
@@ -1186,21 +1180,21 @@ public class ModifyRequestTest
         assertEquals( 0, attributeValue.size() );
 
         // Check the Control
-        List<Control> controls = message.getControls();
+        List<Control> controls = modifyRequest.getControls();
 
         assertEquals( 1, controls.size() );
 
-        Control control = message.getControls( 0 );
+        Control control = modifyRequest.getControls( 0 );
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
         assertEquals( "", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
 
         // Check the length
-        assertEquals( 0x54, message.computeLength() );
+        assertEquals( 0x54, modifyRequest.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = message.encode( null );
+            ByteBuffer bb = modifyRequest.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -1261,10 +1255,9 @@ public class ModifyRequestTest
         }
 
         // Check the decoded PDU
-        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        ModifyRequestCodec modifyRequest = message.getModifyRequest();
+        ModifyRequestCodec modifyRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getModifyRequest();
 
-        assertEquals( 49, message.getMessageId() );
+        assertEquals( 49, modifyRequest.getMessageId() );
         assertEquals( "cn=testModify,ou=users,ou=system", modifyRequest.getObject().toString() );
 
         List<Modification> modifications = modifyRequest.getModifications();
@@ -1284,12 +1277,12 @@ public class ModifyRequestTest
         assertEquals( "b", attrValue );
 
         // Check the length
-        assertEquals( 0x3D, message.computeLength() );
+        assertEquals( 0x3D, modifyRequest.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = message.encode( null );
+            ByteBuffer bb = modifyRequest.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 

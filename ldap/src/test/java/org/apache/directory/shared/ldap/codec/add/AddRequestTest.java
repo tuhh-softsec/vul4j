@@ -37,7 +37,6 @@ import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.codec.EncoderException;
-import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.ResponseCarryingException;
 import org.apache.directory.shared.ldap.entry.Entry;
@@ -113,11 +112,10 @@ public class AddRequestTest
             fail( de.getMessage() );
         }
 
-        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        AddRequestCodec addRequest = message.getAddRequest();
+        AddRequestCodec addRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getAddRequest();
 
         // Check the decoded message
-        assertEquals( 1, message.getMessageId() );
+        assertEquals( 1, addRequest.getMessageId() );
         assertEquals( "cn=testModify,ou=users,ou=system", addRequest.getEntryDn().toString() );
 
         Entry entry = addRequest.getEntry();
@@ -168,7 +166,7 @@ public class AddRequestTest
         }
 
         // Check the length
-        assertEquals( 0x59, message.computeLength() );
+        assertEquals( 0x59, addRequest.computeLength() );
     }
 
 
@@ -605,11 +603,10 @@ public class AddRequestTest
             fail( de.getMessage() );
         }
 
-        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        AddRequestCodec addRequest = message.getAddRequest();
+        AddRequestCodec addRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getAddRequest();
 
         // Check the decoded message
-        assertEquals( 1, message.getMessageId() );
+        assertEquals( 1, addRequest.getMessageId() );
         assertEquals( "cn=testModify,ou=users,ou=system", addRequest.getEntryDn().toString() );
 
         Entry entry = addRequest.getEntry();
@@ -626,12 +623,12 @@ public class AddRequestTest
         }
 
         // Check the length
-        assertEquals( 0x34, message.computeLength() );
+        assertEquals( 0x34, addRequest.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = message.encode( null );
+            ByteBuffer bb = addRequest.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -694,11 +691,10 @@ public class AddRequestTest
             fail( de.getMessage() );
         }
 
-        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        AddRequestCodec addRequest = message.getAddRequest();
+        AddRequestCodec addRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getAddRequest();
 
         // Check the decoded message
-        assertEquals( 1, message.getMessageId() );
+        assertEquals( 1, addRequest.getMessageId() );
         assertEquals( "cn=testModify,ou=users,ou=system", addRequest.getEntryDn().toString() );
 
         Entry entry = addRequest.getEntry();
@@ -715,21 +711,21 @@ public class AddRequestTest
         }
 
         // Check the length
-        assertEquals( 0x51, message.computeLength() );
+        assertEquals( 0x51, addRequest.computeLength() );
 
         // Check the Control
-        List<Control> controls = message.getControls();
+        List<Control> controls = addRequest.getControls();
 
         assertEquals( 1, controls.size() );
 
-        Control control = message.getControls( 0 );
+        Control control = addRequest.getControls( 0 );
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
         assertEquals( "", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = message.encode( null );
+            ByteBuffer bb = addRequest.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 

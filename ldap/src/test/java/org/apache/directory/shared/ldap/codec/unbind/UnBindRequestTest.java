@@ -85,7 +85,7 @@ public class UnBindRequestTest
 
         try
         {
-            ByteBuffer bb = ldapMessage.encode( null );
+            ByteBuffer bb = ldapMessage.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -155,7 +155,7 @@ public class UnBindRequestTest
 
         try
         {
-            ByteBuffer bb = ldapMessage.encode( null );
+            ByteBuffer bb = ldapMessage.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 

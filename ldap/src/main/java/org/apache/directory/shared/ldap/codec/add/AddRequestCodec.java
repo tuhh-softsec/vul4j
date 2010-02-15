@@ -33,13 +33,13 @@ import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
+import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.client.DefaultClientAttribute;
 import org.apache.directory.shared.ldap.entry.client.DefaultClientEntry;
 import org.apache.directory.shared.ldap.name.LdapDN;
 import org.apache.directory.shared.ldap.util.StringTools;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -113,9 +113,18 @@ public class AddRequestCodec extends LdapMessageCodec
      * 
      * @return Returns the type.
      */
-    public int getMessageType()
+    public MessageTypeEnum getMessageType()
     {
-        return LdapConstants.ADD_REQUEST;
+        return MessageTypeEnum.ADD_REQUEST;
+    }
+
+    
+    /**
+     * {@inheritDoc}
+     */
+    public String getMessageTypeName()
+    {
+        return "ADD_REQUEST";
     }
 
 
@@ -265,7 +274,7 @@ public class AddRequestCodec extends LdapMessageCodec
      *                    +--> ...
      *                    +--> 0x04 L7-m-n value
      */
-    public int computeLength()
+    protected int computeLengthProtocolOp()
     {
         // The entry
         addRequestLength = 1 + TLV.getNbBytes( LdapDN.getNbBytes( entry.getDn() ) ) + LdapDN.getNbBytes( entry.getDn() );
@@ -349,13 +358,8 @@ public class AddRequestCodec extends LdapMessageCodec
      * @param buffer The buffer where to put the PDU
      * @return The PDU.
      */
-    public ByteBuffer encode( ByteBuffer buffer ) throws EncoderException
+    protected void encodeProtocolOp( ByteBuffer buffer ) throws EncoderException
     {
-        if ( buffer == null )
-        {
-            throw new EncoderException( "Cannot put a PDU in a null buffer !" );
-        }
-
         try
         {
             // The AddRequest Tag
@@ -420,8 +424,15 @@ public class AddRequestCodec extends LdapMessageCodec
             log.debug( "AddRequest encoding : {}", StringTools.dumpBytes( buffer.array() ) );
             log.debug( "AddRequest initial value : {}", toString() );
         }
+    }
 
-        return buffer;
+
+    /**
+     * @return Returns the currentAttribute type.
+     */
+    public String getCurrentAttributeType()
+    {
+        return currentAttribute.getId();
     }
 
 
@@ -432,7 +443,6 @@ public class AddRequestCodec extends LdapMessageCodec
      */
     public String toString()
     {
-
         StringBuilder sb = new StringBuilder();
 
         sb.append( "    Add Request\n" );
@@ -440,22 +450,13 @@ public class AddRequestCodec extends LdapMessageCodec
 
         if ( entry == null )
         {
-            sb.append( "            No attributes\n" );
+            sb.append( "            No attributes" );
         }
         else
         {
             sb.append( entry );
         }
 
-        return sb.toString();
-    }
-
-
-    /**
-     * @return Returns the currentAttribute type.
-     */
-    public String getCurrentAttributeType()
-    {
-        return currentAttribute.getId();
+        return toString( sb.toString() );
     }
 }

@@ -25,11 +25,11 @@ import java.nio.ByteBuffer;
 import java.util.List;
 
 import org.apache.directory.shared.asn1.AbstractAsn1Object;
-import org.apache.directory.shared.asn1.Asn1Object;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.LdapResponseCodec;
+import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.codec.abandon.AbandonRequestCodec;
 import org.apache.directory.shared.ldap.codec.add.AddRequestCodec;
 import org.apache.directory.shared.ldap.codec.add.AddResponseCodec;
@@ -94,7 +94,13 @@ public abstract class LdapMessageDecorator extends LdapMessageCodec
     @Override
     public int computeLength()
     {
-        return instance.computeLength();
+        return 0;
+    }
+
+    @Override
+    public int computeLengthProtocolOp()
+    {
+        return 0;
     }
 
 
@@ -104,77 +110,76 @@ public abstract class LdapMessageDecorator extends LdapMessageCodec
     @Override
     public ByteBuffer encode( ByteBuffer buffer ) throws EncoderException
     {
-        return instance.encode( buffer );
+        return null;
+    }
+
+
+    @Override
+    public void encodeProtocolOp( ByteBuffer buffer ) throws EncoderException
+    {
     }
 
 
     /* (non-Javadoc)
      * @see org.apache.directory.shared.ldap.codec.LdapMessageCodec#getAbandonRequest()
      */
-    @Override
     public AbandonRequestCodec getAbandonRequest()
     {
-        return instance.getAbandonRequest();
+        return (AbandonRequestCodec)instance;
     }
 
 
     /* (non-Javadoc)
      * @see org.apache.directory.shared.ldap.codec.LdapMessageCodec#getAddRequest()
      */
-    @Override
     public AddRequestCodec getAddRequest()
     {
-        return instance.getAddRequest();
+        return (AddRequestCodec)instance;
     }
 
 
     /* (non-Javadoc)
      * @see org.apache.directory.shared.ldap.codec.LdapMessageCodec#getAddResponse()
      */
-    @Override
     public AddResponseCodec getAddResponse()
     {
-        return instance.getAddResponse();
+        return (AddResponseCodec)instance;
     }
 
 
     /* (non-Javadoc)
      * @see org.apache.directory.shared.ldap.codec.LdapMessageCodec#getBindRequest()
      */
-    @Override
     public BindRequestCodec getBindRequest()
     {
-        return instance.getBindRequest();
+        return (BindRequestCodec)instance;
     }
 
 
     /* (non-Javadoc)
      * @see org.apache.directory.shared.ldap.codec.LdapMessageCodec#getBindResponse()
      */
-    @Override
     public BindResponseCodec getBindResponse()
     {
-        return instance.getBindResponse();
+        return (BindResponseCodec)instance;
     }
 
 
     /* (non-Javadoc)
      * @see org.apache.directory.shared.ldap.codec.LdapMessageCodec#getCompareRequest()
      */
-    @Override
     public CompareRequestCodec getCompareRequest()
     {
-        return instance.getCompareRequest();
+        return (CompareRequestCodec)instance;
     }
 
 
     /* (non-Javadoc)
      * @see org.apache.directory.shared.ldap.codec.LdapMessageCodec#getCompareResponse()
      */
-    @Override
     public CompareResponseCodec getCompareResponse()
     {
-        return instance.getCompareResponse();
+        return (CompareResponseCodec)instance;
     }
 
 
@@ -211,50 +216,45 @@ public abstract class LdapMessageDecorator extends LdapMessageCodec
     /* (non-Javadoc)
      * @see org.apache.directory.shared.ldap.codec.LdapMessageCodec#getDelRequest()
      */
-    @Override
     public DelRequestCodec getDelRequest()
     {
-        return instance.getDelRequest();
+        return (DelRequestCodec)instance;
     }
 
 
     /* (non-Javadoc)
      * @see org.apache.directory.shared.ldap.codec.LdapMessageCodec#getDelResponse()
      */
-    @Override
     public DelResponseCodec getDelResponse()
     {
-        return instance.getDelResponse();
+        return (DelResponseCodec)instance;
     }
 
 
     /* (non-Javadoc)
      * @see org.apache.directory.shared.ldap.codec.LdapMessageCodec#getExtendedRequest()
      */
-    @Override
     public ExtendedRequestCodec getExtendedRequest()
     {
-        return instance.getExtendedRequest();
+        return (ExtendedRequestCodec)instance;
     }
 
 
     /* (non-Javadoc)
      * @see org.apache.directory.shared.ldap.codec.LdapMessageCodec#getExtendedResponse()
      */
-    @Override
     public ExtendedResponseCodec getExtendedResponse()
     {
-        return instance.getExtendedResponse();
+        return (ExtendedResponseCodec)instance;
     }
 
 
     /* (non-Javadoc)
      * @see org.apache.directory.shared.ldap.codec.LdapMessageCodec#getLdapResponse()
      */
-    @Override
     public LdapResponseCodec getLdapResponse()
     {
-        return instance.getLdapResponse();
+        return (LdapResponseCodec)instance;
     }
 
 
@@ -272,7 +272,7 @@ public abstract class LdapMessageDecorator extends LdapMessageCodec
      * @see org.apache.directory.shared.ldap.codec.LdapMessageCodec#getMessageType()
      */
     @Override
-    public int getMessageType()
+    public MessageTypeEnum getMessageType()
     {
         return instance.getMessageType();
     }
@@ -291,90 +291,81 @@ public abstract class LdapMessageDecorator extends LdapMessageCodec
     /* (non-Javadoc)
      * @see org.apache.directory.shared.ldap.codec.LdapMessageCodec#getModifyDNRequest()
      */
-    @Override
     public ModifyDNRequestCodec getModifyDNRequest()
     {
-        return instance.getModifyDNRequest();
+        return (ModifyDNRequestCodec)instance;
     }
 
 
     /* (non-Javadoc)
      * @see org.apache.directory.shared.ldap.codec.LdapMessageCodec#getModifyDNResponse()
      */
-    @Override
     public ModifyDNResponseCodec getModifyDNResponse()
     {
-        return instance.getModifyDNResponse();
+        return (ModifyDNResponseCodec)instance;
     }
 
 
     /* (non-Javadoc)
      * @see org.apache.directory.shared.ldap.codec.LdapMessageCodec#getModifyRequest()
      */
-    @Override
     public ModifyRequestCodec getModifyRequest()
     {
-        return instance.getModifyRequest();
+        return (ModifyRequestCodec)instance;
     }
 
 
     /* (non-Javadoc)
      * @see org.apache.directory.shared.ldap.codec.LdapMessageCodec#getModifyResponse()
      */
-    @Override
     public ModifyResponseCodec getModifyResponse()
     {
-        return instance.getModifyResponse();
+        return (ModifyResponseCodec)instance;
     }
 
 
     /* (non-Javadoc)
      * @see org.apache.directory.shared.ldap.codec.LdapMessageCodec#getSearchRequest()
      */
-    @Override
     public SearchRequestCodec getSearchRequest()
     {
-        return instance.getSearchRequest();
+        return (SearchRequestCodec)instance;
     }
 
 
     /* (non-Javadoc)
      * @see org.apache.directory.shared.ldap.codec.LdapMessageCodec#getSearchResultDone()
      */
-    @Override
     public SearchResultDoneCodec getSearchResultDone()
     {
-        return instance.getSearchResultDone();
+        return (SearchResultDoneCodec)instance;
     }
 
 
     /* (non-Javadoc)
      * @see org.apache.directory.shared.ldap.codec.LdapMessageCodec#getSearchResultEntry()
      */
-    @Override
     public SearchResultEntryCodec getSearchResultEntry()
     {
-        return instance.getSearchResultEntry();
+        return (SearchResultEntryCodec)instance;
     }
 
 
     /* (non-Javadoc)
      * @see org.apache.directory.shared.ldap.codec.LdapMessageCodec#getSearchResultReference()
      */
-    @Override
     public SearchResultReferenceCodec getSearchResultReference()
     {
-        return instance.getSearchResultReference();
+        return (SearchResultReferenceCodec)instance;
     }
 
 
     /* (non-Javadoc)
      * @see org.apache.directory.shared.ldap.codec.LdapMessageCodec#getUnBindRequest()
      */
-    @Override
     public UnBindRequestCodec getUnBindRequest()
     {
-        return instance.getUnBindRequest();
+        return (UnBindRequestCodec)instance;
     }
 
 
@@ -385,16 +376,6 @@ public abstract class LdapMessageDecorator extends LdapMessageCodec
     public void setMessageId( int messageId )
     {
         instance.setMessageId( messageId );
-    }
-
-
-    /* (non-Javadoc)
-     * @see org.apache.directory.shared.ldap.codec.LdapMessageCodec#setProtocolOP(org.apache.directory.shared.asn1.Asn1Object)
-     */
-    @Override
-    public void setProtocolOP( Asn1Object protocolOp )
-    {
-        instance.setProtocolOP( protocolOp );
     }
 
 

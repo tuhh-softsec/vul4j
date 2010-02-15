@@ -23,6 +23,7 @@ package org.apache.directory.shared.ldap.message;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.codec.controls.ControlImpl;
 import org.apache.directory.shared.ldap.message.internal.InternalAbstractMessage;
 import org.junit.Test;

@@ -20,6 +20,7 @@
 package org.apache.directory.shared.dsmlv2.request;
 
 
+import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.codec.bind.BindRequestCodec;
 import org.dom4j.Element;
 
@@ -56,7 +57,7 @@ public class AuthRequestDsml extends AbstractRequestDsml
     /**
      * {@inheritDoc}
      */
-    public int getMessageType()
+    public MessageTypeEnum getMessageType()
     {
         return instance.getMessageType();
     }

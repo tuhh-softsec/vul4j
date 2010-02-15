@@ -77,7 +77,7 @@ public class CertGenerationRequest extends ExtendedRequestImpl
 
     private void encodePayload() throws EncoderException
     {
-        payload = certGenObj.encode( null ).array();
+        payload = certGenObj.encode().array();
     }
 
 

@@ -24,6 +24,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.directory.shared.dsmlv2.ParserUtils;
+import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.codec.modify.ModifyRequestCodec;
 import org.apache.directory.shared.ldap.entry.Modification;
 import org.apache.directory.shared.ldap.entry.ModificationOperation;
@@ -65,7 +66,7 @@ public class ModifyRequestDsml extends AbstractRequestDsml
     /**
      * {@inheritDoc}
      */
-    public int getMessageType()
+    public MessageTypeEnum getMessageType()
     {
         return instance.getMessageType();
     }

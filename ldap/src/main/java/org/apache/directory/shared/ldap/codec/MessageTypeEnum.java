@@ -17,20 +17,46 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.message.internal;
-
-import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
-
+package org.apache.directory.shared.ldap.codec;
 
 /**
- * Modify DN protocol response message used to confirm the results of a modify
- * DN request message.
- * 
+ * An enum to store the Ldap message type.
+ *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Revision$
+ * @version $Rev$, $Date$
  */
-public interface InternalModifyDnResponse extends InternalResultResponse
+public enum MessageTypeEnum
 {
-    /** Modify DN response message type enumeration value */
-    MessageTypeEnum TYPE = MessageTypeEnum.MODIFYDN_RESPONSE;
+    ABANDON_REQUEST(0),
+    ADD_REQUEST (1),
+    ADD_RESPONSE(2),
+    BIND_REQUEST(3),
+    BIND_RESPONSE(4),
+    COMPARE_REQUEST(5),
+    COMPARE_RESPONSE(6),
+    DEL_REQUEST(7),
+    DEL_RESPONSE(8),
+    EXTENDED_REQUEST(9),
+    EXTENDED_RESPONSE(10),
+    MODIFYDN_REQUEST(11),
+    MODIFYDN_RESPONSE(12),
+    MODIFY_REQUEST(13),
+    MODIFY_RESPONSE(14),
+    SEARCH_REQUEST(15),
+    SEARCH_RESULT_DONE(16),
+    SEARCH_RESULT_ENTRY(17),
+    SEARCH_RESULT_REFERENCE(18),
+    UNBIND_REQUEST(19),
+    INTERMEDIATE_RESPONSE(20);
+
+    /** The internal value */
+    private int value;
+    
+    /** The message Type name */
+    private String name;
+    
+    private MessageTypeEnum( int value )
+    {
+        this.value = value;
+    }
 }

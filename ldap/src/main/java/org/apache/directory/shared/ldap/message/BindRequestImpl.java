@@ -22,6 +22,7 @@ package org.apache.directory.shared.ldap.message;
 
 import java.util.Arrays;
 
+import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.message.internal.InternalBindRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalBindResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalResultResponse;

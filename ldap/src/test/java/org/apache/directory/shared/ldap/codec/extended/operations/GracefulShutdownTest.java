@@ -83,7 +83,7 @@ public class GracefulShutdownTest
         // Check the encoding
         try
         {
-            ByteBuffer bb1 = gracefulShutdown.encode( null );
+            ByteBuffer bb1 = gracefulShutdown.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb1.array() );
 
@@ -135,7 +135,7 @@ public class GracefulShutdownTest
         // Check the encoding
         try
         {
-            ByteBuffer bb1 = gracefulShutdown.encode( null );
+            ByteBuffer bb1 = gracefulShutdown.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb1.array() );
 
@@ -188,7 +188,7 @@ public class GracefulShutdownTest
         // Check the encoding
         try
         {
-            ByteBuffer bb1 = gracefulShutdown.encode( null );
+            ByteBuffer bb1 = gracefulShutdown.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb1.array() );
 
@@ -239,7 +239,7 @@ public class GracefulShutdownTest
         // Check the encoding
         try
         {
-            ByteBuffer bb1 = gracefulShutdown.encode( null );
+            ByteBuffer bb1 = gracefulShutdown.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb1.array() );
 
@@ -293,7 +293,7 @@ public class GracefulShutdownTest
         // Check the encoding
         try
         {
-            ByteBuffer bb1 = gracefulShutdown.encode( null );
+            ByteBuffer bb1 = gracefulShutdown.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb1.array() );
 
@@ -347,7 +347,7 @@ public class GracefulShutdownTest
         // Check the encoding
         try
         {
-            ByteBuffer bb1 = gracefulShutdown.encode( null );
+            ByteBuffer bb1 = gracefulShutdown.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb1.array() );
 
@@ -403,7 +403,7 @@ public class GracefulShutdownTest
         // Check the encoding
         try
         {
-            ByteBuffer bb1 = gracefulShutdown.encode( null );
+            ByteBuffer bb1 = gracefulShutdown.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb1.array() );
 

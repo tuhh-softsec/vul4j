@@ -28,6 +28,7 @@ import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.asn1.primitives.OID;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.codec.LdapResponseCodec;
+import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.util.StringTools;
 
 
@@ -79,9 +80,18 @@ public class ExtendedResponseCodec extends LdapResponseCodec
      * 
      * @return Returns the type.
      */
-    public int getMessageType()
+    public MessageTypeEnum getMessageType()
     {
-        return LdapConstants.EXTENDED_RESPONSE;
+        return MessageTypeEnum.EXTENDED_RESPONSE;
+    }
+
+    
+    /**
+     * {@inheritDoc}
+     */
+    public String getMessageTypeName()
+    {
+        return "EXTENDED_RESPONSE";
     }
 
 
@@ -148,9 +158,11 @@ public class ExtendedResponseCodec extends LdapResponseCodec
      * 
      * @return The ExtendedResponse length
      */
-    public int computeLength()
+    protected int computeLengthProtocolOp()
     {
-        extendedResponseLength = super.computeLength();
+        int ldapResultLength = super.computeLdapResultLength();
+        
+        extendedResponseLength = ldapResultLength;
 
         if ( responseName != null )
         {
@@ -187,13 +199,8 @@ public class ExtendedResponseCodec extends LdapResponseCodec
      *            The buffer where to put the PDU
      * @return The PDU.
      */
-    public ByteBuffer encode( ByteBuffer buffer ) throws EncoderException
+    protected void encodeProtocolOp( ByteBuffer buffer ) throws EncoderException
     {
-        if ( buffer == null )
-        {
-            throw new EncoderException( "Cannot put a PDU in a null buffer !" );
-        }
-
         try
         {
             // The ExtendedResponse Tag
@@ -245,8 +252,6 @@ public class ExtendedResponseCodec extends LdapResponseCodec
         {
             throw new EncoderException( "The PDU buffer size is too small !" );
         }
-
-        return buffer;
     }
 
 

@@ -31,7 +31,6 @@ import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.codec.EncoderException;
-import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.message.control.Control;
@@ -92,10 +91,9 @@ public class ExtendedResponseTest
         }
 
         // Check the decoded ExtendedResponse PDU
-        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        ExtendedResponseCodec extendedResponse = message.getExtendedResponse();
+        ExtendedResponseCodec extendedResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getExtendedResponse();
 
-        assertEquals( 1, message.getMessageId() );
+        assertEquals( 1, extendedResponse.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, extendedResponse.getLdapResult().getResultCode() );
         assertEquals( "", extendedResponse.getLdapResult().getMatchedDN() );
         assertEquals( "", extendedResponse.getLdapResult().getErrorMessage() );
@@ -103,12 +101,12 @@ public class ExtendedResponseTest
         assertEquals( "value", StringTools.utf8ToString( ( byte[] ) extendedResponse.getResponse() ) );
 
         // Check the length
-        assertEquals( 0x24, message.computeLength() );
+        assertEquals( 0x24, extendedResponse.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = message.encode( null );
+            ByteBuffer bb = extendedResponse.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -178,10 +176,9 @@ public class ExtendedResponseTest
         }
 
         // Check the decoded ExtendedResponse PDU
-        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        ExtendedResponseCodec extendedResponse = message.getExtendedResponse();
+        ExtendedResponseCodec extendedResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getExtendedResponse();
 
-        assertEquals( 1, message.getMessageId() );
+        assertEquals( 1, extendedResponse.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, extendedResponse.getLdapResult().getResultCode() );
         assertEquals( "", extendedResponse.getLdapResult().getMatchedDN() );
         assertEquals( "", extendedResponse.getLdapResult().getErrorMessage() );
@@ -189,21 +186,21 @@ public class ExtendedResponseTest
         assertEquals( "value", StringTools.utf8ToString( ( byte[] ) extendedResponse.getResponse() ) );
 
         // Check the Control
-        List<Control> controls = message.getControls();
+        List<Control> controls = extendedResponse.getControls();
 
         assertEquals( 1, controls.size() );
 
-        Control control = message.getControls( 0 );
+        Control control = extendedResponse.getControls( 0 );
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
         assertEquals( "", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
 
         // Check the length
-        assertEquals( 0x41, message.computeLength() );
+        assertEquals( 0x41, extendedResponse.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = message.encode( null );
+            ByteBuffer bb = extendedResponse.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -261,21 +258,20 @@ public class ExtendedResponseTest
         }
 
         // Check the decoded ExtendedResponse PDU
-        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        ExtendedResponseCodec extendedResponse = message.getExtendedResponse();
+        ExtendedResponseCodec extendedResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getExtendedResponse();
 
-        assertEquals( 1, message.getMessageId() );
+        assertEquals( 1, extendedResponse.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, extendedResponse.getLdapResult().getResultCode() );
         assertEquals( "", extendedResponse.getLdapResult().getMatchedDN() );
         assertEquals( "", extendedResponse.getLdapResult().getErrorMessage() );
 
         // Check the length
-        assertEquals( 0x0E, message.computeLength() );
+        assertEquals( 0x0E, extendedResponse.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = message.encode( null );
+            ByteBuffer bb = extendedResponse.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -335,30 +331,29 @@ public class ExtendedResponseTest
         }
 
         // Check the decoded ExtendedResponse PDU
-        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        ExtendedResponseCodec extendedResponse = message.getExtendedResponse();
+        ExtendedResponseCodec extendedResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getExtendedResponse();
 
-        assertEquals( 1, message.getMessageId() );
+        assertEquals( 1, extendedResponse.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, extendedResponse.getLdapResult().getResultCode() );
         assertEquals( "", extendedResponse.getLdapResult().getMatchedDN() );
         assertEquals( "", extendedResponse.getLdapResult().getErrorMessage() );
 
         // Check the Control
-        List<Control> controls = message.getControls();
+        List<Control> controls = extendedResponse.getControls();
 
         assertEquals( 1, controls.size() );
 
-        Control control = message.getControls( 0 );
+        Control control = extendedResponse.getControls( 0 );
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
         assertEquals( "", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
 
         // Check the length
-        assertEquals( 0x2B, message.computeLength() );
+        assertEquals( 0x2B, extendedResponse.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = message.encode( null );
+            ByteBuffer bb = extendedResponse.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -539,10 +534,9 @@ public class ExtendedResponseTest
         }
 
         // Check the decoded ExtendedResponse PDU
-        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        ExtendedResponseCodec extendedResponse = message.getExtendedResponse();
+        ExtendedResponseCodec extendedResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getExtendedResponse();
 
-        assertEquals( 1, message.getMessageId() );
+        assertEquals( 1, extendedResponse.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, extendedResponse.getLdapResult().getResultCode() );
         assertEquals( "", extendedResponse.getLdapResult().getMatchedDN() );
         assertEquals( "", extendedResponse.getLdapResult().getErrorMessage() );
@@ -550,12 +544,12 @@ public class ExtendedResponseTest
         assertEquals( "", StringTools.utf8ToString( ( byte[] ) extendedResponse.getResponse() ) );
 
         // Check the length
-        assertEquals( 0x1D, message.computeLength() );
+        assertEquals( 0x1D, extendedResponse.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = message.encode( null );
+            ByteBuffer bb = extendedResponse.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -616,10 +610,9 @@ public class ExtendedResponseTest
         }
 
         // Check the decoded ExtendedResponse PDU
-        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        ExtendedResponseCodec extendedResponse = message.getExtendedResponse();
+        ExtendedResponseCodec extendedResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getExtendedResponse();
 
-        assertEquals( 1, message.getMessageId() );
+        assertEquals( 1, extendedResponse.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, extendedResponse.getLdapResult().getResultCode() );
         assertEquals( "", extendedResponse.getLdapResult().getMatchedDN() );
         assertEquals( "", extendedResponse.getLdapResult().getErrorMessage() );
@@ -627,21 +620,21 @@ public class ExtendedResponseTest
         assertEquals( "", StringTools.utf8ToString( ( byte[] ) extendedResponse.getResponse() ) );
 
         // Check the Control
-        List<Control> controls = message.getControls();
+        List<Control> controls = extendedResponse.getControls();
 
         assertEquals( 1, controls.size() );
 
-        Control control = message.getControls( 0 );
+        Control control = extendedResponse.getControls( 0 );
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
         assertEquals( "", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
 
         // Check the length
-        assertEquals( 0x3A, message.computeLength() );
+        assertEquals( 0x3A, extendedResponse.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = message.encode( null );
+            ByteBuffer bb = extendedResponse.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -700,10 +693,9 @@ public class ExtendedResponseTest
         }
 
         // Check the decoded ExtendedResponse PDU
-        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        ExtendedResponseCodec extendedResponse = message.getExtendedResponse();
+        ExtendedResponseCodec extendedResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getExtendedResponse();
 
-        assertEquals( 1, message.getMessageId() );
+        assertEquals( 1, extendedResponse.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, extendedResponse.getLdapResult().getResultCode() );
         assertEquals( "", extendedResponse.getLdapResult().getMatchedDN() );
         assertEquals( "", extendedResponse.getLdapResult().getErrorMessage() );
@@ -711,12 +703,12 @@ public class ExtendedResponseTest
         assertEquals( "", StringTools.utf8ToString( ( byte[] ) extendedResponse.getResponse() ) );
 
         // Check the length
-        assertEquals( 0x1F, message.computeLength() );
+        assertEquals( 0x1F, extendedResponse.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = message.encode( null );
+            ByteBuffer bb = extendedResponse.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -778,10 +770,9 @@ public class ExtendedResponseTest
         }
 
         // Check the decoded ExtendedResponse PDU
-        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        ExtendedResponseCodec extendedResponse = message.getExtendedResponse();
+        ExtendedResponseCodec extendedResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getExtendedResponse();
 
-        assertEquals( 1, message.getMessageId() );
+        assertEquals( 1, extendedResponse.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, extendedResponse.getLdapResult().getResultCode() );
         assertEquals( "", extendedResponse.getLdapResult().getMatchedDN() );
         assertEquals( "", extendedResponse.getLdapResult().getErrorMessage() );
@@ -789,21 +780,21 @@ public class ExtendedResponseTest
         assertEquals( "", StringTools.utf8ToString( ( byte[] ) extendedResponse.getResponse() ) );
 
         // Check the Control
-        List<Control> controls = message.getControls();
+        List<Control> controls = extendedResponse.getControls();
 
         assertEquals( 1, controls.size() );
 
-        Control control = message.getControls( 0 );
+        Control control = extendedResponse.getControls( 0 );
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
         assertEquals( "", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
 
         // Check the length
-        assertEquals( 0x3C, message.computeLength() );
+        assertEquals( 0x3C, extendedResponse.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = message.encode( null );
+            ByteBuffer bb = extendedResponse.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 

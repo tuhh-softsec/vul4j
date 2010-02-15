@@ -21,7 +21,28 @@ package org.apache.directory.shared.ldap.codec;
 
 
 import org.apache.directory.shared.asn1.ber.AbstractContainer;
+import org.apache.directory.shared.ldap.codec.abandon.AbandonRequestCodec;
+import org.apache.directory.shared.ldap.codec.add.AddRequestCodec;
+import org.apache.directory.shared.ldap.codec.add.AddResponseCodec;
+import org.apache.directory.shared.ldap.codec.bind.BindRequestCodec;
+import org.apache.directory.shared.ldap.codec.bind.BindResponseCodec;
+import org.apache.directory.shared.ldap.codec.compare.CompareRequestCodec;
+import org.apache.directory.shared.ldap.codec.compare.CompareResponseCodec;
 import org.apache.directory.shared.ldap.codec.controls.AbstractControl;
+import org.apache.directory.shared.ldap.codec.del.DelRequestCodec;
+import org.apache.directory.shared.ldap.codec.del.DelResponseCodec;
+import org.apache.directory.shared.ldap.codec.extended.ExtendedRequestCodec;
+import org.apache.directory.shared.ldap.codec.extended.ExtendedResponseCodec;
+import org.apache.directory.shared.ldap.codec.intermediate.IntermediateResponseCodec;
+import org.apache.directory.shared.ldap.codec.modify.ModifyRequestCodec;
+import org.apache.directory.shared.ldap.codec.modify.ModifyResponseCodec;
+import org.apache.directory.shared.ldap.codec.modifyDn.ModifyDNRequestCodec;
+import org.apache.directory.shared.ldap.codec.modifyDn.ModifyDNResponseCodec;
+import org.apache.directory.shared.ldap.codec.search.SearchRequestCodec;
+import org.apache.directory.shared.ldap.codec.search.SearchResultDoneCodec;
+import org.apache.directory.shared.ldap.codec.search.SearchResultEntryCodec;
+import org.apache.directory.shared.ldap.codec.search.SearchResultReferenceCodec;
+import org.apache.directory.shared.ldap.codec.unbind.UnBindRequestCodec;
 import org.apache.directory.shared.ldap.message.spi.BinaryAttributeDetector;
 
 
@@ -95,7 +116,205 @@ public class LdapMessageContainer extends AbstractContainer
         return ldapMessage;
     }
 
+    
+    /**
+     * @return Returns the LdapResponse.
+     */
+    public LdapResponseCodec getLdapResponse()
+    {
+        return (LdapResponseCodec)ldapMessage;
+    }
 
+    
+    /**
+     * @return Returns the AbandonRequest stored in the container
+     */
+    public AbandonRequestCodec getAbandonRequest()
+    {
+        return (AbandonRequestCodec)ldapMessage;
+    }
+
+    
+    /**
+     * @return Returns the AddRequest stored in the container
+     */
+    public AddRequestCodec getAddRequest()
+    {
+        return (AddRequestCodec)ldapMessage;
+    }
+
+    
+    /**
+     * @return Returns the AddResponse stored in the container
+     */
+    public AddResponseCodec getAddResponse()
+    {
+        return (AddResponseCodec)ldapMessage;
+    }
+
+    
+    /**
+     * @return Returns the BindRequest stored in the container
+     */
+    public BindRequestCodec getBindRequest()
+    {
+        return (BindRequestCodec)ldapMessage;
+    }
+
+    
+    /**
+     * @return Returns the BindResponse stored in the container
+     */
+    public BindResponseCodec getBindResponse()
+    {
+        return (BindResponseCodec)ldapMessage;
+    }
+
+    
+    /**
+     * @return Returns the CompareRequest stored in the container
+     */
+    public CompareRequestCodec getCompareRequest()
+    {
+        return (CompareRequestCodec)ldapMessage;
+    }
+
+    
+    /**
+     * @return Returns the CompareResponse stored in the container
+     */
+    public CompareResponseCodec getCompareResponse()
+    {
+        return (CompareResponseCodec)ldapMessage;
+    }
+
+    
+    /**
+     * @return Returns the DelRequest stored in the container
+     */
+    public DelRequestCodec getDelRequest()
+    {
+        return (DelRequestCodec)ldapMessage;
+    }
+
+    
+    /**
+     * @return Returns the DelResponse stored in the container
+     */
+    public DelResponseCodec getDelResponse()
+    {
+        return (DelResponseCodec)ldapMessage;
+    }
+
+    
+    /**
+     * @return Returns the ExtendedRequest stored in the container
+     */
+    public ExtendedRequestCodec getExtendedRequest()
+    {
+        return (ExtendedRequestCodec)ldapMessage;
+    }
+
+    
+    /**
+     * @return Returns the ExtendedResponse stored in the container
+     */
+    public ExtendedResponseCodec getExtendedResponse()
+    {
+        return (ExtendedResponseCodec)ldapMessage;
+    }
+
+    
+    /**
+     * @return Returns the IntermediateResponse stored in the container
+     */
+    public IntermediateResponseCodec getIntermediateResponse()
+    {
+        return (IntermediateResponseCodec)ldapMessage;
+    }
+
+    
+    /**
+     * @return Returns the ModifyRequest stored in the container
+     */
+    public ModifyRequestCodec getModifyRequest()
+    {
+        return (ModifyRequestCodec)ldapMessage;
+    }
+
+    
+    /**
+     * @return Returns the ModifyResponse stored in the container
+     */
+    public ModifyResponseCodec getModifyResponse()
+    {
+        return (ModifyResponseCodec)ldapMessage;
+    }
+
+    
+    /**
+     * @return Returns the ModifyDnRequest stored in the container
+     */
+    public ModifyDNRequestCodec getModifyDnRequest()
+    {
+        return (ModifyDNRequestCodec)ldapMessage;
+    }
+
+    
+    /**
+     * @return Returns the ModifyDnResponse stored in the container
+     */
+    public ModifyDNResponseCodec getModifyDnResponse()
+    {
+        return (ModifyDNResponseCodec)ldapMessage;
+    }
+
+    
+    /**
+     * @return Returns the SearchRequest stored in the container
+     */
+    public SearchRequestCodec getSearchRequest()
+    {
+        return (SearchRequestCodec)ldapMessage;
+    }
+
+    
+    /**
+     * @return Returns the SearchResultEntryCodec stored in the container
+     */
+    public SearchResultEntryCodec getSearchResultEntry()
+    {
+        return (SearchResultEntryCodec)ldapMessage;
+    }
+
+    
+    /**
+     * @return Returns the SearchResultReferenceCodec stored in the container
+     */
+    public SearchResultReferenceCodec getSearchResultReference()
+    {
+        return (SearchResultReferenceCodec)ldapMessage;
+    }
+
+    
+    /**
+     * @return Returns the SearchResultDone stored in the container
+     */
+    public SearchResultDoneCodec getSearchResultDone()
+    {
+        return (SearchResultDoneCodec)ldapMessage;
+    }
+
+    
+    /**
+     * @return Returns the UnbindRequest stored in the container
+     */
+    public UnBindRequestCodec getUnbindRequest()
+    {
+        return (UnBindRequestCodec)ldapMessage;
+    }
+
+    
     /**
      * Set a ldapMessage Object into the container. It will be completed by the
      * ldapDecoder .

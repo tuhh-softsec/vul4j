@@ -28,6 +28,7 @@ import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
+import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.name.LdapDN;
 import org.apache.directory.shared.ldap.name.RDN;
 import org.apache.directory.shared.ldap.util.StringTools;
@@ -85,9 +86,18 @@ public class ModifyDNRequestCodec extends LdapMessageCodec
      * 
      * @return Returns the type.
      */
-    public int getMessageType()
+    public MessageTypeEnum getMessageType()
     {
-        return LdapConstants.MODIFYDN_REQUEST;
+        return MessageTypeEnum.MODIFYDN_REQUEST;
+    }
+
+    
+    /**
+     * {@inheritDoc}
+     */
+    public String getMessageTypeName()
+    {
+        return "MODIFYDN_REQUEST";
     }
 
 
@@ -183,7 +193,7 @@ public class ModifyDNRequestCodec extends LdapMessageCodec
      * Compute the ModifyDNRequest length
      * 
      * ModifyDNRequest :
-     * 
+     * <pre>
      * 0x6C L1
      *  |
      *  +--> 0x04 L2 entry
@@ -197,10 +207,11 @@ public class ModifyDNRequestCodec extends LdapMessageCodec
      * L1 = L2 + L3 + 3 [+ L4] 
      * 
      * Length(ModifyDNRequest) = Length(0x6C) + Length(L1) + L1
+     * </pre>
      * 
      * @return The PDU's length of a ModifyDN Request
      */
-    public int computeLength()
+    protected int computeLengthProtocolOp()
     {
         int newRdnlength = StringTools.getBytesUtf8( newRDN.toString() ).length;
         modifyDNRequestLength = 1 + TLV.getNbBytes( LdapDN.getNbBytes( entry ) ) + LdapDN.getNbBytes( entry ) + 1
@@ -220,23 +231,18 @@ public class ModifyDNRequestCodec extends LdapMessageCodec
      * Encode the ModifyDNRequest message to a PDU. 
      * 
      * ModifyDNRequest :
-     * 
+     * <pre>
      * 0x6C LL
      *   0x04 LL entry
      *   0x04 LL newRDN
      *   0x01 0x01 deleteOldRDN
      *   [0x80 LL newSuperior]
-     * 
+     * </pre>
      * @param buffer The buffer where to put the PDU
      * @return The PDU.
      */
-    public ByteBuffer encode( ByteBuffer buffer ) throws EncoderException
+    protected void encodeProtocolOp( ByteBuffer buffer ) throws EncoderException
     {
-        if ( buffer == null )
-        {
-            throw new EncoderException( "Cannot put a PDU in a null buffer !" );
-        }
-
         try
         {
             // The ModifyDNRequest Tag
@@ -273,8 +279,6 @@ public class ModifyDNRequestCodec extends LdapMessageCodec
         {
             throw new EncoderException( "The PDU buffer size is too small !" );
         }
-
-        return buffer;
     }
 
 

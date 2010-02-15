@@ -22,11 +22,11 @@ package org.apache.directory.shared.ldap.message.internal;
 
 import java.util.List;
 
+import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.filter.ExprNode;
 import org.apache.directory.shared.ldap.filter.SearchScope;
 import org.apache.directory.shared.ldap.message.AliasDerefMode;
 import org.apache.directory.shared.ldap.message.ManyReplyRequest;
-import org.apache.directory.shared.ldap.message.MessageTypeEnum;
 import org.apache.directory.shared.ldap.name.LdapDN;
 
 
@@ -48,7 +48,12 @@ public interface InternalSearchRequest extends ManyReplyRequest, InternalAbandon
      * @see #getResponseTypes()
      */
     MessageTypeEnum[] RESPONSE_TYPES =
-        { InternalSearchResponseDone.TYPE, InternalSearchResponseEntry.TYPE, InternalSearchResponseReference.TYPE, InternalExtendedResponse.TYPE };
+        { 
+        InternalSearchResponseDone.TYPE, 
+        InternalSearchResponseEntry.TYPE, 
+        InternalSearchResponseReference.TYPE, 
+        InternalExtendedResponse.TYPE 
+        };
 
 
     /**

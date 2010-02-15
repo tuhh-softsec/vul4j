@@ -25,6 +25,7 @@ import java.util.Arrays;
 import javax.naming.NamingException;
 import javax.naming.ldap.ExtendedResponse;
 
+import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.message.internal.InternalAbstractRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalExtendedRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalResultResponse;

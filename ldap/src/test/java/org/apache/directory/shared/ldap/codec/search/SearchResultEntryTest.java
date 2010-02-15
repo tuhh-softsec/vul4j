@@ -33,7 +33,6 @@ import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.codec.EncoderException;
-import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
@@ -98,10 +97,9 @@ public class SearchResultEntryTest
             fail( de.getMessage() );
         }
 
-        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        SearchResultEntryCodec searchResultEntry = message.getSearchResultEntry();
+        SearchResultEntryCodec searchResultEntry = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchResultEntry();
 
-        assertEquals( 1, message.getMessageId() );
+        assertEquals( 1, searchResultEntry.getMessageId() );
         assertEquals( "ou=contacts,dc=iktek,dc=com", searchResultEntry.getObjectName().toString() );
 
         Entry entry = searchResultEntry.getEntry();
@@ -119,12 +117,12 @@ public class SearchResultEntryTest
         }
 
         // Check the length
-        assertEquals( 0x50, message.computeLength() );
+        assertEquals( 0x50, searchResultEntry.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = message.encode( null );
+            ByteBuffer bb = searchResultEntry.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -193,10 +191,9 @@ public class SearchResultEntryTest
             fail( de.getMessage() );
         }
 
-        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        SearchResultEntryCodec searchResultEntry = message.getSearchResultEntry();
+        SearchResultEntryCodec searchResultEntry = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchResultEntry();
 
-        assertEquals( 1, message.getMessageId() );
+        assertEquals( 1, searchResultEntry.getMessageId() );
         assertEquals( "ou=contacts,dc=iktek,dc=com", searchResultEntry.getObjectName().toString() );
 
         Entry entry = searchResultEntry.getEntry();
@@ -217,12 +214,12 @@ public class SearchResultEntryTest
         }
 
         // Check the length
-        assertEquals( 0x7b, message.computeLength() );
+        assertEquals( 0x7b, searchResultEntry.computeLength() );
 
         // Check the encoding
         try
         {
-            message.encode( null );
+            searchResultEntry.encode();
 
             // We can't compare the encodings, the order of the attributes has
             // changed
@@ -293,10 +290,9 @@ public class SearchResultEntryTest
             fail( de.getMessage() );
         }
 
-        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        SearchResultEntryCodec searchResultEntry = message.getSearchResultEntry();
+        SearchResultEntryCodec searchResultEntry = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchResultEntry();
 
-        assertEquals( 2, message.getMessageId() );
+        assertEquals( 2, searchResultEntry.getMessageId() );
         assertEquals( "uid=admin,ou=system", searchResultEntry.getObjectName().toString() );
 
         Entry entry = searchResultEntry.getEntry();
@@ -316,7 +312,7 @@ public class SearchResultEntryTest
         }
 
         // Check the length
-        assertEquals( 0x61, message.computeLength() );
+        assertEquals( 0x61, searchResultEntry.computeLength() );
 
         // Check that the next bytes is the first of the next PDU
         assertEquals( 0x30, stream.get( stream.position() ) );
@@ -328,7 +324,7 @@ public class SearchResultEntryTest
         // Check the encoding
         try
         {
-            ByteBuffer bb = message.encode( null );
+            ByteBuffer bb = searchResultEntry.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -504,10 +500,9 @@ public class SearchResultEntryTest
             fail( de.getMessage() );
         }
 
-        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        SearchResultEntryCodec searchResultEntry = message.getSearchResultEntry();
+        SearchResultEntryCodec searchResultEntry = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchResultEntry();
 
-        assertEquals( 1, message.getMessageId() );
+        assertEquals( 1, searchResultEntry.getMessageId() );
         assertEquals( "ou=contacts,dc=iktek,dc=com", searchResultEntry.getObjectName().toString() );
 
         Entry entry = searchResultEntry.getEntry();
@@ -515,12 +510,12 @@ public class SearchResultEntryTest
         assertEquals( 0, entry.size() );
 
         // Check the length
-        assertEquals( 0x26, message.computeLength() );
+        assertEquals( 0x26, searchResultEntry.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = message.encode( null );
+            ByteBuffer bb = searchResultEntry.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -762,10 +757,9 @@ public class SearchResultEntryTest
             fail( de.getMessage() );
         }
 
-        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        SearchResultEntryCodec searchResultEntry = message.getSearchResultEntry();
+        SearchResultEntryCodec searchResultEntry = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchResultEntry();
 
-        assertEquals( 1, message.getMessageId() );
+        assertEquals( 1, searchResultEntry.getMessageId() );
         assertEquals( "ou=contacts,dc=iktek,dc=com", searchResultEntry.getObjectName().toString() );
 
         Entry entry = searchResultEntry.getEntry();
@@ -781,12 +775,12 @@ public class SearchResultEntryTest
         }
 
         // Check the length
-        assertEquals( 0x37, message.computeLength() );
+        assertEquals( 0x37, searchResultEntry.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = message.encode( null );
+            ByteBuffer bb = searchResultEntry.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -845,10 +839,9 @@ public class SearchResultEntryTest
             fail( de.getMessage() );
         }
 
-        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        SearchResultEntryCodec searchResultEntry = message.getSearchResultEntry();
+        SearchResultEntryCodec searchResultEntry = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchResultEntry();
 
-        assertEquals( 1, message.getMessageId() );
+        assertEquals( 1, searchResultEntry.getMessageId() );
         assertEquals( "ou=contacts,dc=iktek,dc=com", searchResultEntry.getObjectName().toString() );
 
         Entry entry = searchResultEntry.getEntry();
@@ -864,12 +857,12 @@ public class SearchResultEntryTest
         assertEquals( 0, attribute.size() );
 
         // Check the length
-        assertEquals( 0x48, message.computeLength() );
+        assertEquals( 0x48, searchResultEntry.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = message.encode( null );
+            ByteBuffer bb = searchResultEntry.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -929,10 +922,9 @@ public class SearchResultEntryTest
             fail( de.getMessage() );
         }
 
-        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        SearchResultEntryCodec searchResultEntry = message.getSearchResultEntry();
+        SearchResultEntryCodec searchResultEntry = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchResultEntry();
 
-        assertEquals( 1, message.getMessageId() );
+        assertEquals( 1, searchResultEntry.getMessageId() );
         assertEquals( "ou=contacts,dc=iktek,dc=com", searchResultEntry.getObjectName().toString() );
 
         Entry entry = searchResultEntry.getEntry();
@@ -949,21 +941,21 @@ public class SearchResultEntryTest
         }
 
         // Check the Control
-        List<Control> controls = message.getControls();
+        List<Control> controls = searchResultEntry.getControls();
 
         assertEquals( 1, controls.size() );
 
-        Control control = message.getControls( 0 );
+        Control control = searchResultEntry.getControls( 0 );
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
         assertEquals( "", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
 
         // Check the length
-        assertEquals( 0x54, message.computeLength() );
+        assertEquals( 0x54, searchResultEntry.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = message.encode( null );
+            ByteBuffer bb = searchResultEntry.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -1022,10 +1014,9 @@ public class SearchResultEntryTest
             fail( de.getMessage() );
         }
 
-        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        SearchResultEntryCodec searchResultEntry = message.getSearchResultEntry();
+        SearchResultEntryCodec searchResultEntry = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchResultEntry();
 
-        assertEquals( 1, message.getMessageId() );
+        assertEquals( 1, searchResultEntry.getMessageId() );
         assertEquals( "ou=contacts,dc=iktek,dc=com", searchResultEntry.getObjectName().toString() );
 
         Entry entry = searchResultEntry.getEntry();
@@ -1042,12 +1033,12 @@ public class SearchResultEntryTest
         }
 
         // Check the length
-        assertEquals( 0x39, message.computeLength() );
+        assertEquals( 0x39, searchResultEntry.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = message.encode( null );
+            ByteBuffer bb = searchResultEntry.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -1109,10 +1100,9 @@ public class SearchResultEntryTest
             fail( de.getMessage() );
         }
 
-        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        SearchResultEntryCodec searchResultEntry = message.getSearchResultEntry();
+        SearchResultEntryCodec searchResultEntry = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchResultEntry();
 
-        assertEquals( 1, message.getMessageId() );
+        assertEquals( 1, searchResultEntry.getMessageId() );
         assertEquals( "ou=contacts,dc=iktek,dc=com", searchResultEntry.getObjectName().toString() );
 
         Entry entry = searchResultEntry.getEntry();
@@ -1129,21 +1119,21 @@ public class SearchResultEntryTest
         }
 
         // Check the Control
-        List<Control> controls = message.getControls();
+        List<Control> controls = searchResultEntry.getControls();
 
         assertEquals( 1, controls.size() );
 
-        Control control = message.getControls( 0 );
+        Control control = searchResultEntry.getControls( 0 );
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
         assertEquals( "", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
 
         // Check the length
-        assertEquals( 0x56, message.computeLength() );
+        assertEquals( 0x56, searchResultEntry.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = message.encode( null );
+            ByteBuffer bb = searchResultEntry.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 

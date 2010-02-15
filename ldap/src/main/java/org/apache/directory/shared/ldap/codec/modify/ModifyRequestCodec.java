@@ -32,6 +32,7 @@ import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
+import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Modification;
 import org.apache.directory.shared.ldap.entry.ModificationOperation;
@@ -128,9 +129,18 @@ public class ModifyRequestCodec extends LdapMessageCodec
      * 
      * @return Returns the type.
      */
-    public int getMessageType()
+    public MessageTypeEnum getMessageType()
     {
-        return LdapConstants.MODIFY_REQUEST;
+        return MessageTypeEnum.MODIFY_REQUEST;
+    }
+
+    
+    /**
+     * {@inheritDoc}
+     */
+    public String getMessageTypeName()
+    {
+        return "MODIFY_REQUEST";
     }
 
 
@@ -332,7 +342,7 @@ public class ModifyRequestCodec extends LdapMessageCodec
      *                          +--> ...
      *                          +--> 0x04 L8-2-n attributeValue
      */
-    public int computeLength()
+    protected int computeLengthProtocolOp()
     {
         // Initialized with object
         modifyRequestLength = 1 + TLV.getNbBytes( LdapDN.getNbBytes( object ) ) + LdapDN.getNbBytes( object );
@@ -394,6 +404,7 @@ public class ModifyRequestCodec extends LdapMessageCodec
      * Encode the ModifyRequest message to a PDU. 
      * 
      * ModifyRequest : 
+     * <pre>
      * 0x66 LL
      *   0x04 LL object
      *   0x30 LL modifiations
@@ -414,18 +425,13 @@ public class ModifyRequestCodec extends LdapMessageCodec
      *           0x04 LL attributeValue
      *           ... 
      *           0x04 LL attributeValue
-     * 
+     * </pre>
      * 
      * @param buffer The buffer where to put the PDU
      * @return The PDU.
      */
-    public ByteBuffer encode( ByteBuffer buffer ) throws EncoderException
+    protected void encodeProtocolOp( ByteBuffer buffer ) throws EncoderException
     {
-        if ( buffer == null )
-        {
-            throw new EncoderException( "Cannot put a PDU in a null buffer !" );
-        }
-
         try
         {
             // The AddRequest Tag
@@ -496,8 +502,6 @@ public class ModifyRequestCodec extends LdapMessageCodec
         {
             throw new EncoderException( "The PDU buffer size is too small !" );
         }
-
-        return buffer;
     }
 
 

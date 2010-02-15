@@ -28,7 +28,10 @@ import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.asn1.primitives.OID;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.codec.LdapResponseCodec;
+import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.util.StringTools;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -42,8 +45,11 @@ import org.apache.directory.shared.ldap.util.StringTools;
  */
 public class IntermediateResponseCodec extends LdapResponseCodec
 {
-    // ~ Instance fields
-    // ----------------------------------------------------------------------------
+    /** The logger */
+    private static Logger LOGGER = LoggerFactory.getLogger( IntermediateResponseCodec.class );
+
+    /** Speedup for logs */
+    private static final boolean IS_DEBUG = LOGGER.isDebugEnabled();
 
     /** The name */
     private OID responseName;
@@ -78,9 +84,18 @@ public class IntermediateResponseCodec extends LdapResponseCodec
      * 
      * @return Returns the type.
      */
-    public int getMessageType()
+    public MessageTypeEnum getMessageType()
     {
-        return LdapConstants.INTERMEDIATE_RESPONSE;
+        return MessageTypeEnum.INTERMEDIATE_RESPONSE;
+    }
+
+    
+    /**
+     * {@inheritDoc}
+     */
+    public String getMessageTypeName()
+    {
+        return "INTERMEDIATE_RESPONSE";
     }
 
 
@@ -145,7 +160,7 @@ public class IntermediateResponseCodec extends LdapResponseCodec
      * 
      * @return The IntermediateResponse length
      */
-    public int computeLength()
+    protected int computeLengthProtocolOp()
     {
         intermediateResponseLength = 0;
 
@@ -161,7 +176,14 @@ public class IntermediateResponseCodec extends LdapResponseCodec
                     + responseValue.length;
         }
 
-        return 1 + TLV.getNbBytes( intermediateResponseLength ) + intermediateResponseLength;
+        int length = 1 + TLV.getNbBytes( intermediateResponseLength ) + intermediateResponseLength;
+
+        if ( IS_DEBUG )
+        {
+            LOGGER.debug( "Intermediate response length : {}", Integer.valueOf( length ) );
+        }
+
+        return length;
     }
 
 
@@ -175,13 +197,8 @@ public class IntermediateResponseCodec extends LdapResponseCodec
      * @param buffer The buffer where to put the PDU
      * @return The PDU.
      */
-    public ByteBuffer encode( ByteBuffer buffer ) throws EncoderException
+    protected void encodeProtocolOp( ByteBuffer buffer ) throws EncoderException
     {
-        if ( buffer == null )
-        {
-            throw new EncoderException( "Cannot put a PDU in a null buffer !" );
-        }
-
         try
         {
             // The IntermediateResponse Tag
@@ -215,13 +232,13 @@ public class IntermediateResponseCodec extends LdapResponseCodec
         }
         catch ( BufferOverflowException boe )
         {
-            throw new EncoderException( "The PDU buffer size is too small !" );
+            String msg = "The PDU buffer size is too small !";
+            LOGGER.error( msg );
+            throw new EncoderException( msg );
         }
-
-        return buffer;
     }
 
-
+    
     /**
      * Get a String representation of an IntermediateResponse
      * 

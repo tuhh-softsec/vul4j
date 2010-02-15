@@ -28,6 +28,7 @@ import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.asn1.primitives.OID;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
+import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.util.StringTools;
 
 
@@ -78,9 +79,18 @@ public class ExtendedRequestCodec extends LdapMessageCodec
      * 
      * @return Returns the type.
      */
-    public int getMessageType()
+    public MessageTypeEnum getMessageType()
     {
-        return LdapConstants.EXTENDED_REQUEST;
+        return MessageTypeEnum.EXTENDED_REQUEST;
+    }
+
+    
+    /**
+     * {@inheritDoc}
+     */
+    public String getMessageTypeName()
+    {
+        return "EXTENDED_REQUEST";
     }
 
 
@@ -156,7 +166,7 @@ public class ExtendedRequestCodec extends LdapMessageCodec
      * 
      * Length(ExtendedRequest) = Length(0x77) + Length(L1) + L1
      */
-    public int computeLength()
+    protected int computeLengthProtocolOp()
     {
         oidLength = requestName.toString().length();
         extendedRequestLength = 1 + TLV.getNbBytes( oidLength ) + oidLength;
@@ -182,13 +192,8 @@ public class ExtendedRequestCodec extends LdapMessageCodec
      * @param buffer The buffer where to put the PDU
      * @return The PDU.
      */
-    public ByteBuffer encode( ByteBuffer buffer ) throws EncoderException
+    protected void encodeProtocolOp( ByteBuffer buffer ) throws EncoderException
     {
-        if ( buffer == null )
-        {
-            throw new EncoderException( "Cannot put a PDU in a null buffer !" );
-        }
-
         try
         {
             // The BindResponse Tag
@@ -226,8 +231,6 @@ public class ExtendedRequestCodec extends LdapMessageCodec
         {
             throw new EncoderException( "The PDU buffer size is too small !" );
         }
-
-        return buffer;
     }
 
 

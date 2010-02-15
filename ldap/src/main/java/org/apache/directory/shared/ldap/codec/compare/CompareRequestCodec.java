@@ -29,6 +29,7 @@ import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
+import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.name.LdapDN;
 import org.apache.directory.shared.ldap.util.StringTools;
 
@@ -91,9 +92,18 @@ public class CompareRequestCodec extends LdapMessageCodec
      * 
      * @return Returns the type.
      */
-    public int getMessageType()
+    public MessageTypeEnum getMessageType()
     {
-        return LdapConstants.COMPARE_REQUEST;
+        return MessageTypeEnum.COMPARE_REQUEST;
+    }
+
+    
+    /**
+     * {@inheritDoc}
+     */
+    public String getMessageTypeName()
+    {
+        return "COMPARE_REQUEST";
     }
 
 
@@ -182,9 +192,8 @@ public class CompareRequestCodec extends LdapMessageCodec
      * 
      * @return The CompareRequest PDU's length
      */
-    public int computeLength()
+    protected int computeLengthProtocolOp()
     {
-
         // The entry
         compareRequestLength = 1 + TLV.getNbBytes( LdapDN.getNbBytes( entry ) ) + LdapDN.getNbBytes( entry );
 
@@ -222,13 +231,8 @@ public class CompareRequestCodec extends LdapMessageCodec
      * @param buffer The buffer where to put the PDU
      * @return The PDU.
      */
-    public ByteBuffer encode( ByteBuffer buffer ) throws EncoderException
+    protected void encodeProtocolOp( ByteBuffer buffer ) throws EncoderException
     {
-        if ( buffer == null )
-        {
-            throw new EncoderException( "Cannot put a PDU in a null buffer !" );
-        }
-
         try
         {
             // The CompareRequest Tag
@@ -259,8 +263,6 @@ public class CompareRequestCodec extends LdapMessageCodec
         {
             Value.encode( buffer, ( byte[] ) assertionValue );
         }
-
-        return buffer;
     }
 
 
@@ -271,14 +273,13 @@ public class CompareRequestCodec extends LdapMessageCodec
      */
     public String toString()
     {
-
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
 
         sb.append( "    Compare request\n" );
         sb.append( "        Entry : '" ).append( entry ).append( "'\n" );
         sb.append( "        Attribute description : '" ).append( attributeDesc ).append( "'\n" );
-        sb.append( "        Attribute value : '" ).append( StringTools.dumpObject( assertionValue )  ).append( "'\n" );
+        sb.append( "        Attribute value : '" ).append( StringTools.dumpObject( assertionValue ) ).append( '\'' );
 
-        return sb.toString();
+        return toString( sb.toString() );
     }
 }

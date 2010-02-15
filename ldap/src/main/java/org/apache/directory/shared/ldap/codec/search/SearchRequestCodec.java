@@ -36,6 +36,7 @@ import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
+import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.client.DefaultClientAttribute;
 import org.apache.directory.shared.ldap.filter.SearchScope;
@@ -122,9 +123,18 @@ public class SearchRequestCodec extends LdapMessageCodec
      * 
      * @return Returns the type.
      */
-    public int getMessageType()
+    public MessageTypeEnum getMessageType()
     {
-        return LdapConstants.SEARCH_REQUEST;
+        return MessageTypeEnum.SEARCH_REQUEST;
+    }
+
+    
+    /**
+     * {@inheritDoc}
+     */
+    public String getMessageTypeName()
+    {
+        return "SEARCH_REQUEST";
     }
 
 
@@ -441,7 +451,7 @@ public class SearchRequestCodec extends LdapMessageCodec
      * Compute the SearchRequest length
      * 
      * SearchRequest :
-     * 
+     * <pre>
      * 0x63 L1
      *  |
      *  +--> 0x04 L2 baseObject
@@ -459,8 +469,9 @@ public class SearchRequestCodec extends LdapMessageCodec
      *        +--> 0x04 L4-i Attribute description 
      *        +--> ... 
      *        +--> 0x04 L4-n Attribute description 
+     *        </pre>
      */
-    public int computeLength()
+    protected int computeLengthProtocolOp()
     {
         searchRequestLength = 0;
 
@@ -524,7 +535,7 @@ public class SearchRequestCodec extends LdapMessageCodec
      * Encode the SearchRequest message to a PDU.
      * 
      * SearchRequest :
-     * 
+     * <pre>
      * 0x63 LL
      *   0x04 LL baseObject
      *   0x0A 01 scope
@@ -537,17 +548,12 @@ public class SearchRequestCodec extends LdapMessageCodec
      *     0x04 LL attributeDescription
      *     ... 
      *     0x04 LL attributeDescription
-     * 
+     * </pre>
      * @param buffer The buffer where to put the PDU
      * @return The PDU.
      */
-    public ByteBuffer encode( ByteBuffer buffer ) throws EncoderException
+    protected void encodeProtocolOp( ByteBuffer buffer ) throws EncoderException
     {
-        if ( buffer == null )
-        {
-            throw new EncoderException( "Cannot put a PDU in a null buffer !" );
-        }
-
         try
         {
             // The SearchRequest Tag
@@ -592,8 +598,6 @@ public class SearchRequestCodec extends LdapMessageCodec
         {
             throw new EncoderException( "The PDU buffer size is too small !" );
         }
-
-        return buffer;
     }
 
 

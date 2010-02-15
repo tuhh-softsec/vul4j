@@ -31,7 +31,6 @@ import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.codec.EncoderException;
-import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.message.control.Control;
@@ -87,20 +86,19 @@ public class AddResponseTest
         }
 
         // Check the decoded AddResponse
-        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        AddResponseCodec addResponse = message.getAddResponse();
+        AddResponseCodec addResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getAddResponse();
 
-        assertEquals( 1, message.getMessageId() );
+        assertEquals( 1, addResponse.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, addResponse.getLdapResult().getResultCode() );
         assertEquals( "", addResponse.getLdapResult().getMatchedDN() );
         assertEquals( "", addResponse.getLdapResult().getErrorMessage() );
 
         // Check the length
-        assertEquals( 0x0E, message.computeLength() );
+        assertEquals( 0x0E, addResponse.computeLength() );
 
         try
         {
-            ByteBuffer bb = message.encode( null );
+            ByteBuffer bb = addResponse.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -195,29 +193,28 @@ public class AddResponseTest
         }
 
         // Check the decoded AddResponse
-        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        AddResponseCodec addResponse = message.getAddResponse();
+        AddResponseCodec addResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getAddResponse();
 
-        assertEquals( 1, message.getMessageId() );
+        assertEquals( 1, addResponse.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, addResponse.getLdapResult().getResultCode() );
         assertEquals( "", addResponse.getLdapResult().getMatchedDN() );
         assertEquals( "", addResponse.getLdapResult().getErrorMessage() );
 
         // Check the length
-        assertEquals( 0x2B, message.computeLength() );
+        assertEquals( 0x2B, addResponse.computeLength() );
 
         // Check the Control
-        List<Control> controls = message.getControls();
+        List<Control> controls = addResponse.getControls();
 
         assertEquals( 1, controls.size() );
 
-        Control control = message.getControls( 0 );
+        Control control = addResponse.getControls( 0 );
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
         assertEquals( "", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
 
         try
         {
-            ByteBuffer bb = message.encode( null );
+            ByteBuffer bb = addResponse.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 

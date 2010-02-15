@@ -27,6 +27,7 @@ import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.codec.LdapResponseCodec;
+import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 
 
 /**
@@ -56,9 +57,18 @@ public class ModifyDNResponseCodec extends LdapResponseCodec
      * 
      * @return Returns the type.
      */
-    public int getMessageType()
+    public MessageTypeEnum getMessageType()
     {
-        return LdapConstants.MODIFYDN_RESPONSE;
+        return MessageTypeEnum.MODIFYDN_RESPONSE;
+    }
+
+    
+    /**
+     * {@inheritDoc}
+     */
+    public String getMessageTypeName()
+    {
+        return "MODIFYDN_RESPONSE";
     }
 
 
@@ -66,18 +76,20 @@ public class ModifyDNResponseCodec extends LdapResponseCodec
      * Compute the ModifyDNResponse length 
      * 
      * ModifyDNResponse : 
+     * <pre>
      * 0x6D L1 
      *   | 
      *   +--> LdapResult 
      *   
      * L1 = Length(LdapResult) 
      * Length(ModifyDNResponse) = Length(0x6D) + Length(L1) + L1
+     * </pre>
      */
-    public int computeLength()
+    protected int computeLengthProtocolOp()
     {
-        int ldapResponseLength = super.computeLength();
+        int ldapResultLength = super.computeLdapResultLength();
 
-        return 1 + TLV.getNbBytes( ldapResponseLength ) + ldapResponseLength;
+        return 1 + TLV.getNbBytes( ldapResultLength ) + ldapResultLength;
     }
 
 
@@ -87,13 +99,8 @@ public class ModifyDNResponseCodec extends LdapResponseCodec
      * @param buffer The buffer where to put the PDU
      * @return The PDU.
      */
-    public ByteBuffer encode( ByteBuffer buffer ) throws EncoderException
+    protected void encodeProtocolOp( ByteBuffer buffer ) throws EncoderException
     {
-        if ( buffer == null )
-        {
-            throw new EncoderException( "Cannot put a PDU in a null buffer !" );
-        }
-
         try
         {
             // The tag
@@ -106,7 +113,7 @@ public class ModifyDNResponseCodec extends LdapResponseCodec
         }
 
         // The ldapResult
-        return super.encode( buffer );
+        super.encode( buffer );
     }
 
 

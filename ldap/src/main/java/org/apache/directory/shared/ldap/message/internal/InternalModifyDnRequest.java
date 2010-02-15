@@ -19,7 +19,7 @@
  */
 package org.apache.directory.shared.ldap.message.internal;
 
-import org.apache.directory.shared.ldap.message.MessageTypeEnum;
+import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.message.SingleReplyRequest;
 import org.apache.directory.shared.ldap.name.LdapDN;
 import org.apache.directory.shared.ldap.name.RDN;
@@ -70,7 +70,7 @@ import org.apache.directory.shared.ldap.name.RDN;
 public interface InternalModifyDnRequest extends SingleReplyRequest, InternalAbandonableRequest
 {
     /** Modify DN request message type enumeration value */
-    MessageTypeEnum TYPE = MessageTypeEnum.MOD_DN_REQUEST;
+    MessageTypeEnum TYPE = MessageTypeEnum.MODIFYDN_REQUEST;
 
     /** Modify DN response message type enumeration value */
     MessageTypeEnum RESP_TYPE = InternalModifyDnResponse.TYPE;

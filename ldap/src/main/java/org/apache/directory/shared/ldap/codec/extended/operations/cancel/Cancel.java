@@ -113,11 +113,10 @@ public class Cancel extends AbstractAsn1Object
     /**
      * Encodes the cancel extended operation.
      * 
-     * @param buffer The encoded sink
      * @return A ByteBuffer that contains the encoded PDU
      * @throws EncoderException If anything goes wrong.
      */
-    public ByteBuffer encode( ByteBuffer buffer ) throws EncoderException
+    public ByteBuffer encode() throws EncoderException
     {
         // Allocate the bytes buffer.
         ByteBuffer bb = ByteBuffer.allocate( computeLength() );

@@ -29,7 +29,6 @@ import org.apache.directory.shared.ldap.codec.extended.operations.gracefulShutdo
 import org.apache.directory.shared.ldap.codec.extended.operations.gracefulShutdown.GracefulShutdownDecoder;
 import org.apache.directory.shared.ldap.message.ExtendedRequestImpl;
 import org.apache.directory.shared.ldap.message.internal.InternalResultResponse;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -85,7 +84,7 @@ public class GracefulShutdownRequest extends ExtendedRequestImpl
         GracefulShutdown gs = new GracefulShutdown();
         gs.setDelay( this.delay );
         gs.setTimeOffline( this.timeOffline );
-        payload = gs.encode( null ).array();
+        payload = gs.encode().array();
     }
 
 

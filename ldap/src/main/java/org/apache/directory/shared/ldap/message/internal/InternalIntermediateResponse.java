@@ -20,8 +20,7 @@
 
 package org.apache.directory.shared.ldap.message.internal;
 
-
-import org.apache.directory.shared.ldap.message.MessageTypeEnum;
+import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 
 
 /**
@@ -34,7 +33,7 @@ import org.apache.directory.shared.ldap.message.MessageTypeEnum;
 public interface InternalIntermediateResponse extends InternalResponse
 {
     /** Intermediate response message type enumeration value */
-    MessageTypeEnum TYPE = MessageTypeEnum.INTERMEDIATE_RESP;
+    MessageTypeEnum TYPE = MessageTypeEnum.INTERMEDIATE_RESPONSE;
 
 
     /**

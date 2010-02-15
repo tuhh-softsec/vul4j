@@ -33,7 +33,6 @@ import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.codec.EncoderException;
-import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.util.LdapURLEncodingException;
 import org.apache.directory.shared.ldap.message.control.Control;
@@ -116,10 +115,9 @@ public class SearchResultReferenceTest
             fail( de.getMessage() );
         }
 
-        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        SearchResultReferenceCodec searchResultReference = message.getSearchResultReference();
+        SearchResultReferenceCodec searchResultReference = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchResultReference();
 
-        assertEquals( 1, message.getMessageId() );
+        assertEquals( 1, searchResultReference.getMessageId() );
 
         Set<String> ldapUrlsSet = new HashSet<String>();
 
@@ -150,12 +148,12 @@ public class SearchResultReferenceTest
         assertTrue( ldapUrlsSet.size() == 0 );
 
         // Check the length
-        assertEquals( 0x3D8, message.computeLength() );
+        assertEquals( 0x3D8, searchResultReference.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = message.encode( null );
+            ByteBuffer bb = searchResultReference.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -249,10 +247,9 @@ public class SearchResultReferenceTest
         
         stream.flip();
         
-        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        SearchResultReferenceCodec searchResultReference = message.getSearchResultReference();
+        SearchResultReferenceCodec searchResultReference = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchResultReference();
 
-        assertEquals( 1, message.getMessageId() );
+        assertEquals( 1, searchResultReference.getMessageId() );
 
         Set<String> ldapUrlsSet = new HashSet<String>();
 
@@ -283,21 +280,21 @@ public class SearchResultReferenceTest
         assertTrue( ldapUrlsSet.size() == 0 );
 
         // Check the Control
-        List<Control> controls = message.getControls();
+        List<Control> controls = searchResultReference.getControls();
 
         assertEquals( 1, controls.size() );
 
-        Control control = message.getControls( 0 );
+        Control control = searchResultReference.getControls( 0 );
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
         assertEquals( "", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
 
         // Check the length
-        assertEquals( 0x3F5, message.computeLength() );
+        assertEquals( 0x3F5, searchResultReference.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = message.encode( null );
+            ByteBuffer bb = searchResultReference.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -393,22 +390,21 @@ public class SearchResultReferenceTest
             fail( de.getMessage() );
         }
 
-        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        SearchResultReferenceCodec searchResultReference = message.getSearchResultReference();
+        SearchResultReferenceCodec searchResultReference = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchResultReference();
 
-        assertEquals( 1, message.getMessageId() );
+        assertEquals( 1, searchResultReference.getMessageId() );
 
         LdapURL ldapUrl = searchResultReference.getSearchResultReferences().get( 0 );
 
         assertEquals( "ldap:///", ldapUrl.toString() );
 
         // Check the length
-        assertEquals( 0x11, message.computeLength() );
+        assertEquals( 0x11, searchResultReference.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = message.encode( null );
+            ByteBuffer bb = searchResultReference.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 

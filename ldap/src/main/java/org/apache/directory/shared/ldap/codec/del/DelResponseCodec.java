@@ -27,6 +27,7 @@ import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.codec.LdapResponseCodec;
+import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 
 
 /**
@@ -56,9 +57,18 @@ public class DelResponseCodec extends LdapResponseCodec
      * 
      * @return Returns the type.
      */
-    public int getMessageType()
+    public MessageTypeEnum getMessageType()
     {
-        return LdapConstants.DEL_RESPONSE;
+        return MessageTypeEnum.DEL_RESPONSE;
+    }
+
+    
+    /**
+     * {@inheritDoc}
+     */
+    public String getMessageTypeName()
+    {
+        return "DEL_RESPONSE";
     }
 
 
@@ -75,11 +85,11 @@ public class DelResponseCodec extends LdapResponseCodec
      * 
      * Length(DelResponse) = Length(0x6B) + Length(L1) + L1
      */
-    public int computeLength()
+    protected int computeLengthProtocolOp()
     {
-        int ldapResponseLength = super.computeLength();
+        int ldapResultLength = super.computeLdapResultLength();
 
-        return 1 + TLV.getNbBytes( ldapResponseLength ) + ldapResponseLength;
+        return 1 + TLV.getNbBytes( ldapResultLength ) + ldapResultLength;
     }
 
 
@@ -89,13 +99,8 @@ public class DelResponseCodec extends LdapResponseCodec
      * @param buffer The buffer where to put the PDU
      * @return The PDU.
      */
-    public ByteBuffer encode( ByteBuffer buffer ) throws EncoderException
+    protected void encodeProtocolOp( ByteBuffer buffer ) throws EncoderException
     {
-        if ( buffer == null )
-        {
-            throw new EncoderException( "Cannot put a PDU in a null buffer !" );
-        }
-
         try
         {
             // The tag
@@ -108,7 +113,7 @@ public class DelResponseCodec extends LdapResponseCodec
         }
 
         // The ldapResult
-        return super.encode( buffer );
+        super.encode( buffer );
     }
 
 
@@ -119,12 +124,6 @@ public class DelResponseCodec extends LdapResponseCodec
      */
     public String toString()
     {
-
-        StringBuffer sb = new StringBuffer();
-
-        sb.append( "    Del Response\n" );
-        sb.append( super.toString() );
-
-        return sb.toString();
+        return toString( "    Del Response" );
     }
 }

@@ -84,7 +84,7 @@ public class CancelRequest extends ExtendedRequestImpl
         Cancel cancel = new Cancel();
         cancel.setCancelId( this.cancelId );
 
-        payload = cancel.encode( null ).array();
+        payload = cancel.encode().array();
     }
     
     /**

@@ -27,7 +27,6 @@ import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.bind.BindResponseCodec;
 import org.apache.directory.shared.ldap.util.StringTools;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,7 +57,7 @@ public class ServerSASLCredsAction extends GrammarAction
     {
         LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
-        BindResponseCodec bindResponseMessage = ldapMessageContainer.getLdapMessage().getBindResponse();
+        BindResponseCodec bindResponseMessage = ldapMessageContainer.getBindResponse();
 
         // Get the Value and store it in the BindRequest
         TLV tlv = ldapMessageContainer.getCurrentTLV();

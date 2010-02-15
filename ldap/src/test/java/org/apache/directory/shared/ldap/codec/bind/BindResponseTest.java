@@ -32,7 +32,6 @@ import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.codec.EncoderException;
-import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.search.controls.pagedSearch.PagedResultsControl;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
@@ -90,21 +89,20 @@ public class BindResponseTest
         }
 
         // Check the decoded BindResponse
-        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        BindResponseCodec br = message.getBindResponse();
+        BindResponseCodec bindResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getBindResponse();
 
-        assertEquals( 1, message.getMessageId() );
-        assertEquals( ResultCodeEnum.SUCCESS, br.getLdapResult().getResultCode() );
-        assertEquals( "", br.getLdapResult().getMatchedDN() );
-        assertEquals( "", br.getLdapResult().getErrorMessage() );
+        assertEquals( 1, bindResponse.getMessageId() );
+        assertEquals( ResultCodeEnum.SUCCESS, bindResponse.getLdapResult().getResultCode() );
+        assertEquals( "", bindResponse.getLdapResult().getMatchedDN() );
+        assertEquals( "", bindResponse.getLdapResult().getErrorMessage() );
 
         // Check the length
-        assertEquals( 0x0E, message.computeLength() );
+        assertEquals( 0x0E, bindResponse.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = message.encode( null );
+            ByteBuffer bb = bindResponse.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -174,23 +172,22 @@ public class BindResponseTest
         }
 
         // Check the decoded BindResponse
-        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        BindResponseCodec br = message.getBindResponse();
+        BindResponseCodec bindResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getBindResponse();
 
-        assertEquals( 1, message.getMessageId() );
-        assertEquals( ResultCodeEnum.SUCCESS, br.getLdapResult().getResultCode() );
-        assertEquals( "", br.getLdapResult().getMatchedDN() );
-        assertEquals( "", br.getLdapResult().getErrorMessage() );
+        assertEquals( 1, bindResponse.getMessageId() );
+        assertEquals( ResultCodeEnum.SUCCESS, bindResponse.getLdapResult().getResultCode() );
+        assertEquals( "", bindResponse.getLdapResult().getMatchedDN() );
+        assertEquals( "", bindResponse.getLdapResult().getErrorMessage() );
 
         // Check the length
-        assertEquals( 0x3C, message.computeLength() );
+        assertEquals( 0x3C, bindResponse.computeLength() );
 
         // Check the Control
-        List<Control> controls = message.getControls();
+        List<Control> controls = bindResponse.getControls();
 
         assertEquals( 1, controls.size() );
 
-        Control control = message.getControls( 0 );
+        Control control = bindResponse.getControls( 0 );
         assertEquals( "1.2.840.113556.1.4.319", control.getOid() );
         assertTrue( control instanceof PagedResultsControl );
         
@@ -202,7 +199,7 @@ public class BindResponseTest
         // Check the encoding
         try
         {
-            ByteBuffer bb = message.encode( null );
+            ByteBuffer bb = bindResponse.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -261,22 +258,21 @@ public class BindResponseTest
         }
 
         // Check the decoded BindResponse
-        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        BindResponseCodec br = message.getBindResponse();
+        BindResponseCodec bindResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getBindResponse();
 
-        assertEquals( 1, message.getMessageId() );
-        assertEquals( ResultCodeEnum.SUCCESS, br.getLdapResult().getResultCode() );
-        assertEquals( "", br.getLdapResult().getMatchedDN() );
-        assertEquals( "", br.getLdapResult().getErrorMessage() );
-        assertEquals( "", StringTools.utf8ToString( br.getServerSaslCreds() ) );
+        assertEquals( 1, bindResponse.getMessageId() );
+        assertEquals( ResultCodeEnum.SUCCESS, bindResponse.getLdapResult().getResultCode() );
+        assertEquals( "", bindResponse.getLdapResult().getMatchedDN() );
+        assertEquals( "", bindResponse.getLdapResult().getErrorMessage() );
+        assertEquals( "", StringTools.utf8ToString( bindResponse.getServerSaslCreds() ) );
 
         // Check the length
-        assertEquals( 0x10, message.computeLength() );
+        assertEquals( 0x10, bindResponse.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = message.encode( null );
+            ByteBuffer bb = bindResponse.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -338,31 +334,30 @@ public class BindResponseTest
         }
 
         // Check the decoded BindResponse
-        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        BindResponseCodec br = message.getBindResponse();
+        BindResponseCodec bindResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getBindResponse();
 
-        assertEquals( 1, message.getMessageId() );
-        assertEquals( ResultCodeEnum.SUCCESS, br.getLdapResult().getResultCode() );
-        assertEquals( "", br.getLdapResult().getMatchedDN() );
-        assertEquals( "", br.getLdapResult().getErrorMessage() );
-        assertEquals( "", StringTools.utf8ToString( br.getServerSaslCreds() ) );
+        assertEquals( 1, bindResponse.getMessageId() );
+        assertEquals( ResultCodeEnum.SUCCESS, bindResponse.getLdapResult().getResultCode() );
+        assertEquals( "", bindResponse.getLdapResult().getMatchedDN() );
+        assertEquals( "", bindResponse.getLdapResult().getErrorMessage() );
+        assertEquals( "", StringTools.utf8ToString( bindResponse.getServerSaslCreds() ) );
 
         // Check the Control
-        List<Control> controls = message.getControls();
+        List<Control> controls = bindResponse.getControls();
 
         assertEquals( 1, controls.size() );
 
-        Control control = message.getControls( 0 );
+        Control control = bindResponse.getControls( 0 );
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
         assertEquals( "", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
 
         // Check the length
-        assertEquals( 0x2D, message.computeLength() );
+        assertEquals( 0x2D, bindResponse.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = message.encode( null );
+            ByteBuffer bb = bindResponse.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -421,22 +416,21 @@ public class BindResponseTest
         }
 
         // Check the decoded BindResponse
-        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        BindResponseCodec br = message.getBindResponse();
+        BindResponseCodec bindResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getBindResponse();
 
-        assertEquals( 1, message.getMessageId() );
-        assertEquals( ResultCodeEnum.SUCCESS, br.getLdapResult().getResultCode() );
-        assertEquals( "", br.getLdapResult().getMatchedDN() );
-        assertEquals( "", br.getLdapResult().getErrorMessage() );
-        assertEquals( "AB", StringTools.utf8ToString( br.getServerSaslCreds() ) );
+        assertEquals( 1, bindResponse.getMessageId() );
+        assertEquals( ResultCodeEnum.SUCCESS, bindResponse.getLdapResult().getResultCode() );
+        assertEquals( "", bindResponse.getLdapResult().getMatchedDN() );
+        assertEquals( "", bindResponse.getLdapResult().getErrorMessage() );
+        assertEquals( "AB", StringTools.utf8ToString( bindResponse.getServerSaslCreds() ) );
 
         // Check the length
-        assertEquals( 0x12, message.computeLength() );
+        assertEquals( 0x12, bindResponse.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = message.encode( null );
+            ByteBuffer bb = bindResponse.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 

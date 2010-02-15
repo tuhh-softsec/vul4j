@@ -51,5 +51,4 @@ public interface InternalAbandonableRequest extends InternalRequest
      *            to be notified if this request gets abandoned.
      */
     void addAbandonListener( AbandonListener listener );
-
 }

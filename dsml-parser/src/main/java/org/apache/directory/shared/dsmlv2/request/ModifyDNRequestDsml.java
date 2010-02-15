@@ -20,6 +20,7 @@
 package org.apache.directory.shared.dsmlv2.request;
 
 
+import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.codec.modifyDn.ModifyDNRequestCodec;
 import org.apache.directory.shared.ldap.name.LdapDN;
 import org.apache.directory.shared.ldap.name.RDN;
@@ -58,7 +59,7 @@ public class ModifyDNRequestDsml extends AbstractRequestDsml
     /**
      * {@inheritDoc}
      */
-    public int getMessageType()
+    public MessageTypeEnum getMessageType()
     {
         return instance.getMessageType();
     }

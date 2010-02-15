@@ -20,6 +20,7 @@
 package org.apache.directory.shared.dsmlv2.request;
 
 
+import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.codec.compare.CompareRequestCodec;
 import org.apache.directory.shared.ldap.name.LdapDN;
 import org.dom4j.Element;
@@ -57,7 +58,7 @@ public class CompareRequestDsml extends AbstractRequestDsml
     /**
      * {@inheritDoc}
      */
-    public int getMessageType()
+    public MessageTypeEnum getMessageType()
     {
         return instance.getMessageType();
     }

@@ -31,7 +31,6 @@ import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.codec.EncoderException;
-import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.ResponseCarryingException;
 import org.apache.directory.shared.ldap.message.CompareResponseImpl;
@@ -96,21 +95,20 @@ public class CompareRequestTest
         }
 
         // Ceck the decoded CompareRequest PDU
-        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        CompareRequestCodec compareRequest = message.getCompareRequest();
+        CompareRequestCodec compareRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getCompareRequest();
 
-        assertEquals( 1, message.getMessageId() );
+        assertEquals( 1, compareRequest.getMessageId() );
         assertEquals( "cn=testModify,ou=users,ou=system", compareRequest.getEntry().toString() );
         assertEquals( "test", compareRequest.getAttributeDesc() );
         assertEquals( "value", compareRequest.getAssertionValue().toString() );
 
         // Check the length
-        assertEquals( 0x38, message.computeLength() );
+        assertEquals( 0x38, compareRequest.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = message.encode( null );
+            ByteBuffer bb = compareRequest.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -382,22 +380,21 @@ public class CompareRequestTest
             fail( de.getMessage() );
         }
 
-        // Ceck the decoded CompareRequest PDU
-        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        CompareRequestCodec compareRequest = message.getCompareRequest();
+        // Check the decoded CompareRequest PDU
+        CompareRequestCodec compareRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getCompareRequest();
 
-        assertEquals( 1, message.getMessageId() );
+        assertEquals( 1, compareRequest.getMessageId() );
         assertEquals( "cn=testModify,ou=users,ou=system", compareRequest.getEntry().toString() );
         assertEquals( "test", compareRequest.getAttributeDesc() );
         assertEquals( "", compareRequest.getAssertionValue().toString() );
 
         // Check the length
-        assertEquals( 0x33, message.computeLength() );
+        assertEquals( 0x33, compareRequest.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = message.encode( null );
+            ByteBuffer bb = compareRequest.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -460,30 +457,29 @@ public class CompareRequestTest
         }
 
         // Ceck the decoded CompareRequest PDU
-        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        CompareRequestCodec compareRequest = message.getCompareRequest();
+        CompareRequestCodec compareRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getCompareRequest();
 
-        assertEquals( 1, message.getMessageId() );
+        assertEquals( 1, compareRequest.getMessageId() );
         assertEquals( "cn=testModify,ou=users,ou=system", compareRequest.getEntry().toString() );
         assertEquals( "test", compareRequest.getAttributeDesc() );
         assertEquals( "value", compareRequest.getAssertionValue().toString() );
 
         // Check the Control
-        List<Control> controls = message.getControls();
+        List<Control> controls = compareRequest.getControls();
 
         assertEquals( 1, controls.size() );
 
-        Control control = message.getControls( 0 );
+        Control control = compareRequest.getControls( 0 );
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
         assertEquals( "", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
 
         // Check the length
-        assertEquals( 0x55, message.computeLength() );
+        assertEquals( 0x55, compareRequest.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = message.encode( null );
+            ByteBuffer bb = compareRequest.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 

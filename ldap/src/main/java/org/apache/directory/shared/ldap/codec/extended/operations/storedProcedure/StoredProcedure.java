@@ -260,10 +260,9 @@ public class StoredProcedure extends AbstractAsn1Object
     /**
      * Encode the StoredProcedure message to a PDU. 
      * 
-     * @param buffer The buffer where to put the PDU
      * @return The PDU.
      */
-    public ByteBuffer encode( ByteBuffer buffer ) throws EncoderException
+    public ByteBuffer encode() throws EncoderException
     {
         // Allocate the bytes buffer.
         ByteBuffer bb = ByteBuffer.allocate( computeLength() );

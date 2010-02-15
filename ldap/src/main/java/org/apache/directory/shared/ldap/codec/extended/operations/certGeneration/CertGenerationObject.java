@@ -83,8 +83,7 @@ public class CertGenerationObject extends AbstractAsn1Object
     }
 
 
-    @Override
-    public ByteBuffer encode( ByteBuffer buffer ) throws EncoderException
+    public ByteBuffer encode() throws EncoderException
     {
         ByteBuffer bb = ByteBuffer.allocate( computeLength() );
 

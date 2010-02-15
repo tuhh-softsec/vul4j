@@ -22,8 +22,8 @@ package org.apache.directory.shared.ldap.message.internal;
 
 import java.util.Collection;
 
+import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.entry.Modification;
-import org.apache.directory.shared.ldap.message.MessageTypeEnum;
 import org.apache.directory.shared.ldap.message.SingleReplyRequest;
 import org.apache.directory.shared.ldap.name.LdapDN;
 

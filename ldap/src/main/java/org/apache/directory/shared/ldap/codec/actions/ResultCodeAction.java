@@ -27,13 +27,11 @@ import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.util.IntegerDecoder;
 import org.apache.directory.shared.asn1.util.IntegerDecoderException;
-import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.LdapResponseCodec;
 import org.apache.directory.shared.ldap.codec.LdapResultCodec;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.util.StringTools;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,8 +61,7 @@ public class ResultCodeAction extends GrammarAction
     public void action( IAsn1Container container ) throws DecoderException
     {
         LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-        LdapMessageCodec message = ldapMessageContainer.getLdapMessage();
-        LdapResponseCodec response = message.getLdapResponse();
+        LdapResponseCodec response = ldapMessageContainer.getLdapResponse();
         LdapResultCodec ldapResult = new LdapResultCodec();
         response.setLdapResult( ldapResult );
 

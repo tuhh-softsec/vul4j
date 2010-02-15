@@ -28,6 +28,7 @@ import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
+import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.name.LdapDN;
 import org.apache.directory.shared.ldap.util.StringTools;
 
@@ -69,9 +70,18 @@ public class BindRequestCodec extends LdapMessageCodec
      * 
      * @return Returns the type.
      */
-    public int getMessageType()
+    public MessageTypeEnum getMessageType()
     {
-        return LdapConstants.BIND_REQUEST;
+        return MessageTypeEnum.BIND_REQUEST;
+    }
+
+    
+    /**
+     * {@inheritDoc}
+     */
+    public String getMessageTypeName()
+    {
+        return "BIND_REQUEST";
     }
 
 
@@ -178,6 +188,7 @@ public class BindRequestCodec extends LdapMessageCodec
      * Compute the BindRequest length 
      * 
      * BindRequest : 
+     * <pre>
      * 0x60 L1 
      *   | 
      *   +--> 0x02 0x01 (1..127) version 
@@ -188,8 +199,9 @@ public class BindRequestCodec extends LdapMessageCodec
      * L3/4 = Length(authentication) 
      * Length(BindRequest) = Length(0x60) + Length(L1) + L1 + Length(0x02) + 1 + 1 + 
      *      Length(0x04) + Length(L2) + L2 + Length(authentication)
+     * </pre>
      */
-    public int computeLength()
+    protected int computeLengthProtocolOp()
     {
         bindRequestLength = 1 + 1 + 1; // Initialized with version
 
@@ -208,24 +220,19 @@ public class BindRequestCodec extends LdapMessageCodec
      * Encode the BindRequest message to a PDU. 
      * 
      * BindRequest : 
-     * 
+     * <pre>
      * 0x60 LL 
      *   0x02 LL version         0x80 LL simple 
      *   0x04 LL name           /   
      *   authentication.encode() 
      *                          \ 0x83 LL mechanism [0x04 LL credential]
-     * 
+     * </pre>
      * 
      * @param buffer The buffer where to put the PDU
      * @return The PDU.
      */
-    public ByteBuffer encode( ByteBuffer buffer ) throws EncoderException
+    protected void encodeProtocolOp( ByteBuffer buffer ) throws EncoderException
     {
-        if ( buffer == null )
-        {
-            throw new EncoderException( "Cannot put a PDU in a null buffer !" );
-        }
-
         try
         {
             // The BindRequest Tag
@@ -246,8 +253,6 @@ public class BindRequestCodec extends LdapMessageCodec
 
         // The authentication
         authentication.encode( buffer );
-
-        return buffer;
     }
 
 
@@ -258,14 +263,14 @@ public class BindRequestCodec extends LdapMessageCodec
      */
     public String toString()
     {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
 
         sb.append( "    BindRequest\n" );
         sb.append( "        Version : '" ).append( version ).append( "'\n" );
 
         if ( ( null == name ) || StringTools.isEmpty( name.toString() ) )
         {
-            sb.append( "        Name : anonymous\n" );
+            sb.append( "        Name : anonymous" );
         }
         else
         {
@@ -273,7 +278,7 @@ public class BindRequestCodec extends LdapMessageCodec
 
             if ( authentication instanceof SimpleAuthentication )
             {
-                sb.append( "        Simple authentication : '" ).append( authentication ).append( "'\n" );
+                sb.append( "        Simple authentication : '" ).append( authentication ).append( '\'' );
             }
             else
             {
@@ -281,7 +286,7 @@ public class BindRequestCodec extends LdapMessageCodec
             }
         }
 
-        return sb.toString();
+        return toString( sb.toString() );
     }
 
     /* Used only for test perfs

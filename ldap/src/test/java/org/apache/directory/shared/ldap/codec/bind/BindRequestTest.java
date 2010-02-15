@@ -31,7 +31,6 @@ import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.codec.EncoderException;
-import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.ResponseCarryingException;
 import org.apache.directory.shared.ldap.message.BindResponseImpl;
@@ -132,7 +131,7 @@ public class BindRequestTest
         // Check the encoding
         try
         {
-            ByteBuffer bb = message.encode( null );
+            ByteBuffer bb = message.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -190,23 +189,22 @@ public class BindRequestTest
         }
 
         // Check the decoded BindRequest
-        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        BindRequestCodec br = message.getBindRequest();
+        BindRequestCodec bindRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getBindRequest();
 
-        assertEquals( 1, message.getMessageId() );
-        assertEquals( 3, br.getVersion() );
-        assertEquals( "uid=akarasulu,dc=example,dc=com", br.getName().toString() );
-        assertEquals( true, ( br.getAuthentication() instanceof SimpleAuthentication ) );
-        assertEquals( "password", StringTools.utf8ToString( ( ( SimpleAuthentication ) br.getAuthentication() )
+        assertEquals( 1, bindRequest.getMessageId() );
+        assertEquals( 3, bindRequest.getVersion() );
+        assertEquals( "uid=akarasulu,dc=example,dc=com", bindRequest.getName().toString() );
+        assertEquals( true, ( bindRequest.getAuthentication() instanceof SimpleAuthentication ) );
+        assertEquals( "password", StringTools.utf8ToString( ( ( SimpleAuthentication ) bindRequest.getAuthentication() )
             .getSimple() ) );
 
         // Check the length
-        assertEquals( 0x35, message.computeLength() );
+        assertEquals( 0x35, bindRequest.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = message.encode( null );
+            ByteBuffer bb = bindRequest.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -354,23 +352,22 @@ public class BindRequestTest
         }
 
         // Check the decoded BindRequest
-        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        BindRequestCodec br = message.getBindRequest();
+        BindRequestCodec bindRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getBindRequest();
 
-        assertEquals( 1, message.getMessageId() );
-        assertEquals( 3, br.getVersion() );
-        assertEquals( "", br.getName().toString() );
-        assertEquals( true, ( br.getAuthentication() instanceof SimpleAuthentication ) );
-        assertEquals( "password", StringTools.utf8ToString( ( ( SimpleAuthentication ) br.getAuthentication() )
+        assertEquals( 1, bindRequest.getMessageId() );
+        assertEquals( 3, bindRequest.getVersion() );
+        assertEquals( "", bindRequest.getName().toString() );
+        assertEquals( true, ( bindRequest.getAuthentication() instanceof SimpleAuthentication ) );
+        assertEquals( "password", StringTools.utf8ToString( ( ( SimpleAuthentication ) bindRequest.getAuthentication() )
             .getSimple() ) );
 
         // Check the length
-        assertEquals( 0x16, message.computeLength() );
+        assertEquals( 0x16, bindRequest.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = message.encode( null );
+            ByteBuffer bb = bindRequest.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -432,22 +429,21 @@ public class BindRequestTest
         }
 
         // Check the decoded BindRequest
-        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        BindRequestCodec br = message.getBindRequest();
+        BindRequestCodec bindRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getBindRequest();
 
-        assertEquals( 1, message.getMessageId() );
-        assertEquals( 3, br.getVersion() );
-        assertEquals( "uid=akarasulu,dc=example,dc=com", br.getName().toString() );
-        assertEquals( true, ( br.getAuthentication() instanceof SaslCredentials ) );
-        assertEquals( "KERBEROS_V4", ( ( SaslCredentials ) br.getAuthentication() ).getMechanism() );
+        assertEquals( 1, bindRequest.getMessageId() );
+        assertEquals( 3, bindRequest.getVersion() );
+        assertEquals( "uid=akarasulu,dc=example,dc=com", bindRequest.getName().toString() );
+        assertEquals( true, ( bindRequest.getAuthentication() instanceof SaslCredentials ) );
+        assertEquals( "KERBEROS_V4", ( ( SaslCredentials ) bindRequest.getAuthentication() ).getMechanism() );
 
         // Check the length
-        assertEquals( 0x3A, message.computeLength() );
+        assertEquals( 0x3A, bindRequest.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = message.encode( null );
+            ByteBuffer bb = bindRequest.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -516,24 +512,23 @@ public class BindRequestTest
         }
 
         // Check the decoded BindRequest
-        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        BindRequestCodec br = message.getBindRequest();
+        BindRequestCodec bindRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getBindRequest();
 
-        assertEquals( 1, message.getMessageId() );
-        assertEquals( 3, br.getVersion() );
-        assertEquals( "uid=akarasulu,dc=example,dc=com", br.getName().toString() );
-        assertEquals( true, ( br.getAuthentication() instanceof SaslCredentials ) );
-        assertEquals( "KERBEROS_V4", ( ( SaslCredentials ) br.getAuthentication() ).getMechanism() );
-        assertEquals( "abcdef", StringTools.utf8ToString( ( ( SaslCredentials ) br.getAuthentication() )
+        assertEquals( 1, bindRequest.getMessageId() );
+        assertEquals( 3, bindRequest.getVersion() );
+        assertEquals( "uid=akarasulu,dc=example,dc=com", bindRequest.getName().toString() );
+        assertEquals( true, ( bindRequest.getAuthentication() instanceof SaslCredentials ) );
+        assertEquals( "KERBEROS_V4", ( ( SaslCredentials ) bindRequest.getAuthentication() ).getMechanism() );
+        assertEquals( "abcdef", StringTools.utf8ToString( ( ( SaslCredentials ) bindRequest.getAuthentication() )
             .getCredentials() ) );
 
         // Check the length
-        assertEquals( 0x42, message.computeLength() );
+        assertEquals( 0x42, bindRequest.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = message.encode( null );
+            ByteBuffer bb = bindRequest.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -600,24 +595,23 @@ public class BindRequestTest
         }
 
         // Check the decoded BindRequest
-        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        BindRequestCodec br = message.getBindRequest();
+        BindRequestCodec bindRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getBindRequest();
 
-        assertEquals( 1, message.getMessageId() );
-        assertEquals( 3, br.getVersion() );
-        assertEquals( "", br.getName().toString() );
-        assertEquals( true, ( br.getAuthentication() instanceof SaslCredentials ) );
-        assertEquals( "KERBEROS_V4", ( ( SaslCredentials ) br.getAuthentication() ).getMechanism() );
-        assertEquals( "abcdef", StringTools.utf8ToString( ( ( SaslCredentials ) br.getAuthentication() )
+        assertEquals( 1, bindRequest.getMessageId() );
+        assertEquals( 3, bindRequest.getVersion() );
+        assertEquals( "", bindRequest.getName().toString() );
+        assertEquals( true, ( bindRequest.getAuthentication() instanceof SaslCredentials ) );
+        assertEquals( "KERBEROS_V4", ( ( SaslCredentials ) bindRequest.getAuthentication() ).getMechanism() );
+        assertEquals( "abcdef", StringTools.utf8ToString( ( ( SaslCredentials ) bindRequest.getAuthentication() )
             .getCredentials() ) );
 
         // Check the length
-        assertEquals( 0x23, message.computeLength() );
+        assertEquals( 0x23, bindRequest.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = message.encode( null );
+            ByteBuffer bb = bindRequest.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -925,22 +919,21 @@ public class BindRequestTest
         }
 
         // Check the decoded BindRequest
-        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        BindRequestCodec br = message.getBindRequest();
+        BindRequestCodec bindRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getBindRequest();
 
-        assertEquals( 1, message.getMessageId() );
-        assertEquals( 3, br.getVersion() );
-        assertEquals( "", br.getName().toString() );
-        assertEquals( true, ( br.getAuthentication() instanceof SimpleAuthentication ) );
-        assertEquals( "", StringTools.utf8ToString( ( ( SimpleAuthentication ) br.getAuthentication() ).getSimple() ) );
+        assertEquals( 1, bindRequest.getMessageId() );
+        assertEquals( 3, bindRequest.getVersion() );
+        assertEquals( "", bindRequest.getName().toString() );
+        assertEquals( true, ( bindRequest.getAuthentication() instanceof SimpleAuthentication ) );
+        assertEquals( "", StringTools.utf8ToString( ( ( SimpleAuthentication ) bindRequest.getAuthentication() ).getSimple() ) );
 
         // Check the length
-        assertEquals( 0x0E, message.computeLength() );
+        assertEquals( 0x0E, bindRequest.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = message.encode( null );
+            ByteBuffer bb = bindRequest.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -1034,22 +1027,21 @@ public class BindRequestTest
         }
 
         // Check the decoded BindRequest
-        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        BindRequestCodec br = message.getBindRequest();
+        BindRequestCodec bindRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getBindRequest();
 
-        assertEquals( 1, message.getMessageId() );
-        assertEquals( 3, br.getVersion() );
-        assertEquals( "", br.getName().toString() );
-        assertEquals( true, ( br.getAuthentication() instanceof SaslCredentials ) );
-        assertEquals( "", ( ( SaslCredentials ) br.getAuthentication() ).getMechanism() );
+        assertEquals( 1, bindRequest.getMessageId() );
+        assertEquals( 3, bindRequest.getVersion() );
+        assertEquals( "", bindRequest.getName().toString() );
+        assertEquals( true, ( bindRequest.getAuthentication() instanceof SaslCredentials ) );
+        assertEquals( "", ( ( SaslCredentials ) bindRequest.getAuthentication() ).getMechanism() );
 
         // Check the length
-        assertEquals( 0x10, message.computeLength() );
+        assertEquals( 0x10, bindRequest.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = message.encode( null );
+            ByteBuffer bb = bindRequest.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -1145,23 +1137,22 @@ public class BindRequestTest
         }
 
         // Check the decoded BindRequest
-        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        BindRequestCodec br = message.getBindRequest();
+        BindRequestCodec bindRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getBindRequest();
 
-        assertEquals( 1, message.getMessageId() );
-        assertEquals( 3, br.getVersion() );
-        assertEquals( "", br.getName().toString() );
-        assertEquals( true, ( br.getAuthentication() instanceof SaslCredentials ) );
-        assertEquals( "", ( ( SaslCredentials ) br.getAuthentication() ).getMechanism() );
-        assertEquals( "", StringTools.utf8ToString( ( ( SaslCredentials ) br.getAuthentication() ).getCredentials() ) );
+        assertEquals( 1, bindRequest.getMessageId() );
+        assertEquals( 3, bindRequest.getVersion() );
+        assertEquals( "", bindRequest.getName().toString() );
+        assertEquals( true, ( bindRequest.getAuthentication() instanceof SaslCredentials ) );
+        assertEquals( "", ( ( SaslCredentials ) bindRequest.getAuthentication() ).getMechanism() );
+        assertEquals( "", StringTools.utf8ToString( ( ( SaslCredentials ) bindRequest.getAuthentication() ).getCredentials() ) );
 
         // Check the length
-        assertEquals( 0x12, message.computeLength() );
+        assertEquals( 0x12, bindRequest.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = message.encode( null );
+            ByteBuffer bb = bindRequest.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -1218,32 +1209,31 @@ public class BindRequestTest
         }
 
         // Check the decoded BindRequest
-        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        BindRequestCodec br = message.getBindRequest();
+        BindRequestCodec bindRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getBindRequest();
 
-        assertEquals( 1, message.getMessageId() );
-        assertEquals( 3, br.getVersion() );
-        assertEquals( "", br.getName().toString() );
-        assertEquals( true, ( br.getAuthentication() instanceof SaslCredentials ) );
-        assertEquals( "", ( ( SaslCredentials ) br.getAuthentication() ).getMechanism() );
-        assertEquals( "", StringTools.utf8ToString( ( ( SaslCredentials ) br.getAuthentication() ).getCredentials() ) );
+        assertEquals( 1, bindRequest.getMessageId() );
+        assertEquals( 3, bindRequest.getVersion() );
+        assertEquals( "", bindRequest.getName().toString() );
+        assertEquals( true, ( bindRequest.getAuthentication() instanceof SaslCredentials ) );
+        assertEquals( "", ( ( SaslCredentials ) bindRequest.getAuthentication() ).getMechanism() );
+        assertEquals( "", StringTools.utf8ToString( ( ( SaslCredentials ) bindRequest.getAuthentication() ).getCredentials() ) );
 
         // Check the length
-        assertEquals( 0x2F, message.computeLength() );
+        assertEquals( 0x2F, bindRequest.computeLength() );
 
         // Check the Control
-        List<Control> controls = message.getControls();
+        List<Control> controls = bindRequest.getControls();
 
         assertEquals( 1, controls.size() );
 
-        Control control = message.getControls( 0 );
+        Control control = bindRequest.getControls( 0 );
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
         assertEquals( "", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = message.encode( null );
+            ByteBuffer bb = bindRequest.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -1298,32 +1288,31 @@ public class BindRequestTest
         }
 
         // Check the decoded BindRequest
-        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        BindRequestCodec br = message.getBindRequest();
+        BindRequestCodec bindRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getBindRequest();
 
-        assertEquals( 1, message.getMessageId() );
-        assertEquals( 3, br.getVersion() );
-        assertEquals( "", br.getName().toString() );
-        assertEquals( true, ( br.getAuthentication() instanceof SaslCredentials ) );
-        assertEquals( "", ( ( SaslCredentials ) br.getAuthentication() ).getMechanism() );
-        assertEquals( "", StringTools.utf8ToString( ( ( SaslCredentials ) br.getAuthentication() ).getCredentials() ) );
+        assertEquals( 1, bindRequest.getMessageId() );
+        assertEquals( 3, bindRequest.getVersion() );
+        assertEquals( "", bindRequest.getName().toString() );
+        assertEquals( true, ( bindRequest.getAuthentication() instanceof SaslCredentials ) );
+        assertEquals( "", ( ( SaslCredentials ) bindRequest.getAuthentication() ).getMechanism() );
+        assertEquals( "", StringTools.utf8ToString( ( ( SaslCredentials ) bindRequest.getAuthentication() ).getCredentials() ) );
 
         // Check the length
-        assertEquals( 0x2D, message.computeLength() );
+        assertEquals( 0x2D, bindRequest.computeLength() );
 
         // Check the Control
-        List<Control> controls = message.getControls();
+        List<Control> controls = bindRequest.getControls();
 
         assertEquals( 1, controls.size() );
 
-        Control control = message.getControls( 0 );
+        Control control = bindRequest.getControls( 0 );
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
         assertEquals( "", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = message.encode( null );
+            ByteBuffer bb = bindRequest.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -1370,7 +1359,7 @@ public class BindRequestTest
             // Check the encoding
             try
             {
-                message.encode( null );
+                message.encode();
             }
             catch ( EncoderException ee )
             {

@@ -20,6 +20,10 @@
 package org.apache.directory.shared.ldap.codec.extended.operations;
 
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.nio.ByteBuffer;
 
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
@@ -30,10 +34,6 @@ import org.apache.directory.shared.ldap.codec.extended.operations.gracefulDiscon
 import org.apache.directory.shared.ldap.codec.extended.operations.gracefulDisconnect.GracefulDisconnectDecoder;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
-
-import static org.junit.Assert.fail;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 
 /**
@@ -94,7 +94,7 @@ public class GracefulDisconnectTest
         // Check the encoding
         try
         {
-            ByteBuffer bb = gracefulDisconnect.encode( null );
+            ByteBuffer bb = gracefulDisconnect.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -147,7 +147,7 @@ public class GracefulDisconnectTest
         // Check the encoding
         try
         {
-            ByteBuffer bb1 = gracefulDisconnect.encode( null );
+            ByteBuffer bb1 = gracefulDisconnect.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb1.array() );
 
@@ -201,7 +201,7 @@ public class GracefulDisconnectTest
         // Check the encoding
         try
         {
-            ByteBuffer bb1 = gracefulDisconnect.encode( null );
+            ByteBuffer bb1 = gracefulDisconnect.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb1.array() );
 
@@ -256,7 +256,7 @@ public class GracefulDisconnectTest
         // Check the encoding
         try
         {
-            ByteBuffer bb2 = gracefulDisconnect.encode( null );
+            ByteBuffer bb2 = gracefulDisconnect.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb2.array() );
 
@@ -321,7 +321,7 @@ public class GracefulDisconnectTest
         // Check the encoding
         try
         {
-            ByteBuffer bb = gracefulDisconnect.encode( null );
+            ByteBuffer bb = gracefulDisconnect.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -373,7 +373,7 @@ public class GracefulDisconnectTest
         // Check the encoding
         try
         {
-            ByteBuffer bb1 = gracefulDisconnect.encode( null );
+            ByteBuffer bb1 = gracefulDisconnect.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb1.array() );
 

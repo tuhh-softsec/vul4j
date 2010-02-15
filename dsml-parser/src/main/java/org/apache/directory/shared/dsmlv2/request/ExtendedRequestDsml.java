@@ -22,6 +22,7 @@ package org.apache.directory.shared.dsmlv2.request;
 
 import org.apache.directory.shared.asn1.primitives.OID;
 import org.apache.directory.shared.dsmlv2.ParserUtils;
+import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.codec.extended.ExtendedRequestCodec;
 import org.dom4j.Element;
 import org.dom4j.Namespace;
@@ -60,7 +61,7 @@ public class ExtendedRequestDsml extends AbstractRequestDsml
     /**
      * {@inheritDoc}
      */
-    public int getMessageType()
+    public MessageTypeEnum getMessageType()
     {
         return instance.getMessageType();
     }

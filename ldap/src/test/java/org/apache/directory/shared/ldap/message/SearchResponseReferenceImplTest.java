@@ -26,6 +26,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.message.internal.InternalReferral;
 import org.apache.directory.shared.ldap.message.internal.InternalSearchResponseReference;
@@ -110,7 +111,7 @@ public class SearchResponseReferenceImplTest
 
             public MessageTypeEnum getType()
             {
-                return MessageTypeEnum.SEARCH_RES_REF;
+                return MessageTypeEnum.SEARCH_RESULT_REFERENCE;
             }
 
 

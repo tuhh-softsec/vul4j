@@ -27,6 +27,7 @@ import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
+import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,10 +48,10 @@ import org.slf4j.LoggerFactory;
 public class AbandonRequestCodec extends LdapMessageCodec
 {
     /** The logger */
-    private static Logger log = LoggerFactory.getLogger( AbandonRequestCodec.class );
+    private static Logger LOGGER = LoggerFactory.getLogger( AbandonRequestCodec.class );
 
     /** Speedup for logs */
-    private static final boolean IS_DEBUG = log.isDebugEnabled();
+    private static final boolean IS_DEBUG = LOGGER.isDebugEnabled();
 
     // ~ Instance fields
     // ----------------------------------------------------------------------------
@@ -90,9 +91,18 @@ public class AbandonRequestCodec extends LdapMessageCodec
      * 
      * @return Returns the type.
      */
-    public int getMessageType()
+    public MessageTypeEnum getMessageType()
     {
-        return LdapConstants.ABANDON_REQUEST;
+        return MessageTypeEnum.ABANDON_REQUEST;
+    }
+    
+    
+    /**
+     * {@inheritDoc}
+     */
+    public String getMessageTypeName()
+    {
+        return "ABANDON_REQUEST";
     }
 
 
@@ -106,7 +116,7 @@ public class AbandonRequestCodec extends LdapMessageCodec
         this.abandonedMessageId = abandonedMessageId;
     }
 
-
+    
     /**
      * Compute the AbandonRequest length 
      * 
@@ -115,13 +125,13 @@ public class AbandonRequestCodec extends LdapMessageCodec
      * 
      * Length(AbandonRequest) = Length(0x50) + 1 + Length(abandoned MessageId)
      */
-    public int computeLength()
+    protected int computeLengthProtocolOp()
     {
         int length = 1 + 1 + Value.getNbBytes( abandonedMessageId );
 
         if ( IS_DEBUG )
         {
-            log.debug( "Message length : {}", Integer.valueOf( length ) );
+            LOGGER.debug( "Message length : {}", Integer.valueOf( length ) );
         }
 
         return length;
@@ -129,19 +139,10 @@ public class AbandonRequestCodec extends LdapMessageCodec
 
 
     /**
-     * Encode the AbandonRequest message to a PDU.
-     * 
-     * @param buffer The buffer where to put the PDU
-     * @return The PDU.
+     * Encode the Abandon protocolOp part
      */
-    public ByteBuffer encode( ByteBuffer buffer ) throws EncoderException
+    protected void encodeProtocolOp( ByteBuffer buffer ) throws EncoderException
     {
-        if ( buffer == null )
-        {
-            log.error( "Cannot put a PDU in a null buffer !" );
-            throw new EncoderException( "Cannot put a PDU in a null buffer !" );
-        }
-
         try
         {
             // The tag
@@ -156,11 +157,10 @@ public class AbandonRequestCodec extends LdapMessageCodec
         }
         catch ( BufferOverflowException boe )
         {
-            log.error( "The PDU buffer size is too small !" );
-            throw new EncoderException( "The PDU buffer size is too small !" );
+            String msg = "The PDU buffer size is too small !";
+            LOGGER.error( msg );
+            throw new EncoderException( msg );
         }
-
-        return buffer;
     }
 
 
@@ -171,12 +171,11 @@ public class AbandonRequestCodec extends LdapMessageCodec
      */
     public String toString()
     {
-
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
 
         sb.append( "    Abandon Request :\n" );
-        sb.append( "        Message Id : " ).append( abandonedMessageId ).append( '\n' );
+        sb.append( "        Message Id : " ).append( abandonedMessageId );
 
-        return sb.toString();
+        return toString( sb.toString() );
     }
 }

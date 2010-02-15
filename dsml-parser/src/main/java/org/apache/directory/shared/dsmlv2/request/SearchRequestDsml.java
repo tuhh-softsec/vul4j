@@ -25,6 +25,7 @@ import java.util.List;
 import org.apache.directory.shared.dsmlv2.ParserUtils;
 import org.apache.directory.shared.ldap.codec.AttributeValueAssertion;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
+import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.codec.search.AndFilter;
 import org.apache.directory.shared.ldap.codec.search.AttributeValueAssertionFilter;
 import org.apache.directory.shared.ldap.codec.search.ExtensibleMatchFilter;
@@ -73,7 +74,7 @@ public class SearchRequestDsml extends AbstractRequestDsml
     /**
      * {@inheritDoc}
      */
-    public int getMessageType()
+    public MessageTypeEnum getMessageType()
     {
         return instance.getMessageType();
     }

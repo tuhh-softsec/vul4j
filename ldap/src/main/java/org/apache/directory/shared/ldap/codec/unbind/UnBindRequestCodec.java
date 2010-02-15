@@ -26,6 +26,9 @@ import java.nio.ByteBuffer;
 import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
+import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -41,8 +44,8 @@ import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
  */
 public class UnBindRequestCodec extends LdapMessageCodec
 {
-    // ~ Instance fields
-    // ----------------------------------------------------------------------------
+    /** The logger */
+    private static Logger LOGGER = LoggerFactory.getLogger( UnBindRequestCodec.class );
 
     // ~ Constructors
     // -------------------------------------------------------------------------------
@@ -64,9 +67,9 @@ public class UnBindRequestCodec extends LdapMessageCodec
      * 
      * @return Returns the type.
      */
-    public int getMessageType()
+    public MessageTypeEnum getMessageType()
     {
-        return LdapConstants.UNBIND_REQUEST;
+        return MessageTypeEnum.UNBIND_REQUEST;
     }
 
 
@@ -76,25 +79,17 @@ public class UnBindRequestCodec extends LdapMessageCodec
      * UnBindRequest : 
      * 0x42 00
      */
-    public int computeLength()
+    protected int computeLengthProtocolOp()
     {
         return 2; // Always 2
     }
 
 
     /**
-     * Encode the UnbindRequest message to a PDU.
-     * 
-     * @param buffer The buffer where to put the PDU
-     * @return The PDU.
+     * Encode the Unbind protocolOp part
      */
-    public ByteBuffer encode( ByteBuffer buffer ) throws EncoderException
+    protected void encodeProtocolOp( ByteBuffer buffer ) throws EncoderException
     {
-        if ( buffer == null )
-        {
-            throw new EncoderException( "Cannot put a PDU in a null buffer !" );
-        }
-
         try
         {
             // The tag
@@ -105,10 +100,19 @@ public class UnBindRequestCodec extends LdapMessageCodec
         }
         catch ( BufferOverflowException boe )
         {
-            throw new EncoderException( "The PDU buffer size is too small !" );
+            String msg = "The PDU buffer size is too small !";
+            LOGGER.error( msg );
+            throw new EncoderException( msg );
         }
+    }
 
-        return buffer;
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getMessageTypeName()
+    {
+        return "UNBIND_REQUEST";
     }
 
 
@@ -119,11 +123,6 @@ public class UnBindRequestCodec extends LdapMessageCodec
      */
     public String toString()
     {
-
-        StringBuffer sb = new StringBuffer();
-
-        sb.append( "    UnBind Request\n" );
-
-        return sb.toString();
+        return super.toString( "    UnBind Request" );
     }
 }

@@ -22,6 +22,7 @@ package org.apache.directory.shared.dsmlv2.reponse;
 
 
 import org.apache.directory.shared.dsmlv2.DsmlDecorator;
+import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.codec.compare.CompareResponseCodec;
 import org.dom4j.Element;
 
@@ -58,7 +59,7 @@ public class CompareResponseDsml extends LdapResponseDecorator implements DsmlDe
     /* (non-Javadoc)
      * @see org.apache.directory.shared.dsmlv2.reponse.LdapMessageDecorator#getMessageType()
      */
-    public int getMessageType()
+    public MessageTypeEnum getMessageType()
     {
         return instance.getMessageType();
     }

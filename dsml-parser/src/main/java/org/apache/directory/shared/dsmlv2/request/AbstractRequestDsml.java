@@ -22,7 +22,6 @@
 
 import org.apache.directory.shared.dsmlv2.DsmlDecorator;
 import org.apache.directory.shared.dsmlv2.ParserUtils;
-import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.dom4j.Element;
 
@@ -76,24 +75,33 @@ public abstract class AbstractRequestDsml extends LdapRequestDecorator implement
     {
         switch ( instance.getMessageType() )
         {
-            case LdapConstants.ABANDON_REQUEST:
+            case ABANDON_REQUEST:
                 return "abandonRequest";
-            case LdapConstants.ADD_REQUEST:
+                
+            case ADD_REQUEST:
                 return "addRequest";
-            case LdapConstants.BIND_REQUEST:
+                
+            case BIND_REQUEST:
                 return "authRequest";
-            case LdapConstants.COMPARE_REQUEST:
+                
+            case COMPARE_REQUEST:
                 return "compareRequest";
-            case LdapConstants.DEL_REQUEST:
+                
+            case DEL_REQUEST:
                 return "delRequest";
-            case LdapConstants.EXTENDED_REQUEST:
+                
+            case EXTENDED_REQUEST:
                 return "extendedRequest";
-            case LdapConstants.MODIFYDN_REQUEST:
+                
+            case MODIFYDN_REQUEST:
                 return "modDNRequest";
-            case LdapConstants.MODIFY_REQUEST:
+                
+            case MODIFY_REQUEST:
                 return "modifyRequest";
-            case LdapConstants.SEARCH_REQUEST:
+                
+            case SEARCH_REQUEST:
                 return "searchRequest";
+                
             default:
                 return "error";
         }

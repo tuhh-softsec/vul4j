@@ -24,11 +24,9 @@ import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.codec.DecoderException;
-import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.LdapResponseCodec;
 import org.apache.directory.shared.ldap.codec.LdapResultCodec;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,8 +56,7 @@ public class InitReferralsAction extends GrammarAction
     public void action( IAsn1Container container ) throws DecoderException
     {
         LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-        LdapMessageCodec ldapMessage = ldapMessageContainer.getLdapMessage();
-        LdapResponseCodec response = ldapMessage.getLdapResponse();
+        LdapResponseCodec response = ldapMessageContainer.getLdapResponse();
         LdapResultCodec ldapResult = response.getLdapResult();
         
         TLV tlv = ldapMessageContainer.getCurrentTLV();

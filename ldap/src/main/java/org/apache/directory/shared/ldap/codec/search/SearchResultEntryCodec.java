@@ -34,6 +34,7 @@ import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.asn1.util.Asn1StringUtils;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
+import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.client.DefaultClientAttribute;
@@ -110,9 +111,18 @@ public class SearchResultEntryCodec extends LdapMessageCodec
      * 
      * @return Returns the type.
      */
-    public int getMessageType()
+    public MessageTypeEnum getMessageType()
     {
-        return LdapConstants.SEARCH_RESULT_ENTRY;
+        return MessageTypeEnum.SEARCH_RESULT_ENTRY;
+    }
+
+    
+    /**
+     * {@inheritDoc}
+     */
+    public String getMessageTypeName()
+    {
+        return "SEARCH_RESULT_ENTRY";
     }
 
 
@@ -203,7 +213,7 @@ public class SearchResultEntryCodec extends LdapMessageCodec
      * Compute the SearchResultEntry length
      * 
      * SearchResultEntry :
-     * 
+     * <pre>
      * 0x64 L1
      *  |
      *  +--> 0x04 L2 objectName
@@ -237,9 +247,9 @@ public class SearchResultEntryCodec extends LdapMessageCodec
      *                    +--> 0x04 L7-m-1 value
      *                    +--> ...
      *                    +--> 0x04 L7-m-n value
-     * 
+     * </pre>
      */
-    public int computeLength()
+    protected int computeLengthProtocolOp()
     {
         objectNameBytes = StringTools.getBytesUtf8( entry.getDn().getName() );
 
@@ -314,7 +324,7 @@ public class SearchResultEntryCodec extends LdapMessageCodec
      * Encode the SearchResultEntry message to a PDU.
      * 
      * SearchResultEntry :
-     * 
+     * <pre>
      * 0x64 LL
      *   0x04 LL objectName
      *   0x30 LL attributes
@@ -331,17 +341,12 @@ public class SearchResultEntryCodec extends LdapMessageCodec
      *         0x04 LL attributeValue
      *         ... 
      *         0x04 LL attributeValue 
-     * 
+     * </pre>
      * @param buffer The buffer where to put the PDU
      * @return The PDU.
      */
-    public ByteBuffer encode( ByteBuffer buffer ) throws EncoderException
+    protected void encodeProtocolOp( ByteBuffer buffer ) throws EncoderException
     {
-        if ( buffer == null )
-        {
-            throw new EncoderException( "Cannot put a PDU in a null buffer !" );
-        }
-
         try
         {
             // The SearchResultEntry Tag
@@ -403,8 +408,6 @@ public class SearchResultEntryCodec extends LdapMessageCodec
         {
             throw new EncoderException( "The PDU buffer size is too small !" );
         }
-
-        return buffer;
     }
 
 

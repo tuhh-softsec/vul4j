@@ -31,7 +31,6 @@ import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.codec.EncoderException;
-import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.util.StringTools;
@@ -85,20 +84,19 @@ public class IntermediateResponseTest
         }
 
         // Check the decoded IntermediateResponse PDU
-        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        IntermediateResponseCodec intermediateResponse = message.getIntermediateResponse();
+        IntermediateResponseCodec intermediateResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getIntermediateResponse();
 
-        assertEquals( 1, message.getMessageId() );
+        assertEquals( 1, intermediateResponse.getMessageId() );
         assertEquals( "1.3.6.1.5.5.2", intermediateResponse.getResponseName() );
         assertEquals( "value", StringTools.utf8ToString( intermediateResponse.getResponseValue() ) );
 
         // Check the length
-        assertEquals( 0x1D, message.computeLength() );
+        assertEquals( 0x1D, intermediateResponse.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = message.encode( null );
+            ByteBuffer bb = intermediateResponse.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -157,29 +155,28 @@ public class IntermediateResponseTest
         }
 
         // Check the decoded IntermediateResponse PDU
-        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        IntermediateResponseCodec intermediateResponse = message.getIntermediateResponse();
+        IntermediateResponseCodec intermediateResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getIntermediateResponse();
 
-        assertEquals( 1, message.getMessageId() );
+        assertEquals( 1, intermediateResponse.getMessageId() );
         assertEquals( "1.3.6.1.5.5.2", intermediateResponse.getResponseName() );
         assertEquals( "value", StringTools.utf8ToString( intermediateResponse.getResponseValue() ) );
 
         // Check the Control
-        List<Control> controls = message.getControls();
+        List<Control> controls = intermediateResponse.getControls();
 
         assertEquals( 1, controls.size() );
 
-        Control control = message.getControls( 0 );
+        Control control = intermediateResponse.getControls( 0 );
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
         assertEquals( "", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
 
         // Check the length
-        assertEquals( 0x3A, message.computeLength() );
+        assertEquals( 0x3A, intermediateResponse.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = message.encode( null );
+            ByteBuffer bb = intermediateResponse.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -239,29 +236,28 @@ public class IntermediateResponseTest
         }
 
         // Check the decoded IntermediateResponse PDU
-        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        IntermediateResponseCodec intermediateResponse = message.getIntermediateResponse();
+        IntermediateResponseCodec intermediateResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getIntermediateResponse();
 
-        assertEquals( 1, message.getMessageId() );
+        assertEquals( 1, intermediateResponse.getMessageId() );
         assertEquals( "1.3.6.1.5.5.2", intermediateResponse.getResponseName() );
         assertEquals( "", StringTools.utf8ToString( intermediateResponse.getResponseValue() ) );
 
         // Check the Control
-        List<Control> controls = message.getControls();
+        List<Control> controls = intermediateResponse.getControls();
 
         assertEquals( 1, controls.size() );
 
-        Control control = message.getControls( 0 );
+        Control control = intermediateResponse.getControls( 0 );
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
         assertEquals( "", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
 
         // Check the length
-        assertEquals( 0x33, message.computeLength() );
+        assertEquals( 0x33, intermediateResponse.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = message.encode( null );
+            ByteBuffer bb = intermediateResponse.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -424,19 +420,18 @@ public class IntermediateResponseTest
         }
 
         // Check the decoded IntermediateResponse PDU
-        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        IntermediateResponseCodec intermediateResponse = message.getIntermediateResponse();
+        IntermediateResponseCodec intermediateResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getIntermediateResponse();
 
-        assertEquals( 1, message.getMessageId() );
+        assertEquals( 1, intermediateResponse.getMessageId() );
         assertEquals( "1.3.6.1.5.5.2", intermediateResponse.getResponseName() );
 
         // Check the length
-        assertEquals( 0x16, message.computeLength() );
+        assertEquals( 0x16, intermediateResponse.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = message.encode( null );
+            ByteBuffer bb = intermediateResponse.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -490,20 +485,19 @@ public class IntermediateResponseTest
         }
 
         // Check the decoded IntermediateResponse PDU
-        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        IntermediateResponseCodec intermediateResponse = message.getIntermediateResponse();
+        IntermediateResponseCodec intermediateResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getIntermediateResponse();
 
-        assertEquals( 1, message.getMessageId() );
+        assertEquals( 1, intermediateResponse.getMessageId() );
         assertEquals( "1.3.6.1.5.5.2", intermediateResponse.getResponseName() );
         assertEquals( "", StringTools.utf8ToString( intermediateResponse.getResponseValue() ) );
 
         // Check the length
-        assertEquals( 0x18, message.computeLength() );
+        assertEquals( 0x18, intermediateResponse.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = message.encode( null );
+            ByteBuffer bb = intermediateResponse.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -555,20 +549,19 @@ public class IntermediateResponseTest
         }
 
         // Check the decoded IntermediateResponse PDU
-        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        IntermediateResponseCodec intermediateResponse = message.getIntermediateResponse();
+        IntermediateResponseCodec intermediateResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getIntermediateResponse();
 
-        assertEquals( 1, message.getMessageId() );
+        assertEquals( 1, intermediateResponse.getMessageId() );
         assertEquals( "", intermediateResponse.getResponseName() );
         assertEquals( "value", StringTools.utf8ToString( intermediateResponse.getResponseValue() ) );
 
         // Check the length
-        assertEquals( 0x0E, message.computeLength() );
+        assertEquals( 0x0E, intermediateResponse.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = message.encode( null );
+            ByteBuffer bb = intermediateResponse.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -620,20 +613,19 @@ public class IntermediateResponseTest
         }
 
         // Check the decoded IntermediateResponse PDU
-        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        IntermediateResponseCodec intermediateResponse = message.getIntermediateResponse();
+        IntermediateResponseCodec intermediateResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getIntermediateResponse();
 
-        assertEquals( 1, message.getMessageId() );
+        assertEquals( 1, intermediateResponse.getMessageId() );
         assertEquals( "1.3.6.1.5.5.2", intermediateResponse.getResponseName() );
         assertEquals( "", StringTools.utf8ToString( intermediateResponse.getResponseValue() ) );
 
         // Check the length
-        assertEquals( 0x16, message.computeLength() );
+        assertEquals( 0x16, intermediateResponse.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = message.encode( null );
+            ByteBuffer bb = intermediateResponse.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 

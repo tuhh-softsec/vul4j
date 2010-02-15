@@ -32,7 +32,6 @@ import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.codec.EncoderException;
-import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.util.StringTools;
@@ -107,44 +106,43 @@ public class AbandonRequestTest
         }
 
         // Check that everything is OK
-        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        AbandonRequestCodec abandonRequest = message.getAbandonRequest();
+        AbandonRequestCodec abandonRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getAbandonRequest();
 
-        assertEquals( 3, message.getMessageId() );
+        assertEquals( 3, abandonRequest.getMessageId() );
         assertEquals( 2, abandonRequest.getAbandonedMessageId() );
 
         // Check the Controls
-        List<Control> controls = message.getControls();
+        List<Control> controls = abandonRequest.getControls();
 
         assertEquals( 4, controls.size() );
 
-        Control control = message.getControls( 0 );
+        Control control = abandonRequest.getControls( 0 );
         assertEquals( "1.3.6.1.5.5.1", control.getOid() );
         assertEquals( "0x61 0x62 0x63 0x64 0x65 0x66 ", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
         assertTrue( control.isCritical() );
 
-        control = message.getControls( 1 );
+        control = abandonRequest.getControls( 1 );
         assertEquals( "1.3.6.1.5.5.2", control.getOid() );
         assertEquals( "0x67 0x68 0x69 0x6A 0x6B 0x6C ", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
         assertFalse( control.isCritical() );
 
-        control = message.getControls( 2 );
+        control = abandonRequest.getControls( 2 );
         assertEquals( "1.3.6.1.5.5.3", control.getOid() );
         assertEquals( "", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
         assertTrue( control.isCritical() );
 
-        control = message.getControls( 3 );
+        control = abandonRequest.getControls( 3 );
         assertEquals( "1.3.6.1.5.5.4", control.getOid() );
         assertEquals( "", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
         assertFalse( control.isCritical() );
 
         // Check the length
-        assertEquals( 0x64, message.computeLength() );
+        assertEquals( 0x64, abandonRequest.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = message.encode( null );
+            ByteBuffer bb = abandonRequest.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -195,19 +193,18 @@ public class AbandonRequestTest
         }
 
         // Check that everything is OK
-        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        AbandonRequestCodec abandonRequest = message.getAbandonRequest();
+        AbandonRequestCodec abandonRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getAbandonRequest();
 
-        assertEquals( 32787, message.getMessageId() );
+        assertEquals( 32787, abandonRequest.getMessageId() );
         assertEquals( 2, abandonRequest.getAbandonedMessageId() );
 
         // Check the length
-        assertEquals( 10, message.computeLength() );
+        assertEquals( 10, abandonRequest.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = message.encode( null );
+            ByteBuffer bb = abandonRequest.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 

@@ -19,10 +19,11 @@
  */
 package org.apache.directory.shared.ldap.codec;
 
-
 import java.nio.ByteBuffer;
 
 import org.apache.directory.shared.asn1.codec.EncoderException;
+
+
 
 
 /**
@@ -31,7 +32,7 @@ import org.apache.directory.shared.asn1.codec.EncoderException;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$, 
  */
-public class LdapResponseCodec extends LdapMessageCodec
+public abstract class LdapResponseCodec extends LdapMessageCodec
 {
     // ~ Instance fields
     // ----------------------------------------------------------------------------
@@ -90,11 +91,16 @@ public class LdapResponseCodec extends LdapMessageCodec
 
 
     /**
-     * Compute the LdapResponse length LdapResponse : LdapResult
+     * Compute the LdapResponse length
      */
-    public int computeLength()
+    public int computeLdapResultLength()
     {
-        ldapResponseLength = ldapResult.computeLength();
+        ldapResponseLength = 0;
+
+        if ( ldapResult != null )
+        {
+            ldapResponseLength = ldapResult.computeLength();
+        }
 
         return ldapResponseLength;
     }
@@ -114,9 +120,11 @@ public class LdapResponseCodec extends LdapMessageCodec
         }
 
         // The ldapResult
-        ldapResult.encode( buffer );
+        if ( ldapResult != null )
+        {
+            ldapResult.encode( buffer );
+        }
 
-        // The ldapResult
         return buffer;
     }
 

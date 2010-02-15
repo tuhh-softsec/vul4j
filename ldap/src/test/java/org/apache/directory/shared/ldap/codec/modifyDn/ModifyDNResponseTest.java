@@ -31,7 +31,6 @@ import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.codec.EncoderException;
-import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.message.control.Control;
@@ -90,21 +89,20 @@ public class ModifyDNResponseTest
         }
 
         // Check the decoded ModifyDNResponse PDU
-        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        ModifyDNResponseCodec modifyDNResponse = message.getModifyDNResponse();
+        ModifyDNResponseCodec modifyDNResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getModifyDnResponse();
 
-        assertEquals( 1, message.getMessageId() );
+        assertEquals( 1, modifyDNResponse.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, modifyDNResponse.getLdapResult().getResultCode() );
         assertEquals( "", modifyDNResponse.getLdapResult().getMatchedDN() );
         assertEquals( "", modifyDNResponse.getLdapResult().getErrorMessage() );
 
         // Check the length
-        assertEquals( 0x0E, message.computeLength() );
+        assertEquals( 0x0E, modifyDNResponse.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = message.encode( null );
+            ByteBuffer bb = modifyDNResponse.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -164,30 +162,29 @@ public class ModifyDNResponseTest
         }
 
         // Check the decoded ModifyDNResponse PDU
-        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        ModifyDNResponseCodec modifyDNResponse = message.getModifyDNResponse();
+        ModifyDNResponseCodec modifyDNResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getModifyDnResponse();
 
-        assertEquals( 1, message.getMessageId() );
+        assertEquals( 1, modifyDNResponse.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, modifyDNResponse.getLdapResult().getResultCode() );
         assertEquals( "", modifyDNResponse.getLdapResult().getMatchedDN() );
         assertEquals( "", modifyDNResponse.getLdapResult().getErrorMessage() );
 
         // Check the Control
-        List<Control> controls = message.getControls();
+        List<Control> controls = modifyDNResponse.getControls();
 
         assertEquals( 1, controls.size() );
 
-        Control control = message.getControls( 0 );
+        Control control = modifyDNResponse.getControls( 0 );
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
         assertEquals( "", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
 
         // Check the length
-        assertEquals( 0x2B, message.computeLength() );
+        assertEquals( 0x2B, modifyDNResponse.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = message.encode( null );
+            ByteBuffer bb = modifyDNResponse.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 

@@ -28,6 +28,7 @@ import java.util.Map;
 
 import javax.naming.InvalidNameException;
 
+import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.message.internal.InternalModifyDnRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalResultResponse;
@@ -273,7 +274,7 @@ public class ModifyDnRequestImplTest
 
             public MessageTypeEnum getResponseType()
             {
-                return MessageTypeEnum.MOD_DN_RESPONSE;
+                return MessageTypeEnum.MODIFYDN_RESPONSE;
             }
 
 
@@ -285,7 +286,7 @@ public class ModifyDnRequestImplTest
 
             public MessageTypeEnum getType()
             {
-                return MessageTypeEnum.MOD_DN_REQUEST;
+                return MessageTypeEnum.MODIFYDN_REQUEST;
             }
 
 

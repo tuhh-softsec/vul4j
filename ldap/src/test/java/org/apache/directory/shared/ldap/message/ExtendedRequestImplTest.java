@@ -29,6 +29,7 @@ import java.util.Map;
 import javax.naming.NamingException;
 import javax.naming.ldap.ExtendedResponse;
 
+import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.message.internal.InternalExtendedRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalResultResponse;
@@ -163,7 +164,7 @@ public class ExtendedRequestImplTest
 
             public MessageTypeEnum getResponseType()
             {
-                return MessageTypeEnum.EXTENDED_RESP;
+                return MessageTypeEnum.EXTENDED_RESPONSE;
             }
 
 
@@ -175,7 +176,7 @@ public class ExtendedRequestImplTest
 
             public MessageTypeEnum getType()
             {
-                return MessageTypeEnum.EXTENDED_REQ;
+                return MessageTypeEnum.EXTENDED_REQUEST;
             }
 
 

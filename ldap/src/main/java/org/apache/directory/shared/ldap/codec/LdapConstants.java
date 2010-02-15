@@ -162,6 +162,7 @@ public class LdapConstants
     public static final int EXTENSIBLE_MATCH_FILTER_TAG = 0xA9;
 
     // The messages types
+    /*
     public static final int ABANDON_REQUEST = 0;
 
     public static final int ADD_REQUEST = 1;
@@ -205,4 +206,5 @@ public class LdapConstants
     public static final int INTERMEDIATE_RESPONSE = 20;
 
     public static final int UNKNOWN = -1; // Just in case ...
+    */
 }

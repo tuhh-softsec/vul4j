@@ -20,9 +20,9 @@
 package org.apache.directory.shared.ldap.message;
 
 
-import java.util.Set;
-import java.util.HashSet;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.naming.AuthenticationException;
 import javax.naming.AuthenticationNotSupportedException;
@@ -46,6 +46,7 @@ import javax.naming.directory.InvalidSearchFilterException;
 import javax.naming.directory.NoSuchAttributeException;
 import javax.naming.directory.SchemaViolationException;
 
+import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.exception.LdapException;
 
 
@@ -2096,19 +2097,19 @@ public enum ResultCodeEnum
                 candidates = intersection( set, DELETE_CODES );
                 break;
                 
-            case EXTENDED_REQ :
+            case EXTENDED_REQUEST :
                 candidates = intersection( set, EXTENDED_CODES );
                 break;
                 
-            case EXTENDED_RESP :
+            case EXTENDED_RESPONSE :
                 candidates = intersection( set, EXTENDED_CODES );
                 break;
                 
-            case MOD_DN_REQUEST :
+            case MODIFYDN_REQUEST :
                 candidates = intersection( set, MODIFYDN_CODES );
                 break;
                 
-            case MOD_DN_RESPONSE :
+            case MODIFYDN_RESPONSE :
                 candidates = intersection( set, MODIFYDN_CODES );
                 break;
                 
@@ -2124,15 +2125,15 @@ public enum ResultCodeEnum
                 candidates = intersection( set, SEARCH_CODES );
                 break;
                 
-            case SEARCH_RES_DONE :
+            case SEARCH_RESULT_DONE :
                 candidates = intersection( set, SEARCH_CODES );
                 break;
                 
-            case SEARCH_RES_ENTRY :
+            case SEARCH_RESULT_ENTRY :
                 candidates = intersection( set, SEARCH_CODES );
                 break;
                 
-            case SEARCH_RES_REF :
+            case SEARCH_RESULT_REFERENCE :
                 candidates = intersection( set, SEARCH_CODES );
                 break;
                 

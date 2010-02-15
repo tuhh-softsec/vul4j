@@ -110,7 +110,7 @@ public class CertGenerationRequestTest
 
         try
         {
-            ByteBuffer encodedBuf = certGenObj.encode( null );
+            ByteBuffer encodedBuf = certGenObj.encode();
             String encodedPdu = StringTools.dumpBytes( encodedBuf.array() );
 
             assertEquals( decodedPdu, encodedPdu );

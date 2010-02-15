@@ -27,6 +27,7 @@ import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.codec.LdapResponseCodec;
+import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 
 
 /**
@@ -53,18 +54,6 @@ public class CompareResponseCodec extends LdapResponseCodec
 
     // ~ Methods
     // ------------------------------------------------------------------------------------
-
-    /**
-     * Get the message type
-     * 
-     * @return Returns the type.
-     */
-    public int getMessageType()
-    {
-        return LdapConstants.COMPARE_RESPONSE;
-    }
-
-
     /**
      * Compute the CompareResponse length 
      * 
@@ -78,11 +67,11 @@ public class CompareResponseCodec extends LdapResponseCodec
      * 
      * Length(CompareResponse) = Length(0x6F) + Length(L1) + L1
      */
-    public int computeLength()
+    protected int computeLengthProtocolOp()
     {
-        int ldapResponseLength = super.computeLength();
+        int ldapResultLength = super.computeLdapResultLength();
 
-        return 1 + TLV.getNbBytes( ldapResponseLength ) + ldapResponseLength;
+        return 1 + TLV.getNbBytes( ldapResultLength ) + ldapResultLength;
     }
 
 
@@ -92,13 +81,8 @@ public class CompareResponseCodec extends LdapResponseCodec
      * @param buffer The buffer where to put the PDU
      * @return The PDU.
      */
-    public ByteBuffer encode( ByteBuffer buffer ) throws EncoderException
+    protected void encodeProtocolOp( ByteBuffer buffer ) throws EncoderException
     {
-        if ( buffer == null )
-        {
-            throw new EncoderException( "Cannot put a PDU in a null buffer !" );
-        }
-
         try
         {
             // The tag
@@ -110,8 +94,28 @@ public class CompareResponseCodec extends LdapResponseCodec
             throw new EncoderException( "The PDU buffer size is too small !" );
         }
 
-        // The ldapResult
-        return super.encode( buffer );
+        // The LdapResult
+        super.encode( buffer );
+    }
+
+    
+    /**
+     * Get the message type
+     * 
+     * @return Returns the type.
+     */
+    public MessageTypeEnum getMessageType()
+    {
+        return MessageTypeEnum.COMPARE_RESPONSE;
+    }
+
+    
+    /**
+     * {@inheritDoc}
+     */
+    public String getMessageTypeName()
+    {
+        return "COMPARE_RESPONSE";
     }
 
 

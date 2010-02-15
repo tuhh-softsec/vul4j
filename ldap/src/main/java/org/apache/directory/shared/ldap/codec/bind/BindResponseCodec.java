@@ -27,6 +27,7 @@ import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.codec.LdapResponseCodec;
+import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.util.StringTools;
 
 
@@ -75,9 +76,18 @@ public class BindResponseCodec extends LdapResponseCodec
      * 
      * @return Returns the type.
      */
-    public int getMessageType()
+    public MessageTypeEnum getMessageType()
     {
-        return LdapConstants.BIND_RESPONSE;
+        return MessageTypeEnum.BIND_RESPONSE;
+    }
+
+    
+    /**
+     * {@inheritDoc}
+     */
+    public String getMessageTypeName()
+    {
+        return "BIND_RESPONSE";
     }
 
 
@@ -118,6 +128,7 @@ public class BindResponseCodec extends LdapResponseCodec
      * Compute the BindResponse length 
      * 
      * BindResponse : 
+     * <pre>
      * 0x61 L1 
      *   | 
      *   +--> LdapResult
@@ -125,12 +136,13 @@ public class BindResponseCodec extends LdapResponseCodec
      *   
      * L1 = Length(LdapResult) [ + Length(serverSaslCreds) ] 
      * Length(BindResponse) = Length(0x61) + Length(L1) + L1
+     * </pre>
      */
-    public int computeLength()
+    protected int computeLengthProtocolOp()
     {
-        int ldapResponseLength = super.computeLength();
+        int ldapResultLength = computeLdapResultLength();
 
-        bindResponseLength = ldapResponseLength;
+        bindResponseLength = ldapResultLength;
 
         if ( serverSaslCreds != null )
         {
@@ -143,19 +155,19 @@ public class BindResponseCodec extends LdapResponseCodec
 
 
     /**
-     * Encode the BindResponse message to a PDU. BindResponse :
-     * LdapResult.encode [0x87 LL serverSaslCreds]
+     * Encode the BindResponse message to a PDU.
+     * 
+     * BindResponse :
+     * <pre>
+     * LdapResult.encode 
+     * [0x87 LL serverSaslCreds]
+     * </pre>
      * 
      * @param buffer The buffer where to put the PDU
      * @return The PDU.
      */
-    public ByteBuffer encode( ByteBuffer buffer ) throws EncoderException
+    protected void encodeProtocolOp( ByteBuffer buffer ) throws EncoderException
     {
-        if ( buffer == null )
-        {
-            throw new EncoderException( "Cannot put a PDU in a null buffer !" );
-        }
-
         try
         {
             // The BindResponse Tag
@@ -182,8 +194,6 @@ public class BindResponseCodec extends LdapResponseCodec
         {
             throw new EncoderException( "The PDU buffer size is too small !" );
         }
-
-        return buffer;
     }
 
 
@@ -194,18 +204,19 @@ public class BindResponseCodec extends LdapResponseCodec
      */
     public String toString()
     {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
 
-        sb.append( "    BindResponse\n" );
-        sb.append( super.toString() );
+        sb.append( "    BindResponse" );
 
         if ( serverSaslCreds != null )
         {
-            sb.append( "        Server sasl credentials : '" ).
+            sb.append( "\n        Server sasl credentials : '" ).
                 append( StringTools.dumpBytes( serverSaslCreds ) ).
-                append( "'\n" );
+                append( '\'' );
         }
+        
+        sb.append( super.toString() );
 
-        return sb.toString();
+        return toString( sb.toString() );
     }
 }

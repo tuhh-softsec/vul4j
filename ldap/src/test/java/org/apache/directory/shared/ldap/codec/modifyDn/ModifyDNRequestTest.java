@@ -31,7 +31,6 @@ import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.codec.EncoderException;
-import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.ResponseCarryingException;
 import org.apache.directory.shared.ldap.message.ModifyDnResponseImpl;
@@ -95,22 +94,21 @@ public class ModifyDNRequestTest
             fail( de.getMessage() );
         }
 
-        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        ModifyDNRequestCodec modifyDNRequest = message.getModifyDNRequest();
+        ModifyDNRequestCodec modifyDNRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getModifyDnRequest();
 
-        assertEquals( 1, message.getMessageId() );
+        assertEquals( 1, modifyDNRequest.getMessageId() );
         assertEquals( "cn=testModify,ou=users,ou=system", modifyDNRequest.getEntry().toString() );
         assertEquals( false, modifyDNRequest.isDeleteOldRDN() );
         assertEquals( "cn=testDNModify", modifyDNRequest.getNewRDN().toString() );
         assertEquals( "ou=system", modifyDNRequest.getNewSuperior().toString() );
 
         // Check the length
-        assertEquals( 0x48, message.computeLength() );
+        assertEquals( 0x48, modifyDNRequest.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = message.encode( null );
+            ByteBuffer bb = modifyDNRequest.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -325,31 +323,30 @@ public class ModifyDNRequestTest
             fail( de.getMessage() );
         }
 
-        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        ModifyDNRequestCodec modifyDNRequest = message.getModifyDNRequest();
+        ModifyDNRequestCodec modifyDNRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getModifyDnRequest();
 
-        assertEquals( 1, message.getMessageId() );
+        assertEquals( 1, modifyDNRequest.getMessageId() );
         assertEquals( "cn=testModify,ou=users,ou=system", modifyDNRequest.getEntry().toString() );
         assertEquals( false, modifyDNRequest.isDeleteOldRDN() );
         assertEquals( "cn=testDNModify", modifyDNRequest.getNewRDN().toString() );
         assertEquals( "ou=system", modifyDNRequest.getNewSuperior().toString() );
 
         // Check the Control
-        List<Control> controls = message.getControls();
+        List<Control> controls = modifyDNRequest.getControls();
 
         assertEquals( 1, controls.size() );
 
-        Control control = message.getControls( 0 );
+        Control control = modifyDNRequest.getControls( 0 );
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
         assertEquals( "", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
 
         // Check the length
-        assertEquals( 0x65, message.computeLength() );
+        assertEquals( 0x65, modifyDNRequest.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = message.encode( null );
+            ByteBuffer bb = modifyDNRequest.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -407,21 +404,20 @@ public class ModifyDNRequestTest
             fail( de.getMessage() );
         }
 
-        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        ModifyDNRequestCodec modifyDNRequest = message.getModifyDNRequest();
+        ModifyDNRequestCodec modifyDNRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getModifyDnRequest();
 
-        assertEquals( 1, message.getMessageId() );
+        assertEquals( 1, modifyDNRequest.getMessageId() );
         assertEquals( "cn=testModify,ou=users,ou=system", modifyDNRequest.getEntry().toString() );
         assertEquals( false, modifyDNRequest.isDeleteOldRDN() );
         assertEquals( "cn=testDNModify", modifyDNRequest.getNewRDN().toString() );
 
         // Check the length
-        assertEquals( 0x3D, message.computeLength() );
+        assertEquals( 0x3D, modifyDNRequest.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = message.encode( null );
+            ByteBuffer bb = modifyDNRequest.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -482,30 +478,29 @@ public class ModifyDNRequestTest
             fail( de.getMessage() );
         }
 
-        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        ModifyDNRequestCodec modifyDNRequest = message.getModifyDNRequest();
+        ModifyDNRequestCodec modifyDNRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getModifyDnRequest();
 
-        assertEquals( 1, message.getMessageId() );
+        assertEquals( 1, modifyDNRequest.getMessageId() );
         assertEquals( "cn=testModify,ou=users,ou=system", modifyDNRequest.getEntry().toString() );
         assertEquals( false, modifyDNRequest.isDeleteOldRDN() );
         assertEquals( "cn=testDNModify", modifyDNRequest.getNewRDN().toString() );
 
         // Check the Control
-        List<Control> controls = message.getControls();
+        List<Control> controls = modifyDNRequest.getControls();
 
         assertEquals( 1, controls.size() );
 
-        Control control = message.getControls( 0 );
+        Control control = modifyDNRequest.getControls( 0 );
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
         assertEquals( "", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
 
         // Check the length
-        assertEquals( 0x5A, message.computeLength() );
+        assertEquals( 0x5A, modifyDNRequest.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = message.encode( null );
+            ByteBuffer bb = modifyDNRequest.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 

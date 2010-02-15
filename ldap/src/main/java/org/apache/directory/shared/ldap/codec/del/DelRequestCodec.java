@@ -27,6 +27,7 @@ import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
+import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.name.LdapDN;
 
 
@@ -69,9 +70,18 @@ public class DelRequestCodec extends LdapMessageCodec
      * 
      * @return Returns the type.
      */
-    public int getMessageType()
+    public MessageTypeEnum getMessageType()
     {
-        return LdapConstants.DEL_REQUEST;
+        return MessageTypeEnum.DEL_REQUEST;
+    }
+
+    
+    /**
+     * {@inheritDoc}
+     */
+    public String getMessageTypeName()
+    {
+        return "DEL_REQUEST";
     }
 
 
@@ -106,7 +116,7 @@ public class DelRequestCodec extends LdapMessageCodec
      * L1 = Length(entry) 
      * Length(DelRequest) = Length(0x4A) + Length(L1) + L1
      */
-    public int computeLength()
+    protected int computeLengthProtocolOp()
     {
         // The entry
         return 1 + TLV.getNbBytes( LdapDN.getNbBytes( entry ) ) + LdapDN.getNbBytes( entry );
@@ -122,13 +132,8 @@ public class DelRequestCodec extends LdapMessageCodec
      * @param buffer The buffer where to put the PDU
      * @return The PDU.
      */
-    public ByteBuffer encode( ByteBuffer buffer ) throws EncoderException
+    protected void encodeProtocolOp( ByteBuffer buffer ) throws EncoderException
     {
-        if ( buffer == null )
-        {
-            throw new EncoderException( "Cannot put a PDU in a null buffer !" );
-        }
-
         try
         {
             // The DelRequest Tag
@@ -142,8 +147,6 @@ public class DelRequestCodec extends LdapMessageCodec
         {
             throw new EncoderException( "The PDU buffer size is too small !" );
         }
-
-        return buffer;
     }
 
 
@@ -154,12 +157,11 @@ public class DelRequestCodec extends LdapMessageCodec
      */
     public String toString()
     {
-
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
 
         sb.append( "    Del request\n" );
-        sb.append( "        Entry : '" ).append( entry ).append( "'\n" );
+        sb.append( "        Entry : '" ).append( entry ).append( '\'' );
 
-        return sb.toString();
+        return toString( sb.toString() );
     }
 }

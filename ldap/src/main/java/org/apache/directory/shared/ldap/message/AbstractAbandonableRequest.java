@@ -23,6 +23,7 @@ package org.apache.directory.shared.ldap.message;
 import java.util.Observable;
 import java.util.Observer;
 
+import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.message.internal.InternalAbandonableRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalAbstractRequest;
 

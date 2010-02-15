@@ -60,6 +60,7 @@ import org.apache.directory.shared.ldap.codec.search.SearchResultDoneCodec;
 import org.apache.directory.shared.ldap.codec.search.SearchResultEntryCodec;
 import org.apache.directory.shared.ldap.codec.search.SearchResultReferenceCodec;
 import org.apache.directory.shared.ldap.codec.search.SubstringFilter;
+import org.apache.directory.shared.ldap.codec.unbind.UnBindRequestCodec;
 import org.apache.directory.shared.ldap.codec.util.LdapURLEncodingException;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Modification;
@@ -137,10 +138,9 @@ public class LdapTransformer
      * @param messageId The message Id
      * @return An internal AbandonRequest message
      */
-    private static InternalMessage transformAbandonRequest( LdapMessageCodec codecMessage, int messageId )
+    private static InternalMessage transformAbandonRequest( AbandonRequestCodec abandonRequest, int messageId )
     {
         AbandonRequestImpl internalMessage = new AbandonRequestImpl( messageId );
-        AbandonRequestCodec abandonRequest = codecMessage.getAbandonRequest();
 
         // Codec : int abandonnedMessageId -> Internal : int abandonId
         internalMessage.setAbandoned( abandonRequest.getAbandonedMessageId() );
@@ -150,16 +150,15 @@ public class LdapTransformer
 
 
     /**
-     * Transform an AddRequest message from a CodecMessage to a InternalMessage
+     * Transform an AddRequest message from a addRequest to a InternalMessage
      * 
-     * @param codecMessage The message to transform
+     * @param addRequest The message to transform
      * @param messageId The message Id
      * @return A Internal AddRequestImpl
      */
-    private static InternalMessage transformAddRequest( LdapMessageCodec codecMessage, int messageId )
+    private static InternalMessage transformAddRequest( AddRequestCodec addRequest, int messageId )
     {
         AddRequestImpl internalMessage = new AddRequestImpl( messageId );
-        AddRequestCodec addRequest = codecMessage.getAddRequest();
 
         // Codec : LdapDN entry -> Internal : String name
         internalMessage.setEntry( addRequest.getEntry() );
@@ -174,14 +173,13 @@ public class LdapTransformer
     /**
      * Transform a BindRequest message from a CodecMessage to a InternalMessage
      * 
-     * @param codecMessage The message to transform
+     * @param bindRequest The message to transform
      * @param messageId The message Id
      * @return A Internal BindRequestImpl
      */
-    private static InternalMessage transformBindRequest( LdapMessageCodec codecMessage, int messageId )
+    private static InternalMessage transformBindRequest( BindRequestCodec bindRequest, int messageId )
     {
         BindRequestImpl internalMessage = new BindRequestImpl( messageId );
-        BindRequestCodec bindRequest = codecMessage.getBindRequest();
 
         // Codec : int version -> Internal : boolean isVersion3
         internalMessage.setVersion3( bindRequest.isLdapV3() );
@@ -217,14 +215,13 @@ public class LdapTransformer
      * BindResponse PDU and must decode it to return the Internal 
      * representation.
      * 
-     * @param codecMessage The message to transform
+     * @param bindResponse The message to transform
      * @param messageId The message Id
      * @return a Internal BindResponseImpl
      */
-    private static InternalMessage transformBindResponse( LdapMessageCodec codecMessage, int messageId )
+    private static InternalMessage transformBindResponse( BindResponseCodec bindResponse, int messageId )
     {
         BindResponseImpl internalMessage = new BindResponseImpl( messageId );
-        BindResponseCodec bindResponse = codecMessage.getBindResponse();
 
         // Codec : byte[] serverSaslcreds -> Internal : byte[] serverSaslCreds
         internalMessage.setServerSaslCreds( bindResponse.getServerSaslCreds() );
@@ -280,14 +277,13 @@ public class LdapTransformer
      * Transform a CompareRequest message from a CodecMessage to a
      * InternalMessage
      * 
-     * @param codecMessage The message to transform
+     * @param compareRequest The message to transform
      * @param messageId The message Id
      * @return A Internal CompareRequestImpl
      */
-    private static InternalMessage transformCompareRequest( LdapMessageCodec codecMessage, int messageId )
+    private static InternalMessage transformCompareRequest( CompareRequestCodec compareRequest, int messageId )
     {
         CompareRequestImpl internalMessage = new CompareRequestImpl( messageId );
-        CompareRequestCodec compareRequest = codecMessage.getCompareRequest();
 
         // Codec : LdapDN entry -> Internal : private LdapDN
         internalMessage.setName( compareRequest.getEntry() );
@@ -312,14 +308,13 @@ public class LdapTransformer
     /**
      * Transform a DelRequest message from a CodecMessage to a InternalMessage
      * 
-     * @param codecMessage The message to transform
+     * @param delRequest The message to transform
      * @param messageId The message Id
      * @return A Internal DeleteRequestImpl
      */
-    private static InternalMessage transformDelRequest( LdapMessageCodec codecMessage, int messageId )
+    private static InternalMessage transformDelRequest( DelRequestCodec delRequest, int messageId )
     {
         DeleteRequestImpl internalMessage = new DeleteRequestImpl( messageId );
-        DelRequestCodec delRequest = codecMessage.getDelRequest();
 
         // Codec : LdapDN entry -> Internal : LdapDN
         internalMessage.setName( delRequest.getEntry() );
@@ -332,13 +327,12 @@ public class LdapTransformer
      * Transform an ExtendedRequest message from a CodecMessage to a
      * InternalMessage
      * 
-     * @param codecMessage The message to transform
+     * @param extendedRequest The message to transform
      * @param messageId The message Id
      * @return A Internal ExtendedRequestImpl
      */
-    private static InternalMessage transformExtendedRequest( LdapMessageCodec codecMessage, int messageId )
+    private static InternalMessage transformExtendedRequest( ExtendedRequestCodec extendedRequest, int messageId )
     {
-        ExtendedRequestCodec extendedRequest = codecMessage.getExtendedRequest();
         ExtendedRequestImpl internalMessage;
 
         if ( extendedRequest.getRequestName().equals( GracefulShutdownRequest.EXTENSION_OID ) )
@@ -364,14 +358,13 @@ public class LdapTransformer
      * Transform a ModifyDNRequest message from a CodecMessage to a
      * InternalMessage
      * 
-     * @param codecMessage The message to transform
+     * @param modifyDNRequest The message to transform
      * @param messageId The message Id
      * @return A Internal ModifyDNRequestImpl
      */
-    private static InternalMessage transformModifyDNRequest( LdapMessageCodec codecMessage, int messageId )
+    private static InternalMessage transformModifyDNRequest( ModifyDNRequestCodec modifyDNRequest, int messageId )
     {
         ModifyDnRequestImpl internalMessage = new ModifyDnRequestImpl( messageId );
-        ModifyDNRequestCodec modifyDNRequest = codecMessage.getModifyDNRequest();
 
         // Codec : LdapDN entry -> Internal : LdapDN m_name
         internalMessage.setName( modifyDNRequest.getEntry() );
@@ -392,14 +385,13 @@ public class LdapTransformer
     /**
      * Transform a ModifyRequest message from a CodecMessage to a InternalMessage
      * 
-     * @param codecMessage The message to transform
+     * @param modifyRequest The message to transform
      * @param messageId The message Id
      * @return A Internal ModifyRequestImpl
      */
-    private static InternalMessage transformModifyRequest( LdapMessageCodec codecMessage, int messageId )
+    private static InternalMessage transformModifyRequest( ModifyRequestCodec modifyRequest, int messageId )
     {
         ModifyRequestImpl internalMessage = new ModifyRequestImpl( messageId );
-        ModifyRequestCodec modifyRequest = codecMessage.getModifyRequest();
 
         // Codec : LdapDN object -> Internal : String name
         internalMessage.setName( modifyRequest.getObject() );
@@ -719,14 +711,13 @@ public class LdapTransformer
     /**
      * Transform a SearchRequest message from a CodecMessage to a InternalMessage
      * 
-     * @param codecMessage The message to transform
+     * @param searchRequest The message to transform
      * @param messageId The message Id
      * @return A Internal SearchRequestImpl
      */
-    private static InternalMessage transformSearchRequest( LdapMessageCodec codecMessage, int messageId )
+    private static InternalMessage transformSearchRequest( SearchRequestCodec searchRequest, int messageId )
     {
         SearchRequestImpl internalMessage = new SearchRequestImpl( messageId );
-        SearchRequestCodec searchRequest = codecMessage.getSearchRequest();
 
         // Codec : LdapDN baseObject -> Internal : String baseDn
         internalMessage.setBase( searchRequest.getBaseObject() );
@@ -822,64 +813,64 @@ public class LdapTransformer
 
         InternalMessage internalMessage = null;
 
-        int messageType = codecMessage.getMessageType();
+        MessageTypeEnum messageType = codecMessage.getMessageType();
 
         switch ( messageType )
         {
-            case ( LdapConstants.BIND_REQUEST  ):
-                internalMessage = transformBindRequest( codecMessage, messageId );
+            case BIND_REQUEST :
+                internalMessage = transformBindRequest( (BindRequestCodec)codecMessage, messageId );
                 break;
 
-            case ( LdapConstants.UNBIND_REQUEST  ):
-                internalMessage = transformUnBindRequest( codecMessage, messageId );
+            case UNBIND_REQUEST :
+                internalMessage = transformUnBindRequest( (UnBindRequestCodec)codecMessage, messageId );
                 break;
 
-            case ( LdapConstants.SEARCH_REQUEST  ):
-                internalMessage = transformSearchRequest( codecMessage, messageId );
+            case SEARCH_REQUEST :
+                internalMessage = transformSearchRequest( (SearchRequestCodec)codecMessage, messageId );
                 break;
 
-            case ( LdapConstants.MODIFY_REQUEST  ):
-                internalMessage = transformModifyRequest( codecMessage, messageId );
+            case MODIFY_REQUEST :
+                internalMessage = transformModifyRequest( (ModifyRequestCodec)codecMessage, messageId );
                 break;
 
-            case ( LdapConstants.ADD_REQUEST  ):
-                internalMessage = transformAddRequest( codecMessage, messageId );
+            case ADD_REQUEST :
+                internalMessage = transformAddRequest( (AddRequestCodec)codecMessage, messageId );
                 break;
 
-            case ( LdapConstants.DEL_REQUEST  ):
-                internalMessage = transformDelRequest( codecMessage, messageId );
+            case DEL_REQUEST :
+                internalMessage = transformDelRequest( (DelRequestCodec)codecMessage, messageId );
                 break;
 
-            case ( LdapConstants.MODIFYDN_REQUEST  ):
-                internalMessage = transformModifyDNRequest( codecMessage, messageId );
+            case MODIFYDN_REQUEST :
+                internalMessage = transformModifyDNRequest( (ModifyDNRequestCodec)codecMessage, messageId );
                 break;
 
-            case ( LdapConstants.COMPARE_REQUEST  ):
-                internalMessage = transformCompareRequest( codecMessage, messageId );
+            case COMPARE_REQUEST :
+                internalMessage = transformCompareRequest( (CompareRequestCodec)codecMessage, messageId );
                 break;
 
-            case ( LdapConstants.ABANDON_REQUEST  ):
-                internalMessage = transformAbandonRequest( codecMessage, messageId );
+            case ABANDON_REQUEST :
+                internalMessage = transformAbandonRequest( (AbandonRequestCodec)codecMessage, messageId );
                 break;
 
-            case ( LdapConstants.EXTENDED_REQUEST  ):
-                internalMessage = transformExtendedRequest( codecMessage, messageId );
+            case EXTENDED_REQUEST :
+                internalMessage = transformExtendedRequest( (ExtendedRequestCodec)codecMessage, messageId );
                 break;
                 
-            case ( LdapConstants.BIND_RESPONSE  ):
-                internalMessage = transformBindResponse( codecMessage, messageId );
+            case BIND_RESPONSE :
+                internalMessage = transformBindResponse( (BindResponseCodec)codecMessage, messageId );
                 break;
 
-            case ( LdapConstants.SEARCH_RESULT_ENTRY ):
-            case ( LdapConstants.SEARCH_RESULT_DONE ):
-            case ( LdapConstants.SEARCH_RESULT_REFERENCE ):
-            case ( LdapConstants.MODIFY_RESPONSE ):
-            case ( LdapConstants.ADD_RESPONSE ):
-            case ( LdapConstants.DEL_RESPONSE ):
-            case ( LdapConstants.MODIFYDN_RESPONSE ):
-            case ( LdapConstants.COMPARE_RESPONSE ):
-            case ( LdapConstants.EXTENDED_RESPONSE ):
-            case ( LdapConstants.INTERMEDIATE_RESPONSE ):
+            case SEARCH_RESULT_ENTRY :
+            case SEARCH_RESULT_DONE :
+            case SEARCH_RESULT_REFERENCE :
+            case MODIFY_RESPONSE :
+            case ADD_RESPONSE :
+            case DEL_RESPONSE :
+            case MODIFYDN_RESPONSE :
+            case COMPARE_RESPONSE :
+            case EXTENDED_RESPONSE :
+            case INTERMEDIATE_RESPONSE :
                 // Nothing to do !
                 break;
 
@@ -945,10 +936,10 @@ public class LdapTransformer
     /**
      * Transform a Internal AddResponse to a Codec AddResponse
      * 
-     * @param codecMessage The Codec AddResponse to produce
      * @param internalMessage The incoming Internal AddResponse
+     * @return The AddResponseCodec instance
      */
-    private static void transformAddResponse( LdapMessageCodec codecMessage, InternalMessage internalMessage )
+    private static LdapMessageCodec transformAddResponse( InternalMessage internalMessage )
     {
         AddResponseImpl internalAddResponse = ( AddResponseImpl ) internalMessage;
 
@@ -957,22 +948,21 @@ public class LdapTransformer
         // Transform the ldapResult
         addResponse.setLdapResult( transformLdapResult( ( LdapResultImpl ) internalAddResponse.getLdapResult() ) );
 
-        // Set the operation into the LdapMessage
-        codecMessage.setProtocolOP( addResponse );
+        return addResponse;
     }
 
 
     /**
      * Transform a Internal BindResponse to a Codec BindResponse
      * 
-     * @param codecMessage The Codec BindResponse to produce
      * @param internalMessage The incoming Internal BindResponse
+     * @return The BindResponseCodec instance
      */
-    private static void transformBindResponse( LdapMessageCodec codecMessage, InternalMessage internalMessage )
+    private static LdapMessageCodec transformBindResponse( InternalMessage internalMessage )
     {
         BindResponseImpl internalBindResponse = ( BindResponseImpl ) internalMessage;
 
-        BindResponseCodec bindResponse = new BindResponseCodec();
+        BindResponseCodec bindResponseCodec = new BindResponseCodec();
 
         // Internal : byte [] serverSaslCreds -> Codec : OctetString
         // serverSaslCreds
@@ -980,29 +970,28 @@ public class LdapTransformer
 
         if ( serverSaslCreds != null )
         {
-            bindResponse.setServerSaslCreds( serverSaslCreds );
+            bindResponseCodec.setServerSaslCreds( serverSaslCreds );
         }
 
         // Transform the ldapResult
-        bindResponse.setLdapResult( transformLdapResult( ( LdapResultImpl ) internalBindResponse.getLdapResult() ) );
+        bindResponseCodec.setLdapResult( transformLdapResult( ( LdapResultImpl ) internalBindResponse.getLdapResult() ) );
 
-        // Set the operation into the LdapMessage
-        codecMessage.setProtocolOP( bindResponse );
+        return bindResponseCodec;
     }
 
 
     /**
      * Transform a Internal BindRequest to a Codec BindRequest
      * 
-     * @param codecMessage The Codec BindRequest to produce
      * @param internalMessage The incoming Internal BindRequest
+     * @return The BindRequestCodec instance
      */
-    private static void transformBindRequest( LdapMessageCodec codecMessage, InternalMessage internalMessage )
+    private static LdapMessageCodec transformBindRequest( InternalMessage internalMessage )
     {
         BindRequestImpl internalBindRequest = ( BindRequestImpl ) internalMessage;
 
         BindRequestCodec bindRequest = new BindRequestCodec();
-        
+
         if ( internalBindRequest.isSimple() )
         {
             SimpleAuthentication simple = new SimpleAuthentication();
@@ -1021,18 +1010,17 @@ public class LdapTransformer
         bindRequest.setName( internalBindRequest.getName() );
         bindRequest.setVersion( internalBindRequest.isVersion3() ? 3 : 2 );
         
-        // Set the operation into the LdapMessage
-        codecMessage.setProtocolOP( bindRequest );
+        return bindRequest;
     }
 
 
     /**
      * Transform a Internal CompareResponse to a Codec CompareResponse
      * 
-     * @param codecMessage The Codec CompareResponse to produce
      * @param internalMessage The incoming Internal CompareResponse
+     * @return The CompareResponseCodec instance
      */
-    private static void transformCompareResponse( LdapMessageCodec codecMessage, InternalMessage internalMessage )
+    private static LdapMessageCodec transformCompareResponse( InternalMessage internalMessage )
     {
         CompareResponseImpl internalCompareResponse = ( CompareResponseImpl ) internalMessage;
 
@@ -1042,18 +1030,17 @@ public class LdapTransformer
         compareResponse
             .setLdapResult( transformLdapResult( ( LdapResultImpl ) internalCompareResponse.getLdapResult() ) );
 
-        // Set the operation into the LdapMessage
-        codecMessage.setProtocolOP( compareResponse );
+        return compareResponse;
     }
 
 
     /**
      * Transform a Internal DelResponse to a Codec DelResponse
      * 
-     * @param codecMessage The Codec DelResponse to produce
      * @param internalMessage The incoming Internal DelResponse
+     * @return The DelResponseCodec instance
      */
-    private static void transformDelResponse( LdapMessageCodec codecMessage, InternalMessage internalMessage )
+    private static LdapMessageCodec transformDelResponse( InternalMessage internalMessage )
     {
         DeleteResponseImpl internalDelResponse = ( DeleteResponseImpl ) internalMessage;
 
@@ -1062,18 +1049,17 @@ public class LdapTransformer
         // Transform the ldapResult
         delResponse.setLdapResult( transformLdapResult( ( LdapResultImpl ) internalDelResponse.getLdapResult() ) );
 
-        // Set the operation into the LdapMessage
-        codecMessage.setProtocolOP( delResponse );
+        return delResponse;
     }
 
 
     /**
      * Transform a Internal ExtendedResponse to a Codec ExtendedResponse
      * 
-     * @param codecMessage The Codec ExtendedResponse to produce
      * @param internalMessage The incoming Internal ExtendedResponse
+     * @return The ExtendedResponseCodec instance
      */
-    private static void transformExtendedResponse( LdapMessageCodec codecMessage, InternalMessage internalMessage )
+    private static LdapMessageCodec transformExtendedResponse( InternalMessage internalMessage )
     {
         ExtendedResponseImpl internalExtendedResponse = ( ExtendedResponseImpl ) internalMessage;
         ExtendedResponseCodec extendedResponse = new ExtendedResponseCodec();
@@ -1096,18 +1082,17 @@ public class LdapTransformer
         extendedResponse.setLdapResult( transformLdapResult( ( LdapResultImpl ) internalExtendedResponse
             .getLdapResult() ) );
 
-        // Set the operation into the LdapMessage
-        codecMessage.setProtocolOP( extendedResponse );
+        return extendedResponse;
     }
 
 
     /**
      * Transform a Internal IntermediateResponse to a Codec IntermediateResponse
      * 
-     * @param codecMessage The Codec IntermediateResponse to produce
      * @param internalMessage The incoming Internal IntermediateResponse
+     * @return The IntermediateResponseCodec instance
      */
-    private static void transformIntermediateResponse( LdapMessageCodec codecMessage, InternalMessage internalMessage )
+    private static LdapMessageCodec transformIntermediateResponse( InternalMessage internalMessage )
     {
         IntermediateResponseImpl internalIntermediateResponse = (IntermediateResponseImpl) internalMessage;
         IntermediateResponseCodec intermediateResponse = new IntermediateResponseCodec();
@@ -1130,18 +1115,17 @@ public class LdapTransformer
         intermediateResponse.setLdapResult( transformLdapResult( ( LdapResultImpl ) internalIntermediateResponse
             .getLdapResult() ) );
 
-        // Set the operation into the LdapMessage
-        codecMessage.setProtocolOP( intermediateResponse );
+        return intermediateResponse;
     }
 
 
     /**
      * Transform a Internal ModifyResponse to a Codec ModifyResponse
      * 
-     * @param codecMessage The Codec ModifyResponse to produce
      * @param internalMessage The incoming Internal ModifyResponse
+     * @return The ModifyResponseCodec instance
      */
-    private static void transformModifyResponse( LdapMessageCodec codecMessage, InternalMessage internalMessage )
+    private static LdapMessageCodec transformModifyResponse( InternalMessage internalMessage )
     {
         ModifyResponseImpl internalModifyResponse = ( ModifyResponseImpl ) internalMessage;
 
@@ -1150,18 +1134,17 @@ public class LdapTransformer
         // Transform the ldapResult
         modifyResponse.setLdapResult( transformLdapResult( ( LdapResultImpl ) internalModifyResponse.getLdapResult() ) );
 
-        // Set the operation into the LdapMessage
-        codecMessage.setProtocolOP( modifyResponse );
+        return modifyResponse;
     }
 
 
     /**
      * Transform a Internal ModifyDNResponse to a Codec ModifyDNResponse
      * 
-     * @param codecMessage The Codec ModifyDNResponse to produce
      * @param internalMessage The incoming Internal ModifyDNResponse
+     * @return The ModifyDnResponseCodec instance
      */
-    private static void transformModifyDNResponse( LdapMessageCodec codecMessage, InternalMessage internalMessage )
+    private static LdapMessageCodec transformModifyDNResponse( InternalMessage internalMessage )
     {
         ModifyDnResponseImpl internalModifyDNResponse = ( ModifyDnResponseImpl ) internalMessage;
 
@@ -1171,18 +1154,17 @@ public class LdapTransformer
         modifyDNResponse.setLdapResult( transformLdapResult( ( LdapResultImpl ) internalModifyDNResponse
             .getLdapResult() ) );
 
-        // Set the operation into the LdapMessage
-        codecMessage.setProtocolOP( modifyDNResponse );
+        return modifyDNResponse;
     }
 
 
     /**
      * Transform a Internal SearchResponseDone to a Codec SearchResultDone
      * 
-     * @param codecMessage The Codec SearchResultDone to produce
      * @param internalMessage The incoming Internal SearchResponseDone
+     * @return The SearchResultDone instance
      */
-    private static void transformSearchResultDone( LdapMessageCodec codecMessage, InternalMessage internalMessage )
+    private static LdapMessageCodec transformSearchResultDone( InternalMessage internalMessage )
     {
         SearchResponseDoneImpl internalSearchResponseDone = ( SearchResponseDoneImpl ) internalMessage;
         SearchResultDoneCodec searchResultDone = new SearchResultDoneCodec();
@@ -1192,17 +1174,16 @@ public class LdapTransformer
             .getLdapResult() ) );
 
         // Set the operation into the LdapMessage
-        codecMessage.setProtocolOP( searchResultDone );
+        return searchResultDone;
     }
 
 
     /**
      * Transform a Internal SearchResponseEntry to a Codec SearchResultEntry
      * 
-     * @param codecMessage The Codec SearchResultEntry to produce
      * @param internalMessage The incoming Internal SearchResponseEntry
      */
-    private static void transformSearchResultEntry( LdapMessageCodec codecMessage, InternalMessage internalMessage )
+    private static LdapMessageCodec transformSearchResultEntry( InternalMessage internalMessage )
     {
         SearchResponseEntryImpl internalSearchResultResponse = ( SearchResponseEntryImpl ) internalMessage;
         SearchResultEntryCodec searchResultEntry = new SearchResultEntryCodec();
@@ -1214,8 +1195,7 @@ public class LdapTransformer
         // partialAttributeList
         searchResultEntry.setEntry( internalSearchResultResponse.getEntry() );
 
-        // Set the operation into the LdapMessage
-        codecMessage.setProtocolOP( searchResultEntry );
+        return searchResultEntry;
     }
 
 
@@ -1223,10 +1203,9 @@ public class LdapTransformer
      * Transform a Internal SearchResponseReference to a Codec
      * SearchResultReference
      * 
-     * @param codecMessage The Codec SearchResultReference to produce
      * @param internalMessage The incoming Internal SearchResponseReference
      */
-    private static void transformSearchResultReference( LdapMessageCodec codecMessage, InternalMessage internalMessage )
+    private static LdapMessageCodec transformSearchResultReference( InternalMessage internalMessage )
     {
         SearchResponseReferenceImpl internalSearchResponseReference = ( SearchResponseReferenceImpl ) internalMessage;
         SearchResultReferenceCodec searchResultReference = new SearchResultReferenceCodec();
@@ -1256,8 +1235,7 @@ public class LdapTransformer
             }
         }
 
-        // Set the operation into the LdapMessage
-        codecMessage.setProtocolOP( searchResultReference );
+        return searchResultReference;
     }
 
 
@@ -1274,60 +1252,60 @@ public class LdapTransformer
             LOG.debug( "Transforming message type " + msg.getType() );
         }
 
-        LdapMessageCodec codecMessage = new LdapMessageCodec();
-
-        codecMessage.setMessageId( msg.getMessageId() );
+        LdapMessageCodec codecMessage = null;
 
         switch ( msg.getType() )
         {
-            case SEARCH_RES_ENTRY :
-                transformSearchResultEntry( codecMessage, msg );
+            case SEARCH_RESULT_ENTRY :
+                codecMessage = transformSearchResultEntry( msg );
                 break;
                 
-            case SEARCH_RES_DONE :
-                transformSearchResultDone( codecMessage, msg );
+            case SEARCH_RESULT_DONE :
+                codecMessage = transformSearchResultDone( msg );
                 break;
                 
-            case SEARCH_RES_REF :
-                transformSearchResultReference( codecMessage, msg );
+            case SEARCH_RESULT_REFERENCE :
+                codecMessage = transformSearchResultReference( msg );
                 break;
                 
             case BIND_RESPONSE :
-                transformBindResponse( codecMessage, msg );
+                codecMessage = transformBindResponse( msg );
                 break;
                 
             case BIND_REQUEST :
-                transformBindRequest( codecMessage, msg );
+                codecMessage = transformBindRequest( msg );
                 break;
                 
             case ADD_RESPONSE :
-                transformAddResponse( codecMessage, msg );
+                codecMessage = transformAddResponse( msg );
                 break;
                 
             case COMPARE_RESPONSE :
-                transformCompareResponse( codecMessage, msg );
+                codecMessage = transformCompareResponse( msg );
                 break;
                 
             case DEL_RESPONSE :
-                transformDelResponse( codecMessage, msg );
+                codecMessage = transformDelResponse( msg );
                 break;
          
             case MODIFY_RESPONSE :
-                transformModifyResponse( codecMessage, msg );
+                codecMessage = transformModifyResponse( msg );
                 break;
 
-            case MOD_DN_RESPONSE :
-                transformModifyDNResponse( codecMessage, msg );
+            case MODIFYDN_RESPONSE :
+                codecMessage = transformModifyDNResponse( msg );
                 break;
                 
-            case EXTENDED_RESP :
-                transformExtendedResponse( codecMessage, msg );
+            case EXTENDED_RESPONSE :
+                codecMessage = transformExtendedResponse( msg );
                 break;
                 
-            case INTERMEDIATE_RESP :
-                transformIntermediateResponse( codecMessage, msg );
+            case INTERMEDIATE_RESPONSE :
+                codecMessage = transformIntermediateResponse( msg );
                 break;
         }
+
+        codecMessage.setMessageId( msg.getMessageId() );
 
         // We also have to transform the controls...
         if ( !msg.getControls().isEmpty() )

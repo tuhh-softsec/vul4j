@@ -31,7 +31,6 @@ import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.codec.EncoderException;
-import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.message.control.Control;
@@ -90,21 +89,20 @@ public class CompareResponseTest
         }
 
         // Check the decoded CompareResponse PDU
-        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        CompareResponseCodec compareResponse = message.getCompareResponse();
+        CompareResponseCodec compareResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getCompareResponse();
 
-        assertEquals( 1, message.getMessageId() );
+        assertEquals( 1, compareResponse.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, compareResponse.getLdapResult().getResultCode() );
         assertEquals( "", compareResponse.getLdapResult().getMatchedDN() );
         assertEquals( "", compareResponse.getLdapResult().getErrorMessage() );
 
         // Check the length
-        assertEquals( 0x0E, message.computeLength() );
+        assertEquals( 0x0E, compareResponse.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = message.encode( null );
+            ByteBuffer bb = compareResponse.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -164,30 +162,29 @@ public class CompareResponseTest
         }
 
         // Check the decoded CompareResponse PDU
-        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        CompareResponseCodec compareResponse = message.getCompareResponse();
+        CompareResponseCodec compareResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getCompareResponse();
 
-        assertEquals( 1, message.getMessageId() );
+        assertEquals( 1, compareResponse.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, compareResponse.getLdapResult().getResultCode() );
         assertEquals( "", compareResponse.getLdapResult().getMatchedDN() );
         assertEquals( "", compareResponse.getLdapResult().getErrorMessage() );
 
         // Check the Control
-        List<Control> controls = message.getControls();
+        List<Control> controls = compareResponse.getControls();
 
         assertEquals( 1, controls.size() );
 
-        Control control = message.getControls( 0 );
+        Control control = compareResponse.getControls( 0 );
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
         assertEquals( "", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
 
         // Check the length
-        assertEquals( 0x2B, message.computeLength() );
+        assertEquals( 0x2B, compareResponse.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = message.encode( null );
+            ByteBuffer bb = compareResponse.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 

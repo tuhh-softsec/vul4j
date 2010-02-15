@@ -27,6 +27,7 @@ import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.codec.LdapResponseCodec;
+import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 
 
 /**
@@ -56,9 +57,18 @@ public class ModifyResponseCodec extends LdapResponseCodec
      * 
      * @return Returns the type.
      */
-    public int getMessageType()
+    public MessageTypeEnum getMessageType()
     {
-        return LdapConstants.MODIFY_RESPONSE;
+        return MessageTypeEnum.MODIFY_RESPONSE;
+    }
+
+    
+    /**
+     * {@inheritDoc}
+     */
+    public String getMessageTypeName()
+    {
+        return "MODIFY_RESPONSE";
     }
 
 
@@ -66,16 +76,18 @@ public class ModifyResponseCodec extends LdapResponseCodec
      * Compute the ModifyResponse length 
      * 
      * ModifyResponse : 
+     * <pre>
      * 0x67 L1 
      *   | 
      *   +--> LdapResult 
      *   
      * L1 = Length(LdapResult) 
      * Length(ModifyResponse) = Length(0x67) + Length(L1) + L1
+     * </pre>
      */
-    public int computeLength()
+    protected int computeLengthProtocolOp()
     {
-        int ldapResponseLength = super.computeLength();
+        int ldapResponseLength = super.computeLdapResultLength();
 
         return 1 + TLV.getNbBytes( ldapResponseLength ) + ldapResponseLength;
     }
@@ -87,13 +99,8 @@ public class ModifyResponseCodec extends LdapResponseCodec
      * @param buffer The buffer where to put the PDU
      * @return The PDU.
      */
-    public ByteBuffer encode( ByteBuffer buffer ) throws EncoderException
+    protected void encodeProtocolOp( ByteBuffer buffer ) throws EncoderException
     {
-        if ( buffer == null )
-        {
-            throw new EncoderException( "Cannot put a PDU in a null buffer !" );
-        }
-
         try
         {
             // The tag
@@ -106,7 +113,7 @@ public class ModifyResponseCodec extends LdapResponseCodec
         }
 
         // The ldapResult
-        return super.encode( buffer );
+        super.encode( buffer );
     }
 
 

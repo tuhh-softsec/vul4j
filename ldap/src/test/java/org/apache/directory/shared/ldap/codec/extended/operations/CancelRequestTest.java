@@ -21,6 +21,10 @@
 package org.apache.directory.shared.ldap.codec.extended.operations;
 
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.nio.ByteBuffer;
 
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
@@ -31,11 +35,7 @@ import org.apache.directory.shared.ldap.codec.extended.operations.cancel.Cancel;
 import org.apache.directory.shared.ldap.codec.extended.operations.cancel.CancelContainer;
 import org.apache.directory.shared.ldap.codec.extended.operations.cancel.CancelDecoder;
 import org.apache.directory.shared.ldap.util.StringTools;
-
 import org.junit.Test;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 
 /*
@@ -84,7 +84,7 @@ public class CancelRequestTest
         // Check the encoding
         try
         {
-            ByteBuffer bb = cancel.encode( null );
+            ByteBuffer bb = cancel.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 

@@ -23,6 +23,7 @@ package org.apache.directory.shared.dsmlv2.reponse;
 
 import org.apache.directory.shared.dsmlv2.DsmlDecorator;
 import org.apache.directory.shared.dsmlv2.ParserUtils;
+import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.codec.search.SearchResultEntryCodec;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
@@ -65,7 +66,7 @@ public class SearchResultEntryDsml extends LdapResponseDecorator implements Dsml
     /* (non-Javadoc)
      * @see org.apache.directory.shared.dsmlv2.reponse.LdapMessageDecorator#getMessageType()
      */
-    public int getMessageType()
+    public MessageTypeEnum getMessageType()
     {
         return instance.getMessageType();
     }

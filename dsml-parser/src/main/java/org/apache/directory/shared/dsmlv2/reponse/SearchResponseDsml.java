@@ -45,9 +45,9 @@ public class SearchResponseDsml extends LdapResponseDecorator implements DsmlDec
     /**
      * Creates a new instance of SearchResponseDsml.
      */
-    public SearchResponseDsml()
+    public SearchResponseDsml( LdapMessageCodec response )
     {
-        super( new LdapMessageCodec() );
+        super( response );
     }
 
 

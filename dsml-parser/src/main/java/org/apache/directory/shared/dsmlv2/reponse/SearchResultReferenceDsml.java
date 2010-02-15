@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.apache.directory.shared.dsmlv2.DsmlDecorator;
 import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
+import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.codec.search.SearchResultReferenceCodec;
 import org.apache.directory.shared.ldap.util.LdapURL;
 import org.dom4j.Element;
@@ -62,7 +63,7 @@ public class SearchResultReferenceDsml extends LdapResponseDecorator implements 
     /* (non-Javadoc)
      * @see org.apache.directory.shared.dsmlv2.reponse.LdapMessageDecorator#getMessageType()
      */
-    public int getMessageType()
+    public MessageTypeEnum getMessageType()
     {
         return instance.getMessageType();
     }

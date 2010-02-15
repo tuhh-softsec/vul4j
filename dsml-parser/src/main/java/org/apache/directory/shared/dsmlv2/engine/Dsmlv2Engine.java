@@ -56,10 +56,10 @@ import org.apache.directory.shared.dsmlv2.request.BatchRequest;
 import org.apache.directory.shared.dsmlv2.request.BatchRequest.OnError;
 import org.apache.directory.shared.dsmlv2.request.BatchRequest.Processing;
 import org.apache.directory.shared.dsmlv2.request.BatchRequest.ResponseOrder;
-import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.LdapResponseCodec;
+import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.codec.add.AddResponseCodec;
 import org.apache.directory.shared.ldap.codec.bind.BindRequestCodec;
 import org.apache.directory.shared.ldap.codec.bind.BindResponseCodec;
@@ -281,7 +281,7 @@ public class Dsmlv2Engine
                 return batchResponse.toDsml();
             }
 
-            // Checking if we need to exit processing (if an error has ocurred if onError == Exit)
+            // Checking if we need to exit processing (if an error has occurred if onError == Exit)
             if ( exit )
             {
                 break;
@@ -319,15 +319,7 @@ public class Dsmlv2Engine
     private void processRequest( LdapMessageCodec request ) throws EncoderException, IOException, DecoderException,
         NamingException
     {
-        LdapMessageCodec message = new LdapMessageCodec();
-
-        message.setProtocolOP( request );
-
-        message.setMessageId( request.getMessageId() );
-
-        ByteBuffer bb = null;
-
-        bb = message.encode( null );
+        ByteBuffer bb = request.encode();
 
         bb.flip();
 
@@ -335,116 +327,127 @@ public class Dsmlv2Engine
 
         bb.clear();
         bb.position( bb.capacity() );
+        
         // Get the response
         LdapMessageCodec response = null;
 
         response = readResponse( bb );
 
-        if ( LdapConstants.ADD_RESPONSE == response.getMessageType() )
+        switch ( response.getMessageType() )
         {
-            AddResponseCodec addResponse = response.getAddResponse();
-            copyMessageIdAndControls( response, addResponse );
+            case ADD_RESPONSE :
+                AddResponseCodec addResponse = (AddResponseCodec)response;
+                copyMessageIdAndControls( response, addResponse );
+    
+                AddResponseDsml addResponseDsml = new AddResponseDsml( addResponse );
+                batchResponse.addResponse( addResponseDsml );
+                break;
+                
+            case BIND_RESPONSE :
+                BindResponseCodec bindResponse = (BindResponseCodec)response;
+                copyMessageIdAndControls( response, bindResponse );
+    
+                AuthResponseDsml authResponseDsml = new AuthResponseDsml( bindResponse );
+                batchResponse.addResponse( authResponseDsml );
+                break;
+                
+            case COMPARE_RESPONSE :
+                CompareResponseCodec compareResponse = (CompareResponseCodec)response;
+                copyMessageIdAndControls( response, compareResponse );
+    
+                CompareResponseDsml compareResponseDsml = new CompareResponseDsml( compareResponse );
+                batchResponse.addResponse( compareResponseDsml );
+                break;
 
-            AddResponseDsml addResponseDsml = new AddResponseDsml( addResponse );
-            batchResponse.addResponse( addResponseDsml );
-        }
-        else if ( LdapConstants.BIND_RESPONSE == response.getMessageType() )
-        {
-            BindResponseCodec bindResponse = response.getBindResponse();
-            copyMessageIdAndControls( response, bindResponse );
+            case DEL_RESPONSE :
+                DelResponseCodec delResponse = (DelResponseCodec)response;
+                copyMessageIdAndControls( response, delResponse );
+    
+                DelResponseDsml delResponseDsml = new DelResponseDsml( delResponse );
+                batchResponse.addResponse( delResponseDsml );
+                break;
+                
+            case MODIFY_RESPONSE :
+                ModifyResponseCodec modifyResponse = (ModifyResponseCodec)response;
+                copyMessageIdAndControls( response, modifyResponse );
+    
+                ModifyResponseDsml modifyResponseDsml = new ModifyResponseDsml( modifyResponse );
+                batchResponse.addResponse( modifyResponseDsml );
+                break;
 
-            AuthResponseDsml authResponseDsml = new AuthResponseDsml( bindResponse );
-            batchResponse.addResponse( authResponseDsml );
-        }
-        else if ( LdapConstants.COMPARE_RESPONSE == response.getMessageType() )
-        {
-            CompareResponseCodec compareResponse = response.getCompareResponse();
-            copyMessageIdAndControls( response, compareResponse );
+            case MODIFYDN_RESPONSE :
+                ModifyDNResponseCodec modifyDNResponse = (ModifyDNResponseCodec)response;
+                copyMessageIdAndControls( response, modifyDNResponse );
+    
+                ModDNResponseDsml modDNResponseDsml = new ModDNResponseDsml( modifyDNResponse );
+                batchResponse.addResponse( modDNResponseDsml );
+                break;
 
-            CompareResponseDsml authResponseDsml = new CompareResponseDsml( compareResponse );
-            batchResponse.addResponse( authResponseDsml );
-        }
-        else if ( LdapConstants.DEL_RESPONSE == response.getMessageType() )
-        {
-            DelResponseCodec delResponse = response.getDelResponse();
-            copyMessageIdAndControls( response, delResponse );
+            case EXTENDED_RESPONSE :
+                ExtendedResponseCodec extendedResponse = (ExtendedResponseCodec)response;
+                copyMessageIdAndControls( response, extendedResponse );
+    
+                ExtendedResponseDsml extendedResponseDsml = new ExtendedResponseDsml( extendedResponse );
+                batchResponse.addResponse( extendedResponseDsml );
+                break;
 
-            DelResponseDsml delResponseDsml = new DelResponseDsml( delResponse );
-            batchResponse.addResponse( delResponseDsml );
-        }
-        else if ( LdapConstants.MODIFY_RESPONSE == response.getMessageType() )
-        {
-            ModifyResponseCodec modifyResponse = response.getModifyResponse();
-            copyMessageIdAndControls( response, modifyResponse );
-
-            ModifyResponseDsml modifyResponseDsml = new ModifyResponseDsml( modifyResponse );
-            batchResponse.addResponse( modifyResponseDsml );
-        }
-        else if ( LdapConstants.MODIFYDN_RESPONSE == response.getMessageType() )
-        {
-            ModifyDNResponseCodec modifyDNResponse = response.getModifyDNResponse();
-            copyMessageIdAndControls( response, modifyDNResponse );
-
-            ModDNResponseDsml modDNResponseDsml = new ModDNResponseDsml( modifyDNResponse );
-            batchResponse.addResponse( modDNResponseDsml );
-        }
-        else if ( LdapConstants.EXTENDED_RESPONSE == response.getMessageType() )
-        {
-            ExtendedResponseCodec extendedResponse = response.getExtendedResponse();
-            copyMessageIdAndControls( response, extendedResponse );
-
-            ExtendedResponseDsml extendedResponseDsml = new ExtendedResponseDsml( extendedResponse );
-            batchResponse.addResponse( extendedResponseDsml );
-        }
-        else if ( ( LdapConstants.SEARCH_RESULT_ENTRY == response.getMessageType() )
-            || ( LdapConstants.SEARCH_RESULT_REFERENCE == response.getMessageType() )
-            || ( LdapConstants.SEARCH_RESULT_DONE == response.getMessageType() ) )
-        {
-            // A SearchResponse can contains multiple responses of 3 types:
-            //     - 0 to n SearchResultEntry
-            //     - O to n SearchResultReference
-            //     - 1 (only) SearchResultDone
-            // So we have to include those individual reponses in a "General" SearchResponse
-            //            Element searchResponse = xmlResponse.getRootElement().addElement( "searchResponse" );
-            SearchResponseDsml searchResponseDsml = new SearchResponseDsml();
-
-            // RequestID
-            int requestID = response.getMessageId();
-            if ( requestID != 0 )
-            {
-                searchResponseDsml.setMessageId( requestID );
-            }
-
-            while ( LdapConstants.SEARCH_RESULT_DONE != response.getMessageType() )
-            {
-                if ( LdapConstants.SEARCH_RESULT_ENTRY == response.getMessageType() )
+            case SEARCH_RESULT_ENTRY :
+            case SEARCH_RESULT_REFERENCE :
+            case SEARCH_RESULT_DONE :
+                // A SearchResponse can contains multiple responses of 3 types:
+                //     - 0 to n SearchResultEntry
+                //     - O to n SearchResultReference
+                //     - 1 (only) SearchResultDone
+                // So we have to include those individual responses in a "General" SearchResponse
+                //            Element searchResponse = xmlResponse.getRootElement().addElement( "searchResponse" );
+                SearchResponseDsml searchResponseDsml = null; //new SearchResponseDsml();
+    
+                // RequestID
+                int requestID = response.getMessageId();
+                
+                if ( requestID != 0 )
                 {
-                    SearchResultEntryCodec sre = response.getSearchResultEntry();
-                    copyMessageIdAndControls( response, sre );
-
-                    SearchResultEntryDsml searchResultEntryDsml = new SearchResultEntryDsml( sre );
-                    searchResponseDsml.addResponse( searchResultEntryDsml );
+                    searchResponseDsml.setMessageId( requestID );
                 }
-                else if ( LdapConstants.SEARCH_RESULT_REFERENCE == response.getMessageType() )
+    
+                while ( MessageTypeEnum.SEARCH_RESULT_DONE != response.getMessageType() )
                 {
-                    SearchResultReferenceCodec srr = response.getSearchResultReference();
-                    copyMessageIdAndControls( response, srr );
-
-                    SearchResultReferenceDsml searchResultReferenceDsml = new SearchResultReferenceDsml( srr );
-                    searchResponseDsml.addResponse( searchResultReferenceDsml );
+                    if ( MessageTypeEnum.SEARCH_RESULT_ENTRY == response.getMessageType() )
+                    {
+                        SearchResultEntryCodec sre = (SearchResultEntryCodec)response;
+                        copyMessageIdAndControls( response, sre );
+    
+                        SearchResultEntryDsml searchResultEntryDsml = new SearchResultEntryDsml( sre );
+                        searchResponseDsml = new SearchResponseDsml( (LdapMessageCodec)sre );
+    
+                        if ( requestID != 0 )
+                        {
+                            searchResponseDsml.setMessageId( requestID );
+                        }
+    
+                        searchResponseDsml.addResponse( searchResultEntryDsml );
+                    }
+                    else if ( MessageTypeEnum.SEARCH_RESULT_REFERENCE == response.getMessageType() )
+                    {
+                        SearchResultReferenceCodec srr = (SearchResultReferenceCodec)response;
+                        copyMessageIdAndControls( response, srr );
+    
+                        SearchResultReferenceDsml searchResultReferenceDsml = new SearchResultReferenceDsml( srr );
+                        searchResponseDsml.addResponse( searchResultReferenceDsml );
+                    }
+    
+                    response = readResponse( bb );
                 }
-
-                response = readResponse( bb );
-            }
-
-            SearchResultDoneCodec srd = response.getSearchResultDone();
-            copyMessageIdAndControls( response, srd );
-
-            SearchResultDoneDsml searchResultDoneDsml = new SearchResultDoneDsml( srd );
-            searchResponseDsml.addResponse( searchResultDoneDsml );
+    
+                SearchResultDoneCodec srd = (SearchResultDoneCodec)response;
+                copyMessageIdAndControls( response, srd );
+    
+                SearchResultDoneDsml searchResultDoneDsml = new SearchResultDoneDsml( srd );
+                searchResponseDsml.addResponse( searchResultDoneDsml );
+                break;
         }
 
-        LdapResponseCodec realResponse = response.getLdapResponse();
+        LdapResponseCodec realResponse = (LdapResponseCodec)response;
 
         if ( !continueOnError )
         {
@@ -457,7 +460,6 @@ public class Dsmlv2Engine
                 exit = true;
             }
         }
-
     }
 
 
@@ -585,7 +587,7 @@ public class Dsmlv2Engine
 
         if ( messageResp instanceof BindResponseCodec )
         {
-            BindResponseCodec resp = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage().getBindResponse();
+            BindResponseCodec resp = ( ( LdapMessageContainer ) ldapMessageContainer ).getBindResponse();
 
             if ( resp.getLdapResult().getResultCode() != ResultCodeEnum.SUCCESS )
             {
@@ -594,8 +596,7 @@ public class Dsmlv2Engine
         }
         else if ( messageResp instanceof ExtendedResponseCodec )
         {
-            ExtendedResponseCodec resp = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage()
-                .getExtendedResponse();
+            ExtendedResponseCodec resp = ( ( LdapMessageContainer ) ldapMessageContainer ).getExtendedResponse();
 
             if ( resp.getLdapResult().getResultCode() != ResultCodeEnum.SUCCESS )
             {
@@ -622,7 +623,6 @@ public class Dsmlv2Engine
     private void bind( int messageId ) throws EncoderException, DecoderException, IOException, NamingException
     {
         BindRequestCodec bindRequest = new BindRequestCodec();
-        LdapMessageCodec message = new LdapMessageCodec();
         LdapAuthentication authentication = new SimpleAuthentication();
         ( ( SimpleAuthentication ) authentication ).setSimple( StringTools.getBytesUtf8( password ) );
 
@@ -630,11 +630,10 @@ public class Dsmlv2Engine
         bindRequest.setName( new LdapDN( user ) );
         bindRequest.setVersion( 3 );
 
-        message.setProtocolOP( bindRequest );
-        message.setMessageId( messageId );
+        bindRequest.setMessageId( messageId );
 
         // Encode and send the bind request
-        ByteBuffer bb = message.encode( null );
+        ByteBuffer bb = bindRequest.encode();
         bb.flip();
 
         connect();

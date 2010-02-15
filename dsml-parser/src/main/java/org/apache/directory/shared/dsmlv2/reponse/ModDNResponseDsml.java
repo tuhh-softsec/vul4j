@@ -22,6 +22,7 @@ package org.apache.directory.shared.dsmlv2.reponse;
 
 
 import org.apache.directory.shared.dsmlv2.DsmlDecorator;
+import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.codec.modifyDn.ModifyDNResponseCodec;
 import org.dom4j.Element;
 
@@ -58,7 +59,7 @@ public class ModDNResponseDsml extends LdapResponseDecorator implements DsmlDeco
     /* (non-Javadoc)
      * @see org.apache.directory.shared.dsmlv2.reponse.LdapMessageDecorator#getMessageType()
      */
-    public int getMessageType()
+    public MessageTypeEnum getMessageType()
     {
         return instance.getMessageType();
     }

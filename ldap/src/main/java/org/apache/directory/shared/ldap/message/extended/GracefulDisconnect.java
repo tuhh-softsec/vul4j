@@ -35,7 +35,6 @@ import org.apache.directory.shared.ldap.message.ReferralImpl;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.message.internal.InternalReferral;
 import org.apache.directory.shared.ldap.util.LdapURL;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -153,7 +152,7 @@ public class GracefulDisconnect extends ExtendedResponseImpl
 
         try
         {
-            super.value = codec.encode( null ).array();
+            super.value = codec.encode().array();
         }
         catch ( EncoderException e )
         {

@@ -37,7 +37,6 @@ import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
-import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
@@ -148,19 +147,18 @@ public class SearchRequestMatchingRuleAssertionTest
             fail( de.getMessage() );
         }
 
-        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        SearchRequestCodec sr = message.getSearchRequest();
+        SearchRequestCodec searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
 
-        assertEquals( 1, message.getMessageId() );
-        assertEquals( "dc=example,dc=com", sr.getBaseObject().toString() );
-        assertEquals( SearchScope.OBJECT, sr.getScope() );
-        assertEquals( LdapConstants.DEREF_FINDING_BASE_OBJ, sr.getDerefAliases() );
-        assertEquals( 2, sr.getSizeLimit() );
-        assertEquals( 3, sr.getTimeLimit() );
-        assertEquals( true, sr.isTypesOnly() );
+        assertEquals( 1, searchRequest.getMessageId() );
+        assertEquals( "dc=example,dc=com", searchRequest.getBaseObject().toString() );
+        assertEquals( SearchScope.OBJECT, searchRequest.getScope() );
+        assertEquals( LdapConstants.DEREF_FINDING_BASE_OBJ, searchRequest.getDerefAliases() );
+        assertEquals( 2, searchRequest.getSizeLimit() );
+        assertEquals( 3, searchRequest.getTimeLimit() );
+        assertEquals( true, searchRequest.isTypesOnly() );
 
         // The attributes
-        List<EntryAttribute> attributes = sr.getAttributes();
+        List<EntryAttribute> attributes = searchRequest.getAttributes();
 
         for ( EntryAttribute attribute:attributes  )
         {
@@ -168,14 +166,14 @@ public class SearchRequestMatchingRuleAssertionTest
         }
 
         // Check the length
-        assertEquals( 0x63, message.computeLength() );
+        assertEquals( 0x63, searchRequest.computeLength() );
 
         // Check the encoding
         // We won't check the whole PDU, as it may differs because
         // attributes may have been reordered
         try
         {
-            ByteBuffer bb = message.encode( null );
+            ByteBuffer bb = searchRequest.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -384,19 +382,18 @@ public class SearchRequestMatchingRuleAssertionTest
             fail( de.getMessage() );
         }
 
-        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        SearchRequestCodec sr = message.getSearchRequest();
+        SearchRequestCodec searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
 
-        assertEquals( 4, message.getMessageId() );
-        assertEquals( "uid=akarasulu,dc=example,dc=com", sr.getBaseObject().toString() );
-        assertEquals( SearchScope.ONELEVEL, sr.getScope() );
-        assertEquals( LdapConstants.DEREF_ALWAYS, sr.getDerefAliases() );
-        assertEquals( 0, sr.getSizeLimit() );
-        assertEquals( 0, sr.getTimeLimit() );
-        assertEquals( true, sr.isTypesOnly() );
+        assertEquals( 4, searchRequest.getMessageId() );
+        assertEquals( "uid=akarasulu,dc=example,dc=com", searchRequest.getBaseObject().toString() );
+        assertEquals( SearchScope.ONELEVEL, searchRequest.getScope() );
+        assertEquals( LdapConstants.DEREF_ALWAYS, searchRequest.getDerefAliases() );
+        assertEquals( 0, searchRequest.getSizeLimit() );
+        assertEquals( 0, searchRequest.getTimeLimit() );
+        assertEquals( true, searchRequest.isTypesOnly() );
 
         // Extended
-        ExtensibleMatchFilter extensibleMatchFilter = ( ExtensibleMatchFilter ) sr.getFilter();
+        ExtensibleMatchFilter extensibleMatchFilter = ( ExtensibleMatchFilter ) searchRequest.getFilter();
         assertNotNull( extensibleMatchFilter );
 
         assertEquals( "test", extensibleMatchFilter.getMatchingRule() );
@@ -404,7 +401,7 @@ public class SearchRequestMatchingRuleAssertionTest
         assertNull( extensibleMatchFilter.getMatchValue().get() );
         assertFalse( extensibleMatchFilter.isDnAttributes() );
 
-        List<EntryAttribute> attributes = sr.getAttributes();
+        List<EntryAttribute> attributes = searchRequest.getAttributes();
 
         assertEquals( 0, attributes.size() );
     }
@@ -671,19 +668,18 @@ public class SearchRequestMatchingRuleAssertionTest
             fail( de.getMessage() );
         }
 
-        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        SearchRequestCodec sr = message.getSearchRequest();
+        SearchRequestCodec searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
 
-        assertEquals( 4, message.getMessageId() );
-        assertEquals( "uid=akarasulu,dc=example,dc=com", sr.getBaseObject().toString() );
-        assertEquals( SearchScope.ONELEVEL, sr.getScope() );
-        assertEquals( LdapConstants.DEREF_ALWAYS, sr.getDerefAliases() );
-        assertEquals( 0, sr.getSizeLimit() );
-        assertEquals( 0, sr.getTimeLimit() );
-        assertEquals( true, sr.isTypesOnly() );
+        assertEquals( 4, searchRequest.getMessageId() );
+        assertEquals( "uid=akarasulu,dc=example,dc=com", searchRequest.getBaseObject().toString() );
+        assertEquals( SearchScope.ONELEVEL, searchRequest.getScope() );
+        assertEquals( LdapConstants.DEREF_ALWAYS, searchRequest.getDerefAliases() );
+        assertEquals( 0, searchRequest.getSizeLimit() );
+        assertEquals( 0, searchRequest.getTimeLimit() );
+        assertEquals( true, searchRequest.isTypesOnly() );
 
         // Extended
-        ExtensibleMatchFilter extensibleMatchFilter = ( ExtensibleMatchFilter ) sr.getFilter();
+        ExtensibleMatchFilter extensibleMatchFilter = ( ExtensibleMatchFilter ) searchRequest.getFilter();
         assertNotNull( extensibleMatchFilter );
 
         assertNull( extensibleMatchFilter.getMatchingRule() );
@@ -691,7 +687,7 @@ public class SearchRequestMatchingRuleAssertionTest
         assertEquals( "test", extensibleMatchFilter.getMatchValue().getString() );
         assertFalse( extensibleMatchFilter.isDnAttributes() );
 
-        List<EntryAttribute> attributes = sr.getAttributes();
+        List<EntryAttribute> attributes = searchRequest.getAttributes();
 
         assertEquals( 0, attributes.size() );
     }
