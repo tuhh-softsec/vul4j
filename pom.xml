@@ -118,6 +118,22 @@
 			<name>JA-SIG Maven2 Repository</name>
 			<url>http://developer.jasig.org/repo/content/repositories/m2</url>
 		</repository>
+		<repository>
+			<id>webassembletool-repository</id>
+			<name>Website Assembling Toolkit repository</name>
+			<url>http://webassembletool.sourceforge.net/maven/repository</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>webassembletool-snapshots</id>
+			<name>Website Assembling Toolkit snapshots repository</name>
+			<url>http://webassembletool.sourceforge.net/maven/snapshots</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>  
+		</repository>
 	</repositories>
 	<reporting>
 		<plugins>
