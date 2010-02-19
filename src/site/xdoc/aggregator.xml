@@ -116,6 +116,8 @@ aggregated2.remoteUrlBase=http://localhost:8080/webassembletool-app-aggregated2/
 Page from aggregated1
 &lt;br /&gt;
 <strong>&lt;!--$includeblock$aggregated2$block.html$myblock$--&gt;</strong>
+This content will be replaced by the block "myblock"
+<strong>&lt;!--$endincludeblock$--&gt;</strong>
 &lt;/body&gt;
 &lt;/html&gt;
 </source>
