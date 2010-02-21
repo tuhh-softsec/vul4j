@@ -26,6 +26,8 @@ package org.apache.directory.shared.asn1.der;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
+import org.apache.directory.shared.i18n.I18n;
+
 
 /**
  * DER UniversalString object.
@@ -58,7 +60,7 @@ public class DERUniversalString extends DERString
         }
         catch ( IOException e )
         {
-            throw new RuntimeException( "Internal error encoding BitString." );
+            throw new RuntimeException( I18n.err( I18n.ERR_00028 ) );
         }
 
         byte[] string = baos.toByteArray();

@@ -25,6 +25,7 @@ import org.apache.directory.shared.asn1.codec.BinaryDecoder;
 import org.apache.directory.shared.asn1.codec.BinaryEncoder;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.codec.EncoderException;
+import org.apache.directory.shared.i18n.I18n;
 
 
 /**
@@ -106,7 +107,7 @@ public class BinaryCodec implements BinaryDecoder, BinaryEncoder
     {
         if ( !( raw instanceof byte[] ) )
         {
-            throw new EncoderException( "argument not a byte array" );
+            throw new EncoderException( I18n.err( I18n.ERR_00012 ) );
         }
         return toAsciiChars( ( byte[] ) raw );
     }
@@ -141,7 +142,7 @@ public class BinaryCodec implements BinaryDecoder, BinaryEncoder
         {
             return fromAscii( ( ( String ) ascii ).toCharArray() );
         }
-        throw new DecoderException( "argument not a byte array" );
+        throw new DecoderException( I18n.err( I18n.ERR_00012 ) );
     }
 
 

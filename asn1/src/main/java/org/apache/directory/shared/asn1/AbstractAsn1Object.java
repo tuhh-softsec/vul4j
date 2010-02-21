@@ -24,6 +24,7 @@ import java.nio.ByteBuffer;
 
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.codec.EncoderException;
+import org.apache.directory.shared.i18n.I18n;
 
 
 /**
@@ -133,7 +134,7 @@ public abstract class AbstractAsn1Object implements Asn1Object
 
         if ( currentLength > expectedLength )
         {
-            throw new DecoderException( "Current Length is above expected Length" );
+            throw new DecoderException( I18n.err( I18n.ERR_00041 ) );
         }
     }
 

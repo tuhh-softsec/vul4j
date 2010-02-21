@@ -25,6 +25,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.constants.AuthenticationLevel;
 
 
@@ -60,15 +61,15 @@ public abstract class ACIItem implements Serializable
     {
         if ( identificationTag == null )
         {
-            throw new NullPointerException( "identificationTag" );
+            throw new NullPointerException( I18n.err( I18n.ERR_04001 ) );
         }
         if ( precedence < 0 || precedence > 255 )
         {
-            throw new IllegalArgumentException( "precedence: " + precedence );
+            throw new IllegalArgumentException( I18n.err( I18n.ERR_04002, precedence ) );
         }
         if ( authenticationLevel == null )
         {
-            throw new NullPointerException( "authenticationLevel" );
+            throw new NullPointerException( I18n.err( I18n.ERR_04003 ) );
         }
 
         this.identificationTag = identificationTag;

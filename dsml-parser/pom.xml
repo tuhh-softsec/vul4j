@@ -47,6 +47,12 @@
     </dependency> 
     
     <dependency>
+      <artifactId>shared-i18n</artifactId>
+      <groupId>${groupId}</groupId>
+      <version>${version}</version>
+    </dependency> 
+    
+    <dependency>
       <groupId>dom4j</groupId>
       <artifactId>dom4j</artifactId>
       <version>${dom4j.version}</version>

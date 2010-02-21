@@ -18,6 +18,8 @@
  */
 package org.apache.directory.shared.ldap.cursor;
 
+import org.apache.directory.shared.i18n.I18n;
+
 
 /**
  * An empty Cursor implementation.
@@ -117,7 +119,7 @@ public class EmptyCursor<E> extends AbstractCursor<E>
     public E get() throws Exception
     {
         checkNotClosed( "get()" );
-        throw new InvalidCursorPositionException( "This cursor is empty and cannot return elements!" );
+        throw new InvalidCursorPositionException( I18n.err( I18n.ERR_02004 ) );
     }
 
 

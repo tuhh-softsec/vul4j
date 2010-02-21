@@ -23,6 +23,7 @@ package org.apache.directory.shared.asn1.ber.grammar;
 import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.util.Asn1StringUtils;
+import org.apache.directory.shared.i18n.I18n;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -132,15 +133,14 @@ public abstract class AbstractGrammar implements IGrammar
         if ( transition == null )
         {
 
-            String errorMessage = "Bad transition from state "
-                + currentGrammar.getStatesEnum().getState( currentState )
-                + ", tag " + Asn1StringUtils.dumpByte( tagByte );
+            String errorMessage = I18n.err( I18n.ERR_00001, currentGrammar.getStatesEnum().getState( currentState ), 
+            		Asn1StringUtils.dumpByte( tagByte ) );
 
             log.error( errorMessage );
 
             // If we have no more grammar on the stack, then this is an
             // error
-            throw new DecoderException( "Bad transition !" );
+            throw new DecoderException( I18n.err( I18n.ERR_00002 ) );
         }
 
         if ( IS_DEBUG )

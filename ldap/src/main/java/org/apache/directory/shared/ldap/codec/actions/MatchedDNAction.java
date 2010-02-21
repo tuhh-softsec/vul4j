@@ -26,6 +26,7 @@ import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.codec.DecoderException;
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.LdapResponseCodec;
 import org.apache.directory.shared.ldap.codec.LdapResultCodec;
@@ -96,12 +97,10 @@ public class MatchedDNAction extends GrammarAction
                     catch ( InvalidNameException ine )
                     {
                         // This is for the client side. We will never decode LdapResult on the server
-                        String msg = "Incorrect DN given : " + dnStr + 
-                            " (" + StringTools.dumpBytes( dnBytes )
-                            + ") is invalid";
-                        log.error( "{} : {}", msg, ine.getMessage() );
+                        String msg = I18n.err( I18n.ERR_04013, dnStr, StringTools.dumpBytes( dnBytes ), ine.getLocalizedMessage() );
+                        log.error( msg );
                     
-                        throw new DecoderException( "Incorrect DN given : " + ine.getMessage() );
+                        throw new DecoderException( I18n.err( I18n.ERR_04014, ine.getLocalizedMessage() ) );
                     }
                     
                     break;

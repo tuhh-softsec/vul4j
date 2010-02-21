@@ -21,6 +21,8 @@ package org.apache.directory.shared.ldap.cursor;
 
 import java.util.Comparator;
 
+import org.apache.directory.shared.i18n.I18n;
+
 
 /**
  * A Cursor over a single element.
@@ -85,8 +87,7 @@ public class SingletonCursor<E> extends AbstractCursor<E>
 
         if ( comparator == null )
         {
-            throw new UnsupportedOperationException(
-                    "Without a comparator I cannot advance to just before the specified element." );
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_02010 ) );
         }
 
         int comparison = comparator.compare( singleton, element );
@@ -111,8 +112,7 @@ public class SingletonCursor<E> extends AbstractCursor<E>
 
         if ( comparator == null )
         {
-            throw new UnsupportedOperationException(
-                    "Without a comparator I cannot advance to just after the specified element." );
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_02011 ) );
         }
 
         int comparison = comparator.compare( singleton, element );
@@ -288,11 +288,11 @@ public class SingletonCursor<E> extends AbstractCursor<E>
 
         if ( beforeFirst )
         {
-            throw new InvalidCursorPositionException( "Cannot access element if positioned before first." );
+            throw new InvalidCursorPositionException( I18n.err( I18n.ERR_02012 ) );
         }
         else
         {
-            throw new InvalidCursorPositionException( "Cannot access element if positioned after last." );
+            throw new InvalidCursorPositionException( I18n.err( I18n.ERR_02013 ) );
         }
     }
 

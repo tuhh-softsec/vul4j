@@ -56,6 +56,7 @@ import org.apache.directory.shared.dsmlv2.request.BatchRequest;
 import org.apache.directory.shared.dsmlv2.request.BatchRequest.OnError;
 import org.apache.directory.shared.dsmlv2.request.BatchRequest.Processing;
 import org.apache.directory.shared.dsmlv2.request.BatchRequest.ResponseOrder;
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.LdapResponseCodec;
@@ -213,7 +214,7 @@ public class Dsmlv2Engine
         {
             // Unable to connect to server
             // We create a new ErrorResponse and return the XML response.
-            ErrorResponse errorResponse = new ErrorResponse( 0, ErrorResponseType.COULD_NOT_CONNECT, e.getMessage() );
+            ErrorResponse errorResponse = new ErrorResponse( 0, ErrorResponseType.COULD_NOT_CONNECT, e.getLocalizedMessage() );
             batchResponse.addResponse( errorResponse );
             return batchResponse.toDsml();
         }
@@ -228,8 +229,8 @@ public class Dsmlv2Engine
         catch ( XmlPullParserException e )
         {
             // We create a new ErrorResponse and return the XML response.
-            ErrorResponse errorResponse = new ErrorResponse( 0, ErrorResponseType.MALFORMED_REQUEST, e.getMessage()
-                + " - Line " + e.getLineNumber() + " - Column " + e.getColumnNumber() );
+            ErrorResponse errorResponse = new ErrorResponse( 0, ErrorResponseType.MALFORMED_REQUEST, I18n.err(I18n.ERR_03001, e.getLocalizedMessage(),
+                e.getLineNumber(), e.getColumnNumber() ) );
             batchResponse.addResponse( errorResponse );
             return batchResponse.toDsml();
         }
@@ -248,8 +249,8 @@ public class Dsmlv2Engine
         catch ( XmlPullParserException e )
         {
             // We create a new ErrorResponse and return the XML response.
-            ErrorResponse errorResponse = new ErrorResponse( 0, ErrorResponseType.MALFORMED_REQUEST, e.getMessage()
-                + " - Line " + e.getLineNumber() + " - Column " + e.getColumnNumber() );
+            ErrorResponse errorResponse = new ErrorResponse( 0, ErrorResponseType.MALFORMED_REQUEST, I18n.err(I18n.ERR_03001, e.getLocalizedMessage(),
+                e.getLineNumber(), e.getColumnNumber() ) );
             batchResponse.addResponse( errorResponse );
             return batchResponse.toDsml();
         }
@@ -262,8 +263,7 @@ public class Dsmlv2Engine
                 && ( request.getMessageId() == 0 ) )
             {
                 // Then we have to send an errorResponse
-                ErrorResponse errorResponse = new ErrorResponse( 0, ErrorResponseType.MALFORMED_REQUEST,
-                    "A requestID must be specified to each request when Processing is Parallel and ReponseOrder is Unordered." );
+                ErrorResponse errorResponse = new ErrorResponse( 0, ErrorResponseType.MALFORMED_REQUEST, I18n.err( I18n.ERR_03002 ) );
                 batchResponse.addResponse( errorResponse );
                 return batchResponse.toDsml();
             }
@@ -276,7 +276,7 @@ public class Dsmlv2Engine
             {
                 // We create a new ErrorResponse and return the XML response.
                 ErrorResponse errorResponse = new ErrorResponse( 0, ErrorResponseType.GATEWAY_INTERNAL_ERROR,
-                    "Internal Error: " + e.getMessage() );
+                    I18n.err( I18n.ERR_03003, e.getMessage() ) );
                 batchResponse.addResponse( errorResponse );
                 return batchResponse.toDsml();
             }
@@ -295,8 +295,8 @@ public class Dsmlv2Engine
             catch ( XmlPullParserException e )
             {
                 // We create a new ErrorResponse and return the XML response.
-                ErrorResponse errorResponse = new ErrorResponse( 0, ErrorResponseType.MALFORMED_REQUEST, e.getMessage()
-                    + " - Line " + e.getLineNumber() + " - Column " + e.getColumnNumber() );
+                ErrorResponse errorResponse = new ErrorResponse( 0, ErrorResponseType.MALFORMED_REQUEST, I18n.err( I18n.ERR_03001,
+                		e.getLocalizedMessage(), e.getLineNumber(), e.getColumnNumber() ) );
                 batchResponse.addResponse( errorResponse );
                 return batchResponse.toDsml();
             }

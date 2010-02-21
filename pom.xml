@@ -65,6 +65,7 @@
   </issueManagement>
 
   <modules>
+    <module>i18n</module>
     <module>all</module>
     <module>asn1</module>
     <module>ldap</module>

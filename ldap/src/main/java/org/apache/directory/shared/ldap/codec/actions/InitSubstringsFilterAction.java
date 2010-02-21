@@ -24,6 +24,7 @@ import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.codec.DecoderException;
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.search.Filter;
 import org.apache.directory.shared.ldap.codec.search.SearchRequestCodec;
@@ -65,8 +66,8 @@ public class InitSubstringsFilterAction extends GrammarAction
 
         if ( expectedLength == 0 )
         {
-            log.error( "The Substring filter PDU must not be empty" );
-            throw new DecoderException( "The Substring filter PDU must not be empty" );
+            log.error( I18n.err( I18n.ERR_04012 ) );
+            throw new DecoderException( I18n.err( I18n.ERR_04012 ) );
         }
 
         // We can allocate the SearchRequest

@@ -26,6 +26,7 @@ import java.util.List;
 
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.codec.EncoderException;
+import org.apache.directory.shared.i18n.I18n;
 
 
 /**
@@ -132,7 +133,7 @@ public abstract class ConnectorFilter extends Filter
     {
         if ( buffer == null )
         {
-            throw new EncoderException( "Cannot put a PDU in a null buffer !" );
+            throw new EncoderException( I18n.err( I18n.ERR_04023 ) );
         }
 
         // encode each filter

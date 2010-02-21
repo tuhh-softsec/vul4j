@@ -24,6 +24,7 @@ package org.apache.directory.shared.dsmlv2;
 import java.io.IOException;
 import java.util.HashMap;
 
+import org.apache.directory.shared.i18n.I18n;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -175,8 +176,7 @@ public abstract class AbstractGrammar implements IGrammar
         }
         else
         {
-            throw new XmlPullParserException( "The tag " + new Tag( tagName, tagType )
-                + " can't be found at this position", xpp, null );
+            throw new XmlPullParserException( I18n.err( I18n.ERR_03036, new Tag( tagName, tagType ) ), xpp, null );
         }
     }
 }

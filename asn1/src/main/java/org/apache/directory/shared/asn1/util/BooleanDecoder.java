@@ -21,6 +21,7 @@ package org.apache.directory.shared.asn1.util;
 
 
 import org.apache.directory.shared.asn1.ber.tlv.Value;
+import org.apache.directory.shared.i18n.I18n;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,12 +56,12 @@ public class BooleanDecoder
 
         if ( ( bytes == null ) || ( bytes.length == 0 ) )
         {
-            throw new BooleanDecoderException( "The value is 0 byte long. This is not allowed for a boolean" );
+            throw new BooleanDecoderException( I18n.err( I18n.ERR_00034 ) );
         }
 
         if ( bytes.length != 1 )
         {
-            throw new BooleanDecoderException( "The value is not 1 byte long. This is not allowed for a boolean" );
+            throw new BooleanDecoderException( I18n.err( I18n.ERR_00035 ) );
         }
 
         if ( ( bytes[0] != 0 ) && ( bytes[0] != ( byte ) 0xFF ) )

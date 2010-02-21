@@ -257,7 +257,7 @@ public class LdapDecoderTest
         }
         catch ( DecoderException de )
         {
-            assertEquals( "The current Value length is above the expected length", de.getMessage() );
+            assertEquals( "ERR_00008 The current Value length 48 is above the expected length 47", de.getMessage() );
             return;
         }
 
@@ -304,7 +304,7 @@ public class LdapDecoderTest
         }
         catch ( DecoderException de )
         {
-            assertEquals( "Bad transition !", de.getMessage() );
+            assertEquals( "ERR_00002 Bad transition !", de.getMessage() );
             return;
         }
 
@@ -350,7 +350,7 @@ public class LdapDecoderTest
         }
         catch ( DecoderException de )
         {
-            assertEquals( "Bad transition !", de.getMessage() );
+            assertEquals( "ERR_00002 Bad transition !", de.getMessage() );
             return;
         }
 

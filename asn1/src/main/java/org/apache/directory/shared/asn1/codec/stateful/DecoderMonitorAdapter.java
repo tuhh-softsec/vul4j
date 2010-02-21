@@ -38,7 +38,7 @@ public class DecoderMonitorAdapter implements DecoderMonitor
      */
     public void error( StatefulDecoder decoder, Exception exception )
     {
-        System.err.println( "ERROR: " + exception.getMessage() );
+        System.err.println( "ERROR: " + exception.getLocalizedMessage() );
     }
 
 
@@ -50,7 +50,7 @@ public class DecoderMonitorAdapter implements DecoderMonitor
      */
     public void fatalError( StatefulDecoder decoder, Exception exception )
     {
-        System.err.println( "FATAL: " + exception.getMessage() );
+        System.err.println( "FATAL: " + exception.getLocalizedMessage() );
     }
 
 
@@ -62,7 +62,7 @@ public class DecoderMonitorAdapter implements DecoderMonitor
      */
     public void warning( StatefulDecoder decoder, Exception exception )
     {
-        System.err.println( "WARN: " + exception.getMessage() );
+        System.err.println( "WARN: " + exception.getLocalizedMessage() );
     }
 
 

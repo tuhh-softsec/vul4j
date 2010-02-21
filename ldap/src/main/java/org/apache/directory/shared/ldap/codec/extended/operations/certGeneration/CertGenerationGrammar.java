@@ -29,6 +29,7 @@ import org.apache.directory.shared.asn1.ber.grammar.IStates;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.asn1.codec.DecoderException;
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.name.LdapDN;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
@@ -124,7 +125,7 @@ public class CertGenerationGrammar extends AbstractGrammar
                     {
                         if( !LdapDN.isValid( targetDN ) )
                         {
-                            String msg = "invalid target DN " +  targetDN;
+                            String msg = I18n.err( I18n.ERR_04032, targetDN );
                             LOG.error( msg );
                             throw new DecoderException( msg );
                         }
@@ -133,8 +134,7 @@ public class CertGenerationGrammar extends AbstractGrammar
                     }
                     else
                     {
-                        String msg = "failed to decode the target DN, it cannot be null or empty it is '"
-                            + StringTools.dumpBytes( value.getData() );
+                        String msg = I18n.err( I18n.ERR_04033, StringTools.dumpBytes( value.getData() ) );
                         LOG.error( msg );
                         throw new DecoderException( msg );
                     }
@@ -171,7 +171,7 @@ public class CertGenerationGrammar extends AbstractGrammar
                     {
                         if( !LdapDN.isValid( issuerDN ) )
                         {
-                            String msg = "invalid issuer DN " +  issuerDN;
+                            String msg = I18n.err( I18n.ERR_04034, issuerDN );
                             LOG.error( msg );
                             throw new DecoderException( msg );
                         }
@@ -211,7 +211,7 @@ public class CertGenerationGrammar extends AbstractGrammar
                     {
                         if( !LdapDN.isValid( subjectDN ) )
                         {
-                            String msg = "invalid subject DN " +  subjectDN;
+                            String msg = I18n.err( I18n.ERR_04035, subjectDN );
                             LOG.error( msg );
                             throw new DecoderException( msg );
                         }
@@ -220,8 +220,7 @@ public class CertGenerationGrammar extends AbstractGrammar
                     }
                     else
                     {
-                        String msg = "failed to decode the subject DN, it cannot be null or empty it is '"
-                            + StringTools.dumpBytes( value.getData() );
+                        String msg = I18n.err( I18n.ERR_04033, StringTools.dumpBytes( value.getData() ) );
                         LOG.error( msg );
                         throw new DecoderException( msg );
                     }

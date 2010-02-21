@@ -24,6 +24,7 @@ import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.codec.DecoderException;
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.LdapResponseCodec;
 import org.apache.directory.shared.ldap.codec.LdapResultCodec;
@@ -65,7 +66,7 @@ public class InitReferralsAction extends GrammarAction
         // sasl credentials
         if ( tlv.getLength() == 0 )
         {
-            String msg = "The Referrals must not be null";
+            String msg = I18n.err( I18n.ERR_04011 );
             log.error( msg );
          
             // This will generate a PROTOCOL_ERROR

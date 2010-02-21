@@ -19,6 +19,8 @@
  */
 package org.apache.directory.shared.ldap.codec.search.controls;
 
+import org.apache.directory.shared.i18n.I18n;
+
 
 /**
  * Enumeration type for entry changes associates with the persistent search
@@ -100,7 +102,7 @@ public class ChangeType
             case ( MODDN_VALUE ):
                 return MODDN;
             default:
-                throw new IllegalArgumentException( "Undefined changeType value: " + value );
+                throw new IllegalArgumentException( I18n.err( I18n.ERR_04055, value ) );
         }
     }
 }

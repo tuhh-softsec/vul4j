@@ -22,6 +22,8 @@ package org.apache.directory.shared.asn1.primitives;
 
 import java.io.Serializable;
 
+import org.apache.directory.shared.i18n.I18n;
+
 
 /**
  * Implement the Bit String primitive type. A BitString is internally stored as
@@ -82,7 +84,7 @@ public class BitString implements Serializable
         if ( length <= 0 )
         {
             // This is not allowed
-            throw new IndexOutOfBoundsException( "Null or negative length are not allowed" );
+            throw new IndexOutOfBoundsException( I18n.err( I18n.ERR_00029 ) );
         }
         
         nbBits = length;
@@ -121,7 +123,7 @@ public class BitString implements Serializable
         if ( length <= 0 )
         {
             // This is not allowed
-            throw new IndexOutOfBoundsException( "Null or negative length are not allowed" );
+            throw new IndexOutOfBoundsException( I18n.err( I18n.ERR_00029 ) );
         }
         
         nbBits = length;
@@ -258,7 +260,7 @@ public class BitString implements Serializable
     {
         if ( ( pos < 0 ) || ( pos > nbBits ) )
         {
-            throw new IndexOutOfBoundsException( "Bad bit number : out of bound" );
+            throw new IndexOutOfBoundsException( I18n.err( I18n.ERR_00030 ) );
         }
         
         int posInt = nbBytes - 1 - ( ( pos + nbUnusedBits ) >> 3 );
@@ -279,7 +281,7 @@ public class BitString implements Serializable
     {
         if ( ( pos < 0 ) || ( pos > nbBits ) )
         {
-            throw new IndexOutOfBoundsException( "Bad bit number : out of bound" );
+            throw new IndexOutOfBoundsException( I18n.err( I18n.ERR_00030 ) );
         }
         
         int posInt = nbBytes - 1 - ( ( pos + nbUnusedBits ) >> 3 );
@@ -313,8 +315,7 @@ public class BitString implements Serializable
 
         if ( pos > nbBits )
         {
-            throw new IndexOutOfBoundsException( "Cannot get a bit at position " + pos + " when the BitString contains only "
-                + nbBits + " ints" );
+            throw new IndexOutOfBoundsException( I18n.err( I18n.ERR_00031, pos, nbBits ) );
         }
 
         int posInt = nbBytes - 1 - ( ( pos + nbUnusedBits ) >> 3 );

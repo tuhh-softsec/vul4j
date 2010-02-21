@@ -24,6 +24,7 @@ import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.codec.DecoderException;
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.search.SearchRequestCodec;
 import org.apache.directory.shared.ldap.codec.search.SubstringFilter;
@@ -66,8 +67,8 @@ public class StoreFinalAction extends GrammarAction
 
         if ( tlv.getLength() == 0 )
         {
-            log.error( "The substring final filter is empty" );
-            throw new DecoderException( "The substring final filter is empty" );
+            log.error( I18n.err( I18n.ERR_04020 ) );
+            throw new DecoderException( I18n.err( I18n.ERR_04020 ) );
         }
 
         String finalValue = StringTools.utf8ToString( tlv.getValue().getData() );

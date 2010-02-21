@@ -24,6 +24,7 @@ import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.codec.DecoderException;
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.search.Filter;
 import org.apache.directory.shared.ldap.codec.search.NotFilter;
@@ -62,8 +63,8 @@ public class InitNotFilterAction extends GrammarAction
 
         if ( tlv.getLength() == 0 )
         {
-            log.error( "The Not filter PDU must not be empty" );
-            throw new DecoderException( "The Not filter PDU must not be empty" );
+            log.error( I18n.err( I18n.ERR_04009 ) );
+            throw new DecoderException( I18n.err( I18n.ERR_04009 ) );
         }
 
         SearchRequestCodec searchRequest = ldapMessageContainer.getSearchRequest();

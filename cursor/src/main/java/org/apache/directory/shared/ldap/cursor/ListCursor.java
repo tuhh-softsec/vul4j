@@ -24,6 +24,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Comparator;
 
+import org.apache.directory.shared.i18n.I18n;
+
 
 /**
  * A simple implementation of a Cursor on a {@link List}.  Optionally, the
@@ -67,20 +69,19 @@ public class ListCursor<E> extends AbstractCursor<E>
     {
         if ( ( start < 0  )|| ( start > list.size() ) )
         {
-            throw new IllegalArgumentException( "start index '" + start + "' out of range" );
+            throw new IllegalArgumentException( I18n.err( I18n.ERR_02005, start ) );
         }
 
         if ( ( end < 0 ) || ( end > list.size() ) )
         {
-            throw new IllegalArgumentException( "end index '" + end + "' out of range" );
+            throw new IllegalArgumentException( I18n.err( I18n.ERR_02006, end ) );
         }
 
         // check list is not empty list since the empty list is the only situation
         // where we allow for start to equal the end: in other cases it makes no sense
         if ( ( list.size() > 0 ) && ( start >= end ) )
         {
-            throw new IllegalArgumentException( "start index '" + start + "' greater than or equal to end index '"
-                    + end + "' just does not make sense" );
+            throw new IllegalArgumentException( I18n.err( I18n.ERR_02007, start, end ) );
         }
 
         this.comparator = comparator;
@@ -263,7 +264,7 @@ public class ListCursor<E> extends AbstractCursor<E>
         }
 
         // TODO might want to add some code here to utilize the comparator
-        throw new UnsupportedOperationException( "don't know if list is sorted and checking that is not worth it" );
+        throw new UnsupportedOperationException( I18n.err( I18n.ERR_02008 ) );
     }
 
 
@@ -297,7 +298,7 @@ public class ListCursor<E> extends AbstractCursor<E>
         }
 
         // TODO might want to add some code here to utilize the comparator
-        throw new UnsupportedOperationException( "don't know if list is sorted and checking that is not worth it" );
+        throw new UnsupportedOperationException( I18n.err( I18n.ERR_02008 ) );
     }
 
 
@@ -477,7 +478,7 @@ public class ListCursor<E> extends AbstractCursor<E>
         
         if ( index < start || index >= end )
         {
-            throw new IOException( "Cursor not positioned at an element" );
+            throw new IOException( I18n.err( I18n.ERR_02009 ) );
         }
 
         return list.get( index );

@@ -30,6 +30,7 @@ import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.asn1.codec.stateful.EncoderCallback;
 import org.apache.directory.shared.asn1.codec.stateful.EncoderMonitor;
 import org.apache.directory.shared.asn1.codec.stateful.StatefulEncoder;
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.add.AddRequestCodec;
 import org.apache.directory.shared.ldap.message.spi.Provider;
 import org.apache.directory.shared.ldap.message.spi.ProviderEncoder;
@@ -98,9 +99,8 @@ public class LdapEncoder implements ProviderEncoder
         }
         catch ( EncoderException e )
         {
-            log.error( "Ldap encoder failed to encode object: " + obj + ", error : " + e.getMessage() );
-            ProviderException pe = new ProviderException( provider, "Ldap encoder failed to encode object: " + obj
-                + ", error : " + e.getMessage() );
+            log.error( I18n.err( I18n.ERR_04065, obj, e.getLocalizedMessage() ) );
+            ProviderException pe = new ProviderException( provider, I18n.err( I18n.ERR_04065, obj, e.getLocalizedMessage() ) );
             throw pe;
         }
     }
@@ -135,9 +135,8 @@ public class LdapEncoder implements ProviderEncoder
         }
         catch ( EncoderException e )
         {
-            log.error( "Ldap encoder failed to encode object: " + obj + ", error : " + e.getMessage() );
-            ProviderException pe = new ProviderException( provider, "Ldap encoder failed to encode object: " + obj
-                + ", error : " + e.getMessage() );
+            log.error( I18n.err( I18n.ERR_04065, obj, e.getLocalizedMessage() ) );
+            ProviderException pe = new ProviderException( provider, I18n.err( I18n.ERR_04065, obj, e.getLocalizedMessage() ) );
             throw pe;
         }
     }
@@ -171,9 +170,8 @@ public class LdapEncoder implements ProviderEncoder
         }
         catch ( EncoderException e )
         {
-            log.error( "Ldap encoder failed to encode object: " + obj + ", error : " + e.getMessage() );
-            ProviderException pe = new ProviderException( provider, "Ldap encoder failed to encode object: " + obj
-                + ", error : " + e.getMessage() );
+            log.error( I18n.err( I18n.ERR_04065,  obj, e.getLocalizedMessage() ) );
+            ProviderException pe = new ProviderException( provider, I18n.err( I18n.ERR_04065, obj, e.getLocalizedMessage() ) );
             throw pe;
         }
     }
@@ -262,8 +260,7 @@ public class LdapEncoder implements ProviderEncoder
             }
             catch ( IOException e )
             {
-                ProviderException pe = new ProviderException( provider,
-                    "Ldap encoder failed to encode object, error : " + e.getMessage() );
+                ProviderException pe = new ProviderException( provider, I18n.err( I18n.ERR_04065, "", e.getLocalizedMessage() ) );
                 throw pe;
             }
         }

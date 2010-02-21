@@ -27,6 +27,7 @@ import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.util.IntegerDecoder;
 import org.apache.directory.shared.asn1.util.IntegerDecoderException;
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.LdapResponseCodec;
 import org.apache.directory.shared.ldap.codec.LdapResultCodec;
@@ -80,8 +81,7 @@ public class ResultCodeAction extends GrammarAction
         }
         catch ( IntegerDecoderException ide )
         {
-            log.error( "The result code " + StringTools.dumpBytes( value.getData() ) + " is invalid : "
-                + ide.getMessage() + ". The result code must be between (0 .. 121)" );
+            log.error( I18n.err( I18n.ERR_04018, StringTools.dumpBytes( value.getData() ), ide.getMessage() ) );
 
             throw new DecoderException( ide.getMessage() );
         }

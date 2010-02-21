@@ -25,6 +25,7 @@ import java.nio.ByteBuffer;
 
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.codec.EncoderException;
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
@@ -133,8 +134,8 @@ public class SimpleAuthentication extends LdapAuthentication
     {
         if ( buffer == null )
         {
-            log.error( "Cannot put a PDU in a null buffer !" );
-            throw new EncoderException( "Cannot put a PDU in a null buffer !" );
+            log.error( I18n.err( I18n.ERR_04023 ) );
+            throw new EncoderException( I18n.err( I18n.ERR_04023 ) );
         }
 
         try
@@ -150,8 +151,8 @@ public class SimpleAuthentication extends LdapAuthentication
         }
         catch ( BufferOverflowException boe )
         {
-            log.error( "The PDU buffer size is too small !" );
-            throw new EncoderException( "The PDU buffer size is too small !" );
+            log.error( I18n.err( I18n.ERR_04005 ) );
+            throw new EncoderException( I18n.err( I18n.ERR_04005 ) );
         }
 
         return buffer;

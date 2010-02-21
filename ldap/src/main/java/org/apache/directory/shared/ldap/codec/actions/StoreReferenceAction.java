@@ -24,6 +24,7 @@ import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.codec.DecoderException;
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.search.SearchResultReferenceCodec;
 import org.apache.directory.shared.ldap.codec.util.LdapURLEncodingException;
@@ -83,8 +84,8 @@ public class StoreReferenceAction extends GrammarAction
             catch ( LdapURLEncodingException luee )
             {
                 String badUrl = StringTools.utf8ToString( tlv.getValue().getData() );
-                log.error( "The URL {} is not valid : {}", badUrl, luee.getMessage() );
-                throw new DecoderException( "Invalid URL : " + luee.getMessage() );
+                log.error( I18n.err( I18n.ERR_04021, badUrl, luee.getMessage() ) );
+                throw new DecoderException( I18n.err( I18n.ERR_04016, luee.getMessage() ) );
             }
         }
 

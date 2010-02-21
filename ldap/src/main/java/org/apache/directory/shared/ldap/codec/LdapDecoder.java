@@ -28,6 +28,7 @@ import org.apache.directory.shared.asn1.ber.tlv.TLVStateEnum;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.codec.stateful.DecoderCallback;
 import org.apache.directory.shared.asn1.codec.stateful.DecoderMonitor;
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.message.spi.BinaryAttributeDetector;
 import org.apache.directory.shared.ldap.message.spi.Provider;
 import org.apache.directory.shared.ldap.message.spi.ProviderDecoder;
@@ -102,8 +103,7 @@ public class LdapDecoder implements ProviderDecoder
         }
         else
         {
-            throw new DecoderException( "Expected either a byte[] or " + "ByteBuffer argument but got a "
-                + encoded.getClass() );
+            throw new DecoderException( I18n.err( I18n.ERR_04059, encoded.getClass() ) );
         }
 
         while ( buf.hasRemaining() )
@@ -182,8 +182,8 @@ public class LdapDecoder implements ProviderDecoder
         }
         catch ( Exception e )
         {
-            log.error( "Ldap decoder failure : " + e.getMessage() );
-            ProviderException pe = new ProviderException( provider, "Ldap decoder failure!" );
+            log.error( I18n.err( I18n.ERR_04060, e.getLocalizedMessage() ) );
+            ProviderException pe = new ProviderException( provider, I18n.err( I18n.ERR_04061 ) );
             pe.addThrowable( e );
             throw pe;
         }
@@ -215,10 +215,10 @@ public class LdapDecoder implements ProviderDecoder
             }
             else
             {
-                log.error( "Ldap decoder failure, PDU does not contain enough data" );
-                ProviderException pe = new ProviderException( provider, "Ldap decoder failure!" );
+                log.error( I18n.err( I18n.ERR_04062 ) );
+                ProviderException pe = new ProviderException( provider, I18n.err( I18n.ERR_04061 ) );
                 //noinspection ThrowableInstanceNeverThrown
-                pe.addThrowable( new DecoderException( "The input stream does not contain a full PDU" ) );
+                pe.addThrowable( new DecoderException( I18n.err( I18n.ERR_04063 ) ) );
                 throw pe;
             }
         }
@@ -238,8 +238,8 @@ public class LdapDecoder implements ProviderDecoder
             }
             catch ( Exception e )
             {
-                log.error( "Ldap decoder failure : " + e.getMessage() );
-                ProviderException pe = new ProviderException( provider, "Ldap decoder failure!" );
+                log.error( I18n.err( I18n.ERR_04060, e.getLocalizedMessage() ) );
+                ProviderException pe = new ProviderException( provider, I18n.err( I18n.ERR_04061 ) );
                 pe.addThrowable( e );
                 throw pe;
             }
@@ -255,10 +255,10 @@ public class LdapDecoder implements ProviderDecoder
             }
             else
             {
-                log.error( "Ldap decoder failure : The input stream does not contain a full PDU" );
-                ProviderException pe = new ProviderException( provider, "Ldap decoder failure!" );
+                log.error( I18n.err( I18n.ERR_04064 ) );
+                ProviderException pe = new ProviderException( provider, I18n.err( I18n.ERR_04062 ) );
                 //noinspection ThrowableInstanceNeverThrown
-                pe.addThrowable( new DecoderException( "The input stream does not contain a full PDU" ) );
+                pe.addThrowable( new DecoderException( I18n.err( I18n.ERR_04063 ) ) );
                 throw pe;
             }
         }

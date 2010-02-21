@@ -26,6 +26,7 @@ import java.util.Iterator;
 
 import org.apache.directory.shared.asn1.codec.stateful.EncoderCallback;
 import org.apache.directory.shared.asn1.codec.stateful.StatefulEncoder;
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.mina.core.buffer.IoBuffer;
 import org.apache.mina.core.session.IoSession;
 import org.apache.mina.filter.codec.ProtocolEncoder;
@@ -117,9 +118,7 @@ public class Asn1CodecEncoder implements ProtocolEncoder
             }
             else
             {
-                throw new IllegalArgumentException(
-                        "Encoded result is not a ByteBuffer: " +
-                        encoded.getClass() );
+                throw new IllegalArgumentException( I18n.err( I18n.ERR_01001, encoded.getClass() ) );
             }
         }
     }

@@ -31,6 +31,7 @@ import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.util.IntegerDecoder;
 import org.apache.directory.shared.asn1.util.IntegerDecoderException;
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.message.control.replication.SyncStateTypeEnum;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
@@ -134,7 +135,7 @@ public class SyncStateValueControlGrammar extends AbstractGrammar
                     }
                     catch ( IntegerDecoderException e )
                     {
-                        String msg = "failed to decode the mode for SyncStateValueControl";
+                        String msg = I18n.err( I18n.ERR_04030 );
                         LOG.error( msg, e );
                         throw new DecoderException( msg );
                     }

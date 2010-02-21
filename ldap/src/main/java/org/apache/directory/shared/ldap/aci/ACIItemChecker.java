@@ -24,6 +24,8 @@ package org.apache.directory.shared.ldap.aci;
 import java.io.StringReader;
 import java.text.ParseException;
 
+import org.apache.directory.shared.i18n.I18n;
+
 import antlr.RecognitionException;
 import antlr.TokenStreamException;
 
@@ -94,15 +96,11 @@ public class ACIItemChecker
         }
         catch ( TokenStreamException e )
         {
-            String msg = "Parser failure on ACIItem:\n\t" + spec;
-            msg += "\nAntlr exception trace:\n" + e.getMessage();
-            throw new ParseException( msg, 0 );
+            throw new ParseException( I18n.err( I18n.ERR_00004, spec, e.getLocalizedMessage() ), 0 );
         }
         catch ( RecognitionException e )
         {
-            String msg = "Parser failure on ACIItem:\n\t" + spec;
-            msg += "\nAntlr exception trace:\n" + e.getMessage();
-            throw new ParseException( msg, e.getColumn() );
+            throw new ParseException( I18n.err( I18n.ERR_00004, spec, e.getLocalizedMessage() ), e.getColumn() );
         }
 
         return;

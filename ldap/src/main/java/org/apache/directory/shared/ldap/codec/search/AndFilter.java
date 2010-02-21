@@ -26,6 +26,7 @@ import java.util.List;
 
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.codec.EncoderException;
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
 
 
@@ -102,7 +103,7 @@ public class AndFilter extends ConnectorFilter
     {
         if ( buffer == null )
         {
-            throw new EncoderException( "Cannot put a PDU in a null buffer !" );
+            throw new EncoderException( I18n.err( I18n.ERR_04023 ) );
         }
 
         try
@@ -113,7 +114,7 @@ public class AndFilter extends ConnectorFilter
         }
         catch ( BufferOverflowException boe )
         {
-            throw new EncoderException( "The PDU buffer size is too small !" );
+            throw new EncoderException( I18n.err( I18n.ERR_04005 ) );
         }
 
         super.encode( buffer );

@@ -29,6 +29,7 @@ import javax.naming.InvalidNameException;
 import org.apache.directory.shared.asn1.Asn1Object;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.primitives.OID;
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.abandon.AbandonRequestCodec;
 import org.apache.directory.shared.ldap.codec.add.AddRequestCodec;
 import org.apache.directory.shared.ldap.codec.add.AddResponseCodec;
@@ -248,8 +249,7 @@ public class LdapTransformer
         }
         catch ( InvalidNameException e )
         {
-            LOG.error( "Could not parse matchedDN while transforming Codec value to Internal: {}", 
-                codecLdapResult.getMatchedDN() );
+            LOG.error( I18n.err( I18n.ERR_04111, codecLdapResult.getMatchedDN() ) );
             internalLdapResult.setMatchedDn( new LdapDN() );
         }
         
@@ -597,7 +597,7 @@ public class LdapTransformer
                         }
                         catch ( DecoderException de )
                         {
-                            LOG.error( "Error while transforming a ExprNode : " + de.getMessage() );
+                            LOG.error( I18n.err( I18n.ERR_04112, de.getLocalizedMessage() ) );
                             return null;
                         }
                     }
@@ -876,7 +876,7 @@ public class LdapTransformer
 
 
             default:
-                throw new IllegalStateException( "shouldn't happen - if it does then we have issues" );
+                throw new IllegalStateException( I18n.err( I18n.ERR_04113 ) );
         }
 
         // Transform the controls, too

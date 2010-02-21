@@ -301,7 +301,7 @@ public class BindRequestTest
         }
         catch ( DecoderException de )
         {
-            assertEquals( "Bad transition !", de.getMessage() );
+            assertEquals( "ERR_00002 Bad transition !", de.getMessage() );
             return;
         }
 

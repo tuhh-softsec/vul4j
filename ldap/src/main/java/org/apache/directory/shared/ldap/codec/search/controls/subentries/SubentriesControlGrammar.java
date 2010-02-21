@@ -31,6 +31,7 @@ import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.util.BooleanDecoder;
 import org.apache.directory.shared.asn1.util.BooleanDecoderException;
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -92,8 +93,7 @@ public class SubentriesControlGrammar extends AbstractGrammar
                     }
                     catch ( BooleanDecoderException bde )
                     {
-                        log.error( "The visibility flag {} is invalid : {}. It should be 0 or 255", StringTools
-                            .dumpBytes( value.getData() ), bde.getMessage() );
+                        log.error( I18n.err( I18n.ERR_04054, StringTools.dumpBytes( value.getData() ), bde.getMessage() ) );
 
                         // This will generate a PROTOCOL_ERROR
                         throw new DecoderException( bde.getMessage() );

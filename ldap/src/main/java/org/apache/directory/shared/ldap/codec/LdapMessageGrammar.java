@@ -38,6 +38,7 @@ import org.apache.directory.shared.asn1.util.BooleanDecoder;
 import org.apache.directory.shared.asn1.util.BooleanDecoderException;
 import org.apache.directory.shared.asn1.util.IntegerDecoder;
 import org.apache.directory.shared.asn1.util.IntegerDecoderException;
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.abandon.AbandonRequestCodec;
 import org.apache.directory.shared.ldap.codec.actions.AttributeDescAction;
 import org.apache.directory.shared.ldap.codec.actions.ControlValueAction;
@@ -176,10 +177,10 @@ public class LdapMessageGrammar extends AbstractGrammar
                     // The Length should not be null
                     if ( tlv.getLength() == 0 )
                     {
-                        log.error( "The LdapMessage has a zero length. This is not allowed" );
+                        log.error( I18n.err( I18n.ERR_04066 ) );
 
                         // This will generate a PROTOCOL_ERROR
-                        throw new DecoderException( "The LdapMessage should not be empty" );
+                        throw new DecoderException( I18n.err( I18n.ERR_04067 ) );
                     }
 
                     return;
@@ -214,10 +215,10 @@ public class LdapMessageGrammar extends AbstractGrammar
                     // The Length should not be null
                     if ( tlv.getLength() == 0 )
                     {
-                        log.error( "The messageId has a zero length. This is not allowed" );
+                        log.error( I18n.err( I18n.ERR_04068 ) );
 
                         // This will generate a PROTOCOL_ERROR
-                        throw new DecoderException( "The messageId should not be null" );
+                        throw new DecoderException( I18n.err( I18n.ERR_04069 ) );
                     }
 
                     Value value = tlv.getValue();
@@ -235,8 +236,8 @@ public class LdapMessageGrammar extends AbstractGrammar
                     }
                     catch ( IntegerDecoderException ide )
                     {
-                        log.error( "The Message Id " + StringTools.dumpBytes( value.getData() ) + " is invalid : "
-                            + ide.getMessage() + ". The message ID must be between (0 .. 2 147 483 647)" );
+                        log.error( I18n.err( I18n.ERR_04070, StringTools.dumpBytes( value.getData() ), 
+                        		ide.getLocalizedMessage() ) );
 
                         // This will generate a PROTOCOL_ERROR                        
                         throw new DecoderException( ide.getMessage() );
@@ -298,11 +299,10 @@ public class LdapMessageGrammar extends AbstractGrammar
                     // The Length should be null
                     if ( expectedLength != 0 )
                     {
-                        log.error( "The length of a UnBindRequest must be null, the actual value is {}", Integer
-                            .valueOf( expectedLength ) );
+                        log.error( I18n.err( I18n.ERR_04071, Integer.valueOf( expectedLength ) ) );
 
                         // This will generate a PROTOCOL_ERROR
-                        throw new DecoderException( "The length of a UnBindRequest must be null" );
+                        throw new DecoderException( I18n.err( I18n.ERR_04072 ) );
                     }
 
                     
@@ -355,7 +355,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                     if ( tlv.getLength() == 0 )
                     {
                         // This will generate a PROTOCOL_ERROR
-                        throw new DecoderException( "The entry must not be null" );
+                        throw new DecoderException( I18n.err( I18n.ERR_04073 ) );
                     }
                     else
                     {
@@ -368,9 +368,9 @@ public class LdapMessageGrammar extends AbstractGrammar
                         }
                         catch ( InvalidNameException ine )
                         {
-                            String msg = "The DN to delete : " + dnStr + " ("
-                                + StringTools.dumpBytes( dnBytes ) + ") is invalid";
-                            log.error( "{} : {}", msg, ine.getMessage() );
+                            String msg = I18n.err( I18n.ERR_04074, dnStr, StringTools.dumpBytes( dnBytes ),
+                            		ine.getLocalizedMessage() );
+                            log.error( msg );
 
                             DeleteResponseImpl response = new DeleteResponseImpl( delRequest.getMessageId() );
                             throw new ResponseCarryingException( msg, response, ResultCodeEnum.INVALID_DN_SYNTAX,
@@ -429,7 +429,7 @@ public class LdapMessageGrammar extends AbstractGrammar
 
                     if ( ( value == null ) || ( value.getData() == null ) )
                     {
-                        String msg = "The AbandonRequest messageId must not be null";
+                        String msg = I18n.err( I18n.ERR_04075 );
                         log.error( msg );
 
                         // This will generate a PROTOCOL_ERROR
@@ -455,9 +455,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                     }
                     catch ( IntegerDecoderException ide )
                     {
-                        log.error( "The Abandonned Message Id {} is invalid : {}."
-                            + " The message ID must be between (0 .. 2 147 483 647)", StringTools.dumpBytes( value
-                            .getData() ), ide.getMessage() );
+                        log.error( I18n.err( I18n.ERR_04076, StringTools.dumpBytes( value.getData() ), ide.getMessage() ) );
 
                         // This will generate a PROTOCOL_ERROR
                         throw new DecoderException( ide.getMessage() );
@@ -501,7 +499,7 @@ public class LdapMessageGrammar extends AbstractGrammar
 
                     if ( tlv.getLength() == 0 )
                     {
-                        String msg = "The BindRequest must not be null";
+                        String msg = I18n.err( I18n.ERR_04077 );
                         log.error( msg );
 
                         // This will generate a PROTOCOL_ERROR
@@ -547,8 +545,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                     }
                     catch ( IntegerDecoderException ide )
                     {
-                        log.error( "The version {} is invalid : {}. The version must be between (0 .. 127)",
-                            StringTools.dumpBytes( value.getData() ), ide.getMessage() );
+                        log.error( I18n.err( I18n.ERR_04078, StringTools.dumpBytes( value.getData() ), ide.getMessage() ) );
 
                         // This will generate a PROTOCOL_ERROR
                         throw new DecoderException( ide.getMessage() );
@@ -705,7 +702,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                     // We will check that the sasl is not null
                     if ( tlv.getLength() == 0 )
                     {
-                        String msg = "The SaslCredential must not be null";
+                        String msg = I18n.err( I18n.ERR_04079 );
                         log.error( msg );
 
                         BindResponseImpl response = new BindResponseImpl( bindRequestMessage.getMessageId() );
@@ -1048,7 +1045,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                     // sasl credentials
                     if ( tlv.getLength() == 0 )
                     {
-                        String msg = "The Referrals must not be null";
+                        String msg = I18n.err( I18n.ERR_04080 );
                         log.error( msg );
 
                         // This will generate a PROTOCOL_ERROR
@@ -1259,7 +1256,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                     if ( tlv.getLength() == 0 )
                     {
                         // The type can't be null
-                        String msg = "The AttributeType can't be empty";
+                        String msg = I18n.err( I18n.ERR_04081 );
                         log.error( msg );
                         throw new DecoderException( msg );
                     }
@@ -1556,8 +1553,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                     }
                     catch ( IntegerDecoderException ide )
                     {
-                        String msg = "Invalid operation ( " + StringTools.dumpBytes( tlv.getValue().getData() )
-                            + "), it should be 0, 1 or 2";
+                        String msg = I18n.err( I18n.ERR_04082, StringTools.dumpBytes( tlv.getValue().getData() ) );
                         log.error( msg );
 
                         // This will generate a PROTOCOL_ERROR
@@ -1635,7 +1631,7 @@ public class LdapMessageGrammar extends AbstractGrammar
 
                     if ( tlv.getLength() == 0 )
                     {
-                        String msg = "The type can't be null";
+                        String msg = I18n.err( I18n.ERR_04083 );
                         log.error( msg );
 
                         ModifyResponseImpl response = new ModifyResponseImpl( modifyRequest.getMessageId() );
@@ -1860,7 +1856,7 @@ public class LdapMessageGrammar extends AbstractGrammar
 
                     if ( tlv.getLength() == 0 )
                     {
-                        String msg = "The AddRequest must not be null";
+                        String msg = I18n.err( I18n.ERR_04084 );
                         log.error( msg );
 
                         // Will generate a PROTOCOL_ERROR
@@ -1892,7 +1888,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                     // Store the entry. It can't be null
                     if ( tlv.getLength() == 0 )
                     {
-                        String msg = "Empty entry DN given";
+                        String msg = I18n.err( I18n.ERR_04085 );
                         log.error( msg );
 
                         AddResponseImpl response = new AddResponseImpl( addRequest.getMessageId() );
@@ -1977,7 +1973,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                     // Store the type. It can't be null.
                     if ( tlv.getLength() == 0 )
                     {
-                        String msg = "Null or empty types are not allowed";
+                        String msg = I18n.err( I18n.ERR_04086 );
                         log.error( msg );
 
                         AddResponseImpl response = new AddResponseImpl( addRequest.getMessageId() );
@@ -1994,7 +1990,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                     }
                     catch ( NamingException ne )
                     {
-                        String msg = "Error while injecting the AttributeType";
+                        String msg = I18n.err( I18n.ERR_04087 );
                         log.error( msg );
 
                         AddResponseImpl response = new AddResponseImpl( addRequest.getMessageId() );
@@ -2092,7 +2088,7 @@ public class LdapMessageGrammar extends AbstractGrammar
 
                     if ( expectedLength == 0 )
                     {
-                        String msg = "The AddResponse must not be null";
+                        String msg = I18n.err( I18n.ERR_04088 );
                         log.error( msg );
                         throw new DecoderException( msg );
                     }
@@ -2206,7 +2202,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                     if ( tlv.getLength() == 0 )
                     {
                         // This will generate a PROTOCOL_ERROR
-                        throw new DecoderException( "The entry must nut be null" );
+                        throw new DecoderException( I18n.err( I18n.ERR_04089 ) );
                     }
                     else
                     {
@@ -2270,7 +2266,7 @@ public class LdapMessageGrammar extends AbstractGrammar
 
                     if ( tlv.getLength() == 0 )
                     {
-                        String msg = "The newrdn must not be null";
+                        String msg = I18n.err( I18n.ERR_04090 );
                         log.error( msg );
 
                         ModifyDnResponseImpl response = new ModifyDnResponseImpl( modifyDNRequest.getMessageId() );
@@ -2342,8 +2338,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                     }
                     catch ( BooleanDecoderException bde )
                     {
-                        log.error( "The oldRDN flag {} is invalid : {}. It should be 0 or 255", StringTools
-                            .dumpBytes( value.getData() ), bde.getMessage() );
+                        log.error( I18n.err( I18n.ERR_04091, StringTools.dumpBytes( value.getData() ), bde.getMessage() ) );
 
                         // This will generate a PROTOCOL_ERROR                        
                         throw new DecoderException( bde.getMessage() );
@@ -2397,8 +2392,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                         if ( modifyDNRequest.isDeleteOldRDN() )
                         {
                             // This will generate a PROTOCOL_ERROR
-                            throw new DecoderException(
-                                "The new superior must nut be null if the flag 'delete old DN' is set to true" );
+                            throw new DecoderException( I18n.err( I18n.ERR_04092 ) );
                         }
                         else
                         {
@@ -2561,7 +2555,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                     if ( tlv.getLength() == 0 )
                     {
                         // This will generate a PROTOCOL_ERROR
-                        throw new DecoderException( "The entry must not be null" );
+                        throw new DecoderException( I18n.err( I18n.ERR_04089 ) );
                     }
                     else
                     {
@@ -2635,7 +2629,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                     // DN
                     if ( tlv.getLength() == 0 )
                     {
-                        String msg = "The attribute description must not be null";
+                        String msg = I18n.err( I18n.ERR_04093 );
                         log.error( msg );
                         CompareResponseImpl response = new CompareResponseImpl( compareRequest.getMessageId() );
 
@@ -2750,7 +2744,7 @@ public class LdapMessageGrammar extends AbstractGrammar
 
                     if ( tlv.getLength() == 0 )
                     {
-                        String msg = "The CompareResponse must not be null";
+                        String msg = I18n.err( I18n.ERR_04094 );
                         log.error( msg );
                         throw new DecoderException( msg );
                     }
@@ -2882,9 +2876,9 @@ public class LdapMessageGrammar extends AbstractGrammar
                     // OID
                     if ( tlv.getLength() == 0 )
                     {
-                        log.error( "The name must not be null" );
+                        log.error( I18n.err( I18n.ERR_04095 ) );
                         // This will generate a PROTOCOL_ERROR                        
-                        throw new DecoderException( "The name must not be null" );
+                        throw new DecoderException( I18n.err( I18n.ERR_04095 ) );
                     }
                     else
                     {
@@ -3251,9 +3245,9 @@ public class LdapMessageGrammar extends AbstractGrammar
                     // OID.
                     if ( tlv.getLength() == 0 )
                     {
-                        log.error( "The name must not be null" );
+                        log.error( I18n.err( I18n.ERR_04095 ) );
                         // This will generate a PROTOCOL_ERROR                        
-                        throw new DecoderException( "The name must not be null" );
+                        throw new DecoderException( I18n.err( I18n.ERR_04095 ) );
                     }
                     else
                     {
@@ -3413,10 +3407,10 @@ public class LdapMessageGrammar extends AbstractGrammar
                 // The Length should be null
                 if ( expectedLength == 0 )
                 {
-                    log.error( "The length of a control must not be null" );
+                    log.error( I18n.err( I18n.ERR_04096 ) );
 
                     // This will generate a PROTOCOL_ERROR
-                    throw new DecoderException( "The length of a control must not be null" );
+                    throw new DecoderException( I18n.err( I18n.ERR_04096 ) );
                 }
             }
         };
@@ -3457,10 +3451,10 @@ public class LdapMessageGrammar extends AbstractGrammar
                     // We have to handle the special case of a 0 length OID
                     if ( tlv.getLength() == 0 )
                     {
-                        log.error( "The OID must not be null" );
+                        log.error( I18n.err( I18n.ERR_04097 ) );
 
                         // This will generate a PROTOCOL_ERROR
-                        throw new DecoderException( "The OID must not be null" );
+                        throw new DecoderException( I18n.err( I18n.ERR_04097 ) );
                     }
 
                     byte[] value = tlv.getValue().getData();
@@ -3469,10 +3463,10 @@ public class LdapMessageGrammar extends AbstractGrammar
                     // The OID is encoded as a String, not an Object Id
                     if ( !OID.isOID( oidValue ) )
                     {
-                        log.error( "The control type " + StringTools.dumpBytes( value ) + " is not a valid OID" );
+                        log.error( I18n.err( I18n.ERR_04098, StringTools.dumpBytes( value ) ) );
 
                         // This will generate a PROTOCOL_ERROR
-                        throw new DecoderException( "Invalid control OID : " + oidValue );
+                        throw new DecoderException( I18n.err( I18n.ERR_04099, oidValue ) );
                     }
                     
                     // get the Control for this OID
@@ -3535,8 +3529,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                     }
                     catch ( BooleanDecoderException bde )
                     {
-                        log.error( "The control criticality flag " + StringTools.dumpBytes( value.getData() )
-                            + " is invalid : " + bde.getMessage() + ". It should be 0 or 255" );
+                        log.error( I18n.err( I18n.ERR_04100, StringTools.dumpBytes( value.getData() ), bde.getMessage() ) );
 
                         // This will generate a PROTOCOL_ERROR
                         throw new DecoderException( bde.getMessage() );
@@ -3723,8 +3716,8 @@ public class LdapMessageGrammar extends AbstractGrammar
                     }
                     catch ( IntegerDecoderException ide )
                     {
-                        log.error( "The scope is not in [0..2] : {}", value.toString() );
-                        throw new DecoderException( "The scope is not in [0..2] : " + value.toString() );
+                        log.error( I18n.err( I18n.ERR_04101, value.toString() ) );
+                        throw new DecoderException( I18n.err( I18n.ERR_04101,  value.toString() ) );
                     }
 
                     searchRequest.setScope( SearchScope.getSearchScope( scope ) );
@@ -3787,8 +3780,8 @@ public class LdapMessageGrammar extends AbstractGrammar
                     }
                     catch ( IntegerDecoderException ide )
                     {
-                        log.error( "The derefAlias is not in [0..3] : {}", value.toString() );
-                        throw new DecoderException( "The derefAlias is not in [0..3] : " + value.toString() );
+                        log.error( I18n.err( I18n.ERR_04102, value.toString() ) );
+                        throw new DecoderException( I18n.err( I18n.ERR_04102, value.toString() ) );
                     }
 
                     searchRequest.setDerefAliases( derefAliases );
@@ -3850,8 +3843,8 @@ public class LdapMessageGrammar extends AbstractGrammar
                     }
                     catch ( IntegerDecoderException ide )
                     {
-                        log.error( "The sizeLimit is not a valid Integer: {}", value.toString() );
-                        throw new DecoderException( "The sizeLimit is not a valid Integer: " + value.toString() );
+                        log.error( I18n.err( I18n.ERR_04103, value.toString() ) );
+                        throw new DecoderException( I18n.err( I18n.ERR_04103, value.toString() ) );
                     }
 
                     searchRequest.setSizeLimit( sizeLimit );
@@ -3898,8 +3891,8 @@ public class LdapMessageGrammar extends AbstractGrammar
                     }
                     catch ( IntegerDecoderException ide )
                     {
-                        log.error( "The timeLimit is not a valid Integer: {}", value.toString() );
-                        throw new DecoderException( "The timeLimit is not a valid Integer: " + value.toString() );
+                        log.error( I18n.err( I18n.ERR_04104, value.toString() ) );
+                        throw new DecoderException( I18n.err( I18n.ERR_04104, value.toString() ) );
                     }
 
                     searchRequest.setTimeLimit( timeLimit );
@@ -3948,8 +3941,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                     }
                     catch ( BooleanDecoderException bde )
                     {
-                        log.error( "The types only flag {} is invalid : {}. It should be 0 or 255", StringTools
-                            .dumpBytes( value.getData() ), bde.getMessage() );
+                        log.error( I18n.err( I18n.ERR_04105, StringTools.dumpBytes( value.getData() ), bde.getMessage() ) );
 
                         throw new DecoderException( bde.getMessage() );
                     }
@@ -5086,8 +5078,8 @@ public class LdapMessageGrammar extends AbstractGrammar
 
                     if ( tlv.getLength() == 0 )
                     {
-                        log.error( "The attribute description should not be null" );
-                        throw new DecoderException( "The attribute description should not be null" );
+                        log.error( I18n.err( I18n.ERR_04106 ) );
+                        throw new DecoderException( I18n.err( I18n.ERR_04106 ) );
                     }
                     else
                     {
@@ -5127,7 +5119,7 @@ public class LdapMessageGrammar extends AbstractGrammar
 
                     if ( tlv.getLength() == 0 )
                     {
-                        log.error( "The substrings sequence is empty" );
+                        log.error( I18n.err( I18n.ERR_04107 ) );
                         throw new DecoderException( "The substring sequence is empty" );
                     }
                 }
@@ -5159,8 +5151,8 @@ public class LdapMessageGrammar extends AbstractGrammar
 
                     if ( tlv.getLength() == 0 )
                     {
-                        log.error( "The substring initial filter is empty" );
-                        throw new DecoderException( "The substring initial filter is empty" );
+                        log.error( I18n.err( I18n.ERR_04108 ) );
+                        throw new DecoderException( I18n.err( I18n.ERR_04108 ) );
                     }
 
                     substringFilter.setInitialSubstrings( StringTools.utf8ToString( tlv.getValue().getData() ) );
@@ -6080,10 +6072,10 @@ public class LdapMessageGrammar extends AbstractGrammar
 
                     if ( tlv.getLength() == 0 )
                     {
-                        log.error( "The matching rule is empty" );
+                        log.error( I18n.err( I18n.ERR_04109 ) );
 
                         // It will generate a PROTOCOL_ERROR
-                        throw new DecoderException( "Invalid matching rule : it can't be empty" );
+                        throw new DecoderException( I18n.err( I18n.ERR_04109 ) );
                     }
                     else
                     {
@@ -6218,8 +6210,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                     }
                     catch ( BooleanDecoderException bde )
                     {
-                        log.error( "The DN attributes flag {} is invalid : {}. It should be 0 or 255", StringTools
-                            .dumpBytes( value.getData() ), bde.getMessage() );
+                        log.error( I18n.err( I18n.ERR_04110, StringTools.dumpBytes( value.getData() ), bde.getMessage() ) );
 
                         throw new DecoderException( bde.getMessage() );
                     }

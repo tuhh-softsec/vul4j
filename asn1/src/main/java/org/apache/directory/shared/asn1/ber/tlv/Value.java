@@ -28,6 +28,7 @@ import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.asn1.primitives.BitString;
 import org.apache.directory.shared.asn1.primitives.OID;
 import org.apache.directory.shared.asn1.util.Asn1StringUtils;
+import org.apache.directory.shared.i18n.I18n;
 
 
 /**
@@ -631,7 +632,7 @@ public class Value implements Serializable
     {
         if ( buffer == null )
         {
-            throw new EncoderException( "Cannot put a PDU in a null buffer !" );
+            throw new EncoderException( I18n.err( I18n.ERR_00003 ) );
         }
 
         try
@@ -649,7 +650,7 @@ public class Value implements Serializable
         }
         catch ( BufferOverflowException boe )
         {
-            throw new EncoderException( "The PDU buffer size is too small !" );
+            throw new EncoderException( I18n.err( I18n.ERR_00004 ) );
         }
 
         return;
@@ -667,7 +668,7 @@ public class Value implements Serializable
     {
         if ( buffer == null )
         {
-            throw new EncoderException( "Cannot put a PDU in a null buffer !" );
+            throw new EncoderException( I18n.err( I18n.ERR_00003 ) );
         }
 
         try
@@ -684,7 +685,7 @@ public class Value implements Serializable
         }
         catch ( BufferOverflowException boe )
         {
-            throw new EncoderException( "The PDU buffer size is too small !" );
+            throw new EncoderException( I18n.err( I18n.ERR_00004 ) );
         }
 
         return;
@@ -703,7 +704,7 @@ public class Value implements Serializable
     {
         if ( buffer == null )
         {
-            throw new EncoderException( "Cannot put a PDU in a null buffer !" );
+            throw new EncoderException( I18n.err( I18n.ERR_00003 ) );
         }
 
         try
@@ -722,7 +723,7 @@ public class Value implements Serializable
         }
         catch ( BufferOverflowException boe )
         {
-            throw new EncoderException( "The PDU buffer size is too small !" );
+            throw new EncoderException( I18n.err( I18n.ERR_00004 ) );
         }
 
         return;
@@ -741,7 +742,7 @@ public class Value implements Serializable
     {
         if ( buffer == null )
         {
-            throw new EncoderException( "Cannot put a PDU in a null buffer !" );
+            throw new EncoderException( I18n.err( I18n.ERR_00003 ) );
         }
 
         try
@@ -756,7 +757,7 @@ public class Value implements Serializable
         }
         catch ( BufferOverflowException boe )
         {
-            throw new EncoderException( "The PDU buffer size is too small !" );
+            throw new EncoderException( I18n.err( I18n.ERR_00004 ) );
         }
 
         return;
@@ -775,7 +776,7 @@ public class Value implements Serializable
     {
         if ( buffer == null )
         {
-            throw new EncoderException( "Cannot put a PDU in a null buffer !" );
+            throw new EncoderException( I18n.err( I18n.ERR_00003 ) );
         }
 
         try
@@ -786,7 +787,7 @@ public class Value implements Serializable
         }
         catch ( BufferOverflowException boe )
         {
-            throw new EncoderException( "The PDU buffer size is too small !" );
+            throw new EncoderException( I18n.err( I18n.ERR_00004 ) );
         }
 
         return;
@@ -805,7 +806,7 @@ public class Value implements Serializable
     {
         if ( buffer == null )
         {
-            throw new EncoderException( "Cannot put a PDU in a null buffer !" );
+            throw new EncoderException( I18n.err( I18n.ERR_00003 ) );
         }
 
         try
@@ -816,7 +817,7 @@ public class Value implements Serializable
         }
         catch ( BufferOverflowException boe )
         {
-            throw new EncoderException( "The PDU buffer size is too small !" );
+            throw new EncoderException( I18n.err( I18n.ERR_00004 ) );
         }
 
         return;
@@ -836,7 +837,7 @@ public class Value implements Serializable
     {
         if ( buffer == null )
         {
-            throw new EncoderException( "Cannot put a PDU in a null buffer !" );
+            throw new EncoderException( I18n.err( I18n.ERR_00003 ) );
         }
 
         try
@@ -847,7 +848,7 @@ public class Value implements Serializable
         }
         catch ( BufferOverflowException boe )
         {
-            throw new EncoderException( "The PDU buffer size is too small !" );
+            throw new EncoderException( I18n.err( I18n.ERR_00004 ) );
         }
 
         return;
@@ -866,7 +867,7 @@ public class Value implements Serializable
     {
         if ( buffer == null )
         {
-            throw new EncoderException( "Cannot put a PDU in a null buffer !" );
+            throw new EncoderException( I18n.err( I18n.ERR_00003 ) );
         }
 
         try
@@ -877,7 +878,7 @@ public class Value implements Serializable
         }
         catch ( BufferOverflowException boe )
         {
-            throw new EncoderException( "The PDU buffer size is too small !" );
+            throw new EncoderException( I18n.err( I18n.ERR_00004 ) );
         }
 
         return;
@@ -896,7 +897,7 @@ public class Value implements Serializable
     {
         if ( buffer == null )
         {
-            throw new EncoderException( "Cannot put a PDU in a null buffer !" );
+            throw new EncoderException( I18n.err( I18n.ERR_00003 ) );
         }
 
         try
@@ -905,7 +906,7 @@ public class Value implements Serializable
         }
         catch ( BufferOverflowException boe )
         {
-            throw new EncoderException( "The PDU buffer size is too small !" );
+            throw new EncoderException( I18n.err( I18n.ERR_00004 ) );
         }
 
         return;

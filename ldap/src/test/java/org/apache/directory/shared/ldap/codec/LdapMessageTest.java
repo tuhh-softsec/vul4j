@@ -250,8 +250,8 @@ public class LdapMessageTest
                     default:
                         String res = de.getMessage();
 
-                        if ( res.equals( "Bad transition !" ) || res.startsWith( "Universal tag " )
-                            || res.startsWith( "Truncated PDU" ) )
+                        if ( res.equals( "ERR_00002 Bad transition !" ) || res.startsWith( "Universal tag " )
+                            || res.startsWith( "ERR_00010 Truncated PDU" ) )
                         {
                             assertTrue( true );
                         }

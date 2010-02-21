@@ -27,6 +27,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.constants.AuthenticationLevel;
 
 
@@ -80,12 +81,12 @@ public class ACITuple implements Serializable
     {
         if ( authenticationLevel == null )
         {
-            throw new NullPointerException( "authenticationLevel" );
+            throw new NullPointerException( I18n.err( I18n.ERR_04003) );
         }
 
         if ( precedence < 0 || precedence > 255 )
         {
-            throw new IllegalArgumentException( "precedence: " + precedence );
+            throw new IllegalArgumentException( I18n.err( I18n.ERR_04002, precedence ) );
         }
 
         this.userClasses = Collections.unmodifiableCollection( new ArrayList<UserClass>( userClasses ) );

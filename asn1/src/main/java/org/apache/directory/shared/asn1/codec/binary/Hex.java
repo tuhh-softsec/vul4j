@@ -25,6 +25,7 @@ import org.apache.directory.shared.asn1.codec.BinaryDecoder;
 import org.apache.directory.shared.asn1.codec.BinaryEncoder;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.codec.EncoderException;
+import org.apache.directory.shared.i18n.I18n;
 
 
 /**
@@ -65,7 +66,7 @@ public class Hex implements BinaryEncoder, BinaryDecoder
 
         if ( ( len & 0x01 ) != 0 )
         {
-            throw new DecoderException( "Odd number of characters." );
+            throw new DecoderException( I18n.err( I18n.ERR_00013 ) );
         }
 
         byte[] out = new byte[len >> 1];
@@ -100,7 +101,7 @@ public class Hex implements BinaryEncoder, BinaryDecoder
         int digit = Character.digit( ch, 16 );
         if ( digit == -1 )
         {
-            throw new DecoderException( "Illegal hexadecimal charcter " + ch + " at index " + index );
+            throw new DecoderException( I18n.err( I18n.ERR_00014, ch, index ) );
         }
         return digit;
     }

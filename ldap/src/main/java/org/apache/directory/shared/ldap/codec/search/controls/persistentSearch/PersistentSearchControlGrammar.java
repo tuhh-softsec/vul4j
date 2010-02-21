@@ -33,6 +33,7 @@ import org.apache.directory.shared.asn1.util.BooleanDecoder;
 import org.apache.directory.shared.asn1.util.BooleanDecoderException;
 import org.apache.directory.shared.asn1.util.IntegerDecoder;
 import org.apache.directory.shared.asn1.util.IntegerDecoderException;
+import org.apache.directory.shared.i18n.I18n;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -129,7 +130,7 @@ public class PersistentSearchControlGrammar extends AbstractGrammar
                     }
                     catch ( IntegerDecoderException e )
                     {
-                        String msg = "failed to decode the changeTypes for PSearchControl";
+                        String msg = I18n.err( I18n.ERR_04051 );
                         log.error( msg, e );
                         throw new DecoderException( msg );
                     }
@@ -168,7 +169,7 @@ public class PersistentSearchControlGrammar extends AbstractGrammar
                     }
                     catch ( BooleanDecoderException e )
                     {
-                        String msg = "failed to decode the changesOnly for PSearchControl";
+                        String msg = I18n.err( I18n.ERR_04052 );
                         log.error( msg, e );
                         throw new DecoderException( msg );
                     }
@@ -210,7 +211,7 @@ public class PersistentSearchControlGrammar extends AbstractGrammar
                     }
                     catch ( BooleanDecoderException e )
                     {
-                        String msg = "failed to decode the returnECs for PSearchControl";
+                        String msg = I18n.err( I18n.ERR_04053 );
                         log.error( msg, e );
                         throw new DecoderException( msg );
                     }

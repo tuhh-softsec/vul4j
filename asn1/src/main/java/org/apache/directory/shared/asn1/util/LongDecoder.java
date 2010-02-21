@@ -21,6 +21,7 @@ package org.apache.directory.shared.asn1.util;
 
 
 import org.apache.directory.shared.asn1.ber.tlv.Value;
+import org.apache.directory.shared.i18n.I18n;
 
 
 /**
@@ -67,13 +68,12 @@ public class LongDecoder
 
         if ( ( bytes == null ) || ( bytes.length == 0 ) )
         {
-            throw new LongDecoderException( "The value is 0 byte long. This is not allowed for a long" );
+            throw new LongDecoderException( I18n.err( I18n.ERR_00039 ) );
         }
 
         if ( bytes.length > 8 )
         {
-            throw new LongDecoderException(
-                "The value is more than 4 bytes long. This is not allowed for a long" );
+            throw new LongDecoderException( I18n.err( I18n.ERR_00039 ) );
         }
 
         for ( int i = 0; ( i < bytes.length ) && ( i < 9 ); i++ )
@@ -92,7 +92,7 @@ public class LongDecoder
         }
         else
         {
-            throw new LongDecoderException( "The value is not in the range [" + min + ", " + max + "]" );
+            throw new LongDecoderException( I18n.err( I18n.ERR_00038, min, max ) );
         }
     }
 

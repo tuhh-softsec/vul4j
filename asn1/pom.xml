@@ -29,6 +29,14 @@
   
   <artifactId>shared-asn1</artifactId>
   <name>Apache Directory Shared ASN.1</name>
-  <packaging>jar</packaging>  
+  <packaging>jar</packaging>
+  
+  <dependencies>
+    <dependency>
+      <artifactId>shared-i18n</artifactId>
+      <groupId>${groupId}</groupId>
+      <version>${version}</version>
+    </dependency> 
+  </dependencies>
 </project>
 

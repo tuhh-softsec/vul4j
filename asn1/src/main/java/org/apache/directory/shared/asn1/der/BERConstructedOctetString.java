@@ -28,6 +28,8 @@ import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Vector;
 
+import org.apache.directory.shared.i18n.I18n;
+
 
 public class BERConstructedOctetString extends DEROctetString
 {
@@ -69,12 +71,11 @@ public class BERConstructedOctetString extends DEROctetString
             }
             catch ( ClassCastException e )
             {
-                throw new IllegalArgumentException( octs.elementAt( i ).getClass().getName()
-                    + " found in input should only contain DEROctetString." );
+                throw new IllegalArgumentException( I18n.err( I18n.ERR_00025, octs.elementAt( i ).getClass().getName() ) );
             }
             catch ( IOException e )
             {
-                throw new IllegalArgumentException( "Exception converting octets " + e.toString() );
+                throw new IllegalArgumentException( I18n.err( I18n.ERR_00026, e.toString() ) );
             }
         }
 

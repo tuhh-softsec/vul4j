@@ -34,6 +34,7 @@ import org.apache.directory.shared.asn1.util.IntegerDecoder;
 import org.apache.directory.shared.asn1.util.IntegerDecoderException;
 import org.apache.directory.shared.asn1.util.LongDecoder;
 import org.apache.directory.shared.asn1.util.LongDecoderException;
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.search.controls.ChangeType;
 import org.apache.directory.shared.ldap.name.LdapDN;
 import org.apache.directory.shared.ldap.util.StringTools;
@@ -123,7 +124,7 @@ public class EntryChangeControlGrammar extends AbstractGrammar
                             break;
 
                         default:
-                            String msg = "failed to decode the changeType for EntryChangeControl";
+                            String msg = I18n.err( I18n.ERR_04044 );
                             log.error( msg );
                             throw new DecoderException( msg );
                     }
@@ -133,7 +134,7 @@ public class EntryChangeControlGrammar extends AbstractGrammar
                 }
                 catch ( IntegerDecoderException e )
                 {
-                    String msg = "failed to decode the changeType for EntryChangeControl";
+                    String msg = I18n.err( I18n.ERR_04044 );
                     log.error( msg, e );
                     throw new DecoderException( msg );
                 }
@@ -164,8 +165,8 @@ public class EntryChangeControlGrammar extends AbstractGrammar
 
                 if ( changeType != ChangeType.MODDN )
                 {
-                    log.error( "The previousDN field should not contain anything if the changeType is not MODDN" );
-                    throw new DecoderException( "Previous DN is not allowed for this change type" );
+                    log.error( I18n.err( I18n.ERR_04045 ) );
+                    throw new DecoderException( I18n.err( I18n.ERR_04046 ));
                 }
                 else
                 {
@@ -178,8 +179,8 @@ public class EntryChangeControlGrammar extends AbstractGrammar
                     }
                     catch ( InvalidNameException ine )
                     {
-                        log.error( "Bad Previous DN : '" + StringTools.dumpBytes( value.getData() ) );
-                        throw new DecoderException( "failed to decode the previous DN" );
+                        log.error( I18n.err( I18n.ERR_04047, StringTools.dumpBytes( value.getData() ) ) );
+                        throw new DecoderException( I18n.err( I18n.ERR_04048 ) );
                     }
 
                     if ( IS_DEBUG )
@@ -219,7 +220,7 @@ public class EntryChangeControlGrammar extends AbstractGrammar
                 }
                 catch ( LongDecoderException e )
                 {
-                    String msg = "failed to decode the changeNumber for EntryChangeControl";
+                    String msg = I18n.err( I18n.ERR_04049 );
                     log.error( msg, e );
                     throw new DecoderException( msg );
                 }

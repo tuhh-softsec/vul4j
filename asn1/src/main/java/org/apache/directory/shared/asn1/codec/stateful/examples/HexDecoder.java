@@ -24,6 +24,7 @@ import java.nio.ByteBuffer;
 
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.codec.stateful.AbstractStatefulDecoder;
+import org.apache.directory.shared.i18n.I18n;
 
 
 /**
@@ -142,7 +143,7 @@ public class HexDecoder extends AbstractStatefulDecoder
             case 102:
                 return 15;
             default:
-                throw new DecoderException( "non-hex character '" + ( char ) ch + "' encountered" );
+                throw new DecoderException( I18n.err( I18n.ERR_00015, ch ) );
         }
     }
 }

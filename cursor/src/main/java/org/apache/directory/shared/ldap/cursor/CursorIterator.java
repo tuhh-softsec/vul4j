@@ -22,6 +22,8 @@ package org.apache.directory.shared.ldap.cursor;
 
 import java.util.Iterator;
 
+import org.apache.directory.shared.i18n.I18n;
+
 
 /**
  * An Iterator over a Cursor so Cursors can be Iterable for using in foreach
@@ -74,7 +76,7 @@ public class CursorIterator<E> implements Iterator<E>
         }
         catch ( Exception e )
         {
-            throw new RuntimeException( "Failure on underlying Cursor.", e );
+            throw new RuntimeException( I18n.err( I18n.ERR_02002 ), e );
         }
     }
 
@@ -84,6 +86,6 @@ public class CursorIterator<E> implements Iterator<E>
      */
     public void remove()
     {
-        throw new UnsupportedOperationException( "Underlying Cursor does not support removal." );
+        throw new UnsupportedOperationException( I18n.err( I18n.ERR_02003 ) );
     }
 }

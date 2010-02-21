@@ -25,6 +25,7 @@ import java.nio.ByteBuffer;
 
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.asn1.codec.EncoderException;
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
@@ -157,7 +158,7 @@ public class AbandonRequestCodec extends LdapMessageCodec
         }
         catch ( BufferOverflowException boe )
         {
-            String msg = "The PDU buffer size is too small !";
+            String msg = I18n.err( I18n.ERR_04005 );
             LOGGER.error( msg );
             throw new EncoderException( msg );
         }

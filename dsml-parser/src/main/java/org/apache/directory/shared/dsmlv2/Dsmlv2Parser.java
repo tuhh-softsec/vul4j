@@ -30,6 +30,7 @@ import java.io.StringReader;
 
 import org.apache.directory.shared.dsmlv2.request.BatchRequest;
 import org.apache.directory.shared.dsmlv2.request.Dsmlv2Grammar;
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -166,7 +167,7 @@ public class Dsmlv2Parser
             }
             catch ( IOException e )
             {
-                throw new XmlPullParserException( "An IOException ocurred during parsing : " + e.getMessage(), xpp,
+                throw new XmlPullParserException( I18n.err( I18n.ERR_03037, e.getLocalizedMessage() ), xpp,
                     null );
             }
         }
@@ -203,8 +204,7 @@ public class Dsmlv2Parser
         }
         else
         {
-            throw new XmlPullParserException( "The tag " + new Tag( tagName, tagType )
-                + " can't be found at this position", xpp, null );
+            throw new XmlPullParserException( I18n.err( I18n.ERR_03036, new Tag( tagName, tagType ) ), xpp, null );
         }
     }
 
@@ -248,7 +248,7 @@ public class Dsmlv2Parser
                 }
                 catch ( IOException e )
                 {
-                    throw new XmlPullParserException( "An IOException ocurred during parsing : " + e.getMessage(), xpp,
+                    throw new XmlPullParserException( I18n.err( I18n.ERR_03037, e.getLocalizedMessage() ), xpp,
                         null );
                 }
                 eventType = xpp.getEventType();
@@ -277,7 +277,7 @@ public class Dsmlv2Parser
             }
             catch ( IOException e )
             {
-                throw new XmlPullParserException( "An IOException ocurred during parsing : " + e.getMessage(), xpp,
+                throw new XmlPullParserException( I18n.err( I18n.ERR_03037, e.getLocalizedMessage() ), xpp,
                     null );
             }
         }

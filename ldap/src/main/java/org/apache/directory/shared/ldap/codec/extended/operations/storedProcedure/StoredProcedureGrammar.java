@@ -29,6 +29,7 @@ import org.apache.directory.shared.asn1.ber.grammar.IGrammar;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.codec.DecoderException;
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.extended.operations.storedProcedure.StoredProcedure.StoredProcedureParameter;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
@@ -101,8 +102,8 @@ public class StoredProcedureGrammar extends AbstractGrammar
                     if ( tlv.getLength() == 0 )
                     {
                         // We can't have a void language !
-                        log.error( "The stored procedure language is null" );
-                        throw new DecoderException( "The stored procedure language cannot be null" );
+                        log.error( I18n.err( I18n.ERR_04038 ) );
+                        throw new DecoderException( I18n.err( I18n.ERR_04038 ) );
                     }
                     else
                     {
@@ -144,8 +145,8 @@ public class StoredProcedureGrammar extends AbstractGrammar
                     if ( tlv.getLength() == 0 )
                     {
                         // We can't have a void procedure !
-                        log.error( "The procedure can't be null" );
-                        throw new DecoderException( "The procedure can't be null" );
+                        log.error( I18n.err( I18n.ERR_04039 ) );
+                        throw new DecoderException( I18n.err( I18n.ERR_04039 ) );
                     }
                     else
                     {
@@ -210,8 +211,8 @@ public class StoredProcedureGrammar extends AbstractGrammar
                     if ( tlv.getLength() == 0 )
                     {
                         // We can't have a void parameter type !
-                        log.error( "The parameter type can't be null" );
-                        throw new DecoderException( "The parameter type can't be null" );
+                        log.error( I18n.err( I18n.ERR_04040 ) );
+                        throw new DecoderException( I18n.err( I18n.ERR_04040 ) );
                     }
                     else
                     {
@@ -255,8 +256,8 @@ public class StoredProcedureGrammar extends AbstractGrammar
                     if ( tlv.getLength() == 0 )
                     {
                         // We can't have a void parameter value !
-                        log.error( "The parameter value can't be null" );
-                        throw new DecoderException( "The parameter value can't be null" );
+                        log.error( I18n.err( I18n.ERR_04041 ) );
+                        throw new DecoderException( I18n.err( I18n.ERR_04041 ) );
                     }
                     else
                     {
@@ -277,8 +278,8 @@ public class StoredProcedureGrammar extends AbstractGrammar
                         }
                         else
                         {
-                            log.error( "The parameter value is empty. This is not allowed." );
-                            throw new DecoderException( "The parameter value is empty. This is not allowed." );
+                            log.error( I18n.err( I18n.ERR_04042 ) );
+                            throw new DecoderException( I18n.err( I18n.ERR_04042 ) );
                         }
                     }
 

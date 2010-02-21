@@ -21,6 +21,8 @@ package org.apache.directory.shared.ldap.cursor;
 
 import java.util.Iterator;
 
+import org.apache.directory.shared.i18n.I18n;
+
 
 /**
  * Simple class that contains often used Cursor code.
@@ -40,7 +42,7 @@ public abstract class AbstractCursor<E> implements Cursor<E>
     {
         if ( monitor == null )
         {
-            throw new NullPointerException( "monitor" );
+            throw new NullPointerException( I18n.err( I18n.ERR_02001 ) );
         }
         
         this.monitor = monitor;

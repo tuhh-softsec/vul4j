@@ -24,6 +24,7 @@ import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.codec.DecoderException;
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.AttributeValueAssertion;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.search.AttributeValueAssertionFilter;
@@ -66,8 +67,8 @@ public class InitAttributeDescFilterAction extends GrammarAction
 
         if ( tlv.getLength() == 0 )
         {
-            log.error( "The attribute description is empty " );
-            throw new DecoderException( "The type can't be null" );
+            log.error( I18n.err( I18n.ERR_04007 ) );
+            throw new DecoderException( I18n.err( I18n.ERR_04007 ) );
         }
         else
         {

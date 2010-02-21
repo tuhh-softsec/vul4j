@@ -31,6 +31,7 @@ import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.util.BooleanDecoder;
 import org.apache.directory.shared.asn1.util.BooleanDecoderException;
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.message.control.replication.SynchronizationInfoEnum;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
@@ -235,7 +236,7 @@ public class SyncInfoValueControlGrammar extends AbstractGrammar
                     }
                     catch ( BooleanDecoderException be )
                     {
-                        String msg = "failed to decode the refreshDone flag for SyncInfoValueControl";
+                        String msg = I18n.err( I18n.ERR_04025 );
                         LOG.error( msg, be );
                         throw new DecoderException( msg );
                     }
@@ -288,7 +289,7 @@ public class SyncInfoValueControlGrammar extends AbstractGrammar
                     }
                     catch ( BooleanDecoderException be )
                     {
-                        String msg = "failed to decode the refreshDone flag for SyncInfoValueControl";
+                        String msg = I18n.err( I18n.ERR_04025 );
                         LOG.error( msg, be );
                         throw new DecoderException( msg );
                     }
@@ -411,7 +412,7 @@ public class SyncInfoValueControlGrammar extends AbstractGrammar
                     }
                     catch ( BooleanDecoderException be )
                     {
-                        String msg = "failed to decode the refreshDone flag for SyncInfoValueControl";
+                        String msg = I18n.err( I18n.ERR_04025 );
                         LOG.error( msg, be );
                         throw new DecoderException( msg );
                     }
@@ -464,7 +465,7 @@ public class SyncInfoValueControlGrammar extends AbstractGrammar
                     }
                     catch ( BooleanDecoderException be )
                     {
-                        String msg = "failed to decode the refreshDone flag for SyncInfoValueControl";
+                        String msg = I18n.err( I18n.ERR_04025 );
                         LOG.error( msg, be );
                         throw new DecoderException( msg );
                     }
@@ -575,7 +576,7 @@ public class SyncInfoValueControlGrammar extends AbstractGrammar
                     }
                     catch ( BooleanDecoderException be )
                     {
-                        String msg = "failed to decode the refreshDeletes flag for SyncInfoValueControl";
+                        String msg = I18n.err( I18n.ERR_04026 );
                         LOG.error( msg, be );
                         throw new DecoderException( msg );
                     }
@@ -621,7 +622,7 @@ public class SyncInfoValueControlGrammar extends AbstractGrammar
                     }
                     catch ( BooleanDecoderException be )
                     {
-                        String msg = "failed to decode the refreshDeletes flag for SyncInfoValueControl";
+                        String msg = I18n.err( I18n.ERR_04024 );
                         LOG.error( msg, be );
                         throw new DecoderException( msg );
                     }
@@ -735,7 +736,7 @@ public class SyncInfoValueControlGrammar extends AbstractGrammar
                     // UUID must be exactly 16 bytes long
                     if ( ( uuid == null ) || ( uuid.length != 16 ) )
                     {
-                        String msg = "Bad UUID value, its length is incorrect ( it should be 16 bytes long)";
+                        String msg = I18n.err( I18n.ERR_04027 );
                         LOG.error( msg );
                         throw new DecoderException( msg );
                     }
@@ -782,7 +783,7 @@ public class SyncInfoValueControlGrammar extends AbstractGrammar
                     // UUID must be exactly 16 bytes long
                     if ( ( uuid == null ) || ( uuid.length != 16 ) )
                     {
-                        String msg = "Bad UUID value, its length is incorrect ( it should be 16 bytes long)";
+                        String msg = I18n.err( I18n.ERR_04027 );
                         LOG.error( msg );
                         throw new DecoderException( msg );
                     }

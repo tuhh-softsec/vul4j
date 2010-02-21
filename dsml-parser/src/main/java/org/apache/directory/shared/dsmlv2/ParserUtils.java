@@ -33,6 +33,7 @@ import org.apache.directory.shared.dsmlv2.engine.Dsmlv2Engine;
 import org.apache.directory.shared.dsmlv2.request.BatchRequest;
 import org.apache.directory.shared.dsmlv2.request.BatchRequest.Processing;
 import org.apache.directory.shared.dsmlv2.request.BatchRequest.ResponseOrder;
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.ldif.LdifUtils;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.util.Base64;
@@ -177,14 +178,14 @@ public class ParserUtils
 
             if ( requestID == 0 )
             {
-                throw new XmlPullParserException( "The attribute requestID can't be equal to 0", xpp, null );
+                throw new XmlPullParserException( I18n.err( I18n.ERR_03038 ), xpp, null );
             }
 
             return requestID;
         }
         catch ( NumberFormatException e )
         {
-            throw new XmlPullParserException( "the given requestID is not an integer", xpp, null );
+            throw new XmlPullParserException( I18n.err( I18n.ERR_03039 ), xpp, null );
         }
     }
 
@@ -259,7 +260,7 @@ public class ParserUtils
 
         if ( batchRequest == null )
         {
-            throw new XmlPullParserException( "unable to find the batch request", container.getParser(), null );
+            throw new XmlPullParserException( I18n.err( I18n.ERR_03040 ), container.getParser(), null );
         }
 
         return ( ( batchRequest.getProcessing() == Processing.PARALLEL ) && ( batchRequest.getResponseOrder() == ResponseOrder.UNORDERED ) );

@@ -26,6 +26,8 @@ package org.apache.directory.shared.asn1.der;
 import java.io.IOException;
 import java.util.Enumeration;
 
+import org.apache.directory.shared.i18n.I18n;
+
 
 /**
  * BER TaggedObject
@@ -99,7 +101,7 @@ public class BERTaggedObject extends DERTaggedObject
                 }
                 else
                 {
-                    throw new RuntimeException( "Not implemented: " + obj.getClass().getName() );
+                    throw new RuntimeException( I18n.err( I18n.ERR_00027, obj.getClass().getName() ) );
                 }
             }
             else

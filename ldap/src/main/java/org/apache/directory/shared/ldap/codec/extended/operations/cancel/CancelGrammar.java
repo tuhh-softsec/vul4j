@@ -31,6 +31,7 @@ import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.util.IntegerDecoder;
 import org.apache.directory.shared.asn1.util.IntegerDecoderException;
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -130,8 +131,7 @@ public class CancelGrammar extends AbstractGrammar
                     }
                     catch ( IntegerDecoderException e )
                     {
-                        String msg = "failed to decode the cancelId, the value should be between 0 and 2^31-1, " + 
-                            "it is '" + StringTools.dumpBytes( value.getData() ) + "'";
+                        String msg = I18n.err( I18n.ERR_04031, StringTools.dumpBytes( value.getData() ) );
                         LOG.error( msg );
                         throw new DecoderException( msg );
                     }

@@ -31,6 +31,7 @@ import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.util.IntegerDecoder;
 import org.apache.directory.shared.asn1.util.IntegerDecoderException;
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.extended.operations.GracefulActionConstants;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
@@ -133,8 +134,7 @@ public class GracefulShutdownGrammar extends AbstractGrammar
                     }
                     catch ( IntegerDecoderException e )
                     {
-                        String msg = "failed to decode the timeOffline, the value should be between 0 and 720 minutes, it is '"
-                            + StringTools.dumpBytes( value.getData() ) + "'";
+                        String msg = I18n.err( I18n.ERR_04037, StringTools.dumpBytes( value.getData() ) );
                         log.error( msg );
                         throw new DecoderException( msg );
                     }
@@ -177,8 +177,7 @@ public class GracefulShutdownGrammar extends AbstractGrammar
                     }
                     catch ( IntegerDecoderException e )
                     {
-                        String msg = "failed to decode the delay, the value should be between 0 and 86400 seconds, it is '"
-                            + StringTools.dumpBytes( value.getData() ) + "'";
+                        String msg = I18n.err( I18n.ERR_04036, StringTools.dumpBytes( value.getData() ) );
                         log.error( msg );
                         throw new DecoderException( msg );
                     }
@@ -222,8 +221,7 @@ public class GracefulShutdownGrammar extends AbstractGrammar
                     }
                     catch ( IntegerDecoderException e )
                     {
-                        String msg = "failed to decode the delay, the value should be between 0 and 86400 seconds, it is '"
-                            + StringTools.dumpBytes( value.getData() ) + "'";
+                        String msg = I18n.err( I18n.ERR_04036, StringTools.dumpBytes( value.getData() ) );
                         log.error( msg );
                         throw new DecoderException( msg );
                     }

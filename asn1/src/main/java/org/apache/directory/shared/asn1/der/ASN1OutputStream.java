@@ -28,6 +28,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 
+import org.apache.directory.shared.i18n.I18n;
+
 
 public class ASN1OutputStream extends FilterOutputStream
 {
@@ -107,7 +109,7 @@ public class ASN1OutputStream extends FilterOutputStream
         }
         else
         {
-            throw new IOException( "Object not DEREncodable." );
+            throw new IOException( I18n.err( I18n.ERR_00024 ) );
         }
     }
 

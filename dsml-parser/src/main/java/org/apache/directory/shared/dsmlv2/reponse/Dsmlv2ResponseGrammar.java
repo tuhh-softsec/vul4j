@@ -40,6 +40,7 @@ import org.apache.directory.shared.dsmlv2.IGrammar;
 import org.apache.directory.shared.dsmlv2.ParserUtils;
 import org.apache.directory.shared.dsmlv2.Tag;
 import org.apache.directory.shared.dsmlv2.reponse.ErrorResponse.ErrorResponseType;
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.LdapResponseCodec;
 import org.apache.directory.shared.ldap.codec.LdapResultCodec;
@@ -1119,12 +1120,12 @@ public class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGrammar
                 }
                 else
                 {
-                    throw new XmlPullParserException( "Unknown type", xpp, null );
+                    throw new XmlPullParserException( I18n.err( I18n.ERR_03004 ), xpp, null );
                 }
             }
             else
             {
-                throw new XmlPullParserException( "type attribute is required", xpp, null );
+                throw new XmlPullParserException( I18n.err( I18n.ERR_03005 ), xpp, null );
             }
         }
     };
@@ -1181,7 +1182,7 @@ public class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGrammar
         {
             if ( !OID.isOID( attributeValue ) )
             {
-                throw new XmlPullParserException( "Incorrect value for 'type' attribute. This is not an OID.", xpp, null );
+                throw new XmlPullParserException( I18n.err( I18n.ERR_03006 ), xpp, null );
             }
             
             control = new ControlImpl( attributeValue );
@@ -1189,7 +1190,7 @@ public class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGrammar
         }
         else
         {
-            throw new XmlPullParserException( "type attribute is required", xpp, null );
+            throw new XmlPullParserException( I18n.err( I18n.ERR_03005 ), xpp, null );
         }
         // CRITICALITY
         attributeValue = xpp.getAttributeValue( "", "criticality" );
@@ -1206,7 +1207,7 @@ public class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGrammar
             }
             else
             {
-                throw new XmlPullParserException( "Incorrect value for 'criticality' attribute", xpp, null );
+                throw new XmlPullParserException( I18n.err( I18n.ERR_03007 ), xpp, null );
             }
         }
     }
@@ -1292,7 +1293,7 @@ public class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGrammar
         }
         catch ( IOException e )
         {
-            throw new XmlPullParserException( "An unexpected error ocurred : " + e.getMessage(), xpp, null );
+            throw new XmlPullParserException( I18n.err( I18n.ERR_03008, e.getMessage() ), xpp, null );
         }
     }
 
@@ -1380,12 +1381,12 @@ public class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGrammar
                 }
                 catch ( NumberFormatException e )
                 {
-                    throw new XmlPullParserException( "the given resultCode is not an integer", xpp, null );
+                    throw new XmlPullParserException( I18n.err( I18n.ERR_03009 ), xpp, null );
                 }
             }
             else
             {
-                throw new XmlPullParserException( "code attribute is required", xpp, null );
+                throw new XmlPullParserException( I18n.err( I18n.ERR_03010 ), xpp, null );
             }
             // descr
             attributeValue = xpp.getAttributeValue( "", "descr" );
@@ -1393,8 +1394,7 @@ public class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGrammar
             {
                 if ( DSMLV2_DESCR_TAGS.contains( attributeValue ) == false )
                 {
-                    throw new XmlPullParserException( "descr ('" + attributeValue
-                        + "') doesn't match with the possible values", xpp, null );
+                    throw new XmlPullParserException( I18n.err( I18n.ERR_03011, attributeValue ), xpp, null );
                 }
 
             }
@@ -1435,7 +1435,7 @@ public class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGrammar
             }
             catch ( IOException e )
             {
-                throw new XmlPullParserException( "An unexpected error ocurred : " + e.getMessage(), xpp, null );
+                throw new XmlPullParserException( I18n.err( I18n.ERR_03008, e.getMessage() ), xpp, null );
             }
         }
     };
@@ -1487,7 +1487,7 @@ public class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGrammar
             }
             catch ( IOException e )
             {
-                throw new XmlPullParserException( "An unexpected error ocurred : " + e.getMessage(), xpp, null );
+                throw new XmlPullParserException( I18n.err( I18n.ERR_03008, e.getMessage() ), xpp, null );
             }
         }
     };
@@ -1652,7 +1652,7 @@ public class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGrammar
             }
             else
             {
-                throw new XmlPullParserException( "name attribute is required", xpp, null );
+                throw new XmlPullParserException( I18n.err( I18n.ERR_03012 ), xpp, null );
             }
         }
     };
@@ -1687,7 +1687,7 @@ public class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGrammar
             }
             catch ( IOException e )
             {
-                throw new XmlPullParserException( "An unexpected error ocurred : " + e.getMessage(), xpp, null );
+                throw new XmlPullParserException( I18n.err( I18n.ERR_03008, e.getMessage() ), xpp, null );
             }
         }
     };
@@ -1714,7 +1714,7 @@ public class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGrammar
             }
             catch ( IOException e )
             {
-                throw new XmlPullParserException( "An unexpected error ocurred : " + e.getMessage(), xpp, null );
+                throw new XmlPullParserException( I18n.err( I18n.ERR_03008, e.getMessage() ), xpp, null );
             }
             catch ( LdapURLEncodingException e )
             {
@@ -1760,7 +1760,7 @@ public class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGrammar
             }
             catch ( IOException e )
             {
-                throw new XmlPullParserException( "An unexpected error ocurred : " + e.getMessage(), xpp, null );
+                throw new XmlPullParserException( I18n.err( I18n.ERR_03008, e.getMessage() ), xpp, null );
             }
             catch ( DecoderException e )
             {
@@ -1797,7 +1797,7 @@ public class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGrammar
             }
             catch ( IOException e )
             {
-                throw new XmlPullParserException( "An unexpected error ocurred : " + e.getMessage(), xpp, null );
+                throw new XmlPullParserException( I18n.err( I18n.ERR_03008, e.getMessage() ), xpp, null );
             }
         }
     };

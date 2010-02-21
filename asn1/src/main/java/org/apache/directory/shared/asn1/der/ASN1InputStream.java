@@ -32,6 +32,8 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.util.Vector;
 
+import org.apache.directory.shared.i18n.I18n;
+
 
 /**
  * General purpose ASN.1 decoder.
@@ -44,7 +46,7 @@ public class ASN1InputStream extends FilterInputStream
     {
         public void encode( ASN1OutputStream out ) throws IOException
         {
-            throw new IOException( "End of stream." );
+            throw new IOException( I18n.err( I18n.ERR_00016 ) );
         }
 
 
@@ -110,7 +112,7 @@ public class ASN1InputStream extends FilterInputStream
         int length = read();
         if ( length < 0 )
         {
-            throw new IOException( "EOF found when length expected." );
+            throw new IOException( I18n.err( I18n.ERR_00017 ) );
         }
 
         // Indefinite-length encoding.
@@ -125,7 +127,7 @@ public class ASN1InputStream extends FilterInputStream
 
             if ( size > 4 )
             {
-                throw new IOException( "DER length more than 4 bytes." );
+                throw new IOException( I18n.err( I18n.ERR_00018 ) );
             }
 
             length = 0;
@@ -135,7 +137,7 @@ public class ASN1InputStream extends FilterInputStream
 
                 if ( next < 0 )
                 {
-                    throw new IOException( "EOF found reading length." );
+                    throw new IOException( I18n.err( I18n.ERR_00019 ) );
                 }
 
                 length = ( length << 8 ) + next;
@@ -143,7 +145,7 @@ public class ASN1InputStream extends FilterInputStream
 
             if ( length < 0 )
             {
-                throw new IOException( "Corrupted steam - negative length found." );
+                throw new IOException( I18n.err( I18n.ERR_00020 ) );
             }
         }
 
@@ -171,7 +173,7 @@ public class ASN1InputStream extends FilterInputStream
 
         if ( left != 0 )
         {
-            throw new EOFException( "EOF encountered in middle of object." );
+            throw new EOFException( I18n.err( I18n.ERR_00021 ) );
         }
     }
 
@@ -395,7 +397,7 @@ public class ASN1InputStream extends FilterInputStream
         {
             if ( EOF_FOUND )
             {
-                throw new EOFException( "Attempt to read past end of file." );
+                throw new EOFException( I18n.err( I18n.ERR_00022 ) );
             }
 
             EOF_FOUND = true;
@@ -506,7 +508,7 @@ public class ASN1InputStream extends FilterInputStream
                         return new BERTaggedObject( false, tagNo, berSequence );
                     }
 
-                    throw new IOException( "Unknown BER object encountered." );
+                    throw new IOException( I18n.err( I18n.ERR_00023 ) );
             }
         }
 

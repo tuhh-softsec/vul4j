@@ -33,6 +33,7 @@ import org.apache.directory.shared.asn1.util.BooleanDecoder;
 import org.apache.directory.shared.asn1.util.BooleanDecoderException;
 import org.apache.directory.shared.asn1.util.IntegerDecoder;
 import org.apache.directory.shared.asn1.util.IntegerDecoderException;
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.message.control.replication.SynchronizationModeEnum;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
@@ -141,7 +142,7 @@ public class SyncRequestValueControlGrammar extends AbstractGrammar
                     }
                     catch ( IntegerDecoderException e )
                     {
-                        String msg = "failed to decode the mode for SyncRequestValueControl";
+                        String msg = I18n.err( I18n.ERR_04028 );
                         LOG.error( msg, e );
                         throw new DecoderException( msg );
                     }
@@ -218,7 +219,7 @@ public class SyncRequestValueControlGrammar extends AbstractGrammar
                     }
                     catch ( BooleanDecoderException e )
                     {
-                        String msg = "failed to decode the reloadHint flag for SyncRequestValueControl";
+                        String msg = I18n.err( I18n.ERR_04029 );
                         LOG.error( msg, e );
                         throw new DecoderException( msg );
                     }
@@ -261,7 +262,7 @@ public class SyncRequestValueControlGrammar extends AbstractGrammar
                     }
                     catch ( BooleanDecoderException e )
                     {
-                        String msg = "failed to decode the reloadHint flag for SyncRequestValueControl";
+                        String msg = I18n.err( I18n.ERR_04029 );
                         LOG.error( msg, e );
                         throw new DecoderException( msg );
                     }

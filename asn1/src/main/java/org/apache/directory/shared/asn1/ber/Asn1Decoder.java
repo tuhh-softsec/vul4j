@@ -29,6 +29,7 @@ import org.apache.directory.shared.asn1.ber.tlv.TLVStateEnum;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.util.Asn1StringUtils;
+import org.apache.directory.shared.i18n.I18n;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -232,8 +233,8 @@ public class Asn1Decoder implements ITLVBerDecoderMBean
 
                 if ( expectedLength > 4 )
                 {
-                    LOG.error( "Overflow : can't have more than 4 bytes long length" );
-                    throw new DecoderException( "Overflow : can't have more than 4 bytes long length" );
+                    LOG.error( I18n.err( I18n.ERR_00005 ) );
+                    throw new DecoderException( I18n.err( I18n.ERR_00005 ) );
                 }
 
                 tlv.setLength( 0 );
@@ -243,8 +244,8 @@ public class Asn1Decoder implements ITLVBerDecoderMBean
             }
             else
             {
-                LOG.error( "Length reserved extension used" );
-                throw new DecoderException( "Length reserved extension used" );
+                LOG.error( I18n.err( I18n.ERR_00006 ) );
+                throw new DecoderException( I18n.err( I18n.ERR_00006 ) );
             }
 
             return MORE;
@@ -362,8 +363,8 @@ public class Asn1Decoder implements ITLVBerDecoderMBean
         
         if ( tlv == null )
         {
-            LOG.error( "The current container TLV is null." );
-            throw new DecoderException( "Current TLV is null" );
+            LOG.error( I18n.err( I18n.ERR_00007 ) );
+            throw new DecoderException( I18n.err( I18n.ERR_00007 ) );
         }
         
         int length = tlv.getLength();
@@ -402,7 +403,7 @@ public class Asn1Decoder implements ITLVBerDecoderMBean
                 // The expected length is lower than the Value length of the
                 // current TLV. This is an error...
                 LOG.error( "tlv[{}, {}]", Integer.valueOf( expectedLength ), Integer.valueOf( currentLength ) );
-                throw new DecoderException( "The current Value length is above the expected length" );
+                throw new DecoderException( I18n.err( I18n.ERR_00008, Integer.valueOf( currentLength ), Integer.valueOf( expectedLength ) ) );
             }
 
             // deal with the particular case where expected length equal
@@ -636,8 +637,8 @@ public class Asn1Decoder implements ITLVBerDecoderMBean
                 }
                 else
                 {
-                    LOG.error( "The PDU is decoded, but we should have had more TLVs" );
-                    throw new DecoderException( "Truncated PDU. Some elements are lacking, accordingly to the grammar" );
+                    LOG.error( I18n.err( I18n.ERR_00009 ) );
+                    throw new DecoderException( I18n.err( I18n.ERR_00010 ) );
                 }
             }
 
@@ -921,7 +922,7 @@ public class Asn1Decoder implements ITLVBerDecoderMBean
 
         if ( ( this.indefiniteLengthAllowed ) && ( maxLengthLength > 126 ) )
         {
-            throw new DecoderException( "Length above 126 bytes are not allowed for a definite form Length" );
+            throw new DecoderException( I18n.err( I18n.ERR_00011 ) );
         }
 
         this.maxLengthLength = maxLengthLength;

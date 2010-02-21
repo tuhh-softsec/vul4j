@@ -24,6 +24,7 @@ import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.codec.DecoderException;
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.search.ExtensibleMatchFilter;
 import org.apache.directory.shared.ldap.codec.search.SearchRequestCodec;
@@ -63,8 +64,8 @@ public class StoreTypeMatchingRuleAction extends GrammarAction
 
         if ( tlv.getLength() == 0 )
         {
-            log.error( "The type cannot be null in a MacthingRuleAssertion" );
-            throw new DecoderException( "The type cannot be null in a MacthingRuleAssertion" );
+            log.error( I18n.err( I18n.ERR_04022 ) );
+            throw new DecoderException( I18n.err( I18n.ERR_04022 ) );
         }
         else
         {

@@ -22,6 +22,7 @@ package org.apache.directory.shared.ldap.codec;
 import java.nio.ByteBuffer;
 
 import org.apache.directory.shared.asn1.codec.EncoderException;
+import org.apache.directory.shared.i18n.I18n;
 
 
 
@@ -116,7 +117,7 @@ public abstract class LdapResponseCodec extends LdapMessageCodec
     {
         if ( buffer == null )
         {
-            throw new EncoderException( "Cannot put a PDU in a null buffer !" );
+            throw new EncoderException( I18n.err( I18n.ERR_04023 ) );
         }
 
         // The ldapResult
