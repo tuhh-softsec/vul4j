@@ -67,7 +67,12 @@ public class ResourceMap
         String element, Pattern pattern )
     {
         File file = new File( element );
-        
+        if ( !file.exists() )
+        {
+            // this may happen if the class path contains an element that doesn't exist
+            return;
+        }
+
         if ( file.isDirectory() )
         {
             getResourcesFromDirectory( map, file, pattern );
