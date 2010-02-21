@@ -354,7 +354,7 @@ public class I18n
 	public static final String ERR_04209 = "ERR_04209";
 	public static final String ERR_04210 = "ERR_04210";
 
-	// cursor
+	// ldap-constants
 	public static final String ERR_05001 = "ERR_05001";
 	public static final String ERR_05002 = "ERR_05002";
 	public static final String ERR_05003 = "ERR_05003";
