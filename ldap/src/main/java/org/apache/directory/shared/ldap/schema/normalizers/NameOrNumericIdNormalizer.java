@@ -22,6 +22,7 @@ package org.apache.directory.shared.ldap.schema.normalizers;
 
 import javax.naming.NamingException;
 
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.entry.client.ClientStringValue;
@@ -96,8 +97,7 @@ public class NameOrNumericIdNormalizer extends Normalizer
         }
 
         // if all else fails
-        throw new LdapNamingException( "Encountered name based id of " + value
-            + " which was not found in the OID registry", ResultCodeEnum.OTHER );
+        throw new LdapNamingException( I18n.err( I18n.ERR_04225, value ), ResultCodeEnum.OTHER );
     }
 
 
@@ -131,8 +131,7 @@ public class NameOrNumericIdNormalizer extends Normalizer
         }
 
         // if all else fails
-        throw new LdapNamingException( "Encountered name based id of " + value
-            + " which was not found in the OID registry", ResultCodeEnum.OTHER );
+        throw new LdapNamingException( I18n.err( I18n.ERR_04226, value ), ResultCodeEnum.OTHER );
     }
 
 

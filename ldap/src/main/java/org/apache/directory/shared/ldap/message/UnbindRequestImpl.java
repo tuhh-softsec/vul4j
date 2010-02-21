@@ -19,6 +19,7 @@
  */
 package org.apache.directory.shared.ldap.message;
 
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.message.internal.InternalAbstractRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalUnbindRequest;
 
@@ -53,7 +54,6 @@ public class UnbindRequestImpl extends InternalAbstractRequest implements Intern
      */
     public void abandon()
     {
-        throw new UnsupportedOperationException(
-            "RFC 2251 [Section 4.11]: Abandon, Bind, Unbind, and StartTLS operations cannot be abandoned. " );
+        throw new UnsupportedOperationException( I18n.err( I18n.ERR_04185 ) );
     }
 }

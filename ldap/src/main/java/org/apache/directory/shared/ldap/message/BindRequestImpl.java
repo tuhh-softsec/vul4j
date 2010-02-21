@@ -22,6 +22,7 @@ package org.apache.directory.shared.ldap.message;
 
 import java.util.Arrays;
 
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.message.internal.InternalBindRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalBindResponse;
@@ -442,7 +443,6 @@ public class BindRequestImpl extends AbstractAbandonableRequest implements Inter
      */
     public void abandon()
     {
-        throw new UnsupportedOperationException(
-            "RFC 2251 [Section 4.11]: Abandon, Bind, Unbind, and StartTLS operations cannot be abandoned. " );
+        throw new UnsupportedOperationException( I18n.err( I18n.ERR_04185 ) );
     }
 }

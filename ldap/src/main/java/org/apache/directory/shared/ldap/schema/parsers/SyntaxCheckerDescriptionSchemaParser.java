@@ -22,6 +22,7 @@ package org.apache.directory.shared.ldap.schema.parsers;
 
 import java.text.ParseException;
 
+import org.apache.directory.shared.i18n.I18n;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -96,16 +97,13 @@ public class SyntaxCheckerDescriptionSchemaParser extends AbstractSchemaParser
         }
         catch ( RecognitionException re )
         {
-            String msg = "Parser failure on syntax checker description:\n\t" + syntaxCheckerDescription +
-                "\nAntlr message: " + re.getMessage() +
-                "\nAntlr column: " + re.getColumn();
+            String msg = I18n.err( I18n.ERR_04259, syntaxCheckerDescription, re.getMessage(), re.getColumn() );
             LOG.error( msg );
             throw new ParseException( msg, re.getColumn() );
         }
         catch ( TokenStreamException tse )
         {
-            String msg = "Parser failure on syntax checker description:\n\t" + syntaxCheckerDescription +
-                "\nAntlr message: " + tse.getMessage();
+            String msg = I18n.err( I18n.ERR_04260, syntaxCheckerDescription, tse.getMessage() );
             LOG.error( msg );
             throw new ParseException( msg, 0 );
         }

@@ -23,6 +23,7 @@ package org.apache.directory.shared.ldap.filter;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.entry.client.ClientBinaryValue;
 import org.apache.directory.shared.ldap.entry.client.ClientStringValue;
@@ -326,7 +327,7 @@ public abstract class AbstractExprNode implements ExprNode
      */
     public StringBuilder printRefinementToBuffer( StringBuilder buf )
     {
-        throw new UnsupportedOperationException( "ScopeNode can't be part of a refinement" );
+        throw new UnsupportedOperationException( I18n.err( I18n.ERR_04144 ) );
     }
     
     

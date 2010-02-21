@@ -19,6 +19,8 @@
  */
 package org.apache.directory.shared.ldap.message.control.replication;
 
+import org.apache.directory.shared.i18n.I18n;
+
 
 /**
  * 
@@ -88,7 +90,7 @@ public enum SyncStateTypeEnum
             return DELETE;
         }
 
-        throw new IllegalArgumentException( "Unknown SyncStateTypeEnum value " + value );
+        throw new IllegalArgumentException( I18n.err( I18n.ERR_04163, value ) );
     }
 
 }

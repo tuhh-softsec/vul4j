@@ -30,6 +30,7 @@ import java.util.Set;
 import javax.naming.NamingException;
 import javax.naming.directory.InvalidAttributeValueException;
 
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.schema.SyntaxChecker;
@@ -114,7 +115,7 @@ public class DefaultClientAttribute implements ClientAttribute
                 }
                 else
                 {
-                    String message = "Unknown value type: " + val.getClass().getName();
+                    String message = I18n.err( I18n.ERR_04129, val.getClass().getName() );
                     LOG.error( message );
                     throw new IllegalStateException( message );
                 }
@@ -167,7 +168,7 @@ public class DefaultClientAttribute implements ClientAttribute
         }
         else
         {
-            String message = "The value is expected to be a byte[]";
+            String message = I18n.err( I18n.ERR_04130 );
             LOG.error( message );
             throw new InvalidAttributeValueException( message );
         }
@@ -196,7 +197,7 @@ public class DefaultClientAttribute implements ClientAttribute
         }
         else
         {
-            String message = "The value is expected to be a String";
+            String message = I18n.err( I18n.ERR_04131 );
             LOG.error( message );
             throw new InvalidAttributeValueException( message );
         }
@@ -244,8 +245,7 @@ public class DefaultClientAttribute implements ClientAttribute
         if ( this.id.length() == 0 )
         {
             this.id = null;
-            throw new IllegalArgumentException( "An ID cannnot be null, empty, or resolved to an emtpy" +
-                " value when trimmed" );
+            throw new IllegalArgumentException( I18n.err( I18n.ERR_04132 ) );
         }
     }
 
@@ -282,8 +282,7 @@ public class DefaultClientAttribute implements ClientAttribute
         if ( this.upId.length() == 0 )
         {
             this.upId = null;
-            throw new IllegalArgumentException( "An ID cannnot be null, empty, or resolved to an emtpy" +
-                " value when trimmed" );
+            throw new IllegalArgumentException( I18n.err( I18n.ERR_04132 ) );
         }
 
         this.id = StringTools.lowerCaseAscii( this.upId );

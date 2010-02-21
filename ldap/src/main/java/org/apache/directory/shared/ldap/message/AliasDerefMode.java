@@ -22,6 +22,7 @@ package org.apache.directory.shared.ldap.message;
 
 import java.util.Map;
 
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.constants.JndiPropertyConstants;
 
 
@@ -115,9 +116,8 @@ public enum AliasDerefMode
             }
             else
             {
-                throw new IllegalArgumentException( "Unrecogniced value '" + property + "' for "
-                        + JndiPropertyConstants.JNDI_LDAP_DAP_DEREF_ALIASES + " JNDI property.\n"
-                        + "Expected a value of either always, never, searching, or finding." );
+                throw new IllegalArgumentException( I18n.err( I18n.ERR_04186, property,
+                		JndiPropertyConstants.JNDI_LDAP_DAP_DEREF_ALIASES ) );
             }
         }
     }
@@ -167,7 +167,7 @@ public enum AliasDerefMode
                 return false;
             
             default:
-                throw new IllegalArgumentException( "Class has bug: check for valid enumeration values" );
+                throw new IllegalArgumentException( I18n.err( I18n.ERR_04187 ) );
         }
     }
 

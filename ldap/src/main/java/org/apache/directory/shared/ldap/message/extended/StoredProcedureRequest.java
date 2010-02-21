@@ -25,6 +25,7 @@ import javax.naming.NamingException;
 import javax.naming.ldap.ExtendedResponse;
 
 import org.apache.directory.shared.asn1.codec.EncoderException;
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.NotImplementedException;
 import org.apache.directory.shared.ldap.codec.extended.operations.storedProcedure.StoredProcedure;
 import org.apache.directory.shared.ldap.codec.extended.operations.storedProcedure.StoredProcedureContainer;
@@ -88,7 +89,7 @@ public class StoredProcedureRequest extends ExtendedRequestImpl
         }
         catch ( Exception e )
         {
-            log.error( "failed to decode payload", e );
+            log.error( I18n.err( I18n.ERR_04165 ), e );
             throw new RuntimeException( e );
         }
     }
@@ -120,7 +121,7 @@ public class StoredProcedureRequest extends ExtendedRequestImpl
             }
             catch ( EncoderException e )
             {
-                log.error( "Failed to encode payload StoredProcedureRequest", e );
+                log.error( I18n.err( I18n.ERR_04174 ), e );
                 throw new RuntimeException( e );
             }
         }
@@ -190,7 +191,7 @@ public class StoredProcedureRequest extends ExtendedRequestImpl
     
     public Class<?> getJavaParameterType( int index )
     {
-        throw new NotImplementedException( "class loading of procedure type not implemented" );
+        throw new NotImplementedException( I18n.err( I18n.ERR_04175 ) );
     }
     
     
@@ -207,7 +208,7 @@ public class StoredProcedureRequest extends ExtendedRequestImpl
     
     public Object getJavaParameterValue( int index )
     {
-        throw new NotImplementedException( "conversion of value to java type not implemented" );
+        throw new NotImplementedException( I18n.err( I18n.ERR_04176 ) );
     }
     
     

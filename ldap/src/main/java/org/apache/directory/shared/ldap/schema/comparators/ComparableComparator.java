@@ -22,6 +22,7 @@ package org.apache.directory.shared.ldap.schema.comparators;
 
 import java.util.Comparator;
 
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.schema.LdapComparator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -101,7 +102,6 @@ public class ComparableComparator<T> extends LdapComparator<Comparable<T>>
         // return o1.hashCode() - o2.hashCode();
         
         // now we will blow a stack trace if none of the objects are Comparable
-        throw new IllegalArgumentException( "None of the arguments are Comparable objects:\n" 
-            + "\targ1 = " + o1 + "\n\targ2 = " + o2 );
+        throw new IllegalArgumentException( I18n.err( I18n.ERR_04217, o1, o2 ) );
     }
 }

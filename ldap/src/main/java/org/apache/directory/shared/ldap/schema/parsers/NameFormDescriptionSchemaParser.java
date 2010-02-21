@@ -22,6 +22,7 @@ package org.apache.directory.shared.ldap.schema.parsers;
 
 import java.text.ParseException;
 
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.schema.NameForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,7 +76,7 @@ public class NameFormDescriptionSchemaParser extends AbstractSchemaParser
 
         if ( nameFormDescription == null )
         {
-            LOG.error( "Cannot parse a null NameForm" );
+            LOG.error( I18n.err( I18n.ERR_04248 ) );
             throw new ParseException( "Null", 0 );
         }
 
@@ -92,16 +93,13 @@ public class NameFormDescriptionSchemaParser extends AbstractSchemaParser
         }
         catch ( RecognitionException re )
         {
-            String msg = "Parser failure on name form description:\n\t" + nameFormDescription +
-                "\nAntlr message: " + re.getMessage() +
-                "\nAntlr column: " + re.getColumn();
+            String msg = I18n.err( I18n.ERR_04249, nameFormDescription, re.getMessage(), re.getColumn() );
             LOG.error( msg );
             throw new ParseException( msg, re.getColumn() );
         }
         catch ( TokenStreamException tse )
         {
-            String msg = "Parser failure on name form description:\n\t" + nameFormDescription +
-                "\nAntlr message: " + tse.getMessage();
+            String msg = I18n.err( I18n.ERR_04250, nameFormDescription, tse.getMessage() );
             LOG.error( msg );
             throw new ParseException( msg, 0 );
         }

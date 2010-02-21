@@ -25,6 +25,7 @@ import javax.naming.ldap.ExtendedResponse;
 
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.codec.EncoderException;
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.extended.operations.certGeneration.CertGenerationDecoder;
 import org.apache.directory.shared.ldap.codec.extended.operations.certGeneration.CertGenerationObject;
 import org.apache.directory.shared.ldap.message.ExtendedRequestImpl;
@@ -99,7 +100,7 @@ public class CertGenerationRequest extends ExtendedRequestImpl
         }
         catch ( DecoderException e )
         {
-            LOG.error( "failed to decode payload", e );
+            LOG.error( I18n.err( I18n.ERR_04165 ), e );
             throw new RuntimeException( e );
         }
     }
@@ -128,7 +129,7 @@ public class CertGenerationRequest extends ExtendedRequestImpl
             }
             catch ( EncoderException e )
             {
-                LOG.error( "Failed to encode payload CertGenerateRequest", e );
+                LOG.error( I18n.err( I18n.ERR_04167 ), e );
                 throw new RuntimeException( e );
             }
         }

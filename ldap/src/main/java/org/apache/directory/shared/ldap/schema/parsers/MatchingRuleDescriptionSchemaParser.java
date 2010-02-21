@@ -22,6 +22,7 @@ package org.apache.directory.shared.ldap.schema.parsers;
 
 import java.text.ParseException;
 
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.schema.MatchingRule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,7 +77,7 @@ public class MatchingRuleDescriptionSchemaParser extends AbstractSchemaParser
 
         if ( matchingRuleDescription == null )
         {
-            LOG.error( "Cannot parse a null MatchingRule" );
+            LOG.error( I18n.err( I18n.ERR_04242 ) );
             throw new ParseException( "Null", 0 );
         }
 
@@ -93,16 +94,13 @@ public class MatchingRuleDescriptionSchemaParser extends AbstractSchemaParser
         }
         catch ( RecognitionException re )
         {
-            String msg = "Parser failure on matching rule description:\n\t" + matchingRuleDescription +
-                "\nAntlr message: " + re.getMessage() +
-                "\nAntlr column: " + re.getColumn();
+            String msg = I18n.err( I18n.ERR_04243, matchingRuleDescription, re.getMessage(), re.getColumn() );
             LOG.error( msg );
             throw new ParseException( msg, re.getColumn() );
         }
         catch ( TokenStreamException tse )
         {
-            String msg = "Parser failure on matching rule description:\n\t" + matchingRuleDescription +
-                "\nAntlr message: " + tse.getMessage();
+            String msg = I18n.err( I18n.ERR_04244, matchingRuleDescription, tse.getMessage() );
             LOG.error( msg );
             throw new ParseException( msg, 0 );
         }

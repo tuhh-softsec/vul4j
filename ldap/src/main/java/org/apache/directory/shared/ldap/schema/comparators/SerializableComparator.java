@@ -24,6 +24,7 @@ import java.util.Comparator;
 
 import javax.naming.NamingException;
 
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.schema.LdapComparator;
 import org.apache.directory.shared.ldap.schema.SchemaManager;
 
@@ -77,7 +78,7 @@ public class SerializableComparator<E> extends LdapComparator<E>
             }
             catch ( NamingException e )
             {
-                throw new RuntimeException( "Matching rule not found: " + matchingRuleOid );
+                throw new RuntimeException( I18n.err( I18n.ERR_04221, matchingRuleOid ) );
             }
         }
 

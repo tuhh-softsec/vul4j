@@ -20,6 +20,7 @@
 package org.apache.directory.shared.ldap.schema.comparators;
 
 
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.schema.LdapComparator;
 
 
@@ -63,11 +64,11 @@ public class LongComparator extends LdapComparator<Long>
         {
             if ( obj1 == null )
             {
-                throw new IllegalArgumentException( "Argument 'obj1' is null" );
+                throw new IllegalArgumentException( I18n.err( I18n.ERR_04219 ) );
             }
             else
             {
-                throw new IllegalArgumentException( "Argument 'obj2' is null" );
+                throw new IllegalArgumentException( I18n.err( I18n.ERR_04220 ));
             }
         }
     }

@@ -21,6 +21,8 @@ package org.apache.directory.shared.ldap.filter;
 
 import javax.naming.directory.SearchControls;
 
+import org.apache.directory.shared.i18n.I18n;
+
 /**
  * A search scope enumerated type.
  *
@@ -124,7 +126,7 @@ public enum SearchScope
             case( SearchControls.SUBTREE_SCOPE ):
                 return SUBTREE;
             default:
-                throw new IllegalArgumentException( "Unknown JNDI scope constant value: " + jndiScope );
+                throw new IllegalArgumentException( I18n.err( I18n.ERR_04160, jndiScope ) );
         }
     }
 
@@ -152,7 +154,7 @@ public enum SearchScope
         }
         else
         {
-            throw new IllegalArgumentException( "Unknown LDAP URL scope value: " + ldapUrlValue );
+            throw new IllegalArgumentException( I18n.err( I18n.ERR_04161, ldapUrlValue ) );
         }
     }
 

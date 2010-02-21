@@ -35,6 +35,7 @@ import javax.naming.NamingException;
 
 import org.apache.commons.collections.MultiMap;
 import org.apache.commons.collections.map.MultiValueMap;
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.entry.client.ClientStringValue;
 import org.apache.directory.shared.ldap.schema.normalizers.OidNormalizer;
@@ -1042,7 +1043,7 @@ public class RDN implements Cloneable, Comparable, Externalizable, Iterable<AVA>
 
             if ( ( chars.length % 2 ) != 1 )
             {
-                throw new IllegalArgumentException( "This value is not in hex form, we have an odd number of hex chars" );
+                throw new IllegalArgumentException( I18n.err( I18n.ERR_04213 ) );
             }
 
             // HexString form
@@ -1057,7 +1058,7 @@ public class RDN implements Cloneable, Comparable, Externalizable, Iterable<AVA>
                 }
                 else
                 {
-                    throw new IllegalArgumentException( "This value is not in hex form" );
+                    throw new IllegalArgumentException( I18n.err( I18n.ERR_04214 ) );
                 }
             }
 
@@ -1138,12 +1139,12 @@ public class RDN implements Cloneable, Comparable, Externalizable, Iterable<AVA>
                                     break;
                                 }
                             case '=':
-                                throw new IllegalArgumentException( "Unescaped special characters are not allowed" );
+                                throw new IllegalArgumentException( I18n.err( I18n.ERR_04215 ) );
 
                             case ' ':
                                 if ( ( i == 0 ) || ( i == chars.length - 1 ) )
                                 {
-                                    throw new IllegalArgumentException( "Unescaped special characters are not allowed" );
+                                    throw new IllegalArgumentException( I18n.err( I18n.ERR_04215 ) );
                                 }
                                 else
                                 {

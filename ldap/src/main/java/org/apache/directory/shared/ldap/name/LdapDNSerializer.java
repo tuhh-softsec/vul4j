@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -81,7 +82,7 @@ public class LdapDNSerializer
         }
         else
         {
-            String message = "The DN should have been normalized before being serialized " + dn;
+            String message = I18n.err( I18n.ERR_04212, dn );
             LOG.error( message );
             throw new IOException( message );
         }

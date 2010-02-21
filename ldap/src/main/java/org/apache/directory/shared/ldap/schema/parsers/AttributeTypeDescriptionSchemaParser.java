@@ -22,6 +22,7 @@ package org.apache.directory.shared.ldap.schema.parsers;
 
 import java.text.ParseException;
 
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -91,7 +92,7 @@ public class AttributeTypeDescriptionSchemaParser extends AbstractSchemaParser
 
         if ( attributeTypeDescription == null )
         {
-            LOG.error( "Cannot parse a null AttributeType" );
+            LOG.error( I18n.err( I18n.ERR_04227 ) );
             throw new ParseException( "Null", 0 );
         }
 
@@ -108,23 +109,19 @@ public class AttributeTypeDescriptionSchemaParser extends AbstractSchemaParser
         }
         catch ( RecognitionException re )
         {
-            String msg = "Parser failure on attribute type description:\n\t" + attributeTypeDescription +
-                "\nAntlr message: " + re.getMessage() +
-                "\nAntlr column: " + re.getColumn();
+            String msg = I18n.err( I18n.ERR_04228, attributeTypeDescription , re.getMessage() , re.getColumn() );
             LOG.error( msg );
             throw new ParseException( msg, re.getColumn() );
         }
         catch ( TokenStreamRecognitionException tsre )
         {
-            String msg = "Parser failure on attribute type description:\n\t" + attributeTypeDescription +
-                "\nAntlr message: " + tsre.getMessage();
+            String msg = I18n.err( I18n.ERR_04229, attributeTypeDescription, tsre.getMessage() );
             LOG.error( msg );
             throw new ParseException( msg, 0 );
         }
         catch ( TokenStreamException tse )
         {
-            String msg = "Parser failure on attribute type description:\n\t" + attributeTypeDescription +
-                "\nAntlr message: " + tse.getMessage();
+            String msg = I18n.err( I18n.ERR_04229, attributeTypeDescription, tse.getMessage() );
             LOG.error( msg );
             throw new ParseException( msg, 0 );
         }

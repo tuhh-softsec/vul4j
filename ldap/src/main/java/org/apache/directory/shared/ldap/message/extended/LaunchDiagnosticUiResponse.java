@@ -20,6 +20,7 @@
 package org.apache.directory.shared.ldap.message.extended;
 
 
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.message.ExtendedResponseImpl;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 
@@ -56,8 +57,8 @@ public class LaunchDiagnosticUiResponse extends ExtendedResponseImpl
                 break;
             
             default:
-                throw new IllegalArgumentException( "The result code can only be one of: " + ResultCodeEnum.SUCCESS
-                    + ", " + ResultCodeEnum.OPERATIONS_ERROR + ", " + ResultCodeEnum.INSUFFICIENT_ACCESS_RIGHTS );
+                throw new IllegalArgumentException( I18n.err( I18n.ERR_04166, ResultCodeEnum.SUCCESS,
+                    ResultCodeEnum.OPERATIONS_ERROR, ResultCodeEnum.INSUFFICIENT_ACCESS_RIGHTS ) );
         }
         
         super.getLdapResult().setMatchedDn( null );
@@ -96,7 +97,7 @@ public class LaunchDiagnosticUiResponse extends ExtendedResponseImpl
      */
     public void setResponse( byte[] value )
     {
-        throw new UnsupportedOperationException( "the response is hardcoded as zero length array" );
+        throw new UnsupportedOperationException( I18n.err( I18n.ERR_04173 ) );
     }
 
 
@@ -121,7 +122,7 @@ public class LaunchDiagnosticUiResponse extends ExtendedResponseImpl
      */
     public void setResponseName( String oid )
     {
-        throw new UnsupportedOperationException( "the OID is fixed: " + EXTENSION_OID );
+        throw new UnsupportedOperationException( I18n.err( I18n.ERR_04168, EXTENSION_OID ) );
     }
 
 

@@ -28,6 +28,7 @@ import java.util.Arrays;
 
 import javax.naming.InvalidNameException;
 
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.entry.client.ClientBinaryValue;
 import org.apache.directory.shared.ldap.entry.client.ClientStringValue;
@@ -171,7 +172,7 @@ public class AVA implements Cloneable, Comparable, Externalizable
         {
             if ( StringTools.isEmpty( normTypeTrimmed ) )
             {
-                String message =  "The type cannot be empty or null";
+                String message =  I18n.err( I18n.ERR_04188 );
                 LOG.error( message );
                 throw new InvalidNameException( message );
             }
@@ -228,7 +229,7 @@ public class AVA implements Cloneable, Comparable, Externalizable
         {
             if ( StringTools.isEmpty( normTypeTrimmed ) )
             {
-                String message = "The type cannot be empty or null";
+                String message = I18n.err( I18n.ERR_04188 );
                 LOG.error( message );
                 throw new InvalidNameException( message );
             }
@@ -295,14 +296,14 @@ public class AVA implements Cloneable, Comparable, Externalizable
     {
         if ( StringTools.isEmpty( type ) || StringTools.isEmpty( type.trim() ) )
         {
-            String message = "The type cannot be empty or null";
+            String message = I18n.err( I18n.ERR_04188 );
             LOG.error( message );
             throw new InvalidNameException( message );
         }
         
         if ( StringTools.isEmpty( upType ) || StringTools.isEmpty( upType.trim() ) )
         {
-            String message = "The User Provided type cannot be empty or null";
+            String message = I18n.err( I18n.ERR_04189 );
             LOG.error( message );
             throw new InvalidNameException( message );
         }
@@ -311,7 +312,7 @@ public class AVA implements Cloneable, Comparable, Externalizable
         
         if ( equalPosition <= 1 )
         {
-            String message = "The User provided name does not contains an '='"; 
+            String message = I18n.err( I18n.ERR_04190 ); 
             LOG.error( message );
             throw new InvalidNameException( message );
         }
@@ -333,8 +334,8 @@ public class AVA implements Cloneable, Comparable, Externalizable
     {
         if ( StringTools.isEmpty( type ) || StringTools.isEmpty( type.trim() ) )
         {
-            LOG.error( "The type cannot be empty or null" );
-            throw new InvalidNameException( "The AVA type cannot be null or empty " );
+            LOG.error( I18n.err( I18n.ERR_04191 ) );
+            throw new InvalidNameException( I18n.err( I18n.ERR_04191 ) );
         }
 
         normType = type.trim().toLowerCase();

@@ -22,6 +22,7 @@ package org.apache.directory.shared.ldap.schema.parsers;
 
 import java.text.ParseException;
 
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.schema.DITStructureRule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -80,7 +81,7 @@ public class DITStructureRuleDescriptionSchemaParser extends AbstractSchemaParse
 
         if ( ditStructureRuleDescription == null )
         {
-            LOG.error( "Cannot parse a null DITStructureRule description" );
+            LOG.error( I18n.err( I18n.ERR_04233 ) );
             throw new ParseException( "Null", 0 );
         }
 
@@ -97,16 +98,13 @@ public class DITStructureRuleDescriptionSchemaParser extends AbstractSchemaParse
         }
         catch ( RecognitionException re )
         {
-            String msg = "Parser failure on DIT structure rule description:\n\t" + ditStructureRuleDescription +
-                "\nAntlr message: " + re.getMessage() +
-                "\nAntlr column: " + re.getColumn();
+            String msg = I18n.err( I18n.ERR_04234, ditStructureRuleDescription, re.getMessage(), re.getColumn() );
             LOG.error( msg );
             throw new ParseException( msg, re.getColumn() );
         }
         catch ( TokenStreamException tse )
         {
-            String msg = "Parser failure on DIT structure rule description:\n\t" + ditStructureRuleDescription +
-                "\nAntlr message: " + tse.getMessage();
+            String msg = I18n.err( I18n.ERR_04235, ditStructureRuleDescription, tse.getMessage() );
             LOG.error( msg );
             throw new ParseException( msg, 0 );
         }

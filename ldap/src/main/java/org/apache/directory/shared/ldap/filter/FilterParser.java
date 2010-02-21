@@ -22,6 +22,7 @@ package org.apache.directory.shared.ldap.filter;
 
 import java.text.ParseException;
 
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.entry.client.ClientBinaryValue;
 import org.apache.directory.shared.ldap.util.AttributeUtils;
@@ -103,13 +104,13 @@ public class FilterParser
                     }
                     else
                     {
-                        throw new ParseException( "AssertionValue expected", pos.start );
+                        throw new ParseException( I18n.err( I18n.ERR_04146 ), pos.start );
                     }
                 }
             }
             else
             {
-                throw new ParseException( "Expected MatchingRule or assertionValue", pos.start );
+                throw new ParseException( I18n.err( I18n.ERR_04147 ), pos.start );
             }
         }
         else
@@ -138,7 +139,7 @@ public class FilterParser
                 {
                     if ( oidRequested )
                     {
-                        throw new ParseException( "MatchingRule expected", pos.start );
+                        throw new ParseException( I18n.err( I18n.ERR_04148 ), pos.start );
                     }
 
                     pos.start++;
@@ -165,13 +166,13 @@ public class FilterParser
                     }
                     else
                     {
-                        throw new ParseException( "AssertionValue expected", pos.start );
+                        throw new ParseException( I18n.err( I18n.ERR_04146 ), pos.start );
                     }
                 }
             }
             else
             {
-                throw new ParseException( "Expected MatchingRule or assertionValue", pos.start );
+                throw new ParseException( I18n.err( I18n.ERR_04147 ), pos.start );
             }
         }
     }
@@ -238,7 +239,7 @@ public class FilterParser
                 }
                 else
                 {
-                    throw new ParseException( "Not a valid escaped value", pos.start );
+                    throw new ParseException( I18n.err( I18n.ERR_04149 ), pos.start );
                 }
 
                 // second hex
@@ -249,7 +250,7 @@ public class FilterParser
                 }
                 else
                 {
-                    throw new ParseException( "Not a valid escaped value", pos.start );
+                    throw new ParseException( I18n.err( I18n.ERR_04149 ), pos.start );
                 }
             }
             else
@@ -335,14 +336,14 @@ public class FilterParser
                 else
                 {
                     // This is an error
-                    throw new ParseException( "Bad substring", pos.start );
+                    throw new ParseException( I18n.err( I18n.ERR_04150 ), pos.start );
                 }
             }
         }
         else
         {
             // This is an error
-            throw new ParseException( "Bad substring", pos.start );
+            throw new ParseException( I18n.err( I18n.ERR_04150 ), pos.start );
         }
     }
 
@@ -434,7 +435,7 @@ public class FilterParser
 
         if ( c == '\0' )
         {
-            throw new ParseException( "Bad char", pos.start );
+            throw new ParseException( I18n.err( I18n.ERR_04151 ), pos.start );
         }
 
         if ( c == ':' )
@@ -464,7 +465,7 @@ public class FilterParser
                     // Check that we have a '='
                     if ( !StringTools.isCharASCII( filter, pos.start, '=' ) )
                     {
-                        throw new ParseException( "Expecting a '=' ", pos.start );
+                        throw new ParseException( I18n.err( I18n.ERR_04152 ), pos.start );
                     }
 
                     pos.start++;
@@ -480,7 +481,7 @@ public class FilterParser
                     // Check that we have a '='
                     if ( !StringTools.isCharASCII( filter, pos.start, '=' ) )
                     {
-                        throw new ParseException( "Expecting a '=' ", pos.start );
+                        throw new ParseException( I18n.err( I18n.ERR_04152 ), pos.start );
                     }
 
                     pos.start++;
@@ -496,7 +497,7 @@ public class FilterParser
                     // Check that we have a '='
                     if ( !StringTools.isCharASCII( filter, pos.start, '=' ) )
                     {
-                        throw new ParseException( "Expecting a '=' ", pos.start );
+                        throw new ParseException( I18n.err( I18n.ERR_04152 ), pos.start );
                     }
 
                     pos.start++;
@@ -512,7 +513,7 @@ public class FilterParser
 
                 default:
                     // This is an error
-                    throw new ParseException( "An item is expected", pos.start );
+                    throw new ParseException( I18n.err( I18n.ERR_04153 ), pos.start );
             }
         }
     }
@@ -569,7 +570,7 @@ public class FilterParser
 
         if ( pos.start == pos.length )
         {
-            throw new ParseException( "Empty filterComp", pos.start );
+            throw new ParseException( I18n.err( I18n.ERR_04154 ), pos.start );
         }
 
         char c = StringTools.charAt( filter, pos.start );
@@ -620,7 +621,7 @@ public class FilterParser
             // No more node, get out
             if ( ( pos.start == 0 ) && ( pos.length != 0 ) )
             {
-                throw new ParseException( "No '(' at the begining of the filter", 0 );
+                throw new ParseException( I18n.err( I18n.ERR_04155 ), 0 );
             }
             else
             {
@@ -635,13 +636,13 @@ public class FilterParser
 
         if ( node == null )
         {
-            throw new ParseException( "Bad filter", pos.start );
+            throw new ParseException( I18n.err( I18n.ERR_04156 ), pos.start );
         }
 
         // Check that we have a right ')'
         if ( !StringTools.isCharASCII( filter, pos.start, ')' ) )
         {
-            throw new ParseException( "The filter has no right parenthese", pos.start );
+            throw new ParseException( I18n.err( I18n.ERR_04157 ), pos.start );
         }
 
         pos.start++;
@@ -658,7 +659,7 @@ public class FilterParser
         // The filter must not be null. This is a defensive test
         if ( StringTools.isEmpty( filter ) )
         {
-            throw new ParseException( "Empty filter", 0 );
+            throw new ParseException( I18n.err( I18n.ERR_04158 ), 0 );
         }
 
         Position pos = new Position();

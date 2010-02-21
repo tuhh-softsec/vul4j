@@ -20,6 +20,7 @@
 package org.apache.directory.shared.ldap.filter;
 
 
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.entry.Value;
 
@@ -134,7 +135,7 @@ public abstract class SimpleNode<T> extends LeafNode
     {
         if ( getAttribute() == null || !SchemaConstants.OBJECT_CLASS_AT.equalsIgnoreCase( getAttribute() ) )
         {
-            throw new UnsupportedOperationException( "Invalid attribute " + getAttribute() + " for a refinement" );
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04162, getAttribute() ) );
         }
 
         buf.append( "item: " ).append( value );

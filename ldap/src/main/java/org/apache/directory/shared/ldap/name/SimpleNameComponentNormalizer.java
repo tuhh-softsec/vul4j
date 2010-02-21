@@ -23,6 +23,7 @@ package org.apache.directory.shared.ldap.name;
 
 import javax.naming.NamingException;
 
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.entry.client.ClientBinaryValue;
 import org.apache.directory.shared.ldap.schema.Normalizer;
 
@@ -86,6 +87,6 @@ public class SimpleNameComponentNormalizer implements NameComponentNormalizer
 
     public String normalizeName( String attributeName ) throws NamingException
     {
-        throw new UnsupportedOperationException( "This class is not aware of schema information and cannot normalize" );
+        throw new UnsupportedOperationException( I18n.err( I18n.ERR_04216 ) );
     }
 }

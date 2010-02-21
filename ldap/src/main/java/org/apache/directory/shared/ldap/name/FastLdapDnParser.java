@@ -27,6 +27,7 @@ import javax.naming.Name;
 import javax.naming.NameParser;
 import javax.naming.NamingException;
 
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.entry.client.ClientStringValue;
 import org.apache.directory.shared.ldap.util.Position;
 import org.apache.directory.shared.ldap.util.StringTools;
@@ -112,8 +113,7 @@ public enum FastLdapDnParser implements NameParser
                     break;
 
                 default:
-                    throw new InvalidNameException( "Unexpected character '" + c + "' at position " + pos.start
-                        + ". Excpected ',' or ';'." );
+                    throw new InvalidNameException( I18n.err( I18n.ERR_04192, c, pos.start) );
             }
         }
     }
@@ -131,11 +131,11 @@ public enum FastLdapDnParser implements NameParser
     {
         if ( name == null || name.length() == 0 )
         {
-            throw new InvalidNameException( "RDN must not be empty" );
+            throw new InvalidNameException( I18n.err( I18n.ERR_04193 ) );
         }
         if( rdn == null )
         {
-            throw new InvalidNameException( "RDN must not be null" );
+            throw new InvalidNameException( I18n.err( I18n.ERR_04194 ) );
         }
 
         Position pos = new Position();
@@ -291,8 +291,7 @@ public enum FastLdapDnParser implements NameParser
 
             default:
                 // error
-                throw new InvalidNameException( "Unexpected character '" + c + "' at position " + pos.start
-                    + ". Excpected start of attributeType." );
+                throw new InvalidNameException( I18n.err( I18n.ERR_04195, c, pos.start) );
         }
     }
 
@@ -392,8 +391,7 @@ public enum FastLdapDnParser implements NameParser
 
                 default:
                     // error
-                    throw new InvalidNameException( "Unexpected character '" + c + "' at position " + pos.start
-                        + ". Excpected start of attributeType descr." );
+                    throw new InvalidNameException( I18n.err( I18n.ERR_04196, c, pos.start ) );
             }
         }
         return descr.toString();
@@ -434,8 +432,7 @@ public enum FastLdapDnParser implements NameParser
                             pos.start--;
                             break;
                         default:
-                            throw new InvalidNameException( "Unexpected character '" + c + "' at position " + pos.start
-                                + ". Excpected numericoid." );
+                            throw new InvalidNameException( I18n.err( I18n.ERR_04197, c, pos.start ) );
                     }
                     break;
 
@@ -477,8 +474,7 @@ public enum FastLdapDnParser implements NameParser
                                 numericOid.append( c );
                                 break;
                             default:
-                                throw new InvalidNameException( "Unexpected character '" + c + "' at position "
-                                    + pos.start + ". Excpected numericoid." );
+                                throw new InvalidNameException( I18n.err( I18n.ERR_04197, c, pos.start ) );
                         }
                     }
                     break;
@@ -491,11 +487,10 @@ public enum FastLdapDnParser implements NameParser
                     }
                     else
                     {
-                        throw new InvalidNameException( "Numeric OID must contain at least one dot." );
+                        throw new InvalidNameException( I18n.err( I18n.ERR_04198 ) );
                     }
                 default:
-                    throw new InvalidNameException( "Unexpected character '" + c + "' at position " + pos.start
-                        + ". Excpected start of attributeType numericoid." );
+                    throw new InvalidNameException( I18n.err( I18n.ERR_04199, c, pos.start ) );
             }
         }
     }
@@ -514,8 +509,7 @@ public enum FastLdapDnParser implements NameParser
         char c = nextChar( name, pos, true );
         if ( c != '=' )
         {
-            throw new InvalidNameException( "Unexpected character '" + c + "' at position " + pos.start
-                + ". Excpected EQUALS '='." );
+            throw new InvalidNameException( I18n.err( I18n.ERR_04200, c, pos.start ) );
         }
     }
 
@@ -582,7 +576,7 @@ public enum FastLdapDnParser implements NameParser
     {
         if ( !hasMoreChars( pos ) )
         {
-            throw new InvalidNameException( "No more characters available at position " + pos.start );
+            throw new InvalidNameException( I18n.err( I18n.ERR_04201, pos.start ) );
         }
         char c = name.charAt( pos.start );
         if ( increment )

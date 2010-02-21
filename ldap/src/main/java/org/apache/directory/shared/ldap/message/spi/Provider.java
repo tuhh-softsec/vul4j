@@ -25,6 +25,7 @@ import java.lang.reflect.Method;
 import java.util.Hashtable;
 import java.util.Properties;
 
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.LdapProvider;
 
 
@@ -84,16 +85,15 @@ public abstract class Provider
                 }
                 catch ( ClassNotFoundException e )
                 {
-                    System.err.println( "provider monitor class " + fqcn + " not found" );
+                    System.err.println( I18n.err( I18n.ERR_04177, fqcn ) );
                 }
                 catch ( IllegalAccessException e )
                 {
-                    System.err.println( "provider monitor class " + fqcn
-                        + " does not expose a public default constructor" );
+                    System.err.println( I18n.err( I18n.ERR_04178, fqcn ) );
                 }
                 catch ( InstantiationException e )
                 {
-                    System.err.println( "provider monitor class " + fqcn + " failed during instantiation" );
+                    System.err.println( I18n.err( I18n.ERR_04179, fqcn ) );
                 }
             }
         }
@@ -229,8 +229,7 @@ public abstract class Provider
         // --------------------------------------------------------------------
         if ( ( className == null ) || className.trim().equals( "" ) )
         {
-            throw new ProviderException( null, "Could not instantiate provider - environment does not specify "
-                + BERLIB_PROVIDER + " property!" );
+            throw new ProviderException( null, I18n.err( I18n.ERR_04180, BERLIB_PROVIDER ) );
         }
 
         try
@@ -241,28 +240,25 @@ public abstract class Provider
         }
         catch ( ClassNotFoundException cnfe )
         {
-            ProviderException pe = new ProviderException( null, "Count not find the Provider class " + className );
+            ProviderException pe = new ProviderException( null, I18n.err( I18n.ERR_04181, className ) );
             pe.addThrowable( cnfe );
             throw pe;
         }
         catch ( NoSuchMethodException nsme )
         {
-            ProviderException pe = new ProviderException( null, "Count not invoke the Provider's factory method: "
-                + className + ".getProvider() - it may not exist!" );
+            ProviderException pe = new ProviderException( null, I18n.err( I18n.ERR_04182, className ) );
             pe.addThrowable( nsme );
             throw pe;
         }
         catch ( IllegalAccessException iae )
         {
-            ProviderException pe = new ProviderException( null, "Count not invoke the Provider's factory method: "
-                + className + ".getProvider() - it does seem to be a public method!" );
+            ProviderException pe = new ProviderException( null, I18n.err( I18n.ERR_04183, className ) );
             pe.addThrowable( iae );
             throw pe;
         }
         catch ( InvocationTargetException ite )
         {
-            ProviderException pe = new ProviderException( null, "Call to Provider's factory method: " + className
-                + ".getProvider() threw the following exception:\n" + ite.getTargetException() );
+            ProviderException pe = new ProviderException( null, I18n.err( I18n.ERR_04184, className, ite.getTargetException() ) );
             pe.addThrowable( ite.getTargetException() );
             throw pe;
         }

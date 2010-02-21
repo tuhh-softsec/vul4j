@@ -31,6 +31,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.ObjectClass;
 import org.apache.directory.shared.ldap.schema.SchemaObject;
@@ -214,7 +215,7 @@ public class OpenLdapSchemaParser extends AbstractSchemaParser
             }
             else
             {
-                throw new ParseException( "No object identifier macro with name " + nameAndSuffix[0], 0 );
+                throw new ParseException( I18n.err( I18n.ERR_04257, nameAndSuffix[0] ), 0 );
             }
 
         }
@@ -246,7 +247,7 @@ public class OpenLdapSchemaParser extends AbstractSchemaParser
     {
         if ( schemaObject == null || schemaObject.trim().equals( "" ) )
         {
-            throw new ParseException( "The schemaObject is either null or is " + "the empty String!", 0 );
+            throw new ParseException( I18n.err( I18n.ERR_04258 ), 0 );
         }
 
         reset( schemaObject ); // reset and initialize the parser / lexer pair

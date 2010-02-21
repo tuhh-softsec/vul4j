@@ -27,6 +27,7 @@ import java.util.Arrays;
 
 import javax.naming.NamingException;
 
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.NotImplementedException;
 import org.apache.directory.shared.ldap.entry.AbstractValue;
 import org.apache.directory.shared.ldap.entry.Value;
@@ -236,8 +237,7 @@ public class ClientBinaryValue extends AbstractValue<byte[]>
             return new ByteArrayComparator( null ).compare( getNormalizedValue(), binaryValue.getNormalizedValue() );
         }
         
-        String message = "I don't really know how to compare anything other " +
-            "than ServerBinaryValues at this point in time."; 
+        String message = I18n.err( I18n.ERR_04127 ); 
         LOG.error( message );
         throw new NotImplementedException( message );
     }

@@ -23,6 +23,8 @@ package org.apache.directory.shared.ldap.filter;
 
 import java.util.List;
 
+import org.apache.directory.shared.i18n.I18n;
+
 /**
  * Node representing an Not connector in a filter operation
  * 
@@ -92,7 +94,7 @@ public class NotNode extends BranchNode
     {
         if ( ( children != null ) && ( children.size() >= 1 ) )
         {
-            throw new IllegalStateException( "Cannot add more than one element to a negation node." );
+            throw new IllegalStateException( I18n.err( I18n.ERR_04159 ) );
         }
         
         children.add( node );
@@ -108,7 +110,7 @@ public class NotNode extends BranchNode
     {
         if ( children.size() >= 1 )
         {
-            throw new IllegalStateException( "Cannot add more than one element to a negation node." );            
+            throw new IllegalStateException( I18n.err( I18n.ERR_04159 ) );            
         }
         
         children.add( node );
@@ -124,7 +126,7 @@ public class NotNode extends BranchNode
     {
         if ( ( childList != null ) && ( childList.size() > 1 ) )
         {
-            throw new IllegalStateException( "Cannot add more than one element to a negation node." );            
+            throw new IllegalStateException( I18n.err( I18n.ERR_04159 ) );            
         }
 
         children = childList;

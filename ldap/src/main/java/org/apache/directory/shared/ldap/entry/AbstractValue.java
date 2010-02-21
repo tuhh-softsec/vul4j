@@ -21,6 +21,7 @@ package org.apache.directory.shared.ldap.entry;
 
 import javax.naming.NamingException;
 
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.schema.SyntaxChecker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -212,7 +213,7 @@ public abstract class AbstractValue<T> implements Value<T>
         
         if ( syntaxChecker == null )
         {
-            String message = "Cannot validate " + toString() + " with a null SyntaxChecker";
+            String message = I18n.err( I18n.ERR_04139, toString() );
             LOG.error( message );
             throw new NamingException( message );
         }

@@ -24,6 +24,7 @@ import java.io.UnsupportedEncodingException;
 
 import javax.naming.NamingException;
 
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.entry.client.ClientBinaryValue;
 import org.apache.directory.shared.ldap.name.NameComponentNormalizer;
 import org.apache.directory.shared.ldap.schema.AttributeType;
@@ -127,7 +128,7 @@ public class ConcreteNameComponentNormalizer implements NameComponentNormalizer
             }
             catch ( UnsupportedEncodingException uee )
             {
-                String message = "The value stored in a non Human Readable attribute as a String should be convertible to a byte[]";
+                String message = I18n.err( I18n.ERR_04222 );
                 LOG.error( message );
                 throw new NamingException( message );
             }
@@ -156,7 +157,7 @@ public class ConcreteNameComponentNormalizer implements NameComponentNormalizer
             }
             catch ( UnsupportedEncodingException uee )
             {
-                String message = "The value stored in an Human Readable attribute as a byte[] should be convertible to a String";
+                String message = I18n.err( I18n.ERR_04223 );
                 LOG.error( message );
                 throw new NamingException( message );
             }

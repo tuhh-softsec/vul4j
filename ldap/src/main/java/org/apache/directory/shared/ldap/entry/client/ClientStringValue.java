@@ -26,6 +26,7 @@ import java.io.ObjectOutput;
 
 import javax.naming.NamingException;
 
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.NotImplementedException;
 import org.apache.directory.shared.ldap.entry.AbstractValue;
 import org.apache.directory.shared.ldap.entry.Value;
@@ -211,7 +212,7 @@ public class ClientStringValue extends AbstractValue<String>
         }
         else 
         {
-            String message = "Cannot compare " + toString() + " with the unknown value " + value.getClass();
+            String message = I18n.err( I18n.ERR_04128, toString(), value.getClass() );
             LOG.error( message );
             throw new NotImplementedException( message );
         }

@@ -20,6 +20,7 @@
 package org.apache.directory.shared.ldap.message.extended;
 
 
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.message.ExtendedResponseImpl;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 
@@ -132,8 +133,8 @@ public class NoticeOfDisconnect extends ExtendedResponseImpl
                 break;
                 
             default:
-                throw new IllegalArgumentException( "The result code can only be one of: " + ResultCodeEnum.UNAVAILABLE
-                    + ", " + ResultCodeEnum.PROTOCOL_ERROR + ", " + ResultCodeEnum.STRONG_AUTH_REQUIRED );
+                throw new IllegalArgumentException( I18n.err( I18n.ERR_04166, ResultCodeEnum.UNAVAILABLE,
+                    ResultCodeEnum.PROTOCOL_ERROR, ResultCodeEnum.STRONG_AUTH_REQUIRED ) );
         }
         
         super.getLdapResult().setErrorMessage( rcode.toString() + ": The server will disconnect!" );
@@ -166,7 +167,7 @@ public class NoticeOfDisconnect extends ExtendedResponseImpl
      */
     public void setResponse( byte[] value )
     {
-        throw new UnsupportedOperationException( "the response is hardcoded as zero length array" );
+        throw new UnsupportedOperationException( I18n.err( I18n.ERR_04173 ) );
     }
 
 
@@ -191,7 +192,7 @@ public class NoticeOfDisconnect extends ExtendedResponseImpl
      */
     public void setResponseName( String oid )
     {
-        throw new UnsupportedOperationException( "the OID is fixed: " + EXTENSION_OID );
+        throw new UnsupportedOperationException( I18n.err( I18n.ERR_04168, EXTENSION_OID ) );
     }
 
 

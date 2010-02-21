@@ -22,6 +22,7 @@ package org.apache.directory.shared.ldap.schema.normalizers;
 
 import javax.naming.NamingException;
 
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.entry.client.ClientStringValue;
@@ -89,8 +90,7 @@ public class UniqueMemberNormalizer extends Normalizer
             }
             else
             {
-                throw new IllegalStateException( "I do not know how to handle NameAndOptionalUID normalization with objects of class: " 
-                    + value.getClass() );
+                throw new IllegalStateException( I18n.err( I18n.ERR_04226, value.getClass() ) );
             }
         }
         else
@@ -137,8 +137,7 @@ public class UniqueMemberNormalizer extends Normalizer
             }
             else
             {
-                throw new IllegalStateException( "I do not know how to handle NameAndOptionalUID normalization with objects of class: " 
-                    + value.getClass() );
+                throw new IllegalStateException( I18n.err( I18n.ERR_04226, value.getClass() ) );
             }
         }
         else

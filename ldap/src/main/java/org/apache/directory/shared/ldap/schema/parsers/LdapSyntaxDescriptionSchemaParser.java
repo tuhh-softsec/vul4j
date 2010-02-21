@@ -22,6 +22,7 @@ package org.apache.directory.shared.ldap.schema.parsers;
 
 import java.text.ParseException;
 
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.schema.LdapSyntax;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,7 +71,7 @@ public class LdapSyntaxDescriptionSchemaParser extends AbstractSchemaParser
 
         if ( ldapSyntaxDescription == null )
         {
-            LOG.error( "Cannot parse a null LdapSyntax" );
+            LOG.error( I18n.err( I18n.ERR_04239 ) );
             throw new ParseException( "Null", 0 );
         }
 
@@ -88,16 +89,13 @@ public class LdapSyntaxDescriptionSchemaParser extends AbstractSchemaParser
         }
         catch ( RecognitionException re )
         {
-            String msg = "Parser failure on LDAP syntay description:\n\t" + ldapSyntaxDescription +
-                "\nAntlr message: " + re.getMessage() +
-                "\nAntlr column: " + re.getColumn();
+            String msg = I18n.err( I18n.ERR_04240, ldapSyntaxDescription, re.getMessage(), re.getColumn() );
             LOG.error( msg );
             throw new ParseException( msg, re.getColumn() );
         }
         catch ( TokenStreamException tse )
         {
-            String msg = "Parser failure on LDAP syntay description:\n\t" + ldapSyntaxDescription +
-                "\nAntlr message: " + tse.getMessage();
+            String msg = I18n.err( I18n.ERR_04241, ldapSyntaxDescription, tse.getMessage() );
             LOG.error(  msg  );
             throw new ParseException( msg, 0 );
         }

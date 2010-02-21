@@ -19,6 +19,8 @@
  */
 package org.apache.directory.shared.ldap.filter;
 
+import org.apache.directory.shared.i18n.I18n;
+
 
 /**
  * Node used for the application of arbitrary predicates on return candidates.
@@ -121,7 +123,7 @@ public abstract class AssertionNode extends AbstractExprNode
      */
     public StringBuilder printRefinementToBuffer( StringBuilder buf ) throws UnsupportedOperationException
     {
-        throw new UnsupportedOperationException( "AssertionNode can't be part of a refinement" );
+        throw new UnsupportedOperationException( I18n.err( I18n.ERR_04145 ) );
     }
 
 

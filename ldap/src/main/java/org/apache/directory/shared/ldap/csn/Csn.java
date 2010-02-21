@@ -25,6 +25,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -123,14 +124,14 @@ public class Csn implements Serializable, Comparable<Csn>
     {
         if ( StringTools.isEmpty( value ) )
         {
-            String message = "The CSN must not be null or empty";
+            String message = I18n.err( I18n.ERR_04114 );
             LOG.error( message );
             throw new InvalidCSNException( message );
         }
         
         if ( value.length() != 40 )
         {
-            String message = "The CSN's length is incorrect, it should be 40 chars long";
+            String message = I18n.err( I18n.ERR_04115 );
             LOG.error( message );
             throw new InvalidCSNException( message );
         }
@@ -140,7 +141,7 @@ public class Csn implements Serializable, Comparable<Csn>
         
         if ( sepTS < 0 )
         {
-            String message = "Cannot find a '#' in the CSN '" + value + "'";
+            String message = I18n.err( I18n.ERR_04116 );
             LOG.error( message );
             throw new InvalidCSNException( message );
         }
@@ -149,7 +150,7 @@ public class Csn implements Serializable, Comparable<Csn>
         
         if ( timestampStr.length() != 22 )
         {
-            String message = "The timestamp is not long enough";
+            String message = I18n.err( I18n.ERR_04117 );
             LOG.error( message );
             throw new InvalidCSNException( message );
         }
@@ -167,7 +168,7 @@ public class Csn implements Serializable, Comparable<Csn>
             }
             catch ( ParseException pe )
             {
-                String message = "Cannot parse the timestamp: '" + timestampStr + "'";
+                String message = I18n.err( I18n.ERR_04118, timestampStr );
                 LOG.error( message );
                 throw new InvalidCSNException( message );
             }
@@ -182,7 +183,7 @@ public class Csn implements Serializable, Comparable<Csn>
         }
         catch ( NumberFormatException nfe )
         {
-            String message = "The microseconds part is invalid";
+            String message = I18n.err( I18n.ERR_04119 );
             LOG.error( message );
             throw new InvalidCSNException( message );
         }
@@ -195,7 +196,7 @@ public class Csn implements Serializable, Comparable<Csn>
         
         if ( sepCC < 0 )
         {
-            String message = "Missing a '#' in the CSN '" + value + "'";
+            String message = I18n.err( I18n.ERR_04110, value );
             LOG.error( message );
             throw new InvalidCSNException( message );
         }
@@ -208,7 +209,7 @@ public class Csn implements Serializable, Comparable<Csn>
         }
         catch ( NumberFormatException nfe )
         {
-            String message = "The changeCount '" + changeCountStr + "' is not a valid number";
+            String message = I18n.err( I18n.ERR_04121, changeCountStr );
             LOG.error( message );
             throw new InvalidCSNException( message );
         }
@@ -218,7 +219,7 @@ public class Csn implements Serializable, Comparable<Csn>
         
         if ( sepRI < 0 )
         {
-            String message = "Missing a '#' in the CSN '" + value + "'";
+            String message = I18n.err( I18n.ERR_04122, value );
             LOG.error( message );
             throw new InvalidCSNException( message );
         }
@@ -227,7 +228,7 @@ public class Csn implements Serializable, Comparable<Csn>
         
         if ( StringTools.isEmpty( replicaIdStr ) )
         {
-            String message = "The replicaID must not be null or empty";
+            String message = I18n.err( I18n.ERR_04123 );
             LOG.error( message );
             throw new InvalidCSNException( message );
         }
@@ -238,7 +239,7 @@ public class Csn implements Serializable, Comparable<Csn>
         }
         catch ( NumberFormatException nfe )
         {
-            String message = "The replicaId '" + replicaIdStr + "' is not a valid number";
+            String message = I18n.err( I18n.ERR_04124, replicaIdStr );
             LOG.error( message );
             throw new InvalidCSNException( message );
         }
@@ -246,7 +247,7 @@ public class Csn implements Serializable, Comparable<Csn>
         // Get the modification number
         if ( sepCC == value.length() )
         {
-            String message = "The operationNumber is absent";
+            String message = I18n.err( I18n.ERR_04125 );
             LOG.error( message );
             throw new InvalidCSNException( message );
         }
@@ -259,7 +260,7 @@ public class Csn implements Serializable, Comparable<Csn>
         }
         catch ( NumberFormatException nfe )
         {
-            String message = "The operationNumber '" + operationNumberStr + "' is not a valid number";
+            String message =  I18n.err( I18n.ERR_04126, operationNumberStr );
             LOG.error( message );
             throw new InvalidCSNException( message );
         }

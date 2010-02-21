@@ -23,6 +23,7 @@ package org.apache.directory.shared.ldap.schema.comparators;
 import javax.naming.Name;
 import javax.naming.NamingException;
 
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.name.LdapDN;
 import org.apache.directory.shared.ldap.schema.LdapComparator;
 import org.apache.directory.shared.ldap.schema.SchemaManager;
@@ -90,8 +91,7 @@ public class DnComparator extends LdapComparator<Object>
         }
         else
         {
-            throw new IllegalStateException( "I do not know how to handle dn comparisons with objects of class: " 
-                + (obj == null ? null : obj.getClass() ) );
+            throw new IllegalStateException( I18n.err( I18n.ERR_04218, (obj == null ? null : obj.getClass() ) ) );
         }
         
         return dn;

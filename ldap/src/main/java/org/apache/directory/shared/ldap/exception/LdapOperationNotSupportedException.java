@@ -22,6 +22,7 @@ package org.apache.directory.shared.ldap.exception;
 
 import javax.naming.OperationNotSupportedException;
 
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 
 
@@ -58,8 +59,7 @@ public class LdapOperationNotSupportedException extends OperationNotSupportedExc
         if ( ! resultCode.equals( ResultCodeEnum.UNWILLING_TO_PERFORM ) && 
             ! resultCode.equals( ResultCodeEnum.UNAVAILABLE_CRITICAL_EXTENSION ) )
         {
-            throw new IllegalArgumentException( "Only UNWILLING_TO_PERFORM and UNAVAILABLE_CRITICAL_EXTENSION "
-                + "result codes are allowed to be used with this exception" );
+            throw new IllegalArgumentException( I18n.err( I18n.ERR_04142 ) );
         }
     }
     

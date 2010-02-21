@@ -22,6 +22,7 @@ package org.apache.directory.shared.ldap.exception;
 
 import javax.naming.AuthenticationNotSupportedException;
 
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 
 
@@ -121,8 +122,7 @@ public class LdapAuthenticationNotSupportedException extends AuthenticationNotSu
                 break;
                 
             default:
-                throw new IllegalArgumentException( "Unexceptable result code " + "for this exception type: "
-                    + resultCode );
+                throw new IllegalArgumentException( I18n.err( I18n.ERR_04140, resultCode ) );
         }
     }
 }

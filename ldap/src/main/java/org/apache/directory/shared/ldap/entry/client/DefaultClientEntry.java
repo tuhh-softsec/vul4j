@@ -33,6 +33,7 @@ import java.util.TreeMap;
 
 import javax.naming.NamingException;
 
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.entry.AbstractEntry;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
@@ -141,7 +142,7 @@ public final class DefaultClientEntry extends AbstractEntry<String> implements C
         // If empty, throw an error
         if ( ( id == null ) || ( id.length() == 0 ) ) 
         {
-            String message = "The attributeType ID should not be null or empty";
+            String message = I18n.err( I18n.ERR_04133 );
             LOG.error( message );
             throw new IllegalArgumentException( message );
         }
@@ -482,7 +483,7 @@ public final class DefaultClientEntry extends AbstractEntry<String> implements C
         }
         catch( IllegalArgumentException iea )
         {
-            LOG.error( "An exception has been raised while looking for attribute id {}''", alias );
+            LOG.error( I18n.err( I18n.ERR_04134, alias ) );
             return null;
         }
     }
@@ -583,7 +584,7 @@ public final class DefaultClientEntry extends AbstractEntry<String> implements C
     {
         if ( upIds == null )
         {
-            String message = "The AttributeType list should not be null";
+            String message = I18n.err( I18n.ERR_04135 );
             LOG.error( message );
             throw new IllegalArgumentException( message );
         }
@@ -597,7 +598,7 @@ public final class DefaultClientEntry extends AbstractEntry<String> implements C
             
             if ( id == null )
             {
-                String message = "The AttributeType list should not contain null values";
+                String message = I18n.err( I18n.ERR_04136 );
                 LOG.error( message );
                 throw new IllegalArgumentException( message );
             }
@@ -707,7 +708,7 @@ public final class DefaultClientEntry extends AbstractEntry<String> implements C
             }
             else
             {
-                String message = "The attribute '" + attribute + "' does not exist in the entry";
+                String message = I18n.err( I18n.ERR_04137, attribute );
                 LOG.warn( message );
                 continue;
             }
@@ -785,7 +786,7 @@ public final class DefaultClientEntry extends AbstractEntry<String> implements C
         }
         catch ( IllegalArgumentException iae )
         {
-            LOG.error( "The removal of values for the missing '{}' attribute is not possible", upId );
+            LOG.error( I18n.err( I18n.ERR_04138, upId ) );
             return false;
         }
     }
@@ -852,7 +853,7 @@ public final class DefaultClientEntry extends AbstractEntry<String> implements C
         }
         catch ( IllegalArgumentException iae )
         {
-            LOG.error( "The removal of values for the missing '{}' attribute is not possible", upId );
+            LOG.error( I18n.err( I18n.ERR_04138, upId ) );
             return false;
         }
     }
@@ -919,7 +920,7 @@ public final class DefaultClientEntry extends AbstractEntry<String> implements C
         }
         catch ( IllegalArgumentException iae )
         {
-            LOG.error( "The removal of values for the missing '{}' attribute is not possible", upId );
+            LOG.error( I18n.err( I18n.ERR_04138, upId ) );
             return false;
         }
     }

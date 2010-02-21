@@ -22,6 +22,7 @@ package org.apache.directory.shared.ldap.exception;
 
 import javax.naming.ServiceUnavailableException;
 
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 
 
@@ -91,7 +92,7 @@ public class LdapServiceUnavailableException extends ServiceUnavailableException
     {
         if ( !ResultCodeEnum.getServiceCodes().contains( result ) )
         {
-            String msg = "Only the following LDAP result codes can be used: " + ResultCodeEnum.getSearchCodes();
+            String msg = I18n.err( I18n.ERR_04143, ResultCodeEnum.getSearchCodes() );
             throw new IllegalArgumentException( msg );
         }
     }

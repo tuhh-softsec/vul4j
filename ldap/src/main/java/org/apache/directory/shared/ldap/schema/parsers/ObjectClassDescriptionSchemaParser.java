@@ -22,6 +22,7 @@ package org.apache.directory.shared.ldap.schema.parsers;
 
 import java.text.ParseException;
 
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.schema.ObjectClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -83,7 +84,7 @@ public class ObjectClassDescriptionSchemaParser extends AbstractSchemaParser
 
         if ( objectClassDescription == null )
         {
-            LOG.error( "Cannot parse a null LdapComparator description" );
+            LOG.error( I18n.err( I18n.ERR_04254 ) );
             throw new ParseException( "Null", 0 );
         }
 
@@ -100,16 +101,13 @@ public class ObjectClassDescriptionSchemaParser extends AbstractSchemaParser
         }
         catch ( RecognitionException re )
         {
-            String msg = "Parser failure on object class description:\n\t" + objectClassDescription +
-                "\nAntlr message: " + re.getMessage()+
-                "\nAntlr column: " + re.getColumn();
+            String msg = I18n.err( I18n.ERR_04255, objectClassDescription, re.getMessage(), re.getColumn() );
             LOG.error( msg );
             throw new ParseException( msg, re.getColumn() );
         }
         catch ( TokenStreamException tse )
         {
-            String msg = "Parser failure on object class description:\n\t" + objectClassDescription +
-                "\nAntlr message: " + tse.getMessage();
+            String msg = I18n.err( I18n.ERR_04256, objectClassDescription, tse.getMessage() );
             LOG.error( msg );
             throw new ParseException( msg, 0 );
         }

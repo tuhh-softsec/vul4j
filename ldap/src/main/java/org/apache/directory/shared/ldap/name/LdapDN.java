@@ -35,6 +35,7 @@ import javax.naming.InvalidNameException;
 import javax.naming.Name;
 import javax.naming.NamingException;
 
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.schema.normalizers.OidNormalizer;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
@@ -225,7 +226,7 @@ public class LdapDN implements Name, Externalizable
         
         if ( valueExpected )
         {
-            throw new InvalidNameException( "A value is missing on some RDN" );
+            throw new InvalidNameException( I18n.err( I18n.ERR_04202 ) );
         }
 
         // Stores the representations of a DN : internal (as a string and as a
@@ -429,7 +430,7 @@ public class LdapDN implements Name, Externalizable
 
         if ( posn > rdns.size() )
         {
-            String message = "Impossible to get the position " + posn + ", the DN only has " + rdns.size() + " RDNs";
+            String message = I18n.err( I18n.ERR_04203, posn, rdns.size() );
             LOG.error( message );
             throw new ArrayIndexOutOfBoundsException( message );
         }
@@ -668,7 +669,7 @@ public class LdapDN implements Name, Externalizable
                 }
                 catch ( InvalidNameException e )
                 {
-                    LOG.error( "Failed to parse RDN for name " + name.toString(), e );
+                    LOG.error( I18n.err( I18n.ERR_04204, name.toString() ), e );
                     return false;
                 }
 
@@ -762,7 +763,7 @@ public class LdapDN implements Name, Externalizable
                 }
                 catch ( InvalidNameException e )
                 {
-                    LOG.error( "Failed to parse RDN for name " + name.toString(), e );
+                    LOG.error( I18n.err( I18n.ERR_04204, name.toString() ), e );
                     return false;
                 }
 
@@ -892,7 +893,7 @@ public class LdapDN implements Name, Externalizable
             {
                 if ( pos >= rdns.size() )
                 {
-                    LOG.error( "Exceeded number of elements in the current object" );
+                    LOG.error( I18n.err( I18n.ERR_04205 ) );
                     throw new NoSuchElementException();
                 }
 
@@ -935,7 +936,7 @@ public class LdapDN implements Name, Externalizable
             {
                 if ( pos >= rdns.size() )
                 {
-                    LOG.error( "Exceeded number of elements in the current object" );
+                    LOG.error( I18n.err( I18n.ERR_04205 ) );
                     throw new NoSuchElementException();
                 }
 
@@ -959,7 +960,7 @@ public class LdapDN implements Name, Externalizable
 
         if ( ( posn < 0 ) || ( posn > rdns.size() ) )
         {
-            String message = "The posn(" + posn + ") should be in the range [0, " + rdns.size() + "]";
+            String message = I18n.err( I18n.ERR_04206, posn, rdns.size() );
             LOG.error( message );
             throw new ArrayIndexOutOfBoundsException( message );
         }
@@ -991,7 +992,7 @@ public class LdapDN implements Name, Externalizable
 
         if ( ( posn < 0 ) || ( posn > rdns.size() ) )
         {
-            String message = "The posn(" + posn + ") should be in the range [0, " + rdns.size() + "]";
+            String message = I18n.err( I18n.ERR_04206, posn, rdns.size() );
             LOG.error( message );
             throw new ArrayIndexOutOfBoundsException( message );
         }
@@ -1235,7 +1236,7 @@ public class LdapDN implements Name, Externalizable
     {
         if ( ( posn < 0 ) || ( posn > size() ) )
         {
-            String message = "The posn(" + posn + ") should be in the range [0, " + rdns.size() + "]";
+            String message = I18n.err( I18n.ERR_04206, posn, rdns.size() );
             LOG.error( message );
             throw new ArrayIndexOutOfBoundsException( message );
         }
@@ -1265,7 +1266,7 @@ public class LdapDN implements Name, Externalizable
 
         if ( ( posn < 0 ) || ( posn >= rdns.size() ) )
         {
-            String message = "The posn(" + posn + ") should be in the range [0, " + rdns.size() + "]";
+            String message = I18n.err( I18n.ERR_04206, posn, rdns.size() );
             LOG.error( message );
             throw new ArrayIndexOutOfBoundsException( message );
         }
@@ -1299,8 +1300,8 @@ public class LdapDN implements Name, Externalizable
         }
         catch ( CloneNotSupportedException cnse )
         {
-            LOG.error( "The clone operation has failed" );
-            throw new Error( "Assertion failure : cannot clone the object" );
+            LOG.error( I18n.err( I18n.ERR_04207 ) );
+            throw new Error( I18n.err( I18n.ERR_04208 ) );
         }
     }
 
@@ -1416,8 +1417,8 @@ public class LdapDN implements Name, Externalizable
         else
         {
             // The type is empty : this is not possible...
-            LOG.error( "Empty type not allowed in a DN" );
-            throw new InvalidNameException( "Empty type not allowed in a DN" );
+            LOG.error( I18n.err( I18n.ERR_04209 ) );
+            throw new InvalidNameException( I18n.err( I18n.ERR_04209 ) );
         }
     }
 
@@ -1590,7 +1591,7 @@ public class LdapDN implements Name, Externalizable
     {
         if ( upName == null )
         {
-            String message = "Cannot serialize a NULL DN";
+            String message = I18n.err( I18n.ERR_04210 );
             LOG.error( message );
             throw new IOException( message );
         }
@@ -1612,7 +1613,7 @@ public class LdapDN implements Name, Externalizable
         }
         else
         {
-            String message = "The DN should have been normalized before being serialized";
+            String message = I18n.err( I18n.ERR_04211 );
             LOG.error( message );
             throw new IOException( message );
         }

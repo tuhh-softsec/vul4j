@@ -22,6 +22,7 @@ package org.apache.directory.shared.ldap.exception;
 
 import javax.naming.directory.InvalidAttributeValueException;
 
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 
 
@@ -65,7 +66,7 @@ public class LdapInvalidAttributeValueException extends InvalidAttributeValueExc
                 
             default:
 
-                throw new IllegalArgumentException( resultCode + " is not an acceptable result code." );
+                throw new IllegalArgumentException( I18n.err( I18n.ERR_04141, resultCode ) );
         }
 
         this.resultCode = resultCode;
