@@ -35,9 +35,14 @@ public enum BindStatus
     ANONYMOUS,
     
     /**
-     * We have received a BindRequest
+     * We have received a Simple BindRequest
      */
-    AUTH_PENDING,
+    SIMPLE_AUTH_PENDING,
+    
+    /**
+     * We have received a SASL BindRequest
+     */
+    SASL_AUTH_PENDING,
     
     /**
      * The user has been authenticated
