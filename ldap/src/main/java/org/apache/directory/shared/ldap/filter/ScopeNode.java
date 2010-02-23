@@ -144,7 +144,7 @@ public class ScopeNode extends AbstractExprNode
         h = h*17 + super.hashCode();
         h = h*17 + ( aliasDerefAliases != null ? aliasDerefAliases.hashCode() : 0 );
         h = h*17 + ( baseDn != null ? baseDn.hashCode() : 0 );
-        h = h*17 + scope.getJndiScope();
+        h = h*17 + scope.getScope();
         
         return h;
     }

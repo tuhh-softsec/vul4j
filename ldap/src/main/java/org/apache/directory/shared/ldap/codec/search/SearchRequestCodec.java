@@ -565,7 +565,7 @@ public class SearchRequestCodec extends LdapMessageCodec
             Value.encode( buffer, LdapDN.getBytes( baseObject ) );
 
             // The scope
-            Value.encodeEnumerated( buffer, scope.getJndiScope() );
+            Value.encodeEnumerated( buffer, scope.getScope() );
 
             // The derefAliases
             Value.encodeEnumerated( buffer, derefAliases );

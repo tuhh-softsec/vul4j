@@ -31,19 +31,19 @@ import org.apache.directory.shared.i18n.I18n;
  */
 public enum SearchScope
 {
-    OBJECT( SearchControls.OBJECT_SCOPE, "base" ), 
-    ONELEVEL( SearchControls.ONELEVEL_SCOPE, "one" ), 
-    SUBTREE( SearchControls.SUBTREE_SCOPE, "sub" );
+    OBJECT( 0, "base" ), 
+    ONELEVEL( 1, "one" ), 
+    SUBTREE( 2, "sub" );
     
     /** 
      * The corresponding JNDI scope constant value as defined in 
      * SearchControls.
      * 
-     * @see javax.naming.directory.SearchControls#OBJECT_SCOPE
-     * @see javax.naming.directory.SearchControls#ONELEVEL_SCOPE
-     * @see javax.naming.directory.SearchControls#SUBTREE_SCOPE
+     * @see SearchScope#OBJECT
+     * @see SearchScope#ONELEVEL
+     * @see SearchScope#SUBTREE
      */ 
-    private final int jndiScope;
+    private final int scope;
     
     /**
      * The LDAP URL string value of either base, one or sub as defined in RFC
@@ -58,12 +58,12 @@ public enum SearchScope
      * Creates a new instance of SearchScope based on the respective 
      * SearchControls scope constant.
      *
-     * @param jndiScope the JNDI scope constant
+     * @param scope the JNDI scope constant
      * @param ldapUrlValue LDAP URL scope string value: base, one, or sub
      */
-    private SearchScope( int jndiScope, String ldapUrlValue )
+    private SearchScope( int scope, String ldapUrlValue )
     {
-        this.jndiScope = jndiScope;
+        this.scope = scope;
         this.ldapUrlValue = ldapUrlValue;
     }
 
@@ -84,14 +84,11 @@ public enum SearchScope
      * Gets the corresponding JNDI scope constant value as defined in 
      * SearchControls.
      * 
-     * @return the jndiScope
-     * @see javax.naming.directory.SearchControls#OBJECT_SCOPE
-     * @see javax.naming.directory.SearchControls#ONELEVEL_SCOPE
-     * @see javax.naming.directory.SearchControls#SUBTREE_SCOPE
+     * @return the scope
      */
-    public int getJndiScope()
+    public int getScope()
     {
-        return jndiScope;
+        return scope;
     }
     
     
@@ -115,18 +112,21 @@ public enum SearchScope
      * @param jndiScope the JNDI numeric value to get SearchScope for
      * @return the SearchScope enumerated type for JNDI numeric value
      */
-    public static SearchScope getSearchScope( int jndiScope )
+    public static SearchScope getSearchScope( int scope )
     {
-        switch( jndiScope )
+        switch( scope )
         {
-            case( SearchControls.OBJECT_SCOPE ): 
+            case 0 : 
                 return OBJECT;
-            case( SearchControls.ONELEVEL_SCOPE ):
+            
+            case 1 :
                 return ONELEVEL;
-            case( SearchControls.SUBTREE_SCOPE ):
+                
+            case 2 :
                 return SUBTREE;
+                
             default:
-                throw new IllegalArgumentException( I18n.err( I18n.ERR_04160, jndiScope ) );
+                throw new IllegalArgumentException( I18n.err( I18n.ERR_04160, scope ) );
         }
     }
 
@@ -138,24 +138,23 @@ public enum SearchScope
      * @param ldapUrlValue the LDAP URL scope value to get SearchScope for
      * @return the SearchScope enumerated type for the LDAP URL scope value
      */
-    public static SearchScope getSearchScope( String ldapUrlValue )
+    public static int getSearchScope( String ldapUrlValue )
     {
         if ( "base".equalsIgnoreCase( ldapUrlValue ) )
         {
-            return OBJECT;
+            return OBJECT.getScope();
         }
         else if ( "one".equalsIgnoreCase( ldapUrlValue ) )
         {
-            return ONELEVEL;
+            return ONELEVEL.getScope();
         }
         else if ( "sub".equalsIgnoreCase( ldapUrlValue ) )
         {
-            return SUBTREE;
+            return SUBTREE.getScope();
         }
         else
         {
             throw new IllegalArgumentException( I18n.err( I18n.ERR_04161, ldapUrlValue ) );
         }
     }
-
 }
