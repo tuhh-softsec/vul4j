@@ -51,7 +51,7 @@ public class BindRequestImpl extends AbstractAbandonableRequest implements Inter
     /** The passwords, keys or tickets used to verify user identity */
     private byte[] credentials;
     
-    /** A storage for credential hashCode */
+    /** A storage for credentials hashCode */
     private int hCredentials;
 
     /** The mechanism used to decode user identity */
@@ -60,9 +60,10 @@ public class BindRequestImpl extends AbstractAbandonableRequest implements Inter
     /** Simple vs. SASL authentication mode flag */
     private boolean isSimple = true;
 
-    /** Bind behavoir exhibity by protocol version */
+    /** Bind behavior exhibited by protocol version */
     private boolean isVersion3 = true;
 
+    /** The associated response */
     public InternalBindResponse response;
 
 
@@ -73,10 +74,9 @@ public class BindRequestImpl extends AbstractAbandonableRequest implements Inter
     /**
      * Creates an BindRequest implementation to bind to an LDAP server.
      * 
-     * @param id
-     *            the sequence identifier of the BindRequest message.
+     * @param id the sequence identifier of the BindRequest message.
      */
-    public BindRequestImpl(final int id)
+    public BindRequestImpl( final int id )
     {
         super( id, TYPE );
         hCredentials = 0;
@@ -149,10 +149,13 @@ public class BindRequestImpl extends AbstractAbandonableRequest implements Inter
         {
             this.credentials = new byte[ credentials.length ];
             System.arraycopy( credentials, 0, this.credentials, 0, credentials.length );
-        } else {
+        } 
+        else 
+        {
             this.credentials = null;
         }
         
+        // Compute the hashcode
         if ( credentials != null )
         {
             hCredentials = 0;
@@ -280,7 +283,6 @@ public class BindRequestImpl extends AbstractAbandonableRequest implements Inter
     // -----------------------------------------------------------------------
     // BindRequest Interface Method Implementations
     // -----------------------------------------------------------------------
-
     /**
      * Gets the protocol response message type for this request which produces
      * at least one response.
@@ -307,6 +309,18 @@ public class BindRequestImpl extends AbstractAbandonableRequest implements Inter
 
         return response;
     }
+    
+
+
+    /**
+     * RFC 2251/4511 [Section 4.11]: Abandon, Bind, Unbind, and StartTLS operations
+     * cannot be abandoned.
+     */
+    public void abandon()
+    {
+        throw new UnsupportedOperationException( I18n.err( I18n.ERR_04185 ) );
+    }
+
 
     /**
      * @see Object#equals(Object)
@@ -371,6 +385,7 @@ public class BindRequestImpl extends AbstractAbandonableRequest implements Inter
         return true;
     }
     
+    
     /**
      * @see Object#hashCode()
      * @return the instance's hash code 
@@ -389,6 +404,7 @@ public class BindRequestImpl extends AbstractAbandonableRequest implements Inter
         return hash;
     }
 
+    
     /**
      * Get a String representation of a BindRequest
      * 
@@ -434,15 +450,5 @@ public class BindRequestImpl extends AbstractAbandonableRequest implements Inter
         }
 
         return sb.toString();
-    }
-
-
-    /**
-     * RFC 2251 [Section 4.11]: Abandon, Bind, Unbind, and StartTLS operations
-     * cannot be abandoned.
-     */
-    public void abandon()
-    {
-        throw new UnsupportedOperationException( I18n.err( I18n.ERR_04185 ) );
     }
 }
