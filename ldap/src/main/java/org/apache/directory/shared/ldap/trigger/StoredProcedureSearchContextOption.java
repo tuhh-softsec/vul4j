@@ -22,6 +22,8 @@ package org.apache.directory.shared.ldap.trigger;
 
 import javax.naming.Name;
 
+import org.apache.directory.shared.ldap.filter.SearchScope;
+
 
 /**
  * 
@@ -38,7 +40,7 @@ public class StoredProcedureSearchContextOption implements StoredProcedureOption
     public StoredProcedureSearchContextOption( Name baseObject )
     {
         // the default search scope is "base"
-        this( baseObject, SearchScope.BASE );
+        this( baseObject, SearchScope.OBJECT );
     }
     
     public StoredProcedureSearchContextOption( Name baseObject, SearchScope searchScope )

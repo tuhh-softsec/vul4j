@@ -36,12 +36,8 @@ public enum SearchScope
     SUBTREE( 2, "sub" );
     
     /** 
-     * The corresponding JNDI scope constant value as defined in 
-     * SearchControls.
-     * 
-     * @see SearchScope#OBJECT
-     * @see SearchScope#ONELEVEL
-     * @see SearchScope#SUBTREE
+     * The corresponding LDAP scope constant value as defined in 
+     * RFC 4511
      */ 
     private final int scope;
     
@@ -56,9 +52,9 @@ public enum SearchScope
 
     /**
      * Creates a new instance of SearchScope based on the respective 
-     * SearchControls scope constant.
+     * scope constant.
      *
-     * @param scope the JNDI scope constant
+     * @param scope the scope constant
      * @param ldapUrlValue LDAP URL scope string value: base, one, or sub
      */
     private SearchScope( int scope, String ldapUrlValue )
@@ -81,8 +77,8 @@ public enum SearchScope
     
 
     /**
-     * Gets the corresponding JNDI scope constant value as defined in 
-     * SearchControls.
+     * Gets the corresponding scope constant value as defined in 
+     * RFC 4511.
      * 
      * @return the scope
      */
@@ -107,10 +103,10 @@ public enum SearchScope
     
     /**
      * Gets the SearchScope enumerated type for the corresponding 
-     * JNDI numeric value.
+     * scope numeric value.
      *
-     * @param jndiScope the JNDI numeric value to get SearchScope for
-     * @return the SearchScope enumerated type for JNDI numeric value
+     * @param scope the numeric value to get SearchScope for
+     * @return the SearchScope enumerated type for the scope numeric value
      */
     public static SearchScope getSearchScope( int scope )
     {
@@ -156,5 +152,14 @@ public enum SearchScope
         {
             throw new IllegalArgumentException( I18n.err( I18n.ERR_04161, ldapUrlValue ) );
         }
+    }
+    
+    
+    /**
+     * {@inheritDoc}
+     */
+    public String toString()
+    {
+        return ldapUrlValue;
     }
 }
