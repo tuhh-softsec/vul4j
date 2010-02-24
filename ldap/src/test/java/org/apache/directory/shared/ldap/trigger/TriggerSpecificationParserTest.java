@@ -21,14 +21,16 @@
 package org.apache.directory.shared.ldap.trigger;
 
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.util.List;
 
+import org.apache.directory.shared.ldap.filter.SearchScope;
 import org.apache.directory.shared.ldap.name.LdapDN;
 import org.apache.directory.shared.ldap.trigger.TriggerSpecification.SPSpec;
 import org.junit.Test;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 
 
@@ -152,7 +154,7 @@ public class TriggerSpecificationParserTest
         assertEquals( theSpec.getOptions().size(), 1 );
         assertTrue( theSpec.getOptions().contains(
             new StoredProcedureSearchContextOption(
-                new LdapDN( "cn=Logger,ou=Stored Procedures,ou=system" ), SearchScope.ONE ) ) );
+                new LdapDN( "cn=Logger,ou=Stored Procedures,ou=system" ), SearchScope.ONELEVEL ) ) );
         assertEquals( theSpec.getParameters().size(), 2 );
         assertTrue( theSpec.getParameters().contains(
             StoredProcedureParameter.ModifyDN_ENTRY.instance() ) );
