@@ -31,6 +31,7 @@ import org.apache.directory.shared.ldap.schema.NormalizerMappingResolver;
 import org.apache.directory.shared.ldap.trigger.StoredProcedureOption;
 import org.apache.directory.shared.ldap.trigger.StoredProcedureParameter;
 import org.apache.directory.shared.ldap.trigger.TriggerSpecification.SPSpec;
+import org.apache.directory.shared.ldap.filter.SearchScope;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -384,7 +385,7 @@ storedProcedureSearchContextOption returns [ StoredProcedureSearchContextOption 
 {
     log.debug( "entered storedProcedureSearchContextOption()" );
     spSearchContextOption = null;
-    SearchScope searchScope = SearchScope.BASE; // default scope
+    SearchScope searchScope = SearchScope.OBJECT; // default scope
     LdapDN spSearchContext = null;
 }
     :
@@ -401,8 +402,8 @@ storedProcedureSearchScope returns [ SearchScope scope ]
     log.debug( "entered storedProcedureSearchScope()" );
     scope = null;
 }
-    : ID_scope_base { scope = SearchScope.BASE; }
-    | ID_scope_one { scope = SearchScope.ONE; }
+    : ID_scope_base { scope = SearchScope.OBJECT; }
+    | ID_scope_one { scope = SearchScope.ONELEVEL; }
     | ID_scope_subtree { scope = SearchScope.SUBTREE; }
     ;
 
