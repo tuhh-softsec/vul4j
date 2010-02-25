@@ -35,7 +35,9 @@ public enum LdapSecurityConstants
 
     HASH_METHOD_SMD5( "smd5" ),
 
-    HASH_METHOD_CRYPT( "crypt" );
+    HASH_METHOD_CRYPT( "crypt" ),
+
+    HASH_METHOD_SHA256( "sha-256" );
     
     private String name;
     
@@ -89,6 +91,11 @@ public enum LdapSecurityConstants
         if ( HASH_METHOD_CRYPT.getName().equalsIgnoreCase( algorithm ) )
         {
             return HASH_METHOD_CRYPT;
+        }
+        
+        if ( HASH_METHOD_SHA256.getName().equalsIgnoreCase( algorithm ) )
+        {
+            return HASH_METHOD_SHA256;
         }
         
         return null;
