@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.Set;
 
 import javax.naming.InvalidNameException;
-import javax.naming.directory.SearchControls;
 
 import org.apache.directory.shared.asn1.codec.binary.Hex;
 import org.apache.directory.shared.ldap.codec.util.HttpClientError;
@@ -38,6 +37,7 @@ import org.apache.directory.shared.ldap.codec.util.LdapURLEncodingException;
 import org.apache.directory.shared.ldap.codec.util.URIException;
 import org.apache.directory.shared.ldap.codec.util.UrlDecoderException;
 import org.apache.directory.shared.ldap.filter.FilterParser;
+import org.apache.directory.shared.ldap.filter.SearchScope;
 import org.apache.directory.shared.ldap.name.LdapDN;
 
 
@@ -98,7 +98,7 @@ public class LdapURL
     private List<String> attributes;
 
     /** The scope */
-    private int scope;
+    private SearchScope scope;
 
     /** The filter as a string */
     private String filter;
@@ -129,7 +129,7 @@ public class LdapURL
         port = -1;
         dn = null;
         attributes = new ArrayList<String>();
-        scope = SearchControls.OBJECT_SCOPE;
+        scope = SearchScope.OBJECT;
         filter = null;
         extensionList = new ArrayList<Extension>( 2 );
     }
@@ -147,7 +147,7 @@ public class LdapURL
         port = -1;
         dn = null;
         attributes = new ArrayList<String>();
-        scope = SearchControls.OBJECT_SCOPE;
+        scope = SearchScope.OBJECT;
         filter = null;
         extensionList = new ArrayList<Extension>( 2 );
 
@@ -957,7 +957,7 @@ public class LdapURL
                     if ( StringTools.isCharASCII( chars, pos, 'e' ) || StringTools.isCharASCII( chars, pos, 'E' ) )
                     {
                         pos++;
-                        scope = SearchControls.OBJECT_SCOPE;
+                        scope = SearchScope.OBJECT;
                         return pos;
                     }
                 }
@@ -975,7 +975,7 @@ public class LdapURL
                 {
                     pos++;
 
-                    scope = SearchControls.ONELEVEL_SCOPE;
+                    scope = SearchScope.ONELEVEL;
                     return pos;
                 }
             }
@@ -992,7 +992,7 @@ public class LdapURL
                 {
                     pos++;
 
-                    scope = SearchControls.SUBTREE_SCOPE;
+                    scope = SearchScope.SUBTREE;
                     return pos;
                 }
             }
@@ -1354,7 +1354,7 @@ public class LdapURL
             sb.append( '/' ).append( urlEncode( dn.getName(), false ) );
 
             if ( attributes.size() != 0 || forceScopeRendering
-                || ( ( scope != SearchControls.OBJECT_SCOPE ) || ( filter != null ) || ( extensionList.size() != 0 ) ) )
+                || ( ( scope != SearchScope.OBJECT ) || ( filter != null ) || ( extensionList.size() != 0 ) ) )
             {
                 sb.append( '?' );
 
@@ -1379,46 +1379,20 @@ public class LdapURL
             {
                 sb.append( '?' );
 
-                switch ( scope )
-                {
-
-                    case SearchControls.OBJECT_SCOPE:
-                        sb.append( "base" );
-                        break;
-
-                    case SearchControls.ONELEVEL_SCOPE:
-                        sb.append( "one" );
-                        break;
-
-                    case SearchControls.SUBTREE_SCOPE:
-                        sb.append( "sub" );
-                        break;
-
-                    default:
-                        break;
-                }
+                sb.append( scope.getLdapUrlValue() );
             }
 
             else
             {
-                if ( ( scope != SearchControls.OBJECT_SCOPE ) || ( filter != null ) || ( extensionList.size() != 0 ) )
+                if ( ( scope != SearchScope.OBJECT ) || ( filter != null ) || ( extensionList.size() != 0 ) )
                 {
                     sb.append( '?' );
 
                     switch ( scope )
                     {
-
-                        case SearchControls.OBJECT_SCOPE:
-
-                            // This is the default value.
-                            break;
-
-                        case SearchControls.ONELEVEL_SCOPE:
-                            sb.append( "one" );
-                            break;
-
-                        case SearchControls.SUBTREE_SCOPE:
-                            sb.append( "sub" );
+                        case ONELEVEL:
+                        case SUBTREE:
+                            sb.append( scope.getLdapUrlValue() );
                             break;
 
                         default:
@@ -1577,14 +1551,14 @@ public class LdapURL
 
 
     /**
-     * Returns the scope, one of {@link SearchControls.OBJECT_SCOPE}, 
-     * {@link SearchControls.ONELEVEL_SCOPE} or {@link SearchControls.SUBTREE_SCOPE}.
+     * Returns the scope, one of {@link SearchScope.OBJECT}, 
+     * {@link SearchScope.ONELEVEL} or {@link SearchScope.SUBTREE}.
      * 
      * @return Returns the scope.
      */
     public int getScope()
     {
-        return scope;
+        return scope.ordinal();
     }
 
 
@@ -1750,21 +1724,21 @@ public class LdapURL
 
 
     /**
-     * Sets the scope. Must be one of {@link SearchControls.OBJECT_SCOPE}, 
-     * {@link SearchControls.ONELEVEL_SCOPE} or {@link SearchControls.SUBTREE_SCOPE},
-     * otherwise {@link SearchControls.OBJECT_SCOPE} is assumed as default.
+     * Sets the scope. Must be one of {@link SearchScope.OBJECT}, 
+     * {@link SearchScope.ONELEVEL} or {@link SearchScope.SUBTREE},
+     * otherwise {@link SearchScope.OBJECT} is assumed as default.
      * 
      * @param scope the new scope
      */
     public void setScope( int scope )
     {
-        if ( scope == SearchControls.ONELEVEL_SCOPE || scope == SearchControls.SUBTREE_SCOPE )
+        try 
         {
-            this.scope = scope;
+            this.scope = SearchScope.getSearchScope( scope );
         }
-        else
+        catch ( IllegalArgumentException iae )
         {
-            this.scope = SearchControls.OBJECT_SCOPE;
+            this.scope = SearchScope.OBJECT;
         }
     }
 
