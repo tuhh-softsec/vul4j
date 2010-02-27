@@ -20,22 +20,23 @@
 package org.apache.directory.shared.ldap.util;
 
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.naming.InvalidNameException;
-import javax.naming.directory.SearchControls;
 
 import org.apache.directory.shared.ldap.codec.util.LdapURLEncodingException;
+import org.apache.directory.shared.ldap.filter.SearchScope;
 import org.apache.directory.shared.ldap.name.LdapDN;
 import org.apache.directory.shared.ldap.util.LdapURL.Extension;
 import org.junit.Test;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertFalse;
 
 
 /**
@@ -790,20 +791,20 @@ public class LdapUrlTest
     public void testLdapDNSetScope() throws LdapURLEncodingException, InvalidNameException
     {
         LdapURL url = new LdapURL();
-        assertEquals( SearchControls.OBJECT_SCOPE, url.getScope() );
+        assertEquals( SearchScope.OBJECT, url.getScope() );
 
         url.setDn( new LdapDN( "dc=example,dc=com" ) );
 
-        url.setScope( SearchControls.ONELEVEL_SCOPE );
-        assertEquals( SearchControls.ONELEVEL_SCOPE, url.getScope() );
+        url.setScope( SearchScope.ONELEVEL );
+        assertEquals( SearchScope.ONELEVEL, url.getScope() );
         assertEquals( "ldap:///dc=example,dc=com??one", url.toString() );
 
-        url.setScope( SearchControls.SUBTREE_SCOPE );
-        assertEquals( SearchControls.SUBTREE_SCOPE, url.getScope() );
+        url.setScope( SearchScope.SUBTREE );
+        assertEquals( SearchScope.SUBTREE, url.getScope() );
         assertEquals( "ldap:///dc=example,dc=com??sub", url.toString() );
 
         url.setScope( -1 );
-        assertEquals( SearchControls.OBJECT_SCOPE, url.getScope() );
+        assertEquals( SearchScope.OBJECT, url.getScope() );
         assertEquals( "ldap:///dc=example,dc=com", url.toString() );
     }
 

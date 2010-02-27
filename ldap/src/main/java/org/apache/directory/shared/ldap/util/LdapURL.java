@@ -1744,6 +1744,26 @@ public class LdapURL
 
 
     /**
+     * Sets the scope. Must be one of {@link SearchScope.OBJECT}, 
+     * {@link SearchScope.ONELEVEL} or {@link SearchScope.SUBTREE},
+     * otherwise {@link SearchScope.OBJECT} is assumed as default.
+     * 
+     * @param scope the new scope
+     */
+    public void setScope( SearchScope scope )
+    {
+        if ( scope == null )
+        {
+            this.scope = SearchScope.OBJECT;
+        }
+        else
+        {
+            this.scope = scope;
+        }
+    }
+
+
+    /**
      * Sets the filter.
      * 
      * @param filter the new filter
