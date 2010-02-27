@@ -19,8 +19,6 @@
  */
 package org.apache.directory.shared.ldap.filter;
 
-import javax.naming.directory.SearchControls;
-
 import org.apache.directory.shared.i18n.I18n;
 
 /**
@@ -85,19 +83,6 @@ public enum SearchScope
     public int getScope()
     {
         return scope;
-    }
-    
-    
-    /**
-     * Gets the SearchScope enumerated type for the corresponding 
-     * SearchControls scope setting.
-     *
-     * @param searchControls the search controls to get SearchScope for
-     * @return the SearchScope enumerated type for the SearchControls
-     */
-    public static SearchScope getSearchScope( SearchControls searchControls )
-    {
-        return getSearchScope( searchControls.getSearchScope() );
     }
     
     
