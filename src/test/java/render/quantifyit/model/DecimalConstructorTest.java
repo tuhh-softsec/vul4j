@@ -9,7 +9,6 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class DecimalConstructorTest {

@@ -6,6 +6,8 @@ import render.quantifyit.model.Decimal;
 
 public class Subtraction {
 
+	private Subtraction(){}
+	
 	public static <X extends Decimal, Y extends Decimal> Decimal subtraction(X x, Y y){
 		return Decimal.$(x.asBigDecimal().subtract(y.asBigDecimal()));
 	}

@@ -6,6 +6,8 @@ import render.quantifyit.model.Decimal;
 
 public class SquareRoot {
 
+	private SquareRoot(){}
+	
 	public static Decimal squareRoot(final int squared){
 		return Decimal.$(Math.sqrt(squared));
 	}

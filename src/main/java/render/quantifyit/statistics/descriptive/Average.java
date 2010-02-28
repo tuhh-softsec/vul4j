@@ -24,7 +24,7 @@ public class Average  {
 			sum = sum.plus(element);
 			count ++;
 		}
-		return sum.by(Decimal.$(count));
+		return sum.divide(count);
 	}
 	
 	

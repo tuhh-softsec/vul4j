@@ -20,18 +20,29 @@ import render.quantifyit.model.operations.Subtraction;
  * 
  * BigDecimal is a complicated class, with many pitfalls. For example,
  * which one of the 15 constructors and 3 static factories should i call? 
- * In particular, the ones accepting double are well-known for their unreliability
+ * While Decimal still offers many constructors, they are there for consistency and simplification,
+ * not due to support of legacy java releases.
+ * 
+ * In particular, the ones accepting double suffer the many problems associated with binary 
+ * representations of floating points.
  * 
  * Decimal provides simple methods, with short consistent names, favouring reuse. 
- * It only supports int, double and String, although much prefers int and String. 
  * 
- * Decimal also chooses not to extend Number, to avoid having to implement 
+ * Decimal chooses not to extend Number, to avoid having to implement 
  * certain abstract methods. 
  * 
  * @author Fernando Racca
  * @see java.math.BigDecimal
  */
 public class Decimal implements Comparable<Decimal>, Serializable{
+
+	private static final long serialVersionUID = 6840541842364016476L;
+
+	public static final Decimal ZERO 	= new Decimal(BigDecimal.ZERO);
+	public static final Decimal ONE 	= new Decimal(BigDecimal.ONE);
+	public static final Decimal TWO 	= new Decimal(BigDecimal.valueOf(2));
+	public static final Decimal THREE 	= new Decimal(BigDecimal.valueOf(3));
+	public static final Decimal TEN	 	= new Decimal(BigDecimal.TEN);
 
 	/**
 	 * Defaults to {@link RoundingMode#HALF_EVEN HALF_EVEN}, the IEEE 754R default.
@@ -42,27 +53,17 @@ public class Decimal implements Comparable<Decimal>, Serializable{
 	 * {@link RoundingMode#HALF_UP HALF_UP}
 	 */
 	private static final RoundingMode DEFAULT_ROUNDING = RoundingMode.HALF_EVEN;
-
-
+	
 	/**
 	 * Defaults to 10 digits
 	 */
 	private static final int DEFAULT_SCALE = 10;
-
-	private static final long serialVersionUID = 6840541842364016476L;
-
-	public static final Decimal ZERO 	= new Decimal(BigDecimal.ZERO);
-	public static final Decimal ONE 	= new Decimal(BigDecimal.ONE);
-	public static final Decimal TWO 	= new Decimal(BigDecimal.valueOf(2));
-	public static final Decimal THREE 	= new Decimal(BigDecimal.valueOf(3));
-	public static final Decimal TEN	 	= new Decimal(BigDecimal.TEN);
-
+	
 	private final BigDecimal significand;
 	
 	/*
 	 * Constructors. all default to BigDecimal
 	 */
-	
 	
 	private Decimal(final BigDecimal value) {
 		this.significand = value;
@@ -163,6 +164,10 @@ public class Decimal implements Comparable<Decimal>, Serializable{
 		return Subtraction.subtraction(this, $(subtrahend));
 	}
 
+	public Decimal minus(final long subtrahend) {
+		return Subtraction.subtraction(this, $(subtrahend));
+	}
+	
 	public Decimal minus(final double subtrahend) {
 		return Subtraction.subtraction(this, $(subtrahend));
 	}
@@ -183,6 +188,10 @@ public class Decimal implements Comparable<Decimal>, Serializable{
 		return Multiplication.multiply(this, $(multiplicand));
 	}
 	
+	public Decimal times(final long multiplicand) {
+		return Multiplication.multiply(this, $(multiplicand));
+	}
+	
 	public Decimal times(final double multiplicand) {
 		return Multiplication.multiply(this, $(multiplicand));
 	}
@@ -196,51 +205,28 @@ public class Decimal implements Comparable<Decimal>, Serializable{
 	}
 	
 	/*
-	 * BY = Division = BigDecimal.divide(...)
+	 * Divide = Division = BigDecimal.divide(...)
+	 * For maximum control use Divide or subclasses.
 	 */
 	
-	public Decimal by(final int divisor) {
-		return Division.divide(this, $(divisor), DEFAULT_SCALE, DEFAULT_ROUNDING);
+	public Decimal divide(final int divisor) {
+		return divide($(divisor));
 	}
 	
-	public Decimal by(final int divisor, final int scale) {
-		return Division.divide(this, $(divisor), scale, DEFAULT_ROUNDING);
+	public Decimal divide(final long divisor) {
+		return divide($(divisor));
 	}
 	
-	public Decimal by(final int divisor, final int scale, final RoundingMode roundingMode) {
-		return Division.divide(this, $(divisor), scale, roundingMode);
+	public Decimal divide(final double divisor) {
+		return divide($(divisor));
 	}
 	
-	public Decimal by(final double divisor) {
-		return Division.divide(this, $(divisor), DEFAULT_SCALE, DEFAULT_ROUNDING);
-	}
-	
-	public Decimal by(final double divisor, final int scale) {
-		return Division.divide(this, $(divisor), scale, DEFAULT_ROUNDING);
-	}
-	
-	public Decimal by(final double divisor, final int scale, final RoundingMode roundingMode) {
-		return Division.divide(this, $(divisor), scale, roundingMode);
-	}
-		
-	public Decimal by(final Decimal divisor) {
+	public Decimal divide(final Decimal divisor) {
 		return Division.divide(this, divisor, DEFAULT_SCALE, DEFAULT_ROUNDING);
 	}
 	
-	public Decimal by(final Decimal divisor, final int scale) {
-		return Division.divide(this, divisor, scale, DEFAULT_ROUNDING);
-	}
-	
-	public Decimal by(final Decimal divisor, final int scale, final RoundingMode roundingMode) {
-		return Division.divide(this, divisor, scale, roundingMode);
-	}
-	
-	public Decimal by(final Decimal divisor, final MathContext roundingCriteria) {
-		return Division.divide(this, divisor, roundingCriteria);
-	}
-	
 	public Decimal halve() {
-		return this.by(Decimal.TWO);
+		return this.divide(2);
 	}
 	
 	/*
@@ -380,6 +366,10 @@ public class Decimal implements Comparable<Decimal>, Serializable{
 	 */
 	public boolean isNegative(){
 		return lt(Decimal.ZERO);
+	}
+	
+	public boolean isZero(){
+		return this.same(ZERO);
 	}
 	
 	/*

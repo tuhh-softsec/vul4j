@@ -103,11 +103,10 @@ public class SimplePerformanceStatisticsTest {
 		outputDeltaRow(decimalSummary, bigDecimalSummary, bigDecimalClassName);
 		outputDeltaRow(decimalSummary, doubleSummary, doubleClassName);
 		
-		
 		System.out.format("Decimal takes %s times longer than %s%n", 
-				decimalSummary.getMean().by(bigDecimalSummary.getMean()).format("%5.2f"),  bigDecimalClassName);
+				decimalSummary.getMean().divide(bigDecimalSummary.getMean()).format("%5.2f"),  bigDecimalClassName);
 		System.out.format("Decimal takes %s times longer than %s%n", 
-				decimalSummary.getMean().by(doubleSummary.getMean()).format("%5.2f"),  doubleClassName);
+				decimalSummary.getMean().divide(doubleSummary.getMean()).format("%5.2f"),  doubleClassName);
 		
 		PerformanceUtils.memoryConsumed(totalMemoryUsed);
 		PerformanceUtils.outputSystemLoad();
@@ -237,7 +236,7 @@ public class SimplePerformanceStatisticsTest {
 		final long executionTime = PerformanceUtils.start();
 		Decimal result = null;
 		for (int i = 1; i < decimalDataSet.length +1; i++) {
-			result = decimalDataSet[i - 1].by(i);	
+			result = decimalDataSet[i - 1].divide(i);	
 			if(STORE_RESULTS){
 				decimalResults[i - 1] = result;
 			}

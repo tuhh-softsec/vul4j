@@ -6,6 +6,8 @@ import render.quantifyit.model.Decimal;
 
 public class Power {
 
+	private Power(){}
+	
 	public static <X extends Decimal> Decimal power(final X x, final int power){
 		return Decimal.$(x.asBigDecimal().pow(power));
 	}
