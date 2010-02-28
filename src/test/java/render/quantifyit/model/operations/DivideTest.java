@@ -128,6 +128,14 @@ public class DivideTest {
 	}
 	
 	@Test
+	public void testCompareDivisionWithDefaultPrecision(){
+		BigDecimal expected = new BigDecimal(312d).divide(new BigDecimal(7d), 10, RoundingMode.HALF_EVEN);
+		assertEquals(new BigDecimal(44.5714285714, new MathContext(12)), expected);
+		
+		assertDecimal(44.5714285714, $(312).divide(7));
+	}
+	
+	@Test
 	public void testShouldRoughlyApproximateToPi(){
 		double doubleApproximation = 223d/71d;
 		assertEquals(3.1408450704, doubleApproximation, 9);
@@ -168,4 +176,6 @@ public class DivideTest {
 		decimalApproximation = new Divide(355d, 113d).precision(6).eval();
 		assertDecimal(3.14159, decimalApproximation);	
 	}
+	
+
 }

@@ -2,6 +2,7 @@ package render.quantifyit.model;
 
 import static render.quantifyit.model.Decimal.$;
 import java.math.BigDecimal;
+import java.math.MathContext;
 
 import org.junit.Test;
 
@@ -9,6 +10,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static render.quantifyit.model.AssertDecimal.assertDecimal;
+
+import static java.math.BigDecimal.TEN;
 
 public class DecimalAgainstJavaNumbersTest {
 	
@@ -52,4 +55,14 @@ public class DecimalAgainstJavaNumbersTest {
 		assertEquals(.25, .5*.5, 0);
 		assertDecimal($(.25), $(.5).times(.5));
 	}
+	
+	@Test
+	public void testShowASimpleChainingVersusBigDecimal(){
+		BigDecimal result = new BigDecimal(125.75).subtract(new BigDecimal(100)).add(new BigDecimal(4.25)).divide(new BigDecimal(3), new MathContext(2));
+		assertEquals(TEN, result);
+	
+		Decimal actual = $(125.75).minus(100).plus(4.25).divide(3);
+		assertDecimal(10, actual);
+	}
+	
 }
