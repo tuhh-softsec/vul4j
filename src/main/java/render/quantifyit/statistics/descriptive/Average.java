@@ -24,7 +24,7 @@ public class Average  {
 			sum = sum.plus(element);
 			count ++;
 		}
-		return sum.by(new Decimal(count));
+		return sum.by(Decimal.$(count));
 	}
 	
 	
@@ -68,6 +68,13 @@ public class Average  {
 		}
 		Arrays.sort(elements);
 		
+		final Set<Decimal> modes = findModes(elements);
+		
+		return modes.toArray(new Decimal[]{});
+	}
+
+
+	private static Set<Decimal> findModes(final Decimal... elements) {
 		final Set<Decimal> modes = new HashSet<Decimal>(); 
 		Decimal last = elements[0];
 		Decimal current = null;
@@ -92,8 +99,7 @@ public class Average  {
 		if ( counter == maxCount ) {
 			modes.add(last);
 		}
-		
-		return modes.toArray(new Decimal[]{});
+		return modes;
 	}
 
 

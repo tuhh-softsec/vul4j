@@ -13,7 +13,7 @@ public class DispersionTest {
 	@Test
 	public void testShouldFindTheSampleVarianceList1WithMean(){
 		final Decimal[] elements = pack(1,2,9);
-		final Decimal varianceWithMean = Dispersion.sampleVariance(new Decimal(4), elements);
+		final Decimal varianceWithMean = Dispersion.sampleVariance(Decimal.$(4), elements);
 		assertDecimal(19, varianceWithMean);
 	}
 	
@@ -27,7 +27,7 @@ public class DispersionTest {
 	@Test
 	public void testShouldFindThePopulationVarianceList1WithMean(){
 		final Decimal[] elements = pack(1,2,9);
-		final Decimal variance = Dispersion.populationVariance(new Decimal(4), elements);
+		final Decimal variance = Dispersion.populationVariance(Decimal.$(4), elements);
 		assertDecimal(12.67, variance, 2);
 	}
 	
@@ -91,7 +91,7 @@ public class DispersionTest {
 		final Decimal[] elements = pack(4, 7, 13, 16);
 		assertDecimal(Decimal.TEN, Average.mean(elements));
 		final Decimal variance = Dispersion.populationVariance(elements);
-		assertDecimal(new Decimal("22.50"), variance, 2);
+		assertDecimal(Decimal.$("22.50"), variance, 2);
 	}
 	
 	@Test
@@ -117,7 +117,7 @@ public class DispersionTest {
 				oneHundredMillions.plus(16),
 		};
 		final Decimal variance = Dispersion.populationVariance(elements);
-		assertDecimal(new Decimal("22.50"), variance, 2);
+		assertDecimal(Decimal.$("22.50"), variance, 2);
 	}
 
 	
@@ -129,7 +129,7 @@ public class DispersionTest {
 	@Test
 	public void testShouldFindTheSampleStandardDeviationList1WithMean(){
 		final Decimal[] elements = pack(1,2,3,4,20);
-		final Decimal sampleSD = Dispersion.sampleStandardDeviation(new Decimal(6), elements);
+		final Decimal sampleSD = Dispersion.sampleStandardDeviation(Decimal.$(6), elements);
 		assertDecimal(7.91, sampleSD, 2);
 	}
 	
@@ -143,7 +143,7 @@ public class DispersionTest {
 	@Test
 	public void testShouldFindThePopulationStandardDeviationList1WithMean(){
 		final Decimal[] elements = pack(1,2,3,4,20);
-		final Decimal populationSD = Dispersion.populationStandardDeviation(new Decimal(6), elements);
+		final Decimal populationSD = Dispersion.populationStandardDeviation(Decimal.$(6), elements);
 		assertDecimal(7.07, populationSD, 2);
 	}
 	
@@ -203,13 +203,13 @@ public class DispersionTest {
 	
 	@Test
 	public void testThatGivenAVarianceFindsTheStandardDeviation(){
-		final Decimal standardDeviation = Dispersion.var2Sd(new Decimal(3226.89));
+		final Decimal standardDeviation = Dispersion.var2Sd(Decimal.$(3226.89));
 		assertDecimal(56.81, standardDeviation, 2);
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
 	public void testThatGivenAVarianceThrowsExceptionIfVarianceIsNegative(){
-		Dispersion.var2Sd(new Decimal(-3226.89d));
+		Dispersion.var2Sd(Decimal.$(-3226.89d));
 	}
 	
 	/**
@@ -218,7 +218,7 @@ public class DispersionTest {
 	
 	@Test
 	public void testThatGivenAStandardDeviationFindsTheVariance(){
-		final Decimal variance = Dispersion.sd2Var(new Decimal(56.81));
+		final Decimal variance = Dispersion.sd2Var(Decimal.$(56.81));
 		assertDecimal(3227.3761, variance);
 	}
 	

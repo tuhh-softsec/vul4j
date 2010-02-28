@@ -3,6 +3,7 @@ package render.quantifyit.model;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static render.quantifyit.model.AssertDecimal.assertDecimal;
 
 import java.math.MathContext;
 
@@ -12,31 +13,32 @@ public class DecimalTest {
 
 	@Test
 	public void testThatDecimalsWithIdenticRepresentationAreTheSame(){
-		Decimal identicInt = new Decimal(1234, new MathContext(2)).plus(new Decimal(34.56789), new MathContext(3));
-		final Decimal expected = new Decimal("1230");
-		assertFalse(expected.equals(identicInt));
-		assertTrue(expected.compareTo(identicInt) == 0);
+		final Decimal firstElement = Decimal.$(1234, new MathContext(2));
+		assertDecimal(Decimal.$(1200), firstElement);
+		Decimal identicInt = firstElement.plus(Decimal.$(34.56789), new MathContext(5));
+		final Decimal expected = Decimal.$(1234.6);
+		assertEquals(0, expected.compareTo(identicInt));
 		assertTrue(expected.same(identicInt));
 		
-		Decimal identicDecimals = new Decimal(654).plus(new Decimal(46.321456789), new MathContext(6));
-		assertTrue(new Decimal(700.321).same(identicDecimals));
+		Decimal identicDecimals = Decimal.$(654).plus(Decimal.$(46.321456789), new MathContext(6));
+		assertTrue(Decimal.$(700.321).same(identicDecimals));
 	}
 	
 	@Test
 	public void testPositiveAndNegativeNumbers(){
-		assertTrue(new Decimal(0.0001).isPositive());
-		assertTrue(new Decimal(1).isPositive());
-		assertFalse(new Decimal(-0.0001).isPositive());
-		assertTrue(new Decimal(-1).isNegative());
-		assertTrue(new Decimal(-0.0001).isNegative());
-		assertFalse(new Decimal(0.0001).isNegative());
+		assertTrue(Decimal.$(0.0001).isPositive());
+		assertTrue(Decimal.$(1).isPositive());
+		assertFalse(Decimal.$(-0.0001).isPositive());
+		assertTrue(Decimal.$(-1).isNegative());
+		assertTrue(Decimal.$(-0.0001).isNegative());
+		assertFalse(Decimal.$(0.0001).isNegative());
 		assertFalse(Decimal.ZERO.isPositive());
 		assertFalse(Decimal.ZERO.isNegative());
 	}
 	
 	@Test
 	public void testDecimalFormatting(){
-		assertEquals("  45.000", String.format("%8.3f", new Decimal(45).asBigDecimal()));
+		assertEquals("  45.000", String.format("%8.3f", Decimal.$(45).asBigDecimal()));
 	}
 	
 }

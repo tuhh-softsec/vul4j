@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static render.quantifyit.model.AssertDecimal.assertDecimal;
 import static render.quantifyit.util.DecimalUtils.pack;
-import static render.quantifyit.util.DecimalUtils.packInts;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -22,11 +22,11 @@ public class AverageTest {
 	public void testShouldCalculateTheMeanOfASetOfNumbers() {
 		Decimal[] elements = pack(1,2,3,4,5,6,7);
 		Decimal mean = Average.mean(elements);
-		assertDecimal(new Decimal(4), mean);
+		assertDecimal(Decimal.$(4), mean);
 		
 		elements = pack(100,25,52,26,69,39,1);
 		mean = Average.mean(elements).scaleTo(2);
-		assertDecimal(new Decimal(44.57), mean);
+		assertDecimal(Decimal.$(44.57), mean);
 	}
 	
 	@Test
@@ -38,7 +38,7 @@ public class AverageTest {
 	public void testShouldReturnNegativeMeanElementsAreNegative(){
 		final Decimal[] elements = pack(-1,-2,-3,-4,-5,-6,-7);
 		final Decimal mean = Average.mean(elements);
-		assertDecimal(new Decimal(-4), mean);
+		assertDecimal(Decimal.$(-4), mean);
 	}
 	
 	@Test (expected = IllegalArgumentException.class)
@@ -59,7 +59,7 @@ public class AverageTest {
 	public void testShouldReturnWeightedAverageWithDoubles(){
 		final Decimal[] elements = new Decimal[10];
 		for (int i = 0; i < 10; i++) {
-			 elements[i] = new Decimal(.1);
+			 elements[i] = Decimal.$(.1);
 		}
 		assertDecimal(.1, Average.mean(elements), 1);
 	}

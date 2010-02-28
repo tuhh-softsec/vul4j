@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<fileset-config file-format-version="1.2.0" simple-config="false">
+  <local-check-config name="maven-chekstyle-plugin" location="file:/Users/fernando/workspace/quantify/checkstyle.xml" type="remote" description="Maven checkstyle configuration">
+    <property name="checkstyle.cache.file" value="${project_loc}/checkstyle-cachefile"/>
+  </local-check-config>
+  <fileset name="java-sources" enabled="true" check-config-name="maven-chekstyle-plugin" local="true">
+    <file-match-pattern match-pattern="src/main/java/" include-pattern="true"/>
+  </fileset>
+</fileset-config>

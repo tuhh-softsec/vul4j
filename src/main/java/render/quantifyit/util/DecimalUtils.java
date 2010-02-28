@@ -1,5 +1,6 @@
 package render.quantifyit.util;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -10,28 +11,42 @@ public class DecimalUtils {
 	public static Decimal[] packInts(final int... elements){
 		final Decimal[] array = new Decimal[elements.length];
 		for (int i =0; i < elements.length; i++) {
-			array[i] = new Decimal(elements[i]);
+			array[i] = Decimal.$(elements[i]);
 		}
 		return array;
+	}
+	
+	public static List<Decimal> packIntList(final int... elements) {
+		return Arrays.asList(packInts(elements));
 	}
 	
 	public static Decimal[] packLongs(final long... elements){
 		final Decimal[] array = new Decimal[elements.length];
 		for (int i =0; i < elements.length; i++) {
-			array[i] = new Decimal(elements[i]);
+			array[i] = Decimal.$(elements[i]);
 		}
 		return array;
+	}
+	
+	public static List<Decimal> packLongList(final long... elements) {
+		return Arrays.asList(packLongs(elements));
 	}
 	
 	public static Decimal[] pack(final double... elements){
 		final Decimal[] array = new Decimal[elements.length];
 		for (int i =0; i < elements.length; i++) {
-			array[i] = new Decimal(elements[i]);
+			array[i] = Decimal.$(elements[i]);
 		}
 		return array;
 	}
 	
+	public static List<Decimal> packList(final double... elements) {
+		return Arrays.asList(pack(elements));
+	}
 	
+	public static Decimal[] $$(final double... elements){
+		return pack(elements);
+	}
 	
 	public static void notNullOrEmpty(final Decimal... elements) {
 		if (elements == null || elements.length == 0 || elements[0] == null){

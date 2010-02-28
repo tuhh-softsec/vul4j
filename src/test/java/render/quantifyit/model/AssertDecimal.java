@@ -14,11 +14,11 @@ public final class AssertDecimal {
 	}
 	
 	public static void assertDecimal(final int expected, final Decimal actual){
-		assertDecimal(new Decimal(expected), actual);
+		assertDecimal(Decimal.$(expected), actual);
 	}
 	
 	public static void assertDecimal(final double expected, final Decimal actual){
-		assertDecimal(new Decimal(expected), actual);
+		assertDecimal(Decimal.$(expected), actual);
 	}
 	
 	public static void assertDecimal(final Decimal expected, final Decimal actual, final int scale, final RoundingMode roundingMode){
@@ -37,19 +37,19 @@ public final class AssertDecimal {
 	}
 	
 	public static void assertDecimal(final int expected, final Decimal actual, final int scale, final RoundingMode roundingMode){
-		assertDecimal(new Decimal(expected), actual, scale, roundingMode);
+		assertDecimal(Decimal.$(expected), actual, scale, roundingMode);
 	}
 	
 	public static void assertDecimal(final int expected, final Decimal actual, final int scale){
-		assertDecimal(new Decimal(expected), actual, scale, RoundingMode.HALF_EVEN);
+		assertDecimal(Decimal.$(expected), actual, scale, RoundingMode.HALF_EVEN);
 	}
 	
 	public static void assertDecimal(final double expected, final Decimal actual, final int scale, final RoundingMode roundingMode){
-		assertDecimal(new Decimal(expected), actual, scale, roundingMode);
+		assertDecimal(Decimal.$(expected), actual, scale, roundingMode);
 	}
 	
 	public static void assertDecimal(final double expected, final Decimal actual, final int scale){
-		assertDecimal(new Decimal(expected), actual, scale, RoundingMode.HALF_EVEN);
+		assertDecimal(Decimal.$(expected), actual, scale, RoundingMode.HALF_EVEN);
 	}
 
 }

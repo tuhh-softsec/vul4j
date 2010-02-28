@@ -1,4 +1,4 @@
-package render.quantifyit.model;
+package render.quantifyit.model.operations;
 
 import static render.quantifyit.model.AssertDecimal.assertDecimal;
 
@@ -6,18 +6,20 @@ import java.math.MathContext;
 
 import org.junit.Test;
 
+import render.quantifyit.model.Decimal;
+
 public class DecimalOperationSquareRootTest {
 
 	@Test
 	public void testSquareRootSimple(){
-		assertDecimal(3, Decimal.squareRoot(9));
-		assertDecimal(Decimal.TEN, new Decimal(100.0).squareRoot());
+		assertDecimal(3, Decimal.$(9).squareRoot());
+		assertDecimal(Decimal.TEN, Decimal.$(100.0).squareRoot());
 	}
 	
 	@Test
 	public void testSquareRootDecimals(){
-		assertDecimal(3.953479480154159, new Decimal(15.63).squareRoot(), 15);
-		assertDecimal(379.824, Decimal.squareRoot(new Decimal(144266), new MathContext(6)));
+		assertDecimal(3.953479480154159, Decimal.$(15.63).squareRoot(), 15);
+		assertDecimal(379.824, Decimal.$(144266).squareRoot(new MathContext(6)));
 	}
 	
 	@Test

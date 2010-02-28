@@ -143,32 +143,32 @@ public class DecimalPrecisionAndScaleTest {
 	
 	private void output(final int number){
 		System.out.format("[%s]\n", number);
-		assertAndOutputNumber(new Decimal(number), new BigDecimal(number));
+		assertAndOutputNumber(Decimal.$(number), new BigDecimal(number));
 	}
 
 	private void output(final int number, final MathContext context){
 		System.out.format("[%s]{%d}\n", number, context.getPrecision());
-		assertAndOutputNumber(new Decimal(number, context), new BigDecimal(number, context));
+		assertAndOutputNumber(Decimal.$(number, context), new BigDecimal(number, context));
 	}
 	
 	private void output(final double number){
 		System.out.format("[%s]\n", number);
-		output(new Decimal(number));
+		output(Decimal.$(number));
 	}
 	
 	private void output(final double number, final MathContext context){
 		System.out.format("[%s]{%d}\n", number, context.getPrecision());
-		assertAndOutputNumber(new Decimal(number, context), new BigDecimal(number, context));
+		assertAndOutputNumber(Decimal.$(number, context), new BigDecimal(number, context));
 	}
 	
 	private void output(final String number){
 		System.out.format("[%s]\n", number);
-		assertAndOutputNumber(new Decimal(number), new BigDecimal(number));
+		assertAndOutputNumber(Decimal.$(number), new BigDecimal(number));
 	}
 	
 	private void output(final String number, final MathContext context){
 		System.out.format("[%s]{%d}\n", number, context.getPrecision());
-		assertAndOutputNumber(new Decimal(number, context), new BigDecimal(number, context));
+		assertAndOutputNumber(Decimal.$(number, context), new BigDecimal(number, context));
 	}
 	
 	private void output(final Decimal number) {

@@ -59,7 +59,7 @@ public class SimplePerformanceStatisticsTest {
 		
 		decimalDataSet = new Decimal[ELEMENTS];
 		for (int i = 0; i < decimalDataSet.length; i++) {
-			decimalDataSet[i] = new Decimal(100000 * (Math.random() + .1d));
+			decimalDataSet[i] = Decimal.$(100000 * (Math.random() + .1d));
 		}
 		
 		bigDecimalDataSet = new BigDecimal[ELEMENTS];
@@ -195,7 +195,7 @@ public class SimplePerformanceStatisticsTest {
 		final long executionTime = PerformanceUtils.start();
 		Decimal result = null;
 		for (int i = 0; i < decimalDataSet.length; i++) {
-			result = decimalDataSet[i].plus(new Decimal(i));
+			result = decimalDataSet[i].plus(Decimal.$(i));
 			if(STORE_RESULTS){
 				decimalResults[i] = result;
 			}
@@ -209,7 +209,7 @@ public class SimplePerformanceStatisticsTest {
 		final long executionTime = PerformanceUtils.start();
 		Decimal result = null;
 		for (int i = 0; i < decimalDataSet.length; i++) {
-			result = decimalDataSet[i].minus(new Decimal(i));
+			result = decimalDataSet[i].minus(Decimal.$(i));
 			if(STORE_RESULTS){
 				decimalResults[i] = result;
 			}
@@ -223,7 +223,7 @@ public class SimplePerformanceStatisticsTest {
 		final long executionTime = PerformanceUtils.start();
 		Decimal result = null;
 		for (int i = 0; i < decimalDataSet.length; i++) {
-			result = decimalDataSet[i].times(new Decimal(i));
+			result = decimalDataSet[i].times(Decimal.$(i));
 			if(STORE_RESULTS){
 				decimalResults[i] = result;
 			}

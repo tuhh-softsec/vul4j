@@ -42,7 +42,7 @@ public class DecimalConstructorTest {
 		assertEquals("0.1", scaled.toString());
 		
 		
-		final Decimal pointOne = new Decimal(.1);
+		final Decimal pointOne = Decimal.$(.1);
 		assertTrue(0.1 == pointOne.asDouble());
 		assertTrue("0.1".equals(pointOne.toString()));
 
@@ -51,9 +51,9 @@ public class DecimalConstructorTest {
 			sumD = sumD.plus(pointOne);
 		}
 		assertEquals("1.0", sumD.toString());
-		assertFalse(new Decimal(1).equals(sumD.toString()));
-		assertTrue(new Decimal(1).compareTo(sumD) == 0);
-		assertTrue(new Decimal(1).same(sumD));
+		assertFalse(Decimal.$(1).equals(sumD.toString()));
+		assertTrue(Decimal.$(1).compareTo(sumD) == 0);
+		assertTrue(Decimal.$(1).same(sumD));
 		assertTrue(Decimal.ONE.same(sumD));
 
 	}
@@ -62,8 +62,8 @@ public class DecimalConstructorTest {
 	public void testThatPositiveIntegerDecimalsWithStringConstructorAreEquals(){
 		final BigDecimal bPositiveIntegerString = new BigDecimal(STRING_POSITIVE);
 		final BigDecimal bmPositiveIntegerString = new BigDecimal(STRING_POSITIVE, new MathContext(3));
-		final Decimal dPositiveIntegerString = new Decimal(STRING_POSITIVE);
-		final Decimal dmPositiveIntegerString = new Decimal(STRING_POSITIVE, new MathContext(3));
+		final Decimal dPositiveIntegerString = Decimal.$(STRING_POSITIVE);
+		final Decimal dmPositiveIntegerString = Decimal.$(STRING_POSITIVE, new MathContext(3));
 		
 		assertEqualString(bPositiveIntegerString, dPositiveIntegerString);
 		assertEqualString(bmPositiveIntegerString, dmPositiveIntegerString);
@@ -85,8 +85,8 @@ public class DecimalConstructorTest {
 	public void testThatNegativeIntegerDecimalsWithStringConstructorAreEquals(){
 		final BigDecimal bNegativeIntegerString = new BigDecimal(STRING_NEGATIVE);
 		final BigDecimal bmNegativeIntegerString = new BigDecimal(STRING_NEGATIVE, new MathContext(3));
-		final Decimal dNegativeIntegerString = new Decimal(STRING_NEGATIVE);
-		Decimal dmNegativeIntegerString = new Decimal(STRING_NEGATIVE, new MathContext(3));
+		final Decimal dNegativeIntegerString = Decimal.$(STRING_NEGATIVE);
+		Decimal dmNegativeIntegerString = Decimal.$(STRING_NEGATIVE, new MathContext(3));
 		
 		assertEqualString(bNegativeIntegerString, dNegativeIntegerString);
 		assertEqualString(bmNegativeIntegerString, dmNegativeIntegerString);
@@ -107,7 +107,7 @@ public class DecimalConstructorTest {
 	@Test
 	public void testThatPositiveIntegerDecimalsWithIntConstructorAreEquals(){
 		final BigDecimal bPositiveIntegerInt = new BigDecimal(INT_POSITIVE);
-		final Decimal dPositiveIntegerInt = new Decimal(INT_POSITIVE);
+		final Decimal dPositiveIntegerInt = Decimal.$(INT_POSITIVE);
 		
 		assertEqualString(bPositiveIntegerInt, dPositiveIntegerInt);
 		
@@ -121,7 +121,7 @@ public class DecimalConstructorTest {
 	@Test
 	public void testThatNegativeIntegerDecimalsWithIntConstructorAreEquals(){
 		final BigDecimal bNegativeIntegerInt = new BigDecimal(INT_NEGATIVE);
-		final Decimal dNegativeIntegerInt = new Decimal(INT_NEGATIVE);
+		final Decimal dNegativeIntegerInt = Decimal.$(INT_NEGATIVE);
 		
 		assertEqualString(bNegativeIntegerInt, dNegativeIntegerInt);
 
@@ -149,7 +149,7 @@ public class DecimalConstructorTest {
 		
 		assertFalse(stringConstructor.equals(doubleConstructor));
 		
-		final Decimal decimal = new Decimal(original);
+		final Decimal decimal = Decimal.$(original);
 		assertEquals(STRING_DECIMAL, decimal.toString());	
 		assertEquals(STRING_DECIMAL, decimal.toSciString());	
 		assertEquals(STRING_DECIMAL, decimal.toEngString());	
@@ -159,7 +159,7 @@ public class DecimalConstructorTest {
 	@Test
 	public void testThatPositiveIntegerDecimalsWithDoubleConstructorCanBeConvertedToPrimitives(){
 		final BigDecimal bPositiveIntegerDouble = new BigDecimal(DOUBLE_POSITIVE);
-		final Decimal dPositiveIntegerDouble = new Decimal(DOUBLE_POSITIVE);
+		final Decimal dPositiveIntegerDouble = Decimal.$(DOUBLE_POSITIVE);
 
 		assertEquals(INT_POSITIVE, dPositiveIntegerDouble.asInteger());
 		assertEquals(bPositiveIntegerDouble.intValue(), dPositiveIntegerDouble.asInteger());
@@ -170,7 +170,7 @@ public class DecimalConstructorTest {
 	@Test
 	public void testThatNegativeIntegerDecimalsWithDoubleConstructorCanBeConvertedToPrimitives(){
 		final BigDecimal bNegativeIntegerDouble = new BigDecimal(DOUBLE_NEGATIVE);
-		final Decimal dNegativeIntegerDouble = new Decimal(DOUBLE_NEGATIVE);
+		final Decimal dNegativeIntegerDouble = Decimal.$(DOUBLE_NEGATIVE);
 		
 		assertEquals(INT_NEGATIVE, dNegativeIntegerDouble.asInteger());
 		assertEquals(bNegativeIntegerDouble.intValue(), dNegativeIntegerDouble.asInteger());
@@ -180,63 +180,49 @@ public class DecimalConstructorTest {
 
 	@Test(expected=NumberFormatException.class)
 	public void testShouldFailOnPositiveInfinity(){
-		new Decimal(Double.POSITIVE_INFINITY);
+		Decimal.$(Double.POSITIVE_INFINITY);
 	}
 	
 	@Test(expected=NumberFormatException.class)
 	public void testShouldFailOnNegativeInfinity(){
-		new Decimal(Double.NEGATIVE_INFINITY);
+		Decimal.$(Double.NEGATIVE_INFINITY);
 	}
 	
 	@Test(expected=NumberFormatException.class)
 	public void testShouldFailOnNaN(){
-		new Decimal(Double.NaN);
+		Decimal.$(Double.NaN);
 	}
-	
-	//FIXME: properly test missing constructors
-	
 	
 	@Test
 	public void testThatNumberCanBeConstructedWithAScaleArgument(){
-		assertEquals("34534533.00000", new Decimal(new BigDecimal(34534533), 5).toString());
-		assertEquals("456.000000001", new Decimal(new BigDecimal(456.0000000005605), 9).toString());
-		assertEquals("483934895393453453", new Decimal(483934895393453453L).toString());
+		assertEquals("34534533.00000", Decimal.$(new BigDecimal(34534533), 5).toString());
+		assertEquals("456.000000001", Decimal.$(new BigDecimal(456.0000000005605), 9).toString());
+		assertEquals("483934895393453453", Decimal.$(483934895393453453L).toString());
 	}
 	
-	@Ignore //FIXME
 	@Test
-	public void testThatAnIntegerValueIsEqualsToItsCorrespondingDoubleValue(){
-		assertDecimal(1, new Decimal(1d));
-		assertDecimal(1, new Decimal(1.0d));
-		assertEquals(Decimal.ONE, new Decimal(1d));
-		assertEquals(Decimal.ONE, new Decimal(1.0d));
-		assertEquals(new Decimal(1), new Decimal(1d));
-		assertEquals(new Decimal(1), new Decimal(1.0d));
-	}
-	
-	@Test (expected=IllegalArgumentException.class)
-	public void testShouldFailOnNullStringConstructor(){
-		new Decimal(null);
-	}
-	
-	@Test (expected=IllegalArgumentException.class)
-	public void testShouldFailOnNullStringMathContextConstructor(){
-		new Decimal(null, new MathContext(1));
+	public void testThatAnIntegerValueIsComparableButNotEqualsToItsCorrespondingDoubleValue(){
+		assertDecimal(1, Decimal.$(1d));
+		assertDecimal(1, Decimal.$(1.0d));
+		
+		assertFalse(Decimal.$(1).equals(Decimal.$(1d)));
+		assertDecimal(Decimal.$(1), Decimal.$(1d));
+		
+		assertFalse(Decimal.ONE.equals(Decimal.$(1d)));
+		assertDecimal(Decimal.ONE, Decimal.$(1d));
+		
+		assertFalse(Decimal.ONE.equals(Decimal.$(1.0d)));
+		assertDecimal(Decimal.ONE, Decimal.$(1.0d));
 	}
 	
 	@Test (expected=IllegalArgumentException.class)
 	public void testShouldFailOnNullBigDecimalScaleConstructor(){
-		new Decimal(null, 1);
+		Decimal.$(null, 1);
 	}
 	
 	@Test (expected=IllegalArgumentException.class)
 	public void testShouldFailOnNullBigDecimalScaleRoundingModeConstructor(){
-		new Decimal(null, 1, RoundingMode.UNNECESSARY);
-	}
-	
-	@Test (expected=IllegalArgumentException.class)
-	public void testShouldFailOnNullBigDecimalMathContextConstructor(){
-		Decimal.valueOf(null, new MathContext(2));
+		Decimal.$(null, 1, RoundingMode.UNNECESSARY);
 	}
 	
 	private void assertEqualString(final BigDecimal expected, final Decimal actual) {

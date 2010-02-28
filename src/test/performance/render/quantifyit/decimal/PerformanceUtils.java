@@ -14,21 +14,21 @@ public class PerformanceUtils {
 	private static final Decimal MICROSECOND = Decimal.TEN.power(6);
 
 	private static final int KILOBYTES = 1024;
-	private static final Decimal MEGABYTES = new Decimal(KILOBYTES).power(2);
-	private static final Decimal GIGABYTES = new Decimal(KILOBYTES).power(3);
+	private static final Decimal MEGABYTES = Decimal.$(KILOBYTES).power(2);
+	private static final Decimal GIGABYTES = Decimal.$(KILOBYTES).power(3);
 	
 	public static long start() {
         return System.nanoTime();
     }
 	
 	public static Decimal end(final long executionTime){
-        Decimal picoDuration = new Decimal(endTime(executionTime));
+        Decimal picoDuration = Decimal.$(endTime(executionTime));
         System.out.format("Execution finished in %s%n", formatDuration(picoDuration));
         return picoDuration;
 	}
     
     public static Decimal end(final int iterations, final long executionTime) {
-        Decimal picoDuration = new Decimal(endTime(executionTime) / iterations);
+        Decimal picoDuration = Decimal.$(endTime(executionTime) / iterations);
         System.out.format("Execution finished in %s%n", formatDuration(picoDuration));
         return picoDuration;
     }
@@ -54,8 +54,8 @@ public class PerformanceUtils {
     
 	public static MemorySnapshot memorySnapshot(){
 		Runtime rt = Runtime.getRuntime();
-		final Decimal totalMemory = new Decimal(rt.totalMemory());
-		final Decimal freeMemory = new Decimal(rt.freeMemory());
+		final Decimal totalMemory = Decimal.$(rt.totalMemory());
+		final Decimal freeMemory = Decimal.$(rt.freeMemory());
 		return new MemorySnapshot(totalMemory, freeMemory);
 	}
 	
@@ -110,7 +110,7 @@ public class PerformanceUtils {
 		} else if (memory.gt(MEGABYTES)){
 			output = memory.movePointToLeft(6);
 			unit = "mb";
-		} else if ( memory.gt(new Decimal(KILOBYTES))){
+		} else if ( memory.gt(Decimal.$(KILOBYTES))){
 			output = memory.movePointToLeft(3);
 			unit = "kb";
 		} 
