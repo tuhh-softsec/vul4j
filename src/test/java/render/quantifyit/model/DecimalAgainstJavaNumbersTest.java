@@ -61,7 +61,7 @@ public class DecimalAgainstJavaNumbersTest {
 		BigDecimal result = new BigDecimal(125.75).subtract(new BigDecimal(100)).add(new BigDecimal(4.25)).divide(new BigDecimal(3), new MathContext(2));
 		assertEquals(TEN, result);
 	
-		Decimal actual = $(125.75).minus(100).plus(4.25).divide(3);
+		Decimal actual = $(125.75).minus(100).plus(4.25).divideBy(3);
 		assertDecimal(10, actual);
 	}
 	

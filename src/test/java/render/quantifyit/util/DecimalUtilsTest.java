@@ -106,11 +106,11 @@ public class DecimalUtilsTest {
 	@Test
 	public void testShouldAddUniqueDecimalElementsIntoASet(){ 
 		Set<Decimal> decimals = new TreeSet<Decimal>(); 
-		decimals.add(Decimal.ONE.divide(10));
+		decimals.add(Decimal.ONE.divideBy(10));
 		decimals.add(Decimal.$(.1d));
-		decimals.add(Decimal.TWO.divide(10));
+		decimals.add(Decimal.TWO.divideBy(10));
 		decimals.add(Decimal.$(.2d));
-		decimals.add(Decimal.THREE.divide(10));
+		decimals.add(Decimal.THREE.divideBy(10));
 		decimals.add(Decimal.$(.3d));
 		
 		assertEquals(3, decimals.size());

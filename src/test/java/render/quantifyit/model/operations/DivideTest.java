@@ -96,7 +96,7 @@ public class DivideTest {
 		Decimal withPrecision = new Divide(312, 7).precision(16).eval();
 		assertDecimal(44.57142857142857, withPrecision);	
 		
-		Decimal defaulted = $(312).divide(7);
+		Decimal defaulted = $(312).divideBy(7);
 		assertDecimal(44.5714285714, defaulted);	
 	}
 	
@@ -132,7 +132,7 @@ public class DivideTest {
 		BigDecimal expected = new BigDecimal(312d).divide(new BigDecimal(7d), 10, RoundingMode.HALF_EVEN);
 		assertEquals(new BigDecimal(44.5714285714, new MathContext(12)), expected);
 		
-		assertDecimal(44.5714285714, $(312).divide(7));
+		assertDecimal(44.5714285714, $(312).divideBy(7));
 	}
 	
 	@Test
@@ -146,11 +146,11 @@ public class DivideTest {
 		bigDecimalApproximation = new BigDecimal(223d).divide(new BigDecimal(71d), 5, RoundingMode.HALF_EVEN);
 		assertEquals(new BigDecimal("3.14085"), bigDecimalApproximation);
 		
-		Decimal decimalApproximation = $(223).divide(71);
+		Decimal decimalApproximation = $(223).divideBy(71);
 		assertDecimal(3.1408450704, decimalApproximation);	
 		decimalApproximation = new Divide(223, 71).precision(6).eval();
 		assertDecimal(3.14085, decimalApproximation);	
-		decimalApproximation = $(223d).divide(71d);
+		decimalApproximation = $(223d).divideBy(71d);
 		assertDecimal(3.1408450704, decimalApproximation);	
 		decimalApproximation = new Divide(223d, 71d).precision(6).eval();
 		assertDecimal(3.14085, decimalApproximation);	
@@ -167,11 +167,11 @@ public class DivideTest {
 		bigDecimalApproximation = new BigDecimal(355d).divide(new BigDecimal(113d), 7, RoundingMode.HALF_EVEN);
 		assertEquals(new BigDecimal("3.1415929"), bigDecimalApproximation);
 		
-		Decimal decimalApproximation = $(355).divide(113);
+		Decimal decimalApproximation = $(355).divideBy(113);
 		assertDecimal(3.1415929204, decimalApproximation);	
 		decimalApproximation = new Divide(355, 113).precision(6).eval();
 		assertDecimal(3.14159, decimalApproximation);	
-		decimalApproximation = $(355d).divide(113d);
+		decimalApproximation = $(355d).divideBy(113d);
 		assertDecimal(3.1415929204, decimalApproximation);	
 		decimalApproximation = new Divide(355d, 113d).precision(6).eval();
 		assertDecimal(3.14159, decimalApproximation);	

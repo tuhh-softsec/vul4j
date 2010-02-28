@@ -205,28 +205,28 @@ public class Decimal implements Comparable<Decimal>, Serializable{
 	}
 	
 	/*
-	 * Divide = Division = BigDecimal.divide(...)
+	 * divideBy = Division = BigDecimal.divide(...)
 	 * For maximum control use Divide or subclasses.
 	 */
 	
-	public Decimal divide(final int divisor) {
-		return divide($(divisor));
+	public Decimal divideBy(final int divisor) {
+		return divideBy($(divisor));
 	}
 	
-	public Decimal divide(final long divisor) {
-		return divide($(divisor));
+	public Decimal divideBy(final long divisor) {
+		return divideBy($(divisor));
 	}
 	
-	public Decimal divide(final double divisor) {
-		return divide($(divisor));
+	public Decimal divideBy(final double divisor) {
+		return divideBy($(divisor));
 	}
 	
-	public Decimal divide(final Decimal divisor) {
+	public Decimal divideBy(final Decimal divisor) {
 		return Division.divide(this, divisor, DEFAULT_SCALE, DEFAULT_ROUNDING);
 	}
 	
 	public Decimal halve() {
-		return this.divide(2);
+		return this.divideBy(2);
 	}
 	
 	/*

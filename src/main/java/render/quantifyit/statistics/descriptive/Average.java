@@ -24,7 +24,7 @@ public class Average  {
 			sum = sum.plus(element);
 			count ++;
 		}
-		return sum.divide(count);
+		return sum.divideBy(count);
 	}
 	
 	

@@ -11,14 +11,14 @@ public class Dispersion {
 		if(elements.length == 1) {
 			return Decimal.ZERO;
 		}
-		return sumOfSquaredDeltas(mean, elements).divide(elements.length - 1);
+		return sumOfSquaredDeltas(mean, elements).divideBy(elements.length - 1);
 	}
 	
 	public static Decimal populationVariance(final Decimal mean, final Decimal[] elements) {
 		if(elements.length == 1){
 			return Decimal.ZERO;
 		}
-		return sumOfSquaredDeltas(mean, elements).divide(elements.length);
+		return sumOfSquaredDeltas(mean, elements).divideBy(elements.length);
 	}
 	
 	public static Decimal sampleVariance(final Decimal... elements) {
@@ -93,7 +93,7 @@ public class Dispersion {
 	 */
 	public static Decimal zScore(final Decimal element, final Decimal populationMean, final Decimal populationStandardDeviation){
 		final Decimal delta = element.minus(populationMean);
-		return delta.divide(populationStandardDeviation);
+		return delta.divideBy(populationStandardDeviation);
 	}
 	
 	/**
