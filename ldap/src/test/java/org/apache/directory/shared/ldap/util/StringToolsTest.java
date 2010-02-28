@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.regex.Pattern;
 
 import javax.naming.NamingException;
@@ -401,4 +402,15 @@ public class StringToolsTest
         assertEquals( "  a", StringTools.trimRight( "  a" ) );
         assertEquals( "  a", StringTools.trimRight( "  a  " ) );
     }
+
+
+    @Test
+    public void testConvertUUID()
+    {
+        UUID uuid = UUID.randomUUID();
+        byte[] bytes = StringTools.uuidToBytes( uuid.toString() );
+        String string = StringTools.uuidToString( bytes );
+        assertEquals( uuid.toString(), string );
+    }
+
 }

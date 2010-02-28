@@ -39,6 +39,7 @@ import javax.naming.InvalidNameException;
 import org.apache.directory.shared.asn1.codec.binary.Hex;
 import org.apache.directory.shared.ldap.entry.client.ClientBinaryValue;
 import org.apache.directory.shared.ldap.entry.client.ClientStringValue;
+import org.apache.directory.shared.ldap.schema.syntaxCheckers.UuidSyntaxChecker;
 
 
 /**
@@ -3750,6 +3751,46 @@ public class StringTools
         sb.append( hex, 20, 12 );
 
         return sb.toString().toLowerCase();
+    }
+
+
+    /**
+     * converts the string representation of an UUID to bytes
+     *  
+     * @param string the string representation of an UUID
+     * @return the bytes, null if the the syntax is not valid
+     */
+    public static byte[] uuidToBytes( String string )
+    {
+        if ( !new UuidSyntaxChecker().isValidSyntax( string ) )
+        {
+            return null;
+        }
+
+        char[] chars = string.toCharArray();
+        byte[] bytes = new byte[16];
+        bytes[0] = getHexValue( chars[0], chars[1] );
+        bytes[1] = getHexValue( chars[2], chars[3] );
+        bytes[2] = getHexValue( chars[4], chars[5] );
+        bytes[3] = getHexValue( chars[6], chars[7] );
+
+        bytes[4] = getHexValue( chars[9], chars[10] );
+        bytes[5] = getHexValue( chars[11], chars[12] );
+
+        bytes[6] = getHexValue( chars[14], chars[15] );
+        bytes[7] = getHexValue( chars[16], chars[17] );
+
+        bytes[8] = getHexValue( chars[19], chars[20] );
+        bytes[9] = getHexValue( chars[21], chars[22] );
+
+        bytes[10] = getHexValue( chars[24], chars[25] );
+        bytes[11] = getHexValue( chars[26], chars[27] );
+        bytes[12] = getHexValue( chars[28], chars[29] );
+        bytes[13] = getHexValue( chars[30], chars[31] );
+        bytes[14] = getHexValue( chars[32], chars[33] );
+        bytes[15] = getHexValue( chars[34], chars[35] );
+
+        return bytes;
     }
 
 }
