@@ -1556,9 +1556,9 @@ public class LdapURL
      * 
      * @return Returns the scope.
      */
-    public int getScope()
+    public SearchScope getScope()
     {
-        return scope.ordinal();
+        return scope;
     }
 
 
