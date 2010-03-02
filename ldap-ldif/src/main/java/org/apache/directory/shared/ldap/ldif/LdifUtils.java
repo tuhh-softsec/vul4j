@@ -320,9 +320,12 @@ public class LdifUtils
         
         // Dump the ChangeType
         String changeType = entry.getChangeType().toString().toLowerCase();
-        sb.append( stripLineToNChars( "changetype: " + changeType, length ) );
         
-        sb.append( '\n' );
+        if ( entry.getChangeType() != ChangeType.Modify )
+        {
+            sb.append( stripLineToNChars( "changetype: " + changeType, length ) );
+            sb.append( '\n' );
+        }
 
         switch ( entry.getChangeType() )
         {
