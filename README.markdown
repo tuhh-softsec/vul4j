@@ -1,4 +1,4 @@
-### QuantifyIt is a minimalist numeric and statistical package for Java 5 or better.
+### QuantifyIt is a minimalist numeric and statistical package for Java 6 or better.
 
 On the numeric side,
 
