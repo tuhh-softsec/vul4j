@@ -22,7 +22,7 @@ package org.apache.directory.shared.ldap.message.internal;
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.message.SingleReplyRequest;
-import org.apache.directory.shared.ldap.name.LdapDN;
+import org.apache.directory.shared.ldap.name.DN;
 
 
 /**
@@ -47,7 +47,7 @@ public interface InternalCompareRequest extends SingleReplyRequest, InternalAban
      * 
      * @return the DN of the compared entry.
      */
-    LdapDN getName();
+    DN getName();
 
 
     /**
@@ -56,7 +56,7 @@ public interface InternalCompareRequest extends SingleReplyRequest, InternalAban
      * 
      * @param name the DN of the compared entry.
      */
-    void setName( LdapDN name );
+    void setName( DN name );
 
 
     /**

@@ -40,7 +40,7 @@ import org.apache.directory.shared.ldap.util.StringTools;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev: 664290 $, $Date: 2008-06-07 08:28:06 +0200 (Sa, 07 Jun 2008) $
  */
-public enum FastLdapDnParser implements NameParser
+public enum FastDnParser implements NameParser
 {
     INSTANCE;
 
@@ -60,21 +60,21 @@ public enum FastLdapDnParser implements NameParser
      */
     public Name parse( String name ) throws NamingException
     {
-        LdapDN dn = new LdapDN();
+        DN dn = new DN();
         parseDn( name, dn );
         return dn;
     }
 
 
     /**
-     * Parses the given name string and fills the given LdapDN object.
+     * Parses the given name string and fills the given DN object.
      * 
      * @param name the name to parse
-     * @param dn the LdapDN to fill
+     * @param dn the DN to fill
      * 
      * @throws InvalidNameException the invalid name exception
      */
-    public void parseDn( String name, LdapDN dn ) throws InvalidNameException
+    public void parseDn( String name, DN dn ) throws InvalidNameException
     {
         parseDn(name, dn.rdns);
         dn.setUpName( name );

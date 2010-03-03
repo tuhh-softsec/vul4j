@@ -29,7 +29,7 @@ import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.LdapResultCodec;
 import org.apache.directory.shared.ldap.util.LdapURL;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
-import org.apache.directory.shared.ldap.name.LdapDN;
+import org.apache.directory.shared.ldap.name.DN;
 import org.dom4j.Element;
 
 
@@ -161,7 +161,7 @@ public class LdapResultDsml implements DsmlDecorator
      * 
      * @param matchedDN The matchedDN to set.
      */
-    public void setMatchedDN( LdapDN matchedDN )
+    public void setMatchedDN( DN matchedDN )
     {
         result.setMatchedDN( matchedDN );
     }

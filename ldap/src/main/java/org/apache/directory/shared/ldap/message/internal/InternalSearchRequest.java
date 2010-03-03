@@ -27,7 +27,7 @@ import org.apache.directory.shared.ldap.filter.ExprNode;
 import org.apache.directory.shared.ldap.filter.SearchScope;
 import org.apache.directory.shared.ldap.message.AliasDerefMode;
 import org.apache.directory.shared.ldap.message.ManyReplyRequest;
-import org.apache.directory.shared.ldap.name.LdapDN;
+import org.apache.directory.shared.ldap.name.DN;
 
 
 /**
@@ -70,7 +70,7 @@ public interface InternalSearchRequest extends ManyReplyRequest, InternalAbandon
      * 
      * @return the search base
      */
-    LdapDN getBase();
+    DN getBase();
 
 
     /**
@@ -78,7 +78,7 @@ public interface InternalSearchRequest extends ManyReplyRequest, InternalAbandon
      * 
      * @param baseDn the search base
      */
-    void setBase( LdapDN baseDn );
+    void setBase( DN baseDn );
 
 
     /**

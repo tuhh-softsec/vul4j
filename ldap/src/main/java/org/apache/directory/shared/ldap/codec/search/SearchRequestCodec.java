@@ -41,7 +41,7 @@ import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.client.DefaultClientAttribute;
 import org.apache.directory.shared.ldap.filter.SearchScope;
-import org.apache.directory.shared.ldap.name.LdapDN;
+import org.apache.directory.shared.ldap.name.DN;
 
 
 /**
@@ -57,7 +57,7 @@ public class SearchRequestCodec extends LdapMessageCodec
     // ----------------------------------------------------------------------------
 
     /** The base DN */
-    private LdapDN baseObject;
+    private DN baseObject;
 
     /** The scope. It could be baseObject, singleLevel or wholeSubtree. */
     private SearchScope scope;
@@ -166,7 +166,7 @@ public class SearchRequestCodec extends LdapMessageCodec
      * 
      * @return Returns the baseObject.
      */
-    public LdapDN getBaseObject()
+    public DN getBaseObject()
     {
         return baseObject;
     }
@@ -177,7 +177,7 @@ public class SearchRequestCodec extends LdapMessageCodec
      * 
      * @param baseObject The baseObject to set.
      */
-    public void setBaseObject( LdapDN baseObject )
+    public void setBaseObject( DN baseObject )
     {
         this.baseObject = baseObject;
     }
@@ -477,8 +477,8 @@ public class SearchRequestCodec extends LdapMessageCodec
         searchRequestLength = 0;
 
         // The baseObject
-        searchRequestLength += 1 + TLV.getNbBytes( LdapDN.getNbBytes( baseObject ) )
-            + LdapDN.getNbBytes( baseObject );
+        searchRequestLength += 1 + TLV.getNbBytes( DN.getNbBytes( baseObject ) )
+            + DN.getNbBytes( baseObject );
 
         // The scope
         searchRequestLength += 1 + 1 + 1;
@@ -562,7 +562,7 @@ public class SearchRequestCodec extends LdapMessageCodec
             buffer.put( TLV.getBytes( searchRequestLength ) );
 
             // The baseObject
-            Value.encode( buffer, LdapDN.getBytes( baseObject ) );
+            Value.encode( buffer, DN.getBytes( baseObject ) );
 
             // The scope
             Value.encodeEnumerated( buffer, scope.getScope() );

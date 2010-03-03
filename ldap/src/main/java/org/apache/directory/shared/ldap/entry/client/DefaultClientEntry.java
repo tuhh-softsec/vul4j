@@ -38,7 +38,7 @@ import org.apache.directory.shared.ldap.entry.AbstractEntry;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Value;
-import org.apache.directory.shared.ldap.name.LdapDN;
+import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,7 +71,7 @@ public final class DefaultClientEntry extends AbstractEntry<String> implements C
      */
     public DefaultClientEntry()
     {
-        dn = LdapDN.EMPTY_LDAPDN;
+        dn = DN.EMPTY_DN;
     }
 
 
@@ -81,7 +81,7 @@ public final class DefaultClientEntry extends AbstractEntry<String> implements C
      * 
      * @param dn The DN for this serverEntry. Can be null.
      */
-    public DefaultClientEntry( LdapDN dn )
+    public DefaultClientEntry( DN dn )
     {
         this.dn = dn;
     }
@@ -94,7 +94,7 @@ public final class DefaultClientEntry extends AbstractEntry<String> implements C
      * @param dn The DN for this serverEntry. Can be null.
      * @param upIds The list of attributes to create.
      */
-    public DefaultClientEntry( LdapDN dn, String... upIds )
+    public DefaultClientEntry( DN dn, String... upIds )
     {
         this.dn = dn;
 
@@ -115,7 +115,7 @@ public final class DefaultClientEntry extends AbstractEntry<String> implements C
      * @param dn The DN for this serverEntry. Can be null
      * @param attributes The list of attributes to create
      */
-    public DefaultClientEntry( LdapDN dn, EntryAttribute... attributes )
+    public DefaultClientEntry( DN dn, EntryAttribute... attributes )
     {
         this.dn = dn;
 
@@ -302,7 +302,7 @@ public final class DefaultClientEntry extends AbstractEntry<String> implements C
         // First, clone the DN, if not null.
         if ( dn != null )
         {
-            clone.setDn( (LdapDN)dn.clone() );
+            clone.setDn( (DN)dn.clone() );
         }
         
         // then clone the ClientAttribute Map.
@@ -955,7 +955,7 @@ public final class DefaultClientEntry extends AbstractEntry<String> implements C
         if ( dn == null )
         {
             // Write an empty DN
-            out.writeObject( LdapDN.EMPTY_LDAPDN );
+            out.writeObject( DN.EMPTY_DN );
         }
         else
         {
@@ -984,7 +984,7 @@ public final class DefaultClientEntry extends AbstractEntry<String> implements C
     public void readExternal( ObjectInput in ) throws IOException, ClassNotFoundException
     {
         // Read the DN
-        dn = (LdapDN)in.readObject();
+        dn = (DN)in.readObject();
         
         // Read the number of attributes
         int nbAttributes = in.readInt();

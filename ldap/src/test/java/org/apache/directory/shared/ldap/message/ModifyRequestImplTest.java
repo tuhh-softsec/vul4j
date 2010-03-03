@@ -40,7 +40,7 @@ import org.apache.directory.shared.ldap.entry.client.DefaultClientAttribute;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.message.internal.InternalModifyRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalResultResponse;
-import org.apache.directory.shared.ldap.name.LdapDN;
+import org.apache.directory.shared.ldap.name.DN;
 import org.junit.Test;
 
 
@@ -66,7 +66,7 @@ public class ModifyRequestImplTest
         
         try 
         {
-            req.setName( new LdapDN( "cn=admin,dc=apache,dc=org" ) );
+            req.setName( new DN( "cn=admin,dc=apache,dc=org" ) );
         }
         catch ( InvalidNameException ne )
         {
@@ -139,9 +139,9 @@ public class ModifyRequestImplTest
         try
         {
             ModifyRequestImpl req0 = getRequest();
-            req0.setName( new LdapDN( "cn=admin,dc=example,dc=com" ) );
+            req0.setName( new DN( "cn=admin,dc=example,dc=com" ) );
             ModifyRequestImpl req1 = getRequest();
-            req1.setName( new LdapDN( "cn=admin,dc=apache,dc=org" ) );
+            req1.setName( new DN( "cn=admin,dc=apache,dc=org" ) );
 
             assertFalse( req0.equals( req1 ) );
         }
@@ -298,11 +298,11 @@ public class ModifyRequestImplTest
             }
 
 
-            public LdapDN getName()
+            public DN getName()
             {
                 try
                 {
-                    return new LdapDN( "cn=admin,dc=apache,dc=org" );
+                    return new DN( "cn=admin,dc=apache,dc=org" );
                 }
                 catch ( Exception e )
                 {
@@ -312,7 +312,7 @@ public class ModifyRequestImplTest
             }
 
 
-            public void setName( LdapDN name )
+            public void setName( DN name )
             {
             }
 

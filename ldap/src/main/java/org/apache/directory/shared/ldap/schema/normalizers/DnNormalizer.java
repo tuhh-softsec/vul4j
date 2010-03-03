@@ -25,7 +25,7 @@ import javax.naming.NamingException;
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.entry.client.ClientStringValue;
-import org.apache.directory.shared.ldap.name.LdapDN;
+import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.schema.Normalizer;
 import org.apache.directory.shared.ldap.schema.SchemaManager;
 
@@ -58,11 +58,11 @@ public class DnNormalizer extends Normalizer
      */
     public Value<?> normalize( Value<?> value ) throws NamingException
     {
-        LdapDN dn = null;
+        DN dn = null;
         
         String dnStr = value.getString();
         
-        dn = new LdapDN( dnStr );
+        dn = new DN( dnStr );
         
         dn.normalize( schemaManager.getNormalizerMapping() );
         return new ClientStringValue( dn.getNormName() );
@@ -74,9 +74,9 @@ public class DnNormalizer extends Normalizer
      */
     public String normalize( String value ) throws NamingException
     {
-        LdapDN dn = null;
+        DN dn = null;
         
-        dn = new LdapDN( value );
+        dn = new DN( value );
         
         dn.normalize( schemaManager.getNormalizerMapping() );
         return dn.getNormName();
@@ -89,11 +89,11 @@ public class DnNormalizer extends Normalizer
      * @return A normalized DN
      * @throws NamingException
      */
-    public String normalize( LdapDN value ) throws NamingException
+    public String normalize( DN value ) throws NamingException
     {
-        LdapDN dn = null;
+        DN dn = null;
         
-        dn = new LdapDN( value );
+        dn = new DN( value );
         
         dn.normalize( schemaManager.getNormalizerMapping() );
         return dn.getNormName();

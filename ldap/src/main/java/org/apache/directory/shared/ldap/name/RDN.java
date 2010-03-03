@@ -399,7 +399,7 @@ public class RDN implements Cloneable, Comparable, Externalizable, Iterable<AVA>
     public RDN normalize( Map<String, OidNormalizer> oidsMap ) throws InvalidNameException, NamingException
     {
         String upName = getUpName();
-        LdapDN.rdnOidToName( this, oidsMap );
+        DN.rdnOidToName( this, oidsMap );
         normalize();
         this.upName = upName;
 

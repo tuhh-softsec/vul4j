@@ -109,7 +109,7 @@ import org.apache.directory.shared.ldap.message.extended.GracefulShutdownRequest
 import org.apache.directory.shared.ldap.message.internal.InternalLdapResult;
 import org.apache.directory.shared.ldap.message.internal.InternalMessage;
 import org.apache.directory.shared.ldap.message.internal.InternalReferral;
-import org.apache.directory.shared.ldap.name.LdapDN;
+import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.util.LdapURL;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
@@ -161,7 +161,7 @@ public class LdapTransformer
     {
         AddRequestImpl internalMessage = new AddRequestImpl( messageId );
 
-        // Codec : LdapDN entry -> Internal : String name
+        // Codec : DN entry -> Internal : String name
         internalMessage.setEntry( addRequest.getEntry() );
 
         // Codec : Attributes attributes -> Internal : Attributes entry
@@ -185,7 +185,7 @@ public class LdapTransformer
         // Codec : int version -> Internal : boolean isVersion3
         internalMessage.setVersion3( bindRequest.isLdapV3() );
 
-        // Codec : LdapDN name -> Internal : LdapDN name
+        // Codec : DN name -> Internal : DN name
         internalMessage.setName( bindRequest.getName() );
 
         // Codec : Asn1Object authentication instanceOf SimpleAuthentication ->
@@ -245,12 +245,12 @@ public class LdapTransformer
         
         try
         {
-            internalLdapResult.setMatchedDn( new LdapDN( codecLdapResult.getMatchedDN() ) );
+            internalLdapResult.setMatchedDn( new DN( codecLdapResult.getMatchedDN() ) );
         }
         catch ( InvalidNameException e )
         {
             LOG.error( I18n.err( I18n.ERR_04111, codecLdapResult.getMatchedDN() ) );
-            internalLdapResult.setMatchedDn( new LdapDN() );
+            internalLdapResult.setMatchedDn( new DN() );
         }
         
         internalLdapResult.setResultCode( codecLdapResult.getResultCode() );
@@ -285,7 +285,7 @@ public class LdapTransformer
     {
         CompareRequestImpl internalMessage = new CompareRequestImpl( messageId );
 
-        // Codec : LdapDN entry -> Internal : private LdapDN
+        // Codec : DN entry -> Internal : private DN
         internalMessage.setName( compareRequest.getEntry() );
 
         // Codec : LdapString attributeDesc -> Internal : String attrId
@@ -316,7 +316,7 @@ public class LdapTransformer
     {
         DeleteRequestImpl internalMessage = new DeleteRequestImpl( messageId );
 
-        // Codec : LdapDN entry -> Internal : LdapDN
+        // Codec : DN entry -> Internal : DN
         internalMessage.setName( delRequest.getEntry() );
 
         return internalMessage;
@@ -366,16 +366,16 @@ public class LdapTransformer
     {
         ModifyDnRequestImpl internalMessage = new ModifyDnRequestImpl( messageId );
 
-        // Codec : LdapDN entry -> Internal : LdapDN m_name
+        // Codec : DN entry -> Internal : DN m_name
         internalMessage.setName( modifyDNRequest.getEntry() );
 
-        // Codec : RelativeLdapDN newRDN -> Internal : LdapDN m_newRdn
+        // Codec : RelativeDN newRDN -> Internal : DN m_newRdn
         internalMessage.setNewRdn( modifyDNRequest.getNewRDN() );
 
         // Codec : boolean deleteOldRDN -> Internal : boolean m_deleteOldRdn
         internalMessage.setDeleteOldRdn( modifyDNRequest.isDeleteOldRDN() );
 
-        // Codec : LdapDN newSuperior -> Internal : LdapDN m_newSuperior
+        // Codec : DN newSuperior -> Internal : DN m_newSuperior
         internalMessage.setNewSuperior( modifyDNRequest.getNewSuperior() );
 
         return internalMessage;
@@ -393,7 +393,7 @@ public class LdapTransformer
     {
         ModifyRequestImpl internalMessage = new ModifyRequestImpl( messageId );
 
-        // Codec : LdapDN object -> Internal : String name
+        // Codec : DN object -> Internal : String name
         internalMessage.setName( modifyRequest.getObject() );
 
         // Codec : ArrayList modifications -> Internal : ArrayList mods
@@ -719,7 +719,7 @@ public class LdapTransformer
     {
         SearchRequestImpl internalMessage = new SearchRequestImpl( messageId );
 
-        // Codec : LdapDN baseObject -> Internal : String baseDn
+        // Codec : DN baseObject -> Internal : String baseDn
         internalMessage.setBase( searchRequest.getBaseObject() );
 
         // Codec : int scope -> Internal : ScopeEnum scope
@@ -904,7 +904,7 @@ public class LdapTransformer
         
         codecLdapResult.setErrorMessage( StringTools.isEmpty( errorMessage ) ? "" : errorMessage );
 
-        // Internal : String matchedDn -> Codec : LdapDN matchedDN
+        // Internal : String matchedDn -> Codec : DN matchedDN
         codecLdapResult.setMatchedDN( internalLdapResult.getMatchedDn() );
 
         // Internal : Referral referral -> Codec : ArrayList referrals
@@ -1188,7 +1188,7 @@ public class LdapTransformer
         SearchResponseEntryImpl internalSearchResultResponse = ( SearchResponseEntryImpl ) internalMessage;
         SearchResultEntryCodec searchResultEntry = new SearchResultEntryCodec();
 
-        // Internal : LdapDN dn -> Codec : LdapDN objectName
+        // Internal : DN dn -> Codec : DN objectName
         searchResultEntry.setObjectName( internalSearchResultResponse.getObjectName() );
 
         // Internal : Attributes attributes -> Codec : ArrayList

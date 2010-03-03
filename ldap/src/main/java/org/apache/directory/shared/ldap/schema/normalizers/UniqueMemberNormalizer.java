@@ -26,7 +26,7 @@ import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.entry.client.ClientStringValue;
-import org.apache.directory.shared.ldap.name.LdapDN;
+import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.schema.Normalizer;
 import org.apache.directory.shared.ldap.schema.SchemaManager;
 import org.apache.directory.shared.ldap.util.StringTools;
@@ -82,7 +82,7 @@ public class UniqueMemberNormalizer extends Normalizer
             
             if ( sharpPos > 0 )
             {
-                LdapDN dn = new LdapDN( nameAndUid.substring( 0, sharpPos ) );
+                DN dn = new DN( nameAndUid.substring( 0, sharpPos ) );
                 
                 dn.normalize( schemaManager.getNormalizerMapping() );
                 
@@ -97,7 +97,7 @@ public class UniqueMemberNormalizer extends Normalizer
         {
             // No UID, the strValue is a DN
             // Return the normalized DN
-            return new ClientStringValue( new LdapDN( nameAndUid ).getNormName() );
+            return new ClientStringValue( new DN( nameAndUid ).getNormName() );
         }
     }
 
@@ -129,7 +129,7 @@ public class UniqueMemberNormalizer extends Normalizer
             
             if ( sharpPos > 0 )
             {
-                LdapDN dn = new LdapDN( value.substring( 0, sharpPos ) );
+                DN dn = new DN( value.substring( 0, sharpPos ) );
                 
                 dn.normalize( schemaManager.getNormalizerMapping() );
                 
@@ -144,7 +144,7 @@ public class UniqueMemberNormalizer extends Normalizer
         {
             // No UID, the strValue is a DN
             // Return the normalized DN
-            return new LdapDN( value ).normalize( schemaManager.getNormalizerMapping() ).getNormName();
+            return new DN( value ).normalize( schemaManager.getNormalizerMapping() ).getNormName();
         }
     }
 

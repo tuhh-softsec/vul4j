@@ -27,7 +27,7 @@ import org.apache.directory.shared.ldap.entry.client.DefaultClientEntry;
 import org.apache.directory.shared.ldap.message.internal.InternalAddRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalAddResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalResultResponse;
-import org.apache.directory.shared.ldap.name.LdapDN;
+import org.apache.directory.shared.ldap.name.DN;
 
 
 /**
@@ -72,7 +72,7 @@ public class AddRequestImpl extends AbstractAbandonableRequest implements Intern
      * 
      * @return the Dn of the added entry.
      */
-    public LdapDN getEntryDn()
+    public DN getEntryDn()
     {
         return entry.getDn();
     }
@@ -83,7 +83,7 @@ public class AddRequestImpl extends AbstractAbandonableRequest implements Intern
      * 
      * @param entry the Dn of the added entry.
      */
-    public void setEntryDn( LdapDN dn )
+    public void setEntryDn( DN dn )
     {
         entry.setDn( dn );
     }

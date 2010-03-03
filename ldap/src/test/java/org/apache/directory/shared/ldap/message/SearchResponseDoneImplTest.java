@@ -32,7 +32,7 @@ import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.message.internal.InternalLdapResult;
 import org.apache.directory.shared.ldap.message.internal.InternalSearchResponseDone;
-import org.apache.directory.shared.ldap.name.LdapDN;
+import org.apache.directory.shared.ldap.name.DN;
 import org.junit.Test;
 
 
@@ -59,7 +59,7 @@ public class SearchResponseDoneImplTest
         
         try
         {
-            result.setMatchedDn( new LdapDN( "dc=example,dc=com" ) );
+            result.setMatchedDn( new DN( "dc=example,dc=com" ) );
         }
         catch ( InvalidNameException ine )
         {
@@ -115,7 +115,7 @@ public class SearchResponseDoneImplTest
                 
                 try
                 {
-                    result.setMatchedDn( new LdapDN( "dc=example,dc=com" ) );
+                    result.setMatchedDn( new DN( "dc=example,dc=com" ) );
                 }
                 catch ( Exception e ) 
                 {

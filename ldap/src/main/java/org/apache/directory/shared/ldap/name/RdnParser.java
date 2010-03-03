@@ -100,12 +100,12 @@ public class RdnParser
     {
         try
         {
-            FastLdapDnParser.INSTANCE.parseRdn( dn, rdn );
+            FastDnParser.INSTANCE.parseRdn( dn, rdn );
         }
         catch ( TooComplexException e )
         {
             rdn.clear();
-            new ComplexLdapDnParser().parseRdn( dn, rdn );
+            new ComplexDnParser().parseRdn( dn, rdn );
         }
     }
 

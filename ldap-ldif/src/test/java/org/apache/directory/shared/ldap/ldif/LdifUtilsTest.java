@@ -39,7 +39,7 @@ import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.client.DefaultClientAttribute;
 import org.apache.directory.shared.ldap.entry.client.DefaultClientEntry;
-import org.apache.directory.shared.ldap.name.LdapDN;
+import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.name.RDN;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
@@ -373,7 +373,7 @@ public class LdifUtilsTest
         attributes.put( "cn", "Saarbrucken" );
         attributes.put( "sn", "test" );
 
-        String ldif = LdifUtils.convertToLdif( attributes, (LdapDN)null, 15 );
+        String ldif = LdifUtils.convertToLdif( attributes, (DN)null, 15 );
         Attributes result = LdifUtils.convertAttributesFromLdif( ldif );
         assertEquals( attributes, result );
     }
@@ -389,8 +389,8 @@ public class LdifUtilsTest
     @Test
     public void testReverseModifyDNSuperior() throws NamingException
     {
-        LdapDN dn = new LdapDN( "cn=john doe, dc=example, dc=com" );
-        LdapDN newSuperior = new LdapDN( "ou=system" );
+        DN dn = new DN( "cn=john doe, dc=example, dc=com" );
+        DN newSuperior = new DN( "ou=system" );
 
         Entry entry = new DefaultClientEntry( dn );
         entry.add( "objectClass", "person", "uidObject" );
@@ -421,8 +421,8 @@ public class LdifUtilsTest
     @Test
     public void testReverseModifyDNDeleteOldRdnSuperior() throws NamingException
     {
-        LdapDN dn = new LdapDN( "cn=john doe, dc=example, dc=com" );
-        LdapDN newSuperior = new LdapDN( "ou=system" );
+        DN dn = new DN( "cn=john doe, dc=example, dc=com" );
+        DN newSuperior = new DN( "ou=system" );
 
         Entry entry = new DefaultClientEntry( dn );
         entry.add( "objectClass", "person", "uidObject" );

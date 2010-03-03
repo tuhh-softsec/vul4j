@@ -32,7 +32,7 @@ import org.apache.directory.shared.ldap.entry.client.ClientModification;
 import org.apache.directory.shared.ldap.message.internal.InternalModifyRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalModifyResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalResultResponse;
-import org.apache.directory.shared.ldap.name.LdapDN;
+import org.apache.directory.shared.ldap.name.DN;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,7 +51,7 @@ public class ModifyRequestImpl extends AbstractAbandonableRequest implements Int
     private static final transient Logger LOG = LoggerFactory.getLogger( ModifyRequestImpl.class );
 
     /** Dn of the entry to modify or PDU's <b>object</b> field */
-    private LdapDN name;
+    private DN name;
 
     /** Sequence of modifications or PDU's <b>modification</b> seqence field */
     private List<Modification> mods = new ArrayList<Modification>();
@@ -97,7 +97,7 @@ public class ModifyRequestImpl extends AbstractAbandonableRequest implements Int
      * 
      * @return the DN of the modified entry.
      */
-    public LdapDN getName()
+    public DN getName()
     {
         return name;
     }
@@ -110,7 +110,7 @@ public class ModifyRequestImpl extends AbstractAbandonableRequest implements Int
      * @param name
      *            the DN of the modified entry.
      */
-    public void setName( LdapDN name )
+    public void setName( DN name )
     {
         this.name = name;
     }

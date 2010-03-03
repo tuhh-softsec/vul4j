@@ -38,7 +38,7 @@ import org.apache.directory.shared.ldap.codec.util.URIException;
 import org.apache.directory.shared.ldap.codec.util.UrlDecoderException;
 import org.apache.directory.shared.ldap.filter.FilterParser;
 import org.apache.directory.shared.ldap.filter.SearchScope;
-import org.apache.directory.shared.ldap.name.LdapDN;
+import org.apache.directory.shared.ldap.name.DN;
 
 
 /**
@@ -50,7 +50,7 @@ import org.apache.directory.shared.ldap.name.LdapDN;
  * scheme     = "ldap"
  * attributes = attrdesc *("," attrdesc)
  * scope      = "base" / "one" / "sub"
- * dn         = LdapDN
+ * dn         = DN
  * hostport   = hostport from Section 5 of RFC 1738
  * attrdesc   = AttributeDescription from Section 4.1.5 of RFC 2251
  * filter     = filter from Section 4 of RFC 2254
@@ -92,7 +92,7 @@ public class LdapURL
     private int port;
 
     /** The DN */
-    private LdapDN dn;
+    private DN dn;
 
     /** The attributes */
     private List<String> attributes;
@@ -750,7 +750,7 @@ public class LdapURL
 
     /**
      * Parse a string and check that it complies with RFC 2253. Here, we will
-     * just call the LdapDN parser to do the job.
+     * just call the DN parser to do the job.
      * 
      * @param chars The char array to be checked
      * @param pos the starting position
@@ -768,7 +768,7 @@ public class LdapURL
 
         try
         {
-            dn = new LdapDN( decode( new String( chars, pos, end - pos ) ) );
+            dn = new DN( decode( new String( chars, pos, end - pos ) ) );
         }
         catch ( URIException ue )
         {
@@ -1466,7 +1466,7 @@ public class LdapURL
     /**
      * @return Returns the dn.
      */
-    public LdapDN getDn()
+    public DN getDn()
     {
         return dn;
     }
@@ -1699,7 +1699,7 @@ public class LdapURL
      * 
      * @param dn the new dn
      */
-    public void setDn( LdapDN dn )
+    public void setDn( DN dn )
     {
         this.dn = dn;
     }

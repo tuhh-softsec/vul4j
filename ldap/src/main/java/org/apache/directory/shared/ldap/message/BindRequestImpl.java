@@ -27,7 +27,7 @@ import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.message.internal.InternalBindRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalBindResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalResultResponse;
-import org.apache.directory.shared.ldap.name.LdapDN;
+import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.util.StringTools;
 
 
@@ -46,7 +46,7 @@ public class BindRequestImpl extends AbstractAbandonableRequest implements Inter
      * Distinguished name identifying the name of the authenticating subject -
      * defaults to the empty string
      */
-    private LdapDN name;
+    private DN name;
 
     /** The passwords, keys or tickets used to verify user identity */
     private byte[] credentials;
@@ -200,11 +200,11 @@ public class BindRequestImpl extends AbstractAbandonableRequest implements Inter
      * request. This field may take on a null value (a zero length string) for
      * the purposes of anonymous binds, when authentication has been performed
      * at a lower layer, or when using SASL credentials with a mechanism that
-     * includes the LDAPDN in the credentials.
+     * includes the DN in the credentials.
      * 
      * @return the DN of the authenticating user.
      */
-    public LdapDN getName()
+    public DN getName()
     {
         return name;
     }
@@ -215,13 +215,13 @@ public class BindRequestImpl extends AbstractAbandonableRequest implements Inter
      * request. This field may take on a null value (or a zero length string)
      * for the purposes of anonymous binds, when authentication has been
      * performed at a lower layer, or when using SASL credentials with a
-     * mechanism that includes the LDAPDN in the credentials.
+     * mechanism that includes the DN in the credentials.
      * 
      * @param name
      *            the DN of the authenticating user - leave null for annonymous
      *            user.
      */
-    public void setName( LdapDN name )
+    public void setName( DN name )
     {
         this.name = name;
     }
@@ -354,8 +354,8 @@ public class BindRequestImpl extends AbstractAbandonableRequest implements Inter
             return false;
         }
 
-        LdapDN dn1 = req.getName();
-        LdapDN dn2 = getName();
+        DN dn1 = req.getName();
+        DN dn2 = getName();
         
         if ( dn1 == null )
         {

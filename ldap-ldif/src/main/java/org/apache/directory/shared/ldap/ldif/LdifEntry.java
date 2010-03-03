@@ -43,7 +43,7 @@ import org.apache.directory.shared.ldap.entry.client.ClientStringValue;
 import org.apache.directory.shared.ldap.entry.client.DefaultClientAttribute;
 import org.apache.directory.shared.ldap.entry.client.DefaultClientEntry;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.name.LdapDN;
+import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.name.RDN;
 import org.apache.directory.shared.ldap.util.StringTools;
 
@@ -111,22 +111,20 @@ public class LdifEntry implements Cloneable, Externalizable
      * @param dn
      *            The Distinguished Name
      */
-    public void setDn( LdapDN dn )
+    public void setDn( DN dn )
     {
-        entry.setDn( (LdapDN)dn.clone() );
+        entry.setDn( (DN)dn.clone() );
     }
 
     
     /**
      * Set the Distinguished Name
      * 
-     * @param dn
-     *            The Distinguished Name
+     * @param dn The Distinguished Name
      */
     public void setDn( String dn ) throws InvalidNameException
     {
-        LdapDN ldapDn = new LdapDN( dn );
-        entry.setDn( ldapDn );
+        entry.setDn( new DN( dn ) );
     }
 
 
@@ -350,7 +348,7 @@ public class LdifEntry implements Cloneable, Externalizable
     /**
      * @return The entry Distinguished name
      */
-    public LdapDN getDn()
+    public DN getDn()
     {
         return entry.getDn();
     }
@@ -767,8 +765,8 @@ public class LdifEntry implements Cloneable, Externalizable
         LdifEntry otherEntry = (LdifEntry)o;
         
         // Check the DN
-        LdapDN thisDn = entry.getDn();
-        LdapDN dnEntry = otherEntry.getDn();
+        DN thisDn = entry.getDn();
+        DN dnEntry = otherEntry.getDn();
         
         if ( !thisDn.equals( dnEntry ) )
         {
@@ -888,8 +886,8 @@ public class LdifEntry implements Cloneable, Externalizable
                 // Check the newSuperior value
                 try
                 {
-                    LdapDN thisNewSuperior = new LdapDN( newSuperior );
-                    LdapDN entryNewSuperior = new LdapDN( otherEntry.newSuperior );
+                    DN thisNewSuperior = new DN( newSuperior );
+                    DN entryNewSuperior = new DN( otherEntry.newSuperior );
                     
                     if ( ! thisNewSuperior.equals(  entryNewSuperior ) )
                     {

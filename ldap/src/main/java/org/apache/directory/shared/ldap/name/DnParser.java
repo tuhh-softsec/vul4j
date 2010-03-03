@@ -62,7 +62,7 @@ import javax.naming.NameParser;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public enum LdapDnParser implements NameParser
+public enum DnParser implements NameParser
 {
     INSTANCE;
 
@@ -89,12 +89,12 @@ public enum LdapDnParser implements NameParser
     {
         try
         {
-            FastLdapDnParser.INSTANCE.parseDn( name, rdns );
+            FastDnParser.INSTANCE.parseDn( name, rdns );
         }
         catch ( TooComplexException e )
         {
             rdns.clear();
-            new ComplexLdapDnParser().parseDn( name, rdns );
+            new ComplexDnParser().parseDn( name, rdns );
         }
     }
 
@@ -108,7 +108,7 @@ public enum LdapDnParser implements NameParser
      */
     public static boolean validateInternal( String name )
     {
-        LdapDN dn = new LdapDN();
+        DN dn = new DN();
         try
         {
             parseInternal( name, dn.rdns );
@@ -122,16 +122,16 @@ public enum LdapDnParser implements NameParser
 
 
     /**
-     * Parse a String and return a LdapDN if the String is a valid DN
+     * Parse a String and return a DN if the String is a valid DN
      *
      * @param dn
      *            The DN to parse
-     * @return A LdapDN
+     * @return A DN
      * @throws InvalidNameException
      *             If the String is not a valid DN
      */
     public Name parse( String dn ) throws InvalidNameException
     {
-        return new LdapDN( dn );
+        return new DN( dn );
     }
 }

@@ -26,7 +26,7 @@ import java.util.Set;
 
 import javax.naming.NamingException;
 
-import org.apache.directory.shared.ldap.name.LdapDN;
+import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.schema.normalizers.OidNormalizer;
 import org.apache.directory.shared.ldap.schema.registries.AttributeTypeRegistry;
 import org.apache.directory.shared.ldap.schema.registries.ComparatorRegistry;
@@ -625,7 +625,7 @@ public interface SchemaManager
     /**
      * @return the namingContext
      */
-    LdapDN getNamingContext();
+    DN getNamingContext();
 
 
     /**

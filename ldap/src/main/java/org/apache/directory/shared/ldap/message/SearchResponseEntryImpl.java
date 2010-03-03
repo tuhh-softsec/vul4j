@@ -23,7 +23,7 @@ package org.apache.directory.shared.ldap.message;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.message.internal.InternalAbstractResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalSearchResponseEntry;
-import org.apache.directory.shared.ldap.name.LdapDN;
+import org.apache.directory.shared.ldap.name.DN;
 
 
 /**
@@ -87,7 +87,7 @@ public class SearchResponseEntryImpl extends InternalAbstractResponse implements
      * 
      * @return the Dn of the entry returned.
      */
-    public LdapDN getObjectName()
+    public DN getObjectName()
     {
         return ( entry == null ? null : entry.getDn() );
     }
@@ -99,7 +99,7 @@ public class SearchResponseEntryImpl extends InternalAbstractResponse implements
      * @param objectName
      *            the Dn of the entry returned.
      */
-    public void setObjectName( LdapDN objectName )
+    public void setObjectName( DN objectName )
     {
         if ( entry != null )
         {

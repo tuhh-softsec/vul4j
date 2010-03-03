@@ -31,7 +31,7 @@ import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.LdapResponseCodec;
 import org.apache.directory.shared.ldap.codec.LdapResultCodec;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
-import org.apache.directory.shared.ldap.name.LdapDN;
+import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,7 +72,7 @@ public class MatchedDNAction extends GrammarAction
         // DN
         if ( tlv.getLength() == 0 )
         {
-            ldapResult.setMatchedDN( LdapDN.EMPTY_LDAPDN );
+            ldapResult.setMatchedDN( DN.EMPTY_DN );
         }
         else
         {
@@ -92,7 +92,7 @@ public class MatchedDNAction extends GrammarAction
                     
                     try
                     {
-                        ldapResult.setMatchedDN( new LdapDN( dnStr ) );
+                        ldapResult.setMatchedDN( new DN( dnStr ) );
                     }
                     catch ( InvalidNameException ine )
                     {
@@ -109,7 +109,7 @@ public class MatchedDNAction extends GrammarAction
                     log.warn( "The matched DN should not be set when the result code is one of NoSuchObject," + 
                         " AliasProblem, InvalidDNSyntax or AliasDreferencingProblem" );
 
-                    ldapResult.setMatchedDN( LdapDN.EMPTY_LDAPDN );
+                    ldapResult.setMatchedDN( DN.EMPTY_DN );
                     break;
             }
         }

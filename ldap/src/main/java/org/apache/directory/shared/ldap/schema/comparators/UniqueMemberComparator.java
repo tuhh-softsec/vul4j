@@ -24,7 +24,7 @@ import javax.naming.Name;
 import javax.naming.NamingException;
 
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.name.LdapDN;
+import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.schema.LdapComparator;
 import org.apache.directory.shared.ldap.schema.SchemaManager;
 import org.slf4j.Logger;
@@ -98,8 +98,8 @@ public class UniqueMemberComparator extends LdapComparator<String>
                 return 1;
             }
 
-            LdapDN dn0 = null;
-            LdapDN dn1 = null;
+            DN dn0 = null;
+            DN dn1 = null;
 
             // This is an UID if the '#' is immediatly
             // followed by a BitString, except if the '#' is
@@ -110,7 +110,7 @@ public class UniqueMemberComparator extends LdapComparator<String>
             {
                 try
                 {
-                    dn0 = new LdapDN( dnstr0.substring( 0, dash0 ) );
+                    dn0 = new DN( dnstr0.substring( 0, dash0 ) );
                 }
                 catch ( NamingException ne )
                 {
@@ -131,7 +131,7 @@ public class UniqueMemberComparator extends LdapComparator<String>
             {
                 try
                 {
-                    dn1 = new LdapDN( dnstr0.substring( 0, dash1 ) );
+                    dn1 = new DN( dnstr0.substring( 0, dash1 ) );
                 }
                 catch ( NamingException ne )
                 {
@@ -164,24 +164,24 @@ public class UniqueMemberComparator extends LdapComparator<String>
     }
 
 
-    public LdapDN getDn( Object obj ) throws NamingException
+    public DN getDn( Object obj ) throws NamingException
     {
-        LdapDN dn = null;
+        DN dn = null;
 
-        if ( obj instanceof LdapDN )
+        if ( obj instanceof DN )
         {
-            dn = ( LdapDN ) obj;
+            dn = ( DN ) obj;
 
-            dn = ( dn.isNormalized() ? dn : LdapDN.normalize( dn, schemaManager.getNormalizerMapping() ) );
+            dn = ( dn.isNormalized() ? dn : DN.normalize( dn, schemaManager.getNormalizerMapping() ) );
         }
         else if ( obj instanceof Name )
         {
-            dn = new LdapDN( ( Name ) obj );
+            dn = new DN( ( Name ) obj );
             dn.normalize( schemaManager.getNormalizerMapping() );
         }
         else if ( obj instanceof String )
         {
-            dn = new LdapDN( ( String ) obj );
+            dn = new DN( ( String ) obj );
             dn.normalize( schemaManager.getNormalizerMapping() );
         }
         else

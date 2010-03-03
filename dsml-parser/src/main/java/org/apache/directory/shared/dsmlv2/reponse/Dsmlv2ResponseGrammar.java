@@ -58,7 +58,7 @@ import org.apache.directory.shared.ldap.codec.search.SearchResultReferenceCodec;
 import org.apache.directory.shared.ldap.codec.util.LdapURLEncodingException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.name.LdapDN;
+import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.util.Base64;
 import org.apache.directory.shared.ldap.util.LdapURL;
 import org.xmlpull.v1.XmlPullParser;
@@ -803,7 +803,7 @@ public class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGrammar
             {
                 try
                 {
-                    ldapResult.setMatchedDN( new LdapDN( attributeValue ) );
+                    ldapResult.setMatchedDN( new DN( attributeValue ) );
                 }
                 catch ( InvalidNameException e )
                 {
@@ -845,7 +845,7 @@ public class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGrammar
             {
                 try
                 {
-                    ldapResult.setMatchedDN( new LdapDN( attributeValue ) );
+                    ldapResult.setMatchedDN( new DN( attributeValue ) );
                 }
                 catch ( InvalidNameException e )
                 {
@@ -886,7 +886,7 @@ public class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGrammar
             {
                 try
                 {
-                    ldapResult.setMatchedDN( new LdapDN( attributeValue ) );
+                    ldapResult.setMatchedDN( new DN( attributeValue ) );
                 }
                 catch ( InvalidNameException e )
                 {
@@ -927,7 +927,7 @@ public class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGrammar
             {
                 try
                 {
-                    ldapResult.setMatchedDN( new LdapDN( attributeValue ) );
+                    ldapResult.setMatchedDN( new DN( attributeValue ) );
                 }
                 catch ( InvalidNameException e )
                 {
@@ -968,7 +968,7 @@ public class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGrammar
             {
                 try
                 {
-                    ldapResult.setMatchedDN( new LdapDN( attributeValue ) );
+                    ldapResult.setMatchedDN( new DN( attributeValue ) );
                 }
                 catch ( InvalidNameException e )
                 {
@@ -1009,7 +1009,7 @@ public class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGrammar
             {
                 try
                 {
-                    ldapResult.setMatchedDN( new LdapDN( attributeValue ) );
+                    ldapResult.setMatchedDN( new DN( attributeValue ) );
                 }
                 catch ( InvalidNameException e )
                 {
@@ -1050,7 +1050,7 @@ public class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGrammar
             {
                 try
                 {
-                    ldapResult.setMatchedDN( new LdapDN( attributeValue ) );
+                    ldapResult.setMatchedDN( new DN( attributeValue ) );
                 }
                 catch ( InvalidNameException e )
                 {
@@ -1546,7 +1546,7 @@ public class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGrammar
             {
                 try
                 {
-                    searchResultEntry.setObjectName( new LdapDN( attributeValue ) );
+                    searchResultEntry.setObjectName( new DN( attributeValue ) );
                 }
                 catch ( InvalidNameException e )
                 {
@@ -1619,7 +1619,7 @@ public class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGrammar
             {
                 try
                 {
-                    searchResultDone.getLdapResult().setMatchedDN( new LdapDN( attributeValue ) );
+                    searchResultDone.getLdapResult().setMatchedDN( new DN( attributeValue ) );
                 }
                 catch ( InvalidNameException e )
                 {

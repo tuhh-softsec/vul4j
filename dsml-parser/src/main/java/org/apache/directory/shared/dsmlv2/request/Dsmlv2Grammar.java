@@ -69,7 +69,7 @@ import org.apache.directory.shared.ldap.entry.client.ClientBinaryValue;
 import org.apache.directory.shared.ldap.entry.client.ClientStringValue;
 import org.apache.directory.shared.ldap.filter.SearchScope;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.name.LdapDN;
+import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.name.RDN;
 import org.apache.directory.shared.ldap.util.Base64;
 import org.apache.directory.shared.ldap.util.StringTools;
@@ -1207,7 +1207,7 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
             {
                 try
                 {
-                    addRequest.setEntryDn( new LdapDN( attributeValue ) );
+                    addRequest.setEntryDn( new DN( attributeValue ) );
                 }
                 catch ( InvalidNameException e )
                 {
@@ -1328,7 +1328,7 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
             {
                 try
                 {
-                    authRequest.setName( new LdapDN( attributeValue ) );
+                    authRequest.setName( new DN( attributeValue ) );
                 }
                 catch ( InvalidNameException e )
                 {
@@ -1375,7 +1375,7 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
             {
                 try
                 {
-                    compareRequest.setEntry( new LdapDN( attributeValue ) );
+                    compareRequest.setEntry( new DN( attributeValue ) );
                 }
                 catch ( InvalidNameException e )
                 {
@@ -1486,7 +1486,7 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
             {
                 try
                 {
-                    delRequest.setEntry( new LdapDN( attributeValue ) );
+                    delRequest.setEntry( new DN( attributeValue ) );
                 }
                 catch ( InvalidNameException e )
                 {
@@ -1632,7 +1632,7 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
             {
                 try
                 {
-                    modifyDNRequest.setEntry( new LdapDN( attributeValue ) );
+                    modifyDNRequest.setEntry( new DN( attributeValue ) );
                 }
                 catch ( InvalidNameException e )
                 {
@@ -1687,7 +1687,7 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
             {
                 try
                 {
-                    modifyDNRequest.setNewSuperior( new LdapDN( attributeValue ) );
+                    modifyDNRequest.setNewSuperior( new DN( attributeValue ) );
                 }
                 catch ( InvalidNameException e )
                 {
@@ -1732,7 +1732,7 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
             {
                 try
                 {
-                    modifyRequest.setObject( new LdapDN( attributeValue ) );
+                    modifyRequest.setObject( new DN( attributeValue ) );
                 }
                 catch ( InvalidNameException e )
                 {
@@ -1867,7 +1867,7 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
             {
                 try
                 {
-                    searchRequest.setBaseObject( new LdapDN( attributeValue ) );
+                    searchRequest.setBaseObject( new DN( attributeValue ) );
                 }
                 catch ( InvalidNameException e )
                 {

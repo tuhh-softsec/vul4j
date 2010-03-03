@@ -36,7 +36,7 @@ import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.exception.LdapOperationNotSupportedException;
 import org.apache.directory.shared.ldap.exception.LdapSchemaViolationException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
-import org.apache.directory.shared.ldap.name.LdapDN;
+import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.EntityFactory;
 import org.apache.directory.shared.ldap.schema.LdapComparator;
@@ -95,7 +95,7 @@ public class DefaultSchemaManager implements SchemaManager
     private static final Logger LOG = LoggerFactory.getLogger( DefaultSchemaManager.class );
 
     /** The NamingContext this SchemaManager is associated with */
-    private LdapDN namingContext;
+    private DN namingContext;
 
     /** The global registries for this namingContext */
     private volatile Registries registries;
@@ -110,7 +110,7 @@ public class DefaultSchemaManager implements SchemaManager
     protected final EntityFactory factory;
 
     /** the normalized name for the schema modification attributes */
-    private LdapDN schemaModificationAttributesDN;
+    private DN schemaModificationAttributesDN;
     
     /** A Map containing all the schema being dependent from a schema */
     private Map<String, Set<String>> schemaDependences = new HashMap<String, Set<String>>();
@@ -131,7 +131,7 @@ public class DefaultSchemaManager implements SchemaManager
     public DefaultSchemaManager( SchemaLoader loader ) throws Exception
     {
         // Default to the the root (one schemaManager for all the entries
-        namingContext = LdapDN.EMPTY_LDAPDN;
+        namingContext = DN.EMPTY_DN;
         this.schemaLoader = loader;
         errors = new ArrayList<Throwable>();
         registries = new Registries( this );
@@ -147,7 +147,7 @@ public class DefaultSchemaManager implements SchemaManager
      * @param loader The schema loader to use
      * @param namingContext The associated NamingContext
      */
-    public DefaultSchemaManager( SchemaLoader loader, LdapDN namingContext ) throws Exception
+    public DefaultSchemaManager( SchemaLoader loader, DN namingContext ) throws Exception
     {
         this.namingContext = namingContext;
         this.schemaLoader = loader;
@@ -1311,7 +1311,7 @@ public class DefaultSchemaManager implements SchemaManager
     /**
      * @return the namingContext
      */
-    public LdapDN getNamingContext()
+    public DN getNamingContext()
     {
         return namingContext;
     }
@@ -1326,7 +1326,7 @@ public class DefaultSchemaManager implements SchemaManager
     {
         try
         {
-            schemaModificationAttributesDN = new LdapDN( SchemaConstants.SCHEMA_MODIFICATIONS_DN );
+            schemaModificationAttributesDN = new DN( SchemaConstants.SCHEMA_MODIFICATIONS_DN );
             schemaModificationAttributesDN
                 .normalize( getRegistries().getAttributeTypeRegistry().getNormalizerMapping() );
         }

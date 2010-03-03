@@ -33,7 +33,7 @@ import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.message.internal.InternalCompareRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalResultResponse;
-import org.apache.directory.shared.ldap.name.LdapDN;
+import org.apache.directory.shared.ldap.name.DN;
 import org.junit.Test;
 
 
@@ -65,12 +65,12 @@ public class CompareRequestImplTest
     public void testEqualsExactCopy() throws InvalidNameException
     {
         CompareRequestImpl req0 = new CompareRequestImpl( 5 );
-        req0.setName( new LdapDN( "cn=admin,dc=example,dc=com" ) );
+        req0.setName( new DN( "cn=admin,dc=example,dc=com" ) );
         req0.setAttributeId( "objectClass" );
         req0.setAssertionValue( "top" );
 
         CompareRequestImpl req1 = new CompareRequestImpl( 5 );
-        req1.setName( new LdapDN( "cn=admin,dc=example,dc=com" ) );
+        req1.setName( new DN( "cn=admin,dc=example,dc=com" ) );
         req1.setAttributeId( "objectClass" );
         req1.setAssertionValue( "top" );
 
@@ -86,10 +86,10 @@ public class CompareRequestImplTest
     public void testNotEqualDiffId() throws InvalidNameException
     {
         CompareRequestImpl req0 = new CompareRequestImpl( 7 );
-        req0.setName( new LdapDN( "cn=admin,dc=example,dc=com" ) );
+        req0.setName( new DN( "cn=admin,dc=example,dc=com" ) );
 
         CompareRequestImpl req1 = new CompareRequestImpl( 5 );
-        req1.setName( new LdapDN( "cn=admin,dc=example,dc=com" ) );
+        req1.setName( new DN( "cn=admin,dc=example,dc=com" ) );
 
         assertFalse( req0.equals( req1 ) );
         assertFalse( req1.equals( req0 ) );
@@ -103,12 +103,12 @@ public class CompareRequestImplTest
     public void testNotEqualDiffAttributeIds() throws InvalidNameException
     {
         CompareRequestImpl req0 = new CompareRequestImpl( 5 );
-        req0.setName( new LdapDN( "cn=admin,dc=apache,dc=org" ) );
+        req0.setName( new DN( "cn=admin,dc=apache,dc=org" ) );
         req0.setAttributeId( "dc" );
         req0.setAssertionValue( "apache.org" );
 
         CompareRequestImpl req1 = new CompareRequestImpl( 5 );
-        req1.setName( new LdapDN( "cn=admin,dc=apache,dc=org" ) );
+        req1.setName( new DN( "cn=admin,dc=apache,dc=org" ) );
         req1.setAttributeId( "nisDomain" );
         req1.setAssertionValue( "apache.org" );
 
@@ -124,12 +124,12 @@ public class CompareRequestImplTest
     public void testNotEqualDiffValue() throws InvalidNameException
     {
         CompareRequestImpl req0 = new CompareRequestImpl( 5 );
-        req0.setName( new LdapDN( "cn=admin,dc=apache,dc=org" ) );
+        req0.setName( new DN( "cn=admin,dc=apache,dc=org" ) );
         req0.setAttributeId( "dc" );
         req0.setAssertionValue( "apache.org" );
 
         CompareRequestImpl req1 = new CompareRequestImpl( 5 );
-        req1.setName( new LdapDN( "cn=admin,dc=apache,dc=org" ) );
+        req1.setName( new DN( "cn=admin,dc=apache,dc=org" ) );
         req1.setAttributeId( "dc" );
         req1.setAssertionValue( "nagoya.apache.org" );
 
@@ -177,13 +177,13 @@ public class CompareRequestImplTest
             }
 
 
-            public LdapDN getName()
+            public DN getName()
             {
                 return null;
             }
 
 
-            public void setName( LdapDN name )
+            public void setName( DN name )
             {
             }
 

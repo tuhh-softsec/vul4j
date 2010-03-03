@@ -30,7 +30,7 @@ import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Modification;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.entry.client.DefaultClientAttribute;
-import org.apache.directory.shared.ldap.name.LdapDN;
+import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.util.AttributeUtils;
 import org.apache.directory.shared.ldap.util.Base64;
 import org.apache.directory.shared.ldap.util.StringTools;
@@ -169,7 +169,7 @@ public class LdifUtils
      * @return the corresponding LDIF code as a String
      * @throws NamingException If a naming exception is encountered.
      */
-    public static String convertToLdif( Attributes attrs, LdapDN dn, int length ) throws NamingException
+    public static String convertToLdif( Attributes attrs, DN dn, int length ) throws NamingException
     {
         return convertEntryToLdif( AttributeUtils.toClientEntry( attrs, dn ), length );
     }
@@ -181,7 +181,7 @@ public class LdifUtils
      * @return the corresponding LDIF code as a String
      * @throws NamingException If a naming exception is encountered.
      */
-    public static String convertToLdif( Attributes attrs, LdapDN dn ) throws NamingException
+    public static String convertToLdif( Attributes attrs, DN dn ) throws NamingException
     {
         return convertEntryToLdif( AttributeUtils.toClientEntry( attrs, dn ), DEFAULT_LINE_LENGTH );
     }

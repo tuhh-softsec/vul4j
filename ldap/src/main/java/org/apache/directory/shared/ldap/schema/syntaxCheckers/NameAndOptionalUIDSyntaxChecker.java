@@ -21,7 +21,7 @@ package org.apache.directory.shared.ldap.schema.syntaxCheckers;
 
 
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
-import org.apache.directory.shared.ldap.name.LdapDN;
+import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.schema.SyntaxChecker;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
@@ -117,7 +117,7 @@ public class NameAndOptionalUIDSyntaxChecker extends SyntaxChecker
                 // except if the '#' is in first position
                 if ( sharpPos > 0 )
                 {
-                    boolean result = LdapDN.isValid( strValue.substring( 0, sharpPos ) );
+                    boolean result = DN.isValid( strValue.substring( 0, sharpPos ) );
                     
                     if ( result )
                     {
@@ -149,7 +149,7 @@ public class NameAndOptionalUIDSyntaxChecker extends SyntaxChecker
         {
             // No UID, the strValue is a DN
             // Check that the value is a valid DN
-            boolean result = LdapDN.isValid( strValue );
+            boolean result = DN.isValid( strValue );
             
             if ( result )
             {

@@ -26,7 +26,7 @@ import java.util.Map;
 
 import javax.naming.NamingException;
 
-import org.apache.directory.shared.ldap.name.LdapDN;
+import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.name.RDN;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -83,7 +83,7 @@ public class DnBranchNode<N> implements DnNode<N>
      * @param element The associated element to add as a tree node
      * @return The modified tree structure.
      */
-    private DnNode<N> recursivelyAddElement( DnBranchNode<N> current, LdapDN dn, int index, N element ) throws NamingException
+    private DnNode<N> recursivelyAddElement( DnBranchNode<N> current, DN dn, int index, N element ) throws NamingException
     {
         String rdnAtIndex = dn.getRdn( index ).toString();
         
@@ -185,7 +185,7 @@ public class DnBranchNode<N> implements DnNode<N>
      * @param dn the normalized distinguished name to resolve to a parent
      * @return the parent associated with the normalized dn
      */
-    public N getParentElement( LdapDN dn )
+    public N getParentElement( DN dn )
     {
         Enumeration<String> rdns = dn.getAll();
         
@@ -237,7 +237,7 @@ public class DnBranchNode<N> implements DnNode<N>
      * @param dn the normalized distinguished name to resolve to a parent
      * @return the parent associated with the normalized dn
      */
-    public boolean hasParentElement( LdapDN dn )
+    public boolean hasParentElement( DN dn )
     {
         Enumeration<RDN> rdns = dn.getAllRdn();
         
@@ -346,7 +346,7 @@ public class DnBranchNode<N> implements DnNode<N>
      * @param element
      * @throws NamingException
      */
-    public void add( LdapDN dn, N element ) throws NamingException
+    public void add( DN dn, N element ) throws NamingException
     {
         recursivelyAddElement( this, dn, 0, element );
     }

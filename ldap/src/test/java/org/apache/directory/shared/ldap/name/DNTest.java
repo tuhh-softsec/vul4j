@@ -55,12 +55,12 @@ import org.junit.Test;
 
 
 /**
- * Test the class LdapDN
+ * Test the class DN
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$, 
  */
-public class LdapDNTest
+public class DNTest
 {
     private Map<String, OidNormalizer> oids;
     private Map<String, OidNormalizer> oidOids;
@@ -104,9 +104,9 @@ public class LdapDNTest
      * Test a null DN
      */
     @Test
-    public void testLdapDNNull()
+    public void testDnNull()
     {
-        LdapDN dn = new LdapDN();
+        DN dn = new DN();
         assertEquals( "", dn.getName() );
         assertTrue( dn.isEmpty() );
     }
@@ -116,9 +116,9 @@ public class LdapDNTest
      * test an empty DN
      */
     @Test
-    public void testLdapDNEmpty() throws InvalidNameException
+    public void testDnEmpty() throws InvalidNameException
     {
-        LdapDN dn = new LdapDN( "" );
+        DN dn = new DN( "" );
         assertEquals( "", dn.getName() );
         assertTrue( dn.isEmpty() );
     }
@@ -128,11 +128,11 @@ public class LdapDNTest
      * test a simple DN : a = b
      */
     @Test
-    public void testLdapDNSimple() throws InvalidNameException
+    public void testDnSimple() throws InvalidNameException
     {
-        LdapDN dn = new LdapDN( "a = b" );
+        DN dn = new DN( "a = b" );
 
-        assertTrue( LdapDN.isValid( "a = b" ) );
+        assertTrue( DN.isValid( "a = b" ) );
         assertEquals( "a = b", dn.getName() );
         assertEquals( "a=b", dn.toString() );
     }
@@ -142,11 +142,11 @@ public class LdapDNTest
      * test a simple DN with some spaces : "a = b  "
      */
     @Test
-    public void testLdapDNSimpleWithSpaces() throws InvalidNameException
+    public void testDnSimpleWithSpaces() throws InvalidNameException
     {
-        LdapDN dn = new LdapDN( "a = b  " );
+        DN dn = new DN( "a = b  " );
 
-        assertTrue( LdapDN.isValid( "a = b  " ) );
+        assertTrue( DN.isValid( "a = b  " ) );
         assertEquals( "a = b  ", dn.getName() );
         assertEquals( "a=b", dn.toString() );
     }
@@ -156,11 +156,11 @@ public class LdapDNTest
      * test a composite DN : a = b, d = e
      */
     @Test
-    public void testLdapDNComposite() throws InvalidNameException
+    public void testDnComposite() throws InvalidNameException
     {
-        LdapDN dn = new LdapDN( "a = b, c = d" );
+        DN dn = new DN( "a = b, c = d" );
 
-        assertTrue( LdapDN.isValid( "a = b, c = d" ) );
+        assertTrue( DN.isValid( "a = b, c = d" ) );
         assertEquals( "a=b,c=d", dn.toString() );
         assertEquals( "a = b, c = d", dn.getName() );
     }
@@ -170,11 +170,11 @@ public class LdapDNTest
      * test a composite DN with spaces : a = b  , d = e
      */
     @Test
-    public void testLdapDNCompositeWithSpaces() throws InvalidNameException
+    public void testDnCompositeWithSpaces() throws InvalidNameException
     {
-        LdapDN dn = new LdapDN( "a = b  , c = d" );
+        DN dn = new DN( "a = b  , c = d" );
 
-        assertTrue( LdapDN.isValid( "a = b  , c = d" ) );
+        assertTrue( DN.isValid( "a = b  , c = d" ) );
         assertEquals( "a=b,c=d", dn.toString() );
         assertEquals( "a = b  , c = d", dn.getName() );
     }
@@ -184,11 +184,11 @@ public class LdapDNTest
      * test a composite DN with or without spaces: a=b, a =b, a= b, a = b, a = b
      */
     @Test
-    public void testLdapDNCompositeWithSpace() throws InvalidNameException
+    public void testDnCompositeWithSpace() throws InvalidNameException
     {
-        LdapDN dn = new LdapDN( "a=b, a =b, a= b, a = b, a  =  b" );
+        DN dn = new DN( "a=b, a =b, a= b, a = b, a  =  b" );
 
-        assertTrue( LdapDN.isValid( "a=b, a =b, a= b, a = b, a  =  b" ) );
+        assertTrue( DN.isValid( "a=b, a =b, a= b, a = b, a  =  b" ) );
         assertEquals( "a=b,a=b,a=b,a=b,a=b", dn.toString() );
         assertEquals( "a=b, a =b, a= b, a = b, a  =  b", dn.getName() );
     }
@@ -199,11 +199,11 @@ public class LdapDNTest
      * return a=b,c=d,e=f (the ';' is replaced by a ',')
      */
     @Test
-    public void testLdapDNCompositeSepators() throws InvalidNameException
+    public void testDnCompositeSepators() throws InvalidNameException
     {
-        LdapDN dn = new LdapDN( "a=b;c=d,e=f" );
+        DN dn = new DN( "a=b;c=d,e=f" );
 
-        assertTrue( LdapDN.isValid( "a=b;c=d,e=f" ) );
+        assertTrue( DN.isValid( "a=b;c=d,e=f" ) );
         assertEquals( "a=b,c=d,e=f", dn.toString() );
         assertEquals( "a=b;c=d,e=f", dn.getName() );
     }
@@ -213,11 +213,11 @@ public class LdapDNTest
      * test a simple DN with multiple NameComponents : a = b + c = d
      */
     @Test
-    public void testLdapDNSimpleMultivaluedAttribute() throws InvalidNameException
+    public void testDnSimpleMultivaluedAttribute() throws InvalidNameException
     {
-        LdapDN dn = new LdapDN( "a = b + c = d" );
+        DN dn = new DN( "a = b + c = d" );
 
-        assertTrue( LdapDN.isValid( "a = b + c = d" ) );
+        assertTrue( DN.isValid( "a = b + c = d" ) );
         assertEquals( "a=b+c=d", dn.toString() );
         assertEquals( "a = b + c = d", dn.getName() );
     }
@@ -228,11 +228,11 @@ public class LdapDNTest
      * i=j
      */
     @Test
-    public void testLdapDNCompositeMultivaluedAttribute() throws InvalidNameException
+    public void testDnCompositeMultivaluedAttribute() throws InvalidNameException
     {
-        LdapDN dn = new LdapDN( "a=b+c=d, e=f + g=h + i=j" );
+        DN dn = new DN( "a=b+c=d, e=f + g=h + i=j" );
 
-        assertTrue( LdapDN.isValid( "a=b+c=d, e=f + g=h + i=j" ) );
+        assertTrue( DN.isValid( "a=b+c=d, e=f + g=h + i=j" ) );
         assertEquals( "a=b+c=d,e=f+g=h+i=j", dn.toString() );
         assertEquals( "a=b+c=d, e=f + g=h + i=j", dn.getName() );
     }
@@ -244,10 +244,10 @@ public class LdapDNTest
     @Test
     public void testAddAllWithMultivaluedAttribute() throws InvalidNameException
     {
-        LdapDN dn = new LdapDN( "cn=Kate Bush+sn=Bush,ou=system" );
-        LdapDN target = new LdapDN();
+        DN dn = new DN( "cn=Kate Bush+sn=Bush,ou=system" );
+        DN target = new DN();
 
-        assertTrue( LdapDN.isValid( "cn=Kate Bush+sn=Bush,ou=system" ) );
+        assertTrue( DN.isValid( "cn=Kate Bush+sn=Bush,ou=system" ) );
         target.addAll( target.size(), dn );
         assertEquals( "cn=Kate Bush+sn=Bush,ou=system", target.toString() );
         assertEquals( "cn=Kate Bush+sn=Bush,ou=system", target.getName() );
@@ -258,11 +258,11 @@ public class LdapDNTest
      * test a simple DN with an oid prefix (uppercase) : OID.12.34.56 = azerty
      */
     @Test
-    public void testLdapDNOidUpper() throws InvalidNameException
+    public void testDnOidUpper() throws InvalidNameException
     {
-        LdapDN dn = new LdapDN( "OID.12.34.56 = azerty" );
+        DN dn = new DN( "OID.12.34.56 = azerty" );
 
-        assertTrue( LdapDN.isValid( "OID.12.34.56 = azerty" ) );
+        assertTrue( DN.isValid( "OID.12.34.56 = azerty" ) );
         assertEquals( "oid.12.34.56=azerty", dn.toString() );
         assertEquals( "OID.12.34.56 = azerty", dn.getName() );
     }
@@ -272,11 +272,11 @@ public class LdapDNTest
      * test a simple DN with an oid prefix (lowercase) : oid.12.34.56 = azerty
      */
     @Test
-    public void testLdapDNOidLower() throws InvalidNameException
+    public void testDnOidLower() throws InvalidNameException
     {
-        LdapDN dn = new LdapDN( "oid.12.34.56 = azerty" );
+        DN dn = new DN( "oid.12.34.56 = azerty" );
 
-        assertTrue( LdapDN.isValid( "oid.12.34.56 = azerty" ) );
+        assertTrue( DN.isValid( "oid.12.34.56 = azerty" ) );
         assertEquals( "oid.12.34.56=azerty", dn.toString() );
         assertEquals( "oid.12.34.56 = azerty", dn.getName() );
     }
@@ -287,11 +287,11 @@ public class LdapDNTest
      * azerty
      */
     @Test
-    public void testLdapDNOidWithoutPrefix() throws InvalidNameException
+    public void testDnOidWithoutPrefix() throws InvalidNameException
     {
-        LdapDN dn = new LdapDN( "12.34.56 = azerty" );
+        DN dn = new DN( "12.34.56 = azerty" );
 
-        assertTrue( LdapDN.isValid( "12.34.56 = azerty" ) );
+        assertTrue( DN.isValid( "12.34.56 = azerty" ) );
         assertEquals( "12.34.56=azerty", dn.toString() );
         assertEquals( "12.34.56 = azerty", dn.getName() );
     }
@@ -302,11 +302,11 @@ public class LdapDNTest
      * azerty; 7.8 = test
      */
     @Test
-    public void testLdapDNCompositeOidWithoutPrefix() throws InvalidNameException
+    public void testDnCompositeOidWithoutPrefix() throws InvalidNameException
     {
-        LdapDN dn = new LdapDN( "12.34.56 = azerty; 7.8 = test" );
+        DN dn = new DN( "12.34.56 = azerty; 7.8 = test" );
 
-        assertTrue( LdapDN.isValid( "12.34.56 = azerty; 7.8 = test" ) );
+        assertTrue( DN.isValid( "12.34.56 = azerty; 7.8 = test" ) );
         assertEquals( "12.34.56=azerty,7.8=test", dn.toString() );
         assertEquals( "12.34.56 = azerty; 7.8 = test", dn.getName() );
     }
@@ -316,11 +316,11 @@ public class LdapDNTest
      * test a simple DN with pair char attribute value : a = \,\=\+\<\>\#\;\\\"\C4\8D"
      */
     @Test
-    public void testLdapDNPairCharAttributeValue() throws InvalidNameException
+    public void testDnPairCharAttributeValue() throws InvalidNameException
     {
-        LdapDN dn = new LdapDN( "a = \\,\\=\\+\\<\\>\\#\\;\\\\\\\"\\C4\\8D" );
+        DN dn = new DN( "a = \\,\\=\\+\\<\\>\\#\\;\\\\\\\"\\C4\\8D" );
 
-        assertTrue( LdapDN.isValid( "a = \\,\\=\\+\\<\\>\\#\\;\\\\\\\"\\C4\\8D" ) );
+        assertTrue( DN.isValid( "a = \\,\\=\\+\\<\\>\\#\\;\\\\\\\"\\C4\\8D" ) );
         assertEquals( "a=\\,=\\+\\<\\>#\\;\\\\\\\"\u010D", dn.toString() );
         assertEquals( "a = \\,\\=\\+\\<\\>\\#\\;\\\\\\\"\\C4\\8D", dn.getName() );
     }
@@ -330,11 +330,11 @@ public class LdapDNTest
      * test a simple DN with pair char attribute value : "SN=Lu\C4\8Di\C4\87"
      */
     @Test
-    public void testLdapDNRFC253_Lucic() throws InvalidNameException
+    public void testDnRFC253_Lucic() throws InvalidNameException
     {
-        LdapDN dn = new LdapDN( "SN=Lu\\C4\\8Di\\C4\\87" );
+        DN dn = new DN( "SN=Lu\\C4\\8Di\\C4\\87" );
 
-        assertTrue( LdapDN.isValid( "SN=Lu\\C4\\8Di\\C4\\87" ) );
+        assertTrue( DN.isValid( "SN=Lu\\C4\\8Di\\C4\\87" ) );
         assertEquals( "sn=Lu\u010Di\u0107", dn.toString() );
         assertEquals( "SN=Lu\\C4\\8Di\\C4\\87", dn.getName() );
     }
@@ -344,11 +344,11 @@ public class LdapDNTest
      * test a simple DN with hexString attribute value : a = #0010A0AAFF
      */
     @Test
-    public void testLdapDNHexStringAttributeValue() throws InvalidNameException
+    public void testDnHexStringAttributeValue() throws InvalidNameException
     {
-        LdapDN dn = new LdapDN( "a = #0010A0AAFF" );
+        DN dn = new DN( "a = #0010A0AAFF" );
 
-        assertTrue( LdapDN.isValid( "a = #0010A0AAFF" ) );
+        assertTrue( DN.isValid( "a = #0010A0AAFF" ) );
         assertEquals( "a=#0010A0AAFF", dn.toString() );
         assertEquals( "a = #0010A0AAFF", dn.getName() );
     }
@@ -361,26 +361,26 @@ public class LdapDNTest
      * (without the ESC it would be a valid hexstring).
      */
     @Test
-    public void testLdapDNEscSharpNumber() throws InvalidNameException, NamingException
+    public void testDnEscSharpNumber() throws InvalidNameException, NamingException
     {
-        LdapDN dn = new LdapDN( "a = \\#123456" );
+        DN dn = new DN( "a = \\#123456" );
 
-        assertTrue( LdapDN.isValid( "a = \\#123456" ) );
+        assertTrue( DN.isValid( "a = \\#123456" ) );
         assertEquals( "a=\\#123456", dn.toString() );
         assertEquals( "a = \\#123456", dn.getName() );
 
         RDN rdn = dn.getRdn();
         assertEquals( "a = \\#123456", rdn.getUpName() );
 
-        assertTrue( LdapDN.isValid( "a = \\#00" ) );
-        assertTrue( LdapDN.isValid( "a = \\#11" ) );
-        assertTrue( LdapDN.isValid( "a = \\#99" ) );
-        assertTrue( LdapDN.isValid( "a = \\#AA" ) );
-        assertTrue( LdapDN.isValid( "a = \\#FF" ) );
+        assertTrue( DN.isValid( "a = \\#00" ) );
+        assertTrue( DN.isValid( "a = \\#11" ) );
+        assertTrue( DN.isValid( "a = \\#99" ) );
+        assertTrue( DN.isValid( "a = \\#AA" ) );
+        assertTrue( DN.isValid( "a = \\#FF" ) );
 
-        assertTrue( LdapDN.isValid( "uid=\\#123456" ) );
-        assertTrue( LdapDN.isValid( "cn=\\#ACL_AD-Projects_Author,ou=Notes_Group,o=Contacts,c=DE" ) );
-        assertTrue( LdapDN.isValid( "cn=\\#Abraham" ) );
+        assertTrue( DN.isValid( "uid=\\#123456" ) );
+        assertTrue( DN.isValid( "cn=\\#ACL_AD-Projects_Author,ou=Notes_Group,o=Contacts,c=DE" ) );
+        assertTrue( DN.isValid( "cn=\\#Abraham" ) );
     }
 
 
@@ -388,11 +388,11 @@ public class LdapDNTest
      * test a simple DN with a # on first position
      */
     @Test
-    public void testLdapDNSharpFirst() throws InvalidNameException, NamingException
+    public void testDnSharpFirst() throws InvalidNameException, NamingException
     {
-        LdapDN dn = new LdapDN( "a = \\#this is a sharp" );
+        DN dn = new DN( "a = \\#this is a sharp" );
 
-        assertTrue( LdapDN.isValid( "a = \\#this is a sharp" ) );
+        assertTrue( DN.isValid( "a = \\#this is a sharp" ) );
         assertEquals( "a=\\#this is a sharp", dn.toString() );
         assertEquals( "a = \\#this is a sharp", dn.getName() );
 
@@ -405,16 +405,16 @@ public class LdapDNTest
      * Normalize a simple DN with a # on first position
      */
     @Test
-    public void testNormalizeLdapDNSharpFirst() throws InvalidNameException, NamingException
+    public void testNormalizeDnSharpFirst() throws InvalidNameException, NamingException
     {
-        LdapDN dn = new LdapDN( "ou = \\#this is a sharp" );
+        DN dn = new DN( "ou = \\#this is a sharp" );
 
-        assertTrue( LdapDN.isValid( "ou = \\#this is a sharp" ) );
+        assertTrue( DN.isValid( "ou = \\#this is a sharp" ) );
         assertEquals( "ou=\\#this is a sharp", dn.toString() );
         assertEquals( "ou = \\#this is a sharp", dn.getName() );
 
         // Check the normalization now
-        LdapDN ndn = dn.normalize( oidOids );
+        DN ndn = dn.normalize( oidOids );
 
         assertEquals( "ou = \\#this is a sharp", ndn.getName() );
         assertEquals( "2.5.4.11=\\#this is a sharp", ndn.toString() );
@@ -426,15 +426,15 @@ public class LdapDNTest
      * This is a corner case for the parser and normalizer.
      */
     @Test
-    public void testNormalizeLdapDNEscEscHexHex() throws NamingException
+    public void testNormalizeDnEscEscHexHex() throws NamingException
     {
-        LdapDN dn = new LdapDN( "ou = AC\\\\DC" );
-        assertTrue( LdapDN.isValid( "ou = AC\\\\DC" ) );
+        DN dn = new DN( "ou = AC\\\\DC" );
+        assertTrue( DN.isValid( "ou = AC\\\\DC" ) );
         assertEquals( "ou=AC\\\\DC", dn.toString() );
         assertEquals( "ou = AC\\\\DC", dn.getName() );
 
         // Check the normalization now
-        LdapDN ndn = dn.normalize( oidOids );
+        DN ndn = dn.normalize( oidOids );
         assertEquals( "ou = AC\\\\DC", ndn.getName() );
         assertEquals( "2.5.4.11=ac\\\\dc", ndn.toString() );
     }
@@ -444,17 +444,17 @@ public class LdapDNTest
      * test a simple DN with a wrong hexString attribute value : a = #0010Z0AAFF
      */
     @Test
-    public void testLdapDNWrongHexStringAttributeValue()
+    public void testDnWrongHexStringAttributeValue()
     {
         try
         {
-            new LdapDN( "a = #0010Z0AAFF" );
+            new DN( "a = #0010Z0AAFF" );
             fail();
         }
         catch ( InvalidNameException ine )
         {
 
-            assertFalse( LdapDN.isValid( "a = #0010Z0AAFF" ) );
+            assertFalse( DN.isValid( "a = #0010Z0AAFF" ) );
             assertTrue( true );
         }
     }
@@ -464,16 +464,16 @@ public class LdapDNTest
      * test a simple DN with a wrong hexString attribute value : a = #AABBCCDD3
      */
     @Test
-    public void testLdapDNWrongHexStringAttributeValue2()
+    public void testDnWrongHexStringAttributeValue2()
     {
         try
         {
-            new LdapDN( "a = #AABBCCDD3" );
+            new DN( "a = #AABBCCDD3" );
             fail();
         }
         catch ( InvalidNameException ine )
         {
-            assertFalse( LdapDN.isValid( "a = #AABBCCDD3" ) );
+            assertFalse( DN.isValid( "a = #AABBCCDD3" ) );
             assertTrue( true );
         }
     }
@@ -483,11 +483,11 @@ public class LdapDNTest
      * test a simple DN with a quote in attribute value : a = quoted \"value\"
      */
     @Test
-    public void testLdapDNQuoteInAttributeValue() throws InvalidNameException
+    public void testDnQuoteInAttributeValue() throws InvalidNameException
     {
-        LdapDN dn = new LdapDN( "a = quoted \\\"value\\\"" );
+        DN dn = new DN( "a = quoted \\\"value\\\"" );
 
-        assertTrue( LdapDN.isValid( "a = quoted \\\"value\\\"" ) );
+        assertTrue( DN.isValid( "a = quoted \\\"value\\\"" ) );
         assertEquals( "a=quoted \\\"value\\\"", dn.toString() );
         assertEquals( "a = quoted \\\"value\\\"", dn.getName() );
     }
@@ -497,11 +497,11 @@ public class LdapDNTest
      * test a simple DN with quoted attribute value : a = \" quoted value \"
      */
     @Test
-    public void testLdapDNQuotedAttributeValue() throws InvalidNameException
+    public void testDnQuotedAttributeValue() throws InvalidNameException
     {
-        LdapDN dn = new LdapDN( "a = \\\" quoted value \\\"" );
+        DN dn = new DN( "a = \\\" quoted value \\\"" );
 
-        assertTrue( LdapDN.isValid( "a = \\\" quoted value \\\"" ) );
+        assertTrue( DN.isValid( "a = \\\" quoted value \\\"" ) );
         assertEquals( "a=\\\" quoted value \\\"", dn.toString() );
         assertEquals( "a = \\\" quoted value \\\"", dn.getName() );
     }
@@ -511,14 +511,14 @@ public class LdapDNTest
      * test a simple DN with a comma at the end
      */
     @Test
-    public void testLdapDNComaAtEnd()
+    public void testDnComaAtEnd()
     {
-        assertFalse( LdapDN.isValid( "a = b," ) );
-        assertFalse( LdapDN.isValid( "a = b, " ) );
+        assertFalse( DN.isValid( "a = b," ) );
+        assertFalse( DN.isValid( "a = b, " ) );
 
         try
         {
-            new LdapDN( "a = b," );
+            new DN( "a = b," );
             fail();
         }
         catch ( InvalidNameException ine )
@@ -534,11 +534,11 @@ public class LdapDNTest
      * test a remove from position 0
      */
     @Test
-    public void testLdapDNRemove0() throws InvalidNameException
+    public void testDnRemove0() throws InvalidNameException
     {
-        LdapDN dn = new LdapDN( "a=b, c=d, e=f" );
+        DN dn = new DN( "a=b, c=d, e=f" );
 
-        assertTrue( LdapDN.isValid( "a=b, c=d, e=f" ) );
+        assertTrue( DN.isValid( "a=b, c=d, e=f" ) );
         assertEquals( "e=f", dn.remove( 0 ).toString() );
         assertEquals( "a=b,c=d", dn.toString() );
         assertEquals( "a=b, c=d", dn.getName() );
@@ -549,11 +549,11 @@ public class LdapDNTest
      * test a remove from position 1
      */
     @Test
-    public void testLdapDNRemove1() throws InvalidNameException
+    public void testDnRemove1() throws InvalidNameException
     {
-        LdapDN dn = new LdapDN( "a=b, c=d, e=f" );
+        DN dn = new DN( "a=b, c=d, e=f" );
 
-        assertTrue( LdapDN.isValid( "a=b, c=d, e=f" ) );
+        assertTrue( DN.isValid( "a=b, c=d, e=f" ) );
         assertEquals( "c=d", dn.remove( 1 ).toString() );
         assertEquals( "a=b, e=f", dn.getName() );
     }
@@ -563,11 +563,11 @@ public class LdapDNTest
      * test a remove from position 2
      */
     @Test
-    public void testLdapDNRemove2() throws InvalidNameException
+    public void testDnRemove2() throws InvalidNameException
     {
-        LdapDN dn = new LdapDN( "a=b, c=d, e=f" );
+        DN dn = new DN( "a=b, c=d, e=f" );
 
-        assertTrue( LdapDN.isValid( "a=b, c=d, e=f" ) );
+        assertTrue( DN.isValid( "a=b, c=d, e=f" ) );
         assertEquals( "a=b", dn.remove( 2 ).toString() );
         assertEquals( " c=d, e=f", dn.getName() );
     }
@@ -577,11 +577,11 @@ public class LdapDNTest
      * test a remove from position 1 whith semi colon
      */
     @Test
-    public void testLdapDNRemove1WithSemiColon() throws InvalidNameException
+    public void testDnRemove1WithSemiColon() throws InvalidNameException
     {
-        LdapDN dn = new LdapDN( "a=b, c=d; e=f" );
+        DN dn = new DN( "a=b, c=d; e=f" );
 
-        assertTrue( LdapDN.isValid( "a=b, c=d; e=f" ) );
+        assertTrue( DN.isValid( "a=b, c=d; e=f" ) );
         assertEquals( "c=d", dn.remove( 1 ).toString() );
         assertEquals( "a=b, e=f", dn.getName() );
     }
@@ -591,11 +591,11 @@ public class LdapDNTest
      * test a remove out of bound
      */
     @Test
-    public void testLdapDNRemoveOutOfBound() throws InvalidNameException
+    public void testDnRemoveOutOfBound() throws InvalidNameException
     {
-        LdapDN dn = new LdapDN( "a=b, c=d; e=f" );
+        DN dn = new DN( "a=b, c=d; e=f" );
 
-        assertTrue( LdapDN.isValid( "a=b, c=d; e=f" ) );
+        assertTrue( DN.isValid( "a=b, c=d; e=f" ) );
 
         try
         {
@@ -615,11 +615,11 @@ public class LdapDNTest
      * test a 0 size
      */
     @Test
-    public void testLdapDNSize0()
+    public void testDnSize0()
     {
-        LdapDN dn = new LdapDN();
+        DN dn = new DN();
 
-        assertTrue( LdapDN.isValid( "" ) );
+        assertTrue( DN.isValid( "" ) );
         assertEquals( 0, dn.size() );
     }
 
@@ -628,11 +628,11 @@ public class LdapDNTest
      * test a 1 size
      */
     @Test
-    public void testLdapDNSize1() throws InvalidNameException
+    public void testDnSize1() throws InvalidNameException
     {
-        LdapDN dn = new LdapDN( "a=b" );
+        DN dn = new DN( "a=b" );
 
-        assertTrue( LdapDN.isValid( "a=b" ) );
+        assertTrue( DN.isValid( "a=b" ) );
         assertEquals( 1, dn.size() );
     }
 
@@ -641,11 +641,11 @@ public class LdapDNTest
      * test a 3 size
      */
     @Test
-    public void testLdapDNSize3() throws InvalidNameException
+    public void testDnSize3() throws InvalidNameException
     {
-        LdapDN dn = new LdapDN( "a=b, c=d, e=f" );
+        DN dn = new DN( "a=b, c=d, e=f" );
 
-        assertTrue( LdapDN.isValid( "a=b, c=d, e=f" ) );
+        assertTrue( DN.isValid( "a=b, c=d, e=f" ) );
         assertEquals( 3, dn.size() );
     }
 
@@ -654,11 +654,11 @@ public class LdapDNTest
      * test a 3 size with NameComponents
      */
     @Test
-    public void testLdapDNSize3NC() throws InvalidNameException
+    public void testDnSize3NC() throws InvalidNameException
     {
-        LdapDN dn = new LdapDN( "a=b+c=d, c=d, e=f" );
+        DN dn = new DN( "a=b+c=d, c=d, e=f" );
 
-        assertTrue( LdapDN.isValid( "a=b+c=d, c=d, e=f" ) );
+        assertTrue( DN.isValid( "a=b+c=d, c=d, e=f" ) );
         assertEquals( 3, dn.size() );
     }
 
@@ -669,7 +669,7 @@ public class LdapDNTest
     @Test
     public void testLdapResizing() throws InvalidNameException
     {
-        LdapDN dn = new LdapDN();
+        DN dn = new DN();
         assertEquals( 0, dn.size() );
 
         dn.add( "e = f" );
@@ -688,12 +688,12 @@ public class LdapDNTest
 
     // ADD Operations
     /**
-     * test Add on a new LdapDN
+     * test Add on a new DN
      */
     @Test
     public void testLdapEmptyAdd() throws InvalidNameException
     {
-        LdapDN dn = new LdapDN();
+        DN dn = new DN();
 
         dn.add( "e = f" );
         assertEquals( "e=f", dn.toString() );
@@ -703,12 +703,12 @@ public class LdapDNTest
 
 
     /**
-     * test Add to an existing LdapDN
+     * test Add to an existing DN
      */
     @Test
-    public void testLdapDNAdd() throws InvalidNameException
+    public void testDnAdd() throws InvalidNameException
     {
-        LdapDN dn = new LdapDN( "a=b, c=d" );
+        DN dn = new DN( "a=b, c=d" );
 
         dn.add( "e = f" );
         assertEquals( "e=f,a=b,c=d", dn.toString() );
@@ -718,12 +718,12 @@ public class LdapDNTest
 
 
     /**
-     * test Add a composite RDN to an existing LdapDN
+     * test Add a composite RDN to an existing DN
      */
     @Test
-    public void testLdapDNAddComposite() throws InvalidNameException
+    public void testDnAddComposite() throws InvalidNameException
     {
-        LdapDN dn = new LdapDN( "a=b, c=d" );
+        DN dn = new DN( "a=b, c=d" );
 
         dn.add( "e = f + g = h" );
 
@@ -736,12 +736,12 @@ public class LdapDNTest
 
 
     /**
-     * test Add at the end of an existing LdapDN
+     * test Add at the end of an existing DN
      */
     @Test
-    public void testLdapDNAddEnd() throws InvalidNameException
+    public void testDnAddEnd() throws InvalidNameException
     {
-        LdapDN dn = new LdapDN( "a=b, c=d" );
+        DN dn = new DN( "a=b, c=d" );
 
         dn.add( dn.size(), "e = f" );
         assertEquals( "e = f,a=b, c=d", dn.getName() );
@@ -750,12 +750,12 @@ public class LdapDNTest
 
 
     /**
-     * test Add at the start of an existing LdapDN
+     * test Add at the start of an existing DN
      */
     @Test
-    public void testLdapDNAddStart() throws InvalidNameException
+    public void testDnAddStart() throws InvalidNameException
     {
-        LdapDN dn = new LdapDN( "a=b, c=d" );
+        DN dn = new DN( "a=b, c=d" );
 
         dn.add( 0, "e = f" );
         assertEquals( "a=b, c=d,e = f", dn.getName() );
@@ -764,12 +764,12 @@ public class LdapDNTest
 
 
     /**
-     * test Add at the middle of an existing LdapDN
+     * test Add at the middle of an existing DN
      */
     @Test
-    public void testLdapDNAddMiddle() throws InvalidNameException
+    public void testDnAddMiddle() throws InvalidNameException
     {
-        LdapDN dn = new LdapDN( "a=b, c=d" );
+        DN dn = new DN( "a=b, c=d" );
 
         dn.add( 1, "e = f" );
         assertEquals( "a=b,e = f, c=d", dn.getName() );
@@ -784,10 +784,10 @@ public class LdapDNTest
      * @throws InvalidNameException
      */
     @Test
-    public void testLdapDNAddAll() throws InvalidNameException
+    public void testDnAddAll() throws InvalidNameException
     {
-        LdapDN dn = new LdapDN( "a = b" );
-        LdapDN dn2 = new LdapDN( "c = d" );
+        DN dn = new DN( "a = b" );
+        DN dn2 = new DN( "c = d" );
         dn.addAll( dn2 );
         assertEquals( "c = d,a = b", dn.getName() );
     }
@@ -799,10 +799,10 @@ public class LdapDNTest
      * @throws InvalidNameException
      */
     @Test
-    public void testLdapDNAddAllAddedNameEmpty() throws InvalidNameException
+    public void testDnAddAllAddedNameEmpty() throws InvalidNameException
     {
-        LdapDN dn = new LdapDN( "a = b" );
-        LdapDN dn2 = new LdapDN();
+        DN dn = new DN( "a = b" );
+        DN dn2 = new DN();
         dn.addAll( dn2 );
         assertEquals( "a=b", dn.toString() );
         assertEquals( "a = b", dn.getName() );
@@ -815,10 +815,10 @@ public class LdapDNTest
      * @throws InvalidNameException
      */
     @Test
-    public void testLdapDNAddAllNameEmpty() throws InvalidNameException
+    public void testDnAddAllNameEmpty() throws InvalidNameException
     {
-        LdapDN dn = new LdapDN();
-        LdapDN dn2 = new LdapDN( "a = b" );
+        DN dn = new DN();
+        DN dn2 = new DN( "a = b" );
         dn.addAll( dn2 );
         assertEquals( "a = b", dn.getName() );
     }
@@ -830,10 +830,10 @@ public class LdapDNTest
      * @throws InvalidNameException
      */
     @Test
-    public void testLdapDNAt0AddAll() throws InvalidNameException
+    public void testDnAt0AddAll() throws InvalidNameException
     {
-        LdapDN dn = new LdapDN( "a = b" );
-        LdapDN dn2 = new LdapDN( "c = d" );
+        DN dn = new DN( "a = b" );
+        DN dn2 = new DN( "c = d" );
         dn.addAll( 0, dn2 );
         assertEquals( "a = b,c = d", dn.getName() );
     }
@@ -845,10 +845,10 @@ public class LdapDNTest
      * @throws InvalidNameException
      */
     @Test
-    public void testLdapDNAt1AddAll() throws InvalidNameException
+    public void testDnAt1AddAll() throws InvalidNameException
     {
-        LdapDN dn = new LdapDN( "a = b" );
-        LdapDN dn2 = new LdapDN( "c = d" );
+        DN dn = new DN( "a = b" );
+        DN dn2 = new DN( "c = d" );
         dn.addAll( 1, dn2 );
         assertEquals( "c = d,a = b", dn.getName() );
     }
@@ -860,10 +860,10 @@ public class LdapDNTest
      * @throws InvalidNameException
      */
     @Test
-    public void testLdapDNAtTheMiddleAddAll() throws InvalidNameException
+    public void testDnAtTheMiddleAddAll() throws InvalidNameException
     {
-        LdapDN dn = new LdapDN( "a = b, c = d" );
-        LdapDN dn2 = new LdapDN( "e = f" );
+        DN dn = new DN( "a = b, c = d" );
+        DN dn2 = new DN( "e = f" );
         dn.addAll( 1, dn2 );
         assertEquals( "a = b,e = f, c = d", dn.getName() );
     }
@@ -875,10 +875,10 @@ public class LdapDNTest
      * @throws InvalidNameException
      */
     @Test
-    public void testLdapDNAddAllAt0AddedNameEmpty() throws InvalidNameException
+    public void testDnAddAllAt0AddedNameEmpty() throws InvalidNameException
     {
-        LdapDN dn = new LdapDN( "a = b" );
-        LdapDN dn2 = new LdapDN();
+        DN dn = new DN( "a = b" );
+        DN dn2 = new DN();
         dn.addAll( 0, dn2 );
         assertEquals( "a=b", dn.toString() );
         assertEquals( "a = b", dn.getName() );
@@ -891,10 +891,10 @@ public class LdapDNTest
      * @throws InvalidNameException
      */
     @Test
-    public void testLdapDNAddAllAt0NameEmpty() throws InvalidNameException
+    public void testDnAddAllAt0NameEmpty() throws InvalidNameException
     {
-        LdapDN dn = new LdapDN();
-        LdapDN dn2 = new LdapDN( "a = b" );
+        DN dn = new DN();
+        DN dn2 = new DN( "a = b" );
         dn.addAll( 0, dn2 );
         assertEquals( "a = b", dn.getName() );
     }
@@ -905,10 +905,10 @@ public class LdapDNTest
      * Get the prefix at pos 0
      */
     @Test
-    public void testLdapDNGetPrefixPos0() throws InvalidNameException
+    public void testDnGetPrefixPos0() throws InvalidNameException
     {
-        LdapDN dn = new LdapDN( "a=b, c=d,e = f" );
-        LdapDN newDn = ( ( LdapDN ) dn.getPrefix( 0 ) );
+        DN dn = new DN( "a=b, c=d,e = f" );
+        DN newDn = ( ( DN ) dn.getPrefix( 0 ) );
         assertEquals( "", newDn.getName() );
     }
 
@@ -917,10 +917,10 @@ public class LdapDNTest
      * Get the prefix at pos 1
      */
     @Test
-    public void testLdapDNGetPrefixPos1() throws InvalidNameException
+    public void testDnGetPrefixPos1() throws InvalidNameException
     {
-        LdapDN dn = new LdapDN( "a=b, c=d,e = f" );
-        LdapDN newDn = ( ( LdapDN ) dn.getPrefix( 1 ) );
+        DN dn = new DN( "a=b, c=d,e = f" );
+        DN newDn = ( ( DN ) dn.getPrefix( 1 ) );
         assertEquals( "e = f", newDn.getName() );
     }
 
@@ -929,10 +929,10 @@ public class LdapDNTest
      * Get the prefix at pos 2
      */
     @Test
-    public void testLdapDNGetPrefixPos2() throws InvalidNameException
+    public void testDnGetPrefixPos2() throws InvalidNameException
     {
-        LdapDN dn = new LdapDN( "a=b, c=d,e = f" );
-        LdapDN newDn = ( ( LdapDN ) dn.getPrefix( 2 ) );
+        DN dn = new DN( "a=b, c=d,e = f" );
+        DN newDn = ( ( DN ) dn.getPrefix( 2 ) );
         assertEquals( " c=d,e = f", newDn.getName() );
     }
 
@@ -941,10 +941,10 @@ public class LdapDNTest
      * Get the prefix at pos 3
      */
     @Test
-    public void testLdapDNGetPrefixPos3() throws InvalidNameException
+    public void testDnGetPrefixPos3() throws InvalidNameException
     {
-        LdapDN dn = new LdapDN( "a=b, c=d,e = f" );
-        LdapDN newDn = ( ( LdapDN ) dn.getPrefix( 3 ) );
+        DN dn = new DN( "a=b, c=d,e = f" );
+        DN newDn = ( ( DN ) dn.getPrefix( 3 ) );
         assertEquals( "a=b, c=d,e = f", newDn.getName() );
     }
 
@@ -953,9 +953,9 @@ public class LdapDNTest
      * Get the prefix out of bound
      */
     @Test
-    public void testLdapDNGetPrefixPos4() throws InvalidNameException
+    public void testDnGetPrefixPos4() throws InvalidNameException
     {
-        LdapDN dn = new LdapDN( "a=b, c=d,e = f" );
+        DN dn = new DN( "a=b, c=d,e = f" );
 
         try
         {
@@ -974,10 +974,10 @@ public class LdapDNTest
      * Get the prefix of an empty LdapName
      */
     @Test
-    public void testLdapDNGetPrefixEmptyDN()
+    public void testDnGetPrefixEmptyDN()
     {
-        LdapDN dn = new LdapDN();
-        LdapDN newDn = ( ( LdapDN ) dn.getPrefix( 0 ) );
+        DN dn = new DN();
+        DN newDn = ( ( DN ) dn.getPrefix( 0 ) );
         assertEquals( "", newDn.getName() );
     }
 
@@ -987,10 +987,10 @@ public class LdapDNTest
      * Get the suffix at pos 0
      */
     @Test
-    public void testLdapDNGetSuffixPos0() throws InvalidNameException
+    public void testDnGetSuffixPos0() throws InvalidNameException
     {
-        LdapDN dn = new LdapDN( "a=b, c=d,e = f" );
-        LdapDN newDn = ( ( LdapDN ) dn.getSuffix( 0 ) );
+        DN dn = new DN( "a=b, c=d,e = f" );
+        DN newDn = ( ( DN ) dn.getSuffix( 0 ) );
         assertEquals( "a=b, c=d,e = f", newDn.getName() );
     }
 
@@ -999,10 +999,10 @@ public class LdapDNTest
      * Get the suffix at pos 1
      */
     @Test
-    public void testLdapDNGetSuffixPos1() throws InvalidNameException
+    public void testDnGetSuffixPos1() throws InvalidNameException
     {
-        LdapDN dn = new LdapDN( "a=b, c=d,e = f" );
-        LdapDN newDn = ( ( LdapDN ) dn.getSuffix( 1 ) );
+        DN dn = new DN( "a=b, c=d,e = f" );
+        DN newDn = ( ( DN ) dn.getSuffix( 1 ) );
         assertEquals( "a=b, c=d", newDn.getName() );
     }
 
@@ -1011,10 +1011,10 @@ public class LdapDNTest
      * Get the suffix at pos 2
      */
     @Test
-    public void testLdapDNGetSuffixPos2() throws InvalidNameException
+    public void testDnGetSuffixPos2() throws InvalidNameException
     {
-        LdapDN dn = new LdapDN( "a=b, c=d,e = f" );
-        LdapDN newDn = ( ( LdapDN ) dn.getSuffix( 2 ) );
+        DN dn = new DN( "a=b, c=d,e = f" );
+        DN newDn = ( ( DN ) dn.getSuffix( 2 ) );
         assertEquals( "a=b", newDn.getName() );
     }
 
@@ -1023,10 +1023,10 @@ public class LdapDNTest
      * Get the suffix at pos 3
      */
     @Test
-    public void testLdapDNGetSuffixPos3() throws InvalidNameException
+    public void testDnGetSuffixPos3() throws InvalidNameException
     {
-        LdapDN dn = new LdapDN( "a=b, c=d,e = f" );
-        LdapDN newDn = ( ( LdapDN ) dn.getSuffix( 3 ) );
+        DN dn = new DN( "a=b, c=d,e = f" );
+        DN newDn = ( ( DN ) dn.getSuffix( 3 ) );
         assertEquals( "", newDn.getName() );
     }
 
@@ -1035,9 +1035,9 @@ public class LdapDNTest
      * Get the suffix out of bound
      */
     @Test
-    public void testLdapDNGetSuffixPos4() throws InvalidNameException
+    public void testDnGetSuffixPos4() throws InvalidNameException
     {
-        LdapDN dn = new LdapDN( "a=b, c=d,e = f" );
+        DN dn = new DN( "a=b, c=d,e = f" );
 
         try
         {
@@ -1056,44 +1056,44 @@ public class LdapDNTest
      * Get the suffix of an empty LdapName
      */
     @Test
-    public void testLdapDNGetSuffixEmptyDN()
+    public void testDnGetSuffixEmptyDN()
     {
-        LdapDN dn = new LdapDN();
-        LdapDN newDn = ( ( LdapDN ) dn.getSuffix( 0 ) );
+        DN dn = new DN();
+        DN newDn = ( ( DN ) dn.getSuffix( 0 ) );
         assertEquals( "", newDn.getName() );
     }
 
 
     // IS EMPTY operations
     /**
-     * Test that a LdapDN is empty
+     * Test that a DN is empty
      */
     @Test
-    public void testLdapDNIsEmpty()
+    public void testDnIsEmpty()
     {
-        LdapDN dn = new LdapDN();
+        DN dn = new DN();
         assertEquals( true, dn.isEmpty() );
     }
 
 
     /**
-     * Test that a LdapDN is empty
+     * Test that a DN is empty
      */
     @Test
-    public void testLdapDNNotEmpty() throws InvalidNameException
+    public void testDnNotEmpty() throws InvalidNameException
     {
-        LdapDN dn = new LdapDN( "a=b" );
+        DN dn = new DN( "a=b" );
         assertEquals( false, dn.isEmpty() );
     }
 
 
     /**
-     * Test that a LdapDN is empty
+     * Test that a DN is empty
      */
     @Test
-    public void testLdapDNRemoveIsEmpty() throws InvalidNameException
+    public void testDnRemoveIsEmpty() throws InvalidNameException
     {
-        LdapDN dn = new LdapDN( "a=b, c=d" );
+        DN dn = new DN( "a=b, c=d" );
         dn.remove( 0 );
         dn.remove( 0 );
 
@@ -1103,68 +1103,68 @@ public class LdapDNTest
 
     // STARTS WITH operations
     /**
-     * Test a startsWith a null LdapDN
+     * Test a startsWith a null DN
      */
     @Test
-    public void testLdapDNStartsWithNull() throws InvalidNameException
+    public void testDnStartsWithNull() throws InvalidNameException
     {
-        LdapDN dn = new LdapDN( "a=b, c=d,e = f" );
+        DN dn = new DN( "a=b, c=d,e = f" );
         assertEquals( true, dn.startsWith( null ) );
     }
 
 
     /**
-     * Test a startsWith an empty LdapDN
+     * Test a startsWith an empty DN
      */
     @Test
-    public void testLdapDNStartsWithEmpty() throws InvalidNameException
+    public void testDnStartsWithEmpty() throws InvalidNameException
     {
-        LdapDN dn = new LdapDN( "a=b, c=d,e = f" );
-        assertEquals( true, dn.startsWith( new LdapDN() ) );
+        DN dn = new DN( "a=b, c=d,e = f" );
+        assertEquals( true, dn.startsWith( new DN() ) );
     }
 
 
     /**
-     * Test a startsWith an simple LdapDN
+     * Test a startsWith an simple DN
      */
     @Test
-    public void testLdapDNStartsWithSimple() throws InvalidNameException
+    public void testDnStartsWithSimple() throws InvalidNameException
     {
-        LdapDN dn = new LdapDN( "a=b, c=d,e = f" );
-        assertEquals( true, dn.startsWith( new LdapDN( "e=f" ) ) );
+        DN dn = new DN( "a=b, c=d,e = f" );
+        assertEquals( true, dn.startsWith( new DN( "e=f" ) ) );
     }
 
 
     /**
-     * Test a startsWith a complex LdapDN
+     * Test a startsWith a complex DN
      */
     @Test
-    public void testLdapDNStartsWithComplex() throws InvalidNameException
+    public void testDnStartsWithComplex() throws InvalidNameException
     {
-        LdapDN dn = new LdapDN( "a=b, c=d,e = f" );
-        assertEquals( true, dn.startsWith( new LdapDN( "c =  d, e =  f" ) ) );
+        DN dn = new DN( "a=b, c=d,e = f" );
+        assertEquals( true, dn.startsWith( new DN( "c =  d, e =  f" ) ) );
     }
 
 
     /**
-     * Test a startsWith a complex LdapDN
+     * Test a startsWith a complex DN
      */
     @Test
-    public void testLdapDNStartsWithComplexMixedCase() throws InvalidNameException
+    public void testDnStartsWithComplexMixedCase() throws InvalidNameException
     {
-        LdapDN dn = new LdapDN( "a=b, c=d,e = f" );
-        assertEquals( false, dn.startsWith( new LdapDN( "c =  D, E =  f" ) ) );
+        DN dn = new DN( "a=b, c=d,e = f" );
+        assertEquals( false, dn.startsWith( new DN( "c =  D, E =  f" ) ) );
     }
 
 
     /**
-     * Test a startsWith a full LdapDN
+     * Test a startsWith a full DN
      */
     @Test
-    public void testLdapDNStartsWithFull() throws InvalidNameException
+    public void testDnStartsWithFull() throws InvalidNameException
     {
-        LdapDN dn = new LdapDN( "a=b, c=d,e = f" );
-        assertEquals( true, dn.startsWith( new LdapDN( "a=  b; c =  d, e =  f" ) ) );
+        DN dn = new DN( "a=b, c=d,e = f" );
+        assertEquals( true, dn.startsWith( new DN( "a=  b; c =  d, e =  f" ) ) );
     }
 
 
@@ -1172,77 +1172,77 @@ public class LdapDNTest
      * Test a startsWith which returns false
      */
     @Test
-    public void testLdapDNStartsWithWrong() throws InvalidNameException
+    public void testDnStartsWithWrong() throws InvalidNameException
     {
-        LdapDN dn = new LdapDN( "a=b, c=d,e = f" );
-        assertEquals( false, dn.startsWith( new LdapDN( "c =  t, e =  f" ) ) );
+        DN dn = new DN( "a=b, c=d,e = f" );
+        assertEquals( false, dn.startsWith( new DN( "c =  t, e =  f" ) ) );
     }
 
 
     // ENDS WITH operations
     /**
-     * Test a endsWith a null LdapDN
+     * Test a endsWith a null DN
      */
     @Test
-    public void testLdapDNEndsWithNull() throws InvalidNameException
+    public void testDnEndsWithNull() throws InvalidNameException
     {
-        LdapDN dn = new LdapDN( "a=b, c=d,e = f" );
+        DN dn = new DN( "a=b, c=d,e = f" );
         assertEquals( true, dn.endsWith( null ) );
     }
 
 
     /**
-     * Test a endsWith an empty LdapDN
+     * Test a endsWith an empty DN
      */
     @Test
-    public void testLdapDNEndsWithEmpty() throws InvalidNameException
+    public void testDnEndsWithEmpty() throws InvalidNameException
     {
-        LdapDN dn = new LdapDN( "a=b, c=d,e = f" );
-        assertEquals( true, dn.endsWith( new LdapDN() ) );
+        DN dn = new DN( "a=b, c=d,e = f" );
+        assertEquals( true, dn.endsWith( new DN() ) );
     }
 
 
     /**
-     * Test a endsWith an simple LdapDN
+     * Test a endsWith an simple DN
      */
     @Test
-    public void testLdapDNEndsWithSimple() throws InvalidNameException
+    public void testDnEndsWithSimple() throws InvalidNameException
     {
-        LdapDN dn = new LdapDN( "a=b, c=d,e = f" );
-        assertEquals( true, dn.endsWith( new LdapDN( "a=b" ) ) );
+        DN dn = new DN( "a=b, c=d,e = f" );
+        assertEquals( true, dn.endsWith( new DN( "a=b" ) ) );
     }
 
 
     /**
-     * Test a endsWith a complex LdapDN
+     * Test a endsWith a complex DN
      */
     @Test
-    public void testLdapDNEndsWithComplex() throws InvalidNameException
+    public void testDnEndsWithComplex() throws InvalidNameException
     {
-        LdapDN dn = new LdapDN( "a=b, c=d,e = f" );
-        assertEquals( true, dn.endsWith( new LdapDN( "a =  b, c =  d" ) ) );
+        DN dn = new DN( "a=b, c=d,e = f" );
+        assertEquals( true, dn.endsWith( new DN( "a =  b, c =  d" ) ) );
     }
 
 
     /**
-     * Test a endsWith a complex LdapDN
+     * Test a endsWith a complex DN
      */
     @Test
-    public void testLdapDNEndsWithComplexMixedCase() throws InvalidNameException
+    public void testDnEndsWithComplexMixedCase() throws InvalidNameException
     {
-        LdapDN dn = new LdapDN( "a=b, c=d,e = f" );
-        assertEquals( false, dn.endsWith( new LdapDN( "a =  B, C =  d" ) ) );
+        DN dn = new DN( "a=b, c=d,e = f" );
+        assertEquals( false, dn.endsWith( new DN( "a =  B, C =  d" ) ) );
     }
 
 
     /**
-     * Test a endsWith a full LdapDN
+     * Test a endsWith a full DN
      */
     @Test
-    public void testLdapDNEndsWithFull() throws InvalidNameException
+    public void testDnEndsWithFull() throws InvalidNameException
     {
-        LdapDN dn = new LdapDN( "a=b, c=d,e = f" );
-        assertEquals( true, dn.endsWith( new LdapDN( "a=  b; c =  d, e =  f" ) ) );
+        DN dn = new DN( "a=b, c=d,e = f" );
+        assertEquals( true, dn.endsWith( new DN( "a=  b; c =  d, e =  f" ) ) );
     }
 
 
@@ -1250,10 +1250,10 @@ public class LdapDNTest
      * Test a endsWith which returns false
      */
     @Test
-    public void testLdapDNEndsWithWrong() throws InvalidNameException
+    public void testDnEndsWithWrong() throws InvalidNameException
     {
-        LdapDN dn = new LdapDN( "a=b, c=d,e = f" );
-        assertEquals( false, dn.endsWith( new LdapDN( "a =  b, e =  f" ) ) );
+        DN dn = new DN( "a=b, c=d,e = f" );
+        assertEquals( false, dn.endsWith( new DN( "a =  b, e =  f" ) ) );
     }
 
 
@@ -1262,9 +1262,9 @@ public class LdapDNTest
      * test a getAll operation on a null DN
      */
     @Test
-    public void testLdapDNGetAllNull()
+    public void testDnGetAllNull()
     {
-        LdapDN dn = new LdapDN();
+        DN dn = new DN();
         Enumeration<String> nc = dn.getAll();
 
         assertEquals( false, nc.hasMoreElements() );
@@ -1275,9 +1275,9 @@ public class LdapDNTest
      * test a getAll operation on an empty DN
      */
     @Test
-    public void testLdapDNGetAllEmpty() throws InvalidNameException
+    public void testDnGetAllEmpty() throws InvalidNameException
     {
-        LdapDN dn = new LdapDN( "" );
+        DN dn = new DN( "" );
         Enumeration<String> nc = dn.getAll();
 
         assertEquals( false, nc.hasMoreElements() );
@@ -1288,9 +1288,9 @@ public class LdapDNTest
      * test a getAll operation on a simple DN
      */
     @Test
-    public void testLdapDNGetAllSimple() throws InvalidNameException
+    public void testDnGetAllSimple() throws InvalidNameException
     {
-        LdapDN dn = new LdapDN( "a=b" );
+        DN dn = new DN( "a=b" );
         Enumeration<String> nc = dn.getAll();
 
         assertEquals( true, nc.hasMoreElements() );
@@ -1303,9 +1303,9 @@ public class LdapDNTest
      * test a getAll operation on a complex DN
      */
     @Test
-    public void testLdapDNGetAllComplex() throws InvalidNameException
+    public void testDnGetAllComplex() throws InvalidNameException
     {
-        LdapDN dn = new LdapDN( "e=f+g=h,a=b,c=d" );
+        DN dn = new DN( "e=f+g=h,a=b,c=d" );
         Enumeration<String> nc = dn.getAll();
 
         assertEquals( true, nc.hasMoreElements() );
@@ -1322,9 +1322,9 @@ public class LdapDNTest
      * test a getAll operation on a complex DN
      */
     @Test
-    public void testLdapDNGetAllComplexOrdered() throws InvalidNameException
+    public void testDnGetAllComplexOrdered() throws InvalidNameException
     {
-        LdapDN dn = new LdapDN( "g=h+e=f,a=b,c=d" );
+        DN dn = new DN( "g=h+e=f,a=b,c=d" );
         Enumeration<String> nc = dn.getAll();
 
         assertEquals( true, nc.hasMoreElements() );
@@ -1344,10 +1344,10 @@ public class LdapDNTest
      * test a clone operation on a empty DN
      */
     @Test
-    public void testLdapDNCloneEmpty()
+    public void testDnCloneEmpty()
     {
-        LdapDN dn = new LdapDN();
-        LdapDN clone = ( LdapDN ) dn.clone();
+        DN dn = new DN();
+        DN clone = ( DN ) dn.clone();
 
         assertEquals( "", clone.getName() );
     }
@@ -1357,10 +1357,10 @@ public class LdapDNTest
      * test a clone operation on a simple DN
      */
     @Test
-    public void testLdapDNCloneSimple() throws InvalidNameException
+    public void testDnCloneSimple() throws InvalidNameException
     {
-        LdapDN dn = new LdapDN( "a=b" );
-        LdapDN clone = ( LdapDN ) dn.clone();
+        DN dn = new DN( "a=b" );
+        DN clone = ( DN ) dn.clone();
 
         assertEquals( "a=b", clone.getName() );
         dn.remove( 0 );
@@ -1372,10 +1372,10 @@ public class LdapDNTest
      * test a clone operation on a complex DN
      */
     @Test
-    public void testLdapDNCloneComplex() throws InvalidNameException
+    public void testDnCloneComplex() throws InvalidNameException
     {
-        LdapDN dn = new LdapDN( "e=f+g=h,a=b,c=d" );
-        LdapDN clone = ( LdapDN ) dn.clone();
+        DN dn = new DN( "e=f+g=h,a=b,c=d" );
+        DN clone = ( DN ) dn.clone();
 
         assertEquals( "e=f+g=h,a=b,c=d", clone.getName() );
         dn.remove( 2 );
@@ -1388,9 +1388,9 @@ public class LdapDNTest
      * test a get in a null DN
      */
     @Test
-    public void testLdapDNGetNull()
+    public void testDnGetNull()
     {
-        LdapDN dn = new LdapDN();
+        DN dn = new DN();
         assertEquals( "", dn.get( 0 ) );
     }
 
@@ -1399,9 +1399,9 @@ public class LdapDNTest
      * test a get in an empty DN
      */
     @Test
-    public void testLdapDNGetEmpty() throws InvalidNameException
+    public void testDnGetEmpty() throws InvalidNameException
     {
-        LdapDN dn = new LdapDN( "" );
+        DN dn = new DN( "" );
         assertEquals( "", dn.get( 0 ) );
     }
 
@@ -1410,9 +1410,9 @@ public class LdapDNTest
      * test a get in a simple DN
      */
     @Test
-    public void testLdapDNGetSimple() throws InvalidNameException
+    public void testDnGetSimple() throws InvalidNameException
     {
-        LdapDN dn = new LdapDN( "a = b" );
+        DN dn = new DN( "a = b" );
         assertEquals( "a=b", dn.get( 0 ) );
     }
 
@@ -1421,9 +1421,9 @@ public class LdapDNTest
      * test a get in a complex DN
      */
     @Test
-    public void testLdapDNGetComplex() throws InvalidNameException
+    public void testDnGetComplex() throws InvalidNameException
     {
-        LdapDN dn = new LdapDN( "a = b + c= d, e= f; g =h" );
+        DN dn = new DN( "a = b + c= d, e= f; g =h" );
         assertEquals( "g=h", dn.get( 0 ) );
         assertEquals( "e=f", dn.get( 1 ) );
         assertEquals( "a=b+c=d", dn.get( 2 ) );
@@ -1434,9 +1434,9 @@ public class LdapDNTest
      * test a get out of bound
      */
     @Test
-    public void testLdapDNGetOutOfBound() throws InvalidNameException
+    public void testDnGetOutOfBound() throws InvalidNameException
     {
-        LdapDN dn = new LdapDN( "a = b + c= d, e= f; g =h" );
+        DN dn = new DN( "a = b + c= d, e= f; g =h" );
 
         try
         {
@@ -1461,7 +1461,7 @@ public class LdapDNTest
     public void testJNDITutorialExample() throws Exception
     {
         // Parse the name
-        Name name = new LdapDN( "cn=John,ou=People,ou=Marketing" );
+        Name name = new DN( "cn=John,ou=People,ou=Marketing" );
 
         // Remove the second component from the head: ou=People
         String out = name.remove( 1 ).toString();
@@ -1483,8 +1483,8 @@ public class LdapDNTest
     @Test
     public void testAttributeEqualsIsCaseInSensitive() throws Exception
     {
-        Name name1 = new LdapDN( "cn=HomeDir" );
-        Name name2 = new LdapDN( "CN=HomeDir" );
+        Name name1 = new DN( "cn=HomeDir" );
+        Name name2 = new DN( "CN=HomeDir" );
 
         assertTrue( name1.equals( name2 ) );
     }
@@ -1493,8 +1493,8 @@ public class LdapDNTest
     @Test
     public void testAttributeTypeEqualsIsCaseInsensitive() throws Exception
     {
-        Name name1 = new LdapDN( "cn=HomeDir+cn=WorkDir" );
-        Name name2 = new LdapDN( "cn=HomeDir+CN=WorkDir" );
+        Name name1 = new DN( "cn=HomeDir+cn=WorkDir" );
+        Name name2 = new DN( "cn=HomeDir+CN=WorkDir" );
 
         assertTrue( name1.equals( name2 ) );
     }
@@ -1504,8 +1504,8 @@ public class LdapDNTest
     public void testNameEqualsIsInsensitiveToAttributesOrder() throws Exception
     {
 
-        Name name1 = new LdapDN( "cn=HomeDir+cn=WorkDir" );
-        Name name2 = new LdapDN( "cn=WorkDir+cn=HomeDir" );
+        Name name1 = new DN( "cn=HomeDir+cn=WorkDir" );
+        Name name2 = new DN( "cn=WorkDir+cn=HomeDir" );
 
         assertTrue( name1.equals( name2 ) );
     }
@@ -1514,8 +1514,8 @@ public class LdapDNTest
     @Test
     public void testAttributeComparisonIsCaseInSensitive() throws Exception
     {
-        Name name1 = new LdapDN( "cn=HomeDir" );
-        Name name2 = new LdapDN( "CN=HomeDir" );
+        Name name1 = new DN( "cn=HomeDir" );
+        Name name2 = new DN( "CN=HomeDir" );
 
         assertEquals( 0, name1.compareTo( name2 ) );
     }
@@ -1524,8 +1524,8 @@ public class LdapDNTest
     @Test
     public void testAttributeTypeComparisonIsCaseInsensitive() throws Exception
     {
-        Name name1 = new LdapDN( "cn=HomeDir+cn=WorkDir" );
-        Name name2 = new LdapDN( "cn=HomeDir+CN=WorkDir" );
+        Name name1 = new DN( "cn=HomeDir+cn=WorkDir" );
+        Name name2 = new DN( "cn=HomeDir+CN=WorkDir" );
 
         assertEquals( 0, name1.compareTo( name2 ) );
     }
@@ -1535,8 +1535,8 @@ public class LdapDNTest
     public void testNameComparisonIsInsensitiveToAttributesOrder() throws Exception
     {
 
-        Name name1 = new LdapDN( "cn=HomeDir+cn=WorkDir" );
-        Name name2 = new LdapDN( "cn=WorkDir+cn=HomeDir" );
+        Name name1 = new DN( "cn=HomeDir+cn=WorkDir" );
+        Name name2 = new DN( "cn=WorkDir+cn=HomeDir" );
 
         assertEquals( 0, name1.compareTo( name2 ) );
     }
@@ -1546,8 +1546,8 @@ public class LdapDNTest
     public void testNameComparisonIsInsensitiveToAttributesOrderFailure() throws Exception
     {
 
-        Name name1 = new LdapDN( "cn= HomeDir+cn=Workdir" );
-        Name name2 = new LdapDN( "cn = Work+cn=HomeDir" );
+        Name name1 = new DN( "cn= HomeDir+cn=Workdir" );
+        Name name2 = new DN( "cn = Work+cn=HomeDir" );
 
         assertEquals( 1, name1.compareTo( name2 ) );
     }
@@ -1559,11 +1559,11 @@ public class LdapDNTest
     @Test
     public void testNameToBytes() throws Exception
     {
-        LdapDN dn = new LdapDN( "cn = John, ou = People, OU = Marketing" );
+        DN dn = new DN( "cn = John, ou = People, OU = Marketing" );
 
-        byte[] bytes = LdapDN.getBytes( dn );
+        byte[] bytes = DN.getBytes( dn );
 
-        assertEquals( 30, LdapDN.getNbBytes( dn ) );
+        assertEquals( 30, DN.getNbBytes( dn ) );
         assertEquals( "cn=John,ou=People,ou=Marketing", new String( bytes, "UTF-8" ) );
     }
 
@@ -1575,9 +1575,9 @@ public class LdapDNTest
             { 'C', 'N', ' ', '=', ' ', 'E', 'm', 'm', 'a', 'n', 'u', 'e', 'l', ' ', ' ', 'L', ( byte ) 0xc3,
                 ( byte ) 0xa9, 'c', 'h', 'a', 'r', 'n', 'y' } );
 
-        Name name = LdapDnParser.getNameParser().parse( dn );
+        Name name = DnParser.getNameParser().parse( dn );
 
-        assertEquals( dn, ( ( LdapDN ) name ).getName() );
+        assertEquals( dn, ( ( DN ) name ).getName() );
         assertEquals( "cn=Emmanuel  L\u00E9charny", name.toString() );
     }
 
@@ -1591,17 +1591,17 @@ public class LdapDNTest
     @Test
     public void testLdapNameString() throws Exception
     {
-        Name name = new LdapDN( "" );
-        Name name50 = new LdapDN();
+        Name name = new DN( "" );
+        Name name50 = new DN();
         assertEquals( name50, name );
 
-        Name name0 = new LdapDN( "ou=Marketing,ou=East" );
-        Name copy = new LdapDN( "ou=Marketing,ou=East" );
-        Name name1 = new LdapDN( "cn=John,ou=Marketing,ou=East" );
-        Name name2 = new LdapDN( "cn=HomeDir,cn=John,ou=Marketing,ou=East" );
-        Name name3 = new LdapDN( "cn=HomeDir,cn=John,ou=Marketing,ou=West" );
-        Name name4 = new LdapDN( "cn=Website,cn=John,ou=Marketing,ou=West" );
-        Name name5 = new LdapDN( "cn=Airline,cn=John,ou=Marketing,ou=West" );
+        Name name0 = new DN( "ou=Marketing,ou=East" );
+        Name copy = new DN( "ou=Marketing,ou=East" );
+        Name name1 = new DN( "cn=John,ou=Marketing,ou=East" );
+        Name name2 = new DN( "cn=HomeDir,cn=John,ou=Marketing,ou=East" );
+        Name name3 = new DN( "cn=HomeDir,cn=John,ou=Marketing,ou=West" );
+        Name name4 = new DN( "cn=Website,cn=John,ou=Marketing,ou=West" );
+        Name name5 = new DN( "cn=Airline,cn=John,ou=Marketing,ou=West" );
 
         assertTrue( name0.compareTo( copy ) == 0 );
         assertTrue( name0.compareTo( name1 ) < 0 );
@@ -1624,7 +1624,7 @@ public class LdapDNTest
     @Test
     public void testLdapName()
     {
-        Name name = new LdapDN();
+        Name name = new DN();
         assertTrue( name.toString().equals( "" ) );
     }
 
@@ -1639,7 +1639,7 @@ public class LdapDNTest
     public void testClone() throws Exception
     {
         String strName = "cn=HomeDir,cn=John,ou=Marketing,ou=East";
-        Name name = new LdapDN( strName );
+        Name name = new DN( strName );
         assertEquals( name, name.clone() );
     }
 
@@ -1653,13 +1653,13 @@ public class LdapDNTest
     @Test
     public void testCompareTo() throws Exception
     {
-        Name name0 = new LdapDN( "ou=Marketing,ou=East" );
-        Name copy = new LdapDN( "ou=Marketing,ou=East" );
-        Name name1 = new LdapDN( "cn=John,ou=Marketing,ou=East" );
-        Name name2 = new LdapDN( "cn=HomeDir,cn=John,ou=Marketing,ou=East" );
-        Name name3 = new LdapDN( "cn=HomeDir,cn=John,ou=Marketing,ou=West" );
-        Name name4 = new LdapDN( "cn=Website,cn=John,ou=Marketing,ou=West" );
-        Name name5 = new LdapDN( "cn=Airline,cn=John,ou=Marketing,ou=West" );
+        Name name0 = new DN( "ou=Marketing,ou=East" );
+        Name copy = new DN( "ou=Marketing,ou=East" );
+        Name name1 = new DN( "cn=John,ou=Marketing,ou=East" );
+        Name name2 = new DN( "cn=HomeDir,cn=John,ou=Marketing,ou=East" );
+        Name name3 = new DN( "cn=HomeDir,cn=John,ou=Marketing,ou=West" );
+        Name name4 = new DN( "cn=Website,cn=John,ou=Marketing,ou=West" );
+        Name name5 = new DN( "cn=Airline,cn=John,ou=Marketing,ou=West" );
 
         assertTrue( name0.compareTo( copy ) == 0 );
         assertTrue( name0.compareTo( name1 ) < 0 );
@@ -1728,13 +1728,13 @@ public class LdapDNTest
     @Test
     public void testSize() throws Exception
     {
-        Name name0 = new LdapDN( "" );
-        Name name1 = new LdapDN( "ou=East" );
-        Name name2 = new LdapDN( "ou=Marketing,ou=East" );
-        Name name3 = new LdapDN( "cn=John,ou=Marketing,ou=East" );
-        Name name4 = new LdapDN( "cn=HomeDir,cn=John,ou=Marketing,ou=East" );
-        Name name5 = new LdapDN( "cn=Website,cn=HomeDir,cn=John,ou=Marketing,ou=West" );
-        Name name6 = new LdapDN( "cn=Airline,cn=Website,cn=HomeDir,cn=John,ou=Marketing,ou=West" );
+        Name name0 = new DN( "" );
+        Name name1 = new DN( "ou=East" );
+        Name name2 = new DN( "ou=Marketing,ou=East" );
+        Name name3 = new DN( "cn=John,ou=Marketing,ou=East" );
+        Name name4 = new DN( "cn=HomeDir,cn=John,ou=Marketing,ou=East" );
+        Name name5 = new DN( "cn=Website,cn=HomeDir,cn=John,ou=Marketing,ou=West" );
+        Name name6 = new DN( "cn=Airline,cn=Website,cn=HomeDir,cn=John,ou=Marketing,ou=West" );
 
         assertEquals( 0, name0.size() );
         assertEquals( 1, name1.size() );
@@ -1755,13 +1755,13 @@ public class LdapDNTest
     @Test
     public void testIsEmpty() throws Exception
     {
-        Name name0 = new LdapDN( "" );
-        Name name1 = new LdapDN( "ou=East" );
-        Name name2 = new LdapDN( "ou=Marketing,ou=East" );
-        Name name3 = new LdapDN( "cn=John,ou=Marketing,ou=East" );
-        Name name4 = new LdapDN( "cn=HomeDir,cn=John,ou=Marketing,ou=East" );
-        Name name5 = new LdapDN( "cn=Website,cn=HomeDir,cn=John,ou=Marketing,ou=West" );
-        Name name6 = new LdapDN( "cn=Airline,cn=Website,cn=HomeDir,cn=John,ou=Marketing,ou=West" );
+        Name name0 = new DN( "" );
+        Name name1 = new DN( "ou=East" );
+        Name name2 = new DN( "ou=Marketing,ou=East" );
+        Name name3 = new DN( "cn=John,ou=Marketing,ou=East" );
+        Name name4 = new DN( "cn=HomeDir,cn=John,ou=Marketing,ou=East" );
+        Name name5 = new DN( "cn=Website,cn=HomeDir,cn=John,ou=Marketing,ou=West" );
+        Name name6 = new DN( "cn=Airline,cn=Website,cn=HomeDir,cn=John,ou=Marketing,ou=West" );
 
         assertEquals( true, name0.isEmpty() );
         assertEquals( false, name1.isEmpty() );
@@ -1782,13 +1782,13 @@ public class LdapDNTest
     @Test
     public void testGetAll() throws Exception
     {
-        Name name0 = new LdapDN( "" );
-        Name name1 = new LdapDN( "ou=East" );
-        Name name2 = new LdapDN( "ou=Marketing,ou=East" );
-        Name name3 = new LdapDN( "cn=John,ou=Marketing,ou=East" );
-        Name name4 = new LdapDN( "cn=HomeDir,cn=John,ou=Marketing,ou=East" );
-        Name name5 = new LdapDN( "cn=Website,cn=HomeDir,cn=John,ou=Marketing,ou=West" );
-        Name name6 = new LdapDN( "cn=Airline,cn=Website,cn=HomeDir,cn=John,ou=Marketing,ou=West" );
+        Name name0 = new DN( "" );
+        Name name1 = new DN( "ou=East" );
+        Name name2 = new DN( "ou=Marketing,ou=East" );
+        Name name3 = new DN( "cn=John,ou=Marketing,ou=East" );
+        Name name4 = new DN( "cn=HomeDir,cn=John,ou=Marketing,ou=East" );
+        Name name5 = new DN( "cn=Website,cn=HomeDir,cn=John,ou=Marketing,ou=West" );
+        Name name6 = new DN( "cn=Airline,cn=Website,cn=HomeDir,cn=John,ou=Marketing,ou=West" );
 
         Enumeration<String> enum0 = name0.getAll();
         assertEquals( false, enum0.hasMoreElements() );
@@ -1957,7 +1957,7 @@ public class LdapDNTest
     @Test
     public void testGetAllRdn() throws Exception
     {
-        LdapDN name = new LdapDN( "cn=Airline,cn=Website,cn=HomeDir,cn=John,ou=Marketing,ou=West" );
+        DN name = new DN( "cn=Airline,cn=Website,cn=HomeDir,cn=John,ou=Marketing,ou=West" );
 
         Enumeration<RDN> rdns = name.getAllRdn();
         assertEquals( true, rdns.hasMoreElements() );
@@ -2005,7 +2005,7 @@ public class LdapDNTest
     @Test
     public void testGet() throws Exception
     {
-        Name name = new LdapDN( "cn=HomeDir,cn=John,ou=Marketing,ou=East" );
+        Name name = new DN( "cn=HomeDir,cn=John,ou=Marketing,ou=East" );
         assertEquals( "cn=HomeDir", name.get( 3 ) );
         assertEquals( "cn=John", name.get( 2 ) );
         assertEquals( "ou=Marketing", name.get( 1 ) );
@@ -2019,7 +2019,7 @@ public class LdapDNTest
     @Test
     public void testGetRdn() throws Exception
     {
-        LdapDN name = new LdapDN( "cn=HomeDir,cn=John,ou=Marketing,ou=East" );
+        DN name = new DN( "cn=HomeDir,cn=John,ou=Marketing,ou=East" );
         assertEquals( "cn=HomeDir", name.getRdn( 3 ).getUpName() );
         assertEquals( "cn=John", name.getRdn( 2 ).getUpName() );
         assertEquals( "ou=Marketing", name.getRdn( 1 ).getUpName() );
@@ -2035,7 +2035,7 @@ public class LdapDNTest
     @Test
     public void testGetXSuffix() throws Exception
     {
-        Name name = new LdapDN( "cn=HomeDir,cn=John,ou=Marketing,ou=East" );
+        Name name = new DN( "cn=HomeDir,cn=John,ou=Marketing,ou=East" );
         assertEquals( "", name.getSuffix( 4 ).toString() );
         assertEquals( "cn=HomeDir", name.getSuffix( 3 ).toString() );
         assertEquals( "cn=HomeDir,cn=John", name.getSuffix( 2 ).toString() );
@@ -2053,7 +2053,7 @@ public class LdapDNTest
     @Test
     public void testGetPrefix() throws Exception
     {
-        Name name = new LdapDN( "cn=HomeDir,cn=John,ou=Marketing,ou=East" );
+        Name name = new DN( "cn=HomeDir,cn=John,ou=Marketing,ou=East" );
 
         assertEquals( "cn=HomeDir,cn=John,ou=Marketing,ou=East", name.getPrefix( 4 ).toString() );
         assertEquals( "cn=John,ou=Marketing,ou=East", name.getPrefix( 3 ).toString() );
@@ -2072,18 +2072,18 @@ public class LdapDNTest
     @Test
     public void testStartsWith() throws Exception
     {
-        Name n0 = new LdapDN( "cn=HomeDir,cn=John,ou=Marketing,ou=East" );
-        Name n1 = new LdapDN( "cn=HomeDir,cn=John,ou=Marketing,ou=East" );
-        Name n2 = new LdapDN( "cn=John,ou=Marketing,ou=East" );
-        Name n3 = new LdapDN( "ou=Marketing,ou=East" );
-        Name n4 = new LdapDN( "ou=East" );
-        Name n5 = new LdapDN( "" );
+        Name n0 = new DN( "cn=HomeDir,cn=John,ou=Marketing,ou=East" );
+        Name n1 = new DN( "cn=HomeDir,cn=John,ou=Marketing,ou=East" );
+        Name n2 = new DN( "cn=John,ou=Marketing,ou=East" );
+        Name n3 = new DN( "ou=Marketing,ou=East" );
+        Name n4 = new DN( "ou=East" );
+        Name n5 = new DN( "" );
 
-        Name n6 = new LdapDN( "cn=HomeDir" );
-        Name n7 = new LdapDN( "cn=HomeDir,cn=John" );
-        Name n8 = new LdapDN( "cn=HomeDir,cn=John,ou=Marketing" );
+        Name n6 = new DN( "cn=HomeDir" );
+        Name n7 = new DN( "cn=HomeDir,cn=John" );
+        Name n8 = new DN( "cn=HomeDir,cn=John,ou=Marketing" );
 
-        // Check with LdapDN
+        // Check with DN
         assertTrue( n0.startsWith( n1 ) );
         assertTrue( n0.startsWith( n2 ) );
         assertTrue( n0.startsWith( n3 ) );
@@ -2094,10 +2094,10 @@ public class LdapDNTest
         assertTrue( !n0.startsWith( n7 ) );
         assertTrue( !n0.startsWith( n8 ) );
         
-        Name nn0 = new LdapDN( "cn=zero" );
-        Name nn10 = new LdapDN( "cn=one,cn=zero" );
-        Name nn210 = new LdapDN( "cn=two,cn=one,cn=zero" );
-        Name nn3210 = new LdapDN( "cn=three,cn=two,cn=one,cn=zero" );
+        Name nn0 = new DN( "cn=zero" );
+        Name nn10 = new DN( "cn=one,cn=zero" );
+        Name nn210 = new DN( "cn=two,cn=one,cn=zero" );
+        Name nn3210 = new DN( "cn=three,cn=two,cn=one,cn=zero" );
         
         assertTrue( nn0.startsWith( nn0 ) );
         assertTrue( nn10.startsWith( nn0 ) );
@@ -2135,14 +2135,14 @@ public class LdapDNTest
         assertTrue( nn3210.startsWith( name3210 ) );
         
 
-        assertTrue( "Starting DN fails with ADS LdapDN", 
-            new LdapDN( "ou=foo,dc=apache,dc=org" ).startsWith( new LdapDN( "dc=apache,dc=org" ) ) );
+        assertTrue( "Starting DN fails with ADS DN", 
+            new DN( "ou=foo,dc=apache,dc=org" ).startsWith( new DN( "dc=apache,dc=org" ) ) );
         
         assertTrue( "Starting DN fails with Java LdapName", 
-            new LdapDN( "ou=foo,dc=apache,dc=org" ).startsWith( new LdapName( "dc=apache,dc=org" ) ) );
+            new DN( "ou=foo,dc=apache,dc=org" ).startsWith( new LdapName( "dc=apache,dc=org" ) ) );
 
         assertTrue( "Starting DN fails with Java LdapName", 
-            new LdapDN( "dc=apache,dc=org" ).startsWith( new LdapName( "dc=apache,dc=org" ) ) );
+            new DN( "dc=apache,dc=org" ).startsWith( new LdapName( "dc=apache,dc=org" ) ) );
     }
 
 
@@ -2155,16 +2155,16 @@ public class LdapDNTest
     @Test
     public void testEndsWith() throws Exception
     {
-        Name name0 = new LdapDN( "cn=HomeDir,cn=John,ou=Marketing,ou=East" );
-        Name name1 = new LdapDN( "cn=HomeDir,cn=John,ou=Marketing,ou=East" );
-        Name name2 = new LdapDN( "cn=John,ou=Marketing,ou=East" );
-        Name name3 = new LdapDN( "ou=Marketing,ou=East" );
-        Name name4 = new LdapDN( "ou=East" );
-        Name name5 = new LdapDN( "" );
+        Name name0 = new DN( "cn=HomeDir,cn=John,ou=Marketing,ou=East" );
+        Name name1 = new DN( "cn=HomeDir,cn=John,ou=Marketing,ou=East" );
+        Name name2 = new DN( "cn=John,ou=Marketing,ou=East" );
+        Name name3 = new DN( "ou=Marketing,ou=East" );
+        Name name4 = new DN( "ou=East" );
+        Name name5 = new DN( "" );
 
-        Name name6 = new LdapDN( "cn=HomeDir" );
-        Name name7 = new LdapDN( "cn=HomeDir,cn=John" );
-        Name name8 = new LdapDN( "cn=HomeDir,cn=John,ou=Marketing" );
+        Name name6 = new DN( "cn=HomeDir" );
+        Name name7 = new DN( "cn=HomeDir,cn=John" );
+        Name name8 = new DN( "cn=HomeDir,cn=John,ou=Marketing" );
 
         assertTrue( name0.endsWith( name1 ) );
         assertTrue( !name0.endsWith( name2 ) );
@@ -2187,8 +2187,8 @@ public class LdapDNTest
     @Test
     public void testAddAllName0() throws Exception
     {
-        Name name = new LdapDN();
-        Name name0 = new LdapDN( "cn=HomeDir,cn=John,ou=Marketing,ou=East" );
+        Name name = new DN();
+        Name name0 = new DN( "cn=HomeDir,cn=John,ou=Marketing,ou=East" );
         assertTrue( name0.equals( name.addAll( name0 ) ) );
     }
 
@@ -2202,9 +2202,9 @@ public class LdapDNTest
     @Test
     public void testAddAllNameExisting0() throws Exception
     {
-        Name name1 = new LdapDN( "ou=Marketing,ou=East" );
-        Name name2 = new LdapDN( "cn=HomeDir,cn=John" );
-        Name nameAdded = new LdapDN( "cn=HomeDir,cn=John, ou=Marketing,ou=East" );
+        Name name1 = new DN( "ou=Marketing,ou=East" );
+        Name name2 = new DN( "cn=HomeDir,cn=John" );
+        Name nameAdded = new DN( "cn=HomeDir,cn=John, ou=Marketing,ou=East" );
         assertTrue( nameAdded.equals( name1.addAll( name2 ) ) );
     }
 
@@ -2218,10 +2218,10 @@ public class LdapDNTest
     @Test
     public void testAddAllName1() throws Exception
     {
-        Name name = new LdapDN();
-        Name name0 = new LdapDN( "ou=Marketing,ou=East" );
-        Name name1 = new LdapDN( "cn=HomeDir,cn=John" );
-        Name name2 = new LdapDN( "cn=HomeDir,cn=John,ou=Marketing,ou=East" );
+        Name name = new DN();
+        Name name0 = new DN( "ou=Marketing,ou=East" );
+        Name name1 = new DN( "cn=HomeDir,cn=John" );
+        Name name2 = new DN( "cn=HomeDir,cn=John,ou=Marketing,ou=East" );
 
         assertTrue( name0.equals( name.addAll( name0 ) ) );
         assertTrue( name2.equals( name.addAll( name1 ) ) );
@@ -2237,10 +2237,10 @@ public class LdapDNTest
     @Test
     public void testAddAllintName0() throws Exception
     {
-        Name name = new LdapDN();
-        Name name0 = new LdapDN( "ou=Marketing,ou=East" );
-        Name name1 = new LdapDN( "cn=HomeDir,cn=John" );
-        Name name2 = new LdapDN( "cn=HomeDir,cn=John,ou=Marketing,ou=East" );
+        Name name = new DN();
+        Name name0 = new DN( "ou=Marketing,ou=East" );
+        Name name1 = new DN( "cn=HomeDir,cn=John" );
+        Name name2 = new DN( "cn=HomeDir,cn=John,ou=Marketing,ou=East" );
 
         assertTrue( name0.equals( name.addAll( name0 ) ) );
         assertTrue( name2.equals( name.addAll( 2, name1 ) ) );
@@ -2256,21 +2256,21 @@ public class LdapDNTest
     @Test
     public void testAddAllintName1() throws Exception
     {
-        Name name = new LdapDN();
-        Name name0 = new LdapDN( "cn=HomeDir,ou=Marketing,ou=East" );
-        Name name1 = new LdapDN( "cn=John" );
-        Name name2 = new LdapDN( "cn=HomeDir,cn=John,ou=Marketing,ou=East" );
+        Name name = new DN();
+        Name name0 = new DN( "cn=HomeDir,ou=Marketing,ou=East" );
+        Name name1 = new DN( "cn=John" );
+        Name name2 = new DN( "cn=HomeDir,cn=John,ou=Marketing,ou=East" );
 
         assertTrue( name0.equals( name.addAll( name0 ) ) );
         assertTrue( name2.equals( name.addAll( 2, name1 ) ) );
 
-        Name name3 = new LdapDN( "cn=Airport" );
-        Name name4 = new LdapDN( "cn=Airport,cn=HomeDir,cn=John,ou=Marketing,ou=East" );
+        Name name3 = new DN( "cn=Airport" );
+        Name name4 = new DN( "cn=Airport,cn=HomeDir,cn=John,ou=Marketing,ou=East" );
 
         assertTrue( name4.equals( name.addAll( 4, name3 ) ) );
 
-        Name name5 = new LdapDN( "cn=ABC123" );
-        Name name6 = new LdapDN( "cn=Airport,cn=HomeDir,cn=ABC123,cn=John,ou=Marketing,ou=East" );
+        Name name5 = new DN( "cn=ABC123" );
+        Name name6 = new DN( "cn=Airport,cn=HomeDir,cn=ABC123,cn=John,ou=Marketing,ou=East" );
 
         assertTrue( name6.equals( name.addAll( 3, name5 ) ) );
     }
@@ -2285,22 +2285,22 @@ public class LdapDNTest
     @Test
     public void testAddString() throws Exception
     {
-        Name name = new LdapDN();
-        assertEquals( name, new LdapDN( "" ) );
+        Name name = new DN();
+        assertEquals( name, new DN( "" ) );
 
-        Name name4 = new LdapDN( "ou=East" );
+        Name name4 = new DN( "ou=East" );
         name.add( "ou=East" );
         assertEquals( name4, name );
 
-        Name name3 = new LdapDN( "ou=Marketing,ou=East" );
+        Name name3 = new DN( "ou=Marketing,ou=East" );
         name.add( "ou=Marketing" );
         assertEquals( name3, name );
 
-        Name name2 = new LdapDN( "cn=John,ou=Marketing,ou=East" );
+        Name name2 = new DN( "cn=John,ou=Marketing,ou=East" );
         name.add( "cn=John" );
         assertEquals( name2, name );
 
-        Name name0 = new LdapDN( "cn=HomeDir,cn=John,ou=Marketing,ou=East" );
+        Name name0 = new DN( "cn=HomeDir,cn=John,ou=Marketing,ou=East" );
         name.add( "cn=HomeDir" );
         assertEquals( name0, name );
     }
@@ -2315,34 +2315,34 @@ public class LdapDNTest
     @Test
     public void testAddintString() throws Exception
     {
-        Name name = new LdapDN();
-        assertEquals( name, new LdapDN( "" ) );
+        Name name = new DN();
+        assertEquals( name, new DN( "" ) );
 
-        Name name4 = new LdapDN( "ou=East" );
+        Name name4 = new DN( "ou=East" );
         name.add( "ou=East" );
         assertEquals( name4, name );
 
-        Name name3 = new LdapDN( "ou=Marketing,ou=East" );
+        Name name3 = new DN( "ou=Marketing,ou=East" );
         name.add( 1, "ou=Marketing" );
         assertEquals( name3, name );
 
-        Name name2 = new LdapDN( "cn=John,ou=Marketing,ou=East" );
+        Name name2 = new DN( "cn=John,ou=Marketing,ou=East" );
         name.add( 2, "cn=John" );
         assertEquals( name2, name );
 
-        Name name0 = new LdapDN( "cn=HomeDir,cn=John,ou=Marketing,ou=East" );
+        Name name0 = new DN( "cn=HomeDir,cn=John,ou=Marketing,ou=East" );
         name.add( 3, "cn=HomeDir" );
         assertEquals( name0, name );
 
-        Name name5 = new LdapDN( "cn=HomeDir,cn=John,ou=Marketing,ou=East,o=LL " + "Bean Inc." );
+        Name name5 = new DN( "cn=HomeDir,cn=John,ou=Marketing,ou=East,o=LL " + "Bean Inc." );
         name.add( 0, "o=LL Bean Inc." );
         assertEquals( name5, name );
 
-        Name name6 = new LdapDN( "cn=HomeDir,cn=John,ou=Marketing,ou=East,c=US,o=LL " + "Bean Inc." );
+        Name name6 = new DN( "cn=HomeDir,cn=John,ou=Marketing,ou=East,c=US,o=LL " + "Bean Inc." );
         name.add( 1, "c=US" );
         assertEquals( name6, name );
 
-        Name name7 = new LdapDN( "cn=HomeDir,cn=John,ou=Advertising,ou=Marketing," + "ou=East,c=US,o=LL " + "Bean Inc." );
+        Name name7 = new DN( "cn=HomeDir,cn=John,ou=Advertising,ou=Marketing," + "ou=East,c=US,o=LL " + "Bean Inc." );
         name.add( 4, "ou=Advertising" );
         assertEquals( name7, name );
     }
@@ -2357,16 +2357,16 @@ public class LdapDNTest
     @Test
     public void testRemove() throws Exception
     {
-        Name name = new LdapDN();
-        assertEquals( new LdapDN( "" ), name );
+        Name name = new DN();
+        assertEquals( new DN( "" ), name );
 
-        Name name3 = new LdapDN( "ou=Marketing" );
+        Name name3 = new DN( "ou=Marketing" );
         name.add( "ou=East" );
         name.add( 1, "ou=Marketing" );
         name.remove( 0 );
         assertEquals( name3, name );
 
-        Name name2 = new LdapDN( "cn=HomeDir,ou=Marketing,ou=East" );
+        Name name2 = new DN( "cn=HomeDir,ou=Marketing,ou=East" );
         name.add( 0, "ou=East" );
         name.add( 2, "cn=John" );
         name.add( "cn=HomeDir" );
@@ -2374,15 +2374,15 @@ public class LdapDNTest
         assertEquals( name2, name );
 
         name.remove( 1 );
-        Name name1 = new LdapDN( "cn=HomeDir,ou=East" );
+        Name name1 = new DN( "cn=HomeDir,ou=East" );
         assertEquals( name1, name );
 
         name.remove( 1 );
-        Name name0 = new LdapDN( "ou=East" );
+        Name name0 = new DN( "ou=East" );
         assertEquals( name0, name );
 
         name.remove( 0 );
-        assertEquals( new LdapDN( "" ), name );
+        assertEquals( new DN( "" ), name );
     }
 
 
@@ -2395,7 +2395,7 @@ public class LdapDNTest
     @Test
     public void testToString() throws Exception
     {
-        Name name = new LdapDN();
+        Name name = new DN();
         assertEquals( "", name.toString() );
 
         name.add( "ou=East" );
@@ -2421,11 +2421,11 @@ public class LdapDNTest
     @Test
     public void testEqualsObject() throws Exception
     {
-        assertTrue( new LdapDN( "ou=People" ).equals( new LdapDN( "ou=People" ) ) );
+        assertTrue( new DN( "ou=People" ).equals( new DN( "ou=People" ) ) );
 
-        assertTrue( !new LdapDN( "ou=People,dc=example,dc=com" ).equals( new LdapDN( "ou=People" ) ) );
-        assertTrue( !new LdapDN( "ou=people" ).equals( new LdapDN( "ou=People" ) ) );
-        assertTrue( !new LdapDN( "ou=Groups" ).equals( new LdapDN( "ou=People" ) ) );
+        assertTrue( !new DN( "ou=People,dc=example,dc=com" ).equals( new DN( "ou=People" ) ) );
+        assertTrue( !new DN( "ou=people" ).equals( new DN( "ou=People" ) ) );
+        assertTrue( !new DN( "ou=Groups" ).equals( new DN( "ou=People" ) ) );
     }
 
 
@@ -2436,7 +2436,7 @@ public class LdapDNTest
             { 'c', 'n', '=', 0x4A, ( byte ) 0xC3, ( byte ) 0xA9, 0x72, ( byte ) 0xC3, ( byte ) 0xB4, 0x6D, 0x65 },
             "UTF-8" );
 
-        Name name = new LdapDN( cn );
+        Name name = new DN( cn );
 
         assertEquals( "cn=J\u00e9r\u00f4me", name.toString() );
     }
@@ -2450,7 +2450,7 @@ public class LdapDNTest
                 ( byte ) 0xC3, ( byte ) 0x9F, ( byte ) 0xC3, ( byte ) 0xA4, ( byte ) 0xC3, ( byte ) 0xB6,
                 ( byte ) 0xC3, ( byte ) 0xBC }, "UTF-8" );
 
-        Name name = new LdapDN( cn );
+        Name name = new DN( cn );
 
         assertEquals( "cn=\u00C4\u00D6\u00DC\u00DF\u00E4\u00F6\u00FC", name.toString() );
     }
@@ -2465,7 +2465,7 @@ public class LdapDNTest
                 ( byte ) 0xC3, ( byte ) 0x9C, ( byte ) 0xC3, ( byte ) 0xBC, ( byte ) 0xC4, ( byte ) 0x9E,
                 ( byte ) 0xC4, ( byte ) 0x9F }, "UTF-8" );
 
-        Name name = new LdapDN( cn );
+        Name name = new DN( cn );
 
         assertEquals( "cn=\u0130\u0131\u015E\u015F\u00D6\u00F6\u00DC\u00FC\u011E\u011F", name.toString() );
     }
@@ -2477,11 +2477,11 @@ public class LdapDNTest
     @Test
     public void testLdapNameToName() throws Exception
     {
-        LdapDN name = new LdapDN( "ou= Some   People   ", "dc = eXample", "dc= cOm" );
+        DN name = new DN( "ou= Some   People   ", "dc = eXample", "dc= cOm" );
 
         assertTrue( name.getName().equals( "ou= Some   People   ,dc = eXample,dc= cOm" ) );
 
-        Name result = LdapDN.normalize( name, oids );
+        Name result = DN.normalize( name, oids );
 
         assertTrue( result.toString().equals( "ou=some people,dc=example,dc=com" ) );
     }
@@ -2490,7 +2490,7 @@ public class LdapDNTest
     @Test
     public void testRdnGetTypeUpName() throws Exception
     {
-        LdapDN name = new LdapDN( "ou= Some   People   ", "dc = eXample", "dc= cOm" );
+        DN name = new DN( "ou= Some   People   ", "dc = eXample", "dc= cOm" );
 
         assertTrue( name.getName().equals( "ou= Some   People   ,dc = eXample,dc= cOm" ) );
 
@@ -2500,7 +2500,7 @@ public class LdapDNTest
         assertEquals( "ou", rdn.getNormType() );
         assertEquals( "ou", rdn.getUpType() );
 
-        LdapDN result = LdapDN.normalize( name, oidOids );
+        DN result = DN.normalize( name, oidOids );
 
         assertTrue( result.getNormName().equals(
             "2.5.4.11=some people,0.9.2342.19200300.100.1.25=example,0.9.2342.19200300.100.1.25=com" ) );
@@ -2520,9 +2520,9 @@ public class LdapDNTest
     @Test
     public void testLdapNameToNameEmpty() throws Exception
     {
-        LdapDN name = new LdapDN();
+        DN name = new DN();
 
-        Name result = LdapDN.normalize( name, oids );
+        Name result = DN.normalize( name, oids );
         assertTrue( result.toString().equals( "" ) );
     }
 
@@ -2533,15 +2533,15 @@ public class LdapDNTest
     @Test
     public void testLdapNameToNameMultiNC() throws Exception
     {
-        LdapDN name = new LdapDN(
+        DN name = new DN(
             "2.5.4.11= Some   People   + 0.9.2342.19200300.100.1.25=  And   Some anImAls,0.9.2342.19200300.100.1.25 = eXample,dc= cOm" );
 
-        Name result = LdapDN.normalize( name, oidOids );
+        Name result = DN.normalize( name, oidOids );
 
         assertEquals(
             result.toString(),
             "0.9.2342.19200300.100.1.25=and some animals+2.5.4.11=some people,0.9.2342.19200300.100.1.25=example,0.9.2342.19200300.100.1.25=com" );
-        assertTrue( ( ( LdapDN ) result )
+        assertTrue( ( ( DN ) result )
             .getName()
             .equals(
                 "2.5.4.11= Some   People   + 0.9.2342.19200300.100.1.25=  And   Some anImAls,0.9.2342.19200300.100.1.25 = eXample,dc= cOm" ) );
@@ -2554,10 +2554,10 @@ public class LdapDNTest
     @Test
     public void testLdapNameToNameAliasMultiNC() throws Exception
     {
-        LdapDN name = new LdapDN(
+        DN name = new DN(
             "2.5.4.11= Some   People   + domainComponent=  And   Some anImAls,DomainComponent = eXample,0.9.2342.19200300.100.1.25= cOm" );
 
-        LdapDN result = LdapDN.normalize( name, oidOids );
+        DN result = DN.normalize( name, oidOids );
 
         assertTrue( result
             .toString()
@@ -2576,12 +2576,12 @@ public class LdapDNTest
     @Test
     public void testLdapNameHashCode() throws Exception
     {
-        Name name1 = LdapDN
+        Name name1 = DN
             .normalize(
                 "2.5.4.11= Some   People   + domainComponent=  And   Some anImAls,DomainComponent = eXample,0.9.2342.19200300.100.1.25= cOm",
                 oids );
 
-        Name name2 = LdapDN
+        Name name2 = DN
             .normalize(
                 "2.5.4.11=some people+domainComponent=and some animals,DomainComponent=example,0.9.2342.19200300.100.1.25=com",
                 oids );
@@ -2597,7 +2597,7 @@ public class LdapDNTest
     public void testName() throws NamingException
     {
         Name jName = new javax.naming.ldap.LdapName( "cn=four,cn=three,cn=two,cn=one" );
-        Name aName = new LdapDN( "cn=four,cn=three,cn=two,cn=one" );
+        Name aName = new DN( "cn=four,cn=three,cn=two,cn=one" );
         assertEquals( jName.toString(), "cn=four,cn=three,cn=two,cn=one" );
         assertEquals( aName.toString(), "cn=four,cn=three,cn=two,cn=one" );
         assertEquals( jName.toString(), aName.toString() );
@@ -2611,7 +2611,7 @@ public class LdapDNTest
     public void testGetPrefixName() throws NamingException
     {
         Name jName = new LdapName( "cn=four,cn=three,cn=two,cn=one" );
-        Name aName = new LdapDN( "cn=four,cn=three,cn=two,cn=one" );
+        Name aName = new DN( "cn=four,cn=three,cn=two,cn=one" );
 
         assertEquals( jName.getPrefix( 0 ).toString(), aName.getPrefix( 0 ).toString() );
         assertEquals( jName.getPrefix( 1 ).toString(), aName.getPrefix( 1 ).toString() );
@@ -2628,7 +2628,7 @@ public class LdapDNTest
     public void testGetSuffix() throws NamingException
     {
         Name jName = new LdapName( "cn=four,cn=three,cn=two,cn=one" );
-        Name aName = new LdapDN( "cn=four,cn=three,cn=two,cn=one" );
+        Name aName = new DN( "cn=four,cn=three,cn=two,cn=one" );
 
         assertEquals( jName.getSuffix( 0 ).toString(), aName.getSuffix( 0 ).toString() );
         assertEquals( jName.getSuffix( 1 ).toString(), aName.getSuffix( 1 ).toString() );
@@ -2645,7 +2645,7 @@ public class LdapDNTest
     public void testAddStringName() throws NamingException
     {
         Name jName = new LdapName( "cn=four,cn=three,cn=two,cn=one" );
-        Name aName = new LdapDN( "cn=four,cn=three,cn=two,cn=one" );
+        Name aName = new DN( "cn=four,cn=three,cn=two,cn=one" );
 
         assertSame( jName, jName.add( "cn=five" ) );
         assertSame( aName, aName.add( "cn=five" ) );
@@ -2660,7 +2660,7 @@ public class LdapDNTest
     public void testAddIntString() throws NamingException
     {
         Name jName = new LdapName( "cn=four,cn=three,cn=two,cn=one" );
-        Name aName = new LdapDN( "cn=four,cn=three,cn=two,cn=one" );
+        Name aName = new DN( "cn=four,cn=three,cn=two,cn=one" );
 
         assertSame( jName, jName.add( 0, "cn=zero" ) );
         assertSame( aName, aName.add( 0, "cn=zero" ) );
@@ -2683,10 +2683,10 @@ public class LdapDNTest
     public void testAddAllName() throws NamingException
     {
         Name jName = new LdapName( "cn=four,cn=three,cn=two,cn=one" );
-        Name aName = new LdapDN( "cn=four,cn=three,cn=two,cn=one" );
+        Name aName = new DN( "cn=four,cn=three,cn=two,cn=one" );
 
         assertSame( jName, jName.addAll( new LdapName( "cn=seven,cn=six" ) ) );
-        assertSame( aName, aName.addAll( new LdapDN( "cn=seven,cn=six" ) ) );
+        assertSame( aName, aName.addAll( new DN( "cn=seven,cn=six" ) ) );
         assertEquals( jName.toString(), aName.toString() );
     }
 
@@ -2698,18 +2698,18 @@ public class LdapDNTest
     public void testAddAllIntName() throws NamingException
     {
         Name jName = new LdapName( "cn=four,cn=three,cn=two,cn=one" );
-        Name aName = new LdapDN( "cn=four,cn=three,cn=two,cn=one" );
+        Name aName = new DN( "cn=four,cn=three,cn=two,cn=one" );
 
         assertSame( jName, jName.addAll( 0, new LdapName( "cn=zero,cn=zero.5" ) ) );
-        assertSame( aName, aName.addAll( 0, new LdapDN( "cn=zero,cn=zero.5" ) ) );
+        assertSame( aName, aName.addAll( 0, new DN( "cn=zero,cn=zero.5" ) ) );
         assertEquals( jName.toString(), aName.toString() );
 
         assertSame( jName, jName.addAll( 2, new LdapName( "cn=zero,cn=zero.5" ) ) );
-        assertSame( aName, aName.addAll( 2, new LdapDN( "cn=zero,cn=zero.5" ) ) );
+        assertSame( aName, aName.addAll( 2, new DN( "cn=zero,cn=zero.5" ) ) );
         assertEquals( jName.toString(), aName.toString() );
 
         assertSame( jName, jName.addAll( jName.size(), new LdapName( "cn=zero,cn=zero.5" ) ) );
-        assertSame( aName, aName.addAll( aName.size(), new LdapDN( "cn=zero,cn=zero.5" ) ) );
+        assertSame( aName, aName.addAll( aName.size(), new DN( "cn=zero,cn=zero.5" ) ) );
         assertEquals( jName.toString(), aName.toString() );
     }
 
@@ -2721,11 +2721,11 @@ public class LdapDNTest
     public void testStartsWithName() throws NamingException
     {
         Name jName = new LdapName( "cn=four,cn=three,cn=two,cn=one" );
-        Name aName = new LdapDN( "cn=four,cn=three,cn=two,cn=one" );
+        Name aName = new DN( "cn=four,cn=three,cn=two,cn=one" );
 
-        assertEquals( jName.startsWith( new LdapName( "cn=seven,cn=six,cn=five" ) ), aName.startsWith( new LdapDN(
+        assertEquals( jName.startsWith( new LdapName( "cn=seven,cn=six,cn=five" ) ), aName.startsWith( new DN(
             "cn=seven,cn=six,cn=five" ) ) );
-        assertEquals( jName.startsWith( new LdapName( "cn=three,cn=two,cn=one" ) ), aName.startsWith( new LdapDN(
+        assertEquals( jName.startsWith( new LdapName( "cn=three,cn=two,cn=one" ) ), aName.startsWith( new DN(
             "cn=three,cn=two,cn=one" ) ) );
     }
 
@@ -2777,16 +2777,16 @@ public class LdapDNTest
         assertTrue( name0.endsWith( name0 ) );
         
         // Check with DN
-        Name n0 = new LdapDN( "cn=zero" );
-        Name n10 = new LdapDN( "cn=one,cn=zero" );
-        Name n210 = new LdapDN( "cn=two,cn=one,cn=zero" );
-        Name n3210 = new LdapDN( "cn=three,cn=two,cn=one,cn=zero" );
-        Name n321 =  new LdapDN( "cn=three,cn=two,cn=one" );
-        Name n32 =  new LdapDN( "cn=three,cn=two" );
-        Name n3 =  new LdapDN( "cn=three" );
-        Name n21 =  new LdapDN( "cn=two,cn=one" );
-        Name n2 =  new LdapDN( "cn=two" );
-        Name n1 =  new LdapDN( "cn=one" );
+        Name n0 = new DN( "cn=zero" );
+        Name n10 = new DN( "cn=one,cn=zero" );
+        Name n210 = new DN( "cn=two,cn=one,cn=zero" );
+        Name n3210 = new DN( "cn=three,cn=two,cn=one,cn=zero" );
+        Name n321 =  new DN( "cn=three,cn=two,cn=one" );
+        Name n32 =  new DN( "cn=three,cn=two" );
+        Name n3 =  new DN( "cn=three" );
+        Name n21 =  new DN( "cn=two,cn=one" );
+        Name n2 =  new DN( "cn=two" );
+        Name n1 =  new DN( "cn=one" );
         
         assertTrue( n3210.endsWith( n3 ) );
         assertTrue( n3210.endsWith( n32 ) );
@@ -2819,13 +2819,13 @@ public class LdapDNTest
         
         
         Name jName = new LdapName( "cn=four,cn=three,cn=two,cn=one" );
-        Name aName = new LdapDN( "cn=four,cn=three,cn=two,cn=one" );
+        Name aName = new DN( "cn=four,cn=three,cn=two,cn=one" );
 
-        assertEquals( jName.endsWith( new LdapName( "cn=seven,cn=six,cn=five" ) ), aName.endsWith( new LdapDN(
+        assertEquals( jName.endsWith( new LdapName( "cn=seven,cn=six,cn=five" ) ), aName.endsWith( new DN(
             "cn=seven,cn=six,cn=five" ) ) );
-        assertEquals( jName.endsWith( new LdapName( "cn=three,cn=two,cn=one" ) ), aName.endsWith( new LdapDN(
+        assertEquals( jName.endsWith( new LdapName( "cn=three,cn=two,cn=one" ) ), aName.endsWith( new DN(
             "cn=three,cn=two,cn=one" ) ) );
-        assertEquals( jName.endsWith( new LdapName( "cn=two,cn=one" ) ), aName.endsWith( new LdapDN(
+        assertEquals( jName.endsWith( new LdapName( "cn=two,cn=one" ) ), aName.endsWith( new DN(
         "cn=three,cn=two,cn=one" ) ) );
         
         assertTrue( aName.endsWith( new LdapName( "cn=four,cn=three" ) ) );
@@ -2839,7 +2839,7 @@ public class LdapDNTest
     public void testRemoveName() throws NamingException
     {
         Name jName = new LdapName( "cn=four,cn=three,cn=two,cn=one" );
-        Name aName = new LdapDN( "cn=four,cn=three,cn=two,cn=one" );
+        Name aName = new DN( "cn=four,cn=three,cn=two,cn=one" );
 
         assertEquals( jName.remove( 0 ).toString(), aName.remove( 0 ).toString() );
         assertEquals( jName.toString(), aName.toString() );
@@ -2856,7 +2856,7 @@ public class LdapDNTest
     public void testGetAllName() throws NamingException
     {
         Name jName = new LdapName( "cn=four,cn=three,cn=two,cn=one" );
-        Name aName = new LdapDN( "cn=four,cn=three,cn=two,cn=one" );
+        Name aName = new DN( "cn=four,cn=three,cn=two,cn=one" );
 
         Enumeration<String> j = jName.getAll();
         Enumeration<String> a = aName.getAll();
@@ -2875,7 +2875,7 @@ public class LdapDNTest
     @Test
     public void testDoubleQuoteInNameDIRSERVER_642() throws NamingException
     {
-        Name name1 = new LdapDN( "cn=\"Kylie Minogue\",dc=example,dc=com" );
+        Name name1 = new DN( "cn=\"Kylie Minogue\",dc=example,dc=com" );
         Name name2 = new LdapName( "cn=\"Kylie Minogue\",dc=example,dc=com" );
 
         Enumeration<String> j = name1.getAll();
@@ -2896,7 +2896,7 @@ public class LdapDNTest
     @Test
     public void testDoubleQuoteInNameDIRSERVER_642_1() throws NamingException
     {
-        LdapDN dn = new LdapDN( "cn=\" Kylie Minogue \",dc=example,dc=com" );
+        DN dn = new DN( "cn=\" Kylie Minogue \",dc=example,dc=com" );
 
         assertEquals( "cn=\" Kylie Minogue \",dc=example,dc=com", dn.getName() );
         assertEquals( "cn=\\ Kylie Minogue\\ ,dc=example,dc=com", dn.toString() );
@@ -2910,7 +2910,7 @@ public class LdapDNTest
     @Test
     public void testDoubleQuoteWithSpecialCharsInNameDIRSERVER_250() throws NamingException
     {
-        LdapDN dn = new LdapDN( "a=\"b,c\"" );
+        DN dn = new DN( "a=\"b,c\"" );
 
         assertEquals( "a=\"b,c\"", dn.getName() );
         assertEquals( "a=b\\,c", dn.toString() );
@@ -2924,7 +2924,7 @@ public class LdapDNTest
     @Test
     public void testLeadingAndTrailingSpacesDIRSERVER_184() throws NamingException
     {
-        LdapDN name = new LdapDN( "dn= \\ four spaces leading and 3 trailing \\  " );
+        DN name = new DN( "dn= \\ four spaces leading and 3 trailing \\  " );
 
         assertEquals( "dn=\\ four spaces leading and 3 trailing \\ ", name.toString() );
         assertEquals( "dn= \\ four spaces leading and 3 trailing \\  ", name.getName() );
@@ -2940,7 +2940,7 @@ public class LdapDNTest
     {
         try
         {
-            new LdapDN( "dn=middle\\ spaces" );
+            new DN( "dn=middle\\ spaces" );
         }
         catch ( InvalidNameException ine )
         {
@@ -2958,7 +2958,7 @@ public class LdapDNTest
     {
         try
         {
-            new LdapDN( "dn=# a leading pound" );
+            new DN( "dn=# a leading pound" );
         }
         catch ( InvalidNameException ine )
         {
@@ -2974,7 +2974,7 @@ public class LdapDNTest
     @Test
     public void testDIRSERVER_184_3() throws NamingException
     {
-        LdapDN name = new LdapDN( "dn=\\# a leading pound" );
+        DN name = new DN( "dn=\\# a leading pound" );
 
         assertEquals( "dn=\\# a leading pound", name.toString() );
         assertEquals( "dn=\\# a leading pound", name.getName() );
@@ -2988,7 +2988,7 @@ public class LdapDNTest
     @Test
     public void testDIRSERVER_184_4() throws NamingException
     {
-        LdapDN name = new LdapDN( "dn=a middle \\# pound" );
+        DN name = new DN( "dn=a middle \\# pound" );
 
         assertEquals( "dn=a middle # pound", name.toString() );
         assertEquals( "dn=a middle \\# pound", name.getName() );
@@ -3002,7 +3002,7 @@ public class LdapDNTest
     @Test
     public void testDIRSERVER_184_5() throws NamingException
     {
-        LdapDN name = new LdapDN( "dn=a trailing pound \\#" );
+        DN name = new DN( "dn=a trailing pound \\#" );
 
         assertEquals( "dn=a trailing pound #", name.toString() );
         assertEquals( "dn=a trailing pound \\#", name.getName() );
@@ -3018,7 +3018,7 @@ public class LdapDNTest
     {
         try
         {
-            new LdapDN( "dn=a middle # pound" );
+            new DN( "dn=a middle # pound" );
         }
         catch ( InvalidNameException ine )
         {
@@ -3036,7 +3036,7 @@ public class LdapDNTest
     {
         try
         {
-            new LdapDN( "dn=a trailing pound #" );
+            new DN( "dn=a trailing pound #" );
         }
         catch ( InvalidNameException ine )
         {
@@ -3048,7 +3048,7 @@ public class LdapDNTest
     @Test
     public void testDIRSERVER_631_1() throws NamingException
     {
-        LdapDN name = new LdapDN( "cn=Bush\\, Kate,dc=example,dc=com" );
+        DN name = new DN( "cn=Bush\\, Kate,dc=example,dc=com" );
 
         assertEquals( "cn=Bush\\, Kate,dc=example,dc=com", name.toString() );
         assertEquals( "cn=Bush\\, Kate,dc=example,dc=com", name.getName() );
@@ -3064,7 +3064,7 @@ public class LdapDNTest
     @Test
     public void testDNWithMultiOidsRDN() throws NamingException
     {
-        LdapDN name = new LdapDN(
+        DN name = new DN(
             "0.9.2342.19200300.100.1.1=00123456789+2.5.4.3=pablo picasso,2.5.4.11=search,2.5.4.10=imc,2.5.4.6=us" );
         assertEquals(
             "0.9.2342.19200300.100.1.1=00123456789+2.5.4.3=pablo picasso,2.5.4.11=search,2.5.4.10=imc,2.5.4.6=us", name
@@ -3084,25 +3084,25 @@ public class LdapDNTest
         props.setProperty( "jndi.syntax.ignorecase", "true" );
         props.setProperty( "jndi.syntax.trimblanks", "true" );
 
-        Name dn = new CompoundName( "cn=blah,dc=example,dc=com", props );
-        LdapDN ldapDn = new LdapDN();
-        ldapDn.addAll( 0, dn );
+        Name name = new CompoundName( "cn=blah,dc=example,dc=com", props );
+        DN dn = new DN();
+        dn.addAll( 0, name );
 
-        assertEquals( "cn=blah,dc=example,dc=com", ldapDn.toString() );
+        assertEquals( "cn=blah,dc=example,dc=com", dn.toString() );
 
-        dn = new CompoundName( "cn=blah,dc=example,dc=com", props );
-        ldapDn = new LdapDN( "cn=xyz" );
-        ldapDn.addAll( 0, dn );
+        name = new CompoundName( "cn=blah,dc=example,dc=com", props );
+        dn = new DN( "cn=xyz" );
+        dn.addAll( 0, name );
 
-        assertEquals( "cn=xyz,cn=blah,dc=example,dc=com", ldapDn.toString() );
+        assertEquals( "cn=xyz,cn=blah,dc=example,dc=com", dn.toString() );
     }
 
 
     @Test
     public void testDNEquals() throws NamingException
     {
-        LdapDN dn1 = new LdapDN( "a=b,c=d,e=f" );
-        LdapDN dn2 = new LdapDN( "a=b\\,c\\=d,e=f" );
+        DN dn1 = new DN( "a=b,c=d,e=f" );
+        DN dn2 = new DN( "a=b\\,c\\=d,e=f" );
 
         assertFalse( dn1.toString().equals( dn2.toString() ) );
     }
@@ -3111,7 +3111,7 @@ public class LdapDNTest
     @Test
     public void testDNAddEmptyString() throws NamingException
     {
-        LdapDN dn = new LdapDN();
+        DN dn = new DN();
         assertTrue( dn.size() == 0 );
         assertTrue( dn.add( "" ).size() == 0 );
     }
@@ -3123,32 +3123,32 @@ public class LdapDNTest
     @Test
     public void testPreserveAttributeIdCase() throws NamingException
     {
-        LdapDN dn = new LdapDN( "uID=kevin" );
+        DN dn = new DN( "uID=kevin" );
         assertEquals( "uID", dn.getRdn().getUpType() );
     }
 
 
     /**
-     * Tests the LdapDN.isValid() method.
+     * Tests the DN.isValid() method.
      */
     @Test
     public void testIsValid()
     {
-        assertTrue( LdapDN.isValid( "" ) );
+        assertTrue( DN.isValid( "" ) );
 
-        assertFalse( LdapDN.isValid( "a" ) );
-        assertFalse( LdapDN.isValid( "a " ) );
+        assertFalse( DN.isValid( "a" ) );
+        assertFalse( DN.isValid( "a " ) );
 
-        assertTrue( LdapDN.isValid( "a=" ) );
-        assertTrue( LdapDN.isValid( "a= " ) );
+        assertTrue( DN.isValid( "a=" ) );
+        assertTrue( DN.isValid( "a= " ) );
 
-        assertFalse( LdapDN.isValid( "=" ) );
-        assertFalse( LdapDN.isValid( " = " ) );
-        assertFalse( LdapDN.isValid( " = a" ) );
+        assertFalse( DN.isValid( "=" ) );
+        assertFalse( DN.isValid( " = " ) );
+        assertFalse( DN.isValid( " = a" ) );
     }
 
 
-    private ByteArrayOutputStream serializeDN( LdapDN dn ) throws IOException
+    private ByteArrayOutputStream serializeDN( DN dn ) throws IOException
     {
         ObjectOutputStream oOut = null;
         ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -3182,7 +3182,7 @@ public class LdapDNTest
     }
 
 
-    private LdapDN deserializeDN( ByteArrayOutputStream out ) throws IOException, ClassNotFoundException
+    private DN deserializeDN( ByteArrayOutputStream out ) throws IOException, ClassNotFoundException
     {
         ObjectInputStream oIn = null;
         ByteArrayInputStream in = new ByteArrayInputStream( out.toByteArray() );
@@ -3191,7 +3191,7 @@ public class LdapDNTest
         {
             oIn = new ObjectInputStream( in );
 
-            LdapDN dn = ( LdapDN ) oIn.readObject();
+            DN dn = ( DN ) oIn.readObject();
 
             return dn;
         }
@@ -3224,7 +3224,7 @@ public class LdapDNTest
     @Test
     public void testNameSerialization() throws Exception
     {
-        LdapDN dn = new LdapDN( "ou= Some   People   + dc=  And   Some anImAls,dc = eXample,dc= cOm" );
+        DN dn = new DN( "ou= Some   People   + dc=  And   Some anImAls,dc = eXample,dc= cOm" );
         dn.normalize( oids );
 
         assertEquals( dn, deserializeDN( serializeDN( dn ) ) );
@@ -3234,7 +3234,7 @@ public class LdapDNTest
     @Test
     public void testSerializeEmptyDN() throws Exception
     {
-        LdapDN dn = LdapDN.EMPTY_LDAPDN;
+        DN dn = DN.EMPTY_DN;
 
         assertEquals( dn, deserializeDN( serializeDN( dn ) ) );
     }
@@ -3248,26 +3248,26 @@ public class LdapDNTest
     @Test
     public void testNameStaticSerialization() throws Exception
     {
-        LdapDN dn = new LdapDN( "ou= Some   People   + dc=  And   Some anImAls,dc = eXample,dc= cOm" );
+        DN dn = new DN( "ou= Some   People   + dc=  And   Some anImAls,dc = eXample,dc= cOm" );
         dn.normalize( oids );
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
 
-        LdapDNSerializer.serialize( dn, out );
+        DnSerializer.serialize( dn, out );
         out.flush();
 
         byte[] data = baos.toByteArray();
         ObjectInputStream in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        assertEquals( dn, LdapDNSerializer.deserialize( in ) );
+        assertEquals( dn, DnSerializer.deserialize( in ) );
     }
 
 
     /*
     @Test public void testSerializationPerfs() throws Exception
     {
-        LdapDN dn = new LdapDN( "ou= Some   People   + dc=  And   Some anImAls,dc = eXample,dc= cOm" );
+        DN dn = new DN( "ou= Some   People   + dc=  And   Some anImAls,dc = eXample,dc= cOm" );
         dn.normalize( oids );
 
         long t0 = System.currentTimeMillis();
@@ -3282,7 +3282,7 @@ public class LdapDNTest
             byte[] data = baos.toByteArray();
             ObjectInputStream in = new ObjectInputStream( new ByteArrayInputStream( data ) );
             
-            LdapDN dn1 = DnSerializer.deserialize( in );
+            DN dn1 = DnSerializer.deserialize( in );
         }
         
         long t1 = System.currentTimeMillis();
@@ -3301,7 +3301,7 @@ public class LdapDNTest
             //byte[] data = baos.toByteArray();
             //ObjectInputStream in = new ObjectInputStream( new ByteArrayInputStream( data ) );
             
-            //LdapDN dn1 = DnSerializer.deserializeString( in, oids );
+            //DN dn1 = DnSerializer.deserializeString( in, oids );
             dn.normalize( oids );
         }
         
@@ -3316,27 +3316,27 @@ public class LdapDNTest
     @Test
     public void testStaticSerializeEmptyDN() throws Exception
     {
-        LdapDN dn = LdapDN.EMPTY_LDAPDN;
+        DN dn = DN.EMPTY_DN;
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
 
-        LdapDNSerializer.serialize( dn, out );
+        DnSerializer.serialize( dn, out );
         out.flush();
 
         byte[] data = baos.toByteArray();
         ObjectInputStream in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        assertEquals( dn, LdapDNSerializer.deserialize( in ) );
+        assertEquals( dn, DnSerializer.deserialize( in ) );
         assertEquals( dn, deserializeDN( serializeDN( dn ) ) );
     }
     
     @Test
     public void testCompositeRDN() throws InvalidNameException
     {
-        assertTrue( LdapDN.isValid( "a=b+c=d+e=f,g=h" ) );
+        assertTrue( DN.isValid( "a=b+c=d+e=f,g=h" ) );
 
-        LdapDN dn = new LdapDN( "a=b+c=d+e=f,g=h" );
+        DN dn = new DN( "a=b+c=d+e=f,g=h" );
         
         assertEquals( "a=b+c=d+e=f,g=h", dn.toString() );
     }
@@ -3344,9 +3344,9 @@ public class LdapDNTest
     @Test
     public void testCompositeRDNOids() throws InvalidNameException
     {
-        assertTrue( LdapDN.isValid( "1.2.3.4.5=0+1.2.3.4.6=0+1.2.3.4.7=omnischmomni,2.5.4.3=subtree,0.9.2342.19200300.100.1.25=example,0.9.2342.19200300.100.1.25=com" ) );
+        assertTrue( DN.isValid( "1.2.3.4.5=0+1.2.3.4.6=0+1.2.3.4.7=omnischmomni,2.5.4.3=subtree,0.9.2342.19200300.100.1.25=example,0.9.2342.19200300.100.1.25=com" ) );
 
-        LdapDN dn = new LdapDN( "1.2.3.4.5=0+1.2.3.4.6=0+1.2.3.4.7=omnischmomni,2.5.4.3=subtree,0.9.2342.19200300.100.1.25=example,0.9.2342.19200300.100.1.25=com" );
+        DN dn = new DN( "1.2.3.4.5=0+1.2.3.4.6=0+1.2.3.4.7=omnischmomni,2.5.4.3=subtree,0.9.2342.19200300.100.1.25=example,0.9.2342.19200300.100.1.25=com" );
         
         assertEquals( "1.2.3.4.5=0+1.2.3.4.6=0+1.2.3.4.7=omnischmomni,2.5.4.3=subtree,0.9.2342.19200300.100.1.25=example,0.9.2342.19200300.100.1.25=com", dn.toString() );
     }
@@ -3358,14 +3358,14 @@ public class LdapDNTest
     public void testTrimAtavs() throws InvalidNameException
     {
         // antlr parser: string value with trailing spaces
-        LdapDN dn1 = new LdapDN( " cn = Amos\\,Tori , ou=system " );
+        DN dn1 = new DN( " cn = Amos\\,Tori , ou=system " );
         assertEquals( " cn = Amos\\,Tori ", dn1.getRdn().getUpName() );
         AVA atav1 = dn1.getRdn().getAtav();
         assertEquals( "cn", atav1.getUpType() );
         assertEquals( "Amos,Tori", atav1.getUpValue().getString() );
 
         // antlr parser: hexstring with trailing spaces
-        LdapDN dn3 = new LdapDN( " cn = #414243 , ou=system " );
+        DN dn3 = new DN( " cn = #414243 , ou=system " );
         assertEquals( " cn = #414243 ", dn3.getRdn().getUpName() );
         AVA atav3 = dn3.getRdn().getAtav();
         assertEquals( "cn", atav3.getUpType() );
@@ -3373,7 +3373,7 @@ public class LdapDNTest
         assertTrue( Arrays.equals( StringTools.getBytesUtf8( "ABC" ),atav3.getNormValue().getBytes() ) );
 
         // antlr parser: 
-        LdapDN dn4 = new LdapDN( " cn = \\41\\42\\43 , ou=system " );
+        DN dn4 = new DN( " cn = \\41\\42\\43 , ou=system " );
         assertEquals( " cn = \\41\\42\\43 ", dn4.getRdn().getUpName() );
         AVA atav4 = dn4.getRdn().getAtav();
         assertEquals( "cn", atav4.getUpType() );
@@ -3381,7 +3381,7 @@ public class LdapDNTest
         assertEquals( "ABC", atav4.getNormValue().getString() );
 
         // antlr parser: quotestring with trailing spaces
-        LdapDN dn5 = new LdapDN( " cn = \"ABC\" , ou=system " );
+        DN dn5 = new DN( " cn = \"ABC\" , ou=system " );
         assertEquals( " cn = \"ABC\" ", dn5.getRdn().getUpName() );
         AVA atav5 = dn5.getRdn().getAtav();
         assertEquals( "cn", atav5.getUpType() );
@@ -3389,7 +3389,7 @@ public class LdapDNTest
         assertEquals( "ABC", atav5.getNormValue().getString() );
 
         // fast parser: string value with trailing spaces 
-        LdapDN dn2 = new LdapDN( " cn = Amos Tori , ou=system " );
+        DN dn2 = new DN( " cn = Amos Tori , ou=system " );
         assertEquals( " cn = Amos Tori ", dn2.getRdn().getUpName() );
         AVA atav2 = dn2.getRdn().getAtav();
         assertEquals( "cn", atav2.getUpType() );
@@ -3404,28 +3404,28 @@ public class LdapDNTest
     @Test
     public void testTrailingEscapedSpace() throws Exception
     {
-        LdapDN dn1 = new LdapDN( "ou=A\\ ,ou=system" );
+        DN dn1 = new DN( "ou=A\\ ,ou=system" );
         dn1.normalize( oids );
         assertEquals( "ou=A\\ ,ou=system", dn1.getName() );
         assertEquals( "ou=a,ou=system", dn1.getNormName() );
         assertEquals( "ou=A\\ ", dn1.getRdn().getUpName() );
         assertEquals( "ou=a", dn1.getRdn().getNormName() );
 
-        LdapDN dn2 = new LdapDN( "ou=A\\20,ou=system" );
+        DN dn2 = new DN( "ou=A\\20,ou=system" );
         dn2.normalize( oids );
         assertEquals( "ou=A\\20,ou=system", dn2.getName() );
         assertEquals( "ou=a,ou=system", dn2.getNormName() );
         assertEquals( "ou=A\\20", dn2.getRdn().getUpName() );
         assertEquals( "ou=a", dn2.getRdn().getNormName() );
         
-        LdapDN dn3 = new LdapDN( "ou=\\ ,ou=system" );
+        DN dn3 = new DN( "ou=\\ ,ou=system" );
         dn3.normalize( oids );
         assertEquals( "ou=\\ ,ou=system", dn3.getName() );
         assertEquals( "ou=,ou=system", dn3.getNormName() );
         assertEquals( "ou=\\ ", dn3.getRdn().getUpName() );
         assertEquals( "ou=", dn3.getRdn().getNormName() );
         
-        LdapDN dn4 = new LdapDN( "ou=\\20,ou=system" );
+        DN dn4 = new DN( "ou=\\20,ou=system" );
         dn4.normalize( oids );
         assertEquals( "ou=\\20,ou=system", dn4.getName() );
         assertEquals( "ou=,ou=system", dn4.getNormName() );
@@ -3442,7 +3442,7 @@ public class LdapDNTest
     public void testNumericOid() throws Exception
     {
         // numeric OID only
-        LdapDN dn1 = new LdapDN( "cn=loopback+ipHostNumber=127.0.0.1,ou=Hosts,dc=mygfs,dc=com" );
+        DN dn1 = new DN( "cn=loopback+ipHostNumber=127.0.0.1,ou=Hosts,dc=mygfs,dc=com" );
         assertEquals( "cn=loopback+ipHostNumber=127.0.0.1,ou=Hosts,dc=mygfs,dc=com", dn1.getName() );
         assertEquals( "cn=loopback+iphostnumber=127.0.0.1,ou=Hosts,dc=mygfs,dc=com", dn1.getNormName() );
         assertEquals( "cn=loopback+ipHostNumber=127.0.0.1", dn1.getRdn().getUpName() );
@@ -3450,21 +3450,21 @@ public class LdapDNTest
         assertEquals( "127.0.0.1", dn1.getRdn().getAttributeTypeAndValue( "ipHostNumber" ).getUpValue().get() );
         
         // numeric OID with suffix
-        LdapDN dn2 = new LdapDN( "cn=loopback+ipHostNumber=X127.0.0.1,ou=Hosts,dc=mygfs,dc=com" );
+        DN dn2 = new DN( "cn=loopback+ipHostNumber=X127.0.0.1,ou=Hosts,dc=mygfs,dc=com" );
         assertEquals( "cn=loopback+ipHostNumber=X127.0.0.1,ou=Hosts,dc=mygfs,dc=com", dn2.getName() );
         assertEquals( "cn=loopback+iphostnumber=X127.0.0.1,ou=Hosts,dc=mygfs,dc=com", dn2.getNormName() );
         assertEquals( "cn=loopback+ipHostNumber=X127.0.0.1", dn2.getRdn().getUpName() );
         assertEquals( "cn=loopback+iphostnumber=X127.0.0.1", dn2.getRdn().getNormName() );
 
         // numeric OID with prefix
-        LdapDN dn3 = new LdapDN( "cn=loopback+ipHostNumber=127.0.0.1Y,ou=Hosts,dc=mygfs,dc=com" );
+        DN dn3 = new DN( "cn=loopback+ipHostNumber=127.0.0.1Y,ou=Hosts,dc=mygfs,dc=com" );
         assertEquals( "cn=loopback+ipHostNumber=127.0.0.1Y,ou=Hosts,dc=mygfs,dc=com", dn3.getName() );
         assertEquals( "cn=loopback+iphostnumber=127.0.0.1Y,ou=Hosts,dc=mygfs,dc=com", dn3.getNormName() );
         assertEquals( "cn=loopback+ipHostNumber=127.0.0.1Y", dn3.getRdn().getUpName() );
         assertEquals( "cn=loopback+iphostnumber=127.0.0.1Y", dn3.getRdn().getNormName() );
 
         // numeric OID with special characters
-        LdapDN dn4 = new LdapDN( "cn=loopback+ipHostNumber=\\#127.0.0.1 Z,ou=Hosts,dc=mygfs,dc=com" );
+        DN dn4 = new DN( "cn=loopback+ipHostNumber=\\#127.0.0.1 Z,ou=Hosts,dc=mygfs,dc=com" );
         assertEquals( "cn=loopback+ipHostNumber=\\#127.0.0.1 Z,ou=Hosts,dc=mygfs,dc=com", dn4.getName() );
         assertEquals( "cn=loopback+iphostnumber=\\#127.0.0.1 Z,ou=Hosts,dc=mygfs,dc=com", dn4.getNormName() );
         assertEquals( "cn=loopback+ipHostNumber=\\#127.0.0.1 Z", dn4.getRdn().getUpName() );
@@ -3475,7 +3475,7 @@ public class LdapDNTest
     @Test
     public void testNormalizeAscii() throws Exception
     {
-        LdapDN dn = new LdapDN( "  ou  =  Example ,  ou  =  COM " );
+        DN dn = new DN( "  ou  =  Example ,  ou  =  COM " );
         
         dn.normalize( oidOids );
         assertEquals( "2.5.4.11=example,2.5.4.11=com", dn.getNormName() );
@@ -3505,7 +3505,7 @@ public class LdapDNTest
     @Test
     public void testNormalizeAsciiComposite() throws Exception
     {
-        LdapDN dn = new LdapDN( "  ou  =  Example + ou = TEST ,  ou  =  COM " );
+        DN dn = new DN( "  ou  =  Example + ou = TEST ,  ou  =  COM " );
         
         dn.normalize( oidOids );
         assertEquals( "2.5.4.11=example+2.5.4.11=test,2.5.4.11=com", dn.getNormName() );
@@ -3556,7 +3556,7 @@ public class LdapDNTest
     @Test
     public void testNormalizeAsciiWithEscaped() throws Exception
     {
-        LdapDN dn = new LdapDN( "  ou  =  Ex\\+mple ,  ou  =  COM " );
+        DN dn = new DN( "  ou  =  Ex\\+mple ,  ou  =  COM " );
         
         dn.normalize( oidOids );
         assertEquals( "2.5.4.11=ex\\+mple,2.5.4.11=com", dn.getNormName() );
@@ -3586,7 +3586,7 @@ public class LdapDNTest
     @Test
     public void testNormalizeCompositeWithEscaped() throws Exception
     {
-        LdapDN dn = new LdapDN( "  OU  =  Ex\\+mple + ou = T\\+ST\\  ,  ou  =  COM " );
+        DN dn = new DN( "  OU  =  Ex\\+mple + ou = T\\+ST\\  ,  ou  =  COM " );
         
         // ------------------------------------------------------------------
         // Before normalization

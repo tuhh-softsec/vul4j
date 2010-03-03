@@ -21,7 +21,7 @@
 package org.apache.directory.shared.ldap.message.internal;
 
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
-import org.apache.directory.shared.ldap.name.LdapDN;
+import org.apache.directory.shared.ldap.name.DN;
 
 
 /**
@@ -76,7 +76,7 @@ public interface InternalLdapResult
      * 
      * @return the Dn of the lowest matched entry.
      */
-    LdapDN getMatchedDn();
+    DN getMatchedDn();
 
 
     /**
@@ -86,7 +86,7 @@ public interface InternalLdapResult
      * @param dn
      *            the Dn of the lowest matched entry.
      */
-    void setMatchedDn( LdapDN dn );
+    void setMatchedDn( DN dn );
 
 
     /**

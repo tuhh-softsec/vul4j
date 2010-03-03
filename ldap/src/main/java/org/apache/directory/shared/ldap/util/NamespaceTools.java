@@ -20,7 +20,7 @@
 package org.apache.directory.shared.ldap.util;
 
 
-import org.apache.directory.shared.ldap.name.LdapDN;
+import org.apache.directory.shared.ldap.name.DN;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,7 +79,7 @@ public class NamespaceTools
     {
         if ( name1.size() == name2.size() )
         {
-            LdapDN parentDn = ( LdapDN ) name1.clone();
+            DN parentDn = ( DN ) name1.clone();
             parentDn.remove( name1.size() - 1 );
             return name2.startsWith( parentDn );
         }
@@ -114,15 +114,15 @@ public class NamespaceTools
      */
     public static Name getRelativeName( Name ancestor, Name descendant ) throws NamingException
     {
-        LdapDN rdn = null;
+        DN rdn = null;
         
-        if ( descendant instanceof LdapDN )
+        if ( descendant instanceof DN )
         {
-            rdn = ( LdapDN ) descendant.clone();
+            rdn = ( DN ) descendant.clone();
         }
         else
         {
-            rdn = new LdapDN( descendant.toString() );
+            rdn = new DN( descendant.toString() );
         }
 
         if ( rdn.startsWith( ancestor ) )

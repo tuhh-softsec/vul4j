@@ -28,7 +28,7 @@ import org.apache.directory.shared.ldap.codec.add.AddRequestCodec;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Value;
-import org.apache.directory.shared.ldap.name.LdapDN;
+import org.apache.directory.shared.ldap.name.DN;
 import org.dom4j.Element;
 import org.dom4j.Namespace;
 import org.dom4j.QName;
@@ -181,7 +181,7 @@ public class AddRequestDsml extends AbstractRequestDsml
      * 
      * @return Returns the entry DN.
      */
-    public LdapDN getEntryDn()
+    public DN getEntryDn()
     {
         return ( ( AddRequestCodec ) instance ).getEntryDn();
     }
@@ -192,7 +192,7 @@ public class AddRequestDsml extends AbstractRequestDsml
      * 
      * @param entry The entry DN to set.
      */
-    public void setEntryDn( LdapDN entryDn )
+    public void setEntryDn( DN entryDn )
     {
         ( ( AddRequestCodec ) instance ).setEntryDn( entryDn );
     }

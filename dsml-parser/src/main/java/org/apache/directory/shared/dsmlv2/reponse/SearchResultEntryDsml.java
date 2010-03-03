@@ -28,7 +28,7 @@ import org.apache.directory.shared.ldap.codec.search.SearchResultEntryCodec;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Value;
-import org.apache.directory.shared.ldap.name.LdapDN;
+import org.apache.directory.shared.ldap.name.DN;
 import org.dom4j.Element;
 import org.dom4j.Namespace;
 import org.dom4j.QName;
@@ -118,7 +118,7 @@ public class SearchResultEntryDsml extends LdapResponseDecorator implements Dsml
      * 
      * @return Returns the objectName.
      */
-    public LdapDN getObjectName()
+    public DN getObjectName()
     {
         return ( ( SearchResultEntryCodec ) instance ).getObjectName();
     }
@@ -129,7 +129,7 @@ public class SearchResultEntryDsml extends LdapResponseDecorator implements Dsml
      * 
      * @param objectName The objectName to set.
      */
-    public void setObjectName( LdapDN objectName )
+    public void setObjectName( DN objectName )
     {
         ( ( SearchResultEntryCodec ) instance ).setObjectName( objectName );
     }

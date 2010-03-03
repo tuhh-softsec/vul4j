@@ -21,7 +21,7 @@ package org.apache.directory.shared.ldap.message.internal;
 
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.message.SingleReplyRequest;
-import org.apache.directory.shared.ldap.name.LdapDN;
+import org.apache.directory.shared.ldap.name.DN;
 
 
 /**
@@ -92,11 +92,11 @@ public interface InternalBindRequest extends SingleReplyRequest, InternalAbandon
      * request. This field may take on a null value (a zero length string) for
      * the purposes of anonymous binds, when authentication has been performed
      * at a lower layer, or when using SASL credentials with a mechanism that
-     * includes the LDAPDN in the credentials.
+     * includes the DN in the credentials.
      * 
      * @return the DN of the authenticating user.
      */
-    LdapDN getName();
+    DN getName();
 
 
     /**
@@ -104,13 +104,13 @@ public interface InternalBindRequest extends SingleReplyRequest, InternalAbandon
      * request. This field may take on a null value (or a zero length string)
      * for the purposes of anonymous binds, when authentication has been
      * performed at a lower layer, or when using SASL credentials with a
-     * mechanism that includes the LDAPDN in the credentials.
+     * mechanism that includes the DN in the credentials.
      * 
      * @param name
      *            the DN of the authenticating user - leave null for annonymous
      *            user.
      */
-    void setName( LdapDN name );
+    void setName( DN name );
 
 
     /**

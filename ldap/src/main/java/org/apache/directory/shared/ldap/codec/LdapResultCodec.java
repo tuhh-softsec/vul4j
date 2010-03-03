@@ -32,7 +32,7 @@ import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
-import org.apache.directory.shared.ldap.name.LdapDN;
+import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.util.LdapURL;
 import org.apache.directory.shared.ldap.util.StringTools;
 
@@ -103,7 +103,7 @@ public class LdapResultCodec extends AbstractAsn1Object
     private ResultCodeEnum resultCode;
 
     /** The DN that is matched by the Bind */
-    private LdapDN matchedDN;
+    private DN matchedDN;
 
     /** Temporary storage of the byte[] representing the matchedDN */
     private byte[] matchedDNBytes;
@@ -182,7 +182,7 @@ public class LdapResultCodec extends AbstractAsn1Object
      * 
      * @param matchedDN The matchedDN to set.
      */
-    public void setMatchedDN( LdapDN matchedDN )
+    public void setMatchedDN( DN matchedDN )
     {
         this.matchedDN = matchedDN;
     }

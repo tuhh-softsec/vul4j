@@ -27,7 +27,7 @@ import org.apache.directory.shared.ldap.entry.client.ClientStringValue;
 import org.apache.directory.shared.ldap.message.internal.InternalCompareRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalCompareResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalResultResponse;
-import org.apache.directory.shared.ldap.name.LdapDN;
+import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.util.StringTools;
 
 
@@ -42,7 +42,7 @@ public class CompareRequestImpl extends AbstractAbandonableRequest implements In
     static final long serialVersionUID = 1699731530016468977L;
 
     /** Distinguished name identifying the compared entry */
-    private LdapDN name;
+    private DN name;
 
     /** The id of the attribute used in the comparison */
     private String attrId;
@@ -80,7 +80,7 @@ public class CompareRequestImpl extends AbstractAbandonableRequest implements In
      * 
      * @return the DN of the compared entry.
      */
-    public LdapDN getName()
+    public DN getName()
     {
         return name;
     }
@@ -93,7 +93,7 @@ public class CompareRequestImpl extends AbstractAbandonableRequest implements In
      * @param name
      *            the DN of the compared entry.
      */
-    public void setName( LdapDN name )
+    public void setName( DN name )
     {
         this.name = name;
     }
@@ -215,7 +215,7 @@ public class CompareRequestImpl extends AbstractAbandonableRequest implements In
         }
 
         InternalCompareRequest req = ( InternalCompareRequest ) obj;
-        LdapDN reqName = req.getName();
+        DN reqName = req.getName();
 
         if ( ( name != null ) && ( reqName == null ) )
         {

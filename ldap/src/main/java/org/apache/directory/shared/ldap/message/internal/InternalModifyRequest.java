@@ -25,7 +25,7 @@ import java.util.Collection;
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.entry.Modification;
 import org.apache.directory.shared.ldap.message.SingleReplyRequest;
-import org.apache.directory.shared.ldap.name.LdapDN;
+import org.apache.directory.shared.ldap.name.DN;
 
 
 /**
@@ -112,7 +112,7 @@ public interface InternalModifyRequest extends SingleReplyRequest, InternalAband
      * 
      * @return the DN of the modified entry.
      */
-    LdapDN getName();
+    DN getName();
 
 
     /**
@@ -122,7 +122,7 @@ public interface InternalModifyRequest extends SingleReplyRequest, InternalAband
      * @param name
      *            the DN of the modified entry.
      */
-    void setName( LdapDN name );
+    void setName( DN name );
 
 
     /**

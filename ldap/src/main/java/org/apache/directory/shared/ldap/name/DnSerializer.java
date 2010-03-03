@@ -34,10 +34,10 @@ import org.slf4j.LoggerFactory;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public class LdapDNSerializer
+public class DnSerializer
 {
     /** The LoggerFactory used by this class */
-    protected static final Logger LOG = LoggerFactory.getLogger( LdapDNSerializer.class );
+    protected static final Logger LOG = LoggerFactory.getLogger( DnSerializer.class );
 
     /**
      * Serialize a DN
@@ -56,7 +56,7 @@ public class LdapDNSerializer
      * @param out the stream in which the DN will be serialized
      * @throws IOException If we can't write in this stream
      */
-    public static void serialize( LdapDN dn, ObjectOutput out ) throws IOException
+    public static void serialize( DN dn, ObjectOutput out ) throws IOException
     {
         if ( dn.getName() == null )
         {
@@ -104,15 +104,15 @@ public class LdapDNSerializer
     /**
      * Deserialize a DN
      * 
-     * We read back the data to create a new LdapDN. The structure 
-     * read is exposed in the {@link LdapDNSerializer#serialize(LdapDN, ObjectOutput)} 
+     * We read back the data to create a new DN. The structure 
+     * read is exposed in the {@link DnSerializer#serialize(DN, ObjectOutput)} 
      * method<p>
      * 
      * @param in The input stream from which the DN is read
      * @return a deserialized DN
      * @throws IOException If the stream can't be read
      */
-    public static LdapDN deserialize( ObjectInput in ) throws IOException
+    public static DN deserialize( ObjectInput in ) throws IOException
     {
         // Read the UPName
         String upName = in.readUTF();
@@ -134,7 +134,7 @@ public class LdapDNSerializer
         // Read the RDNs. Is it's null, the number will be -1.
         int nbRdns = in.readInt();
         
-        LdapDN dn = new LdapDN( upName, normName, bytes );
+        DN dn = new DN( upName, normName, bytes );
         
         for ( int i = 0; i < nbRdns; i++ )
         {

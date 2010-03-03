@@ -51,7 +51,7 @@ import org.apache.directory.shared.ldap.util.MandatoryComponentsMonitor;
 import org.apache.directory.shared.ldap.util.NamespaceTools;
 import org.apache.directory.shared.ldap.util.NoDuplicateKeysMap;
 import org.apache.directory.shared.ldap.util.OptionalComponentsMonitor;
-import org.apache.directory.shared.ldap.name.LdapDN;
+import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.constants.AuthenticationLevel;
 import org.apache.directory.shared.ldap.schema.normalizers.OidNormalizer;
@@ -126,8 +126,8 @@ tokens
     private Set<UserPermission> userPermissions;
     private Map<String, OidNormalizer> oidsMap;
     
-    private Set<LdapDN> chopBeforeExclusions;
-    private Set<LdapDN> chopAfterExclusions;
+    private Set<DN> chopBeforeExclusions;
+    private Set<DN> chopAfterExclusions;
     private SubtreeSpecificationModifier ssModifier = null;
     
     private ComponentsMonitor mainACIItemComponentsMonitor;
@@ -494,7 +494,7 @@ attributeValue
     {
         // A Dn can be considered as a set of attributeTypeAndValues
         // So, parse the set as a Dn and extract each attributeTypeAndValue
-        LdapDN attributeTypeAndValueSetAsDn = new LdapDN( token.getText() );
+        DN attributeTypeAndValueSetAsDn = new DN( token.getText() );
         
         if ( oidsMap != null )
         {        
@@ -897,8 +897,8 @@ parentOfEntry
 name
 {
     log.debug( "entered name()" );
-    Set<LdapDN> names = new HashSet<LdapDN>();
-    LdapDN distinguishedName = null;
+    Set<DN> names = new HashSet<DN>();
+    DN distinguishedName = null;
 }
     :
     ID_name ( SP )+ 
@@ -920,8 +920,8 @@ name
 userGroup
 {
     log.debug( "entered userGroup()" );
-    Set<LdapDN> userGroup = new HashSet<LdapDN>();
-    LdapDN distinguishedName = null;
+    Set<DN> userGroup = new HashSet<DN>();
+    DN distinguishedName = null;
 }
     :
     ID_userGroup ( SP )+ 
@@ -1037,8 +1037,8 @@ subtreeSpecification returns [SubtreeSpecification ss]
     // in case something is left from the last parse
     ss = null;
     ssModifier = new SubtreeSpecificationModifier();
-    chopBeforeExclusions = new HashSet<LdapDN>();
-    chopAfterExclusions = new HashSet<LdapDN>();
+    chopBeforeExclusions = new HashSet<DN>();
+    chopAfterExclusions = new HashSet<DN>();
     subtreeSpecificationComponentsMonitor = new OptionalComponentsMonitor( 
             new String [] { "base", "specificExclusions", "minimum", "maximum" } );
 }
@@ -1083,7 +1083,7 @@ subtreeSpecificationComponent
 ss_base
 {
     log.debug( "entered ss_base()" );
-    LdapDN base = null;
+    DN base = null;
 }
     :
     ID_base ( SP )+ base=distinguishedName
@@ -1127,7 +1127,7 @@ specificExclusion
 chopBefore
 {
     log.debug( "entered chopBefore()" );
-    LdapDN chopBeforeExclusion = null;
+    DN chopBeforeExclusion = null;
 }
     :
     ID_chopBefore ( SP )* COLON ( SP )* chopBeforeExclusion=distinguishedName
@@ -1139,7 +1139,7 @@ chopBefore
 chopAfter
 {
     log.debug( "entered chopAfter()" );
-    LdapDN chopAfterExclusion = null;
+    DN chopAfterExclusion = null;
 }
     :
     ID_chopAfter ( SP )* COLON ( SP )* chopAfterExclusion=distinguishedName
@@ -1172,7 +1172,7 @@ ss_maximum
     }
     ;
 
-distinguishedName returns [ LdapDN name ] 
+distinguishedName returns [ DN name ] 
 {
     log.debug( "entered distinguishedName()" );
     name = null;
@@ -1180,7 +1180,7 @@ distinguishedName returns [ LdapDN name ]
     :
     token:SAFEUTF8STRING
     {
-        name = new LdapDN( token.getText() );
+        name = new DN( token.getText() );
         if ( oidsMap != null )
         {
             name.normalize( oidsMap );

@@ -76,7 +76,7 @@ import org.apache.directory.shared.ldap.codec.search.SearchResultEntryCodec;
 import org.apache.directory.shared.ldap.codec.search.SearchResultReferenceCodec;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.name.LdapDN;
+import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -627,7 +627,7 @@ public class Dsmlv2Engine
         ( ( SimpleAuthentication ) authentication ).setSimple( StringTools.getBytesUtf8( password ) );
 
         bindRequest.setAuthentication( authentication );
-        bindRequest.setName( new LdapDN( user ) );
+        bindRequest.setName( new DN( user ) );
         bindRequest.setVersion( 3 );
 
         bindRequest.setMessageId( messageId );

@@ -36,7 +36,7 @@ import org.apache.directory.shared.asn1.util.LongDecoder;
 import org.apache.directory.shared.asn1.util.LongDecoderException;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.search.controls.ChangeType;
-import org.apache.directory.shared.ldap.name.LdapDN;
+import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -171,11 +171,11 @@ public class EntryChangeControlGrammar extends AbstractGrammar
                 else
                 {
                     Value value = entryChangeContainer.getCurrentTLV().getValue();
-                    LdapDN previousDn = null;
+                    DN previousDn = null;
 
                     try
                     {
-                        previousDn = new LdapDN( StringTools.utf8ToString( value.getData() ) );
+                        previousDn = new DN( StringTools.utf8ToString( value.getData() ) );
                     }
                     catch ( InvalidNameException ine )
                     {

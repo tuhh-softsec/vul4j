@@ -26,7 +26,7 @@ import static org.junit.Assert.assertFalse;
 
 import javax.naming.NamingException;
 
-import org.apache.directory.shared.ldap.name.LdapDN;
+import org.apache.directory.shared.ldap.name.DN;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,13 +41,13 @@ import org.junit.Test;
 public class TestDnNode
 {
     /** A structure to hold all the DNs */
-    DnBranchNode<LdapDN> dnLookupTree;
-    LdapDN dn1;
-    LdapDN dn2;
-    LdapDN dn3;
-    LdapDN dn4;
-    LdapDN dn5;
-    LdapDN dn6;
+    DnBranchNode<DN> dnLookupTree;
+    DN dn1;
+    DN dn2;
+    DN dn3;
+    DN dn4;
+    DN dn5;
+    DN dn6;
 
     /**
      * Create the elements we will test
@@ -55,14 +55,14 @@ public class TestDnNode
     @Before
     public void setUp()  throws Exception
     {
-        dnLookupTree = new DnBranchNode<LdapDN>();
+        dnLookupTree = new DnBranchNode<DN>();
         
-        dn1 = new LdapDN( "dc=directory,dc=apache,dc=org" );
-        dn2 = new LdapDN( "dc=mina,dc=apache,dc=org" );
-        dn3 = new LdapDN( "dc=test,dc=com" );
-        dn4 = new LdapDN( "dc=acme,dc=com" );
-        dn5 = new LdapDN( "dc=acme,c=us,dc=com" );
-        dn6 = new LdapDN( "dc=empty" );
+        dn1 = new DN( "dc=directory,dc=apache,dc=org" );
+        dn2 = new DN( "dc=mina,dc=apache,dc=org" );
+        dn3 = new DN( "dc=test,dc=com" );
+        dn4 = new DN( "dc=acme,dc=com" );
+        dn5 = new DN( "dc=acme,c=us,dc=com" );
+        dn6 = new DN( "dc=empty" );
 
         dnLookupTree.add( dn1, dn1 );
         dnLookupTree.add( dn2, dn2 );
@@ -90,22 +90,22 @@ public class TestDnNode
     @Test public void testNewTree() throws NamingException
     {
         /** A structure to hold all the DNs */
-        DnBranchNode<LdapDN> dnLookupTree = new DnBranchNode<LdapDN>();
+        DnBranchNode<DN> dnLookupTree = new DnBranchNode<DN>();
         
-        LdapDN suffix = new LdapDN( "dc=example, dc=com" );
+        DN suffix = new DN( "dc=example, dc=com" );
         
         dnLookupTree.add( suffix, suffix );
         
         assertNotNull( dnLookupTree );
         assertTrue( dnLookupTree instanceof DnBranchNode );
-        assertTrue( ((DnBranchNode<LdapDN>)dnLookupTree).contains( "dc=com" ) );
+        assertTrue( ((DnBranchNode<DN>)dnLookupTree).contains( "dc=com" ) );
         
-        DnNode<LdapDN> child = ((DnBranchNode<LdapDN>)dnLookupTree).getChild( "dc=com" );
+        DnNode<DN> child = ((DnBranchNode<DN>)dnLookupTree).getChild( "dc=com" );
         assertTrue( child instanceof DnBranchNode );
-        assertTrue( ((DnBranchNode<LdapDN>)child).contains( "dc=example" ) );
+        assertTrue( ((DnBranchNode<DN>)child).contains( "dc=example" ) );
 
-        child = ((DnBranchNode<LdapDN>)child).getChild( "dc=example" );
-        assertEquals( suffix, ((DnLeafNode<LdapDN>)child).getElement() );
+        child = ((DnBranchNode<DN>)child).getChild( "dc=example" );
+        assertEquals( suffix, ((DnLeafNode<DN>)child).getElement() );
     }
 
 
@@ -122,8 +122,8 @@ public class TestDnNode
         assertTrue( dnLookupTree.hasParentElement( dn4 ) );
         assertTrue( dnLookupTree.hasParentElement( dn5 ) );
         assertTrue( dnLookupTree.hasParentElement( dn6 ) );
-        assertTrue( dnLookupTree.hasParentElement( new LdapDN( "dc=nothing,dc=empty" ) ) );
-        assertFalse( dnLookupTree.hasParentElement( new LdapDN(  "dc=directory,dc=apache,dc=root" ) ) );
+        assertTrue( dnLookupTree.hasParentElement( new DN( "dc=nothing,dc=empty" ) ) );
+        assertFalse( dnLookupTree.hasParentElement( new DN(  "dc=directory,dc=apache,dc=root" ) ) );
     }
     
     
@@ -155,8 +155,8 @@ public class TestDnNode
         assertTrue( dnLookupTree.hasParentElement( dn4 ) );
         assertTrue( dnLookupTree.hasParentElement( dn5 ) );
         assertTrue( dnLookupTree.hasParentElement( dn6 ) );
-        assertTrue( dnLookupTree.hasParentElement( new LdapDN( "dc=nothing,dc=empty" ) ) );
-        assertFalse( dnLookupTree.hasParentElement( new LdapDN(  "dc=directory,dc=apache,dc=root" ) ) );
+        assertTrue( dnLookupTree.hasParentElement( new DN( "dc=nothing,dc=empty" ) ) );
+        assertFalse( dnLookupTree.hasParentElement( new DN(  "dc=directory,dc=apache,dc=root" ) ) );
 
         dnLookupTree.remove( dn6 );
         assertEquals( 4, dnLookupTree.size() );
@@ -164,16 +164,16 @@ public class TestDnNode
         assertTrue( dnLookupTree.hasParentElement( dn2 ) );
         assertTrue( dnLookupTree.hasParentElement( dn4 ) );
         assertTrue( dnLookupTree.hasParentElement( dn5 ) );
-        assertFalse( dnLookupTree.hasParentElement( new LdapDN( "dc=nothing,dc=empty" ) ) );
-        assertFalse( dnLookupTree.hasParentElement( new LdapDN(  "dc=directory,dc=apache,dc=root" ) ) );
+        assertFalse( dnLookupTree.hasParentElement( new DN( "dc=nothing,dc=empty" ) ) );
+        assertFalse( dnLookupTree.hasParentElement( new DN(  "dc=directory,dc=apache,dc=root" ) ) );
 
         dnLookupTree.remove( dn1 );
         assertEquals( 3, dnLookupTree.size() );
         assertTrue( dnLookupTree.hasParentElement( dn2 ) );
         assertTrue( dnLookupTree.hasParentElement( dn4 ) );
         assertTrue( dnLookupTree.hasParentElement( dn5 ) );
-        assertFalse( dnLookupTree.hasParentElement( new LdapDN( "dc=nothing,dc=empty" ) ) );
-        assertFalse( dnLookupTree.hasParentElement( new LdapDN(  "dc=directory,dc=apache,dc=root" ) ) );
+        assertFalse( dnLookupTree.hasParentElement( new DN( "dc=nothing,dc=empty" ) ) );
+        assertFalse( dnLookupTree.hasParentElement( new DN(  "dc=directory,dc=apache,dc=root" ) ) );
 
         // Should not change anything
         dnLookupTree.remove( dn3 );
@@ -181,25 +181,25 @@ public class TestDnNode
         assertTrue( dnLookupTree.hasParentElement( dn2 ) );
         assertTrue( dnLookupTree.hasParentElement( dn4 ) );
         assertTrue( dnLookupTree.hasParentElement( dn5 ) );
-        assertFalse( dnLookupTree.hasParentElement( new LdapDN( "dc=nothing,dc=empty" ) ) );
-        assertFalse( dnLookupTree.hasParentElement( new LdapDN(  "dc=directory,dc=apache,dc=root" ) ) );
+        assertFalse( dnLookupTree.hasParentElement( new DN( "dc=nothing,dc=empty" ) ) );
+        assertFalse( dnLookupTree.hasParentElement( new DN(  "dc=directory,dc=apache,dc=root" ) ) );
 
         dnLookupTree.remove( dn5 );
         assertEquals( 2, dnLookupTree.size() );
         assertTrue( dnLookupTree.hasParentElement( dn2 ) );
         assertTrue( dnLookupTree.hasParentElement( dn4 ) );
-        assertFalse( dnLookupTree.hasParentElement( new LdapDN( "dc=nothing,dc=empty" ) ) );
-        assertFalse( dnLookupTree.hasParentElement( new LdapDN(  "dc=directory,dc=apache,dc=root" ) ) );
+        assertFalse( dnLookupTree.hasParentElement( new DN( "dc=nothing,dc=empty" ) ) );
+        assertFalse( dnLookupTree.hasParentElement( new DN(  "dc=directory,dc=apache,dc=root" ) ) );
 
         dnLookupTree.remove( dn2 );
         assertEquals( 1, dnLookupTree.size() );
         assertTrue( dnLookupTree.hasParentElement( dn4 ) );
-        assertFalse( dnLookupTree.hasParentElement( new LdapDN( "dc=nothing,dc=empty" ) ) );
-        assertFalse( dnLookupTree.hasParentElement( new LdapDN(  "dc=directory,dc=apache,dc=root" ) ) );
+        assertFalse( dnLookupTree.hasParentElement( new DN( "dc=nothing,dc=empty" ) ) );
+        assertFalse( dnLookupTree.hasParentElement( new DN(  "dc=directory,dc=apache,dc=root" ) ) );
 
         dnLookupTree.remove( dn4 );
         assertEquals( 0, dnLookupTree.size() );
-        assertFalse( dnLookupTree.hasParentElement( new LdapDN( "dc=nothing,dc=empty" ) ) );
-        assertFalse( dnLookupTree.hasParentElement( new LdapDN(  "dc=directory,dc=apache,dc=root" ) ) );
+        assertFalse( dnLookupTree.hasParentElement( new DN( "dc=nothing,dc=empty" ) ) );
+        assertFalse( dnLookupTree.hasParentElement( new DN(  "dc=directory,dc=apache,dc=root" ) ) );
     }
 }

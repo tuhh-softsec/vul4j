@@ -22,7 +22,7 @@ package org.apache.directory.shared.dsmlv2.request;
 
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.codec.modifyDn.ModifyDNRequestCodec;
-import org.apache.directory.shared.ldap.name.LdapDN;
+import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.name.RDN;
 import org.dom4j.Element;
 
@@ -104,7 +104,7 @@ public class ModifyDNRequestDsml extends AbstractRequestDsml
      * 
      * @return Returns the entry.
      */
-    public LdapDN getEntry()
+    public DN getEntry()
     {
         return ( ( ModifyDNRequestCodec ) instance ).getEntry();
     }
@@ -115,7 +115,7 @@ public class ModifyDNRequestDsml extends AbstractRequestDsml
      * 
      * @param entry The entry to set.
      */
-    public void setEntry( LdapDN entry )
+    public void setEntry( DN entry )
     {
         ( ( ModifyDNRequestCodec ) instance ).setEntry( entry );
     }
@@ -170,7 +170,7 @@ public class ModifyDNRequestDsml extends AbstractRequestDsml
      * 
      * @return Returns the newSuperior.
      */
-    public LdapDN getNewSuperior()
+    public DN getNewSuperior()
     {
         return ( ( ModifyDNRequestCodec ) instance ).getNewSuperior();
     }
@@ -181,7 +181,7 @@ public class ModifyDNRequestDsml extends AbstractRequestDsml
      * 
      * @param newSuperior The newSuperior to set.
      */
-    public void setNewSuperior( LdapDN newSuperior )
+    public void setNewSuperior( DN newSuperior )
     {
         ( ( ModifyDNRequestCodec ) instance ).setNewSuperior( newSuperior );
     }

@@ -22,7 +22,7 @@ package org.apache.directory.shared.dsmlv2.request;
 
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.codec.del.DelRequestCodec;
-import org.apache.directory.shared.ldap.name.LdapDN;
+import org.apache.directory.shared.ldap.name.DN;
 import org.dom4j.Element;
 
 
@@ -88,7 +88,7 @@ public class DelRequestDsml extends AbstractRequestDsml
      * 
      * @return Returns the entry.
      */
-    public LdapDN getEntry()
+    public DN getEntry()
     {
         return ( ( DelRequestCodec ) instance ).getEntry();
     }
@@ -99,7 +99,7 @@ public class DelRequestDsml extends AbstractRequestDsml
      * 
      * @param entry The entry to set.
      */
-    public void setEntry( LdapDN entry )
+    public void setEntry( DN entry )
     {
         ( ( DelRequestCodec ) instance ).setEntry( entry );
     }

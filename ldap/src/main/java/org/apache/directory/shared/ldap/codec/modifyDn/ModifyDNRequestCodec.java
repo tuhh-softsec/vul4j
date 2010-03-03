@@ -30,7 +30,7 @@ import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
-import org.apache.directory.shared.ldap.name.LdapDN;
+import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.name.RDN;
 import org.apache.directory.shared.ldap.util.StringTools;
 
@@ -52,7 +52,7 @@ public class ModifyDNRequestCodec extends LdapMessageCodec
     // ----------------------------------------------------------------------------
 
     /** The DN to be modified. */
-    private LdapDN entry;
+    private DN entry;
 
     /** The new RDN to be added to the RDN or to the new superior, if present */
     private RDN newRDN;
@@ -61,7 +61,7 @@ public class ModifyDNRequestCodec extends LdapMessageCodec
     private boolean deleteOldRDN;
 
     /** The optional superior, which will be concatened to the newRdn */
-    private LdapDN newSuperior;
+    private DN newSuperior;
 
     /** The modify DN request length */
     private int modifyDNRequestLength;
@@ -107,7 +107,7 @@ public class ModifyDNRequestCodec extends LdapMessageCodec
      * 
      * @return Returns the entry.
      */
-    public LdapDN getEntry()
+    public DN getEntry()
     {
         return entry;
     }
@@ -118,7 +118,7 @@ public class ModifyDNRequestCodec extends LdapMessageCodec
      * 
      * @param entry The entry to set.
      */
-    public void setEntry( LdapDN entry )
+    public void setEntry( DN entry )
     {
         this.entry = entry;
     }
@@ -173,7 +173,7 @@ public class ModifyDNRequestCodec extends LdapMessageCodec
      * 
      * @return Returns the newSuperior.
      */
-    public LdapDN getNewSuperior()
+    public DN getNewSuperior()
     {
         return newSuperior;
     }
@@ -184,7 +184,7 @@ public class ModifyDNRequestCodec extends LdapMessageCodec
      * 
      * @param newSuperior The newSuperior to set.
      */
-    public void setNewSuperior( LdapDN newSuperior )
+    public void setNewSuperior( DN newSuperior )
     {
         this.newSuperior = newSuperior;
     }
@@ -215,13 +215,13 @@ public class ModifyDNRequestCodec extends LdapMessageCodec
     protected int computeLengthProtocolOp()
     {
         int newRdnlength = StringTools.getBytesUtf8( newRDN.toString() ).length;
-        modifyDNRequestLength = 1 + TLV.getNbBytes( LdapDN.getNbBytes( entry ) ) + LdapDN.getNbBytes( entry ) + 1
+        modifyDNRequestLength = 1 + TLV.getNbBytes( DN.getNbBytes( entry ) ) + DN.getNbBytes( entry ) + 1
             + TLV.getNbBytes( newRdnlength ) + newRdnlength + 1 + 1 + 1; // deleteOldRDN
 
         if ( newSuperior != null )
         {
-            modifyDNRequestLength += 1 + TLV.getNbBytes( LdapDN.getNbBytes( newSuperior ) )
-                + LdapDN.getNbBytes( newSuperior );
+            modifyDNRequestLength += 1 + TLV.getNbBytes( DN.getNbBytes( newSuperior ) )
+                + DN.getNbBytes( newSuperior );
         }
 
         return 1 + TLV.getNbBytes( modifyDNRequestLength ) + modifyDNRequestLength;
@@ -252,7 +252,7 @@ public class ModifyDNRequestCodec extends LdapMessageCodec
 
             // The entry
 
-            Value.encode( buffer, LdapDN.getBytes( entry ) );
+            Value.encode( buffer, DN.getBytes( entry ) );
 
             // The newRDN
             Value.encode( buffer, newRDN.toString() );
@@ -266,13 +266,13 @@ public class ModifyDNRequestCodec extends LdapMessageCodec
                 // Encode the reference
                 buffer.put( ( byte ) LdapConstants.MODIFY_DN_REQUEST_NEW_SUPERIOR_TAG );
 
-                int newSuperiorLength = LdapDN.getNbBytes( newSuperior );
+                int newSuperiorLength = DN.getNbBytes( newSuperior );
 
                 buffer.put( TLV.getBytes( newSuperiorLength ) );
 
                 if ( newSuperiorLength != 0 )
                 {
-                    buffer.put( LdapDN.getBytes( newSuperior ) );
+                    buffer.put( DN.getBytes( newSuperior ) );
                 }
             }
         }

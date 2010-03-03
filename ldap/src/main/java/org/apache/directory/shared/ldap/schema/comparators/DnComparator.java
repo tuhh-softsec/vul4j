@@ -24,7 +24,7 @@ import javax.naming.Name;
 import javax.naming.NamingException;
 
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.name.LdapDN;
+import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.schema.LdapComparator;
 import org.apache.directory.shared.ldap.schema.SchemaManager;
 
@@ -51,8 +51,8 @@ public class DnComparator extends LdapComparator<Object>
      */
     public int compare( Object obj0, Object obj1 ) 
     {
-        LdapDN dn0 = null;
-        LdapDN dn1 = null;
+        DN dn0 = null;
+        DN dn1 = null;
         
         try 
         {
@@ -69,24 +69,24 @@ public class DnComparator extends LdapComparator<Object>
     }
 
 
-    public LdapDN getDn( Object obj ) throws NamingException
+    public DN getDn( Object obj ) throws NamingException
     {
-        LdapDN dn = null;
+        DN dn = null;
         
-        if ( obj instanceof LdapDN )
+        if ( obj instanceof DN )
         {
-            dn = (LdapDN)obj;
+            dn = (DN)obj;
             
-            dn = ( dn.isNormalized() ? dn : LdapDN.normalize( dn, schemaManager.getNormalizerMapping() ) );
+            dn = ( dn.isNormalized() ? dn : DN.normalize( dn, schemaManager.getNormalizerMapping() ) );
         }
         else if ( obj instanceof Name )
         {
-            dn = new LdapDN( ( Name ) obj );
+            dn = new DN( ( Name ) obj );
             dn.normalize( schemaManager.getNormalizerMapping() );
         }
         else if ( obj instanceof String )
         {
-            dn = new LdapDN( ( String ) obj );
+            dn = new DN( ( String ) obj );
             dn.normalize( schemaManager.getNormalizerMapping() );
         }
         else

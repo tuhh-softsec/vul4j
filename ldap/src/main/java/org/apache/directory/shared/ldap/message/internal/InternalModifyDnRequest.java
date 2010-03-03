@@ -21,7 +21,7 @@ package org.apache.directory.shared.ldap.message.internal;
 
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.message.SingleReplyRequest;
-import org.apache.directory.shared.ldap.name.LdapDN;
+import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.name.RDN;
 
 
@@ -82,7 +82,7 @@ public interface InternalModifyDnRequest extends SingleReplyRequest, InternalAba
      * 
      * @return the distinguished name of the entry.
      */
-    LdapDN getName();
+    DN getName();
 
 
     /**
@@ -92,7 +92,7 @@ public interface InternalModifyDnRequest extends SingleReplyRequest, InternalAba
      * @param name
      *            the distinguished name of the entry.
      */
-    void setName( LdapDN name );
+    void setName( DN name );
 
 
     /**
@@ -147,7 +147,7 @@ public interface InternalModifyDnRequest extends SingleReplyRequest, InternalAba
      * 
      * @return the dn of the superior entry the candidate entry is moved under.
      */
-    LdapDN getNewSuperior();
+    DN getNewSuperior();
 
 
     /**
@@ -161,7 +161,7 @@ public interface InternalModifyDnRequest extends SingleReplyRequest, InternalAba
      *            the dn of the superior entry the candidate entry for DN
      *            modification is moved under.
      */
-    void setNewSuperior( LdapDN newSuperior );
+    void setNewSuperior( DN newSuperior );
 
 
     /**

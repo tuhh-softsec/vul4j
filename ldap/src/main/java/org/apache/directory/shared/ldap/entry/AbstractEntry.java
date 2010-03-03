@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.apache.directory.shared.ldap.name.LdapDN;
+import org.apache.directory.shared.ldap.name.DN;
 
 
 /**
@@ -36,7 +36,7 @@ import org.apache.directory.shared.ldap.name.LdapDN;
 public abstract class AbstractEntry<K> implements Entry
 {
     /** The DN for this entry */
-    protected LdapDN dn;
+    protected DN dn;
     
     /** A map containing all the attributes for this entry */
     protected Map<K, EntryAttribute> attributes = new HashMap<K, EntryAttribute>();
@@ -47,7 +47,7 @@ public abstract class AbstractEntry<K> implements Entry
      *
      * @return The entry's DN
      */
-    public LdapDN getDn()
+    public DN getDn()
     {
         return dn;
     }
@@ -58,7 +58,7 @@ public abstract class AbstractEntry<K> implements Entry
      *
      * @param dn The DN associated with this entry
      */
-    public void setDn( LdapDN dn )
+    public void setDn( DN dn )
     {
         this.dn = dn;
     }

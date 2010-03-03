@@ -23,7 +23,7 @@ import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.message.internal.InternalModifyDnRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalModifyDnResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalResultResponse;
-import org.apache.directory.shared.ldap.name.LdapDN;
+import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.name.RDN;
 
 
@@ -38,13 +38,13 @@ public class ModifyDnRequestImpl extends AbstractAbandonableRequest implements I
     static final long serialVersionUID = 1233507339633051696L;
 
     /** PDU's modify Dn candidate <b>entry</b> distinguished name property */
-    private LdapDN name;
+    private DN name;
 
     /** PDU's <b>newrdn</b> relative distinguished name property */
     private RDN newRdn;
 
     /** PDU's <b>newSuperior</b> distinguished name property */
-    private LdapDN newSuperior;
+    private DN newSuperior;
 
     /** PDU's <b>deleteOldRdn</b> flag */
     private boolean deleteOldRdn = false;
@@ -124,7 +124,7 @@ public class ModifyDnRequestImpl extends AbstractAbandonableRequest implements I
      * 
      * @return the distinguished name of the entry.
      */
-    public LdapDN getName()
+    public DN getName()
     {
         return name;
     }
@@ -137,7 +137,7 @@ public class ModifyDnRequestImpl extends AbstractAbandonableRequest implements I
      * @param name
      *            the distinguished name of the entry.
      */
-    public void setName( LdapDN name )
+    public void setName( DN name )
     {
         this.name = name;
     }
@@ -176,7 +176,7 @@ public class ModifyDnRequestImpl extends AbstractAbandonableRequest implements I
      * 
      * @return the dn of the superior entry the candidate entry is moved under.
      */
-    public LdapDN getNewSuperior()
+    public DN getNewSuperior()
     {
         return newSuperior;
     }
@@ -193,7 +193,7 @@ public class ModifyDnRequestImpl extends AbstractAbandonableRequest implements I
      *            the dn of the superior entry the candidate entry for DN
      *            modification is moved under.
      */
-    public void setNewSuperior( LdapDN newSuperior )
+    public void setNewSuperior( DN newSuperior )
     {
         this.newSuperior = newSuperior;
     }

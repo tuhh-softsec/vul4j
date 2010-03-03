@@ -30,7 +30,7 @@ import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
-import org.apache.directory.shared.ldap.name.LdapDN;
+import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.util.StringTools;
 
 
@@ -50,7 +50,7 @@ public class BindRequestCodec extends LdapMessageCodec
     private int version;
 
     /** The name of the user requesting a bind */
-    private LdapDN name;
+    private DN name;
 
     /** The authentication used to bind the user */
     private LdapAuthentication authentication;
@@ -135,7 +135,7 @@ public class BindRequestCodec extends LdapMessageCodec
      * 
      * @return The user name
      */
-    public LdapDN getName()
+    public DN getName()
     {
         return name;
     }
@@ -146,7 +146,7 @@ public class BindRequestCodec extends LdapMessageCodec
      * 
      * @param name The user name
      */
-    public void setName( LdapDN name )
+    public void setName( DN name )
     {
         this.name = name;
     }
@@ -207,7 +207,7 @@ public class BindRequestCodec extends LdapMessageCodec
         bindRequestLength = 1 + 1 + 1; // Initialized with version
 
         // The name
-        bindRequestLength += 1 + TLV.getNbBytes( LdapDN.getNbBytes( name ) ) + LdapDN.getNbBytes( name );
+        bindRequestLength += 1 + TLV.getNbBytes( DN.getNbBytes( name ) ) + DN.getNbBytes( name );
 
         // The authentication
         bindRequestLength += authentication.computeLength();
@@ -250,7 +250,7 @@ public class BindRequestCodec extends LdapMessageCodec
         Value.encode( buffer, version );
 
         // The name
-        Value.encode( buffer, LdapDN.getBytes( name ) );
+        Value.encode( buffer, DN.getBytes( name ) );
 
         // The authentication
         authentication.encode( buffer );

@@ -21,7 +21,7 @@ package org.apache.directory.shared.ldap.message.internal;
 
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.message.SingleReplyRequest;
-import org.apache.directory.shared.ldap.name.LdapDN;
+import org.apache.directory.shared.ldap.name.DN;
 
 
 /**
@@ -46,7 +46,7 @@ public interface InternalDeleteRequest extends SingleReplyRequest, InternalAband
      * 
      * @return the DN of the leaf entry to delete.
      */
-    LdapDN getName();
+    DN getName();
 
 
     /**
@@ -55,5 +55,5 @@ public interface InternalDeleteRequest extends SingleReplyRequest, InternalAband
      * 
      * @param name the DN of the leaf entry to delete.
      */
-    void setName( LdapDN name );
+    void setName( DN name );
 }

@@ -32,7 +32,7 @@ import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.message.internal.InternalDeleteRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalResultResponse;
-import org.apache.directory.shared.ldap.name.LdapDN;
+import org.apache.directory.shared.ldap.name.DN;
 import org.junit.Test;
 
 
@@ -64,10 +64,10 @@ public class DeleteRequestImplTest
     public void testEqualsExactCopy() throws InvalidNameException
     {
         DeleteRequestImpl req0 = new DeleteRequestImpl( 5 );
-        req0.setName( new LdapDN( "cn=admin,dc=example,dc=com" ) );
+        req0.setName( new DN( "cn=admin,dc=example,dc=com" ) );
 
         DeleteRequestImpl req1 = new DeleteRequestImpl( 5 );
-        req1.setName( new LdapDN( "cn=admin,dc=example,dc=com" ) );
+        req1.setName( new DN( "cn=admin,dc=example,dc=com" ) );
 
         assertTrue( req0.equals( req1 ) );
     }
@@ -80,10 +80,10 @@ public class DeleteRequestImplTest
     public void testNotEqualDiffId() throws InvalidNameException
     {
         DeleteRequestImpl req0 = new DeleteRequestImpl( 7 );
-        req0.setName( new LdapDN( "cn=admin,dc=example,dc=com" ) );
+        req0.setName( new DN( "cn=admin,dc=example,dc=com" ) );
 
         DeleteRequestImpl req1 = new DeleteRequestImpl( 5 );
-        req1.setName( new LdapDN( "cn=admin,dc=example,dc=com" ) );
+        req1.setName( new DN( "cn=admin,dc=example,dc=com" ) );
 
         assertFalse( req0.equals( req1 ) );
     }
@@ -96,10 +96,10 @@ public class DeleteRequestImplTest
     public void testNotEqualDiffName() throws InvalidNameException
     {
         DeleteRequestImpl req0 = new DeleteRequestImpl( 5 );
-        req0.setName( new LdapDN( "uid=akarasulu,dc=example,dc=com" ) );
+        req0.setName( new DN( "uid=akarasulu,dc=example,dc=com" ) );
 
         DeleteRequestImpl req1 = new DeleteRequestImpl( 5 );
-        req1.setName( new LdapDN( "cn=admin,dc=example,dc=com" ) );
+        req1.setName( new DN( "cn=admin,dc=example,dc=com" ) );
 
         assertFalse( req0.equals( req1 ) );
     }
@@ -114,13 +114,13 @@ public class DeleteRequestImplTest
     {
         InternalDeleteRequest req0 = new InternalDeleteRequest()
         {
-            public LdapDN getName()
+            public DN getName()
             {
                 return null;
             }
 
 
-            public void setName( LdapDN name )
+            public void setName( DN name )
             {
             }
 

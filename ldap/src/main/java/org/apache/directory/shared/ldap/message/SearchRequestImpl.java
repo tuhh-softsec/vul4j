@@ -33,7 +33,7 @@ import org.apache.directory.shared.ldap.filter.SearchScope;
 import org.apache.directory.shared.ldap.message.internal.InternalResultResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalSearchRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalSearchResponseDone;
-import org.apache.directory.shared.ldap.name.LdapDN;
+import org.apache.directory.shared.ldap.name.DN;
 
 
 /**
@@ -47,7 +47,7 @@ public class SearchRequestImpl extends AbstractAbandonableRequest implements Int
     static final long serialVersionUID = -5655881944020886218L;
 
     /** Search base distinguished name */
-    private LdapDN baseDn;
+    private DN baseDn;
 
     /** Search filter expression tree's root node */
     private ExprNode filter;
@@ -128,7 +128,7 @@ public class SearchRequestImpl extends AbstractAbandonableRequest implements Int
      * 
      * @return the search base
      */
-    public LdapDN getBase()
+    public DN getBase()
     {
         return baseDn;
     }
@@ -140,7 +140,7 @@ public class SearchRequestImpl extends AbstractAbandonableRequest implements Int
      * @param base
      *            the search base
      */
-    public void setBase( LdapDN base )
+    public void setBase( DN base )
     {
         baseDn = base;
     }

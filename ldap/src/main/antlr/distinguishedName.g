@@ -174,7 +174,7 @@ options    {
      * <optional-space> ::= ( <CR> ) *( " " )
      *
      */
-distinguishedName [LdapDN dn]
+distinguishedName [DN dn]
     {
         matchedProduction( "distinguishedName()" );
         RDN rdn = null;

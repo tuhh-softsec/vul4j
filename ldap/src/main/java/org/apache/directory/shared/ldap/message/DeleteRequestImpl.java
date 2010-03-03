@@ -23,7 +23,7 @@ import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.message.internal.InternalDeleteRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalDeleteResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalResultResponse;
-import org.apache.directory.shared.ldap.name.LdapDN;
+import org.apache.directory.shared.ldap.name.DN;
 
 
 /**
@@ -37,7 +37,7 @@ public class DeleteRequestImpl extends AbstractAbandonableRequest implements Int
     static final long serialVersionUID = 3187847454305567542L;
 
     /** The distinguished name of the entry to delete */
-    private LdapDN name;
+    private DN name;
 
     private InternalDeleteResponse response;
 
@@ -69,7 +69,7 @@ public class DeleteRequestImpl extends AbstractAbandonableRequest implements Int
      * 
      * @return the DN of the leaf entry to delete.
      */
-    public LdapDN getName()
+    public DN getName()
     {
         return name;
     }
@@ -82,7 +82,7 @@ public class DeleteRequestImpl extends AbstractAbandonableRequest implements Int
      * @param name
      *            the DN of the leaf entry to delete.
      */
-    public void setName( LdapDN name )
+    public void setName( DN name )
     {
         this.name = name;
     }

@@ -37,7 +37,7 @@ import org.apache.directory.shared.ldap.entry.client.DefaultClientEntry;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.message.internal.InternalAddRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalResultResponse;
-import org.apache.directory.shared.ldap.name.LdapDN;
+import org.apache.directory.shared.ldap.name.DN;
 import org.junit.Test;
 
 
@@ -110,11 +110,11 @@ public class AddRequestImplTest
     public void testEqualsExactCopy() throws InvalidNameException, NamingException
     {
         AddRequestImpl req0 = new AddRequestImpl( 5 );
-        req0.setEntryDn( new LdapDN( "cn=admin,dc=example,dc=com" ) );
+        req0.setEntryDn( new DN( "cn=admin,dc=example,dc=com" ) );
         req0.setEntry( getEntry() );
 
         AddRequestImpl req1 = new AddRequestImpl( 5 );
-        req1.setEntryDn( new LdapDN( "cn=admin,dc=example,dc=com" ) );
+        req1.setEntryDn( new DN( "cn=admin,dc=example,dc=com" ) );
         req1.setEntry( getEntry() );
 
         assertTrue( req0.equals( req1 ) );
@@ -128,11 +128,11 @@ public class AddRequestImplTest
     public void testNotEqualDiffId() throws InvalidNameException, NamingException
     {
         AddRequestImpl req0 = new AddRequestImpl( 7 );
-        req0.setEntryDn( new LdapDN( "cn=admin,dc=example,dc=com" ) );
+        req0.setEntryDn( new DN( "cn=admin,dc=example,dc=com" ) );
         req0.setEntry( getEntry() );
 
         AddRequestImpl req1 = new AddRequestImpl( 5 );
-        req1.setEntryDn( new LdapDN( "cn=admin,dc=example,dc=com" ) );
+        req1.setEntryDn( new DN( "cn=admin,dc=example,dc=com" ) );
         req1.setEntry( getEntry() );
 
         assertFalse( req0.equals( req1 ) );
@@ -147,11 +147,11 @@ public class AddRequestImplTest
     {
         AddRequestImpl req0 = new AddRequestImpl( 5 );
         req0.setEntry( getEntry() );
-        req0.setEntryDn( new LdapDN( "cn=admin,dc=example,dc=com" ) );
+        req0.setEntryDn( new DN( "cn=admin,dc=example,dc=com" ) );
 
         AddRequestImpl req1 = new AddRequestImpl( 5 );
         req1.setEntry( getEntry() );
-        req1.setEntryDn( new LdapDN( "cn=admin,dc=apache,dc=org" ) );
+        req1.setEntryDn( new DN( "cn=admin,dc=apache,dc=org" ) );
 
         assertFalse( req0.equals( req1 ) );
     }
@@ -164,11 +164,11 @@ public class AddRequestImplTest
     public void testNotEqualDiffAttributes() throws InvalidNameException, NamingException
     {
         AddRequestImpl req0 = new AddRequestImpl( 5 );
-        req0.setEntryDn( new LdapDN( "cn=admin,dc=apache,dc=org" ) );
+        req0.setEntryDn( new DN( "cn=admin,dc=apache,dc=org" ) );
         req0.setEntry( getEntry() );
 
         AddRequestImpl req1 = new AddRequestImpl( 5 );
-        req1.setEntryDn( new LdapDN( "cn=admin,dc=apache,dc=org" ) );
+        req1.setEntryDn( new DN( "cn=admin,dc=apache,dc=org" ) );
 
         assertFalse( req0.equals( req1 ) );
         assertFalse( req1.equals( req0 ) );
@@ -204,13 +204,13 @@ public class AddRequestImplTest
             }
 
 
-            public LdapDN getEntryDn()
+            public DN getEntryDn()
             {
                 return null;
             }
 
 
-            public void setEntryDn( LdapDN entryDn )
+            public void setEntryDn( DN entryDn )
             {
             }
 

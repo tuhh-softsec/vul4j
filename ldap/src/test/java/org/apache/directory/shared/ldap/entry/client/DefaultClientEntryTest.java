@@ -46,7 +46,7 @@ import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Value;
-import org.apache.directory.shared.ldap.name.LdapDN;
+import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.schema.normalizers.DeepTrimToLowerNormalizer;
 import org.apache.directory.shared.ldap.schema.normalizers.OidNormalizer;
 import org.apache.directory.shared.ldap.util.StringTools;
@@ -61,7 +61,7 @@ import org.junit.Test;
  */
 public class DefaultClientEntryTest
 {
-    private static LdapDN EXAMPLE_DN;
+    private static DN EXAMPLE_DN;
     private static final byte[] BYTES1 = new byte[]{ 'a', 'b' };
     private static final byte[] BYTES2 = new byte[]{ 'b' };
     private static final byte[] BYTES3 = new byte[]{ 'c' };
@@ -174,7 +174,7 @@ public class DefaultClientEntryTest
     @BeforeClass
     public static void setUpBeforeClass() throws Exception
     {
-        EXAMPLE_DN = new LdapDN( "dc=example,dc=com" );
+        EXAMPLE_DN = new DN( "dc=example,dc=com" );
 
         oids = new HashMap<String, OidNormalizer>();
 
@@ -205,13 +205,13 @@ public class DefaultClientEntryTest
         Entry entry = new DefaultClientEntry();
         
         assertNotNull( entry );
-        assertEquals( LdapDN.EMPTY_LDAPDN, entry.getDn() );
+        assertEquals( DN.EMPTY_DN, entry.getDn() );
         assertEquals( 0, entry.size() );
     }
 
 
     /**
-     * Test method for DefaultClientEntry( LdapDN )
+     * Test method for DefaultClientEntry( DN )
      */
     @Test
     public void testDefaultClientEntryLdapDN()
@@ -226,7 +226,7 @@ public class DefaultClientEntryTest
 
 
     /**
-     * Test method for DefaultClientEntry( LdapDN, String... )
+     * Test method for DefaultClientEntry( DN, String... )
      */
     @Test
     public void testDefaultClientEntryLdapDNStringArray()
@@ -264,7 +264,7 @@ public class DefaultClientEntryTest
 
 
     /**
-     * Test method for DefaultClientEntry( LdapDN, EntryAttribute... )
+     * Test method for DefaultClientEntry( DN, EntryAttribute... )
      */
     @Test
     public void testDefaultClientEntryLdapDNEntryAttributeArray()
@@ -465,7 +465,7 @@ public class DefaultClientEntryTest
         assertEquals( entry1, entry2 );
         entry2.setDn( EXAMPLE_DN );
         
-        assertEquals( LdapDN.EMPTY_LDAPDN, entry1.getDn() );
+        assertEquals( DN.EMPTY_DN, entry1.getDn() );
         
         entry1.setDn( EXAMPLE_DN );
         entry2 = entry1.clone();
@@ -715,7 +715,7 @@ public class DefaultClientEntryTest
         
         assertEquals( EXAMPLE_DN, entry.getDn() );
         
-        LdapDN testDn = new LdapDN( "cn=test" );
+        DN testDn = new DN( "cn=test" );
         entry.setDn( testDn );
         
         assertEquals( testDn, entry.getDn() );
@@ -733,7 +733,7 @@ public class DefaultClientEntryTest
         
         assertEquals( entry1.hashCode(), entry2.hashCode() );
         
-        entry2.setDn( new LdapDN( "ou=system,dc=com" ) );
+        entry2.setDn( new DN( "ou=system,dc=com" ) );
         assertNotSame( entry1.hashCode(), entry2.hashCode() );
         
         entry2.setDn( EXAMPLE_DN );
@@ -1193,14 +1193,14 @@ public class DefaultClientEntryTest
 
 
     /**
-     * Test method for setDN( LdapDN )
+     * Test method for setDN( DN )
      */
     @Test
     public void testSetDn()
     {
         Entry entry = new DefaultClientEntry();
         
-        assertEquals( LdapDN.EMPTY_LDAPDN, entry.getDn() );
+        assertEquals( DN.EMPTY_DN, entry.getDn() );
         
         entry.setDn( EXAMPLE_DN );
         assertEquals( EXAMPLE_DN, entry.getDn() );
@@ -1268,7 +1268,7 @@ public class DefaultClientEntryTest
     @Test
     public void testSerializeCompleteEntry() throws NamingException, IOException, ClassNotFoundException
     {
-        LdapDN dn = new LdapDN( "ou=system" );
+        DN dn = new DN( "ou=system" );
         
         dn.normalize( oids );
         
@@ -1322,7 +1322,7 @@ public class DefaultClientEntryTest
     @Test
     public void testSerializeEntryWithNoAttribute() throws NamingException, IOException, ClassNotFoundException
     {
-        LdapDN dn = new LdapDN( "ou=system" );
+        DN dn = new DN( "ou=system" );
         
         dn.normalize( oids );
         

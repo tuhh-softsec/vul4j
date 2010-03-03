@@ -30,7 +30,7 @@ import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.controls.AbstractControl;
 import org.apache.directory.shared.ldap.codec.search.controls.ChangeType;
-import org.apache.directory.shared.ldap.name.LdapDN;
+import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.util.StringTools;
 
 
@@ -94,7 +94,7 @@ public class EntryChangeControl extends AbstractControl
     private long changeNumber = UNDEFINED_CHANGE_NUMBER;
 
     /** The previous DN */
-    private LdapDN previousDn = null;
+    private DN previousDn = null;
     
     /** A temporary storage for the previous DN */
     private byte[] previousDnBytes = null;
@@ -252,13 +252,13 @@ public class EntryChangeControl extends AbstractControl
     }
 
 
-    public LdapDN getPreviousDn()
+    public DN getPreviousDn()
     {
         return previousDn;
     }
 
 
-    public void setPreviousDn( LdapDN previousDn )
+    public void setPreviousDn( DN previousDn )
     {
         this.previousDn = previousDn;
     }

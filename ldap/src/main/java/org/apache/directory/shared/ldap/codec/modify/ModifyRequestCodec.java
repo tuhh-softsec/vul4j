@@ -39,7 +39,7 @@ import org.apache.directory.shared.ldap.entry.Modification;
 import org.apache.directory.shared.ldap.entry.ModificationOperation;
 import org.apache.directory.shared.ldap.entry.client.ClientModification;
 import org.apache.directory.shared.ldap.entry.client.DefaultClientAttribute;
-import org.apache.directory.shared.ldap.name.LdapDN;
+import org.apache.directory.shared.ldap.name.DN;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -83,7 +83,7 @@ public class ModifyRequestCodec extends LdapMessageCodec
     // ----------------------------------------------------------------------------
 
     /** The DN to be modified. */
-    private LdapDN object;
+    private DN object;
 
     /** The modifications list. This is an array of Modification. */
     private List<Modification> modifications;
@@ -242,7 +242,7 @@ public class ModifyRequestCodec extends LdapMessageCodec
      * 
      * @return Returns the object.
      */
-    public LdapDN getObject()
+    public DN getObject()
     {
         return object;
     }
@@ -253,7 +253,7 @@ public class ModifyRequestCodec extends LdapMessageCodec
      * 
      * @param object The DN to set.
      */
-    public void setObject( LdapDN object )
+    public void setObject( DN object )
     {
         this.object = object;
     }
@@ -346,7 +346,7 @@ public class ModifyRequestCodec extends LdapMessageCodec
     protected int computeLengthProtocolOp()
     {
         // Initialized with object
-        modifyRequestLength = 1 + TLV.getNbBytes( LdapDN.getNbBytes( object ) ) + LdapDN.getNbBytes( object );
+        modifyRequestLength = 1 + TLV.getNbBytes( DN.getNbBytes( object ) ) + DN.getNbBytes( object );
 
         // Modifications
         modificationsLength = 0;
@@ -440,7 +440,7 @@ public class ModifyRequestCodec extends LdapMessageCodec
             buffer.put( TLV.getBytes( modifyRequestLength ) );
 
             // The entry
-            Value.encode( buffer, LdapDN.getBytes( object ) );
+            Value.encode( buffer, DN.getBytes( object ) );
 
             // The modifications sequence
             buffer.put( UniversalTag.SEQUENCE_TAG );

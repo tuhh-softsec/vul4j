@@ -31,7 +31,7 @@ import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
-import org.apache.directory.shared.ldap.name.LdapDN;
+import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.util.StringTools;
 
 
@@ -58,7 +58,7 @@ public class CompareRequestCodec extends LdapMessageCodec
     // ----------------------------------------------------------------------------
 
     /** The entry to be compared */
-    private LdapDN entry;
+    private DN entry;
 
     /** The attribute to be compared */
     private String attributeDesc;
@@ -113,7 +113,7 @@ public class CompareRequestCodec extends LdapMessageCodec
      * 
      * @return Returns the entry.
      */
-    public LdapDN getEntry()
+    public DN getEntry()
     {
         return entry;
     }
@@ -124,7 +124,7 @@ public class CompareRequestCodec extends LdapMessageCodec
      * 
      * @param entry The entry to set.
      */
-    public void setEntry( LdapDN entry )
+    public void setEntry( DN entry )
     {
         this.entry = entry;
     }
@@ -196,7 +196,7 @@ public class CompareRequestCodec extends LdapMessageCodec
     protected int computeLengthProtocolOp()
     {
         // The entry
-        compareRequestLength = 1 + TLV.getNbBytes( LdapDN.getNbBytes( entry ) ) + LdapDN.getNbBytes( entry );
+        compareRequestLength = 1 + TLV.getNbBytes( DN.getNbBytes( entry ) ) + DN.getNbBytes( entry );
 
         // The attribute value assertion
         int attributeDescLength = StringTools.getBytesUtf8( attributeDesc ).length;
@@ -241,7 +241,7 @@ public class CompareRequestCodec extends LdapMessageCodec
             buffer.put( TLV.getBytes( compareRequestLength ) );
 
             // The entry
-            Value.encode( buffer, LdapDN.getBytes( entry ) );
+            Value.encode( buffer, DN.getBytes( entry ) );
 
             // The attributeValueAssertion sequence Tag
             buffer.put( UniversalTag.SEQUENCE_TAG );

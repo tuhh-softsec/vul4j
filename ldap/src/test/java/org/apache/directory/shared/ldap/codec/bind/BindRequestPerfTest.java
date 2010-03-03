@@ -33,7 +33,7 @@ import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.controls.ControlImpl;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.name.LdapDN;
+import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
 
@@ -149,7 +149,7 @@ public class BindRequestPerfTest
     @Test
     public void testEncodeBindRequestPerf() throws Exception
     {
-        LdapDN name = new LdapDN( "uid=akarasulu,dc=example,dc=com" );
+        DN name = new DN( "uid=akarasulu,dc=example,dc=com" );
         int nbLoops = 1;
         long t0 = System.currentTimeMillis();
         

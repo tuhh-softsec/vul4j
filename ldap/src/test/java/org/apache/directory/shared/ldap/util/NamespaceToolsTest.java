@@ -23,7 +23,7 @@ package org.apache.directory.shared.ldap.util;
 import javax.naming.Name;
 import javax.naming.NamingException;
 
-import org.apache.directory.shared.ldap.name.LdapDN;
+import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.util.NamespaceTools;
 import org.junit.Test;
 
@@ -111,13 +111,13 @@ public class NamespaceToolsTest
     public void testGetRelativeName() throws NamingException
     {
         // test the basis case first with the root
-        LdapDN ancestor = new LdapDN( "" );
-        LdapDN descendant = new LdapDN( "ou=system" );
+        DN ancestor = new DN( "" );
+        DN descendant = new DN( "ou=system" );
         Name relativeName = NamespaceTools.getRelativeName( ancestor, descendant );
         assertEquals( relativeName.toString(), "ou=system" );
         
-        ancestor = new LdapDN( "ou=system" );
-        descendant = new LdapDN( "ou=users,ou=system" );
+        ancestor = new DN( "ou=system" );
+        descendant = new DN( "ou=users,ou=system" );
         relativeName = NamespaceTools.getRelativeName( ancestor, descendant );
         assertEquals( relativeName.toString(), "ou=users" );
     }

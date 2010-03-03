@@ -25,7 +25,7 @@ import java.util.List;
 
 import javax.naming.NamingException;
 
-import org.apache.directory.shared.ldap.name.LdapDN;
+import org.apache.directory.shared.ldap.name.DN;
 
 
 /**
@@ -62,7 +62,7 @@ public interface Entry extends Cloneable, Iterable<EntryAttribute>, Externalizab
      *
      * @return The entry's DN
      */
-    LdapDN getDn();
+    DN getDn();
 
 
     /**
@@ -112,7 +112,7 @@ public interface Entry extends Cloneable, Iterable<EntryAttribute>, Externalizab
      *
      * @param dn The DN associated with this entry
      */
-    void setDn( LdapDN dn );
+    void setDn( DN dn );
 
 
     /**

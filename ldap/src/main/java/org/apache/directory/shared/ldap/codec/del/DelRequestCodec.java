@@ -29,7 +29,7 @@ import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
-import org.apache.directory.shared.ldap.name.LdapDN;
+import org.apache.directory.shared.ldap.name.DN;
 
 
 /**
@@ -48,7 +48,7 @@ public class DelRequestCodec extends LdapMessageCodec
     // ----------------------------------------------------------------------------
 
     /** The entry to be deleted */
-    private LdapDN entry;
+    private DN entry;
 
 
     // ~ Constructors
@@ -91,7 +91,7 @@ public class DelRequestCodec extends LdapMessageCodec
      * 
      * @return Returns the entry.
      */
-    public LdapDN getEntry()
+    public DN getEntry()
     {
         return entry;
     }
@@ -102,7 +102,7 @@ public class DelRequestCodec extends LdapMessageCodec
      * 
      * @param entry The entry to set.
      */
-    public void setEntry( LdapDN entry )
+    public void setEntry( DN entry )
     {
         this.entry = entry;
     }
@@ -120,7 +120,7 @@ public class DelRequestCodec extends LdapMessageCodec
     protected int computeLengthProtocolOp()
     {
         // The entry
-        return 1 + TLV.getNbBytes( LdapDN.getNbBytes( entry ) ) + LdapDN.getNbBytes( entry );
+        return 1 + TLV.getNbBytes( DN.getNbBytes( entry ) ) + DN.getNbBytes( entry );
     }
 
 
@@ -141,8 +141,8 @@ public class DelRequestCodec extends LdapMessageCodec
             buffer.put( LdapConstants.DEL_REQUEST_TAG );
 
             // The entry
-            buffer.put( TLV.getBytes( LdapDN.getNbBytes( entry ) ) );
-            buffer.put( LdapDN.getBytes( entry ) );
+            buffer.put( TLV.getBytes( DN.getNbBytes( entry ) ) );
+            buffer.put( DN.getBytes( entry ) );
         }
         catch ( BufferOverflowException boe )
         {

@@ -32,7 +32,7 @@ import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.message.internal.InternalModifyDnRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalResultResponse;
-import org.apache.directory.shared.ldap.name.LdapDN;
+import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.name.RDN;
 import org.junit.Test;
 
@@ -60,9 +60,9 @@ public class ModifyDnRequestImplTest
         
         try
         {
-            request.setName( new LdapDN( "dc=admins,dc=apache,dc=org" ) );
+            request.setName( new DN( "dc=admins,dc=apache,dc=org" ) );
             request.setNewRdn( new RDN( "dc=administrators" ) );
-            request.setNewSuperior( new LdapDN( "dc=groups,dc=apache,dc=org" ) );
+            request.setNewSuperior( new DN( "dc=groups,dc=apache,dc=org" ) );
         }
         catch ( InvalidNameException ine )
         {
@@ -132,10 +132,10 @@ public class ModifyDnRequestImplTest
     public void testNotEqualDiffName() throws InvalidNameException
     {
         ModifyDnRequestImpl req0 = getRequest();
-        req0.setName( new LdapDN( "cn=admin,dc=example,dc=com" ) );
+        req0.setName( new DN( "cn=admin,dc=example,dc=com" ) );
 
         ModifyDnRequestImpl req1 = getRequest();
-        req1.setName( new LdapDN( "cn=admin,dc=apache,dc=org" ) );
+        req1.setName( new DN( "cn=admin,dc=apache,dc=org" ) );
 
         assertFalse( req0.equals( req1 ) );
     }
@@ -148,10 +148,10 @@ public class ModifyDnRequestImplTest
     public void testNotEqualDiffNewSuperior() throws InvalidNameException
     {
         ModifyDnRequestImpl req0 = getRequest();
-        req0.setNewSuperior( new LdapDN( "cn=admin,dc=example,dc=com" ) );
+        req0.setNewSuperior( new DN( "cn=admin,dc=example,dc=com" ) );
 
         ModifyDnRequestImpl req1 = getRequest();
-        req1.setNewSuperior( new LdapDN( "cn=admin,dc=apache,dc=org" ) );
+        req1.setNewSuperior( new DN( "cn=admin,dc=apache,dc=org" ) );
 
         assertFalse( req0.equals( req1 ) );
     }
@@ -198,11 +198,11 @@ public class ModifyDnRequestImplTest
     {
         InternalModifyDnRequest req0 = new InternalModifyDnRequest()
         {
-            public LdapDN getName()
+            public DN getName()
             {
                 try
                 {
-                    return new LdapDN( "dc=admins,dc=apache,dc=org" );
+                    return new DN( "dc=admins,dc=apache,dc=org" );
                 }
                 catch ( InvalidNameException ine )
                 {
@@ -212,7 +212,7 @@ public class ModifyDnRequestImplTest
             }
 
 
-            public void setName( LdapDN name )
+            public void setName( DN name )
             {
             }
 
@@ -247,11 +247,11 @@ public class ModifyDnRequestImplTest
             }
 
 
-            public LdapDN getNewSuperior()
+            public DN getNewSuperior()
             {
                 try
                 {
-                    return new LdapDN( "dc=groups,dc=apache,dc=org" );
+                    return new DN( "dc=groups,dc=apache,dc=org" );
                 }
                 catch ( InvalidNameException ine )
                 {
@@ -261,7 +261,7 @@ public class ModifyDnRequestImplTest
             }
 
 
-            public void setNewSuperior( LdapDN newSuperior )
+            public void setNewSuperior( DN newSuperior )
             {
             }
 

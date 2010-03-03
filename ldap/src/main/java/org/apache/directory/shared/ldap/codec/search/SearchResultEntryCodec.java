@@ -40,7 +40,7 @@ import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.client.DefaultClientAttribute;
 import org.apache.directory.shared.ldap.entry.client.DefaultClientEntry;
-import org.apache.directory.shared.ldap.name.LdapDN;
+import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.util.StringTools;
 
 
@@ -132,7 +132,7 @@ public class SearchResultEntryCodec extends LdapMessageCodec
      * 
      * @return Returns the objectName.
      */
-    public LdapDN getObjectName()
+    public DN getObjectName()
     {
         return entry.getDn();
     }
@@ -143,7 +143,7 @@ public class SearchResultEntryCodec extends LdapMessageCodec
      * 
      * @param objectName The objectName to set.
      */
-    public void setObjectName( LdapDN objectName )
+    public void setObjectName( DN objectName )
     {
         entry.setDn( objectName );
     }

@@ -26,7 +26,7 @@ package org.apache.directory.shared.ldap.trigger;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.directory.shared.ldap.name.LdapDN;
+import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.schema.NormalizerMappingResolver;
 import org.apache.directory.shared.ldap.trigger.StoredProcedureOption;
 import org.apache.directory.shared.ldap.trigger.StoredProcedureParameter;
@@ -346,7 +346,7 @@ genericStoredProcedureParameter
 ldapContextStoredProcedureParameter
 {
     log.debug( "entered ldapContextStoredProcedureParameter()" );
-    LdapDN ldapContext = null;
+    DN ldapContext = null;
 }
     : ID_ldapContext ( SP )+ ldapContext=distinguishedName
     { triggerStoredProcedureParameters.add( StoredProcedureParameter.Generic_LDAP_CONTEXT.instance( ldapContext ) ); }
@@ -386,7 +386,7 @@ storedProcedureSearchContextOption returns [ StoredProcedureSearchContextOption 
     log.debug( "entered storedProcedureSearchContextOption()" );
     spSearchContextOption = null;
     SearchScope searchScope = SearchScope.OBJECT; // default scope
-    LdapDN spSearchContext = null;
+    DN spSearchContext = null;
 }
     :
     ID_searchContext ( SP )+ // FIXME: SP should not be mandatory if an OPEN_CURLY follows
@@ -407,7 +407,7 @@ storedProcedureSearchScope returns [ SearchScope scope ]
     | ID_scope_subtree { scope = SearchScope.SUBTREE; }
     ;
 
-storedProcedureSearchContext returns [ LdapDN spSearchContext ]
+storedProcedureSearchContext returns [ DN spSearchContext ]
 {
     log.debug( "entered storedProcedureSearchContext()" );
     spSearchContext = null;
@@ -426,14 +426,14 @@ fullyQualifiedStoredProcedureName returns [ String spName ]
     { spName = spNameToken.getText(); }
     ;
 
-distinguishedName returns [ LdapDN name ] 
+distinguishedName returns [ DN name ] 
 {
     log.debug( "entered distinguishedName()" );
     name = null;
 }
     : nameToken:UTF8String
     {
-        name = new LdapDN( nameToken.getText() );
+        name = new DN( nameToken.getText() );
     }
     ;
     exception

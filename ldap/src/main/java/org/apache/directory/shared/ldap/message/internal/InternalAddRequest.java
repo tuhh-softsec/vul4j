@@ -24,7 +24,7 @@ package org.apache.directory.shared.ldap.message.internal;
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.message.SingleReplyRequest;
-import org.apache.directory.shared.ldap.name.LdapDN;
+import org.apache.directory.shared.ldap.name.DN;
 
 
 /**
@@ -47,7 +47,7 @@ public interface InternalAddRequest extends SingleReplyRequest, InternalAbandona
      * 
      * @return the Dn of the added entry.
      */
-    LdapDN getEntryDn();
+    DN getEntryDn();
 
 
     /**
@@ -55,7 +55,7 @@ public interface InternalAddRequest extends SingleReplyRequest, InternalAbandona
      * 
      * @param entry the Dn of the added entry.
      */
-    void setEntryDn( LdapDN entry );
+    void setEntryDn( DN entry );
 
 
     /**

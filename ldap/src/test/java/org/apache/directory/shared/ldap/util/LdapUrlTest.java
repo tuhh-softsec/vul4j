@@ -34,7 +34,7 @@ import javax.naming.InvalidNameException;
 
 import org.apache.directory.shared.ldap.codec.util.LdapURLEncodingException;
 import org.apache.directory.shared.ldap.filter.SearchScope;
-import org.apache.directory.shared.ldap.name.LdapDN;
+import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.util.LdapURL.Extension;
 import org.junit.Test;
 
@@ -62,7 +62,7 @@ public class LdapUrlTest
      * test an empty LdapURL
      */
     @Test
-    public void testLdapDNEmpty() throws LdapURLEncodingException
+    public void testDnEmpty() throws LdapURLEncodingException
     {
         assertEquals( "ldap:///", new LdapURL( "" ).toString() );
     }
@@ -72,7 +72,7 @@ public class LdapUrlTest
      * test a simple LdapURL
      */
     @Test
-    public void testLdapDNSimple() throws LdapURLEncodingException
+    public void testDnSimple() throws LdapURLEncodingException
     {
         assertEquals( "ldap://directory.apache.org:80/", new LdapURL( "ldap://directory.apache.org:80/" )
             .toString() );
@@ -83,7 +83,7 @@ public class LdapUrlTest
      * test a LdapURL host 1
      */
     @Test
-    public void testLdapDNWithMinus() throws LdapURLEncodingException
+    public void testDnWithMinus() throws LdapURLEncodingException
     {
         assertEquals( "ldap://d-a.org:80/", new LdapURL( "ldap://d-a.org:80/" ).toString() );
     }
@@ -93,7 +93,7 @@ public class LdapUrlTest
      * test a LdapURL with a bad port
      */
     @Test
-    public void testLdapDNBadPort()
+    public void testDnBadPort()
     {
         try
         {
@@ -113,7 +113,7 @@ public class LdapUrlTest
      * test a LdapURL with a bad port 2
      */
     @Test
-    public void testLdapDNBadPort2()
+    public void testDnBadPort2()
     {
         try
         {
@@ -133,7 +133,7 @@ public class LdapUrlTest
      * test a LdapURL with a bad port 3
      */
     @Test
-    public void testLdapDNBadPort3()
+    public void testDnBadPort3()
     {
         try
         {
@@ -153,7 +153,7 @@ public class LdapUrlTest
      * test a LdapURL with a bad port 4
      */
     @Test
-    public void testLdapDNBadPort4()
+    public void testDnBadPort4()
     {
         try
         {
@@ -173,7 +173,7 @@ public class LdapUrlTest
      * test a LdapURL with no host
      */
     @Test
-    public void testLdapDNBadHost1() throws LdapURLEncodingException
+    public void testDnBadHost1() throws LdapURLEncodingException
     {
         assertEquals( "ldap:///", new LdapURL( "ldap:///" ).toString() );
     }
@@ -183,7 +183,7 @@ public class LdapUrlTest
      * test a LdapURL with a bad host 2
      */
     @Test
-    public void testLdapDNBadHost2()
+    public void testDnBadHost2()
     {
         try
         {
@@ -203,7 +203,7 @@ public class LdapUrlTest
      * test a LdapURL with a bad host 3
      */
     @Test
-    public void testLdapDNBadHost3()
+    public void testDnBadHost3()
     {
         try
         {
@@ -223,7 +223,7 @@ public class LdapUrlTest
      * test a LdapURL with a bad host 4
      */
     @Test
-    public void testLdapDNBadHost4()
+    public void testDnBadHost4()
     {
         try
         {
@@ -243,7 +243,7 @@ public class LdapUrlTest
      * test a LdapURL with a bad host 5
      */
     @Test
-    public void testLdapDNBadHost5()
+    public void testDnBadHost5()
     {
         try
         {
@@ -263,7 +263,7 @@ public class LdapUrlTest
      * test a LdapURL with a bad host 6
      */
     @Test
-    public void testLdapDNBadHost6()
+    public void testDnBadHost6()
     {
         try
         {
@@ -283,7 +283,7 @@ public class LdapUrlTest
      * test a LdapURL with a bad host 7
      */
     @Test
-    public void testLdapDNBadHost7()
+    public void testDnBadHost7()
     {
         try
         {
@@ -303,7 +303,7 @@ public class LdapUrlTest
      * test a LdapURL IP host
      */
     @Test
-    public void testLdapDNIPHost() throws LdapURLEncodingException
+    public void testDnIPHost() throws LdapURLEncodingException
     {
         assertEquals( "ldap://1.2.3.4/", new LdapURL( "ldap://1.2.3.4/" ).toString() );
     }
@@ -313,7 +313,7 @@ public class LdapUrlTest
      * test a LdapURL IP host and port
      */
     @Test
-    public void testLdapDNIPHostPort() throws LdapURLEncodingException
+    public void testDnIPHostPort() throws LdapURLEncodingException
     {
         assertEquals( "ldap://1.2.3.4:80/", new LdapURL( "ldap://1.2.3.4:80/" ).toString() );
     }
@@ -323,7 +323,7 @@ public class LdapUrlTest
      * test a LdapURL with a bad IP host 1
      */
     @Test
-    public void testLdapDNBadHostIP1()
+    public void testDnBadHostIP1()
     {
         try
         {
@@ -343,7 +343,7 @@ public class LdapUrlTest
      * test a LdapURL with a bad IP host 2
      */
     @Test
-    public void testLdapDNBadHostIP2()
+    public void testDnBadHostIP2()
     {
         try
         {
@@ -363,7 +363,7 @@ public class LdapUrlTest
      * test a LdapURL with a bad IP host 3
      */
     @Test
-    public void testLdapDNBadHostIP3()
+    public void testDnBadHostIP3()
     {
         try
         {
@@ -383,7 +383,7 @@ public class LdapUrlTest
      * test a LdapURL with a bad IP host 4
      */
     @Test
-    public void testLdapDNBadHostIP4()
+    public void testDnBadHostIP4()
     {
         try
         {
@@ -403,7 +403,7 @@ public class LdapUrlTest
      * test a LdapURL with a valid host hich is not an IP
      */
     @Test
-    public void testLdapDNNotAnIP() throws LdapURLEncodingException
+    public void testDnNotAnIP() throws LdapURLEncodingException
     {
         assertEquals( "ldap://1.1.1.100000.a/", new LdapURL( "ldap://1.1.1.100000.a/" ).toString() );
     }
@@ -413,7 +413,7 @@ public class LdapUrlTest
      * test a LdapURL with valid simpleDN
      */
     @Test
-    public void testLdapDNSimpleDN() throws LdapURLEncodingException
+    public void testDnSimpleDN() throws LdapURLEncodingException
     {
         assertEquals( "ldap://directory.apache.org:389/dc=example,dc=org/", new LdapURL(
             "ldap://directory.apache.org:389/dc=example,dc=org/" ).toString() );
@@ -424,7 +424,7 @@ public class LdapUrlTest
      * test a LdapURL with valid simpleDN 2
      */
     @Test
-    public void testLdapDNSimpleDN2() throws LdapURLEncodingException
+    public void testDnSimpleDN2() throws LdapURLEncodingException
     {
         assertEquals( "ldap://directory.apache.org:389/dc=example", new LdapURL(
             "ldap://directory.apache.org:389/dc=example" ).toString() );
@@ -435,7 +435,7 @@ public class LdapUrlTest
      * test a LdapURL with a valid encoded DN
      */
     @Test
-    public void testLdapDNSimpleDNEncoded() throws LdapURLEncodingException
+    public void testDnSimpleDNEncoded() throws LdapURLEncodingException
     {
         assertEquals( "ldap://directory.apache.org:389/dc=example%202,dc=org", new LdapURL(
             "ldap://directory.apache.org:389/dc=example%202,dc=org" ).toString() );
@@ -446,7 +446,7 @@ public class LdapUrlTest
      * test a LdapURL with an invalid DN
      */
     @Test
-    public void testLdapDNInvalidDN()
+    public void testDnInvalidDN()
     {
         try
         {
@@ -464,7 +464,7 @@ public class LdapUrlTest
      * test a LdapURL with an invalid DN 2
      */
     @Test
-    public void testLdapDNInvalidDN2()
+    public void testDnInvalidDN2()
     {
         try
         {
@@ -482,7 +482,7 @@ public class LdapUrlTest
      * test a LdapURL with valid unique attributes
      */
     @Test
-    public void testLdapDNUniqueAttribute() throws LdapURLEncodingException
+    public void testDnUniqueAttribute() throws LdapURLEncodingException
     {
         assertEquals( "ldap://directory.apache.org:389/dc=example,dc=org?ou", new LdapURL(
             "ldap://directory.apache.org:389/dc=example,dc=org?ou" ).toString() );
@@ -493,7 +493,7 @@ public class LdapUrlTest
      * test a LdapURL with valid attributes
      */
     @Test
-    public void testLdapDNAttributes() throws LdapURLEncodingException
+    public void testDnAttributes() throws LdapURLEncodingException
     {
         assertEquals( "ldap://directory.apache.org:389/dc=example,dc=org?ou,objectclass,dc", new LdapURL(
             "ldap://directory.apache.org:389/dc=example,dc=org?ou,objectclass,dc" ).toString() );
@@ -504,7 +504,7 @@ public class LdapUrlTest
      * test a LdapURL with valid duplicated attributes
      */
     @Test
-    public void testLdapDNDuplicatedAttributes() throws LdapURLEncodingException
+    public void testDnDuplicatedAttributes() throws LdapURLEncodingException
     {
         assertEquals( "ldap://directory.apache.org:389/dc=example,dc=org?ou,dc", new LdapURL(
             "ldap://directory.apache.org:389/dc=example,dc=org?ou,dc,ou" ).toString() );
@@ -650,7 +650,7 @@ public class LdapUrlTest
      * test an empty ldaps:// LdapURL
      */
     @Test
-    public void testLdapDNEmptyLdaps() throws LdapURLEncodingException
+    public void testDnEmptyLdaps() throws LdapURLEncodingException
     {
         assertEquals( "ldaps:///", new LdapURL( "ldaps:///" ).toString() );
     }
@@ -660,7 +660,7 @@ public class LdapUrlTest
      * test an simple ldaps:// LdapURL
      */
     @Test
-    public void testLdapDNSimpleLdaps() throws LdapURLEncodingException
+    public void testDnSimpleLdaps() throws LdapURLEncodingException
     {
         assertEquals( "ldaps://directory.apache.org:80/", new LdapURL( "ldaps://directory.apache.org:80/" )
             .toString() );
@@ -671,7 +671,7 @@ public class LdapUrlTest
      * test the setScheme() method
      */
     @Test
-    public void testLdapDNSetScheme() throws LdapURLEncodingException
+    public void testDnSetScheme() throws LdapURLEncodingException
     {
         LdapURL url = new LdapURL();
         assertEquals( "ldap://", url.getScheme() );
@@ -694,7 +694,7 @@ public class LdapUrlTest
      * test the setHost() method
      */
     @Test
-    public void testLdapDNSetHost() throws LdapURLEncodingException
+    public void testDnSetHost() throws LdapURLEncodingException
     {
         LdapURL url = new LdapURL();
         assertNull( url.getHost() );
@@ -713,7 +713,7 @@ public class LdapUrlTest
      * test the setPort() method
      */
     @Test
-    public void testLdapDNSetPort() throws LdapURLEncodingException
+    public void testDnSetPort() throws LdapURLEncodingException
     {
         LdapURL url = new LdapURL();
         assertEquals( -1, url.getPort() );
@@ -736,12 +736,12 @@ public class LdapUrlTest
      * test the setDn() method
      */
     @Test
-    public void testLdapDNSetDn() throws LdapURLEncodingException, InvalidNameException
+    public void testDnSetDn() throws LdapURLEncodingException, InvalidNameException
     {
         LdapURL url = new LdapURL();
         assertNull( url.getDn() );
 
-        LdapDN dn = new LdapDN( "dc=example,dc=com" );
+        DN dn = new DN( "dc=example,dc=com" );
         url.setDn( dn );
         assertEquals( dn, url.getDn() );
         assertEquals( "ldap:///dc=example,dc=com", url.toString() );
@@ -756,14 +756,14 @@ public class LdapUrlTest
      * test the setAttributes() method
      */
     @Test
-    public void testLdapDNSetAttributes() throws LdapURLEncodingException, InvalidNameException
+    public void testDnSetAttributes() throws LdapURLEncodingException, InvalidNameException
     {
         LdapURL url = new LdapURL();
         assertNotNull( url.getAttributes() );
         assertTrue( url.getAttributes().isEmpty() );
 
         List<String> attributes = new ArrayList<String>();
-        url.setDn( new LdapDN( "dc=example,dc=com" ) );
+        url.setDn( new DN( "dc=example,dc=com" ) );
 
         url.setAttributes( null );
         assertNotNull( url.getAttributes() );
@@ -788,12 +788,12 @@ public class LdapUrlTest
      * test the setScope() method
      */
     @Test
-    public void testLdapDNSetScope() throws LdapURLEncodingException, InvalidNameException
+    public void testDnSetScope() throws LdapURLEncodingException, InvalidNameException
     {
         LdapURL url = new LdapURL();
         assertEquals( SearchScope.OBJECT, url.getScope() );
 
-        url.setDn( new LdapDN( "dc=example,dc=com" ) );
+        url.setDn( new DN( "dc=example,dc=com" ) );
 
         url.setScope( SearchScope.ONELEVEL );
         assertEquals( SearchScope.ONELEVEL, url.getScope() );
@@ -813,12 +813,12 @@ public class LdapUrlTest
      * test the setFilter() method
      */
     @Test
-    public void testLdapDNSetFilter() throws LdapURLEncodingException, InvalidNameException
+    public void testDnSetFilter() throws LdapURLEncodingException, InvalidNameException
     {
         LdapURL url = new LdapURL();
         assertNull( url.getFilter() );
 
-        url.setDn( new LdapDN( "dc=example,dc=com" ) );
+        url.setDn( new DN( "dc=example,dc=com" ) );
 
         url.setFilter( "(objectClass=person)" );
         assertEquals( "(objectClass=person)", url.getFilter() );
@@ -2113,7 +2113,7 @@ public class LdapUrlTest
         LdapURL url1 = new LdapURL();
         url1.setHost( "localhost" );
         url1.setPort( 123 );
-        url1.setDn( LdapDN.EMPTY_LDAPDN );
+        url1.setDn( DN.EMPTY_DN );
         url1.getExtensions().add( new Extension( false, "X-CONNECTION-NAME", germanChars ) );
         assertEquals( "ldap://localhost:123/????X-CONNECTION-NAME=%c3%84%c3%96%c3%9c%c3%9f%c3%a4%c3%b6%c3%bc", url1
             .toString() );
@@ -2135,7 +2135,7 @@ public class LdapUrlTest
         LdapURL url1 = new LdapURL();
         url1.setHost( "localhost" );
         url1.setPort( 123 );
-        url1.setDn( LdapDN.EMPTY_LDAPDN );
+        url1.setDn( DN.EMPTY_DN );
         url1.getExtensions().add( new Extension( false, "X-CONNECTION-NAME", "," ) );
         assertEquals( "ldap://localhost:123/????X-CONNECTION-NAME=%2c", url1.toString() );
 
@@ -2162,7 +2162,7 @@ public class LdapUrlTest
         LdapURL url1 = new LdapURL();
         url1.setHost( "localhost" );
         url1.setPort( 123 );
-        url1.setDn( LdapDN.EMPTY_LDAPDN );
+        url1.setDn( DN.EMPTY_DN );
         url1.getExtensions().add( new Extension( false, "X-CONNECTION-NAME", ":/?#[]@!$&'()*+,;=" ) );
         assertEquals( "ldap://localhost:123/????X-CONNECTION-NAME=:/%3f#[]@!$&'()*+%2c;=", url1.toString() );
 
@@ -2183,7 +2183,7 @@ public class LdapUrlTest
         LdapURL url1 = new LdapURL();
         url1.setHost( "localhost" );
         url1.setPort( 123 );
-        url1.setDn( LdapDN.EMPTY_LDAPDN );
+        url1.setDn( DN.EMPTY_DN );
         url1.getExtensions().add(
             new Extension( false, "X-CONNECTION-NAME",
                 "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._~" ) );

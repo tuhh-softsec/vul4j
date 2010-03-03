@@ -22,7 +22,7 @@ package org.apache.directory.shared.ldap.message;
 
 import org.apache.directory.shared.ldap.message.internal.InternalLdapResult;
 import org.apache.directory.shared.ldap.message.internal.InternalReferral;
-import org.apache.directory.shared.ldap.name.LdapDN;
+import org.apache.directory.shared.ldap.name.DN;
 
 
 /**
@@ -36,7 +36,7 @@ public class LdapResultImpl implements InternalLdapResult
     static final long serialVersionUID = -1446626887394613213L;
 
     /** Lowest matched entry Dn - defaults to empty string */
-    private LdapDN matchedDn;
+    private DN matchedDn;
 
     /** Referral associated with this LdapResult if the errorCode is REFERRAL */
     private InternalReferral referral;
@@ -90,7 +90,7 @@ public class LdapResultImpl implements InternalLdapResult
      * 
      * @return the Dn of the lowest matched entry.
      */
-    public LdapDN getMatchedDn()
+    public DN getMatchedDn()
     {
         return matchedDn;
     }
@@ -103,7 +103,7 @@ public class LdapResultImpl implements InternalLdapResult
      * @param matchedDn
      *            the Dn of the lowest matched entry.
      */
-    public void setMatchedDn( LdapDN matchedDn )
+    public void setMatchedDn( DN matchedDn )
     {
         this.matchedDn = matchedDn;
     }

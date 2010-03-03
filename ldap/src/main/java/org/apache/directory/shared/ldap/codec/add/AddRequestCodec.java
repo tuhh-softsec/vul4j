@@ -38,7 +38,7 @@ import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.client.DefaultClientAttribute;
 import org.apache.directory.shared.ldap.entry.client.DefaultClientEntry;
-import org.apache.directory.shared.ldap.name.LdapDN;
+import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -218,7 +218,7 @@ public class AddRequestCodec extends LdapMessageCodec
      * 
      * @return Returns the entry DN.
      */
-    public LdapDN getEntryDn()
+    public DN getEntryDn()
     {
         return entry.getDn();
     }
@@ -229,7 +229,7 @@ public class AddRequestCodec extends LdapMessageCodec
      * 
      * @param entry The DN to set.
      */
-    public void setEntryDn( LdapDN entryDn )
+    public void setEntryDn( DN entryDn )
     {
         entry.setDn( entryDn );
     }
@@ -277,7 +277,7 @@ public class AddRequestCodec extends LdapMessageCodec
     protected int computeLengthProtocolOp()
     {
         // The entry
-        addRequestLength = 1 + TLV.getNbBytes( LdapDN.getNbBytes( entry.getDn() ) ) + LdapDN.getNbBytes( entry.getDn() );
+        addRequestLength = 1 + TLV.getNbBytes( DN.getNbBytes( entry.getDn() ) ) + DN.getNbBytes( entry.getDn() );
 
         // The attributes sequence
         attributesLength = 0;
@@ -367,7 +367,7 @@ public class AddRequestCodec extends LdapMessageCodec
             buffer.put( TLV.getBytes( addRequestLength ) );
 
             // The entry
-            Value.encode( buffer, LdapDN.getBytes( entry.getDn() ) );
+            Value.encode( buffer, DN.getBytes( entry.getDn() ) );
 
             // The attributes sequence
             buffer.put( UniversalTag.SEQUENCE_TAG );

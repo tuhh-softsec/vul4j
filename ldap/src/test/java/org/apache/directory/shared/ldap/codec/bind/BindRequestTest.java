@@ -1333,7 +1333,7 @@ public class BindRequestTest
     @Test
     public void testPerf() throws Exception
     {
-        LdapDN name = new LdapDN( "uid=akarasulu,dc=example,dc=com" );
+        DN name = new DN( "uid=akarasulu,dc=example,dc=com" );
         long t0 = System.currentTimeMillis();
         
         for ( int i = 0; i< 10000; i++)

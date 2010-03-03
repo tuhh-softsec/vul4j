@@ -107,7 +107,7 @@ import org.apache.directory.shared.ldap.message.ModifyResponseImpl;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.message.SearchResponseDoneImpl;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.name.LdapDN;
+import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.name.RDN;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
@@ -350,7 +350,7 @@ public class LdapMessageGrammar extends AbstractGrammar
 
                     // We have to handle the special case of a 0 length matched
                     // DN
-                    LdapDN entry = null;
+                    DN entry = null;
 
                     if ( tlv.getLength() == 0 )
                     {
@@ -364,7 +364,7 @@ public class LdapMessageGrammar extends AbstractGrammar
 
                         try
                         {
-                            entry = new LdapDN( dnStr );
+                            entry = new DN( dnStr );
                         }
                         catch ( InvalidNameException ine )
                         {
@@ -374,7 +374,7 @@ public class LdapMessageGrammar extends AbstractGrammar
 
                             DeleteResponseImpl response = new DeleteResponseImpl( delRequest.getMessageId() );
                             throw new ResponseCarryingException( msg, response, ResultCodeEnum.INVALID_DN_SYNTAX,
-                                LdapDN.EMPTY_LDAPDN, ine );
+                                DN.EMPTY_DN, ine );
                         }
 
                         delRequest.setEntry( entry );
@@ -579,7 +579,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                     // We have to handle the special case of a 0 length name
                     if ( tlv.getLength() == 0 )
                     {
-                        bindRequestMessage.setName( LdapDN.EMPTY_LDAPDN );
+                        bindRequestMessage.setName( DN.EMPTY_DN );
                     }
                     else
                     {
@@ -588,7 +588,7 @@ public class LdapMessageGrammar extends AbstractGrammar
 
                         try
                         {
-                            LdapDN dn = new LdapDN( dnStr );
+                            DN dn = new DN( dnStr );
                             bindRequestMessage.setName( dn );
                         }
                         catch ( InvalidNameException ine )
@@ -600,7 +600,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                             BindResponseImpl response = new BindResponseImpl( bindRequestMessage.getMessageId() );
 
                             throw new ResponseCarryingException( msg, response, ResultCodeEnum.INVALID_DN_SYNTAX,
-                                LdapDN.EMPTY_LDAPDN, ine );
+                                DN.EMPTY_DN, ine );
                         }
                     }
 
@@ -1144,7 +1144,7 @@ public class LdapMessageGrammar extends AbstractGrammar
 
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
-                    LdapDN objectName = LdapDN.EMPTY_LDAPDN;
+                    DN objectName = DN.EMPTY_DN;
 
                     // Store the value.
                     if ( tlv.getLength() == 0 )
@@ -1158,7 +1158,7 @@ public class LdapMessageGrammar extends AbstractGrammar
 
                         try
                         {
-                            objectName = new LdapDN( dnStr );
+                            objectName = new DN( dnStr );
                         }
                         catch ( InvalidNameException ine )
                         {
@@ -1450,7 +1450,7 @@ public class LdapMessageGrammar extends AbstractGrammar
 
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
-                    LdapDN object = LdapDN.EMPTY_LDAPDN;
+                    DN object = DN.EMPTY_DN;
 
                     // Store the value.
                     if ( tlv.getLength() == 0 )
@@ -1464,7 +1464,7 @@ public class LdapMessageGrammar extends AbstractGrammar
 
                         try
                         {
-                            object = new LdapDN( dnStr );
+                            object = new DN( dnStr );
                         }
                         catch ( InvalidNameException ine )
                         {
@@ -1474,7 +1474,7 @@ public class LdapMessageGrammar extends AbstractGrammar
 
                             ModifyResponseImpl response = new ModifyResponseImpl( modifyRequest.getMessageId() );
                             throw new ResponseCarryingException( msg, response, ResultCodeEnum.INVALID_DN_SYNTAX,
-                                LdapDN.EMPTY_LDAPDN, ine );
+                                DN.EMPTY_DN, ine );
                         }
 
                         modifyRequest.setObject( object );
@@ -1896,17 +1896,17 @@ public class LdapMessageGrammar extends AbstractGrammar
                         // I guess that trying to add an entry which DN is empty is a naming violation...
                         // Not 100% sure though ...
                         throw new ResponseCarryingException( msg, response, ResultCodeEnum.NAMING_VIOLATION,
-                            LdapDN.EMPTY_LDAPDN, null );
+                            DN.EMPTY_DN, null );
                     }
                     else
                     {
-                        LdapDN entryDn = null;
+                        DN entryDn = null;
                         byte[] dnBytes = tlv.getValue().getData();
                         String dnStr = StringTools.utf8ToString( dnBytes );
 
                         try
                         {
-                            entryDn = new LdapDN( dnStr );
+                            entryDn = new DN( dnStr );
                         }
                         catch ( InvalidNameException ine )
                         {
@@ -1916,7 +1916,7 @@ public class LdapMessageGrammar extends AbstractGrammar
 
                             AddResponseImpl response = new AddResponseImpl( addRequest.getMessageId() );
                             throw new ResponseCarryingException( msg, response, ResultCodeEnum.INVALID_DN_SYNTAX,
-                                LdapDN.EMPTY_LDAPDN, ine );
+                                DN.EMPTY_DN, ine );
                         }
 
                         addRequest.setEntryDn( entryDn );
@@ -2197,7 +2197,7 @@ public class LdapMessageGrammar extends AbstractGrammar
 
                     // We have to handle the special case of a 0 length matched
                     // DN
-                    LdapDN entry = null;
+                    DN entry = null;
 
                     if ( tlv.getLength() == 0 )
                     {
@@ -2211,7 +2211,7 @@ public class LdapMessageGrammar extends AbstractGrammar
 
                         try
                         {
-                            entry = new LdapDN( dnStr );
+                            entry = new DN( dnStr );
                         }
                         catch ( InvalidNameException ine )
                         {
@@ -2221,7 +2221,7 @@ public class LdapMessageGrammar extends AbstractGrammar
 
                             ModifyDnResponseImpl response = new ModifyDnResponseImpl( modifyDNRequest.getMessageId() );
                             throw new ResponseCarryingException( msg, response, ResultCodeEnum.INVALID_DN_SYNTAX,
-                                LdapDN.EMPTY_LDAPDN, ine );
+                                DN.EMPTY_DN, ine );
                         }
 
                         modifyDNRequest.setEntry( entry );
@@ -2280,7 +2280,7 @@ public class LdapMessageGrammar extends AbstractGrammar
 
                         try
                         {
-                            LdapDN dn = new LdapDN( dnStr );
+                            DN dn = new DN( dnStr );
                             newRdn = dn.getRdn( 0 );
                         }
                         catch ( InvalidNameException ine )
@@ -2384,7 +2384,7 @@ public class LdapMessageGrammar extends AbstractGrammar
 
                     // We have to handle the special case of a 0 length matched
                     // DN
-                    LdapDN newSuperior = LdapDN.EMPTY_LDAPDN;
+                    DN newSuperior = DN.EMPTY_DN;
 
                     if ( tlv.getLength() == 0 )
                     {
@@ -2408,7 +2408,7 @@ public class LdapMessageGrammar extends AbstractGrammar
 
                         try
                         {
-                            newSuperior = new LdapDN( dnStr );
+                            newSuperior = new DN( dnStr );
                         }
                         catch ( InvalidNameException ine )
                         {
@@ -2548,7 +2548,7 @@ public class LdapMessageGrammar extends AbstractGrammar
 
                     // Get the Value and store it in the CompareRequest
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
-                    LdapDN entry = null;
+                    DN entry = null;
 
                     // We have to handle the special case of a 0 length matched
                     // DN
@@ -2564,7 +2564,7 @@ public class LdapMessageGrammar extends AbstractGrammar
 
                         try
                         {
-                            entry = new LdapDN( dnStr );
+                            entry = new DN( dnStr );
                         }
                         catch ( InvalidNameException ine )
                         {
@@ -2574,7 +2574,7 @@ public class LdapMessageGrammar extends AbstractGrammar
 
                             CompareResponseImpl response = new CompareResponseImpl( compareRequest.getMessageId() );
                             throw new ResponseCarryingException( msg, response, ResultCodeEnum.INVALID_DN_SYNTAX,
-                                LdapDN.EMPTY_LDAPDN, ine );
+                                DN.EMPTY_DN, ine );
                         }
 
                         compareRequest.setEntry( entry );
@@ -3646,7 +3646,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
                     // We have to check that this is a correct DN
-                    LdapDN baseObject = LdapDN.EMPTY_LDAPDN;
+                    DN baseObject = DN.EMPTY_DN;
 
                     // We have to handle the special case of a 0 length base
                     // object,
@@ -3659,7 +3659,7 @@ public class LdapMessageGrammar extends AbstractGrammar
 
                         try
                         {
-                            baseObject = new LdapDN( dnStr );
+                            baseObject = new DN( dnStr );
                         }
                         catch ( InvalidNameException ine )
                         {
@@ -3669,7 +3669,7 @@ public class LdapMessageGrammar extends AbstractGrammar
 
                             SearchResponseDoneImpl response = new SearchResponseDoneImpl( searchRequest.getMessageId() );
                             throw new ResponseCarryingException( msg, response, ResultCodeEnum.INVALID_DN_SYNTAX,
-                                LdapDN.EMPTY_LDAPDN, ine );
+                                DN.EMPTY_DN, ine );
                         }
                     }
 

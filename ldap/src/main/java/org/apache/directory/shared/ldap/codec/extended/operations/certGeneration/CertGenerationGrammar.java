@@ -30,7 +30,7 @@ import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.name.LdapDN;
+import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -123,7 +123,7 @@ public class CertGenerationGrammar extends AbstractGrammar
 
                     if ( ( targetDN != null ) && ( targetDN.trim().length() > 0 ) )
                     {
-                        if( !LdapDN.isValid( targetDN ) )
+                        if( !DN.isValid( targetDN ) )
                         {
                             String msg = I18n.err( I18n.ERR_04032, targetDN );
                             LOG.error( msg );
@@ -169,7 +169,7 @@ public class CertGenerationGrammar extends AbstractGrammar
 
                     if ( ( issuerDN != null ) && ( issuerDN.trim().length() > 0 ) )
                     {
-                        if( !LdapDN.isValid( issuerDN ) )
+                        if( !DN.isValid( issuerDN ) )
                         {
                             String msg = I18n.err( I18n.ERR_04034, issuerDN );
                             LOG.error( msg );
@@ -209,7 +209,7 @@ public class CertGenerationGrammar extends AbstractGrammar
 
                     if ( ( subjectDN != null ) && ( subjectDN.trim().length() > 0 ) )
                     {
-                        if( !LdapDN.isValid( subjectDN ) )
+                        if( !DN.isValid( subjectDN ) )
                         {
                             String msg = I18n.err( I18n.ERR_04035, subjectDN );
                             LOG.error( msg );

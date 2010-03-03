@@ -24,7 +24,7 @@ import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.message.internal.InternalMessage;
 import org.apache.directory.shared.ldap.message.internal.InternalResultResponse;
-import org.apache.directory.shared.ldap.name.LdapDN;
+import org.apache.directory.shared.ldap.name.DN;
 
 
 /**
@@ -65,7 +65,7 @@ public class ResponseCarryingException extends DecoderException
      * @param cause The Exception which caused the error
      */
     public ResponseCarryingException(String message, InternalResultResponse response, ResultCodeEnum code, 
-        LdapDN matchedDn, Throwable cause)
+        DN matchedDn, Throwable cause)
     {
         super( message, cause );
 

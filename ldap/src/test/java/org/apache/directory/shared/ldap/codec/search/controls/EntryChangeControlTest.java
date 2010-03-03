@@ -32,7 +32,7 @@ import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.ldap.codec.search.controls.entryChange.EntryChangeControl;
 import org.apache.directory.shared.ldap.codec.search.controls.entryChange.EntryChangeControlContainer;
 import org.apache.directory.shared.ldap.codec.search.controls.entryChange.EntryChangeControlDecoder;
-import org.apache.directory.shared.ldap.name.LdapDN;
+import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
 
@@ -345,7 +345,7 @@ public class EntryChangeControlTest
         EntryChangeControl entry = new EntryChangeControl();
         entry.setChangeType( ChangeType.MODDN );
         entry.setChangeNumber( 16 );
-        entry.setPreviousDn( new LdapDN( "a=b" ) );
+        entry.setPreviousDn( new DN( "a=b" ) );
         bb = entry.encode( ByteBuffer.allocate( entry.computeLength() ) );
         String decoded = StringTools.dumpBytes( bb.array() );
         assertEquals( expected, decoded );
@@ -382,7 +382,7 @@ public class EntryChangeControlTest
         EntryChangeControl entry = new EntryChangeControl();
         entry.setChangeType( ChangeType.MODDN );
         entry.setChangeNumber( 5124095576030430L );
-        entry.setPreviousDn( new LdapDN( "a=b" ) );
+        entry.setPreviousDn( new DN( "a=b" ) );
         bb = entry.encode( ByteBuffer.allocate( entry.computeLength() ) );
         String decoded = StringTools.dumpBytes( bb.array() );
         assertEquals( expected, decoded );

@@ -23,7 +23,7 @@ package org.apache.directory.shared.ldap.message.internal;
 
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.entry.Entry;
-import org.apache.directory.shared.ldap.name.LdapDN;
+import org.apache.directory.shared.ldap.name.DN;
 
 
 /**
@@ -44,7 +44,7 @@ public interface InternalSearchResponseEntry extends InternalResponse
      * 
      * @return the Dn of the entry returned.
      */
-    LdapDN getObjectName();
+    DN getObjectName();
 
 
     /**
@@ -52,7 +52,7 @@ public interface InternalSearchResponseEntry extends InternalResponse
      * 
      * @param dn the Dn of the entry returned.
      */
-    void setObjectName( LdapDN dn );
+    void setObjectName( DN dn );
 
 
     /**
