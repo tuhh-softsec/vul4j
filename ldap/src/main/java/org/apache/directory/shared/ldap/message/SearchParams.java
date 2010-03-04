@@ -50,7 +50,7 @@ public class SearchParams
     private SearchScope scope = SearchScope.OBJECT;
     
     /** The time limit. Default to 0 (infinite) */
-    private long timeLimit = 0;
+    private int timeLimit = 0;
     
     /** The size limit. Default to 0 (infinite) */
     private long sizeLimit = 0;
@@ -103,7 +103,7 @@ public class SearchParams
     /**
      * @return the timeLimit
      */
-    public long getTimeLimit()
+    public int getTimeLimit()
     {
         return timeLimit;
     }

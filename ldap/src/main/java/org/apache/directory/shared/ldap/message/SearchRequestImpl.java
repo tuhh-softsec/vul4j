@@ -59,7 +59,7 @@ public class SearchRequestImpl extends AbstractAbandonableRequest implements Int
     private boolean typesOnly;
 
     /** Max size in entries to return */
-    private int sizeLimit;
+    private long sizeLimit;
 
     /** Max seconds to wait for search to complete */
     private int timeLimit;
@@ -236,7 +236,7 @@ public class SearchRequestImpl extends AbstractAbandonableRequest implements Int
      * 
      * @return search size limit.
      */
-    public int getSizeLimit()
+    public long getSizeLimit()
     {
         return sizeLimit;
     }
@@ -251,7 +251,7 @@ public class SearchRequestImpl extends AbstractAbandonableRequest implements Int
      * @param entriesMax
      *            maximum search result entries to return.
      */
-    public void setSizeLimit( int entriesMax )
+    public void setSizeLimit( long entriesMax )
     {
         sizeLimit = entriesMax;
     }
@@ -494,7 +494,7 @@ public class SearchRequestImpl extends AbstractAbandonableRequest implements Int
 
         sb.append( "        Size Limit : " );
 
-        if ( sizeLimit == 0 )
+        if ( sizeLimit == 0L )
         {
             sb.append( "no limit" );
         }

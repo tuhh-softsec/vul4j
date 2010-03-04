@@ -122,7 +122,7 @@ public interface InternalSearchRequest extends ManyReplyRequest, InternalAbandon
      * 
      * @return search size limit.
      */
-    int getSizeLimit();
+    long getSizeLimit();
 
 
     /**
@@ -134,7 +134,7 @@ public interface InternalSearchRequest extends ManyReplyRequest, InternalAbandon
      * @param entriesMax
      *            maximum search result entries to return.
      */
-    void setSizeLimit( int entriesMax );
+    void setSizeLimit( long entriesMax );
 
 
     /**

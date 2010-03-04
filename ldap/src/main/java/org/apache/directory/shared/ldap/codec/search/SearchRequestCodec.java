@@ -69,7 +69,7 @@ public class SearchRequestCodec extends LdapMessageCodec
     private int derefAliases;
 
     /** The size limit (number of objects returned) */
-    private int sizeLimit;
+    private long sizeLimit;
 
     /**
      * The time limit (max time to process the response before returning the
@@ -254,7 +254,7 @@ public class SearchRequestCodec extends LdapMessageCodec
      * 
      * @return Returns the sizeLimit.
      */
-    public int getSizeLimit()
+    public long getSizeLimit()
     {
         return sizeLimit;
     }
@@ -265,7 +265,7 @@ public class SearchRequestCodec extends LdapMessageCodec
      * 
      * @param sizeLimit The sizeLimit to set.
      */
-    public void setSizeLimit( int sizeLimit )
+    public void setSizeLimit( long sizeLimit )
     {
         this.sizeLimit = sizeLimit;
     }

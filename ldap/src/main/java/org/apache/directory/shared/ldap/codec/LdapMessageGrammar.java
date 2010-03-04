@@ -38,6 +38,8 @@ import org.apache.directory.shared.asn1.util.BooleanDecoder;
 import org.apache.directory.shared.asn1.util.BooleanDecoderException;
 import org.apache.directory.shared.asn1.util.IntegerDecoder;
 import org.apache.directory.shared.asn1.util.IntegerDecoderException;
+import org.apache.directory.shared.asn1.util.LongDecoder;
+import org.apache.directory.shared.asn1.util.LongDecoderException;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.abandon.AbandonRequestCodec;
 import org.apache.directory.shared.ldap.codec.actions.AttributeDescAction;
@@ -3835,13 +3837,13 @@ public class LdapMessageGrammar extends AbstractGrammar
                     // The current TLV should be a integer
                     // We get it and store it in sizeLimit
                     Value value = tlv.getValue();
-                    int sizeLimit = 0;
+                    long sizeLimit = 0;
 
                     try
                     {
-                        sizeLimit = IntegerDecoder.parse( value, 0, Integer.MAX_VALUE );
+                        sizeLimit = LongDecoder.parse( value, 0, Integer.MAX_VALUE );
                     }
-                    catch ( IntegerDecoderException ide )
+                    catch ( LongDecoderException lde )
                     {
                         log.error( I18n.err( I18n.ERR_04103, value.toString() ) );
                         throw new DecoderException( I18n.err( I18n.ERR_04103, value.toString() ) );
@@ -3851,7 +3853,7 @@ public class LdapMessageGrammar extends AbstractGrammar
 
                     if ( IS_DEBUG )
                     {
-                        log.debug( "The sizeLimit value is set to {} objects", Integer.valueOf( sizeLimit ) );
+                        log.debug( "The sizeLimit value is set to {} objects", Long.valueOf( sizeLimit ) );
                     }
 
                     return;

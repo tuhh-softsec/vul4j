@@ -133,7 +133,7 @@ public class SearchRequestDsml extends AbstractRequestDsml
         }
 
         // SizeLimit
-        if ( request.getSizeLimit() != 0 )
+        if ( request.getSizeLimit() != 0L )
         {
             element.addAttribute( "sizeLimit", "" + request.getSizeLimit() );
         }

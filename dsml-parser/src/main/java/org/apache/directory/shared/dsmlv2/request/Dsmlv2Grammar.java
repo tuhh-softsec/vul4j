@@ -1938,7 +1938,7 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
             {
                 try
                 {
-                    searchRequest.setSizeLimit( Integer.parseInt( attributeValue ) );
+                    searchRequest.setSizeLimit( Long.parseLong( attributeValue ) );
                 }
                 catch ( NumberFormatException e )
                 {
@@ -1947,7 +1947,7 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
             }
             else
             {
-                searchRequest.setSizeLimit( 0 );
+                searchRequest.setSizeLimit( 0L );
             }
             // timeLimit
             attributeValue = xpp.getAttributeValue( "", "timeLimit" );
