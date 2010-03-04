@@ -23,6 +23,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.naming.NamingException;
+import javax.naming.directory.SearchControls;
 
 import org.apache.directory.shared.ldap.filter.SearchScope;
 import org.apache.directory.shared.ldap.message.control.Control;
@@ -49,10 +50,10 @@ public class SearchParams
     private SearchScope scope = SearchScope.OBJECT;
     
     /** The time limit. Default to 0 (infinite) */
-    private int timeLimit = 0;
+    private long timeLimit = 0;
     
     /** The size limit. Default to 0 (infinite) */
-    private int sizeLimit = 0;
+    private long sizeLimit = 0;
     
     /** If we should return only types. Default to false */
     private boolean typesOnly = false;
@@ -102,7 +103,7 @@ public class SearchParams
     /**
      * @return the timeLimit
      */
-    public int getTimeLimit()
+    public long getTimeLimit()
     {
         return timeLimit;
     }
@@ -120,7 +121,7 @@ public class SearchParams
     /**
      * @return the sizeLimit
      */
-    public int getSizeLimit()
+    public long getSizeLimit()
     {
         return sizeLimit;
     }
@@ -129,7 +130,7 @@ public class SearchParams
     /**
      * @param sizeLimit the sizeLimit to set
      */
-    public void setSizeLimit( int sizeLimit )
+    public void setSizeLimit( long sizeLimit )
     {
         this.sizeLimit = sizeLimit;
     }
@@ -268,6 +269,20 @@ public class SearchParams
     {
         this.controls.add( control );
     }
+    
+    
+    public static SearchParams toSearchParams( SearchControls searchControls, AliasDerefMode aliasDerefMode )
+    {
+        SearchParams searchParams = new SearchParams();
+        
+        searchParams.setAliasDerefMode( aliasDerefMode );
+        searchParams.setTimeLimit( searchControls.getTimeLimit() );
+        searchParams.setSizeLimit( searchControls.getCountLimit() );
+        searchParams.setScope( SearchScope.getSearchScope( searchControls.getSearchScope() ) );
+        searchParams.setTypesOnly( searchControls.getReturningObjFlag() );
+        return searchParams;
+    }
+    
     
     
     /**
