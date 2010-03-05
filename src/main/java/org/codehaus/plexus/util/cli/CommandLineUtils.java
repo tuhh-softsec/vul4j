@@ -20,6 +20,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -30,6 +31,7 @@ import java.util.StringTokenizer;
 import java.util.Vector;
 
 import org.codehaus.plexus.util.Os;
+import org.codehaus.plexus.util.ReaderFactory;
 import org.codehaus.plexus.util.StringUtils;
 
 /**
@@ -248,6 +250,7 @@ public abstract class CommandLineUtils
      *
      * @return The shell environment variables, can be empty but never <code>null</code>.
      * @throws IOException If the environment variables could not be queried from the shell.
+     * @see System#getenv() System.getenv() API, new in JDK 5.0, to get the same result
      */
     public static Properties getSystemEnvVars()
         throws IOException
@@ -262,6 +265,7 @@ public abstract class CommandLineUtils
      * @param caseSensitive Whether environment variable keys should be treated case-sensitively.
      * @return Properties object of (possibly modified) envar keys mapped to their values.
      * @throws IOException
+     * @see System#getenv() System.getenv() API, new in JDK 5.0, to get the same result
      */
     public static Properties getSystemEnvVars( boolean caseSensitive )
         throws IOException
@@ -275,6 +279,7 @@ public abstract class CommandLineUtils
             Runtime r = Runtime.getRuntime();
 
             //If this is windows set the shell to command.com or cmd.exe with correct arguments.
+            boolean overriddenEncoding = false;
             if ( Os.isFamily( Os.FAMILY_WINDOWS ) )
             {
                 if ( Os.isFamily( Os.FAMILY_WIN9X ) )
@@ -283,7 +288,10 @@ public abstract class CommandLineUtils
                 }
                 else
                 {
-                    p = r.exec( "cmd.exe /c set" );
+                    overriddenEncoding = true;
+                    // /U = change stdout encoding to UTF-16LE to avoid encoding inconsistency
+                    // between command-line/DOS and GUI/Windows, see PLXUTILS-124
+                    p = r.exec( "cmd.exe /U /c set" );
                 }
             }
             else
@@ -291,7 +299,10 @@ public abstract class CommandLineUtils
                 p = r.exec( "env" );
             }
 
-            BufferedReader br = new BufferedReader( new InputStreamReader( p.getInputStream() ) );
+            Reader reader = overriddenEncoding
+                ? new InputStreamReader( p.getInputStream(), ReaderFactory.UTF_16LE )
+                : new InputStreamReader( p.getInputStream() );
+            BufferedReader br = new BufferedReader( reader );
 
             String line;
 
