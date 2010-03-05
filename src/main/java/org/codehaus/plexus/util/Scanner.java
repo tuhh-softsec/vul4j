@@ -1,7 +1,5 @@
 package org.codehaus.plexus.util;
 
-import java.io.File;
-
 /*
  * Copyright The Codehaus Foundation.
  *
@@ -18,8 +16,9 @@ import java.io.File;
  * limitations under the License.
  */
 
+import java.io.File;
 
-public interface Scanner 
+public interface Scanner
 {
 
     /**
@@ -36,7 +35,7 @@ public interface Scanner
      * non-<code>null</code>.
      */
     void setIncludes(String[] includes);
-  
+
     /**
      * Sets the list of exclude patterns to use. All '/' and '\' characters
      * are replaced by <code>File.separatorChar</code>, so the separator used
@@ -75,7 +74,7 @@ public interface Scanner
      *         include patterns and none of the exclude patterns.
      */
     String[] getIncludedFiles();
-  
+
     /**
      * Returns the names of the directories which matched at least one of the
      * include patterns and none of the exclude patterns.

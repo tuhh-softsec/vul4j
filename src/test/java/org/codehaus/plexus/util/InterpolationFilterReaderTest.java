@@ -15,6 +15,7 @@ package org.codehaus.plexus.util;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;

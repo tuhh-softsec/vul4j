@@ -1,13 +1,13 @@
 package org.codehaus.plexus.util.cli.shell;
 
 /*
- * Copyright 2007 The Codehaus Foundation.
+ * Copyright The Codehaus Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -100,10 +100,10 @@ public class BourneShellTest
         System.out.println( cli );
         assertTrue( cli.endsWith( "\'" + args[0] + "\'" ) );
     }
-    
+
     public void testArgumentsWithsemicolon()
     {
-        
+
         System.out.println( "---- semi colon tests ----" );
 
         Shell sh = newShell();
@@ -156,7 +156,7 @@ public class BourneShellTest
         assertEquals( "/C", lines[2] );
         assertEquals( "\"--password ;password\"", lines[3] );
     }
-    
+
     public void testBourneShellQuotingCharacters()
         throws Exception
     {

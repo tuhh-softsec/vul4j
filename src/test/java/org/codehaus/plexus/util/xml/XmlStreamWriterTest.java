@@ -19,9 +19,6 @@ package org.codehaus.plexus.util.xml;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-import org.codehaus.plexus.util.IOUtil;
-
-import junit.framework.ComparisonFailure;
 import junit.framework.TestCase;
 
 public class XmlStreamWriterTest
