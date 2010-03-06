@@ -25,6 +25,7 @@ import javax.naming.NamingException;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.InvalidAttributeValueException;
 
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Modification;
@@ -332,7 +333,7 @@ public class LdifUtils
             case Delete :
                 if ( entry.getEntry() != null )
                 {
-                    throw new NamingException( "Invalid Entry : a deleted entry should not contain attributes" );
+                    throw new NamingException( I18n.err( I18n.ERR_12081 ) );
                 }
                 
                 break;
@@ -340,7 +341,7 @@ public class LdifUtils
             case Add :
                 if ( ( entry.getEntry() == null ) )
                 {
-                    throw new NamingException( "Invalid Entry : a added or modified entry should contain attributes" );
+                    throw new NamingException( I18n.err( I18n.ERR_12082 ) );
                 }
 
                 // Now, iterate through all the attributes
@@ -355,7 +356,7 @@ public class LdifUtils
             case ModRdn :
                 if ( entry.getEntry() != null )
                 {
-                    throw new NamingException( "Invalid Entry : a modifyDN operation entry should not contain attributes" );
+                    throw new NamingException( I18n.err( I18n.ERR_12083 ) );
                 }
                 
                 
@@ -535,7 +536,7 @@ public class LdifUtils
         
         if ( nbChars < 2 )
         {
-            throw new IllegalArgumentException( "The length of each line must be at least 2 chars long" );
+            throw new IllegalArgumentException( I18n.err( I18n.ERR_12084 ) );
         }
         
         // We will first compute the new size of the LDIF result
@@ -606,7 +607,7 @@ public class LdifUtils
             {
                 if ( !(ava instanceof String) )
                 {
-                    throw new InvalidAttributeValueException( "The Attribute ID #" + (pos+1) + " must be a String" );
+                    throw new InvalidAttributeValueException( I18n.err( I18n.ERR_12085, (pos+1) ) );
                 }
                 
                 String attribute = (String)ava;
@@ -635,7 +636,7 @@ public class LdifUtils
                 }
                 else
                 {
-                    throw new InvalidAttributeValueException( "The Attribute value #" + (pos+1) + " must be a String or a byte[]" );
+                    throw new InvalidAttributeValueException( I18n.err( I18n.ERR_12086, (pos+1) ) );
                 }
                 
                 valueExpected = false;
@@ -644,7 +645,7 @@ public class LdifUtils
         
         if ( valueExpected )
         {
-            throw new InvalidAttributeValueException( "A value is missing at the end" );
+            throw new InvalidAttributeValueException( I18n.err( I18n.ERR_12087 ) );
         }
         
         LdifAttributesReader reader = new LdifAttributesReader();

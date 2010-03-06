@@ -30,6 +30,7 @@ import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 import javax.naming.NamingException;
 
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Before;
@@ -546,15 +547,15 @@ public class LdifAttributesReaderTest
     @Test public void testLdifParserRFC2849Sample4() throws NamingException, Exception
     {
         String ldif = 
-            "# dn:: ou=営業部,o=Airius\n" + 
+            "# dn:: ou=���������,o=Airius\n" + 
             "objectclass: top\n" + 
             "objectclass: organizationalUnit\n" + 
             "ou:: 5Za25qWt6YOo\n" + 
-            "# ou:: 営業部\n" + 
+            "# ou:: ���������\n" + 
             "ou;lang-ja:: 5Za25qWt6YOo\n" + 
-            "# ou;lang-ja:: 営業部\n" + 
+            "# ou;lang-ja:: ���������\n" + 
             "ou;lang-ja;phonetic:: 44GI44GE44GO44KH44GG44G2\n" + 
-            "# ou;lang-ja:: えいぎょうぶ\n" + 
+            "# ou;lang-ja:: ������������������\n" + 
             "ou;lang-en: Sales\n" + 
             "description: Japanese office\n";
 
@@ -567,8 +568,8 @@ public class LdifAttributesReaderTest
                 { "objectclass", "organizationalUnit" },
                 { "ou", "\u55b6\u696d\u90e8" },
                 { "ou;lang-ja", "\u55b6\u696d\u90e8" },
-                { "ou;lang-ja;phonetic", "\u3048\u3044\u304e\u3087\u3046\u3076" }, // 3048 = え, 3044 = い, 304e = ぎ
-                                                                                // 3087 = ょ, 3046 = う, 3076 = ぶ
+                { "ou;lang-ja;phonetic", "\u3048\u3044\u304e\u3087\u3046\u3076" }, // 3048 = ���, 3044 = ���, 304e = ���
+                                                                                // 3087 = ���, 3046 = ���, 3076 = ���
                 { "ou;lang-en", "Sales" },
                 { "description", "Japanese office" }
             }; 
@@ -665,7 +666,7 @@ public class LdifAttributesReaderTest
         }
         catch (NamingException ne)
         {
-            assertEquals( "Error while parsing the ldif buffer", ne.getMessage() );
+        	assertTrue(I18n.err(I18n.ERR_12009), ne.getMessage().startsWith(I18n.ERR_12009));
         }
     }
 

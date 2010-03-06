@@ -28,6 +28,7 @@ import java.util.Set;
 import javax.naming.InvalidNameException;
 import javax.naming.NamingException;
 
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Modification;
@@ -223,8 +224,7 @@ public class LdifRevertor
         // Special case if we don't have any reverse modifications
         if ( reverseModifications.size() == 0 )
         {
-            throw new IllegalArgumentException( "Could not deduce reverse modifications from provided modifications: "
-                + forwardModifications );
+            throw new IllegalArgumentException( I18n.err( I18n.ERR_12073, forwardModifications ) );
         }
 
         // Now, push the reversed list into the entry
@@ -257,17 +257,17 @@ public class LdifRevertor
 
         if ( newSuperiorDn == null )
         {
-            throw new NullPointerException( "newSuperiorDn must not be null" );
+            throw new NullPointerException( I18n.err( I18n.ERR_12074 ) );
         }
 
         if ( modifiedDn == null )
         {
-            throw new NullPointerException( "modifiedDn must not be null" );
+            throw new NullPointerException( I18n.err( I18n.ERR_12075 ) );
         }
 
         if ( modifiedDn.size() == 0 )
         {
-            throw new IllegalArgumentException( "Don't think about moving the rootDSE." );
+            throw new IllegalArgumentException( I18n.err( I18n.ERR_12076 ) );
         }
 
         currentParent = ( DN ) modifiedDn.clone();
@@ -434,17 +434,17 @@ public class LdifRevertor
 
         if ( newRdn == null )
         {
-            throw new NullPointerException( "The newRdn must not be null" );
+            throw new NullPointerException( I18n.err( I18n.ERR_12077 ) );
         }
 
         if ( parentDn == null )
         {
-            throw new NullPointerException( "The modified Dn must not be null" );
+            throw new NullPointerException( I18n.err( I18n.ERR_12078 ) );
         }
 
         if ( parentDn.size() == 0 )
         {
-            throw new IllegalArgumentException( "Don't think about renaming the rootDSE." );
+            throw new IllegalArgumentException( I18n.err( I18n.ERR_12079 ) );
         }
 
         parentDn = ( DN ) entry.getDn().clone();
@@ -466,7 +466,7 @@ public class LdifRevertor
                 // We have a simple old RDN, something like A=a
                 // If the values overlap, we can't rename the entry, just get out
                 // with an error
-                throw new NamingException( "Can't rename an entry using the same name ..." ); 
+                throw new NamingException( I18n.err( I18n.ERR_12080 ) ); 
             }
 
             reverted =

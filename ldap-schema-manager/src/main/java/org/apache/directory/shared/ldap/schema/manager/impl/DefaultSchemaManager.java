@@ -29,6 +29,7 @@ import java.util.Set;
 
 import javax.naming.NamingException;
 
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.NotImplementedException;
 import org.apache.directory.shared.ldap.constants.MetaSchemaConstants;
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
@@ -202,7 +203,7 @@ public class DefaultSchemaManager implements SchemaManager
             }
             else
             {
-                throw new LdapOperationNotSupportedException( "Cannot load the unknown schema " + schemaName, ResultCodeEnum.UNWILLING_TO_PERFORM );
+                throw new LdapOperationNotSupportedException( I18n.err( I18n.ERR_11001, schemaName ), ResultCodeEnum.UNWILLING_TO_PERFORM );
             }
         }
 
@@ -668,8 +669,7 @@ public class DefaultSchemaManager implements SchemaManager
                     if ( schemaLoader.getSchema( dependency ) == null )
                     {
                         // The dependency has not been loaded.
-                        String msg = "Cannot load the Schema " + schema.getSchemaName()
-                            + " as one of its dependencies has not been loaded";
+                        String msg = I18n.err( I18n.ERR_11002, schema.getSchemaName() );
                         LOG.info( msg );
                         Throwable error = new LdapSchemaViolationException( msg, ResultCodeEnum.OTHER );
                         errors.add( error );
@@ -752,7 +752,7 @@ public class DefaultSchemaManager implements SchemaManager
     {
         for ( Entry entry : schemaLoader.loadDitContentRules( schema ) )
         {
-            throw new NotImplementedException( "Need to implement factory " + "method for creating a DitContentRule" );
+            throw new NotImplementedException( I18n.err( I18n.ERR_11003 ) );
         }
     }
 
@@ -764,7 +764,7 @@ public class DefaultSchemaManager implements SchemaManager
     {
         for ( Entry entry : schemaLoader.loadDitStructureRules( schema ) )
         {
-            throw new NotImplementedException( "Need to implement factory " + "method for creating a DitStructureRule" );
+            throw new NotImplementedException( I18n.err( I18n.ERR_11004 ) );
         }
     }
 
@@ -790,7 +790,7 @@ public class DefaultSchemaManager implements SchemaManager
     {
         for ( Entry entry : schemaLoader.loadMatchingRuleUses( schema ) )
         {
-            throw new NotImplementedException( "Need to implement factory " + "method for creating a MatchingRuleUse" );
+            throw new NotImplementedException( I18n.err( I18n.ERR_11005 ) );
         }
     }
 
@@ -802,7 +802,7 @@ public class DefaultSchemaManager implements SchemaManager
     {
         for ( Entry entry : schemaLoader.loadNameForms( schema ) )
         {
-            throw new NotImplementedException( "Need to implement factory " + "method for creating a NameForm" );
+            throw new NotImplementedException( I18n.err( I18n.ERR_11006 ) );
         }
     }
 
@@ -1597,8 +1597,8 @@ public class DefaultSchemaManager implements SchemaManager
             else
             {
                 // We have an invalid SchemaObject, no need to go any further
-                Throwable error = new LdapOperationNotSupportedException( "the SchemaObject " + schemaObject.getOid()
-                    + " canot be added, it's not a valid LoadableSchemaObject.", ResultCodeEnum.UNWILLING_TO_PERFORM );
+                Throwable error = new LdapOperationNotSupportedException( I18n.err( I18n.ERR_11007, schemaObject.getOid() ),
+                		ResultCodeEnum.UNWILLING_TO_PERFORM );
                 errors.add( error );
             }
         }
@@ -1639,8 +1639,8 @@ public class DefaultSchemaManager implements SchemaManager
             // The new schemaObject's OID must not already exist
             if ( checkOidExist( copy ) )
             {
-                Throwable error = new LdapSchemaViolationException( "Oid " + schemaObject.getOid()
-                    + " for new schema entity is not unique.", ResultCodeEnum.OTHER );
+                Throwable error = new LdapSchemaViolationException( I18n.err( I18n.ERR_11008, schemaObject.getOid() ),
+                		ResultCodeEnum.OTHER );
                 errors.add( error );
 
                 return false;
@@ -1652,9 +1652,8 @@ public class DefaultSchemaManager implements SchemaManager
             if ( schemaName == null )
             {
                 // The schema associated with the SchemzaObject does not exist. This is not valid.
-                Throwable error = new LdapOperationNotSupportedException( "Cannot add the SchemaObject "
-                    + schemaObject.getOid() + " into a non existing schema " + copy.getSchemaName(),
-                    ResultCodeEnum.UNWILLING_TO_PERFORM );
+                Throwable error = new LdapOperationNotSupportedException( I18n.err( I18n.ERR_11009, schemaObject.getOid(),
+                		copy.getSchemaName() ), ResultCodeEnum.UNWILLING_TO_PERFORM );
                 errors.add( error );
 
                 return false;
@@ -1668,8 +1667,7 @@ public class DefaultSchemaManager implements SchemaManager
             if ( schema == null )
             {
                 // The SchemaObject must be associated with an existing schema
-                String msg = "Cannot inject the SchemaObject " + copy.getOid()
-                    + " as it's not associated with a schema";
+                String msg = I18n.err( I18n.ERR_11010, copy.getOid() );
                 LOG.info( msg );
                 Throwable error = new LdapSchemaViolationException( msg, ResultCodeEnum.OTHER );
                 errors.add( error );
@@ -1744,8 +1742,8 @@ public class DefaultSchemaManager implements SchemaManager
             // The new schemaObject's OID must exist
             if ( !checkOidExist( schemaObject ) )
             {
-                Throwable error = new LdapSchemaViolationException( "Oid " + schemaObject.getOid()
-                    + " for new schema entity does not exist.", ResultCodeEnum.OTHER );
+                Throwable error = new LdapSchemaViolationException( I18n.err( I18n.ERR_11011, schemaObject.getOid() ),
+                		ResultCodeEnum.OTHER );
                 errors.add( error );
                 return false;
             }
@@ -1758,9 +1756,7 @@ public class DefaultSchemaManager implements SchemaManager
 
             if ( ( referencing != null ) && !referencing.isEmpty() )
             {
-                String msg = "Cannot remove  " + schemaObject.getOid()
-                    + " for the registries, it would become inconsistent. The following SchemaOjects are "
-                    + "referencing this SchemaObject : " + StringTools.setToString( referencing );
+                String msg = I18n.err( I18n.ERR_11012, schemaObject.getOid(), StringTools.setToString( referencing ) );
 
                 Throwable error = new LdapSchemaViolationException( msg, ResultCodeEnum.OTHER );
                 errors.add( error );
@@ -1776,8 +1772,7 @@ public class DefaultSchemaManager implements SchemaManager
             if ( schema == null )
             {
                 // The SchemaObject must be associated with an existing schema
-                String msg = "Cannot delete the SchemaObject " + schemaObject.getOid()
-                    + " as it's not associated with a schema";
+                String msg = I18n.err( I18n.ERR_11013, schemaObject.getOid() );
                 LOG.info( msg );
                 Throwable error = new LdapSchemaViolationException( msg, ResultCodeEnum.OTHER );
                 errors.add( error );

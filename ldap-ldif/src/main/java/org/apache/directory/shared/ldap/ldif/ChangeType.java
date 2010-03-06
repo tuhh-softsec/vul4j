@@ -19,6 +19,8 @@
  */
 package org.apache.directory.shared.ldap.ldif;
 
+import org.apache.directory.shared.i18n.I18n;
+
 
 /**
  * A type safe enumeration for an LDIF record's change type.
@@ -89,7 +91,7 @@ public enum ChangeType
             case 4: return Delete;
             
             default:
-                throw new IllegalArgumentException( "Unknown change type value " + val );
+                throw new IllegalArgumentException( I18n.err( I18n.ERR_12001, val ) );
         }
     }
 }

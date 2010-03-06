@@ -48,6 +48,7 @@ import javax.naming.directory.BasicAttribute;
 
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.primitives.OID;
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.ModificationOperation;
 import org.apache.directory.shared.ldap.entry.client.DefaultClientAttribute;
@@ -304,14 +305,14 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
 
         if ( !file.exists() )
         {
-            LOG.error( "File {} cannot be found", file.getAbsoluteFile() );
-            throw new NamingException( "Cannot find file " + file.getAbsoluteFile() );
+            LOG.error( I18n.err( I18n.ERR_12010, file.getAbsoluteFile() ) );
+            throw new NamingException( I18n.err( I18n.ERR_12010, file.getAbsoluteFile() ) );
         }
 
         if ( !file.canRead() )
         {
-            LOG.error( "File {} cannot be read", file.getName() );
-            throw new NamingException( "Cannot read file " + file.getName() );
+            LOG.error( I18n.err( I18n.ERR_12011, file.getName() ) );
+            throw new NamingException( I18n.err( I18n.ERR_12011, file.getName() ) );
         }
 
         try
@@ -320,8 +321,8 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
         }
         catch ( FileNotFoundException fnfe )
         {
-            LOG.error( "File {} cannot be found", file.getAbsoluteFile() );
-            throw new NamingException( "Cannot find file " + file.getAbsoluteFile() );
+            LOG.error( I18n.err( I18n.ERR_12010, file.getAbsoluteFile() ) );
+            throw new NamingException( I18n.err( I18n.ERR_12010, file.getAbsoluteFile() ) );
         }
     }
 
@@ -366,14 +367,14 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
     {
         if ( !file.exists() )
         {
-            LOG.error( "File {} cannot be found", file.getAbsoluteFile() );
-            throw new NamingException( "Cannot find file " + file.getAbsoluteFile() );
+            LOG.error( I18n.err( I18n.ERR_12010, file.getAbsoluteFile() ) );
+            throw new NamingException( I18n.err( I18n.ERR_12010, file.getAbsoluteFile() ) );
         }
 
         if ( !file.canRead() )
         {
-            LOG.error( "File {} cannot be read", file.getName() );
-            throw new NamingException( "Cannot read file " + file.getName() );
+            LOG.error( I18n.err( I18n.ERR_12011, file.getName() ) );
+            throw new NamingException( I18n.err( I18n.ERR_12011, file.getName() ) );
         }
 
         try
@@ -382,8 +383,8 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
         }
         catch ( FileNotFoundException fnfe )
         {
-            LOG.error( "File {} cannot be found", file.getAbsoluteFile() );
-            throw new NamingException( "Cannot find file " + file.getAbsoluteFile() );
+            LOG.error( I18n.err( I18n.ERR_12010, file.getAbsoluteFile() ) );
+            throw new NamingException( I18n.err( I18n.ERR_12010, file.getAbsoluteFile() ) );
         }
     }
 
@@ -418,7 +419,7 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
     }
 
 
-    // <fill> ::= ' ' <fill> | �
+    // <fill> ::= ' ' <fill> | ���
     private static void parseFill( char[] document, Position position )
     {
 
@@ -529,8 +530,8 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
             if ( length == 3 )
             {
                 // The DN is empty : error
-                LOG.error( "A ldif entry must have a non empty DN" );
-                throw new NamingException( "No DN for entry" );
+                LOG.error( I18n.err( I18n.ERR_12012 ) );
+                throw new NamingException( I18n.err( I18n.ERR_12013 ) );
             }
             else if ( line.charAt( 3 ) == ':' )
             {
@@ -546,15 +547,15 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
                     catch ( UnsupportedEncodingException uee )
                     {
                         // The DN is not base 64 encoded
-                        LOG.error( "The ldif entry is supposed to have a base 64 encoded DN" );
-                        throw new NamingException( "Invalid base 64 encoded DN" );
+                        LOG.error( I18n.err( I18n.ERR_12014 ) );
+                        throw new NamingException( I18n.err( I18n.ERR_12015 ) );
                     }
                 }
                 else
                 {
                     // The DN is empty : error
-                    LOG.error( "A ldif entry must have a non empty DN" );
-                    throw new NamingException( "No DN for entry" );
+                    LOG.error( I18n.err( I18n.ERR_12012 ) );
+                    throw new NamingException( I18n.err( I18n.ERR_12013 ) );
                 }
             }
             else
@@ -564,8 +565,8 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
         }
         else
         {
-            LOG.error( "A ldif entry must start with a DN" );
-            throw new NamingException( "No DN for entry" );
+            LOG.error( I18n.err( I18n.ERR_12016 ) );
+            throw new NamingException( I18n.err( I18n.ERR_12013 ) );
         }
 
         // Check that the DN is valid. If not, an exception will be thrown
@@ -575,7 +576,7 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
         }
         catch ( InvalidNameException ine )
         {
-            LOG.error( "The DN {} is not valid" );
+            LOG.error( I18n.err( I18n.ERR_12017, dn ) );
             throw ine;
         }
 
@@ -655,8 +656,8 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
 
                         if ( !file.exists() )
                         {
-                            LOG.error( "File {} not found", fileName );
-                            throw new NamingException( "Bad URL, file not found" );
+                            LOG.error( I18n.err( I18n.ERR_12018, fileName ) );
+                            throw new NamingException( I18n.err( I18n.ERR_12019 ) );
                         }
                         else
                         {
@@ -664,8 +665,8 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
 
                             if ( length > sizeLimit )
                             {
-                                LOG.error( "File {} is too big", fileName );
-                                throw new NamingException( "File too big" );
+                                LOG.error( I18n.err( I18n.ERR_12020, fileName ) );
+                                throw new NamingException( I18n.err( I18n.ERR_12021 ) );
                             }
                             else
                             {
@@ -684,13 +685,13 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
                                     // We can't reach this point, the file
                                     // existence has already been
                                     // checked
-                                    LOG.error( "File {} not found", fileName );
-                                    throw new NamingException( "Bad URL, file not found" );
+                                    LOG.error( I18n.err( I18n.ERR_12018, fileName ) );
+                                    throw new NamingException( I18n.err( I18n.ERR_12019 ) );
                                 }
                                 catch ( IOException ioe )
                                 {
-                                    LOG.error( "File {} error reading", fileName );
-                                    throw new NamingException( "Bad URL, file can't be read" );
+                                    LOG.error( I18n.err( I18n.ERR_12022, fileName ) );
+                                    throw new NamingException( I18n.err( I18n.ERR_12023 ) );
                                 }
                                 finally
                                 {
@@ -700,7 +701,7 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
                                     }
                                     catch ( IOException ioe )
                                     {
-                                        LOG.error( "Error while closing the stream : {}", ioe.getMessage() );
+                                        LOG.error( I18n.err( I18n.ERR_12024, ioe.getMessage() ) );
                                         // Just do nothing ...
                                     }
                                 }
@@ -709,14 +710,14 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
                     }
                     else
                     {
-                        LOG.error( "Protocols other than file: are not supported" );
-                        throw new NamingException( "Unsupported URL protocol" );
+                        LOG.error( I18n.err( I18n.ERR_12025 ) );
+                        throw new NamingException( I18n.err( I18n.ERR_12026 ) );
                     }
                 }
                 catch ( MalformedURLException mue )
                 {
-                    LOG.error( "Bad URL {}", urlName );
-                    throw new NamingException( "Bad URL" );
+                    LOG.error( I18n.err( I18n.ERR_12027, urlName ) );
+                    throw new NamingException( I18n.err( I18n.ERR_12028 ) );
                 }
             }
             else
@@ -758,8 +759,8 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
         if ( pos > length )
         {
             // No OID : error !
-            LOG.error( "The control does not have an OID" );
-            throw new NamingException( "Bad control, no oid" );
+            LOG.error( I18n.err( I18n.ERR_12029 ) );
+            throw new NamingException( I18n.err( I18n.ERR_12030 ) );
         }
 
         int initPos = pos;
@@ -772,8 +773,8 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
         if ( pos == initPos )
         {
             // Not a valid OID !
-            LOG.error( "The control does not have an OID" );
-            throw new NamingException( "Bad control, no oid" );
+            LOG.error( I18n.err( I18n.ERR_12029 ) );
+            throw new NamingException( I18n.err( I18n.ERR_12030 ) );
         }
 
         // Create and check the OID
@@ -787,8 +788,8 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
         }
         catch ( DecoderException de )
         {
-            LOG.error( "The OID {} is not valid", oidString );
-            throw new NamingException( "Bad control oid" );
+            LOG.error( I18n.err( I18n.ERR_12031, oidString ) );
+            throw new NamingException( I18n.err( I18n.ERR_12032 ) );
         }
 
         LdifControl control = new LdifControl( oidString );
@@ -826,8 +827,8 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
         {
             // If we have a criticality, it should be either "true" or "false",
             // nothing else
-            LOG.error( "The control muts have a valid criticality" );
-            throw new NamingException( "Bad control criticality" );
+            LOG.error( I18n.err( I18n.ERR_12033 ) );
+            throw new NamingException( I18n.err( I18n.ERR_12034 ) );
         }
 
         if ( criticalPos > 0 )
@@ -904,8 +905,8 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
         // We should *not* have a DN twice
         if ( attributeType.equals( "dn" ) )
         {
-            LOG.error( "An entry must not have two DNs" );
-            throw new NamingException( "A ldif entry should not have two DN" );
+            LOG.error( I18n.err( I18n.ERR_12002 ) );
+            throw new NamingException( I18n.err( I18n.ERR_12003 ) );
         }
 
         Object attributeValue = parseValue( line, colonIndex );
@@ -943,15 +944,15 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
             }
             else
             {
-                LOG.error( "A modrdn operation must start with a \"newrdn:\"" );
-                throw new NamingException( "Bad modrdn operation" );
+                LOG.error( I18n.err( I18n.ERR_12035 ) );
+                throw new NamingException( I18n.err( I18n.ERR_12036 ) );
             }
 
         }
         else
         {
-            LOG.error( "A modrdn operation must start with a \"newrdn:\"" );
-            throw new NamingException( "Bad modrdn operation, no newrdn" );
+            LOG.error( I18n.err( I18n.ERR_12035 ) );
+            throw new NamingException( I18n.err( I18n.ERR_12037 ) );
         }
 
         if ( iter.hasNext() )
@@ -967,14 +968,14 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
             }
             else
             {
-                LOG.error( "A modrdn operation must contains a \"deleteoldrdn:\"" );
-                throw new NamingException( "Bad modrdn operation, no deleteoldrdn" );
+                LOG.error( I18n.err( I18n.ERR_12038 ) );
+                throw new NamingException( I18n.err( I18n.ERR_12039 ) );
             }
         }
         else
         {
-            LOG.error( "A modrdn operation must contains a \"deleteoldrdn:\"" );
-            throw new NamingException( "Bad modrdn operation, no deleteoldrdn" );
+            LOG.error( I18n.err( I18n.ERR_12038 ) );
+            throw new NamingException( I18n.err( I18n.ERR_12039 ) );
         }
 
         return;
@@ -1015,8 +1016,8 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
             {
                 if ( state != ATTRVAL_SPEC_OR_SEP )
                 {
-                    LOG.error( "Bad state : we should have come from an ATTRVAL_SPEC" );
-                    throw new NamingException( "Bad modify separator" );
+                    LOG.error( I18n.err( I18n.ERR_12040 ) );
+                    throw new NamingException( I18n.err( I18n.ERR_12041 ) );
                 }
                 else
                 {
@@ -1040,8 +1041,8 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
             {
                 if ( ( state != MOD_SPEC ) && ( state != ATTRVAL_SPEC ) )
                 {
-                    LOG.error( "Bad state : we should have come from a MOD_SPEC or an ATTRVAL_SPEC" );
-                    throw new NamingException( "Bad modify state" );
+                    LOG.error( I18n.err( I18n.ERR_12042 ) );
+                    throw new NamingException( I18n.err( I18n.ERR_12043 ) );
                 }
 
                 modified = StringTools.trim( line.substring( "add:".length() ) );
@@ -1054,8 +1055,8 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
             {
                 if ( ( state != MOD_SPEC ) && ( state != ATTRVAL_SPEC ) )
                 {
-                    LOG.error( "Bad state : we should have come from a MOD_SPEC or an ATTRVAL_SPEC" );
-                    throw new NamingException( "Bad modify state" );
+                    LOG.error( I18n.err( I18n.ERR_12042 ) );
+                    throw new NamingException( I18n.err( I18n.ERR_12043 ) );
                 }
 
                 modified = StringTools.trim( line.substring( "delete:".length() ) );
@@ -1068,8 +1069,8 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
             {
                 if ( ( state != MOD_SPEC ) && ( state != ATTRVAL_SPEC ) )
                 {
-                    LOG.error( "Bad state : we should have come from a MOD_SPEC or an ATTRVAL_SPEC" );
-                    throw new NamingException( "Bad modify state" );
+                    LOG.error( I18n.err( I18n.ERR_12042 ) );
+                    throw new NamingException( I18n.err( I18n.ERR_12043 ) );
                 }
 
                 modified = StringTools.trim( line.substring( "replace:".length() ) );
@@ -1082,8 +1083,8 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
             {
                 if ( ( state != ATTRVAL_SPEC ) && ( state != ATTRVAL_SPEC_OR_SEP ) )
                 {
-                    LOG.error( "Bad state : we should have come from an ATTRVAL_SPEC" );
-                    throw new NamingException( "Bad modify state" );
+                    LOG.error( I18n.err( I18n.ERR_12040 ) );
+                    throw new NamingException( I18n.err( I18n.ERR_12043 ) );
                 }
 
                 // A standard AttributeType/AttributeValue pair
@@ -1093,15 +1094,15 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
 
                 if ( !attributeType.equalsIgnoreCase( modified ) )
                 {
-                    LOG.error( "The modified attribute and the attribute value spec must be equal" );
-                    throw new NamingException( "Bad modify attribute" );
+                    LOG.error( I18n.err( I18n.ERR_12044 ) );
+                    throw new NamingException( I18n.err( I18n.ERR_12045 ) );
                 }
 
                 // We should *not* have a DN twice
                 if ( attributeType.equalsIgnoreCase( "dn" ) )
                 {
-                    LOG.error( "An entry must not have two DNs" );
-                    throw new NamingException( "A ldif entry should not have two DN" );
+                    LOG.error( I18n.err( I18n.ERR_12002 ) );
+                    throw new NamingException( I18n.err( I18n.ERR_12003 ) );
                 }
 
                 Object attributeValue = parseValue( line, colonIndex );
@@ -1198,8 +1199,8 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
                     {
                         if ( operation == ChangeType.ModDn )
                         {
-                            LOG.error( "A moddn operation must contains a \"newsuperior:\"" );
-                            throw new NamingException( "Bad moddn operation, no newsuperior" );
+                            LOG.error( I18n.err( I18n.ERR_12046 ) );
+                            throw new NamingException( I18n.err( I18n.ERR_12047 ) );
                         }
                     }
                 }
@@ -1207,8 +1208,8 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
                 {
                     if ( operation == ChangeType.ModDn )
                     {
-                        LOG.error( "A moddn operation must contains a \"newsuperior:\"" );
-                        throw new NamingException( "Bad moddn operation, no newsuperior" );
+                        LOG.error( I18n.err( I18n.ERR_12046 ) );
+                        throw new NamingException( I18n.err( I18n.ERR_12047 ) );
                     }
                 }
 
@@ -1216,8 +1217,8 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
 
             default:
                 // This is an error
-                LOG.error( "Unknown operation" );
-                throw new NamingException( "Bad operation" );
+                LOG.error( I18n.err( I18n.ERR_12048 ) );
+                throw new NamingException( I18n.err( I18n.ERR_12049 ) );
         }
     }
 
@@ -1290,16 +1291,16 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
             {
                 if ( containsEntries )
                 {
-                    LOG.error( "We cannot have changes when reading a file which already contains entries" );
-                    throw new NamingException( "No changes withing entries" );
+                    LOG.error( I18n.err( I18n.ERR_12004 ) );
+                    throw new NamingException( I18n.err( I18n.ERR_12005 ) );
                 }
 
                 containsChanges = true;
 
                 if ( controlSeen )
                 {
-                    LOG.error( "We already have had a control" );
-                    throw new NamingException( "Control misplaced" );
+                    LOG.error( I18n.err( I18n.ERR_12050 ) );
+                    throw new NamingException( I18n.err( I18n.ERR_12051 ) );
                 }
 
                 // Parse the control
@@ -1310,16 +1311,16 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
             {
                 if ( containsEntries )
                 {
-                    LOG.error( "We cannot have changes when reading a file which already contains entries" );
-                    throw new NamingException( "No changes withing entries" );
+                    LOG.error( I18n.err( I18n.ERR_12004 ) );
+                    throw new NamingException( I18n.err( I18n.ERR_12005 ) );
                 }
 
                 containsChanges = true;
 
                 if ( changeTypeSeen )
                 {
-                    LOG.error( "We already have had a changeType" );
-                    throw new NamingException( "ChangeType misplaced" );
+                    LOG.error( I18n.err( I18n.ERR_12052 ) );
+                    throw new NamingException( I18n.err( I18n.ERR_12053 ) );
                 }
 
                 // A change request
@@ -1336,16 +1337,16 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
             {
                 if ( containsChanges )
                 {
-                    LOG.error( "We cannot have entries when reading a file which already contains changes" );
-                    throw new NamingException( "No entries within changes" );
+                    LOG.error( I18n.err( I18n.ERR_12004 ) );
+                    throw new NamingException( I18n.err( I18n.ERR_12005 ) );
                 }
 
                 containsEntries = true;
 
                 if ( controlSeen || changeTypeSeen )
                 {
-                    LOG.error( "We can't have a Attribute/Value pair after a control or a changeType" );
-                    throw new NamingException( "AttributeType misplaced" );
+                    LOG.error( I18n.err( I18n.ERR_12054 ) );
+                    throw new NamingException( I18n.err( I18n.ERR_12055 ) );
                 }
 
                 parseAttributeValue( entry, line, lowerLine );
@@ -1354,8 +1355,8 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
             else
             {
                 // Invalid attribute Value
-                LOG.error( "Expecting an attribute type" );
-                throw new NamingException( "Bad attribute" );
+                LOG.error( I18n.err( I18n.ERR_12056 ) );
+                throw new NamingException( I18n.err( I18n.ERR_12057 ) );
             }
         }
 
@@ -1370,8 +1371,8 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
         }
         else
         {
-            LOG.error( "Unknown entry type" );
-            throw new NamingException( "Unknown entry" );
+            LOG.error( I18n.err( I18n.ERR_12058 ) );
+            throw new NamingException( I18n.err( I18n.ERR_12059 ) );
         }
 
         return entry;
@@ -1418,8 +1419,8 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
             // We should not have any other chars after the number
             if ( position.pos != document.length )
             {
-                LOG.error( "The version is not a number" );
-                throw new NamingException( "Ldif parsing error" );
+                LOG.error( I18n.err( I18n.ERR_12060 ) );
+                throw new NamingException( I18n.err( I18n.ERR_12061 ) );
             }
 
             try
@@ -1428,8 +1429,8 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
             }
             catch ( NumberFormatException nfe )
             {
-                LOG.error( "The version is not a number" );
-                throw new NamingException( "Ldif parsing error" );
+                LOG.error( I18n.err( I18n.ERR_12060 ) );
+                throw new NamingException( I18n.err( I18n.ERR_12061 ) );
             }
 
             LOG.debug( "Ldif version : {}", versionNumber );
@@ -1503,8 +1504,8 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
                         }
                         else if ( sb.length() == 0 )
                         {
-                            LOG.error( "Cannot have an empty continuation line" );
-                            throw new NamingException( "Ldif Parsing error" );
+                            LOG.error( I18n.err( I18n.ERR_12062 ) );
+                            throw new NamingException( I18n.err( I18n.ERR_12061 ) );
                         }
                         else
                         {
@@ -1532,7 +1533,7 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
         }
         catch ( IOException ioe )
         {
-            throw new NamingException( "Error while reading ldif lines" );
+            throw new NamingException( I18n.err( I18n.ERR_12063 ) );
         }
 
         // Stores the current line if necessary.
@@ -1575,16 +1576,16 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
     {
         if ( StringTools.isEmpty( fileName ) )
         {
-            LOG.error( "Cannot parse an empty file name !" );
-            throw new NamingException( "Empty filename" );
+            LOG.error( I18n.err( I18n.ERR_12064 ) );
+            throw new NamingException( I18n.err( I18n.ERR_12065 ) );
         }
 
         File file = new File( fileName );
 
         if ( !file.exists() )
         {
-            LOG.error( "Cannot parse the file {}, it does not exist", fileName );
-            throw new NamingException( "Filename " + fileName + " not found." );
+            LOG.error( I18n.err( I18n.ERR_12066, fileName ) );
+            throw new NamingException( I18n.err( I18n.ERR_12067, fileName ) );
         }
 
         BufferedReader reader = null;
@@ -1600,8 +1601,8 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
         }
         catch ( FileNotFoundException fnfe )
         {
-            LOG.error( "Cannot find file {}", fileName );
-            throw new NamingException( "Filename " + fileName + " not found." );
+            LOG.error( I18n.err( I18n.ERR_12068, fileName ) );
+            throw new NamingException( I18n.err( I18n.ERR_12067, fileName ) );
         }
         finally
         {
@@ -1656,8 +1657,8 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
         }
         catch ( NamingException ne )
         {
-            LOG.error( "Cannot parse the ldif buffer : {}", ne.getMessage() );
-            throw new NamingException( "Error while parsing the ldif buffer" );
+            LOG.error( I18n.err( I18n.ERR_12069, ne.getLocalizedMessage() ) );
+            throw new NamingException( I18n.err( I18n.ERR_12070 ) );
         }
         finally
         {
@@ -1713,7 +1714,7 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
         }
         catch ( NamingException ne )
         {
-            LOG.error( "Premature termination of LDIF iterator" );
+            LOG.error( I18n.err( I18n.ERR_12071 ) );
             error = ne;
             return null;
         }
@@ -1857,7 +1858,7 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
         }
         catch ( NoSuchElementException nsee )
         {
-            throw new NamingException( "Error while parsing ldif : " + error.getMessage() );
+            throw new NamingException( I18n.err( I18n.ERR_12072, error.getLocalizedMessage() ) );
         }
 
         return entries;
@@ -1886,4 +1887,5 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
         }
     }
 }
+
 

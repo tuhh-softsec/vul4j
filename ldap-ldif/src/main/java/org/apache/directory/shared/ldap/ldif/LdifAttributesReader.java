@@ -29,6 +29,7 @@ import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.BasicAttributes;
 
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -173,8 +174,8 @@ public class LdifAttributesReader extends LdifReader
         // We should *not* have a DN twice
         if ( attributeType.equals( "dn" ) )
         {
-            LOG.error( "An entry must not have two DNs" );
-            throw new NamingException( "A ldif entry should not have two DNs" );
+            LOG.error( I18n.err( I18n.ERR_12002 ) );
+            throw new NamingException( I18n.err( I18n.ERR_12003 ) );
         }
 
         Object attributeValue = parseValue( line, colonIndex );
@@ -228,13 +229,13 @@ public class LdifAttributesReader extends LdifReader
             // 3) The first line after the DN is anything else
             if ( lowerLine.startsWith( "control:" ) )
             {
-                LOG.error( "We cannot have changes when reading a file which already contains entries" );
-                throw new NamingException( "No changes withing entries" );
+                LOG.error( I18n.err( I18n.ERR_12004 ) );
+                throw new NamingException( I18n.err( I18n.ERR_12005 ) );
             }
             else if ( lowerLine.startsWith( "changetype:" ) )
             {
-                LOG.error( "We cannot have changes when reading a file which already contains entries" );
-                throw new NamingException( "No changes withing entries" );
+                LOG.error( I18n.err( I18n.ERR_12004 ) );
+                throw new NamingException( I18n.err( I18n.ERR_12005 ) );
             }
             else if ( line.indexOf( ':' ) > 0 )
             {
@@ -243,8 +244,8 @@ public class LdifAttributesReader extends LdifReader
             else
             {
                 // Invalid attribute Value
-                LOG.error( "Expecting an attribute type" );
-                throw new NamingException( "Bad attribute" );
+                LOG.error( I18n.err( I18n.ERR_12006 ) );
+                throw new NamingException( I18n.err( I18n.ERR_12007 ) );
             }
         }
 
@@ -292,8 +293,8 @@ public class LdifAttributesReader extends LdifReader
         }
         catch (NamingException ne)
         {
-            LOG.error( "Cannot parse the ldif buffer : {}", ne.getMessage() );
-            throw new NamingException( "Error while parsing the ldif buffer" );
+            LOG.error( I18n.err( I18n.ERR_12008, ne.getLocalizedMessage() ) );
+            throw new NamingException( I18n.err( I18n.ERR_12009 ) );
         }
         finally
         {
