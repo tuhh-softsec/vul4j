@@ -28,6 +28,7 @@ import java.util.UUID;
 
 import javax.naming.NamingException;
 
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.constants.MetaSchemaConstants;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
@@ -112,7 +113,7 @@ public class SchemaUtils
                     break;
 
                 default:
-                    throw new IllegalStateException( "undefined modification type: " + mod.getOperation() );
+                    throw new IllegalStateException( I18n.err( I18n.ERR_04328, mod.getOperation() ) );
             }
         }
 

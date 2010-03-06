@@ -26,6 +26,8 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.directory.shared.i18n.I18n;
+
 
 public abstract class AbstractSimpleComponentsMonitor implements ComponentsMonitor
 {
@@ -43,7 +45,7 @@ public abstract class AbstractSimpleComponentsMonitor implements ComponentsMonit
     {
         if ( !components.remove( component ) )
         {
-            throw new IllegalArgumentException( "Unregistered or previously used component: " + component );
+            throw new IllegalArgumentException( I18n.err( I18n.ERR_04336, component ) );
         }
 
         return this;

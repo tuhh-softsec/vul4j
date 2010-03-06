@@ -25,6 +25,7 @@ import java.util.List;
 
 import javax.naming.NamingException;
 
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.exception.LdapSchemaViolationException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.schema.registries.AttributeTypeRegistry;
@@ -143,9 +144,7 @@ public class ObjectClass extends AbstractSchemaObject
                             if ( superior.objectClassType != ObjectClassTypeEnum.ABSTRACT )
                             {
                                 // An ABSTRACT OC can only inherit from ABSTRACT OCs
-                                String msg = "Cannot register the SchemaOject " + oid + ", an ABSTRACT ObjectClass "
-                                    + "cannot inherit from an " + superior.getObjectType() + " ObjectClass :/n "
-                                    + superior;
+                                String msg = I18n.err( I18n.ERR_04318, oid , superior.getObjectType() , superior );
 
                                 Throwable error = new LdapSchemaViolationException( msg,
                                     ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
@@ -159,8 +158,7 @@ public class ObjectClass extends AbstractSchemaObject
                             if ( superior.objectClassType == ObjectClassTypeEnum.STRUCTURAL )
                             {
                                 // An AUXILIARY OC can only inherit from STRUCTURAL OCs
-                                String msg = "Cannot register the SchemaOject " + oid + ", an AUXILIARY ObjectClass "
-                                    + "cannot inherit from a STRUCTURAL ObjectClass :/n " + superior;
+                                String msg = I18n.err( I18n.ERR_04319, oid, superior );
 
                                 Throwable error = new LdapSchemaViolationException( msg,
                                     ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
@@ -174,8 +172,7 @@ public class ObjectClass extends AbstractSchemaObject
                             if ( superior.objectClassType == ObjectClassTypeEnum.AUXILIARY )
                             {
                                 // A STRUCTURAL OC can only inherit from AUXILIARY OCs
-                                String msg = "Cannot register the SchemaOject " + oid + ", a STRUCTURAL ObjectClass "
-                                    + "cannot inherit from an AUXILIARY ObjectClass :/n " + superior;
+                                String msg = I18n.err( I18n.ERR_04320, oid, superior );
 
                                 Throwable error = new LdapSchemaViolationException( msg,
                                     ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
@@ -191,8 +188,7 @@ public class ObjectClass extends AbstractSchemaObject
                 catch ( NamingException ne )
                 {
                     // Cannot find the OC
-                    String msg = "Cannot register the SchemaOject " + oid + ", the given SUPERIOR does not exist : "
-                        + superiorName;
+                    String msg = I18n.err( I18n.ERR_04321, oid, superiorName );
 
                     Throwable error = new LdapSchemaViolationException( msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
                     errors.add( error );
@@ -220,9 +216,7 @@ public class ObjectClass extends AbstractSchemaObject
                     if ( mayAttributeTypes.contains( attributeType ) )
                     {
                         // Already registered : this is an error
-                        String msg = "Cannot register the SchemaOject " + oid
-                            + ", there are some duplicate AT in the MAY : " + mayAttributeTypeName;
-
+                        String msg = I18n.err( I18n.ERR_04322, oid, mayAttributeTypeName );
                         Throwable error = new LdapSchemaViolationException( msg,
                             ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
                         errors.add( error );
@@ -234,8 +228,7 @@ public class ObjectClass extends AbstractSchemaObject
                 catch ( NamingException ne )
                 {
                     // Cannot find the AT
-                    String msg = "Cannot register the SchemaOject " + oid
-                        + ", the AT we want to add to MAY does not exist : " + mayAttributeTypeName;
+                    String msg = I18n.err( I18n.ERR_04323, oid, mayAttributeTypeName );
 
                     Throwable error = new LdapSchemaViolationException( msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
                     errors.add( error );
@@ -263,8 +256,7 @@ public class ObjectClass extends AbstractSchemaObject
                     if ( mustAttributeTypes.contains( attributeType ) )
                     {
                         // Already registered : this is an error
-                        String msg = "Cannot register the SchemaOject " + oid
-                            + ", there are some duplicate AT in the MUST : " + mustAttributeTypeName;
+                        String msg = I18n.err( I18n.ERR_04324, oid, mustAttributeTypeName );
 
                         Throwable error = new LdapSchemaViolationException( msg,
                             ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
@@ -276,8 +268,7 @@ public class ObjectClass extends AbstractSchemaObject
                     if ( mayAttributeTypes.contains( attributeType ) )
                     {
                         // Already registered : this is an error
-                        String msg = "Cannot register the SchemaOject " + oid
-                            + ", there are some duplicate AT in MAY and MUST : " + mustAttributeTypeName;
+                        String msg = I18n.err( I18n.ERR_04325, oid, mustAttributeTypeName );
 
                         Throwable error = new LdapSchemaViolationException( msg,
                             ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
@@ -290,8 +281,7 @@ public class ObjectClass extends AbstractSchemaObject
                 catch ( NamingException ne )
                 {
                     // Cannot find the AT
-                    String msg = "Cannot register the SchemaOject " + oid
-                        + ", the AT we want to add to MUST does not exist : " + mustAttributeTypeName;
+                    String msg = I18n.err( I18n.ERR_04326, oid, mustAttributeTypeName );
 
                     Throwable error = new LdapSchemaViolationException( msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
                     errors.add( error );

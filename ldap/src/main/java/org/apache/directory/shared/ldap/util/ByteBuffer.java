@@ -19,6 +19,8 @@
  */
 package org.apache.directory.shared.ldap.util;
 
+import org.apache.directory.shared.i18n.I18n;
+
 
 /**
  * A dynamically growing byte[]. 
@@ -49,7 +51,7 @@ public class ByteBuffer
     {
         if ( initialSize <= 0 )
         {
-            throw new IllegalArgumentException( "initialSize must be greater than zero" );
+            throw new IllegalArgumentException( I18n.err( I18n.ERR_04354 ) );
         }
         this.initialSize = initialSize;
         this.buf = new byte[initialSize];

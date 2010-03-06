@@ -24,6 +24,8 @@ import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.DirContext;
 
+import org.apache.directory.shared.i18n.I18n;
+
 
 /**
  * A read only wrapper around an Attributes object.
@@ -74,19 +76,19 @@ public class ImmutableAttributeWrapper implements Attribute
 
     public boolean add( Object attrVal )
     {
-        throw new UnsupportedOperationException( "Value addition not supported for immutable attribute" );
+        throw new UnsupportedOperationException( I18n.err( I18n.ERR_04392 ) );
     }
 
 
     public boolean remove( Object attrval )
     {
-        throw new UnsupportedOperationException( "Value removal not supported for immutable attribute" );
+        throw new UnsupportedOperationException( I18n.err( I18n.ERR_04393 ) );
     }
 
 
     public void clear()
     {
-        throw new UnsupportedOperationException( "Clearing all values not supported for immutable attribute" );
+        throw new UnsupportedOperationException( I18n.err( I18n.ERR_04394 ) );
     }
 
 
@@ -104,7 +106,7 @@ public class ImmutableAttributeWrapper implements Attribute
 
     public Object clone()
     {
-        throw new IllegalStateException( "Now why would you ever want to clone an immutable object?" );
+        throw new IllegalStateException( I18n.err( I18n.ERR_04395 ) );
     }
 
 
@@ -122,18 +124,18 @@ public class ImmutableAttributeWrapper implements Attribute
 
     public Object remove( int ix )
     {
-        throw new UnsupportedOperationException( "Value removal not supported for immutable attribute" );
+        throw new UnsupportedOperationException( I18n.err( I18n.ERR_04393 ) );
     }
 
 
     public void add( int ix, Object attrVal )
     {
-        throw new UnsupportedOperationException( "Value addition not supported for immutable attribute" );
+        throw new UnsupportedOperationException( I18n.err( I18n.ERR_04392 ) );
     }
 
 
     public Object set( int ix, Object attrVal )
     {
-        throw new UnsupportedOperationException( "Value alteration is not supported for immutable attribute" );
+        throw new UnsupportedOperationException( I18n.err( I18n.ERR_04396 ) );
     }
 }

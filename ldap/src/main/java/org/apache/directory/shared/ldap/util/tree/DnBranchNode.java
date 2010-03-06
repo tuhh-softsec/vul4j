@@ -26,6 +26,7 @@ import java.util.Map;
 
 import javax.naming.NamingException;
 
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.name.RDN;
 import org.slf4j.Logger;
@@ -104,7 +105,7 @@ public class DnBranchNode<N> implements DnNode<N>
             
             if ( newNode instanceof DnLeafNode )
             {
-                String message = "Overlapping partitions are not allowed";
+                String message = I18n.err( I18n.ERR_04334 );
                 LOG.error( message );
                 throw new NamingException( message );
             }

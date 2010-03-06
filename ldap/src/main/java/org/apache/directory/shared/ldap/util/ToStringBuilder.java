@@ -19,6 +19,8 @@
  */
 package org.apache.directory.shared.ldap.util;
 
+import org.apache.directory.shared.i18n.I18n;
+
 
 /**
  * <p>
@@ -201,7 +203,7 @@ public class ToStringBuilder
     {
         if ( style == null )
         {
-            throw new IllegalArgumentException( "The style must not be null" );
+            throw new IllegalArgumentException( I18n.err( I18n.ERR_04438 ) );
         }
         defaultStyle = style;
     }

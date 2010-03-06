@@ -24,6 +24,7 @@ package org.apache.directory.shared.ldap.trigger;
 import java.io.StringReader;
 import java.text.ParseException;
 
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.schema.NormalizerMappingResolver;
 
 import antlr.RecognitionException;
@@ -119,14 +120,12 @@ public class TriggerSpecificationParser
         }
         catch ( TokenStreamException e )
         {
-            String msg = "Parser failure on Trigger Specification:\n\t" + spec;
-            msg += "\nAntlr exception trace:\n" + e.getMessage();
+            String msg = I18n.err( I18n.ERR_04333, spec, e.getLocalizedMessage() );
             throw new ParseException( msg, 0 );
         }
         catch ( RecognitionException e )
         {
-            String msg = "Parser failure on Trigger Specification:\n\t" + spec;
-            msg += "\nAntlr exception trace:\n" + e.getMessage();
+            String msg = I18n.err( I18n.ERR_04333, spec, e.getLocalizedMessage() );
             throw new ParseException( msg, e.getColumn() );
         }
         

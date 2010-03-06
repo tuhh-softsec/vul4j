@@ -20,6 +20,8 @@
 
 package org.apache.directory.shared.ldap.util;
 
+import org.apache.directory.shared.i18n.I18n;
+
 
 /**
  * decoding of base64 characters to raw bytes.
@@ -162,7 +164,7 @@ public class Base64
         // if there is STILL something wrong we just have to throw up now!
         if ( l_index != l_out.length )
         {
-            throw new Error( "Miscalculated data length (wrote " + l_index + " instead of " + l_out.length + ")" );
+            throw new Error( I18n.err( I18n.ERR_04348, l_index, l_out.length ) );
         }
 
         return l_out;

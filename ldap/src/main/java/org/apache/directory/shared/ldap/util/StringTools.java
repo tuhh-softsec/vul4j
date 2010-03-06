@@ -37,6 +37,7 @@ import java.util.regex.PatternSyntaxException;
 import javax.naming.InvalidNameException;
 
 import org.apache.directory.shared.asn1.codec.binary.Hex;
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.entry.client.ClientBinaryValue;
 import org.apache.directory.shared.ldap.entry.client.ClientStringValue;
 import org.apache.directory.shared.ldap.schema.syntaxCheckers.UuidSyntaxChecker;
@@ -850,7 +851,7 @@ public class StringTools
     {
         if ( ldapRegex == null )
         {
-            throw new PatternSyntaxException( "Regex was null", "null", -1 );
+            throw new PatternSyntaxException( I18n.err( I18n.ERR_04429 ), "null", -1 );
         }
 
         List<String> any = new ArrayList<String>();
@@ -859,7 +860,7 @@ public class StringTools
 
         if ( index == -1 )
         {
-            throw new PatternSyntaxException( "Ldap regex must have wild cards!", remaining, -1 );
+            throw new PatternSyntaxException( I18n.err( I18n.ERR_04430 ), remaining, -1 );
         }
 
         String initialPattern = null;
@@ -3384,16 +3385,14 @@ public class StringTools
     {
         if ( str == null || str.length() == 0 )
         {
-            throw new InvalidNameException( "Expected string to start with a '#' character.  " +
-                "Invalid hex encoded string for empty or null string."  );
+            throw new InvalidNameException( I18n.err( I18n.ERR_04431 ) );
         }
         
         char[] chars = str.toCharArray();
         
         if ( chars[0] != '#' )
         {
-            throw new InvalidNameException( "Expected string to start with a '#' character.  " +
-                    "Invalid hex encoded string: " + str  );
+            throw new InvalidNameException( I18n.err( I18n.ERR_04432, str ) );
         }
         
         // the bytes representing the encoded string of hex
@@ -3423,16 +3422,14 @@ public class StringTools
     {
         if ( str == null )
         {
-            throw new InvalidNameException( "Expected string to be non-null " +
-            "with valid index."  );
+            throw new InvalidNameException( I18n.err( I18n.ERR_04433 ) );
         }
         
         int length = str.length();
         
         if ( length == 0 )
         {
-            throw new InvalidNameException( "Expected string to be non-empty " +
-            "with valid index."  );
+            throw new InvalidNameException( I18n.err( I18n.ERR_04434 ) );
         }
         
         // create buffer and add everything before start of scan
@@ -3477,7 +3474,7 @@ public class StringTools
                 }
                 else
                 {
-                    throw new InvalidNameException( "The DN must contain valid escaped characters." );
+                    throw new InvalidNameException( I18n.err( I18n.ERR_04435 ) );
                 }
             }
             else
@@ -3489,7 +3486,7 @@ public class StringTools
         if ( escaped )
         {
             // We should not have a '\' at the end of the string
-            throw new InvalidNameException( "The DN must not ends with a '\\'." );
+            throw new InvalidNameException( I18n.err( I18n.ERR_04436 ) );
         }
 
         return buf.toString();
@@ -3506,16 +3503,14 @@ public class StringTools
     {
         if ( str == null )
         {
-            throw new InvalidNameException( "Expected string to be non-null " +
-            "with valid index."  );
+            throw new InvalidNameException( I18n.err( I18n.ERR_04433 ) );
         }
         
         int length = str.length();
         
         if ( length == 0 )
         {
-            throw new InvalidNameException( "Expected string to be non-empty " +
-            "with valid index."  );
+            throw new InvalidNameException( I18n.err( I18n.ERR_04434 ) );
         }
         
         // create buffer and add everything before start of scan
@@ -3541,7 +3536,7 @@ public class StringTools
             }
             else
             {
-                throw new InvalidNameException( "The DN must contain valid escaped characters." );
+                throw new InvalidNameException( I18n.err( I18n.ERR_04435 ) );
             }
         }
 

@@ -24,6 +24,8 @@ import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
+import org.apache.directory.shared.i18n.I18n;
+
 
 /**
  * <p>
@@ -145,19 +147,19 @@ public class HashCodeBuilder
         super();
         if ( initialNonZeroOddNumber == 0 )
         {
-            throw new IllegalArgumentException( "HashCodeBuilder requires a non zero initial value" );
+            throw new IllegalArgumentException( I18n.err( I18n.ERR_04384 ) );
         }
         if ( initialNonZeroOddNumber % 2 == 0 )
         {
-            throw new IllegalArgumentException( "HashCodeBuilder requires an odd initial value" );
+            throw new IllegalArgumentException( I18n.err( I18n.ERR_04385 ) );
         }
         if ( multiplierNonZeroOddNumber == 0 )
         {
-            throw new IllegalArgumentException( "HashCodeBuilder requires a non zero multiplier" );
+            throw new IllegalArgumentException( I18n.err( I18n.ERR_04386 ) );
         }
         if ( multiplierNonZeroOddNumber % 2 == 0 )
         {
-            throw new IllegalArgumentException( "HashCodeBuilder requires an odd multiplier" );
+            throw new IllegalArgumentException( I18n.err( I18n.ERR_04387 ) );
         }
         iConstant = multiplierNonZeroOddNumber;
         iTotal = initialNonZeroOddNumber;
@@ -373,7 +375,7 @@ public class HashCodeBuilder
 
         if ( object == null )
         {
-            throw new IllegalArgumentException( "The object to build a hash code for must not be null" );
+            throw new IllegalArgumentException( I18n.err( I18n.ERR_04388 ) );
         }
         HashCodeBuilder builder = new HashCodeBuilder( initialNonZeroOddNumber, multiplierNonZeroOddNumber );
         Class clazz = object.getClass();
@@ -420,7 +422,7 @@ public class HashCodeBuilder
                 {
                     // this can't happen. Would get a Security exception instead
                     // throw a runtime exception in case the impossible happens.
-                    throw new InternalError( "Unexpected IllegalAccessException" );
+                    throw new InternalError( I18n.err( I18n.ERR_04355 ) );
                 }
             }
         }

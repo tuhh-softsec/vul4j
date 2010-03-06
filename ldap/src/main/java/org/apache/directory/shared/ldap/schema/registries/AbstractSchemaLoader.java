@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.constants.MetaSchemaConstants;
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.entry.Entry;
@@ -164,12 +165,12 @@ public abstract class AbstractSchemaLoader implements SchemaLoader
 
         if ( entry == null )
         {
-            throw new NullPointerException( "entry cannot be null" );
+            throw new NullPointerException( I18n.err( I18n.ERR_04261 ) );
         }
 
         if ( entry.get( SchemaConstants.CN_AT ) == null )
         {
-            throw new NullPointerException( "entry must have a valid cn attribute" );
+            throw new NullPointerException( I18n.err( I18n.ERR_04262 ) );
         }
 
         name = entry.get( SchemaConstants.CN_AT ).getString();

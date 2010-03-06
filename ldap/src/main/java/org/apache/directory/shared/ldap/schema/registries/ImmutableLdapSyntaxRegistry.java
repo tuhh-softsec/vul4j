@@ -24,6 +24,7 @@ import java.util.Iterator;
 
 import javax.naming.NamingException;
 
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.exception.LdapOperationNotSupportedException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.schema.LdapSyntax;
@@ -140,8 +141,7 @@ public class ImmutableLdapSyntaxRegistry implements LdapSyntaxRegistry
      */
     public void register( LdapSyntax schemaObject ) throws NamingException
     {
-        throw new LdapOperationNotSupportedException( "Cannot modify the LdapSyntaxRegistry copy",
-            ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapOperationNotSupportedException( I18n.err( I18n.ERR_04279 ), ResultCodeEnum.NO_SUCH_OPERATION );
     }
 
 
@@ -150,8 +150,7 @@ public class ImmutableLdapSyntaxRegistry implements LdapSyntaxRegistry
      */
     public void renameSchema( String originalSchemaName, String newSchemaName ) throws NamingException
     {
-        throw new LdapOperationNotSupportedException( "Cannot modify the LdapSyntaxRegistry copy",
-            ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapOperationNotSupportedException( I18n.err( I18n.ERR_04279 ), ResultCodeEnum.NO_SUCH_OPERATION );
     }
 
 
@@ -160,8 +159,7 @@ public class ImmutableLdapSyntaxRegistry implements LdapSyntaxRegistry
      */
     public LdapSyntax unregister( String numericOid ) throws NamingException
     {
-        throw new LdapOperationNotSupportedException( "Cannot modify the LdapSyntaxRegistry copy",
-            ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapOperationNotSupportedException( I18n.err( I18n.ERR_04279 ), ResultCodeEnum.NO_SUCH_OPERATION );
     }
 
 
@@ -170,8 +168,7 @@ public class ImmutableLdapSyntaxRegistry implements LdapSyntaxRegistry
      */
     public void unregisterSchemaElements( String schemaName ) throws NamingException
     {
-        throw new LdapOperationNotSupportedException( "Cannot modify the LdapSyntaxRegistry copy",
-            ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapOperationNotSupportedException( I18n.err( I18n.ERR_04279 ), ResultCodeEnum.NO_SUCH_OPERATION );
     }
 
 
@@ -189,8 +186,7 @@ public class ImmutableLdapSyntaxRegistry implements LdapSyntaxRegistry
      */
     public void clear() throws NamingException
     {
-        throw new LdapOperationNotSupportedException( "Cannot modify the LdapSyntaxRegistry copy",
-            ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapOperationNotSupportedException( I18n.err( I18n.ERR_04279 ), ResultCodeEnum.NO_SUCH_OPERATION );
     }
 
 
@@ -199,7 +195,6 @@ public class ImmutableLdapSyntaxRegistry implements LdapSyntaxRegistry
      */
     public LdapSyntax unregister( LdapSyntax schemaObject ) throws NamingException
     {
-        throw new LdapOperationNotSupportedException( "Cannot modify the LdapSyntaxRegistry copy",
-            ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapOperationNotSupportedException( I18n.err( I18n.ERR_04279 ), ResultCodeEnum.NO_SUCH_OPERATION );
     }
 }

@@ -22,6 +22,8 @@ package org.apache.directory.shared.ldap.util;
 
 import java.lang.reflect.Array;
 
+import org.apache.directory.shared.i18n.I18n;
+
 
 /**
  * <p>
@@ -1235,7 +1237,7 @@ public class ArrayUtils
     {
         if ( array1 == null || array2 == null )
         {
-            throw new IllegalArgumentException( "The Array must not be null" );
+            throw new IllegalArgumentException( I18n.err( I18n.ERR_04337 ) );
         }
         return array1.getClass().getName().equals( array2.getClass().getName() );
     }
@@ -4552,7 +4554,7 @@ public class ArrayUtils
         {
             if ( index != 0 )
             {
-                throw new IndexOutOfBoundsException( "Index: " + index + ", Length: 0" );
+                throw new IndexOutOfBoundsException( I18n.err( I18n.ERR_04338, index ,0 ) );
             }
             Object joinedArray = Array.newInstance( element != null ? element.getClass() : Object.class, 1 );
             Array.set( joinedArray, 0, element );
@@ -4561,7 +4563,7 @@ public class ArrayUtils
         int length = array.length;
         if ( index > length || index < 0 )
         {
-            throw new IndexOutOfBoundsException( "Index: " + index + ", Length: " + length );
+            throw new IndexOutOfBoundsException( I18n.err( I18n.ERR_04338, index, length ) );
         }
         Object result = Array.newInstance( array.getClass().getComponentType(), length + 1 );
         System.arraycopy( array, 0, result, 0, index );
@@ -5336,7 +5338,7 @@ public class ArrayUtils
         int length = getLength( array );
         if ( index < 0 || index >= length )
         {
-            throw new IndexOutOfBoundsException( "Index: " + index + ", Length: " + length );
+            throw new IndexOutOfBoundsException( I18n.err( I18n.ERR_04338, index, length ) );
         }
 
         Object result = Array.newInstance( array.getClass().getComponentType(), length - 1 );

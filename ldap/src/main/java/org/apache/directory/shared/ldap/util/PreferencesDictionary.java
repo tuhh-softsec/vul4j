@@ -25,6 +25,8 @@ import java.util.Enumeration;
 import java.util.prefs.Preferences;
 import java.util.prefs.BackingStoreException;
 
+import org.apache.directory.shared.i18n.I18n;
+
 
 /**
  * A wrapper around Preferences to access it as a Dictionary.
@@ -75,7 +77,7 @@ public class PreferencesDictionary extends Dictionary<String,String>
         }
         catch ( BackingStoreException e )
         {
-            throw new NestableRuntimeException( "can't get keys from prefs", e );
+            throw new NestableRuntimeException( I18n.err( I18n.ERR_04423 ), e );
         }
     }
 
@@ -88,7 +90,7 @@ public class PreferencesDictionary extends Dictionary<String,String>
         }
         catch ( BackingStoreException e )
         {
-            throw new NestableRuntimeException( "can't get keys from prefs", e );
+            throw new NestableRuntimeException( I18n.err( I18n.ERR_04423 ), e );
         }
     }
 
@@ -110,7 +112,7 @@ public class PreferencesDictionary extends Dictionary<String,String>
         }
         catch ( BackingStoreException e )
         {
-            throw new NestableRuntimeException( "can't get keys from prefs", e );
+            throw new NestableRuntimeException( I18n.err( I18n.ERR_04423 ), e );
         }
     }
 
@@ -124,7 +126,7 @@ public class PreferencesDictionary extends Dictionary<String,String>
         }
         catch ( BackingStoreException e )
         {
-            throw new NestableRuntimeException( "can't get keys from prefs", e );
+            throw new NestableRuntimeException( I18n.err( I18n.ERR_04423 ), e );
         }
     }
 

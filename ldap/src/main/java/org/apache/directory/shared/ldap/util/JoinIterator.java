@@ -23,6 +23,8 @@ package org.apache.directory.shared.ldap.util;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import org.apache.directory.shared.i18n.I18n;
+
 
 /**
  * An Iterator that joins the results of many iterators.
@@ -51,8 +53,7 @@ public class JoinIterator implements Iterator
     {
         if ( iterators == null || iterators.length < 2 )
         {
-            throw new IllegalArgumentException( "Iterator[] arg must not be "
-                + "null, empty or composed of less than two Iterators" );
+            throw new IllegalArgumentException( I18n.err( I18n.ERR_04397 ) );
         }
 
         if ( iterators != null )

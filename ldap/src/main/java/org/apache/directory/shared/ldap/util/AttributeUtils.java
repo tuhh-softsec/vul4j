@@ -33,6 +33,7 @@ import javax.naming.directory.BasicAttribute;
 import javax.naming.directory.BasicAttributes;
 import javax.naming.directory.InvalidAttributeIdentifierException;
 
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Modification;
@@ -501,7 +502,7 @@ public class AttributeUtils
 
         if ( ( attr0 == null ) && ( attr1 == null ) )
         {
-            throw new IllegalArgumentException( "Cannot figure out attribute ID if both args are null" );
+            throw new IllegalArgumentException( I18n.err( I18n.ERR_04339 ) );
         }
         else if ( attr0 == null )
         {
@@ -513,7 +514,7 @@ public class AttributeUtils
         }
         else if ( !attr0.getID().equalsIgnoreCase( attr1.getID() ) )
         {
-            throw new IllegalArgumentException( "Cannot take difference of attributes with different IDs!" );
+            throw new IllegalArgumentException( I18n.err( I18n.ERR_04340 ) );
         }
         else
         {
@@ -558,7 +559,7 @@ public class AttributeUtils
 
         if ( attr0 == null && attr1 == null )
         {
-            throw new IllegalArgumentException( "Cannot figure out attribute ID if both args are null" );
+            throw new IllegalArgumentException( I18n.err( I18n.ERR_04341 ) );
         }
         else if ( attr0 == null )
         {
@@ -570,7 +571,7 @@ public class AttributeUtils
         }
         else if ( !attr0.getID().equalsIgnoreCase( attr1.getID() ) )
         {
-            throw new IllegalArgumentException( "Cannot take union of attributes with different IDs!" );
+            throw new IllegalArgumentException( I18n.err( I18n.ERR_04342 ) );
         }
         else
         {
@@ -769,7 +770,7 @@ public class AttributeUtils
             if ( !StringTools.isAlphaDigitMinus( str, pos.start ) )
             {
                 // We must have at least one keychar
-                throw new ParseException( "An empty option is not allowed", pos.start );
+                throw new ParseException( I18n.err( I18n.ERR_04343 ), pos.start );
             }
 
             pos.start++;
@@ -847,14 +848,14 @@ public class AttributeUtils
         // We must have at least one '.' number
         if ( !StringTools.isCharASCII( str, pos.start, '.' ) )
         {
-            throw new ParseException( "Invalid OID, missing '.'", pos.start );
+            throw new ParseException( I18n.err( I18n.ERR_04344 ), pos.start );
         }
 
         pos.start++;
 
         if ( !parseNumber( str, pos ) )
         {
-            throw new ParseException( "Invalid OID, missing a number after a '.'", pos.start );
+            throw new ParseException( I18n.err( I18n.ERR_04345 ), pos.start );
         }
 
         while ( true )
@@ -869,7 +870,7 @@ public class AttributeUtils
 
             if ( !parseNumber( str, pos ) )
             {
-                throw new ParseException( "Invalid OID, missing a number after a '.'", pos.start );
+                throw new ParseException(I18n.err( I18n.ERR_04345 ), pos.start );
             }
         }
     }
@@ -900,7 +901,7 @@ public class AttributeUtils
 
         if ( c == '\0' )
         {
-            throw new ParseException( "Empty attributes", pos.start );
+            throw new ParseException( I18n.err( I18n.ERR_04346 ), pos.start );
         }
 
         int start = pos.start;
@@ -941,7 +942,7 @@ public class AttributeUtils
         }
         else
         {
-            throw new ParseException( "Bad char in attribute", pos.start );
+            throw new ParseException( I18n.err( I18n.ERR_04347 ), pos.start );
         }
     }
 

@@ -24,6 +24,7 @@ import java.util.Iterator;
 
 import javax.naming.NamingException;
 
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.exception.LdapOperationNotSupportedException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.schema.MatchingRuleUse;
@@ -140,8 +141,7 @@ public class ImmutableMatchingRuleUseRegistry implements MatchingRuleUseRegistry
      */
     public void register( MatchingRuleUse schemaObject ) throws NamingException
     {
-        throw new LdapOperationNotSupportedException( "Cannot modify the MatchingRuleUseRegistry copy",
-            ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapOperationNotSupportedException( I18n.err( I18n.ERR_04281 ), ResultCodeEnum.NO_SUCH_OPERATION );
     }
 
 
@@ -150,8 +150,7 @@ public class ImmutableMatchingRuleUseRegistry implements MatchingRuleUseRegistry
      */
     public void renameSchema( String originalSchemaName, String newSchemaName ) throws NamingException
     {
-        throw new LdapOperationNotSupportedException( "Cannot modify the MatchingRuleUseRegistry copy",
-            ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapOperationNotSupportedException( I18n.err( I18n.ERR_04281 ), ResultCodeEnum.NO_SUCH_OPERATION );
     }
 
 
@@ -160,8 +159,7 @@ public class ImmutableMatchingRuleUseRegistry implements MatchingRuleUseRegistry
      */
     public MatchingRuleUse unregister( String numericOid ) throws NamingException
     {
-        throw new LdapOperationNotSupportedException( "Cannot modify the MatchingRuleUseRegistry copy",
-            ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapOperationNotSupportedException( I18n.err( I18n.ERR_04281 ), ResultCodeEnum.NO_SUCH_OPERATION );
     }
 
 
@@ -170,8 +168,7 @@ public class ImmutableMatchingRuleUseRegistry implements MatchingRuleUseRegistry
      */
     public void unregisterSchemaElements( String schemaName ) throws NamingException
     {
-        throw new LdapOperationNotSupportedException( "Cannot modify the MatchingRuleUseRegistry copy",
-            ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapOperationNotSupportedException( I18n.err( I18n.ERR_04281 ), ResultCodeEnum.NO_SUCH_OPERATION );
     }
 
 
@@ -189,8 +186,7 @@ public class ImmutableMatchingRuleUseRegistry implements MatchingRuleUseRegistry
      */
     public void clear() throws NamingException
     {
-        throw new LdapOperationNotSupportedException( "Cannot modify the MatchingRuleUseRegistry copy",
-            ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapOperationNotSupportedException( I18n.err( I18n.ERR_04281 ), ResultCodeEnum.NO_SUCH_OPERATION );
     }
 
 
@@ -199,7 +195,6 @@ public class ImmutableMatchingRuleUseRegistry implements MatchingRuleUseRegistry
      */
     public MatchingRuleUse unregister( MatchingRuleUse schemaObject ) throws NamingException
     {
-        throw new LdapOperationNotSupportedException( "Cannot modify the MatchingRuleUseRegistry copy",
-            ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapOperationNotSupportedException( I18n.err( I18n.ERR_04281 ), ResultCodeEnum.NO_SUCH_OPERATION );
     }
 }

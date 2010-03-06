@@ -37,6 +37,8 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
+import org.apache.directory.shared.i18n.I18n;
+
 
 /**
  * A map of objects whose mapping entries are sequenced based on the order in
@@ -960,7 +962,7 @@ public class SequencedHashMap implements Map, Cloneable, Externalizable
                     return pos;
                 default:
                     // should never happen
-                    throw new Error( "bad iterator type: " + returnType );
+                    throw new Error( I18n.err( I18n.ERR_04425, returnType ) );
             }
 
         }
@@ -981,7 +983,7 @@ public class SequencedHashMap implements Map, Cloneable, Externalizable
         {
             if ( ( returnType & REMOVED_MASK ) != 0 )
             {
-                throw new IllegalStateException( "remove() must follow next()" );
+                throw new IllegalStateException( I18n.err( I18n.ERR_04426 ) );
             }
             if ( modCount != expectedModCount )
             {
@@ -1059,7 +1061,7 @@ public class SequencedHashMap implements Map, Cloneable, Externalizable
 
         if ( index < 0 )
         {
-            throw new ArrayIndexOutOfBoundsException( index + " < 0" );
+            throw new ArrayIndexOutOfBoundsException( I18n.err( I18n.ERR_04427, index ) );
         }
 
         // loop to one before the position
@@ -1074,7 +1076,7 @@ public class SequencedHashMap implements Map, Cloneable, Externalizable
         // if sentinel is next, past end of list
         if ( pos.next == sentinel )
         {
-            throw new ArrayIndexOutOfBoundsException( index + " >= " + ( i + 1 ) );
+            throw new ArrayIndexOutOfBoundsException( I18n.err( I18n.ERR_04428, index, ( i + 1 ) ) );
         }
 
         return pos.next;

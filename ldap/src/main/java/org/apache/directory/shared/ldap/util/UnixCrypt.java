@@ -43,6 +43,8 @@
 
 package org.apache.directory.shared.ldap.util;
 
+import org.apache.directory.shared.i18n.I18n;
+
 
    /*
     * @(#)UnixCrypt.java   0.9 96/11/25
@@ -508,11 +510,11 @@ package org.apache.directory.shared.ldap.util;
      {
          if (arg.length!=2)
          {
-             System.err.println("Usage - java org.mortbay.util.UnixCrypt <key> <salt>");
+             System.err.println( I18n.err( I18n.ERR_04439 ) );
              System.exit(1);
          }
  
-         System.err.println("Crypt="+crypt(arg[0],arg[1]));
+         System.err.println( I18n.err( I18n.ERR_04440, crypt(arg[0],arg[1]) ) );
      }
      
  }

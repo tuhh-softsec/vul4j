@@ -26,6 +26,7 @@ import java.util.Map;
 
 import javax.naming.NamingException;
 
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.schema.DITStructureRule;
 import org.apache.directory.shared.ldap.schema.SchemaObject;
 import org.apache.directory.shared.ldap.schema.SchemaObjectType;
@@ -100,7 +101,7 @@ public class DefaultDITStructureRuleRegistry extends DefaultSchemaObjectRegistry
             return ditStructureRule.getSchemaName();
         }
         
-        String msg = "RuleId " + ruleId + " not found in ruleId to schema name map!";
+        String msg = I18n.err( I18n.ERR_04263, ruleId );
         LOG.warn( msg );
         throw new NamingException( msg );
     }
@@ -115,7 +116,7 @@ public class DefaultDITStructureRuleRegistry extends DefaultSchemaObjectRegistry
         
         if ( byRuleId.containsKey( ruleId ) )
         {
-            String msg = "DITStructureRule with RuleId " + ruleId + " already registered!";
+            String msg = I18n.err( I18n.ERR_04264, ruleId );
             LOG.warn( msg );
             throw new NamingException( msg );
         }
@@ -138,7 +139,7 @@ public class DefaultDITStructureRuleRegistry extends DefaultSchemaObjectRegistry
 
         if ( ditStructureRule == null )
         {
-            String msg = "DITStructureRule for ruleId " + ruleId + " does not exist!";
+            String msg = I18n.err( I18n.ERR_04265, ruleId );
             LOG.debug( msg );
             throw new NamingException( msg );
         }

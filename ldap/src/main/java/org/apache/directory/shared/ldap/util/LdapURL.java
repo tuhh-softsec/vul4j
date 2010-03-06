@@ -32,6 +32,7 @@ import java.util.Set;
 import javax.naming.InvalidNameException;
 
 import org.apache.directory.shared.asn1.codec.binary.Hex;
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.util.HttpClientError;
 import org.apache.directory.shared.ldap.codec.util.LdapURLEncodingException;
 import org.apache.directory.shared.ldap.codec.util.URIException;
@@ -168,7 +169,7 @@ public class LdapURL
         if ( ( ( pos = StringTools.areEquals( chars, 0, LDAP_SCHEME ) ) == StringTools.NOT_EQUAL )
             && ( ( pos = StringTools.areEquals( chars, 0, LDAPS_SCHEME ) ) == StringTools.NOT_EQUAL ) )
         {
-            throw new LdapURLEncodingException( "A LdapUrl must start with \"ldap://\" or \"ldaps://\"" );
+            throw new LdapURLEncodingException( I18n.err( I18n.ERR_04398 ) );
         }
         else
         {
@@ -178,7 +179,7 @@ public class LdapURL
         // The hostport
         if ( ( pos = parseHostPort( chars, pos ) ) == -1 )
         {
-            throw new LdapURLEncodingException( "The hostport is invalid" );
+            throw new LdapURLEncodingException( I18n.err( I18n.ERR_04399 ) );
         }
 
         if ( pos == chars.length )
@@ -189,8 +190,7 @@ public class LdapURL
         // An optional '/'
         if ( !StringTools.isCharASCII( chars, pos, '/' ) )
         {
-            throw new LdapURLEncodingException( "Bad character, position " + pos + ", '" + chars[pos]
-                + "', '/' expected" );
+            throw new LdapURLEncodingException( I18n.err( I18n.ERR_04400, pos, chars[pos] ) );
         }
 
         pos++;
@@ -203,7 +203,7 @@ public class LdapURL
         // An optional DN
         if ( ( pos = parseDN( chars, pos ) ) == -1 )
         {
-            throw new LdapURLEncodingException( "The DN is invalid" );
+            throw new LdapURLEncodingException( I18n.err( I18n.ERR_04401 ) );
         }
 
         if ( pos == chars.length )
@@ -214,15 +214,14 @@ public class LdapURL
         // Optionals attributes
         if ( !StringTools.isCharASCII( chars, pos, '?' ) )
         {
-            throw new LdapURLEncodingException( "Bad character, position " + pos + ", '" + chars[pos]
-                + "', '?' expected" );
+            throw new LdapURLEncodingException( I18n.err( I18n.ERR_04402, pos, chars[pos] ) );
         }
 
         pos++;
 
         if ( ( pos = parseAttributes( chars, pos ) ) == -1 )
         {
-            throw new LdapURLEncodingException( "Attributes are invalid" );
+            throw new LdapURLEncodingException( I18n.err( I18n.ERR_04403 ) );
         }
 
         if ( pos == chars.length )
@@ -233,15 +232,14 @@ public class LdapURL
         // Optional scope
         if ( !StringTools.isCharASCII( chars, pos, '?' ) )
         {
-            throw new LdapURLEncodingException( "Bad character, position " + pos + ", '" + chars[pos]
-                + "', '?' expected" );
+            throw new LdapURLEncodingException( I18n.err( I18n.ERR_04402, pos, chars[pos] ) );
         }
 
         pos++;
 
         if ( ( pos = parseScope( chars, pos ) ) == -1 )
         {
-            throw new LdapURLEncodingException( "Scope is invalid" );
+            throw new LdapURLEncodingException( I18n.err( I18n.ERR_04404 ) );
         }
 
         if ( pos == chars.length )
@@ -252,8 +250,7 @@ public class LdapURL
         // Optional filter
         if ( !StringTools.isCharASCII( chars, pos, '?' ) )
         {
-            throw new LdapURLEncodingException( "Bad character, position " + pos + ", '" + chars[pos]
-                + "', '?' expected" );
+            throw new LdapURLEncodingException( I18n.err( I18n.ERR_04402, pos, chars[pos] ) );
         }
 
         pos++;
@@ -265,7 +262,7 @@ public class LdapURL
 
         if ( ( pos = parseFilter( chars, pos ) ) == -1 )
         {
-            throw new LdapURLEncodingException( "Filter is invalid" );
+            throw new LdapURLEncodingException( I18n.err( I18n.ERR_04405 ) );
         }
 
         if ( pos == chars.length )
@@ -276,15 +273,14 @@ public class LdapURL
         // Optional extensions
         if ( !StringTools.isCharASCII( chars, pos, '?' ) )
         {
-            throw new LdapURLEncodingException( "Bad character, position " + pos + ", '" + chars[pos]
-                + "', '?' expected" );
+            throw new LdapURLEncodingException( I18n.err( I18n.ERR_04402, pos, chars[pos] ) );
         }
 
         pos++;
 
         if ( ( pos = parseExtensions( chars, pos ) ) == -1 )
         {
-            throw new LdapURLEncodingException( "Extensions are invalid" );
+            throw new LdapURLEncodingException( I18n.err( I18n.ERR_04406 ) );
         }
 
         if ( pos == chars.length )
@@ -293,7 +289,7 @@ public class LdapURL
         }
         else
         {
-            throw new LdapURLEncodingException( "Invalid character at the end of the ldapUrl" );
+            throw new LdapURLEncodingException( I18n.err( I18n.ERR_04407 ) );
         }
     }
 
@@ -308,7 +304,7 @@ public class LdapURL
     {
         if ( string == null )
         {
-            throw new LdapURLEncodingException( "The string is empty : this is not a valid LdapURL." );
+            throw new LdapURLEncodingException( I18n.err( I18n.ERR_04408 ) );
         }
 
         try
@@ -319,7 +315,7 @@ public class LdapURL
         }
         catch ( UnsupportedEncodingException uee )
         {
-            throw new LdapURLEncodingException( "Bad Ldap URL : " + string );
+            throw new LdapURLEncodingException( I18n.err( I18n.ERR_04409, string ) );
         }
     }
 
@@ -334,7 +330,7 @@ public class LdapURL
     {
         if ( ( bytes == null ) || ( bytes.length == 0 ) )
         {
-            throw new LdapURLEncodingException( "The byte array is empty : this is not a valid LdapURL." );
+            throw new LdapURLEncodingException( I18n.err( I18n.ERR_04410 ) );
         }
 
         string = StringTools.utf8ToString( bytes );
@@ -613,12 +609,12 @@ public class LdapURL
     {
         if ( data == null )
         {
-            throw new IllegalArgumentException( "Parameter may not be null" );
+            throw new IllegalArgumentException( I18n.err( I18n.ERR_04411 ) );
         }
 
         if ( charset == null || charset.length() == 0 )
         {
-            throw new IllegalArgumentException( "charset may not be null or empty" );
+            throw new IllegalArgumentException( I18n.err( I18n.ERR_04412 ) );
         }
 
         try
@@ -660,7 +656,7 @@ public class LdapURL
 
         if ( data == null )
         {
-            throw new IllegalArgumentException( "Parameter may not be null" );
+            throw new IllegalArgumentException( I18n.err( I18n.ERR_04411 ) );
         }
 
         try
@@ -669,7 +665,7 @@ public class LdapURL
         }
         catch ( UnsupportedEncodingException e )
         {
-            throw new HttpClientError( "HttpClient requires ASCII support" );
+            throw new HttpClientError( I18n.err( I18n.ERR_04413 ) );
         }
     }
 
@@ -705,14 +701,14 @@ public class LdapURL
 
                     if ( u == -1 || l == -1 )
                     {
-                        throw new UrlDecoderException( "Invalid URL encoding" );
+                        throw new UrlDecoderException( I18n.err( I18n.ERR_04414 ) );
                     }
 
                     buffer.write( ( char ) ( ( u << 4 ) + l ) );
                 }
                 catch ( ArrayIndexOutOfBoundsException e )
                 {
-                    throw new UrlDecoderException( "Invalid URL encoding" );
+                    throw new UrlDecoderException( I18n.err( I18n.ERR_04414 ) );
                 }
             }
             else

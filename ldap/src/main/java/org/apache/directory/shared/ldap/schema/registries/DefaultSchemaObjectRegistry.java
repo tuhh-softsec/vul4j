@@ -27,6 +27,7 @@ import java.util.Map;
 import javax.naming.NamingException;
 
 import org.apache.directory.shared.asn1.primitives.OID;
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.exception.LdapSchemaViolationException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.schema.LoadableSchemaObject;
@@ -94,7 +95,7 @@ public abstract class DefaultSchemaObjectRegistry<T extends SchemaObject> implem
     {
         if ( !OID.isOID( oid ) )
         {
-            String msg = "Looks like the arg is not a numeric OID";
+            String msg = I18n.err( I18n.ERR_04267 );
             LOG.warn( msg );
             throw new NamingException( msg );
         }
@@ -106,7 +107,7 @@ public abstract class DefaultSchemaObjectRegistry<T extends SchemaObject> implem
             return schemaObject.getSchemaName();
         }
 
-        String msg = "OID " + oid + " not found in oid to schema name map!";
+        String msg = I18n.err( I18n.ERR_04268, oid );
         LOG.warn( msg );
         throw new NamingException( msg );
     }
@@ -172,7 +173,7 @@ public abstract class DefaultSchemaObjectRegistry<T extends SchemaObject> implem
 
         if ( schemaObject == null )
         {
-            String msg = schemaObjectType.name() + " for OID " + oid + " does not exist!";
+            String msg = I18n.err( I18n.ERR_04269, schemaObjectType.name(), oid );
             LOG.debug( msg );
             throw new NamingException( msg );
         }
@@ -195,7 +196,7 @@ public abstract class DefaultSchemaObjectRegistry<T extends SchemaObject> implem
 
         if ( byName.containsKey( oid ) )
         {
-            String msg = schemaObjectType.name() + " with OID " + oid + " already registered!";
+            String msg = I18n.err( I18n.ERR_04270, schemaObjectType.name(), oid );
             LOG.warn( msg );
             throw new LdapSchemaViolationException( msg, ResultCodeEnum.ATTRIBUTE_OR_VALUE_EXISTS );
         }
@@ -212,7 +213,7 @@ public abstract class DefaultSchemaObjectRegistry<T extends SchemaObject> implem
 
             if ( byName.containsKey( lowerName ) )
             {
-                String msg = schemaObjectType.name() + " with name " + name + " already registered!";
+                String msg = I18n.err( I18n.ERR_04271, schemaObjectType.name(), name );
                 LOG.warn( msg );
                 throw new LdapSchemaViolationException( msg, ResultCodeEnum.ATTRIBUTE_OR_VALUE_EXISTS );
             }
@@ -239,7 +240,7 @@ public abstract class DefaultSchemaObjectRegistry<T extends SchemaObject> implem
     {
         if ( !OID.isOID( numericOid ) )
         {
-            String msg = "OID " + numericOid + " is not a numeric OID";
+            String msg = I18n.err( I18n.ERR_04272, numericOid );
             LOG.error( msg );
             throw new NamingException( msg );
         }
@@ -272,7 +273,7 @@ public abstract class DefaultSchemaObjectRegistry<T extends SchemaObject> implem
 
         if ( !byName.containsKey( oid ) )
         {
-            String msg = schemaObjectType.name() + " with OID " + oid + " not registered!";
+            String msg = I18n.err( I18n.ERR_04273, schemaObjectType.name(), oid );
             LOG.warn( msg );
             throw new NamingException( msg );
         }
@@ -341,7 +342,7 @@ public abstract class DefaultSchemaObjectRegistry<T extends SchemaObject> implem
             // ok this name is not for a schema object in the registry
             if ( schemaObject == null )
             {
-                throw new NamingException( "Can't find an OID for the name " + name );
+                throw new NamingException( I18n.err( I18n.ERR_04274, name ) );
             }
         }
 

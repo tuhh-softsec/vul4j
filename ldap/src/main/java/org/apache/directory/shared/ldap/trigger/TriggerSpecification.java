@@ -23,6 +23,7 @@ package org.apache.directory.shared.ldap.trigger;
 import java.util.List;
 
 import org.apache.commons.lang.NullArgumentException;
+import org.apache.directory.shared.i18n.I18n;
 
 /**
  * The Trigger Specification Bean.
@@ -47,11 +48,11 @@ public class TriggerSpecification
             actionTime == null || 
             spSpecs == null )
         {
-            throw new NullArgumentException( "TriggerSpecification cannot be initialized with any NULL argument." );
+            throw new NullArgumentException( I18n.err( I18n.ERR_04331 ) );
         }
         if ( spSpecs.size() == 0 )
         {
-            throw new IllegalArgumentException( "TriggerSpecification cannot be initialized with emtpy SPSPec list." );
+            throw new IllegalArgumentException( I18n.err( I18n.ERR_04332 ) );
         }
         this.ldapOperation = ldapOperation;
         this.actionTime = actionTime;

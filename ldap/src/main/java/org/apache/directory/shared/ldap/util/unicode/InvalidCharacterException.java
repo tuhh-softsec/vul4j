@@ -20,6 +20,8 @@ package org.apache.directory.shared.ldap.util.unicode;
 
 import java.io.IOException;
 
+import org.apache.directory.shared.i18n.I18n;
+
 /**
  * 
  * Exception thrown when a Character is invalid
@@ -42,6 +44,6 @@ public class InvalidCharacterException extends IOException
     @Override
     public String getMessage()
     {
-        return "Invalid Character 0x" + Integer.toHexString( input );
+        return I18n.err( I18n.ERR_04335, Integer.toHexString( input ) );
     }
 }

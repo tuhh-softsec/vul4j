@@ -20,6 +20,7 @@
 package org.apache.directory.shared.ldap.util;
 
 
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.name.DN;
 
 import java.util.ArrayList;
@@ -134,7 +135,7 @@ public class NamespaceTools
         }
         else
         {
-            NamingException e = new NamingException( descendant + " is not ancestually related to context:" + ancestor );
+            NamingException e = new NamingException( I18n.err( I18n.ERR_04417, descendant, ancestor ) );
 
             throw e;
         }
@@ -198,8 +199,7 @@ public class NamespaceTools
             {
                 if ( ii == 0 )
                 {
-                    throw new NamingException( "invalid name - a name cannot start with a '+': "
-                        + compositeNameComponent );
+                    throw new NamingException( I18n.err( I18n.ERR_04418, compositeNameComponent ) );
                 }
                 
                 if ( compositeNameComponent.charAt( ii - 1 ) != '\\' )
@@ -256,7 +256,7 @@ public class NamespaceTools
             {
                 if ( ii == 0 )
                 {
-                    throw new NamingException( "invalid name - a name cannot start with a '+': " + name );
+                    throw new NamingException( I18n.err( I18n.ERR_04418, name ) );
                 }
                 if ( name.charAt( ii - 1 ) != '\\' )
                 {

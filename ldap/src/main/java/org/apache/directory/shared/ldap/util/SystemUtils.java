@@ -22,6 +22,8 @@ package org.apache.directory.shared.ldap.util;
 
 import java.io.File;
 
+import org.apache.directory.shared.i18n.I18n;
+
 
 /**
  * <p>
@@ -1457,8 +1459,7 @@ public class SystemUtils
         catch ( SecurityException ex )
         {
             // we are not allowed to look at this property
-            System.err.println( "Caught a SecurityException reading the system property '" + property
-                + "'; the SystemUtils property value will default to null." );
+            System.err.println( I18n.err( I18n.ERR_04437, property ) );
             return null;
         }
     }

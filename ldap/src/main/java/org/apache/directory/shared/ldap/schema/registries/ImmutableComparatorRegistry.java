@@ -24,6 +24,7 @@ import java.util.Iterator;
 
 import javax.naming.NamingException;
 
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.exception.LdapOperationNotSupportedException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.schema.LdapComparator;
@@ -59,8 +60,7 @@ public class ImmutableComparatorRegistry implements ComparatorRegistry
      */
     public void register( LdapComparator<?> comparator ) throws NamingException
     {
-        throw new LdapOperationNotSupportedException( "Cannot modify the ComparatorRegistry copy",
-            ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapOperationNotSupportedException( I18n.err( I18n.ERR_04276 ), ResultCodeEnum.NO_SUCH_OPERATION );
     }
 
 
@@ -69,8 +69,7 @@ public class ImmutableComparatorRegistry implements ComparatorRegistry
      */
     public LdapComparator<?> unregister( String numericOid ) throws NamingException
     {
-        throw new LdapOperationNotSupportedException( "Cannot modify the ComparatorRegistry copy",
-            ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapOperationNotSupportedException( I18n.err( I18n.ERR_04276 ), ResultCodeEnum.NO_SUCH_OPERATION );
     }
 
 
@@ -79,8 +78,7 @@ public class ImmutableComparatorRegistry implements ComparatorRegistry
      */
     public void unregisterSchemaElements( String schemaName ) throws NamingException
     {
-        throw new LdapOperationNotSupportedException( "Cannot modify the ComparatorRegistry copy",
-            ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapOperationNotSupportedException( I18n.err( I18n.ERR_04276 ), ResultCodeEnum.NO_SUCH_OPERATION );
     }
 
 
@@ -170,8 +168,7 @@ public class ImmutableComparatorRegistry implements ComparatorRegistry
      */
     public void renameSchema( String originalSchemaName, String newSchemaName ) throws NamingException
     {
-        throw new LdapOperationNotSupportedException( "Cannot modify the ComparatorRegistry copy",
-            ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapOperationNotSupportedException( I18n.err( I18n.ERR_04276 ), ResultCodeEnum.NO_SUCH_OPERATION );
     }
 
 
@@ -189,8 +186,7 @@ public class ImmutableComparatorRegistry implements ComparatorRegistry
      */
     public void clear() throws NamingException
     {
-        throw new LdapOperationNotSupportedException( "Cannot modify the ComparatorRegistry copy",
-            ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapOperationNotSupportedException( I18n.err( I18n.ERR_04276 ), ResultCodeEnum.NO_SUCH_OPERATION );
     }
 
 
@@ -199,7 +195,6 @@ public class ImmutableComparatorRegistry implements ComparatorRegistry
      */
     public LdapComparator<?> unregister( LdapComparator<?> schemaObject ) throws NamingException
     {
-        throw new LdapOperationNotSupportedException( "Cannot modify the  omparatorRegistry copy",
-            ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapOperationNotSupportedException( I18n.err( I18n.ERR_04276 ), ResultCodeEnum.NO_SUCH_OPERATION );
     }
 }

@@ -25,6 +25,7 @@ import java.util.Map;
 
 import javax.naming.NamingException;
 
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.exception.LdapOperationNotSupportedException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.schema.AttributeType;
@@ -88,8 +89,7 @@ public class ImmutableAttributeTypeRegistry implements AttributeTypeRegistry
      */
     public void register( AttributeType attributeType ) throws NamingException
     {
-        throw new LdapOperationNotSupportedException( "Cannot modify the AttributeTypeRegistry copy",
-            ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapOperationNotSupportedException( I18n.err( I18n.ERR_04275 ), ResultCodeEnum.NO_SUCH_OPERATION );
     }
 
 
@@ -98,8 +98,7 @@ public class ImmutableAttributeTypeRegistry implements AttributeTypeRegistry
      */
     public void registerDescendants( AttributeType attributeType, AttributeType ancestor ) throws NamingException
     {
-        throw new LdapOperationNotSupportedException( "Cannot modify the AttributeTypeRegistry copy",
-            ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapOperationNotSupportedException( I18n.err( I18n.ERR_04275 ), ResultCodeEnum.NO_SUCH_OPERATION );
     }
 
 
@@ -108,8 +107,7 @@ public class ImmutableAttributeTypeRegistry implements AttributeTypeRegistry
      */
     public void unregisterDescendants( AttributeType attributeType, AttributeType ancestor ) throws NamingException
     {
-        throw new LdapOperationNotSupportedException( "Cannot modify the AttributeTypeRegistry copy",
-            ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapOperationNotSupportedException( I18n.err( I18n.ERR_04275 ), ResultCodeEnum.NO_SUCH_OPERATION );
     }
 
 
@@ -128,8 +126,7 @@ public class ImmutableAttributeTypeRegistry implements AttributeTypeRegistry
      */
     public void addMappingFor( AttributeType attributeType ) throws NamingException
     {
-        throw new LdapOperationNotSupportedException( "Cannot modify the AttributeTypeRegistry copy",
-            ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapOperationNotSupportedException( I18n.err( I18n.ERR_04275 ), ResultCodeEnum.NO_SUCH_OPERATION );
     }
 
 
@@ -138,8 +135,7 @@ public class ImmutableAttributeTypeRegistry implements AttributeTypeRegistry
      */
     public void removeMappingFor( AttributeType attributeType ) throws NamingException
     {
-        throw new LdapOperationNotSupportedException( "Cannot modify the AttributeTypeRegistry copy",
-            ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapOperationNotSupportedException( I18n.err( I18n.ERR_04275 ), ResultCodeEnum.NO_SUCH_OPERATION );
     }
 
 
@@ -247,8 +243,7 @@ public class ImmutableAttributeTypeRegistry implements AttributeTypeRegistry
      */
     public void unregisterSchemaElements( String schemaName ) throws NamingException
     {
-        throw new LdapOperationNotSupportedException( "Cannot modify the AttributeTypeRegistry copy",
-            ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapOperationNotSupportedException( I18n.err( I18n.ERR_04275 ), ResultCodeEnum.NO_SUCH_OPERATION );
     }
 
 
@@ -266,8 +261,7 @@ public class ImmutableAttributeTypeRegistry implements AttributeTypeRegistry
      */
     public void clear() throws NamingException
     {
-        throw new LdapOperationNotSupportedException( "Cannot modify the AttributeTypeRegistry copy",
-            ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapOperationNotSupportedException( I18n.err( I18n.ERR_04275 ), ResultCodeEnum.NO_SUCH_OPERATION );
     }
 
 
@@ -276,7 +270,6 @@ public class ImmutableAttributeTypeRegistry implements AttributeTypeRegistry
      */
     public AttributeType unregister( AttributeType schemaObject ) throws NamingException
     {
-        throw new LdapOperationNotSupportedException( "Cannot modify the AttributeTypeRegistry copy",
-            ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapOperationNotSupportedException( I18n.err( I18n.ERR_04275 ), ResultCodeEnum.NO_SUCH_OPERATION );
     }
 }

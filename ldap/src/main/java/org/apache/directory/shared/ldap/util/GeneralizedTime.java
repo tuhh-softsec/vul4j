@@ -26,6 +26,8 @@ import java.text.ParseException;
 import java.util.Calendar;
 import java.util.TimeZone;
 
+import org.apache.directory.shared.i18n.I18n;
+
 
 /**
  * <p>This class represents the generalized time syntax as defined in 
@@ -160,7 +162,7 @@ public class GeneralizedTime implements Comparable<GeneralizedTime>
     {
         if ( calendar == null )
         {
-            throw new IllegalArgumentException( "Calendar must not be null." );
+            throw new IllegalArgumentException( I18n.err( I18n.ERR_04358 ) );
         }
 
         this.calendar = calendar;
@@ -184,7 +186,7 @@ public class GeneralizedTime implements Comparable<GeneralizedTime>
     {
         if ( generalizedTime == null )
         {
-            throw new ParseException( "generalizedTime is null", 0 );
+            throw new ParseException( I18n.err( I18n.ERR_04359 ), 0 );
         }
 
         this.upGeneralizedTime = generalizedTime;
@@ -200,8 +202,7 @@ public class GeneralizedTime implements Comparable<GeneralizedTime>
 
         if ( upGeneralizedTime.length() < 11 )
         {
-            throw new ParseException(
-                "Generalized Time too short, doesn't contain field 'minute' or 'fraction of hour' or 'timezone'.", 10 );
+            throw new ParseException( I18n.err( I18n.ERR_04360 ), 10 );
         }
 
         // pos 10: 
@@ -217,9 +218,7 @@ public class GeneralizedTime implements Comparable<GeneralizedTime>
 
             if ( upGeneralizedTime.length() < 13 )
             {
-                throw new ParseException(
-                    "Generalized Time too short, doesn't contain field 'second' or 'fraction of minute' or 'timezone'.",
-                    12 );
+                throw new ParseException( I18n.err( I18n.ERR_04361 ), 12 );
             }
 
             // pos 12: 
@@ -235,8 +234,7 @@ public class GeneralizedTime implements Comparable<GeneralizedTime>
 
                 if ( upGeneralizedTime.length() < 15 )
                 {
-                    throw new ParseException(
-                        "Generalized Time too short, doesn't contain field 'fraction of second' or 'timezone'.", 14 );
+                    throw new ParseException( I18n.err( I18n.ERR_04362 ), 14 );
                 }
 
                 // pos 14: 
@@ -262,8 +260,7 @@ public class GeneralizedTime implements Comparable<GeneralizedTime>
                 }
                 else
                 {
-                    throw new ParseException(
-                        "Invalid Time too short, expected field 'fraction of second' or 'timezone'.", 14 );
+                    throw new ParseException( I18n.err( I18n.ERR_04363 ), 14 );
                 }
             }
             else if ( c == '.' || c == ',' )
@@ -283,8 +280,7 @@ public class GeneralizedTime implements Comparable<GeneralizedTime>
             }
             else
             {
-                throw new ParseException(
-                    "Invalid Time too short, expected field 'second' or 'fraction of minute' or 'timezone'.", 12 );
+                throw new ParseException( I18n.err( I18n.ERR_04364 ), 12 );
             }
         }
         else if ( c == '.' || c == ',' )
@@ -304,8 +300,7 @@ public class GeneralizedTime implements Comparable<GeneralizedTime>
         }
         else
         {
-            throw new ParseException(
-                "Invalid Generalized Time, expected field 'minute' or 'fraction of hour' or 'timezone'.", 10 );
+            throw new ParseException( I18n.err( I18n.ERR_04365 ), 10 );
         }
 
         // this calculates and verifies the calendar
@@ -315,7 +310,7 @@ public class GeneralizedTime implements Comparable<GeneralizedTime>
         }
         catch ( IllegalArgumentException iae )
         {
-            throw new ParseException( "Invalid date/time values.", 0 );
+            throw new ParseException( I18n.err( I18n.ERR_04366 ), 0 );
         }
 
         calendar.setLenient( true );
@@ -326,7 +321,7 @@ public class GeneralizedTime implements Comparable<GeneralizedTime>
     {
         if ( upGeneralizedTime.length() < pos + 1 )
         {
-            throw new ParseException( "Generalized Time too short, doesn't contain field 'timezone'.", pos );
+            throw new ParseException( I18n.err( I18n.ERR_04367 ), pos );
         }
 
         char c = upGeneralizedTime.charAt( pos );
@@ -337,7 +332,7 @@ public class GeneralizedTime implements Comparable<GeneralizedTime>
 
             if ( upGeneralizedTime.length() > pos + 1 )
             {
-                throw new ParseException( "Invalid Generalized Time, expected 'timezone' as the last field.", pos + 1 );
+                throw new ParseException( I18n.err( I18n.ERR_04368 ), pos + 1 );
             }
         }
         else if ( c == '+' || c == '-' )
@@ -362,14 +357,12 @@ public class GeneralizedTime implements Comparable<GeneralizedTime>
             }
             else
             {
-                throw new ParseException(
-                    "Invalid Generalized Time, expected field 'timezone' must contain 2 or 4 digits.", pos );
+                throw new ParseException( I18n.err( I18n.ERR_04369 ), pos );
             }
 
             if ( upGeneralizedTime.length() > pos + 1 + digits.length() )
             {
-                throw new ParseException( "Invalid Generalized Time, expected 'timezone' as the last field.", pos + 1
-                    + digits.length() );
+                throw new ParseException( I18n.err( I18n.ERR_04370 ), pos + 1 + digits.length() );
             }
         }
     }
@@ -436,7 +429,7 @@ public class GeneralizedTime implements Comparable<GeneralizedTime>
         // minimum one digit
         if ( fraction.length() == 0 )
         {
-            throw new ParseException( "Generalized Time too short, doesn't contain number for 'fraction'.", startIndex );
+            throw new ParseException( I18n.err( I18n.ERR_04371 ), startIndex );
         }
 
         return fraction;
@@ -468,7 +461,7 @@ public class GeneralizedTime implements Comparable<GeneralizedTime>
         // read minute
         if ( upGeneralizedTime.length() < 14 )
         {
-            throw new ParseException( "Generalized Time too short, doesn't contain field 'second'.", 12 );
+            throw new ParseException( I18n.err( I18n.ERR_04372 ), 12 );
         }
         try
         {
@@ -477,7 +470,7 @@ public class GeneralizedTime implements Comparable<GeneralizedTime>
         }
         catch ( NumberFormatException e )
         {
-            throw new ParseException( "Invalid Generalized Time, field 'second' is not numeric.", 12 );
+            throw new ParseException( I18n.err( I18n.ERR_04373 ), 12 );
         }
     }
 
@@ -487,7 +480,7 @@ public class GeneralizedTime implements Comparable<GeneralizedTime>
         // read minute
         if ( upGeneralizedTime.length() < 12 )
         {
-            throw new ParseException( "Generalized Time too short, doesn't contain field 'minute'.", 10 );
+            throw new ParseException( I18n.err( I18n.ERR_04374 ), 10 );
         }
         try
         {
@@ -496,7 +489,7 @@ public class GeneralizedTime implements Comparable<GeneralizedTime>
         }
         catch ( NumberFormatException e )
         {
-            throw new ParseException( "Invalid Generalized Time, field 'minute' is not numeric.", 10 );
+            throw new ParseException( I18n.err( I18n.ERR_04375 ), 10 );
         }
     }
 
@@ -505,7 +498,7 @@ public class GeneralizedTime implements Comparable<GeneralizedTime>
     {
         if ( upGeneralizedTime.length() < 10 )
         {
-            throw new ParseException( "Generalized Time too short, doesn't contain field 'hour'.", 8 );
+            throw new ParseException( I18n.err( I18n.ERR_04376 ), 8 );
         }
         try
         {
@@ -514,7 +507,7 @@ public class GeneralizedTime implements Comparable<GeneralizedTime>
         }
         catch ( NumberFormatException e )
         {
-            throw new ParseException( "Invalid Generalized Time, field 'hour' is not numeric.", 8 );
+            throw new ParseException( I18n.err( I18n.ERR_04377 ), 8 );
         }
     }
 
@@ -523,7 +516,7 @@ public class GeneralizedTime implements Comparable<GeneralizedTime>
     {
         if ( upGeneralizedTime.length() < 8 )
         {
-            throw new ParseException( "Generalized Time too short, doesn't contain field 'day'.", 6 );
+            throw new ParseException( I18n.err( I18n.ERR_04378 ), 6 );
         }
         try
         {
@@ -532,7 +525,7 @@ public class GeneralizedTime implements Comparable<GeneralizedTime>
         }
         catch ( NumberFormatException e )
         {
-            throw new ParseException( "Invalid Generalized Time, field 'day' is not numeric.", 6 );
+            throw new ParseException( I18n.err( I18n.ERR_04379 ), 6 );
         }
     }
 
@@ -541,7 +534,7 @@ public class GeneralizedTime implements Comparable<GeneralizedTime>
     {
         if ( upGeneralizedTime.length() < 6 )
         {
-            throw new ParseException( "Generalized Time too short, doesn't contain field 'month'.", 4 );
+            throw new ParseException( I18n.err( I18n.ERR_04380 ), 4 );
         }
         try
         {
@@ -550,7 +543,7 @@ public class GeneralizedTime implements Comparable<GeneralizedTime>
         }
         catch ( NumberFormatException e )
         {
-            throw new ParseException( "Invalid Generalized Time, field 'month' is not numeric.", 4 );
+            throw new ParseException( I18n.err( I18n.ERR_04381 ), 4 );
         }
     }
 
@@ -559,7 +552,7 @@ public class GeneralizedTime implements Comparable<GeneralizedTime>
     {
         if ( upGeneralizedTime.length() < 4 )
         {
-            throw new ParseException( "Generalized Time too short, doesn't contain field 'century/year'.", 0 );
+            throw new ParseException( I18n.err( I18n.ERR_04382 ), 0 );
         }
         try
         {
@@ -568,7 +561,7 @@ public class GeneralizedTime implements Comparable<GeneralizedTime>
         }
         catch ( NumberFormatException e )
         {
-            throw new ParseException( "Invalid Generalized Time, field 'century/year' is not numeric.", 0 );
+            throw new ParseException( I18n.err( I18n.ERR_04383 ), 0 );
         }
     }
 

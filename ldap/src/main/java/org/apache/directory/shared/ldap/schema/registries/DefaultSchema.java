@@ -24,6 +24,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.schema.SchemaObjectWrapper;
 import org.apache.directory.shared.ldap.util.StringTools;
 
@@ -104,7 +105,7 @@ public class DefaultSchema implements Schema
     {
         if ( name == null )
         {
-            throw new NullPointerException( "name cannot be null" );
+            throw new NullPointerException( I18n.err( I18n.ERR_04266 ) );
         }
         
         this.name = name;

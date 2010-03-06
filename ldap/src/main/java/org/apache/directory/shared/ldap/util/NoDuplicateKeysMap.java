@@ -23,6 +23,8 @@ package org.apache.directory.shared.ldap.util;
 
 import java.util.HashMap;
 
+import org.apache.directory.shared.i18n.I18n;
+
 
 /**
  * A Map implementation derived from HashMap that only overrides a single method
@@ -43,7 +45,7 @@ public class NoDuplicateKeysMap extends HashMap
     {
         if ( containsKey( key ) )
         {
-            throw new IllegalArgumentException( "Adding duplicate keys is not permitted." );
+            throw new IllegalArgumentException( I18n.err( I18n.ERR_04422 ) );
         }
         else
         {

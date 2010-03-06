@@ -19,6 +19,8 @@
  */
 package org.apache.directory.shared.ldap.schema;
 
+import org.apache.directory.shared.i18n.I18n;
+
 
 /**
  * Type safe enumerations for an objectClass' type. An ObjectClass type can be
@@ -102,7 +104,6 @@ public enum ObjectClassTypeEnum
             return ABSTRACT;
         }
 
-        throw new IllegalArgumentException( "Unknown objectClass type name '" + name
-            + "': options are AUXILIARY, STRUCTURAL, ABSTRACT." );
+        throw new IllegalArgumentException( I18n.err( I18n.ERR_04327, name) );
     }
 }

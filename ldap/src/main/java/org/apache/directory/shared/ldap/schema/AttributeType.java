@@ -26,6 +26,7 @@ import java.util.Set;
 
 import javax.naming.NamingException;
 
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.exception.LdapSchemaViolationException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.schema.registries.AttributeTypeRegistry;
@@ -223,8 +224,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
             catch ( Exception e )
             {
                 // Not allowed.
-                String msg = "Cannot find the SUPERIOR object " + superiorOid
-                    + " while building cross-references for the " + getName() + " AttributeType.";
+                String msg = I18n.err( I18n.ERR_04303, superiorOid, getName() );
 
                 Throwable error = new LdapSchemaViolationException( msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
                 errors.add( error );
@@ -270,8 +270,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
                     {
                         // There is a cycle : bad bad bad !
                         // Not allowed.
-                        String msg = "A cycle has been detected in the superior hierarchyOid"
-                            + " while building cross-references for the " + getName() + " AttributeType.";
+                        String msg = I18n.err( I18n.ERR_04304, getName() );
 
                         Throwable error = new LdapSchemaViolationException( msg,
                             ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
@@ -295,8 +294,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
             else
             {
                 // Not allowed.
-                String msg = "Cannot find the SUPERIOR object " + superiorOid
-                    + " while building cross-references for the " + getName() + " AttributeType.";
+                String msg = I18n.err( I18n.ERR_04305, superiorOid, getName() );
 
                 Throwable error = new LdapSchemaViolationException( msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
                 errors.add( error );
@@ -330,8 +328,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
             catch ( NamingException ne )
             {
                 // Not allowed.
-                String msg = "Cannot find a Syntax object " + syntaxOid + " while building cross-references for the "
-                    + getName() + " AttributeType.";
+                String msg = I18n.err( I18n.ERR_04306, syntaxOid, getName() );
 
                 Throwable error = new LdapSchemaViolationException( msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
                 errors.add( error );
@@ -347,8 +344,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
             else
             {
                 // Not allowed.
-                String msg = "Cannot find a Syntax object " + syntaxOid + " while building cross-references for the "
-                    + getName() + " AttributeType.";
+                String msg = I18n.err( I18n.ERR_04306, syntaxOid, getName() );
 
                 Throwable error = new LdapSchemaViolationException( msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
                 errors.add( error );
@@ -367,8 +363,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
             else
             {
                 // Not allowed.
-                String msg = "The AttributeType " + getName() + " must have "
-                    + "a syntax OID or a superior, it does not have any.";
+                String msg = I18n.err( I18n.ERR_04307, getName() );
 
                 Throwable error = new LdapSchemaViolationException( msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
                 errors.add( error );
@@ -396,8 +391,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
             catch ( NamingException ne )
             {
                 // Not allowed.
-                String msg = "Cannot find an Equality MatchingRule object for " + equalityOid
-                    + " while building cross-references for the " + getName() + " AttributeType.";
+                String msg = I18n.err( I18n.ERR_04308, equalityOid, getName() );
 
                 Throwable error = new LdapSchemaViolationException( msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
                 errors.add( error );
@@ -412,8 +406,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
             else
             {
                 // Not allowed.
-                String msg = "Cannot find an EQUALITY MatchingRule instance for " + equalityOid
-                    + " while building cross-references for the " + getName() + " AttributeType.";
+                String msg = I18n.err( I18n.ERR_04309, equalityOid, getName() );
 
                 Throwable error = new LdapSchemaViolationException( msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
                 errors.add( error );
@@ -448,8 +441,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
             catch ( NamingException ne )
             {
                 // Not allowed.
-                String msg = "Cannot find a Ordering MatchingRule object for " + orderingOid
-                    + " while building cross-references for the " + getName() + " AttributeType.";
+                String msg = I18n.err( I18n.ERR_04310, orderingOid, getName() );
 
                 Throwable error = new LdapSchemaViolationException( msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
                 errors.add( error );
@@ -464,8 +456,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
             else
             {
                 // Not allowed.
-                String msg = "Cannot find an ORDERING MatchingRule instance for " + orderingOid
-                    + " while building cross-references for the " + getName() + " AttributeType.";
+                String msg = I18n.err( I18n.ERR_04311, orderingOid, getName() );
 
                 Throwable error = new LdapSchemaViolationException( msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
                 errors.add( error );
@@ -501,8 +492,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
             catch ( NamingException ne )
             {
                 // Not allowed.
-                String msg = "Cannot find a SUBSTR MatchingRule object for " + substringOid
-                    + " while building cross-references for the " + getName() + " AttributeType.";
+                String msg = I18n.err( I18n.ERR_04312, substringOid, getName() );
 
                 Throwable error = new LdapSchemaViolationException( msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
                 errors.add( error );
@@ -517,8 +507,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
             else
             {
                 // Not allowed.
-                String msg = "Cannot find a SUBSTR MatchingRule instance for " + substringOid
-                    + " while building cross-references for the " + getName() + " AttributeType.";
+                String msg = I18n.err( I18n.ERR_04313, substringOid, getName() );
 
                 Throwable error = new LdapSchemaViolationException( msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
                 errors.add( error );
@@ -547,7 +536,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
         if ( ( superior != null ) && ( usage != superior.getUsage() ) )
         {
             // This is an error
-            String msg = "The attributeType " + getName() + " must have the same USAGE than its superior";
+            String msg = I18n.err( I18n.ERR_04314, getName() );
 
             Throwable error = new LdapSchemaViolationException( msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
             errors.add( error );
@@ -559,8 +548,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
         if ( !isUserModifiable() && ( usage == UsageEnum.USER_APPLICATIONS ) )
         {
             // Cannot have a not user modifiable AT which is not an operational AT
-            String msg = "The attributeType " + getName() + " is a USER-APPLICATION attribute, "
-                + "it must be USER-MODIFIABLE";
+            String msg = I18n.err( I18n.ERR_04315, getName() );
 
             Throwable error = new LdapSchemaViolationException( msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
             errors.add( error );
@@ -586,8 +574,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
         if ( isCollective() && ( usage != UsageEnum.USER_APPLICATIONS ) )
         {
             // An AttributeType which is collective must be a USER attributeType
-            String msg = "The attributeType " + getName() + " is a COLLECTIVE AttributeType, "
-                + ", it must be a USER-APPLICATION attributeType too.";
+            String msg = I18n.err( I18n.ERR_04316, getName() );
 
             Throwable error = new LdapSchemaViolationException( msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
             errors.add( error );

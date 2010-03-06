@@ -25,6 +25,8 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.directory.shared.i18n.I18n;
+
 
 public class MandatoryAndOptionalComponentsMonitor implements ComponentsMonitor
 {
@@ -43,8 +45,7 @@ public class MandatoryAndOptionalComponentsMonitor implements ComponentsMonitor
             {
                 if ( mandatoryComponents[i].equals( optionalComponents[j] ) )
                 {
-                    throw new IllegalArgumentException( "Common element, \"" + mandatoryComponents[i]
-                        + "\" detected for Mandatory and Optional components." );
+                    throw new IllegalArgumentException( I18n.err( I18n.ERR_04415, mandatoryComponents[i] ) );
                 }
             }
         }
@@ -68,7 +69,7 @@ public class MandatoryAndOptionalComponentsMonitor implements ComponentsMonitor
             }
             catch ( IllegalArgumentException e2 )
             {
-                throw new IllegalArgumentException( "Unregistered or previously used component: " + component );
+                throw new IllegalArgumentException( I18n.err( I18n.ERR_04416, component ) );
             }
         }
 

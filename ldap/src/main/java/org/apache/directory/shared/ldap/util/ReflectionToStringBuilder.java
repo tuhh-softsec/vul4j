@@ -26,6 +26,8 @@ import java.lang.reflect.Modifier;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.directory.shared.i18n.I18n;
+
 
 /**
  * <p>
@@ -674,7 +676,7 @@ public class ReflectionToStringBuilder extends ToStringBuilder
                         // instead
                         // throw a runtime exception in case the impossible
                         // happens.
-                        throw new InternalError( "Unexpected IllegalAccessException: " + ex.getMessage() );
+                        throw new InternalError( I18n.err( I18n.ERR_04424, ex.getLocalizedMessage() ) );
                     }
                 }
             }

@@ -20,6 +20,7 @@
 package org.apache.directory.shared.ldap.subtree;
 
 
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.filter.ExprNode;
 import org.apache.directory.shared.ldap.name.DN;
 
@@ -130,7 +131,7 @@ public class SubtreeSpecificationModifier
     {
         if ( minBaseDistance < 0 )
         {
-            throw new IllegalArgumentException( "A negative minimum base distance is undefined!" );
+            throw new IllegalArgumentException( I18n.err( I18n.ERR_04330 ) );
         }
 
         this.minBaseDistance = minBaseDistance;

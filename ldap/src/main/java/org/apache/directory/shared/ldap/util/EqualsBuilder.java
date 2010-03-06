@@ -24,6 +24,8 @@ import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
+import org.apache.directory.shared.i18n.I18n;
+
 
 /**
  * <p>
@@ -311,7 +313,7 @@ public class EqualsBuilder
                 {
                     // this can't happen. Would get a Security exception instead
                     // throw a runtime exception in case the impossible happens.
-                    throw new InternalError( "Unexpected IllegalAccessException" );
+                    throw new InternalError( I18n.err( I18n.ERR_04355 ) );
                 }
             }
         }

@@ -24,6 +24,8 @@ import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 
+import org.apache.directory.shared.i18n.I18n;
+
 
 /**
  * Document me!
@@ -74,25 +76,25 @@ public class ImmutableAttributesWrapper implements Attributes
 
     public Attribute put( String attrID, Object val )
     {
-        throw new UnsupportedOperationException( "Putting attributes not supported by immutable attributes" );
+        throw new UnsupportedOperationException( I18n.err( I18n.ERR_04389 ) );
     }
 
 
     public Attribute put( Attribute attr )
     {
-        throw new UnsupportedOperationException( "Putting attributes not supported by immutable attributes" );
+        throw new UnsupportedOperationException( I18n.err( I18n.ERR_04389 ) );
     }
 
 
     public Attribute remove( String attrID )
     {
-        throw new UnsupportedOperationException( "Removing attributes not supported by immutable attributes" );
+        throw new UnsupportedOperationException( I18n.err( I18n.ERR_04390 ) );
     }
 
 
     public Object clone()
     {
-        throw new IllegalStateException( "Now why would you want to clone() an immutable object in the first place." );
+        throw new IllegalStateException( I18n.err( I18n.ERR_04391 ) );
     }
 
 

@@ -19,6 +19,8 @@
  */
 package org.apache.directory.shared.ldap.util;
 
+import org.apache.directory.shared.i18n.I18n;
+
 
 /**
  * <p>
@@ -278,7 +280,7 @@ public class BooleanUtils
             return false;
         }
         // no match
-        throw new IllegalArgumentException( "The Integer did not match either specified value" );
+        throw new IllegalArgumentException( I18n.err( I18n.ERR_04349 ) );
     }
 
 
@@ -329,7 +331,7 @@ public class BooleanUtils
             return false;
         }
         // no match
-        throw new IllegalArgumentException( "The Integer did not match either specified value" );
+        throw new IllegalArgumentException( I18n.err( I18n.ERR_04349 ) );
     }
 
 
@@ -371,7 +373,7 @@ public class BooleanUtils
             return null;
         }
         // no match
-        throw new IllegalArgumentException( "The Integer did not match any specified value" );
+        throw new IllegalArgumentException( I18n.err( I18n.ERR_04349 ) );
     }
 
 
@@ -431,7 +433,7 @@ public class BooleanUtils
             return null;
         }
         // no match
-        throw new IllegalArgumentException( "The Integer did not match any specified value" );
+        throw new IllegalArgumentException( I18n.err( I18n.ERR_04349 ) );
     }
 
 
@@ -738,7 +740,7 @@ public class BooleanUtils
             return null;
         }
         // no match
-        throw new IllegalArgumentException( "The String did not match any specified value" );
+        throw new IllegalArgumentException( I18n.err( I18n.ERR_04350 ) );
     }
 
 
@@ -880,7 +882,7 @@ public class BooleanUtils
             return false;
         }
         // no match
-        throw new IllegalArgumentException( "The String did not match either specified value" );
+        throw new IllegalArgumentException( I18n.err( I18n.ERR_04350 ) );
     }
 
 
@@ -1103,11 +1105,11 @@ public class BooleanUtils
         // Validates input
         if ( array == null )
         {
-            throw new IllegalArgumentException( "The Array must not be null" );
+            throw new IllegalArgumentException( I18n.err( I18n.ERR_04352 ) );
         }
         else if ( array.length == 0 )
         {
-            throw new IllegalArgumentException( "Array is empty" );
+            throw new IllegalArgumentException( I18n.err( I18n.ERR_04352 ) );
         }
 
         // Loops through array, comparing each item
@@ -1156,11 +1158,11 @@ public class BooleanUtils
     {
         if ( array == null )
         {
-            throw new IllegalArgumentException( "The Array must not be null" );
+            throw new IllegalArgumentException( I18n.err( I18n.ERR_04351 ) );
         }
         else if ( array.length == 0 )
         {
-            throw new IllegalArgumentException( "Array is empty" );
+            throw new IllegalArgumentException( I18n.err( I18n.ERR_04352 ) );
         }
         boolean[] primitive = null;
         try
@@ -1169,7 +1171,7 @@ public class BooleanUtils
         }
         catch ( NullPointerException ex )
         {
-            throw new IllegalArgumentException( "The array must not contain any null elements" );
+            throw new IllegalArgumentException( I18n.err( I18n.ERR_04353 ) );
         }
         return ( xor( primitive ) ? Boolean.TRUE : Boolean.FALSE );
     }

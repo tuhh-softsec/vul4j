@@ -33,6 +33,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import org.apache.directory.shared.i18n.I18n;
+
 
 /**
  * <p>
@@ -735,7 +737,7 @@ public class ExceptionUtils
         }
         if ( writer == null )
         {
-            throw new IllegalArgumentException( "The PrintWriter must not be null" );
+            throw new IllegalArgumentException( I18n.err( I18n.ERR_04356 ) );
         }
         String trace[] = getRootCauseStackTrace( throwable );
         for ( int i = 0; i < trace.length; i++ )
@@ -813,7 +815,7 @@ public class ExceptionUtils
     {
         if ( causeFrames == null || wrapperFrames == null )
         {
-            throw new IllegalArgumentException( "The List must not be null" );
+            throw new IllegalArgumentException( I18n.err( I18n.ERR_04357 ) );
         }
         int causeFrameIndex = causeFrames.size() - 1;
         int wrapperFrameIndex = wrapperFrames.size() - 1;

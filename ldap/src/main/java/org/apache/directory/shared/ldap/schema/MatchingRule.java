@@ -24,6 +24,7 @@ import java.util.List;
 
 import javax.naming.NamingException;
 
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.exception.LdapSchemaViolationException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.schema.comparators.ComparableComparator;
@@ -153,8 +154,7 @@ public class MatchingRule extends AbstractSchemaObject
             catch ( NamingException ne )
             {
                 // The Syntax is a mandatory element, it must exist.
-                throw new LdapSchemaViolationException(
-                    "The created MatchingRule must refers to an existing SYNTAX element",
+                throw new LdapSchemaViolationException( I18n.err( I18n.ERR_04317 ),
                     ResultCodeEnum.UNWILLING_TO_PERFORM );
             }
 

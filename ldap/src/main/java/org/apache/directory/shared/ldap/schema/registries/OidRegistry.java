@@ -29,6 +29,7 @@ import java.util.Map;
 import javax.naming.NamingException;
 
 import org.apache.directory.shared.asn1.primitives.OID;
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.schema.SchemaObject;
 import org.apache.directory.shared.ldap.util.ArrayUtils;
 import org.slf4j.Logger;
@@ -84,7 +85,7 @@ public class OidRegistry implements Iterable<SchemaObject>
         }
         else
         {
-            String msg = "OID '" + oid + "' was not found within the OID registry";
+            String msg = I18n.err( I18n.ERR_04286, oid );
             LOG.error( msg );
             throw new NamingException( msg );
         }
@@ -108,7 +109,7 @@ public class OidRegistry implements Iterable<SchemaObject>
         }
         else
         {
-            String msg = "There is no SchemaObject associated with OID '" + oid + "'";
+            String msg = I18n.err( I18n.ERR_04287, oid );
             LOG.error( msg );
             throw new NamingException( msg );
         }
@@ -133,7 +134,7 @@ public class OidRegistry implements Iterable<SchemaObject>
 
         if ( null == schemaObject )
         {
-            String msg = "OID '" + oid + "' was not found within the OID registry";
+            String msg = I18n.err( I18n.ERR_04288, oid );
             LOG.error( msg );
             throw new NamingException( msg );
         }
@@ -181,7 +182,7 @@ public class OidRegistry implements Iterable<SchemaObject>
     {
         if ( schemaObject == null )
         {
-            String message = "Cannot register a Null SchemaObject !";
+            String message = I18n.err( I18n.ERR_04289 );
 
             LOG.debug( message );
             throw new NamingException( message );
@@ -191,7 +192,7 @@ public class OidRegistry implements Iterable<SchemaObject>
 
         if ( !OID.isOID( oid ) )
         {
-            String message = "The given SchemaObject does not have a valid OID";
+            String message = I18n.err( I18n.ERR_04290 );
 
             LOG.debug( message );
             throw new NamingException( message );
@@ -202,7 +203,7 @@ public class OidRegistry implements Iterable<SchemaObject>
          */
         if ( byOid.containsKey( oid ) )
         {
-            String message = "There is already a SchemaObject for OID " + oid;
+            String message = I18n.err( I18n.ERR_04291, oid );
             LOG.info( message );
             return;
         }

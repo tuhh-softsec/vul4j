@@ -25,6 +25,7 @@ import java.io.StringReader;
 import java.text.ParseException;
 import java.util.Map;
 
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.schema.NormalizerMappingResolver;
 import org.apache.directory.shared.ldap.schema.normalizers.OidNormalizer;
 
@@ -123,20 +124,17 @@ public class SubtreeSpecificationParser
         }
         catch ( TokenStreamException e )
         {
-            String msg = "Parser failure on subtree specification:\n\t" + spec;
-            msg += "\nAntlr exception trace:\n" + e.getMessage();
+            String msg = I18n.err( I18n.ERR_04329, spec, e.getLocalizedMessage() );
             throw new ParseException( msg, 0 );
         }
         catch ( RecognitionException e )
         {
-            String msg = "Parser failure on subtree specification:\n\t" + spec;
-            msg += "\nAntlr exception trace:\n" + e.getMessage();
+            String msg = I18n.err( I18n.ERR_04329, spec, e.getLocalizedMessage() );
             throw new ParseException( msg, e.getColumn() );
         }
         catch ( Exception e )
         {
-            String msg = "Parser failure on subtree specification:\n\t" + spec;
-            msg += "\nAntlr exception trace:\n" + e.getMessage();
+            String msg = I18n.err( I18n.ERR_04329, spec, e.getLocalizedMessage() );
             throw new ParseException( msg, 0 );
         }
 

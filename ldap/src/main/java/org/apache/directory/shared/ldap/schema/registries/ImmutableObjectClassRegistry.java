@@ -25,6 +25,7 @@ import java.util.List;
 
 import javax.naming.NamingException;
 
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.exception.LdapOperationNotSupportedException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.schema.ObjectClass;
@@ -78,8 +79,7 @@ public class ImmutableObjectClassRegistry implements ObjectClassRegistry, Clonea
      */
     public void registerDescendants( ObjectClass objectClass, List<ObjectClass> ancestors ) throws NamingException
     {
-        throw new LdapOperationNotSupportedException( "Cannot modify the ObjectClassRegistry copy",
-            ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapOperationNotSupportedException( I18n.err( I18n.ERR_04284 ), ResultCodeEnum.NO_SUCH_OPERATION );
     }
 
 
@@ -88,8 +88,7 @@ public class ImmutableObjectClassRegistry implements ObjectClassRegistry, Clonea
      */
     public void unregisterDescendants( ObjectClass attributeType, List<ObjectClass> ancestors ) throws NamingException
     {
-        throw new LdapOperationNotSupportedException( "Cannot modify the ObjectClassRegistry copy",
-            ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapOperationNotSupportedException( I18n.err( I18n.ERR_04284 ), ResultCodeEnum.NO_SUCH_OPERATION );
     }
 
 
@@ -98,8 +97,7 @@ public class ImmutableObjectClassRegistry implements ObjectClassRegistry, Clonea
      */
     public void register( ObjectClass objectClass ) throws NamingException
     {
-        throw new LdapOperationNotSupportedException( "Cannot modify the ObjectClassRegistry copy",
-            ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapOperationNotSupportedException( I18n.err( I18n.ERR_04284 ), ResultCodeEnum.NO_SUCH_OPERATION );
     }
 
 
@@ -108,8 +106,7 @@ public class ImmutableObjectClassRegistry implements ObjectClassRegistry, Clonea
      */
     public ObjectClass unregister( String numericOid ) throws NamingException
     {
-        throw new LdapOperationNotSupportedException( "Cannot modify the ObjectClassRegistry copy",
-            ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapOperationNotSupportedException( I18n.err( I18n.ERR_04284 ), ResultCodeEnum.NO_SUCH_OPERATION );
     }
 
 
@@ -199,8 +196,7 @@ public class ImmutableObjectClassRegistry implements ObjectClassRegistry, Clonea
      */
     public void renameSchema( String originalSchemaName, String newSchemaName ) throws NamingException
     {
-        throw new LdapOperationNotSupportedException( "Cannot modify the ObjectClassRegistry copy",
-            ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapOperationNotSupportedException( I18n.err( I18n.ERR_04284 ), ResultCodeEnum.NO_SUCH_OPERATION );
     }
 
 
@@ -209,8 +205,7 @@ public class ImmutableObjectClassRegistry implements ObjectClassRegistry, Clonea
      */
     public void unregisterSchemaElements( String schemaName ) throws NamingException
     {
-        throw new LdapOperationNotSupportedException( "Cannot modify the ObjectClassRegistry copy",
-            ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapOperationNotSupportedException( I18n.err( I18n.ERR_04284 ), ResultCodeEnum.NO_SUCH_OPERATION );
     }
 
 
@@ -228,8 +223,7 @@ public class ImmutableObjectClassRegistry implements ObjectClassRegistry, Clonea
      */
     public void clear() throws NamingException
     {
-        throw new LdapOperationNotSupportedException( "Cannot modify the ObjectClassRegistry copy",
-            ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapOperationNotSupportedException( I18n.err( I18n.ERR_04284 ), ResultCodeEnum.NO_SUCH_OPERATION );
     }
 
 
@@ -238,7 +232,6 @@ public class ImmutableObjectClassRegistry implements ObjectClassRegistry, Clonea
      */
     public ObjectClass unregister( ObjectClass schemaObject ) throws NamingException
     {
-        throw new LdapOperationNotSupportedException( "Cannot modify the ObjectClassRegistry copy",
-            ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapOperationNotSupportedException( I18n.err( I18n.ERR_04284 ), ResultCodeEnum.NO_SUCH_OPERATION );
     }
 }

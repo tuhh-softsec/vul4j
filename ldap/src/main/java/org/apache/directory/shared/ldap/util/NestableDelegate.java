@@ -29,6 +29,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.directory.shared.i18n.I18n;
+
 
 /**
  * <p>
@@ -48,8 +50,7 @@ public class NestableDelegate implements Serializable
     /**
      * Constructor error message.
      */
-    private transient static final String MUST_BE_THROWABLE = "The Nestable implementation passed to the NestableDelegate(Nestable) "
-        + "constructor must extend java.lang.Throwable";
+    private transient static final String MUST_BE_THROWABLE = I18n.err( I18n.ERR_04419 );
 
     /**
      * Holds the reference to the exception or error that we're wrapping (which
@@ -263,15 +264,14 @@ public class NestableDelegate implements Serializable
     {
         if ( fromIndex < 0 )
         {
-            throw new IndexOutOfBoundsException( "The start index was out of bounds: " + fromIndex );
+            throw new IndexOutOfBoundsException( I18n.err( I18n.ERR_04420, fromIndex ) );
         }
         
         Throwable[] throwables = ExceptionUtils.getThrowables( this.nestable );
         
         if ( fromIndex >= throwables.length )
         {
-            throw new IndexOutOfBoundsException( "The start index was out of bounds: " + fromIndex + " >= "
-                + throwables.length );
+            throw new IndexOutOfBoundsException( I18n.err( I18n.ERR_04421, fromIndex, throwables.length ) );
         }
         
         for ( int i = fromIndex; i < throwables.length; i++ )
