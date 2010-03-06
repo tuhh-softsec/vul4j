@@ -30,6 +30,7 @@ import java.io.Writer;
 import java.text.ParseException;
 import java.util.List;
 
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.util.ExceptionUtils;
 
 import antlr.RecognitionException;
@@ -118,7 +119,7 @@ public class SchemaParser
     {
         if ( ( schemaObject == null ) || ( schemaObject.trim().equals( "" ) ) )
         {
-            throw new ParseException( "The schemaObject is either null or is empty!", 0 );
+            throw new ParseException( I18n.err( I18n.ERR_06001 ), 0 );
         }
 
         schemaIn = new ByteArrayInputStream( schemaObject.getBytes() );
@@ -150,15 +151,13 @@ public class SchemaParser
         }
         catch ( RecognitionException re )
         {
-            String msg = "Parser failure on:\n\t" + schemaName;
-            msg += "\nAntlr exception trace:\n" + ExceptionUtils.getFullStackTrace( re );
+            String msg = I18n.err( I18n.ERR_06002, schemaName, ExceptionUtils.getFullStackTrace( re ) );
             init();
             throw new ParseException( msg, re.getColumn() );
         }
         catch ( TokenStreamException tse )
         {
-            String msg = "Parser failure on:\n\t" + schemaName;
-            msg += "\nAntlr exception trace:\n" + ExceptionUtils.getFullStackTrace( tse );
+            String msg = I18n.err( I18n.ERR_06002, schemaName, ExceptionUtils.getFullStackTrace( tse ) );
             init();
             throw new ParseException( msg, 0 );
         }

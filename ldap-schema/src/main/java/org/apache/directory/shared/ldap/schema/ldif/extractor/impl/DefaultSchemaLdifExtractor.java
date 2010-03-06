@@ -37,6 +37,7 @@ import java.util.regex.Pattern;
 
 import javax.naming.NamingException;
 
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.ldif.LdifEntry;
 import org.apache.directory.shared.ldap.ldif.LdifReader;
@@ -137,8 +138,7 @@ public class DefaultSchemaLdifExtractor implements SchemaLdifExtractor
         }
         else if ( ! overwrite )
         {
-            throw new IOException( "Cannot overwrite yet schema output directory already exists: "
-                    + schemaDirectory.getAbsolutePath() );
+            throw new IOException( I18n.err( I18n.ERR_08001, schemaDirectory.getAbsolutePath() ) );
         }
 
         Pattern pattern = Pattern.compile( ".*schema/ou=schema.*\\.ldif" );
@@ -191,8 +191,7 @@ public class DefaultSchemaLdifExtractor implements SchemaLdifExtractor
         
         if ( ! source.getParentFile().exists() )
         {
-            throw new FileNotFoundException( "Cannot copy non-existant " +
-                "source file " + source.getAbsolutePath() );
+            throw new FileNotFoundException( I18n.err( I18n.ERR_08002, source.getAbsolutePath() ) );
         }
         
         FileWriter out = new FileWriter( destination );
@@ -221,7 +220,7 @@ public class DefaultSchemaLdifExtractor implements SchemaLdifExtractor
                 else
                 {
                     // throw an exception : we should not have more than one entry per schema ldif file
-                    String msg = "Cannot have more than one entry in a schema ldif file : " + source;
+                    String msg = I18n.err( I18n.ERR_08003, source );
                     LOG.error( msg );
                     throw new InvalidObjectException( msg );
                 }
@@ -238,7 +237,7 @@ public class DefaultSchemaLdifExtractor implements SchemaLdifExtractor
         catch ( NamingException ne )
         {
             // throw an exception : we should not have more than one entry per schema ldif file
-            String msg = "Excepion occured while parsing the ldif file " + source + " : " + ne.getMessage();
+            String msg = I18n.err( I18n.ERR_08004, source, ne.getLocalizedMessage() );
             LOG.error( msg );
             throw new InvalidObjectException( msg );
         }
@@ -298,8 +297,7 @@ public class DefaultSchemaLdifExtractor implements SchemaLdifExtractor
             if ( parent.equals( parent.getParentFile() )
                     || parent.getParentFile() == null )
             {
-                throw new IllegalStateException( 
-                    "Should not be hitting root without schema/schema pattern." );
+                throw new IllegalStateException( I18n.err( I18n.ERR_08005 ) );
             }
             
             parent = parent.getParentFile();
@@ -322,7 +320,7 @@ public class DefaultSchemaLdifExtractor implements SchemaLdifExtractor
         
         */
 
-        throw new IllegalStateException( "parent cannot be null" );
+        throw new IllegalStateException( I18n.err( I18n.ERR_08006 ) );
     }
     
     

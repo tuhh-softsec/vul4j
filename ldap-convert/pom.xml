@@ -42,6 +42,12 @@
 
   <dependencies>
     <dependency>
+      <artifactId>shared-i18n</artifactId>
+      <groupId>${groupId}</groupId>
+      <version>${version}</version>
+    </dependency>  
+
+    <dependency>
       <artifactId>shared-ldif</artifactId>
       <groupId>${groupId}</groupId>
       <version>${version}</version>

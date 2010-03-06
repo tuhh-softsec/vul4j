@@ -27,6 +27,7 @@ import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.constants.MetaSchemaConstants;
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.entry.Entry;
@@ -107,8 +108,7 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
 
         if ( !schemaLdif.exists() )
         {
-            String msg = "Expecting to find a schema.ldif file in provided baseDirectory path '"
-                + schemaLdif.getAbsolutePath() + "' but no such file found.";
+            String msg = I18n.err( I18n.ERR_10004, schemaLdif.getAbsolutePath() );
             LOG.error( msg );
             throw new FileNotFoundException( msg );
         }
@@ -164,7 +164,7 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
             }
             catch ( Exception e )
             {
-                LOG.error( "Failed to load schema LDIF file " + ldifFile, e );
+                LOG.error( I18n.err( I18n.ERR_10003, ldifFile ), e );
                 throw e;
             }
         }

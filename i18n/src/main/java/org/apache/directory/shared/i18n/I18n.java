@@ -586,46 +586,60 @@ public class I18n
 
 	// ldap-constants
 	public static final String ERR_05001 = "ERR_05001";
-	public static final String ERR_05002 = "ERR_05002";
-	public static final String ERR_05003 = "ERR_05003";
-	public static final String ERR_05004 = "ERR_05004";
-	public static final String ERR_05005 = "ERR_05005";
-	public static final String ERR_05006 = "ERR_05006";
-	public static final String ERR_05007 = "ERR_05007";
-	public static final String ERR_05008 = "ERR_05008";
-	public static final String ERR_05009 = "ERR_05009";
-	public static final String ERR_05010 = "ERR_05010";
-	public static final String ERR_05011 = "ERR_05011";
-	public static final String ERR_05012 = "ERR_05012";
-	public static final String ERR_05013 = "ERR_05013";
-	public static final String ERR_05014 = "ERR_05014";
-	public static final String ERR_05015 = "ERR_05015";
-	public static final String ERR_05016 = "ERR_05016";
-	public static final String ERR_05017 = "ERR_05017";
-	public static final String ERR_05018 = "ERR_05018";
-	public static final String ERR_05019 = "ERR_05019";
-	public static final String ERR_05020 = "ERR_05020";
-	public static final String ERR_05021 = "ERR_05021";
-	public static final String ERR_05022 = "ERR_05022";
-	public static final String ERR_05023 = "ERR_05023";
-	public static final String ERR_05024 = "ERR_05024";
-	public static final String ERR_05025 = "ERR_00025";
-	public static final String ERR_05026 = "ERR_05026";
-	public static final String ERR_05027 = "ERR_05027";
-	public static final String ERR_05028 = "ERR_05028";
-	public static final String ERR_05029 = "ERR_05029";
-	public static final String ERR_05030 = "ERR_05030";
-	public static final String ERR_05031 = "ERR_05031";
-	public static final String ERR_05032 = "ERR_05032";
-	public static final String ERR_05033 = "ERR_05033";
-	public static final String ERR_05034 = "ERR_05034";
-	public static final String ERR_05035 = "ERR_05035";
-	public static final String ERR_05036 = "ERR_05036";
-	public static final String ERR_05037 = "ERR_05037";
-	public static final String ERR_05038 = "ERR_05038";
-	public static final String ERR_05039 = "ERR_05039";
-	public static final String ERR_05040 = "ERR_05040";
 
+	// ldap-converter
+	public static final String ERR_06001 = "ERR_06001";
+	public static final String ERR_06002 = "ERR_06002";
+	public static final String ERR_06003 = "ERR_06003";
+	public static final String ERR_06004 = "ERR_06004";
+	public static final String ERR_06005 = "ERR_06005";
+	public static final String ERR_06006 = "ERR_06006";
+
+	// ldap-jndi
+	// no exceptions to translate
+	
+	// ldap-schema
+	public static final String ERR_08001 = "ERR_08001";
+	public static final String ERR_08002 = "ERR_08002";
+	public static final String ERR_08003 = "ERR_08003";
+	public static final String ERR_08004 = "ERR_08004";
+	public static final String ERR_08005 = "ERR_08005";
+	public static final String ERR_08006 = "ERR_08006";
+	
+	// ldap-schema-dao
+	// no exceptions to translate
+	
+	// ldap-schema-loader
+	public static final String ERR_10001 = "ERR_10001";
+	public static final String ERR_10002 = "ERR_10002";
+	public static final String ERR_10003 = "ERR_10003";
+	public static final String ERR_10004 = "ERR_10004";
+	public static final String ERR_10005 = "ERR_10005";
+	public static final String ERR_10006 = "ERR_10006";
+	public static final String ERR_10007 = "ERR_10007";
+	public static final String ERR_10008 = "ERR_10008";
+	public static final String ERR_10009 = "ERR_10009";
+	public static final String ERR_10010 = "ERR_10010";
+	public static final String ERR_10011 = "ERR_10011";
+	public static final String ERR_10012 = "ERR_10012";
+	public static final String ERR_10013 = "ERR_10013";
+	public static final String ERR_10014 = "ERR_10014";
+	public static final String ERR_10015 = "ERR_10015";
+	public static final String ERR_10016 = "ERR_10016";
+	public static final String ERR_10017 = "ERR_10017";
+	public static final String ERR_10018 = "ERR_10018";
+	public static final String ERR_10019 = "ERR_10019";
+	public static final String ERR_10020 = "ERR_10020";
+	public static final String ERR_10021 = "ERR_10021";
+	public static final String ERR_10022 = "ERR_10022";
+	public static final String ERR_10023 = "ERR_10023";
+	public static final String ERR_10024 = "ERR_10024";
+	public static final String ERR_10025 = "ERR_00025";
+	public static final String ERR_10026 = "ERR_10026";
+	public static final String ERR_10027 = "ERR_10027";
+	public static final String ERR_10028 = "ERR_10028";
+	
+	
 	
     /**
      * 

@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.ldif.LdifEntry;
@@ -128,7 +129,7 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
                 }
                 catch ( Exception e )
                 {
-                    LOG.error( "Failed to load schema LDIF file " + file, e );
+                    LOG.error( I18n.err( I18n.ERR_10003, file ), e );
                     throw e;
                 }
                 finally

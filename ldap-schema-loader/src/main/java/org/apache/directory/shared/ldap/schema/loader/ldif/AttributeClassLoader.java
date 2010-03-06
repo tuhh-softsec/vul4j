@@ -23,6 +23,7 @@ package org.apache.directory.shared.ldap.schema.loader.ldif;
 import javax.naming.NamingException;
 import javax.naming.directory.InvalidAttributeValueException;
 
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Value;
 
@@ -48,7 +49,7 @@ public class AttributeClassLoader extends ClassLoader
     {
         if ( attribute.isHR() )
         {
-            throw new InvalidAttributeValueException( "The attribute must be binary" );
+            throw new InvalidAttributeValueException( I18n.err( I18n.ERR_10001 ) );
         }
         
         this.attribute = attribute;
@@ -69,7 +70,7 @@ public class AttributeClassLoader extends ClassLoader
         }
         else
         {
-            throw new ClassNotFoundException( "Failed to access attribute bytes." );
+            throw new ClassNotFoundException( I18n.err( I18n.ERR_10002 ) );
         }
     }
 }

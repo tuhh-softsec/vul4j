@@ -39,5 +39,13 @@
   <description>
     Common LDAP constants used by clients and servers.
   </description>
+  
+  <dependencies>
+    <dependency>
+      <artifactId>shared-i18n</artifactId>
+      <groupId>${groupId}</groupId>
+      <version>${version}</version>
+    </dependency>  
+  </dependencies>
 </project>
 

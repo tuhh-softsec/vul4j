@@ -19,6 +19,8 @@
  */
 package org.apache.directory.shared.ldap.constants;
 
+import org.apache.directory.shared.i18n.I18n;
+
 
 /**
  * An enumeration that represents the level of authentication.
@@ -100,7 +102,7 @@ public enum AuthenticationLevel
             case 3: return UNAUTHENT;
             
             default:
-                throw new IllegalArgumentException( "Unknown AuthenticationLevel " + val );
+                throw new IllegalArgumentException( I18n.err(I18n.ERR_05001, val ) );
         }
     }
 }

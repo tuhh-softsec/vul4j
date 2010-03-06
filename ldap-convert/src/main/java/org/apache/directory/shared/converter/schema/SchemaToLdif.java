@@ -23,6 +23,7 @@ import java.io.InputStream;
 import java.io.Writer;
 import java.util.List;
 
+import org.apache.directory.shared.i18n.I18n;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -83,7 +84,7 @@ public class SchemaToLdif
         {
             if ( schema.getName() == null )
             {
-                String msg = i + "the schema configuration element must specify a name.";
+                String msg = I18n.err( I18n.ERR_06003, i );
                 log.error( msg );
                 throw new ParserException( msg );
             }
@@ -100,7 +101,7 @@ public class SchemaToLdif
             }
             catch ( Exception e )
             {
-                throw new ParserException( "Failed while generating sources for " + schema.getName() );
+                throw new ParserException( I18n.err( I18n.ERR_06004, schema.getName() ) );
             }
         }
     }
@@ -116,8 +117,8 @@ public class SchemaToLdif
     {
         if ( schema == null )
         {
-            log.error( "Can't generate a ldif for a null schema" );
-            throw new NullPointerException( "the schema property must be set" );
+            log.error( I18n.err( I18n.ERR_06005 ) );
+            throw new NullPointerException( I18n.err( I18n.ERR_06006 ) );
         }
 
         InputStream in = schema.getInput();
