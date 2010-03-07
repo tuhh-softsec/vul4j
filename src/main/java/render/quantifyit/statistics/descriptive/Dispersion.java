@@ -100,7 +100,7 @@ public final class Dispersion {
 	}
 	
 	/**
-	 * (x - μ)^2
+	 * ∑ (x - μ)^2
 	 */
 	private static Decimal sumOfSquaredDeltas(final Decimal mean, final Decimal... elements) {
 		Decimal sumOfSquaredDeltas = Decimal.ZERO;
