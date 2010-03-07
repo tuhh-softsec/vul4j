@@ -21,7 +21,7 @@ public class PerformanceUtils {
         return System.nanoTime();
     }
 	
-	public static Decimal end(final long executionTime){
+	public static Decimal end(final long executionTime) {
         Decimal picoDuration = Decimal.$(endTime(executionTime));
         System.out.format("Execution finished in %s%n", formatDuration(picoDuration));
         return picoDuration;
@@ -33,7 +33,7 @@ public class PerformanceUtils {
         return picoDuration;
     }
     
-    private static long endTime(final long executionTime){
+    private static long endTime(final long executionTime) {
     	long nanoSeconds = System.nanoTime() - executionTime;
     	long picoDuration = nanoSeconds * THOUSAND ;
     	return picoDuration;
@@ -52,32 +52,32 @@ public class PerformanceUtils {
 		}
 	}
     
-	public static MemorySnapshot memorySnapshot(){
+	public static MemorySnapshot memorySnapshot() {
 		Runtime rt = Runtime.getRuntime();
 		final Decimal totalMemory = Decimal.$(rt.totalMemory());
 		final Decimal freeMemory = Decimal.$(rt.freeMemory());
 		return new MemorySnapshot(totalMemory, freeMemory);
 	}
 	
-	public static void memoryConsumed(final MemorySnapshot atStart){
+	public static void memoryConsumed(final MemorySnapshot atStart) {
 		MemorySnapshot now = memorySnapshot();
 		
 		System.out.format("%nMemory allocated:%s%nMemory free:\t %s%nDelta:\t\t %s%n", 
 				now.getFormattedTotalAllocated(), now.getFormattedFree(), now.getFormattedDelta());
 	}
 	
-	public static void runtime(){
+	public static void runtime() {
 		OperatingSystemMXBean os = ManagementFactory.getOperatingSystemMXBean();
 		System.out.format("Operating system: [%s %s][%s]%n", os.getName(), os.getArch(), os.getVersion());
 		
 		System.out.format("Available processors: %s%n", os.getAvailableProcessors());
 	}
 
-	public static void outputSystemLoad(){
+	public static void outputSystemLoad() {
 		System.out.format("%nSystem load average: %s%n", systemLoad());
 	}
 	
-	public static String systemLoad(){
+	public static String systemLoad() {
 		OperatingSystemMXBean os = ManagementFactory.getOperatingSystemMXBean();
 		return systemLoad(os);
 	}
@@ -101,16 +101,16 @@ public class PerformanceUtils {
         return String.format("%s %s", output.scaleTo(3).format("%8.3f"), unit);
 	}
 	
-	public static String formatMemory(final Decimal memory){
+	public static String formatMemory(final Decimal memory) {
 		Decimal output = null;
 		String unit = null;
-		if(memory.gt(GIGABYTES)){
+		if(memory.gt(GIGABYTES)) {
 			output = memory.movePointToLeft(9);
 			unit = "gb";
-		} else if (memory.gt(MEGABYTES)){
+		} else if (memory.gt(MEGABYTES)) {
 			output = memory.movePointToLeft(6);
 			unit = "mb";
-		} else if ( memory.gt(Decimal.$(KILOBYTES))){
+		} else if ( memory.gt(Decimal.$(KILOBYTES))) {
 			output = memory.movePointToLeft(3);
 			unit = "kb";
 		} 

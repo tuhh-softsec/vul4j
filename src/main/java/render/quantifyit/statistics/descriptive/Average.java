@@ -7,8 +7,10 @@ import java.util.Set;
 import render.quantifyit.model.Decimal;
 import render.quantifyit.util.DecimalUtils;
 
-public class Average  {
+public final class Average {
 	
+	private Average() {
+	}
 	/**
 	 * The arithmetic mean (or simply the mean) of a list of numbers is the sum of all 
 	 * of the list divided by the number of items in the list. 
@@ -20,7 +22,7 @@ public class Average  {
 		DecimalUtils.notNullOrEmpty(elements);	
 		int count = 0;
 		Decimal sum = Decimal.ZERO;
-		for (Decimal element : elements){
+		for (Decimal element : elements) {
 			sum = sum.plus(element);
 			count ++;
 		}
@@ -46,9 +48,9 @@ public class Average  {
 		Decimal median = Decimal.ZERO;
 		final int medianPosition = elements.length/2;
 		
-		if (elements.length % 2 == 0){
+		if (elements.length % 2 == 0) {
 			median = ( elements[medianPosition - 1].plus(elements[medianPosition]) ).halve(); 
-		}else{
+		}else {
 			median = elements[medianPosition];
 		}
 		return median;
@@ -63,14 +65,14 @@ public class Average  {
 	 */
 	public static Decimal[] mode(final Decimal... elements) {
 		DecimalUtils.notNullOrEmpty(elements);
-		if(elements.length == 1){
-			return new Decimal[]{elements[0]};
+		if(elements.length == 1) {
+			return new Decimal[] {elements[0]};
 		}
 		Arrays.sort(elements);
 		
 		final Set<Decimal> modes = findModes(elements);
 		
-		return modes.toArray(new Decimal[]{});
+		return modes.toArray(new Decimal[] {});
 	}
 
 

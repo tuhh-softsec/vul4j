@@ -8,7 +8,7 @@ public class SampleSummary extends Summary {
 		super(dataSet);
 	}
 	
-	public Decimal getStandardDeviation(){
+	public Decimal getStandardDeviation() {
 		return Dispersion.sampleStandardDeviation(getMean(), getDataSet());
 	}
 }

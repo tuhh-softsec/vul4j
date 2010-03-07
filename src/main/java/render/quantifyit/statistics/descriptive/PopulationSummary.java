@@ -8,11 +8,11 @@ public class PopulationSummary extends Summary {
 		super(dataSet);
 	}
 
-	public Decimal getStandardDeviation(){
+	public Decimal getStandardDeviation() {
 		return Dispersion.populationStandardDeviation(getDataSet());
 	}
 
-	public Decimal zScoreFor(int index){
+	public Decimal zScoreFor(final int index) {
 		return Dispersion.zScore(dataSet[index], getMean(), getStandardDeviation());
 	}
 }

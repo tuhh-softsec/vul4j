@@ -44,9 +44,9 @@ public class SimplePerformanceStatisticsTest {
 	private static long totalExecutionTime;
 	
 	@BeforeClass
-	public static void performanceBenchmarkStarts() throws InterruptedException{
+	public static void performanceBenchmarkStarts() throws InterruptedException {
 		System.out.format("Performance tests for Quantify: %s%n", new Date());
-		if(PRINT_ENV){
+		if(PRINT_ENV) {
 			PerformanceUtils.runtime();
 		}
 		
@@ -67,7 +67,7 @@ public class SimplePerformanceStatisticsTest {
 			bigDecimalDataSet[i] = new BigDecimal(100000 * (Math.random() + .1d)).setScale(10, RoundingMode.HALF_EVEN);
 		}
 		
-		if(STORE_RESULTS){
+		if(STORE_RESULTS) {
 			doubleResults = new double[ELEMENTS];
 			decimalResults = new Decimal[ELEMENTS];
 			bigDecimalResults = new BigDecimal[ELEMENTS];
@@ -83,13 +83,13 @@ public class SimplePerformanceStatisticsTest {
 	}
 	
 	@AfterClass
-	public static void summary(){
+	public static void summary() {
 		final String bigDecimalClassName = BigDecimal.class.getSimpleName();
 		final String doubleClassName = Double.class.getSimpleName();
 		
-		PopulationSummary decimalSummary = new PopulationSummary(decimalDuration.toArray(new Decimal[]{})); 
-		PopulationSummary bigDecimalSummary = new PopulationSummary(bigDecimalDuration.toArray(new Decimal[]{}));
-		PopulationSummary doubleSummary = new PopulationSummary(doubleDuration.toArray(new Decimal[]{})); 
+		PopulationSummary decimalSummary = new PopulationSummary(decimalDuration.toArray(new Decimal[] {})); 
+		PopulationSummary bigDecimalSummary = new PopulationSummary(bigDecimalDuration.toArray(new Decimal[] {}));
+		PopulationSummary doubleSummary = new PopulationSummary(doubleDuration.toArray(new Decimal[] {})); 
 
 		System.out.format("%n%1$-20s%n%n", "Summary:");
 		
@@ -121,11 +121,11 @@ public class SimplePerformanceStatisticsTest {
 	}
 	
 	@After
-	public void measureMemoryAndTearDown() throws InterruptedException{
+	public void measureMemoryAndTearDown() throws InterruptedException {
 		if(STORE_RESULTS) {
 			PerformanceUtils.memoryConsumed(testMemoryConsumption);
 		}
-		if(GC_ON){
+		if(GC_ON) {
 			System.gc();
 			Thread.sleep(2000);
 		}			
@@ -133,13 +133,13 @@ public class SimplePerformanceStatisticsTest {
 	
 
 	@Test
-	public void testPerformanceOFBigDecimalPlus(){
+	public void testPerformanceOFBigDecimalPlus() {
 		System.out.println("BigDecimal operation: Add:");
 		final long executionTime = PerformanceUtils.start();
 		BigDecimal result = null;
 		for (int i = 0; i < bigDecimalDataSet.length; i++) {
 			result = bigDecimalDataSet[i].add(new BigDecimal(i));
-			if(STORE_RESULTS){
+			if(STORE_RESULTS) {
 				bigDecimalResults[i] = result;
 			}
 		}
@@ -147,13 +147,13 @@ public class SimplePerformanceStatisticsTest {
 	}
 	
 	@Test
-	public void testPerformanceOFBigDecimalMinus(){
+	public void testPerformanceOFBigDecimalMinus() {
 		System.out.println("BigDecimal operation: Subtract:");
 		final long executionTime = PerformanceUtils.start();
 		BigDecimal result = null;
 		for (int i = 0; i < bigDecimalDataSet.length; i++) {
 			result = bigDecimalDataSet[i].subtract(new BigDecimal(i));
-			if(STORE_RESULTS){
+			if(STORE_RESULTS) {
 				bigDecimalResults[i] = result;
 			}
 		}
@@ -161,13 +161,13 @@ public class SimplePerformanceStatisticsTest {
 	}
 	
 	@Test
-	public void testPerformanceOFBigDecimalMultiply(){
+	public void testPerformanceOFBigDecimalMultiply() {
 		System.out.println("BigDecimal operation: Multiply:");
 		final long executionTime = PerformanceUtils.start();
 		BigDecimal result = null;
 		for (int i = 0; i < bigDecimalDataSet.length; i++) {
 			result = bigDecimalDataSet[i].multiply(new BigDecimal(i));
-			if(STORE_RESULTS){
+			if(STORE_RESULTS) {
 				bigDecimalResults[i] = result;
 			}
 		}
@@ -175,13 +175,13 @@ public class SimplePerformanceStatisticsTest {
 	}
 	
 	@Test
-	public void testPerformanceOFBigDecimalDivide(){
+	public void testPerformanceOFBigDecimalDivide() {
 		System.out.println("BigDecimal operation: Divide:");
 		final long executionTime = PerformanceUtils.start();
 		BigDecimal result = null;
 		for (int i = 1; i < bigDecimalDataSet.length +1; i++) {
 			result = bigDecimalDataSet[i - 1].divide(new BigDecimal(i), 10, RoundingMode.HALF_EVEN);
-			if(STORE_RESULTS){
+			if(STORE_RESULTS) {
 				bigDecimalResults[i - 1] = result;
 			}
 		}
@@ -189,13 +189,13 @@ public class SimplePerformanceStatisticsTest {
 	}
 	
 	@Test
-	public void testPerformanceOFDecimalPlus(){
+	public void testPerformanceOFDecimalPlus() {
 		System.out.println("Decimal operation: Plus:");
 		final long executionTime = PerformanceUtils.start();
 		Decimal result = null;
 		for (int i = 0; i < decimalDataSet.length; i++) {
 			result = decimalDataSet[i].plus(Decimal.$(i));
-			if(STORE_RESULTS){
+			if(STORE_RESULTS) {
 				decimalResults[i] = result;
 			}
 		}
@@ -203,13 +203,13 @@ public class SimplePerformanceStatisticsTest {
 	}
 	
 	@Test
-	public void testPerformanceOFDecimalMinus(){
+	public void testPerformanceOFDecimalMinus() {
 		System.out.println("Decimal operation: Minus:");
 		final long executionTime = PerformanceUtils.start();
 		Decimal result = null;
 		for (int i = 0; i < decimalDataSet.length; i++) {
 			result = decimalDataSet[i].minus(Decimal.$(i));
-			if(STORE_RESULTS){
+			if(STORE_RESULTS) {
 				decimalResults[i] = result;
 			}
 		}
@@ -217,13 +217,13 @@ public class SimplePerformanceStatisticsTest {
 	}
 	
 	@Test
-	public void testPerformanceOFDecimalTimes(){
+	public void testPerformanceOFDecimalTimes() {
 		System.out.println("Decimal operation: Times:");
 		final long executionTime = PerformanceUtils.start();
 		Decimal result = null;
 		for (int i = 0; i < decimalDataSet.length; i++) {
 			result = decimalDataSet[i].times(Decimal.$(i));
-			if(STORE_RESULTS){
+			if(STORE_RESULTS) {
 				decimalResults[i] = result;
 			}
 		}
@@ -231,13 +231,13 @@ public class SimplePerformanceStatisticsTest {
 	}
 	
 	@Test
-	public void testPerformanceOFDecimalBy(){
+	public void testPerformanceOFDecimalBy() {
 		System.out.println("Decimal operation: By:");
 		final long executionTime = PerformanceUtils.start();
 		Decimal result = null;
 		for (int i = 1; i < decimalDataSet.length +1; i++) {
 			result = decimalDataSet[i - 1].divideBy(i);	
-			if(STORE_RESULTS){
+			if(STORE_RESULTS) {
 				decimalResults[i - 1] = result;
 			}
 		}
@@ -246,13 +246,13 @@ public class SimplePerformanceStatisticsTest {
 
 	
 	@Test
-	public void testPerformanceOFDoublePlus(){
+	public void testPerformanceOFDoublePlus() {
 		System.out.println("Double operation: Plus:");
 		final long executionTime = PerformanceUtils.start();
 		double result = 0.0;
 		for (int i = 0; i < doubleDataSet.length; i++) {
 			result = doubleDataSet[i] + i;
-			if(STORE_RESULTS){
+			if(STORE_RESULTS) {
 				doubleResults[i] = result;
 			}
 		}
@@ -260,13 +260,13 @@ public class SimplePerformanceStatisticsTest {
 	}
 	
 	@Test
-	public void testPerformanceOFDoubleMinus(){
+	public void testPerformanceOFDoubleMinus() {
 		System.out.println("Double operation: Minus:");
 		final long executionTime = PerformanceUtils.start();
 		double result = 0.0;
 		for (int i = 0; i < doubleDataSet.length; i++) {
 			result = doubleDataSet[i] - i;
-			if(STORE_RESULTS){
+			if(STORE_RESULTS) {
 				doubleResults[i] = result;
 			}
 		}
@@ -274,13 +274,13 @@ public class SimplePerformanceStatisticsTest {
 	}
 	
 	@Test
-	public void testPerformanceOFDoubleTimes(){
+	public void testPerformanceOFDoubleTimes() {
 		System.out.println("Double operation: Times:");
 		final long executionTime = PerformanceUtils.start();
 		double result = 0.0;
 		for (int i = 0; i < doubleDataSet.length; i++) {
 			result = doubleDataSet[i] * i;
-			if(STORE_RESULTS){
+			if(STORE_RESULTS) {
 				doubleResults[i] = result;
 			}
 		}
@@ -288,30 +288,30 @@ public class SimplePerformanceStatisticsTest {
 	}
 	
 	@Test
-	public void testPerformanceOFDoubleBy(){
+	public void testPerformanceOFDoubleBy() {
 		System.out.println("Double operation: Divide:");
 		final long executionTime = PerformanceUtils.start();
 		double result = 0.0;
 		for (int i = 1; i < doubleDataSet.length + 1; i++) {
 			result = doubleDataSet[i -1] / i;
-			if(STORE_RESULTS){
+			if(STORE_RESULTS) {
 				doubleResults[i - 1] = result;
 			}
 		}
 		doubleDuration.add(PerformanceUtils.end(ELEMENTS, executionTime));
 	}
 	
-	private static void outputDeltaRow(final PopulationSummary x, final PopulationSummary y, final String className){
+	private static void outputDeltaRow(final PopulationSummary x, final PopulationSummary y, final String className) {
 		final Decimal meanDelta = x.getMean().minus(y.getMean()); 
 		final Decimal stdDelta = x.getStandardDeviation().minus(y.getStandardDeviation());
 		output(className, meanDelta, stdDelta);
 	}
 	
-	private static void outputTimeSpentRow(PopulationSummary summary, String label){
+	private static void outputTimeSpentRow(PopulationSummary summary, String label) {
 		output(label, summary.getMean(), summary.getStandardDeviation());
 	}
 	
-	private static void output(final String label, final Decimal mean, final Decimal stDev){
+	private static void output(final String label, final Decimal mean, final Decimal stDev) {
 		System.out.format("|%1$-15s|%2$-10s|%3$-12s|%n", label, 
 				PerformanceUtils.formatDuration(mean), PerformanceUtils.formatDuration(stDev));
 	}

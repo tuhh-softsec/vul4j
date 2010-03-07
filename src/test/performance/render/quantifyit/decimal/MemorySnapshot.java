@@ -20,15 +20,15 @@ public class MemorySnapshot {
 		return free;
 	}
 
-	public String getFormattedDelta(){
+	public String getFormattedDelta() {
 		return PerformanceUtils.formatMemory(total.minus(free));
 	}
 	
-	public String getFormattedTotalAllocated(){
+	public String getFormattedTotalAllocated() {
 		return PerformanceUtils.formatMemory(total);
 	}
 	
-	public String getFormattedFree(){
+	public String getFormattedFree() {
 		return PerformanceUtils.formatMemory(free);
 	}
 	

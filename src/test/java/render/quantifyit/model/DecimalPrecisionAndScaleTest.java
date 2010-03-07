@@ -11,12 +11,12 @@ import org.junit.Test;
 public class DecimalPrecisionAndScaleTest {
 	
 	@Before
-	public void setUp(){
+	public void setUp() {
 		separator();
 	}
 	
 	@Test
-	public void testIntegerConstructorWithoutContext(){
+	public void testIntegerConstructorWithoutContext() {
 		message("Integer constructor, without context");
 		
 		output(202);
@@ -26,7 +26,7 @@ public class DecimalPrecisionAndScaleTest {
 	}
 	
 	@Test
-	public void testIntegerConstructorWithContext(){
+	public void testIntegerConstructorWithContext() {
 		message("Integer constructor, with context");
 		
 		output(202, new MathContext(1));
@@ -40,7 +40,7 @@ public class DecimalPrecisionAndScaleTest {
 	 * @see {@link java.math.BigDecimal(String)}
 	 */
 	@Test
-	public void testDoubleConstructorWithoutContext(){
+	public void testDoubleConstructorWithoutContext() {
 		message("Double constructor, no context. WARNING: precision and scale in Decimal is different than BigDecimal");
 		
 		output(202.000);
@@ -56,7 +56,7 @@ public class DecimalPrecisionAndScaleTest {
 	 * @see {@link java.math.BigDecimal(String)}
 	 */
 	@Test
-	public void testDoubleConstructorWithContext(){
+	public void testDoubleConstructorWithContext() {
 		message("Double constructor, with context.");
 		
 		output(202.000, new MathContext(1));
@@ -68,7 +68,7 @@ public class DecimalPrecisionAndScaleTest {
 	}
 	
 	@Test
-	public void testNoContextConstructor(){
+	public void testNoContextConstructor() {
 		message("No context, by default, all required decimals up to 15...");
 
 		output("202.000");
@@ -80,7 +80,7 @@ public class DecimalPrecisionAndScaleTest {
 	}
 	
 	@Test
-	public void testWithContextConstructor(){
+	public void testWithContextConstructor() {
 		message("With context (defines the total amount of digits to use)");
 		
 		output("202.000", new MathContext(3));
@@ -92,7 +92,7 @@ public class DecimalPrecisionAndScaleTest {
 	}
 	
 	@Test
-	public void testWithLossOfIntegerPrecision(){
+	public void testWithLossOfIntegerPrecision() {
 		message("With loss of integer precision...");
 		
 		output("202.000", new MathContext(1));
@@ -104,7 +104,7 @@ public class DecimalPrecisionAndScaleTest {
 	}
 	
 	@Test
-	public void testNegativeNumbers(){
+	public void testNegativeNumbers() {
 		message("Negative numbers...");
 
 		output("-202.000", new MathContext(1));
@@ -114,7 +114,7 @@ public class DecimalPrecisionAndScaleTest {
 	}
 	
 	@Test
-	public void testSmallDecimals(){
+	public void testSmallDecimals() {
 		message("Small decimals...");
 		
 		output("0.0202", new MathContext(1));
@@ -124,7 +124,7 @@ public class DecimalPrecisionAndScaleTest {
 	}
 	
 	@Test
-	public void testPeriodicals(){
+	public void testPeriodicals() {
 		message("Periodicals...");
 		
 		output("0.33333333333", new MathContext(4));
@@ -141,33 +141,33 @@ public class DecimalPrecisionAndScaleTest {
 		System.out.format("------------------------------------------\n");
 	}
 	
-	private void output(final int number){
+	private void output(final int number) {
 		System.out.format("[%s]\n", number);
 		assertAndOutputNumber(Decimal.$(number), new BigDecimal(number));
 	}
 
-	private void output(final int number, final MathContext context){
-		System.out.format("[%s]{%d}\n", number, context.getPrecision());
+	private void output(final int number, final MathContext context) {
+		System.out.format("[%s] {%d}\n", number, context.getPrecision());
 		assertAndOutputNumber(Decimal.$(number, context), new BigDecimal(number, context));
 	}
 	
-	private void output(final double number){
+	private void output(final double number) {
 		System.out.format("[%s]\n", number);
 		output(Decimal.$(number));
 	}
 	
-	private void output(final double number, final MathContext context){
-		System.out.format("[%s]{%d}\n", number, context.getPrecision());
+	private void output(final double number, final MathContext context) {
+		System.out.format("[%s] {%d}\n", number, context.getPrecision());
 		assertAndOutputNumber(Decimal.$(number, context), new BigDecimal(number, context));
 	}
 	
-	private void output(final String number){
+	private void output(final String number) {
 		System.out.format("[%s]\n", number);
 		assertAndOutputNumber(Decimal.$(number), new BigDecimal(number));
 	}
 	
-	private void output(final String number, final MathContext context){
-		System.out.format("[%s]{%d}\n", number, context.getPrecision());
+	private void output(final String number, final MathContext context) {
+		System.out.format("[%s] {%d}\n", number, context.getPrecision());
 		assertAndOutputNumber(Decimal.$(number, context), new BigDecimal(number, context));
 	}
 	

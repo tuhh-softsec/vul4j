@@ -30,33 +30,33 @@ public class AverageTest {
 	}
 	
 	@Test
-	public void testShouldReturnAMeanOfZeroIfNoElements(){
+	public void testShouldReturnAMeanOfZeroIfNoElements() {
 		assertDecimal(Decimal.ZERO, Average.mean(Decimal.ZERO));
 	}
 	
 	@Test
-	public void testShouldReturnNegativeMeanElementsAreNegative(){
+	public void testShouldReturnNegativeMeanElementsAreNegative() {
 		final Decimal[] elements = pack(-1,-2,-3,-4,-5,-6,-7);
 		final Decimal mean = Average.mean(elements);
 		assertDecimal(Decimal.$(-4), mean);
 	}
 	
 	@Test (expected = IllegalArgumentException.class)
-	public void testShouldThrowExceptionOnMeanWithNullArray(){
-		final Decimal[] nullArray = null;
+	public void testShouldThrowExceptionOnMeanWithNullArray() {
+		Decimal[] nullArray = null;
 		Average.mean(nullArray);
 	}
 	
 	@Test
-	public void testShouldReturnDecimalAverages(){
-		final double[] dataset = new double[]{1.3,2.5,3.1,4.25,5.97,6.41,7.132};
+	public void testShouldReturnDecimalAverages() {
+		final double[] dataset = new double[] {1.3,2.5,3.1,4.25,5.97,6.41,7.132};
 		final Decimal[] elements = pack(dataset);
 		final Decimal mean = Average.mean(elements).scaleTo(2);
 		assertDecimal(4.38, mean);
 	}
 	
 	@Test
-	public void testShouldReturnWeightedAverageWithDoubles(){
+	public void testShouldReturnWeightedAverageWithDoubles() {
 		final Decimal[] elements = new Decimal[10];
 		for (int i = 0; i < 10; i++) {
 			 elements[i] = Decimal.$(.1);
@@ -80,29 +80,29 @@ public class AverageTest {
 	}
 	
 	@Test
-	public void testShouldCalculateTheMedianWhenEvenAmountOfElements(){
+	public void testShouldCalculateTheMedianWhenEvenAmountOfElements() {
 		final Decimal[] elements = pack(32,28,23,7);
 		final Decimal median = Average.median(elements);
 		assertDecimal(25.5, median);
 	}
 	
 	@Test
-	public void testShouldReturnAMedianOfZeroIfNoElements(){
+	public void testShouldReturnAMedianOfZeroIfNoElements() {
 		final Decimal elements = Decimal.ZERO;
 		final Decimal median = Average.median(elements);
 		assertDecimal(0, median);
 	}
 	
 	@Test
-	public void testShouldReturnNegativeMedianElementsAreNegative(){
+	public void testShouldReturnNegativeMedianElementsAreNegative() {
 		final Decimal[] elements = pack(-1,-2,-3,-4,-5,-6,-7);
 		final Decimal median = Average.median(elements);
 		assertDecimal(-4, median);
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
-	public void testShouldThrowExceptionOnMedianWithNullArray(){
-		final Decimal[] nullArray = null;
+	public void testShouldThrowExceptionOnMedianWithNullArray() {
+		Decimal[] nullArray = null;
 		Average.median(nullArray);
 	}
 	
@@ -118,15 +118,15 @@ public class AverageTest {
 	}
 	
 	@Test
-	public void testShoudReturnTheSameElementIfOnlyOnePresent(){
+	public void testShoudReturnTheSameElementIfOnlyOnePresent() {
 		final Decimal elements = Decimal.ONE;
 		final Decimal mode = Average.mode(elements)[0];
 		assertDecimal(1, mode);
 	}
 	
 	@Test
-	public void testShouldReturnMoreThanOneModeIfSetIsBimodal(){
-		final double[] dataset = new double[]{1,2,3,2,4,6,4,5,1,3,2,1,5,1,2,3};
+	public void testShouldReturnMoreThanOneModeIfSetIsBimodal() {
+		final double[] dataset = new double[] {1,2,3,2,4,6,4,5,1,3,2,1,5,1,2,3};
 		final Decimal[] elements = pack(dataset);
 		final Decimal[] modes = Average.mode(elements);
 		assertEquals(2, modes.length);
@@ -136,7 +136,7 @@ public class AverageTest {
 	}
 	
 	@Test
-	public void testShouldReturnMoreThanOneModeIfSetIsMultimodal(){
+	public void testShouldReturnMoreThanOneModeIfSetIsMultimodal() {
 		final Decimal[] elements = pack(1,2,1,2,3,4,3,4,5,6,5,6,7,8,7,8);
 		final Decimal[] modes = Average.mode(elements);
 		assertEquals(8, modes.length);
@@ -145,15 +145,15 @@ public class AverageTest {
 	}
 	
 	@Test
-	public void testShouldReturnNegativeModeElementsAreNegative(){
+	public void testShouldReturnNegativeModeElementsAreNegative() {
 		final Decimal[] elements = pack(-1,-2,-3,-3,-4,-3,-7);
 		final Decimal mode = Average.mode(elements)[0];
 		assertDecimal(-3, mode);
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
-	public void testShouldThrowExceptionIfModeHasNullElements(){
-		final Decimal[] nullArray = null;
+	public void testShouldThrowExceptionIfModeHasNullElements() {
+		Decimal[] nullArray = null;
 		Average.mode(nullArray);
 	}
 }

@@ -5,14 +5,14 @@ import render.quantifyit.util.DecimalUtils;
 
 public abstract class Summary {
 
-	protected final Decimal[] dataSet;
+	protected final transient Decimal[] dataSet;
 
-	public Summary(final Decimal... dataSet){
+	public Summary(final Decimal... dataSet) {
 		DecimalUtils.notNullOrEmpty(dataSet);
 		this.dataSet = dataSet;
 	}
 	
-	public Decimal getMean(){
+	public Decimal getMean() {
 		return Average.mean(getDataSet());
 	}
 	

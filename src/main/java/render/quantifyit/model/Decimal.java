@@ -34,7 +34,7 @@ import render.quantifyit.model.operations.Subtraction;
  * @author Fernando Racca
  * @see java.math.BigDecimal
  */
-public class Decimal implements Comparable<Decimal>, Serializable{
+public final class Decimal implements Comparable<Decimal>, Serializable {
 
 	private static final long serialVersionUID = 6840541842364016476L;
 
@@ -59,7 +59,7 @@ public class Decimal implements Comparable<Decimal>, Serializable{
 	 */
 	private static final int DEFAULT_SCALE = 10;
 	
-	private final BigDecimal significand;
+	private final transient BigDecimal significand;
 	
 	/*
 	 * Constructors. all default to BigDecimal
@@ -69,11 +69,11 @@ public class Decimal implements Comparable<Decimal>, Serializable{
 		this.significand = value;
 	}
 
-	public static Decimal $(final int value){
+	public static Decimal $(final int value) {
 		return $((long)value);
 	}
 	
-	public static Decimal $(final int value, final MathContext roundingCriteria){
+	public static Decimal $(final int value, final MathContext roundingCriteria) {
 		return $((long)value, roundingCriteria);
 	}
 	
@@ -85,11 +85,11 @@ public class Decimal implements Comparable<Decimal>, Serializable{
 		return $(BigDecimal.valueOf(value).round(roundingCriteria));
 	}
 	
-	public static Decimal $(final double value){
+	public static Decimal $(final double value) {
 		return $(Double.toString(value));
 	}
 	
-	public static Decimal $(final double value, final MathContext roundingCriteria){
+	public static Decimal $(final double value, final MathContext roundingCriteria) {
 		return $(Double.toString(value), roundingCriteria);
 	}
 	
@@ -107,7 +107,7 @@ public class Decimal implements Comparable<Decimal>, Serializable{
 		return $(new BigDecimal(value).round(roundingCriteria));
 	}
 
-	public static Decimal $(final BigDecimal value){
+	public static Decimal $(final BigDecimal value) {
 		if(value == null) {
 			throw new IllegalArgumentException("Value can't be null.");
 		}
@@ -233,11 +233,11 @@ public class Decimal implements Comparable<Decimal>, Serializable{
 	 * POWER = Power = BigDecimal.pow(...)
 	 */
 	
-	public Decimal power(final int power){
+	public Decimal power(final int power) {
 		return Power.power(this, power);
 	}
 
-	public Decimal power(final int power, final MathContext roundingCriteria){
+	public Decimal power(final int power, final MathContext roundingCriteria) {
 		return Power.power(this, power, roundingCriteria);
 	}
 	
@@ -253,16 +253,16 @@ public class Decimal implements Comparable<Decimal>, Serializable{
 	 * Square root
 	 */
 	
-	public Decimal squareRoot(){
+	public Decimal squareRoot() {
 		return SquareRoot.squareRoot(this);
 	}
 	
-	public Decimal squareRoot(final MathContext roundingCriteria){
+	public Decimal squareRoot(final MathContext roundingCriteria) {
 		return SquareRoot.squareRoot(this, roundingCriteria);
 	}
 
 	//TODO: implement modulo
-	public Decimal modulo(final Decimal other){
+	public Decimal modulo(final Decimal other) {
 		throw new UnsupportedOperationException("Not implemented yet");
 	}
 	
@@ -285,19 +285,19 @@ public class Decimal implements Comparable<Decimal>, Serializable{
 	 * 		if you do operations such as division</li>
 	 * 		<li>Avoid hash based collections, prefer instead those that use Comparable/Comparator</li>
 	 * 		<li>To compare lists, use 
-	 * 			{@link DecimalUtils#containsAll(Collection<Decimal> source, Collection<Decimal> target)}</li>
-	 * 
+	 * 			 {@link DecimalUtils#containsAll(Collection<Decimal> source, Collection<Decimal> target)}</li>
+	 * </ul>
 	 * {@link BigDecimal#equals(Object) equals(Object)} for 
 	 * @see 
 	 * @see #compareTo(java.math.BigDecimal)
 	 */
 	@Override
 	public boolean equals(final Object otherObject) {
-	    if (!(otherObject instanceof Decimal)){
+	    if (!(otherObject instanceof Decimal)) {
             return false;
 	    }
         final Decimal other = (Decimal) otherObject;
-        if (other == this){
+        if (other == this) {
             return true;
         }
 		return this.significand.equals(other.asBigDecimal());
@@ -318,7 +318,7 @@ public class Decimal implements Comparable<Decimal>, Serializable{
 	 * @param other the value to compare
 	 * @return true if both values have exact same representation
 	 */
-	public boolean same(final Decimal other){
+	public boolean same(final Decimal other) {
 		return this.compareTo(other) == 0;
 	}
 	
@@ -330,23 +330,23 @@ public class Decimal implements Comparable<Decimal>, Serializable{
 		return (compareTo(other) >= 0 ? this : other);
 	}
 	
-	public boolean gt(final Decimal other){
+	public boolean gt(final Decimal other) {
 		return compareTo(other) > 0;
 	}
 	
-	public boolean lt(final Decimal other){
+	public boolean lt(final Decimal other) {
 		return compareTo(other) < 0;
 	}
 	
-	public boolean gte(final Decimal other){
+	public boolean gte(final Decimal other) {
 		return compareTo(other) >= 0;
 	}
 	
-	public boolean lte(final Decimal other){
+	public boolean lte(final Decimal other) {
 		return compareTo(other) <= 0;
 	}
 	
-	public boolean isInfinite(){
+	public boolean isInfinite() {
 		return Double.isInfinite(significand.doubleValue());
 	}
 	
@@ -355,7 +355,7 @@ public class Decimal implements Comparable<Decimal>, Serializable{
 	 * Doesn't account for positive or negative zero, infinity or NaN
 	 * @return true if code>x > 0</code> 
 	 */
-	public boolean isPositive(){
+	public boolean isPositive() {
 		return gt(Decimal.ZERO);
 	}
 	
@@ -364,11 +364,11 @@ public class Decimal implements Comparable<Decimal>, Serializable{
 	 * Doesn't account for positive or negative zero, infinity or NaN
 	 * @return true if code>x < 0</code> 
 	 */
-	public boolean isNegative(){
+	public boolean isNegative() {
 		return lt(Decimal.ZERO);
 	}
 	
-	public boolean isZero(){
+	public boolean isZero() {
 		return this.same(ZERO);
 	}
 	
@@ -381,35 +381,35 @@ public class Decimal implements Comparable<Decimal>, Serializable{
 		return this.significand.toPlainString();
 	}
 	
-	public String toSciString(){
+	public String toSciString() {
 		return significand.toString();
 	}
 	
-	public String toEngString(){
+	public String toEngString() {
 		return significand.toEngineeringString();
 	}
 	
-	public String format(final String pattern){
+	public String format(final String pattern) {
 		return String.format(pattern, this.significand);
 	}
 	
-	public Decimal abs(){
+	public Decimal abs() {
 		return $(significand.abs());
 	}
 	
-	public Decimal abs(final MathContext roundingCriteria){
+	public Decimal abs(final MathContext roundingCriteria) {
 		return $(significand.abs(roundingCriteria));
 	}
 
-	public double asDouble(){
+	public double asDouble() {
 		return significand.doubleValue();
 	}
 	
-	public int asInteger(){
+	public int asInteger() {
 		return significand.intValue();
 	}
 	
-	public long asLong(){
+	public long asLong() {
 		return significand.longValue();
 	}
 
@@ -421,27 +421,27 @@ public class Decimal implements Comparable<Decimal>, Serializable{
 	 * Precision and scale
 	 */
 		
-	public Decimal scaleTo(final int scale){
+	public Decimal scaleTo(final int scale) {
 		return scaleTo(scale, DEFAULT_ROUNDING);
 	}
 	
-	public Decimal scaleTo(final int scale, final RoundingMode roundingMode){
+	public Decimal scaleTo(final int scale, final RoundingMode roundingMode) {
 		return $(significand.setScale(scale, roundingMode));
 	}
 	
-	public Decimal roundTo(final MathContext roundingCriteria){
+	public Decimal roundTo(final MathContext roundingCriteria) {
 		return $(significand.round(roundingCriteria));
 	}
 	
-	public Decimal movePointToLeft(final int n){
+	public Decimal movePointToLeft(final int n) {
 		return $(significand.movePointLeft(n));
 	}
 	
-	public int getScale(){
+	public int getScale() {
 		return significand.scale();
 	}
 	
-	public int getPrecision(){
+	public int getPrecision() {
 		return significand.precision();
 	}
 }

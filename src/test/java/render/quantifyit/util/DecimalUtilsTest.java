@@ -21,51 +21,51 @@ import render.quantifyit.model.Decimal;
 public class DecimalUtilsTest {
 
 	@Test
-	public void testPackInts(){
-		Decimal[] ints = DecimalUtils.packInts(1, 2, 3);
+	public void testPackInts() {
+		final Decimal[] ints = DecimalUtils.packInts(1, 2, 3);
 		assertEquals(3, ints.length);
 	}
 	
 	@Test
-	public void testPackLongs(){
+	public void testPackLongs() {
 		final Decimal[] longs = DecimalUtils.packLongs(23142341234123412L, 345235234523532453L, new Date().getTime());
 		assertEquals(3, longs.length);
 	}
 	
 
 	@Test
-	public void testPackDoubles(){
-		Decimal[] doubles = DecimalUtils.pack(123.456, 5635.32353, 6754353.4234);
+	public void testPackDoubles() {
+		final Decimal[] doubles = DecimalUtils.pack(123.456, 5635.32353, 6754353.4234);
 		assertEquals(3, doubles.length);
 	}
 	
 	@Test
-	public void testPackIntList(){
-		List<Decimal> ints = DecimalUtils.packIntList(1, 2, 3);
+	public void testPackIntList() {
+		final List<Decimal> ints = DecimalUtils.packIntList(1, 2, 3);
 		assertEquals(3, ints.size());
 	}
 	
 	@Test
-	public void testPackLongList(){
+	public void testPackLongList() {
 		final List<Decimal> longs = DecimalUtils.packLongList(23142341234123412L, 345235234523532453L, new Date().getTime());
 		assertEquals(3, longs.size());
 	}
 
 	@Test
-	public void testPackDoubleList(){
-		List<Decimal> doubles = DecimalUtils.packList(123.456, 5635.32353, 6754353.4234);
+	public void testPackDoubleList() {
+		final List<Decimal> doubles = DecimalUtils.packList(123.456, 5635.32353, 6754353.4234);
 		assertEquals(3, doubles.size());
 	}
 	
 	@Test
-	public void testUltraPack(){
-		Decimal[] doubles = DecimalUtils.$$(123.456, 5635.32353, 6754353.4234);
+	public void testUltraPack() {
+		final Decimal[] doubles = DecimalUtils.$$(123.456, 5635.32353, 6754353.4234);
 		assertEquals(3, doubles.length);
 	}
 	
 	
 	@Test
-	public void testShouldAddUniqueElementsIntoAHashSet(){ 
+	public void testShouldAddUniqueElementsIntoAHashSet() { 
 		Set<Decimal> decimals = new HashSet<Decimal>(); 
 		decimals.add(Decimal.$(1));
 		decimals.add(Decimal.ONE);
@@ -85,7 +85,7 @@ public class DecimalUtilsTest {
 	 * fails with a HashSet, since it relies on equals(), which is different for ints and doubles
 	 */
 	@Test
-	public void testShouldAddUniqueElementsIntoASet(){ 
+	public void testShouldAddUniqueElementsIntoASet() { 
 		Set<Decimal> decimals = new TreeSet<Decimal>(); 
 		decimals.add(Decimal.$(1));
 		decimals.add(Decimal.ONE);
@@ -104,7 +104,7 @@ public class DecimalUtilsTest {
 	}
 	
 	@Test
-	public void testShouldAddUniqueDecimalElementsIntoASet(){ 
+	public void testShouldAddUniqueDecimalElementsIntoASet() { 
 		Set<Decimal> decimals = new TreeSet<Decimal>(); 
 		decimals.add(Decimal.ONE.divideBy(10));
 		decimals.add(Decimal.$(.1d));
@@ -120,7 +120,7 @@ public class DecimalUtilsTest {
 	}
 	
 	@Test
-	public void testFailsToReplaceUniqueDecimalsIntoAHashSet(){ 
+	public void testFailsToReplaceUniqueDecimalsIntoAHashSet() { 
 		Set<Decimal> decimals = new HashSet<Decimal>(); 
 		decimals.add(Decimal.ONE);
 		decimals.add(Decimal.$(.1d));
@@ -134,7 +134,7 @@ public class DecimalUtilsTest {
 	}
 	
 	@Test
-	public void testFailsToReplaceUniqueBigDecimalsIntoAHashSet(){
+	public void testFailsToReplaceUniqueBigDecimalsIntoAHashSet() {
 		Set<BigDecimal> bigDecimals = new HashSet<BigDecimal>(); 
 		bigDecimals.add(BigDecimal.ONE.divide(BigDecimal.TEN));
 		bigDecimals.add(new BigDecimal(.1d));
@@ -150,7 +150,7 @@ public class DecimalUtilsTest {
 	
 	
 	@Test
-	public void testShouldAddDecimalsAsKeysForAMap(){
+	public void testShouldAddDecimalsAsKeysForAMap() {
 		Map<Decimal, String> decimals = new TreeMap<Decimal, String>();
 		decimals.put(Decimal.$(1), "asdf");
 		decimals.put(Decimal.ONE, "asdf");
@@ -178,7 +178,7 @@ public class DecimalUtilsTest {
 
 	
 	@Test
-	public void testThatAListOfDecimalCanContainAllTheElementsOfAnotherListIfTheyAreTheSame(){
+	public void testThatAListOfDecimalCanContainAllTheElementsOfAnotherListIfTheyAreTheSame() {
 		final Decimal[] doubles = DecimalUtils.pack(1,2,1,2,3,4,3,4,5,6,5,6,7,8,7,8);
 		final List<Decimal> doublesList = Arrays.asList(doubles);
 		final List<Decimal> intsList = Arrays.asList(DecimalUtils.packInts(1,2,3,4,5,6,7,8));
@@ -190,7 +190,7 @@ public class DecimalUtilsTest {
 	}
 	
 	@Test
-	public void testASetOfDecimals(){
+	public void testASetOfDecimals() {
 		final List<Decimal> doublesList = Arrays.asList(DecimalUtils.pack(1,2,1,2,3,4,3,4,5,6,5,6,7,8,7,8));
 		final Set<Decimal> doublesSet = new TreeSet<Decimal>(doublesList);
 		final Set<Decimal> intsSet = new TreeSet<Decimal>(Arrays.asList(DecimalUtils.packInts(1,2,3,4,5,6,7,8)));
@@ -204,19 +204,19 @@ public class DecimalUtilsTest {
 	
 	
 	@Test(expected = IllegalArgumentException.class)
-	public void testShouldThrowExceptionIfModeHasEmptyElements(){
-		DecimalUtils.notNullOrEmpty(new Decimal[]{});
+	public void testShouldThrowExceptionIfModeHasEmptyElements() {
+		DecimalUtils.notNullOrEmpty(new Decimal[] {});
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
-	public void testShouldThrowExceptionIfModeHasNullElements(){
-		final Decimal[] nullArray = null;
+	public void testShouldThrowExceptionIfModeHasNullElements() {
+		Decimal[] nullArray = null;
 		DecimalUtils.notNullOrEmpty(nullArray);
 	}
 	
 	@Test (expected = IllegalArgumentException.class)
-	public void testShouldThrowExceptionOnModeWithNullVararg(){
-		final Decimal nullObject = null;
+	public void testShouldThrowExceptionOnModeWithNullVararg() {
+		Decimal nullObject = null;
 		DecimalUtils.notNullOrEmpty(nullObject);
 	}
 

@@ -4,16 +4,16 @@ import java.math.MathContext;
 
 import render.quantifyit.model.Decimal;
 
-public class Subtraction {
+public final class Subtraction {
 
-	private Subtraction(){}
+	private Subtraction() {}
 	
-	public static <X extends Decimal, Y extends Decimal> Decimal subtraction(X x, Y y){
+	public static <X extends Decimal, Y extends Decimal> Decimal subtraction(final X x, final Y y) {
 		return Decimal.$(x.asBigDecimal().subtract(y.asBigDecimal()));
 	}
 
-	public static <X extends Decimal, Y extends Decimal> Decimal subtraction(X x, Y y,
-			MathContext roundingCriteria) {
+	public static <X extends Decimal, Y extends Decimal> Decimal subtraction(final X x, final Y y,
+			final MathContext roundingCriteria) {
 		return Decimal.$(x.asBigDecimal().subtract(y.asBigDecimal(), roundingCriteria));
 	}
 }

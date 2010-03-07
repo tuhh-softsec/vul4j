@@ -5,7 +5,10 @@ import java.util.Arrays;
 import render.quantifyit.model.Decimal;
 import render.quantifyit.util.DecimalUtils;
 
-public class Dispersion {
+public final class Dispersion {
+	
+	private Dispersion() {
+	}
 
 	public static Decimal sampleVariance(final Decimal mean, final Decimal[] elements) {
 		if(elements.length == 1) {
@@ -15,7 +18,7 @@ public class Dispersion {
 	}
 	
 	public static Decimal populationVariance(final Decimal mean, final Decimal[] elements) {
-		if(elements.length == 1){
+		if(elements.length == 1) {
 			return Decimal.ZERO;
 		}
 		return sumOfSquaredDeltas(mean, elements).divideBy(elements.length);
@@ -50,25 +53,25 @@ public class Dispersion {
 	}
 
 	public static Decimal var2Sd(final Decimal variance) {
-		if(variance.isNegative()){
+		if(variance.isNegative()) {
 			throw new IllegalArgumentException("Please give a non negative number.");
 		}
 		return variance.squareRoot();
 	}
 	
-	public static Decimal min(final Decimal... elements){
+	public static Decimal min(final Decimal... elements) {
 		DecimalUtils.notNullOrEmpty(elements);
 		
 		Decimal min = elements[0];
 		for (Decimal element : elements) {
-			if(element.lt(min)){
+			if(element.lt(min)) {
 				min = element;
 			}
 		}
 		return min;
 	}
 
-	public static Decimal max(final Decimal... elements){
+	public static Decimal max(final Decimal... elements) {
 		DecimalUtils.notNullOrEmpty(elements);
 		
 		Decimal max = elements[0];
@@ -80,7 +83,7 @@ public class Dispersion {
 		return max;
 	}
 		
-	public static Decimal range(final Decimal... elements){
+	public static Decimal range(final Decimal... elements) {
 		DecimalUtils.notNullOrEmpty(elements);
 
 		Arrays.sort(elements);
@@ -91,7 +94,7 @@ public class Dispersion {
 	/**
 	 * z = (x - μ)/ σ
 	 */
-	public static Decimal zScore(final Decimal element, final Decimal populationMean, final Decimal populationStandardDeviation){
+	public static Decimal zScore(final Decimal element, final Decimal populationMean, final Decimal populationStandardDeviation) {
 		final Decimal delta = element.minus(populationMean);
 		return delta.divideBy(populationStandardDeviation);
 	}
