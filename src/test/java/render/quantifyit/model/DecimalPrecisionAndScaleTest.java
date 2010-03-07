@@ -36,8 +36,9 @@ public class DecimalPrecisionAndScaleTest {
 	}
 	
 	/**
-	 * BigDecimal String constructor.
-	 * @see {@link java.math.BigDecimal}
+	 * BigDecimal Double constructor.
+	 * 
+	 * @see java.math.BigDecimal#BigDecimal(double)
 	 */
 	@Test
 	public void testDoubleConstructorWithoutContext() {
@@ -52,8 +53,9 @@ public class DecimalPrecisionAndScaleTest {
 	}
 	
 	/**
-	 * BigDecimal String constructor.
-	 * @see {@link java.math.BigDecimal#BigDecimal(String) }
+	 * BigDecimal Double constructor.
+	 *  
+	 * @see java.math.BigDecimal#BigDecimal(double)
 	 */
 	@Test
 	public void testDoubleConstructorWithContext() {
