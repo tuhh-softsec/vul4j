@@ -60,7 +60,7 @@ public class Decimal implements Comparable<Decimal>, Serializable {
 	 */
 	private static final int DEFAULT_SCALE = 10;
 	
-	private final transient BigDecimal significand;
+	private final BigDecimal significand;
 	
 	/*
 	 * Private constructor to avoid instatiation using new 
