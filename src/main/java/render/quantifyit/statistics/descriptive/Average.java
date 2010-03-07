@@ -77,7 +77,7 @@ public final class Average {
 		
 		final Set<Decimal> modes = findModes(elements);
 		
-		return modes.toArray(new Decimal[] {});
+		return modes.toArray(new Decimal[modes.size()]);
 	}
 
 
