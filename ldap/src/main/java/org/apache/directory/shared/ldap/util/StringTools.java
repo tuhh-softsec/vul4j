@@ -1470,7 +1470,8 @@ public class StringTools
             }
             catch ( UnsupportedEncodingException uee )
             {
-                return NOT_EQUAL;
+                // if this happens something is really strange
+                throw new RuntimeException( uee );
             }
         }
     }
@@ -3103,7 +3104,8 @@ public class StringTools
         }
         catch ( UnsupportedEncodingException uee )
         {
-            return "";
+            // if this happens something is really strange
+            throw new RuntimeException( uee );
         }
     }
 
@@ -3128,7 +3130,8 @@ public class StringTools
         }
         catch ( UnsupportedEncodingException uee )
         {
-            return "";
+            // if this happens something is really strange
+            throw new RuntimeException( uee );
         }
     }
 
@@ -3154,7 +3157,8 @@ public class StringTools
         }
         catch ( UnsupportedEncodingException uee )
         {
-            return "";
+            // if this happens something is really strange
+            throw new RuntimeException( uee );
         }
     }
 
@@ -3178,8 +3182,8 @@ public class StringTools
         }
         catch ( UnsupportedEncodingException uee )
         {
-            return new byte[]
-                {};
+            // if this happens something is really strange
+            throw new RuntimeException( uee );
         }
     }
 
