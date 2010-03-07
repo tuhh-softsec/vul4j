@@ -1,5 +1,6 @@
 package render.quantifyit.model;
 
+import java.awt.image.renderable.RenderableImage;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -55,7 +56,7 @@ public final class Decimal implements Comparable<Decimal>, Serializable {
 	private static final RoundingMode DEFAULT_ROUNDING = RoundingMode.HALF_EVEN;
 	
 	/**
-	 * Defaults to 10 digits
+	 * Defaults to 10 digits.
 	 */
 	private static final int DEFAULT_SCALE = 10;
 	
@@ -70,11 +71,11 @@ public final class Decimal implements Comparable<Decimal>, Serializable {
 	}
 
 	public static Decimal $(final int value) {
-		return $((long)value);
+		return $((long) value);
 	}
 	
 	public static Decimal $(final int value, final MathContext roundingCriteria) {
-		return $((long)value, roundingCriteria);
+		return $((long) value, roundingCriteria);
 	}
 	
 	public static Decimal $(final long value) {
@@ -94,21 +95,21 @@ public final class Decimal implements Comparable<Decimal>, Serializable {
 	}
 	
 	public static Decimal $(final String value) {
-		if(value == null) {
+		if (value == null) {
 			throw new IllegalArgumentException("Decimal(String) failed construction due to a null argument.");
 		}
 		return $(new BigDecimal(value));
 	}
 
 	public static Decimal $(final String value, final MathContext roundingCriteria) {
-		if(value == null ) {
+		if (value == null) {
 			throw new IllegalArgumentException("Value can't be null");
 		}
 		return $(new BigDecimal(value).round(roundingCriteria));
 	}
 
 	public static Decimal $(final BigDecimal value) {
-		if(value == null) {
+		if (value == null) {
 			throw new IllegalArgumentException("Value can't be null.");
 		}
 		return new Decimal(value);
@@ -119,14 +120,14 @@ public final class Decimal implements Comparable<Decimal>, Serializable {
 	}
 	
 	public static Decimal $(final BigDecimal value, final int scale, final RoundingMode roundingMode) {
-		if(value == null) {
+		if (value == null) {
 			throw new IllegalArgumentException("Value can't be null.");
 		}
 		return $(value.setScale(scale, roundingMode));
 	}
 	
 	public static Decimal $(final BigDecimal value, final MathContext roundingCriteria) {
-		if(value == null ) {
+		if (value == null) {
 			throw new IllegalArgumentException("Value can't be null");
 		}
 		return $(value.round(roundingCriteria));
@@ -270,11 +271,11 @@ public final class Decimal implements Comparable<Decimal>, Serializable {
 	 * Comparison
 	 */
 	
-	
+
 	/**
 	 * Honours the equals(Object) implementation of BigDecimal, which is prone to errors, since
 	 * Decimal.$(1).equals(Decimal.$(1d)) evaluates to false, because 1d = 1.0 (10 with a scale of 1)
-	 * Use {@link #compareTo(Decimal) instead. 
+	 * Use {@link render.quantifyit.model.Decimal#compareTo} instead. 
 	 * 
 	 * Warning, collections that rely on equals ( and its evil twin hashCode), such as HashSet and HashMap
 	 * will fail the equality comparison.
@@ -285,13 +286,18 @@ public final class Decimal implements Comparable<Decimal>, Serializable {
 	 * 		if you do operations such as division</li>
 	 * 		<li>Avoid hash based collections, prefer instead those that use Comparable/Comparator</li>
 	 * 		<li>To compare lists, use 
-	 * 			 {@link DecimalUtils#containsAll(Collection<Decimal> source, Collection<Decimal> target)}</li>
+	 * 			 {@link render.quantifyit.util.DecimalUtils#containsAll}</li>
 	 * </ul>
-	 * {@link BigDecimal#equals(Object) equals(Object)} for 
-	 * @see 
-	 * @see #compareTo(java.math.BigDecimal)
+	 * {@link BigDecimal#equals(Object) equals(Object)}
+	 * 
+	 * 
+	 * @see java.math.BigDecimal#compareTo
+	 * 
+	 * @param otherObject 
+	 * 
+	 * @return a boolean 
 	 */
-	@Override
+    @Override
 	public boolean equals(final Object otherObject) {
 	    if (!(otherObject instanceof Decimal)) {
             return false;
@@ -351,18 +357,18 @@ public final class Decimal implements Comparable<Decimal>, Serializable {
 	}
 	
 	/**
-	 * If the number is GREATER THAN Decimal.ZERO
+	 * If the number is GREATER THAN Decimal.ZERO.
 	 * Doesn't account for positive or negative zero, infinity or NaN
-	 * @return true if code>x > 0</code> 
+	 * @return true if code > x > 0
 	 */
 	public boolean isPositive() {
 		return gt(Decimal.ZERO);
 	}
 	
 	/**
-	 * If the number is LOWER THAN Decimal.ZERO
+	 * If the number is LOWER THAN Decimal.ZERO.
 	 * Doesn't account for positive or negative zero, infinity or NaN
-	 * @return true if code>x < 0</code> 
+	 * @return true if code > x < 0 
 	 */
 	public boolean isNegative() {
 		return lt(Decimal.ZERO);

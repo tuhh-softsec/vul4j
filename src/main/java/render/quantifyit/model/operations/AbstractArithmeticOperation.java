@@ -23,9 +23,9 @@ public abstract class AbstractArithmeticOperation implements Operation {
 		this(Decimal.$(x), Decimal.$(y));
 	}
 	
-	public <X extends Decimal, Y extends Decimal> AbstractArithmeticOperation(final X x, final Y y) {
-		this.x = x;
-		this.y = y;
+	public <X extends Decimal, Y extends Decimal> AbstractArithmeticOperation(X xLocal, Y yLocal) {
+		this.x = xLocal;
+		this.y = yLocal;
 	}
 	
 	@SuppressWarnings("unchecked")

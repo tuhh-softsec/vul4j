@@ -88,7 +88,7 @@ public final class Dispersion {
 
 		Arrays.sort(elements);
 		
-		return elements[elements.length-1].minus(elements[0]);
+		return elements[elements.length - 1].minus(elements[0]);
 	}
 	
 	/**

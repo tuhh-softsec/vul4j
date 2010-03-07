@@ -293,7 +293,7 @@ public class SimplePerformanceStatisticsTest {
 		final long executionTime = PerformanceUtils.start();
 		double result = 0.0;
 		for (int i = 1; i < doubleDataSet.length + 1; i++) {
-			result = doubleDataSet[i -1] / i;
+			result = doubleDataSet[i - 1] / i;
 			if(STORE_RESULTS) {
 				doubleResults[i - 1] = result;
 			}

@@ -36,8 +36,8 @@ public class DecimalPrecisionAndScaleTest {
 	}
 	
 	/**
-	 * BigDecimal String constructor
-	 * @see {@link java.math.BigDecimal(String)}
+	 * BigDecimal String constructor.
+	 * @see {@link java.math.BigDecimal}
 	 */
 	@Test
 	public void testDoubleConstructorWithoutContext() {
@@ -52,8 +52,8 @@ public class DecimalPrecisionAndScaleTest {
 	}
 	
 	/**
-	 * BigDecimal String constructor
-	 * @see {@link java.math.BigDecimal(String)}
+	 * BigDecimal String constructor.
+	 * @see {@link java.math.BigDecimal#BigDecimal(String) }
 	 */
 	@Test
 	public void testDoubleConstructorWithContext() {
@@ -178,7 +178,7 @@ public class DecimalPrecisionAndScaleTest {
 		msg.append("\tsciString\t:%s").append("\n\tplainString\t:%s").append("\n\tengString\t:%s")
 			.append("\n\tprecision\t:%d").append("\n\tscale\t\t:%d\n");
 		
-		System.out.format(msg.toString(),number.toSciString(), output, number.toEngString(), 
+		System.out.format(msg.toString(), number.toSciString(), output, number.toEngString(), 
 				 number.getPrecision(), number.getScale());
 	}
 
