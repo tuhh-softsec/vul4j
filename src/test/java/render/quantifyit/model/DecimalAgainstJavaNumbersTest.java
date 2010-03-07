@@ -1,6 +1,7 @@
 package render.quantifyit.model;
 
 import static render.quantifyit.model.Decimal.$;
+import static render.quantifyit.util.DecimalUtils.$$;
 import java.math.BigDecimal;
 import java.math.MathContext;
 
@@ -65,4 +66,24 @@ public class DecimalAgainstJavaNumbersTest {
 		assertDecimal(10, actual);
 	}
 	
+	@Test
+	public void testBigDecimalComparison(){
+		assertEquals(0, new BigDecimal(1).compareTo(BigDecimal.ONE));
+		assertDecimal(1, $(1));
+		
+		assertTrue(new BigDecimal("123.33").compareTo(new BigDecimal("123.33")) == 0);
+		assertTrue($(123.33).same($(123.33)));
+		
+		assertTrue(new BigDecimal(0).equals(BigDecimal.ZERO));
+		assertTrue($(0).isZero());
+	}
+	
+	@Test
+	public void testArrayCreation(){
+		BigDecimal[] values = new BigDecimal[]{new BigDecimal("123.456"), new BigDecimal("5635.32353"), new BigDecimal("6754353.4234")};
+		assertEquals(3, values.length);
+		
+		Decimal[] packed = $$(123.456, 5635.32353, 6754353.4234);
+		assertEquals(3, packed.length);
+	}
 }
