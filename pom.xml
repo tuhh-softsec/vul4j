@@ -10,7 +10,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.5</version>
+            <version>4.7</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -22,6 +22,10 @@
     	<system>github</system>
     	<url>http://github.com/fractal/quantifyit/issues</url>
     </issueManagement>
+    <ciManagement>
+    	<system>hudson</system>
+    	<url>http://hudson.feniix-hq.net</url>
+    </ciManagement>
     <developers>
     	<developer>
     		<id>feniix</id>
