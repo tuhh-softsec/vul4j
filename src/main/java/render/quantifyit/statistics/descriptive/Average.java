@@ -49,7 +49,7 @@ public final class Average {
 	public static Decimal median(final Decimal... elements) {
 		DecimalUtils.notNullOrEmpty(elements);
 		Arrays.sort(elements);
-		Decimal median = Decimal.ZERO;
+		Decimal median; // no need for initialization 
 		final int medianPosition = elements.length / 2;
 		
 		if (elements.length % 2 == 0) {
