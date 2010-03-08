@@ -95,7 +95,7 @@ limitations under the License.
       </p>
     </subsection>
     </section>
-    <section name="Commons Digester 2.0 ">
+    <section name="Commons Digester 2.0 (minium JDK 1.5)">
       <subsection name="Binaries">
         <table>
           <tr>
@@ -121,6 +121,36 @@ limitations under the License.
               <td><a href="[preferred]/commons/digester/source/commons-digester-2.0-src.zip">commons-digester-2.0-src.zip</a></td>
               <td><a href="http://www.apache.org/dist/commons/digester/source/commons-digester-2.0-src.zip.md5">md5</a></td>
               <td><a href="http://www.apache.org/dist/commons/digester/source/commons-digester-2.0-src.zip.asc">pgp</a></td>
+          </tr>
+        </table>
+      </subsection>
+    </section>
+    <section name="Commons Digester 1.8.1 (minimum JDK 1.3)">
+      <subsection name="Binaries">
+        <table>
+          <tr>
+              <td><a href="[preferred]/commons/digester/binaries/commons-digester-1.8.1-bin.tar.gz">commons-digester-1.8.1-bin.tar.gz</a></td>
+              <td><a href="http://www.apache.org/dist/commons/digester/binaries/commons-digester-1.8.1-bin.tar.gz.md5">md5</a></td>
+              <td><a href="http://www.apache.org/dist/commons/digester/binaries/commons-digester-1.8.1-bin.tar.gz.asc">pgp</a></td>
+          </tr>
+          <tr>
+              <td><a href="[preferred]/commons/digester/binaries/commons-digester-1.8.1-bin.zip">commons-digester-1.8.1-bin.zip</a></td>
+              <td><a href="http://www.apache.org/dist/commons/digester/binaries/commons-digester-1.8.1-bin.zip.md5">md5</a></td>
+              <td><a href="http://www.apache.org/dist/commons/digester/binaries/commons-digester-1.8.1-bin.zip.asc">pgp</a></td>
+          </tr>
+        </table>
+      </subsection>
+      <subsection name="Source">
+        <table>
+          <tr>
+              <td><a href="[preferred]/commons/digester/source/commons-digester-1.8.1-src.tar.gz">commons-digester-1.8.1-src.tar.gz</a></td>
+              <td><a href="http://www.apache.org/dist/commons/digester/source/commons-digester-1.8.1-src.tar.gz.md5">md5</a></td>
+              <td><a href="http://www.apache.org/dist/commons/digester/source/commons-digester-1.8.1-src.tar.gz.asc">pgp</a></td>
+          </tr>
+          <tr>
+              <td><a href="[preferred]/commons/digester/source/commons-digester-1.8.1-src.zip">commons-digester-1.8.1-src.zip</a></td>
+              <td><a href="http://www.apache.org/dist/commons/digester/source/commons-digester-1.8.1-src.zip.md5">md5</a></td>
+              <td><a href="http://www.apache.org/dist/commons/digester/source/commons-digester-1.8.1-src.zip.asc">pgp</a></td>
           </tr>
         </table>
       </subsection>
