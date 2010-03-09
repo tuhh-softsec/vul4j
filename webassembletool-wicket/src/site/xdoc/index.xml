@@ -14,6 +14,7 @@
 		<tr><th>Tag</th><th>Status</th><th></th></tr>
 		<tr><td>includeTemplate</td><td>Partial</td><td><strong>page</strong> is the only attribute supported</td></tr>  
 		<tr><td>includeParam</td><td>Partial</td><td><strong>name</strong> is the only attribute supported</td></tr>  
+		<tr><td>includeBlock</td><td>Partial</td><td><strong>page</strong> and <strong>name</strong> are supported</td></tr>  
 		</table>
 
 		</section>
