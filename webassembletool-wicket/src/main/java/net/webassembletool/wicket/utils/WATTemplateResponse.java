@@ -24,6 +24,7 @@ import java.util.Map;
 import net.webassembletool.wicket.container.WATTemplate;
 
 import org.apache.wicket.Response;
+import org.apache.wicket.protocol.http.WebResponse;
 
 /**
  * This response drops all output and can store content from param blocks.
@@ -33,7 +34,7 @@ import org.apache.wicket.Response;
  * @see WATTemplate
  * @see Response
  */
-public class WATTemplateResponse extends Response {
+public class WATTemplateResponse extends WebResponse {
 	private final Map<String, String> blocks = new HashMap<String, String>();
 
 	/**

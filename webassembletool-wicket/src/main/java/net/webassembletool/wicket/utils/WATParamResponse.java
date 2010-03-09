@@ -23,6 +23,7 @@ import java.io.OutputStream;
 import net.webassembletool.wicket.container.WATParam;
 
 import org.apache.wicket.Response;
+import org.apache.wicket.protocol.http.WebResponse;
 
 /**
  * A Wicket Response implementation used by the WATParam container. Any content
@@ -33,7 +34,7 @@ import org.apache.wicket.Response;
  * @see WATParam
  * @see Response
  */
-public class WATParamResponse extends Response {
+public class WATParamResponse extends WebResponse {
 
 	private final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
