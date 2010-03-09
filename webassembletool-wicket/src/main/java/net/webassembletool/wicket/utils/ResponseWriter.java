@@ -23,7 +23,7 @@ import org.apache.wicket.Response;
 
 /**
  * @author Nicolas Richeton
- *
+ * 
  */
 public class ResponseWriter extends Writer implements Appendable {
 
@@ -31,13 +31,16 @@ public class ResponseWriter extends Writer implements Appendable {
 
 	/**
 	 * Adapts Wicket Response to Writer.
+	 * 
 	 * @param r
 	 */
 	public ResponseWriter(Response r) {
 		this.r = r;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.io.Writer#close()
 	 */
 	@Override
@@ -45,7 +48,9 @@ public class ResponseWriter extends Writer implements Appendable {
 		r.close();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.io.Writer#flush()
 	 */
 	@Override
@@ -53,12 +58,15 @@ public class ResponseWriter extends Writer implements Appendable {
 
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.io.Writer#write(char[], int, int)
 	 */
 	@Override
 	public void write(char[] cbuf, int off, int len) throws IOException {
-		r.write(new String(cbuf));
+		String content = new String(cbuf);
+		r.write(content.subSequence(off, len));
 
 	}
 }
