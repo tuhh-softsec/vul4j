@@ -1,0 +1,146 @@
+/*
+Design by Free CSS Templates
+http://www.freecsstemplates.org
+Released for free under a Creative Commons Attribution 2.5 License
+*/
+
+body {
+	margin: 20px 0;
+	padding: 0;
+	background: #000000;
+	font: normal small "Trebuchet MS", Arial, Helvetica, sans-serif;
+}
+
+h1, h2, h3 {
+	color: #B13413;
+}
+
+h2 {
+	font-size: 1.6em;
+}
+
+h3 {
+	margin: 0;
+	font-size: 1em;
+}
+
+p, ul, ol, blockquote {
+	margin-top: 0;
+}
+
+a:link {
+	border-bottom: 1px dotted #CCCCCC;
+	text-decoration: none;
+	color: #3284B5;
+}
+
+a:hover {
+	border: none;
+}
+
+img {
+	border: none;
+}
+
+/* Header */
+
+#header {
+	width: 700px;
+	height: 200px;
+	margin: 0 auto;
+	background: url(images/img1.jpg) no-repeat;
+}
+
+#header * {
+	margin: 0;
+	border: none;
+	text-decoration: none;
+	text-transform: lowercase;
+	font-weight: normal;
+	color: #FFFFFF;
+}
+
+#header h1 {
+	float: left;
+	padding: 140px 0 0 20px;
+	font-size: 3em;
+}
+
+#header h2 {
+	float: left;
+	padding: 165px 0 0 3px;
+	font-size: 1em;
+}
+
+/* Menu */
+
+#menu {
+	width: 700px;
+	height: 41px;
+	margin: 0 auto;
+	background: #37AEF2 url(images/img2.gif)
+}
+
+#menu ul {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+#menu li {
+	display: inline;
+}
+
+#menu a {
+	display: block;
+	float: left;
+	height: 32px;
+	padding: 9px 20px 0 20px;
+	text-decoration: none;
+	color: #FFFFFF;
+}
+
+#menu a:hover, #menu .active a {
+	background: url(images/img3.gif);
+	color: #FFFFFF;
+}
+
+/* Content */
+
+#content {
+	width: 700px;
+	margin: 0 auto;
+	background: url(images/img4.gif);
+}
+
+#colOne {
+	float: right;
+	width: 160px;
+	padding: 20px 10px 0 10px;
+}
+
+#colTwo {
+	float: right;
+	width: 360px;
+	padding: 20px 10px 0 10px;
+}
+
+#colThree {
+	float: right;
+	width: 120px;
+	padding: 10px;
+}
+
+/* Footer */
+
+#footer {
+	width: 700px;
+	margin: 0 auto;
+	padding: 10px 0;
+	background: url(images/img6.gif) repeat-x;
+	font-size: smaller;
+}
+
+#footer * {
+	color: #666666;
+}
