@@ -78,7 +78,7 @@ public class AddRequestTest extends AbstractTest
 
         AddRequestCodec addRequest = ( AddRequestCodec ) parser.getBatchRequest().getCurrentRequest();
 
-        assertEquals( "cn=Bob Rush,ou=Dev,dc=Example,dc=COM", addRequest.getEntryDn().toString() );
+        assertEquals( "cn=Bob Rush,ou=Dev,dc=Example,dc=COM", addRequest.getEntryDn().getNormName() );
     }
 
 

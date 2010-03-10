@@ -49,7 +49,7 @@ import org.slf4j.LoggerFactory;
  * "UTF-8 String Representation of Distinguished Names".
  *
  * We will store two representation of a DN :
- * - a user Provider represeentation, which is the parsed String given by a user
+ * - a user Provider representation, which is the parsed String given by a user
  * - an internal representation.
  *
  * A DN is formed of RDNs, in a specific order :
@@ -357,11 +357,10 @@ public class DN implements Name, Externalizable
      * getNormName method
      *
      * @return A String representing the normalized DN
-     * @TODO : use the getName() method instead
      */
     public String toString()
     {
-        return getNormName();
+        return getName();
     }
 
 
@@ -528,18 +527,6 @@ public class DN implements Name, Externalizable
      * @return The DN as a String
      */
     public String getName()
-    {
-        return ( upName == null ? "" : upName );
-    }
-
-
-    /**
-     * Get the initial DN (without normalization)
-     *
-     * @return The DN as a String
-     * @deprecated
-     */
-    public String getUpName()
     {
         return ( upName == null ? "" : upName );
     }

@@ -173,7 +173,7 @@ public class LdapResultCodec extends AbstractAsn1Object
      */
     public String getMatchedDN()
     {
-        return ( ( matchedDN == null ) ? "" : matchedDN.toString() );
+        return ( ( matchedDN == null ) ? "" : matchedDN.getNormName() );
     }
 
 

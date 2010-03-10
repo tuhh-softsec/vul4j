@@ -75,7 +75,7 @@ public class CompareRequestTest extends AbstractTest
 
         CompareRequestCodec compareRequest = ( CompareRequestCodec ) parser.getBatchRequest().getCurrentRequest();
 
-        assertEquals( "cn=Bob Rush,ou=Dev,dc=Example,dc=COM", compareRequest.getEntry().toString() );
+        assertEquals( "cn=Bob Rush,ou=Dev,dc=Example,dc=COM", compareRequest.getEntry().getNormName() );
     }
 
 
@@ -314,7 +314,7 @@ public class CompareRequestTest extends AbstractTest
 
         CompareRequestCodec compareRequest = ( CompareRequestCodec ) parser.getBatchRequest().getCurrentRequest();
 
-        assertEquals( "cn=Bob Rush,ou=Dev,dc=Example,dc=COM", ( String ) compareRequest.getEntry().toString() );
+        assertEquals( "cn=Bob Rush,ou=Dev,dc=Example,dc=COM", compareRequest.getEntry().getNormName() );
 
         assertEquals( "sn", ( String ) compareRequest.getAttributeDesc() );
 
@@ -345,7 +345,7 @@ public class CompareRequestTest extends AbstractTest
 
         CompareRequestCodec compareRequest = ( CompareRequestCodec ) parser.getBatchRequest().getCurrentRequest();
 
-        assertEquals( "cn=Bob Rush,ou=Dev,dc=Example,dc=COM", ( String ) compareRequest.getEntry().toString() );
+        assertEquals( "cn=Bob Rush,ou=Dev,dc=Example,dc=COM", compareRequest.getEntry().getNormName() );
 
         assertEquals( "sn", ( String ) compareRequest.getAttributeDesc() );
 
@@ -376,7 +376,7 @@ public class CompareRequestTest extends AbstractTest
 
         CompareRequestCodec compareRequest = ( CompareRequestCodec ) parser.getBatchRequest().getCurrentRequest();
 
-        assertEquals( "cn=Bob Rush,ou=Dev,dc=Example,dc=COM", ( String ) compareRequest.getEntry().toString() );
+        assertEquals( "cn=Bob Rush,ou=Dev,dc=Example,dc=COM", compareRequest.getEntry().getNormName() );
 
         assertEquals( "sn", ( String ) compareRequest.getAttributeDesc() );
 

@@ -269,7 +269,7 @@ public class BindRequestCodec extends LdapMessageCodec
         sb.append( "    BindRequest\n" );
         sb.append( "        Version : '" ).append( version ).append( "'\n" );
 
-        if ( ( null == name ) || StringTools.isEmpty( name.toString() ) )
+        if ( ( null == name ) || StringTools.isEmpty( name.getNormName() ) )
         {
             sb.append( "        Name : anonymous" );
         }

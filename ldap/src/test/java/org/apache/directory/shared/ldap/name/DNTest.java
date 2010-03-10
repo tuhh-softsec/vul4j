@@ -134,7 +134,7 @@ public class DNTest
 
         assertTrue( DN.isValid( "a = b" ) );
         assertEquals( "a = b", dn.getName() );
-        assertEquals( "a=b", dn.toString() );
+        assertEquals( "a=b", dn.getNormName() );
     }
 
 
@@ -148,7 +148,7 @@ public class DNTest
 
         assertTrue( DN.isValid( "a = b  " ) );
         assertEquals( "a = b  ", dn.getName() );
-        assertEquals( "a=b", dn.toString() );
+        assertEquals( "a=b", dn.getNormName() );
     }
 
 
@@ -161,7 +161,7 @@ public class DNTest
         DN dn = new DN( "a = b, c = d" );
 
         assertTrue( DN.isValid( "a = b, c = d" ) );
-        assertEquals( "a=b,c=d", dn.toString() );
+        assertEquals( "a=b,c=d", dn.getNormName() );
         assertEquals( "a = b, c = d", dn.getName() );
     }
 
@@ -175,7 +175,7 @@ public class DNTest
         DN dn = new DN( "a = b  , c = d" );
 
         assertTrue( DN.isValid( "a = b  , c = d" ) );
-        assertEquals( "a=b,c=d", dn.toString() );
+        assertEquals( "a=b,c=d", dn.getNormName() );
         assertEquals( "a = b  , c = d", dn.getName() );
     }
 
@@ -189,7 +189,7 @@ public class DNTest
         DN dn = new DN( "a=b, a =b, a= b, a = b, a  =  b" );
 
         assertTrue( DN.isValid( "a=b, a =b, a= b, a = b, a  =  b" ) );
-        assertEquals( "a=b,a=b,a=b,a=b,a=b", dn.toString() );
+        assertEquals( "a=b,a=b,a=b,a=b,a=b", dn.getNormName() );
         assertEquals( "a=b, a =b, a= b, a = b, a  =  b", dn.getName() );
     }
 
@@ -204,7 +204,7 @@ public class DNTest
         DN dn = new DN( "a=b;c=d,e=f" );
 
         assertTrue( DN.isValid( "a=b;c=d,e=f" ) );
-        assertEquals( "a=b,c=d,e=f", dn.toString() );
+        assertEquals( "a=b,c=d,e=f", dn.getNormName() );
         assertEquals( "a=b;c=d,e=f", dn.getName() );
     }
 
@@ -218,7 +218,7 @@ public class DNTest
         DN dn = new DN( "a = b + c = d" );
 
         assertTrue( DN.isValid( "a = b + c = d" ) );
-        assertEquals( "a=b+c=d", dn.toString() );
+        assertEquals( "a=b+c=d", dn.getNormName() );
         assertEquals( "a = b + c = d", dn.getName() );
     }
 
@@ -233,7 +233,7 @@ public class DNTest
         DN dn = new DN( "a=b+c=d, e=f + g=h + i=j" );
 
         assertTrue( DN.isValid( "a=b+c=d, e=f + g=h + i=j" ) );
-        assertEquals( "a=b+c=d,e=f+g=h+i=j", dn.toString() );
+        assertEquals( "a=b+c=d,e=f+g=h+i=j", dn.getNormName() );
         assertEquals( "a=b+c=d, e=f + g=h + i=j", dn.getName() );
     }
 
@@ -263,7 +263,7 @@ public class DNTest
         DN dn = new DN( "OID.12.34.56 = azerty" );
 
         assertTrue( DN.isValid( "OID.12.34.56 = azerty" ) );
-        assertEquals( "oid.12.34.56=azerty", dn.toString() );
+        assertEquals( "oid.12.34.56=azerty", dn.getNormName() );
         assertEquals( "OID.12.34.56 = azerty", dn.getName() );
     }
 
@@ -277,7 +277,7 @@ public class DNTest
         DN dn = new DN( "oid.12.34.56 = azerty" );
 
         assertTrue( DN.isValid( "oid.12.34.56 = azerty" ) );
-        assertEquals( "oid.12.34.56=azerty", dn.toString() );
+        assertEquals( "oid.12.34.56=azerty", dn.getNormName() );
         assertEquals( "oid.12.34.56 = azerty", dn.getName() );
     }
 
@@ -292,7 +292,7 @@ public class DNTest
         DN dn = new DN( "12.34.56 = azerty" );
 
         assertTrue( DN.isValid( "12.34.56 = azerty" ) );
-        assertEquals( "12.34.56=azerty", dn.toString() );
+        assertEquals( "12.34.56=azerty", dn.getNormName() );
         assertEquals( "12.34.56 = azerty", dn.getName() );
     }
 
@@ -307,7 +307,7 @@ public class DNTest
         DN dn = new DN( "12.34.56 = azerty; 7.8 = test" );
 
         assertTrue( DN.isValid( "12.34.56 = azerty; 7.8 = test" ) );
-        assertEquals( "12.34.56=azerty,7.8=test", dn.toString() );
+        assertEquals( "12.34.56=azerty,7.8=test", dn.getNormName() );
         assertEquals( "12.34.56 = azerty; 7.8 = test", dn.getName() );
     }
 
@@ -321,7 +321,7 @@ public class DNTest
         DN dn = new DN( "a = \\,\\=\\+\\<\\>\\#\\;\\\\\\\"\\C4\\8D" );
 
         assertTrue( DN.isValid( "a = \\,\\=\\+\\<\\>\\#\\;\\\\\\\"\\C4\\8D" ) );
-        assertEquals( "a=\\,=\\+\\<\\>#\\;\\\\\\\"\u010D", dn.toString() );
+        assertEquals( "a=\\,=\\+\\<\\>#\\;\\\\\\\"\u010D", dn.getNormName() );
         assertEquals( "a = \\,\\=\\+\\<\\>\\#\\;\\\\\\\"\\C4\\8D", dn.getName() );
     }
 
@@ -335,7 +335,7 @@ public class DNTest
         DN dn = new DN( "SN=Lu\\C4\\8Di\\C4\\87" );
 
         assertTrue( DN.isValid( "SN=Lu\\C4\\8Di\\C4\\87" ) );
-        assertEquals( "sn=Lu\u010Di\u0107", dn.toString() );
+        assertEquals( "sn=Lu\u010Di\u0107", dn.getNormName() );
         assertEquals( "SN=Lu\\C4\\8Di\\C4\\87", dn.getName() );
     }
 
@@ -349,7 +349,7 @@ public class DNTest
         DN dn = new DN( "a = #0010A0AAFF" );
 
         assertTrue( DN.isValid( "a = #0010A0AAFF" ) );
-        assertEquals( "a=#0010A0AAFF", dn.toString() );
+        assertEquals( "a=#0010A0AAFF", dn.getNormName() );
         assertEquals( "a = #0010A0AAFF", dn.getName() );
     }
 
@@ -366,7 +366,7 @@ public class DNTest
         DN dn = new DN( "a = \\#123456" );
 
         assertTrue( DN.isValid( "a = \\#123456" ) );
-        assertEquals( "a=\\#123456", dn.toString() );
+        assertEquals( "a=\\#123456", dn.getNormName() );
         assertEquals( "a = \\#123456", dn.getName() );
 
         RDN rdn = dn.getRdn();
@@ -393,7 +393,7 @@ public class DNTest
         DN dn = new DN( "a = \\#this is a sharp" );
 
         assertTrue( DN.isValid( "a = \\#this is a sharp" ) );
-        assertEquals( "a=\\#this is a sharp", dn.toString() );
+        assertEquals( "a=\\#this is a sharp", dn.getNormName() );
         assertEquals( "a = \\#this is a sharp", dn.getName() );
 
         RDN rdn = dn.getRdn();
@@ -410,14 +410,14 @@ public class DNTest
         DN dn = new DN( "ou = \\#this is a sharp" );
 
         assertTrue( DN.isValid( "ou = \\#this is a sharp" ) );
-        assertEquals( "ou=\\#this is a sharp", dn.toString() );
+        assertEquals( "ou=\\#this is a sharp", dn.getNormName() );
         assertEquals( "ou = \\#this is a sharp", dn.getName() );
 
         // Check the normalization now
         DN ndn = dn.normalize( oidOids );
 
         assertEquals( "ou = \\#this is a sharp", ndn.getName() );
-        assertEquals( "2.5.4.11=\\#this is a sharp", ndn.toString() );
+        assertEquals( "2.5.4.11=\\#this is a sharp", ndn.getNormName() );
     }
 
 
@@ -430,13 +430,13 @@ public class DNTest
     {
         DN dn = new DN( "ou = AC\\\\DC" );
         assertTrue( DN.isValid( "ou = AC\\\\DC" ) );
-        assertEquals( "ou=AC\\\\DC", dn.toString() );
+        assertEquals( "ou=AC\\\\DC", dn.getNormName() );
         assertEquals( "ou = AC\\\\DC", dn.getName() );
 
         // Check the normalization now
         DN ndn = dn.normalize( oidOids );
         assertEquals( "ou = AC\\\\DC", ndn.getName() );
-        assertEquals( "2.5.4.11=ac\\\\dc", ndn.toString() );
+        assertEquals( "2.5.4.11=ac\\\\dc", ndn.getNormName() );
     }
 
 
@@ -488,7 +488,7 @@ public class DNTest
         DN dn = new DN( "a = quoted \\\"value\\\"" );
 
         assertTrue( DN.isValid( "a = quoted \\\"value\\\"" ) );
-        assertEquals( "a=quoted \\\"value\\\"", dn.toString() );
+        assertEquals( "a=quoted \\\"value\\\"", dn.getNormName() );
         assertEquals( "a = quoted \\\"value\\\"", dn.getName() );
     }
 
@@ -502,7 +502,7 @@ public class DNTest
         DN dn = new DN( "a = \\\" quoted value \\\"" );
 
         assertTrue( DN.isValid( "a = \\\" quoted value \\\"" ) );
-        assertEquals( "a=\\\" quoted value \\\"", dn.toString() );
+        assertEquals( "a=\\\" quoted value \\\"", dn.getNormName() );
         assertEquals( "a = \\\" quoted value \\\"", dn.getName() );
     }
 
@@ -540,7 +540,7 @@ public class DNTest
 
         assertTrue( DN.isValid( "a=b, c=d, e=f" ) );
         assertEquals( "e=f", dn.remove( 0 ).toString() );
-        assertEquals( "a=b,c=d", dn.toString() );
+        assertEquals( "a=b,c=d", dn.getNormName() );
         assertEquals( "a=b, c=d", dn.getName() );
     }
 
@@ -696,7 +696,7 @@ public class DNTest
         DN dn = new DN();
 
         dn.add( "e = f" );
-        assertEquals( "e=f", dn.toString() );
+        assertEquals( "e=f", dn.getNormName() );
         assertEquals( "e = f", dn.getName() );
         assertEquals( 1, dn.size() );
     }
@@ -711,7 +711,7 @@ public class DNTest
         DN dn = new DN( "a=b, c=d" );
 
         dn.add( "e = f" );
-        assertEquals( "e=f,a=b,c=d", dn.toString() );
+        assertEquals( "e=f,a=b,c=d", dn.getNormName() );
         assertEquals( "e = f,a=b, c=d", dn.getName() );
         assertEquals( 3, dn.size() );
     }
@@ -730,7 +730,7 @@ public class DNTest
         // Warning ! The order of AVAs has changed during the parsing
         // This has no impact on the correctness of the DN, but the
         // String used to do the comparizon should be inverted.
-        assertEquals( "e=f+g=h,a=b,c=d", dn.toString() );
+        assertEquals( "e=f+g=h,a=b,c=d", dn.getNormName() );
         assertEquals( 3, dn.size() );
     }
 
@@ -804,7 +804,7 @@ public class DNTest
         DN dn = new DN( "a = b" );
         DN dn2 = new DN();
         dn.addAll( dn2 );
-        assertEquals( "a=b", dn.toString() );
+        assertEquals( "a=b", dn.getNormName() );
         assertEquals( "a = b", dn.getName() );
     }
 
@@ -880,7 +880,7 @@ public class DNTest
         DN dn = new DN( "a = b" );
         DN dn2 = new DN();
         dn.addAll( 0, dn2 );
-        assertEquals( "a=b", dn.toString() );
+        assertEquals( "a=b", dn.getNormName() );
         assertEquals( "a = b", dn.getName() );
     }
 
@@ -1578,7 +1578,7 @@ public class DNTest
         Name name = DnParser.getNameParser().parse( dn );
 
         assertEquals( dn, ( ( DN ) name ).getName() );
-        assertEquals( "cn=Emmanuel  L\u00E9charny", name.toString() );
+        assertEquals( "cn=Emmanuel  L\u00E9charny", ((DN)name).getNormName() );
     }
 
 
@@ -2483,7 +2483,7 @@ public class DNTest
 
         Name result = DN.normalize( name, oids );
 
-        assertTrue( result.toString().equals( "ou=some people,dc=example,dc=com" ) );
+        assertTrue( ((DN)result).getNormName().equals( "ou=some people,dc=example,dc=com" ) );
     }
 
 
@@ -2539,7 +2539,7 @@ public class DNTest
         Name result = DN.normalize( name, oidOids );
 
         assertEquals(
-            result.toString(),
+            ((DN)result).getNormName(),
             "0.9.2342.19200300.100.1.25=and some animals+2.5.4.11=some people,0.9.2342.19200300.100.1.25=example,0.9.2342.19200300.100.1.25=com" );
         assertTrue( ( ( DN ) result )
             .getName()
@@ -2560,7 +2560,7 @@ public class DNTest
         DN result = DN.normalize( name, oidOids );
 
         assertTrue( result
-            .toString()
+            .getNormName()
             .equals(
                 "0.9.2342.19200300.100.1.25=and some animals+2.5.4.11=some people,0.9.2342.19200300.100.1.25=example,0.9.2342.19200300.100.1.25=com" ) );
         assertTrue( result
@@ -2899,7 +2899,7 @@ public class DNTest
         DN dn = new DN( "cn=\" Kylie Minogue \",dc=example,dc=com" );
 
         assertEquals( "cn=\" Kylie Minogue \",dc=example,dc=com", dn.getName() );
-        assertEquals( "cn=\\ Kylie Minogue\\ ,dc=example,dc=com", dn.toString() );
+        assertEquals( "cn=\\ Kylie Minogue\\ ,dc=example,dc=com", dn.getNormName() );
     }
 
 
@@ -2913,7 +2913,7 @@ public class DNTest
         DN dn = new DN( "a=\"b,c\"" );
 
         assertEquals( "a=\"b,c\"", dn.getName() );
-        assertEquals( "a=b\\,c", dn.toString() );
+        assertEquals( "a=b\\,c", dn.getNormName() );
     }
 
 
@@ -2926,7 +2926,7 @@ public class DNTest
     {
         DN name = new DN( "dn= \\ four spaces leading and 3 trailing \\  " );
 
-        assertEquals( "dn=\\ four spaces leading and 3 trailing \\ ", name.toString() );
+        assertEquals( "dn=\\ four spaces leading and 3 trailing \\ ", name.getNormName() );
         assertEquals( "dn= \\ four spaces leading and 3 trailing \\  ", name.getName() );
     }
 
@@ -2990,7 +2990,7 @@ public class DNTest
     {
         DN name = new DN( "dn=a middle \\# pound" );
 
-        assertEquals( "dn=a middle # pound", name.toString() );
+        assertEquals( "dn=a middle # pound", name.getNormName() );
         assertEquals( "dn=a middle \\# pound", name.getName() );
     }
 
@@ -3004,7 +3004,7 @@ public class DNTest
     {
         DN name = new DN( "dn=a trailing pound \\#" );
 
-        assertEquals( "dn=a trailing pound #", name.toString() );
+        assertEquals( "dn=a trailing pound #", name.getNormName() );
         assertEquals( "dn=a trailing pound \\#", name.getName() );
     }
 
@@ -3104,7 +3104,7 @@ public class DNTest
         DN dn1 = new DN( "a=b,c=d,e=f" );
         DN dn2 = new DN( "a=b\\,c\\=d,e=f" );
 
-        assertFalse( dn1.toString().equals( dn2.toString() ) );
+        assertFalse( dn1.getNormName().equals( dn2.getNormName() ) );
     }
 
 

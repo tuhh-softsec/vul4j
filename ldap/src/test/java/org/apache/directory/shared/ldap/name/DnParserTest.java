@@ -67,7 +67,7 @@ public class DnParserTest
         NameParser dnParser = DnParser.getNameParser();
 
         assertEquals( "a = b", ( ( DN ) dnParser.parse( "a = b" ) ).getName() );
-        assertEquals( "a=b", ( ( DN ) dnParser.parse( "a = b" ) ).toString() );
+        assertEquals( "a=b", ( ( DN ) dnParser.parse( "a = b" ) ).getNormName() );
     }
 
 
@@ -79,7 +79,7 @@ public class DnParserTest
     {
         NameParser dnParser = DnParser.getNameParser();
         DN dn = ( DN ) dnParser.parse( "a = b, c = d" );
-        assertEquals( "a=b,c=d", dn.toString() );
+        assertEquals( "a=b,c=d", dn.getNormName() );
         assertEquals( "a = b, c = d", dn.getName() );
     }
 
@@ -92,7 +92,7 @@ public class DnParserTest
     {
         NameParser dnParser = DnParser.getNameParser();
         DN dn = ( DN ) dnParser.parse( "a=b, a =b, a= b, a = b, a  =  b" );
-        assertEquals( "a=b,a=b,a=b,a=b,a=b", dn.toString() );
+        assertEquals( "a=b,a=b,a=b,a=b,a=b", dn.getNormName() );
         assertEquals( "a=b, a =b, a= b, a = b, a  =  b", dn.getName() );
     }
 
@@ -106,7 +106,7 @@ public class DnParserTest
     {
         NameParser dnParser = DnParser.getNameParser();
         DN dn = ( DN ) dnParser.parse( "a=b;c=d,e=f" );
-        assertEquals( "a=b,c=d,e=f", dn.toString() );
+        assertEquals( "a=b,c=d,e=f", dn.getNormName() );
         assertEquals( "a=b;c=d,e=f", dn.getName() );
     }
 
@@ -119,7 +119,7 @@ public class DnParserTest
     {
         NameParser dnParser = DnParser.getNameParser();
         DN dn = ( DN ) dnParser.parse( "a = b + c = d" );
-        assertEquals( "a=b+c=d", dn.toString() );
+        assertEquals( "a=b+c=d", dn.getNormName() );
         assertEquals( "a = b + c = d", dn.getName() );
     }
 
@@ -133,7 +133,7 @@ public class DnParserTest
     {
         NameParser dnParser = DnParser.getNameParser();
         DN dn = ( DN ) dnParser.parse( "a=b+c=d, e=f + g=h + i=j" );
-        assertEquals( "a=b+c=d,e=f+g=h+i=j", dn.toString() );
+        assertEquals( "a=b+c=d,e=f+g=h+i=j", dn.getNormName() );
         assertEquals( "a=b+c=d, e=f + g=h + i=j", dn.getName() );
     }
 
@@ -146,7 +146,7 @@ public class DnParserTest
     {
         NameParser dnParser = DnParser.getNameParser();
         DN dn = ( DN ) dnParser.parse( "OID.12.34.56 = azerty" );
-        assertEquals( "oid.12.34.56=azerty", dn.toString() );
+        assertEquals( "oid.12.34.56=azerty", dn.getNormName() );
         assertEquals( "OID.12.34.56 = azerty", dn.getName() );
     }
 
@@ -159,7 +159,7 @@ public class DnParserTest
     {
         NameParser dnParser = DnParser.getNameParser();
         DN dn = ( DN ) dnParser.parse( "oid.12.34.56 = azerty" );
-        assertEquals( "oid.12.34.56=azerty", dn.toString() );
+        assertEquals( "oid.12.34.56=azerty", dn.getNormName() );
         assertEquals( "oid.12.34.56 = azerty", dn.getName() );
     }
 
@@ -173,7 +173,7 @@ public class DnParserTest
     {
         NameParser dnParser = DnParser.getNameParser();
         DN dn = ( DN ) dnParser.parse( "12.34.56 = azerty" );
-        assertEquals( "12.34.56=azerty", dn.toString() );
+        assertEquals( "12.34.56=azerty", dn.getNormName() );
         assertEquals( "12.34.56 = azerty", dn.getName() );
     }
 
@@ -187,7 +187,7 @@ public class DnParserTest
     {
         NameParser dnParser = DnParser.getNameParser();
         DN dn = ( DN ) dnParser.parse( "12.34.56 = azerty; 7.8 = test" );
-        assertEquals( "12.34.56=azerty,7.8=test", dn.toString() );
+        assertEquals( "12.34.56=azerty,7.8=test", dn.getNormName() );
         assertEquals( "12.34.56 = azerty; 7.8 = test", dn.getName() );
     }
 
@@ -200,11 +200,11 @@ public class DnParserTest
     {
         NameParser dnParser = DnParser.getNameParser();
         DN dn = ( DN ) dnParser.parse( "a = \\,\\=\\+\\<\\>\\#\\;\\\\\\\"\\C3\\A9" );
-        assertEquals( "a=\\,=\\+\\<\\>#\\;\\\\\\\"\u00e9", dn.toString() );
+        assertEquals( "a=\\,=\\+\\<\\>#\\;\\\\\\\"\u00e9", dn.getNormName() );
         assertEquals( "a = \\,\\=\\+\\<\\>\\#\\;\\\\\\\"\\C3\\A9", dn.getName() );
 
         dn = ( DN ) dnParser.parse( "a = \\,\\=\\+\\<\\>\\#\\;\\\\\\\"\u00e9" );
-        assertEquals( "a=\\,=\\+\\<\\>#\\;\\\\\\\"\u00e9", dn.toString() );
+        assertEquals( "a=\\,=\\+\\<\\>#\\;\\\\\\\"\u00e9", dn.getNormName() );
         assertEquals( "a = \\,\\=\\+\\<\\>\\#\\;\\\\\\\"\u00e9", dn.getName() );
     }
 
@@ -217,7 +217,7 @@ public class DnParserTest
     {
         NameParser dnParser = DnParser.getNameParser();
         DN dn = ( DN ) dnParser.parse( "a = #0010A0AAFF" );
-        assertEquals( "a=#0010A0AAFF", dn.toString() );
+        assertEquals( "a=#0010A0AAFF", dn.getNormName() );
         assertEquals( "a = #0010A0AAFF", dn.getName() );
     }
 
@@ -253,11 +253,11 @@ public class DnParserTest
     {
         NameParser dnParser = DnParser.getNameParser();
         DN dn = ( DN ) dnParser.parse( "a = quoted \\\"value" );
-        assertEquals( "a=quoted \\\"value", dn.toString() );
+        assertEquals( "a=quoted \\\"value", dn.getNormName() );
         assertEquals( "a = quoted \\\"value", dn.getName() );
         
         dn = ( DN ) dnParser.parse( "cn=Mackie \\\"The Knife\\\" Messer" );
-        assertEquals( "cn=Mackie \\\"The Knife\\\" Messer", dn.toString() );
+        assertEquals( "cn=Mackie \\\"The Knife\\\" Messer", dn.getNormName() );
         assertEquals( "cn=Mackie \\\"The Knife\\\" Messer", dn.getName() );
     }
 
@@ -270,7 +270,7 @@ public class DnParserTest
     {
         NameParser dnParser = DnParser.getNameParser();
         DN dn = ( DN ) dnParser.parse( "a = AC\\\\DC" );
-        assertEquals( "a=AC\\\\DC", dn.toString() );
+        assertEquals( "a=AC\\\\DC", dn.getNormName() );
         assertEquals( "a = AC\\\\DC", dn.getName() );
     }
 
@@ -302,7 +302,7 @@ public class DnParserTest
         DN name = ( DN ) dnParser.parse( dn );
 
         assertEquals( dn, name.getName() );
-        assertEquals( "cn=Emmanuel  L\u00e9charny", name.toString() );
+        assertEquals( "cn=Emmanuel  L\u00e9charny", name.getNormName() );
     }
 
 
@@ -316,7 +316,7 @@ public class DnParserTest
         DN name = ( DN ) dnParser.parse( dn );
 
         assertEquals( dn, name.getName() );
-        assertEquals( "c=E\u00e9c", name.toString() );
+        assertEquals( "c=E\u00e9c", name.getNormName() );
     }
 
 
@@ -332,7 +332,7 @@ public class DnParserTest
                 .getName() );
         assertEquals(
             "cn=Billy Bakers,oid.2.5.4.11=Corporate Tax,ou=Fin-Accounting,ou=Americas,ou=Search,o=IMC,c=US", name
-                .toString() );
+                .getNormName() );
     }
 
 
@@ -554,7 +554,7 @@ public class DnParserTest
         NameParser parser = DnParser.getNameParser();
         Name result = parser.parse( path );
         assertEquals( path, ( ( DN ) result ).getName() );
-        assertEquals( "windowsfilepath=C:\\\\cygwin", result.toString() );
+        assertEquals( "windowsfilepath=C:\\\\cygwin", ((DN)result).getNormName() );
     }
 
 
@@ -610,7 +610,7 @@ public class DnParserTest
 
 
         NameParser parser = DnParser.getNameParser();
-        String result = parser.parse( cn ).toString();
+        String result = ((DN)parser.parse( cn )).getNormName();
         
         assertEquals( "cn=\u00c4\\+", result );
     }

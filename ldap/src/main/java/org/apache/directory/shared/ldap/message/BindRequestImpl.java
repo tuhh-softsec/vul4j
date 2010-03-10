@@ -416,7 +416,7 @@ public class BindRequestImpl extends AbstractAbandonableRequest implements Inter
         sb.append( "    BindRequest\n" );
         sb.append( "        Version : '" ).append( isVersion3 ? "3" : "2" ).append( "'\n" );
 
-        if ( StringTools.isEmpty( name.toString() ) && isSimple )
+        if ( StringTools.isEmpty( name.getNormName() ) && isSimple )
         {
             sb.append( "        Name : anonymous\n" );
         }

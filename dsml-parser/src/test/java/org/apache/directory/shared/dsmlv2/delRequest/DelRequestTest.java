@@ -74,7 +74,7 @@ public class DelRequestTest extends AbstractTest
 
         DelRequestCodec delRequest = ( DelRequestCodec ) parser.getBatchRequest().getCurrentRequest();
 
-        assertEquals( "cn=Bob Rush,ou=Dev,dc=Example,dc=COM", delRequest.getEntry().toString() );
+        assertEquals( "cn=Bob Rush,ou=Dev,dc=Example,dc=COM", delRequest.getEntry().getNormName() );
     }
 
 
