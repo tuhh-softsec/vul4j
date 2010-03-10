@@ -21,7 +21,6 @@ package org.apache.directory.shared.ldap.schema.comparators;
 
 
 import org.apache.directory.shared.ldap.schema.LdapComparator;
-import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
