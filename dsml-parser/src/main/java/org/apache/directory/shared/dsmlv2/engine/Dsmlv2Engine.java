@@ -399,17 +399,11 @@ public class Dsmlv2Engine
                 //     - O to n SearchResultReference
                 //     - 1 (only) SearchResultDone
                 // So we have to include those individual responses in a "General" SearchResponse
-                //            Element searchResponse = xmlResponse.getRootElement().addElement( "searchResponse" );
-                SearchResponseDsml searchResponseDsml = null; //new SearchResponseDsml();
+                SearchResponseDsml searchResponseDsml = null;
     
                 // RequestID
                 int requestID = response.getMessageId();
                 
-                if ( requestID != 0 )
-                {
-                    searchResponseDsml.setMessageId( requestID );
-                }
-    
                 while ( MessageTypeEnum.SEARCH_RESULT_DONE != response.getMessageType() )
                 {
                     if ( MessageTypeEnum.SEARCH_RESULT_ENTRY == response.getMessageType() )
