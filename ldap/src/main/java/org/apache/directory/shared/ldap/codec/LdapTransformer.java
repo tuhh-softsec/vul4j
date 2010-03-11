@@ -617,7 +617,7 @@ public class LdapTransformer
                     {
                         filter = new AttributeValueAssertionFilter( LdapConstants.EQUALITY_MATCH_FILTER );
                         AttributeValueAssertion assertion = new AttributeValueAssertion();
-                        assertion.setAttributeDesc( ((EqualityNode<?>)exprNode).getAssertionType().name() );
+                        assertion.setAttributeDesc( ((EqualityNode<?>)exprNode).getAttribute() );
                         assertion.setAssertionValue( ((EqualityNode<?>)exprNode).getValue() );
                         ((AttributeValueAssertionFilter)filter).setAssertion( assertion );
                     }
@@ -625,7 +625,7 @@ public class LdapTransformer
                     {
                         filter = new AttributeValueAssertionFilter( LdapConstants.GREATER_OR_EQUAL_FILTER );
                         AttributeValueAssertion assertion = new AttributeValueAssertion();
-                        assertion.setAttributeDesc( ((EqualityNode<?>)exprNode).getAssertionType().name() );
+                        assertion.setAttributeDesc( ((EqualityNode<?>)exprNode).getAttribute() );
                         assertion.setAssertionValue( ((EqualityNode<?>)exprNode).getValue() );
                         ((AttributeValueAssertionFilter)filter).setAssertion( assertion );
                     }
@@ -633,7 +633,7 @@ public class LdapTransformer
                     {
                         filter = new AttributeValueAssertionFilter( LdapConstants.LESS_OR_EQUAL_FILTER );
                         AttributeValueAssertion assertion = new AttributeValueAssertion();
-                        assertion.setAttributeDesc( ((EqualityNode<?>)exprNode).getAssertionType().name() );
+                        assertion.setAttributeDesc( ((EqualityNode<?>)exprNode).getAttribute() );
                         assertion.setAssertionValue( ((EqualityNode<?>)exprNode).getValue() );
                         ((AttributeValueAssertionFilter)filter).setAssertion( assertion );
                     }
@@ -641,7 +641,7 @@ public class LdapTransformer
                     {
                         filter = new AttributeValueAssertionFilter( LdapConstants.APPROX_MATCH_FILTER );
                         AttributeValueAssertion assertion = new AttributeValueAssertion();
-                        assertion.setAttributeDesc( ((EqualityNode<?>)exprNode).getAssertionType().name() );
+                        assertion.setAttributeDesc( ((EqualityNode<?>)exprNode).getAttribute() );
                         assertion.setAssertionValue( ((EqualityNode<?>)exprNode).getValue() );
                         ((AttributeValueAssertionFilter)filter).setAssertion( assertion );
                     }
