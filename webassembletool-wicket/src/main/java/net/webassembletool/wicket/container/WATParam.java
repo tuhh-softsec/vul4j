@@ -1,22 +1,21 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software distributed under the License
- * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
- * or implied. See the License for the specific language governing permissions and limitations under
- * the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  *
  */
 
 package net.webassembletool.wicket.container;
 
+import net.webassembletool.wicket.utils.BlockUtils;
 import net.webassembletool.wicket.utils.WATParamResponse;
 import net.webassembletool.wicket.utils.WATTemplateResponse;
 
@@ -42,7 +41,7 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
  * </code>
  * 
  * <p>
- * HTML : (Within an enclosing WAT Template block) 
+ * HTML : (Within an enclosing WAT Template block)
  * </p>
  * <code>
  * <div id='block1'>
@@ -60,10 +59,13 @@ public class WATParam extends WebMarkupContainer {
 	 * Serialization ID.
 	 */
 	private static final long serialVersionUID = 1L;
+
+	private int discardTagsLevel = 0;
 	private final String name;
 
 	/**
 	 * Create a parameter block
+	 * 
 	 * @param id
 	 *            - Must be unique in the page
 	 * @param name
@@ -74,12 +76,19 @@ public class WATParam extends WebMarkupContainer {
 		this.name = name;
 	}
 
-	/*
-	 * (non-Javadoc)
+	/**
+	 * @see WATParam#setDiscardTags(int)
 	 * 
-	 * @see
-	 * org.apache.wicket.MarkupContainer#onComponentTagBody(org.apache.wicket
-	 * .markup.MarkupStream, org.apache.wicket.markup.ComponentTag)
+	 * @return current level. 0 if disabled.
+	 */
+	public int getDiscardTags() {
+		return discardTagsLevel;
+	}
+
+	/**
+	 * 
+	 * @see org.apache.wicket.MarkupContainer#onComponentTagBody(org.apache.wicket
+	 *      .markup.MarkupStream, org.apache.wicket.markup.ComponentTag)
 	 */
 	@Override
 	protected void onComponentTagBody(MarkupStream markupStream,
@@ -89,12 +98,49 @@ public class WATParam extends WebMarkupContainer {
 
 		if (r instanceof WATTemplateResponse) {
 			WATTemplateResponse watResponse = (WATTemplateResponse) r;
-			WATParamResponse wATParamResponse = new WATParamResponse();
+			WATParamResponse watParamResponse = new WATParamResponse();
 
-			getRequestCycle().setResponse(wATParamResponse);
+			// Set buffered response.
+			getRequestCycle().setResponse(watParamResponse);
+			// Render content.
 			super.onComponentTagBody(markupStream, openTag);
+			// Restore original response.
 			getRequestCycle().setResponse(watResponse);
-			watResponse.getBlocks().put(name, wATParamResponse.getContent());
+
+			// Get output
+			String blockOutput = watParamResponse.getContent();
+
+			// Process discard tag
+			if (discardTagsLevel > 0) {
+				blockOutput = BlockUtils.discardTags(blockOutput,
+						discardTagsLevel);
+			}
+			// Add param content to parent template.
+			watResponse.getBlocks().put(name, blockOutput);
+		} else {
+			throw new RuntimeException(
+					"WATParam can only be used within a WATTemplate.");
 		}
+	}
+
+	/**
+	 * Discards first HTML tags from the block content. This is a work-around
+	 * for wicket's &lt;head&gt; management which doesn't let WAT catch the
+	 * content without getting the &lt;head&gt; &lt;/head&gt; tags at the same
+	 * time.
+	 * 
+	 * <p>
+	 * Note that the implementation is quite basic and does not try to
+	 * understand HTML content. It just removes the first open tag and the last
+	 * close tag from the content
+	 * </p>
+	 * 
+	 * 
+	 * @param level
+	 *            - how many tags will be removed. 0 =
+	 *            <strong>Disabled</strong>.
+	 */
+	public void setDiscardTags(int level) {
+		this.discardTagsLevel = level;
 	}
 }
