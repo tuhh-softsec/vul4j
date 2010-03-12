@@ -45,6 +45,11 @@
 			<name>Stanislav Bernatsky</name>
 			<email>saber@smile.fr</email>
 		</developer>
+		<developer>
+			<id>nricheton</id>
+			<name>Nicolas Richeton</name>
+			<url>http://blog.richeton.com</url>
+		</developer>
 	</developers>
 	<scm>
 		<connection>scm:svn:https://webassembletool.svn.sourceforge.net/svnroot/webassembletool/trunk</connection>
