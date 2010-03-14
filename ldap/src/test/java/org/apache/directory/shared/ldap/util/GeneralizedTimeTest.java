@@ -500,6 +500,22 @@ public class GeneralizedTimeTest
             TimeZoneFormat.DIFF_HOUR_MINUTE );
         assertEquals( "2008010212+0000", result );
     }
+    
+    
+    /**
+     * Test adjustment of time while formatting. 
+     */
+    @Test
+    public void testAdjustWhileFormatting() throws ParseException
+    {
+        String gt = "20080102121314+0130";
+        GeneralizedTime generalizedTime = new GeneralizedTime( gt );
+        String result = generalizedTime.toGeneralizedTime();
+        assertEquals( gt, result );
+        
+        result = generalizedTime.toGeneralizedTime( Format.YEAR_MONTH_DAY_HOUR_MIN_SEC, null, 0, TimeZoneFormat.Z );
+        assertEquals( "20080102104314Z", result );
+    }
 
 
     /**

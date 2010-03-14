@@ -591,6 +591,12 @@ public class GeneralizedTime implements Comparable<GeneralizedTime>
     public String toGeneralizedTime( Format format, FractionDelimiter fractionDelimiter, int fractionLength,
         TimeZoneFormat timeZoneFormat )
     {
+        Calendar calendar = ( Calendar ) this.calendar.clone();
+        if ( timeZoneFormat == TimeZoneFormat.Z )
+        {
+            calendar.setTimeZone( GMT );
+        }
+
         NumberFormat twoDigits = new DecimalFormat( "00" );
         NumberFormat fourDigits = new DecimalFormat( "00" );
         String fractionFormat = "";

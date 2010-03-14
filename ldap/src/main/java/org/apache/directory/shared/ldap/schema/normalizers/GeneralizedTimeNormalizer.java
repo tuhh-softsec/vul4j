@@ -21,6 +21,7 @@ package org.apache.directory.shared.ldap.schema.normalizers;
 
 
 import java.io.IOException;
+import java.text.ParseException;
 
 import javax.naming.NamingException;
 
@@ -30,15 +31,21 @@ import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.entry.client.ClientStringValue;
 import org.apache.directory.shared.ldap.schema.Normalizer;
 import org.apache.directory.shared.ldap.schema.PrepareString;
+import org.apache.directory.shared.ldap.util.GeneralizedTime;
+import org.apache.directory.shared.ldap.util.GeneralizedTime.Format;
+import org.apache.directory.shared.ldap.util.GeneralizedTime.FractionDelimiter;
+import org.apache.directory.shared.ldap.util.GeneralizedTime.TimeZoneFormat;
 
 
 /**
  * Normalizer which normalize a time following those rules :
- * - if minutes are ommited, then they are replaced by 00
- * - if seconds are ommited, then they are replaced by 00
- * - if fraction is 0, it is removed
- * - the time is supposed to be expressed in Zulu (GMT), so 
- * increment is applied to hours/days/yeah, and a Z is added at the end.
+ * </ul>
+ * <li>if minutes are ommited, then they are replaced by 00</li>
+ * <li>if seconds are ommited, then they are replaced by 00</li>
+ * <li>if fraction is 0 or omitted, it is replaced by 000</li>
+ * <li>the time is supposed to be expressed in Zulu (GMT), so 
+ * increment is applied to hours/days/yeah, and a Z is added at the end</li>
+ * </ul>
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev: 491034 $
@@ -47,6 +54,7 @@ public class GeneralizedTimeNormalizer extends Normalizer
 {
     /** The serial UID */
     public static final long serialVersionUID = 1L;
+
 
     /**
      * Creates a new instance of GeneralizedTimeNormalizer.
@@ -57,40 +65,46 @@ public class GeneralizedTimeNormalizer extends Normalizer
     }
 
 
-   /**
-    * {@inheritDoc}
-    */
-   public Value<?> normalize( Value<?> value ) throws NamingException
-   {
-       try
-       {
-           String normalized = PrepareString.normalize( value.getString(), 
-               PrepareString.StringType.DIRECTORY_STRING );
-           
-           return new ClientStringValue( normalized );
-       }
-       catch ( IOException ioe )
-       {
-           throw new NamingException( I18n.err( I18n.ERR_04224, value ) );
-       }
-   }
+    /**
+     * {@inheritDoc}
+     */
+    public Value<?> normalize( Value<?> value ) throws NamingException
+    {
+        try
+        {
+            String normalized = PrepareString.normalize( value.getString(), PrepareString.StringType.DIRECTORY_STRING );
 
-   
-   /**
-    * {@inheritDoc}
-    */
-   public String normalize( String value ) throws NamingException
-   {
-       try
-       {
-           String normalized = PrepareString.normalize( value, 
-               PrepareString.StringType.DIRECTORY_STRING );
-           
-           return normalized;
-       }
-       catch ( IOException ioe )
-       {
-           throw new NamingException( I18n.err( I18n.ERR_04224, value ) );
-       }
-   }
+            return new ClientStringValue( normalized );
+        }
+        catch ( IOException ioe )
+        {
+            throw new NamingException( I18n.err( I18n.ERR_04224, value ) );
+        }
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public String normalize( String value ) throws NamingException
+    {
+        try
+        {
+            String prepared = PrepareString.normalize( value, PrepareString.StringType.DIRECTORY_STRING );
+
+            GeneralizedTime time = new GeneralizedTime( prepared );
+            String normalized = time.toGeneralizedTime( Format.YEAR_MONTH_DAY_HOUR_MIN_SEC_FRACTION,
+                FractionDelimiter.DOT, 3, TimeZoneFormat.Z );
+
+            return normalized;
+        }
+        catch ( IOException ioe )
+        {
+            throw new NamingException( I18n.err( I18n.ERR_04224, value ) );
+        }
+        catch ( ParseException pe )
+        {
+            throw new NamingException( I18n.err( I18n.ERR_04224, value ) );
+        }
+    }
 }

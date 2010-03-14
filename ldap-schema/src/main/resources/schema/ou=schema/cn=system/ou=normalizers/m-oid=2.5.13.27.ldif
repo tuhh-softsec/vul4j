@@ -3,8 +3,7 @@ dn: m-oid=2.5.13.27,ou=normalizers,cn=system,ou=schema
 createtimestamp: 20090818022727Z
 m-oid: 2.5.13.27
 entrycsn: 20090818052727.845000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.normalizers.CachingDeepTrimNorma
- lizer
+m-fqcn: org.apache.directory.shared.ldap.schema.normalizers.GeneralizedTimeNormalizer
 objectclass: metaNormalizer
 objectclass: metaTop
 objectclass: top

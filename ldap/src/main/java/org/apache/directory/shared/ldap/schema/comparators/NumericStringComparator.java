@@ -21,7 +21,6 @@ package org.apache.directory.shared.ldap.schema.comparators;
 
 
 import java.io.IOException;
-import java.math.BigInteger;
 
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.schema.LdapComparator;
@@ -31,25 +30,25 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * A class for the integerOrderingMatch matchingRule (RFC 4517, par. 4.2.20)
+ * A class for the numericStringOrderingMatch matchingRule (RFC 4517, par. 4.2.23)
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev: 437007 $
  */
-public class IntegerOrderingComparator extends LdapComparator<String>
+public class NumericStringComparator extends LdapComparator<String>
 {
     /** A logger for this class */
-    private static final Logger LOG = LoggerFactory.getLogger( IntegerOrderingComparator.class );
+    private static final Logger LOG = LoggerFactory.getLogger( NumericStringComparator.class );
 
     /** The serialVersionUID */
     private static final long serialVersionUID = 1L;
 
 
     /**
-     * The IntegerOrderingComparator constructor. Its OID is the IntegerOrderingMatch matching
+     * The IntegerOrderingComparator constructor. Its OID is the numericStringOrderingMatch matching
      * rule OID.
      */
-    public IntegerOrderingComparator( String oid )
+    public NumericStringComparator( String oid )
     {
         super( oid );
     }
@@ -60,7 +59,7 @@ public class IntegerOrderingComparator extends LdapComparator<String>
      */
     public int compare( String backendValue, String assertValue )
     {
-        LOG.debug( "comparing IntegerOrdering objects '{}' with '{}'", backendValue, assertValue );
+        LOG.debug( "comparing numericStringOrdering objects '{}' with '{}'", backendValue, assertValue );
 
         // First, shortcut the process by comparing
         // references. If they are equals, then o1 and o2
@@ -97,8 +96,6 @@ public class IntegerOrderingComparator extends LdapComparator<String>
             throw new IllegalArgumentException( I18n.err( I18n.ERR_04224, assertValue ) );
         }
 
-        BigInteger b1 = new BigInteger( backendValue );
-        BigInteger b2 = new BigInteger( assertValue );
-        return b1.compareTo( b2 );
+        return backendValue.compareTo( assertValue );
     }
 }
