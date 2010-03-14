@@ -311,7 +311,7 @@ public class SchemaManagerLoadTest
         assertEquals( 69, schemaManager.getAttributeTypeRegistry().size() );
         assertEquals( 40, schemaManager.getComparatorRegistry().size() );
         assertEquals( 40, schemaManager.getMatchingRuleRegistry().size() );
-        assertEquals( 42, schemaManager.getNormalizerRegistry().size() );
+        assertEquals( 40, schemaManager.getNormalizerRegistry().size() );
         assertEquals( 22, schemaManager.getObjectClassRegistry().size() );
         assertEquals( 63, schemaManager.getSyntaxCheckerRegistry().size() );
         assertEquals( 64, schemaManager.getLdapSyntaxRegistry().size() );

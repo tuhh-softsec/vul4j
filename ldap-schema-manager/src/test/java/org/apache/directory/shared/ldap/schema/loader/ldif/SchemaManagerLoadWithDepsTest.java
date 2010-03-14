@@ -195,7 +195,7 @@ public class SchemaManagerLoadWithDepsTest
         assertEquals( 69, schemaManager.getAttributeTypeRegistry().size() );
         assertEquals( 40, schemaManager.getComparatorRegistry().size() );
         assertEquals( 40, schemaManager.getMatchingRuleRegistry().size() );
-        assertEquals( 42, schemaManager.getNormalizerRegistry().size() );
+        assertEquals( 40, schemaManager.getNormalizerRegistry().size() );
         assertEquals( 22, schemaManager.getObjectClassRegistry().size() );
         assertEquals( 63, schemaManager.getSyntaxCheckerRegistry().size() );
         assertEquals( 64, schemaManager.getLdapSyntaxRegistry().size() );
@@ -251,7 +251,7 @@ public class SchemaManagerLoadWithDepsTest
         assertEquals( 176, schemaManager.getAttributeTypeRegistry().size() );
         assertEquals( 48, schemaManager.getComparatorRegistry().size() );
         assertEquals( 48, schemaManager.getMatchingRuleRegistry().size() );
-        assertEquals( 50, schemaManager.getNormalizerRegistry().size() );
+        assertEquals( 48, schemaManager.getNormalizerRegistry().size() );
         assertEquals( 66, schemaManager.getObjectClassRegistry().size() );
         assertEquals( 66, schemaManager.getSyntaxCheckerRegistry().size() );
         assertEquals( 71, schemaManager.getLdapSyntaxRegistry().size() );
