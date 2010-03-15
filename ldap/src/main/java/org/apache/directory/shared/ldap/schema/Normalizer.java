@@ -20,9 +20,9 @@
 package org.apache.directory.shared.ldap.schema;
 
 
-import javax.naming.NamingException;
-
 import org.apache.directory.shared.ldap.entry.Value;
+import org.apache.directory.shared.ldap.exception.LdapException;
+import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
 
 
 /**
@@ -64,9 +64,9 @@ public abstract class Normalizer extends LoadableSchemaObject
      * 
      * @param value the value to normalize. It must *not* be null !
      * @return the normalized form for a value
-     * @throws NamingException if an error results during normalization
+     * @throws LdapException if an error results during normalization
      */
-    public abstract Value<?> normalize( Value<?> value ) throws NamingException;
+    public abstract Value<?> normalize( Value<?> value ) throws LdapInvalidDnException;
 
 
     /**
@@ -74,9 +74,9 @@ public abstract class Normalizer extends LoadableSchemaObject
      * 
      * @param value the value to normalize. It must *not* be null !
      * @return the normalized form for a value
-     * @throws NamingException if an error results during normalization
+     * @throws LdapException if an error results during normalization
      */
-    public abstract String normalize( String value ) throws NamingException;
+    public abstract String normalize( String value ) throws LdapInvalidDnException;
 
 
     /**

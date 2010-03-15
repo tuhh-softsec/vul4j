@@ -24,7 +24,8 @@ import java.util.List;
 
 import javax.naming.InvalidNameException;
 import javax.naming.Name;
-import javax.naming.NameParser;
+
+import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
 
 
 /**
@@ -62,7 +63,7 @@ import javax.naming.NameParser;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public enum DnParser implements NameParser
+public enum DnParser
 {
     INSTANCE;
 
@@ -72,7 +73,7 @@ public enum DnParser implements NameParser
      *
      * @return An instance of the NameParser
      */
-    public static NameParser getNameParser()
+    public static DnParser getNameParser()
     {
         return INSTANCE;
     }
@@ -83,9 +84,9 @@ public enum DnParser implements NameParser
      *
      * @param dn The DN to be parsed
      * @param rdns The list that will contain the RDNs
-     * @throws InvalidNameException If the DN is invalid
+     * @throws LdapInvalidDnException If the DN is invalid
      */
-    public static void parseInternal( String name, List<RDN> rdns ) throws InvalidNameException
+    public static void parseInternal( String name, List<RDN> rdns ) throws LdapInvalidDnException
     {
         try
         {
@@ -114,7 +115,7 @@ public enum DnParser implements NameParser
             parseInternal( name, dn.rdns );
             return true;
         }
-        catch ( InvalidNameException e )
+        catch ( LdapInvalidDnException e )
         {
             return false;
         }
@@ -130,7 +131,7 @@ public enum DnParser implements NameParser
      * @throws InvalidNameException
      *             If the String is not a valid DN
      */
-    public Name parse( String dn ) throws InvalidNameException
+    public Name parse( String dn ) throws LdapInvalidDnException
     {
         return new DN( dn );
     }

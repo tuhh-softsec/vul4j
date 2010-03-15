@@ -21,7 +21,8 @@
 package org.apache.directory.shared.ldap.name;
 
 
-import javax.naming.NamingException;
+import org.apache.directory.shared.ldap.exception.LdapException;
+import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
 
 
 /**
@@ -46,9 +47,9 @@ public interface NameComponentNormalizer
      * 
      * @param attributeName the name or OID of the attributeType
      * @return the OID of the attributeType if it is recognized
-     * @throws NamingException if the attributeName is not recognized as a valid alias
+     * @throws LdapInvalidDnException if the attributeName is not recognized as a valid alias
      */
-    String normalizeName( String attributeName ) throws NamingException;
+    String normalizeName( String attributeName ) throws LdapInvalidDnException;
 
     /**
      * Normalizes an attribute's value given the name of the attribute - short
@@ -59,10 +60,10 @@ public interface NameComponentNormalizer
      * @param value
      *            the value of the attribute to normalize
      * @return the normalized value
-     * @throws NamingException
+     * @throws LdapException
      *             if there is a recognition problem or a syntax issue
      */
-    Object normalizeByName( String attributeName, String value ) throws NamingException;
+    Object normalizeByName( String attributeName, String value ) throws LdapException;
 
 
     /**
@@ -74,10 +75,10 @@ public interface NameComponentNormalizer
      * @param value
      *            the value of the attribute to normalize
      * @return the normalized value
-     * @throws NamingException
+     * @throws LdapInvalidDnException
      *             if there is a recognition problem or a syntax issue
      */
-    Object normalizeByName( String attributeName, byte[] value ) throws NamingException;
+    Object normalizeByName( String attributeName, byte[] value ) throws LdapInvalidDnException;
 
 
     /**
@@ -88,10 +89,10 @@ public interface NameComponentNormalizer
      * @param value
      *            the value of the attribute to normalize
      * @return the normalized value
-     * @throws NamingException
+     * @throws LdapInvalidDnException
      *             if there is a recognition problem or a syntax issue
      */
-    Object normalizeByOid( String attributeOid, String value ) throws NamingException;
+    Object normalizeByOid( String attributeOid, String value ) throws LdapInvalidDnException;
 
 
     /**
@@ -102,8 +103,8 @@ public interface NameComponentNormalizer
      * @param value
      *            the value of the attribute to normalize
      * @return the normalized value
-     * @throws NamingException
+     * @throws LdapInvalidDnException
      *             if there is a recognition problem or a syntax issue
      */
-    Object normalizeByOid( String attributeOid, byte[] value ) throws NamingException;
+    Object normalizeByOid( String attributeOid, byte[] value ) throws LdapInvalidDnException;
 }

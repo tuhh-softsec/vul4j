@@ -47,7 +47,7 @@ import javax.naming.directory.NoSuchAttributeException;
 import javax.naming.directory.SchemaViolationException;
 
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
-import org.apache.directory.shared.ldap.exception.LdapException;
+import org.apache.directory.shared.ldap.exception.LdapOperationException;
 
 
 /**
@@ -2364,9 +2364,9 @@ public enum ResultCodeEnum
      */
     public static ResultCodeEnum getResultCode( Throwable t )
     {
-        if ( t instanceof LdapException )
+        if ( t instanceof LdapOperationException )
         {
-            return ( ( LdapException ) t ).getResultCode();
+            return ( ( LdapOperationException ) t ).getResultCode();
         }
 
         if ( t instanceof CommunicationException )

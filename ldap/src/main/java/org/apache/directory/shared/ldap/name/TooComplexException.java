@@ -20,7 +20,7 @@
 package org.apache.directory.shared.ldap.name;
 
 
-import javax.naming.InvalidNameException;
+import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
 
 
 /**
@@ -29,13 +29,14 @@ import javax.naming.InvalidNameException;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public class TooComplexException extends InvalidNameException
+public class TooComplexException extends LdapInvalidDnException
 {
     private static final long serialVersionUID = 4854240181901296414L;
 
 
     public TooComplexException()
     {
+        super( ( String ) null );
     }
 
 

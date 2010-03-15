@@ -36,6 +36,9 @@ import javax.naming.Name;
 import javax.naming.NamingException;
 
 import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.exception.LdapException;
+import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
+import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.schema.normalizers.OidNormalizer;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
@@ -154,7 +157,7 @@ public class DN implements Name, Externalizable
      * @param upName The String that contains the DN.
      * @throws InvalidNameException if the String does not contain a valid DN.
      */
-    public DN( String upName ) throws InvalidNameException
+    public DN( String upName ) throws LdapInvalidDnException
     {
         if ( upName != null )
         {
@@ -188,9 +191,9 @@ public class DN implements Name, Externalizable
      * </pre>
      *
      * @param upNames
-     * @throws InvalidNameException
+     * @throws LdapInvalidDnException
      */
-    public DN( String... upRdns ) throws InvalidNameException
+    public DN( String... upRdns ) throws LdapInvalidDnException
     {
         StringBuilder sb = new StringBuilder();
         boolean valueExpected = false;
@@ -226,7 +229,7 @@ public class DN implements Name, Externalizable
         
         if ( valueExpected )
         {
-            throw new InvalidNameException( I18n.err( I18n.ERR_04202 ) );
+            throw new LdapInvalidDnException( ResultCodeEnum.INVALID_DN_SYNTAX, I18n.err( I18n.ERR_04202 ) );
         }
 
         // Stores the representations of a DN : internal (as a string and as a
@@ -263,39 +266,31 @@ public class DN implements Name, Externalizable
      * @throws InvalidNameException If the DN is invalid.
      * @throws NamingException If something went wrong.
      */
-    public static Name normalize( String name, Map<String, OidNormalizer> oidsMap ) throws InvalidNameException,
-        NamingException
+    public static Name normalize( String name, Map<String, OidNormalizer> oidsMap ) throws LdapInvalidDnException
     {
         if ( ( name == null ) || ( name.length() == 0 ) || ( oidsMap == null ) || ( oidsMap.size() == 0 ) )
         {
             return DN.EMPTY_DN;
         }
 
-        try
+        DN newDn = new DN( name );
+        
+        Enumeration<RDN> rdns = newDn.getAllRdn();
+        
+        // Loop on all RDNs
+        while ( rdns.hasMoreElements() )
         {
-            DN newDn = new DN( name );
-
-            Enumeration<RDN> rdns = newDn.getAllRdn();
-
-            // Loop on all RDNs
-            while ( rdns.hasMoreElements() )
-            {
-                RDN rdn = rdns.nextElement();
-                String upName = rdn.getUpName();
-                rdnOidToName( rdn, oidsMap );
-                rdn.normalize();
-                rdn.setUpName( upName );
-            }
-
-            newDn.normalizeInternal();
-            newDn.normalized = true;
-
-            return newDn;
+            RDN rdn = rdns.nextElement();
+            String upName = rdn.getUpName();
+            rdnOidToName( rdn, oidsMap );
+            rdn.normalize();
+            rdn.setUpName( upName );
         }
-        catch ( NamingException ne )
-        {
-            throw new InvalidNameException( ne.getMessage() );
-        }
+        
+        newDn.normalizeInternal();
+        newDn.normalized = true;
+        
+        return newDn;
     }
 
 
@@ -654,7 +649,7 @@ public class DN implements Name, Externalizable
                 {
                     nameRdn = new RDN( name.get( name.size() - i - 1 ) );
                 }
-                catch ( InvalidNameException e )
+                catch ( LdapInvalidDnException e )
                 {
                     LOG.error( I18n.err( I18n.ERR_04204, name.toString() ), e );
                     return false;
@@ -748,7 +743,7 @@ public class DN implements Name, Externalizable
                 {
                     nameRdn = new RDN( name.get( i ) );
                 }
-                catch ( InvalidNameException e )
+                catch ( LdapInvalidDnException e )
                 {
                     LOG.error( I18n.err( I18n.ERR_04204, name.toString() ), e );
                     return false;
@@ -1011,11 +1006,11 @@ public class DN implements Name, Externalizable
      * @return the updated name (not a new one)
      * @throws ArrayIndexOutOfBoundsException
      *             if posn is outside the specified range
-     * @throws InvalidNameException
+     * @throws LdapInvalidDnException
      *             if <tt>n</tt> is not a valid name, or if the addition of
      *             the components would violate the syntax rules of this name
      */
-    public Name addAllNormalized( int posn, Name name ) throws InvalidNameException
+    public Name addAllNormalized( int posn, Name name ) throws LdapInvalidDnException
     {
         if ( name instanceof DN )
         {
@@ -1117,8 +1112,17 @@ public class DN implements Name, Externalizable
 
             for ( int i = name.size() - 1; i >= 0; i-- )
             {
-                RDN rdn = new RDN( name.get( i ) );
-                rdns.add( size() - posn, rdn );
+                //FIXME this try-catch block is for the time being, during removal of
+                // java.naming.Name we have to remove this
+                try
+                {
+                    RDN rdn = new RDN( name.get( i ) );
+                    rdns.add( size() - posn, rdn );
+                }
+                catch( LdapInvalidDnException le )
+                {
+                    throw new InvalidNameException( le.getMessage() );
+                }
             }
 
             normalizeInternal();
@@ -1139,10 +1143,20 @@ public class DN implements Name, Externalizable
             return this;
         }
 
-        // We have to parse the nameComponent which is given as an argument
-        RDN newRdn = new RDN( comp );
-
-        rdns.add( 0, newRdn );
+        //FIXME this try-catch block is for the time being, during removal of
+        // java.naming.Name we have to remove this
+        try
+        {
+            // We have to parse the nameComponent which is given as an argument
+            RDN newRdn = new RDN( comp );
+            
+            rdns.add( 0, newRdn );
+        }
+        catch( LdapInvalidDnException le )
+        {
+            throw new InvalidNameException( le.getMessage() );
+        }
+        
         normalizeInternal();
         toUpName();
 
@@ -1228,11 +1242,20 @@ public class DN implements Name, Externalizable
             throw new ArrayIndexOutOfBoundsException( message );
         }
 
-        // We have to parse the nameComponent which is given as an argument
-        RDN newRdn = new RDN( comp );
-
-        int realPos = size() - posn;
-        rdns.add( realPos, newRdn );
+        //FIXME this try-catch block is for the time being, during removal of
+        // java.naming.Name we have to remove this
+        try
+        {
+            // We have to parse the nameComponent which is given as an argument
+            RDN newRdn = new RDN( comp );
+            
+            int realPos = size() - posn;
+            rdns.add( realPos, newRdn );
+        }
+        catch( LdapInvalidDnException le )
+        {
+            throw new InvalidNameException( le.getMessage() );
+        }
 
         normalizeInternal();
         toUpName();
@@ -1366,7 +1389,7 @@ public class DN implements Name, Externalizable
 
 
     private static AVA atavOidToName( AVA atav, Map<String, OidNormalizer> oidsMap )
-        throws InvalidNameException, NamingException
+        throws LdapInvalidDnException
     {
         String type = StringTools.trim( atav.getNormType() );
 
@@ -1405,7 +1428,7 @@ public class DN implements Name, Externalizable
         {
             // The type is empty : this is not possible...
             LOG.error( I18n.err( I18n.ERR_04209 ) );
-            throw new InvalidNameException( I18n.err( I18n.ERR_04209 ) );
+            throw new LdapInvalidDnException( ResultCodeEnum.INVALID_DN_SYNTAX, I18n.err( I18n.ERR_04209 ) );
         }
     }
 
@@ -1416,11 +1439,9 @@ public class DN implements Name, Externalizable
      *
      * @param rdn The RDN to modify.
      * @param oidsMap The map of all existing oids and normalizer.
-     * @throws InvalidNameException If the RDN is invalid.
-     * @throws NamingException If something went wrong.
+     * @throws LdapInvalidDnException If the RDN is invalid.
      */
-    /** No qualifier */ static void rdnOidToName( RDN rdn, Map<String, OidNormalizer> oidsMap ) throws InvalidNameException,
-        NamingException
+    /** No qualifier */ static void rdnOidToName( RDN rdn, Map<String, OidNormalizer> oidsMap ) throws LdapInvalidDnException
     {
         if ( rdn.getNbAtavs() > 1 )
         {
@@ -1460,9 +1481,9 @@ public class DN implements Name, Externalizable
      * @param dn The DN to transform.
      * @param oidsMap The mapping between names and oids.
      * @return A normalized form of the DN.
-     * @throws NamingException If something went wrong.
+     * @throws LdapInvalidDnException If something went wrong.
      */
-    public static DN normalize( DN dn, Map<String, OidNormalizer> oidsMap ) throws NamingException
+    public static DN normalize( DN dn, Map<String, OidNormalizer> oidsMap ) throws LdapInvalidDnException
     {
         if ( ( dn == null ) || ( dn.size() == 0 ) || ( oidsMap == null ) || ( oidsMap.size() == 0 ) )
         {
@@ -1501,10 +1522,10 @@ public class DN implements Name, Externalizable
      * 'commonname' share the same OID.
      *
      * @param oidsMap The mapping between names and oids.
-     * @throws NamingException If something went wrong.
+     * @throws LdapInvalidDnException If something went wrong.
      * @return The normalized DN
      */
-    public DN normalize( Map<String, OidNormalizer> oidsMap ) throws NamingException
+    public DN normalize( Map<String, OidNormalizer> oidsMap ) throws LdapInvalidDnException
     {
         if ( ( oidsMap == null ) || ( oidsMap.size() == 0 ) )
         {

@@ -23,7 +23,8 @@ package org.apache.directory.shared.ldap.name;
 import java.io.StringReader;
 import java.util.List;
 
-import javax.naming.InvalidNameException;
+import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
+import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 
 
 /**
@@ -41,9 +42,9 @@ public class ComplexDnParser
      * @param name the string representation of the distinguished name
      * @param rdns the (empty) list where parsed RDNs are put to
      * 
-     * @throws InvalidNameException the invalid name exception
+     * @throws LdapInvalidDnException the invalid name exception
      */
-    public void parseDn( String name, List<RDN> rdns ) throws InvalidNameException
+    public void parseDn( String name, List<RDN> rdns ) throws LdapInvalidDnException
     {
         AntlrDnParser dnParser = new AntlrDnParser( new AntlrDnLexer( new StringReader( name ) ) );
         
@@ -53,8 +54,8 @@ public class ComplexDnParser
         }
         catch ( Exception e )
         {
-            InvalidNameException ine = new InvalidNameException( e.getMessage() );
-            ine.setRootCause( e );
+            LdapInvalidDnException ine = new LdapInvalidDnException( ResultCodeEnum.INVALID_DN_SYNTAX, e.getMessage() );
+            ine.initCause( e );
             throw ine;
         }
     }
@@ -66,9 +67,9 @@ public class ComplexDnParser
      * @param name the string representationof the relative distinguished name
      * @param rdn the (empty) RDN where parsed ATAVs are put to
      * 
-     * @throws InvalidNameException the invalid name exception
+     * @throws LdapInvalidDnException the invalid name exception
      */
-    public void parseRdn( String name, RDN rdn ) throws InvalidNameException
+    public void parseRdn( String name, RDN rdn ) throws LdapInvalidDnException
     {
         AntlrDnParser dnParser = new AntlrDnParser( new AntlrDnLexer( new StringReader( name ) ) );
         try
@@ -77,8 +78,8 @@ public class ComplexDnParser
         }
         catch ( Exception e )
         {
-            InvalidNameException ine = new InvalidNameException( e.getMessage() );
-            ine.setRootCause( e );
+            LdapInvalidDnException ine = new LdapInvalidDnException( ResultCodeEnum.INVALID_DN_SYNTAX, e.getMessage() );
+            ine.initCause( e );
             throw ine;
         }
     }

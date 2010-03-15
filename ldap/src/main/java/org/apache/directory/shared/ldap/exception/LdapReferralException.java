@@ -55,6 +55,7 @@ public class LdapReferralException extends LdapOperationException
      */
     public LdapReferralException( Collection<String> refs )
     {
+        super( null );
         this.refs = new ArrayList<String>( refs );
     }
 

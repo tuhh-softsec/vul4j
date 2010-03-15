@@ -22,13 +22,12 @@ package org.apache.directory.shared.ldap.name;
 
 import java.util.List;
 
-import javax.naming.InvalidNameException;
 import javax.naming.Name;
-import javax.naming.NameParser;
-import javax.naming.NamingException;
 
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.entry.client.ClientStringValue;
+import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
+import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.util.Position;
 import org.apache.directory.shared.ldap.util.StringTools;
 
@@ -40,7 +39,7 @@ import org.apache.directory.shared.ldap.util.StringTools;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev: 664290 $, $Date: 2008-06-07 08:28:06 +0200 (Sa, 07 Jun 2008) $
  */
-public enum FastDnParser implements NameParser
+public enum FastDnParser
 {
     INSTANCE;
 
@@ -49,7 +48,7 @@ public enum FastDnParser implements NameParser
      * 
      * @return the name parser
      */
-    public static NameParser getNameParser()
+    public static FastDnParser getNameParser()
     {
         return INSTANCE;
     }
@@ -58,7 +57,7 @@ public enum FastDnParser implements NameParser
     /* (non-Javadoc)
      * @see javax.naming.NameParser#parse(java.lang.String)
      */
-    public Name parse( String name ) throws NamingException
+    public Name parse( String name ) throws LdapInvalidDnException
     {
         DN dn = new DN();
         parseDn( name, dn );
@@ -72,16 +71,16 @@ public enum FastDnParser implements NameParser
      * @param name the name to parse
      * @param dn the DN to fill
      * 
-     * @throws InvalidNameException the invalid name exception
+     * @throws LdapInvalidDnException the invalid name exception
      */
-    public void parseDn( String name, DN dn ) throws InvalidNameException
+    public void parseDn( String name, DN dn ) throws LdapInvalidDnException
     {
         parseDn(name, dn.rdns);
         dn.setUpName( name );
         dn.normalizeInternal();
     }
     
-    void parseDn( String name, List<RDN> rdns ) throws InvalidNameException
+    void parseDn( String name, List<RDN> rdns ) throws LdapInvalidDnException
     {
         if ( ( name == null ) || ( name.trim().length() == 0 ) )
         {
@@ -113,7 +112,7 @@ public enum FastDnParser implements NameParser
                     break;
 
                 default:
-                    throw new InvalidNameException( I18n.err( I18n.ERR_04192, c, pos.start) );
+                    throw new LdapInvalidDnException( ResultCodeEnum.INVALID_DN_SYNTAX, I18n.err( I18n.ERR_04192, c, pos.start) );
             }
         }
     }
@@ -125,17 +124,17 @@ public enum FastDnParser implements NameParser
      * @param name the name to parse
      * @param rdn the RDN to fill
      * 
-     * @throws InvalidNameException the invalid name exception
+     * @throws LdapInvalidDnException the invalid name exception
      */
-    public void parseRdn( String name, RDN rdn ) throws InvalidNameException
+    public void parseRdn( String name, RDN rdn ) throws LdapInvalidDnException
     {
         if ( name == null || name.length() == 0 )
         {
-            throw new InvalidNameException( I18n.err( I18n.ERR_04193 ) );
+            throw new LdapInvalidDnException( ResultCodeEnum.INVALID_DN_SYNTAX, I18n.err( I18n.ERR_04193 ) );
         }
         if( rdn == null )
         {
-            throw new InvalidNameException( I18n.err( I18n.ERR_04194 ) );
+            throw new LdapInvalidDnException( ResultCodeEnum.INVALID_DN_SYNTAX, I18n.err( I18n.ERR_04194 ) );
         }
 
         Position pos = new Position();
@@ -146,7 +145,7 @@ public enum FastDnParser implements NameParser
     }
 
 
-    private void parseRdnInternal( String name, Position pos, RDN rdn ) throws InvalidNameException
+    private void parseRdnInternal( String name, Position pos, RDN rdn ) throws LdapInvalidDnException
     {
         int rdnStart = pos.start;
 
@@ -190,9 +189,9 @@ public enum FastDnParser implements NameParser
      * 
      * @param name the name
      * @param pos the pos
-     * @throws InvalidNameException 
+     * @throws LdapInvalidDnException 
      */
-    private void matchSpaces( String name, Position pos ) throws InvalidNameException
+    private void matchSpaces( String name, Position pos ) throws LdapInvalidDnException
     {
         while ( hasMoreChars( pos ) )
         {
@@ -214,9 +213,9 @@ public enum FastDnParser implements NameParser
      * 
      * @return the matched attribute type
      * 
-     * @throws InvalidNameException the invalid name exception
+     * @throws LdapInvalidDnException the invalid name exception
      */
-    private String matchAttributeType( String name, Position pos ) throws InvalidNameException
+    private String matchAttributeType( String name, Position pos ) throws LdapInvalidDnException
     {
         char c = nextChar( name, pos, false );
         switch ( c )
@@ -291,7 +290,7 @@ public enum FastDnParser implements NameParser
 
             default:
                 // error
-                throw new InvalidNameException( I18n.err( I18n.ERR_04195, c, pos.start) );
+                throw new LdapInvalidDnException( ResultCodeEnum.INVALID_DN_SYNTAX, I18n.err( I18n.ERR_04195, c, pos.start) );
         }
     }
 
@@ -304,9 +303,9 @@ public enum FastDnParser implements NameParser
      * 
      * @return the attribute type descr
      * 
-     * @throws InvalidNameException the invalid name exception
+     * @throws LdapInvalidDnException the invalid name exception
      */
-    private String matchAttributeTypeDescr( String name, Position pos ) throws InvalidNameException
+    private String matchAttributeTypeDescr( String name, Position pos ) throws LdapInvalidDnException
     {
         StringBuilder descr = new StringBuilder();
         while ( hasMoreChars( pos ) )
@@ -391,7 +390,7 @@ public enum FastDnParser implements NameParser
 
                 default:
                     // error
-                    throw new InvalidNameException( I18n.err( I18n.ERR_04196, c, pos.start ) );
+                    throw new LdapInvalidDnException( ResultCodeEnum.INVALID_DN_SYNTAX, I18n.err( I18n.ERR_04196, c, pos.start ) );
             }
         }
         return descr.toString();
@@ -406,9 +405,9 @@ public enum FastDnParser implements NameParser
      * 
      * @return the attribute type OID
      * 
-     * @throws InvalidNameException the invalid name exception
+     * @throws LdapInvalidDnException the invalid name exception
      */
-    private String matchAttributeTypeNumericOid( String name, Position pos ) throws InvalidNameException
+    private String matchAttributeTypeNumericOid( String name, Position pos ) throws LdapInvalidDnException
     {
         StringBuilder numericOid = new StringBuilder();
         int dotCount = 0;
@@ -432,7 +431,7 @@ public enum FastDnParser implements NameParser
                             pos.start--;
                             break;
                         default:
-                            throw new InvalidNameException( I18n.err( I18n.ERR_04197, c, pos.start ) );
+                            throw new LdapInvalidDnException( ResultCodeEnum.INVALID_DN_SYNTAX, I18n.err( I18n.ERR_04197, c, pos.start ) );
                     }
                     break;
 
@@ -474,7 +473,7 @@ public enum FastDnParser implements NameParser
                                 numericOid.append( c );
                                 break;
                             default:
-                                throw new InvalidNameException( I18n.err( I18n.ERR_04197, c, pos.start ) );
+                                throw new LdapInvalidDnException( ResultCodeEnum.INVALID_DN_SYNTAX, I18n.err( I18n.ERR_04197, c, pos.start ) );
                         }
                     }
                     break;
@@ -487,10 +486,10 @@ public enum FastDnParser implements NameParser
                     }
                     else
                     {
-                        throw new InvalidNameException( I18n.err( I18n.ERR_04198 ) );
+                        throw new LdapInvalidDnException( ResultCodeEnum.INVALID_DN_SYNTAX, I18n.err( I18n.ERR_04198 ) );
                     }
                 default:
-                    throw new InvalidNameException( I18n.err( I18n.ERR_04199, c, pos.start ) );
+                    throw new LdapInvalidDnException( ResultCodeEnum.INVALID_DN_SYNTAX, I18n.err( I18n.ERR_04199, c, pos.start ) );
             }
         }
     }
@@ -502,14 +501,14 @@ public enum FastDnParser implements NameParser
      * @param name the name
      * @param pos the pos
      * 
-     * @throws InvalidNameException the invalid name exception
+     * @throws LdapInvalidDnException the invalid name exception
      */
-    private void matchEquals( String name, Position pos ) throws InvalidNameException
+    private void matchEquals( String name, Position pos ) throws LdapInvalidDnException
     {
         char c = nextChar( name, pos, true );
         if ( c != '=' )
         {
-            throw new InvalidNameException( I18n.err( I18n.ERR_04200, c, pos.start ) );
+            throw new LdapInvalidDnException( ResultCodeEnum.INVALID_DN_SYNTAX, I18n.err( I18n.ERR_04200, c, pos.start ) );
         }
     }
 
@@ -524,9 +523,9 @@ public enum FastDnParser implements NameParser
      * 
      * @return the string
      * 
-     * @throws InvalidNameException the invalid name exception
+     * @throws LdapInvalidDnException the invalid name exception
      */
-    private String matchValue( String name, Position pos ) throws InvalidNameException
+    private String matchValue( String name, Position pos ) throws LdapInvalidDnException
     {
         StringBuilder value = new StringBuilder();
         int numTrailingSpaces = 0;
@@ -570,13 +569,13 @@ public enum FastDnParser implements NameParser
      * @param increment true to increment the position
      * 
      * @return the character
-     * @throws InvalidNameException If no more characters are available
+     * @throws LdapInvalidDnException If no more characters are available
      */
-    private char nextChar( String name, Position pos, boolean increment ) throws InvalidNameException
+    private char nextChar( String name, Position pos, boolean increment ) throws LdapInvalidDnException
     {
         if ( !hasMoreChars( pos ) )
         {
-            throw new InvalidNameException( I18n.err( I18n.ERR_04201, pos.start ) );
+            throw new LdapInvalidDnException( ResultCodeEnum.INVALID_DN_SYNTAX, I18n.err( I18n.ERR_04201, pos.start ) );
         }
         char c = name.charAt( pos.start );
         if ( increment )

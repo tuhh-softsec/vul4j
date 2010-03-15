@@ -26,6 +26,7 @@ import javax.naming.NamingException;
 
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.entry.client.ClientBinaryValue;
+import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.name.NameComponentNormalizer;
 import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.MatchingRule;
@@ -109,7 +110,7 @@ public class ConcreteNameComponentNormalizer implements NameComponentNormalizer
     /**
      * @see NameComponentNormalizer#normalizeByName(String, String)
      */
-    public Object normalizeByName( String name, String value ) throws NamingException
+    public Object normalizeByName( String name, String value ) throws LdapException
     {
         AttributeType attributeType = schemaManager.lookupAttributeTypeRegistry( name );
         
@@ -140,7 +141,7 @@ public class ConcreteNameComponentNormalizer implements NameComponentNormalizer
     /**
      * @see NameComponentNormalizer#normalizeByName(String, String)
      */
-    public Object normalizeByName( String name, byte[] value ) throws NamingException
+    public Object normalizeByName( String name, byte[] value ) throws LdapException
     {
         AttributeType attributeType = schemaManager.lookupAttributeTypeRegistry( name );
         
@@ -168,7 +169,7 @@ public class ConcreteNameComponentNormalizer implements NameComponentNormalizer
     /**
      * @see NameComponentNormalizer#normalizeByOid(String, String)
      */
-    public Object normalizeByOid( String oid, String value ) throws NamingException
+    public Object normalizeByOid( String oid, String value ) throws LdapException
     {
         return lookup( oid ).normalize( value );
     }
@@ -177,7 +178,7 @@ public class ConcreteNameComponentNormalizer implements NameComponentNormalizer
     /**
      * @see NameComponentNormalizer#normalizeByOid(String, String)
      */
-    public Object normalizeByOid( String oid, byte[] value ) throws NamingException
+    public Object normalizeByOid( String oid, byte[] value ) throws LdapException
     {
         return lookup( oid ).normalize( new ClientBinaryValue( value ) );
     }

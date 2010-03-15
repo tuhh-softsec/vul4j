@@ -26,12 +26,12 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Arrays;
 
-import javax.naming.InvalidNameException;
-
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.entry.client.ClientBinaryValue;
 import org.apache.directory.shared.ldap.entry.client.ClientStringValue;
+import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
+import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -123,7 +123,7 @@ public class AVA implements Cloneable, Comparable, Externalizable
      * @param upValue The User Provided value
      * @param normValue The normalized value
      */
-    public AVA( String upType, String normType, String upValue, String normValue ) throws InvalidNameException
+    public AVA( String upType, String normType, String upValue, String normValue ) throws LdapInvalidDnException
     {
         this( upType, normType, new ClientStringValue( upValue ), new ClientStringValue( normValue ) );
     }
@@ -144,7 +144,7 @@ public class AVA implements Cloneable, Comparable, Externalizable
      * @param upValue The User Provided value
      * @param normValue The normalized value
      */
-    public AVA( String upType, String normType, byte[] upValue, byte[] normValue ) throws InvalidNameException
+    public AVA( String upType, String normType, byte[] upValue, byte[] normValue ) throws LdapInvalidDnException
     {
         this( upType, normType, new ClientBinaryValue( upValue ), new ClientBinaryValue( normValue ) );
     }
@@ -163,7 +163,7 @@ public class AVA implements Cloneable, Comparable, Externalizable
      * @param upValue The User Provided value
      * @param normValue The normalized value
      */
-    public AVA( String upType, String normType, Value<?> upValue, Value<?> normValue ) throws InvalidNameException
+    public AVA( String upType, String normType, Value<?> upValue, Value<?> normValue ) throws LdapInvalidDnException
     {
         String upTypeTrimmed = StringTools.trim( upType );
         String normTypeTrimmed = StringTools.trim( normType );
@@ -174,7 +174,7 @@ public class AVA implements Cloneable, Comparable, Externalizable
             {
                 String message =  I18n.err( I18n.ERR_04188 );
                 LOG.error( message );
-                throw new InvalidNameException( message );
+                throw new LdapInvalidDnException( ResultCodeEnum.INVALID_DN_SYNTAX, message );
             }
             else
             {
@@ -220,7 +220,7 @@ public class AVA implements Cloneable, Comparable, Externalizable
      * @param upName The User Provided name (may be escaped)
      */
     public AVA( String upType, String normType, Value<?> upValue, Value<?> normValue, String upName )
-        throws InvalidNameException
+        throws LdapInvalidDnException
     {
         String upTypeTrimmed = StringTools.trim( upType );
         String normTypeTrimmed = StringTools.trim( normType );
@@ -231,7 +231,7 @@ public class AVA implements Cloneable, Comparable, Externalizable
             {
                 String message = I18n.err( I18n.ERR_04188 );
                 LOG.error( message );
-                throw new InvalidNameException( message );
+                throw new LdapInvalidDnException( ResultCodeEnum.INVALID_DN_SYNTAX, message );
             }
             else
             {
@@ -289,23 +289,23 @@ public class AVA implements Cloneable, Comparable, Externalizable
      * @param upType The AVA User Provided type
      * @param type The AVA type
      * 
-     * @throws InvalidNameException if the type or upType are empty or null.
+     * @throws LdapInvalidDnException if the type or upType are empty or null.
      * If the upName is invalid.
      */
-    public void setType( String upType, String type ) throws InvalidNameException
+    public void setType( String upType, String type ) throws LdapInvalidDnException
     {
         if ( StringTools.isEmpty( type ) || StringTools.isEmpty( type.trim() ) )
         {
             String message = I18n.err( I18n.ERR_04188 );
             LOG.error( message );
-            throw new InvalidNameException( message );
+            throw new LdapInvalidDnException( ResultCodeEnum.INVALID_DN_SYNTAX, message );
         }
         
         if ( StringTools.isEmpty( upType ) || StringTools.isEmpty( upType.trim() ) )
         {
             String message = I18n.err( I18n.ERR_04189 );
             LOG.error( message );
-            throw new InvalidNameException( message );
+            throw new LdapInvalidDnException( ResultCodeEnum.INVALID_DN_SYNTAX, message );
         }
         
         int equalPosition = upName.indexOf( '=' );
@@ -314,7 +314,7 @@ public class AVA implements Cloneable, Comparable, Externalizable
         {
             String message = I18n.err( I18n.ERR_04190 ); 
             LOG.error( message );
-            throw new InvalidNameException( message );
+            throw new LdapInvalidDnException( ResultCodeEnum.INVALID_DN_SYNTAX, message );
         }
 
         normType = type.trim().toLowerCase();
@@ -330,12 +330,12 @@ public class AVA implements Cloneable, Comparable, Externalizable
      *
      * @param type The AVA type
      */
-    public void setTypeNormalized( String type ) throws InvalidNameException
+    public void setTypeNormalized( String type ) throws LdapInvalidDnException
     {
         if ( StringTools.isEmpty( type ) || StringTools.isEmpty( type.trim() ) )
         {
             LOG.error( I18n.err( I18n.ERR_04191 ) );
-            throw new InvalidNameException( I18n.err( I18n.ERR_04191 ) );
+            throw new LdapInvalidDnException( ResultCodeEnum.INVALID_DN_SYNTAX, I18n.err( I18n.ERR_04191 ) );
         }
 
         normType = type.trim().toLowerCase();

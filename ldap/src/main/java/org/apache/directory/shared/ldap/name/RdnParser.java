@@ -20,7 +20,7 @@
 package org.apache.directory.shared.ldap.name;
 
 
-import javax.naming.InvalidNameException;
+import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
 
 
 /**
@@ -94,9 +94,9 @@ public class RdnParser
      * @param dn The String to parse
      * @param rdn The RDN to fill. Beware that if the RDN is not empty, the new
      *            AttributeTypeAndValue will be added.
-     * @throws InvalidNameException If the NameComponent is invalid
+     * @throws LdapInvalidDnException If the NameComponent is invalid
      */
-    public static void parse( String dn, RDN rdn ) throws InvalidNameException
+    public static void parse( String dn, RDN rdn ) throws LdapInvalidDnException
     {
         try
         {
@@ -128,7 +128,7 @@ public class RdnParser
             parse( dn, rdn );
             return true;
         }
-        catch ( InvalidNameException e )
+        catch ( LdapInvalidDnException e )
         {
             return false;
         }

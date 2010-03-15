@@ -30,14 +30,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import javax.naming.InvalidNameException;
-import javax.naming.NamingException;
-
 import org.apache.commons.collections.MultiMap;
 import org.apache.commons.collections.map.MultiValueMap;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.entry.client.ClientStringValue;
+import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.schema.normalizers.OidNormalizer;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
@@ -200,9 +198,9 @@ public class RDN implements Cloneable, Comparable, Externalizable, Iterable<AVA>
      * A constructor that parse a String representing a RDN.
      *
      * @param rdn The String containing the RDN to parse
-     * @throws InvalidNameException If the RDN is invalid
+     * @throws LdapInvalidDnException If the RDN is invalid
      */
-    public RDN( String rdn ) throws InvalidNameException
+    public RDN( String rdn ) throws LdapInvalidDnException
     {
         start = 0;
 
@@ -236,9 +234,9 @@ public class RDN implements Cloneable, Comparable, Externalizable, Iterable<AVA>
      * @param upValue The user provided value of the RDN
      * @param normType The normalized provided type of the RDN
      * @param normValue The normalized provided value of the RDN
-     * @throws InvalidNameException If the RDN is invalid
+     * @throws LdapInvalidDnException If the RDN is invalid
      */
-    public RDN( String upType, String normType, String upValue, String normValue ) throws InvalidNameException
+    public RDN( String upType, String normType, String upValue, String normValue ) throws LdapInvalidDnException
     {
         addAttributeTypeAndValue( upType, normType, new ClientStringValue( upValue ), new ClientStringValue( normValue ) );
 
@@ -258,9 +256,9 @@ public class RDN implements Cloneable, Comparable, Externalizable, Iterable<AVA>
      *
      * @param upType The user provided type of the RDN
      * @param upValue The user provided value of the RDN
-     * @throws InvalidNameException If the RDN is invalid
+     * @throws LdapInvalidDnException If the RDN is invalid
      */
-    public RDN( String upType, String upValue ) throws InvalidNameException
+    public RDN( String upType, String upValue ) throws LdapInvalidDnException
     {
         addAttributeTypeAndValue( upType, upType, new ClientStringValue( upValue ), new ClientStringValue( upValue ) );
 
@@ -393,10 +391,9 @@ public class RDN implements Cloneable, Comparable, Externalizable, Iterable<AVA>
      *
      * @param rdn The RDN to modify.
      * @param oidsMap The map of all existing oids and normalizer.
-     * @throws InvalidNameException If the RDN is invalid.
-     * @throws NamingException If something went wrong.
+     * @throws LdapInvalidDnException If the RDN is invalid.
      */
-    public RDN normalize( Map<String, OidNormalizer> oidsMap ) throws InvalidNameException, NamingException
+    public RDN normalize( Map<String, OidNormalizer> oidsMap ) throws LdapInvalidDnException
     {
         String upName = getUpName();
         DN.rdnOidToName( this, oidsMap );
@@ -416,14 +413,14 @@ public class RDN implements Cloneable, Comparable, Externalizable, Iterable<AVA>
      * @param type The normalized provided type of the added RDN.
      * @param upValue The user provided value of the added RDN
      * @param value The normalized provided value of the added RDN
-     * @throws InvalidNameException
+     * @throws LdapInvalidDnException
      *             If the RDN is invalid
      */
     // WARNING : The protection level is left unspecified intentionally.
     // We need this method to be visible from the DnParser class, but not
     // from outside this package.
     /* Unspecified protection */void addAttributeTypeAndValue( String upType, String type, Value<?> upValue,
-        Value<?> value ) throws InvalidNameException
+        Value<?> value ) throws LdapInvalidDnException
     {
         // First, let's normalize the type
         String normalizedType = StringTools.lowerCaseAscii( type );
@@ -540,9 +537,9 @@ public class RDN implements Cloneable, Comparable, Externalizable, Iterable<AVA>
      * @param type
      *            The type of the NameArgument
      * @return The Value to be returned, or null if none found.
-     * @throws InvalidNameException 
+     * @throws LdapInvalidDnException 
      */
-    public Object getValue( String type ) throws InvalidNameException
+    public Object getValue( String type ) throws LdapInvalidDnException
     {
         // First, let's normalize the type
         String normalizedType = StringTools.lowerCaseAscii( StringTools.trim( type ) );

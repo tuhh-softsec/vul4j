@@ -35,6 +35,16 @@ public class LdapInvalidDnException extends LdapOperationException
     /** The serial version UUID */
     static final long serialVersionUID = 1L;
 
+    
+    /**
+     * to be used by some special exceptions like TooComplexException
+     */
+    protected LdapInvalidDnException( String message )
+    {
+        super( message );
+    }
+    
+    
     /**
      * Creates a new instance of LdapInvalidDnException.
      *
