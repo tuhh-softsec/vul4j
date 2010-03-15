@@ -24,8 +24,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import javax.naming.InvalidNameException;
-
 import org.apache.directory.shared.asn1.Asn1Object;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.primitives.OID;
@@ -66,6 +64,7 @@ import org.apache.directory.shared.ldap.codec.util.LdapURLEncodingException;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Modification;
 import org.apache.directory.shared.ldap.entry.Value;
+import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.filter.AndNode;
 import org.apache.directory.shared.ldap.filter.ApproximateNode;
 import org.apache.directory.shared.ldap.filter.BranchNode;
@@ -247,7 +246,7 @@ public class LdapTransformer
         {
             internalLdapResult.setMatchedDn( new DN( codecLdapResult.getMatchedDN() ) );
         }
-        catch ( InvalidNameException e )
+        catch ( LdapInvalidDnException e )
         {
             LOG.error( I18n.err( I18n.ERR_04111, codecLdapResult.getMatchedDN() ) );
             internalLdapResult.setMatchedDn( new DN() );

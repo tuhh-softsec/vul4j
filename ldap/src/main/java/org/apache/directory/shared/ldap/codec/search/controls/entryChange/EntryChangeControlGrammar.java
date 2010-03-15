@@ -20,8 +20,6 @@
 package org.apache.directory.shared.ldap.codec.search.controls.entryChange;
 
 
-import javax.naming.InvalidNameException;
-
 import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.AbstractGrammar;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
@@ -36,6 +34,7 @@ import org.apache.directory.shared.asn1.util.LongDecoder;
 import org.apache.directory.shared.asn1.util.LongDecoderException;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.search.controls.ChangeType;
+import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
@@ -177,7 +176,7 @@ public class EntryChangeControlGrammar extends AbstractGrammar
                     {
                         previousDn = new DN( StringTools.utf8ToString( value.getData() ) );
                     }
-                    catch ( InvalidNameException ine )
+                    catch ( LdapInvalidDnException ine )
                     {
                         log.error( I18n.err( I18n.ERR_04047, StringTools.dumpBytes( value.getData() ) ) );
                         throw new DecoderException( I18n.err( I18n.ERR_04048 ) );

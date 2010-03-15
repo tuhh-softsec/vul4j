@@ -20,7 +20,6 @@
 package org.apache.directory.shared.ldap.codec;
 
 
-import javax.naming.InvalidNameException;
 import javax.naming.NamingException;
 
 import org.apache.directory.shared.asn1.ber.IAsn1Container;
@@ -99,6 +98,7 @@ import org.apache.directory.shared.ldap.codec.search.SearchResultEntryCodec;
 import org.apache.directory.shared.ldap.codec.search.SearchResultReferenceCodec;
 import org.apache.directory.shared.ldap.codec.search.SubstringFilter;
 import org.apache.directory.shared.ldap.codec.unbind.UnBindRequestCodec;
+import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.filter.SearchScope;
 import org.apache.directory.shared.ldap.message.AddResponseImpl;
 import org.apache.directory.shared.ldap.message.BindResponseImpl;
@@ -368,7 +368,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                         {
                             entry = new DN( dnStr );
                         }
-                        catch ( InvalidNameException ine )
+                        catch ( LdapInvalidDnException ine )
                         {
                             String msg = I18n.err( I18n.ERR_04074, dnStr, StringTools.dumpBytes( dnBytes ),
                             		ine.getLocalizedMessage() );
@@ -593,7 +593,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                             DN dn = new DN( dnStr );
                             bindRequestMessage.setName( dn );
                         }
-                        catch ( InvalidNameException ine )
+                        catch ( LdapInvalidDnException ine )
                         {
                             String msg = "Incorrect DN given : " + dnStr + " ("
                                 + StringTools.dumpBytes( dnBytes ) + ") is invalid";
@@ -1162,7 +1162,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                         {
                             objectName = new DN( dnStr );
                         }
-                        catch ( InvalidNameException ine )
+                        catch ( LdapInvalidDnException ine )
                         {
                             // This is for the client side. We will never decode LdapResult on the server
                             String msg = "The DN " + StringTools.dumpBytes( dnBytes ) + "is invalid : "
@@ -1468,7 +1468,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                         {
                             object = new DN( dnStr );
                         }
-                        catch ( InvalidNameException ine )
+                        catch ( LdapInvalidDnException ine )
                         {
                             String msg = "Invalid DN given : " + dnStr + " ("
                                 + StringTools.dumpBytes( dnBytes ) + ") is invalid";
@@ -1910,7 +1910,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                         {
                             entryDn = new DN( dnStr );
                         }
-                        catch ( InvalidNameException ine )
+                        catch ( LdapInvalidDnException ine )
                         {
                             String msg = "Invalid DN given : " + dnStr + " ("
                                 + StringTools.dumpBytes( dnBytes ) + ") is invalid";
@@ -2215,7 +2215,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                         {
                             entry = new DN( dnStr );
                         }
-                        catch ( InvalidNameException ine )
+                        catch ( LdapInvalidDnException ine )
                         {
                             String msg = "Invalid DN given : " + dnStr + " ("
                                 + StringTools.dumpBytes( dnBytes ) + ") is invalid";
@@ -2285,7 +2285,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                             DN dn = new DN( dnStr );
                             newRdn = dn.getRdn( 0 );
                         }
-                        catch ( InvalidNameException ine )
+                        catch ( LdapInvalidDnException ine )
                         {
                             String msg = "Invalid new RDN given : " + dnStr + " ("
                                 + StringTools.dumpBytes( dnBytes ) + ") is invalid";
@@ -2412,7 +2412,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                         {
                             newSuperior = new DN( dnStr );
                         }
-                        catch ( InvalidNameException ine )
+                        catch ( LdapInvalidDnException ine )
                         {
                             String msg = "Invalid new superior DN given : " + dnStr
                                 + " (" + StringTools.dumpBytes( dnBytes ) + ") is invalid";
@@ -2568,7 +2568,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                         {
                             entry = new DN( dnStr );
                         }
-                        catch ( InvalidNameException ine )
+                        catch ( LdapInvalidDnException ine )
                         {
                             String msg = "Invalid DN given : " + dnStr + " ("
                                 + StringTools.dumpBytes( dnBytes ) + ") is invalid";
@@ -3663,7 +3663,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                         {
                             baseObject = new DN( dnStr );
                         }
-                        catch ( InvalidNameException ine )
+                        catch ( LdapInvalidDnException ine )
                         {
                             String msg = "Invalid root DN given : " + dnStr + " ("
                                 + StringTools.dumpBytes( dnBytes ) + ") is invalid";

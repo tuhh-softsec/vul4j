@@ -20,8 +20,6 @@
 package org.apache.directory.shared.ldap.codec.actions;
 
 
-import javax.naming.InvalidNameException;
-
 import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
@@ -30,6 +28,7 @@ import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.LdapResponseCodec;
 import org.apache.directory.shared.ldap.codec.LdapResultCodec;
+import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.util.StringTools;
@@ -94,7 +93,7 @@ public class MatchedDNAction extends GrammarAction
                     {
                         ldapResult.setMatchedDN( new DN( dnStr ) );
                     }
-                    catch ( InvalidNameException ine )
+                    catch ( LdapInvalidDnException ine )
                     {
                         // This is for the client side. We will never decode LdapResult on the server
                         String msg = I18n.err( I18n.ERR_04013, dnStr, StringTools.dumpBytes( dnBytes ), ine.getLocalizedMessage() );
