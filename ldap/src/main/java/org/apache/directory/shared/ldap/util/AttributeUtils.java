@@ -40,6 +40,7 @@ import org.apache.directory.shared.ldap.entry.Modification;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.entry.client.DefaultClientAttribute;
 import org.apache.directory.shared.ldap.entry.client.DefaultClientEntry;
+import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.MatchingRule;
@@ -268,15 +269,22 @@ public class AttributeUtils
 
         if ( type.getSyntax().isHumanReadable() )
         {
-            String comparedStr = normalizer.normalize( compared.getString() );
-
-            for ( NamingEnumeration<?> values = attr.getAll(); values.hasMoreElements(); /**/)
+            try
             {
-                String value = ( String ) values.nextElement();
-                if ( comparedStr.equals( normalizer.normalize( value ) ) )
+                String comparedStr = normalizer.normalize( compared.getString() );
+                
+                for ( NamingEnumeration<?> values = attr.getAll(); values.hasMoreElements(); /**/)
                 {
-                    return true;
+                    String value = ( String ) values.nextElement();
+                    if ( comparedStr.equals( normalizer.normalize( value ) ) )
+                    {
+                        return true;
+                    }
                 }
+            }
+            catch( LdapInvalidDnException e )
+            {
+                throw new NamingException( e.getMessage() );
             }
         }
         else

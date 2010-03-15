@@ -33,10 +33,8 @@ import java.util.NoSuchElementException;
 
 import javax.naming.InvalidNameException;
 import javax.naming.Name;
-import javax.naming.NamingException;
 
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.schema.normalizers.OidNormalizer;
@@ -264,7 +262,7 @@ public class DN implements Name, Externalizable
      * @param oidsMap The OID mapping
      * @return A valid DN
      * @throws InvalidNameException If the DN is invalid.
-     * @throws NamingException If something went wrong.
+     * @throws LdapInvalidDnException If something went wrong.
      */
     public static Name normalize( String name, Map<String, OidNormalizer> oidsMap ) throws LdapInvalidDnException
     {

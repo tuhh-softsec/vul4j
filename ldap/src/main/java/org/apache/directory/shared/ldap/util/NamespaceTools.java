@@ -20,14 +20,15 @@
 package org.apache.directory.shared.ldap.util;
 
 
-import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.name.DN;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.naming.Name;
 import javax.naming.NamingException;
+
+import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
+import org.apache.directory.shared.ldap.name.DN;
 
 
 /**
@@ -123,7 +124,14 @@ public class NamespaceTools
         }
         else
         {
-            rdn = new DN( descendant.toString() );
+            try
+            {
+                rdn = new DN( descendant.toString() );
+            }
+            catch( LdapInvalidDnException e )
+            {
+                throw new NamingException( e.getMessage() );
+            }
         }
 
         if ( rdn.startsWith( ancestor ) )

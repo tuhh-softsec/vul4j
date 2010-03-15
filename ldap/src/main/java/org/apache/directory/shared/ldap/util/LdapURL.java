@@ -29,14 +29,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.naming.InvalidNameException;
-
 import org.apache.directory.shared.asn1.codec.binary.Hex;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.util.HttpClientError;
 import org.apache.directory.shared.ldap.codec.util.LdapURLEncodingException;
 import org.apache.directory.shared.ldap.codec.util.URIException;
 import org.apache.directory.shared.ldap.codec.util.UrlDecoderException;
+import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.filter.FilterParser;
 import org.apache.directory.shared.ldap.filter.SearchScope;
 import org.apache.directory.shared.ldap.name.DN;
@@ -770,7 +769,7 @@ public class LdapURL
         {
             return -1;
         }
-        catch ( InvalidNameException de )
+        catch ( LdapInvalidDnException de )
         {
             return -1;
         }
