@@ -40,5 +40,21 @@ public class EsiRendererTest extends TestCase {
 		tested.render(page, out);
 		assertEquals("begin <sometag> some text</sometag> end", out.toString());
 	}
+	
+	public void testRemove() throws IOException, HttpErrorPage {
+		String page = "begin <esi:remove>some text to be removed</esi:remove> end";
+		EsiRenderer tested = new EsiRenderer(null, null, provider);
+		StringWriter out = new StringWriter();
+		tested.render(page, out);
+		assertEquals("begin  end", out.toString());
+	}
+	
+	public void testComment() throws IOException, HttpErrorPage {
+		String page = "begin <esi:comment text=\"some comment\" /> end";
+		EsiRenderer tested = new EsiRenderer(null, null, provider);
+		StringWriter out = new StringWriter();
+		tested.render(page, out);
+		assertEquals("begin  end", out.toString());
+	}
 
 }

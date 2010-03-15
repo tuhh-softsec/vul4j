@@ -23,8 +23,8 @@ import net.webassembletool.parser.Parser;
  */
 public class EsiRenderer implements Renderer, Appendable {
 	private final static Parser PARSER = new Parser(Pattern
-			.compile("(<esi:[^>]*>)|(<!--esi)|(-->)"), IncludeElement.TYPE,
-			Comment.TYPE);
+			.compile("(<esi:[^>]*>)|(</esi:[^>]*>)|(<!--esi)|(-->)"), IncludeElement.TYPE,
+			Comment.TYPE, CommentElement.TYPE, RemoveElement.TYPE);
 	private Writer out;
 	private final HttpServletRequest request;
 	private final HttpServletResponse response;
