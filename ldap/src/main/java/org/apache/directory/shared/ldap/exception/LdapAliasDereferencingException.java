@@ -20,46 +20,37 @@
 package org.apache.directory.shared.ldap.exception;
 
 
-import javax.naming.NameNotFoundException;
-
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 
 
 /**
- * A NameNotFoundException holding LDAP specific information such as the LDAP
- * ResultCode.
+ * A subclass of {@link LdapOperationException} which associates the
+ * {@link ResultCodeEnum#ALIAS_DEREFERENCING_PROBLEM} value with the type.
  * 
- * @see NameNotFoundException
- * @see <a
- *      href="http://java.sun.com/j2se/1.4.2/docs/guide/jndi/jndi-ldap-gl.html#EXCEPT">
- *      LDAP ResultCode to JNDI Exception Mappings</a>
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
+ * @version $Rev: 477298 $
  */
-public class LdapNameNotFoundException extends NameNotFoundException implements LdapException
+public class LdapAliasDereferencingException extends LdapOperationException
 {
-    static final long serialVersionUID = 5162107136594237160L;
+    /** The serial version UUID */
+    static final long serialVersionUID = 1L;
 
-
-    public LdapNameNotFoundException()
+    /**
+     * Creates a new instance of LdapAliasDereferencingException.
+     *
+     * @param message The exception message
+     */
+    public LdapAliasDereferencingException( String message )
     {
-    }
-
-
-    public LdapNameNotFoundException(String explanation)
-    {
-        super( explanation );
+        super( ResultCodeEnum.ALIAS_DEREFERENCING_PROBLEM, message );
     }
 
 
     /**
-     * Gets the ResultCode associated with this exception which will always be
-     * ResultCodeEnum.NOSUCHOBJECT.
-     * 
-     * @return ResultCodeEnum.NOSUCHOBJECT
+     * Creates a new instance of LdapAliasDereferencingException.
      */
-    public ResultCodeEnum getResultCode()
+    public LdapAliasDereferencingException()
     {
-        return ResultCodeEnum.NO_SUCH_OBJECT;
+        super( ResultCodeEnum.ALIAS_DEREFERENCING_PROBLEM, null );
     }
 }

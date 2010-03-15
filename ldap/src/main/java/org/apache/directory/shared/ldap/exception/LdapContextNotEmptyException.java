@@ -20,8 +20,6 @@
 package org.apache.directory.shared.ldap.exception;
 
 
-import javax.naming.ContextNotEmptyException;
-
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 
 
@@ -31,30 +29,27 @@ import org.apache.directory.shared.ldap.message.ResultCodeEnum;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public class LdapContextNotEmptyException extends ContextNotEmptyException implements LdapException
+public class LdapContextNotEmptyException extends LdapOperationException
 {
-    static final long serialVersionUID = -2320797162018226278L;
+    /** The serial version UUID */
+    static final long serialVersionUID = 1L;
 
-
-    public LdapContextNotEmptyException()
+    /**
+     * Creates a new instance of LdapContextNotEmptyException.
+     *
+     * @param message The exception message
+     */
+    public LdapContextNotEmptyException( String message )
     {
-        super();
-    }
-
-
-    public LdapContextNotEmptyException(String explanation)
-    {
-        super( explanation );
+        super( ResultCodeEnum.NOT_ALLOWED_ON_NON_LEAF, message );
     }
 
 
     /**
-     * Gets the LDAP ResultCode for this exception type.
-     * 
-     * @return {@link ResultCodeEnum#NOTALLOWEDONNONLEAF} always
+     * Creates a new instance of LdapContextNotEmptyException.
      */
-    public ResultCodeEnum getResultCode()
+    public LdapContextNotEmptyException()
     {
-        return ResultCodeEnum.NOT_ALLOWED_ON_NON_LEAF;
+        super( ResultCodeEnum.NOT_ALLOWED_ON_NON_LEAF, null );
     }
 }

@@ -20,45 +20,37 @@
 package org.apache.directory.shared.ldap.exception;
 
 
-import javax.naming.AuthenticationException;
-
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 
 
 /**
- * A subclass of {@link AuthenticationException} which associates the
+ * A subclass of {@link LdapOperationException} which associates the
  * {@link ResultCodeEnum#INVALIDCREDENTIALS} value with the type.
  * 
- * @see <a
- *      href="http://java.sun.com/j2se/1.4.2/docs/guide/jndi/jndi-ldap-gl.html#EXCEPT">
- *      LDAP ResultCode to JNDI Exception Mappings</a>
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public class LdapAuthenticationException extends AuthenticationException implements LdapException
+public class LdapAuthenticationException extends LdapOperationException
 {
-    static final long serialVersionUID = 4035795887975350185L;
+    /** The serial version UUID */
+    static final long serialVersionUID = 1L;
 
-
-    public LdapAuthenticationException(String msg)
+    /**
+     * Creates a new instance of LdapAuthenticationException.
+     *
+     * @param message The exception message
+     */
+    public LdapAuthenticationException( String message )
     {
-        super( msg );
-    }
-
-
-    public LdapAuthenticationException()
-    {
+        super( ResultCodeEnum.INVALID_CREDENTIALS, message );
     }
 
 
     /**
-     * Gets ResultCodeEnum.INVALIDCREDENTIALS every time.
-     * 
-     * @see LdapException#getResultCode()
-     * @return ResultCodeEnum.INVALIDCREDENTIALS
+     * Creates a new instance of LdapAuthenticationException.
      */
-    public ResultCodeEnum getResultCode()
+    public LdapAuthenticationException()
     {
-        return ResultCodeEnum.INVALID_CREDENTIALS;
+        super( ResultCodeEnum.INVALID_CREDENTIALS, null );
     }
 }

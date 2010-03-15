@@ -20,49 +20,37 @@
 package org.apache.directory.shared.ldap.exception;
 
 
-import javax.naming.directory.NoSuchAttributeException;
-
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 
 
 /**
- * A subclass of NoSuchAttributeException which holds the LDAP resultCode
+ * A subclass of {@link LdapOperationException} which holds the LDAP resultCode
  * associated with the exception.
  * 
- * @see <a
- *      href="http://java.sun.com/j2se/1.4.2/docs/guide/jndi/jndi-ldap-gl.html#EXCEPT">
- *      LDAP ResultCode to JNDI Exception Mappings</a>
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public class LdapNoSuchAttributeException extends NoSuchAttributeException implements LdapException
+public class LdapNoSuchAttributeException extends LdapOperationException
 {
-    static final long serialVersionUID = 886120483680893537L;
+    /** The serial version UUID */
+    static final long serialVersionUID = 1L;
+
+    /**
+     * Creates a new instance of LdapNoSuchAttributeException.
+     *
+     * @param message The exception message
+     */
+    public LdapNoSuchAttributeException( String message )
+    {
+        super( ResultCodeEnum.NO_SUCH_ATTRIBUTE, message );
+    }
 
 
     /**
-     * @see javax.naming.directory.NoSuchAttributeException#NoSuchAttributeException()
+     * Creates a new instance of LdapNoSuchAttributeException.
      */
     public LdapNoSuchAttributeException()
     {
-        super();
-    }
-
-
-    /**
-     * @see javax.naming.directory.NoSuchAttributeException#NoSuchAttributeException(String)
-     */
-    public LdapNoSuchAttributeException(String explanation)
-    {
-        super( explanation );
-    }
-
-
-    /**
-     * @see LdapException#getResultCode()
-     */
-    public ResultCodeEnum getResultCode()
-    {
-        return ResultCodeEnum.NO_SUCH_ATTRIBUTE;
+        super( ResultCodeEnum.NO_SUCH_ATTRIBUTE, null );
     }
 }

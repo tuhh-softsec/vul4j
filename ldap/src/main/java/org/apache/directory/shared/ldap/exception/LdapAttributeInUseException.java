@@ -20,49 +20,37 @@
 package org.apache.directory.shared.ldap.exception;
 
 
-import javax.naming.directory.AttributeInUseException;
-
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 
 
 /**
- * A subclass of AttributeInUseException which holds the LDAP resultCode
+ * A subclass of {@link LdapOperationException} which holds the LDAP resultCode
  * associated with the exception.
  * 
- * @see <a
- *      href="http://java.sun.com/j2se/1.4.2/docs/guide/jndi/jndi-ldap-gl.html#EXCEPT">
- *      LDAP ResultCode to JNDI Exception Mappings</a>
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public class LdapAttributeInUseException extends AttributeInUseException implements LdapException
+public class LdapAttributeInUseException extends LdapOperationException
 {
-    static final long serialVersionUID = 886120483680893537L;
+    /** The serial version UUID */
+    static final long serialVersionUID = 1L;
+
+    /**
+     * Creates a new instance of LdapAttributeInUseException.
+     *
+     * @param message The exception message
+     */
+    public LdapAttributeInUseException( String message )
+    {
+        super( ResultCodeEnum.ATTRIBUTE_OR_VALUE_EXISTS, message );
+    }
 
 
     /**
-     * @see AttributeInUseException#AttributeInUseException()
+     * Creates a new instance of LdapAttributeInUseException.
      */
     public LdapAttributeInUseException()
     {
-        super();
-    }
-
-
-    /**
-     * @see AttributeInUseException#AttributeInUseException(String)
-     */
-    public LdapAttributeInUseException(String explanation)
-    {
-        super( explanation );
-    }
-
-
-    /**
-     * @see LdapException#getResultCode()
-     */
-    public ResultCodeEnum getResultCode()
-    {
-        return ResultCodeEnum.ATTRIBUTE_OR_VALUE_EXISTS;
+        super( ResultCodeEnum.ATTRIBUTE_OR_VALUE_EXISTS, null );
     }
 }

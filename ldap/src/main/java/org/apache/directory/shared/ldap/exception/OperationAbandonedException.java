@@ -31,5 +31,6 @@ import javax.naming.NamingException;
  */
 public class OperationAbandonedException extends NamingException
 {
-    private static final long serialVersionUID = -99548684403070989L;
+    /** The serial version UUID */
+    static final long serialVersionUID = 1L;
 }

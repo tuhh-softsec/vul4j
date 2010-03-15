@@ -20,92 +20,68 @@
 package org.apache.directory.shared.ldap.exception;
 
 
-import javax.naming.ServiceUnavailableException;
-
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 
 
 /**
- * LDAP specific ServiceUnavailableException that preserves resultCode
+ * LDAP specific {@link LdapOperationException} that preserves resultCode
  * resolution.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public class LdapServiceUnavailableException extends ServiceUnavailableException implements LdapException
+public class LdapServiceUnavailableException extends LdapOperationException
 {
-    static final long serialVersionUID = -5058439476235675179L;
-
-    /** the LDAP result code to be checked */
-    private final ResultCodeEnum resultCode;
+    /** The serial version UUID */
+    static final long serialVersionUID = 1L;
 
 
     /**
-     * Creates an LDAP specific ServiceUnavailableException that preserves
-     * resultCode resolution.
-     * 
-     * @param resultCode
-     *            the LDAP result code to be checked
-     * @throws IllegalArgumentException
-     *             if the result code is not within the set
-     *             {@link ResultCodeEnum#SERVICEUNAVAILABLE_CODES}.
+     * Creates a new instance of LdapServiceUnavailableException.
+     *
+     * @param resultCode the ResultCodeEnum for this exception
+     * @param message The exception message
      */
-    public LdapServiceUnavailableException(ResultCodeEnum resultCode)
+    public LdapServiceUnavailableException( ResultCodeEnum resultCode, String message )
     {
-        super();
+        super( message );
         checkResultCode( resultCode );
         this.resultCode = resultCode;
     }
 
 
     /**
-     * Creates an LDAP specific ServiceUnavailableException that preserves
-     * resultCode resolution.
+     * Creates a new instance of LdapServiceUnavailableException.
      * 
-     * @param explanation
-     *            the reason for the exception to pass to super
-     * @param resultCode
-     *            the LDAP result code to be checked
-     * @throws IllegalArgumentException
-     *             if the result code is not within the set
-     *             {@link ResultCodeEnum#SERVICEUNAVAILABLE_CODES}.
+     * @param resultCode the ResultCodeEnum for this exception
      */
-    public LdapServiceUnavailableException(String explanation, ResultCodeEnum resultCode)
+    public LdapServiceUnavailableException( ResultCodeEnum resultCode )
     {
-        super( explanation );
+        super( null );
         checkResultCode( resultCode );
         this.resultCode = resultCode;
     }
 
 
     /**
-     * Checks to see if the LDAP result code is valid for this exception.
+     * Checks to make sure the resultCode value is right for this exception
+     * type.
      * 
-     * @param resultCode
-     *            the LDAP result code to be checked
      * @throws IllegalArgumentException
-     *             if the result code is not within the set
-     *             {@link ResultCodeEnum#SERVICEUNAVAILABLE_CODES}.
+     *             if the result code is not one of
+     *             {@link ResultCodeEnum#BUSY},
+     *             {@link ResultCodeEnum#UNAVAILABLE}.
      */
-    private void checkResultCode( ResultCodeEnum result )
+    private void checkResultCode( ResultCodeEnum resultCode )
     {
-        if ( !ResultCodeEnum.getServiceCodes().contains( result ) )
+        switch ( resultCode )
         {
-            String msg = I18n.err( I18n.ERR_04143, ResultCodeEnum.getSearchCodes() );
-            throw new IllegalArgumentException( msg );
+            case BUSY :
+            case UNAVAILABLE :
+                
+            default:
+                throw new IllegalArgumentException( I18n.err( I18n.ERR_04140, resultCode ) );
         }
-    }
-
-
-    /**
-     * Returns one of the resultCodes within the set {@link
-     * ResultCodeEnum#SERVICEUNAVAILABLE_CODES}.
-     * 
-     * @see LdapException#getResultCode()
-     */
-    public final ResultCodeEnum getResultCode()
-    {
-        return resultCode;
     }
 }

@@ -20,84 +20,69 @@
 package org.apache.directory.shared.ldap.exception;
 
 
-import javax.naming.directory.SchemaViolationException;
-
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 
 
 /**
- * Makes a SchemaViolationException unambiguous with respect to the result code
+ * Makes a {@link LdapOperationException} unambiguous with respect to the result code
  * it corresponds to by associating an LDAP specific result code with it.
  * 
- * @see <a
- *      href="http://java.sun.com/j2se/1.4.2/docs/guide/jndi/jndi-ldap-gl.html#EXCEPT">
- *      LDAP ResultCode to JNDI Exception Mappings</a>
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public class LdapSchemaViolationException extends SchemaViolationException implements LdapException
+public class LdapSchemaViolationException extends LdapOperationException
 {
-    static final long serialVersionUID = 5763624876999168014L;
+    /** The serial version UUID */
+    static final long serialVersionUID = 1L;
 
-    /** the LDAP resultCode this exception is associated with */
-    private final ResultCodeEnum resultCode;
+    /**
+     * Creates a new instance of LdapSchemaViolationException.
+     *
+     * @param resultCode the ResultCodeEnum for this exception
+     * @param message The exception message
+     */
+    public LdapSchemaViolationException( ResultCodeEnum resultCode, String message )
+    {
+        super( message );
+        checkResultCode( resultCode );
+        this.resultCode = resultCode;
+    }
 
 
     /**
-     * Creates an Ldap NamingException using a result code.
+     * Creates a new instance of LdapSchemaViolationException.
      * 
-     * @param resultCode
-     *            the LDAP resultCode this exception is associated with
-     * @throws IllegalArgumentException
-     *             if the resultCode argument is not
-     *             ResultCodeEnum.OBJECTCLASSVIOLATION,
-     *             ResultCodeEnum.NOTALLOWEDONRDN, or
-     *             ResultCodeEnum.OBJECTCLASSMODSPROHIBITED
+     * @param resultCode the ResultCodeEnum for this exception
      */
-    public LdapSchemaViolationException(ResultCodeEnum resultCode)
+    public LdapSchemaViolationException( ResultCodeEnum resultCode )
     {
-        super();
+        super( null );
+        checkResultCode( resultCode );
+        this.resultCode = resultCode;
+    }
 
+
+    /**
+     * Checks to make sure the resultCode value is right for this exception
+     * type.
+     * 
+     * @throws IllegalArgumentException
+     *             if the result code is not one of
+     *             {@link ResultCodeEnum#OBJECT_CLASS_VIOLATION},
+     *             {@link ResultCodeEnum#NOT_ALLOWED_ON_RDN}.
+     *             {@link ResultCodeEnum#OBJECT_CLASS_MODS_PROHIBITED}.
+     */
+    private void checkResultCode( ResultCodeEnum resultCode )
+    {
         switch ( resultCode )
         {
             case OBJECT_CLASS_VIOLATION :
             case NOT_ALLOWED_ON_RDN :
             case OBJECT_CLASS_MODS_PROHIBITED :
-                break;
-
+                
             default:
-
-                throw new IllegalArgumentException( I18n.err( I18n.ERR_04141, resultCode ) );
+                throw new IllegalArgumentException( I18n.err( I18n.ERR_04140, resultCode ) );
         }
-
-        this.resultCode = resultCode;
-    }
-
-
-    /**
-     * Creates an Eve NamingException.
-     * 
-     * @param explanation
-     *            an explanation for the failure
-     * @param resultCode
-     *            the LDAP resultCode this exception is associated with
-     */
-    public LdapSchemaViolationException(String explanation, ResultCodeEnum resultCode)
-    {
-        super( explanation );
-
-        this.resultCode = resultCode;
-    }
-
-
-    /**
-     * Gets the LDAP resultCode this exception is associated with.
-     * 
-     * @return the LDAP resultCode this exception is associated with
-     */
-    public ResultCodeEnum getResultCode()
-    {
-        return this.resultCode;
     }
 }

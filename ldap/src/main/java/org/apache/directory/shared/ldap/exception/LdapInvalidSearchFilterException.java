@@ -20,25 +20,37 @@
 package org.apache.directory.shared.ldap.exception;
 
 
+import org.apache.directory.shared.ldap.message.ResultCodeEnum;
+
+
 /**
- * An class for exceptions which add LDAP specific information to
- * Exceptions.
+ * A subclass of {@link LdapOperationException} which associates the
+ * {@link ResultCodeEnum#INAPPROPRIATE_MATCHING} value with the type.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
+ * @version $Rev: 477298 $
  */
-public class LdapException extends Exception
+public class LdapInvalidSearchFilterException extends LdapOperationException
 {
     /** The serial version UUID */
-    private static final long serialVersionUID = 1L;
-    
+    static final long serialVersionUID = 1L;
+
     /**
-     * Creates a new instance of LdapException.
+     * Creates a new instance of LdapInvalidSearchFilterException.
      *
      * @param message The exception message
      */
-    public LdapException( String message )
+    public LdapInvalidSearchFilterException( String message )
     {
-        super( message );
+        super( ResultCodeEnum.INAPPROPRIATE_MATCHING, message );
+    }
+
+
+    /**
+     * Creates a new instance of LdapInvalidSearchFilterException.
+     */
+    public LdapInvalidSearchFilterException()
+    {
+        super( ResultCodeEnum.INAPPROPRIATE_MATCHING, null );
     }
 }

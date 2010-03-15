@@ -25,24 +25,24 @@ import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 
 
 /**
- * Makes a {@link LdapOperationException} unambiguous with respect to the result
- * code it corresponds to by associating an LDAP specific result code with it.
- * 
+ * An LDAPException that extends the {@link LdapOperationException} 
+ * carrying with it the corresponding result codes for this condition.
+ *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public class LdapInvalidAttributeValueException extends LdapOperationException
+public class LdapUnwillingToPerformException extends LdapOperationException
 {
     /** The serial version UUID */
     static final long serialVersionUID = 1L;
-
+    
     /**
-     * Creates a new instance of LdapInvalidAttributeValueException.
+     * Creates a new instance of LdapUnwillingToPerformException.
      *
      * @param resultCode the ResultCodeEnum for this exception
      * @param message The exception message
      */
-    public LdapInvalidAttributeValueException( ResultCodeEnum resultCode, String message )
+    public LdapUnwillingToPerformException( ResultCodeEnum resultCode, String message )
     {
         super( message );
         checkResultCode( resultCode );
@@ -51,11 +51,11 @@ public class LdapInvalidAttributeValueException extends LdapOperationException
 
 
     /**
-     * Creates a new instance of LdapInvalidAttributeValueException.
+     * Creates a new instance of LdapUnwillingToPerformException.
      * 
      * @param resultCode the ResultCodeEnum for this exception
      */
-    public LdapInvalidAttributeValueException( ResultCodeEnum resultCode )
+    public LdapUnwillingToPerformException( ResultCodeEnum resultCode )
     {
         super( null );
         checkResultCode( resultCode );
@@ -69,15 +69,15 @@ public class LdapInvalidAttributeValueException extends LdapOperationException
      * 
      * @throws IllegalArgumentException
      *             if the result code is not one of
-     *             {@link ResultCodeEnum#CONSTRAINT_VIOLATION},
-     *             {@link ResultCodeEnum#INVALID_ATTRIBUTE_SYNTAX}.
+     *             {@link ResultCodeEnum#UNWILLING_TO_PERFORM},
+     *             {@link ResultCodeEnum#UNAVAILABLE_CRITICAL_EXTENSION}.
      */
     private void checkResultCode( ResultCodeEnum resultCode )
     {
         switch ( resultCode )
         {
-            case CONSTRAINT_VIOLATION :
-            case INVALID_ATTRIBUTE_SYNTAX :
+            case UNWILLING_TO_PERFORM :
+            case UNAVAILABLE_CRITICAL_EXTENSION :
                 
             default:
                 throw new IllegalArgumentException( I18n.err( I18n.ERR_04140, resultCode ) );

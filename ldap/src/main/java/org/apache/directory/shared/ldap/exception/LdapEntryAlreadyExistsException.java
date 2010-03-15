@@ -20,47 +20,37 @@
 package org.apache.directory.shared.ldap.exception;
 
 
-import javax.naming.NameAlreadyBoundException;
-
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 
 
 /**
- * A NameAlreadyBoundException which contains LDAP specific information such as
+ * A {@link LdapOperationException} which contains LDAP specific information such as
  * a result code.
  * 
- * @see NameAlreadyBoundException
- * @see <a
- *      href="http://java.sun.com/j2se/1.4.2/docs/guide/jndi/jndi-ldap-gl.html#EXCEPT">
- *      LDAP ResultCode to JNDI Exception Mappings</a>
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public class LdapNameAlreadyBoundException extends NameAlreadyBoundException implements LdapException
+public class LdapEntryAlreadyExistsException extends LdapOperationException
 {
-    static final long serialVersionUID = 5387177233617276618L;
+    /** The serial version UUID */
+    static final long serialVersionUID = 1L;
 
-
-    public LdapNameAlreadyBoundException()
+    /**
+     * Creates a new instance of LdapEntryAlreadyExistsException.
+     *
+     * @param message The exception message
+     */
+    public LdapEntryAlreadyExistsException( String message )
     {
-        super();
-    }
-
-
-    public LdapNameAlreadyBoundException(String explanation)
-    {
-        super( explanation );
+        super( ResultCodeEnum.ENTRY_ALREADY_EXISTS, message );
     }
 
 
     /**
-     * Always returns ResultCodeEnum.ENTRYALREADYEXISTS.
-     * 
-     * @see LdapException#getResultCode()
-     * @return ResultCodeEnum.ENTRYALREADYEXISTS all the time
+     * Creates a new instance of LdapEntryAlreadyExistsException.
      */
-    public ResultCodeEnum getResultCode()
+    public LdapEntryAlreadyExistsException()
     {
-        return ResultCodeEnum.ENTRY_ALREADY_EXISTS;
+        super( ResultCodeEnum.ENTRY_ALREADY_EXISTS, null );
     }
 }

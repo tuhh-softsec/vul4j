@@ -20,64 +20,58 @@
 package org.apache.directory.shared.ldap.exception;
 
 
-import javax.naming.ConfigurationException;
-
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 
 
 /**
- * A ConfigurationException which associates a resultCode namely the
+ * A {@link LdapException} which associates a resultCode namely the
  * {@link ResultCodeEnum#OTHER} resultCode with the exception.
  * 
- * @see LdapException
- * @see javax.naming.ConfigurationException
- * @see <a
- *      href="http://java.sun.com/j2se/1.4.2/docs/guide/jndi/jndi-ldap-gl.html#EXCEPT">
- *      LDAP ResultCode to JNDI Exception Mappings</a>
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public class LdapConfigurationException extends ConfigurationException implements LdapException
+public class LdapConfigurationException extends LdapOperationException
 {
-    static final long serialVersionUID = 7062168557099947648L;
+    /** The serial version UUID */
+    static final long serialVersionUID = 1L;
+    
+    /** The exception cause */
+    private Throwable cause;
+
+    /**
+     * Creates a new instance of LdapAuthenticationException.
+     *
+     * @param message The exception message
+     */
+    public LdapConfigurationException( String message )
+    {
+        super( message );
+    }
 
 
     /**
-     * @see javax.naming.NoPermissionException#NoPermissionException()
+     * Creates a new instance of LdapAuthenticationException.
      */
     public LdapConfigurationException()
     {
-        super();
+        super( null );
     }
-
-
+    
+    
     /**
-     * @see javax.naming.NoPermissionException#NoPermissionException( String )
      */
-    public LdapConfigurationException( String explanation )
+    public LdapConfigurationException( String message, Throwable cause )
     {
-        super( explanation );
+        super( message );
+        this.cause = cause;
     }
-
-
+    
+    
     /**
-     * @see javax.naming.NoPermissionException#NoPermissionException( String )
+     * @return Returns the Exception's cause
      */
-    public LdapConfigurationException( String explanation, Throwable t )
+    public Throwable getCause()
     {
-        super( explanation );
-        super.setRootCause( t );
-    }
-
-
-    /**
-     * Always returns
-     * {@link org.apache.directory.shared.ldap.message.ResultCodeEnum#OTHER}
-     * 
-     * @see LdapException#getResultCode()
-     */
-    public ResultCodeEnum getResultCode()
-    {
-        return ResultCodeEnum.OTHER;
+        return cause;
     }
 }

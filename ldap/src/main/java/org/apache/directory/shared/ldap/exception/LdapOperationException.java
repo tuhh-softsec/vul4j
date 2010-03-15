@@ -20,53 +20,55 @@
 package org.apache.directory.shared.ldap.exception;
 
 
-import javax.naming.OperationNotSupportedException;
-
-import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 
 
 /**
- * An LDAPException that extends the OperationNotSupportedException 
- * carrying with it the corresponding result codes for this condition.
- *
+ * An class for LDAP operation exceptions which add LDAP specific information to
+ * Exceptions.
+ * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
+ * @version $Rev: 437007 $
  */
-public class LdapOperationNotSupportedException extends OperationNotSupportedException implements LdapException
+public class LdapOperationException extends LdapException
 {
+    /** The serial version UUID */
     private static final long serialVersionUID = 1L;
-    private final ResultCodeEnum resultCode;
-    
-    
-    public LdapOperationNotSupportedException( String description, ResultCodeEnum resultCode )
+
+    /** The operation resultCode */
+    protected ResultCodeEnum resultCode;
+
+    /**
+     * Creates a new instance of LdapOperationException.
+     *
+     * @param resultCode The operation resultCode
+     * @param message The exception message
+     */
+    public LdapOperationException( ResultCodeEnum resultCode, String message )
     {
-        super( description );
-        checkResultCode( resultCode );
+        super( message );
         this.resultCode = resultCode;
     }
-    
 
-    public LdapOperationNotSupportedException( ResultCodeEnum resultCode )
+    
+    /**
+     * Creates a new instance of LdapOperationException.
+     *
+     * @param message The exception message
+     */
+    public LdapOperationException( String message )
     {
-        checkResultCode( resultCode );
-        this.resultCode = resultCode;
+        super( message );
     }
     
     
-    private void checkResultCode( ResultCodeEnum resultCode )
-    {
-        if ( ! resultCode.equals( ResultCodeEnum.UNWILLING_TO_PERFORM ) && 
-            ! resultCode.equals( ResultCodeEnum.UNAVAILABLE_CRITICAL_EXTENSION ) )
-        {
-            throw new IllegalArgumentException( I18n.err( I18n.ERR_04142 ) );
-        }
-    }
-    
-
+    /**
+     * Gets the LDAP result code that would be associated with this exception.
+     * 
+     * @return the LDAP result code corresponding to this exception type.
+     */
     public ResultCodeEnum getResultCode()
     {
         return resultCode;
     }
-
 }

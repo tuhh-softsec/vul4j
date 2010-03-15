@@ -20,50 +20,37 @@
 package org.apache.directory.shared.ldap.exception;
 
 
-import javax.naming.directory.InvalidAttributeIdentifierException;
-
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 
 
 /**
- * A subclass of InvalidAttributeIdentifierException which holds the LDAP
+ * A subclass of {@link LdapOperationException} which holds the LDAP
  * resultCode associated with the exception. The LDAP result code associated
  * with this exception is the undefinedAttributeType result code value of 17.
  * 
- * @see <a
- *      href="http://java.sun.com/j2se/1.4.2/docs/guide/jndi/jndi-ldap-gl.html#EXCEPT">
- *      LDAP ResultCode to JNDI Exception Mappings</a>
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class LdapInvalidAttributeIdentifierException extends InvalidAttributeIdentifierException implements
-    LdapException
+public class LdapInvalidAttributeTypeException  extends LdapOperationException
 {
-    static final long serialVersionUID = 886120483680893537L;
-
+    /** The serial version UUID */
+    static final long serialVersionUID = 1L;
 
     /**
-     * @see javax.naming.directory.InvalidAttributeIdentifierException#InvalidAttributeIdentifierException()
+     * Creates a new instance of LdapInvalidAttributeTypeException.
+     *
+     * @param message The exception message
      */
-    public LdapInvalidAttributeIdentifierException()
+    public LdapInvalidAttributeTypeException( String message )
     {
-        super();
+        super( ResultCodeEnum.UNDEFINED_ATTRIBUTE_TYPE, message );
     }
 
 
     /**
-     * @see javax.naming.directory.InvalidAttributeIdentifierException#InvalidAttributeIdentifierException(String)
+     * Creates a new instance of LdapInvalidAttributeTypeException.
      */
-    public LdapInvalidAttributeIdentifierException(String explanation)
+    public LdapInvalidAttributeTypeException()
     {
-        super( explanation );
-    }
-
-
-    /**
-     * @see LdapException#getResultCode()
-     */
-    public ResultCodeEnum getResultCode()
-    {
-        return ResultCodeEnum.UNDEFINED_ATTRIBUTE_TYPE;
+        super( ResultCodeEnum.UNDEFINED_ATTRIBUTE_TYPE, null );
     }
 }

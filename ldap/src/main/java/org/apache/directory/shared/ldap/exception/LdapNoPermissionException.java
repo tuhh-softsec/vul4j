@@ -20,54 +20,38 @@
 package org.apache.directory.shared.ldap.exception;
 
 
-import javax.naming.NoPermissionException;
-
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 
 
 /**
- * A NoPermissionException which associates a resultCode namely the
+ * A {@link LdapOperationException} which associates a resultCode namely the
  * {@link ResultCodeEnum#INSUFFICIENTACCESSRIGHTS} resultCode with the
  * exception.
  * 
- * @see LdapException
- * @see NoPermissionException
- * @see <a
- *      href="http://java.sun.com/j2se/1.4.2/docs/guide/jndi/jndi-ldap-gl.html#EXCEPT">
- *      LDAP ResultCode to JNDI Exception Mappings</a>
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public class LdapNoPermissionException extends NoPermissionException implements LdapException
+public class LdapNoPermissionException extends LdapOperationException
 {
-    static final long serialVersionUID = -8611970137960601723L;
+    /** The serial version UUID */
+    static final long serialVersionUID = 1L;
+
+    /**
+     * Creates a new instance of LdapNoPermissionException.
+     *
+     * @param message The exception message
+     */
+    public LdapNoPermissionException( String message )
+    {
+        super( ResultCodeEnum.INSUFFICIENT_ACCESS_RIGHTS, message );
+    }
 
 
     /**
-     * @see NoPermissionException#NoPermissionException()
+     * Creates a new instance of LdapNoPermissionException.
      */
     public LdapNoPermissionException()
     {
-        super();
-    }
-
-
-    /**
-     * @see NoPermissionException#NoPermissionException(String)
-     */
-    public LdapNoPermissionException(String explanation)
-    {
-        super( explanation );
-    }
-
-
-    /**
-     * Always returns {@link ResultCodeEnum#INSUFFICIENTACCESSRIGHTS}
-     * 
-     * @see LdapException#getResultCode()
-     */
-    public ResultCodeEnum getResultCode()
-    {
-        return ResultCodeEnum.INSUFFICIENT_ACCESS_RIGHTS;
+        super( ResultCodeEnum.INSUFFICIENT_ACCESS_RIGHTS, null );
     }
 }

@@ -34,20 +34,16 @@ import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 
 
 /**
- * A ReferralException which associates a resultCode namely the
+ * A {@link LdapOperationException} which associates a resultCode namely the
  * {@link ResultCodeEnum#REFERRAL} resultCode with the exception.
  * 
- * @see LdapException
- * @see ReferralException
- * @see <a
- *      href="http://java.sun.com/j2se/1.4.2/docs/guide/jndi/jndi-ldap-gl.html#EXCEPT">
- *      LDAP ResultCode to JNDI Exception Mappings</a>
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public class LdapReferralException extends ReferralException implements LdapException
+public class LdapReferralException extends LdapOperationException
 {
-    static final long serialVersionUID = -8611970137960601723L;
+    /** The serial version UUID */
+    static final long serialVersionUID = 1L;
 
     private final List<String> refs;
 

@@ -20,53 +20,37 @@
 package org.apache.directory.shared.ldap.exception;
 
 
-import javax.naming.SizeLimitExceededException;
-
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 
 
 /**
- * A SizeLimitExceededException which associates a resultCode namely the
- * {@link ResultCodeEnum#SIZELIMITEXCEEDED} resultCode with the exception.
+ * A {@link LdapOperationException} holding LDAP specific information such as the LDAP
+ * ResultCode.
  * 
- * @see LdapException
- * @see SizeLimitExceededException
- * @see <a
- *      href="http://java.sun.com/j2se/1.4.2/docs/guide/jndi/jndi-ldap-gl.html#EXCEPT">
- *      LDAP ResultCode to JNDI Exception Mappings</a>
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public class LdapSizeLimitExceededException extends SizeLimitExceededException implements LdapException
+public class LdapNoSuchObjectException extends LdapOperationException
 {
-    static final long serialVersionUID = -8611970137960601723L;
-
+    /** The serial version UUID */
+    static final long serialVersionUID = 1L;
 
     /**
-     * @see SizeLimitExceededException#SizeLimitExceededException()
+     * Creates a new instance of LdapNoSuchObjectException.
+     *
+     * @param message The exception message
      */
-    public LdapSizeLimitExceededException()
+    public LdapNoSuchObjectException( String message )
     {
-        super();
+        super( ResultCodeEnum.NO_SUCH_OBJECT, message );
     }
 
 
     /**
-     * @see SizeLimitExceededException#SizeLimitExceededException(String)
+     * Creates a new instance of LdapNoSuchObjectException.
      */
-    public LdapSizeLimitExceededException(String explanation)
+    public LdapNoSuchObjectException()
     {
-        super( explanation );
-    }
-
-
-    /**
-     * Always returns {@link ResultCodeEnum#SIZELIMITEXCEEDED}
-     * 
-     * @see LdapException#getResultCode()
-     */
-    public ResultCodeEnum getResultCode()
-    {
-        return ResultCodeEnum.SIZE_LIMIT_EXCEEDED;
+        super( ResultCodeEnum.NO_SUCH_OBJECT, null );
     }
 }
