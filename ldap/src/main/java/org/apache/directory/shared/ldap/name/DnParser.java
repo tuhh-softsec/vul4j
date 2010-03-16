@@ -22,9 +22,6 @@ package org.apache.directory.shared.ldap.name;
 
 import java.util.List;
 
-import javax.naming.InvalidNameException;
-import javax.naming.Name;
-
 import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
 
 
@@ -125,13 +122,11 @@ public enum DnParser
     /**
      * Parse a String and return a DN if the String is a valid DN
      *
-     * @param dn
-     *            The DN to parse
+     * @param dn The DN to parse
      * @return A DN
-     * @throws InvalidNameException
-     *             If the String is not a valid DN
+     * @throws LdapInvalidDnException If the String is not a valid DN
      */
-    public Name parse( String dn ) throws LdapInvalidDnException
+    public DN parse( String dn ) throws LdapInvalidDnException
     {
         return new DN( dn );
     }

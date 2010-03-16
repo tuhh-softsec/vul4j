@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
+import javax.naming.InvalidNameException;
 import javax.naming.Name;
 
 import org.apache.directory.shared.i18n.I18n;
@@ -62,7 +63,7 @@ import org.slf4j.LoggerFactory;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public class DN implements Name, Externalizable
+public class DN implements Externalizable
 {
     /** The LoggerFactory used by this class */
     protected static final Logger LOG = LoggerFactory.getLogger( DN.class );
@@ -122,18 +123,18 @@ public class DN implements Name, Externalizable
 
 
     /**
-     * Transduces, or copies a Name to an DN.
+     * Copies a DN to an DN.
      *
      * @param name composed of String name components.
      * @throws LdapInvalidDnException If the Name is invalid.
      */
-    public DN( Name name ) throws LdapInvalidDnException
+    public DN( DN dn ) throws LdapInvalidDnException
     {
-        if ( ( name != null ) && ( name.size() != 0 ) )
+        if ( ( dn != null ) && ( dn.size() != 0 ) )
         {
-            for ( int ii = 0; ii < name.size(); ii++ )
+            for ( int ii = 0; ii < dn.size(); ii++ )
             {
-                String nameComponent = name.get( ii );
+                String nameComponent = dn.get( ii );
                 add( nameComponent );
             }
         }
@@ -264,7 +265,7 @@ public class DN implements Name, Externalizable
      * @throws LdapInvalidNameException If the DN is invalid.
      * @throws LdapInvalidDnException If something went wrong.
      */
-    public static Name normalize( String name, Map<String, OidNormalizer> oidsMap ) throws LdapInvalidDnException
+    public static DN normalize( String name, Map<String, OidNormalizer> oidsMap ) throws LdapInvalidDnException
     {
         if ( ( name == null ) || ( name.length() == 0 ) || ( oidsMap == null ) || ( oidsMap.size() == 0 ) )
         {
@@ -562,7 +563,7 @@ public class DN implements Name, Externalizable
      * @param dn The DN.
      * @return A integer, which is the size of the UTF-8 byte array
      */
-    public static int getNbBytes( Name dn )
+    public static int getNbBytes( DN dn )
     {
         DN newDn = ( DN ) dn;
         return newDn.bytes == null ? 0 : newDn.bytes.length;
@@ -584,83 +585,39 @@ public class DN implements Name, Externalizable
     /**
      * {@inheritDoc}
      */
-    public boolean startsWith( Name name )
+    public boolean startsWith( DN dn )
     {
-        if ( name == null )
+        if ( dn == null )
         {
             return true;
         }
-        else if ( name instanceof DN )
+
+        if ( dn.size() == 0 )
         {
-            DN nameDN = ( DN ) name;
+            return true;
+        }
 
-            if ( nameDN.size() == 0 )
-            {
-                return true;
-            }
+        if ( dn.size() > size() )
+        {
+            // The name is longer than the current DN.
+            return false;
+        }
 
-            if ( nameDN.size() > size() )
+        // Ok, iterate through all the RDN of the name,
+        // starting a the end of the current list.
+
+        for ( int i = dn.size() - 1; i >= 0; i-- )
+        {
+            RDN nameRdn = dn.rdns.get( dn.rdns.size() - i - 1 );
+            RDN ldapRdn = rdns.get( rdns.size() - i - 1 );
+
+            if ( nameRdn.compareTo( ldapRdn ) != 0 )
             {
-                // The name is longer than the current DN.
                 return false;
             }
-
-            // Ok, iterate through all the RDN of the name,
-            // starting a the end of the current list.
-
-            for ( int i = nameDN.size() - 1; i >= 0; i-- )
-            {
-                RDN nameRdn = nameDN.rdns.get( nameDN.rdns.size() - i - 1 );
-                RDN ldapRdn = rdns.get( rdns.size() - i - 1 );
-
-                if ( nameRdn.compareTo( ldapRdn ) != 0 )
-                {
-                    return false;
-                }
-            }
-
-            return true;
         }
-        else
-        {
-            if ( name.size() == 0 )
-            {
-                return true;
-            }
 
-            if ( name.size() > size() )
-            {
-                // The name is longer than the current DN.
-                return false;
-            }
-
-            // Ok, iterate through all the RDN of the name,
-            // starting a the end of the current list.
-            int starting = size() - name.size();
-
-            for ( int i = name.size() - 1; i >= 0; i-- )
-            {
-                RDN ldapRdn = rdns.get( i + starting );
-                RDN nameRdn = null;
-
-                try
-                {
-                    nameRdn = new RDN( name.get( name.size() - i - 1 ) );
-                }
-                catch ( LdapInvalidDnException e )
-                {
-                    LOG.error( I18n.err( I18n.ERR_04204, name.toString() ), e );
-                    return false;
-                }
-
-                if ( nameRdn.compareTo( ldapRdn ) != 0 )
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
+        return true;
     }
 
 
@@ -680,6 +637,43 @@ public class DN implements Name, Externalizable
     /**
      * {@inheritDoc}
      */
+    public boolean endsWith( DN dn )
+    {
+        if ( dn == null )
+        {
+            return true;
+        }
+        
+        if ( dn.size() == 0 )
+        {
+            return true;
+        }
+
+        if ( dn.size() > size() )
+        {
+            // The name is longer than the current DN.
+            return false;
+        }
+
+        // Ok, iterate through all the RDN of the name
+        for ( int i = 0; i < dn.size(); i++ )
+        {
+            RDN nameRdn = dn.rdns.get( i );
+            RDN ldapRdn = rdns.get( i );
+
+            if ( nameRdn.compareTo( ldapRdn ) != 0 )
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+    
+    
+    /**
+     * {@inheritDoc}
+     */
     public boolean endsWith( Name name )
     {
         if ( name == null )
@@ -687,74 +681,42 @@ public class DN implements Name, Externalizable
             return true;
         }
         
-        if ( name instanceof DN )
+        if ( name.size() == 0 )
         {
-            DN nameDN = ( DN ) name;
+            return true;
+        }
 
-            if ( nameDN.size() == 0 )
+        if ( name.size() > size() )
+        {
+            // The name is longer than the current LdapDN.
+            return false;
+        }
+
+        // Ok, iterate through all the RDN of the name
+        int nameSize = name.size();
+        
+        for ( int i = name.size() - 1; i >= 0; i-- )
+        {
+            RDN ldapRdn = rdns.get( nameSize - i - 1 );
+            RDN nameRdn = null;
+
+            try
             {
-                return true;
+                nameRdn = new RDN( name.get( i ) );
             }
-
-            if ( nameDN.size() > size() )
+            catch ( LdapInvalidDnException e )
             {
-                // The name is longer than the current DN.
+                LOG.error( I18n.err( I18n.ERR_04204, name.toString() ), e );
                 return false;
             }
 
-            // Ok, iterate through all the RDN of the name
-            for ( int i = 0; i < nameDN.size(); i++ )
+            if ( nameRdn.compareTo( ldapRdn ) != 0 )
             {
-                RDN nameRdn = nameDN.rdns.get( i );
-                RDN ldapRdn = rdns.get( i );
-
-                if ( nameRdn.compareTo( ldapRdn ) != 0 )
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-        else
-        {
-            if ( name.size() == 0 )
-            {
-                return true;
-            }
-
-            if ( name.size() > size() )
-            {
-                // The name is longer than the current DN.
                 return false;
             }
-
-            // Ok, iterate through all the RDN of the name
-            int nameSize = name.size();
-            
-            for ( int i = name.size() - 1; i >= 0; i-- )
-            {
-                RDN ldapRdn = rdns.get( nameSize - i - 1 );
-                RDN nameRdn = null;
-
-                try
-                {
-                    nameRdn = new RDN( name.get( i ) );
-                }
-                catch ( LdapInvalidDnException e )
-                {
-                    LOG.error( I18n.err( I18n.ERR_04204, name.toString() ), e );
-                    return false;
-                }
-
-                if ( nameRdn.compareTo( ldapRdn ) != 0 )
-                {
-                    return false;
-                }
-            }
-
-            return true;
         }
+
+        return true;
     }
 
 
@@ -931,7 +893,7 @@ public class DN implements Name, Externalizable
     /**
      * {@inheritDoc}
      */
-    public Name getPrefix( int posn )
+    public DN getPrefix( int posn )
     {
         if ( rdns.size() == 0 )
         {
@@ -963,7 +925,7 @@ public class DN implements Name, Externalizable
     /**
      * {@inheritDoc}
      */
-    public Name getSuffix( int posn )
+    public DN getSuffix( int posn )
     {
         if ( rdns.size() == 0 )
         {
@@ -1008,7 +970,7 @@ public class DN implements Name, Externalizable
      *             if <tt>n</tt> is not a valid name, or if the addition of
      *             the components would violate the syntax rules of this name
      */
-    public Name addAllNormalized( int posn, Name name ) throws LdapInvalidDnException
+    public DN addAllNormalized( int posn, DN name ) throws LdapInvalidDnException
     {
         if ( name instanceof DN )
         {
@@ -1058,7 +1020,7 @@ public class DN implements Name, Externalizable
     /**
      * {@inheritDoc}
      */
-    public Name addAll( Name suffix ) throws LdapInvalidNameException
+    public DN addAll( DN suffix ) throws LdapInvalidDnException
     {
         addAll( rdns.size(), suffix );
         normalizeInternal();
@@ -1071,58 +1033,51 @@ public class DN implements Name, Externalizable
     /**
      * {@inheritDoc}
      */
-    public Name addAll( int posn, Name name ) throws LdapInvalidNameException
+    public DN addAll( int posn, Name name ) throws InvalidNameException, LdapInvalidDnException
     {
-        if ( name instanceof DN )
+        if ( ( name == null ) || ( name.size() == 0 ) )
         {
-            DN dn = (DN)name;
-            
-            if ( ( dn == null ) || ( dn.size() == 0 ) )
-            {
-                return this;
-            }
+            return this;
+        }
 
-            // Concatenate the rdns
-            rdns.addAll( size() - posn, dn.rdns );
+        for ( int i = name.size() - 1; i >= 0; i-- )
+        {
+            RDN rdn = new RDN( name.get( i ) );
+            rdns.add( size() - posn, rdn );
+        }
 
-            // Regenerate the normalized name and the original string
-            if ( this.isNormalized() && dn.isNormalized() )
+        normalizeInternal();
+        toUpName();
+
+        return this;
+    }
+
+    
+    /**
+     * {@inheritDoc}
+     */
+    public DN addAll( int posn, DN dn ) throws LdapInvalidDnException
+    {
+        if ( ( dn == null ) || ( dn.size() == 0 ) )
+        {
+            return this;
+        }
+
+        // Concatenate the rdns
+        rdns.addAll( size() - posn, dn.rdns );
+
+        // Regenerate the normalized name and the original string
+        if ( this.isNormalized() && dn.isNormalized() )
+        {
+            if ( this.size() != 0 )
             {
-                if ( this.size() != 0 )
-                {
-                    normName = dn.getNormName() + "," + normName;
-                    bytes = StringTools.getBytesUtf8( normName );
-                    upName = dn.getName() + "," + upName;
-                }
-            }
-            else
-            {
-                normalizeInternal();
-                toUpName();
+                normName = dn.getNormName() + "," + normName;
+                bytes = StringTools.getBytesUtf8( normName );
+                upName = dn.getName() + "," + upName;
             }
         }
         else
         {
-            if ( ( name == null ) || ( name.size() == 0 ) )
-            {
-                return this;
-            }
-
-            for ( int i = name.size() - 1; i >= 0; i-- )
-            {
-                //FIXME this try-catch block is for the time being, during removal of
-                // java.naming.Name we have to remove this
-                try
-                {
-                    RDN rdn = new RDN( name.get( i ) );
-                    rdns.add( size() - posn, rdn );
-                }
-                catch( LdapInvalidDnException le )
-                {
-                    throw new LdapInvalidNameException( le.getMessage() );
-                }
-            }
-
             normalizeInternal();
             toUpName();
         }
@@ -1134,7 +1089,7 @@ public class DN implements Name, Externalizable
     /**
      * {@inheritDoc}
      */
-    public Name add( String comp ) throws LdapException
+    public DN add( String comp ) throws LdapInvalidDnException
     {
         if ( comp.length() == 0 )
         {
@@ -1168,7 +1123,7 @@ public class DN implements Name, Externalizable
      * @param newRdn the RDN to add
      * @return the updated name (not a new one)
      */
-    public Name add( RDN newRdn )
+    public DN add( RDN newRdn )
     {
         rdns.add( 0, newRdn );
         
@@ -1186,7 +1141,7 @@ public class DN implements Name, Externalizable
      * @param pos The position where we want to add the Rdn
      * @return the updated name (not a new one)
      */
-    public Name add( int pos, RDN newRdn )
+    public DN add( int pos, RDN newRdn )
     {
         rdns.add( newRdn );
         
@@ -1203,7 +1158,7 @@ public class DN implements Name, Externalizable
      * @param newRdn the RDN to add
      * @return the updated name (not a new one)
      */
-    public Name addNormalized( RDN newRdn )
+    public DN addNormalized( RDN newRdn )
     {
         rdns.add( 0, newRdn );
         
@@ -1231,7 +1186,7 @@ public class DN implements Name, Externalizable
     /**
      * {@inheritDoc}
      */
-    public Name add( int posn, String comp ) throws LdapInvalidNameException
+    public DN add( int posn, String comp ) throws LdapInvalidDnException
     {
         if ( ( posn < 0 ) || ( posn > size() ) )
         {
@@ -1252,7 +1207,7 @@ public class DN implements Name, Externalizable
         }
         catch( LdapInvalidDnException le )
         {
-            throw new LdapInvalidNameException( le.getMessage() );
+            throw new LdapInvalidDnException( le.getMessage() );
         }
 
         normalizeInternal();
@@ -1265,7 +1220,7 @@ public class DN implements Name, Externalizable
     /**
      * {@inheritDoc}
      */
-    public Object remove( int posn ) throws LdapInvalidNameException
+    public Object remove( int posn ) throws LdapInvalidDnException
     {
         if ( rdns.size() == 0 )
         {
@@ -1408,12 +1363,19 @@ public class DN implements Name, Externalizable
 
                 if ( oidNormalizer != null )
                 {
+                    try
+                    {
                     return new AVA( 
                         atav.getUpType(), 
                         oidNormalizer.getAttributeTypeOid(), 
                         atav.getUpValue(),
-                        oidNormalizer.getNormalizer().normalize( atav.getNormValue() ),
+                            oidNormalizer.getNormalizer().normalize( atav.getNormValue() ),
                         atav.getUpName() );
+                    }
+                    catch ( LdapException le )
+                    {
+                        throw new LdapInvalidDnException( le.getMessage() );
+                    }
                 }
                 else
                 {

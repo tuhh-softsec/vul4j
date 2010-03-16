@@ -24,9 +24,10 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.naming.NamingException;
-
 import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.exception.LdapException;
+import org.apache.directory.shared.ldap.exception.LdapUnwillingToPerformException;
+import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.name.RDN;
 import org.slf4j.Logger;
@@ -84,7 +85,7 @@ public class DnBranchNode<N> implements DnNode<N>
      * @param element The associated element to add as a tree node
      * @return The modified tree structure.
      */
-    private DnNode<N> recursivelyAddElement( DnBranchNode<N> current, DN dn, int index, N element ) throws NamingException
+    private DnNode<N> recursivelyAddElement( DnBranchNode<N> current, DN dn, int index, N element ) throws LdapException
     {
         String rdnAtIndex = dn.getRdn( index ).toString();
         
@@ -107,7 +108,7 @@ public class DnBranchNode<N> implements DnNode<N>
             {
                 String message = I18n.err( I18n.ERR_04334 );
                 LOG.error( message );
-                throw new NamingException( message );
+                throw new LdapUnwillingToPerformException( ResultCodeEnum.UNWILLING_TO_PERFORM, message );
             }
         
             if ( newNode == null )
@@ -347,7 +348,7 @@ public class DnBranchNode<N> implements DnNode<N>
      * @param element
      * @throws NamingException
      */
-    public void add( DN dn, N element ) throws NamingException
+    public void add( DN dn, N element ) throws LdapException
     {
         recursivelyAddElement( this, dn, 0, element );
     }

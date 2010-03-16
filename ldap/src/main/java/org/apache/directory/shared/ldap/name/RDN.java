@@ -35,6 +35,7 @@ import org.apache.commons.collections.map.MultiValueMap;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.entry.client.ClientStringValue;
+import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.schema.normalizers.OidNormalizer;
 import org.apache.directory.shared.ldap.util.StringTools;
@@ -391,7 +392,7 @@ public class RDN implements Cloneable, Comparable, Externalizable, Iterable<AVA>
      *
      * @param rdn The RDN to modify.
      * @param oidsMap The map of all existing oids and normalizer.
-     * @throws LdapInvalidDnException If the RDN is invalid.
+     * @throws LdapException If the RDN is invalid.
      */
     public RDN normalize( Map<String, OidNormalizer> oidsMap ) throws LdapInvalidDnException
     {

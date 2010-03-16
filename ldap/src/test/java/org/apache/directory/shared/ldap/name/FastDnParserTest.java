@@ -20,8 +20,6 @@
 package org.apache.directory.shared.ldap.name;
 
 
-import javax.naming.Name;
-
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
@@ -485,7 +483,7 @@ public class FastDnParserTest
     {
         FastDnParser parser = FastDnParser.getNameParser();
 
-        Name nameEmpty = parser.parse( "" );
+        DN nameEmpty = parser.parse( "" );
 
         assertNotNull( nameEmpty );
     }
@@ -502,7 +500,7 @@ public class FastDnParserTest
     {
         FastDnParser parser = FastDnParser.getNameParser();
 
-        Name nameNull = parser.parse( null );
+        DN nameNull = parser.parse( null );
 
         assertEquals( "Null DN are legal : ", "", nameNull.toString() );
     }
@@ -519,7 +517,7 @@ public class FastDnParserTest
     {
         FastDnParser parser = FastDnParser.getNameParser();
 
-        Name nameRFC1779_1 = parser
+        DN nameRFC1779_1 = parser
             .parse( "CN=Marshall T. Rose, O=Dover Beach Consulting, L=Santa Clara, ST=California, C=US" );
 
         assertEquals( "RFC1779_1 : ",
@@ -541,7 +539,7 @@ public class FastDnParserTest
     {
         FastDnParser parser = FastDnParser.getNameParser();
 
-        Name nameRFC2253_1 = parser.parse( "CN=Steve Kille,O=Isode limited,C=GB" );
+        DN nameRFC2253_1 = parser.parse( "CN=Steve Kille,O=Isode limited,C=GB" );
 
         assertEquals( "RFC2253_1 : ", "CN=Steve Kille,O=Isode limited,C=GB", ( ( DN ) nameRFC2253_1 ).getName() );
     }

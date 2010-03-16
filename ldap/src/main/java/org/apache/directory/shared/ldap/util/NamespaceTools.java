@@ -77,7 +77,7 @@ public class NamespaceTools
      * @param name2 the second name
      * @return true if the names are siblings, false otherwise.
      */
-    public static boolean isSibling( Name name1, Name name2 ) throws LdapException
+    public static boolean isSibling( DN name1, DN name2 ) throws LdapException
     {
         if ( name1.size() == name2.size() )
         {
@@ -110,11 +110,11 @@ public class NamespaceTools
      * 
      * @param ancestor the normalized distinguished name of the ancestor context
      * @param descendant the normalized distinguished name of the descendant context
-     * @return the relatve normalized name between the ancestor and the
+     * @return the relative normalized name between the ancestor and the
      *         descendant contexts
      * @throws javax.naming.LdapException if the contexts are not related in the ancestual sense
      */
-    public static Name getRelativeName( Name ancestor, Name descendant ) throws LdapException
+    public static DN getRelativeName( DN ancestor, DN descendant ) throws LdapException
     {
         DN rdn = null;
         

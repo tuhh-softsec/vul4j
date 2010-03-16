@@ -182,7 +182,7 @@ public abstract class UserClass implements Serializable
             boolean isFirst = true;
             buffer.append( "{ " );
             
-            for ( javax.naming.Name name:names )
+            for ( DN name:names )
             {
                 if ( isFirst )
                 {

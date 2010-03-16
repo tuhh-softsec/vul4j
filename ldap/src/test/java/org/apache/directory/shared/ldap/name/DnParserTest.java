@@ -20,8 +20,6 @@
 package org.apache.directory.shared.ldap.name;
 
 
-import javax.naming.Name;
-
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.util.StringTools;
@@ -362,7 +360,7 @@ public class DnParserTest
     {
         DnParser parser = DnParser.getNameParser();
 
-        Name nameEmpty = parser.parse( "" );
+        DN nameEmpty = parser.parse( "" );
 
         assertNotNull( nameEmpty );
     }
@@ -378,7 +376,7 @@ public class DnParserTest
     {
         DnParser parser = DnParser.getNameParser();
 
-        Name nameNull = parser.parse( null );
+        DN nameNull = parser.parse( null );
 
         assertEquals( "Null DN are legal : ", "", nameNull.toString() );
     }
@@ -394,7 +392,7 @@ public class DnParserTest
     {
         DnParser parser = DnParser.getNameParser();
 
-        Name nameRFC1779_1 = parser
+        DN nameRFC1779_1 = parser
             .parse( "CN=Marshall T. Rose, O=Dover Beach Consulting, L=Santa Clara, ST=California, C=US" );
 
         assertEquals( "RFC1779_1 : ",
@@ -415,7 +413,7 @@ public class DnParserTest
     {
         DnParser parser = DnParser.getNameParser();
 
-        Name nameRFC2253_1 = parser.parse( "CN=Steve Kille,O=Isode limited,C=GB" );
+        DN nameRFC2253_1 = parser.parse( "CN=Steve Kille,O=Isode limited,C=GB" );
 
         assertEquals( "RFC2253_1 : ", "CN=Steve Kille,O=Isode limited,C=GB", ( ( DN ) nameRFC2253_1 ).getName() );
     }
@@ -431,7 +429,7 @@ public class DnParserTest
     {
         DnParser parser = DnParser.getNameParser();
 
-        Name nameRFC2253_2 = parser.parse( "CN = Sales + CN =   J. Smith , O = Widget Inc. , C = US" );
+        DN nameRFC2253_2 = parser.parse( "CN = Sales + CN =   J. Smith , O = Widget Inc. , C = US" );
 
         assertEquals( "RFC2253_2 : ", "CN = Sales + CN =   J. Smith , O = Widget Inc. , C = US",
             ( ( DN ) nameRFC2253_2 ).getName() );
@@ -449,7 +447,7 @@ public class DnParserTest
     {
         DnParser parser = DnParser.getNameParser();
 
-        Name nameRFC2253_3 = parser.parse( "CN=L. Eagle,   O=Sue\\, Grabbit and Runn, C=GB" );
+        DN nameRFC2253_3 = parser.parse( "CN=L. Eagle,   O=Sue\\, Grabbit and Runn, C=GB" );
 
         assertEquals( "RFC2253_3 : ", "CN=L. Eagle,   O=Sue\\, Grabbit and Runn, C=GB", ( ( DN ) nameRFC2253_3 )
             .getName() );
@@ -467,7 +465,7 @@ public class DnParserTest
     {
         DnParser parser = DnParser.getNameParser();
 
-        Name nameRFC2253_4 = parser.parse( "CN=Before\\0DAfter,O=Test,C=GB" );
+        DN nameRFC2253_4 = parser.parse( "CN=Before\\0DAfter,O=Test,C=GB" );
         assertEquals( "RFC2253_4 : ", "CN=Before\\0DAfter,O=Test,C=GB", ( ( DN ) nameRFC2253_4 ).getName() );
     }
 
@@ -482,7 +480,7 @@ public class DnParserTest
     {
         DnParser parser = DnParser.getNameParser();
 
-        Name nameRFC2253_5 = parser.parse( "1.3.6.1.4.1.1466.0=#04024869,O=Test,C=GB" );
+        DN nameRFC2253_5 = parser.parse( "1.3.6.1.4.1.1466.0=#04024869,O=Test,C=GB" );
 
         assertEquals( "RFC2253_5 : ", "1.3.6.1.4.1.1466.0=#04024869,O=Test,C=GB", ( ( DN ) nameRFC2253_5 )
             .getName() );
@@ -499,7 +497,7 @@ public class DnParserTest
     {
         DnParser parser = DnParser.getNameParser();
 
-        Name nameRFC2253_6 = parser.parse( "SN=Lu\\C4\\8Di\\C4\\87" );
+        DN nameRFC2253_6 = parser.parse( "SN=Lu\\C4\\8Di\\C4\\87" );
 
         assertEquals( "RFC2253_6 : ", "SN=Lu\\C4\\8Di\\C4\\87", ( ( DN ) nameRFC2253_6 ).getName() );
     }
@@ -551,7 +549,7 @@ public class DnParserTest
         // '\' should be escaped as stated in RFC 2253
         String path = "windowsFilePath=C:\\\\cygwin";
         DnParser parser = DnParser.getNameParser();
-        Name result = parser.parse( path );
+        DN result = parser.parse( path );
         assertEquals( path, ( ( DN ) result ).getName() );
         assertEquals( "windowsfilepath=C:\\\\cygwin", ((DN)result).getNormName() );
     }

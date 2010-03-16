@@ -22,10 +22,9 @@ package org.apache.directory.shared.ldap.name;
 
 import java.util.List;
 
-import javax.naming.Name;
-
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.entry.client.ClientStringValue;
+import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.util.Position;
@@ -54,10 +53,14 @@ public enum FastDnParser
     }
 
 
-    /* (non-Javadoc)
-     * @see javax.naming.NameParser#parse(java.lang.String)
+    /**
+     * Parses a DN from a String
+     *
+     * @param name The DN to parse
+     * @return A valid DN
+     * @throws LdapException If the DN was invalid
      */
-    public Name parse( String name ) throws LdapInvalidDnException
+    public DN parse( String name ) throws LdapException
     {
         DN dn = new DN();
         parseDn( name, dn );
