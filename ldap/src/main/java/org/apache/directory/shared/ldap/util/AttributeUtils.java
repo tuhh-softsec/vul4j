@@ -1241,7 +1241,7 @@ public class AttributeUtils
     {
         if ( entry != null )
         {
-            Attributes attributes = new BasicAttributes();
+            Attributes attributes = new BasicAttributes( true );
 
             // Looping on attributes
             for ( Iterator<EntryAttribute> attributeIterator = entry.iterator(); attributeIterator.hasNext(); )
