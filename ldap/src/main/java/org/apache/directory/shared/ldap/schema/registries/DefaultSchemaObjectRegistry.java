@@ -28,8 +28,6 @@ import org.apache.directory.shared.asn1.primitives.OID;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.exception.LdapAttributeInUseException;
 import org.apache.directory.shared.ldap.exception.LdapException;
-import org.apache.directory.shared.ldap.exception.LdapSchemaViolationException;
-import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.schema.LoadableSchemaObject;
 import org.apache.directory.shared.ldap.schema.SchemaObject;
 import org.apache.directory.shared.ldap.schema.SchemaObjectType;
@@ -198,7 +196,7 @@ public abstract class DefaultSchemaObjectRegistry<T extends SchemaObject> implem
         {
             String msg = I18n.err( I18n.ERR_04270, schemaObjectType.name(), oid );
             LOG.warn( msg );
-            throw new LdapSchemaViolationException( ResultCodeEnum.ATTRIBUTE_OR_VALUE_EXISTS, msg );
+            throw new LdapAttributeInUseException( msg );
         }
 
         byName.put( oid, schemaObject );

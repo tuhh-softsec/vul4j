@@ -233,10 +233,6 @@ public class DnParserTest
         }
         catch ( LdapInvalidDnException ine )
         {
-            fail();
-        }
-        catch ( LdapException ine )
-        {
             assertTrue( true );
         }
     }
