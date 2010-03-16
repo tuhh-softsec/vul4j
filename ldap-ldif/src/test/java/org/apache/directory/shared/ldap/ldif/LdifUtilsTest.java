@@ -33,12 +33,13 @@ import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.BasicAttribute;
 import javax.naming.directory.BasicAttributes;
-import javax.naming.directory.InvalidAttributeValueException;
 
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.client.DefaultClientAttribute;
 import org.apache.directory.shared.ldap.entry.client.DefaultClientEntry;
+import org.apache.directory.shared.ldap.exception.LdapException;
+import org.apache.directory.shared.ldap.exception.LdapInvalidAttributeValueException;
 import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.name.RDN;
 import org.apache.directory.shared.ldap.util.StringTools;
@@ -305,11 +306,12 @@ public class LdifUtilsTest
     
     /**
      * Tests that unsafe characters are encoded using UTF-8 charset. 
+     * @throws LdapException 
      * 
      * @throws NamingException
      */
     @Test
-    public void testConvertToLdifEncoding() throws NamingException
+    public void testConvertToLdifEncoding() throws LdapException
     {
         Attributes attributes = new BasicAttributes( "cn", "Saarbr\u00FCcken" );
         String ldif = LdifUtils.convertToLdif( attributes );
@@ -323,7 +325,7 @@ public class LdifUtilsTest
      * @throws NamingException
      */
     @Test
-    public void testConvertToLdifAttrWithNullValues() throws NamingException
+    public void testConvertToLdifAttrWithNullValues() throws LdapException
     {
         Attributes attributes = new BasicAttributes( "cn", null );
         String ldif = LdifUtils.convertToLdif( attributes );
@@ -335,7 +337,7 @@ public class LdifUtilsTest
      * Test a conversion of an entry from a LDIF file
      */
     @Test
-    public void testConvertToLdif() throws NamingException
+    public void testConvertToLdif() throws LdapException
     {
         LdifEntry entry = new LdifEntry();
         entry.setDn( "cn=Saarbr\u00FCcken, dc=example, dc=com" );
@@ -357,9 +359,10 @@ public class LdifUtilsTest
     
     /**
      * Test a conversion of an attributes from a LDIF file
+     * @throws LdapLdifException 
      */
     @Test
-    public void testConvertAttributesfromLdif() throws NamingException
+    public void testConvertAttributesfromLdif() throws LdapException, LdapLdifException
     {
         Attributes attributes = new BasicAttributes( true );
         
@@ -387,7 +390,7 @@ public class LdifUtilsTest
      * @throws NamingException on error
      */
     @Test
-    public void testReverseModifyDNSuperior() throws NamingException
+    public void testReverseModifyDNSuperior() throws LdapException
     {
         DN dn = new DN( "cn=john doe, dc=example, dc=com" );
         DN newSuperior = new DN( "ou=system" );
@@ -419,7 +422,7 @@ public class LdifUtilsTest
      * @throws NamingException on error
      */
     @Test
-    public void testReverseModifyDNDeleteOldRdnSuperior() throws NamingException
+    public void testReverseModifyDNDeleteOldRdnSuperior() throws LdapException
     {
         DN dn = new DN( "cn=john doe, dc=example, dc=com" );
         DN newSuperior = new DN( "ou=system" );
@@ -446,7 +449,7 @@ public class LdifUtilsTest
     
     
     @Test
-    public void testCreateAttributesVarargs() throws NamingException
+    public void testCreateAttributesVarargs() throws LdapException, LdapLdifException, NamingException
     {
         String mOid = "m-oid: 1.2.3.4";
         String description = "description";
@@ -471,7 +474,7 @@ public class LdifUtilsTest
                 "objectClass" );
             fail();
         }
-        catch ( InvalidAttributeValueException iave )
+        catch ( LdapInvalidAttributeValueException iave )
         {
             assertTrue( true );
         }

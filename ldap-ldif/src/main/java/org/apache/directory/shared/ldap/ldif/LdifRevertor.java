@@ -25,9 +25,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.naming.InvalidNameException;
-import javax.naming.NamingException;
-
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
@@ -35,6 +32,8 @@ import org.apache.directory.shared.ldap.entry.Modification;
 import org.apache.directory.shared.ldap.entry.ModificationOperation;
 import org.apache.directory.shared.ldap.entry.client.ClientModification;
 import org.apache.directory.shared.ldap.entry.client.DefaultClientAttribute;
+import org.apache.directory.shared.ldap.exception.LdapException;
+import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.name.AVA;
 import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.name.RDN;
@@ -77,7 +76,7 @@ public class LdifRevertor
      * @param deletedEntry The entry which has been deleted
      * @return A reverse LDIF
      */
-    public static LdifEntry reverseDel( DN dn, Entry deletedEntry ) throws NamingException
+    public static LdifEntry reverseDel( DN dn, Entry deletedEntry ) throws LdapException
     {
         LdifEntry entry = new LdifEntry();
 
@@ -112,7 +111,7 @@ public class LdifRevertor
     * @throws NamingException If something went wrong
     */
     public static LdifEntry reverseModify( DN dn, List<Modification> forwardModifications, Entry modifiedEntry )
-        throws NamingException
+        throws LdapException
     {
         // First, protect the original entry by cloning it : we will modify it
         Entry clonedEntry = ( Entry ) modifiedEntry.clone();
@@ -248,7 +247,7 @@ public class LdifRevertor
      * @return a reverse LDIF
      * @throws NamingException if something went wrong
      */
-    public static LdifEntry reverseMove( DN newSuperiorDn, DN modifiedDn ) throws NamingException
+    public static LdifEntry reverseMove( DN newSuperiorDn, DN modifiedDn ) throws LdapException
     {
         LdifEntry entry = new LdifEntry();
         DN currentParent = null;
@@ -290,7 +289,7 @@ public class LdifRevertor
      * A small helper class to compute the simple revert.
      */
     private static LdifEntry revertEntry( List<LdifEntry> entries, Entry entry, DN newDn, 
-        DN newSuperior, RDN oldRdn, RDN newRdn ) throws InvalidNameException
+        DN newSuperior, RDN oldRdn, RDN newRdn ) throws LdapInvalidDnException
     {
         LdifEntry reverted = new LdifEntry();
         
@@ -366,7 +365,7 @@ public class LdifRevertor
      * A helper method which generates a reverted entry
      */
     private static LdifEntry generateReverted( DN newSuperior, RDN newRdn, DN newDn, 
-        RDN oldRdn, boolean deleteOldRdn ) throws InvalidNameException
+        RDN oldRdn, boolean deleteOldRdn ) throws LdapInvalidDnException
     {
         LdifEntry reverted = new LdifEntry();
         reverted.setChangeType( ChangeType.ModRdn );
@@ -409,7 +408,7 @@ public class LdifRevertor
      * @return A list of LDIF reverted entries 
      * @throws NamingException If the name reverting failed
      */
-    public static List<LdifEntry> reverseRename( Entry entry, RDN newRdn, boolean deleteOldRdn ) throws NamingException
+    public static List<LdifEntry> reverseRename( Entry entry, RDN newRdn, boolean deleteOldRdn ) throws LdapInvalidDnException
     {
         return reverseMoveAndRename( entry, null, newRdn, deleteOldRdn );
     }
@@ -427,7 +426,7 @@ public class LdifRevertor
      * @return A list of LDIF reverted entries 
      * @throws NamingException If the name reverting failed
      */
-    public static List<LdifEntry> reverseMoveAndRename( Entry entry, DN newSuperior, RDN newRdn, boolean deleteOldRdn ) throws NamingException
+    public static List<LdifEntry> reverseMoveAndRename( Entry entry, DN newSuperior, RDN newRdn, boolean deleteOldRdn ) throws LdapInvalidDnException
     {
         DN parentDn = entry.getDn();
         DN newDn = null;
@@ -466,7 +465,7 @@ public class LdifRevertor
                 // We have a simple old RDN, something like A=a
                 // If the values overlap, we can't rename the entry, just get out
                 // with an error
-                throw new NamingException( I18n.err( I18n.ERR_12080 ) ); 
+                throw new LdapInvalidDnException( I18n.err( I18n.ERR_12080 ) ); 
             }
 
             reverted =

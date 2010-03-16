@@ -24,12 +24,14 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
 
-import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.BasicAttributes;
 
 import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.entry.Entry;
+import org.apache.directory.shared.ldap.entry.EntryAttribute;
+import org.apache.directory.shared.ldap.entry.client.DefaultClientEntry;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -165,7 +167,7 @@ public class LdifAttributesReader extends LdifReader
      * @param lowerLine The same line, lowercased
      * @throws NamingException If anything goes wrong
      */
-    private void parseAttribute( Attributes attributes, String line, String lowerLine ) throws NamingException
+    private void parseAttribute( Attributes attributes, String line, String lowerLine ) throws LdapLdifException
     {
         int colonIndex = line.indexOf( ':' );
 
@@ -175,7 +177,7 @@ public class LdifAttributesReader extends LdifReader
         if ( attributeType.equals( "dn" ) )
         {
             LOG.error( I18n.err( I18n.ERR_12002 ) );
-            throw new NamingException( I18n.err( I18n.ERR_12003 ) );
+            throw new LdapLdifException( I18n.err( I18n.ERR_12003 ) );
         }
 
         Object attributeValue = parseValue( line, colonIndex );
@@ -193,6 +195,122 @@ public class LdifAttributesReader extends LdifReader
         }
     }
 
+    
+
+
+    /**
+     * Parse an AttributeType/AttributeValue
+     * 
+     * @param attributes The entry where to store the value
+     * @param line The line to parse
+     * @param lowerLine The same line, lowercased
+     * @throws NamingException If anything goes wrong
+     */
+    private void parseEntryAttribute( Entry entry, String line, String lowerLine ) throws LdapLdifException
+    {
+        int colonIndex = line.indexOf( ':' );
+
+        String attributeType = lowerLine.substring( 0, colonIndex );
+
+        // We should *not* have a DN twice
+        if ( attributeType.equals( "dn" ) )
+        {
+            LOG.error( I18n.err( I18n.ERR_12002 ) );
+            throw new LdapLdifException( I18n.err( I18n.ERR_12003 ) );
+        }
+
+        Object attributeValue = parseValue( line, colonIndex );
+
+        // Update the entry
+        EntryAttribute attribute = entry.get( attributeType );
+        
+        if ( attribute == null )
+        {
+            if ( attributeValue instanceof String )
+            {
+                entry.put( attributeType, (String)attributeValue );
+            }
+            else
+            {
+                entry.put( attributeType, (byte[])attributeValue );
+            }
+        }
+        else
+        {
+            if ( attributeValue instanceof String )
+            {
+                attribute.add( (String)attributeValue );
+            }
+            else
+            {
+                attribute.add( (byte[])attributeValue );
+            }
+        }
+    }
+
+    
+    /**
+     * Parse a ldif file. The following rules are processed :
+     * 
+     * &lt;ldif-file&gt; ::= &lt;ldif-attrval-record&gt; &lt;ldif-attrval-records&gt; |
+     * &lt;ldif-change-record&gt; &lt;ldif-change-records&gt; &lt;ldif-attrval-record&gt; ::=
+     * &lt;dn-spec&gt; &lt;sep&gt; &lt;attrval-spec&gt; &lt;attrval-specs&gt; &lt;ldif-change-record&gt; ::=
+     * &lt;dn-spec&gt; &lt;sep&gt; &lt;controls-e&gt; &lt;changerecord&gt; &lt;dn-spec&gt; ::= "dn:" &lt;fill&gt;
+     * &lt;distinguishedName&gt; | "dn::" &lt;fill&gt; &lt;base64-distinguishedName&gt;
+     * &lt;changerecord&gt; ::= "changetype:" &lt;fill&gt; &lt;change-op&gt;
+     * 
+     * @return The read entry
+     * @throws LdapLdifException If the entry can't be read or is invalid
+     */
+    private Entry parseEntry() throws LdapLdifException
+    {
+        if ( ( lines == null ) || ( lines.size() == 0 ) )
+        {
+            LOG.debug( "The entry is empty : end of ldif file" );
+            return null;
+        }
+
+        Entry entry = new DefaultClientEntry();
+
+        // Now, let's iterate through the other lines
+        for ( String line:lines )
+        {
+            // Each line could start either with an OID, an attribute type, with
+            // "control:" or with "changetype:"
+            String lowerLine = line.toLowerCase();
+
+            // We have three cases :
+            // 1) The first line after the DN is a "control:" -> this is an error
+            // 2) The first line after the DN is a "changeType:" -> this is an error
+            // 3) The first line after the DN is anything else
+            if ( lowerLine.startsWith( "control:" ) )
+            {
+                LOG.error( I18n.err( I18n.ERR_12004 ) );
+                throw new LdapLdifException( I18n.err( I18n.ERR_12005 ) );
+            }
+            else if ( lowerLine.startsWith( "changetype:" ) )
+            {
+                LOG.error( I18n.err( I18n.ERR_12004 ) );
+                throw new LdapLdifException( I18n.err( I18n.ERR_12005 ) );
+            }
+            else if ( line.indexOf( ':' ) > 0 )
+            {
+                parseEntryAttribute( entry, line, lowerLine );
+            }
+            else
+            {
+                // Invalid attribute Value
+                LOG.error( I18n.err( I18n.ERR_12006 ) );
+                throw new LdapLdifException( I18n.err( I18n.ERR_12007 ) );
+            }
+        }
+
+        LOG.debug( "Read an attributes : {}", entry );
+        
+        return entry;
+    }
+
+
     /**
      * Parse a ldif file. The following rules are processed :
      * 
@@ -206,7 +324,7 @@ public class LdifAttributesReader extends LdifReader
      * @return The read entry
      * @throws NamingException If the entry can't be read or is invalid
      */
-    private Attributes parseAttributes() throws NamingException
+    private Attributes parseAttributes() throws LdapLdifException
     {
         if ( ( lines == null ) || ( lines.size() == 0 ) )
         {
@@ -230,12 +348,12 @@ public class LdifAttributesReader extends LdifReader
             if ( lowerLine.startsWith( "control:" ) )
             {
                 LOG.error( I18n.err( I18n.ERR_12004 ) );
-                throw new NamingException( I18n.err( I18n.ERR_12005 ) );
+                throw new LdapLdifException( I18n.err( I18n.ERR_12005 ) );
             }
             else if ( lowerLine.startsWith( "changetype:" ) )
             {
                 LOG.error( I18n.err( I18n.ERR_12004 ) );
-                throw new NamingException( I18n.err( I18n.ERR_12005 ) );
+                throw new LdapLdifException( I18n.err( I18n.ERR_12005 ) );
             }
             else if ( line.indexOf( ':' ) > 0 )
             {
@@ -245,7 +363,7 @@ public class LdifAttributesReader extends LdifReader
             {
                 // Invalid attribute Value
                 LOG.error( I18n.err( I18n.ERR_12006 ) );
-                throw new NamingException( I18n.err( I18n.ERR_12007 ) );
+                throw new LdapLdifException( I18n.err( I18n.ERR_12007 ) );
             }
         }
 
@@ -256,14 +374,13 @@ public class LdifAttributesReader extends LdifReader
 
 
     /**
-     * A method which parses a ldif string and returns a list of entries.
+     * A method which parses a ldif string and returns a list of Attributes.
      * 
      * @param ldif The ldif string
-     * @return A list of entries, or an empty List
-     * @throws NamingException
-     *             If something went wrong
+     * @return A list of Attributes, or an empty List
+     * @throws LdapLdifException If something went wrong
      */
-    public Attributes parseAttributes( String ldif ) throws NamingException
+    public Attributes parseAttributes( String ldif ) throws LdapLdifException
     {
         lines = new ArrayList<String>();
         position = new Position();
@@ -291,10 +408,64 @@ public class LdifAttributesReader extends LdifReader
 
             return attributes;
         }
-        catch (NamingException ne)
+        catch (LdapLdifException ne)
         {
             LOG.error( I18n.err( I18n.ERR_12008, ne.getLocalizedMessage() ) );
-            throw new NamingException( I18n.err( I18n.ERR_12009 ) );
+            throw new LdapLdifException( I18n.err( I18n.ERR_12009 ) );
+        }
+        finally
+        {
+            try
+            {
+                reader.close();
+            }
+            catch ( IOException ioe )
+            {
+                // Do nothing
+            }
+        }
+    }
+    
+    
+    /**
+     * A method which parses a ldif string and returns a list of Entry.
+     * 
+     * @param ldif The ldif string
+     * @return A list of Entry, or an empty List
+     * @throws LdapLdifException If something went wrong
+     */
+    public Entry parseEntry( String ldif ) throws LdapLdifException
+    {
+        lines = new ArrayList<String>();
+        position = new Position();
+
+        LOG.debug( "Starts parsing ldif buffer" );
+
+        if ( StringTools.isEmpty( ldif ) )
+        {
+            return new DefaultClientEntry();
+        }
+
+        StringReader strIn = new StringReader( ldif );
+        reader = new BufferedReader( strIn );
+
+        try
+        {
+            readLines();
+            
+            Entry entry = parseEntry();
+
+            if ( LOG.isDebugEnabled() )
+            {
+                LOG.debug( "Parsed {} entries.", ( entry == null ? 0 : 1 ) );
+            }
+
+            return entry;
+        }
+        catch (LdapLdifException ne)
+        {
+            LOG.error( I18n.err( I18n.ERR_12008, ne.getLocalizedMessage() ) );
+            throw new LdapLdifException( I18n.err( I18n.ERR_12009 ) );
         }
         finally
         {

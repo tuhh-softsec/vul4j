@@ -32,6 +32,9 @@ import javax.naming.NamingException;
 
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
+import org.apache.directory.shared.ldap.entry.Entry;
+import org.apache.directory.shared.ldap.entry.EntryAttribute;
+import org.apache.directory.shared.ldap.exception.LdapInvalidAttributeValueException;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Before;
 import org.junit.Test;
@@ -86,39 +89,39 @@ public class LdifAttributesReaderTest
         HJENSEN_JPEG_FILE = createFile( "hjensen", data );
     }
 
-    @Test public void testLdifNull() throws NamingException
+    @Test public void testLdifNull() throws LdapLdifException
     {
         String ldif = null;
 
         LdifAttributesReader reader = new LdifAttributesReader();
-        Attributes attributes = reader.parseAttributes( ldif );
+        Entry entry = reader.parseEntry( ldif );
 
-        assertEquals( 0, attributes.size() );
+        assertEquals( 0, entry.size() );
     }
     
 
-    @Test public void testLdifEmpty() throws NamingException
+    @Test public void testLdifEmpty() throws LdapLdifException
     {
         String ldif = "";
 
         LdifAttributesReader reader = new LdifAttributesReader();
-        Attributes attributes = reader.parseAttributes( ldif );
+        Entry entry = reader.parseEntry( ldif );
 
-        assertEquals( 0, attributes.size() );
+        assertEquals( 0, entry.size() );
     }
 
     
-    @Test public void testLdifEmptyLines() throws NamingException
+    @Test public void testLdifEmptyLines() throws LdapLdifException
     {
         String ldif = "\n\n\r\r\n";
 
         LdifAttributesReader reader = new LdifAttributesReader();
-        Attributes attributes = reader.parseAttributes( ldif );
-        assertNull( attributes );
+        Entry entry = reader.parseEntry( ldif );
+        assertNull( entry );
     }
 
     
-    @Test public void testLdifComments() throws NamingException
+    @Test public void testLdifComments() throws LdapLdifException
     {
         String ldif = 
             "#Comment 1\r" + 
@@ -128,13 +131,13 @@ public class LdifAttributesReaderTest
             "\n";
 
         LdifAttributesReader reader = new LdifAttributesReader();
-        Attributes attributes = reader.parseAttributes( ldif );
+        Entry entry = reader.parseEntry( ldif );
 
-        assertNull( attributes );
+        assertNull( entry );
     }
 
     
-    @Test public void testLdifVersionStart() throws NamingException
+    @Test public void testLdifVersionStart() throws LdapLdifException
     {
         String ldif = 
             "cn: app1\n" + 
@@ -146,12 +149,12 @@ public class LdifAttributesReaderTest
 
 
         LdifAttributesReader reader = new LdifAttributesReader();
-        Attributes attributes = reader.parseAttributes( ldif );
+        Entry entry = reader.parseEntry( ldif );
 
         assertEquals( 1, reader.getVersion() );
-        assertNotNull( attributes );
+        assertNotNull( entry );
 
-        Attribute attr = attributes.get( "displayname" );
+        EntryAttribute attr = entry.get( "displayname" );
         assertTrue( attr.contains( "app1" ) );
     }
 
@@ -161,7 +164,7 @@ public class LdifAttributesReaderTest
      * 
      * @throws NamingException
      */
-    @Test public void testLdifParserEndSpaces() throws NamingException
+    @Test public void testLdifParserEndSpaces() throws LdapLdifException
     {
         String ldif = 
             "cn: app1\n" + 
@@ -173,16 +176,16 @@ public class LdifAttributesReaderTest
 
         LdifAttributesReader reader = new LdifAttributesReader();
 
-        Attributes attributes = reader.parseAttributes( ldif );
-        assertNotNull( attributes );
+        Entry entry = reader.parseEntry( ldif );
+        assertNotNull( entry );
 
-        Attribute attr = attributes.get( "displayname" );
+        EntryAttribute attr = entry.get( "displayname" );
         assertTrue( attr.contains( "app1" ) );
 
     }
 
 
-    @Test public void testLdifParser() throws NamingException
+    @Test public void testLdifParser() throws LdapLdifException, LdapInvalidAttributeValueException
     {
         String ldif = 
             "cn: app1\n" + 
@@ -193,29 +196,29 @@ public class LdifAttributesReaderTest
             "envVars:";
 
         LdifAttributesReader reader = new LdifAttributesReader();
-        Attributes attributes = reader.parseAttributes( ldif );
+        Entry entry = reader.parseEntry( ldif );
 
-        assertNotNull( attributes );
+        assertNotNull( entry );
 
-        Attribute attr = attributes.get( "cn" );
+        EntryAttribute attr = entry.get( "cn" );
         assertTrue( attr.contains( "app1" ) );
 
-        attr = attributes.get( "objectclass" );
+        attr = entry.get( "objectclass" );
         assertTrue( attr.contains( "top" ) );
         assertTrue( attr.contains( "apApplication" ) );
 
-        attr = attributes.get( "displayname" );
+        attr = entry.get( "displayname" );
         assertTrue( attr.contains( "app1" ) );
 
-        attr = attributes.get( "dependencies" );
-        assertNull( attr.get() );
+        attr = entry.get( "dependencies" );
+        assertNull( attr.get().get() );
 
-        attr = attributes.get( "envvars" );
-        assertNull( attr.get() );
+        attr = entry.get( "envvars" );
+        assertNull( attr.get().get() );
     }
 
     
-    @Test public void testLdifParserMuiltiLineComments() throws NamingException
+    @Test public void testLdifParserMuiltiLineComments() throws LdapLdifException
     {
         String ldif = 
             "#comment\n" + 
@@ -231,29 +234,29 @@ public class LdifAttributesReaderTest
             "envVars:";
 
         LdifAttributesReader reader = new LdifAttributesReader();
-        Attributes attributes = reader.parseAttributes( ldif );
+        Entry entry = reader.parseEntry( ldif );
 
-        assertNotNull( attributes );
+        assertNotNull( entry );
 
-        Attribute attr = attributes.get( "cn" );
+        EntryAttribute attr = entry.get( "cn" );
         assertTrue( attr.contains( "app1#another comment" ) );
 
-        attr = attributes.get( "objectclass" );
+        attr = entry.get( "objectclass" );
         assertTrue( attr.contains( "top" ) );
         assertTrue( attr.contains( "apApplication" ) );
 
-        attr = attributes.get( "displayname" );
+        attr = entry.get( "displayname" );
         assertTrue( attr.contains( "app1" ) );
 
-        attr = attributes.get( "dependencies" );
-        assertNull( attr.get() );
+        attr = entry.get( "dependencies" );
+        assertNull( attr.get().get() );
 
-        attr = attributes.get( "envvars" );
-        assertNull( attr.get() );
+        attr = entry.get( "envvars" );
+        assertNull( attr.get().get() );
     }
 
     
-    @Test public void testLdifParserMultiLineEntries() throws NamingException
+    @Test public void testLdifParserMultiLineEntries() throws LdapLdifException
     {
         String ldif = 
             "#comment\n" + 
@@ -269,29 +272,29 @@ public class LdifAttributesReaderTest
             "envVars:";
 
         LdifAttributesReader reader = new LdifAttributesReader();
-        Attributes attributes = reader.parseAttributes( ldif );
+        Entry entry = reader.parseEntry( ldif );
 
-        assertNotNull( attributes );
+        assertNotNull( entry );
 
-        Attribute attr = attributes.get( "cn" );
+        EntryAttribute attr = entry.get( "cn" );
         assertTrue( attr.contains( "app1#another comment" ) );
 
-        attr = attributes.get( "objectclass" );
+        attr = entry.get( "objectclass" );
         assertTrue( attr.contains( "top" ) );
         assertTrue( attr.contains( "apApplication" ) );
 
-        attr = attributes.get( "displayname" );
+        attr = entry.get( "displayname" );
         assertTrue( attr.contains( "app1" ) );
 
-        attr = attributes.get( "dependencies" );
-        assertNull( attr.get() );
+        attr = entry.get( "dependencies" );
+        assertNull( attr.get().get() );
 
-        attr = attributes.get( "envvars" );
-        assertNull( attr.get() );
+        attr = entry.get( "envvars" );
+        assertNull( attr.get().get() );
     }
 
     
-    @Test public void testLdifParserBase64() throws NamingException, UnsupportedEncodingException
+    @Test public void testLdifParserBase64() throws LdapLdifException, UnsupportedEncodingException
     {
         String ldif = 
             "#comment\n" + 
@@ -306,29 +309,29 @@ public class LdifAttributesReaderTest
             "envVars:";
 
         LdifAttributesReader reader = new LdifAttributesReader();
-        Attributes attributes = reader.parseAttributes( ldif );
+        Entry entry = reader.parseEntry( ldif );
 
-        assertNotNull( attributes );
+        assertNotNull( entry );
 
-        Attribute attr = attributes.get( "cn" );
+        EntryAttribute attr = entry.get( "cn" );
         assertTrue( attr.contains( "Emmanuel L\u00e9charny".getBytes( "UTF-8" ) ) );
 
-        attr = attributes.get( "objectclass" );
+        attr = entry.get( "objectclass" );
         assertTrue( attr.contains( "top" ) );
         assertTrue( attr.contains( "apApplication" ) );
 
-        attr = attributes.get( "displayname" );
+        attr = entry.get( "displayname" );
         assertTrue( attr.contains( "app1" ) );
 
-        attr = attributes.get( "dependencies" );
-        assertNull( attr.get() );
+        attr = entry.get( "dependencies" );
+        assertNull( attr.get().get() );
 
-        attr = attributes.get( "envvars" );
-        assertNull( attr.get() );
+        attr = entry.get( "envvars" );
+        assertNull( attr.get().get() );
     }
 
     
-    @Test public void testLdifParserBase64MultiLine() throws NamingException, UnsupportedEncodingException
+    @Test public void testLdifParserBase64MultiLine() throws LdapLdifException, UnsupportedEncodingException
     {
         String ldif = 
             "#comment\n" + 
@@ -344,29 +347,29 @@ public class LdifAttributesReaderTest
             "envVars:";
 
         LdifAttributesReader reader = new LdifAttributesReader();
-        Attributes attributes = reader.parseAttributes( ldif );
+        Entry entry = reader.parseEntry( ldif );
 
-        assertNotNull( attributes );
+        assertNotNull( entry );
 
-        Attribute attr = attributes.get( "cn" );
+        EntryAttribute attr = entry.get( "cn" );
         assertTrue( attr.contains( "Emmanuel L\u00e9charny  ".getBytes( "UTF-8" ) ) );
 
-        attr = attributes.get( "objectclass" );
+        attr = entry.get( "objectclass" );
         assertTrue( attr.contains( "top" ) );
         assertTrue( attr.contains( "apApplication" ) );
 
-        attr = attributes.get( "displayname" );
+        attr = entry.get( "displayname" );
         assertTrue( attr.contains( "app1" ) );
 
-        attr = attributes.get( "dependencies" );
-        assertNull( attr.get() );
+        attr = entry.get( "dependencies" );
+        assertNull( attr.get().get() );
 
-        attr = attributes.get( "envvars" );
-        assertNull( attr.get() );
+        attr = entry.get( "envvars" );
+        assertNull( attr.get().get() );
     }
 
     
-    @Test public void testLdifParserRFC2849Sample1() throws NamingException
+    @Test public void testLdifParserRFC2849Sample1() throws LdapLdifException
     {
         String ldif = 
             "objectclass: top\n" + 
@@ -381,34 +384,34 @@ public class LdifAttributesReaderTest
             "description: A big sailing fan.\n"; 
 
         LdifAttributesReader reader = new LdifAttributesReader();
-        Attributes attributes = reader.parseAttributes( ldif );
+        Entry entry = reader.parseEntry( ldif );
 
-        Attribute attr = attributes.get( "objectclass" );
+        EntryAttribute attr = entry.get( "objectclass" );
         assertTrue( attr.contains( "top" ) );
         assertTrue( attr.contains( "person" ) );
         assertTrue( attr.contains( "organizationalPerson" ) );
 
-        attr = attributes.get( "cn" );
+        attr = entry.get( "cn" );
         assertTrue( attr.contains( "Barbara Jensen" ) );
         assertTrue( attr.contains( "Barbara J Jensen" ) );
         assertTrue( attr.contains( "Babs Jensen" ) );
 
-        attr = attributes.get( "sn" );
+        attr = entry.get( "sn" );
         assertTrue( attr.contains( "Jensen" ) );
 
-        attr = attributes.get( "uid" );
+        attr = entry.get( "uid" );
         assertTrue( attr.contains( "bjensen" ) );
 
-        attr = attributes.get( "telephonenumber" );
+        attr = entry.get( "telephonenumber" );
         assertTrue( attr.contains( "+1 408 555 1212" ) );
 
-        attr = attributes.get( "description" );
+        attr = entry.get( "description" );
         assertTrue( attr.contains( "A big sailing fan." ) );
 
     }
 
     
-    @Test public void testLdifParserRFC2849Sample2() throws NamingException
+    @Test public void testLdifParserRFC2849Sample2() throws LdapLdifException
     {
         String ldif = 
             "objectclass: top\n" + 
@@ -425,38 +428,38 @@ public class LdifAttributesReaderTest
             "title:Product Manager, Rod and Reel Division";
 
         LdifAttributesReader reader = new LdifAttributesReader();
-        Attributes attributes = reader.parseAttributes( ldif );
+        Entry entry = reader.parseEntry( ldif );
 
-        Attribute attr = attributes.get( "objectclass" );
+        EntryAttribute attr = entry.get( "objectclass" );
         assertTrue( attr.contains( "top" ) );
         assertTrue( attr.contains( "person" ) );
         assertTrue( attr.contains( "organizationalPerson" ) );
 
-        attr = attributes.get( "cn" );
+        attr = entry.get( "cn" );
         assertTrue( attr.contains( "Barbara Jensen" ) );
         assertTrue( attr.contains( "Barbara J Jensen" ) );
         assertTrue( attr.contains( "Babs Jensen" ) );
 
-        attr = attributes.get( "sn" );
+        attr = entry.get( "sn" );
         assertTrue( attr.contains( "Jensen" ) );
 
-        attr = attributes.get( "uid" );
+        attr = entry.get( "uid" );
         assertTrue( attr.contains( "bjensen" ) );
 
-        attr = attributes.get( "telephonenumber" );
+        attr = entry.get( "telephonenumber" );
         assertTrue( attr.contains( "+1 408 555 1212" ) );
 
-        attr = attributes.get( "description" );
+        attr = entry.get( "description" );
         assertTrue( attr
                 .contains( "Babs is a big sailing fan, and travels extensively in search of perfect sailing conditions." ) );
 
-        attr = attributes.get( "title" );
+        attr = entry.get( "title" );
         assertTrue( attr.contains( "Product Manager, Rod and Reel Division" ) );
 
     }
 
     
-    @Test public void testLdifParserRFC2849Sample3() throws NamingException, Exception
+    @Test public void testLdifParserRFC2849Sample3() throws LdapLdifException, Exception
     {
         String ldif = 
             "objectclass: top\n" + 
@@ -500,7 +503,7 @@ public class LdifAttributesReaderTest
     }
 
     
-    @Test public void testLdifParserRFC2849Sample3VariousSpacing() throws NamingException, Exception
+    @Test public void testLdifParserRFC2849Sample3VariousSpacing() throws LdapLdifException, Exception
     {
         String ldif = 
             "objectclass:top\n" + 
@@ -661,10 +664,10 @@ public class LdifAttributesReaderTest
 
         try
         {
-            reader.parseAttributes( ldif );
+            reader.parseEntry( ldif );
             fail();
         }
-        catch (NamingException ne)
+        catch ( LdapLdifException ne )
         {
         	assertTrue(I18n.err(I18n.ERR_12009), ne.getMessage().startsWith(I18n.ERR_12009));
         }

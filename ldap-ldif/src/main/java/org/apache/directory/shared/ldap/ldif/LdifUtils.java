@@ -21,9 +21,7 @@ package org.apache.directory.shared.ldap.ldif;
 
 import java.io.UnsupportedEncodingException;
 
-import javax.naming.NamingException;
 import javax.naming.directory.Attributes;
-import javax.naming.directory.InvalidAttributeValueException;
 
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.entry.Entry;
@@ -31,6 +29,9 @@ import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Modification;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.entry.client.DefaultClientAttribute;
+import org.apache.directory.shared.ldap.exception.LdapException;
+import org.apache.directory.shared.ldap.exception.LdapInvalidAttributeValueException;
+import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.util.AttributeUtils;
 import org.apache.directory.shared.ldap.util.Base64;
@@ -144,9 +145,9 @@ public class LdifUtils
      * Convert an Attributes as LDIF
      * @param attrs the Attributes to convert
      * @return the corresponding LDIF code as a String
-     * @throws NamingException If a naming exception is encountered.
+     * @throws LdapException If a naming exception is encountered.
      */
-    public static String convertToLdif( Attributes attrs ) throws NamingException
+    public static String convertToLdif( Attributes attrs ) throws LdapException
     {
         return convertAttributesToLdif( AttributeUtils.toClientEntry( attrs, null ), DEFAULT_LINE_LENGTH );
     }
@@ -156,9 +157,9 @@ public class LdifUtils
      * Convert an Attributes as LDIF
      * @param attrs the Attributes to convert
      * @return the corresponding LDIF code as a String
-     * @throws NamingException If a naming exception is encountered.
+     * @throws LdapException If a naming exception is encountered.
      */
-    public static String convertToLdif( Attributes attrs, int length ) throws NamingException
+    public static String convertToLdif( Attributes attrs, int length ) throws LdapException
     {
         return convertAttributesToLdif( AttributeUtils.toClientEntry( attrs, null ), length );
     }
@@ -168,9 +169,9 @@ public class LdifUtils
      * Convert an Attributes as LDIF. The DN is written.
      * @param attrs the Attributes to convert
      * @return the corresponding LDIF code as a String
-     * @throws NamingException If a naming exception is encountered.
+     * @throws LdapException If a naming exception is encountered.
      */
-    public static String convertToLdif( Attributes attrs, DN dn, int length ) throws NamingException
+    public static String convertToLdif( Attributes attrs, DN dn, int length ) throws LdapException
     {
         return convertEntryToLdif( AttributeUtils.toClientEntry( attrs, dn ), length );
     }
@@ -180,9 +181,9 @@ public class LdifUtils
      * Convert an Attributes as LDIF. The DN is written.
      * @param attrs the Attributes to convert
      * @return the corresponding LDIF code as a String
-     * @throws NamingException If a naming exception is encountered.
+     * @throws LdapException If a naming exception is encountered.
      */
-    public static String convertToLdif( Attributes attrs, DN dn ) throws NamingException
+    public static String convertToLdif( Attributes attrs, DN dn ) throws LdapException
     {
         return convertEntryToLdif( AttributeUtils.toClientEntry( attrs, dn ), DEFAULT_LINE_LENGTH );
     }
@@ -192,9 +193,9 @@ public class LdifUtils
      * Convert an Entry to LDIF
      * @param entry the Entry to convert
      * @return the corresponding LDIF code as a String
-     * @throws NamingException If a naming exception is encountered.
+     * @throws LdapException If a naming exception is encountered.
      */
-    public static String convertEntryToLdif( Entry entry ) throws NamingException
+    public static String convertEntryToLdif( Entry entry ) throws LdapException
     {
         return convertEntryToLdif( entry, DEFAULT_LINE_LENGTH );
     }
@@ -204,9 +205,9 @@ public class LdifUtils
      * Convert all the Entry's attributes to LDIF. The DN is not written
      * @param entry the Entry to convert
      * @return the corresponding LDIF code as a String
-     * @throws NamingException If a naming exception is encountered.
+     * @throws LdapException If a naming exception is encountered.
      */
-    public static String convertAttributesToLdif( Entry entry ) throws NamingException
+    public static String convertAttributesToLdif( Entry entry ) throws LdapException
     {
         return convertAttributesToLdif( entry, DEFAULT_LINE_LENGTH );
     }
@@ -217,13 +218,13 @@ public class LdifUtils
      * 
      * @param ldif The LDIF string containing an attribute value
      * @return An Attributes instance
-     * @exception NamingException If the LDIF String cannot be converted to an Attributes
+     * @exception LdapException If the LDIF String cannot be converted to an Attributes
      */
-    public static Attributes convertAttributesFromLdif( String ldif ) throws NamingException
+    public static Attributes convertAttributesFromLdif( String ldif ) throws LdapLdifException
     {
         LdifAttributesReader reader = new  LdifAttributesReader();
         
-        return reader.parseAttributes( ldif );
+        return AttributeUtils.toAttributes( reader.parseEntry( ldif ) );
     }
     
     
@@ -232,9 +233,9 @@ public class LdifUtils
      * @param entry the Entry to convert
      * @param length the expected line length
      * @return the corresponding LDIF code as a String
-     * @throws NamingException If a naming exception is encountered.
+     * @throws LdapException If a naming exception is encountered.
      */
-    public static String convertEntryToLdif( Entry entry, int length ) throws NamingException
+    public static String convertEntryToLdif( Entry entry, int length ) throws LdapException
     {
         StringBuilder sb = new StringBuilder();
         
@@ -268,9 +269,9 @@ public class LdifUtils
      * @param entry the Entry to convert
      * @param length the expected line length
      * @return the corresponding LDIF code as a String
-     * @throws NamingException If a naming exception is encountered.
+     * @throws LdapException If a naming exception is encountered.
      */
-    public static String convertAttributesToLdif( Entry entry, int length ) throws NamingException
+    public static String convertAttributesToLdif( Entry entry, int length ) throws LdapException
     {
         StringBuilder sb = new StringBuilder();
         
@@ -288,9 +289,9 @@ public class LdifUtils
      * Convert an LdifEntry to LDIF
      * @param entry the LdifEntry to convert
      * @return the corresponding LDIF as a String
-     * @throws NamingException If a naming exception is encountered.
+     * @throws LdapException If a naming exception is encountered.
      */
-    public static String convertToLdif( LdifEntry entry ) throws NamingException
+    public static String convertToLdif( LdifEntry entry ) throws LdapException
     {
         return convertToLdif( entry, DEFAULT_LINE_LENGTH );
     }
@@ -301,9 +302,9 @@ public class LdifUtils
      * @param entry the LdifEntry to convert
      * @param length The maximum line's length 
      * @return the corresponding LDIF as a String
-     * @throws NamingException If a naming exception is encountered.
+     * @throws LdapException If a naming exception is encountered.
      */
-    public static String convertToLdif( LdifEntry entry, int length ) throws NamingException
+    public static String convertToLdif( LdifEntry entry, int length ) throws LdapException
     {
         StringBuilder sb = new StringBuilder();
         
@@ -333,7 +334,7 @@ public class LdifUtils
             case Delete :
                 if ( entry.getEntry() != null )
                 {
-                    throw new NamingException( I18n.err( I18n.ERR_12081 ) );
+                    throw new LdapException( I18n.err( I18n.ERR_12081 ) );
                 }
                 
                 break;
@@ -341,7 +342,7 @@ public class LdifUtils
             case Add :
                 if ( ( entry.getEntry() == null ) )
                 {
-                    throw new NamingException( I18n.err( I18n.ERR_12082 ) );
+                    throw new LdapException( I18n.err( I18n.ERR_12082 ) );
                 }
 
                 // Now, iterate through all the attributes
@@ -356,7 +357,7 @@ public class LdifUtils
             case ModRdn :
                 if ( entry.getEntry() != null )
                 {
-                    throw new NamingException( I18n.err( I18n.ERR_12083 ) );
+                    throw new LdapException( I18n.err( I18n.ERR_12083 ) );
                 }
                 
                 
@@ -454,9 +455,9 @@ public class LdifUtils
      * Converts an EntryAttribute to LDIF
      * @param attr the >EntryAttribute to convert
      * @return the corresponding LDIF code as a String
-     * @throws NamingException If a naming exception is encountered.
+     * @throws LdapException If a naming exception is encountered.
      */
-    public static String convertToLdif( EntryAttribute attr ) throws NamingException
+    public static String convertToLdif( EntryAttribute attr ) throws LdapException
     {
         return convertToLdif( attr, DEFAULT_LINE_LENGTH );
     }
@@ -467,9 +468,9 @@ public class LdifUtils
      * @param attr the EntryAttribute to convert
      * @param length the expected line length
      * @return the corresponding LDIF code as a String
-     * @throws NamingException If a naming exception is encountered.
+     * @throws LdapException If a naming exception is encountered.
      */
-    public static String convertToLdif( EntryAttribute attr, int length ) throws NamingException
+    public static String convertToLdif( EntryAttribute attr, int length ) throws LdapException
     {
         StringBuilder sb = new StringBuilder();
         
@@ -593,9 +594,10 @@ public class LdifUtils
      * @param avas The AttributeType and Values, using a ldif format, or a couple of 
      * Attribute ID/Value
      * @return An Attributes instance
-     * @throws NamingException If the data are invalid
+     * @throws LdapException If the data are invalid
+     * @throws LdapLdifException 
      */
-    public static Attributes createAttributes( Object... avas ) throws NamingException
+    public static Attributes createAttributes( Object... avas ) throws LdapException, LdapLdifException
     {
         StringBuilder sb = new StringBuilder();
         int pos = 0;
@@ -607,7 +609,7 @@ public class LdifUtils
             {
                 if ( !(ava instanceof String) )
                 {
-                    throw new InvalidAttributeValueException( I18n.err( I18n.ERR_12085, (pos+1) ) );
+                    throw new LdapInvalidAttributeValueException( ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX, I18n.err( I18n.ERR_12085, (pos+1) ) );
                 }
                 
                 String attribute = (String)ava;
@@ -636,7 +638,7 @@ public class LdifUtils
                 }
                 else
                 {
-                    throw new InvalidAttributeValueException( I18n.err( I18n.ERR_12086, (pos+1) ) );
+                    throw new LdapInvalidAttributeValueException( ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX, I18n.err( I18n.ERR_12086, (pos+1) ) );
                 }
                 
                 valueExpected = false;
@@ -645,11 +647,11 @@ public class LdifUtils
         
         if ( valueExpected )
         {
-            throw new InvalidAttributeValueException( I18n.err( I18n.ERR_12087 ) );
+            throw new LdapInvalidAttributeValueException( ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX, I18n.err( I18n.ERR_12087 ) );
         }
         
         LdifAttributesReader reader = new LdifAttributesReader();
-        Attributes attributes = reader.parseAttributes( sb.toString() );
+        Attributes attributes = AttributeUtils.toAttributes( reader.parseEntry( sb.toString() ) );
 
         return attributes;
     }

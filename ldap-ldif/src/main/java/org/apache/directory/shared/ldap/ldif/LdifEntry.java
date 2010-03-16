@@ -29,9 +29,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import javax.naming.InvalidNameException;
-import javax.naming.NamingException;
-
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Modification;
@@ -42,6 +39,8 @@ import org.apache.directory.shared.ldap.entry.client.ClientModification;
 import org.apache.directory.shared.ldap.entry.client.ClientStringValue;
 import org.apache.directory.shared.ldap.entry.client.DefaultClientAttribute;
 import org.apache.directory.shared.ldap.entry.client.DefaultClientEntry;
+import org.apache.directory.shared.ldap.exception.LdapException;
+import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.name.RDN;
@@ -122,7 +121,7 @@ public class LdifEntry implements Cloneable, Externalizable
      * 
      * @param dn The Distinguished Name
      */
-    public void setDn( String dn ) throws InvalidNameException
+    public void setDn( String dn ) throws LdapInvalidDnException
     {
         entry.setDn( new DN( dn ) );
     }
@@ -246,7 +245,7 @@ public class LdifEntry implements Cloneable, Externalizable
      * @param attr
      *            The attribute to be added
      */
-    public void addAttribute( EntryAttribute attr ) throws NamingException
+    public void addAttribute( EntryAttribute attr ) throws LdapException
     {
         entry.put( attr );
     }
@@ -261,7 +260,7 @@ public class LdifEntry implements Cloneable, Externalizable
      *            The attribute value
      * 
      */
-    public void addAttribute( String id, Object value ) throws NamingException
+    public void addAttribute( String id, Object value ) throws LdapException
     {
         if ( value instanceof String )
         {
@@ -302,7 +301,7 @@ public class LdifEntry implements Cloneable, Externalizable
      *            The attribute value
      * 
      */
-    public void putAttribute( String id, Object value ) throws NamingException
+    public void putAttribute( String id, Object value ) throws LdapException
     {
         if ( value instanceof String )
         {
@@ -657,7 +656,7 @@ public class LdifEntry implements Cloneable, Externalizable
         {
             return LdifUtils.convertToLdif( this );
         }
-        catch ( NamingException ne )
+        catch ( LdapException ne )
         {
             return null;
         }
@@ -878,7 +877,7 @@ public class LdifEntry implements Cloneable, Externalizable
                         return false;
                     }
                 }
-                catch ( InvalidNameException ine )
+                catch ( LdapInvalidDnException ine )
                 {
                     return false;
                 }
@@ -894,7 +893,7 @@ public class LdifEntry implements Cloneable, Externalizable
                         return false;
                     }
                 }
-                catch ( InvalidNameException ine )
+                catch ( LdapInvalidDnException ine )
                 {
                     return false;
                 }
