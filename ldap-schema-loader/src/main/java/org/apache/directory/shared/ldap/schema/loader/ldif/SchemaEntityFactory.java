@@ -27,8 +27,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.naming.NamingException;
-
 import org.apache.directory.shared.asn1.primitives.OID;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.constants.MetaSchemaConstants;
@@ -101,7 +99,7 @@ public class SchemaEntityFactory implements EntityFactory
      * Get an OID from an entry. Handles the bad cases (null OID, 
      * not a valid OID, ...)
      */
-    private String getOid( Entry entry, String objectType ) throws NamingException
+    private String getOid( Entry entry, String objectType ) throws LdapInvalidAttributeValueException
     {
         // The OID
         EntryAttribute mOid = entry.get( MetaSchemaConstants.M_OID_AT );
@@ -119,7 +117,7 @@ public class SchemaEntityFactory implements EntityFactory
         {
             String msg = I18n.err( I18n.ERR_10006, oid );
             LOG.warn( msg );
-            throw new LdapInvalidAttributeValueException( msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
+            throw new LdapInvalidAttributeValueException( ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX, msg );
         }
 
         return oid;
@@ -130,7 +128,7 @@ public class SchemaEntityFactory implements EntityFactory
      * Get an OID from an entry. Handles the bad cases (null OID, 
      * not a valid OID, ...)
      */
-    private String getOid( SchemaObject description, String objectType ) throws NamingException
+    private String getOid( SchemaObject description, String objectType ) throws LdapInvalidAttributeValueException
     {
         // The OID
         String oid = description.getOid();
@@ -146,7 +144,7 @@ public class SchemaEntityFactory implements EntityFactory
         {
             String msg = I18n.err( I18n.ERR_10006, oid );
             LOG.warn( msg );
-            throw new LdapInvalidAttributeValueException( msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
+            throw new LdapInvalidAttributeValueException( ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX, msg );
         }
 
         return oid;
@@ -310,7 +308,7 @@ public class SchemaEntityFactory implements EntityFactory
             // The schema is not loaded. We can't create the requested Normalizer
             String msg = I18n.err( I18n.ERR_10013, entry.getDn().getName(), schemaName );
             LOG.warn( msg );
-            throw new LdapUnwillingToPerformException( msg, ResultCodeEnum.UNWILLING_TO_PERFORM );
+            throw new LdapUnwillingToPerformException( ResultCodeEnum.UNWILLING_TO_PERFORM, msg );
         }
 
         Schema schema = getSchema( schemaName, targetRegistries );
@@ -360,7 +358,7 @@ public class SchemaEntityFactory implements EntityFactory
             // The schema is not loaded. We can't create the requested SyntaxChecker
             String msg = I18n.err( I18n.ERR_10013, syntaxCheckerDescription.getName(), schemaName );
             LOG.warn( msg );
-            throw new LdapUnwillingToPerformException( msg, ResultCodeEnum.UNWILLING_TO_PERFORM );
+            throw new LdapUnwillingToPerformException( ResultCodeEnum.UNWILLING_TO_PERFORM, msg );
         }
 
         // The FQCN
@@ -421,7 +419,7 @@ public class SchemaEntityFactory implements EntityFactory
             if ( !comparator.getOid().equals( oid ) )
             {
                 String msg = I18n.err( I18n.ERR_10015, oid, comparator.getOid() );
-                throw new LdapInvalidAttributeValueException( msg, ResultCodeEnum.UNWILLING_TO_PERFORM );
+                throw new LdapInvalidAttributeValueException( ResultCodeEnum.UNWILLING_TO_PERFORM, msg );
             }
         }
 
@@ -456,7 +454,7 @@ public class SchemaEntityFactory implements EntityFactory
             // The schema is not loaded. We can't create the requested Comparator
             String msg = I18n.err( I18n.ERR_10016, comparatorDescription.getName(), schemaName );
             LOG.warn( msg );
-            throw new LdapUnwillingToPerformException( msg, ResultCodeEnum.UNWILLING_TO_PERFORM );
+            throw new LdapUnwillingToPerformException( ResultCodeEnum.UNWILLING_TO_PERFORM, msg );
         }
 
         // The FQCN
@@ -492,7 +490,7 @@ public class SchemaEntityFactory implements EntityFactory
             // The schema is not loaded. We can't create the requested Comparator
             String msg = I18n.err( I18n.ERR_10016, entry.getDn().getName(), schemaName );
             LOG.warn( msg );
-            throw new LdapUnwillingToPerformException( msg, ResultCodeEnum.UNWILLING_TO_PERFORM );
+            throw new LdapUnwillingToPerformException( ResultCodeEnum.UNWILLING_TO_PERFORM, msg );
         }
 
         Schema schema = getSchema( schemaName, targetRegistries );
@@ -580,7 +578,7 @@ public class SchemaEntityFactory implements EntityFactory
             // The schema is not loaded. We can't create the requested Normalizer
             String msg = I18n.err( I18n.ERR_10018, normalizerDescription.getName(), schemaName );
             LOG.warn( msg );
-            throw new LdapUnwillingToPerformException( msg, ResultCodeEnum.UNWILLING_TO_PERFORM );
+            throw new LdapUnwillingToPerformException( ResultCodeEnum.UNWILLING_TO_PERFORM, msg );
         }
 
         // The FQCN
@@ -616,7 +614,7 @@ public class SchemaEntityFactory implements EntityFactory
             // The schema is not loaded. We can't create the requested Normalizer
             String msg = I18n.err( I18n.ERR_10018, entry.getDn().getName(), schemaName );
             LOG.warn( msg );
-            throw new LdapUnwillingToPerformException( msg, ResultCodeEnum.UNWILLING_TO_PERFORM );
+            throw new LdapUnwillingToPerformException( ResultCodeEnum.UNWILLING_TO_PERFORM, msg );
         }
 
         Schema schema = getSchema( schemaName, targetRegistries );
@@ -684,9 +682,11 @@ public class SchemaEntityFactory implements EntityFactory
 
     /**
      * {@inheritDoc}
+     * @throws LdapInvalidAttributeValueException 
+     * @throws LdapUnwillingToPerformException 
      */
     public LdapSyntax getSyntax( SchemaManager schemaManager, Entry entry, Registries targetRegistries,
-        String schemaName ) throws NamingException
+        String schemaName ) throws LdapInvalidAttributeValueException, LdapUnwillingToPerformException
     {
         checkEntry( entry, SchemaConstants.SYNTAX );
 
@@ -699,7 +699,7 @@ public class SchemaEntityFactory implements EntityFactory
             // The schema is not loaded. We can't create the requested Syntax
             String msg = I18n.err( I18n.ERR_10020, entry.getDn().getName(), schemaName );
             LOG.warn( msg );
-            throw new LdapUnwillingToPerformException( msg, ResultCodeEnum.UNWILLING_TO_PERFORM );
+            throw new LdapUnwillingToPerformException( ResultCodeEnum.UNWILLING_TO_PERFORM, msg );
         }
 
         Schema schema = getSchema( schemaName, targetRegistries );
@@ -733,9 +733,11 @@ public class SchemaEntityFactory implements EntityFactory
 
     /**
      * {@inheritDoc}
+     * @throws LdapUnwillingToPerformException 
+     * @throws LdapInvalidAttributeValueException 
      */
     public MatchingRule getMatchingRule( SchemaManager schemaManager, Entry entry, Registries targetRegistries,
-        String schemaName ) throws NamingException
+        String schemaName ) throws LdapUnwillingToPerformException, LdapInvalidAttributeValueException
     {
         checkEntry( entry, SchemaConstants.MATCHING_RULE );
 
@@ -748,7 +750,7 @@ public class SchemaEntityFactory implements EntityFactory
             // The schema is not loaded. We can't create the requested MatchingRule
             String msg = I18n.err( I18n.ERR_10022, entry.getDn().getName(), schemaName );
             LOG.warn( msg );
-            throw new LdapUnwillingToPerformException( msg, ResultCodeEnum.UNWILLING_TO_PERFORM );
+            throw new LdapUnwillingToPerformException( ResultCodeEnum.UNWILLING_TO_PERFORM, msg );
         }
 
         Schema schema = getSchema( schemaName, targetRegistries );
@@ -784,7 +786,7 @@ public class SchemaEntityFactory implements EntityFactory
     /**
      * Create a list of string from a multivalued attribute's values
      */
-    private List<String> getStrings( EntryAttribute attr ) throws NamingException
+    private List<String> getStrings( EntryAttribute attr )
     {
         if ( attr == null )
         {
@@ -819,7 +821,7 @@ public class SchemaEntityFactory implements EntityFactory
             // The schema is not loaded. We can't create the requested ObjectClass
             String msg = I18n.err( I18n.ERR_10024, entry.getDn().getName(), schemaName );
             LOG.warn( msg );
-            throw new LdapUnwillingToPerformException( msg, ResultCodeEnum.UNWILLING_TO_PERFORM );
+            throw new LdapUnwillingToPerformException( ResultCodeEnum.UNWILLING_TO_PERFORM, msg );
         }
 
         Schema schema = getSchema( schemaName, targetRegistries );
@@ -877,9 +879,11 @@ public class SchemaEntityFactory implements EntityFactory
 
     /**
      * {@inheritDoc}
+     * @throws LdapInvalidAttributeValueException 
+     * @throws LdapUnwillingToPerformException 
      */
     public AttributeType getAttributeType( SchemaManager schemaManager, Entry entry, Registries targetRegistries,
-        String schemaName ) throws NamingException
+        String schemaName ) throws LdapInvalidAttributeValueException, LdapUnwillingToPerformException
     {
         checkEntry( entry, SchemaConstants.ATTRIBUTE_TYPE );
 
@@ -892,7 +896,7 @@ public class SchemaEntityFactory implements EntityFactory
             // The schema is not loaded, this is an error
             String msg = I18n.err( I18n.ERR_10026, entry.getDn().getName(),  schemaName );
             LOG.warn( msg );
-            throw new LdapUnwillingToPerformException( msg, ResultCodeEnum.UNWILLING_TO_PERFORM );
+            throw new LdapUnwillingToPerformException( ResultCodeEnum.UNWILLING_TO_PERFORM, msg );
         }
 
         Schema schema = getSchema( schemaName, targetRegistries );
@@ -1000,8 +1004,9 @@ public class SchemaEntityFactory implements EntityFactory
 
     /**
      * Process the FQCN attribute
+     * @throws LdapInvalidAttributeValueException 
      */
-    private String getFqcn( Entry entry, String objectType ) throws NamingException
+    private String getFqcn( Entry entry, String objectType ) throws LdapInvalidAttributeValueException
     {
         // The FQCN
         EntryAttribute mFqcn = entry.get( MetaSchemaConstants.M_FQCN_AT );
@@ -1020,7 +1025,7 @@ public class SchemaEntityFactory implements EntityFactory
     /**
      * Process the FQCN attribute
      */
-    private String getFqcn( LoadableSchemaObject description, String objectType ) throws NamingException
+    private String getFqcn( LoadableSchemaObject description, String objectType )
     {
         // The FQCN
         String mFqcn = description.getFqcn();
@@ -1039,7 +1044,7 @@ public class SchemaEntityFactory implements EntityFactory
     /**
      * Process the ByteCode attribute
      */
-    private EntryAttribute getByteCode( Entry entry, String objectType ) throws NamingException
+    private EntryAttribute getByteCode( Entry entry, String objectType )
     {
         EntryAttribute byteCode = entry.get( MetaSchemaConstants.M_BYTECODE_AT );
 
@@ -1057,7 +1062,7 @@ public class SchemaEntityFactory implements EntityFactory
     /**
      * Process the ByteCode attribute
      */
-    private EntryAttribute getByteCode( LoadableSchemaObject description, String objectType ) throws NamingException
+    private EntryAttribute getByteCode( LoadableSchemaObject description, String objectType )
     {
         String byteCodeString = description.getBytecode();
 
@@ -1085,9 +1090,9 @@ public class SchemaEntityFactory implements EntityFactory
      *  - extensions
      *  - isReadOnly
      *  - isEnabled
+     * @throws LdapInvalidAttributeValueException 
      */
-    private void setSchemaObjectProperties( SchemaObject schemaObject, Entry entry, Schema schema )
-        throws NamingException
+    private void setSchemaObjectProperties( SchemaObject schemaObject, Entry entry, Schema schema ) throws LdapInvalidAttributeValueException
     {
         // The isObsolete field
         EntryAttribute mObsolete = entry.get( MetaSchemaConstants.M_OBSOLETE_AT );
@@ -1191,7 +1196,6 @@ public class SchemaEntityFactory implements EntityFactory
      *  - isEnabled
      */
     private void setSchemaObjectProperties( SchemaObject schemaObject, SchemaObject description, Schema schema )
-        throws NamingException
     {
         // The isObsolete field
         schemaObject.setObsolete( description.isObsolete() );
