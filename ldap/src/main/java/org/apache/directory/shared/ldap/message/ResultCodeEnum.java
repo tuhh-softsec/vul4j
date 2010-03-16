@@ -24,7 +24,11 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.directory.shared.ldap.codec.LdapEncoder;
+import javax.naming.CommunicationException;
+import javax.naming.LimitExceededException;
+import javax.naming.PartialResultException;
+import javax.naming.SizeLimitExceededException;
+
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.exception.LdapAttributeInUseException;
 import org.apache.directory.shared.ldap.exception.LdapAuthenticationException;
@@ -2365,7 +2369,7 @@ public enum ResultCodeEnum
             return ( ( LdapOperationException ) t ).getResultCode();
         }
 
-        if ( t instanceof LdapCommunicationException )
+        if ( t instanceof CommunicationException )
         {
             return ResultCodeEnum.PROTOCOL_ERROR;
         }

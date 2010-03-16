@@ -42,7 +42,6 @@ import org.apache.directory.shared.ldap.entry.client.DefaultClientAttribute;
 import org.apache.directory.shared.ldap.entry.client.DefaultClientEntry;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.exception.LdapInvalidAttributeTypeException;
-import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.MatchingRule;
@@ -284,9 +283,9 @@ public class AttributeUtils
                     }
                 }
             }
-            catch( LdapInvalidDnException e )
+            catch( NamingException e )
             {
-                throw new NamingException( e.getMessage() );
+                throw new LdapException( e.getMessage() );
             }
         }
         else
@@ -352,17 +351,24 @@ public class AttributeUtils
                 comparedBytes = compared.getBytes();
             }
 
-            for ( NamingEnumeration<?> values = attr.getAll(); values.hasMoreElements(); /**/)
+            try
             {
-                Object value = values.nextElement();
-
-                if ( value instanceof byte[] )
+                for ( NamingEnumeration<?> values = attr.getAll(); values.hasMoreElements(); /**/)
                 {
-                    if ( ArrayUtils.isEquals( comparedBytes, value ) )
+                    Object value = values.nextElement();
+    
+                    if ( value instanceof byte[] )
                     {
-                        return true;
+                        if ( ArrayUtils.isEquals( comparedBytes, value ) )
+                        {
+                            return true;
+                        }
                     }
                 }
+            }
+            catch ( NamingException ne )
+            {
+                throw new LdapException( ne.getMessage() );
             }
         }
 
