@@ -26,14 +26,12 @@ import static org.junit.Assert.assertTrue;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.naming.InvalidNameException;
-import javax.naming.NamingException;
-
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.client.DefaultClientAttribute;
 import org.apache.directory.shared.ldap.entry.client.DefaultClientEntry;
+import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.message.internal.InternalAddRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalResultResponse;
@@ -83,7 +81,7 @@ public class AddRequestImplTest
             entry.put( getAttribute( "attr1" ) );
             entry.put( getAttribute( "attr2" ) );
         }
-        catch ( NamingException ne )
+        catch ( LdapException ne )
         {
             // Do nothing
         }
@@ -107,7 +105,7 @@ public class AddRequestImplTest
      * Tests for equality using exact copies.
      */
     @Test
-    public void testEqualsExactCopy() throws InvalidNameException, NamingException
+    public void testEqualsExactCopy() throws LdapException
     {
         AddRequestImpl req0 = new AddRequestImpl( 5 );
         req0.setEntryDn( new DN( "cn=admin,dc=example,dc=com" ) );
@@ -125,7 +123,7 @@ public class AddRequestImplTest
      * Test for inequality when only the IDs are different.
      */
     @Test
-    public void testNotEqualDiffId() throws InvalidNameException, NamingException
+    public void testNotEqualDiffId() throws LdapException
     {
         AddRequestImpl req0 = new AddRequestImpl( 7 );
         req0.setEntryDn( new DN( "cn=admin,dc=example,dc=com" ) );
@@ -143,7 +141,7 @@ public class AddRequestImplTest
      * Test for inequality when only the DN names are different.
      */
     @Test
-    public void testNotEqualDiffName() throws InvalidNameException, NamingException
+    public void testNotEqualDiffName() throws LdapException
     {
         AddRequestImpl req0 = new AddRequestImpl( 5 );
         req0.setEntry( getEntry() );
@@ -161,7 +159,7 @@ public class AddRequestImplTest
      * Test for inequality when only the DN names are different.
      */
     @Test
-    public void testNotEqualDiffAttributes() throws InvalidNameException, NamingException
+    public void testNotEqualDiffAttributes() throws LdapException
     {
         AddRequestImpl req0 = new AddRequestImpl( 5 );
         req0.setEntryDn( new DN( "cn=admin,dc=apache,dc=org" ) );

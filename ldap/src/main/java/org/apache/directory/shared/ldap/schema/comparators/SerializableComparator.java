@@ -22,9 +22,8 @@ package org.apache.directory.shared.ldap.schema.comparators;
 
 import java.util.Comparator;
 
-import javax.naming.NamingException;
-
 import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.schema.LdapComparator;
 import org.apache.directory.shared.ldap.schema.SchemaManager;
 
@@ -76,7 +75,7 @@ public class SerializableComparator<E> extends LdapComparator<E>
             {
                 wrapped = (Comparator<E>)schemaManager.lookupComparatorRegistry( matchingRuleOid );
             }
-            catch ( NamingException e )
+            catch ( LdapException e )
             {
                 throw new RuntimeException( I18n.err( I18n.ERR_04221, matchingRuleOid ) );
             }
@@ -97,7 +96,7 @@ public class SerializableComparator<E> extends LdapComparator<E>
             {
                 wrapped = (Comparator<E>)schemaManager.lookupComparatorRegistry( matchingRuleOid );
             }
-            catch ( NamingException ne )
+            catch ( LdapException ne )
             {
                 // Not found : get the default comparator
                 wrapped = (Comparator<E>)new ComparableComparator<Comparable<E>>( matchingRuleOid );

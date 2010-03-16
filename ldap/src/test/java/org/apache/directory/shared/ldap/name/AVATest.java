@@ -26,9 +26,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import javax.naming.InvalidNameException;
-import javax.naming.NamingException;
-
+import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.util.StringTools;
 
 import static org.junit.Assert.assertEquals;
@@ -65,14 +63,14 @@ public class AVATest
      * Test a null type for an AttributeTypeAndValue
      */
     @Test
-    public void testAttributeTypeAndValueNullType() throws InvalidNameException
+    public void testAttributeTypeAndValueNullType() throws LdapException
     {
         try
         {
             new AVA( null, null, (String)null, (String)null );
             fail();
         }
-        catch ( InvalidNameException ine )
+        catch ( LdapException ine )
         {
             assertTrue( true );
         }
@@ -83,14 +81,14 @@ public class AVATest
      * Test an invalid type for an AttributeTypeAndValue
      */
     @Test
-    public void testAttributeTypeAndValueInvalidType() throws InvalidNameException
+    public void testAttributeTypeAndValueInvalidType() throws LdapException
     {
         try
         {
             new AVA( "  ", " ", (String)null, (String)null );
             fail();
         }
-        catch ( InvalidNameException ine )
+        catch ( LdapException ine )
         {
             assertTrue( true );
         }
@@ -101,7 +99,7 @@ public class AVATest
      * Test a valid type for an AttributeTypeAndValue
      */
     @Test
-    public void testAttributeTypeAndValueValidType() throws InvalidNameException
+    public void testAttributeTypeAndValueValidType() throws LdapException
     {
         AVA atav = new AVA( "A", "a", (String)null, (String)null );
         assertEquals( "a=", atav.toString() );
@@ -132,7 +130,7 @@ public class AVATest
             new AVA( "", "", "", "" );
             fail( "Should not occurs ... " );
         }
-        catch ( InvalidNameException ine )
+        catch ( LdapException ine )
         {
             assertTrue( true );
         }
@@ -143,7 +141,7 @@ public class AVATest
      * test a simple AttributeTypeAndValue : a = b
      */
     @Test
-    public void testLdapRDNSimple() throws InvalidNameException
+    public void testLdapRDNSimple() throws LdapException
     {
         AVA atav = new AVA( "a", "a", "b", "b" );
         assertEquals( "a=b", atav.toString() );
@@ -157,7 +155,7 @@ public class AVATest
      * Compares two equals atavs
      */
     @Test
-    public void testCompareToEquals() throws InvalidNameException
+    public void testCompareToEquals() throws LdapException
     {
         AVA atav1 = new AVA( "a", "a","b", "b" );
         AVA atav2 = new AVA( "a", "a","b", "b" );
@@ -170,7 +168,7 @@ public class AVATest
      * Compares two equals atavs but with a type in different case
      */
     @Test
-    public void testCompareToEqualsCase() throws InvalidNameException
+    public void testCompareToEqualsCase() throws LdapException
     {
         AVA atav1 = new AVA( "a", "a", "b", "b" );
         AVA atav2 = new AVA( "A", "A", "b", "b" );
@@ -184,7 +182,7 @@ public class AVATest
      * superior
      */
     @Test
-    public void testCompareAtav1TypeSuperior() throws InvalidNameException
+    public void testCompareAtav1TypeSuperior() throws LdapException
     {
         AVA atav1 = new AVA( "b", "b", "b", "b" );
             
@@ -199,7 +197,7 @@ public class AVATest
      * superior
      */
     @Test
-    public void testCompareAtav2TypeSuperior() throws InvalidNameException
+    public void testCompareAtav2TypeSuperior() throws LdapException
     {
         AVA atav1 = new AVA( "a", "a", "b", "b" );
         AVA atav2 = new AVA( "b", "b", "b", "b" );
@@ -213,7 +211,7 @@ public class AVATest
      * superior
      */
     @Test
-    public void testCompareAtav1ValueSuperior() throws InvalidNameException
+    public void testCompareAtav1ValueSuperior() throws LdapException
     {
         AVA atav1 = new AVA( "a", "a", "b", "b" );
         AVA atav2 = new AVA( "a", "a", "a", "a" );
@@ -227,7 +225,7 @@ public class AVATest
      * superior
      */
     @Test
-    public void testCompareAtav2ValueSuperior() throws InvalidNameException
+    public void testCompareAtav2ValueSuperior() throws LdapException
     {
         AVA atav1 = new AVA( "a", "a", "a", "a" );
         AVA atav2 = new AVA( "a", "a", "b", "b" );
@@ -237,7 +235,7 @@ public class AVATest
 
 
     @Test
-    public void testNormalize() throws InvalidNameException
+    public void testNormalize() throws LdapException
     {
         AVA atav = new AVA( " A ", " A ", "a", "a" );
 
@@ -252,7 +250,7 @@ public class AVATest
      * Test serialization of a simple ATAV
      */
     @Test
-    public void testStringAtavSerialization() throws NamingException, IOException, ClassNotFoundException
+    public void testStringAtavSerialization() throws LdapException, IOException, ClassNotFoundException
     {
         AVA atav = new AVA( "cn", "CN", "test", "Test" );
 
@@ -275,7 +273,7 @@ public class AVATest
 
 
     @Test
-    public void testBinaryAtavSerialization() throws NamingException, IOException, ClassNotFoundException
+    public void testBinaryAtavSerialization() throws LdapException, IOException, ClassNotFoundException
     {
         byte[] upValue = StringTools.getBytesUtf8( "  Test  " );
         byte[] normValue = StringTools.getBytesUtf8( "Test" );
@@ -304,7 +302,7 @@ public class AVATest
      * Test serialization of a simple ATAV
      */
     @Test
-    public void testNullAtavSerialization() throws NamingException, IOException, ClassNotFoundException
+    public void testNullAtavSerialization() throws LdapException, IOException, ClassNotFoundException
     {
         AVA atav = new AVA();
 
@@ -324,7 +322,7 @@ public class AVATest
 
 
     @Test
-    public void testNullNormValueSerialization() throws NamingException, IOException, ClassNotFoundException
+    public void testNullNormValueSerialization() throws LdapException, IOException, ClassNotFoundException
     {
         AVA atav = new AVA( "CN", "cn", "test", (String)null );
 
@@ -345,7 +343,7 @@ public class AVATest
 
 
     @Test
-    public void testNullUpValueSerialization() throws NamingException, IOException, ClassNotFoundException
+    public void testNullUpValueSerialization() throws LdapException, IOException, ClassNotFoundException
     {
         AVA atav = new AVA( "CN", "cn", null, "test" );
 
@@ -366,7 +364,7 @@ public class AVATest
 
 
     @Test
-    public void testEmptyNormValueSerialization() throws NamingException, IOException, ClassNotFoundException
+    public void testEmptyNormValueSerialization() throws LdapException, IOException, ClassNotFoundException
     {
         AVA atav = new AVA( "CN", "cn", "test", "" );
 
@@ -387,7 +385,7 @@ public class AVATest
 
 
     @Test
-    public void testEmptyUpValueSerialization() throws NamingException, IOException, ClassNotFoundException
+    public void testEmptyUpValueSerialization() throws LdapException, IOException, ClassNotFoundException
     {
         AVA atav = new AVA( "CN", "cn", "", "test" );
 
@@ -411,7 +409,7 @@ public class AVATest
      * Test serialization of a simple ATAV
      */
     @Test
-    public void testStringAtavStaticSerialization() throws NamingException, IOException, ClassNotFoundException
+    public void testStringAtavStaticSerialization() throws LdapException, IOException, ClassNotFoundException
     {
         AVA atav = new AVA( "cn", "CN", "test", "Test" );
 
@@ -435,7 +433,7 @@ public class AVATest
 
 
     @Test
-    public void testBinaryAtavStaticSerialization() throws NamingException, IOException, ClassNotFoundException
+    public void testBinaryAtavStaticSerialization() throws LdapException, IOException, ClassNotFoundException
     {
         byte[] upValue = StringTools.getBytesUtf8( "  Test  " );
         byte[] normValue = StringTools.getBytesUtf8( "Test" );
@@ -465,7 +463,7 @@ public class AVATest
      * Test static serialization of a simple ATAV
      */
     @Test
-    public void testNullAtavStaticSerialization() throws NamingException, IOException, ClassNotFoundException
+    public void testNullAtavStaticSerialization() throws LdapException, IOException, ClassNotFoundException
     {
         AVA atav = new AVA();
 
@@ -485,7 +483,7 @@ public class AVATest
 
 
     @Test
-    public void testNullNormValueStaticSerialization() throws NamingException, IOException, ClassNotFoundException
+    public void testNullNormValueStaticSerialization() throws LdapException, IOException, ClassNotFoundException
     {
         AVA atav = new AVA( "CN", "cn", "test", (String)null );
 
@@ -506,7 +504,7 @@ public class AVATest
 
 
     @Test
-    public void testNullUpValueStaticSerialization() throws NamingException, IOException, ClassNotFoundException
+    public void testNullUpValueStaticSerialization() throws LdapException, IOException, ClassNotFoundException
     {
         AVA atav = new AVA( "CN", "cn", null, "test" );
 
@@ -527,7 +525,7 @@ public class AVATest
 
 
     @Test
-    public void testEmptyNormValueStaticSerialization() throws NamingException, IOException, ClassNotFoundException
+    public void testEmptyNormValueStaticSerialization() throws LdapException, IOException, ClassNotFoundException
     {
         AVA atav = new AVA( "CN", "cn", "test", "" );
 
@@ -549,7 +547,7 @@ public class AVATest
 
 
     @Test
-    public void testEmptyUpValueStaticSerialization() throws NamingException, IOException, ClassNotFoundException
+    public void testEmptyUpValueStaticSerialization() throws LdapException, IOException, ClassNotFoundException
     {
         AVA atav = new AVA( "CN", "cn", "", "test" );
 

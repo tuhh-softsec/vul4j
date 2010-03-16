@@ -23,7 +23,7 @@ package org.apache.directory.shared.ldap.schema.normalizers;
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.entry.client.ClientStringValue;
-import org.apache.directory.shared.ldap.exception.LdapException;
+import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.schema.Normalizer;
 
 
@@ -51,7 +51,7 @@ public class BooleanNormalizer extends Normalizer
     /**
      * {@inheritDoc}
      */
-    public Value<?> normalize( Value<?> value ) throws LdapException
+    public Value<?> normalize( Value<?> value ) throws LdapInvalidDnException
     {
         if ( value == null )
         {
@@ -67,7 +67,7 @@ public class BooleanNormalizer extends Normalizer
     /**
      * {@inheritDoc}
      */
-    public String normalize( String value ) throws LdapException
+    public String normalize( String value ) throws LdapInvalidDnException
     {
         if ( value == null )
         {

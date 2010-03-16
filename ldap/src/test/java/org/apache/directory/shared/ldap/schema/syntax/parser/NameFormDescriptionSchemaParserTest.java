@@ -22,8 +22,7 @@ package org.apache.directory.shared.ldap.schema.syntax.parser;
 
 import java.text.ParseException;
 
-import javax.naming.NamingException;
-
+import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.schema.NameForm;
 import org.apache.directory.shared.ldap.schema.parsers.NameFormDescriptionSchemaParser;
 import org.junit.After;
@@ -113,7 +112,7 @@ public class NameFormDescriptionSchemaParserTest
      * @throws ParseException
      */
     @Test
-    public void testOc() throws ParseException, NamingException
+    public void testOc() throws ParseException, LdapException
     {
         String value = null;
         NameForm nf = null;
@@ -215,7 +214,7 @@ public class NameFormDescriptionSchemaParserTest
      * @throws ParseException
      */
     @Test
-    public void testMust() throws ParseException, NamingException
+    public void testMust() throws ParseException, LdapException
     {
         String value = null;
         NameForm nf = null;
@@ -294,7 +293,7 @@ public class NameFormDescriptionSchemaParserTest
      * @throws ParseException
      */
     @Test
-    public void testMay() throws ParseException, NamingException
+    public void testMay() throws ParseException, LdapException
     {
         String value = null;
         NameForm nf = null;
@@ -367,7 +366,7 @@ public class NameFormDescriptionSchemaParserTest
      * @throws ParseException
      */
     @Test
-    public void testFull() throws ParseException, NamingException
+    public void testFull() throws ParseException, LdapException
     {
         String value = null;
         NameForm nf = null;
@@ -426,7 +425,7 @@ public class NameFormDescriptionSchemaParserTest
      * @throws ParseException
      */
     @Test
-    public void testRequiredElements() throws ParseException, NamingException
+    public void testRequiredElements() throws ParseException, LdapException
     {
         String value = null;
         NameForm nf = null;
@@ -526,7 +525,7 @@ public class NameFormDescriptionSchemaParserTest
      * Tests quirks mode.
      */
     @Test
-    public void testQuirksMode() throws ParseException, NamingException
+    public void testQuirksMode() throws ParseException, LdapException
     {
         SchemaParserTestUtils.testQuirksMode( parser, "OC o MUST m" );
 

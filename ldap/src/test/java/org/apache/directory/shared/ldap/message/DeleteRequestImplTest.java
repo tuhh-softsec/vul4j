@@ -26,9 +26,8 @@ import static org.junit.Assert.assertTrue;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.naming.InvalidNameException;
-
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
+import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.message.internal.InternalDeleteRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalResultResponse;
@@ -61,7 +60,7 @@ public class DeleteRequestImplTest
      * Tests for equality using exact copies.
      */
     @Test
-    public void testEqualsExactCopy() throws InvalidNameException
+    public void testEqualsExactCopy() throws LdapException
     {
         DeleteRequestImpl req0 = new DeleteRequestImpl( 5 );
         req0.setName( new DN( "cn=admin,dc=example,dc=com" ) );
@@ -77,7 +76,7 @@ public class DeleteRequestImplTest
      * Test for inequality when only the IDs are different.
      */
     @Test
-    public void testNotEqualDiffId() throws InvalidNameException
+    public void testNotEqualDiffId() throws LdapException
     {
         DeleteRequestImpl req0 = new DeleteRequestImpl( 7 );
         req0.setName( new DN( "cn=admin,dc=example,dc=com" ) );
@@ -93,7 +92,7 @@ public class DeleteRequestImplTest
      * Test for inequality when only the DN names are different.
      */
     @Test
-    public void testNotEqualDiffName() throws InvalidNameException
+    public void testNotEqualDiffName() throws LdapException
     {
         DeleteRequestImpl req0 = new DeleteRequestImpl( 5 );
         req0.setName( new DN( "uid=akarasulu,dc=example,dc=com" ) );

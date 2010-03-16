@@ -23,8 +23,7 @@ package org.apache.directory.shared.ldap.schema.registries;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.naming.NamingException;
-
+import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.schema.ObjectClass;
 
 
@@ -43,10 +42,10 @@ public interface ObjectClassRegistry extends SchemaObjectRegistry<ObjectClass>,
      * @param ancestorId the name alias or OID for an ObjectClass
      * @return an Iterator over the ObjectClasses which have the ancestor
      * within their superior chain to the top
-     * @throws NamingException if the ancestor ObjectClass cannot be 
+     * @throws LdapException if the ancestor ObjectClass cannot be 
      * discerned from the ancestorId supplied
      */
-    boolean hasDescendants( String ancestorId ) throws NamingException;
+    boolean hasDescendants( String ancestorId ) throws LdapException;
     
     
     /**
@@ -56,10 +55,10 @@ public interface ObjectClassRegistry extends SchemaObjectRegistry<ObjectClass>,
      * @param ancestorId the name alias or OID for an ObjectClass
      * @return an Iterator over the ObjectClasses which have the ancestor
      * within their superior chain to the top
-     * @throws NamingException if the ancestor ObjectClass cannot be 
+     * @throws LdapException if the ancestor ObjectClass cannot be 
      * discerned from the ancestorId supplied
      */
-    Iterator<ObjectClass> descendants( String ancestorId ) throws NamingException;
+    Iterator<ObjectClass> descendants( String ancestorId ) throws LdapException;
 
     
     /**
@@ -67,10 +66,10 @@ public interface ObjectClassRegistry extends SchemaObjectRegistry<ObjectClass>,
      * descendants.
      * 
      * @param attributeType The ObjectClass to register
-     * @throws NamingException If something went wrong
+     * @throws LdapException If something went wrong
      */
     void registerDescendants( ObjectClass objectClass, List<ObjectClass> ancestors ) 
-        throws NamingException;
+        throws LdapException;
     
     
     /**
@@ -79,29 +78,29 @@ public interface ObjectClassRegistry extends SchemaObjectRegistry<ObjectClass>,
      * 
      * @param attributeType The ObjectClass to unregister
      * @param ancestor its ancestor 
-     * @throws NamingException If something went wrong
+     * @throws LdapException If something went wrong
      */
     void unregisterDescendants( ObjectClass attributeType, List<ObjectClass> ancestors ) 
-        throws NamingException;
+        throws LdapException;
     
     
     /**
      * Registers a new ObjectClass with this registry.
      *
      * @param objectClass the ObjectClass to register
-     * @throws NamingException if the ObjectClass is already registered or
+     * @throws LdapException if the ObjectClass is already registered or
      * the registration operation is not supported
      */
-    void register( ObjectClass objectClass ) throws NamingException;
+    void register( ObjectClass objectClass ) throws LdapException;
     
     
     /**
      * Removes the ObjectClass registered with this registry.
      * 
      * @param numericOid the numeric identifier
-     * @throws NamingException if the numeric identifier is invalid
+     * @throws LdapException if the numeric identifier is invalid
      */
-    ObjectClass unregister( String numericOid ) throws NamingException;
+    ObjectClass unregister( String numericOid ) throws LdapException;
     
     
     /**

@@ -22,10 +22,10 @@ package org.apache.directory.shared.ldap.schema.registries;
 
 import java.util.Iterator;
 
-import javax.naming.NamingException;
+import org.apache.directory.shared.ldap.exception.LdapException;
 
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.exception.LdapOperationNotSupportedException;
+import org.apache.directory.shared.ldap.exception.LdapUnwillingToPerformException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.schema.LdapComparator;
 import org.apache.directory.shared.ldap.schema.SchemaObject;
@@ -58,27 +58,27 @@ public class ImmutableComparatorRegistry implements ComparatorRegistry
     /**
      * {@inheritDoc}
      */
-    public void register( LdapComparator<?> comparator ) throws NamingException
+    public void register( LdapComparator<?> comparator ) throws LdapException
     {
-        throw new LdapOperationNotSupportedException( I18n.err( I18n.ERR_04276 ), ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapUnwillingToPerformException( ResultCodeEnum.NO_SUCH_OPERATION, I18n.err( I18n.ERR_04276 ) );
     }
 
 
     /**
      * {@inheritDoc}
      */
-    public LdapComparator<?> unregister( String numericOid ) throws NamingException
+    public LdapComparator<?> unregister( String numericOid ) throws LdapException
     {
-        throw new LdapOperationNotSupportedException( I18n.err( I18n.ERR_04276 ), ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapUnwillingToPerformException( ResultCodeEnum.NO_SUCH_OPERATION, I18n.err( I18n.ERR_04276 ) );
     }
 
 
     /**
      * {@inheritDoc}
      */
-    public void unregisterSchemaElements( String schemaName ) throws NamingException
+    public void unregisterSchemaElements( String schemaName ) throws LdapException
     {
-        throw new LdapOperationNotSupportedException( I18n.err( I18n.ERR_04276 ), ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapUnwillingToPerformException( ResultCodeEnum.NO_SUCH_OPERATION, I18n.err( I18n.ERR_04276 ) );
     }
 
 
@@ -112,7 +112,7 @@ public class ImmutableComparatorRegistry implements ComparatorRegistry
     /**
      * {@inheritDoc}
      */
-    public String getOidByName( String name ) throws NamingException
+    public String getOidByName( String name ) throws LdapException
     {
         return immutableComparatorRegistry.getOidByName( name );
     }
@@ -121,7 +121,7 @@ public class ImmutableComparatorRegistry implements ComparatorRegistry
     /**
      * {@inheritDoc}
      */
-    public String getSchemaName( String oid ) throws NamingException
+    public String getSchemaName( String oid ) throws LdapException
     {
         return immutableComparatorRegistry.getSchemaName( oid );
     }
@@ -148,7 +148,7 @@ public class ImmutableComparatorRegistry implements ComparatorRegistry
     /**
      * {@inheritDoc}
      */
-    public LdapComparator<?> lookup( String oid ) throws NamingException
+    public LdapComparator<?> lookup( String oid ) throws LdapException
     {
         return immutableComparatorRegistry.lookup( oid );
     }
@@ -166,9 +166,9 @@ public class ImmutableComparatorRegistry implements ComparatorRegistry
     /**
      * {@inheritDoc}
      */
-    public void renameSchema( String originalSchemaName, String newSchemaName ) throws NamingException
+    public void renameSchema( String originalSchemaName, String newSchemaName ) throws LdapException
     {
-        throw new LdapOperationNotSupportedException( I18n.err( I18n.ERR_04276 ), ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapUnwillingToPerformException( ResultCodeEnum.NO_SUCH_OPERATION, I18n.err( I18n.ERR_04276 ) );
     }
 
 
@@ -184,17 +184,17 @@ public class ImmutableComparatorRegistry implements ComparatorRegistry
     /**
      * {@inheritDoc}
      */
-    public void clear() throws NamingException
+    public void clear() throws LdapException
     {
-        throw new LdapOperationNotSupportedException( I18n.err( I18n.ERR_04276 ), ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapUnwillingToPerformException( ResultCodeEnum.NO_SUCH_OPERATION, I18n.err( I18n.ERR_04276 ) );
     }
 
 
     /**
      * {@inheritDoc}
      */
-    public LdapComparator<?> unregister( LdapComparator<?> schemaObject ) throws NamingException
+    public LdapComparator<?> unregister( LdapComparator<?> schemaObject ) throws LdapException
     {
-        throw new LdapOperationNotSupportedException( I18n.err( I18n.ERR_04276 ), ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapUnwillingToPerformException( ResultCodeEnum.NO_SUCH_OPERATION, I18n.err( I18n.ERR_04276 ) );
     }
 }

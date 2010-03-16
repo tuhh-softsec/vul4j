@@ -35,11 +35,12 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.naming.NamingException;
 import javax.naming.directory.InvalidAttributeValueException;
 
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Value;
+import org.apache.directory.shared.ldap.exception.LdapException;
+import org.apache.directory.shared.ldap.exception.LdapInvalidAttributeValueException;
 import org.apache.directory.shared.ldap.schema.syntaxCheckers.Ia5StringSyntaxChecker;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.BeforeClass;
@@ -240,7 +241,7 @@ public class DefaultClientAttributeTest
      * Test method getBytes()
      */
     @Test
-    public void testGetBytes() throws InvalidAttributeValueException, NamingException
+    public void testGetBytes() throws InvalidAttributeValueException, LdapException
     {
         EntryAttribute attr1 = new DefaultClientAttribute( "test" );
         
@@ -261,7 +262,7 @@ public class DefaultClientAttributeTest
             attr3.getBytes();
             fail();
         }
-        catch ( InvalidAttributeValueException ivae )
+        catch ( LdapInvalidAttributeValueException ivae )
         {
             assertTrue( true );
         }
@@ -272,7 +273,7 @@ public class DefaultClientAttributeTest
      * Test method getString()
      */
     @Test
-    public void testGetString() throws InvalidAttributeValueException, NamingException
+    public void testGetString() throws InvalidAttributeValueException, LdapException
     {
         EntryAttribute attr1 = new DefaultClientAttribute( "test" );
         
@@ -293,7 +294,7 @@ public class DefaultClientAttributeTest
             attr3.getString();
             fail();
         }
-        catch ( InvalidAttributeValueException ivae )
+        catch ( LdapInvalidAttributeValueException ivae )
         {
             assertTrue( true );
         }
@@ -434,7 +435,7 @@ public class DefaultClientAttributeTest
      * Test method isValid( SyntaxChecker ) 
      */
     @Test
-    public void testIsValidSyntaxChecker() throws NamingException
+    public void testIsValidSyntaxChecker() throws LdapException
     {
         ClientAttribute attr = new DefaultClientAttribute( "test" );
         
@@ -475,7 +476,7 @@ public class DefaultClientAttributeTest
      * Test method add(Value...)
      */
     @Test
-    public void testAddValueArray() throws InvalidAttributeValueException, NamingException
+    public void testAddValueArray() throws InvalidAttributeValueException, LdapException
     {
         EntryAttribute attr1 = new DefaultClientAttribute( "test" );
         
@@ -545,7 +546,7 @@ public class DefaultClientAttributeTest
      * Test method add( String... )
      */
     @Test
-    public void testAddStringArray() throws InvalidAttributeValueException, NamingException
+    public void testAddStringArray() throws InvalidAttributeValueException, LdapException
     {
         EntryAttribute attr1 = new DefaultClientAttribute( "test" );
         
@@ -634,7 +635,7 @@ public class DefaultClientAttributeTest
      * Test method add( byte[]... )
      */
     @Test
-    public void testAddByteArray() throws InvalidAttributeValueException, NamingException
+    public void testAddByteArray() throws InvalidAttributeValueException, LdapException
     {
         EntryAttribute attr1 = new DefaultClientAttribute( "test" );
         
@@ -692,7 +693,7 @@ public class DefaultClientAttributeTest
      * Test method clear()
      */
     @Test
-    public void testClear() throws InvalidAttributeValueException, NamingException
+    public void testClear() throws InvalidAttributeValueException, LdapException
     {
         EntryAttribute attr1 = new DefaultClientAttribute( "test" );
         
@@ -719,7 +720,7 @@ public class DefaultClientAttributeTest
      * Test method contains( Value... )
      */
     @Test
-    public void testContainsValueArray() throws InvalidAttributeValueException, NamingException
+    public void testContainsValueArray() throws InvalidAttributeValueException, LdapException
     {
         EntryAttribute attr1 = new DefaultClientAttribute( "test" );
         
@@ -772,7 +773,7 @@ public class DefaultClientAttributeTest
      * Test method contains( String... )
      */
     @Test
-    public void testContainsStringArray() throws InvalidAttributeValueException, NamingException
+    public void testContainsStringArray() throws InvalidAttributeValueException, LdapException
     {
         EntryAttribute attr1 = new DefaultClientAttribute( "test" );
         
@@ -822,7 +823,7 @@ public class DefaultClientAttributeTest
      * Test method contains( byte... )
      */
     @Test
-    public void testContainsByteArray() throws InvalidAttributeValueException, NamingException
+    public void testContainsByteArray() throws InvalidAttributeValueException, LdapException
     {
         EntryAttribute attr1 = new DefaultClientAttribute( "test" );
         
@@ -872,7 +873,7 @@ public class DefaultClientAttributeTest
      * Test method get()
      */
     @Test
-    public void testGet() throws InvalidAttributeValueException, NamingException
+    public void testGet() throws InvalidAttributeValueException, LdapException
     {
         EntryAttribute attr1 = new DefaultClientAttribute( "test" );
         
@@ -945,7 +946,7 @@ public class DefaultClientAttributeTest
      * Test method size()
      */
     @Test
-    public void testSize() throws InvalidAttributeValueException, NamingException
+    public void testSize() throws InvalidAttributeValueException, LdapException
     {
         EntryAttribute attr1 = new DefaultClientAttribute( "test" );
 
@@ -968,7 +969,7 @@ public class DefaultClientAttributeTest
      * Test method remove( Value... )
      */
     @Test
-    public void testRemoveValueArray() throws InvalidAttributeValueException, NamingException
+    public void testRemoveValueArray() throws InvalidAttributeValueException, LdapException
     {
         EntryAttribute attr1 = new DefaultClientAttribute( "test" );
 
@@ -1038,7 +1039,7 @@ public class DefaultClientAttributeTest
      * Test method remove( byte... )
      */
     @Test
-    public void testRemoveByteArray() throws InvalidAttributeValueException, NamingException
+    public void testRemoveByteArray() throws InvalidAttributeValueException, LdapException
     {
         EntryAttribute attr1 = new DefaultClientAttribute( "test" );
 
@@ -1079,7 +1080,7 @@ public class DefaultClientAttributeTest
      * Test method remove( String... )
      */
     @Test
-    public void testRemoveStringArray() throws InvalidAttributeValueException, NamingException
+    public void testRemoveStringArray() throws InvalidAttributeValueException, LdapException
     {
         EntryAttribute attr1 = new DefaultClientAttribute( "test" );
 
@@ -1120,7 +1121,7 @@ public class DefaultClientAttributeTest
      * Test method put( String... )
      */
     @Test
-    public void testPutStringArray() throws InvalidAttributeValueException, NamingException
+    public void testPutStringArray() throws InvalidAttributeValueException, LdapException
     {
         EntryAttribute attr1 = new DefaultClientAttribute( "test" );
         
@@ -1178,7 +1179,7 @@ public class DefaultClientAttributeTest
      * Test method put( byte[]... )
      */
     @Test
-    public void testPutByteArray() throws InvalidAttributeValueException, NamingException
+    public void testPutByteArray() throws InvalidAttributeValueException, LdapException
     {
         EntryAttribute attr1 = new DefaultClientAttribute( "test" );
         
@@ -1240,7 +1241,7 @@ public class DefaultClientAttributeTest
      * Test method put( Value... )
      */
     @Test
-    public void testPutValueArray() throws InvalidAttributeValueException, NamingException
+    public void testPutValueArray() throws InvalidAttributeValueException, LdapException
     {
         EntryAttribute attr1 = new DefaultClientAttribute( "test" );
         
@@ -1373,7 +1374,7 @@ public class DefaultClientAttributeTest
      * Test method toString()
      */
     @Test
-    public void testToString() throws InvalidAttributeValueException, NamingException
+    public void testToString() throws InvalidAttributeValueException, LdapException
     {
         EntryAttribute attr1 = new DefaultClientAttribute( "test" );
         
@@ -1399,7 +1400,7 @@ public class DefaultClientAttributeTest
      * Test method hashCode()
      */
     @Test
-    public void testHashCode() throws InvalidAttributeValueException, NamingException
+    public void testHashCode() throws InvalidAttributeValueException, LdapException
     {
         EntryAttribute attr = new DefaultClientAttribute();
         assertEquals( 37, attr.hashCode() );
@@ -1549,7 +1550,7 @@ public class DefaultClientAttributeTest
      * Test the serialization of a complete client attribute
      */
     @Test
-    public void testSerializeCompleteAttribute() throws NamingException, IOException, ClassNotFoundException
+    public void testSerializeCompleteAttribute() throws LdapException, IOException, ClassNotFoundException
     {
         DefaultClientAttribute dca = new DefaultClientAttribute( "CommonName" );
         dca.setHR( true );
@@ -1571,7 +1572,7 @@ public class DefaultClientAttributeTest
      * Test the serialization of a client attribute with no value
      */
     @Test
-    public void testSerializeAttributeWithNoValue() throws NamingException, IOException, ClassNotFoundException
+    public void testSerializeAttributeWithNoValue() throws LdapException, IOException, ClassNotFoundException
     {
         DefaultClientAttribute dca = new DefaultClientAttribute( "CommonName" );
         dca.setHR( true );
@@ -1591,7 +1592,7 @@ public class DefaultClientAttributeTest
      * Test the serialization of a client attribute with a null value
      */
     @Test
-    public void testSerializeAttributeNullValue() throws NamingException, IOException, ClassNotFoundException
+    public void testSerializeAttributeNullValue() throws LdapException, IOException, ClassNotFoundException
     {
         DefaultClientAttribute dca = new DefaultClientAttribute( "CommonName" );
         dca.setHR( true );
@@ -1614,7 +1615,7 @@ public class DefaultClientAttributeTest
      * Test the serialization of a client attribute with a binary value
      */
     @Test
-    public void testSerializeAttributeBinaryValue() throws NamingException, IOException, ClassNotFoundException
+    public void testSerializeAttributeBinaryValue() throws LdapException, IOException, ClassNotFoundException
     {
         DefaultClientAttribute dca = new DefaultClientAttribute( "UserPassword" );
         dca.setHR( false );

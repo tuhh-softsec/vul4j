@@ -23,10 +23,10 @@ package org.apache.directory.shared.ldap.schema.registries;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.naming.NamingException;
+import org.apache.directory.shared.ldap.exception.LdapException;
 
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.exception.LdapOperationNotSupportedException;
+import org.apache.directory.shared.ldap.exception.LdapUnwillingToPerformException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.schema.ObjectClass;
 import org.apache.directory.shared.ldap.schema.SchemaObject;
@@ -59,7 +59,7 @@ public class ImmutableObjectClassRegistry implements ObjectClassRegistry, Clonea
     /**
      * {@inheritDoc}
      */
-    public boolean hasDescendants( String ancestorId ) throws NamingException
+    public boolean hasDescendants( String ancestorId ) throws LdapException
     {
         return immutableObjectClassRegistry.hasDescendants( ancestorId );
     }
@@ -68,7 +68,7 @@ public class ImmutableObjectClassRegistry implements ObjectClassRegistry, Clonea
     /**
      * {@inheritDoc}
      */
-    public Iterator<ObjectClass> descendants( String ancestorId ) throws NamingException
+    public Iterator<ObjectClass> descendants( String ancestorId ) throws LdapException
     {
         return immutableObjectClassRegistry.descendants( ancestorId );
     }
@@ -77,36 +77,36 @@ public class ImmutableObjectClassRegistry implements ObjectClassRegistry, Clonea
     /**
      * {@inheritDoc}
      */
-    public void registerDescendants( ObjectClass objectClass, List<ObjectClass> ancestors ) throws NamingException
+    public void registerDescendants( ObjectClass objectClass, List<ObjectClass> ancestors ) throws LdapException
     {
-        throw new LdapOperationNotSupportedException( I18n.err( I18n.ERR_04284 ), ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapUnwillingToPerformException( ResultCodeEnum.NO_SUCH_OPERATION, I18n.err( I18n.ERR_04284 ) );
     }
 
 
     /**
      * {@inheritDoc}
      */
-    public void unregisterDescendants( ObjectClass attributeType, List<ObjectClass> ancestors ) throws NamingException
+    public void unregisterDescendants( ObjectClass attributeType, List<ObjectClass> ancestors ) throws LdapException
     {
-        throw new LdapOperationNotSupportedException( I18n.err( I18n.ERR_04284 ), ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapUnwillingToPerformException( ResultCodeEnum.NO_SUCH_OPERATION, I18n.err( I18n.ERR_04284 ) );
     }
 
 
     /**
      * {@inheritDoc}
      */
-    public void register( ObjectClass objectClass ) throws NamingException
+    public void register( ObjectClass objectClass ) throws LdapException
     {
-        throw new LdapOperationNotSupportedException( I18n.err( I18n.ERR_04284 ), ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapUnwillingToPerformException( ResultCodeEnum.NO_SUCH_OPERATION, I18n.err( I18n.ERR_04284 ) );
     }
 
 
     /**
      * {@inheritDoc}
      */
-    public ObjectClass unregister( String numericOid ) throws NamingException
+    public ObjectClass unregister( String numericOid ) throws LdapException
     {
-        throw new LdapOperationNotSupportedException( I18n.err( I18n.ERR_04284 ), ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapUnwillingToPerformException( ResultCodeEnum.NO_SUCH_OPERATION, I18n.err( I18n.ERR_04284 ) );
     }
 
 
@@ -140,7 +140,7 @@ public class ImmutableObjectClassRegistry implements ObjectClassRegistry, Clonea
     /**
      * {@inheritDoc}
      */
-    public String getOidByName( String name ) throws NamingException
+    public String getOidByName( String name ) throws LdapException
     {
         return immutableObjectClassRegistry.getOidByName( name );
     }
@@ -149,7 +149,7 @@ public class ImmutableObjectClassRegistry implements ObjectClassRegistry, Clonea
     /**
      * {@inheritDoc}
      */
-    public String getSchemaName( String oid ) throws NamingException
+    public String getSchemaName( String oid ) throws LdapException
     {
         return immutableObjectClassRegistry.getSchemaName( oid );
     }
@@ -176,7 +176,7 @@ public class ImmutableObjectClassRegistry implements ObjectClassRegistry, Clonea
     /**
      * {@inheritDoc}
      */
-    public ObjectClass lookup( String oid ) throws NamingException
+    public ObjectClass lookup( String oid ) throws LdapException
     {
         return immutableObjectClassRegistry.lookup( oid );
     }
@@ -194,18 +194,18 @@ public class ImmutableObjectClassRegistry implements ObjectClassRegistry, Clonea
     /**
      * {@inheritDoc}
      */
-    public void renameSchema( String originalSchemaName, String newSchemaName ) throws NamingException
+    public void renameSchema( String originalSchemaName, String newSchemaName ) throws LdapException
     {
-        throw new LdapOperationNotSupportedException( I18n.err( I18n.ERR_04284 ), ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapUnwillingToPerformException( ResultCodeEnum.NO_SUCH_OPERATION, I18n.err( I18n.ERR_04284 ) );
     }
 
 
     /**
      * {@inheritDoc}
      */
-    public void unregisterSchemaElements( String schemaName ) throws NamingException
+    public void unregisterSchemaElements( String schemaName ) throws LdapException
     {
-        throw new LdapOperationNotSupportedException( I18n.err( I18n.ERR_04284 ), ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapUnwillingToPerformException( ResultCodeEnum.NO_SUCH_OPERATION, I18n.err( I18n.ERR_04284 ) );
     }
 
 
@@ -221,17 +221,17 @@ public class ImmutableObjectClassRegistry implements ObjectClassRegistry, Clonea
     /**
      * {@inheritDoc}
      */
-    public void clear() throws NamingException
+    public void clear() throws LdapException
     {
-        throw new LdapOperationNotSupportedException( I18n.err( I18n.ERR_04284 ), ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapUnwillingToPerformException( ResultCodeEnum.NO_SUCH_OPERATION, I18n.err( I18n.ERR_04284 ) );
     }
 
 
     /**
      * {@inheritDoc}
      */
-    public ObjectClass unregister( ObjectClass schemaObject ) throws NamingException
+    public ObjectClass unregister( ObjectClass schemaObject ) throws LdapException
     {
-        throw new LdapOperationNotSupportedException( I18n.err( I18n.ERR_04284 ), ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapUnwillingToPerformException( ResultCodeEnum.NO_SUCH_OPERATION, I18n.err( I18n.ERR_04284 ) );
     }
 }

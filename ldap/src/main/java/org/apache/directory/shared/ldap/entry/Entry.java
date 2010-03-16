@@ -23,7 +23,7 @@ import java.io.Externalizable;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.naming.NamingException;
+import org.apache.directory.shared.ldap.exception.LdapException;
 
 import org.apache.directory.shared.ldap.name.DN;
 
@@ -129,9 +129,9 @@ public interface Entry extends Cloneable, Iterable<EntryAttribute>, Externalizab
      * Add some Attributes to the current Entry.
      *
      * @param attributes The attributes to add
-     * @throws NamingException If we can't add any of the attributes
+     * @throws LdapException If we can't add any of the attributes
      */
-    void add( EntryAttribute... attributes ) throws NamingException;
+    void add( EntryAttribute... attributes ) throws LdapException;
 
 
     /**
@@ -140,9 +140,9 @@ public interface Entry extends Cloneable, Iterable<EntryAttribute>, Externalizab
      * @param upId The user provided ID of the attribute we want to add 
      * some values to
      * @param values The list of String values to add
-     * @throws NamingException If we can't add any of the values
+     * @throws LdapException If we can't add any of the values
      */
-    void add( String upId, String... values ) throws NamingException;
+    void add( String upId, String... values ) throws LdapException;
 
 
     /**
@@ -151,9 +151,9 @@ public interface Entry extends Cloneable, Iterable<EntryAttribute>, Externalizab
      * @param upId The user provided ID of the attribute we want to add 
      * some values to
      * @param values The list of binary values to add
-     * @throws NamingException If we can't add any of the values
+     * @throws LdapException If we can't add any of the values
      */
-    void add( String upId, byte[]... values ) throws NamingException;
+    void add( String upId, byte[]... values ) throws LdapException;
 
 
     /**
@@ -162,9 +162,9 @@ public interface Entry extends Cloneable, Iterable<EntryAttribute>, Externalizab
      * @param upId The user provided ID of the attribute we want to add 
      * some values to
      * @param values The list of Values to add
-     * @throws NamingException If we can't add any of the values
+     * @throws LdapException If we can't add any of the values
      */
-    void add( String upId, Value<?>... values ) throws NamingException;
+    void add( String upId, Value<?>... values ) throws LdapException;
 
 
     /**
@@ -180,9 +180,9 @@ public interface Entry extends Cloneable, Iterable<EntryAttribute>, Externalizab
      * @param attributes the attributes to be put
      * @return the old attributes with the same OID, if exist; otherwise
      *         <code>null</code>
-     * @exception NamingException if the operation fails
+     * @exception LdapException if the operation fails
      */
-    List<EntryAttribute> put( EntryAttribute... attributes ) throws NamingException;
+    List<EntryAttribute> put( EntryAttribute... attributes ) throws LdapException;
 
 
     /**
@@ -241,7 +241,7 @@ public interface Entry extends Cloneable, Iterable<EntryAttribute>, Externalizab
       * @param attributes the attributes to be removed
       * @return the removed attribute, if exists; otherwise <code>null</code>
       */
-    List<EntryAttribute> remove( EntryAttribute... attributes ) throws NamingException;
+    List<EntryAttribute> remove( EntryAttribute... attributes ) throws LdapException;
 
 
     /**
@@ -265,7 +265,7 @@ public interface Entry extends Cloneable, Iterable<EntryAttribute>, Externalizab
      * @return <code>true</code> if at least a value is removed, <code>false</code>
      * if not all the values have been removed or if the attribute does not exist. 
      */
-    boolean remove( String upId, byte[]... values ) throws NamingException;
+    boolean remove( String upId, byte[]... values ) throws LdapException;
 
 
     /**
@@ -289,7 +289,7 @@ public interface Entry extends Cloneable, Iterable<EntryAttribute>, Externalizab
      * @return <code>true</code> if at least a value is removed, <code>false</code>
      * if no values have been removed or if the attribute does not exist. 
      */
-    boolean remove( String upId, String... values ) throws NamingException;
+    boolean remove( String upId, String... values ) throws LdapException;
 
 
     /**
@@ -313,7 +313,7 @@ public interface Entry extends Cloneable, Iterable<EntryAttribute>, Externalizab
      * @return <code>true</code> if at least a value is removed, <code>false</code>
      * if not all the values have been removed or if the attribute does not exist. 
      */
-    boolean remove( String upId, Value<?>... values ) throws NamingException;
+    boolean remove( String upId, Value<?>... values ) throws LdapException;
 
 
     /**
@@ -346,9 +346,9 @@ public interface Entry extends Cloneable, Iterable<EntryAttribute>, Externalizab
      * @param attributes The Attributes to look for
      * @return <code>true</code> if all the attributes are found within 
      * the entry, <code>false</code> if at least one of them is not present.
-     * @throws NamingException If the attribute does not exist
+     * @throws LdapException If the attribute does not exist
      */
-    boolean contains( EntryAttribute... attributes ) throws NamingException;
+    boolean contains( EntryAttribute... attributes ) throws LdapException;
 
 
     /**

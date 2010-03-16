@@ -20,8 +20,7 @@
 package org.apache.directory.shared.ldap.schema.registries;
 
 
-import javax.naming.NamingException;
-
+import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.schema.SyntaxChecker;
 
 
@@ -38,10 +37,10 @@ public interface SyntaxCheckerRegistry extends SchemaObjectRegistry<SyntaxChecke
      * Registers a new SyntaxChecker with this registry.
      *
      * @param syntaxChecker the SyntaxChecker to register
-     * @throws NamingException if the SyntaxChecker is already registered or
+     * @throws LdapException if the SyntaxChecker is already registered or
      * the registration operation is not supported
      */
-    void register( SyntaxChecker syntaxChecker ) throws NamingException;
+    void register( SyntaxChecker syntaxChecker ) throws LdapException;
 
 
     /**
@@ -49,9 +48,9 @@ public interface SyntaxCheckerRegistry extends SchemaObjectRegistry<SyntaxChecke
      * numeric OID.
      * 
      * @param numericOid the numeric identifier
-     * @throws NamingException if the numeric identifier is invalid
+     * @throws LdapException if the numeric identifier is invalid
      */
-    SyntaxChecker unregister( String numericOid ) throws NamingException;
+    SyntaxChecker unregister( String numericOid ) throws LdapException;
     
     
     /**
@@ -60,7 +59,7 @@ public interface SyntaxCheckerRegistry extends SchemaObjectRegistry<SyntaxChecke
      * 
      * @param schemaName the name of the schema whose SyntaxCheckers will be removed from
      */
-    void unregisterSchemaElements( String schemaName ) throws NamingException;
+    void unregisterSchemaElements( String schemaName ) throws LdapException;
     
     
     /**

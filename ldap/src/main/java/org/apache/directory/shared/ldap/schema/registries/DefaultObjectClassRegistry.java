@@ -28,9 +28,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.naming.NamingException;
-import javax.naming.directory.NoSuchAttributeException;
-
+import org.apache.directory.shared.ldap.exception.LdapException;
+import org.apache.directory.shared.ldap.exception.LdapNoSuchAttributeException;
 import org.apache.directory.shared.ldap.schema.ObjectClass;
 import org.apache.directory.shared.ldap.schema.SchemaObject;
 import org.apache.directory.shared.ldap.schema.SchemaObjectType;
@@ -69,7 +68,7 @@ public class DefaultObjectClassRegistry extends DefaultSchemaObjectRegistry<Obje
     /**
      * {@inheritDoc}
      */
-    public boolean hasDescendants( String ancestorId ) throws NamingException
+    public boolean hasDescendants( String ancestorId ) throws LdapException
     {
         try
         {
@@ -77,9 +76,9 @@ public class DefaultObjectClassRegistry extends DefaultSchemaObjectRegistry<Obje
             Set<ObjectClass> descendants = oidToDescendants.get( oid );
             return (descendants != null) && !descendants.isEmpty();
         }
-        catch ( NamingException ne )
+        catch ( LdapException ne )
         {
-            throw new NoSuchAttributeException( ne.getMessage() );
+            throw new LdapNoSuchAttributeException( ne.getMessage() );
         }
     }
     
@@ -88,7 +87,7 @@ public class DefaultObjectClassRegistry extends DefaultSchemaObjectRegistry<Obje
      * {@inheritDoc}
      */
     @SuppressWarnings("unchecked")
-    public Iterator<ObjectClass> descendants( String ancestorId ) throws NamingException
+    public Iterator<ObjectClass> descendants( String ancestorId ) throws LdapException
     {
         try
         {
@@ -102,9 +101,9 @@ public class DefaultObjectClassRegistry extends DefaultSchemaObjectRegistry<Obje
             
             return descendants.iterator();
         }
-        catch ( NamingException ne )
+        catch ( LdapException ne )
         {
-            throw new NoSuchAttributeException( ne.getMessage() );
+            throw new LdapNoSuchAttributeException( ne.getMessage() );
         }
     }
 
@@ -113,7 +112,7 @@ public class DefaultObjectClassRegistry extends DefaultSchemaObjectRegistry<Obje
      * {@inheritDoc}
      */
     public void registerDescendants( ObjectClass objectClass, List<ObjectClass> ancestors ) 
-        throws NamingException
+        throws LdapException
     {
         // add this attribute to descendant list of other attributes in superior chain
         if ( ( ancestors == null ) || ( ancestors.size() == 0 ) ) 
@@ -141,9 +140,9 @@ public class DefaultObjectClassRegistry extends DefaultSchemaObjectRegistry<Obje
                 // And recurse until we reach the top of the hierarchy
                 registerDescendants( objectClass, ancestor.getSuperiors() );
             }
-            catch ( NamingException ne )
+            catch ( LdapException ne )
             {
-                throw new NoSuchAttributeException( ne.getMessage() );
+                throw new LdapNoSuchAttributeException( ne.getMessage() );
             }
         }
     }
@@ -153,7 +152,7 @@ public class DefaultObjectClassRegistry extends DefaultSchemaObjectRegistry<Obje
      * {@inheritDoc}
      */
     public void unregisterDescendants( ObjectClass attributeType, List<ObjectClass> ancestors ) 
-        throws NamingException
+        throws LdapException
     {
         // add this attribute to descendant list of other attributes in superior chain
         if ( ( ancestors == null ) || ( ancestors.size() == 0 ) ) 
@@ -181,9 +180,9 @@ public class DefaultObjectClassRegistry extends DefaultSchemaObjectRegistry<Obje
                 // And recurse until we reach the top of the hierarchy
                 unregisterDescendants( attributeType, ancestor.getSuperiors() );
             }
-            catch ( NamingException ne )
+            catch ( LdapException ne )
             {
-                throw new NoSuchAttributeException( ne.getMessage() );
+                throw new LdapNoSuchAttributeException( ne.getMessage() );
             }
         }
     }
@@ -192,7 +191,7 @@ public class DefaultObjectClassRegistry extends DefaultSchemaObjectRegistry<Obje
     /**
      * {@inheritDoc}
      */
-    public ObjectClass unregister( String numericOid ) throws NamingException
+    public ObjectClass unregister( String numericOid ) throws LdapException
     {
         try
         {
@@ -208,9 +207,9 @@ public class DefaultObjectClassRegistry extends DefaultSchemaObjectRegistry<Obje
             
             return removed;
         }
-        catch ( NamingException ne )
+        catch ( LdapException ne )
         {
-            throw new NoSuchAttributeException( ne.getMessage() );
+            throw new LdapNoSuchAttributeException( ne.getMessage() );
         }
     }
     

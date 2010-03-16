@@ -24,9 +24,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.naming.Name;
-import javax.naming.NamingException;
 
 import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.name.DN;
 
@@ -77,7 +77,7 @@ public class NamespaceTools
      * @param name2 the second name
      * @return true if the names are siblings, false otherwise.
      */
-    public static boolean isSibling( Name name1, Name name2 ) throws NamingException
+    public static boolean isSibling( Name name1, Name name2 ) throws LdapException
     {
         if ( name1.size() == name2.size() )
         {
@@ -112,9 +112,9 @@ public class NamespaceTools
      * @param descendant the normalized distinguished name of the descendant context
      * @return the relatve normalized name between the ancestor and the
      *         descendant contexts
-     * @throws javax.naming.NamingException if the contexts are not related in the ancestual sense
+     * @throws javax.naming.LdapException if the contexts are not related in the ancestual sense
      */
-    public static Name getRelativeName( Name ancestor, Name descendant ) throws NamingException
+    public static Name getRelativeName( Name ancestor, Name descendant ) throws LdapException
     {
         DN rdn = null;
         
@@ -130,7 +130,7 @@ public class NamespaceTools
             }
             catch( LdapInvalidDnException e )
             {
-                throw new NamingException( e.getMessage() );
+                throw new LdapException( e.getMessage() );
             }
         }
 
@@ -143,7 +143,7 @@ public class NamespaceTools
         }
         else
         {
-            NamingException e = new NamingException( I18n.err( I18n.ERR_04417, descendant, ancestor ) );
+            LdapException e = new LdapException( I18n.err( I18n.ERR_04417, descendant, ancestor ) );
 
             throw e;
         }
@@ -193,10 +193,10 @@ public class NamespaceTools
      * 
      * @param compositeNameComponent a single name component not a whole name
      * @return the components of the complex name component in order
-     * @throws NamingException
+     * @throws LdapException
      *             if nameComponent is invalid (starts with a +)
      */
-    public static String[] getCompositeComponents( String compositeNameComponent ) throws NamingException
+    public static String[] getCompositeComponents( String compositeNameComponent ) throws LdapException
     {
         int lastIndex = compositeNameComponent.length() - 1;
         List<String> comps = new ArrayList<String>();
@@ -207,7 +207,7 @@ public class NamespaceTools
             {
                 if ( ii == 0 )
                 {
-                    throw new NamingException( I18n.err( I18n.ERR_04418, compositeNameComponent ) );
+                    throw new LdapException( I18n.err( I18n.ERR_04418, compositeNameComponent ) );
                 }
                 
                 if ( compositeNameComponent.charAt( ii - 1 ) != '\\' )
@@ -254,9 +254,9 @@ public class NamespaceTools
      * 
      * @param name The name to check 
      * @return <code>true</code> if the name has composite components
-     * @throws NamingException If the name is invalid
+     * @throws LdapException If the name is invalid
      */
-    public static boolean hasCompositeComponents( String name ) throws NamingException
+    public static boolean hasCompositeComponents( String name ) throws LdapException
     {
         for ( int ii = name.length() - 1; ii >= 0; ii-- )
         {
@@ -264,7 +264,7 @@ public class NamespaceTools
             {
                 if ( ii == 0 )
                 {
-                    throw new NamingException( I18n.err( I18n.ERR_04418, name ) );
+                    throw new LdapException( I18n.err( I18n.ERR_04418, name ) );
                 }
                 if ( name.charAt( ii - 1 ) != '\\' )
                 {

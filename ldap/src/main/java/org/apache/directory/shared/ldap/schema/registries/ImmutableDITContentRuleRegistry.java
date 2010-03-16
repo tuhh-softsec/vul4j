@@ -22,10 +22,10 @@ package org.apache.directory.shared.ldap.schema.registries;
 
 import java.util.Iterator;
 
-import javax.naming.NamingException;
+import org.apache.directory.shared.ldap.exception.LdapException;
 
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.exception.LdapOperationNotSupportedException;
+import org.apache.directory.shared.ldap.exception.LdapUnwillingToPerformException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.schema.DITContentRule;
 import org.apache.directory.shared.ldap.schema.SchemaObject;
@@ -85,7 +85,7 @@ public class ImmutableDITContentRuleRegistry implements DITContentRuleRegistry
     /**
      * {@inheritDoc}
      */
-    public String getOidByName( String name ) throws NamingException
+    public String getOidByName( String name ) throws LdapException
     {
         return immutableDITContentRuleRegistry.getOidByName( name );
     }
@@ -94,7 +94,7 @@ public class ImmutableDITContentRuleRegistry implements DITContentRuleRegistry
     /**
      * {@inheritDoc}
      */
-    public String getSchemaName( String oid ) throws NamingException
+    public String getSchemaName( String oid ) throws LdapException
     {
         return immutableDITContentRuleRegistry.getSchemaName( oid );
     }
@@ -121,7 +121,7 @@ public class ImmutableDITContentRuleRegistry implements DITContentRuleRegistry
     /**
      * {@inheritDoc}
      */
-    public DITContentRule lookup( String oid ) throws NamingException
+    public DITContentRule lookup( String oid ) throws LdapException
     {
         return immutableDITContentRuleRegistry.lookup( oid );
     }
@@ -139,36 +139,36 @@ public class ImmutableDITContentRuleRegistry implements DITContentRuleRegistry
     /**
      * {@inheritDoc}
      */
-    public void register( DITContentRule schemaObject ) throws NamingException
+    public void register( DITContentRule schemaObject ) throws LdapException
     {
-        throw new LdapOperationNotSupportedException( I18n.err( I18n.ERR_04277 ), ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapUnwillingToPerformException( ResultCodeEnum.NO_SUCH_OPERATION, I18n.err( I18n.ERR_04277 ) );
     }
 
 
     /**
      * {@inheritDoc}
      */
-    public void renameSchema( String originalSchemaName, String newSchemaName ) throws NamingException
+    public void renameSchema( String originalSchemaName, String newSchemaName ) throws LdapException
     {
-        throw new LdapOperationNotSupportedException( I18n.err( I18n.ERR_04277 ), ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapUnwillingToPerformException( ResultCodeEnum.NO_SUCH_OPERATION, I18n.err( I18n.ERR_04277 ) );
     }
 
 
     /**
      * {@inheritDoc}
      */
-    public DITContentRule unregister( String numericOid ) throws NamingException
+    public DITContentRule unregister( String numericOid ) throws LdapException
     {
-        throw new LdapOperationNotSupportedException( I18n.err( I18n.ERR_04277 ), ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapUnwillingToPerformException( ResultCodeEnum.NO_SUCH_OPERATION, I18n.err( I18n.ERR_04277 ) );
     }
 
 
     /**
      * {@inheritDoc}
      */
-    public void unregisterSchemaElements( String schemaName ) throws NamingException
+    public void unregisterSchemaElements( String schemaName ) throws LdapException
     {
-        throw new LdapOperationNotSupportedException( I18n.err( I18n.ERR_04277 ), ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapUnwillingToPerformException( ResultCodeEnum.NO_SUCH_OPERATION, I18n.err( I18n.ERR_04277 ) );
     }
 
 
@@ -184,17 +184,17 @@ public class ImmutableDITContentRuleRegistry implements DITContentRuleRegistry
     /**
      * {@inheritDoc}
      */
-    public void clear() throws NamingException
+    public void clear() throws LdapException
     {
-        throw new LdapOperationNotSupportedException( I18n.err( I18n.ERR_04277 ), ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapUnwillingToPerformException( ResultCodeEnum.NO_SUCH_OPERATION, I18n.err( I18n.ERR_04277 ) );
     }
 
 
     /**
      * {@inheritDoc}
      */
-    public DITContentRule unregister( DITContentRule schemaObject ) throws NamingException
+    public DITContentRule unregister( DITContentRule schemaObject ) throws LdapException
     {
-        throw new LdapOperationNotSupportedException( I18n.err( I18n.ERR_04277 ), ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapUnwillingToPerformException( ResultCodeEnum.NO_SUCH_OPERATION, I18n.err( I18n.ERR_04277 ) );
     }
 }

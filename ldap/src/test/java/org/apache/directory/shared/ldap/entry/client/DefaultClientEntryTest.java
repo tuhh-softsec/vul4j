@@ -39,13 +39,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.naming.InvalidNameException;
-import javax.naming.NamingException;
-
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Value;
+import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.schema.normalizers.DeepTrimToLowerNormalizer;
 import org.apache.directory.shared.ldap.schema.normalizers.OidNormalizer;
@@ -86,7 +84,7 @@ public class DefaultClientEntryTest
             
             return entry;
         }
-        catch ( NamingException ne )
+        catch ( LdapException ne )
         {
             // Do nothing
             return null;
@@ -304,7 +302,7 @@ public class DefaultClientEntryTest
      * Test method for add( EntryAttribute... )
      */
     @Test
-    public void testAddEntryAttributeArray() throws NamingException
+    public void testAddEntryAttributeArray() throws LdapException
     {
         Entry entry = createEntry();
         
@@ -338,7 +336,7 @@ public class DefaultClientEntryTest
      * Test method for add( String, byte[]... )
      */
     @Test
-    public void testAddStringByteArrayArray() throws NamingException
+    public void testAddStringByteArrayArray() throws LdapException
     {
         Entry entry = new DefaultClientEntry();
         
@@ -363,7 +361,7 @@ public class DefaultClientEntryTest
      * Test method for add( String, String... )
      */
     @Test
-    public void testAddStringStringArray() throws NamingException
+    public void testAddStringStringArray() throws LdapException
     {
         Entry entry = new DefaultClientEntry();
         
@@ -388,7 +386,7 @@ public class DefaultClientEntryTest
      * Test method for add( String, Value<?>... )
      */
     @Test
-    public void testAddStringValueArray() throws NamingException
+    public void testAddStringValueArray() throws LdapException
     {
         Entry entry = new DefaultClientEntry();
         
@@ -432,7 +430,7 @@ public class DefaultClientEntryTest
      * Test method for clear()
      */
     @Test
-    public void testClear() throws NamingException
+    public void testClear() throws LdapException
     {
         Entry entry = new DefaultClientEntry( EXAMPLE_DN );
         
@@ -456,7 +454,7 @@ public class DefaultClientEntryTest
      * Test method for clone()
      */
     @Test
-    public void testClone() throws NamingException
+    public void testClone() throws LdapException
     {
         Entry entry1 = new DefaultClientEntry();
         
@@ -490,7 +488,7 @@ public class DefaultClientEntryTest
      * Test method for contains( EntryAttribute... )
      */
     @Test
-    public void testContainsEntryAttributeArray() throws NamingException
+    public void testContainsEntryAttributeArray() throws LdapException
     {
         Entry entry = new DefaultClientEntry( EXAMPLE_DN );
         
@@ -516,7 +514,7 @@ public class DefaultClientEntryTest
      * Test method for contains( String, byte[]... )
      */
     @Test
-    public void testContainsStringByteArray() throws NamingException
+    public void testContainsStringByteArray() throws LdapException
     {
         Entry entry = new DefaultClientEntry( EXAMPLE_DN );
         
@@ -540,7 +538,7 @@ public class DefaultClientEntryTest
      * Test method for contains( String, String... )
      */
     @Test
-    public void testContainsStringStringArray() throws NamingException
+    public void testContainsStringStringArray() throws LdapException
     {
         Entry entry = new DefaultClientEntry( EXAMPLE_DN );
         
@@ -569,7 +567,7 @@ public class DefaultClientEntryTest
      * Test method for contains( Sring, Value<?>... )
      */
     @Test
-    public void testContainsStringValueArray() throws NamingException
+    public void testContainsStringValueArray() throws LdapException
     {
         Entry entry = new DefaultClientEntry( EXAMPLE_DN );
         
@@ -602,7 +600,7 @@ public class DefaultClientEntryTest
      * Test method for containsAttribute( String )
      */
     @Test
-    public void testContainsAttribute() throws NamingException
+    public void testContainsAttribute() throws LdapException
     {
         Entry entry = new DefaultClientEntry( EXAMPLE_DN );
         
@@ -633,7 +631,7 @@ public class DefaultClientEntryTest
      * Test method for equals()
      */
     @Test
-    public void testEqualsObject() throws NamingException
+    public void testEqualsObject() throws LdapException
     {
         Entry entry1 = new DefaultClientEntry();
         Entry entry2 = new DefaultClientEntry();
@@ -681,7 +679,7 @@ public class DefaultClientEntryTest
      * Test method for get( String )
      */
     @Test
-    public void testGet() throws NamingException
+    public void testGet() throws LdapException
     {
         Entry entry = new DefaultClientEntry( EXAMPLE_DN );
         
@@ -709,7 +707,7 @@ public class DefaultClientEntryTest
      * Test method for getDN()
      */
     @Test
-    public void testGetDn() throws InvalidNameException 
+    public void testGetDn() throws LdapException 
     {
         Entry entry = new DefaultClientEntry( EXAMPLE_DN );
         
@@ -726,7 +724,7 @@ public class DefaultClientEntryTest
      * Test method for hashcode()
      */
     @Test
-    public void testHashCode() throws InvalidNameException, NamingException
+    public void testHashCode() throws LdapException, LdapException
     {
         Entry entry1 = new DefaultClientEntry( EXAMPLE_DN );
         Entry entry2 = new DefaultClientEntry( EXAMPLE_DN );
@@ -761,7 +759,7 @@ public class DefaultClientEntryTest
      * Test method for hasObjectClass( String )
      */
     @Test
-    public void testHasObjectClass() throws NamingException
+    public void testHasObjectClass() throws LdapException
     {
         Entry entry = new DefaultClientEntry( EXAMPLE_DN );
         
@@ -782,7 +780,7 @@ public class DefaultClientEntryTest
      * Test method for Iterator()
      */
     @Test
-    public void testIterator() throws NamingException
+    public void testIterator() throws LdapException
     {
         Entry entry = createEntry();
         
@@ -813,7 +811,7 @@ public class DefaultClientEntryTest
      * Test method for put( EntryAttribute... )
      */
     @Test
-    public void testPutEntryAttributeArray() throws NamingException
+    public void testPutEntryAttributeArray() throws LdapException
     {
         Entry entry = new DefaultClientEntry( EXAMPLE_DN );
         
@@ -1016,7 +1014,7 @@ public class DefaultClientEntryTest
      * Test method for removeAttributes( String... )
      */
     @Test
-    public void testRemoveAttributesStringArray() throws NamingException
+    public void testRemoveAttributesStringArray() throws LdapException
     {
         Entry entry = new DefaultClientEntry( EXAMPLE_DN );
 
@@ -1044,7 +1042,7 @@ public class DefaultClientEntryTest
      * Test method for remove( EntryAttribute... )
      */
     @Test
-    public void testRemoveEntryAttributeArray() throws NamingException
+    public void testRemoveEntryAttributeArray() throws LdapException
     {
         Entry entry = new DefaultClientEntry( EXAMPLE_DN );
         
@@ -1076,7 +1074,7 @@ public class DefaultClientEntryTest
      * Test method for remove(String, byte[]... )
      */
     @Test
-    public void testRemoveStringByteArrayArray() throws NamingException
+    public void testRemoveStringByteArrayArray() throws LdapException
     {
         Entry entry = new DefaultClientEntry( EXAMPLE_DN );
         
@@ -1103,7 +1101,7 @@ public class DefaultClientEntryTest
      * Test method for remove( String, String... )
      */
     @Test
-    public void testRemoveStringStringArray() throws NamingException
+    public void testRemoveStringStringArray() throws LdapException
     {
         Entry entry = createEntry();
         
@@ -1127,7 +1125,7 @@ public class DefaultClientEntryTest
      * Test method for remove(String, Value<?>... )
      */
     @Test
-    public void testRemoveStringValueArray() throws NamingException
+    public void testRemoveStringValueArray() throws LdapException
     {
         Entry entry = new DefaultClientEntry( EXAMPLE_DN );
 
@@ -1166,7 +1164,7 @@ public class DefaultClientEntryTest
      * Test method for set( String... )
      */
     @Test
-    public void testSet() throws NamingException
+    public void testSet() throws LdapException
     {
         Entry entry = new DefaultClientEntry( EXAMPLE_DN );
 
@@ -1211,7 +1209,7 @@ public class DefaultClientEntryTest
      * Test method for size()
      */
     @Test
-    public void testSize() throws NamingException
+    public void testSize() throws LdapException
     {
         Entry entry = new DefaultClientEntry( EXAMPLE_DN );
         
@@ -1266,7 +1264,7 @@ public class DefaultClientEntryTest
      * Test the serialization of a complete entry
      */
     @Test
-    public void testSerializeCompleteEntry() throws NamingException, IOException, ClassNotFoundException
+    public void testSerializeCompleteEntry() throws LdapException, IOException, ClassNotFoundException
     {
         DN dn = new DN( "ou=system" );
         
@@ -1288,7 +1286,7 @@ public class DefaultClientEntryTest
      * Test the serialization of an entry with no DN
      */
     @Test
-    public void testSerializeEntryWithNoDN() throws NamingException, IOException, ClassNotFoundException
+    public void testSerializeEntryWithNoDN() throws LdapException, IOException, ClassNotFoundException
     {
         byte[] password = StringTools.getBytesUtf8( "secret" );
         ClientEntry entry = new DefaultClientEntry();
@@ -1306,7 +1304,7 @@ public class DefaultClientEntryTest
      * Test the serialization of an entry with no attribute and no DN
      */
     @Test
-    public void testSerializeEntryWithNoDNNoAttribute() throws NamingException, IOException, ClassNotFoundException
+    public void testSerializeEntryWithNoDNNoAttribute() throws LdapException, IOException, ClassNotFoundException
     {
         ClientEntry entry = new DefaultClientEntry();
 
@@ -1320,7 +1318,7 @@ public class DefaultClientEntryTest
      * Test the serialization of an entry with no attribute
      */
     @Test
-    public void testSerializeEntryWithNoAttribute() throws NamingException, IOException, ClassNotFoundException
+    public void testSerializeEntryWithNoAttribute() throws LdapException, IOException, ClassNotFoundException
     {
         DN dn = new DN( "ou=system" );
         

@@ -26,9 +26,8 @@ import static org.junit.Assert.assertTrue;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.naming.InvalidNameException;
-
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
+import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.message.internal.InternalBindRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalResultResponse;
@@ -61,7 +60,7 @@ public class BindRequestImplTest
      * Tests for equality using exact copies.
      */
     @Test
-    public void testEqualsExactCopy() throws InvalidNameException
+    public void testEqualsExactCopy() throws LdapException
     {
         BindRequestImpl req0 = new BindRequestImpl( 5 );
         req0.setCredentials( "password".getBytes() );
@@ -83,7 +82,7 @@ public class BindRequestImplTest
      * Test for inequality when only the IDs are different.
      */
     @Test
-    public void testNotEqualDiffId() throws InvalidNameException
+    public void testNotEqualDiffId() throws LdapException
     {
         BindRequestImpl req0 = new BindRequestImpl( 7 );
         req0.setCredentials( "password".getBytes() );
@@ -105,7 +104,7 @@ public class BindRequestImplTest
      * Test for inequality when only the credentials are different.
      */
     @Test
-    public void testNotEqualDiffCreds() throws InvalidNameException
+    public void testNotEqualDiffCreds() throws LdapException
     {
         BindRequestImpl req0 = new BindRequestImpl( 5 );
         req0.setCredentials( "abcdefg".getBytes() );
@@ -127,7 +126,7 @@ public class BindRequestImplTest
      * Test for inequality when only the DN names are different.
      */
     @Test
-    public void testNotEqualDiffName() throws InvalidNameException
+    public void testNotEqualDiffName() throws LdapException
     {
         BindRequestImpl req0 = new BindRequestImpl( 5 );
         req0.setCredentials( "password".getBytes() );
@@ -149,7 +148,7 @@ public class BindRequestImplTest
      * Test for inequality when only the auth mechanisms are different.
      */
     @Test
-    public void testNotEqualDiffSimple() throws InvalidNameException
+    public void testNotEqualDiffSimple() throws LdapException
     {
         BindRequestImpl req0 = new BindRequestImpl( 5 );
         req0.setCredentials( "password".getBytes() );
@@ -171,7 +170,7 @@ public class BindRequestImplTest
      * Test for inequality when only the bind LDAP versions are different.
      */
     @Test
-    public void testNotEqualDiffVersion() throws InvalidNameException
+    public void testNotEqualDiffVersion() throws LdapException
     {
         BindRequestImpl req0 = new BindRequestImpl( 5 );
         req0.setCredentials( "password".getBytes() );

@@ -27,8 +27,6 @@ import static org.junit.Assert.fail;
 import java.nio.ByteBuffer;
 import java.util.List;
 
-import javax.naming.NamingException;
-
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.codec.DecoderException;
@@ -38,6 +36,7 @@ import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.ResponseCarryingException;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Modification;
+import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.message.ModifyResponseImpl;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.message.control.Control;
@@ -57,7 +56,7 @@ public class ModifyRequestTest
      * Test the decoding of a ModifyRequest
      */
     @Test
-    public void testDecodeModifyRequest2AttrsSuccess() throws NamingException
+    public void testDecodeModifyRequest2AttrsSuccess() throws LdapException
     {
         Asn1Decoder ldapDecoder = new Asn1Decoder();
 
@@ -231,7 +230,7 @@ public class ModifyRequestTest
      * Test the decoding of a ModifyRequest, with different operations
      */
     @Test
-    public void testDecodeModifyRequestManyOperations() throws NamingException
+    public void testDecodeModifyRequestManyOperations() throws LdapException
     {
         Asn1Decoder ldapDecoder = new Asn1Decoder();
 
@@ -348,7 +347,7 @@ public class ModifyRequestTest
      * Test the decoding of a ModifyRequest, with different operations, take 2
      */
     @Test
-    public void testDecodeModifyRequestManyOperations2() throws NamingException
+    public void testDecodeModifyRequestManyOperations2() throws LdapException
     {
         Asn1Decoder ldapDecoder = new Asn1Decoder();
 
@@ -480,7 +479,7 @@ public class ModifyRequestTest
      * Test the decoding of a ModifyRequest
      */
     @Test
-    public void testDecodeModifyRequest2Attrs3valsSuccess() throws NamingException
+    public void testDecodeModifyRequest2Attrs3valsSuccess() throws LdapException
     {
         Asn1Decoder ldapDecoder = new Asn1Decoder();
 
@@ -1213,7 +1212,7 @@ public class ModifyRequestTest
      * modification with a type and two vals
      */
     @Test
-    public void testDecodeModifyRequestAddOperationModificationType2Vals() throws NamingException
+    public void testDecodeModifyRequestAddOperationModificationType2Vals() throws LdapException
     {
         Asn1Decoder ldapDecoder = new Asn1Decoder();
 

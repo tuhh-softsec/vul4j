@@ -23,10 +23,9 @@ package org.apache.directory.shared.ldap.message;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import javax.naming.InvalidNameException;
-
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.codec.controls.ControlImpl;
+import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.message.internal.InternalAbstractResultResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalLdapResult;
 import org.apache.directory.shared.ldap.message.internal.InternalReferral;
@@ -61,7 +60,7 @@ public class AbstractResultResponseTest
      * Tests to see the same exact copy returns true.
      */
     @Test
-    public void testEqualsExactCopy() throws InvalidNameException
+    public void testEqualsExactCopy() throws LdapException
     {
         InternalAbstractResultResponse msg0 = new InternalAbstractResultResponse( 5, MessageTypeEnum.BIND_REQUEST )
         {
@@ -100,7 +99,7 @@ public class AbstractResultResponseTest
      * Tests to see the same exact copy returns true.
      */
     @Test
-    public void testNotEqualsDiffResult() throws InvalidNameException
+    public void testNotEqualsDiffResult() throws LdapException
     {
         InternalAbstractResultResponse msg0 = new InternalAbstractResultResponse( 5, MessageTypeEnum.BIND_REQUEST )
         {

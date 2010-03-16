@@ -19,11 +19,10 @@
  */
 package org.apache.directory.shared.ldap.schema.normalizers;
 
-import javax.naming.NamingException;
-
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.entry.client.ClientStringValue;
+import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.schema.Normalizer;
 import org.apache.directory.shared.ldap.util.StringTools;
 
@@ -55,7 +54,7 @@ public class DefaultStringNormalizer extends Normalizer
     /**
      * {@inheritDoc}
      */
-    public Value<?> normalize( Value<?> value ) throws NamingException
+    public Value<?> normalize( Value<?> value ) throws LdapException
     {
         String str = value.getString();
         
@@ -71,7 +70,7 @@ public class DefaultStringNormalizer extends Normalizer
     /**
      * {@inheritDoc}
      */
-    public String normalize( String value ) throws NamingException
+    public String normalize( String value ) throws LdapException
     {
         if ( StringTools.isEmpty( value ) )
         {
@@ -87,9 +86,9 @@ public class DefaultStringNormalizer extends Normalizer
      *
      * @param string The string to normalize
      * @return The normalized object
-     * @throws NamingException If the normalization throws an error
+     * @throws LdapException If the normalization throws an error
      */
-    public static String normalizeString( String string ) throws NamingException
+    public static String normalizeString( String string ) throws LdapException
     {
         return NORMALIZER.normalize( string );
     }

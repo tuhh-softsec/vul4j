@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import javax.naming.NamingException;
+import org.apache.directory.shared.ldap.exception.LdapException;
 
 import org.apache.directory.shared.ldap.schema.registries.AttributeTypeRegistry;
 import org.apache.directory.shared.ldap.schema.registries.Registries;
@@ -143,7 +143,7 @@ public class NameForm extends AbstractSchemaObject
      *
      * @param registries The Registries
      */
-    public void addToRegistries( Registries registries ) throws NamingException
+    public void addToRegistries( Registries registries ) throws LdapException
     {
         if ( registries != null )
         {
@@ -191,9 +191,9 @@ public class NameForm extends AbstractSchemaObject
      * attributes for.
      * 
      * @return the ObjectClass this NameForm is for
-     * @throws NamingException If the structuralObjectClass is invalid
+     * @throws LdapException If the structuralObjectClass is invalid
      */
-    public ObjectClass getStructuralObjectClass() throws NamingException
+    public ObjectClass getStructuralObjectClass() throws LdapException
     {
         return structuralObjectClass;
     }
@@ -234,9 +234,9 @@ public class NameForm extends AbstractSchemaObject
      * Rdn.
      * 
      * @return the AttributeTypes OIDs of the must use attributes
-     * @throws NamingException if there is a failure resolving one AttributeTyoe
+     * @throws LdapException if there is a failure resolving one AttributeTyoe
      */
-    public List<String> getMustAttributeTypeOids() throws NamingException
+    public List<String> getMustAttributeTypeOids() throws LdapException
     {
         return Collections.unmodifiableList( mustAttributeTypeOids );
     }
@@ -329,9 +329,9 @@ public class NameForm extends AbstractSchemaObject
      * part of the Rdn.
      * 
      * @return the AttributeTypes OIDs of the may use attributes
-     * @throws NamingException if there is a failure resolving one AttributeTyoe
+     * @throws LdapException if there is a failure resolving one AttributeTyoe
      */
-    public List<String> getMayAttributeTypeOids() throws NamingException
+    public List<String> getMayAttributeTypeOids() throws LdapException
     {
         return Collections.unmodifiableList( mayAttributeTypeOids );
     }

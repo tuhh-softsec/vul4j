@@ -40,6 +40,8 @@ import org.apache.directory.shared.ldap.entry.Modification;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.entry.client.DefaultClientAttribute;
 import org.apache.directory.shared.ldap.entry.client.DefaultClientEntry;
+import org.apache.directory.shared.ldap.exception.LdapException;
+import org.apache.directory.shared.ldap.exception.LdapInvalidAttributeTypeException;
 import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.schema.AttributeType;
@@ -244,9 +246,9 @@ public class AttributeUtils
      * @param compared The object we are looking for
      * @param type The attribute type
      * @return <code>true</code> if the value exists in the attribute</code>
-     * @throws NamingException If something went wrong while accessing the data
+     * @throws LdapException If something went wrong while accessing the data
      */
-    public static boolean containsValue( Attribute attr, Value<?> compared, AttributeType type ) throws NamingException
+    public static boolean containsValue( Attribute attr, Value<?> compared, AttributeType type ) throws LdapException
     {
         // quick bypass test
         if ( attr.contains( compared ) )
@@ -973,9 +975,9 @@ public class AttributeUtils
      * 
      * @param entry The entry on which we want to apply a modification
      * @param modification the Modification to be applied
-     * @throws NamingException if some operation fails.
+     * @throws LdapException if some operation fails.
      */
-    public static void applyModification( Entry entry, Modification modification ) throws NamingException
+    public static void applyModification( Entry entry, Modification modification ) throws LdapException
     {
         EntryAttribute modAttr = modification.getAttribute();
         String modificationId = modAttr.getId();
@@ -1193,7 +1195,7 @@ public class AttributeUtils
      * 
      * @throws InvalidAttributeIdentifierException If we get an invalid attribute
      */
-    public static Entry toClientEntry( Attributes attributes, DN dn ) throws InvalidAttributeIdentifierException
+    public static Entry toClientEntry( Attributes attributes, DN dn ) throws LdapException
     {
         if ( attributes instanceof BasicAttributes )
         {
@@ -1215,9 +1217,9 @@ public class AttributeUtils
 
                 return entry;
             }
-            catch ( NamingException ne )
+            catch ( LdapException ne )
             {
-                throw new InvalidAttributeIdentifierException( ne.getMessage() );
+                throw new LdapInvalidAttributeTypeException( ne.getMessage() );
             }
         }
         else

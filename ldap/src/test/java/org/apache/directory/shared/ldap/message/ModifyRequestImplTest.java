@@ -29,14 +29,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.naming.InvalidNameException;
-
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Modification;
 import org.apache.directory.shared.ldap.entry.ModificationOperation;
 import org.apache.directory.shared.ldap.entry.client.ClientModification;
 import org.apache.directory.shared.ldap.entry.client.DefaultClientAttribute;
+import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.message.internal.InternalModifyRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalResultResponse;
@@ -68,7 +67,7 @@ public class ModifyRequestImplTest
         {
             req.setName( new DN( "cn=admin,dc=apache,dc=org" ) );
         }
-        catch ( InvalidNameException ne )
+        catch ( LdapException ne )
         {
             // do nothing
         }
@@ -145,7 +144,7 @@ public class ModifyRequestImplTest
 
             assertFalse( req0.equals( req1 ) );
         }
-        catch ( InvalidNameException ine )
+        catch ( LdapException ine )
         {
             // do nothing
         }

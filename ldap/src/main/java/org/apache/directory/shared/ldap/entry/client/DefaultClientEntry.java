@@ -31,7 +31,7 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import javax.naming.NamingException;
+import org.apache.directory.shared.ldap.exception.LdapException;
 
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.entry.AbstractEntry;
@@ -158,9 +158,9 @@ public final class DefaultClientEntry extends AbstractEntry<String> implements C
      * Add some Attributes to the current Entry.
      *
      * @param attributes The attributes to add
-     * @throws NamingException If we can't add any of the attributes
+     * @throws LdapException If we can't add any of the attributes
      */
-    public void add( EntryAttribute... attributes ) throws NamingException
+    public void add( EntryAttribute... attributes ) throws LdapException
     {
         // Loop on all the added attributes
         for ( EntryAttribute attribute:attributes )
@@ -190,9 +190,9 @@ public final class DefaultClientEntry extends AbstractEntry<String> implements C
      *
      * @param upId The attribute ID
      * @param values The list of binary values to inject. It can be empty
-     * @throws NamingException If the attribute does not exist
+     * @throws LdapException If the attribute does not exist
      */
-    public void add( String upId, byte[]... values ) throws NamingException
+    public void add( String upId, byte[]... values ) throws LdapException
     {
         // First, transform the upID to a valid ID
         String id = getId( upId );
@@ -223,9 +223,9 @@ public final class DefaultClientEntry extends AbstractEntry<String> implements C
      * @param upId The user provided ID of the attribute we want to add 
      * some values to
      * @param values The list of String values to add
-     * @throws NamingException If we can't add any of the values
+     * @throws LdapException If we can't add any of the values
      */
-    public void add( String upId, String... values ) throws NamingException
+    public void add( String upId, String... values ) throws LdapException
     {
         // First, transform the upID to a valid ID
         String id = getId( upId );
@@ -255,9 +255,9 @@ public final class DefaultClientEntry extends AbstractEntry<String> implements C
      *
      * @param upId The attribute ID
      * @param values The list of Value values to inject. It can be empty
-     * @throws NamingException If the attribute does not exist
+     * @throws LdapException If the attribute does not exist
      */
-    public void add( String upId, Value<?>... values ) throws NamingException
+    public void add( String upId, Value<?>... values ) throws LdapException
     {
         // First, transform the upID to a valid ID
         String id = getId( upId );
@@ -333,9 +333,9 @@ public final class DefaultClientEntry extends AbstractEntry<String> implements C
      * @param attributes The Attributes to look for
      * @return <code>true</code> if all the attributes are found within 
      * the entry, <code>false</code> if at least one of them is not present.
-     * @throws NamingException If the attribute does not exist
+     * @throws LdapException If the attribute does not exist
      */
-    public boolean contains( EntryAttribute... attributes ) throws NamingException
+    public boolean contains( EntryAttribute... attributes ) throws LdapException
     {
         for ( EntryAttribute attribute:attributes )
         {
@@ -359,9 +359,9 @@ public final class DefaultClientEntry extends AbstractEntry<String> implements C
      *
      * @param attributes The Attributes to look for
      * @return <code>true</code> if the attributes are found within the entry
-     * @throws NamingException If the attribute does not exist
+     * @throws LdapException If the attribute does not exist
      */
-    public boolean contains( String upId ) throws NamingException
+    public boolean contains( String upId ) throws LdapException
     {
         String id = getId( upId );
         
@@ -630,9 +630,9 @@ public final class DefaultClientEntry extends AbstractEntry<String> implements C
      * @param attributes the attributes to be put
      * @return the old attributes with the same OID, if exist; otherwise
      *         <code>null</code>
-     * @exception NamingException if the operation fails
+     * @exception LdapException if the operation fails
      */
-    public List<EntryAttribute> put( EntryAttribute... attributes ) throws NamingException
+    public List<EntryAttribute> put( EntryAttribute... attributes ) throws LdapException
     {
         // First, get the existing attributes
         List<EntryAttribute> previous = new ArrayList<EntryAttribute>();
@@ -657,7 +657,7 @@ public final class DefaultClientEntry extends AbstractEntry<String> implements C
     }
 
 
-    public List<EntryAttribute> remove( EntryAttribute... attributes ) throws NamingException
+    public List<EntryAttribute> remove( EntryAttribute... attributes ) throws LdapException
     {
         List<EntryAttribute> removedAttributes = new ArrayList<EntryAttribute>();
         
@@ -746,7 +746,7 @@ public final class DefaultClientEntry extends AbstractEntry<String> implements C
      * @return <code>true</code> if at least a value is removed, <code>false</code>
      * if not all the values have been removed or if the attribute does not exist. 
      */
-    public boolean remove( String upId, byte[]... values ) throws NamingException
+    public boolean remove( String upId, byte[]... values ) throws LdapException
     {
         try
         {
@@ -813,7 +813,7 @@ public final class DefaultClientEntry extends AbstractEntry<String> implements C
      * @return <code>true</code> if at least a value is removed, <code>false</code>
      * if not all the values have been removed or if the attribute does not exist. 
      */
-    public boolean remove( String upId, String... values ) throws NamingException
+    public boolean remove( String upId, String... values ) throws LdapException
     {
         try
         {
@@ -880,7 +880,7 @@ public final class DefaultClientEntry extends AbstractEntry<String> implements C
      * @return <code>true</code> if at least a value is removed, <code>false</code>
      * if not all the values have been removed or if the attribute does not exist. 
      */
-    public boolean remove( String upId, Value<?>... values ) throws NamingException
+    public boolean remove( String upId, Value<?>... values ) throws LdapException
     {
         try
         {

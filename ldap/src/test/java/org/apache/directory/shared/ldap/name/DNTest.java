@@ -42,11 +42,10 @@ import java.util.Map;
 import java.util.Properties;
 
 import javax.naming.CompoundName;
-import javax.naming.InvalidNameException;
 import javax.naming.Name;
-import javax.naming.NamingException;
 import javax.naming.ldap.LdapName;
 
+import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.schema.normalizers.DeepTrimToLowerNormalizer;
 import org.apache.directory.shared.ldap.schema.normalizers.OidNormalizer;
 import org.apache.directory.shared.ldap.util.StringTools;
@@ -116,7 +115,7 @@ public class DNTest
      * test an empty DN
      */
     @Test
-    public void testDnEmpty() throws InvalidNameException
+    public void testDnEmpty() throws LdapException
     {
         DN dn = new DN( "" );
         assertEquals( "", dn.getName() );
@@ -128,7 +127,7 @@ public class DNTest
      * test a simple DN : a = b
      */
     @Test
-    public void testDnSimple() throws InvalidNameException
+    public void testDnSimple() throws LdapException
     {
         DN dn = new DN( "a = b" );
 
@@ -142,7 +141,7 @@ public class DNTest
      * test a simple DN with some spaces : "a = b  "
      */
     @Test
-    public void testDnSimpleWithSpaces() throws InvalidNameException
+    public void testDnSimpleWithSpaces() throws LdapException
     {
         DN dn = new DN( "a = b  " );
 
@@ -156,7 +155,7 @@ public class DNTest
      * test a composite DN : a = b, d = e
      */
     @Test
-    public void testDnComposite() throws InvalidNameException
+    public void testDnComposite() throws LdapException
     {
         DN dn = new DN( "a = b, c = d" );
 
@@ -170,7 +169,7 @@ public class DNTest
      * test a composite DN with spaces : a = b  , d = e
      */
     @Test
-    public void testDnCompositeWithSpaces() throws InvalidNameException
+    public void testDnCompositeWithSpaces() throws LdapException
     {
         DN dn = new DN( "a = b  , c = d" );
 
@@ -184,7 +183,7 @@ public class DNTest
      * test a composite DN with or without spaces: a=b, a =b, a= b, a = b, a = b
      */
     @Test
-    public void testDnCompositeWithSpace() throws InvalidNameException
+    public void testDnCompositeWithSpace() throws LdapException
     {
         DN dn = new DN( "a=b, a =b, a= b, a = b, a  =  b" );
 
@@ -199,7 +198,7 @@ public class DNTest
      * return a=b,c=d,e=f (the ';' is replaced by a ',')
      */
     @Test
-    public void testDnCompositeSepators() throws InvalidNameException
+    public void testDnCompositeSepators() throws LdapException
     {
         DN dn = new DN( "a=b;c=d,e=f" );
 
@@ -213,7 +212,7 @@ public class DNTest
      * test a simple DN with multiple NameComponents : a = b + c = d
      */
     @Test
-    public void testDnSimpleMultivaluedAttribute() throws InvalidNameException
+    public void testDnSimpleMultivaluedAttribute() throws LdapException
     {
         DN dn = new DN( "a = b + c = d" );
 
@@ -228,7 +227,7 @@ public class DNTest
      * i=j
      */
     @Test
-    public void testDnCompositeMultivaluedAttribute() throws InvalidNameException
+    public void testDnCompositeMultivaluedAttribute() throws LdapException
     {
         DN dn = new DN( "a=b+c=d, e=f + g=h + i=j" );
 
@@ -242,7 +241,7 @@ public class DNTest
     * Test to see if a DN with multiRdn values is preserved after an addAll.
     */
     @Test
-    public void testAddAllWithMultivaluedAttribute() throws InvalidNameException
+    public void testAddAllWithMultivaluedAttribute() throws LdapException
     {
         DN dn = new DN( "cn=Kate Bush+sn=Bush,ou=system" );
         DN target = new DN();
@@ -258,7 +257,7 @@ public class DNTest
      * test a simple DN with an oid prefix (uppercase) : OID.12.34.56 = azerty
      */
     @Test
-    public void testDnOidUpper() throws InvalidNameException
+    public void testDnOidUpper() throws LdapException
     {
         DN dn = new DN( "OID.12.34.56 = azerty" );
 
@@ -272,7 +271,7 @@ public class DNTest
      * test a simple DN with an oid prefix (lowercase) : oid.12.34.56 = azerty
      */
     @Test
-    public void testDnOidLower() throws InvalidNameException
+    public void testDnOidLower() throws LdapException
     {
         DN dn = new DN( "oid.12.34.56 = azerty" );
 
@@ -287,7 +286,7 @@ public class DNTest
      * azerty
      */
     @Test
-    public void testDnOidWithoutPrefix() throws InvalidNameException
+    public void testDnOidWithoutPrefix() throws LdapException
     {
         DN dn = new DN( "12.34.56 = azerty" );
 
@@ -302,7 +301,7 @@ public class DNTest
      * azerty; 7.8 = test
      */
     @Test
-    public void testDnCompositeOidWithoutPrefix() throws InvalidNameException
+    public void testDnCompositeOidWithoutPrefix() throws LdapException
     {
         DN dn = new DN( "12.34.56 = azerty; 7.8 = test" );
 
@@ -316,7 +315,7 @@ public class DNTest
      * test a simple DN with pair char attribute value : a = \,\=\+\<\>\#\;\\\"\C4\8D"
      */
     @Test
-    public void testDnPairCharAttributeValue() throws InvalidNameException
+    public void testDnPairCharAttributeValue() throws LdapException
     {
         DN dn = new DN( "a = \\,\\=\\+\\<\\>\\#\\;\\\\\\\"\\C4\\8D" );
 
@@ -330,7 +329,7 @@ public class DNTest
      * test a simple DN with pair char attribute value : "SN=Lu\C4\8Di\C4\87"
      */
     @Test
-    public void testDnRFC253_Lucic() throws InvalidNameException
+    public void testDnRFC253_Lucic() throws LdapException
     {
         DN dn = new DN( "SN=Lu\\C4\\8Di\\C4\\87" );
 
@@ -344,7 +343,7 @@ public class DNTest
      * test a simple DN with hexString attribute value : a = #0010A0AAFF
      */
     @Test
-    public void testDnHexStringAttributeValue() throws InvalidNameException
+    public void testDnHexStringAttributeValue() throws LdapException
     {
         DN dn = new DN( "a = #0010A0AAFF" );
 
@@ -361,7 +360,7 @@ public class DNTest
      * (without the ESC it would be a valid hexstring).
      */
     @Test
-    public void testDnEscSharpNumber() throws InvalidNameException, NamingException
+    public void testDnEscSharpNumber() throws LdapException, LdapException
     {
         DN dn = new DN( "a = \\#123456" );
 
@@ -388,7 +387,7 @@ public class DNTest
      * test a simple DN with a # on first position
      */
     @Test
-    public void testDnSharpFirst() throws InvalidNameException, NamingException
+    public void testDnSharpFirst() throws LdapException, LdapException
     {
         DN dn = new DN( "a = \\#this is a sharp" );
 
@@ -405,7 +404,7 @@ public class DNTest
      * Normalize a simple DN with a # on first position
      */
     @Test
-    public void testNormalizeDnSharpFirst() throws InvalidNameException, NamingException
+    public void testNormalizeDnSharpFirst() throws LdapException, LdapException
     {
         DN dn = new DN( "ou = \\#this is a sharp" );
 
@@ -426,7 +425,7 @@ public class DNTest
      * This is a corner case for the parser and normalizer.
      */
     @Test
-    public void testNormalizeDnEscEscHexHex() throws NamingException
+    public void testNormalizeDnEscEscHexHex() throws LdapException
     {
         DN dn = new DN( "ou = AC\\\\DC" );
         assertTrue( DN.isValid( "ou = AC\\\\DC" ) );
@@ -451,7 +450,7 @@ public class DNTest
             new DN( "a = #0010Z0AAFF" );
             fail();
         }
-        catch ( InvalidNameException ine )
+        catch ( LdapException ine )
         {
 
             assertFalse( DN.isValid( "a = #0010Z0AAFF" ) );
@@ -471,7 +470,7 @@ public class DNTest
             new DN( "a = #AABBCCDD3" );
             fail();
         }
-        catch ( InvalidNameException ine )
+        catch ( LdapException ine )
         {
             assertFalse( DN.isValid( "a = #AABBCCDD3" ) );
             assertTrue( true );
@@ -483,7 +482,7 @@ public class DNTest
      * test a simple DN with a quote in attribute value : a = quoted \"value\"
      */
     @Test
-    public void testDnQuoteInAttributeValue() throws InvalidNameException
+    public void testDnQuoteInAttributeValue() throws LdapException
     {
         DN dn = new DN( "a = quoted \\\"value\\\"" );
 
@@ -497,7 +496,7 @@ public class DNTest
      * test a simple DN with quoted attribute value : a = \" quoted value \"
      */
     @Test
-    public void testDnQuotedAttributeValue() throws InvalidNameException
+    public void testDnQuotedAttributeValue() throws LdapException
     {
         DN dn = new DN( "a = \\\" quoted value \\\"" );
 
@@ -521,7 +520,7 @@ public class DNTest
             new DN( "a = b," );
             fail();
         }
-        catch ( InvalidNameException ine )
+        catch ( LdapException ine )
         {
             assertTrue( true );
         }
@@ -534,7 +533,7 @@ public class DNTest
      * test a remove from position 0
      */
     @Test
-    public void testDnRemove0() throws InvalidNameException
+    public void testDnRemove0() throws LdapException
     {
         DN dn = new DN( "a=b, c=d, e=f" );
 
@@ -549,7 +548,7 @@ public class DNTest
      * test a remove from position 1
      */
     @Test
-    public void testDnRemove1() throws InvalidNameException
+    public void testDnRemove1() throws LdapException
     {
         DN dn = new DN( "a=b, c=d, e=f" );
 
@@ -563,7 +562,7 @@ public class DNTest
      * test a remove from position 2
      */
     @Test
-    public void testDnRemove2() throws InvalidNameException
+    public void testDnRemove2() throws LdapException
     {
         DN dn = new DN( "a=b, c=d, e=f" );
 
@@ -577,7 +576,7 @@ public class DNTest
      * test a remove from position 1 whith semi colon
      */
     @Test
-    public void testDnRemove1WithSemiColon() throws InvalidNameException
+    public void testDnRemove1WithSemiColon() throws LdapException
     {
         DN dn = new DN( "a=b, c=d; e=f" );
 
@@ -591,7 +590,7 @@ public class DNTest
      * test a remove out of bound
      */
     @Test
-    public void testDnRemoveOutOfBound() throws InvalidNameException
+    public void testDnRemoveOutOfBound() throws LdapException
     {
         DN dn = new DN( "a=b, c=d; e=f" );
 
@@ -628,7 +627,7 @@ public class DNTest
      * test a 1 size
      */
     @Test
-    public void testDnSize1() throws InvalidNameException
+    public void testDnSize1() throws LdapException
     {
         DN dn = new DN( "a=b" );
 
@@ -641,7 +640,7 @@ public class DNTest
      * test a 3 size
      */
     @Test
-    public void testDnSize3() throws InvalidNameException
+    public void testDnSize3() throws LdapException
     {
         DN dn = new DN( "a=b, c=d, e=f" );
 
@@ -654,7 +653,7 @@ public class DNTest
      * test a 3 size with NameComponents
      */
     @Test
-    public void testDnSize3NC() throws InvalidNameException
+    public void testDnSize3NC() throws LdapException
     {
         DN dn = new DN( "a=b+c=d, c=d, e=f" );
 
@@ -667,7 +666,7 @@ public class DNTest
      * test size after operations
      */
     @Test
-    public void testLdapResizing() throws InvalidNameException
+    public void testLdapResizing() throws LdapException
     {
         DN dn = new DN();
         assertEquals( 0, dn.size() );
@@ -691,7 +690,7 @@ public class DNTest
      * test Add on a new DN
      */
     @Test
-    public void testLdapEmptyAdd() throws InvalidNameException
+    public void testLdapEmptyAdd() throws LdapException
     {
         DN dn = new DN();
 
@@ -706,7 +705,7 @@ public class DNTest
      * test Add to an existing DN
      */
     @Test
-    public void testDnAdd() throws InvalidNameException
+    public void testDnAdd() throws LdapException
     {
         DN dn = new DN( "a=b, c=d" );
 
@@ -721,7 +720,7 @@ public class DNTest
      * test Add a composite RDN to an existing DN
      */
     @Test
-    public void testDnAddComposite() throws InvalidNameException
+    public void testDnAddComposite() throws LdapException
     {
         DN dn = new DN( "a=b, c=d" );
 
@@ -739,7 +738,7 @@ public class DNTest
      * test Add at the end of an existing DN
      */
     @Test
-    public void testDnAddEnd() throws InvalidNameException
+    public void testDnAddEnd() throws LdapException
     {
         DN dn = new DN( "a=b, c=d" );
 
@@ -753,7 +752,7 @@ public class DNTest
      * test Add at the start of an existing DN
      */
     @Test
-    public void testDnAddStart() throws InvalidNameException
+    public void testDnAddStart() throws LdapException
     {
         DN dn = new DN( "a=b, c=d" );
 
@@ -767,7 +766,7 @@ public class DNTest
      * test Add at the middle of an existing DN
      */
     @Test
-    public void testDnAddMiddle() throws InvalidNameException
+    public void testDnAddMiddle() throws LdapException
     {
         DN dn = new DN( "a=b, c=d" );
 
@@ -781,10 +780,10 @@ public class DNTest
     /**
      * Test AddAll
      *
-     * @throws InvalidNameException
+     * @throws LdapException
      */
     @Test
-    public void testDnAddAll() throws InvalidNameException
+    public void testDnAddAll() throws LdapException
     {
         DN dn = new DN( "a = b" );
         DN dn2 = new DN( "c = d" );
@@ -796,10 +795,10 @@ public class DNTest
     /**
      * Test AddAll with an empty added name
      *
-     * @throws InvalidNameException
+     * @throws LdapException
      */
     @Test
-    public void testDnAddAllAddedNameEmpty() throws InvalidNameException
+    public void testDnAddAllAddedNameEmpty() throws LdapException
     {
         DN dn = new DN( "a = b" );
         DN dn2 = new DN();
@@ -812,10 +811,10 @@ public class DNTest
     /**
      * Test AddAll to an empty name
      *
-     * @throws InvalidNameException
+     * @throws LdapException
      */
     @Test
-    public void testDnAddAllNameEmpty() throws InvalidNameException
+    public void testDnAddAllNameEmpty() throws LdapException
     {
         DN dn = new DN();
         DN dn2 = new DN( "a = b" );
@@ -827,10 +826,10 @@ public class DNTest
     /**
      * Test AddAll at position 0
      *
-     * @throws InvalidNameException
+     * @throws LdapException
      */
     @Test
-    public void testDnAt0AddAll() throws InvalidNameException
+    public void testDnAt0AddAll() throws LdapException
     {
         DN dn = new DN( "a = b" );
         DN dn2 = new DN( "c = d" );
@@ -842,10 +841,10 @@ public class DNTest
     /**
      * Test AddAll at position 1
      *
-     * @throws InvalidNameException
+     * @throws LdapException
      */
     @Test
-    public void testDnAt1AddAll() throws InvalidNameException
+    public void testDnAt1AddAll() throws LdapException
     {
         DN dn = new DN( "a = b" );
         DN dn2 = new DN( "c = d" );
@@ -857,10 +856,10 @@ public class DNTest
     /**
      * Test AddAll at the middle
      *
-     * @throws InvalidNameException
+     * @throws LdapException
      */
     @Test
-    public void testDnAtTheMiddleAddAll() throws InvalidNameException
+    public void testDnAtTheMiddleAddAll() throws LdapException
     {
         DN dn = new DN( "a = b, c = d" );
         DN dn2 = new DN( "e = f" );
@@ -872,10 +871,10 @@ public class DNTest
     /**
      * Test AddAll with an empty added name at position 0
      *
-     * @throws InvalidNameException
+     * @throws LdapException
      */
     @Test
-    public void testDnAddAllAt0AddedNameEmpty() throws InvalidNameException
+    public void testDnAddAllAt0AddedNameEmpty() throws LdapException
     {
         DN dn = new DN( "a = b" );
         DN dn2 = new DN();
@@ -888,10 +887,10 @@ public class DNTest
     /**
      * Test AddAll to an empty name at position 0
      *
-     * @throws InvalidNameException
+     * @throws LdapException
      */
     @Test
-    public void testDnAddAllAt0NameEmpty() throws InvalidNameException
+    public void testDnAddAllAt0NameEmpty() throws LdapException
     {
         DN dn = new DN();
         DN dn2 = new DN( "a = b" );
@@ -905,7 +904,7 @@ public class DNTest
      * Get the prefix at pos 0
      */
     @Test
-    public void testDnGetPrefixPos0() throws InvalidNameException
+    public void testDnGetPrefixPos0() throws LdapException
     {
         DN dn = new DN( "a=b, c=d,e = f" );
         DN newDn = ( ( DN ) dn.getPrefix( 0 ) );
@@ -917,7 +916,7 @@ public class DNTest
      * Get the prefix at pos 1
      */
     @Test
-    public void testDnGetPrefixPos1() throws InvalidNameException
+    public void testDnGetPrefixPos1() throws LdapException
     {
         DN dn = new DN( "a=b, c=d,e = f" );
         DN newDn = ( ( DN ) dn.getPrefix( 1 ) );
@@ -929,7 +928,7 @@ public class DNTest
      * Get the prefix at pos 2
      */
     @Test
-    public void testDnGetPrefixPos2() throws InvalidNameException
+    public void testDnGetPrefixPos2() throws LdapException
     {
         DN dn = new DN( "a=b, c=d,e = f" );
         DN newDn = ( ( DN ) dn.getPrefix( 2 ) );
@@ -941,7 +940,7 @@ public class DNTest
      * Get the prefix at pos 3
      */
     @Test
-    public void testDnGetPrefixPos3() throws InvalidNameException
+    public void testDnGetPrefixPos3() throws LdapException
     {
         DN dn = new DN( "a=b, c=d,e = f" );
         DN newDn = ( ( DN ) dn.getPrefix( 3 ) );
@@ -953,7 +952,7 @@ public class DNTest
      * Get the prefix out of bound
      */
     @Test
-    public void testDnGetPrefixPos4() throws InvalidNameException
+    public void testDnGetPrefixPos4() throws LdapException
     {
         DN dn = new DN( "a=b, c=d,e = f" );
 
@@ -987,7 +986,7 @@ public class DNTest
      * Get the suffix at pos 0
      */
     @Test
-    public void testDnGetSuffixPos0() throws InvalidNameException
+    public void testDnGetSuffixPos0() throws LdapException
     {
         DN dn = new DN( "a=b, c=d,e = f" );
         DN newDn = ( ( DN ) dn.getSuffix( 0 ) );
@@ -999,7 +998,7 @@ public class DNTest
      * Get the suffix at pos 1
      */
     @Test
-    public void testDnGetSuffixPos1() throws InvalidNameException
+    public void testDnGetSuffixPos1() throws LdapException
     {
         DN dn = new DN( "a=b, c=d,e = f" );
         DN newDn = ( ( DN ) dn.getSuffix( 1 ) );
@@ -1011,7 +1010,7 @@ public class DNTest
      * Get the suffix at pos 2
      */
     @Test
-    public void testDnGetSuffixPos2() throws InvalidNameException
+    public void testDnGetSuffixPos2() throws LdapException
     {
         DN dn = new DN( "a=b, c=d,e = f" );
         DN newDn = ( ( DN ) dn.getSuffix( 2 ) );
@@ -1023,7 +1022,7 @@ public class DNTest
      * Get the suffix at pos 3
      */
     @Test
-    public void testDnGetSuffixPos3() throws InvalidNameException
+    public void testDnGetSuffixPos3() throws LdapException
     {
         DN dn = new DN( "a=b, c=d,e = f" );
         DN newDn = ( ( DN ) dn.getSuffix( 3 ) );
@@ -1035,7 +1034,7 @@ public class DNTest
      * Get the suffix out of bound
      */
     @Test
-    public void testDnGetSuffixPos4() throws InvalidNameException
+    public void testDnGetSuffixPos4() throws LdapException
     {
         DN dn = new DN( "a=b, c=d,e = f" );
 
@@ -1080,7 +1079,7 @@ public class DNTest
      * Test that a DN is empty
      */
     @Test
-    public void testDnNotEmpty() throws InvalidNameException
+    public void testDnNotEmpty() throws LdapException
     {
         DN dn = new DN( "a=b" );
         assertEquals( false, dn.isEmpty() );
@@ -1091,7 +1090,7 @@ public class DNTest
      * Test that a DN is empty
      */
     @Test
-    public void testDnRemoveIsEmpty() throws InvalidNameException
+    public void testDnRemoveIsEmpty() throws LdapException
     {
         DN dn = new DN( "a=b, c=d" );
         dn.remove( 0 );
@@ -1106,7 +1105,7 @@ public class DNTest
      * Test a startsWith a null DN
      */
     @Test
-    public void testDnStartsWithNull() throws InvalidNameException
+    public void testDnStartsWithNull() throws LdapException
     {
         DN dn = new DN( "a=b, c=d,e = f" );
         assertEquals( true, dn.startsWith( null ) );
@@ -1117,7 +1116,7 @@ public class DNTest
      * Test a startsWith an empty DN
      */
     @Test
-    public void testDnStartsWithEmpty() throws InvalidNameException
+    public void testDnStartsWithEmpty() throws LdapException
     {
         DN dn = new DN( "a=b, c=d,e = f" );
         assertEquals( true, dn.startsWith( new DN() ) );
@@ -1128,7 +1127,7 @@ public class DNTest
      * Test a startsWith an simple DN
      */
     @Test
-    public void testDnStartsWithSimple() throws InvalidNameException
+    public void testDnStartsWithSimple() throws LdapException
     {
         DN dn = new DN( "a=b, c=d,e = f" );
         assertEquals( true, dn.startsWith( new DN( "e=f" ) ) );
@@ -1139,7 +1138,7 @@ public class DNTest
      * Test a startsWith a complex DN
      */
     @Test
-    public void testDnStartsWithComplex() throws InvalidNameException
+    public void testDnStartsWithComplex() throws LdapException
     {
         DN dn = new DN( "a=b, c=d,e = f" );
         assertEquals( true, dn.startsWith( new DN( "c =  d, e =  f" ) ) );
@@ -1150,7 +1149,7 @@ public class DNTest
      * Test a startsWith a complex DN
      */
     @Test
-    public void testDnStartsWithComplexMixedCase() throws InvalidNameException
+    public void testDnStartsWithComplexMixedCase() throws LdapException
     {
         DN dn = new DN( "a=b, c=d,e = f" );
         assertEquals( false, dn.startsWith( new DN( "c =  D, E =  f" ) ) );
@@ -1161,7 +1160,7 @@ public class DNTest
      * Test a startsWith a full DN
      */
     @Test
-    public void testDnStartsWithFull() throws InvalidNameException
+    public void testDnStartsWithFull() throws LdapException
     {
         DN dn = new DN( "a=b, c=d,e = f" );
         assertEquals( true, dn.startsWith( new DN( "a=  b; c =  d, e =  f" ) ) );
@@ -1172,7 +1171,7 @@ public class DNTest
      * Test a startsWith which returns false
      */
     @Test
-    public void testDnStartsWithWrong() throws InvalidNameException
+    public void testDnStartsWithWrong() throws LdapException
     {
         DN dn = new DN( "a=b, c=d,e = f" );
         assertEquals( false, dn.startsWith( new DN( "c =  t, e =  f" ) ) );
@@ -1184,7 +1183,7 @@ public class DNTest
      * Test a endsWith a null DN
      */
     @Test
-    public void testDnEndsWithNull() throws InvalidNameException
+    public void testDnEndsWithNull() throws LdapException
     {
         DN dn = new DN( "a=b, c=d,e = f" );
         assertEquals( true, dn.endsWith( null ) );
@@ -1195,7 +1194,7 @@ public class DNTest
      * Test a endsWith an empty DN
      */
     @Test
-    public void testDnEndsWithEmpty() throws InvalidNameException
+    public void testDnEndsWithEmpty() throws LdapException
     {
         DN dn = new DN( "a=b, c=d,e = f" );
         assertEquals( true, dn.endsWith( new DN() ) );
@@ -1206,7 +1205,7 @@ public class DNTest
      * Test a endsWith an simple DN
      */
     @Test
-    public void testDnEndsWithSimple() throws InvalidNameException
+    public void testDnEndsWithSimple() throws LdapException
     {
         DN dn = new DN( "a=b, c=d,e = f" );
         assertEquals( true, dn.endsWith( new DN( "a=b" ) ) );
@@ -1217,7 +1216,7 @@ public class DNTest
      * Test a endsWith a complex DN
      */
     @Test
-    public void testDnEndsWithComplex() throws InvalidNameException
+    public void testDnEndsWithComplex() throws LdapException
     {
         DN dn = new DN( "a=b, c=d,e = f" );
         assertEquals( true, dn.endsWith( new DN( "a =  b, c =  d" ) ) );
@@ -1228,7 +1227,7 @@ public class DNTest
      * Test a endsWith a complex DN
      */
     @Test
-    public void testDnEndsWithComplexMixedCase() throws InvalidNameException
+    public void testDnEndsWithComplexMixedCase() throws LdapException
     {
         DN dn = new DN( "a=b, c=d,e = f" );
         assertEquals( false, dn.endsWith( new DN( "a =  B, C =  d" ) ) );
@@ -1239,7 +1238,7 @@ public class DNTest
      * Test a endsWith a full DN
      */
     @Test
-    public void testDnEndsWithFull() throws InvalidNameException
+    public void testDnEndsWithFull() throws LdapException
     {
         DN dn = new DN( "a=b, c=d,e = f" );
         assertEquals( true, dn.endsWith( new DN( "a=  b; c =  d, e =  f" ) ) );
@@ -1250,7 +1249,7 @@ public class DNTest
      * Test a endsWith which returns false
      */
     @Test
-    public void testDnEndsWithWrong() throws InvalidNameException
+    public void testDnEndsWithWrong() throws LdapException
     {
         DN dn = new DN( "a=b, c=d,e = f" );
         assertEquals( false, dn.endsWith( new DN( "a =  b, e =  f" ) ) );
@@ -1275,7 +1274,7 @@ public class DNTest
      * test a getAll operation on an empty DN
      */
     @Test
-    public void testDnGetAllEmpty() throws InvalidNameException
+    public void testDnGetAllEmpty() throws LdapException
     {
         DN dn = new DN( "" );
         Enumeration<String> nc = dn.getAll();
@@ -1288,7 +1287,7 @@ public class DNTest
      * test a getAll operation on a simple DN
      */
     @Test
-    public void testDnGetAllSimple() throws InvalidNameException
+    public void testDnGetAllSimple() throws LdapException
     {
         DN dn = new DN( "a=b" );
         Enumeration<String> nc = dn.getAll();
@@ -1303,7 +1302,7 @@ public class DNTest
      * test a getAll operation on a complex DN
      */
     @Test
-    public void testDnGetAllComplex() throws InvalidNameException
+    public void testDnGetAllComplex() throws LdapException
     {
         DN dn = new DN( "e=f+g=h,a=b,c=d" );
         Enumeration<String> nc = dn.getAll();
@@ -1322,7 +1321,7 @@ public class DNTest
      * test a getAll operation on a complex DN
      */
     @Test
-    public void testDnGetAllComplexOrdered() throws InvalidNameException
+    public void testDnGetAllComplexOrdered() throws LdapException
     {
         DN dn = new DN( "g=h+e=f,a=b,c=d" );
         Enumeration<String> nc = dn.getAll();
@@ -1357,7 +1356,7 @@ public class DNTest
      * test a clone operation on a simple DN
      */
     @Test
-    public void testDnCloneSimple() throws InvalidNameException
+    public void testDnCloneSimple() throws LdapException
     {
         DN dn = new DN( "a=b" );
         DN clone = ( DN ) dn.clone();
@@ -1372,7 +1371,7 @@ public class DNTest
      * test a clone operation on a complex DN
      */
     @Test
-    public void testDnCloneComplex() throws InvalidNameException
+    public void testDnCloneComplex() throws LdapException
     {
         DN dn = new DN( "e=f+g=h,a=b,c=d" );
         DN clone = ( DN ) dn.clone();
@@ -1399,7 +1398,7 @@ public class DNTest
      * test a get in an empty DN
      */
     @Test
-    public void testDnGetEmpty() throws InvalidNameException
+    public void testDnGetEmpty() throws LdapException
     {
         DN dn = new DN( "" );
         assertEquals( "", dn.get( 0 ) );
@@ -1410,7 +1409,7 @@ public class DNTest
      * test a get in a simple DN
      */
     @Test
-    public void testDnGetSimple() throws InvalidNameException
+    public void testDnGetSimple() throws LdapException
     {
         DN dn = new DN( "a = b" );
         assertEquals( "a=b", dn.get( 0 ) );
@@ -1421,7 +1420,7 @@ public class DNTest
      * test a get in a complex DN
      */
     @Test
-    public void testDnGetComplex() throws InvalidNameException
+    public void testDnGetComplex() throws LdapException
     {
         DN dn = new DN( "a = b + c= d, e= f; g =h" );
         assertEquals( "g=h", dn.get( 0 ) );
@@ -1434,7 +1433,7 @@ public class DNTest
      * test a get out of bound
      */
     @Test
-    public void testDnGetOutOfBound() throws InvalidNameException
+    public void testDnGetOutOfBound() throws LdapException
     {
         DN dn = new DN( "a = b + c= d, e= f; g =h" );
 
@@ -2594,7 +2593,7 @@ public class DNTest
      * Test for DIRSERVER-191
      */
     @Test
-    public void testName() throws NamingException
+    public void testName() throws LdapException
     {
         Name jName = new javax.naming.ldap.LdapName( "cn=four,cn=three,cn=two,cn=one" );
         Name aName = new DN( "cn=four,cn=three,cn=two,cn=one" );
@@ -2608,7 +2607,7 @@ public class DNTest
      * Test for DIRSERVER-191
      */
     @Test
-    public void testGetPrefixName() throws NamingException
+    public void testGetPrefixName() throws LdapException
     {
         Name jName = new LdapName( "cn=four,cn=three,cn=two,cn=one" );
         Name aName = new DN( "cn=four,cn=three,cn=two,cn=one" );
@@ -2625,7 +2624,7 @@ public class DNTest
      * Test for DIRSERVER-191
      */
     @Test
-    public void testGetSuffix() throws NamingException
+    public void testGetSuffix() throws LdapException
     {
         Name jName = new LdapName( "cn=four,cn=three,cn=two,cn=one" );
         Name aName = new DN( "cn=four,cn=three,cn=two,cn=one" );
@@ -2642,7 +2641,7 @@ public class DNTest
      * Test for DIRSERVER-191
      */
     @Test
-    public void testAddStringName() throws NamingException
+    public void testAddStringName() throws LdapException
     {
         Name jName = new LdapName( "cn=four,cn=three,cn=two,cn=one" );
         Name aName = new DN( "cn=four,cn=three,cn=two,cn=one" );
@@ -2657,7 +2656,7 @@ public class DNTest
      * Test for DIRSERVER-191
      */
     @Test
-    public void testAddIntString() throws NamingException
+    public void testAddIntString() throws LdapException
     {
         Name jName = new LdapName( "cn=four,cn=three,cn=two,cn=one" );
         Name aName = new DN( "cn=four,cn=three,cn=two,cn=one" );
@@ -2680,7 +2679,7 @@ public class DNTest
      * Test for DIRSERVER-191
      */
     @Test
-    public void testAddAllName() throws NamingException
+    public void testAddAllName() throws LdapException
     {
         Name jName = new LdapName( "cn=four,cn=three,cn=two,cn=one" );
         Name aName = new DN( "cn=four,cn=three,cn=two,cn=one" );
@@ -2695,7 +2694,7 @@ public class DNTest
      * Test for DIRSERVER-191
      */
     @Test
-    public void testAddAllIntName() throws NamingException
+    public void testAddAllIntName() throws LdapException
     {
         Name jName = new LdapName( "cn=four,cn=three,cn=two,cn=one" );
         Name aName = new DN( "cn=four,cn=three,cn=two,cn=one" );
@@ -2718,7 +2717,7 @@ public class DNTest
      * Test for DIRSERVER-191
      */
     @Test
-    public void testStartsWithName() throws NamingException
+    public void testStartsWithName() throws LdapException
     {
         Name jName = new LdapName( "cn=four,cn=three,cn=two,cn=one" );
         Name aName = new DN( "cn=four,cn=three,cn=two,cn=one" );
@@ -2734,7 +2733,7 @@ public class DNTest
      * Test for DIRSERVER-191
      */
     @Test
-    public void testEndsWithName() throws NamingException
+    public void testEndsWithName() throws LdapException
     {
         Name name0 = new LdapName( "cn=zero" );
         Name name10 = new LdapName( "cn=one,cn=zero" );
@@ -2836,7 +2835,7 @@ public class DNTest
      * Test for DIRSERVER-191
      */
     @Test
-    public void testRemoveName() throws NamingException
+    public void testRemoveName() throws LdapException
     {
         Name jName = new LdapName( "cn=four,cn=three,cn=two,cn=one" );
         Name aName = new DN( "cn=four,cn=three,cn=two,cn=one" );
@@ -2853,7 +2852,7 @@ public class DNTest
      * Test for DIRSERVER-191
      */
     @Test
-    public void testGetAllName() throws NamingException
+    public void testGetAllName() throws LdapException
     {
         Name jName = new LdapName( "cn=four,cn=three,cn=two,cn=one" );
         Name aName = new DN( "cn=four,cn=three,cn=two,cn=one" );
@@ -2870,10 +2869,10 @@ public class DNTest
 
     /**
      * Test for DIRSERVER-642
-     * @throws NamingException
+     * @throws LdapException
      */
     @Test
-    public void testDoubleQuoteInNameDIRSERVER_642() throws NamingException
+    public void testDoubleQuoteInNameDIRSERVER_642() throws LdapException
     {
         Name name1 = new DN( "cn=\"Kylie Minogue\",dc=example,dc=com" );
         Name name2 = new LdapName( "cn=\"Kylie Minogue\",dc=example,dc=com" );
@@ -2891,10 +2890,10 @@ public class DNTest
 
     /**
      * Test for DIRSERVER-642
-     * @throws NamingException
+     * @throws LdapException
      */
     @Test
-    public void testDoubleQuoteInNameDIRSERVER_642_1() throws NamingException
+    public void testDoubleQuoteInNameDIRSERVER_642_1() throws LdapException
     {
         DN dn = new DN( "cn=\" Kylie Minogue \",dc=example,dc=com" );
 
@@ -2905,10 +2904,10 @@ public class DNTest
 
     /**
      * Test for DIRSTUDIO-250
-     * @throws NamingException
+     * @throws LdapException
      */
     @Test
-    public void testDoubleQuoteWithSpecialCharsInNameDIRSERVER_250() throws NamingException
+    public void testDoubleQuoteWithSpecialCharsInNameDIRSERVER_250() throws LdapException
     {
         DN dn = new DN( "a=\"b,c\"" );
 
@@ -2919,10 +2918,10 @@ public class DNTest
 
     /**
      * Test for DIRSERVER-184
-     * @throws NamingException
+     * @throws LdapException
      */
     @Test
-    public void testLeadingAndTrailingSpacesDIRSERVER_184() throws NamingException
+    public void testLeadingAndTrailingSpacesDIRSERVER_184() throws LdapException
     {
         DN name = new DN( "dn= \\ four spaces leading and 3 trailing \\  " );
 
@@ -2933,7 +2932,7 @@ public class DNTest
 
     /**
      * Test for DIRSERVER-184
-     * @throws NamingException
+     * @throws LdapException
      */
     @Test
     public void testDIRSERVER_184_1()
@@ -2942,7 +2941,7 @@ public class DNTest
         {
             new DN( "dn=middle\\ spaces" );
         }
-        catch ( InvalidNameException ine )
+        catch ( LdapException ine )
         {
             assertTrue( true );
         }
@@ -2951,7 +2950,7 @@ public class DNTest
 
     /**
      * Test for DIRSERVER-184
-     * @throws NamingException
+     * @throws LdapException
      */
     @Test
     public void testDIRSERVER_184_2()
@@ -2960,7 +2959,7 @@ public class DNTest
         {
             new DN( "dn=# a leading pound" );
         }
-        catch ( InvalidNameException ine )
+        catch ( LdapException ine )
         {
             assertTrue( true );
         }
@@ -2969,10 +2968,10 @@ public class DNTest
 
     /**
      * Test for DIRSERVER-184
-     * @throws NamingException
+     * @throws LdapException
      */
     @Test
-    public void testDIRSERVER_184_3() throws NamingException
+    public void testDIRSERVER_184_3() throws LdapException
     {
         DN name = new DN( "dn=\\# a leading pound" );
 
@@ -2983,10 +2982,10 @@ public class DNTest
 
     /**
      * Test for DIRSERVER-184
-     * @throws NamingException
+     * @throws LdapException
      */
     @Test
-    public void testDIRSERVER_184_4() throws NamingException
+    public void testDIRSERVER_184_4() throws LdapException
     {
         DN name = new DN( "dn=a middle \\# pound" );
 
@@ -2997,10 +2996,10 @@ public class DNTest
 
     /**
      * Test for DIRSERVER-184
-     * @throws NamingException
+     * @throws LdapException
      */
     @Test
-    public void testDIRSERVER_184_5() throws NamingException
+    public void testDIRSERVER_184_5() throws LdapException
     {
         DN name = new DN( "dn=a trailing pound \\#" );
 
@@ -3011,7 +3010,7 @@ public class DNTest
 
     /**
      * Test for DIRSERVER-184
-     * @throws NamingException
+     * @throws LdapException
      */
     @Test
     public void testDIRSERVER_184_6()
@@ -3020,7 +3019,7 @@ public class DNTest
         {
             new DN( "dn=a middle # pound" );
         }
-        catch ( InvalidNameException ine )
+        catch ( LdapException ine )
         {
             assertTrue( true );
         }
@@ -3029,7 +3028,7 @@ public class DNTest
 
     /**
      * Test for DIRSERVER-184
-     * @throws NamingException
+     * @throws LdapException
      */
     @Test
     public void testDIRSERVER_184_7()
@@ -3038,7 +3037,7 @@ public class DNTest
         {
             new DN( "dn=a trailing pound #" );
         }
-        catch ( InvalidNameException ine )
+        catch ( LdapException ine )
         {
             assertTrue( true );
         }
@@ -3046,7 +3045,7 @@ public class DNTest
 
 
     @Test
-    public void testDIRSERVER_631_1() throws NamingException
+    public void testDIRSERVER_631_1() throws LdapException
     {
         DN name = new DN( "cn=Bush\\, Kate,dc=example,dc=com" );
 
@@ -3059,10 +3058,10 @@ public class DNTest
     /**
      * Added a test to check the parsing of a DN with more than one RDN
      * which are OIDs, and with one RDN which has more than one atav.
-     * @throws NamingException
+     * @throws LdapException
      */
     @Test
-    public void testDNWithMultiOidsRDN() throws NamingException
+    public void testDNWithMultiOidsRDN() throws LdapException
     {
         DN name = new DN(
             "0.9.2342.19200300.100.1.1=00123456789+2.5.4.3=pablo picasso,2.5.4.11=search,2.5.4.10=imc,2.5.4.6=us" );
@@ -3076,7 +3075,7 @@ public class DNTest
 
 
     @Test
-    public void testNameAddAll() throws NamingException
+    public void testNameAddAll() throws LdapException
     {
         Properties props = new Properties();
         props.setProperty( "jndi.syntax.direction", "right_to_left" );
@@ -3099,7 +3098,7 @@ public class DNTest
 
 
     @Test
-    public void testDNEquals() throws NamingException
+    public void testDNEquals() throws LdapException
     {
         DN dn1 = new DN( "a=b,c=d,e=f" );
         DN dn2 = new DN( "a=b\\,c\\=d,e=f" );
@@ -3109,7 +3108,7 @@ public class DNTest
 
 
     @Test
-    public void testDNAddEmptyString() throws NamingException
+    public void testDNAddEmptyString() throws LdapException
     {
         DN dn = new DN();
         assertTrue( dn.size() == 0 );
@@ -3121,7 +3120,7 @@ public class DNTest
      * This leads to the bug in DIRSERVER-832.
      */
     @Test
-    public void testPreserveAttributeIdCase() throws NamingException
+    public void testPreserveAttributeIdCase() throws LdapException
     {
         DN dn = new DN( "uID=kevin" );
         assertEquals( "uID", dn.getRdn().getUpType() );
@@ -3332,7 +3331,7 @@ public class DNTest
     }
     
     @Test
-    public void testCompositeRDN() throws InvalidNameException
+    public void testCompositeRDN() throws LdapException
     {
         assertTrue( DN.isValid( "a=b+c=d+e=f,g=h" ) );
 
@@ -3342,7 +3341,7 @@ public class DNTest
     }
 
     @Test
-    public void testCompositeRDNOids() throws InvalidNameException
+    public void testCompositeRDNOids() throws LdapException
     {
         assertTrue( DN.isValid( "1.2.3.4.5=0+1.2.3.4.6=0+1.2.3.4.7=omnischmomni,2.5.4.3=subtree,0.9.2342.19200300.100.1.25=example,0.9.2342.19200300.100.1.25=com" ) );
 
@@ -3355,7 +3354,7 @@ public class DNTest
      * Tests that AttributeTypeAndValues are correctly trimmed.
      */
     @Test
-    public void testTrimAtavs() throws InvalidNameException
+    public void testTrimAtavs() throws LdapException
     {
         // antlr parser: string value with trailing spaces
         DN dn1 = new DN( " cn = Amos\\,Tori , ou=system " );

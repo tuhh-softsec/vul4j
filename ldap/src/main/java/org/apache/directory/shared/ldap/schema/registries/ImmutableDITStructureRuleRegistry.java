@@ -22,10 +22,10 @@ package org.apache.directory.shared.ldap.schema.registries;
 
 import java.util.Iterator;
 
-import javax.naming.NamingException;
+import org.apache.directory.shared.ldap.exception.LdapException;
 
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.exception.LdapOperationNotSupportedException;
+import org.apache.directory.shared.ldap.exception.LdapUnwillingToPerformException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.schema.DITStructureRule;
 import org.apache.directory.shared.ldap.schema.SchemaObject;
@@ -85,7 +85,7 @@ public class ImmutableDITStructureRuleRegistry implements DITStructureRuleRegist
     /**
      * {@inheritDoc}
      */
-    public String getSchemaName( int ruleId ) throws NamingException
+    public String getSchemaName( int ruleId ) throws LdapException
     {
         return immutableDITStructureRuleRegistry.getSchemaName( ruleId );
     }
@@ -94,7 +94,7 @@ public class ImmutableDITStructureRuleRegistry implements DITStructureRuleRegist
     /**
      * {@inheritDoc}
      */
-    public void register( DITStructureRule ditStructureRule ) throws NamingException
+    public void register( DITStructureRule ditStructureRule ) throws LdapException
     {
     }
 
@@ -102,7 +102,7 @@ public class ImmutableDITStructureRuleRegistry implements DITStructureRuleRegist
     /**
      * {@inheritDoc}
      */
-    public DITStructureRule lookup( int ruleId ) throws NamingException
+    public DITStructureRule lookup( int ruleId ) throws LdapException
     {
         return immutableDITStructureRuleRegistry.lookup( ruleId );
     }
@@ -111,27 +111,27 @@ public class ImmutableDITStructureRuleRegistry implements DITStructureRuleRegist
     /**
      * {@inheritDoc}
      */
-    public void unregister( int ruleId ) throws NamingException
+    public void unregister( int ruleId ) throws LdapException
     {
-        throw new LdapOperationNotSupportedException( I18n.err( I18n.ERR_04278 ), ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapUnwillingToPerformException( ResultCodeEnum.NO_SUCH_OPERATION, I18n.err( I18n.ERR_04278 ) );
     }
 
 
     /**
      * {@inheritDoc}
      */
-    public void unregisterSchemaElements( String schemaName ) throws NamingException
+    public void unregisterSchemaElements( String schemaName ) throws LdapException
     {
-        throw new LdapOperationNotSupportedException( I18n.err( I18n.ERR_04278 ), ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapUnwillingToPerformException( ResultCodeEnum.NO_SUCH_OPERATION, I18n.err( I18n.ERR_04278 ) );
     }
 
 
     /**
      * {@inheritDoc}
      */
-    public void renameSchema( String originalSchemaName, String newSchemaName ) throws NamingException
+    public void renameSchema( String originalSchemaName, String newSchemaName ) throws LdapException
     {
-        throw new LdapOperationNotSupportedException( I18n.err( I18n.ERR_04278 ), ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapUnwillingToPerformException( ResultCodeEnum.NO_SUCH_OPERATION, I18n.err( I18n.ERR_04278 ) );
     }
 
 
@@ -165,7 +165,7 @@ public class ImmutableDITStructureRuleRegistry implements DITStructureRuleRegist
     /**
      * {@inheritDoc}
      */
-    public String getOidByName( String name ) throws NamingException
+    public String getOidByName( String name ) throws LdapException
     {
         return immutableDITStructureRuleRegistry.getOidByName( name );
     }
@@ -174,7 +174,7 @@ public class ImmutableDITStructureRuleRegistry implements DITStructureRuleRegist
     /**
      * {@inheritDoc}
      */
-    public String getSchemaName( String oid ) throws NamingException
+    public String getSchemaName( String oid ) throws LdapException
     {
         return immutableDITStructureRuleRegistry.getSchemaName( oid );
     }
@@ -192,7 +192,7 @@ public class ImmutableDITStructureRuleRegistry implements DITStructureRuleRegist
     /**
      * {@inheritDoc}
      */
-    public DITStructureRule lookup( String oid ) throws NamingException
+    public DITStructureRule lookup( String oid ) throws LdapException
     {
         return immutableDITStructureRuleRegistry.lookup( oid );
     }
@@ -210,9 +210,9 @@ public class ImmutableDITStructureRuleRegistry implements DITStructureRuleRegist
     /**
      * {@inheritDoc}
      */
-    public DITStructureRule unregister( String numericOid ) throws NamingException
+    public DITStructureRule unregister( String numericOid ) throws LdapException
     {
-        throw new LdapOperationNotSupportedException( I18n.err( I18n.ERR_04278 ), ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapUnwillingToPerformException( ResultCodeEnum.NO_SUCH_OPERATION, I18n.err( I18n.ERR_04278 ) );
     }
 
 
@@ -228,17 +228,17 @@ public class ImmutableDITStructureRuleRegistry implements DITStructureRuleRegist
     /**
      * {@inheritDoc}
      */
-    public void clear() throws NamingException
+    public void clear() throws LdapException
     {
-        throw new LdapOperationNotSupportedException( I18n.err( I18n.ERR_04278 ), ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapUnwillingToPerformException( ResultCodeEnum.NO_SUCH_OPERATION, I18n.err( I18n.ERR_04278 ) );
     }
 
 
     /**
      * {@inheritDoc}
      */
-    public DITStructureRule unregister( DITStructureRule schemaObject ) throws NamingException
+    public DITStructureRule unregister( DITStructureRule schemaObject ) throws LdapException
     {
-        throw new LdapOperationNotSupportedException( I18n.err( I18n.ERR_04278 ), ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapUnwillingToPerformException( ResultCodeEnum.NO_SUCH_OPERATION, I18n.err( I18n.ERR_04278 ) );
     }
 }

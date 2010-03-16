@@ -26,14 +26,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.naming.NamingException;
-
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.constants.MetaSchemaConstants;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Modification;
 import org.apache.directory.shared.ldap.entry.Value;
+import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.util.StringTools;
 
 
@@ -52,10 +51,10 @@ public class SchemaUtils
      * @param mods the modifications performed on the entry
      * @param entry the source entry that is modified
      * @return the resultant entry after the modifications have taken place
-     * @throws NamingException if there are problems accessing attributes
+     * @throws LdapException if there are problems accessing attributes
      */
     public static Entry getTargetEntry( List<? extends Modification> mods, Entry entry )
-        throws NamingException
+        throws LdapException
     {
         Entry targetEntry = entry.clone();
 
@@ -338,10 +337,10 @@ public class SchemaUtils
      * </pre>
      * @param oc the objectClass to render the description of
      * @return the buffer containing the objectClass description
-     * @throws NamingException if there are any problems accessing objectClass
+     * @throws LdapException if there are any problems accessing objectClass
      * information
      */
-    public static StringBuffer render( ObjectClass oc ) throws NamingException
+    public static StringBuffer render( ObjectClass oc ) throws LdapException
     {
         StringBuffer buf = new StringBuffer();
         buf.append( "( " ).append( oc.getOid() );
@@ -457,10 +456,10 @@ public class SchemaUtils
      * </pre>
      * @param at the AttributeType to render the description for
      * @return the StringBuffer containing the rendered attributeType description
-     * @throws NamingException if there are problems accessing the objects
+     * @throws LdapException if there are problems accessing the objects
      * associated with the attribute type.
      */
-    public static StringBuffer render( AttributeType at ) throws NamingException
+    public static StringBuffer render( AttributeType at ) throws LdapException
     {
         StringBuffer buf = new StringBuffer();
         buf.append( "( " ).append( at.getOid() );
@@ -604,7 +603,7 @@ public class SchemaUtils
      * </pre>
      * @param atd the AttributeTypeDescription to render the description for
      * @return the StringBuffer containing the rendered attributeType description
-     * @throws NamingException if there are problems accessing the objects
+     * @throws LdapException if there are problems accessing the objects
      * associated with the attribute type.
      *
     public static StringBuffer render( AttributeType attributeType )
@@ -780,10 +779,10 @@ public class SchemaUtils
      * </pre>
      * @param mr the MatchingRule to render the description for
      * @return the StringBuffer containing the rendered matchingRule description
-     * @throws NamingException if there are problems accessing the objects
+     * @throws LdapException if there are problems accessing the objects
      * associated with the MatchingRule.
      */
-    public static StringBuffer render( MatchingRule mr ) throws NamingException
+    public static StringBuffer render( MatchingRule mr ) throws LdapException
     {
         StringBuffer buf = new StringBuffer();
         buf.append( "( " ).append( mr.getOid() );

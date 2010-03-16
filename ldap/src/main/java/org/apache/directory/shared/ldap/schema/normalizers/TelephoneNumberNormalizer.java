@@ -22,12 +22,12 @@ package org.apache.directory.shared.ldap.schema.normalizers;
 
 import java.io.IOException;
 
-import javax.naming.NamingException;
-
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.entry.client.ClientStringValue;
+import org.apache.directory.shared.ldap.exception.LdapException;
+import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.schema.Normalizer;
 import org.apache.directory.shared.ldap.schema.PrepareString;
 
@@ -55,7 +55,7 @@ public class TelephoneNumberNormalizer extends Normalizer
    /**
     * {@inheritDoc}
     */
-   public Value<?> normalize( Value<?> value ) throws NamingException
+   public Value<?> normalize( Value<?> value ) throws LdapException
    {
        try
        {
@@ -66,7 +66,7 @@ public class TelephoneNumberNormalizer extends Normalizer
        }
        catch ( IOException ioe )
        {
-           throw new NamingException( I18n.err( I18n.ERR_04224, value ) );
+           throw new LdapInvalidDnException( I18n.err( I18n.ERR_04224, value ) );
        }
    }
 
@@ -74,7 +74,7 @@ public class TelephoneNumberNormalizer extends Normalizer
    /**
     * {@inheritDoc}
     */
-   public String normalize( String value ) throws NamingException
+   public String normalize( String value ) throws LdapException
    {
        try
        {
@@ -83,7 +83,7 @@ public class TelephoneNumberNormalizer extends Normalizer
        }
        catch ( IOException ioe )
        {
-           throw new NamingException( I18n.err( I18n.ERR_04224, value ) );
+           throw new LdapInvalidDnException( I18n.err( I18n.ERR_04224, value ) );
        }
    }
 }

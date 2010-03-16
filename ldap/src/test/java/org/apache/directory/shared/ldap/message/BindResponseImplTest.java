@@ -20,8 +20,7 @@
 package org.apache.directory.shared.ldap.message;
 
 
-import javax.naming.InvalidNameException;
-
+import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.message.BindResponseImpl;
 import org.apache.directory.shared.ldap.message.LdapResultImpl;
 import org.apache.directory.shared.ldap.message.ReferralImpl;
@@ -100,7 +99,7 @@ public class BindResponseImplTest
      * Tests for equality of two fully loaded identical BindResponse PDUs.
      */
     @Test
-    public void testEqualsWithTheWorks() throws InvalidNameException
+    public void testEqualsWithTheWorks() throws LdapException
     {
         LdapResultImpl r0 = new LdapResultImpl();
         LdapResultImpl r1 = new LdapResultImpl();

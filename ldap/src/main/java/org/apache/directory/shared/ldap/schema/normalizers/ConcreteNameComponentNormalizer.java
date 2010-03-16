@@ -22,8 +22,6 @@ package org.apache.directory.shared.ldap.schema.normalizers;
 
 import java.io.UnsupportedEncodingException;
 
-import javax.naming.NamingException;
-
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.entry.client.ClientBinaryValue;
 import org.apache.directory.shared.ldap.exception.LdapException;
@@ -131,7 +129,7 @@ public class ConcreteNameComponentNormalizer implements NameComponentNormalizer
             {
                 String message = I18n.err( I18n.ERR_04222 );
                 LOG.error( message );
-                throw new NamingException( message );
+                throw new LdapException( message );
             }
         }
         
@@ -160,7 +158,7 @@ public class ConcreteNameComponentNormalizer implements NameComponentNormalizer
             {
                 String message = I18n.err( I18n.ERR_04223 );
                 LOG.error( message );
-                throw new NamingException( message );
+                throw new LdapException( message );
             }
         }
     }
@@ -193,9 +191,9 @@ public class ConcreteNameComponentNormalizer implements NameComponentNormalizer
      * @param id the name or oid of the attribute in the name component to
      * normalize the value of
      * @return the Normalizer to use for normalizing the value of the attribute
-     * @throws NamingException if there are failures resolving the Normalizer
+     * @throws LdapException if there are failures resolving the Normalizer
      */
-    private Normalizer lookup( String id ) throws NamingException
+    private Normalizer lookup( String id ) throws LdapException
     {
         AttributeType type = schemaManager.lookupAttributeTypeRegistry( id );
         MatchingRule mrule = type.getEquality();
@@ -218,7 +216,7 @@ public class ConcreteNameComponentNormalizer implements NameComponentNormalizer
     }
 
 
-    public String normalizeName( String attributeName ) throws NamingException
+    public String normalizeName( String attributeName ) throws LdapException
     {
         return schemaManager.getAttributeTypeRegistry().getOidByName( attributeName );
     }

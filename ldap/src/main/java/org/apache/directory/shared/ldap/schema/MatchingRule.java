@@ -22,9 +22,8 @@ package org.apache.directory.shared.ldap.schema;
 
 import java.util.List;
 
-import javax.naming.NamingException;
-
 import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.exception.LdapSchemaViolationException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.schema.comparators.ComparableComparator;
@@ -120,7 +119,7 @@ public class MatchingRule extends AbstractSchemaObject
      * @param registries The Registries
      * @exception If the addition failed
      */
-    public void addToRegistries( List<Throwable> errors, Registries registries ) throws NamingException
+    public void addToRegistries( List<Throwable> errors, Registries registries ) throws LdapException
     {
         if ( registries != null )
         {
@@ -129,7 +128,7 @@ public class MatchingRule extends AbstractSchemaObject
                 // Gets the associated Comparator 
                 ldapComparator = ( LdapComparator<? super Object> ) registries.getComparatorRegistry().lookup( oid );
             }
-            catch ( NamingException ne )
+            catch ( LdapException ne )
             {
                 // Default to a catch all comparator
                 ldapComparator = new ComparableComparator( oid );
@@ -140,7 +139,7 @@ public class MatchingRule extends AbstractSchemaObject
                 // Gets the associated Normalizer
                 normalizer = registries.getNormalizerRegistry().lookup( oid );
             }
-            catch ( NamingException ne )
+            catch ( LdapException ne )
             {
                 // Default to the NoOp normalizer
                 normalizer = new NoOpNormalizer( oid );
@@ -151,11 +150,11 @@ public class MatchingRule extends AbstractSchemaObject
                 // Get the associated LdapSyntax
                 ldapSyntax = registries.getLdapSyntaxRegistry().lookup( ldapSyntaxOid );
             }
-            catch ( NamingException ne )
+            catch ( LdapException ne )
             {
                 // The Syntax is a mandatory element, it must exist.
-                throw new LdapSchemaViolationException( I18n.err( I18n.ERR_04317 ),
-                    ResultCodeEnum.UNWILLING_TO_PERFORM );
+                throw new LdapSchemaViolationException( ResultCodeEnum.UNWILLING_TO_PERFORM,
+                    I18n.err( I18n.ERR_04317 ) );
             }
 
             /**
@@ -193,7 +192,7 @@ public class MatchingRule extends AbstractSchemaObject
      * @param registries The Registries
      * @exception If the MatchingRule is not valid 
      */
-    public void removeFromRegistries( List<Throwable> errors, Registries registries ) throws NamingException
+    public void removeFromRegistries( List<Throwable> errors, Registries registries ) throws LdapException
     {
         if ( registries != null )
         {

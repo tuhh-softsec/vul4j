@@ -22,8 +22,7 @@ package org.apache.directory.shared.ldap.schema.registries;
 
 import java.util.Iterator;
 
-import javax.naming.NamingException;
-
+import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.schema.SchemaObject;
 import org.apache.directory.shared.ldap.schema.SchemaObjectType;
 
@@ -52,9 +51,9 @@ public interface SchemaObjectRegistry<T extends SchemaObject>
      *
      * @param id the object identifier or the name
      * @return the schema name
-     * @throws NamingException if the schema object does not exist
+     * @throws LdapException if the schema object does not exist
      */
-    String getSchemaName( String oid ) throws NamingException;
+    String getSchemaName( String oid ) throws LdapException;
 
 
     /**
@@ -71,9 +70,9 @@ public interface SchemaObjectRegistry<T extends SchemaObject>
      *
      * @param originalSchemaName The original Schema name
      * @param newSchemaName The new Schema name
-     * @throws NamingException if the schema object does not exist
+     * @throws LdapException if the schema object does not exist
      */
-    void renameSchema( String originalSchemaName, String newSchemaName ) throws NamingException;
+    void renameSchema( String originalSchemaName, String newSchemaName ) throws LdapException;
 
 
     /**
@@ -97,19 +96,19 @@ public interface SchemaObjectRegistry<T extends SchemaObject>
      *
      * @param oid the object identifier or name
      * @return the SchemaObject instance for the id
-     * @throws NamingException if the SchemaObject does not exist
+     * @throws LdapException if the SchemaObject does not exist
      */
-    T lookup( String oid ) throws NamingException;
+    T lookup( String oid ) throws LdapException;
 
 
     /**
      * Registers a new SchemaObject with this registry.
      *
      * @param schemaObject the SchemaObject to register
-     * @throws NamingException if the SchemaObject is already registered or
+     * @throws LdapException if the SchemaObject is already registered or
      * the registration operation is not supported
      */
-    void register( T schemaObject ) throws NamingException;
+    void register( T schemaObject ) throws LdapException;
 
 
     /**
@@ -117,18 +116,18 @@ public interface SchemaObjectRegistry<T extends SchemaObject>
      * numeric OID.
      * 
      * @param numericOid the numeric identifier
-     * @throws NamingException if the numeric identifier is invalid
+     * @throws LdapException if the numeric identifier is invalid
      */
-    T unregister( String numericOid ) throws NamingException;
+    T unregister( String numericOid ) throws LdapException;
 
 
     /**
      * Removes the SchemaObject registered with this registry.
      * 
      * @param T the schemaObject to unregister
-     * @throws NamingException if the schemaObject can't be unregistered is invalid
+     * @throws LdapException if the schemaObject can't be unregistered is invalid
      */
-    T unregister( T schemaObject ) throws NamingException;
+    T unregister( T schemaObject ) throws LdapException;
 
 
     /**
@@ -137,7 +136,7 @@ public interface SchemaObjectRegistry<T extends SchemaObject>
      * 
      * @param schemaName the name of the schema whose SchemaObjects will be removed from
      */
-    void unregisterSchemaElements( String schemaName ) throws NamingException;
+    void unregisterSchemaElements( String schemaName ) throws LdapException;
 
 
     /**
@@ -149,9 +148,9 @@ public interface SchemaObjectRegistry<T extends SchemaObject>
      * 
      * @param name The name we are looking the oid for
      * @return The numericOID associated with this name
-     * @throws NamingException If the OID can't be found
+     * @throws LdapException If the OID can't be found
      */
-    String getOidByName( String name ) throws NamingException;
+    String getOidByName( String name ) throws LdapException;
 
 
     /**
@@ -178,5 +177,5 @@ public interface SchemaObjectRegistry<T extends SchemaObject>
     /**
      * Clear the registry from all its content
      */
-    void clear() throws NamingException;
+    void clear() throws LdapException;
 }

@@ -23,8 +23,7 @@ package org.apache.directory.shared.ldap.schema.registries;
 import java.util.Iterator;
 import java.util.Map;
 
-import javax.naming.NamingException;
-
+import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.normalizers.OidNormalizer;
 
@@ -52,10 +51,10 @@ public interface AttributeTypeRegistry extends SchemaObjectRegistry<AttributeTyp
      * @param ancestorId the name alias or OID for an attributeType
      * @return an Iterator over the AttributeTypes which have the ancestor
      * within their superior chain to the top
-     * @throws NamingException if the ancestor attributeType cannot be 
+     * @throws LdapException if the ancestor attributeType cannot be 
      * discerned from the ancestorId supplied
      */
-    boolean hasDescendants( String ancestorId ) throws NamingException;
+    boolean hasDescendants( String ancestorId ) throws LdapException;
 
 
     /**
@@ -65,10 +64,10 @@ public interface AttributeTypeRegistry extends SchemaObjectRegistry<AttributeTyp
      * @param ancestorId the name alias or OID for an attributeType
      * @return an Iterator over the AttributeTypes which have the ancestor
      * within their superior chain to the top
-     * @throws NamingException if the ancestor attributeType cannot be 
+     * @throws LdapException if the ancestor attributeType cannot be 
      * discerned from the ancestorId supplied
      */
-    Iterator<AttributeType> descendants( String ancestorId ) throws NamingException;
+    Iterator<AttributeType> descendants( String ancestorId ) throws LdapException;
 
 
     /**
@@ -76,9 +75,9 @@ public interface AttributeTypeRegistry extends SchemaObjectRegistry<AttributeTyp
      * descendants.
      * 
      * @param attributeType The attributeType to register
-     * @throws NamingException If something went wrong
+     * @throws LdapException If something went wrong
      */
-    void registerDescendants( AttributeType attributeType, AttributeType ancestor ) throws NamingException;
+    void registerDescendants( AttributeType attributeType, AttributeType ancestor ) throws LdapException;
 
 
     /**
@@ -87,21 +86,21 @@ public interface AttributeTypeRegistry extends SchemaObjectRegistry<AttributeTyp
      * 
      * @param attributeType The attributeType to unregister
      * @param ancestor its ancestor 
-     * @throws NamingException If something went wrong
+     * @throws LdapException If something went wrong
      */
-    void unregisterDescendants( AttributeType attributeType, AttributeType ancestor ) throws NamingException;
+    void unregisterDescendants( AttributeType attributeType, AttributeType ancestor ) throws LdapException;
 
 
     /**
      * Add a new Oid/Normalizer couple in the OidNormalizer map
      */
-    void addMappingFor( AttributeType attributeType ) throws NamingException;
+    void addMappingFor( AttributeType attributeType ) throws LdapException;
 
 
     /**
      * Remove a new Oid/Normalizer couple in the OidNormalizer map
      */
-    void removeMappingFor( AttributeType attributeType ) throws NamingException;
+    void removeMappingFor( AttributeType attributeType ) throws LdapException;
 
 
     /**

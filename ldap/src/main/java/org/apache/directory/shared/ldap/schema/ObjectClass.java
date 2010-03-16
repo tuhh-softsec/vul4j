@@ -23,9 +23,8 @@ package org.apache.directory.shared.ldap.schema;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.naming.NamingException;
-
 import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.exception.LdapSchemaViolationException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.schema.registries.AttributeTypeRegistry;
@@ -146,8 +145,8 @@ public class ObjectClass extends AbstractSchemaObject
                                 // An ABSTRACT OC can only inherit from ABSTRACT OCs
                                 String msg = I18n.err( I18n.ERR_04318, oid , superior.getObjectType() , superior );
 
-                                Throwable error = new LdapSchemaViolationException( msg,
-                                    ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
+                                Throwable error = new LdapSchemaViolationException( ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX,
+                                    msg );
                                 errors.add( error );
                                 return;
                             }
@@ -160,8 +159,8 @@ public class ObjectClass extends AbstractSchemaObject
                                 // An AUXILIARY OC can only inherit from STRUCTURAL OCs
                                 String msg = I18n.err( I18n.ERR_04319, oid, superior );
 
-                                Throwable error = new LdapSchemaViolationException( msg,
-                                    ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
+                                Throwable error = new LdapSchemaViolationException( ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX,
+                                    msg );
                                 errors.add( error );
                                 return;
                             }
@@ -174,8 +173,8 @@ public class ObjectClass extends AbstractSchemaObject
                                 // A STRUCTURAL OC can only inherit from AUXILIARY OCs
                                 String msg = I18n.err( I18n.ERR_04320, oid, superior );
 
-                                Throwable error = new LdapSchemaViolationException( msg,
-                                    ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
+                                Throwable error = new LdapSchemaViolationException( ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX,
+                                    msg );
                                 errors.add( error );
                                 return;
                             }
@@ -185,12 +184,12 @@ public class ObjectClass extends AbstractSchemaObject
 
                     superiors.add( superior );
                 }
-                catch ( NamingException ne )
+                catch ( LdapException ne )
                 {
                     // Cannot find the OC
                     String msg = I18n.err( I18n.ERR_04321, oid, superiorName );
 
-                    Throwable error = new LdapSchemaViolationException( msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
+                    Throwable error = new LdapSchemaViolationException( ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX, msg );
                     errors.add( error );
                     return;
                 }
@@ -217,20 +216,20 @@ public class ObjectClass extends AbstractSchemaObject
                     {
                         // Already registered : this is an error
                         String msg = I18n.err( I18n.ERR_04322, oid, mayAttributeTypeName );
-                        Throwable error = new LdapSchemaViolationException( msg,
-                            ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
+                        Throwable error = new LdapSchemaViolationException( ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX,
+                            msg );
                         errors.add( error );
                         break;
                     }
 
                     mayAttributeTypes.add( attributeType );
                 }
-                catch ( NamingException ne )
+                catch ( LdapException ne )
                 {
                     // Cannot find the AT
                     String msg = I18n.err( I18n.ERR_04323, oid, mayAttributeTypeName );
 
-                    Throwable error = new LdapSchemaViolationException( msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
+                    Throwable error = new LdapSchemaViolationException( ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX, msg );
                     errors.add( error );
                     break;
                 }
@@ -258,8 +257,8 @@ public class ObjectClass extends AbstractSchemaObject
                         // Already registered : this is an error
                         String msg = I18n.err( I18n.ERR_04324, oid, mustAttributeTypeName );
 
-                        Throwable error = new LdapSchemaViolationException( msg,
-                            ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
+                        Throwable error = new LdapSchemaViolationException( ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX,
+                            msg );
                         errors.add( error );
                         break;
                     }
@@ -270,20 +269,20 @@ public class ObjectClass extends AbstractSchemaObject
                         // Already registered : this is an error
                         String msg = I18n.err( I18n.ERR_04325, oid, mustAttributeTypeName );
 
-                        Throwable error = new LdapSchemaViolationException( msg,
-                            ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
+                        Throwable error = new LdapSchemaViolationException( ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX,
+                            msg );
                         errors.add( error );
                         break;
                     }
 
                     mustAttributeTypes.add( attributeType );
                 }
-                catch ( NamingException ne )
+                catch ( LdapException ne )
                 {
                     // Cannot find the AT
                     String msg = I18n.err( I18n.ERR_04326, oid, mustAttributeTypeName );
 
-                    Throwable error = new LdapSchemaViolationException( msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
+                    Throwable error = new LdapSchemaViolationException( ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX, msg );
                     errors.add( error );
                     break;
                 }
@@ -301,7 +300,7 @@ public class ObjectClass extends AbstractSchemaObject
      * @throws Exception on failure
      *
      */
-    public void addToRegistries( List<Throwable> errors, Registries registries ) throws NamingException
+    public void addToRegistries( List<Throwable> errors, Registries registries ) throws LdapException
     {
         if ( registries != null )
         {
@@ -348,7 +347,7 @@ public class ObjectClass extends AbstractSchemaObject
      * @param registries The Registries
      * @exception If the ObjectClass is not valid 
      */
-    public void removeFromRegistries( List<Throwable> errors, Registries registries ) throws NamingException
+    public void removeFromRegistries( List<Throwable> errors, Registries registries ) throws LdapException
     {
         if ( registries != null )
         {
@@ -613,7 +612,6 @@ public class ObjectClass extends AbstractSchemaObject
      * Gets the superclasses of this ObjectClass.
      * 
      * @return the superclasses
-     * @throws NamingException if there is a failure resolving the object
      */
     public List<ObjectClass> getSuperiors()
     {

@@ -21,8 +21,8 @@ package org.apache.directory.shared.ldap.util;
 
 
 import javax.naming.Name;
-import javax.naming.NamingException;
 
+import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.util.NamespaceTools;
 import org.junit.Test;
@@ -74,7 +74,7 @@ public class NamespaceToolsTest
 
 
     @Test
-    public void testHasCompositeComponents() throws NamingException
+    public void testHasCompositeComponents() throws LdapException
     {
         assertTrue( NamespaceTools.hasCompositeComponents( "givenName=Alex+sn=Karasulu" ) );
         assertTrue( NamespaceTools.hasCompositeComponents( "givenName=Alex+sn=Karasulu+age=13" ) );
@@ -84,7 +84,7 @@ public class NamespaceToolsTest
 
 
     @Test
-    public void testGetCompositeComponents() throws NamingException
+    public void testGetCompositeComponents() throws LdapException
     {
         String[] args = NamespaceTools.getCompositeComponents( "givenName=Alex+sn=Karasulu" );
         assertEquals( "expecting two parts : ", 2, args.length );
@@ -108,7 +108,7 @@ public class NamespaceToolsTest
     
     
     @Test
-    public void testGetRelativeName() throws NamingException
+    public void testGetRelativeName() throws LdapException
     {
         // test the basis case first with the root
         DN ancestor = new DN( "" );

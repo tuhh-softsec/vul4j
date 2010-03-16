@@ -27,12 +27,13 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.naming.NamingException;
-import javax.naming.directory.InvalidAttributeValueException;
+import org.apache.directory.shared.ldap.exception.LdapException;
+import org.apache.directory.shared.ldap.exception.LdapInvalidAttributeValueException;
 
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Value;
+import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.schema.SyntaxChecker;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
@@ -156,9 +157,9 @@ public class DefaultClientAttribute implements ClientAttribute
      * </p>
      *
      * @return The value as a byte[]
-     * @throws InvalidAttributeValueException If the value is a String
+     * @throws LdapInvalidAttributeValueException If the value is a String
      */
-    public byte[] getBytes() throws InvalidAttributeValueException
+    public byte[] getBytes() throws LdapInvalidAttributeValueException
     {
         Value<?> value = get();
         
@@ -170,7 +171,7 @@ public class DefaultClientAttribute implements ClientAttribute
         {
             String message = I18n.err( I18n.ERR_04130 );
             LOG.error( message );
-            throw new InvalidAttributeValueException( message );
+            throw new LdapInvalidAttributeValueException( ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX, message );
         }
     }
 
@@ -185,9 +186,9 @@ public class DefaultClientAttribute implements ClientAttribute
      * </p>
      *
      * @return The value as a String
-     * @throws InvalidAttributeValueException If the value is a byte[]
+     * @throws LdapInvalidAttributeValueException If the value is a byte[]
      */
-    public String getString() throws InvalidAttributeValueException
+    public String getString() throws LdapInvalidAttributeValueException
     {
         Value<?> value = get();
         
@@ -199,7 +200,7 @@ public class DefaultClientAttribute implements ClientAttribute
         {
             String message = I18n.err( I18n.ERR_04131 );
             LOG.error( message );
-            throw new InvalidAttributeValueException( message );
+            throw new LdapInvalidAttributeValueException( ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX, message );
         }
     }
 
@@ -308,9 +309,9 @@ public class DefaultClientAttribute implements ClientAttribute
      * Checks to see if this attribute is valid along with the values it contains.
      *
      * @return true if the attribute and it's values are valid, false otherwise
-     * @throws NamingException if there is a failure to check syntaxes of values
+     * @throws LdapException if there is a failure to check syntaxes of values
      */
-    public boolean isValid() throws NamingException
+    public boolean isValid() throws LdapException
     {
         for ( Value<?> value:values )
         {
@@ -328,9 +329,9 @@ public class DefaultClientAttribute implements ClientAttribute
      * Checks to see if this attribute is valid along with the values it contains.
      *
      * @return true if the attribute and it's values are valid, false otherwise
-     * @throws NamingException if there is a failure to check syntaxes of values
+     * @throws LdapException if there is a failure to check syntaxes of values
      */
-    public boolean isValid( SyntaxChecker checker ) throws NamingException
+    public boolean isValid( SyntaxChecker checker ) throws LdapException
     {
         for ( Value<?> value : values )
         {
@@ -979,7 +980,7 @@ public class DefaultClientAttribute implements ClientAttribute
      * the attribute is not specified.
      * </p>
      * <p>
-     * This method will throw any <code>NamingException</code> that occurs.
+     * This method will throw any <code>LdapException</code> that occurs.
      * </p>
      *
      * @return an enumeration of all values of the attribute

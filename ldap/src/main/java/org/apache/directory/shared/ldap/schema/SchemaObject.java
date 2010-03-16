@@ -24,8 +24,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
-import javax.naming.NamingException;
-
+import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.schema.registries.Registries;
 
 
@@ -115,7 +114,7 @@ public interface SchemaObject extends Serializable
      * @param errors The errors we got
      * @param registries The Registries
      */
-    void addToRegistries( List<Throwable> errors, Registries registries ) throws NamingException;
+    void addToRegistries( List<Throwable> errors, Registries registries ) throws LdapException;
 
 
     /**
@@ -125,7 +124,7 @@ public interface SchemaObject extends Serializable
      * @param errors The errors we got
      * @param registries The Registries
      */
-    void removeFromRegistries( List<Throwable> errors, Registries registries ) throws NamingException;
+    void removeFromRegistries( List<Throwable> errors, Registries registries ) throws LdapException;
 
 
     /**
@@ -314,9 +313,9 @@ public interface SchemaObject extends Serializable
      *
      * @param schemaObject the SchemaObject we want to register
      * @param registries The registries in which we want it to be stored
-     * @throws NamingException If the OID is invalid
+     * @throws LdapException If the OID is invalid
      */
-    void registerOid( SchemaObject schemaObject, Registries registries ) throws NamingException;
+    void registerOid( SchemaObject schemaObject, Registries registries ) throws LdapException;
 
 
     /**

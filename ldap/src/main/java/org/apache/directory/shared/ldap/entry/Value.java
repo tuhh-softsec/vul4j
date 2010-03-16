@@ -22,7 +22,7 @@ package org.apache.directory.shared.ldap.entry;
 
 import java.io.Externalizable;
 
-import javax.naming.NamingException;
+import org.apache.directory.shared.ldap.exception.LdapException;
 
 import org.apache.directory.shared.ldap.schema.Normalizer;
 import org.apache.directory.shared.ldap.schema.SyntaxChecker;
@@ -134,9 +134,9 @@ public interface Value<T> extends Cloneable, Externalizable, Comparable<Value<T>
      * 
      * @param checker the SyntaxChecker to use to validate the value
      * @return <code>true</code> if the value is valid
-     * @exception NamingException if the value cannot be validated
+     * @exception LdapException if the value cannot be validated
      */
-    boolean isValid( SyntaxChecker checker ) throws NamingException;
+    boolean isValid( SyntaxChecker checker ) throws LdapException;
 
     
     /**
@@ -182,9 +182,9 @@ public interface Value<T> extends Cloneable, Externalizable, Comparable<Value<T>
      * Normalize the value. In order to use this method, the Value
      * must be schema aware.
      * 
-     * @exception NamingException if the value cannot be normalized
+     * @exception LdapException if the value cannot be normalized
      */
-    void normalize() throws NamingException;
+    void normalize() throws LdapException;
 
     
     /**
@@ -194,9 +194,9 @@ public interface Value<T> extends Cloneable, Externalizable, Comparable<Value<T>
      * appropriate normalizer.
      * 
      * @param normalizer the normalizer to apply to the value
-     * @exception NamingException if the value cannot be normalized
+     * @exception LdapException if the value cannot be normalized
      */
-    void normalize( Normalizer normalizer ) throws NamingException;
+    void normalize( Normalizer normalizer ) throws LdapException;
     
     
     /**

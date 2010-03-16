@@ -22,8 +22,7 @@ package org.apache.directory.shared.ldap.name;
 
 import java.util.ArrayList;
 
-import javax.naming.InvalidNameException;
-
+import org.apache.directory.shared.ldap.exception.LdapException;
 import org.junit.Test;
 import static org.junit.Assert.fail;
 
@@ -48,7 +47,7 @@ public class DnParserDIRSERVER_584_Test
            DnParser.parseInternal( "ou=test+testing", new ArrayList<RDN>() );
            fail( "should never get here" );
        }
-       catch ( InvalidNameException e )
+       catch ( LdapException e )
        {
            // Nothing to do
        }

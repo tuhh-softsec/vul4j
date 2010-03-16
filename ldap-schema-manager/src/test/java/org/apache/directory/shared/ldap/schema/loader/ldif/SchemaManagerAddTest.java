@@ -36,7 +36,7 @@ import javax.naming.NamingException;
 import javax.naming.directory.NoSuchAttributeException;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.directory.shared.ldap.exception.LdapOperationNotSupportedException;
+import org.apache.directory.shared.ldap.exception.LdapUnwillingToPerformException;
 import org.apache.directory.shared.ldap.exception.LdapSchemaViolationException;
 import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.LdapComparator;
@@ -1044,7 +1044,7 @@ public class SchemaManagerAddTest
 
         assertEquals( 1, errors.size() );
         Throwable error = errors.get( 0 );
-        assertTrue( error instanceof LdapOperationNotSupportedException );
+        assertTrue( error instanceof LdapUnwillingToPerformException );
 
         // Check that the new MR has been injected
         assertFalse( isMRPresent( schemaManager, "1.1.0" ) );

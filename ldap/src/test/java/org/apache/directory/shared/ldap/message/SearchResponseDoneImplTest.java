@@ -26,9 +26,8 @@ import static org.junit.Assert.assertTrue;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.naming.InvalidNameException;
-
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
+import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.message.internal.InternalLdapResult;
 import org.apache.directory.shared.ldap.message.internal.InternalSearchResponseDone;
@@ -61,7 +60,7 @@ public class SearchResponseDoneImplTest
         {
             result.setMatchedDn( new DN( "dc=example,dc=com" ) );
         }
-        catch ( InvalidNameException ine )
+        catch ( LdapException ine )
         {
             // do nothing
         }

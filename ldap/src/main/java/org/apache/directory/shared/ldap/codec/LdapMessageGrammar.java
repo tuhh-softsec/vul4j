@@ -20,7 +20,7 @@
 package org.apache.directory.shared.ldap.codec;
 
 
-import javax.naming.NamingException;
+import org.apache.directory.shared.ldap.exception.LdapException;
 
 import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.AbstractGrammar;
@@ -1990,7 +1990,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                     {
                         addRequest.addAttributeType( type );
                     }
-                    catch ( NamingException ne )
+                    catch ( LdapException ne )
                     {
                         String msg = I18n.err( I18n.ERR_04087 );
                         log.error( msg );

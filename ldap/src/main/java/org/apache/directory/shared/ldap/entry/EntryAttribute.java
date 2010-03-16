@@ -22,7 +22,7 @@ import java.io.Externalizable;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.naming.directory.InvalidAttributeValueException;
+import org.apache.directory.shared.ldap.exception.LdapInvalidAttributeValueException;
 
 /**
  * A generic interface mocking the Attribute JNDI interface. This interface
@@ -257,9 +257,9 @@ public interface EntryAttribute extends Iterable<Value<?>>, Cloneable, Externali
      * </p>
      *
      * @return The value as a byte[]
-     * @throws InvalidAttributeValueException If the value is a String
+     * @throws LdapInvalidAttributeValueException If the value is a String
      */
-    byte[] getBytes() throws InvalidAttributeValueException;
+    byte[] getBytes() throws LdapInvalidAttributeValueException;
     
     
     /**
@@ -308,9 +308,9 @@ public interface EntryAttribute extends Iterable<Value<?>>, Cloneable, Externali
      * </p>
      *
      * @return The value as a String
-     * @throws InvalidAttributeValueException If the value is a byte[]
+     * @throws LdapInvalidAttributeValueException If the value is a byte[]
      */
-    String getString() throws InvalidAttributeValueException;
+    String getString() throws LdapInvalidAttributeValueException;
 
     
     /**

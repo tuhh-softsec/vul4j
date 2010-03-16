@@ -23,12 +23,13 @@ package org.apache.directory.shared.ldap.schema.normalizers;
 import java.io.IOException;
 import java.text.ParseException;
 
-import javax.naming.NamingException;
-
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.entry.client.ClientStringValue;
+import org.apache.directory.shared.ldap.exception.LdapException;
+import org.apache.directory.shared.ldap.exception.LdapInvalidAttributeValueException;
+import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.schema.Normalizer;
 import org.apache.directory.shared.ldap.schema.PrepareString;
 import org.apache.directory.shared.ldap.util.GeneralizedTime;
@@ -68,7 +69,7 @@ public class GeneralizedTimeNormalizer extends Normalizer
     /**
      * {@inheritDoc}
      */
-    public Value<?> normalize( Value<?> value ) throws NamingException
+    public Value<?> normalize( Value<?> value ) throws LdapException
     {
         try
         {
@@ -78,7 +79,7 @@ public class GeneralizedTimeNormalizer extends Normalizer
         }
         catch ( IOException ioe )
         {
-            throw new NamingException( I18n.err( I18n.ERR_04224, value ) );
+            throw new LdapInvalidAttributeValueException( ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX, I18n.err( I18n.ERR_04224, value ) );
         }
     }
 
@@ -86,7 +87,7 @@ public class GeneralizedTimeNormalizer extends Normalizer
     /**
      * {@inheritDoc}
      */
-    public String normalize( String value ) throws NamingException
+    public String normalize( String value ) throws LdapException
     {
         try
         {
@@ -100,11 +101,11 @@ public class GeneralizedTimeNormalizer extends Normalizer
         }
         catch ( IOException ioe )
         {
-            throw new NamingException( I18n.err( I18n.ERR_04224, value ) );
+            throw new LdapInvalidAttributeValueException( ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX, I18n.err( I18n.ERR_04224, value ) );
         }
         catch ( ParseException pe )
         {
-            throw new NamingException( I18n.err( I18n.ERR_04224, value ) );
+            throw new LdapInvalidAttributeValueException( ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX, I18n.err( I18n.ERR_04224, value ) );
         }
     }
 }

@@ -22,8 +22,7 @@ package org.apache.directory.shared.ldap.schema;
 
 import java.util.List;
 
-import javax.naming.NamingException;
-
+import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.schema.registries.Registries;
 import org.apache.directory.shared.ldap.schema.syntaxCheckers.OctetStringSyntaxChecker;
 
@@ -197,7 +196,7 @@ public class LdapSyntax extends AbstractSchemaObject
      * @param registries The Registries
      * @exception If the addition failed
      */
-    public void addToRegistries( List<Throwable> errors, Registries registries ) throws NamingException
+    public void addToRegistries( List<Throwable> errors, Registries registries ) throws LdapException
     {
         if ( registries != null )
         {
@@ -206,7 +205,7 @@ public class LdapSyntax extends AbstractSchemaObject
                 // Gets the associated SyntaxChecker
                 syntaxChecker = registries.getSyntaxCheckerRegistry().lookup( oid );
             }
-            catch ( NamingException ne )
+            catch ( LdapException ne )
             {
                 // No SyntaxChecker ? Associate the Syntax to a catch all SyntaxChecker
                 syntaxChecker = new OctetStringSyntaxChecker( oid );
@@ -232,7 +231,7 @@ public class LdapSyntax extends AbstractSchemaObject
      * @param registries The Registries
      * @exception If the Syntx is not valid 
      */
-    public void removeFromRegistries( List<Throwable> errors, Registries registries ) throws NamingException
+    public void removeFromRegistries( List<Throwable> errors, Registries registries ) throws LdapException
     {
         if ( registries != null )
         {

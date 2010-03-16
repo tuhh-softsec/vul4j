@@ -20,11 +20,10 @@
 package org.apache.directory.shared.ldap.schema.normalizers;
 
 
-import javax.naming.NamingException;
-
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.entry.client.ClientStringValue;
+import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.schema.Normalizer;
 
 
@@ -51,7 +50,7 @@ public class ObjectIdentifierNormalizer extends Normalizer
     /**
      * {@inheritDoc}
      */
-    public Value<?> normalize( Value<?> value ) throws NamingException
+    public Value<?> normalize( Value<?> value ) throws LdapException
     {
         if ( value == null )
         {
@@ -79,7 +78,7 @@ public class ObjectIdentifierNormalizer extends Normalizer
     /**
      * {@inheritDoc}
      */
-    public String normalize( String value ) throws NamingException
+    public String normalize( String value ) throws LdapException
     {
         if ( value == null )
         {

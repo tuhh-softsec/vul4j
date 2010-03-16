@@ -28,8 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.naming.NamingException;
-
+import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.schema.registries.Registries;
 import org.apache.directory.shared.ldap.util.StringTools;
 
@@ -209,7 +208,7 @@ public abstract class AbstractSchemaObject implements SchemaObject
      * @param errors The errors we got
      * @param registries The Registries
      */
-    public void addToRegistries( List<Throwable> errors, Registries registries ) throws NamingException
+    public void addToRegistries( List<Throwable> errors, Registries registries ) throws LdapException
     {
         // do nothing
     }
@@ -222,7 +221,7 @@ public abstract class AbstractSchemaObject implements SchemaObject
      * @param errors The errors we got
      * @param registries The Registries
      */
-    public void removeFromRegistries( List<Throwable> errors, Registries registries ) throws NamingException
+    public void removeFromRegistries( List<Throwable> errors, Registries registries ) throws LdapException
     {
         // do nothing
     }
@@ -777,9 +776,9 @@ public abstract class AbstractSchemaObject implements SchemaObject
      *
      * @param schemaObject the SchemaObject we want to register
      * @param registries The registries in which we want it to be stored
-     * @throws NamingException If the OID is invalid
+     * @throws LdapException If the OID is invalid
      */
-    public void registerOid( SchemaObject schemaObject, Registries registries ) throws NamingException
+    public void registerOid( SchemaObject schemaObject, Registries registries ) throws LdapException
     {
         // Add the SchemaObject into the globalOidRegistry
         registries.getGlobalOidRegistry().register( schemaObject );

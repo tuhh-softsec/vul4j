@@ -24,9 +24,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import javax.naming.NamingException;
-
 import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.schema.DITStructureRule;
 import org.apache.directory.shared.ldap.schema.SchemaObject;
 import org.apache.directory.shared.ldap.schema.SchemaObjectType;
@@ -92,7 +91,7 @@ public class DefaultDITStructureRuleRegistry extends DefaultSchemaObjectRegistry
     /**
      * {@inheritDoc}
      */
-    public String getSchemaName( int ruleId ) throws NamingException
+    public String getSchemaName( int ruleId ) throws LdapException
     {
         DITStructureRule ditStructureRule = byRuleId.get( ruleId );
 
@@ -103,14 +102,14 @@ public class DefaultDITStructureRuleRegistry extends DefaultSchemaObjectRegistry
         
         String msg = I18n.err( I18n.ERR_04263, ruleId );
         LOG.warn( msg );
-        throw new NamingException( msg );
+        throw new LdapException( msg );
     }
 
     
     /**
      * {@inheritDoc}
      */
-    public void register( DITStructureRule ditStructureRule ) throws NamingException
+    public void register( DITStructureRule ditStructureRule ) throws LdapException
     {
         int ruleId = ditStructureRule.getRuleId();
         
@@ -118,7 +117,7 @@ public class DefaultDITStructureRuleRegistry extends DefaultSchemaObjectRegistry
         {
             String msg = I18n.err( I18n.ERR_04264, ruleId );
             LOG.warn( msg );
-            throw new NamingException( msg );
+            throw new LdapException( msg );
         }
 
         byRuleId.put( ruleId, ditStructureRule );
@@ -133,7 +132,7 @@ public class DefaultDITStructureRuleRegistry extends DefaultSchemaObjectRegistry
     /**
      * {@inheritDoc}
      */
-    public DITStructureRule lookup( int ruleId ) throws NamingException
+    public DITStructureRule lookup( int ruleId ) throws LdapException
     {
         DITStructureRule ditStructureRule = byRuleId.get( ruleId );
 
@@ -141,7 +140,7 @@ public class DefaultDITStructureRuleRegistry extends DefaultSchemaObjectRegistry
         {
             String msg = I18n.err( I18n.ERR_04265, ruleId );
             LOG.debug( msg );
-            throw new NamingException( msg );
+            throw new LdapException( msg );
         }
 
         if ( DEBUG )
@@ -156,7 +155,7 @@ public class DefaultDITStructureRuleRegistry extends DefaultSchemaObjectRegistry
     /**
      * {@inheritDoc}
      */
-    public void unregister( int ruleId ) throws NamingException
+    public void unregister( int ruleId ) throws LdapException
     {
         DITStructureRule ditStructureRule = byRuleId.remove( ruleId );
         

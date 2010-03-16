@@ -25,7 +25,7 @@ import java.nio.ByteBuffer;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.naming.NamingException;
+import org.apache.directory.shared.ldap.exception.LdapException;
 
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
@@ -165,7 +165,7 @@ public class AddRequestCodec extends LdapMessageCodec
      * 
      * @param type The attribute's name (called 'type' in the grammar)
      */
-    public void addAttributeType( String type ) throws NamingException
+    public void addAttributeType( String type ) throws LdapException
     {
         // do not create a new attribute if we have seen this attributeType before
         if ( entry.get( type ) != null )

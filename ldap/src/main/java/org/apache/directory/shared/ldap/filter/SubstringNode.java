@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import org.apache.directory.shared.ldap.entry.client.ClientStringValue;
+import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.schema.Normalizer;
 import org.apache.directory.shared.ldap.util.StringTools;
@@ -197,7 +198,7 @@ public class SubstringNode extends LeafNode
      * @return the equivalent compiled regular expression
      * @throws LdapInvalidDnException if there are problems while normalizing
      */
-    public final Pattern getRegex( Normalizer normalizer ) throws LdapInvalidDnException
+    public final Pattern getRegex( Normalizer normalizer ) throws LdapException
     {
         boolean isBinary = false;
         

@@ -26,10 +26,9 @@ import static org.junit.Assert.assertTrue;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.naming.InvalidNameException;
-
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.entry.Value;
+import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.message.internal.InternalCompareRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalResultResponse;
@@ -62,7 +61,7 @@ public class CompareRequestImplTest
      * Tests for equality using exact copies.
      */
     @Test
-    public void testEqualsExactCopy() throws InvalidNameException
+    public void testEqualsExactCopy() throws LdapException
     {
         CompareRequestImpl req0 = new CompareRequestImpl( 5 );
         req0.setName( new DN( "cn=admin,dc=example,dc=com" ) );
@@ -83,7 +82,7 @@ public class CompareRequestImplTest
      * Test for inequality when only the IDs are different.
      */
     @Test
-    public void testNotEqualDiffId() throws InvalidNameException
+    public void testNotEqualDiffId() throws LdapException
     {
         CompareRequestImpl req0 = new CompareRequestImpl( 7 );
         req0.setName( new DN( "cn=admin,dc=example,dc=com" ) );
@@ -100,7 +99,7 @@ public class CompareRequestImplTest
      * Test for inequality when only the attributeIds are different.
      */
     @Test
-    public void testNotEqualDiffAttributeIds() throws InvalidNameException
+    public void testNotEqualDiffAttributeIds() throws LdapException
     {
         CompareRequestImpl req0 = new CompareRequestImpl( 5 );
         req0.setName( new DN( "cn=admin,dc=apache,dc=org" ) );
@@ -121,7 +120,7 @@ public class CompareRequestImplTest
      * Test for inequality when only the Assertion values are different.
      */
     @Test
-    public void testNotEqualDiffValue() throws InvalidNameException
+    public void testNotEqualDiffValue() throws LdapException
     {
         CompareRequestImpl req0 = new CompareRequestImpl( 5 );
         req0.setName( new DN( "cn=admin,dc=apache,dc=org" ) );

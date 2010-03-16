@@ -26,9 +26,8 @@ import static org.junit.Assert.assertTrue;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.naming.InvalidNameException;
-
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
+import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.message.internal.InternalModifyDnRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalResultResponse;
@@ -64,7 +63,7 @@ public class ModifyDnRequestImplTest
             request.setNewRdn( new RDN( "dc=administrators" ) );
             request.setNewSuperior( new DN( "dc=groups,dc=apache,dc=org" ) );
         }
-        catch ( InvalidNameException ine )
+        catch ( LdapException ine )
         {
             // do nothing
         }
@@ -129,7 +128,7 @@ public class ModifyDnRequestImplTest
      * Test for inequality when only the DN names are different.
      */
     @Test
-    public void testNotEqualDiffName() throws InvalidNameException
+    public void testNotEqualDiffName() throws LdapException
     {
         ModifyDnRequestImpl req0 = getRequest();
         req0.setName( new DN( "cn=admin,dc=example,dc=com" ) );
@@ -145,7 +144,7 @@ public class ModifyDnRequestImplTest
      * Test for inequality when only the newSuperior DNs are different.
      */
     @Test
-    public void testNotEqualDiffNewSuperior() throws InvalidNameException
+    public void testNotEqualDiffNewSuperior() throws LdapException
     {
         ModifyDnRequestImpl req0 = getRequest();
         req0.setNewSuperior( new DN( "cn=admin,dc=example,dc=com" ) );
@@ -177,7 +176,7 @@ public class ModifyDnRequestImplTest
      * Test for inequality when only the new Rdn properties are different.
      */
     @Test
-    public void testNotEqualDiffNewRdn() throws InvalidNameException
+    public void testNotEqualDiffNewRdn() throws LdapException
     {
         ModifyDnRequestImpl req0 = getRequest();
         req0.setNewRdn( new RDN( "cn=admin0" ) );
@@ -204,7 +203,7 @@ public class ModifyDnRequestImplTest
                 {
                     return new DN( "dc=admins,dc=apache,dc=org" );
                 }
-                catch ( InvalidNameException ine )
+                catch ( LdapException ine )
                 {
                     // do nothing
                     return null;
@@ -223,7 +222,7 @@ public class ModifyDnRequestImplTest
                 {
                     return new RDN( "dc=administrators" );
                 }
-                catch ( InvalidNameException ine )
+                catch ( LdapException ine )
                 {
                     // do nothing
                     return null;
@@ -253,7 +252,7 @@ public class ModifyDnRequestImplTest
                 {
                     return new DN( "dc=groups,dc=apache,dc=org" );
                 }
-                catch ( InvalidNameException ine )
+                catch ( LdapException ine )
                 {
                     // do nothing
                     return null;

@@ -20,8 +20,7 @@
 package org.apache.directory.shared.ldap.schema.normalizers;
 
 
-import javax.naming.NamingException;
-
+import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.schema.Normalizer;
 import org.apache.directory.shared.ldap.schema.normalizers.DeepTrimNormalizer;
 import org.junit.Test;
@@ -37,7 +36,7 @@ import static org.junit.Assert.assertEquals;
 public class DeepTrimNormalizerTest
 {
     @Test
-    public void testDeepTrimNormalizerNull() throws NamingException
+    public void testDeepTrimNormalizerNull() throws LdapException
     {
         Normalizer normalizer = new DeepTrimNormalizer( "1.1.1" );
         assertEquals( "", normalizer.normalize( ( String ) null ) );
@@ -45,7 +44,7 @@ public class DeepTrimNormalizerTest
 
 
     @Test
-    public void testDeepTrimNormalizerEmpty() throws NamingException
+    public void testDeepTrimNormalizerEmpty() throws LdapException
     {
         Normalizer normalizer = new DeepTrimNormalizer( "1.1.1" );
         assertEquals( "", normalizer.normalize( "" ) );
@@ -53,7 +52,7 @@ public class DeepTrimNormalizerTest
 
 
     @Test
-    public void testDeepTrimNormalizerOneSpace() throws NamingException
+    public void testDeepTrimNormalizerOneSpace() throws LdapException
     {
         Normalizer normalizer = new DeepTrimNormalizer( "1.1.1" );
         assertEquals( "", normalizer.normalize( " " ) );
@@ -61,7 +60,7 @@ public class DeepTrimNormalizerTest
 
 
     @Test
-    public void testDeepTrimNormalizerTwoSpaces() throws NamingException
+    public void testDeepTrimNormalizerTwoSpaces() throws LdapException
     {
         Normalizer normalizer = new DeepTrimNormalizer( "1.1.1" );
         assertEquals( "", normalizer.normalize( "  " ) );
@@ -69,7 +68,7 @@ public class DeepTrimNormalizerTest
 
 
     @Test
-    public void testDeepTrimNormalizerNSpaces() throws NamingException
+    public void testDeepTrimNormalizerNSpaces() throws LdapException
     {
         Normalizer normalizer = new DeepTrimNormalizer( "1.1.1" );
         assertEquals( "", normalizer.normalize( "      " ) );
@@ -77,7 +76,7 @@ public class DeepTrimNormalizerTest
 
 
     @Test
-    public void testInsignifiantSpacesStringOneChar() throws NamingException
+    public void testInsignifiantSpacesStringOneChar() throws LdapException
     {
         Normalizer normalizer = new DeepTrimNormalizer( "1.1.1" );
         assertEquals( "a", normalizer.normalize( "a" ) );
@@ -85,7 +84,7 @@ public class DeepTrimNormalizerTest
 
 
     @Test
-    public void testInsignifiantSpacesStringTwoChars() throws NamingException
+    public void testInsignifiantSpacesStringTwoChars() throws LdapException
     {
         Normalizer normalizer = new DeepTrimNormalizer( "1.1.1" );
         assertEquals( "aa", normalizer.normalize( "aa" ) );
@@ -93,7 +92,7 @@ public class DeepTrimNormalizerTest
 
 
     @Test
-    public void testInsignifiantSpacesStringNChars() throws NamingException
+    public void testInsignifiantSpacesStringNChars() throws LdapException
     {
         Normalizer normalizer = new DeepTrimNormalizer( "1.1.1" );
         assertEquals( "aaaaa", normalizer.normalize( "aaaaa" ) );
@@ -101,7 +100,7 @@ public class DeepTrimNormalizerTest
 
 
     @Test
-    public void testInsignifiantSpacesStringOneCombining() throws NamingException
+    public void testInsignifiantSpacesStringOneCombining() throws LdapException
     {
         Normalizer normalizer = new DeepTrimNormalizer( "1.1.1" );
         char[] chars = new char[]
@@ -113,7 +112,7 @@ public class DeepTrimNormalizerTest
 
 
     @Test
-    public void testInsignifiantSpacesStringNCombining() throws NamingException
+    public void testInsignifiantSpacesStringNCombining() throws LdapException
     {
         Normalizer normalizer = new DeepTrimNormalizer( "1.1.1" );
         char[] chars = new char[]
@@ -125,7 +124,7 @@ public class DeepTrimNormalizerTest
 
 
     @Test
-    public void testInsignifiantSpacesStringCharsSpaces() throws NamingException
+    public void testInsignifiantSpacesStringCharsSpaces() throws LdapException
     {
         Normalizer normalizer = new DeepTrimNormalizer( "1.1.1" );
         assertEquals( "a", normalizer.normalize( " a" ) );
@@ -141,7 +140,7 @@ public class DeepTrimNormalizerTest
 
 
     @Test
-    public void testNormalizeCharsCombiningSpaces() throws NamingException
+    public void testNormalizeCharsCombiningSpaces() throws LdapException
     {
         Normalizer normalizer = new DeepTrimNormalizer( "1.1.1" );
         char[] chars = new char[]

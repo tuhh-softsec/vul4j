@@ -24,10 +24,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import javax.naming.NamingException;
-
 import org.apache.directory.shared.asn1.primitives.OID;
 import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.exception.LdapSchemaViolationException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.schema.LoadableSchemaObject;
@@ -91,13 +90,13 @@ public abstract class DefaultSchemaObjectRegistry<T extends SchemaObject> implem
     /**
      * {@inheritDoc}
      */
-    public String getSchemaName( String oid ) throws NamingException
+    public String getSchemaName( String oid ) throws LdapException
     {
         if ( !OID.isOID( oid ) )
         {
             String msg = I18n.err( I18n.ERR_04267 );
             LOG.warn( msg );
-            throw new NamingException( msg );
+            throw new LdapException( msg );
         }
 
         SchemaObject schemaObject = byName.get( oid );
@@ -109,7 +108,7 @@ public abstract class DefaultSchemaObjectRegistry<T extends SchemaObject> implem
 
         String msg = I18n.err( I18n.ERR_04268, oid );
         LOG.warn( msg );
-        throw new NamingException( msg );
+        throw new LdapException( msg );
     }
 
 
@@ -156,7 +155,7 @@ public abstract class DefaultSchemaObjectRegistry<T extends SchemaObject> implem
     /**
      * {@inheritDoc}
      */
-    public T lookup( String oid ) throws NamingException
+    public T lookup( String oid ) throws LdapException
     {
         if ( oid == null )
         {
@@ -175,7 +174,7 @@ public abstract class DefaultSchemaObjectRegistry<T extends SchemaObject> implem
         {
             String msg = I18n.err( I18n.ERR_04269, schemaObjectType.name(), oid );
             LOG.debug( msg );
-            throw new NamingException( msg );
+            throw new LdapException( msg );
         }
 
         if ( DEBUG )
@@ -190,7 +189,7 @@ public abstract class DefaultSchemaObjectRegistry<T extends SchemaObject> implem
     /**
      * {@inheritDoc}
      */
-    public void register( T schemaObject ) throws NamingException
+    public void register( T schemaObject ) throws LdapException
     {
         String oid = schemaObject.getOid();
 
@@ -198,7 +197,7 @@ public abstract class DefaultSchemaObjectRegistry<T extends SchemaObject> implem
         {
             String msg = I18n.err( I18n.ERR_04270, schemaObjectType.name(), oid );
             LOG.warn( msg );
-            throw new LdapSchemaViolationException( msg, ResultCodeEnum.ATTRIBUTE_OR_VALUE_EXISTS );
+            throw new LdapSchemaViolationException( ResultCodeEnum.ATTRIBUTE_OR_VALUE_EXISTS, msg );
         }
 
         byName.put( oid, schemaObject );
@@ -215,7 +214,7 @@ public abstract class DefaultSchemaObjectRegistry<T extends SchemaObject> implem
             {
                 String msg = I18n.err( I18n.ERR_04271, schemaObjectType.name(), name );
                 LOG.warn( msg );
-                throw new LdapSchemaViolationException( msg, ResultCodeEnum.ATTRIBUTE_OR_VALUE_EXISTS );
+                throw new LdapSchemaViolationException( ResultCodeEnum.ATTRIBUTE_OR_VALUE_EXISTS, msg );
             }
             else
             {
@@ -236,13 +235,13 @@ public abstract class DefaultSchemaObjectRegistry<T extends SchemaObject> implem
     /**
      * {@inheritDoc}
      */
-    public T unregister( String numericOid ) throws NamingException
+    public T unregister( String numericOid ) throws LdapException
     {
         if ( !OID.isOID( numericOid ) )
         {
             String msg = I18n.err( I18n.ERR_04272, numericOid );
             LOG.error( msg );
-            throw new NamingException( msg );
+            throw new LdapException( msg );
         }
 
         T schemaObject = byName.remove( numericOid );
@@ -267,7 +266,7 @@ public abstract class DefaultSchemaObjectRegistry<T extends SchemaObject> implem
     /**
      * {@inheritDoc}
      */
-    public T unregister( T schemaObject ) throws NamingException
+    public T unregister( T schemaObject ) throws LdapException
     {
         String oid = schemaObject.getOid();
 
@@ -275,7 +274,7 @@ public abstract class DefaultSchemaObjectRegistry<T extends SchemaObject> implem
         {
             String msg = I18n.err( I18n.ERR_04273, schemaObjectType.name(), oid );
             LOG.warn( msg );
-            throw new NamingException( msg );
+            throw new LdapException( msg );
         }
 
         // Remove the oid
@@ -300,7 +299,7 @@ public abstract class DefaultSchemaObjectRegistry<T extends SchemaObject> implem
     /**
      * {@inheritDoc}
      */
-    public void unregisterSchemaElements( String schemaName ) throws NamingException
+    public void unregisterSchemaElements( String schemaName ) throws LdapException
     {
         if ( schemaName == null )
         {
@@ -328,7 +327,7 @@ public abstract class DefaultSchemaObjectRegistry<T extends SchemaObject> implem
     /**
      * {@inheritDoc}
      */
-    public String getOidByName( String name ) throws NamingException
+    public String getOidByName( String name ) throws LdapException
     {
         T schemaObject = byName.get( name );
 
@@ -342,7 +341,7 @@ public abstract class DefaultSchemaObjectRegistry<T extends SchemaObject> implem
             // ok this name is not for a schema object in the registry
             if ( schemaObject == null )
             {
-                throw new NamingException( I18n.err( I18n.ERR_04274, name ) );
+                throw new LdapException( I18n.err( I18n.ERR_04274, name ) );
             }
         }
 
@@ -383,7 +382,7 @@ public abstract class DefaultSchemaObjectRegistry<T extends SchemaObject> implem
                     {
                         copiedValue = ( T ) oidRegistry.getSchemaObject( value.getOid() );
                     }
-                    catch ( NamingException ne )
+                    catch ( LdapException ne )
                     {
                         // Can't happen
                     }
@@ -414,7 +413,7 @@ public abstract class DefaultSchemaObjectRegistry<T extends SchemaObject> implem
         {
             return oidRegistry.getSchemaObject( oid );
         }
-        catch ( NamingException ne )
+        catch ( LdapException ne )
         {
             return null;
         }

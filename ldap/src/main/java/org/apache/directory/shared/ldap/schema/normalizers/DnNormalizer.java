@@ -20,11 +20,10 @@
 package org.apache.directory.shared.ldap.schema.normalizers;
 
 
-import javax.naming.NamingException;
-
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.entry.client.ClientStringValue;
+import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.schema.Normalizer;
 import org.apache.directory.shared.ldap.schema.SchemaManager;
@@ -56,7 +55,7 @@ public class DnNormalizer extends Normalizer
     /**
      * {@inheritDoc}
      */
-    public Value<?> normalize( Value<?> value ) throws NamingException
+    public Value<?> normalize( Value<?> value ) throws LdapException
     {
         DN dn = null;
         
@@ -72,7 +71,7 @@ public class DnNormalizer extends Normalizer
     /**
      * {@inheritDoc}
      */
-    public String normalize( String value ) throws NamingException
+    public String normalize( String value ) throws LdapException
     {
         DN dn = null;
         
@@ -87,9 +86,9 @@ public class DnNormalizer extends Normalizer
      * Normalize a DN
      * @param value The DN to normalize
      * @return A normalized DN
-     * @throws NamingException
+     * @throws LdapException
      */
-    public String normalize( DN value ) throws NamingException
+    public String normalize( DN value ) throws LdapException
     {
         DN dn = null;
         

@@ -22,8 +22,7 @@ package org.apache.directory.shared.ldap.schema.registries;
 
 import java.util.Iterator;
 
-import javax.naming.NamingException;
-
+import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.schema.DITStructureRule;
 
 
@@ -68,19 +67,19 @@ public interface DITStructureRuleRegistry extends SchemaObjectRegistry<DITStruct
      *
      * @param id the object identifier or the name
      * @return the schema name
-     * @throws NamingException if the schema object does not exist
+     * @throws LdapException if the schema object does not exist
      */
-    String getSchemaName( int ruleId ) throws NamingException;
+    String getSchemaName( int ruleId ) throws LdapException;
 
     
     /**
      * Registers a new DITStructureRule with this registry.
      *
      * @param ditStructureRule the DITStructureRule to register
-     * @throws NamingException if the DITStructureRule is already registered or
+     * @throws LdapException if the DITStructureRule is already registered or
      * the registration operation is not supported
      */
-    void register( DITStructureRule ditStructureRule ) throws NamingException;
+    void register( DITStructureRule ditStructureRule ) throws LdapException;
 
     
     /**
@@ -89,18 +88,18 @@ public interface DITStructureRuleRegistry extends SchemaObjectRegistry<DITStruct
      * 
      * @param ruleId the rule identifier for the DITStructureRule
      * @return the DITStructureRule instance for rule identifier
-     * @throws NamingException if the DITStructureRule does not exist
+     * @throws LdapException if the DITStructureRule does not exist
      */
-    DITStructureRule lookup( int ruleId ) throws NamingException;
+    DITStructureRule lookup( int ruleId ) throws LdapException;
 
 
     /**
      * Unregisters a DITStructureRule using it's rule identifier. 
      * 
      * @param ruleId the rule identifier for the DITStructureRule to unregister
-     * @throws NamingException if no such DITStructureRule exists
+     * @throws LdapException if no such DITStructureRule exists
      */
-    void unregister( int ruleId ) throws NamingException;
+    void unregister( int ruleId ) throws LdapException;
     
     
     /**
@@ -108,9 +107,9 @@ public interface DITStructureRuleRegistry extends SchemaObjectRegistry<DITStruct
      * this registry.
      * 
      * @param schemaName the name of the schema whose syntaxCheckers will be removed from
-     * @throws NamingException if no such SchemaElement exists
+     * @throws LdapException if no such SchemaElement exists
      */
-    void unregisterSchemaElements( String schemaName ) throws NamingException;
+    void unregisterSchemaElements( String schemaName ) throws LdapException;
 
     
     /**
@@ -118,9 +117,9 @@ public interface DITStructureRuleRegistry extends SchemaObjectRegistry<DITStruct
      *
      * @param originalSchemaName The original Schema name
      * @param newSchemaName The new Schema name
-     * @throws NamingException if the schema can't be renamed
+     * @throws LdapException if the schema can't be renamed
      */
-    void renameSchema( String originalSchemaName, String newSchemaName ) throws NamingException;
+    void renameSchema( String originalSchemaName, String newSchemaName ) throws LdapException;
     
     
     /**

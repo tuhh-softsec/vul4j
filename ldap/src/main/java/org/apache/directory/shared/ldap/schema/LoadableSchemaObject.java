@@ -20,7 +20,7 @@
 package org.apache.directory.shared.ldap.schema;
 
 
-import javax.naming.NamingException;
+import org.apache.directory.shared.ldap.exception.LdapException;
 
 import org.apache.directory.shared.ldap.schema.registries.Registries;
 import org.apache.directory.shared.ldap.util.StringTools;
@@ -124,7 +124,7 @@ public abstract class LoadableSchemaObject extends AbstractSchemaObject
     /**
      * {@inheritDoc}
      */
-    public void registerOid( SchemaObject schemaObject, Registries registries ) throws NamingException
+    public void registerOid( SchemaObject schemaObject, Registries registries ) throws LdapException
     {
         // Do nothing : the current SchemaObject ha sthe same OID than the one it is realted to
     }

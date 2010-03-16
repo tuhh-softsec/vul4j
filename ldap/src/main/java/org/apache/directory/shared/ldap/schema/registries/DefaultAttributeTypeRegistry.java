@@ -27,9 +27,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import javax.naming.NamingException;
-import javax.naming.directory.NoSuchAttributeException;
-
+import org.apache.directory.shared.ldap.exception.LdapException;
+import org.apache.directory.shared.ldap.exception.LdapNoSuchAttributeException;
 import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.MatchingRule;
 import org.apache.directory.shared.ldap.schema.SchemaObjectType;
@@ -84,7 +83,7 @@ public class DefaultAttributeTypeRegistry extends DefaultSchemaObjectRegistry<At
     /**
      * {@inheritDoc}
      */
-    public boolean hasDescendants( String ancestorId ) throws NamingException
+    public boolean hasDescendants( String ancestorId ) throws LdapException
     {
         try
         {
@@ -92,9 +91,9 @@ public class DefaultAttributeTypeRegistry extends DefaultSchemaObjectRegistry<At
             Set<AttributeType> descendants = oidToDescendantSet.get( oid );
             return ( descendants != null ) && !descendants.isEmpty();
         }
-        catch ( NamingException ne )
+        catch ( LdapException ne )
         {
-            throw new NoSuchAttributeException( ne.getMessage() );
+            throw new LdapNoSuchAttributeException( ne.getMessage() );
         }
     }
 
@@ -103,7 +102,7 @@ public class DefaultAttributeTypeRegistry extends DefaultSchemaObjectRegistry<At
      * {@inheritDoc}
      */
     @SuppressWarnings("unchecked")
-    public Iterator<AttributeType> descendants( String ancestorId ) throws NamingException
+    public Iterator<AttributeType> descendants( String ancestorId ) throws LdapException
     {
         try
         {
@@ -117,9 +116,9 @@ public class DefaultAttributeTypeRegistry extends DefaultSchemaObjectRegistry<At
 
             return descendants.iterator();
         }
-        catch ( NamingException ne )
+        catch ( LdapException ne )
         {
-            throw new NoSuchAttributeException( ne.getMessage() );
+            throw new LdapNoSuchAttributeException( ne.getMessage() );
         }
     }
 
@@ -127,7 +126,7 @@ public class DefaultAttributeTypeRegistry extends DefaultSchemaObjectRegistry<At
     /**
      * {@inheritDoc}
      */
-    public void registerDescendants( AttributeType attributeType, AttributeType ancestor ) throws NamingException
+    public void registerDescendants( AttributeType attributeType, AttributeType ancestor ) throws LdapException
     {
         // add this attribute to descendant list of other attributes in superior chain
         if ( ancestor == null )
@@ -154,7 +153,7 @@ public class DefaultAttributeTypeRegistry extends DefaultSchemaObjectRegistry<At
             // And recurse until we reach the top of the hierarchy
             registerDescendants( attributeType, ancestor.getSuperior() );
         }
-        catch ( NamingException ne )
+        catch ( LdapException ne )
         {
             throw new NoSuchAttributeException( ne.getMessage() );
         }
@@ -165,7 +164,7 @@ public class DefaultAttributeTypeRegistry extends DefaultSchemaObjectRegistry<At
     /**
      * {@inheritDoc}
      */
-    public void unregisterDescendants( AttributeType attributeType, AttributeType ancestor ) throws NamingException
+    public void unregisterDescendants( AttributeType attributeType, AttributeType ancestor ) throws LdapException
     {
         // add this attribute to descendant list of other attributes in superior chain
         if ( ancestor == null )
@@ -192,7 +191,7 @@ public class DefaultAttributeTypeRegistry extends DefaultSchemaObjectRegistry<At
             // And recurse until we reach the top of the hierarchy
             unregisterDescendants( attributeType, ancestor.getSuperior() );
         }
-        catch ( NamingException ne )
+        catch ( LdapException ne )
         {
             throw new NoSuchAttributeException( ne.getMessage() );
         }
@@ -203,7 +202,7 @@ public class DefaultAttributeTypeRegistry extends DefaultSchemaObjectRegistry<At
     /**
      * {@inheritDoc}
      */
-    public AttributeType unregister( String numericOid ) throws NamingException
+    public AttributeType unregister( String numericOid ) throws LdapException
     {
         try
         {
@@ -221,9 +220,9 @@ public class DefaultAttributeTypeRegistry extends DefaultSchemaObjectRegistry<At
 
             return removed;
         }
-        catch ( NamingException ne )
+        catch ( LdapException ne )
         {
-            throw new NoSuchAttributeException( ne.getMessage() );
+            throw new LdapNoSuchAttributeException( ne.getMessage() );
         }
     }
 
@@ -231,7 +230,7 @@ public class DefaultAttributeTypeRegistry extends DefaultSchemaObjectRegistry<At
     /**
      * {@inheritDoc}
      */
-    public void addMappingFor( AttributeType attributeType ) throws NamingException
+    public void addMappingFor( AttributeType attributeType ) throws LdapException
     {
         MatchingRule equality = attributeType.getEquality();
         OidNormalizer oidNormalizer;
@@ -261,7 +260,7 @@ public class DefaultAttributeTypeRegistry extends DefaultSchemaObjectRegistry<At
     /**
      * Remove the AttributeType normalizer from the OidNormalizer map 
      */
-    public void removeMappingFor( AttributeType attributeType ) throws NamingException
+    public void removeMappingFor( AttributeType attributeType ) throws LdapException
     {
         if ( attributeType == null )
         {
@@ -281,15 +280,15 @@ public class DefaultAttributeTypeRegistry extends DefaultSchemaObjectRegistry<At
     /**
      * {@inheritDoc}
      */
-    public AttributeType lookup( String oid ) throws NamingException
+    public AttributeType lookup( String oid ) throws LdapException
     {
         try
         {
             return super.lookup( oid );
         }
-        catch ( NamingException ne )
+        catch ( LdapException ne )
         {
-            throw new NoSuchAttributeException( ne.getMessage() );
+            throw new LdapNoSuchAttributeException( ne.getMessage() );
         }
     }
 

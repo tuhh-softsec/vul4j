@@ -19,9 +19,7 @@
  */
 package org.apache.directory.shared.ldap.schema.registries;
 
-
-import javax.naming.NamingException;
-
+import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.schema.Normalizer;
 
 
@@ -38,10 +36,10 @@ public interface NormalizerRegistry extends SchemaObjectRegistry<Normalizer>,
      * Registers a new Normalizer with this registry.
      *
      * @param normalizer the Normalizer to register
-     * @throws NamingException if the Normalizer is already registered or
+     * @throws LdapException if the Normalizer is already registered or
      * the registration operation is not supported
      */
-    void register( Normalizer normalizer ) throws NamingException;
+    void register( Normalizer normalizer ) throws LdapException;
 
 
     /**
@@ -49,9 +47,9 @@ public interface NormalizerRegistry extends SchemaObjectRegistry<Normalizer>,
      * numeric OID.
      * 
      * @param numericOid the numeric identifier
-     * @throws NamingException if the numeric identifier is invalid
+     * @throws LdapException if the numeric identifier is invalid
      */
-    Normalizer unregister( String numericOid ) throws NamingException;
+    Normalizer unregister( String numericOid ) throws LdapException;
     
     
     /**
@@ -60,7 +58,7 @@ public interface NormalizerRegistry extends SchemaObjectRegistry<Normalizer>,
      * 
      * @param schemaName the name of the schema whose Normalizers will be removed from
      */
-    void unregisterSchemaElements( String schemaName ) throws NamingException;
+    void unregisterSchemaElements( String schemaName ) throws LdapException;
     
     
     /**

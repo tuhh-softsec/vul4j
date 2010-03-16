@@ -20,8 +20,7 @@
 package org.apache.directory.shared.ldap.message;
 
 
-import javax.naming.InvalidNameException;
-
+import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.message.LdapResultImpl;
 import org.apache.directory.shared.ldap.message.ReferralImpl;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
@@ -149,7 +148,7 @@ public class LdapResultImplTest
      * Tests two non default carbon copies for equality.
      */
     @Test
-    public void testEqualsCarbonCopy() throws InvalidNameException
+    public void testEqualsCarbonCopy() throws LdapException
     {
         LdapResultImpl r0 = new LdapResultImpl();
         LdapResultImpl r1 = new LdapResultImpl();
@@ -180,7 +179,7 @@ public class LdapResultImplTest
      * Tests for inequality when the error message is different.
      */
     @Test
-    public void testNotEqualsDiffErrorMessage() throws InvalidNameException
+    public void testNotEqualsDiffErrorMessage() throws LdapException
     {
         LdapResultImpl r0 = new LdapResultImpl();
         LdapResultImpl r1 = new LdapResultImpl();
@@ -211,7 +210,7 @@ public class LdapResultImplTest
      * Tests for inequality when the matchedDn properties are not the same.
      */
     @Test
-    public void testNotEqualsDiffMatchedDn() throws InvalidNameException
+    public void testNotEqualsDiffMatchedDn() throws LdapException
     {
         LdapResultImpl r0 = new LdapResultImpl();
         LdapResultImpl r1 = new LdapResultImpl();
@@ -242,7 +241,7 @@ public class LdapResultImplTest
      * Tests for inequality when the resultCode properties are not the same.
      */
     @Test
-    public void testNotEqualsDiffResultCode() throws InvalidNameException
+    public void testNotEqualsDiffResultCode() throws LdapException
     {
         LdapResultImpl r0 = new LdapResultImpl();
         LdapResultImpl r1 = new LdapResultImpl();
@@ -273,7 +272,7 @@ public class LdapResultImplTest
      * Tests for inequality when the referrals are not the same.
      */
     @Test
-    public void testNotEqualsDiffReferrals() throws InvalidNameException
+    public void testNotEqualsDiffReferrals() throws LdapException
     {
         LdapResultImpl r0 = new LdapResultImpl();
         LdapResultImpl r1 = new LdapResultImpl();

@@ -19,9 +19,7 @@
  */
 package org.apache.directory.shared.ldap.schema.normalizers;
 
-
-import javax.naming.NamingException;
-
+import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.schema.Normalizer;
 import org.apache.directory.shared.ldap.schema.normalizers.TelephoneNumberNormalizer;
 import org.junit.Test;
@@ -36,7 +34,7 @@ import static org.junit.Assert.assertEquals;
 public class TelephoneNumberNormalizerTest
 {
     @Test
-    public void testTelephoneNumberNormalizerNull() throws NamingException
+    public void testTelephoneNumberNormalizerNull() throws LdapException
     {
         Normalizer normalizer = new TelephoneNumberNormalizer();
         assertEquals( "", normalizer.normalize( ( String ) null ) );
@@ -44,7 +42,7 @@ public class TelephoneNumberNormalizerTest
 
 
     @Test
-    public void testTelephoneNumberNormalizerEmpty() throws NamingException
+    public void testTelephoneNumberNormalizerEmpty() throws LdapException
     {
         Normalizer normalizer = new TelephoneNumberNormalizer();
         assertEquals( "", normalizer.normalize( "" ) );
@@ -52,7 +50,7 @@ public class TelephoneNumberNormalizerTest
 
 
     @Test
-    public void testTelephoneNumberNormalizerOneSpace() throws NamingException
+    public void testTelephoneNumberNormalizerOneSpace() throws LdapException
     {
         Normalizer normalizer = new TelephoneNumberNormalizer();
         assertEquals( "", normalizer.normalize( " " ) );
@@ -60,7 +58,7 @@ public class TelephoneNumberNormalizerTest
 
 
     @Test
-    public void testTelephoneNumberNormalizerTwoSpaces() throws NamingException
+    public void testTelephoneNumberNormalizerTwoSpaces() throws LdapException
     {
         Normalizer normalizer = new TelephoneNumberNormalizer();
         assertEquals( "", normalizer.normalize( "  " ) );
@@ -68,7 +66,7 @@ public class TelephoneNumberNormalizerTest
 
 
     @Test
-    public void testTelephoneNumberNormalizerNSpaces() throws NamingException
+    public void testTelephoneNumberNormalizerNSpaces() throws LdapException
     {
         Normalizer normalizer = new TelephoneNumberNormalizer();
         assertEquals( "", normalizer.normalize( "      " ) );
@@ -76,7 +74,7 @@ public class TelephoneNumberNormalizerTest
 
 
     @Test
-    public void testTelephoneNumberNormalizerOneHyphen() throws NamingException
+    public void testTelephoneNumberNormalizerOneHyphen() throws LdapException
     {
         Normalizer normalizer = new TelephoneNumberNormalizer();
         assertEquals( "", normalizer.normalize( "-" ) );
@@ -84,7 +82,7 @@ public class TelephoneNumberNormalizerTest
 
 
     @Test
-    public void testTelephoneNumberNormalizerTwoHyphen() throws NamingException
+    public void testTelephoneNumberNormalizerTwoHyphen() throws LdapException
     {
         Normalizer normalizer = new TelephoneNumberNormalizer();
         assertEquals( "", normalizer.normalize( "--" ) );
@@ -92,7 +90,7 @@ public class TelephoneNumberNormalizerTest
 
 
     @Test
-    public void testTelephoneNumberNormalizerHyphensSpaces() throws NamingException
+    public void testTelephoneNumberNormalizerHyphensSpaces() throws LdapException
     {
         Normalizer normalizer = new TelephoneNumberNormalizer();
         assertEquals( "", normalizer.normalize( " -- - -- " ) );
@@ -100,7 +98,7 @@ public class TelephoneNumberNormalizerTest
 
 
     @Test
-    public void testInsignifiantSpacesStringOneChar() throws NamingException
+    public void testInsignifiantSpacesStringOneChar() throws LdapException
     {
         Normalizer normalizer = new TelephoneNumberNormalizer();
         assertEquals( "1", normalizer.normalize( "1" ) );
@@ -108,7 +106,7 @@ public class TelephoneNumberNormalizerTest
 
 
     @Test
-    public void testInsignifiantSpacesStringTwoChars() throws NamingException
+    public void testInsignifiantSpacesStringTwoChars() throws LdapException
     {
         Normalizer normalizer = new TelephoneNumberNormalizer();
         assertEquals( "11", normalizer.normalize( "11" ) );
@@ -116,7 +114,7 @@ public class TelephoneNumberNormalizerTest
 
 
     @Test
-    public void testInsignifiantSpacesStringNChars() throws NamingException
+    public void testInsignifiantSpacesStringNChars() throws LdapException
     {
         Normalizer normalizer = new TelephoneNumberNormalizer();
         assertEquals( "123456", normalizer.normalize( "123456" ) );
@@ -124,7 +122,7 @@ public class TelephoneNumberNormalizerTest
 
 
     @Test
-    public void testInsignifiantTelephoneNumberCharsSpaces() throws NamingException
+    public void testInsignifiantTelephoneNumberCharsSpaces() throws LdapException
     {
         Normalizer normalizer = new TelephoneNumberNormalizer();
         assertEquals( "1", normalizer.normalize( " 1" ) );

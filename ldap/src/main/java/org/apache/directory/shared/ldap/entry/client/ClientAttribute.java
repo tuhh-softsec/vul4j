@@ -19,7 +19,7 @@
 package org.apache.directory.shared.ldap.entry.client;
 
 
-import javax.naming.NamingException;
+import org.apache.directory.shared.ldap.exception.LdapException;
 
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.schema.SyntaxChecker;
@@ -39,7 +39,7 @@ public interface ClientAttribute extends EntryAttribute
      *
      * @param checker The syntax checker
      * @return true if the attribute and it's values are valid, false otherwise
-     * @throws NamingException if there is a failure to check syntaxes of values
+     * @throws LdapException if there is a failure to check syntaxes of values
      */
-    boolean isValid( SyntaxChecker checker) throws NamingException;
+    boolean isValid( SyntaxChecker checker) throws LdapException;
 }

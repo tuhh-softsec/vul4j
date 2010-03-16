@@ -20,8 +20,7 @@
 package org.apache.directory.shared.ldap.schema.registries;
 
 
-import javax.naming.NamingException;
-
+import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.schema.SchemaObject;
 import org.apache.directory.shared.ldap.schema.SchemaObjectType;
 import org.apache.directory.shared.ldap.schema.SyntaxChecker;
@@ -56,7 +55,7 @@ public class DefaultSyntaxCheckerRegistry extends  DefaultSchemaObjectRegistry<S
     /**
      * {@inheritDoc}
      */
-    public void unregisterSchemaElements( String schemaName ) throws NamingException
+    public void unregisterSchemaElements( String schemaName ) throws LdapException
     {
         if ( schemaName == null )
         {

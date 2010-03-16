@@ -1,9 +1,8 @@
 
 package org.apache.directory.shared.ldap.schema;
 
-import javax.naming.NamingException;
-
 import org.apache.directory.shared.ldap.entry.Entry;
+import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.schema.parsers.LdapComparatorDescription;
 import org.apache.directory.shared.ldap.schema.parsers.NormalizerDescription;
 import org.apache.directory.shared.ldap.schema.parsers.SyntaxCheckerDescription;
@@ -30,9 +29,9 @@ public interface EntityFactory
      * @param targetRegistries The registries containing all the enabled SchemaObjects
      * @param schemaName The schema this SchemaObject will be part of
      * @return An AttributeType SchemaObject
-     * @throws NamingException If the AttributeType is invalid
+     * @throws LdapException If the AttributeType is invalid
      */
-    AttributeType getAttributeType( SchemaManager schemaManager, Entry entry, Registries targetRegistries, String schemaName ) throws NamingException;
+    AttributeType getAttributeType( SchemaManager schemaManager, Entry entry, Registries targetRegistries, String schemaName ) throws LdapException;
 
     
     /**
@@ -58,7 +57,7 @@ public interface EntityFactory
      * @param targetRegistries The registries containing all the enabled SchemaObjects
      * @param schemaName The schema this SchemaObject will be part of
      * @return the loaded Comparator
-     * @throws NamingException if anything fails during loading
+     * @throws LdapException if anything fails during loading
      */
     LdapComparator<?> getLdapComparator( SchemaManager schemaManager, Entry entry, 
         Registries targetRegistries, String schemaName ) throws Exception;
@@ -72,9 +71,9 @@ public interface EntityFactory
      * @param targetRegistries The registries containing all the enabled SchemaObjects
      * @param schemaName The schema this SchemaObject will be part of
      * @return A MatchingRule SchemaObject
-     * @throws NamingException If the MatchingRule is invalid
+     * @throws LdapException If the MatchingRule is invalid
      */
-    MatchingRule getMatchingRule( SchemaManager schemaManager, Entry entry, Registries targetRegistries, String schemaName ) throws NamingException;
+    MatchingRule getMatchingRule( SchemaManager schemaManager, Entry entry, Registries targetRegistries, String schemaName ) throws LdapException;
 
 
     /**
@@ -99,7 +98,7 @@ public interface EntityFactory
      * @param targetRegistries The registries containing all the enabled SchemaObjects
      * @param schemaName The schema this SchemaObject will be part of
      * @return the loaded Normalizer
-     * @throws NamingException if anything fails during loading
+     * @throws LdapException if anything fails during loading
      */
     Normalizer getNormalizer( SchemaManager schemaManager, Entry entry, Registries targetRegistries, String schemaName ) 
         throws Exception;
@@ -124,9 +123,9 @@ public interface EntityFactory
      * @param targetRegistries The registries containing all the enabled SchemaObjects
      * @param schemaName The schema this SchemaObject will be part of
      * @return
-     * @throws NamingException
+     * @throws LdapException
      */
-    LdapSyntax getSyntax( SchemaManager schemaManager, Entry entry, Registries targetRegistries, String schemaName ) throws NamingException;
+    LdapSyntax getSyntax( SchemaManager schemaManager, Entry entry, Registries targetRegistries, String schemaName ) throws LdapException;
     
     
     /**
@@ -137,7 +136,7 @@ public interface EntityFactory
      * @param targetRegistries The registries containing all the enabled SchemaObjects
      * @param schemaName The schema this SchemaObject will be part of
      * @return the loaded SyntaxChecker
-     * @throws NamingException if anything fails during loading
+     * @throws LdapException if anything fails during loading
      */
     SyntaxChecker getSyntaxChecker( SchemaManager schemaManager, Entry entry, Registries targetRegistries, String schemaName ) throws Exception;
     

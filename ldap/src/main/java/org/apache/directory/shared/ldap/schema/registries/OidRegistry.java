@@ -26,10 +26,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.naming.NamingException;
-
 import org.apache.directory.shared.asn1.primitives.OID;
 import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.schema.SchemaObject;
 import org.apache.directory.shared.ldap.util.ArrayUtils;
 import org.slf4j.Logger;
@@ -73,9 +72,9 @@ public class OidRegistry implements Iterable<SchemaObject>
      * 
      * @param oid the object identifier
      * @return the primary name
-     * @throws NamingException if oid does not exist
+     * @throws LdapException if oid does not exist
      */
-    public String getPrimaryName( String oid ) throws NamingException
+    public String getPrimaryName( String oid ) throws LdapException
     {
         SchemaObject schemaObject = byOid.get( oid );
 
@@ -87,7 +86,7 @@ public class OidRegistry implements Iterable<SchemaObject>
         {
             String msg = I18n.err( I18n.ERR_04286, oid );
             LOG.error( msg );
-            throw new NamingException( msg );
+            throw new LdapException( msg );
         }
     }
 
@@ -97,9 +96,9 @@ public class OidRegistry implements Iterable<SchemaObject>
      * 
      * @param oid the object identifier
      * @return the associated SchemaObject
-     * @throws NamingException if oid does not exist
+     * @throws LdapException if oid does not exist
      */
-    public SchemaObject getSchemaObject( String oid ) throws NamingException
+    public SchemaObject getSchemaObject( String oid ) throws LdapException
     {
         SchemaObject schemaObject = byOid.get( oid );
 
@@ -111,7 +110,7 @@ public class OidRegistry implements Iterable<SchemaObject>
         {
             String msg = I18n.err( I18n.ERR_04287, oid );
             LOG.error( msg );
-            throw new NamingException( msg );
+            throw new LdapException( msg );
         }
     }
 
@@ -126,9 +125,9 @@ public class OidRegistry implements Iterable<SchemaObject>
      * 
      * @param oid the OID for which we return the set of common names
      * @return a sorted set of names
-     * @throws NamingException if oid does not exist
+     * @throws LdapException if oid does not exist
      */
-    public List<String> getNameSet( String oid ) throws NamingException
+    public List<String> getNameSet( String oid ) throws LdapException
     {
         SchemaObject schemaObject = byOid.get( oid );
 
@@ -136,7 +135,7 @@ public class OidRegistry implements Iterable<SchemaObject>
         {
             String msg = I18n.err( I18n.ERR_04288, oid );
             LOG.error( msg );
-            throw new NamingException( msg );
+            throw new LdapException( msg );
         }
 
         List<String> names = schemaObject.getNames();
@@ -178,14 +177,14 @@ public class OidRegistry implements Iterable<SchemaObject>
      * @param type The SchemaObjectType the oid belongs to
      * @param oid the OID to add or associate a new name with
      */
-    public void register( SchemaObject schemaObject ) throws NamingException
+    public void register( SchemaObject schemaObject ) throws LdapException
     {
         if ( schemaObject == null )
         {
             String message = I18n.err( I18n.ERR_04289 );
 
             LOG.debug( message );
-            throw new NamingException( message );
+            throw new LdapException( message );
         }
 
         String oid = schemaObject.getOid();
@@ -195,7 +194,7 @@ public class OidRegistry implements Iterable<SchemaObject>
             String message = I18n.err( I18n.ERR_04290 );
 
             LOG.debug( message );
-            throw new NamingException( message );
+            throw new LdapException( message );
         }
 
         /*
@@ -236,9 +235,9 @@ public class OidRegistry implements Iterable<SchemaObject>
      * Removes an oid from this registry.
      *
      * @param oid the numeric identifier for the object
-     * @throws NamingException if the identifier is not numeric
+     * @throws LdapException if the identifier is not numeric
      */
-    public void unregister( String oid ) throws NamingException
+    public void unregister( String oid ) throws LdapException
     {
         // Removes the <OID, names> from the byOID map
         SchemaObject removed = byOid.remove( oid );

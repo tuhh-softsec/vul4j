@@ -30,7 +30,7 @@ import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.directory.shared.ldap.exception.LdapOperationNotSupportedException;
+import org.apache.directory.shared.ldap.exception.LdapUnwillingToPerformException;
 import org.apache.directory.shared.ldap.schema.SchemaManager;
 import org.apache.directory.shared.ldap.schema.ldif.extractor.SchemaLdifExtractor;
 import org.apache.directory.shared.ldap.schema.ldif.extractor.impl.DefaultSchemaLdifExtractor;
@@ -423,7 +423,7 @@ public class SchemaManagerLoadWithDepsTest
             schemaManager.loadWithDeps( "bad" );
             fail();
         }
-        catch ( LdapOperationNotSupportedException lonse )
+        catch ( LdapUnwillingToPerformException lonse )
         {
             // expected
         }
@@ -485,7 +485,7 @@ public class SchemaManagerLoadWithDepsTest
             schemaManager.loadWithDeps( "core", "bad", "InetOrgPerson" );
             fail();
         }
-        catch ( LdapOperationNotSupportedException lonse )
+        catch ( LdapUnwillingToPerformException lonse )
         {
             // expected
         }

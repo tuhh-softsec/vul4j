@@ -21,7 +21,7 @@ package org.apache.directory.shared.ldap.schema.comparators;
 
 
 import javax.naming.Name;
-import javax.naming.NamingException;
+import org.apache.directory.shared.ldap.exception.LdapException;
 
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.name.DN;
@@ -76,7 +76,7 @@ public class UniqueMemberComparator extends LdapComparator<String>
             {
                 return getDn( dnstr0 ).compareTo( getDn( dnstr1 ) );
             }
-            catch ( NamingException ne )
+            catch ( LdapException ne )
             {
                 return -1;
             }
@@ -112,7 +112,7 @@ public class UniqueMemberComparator extends LdapComparator<String>
                 {
                     dn0 = new DN( dnstr0.substring( 0, dash0 ) );
                 }
-                catch ( NamingException ne )
+                catch ( LdapException ne )
                 {
                     return -1;
                 }
@@ -133,7 +133,7 @@ public class UniqueMemberComparator extends LdapComparator<String>
                 {
                     dn1 = new DN( dnstr0.substring( 0, dash1 ) );
                 }
-                catch ( NamingException ne )
+                catch ( LdapException ne )
                 {
                     return 1;
                 }
@@ -164,7 +164,7 @@ public class UniqueMemberComparator extends LdapComparator<String>
     }
 
 
-    public DN getDn( Object obj ) throws NamingException
+    public DN getDn( Object obj ) throws LdapException
     {
         DN dn = null;
 

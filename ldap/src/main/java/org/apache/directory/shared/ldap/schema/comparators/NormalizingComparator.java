@@ -22,7 +22,7 @@ package org.apache.directory.shared.ldap.schema.comparators;
 
 import java.util.Comparator;
 
-import javax.naming.NamingException;
+import org.apache.directory.shared.ldap.exception.LdapException;
 
 import org.apache.directory.shared.ldap.schema.LdapComparator;
 import org.apache.directory.shared.ldap.schema.Normalizer;
@@ -81,7 +81,7 @@ import org.slf4j.LoggerFactory;
         {
             n1 = normalizer.normalize( o1 );
         }
-        catch ( NamingException e )
+        catch ( LdapException e )
         {
             LOG.warn( "Failed to normalize: " + o1, e );
             n1 = o1;
@@ -91,7 +91,7 @@ import org.slf4j.LoggerFactory;
         {
             n2 = normalizer.normalize( o2 );
         }
-        catch ( NamingException e )
+        catch ( LdapException e )
         {
             LOG.warn( "Failed to normalize: " + o2, e );
             n2 = o2;

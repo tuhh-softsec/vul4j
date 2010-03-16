@@ -24,30 +24,26 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.naming.AuthenticationException;
-import javax.naming.AuthenticationNotSupportedException;
-import javax.naming.CommunicationException;
-import javax.naming.ContextNotEmptyException;
-import javax.naming.InvalidNameException;
-import javax.naming.LimitExceededException;
-import javax.naming.NameAlreadyBoundException;
-import javax.naming.NameNotFoundException;
-import javax.naming.NamingException;
-import javax.naming.NoPermissionException;
-import javax.naming.OperationNotSupportedException;
-import javax.naming.PartialResultException;
-import javax.naming.ServiceUnavailableException;
-import javax.naming.SizeLimitExceededException;
-import javax.naming.TimeLimitExceededException;
-import javax.naming.directory.AttributeInUseException;
-import javax.naming.directory.InvalidAttributeIdentifierException;
-import javax.naming.directory.InvalidAttributeValueException;
-import javax.naming.directory.InvalidSearchFilterException;
-import javax.naming.directory.NoSuchAttributeException;
-import javax.naming.directory.SchemaViolationException;
-
+import org.apache.directory.shared.ldap.codec.LdapEncoder;
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
+import org.apache.directory.shared.ldap.exception.LdapAttributeInUseException;
+import org.apache.directory.shared.ldap.exception.LdapAuthenticationException;
+import org.apache.directory.shared.ldap.exception.LdapAuthenticationNotSupportedException;
+import org.apache.directory.shared.ldap.exception.LdapContextNotEmptyException;
+import org.apache.directory.shared.ldap.exception.LdapEntryAlreadyExistsException;
+import org.apache.directory.shared.ldap.exception.LdapException;
+import org.apache.directory.shared.ldap.exception.LdapInvalidAttributeTypeException;
+import org.apache.directory.shared.ldap.exception.LdapInvalidSearchFilterException;
+import org.apache.directory.shared.ldap.exception.LdapNoPermissionException;
+import org.apache.directory.shared.ldap.exception.LdapNoSuchAttributeException;
+import org.apache.directory.shared.ldap.exception.LdapNoSuchObjectException;
 import org.apache.directory.shared.ldap.exception.LdapOperationException;
+import org.apache.directory.shared.ldap.exception.LdapInvalidAttributeValueException;
+import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
+import org.apache.directory.shared.ldap.exception.LdapSchemaViolationException;
+import org.apache.directory.shared.ldap.exception.LdapServiceUnavailableException;
+import org.apache.directory.shared.ldap.exception.LdapTimeLimitExceededException;
+import org.apache.directory.shared.ldap.exception.LdapUnwillingToPerformException;
 
 
 /**
@@ -2281,17 +2277,17 @@ public enum ResultCodeEnum
             return Collections.singleton( rc );
         }
 
-        if ( t instanceof SchemaViolationException )
+        if ( t instanceof LdapSchemaViolationException )
         {
             return SCHEMAVIOLATIONEXCEPTION_CODES;
         }
 
-        if ( t instanceof InvalidNameException )
+        if ( t instanceof LdapInvalidDnException )
         {
             return INVALIDNAMEEXCEPTION_CODES;
         }
 
-        if ( t instanceof OperationNotSupportedException )
+        if ( t instanceof LdapUnwillingToPerformException )
         {
             return OPERATIONNOTSUPPOERTEXCEPTION_CODES;
         }
@@ -2306,24 +2302,24 @@ public enum ResultCodeEnum
             return PARTIAL_RESULTSEXCEPTION_CODES;
         }
 
-        if ( t instanceof InvalidAttributeValueException )
+        if ( t instanceof LdapInvalidAttributeValueException )
         {
             return INVALIDATTRIBUTEVALUEEXCEPTION_CODES;
         }
 
-        if ( t instanceof ServiceUnavailableException )
+        if ( t instanceof LdapServiceUnavailableException )
         {
             return SERVICEUNAVAILABLE_CODES;
         }
 
-        if ( t instanceof AuthenticationNotSupportedException )
+        if ( t instanceof LdapAuthenticationNotSupportedException )
         {
             return AUTHENTICATIONNOTSUPPOERTEDEXCEPTION_CODES;
         }
 
         // keep this last because others are subtypes and thier evaluation
         // may be shorted otherwise by this comparison here
-        if ( t instanceof NamingException )
+        if ( t instanceof LdapException )
         {
             return NAMINGEXCEPTION_CODES;
         }
@@ -2369,12 +2365,12 @@ public enum ResultCodeEnum
             return ( ( LdapOperationException ) t ).getResultCode();
         }
 
-        if ( t instanceof CommunicationException )
+        if ( t instanceof LdapCommunicationException )
         {
             return ResultCodeEnum.PROTOCOL_ERROR;
         }
 
-        if ( t instanceof TimeLimitExceededException )
+        if ( t instanceof LdapTimeLimitExceededException )
         {
             return ResultCodeEnum.TIME_LIMIT_EXCEEDED;
         }
@@ -2384,47 +2380,47 @@ public enum ResultCodeEnum
             return ResultCodeEnum.SIZE_LIMIT_EXCEEDED;
         }
 
-        if ( t instanceof AuthenticationException )
+        if ( t instanceof LdapAuthenticationException )
         {
             return ResultCodeEnum.INVALID_CREDENTIALS;
         }
 
-        if ( t instanceof NoPermissionException )
+        if ( t instanceof LdapNoPermissionException )
         {
             return ResultCodeEnum.INSUFFICIENT_ACCESS_RIGHTS;
         }
 
-        if ( t instanceof NoSuchAttributeException )
+        if ( t instanceof LdapNoSuchAttributeException )
         {
             return ResultCodeEnum.NO_SUCH_ATTRIBUTE;
         }
 
-        if ( t instanceof InvalidAttributeIdentifierException )
+        if ( t instanceof LdapInvalidAttributeTypeException )
         {
             return ResultCodeEnum.UNDEFINED_ATTRIBUTE_TYPE;
         }
 
-        if ( t instanceof InvalidSearchFilterException )
+        if ( t instanceof LdapInvalidSearchFilterException )
         {
             return ResultCodeEnum.INAPPROPRIATE_MATCHING;
         }
 
-        if ( t instanceof AttributeInUseException )
+        if ( t instanceof LdapAttributeInUseException )
         {
             return ResultCodeEnum.ATTRIBUTE_OR_VALUE_EXISTS;
         }
 
-        if ( t instanceof NameNotFoundException )
+        if ( t instanceof LdapNoSuchObjectException )
         {
             return ResultCodeEnum.NO_SUCH_OBJECT;
         }
 
-        if ( t instanceof NameAlreadyBoundException )
+        if ( t instanceof LdapEntryAlreadyExistsException )
         {
             return ResultCodeEnum.ENTRY_ALREADY_EXISTS;
         }
 
-        if ( t instanceof ContextNotEmptyException )
+        if ( t instanceof LdapContextNotEmptyException )
         {
             return ResultCodeEnum.NOT_ALLOWED_ON_NON_LEAF;
         }

@@ -20,8 +20,7 @@
 package org.apache.directory.shared.ldap.schema.normalizers;
 
 
-import javax.naming.NamingException;
-
+import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.schema.Normalizer;
 import org.apache.directory.shared.ldap.schema.normalizers.NumericNormalizer;
 import org.junit.Test;
@@ -36,7 +35,7 @@ import static org.junit.Assert.assertEquals;
 public class NumericNormalizerTest
 {
     @Test
-    public void testNumericNormalizerNull() throws NamingException
+    public void testNumericNormalizerNull() throws LdapException
     {
         Normalizer normalizer = new NumericNormalizer();
         assertEquals( "", normalizer.normalize( ( String ) null ) );
@@ -44,7 +43,7 @@ public class NumericNormalizerTest
 
 
     @Test
-    public void testNumericNormalizerEmpty() throws NamingException
+    public void testNumericNormalizerEmpty() throws LdapException
     {
         Normalizer normalizer = new NumericNormalizer();
         assertEquals( "", normalizer.normalize( "" ) );
@@ -52,7 +51,7 @@ public class NumericNormalizerTest
 
 
     @Test
-    public void testNumericNormalizerOneSpace() throws NamingException
+    public void testNumericNormalizerOneSpace() throws LdapException
     {
         Normalizer normalizer = new NumericNormalizer();
         assertEquals( "", normalizer.normalize( " " ) );
@@ -60,7 +59,7 @@ public class NumericNormalizerTest
 
 
     @Test
-    public void testNumericNormalizerTwoSpaces() throws NamingException
+    public void testNumericNormalizerTwoSpaces() throws LdapException
     {
         Normalizer normalizer = new NumericNormalizer();
         assertEquals( "", normalizer.normalize( "  " ) );
@@ -68,7 +67,7 @@ public class NumericNormalizerTest
 
 
     @Test
-    public void testNumericNormalizerNSpaces() throws NamingException
+    public void testNumericNormalizerNSpaces() throws LdapException
     {
         Normalizer normalizer = new NumericNormalizer();
         assertEquals( "", normalizer.normalize( "      " ) );
@@ -76,7 +75,7 @@ public class NumericNormalizerTest
 
 
     @Test
-    public void testInsignifiantSpacesStringOneChar() throws NamingException
+    public void testInsignifiantSpacesStringOneChar() throws LdapException
     {
         Normalizer normalizer = new NumericNormalizer();
         assertEquals( "1", normalizer.normalize( "1" ) );
@@ -84,7 +83,7 @@ public class NumericNormalizerTest
 
 
     @Test
-    public void testInsignifiantSpacesStringTwoChars() throws NamingException
+    public void testInsignifiantSpacesStringTwoChars() throws LdapException
     {
         Normalizer normalizer = new NumericNormalizer();
         assertEquals( "11", normalizer.normalize( "11" ) );
@@ -92,7 +91,7 @@ public class NumericNormalizerTest
 
 
     @Test
-    public void testInsignifiantSpacesStringNChars() throws NamingException
+    public void testInsignifiantSpacesStringNChars() throws LdapException
     {
         Normalizer normalizer = new NumericNormalizer();
         assertEquals( "123456", normalizer.normalize( "123456" ) );
@@ -100,7 +99,7 @@ public class NumericNormalizerTest
 
 
     @Test
-    public void testInsignifiantNumericCharsSpaces() throws NamingException
+    public void testInsignifiantNumericCharsSpaces() throws LdapException
     {
         Normalizer normalizer = new NumericNormalizer();
         assertEquals( "1", normalizer.normalize( " 1" ) );

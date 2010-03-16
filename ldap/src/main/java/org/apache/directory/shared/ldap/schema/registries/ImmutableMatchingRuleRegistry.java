@@ -22,10 +22,10 @@ package org.apache.directory.shared.ldap.schema.registries;
 
 import java.util.Iterator;
 
-import javax.naming.NamingException;
+import org.apache.directory.shared.ldap.exception.LdapException;
 
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.exception.LdapOperationNotSupportedException;
+import org.apache.directory.shared.ldap.exception.LdapUnwillingToPerformException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.schema.MatchingRule;
 import org.apache.directory.shared.ldap.schema.SchemaObject;
@@ -85,7 +85,7 @@ public class ImmutableMatchingRuleRegistry implements MatchingRuleRegistry
     /**
      * {@inheritDoc}
      */
-    public String getOidByName( String name ) throws NamingException
+    public String getOidByName( String name ) throws LdapException
     {
         return immutableMatchingRuleRegistry.getOidByName( name );
     }
@@ -94,7 +94,7 @@ public class ImmutableMatchingRuleRegistry implements MatchingRuleRegistry
     /**
      * {@inheritDoc}
      */
-    public String getSchemaName( String oid ) throws NamingException
+    public String getSchemaName( String oid ) throws LdapException
     {
         return immutableMatchingRuleRegistry.getSchemaName( oid );
     }
@@ -121,7 +121,7 @@ public class ImmutableMatchingRuleRegistry implements MatchingRuleRegistry
     /**
      * {@inheritDoc}
      */
-    public MatchingRule lookup( String oid ) throws NamingException
+    public MatchingRule lookup( String oid ) throws LdapException
     {
         return immutableMatchingRuleRegistry.lookup( oid );
     }
@@ -139,36 +139,36 @@ public class ImmutableMatchingRuleRegistry implements MatchingRuleRegistry
     /**
      * {@inheritDoc}
      */
-    public void register( MatchingRule schemaObject ) throws NamingException
+    public void register( MatchingRule schemaObject ) throws LdapException
     {
-        throw new LdapOperationNotSupportedException( I18n.err( I18n.ERR_04280 ), ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapUnwillingToPerformException( ResultCodeEnum.NO_SUCH_OPERATION, I18n.err( I18n.ERR_04280 ) );
     }
 
 
     /**
      * {@inheritDoc}
      */
-    public void renameSchema( String originalSchemaName, String newSchemaName ) throws NamingException
+    public void renameSchema( String originalSchemaName, String newSchemaName ) throws LdapException
     {
-        throw new LdapOperationNotSupportedException( I18n.err( I18n.ERR_04280 ), ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapUnwillingToPerformException( ResultCodeEnum.NO_SUCH_OPERATION, I18n.err( I18n.ERR_04280 ) );
     }
 
 
     /**
      * {@inheritDoc}
      */
-    public MatchingRule unregister( String numericOid ) throws NamingException
+    public MatchingRule unregister( String numericOid ) throws LdapException
     {
-        throw new LdapOperationNotSupportedException( I18n.err( I18n.ERR_04280 ), ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapUnwillingToPerformException( ResultCodeEnum.NO_SUCH_OPERATION, I18n.err( I18n.ERR_04280 ) );
     }
 
 
     /**
      * {@inheritDoc}
      */
-    public void unregisterSchemaElements( String schemaName ) throws NamingException
+    public void unregisterSchemaElements( String schemaName ) throws LdapException
     {
-        throw new LdapOperationNotSupportedException( I18n.err( I18n.ERR_04280 ), ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapUnwillingToPerformException( ResultCodeEnum.NO_SUCH_OPERATION, I18n.err( I18n.ERR_04280 ) );
     }
 
 
@@ -184,17 +184,17 @@ public class ImmutableMatchingRuleRegistry implements MatchingRuleRegistry
     /**
      * {@inheritDoc}
      */
-    public void clear() throws NamingException
+    public void clear() throws LdapException
     {
-        throw new LdapOperationNotSupportedException( I18n.err( I18n.ERR_04280 ), ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapUnwillingToPerformException( ResultCodeEnum.NO_SUCH_OPERATION, I18n.err( I18n.ERR_04280 ) );
     }
 
 
     /**
      * {@inheritDoc}
      */
-    public MatchingRule unregister( MatchingRule schemaObject ) throws NamingException
+    public MatchingRule unregister( MatchingRule schemaObject ) throws LdapException
     {
-        throw new LdapOperationNotSupportedException( I18n.err( I18n.ERR_04280 ), ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapUnwillingToPerformException( ResultCodeEnum.NO_SUCH_OPERATION, I18n.err( I18n.ERR_04280 ) );
     }
 }

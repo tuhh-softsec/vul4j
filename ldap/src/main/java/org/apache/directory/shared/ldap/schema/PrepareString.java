@@ -24,7 +24,6 @@ import java.io.IOException;
 
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.apache.directory.shared.ldap.util.unicode.InvalidCharacterException;
-// import org.apache.directory.shared.ldap.util.unicode.Normalizer;
 
 /**
  * 

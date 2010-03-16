@@ -20,8 +20,7 @@
 package org.apache.directory.shared.ldap.schema.registries;
 
 
-import javax.naming.NamingException;
-
+import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.schema.LdapComparator;
 
 
@@ -38,10 +37,10 @@ public interface ComparatorRegistry extends SchemaObjectRegistry<LdapComparator<
      * Registers a new LdapComparator with this registry.
      *
      * @param comparator the LdapComparator to register
-     * @throws NamingException if the LdapComparator is already registered or
+     * @throws LdapException if the LdapComparator is already registered or
      * the registration operation is not supported
      */
-    void register( LdapComparator<?> comparator ) throws NamingException;
+    void register( LdapComparator<?> comparator ) throws LdapException;
 
 
     /**
@@ -49,9 +48,9 @@ public interface ComparatorRegistry extends SchemaObjectRegistry<LdapComparator<
      * numeric OID.
      * 
      * @param numericOid the numeric identifier
-     * @throws NamingException if the numeric identifier is invalid
+     * @throws LdapException if the numeric identifier is invalid
      */
-    LdapComparator<?> unregister( String numericOid ) throws NamingException;
+    LdapComparator<?> unregister( String numericOid ) throws LdapException;
     
     
     /**
@@ -60,7 +59,7 @@ public interface ComparatorRegistry extends SchemaObjectRegistry<LdapComparator<
      * 
      * @param schemaName the name of the schema whose LdapComparators will be removed from
      */
-    void unregisterSchemaElements( String schemaName ) throws NamingException;
+    void unregisterSchemaElements( String schemaName ) throws LdapException;
     
     
     /**

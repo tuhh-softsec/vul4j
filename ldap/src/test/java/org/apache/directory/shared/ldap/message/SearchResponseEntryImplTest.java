@@ -20,13 +20,11 @@
 package org.apache.directory.shared.ldap.message;
 
 
-import javax.naming.InvalidNameException;
-import javax.naming.NamingException;
-
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.client.DefaultClientAttribute;
 import org.apache.directory.shared.ldap.entry.client.DefaultClientEntry;
+import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.message.SearchResponseEntryImpl;
 import org.apache.directory.shared.ldap.name.DN;
 import org.junit.Test;
@@ -63,7 +61,7 @@ public class SearchResponseEntryImplTest
      * 
      * @return The populated Entry object
      */
-    private Entry getEntry() throws NamingException
+    private Entry getEntry() throws LdapException
     {
         Entry attrs = new DefaultClientEntry();
         attrs.put( getEntry( "attr0" ) );
@@ -88,7 +86,7 @@ public class SearchResponseEntryImplTest
      * Tests for equality when an exact copy is compared.
      */
     @Test
-    public void testEqualsExactCopy() throws InvalidNameException, NamingException
+    public void testEqualsExactCopy() throws LdapException
     {
         SearchResponseEntryImpl resp0 = new SearchResponseEntryImpl( 5 );
         resp0.setEntry( getEntry() );
@@ -107,7 +105,7 @@ public class SearchResponseEntryImplTest
      * Tests for inequality when the objectName dn is not the same.
      */
     @Test
-    public void testNotEqualDiffObjectName() throws InvalidNameException, NamingException
+    public void testNotEqualDiffObjectName() throws LdapException
     {
         SearchResponseEntryImpl resp0 = new SearchResponseEntryImpl( 5 );
         resp0.setEntry( getEntry() );
@@ -126,7 +124,7 @@ public class SearchResponseEntryImplTest
      * Tests for inequality when the attributes are not the same.
      */
     @Test
-    public void testNotEqualDiffAttributes() throws InvalidNameException, NamingException
+    public void testNotEqualDiffAttributes() throws LdapException
     {
         SearchResponseEntryImpl resp0 = new SearchResponseEntryImpl( 5 );
         resp0.setEntry( getEntry() );

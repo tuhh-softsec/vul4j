@@ -20,7 +20,7 @@
 package org.apache.directory.shared.ldap.schema;
 
 
-import javax.naming.NamingException;
+import org.apache.directory.shared.ldap.exception.LdapException;
 
 import org.apache.directory.shared.ldap.exception.LdapInvalidAttributeValueException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
@@ -73,9 +73,9 @@ public abstract class SyntaxChecker extends LoadableSchemaObject
      * syntax.
      * 
      * @param value the value of some attribute with the syntax
-     * @throws NamingException if the value does not conform to the attribute syntax.
+     * @throws LdapException if the value does not conform to the attribute syntax.
      */
-    public void assertSyntax( Object value ) throws NamingException
+    public void assertSyntax( Object value ) throws LdapException
     {
         if ( !isValidSyntax( value ) )
         {

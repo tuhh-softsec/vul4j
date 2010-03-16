@@ -24,8 +24,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import javax.naming.NamingException;
-
+import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.junit.Before;
 import org.junit.Test;
@@ -49,7 +48,7 @@ public class AttributeTypeRegistryTest
     
     
     @Test
-    public void testUnregister() throws NamingException
+    public void testUnregister() throws LdapException
     {
         AttributeType at0 = new AttributeType( "1.1" );
         at0.addName( "t", "test", "Test", "T" );
@@ -66,7 +65,7 @@ public class AttributeTypeRegistryTest
             atRegistry.getOidByName( "T" );
             fail();
         }
-        catch ( NamingException ne )
+        catch ( LdapException ne )
         {
             assertTrue( true );
         }
@@ -74,7 +73,7 @@ public class AttributeTypeRegistryTest
     
     
     @Test
-    public void testRegister() throws NamingException
+    public void testRegister() throws LdapException
     {
         AttributeType at0 = new AttributeType( "1.1" );
         at0.addName( "t", "test", "Test", "T" );
@@ -91,7 +90,7 @@ public class AttributeTypeRegistryTest
             atRegistry.register( at0 );
             fail();
         }
-        catch ( NamingException ne )
+        catch ( LdapException ne )
         {
             assertTrue( true );
         }

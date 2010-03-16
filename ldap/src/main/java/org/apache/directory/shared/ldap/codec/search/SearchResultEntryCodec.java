@@ -25,7 +25,7 @@ import java.nio.ByteBuffer;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.naming.NamingException;
+import org.apache.directory.shared.ldap.exception.LdapException;
 
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
@@ -185,7 +185,7 @@ public class SearchResultEntryCodec extends LdapMessageCodec
         {
             entry.put( currentAttributeValue );
         }
-        catch ( NamingException ne )
+        catch ( LdapException ne )
         {
             // Too bad... But there is nothing we can do.
         }

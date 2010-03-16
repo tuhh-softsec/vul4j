@@ -19,7 +19,7 @@
  */
 package org.apache.directory.shared.ldap.entry;
 
-import javax.naming.NamingException;
+import org.apache.directory.shared.ldap.exception.LdapException;
 
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.schema.SyntaxChecker;
@@ -204,7 +204,7 @@ public abstract class AbstractValue<T> implements Value<T>
      *
      * @see ServerValue#isValid()
      */
-    public final boolean isValid( SyntaxChecker syntaxChecker ) throws NamingException
+    public final boolean isValid( SyntaxChecker syntaxChecker ) throws LdapException
     {
         if ( valid != null )
         {
@@ -215,7 +215,7 @@ public abstract class AbstractValue<T> implements Value<T>
         {
             String message = I18n.err( I18n.ERR_04139, toString() );
             LOG.error( message );
-            throw new NamingException( message );
+            throw new LdapException( message );
         }
         
         valid = syntaxChecker.isValidSyntax( getReference() );
@@ -227,9 +227,9 @@ public abstract class AbstractValue<T> implements Value<T>
      * Normalize the value. In order to use this method, the Value
      * must be schema aware.
      * 
-     * @exception NamingException If the value cannot be normalized
+     * @exception LdapException If the value cannot be normalized
      */
-    public void normalize() throws NamingException
+    public void normalize() throws LdapException
     {
         normalized = true;
         normalizedValue = wrapped;

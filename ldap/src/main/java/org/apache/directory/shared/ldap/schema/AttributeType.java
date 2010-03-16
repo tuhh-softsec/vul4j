@@ -24,9 +24,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.naming.NamingException;
-
 import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.exception.LdapSchemaViolationException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.schema.registries.AttributeTypeRegistry;
@@ -226,7 +225,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
                 // Not allowed.
                 String msg = I18n.err( I18n.ERR_04303, superiorOid, getName() );
 
-                Throwable error = new LdapSchemaViolationException( msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
+                Throwable error = new LdapSchemaViolationException( ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX, msg );
                 errors.add( error );
                 LOG.info( msg );
 
@@ -251,7 +250,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
                 {
                     attributeTypeRegistry.registerDescendants( this, superior );
                 }
-                catch ( NamingException ne )
+                catch ( LdapException ne )
                 {
                     errors.add( ne );
                     LOG.info( ne.getMessage() );
@@ -272,8 +271,8 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
                         // Not allowed.
                         String msg = I18n.err( I18n.ERR_04304, getName() );
 
-                        Throwable error = new LdapSchemaViolationException( msg,
-                            ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
+                        Throwable error = new LdapSchemaViolationException( ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX,
+                            msg );
                         errors.add( error );
                         LOG.info( msg );
                         isOk = false;
@@ -296,7 +295,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
                 // Not allowed.
                 String msg = I18n.err( I18n.ERR_04305, superiorOid, getName() );
 
-                Throwable error = new LdapSchemaViolationException( msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
+                Throwable error = new LdapSchemaViolationException( ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX, msg );
                 errors.add( error );
                 LOG.info( msg );
 
@@ -325,12 +324,12 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
             {
                 syntax = registries.getLdapSyntaxRegistry().lookup( syntaxOid );
             }
-            catch ( NamingException ne )
+            catch ( LdapException ne )
             {
                 // Not allowed.
                 String msg = I18n.err( I18n.ERR_04306, syntaxOid, getName() );
 
-                Throwable error = new LdapSchemaViolationException( msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
+                Throwable error = new LdapSchemaViolationException( ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX, msg );
                 errors.add( error );
                 LOG.info( msg );
                 return;
@@ -346,7 +345,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
                 // Not allowed.
                 String msg = I18n.err( I18n.ERR_04306, syntaxOid, getName() );
 
-                Throwable error = new LdapSchemaViolationException( msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
+                Throwable error = new LdapSchemaViolationException( ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX, msg );
                 errors.add( error );
                 LOG.info( msg );
                 return;
@@ -365,7 +364,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
                 // Not allowed.
                 String msg = I18n.err( I18n.ERR_04307, getName() );
 
-                Throwable error = new LdapSchemaViolationException( msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
+                Throwable error = new LdapSchemaViolationException( ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX, msg );
                 errors.add( error );
                 LOG.info( msg );
                 return;
@@ -388,12 +387,12 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
             {
                 equality = registries.getMatchingRuleRegistry().lookup( equalityOid );
             }
-            catch ( NamingException ne )
+            catch ( LdapException ne )
             {
                 // Not allowed.
                 String msg = I18n.err( I18n.ERR_04308, equalityOid, getName() );
 
-                Throwable error = new LdapSchemaViolationException( msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
+                Throwable error = new LdapSchemaViolationException( ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX, msg );
                 errors.add( error );
                 LOG.info( msg );
                 return;
@@ -408,7 +407,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
                 // Not allowed.
                 String msg = I18n.err( I18n.ERR_04309, equalityOid, getName() );
 
-                Throwable error = new LdapSchemaViolationException( msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
+                Throwable error = new LdapSchemaViolationException( ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX, msg );
                 errors.add( error );
                 LOG.info( msg );
             }
@@ -438,12 +437,12 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
             {
                 ordering = registries.getMatchingRuleRegistry().lookup( orderingOid );
             }
-            catch ( NamingException ne )
+            catch ( LdapException ne )
             {
                 // Not allowed.
                 String msg = I18n.err( I18n.ERR_04310, orderingOid, getName() );
 
-                Throwable error = new LdapSchemaViolationException( msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
+                Throwable error = new LdapSchemaViolationException( ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX, msg );
                 errors.add( error );
                 LOG.info( msg );
                 return;
@@ -458,7 +457,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
                 // Not allowed.
                 String msg = I18n.err( I18n.ERR_04311, orderingOid, getName() );
 
-                Throwable error = new LdapSchemaViolationException( msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
+                Throwable error = new LdapSchemaViolationException( ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX, msg );
                 errors.add( error );
                 LOG.info( msg );
             }
@@ -489,12 +488,12 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
             {
                 substring = registries.getMatchingRuleRegistry().lookup( substringOid );
             }
-            catch ( NamingException ne )
+            catch ( LdapException ne )
             {
                 // Not allowed.
                 String msg = I18n.err( I18n.ERR_04312, substringOid, getName() );
 
-                Throwable error = new LdapSchemaViolationException( msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
+                Throwable error = new LdapSchemaViolationException( ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX, msg );
                 errors.add( error );
                 LOG.info( msg );
                 return;
@@ -509,7 +508,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
                 // Not allowed.
                 String msg = I18n.err( I18n.ERR_04313, substringOid, getName() );
 
-                Throwable error = new LdapSchemaViolationException( msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
+                Throwable error = new LdapSchemaViolationException( ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX, msg );
                 errors.add( error );
                 LOG.info( msg );
                 return;
@@ -538,7 +537,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
             // This is an error
             String msg = I18n.err( I18n.ERR_04314, getName() );
 
-            Throwable error = new LdapSchemaViolationException( msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
+            Throwable error = new LdapSchemaViolationException( ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX, msg );
             errors.add( error );
             LOG.info( msg );
             return;
@@ -550,7 +549,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
             // Cannot have a not user modifiable AT which is not an operational AT
             String msg = I18n.err( I18n.ERR_04315, getName() );
 
-            Throwable error = new LdapSchemaViolationException( msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
+            Throwable error = new LdapSchemaViolationException( ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX, msg );
             errors.add( error );
             LOG.info( msg );
         }
@@ -576,7 +575,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
             // An AttributeType which is collective must be a USER attributeType
             String msg = I18n.err( I18n.ERR_04316, getName() );
 
-            Throwable error = new LdapSchemaViolationException( msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
+            Throwable error = new LdapSchemaViolationException( ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX, msg );
             errors.add( error );
             LOG.info( msg );
         }
@@ -593,7 +592,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
      * @param registries The Registries
      * @exception If the AttributeType is not valid 
      */
-    public void addToRegistries( List<Throwable> errors, Registries registries ) throws NamingException
+    public void addToRegistries( List<Throwable> errors, Registries registries ) throws LdapException
     {
         if ( registries != null )
         {
@@ -674,7 +673,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
      * @param registries The Registries
      * @exception If the AttributeType is not valid 
      */
-    public void removeFromRegistries( List<Throwable> errors, Registries registries ) throws NamingException
+    public void removeFromRegistries( List<Throwable> errors, Registries registries ) throws LdapException
     {
         if ( registries != null )
         {

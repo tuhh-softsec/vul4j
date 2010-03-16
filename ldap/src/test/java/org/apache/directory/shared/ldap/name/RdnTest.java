@@ -33,9 +33,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Iterator;
 
-import javax.naming.InvalidNameException;
-import javax.naming.NamingException;
-
+import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
 
@@ -63,10 +61,10 @@ public class RdnTest
     /**
      * test an empty RDN
      * 
-     * @throws InvalidNameException
+     * @throws LdapException
      */
     @Test
-    public void testRdnEmpty() throws InvalidNameException
+    public void testRdnEmpty() throws LdapException
     {
         assertEquals( "", new RDN( "" ).toString() );
     }
@@ -75,10 +73,10 @@ public class RdnTest
     /**
      * test a simple RDN : a = b
      * 
-     * @throws InvalidNameException
+     * @throws LdapException
      */
     @Test
-    public void testRdnSimple() throws InvalidNameException
+    public void testRdnSimple() throws LdapException
     {
         assertEquals( "a=b", new RDN( "a = b" ).toString() );
     }
@@ -87,10 +85,10 @@ public class RdnTest
     /**
      * test a composite RDN : a = b, d = e
      * 
-     * @throws InvalidNameException
+     * @throws LdapException
      */
     @Test
-    public void testRdnComposite() throws InvalidNameException
+    public void testRdnComposite() throws LdapException
     {
         assertEquals( "a=b+c=d", new RDN( "a = b + c = d" ).toString() );
     }
@@ -100,10 +98,10 @@ public class RdnTest
      * test a composite RDN with or without spaces: a=b, a =b, a= b, a = b, a =
      * b
      * 
-     * @throws InvalidNameException
+     * @throws LdapException
      */
     @Test
-    public void testRdnCompositeWithSpace() throws InvalidNameException
+    public void testRdnCompositeWithSpace() throws LdapException
     {
         assertEquals( "a=b", new RDN( "a=b" ).toString() );
         assertEquals( "a=b", new RDN( " a=b" ).toString() );
@@ -127,10 +125,10 @@ public class RdnTest
     /**
      * test a simple RDN with differents separators : a = b + c = d
      * 
-     * @throws InvalidNameException
+     * @throws LdapException
      */
     @Test
-    public void testRdnSimpleMultivaluedAttribute() throws InvalidNameException
+    public void testRdnSimpleMultivaluedAttribute() throws LdapException
     {
         String result = new RDN( "a = b + c = d" ).toString();
         assertEquals( "a=b+c=d", result );
@@ -141,10 +139,10 @@ public class RdnTest
      * test a composite RDN with differents separators : a=b+c=d, e=f + g=h +
      * i=j
      * 
-     * @throws InvalidNameException
+     * @throws LdapException
      */
     @Test
-    public void testRdnCompositeMultivaluedAttribute() throws InvalidNameException
+    public void testRdnCompositeMultivaluedAttribute() throws LdapException
     {
         RDN rdn = new RDN( "a =b+c=d + e=f + g  =h + i =j " );
 
@@ -160,10 +158,10 @@ public class RdnTest
     /**
      * test a simple RDN with an oid prefix (uppercase) : OID.12.34.56 = azerty
      * 
-     * @throws InvalidNameException
+     * @throws LdapException
      */
     @Test
-    public void testRdnOidUpper() throws InvalidNameException
+    public void testRdnOidUpper() throws LdapException
     {
         assertEquals( "oid.12.34.56=azerty", new RDN( "OID.12.34.56 =  azerty" ).toString() );
     }
@@ -172,10 +170,10 @@ public class RdnTest
     /**
      * test a simple RDN with an oid prefix (lowercase) : oid.12.34.56 = azerty
      * 
-     * @throws InvalidNameException
+     * @throws LdapException
      */
     @Test
-    public void testRdnOidLower() throws InvalidNameException
+    public void testRdnOidLower() throws LdapException
     {
         assertEquals( "oid.12.34.56=azerty", new RDN( "oid.12.34.56 = azerty" ).toString() );
     }
@@ -185,10 +183,10 @@ public class RdnTest
      * test a simple RDN with an oid attribut wiithout oid prefix : 12.34.56 =
      * azerty
      * 
-     * @throws InvalidNameException
+     * @throws LdapException
      */
     @Test
-    public void testRdnOidWithoutPrefix() throws InvalidNameException
+    public void testRdnOidWithoutPrefix() throws LdapException
     {
         assertEquals( "12.34.56=azerty", new RDN( "12.34.56 = azerty" ).toString() );
     }
@@ -198,10 +196,10 @@ public class RdnTest
      * test a composite RDN with an oid attribut wiithout oid prefix : 12.34.56 =
      * azerty; 7.8 = test
      * 
-     * @throws InvalidNameException
+     * @throws LdapException
      */
     @Test
-    public void testRdnCompositeOidWithoutPrefix() throws InvalidNameException
+    public void testRdnCompositeOidWithoutPrefix() throws LdapException
     {
         String result = new RDN( "12.34.56 = azerty + 7.8 = test" ).toString();
         assertEquals( "12.34.56=azerty+7.8=test", result );
@@ -211,10 +209,10 @@ public class RdnTest
     /**
      * test a simple RDN with pair char attribute value : a = \,\=\+\<\>\#\;\\\"\C3\A9"
      * 
-     * @throws InvalidNameException
+     * @throws LdapException
      */
     @Test
-    public void testRdnPairCharAttributeValue() throws InvalidNameException
+    public void testRdnPairCharAttributeValue() throws LdapException
     {
         String rdn = StringTools.utf8ToString( new byte[]
             { 'a', '=', '\\', ',', '=', '\\', '+', '\\', '<', '\\', '>', '#', '\\', ';', '\\', '\\', '\\', '"', '\\',
@@ -227,7 +225,7 @@ public class RdnTest
      * test a simple RDN with hexString attribute value : a = #0010A0AAFF
      */
     @Test
-    public void testRdnHexStringAttributeValue() throws InvalidNameException
+    public void testRdnHexStringAttributeValue() throws LdapException
     {
         assertEquals( "a=#0010A0AAFF", new RDN( "a = #0010A0AAFF" ).toString() );
     }
@@ -236,14 +234,14 @@ public class RdnTest
      * test exception from illegal hexString attribute value : a=#zz.
      */
     @Test
-    public void testBadRdnHexStringAttributeValue() throws InvalidNameException
+    public void testBadRdnHexStringAttributeValue() throws LdapException
     {
         try
         {
             new RDN( "a=#zz" );
             fail();
         }
-        catch ( InvalidNameException ine )
+        catch ( LdapException ine )
         {
             assertTrue( true );
         }
@@ -252,10 +250,10 @@ public class RdnTest
     /**
      * test a simple RDN with quoted attribute value : a = "quoted \"value"
      * 
-     * @throws InvalidNameException
+     * @throws LdapException
      */
     @Test
-    public void testRdnQuotedAttributeValue() throws InvalidNameException
+    public void testRdnQuotedAttributeValue() throws LdapException
     {
         assertEquals( "a=quoted \\\"value", new RDN( "a = quoted \\\"value" ).toString() );
     }
@@ -274,7 +272,7 @@ public class RdnTest
             RdnParser.parse( "c=d", rdn );
             fail();
         }
-        catch ( InvalidNameException ine )
+        catch ( LdapException ine )
         {
             assertTrue( true );
         }
@@ -284,10 +282,10 @@ public class RdnTest
     /**
      * Test the clone method for a RDN.
      * 
-     * @throws InvalidNameException
+     * @throws LdapException
      */
     @Test
-    public void testRDNCloningOneNameComponent() throws InvalidNameException
+    public void testRDNCloningOneNameComponent() throws LdapException
     {
         RDN rdn = new RDN( "a", "a", "b", "b" );
 
@@ -302,10 +300,10 @@ public class RdnTest
     /**
      * Test teh creation of a new RDN
      * 
-     * @throws InvalidNameException
+     * @throws LdapException
      */
     @Test
-    public void testRDNCreation() throws InvalidNameException
+    public void testRDNCreation() throws LdapException
     {
         RDN rdn = new RDN( "A", "  b  " );
         assertEquals( "a=\\  b \\ ", rdn.getNormName() );
@@ -316,10 +314,10 @@ public class RdnTest
     /**
      * Test the clone method for a RDN.
      * 
-     * @throws InvalidNameException
+     * @throws LdapException
      */
     @Test
-    public void testRDNCloningTwoNameComponent() throws InvalidNameException
+    public void testRDNCloningTwoNameComponent() throws LdapException
     {
         RDN rdn = new RDN( "a = b + aa = bb" );
 
@@ -337,10 +335,10 @@ public class RdnTest
     /**
      * Test the compareTo method for a RDN.
      * 
-     * @throws InvalidNameException
+     * @throws LdapException
      */
     @Test
-    public void testRDNCompareToNull() throws InvalidNameException
+    public void testRDNCompareToNull() throws LdapException
     {
         RDN rdn1 = new RDN( " a = b + c = d + a = f + g = h " );
         RDN rdn2 = null;
@@ -351,10 +349,10 @@ public class RdnTest
     /**
      * Compares a composite NC to a single NC.
      * 
-     * @throws InvalidNameException
+     * @throws LdapException
      */
     @Test
-    public void testRDNCompareToNCS2NC() throws InvalidNameException
+    public void testRDNCompareToNCS2NC() throws LdapException
     {
         RDN rdn1 = new RDN( " a = b + c = d + a = f + g = h " );
         RDN rdn2 = new RDN( " a = b " );
@@ -365,10 +363,10 @@ public class RdnTest
     /**
      * Compares a single NC to a composite NC.
      * 
-     * @throws InvalidNameException
+     * @throws LdapException
      */
     @Test
-    public void testRDNCompareToNC2NCS() throws InvalidNameException
+    public void testRDNCompareToNC2NCS() throws LdapException
     {
         RDN rdn1 = new RDN( " a = b " );
         RDN rdn2 = new RDN( " a = b + c = d + a = f + g = h " );
@@ -380,10 +378,10 @@ public class RdnTest
     /**
      * Compares a composite NCS to a composite NCS in the same order.
      * 
-     * @throws InvalidNameException
+     * @throws LdapException
      */
     @Test
-    public void testRDNCompareToNCS2NCSOrdered() throws InvalidNameException
+    public void testRDNCompareToNCS2NCSOrdered() throws LdapException
     {
         RDN rdn1 = new RDN( " a = b + c = d + a = f + g = h " );
         RDN rdn2 = new RDN( " a = b + c = d + a = f + g = h " );
@@ -395,10 +393,10 @@ public class RdnTest
     /**
      * Compares a composite NCS to a composite NCS in a different order.
      * 
-     * @throws InvalidNameException
+     * @throws LdapException
      */
     @Test
-    public void testRDNCompareToNCS2NCSUnordered() throws InvalidNameException
+    public void testRDNCompareToNCS2NCSUnordered() throws LdapException
     {
         RDN rdn1 = new RDN( " a = b + a = f + g = h + c = d " );
         RDN rdn2 = new RDN( " a = b + c = d + a = f + g = h " );
@@ -410,10 +408,10 @@ public class RdnTest
     /**
      * Compares a composite NCS to a different composite NCS.
      * 
-     * @throws InvalidNameException
+     * @throws LdapException
      */
     @Test
-    public void testRDNCompareToNCS2NCSNotEquals() throws InvalidNameException
+    public void testRDNCompareToNCS2NCSNotEquals() throws LdapException
     {
         RDN rdn1 = new RDN( " a = f + g = h + c = d " );
         RDN rdn2 = new RDN( " c = d + a = h + g = h " );
@@ -428,10 +426,10 @@ public class RdnTest
      * Test for DIRSHARED-2.
      * The first ATAV is equal, the second or following ATAV differs.
      * 
-     * @throws InvalidNameException
+     * @throws LdapException
      */
     @Test
-    public void testCompareSecondAtav() throws InvalidNameException
+    public void testCompareSecondAtav() throws LdapException
     {
         // the second ATAV differs
         RDN rdn1 = new RDN( " a = b + c = d " );
@@ -461,10 +459,10 @@ public class RdnTest
      * The compare operation should return a correct value (1 or -1)
      * depending on the ATAVs, not on their position.
      * 
-     * @throws InvalidNameException
+     * @throws LdapException
      */
     @Test
-    public void testCompareIndependentFromOrder() throws InvalidNameException
+    public void testCompareIndependentFromOrder() throws LdapException
     {
         RDN rdn1 = new RDN( " a = b + c = d " );
         RDN rdn2 = new RDN( " c = d + a = b " );
@@ -488,10 +486,10 @@ public class RdnTest
      * Test for DIRSHARED-3.
      * Tests that compareTo() is invertable for single-valued RDNs.
      * 
-     * @throws InvalidNameException
+     * @throws LdapException
      */
     @Test
-    public void testCompareInvertableNC2NC() throws InvalidNameException
+    public void testCompareInvertableNC2NC() throws LdapException
     {
         RDN rdn1 = new RDN( " a = b " );
         RDN rdn2 = new RDN( " a = c " );
@@ -506,10 +504,10 @@ public class RdnTest
      * Test for DIRSHARED-3.
      * Tests that compareTo() is invertable for multi-valued RDNs with different values.
      * 
-     * @throws InvalidNameException
+     * @throws LdapException
      */
     @Test
-    public void testCompareInvertableNCS2NCSDifferentValues() throws InvalidNameException
+    public void testCompareInvertableNCS2NCSDifferentValues() throws LdapException
     {
         RDN rdn1 = new RDN( " a = b + a = c " );
         RDN rdn2 = new RDN( " a = b + a = y " );
@@ -523,10 +521,10 @@ public class RdnTest
      * Test for DIRSHARED-3.
      * Tests that compareTo() is invertable for multi-valued RDNs with different types.
      * 
-     * @throws InvalidNameException
+     * @throws LdapException
      */
     @Test
-    public void testCompareInvertableNCS2NCSDifferentTypes() throws InvalidNameException
+    public void testCompareInvertableNCS2NCSDifferentTypes() throws LdapException
     {
         RDN rdn1 = new RDN( " a = b + c = d  " );
         RDN rdn2 = new RDN( " e = f + g = h " );
@@ -540,10 +538,10 @@ public class RdnTest
      * Test for DIRSHARED-3.
      * Tests that compareTo() is invertable for multi-valued RDNs with different order.
      * 
-     * @throws InvalidNameException
+     * @throws LdapException
      */
     @Test
-    public void testCompareInvertableNCS2NCSUnordered() throws InvalidNameException
+    public void testCompareInvertableNCS2NCSUnordered() throws LdapException
     {
         RDN rdn1 = new RDN( " c = d + a = b " );
         RDN rdn2 = new RDN( " a = b + e = f " );
@@ -556,10 +554,10 @@ public class RdnTest
     /**
      * Compares with a null RDN.
      * 
-     * @throws InvalidNameException
+     * @throws LdapException
      */
     @Test
-    public void testRDNCompareToNullRdn() throws InvalidNameException
+    public void testRDNCompareToNullRdn() throws LdapException
     {
         RDN rdn1 = new RDN( " a = b " );
 
@@ -570,10 +568,10 @@ public class RdnTest
     /**
      * Compares with a bad object
      * 
-     * @throws InvalidNameException
+     * @throws LdapException
      */
     @Test
-    public void testRDNCompareToBadObject() throws InvalidNameException
+    public void testRDNCompareToBadObject() throws LdapException
     {
         RDN rdn1 = new RDN( " a = b " );
 
@@ -584,10 +582,10 @@ public class RdnTest
     /**
      * Compares a simple NC to a simple NC.
      * 
-     * @throws InvalidNameException
+     * @throws LdapException
      */
     @Test
-    public void testRDNCompareToNC2NC() throws InvalidNameException
+    public void testRDNCompareToNC2NC() throws LdapException
     {
         RDN rdn1 = new RDN( " a = b " );
         RDN rdn2 = new RDN( " a = b " );
@@ -599,10 +597,10 @@ public class RdnTest
     /**
      * Compares a simple NC to a simple NC in UperCase.
      * 
-     * @throws InvalidNameException
+     * @throws LdapException
      */
     @Test
-    public void testRDNCompareToNC2NCUperCase() throws InvalidNameException
+    public void testRDNCompareToNC2NCUperCase() throws LdapException
     {
         RDN rdn1 = new RDN( " a = b " );
         RDN rdn2 = new RDN( " A = b " );
@@ -615,10 +613,10 @@ public class RdnTest
     /**
      * Compares a simple NC to a different simple NC.
      * 
-     * @throws InvalidNameException
+     * @throws LdapException
      */
     @Test
-    public void testRDNCompareToNC2NCNotEquals() throws InvalidNameException
+    public void testRDNCompareToNC2NCNotEquals() throws LdapException
     {
         RDN rdn1 = new RDN( " a = b " );
         RDN rdn2 = new RDN( " A = d " );
@@ -631,10 +629,10 @@ public class RdnTest
      * 
      * Test the getValue method.
      *
-     * @throws InvalidNameException
+     * @throws LdapException
      */
     @Test
-    public void testGetValue() throws InvalidNameException
+    public void testGetValue() throws LdapException
     {
         RDN rdn = new RDN( " a = b + a = f + g = h + c = d " );
 
@@ -646,10 +644,10 @@ public class RdnTest
      * 
      * Test the getType method.
      *
-     * @throws InvalidNameException
+     * @throws LdapException
      */
     @Test
-    public void testGetType() throws InvalidNameException
+    public void testGetType() throws LdapException
     {
         RDN rdn = new RDN( " a = b + a = f + g = h + c = d " );
 
@@ -660,10 +658,10 @@ public class RdnTest
     /**
      * Test the getSize method.
      *
-     * @throws InvalidNameException
+     * @throws LdapException
      */
     @Test
-    public void testGetSize() throws InvalidNameException
+    public void testGetSize() throws LdapException
     {
         RDN rdn = new RDN( " a = b + a = f + g = h + c = d " );
 
@@ -687,10 +685,10 @@ public class RdnTest
     /**
      * Test the equals method
      *
-     * @throws InvalidNameException
+     * @throws LdapException
      */
     @Test
-    public void testEquals() throws InvalidNameException
+    public void testEquals() throws LdapException
     {
         RDN rdn = new RDN( "a=b + c=d + a=f" );
 
@@ -833,7 +831,7 @@ public class RdnTest
 
 
     @Test
-    public void testDIRSERVER_703() throws InvalidNameException
+    public void testDIRSERVER_703() throws LdapException
     {
         RDN rdn = new RDN( "cn=Kate Bush+sn=Bush" );
         assertEquals( "cn=Kate Bush+sn=Bush", rdn.getUpName() );
@@ -841,7 +839,7 @@ public class RdnTest
 
 
     @Test
-    public void testMultiValuedIterator() throws InvalidNameException
+    public void testMultiValuedIterator() throws LdapException
     {
         RDN rdn = new RDN( "cn=Kate Bush+sn=Bush" );
         Iterator<AVA> iterator = rdn.iterator();
@@ -855,7 +853,7 @@ public class RdnTest
 
 
     @Test
-    public void testSingleValuedIterator() throws InvalidNameException
+    public void testSingleValuedIterator() throws LdapException
     {
         RDN rdn = new RDN( "cn=Kate Bush" );
         Iterator<AVA> iterator = rdn.iterator();
@@ -877,7 +875,7 @@ public class RdnTest
 
 
     @Test
-    public void testRdnWithSpaces() throws InvalidNameException
+    public void testRdnWithSpaces() throws LdapException
     {
         RDN rdn = new RDN( "cn=a\\ b\\ c" );
         assertEquals( "cn=a b c", rdn.toString() );
@@ -885,7 +883,7 @@ public class RdnTest
 
 
     @Test
-    public void testEscapedSpaceInValue() throws InvalidNameException
+    public void testEscapedSpaceInValue() throws LdapException
     {
         RDN rdn1 = new RDN( "cn=a b c" );
         RDN rdn2 = new RDN( "cn=a\\ b\\ c" );
@@ -902,7 +900,7 @@ public class RdnTest
 
 
     @Test
-    public void testEscapedHashInValue() throws InvalidNameException
+    public void testEscapedHashInValue() throws LdapException
     {
         RDN rdn1 = new RDN( "cn=a#b#c" );
         RDN rdn2 = new RDN( "cn=a\\#b\\#c" );
@@ -952,7 +950,7 @@ public class RdnTest
      * Test serialization of an empty RDN
      */
     @Test
-    public void testEmptyRDNSerialization() throws NamingException, IOException, ClassNotFoundException
+    public void testEmptyRDNSerialization() throws LdapException, IOException, ClassNotFoundException
     {
         RDN rdn = new RDN( "" );
 
@@ -1001,7 +999,7 @@ public class RdnTest
      * Test serialization of a simple Rdn
      */
     @Test
-    public void testSimpleRdnSerialization() throws NamingException, IOException, ClassNotFoundException
+    public void testSimpleRdnSerialization() throws LdapException, IOException, ClassNotFoundException
     {
         RDN rdn = new RDN( "a=b" );
         rdn.normalize();
@@ -1026,7 +1024,7 @@ public class RdnTest
      * Test serialization of a simple Rdn
      */
     @Test
-    public void testSimpleRdn2Serialization() throws NamingException, IOException, ClassNotFoundException
+    public void testSimpleRdn2Serialization() throws LdapException, IOException, ClassNotFoundException
     {
         RDN rdn = new RDN( " ABC  = DEF " );
         rdn.normalize();
@@ -1051,7 +1049,7 @@ public class RdnTest
      * Test serialization of a simple Rdn with no value
      */
     @Test
-    public void testSimpleRdnNoValueSerialization() throws NamingException, IOException, ClassNotFoundException
+    public void testSimpleRdnNoValueSerialization() throws LdapException, IOException, ClassNotFoundException
     {
         RDN rdn = new RDN( " ABC  =" );
         rdn.normalize();
@@ -1076,7 +1074,7 @@ public class RdnTest
      * Test serialization of a simple Rdn with one value
      */
     @Test
-    public void testSimpleRdnOneValueSerialization() throws NamingException, IOException, ClassNotFoundException
+    public void testSimpleRdnOneValueSerialization() throws LdapException, IOException, ClassNotFoundException
     {
         RDN rdn = new RDN( " ABC  = def " );
         rdn.normalize();
@@ -1101,7 +1099,7 @@ public class RdnTest
      * Test serialization of a simple Rdn with three values
      */
     @Test
-    public void testSimpleRdnThreeValuesSerialization() throws NamingException, IOException, ClassNotFoundException
+    public void testSimpleRdnThreeValuesSerialization() throws LdapException, IOException, ClassNotFoundException
     {
         RDN rdn = new RDN( " A = a + B = b + C = c " );
         rdn.normalize();
@@ -1126,7 +1124,7 @@ public class RdnTest
      * Test serialization of a simple Rdn with three unordered values
      */
     @Test
-    public void testSimpleRdnThreeValuesUnorderedSerialization() throws NamingException, IOException,
+    public void testSimpleRdnThreeValuesUnorderedSerialization() throws LdapException, IOException,
         ClassNotFoundException
     {
         RDN rdn = new RDN( " B = b + A = a + C = c " );
@@ -1154,7 +1152,7 @@ public class RdnTest
      * Test serialization of an empty RDN
      */
     @Test
-    public void testEmptyRDNStaticSerialization() throws NamingException, IOException, ClassNotFoundException
+    public void testEmptyRDNStaticSerialization() throws LdapException, IOException, ClassNotFoundException
     {
         RDN rdn = new RDN( "" );
 
@@ -1205,7 +1203,7 @@ public class RdnTest
      * Test serialization of a simple Rdn
      */
     @Test
-    public void testSimpleRdnStaticSerialization() throws NamingException, IOException, ClassNotFoundException
+    public void testSimpleRdnStaticSerialization() throws LdapException, IOException, ClassNotFoundException
     {
         RDN rdn = new RDN( "a=b" );
         rdn.normalize();
@@ -1231,7 +1229,7 @@ public class RdnTest
      * Test serialization of a simple Rdn
      */
     @Test
-    public void testSimpleRdn2StaticSerialization() throws NamingException, IOException, ClassNotFoundException
+    public void testSimpleRdn2StaticSerialization() throws LdapException, IOException, ClassNotFoundException
     {
         RDN rdn = new RDN( " ABC  = DEF " );
         rdn.normalize();
@@ -1257,7 +1255,7 @@ public class RdnTest
      * Test serialization of a simple Rdn with no value
      */
     @Test
-    public void testSimpleRdnNoValueStaticSerialization() throws NamingException, IOException, ClassNotFoundException
+    public void testSimpleRdnNoValueStaticSerialization() throws LdapException, IOException, ClassNotFoundException
     {
         RDN rdn = new RDN( " ABC  =" );
         rdn.normalize();
@@ -1283,7 +1281,7 @@ public class RdnTest
      * Test serialization of a simple Rdn with one value
      */
     @Test
-    public void testSimpleRdnOneValueStaticSerialization() throws NamingException, IOException, ClassNotFoundException
+    public void testSimpleRdnOneValueStaticSerialization() throws LdapException, IOException, ClassNotFoundException
     {
         RDN rdn = new RDN( " ABC  = def " );
         rdn.normalize();
@@ -1309,7 +1307,7 @@ public class RdnTest
      * Test serialization of a simple Rdn with three values
      */
     @Test
-    public void testSimpleRdnThreeValuesStaticSerialization() throws NamingException, IOException,
+    public void testSimpleRdnThreeValuesStaticSerialization() throws LdapException, IOException,
         ClassNotFoundException
     {
         RDN rdn = new RDN( " A = a + B = b + C = c " );
@@ -1336,7 +1334,7 @@ public class RdnTest
      * Test serialization of a simple Rdn with three unordered values
      */
     @Test
-    public void testSimpleRdnThreeValuesUnorderedStaticSerialization() throws NamingException, IOException,
+    public void testSimpleRdnThreeValuesUnorderedStaticSerialization() throws LdapException, IOException,
         ClassNotFoundException
     {
         RDN rdn = new RDN( " B = b + A = a + C = c " );
@@ -1363,7 +1361,7 @@ public class RdnTest
      * test an RDN with empty value
      */
     @Test
-    public void testRdnWithEmptyValue() throws InvalidNameException
+    public void testRdnWithEmptyValue() throws LdapException
     {
         assertTrue( RdnParser.isValid( "a=" ) );
         assertTrue( RdnParser.isValid( "a=\"\"" ) );
@@ -1376,7 +1374,7 @@ public class RdnTest
      * test an RDN with escaped comma
      */
     @Test
-    public void testRdnWithEscapedComa() throws InvalidNameException
+    public void testRdnWithEscapedComa() throws LdapException
     {
         assertTrue( RdnParser.isValid( "a=b\\,c" ) );
         assertEquals( "a=b\\,c", new RDN( "a=b\\,c" ).toString() );
@@ -1396,10 +1394,10 @@ public class RdnTest
      * Tests the equals and compareTo results of cloned multi-valued RDNs.
      * Test for DIRSHARED-9.
      * 
-     * @throws InvalidNameException
+     * @throws LdapException
      */
     @Test
-    public void testComparingOfClonedMultiValuedRDNs() throws InvalidNameException
+    public void testComparingOfClonedMultiValuedRDNs() throws LdapException
     {
         // Use upper case attribute types to test if normalized types are used 
         // for comparison
@@ -1415,10 +1413,10 @@ public class RdnTest
      * Tests the equals and compareTo results of copy constructed multi-valued RDNs.
      * Test for DIRSHARED-9.
      * 
-     * @throws InvalidNameException
+     * @throws LdapException
      */
     @Test
-    public void testComparingOfCopyConstructedMultiValuedRDNs() throws InvalidNameException
+    public void testComparingOfCopyConstructedMultiValuedRDNs() throws LdapException
     {
         // Use upper case attribute types to test if normalized types are used 
         // for comparison
@@ -1434,7 +1432,7 @@ public class RdnTest
      * test the UpName method on a RDN with more than one atav
      */
     @Test 
-    public void testGetUpNameMultipleAtav() throws InvalidNameException
+    public void testGetUpNameMultipleAtav() throws LdapException
     {
         RDN rdn = new RDN( " A = b + C = d " );
         

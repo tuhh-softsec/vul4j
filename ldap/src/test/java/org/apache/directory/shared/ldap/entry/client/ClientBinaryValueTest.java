@@ -32,9 +32,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Arrays;
 
-import javax.naming.NamingException;
-
 import org.apache.directory.shared.ldap.entry.Value;
+import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.schema.Normalizer;
 import org.apache.directory.shared.ldap.schema.SyntaxChecker;
 import org.apache.directory.shared.ldap.util.StringTools;
@@ -58,7 +57,7 @@ public class ClientBinaryValueTest
     {
         private static final long serialVersionUID = 1L;
         
-        public Value<?> normalize( Value<?> value ) throws NamingException
+        public Value<?> normalize( Value<?> value ) throws LdapException
         {
             if ( value.isBinary() )
             {
@@ -78,7 +77,7 @@ public class ClientBinaryValueTest
             throw new IllegalStateException( "expected byte[] to normalize" );
         }
 
-        public String normalize( String value ) throws NamingException
+        public String normalize( String value ) throws LdapException
         {
             throw new IllegalStateException( "expected byte[] to normalize" );
         }
@@ -92,7 +91,7 @@ public class ClientBinaryValueTest
     {
         private static final long serialVersionUID = 1L;
         
-        public Value<?> normalize( Value<?> value ) throws NamingException
+        public Value<?> normalize( Value<?> value ) throws LdapException
         {
             if ( value.isBinary() )
             {
@@ -102,7 +101,7 @@ public class ClientBinaryValueTest
             throw new IllegalStateException( "expected byte[] to normalize" );
         }
 
-        public String normalize( String value ) throws NamingException
+        public String normalize( String value ) throws LdapException
         {
             throw new IllegalStateException( "expected byte[] to normalize" );
         }
@@ -214,7 +213,7 @@ public class ClientBinaryValueTest
 
 
     @Test
-    public void testClear() throws NamingException
+    public void testClear() throws LdapException
     {
         ClientBinaryValue cbv = new ClientBinaryValue( BYTES2 );
         cbv.normalize( BINARY_NORMALIZER );
@@ -234,7 +233,7 @@ public class ClientBinaryValueTest
 
 
     @Test
-    public void testClientBinaryValueNull() throws NamingException
+    public void testClientBinaryValueNull() throws LdapException
     {
         ClientBinaryValue cbv = new ClientBinaryValue( null );
         
@@ -247,7 +246,7 @@ public class ClientBinaryValueTest
 
 
     @Test
-    public void testClientBinaryValueEmpty() throws NamingException
+    public void testClientBinaryValueEmpty() throws LdapException
     {
         ClientBinaryValue cbv = new ClientBinaryValue( StringTools.EMPTY_BYTES );
         
@@ -264,7 +263,7 @@ public class ClientBinaryValueTest
 
 
     @Test
-    public void testClientBinaryValue() throws NamingException
+    public void testClientBinaryValue() throws LdapException
     {
         ClientBinaryValue cbv = new ClientBinaryValue( BYTES1 );
         
@@ -280,7 +279,7 @@ public class ClientBinaryValueTest
 
 
     @Test
-    public void testSetByteArray() throws NamingException
+    public void testSetByteArray() throws LdapException
     {
         ClientBinaryValue cbv = new ClientBinaryValue();
         
@@ -298,7 +297,7 @@ public class ClientBinaryValueTest
 
 
     @Test
-    public void testGetNormalizedValueCopy()  throws NamingException
+    public void testGetNormalizedValueCopy()  throws LdapException
     {
         ClientBinaryValue cbv = new ClientBinaryValue( BYTES2 );
         
@@ -320,7 +319,7 @@ public class ClientBinaryValueTest
 
 
     @Test
-    public void testNormalizeNormalizer() throws NamingException
+    public void testNormalizeNormalizer() throws LdapException
     {
         ClientBinaryValue cbv = new ClientBinaryValue();
         
@@ -349,7 +348,7 @@ public class ClientBinaryValueTest
 
 
     @Test
-    public void testCompareToValueOfbyte() throws NamingException
+    public void testCompareToValueOfbyte() throws LdapException
     {
         ClientBinaryValue cbv1 = new ClientBinaryValue();
         ClientBinaryValue cbv2 = new ClientBinaryValue();
@@ -371,7 +370,7 @@ public class ClientBinaryValueTest
 
 
     @Test
-    public void testEquals() throws NamingException
+    public void testEquals() throws LdapException
     {
         ClientBinaryValue cbv1 = new ClientBinaryValue();
         ClientBinaryValue cbv2 = new ClientBinaryValue();
@@ -436,7 +435,7 @@ public class ClientBinaryValueTest
 
 
     @Test
-    public void testCompareTo() throws NamingException
+    public void testCompareTo() throws LdapException
     {
         ClientBinaryValue cbv1 = new ClientBinaryValue();
         ClientBinaryValue cbv2 = new ClientBinaryValue();
@@ -529,7 +528,7 @@ public class ClientBinaryValueTest
 
 
     @Test
-    public void testGetNormalizedValue() throws NamingException
+    public void testGetNormalizedValue() throws LdapException
     {
         ClientBinaryValue cbv = new ClientBinaryValue();
         
@@ -550,7 +549,7 @@ public class ClientBinaryValueTest
 
 
     @Test
-    public void testGetNormalizedValueReference() throws NamingException
+    public void testGetNormalizedValueReference() throws LdapException
     {
         ClientBinaryValue cbv = new ClientBinaryValue();
         
@@ -589,7 +588,7 @@ public class ClientBinaryValueTest
 
 
     @Test
-    public void testIsValid() throws NamingException
+    public void testIsValid() throws LdapException
     {
         ClientBinaryValue cbv = new ClientBinaryValue();
         
@@ -615,7 +614,7 @@ public class ClientBinaryValueTest
 
 
     @Test
-    public void testIsValidSyntaxChecker() throws NamingException
+    public void testIsValidSyntaxChecker() throws LdapException
     {
         ClientBinaryValue cbv = new ClientBinaryValue();
         
@@ -633,7 +632,7 @@ public class ClientBinaryValueTest
 
 
     @Test
-    public void testNormalize() throws NamingException
+    public void testNormalize() throws LdapException
     {
         ClientBinaryValue cbv = new ClientBinaryValue();
         
@@ -654,7 +653,7 @@ public class ClientBinaryValueTest
 
 
     @Test
-    public void testSet() throws NamingException
+    public void testSet() throws LdapException
     {
         ClientBinaryValue cbv = new ClientBinaryValue();
         
@@ -681,7 +680,7 @@ public class ClientBinaryValueTest
 
 
     @Test
-    public void testIsNormalized() throws NamingException
+    public void testIsNormalized() throws LdapException
     {
         ClientBinaryValue cbv = new ClientBinaryValue();
         
@@ -704,7 +703,7 @@ public class ClientBinaryValueTest
 
 
     @Test
-    public void testSetNormalized() throws NamingException
+    public void testSetNormalized() throws LdapException
     {
         ClientBinaryValue cbv = new ClientBinaryValue();
         
@@ -735,7 +734,7 @@ public class ClientBinaryValueTest
      * Test the serialization of a CBV with a value and a normalized value
      */
     @Test
-    public void testSerializeStandard() throws NamingException, IOException, ClassNotFoundException
+    public void testSerializeStandard() throws LdapException, IOException, ClassNotFoundException
     {
         ClientBinaryValue cbv = new ClientBinaryValue();
         cbv.setNormalized( true );
@@ -756,7 +755,7 @@ public class ClientBinaryValueTest
      * Test the serialization of a CBV with a value and no normalized value
      */
     @Test
-    public void testSerializeNotNormalized() throws NamingException, IOException, ClassNotFoundException
+    public void testSerializeNotNormalized() throws LdapException, IOException, ClassNotFoundException
     {
         ClientBinaryValue cbv = new ClientBinaryValue();
         cbv.setNormalized( false );
@@ -776,7 +775,7 @@ public class ClientBinaryValueTest
      * Test the serialization of a CBV with a value and an empty normalized value
      */
     @Test
-    public void testSerializeEmptyNormalized() throws NamingException, IOException, ClassNotFoundException
+    public void testSerializeEmptyNormalized() throws LdapException, IOException, ClassNotFoundException
     {
         ClientBinaryValue cbv = new ClientBinaryValue();
         cbv.setNormalized( true );
@@ -797,7 +796,7 @@ public class ClientBinaryValueTest
      * Test the serialization of a CBV with a null value
      */
     @Test
-    public void testSerializeNullValue() throws NamingException, IOException, ClassNotFoundException
+    public void testSerializeNullValue() throws LdapException, IOException, ClassNotFoundException
     {
         ClientBinaryValue cbv = new ClientBinaryValue();
         cbv.setNormalized( true );
@@ -818,7 +817,7 @@ public class ClientBinaryValueTest
      * Test the serialization of a CBV with an empty value
      */
     @Test
-    public void testSerializeEmptyValue() throws NamingException, IOException, ClassNotFoundException
+    public void testSerializeEmptyValue() throws LdapException, IOException, ClassNotFoundException
     {
         ClientBinaryValue cbv = new ClientBinaryValue();
         cbv.setNormalized( true );
@@ -839,7 +838,7 @@ public class ClientBinaryValueTest
      * Test the serialization of a CBV with an empty value not normalized
      */
     @Test
-    public void testSerializeEmptyValueNotNormalized() throws NamingException, IOException, ClassNotFoundException
+    public void testSerializeEmptyValueNotNormalized() throws LdapException, IOException, ClassNotFoundException
     {
         ClientBinaryValue cbv = new ClientBinaryValue();
         cbv.setNormalized( false );

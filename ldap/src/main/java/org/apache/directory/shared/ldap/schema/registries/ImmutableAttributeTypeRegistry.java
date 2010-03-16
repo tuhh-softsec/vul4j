@@ -23,10 +23,9 @@ package org.apache.directory.shared.ldap.schema.registries;
 import java.util.Iterator;
 import java.util.Map;
 
-import javax.naming.NamingException;
-
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.exception.LdapOperationNotSupportedException;
+import org.apache.directory.shared.ldap.exception.LdapException;
+import org.apache.directory.shared.ldap.exception.LdapUnwillingToPerformException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.SchemaObject;
@@ -69,7 +68,7 @@ public class ImmutableAttributeTypeRegistry implements AttributeTypeRegistry
     /**
      * {@inheritDoc}
      */
-    public boolean hasDescendants( String ancestorId ) throws NamingException
+    public boolean hasDescendants( String ancestorId ) throws LdapException
     {
         return immutableAttributeTypeRegistry.hasDescendants( ancestorId );
     }
@@ -78,7 +77,7 @@ public class ImmutableAttributeTypeRegistry implements AttributeTypeRegistry
     /**
      * {@inheritDoc}
      */
-    public Iterator<AttributeType> descendants( String ancestorId ) throws NamingException
+    public Iterator<AttributeType> descendants( String ancestorId ) throws LdapException
     {
         return immutableAttributeTypeRegistry.descendants( ancestorId );
     }
@@ -87,62 +86,62 @@ public class ImmutableAttributeTypeRegistry implements AttributeTypeRegistry
     /**
      * {@inheritDoc}
      */
-    public void register( AttributeType attributeType ) throws NamingException
+    public void register( AttributeType attributeType ) throws LdapException
     {
-        throw new LdapOperationNotSupportedException( I18n.err( I18n.ERR_04275 ), ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapUnwillingToPerformException( ResultCodeEnum.NO_SUCH_OPERATION, I18n.err( I18n.ERR_04275 ) );
     }
 
 
     /**
      * {@inheritDoc}
      */
-    public void registerDescendants( AttributeType attributeType, AttributeType ancestor ) throws NamingException
+    public void registerDescendants( AttributeType attributeType, AttributeType ancestor ) throws LdapException
     {
-        throw new LdapOperationNotSupportedException( I18n.err( I18n.ERR_04275 ), ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapUnwillingToPerformException( ResultCodeEnum.NO_SUCH_OPERATION, I18n.err( I18n.ERR_04275 ) );
     }
 
 
     /**
      * {@inheritDoc}
      */
-    public void unregisterDescendants( AttributeType attributeType, AttributeType ancestor ) throws NamingException
+    public void unregisterDescendants( AttributeType attributeType, AttributeType ancestor ) throws LdapException
     {
-        throw new LdapOperationNotSupportedException( I18n.err( I18n.ERR_04275 ), ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapUnwillingToPerformException( ResultCodeEnum.NO_SUCH_OPERATION, I18n.err( I18n.ERR_04275 ) );
     }
 
 
     /**
      * {@inheritDoc}
      */
-    public AttributeType unregister( String numericOid ) throws NamingException
+    public AttributeType unregister( String numericOid ) throws LdapException
     {
-        throw new LdapOperationNotSupportedException( "Cannot modify the AttributeTypeRegistry copy",
-            ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapUnwillingToPerformException( ResultCodeEnum.NO_SUCH_OPERATION,
+            "Cannot modify the AttributeTypeRegistry copy" );
     }
 
 
     /**
      * {@inheritDoc}
      */
-    public void addMappingFor( AttributeType attributeType ) throws NamingException
+    public void addMappingFor( AttributeType attributeType ) throws LdapException
     {
-        throw new LdapOperationNotSupportedException( I18n.err( I18n.ERR_04275 ), ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapUnwillingToPerformException( ResultCodeEnum.NO_SUCH_OPERATION, I18n.err( I18n.ERR_04275 ) );
     }
 
 
     /**
      * {@inheritDoc}
      */
-    public void removeMappingFor( AttributeType attributeType ) throws NamingException
+    public void removeMappingFor( AttributeType attributeType ) throws LdapException
     {
-        throw new LdapOperationNotSupportedException( I18n.err( I18n.ERR_04275 ), ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapUnwillingToPerformException( ResultCodeEnum.NO_SUCH_OPERATION, I18n.err( I18n.ERR_04275 ) );
     }
 
 
     /**
      * {@inheritDoc}
      */
-    public AttributeType lookup( String oid ) throws NamingException
+    public AttributeType lookup( String oid ) throws LdapException
     {
         return immutableAttributeTypeRegistry.lookup( oid );
     }
@@ -205,7 +204,7 @@ public class ImmutableAttributeTypeRegistry implements AttributeTypeRegistry
     /**
      * {@inheritDoc}
      */
-    public String getOidByName( String name ) throws NamingException
+    public String getOidByName( String name ) throws LdapException
     {
         return immutableAttributeTypeRegistry.getOidByName( name );
     }
@@ -214,7 +213,7 @@ public class ImmutableAttributeTypeRegistry implements AttributeTypeRegistry
     /**
      * {@inheritDoc}
      */
-    public String getSchemaName( String oid ) throws NamingException
+    public String getSchemaName( String oid ) throws LdapException
     {
         return immutableAttributeTypeRegistry.getSchemaName( oid );
     }
@@ -241,9 +240,9 @@ public class ImmutableAttributeTypeRegistry implements AttributeTypeRegistry
     /**
      * {@inheritDoc}
      */
-    public void unregisterSchemaElements( String schemaName ) throws NamingException
+    public void unregisterSchemaElements( String schemaName ) throws LdapException
     {
-        throw new LdapOperationNotSupportedException( I18n.err( I18n.ERR_04275 ), ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapUnwillingToPerformException( ResultCodeEnum.NO_SUCH_OPERATION, I18n.err( I18n.ERR_04275 ) );
     }
 
 
@@ -259,17 +258,17 @@ public class ImmutableAttributeTypeRegistry implements AttributeTypeRegistry
     /**
      * {@inheritDoc}
      */
-    public void clear() throws NamingException
+    public void clear() throws LdapException
     {
-        throw new LdapOperationNotSupportedException( I18n.err( I18n.ERR_04275 ), ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapUnwillingToPerformException( ResultCodeEnum.NO_SUCH_OPERATION, I18n.err( I18n.ERR_04275 ) );
     }
 
 
     /**
      * {@inheritDoc}
      */
-    public AttributeType unregister( AttributeType schemaObject ) throws NamingException
+    public AttributeType unregister( AttributeType schemaObject ) throws LdapException
     {
-        throw new LdapOperationNotSupportedException( I18n.err( I18n.ERR_04275 ), ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapUnwillingToPerformException( ResultCodeEnum.NO_SUCH_OPERATION, I18n.err( I18n.ERR_04275 ) );
     }
 }

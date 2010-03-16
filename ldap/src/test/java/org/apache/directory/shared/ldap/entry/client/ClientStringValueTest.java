@@ -31,8 +31,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import javax.naming.NamingException;
-
+import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.schema.normalizers.DeepTrimToLowerNormalizer;
 import org.apache.directory.shared.ldap.schema.syntaxCheckers.Ia5StringSyntaxChecker;
 import org.junit.Test;
@@ -141,7 +140,7 @@ public class ClientStringValueTest
      * Test method for {@link org.apache.directory.shared.ldap.entry.client.ClientStringValue#ClientStringValue()}.
      */
     @Test
-    public void testClientStringValueNull() throws NamingException
+    public void testClientStringValueNull() throws LdapException
     {
         ClientStringValue csv = new ClientStringValue();
         
@@ -157,7 +156,7 @@ public class ClientStringValueTest
      * Test method for {@link org.apache.directory.shared.ldap.entry.client.ClientStringValue#ClientStringValue(java.lang.String)}.
      */
     @Test
-    public void testClientStringValueEmpty() throws NamingException
+    public void testClientStringValueEmpty() throws LdapException
     {
         ClientStringValue csv = new ClientStringValue( "" );
         
@@ -175,7 +174,7 @@ public class ClientStringValueTest
      * Test method for {@link org.apache.directory.shared.ldap.entry.client.ClientStringValue#ClientStringValue(java.lang.String)}.
      */
     @Test
-    public void testClientStringValueString() throws NamingException
+    public void testClientStringValueString() throws LdapException
     {
         ClientStringValue csv = new ClientStringValue( "test" );
         
@@ -228,7 +227,7 @@ public class ClientStringValueTest
      * Test method for {@link org.apache.directory.shared.ldap.entry.client.ClientStringValue#set(java.lang.String)}.
      */
     @Test
-    public void testSet() throws NamingException
+    public void testSet() throws LdapException
     {
         ClientStringValue csv = new ClientStringValue();
         
@@ -277,7 +276,7 @@ public class ClientStringValueTest
      * Test method for {@link org.apache.directory.shared.ldap.entry.client.ClientStringValue#clear()}.
      */
     @Test
-    public void testClear() throws NamingException
+    public void testClear() throws LdapException
     {
         ClientStringValue csv = new ClientStringValue();
         
@@ -297,7 +296,7 @@ public class ClientStringValueTest
      * Test method for {@link org.apache.directory.shared.ldap.entry.client.ClientStringValue#isNormalized()}.
      */
     @Test
-    public void testIsNormalized() throws NamingException
+    public void testIsNormalized() throws LdapException
     {
         ClientStringValue csv = new ClientStringValue();
         
@@ -320,7 +319,7 @@ public class ClientStringValueTest
      * Test method for {@link org.apache.directory.shared.ldap.entry.client.ClientStringValue#setNormalized(boolean)}.
      */
     @Test
-    public void testSetNormalized() throws NamingException
+    public void testSetNormalized() throws LdapException
     {
         ClientStringValue csv = new ClientStringValue();
         
@@ -351,7 +350,7 @@ public class ClientStringValueTest
      * Test method for {@link org.apache.directory.shared.ldap.entry.client.ClientStringValue#getNormalizedValue()}.
      */
     @Test
-    public void testGetNormalizedValue() throws NamingException
+    public void testGetNormalizedValue() throws LdapException
     {
         ClientStringValue csv = new ClientStringValue();
         
@@ -374,7 +373,7 @@ public class ClientStringValueTest
      * Test method for {@link org.apache.directory.shared.ldap.entry.client.ClientStringValue#getNormalizedValueCopy()}.
      */
     @Test
-    public void getNormalizedValueCopy() throws NamingException
+    public void getNormalizedValueCopy() throws LdapException
     {
         ClientStringValue csv = new ClientStringValue();
         
@@ -397,7 +396,7 @@ public class ClientStringValueTest
      * Test method for {@link org.apache.directory.shared.ldap.entry.client.ClientStringValue#normalize(org.apache.directory.shared.ldap.schema.Normalizer)}.
      */
     @Test
-    public void testNormalize() throws NamingException
+    public void testNormalize() throws LdapException
     {
         ClientStringValue csv = new ClientStringValue();
 
@@ -421,7 +420,7 @@ public class ClientStringValueTest
      * Test method for {@link org.apache.directory.shared.ldap.entry.client.ClientStringValue#isValid(org.apache.directory.shared.ldap.schema.SyntaxChecker)}.
      */
     @Test
-    public void testIsValid() throws NamingException
+    public void testIsValid() throws LdapException
     {
         ClientStringValue csv = new ClientStringValue( "Test" );
         
@@ -436,7 +435,7 @@ public class ClientStringValueTest
      * Test method for {@link org.apache.directory.shared.ldap.entry.client.ClientStringValue#compareTo(org.apache.directory.shared.ldap.entry.Value)}.
      */
     @Test
-    public void testCompareTo() throws NamingException
+    public void testCompareTo() throws LdapException
     {
         ClientStringValue csv1 = new ClientStringValue();
         ClientStringValue csv2 = new ClientStringValue();
@@ -470,7 +469,7 @@ public class ClientStringValueTest
      * Test method for {@link org.apache.directory.shared.ldap.entry.client.ClientStringValue#clone()}.
      */
     @Test
-    public void testClone() throws NamingException
+    public void testClone() throws LdapException
     {
         ClientStringValue csv = new ClientStringValue();
         
@@ -499,7 +498,7 @@ public class ClientStringValueTest
      * Test method for {@link org.apache.directory.shared.ldap.entry.client.ClientStringValue#equals(java.lang.Object)}.
      */
     @Test
-    public void testEquals() throws NamingException
+    public void testEquals() throws LdapException
     {
         ClientStringValue csv1 = new ClientStringValue();
         ClientStringValue csv2 = new ClientStringValue();
@@ -545,7 +544,7 @@ public class ClientStringValueTest
      * Test the serialization of a CSV with a value and a normalized value
      */
     @Test
-    public void testSerializeStandard() throws NamingException, IOException, ClassNotFoundException
+    public void testSerializeStandard() throws LdapException, IOException, ClassNotFoundException
     {
         ClientStringValue csv = new ClientStringValue( "TEST");
         csv.setNormalized( true );
@@ -565,7 +564,7 @@ public class ClientStringValueTest
      * Test the serialization of a CSV with a value and no normalized value
      */
     @Test
-    public void testSerializeNotNormalized() throws NamingException, IOException, ClassNotFoundException
+    public void testSerializeNotNormalized() throws LdapException, IOException, ClassNotFoundException
     {
         ClientStringValue csv = new ClientStringValue( "Test" );
         csv.setNormalized( false );
@@ -584,7 +583,7 @@ public class ClientStringValueTest
      * Test the serialization of a CSV with a value and an empty normalized value
      */
     @Test
-    public void testSerializeEmptyNormalized() throws NamingException, IOException, ClassNotFoundException
+    public void testSerializeEmptyNormalized() throws LdapException, IOException, ClassNotFoundException
     {
         ClientStringValue csv = new ClientStringValue( "  " );
         csv.setNormalized( true );
@@ -604,7 +603,7 @@ public class ClientStringValueTest
      * Test the serialization of a CSV with a null value
      */
     @Test
-    public void testSerializeNullValue() throws NamingException, IOException, ClassNotFoundException
+    public void testSerializeNullValue() throws LdapException, IOException, ClassNotFoundException
     {
         ClientStringValue csv = new ClientStringValue( null );
         csv.setNormalized( true );
@@ -624,7 +623,7 @@ public class ClientStringValueTest
      * Test the serialization of a CSV with an empty value
      */
     @Test
-    public void testSerializeEmptyValue() throws NamingException, IOException, ClassNotFoundException
+    public void testSerializeEmptyValue() throws LdapException, IOException, ClassNotFoundException
     {
         ClientStringValue csv = new ClientStringValue( "" );
         csv.setNormalized( true );
@@ -644,7 +643,7 @@ public class ClientStringValueTest
      * Test the serialization of a CSV with an empty value not normalized
      */
     @Test
-    public void testSerializeEmptyValueNotNormalized() throws NamingException, IOException, ClassNotFoundException
+    public void testSerializeEmptyValueNotNormalized() throws LdapException, IOException, ClassNotFoundException
     {
         ClientStringValue csv = new ClientStringValue( "" );
         csv.setNormalized( false );

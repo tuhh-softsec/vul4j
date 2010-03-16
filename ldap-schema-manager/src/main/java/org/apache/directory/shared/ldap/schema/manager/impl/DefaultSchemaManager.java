@@ -34,7 +34,7 @@ import org.apache.directory.shared.ldap.NotImplementedException;
 import org.apache.directory.shared.ldap.constants.MetaSchemaConstants;
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.entry.Entry;
-import org.apache.directory.shared.ldap.exception.LdapOperationNotSupportedException;
+import org.apache.directory.shared.ldap.exception.LdapUnwillingToPerformException;
 import org.apache.directory.shared.ldap.exception.LdapSchemaViolationException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.name.DN;
@@ -203,7 +203,7 @@ public class DefaultSchemaManager implements SchemaManager
             }
             else
             {
-                throw new LdapOperationNotSupportedException( I18n.err( I18n.ERR_11001, schemaName ), ResultCodeEnum.UNWILLING_TO_PERFORM );
+                throw new LdapUnwillingToPerformException( I18n.err( I18n.ERR_11001, schemaName ), ResultCodeEnum.UNWILLING_TO_PERFORM );
             }
         }
 
@@ -1597,7 +1597,7 @@ public class DefaultSchemaManager implements SchemaManager
             else
             {
                 // We have an invalid SchemaObject, no need to go any further
-                Throwable error = new LdapOperationNotSupportedException( I18n.err( I18n.ERR_11007, schemaObject.getOid() ),
+                Throwable error = new LdapUnwillingToPerformException( I18n.err( I18n.ERR_11007, schemaObject.getOid() ),
                 		ResultCodeEnum.UNWILLING_TO_PERFORM );
                 errors.add( error );
             }
@@ -1652,7 +1652,7 @@ public class DefaultSchemaManager implements SchemaManager
             if ( schemaName == null )
             {
                 // The schema associated with the SchemzaObject does not exist. This is not valid.
-                Throwable error = new LdapOperationNotSupportedException( I18n.err( I18n.ERR_11009, schemaObject.getOid(),
+                Throwable error = new LdapUnwillingToPerformException( I18n.err( I18n.ERR_11009, schemaObject.getOid(),
                 		copy.getSchemaName() ), ResultCodeEnum.UNWILLING_TO_PERFORM );
                 errors.add( error );
 

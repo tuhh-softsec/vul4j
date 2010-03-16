@@ -21,7 +21,7 @@ package org.apache.directory.shared.ldap.schema.comparators;
 
 
 import javax.naming.Name;
-import javax.naming.NamingException;
+import org.apache.directory.shared.ldap.exception.LdapException;
 
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.name.DN;
@@ -59,7 +59,7 @@ public class DnComparator extends LdapComparator<Object>
             dn0 = getDn( obj0 );
             dn1 = getDn( obj1 );
         }
-        catch ( NamingException e )
+        catch ( LdapException e )
         {
             // -- what do we do here ?
             return -1;
@@ -69,7 +69,7 @@ public class DnComparator extends LdapComparator<Object>
     }
 
 
-    public DN getDn( Object obj ) throws NamingException
+    public DN getDn( Object obj ) throws LdapException
     {
         DN dn = null;
         

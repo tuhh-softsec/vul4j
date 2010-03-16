@@ -20,12 +20,11 @@
 package org.apache.directory.shared.ldap.schema.normalizers;
 
 
-import javax.naming.NamingException;
-
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.entry.client.ClientStringValue;
+import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.schema.Normalizer;
 import org.apache.directory.shared.ldap.schema.SchemaManager;
@@ -53,7 +52,7 @@ public class UniqueMemberNormalizer extends Normalizer
     }
     
 
-    public Value<?> normalize( Value<?> value ) throws NamingException
+    public Value<?> normalize( Value<?> value ) throws LdapException
     {
         String nameAndUid = value.getString();
             
@@ -102,7 +101,7 @@ public class UniqueMemberNormalizer extends Normalizer
     }
 
 
-    public String normalize( String value ) throws NamingException
+    public String normalize( String value ) throws LdapException
     {
         if ( StringTools.isEmpty( value ) )
         {

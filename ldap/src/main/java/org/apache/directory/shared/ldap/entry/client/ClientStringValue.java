@@ -24,7 +24,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import javax.naming.NamingException;
+import org.apache.directory.shared.ldap.exception.LdapException;
 
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.NotImplementedException;
@@ -166,9 +166,9 @@ public class ClientStringValue extends AbstractValue<String>
      * appropriate normalizer.
      * 
      * @param Normalizer The normalizer to apply to the value
-     * @exception NamingException If the value cannot be normalized
+     * @exception LdapException If the value cannot be normalized
      */
-    public final void normalize( Normalizer normalizer ) throws NamingException
+    public final void normalize( Normalizer normalizer ) throws LdapException
     {
         if ( normalizer != null )
         {

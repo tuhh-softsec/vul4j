@@ -31,10 +31,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
-import javax.naming.InvalidNameException;
 import javax.naming.Name;
 
 import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.schema.normalizers.OidNormalizer;
@@ -125,9 +125,9 @@ public class DN implements Name, Externalizable
      * Transduces, or copies a Name to an DN.
      *
      * @param name composed of String name components.
-     * @throws InvalidNameException If the Name is invalid.
+     * @throws LdapInvalidDnException If the Name is invalid.
      */
-    public DN( Name name ) throws InvalidNameException
+    public DN( Name name ) throws LdapInvalidDnException
     {
         if ( ( name != null ) && ( name.size() != 0 ) )
         {
@@ -153,7 +153,7 @@ public class DN implements Name, Externalizable
      * </p>
      *
      * @param upName The String that contains the DN.
-     * @throws InvalidNameException if the String does not contain a valid DN.
+     * @throws LdapInvalidNameException if the String does not contain a valid DN.
      */
     public DN( String upName ) throws LdapInvalidDnException
     {
@@ -261,7 +261,7 @@ public class DN implements Name, Externalizable
      * @param name The DN as a String
      * @param oidsMap The OID mapping
      * @return A valid DN
-     * @throws InvalidNameException If the DN is invalid.
+     * @throws LdapInvalidNameException If the DN is invalid.
      * @throws LdapInvalidDnException If something went wrong.
      */
     public static Name normalize( String name, Map<String, OidNormalizer> oidsMap ) throws LdapInvalidDnException
@@ -1058,7 +1058,7 @@ public class DN implements Name, Externalizable
     /**
      * {@inheritDoc}
      */
-    public Name addAll( Name suffix ) throws InvalidNameException
+    public Name addAll( Name suffix ) throws LdapInvalidNameException
     {
         addAll( rdns.size(), suffix );
         normalizeInternal();
@@ -1071,7 +1071,7 @@ public class DN implements Name, Externalizable
     /**
      * {@inheritDoc}
      */
-    public Name addAll( int posn, Name name ) throws InvalidNameException
+    public Name addAll( int posn, Name name ) throws LdapInvalidNameException
     {
         if ( name instanceof DN )
         {
@@ -1119,7 +1119,7 @@ public class DN implements Name, Externalizable
                 }
                 catch( LdapInvalidDnException le )
                 {
-                    throw new InvalidNameException( le.getMessage() );
+                    throw new LdapInvalidNameException( le.getMessage() );
                 }
             }
 
@@ -1134,7 +1134,7 @@ public class DN implements Name, Externalizable
     /**
      * {@inheritDoc}
      */
-    public Name add( String comp ) throws InvalidNameException
+    public Name add( String comp ) throws LdapException
     {
         if ( comp.length() == 0 )
         {
@@ -1152,7 +1152,7 @@ public class DN implements Name, Externalizable
         }
         catch( LdapInvalidDnException le )
         {
-            throw new InvalidNameException( le.getMessage() );
+            throw new LdapInvalidDnException( le.getMessage() );
         }
         
         normalizeInternal();
@@ -1231,7 +1231,7 @@ public class DN implements Name, Externalizable
     /**
      * {@inheritDoc}
      */
-    public Name add( int posn, String comp ) throws InvalidNameException
+    public Name add( int posn, String comp ) throws LdapInvalidNameException
     {
         if ( ( posn < 0 ) || ( posn > size() ) )
         {
@@ -1252,7 +1252,7 @@ public class DN implements Name, Externalizable
         }
         catch( LdapInvalidDnException le )
         {
-            throw new InvalidNameException( le.getMessage() );
+            throw new LdapInvalidNameException( le.getMessage() );
         }
 
         normalizeInternal();
@@ -1265,7 +1265,7 @@ public class DN implements Name, Externalizable
     /**
      * {@inheritDoc}
      */
-    public Object remove( int posn ) throws InvalidNameException
+    public Object remove( int posn ) throws LdapInvalidNameException
     {
         if ( rdns.size() == 0 )
         {

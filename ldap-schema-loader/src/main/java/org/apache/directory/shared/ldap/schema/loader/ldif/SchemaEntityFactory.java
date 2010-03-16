@@ -38,7 +38,7 @@ import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.entry.client.DefaultClientAttribute;
 import org.apache.directory.shared.ldap.exception.LdapInvalidAttributeValueException;
-import org.apache.directory.shared.ldap.exception.LdapOperationNotSupportedException;
+import org.apache.directory.shared.ldap.exception.LdapUnwillingToPerformException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.EntityFactory;
@@ -310,7 +310,7 @@ public class SchemaEntityFactory implements EntityFactory
             // The schema is not loaded. We can't create the requested Normalizer
             String msg = I18n.err( I18n.ERR_10013, entry.getDn().getName(), schemaName );
             LOG.warn( msg );
-            throw new LdapOperationNotSupportedException( msg, ResultCodeEnum.UNWILLING_TO_PERFORM );
+            throw new LdapUnwillingToPerformException( msg, ResultCodeEnum.UNWILLING_TO_PERFORM );
         }
 
         Schema schema = getSchema( schemaName, targetRegistries );
@@ -360,7 +360,7 @@ public class SchemaEntityFactory implements EntityFactory
             // The schema is not loaded. We can't create the requested SyntaxChecker
             String msg = I18n.err( I18n.ERR_10013, syntaxCheckerDescription.getName(), schemaName );
             LOG.warn( msg );
-            throw new LdapOperationNotSupportedException( msg, ResultCodeEnum.UNWILLING_TO_PERFORM );
+            throw new LdapUnwillingToPerformException( msg, ResultCodeEnum.UNWILLING_TO_PERFORM );
         }
 
         // The FQCN
@@ -456,7 +456,7 @@ public class SchemaEntityFactory implements EntityFactory
             // The schema is not loaded. We can't create the requested Comparator
             String msg = I18n.err( I18n.ERR_10016, comparatorDescription.getName(), schemaName );
             LOG.warn( msg );
-            throw new LdapOperationNotSupportedException( msg, ResultCodeEnum.UNWILLING_TO_PERFORM );
+            throw new LdapUnwillingToPerformException( msg, ResultCodeEnum.UNWILLING_TO_PERFORM );
         }
 
         // The FQCN
@@ -492,7 +492,7 @@ public class SchemaEntityFactory implements EntityFactory
             // The schema is not loaded. We can't create the requested Comparator
             String msg = I18n.err( I18n.ERR_10016, entry.getDn().getName(), schemaName );
             LOG.warn( msg );
-            throw new LdapOperationNotSupportedException( msg, ResultCodeEnum.UNWILLING_TO_PERFORM );
+            throw new LdapUnwillingToPerformException( msg, ResultCodeEnum.UNWILLING_TO_PERFORM );
         }
 
         Schema schema = getSchema( schemaName, targetRegistries );
@@ -580,7 +580,7 @@ public class SchemaEntityFactory implements EntityFactory
             // The schema is not loaded. We can't create the requested Normalizer
             String msg = I18n.err( I18n.ERR_10018, normalizerDescription.getName(), schemaName );
             LOG.warn( msg );
-            throw new LdapOperationNotSupportedException( msg, ResultCodeEnum.UNWILLING_TO_PERFORM );
+            throw new LdapUnwillingToPerformException( msg, ResultCodeEnum.UNWILLING_TO_PERFORM );
         }
 
         // The FQCN
@@ -616,7 +616,7 @@ public class SchemaEntityFactory implements EntityFactory
             // The schema is not loaded. We can't create the requested Normalizer
             String msg = I18n.err( I18n.ERR_10018, entry.getDn().getName(), schemaName );
             LOG.warn( msg );
-            throw new LdapOperationNotSupportedException( msg, ResultCodeEnum.UNWILLING_TO_PERFORM );
+            throw new LdapUnwillingToPerformException( msg, ResultCodeEnum.UNWILLING_TO_PERFORM );
         }
 
         Schema schema = getSchema( schemaName, targetRegistries );
@@ -699,7 +699,7 @@ public class SchemaEntityFactory implements EntityFactory
             // The schema is not loaded. We can't create the requested Syntax
             String msg = I18n.err( I18n.ERR_10020, entry.getDn().getName(), schemaName );
             LOG.warn( msg );
-            throw new LdapOperationNotSupportedException( msg, ResultCodeEnum.UNWILLING_TO_PERFORM );
+            throw new LdapUnwillingToPerformException( msg, ResultCodeEnum.UNWILLING_TO_PERFORM );
         }
 
         Schema schema = getSchema( schemaName, targetRegistries );
@@ -748,7 +748,7 @@ public class SchemaEntityFactory implements EntityFactory
             // The schema is not loaded. We can't create the requested MatchingRule
             String msg = I18n.err( I18n.ERR_10022, entry.getDn().getName(), schemaName );
             LOG.warn( msg );
-            throw new LdapOperationNotSupportedException( msg, ResultCodeEnum.UNWILLING_TO_PERFORM );
+            throw new LdapUnwillingToPerformException( msg, ResultCodeEnum.UNWILLING_TO_PERFORM );
         }
 
         Schema schema = getSchema( schemaName, targetRegistries );
@@ -819,7 +819,7 @@ public class SchemaEntityFactory implements EntityFactory
             // The schema is not loaded. We can't create the requested ObjectClass
             String msg = I18n.err( I18n.ERR_10024, entry.getDn().getName(), schemaName );
             LOG.warn( msg );
-            throw new LdapOperationNotSupportedException( msg, ResultCodeEnum.UNWILLING_TO_PERFORM );
+            throw new LdapUnwillingToPerformException( msg, ResultCodeEnum.UNWILLING_TO_PERFORM );
         }
 
         Schema schema = getSchema( schemaName, targetRegistries );
@@ -892,7 +892,7 @@ public class SchemaEntityFactory implements EntityFactory
             // The schema is not loaded, this is an error
             String msg = I18n.err( I18n.ERR_10026, entry.getDn().getName(),  schemaName );
             LOG.warn( msg );
-            throw new LdapOperationNotSupportedException( msg, ResultCodeEnum.UNWILLING_TO_PERFORM );
+            throw new LdapUnwillingToPerformException( msg, ResultCodeEnum.UNWILLING_TO_PERFORM );
         }
 
         Schema schema = getSchema( schemaName, targetRegistries );

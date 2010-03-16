@@ -23,8 +23,7 @@ package org.apache.directory.shared.ldap.schema;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.naming.NamingException;
-
+import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.schema.registries.AttributeTypeRegistry;
 import org.apache.directory.shared.ldap.schema.registries.ObjectClassRegistry;
 import org.apache.directory.shared.ldap.schema.registries.Registries;
@@ -508,7 +507,7 @@ public class DITContentRule extends AbstractSchemaObject
      * @param registries The Registries
      * @exception If the addition failed
      */
-    public void addToRegistries( Registries registries ) throws NamingException
+    public void addToRegistries( Registries registries ) throws LdapException
     {
         if ( registries != null )
         {

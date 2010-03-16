@@ -66,7 +66,7 @@ public abstract class Normalizer extends LoadableSchemaObject
      * @return the normalized form for a value
      * @throws LdapException if an error results during normalization
      */
-    public abstract Value<?> normalize( Value<?> value ) throws LdapInvalidDnException;
+    public abstract Value<?> normalize( Value<?> value ) throws LdapException;
 
 
     /**
@@ -76,7 +76,7 @@ public abstract class Normalizer extends LoadableSchemaObject
      * @return the normalized form for a value
      * @throws LdapException if an error results during normalization
      */
-    public abstract String normalize( String value ) throws LdapInvalidDnException;
+    public abstract String normalize( String value ) throws LdapException;
 
 
     /**

@@ -27,8 +27,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.naming.NamingException;
-
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Modification;
@@ -37,6 +35,7 @@ import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.entry.client.ClientModification;
 import org.apache.directory.shared.ldap.entry.client.DefaultClientAttribute;
 import org.apache.directory.shared.ldap.entry.client.DefaultClientEntry;
+import org.apache.directory.shared.ldap.exception.LdapException;
 import org.junit.Test;
 
 /**
@@ -51,7 +50,7 @@ public class AttributeUtilsTest
      * Test a addModification applied to an empty entry
      */
     @Test
-    public void testApplyAddModificationToEmptyEntry() throws NamingException
+    public void testApplyAddModificationToEmptyEntry() throws LdapException
     {
         Entry entry = new DefaultClientEntry();
         EntryAttribute attr = new DefaultClientAttribute( "cn", "test" );
@@ -67,7 +66,7 @@ public class AttributeUtilsTest
      * Test a addModification applied to an entry 
      */
     @Test
-    public void testApplyAddModificationToEntry() throws NamingException
+    public void testApplyAddModificationToEntry() throws LdapException
     {
         Entry entry = new DefaultClientEntry();
         entry.add( "dc", "apache" );
@@ -88,7 +87,7 @@ public class AttributeUtilsTest
      * but with another value 
      */
     @Test
-    public void testApplyAddModificationToEntryWithValues() throws NamingException
+    public void testApplyAddModificationToEntryWithValues() throws LdapException
     {
         Entry entry = new DefaultClientEntry();
         entry.put( "cn", "apache" );
@@ -126,7 +125,7 @@ public class AttributeUtilsTest
      * and the same value 
      */
     @Test
-    public void testApplyAddModificationToEntryWithSameValue() throws NamingException
+    public void testApplyAddModificationToEntryWithSameValue() throws LdapException
     {
         Entry entry = new DefaultClientEntry();
         entry.put( "cn", "test", "apache" );
@@ -163,7 +162,7 @@ public class AttributeUtilsTest
      * Test the deletion of an attribute into an empty entry
      */
     @Test
-    public void testApplyRemoveModificationFromEmptyEntry() throws NamingException
+    public void testApplyRemoveModificationFromEmptyEntry() throws LdapException
     {
         Entry entry = new DefaultClientEntry();
 
@@ -180,7 +179,7 @@ public class AttributeUtilsTest
      * Test the deletion of an attribute into an entry which does not contain the attribute
      */
     @Test
-    public void testApplyRemoveModificationFromEntryAttributeNotPresent() throws NamingException
+    public void testApplyRemoveModificationFromEntryAttributeNotPresent() throws LdapException
     {
         Entry entry = new DefaultClientEntry();
 
@@ -205,7 +204,7 @@ public class AttributeUtilsTest
      * but without the value to be deleted
      */
     @Test
-    public void testApplyRemoveModificationFromEntryAttributeNotSameValue() throws NamingException
+    public void testApplyRemoveModificationFromEntryAttributeNotSameValue() throws LdapException
     {
         Entry entry = new DefaultClientEntry();
 
@@ -230,7 +229,7 @@ public class AttributeUtilsTest
      * The entry should not contain the attribute after the operation
      */
     @Test
-    public void testApplyRemoveModificationFromEntrySameAttributeSameValue() throws NamingException
+    public void testApplyRemoveModificationFromEntrySameAttributeSameValue() throws LdapException
     {
         Entry entry = new DefaultClientEntry();
         entry.put( "cn", "test" );
@@ -253,7 +252,7 @@ public class AttributeUtilsTest
      * The entry should contain the attribute after the operation, but with one less value
      */
     @Test
-    public void testApplyRemoveModificationFromEntrySameAttributeValues() throws NamingException
+    public void testApplyRemoveModificationFromEntrySameAttributeValues() throws LdapException
     {
         Entry entry = new DefaultClientEntry();
         entry.put( "cn", "test", "apache" );
@@ -287,10 +286,10 @@ public class AttributeUtilsTest
      * 
      * As we are replacing a non existing attribute, it should be added.
      *
-     * @throws NamingException
+     * @throws LdapException
      */
     @Test
-    public void testApplyModifyModificationFromEmptyEntry() throws NamingException
+    public void testApplyModifyModificationFromEmptyEntry() throws LdapException
     {
         Entry entry = new DefaultClientEntry();
         
@@ -309,10 +308,10 @@ public class AttributeUtilsTest
      * 
      * As we are replacing a non existing attribute, it should not change the entry.
      *
-     * @throws NamingException
+     * @throws LdapException
      */
     @Test
-    public void testApplyModifyEmptyModificationFromEmptyEntry() throws NamingException
+    public void testApplyModifyEmptyModificationFromEmptyEntry() throws LdapException
     {
         Entry entry = new DefaultClientEntry();
         
@@ -330,10 +329,10 @@ public class AttributeUtilsTest
      * 
      * As we are replacing a non existing attribute, it should not change the entry.
      *
-     * @throws NamingException
+     * @throws LdapException
      */
     @Test
-    public void testApplyModifyAttributeModification() throws NamingException
+    public void testApplyModifyAttributeModification() throws LdapException
     {
         Entry entry = new DefaultClientEntry();
         entry.put( "cn", "test" );
@@ -374,10 +373,10 @@ public class AttributeUtilsTest
     /**
      * Test the removing by modification of an existing attribute in an .
      * 
-     * @throws NamingException
+     * @throws LdapException
      */
     @Test
-    public void testApplyModifyModificationRemoveAttribute() throws NamingException
+    public void testApplyModifyModificationRemoveAttribute() throws LdapException
     {
         Entry entry = new DefaultClientEntry();
         entry.put(  "cn", "test" );

@@ -30,9 +30,8 @@ import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.naming.InvalidNameException;
-
 import org.apache.directory.shared.ldap.codec.util.LdapURLEncodingException;
+import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.filter.SearchScope;
 import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.util.LdapURL.Extension;
@@ -736,7 +735,7 @@ public class LdapUrlTest
      * test the setDn() method
      */
     @Test
-    public void testDnSetDn() throws LdapURLEncodingException, InvalidNameException
+    public void testDnSetDn() throws LdapURLEncodingException, LdapInvalidDnException
     {
         LdapURL url = new LdapURL();
         assertNull( url.getDn() );
@@ -756,7 +755,7 @@ public class LdapUrlTest
      * test the setAttributes() method
      */
     @Test
-    public void testDnSetAttributes() throws LdapURLEncodingException, InvalidNameException
+    public void testDnSetAttributes() throws LdapURLEncodingException, LdapInvalidDnException
     {
         LdapURL url = new LdapURL();
         assertNotNull( url.getAttributes() );
@@ -788,7 +787,7 @@ public class LdapUrlTest
      * test the setScope() method
      */
     @Test
-    public void testDnSetScope() throws LdapURLEncodingException, InvalidNameException
+    public void testDnSetScope() throws LdapURLEncodingException, LdapInvalidDnException
     {
         LdapURL url = new LdapURL();
         assertEquals( SearchScope.OBJECT, url.getScope() );
@@ -813,7 +812,7 @@ public class LdapUrlTest
      * test the setFilter() method
      */
     @Test
-    public void testDnSetFilter() throws LdapURLEncodingException, InvalidNameException
+    public void testDnSetFilter() throws LdapURLEncodingException, LdapInvalidDnException
     {
         LdapURL url = new LdapURL();
         assertNull( url.getFilter() );

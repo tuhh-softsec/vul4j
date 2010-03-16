@@ -22,9 +22,9 @@ package org.apache.directory.shared.ldap.message;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.naming.NamingException;
 import javax.naming.directory.SearchControls;
 
+import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.filter.SearchScope;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.schema.AttributeType;
@@ -69,6 +69,9 @@ public class SearchParams
     
     /** The set of controls for this search. Default to an empty set */
     private Set<Control> controls;
+    
+    /** TODO : Remove me ! */
+    private SearchControls searchControls;
 
     /**
      * Creates a new instance of SearchContext, with all the values set to 
@@ -211,7 +214,7 @@ public class SearchParams
                
                 returningAttributes.add( attrOptions );
             }
-            catch ( NamingException ne )
+            catch ( LdapException ne )
             {
                 LOG.warn( "Requested attribute {} does not exist in the schema, it will be ignored", returnAttribute );
                 // Unknown attributes should be silently ignored, as RFC 2251 states
@@ -271,6 +274,12 @@ public class SearchParams
     }
     
     
+    public SearchControls getSearchControls()
+    {
+        return searchControls;
+    }
+
+
     public static SearchParams toSearchParams( SearchControls searchControls, AliasDerefMode aliasDerefMode )
     {
         SearchParams searchParams = new SearchParams();
@@ -280,6 +289,17 @@ public class SearchParams
         searchParams.setSizeLimit( searchControls.getCountLimit() );
         searchParams.setScope( SearchScope.getSearchScope( searchControls.getSearchScope() ) );
         searchParams.setTypesOnly( searchControls.getReturningObjFlag() );
+        
+        if ( searchControls.getReturningAttributes() != null )
+        {
+            for ( String returningAttribute : searchControls.getReturningAttributes() )
+            {
+                searchParams.addReturningAttributes( returningAttribute );
+            }
+        }
+        
+        searchParams.searchControls = searchControls;
+        
         return searchParams;
     }
     

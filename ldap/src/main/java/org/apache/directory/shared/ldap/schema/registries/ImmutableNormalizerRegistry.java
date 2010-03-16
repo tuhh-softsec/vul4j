@@ -22,10 +22,10 @@ package org.apache.directory.shared.ldap.schema.registries;
 
 import java.util.Iterator;
 
-import javax.naming.NamingException;
+import org.apache.directory.shared.ldap.exception.LdapException;
 
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.exception.LdapOperationNotSupportedException;
+import org.apache.directory.shared.ldap.exception.LdapUnwillingToPerformException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.schema.Normalizer;
 import org.apache.directory.shared.ldap.schema.SchemaObject;
@@ -58,27 +58,27 @@ public class ImmutableNormalizerRegistry implements NormalizerRegistry
     /**
      *  {@inheritDoc}
      */
-    public void register( Normalizer normalizer ) throws NamingException
+    public void register( Normalizer normalizer ) throws LdapException
     {
-        throw new LdapOperationNotSupportedException( I18n.err( I18n.ERR_04283 ), ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapUnwillingToPerformException( ResultCodeEnum.NO_SUCH_OPERATION, I18n.err( I18n.ERR_04283 ) );
     }
 
 
     /**
      *  {@inheritDoc}
      */
-    public Normalizer unregister( String numericOid ) throws NamingException
+    public Normalizer unregister( String numericOid ) throws LdapException
     {
-        throw new LdapOperationNotSupportedException( I18n.err( I18n.ERR_04283 ), ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapUnwillingToPerformException( ResultCodeEnum.NO_SUCH_OPERATION, I18n.err( I18n.ERR_04283 ) );
     }
 
 
     /**
      *  {@inheritDoc}
      */
-    public void unregisterSchemaElements( String schemaName ) throws NamingException
+    public void unregisterSchemaElements( String schemaName ) throws LdapException
     {
-        throw new LdapOperationNotSupportedException( I18n.err( I18n.ERR_04283 ), ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapUnwillingToPerformException( ResultCodeEnum.NO_SUCH_OPERATION, I18n.err( I18n.ERR_04283 ) );
     }
 
 
@@ -112,7 +112,7 @@ public class ImmutableNormalizerRegistry implements NormalizerRegistry
     /**
      *  {@inheritDoc}
      */
-    public String getOidByName( String name ) throws NamingException
+    public String getOidByName( String name ) throws LdapException
     {
         return immutableNormalizerRegistry.getOidByName( name );
     }
@@ -121,7 +121,7 @@ public class ImmutableNormalizerRegistry implements NormalizerRegistry
     /**
      *  {@inheritDoc}
      */
-    public String getSchemaName( String oid ) throws NamingException
+    public String getSchemaName( String oid ) throws LdapException
     {
         return immutableNormalizerRegistry.getSchemaName( oid );
     }
@@ -148,7 +148,7 @@ public class ImmutableNormalizerRegistry implements NormalizerRegistry
     /**
      *  {@inheritDoc}
      */
-    public Normalizer lookup( String oid ) throws NamingException
+    public Normalizer lookup( String oid ) throws LdapException
     {
         return immutableNormalizerRegistry.lookup( oid );
     }
@@ -166,9 +166,9 @@ public class ImmutableNormalizerRegistry implements NormalizerRegistry
     /**
      *  {@inheritDoc}
      */
-    public void renameSchema( String originalSchemaName, String newSchemaName ) throws NamingException
+    public void renameSchema( String originalSchemaName, String newSchemaName ) throws LdapException
     {
-        throw new LdapOperationNotSupportedException( I18n.err( I18n.ERR_04283 ), ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapUnwillingToPerformException( ResultCodeEnum.NO_SUCH_OPERATION, I18n.err( I18n.ERR_04283 ) );
     }
 
 
@@ -184,17 +184,17 @@ public class ImmutableNormalizerRegistry implements NormalizerRegistry
     /**
      * {@inheritDoc}
      */
-    public void clear() throws NamingException
+    public void clear() throws LdapException
     {
-        throw new LdapOperationNotSupportedException( I18n.err( I18n.ERR_04283 ), ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapUnwillingToPerformException( ResultCodeEnum.NO_SUCH_OPERATION, I18n.err( I18n.ERR_04283 ) );
     }
 
 
     /**
      * {@inheritDoc}
      */
-    public Normalizer unregister( Normalizer schemaObject ) throws NamingException
+    public Normalizer unregister( Normalizer schemaObject ) throws LdapException
     {
-        throw new LdapOperationNotSupportedException( I18n.err( I18n.ERR_04283 ), ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapUnwillingToPerformException( ResultCodeEnum.NO_SUCH_OPERATION, I18n.err( I18n.ERR_04283 ) );
     }
 }

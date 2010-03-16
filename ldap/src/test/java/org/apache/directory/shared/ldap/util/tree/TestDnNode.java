@@ -24,8 +24,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
 
-import javax.naming.NamingException;
-
+import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.name.DN;
 import org.junit.After;
 import org.junit.Before;
@@ -87,7 +86,7 @@ public class TestDnNode
     /**
      * Test the addition of a single DN
      */
-    @Test public void testNewTree() throws NamingException
+    @Test public void testNewTree() throws LdapException
     {
         /** A structure to hold all the DNs */
         DnBranchNode<DN> dnLookupTree = new DnBranchNode<DN>();
@@ -113,7 +112,7 @@ public class TestDnNode
      * Test additions in a tree 
      */
     @Test
-    public void testComplexTreeCreation() throws NamingException
+    public void testComplexTreeCreation() throws LdapException
     {
         
         assertTrue( dnLookupTree.hasParentElement( dn1 ) );
@@ -133,7 +132,7 @@ public class TestDnNode
      *
      */
     @Test
-    public void testAddEntryTwice() throws NamingException
+    public void testAddEntryTwice() throws LdapException
     {
         assertEquals( 6, dnLookupTree.size() );
 
@@ -146,7 +145,7 @@ public class TestDnNode
      * test the deletion of elements in a tree
      */
     @Test
-    public void testComplexTreeDeletion() throws NamingException
+    public void testComplexTreeDeletion() throws LdapException
     {
         dnLookupTree.remove( dn3 );
         assertEquals( 5, dnLookupTree.size() );
