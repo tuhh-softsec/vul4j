@@ -21,7 +21,7 @@ package org.apache.directory.shared.converter.schema;
 
 import java.util.List;
 
-import javax.naming.NamingException;
+import org.apache.directory.shared.ldap.exception.LdapException;
 
 /**
  * An interface defining the methods to be implemented by the SchemaElement 
@@ -89,7 +89,7 @@ public interface SchemaElement
      * as a ldif string 
      * @param schemaName The schema from which is extracted this schemaElement
      * @return A string representing the schemaElement as a Ldif formated  String 
-     * @throws NamingException If any error occurs.
+     * @throws LdapException If any error occurs.
      */
-    String toLdif( String schemaName ) throws NamingException;
+    String toLdif( String schemaName ) throws LdapException;
 }

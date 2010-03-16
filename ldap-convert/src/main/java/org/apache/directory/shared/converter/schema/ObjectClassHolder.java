@@ -23,11 +23,10 @@ package org.apache.directory.shared.converter.schema;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.naming.NamingException;
-
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.client.DefaultClientEntry;
+import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.ldif.LdifUtils;
 import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.name.RDN;
@@ -148,7 +147,7 @@ public class ObjectClassHolder extends SchemaElementImpl
      * @param schemaName The name of the schema file containing this objectClass
      * @return A ldif formatted string
      */
-    public String toLdif( String schemaName ) throws NamingException
+    public String toLdif( String schemaName ) throws LdapException
     {
         StringBuilder sb = new StringBuilder();
 
@@ -209,7 +208,7 @@ public class ObjectClassHolder extends SchemaElementImpl
     /* (non-Javadoc)
      * @see org.apache.directory.shared.converter.schema.SchemaElementImpl#dnToLdif(java.lang.String)
      */
-    public String dnToLdif( String schemaName ) throws NamingException
+    public String dnToLdif( String schemaName ) throws LdapException
     {
         StringBuilder sb = new StringBuilder();
 

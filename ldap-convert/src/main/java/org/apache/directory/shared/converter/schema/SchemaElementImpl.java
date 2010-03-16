@@ -22,12 +22,11 @@ package org.apache.directory.shared.converter.schema;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.naming.NamingException;
-
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.client.DefaultClientAttribute;
 import org.apache.directory.shared.ldap.entry.client.DefaultClientEntry;
+import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.ldif.LdifUtils;
 import org.apache.directory.shared.ldap.util.StringTools;
 
@@ -139,7 +138,7 @@ public abstract class SchemaElementImpl implements SchemaElement
     /**
      * @return the Names as Ldif lines
      */
-    private String nameToLdif() throws NamingException
+    private String nameToLdif() throws LdapException
     {
         if ( names.size() == 0 )
         {
@@ -164,7 +163,7 @@ public abstract class SchemaElementImpl implements SchemaElement
     /**
      * @return The description as a ldif line
      */
-    private String descToLdif() throws NamingException
+    private String descToLdif() throws LdapException
     {
         if ( StringTools.isEmpty( description ) )
         {
@@ -184,7 +183,7 @@ public abstract class SchemaElementImpl implements SchemaElement
     /**
      * @return The dn as a ldif line
      */
-    public abstract String dnToLdif( String schemaName ) throws NamingException;
+    public abstract String dnToLdif( String schemaName ) throws LdapException;
     
     /**
      * Return the extensions formated as Ldif lines
@@ -192,9 +191,9 @@ public abstract class SchemaElementImpl implements SchemaElement
      * m-attributeTypeExtension
      * 
      * @return The extensions formated as ldif lines
-     * @throws NamingException If the conversion goes wrong
+     * @throws LdapException If the conversion goes wrong
      */
-    protected String extensionsToLdif( String ID ) throws NamingException
+    protected String extensionsToLdif( String ID ) throws LdapException
     {
         StringBuilder sb = new StringBuilder();
         
@@ -211,7 +210,7 @@ public abstract class SchemaElementImpl implements SchemaElement
         return sb.toString();
     }
 
-    protected String schemaToLdif( String schemaName, String type ) throws NamingException
+    protected String schemaToLdif( String schemaName, String type ) throws LdapException
     {
         StringBuilder sb = new StringBuilder();
         
