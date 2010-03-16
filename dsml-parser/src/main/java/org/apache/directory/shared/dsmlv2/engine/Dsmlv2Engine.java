@@ -30,8 +30,6 @@ import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 
-import javax.naming.NamingException;
-
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.ber.tlv.TLVStateEnum;
@@ -74,6 +72,7 @@ import org.apache.directory.shared.ldap.codec.modifyDn.ModifyDNResponseCodec;
 import org.apache.directory.shared.ldap.codec.search.SearchResultDoneCodec;
 import org.apache.directory.shared.ldap.codec.search.SearchResultEntryCodec;
 import org.apache.directory.shared.ldap.codec.search.SearchResultReferenceCodec;
+import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.name.DN;
@@ -313,11 +312,9 @@ public class Dsmlv2Engine
      *      the request to process
      * @throws EncoderException 
      * @throws IOException 
-     * @throws NamingException 
      * @throws DecoderException 
      */
-    private void processRequest( LdapMessageCodec request ) throws EncoderException, IOException, DecoderException,
-        NamingException
+    private void processRequest( LdapMessageCodec request ) throws EncoderException, IOException, DecoderException
     {
         ByteBuffer bb = request.encode();
 
@@ -544,9 +541,8 @@ public class Dsmlv2Engine
      *      the response as a LDAP message
      * @throws IOException
      * @throws DecoderException
-     * @throws NamingException
      */
-    private LdapMessageCodec readResponse( ByteBuffer bb ) throws IOException, DecoderException, NamingException
+    private LdapMessageCodec readResponse( ByteBuffer bb ) throws IOException, DecoderException
     {
 
         LdapMessageCodec messageResp = null;
@@ -612,9 +608,9 @@ public class Dsmlv2Engine
      * @throws EncoderException
      * @throws DecoderException
      * @throws IOException
-     * @throws NamingException
+     * @throws LdapInvalidDnException
      */
-    private void bind( int messageId ) throws EncoderException, DecoderException, IOException, NamingException
+    private void bind( int messageId ) throws EncoderException, DecoderException, IOException, LdapInvalidDnException
     {
         BindRequestCodec bindRequest = new BindRequestCodec();
         LdapAuthentication authentication = new SimpleAuthentication();

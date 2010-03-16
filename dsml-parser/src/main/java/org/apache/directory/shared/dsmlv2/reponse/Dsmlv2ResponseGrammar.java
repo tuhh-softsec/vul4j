@@ -27,8 +27,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.naming.InvalidNameException;
-
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.primitives.OID;
 import org.apache.directory.shared.dsmlv2.AbstractGrammar;
@@ -56,6 +54,7 @@ import org.apache.directory.shared.ldap.codec.search.SearchResultDoneCodec;
 import org.apache.directory.shared.ldap.codec.search.SearchResultEntryCodec;
 import org.apache.directory.shared.ldap.codec.search.SearchResultReferenceCodec;
 import org.apache.directory.shared.ldap.codec.util.LdapURLEncodingException;
+import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.name.DN;
@@ -805,7 +804,7 @@ public class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGrammar
                 {
                     ldapResult.setMatchedDN( new DN( attributeValue ) );
                 }
-                catch ( InvalidNameException e )
+                catch ( LdapInvalidDnException e )
                 {
                     throw new XmlPullParserException( "" + e.getMessage(), xpp, null );
                 }
@@ -847,7 +846,7 @@ public class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGrammar
                 {
                     ldapResult.setMatchedDN( new DN( attributeValue ) );
                 }
-                catch ( InvalidNameException e )
+                catch ( LdapInvalidDnException e )
                 {
                     throw new XmlPullParserException( "" + e.getMessage(), xpp, null );
                 }
@@ -888,7 +887,7 @@ public class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGrammar
                 {
                     ldapResult.setMatchedDN( new DN( attributeValue ) );
                 }
-                catch ( InvalidNameException e )
+                catch ( LdapInvalidDnException e )
                 {
                     throw new XmlPullParserException( "" + e.getMessage(), xpp, null );
                 }
@@ -929,7 +928,7 @@ public class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGrammar
                 {
                     ldapResult.setMatchedDN( new DN( attributeValue ) );
                 }
-                catch ( InvalidNameException e )
+                catch ( LdapInvalidDnException e )
                 {
                     throw new XmlPullParserException( "" + e.getMessage(), xpp, null );
                 }
@@ -970,7 +969,7 @@ public class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGrammar
                 {
                     ldapResult.setMatchedDN( new DN( attributeValue ) );
                 }
-                catch ( InvalidNameException e )
+                catch ( LdapInvalidDnException e )
                 {
                     throw new XmlPullParserException( "" + e.getMessage(), xpp, null );
                 }
@@ -1011,7 +1010,7 @@ public class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGrammar
                 {
                     ldapResult.setMatchedDN( new DN( attributeValue ) );
                 }
-                catch ( InvalidNameException e )
+                catch ( LdapInvalidDnException e )
                 {
                     throw new XmlPullParserException( "" + e.getMessage(), xpp, null );
                 }
@@ -1052,7 +1051,7 @@ public class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGrammar
                 {
                     ldapResult.setMatchedDN( new DN( attributeValue ) );
                 }
-                catch ( InvalidNameException e )
+                catch ( LdapInvalidDnException e )
                 {
                     throw new XmlPullParserException( "" + e.getMessage(), xpp, null );
                 }
@@ -1548,7 +1547,7 @@ public class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGrammar
                 {
                     searchResultEntry.setObjectName( new DN( attributeValue ) );
                 }
-                catch ( InvalidNameException e )
+                catch ( LdapInvalidDnException e )
                 {
                     throw new XmlPullParserException( e.getMessage(), xpp, null );
                 }
@@ -1621,7 +1620,7 @@ public class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGrammar
                 {
                     searchResultDone.getLdapResult().setMatchedDN( new DN( attributeValue ) );
                 }
-                catch ( InvalidNameException e )
+                catch ( LdapInvalidDnException e )
                 {
                     throw new XmlPullParserException( "" + e.getMessage(), xpp, null );
                 }

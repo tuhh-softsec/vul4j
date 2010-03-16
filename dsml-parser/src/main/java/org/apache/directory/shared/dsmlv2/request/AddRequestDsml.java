@@ -20,14 +20,13 @@
 package org.apache.directory.shared.dsmlv2.request;
 
 
-import javax.naming.NamingException;
-
 import org.apache.directory.shared.dsmlv2.ParserUtils;
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.codec.add.AddRequestCodec;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Value;
+import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.name.DN;
 import org.dom4j.Element;
 import org.dom4j.Namespace;
@@ -146,9 +145,9 @@ public class AddRequestDsml extends AbstractRequestDsml
      * Create a new attributeValue
      * 
      * @param type The attribute's name (called 'type' in the grammar)
-     * @throws NamingException 
+     * @throws LdapException 
      */
-    public void addAttributeType( String type ) throws NamingException
+    public void addAttributeType( String type ) throws LdapException
     {
         ( ( AddRequestCodec ) instance ).addAttributeType( type );
     }
