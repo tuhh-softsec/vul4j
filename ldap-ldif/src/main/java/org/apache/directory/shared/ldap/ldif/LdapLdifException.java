@@ -19,6 +19,8 @@
  */
 package org.apache.directory.shared.ldap.ldif;
 
+import org.apache.directory.shared.ldap.exception.LdapException;
+
 
 /**
  * An exception throws when we get an error while parsing a LDIF file.
@@ -26,7 +28,7 @@ package org.apache.directory.shared.ldap.ldif;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev: 923395 $
  */
-public class LdapLdifException extends Exception
+public class LdapLdifException extends LdapException
 {
     /** The serial version UUID */
     private static final long serialVersionUID = 1L;
