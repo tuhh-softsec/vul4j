@@ -26,6 +26,7 @@ import java.util.Set;
 
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.exception.LdapException;
+import org.apache.directory.shared.ldap.exception.LdapProtocolErrorException;
 import org.apache.directory.shared.ldap.exception.LdapSchemaViolationException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.schema.registries.AttributeTypeRegistry;
@@ -225,7 +226,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
                 // Not allowed.
                 String msg = I18n.err( I18n.ERR_04303, superiorOid, getName() );
 
-                Throwable error = new LdapSchemaViolationException( ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX, msg );
+                Throwable error = new LdapProtocolErrorException( msg );
                 errors.add( error );
                 LOG.info( msg );
 

@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.exception.LdapException;
+import org.apache.directory.shared.ldap.exception.LdapProtocolErrorException;
 import org.apache.directory.shared.ldap.exception.LdapSchemaViolationException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.schema.registries.AttributeTypeRegistry;
@@ -189,7 +190,7 @@ public class ObjectClass extends AbstractSchemaObject
                     // Cannot find the OC
                     String msg = I18n.err( I18n.ERR_04321, oid, superiorName );
 
-                    Throwable error = new LdapSchemaViolationException( ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX, msg );
+                    Throwable error = new LdapProtocolErrorException( msg );
                     errors.add( error );
                     return;
                 }
