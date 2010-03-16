@@ -32,7 +32,7 @@ import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.directory.shared.ldap.exception.LdapException;
-import org.apache.directory.shared.ldap.exception.LdapSchemaViolationException;
+import org.apache.directory.shared.ldap.exception.LdapProtocolErrorException;
 import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.LdapComparator;
 import org.apache.directory.shared.ldap.schema.LdapSyntax;
@@ -398,7 +398,7 @@ public class SchemaManagerDelTest
 
         List<Throwable> errors = schemaManager.getErrors();
         assertFalse( errors.isEmpty() );
-        assertTrue( errors.get( 0 ) instanceof LdapSchemaViolationException );
+        assertTrue( errors.get( 0 ) instanceof LdapProtocolErrorException );
 
         assertNotNull( schemaManager.lookupComparatorRegistry( "2.5.13.0" ) );
         assertEquals( ctrSize, schemaManager.getComparatorRegistry().size() );
@@ -432,7 +432,7 @@ public class SchemaManagerDelTest
 
         List<Throwable> errors = schemaManager.getErrors();
         assertFalse( errors.isEmpty() );
-        assertTrue( errors.get( 0 ) instanceof LdapSchemaViolationException );
+        assertTrue( errors.get( 0 ) instanceof LdapProtocolErrorException );
 
         // Now delete the using MR : it should be OK
         MatchingRule mr = new MatchingRule( OID );
@@ -539,7 +539,7 @@ public class SchemaManagerDelTest
 
         List<Throwable> errors = schemaManager.getErrors();
         assertFalse( errors.isEmpty() );
-        assertTrue( errors.get( 0 ) instanceof LdapSchemaViolationException );
+        assertTrue( errors.get( 0 ) instanceof LdapProtocolErrorException );
 
         // Now delete the using AT : it should be OK
         AttributeType at = new AttributeType( AT_OID );
@@ -639,7 +639,7 @@ public class SchemaManagerDelTest
 
         List<Throwable> errors = schemaManager.getErrors();
         assertFalse( errors.isEmpty() );
-        assertTrue( errors.get( 0 ) instanceof LdapSchemaViolationException );
+        assertTrue( errors.get( 0 ) instanceof LdapProtocolErrorException );
 
         assertNotNull( schemaManager.lookupNormalizerRegistry( "2.5.13.0" ) );
         assertEquals( nrSize, schemaManager.getNormalizerRegistry().size() );
@@ -673,7 +673,7 @@ public class SchemaManagerDelTest
 
         List<Throwable> errors = schemaManager.getErrors();
         assertFalse( errors.isEmpty() );
-        assertTrue( errors.get( 0 ) instanceof LdapSchemaViolationException );
+        assertTrue( errors.get( 0 ) instanceof LdapProtocolErrorException );
 
         // Now delete the using MR : it should be OK
         MatchingRule mr = new MatchingRule( OID );
@@ -753,7 +753,7 @@ public class SchemaManagerDelTest
         
         List<Throwable> errors = schemaManager.getErrors();
         assertFalse( errors.isEmpty() );
-        assertTrue( errors.get( 0 ) instanceof LdapSchemaViolationException );
+        assertTrue( errors.get( 0 ) instanceof LdapProtocolErrorException );
 
         assertEquals( ocSize, schemaManager.getObjectClassRegistry().size() );
         assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
@@ -886,7 +886,7 @@ public class SchemaManagerDelTest
 
         List<Throwable> errors = schemaManager.getErrors();
         assertFalse( errors.isEmpty() );
-        assertTrue( errors.get( 0 ) instanceof LdapSchemaViolationException );
+        assertTrue( errors.get( 0 ) instanceof LdapProtocolErrorException );
 
         // Now delete the using MR : it should be OK
         MatchingRule mr = new MatchingRule( MR_OID );
@@ -933,7 +933,7 @@ public class SchemaManagerDelTest
 
         List<Throwable> errors = schemaManager.getErrors();
         assertFalse( errors.isEmpty() );
-        assertTrue( errors.get( 0 ) instanceof LdapSchemaViolationException );
+        assertTrue( errors.get( 0 ) instanceof LdapProtocolErrorException );
 
         // Now delete the using AT : it should be OK
         AttributeType at = new AttributeType( AT_OID );
@@ -979,7 +979,7 @@ public class SchemaManagerDelTest
 
         List<Throwable> errors = schemaManager.getErrors();
         assertFalse( errors.isEmpty() );
-        assertTrue( errors.get( 0 ) instanceof LdapSchemaViolationException );
+        assertTrue( errors.get( 0 ) instanceof LdapProtocolErrorException );
 
         // Now delete the using S : it should be OK
         LdapSyntax syntax = new LdapSyntax( OID );
@@ -1069,7 +1069,7 @@ public class SchemaManagerDelTest
 
         List<Throwable> errors = schemaManager.getErrors();
         assertFalse( errors.isEmpty() );
-        assertTrue( errors.get( 0 ) instanceof LdapSchemaViolationException );
+        assertTrue( errors.get( 0 ) instanceof LdapProtocolErrorException );
 
         assertEquals( scrSize, schemaManager.getSyntaxCheckerRegistry().size() );
         assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );

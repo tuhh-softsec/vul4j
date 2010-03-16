@@ -34,8 +34,9 @@ import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
+import org.apache.directory.shared.ldap.exception.LdapProtocolErrorException;
 import org.apache.directory.shared.ldap.exception.LdapUnwillingToPerformException;
-import org.apache.directory.shared.ldap.exception.LdapSchemaViolationException;
+//import org.apache.directory.shared.ldap.exception.LdapSchemaViolationException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.schema.AttributeType;
@@ -671,7 +672,7 @@ public class DefaultSchemaManager implements SchemaManager
                         // The dependency has not been loaded.
                         String msg = I18n.err( I18n.ERR_11002, schema.getSchemaName() );
                         LOG.info( msg );
-                        Throwable error = new LdapSchemaViolationException( ResultCodeEnum.OTHER, msg );
+                        Throwable error = new LdapProtocolErrorException( msg );
                         errors.add( error );
                         return false;
                     }
@@ -1639,7 +1640,7 @@ public class DefaultSchemaManager implements SchemaManager
             // The new schemaObject's OID must not already exist
             if ( checkOidExist( copy ) )
             {
-                Throwable error = new LdapSchemaViolationException( ResultCodeEnum.OTHER,
+                Throwable error = new LdapProtocolErrorException(
                 		I18n.err( I18n.ERR_11008, schemaObject.getOid() ) );
                 errors.add( error );
 
@@ -1669,7 +1670,7 @@ public class DefaultSchemaManager implements SchemaManager
                 // The SchemaObject must be associated with an existing schema
                 String msg = I18n.err( I18n.ERR_11010, copy.getOid() );
                 LOG.info( msg );
-                Throwable error = new LdapSchemaViolationException( ResultCodeEnum.OTHER, msg );
+                Throwable error = new LdapProtocolErrorException( msg );
                 errors.add( error );
                 return false;
             }
@@ -1742,7 +1743,7 @@ public class DefaultSchemaManager implements SchemaManager
             // The new schemaObject's OID must exist
             if ( !checkOidExist( schemaObject ) )
             {
-                Throwable error = new LdapSchemaViolationException( ResultCodeEnum.OTHER,
+                Throwable error = new LdapProtocolErrorException( 
                 		I18n.err( I18n.ERR_11011, schemaObject.getOid() ) );
                 errors.add( error );
                 return false;
@@ -1758,7 +1759,7 @@ public class DefaultSchemaManager implements SchemaManager
             {
                 String msg = I18n.err( I18n.ERR_11012, schemaObject.getOid(), StringTools.setToString( referencing ) );
 
-                Throwable error = new LdapSchemaViolationException( ResultCodeEnum.OTHER, msg );
+                Throwable error = new LdapProtocolErrorException( msg );
                 errors.add( error );
                 return false;
             }
@@ -1774,7 +1775,7 @@ public class DefaultSchemaManager implements SchemaManager
                 // The SchemaObject must be associated with an existing schema
                 String msg = I18n.err( I18n.ERR_11013, schemaObject.getOid() );
                 LOG.info( msg );
-                Throwable error = new LdapSchemaViolationException( ResultCodeEnum.OTHER, msg );
+                Throwable error = new LdapProtocolErrorException( msg );
                 errors.add( error );
                 return false;
             }
