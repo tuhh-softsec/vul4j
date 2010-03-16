@@ -80,6 +80,7 @@ public class LdapSchemaViolationException extends LdapOperationException
             case OBJECT_CLASS_VIOLATION :
             case NOT_ALLOWED_ON_RDN :
             case OBJECT_CLASS_MODS_PROHIBITED :
+                return;
                 
             default:
                 throw new IllegalArgumentException( I18n.err( I18n.ERR_04140, resultCode ) );

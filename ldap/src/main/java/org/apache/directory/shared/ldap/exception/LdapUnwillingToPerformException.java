@@ -78,6 +78,7 @@ public class LdapUnwillingToPerformException extends LdapOperationException
         {
             case UNWILLING_TO_PERFORM :
             case UNAVAILABLE_CRITICAL_EXTENSION :
+                return;
                 
             default:
                 throw new IllegalArgumentException( I18n.err( I18n.ERR_04140, resultCode ) );

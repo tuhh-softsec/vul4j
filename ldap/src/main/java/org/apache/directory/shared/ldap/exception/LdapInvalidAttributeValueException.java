@@ -78,8 +78,7 @@ public class LdapInvalidAttributeValueException extends LdapOperationException
         {
             case CONSTRAINT_VIOLATION :
             case INVALID_ATTRIBUTE_SYNTAX :
-                this.resultCode = resultCode;
-                break;
+                return;
                 
             default:
                 throw new IllegalArgumentException( I18n.err( I18n.ERR_04140, resultCode ) );

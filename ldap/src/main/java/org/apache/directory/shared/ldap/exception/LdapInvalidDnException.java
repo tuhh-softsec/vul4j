@@ -87,6 +87,7 @@ public class LdapInvalidDnException extends LdapOperationException
         {
             case INVALID_DN_SYNTAX :
             case NAMING_VIOLATION :
+                return;
                 
             default:
                 throw new IllegalArgumentException( I18n.err( I18n.ERR_04140, resultCode ) );

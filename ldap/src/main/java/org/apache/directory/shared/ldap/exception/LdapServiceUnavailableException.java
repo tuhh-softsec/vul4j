@@ -79,6 +79,7 @@ public class LdapServiceUnavailableException extends LdapOperationException
         {
             case BUSY :
             case UNAVAILABLE :
+                return;
                 
             default:
                 throw new IllegalArgumentException( I18n.err( I18n.ERR_04140, resultCode ) );
