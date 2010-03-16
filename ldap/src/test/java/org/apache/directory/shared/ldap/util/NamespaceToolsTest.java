@@ -20,16 +20,14 @@
 package org.apache.directory.shared.ldap.util;
 
 
-import javax.naming.Name;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.apache.directory.shared.ldap.exception.LdapException;
+import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.name.DN;
-import org.apache.directory.shared.ldap.util.NamespaceTools;
 import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
 
 /**
  * Test the NameToolsTest class
@@ -108,12 +106,12 @@ public class NamespaceToolsTest
     
     
     @Test
-    public void testGetRelativeName() throws LdapException
+    public void testGetRelativeName() throws LdapInvalidDnException
     {
         // test the basis case first with the root
         DN ancestor = new DN( "" );
         DN descendant = new DN( "ou=system" );
-        Name relativeName = NamespaceTools.getRelativeName( ancestor, descendant );
+        DN relativeName = NamespaceTools.getRelativeName( ancestor, descendant );
         assertEquals( relativeName.toString(), "ou=system" );
         
         ancestor = new DN( "ou=system" );

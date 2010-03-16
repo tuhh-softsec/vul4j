@@ -23,10 +23,7 @@ package org.apache.directory.shared.ldap.util;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.naming.Name;
-
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.name.DN;
 
@@ -77,7 +74,7 @@ public class NamespaceTools
      * @param name2 the second name
      * @return true if the names are siblings, false otherwise.
      */
-    public static boolean isSibling( DN name1, DN name2 ) throws LdapException
+    public static boolean isSibling( DN name1, DN name2 ) throws LdapInvalidDnException
     {
         if ( name1.size() == name2.size() )
         {
@@ -97,7 +94,7 @@ public class NamespaceTools
      * @param descendant the candidate to test for descendancy
      * @return true if the candidate is a descendant
      */
-    public static boolean isDescendant( Name ancestor, Name descendant )
+    public static boolean isDescendant( DN ancestor, DN descendant )
     {
         return descendant.startsWith( ancestor );
     }
@@ -112,9 +109,9 @@ public class NamespaceTools
      * @param descendant the normalized distinguished name of the descendant context
      * @return the relative normalized name between the ancestor and the
      *         descendant contexts
-     * @throws javax.naming.LdapException if the contexts are not related in the ancestual sense
+     * @throws LdapInvalidDnException if the contexts are not related in the ancestual sense
      */
-    public static DN getRelativeName( DN ancestor, DN descendant ) throws LdapException
+    public static DN getRelativeName( DN ancestor, DN descendant ) throws LdapInvalidDnException
     {
         DN rdn = null;
         
@@ -124,14 +121,7 @@ public class NamespaceTools
         }
         else
         {
-            try
-            {
-                rdn = new DN( descendant.toString() );
-            }
-            catch( LdapInvalidDnException e )
-            {
-                throw new LdapException( e.getMessage() );
-            }
+            rdn = new DN( descendant.toString() );
         }
 
         if ( rdn.startsWith( ancestor ) )
@@ -143,7 +133,7 @@ public class NamespaceTools
         }
         else
         {
-            LdapException e = new LdapException( I18n.err( I18n.ERR_04417, descendant, ancestor ) );
+            LdapInvalidDnException e = new LdapInvalidDnException( I18n.err( I18n.ERR_04417, descendant, ancestor ) );
 
             throw e;
         }
@@ -193,10 +183,10 @@ public class NamespaceTools
      * 
      * @param compositeNameComponent a single name component not a whole name
      * @return the components of the complex name component in order
-     * @throws LdapException
+     * @throws LdapInvalidDnException
      *             if nameComponent is invalid (starts with a +)
      */
-    public static String[] getCompositeComponents( String compositeNameComponent ) throws LdapException
+    public static String[] getCompositeComponents( String compositeNameComponent ) throws LdapInvalidDnException
     {
         int lastIndex = compositeNameComponent.length() - 1;
         List<String> comps = new ArrayList<String>();
@@ -207,7 +197,7 @@ public class NamespaceTools
             {
                 if ( ii == 0 )
                 {
-                    throw new LdapException( I18n.err( I18n.ERR_04418, compositeNameComponent ) );
+                    throw new LdapInvalidDnException( I18n.err( I18n.ERR_04418, compositeNameComponent ) );
                 }
                 
                 if ( compositeNameComponent.charAt( ii - 1 ) != '\\' )
@@ -254,9 +244,9 @@ public class NamespaceTools
      * 
      * @param name The name to check 
      * @return <code>true</code> if the name has composite components
-     * @throws LdapException If the name is invalid
+     * @throws LdapInvalidDnException If the name is invalid
      */
-    public static boolean hasCompositeComponents( String name ) throws LdapException
+    public static boolean hasCompositeComponents( String name ) throws LdapInvalidDnException
     {
         for ( int ii = name.length() - 1; ii >= 0; ii-- )
         {
@@ -264,7 +254,7 @@ public class NamespaceTools
             {
                 if ( ii == 0 )
                 {
-                    throw new LdapException( I18n.err( I18n.ERR_04418, name ) );
+                    throw new LdapInvalidDnException( I18n.err( I18n.ERR_04418, name ) );
                 }
                 if ( name.charAt( ii - 1 ) != '\\' )
                 {
