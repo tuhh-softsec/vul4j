@@ -52,7 +52,9 @@ public class MasterTest extends TestCase {
 		WebResponse resp = webConversation.getResponse(req);
 		assertEquals("Status should be 200", HttpServletResponse.SC_OK, resp
 				.getResponseCode());
-		assertEquals(getResource(resultResource), resp.getText());
+                String strResponse = resp.getText().replaceAll("\r","");
+                String strResource = getResource(resultResource).replaceAll("\r","");
+		assertEquals(strResource, strResponse);
 	}
 
 	// This test does not work with cargo maven plugin as the version of
