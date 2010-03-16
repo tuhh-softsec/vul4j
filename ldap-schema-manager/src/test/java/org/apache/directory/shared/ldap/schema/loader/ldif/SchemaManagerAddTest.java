@@ -32,10 +32,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.naming.NamingException;
-import javax.naming.directory.NoSuchAttributeException;
-
 import org.apache.commons.io.FileUtils;
+import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.exception.LdapUnwillingToPerformException;
 import org.apache.directory.shared.ldap.exception.LdapSchemaViolationException;
 import org.apache.directory.shared.ldap.schema.AttributeType;
@@ -132,11 +130,7 @@ public class SchemaManagerAddTest
 
             return attributeType != null;
         }
-        catch ( NoSuchAttributeException nsae )
-        {
-            return false;
-        }
-        catch ( NamingException ne )
+        catch ( LdapException ne )
         {
             return false;
         }
@@ -154,11 +148,7 @@ public class SchemaManagerAddTest
 
             return matchingRule != null;
         }
-        catch ( NoSuchAttributeException nsae )
-        {
-            return false;
-        }
-        catch ( NamingException ne )
+        catch ( LdapException ne )
         {
             return false;
         }
@@ -176,11 +166,7 @@ public class SchemaManagerAddTest
 
             return objectClass != null;
         }
-        catch ( NoSuchAttributeException nsae )
-        {
-            return false;
-        }
-        catch ( NamingException ne )
+        catch ( LdapException ne )
         {
             return false;
         }
@@ -198,11 +184,7 @@ public class SchemaManagerAddTest
 
             return syntax != null;
         }
-        catch ( NoSuchAttributeException nsae )
-        {
-            return false;
-        }
-        catch ( NamingException ne )
+        catch ( LdapException ne )
         {
             return false;
         }

@@ -30,10 +30,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import javax.naming.NamingException;
-import javax.naming.directory.NoSuchAttributeException;
-
 import org.apache.commons.io.FileUtils;
+import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.exception.LdapSchemaViolationException;
 import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.LdapComparator;
@@ -119,11 +117,7 @@ public class SchemaManagerDelTest
 
             return attributeType != null;
         }
-        catch ( NoSuchAttributeException nsae )
-        {
-            return false;
-        }
-        catch ( NamingException ne )
+        catch ( LdapException ne )
         {
             return false;
         }
@@ -138,11 +132,7 @@ public class SchemaManagerDelTest
 
             return comparator != null;
         }
-        catch ( NoSuchAttributeException nsae )
-        {
-            return false;
-        }
-        catch ( NamingException ne )
+        catch ( LdapException ne )
         {
             return false;
         }
@@ -157,11 +147,7 @@ public class SchemaManagerDelTest
 
             return normalizer != null;
         }
-        catch ( NoSuchAttributeException nsae )
-        {
-            return false;
-        }
-        catch ( NamingException ne )
+        catch ( LdapException ne )
         {
             return false;
         }
@@ -176,11 +162,7 @@ public class SchemaManagerDelTest
 
             return matchingRule != null;
         }
-        catch ( NoSuchAttributeException nsae )
-        {
-            return false;
-        }
-        catch ( NamingException ne )
+        catch ( LdapException ne )
         {
             return false;
         }
@@ -195,11 +177,7 @@ public class SchemaManagerDelTest
 
             return syntax != null;
         }
-        catch ( NoSuchAttributeException nsae )
-        {
-            return false;
-        }
-        catch ( NamingException ne )
+        catch ( LdapException ne )
         {
             return false;
         }
@@ -214,11 +192,7 @@ public class SchemaManagerDelTest
 
             return syntaxChecker != null;
         }
-        catch ( NoSuchAttributeException nsae )
-        {
-            return false;
-        }
-        catch ( NamingException ne )
+        catch ( LdapException ne )
         {
             return false;
         }

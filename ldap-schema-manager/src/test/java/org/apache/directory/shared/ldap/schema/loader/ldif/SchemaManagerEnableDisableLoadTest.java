@@ -31,9 +31,8 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.naming.NamingException;
-
 import org.apache.commons.io.FileUtils;
+import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.schema.SchemaManager;
 import org.apache.directory.shared.ldap.schema.ldif.extractor.SchemaLdifExtractor;
 import org.apache.directory.shared.ldap.schema.ldif.extractor.impl.DefaultSchemaLdifExtractor;
@@ -225,7 +224,7 @@ public class SchemaManagerEnableDisableLoadTest
             schemaManager.lookupAttributeTypeRegistry( "gecos" );
             fail();
         }
-        catch ( NamingException ne )
+        catch ( LdapException ne )
         {
             // Expected
         }

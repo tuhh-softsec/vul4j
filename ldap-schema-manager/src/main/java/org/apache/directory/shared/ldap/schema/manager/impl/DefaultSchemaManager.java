@@ -27,13 +27,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.naming.NamingException;
-
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.NotImplementedException;
 import org.apache.directory.shared.ldap.constants.MetaSchemaConstants;
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.entry.Entry;
+import org.apache.directory.shared.ldap.exception.LdapException;
+import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.exception.LdapUnwillingToPerformException;
 import org.apache.directory.shared.ldap.exception.LdapSchemaViolationException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
@@ -203,7 +203,7 @@ public class DefaultSchemaManager implements SchemaManager
             }
             else
             {
-                throw new LdapUnwillingToPerformException( I18n.err( I18n.ERR_11001, schemaName ), ResultCodeEnum.UNWILLING_TO_PERFORM );
+                throw new LdapUnwillingToPerformException( ResultCodeEnum.UNWILLING_TO_PERFORM, I18n.err( I18n.ERR_11001, schemaName ) );
             }
         }
 
@@ -671,7 +671,7 @@ public class DefaultSchemaManager implements SchemaManager
                         // The dependency has not been loaded.
                         String msg = I18n.err( I18n.ERR_11002, schema.getSchemaName() );
                         LOG.info( msg );
-                        Throwable error = new LdapSchemaViolationException( msg, ResultCodeEnum.OTHER );
+                        Throwable error = new LdapSchemaViolationException( ResultCodeEnum.OTHER, msg );
                         errors.add( error );
                         return false;
                     }
@@ -1330,7 +1330,7 @@ public class DefaultSchemaManager implements SchemaManager
             schemaModificationAttributesDN
                 .normalize( getRegistries().getAttributeTypeRegistry().getNormalizerMapping() );
         }
-        catch ( NamingException e )
+        catch ( LdapInvalidDnException e )
         {
             throw new RuntimeException( e );
         }
@@ -1451,7 +1451,7 @@ public class DefaultSchemaManager implements SchemaManager
     /**
      * {@inheritDoc}
      */
-    public AttributeType lookupAttributeTypeRegistry( String oid ) throws NamingException
+    public AttributeType lookupAttributeTypeRegistry( String oid ) throws LdapException
     {
         return registries.getAttributeTypeRegistry().lookup( StringTools.toLowerCase( oid ).trim() );
     }
@@ -1460,7 +1460,7 @@ public class DefaultSchemaManager implements SchemaManager
     /**
      * {@inheritDoc}
      */
-    public LdapComparator<?> lookupComparatorRegistry( String oid ) throws NamingException
+    public LdapComparator<?> lookupComparatorRegistry( String oid ) throws LdapException
     {
         return registries.getComparatorRegistry().lookup( oid );
     }
@@ -1469,7 +1469,7 @@ public class DefaultSchemaManager implements SchemaManager
     /**
      * {@inheritDoc}
      */
-    public MatchingRule lookupMatchingRuleRegistry( String oid ) throws NamingException
+    public MatchingRule lookupMatchingRuleRegistry( String oid ) throws LdapException
     {
         return registries.getMatchingRuleRegistry().lookup( StringTools.toLowerCase( oid ).trim() );
     }
@@ -1478,7 +1478,7 @@ public class DefaultSchemaManager implements SchemaManager
     /**
      * {@inheritDoc}
      */
-    public Normalizer lookupNormalizerRegistry( String oid ) throws NamingException
+    public Normalizer lookupNormalizerRegistry( String oid ) throws LdapException
     {
         return registries.getNormalizerRegistry().lookup( oid );
     }
@@ -1487,7 +1487,7 @@ public class DefaultSchemaManager implements SchemaManager
     /**
      * {@inheritDoc}
      */
-    public ObjectClass lookupObjectClassRegistry( String oid ) throws NamingException
+    public ObjectClass lookupObjectClassRegistry( String oid ) throws LdapException
     {
         return registries.getObjectClassRegistry().lookup( StringTools.toLowerCase( oid ).trim() );
     }
@@ -1496,7 +1496,7 @@ public class DefaultSchemaManager implements SchemaManager
     /**
      * {@inheritDoc}
      */
-    public LdapSyntax lookupLdapSyntaxRegistry( String oid ) throws NamingException
+    public LdapSyntax lookupLdapSyntaxRegistry( String oid ) throws LdapException
     {
         return registries.getLdapSyntaxRegistry().lookup( StringTools.toLowerCase( oid ).trim() );
     }
@@ -1505,7 +1505,7 @@ public class DefaultSchemaManager implements SchemaManager
     /**
      * {@inheritDoc}
      */
-    public SyntaxChecker lookupSyntaxCheckerRegistry( String oid ) throws NamingException
+    public SyntaxChecker lookupSyntaxCheckerRegistry( String oid ) throws LdapException
     {
         return registries.getSyntaxCheckerRegistry().lookup( oid );
     }
@@ -1543,7 +1543,7 @@ public class DefaultSchemaManager implements SchemaManager
     /**
      * Get the inner SchemaObject if it's not a C/N/SC
      */
-    private SchemaObject getSchemaObject( SchemaObject schemaObject ) throws NamingException
+    private SchemaObject getSchemaObject( SchemaObject schemaObject ) throws LdapException
     {
         if ( schemaObject instanceof LoadableSchemaObject )
         {
@@ -1597,8 +1597,8 @@ public class DefaultSchemaManager implements SchemaManager
             else
             {
                 // We have an invalid SchemaObject, no need to go any further
-                Throwable error = new LdapUnwillingToPerformException( I18n.err( I18n.ERR_11007, schemaObject.getOid() ),
-                		ResultCodeEnum.UNWILLING_TO_PERFORM );
+                Throwable error = new LdapUnwillingToPerformException( ResultCodeEnum.UNWILLING_TO_PERFORM,
+                		I18n.err( I18n.ERR_11007, schemaObject.getOid() ) );
                 errors.add( error );
             }
         }
@@ -1639,8 +1639,8 @@ public class DefaultSchemaManager implements SchemaManager
             // The new schemaObject's OID must not already exist
             if ( checkOidExist( copy ) )
             {
-                Throwable error = new LdapSchemaViolationException( I18n.err( I18n.ERR_11008, schemaObject.getOid() ),
-                		ResultCodeEnum.OTHER );
+                Throwable error = new LdapSchemaViolationException( ResultCodeEnum.OTHER,
+                		I18n.err( I18n.ERR_11008, schemaObject.getOid() ) );
                 errors.add( error );
 
                 return false;
@@ -1652,8 +1652,8 @@ public class DefaultSchemaManager implements SchemaManager
             if ( schemaName == null )
             {
                 // The schema associated with the SchemzaObject does not exist. This is not valid.
-                Throwable error = new LdapUnwillingToPerformException( I18n.err( I18n.ERR_11009, schemaObject.getOid(),
-                		copy.getSchemaName() ), ResultCodeEnum.UNWILLING_TO_PERFORM );
+                Throwable error = new LdapUnwillingToPerformException( ResultCodeEnum.UNWILLING_TO_PERFORM, I18n.err( I18n.ERR_11009, schemaObject.getOid(),
+                        		copy.getSchemaName() ) );
                 errors.add( error );
 
                 return false;
@@ -1669,7 +1669,7 @@ public class DefaultSchemaManager implements SchemaManager
                 // The SchemaObject must be associated with an existing schema
                 String msg = I18n.err( I18n.ERR_11010, copy.getOid() );
                 LOG.info( msg );
-                Throwable error = new LdapSchemaViolationException( msg, ResultCodeEnum.OTHER );
+                Throwable error = new LdapSchemaViolationException( ResultCodeEnum.OTHER, msg );
                 errors.add( error );
                 return false;
             }
@@ -1742,8 +1742,8 @@ public class DefaultSchemaManager implements SchemaManager
             // The new schemaObject's OID must exist
             if ( !checkOidExist( schemaObject ) )
             {
-                Throwable error = new LdapSchemaViolationException( I18n.err( I18n.ERR_11011, schemaObject.getOid() ),
-                		ResultCodeEnum.OTHER );
+                Throwable error = new LdapSchemaViolationException( ResultCodeEnum.OTHER,
+                		I18n.err( I18n.ERR_11011, schemaObject.getOid() ) );
                 errors.add( error );
                 return false;
             }
@@ -1758,7 +1758,7 @@ public class DefaultSchemaManager implements SchemaManager
             {
                 String msg = I18n.err( I18n.ERR_11012, schemaObject.getOid(), StringTools.setToString( referencing ) );
 
-                Throwable error = new LdapSchemaViolationException( msg, ResultCodeEnum.OTHER );
+                Throwable error = new LdapSchemaViolationException( ResultCodeEnum.OTHER, msg );
                 errors.add( error );
                 return false;
             }
@@ -1774,7 +1774,7 @@ public class DefaultSchemaManager implements SchemaManager
                 // The SchemaObject must be associated with an existing schema
                 String msg = I18n.err( I18n.ERR_11013, schemaObject.getOid() );
                 LOG.info( msg );
-                Throwable error = new LdapSchemaViolationException( msg, ResultCodeEnum.OTHER );
+                Throwable error = new LdapSchemaViolationException( ResultCodeEnum.OTHER, msg );
                 errors.add( error );
                 return false;
             }
@@ -1870,7 +1870,7 @@ public class DefaultSchemaManager implements SchemaManager
     /**
      * {@inheritDoc}
      */
-    public SchemaObject unregisterAttributeType( String attributeTypeOid ) throws NamingException
+    public SchemaObject unregisterAttributeType( String attributeTypeOid ) throws LdapException
     {
         return registries.getAttributeTypeRegistry().unregister( attributeTypeOid );
     }
@@ -1879,7 +1879,7 @@ public class DefaultSchemaManager implements SchemaManager
     /**
      * {@inheritDoc}
      */
-    public SchemaObject unregisterComparator( String comparatorOid ) throws NamingException
+    public SchemaObject unregisterComparator( String comparatorOid ) throws LdapException
     {
         return registries.getComparatorRegistry().unregister( comparatorOid );
     }
@@ -1888,7 +1888,7 @@ public class DefaultSchemaManager implements SchemaManager
     /**
      * {@inheritDoc}
      */
-    public SchemaObject unregisterDitControlRule( String ditControlRuleOid ) throws NamingException
+    public SchemaObject unregisterDitControlRule( String ditControlRuleOid ) throws LdapException
     {
         return registries.getDitContentRuleRegistry().unregister( ditControlRuleOid );
     }
@@ -1897,7 +1897,7 @@ public class DefaultSchemaManager implements SchemaManager
     /**
      * {@inheritDoc}
      */
-    public SchemaObject unregisterDitStructureRule( String ditStructureRuleOid ) throws NamingException
+    public SchemaObject unregisterDitStructureRule( String ditStructureRuleOid ) throws LdapException
     {
         return registries.getDitStructureRuleRegistry().unregister( ditStructureRuleOid );
     }
@@ -1906,7 +1906,7 @@ public class DefaultSchemaManager implements SchemaManager
     /**
      * {@inheritDoc}
      */
-    public SchemaObject unregisterLdapSyntax( String ldapSyntaxOid ) throws NamingException
+    public SchemaObject unregisterLdapSyntax( String ldapSyntaxOid ) throws LdapException
     {
         return registries.getLdapSyntaxRegistry().unregister( ldapSyntaxOid );
     }
@@ -1915,7 +1915,7 @@ public class DefaultSchemaManager implements SchemaManager
     /**
      * {@inheritDoc}
      */
-    public SchemaObject unregisterMatchingRule( String matchingRuleOid ) throws NamingException
+    public SchemaObject unregisterMatchingRule( String matchingRuleOid ) throws LdapException
     {
         return registries.getMatchingRuleRegistry().unregister( matchingRuleOid );
     }
@@ -1924,7 +1924,7 @@ public class DefaultSchemaManager implements SchemaManager
     /**
      * {@inheritDoc}
      */
-    public SchemaObject unregisterMatchingRuleUse( String matchingRuleUseOid ) throws NamingException
+    public SchemaObject unregisterMatchingRuleUse( String matchingRuleUseOid ) throws LdapException
     {
         return registries.getMatchingRuleUseRegistry().unregister( matchingRuleUseOid );
     }
@@ -1933,7 +1933,7 @@ public class DefaultSchemaManager implements SchemaManager
     /**
      * {@inheritDoc}
      */
-    public SchemaObject unregisterNameForm( String nameFormOid ) throws NamingException
+    public SchemaObject unregisterNameForm( String nameFormOid ) throws LdapException
     {
         return registries.getNameFormRegistry().unregister( nameFormOid );
     }
@@ -1942,7 +1942,7 @@ public class DefaultSchemaManager implements SchemaManager
     /**
      * {@inheritDoc}
      */
-    public SchemaObject unregisterNormalizer( String normalizerOid ) throws NamingException
+    public SchemaObject unregisterNormalizer( String normalizerOid ) throws LdapException
     {
         return registries.getNormalizerRegistry().unregister( normalizerOid );
     }
@@ -1951,7 +1951,7 @@ public class DefaultSchemaManager implements SchemaManager
     /**
      * {@inheritDoc}
      */
-    public SchemaObject unregisterObjectClass( String objectClassOid ) throws NamingException
+    public SchemaObject unregisterObjectClass( String objectClassOid ) throws LdapException
     {
         return registries.getObjectClassRegistry().unregister( objectClassOid );
     }
@@ -1960,7 +1960,7 @@ public class DefaultSchemaManager implements SchemaManager
     /**
      * {@inheritDoc}
      */
-    public SchemaObject unregisterSyntaxChecker( String syntaxCheckerOid ) throws NamingException
+    public SchemaObject unregisterSyntaxChecker( String syntaxCheckerOid ) throws LdapException
     {
         return registries.getSyntaxCheckerRegistry().unregister( syntaxCheckerOid );
     }
