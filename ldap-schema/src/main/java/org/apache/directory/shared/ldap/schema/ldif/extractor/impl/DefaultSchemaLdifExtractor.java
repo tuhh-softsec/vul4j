@@ -35,10 +35,10 @@ import java.util.UUID;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
-import javax.naming.NamingException;
-
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
+import org.apache.directory.shared.ldap.exception.LdapException;
+import org.apache.directory.shared.ldap.ldif.LdapLdifException;
 import org.apache.directory.shared.ldap.ldif.LdifEntry;
 import org.apache.directory.shared.ldap.ldif.LdifReader;
 import org.apache.directory.shared.ldap.schema.ldif.extractor.SchemaLdifExtractor;
@@ -234,7 +234,14 @@ public class DefaultSchemaLdifExtractor implements SchemaLdifExtractor
             out.write( ldifString );
             out.flush();
         }
-        catch ( NamingException ne )
+        catch ( LdapLdifException ne )
+        {
+            // throw an exception : we should not have more than one entry per schema ldif file
+            String msg = I18n.err( I18n.ERR_08004, source, ne.getLocalizedMessage() );
+            LOG.error( msg );
+            throw new InvalidObjectException( msg );
+        }
+        catch ( LdapException ne )
         {
             // throw an exception : we should not have more than one entry per schema ldif file
             String msg = I18n.err( I18n.ERR_08004, source, ne.getLocalizedMessage() );
