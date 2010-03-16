@@ -31,6 +31,7 @@ import java.util.Set;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.constants.MetaSchemaConstants;
 import org.apache.directory.shared.ldap.exception.LdapException;
+import org.apache.directory.shared.ldap.exception.LdapProtocolErrorException;
 import org.apache.directory.shared.ldap.exception.LdapUnwillingToPerformException;
 import org.apache.directory.shared.ldap.exception.LdapSchemaViolationException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
@@ -723,7 +724,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
             // Not allowed.
             String msg = I18n.err( I18n.ERR_04292, schemaObject.getName(), ne.getLocalizedMessage() );
 
-            Throwable error = new LdapSchemaViolationException( ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX, msg );
+            Throwable error = new LdapProtocolErrorException( msg );
             errors.add( error );
             LOG.info( msg );
         }
@@ -1000,7 +1001,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
         else
         {
             // This is an error. 
-            Throwable error = new LdapSchemaViolationException( ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX, 
+            Throwable error = new LdapProtocolErrorException( 
             		I18n.err( I18n.ERR_04294, matchingRule.getOid() ) );
             errors.add( error );
         }
@@ -1234,8 +1235,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
                 if ( musts.contains( may ) )
                 {
                     // This is not allowed.
-                    Throwable error = new LdapSchemaViolationException( ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX,
-                        I18n.err( I18n.ERR_04299, objectClass.getOid() ) );
+                    Throwable error = new LdapProtocolErrorException( I18n.err( I18n.ERR_04299, objectClass.getOid() ) );
                     errors.add( error );
                     return;
                 }
@@ -1278,8 +1278,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
                 else
                 {
                     // Not allowed : we have a cyle
-                    Throwable error = new LdapSchemaViolationException( ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX ,
-                        I18n.err( I18n.ERR_04300, objectClass.getOid(), superior) );
+                    Throwable error = new LdapProtocolErrorException( I18n.err( I18n.ERR_04300, objectClass.getOid(), superior) );
                     errors.add( error );
                     return;
                 }

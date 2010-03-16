@@ -24,8 +24,7 @@ import java.util.List;
 
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.exception.LdapException;
-import org.apache.directory.shared.ldap.exception.LdapSchemaViolationException;
-import org.apache.directory.shared.ldap.message.ResultCodeEnum;
+import org.apache.directory.shared.ldap.exception.LdapProtocolErrorException;
 import org.apache.directory.shared.ldap.schema.comparators.ComparableComparator;
 import org.apache.directory.shared.ldap.schema.normalizers.NoOpNormalizer;
 import org.apache.directory.shared.ldap.schema.registries.Registries;
@@ -153,8 +152,7 @@ public class MatchingRule extends AbstractSchemaObject
             catch ( LdapException ne )
             {
                 // The Syntax is a mandatory element, it must exist.
-                throw new LdapSchemaViolationException( ResultCodeEnum.UNWILLING_TO_PERFORM,
-                    I18n.err( I18n.ERR_04317 ) );
+                throw new LdapProtocolErrorException( I18n.err( I18n.ERR_04317 ) );
             }
 
             /**
