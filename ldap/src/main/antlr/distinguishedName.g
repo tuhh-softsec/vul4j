@@ -26,7 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.naming.InvalidNameException;
+import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
 import javax.naming.NameParser;
 import org.apache.directory.shared.ldap.entry.client.ClientStringValue;
 import org.apache.directory.shared.ldap.entry.client.ClientBinaryValue;
@@ -323,7 +323,7 @@ attributeTypeAndValue [RDN rdn] returns [String upName = ""]
            
                 rdn.addAttributeTypeAndValue( ava );
             }
-            catch ( InvalidNameException e )
+            catch ( LdapInvalidDnException e )
             {
                 throw new SemanticException( e.getMessage() );
             } 
