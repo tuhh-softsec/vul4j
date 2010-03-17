@@ -50,6 +50,11 @@
 			<name>Nicolas Richeton</name>
 			<url>http://blog.richeton.com</url>
 		</developer>
+                <developer>
+			<id>athaveau</id>
+			<name>Alexis Thaveau</name>
+			<email>altha@smile.fr</email>
+		</developer>
 	</developers>
 	<scm>
 		<connection>scm:svn:https://webassembletool.svn.sourceforge.net/svnroot/webassembletool/trunk</connection>
