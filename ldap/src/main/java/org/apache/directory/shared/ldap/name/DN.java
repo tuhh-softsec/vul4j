@@ -43,6 +43,8 @@ import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.sun.jndi.ldap.LdapName;
+
 
 /**
  * The DN class contains a DN (Distinguished Name).
@@ -1640,6 +1642,52 @@ public class DN implements Externalizable, Cloneable
         {
             RDN rdn = (RDN)in.readObject();
             rdns.add( rdn );
+        }
+    }
+    
+    
+    /**
+     * Convert a {@link javax.naming.Name} to a DN
+     *
+     * @param name The Name to convert
+     * @return A DN
+     */
+    public static DN fromName( Name name )
+    {
+        try
+        {
+            DN dn = new DN( name.toString() );
+        
+            return dn;
+        }
+        catch ( LdapInvalidDnException lide )
+        {
+            // TODO : check if we must throw an exception.
+            // Logically, the Name must be valid.
+            return null;
+        }
+    }
+    
+    
+    /**
+     * Convert a DN to a {@link javax.naming.Name}
+     *
+     * @param name The DN to convert
+     * @return A Name
+     */
+    public static Name toName( DN dn )
+    {
+        try
+        {
+            Name name = new LdapName( dn.toString() );
+        
+            return name;
+        }
+        catch ( InvalidNameException ine )
+        {
+            // TODO : check if we must throw an exception.
+            // Logically, the DN must be valid.
+            return null;
         }
     }
 }

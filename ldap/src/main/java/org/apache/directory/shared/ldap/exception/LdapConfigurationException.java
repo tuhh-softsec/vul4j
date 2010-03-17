@@ -74,4 +74,15 @@ public class LdapConfigurationException extends LdapOperationException
     {
         return cause;
     }
+    
+    
+    /**
+     * Set the root cause
+     *
+     * @param cause The cause
+     */
+    public void setCause( Throwable cause )
+    {
+        this.cause = cause;
+    }
 }

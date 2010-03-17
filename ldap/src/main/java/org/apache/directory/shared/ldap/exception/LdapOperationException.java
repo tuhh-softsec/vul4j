@@ -21,6 +21,7 @@ package org.apache.directory.shared.ldap.exception;
 
 
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
+import org.apache.directory.shared.ldap.name.DN;
 
 
 /**
@@ -37,6 +38,27 @@ public class LdapOperationException extends LdapException
 
     /** The operation resultCode */
     protected ResultCodeEnum resultCode;
+    
+    /** The resolved DN */
+    protected DN resolvedDn;
+
+    /**
+     * @return the resolvedDn
+     */
+    public DN getResolvedDn()
+    {
+        return resolvedDn;
+    }
+
+
+    /**
+     * @param resolvedDn the resolvedDn to set
+     */
+    public void setResolvedDn( DN resolvedDn )
+    {
+        this.resolvedDn = resolvedDn;
+    }
+
 
     /**
      * Creates a new instance of LdapOperationException.
