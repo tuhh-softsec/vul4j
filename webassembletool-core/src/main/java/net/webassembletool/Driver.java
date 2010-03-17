@@ -28,6 +28,7 @@ import net.webassembletool.resource.Resource;
 import net.webassembletool.resource.ResourceUtils;
 import net.webassembletool.tags.BlockRenderer;
 import net.webassembletool.tags.TemplateRenderer;
+import net.webassembletool.vars.VariablesResolver;
 import net.webassembletool.xml.XpathRenderer;
 import net.webassembletool.xml.XsltRenderer;
 
@@ -302,8 +303,9 @@ public class Driver {
 	public final void render(String page, Map<String, String> parameters,
 			Appendable writer, HttpServletRequest originalRequest,
 			HttpServletResponse response, Renderer... renderers)
-			throws IOException, HttpErrorPage {
-		ResourceContext resourceContext = new ResourceContext(this, page,
+			throws IOException, HttpErrorPage {                
+                String resultingpage = VariablesResolver.replaceAllVariables(page);
+		ResourceContext resourceContext = new ResourceContext(this, resultingpage,
 				parameters, originalRequest, response);
 		resourceContext.setPreserveHost(config.isPreserveHost());
 		StringOutput stringOutput = getResourceAsString(resourceContext);

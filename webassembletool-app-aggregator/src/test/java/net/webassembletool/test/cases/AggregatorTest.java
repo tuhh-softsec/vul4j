@@ -53,12 +53,18 @@ public class AggregatorTest extends TestCase {
 		WebResponse resp = webConversation.getResponse(req);
 		assertEquals("Status should be 200", HttpServletResponse.SC_OK, resp
 				.getResponseCode());
-		assertEquals(getResource(resultResource), resp.getText());
+		assertEquals(getResource(resultResource).replaceAll("\r",""), resp.getText().replaceAll("\r",""));
 	}
 
 	public void testBlock() throws Exception {
 		doSimpleTest("block.html");
 	}
+
+        public void testBlockWithVariables() throws Exception {
+		doSimpleTest("blockwithvariables.html","block.html");
+	}
+
+
 
 	public void testBlockWithRedirect() throws Exception {
 		webConversation.getClientProperties().setAutoRedirect(true);
@@ -208,5 +214,6 @@ public class AggregatorTest extends TestCase {
 	public void testBinaryGzip() throws Exception {
 		doSimpleTest("binary-gzip.jsp");
 	}
+
 
 }

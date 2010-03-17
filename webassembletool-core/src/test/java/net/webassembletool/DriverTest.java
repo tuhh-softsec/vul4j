@@ -30,6 +30,18 @@ public class DriverTest extends TestCase {
 		DriverFactory.getInstance("mock").renderBlock("/testBlock", "A", out,
 				null, null, new HashMap<String, String>(), null, false);
 		assertEquals("some text goes here", out.toString());
+
+                out = new StringWriter();
+		DriverFactory.getInstance("mock").renderBlock("$(vartestBlock)", "A", out,
+				null, null, new HashMap<String, String>(), null, false);
+		assertEquals("some text goes here", out.toString());
+
+                out = new StringWriter();
+		DriverFactory.getInstance("mock").renderBlock("/$(vartest)$(varBlock)", "A", out,
+				null, null, new HashMap<String, String>(), null, false);
+		assertEquals("some text goes here", out.toString());
+
+
 	}
 
 	public void testRenderTemplateFullPage() throws IOException, HttpErrorPage {
@@ -51,5 +63,11 @@ public class DriverTest extends TestCase {
 		DriverFactory.getInstance("mock").renderTemplate("/testTemplate", "A",
 				out, null, null, null, null, null, false);
 		assertEquals("some text goes here", out.toString());
+
+                out = new StringWriter();
+		DriverFactory.getInstance("mock").renderTemplate("/test$(varTemplate)", "A",
+				out, null, null, null, null, null, false);
+		assertEquals("some text goes here", out.toString());
+
 	}
 }

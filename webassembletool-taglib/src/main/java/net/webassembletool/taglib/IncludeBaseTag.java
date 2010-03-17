@@ -5,6 +5,7 @@ import java.io.IOException;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.TagSupport;
+import net.webassembletool.vars.VariablesResolver;
 
 /**
  * Generates an HTML "base" tag pointing to a page inside the provider
@@ -22,7 +23,9 @@ public class IncludeBaseTag extends TagSupport {
     public int doStartTag() throws JspException {
 	JspWriter out = pageContext.getOut();
 	try {
-	    out.write("<base href=\"" + DriverUtils.getBaseUrl(provider) + page
+
+            String strpage = VariablesResolver.replaceAllVariables(page);
+	    out.write("<base href=\"" + DriverUtils.getBaseUrl(provider) + strpage
 		    + "\" />");
 	} catch (IOException e) {
 	    throw new JspException(e);

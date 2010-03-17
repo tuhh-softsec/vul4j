@@ -71,6 +71,7 @@ public class MasterTest extends TestCase {
 
 	public void testBlock() throws Exception {
 		doSimpleTest("block.jsp");
+                doSimpleTest("blockvariables.jsp","block.jsp");
 	}
 
 	public void testError500() throws Exception {

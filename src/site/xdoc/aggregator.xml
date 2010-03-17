@@ -121,6 +121,37 @@ This content will be replaced by the block "myblock"
 &lt;/body&gt;
 &lt;/html&gt;
 </source>
+<p>
+Page accept variables $() that will be resolved from vars.properties. See <a href="configuration.html#Variables_resolver">Configuration</a> for more information.
+</p>
+in vars.properties :
+<source>
+myblock=myblock.html
+myattributid=789
+</source>
+
+<source>
+<strong>&lt;!--$includeblock$aggregated2$$(myblock)$myblock$--&gt;</strong>
+This content will be replaced by the block "myblock" from myblock.html
+<strong>&lt;!--$endincludeblock$--&gt;</strong>
+&lt;/body&gt;
+&lt;/html&gt;
+</source>
+
+or
+
+<source>
+<strong>&lt;!--$includeblock$aggregated2$myblock.html?id=$(myattributid)$myblock$--&gt;</strong>
+This content will be replaced by the block "myblock" from myblock.html?id=789
+<strong>&lt;!--$endincludeblock$--&gt;</strong>
+&lt;/body&gt;
+&lt;/html&gt;
+</source>
+
+
+
+
+
 			</subsection>
 			<subsection name="Including page via &lt;esi:include&gt; directive">
 				<p>Use

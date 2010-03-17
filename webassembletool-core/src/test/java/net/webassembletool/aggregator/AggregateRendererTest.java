@@ -45,7 +45,15 @@ public class AggregateRendererTest extends TestCase {
 		StringWriter out = new StringWriter();
 		tested.render(page, out);
 		assertEquals("content some text goes here end", out.toString());
+
+                page = "content <!--$includeblock$mock$$(vartestBlock)$myblock$--> some text <!--$endincludeblock$--> end";
+		out = new StringWriter();
+		tested.render(page, out);
+		assertEquals("content some text goes here end", out.toString());
+
+
 	}
+
 
 	public void testIncludeBlockRoot() throws IOException, HttpErrorPage {
 		String page = "content <!--$includeblock$mock$$myblock$--> some text <!--$endincludeblock$--> end";

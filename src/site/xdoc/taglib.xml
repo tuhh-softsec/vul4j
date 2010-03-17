@@ -38,7 +38,31 @@ Some other HTML
 &lt;/body&gt;
 &lt;/html&gt;
 </source>
+
+
             <p><i><b>NOTE</b>: do not forget to add the taglib declaration at the beging of the page.</i></p>
+
+<p>
+    In page attribute, you can put variables that will be resolved from vars.properties. See <a href="configuration.html#Variables_resolver">Configuration</a> for more information.
+</p>
+in vars.properties :
+<source>
+myvar=mypage.php
+myattributid=789
+</source>
+
+Variables $(myvar) and $(myattributid) can be used in page attribut :
+<source>
+    <strong>&lt;w:includeblock page="$(myvar)" name="myblock" /&gt;</strong>
+</source>
+or
+<source>    
+<strong>&lt;w:includeblock page="mypage.php?id=$(myattributid)" name="myblock" /&gt;</strong>
+</source>
+
+
+
+
 		</section>
         <section name="Include XML fragment from master application">
             <p>If using JSP, you can use library's '<code>include-xml</code>' tag.</p>
