@@ -19,10 +19,50 @@
  */
 package org.apache.directory.shared.ldap.jndi;
 
+import javax.naming.AuthenticationException;
+import javax.naming.AuthenticationNotSupportedException;
+import javax.naming.CommunicationException;
+import javax.naming.ContextNotEmptyException;
+import javax.naming.InvalidNameException;
+import javax.naming.NameAlreadyBoundException;
+import javax.naming.NameNotFoundException;
 import javax.naming.NamingException;
+import javax.naming.NoPermissionException;
+import javax.naming.OperationNotSupportedException;
+import javax.naming.ServiceUnavailableException;
+import javax.naming.TimeLimitExceededException;
+import javax.naming.directory.AttributeInUseException;
+import javax.naming.directory.InvalidAttributeIdentifierException;
+import javax.naming.directory.InvalidAttributeValueException;
+import javax.naming.directory.InvalidSearchFilterException;
+import javax.naming.directory.NoSuchAttributeException;
+import javax.naming.directory.SchemaViolationException;
 import javax.naming.ldap.BasicControl;
 
 import org.apache.directory.shared.ldap.codec.controls.ControlImpl;
+import org.apache.directory.shared.ldap.exception.LdapAffectMultipleDsaException;
+import org.apache.directory.shared.ldap.exception.LdapAliasDereferencingException;
+import org.apache.directory.shared.ldap.exception.LdapAliasException;
+import org.apache.directory.shared.ldap.exception.LdapAttributeInUseException;
+import org.apache.directory.shared.ldap.exception.LdapAuthenticationException;
+import org.apache.directory.shared.ldap.exception.LdapAuthenticationNotSupportedException;
+import org.apache.directory.shared.ldap.exception.LdapContextNotEmptyException;
+import org.apache.directory.shared.ldap.exception.LdapEntryAlreadyExistsException;
+import org.apache.directory.shared.ldap.exception.LdapInvalidAttributeTypeException;
+import org.apache.directory.shared.ldap.exception.LdapInvalidAttributeValueException;
+import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
+import org.apache.directory.shared.ldap.exception.LdapInvalidSearchFilterException;
+import org.apache.directory.shared.ldap.exception.LdapLoopDetectedException;
+import org.apache.directory.shared.ldap.exception.LdapNoPermissionException;
+import org.apache.directory.shared.ldap.exception.LdapNoSuchAttributeException;
+import org.apache.directory.shared.ldap.exception.LdapNoSuchObjectException;
+import org.apache.directory.shared.ldap.exception.LdapOperationErrorException;
+import org.apache.directory.shared.ldap.exception.LdapOtherException;
+import org.apache.directory.shared.ldap.exception.LdapProtocolErrorException;
+import org.apache.directory.shared.ldap.exception.LdapSchemaViolationException;
+import org.apache.directory.shared.ldap.exception.LdapServiceUnavailableException;
+import org.apache.directory.shared.ldap.exception.LdapTimeLimitExceededException;
+import org.apache.directory.shared.ldap.exception.LdapUnwillingToPerformException;
 import org.apache.directory.shared.ldap.message.control.Control;
 
 /**
@@ -101,7 +141,111 @@ public class JndiUtils
             throw ( NamingException ) t;
         }
         
-        NamingException ne = new NamingException( t.getLocalizedMessage() );
+        NamingException ne = null;
+        
+        if ( t instanceof LdapAffectMultipleDsaException )
+        {
+            ne = new NamingException( t.getLocalizedMessage() );
+        }
+        else if ( t instanceof LdapAliasDereferencingException )
+        {
+            ne = new NamingException( t.getLocalizedMessage() );
+        }
+        else if ( t instanceof LdapAliasException )
+        {
+            ne = new NamingException( t.getLocalizedMessage() );
+        }
+        else if ( t instanceof LdapAttributeInUseException )
+        {
+            ne = new AttributeInUseException( t.getLocalizedMessage() );
+        }
+        else if ( t instanceof LdapAuthenticationException )
+        {
+            ne = new AuthenticationException( t.getLocalizedMessage() );
+        }
+        else if ( t instanceof LdapAuthenticationNotSupportedException )
+        {
+            ne = new AuthenticationNotSupportedException( t.getLocalizedMessage() );
+        }
+        else if ( t instanceof LdapContextNotEmptyException )
+        {
+            ne = new ContextNotEmptyException( t.getLocalizedMessage() );
+        }
+        else if ( t instanceof LdapEntryAlreadyExistsException )
+        {
+            ne = new NameAlreadyBoundException( t.getLocalizedMessage() );
+        }
+        else if ( t instanceof LdapInvalidAttributeTypeException )
+        {
+            ne = new InvalidAttributeIdentifierException( t.getLocalizedMessage() );
+        }
+        else if ( t instanceof LdapInvalidAttributeValueException )
+        {
+            ne = new InvalidAttributeValueException( t.getLocalizedMessage() );
+        }
+        else if ( t instanceof LdapInvalidDnException )
+        {
+            ne = new InvalidNameException( t.getLocalizedMessage() );
+        }
+        else if ( t instanceof LdapInvalidSearchFilterException )
+        {
+            ne = new InvalidSearchFilterException( t.getLocalizedMessage() );
+        }
+        else if ( t instanceof LdapLoopDetectedException )
+        {
+            ne = new NamingException( t.getLocalizedMessage() );
+        }
+        else if ( t instanceof LdapNoPermissionException )
+        {
+            ne = new NoPermissionException( t.getLocalizedMessage() );
+        }
+        else if ( t instanceof LdapNoSuchAttributeException )
+        {
+            ne = new NoSuchAttributeException( t.getLocalizedMessage() );
+        }
+        else if ( t instanceof LdapNoSuchObjectException )
+        {
+            ne = new NameNotFoundException( t.getLocalizedMessage() );
+        }
+        else if ( t instanceof LdapOperationErrorException )
+        {
+            ne = new NamingException( t.getLocalizedMessage() );
+        }
+        else if ( t instanceof LdapOtherException )
+        {
+            ne = new NamingException( t.getLocalizedMessage() );
+        }
+        else if ( t instanceof LdapProtocolErrorException )
+        {
+            ne = new CommunicationException( t.getLocalizedMessage() );
+        }
+        /* Special case ...
+        else if ( t instanceof LdapReferralException )
+        {
+            ne = new LdapReferralException( t.getLocalizedMessage() );
+        }
+        */
+        else if ( t instanceof LdapSchemaViolationException )
+        {
+            ne = new SchemaViolationException( t.getLocalizedMessage() );
+        }
+        else if ( t instanceof LdapServiceUnavailableException )
+        {
+            ne = new ServiceUnavailableException( t.getLocalizedMessage() );
+        }
+        else if ( t instanceof LdapTimeLimitExceededException )
+        {
+            ne = new TimeLimitExceededException( t.getLocalizedMessage() );
+        }
+        else if ( t instanceof LdapUnwillingToPerformException )
+        {
+            ne = new OperationNotSupportedException( t.getLocalizedMessage() );
+        }
+        else
+        {
+            ne = new NamingException( t.getLocalizedMessage() );
+        }
+        
         ne.setRootCause( t );
         throw ne;
     }
