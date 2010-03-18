@@ -159,11 +159,12 @@ appli2.uriEncoding=UTF-8
 				You can define variables in
 				classpath net/webassembletool/vars.properties
                                 </p>
-                                <source>
-                                someUrl=/cms/article123
-                                </source>
+<source>
+variable_name=variable_value
+someUrl=/cms/article123
+</source>
                                 <p>
-                                Those variables can be used in page attribute of <a href="taglib.html">tags</a> includeBlock and includeBase or in <a href="aggregator.html#Including_a_block">aggregator</a>.
+                                Those variables can be used in page attribute of <a href="taglib.html">tags</a> includeBlock,includeTemplate and includeBase or in <a href="aggregator.html#Including_a_block">aggregator</a>.
                                 The syntax for using a variable is $(variable_name) and is fixed by the standard <a href="http://www.w3.org/TR/esi-lang">ESI</a>.
                                 </p>
                                                        

@@ -121,10 +121,13 @@ This content will be replaced by the block "myblock"
 &lt;/body&gt;
 &lt;/html&gt;
 </source>
-<p>
-Page accept variables $() that will be resolved from vars.properties. See <a href="configuration.html#Variables_resolver">Configuration</a> for more information.
-</p>
-in vars.properties :
+            </subsection>
+
+            <subsection name="Including a block with variables">
+                <p>
+                    Page accept variables $(variable_name) that will be resolved from vars.properties. This file is descripted in <a href="configuration.html#Variables_resolver">Configuration</a> page.
+                </p>
+                in vars.properties :
 <source>
 myblock=myblock.html
 myattributid=789
@@ -138,7 +141,7 @@ This content will be replaced by the block "myblock" from myblock.html
 &lt;/html&gt;
 </source>
 
-or
+                or
 
 <source>
 <strong>&lt;!--$includeblock$aggregated2$myblock.html?id=$(myattributid)$myblock$--&gt;</strong>
@@ -152,8 +155,8 @@ This content will be replaced by the block "myblock" from myblock.html?id=789
 
 
 
-			</subsection>
-			<subsection name="Including page via &lt;esi:include&gt; directive">
+		</subsection>
+		<subsection name="Including page via &lt;esi:include&gt; directive">
 				<p>Use
 					the "&lt;esi:include&gt;" directive to include complete page into aggregated output. Directive supports following attributes:
 			</p>
@@ -185,7 +188,7 @@ Template from aggregated2
 &lt;/html&gt;
 </source>
 		</subsection>
-		<subsection name="Including a block">
+		<subsection name="Including a template">
 			<p>
 				Use the "includetemplate" directives with the name of the provider, the page and the name of the template to retrieve. If no template name, the complete page is retrieved.
 				Use directives "beginput" and "endput" to replace params inside the template.
@@ -201,6 +204,25 @@ Some text from aggregated1
 <strong>&lt;!--$endincludetemplate$--&gt;</strong>
 </source>
 		</subsection>
-	</section>
-	</body>
+
+            <subsection name="Including a template with variables">
+                <p>
+                    Page accept variables $(variable_name) that will be resolved from vars.properties. This file is descripted in <a href="configuration.html#Variables_resolver">Configuration</a> page.
+                </p>
+                in vars.properties :
+<source>mytemplate=template.html</source>
+<source>
+<strong>&lt;!--$includetemplate$aggregated2$$(mytemplate)$--&gt;</strong>&#160;
+<strong>&lt;!--$beginput$title$--&gt;</strong>&lt;title&gt;Template exemple&lt;/title&gt;<strong>&lt;!--$endput$--&gt;</strong>&#160;
+<strong>&lt;!--$beginput$content$--&gt;</strong>
+&lt;div style="background-color: yellow"&gt;
+Some text from aggregated1
+&lt;/div&gt;
+<strong>&lt;!--$endput$--&gt;</strong>&#160;
+<strong>&lt;!--$endincludetemplate$--&gt;</strong>
+</source>
+
+            </subsection>
+        </section>
+    </body>
 </document>
