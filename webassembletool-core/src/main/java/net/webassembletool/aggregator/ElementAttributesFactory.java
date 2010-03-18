@@ -11,14 +11,14 @@ import net.webassembletool.DriverFactory;
  * ElementAttributs's Factory
  * @author athaveau
  */
-public final class ElementAttributesFactory {
+final class ElementAttributesFactory {
 
     /**
      * Parse the tag and return the ElementAttributes representation
      * @param tag the tag to parse
      * @return ElementAttributes
      */
-    public final static ElementAttributes createElementAttributes(String tag) {
+    final static ElementAttributes createElementAttributes(String tag) {
         //<!--$includetemplate$aggregated2$templatewithparams.jsp$-->
         //Parsing sting <!--$includeblock$aggregated2$$(block)$myblock$-->
         //in order to retrieve includeblock, aggregated2, $(block), myblock
