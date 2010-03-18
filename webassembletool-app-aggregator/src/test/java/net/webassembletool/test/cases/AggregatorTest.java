@@ -65,7 +65,6 @@ public class AggregatorTest extends TestCase {
 	}
 
 
-
 	public void testBlockWithRedirect() throws Exception {
 		webConversation.getClientProperties().setAutoRedirect(true);
 		doSimpleTest("/blockwithredirect.jsp?count=1", "blockwithredirect.jsp");
@@ -111,6 +110,10 @@ public class AggregatorTest extends TestCase {
 
 	public void testTemplate() throws Exception {
 		doSimpleTest("template.html");
+	}
+        
+        public void testTemplateWithVariables() throws Exception {
+		doSimpleTest("templatewithvariables.html","template.html");
 	}
 
 	public void testTemplateWithParams() throws Exception {

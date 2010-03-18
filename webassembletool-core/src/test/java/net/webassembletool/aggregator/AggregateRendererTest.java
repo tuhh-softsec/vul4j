@@ -81,6 +81,30 @@ public class AggregateRendererTest extends TestCase {
 				.toString());
 	}
 
+        public void testIncludeTemplateWithVariables() throws IOException, HttpErrorPage {
+		String page = "content <!--$includetemplate$mock$$(varTestTemplateParams)$mytemplate$--> some text <!--$beginput$param1$-->Replacement<!--$endput$-->some other text<!--$endincludetemplate$--> end";
+		AggregateRenderer tested = new AggregateRenderer(null, null);
+		StringWriter out = new StringWriter();
+		tested.render(page, out);
+		assertEquals("content some text Replacement goes here end", out
+				.toString());
+
+
+                page = "content <!--$includetemplate$mock$/test$(varTemplate)Params$mytemplate$--> some text <!--$beginput$param1$-->Replacement<!--$endput$-->some other text<!--$endincludetemplate$--> end";
+		out = new StringWriter();
+		tested.render(page, out);
+		assertEquals("content some text Replacement goes here end", out
+				.toString());
+
+                page = "content <!--$includetemplate$mock$/test$(varTemplate)$(varParams)$mytemplate$--> some text <!--$beginput$param1$-->Replacement<!--$endput$-->some other text<!--$endincludetemplate$--> end";
+		out = new StringWriter();
+		tested.render(page, out);
+		assertEquals("content some text Replacement goes here end", out
+				.toString());
+                
+
+	}
+
 	public void testNestedTags() throws IOException, HttpErrorPage {
 		String page = "content <!--$includetemplate$mock$/testTemplateParams$mytemplate$--> some text <!--$beginput$param1$-->aaa <!--$includeblock$mock$/testInclude$--> some text <!--$endincludeblock$--> bbb<!--$endput$-->some other text<!--$endincludetemplate$--> end";
 		AggregateRenderer tested = new AggregateRenderer(null, null);

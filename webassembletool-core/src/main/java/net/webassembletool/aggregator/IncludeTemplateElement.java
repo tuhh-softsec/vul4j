@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.webassembletool.Driver;
-import net.webassembletool.DriverFactory;
 import net.webassembletool.HttpErrorPage;
 import net.webassembletool.parser.Element;
 import net.webassembletool.parser.ElementStack;
@@ -27,27 +26,23 @@ public class IncludeTemplateElement implements Element {
 		}
 
 	};
-	private Driver driver;
-	private String page = "";
-	private String name = null;
+        private Driver driver;
+        private String page;
+        private String name;
 	private Map<String, String> params = new HashMap<String, String>();
 	private AggregateRenderer aggregateRenderer;
 	private Appendable out;
 
-	public void doStartTag(String tag, Appendable out, ElementStack stack)
+    	public void doStartTag(String tag, Appendable out, ElementStack stack)
 			throws IOException, HttpErrorPage {
 		this.out = out;
 		aggregateRenderer = stack.findAncestorWithClass(this,
 				AggregateRenderer.class);
-		String[] parameters = tag.split("\\$");
-		if (parameters.length > 3)
-			driver = DriverFactory.getInstance(parameters[2]);
-		else
-			driver = DriverFactory.getInstance();
-		if (parameters.length > 4)
-			page = parameters[3];
-		if (parameters.length > 5)
-			name = parameters[4];
+                ElementAttributes tagAttributes = ElementAttributesFactory.createElementAttributes(tag);
+		this.driver = tagAttributes.getDriver();
+                this.page = tagAttributes.getPage();
+                this.name = tagAttributes.getName();
+		
 	}
 
 	public void doEndTag(String tag) throws IOException, HttpErrorPage {
