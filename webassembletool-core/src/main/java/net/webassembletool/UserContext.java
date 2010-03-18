@@ -1,10 +1,27 @@
+ /* 
+  * Licensed under the Apache License, Version 2.0 (the "License");
+  * you may not use this file except in compliance with the License.
+  * You may obtain a copy of the License at
+  *
+  * http://www.apache.org/licenses/LICENSE-2.0
+  *
+  * Unless required by applicable law or agreed to in writing, software
+  * distributed under the License is distributed on an "AS IS" BASIS,
+  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  * See the License for the specific language governing permissions and
+  * limitations under the License.
+  *
+  */
 package net.webassembletool;
+
+import java.io.Serializable;
+
+import net.webassembletool.http.SerializableBasicCookieStore;
+import net.webassembletool.http.SerializableBasicHttpContext;
 
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.protocol.ClientContext;
 import org.apache.http.cookie.Cookie;
-import org.apache.http.impl.client.BasicCookieStore;
-import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 
 /**
@@ -13,9 +30,10 @@ import org.apache.http.protocol.HttpContext;
  * There is one instance of user context associated with each session.
  * 
  * @author Francois-Xavier Bonnet
+ * @contributor Nicolas Richeton
  * 
  */
-public class UserContext {
+public class UserContext implements Serializable{
 	private String user;
 	private HttpContext httpContext;
 	public HttpContext getHttpContext() {
@@ -26,9 +44,9 @@ public class UserContext {
 
 	public UserContext() {
 		// Create a local instance of cookie store
-		cookieStore = new BasicCookieStore();
+		cookieStore = new SerializableBasicCookieStore();
 		// Create local HTTP context
-		httpContext = new BasicHttpContext();
+		httpContext = new SerializableBasicHttpContext();
 		// Bind custom cookie store to the local context
 		httpContext.setAttribute(ClientContext.COOKIE_STORE, cookieStore);
 	}
