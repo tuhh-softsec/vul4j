@@ -1620,6 +1620,7 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
         }
         catch ( LdapException le )
         {
+            le.printStackTrace();
             throw new LdapLdifException( le.getMessage() );
         }
         finally
@@ -1911,6 +1912,8 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
         {
             position = new Position();
             reader.close();
+            containsEntries = false;
+            containsChanges = false;
         }
     }
 }
