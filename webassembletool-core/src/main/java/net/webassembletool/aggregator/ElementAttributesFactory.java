@@ -14,14 +14,16 @@ import net.webassembletool.DriverFactory;
 final class ElementAttributesFactory {
 
     /**
-     * Parse the tag and return the ElementAttributes representation
+     * Parse the tag and return the ElementAttributes
      * @param tag the tag to parse
      * @return ElementAttributes
      */
     final static ElementAttributes createElementAttributes(String tag) {
+        //Parsing strings
         //<!--$includetemplate$aggregated2$templatewithparams.jsp$-->
-        //Parsing sting <!--$includeblock$aggregated2$$(block)$myblock$-->
-        //in order to retrieve includeblock, aggregated2, $(block), myblock
+        //or
+        //<!--$includeblock$aggregated2$$(block)$myblock$-->
+        //in order to retrieve driver, page and name attributes
         Pattern pattern = Pattern.compile("(?<=\\$)(?:[^\\$]|\\$\\()*(?=\\$)");
         Matcher matcher = pattern.matcher(tag);
         List<String> listparameters = new ArrayList<String>();
