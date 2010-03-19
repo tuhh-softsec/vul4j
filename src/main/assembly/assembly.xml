@@ -55,7 +55,7 @@
 	<fileSets>
 		<fileSet>
 			<directory>src</directory>
-			<outputDirectory>src/webassembletool</outputDirectory>
+			<outputDirectory>src/webassembletool/src</outputDirectory>
 			<includes>
 				<include>**</include>
 			</includes>
