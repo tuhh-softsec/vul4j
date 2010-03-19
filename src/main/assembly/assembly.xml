@@ -16,6 +16,17 @@
 					<dependencySet />
 				</dependencySets>
 			</binaries>
+			<sources>
+				<includeModuleDirectory>false</includeModuleDirectory>
+				<fileSets>
+				  <fileSet>
+					<outputDirectory>/src/${module.artifactId}</outputDirectory>
+					 <includes>
+					     <include>src/**</include>
+					 </includes>
+				  </fileSet>
+				</fileSets>
+			 </sources>
 		</moduleSet>
 		<moduleSet>
 			<includes>
@@ -23,16 +34,31 @@
 			</includes>
 			<binaries>
 				<unpack>false</unpack>
-				<outputFileNameMapping> ${module.artifactId}.${module.extension}</outputFileNameMapping>
+				<outputFileNameMapping>${module.artifactId}.${module.extension}</outputFileNameMapping>
 				<includeDependencies>false</includeDependencies>
 				<outputDirectory>apps</outputDirectory>
 			</binaries>
+			<sources>
+				<includeModuleDirectory>false</includeModuleDirectory>
+				<fileSets>
+				  <fileSet>
+					<outputDirectory>/src/${module.artifactId}</outputDirectory>
+					 <includes>
+					     <include>src/**</include>
+					 </includes>
+				  </fileSet>
+				</fileSets>
+			 </sources>
 		</moduleSet>
 	</moduleSets>
+
 	<fileSets>
 		<fileSet>
-			<directory>/</directory>
-			<outputDirectory>src</outputDirectory>
+			<directory>src</directory>
+			<outputDirectory>src/webassembletool</outputDirectory>
+			<includes>
+				<include>**</include>
+			</includes>
 			<excludes>
 				<exclude>**/.*</exclude>
 				<exclude>**/.settings/**</exclude>
