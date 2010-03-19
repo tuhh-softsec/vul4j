@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <project name="Website Assembling Toolkit">
+        <version position="left"/>
 	<bannerLeft>
 		<name>Website Assembling Toolkit</name>
 		<src>http://sflogo.sourceforge.net/sflogo.php?group_id=209844&amp;type=16</src>

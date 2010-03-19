@@ -25,7 +25,7 @@
 &lt;dependency&gt;
 	&lt;groupId&gt;net.sourceforge.webassembletool&lt;/groupId&gt;
 	&lt;artifactId&gt;webassembletool-core&lt;/artifactId&gt;
-	&lt;version&gt;2.2&lt;/version&gt;
+	&lt;version&gt;${currentVersion}&lt;/version&gt;
 &lt;/dependency&gt;
 			</source>
 			<p>
@@ -35,7 +35,7 @@
 &lt;dependency&gt;
 	&lt;groupId&gt;net.sourceforge.webassembletool&lt;/groupId&gt;
 	&lt;artifactId&gt;webassembletool-taglib&lt;/artifactId&gt;
-	&lt;version&gt;2.2&lt;/version&gt;
+	&lt;version&gt;${currentVersion}&lt;/version&gt;
 &lt;/dependency&gt;
 			</source>
 			<p>
@@ -45,7 +45,7 @@
 &lt;dependency&gt;
 	&lt;groupId&gt;net.sourceforge.webassembletool&lt;/groupId&gt;
 	&lt;artifactId&gt;webassembletool-jsf&lt;/artifactId&gt;
-	&lt;version&gt;2.2&lt;/version&gt;
+	&lt;version&gt;${currentVersion}&lt;/version&gt;
 &lt;/dependency&gt;
 			</source>
 			<p>
@@ -55,7 +55,7 @@
 &lt;dependency&gt;
 	&lt;groupId&gt;net.sourceforge.webassembletool&lt;/groupId&gt;
 	&lt;artifactId&gt;webassembletool-taglib-helper&lt;/artifactId&gt;
-	&lt;version&gt;2.2&lt;/version&gt;
+	&lt;version&gt;${currentVersion}&lt;/version&gt;
 &lt;/dependency&gt;
 			</source>
 		</section>
