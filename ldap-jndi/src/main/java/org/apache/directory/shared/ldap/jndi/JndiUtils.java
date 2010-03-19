@@ -19,9 +19,12 @@
  */
 package org.apache.directory.shared.ldap.jndi;
 
+import java.util.Hashtable;
+
 import javax.naming.AuthenticationException;
 import javax.naming.AuthenticationNotSupportedException;
 import javax.naming.CommunicationException;
+import javax.naming.Context;
 import javax.naming.ContextNotEmptyException;
 import javax.naming.InvalidNameException;
 import javax.naming.NameAlreadyBoundException;
@@ -29,6 +32,7 @@ import javax.naming.NameNotFoundException;
 import javax.naming.NamingException;
 import javax.naming.NoPermissionException;
 import javax.naming.OperationNotSupportedException;
+import javax.naming.ReferralException;
 import javax.naming.ServiceUnavailableException;
 import javax.naming.TimeLimitExceededException;
 import javax.naming.directory.AttributeInUseException;
@@ -59,6 +63,7 @@ import org.apache.directory.shared.ldap.exception.LdapNoSuchObjectException;
 import org.apache.directory.shared.ldap.exception.LdapOperationErrorException;
 import org.apache.directory.shared.ldap.exception.LdapOtherException;
 import org.apache.directory.shared.ldap.exception.LdapProtocolErrorException;
+import org.apache.directory.shared.ldap.exception.LdapReferralException;
 import org.apache.directory.shared.ldap.exception.LdapSchemaViolationException;
 import org.apache.directory.shared.ldap.exception.LdapServiceUnavailableException;
 import org.apache.directory.shared.ldap.exception.LdapTimeLimitExceededException;
@@ -219,12 +224,10 @@ public class JndiUtils
         {
             ne = new CommunicationException( t.getLocalizedMessage() );
         }
-        /* Special case ...
         else if ( t instanceof LdapReferralException )
         {
-            ne = new LdapReferralException( t.getLocalizedMessage() );
+            ne = new WrappedReferralException( ( LdapReferralException ) t );
         }
-        */
         else if ( t instanceof LdapSchemaViolationException )
         {
             ne = new SchemaViolationException( t.getLocalizedMessage() );
@@ -245,9 +248,52 @@ public class JndiUtils
         {
             ne = new NamingException( t.getLocalizedMessage() );
         }
-        
         ne.setRootCause( t );
         throw ne;
     }
-
 }
+
+// a ReferralException around the LdapReferralException to be used in tests 
+class WrappedReferralException extends ReferralException
+{
+    private LdapReferralException lre;
+    
+    public WrappedReferralException( LdapReferralException lre )
+    {
+        this.lre = lre;
+    }
+    
+    @Override
+    public boolean skipReferral()
+    {
+        return lre.skipReferral();
+    }
+    
+
+    @Override
+    public void retryReferral()
+    {
+        lre.retryReferral();
+    }
+    
+
+    @Override
+    public Object getReferralInfo()
+    {
+        return lre.getReferralInfo();
+    }
+    
+
+    @Override
+    public Context getReferralContext( Hashtable<?, ?> env ) throws NamingException
+    {
+        return lre.getReferralContext( env );
+    }
+    
+
+    @Override
+    public Context getReferralContext() throws NamingException
+    {
+        return lre.getReferralContext();
+    }
+} 
