@@ -27,11 +27,13 @@ import javax.naming.CommunicationException;
 import javax.naming.Context;
 import javax.naming.ContextNotEmptyException;
 import javax.naming.InvalidNameException;
+import javax.naming.Name;
 import javax.naming.NameAlreadyBoundException;
 import javax.naming.NameNotFoundException;
 import javax.naming.NamingException;
 import javax.naming.NoPermissionException;
 import javax.naming.OperationNotSupportedException;
+import javax.naming.PartialResultException;
 import javax.naming.ReferralException;
 import javax.naming.ServiceUnavailableException;
 import javax.naming.TimeLimitExceededException;
@@ -62,6 +64,7 @@ import org.apache.directory.shared.ldap.exception.LdapNoSuchAttributeException;
 import org.apache.directory.shared.ldap.exception.LdapNoSuchObjectException;
 import org.apache.directory.shared.ldap.exception.LdapOperationErrorException;
 import org.apache.directory.shared.ldap.exception.LdapOtherException;
+import org.apache.directory.shared.ldap.exception.LdapPartialResultException;
 import org.apache.directory.shared.ldap.exception.LdapProtocolErrorException;
 import org.apache.directory.shared.ldap.exception.LdapReferralException;
 import org.apache.directory.shared.ldap.exception.LdapSchemaViolationException;
@@ -69,6 +72,7 @@ import org.apache.directory.shared.ldap.exception.LdapServiceUnavailableExceptio
 import org.apache.directory.shared.ldap.exception.LdapTimeLimitExceededException;
 import org.apache.directory.shared.ldap.exception.LdapUnwillingToPerformException;
 import org.apache.directory.shared.ldap.message.control.Control;
+import org.apache.directory.shared.ldap.name.DN;
 
 /**
  * An utility class to convert back and forth JNDI classes to ADS classes.
@@ -228,6 +232,10 @@ public class JndiUtils
         {
             ne = new WrappedReferralException( ( LdapReferralException ) t );
         }
+        else if ( t instanceof LdapPartialResultException )
+        {
+            ne = new WrappedPartialResultException( ( LdapPartialResultException ) t );
+        }
         else if ( t instanceof LdapSchemaViolationException )
         {
             ne = new SchemaViolationException( t.getLocalizedMessage() );
@@ -248,7 +256,9 @@ public class JndiUtils
         {
             ne = new NamingException( t.getLocalizedMessage() );
         }
+        
         ne.setRootCause( t );
+        
         throw ne;
     }
 }
@@ -256,6 +266,8 @@ public class JndiUtils
 // a ReferralException around the LdapReferralException to be used in tests 
 class WrappedReferralException extends ReferralException
 {
+    private static final long serialVersionUID = 1L;
+    
     private LdapReferralException lre;
     
     public WrappedReferralException( LdapReferralException lre )
@@ -296,4 +308,59 @@ class WrappedReferralException extends ReferralException
     {
         return lre.getReferralContext();
     }
-} 
+    
+    @Override
+    public Name getRemainingName()
+    {
+        return DN.toName( lre.getRemainingDn() );
+    }
+    
+    
+    @Override
+    public Object getResolvedObj()
+    {
+        return lre.getResolvedObject();
+    }
+    
+    
+    @Override
+    public Name getResolvedName()
+    {
+        // TODO Auto-generated method stub
+        return DN.toName( lre.getResolvedDn() );
+    }
+}
+
+
+// a PartialResultException around the LdapPartialResultException to be used in tests 
+class WrappedPartialResultException extends PartialResultException
+{
+    private static final long serialVersionUID = 1L;
+ 
+    private LdapPartialResultException lpre;
+     
+    public WrappedPartialResultException( LdapPartialResultException lpre )
+    {
+        this.lpre = lpre;
+    }
+     
+    @Override
+    public Name getRemainingName()
+    {
+        return DN.toName( lpre.getRemainingDn() );
+    }
+     
+     
+    @Override
+    public Object getResolvedObj()
+    {
+        return lpre.getResolvedObject();
+    }
+     
+     
+    @Override
+    public Name getResolvedName()
+    {
+        return DN.toName( lpre.getResolvedDn() );
+    }
+}
