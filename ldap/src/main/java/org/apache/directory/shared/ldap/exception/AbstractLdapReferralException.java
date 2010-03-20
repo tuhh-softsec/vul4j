@@ -20,10 +20,7 @@
 package org.apache.directory.shared.ldap.exception;
 
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Hashtable;
-import java.util.List;
 
 import javax.naming.Context;
 import javax.naming.NamingException;
@@ -39,19 +36,13 @@ import org.apache.directory.shared.ldap.name.DN;
  * {@link ResultCodeEnum#REFERRAL} resultCode with the exception.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
+ * @version $Rev: 923448 $
  */
-public class LdapReferralException extends AbstractLdapReferralException
+public class AbstractLdapReferralException extends LdapOperationException
 {
     /** The serial version UUID */
     static final long serialVersionUID = 1L;
 
-    /** The list of referrals */
-    private final List<String> refs;
-
-    /** The current index in the list of referrals */
-    private int index = 0;
-    
     /** The remaining DN */
     private DN remainingDn;
     
@@ -60,22 +51,11 @@ public class LdapReferralException extends AbstractLdapReferralException
 
 
     /**
-     * @see ReferralException#ReferralException()
-     */
-    public LdapReferralException( Collection<String> refs )
-    {
-        super( null );
-        this.refs = new ArrayList<String>( refs );
-    }
-
-
-    /**
      * @see ReferralException#ReferralException(java.lang.String)
      */
-    public LdapReferralException( Collection<String> refs, String explanation )
+    public AbstractLdapReferralException( String explanation )
     {
         super( explanation );
-        this.refs = new ArrayList<String>( refs );
     }
 
 
@@ -90,12 +70,6 @@ public class LdapReferralException extends AbstractLdapReferralException
     }
 
 
-    public String getReferralInfo()
-    {
-        return refs.get( index );
-    }
-
-
     public Context getReferralContext() throws NamingException
     {
         throw new NotImplementedException();
@@ -105,13 +79,6 @@ public class LdapReferralException extends AbstractLdapReferralException
     public Context getReferralContext( Hashtable<?, ?> arg ) throws NamingException
     {
         throw new NotImplementedException();
-    }
-
-
-    public boolean skipReferral()
-    {
-        index++;
-        return index < refs.size();
     }
 
 
