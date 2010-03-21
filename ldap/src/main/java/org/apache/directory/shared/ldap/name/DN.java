@@ -731,7 +731,15 @@ public class DN implements Externalizable, Cloneable
 
 
     /**
-     * {@inheritDoc}
+     * Get the given RDN as a String. The position is used in the 
+     * reverse order. Assuming that we have a DN like 
+     * <pre>dc=example,dc=apache,dc=org</pre>
+     * then :
+     * <li><code>get(0)</code> will return dc=org</li>
+     * <li><code>get(1)</code> will return dc=apache</li>
+     * <li><code>get(2)</code> will return dc=example</li>
+     * 
+     * @param posn The position of the wanted RDN in the DN.
      */
     public String get( int posn )
     {
@@ -743,7 +751,7 @@ public class DN implements Externalizable, Cloneable
         {
             RDN rdn = rdns.get( rdns.size() - posn - 1 );
 
-            return rdn.toString();
+            return rdn.getNormName();
         }
     }
 
@@ -811,7 +819,8 @@ public class DN implements Externalizable, Cloneable
 
 
     /**
-     * {@inheritDoc}
+     * @return The list of all the RDN for this DN, as Strings. This method
+     * retruns a User Provided form of each RDN, not a normalized form.
      */
     public Enumeration<String> getAll()
     {
@@ -842,7 +851,7 @@ public class DN implements Externalizable, Cloneable
 
                 RDN rdn = rdns.get( rdns.size() - pos - 1 );
                 pos++;
-                return rdn.toString();
+                return rdn.getNormName();
             }
         };
     }
@@ -1169,7 +1178,7 @@ public class DN implements Externalizable, Cloneable
         // RDN normalized name. The very same for upName.
         if (rdns.size() == 1 )
         {
-            normName = newRdn.toString();
+            normName = newRdn.getNormName();
             upName = newRdn.getUpName();
         }
         else
@@ -1221,11 +1230,11 @@ public class DN implements Externalizable, Cloneable
     /**
      * {@inheritDoc}
      */
-    public Object remove( int posn ) throws LdapInvalidDnException
+    public RDN remove( int posn ) throws LdapInvalidDnException
     {
         if ( rdns.size() == 0 )
         {
-            return EMPTY_DN;
+            return RDN.EMPTY_RDN;
         }
 
         if ( ( posn < 0 ) || ( posn >= rdns.size() ) )

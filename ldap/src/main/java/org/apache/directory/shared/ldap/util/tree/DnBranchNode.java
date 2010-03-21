@@ -87,7 +87,7 @@ public class DnBranchNode<N> implements DnNode<N>
      */
     private DnNode<N> recursivelyAddElement( DnBranchNode<N> current, DN dn, int index, N element ) throws LdapException
     {
-        String rdnAtIndex = dn.getRdn( index ).toString();
+        String rdnAtIndex = dn.getRdn( index ).getNormName();
         
         if ( index == dn.size() - 1 )
         {

@@ -108,10 +108,13 @@ import org.slf4j.LoggerFactory;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public class RDN implements Cloneable, Comparable, Externalizable, Iterable<AVA>
+public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable<AVA>
 {
     /** The LoggerFactory used by this class */
     protected static final Logger LOG = LoggerFactory.getLogger( RDN.class );
+    
+    /** An empty RDN */
+    public static final RDN EMPTY_RDN = new RDN();
 
     /**
     * Declares the Serial Version Uid.
@@ -750,78 +753,60 @@ public class RDN implements Cloneable, Comparable, Externalizable, Iterable<AVA>
      * @return 0 if both rdn are equals. -1 if the current RDN is inferior, 1 if
      *         the current Rdn is superior, UNDEFINED otherwise.
      */
-    public int compareTo( Object object )
+    public int compareTo( RDN rdn )
     {
-        if ( object == null )
+        if ( rdn == null )
         {
             return SUPERIOR;
         }
 
-        if ( object instanceof RDN )
+        if ( rdn.nbAtavs != nbAtavs )
         {
-            RDN rdn = ( RDN ) object;
+            // We don't have the same number of ATAVs. The Rdn which
+            // has the higher number of Atav is the one which is
+            // superior
+            return nbAtavs - rdn.nbAtavs;
+        }
 
-            if ( rdn.nbAtavs != nbAtavs )
-            {
-                // We don't have the same number of ATAVs. The Rdn which
-                // has the higher number of Atav is the one which is
-                // superior
-                return nbAtavs - rdn.nbAtavs;
-            }
+        switch ( nbAtavs )
+        {
+            case 0:
+                return EQUAL;
 
-            switch ( nbAtavs )
-            {
-                case 0:
-                    return EQUAL;
+            case 1:
+                return atav.compareTo( rdn.atav );
 
-                case 1:
-                    return atav.compareTo( rdn.atav );
+            default:
+                // We have more than one value. We will
+                // go through all of them.
 
-                default:
-                    // We have more than one value. We will
-                    // go through all of them.
+                // the types are already normalized and sorted in the atavs TreeSet
+                // so we could compare the 1st with the 1st, then the 2nd with the 2nd, etc.
+                Iterator<AVA> localIterator = atavs.iterator();
+                Iterator<AVA> paramIterator = rdn.atavs.iterator();
 
-                    // the types are already normalized and sorted in the atavs TreeSet
-                    // so we could compare the 1st with the 1st, then the 2nd with the 2nd, etc.
-                    Iterator<AVA> localIterator = atavs.iterator();
-                    Iterator<AVA> paramIterator = rdn.atavs.iterator();
-
-                    while ( localIterator.hasNext() || paramIterator.hasNext() )
+                while ( localIterator.hasNext() || paramIterator.hasNext() )
+                {
+                    if ( !localIterator.hasNext() )
                     {
-                        if ( !localIterator.hasNext() )
-                        {
-                            return SUPERIOR;
-                        }
-                        if ( !paramIterator.hasNext() )
-                        {
-                            return INFERIOR;
-                        }
-
-                        AVA localAtav = localIterator.next();
-                        AVA paramAtav = paramIterator.next();
-                        int result = localAtav.compareTo( paramAtav );
-                        if ( result != EQUAL )
-                        {
-                            return result;
-                        }
+                        return SUPERIOR;
+                    }
+                    if ( !paramIterator.hasNext() )
+                    {
+                        return INFERIOR;
                     }
 
-                    return EQUAL;
-            }
-        }
-        else
-        {
-            return UNDEFINED;
-        }
-    }
+                    AVA localAtav = localIterator.next();
+                    AVA paramAtav = paramIterator.next();
+                    int result = localAtav.compareTo( paramAtav );
+                    if ( result != EQUAL )
+                    {
+                        return result;
+                    }
+                }
 
-
-    /**
-     * @return a String representation of the RDN
-     */
-    public String toString()
-    {
-        return normName == null ? "" : normName;
+                return EQUAL;
+        }
     }
 
 
@@ -990,7 +975,7 @@ public class RDN implements Cloneable, Comparable, Externalizable, Iterable<AVA>
             return false;
         }
 
-        return compareTo( rdn ) == EQUAL;
+        return compareTo( (RDN)rdn ) == EQUAL;
     }
 
 
@@ -1464,5 +1449,14 @@ public class RDN implements Cloneable, Comparable, Externalizable, Iterable<AVA>
 
                 break;
         }
+    }
+
+
+    /**
+     * @return a String representation of the RDN
+     */
+    public String toString()
+    {
+        return upName == null ? "" : upName;
     }
 }

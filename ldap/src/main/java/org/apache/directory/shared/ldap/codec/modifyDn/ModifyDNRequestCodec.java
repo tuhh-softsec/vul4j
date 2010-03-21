@@ -214,7 +214,7 @@ public class ModifyDNRequestCodec extends LdapMessageCodec
      */
     protected int computeLengthProtocolOp()
     {
-        int newRdnlength = StringTools.getBytesUtf8( newRDN.toString() ).length;
+        int newRdnlength = StringTools.getBytesUtf8( newRDN.getUpName() ).length;
         modifyDNRequestLength = 1 + TLV.getNbBytes( DN.getNbBytes( entry ) ) + DN.getNbBytes( entry ) + 1
             + TLV.getNbBytes( newRdnlength ) + newRdnlength + 1 + 1 + 1; // deleteOldRDN
 
@@ -255,7 +255,7 @@ public class ModifyDNRequestCodec extends LdapMessageCodec
             Value.encode( buffer, DN.getBytes( entry ) );
 
             // The newRDN
-            Value.encode( buffer, newRDN.toString() );
+            Value.encode( buffer, newRDN.getUpName() );
 
             // The flag deleteOldRdn
             Value.encode( buffer, deleteOldRDN );

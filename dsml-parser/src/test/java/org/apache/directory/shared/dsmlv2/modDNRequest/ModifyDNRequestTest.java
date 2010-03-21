@@ -278,7 +278,7 @@ public class ModifyDNRequestTest extends AbstractTest
 
         assertEquals( "cn=Bob Rush,ou=Dev,dc=Example,dc=COM", modifyDNRequest.getEntry().getNormName() );
 
-        assertEquals( "cn=Steve Jobs", modifyDNRequest.getNewRDN().toString() );
+        assertEquals( "cn=Steve Jobs", modifyDNRequest.getNewRDN().getNormName() );
     }
 
 

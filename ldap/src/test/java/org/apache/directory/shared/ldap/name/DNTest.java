@@ -50,6 +50,7 @@ import org.apache.directory.shared.ldap.schema.normalizers.DeepTrimToLowerNormal
 import org.apache.directory.shared.ldap.schema.normalizers.OidNormalizer;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -538,7 +539,7 @@ public class DNTest
         DN dn = new DN( "a=b, c=d, e=f" );
 
         assertTrue( DN.isValid( "a=b, c=d, e=f" ) );
-        assertEquals( "e=f", dn.remove( 0 ).toString() );
+        assertEquals( "e=f", dn.remove( 0 ).getNormName() );
         assertEquals( "a=b,c=d", dn.getNormName() );
         assertEquals( "a=b, c=d", dn.getName() );
     }
@@ -553,7 +554,7 @@ public class DNTest
         DN dn = new DN( "a=b, c=d, e=f" );
 
         assertTrue( DN.isValid( "a=b, c=d, e=f" ) );
-        assertEquals( "c=d", dn.remove( 1 ).toString() );
+        assertEquals( "c=d", dn.remove( 1 ).getNormName() );
         assertEquals( "a=b, e=f", dn.getName() );
     }
 
@@ -581,7 +582,7 @@ public class DNTest
         DN dn = new DN( "a=b, c=d; e=f" );
 
         assertTrue( DN.isValid( "a=b, c=d; e=f" ) );
-        assertEquals( "c=d", dn.remove( 1 ).toString() );
+        assertEquals( "c=d", dn.remove( 1 ).getNormName() );
         assertEquals( "a=b, e=f", dn.getName() );
     }
 
@@ -1332,7 +1333,6 @@ public class DNTest
         assertEquals( "a=b", nc.nextElement() );
         assertEquals( true, nc.hasMoreElements() );
 
-        // The lowest atav should be the first one
         assertEquals( "e=f+g=h", nc.nextElement() );
         assertEquals( false, nc.hasMoreElements() );
     }

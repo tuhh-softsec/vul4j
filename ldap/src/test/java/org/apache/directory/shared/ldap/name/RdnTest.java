@@ -78,7 +78,7 @@ public class RdnTest
     @Test
     public void testRdnSimple() throws LdapException
     {
-        assertEquals( "a=b", new RDN( "a = b" ).toString() );
+        assertEquals( "a=b", new RDN( "a = b" ).getNormName() );
     }
 
 
@@ -90,7 +90,7 @@ public class RdnTest
     @Test
     public void testRdnComposite() throws LdapException
     {
-        assertEquals( "a=b+c=d", new RDN( "a = b + c = d" ).toString() );
+        assertEquals( "a=b+c=d", new RDN( "a = b + c = d" ).getNormName() );
     }
 
 
@@ -103,22 +103,22 @@ public class RdnTest
     @Test
     public void testRdnCompositeWithSpace() throws LdapException
     {
-        assertEquals( "a=b", new RDN( "a=b" ).toString() );
-        assertEquals( "a=b", new RDN( " a=b" ).toString() );
-        assertEquals( "a=b", new RDN( "a =b" ).toString() );
-        assertEquals( "a=b", new RDN( "a= b" ).toString() );
-        assertEquals( "a=b", new RDN( "a=b " ).toString() );
-        assertEquals( "a=b", new RDN( " a =b" ).toString() );
-        assertEquals( "a=b", new RDN( " a= b" ).toString() );
-        assertEquals( "a=b", new RDN( " a=b " ).toString() );
-        assertEquals( "a=b", new RDN( "a = b" ).toString() );
-        assertEquals( "a=b", new RDN( "a =b " ).toString() );
-        assertEquals( "a=b", new RDN( "a= b " ).toString() );
-        assertEquals( "a=b", new RDN( " a = b" ).toString() );
-        assertEquals( "a=b", new RDN( " a =b " ).toString() );
-        assertEquals( "a=b", new RDN( " a= b " ).toString() );
-        assertEquals( "a=b", new RDN( "a = b " ).toString() );
-        assertEquals( "a=b", new RDN( " a = b " ).toString() );
+        assertEquals( "a=b", new RDN( "a=b" ).getNormName() );
+        assertEquals( "a=b", new RDN( " a=b" ).getNormName() );
+        assertEquals( "a=b", new RDN( "a =b" ).getNormName() );
+        assertEquals( "a=b", new RDN( "a= b" ).getNormName() );
+        assertEquals( "a=b", new RDN( "a=b " ).getNormName() );
+        assertEquals( "a=b", new RDN( " a =b" ).getNormName() );
+        assertEquals( "a=b", new RDN( " a= b" ).getNormName() );
+        assertEquals( "a=b", new RDN( " a=b " ).getNormName() );
+        assertEquals( "a=b", new RDN( "a = b" ).getNormName() );
+        assertEquals( "a=b", new RDN( "a =b " ).getNormName() );
+        assertEquals( "a=b", new RDN( "a= b " ).getNormName() );
+        assertEquals( "a=b", new RDN( " a = b" ).getNormName() );
+        assertEquals( "a=b", new RDN( " a =b " ).getNormName() );
+        assertEquals( "a=b", new RDN( " a= b " ).getNormName() );
+        assertEquals( "a=b", new RDN( "a = b " ).getNormName() );
+        assertEquals( "a=b", new RDN( " a = b " ).getNormName() );
     }
 
 
@@ -130,7 +130,7 @@ public class RdnTest
     @Test
     public void testRdnSimpleMultivaluedAttribute() throws LdapException
     {
-        String result = new RDN( "a = b + c = d" ).toString();
+        String result = new RDN( "a = b + c = d" ).getNormName();
         assertEquals( "a=b+c=d", result );
     }
 
@@ -163,7 +163,7 @@ public class RdnTest
     @Test
     public void testRdnOidUpper() throws LdapException
     {
-        assertEquals( "oid.12.34.56=azerty", new RDN( "OID.12.34.56 =  azerty" ).toString() );
+        assertEquals( "oid.12.34.56=azerty", new RDN( "OID.12.34.56 =  azerty" ).getNormName() );
     }
 
 
@@ -175,7 +175,7 @@ public class RdnTest
     @Test
     public void testRdnOidLower() throws LdapException
     {
-        assertEquals( "oid.12.34.56=azerty", new RDN( "oid.12.34.56 = azerty" ).toString() );
+        assertEquals( "oid.12.34.56=azerty", new RDN( "oid.12.34.56 = azerty" ).getNormName() );
     }
 
 
@@ -188,7 +188,7 @@ public class RdnTest
     @Test
     public void testRdnOidWithoutPrefix() throws LdapException
     {
-        assertEquals( "12.34.56=azerty", new RDN( "12.34.56 = azerty" ).toString() );
+        assertEquals( "12.34.56=azerty", new RDN( "12.34.56 = azerty" ).getNormName() );
     }
 
 
@@ -201,7 +201,7 @@ public class RdnTest
     @Test
     public void testRdnCompositeOidWithoutPrefix() throws LdapException
     {
-        String result = new RDN( "12.34.56 = azerty + 7.8 = test" ).toString();
+        String result = new RDN( "12.34.56 = azerty + 7.8 = test" ).getNormName();
         assertEquals( "12.34.56=azerty+7.8=test", result );
     }
 
@@ -217,7 +217,7 @@ public class RdnTest
         String rdn = StringTools.utf8ToString( new byte[]
             { 'a', '=', '\\', ',', '=', '\\', '+', '\\', '<', '\\', '>', '#', '\\', ';', '\\', '\\', '\\', '"', '\\',
                 'C', '3', '\\', 'A', '9' } );
-        assertEquals( "a=\\,=\\+\\<\\>#\\;\\\\\\\"\u00E9", new RDN( rdn ).toString() );
+        assertEquals( "a=\\,=\\+\\<\\>#\\;\\\\\\\"\u00E9", new RDN( rdn ).getNormName() );
     }
 
 
@@ -227,7 +227,7 @@ public class RdnTest
     @Test
     public void testRdnHexStringAttributeValue() throws LdapException
     {
-        assertEquals( "a=#0010A0AAFF", new RDN( "a = #0010A0AAFF" ).toString() );
+        assertEquals( "a=#0010A0AAFF", new RDN( "a = #0010A0AAFF" ).getNormName() );
     }
 
     /**
@@ -255,7 +255,7 @@ public class RdnTest
     @Test
     public void testRdnQuotedAttributeValue() throws LdapException
     {
-        assertEquals( "a=quoted \\\"value", new RDN( "a = quoted \\\"value" ).toString() );
+        assertEquals( "a=quoted \\\"value", new RDN( "a = quoted \\\"value" ).getNormName() );
     }
 
 
@@ -566,20 +566,6 @@ public class RdnTest
 
 
     /**
-     * Compares with a bad object
-     * 
-     * @throws LdapException
-     */
-    @Test
-    public void testRDNCompareToBadObject() throws LdapException
-    {
-        RDN rdn1 = new RDN( " a = b " );
-
-        assertEquals( RDN.UNDEFINED, rdn1.compareTo( "test" ) );
-    }
-
-
-    /**
      * Compares a simple NC to a simple NC.
      * 
      * @throws LdapException
@@ -878,7 +864,7 @@ public class RdnTest
     public void testRdnWithSpaces() throws LdapException
     {
         RDN rdn = new RDN( "cn=a\\ b\\ c" );
-        assertEquals( "cn=a b c", rdn.toString() );
+        assertEquals( "cn=a b c", rdn.getNormName() );
     }
 
 
@@ -887,14 +873,14 @@ public class RdnTest
     {
         RDN rdn1 = new RDN( "cn=a b c" );
         RDN rdn2 = new RDN( "cn=a\\ b\\ c" );
-        assertEquals( "cn=a b c", rdn1.toString() );
-        assertEquals( "cn=a b c", rdn2.toString() );
+        assertEquals( "cn=a b c", rdn1.getNormName() );
+        assertEquals( "cn=a b c", rdn2.getNormName() );
         assertTrue( rdn1.equals( rdn2 ) );
 
         RDN rdn3 = new RDN( "cn=\\ a b c\\ " );
         RDN rdn4 = new RDN( "cn=\\ a\\ b\\ c\\ " );
-        assertEquals( "cn=\\ a b c\\ ", rdn3.toString() );
-        assertEquals( "cn=\\ a b c\\ ", rdn4.toString() );
+        assertEquals( "cn=\\ a b c\\ ", rdn3.getNormName() );
+        assertEquals( "cn=\\ a b c\\ ", rdn4.getNormName() );
         assertTrue( rdn3.equals( rdn4 ) );
     }
 
@@ -904,14 +890,14 @@ public class RdnTest
     {
         RDN rdn1 = new RDN( "cn=a#b#c" );
         RDN rdn2 = new RDN( "cn=a\\#b\\#c" );
-        assertEquals( "cn=a#b#c", rdn1.toString() );
-        assertEquals( "cn=a#b#c", rdn2.toString() );
+        assertEquals( "cn=a#b#c", rdn1.getNormName() );
+        assertEquals( "cn=a#b#c", rdn2.getNormName() );
         assertTrue( rdn1.equals( rdn2 ) );
 
         RDN rdn3 = new RDN( "cn=\\#a#b#c\\#" );
         RDN rdn4 = new RDN( "cn=\\#a\\#b\\#c\\#" );
-        assertEquals( "cn=\\#a#b#c#", rdn3.toString() );
-        assertEquals( "cn=\\#a#b#c#", rdn4.toString() );
+        assertEquals( "cn=\\#a#b#c#", rdn3.getNormName() );
+        assertEquals( "cn=\\#a#b#c#", rdn4.getNormName() );
         assertTrue( rdn3.equals( rdn4 ) );
     }
 
@@ -1365,8 +1351,8 @@ public class RdnTest
     {
         assertTrue( RdnParser.isValid( "a=" ) );
         assertTrue( RdnParser.isValid( "a=\"\"" ) );
-        assertEquals( "a=", new RDN( "a=\"\"" ).toString() );
-        assertEquals( "a=", new RDN( "a=" ).toString() );
+        assertEquals( "a=", new RDN( "a=\"\"" ).getNormName() );
+        assertEquals( "a=", new RDN( "a=" ).getNormName() );
     }
 
 
@@ -1377,16 +1363,16 @@ public class RdnTest
     public void testRdnWithEscapedComa() throws LdapException
     {
         assertTrue( RdnParser.isValid( "a=b\\,c" ) );
-        assertEquals( "a=b\\,c", new RDN( "a=b\\,c" ).toString() );
+        assertEquals( "a=b\\,c", new RDN( "a=b\\,c" ).getNormName() );
 
         assertTrue( RdnParser.isValid( "a=\"b,c\"" ) );
-        assertEquals( "a=b\\,c", new RDN( "a=\"b,c\"" ).toString() );
+        assertEquals( "a=b\\,c", new RDN( "a=\"b,c\"" ).getNormName() );
         assertEquals( "a=\"b,c\"", new RDN( "a=\"b,c\"" ).getUpName() );
 
         assertTrue( RdnParser.isValid( "a=\"b\\,c\"" ) );
         RDN rdn = new RDN( "a=\"b\\,c\"" );
         assertEquals( "a=\"b\\,c\"", rdn.getUpName() );
-        assertEquals( "a=b\\,c", rdn.toString() );
+        assertEquals( "a=b\\,c", rdn.getNormName() );
     }
 
 
