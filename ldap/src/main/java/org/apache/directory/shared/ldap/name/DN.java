@@ -33,6 +33,7 @@ import java.util.NoSuchElementException;
 
 import javax.naming.InvalidNameException;
 import javax.naming.Name;
+import javax.naming.ldap.LdapName;
 
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.exception.LdapException;
@@ -42,8 +43,6 @@ import org.apache.directory.shared.ldap.schema.normalizers.OidNormalizer;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.sun.jndi.ldap.LdapName;
 
 
 /**
