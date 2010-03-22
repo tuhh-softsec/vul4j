@@ -302,7 +302,7 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
     {
         nbAtavs = rdn.getNbAtavs();
         this.normName = rdn.normName;
-        this.upName = rdn.getUpName();
+        this.upName = rdn.getName();
         this.start = rdn.start;
         this.length = rdn.length;
 
@@ -399,7 +399,7 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
      */
     public RDN normalize( Map<String, OidNormalizer> oidsMap ) throws LdapInvalidDnException
     {
-        String upName = getUpName();
+        String upName = getName();
         DN.rdnOidToName( this, oidsMap );
         normalize();
         this.upName = upName;
@@ -813,7 +813,7 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
     /**
      * @return the user provided name
      */
-    public String getUpName()
+    public String getName()
     {
         return upName;
     }

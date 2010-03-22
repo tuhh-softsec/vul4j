@@ -307,7 +307,7 @@ public class RdnTest
     {
         RDN rdn = new RDN( "A", "  b  " );
         assertEquals( "a=\\  b \\ ", rdn.getNormName() );
-        assertEquals( "A=  b  ", rdn.getUpName() );
+        assertEquals( "A=  b  ", rdn.getName() );
     }
 
 
@@ -820,7 +820,7 @@ public class RdnTest
     public void testDIRSERVER_703() throws LdapException
     {
         RDN rdn = new RDN( "cn=Kate Bush+sn=Bush" );
-        assertEquals( "cn=Kate Bush+sn=Bush", rdn.getUpName() );
+        assertEquals( "cn=Kate Bush+sn=Bush", rdn.getName() );
     }
 
 
@@ -1367,11 +1367,11 @@ public class RdnTest
 
         assertTrue( RdnParser.isValid( "a=\"b,c\"" ) );
         assertEquals( "a=b\\,c", new RDN( "a=\"b,c\"" ).getNormName() );
-        assertEquals( "a=\"b,c\"", new RDN( "a=\"b,c\"" ).getUpName() );
+        assertEquals( "a=\"b,c\"", new RDN( "a=\"b,c\"" ).getName() );
 
         assertTrue( RdnParser.isValid( "a=\"b\\,c\"" ) );
         RDN rdn = new RDN( "a=\"b\\,c\"" );
-        assertEquals( "a=\"b\\,c\"", rdn.getUpName() );
+        assertEquals( "a=\"b\\,c\"", rdn.getName() );
         assertEquals( "a=b\\,c", rdn.getNormName() );
     }
 
@@ -1422,6 +1422,6 @@ public class RdnTest
     {
         RDN rdn = new RDN( " A = b + C = d " );
         
-        assertEquals( " A = b + C = d ", rdn.getUpName() );
+        assertEquals( " A = b + C = d ", rdn.getName() );
     }
 }

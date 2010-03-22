@@ -281,7 +281,7 @@ public class DN implements Externalizable, Cloneable
         while ( rdns.hasMoreElements() )
         {
             RDN rdn = rdns.nextElement();
-            String upName = rdn.getUpName();
+            String upName = rdn.getName();
             rdnOidToName( rdn, oidsMap );
             rdn.normalize();
             rdn.setUpName( upName );
@@ -386,7 +386,7 @@ public class DN implements Externalizable, Cloneable
                     sb.append( ',' );
                 }
 
-                sb.append( rdn.getUpName() );
+                sb.append( rdn.getName() );
             }
 
             upName = sb.toString();
@@ -444,7 +444,7 @@ public class DN implements Externalizable, Cloneable
                 sb.append( ',' );
             }
 
-            sb.append( rdns.get( i ).getUpName() );
+            sb.append( rdns.get( i ).getName() );
         }
 
         return sb.toString();
@@ -490,7 +490,7 @@ public class DN implements Externalizable, Cloneable
                 sb.append( ',' );
             }
 
-            sb.append( rdns.get( i ).getUpName() );
+            sb.append( rdns.get( i ).getName() );
         }
 
         return sb.toString();
@@ -1179,12 +1179,12 @@ public class DN implements Externalizable, Cloneable
         if (rdns.size() == 1 )
         {
             normName = newRdn.getNormName();
-            upName = newRdn.getUpName();
+            upName = newRdn.getName();
         }
         else
         {
             normName = newRdn + "," + normName;
-            upName = newRdn.getUpName() + "," + upName;
+            upName = newRdn.getName() + "," + upName;
         }
         
         bytes = StringTools.getBytesUtf8( normName );
@@ -1466,7 +1466,7 @@ public class DN implements Externalizable, Cloneable
         while ( rdns.hasMoreElements() )
         {
             RDN rdn = rdns.nextElement();
-            String upName = rdn.getUpName();
+            String upName = rdn.getName();
             rdnOidToName( rdn, oidsMap );
             rdn.normalize();
             rdn.setUpName( upName );
@@ -1514,7 +1514,7 @@ public class DN implements Externalizable, Cloneable
         while ( localRdns.hasMoreElements() )
         {
             RDN rdn = localRdns.nextElement();
-            String localUpName = rdn.getUpName();
+            String localUpName = rdn.getName();
             rdnOidToName( rdn, oidsMap );
             rdn.normalize();
             rdn.setUpName( localUpName );

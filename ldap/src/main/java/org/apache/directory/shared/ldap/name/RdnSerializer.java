@@ -63,7 +63,7 @@ public class RdnSerializer
     public static void serialize( RDN rdn, ObjectOutput out ) throws IOException
     {
         out.writeInt( rdn.getNbAtavs() );
-        out.writeUTF( rdn.getUpName() );
+        out.writeUTF( rdn.getName() );
         out.writeUTF( rdn.getNormName() );
         out.writeInt( rdn.getStart() );
         out.writeInt( rdn.getLength() );

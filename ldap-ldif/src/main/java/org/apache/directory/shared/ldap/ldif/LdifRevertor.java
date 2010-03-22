@@ -278,7 +278,7 @@ public class LdifRevertor
 
         entry.setChangeType( ChangeType.ModDn );
         entry.setDn( newDn );
-        entry.setNewRdn( currentRdn.getUpName() );
+        entry.setNewRdn( currentRdn.getName() );
         entry.setNewSuperior( currentParent.getName() );
         entry.setDeleteOldRdn( false );
         return entry;
@@ -307,7 +307,7 @@ public class LdifRevertor
             reverted.setDn( newDn );
         }
         
-        reverted.setNewRdn( oldRdn.getUpName() );
+        reverted.setNewRdn( oldRdn.getName() );
 
         // Is the newRdn's value present in the entry ?
         // ( case 3, 4 and 5)
@@ -380,7 +380,7 @@ public class LdifRevertor
             reverted.setDn( newDn );
         }
         
-        reverted.setNewRdn( oldRdn.getUpName() );
+        reverted.setNewRdn( oldRdn.getName() );
         
         if ( newSuperior != null )
         {

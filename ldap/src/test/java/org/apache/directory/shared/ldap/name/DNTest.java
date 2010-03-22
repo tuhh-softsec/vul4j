@@ -370,7 +370,7 @@ public class DNTest
         assertEquals( "a = \\#123456", dn.getName() );
 
         RDN rdn = dn.getRdn();
-        assertEquals( "a = \\#123456", rdn.getUpName() );
+        assertEquals( "a = \\#123456", rdn.getName() );
 
         assertTrue( DN.isValid( "a = \\#00" ) );
         assertTrue( DN.isValid( "a = \\#11" ) );
@@ -397,7 +397,7 @@ public class DNTest
         assertEquals( "a = \\#this is a sharp", dn.getName() );
 
         RDN rdn = dn.getRdn();
-        assertEquals( "a = \\#this is a sharp", rdn.getUpName() );
+        assertEquals( "a = \\#this is a sharp", rdn.getName() );
     }
 
 
@@ -2019,10 +2019,10 @@ public class DNTest
     public void testGetRdn() throws Exception
     {
         DN name = new DN( "cn=HomeDir,cn=John,ou=Marketing,ou=East" );
-        assertEquals( "cn=HomeDir", name.getRdn( 3 ).getUpName() );
-        assertEquals( "cn=John", name.getRdn( 2 ).getUpName() );
-        assertEquals( "ou=Marketing", name.getRdn( 1 ).getUpName() );
-        assertEquals( "ou=East", name.getRdn( 0 ).getUpName() );
+        assertEquals( "cn=HomeDir", name.getRdn( 3 ).getName() );
+        assertEquals( "cn=John", name.getRdn( 2 ).getName() );
+        assertEquals( "ou=Marketing", name.getRdn( 1 ).getName() );
+        assertEquals( "ou=East", name.getRdn( 0 ).getName() );
     }
 
     /**
@@ -2473,7 +2473,7 @@ public class DNTest
 
         RDN rdn = name.getRdn();
 
-        assertEquals( "ou= Some   People   ", rdn.getUpName() );
+        assertEquals( "ou= Some   People   ", rdn.getName() );
         assertEquals( "ou", rdn.getNormType() );
         assertEquals( "ou", rdn.getUpType() );
 
@@ -2485,7 +2485,7 @@ public class DNTest
 
         RDN rdn2 = result.getRdn();
 
-        assertEquals( "ou= Some   People   ", rdn2.getUpName() );
+        assertEquals( "ou= Some   People   ", rdn2.getName() );
         assertEquals( "2.5.4.11", rdn2.getNormType() );
         assertEquals( "ou", rdn2.getUpType() );
     }
@@ -3336,14 +3336,14 @@ public class DNTest
     {
         // antlr parser: string value with trailing spaces
         DN dn1 = new DN( " cn = Amos\\,Tori , ou=system " );
-        assertEquals( " cn = Amos\\,Tori ", dn1.getRdn().getUpName() );
+        assertEquals( " cn = Amos\\,Tori ", dn1.getRdn().getName() );
         AVA atav1 = dn1.getRdn().getAtav();
         assertEquals( "cn", atav1.getUpType() );
         assertEquals( "Amos,Tori", atav1.getUpValue().getString() );
 
         // antlr parser: hexstring with trailing spaces
         DN dn3 = new DN( " cn = #414243 , ou=system " );
-        assertEquals( " cn = #414243 ", dn3.getRdn().getUpName() );
+        assertEquals( " cn = #414243 ", dn3.getRdn().getName() );
         AVA atav3 = dn3.getRdn().getAtav();
         assertEquals( "cn", atav3.getUpType() );
         assertEquals( "ABC", atav3.getUpValue().getString() );
@@ -3351,7 +3351,7 @@ public class DNTest
 
         // antlr parser: 
         DN dn4 = new DN( " cn = \\41\\42\\43 , ou=system " );
-        assertEquals( " cn = \\41\\42\\43 ", dn4.getRdn().getUpName() );
+        assertEquals( " cn = \\41\\42\\43 ", dn4.getRdn().getName() );
         AVA atav4 = dn4.getRdn().getAtav();
         assertEquals( "cn", atav4.getUpType() );
         assertEquals( "ABC", atav4.getUpValue().getString() );
@@ -3359,7 +3359,7 @@ public class DNTest
 
         // antlr parser: quotestring with trailing spaces
         DN dn5 = new DN( " cn = \"ABC\" , ou=system " );
-        assertEquals( " cn = \"ABC\" ", dn5.getRdn().getUpName() );
+        assertEquals( " cn = \"ABC\" ", dn5.getRdn().getName() );
         AVA atav5 = dn5.getRdn().getAtav();
         assertEquals( "cn", atav5.getUpType() );
         assertEquals( "ABC", atav5.getUpValue().getString() );
@@ -3367,7 +3367,7 @@ public class DNTest
 
         // fast parser: string value with trailing spaces 
         DN dn2 = new DN( " cn = Amos Tori , ou=system " );
-        assertEquals( " cn = Amos Tori ", dn2.getRdn().getUpName() );
+        assertEquals( " cn = Amos Tori ", dn2.getRdn().getName() );
         AVA atav2 = dn2.getRdn().getAtav();
         assertEquals( "cn", atav2.getUpType() );
         assertEquals( "Amos Tori", atav2.getUpValue().getString() );
@@ -3385,28 +3385,28 @@ public class DNTest
         dn1.normalize( oids );
         assertEquals( "ou=A\\ ,ou=system", dn1.getName() );
         assertEquals( "ou=a,ou=system", dn1.getNormName() );
-        assertEquals( "ou=A\\ ", dn1.getRdn().getUpName() );
+        assertEquals( "ou=A\\ ", dn1.getRdn().getName() );
         assertEquals( "ou=a", dn1.getRdn().getNormName() );
 
         DN dn2 = new DN( "ou=A\\20,ou=system" );
         dn2.normalize( oids );
         assertEquals( "ou=A\\20,ou=system", dn2.getName() );
         assertEquals( "ou=a,ou=system", dn2.getNormName() );
-        assertEquals( "ou=A\\20", dn2.getRdn().getUpName() );
+        assertEquals( "ou=A\\20", dn2.getRdn().getName() );
         assertEquals( "ou=a", dn2.getRdn().getNormName() );
         
         DN dn3 = new DN( "ou=\\ ,ou=system" );
         dn3.normalize( oids );
         assertEquals( "ou=\\ ,ou=system", dn3.getName() );
         assertEquals( "ou=,ou=system", dn3.getNormName() );
-        assertEquals( "ou=\\ ", dn3.getRdn().getUpName() );
+        assertEquals( "ou=\\ ", dn3.getRdn().getName() );
         assertEquals( "ou=", dn3.getRdn().getNormName() );
         
         DN dn4 = new DN( "ou=\\20,ou=system" );
         dn4.normalize( oids );
         assertEquals( "ou=\\20,ou=system", dn4.getName() );
         assertEquals( "ou=,ou=system", dn4.getNormName() );
-        assertEquals( "ou=\\20", dn4.getRdn().getUpName() );
+        assertEquals( "ou=\\20", dn4.getRdn().getName() );
         assertEquals( "ou=", dn4.getRdn().getNormName() );
     }
 
@@ -3422,7 +3422,7 @@ public class DNTest
         DN dn1 = new DN( "cn=loopback+ipHostNumber=127.0.0.1,ou=Hosts,dc=mygfs,dc=com" );
         assertEquals( "cn=loopback+ipHostNumber=127.0.0.1,ou=Hosts,dc=mygfs,dc=com", dn1.getName() );
         assertEquals( "cn=loopback+iphostnumber=127.0.0.1,ou=Hosts,dc=mygfs,dc=com", dn1.getNormName() );
-        assertEquals( "cn=loopback+ipHostNumber=127.0.0.1", dn1.getRdn().getUpName() );
+        assertEquals( "cn=loopback+ipHostNumber=127.0.0.1", dn1.getRdn().getName() );
         assertEquals( "cn=loopback+iphostnumber=127.0.0.1", dn1.getRdn().getNormName() );
         assertEquals( "127.0.0.1", dn1.getRdn().getAttributeTypeAndValue( "ipHostNumber" ).getUpValue().get() );
         
@@ -3430,21 +3430,21 @@ public class DNTest
         DN dn2 = new DN( "cn=loopback+ipHostNumber=X127.0.0.1,ou=Hosts,dc=mygfs,dc=com" );
         assertEquals( "cn=loopback+ipHostNumber=X127.0.0.1,ou=Hosts,dc=mygfs,dc=com", dn2.getName() );
         assertEquals( "cn=loopback+iphostnumber=X127.0.0.1,ou=Hosts,dc=mygfs,dc=com", dn2.getNormName() );
-        assertEquals( "cn=loopback+ipHostNumber=X127.0.0.1", dn2.getRdn().getUpName() );
+        assertEquals( "cn=loopback+ipHostNumber=X127.0.0.1", dn2.getRdn().getName() );
         assertEquals( "cn=loopback+iphostnumber=X127.0.0.1", dn2.getRdn().getNormName() );
 
         // numeric OID with prefix
         DN dn3 = new DN( "cn=loopback+ipHostNumber=127.0.0.1Y,ou=Hosts,dc=mygfs,dc=com" );
         assertEquals( "cn=loopback+ipHostNumber=127.0.0.1Y,ou=Hosts,dc=mygfs,dc=com", dn3.getName() );
         assertEquals( "cn=loopback+iphostnumber=127.0.0.1Y,ou=Hosts,dc=mygfs,dc=com", dn3.getNormName() );
-        assertEquals( "cn=loopback+ipHostNumber=127.0.0.1Y", dn3.getRdn().getUpName() );
+        assertEquals( "cn=loopback+ipHostNumber=127.0.0.1Y", dn3.getRdn().getName() );
         assertEquals( "cn=loopback+iphostnumber=127.0.0.1Y", dn3.getRdn().getNormName() );
 
         // numeric OID with special characters
         DN dn4 = new DN( "cn=loopback+ipHostNumber=\\#127.0.0.1 Z,ou=Hosts,dc=mygfs,dc=com" );
         assertEquals( "cn=loopback+ipHostNumber=\\#127.0.0.1 Z,ou=Hosts,dc=mygfs,dc=com", dn4.getName() );
         assertEquals( "cn=loopback+iphostnumber=\\#127.0.0.1 Z,ou=Hosts,dc=mygfs,dc=com", dn4.getNormName() );
-        assertEquals( "cn=loopback+ipHostNumber=\\#127.0.0.1 Z", dn4.getRdn().getUpName() );
+        assertEquals( "cn=loopback+ipHostNumber=\\#127.0.0.1 Z", dn4.getRdn().getName() );
         assertEquals( "cn=loopback+iphostnumber=\\#127.0.0.1 Z", dn4.getRdn().getNormName() );
     }
 
@@ -3464,7 +3464,7 @@ public class DNTest
         assertEquals( "2.5.4.11=example", rdn.getNormName() );
         assertEquals( "ou", rdn.getUpType() );
         assertEquals( "Example",rdn.getUpValue() );
-        assertEquals( "  ou  =  Example ", rdn.getUpName() );
+        assertEquals( "  ou  =  Example ", rdn.getName() );
         
         AVA atav = rdn.getAtav();
         
@@ -3494,7 +3494,7 @@ public class DNTest
         assertEquals( "2.5.4.11=example+2.5.4.11=test", rdn.getNormName() );
         assertEquals( "ou", rdn.getUpType() );
         assertEquals( "Example",rdn.getUpValue() );
-        assertEquals( "  ou  =  Example + ou = TEST ", rdn.getUpName() );
+        assertEquals( "  ou  =  Example + ou = TEST ", rdn.getName() );
         
         // The first ATAV
         AVA atav = rdn.getAtav();
@@ -3545,7 +3545,7 @@ public class DNTest
         assertEquals( "2.5.4.11=ex\\+mple", rdn.getNormName() );
         assertEquals( "ou", rdn.getUpType() );
         assertEquals( "Ex+mple",rdn.getUpValue() );
-        assertEquals( "  ou  =  Ex\\+mple ", rdn.getUpName() );
+        assertEquals( "  ou  =  Ex\\+mple ", rdn.getName() );
         
         AVA atav = rdn.getAtav();
         
@@ -3572,7 +3572,7 @@ public class DNTest
         
         // Check the first RDN
         RDN rdn = dn.getRdn();
-        assertEquals( "  OU  =  Ex\\+mple + ou = T\\+ST\\  ", rdn.getUpName() );
+        assertEquals( "  OU  =  Ex\\+mple + ou = T\\+ST\\  ", rdn.getName() );
         assertEquals( "ou=Ex\\+mple+ou=T\\+ST\\ ", rdn.getNormName() );
 
         assertEquals( "OU", rdn.getUpType() );
@@ -3623,7 +3623,7 @@ public class DNTest
         
         // Check the first RDN
         rdn = dn.getRdn();
-        assertEquals( "  OU  =  Ex\\+mple + ou = T\\+ST\\  ", rdn.getUpName() );
+        assertEquals( "  OU  =  Ex\\+mple + ou = T\\+ST\\  ", rdn.getName() );
         assertEquals( "2.5.4.11=ex\\+mple+2.5.4.11=t\\+st", rdn.getNormName() );
 
         assertEquals( "OU", rdn.getUpType() );

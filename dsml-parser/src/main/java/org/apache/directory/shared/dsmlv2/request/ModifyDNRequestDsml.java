@@ -83,7 +83,7 @@ public class ModifyDNRequestDsml extends AbstractRequestDsml
         // NewRDN
         if ( request.getNewRDN() != null )
         {
-            element.addAttribute( "newrdn", request.getNewRDN().getUpName() );
+            element.addAttribute( "newrdn", request.getNewRDN().getName() );
         }
 
         // DeleteOldRDN
