@@ -29,7 +29,7 @@
   <artifactId>shared-parent</artifactId>
   <name>Apache Directory Shared</name>
   <packaging>pom</packaging>
-  <version>0.9.18-SNAPSHOT</version>
+  <version>0.9.19-SNAPSHOT</version>
 
   <properties>
     <projectName>ApacheDS-Shared</projectName>
