@@ -35,7 +35,7 @@
     <projectName>ApacheDS-Shared</projectName>
     <distMgmtSiteUrl>scpexe://people.apache.org/www/directory.apache.org/shared/gen-docs/${version}/</distMgmtSiteUrl>
     <skin.version>1.0.1</skin.version>
-    <org.apache.directory.shared.version>0.9.18-SNAPSHOT</org.apache.directory.shared.version>
+    <org.apache.directory.shared.version>0.9.19-SNAPSHOT</org.apache.directory.shared.version>
     
     <!-- Jar's version -->
     <antlr.version>2.7.7</antlr.version>
