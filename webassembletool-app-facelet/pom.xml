@@ -41,7 +41,7 @@
 		<dependency>
 			<groupId>com.sun.facelets</groupId>
 			<artifactId>jsf-facelets</artifactId>
-			<version>1.1.11</version>
+			<version>1.1.14</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
@@ -136,7 +136,13 @@
 								</properties>
 							</deployable>
 						</deployables>
+						
 					</configuration>
+						<container>
+					   		<systemProperties>
+                            	<java.io.tmpdir>target/tmp</java.io.tmpdir>
+                      	    </systemProperties>
+  						</container>
 				</configuration>
 			</plugin>
 		</plugins>
