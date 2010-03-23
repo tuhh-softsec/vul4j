@@ -50,7 +50,6 @@ import org.apache.directory.shared.ldap.schema.normalizers.DeepTrimToLowerNormal
 import org.apache.directory.shared.ldap.schema.normalizers.OidNormalizer;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -3664,5 +3663,56 @@ public class DNTest
             assertEquals( "T+ST ", ava.getUpValue().get() );
             assertEquals( "t+st", ava.getNormValue().get() );
         }
+    }
+    
+    
+    //-------------------------------------------------------------------------
+    // test the iterator
+    //-------------------------------------------------------------------------
+    @Test
+    public void testIteratorNullDN()
+    {
+        DN dn = DN.EMPTY_DN;
+        
+        for ( RDN rdn : dn )
+        {
+            fail( "Should not be there" );
+        }
+        
+        assertTrue( true );
+    }
+    
+    
+    @Test
+    public void testIteratorOneRDN() throws Exception
+    {
+        DN dn = new DN( "ou=example" );
+        int count = 0;
+        
+        for ( RDN rdn : dn )
+        {
+            count++;
+            assertEquals( "ou=example", rdn.getName() );
+        }
+        
+        assertEquals( 1, count );
+    }
+    
+    
+    @Test
+    public void testIteratorMultipleRDN() throws Exception
+    {
+        DN dn = new DN( "sn=joe+cn=doe,dc=apache,dc=org" );
+        int count = 0;
+        
+        String[] expected = new String[]{ "sn=joe+cn=doe", "dc=apache", "dc=org" };
+        
+        for ( RDN rdn : dn )
+        {
+            assertEquals( expected[count], rdn.getName() );
+            count++;
+        }
+        
+        assertEquals( 3, count );
     }
 }

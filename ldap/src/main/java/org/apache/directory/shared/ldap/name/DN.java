@@ -25,8 +25,10 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -64,7 +66,7 @@ import org.slf4j.LoggerFactory;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public class DN implements Externalizable, Cloneable
+public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN>
 {
     /** The LoggerFactory used by this class */
     protected static final Logger LOG = LoggerFactory.getLogger( DN.class );
@@ -1319,35 +1321,26 @@ public class DN implements Externalizable, Cloneable
     /**
      * {@inheritDoc}
      */
-    public int compareTo( Object obj )
+    public int compareTo( DN dn )
     {
-        if ( obj instanceof DN )
+        if ( dn.size() != size() )
         {
-            DN dn = ( DN ) obj;
-
-            if ( dn.size() != size() )
-            {
-                return size() - dn.size();
-            }
-
-            for ( int i = rdns.size(); i > 0; i-- )
-            {
-                RDN rdn1 = rdns.get( i - 1 );
-                RDN rdn2 = dn.rdns.get( i - 1 );
-                int res = rdn1.compareTo( rdn2 );
-
-                if ( res != 0 )
-                {
-                    return res;
-                }
-            }
-
-            return EQUAL;
+            return size() - dn.size();
         }
-        else
+
+        for ( int i = rdns.size(); i > 0; i-- )
         {
-            return 1;
+            RDN rdn1 = rdns.get( i - 1 );
+            RDN rdn2 = dn.rdns.get( i - 1 );
+            int res = rdn1.compareTo( rdn2 );
+
+            if ( res != 0 )
+            {
+                return res;
+            }
         }
+
+        return EQUAL;
     }
 
 
@@ -1697,5 +1690,14 @@ public class DN implements Externalizable, Cloneable
             // Logically, the DN must be valid.
             return null;
         }
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public Iterator<RDN> iterator()
+    {
+        return rdns.iterator();
     }
 }
