@@ -120,7 +120,7 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
     public DN()
     {
         upName = "";
-        normName = "";
+        normName = null;
         normalized = true;
     }
 
@@ -143,7 +143,6 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
         }
 
         normalized = false;
-
     }
 
 
@@ -310,7 +309,7 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
      *
      * @return A String representing the normalized DN
      */
-    public String toNormName()
+    private String toNormName()
     {
         if ( rdns.size() == 0 )
         {
@@ -541,13 +540,18 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
 
 
     /**
-     * Get the initial DN (without normalization)
+     * Get the normalized DN
      *
      * @return The DN as a String
      */
     public String getNormName()
     {
-        return ( normName == null ? "" : normName );
+        if ( normName == null )
+        {
+            normName = toNormName();
+        }
+        
+        return normName;
     }
 
 
