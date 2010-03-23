@@ -821,45 +821,6 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
 
 
     /**
-     * @return The list of all the RDN for this DN, as Strings. This method
-     * retruns a User Provided form of each RDN, not a normalized form.
-     */
-    public Enumeration<String> getAll()
-    {
-        /*
-         * Note that by accessing the name component using the get() method on
-         * the name rather than get() on the list we are reading components from
-         * right to left with increasing index values. LdapName.get() does the
-         * index translation on m_list for us.
-         */
-        return new Enumeration<String>()
-        {
-            private int pos;
-
-
-            public boolean hasMoreElements()
-            {
-                return pos < rdns.size();
-            }
-
-
-            public String nextElement()
-            {
-                if ( pos >= rdns.size() )
-                {
-                    LOG.error( I18n.err( I18n.ERR_04205 ) );
-                    throw new NoSuchElementException();
-                }
-
-                RDN rdn = rdns.get( rdns.size() - pos - 1 );
-                pos++;
-                return rdn.getNormName();
-            }
-        };
-    }
-
-
-    /**
      * Retrieves the components of this name as an enumeration of strings. The
      * effect on the enumeration of updates to this name is undefined. If the
      * name has zero components, an empty (non-null) enumeration is returned.

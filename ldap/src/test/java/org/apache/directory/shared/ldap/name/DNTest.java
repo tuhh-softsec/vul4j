@@ -35,7 +35,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -1259,7 +1258,7 @@ public class DNTest
     // GET ALL operations
     /**
      * test a getAll operation on a null DN
-     */
+     *
     @Test
     public void testDnGetAllNull()
     {
@@ -1272,7 +1271,7 @@ public class DNTest
 
     /**
      * test a getAll operation on an empty DN
-     */
+     *
     @Test
     public void testDnGetAllEmpty() throws LdapException
     {
@@ -1285,7 +1284,7 @@ public class DNTest
 
     /**
      * test a getAll operation on a simple DN
-     */
+     *
     @Test
     public void testDnGetAllSimple() throws LdapException
     {
@@ -1300,7 +1299,7 @@ public class DNTest
 
     /**
      * test a getAll operation on a complex DN
-     */
+     *
     @Test
     public void testDnGetAllComplex() throws LdapException
     {
@@ -1319,7 +1318,7 @@ public class DNTest
 
     /**
      * test a getAll operation on a complex DN
-     */
+     *
     @Test
     public void testDnGetAllComplexOrdered() throws LdapException
     {
@@ -1776,7 +1775,7 @@ public class DNTest
      *
      * @throws Exception
      *             if anything goes wrong.
-     */
+     *
     @Test
     public void testGetAll() throws Exception
     {
@@ -1955,44 +1954,14 @@ public class DNTest
     @Test
     public void testGetAllRdn() throws Exception
     {
-        DN name = new DN( "cn=Airline,cn=Website,cn=HomeDir,cn=John,ou=Marketing,ou=West" );
-
-        Enumeration<RDN> rdns = name.getAllRdn();
-        assertEquals( true, rdns.hasMoreElements() );
-
-        for ( int i = 0; rdns.hasMoreElements(); i++ )
+        DN dn = new DN( "cn=Airline,cn=Website,cn=HomeDir,cn=John,ou=Marketing,ou=West" );
+        String[] expected = new String[]{ "cn=Airline", "cn=Website", "cn=HomeDir", "cn=John", "ou=Marketing", "ou=West" };
+        int count = 0;
+        
+        for ( RDN rdn : dn )
         {
-            RDN element = ( RDN ) rdns.nextElement();
-
-            if ( i == 0 )
-            {
-                assertEquals( "ou=West", element.toString() );
-            }
-
-            if ( i == 1 )
-            {
-                assertEquals( "ou=Marketing", element.toString() );
-            }
-
-            if ( i == 2 )
-            {
-                assertEquals( "cn=John", element.toString() );
-            }
-
-            if ( i == 3 )
-            {
-                assertEquals( "cn=HomeDir", element.toString() );
-            }
-
-            if ( i == 4 )
-            {
-                assertEquals( "cn=Website", element.toString() );
-            }
-
-            if ( i == 5 )
-            {
-                assertEquals( "cn=Airline", element.toString() );
-            }
+            assertEquals( expected[count], rdn.toString() );
+            count++;
         }
     }
 
@@ -2827,7 +2796,7 @@ public class DNTest
 
     /**
      * Test for DIRSERVER-191
-     */
+     *
     @Test
     public void testGetAllName() throws LdapException, InvalidNameException
     {
@@ -2852,15 +2821,17 @@ public class DNTest
     public void testDoubleQuoteInNameDIRSERVER_642() throws LdapException, InvalidNameException
     {
         DN name1 = new DN( "cn=\"Kylie Minogue\",dc=example,dc=com" );
-        LdapName name2 = new LdapName( "cn=\"Kylie Minogue\",dc=example,dc=com" );
+        
+        String[] expected = new String[]{ "cn=\"Kylie Minogue\"", "dc=example", "dc=com" };
 
-        Enumeration<String> j = name1.getAll();
-        Enumeration<String> a = name2.getAll();
+        List<RDN> j = name1.getRdns();
+        int count = 0;
+        
 
-        while ( j.hasMoreElements() )
+        for ( RDN rdn:j )
         {
-            assertTrue( j.hasMoreElements() );
-            assertEquals( j.nextElement(), a.nextElement() );
+            assertEquals( expected[count], rdn.getName() );
+            count++;
         }
     }
 

@@ -52,6 +52,7 @@ import org.apache.directory.shared.ldap.util.NamespaceTools;
 import org.apache.directory.shared.ldap.util.NoDuplicateKeysMap;
 import org.apache.directory.shared.ldap.util.OptionalComponentsMonitor;
 import org.apache.directory.shared.ldap.name.DN;
+import org.apache.directory.shared.ldap.name.RDN;
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.constants.AuthenticationLevel;
 import org.apache.directory.shared.ldap.schema.normalizers.OidNormalizer;
@@ -501,11 +502,9 @@ attributeValue
             attributeTypeAndValueSetAsDn.normalize( oidsMap );
         }
         
-        Enumeration attributeTypeAndValueSet = attributeTypeAndValueSetAsDn.getAll();
-        
-        while ( attributeTypeAndValueSet.hasMoreElements() )
+        for ( RDN rdn :attributeTypeAndValueSetAsDn.getRdns() )
         {
-            attributeTypeAndValue = ( String ) attributeTypeAndValueSet.nextElement();
+            attributeTypeAndValue = rdn.getNormName();
             attributeType = NamespaceTools.getRdnAttribute( attributeTypeAndValue );
             attributeValue = NamespaceTools.getRdnValue( attributeTypeAndValue );
             attributeSet.add( new BasicAttribute( attributeType, attributeValue ) );

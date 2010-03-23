@@ -22,6 +22,7 @@ package org.apache.directory.shared.ldap.util.tree;
 
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.directory.shared.i18n.I18n;
@@ -189,7 +190,7 @@ public class DnBranchNode<N> implements DnNode<N>
      */
     public N getParentElement( DN dn )
     {
-        Enumeration<String> rdns = dn.getAll();
+        List<RDN> rdns = dn.getRdns();
         
         // This is synchronized so that we can't read the
         // partitionList when it is modified.
@@ -198,9 +199,9 @@ public class DnBranchNode<N> implements DnNode<N>
             DnNode<N> currentNode = this;
 
             // Iterate through all the RDN until we find the associated partition
-            while ( rdns.hasMoreElements() )
+            for ( int i = rdns.size() - 1; i >= 0; i-- )
             {
-                String rdn = rdns.nextElement();
+                String rdnStr = rdns.get( i ).getNormName();
 
                 if ( currentNode == null )
                 {
@@ -214,9 +215,9 @@ public class DnBranchNode<N> implements DnNode<N>
 
                 DnBranchNode<N> currentBranch = ( DnBranchNode<N> ) currentNode;
                 
-                if ( currentBranch.contains( rdn ) )
+                if ( currentBranch.contains( rdnStr ) )
                 {
-                    currentNode = currentBranch.getChild( rdn );
+                    currentNode = currentBranch.getChild( rdnStr );
                     
                     if ( currentNode instanceof DnLeafNode )
                     {
@@ -241,7 +242,7 @@ public class DnBranchNode<N> implements DnNode<N>
      */
     public boolean hasParentElement( DN dn )
     {
-        Enumeration<RDN> rdns = dn.getAllRdn();
+        List<RDN> rdns = dn.getRdns();
         
         // This is synchronized so that we can't read the
         // partitionList when it is modified.
@@ -250,9 +251,9 @@ public class DnBranchNode<N> implements DnNode<N>
             DnNode<N> currentNode = this;
 
             // Iterate through all the RDN until we find the associated partition
-            while ( rdns.hasMoreElements() )
+            for ( int i = rdns.size() - 1; i >= 0; i-- )
             {
-                RDN rdn = rdns.nextElement();
+                String rdnStr = rdns.get( i ).getNormName();
 
                 if ( currentNode == null )
                 {
@@ -266,9 +267,9 @@ public class DnBranchNode<N> implements DnNode<N>
 
                 DnBranchNode<N> currentBranch = ( DnBranchNode<N> ) currentNode;
                 
-                if ( currentBranch.contains( rdn.getNormName() ) )
+                if ( currentBranch.contains( rdnStr ) )
                 {
-                    currentNode = currentBranch.getChild( rdn.getNormName() );
+                    currentNode = currentBranch.getChild( rdnStr );
                     
                     if ( currentNode instanceof DnLeafNode )
                     {
