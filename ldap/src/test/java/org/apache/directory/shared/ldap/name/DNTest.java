@@ -2681,46 +2681,6 @@ public class DNTest
     @Test
     public void testEndsWithName() throws LdapException, InvalidNameException
     {
-        LdapName name0 = new LdapName( "cn=zero" );
-        LdapName name10 = new LdapName( "cn=one,cn=zero" );
-        LdapName name210 = new LdapName( "cn=two,cn=one,cn=zero" );
-        LdapName name3210 = new LdapName( "cn=three,cn=two,cn=one,cn=zero" );
-        LdapName name321 =  new LdapName( "cn=three,cn=two,cn=one" );
-        LdapName name32 =  new LdapName( "cn=three,cn=two" );
-        LdapName name3 =  new LdapName( "cn=three" );
-        LdapName name21 =  new LdapName( "cn=two,cn=one" );
-        LdapName name2 =  new LdapName( "cn=two" );
-        LdapName name1 =  new LdapName( "cn=one" );
-        
-        // Check with DN
-        assertTrue( name0.startsWith( name0 ) );
-        assertTrue( name10.startsWith( name0 ) );
-        assertTrue( name210.startsWith( name0 ) );
-        assertTrue( name3210.startsWith( name0 ) );
-
-        assertTrue( name10.startsWith( name10 ) );
-        assertTrue( name210.startsWith( name10 ) );
-        assertTrue( name3210.startsWith( name10 ) );
-
-        assertTrue( name210.startsWith( name210 ) );
-        assertTrue( name3210.startsWith( name210 ) );
-
-        assertTrue( name3210.startsWith( name3210 ) );
-        
-        assertTrue( name3210.endsWith( name3 ) );
-        assertTrue( name3210.endsWith( name32 ) );
-        assertTrue( name3210.endsWith( name321 ) );
-        assertTrue( name3210.endsWith( name3210 ) );
-
-        assertTrue( name210.endsWith( name2 ) );
-        assertTrue( name210.endsWith( name21 ) );
-        assertTrue( name210.endsWith( name210 ) );
-
-        assertTrue( name10.endsWith( name1 ) );
-        assertTrue( name10.endsWith( name10 ) );
-
-        assertTrue( name0.endsWith( name0 ) );
-        
         // Check with DN
         DN n0 = new DN( "cn=zero" );
         DN n10 = new DN( "cn=one,cn=zero" );
@@ -2746,34 +2706,6 @@ public class DNTest
         assertTrue( n10.endsWith( n10 ) );
 
         assertTrue( n0.endsWith( n0 ) );
-
-        // Check with DN/DN now
-        assertTrue( n3210.endsWith( name3 ) );
-        assertTrue( n3210.endsWith( name32 ) );
-        assertTrue( n3210.endsWith( name321 ) );
-        assertTrue( n3210.endsWith( name3210 ) );
-
-        assertTrue( n210.endsWith( name2 ) );
-        assertTrue( n210.endsWith( name21 ) );
-        assertTrue( n210.endsWith( name210 ) );
-
-        assertTrue( n10.endsWith( name1 ) );
-        assertTrue( n10.endsWith( name10 ) );
-
-        assertTrue( n0.endsWith( name0 ) );
-        
-        
-        LdapName jName = new LdapName( "cn=four,cn=three,cn=two,cn=one" );
-        DN aName = new DN( "cn=four,cn=three,cn=two,cn=one" );
-
-        assertEquals( jName.endsWith( new LdapName( "cn=seven,cn=six,cn=five" ) ), aName.endsWith( new DN(
-            "cn=seven,cn=six,cn=five" ) ) );
-        assertEquals( jName.endsWith( new LdapName( "cn=three,cn=two,cn=one" ) ), aName.endsWith( new DN(
-            "cn=three,cn=two,cn=one" ) ) );
-        assertEquals( jName.endsWith( new LdapName( "cn=two,cn=one" ) ), aName.endsWith( new DN(
-        "cn=three,cn=two,cn=one" ) ) );
-        
-        assertTrue( aName.endsWith( new LdapName( "cn=four,cn=three" ) ) );
     }
 
 

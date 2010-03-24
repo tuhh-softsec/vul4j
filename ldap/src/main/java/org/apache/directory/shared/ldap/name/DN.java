@@ -702,55 +702,6 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
     /**
      * {@inheritDoc}
      */
-    public boolean endsWith( Name name )
-    {
-        if ( name == null )
-        {
-            return true;
-        }
-        
-        if ( name.size() == 0 )
-        {
-            return true;
-        }
-
-        if ( name.size() > size() )
-        {
-            // The name is longer than the current LdapDN.
-            return false;
-        }
-
-        // Ok, iterate through all the RDN of the name
-        int nameSize = name.size();
-        
-        for ( int i = name.size() - 1; i >= 0; i-- )
-        {
-            RDN ldapRdn = rdns.get( nameSize - i - 1 );
-            RDN nameRdn = null;
-
-            try
-            {
-                nameRdn = new RDN( name.get( i ) );
-            }
-            catch ( LdapInvalidDnException e )
-            {
-                LOG.error( I18n.err( I18n.ERR_04204, name.toString() ), e );
-                return false;
-            }
-
-            if ( nameRdn.compareTo( ldapRdn ) != 0 )
-            {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
     public boolean isEmpty()
     {
         return ( rdns.size() == 0 );
