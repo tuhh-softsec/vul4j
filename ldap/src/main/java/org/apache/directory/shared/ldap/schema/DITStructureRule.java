@@ -23,6 +23,7 @@ package org.apache.directory.shared.ldap.schema;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.NotImplementedException;
 
 
@@ -123,6 +124,11 @@ public class DITStructureRule extends AbstractSchemaObject
      */
     public void setForm( String form )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         if ( !isReadOnly )
         {
             this.form = form;
@@ -146,6 +152,11 @@ public class DITStructureRule extends AbstractSchemaObject
      */
     public void setRuleId( int ruleId )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         if ( !isReadOnly )
         {
             this.ruleId = ruleId;
@@ -169,6 +180,11 @@ public class DITStructureRule extends AbstractSchemaObject
      */
     public void setSuperRules( List<Integer> superRules )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         if ( !isReadOnly )
         {
             this.superRules = superRules;
@@ -183,6 +199,11 @@ public class DITStructureRule extends AbstractSchemaObject
      */
     public void addSuperRule( Integer superRule )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         superRules.add( superRule );
     }
 

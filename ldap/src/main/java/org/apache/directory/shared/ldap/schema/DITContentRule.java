@@ -23,6 +23,7 @@ package org.apache.directory.shared.ldap.schema;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.schema.registries.AttributeTypeRegistry;
 import org.apache.directory.shared.ldap.schema.registries.ObjectClassRegistry;
@@ -182,6 +183,11 @@ public class DITContentRule extends AbstractSchemaObject
      */
     public void addAuxObjectClassOidOids( String oid )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         if ( !isReadOnly )
         {
             auxObjectClassOids.add( oid );
@@ -196,6 +202,11 @@ public class DITContentRule extends AbstractSchemaObject
      */
     public void addAuxObjectClasses( ObjectClass objectClass )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         if ( !isReadOnly )
         {
             if ( !auxObjectClassOids.contains( objectClass.getOid() ) )
@@ -212,6 +223,11 @@ public class DITContentRule extends AbstractSchemaObject
      */
     public void setAuxObjectClassOids( List<String> auxObjectClassOids )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         if ( !isReadOnly )
         {
             this.auxObjectClassOids = auxObjectClassOids;
@@ -224,6 +240,11 @@ public class DITContentRule extends AbstractSchemaObject
      */
     public void setAuxObjectClasses( List<ObjectClass> auxObjectClasses )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         if ( !isReadOnly )
         {
             this.auxObjectClasses = auxObjectClasses;
@@ -264,6 +285,11 @@ public class DITContentRule extends AbstractSchemaObject
      */
     public void addMayAttributeTypeOids( String oid )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         if ( !isReadOnly )
         {
             mayAttributeTypeOids.add( oid );
@@ -278,6 +304,11 @@ public class DITContentRule extends AbstractSchemaObject
      */
     public void addMayAttributeTypes( AttributeType attributeType )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         if ( !isReadOnly )
         {
             if ( !mayAttributeTypeOids.contains( attributeType.getOid() ) )
@@ -294,6 +325,11 @@ public class DITContentRule extends AbstractSchemaObject
      */
     public void setMayAttributeTypeOids( List<String> mayAttributeTypeOids )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         if ( !isReadOnly )
         {
             this.mayAttributeTypeOids = mayAttributeTypeOids;
@@ -308,6 +344,11 @@ public class DITContentRule extends AbstractSchemaObject
      */
     public void setMayAttributeTypes( List<AttributeType> mayAttributeTypes )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         if ( !isReadOnly )
         {
             this.mayAttributeTypes = mayAttributeTypes;
@@ -348,6 +389,11 @@ public class DITContentRule extends AbstractSchemaObject
      */
     public void addMustAttributeTypeOids( String oid )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         if ( !isReadOnly )
         {
             mustAttributeTypeOids.add( oid );
@@ -362,6 +408,11 @@ public class DITContentRule extends AbstractSchemaObject
      */
     public void addMustAttributeTypes( AttributeType attributeType )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         if ( !isReadOnly )
         {
             if ( !mustAttributeTypeOids.contains( attributeType.getOid() ) )
@@ -378,6 +429,11 @@ public class DITContentRule extends AbstractSchemaObject
      */
     public void setMustAttributeTypeOids( List<String> mustAttributeTypeOids )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         if ( !isReadOnly )
         {
             this.mustAttributeTypeOids = mustAttributeTypeOids;
@@ -392,6 +448,11 @@ public class DITContentRule extends AbstractSchemaObject
      */
     public void setMustAttributeTypes( List<AttributeType> mustAttributeTypes )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         if ( !isReadOnly )
         {
             this.mustAttributeTypes = mustAttributeTypes;
@@ -432,6 +493,11 @@ public class DITContentRule extends AbstractSchemaObject
      */
     public void addNotAttributeTypeOids( String oid )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         if ( !isReadOnly )
         {
             notAttributeTypeOids.add( oid );
@@ -446,6 +512,11 @@ public class DITContentRule extends AbstractSchemaObject
      */
     public void addNotAttributeTypes( AttributeType attributeType )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         if ( !isReadOnly )
         {
             if ( !notAttributeTypeOids.contains( attributeType.getOid() ) )
@@ -462,6 +533,11 @@ public class DITContentRule extends AbstractSchemaObject
      */
     public void setNotAttributeTypeOids( List<String> notAttributeTypeOids )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         if ( !isReadOnly )
         {
             this.notAttributeTypeOids = notAttributeTypeOids;
@@ -476,6 +552,11 @@ public class DITContentRule extends AbstractSchemaObject
      */
     public void setNotAttributeTypes( List<AttributeType> notAttributeTypes )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         if ( !isReadOnly )
         {
             this.notAttributeTypes = notAttributeTypes;

@@ -406,6 +406,11 @@ public class ObjectClass extends AbstractSchemaObject
      */
     public void addMayAttributeTypeOids( String... oids )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         if ( !isReadOnly )
         {
             for ( String oid : oids )
@@ -423,6 +428,11 @@ public class ObjectClass extends AbstractSchemaObject
      */
     public void addMayAttributeTypes( AttributeType... attributeTypes )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         if ( !isReadOnly )
         {
             for ( AttributeType attributeType : attributeTypes )
@@ -442,6 +452,11 @@ public class ObjectClass extends AbstractSchemaObject
      */
     public void setMayAttributeTypeOids( List<String> mayAttributeTypeOids )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         if ( !isReadOnly )
         {
             this.mayAttributeTypeOids = mayAttributeTypeOids;
@@ -456,6 +471,11 @@ public class ObjectClass extends AbstractSchemaObject
      */
     public void setMayAttributeTypes( List<AttributeType> mayAttributeTypes )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         if ( !isReadOnly )
         {
             this.mayAttributeTypes = mayAttributeTypes;
@@ -516,6 +536,11 @@ public class ObjectClass extends AbstractSchemaObject
      */
     public void addMustAttributeTypeOids( String... oids )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         if ( !isReadOnly )
         {
             for ( String oid : oids )
@@ -533,6 +558,11 @@ public class ObjectClass extends AbstractSchemaObject
      */
     public void addMustAttributeTypes( AttributeType... attributeTypes )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         if ( !isReadOnly )
         {
             for ( AttributeType attributeType : attributeTypes )
@@ -552,6 +582,11 @@ public class ObjectClass extends AbstractSchemaObject
      */
     public void setMustAttributeTypeOids( List<String> mustAttributeTypeOids )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         if ( !isReadOnly )
         {
             this.mustAttributeTypeOids = mustAttributeTypeOids;
@@ -566,6 +601,11 @@ public class ObjectClass extends AbstractSchemaObject
      */
     public void setMustAttributeTypes( List<AttributeType> mustAttributeTypes )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         if ( !isReadOnly )
         {
             this.mustAttributeTypes = mustAttributeTypes;
@@ -630,6 +670,11 @@ public class ObjectClass extends AbstractSchemaObject
      */
     public void addSuperiorOids( String... oids )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         if ( !isReadOnly )
         {
             for ( String oid : oids )
@@ -650,6 +695,11 @@ public class ObjectClass extends AbstractSchemaObject
      */
     public void addSuperior( ObjectClass... objectClasses )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         if ( !isReadOnly )
         {
             for ( ObjectClass objectClass : objectClasses )
@@ -671,6 +721,11 @@ public class ObjectClass extends AbstractSchemaObject
      */
     public void setSuperiors( List<ObjectClass> superiors )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         if ( !isReadOnly )
         {
             this.superiors = superiors;
@@ -713,6 +768,11 @@ public class ObjectClass extends AbstractSchemaObject
      */
     public void setSuperiorOids( List<String> superiorOids )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         if ( !isReadOnly )
         {
             this.superiorOids = superiorOids;
@@ -738,6 +798,11 @@ public class ObjectClass extends AbstractSchemaObject
      */
     public void setType( ObjectClassTypeEnum objectClassType )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         if ( !isReadOnly )
         {
             this.objectClassType = objectClassType;

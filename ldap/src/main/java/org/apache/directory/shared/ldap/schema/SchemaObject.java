@@ -347,4 +347,12 @@ public interface SchemaObject extends Serializable
      * @param registries The Registries
      */
     void setRegistries( Registries registries );
+    
+    
+    /**
+     * Transform the SchemaObject to an immutable object
+     * TODO locked.
+     *
+     */
+    void lock();
 }

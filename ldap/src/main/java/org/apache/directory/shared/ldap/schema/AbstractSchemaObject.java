@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.schema.registries.Registries;
 import org.apache.directory.shared.ldap.util.StringTools;
@@ -104,6 +105,12 @@ public abstract class AbstractSchemaObject implements SchemaObject
 
     /** A map containing the list of supported extensions */
     protected Map<String, List<String>> extensions;
+    
+    /** A locked to avoid modifications when set to true */
+    protected volatile boolean locked;
+    
+    /** The hashcoe for this schemaObject */
+    private int h;
 
 
     /**
@@ -158,6 +165,11 @@ public abstract class AbstractSchemaObject implements SchemaObject
      */
     public void setOid( String oid )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         this.oid = oid;
     }
 
@@ -246,6 +258,11 @@ public abstract class AbstractSchemaObject implements SchemaObject
      */
     public void addName( String... names )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         if ( !isReadOnly )
         {
             // We must avoid duplicated names, as names are case insensitive
@@ -282,6 +299,11 @@ public abstract class AbstractSchemaObject implements SchemaObject
      */
     public void setNames( List<String> names )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         if ( names == null )
         {
             return;
@@ -310,6 +332,11 @@ public abstract class AbstractSchemaObject implements SchemaObject
      */
     public void setNames( String... names )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         if ( names == null )
         {
             return;
@@ -346,6 +373,11 @@ public abstract class AbstractSchemaObject implements SchemaObject
      */
     public void setDescription( String description )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         if ( !isReadOnly )
         {
             this.description = description;
@@ -371,6 +403,11 @@ public abstract class AbstractSchemaObject implements SchemaObject
      */
     public void setSpecification( String specification )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         if ( !isReadOnly )
         {
             this.specification = specification;
@@ -434,6 +471,11 @@ public abstract class AbstractSchemaObject implements SchemaObject
      */
     public void setReadOnly( boolean isReadOnly )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         this.isReadOnly = isReadOnly;
     }
 
@@ -459,6 +501,11 @@ public abstract class AbstractSchemaObject implements SchemaObject
      */
     public void setObsolete( boolean obsolete )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         if ( !isReadOnly )
         {
             this.isObsolete = obsolete;
@@ -482,6 +529,11 @@ public abstract class AbstractSchemaObject implements SchemaObject
      */
     public void addExtension( String key, List<String> values )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         if ( !isReadOnly )
         {
             extensions.put( key, values );
@@ -497,6 +549,11 @@ public abstract class AbstractSchemaObject implements SchemaObject
      */
     public void setExtensions( Map<String, List<String>> extensions )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         if ( !isReadOnly && ( extensions != null ) )
         {
             this.extensions = new HashMap<String, List<String>>();
@@ -557,6 +614,11 @@ public abstract class AbstractSchemaObject implements SchemaObject
      */
     public void setSchemaName( String schemaName )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         if ( !isReadOnly )
         {
             this.schemaName = schemaName;
@@ -569,54 +631,6 @@ public abstract class AbstractSchemaObject implements SchemaObject
      */
     public int hashCode()
     {
-        int h = 37;
-
-        // The OID
-        h += h * 17 + oid.hashCode();
-
-        // The SchemaObject type
-        h += h * 17 + objectType.getValue();
-
-        // The Names, if any
-        if ( ( names != null ) && ( names.size() != 0 ) )
-        {
-            for ( String name : names )
-            {
-                h += h * 17 + name.hashCode();
-            }
-        }
-
-        // The schemaName if any
-        if ( schemaName != null )
-        {
-            h += h * 17 + schemaName.hashCode();
-        }
-
-        h += h * 17 + ( isEnabled ? 1 : 0 );
-        h += h * 17 + ( isReadOnly ? 1 : 0 );
-
-        // The description, if any
-        if ( description != null )
-        {
-            h += h * 17 + description.hashCode();
-        }
-
-        // The extensions, if any
-        for ( String key : extensions.keySet() )
-        {
-            h += h * 17 + key.hashCode();
-
-            List<String> values = extensions.get( key );
-
-            if ( values != null )
-            {
-                for ( String value : values )
-                {
-                    h += h * 17 + value.hashCode();
-                }
-            }
-        }
-
         return h;
     }
 
@@ -878,5 +892,67 @@ public abstract class AbstractSchemaObject implements SchemaObject
 
         // Clear the names
         names.clear();
+    }
+    
+
+    /**
+     * {@inheritDoc}
+     */
+    public final void lock()
+    {
+        if ( locked )
+        {
+            return;
+        }
+        
+        h = 37;
+
+        // The OID
+        h += h * 17 + oid.hashCode();
+
+        // The SchemaObject type
+        h += h * 17 + objectType.getValue();
+
+        // The Names, if any
+        if ( ( names != null ) && ( names.size() != 0 ) )
+        {
+            for ( String name : names )
+            {
+                h += h * 17 + name.hashCode();
+            }
+        }
+
+        // The schemaName if any
+        if ( schemaName != null )
+        {
+            h += h * 17 + schemaName.hashCode();
+        }
+
+        h += h * 17 + ( isEnabled ? 1 : 0 );
+        h += h * 17 + ( isReadOnly ? 1 : 0 );
+
+        // The description, if any
+        if ( description != null )
+        {
+            h += h * 17 + description.hashCode();
+        }
+
+        // The extensions, if any
+        for ( String key : extensions.keySet() )
+        {
+            h += h * 17 + key.hashCode();
+
+            List<String> values = extensions.get( key );
+
+            if ( values != null )
+            {
+                for ( String value : values )
+                {
+                    h += h * 17 + value.hashCode();
+                }
+            }
+        }
+        
+        locked = true;
     }
 }

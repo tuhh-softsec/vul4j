@@ -1345,6 +1345,9 @@ public class Registries implements SchemaLoaderListener, Cloneable
 
         // Build the SchemaObject references
         buildReference( errors, schemaObject );
+        
+        // Lock the SchemaObject
+        schemaObject.lock();
 
         if ( errors.isEmpty() )
         {

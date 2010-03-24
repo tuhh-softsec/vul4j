@@ -738,6 +738,11 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
      */
     public void setSingleValued( boolean singleValued )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         if ( !isReadOnly )
         {
             this.isSingleValued = singleValued;
@@ -763,6 +768,11 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
      */
     public void setUserModifiable( boolean canUserModify )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         if ( !isReadOnly )
         {
             this.canUserModify = canUserModify;
@@ -788,6 +798,11 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
      */
     public void updateCollective( boolean collective )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         this.isCollective = collective;
     }
 
@@ -799,6 +814,11 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
      */
     public void setCollective( boolean collective )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         if ( !isReadOnly )
         {
             this.isCollective = collective;
@@ -829,6 +849,11 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
      */
     public void setUsage( UsageEnum usage )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         if ( !isReadOnly )
         {
             this.usage = usage;
@@ -848,6 +873,11 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
      */
     public void updateUsage( UsageEnum usage )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         this.usage = usage;
     }
 
@@ -871,6 +901,11 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
      */
     public void setSyntaxLength( int length )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         if ( !isReadOnly )
         {
             this.syntaxLength = length;
@@ -925,6 +960,11 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
      */
     public void setSuperiorOid( String superiorOid )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         if ( !isReadOnly )
         {
             this.superiorOid = superiorOid;
@@ -939,6 +979,11 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
      */
     public void setSuperior( AttributeType superior )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         if ( !isReadOnly )
         {
             this.superior = superior;
@@ -954,6 +999,11 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
      */
     public void setSuperior( String superiorOid )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         if ( !isReadOnly )
         {
             this.superiorOid = superiorOid;
@@ -968,6 +1018,11 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
      */
     public void updateSuperior( AttributeType superior )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         this.superior = superior;
         this.superiorOid = superior.getOid();
     }
@@ -1020,6 +1075,11 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
      */
     public void setSyntaxOid( String syntaxOid )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         if ( !isReadOnly )
         {
             this.syntaxOid = syntaxOid;
@@ -1034,6 +1094,11 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
      */
     public void setSyntax( LdapSyntax syntax )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         if ( !isReadOnly )
         {
             this.syntax = syntax;
@@ -1049,6 +1114,11 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
      */
     public void updateSyntax( LdapSyntax syntax )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         this.syntax = syntax;
         this.syntaxOid = syntax.getOid();
     }
@@ -1101,6 +1171,11 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
      */
     public void setEqualityOid( String equalityOid )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         if ( !isReadOnly )
         {
             this.equalityOid = equalityOid;
@@ -1115,6 +1190,11 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
      */
     public void setEquality( MatchingRule equality )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         if ( !isReadOnly )
         {
             this.equality = equality;
@@ -1130,6 +1210,11 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
      */
     public void updateEquality( MatchingRule equality )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         this.equality = equality;
         this.equalityOid = equality.getOid();
     }
@@ -1182,6 +1267,11 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
      */
     public void setOrderingOid( String orderingOid )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         if ( !isReadOnly )
         {
             this.orderingOid = orderingOid;
@@ -1196,6 +1286,11 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
      */
     public void setOrdering( MatchingRule ordering )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         if ( !isReadOnly )
         {
             this.ordering = ordering;
@@ -1211,6 +1306,11 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
      */
     public void updateOrdering( MatchingRule ordering )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         this.ordering = ordering;
         this.orderingOid = ordering.getOid();
     }
@@ -1263,6 +1363,11 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
      */
     public void setSubstringOid( String substrOid )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         if ( !isReadOnly )
         {
             this.substringOid = substrOid;
@@ -1277,6 +1382,11 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
      */
     public void setSubstring( MatchingRule substring )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         if ( !isReadOnly )
         {
             this.substring = substring;
@@ -1292,6 +1402,11 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
      */
     public void updateSubstring( MatchingRule substring )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         this.substring = substring;
         this.substringOid = substring.getOid();
     }

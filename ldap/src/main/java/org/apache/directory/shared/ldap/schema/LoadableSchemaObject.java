@@ -20,6 +20,7 @@
 package org.apache.directory.shared.ldap.schema;
 
 
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.exception.LdapException;
 
 import org.apache.directory.shared.ldap.schema.registries.Registries;
@@ -91,6 +92,11 @@ public abstract class LoadableSchemaObject extends AbstractSchemaObject
      */
     public void setBytecode( String bytecode )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         if ( !isReadOnly )
         {
             this.bytecode = bytecode;
@@ -114,6 +120,11 @@ public abstract class LoadableSchemaObject extends AbstractSchemaObject
      */
     public void setFqcn( String fqcn )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         if ( !isReadOnly )
         {
             this.fqcn = fqcn;

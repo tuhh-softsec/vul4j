@@ -22,6 +22,7 @@ package org.apache.directory.shared.ldap.schema;
 
 import java.util.List;
 
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.schema.registries.Registries;
 import org.apache.directory.shared.ldap.schema.syntaxCheckers.OctetStringSyntaxChecker;
@@ -136,6 +137,11 @@ public class LdapSyntax extends AbstractSchemaObject
      */
     public void setHumanReadable( boolean isHumanReadable )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         if ( !isReadOnly )
         {
             this.isHumanReadable = isHumanReadable;
@@ -162,6 +168,11 @@ public class LdapSyntax extends AbstractSchemaObject
      */
     public void setSyntaxChecker( SyntaxChecker syntaxChecker )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         if ( !isReadOnly )
         {
             this.syntaxChecker = syntaxChecker;
@@ -176,6 +187,11 @@ public class LdapSyntax extends AbstractSchemaObject
      */
     public void updateSyntaxChecker( SyntaxChecker syntaxChecker )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         this.syntaxChecker = syntaxChecker;
     }
 

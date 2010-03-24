@@ -248,6 +248,11 @@ public class MatchingRule extends AbstractSchemaObject
      */
     public void setSyntaxOid( String oid )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         if ( !isReadOnly )
         {
             this.ldapSyntaxOid = oid;
@@ -262,6 +267,11 @@ public class MatchingRule extends AbstractSchemaObject
      */
     public void setSyntax( LdapSyntax ldapSyntax )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         if ( !isReadOnly )
         {
             this.ldapSyntax = ldapSyntax;
@@ -277,6 +287,11 @@ public class MatchingRule extends AbstractSchemaObject
      */
     public void updateSyntax( LdapSyntax ldapSyntax )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         this.ldapSyntax = ldapSyntax;
         this.ldapSyntaxOid = ldapSyntax.getOid();
     }
@@ -302,6 +317,11 @@ public class MatchingRule extends AbstractSchemaObject
      */
     public void setLdapComparator( LdapComparator<?> ldapComparator )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         if ( !isReadOnly )
         {
             this.ldapComparator = ( LdapComparator<? super Object> ) ldapComparator;
@@ -316,6 +336,11 @@ public class MatchingRule extends AbstractSchemaObject
      */
     public void updateLdapComparator( LdapComparator<?> ldapComparator )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         this.ldapComparator = ( LdapComparator<? super Object> ) ldapComparator;
     }
 
@@ -340,6 +365,11 @@ public class MatchingRule extends AbstractSchemaObject
      */
     public void setNormalizer( Normalizer normalizer )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         if ( !isReadOnly )
         {
             this.normalizer = normalizer;
@@ -354,6 +384,11 @@ public class MatchingRule extends AbstractSchemaObject
      */
     public void updateNormalizer( Normalizer normalizer )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         this.normalizer = normalizer;
     }
 

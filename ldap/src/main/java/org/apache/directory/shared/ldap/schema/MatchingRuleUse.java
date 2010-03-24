@@ -23,6 +23,7 @@ package org.apache.directory.shared.ldap.schema;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.exception.LdapException;
 
 import org.apache.directory.shared.ldap.schema.registries.AttributeTypeRegistry;
@@ -118,6 +119,11 @@ public class MatchingRuleUse extends AbstractSchemaObject
      */
     public void addToRegistries( Registries registries ) throws LdapException
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         if ( registries != null )
         {
             AttributeTypeRegistry atRegistry = registries.getAttributeTypeRegistry();
@@ -160,6 +166,11 @@ public class MatchingRuleUse extends AbstractSchemaObject
      */
     public void setApplicableAttributeOids( List<String> applicableAttributeOids )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         if ( !isReadOnly )
         {
             this.applicableAttributeOids = applicableAttributeOids;
@@ -174,6 +185,11 @@ public class MatchingRuleUse extends AbstractSchemaObject
      */
     public void setApplicableAttributes( List<AttributeType> applicableAttributes )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         if ( !isReadOnly )
         {
             this.applicableAttributes = applicableAttributes;
@@ -196,6 +212,11 @@ public class MatchingRuleUse extends AbstractSchemaObject
      */
     public void addApplicableAttributeOids( String oid )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         if ( !isReadOnly )
         {
             if ( !applicableAttributeOids.contains( oid ) )
@@ -213,6 +234,11 @@ public class MatchingRuleUse extends AbstractSchemaObject
      */
     public void addApplicableAttribute( AttributeType attributeType )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         if ( !isReadOnly )
         {
             if ( !applicableAttributeOids.contains( attributeType.getOid() ) )

@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.exception.LdapException;
 
 import org.apache.directory.shared.ldap.schema.registries.AttributeTypeRegistry;
@@ -206,6 +207,11 @@ public class NameForm extends AbstractSchemaObject
      */
     public void setStructuralObjectClassOid( String structuralObjectClassOid )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         if ( !isReadOnly )
         {
             this.structuralObjectClassOid = structuralObjectClassOid;
@@ -220,6 +226,11 @@ public class NameForm extends AbstractSchemaObject
      */
     public void setStructuralObjectClass( ObjectClass structuralObjectClass )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         if ( !isReadOnly )
         {
             this.structuralObjectClass = structuralObjectClass;
@@ -262,6 +273,11 @@ public class NameForm extends AbstractSchemaObject
      */
     public void setMustAttributeTypeOids( List<String> mustAttributeTypeOids )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         if ( !isReadOnly )
         {
             this.mustAttributeTypeOids = mustAttributeTypeOids;
@@ -276,6 +292,11 @@ public class NameForm extends AbstractSchemaObject
      */
     public void setMustAttributeTypes( List<AttributeType> mustAttributeTypes )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         if ( !isReadOnly )
         {
             this.mustAttributeTypes = mustAttributeTypes;
@@ -298,6 +319,11 @@ public class NameForm extends AbstractSchemaObject
      */
     public void addMustAttributeTypeOids( String oid )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         if ( !isReadOnly )
         {
             mustAttributeTypeOids.add( oid );
@@ -312,6 +338,11 @@ public class NameForm extends AbstractSchemaObject
      */
     public void addMustAttributeTypes( AttributeType attributeType )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         if ( !isReadOnly )
         {
             if ( !mustAttributeTypeOids.contains( attributeType.getOid() ) )
@@ -357,6 +388,11 @@ public class NameForm extends AbstractSchemaObject
      */
     public void setMayAttributeTypeOids( List<String> mayAttributeTypeOids )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         if ( !isReadOnly )
         {
             this.mayAttributeTypeOids = mayAttributeTypeOids;
@@ -371,6 +407,11 @@ public class NameForm extends AbstractSchemaObject
      */
     public void setMayAttributeTypes( List<AttributeType> mayAttributeTypes )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         if ( !isReadOnly )
         {
             this.mayAttributeTypes = mayAttributeTypes;
@@ -393,6 +434,11 @@ public class NameForm extends AbstractSchemaObject
      */
     public void addMayAttributeTypeOids( String oid )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         if ( !isReadOnly )
         {
             mayAttributeTypeOids.add( oid );
@@ -407,6 +453,11 @@ public class NameForm extends AbstractSchemaObject
      */
     public void addMayAttributeTypes( AttributeType attributeType )
     {
+        if ( locked )
+        {
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
+        }
+        
         if ( !isReadOnly )
         {
             if ( !mayAttributeTypeOids.contains( attributeType.getOid() ) )
