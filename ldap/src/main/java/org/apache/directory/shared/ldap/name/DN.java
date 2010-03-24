@@ -596,6 +596,27 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
      * @param dn The child
      * @return true if the given DN is a child of the current DN 
      */
+    public boolean isParentOf( String dn )
+    {
+        try
+        {
+            return isParentOf( new DN( dn ) );
+        }
+        catch( LdapInvalidDnException lide )
+        {
+            return false;
+        }
+    }
+    
+
+    /**
+     * Tells if the current DN is a parent of another DN.<br>
+     * For instance, <b>dc=com</b> is a child
+     * of <b>dc=example, dc=com</b>
+     * 
+     * @param dn The child
+     * @return true if the given DN is a child of the current DN 
+     */
     public boolean isParentOf( DN dn )
     {
         if ( dn == null )
@@ -606,6 +627,27 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
         return dn.isChildOf( this );
     }
 
+
+    /**
+     * Tells if a DN is a child of another DN.<br>
+     * For instance, <b>dc=example, dc=com</b> is a child
+     * of <b>dc=com</b>
+     * 
+     * @param dn The parent
+     * @return true if the given DN is a parent of the current DN 
+     */
+    public boolean isChildOf( String dn )
+    {
+        try
+        {
+            return isChildOf( new DN( dn ) );
+        }
+        catch( LdapInvalidDnException lide )
+        {
+            return false;
+        }
+    }
+    
 
     /**
      * Tells if a DN is a child of another DN.<br>
@@ -652,17 +694,17 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
 
 
     /**
-     * Determines whether this name is a child of a specified suffix. A name
-     * <tt>name</tt> is a child if its right part contains the given DN
+     * Determines whether this name has a specific suffix. A name
+     * <tt>name</tt> has a DN as a suffix if its right part contains the given DN
      *
      * Be aware that for a specific
-     * DN like : <b>cn=xxx, ou=yyy</b> the isChildOf method will return true with
-     * <b>ou=yyy</b>, and false with <b>cn=xxx</b>
+     * DN like : <b>cn=xxx, ou=yyy</b> the hasSuffix method will return false with
+     * <b>ou=yyy</b>, and true with <b>cn=xxx</b>
      *
      * @param dn the name to check
-     * @return true if <tt>dn</tt> is a child of this name, false otherwise
+     * @return true if <tt>dn</tt> is a suffix of this name, false otherwise
      */
-    public boolean endsWith( DN dn )
+    public boolean hasSuffix( DN dn )
     {
 
         if ( dn == null )

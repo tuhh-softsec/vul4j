@@ -1107,7 +1107,7 @@ public class DNTest
     public void testDnStartsWithNull() throws LdapException
     {
         DN dn = new DN( "a=b, c=d,e = f" );
-        assertEquals( true, dn.isChildOf( null ) );
+        assertEquals( true, dn.isChildOf( (DN)null ) );
     }
 
 
@@ -1185,7 +1185,7 @@ public class DNTest
     public void testDnEndsWithNull() throws LdapException
     {
         DN dn = new DN( "a=b, c=d,e = f" );
-        assertEquals( true, dn.endsWith( (DN)null ) );
+        assertEquals( true, dn.hasSuffix( (DN)null ) );
     }
 
 
@@ -1196,7 +1196,7 @@ public class DNTest
     public void testDnEndsWithEmpty() throws LdapException
     {
         DN dn = new DN( "a=b, c=d,e = f" );
-        assertEquals( true, dn.endsWith( new DN() ) );
+        assertEquals( true, dn.hasSuffix( new DN() ) );
     }
 
 
@@ -1207,7 +1207,7 @@ public class DNTest
     public void testDnEndsWithSimple() throws LdapException
     {
         DN dn = new DN( "a=b, c=d,e = f" );
-        assertEquals( true, dn.endsWith( new DN( "a=b" ) ) );
+        assertEquals( true, dn.hasSuffix( new DN( "a=b" ) ) );
     }
 
 
@@ -1218,7 +1218,7 @@ public class DNTest
     public void testDnEndsWithComplex() throws LdapException
     {
         DN dn = new DN( "a=b, c=d,e = f" );
-        assertEquals( true, dn.endsWith( new DN( "a =  b, c =  d" ) ) );
+        assertEquals( true, dn.hasSuffix( new DN( "a =  b, c =  d" ) ) );
     }
 
 
@@ -1229,7 +1229,7 @@ public class DNTest
     public void testDnEndsWithComplexMixedCase() throws LdapException
     {
         DN dn = new DN( "a=b, c=d,e = f" );
-        assertEquals( false, dn.endsWith( new DN( "a =  B, C =  d" ) ) );
+        assertEquals( false, dn.hasSuffix( new DN( "a =  B, C =  d" ) ) );
     }
 
 
@@ -1240,7 +1240,7 @@ public class DNTest
     public void testDnEndsWithFull() throws LdapException
     {
         DN dn = new DN( "a=b, c=d,e = f" );
-        assertEquals( true, dn.endsWith( new DN( "a=  b; c =  d, e =  f" ) ) );
+        assertEquals( true, dn.hasSuffix( new DN( "a=  b; c =  d, e =  f" ) ) );
     }
 
 
@@ -1251,7 +1251,7 @@ public class DNTest
     public void testDnEndsWithWrong() throws LdapException
     {
         DN dn = new DN( "a=b, c=d,e = f" );
-        assertEquals( false, dn.endsWith( new DN( "a =  b, e =  f" ) ) );
+        assertEquals( false, dn.hasSuffix( new DN( "a =  b, e =  f" ) ) );
     }
 
 
@@ -2111,15 +2111,15 @@ public class DNTest
         DN name7 = new DN( "cn=HomeDir,cn=John" );
         DN name8 = new DN( "cn=HomeDir,cn=John,ou=Marketing" );
 
-        assertTrue( name0.endsWith( name1 ) );
-        assertTrue( !name0.endsWith( name2 ) );
-        assertTrue( !name0.endsWith( name3 ) );
-        assertTrue( !name0.endsWith( name4 ) );
-        assertTrue( name0.endsWith( name5 ) );
+        assertTrue( name0.hasSuffix( name1 ) );
+        assertTrue( !name0.hasSuffix( name2 ) );
+        assertTrue( !name0.hasSuffix( name3 ) );
+        assertTrue( !name0.hasSuffix( name4 ) );
+        assertTrue( name0.hasSuffix( name5 ) );
 
-        assertTrue( name0.endsWith( name6 ) );
-        assertTrue( name0.endsWith( name7 ) );
-        assertTrue( name0.endsWith( name8 ) );
+        assertTrue( name0.hasSuffix( name6 ) );
+        assertTrue( name0.hasSuffix( name7 ) );
+        assertTrue( name0.hasSuffix( name8 ) );
     }
 
 
@@ -2693,19 +2693,19 @@ public class DNTest
         DN n2 =  new DN( "cn=two" );
         DN n1 =  new DN( "cn=one" );
         
-        assertTrue( n3210.endsWith( n3 ) );
-        assertTrue( n3210.endsWith( n32 ) );
-        assertTrue( n3210.endsWith( n321 ) );
-        assertTrue( n3210.endsWith( n3210 ) );
+        assertTrue( n3210.hasSuffix( n3 ) );
+        assertTrue( n3210.hasSuffix( n32 ) );
+        assertTrue( n3210.hasSuffix( n321 ) );
+        assertTrue( n3210.hasSuffix( n3210 ) );
 
-        assertTrue( n210.endsWith( n2 ) );
-        assertTrue( n210.endsWith( n21 ) );
-        assertTrue( n210.endsWith( n210 ) );
+        assertTrue( n210.hasSuffix( n2 ) );
+        assertTrue( n210.hasSuffix( n21 ) );
+        assertTrue( n210.hasSuffix( n210 ) );
 
-        assertTrue( n10.endsWith( n1 ) );
-        assertTrue( n10.endsWith( n10 ) );
+        assertTrue( n10.hasSuffix( n1 ) );
+        assertTrue( n10.hasSuffix( n10 ) );
 
-        assertTrue( n0.endsWith( n0 ) );
+        assertTrue( n0.hasSuffix( n0 ) );
     }
 
 
