@@ -48,7 +48,8 @@ limitations under the License.
 	validating XML Signatures and to make the binaries of this software
 	freely available. 
       </p>
-      <p>In September 2001, the Institute for Data Communications Systems decided to
+      <p>In September 2001, Christian Geuer-Pollmann and the 
+  Institute for Data Communications Systems decided to
 	make the sources freely available, too, to promote the use of digital
 	signatures and to give XML Signature a spin. The decision was made to
 	give the complete library (including an implementation of "Canonical

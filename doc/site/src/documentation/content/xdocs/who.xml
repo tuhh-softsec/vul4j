@@ -52,11 +52,12 @@ limitations under the License.
         <li> [CO] Colm O hEigeartaigh (coheigeaATapache.org) </li>
       </ul>
       <p>
-        The following people were developers on the project in the past, 
-        but are no longer actively involved in the project :
+        The following people are currently not active in the project :
       </p>
       <ul>
-        <li> [CGP] Christian Geuer-Pollmann (geuer-pollmannATnue.et-inf.uni-siegen.de) </li>
+        <li> [CGP] Christian Geuer-Pollmann (christian.geuer-pollmannATweb.de) <br/>
+             Christian funded the XML Security project in 2002 but must not be 
+             actively contributing while working for Microsoft. </li>
       </ul>
     </section>
   </body>
