@@ -1107,7 +1107,7 @@ public class DNTest
     public void testDnStartsWithNull() throws LdapException
     {
         DN dn = new DN( "a=b, c=d,e = f" );
-        assertEquals( true, dn.startsWith( null ) );
+        assertEquals( true, dn.isChildOf( null ) );
     }
 
 
@@ -1118,7 +1118,7 @@ public class DNTest
     public void testDnStartsWithEmpty() throws LdapException
     {
         DN dn = new DN( "a=b, c=d,e = f" );
-        assertEquals( true, dn.startsWith( new DN() ) );
+        assertEquals( true, dn.isChildOf( new DN() ) );
     }
 
 
@@ -1129,7 +1129,7 @@ public class DNTest
     public void testDnStartsWithSimple() throws LdapException
     {
         DN dn = new DN( "a=b, c=d,e = f" );
-        assertEquals( true, dn.startsWith( new DN( "e=f" ) ) );
+        assertEquals( true, dn.isChildOf( new DN( "e=f" ) ) );
     }
 
 
@@ -1140,7 +1140,7 @@ public class DNTest
     public void testDnStartsWithComplex() throws LdapException
     {
         DN dn = new DN( "a=b, c=d,e = f" );
-        assertEquals( true, dn.startsWith( new DN( "c =  d, e =  f" ) ) );
+        assertEquals( true, dn.isChildOf( new DN( "c =  d, e =  f" ) ) );
     }
 
 
@@ -1151,7 +1151,7 @@ public class DNTest
     public void testDnStartsWithComplexMixedCase() throws LdapException
     {
         DN dn = new DN( "a=b, c=d,e = f" );
-        assertEquals( false, dn.startsWith( new DN( "c =  D, E =  f" ) ) );
+        assertEquals( false, dn.isChildOf( new DN( "c =  D, E =  f" ) ) );
     }
 
 
@@ -1162,7 +1162,7 @@ public class DNTest
     public void testDnStartsWithFull() throws LdapException
     {
         DN dn = new DN( "a=b, c=d,e = f" );
-        assertEquals( true, dn.startsWith( new DN( "a=  b; c =  d, e =  f" ) ) );
+        assertEquals( true, dn.isChildOf( new DN( "a=  b; c =  d, e =  f" ) ) );
     }
 
 
@@ -1173,7 +1173,7 @@ public class DNTest
     public void testDnStartsWithWrong() throws LdapException
     {
         DN dn = new DN( "a=b, c=d,e = f" );
-        assertEquals( false, dn.startsWith( new DN( "c =  t, e =  f" ) ) );
+        assertEquals( false, dn.isChildOf( new DN( "c =  t, e =  f" ) ) );
     }
 
 
@@ -2051,43 +2051,43 @@ public class DNTest
         DN n8 = new DN( "cn=HomeDir,cn=John,ou=Marketing" );
 
         // Check with DN
-        assertTrue( n0.startsWith( n1 ) );
-        assertTrue( n0.startsWith( n2 ) );
-        assertTrue( n0.startsWith( n3 ) );
-        assertTrue( n0.startsWith( n4 ) );
-        assertTrue( n0.startsWith( n5 ) );
+        assertTrue( n0.isChildOf( n1 ) );
+        assertTrue( n0.isChildOf( n2 ) );
+        assertTrue( n0.isChildOf( n3 ) );
+        assertTrue( n0.isChildOf( n4 ) );
+        assertTrue( n0.isChildOf( n5 ) );
 
-        assertTrue( !n0.startsWith( n6 ) );
-        assertTrue( !n0.startsWith( n7 ) );
-        assertTrue( !n0.startsWith( n8 ) );
+        assertTrue( !n0.isChildOf( n6 ) );
+        assertTrue( !n0.isChildOf( n7 ) );
+        assertTrue( !n0.isChildOf( n8 ) );
         
         DN nn0 = new DN( "cn=zero" );
         DN nn10 = new DN( "cn=one,cn=zero" );
         DN nn210 = new DN( "cn=two,cn=one,cn=zero" );
         DN nn3210 = new DN( "cn=three,cn=two,cn=one,cn=zero" );
         
-        assertTrue( nn0.startsWith( nn0 ) );
-        assertTrue( nn10.startsWith( nn0 ) );
-        assertTrue( nn210.startsWith( nn0 ) );
-        assertTrue( nn3210.startsWith( nn0 ) );
+        assertTrue( nn0.isChildOf( nn0 ) );
+        assertTrue( nn10.isChildOf( nn0 ) );
+        assertTrue( nn210.isChildOf( nn0 ) );
+        assertTrue( nn3210.isChildOf( nn0 ) );
 
-        assertTrue( nn10.startsWith( nn10 ) );
-        assertTrue( nn210.startsWith( nn10 ) );
-        assertTrue( nn3210.startsWith( nn10 ) );
+        assertTrue( nn10.isChildOf( nn10 ) );
+        assertTrue( nn210.isChildOf( nn10 ) );
+        assertTrue( nn3210.isChildOf( nn10 ) );
 
-        assertTrue( nn210.startsWith( nn210 ) );
-        assertTrue( nn3210.startsWith( nn210 ) );
+        assertTrue( nn210.isChildOf( nn210 ) );
+        assertTrue( nn3210.isChildOf( nn210 ) );
 
-        assertTrue( nn3210.startsWith( nn3210 ) );
+        assertTrue( nn3210.isChildOf( nn3210 ) );
         
         assertTrue( "Starting DN fails with ADS DN", 
-            new DN( "ou=foo,dc=apache,dc=org" ).startsWith( new DN( "dc=apache,dc=org" ) ) );
+            new DN( "ou=foo,dc=apache,dc=org" ).isChildOf( new DN( "dc=apache,dc=org" ) ) );
         
         assertTrue( "Starting DN fails with Java LdapName", 
-            new DN( "ou=foo,dc=apache,dc=org" ).startsWith( new DN( "dc=apache,dc=org" ) ) );
+            new DN( "ou=foo,dc=apache,dc=org" ).isChildOf( new DN( "dc=apache,dc=org" ) ) );
 
         assertTrue( "Starting DN fails with Java LdapName", 
-            new DN( "dc=apache,dc=org" ).startsWith( new DN( "dc=apache,dc=org" ) ) );
+            new DN( "dc=apache,dc=org" ).isChildOf( new DN( "dc=apache,dc=org" ) ) );
     }
 
 
@@ -2668,9 +2668,9 @@ public class DNTest
         LdapName jName = new LdapName( "cn=four,cn=three,cn=two,cn=one" );
         DN aName = new DN( "cn=four,cn=three,cn=two,cn=one" );
 
-        assertEquals( jName.startsWith( new LdapName( "cn=seven,cn=six,cn=five" ) ), aName.startsWith( new DN(
+        assertEquals( jName.startsWith( new LdapName( "cn=seven,cn=six,cn=five" ) ), aName.isChildOf( new DN(
             "cn=seven,cn=six,cn=five" ) ) );
-        assertEquals( jName.startsWith( new LdapName( "cn=three,cn=two,cn=one" ) ), aName.startsWith( new DN(
+        assertEquals( jName.startsWith( new LdapName( "cn=three,cn=two,cn=one" ) ), aName.isChildOf( new DN(
             "cn=three,cn=two,cn=one" ) ) );
     }
 

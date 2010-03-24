@@ -80,7 +80,7 @@ public class NamespaceTools
         {
             DN parentDn = ( DN ) name1.clone();
             parentDn.remove( name1.size() - 1 );
-            return name2.startsWith( parentDn );
+            return name2.isChildOf( parentDn );
         }
 
         return false;
@@ -96,7 +96,7 @@ public class NamespaceTools
      */
     public static boolean isDescendant( DN ancestor, DN descendant )
     {
-        return descendant.startsWith( ancestor );
+        return descendant.isChildOf( ancestor );
     }
 
 
@@ -124,7 +124,7 @@ public class NamespaceTools
             rdn = new DN( descendant.toString() );
         }
 
-        if ( rdn.startsWith( ancestor ) )
+        if ( rdn.isChildOf( ancestor ) )
         {
             for ( int ii = 0; ii < ancestor.size(); ii++ )
             {

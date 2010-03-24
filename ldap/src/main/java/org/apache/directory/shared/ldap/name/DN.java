@@ -572,8 +572,7 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
      */
     public static int getNbBytes( DN dn )
     {
-        DN newDn = ( DN ) dn;
-        return newDn.bytes == null ? 0 : newDn.bytes.length;
+        return dn.bytes == null ? 0 : dn.bytes.length;
     }
 
 
@@ -590,9 +589,33 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
 
 
     /**
-     * {@inheritDoc}
+     * Tells if the current DN is a parent of another DN.<br>
+     * For instance, <b>dc=com</b> is a child
+     * of <b>dc=example, dc=com</b>
+     * 
+     * @param dn The child
+     * @return true if the given DN is a child of the current DN 
      */
-    public boolean startsWith( DN dn )
+    public boolean isParentOf( DN dn )
+    {
+        if ( dn == null )
+        {
+            return false;
+        }
+        
+        return dn.isChildOf( this );
+    }
+
+
+    /**
+     * Tells if a DN is a child of another DN.<br>
+     * For instance, <b>dc=example, dc=com</b> is a child
+     * of <b>dc=com</b>
+     * 
+     * @param dn The parent
+     * @return true if the given DN is a parent of the current DN 
+     */
+    public boolean isChildOf( DN dn )
     {
         if ( dn == null )
         {
@@ -628,29 +651,25 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
     }
 
 
-    /*
-     * Determines whether this name ends with a specified suffix. A name
-     * <tt>name</tt> is a suffix if it is equal to
-     * <tt>getSuffix(size()-name.size())</tt>.
+    /**
+     * Determines whether this name is a child of a specified suffix. A name
+     * <tt>name</tt> is a child if its right part contains the given DN
      *
      * Be aware that for a specific
-     * DN like : cn=xxx, ou=yyy the endsWith method will return true with
-     * cn=xxx, and false with ou=yyy
+     * DN like : <b>cn=xxx, ou=yyy</b> the isChildOf method will return true with
+     * <b>ou=yyy</b>, and false with <b>cn=xxx</b>
      *
-     * @param name
-     *            the name to check
-     * @return true if <tt>name</tt> is a suffix of this name, false otherwise
-     */
-    /**
-     * {@inheritDoc}
+     * @param dn the name to check
+     * @return true if <tt>dn</tt> is a child of this name, false otherwise
      */
     public boolean endsWith( DN dn )
     {
+
         if ( dn == null )
         {
             return true;
         }
-        
+
         if ( dn.size() == 0 )
         {
             return true;
@@ -662,7 +681,9 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
             return false;
         }
 
-        // Ok, iterate through all the RDN of the name
+        // Ok, iterate through all the RDN of the name,
+        // starting a the end of the current list.
+
         for ( int i = 0; i < dn.size(); i++ )
         {
             RDN nameRdn = dn.rdns.get( i );
@@ -1495,6 +1516,7 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
     {
         return DnParser.validateInternal( dn );
     }
+    
 
     /**
      * Tells if the DN has already been normalized or not
