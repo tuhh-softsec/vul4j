@@ -95,7 +95,7 @@ public class DefaultClientEntryTest
     /**
      * Serialize a ClientEntry
      */
-    private ByteArrayOutputStream serializeValue( ClientEntry value ) throws IOException
+    private ByteArrayOutputStream serializeValue( Entry value ) throws IOException
     {
         ObjectOutputStream oOut = null;
         ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -132,7 +132,7 @@ public class DefaultClientEntryTest
     /**
      * Deserialize a ClientEntry
      */
-    private ClientEntry deserializeValue( ByteArrayOutputStream out ) throws IOException, ClassNotFoundException
+    private Entry deserializeValue( ByteArrayOutputStream out ) throws IOException, ClassNotFoundException
     {
         ObjectInputStream oIn = null;
         ByteArrayInputStream in = new ByteArrayInputStream( out.toByteArray() );
@@ -141,7 +141,7 @@ public class DefaultClientEntryTest
         {
             oIn = new ObjectInputStream( in );
 
-            ClientEntry value = ( ClientEntry ) oIn.readObject();
+            Entry value = ( Entry ) oIn.readObject();
 
             return value;
         }
@@ -1271,12 +1271,12 @@ public class DefaultClientEntryTest
         dn.normalize( oids );
         
         byte[] password = StringTools.getBytesUtf8( "secret" );
-        ClientEntry entry = new DefaultClientEntry( dn);
+        Entry entry = new DefaultClientEntry( dn);
         entry.add( "ObjectClass", "top", "person" );
         entry.add( "cn", "test1" );
         entry.add( "userPassword", password );
 
-        ClientEntry entrySer = deserializeValue( serializeValue( entry ) );
+        Entry entrySer = deserializeValue( serializeValue( entry ) );
         
         assertEquals( entry, entrySer );
     }
@@ -1289,12 +1289,12 @@ public class DefaultClientEntryTest
     public void testSerializeEntryWithNoDN() throws LdapException, IOException, ClassNotFoundException
     {
         byte[] password = StringTools.getBytesUtf8( "secret" );
-        ClientEntry entry = new DefaultClientEntry();
+        Entry entry = new DefaultClientEntry();
         entry.add( "ObjectClass", "top", "person" );
         entry.add( "cn", "test1" );
         entry.add( "userPassword", password );
 
-        ClientEntry entrySer = deserializeValue( serializeValue( entry ) );
+        Entry entrySer = deserializeValue( serializeValue( entry ) );
         
         assertEquals( entry, entrySer );
     }
@@ -1306,9 +1306,9 @@ public class DefaultClientEntryTest
     @Test
     public void testSerializeEntryWithNoDNNoAttribute() throws LdapException, IOException, ClassNotFoundException
     {
-        ClientEntry entry = new DefaultClientEntry();
+        Entry entry = new DefaultClientEntry();
 
-        ClientEntry entrySer = deserializeValue( serializeValue( entry ) );
+        Entry entrySer = deserializeValue( serializeValue( entry ) );
         
         assertEquals( entry, entrySer );
     }
@@ -1324,12 +1324,12 @@ public class DefaultClientEntryTest
         
         dn.normalize( oids );
         
-        ClientEntry entry = new DefaultClientEntry( dn );
+        Entry entry = new DefaultClientEntry( dn );
 
-        ClientEntry entrySer = deserializeValue( serializeValue( entry ) );
+        Entry entrySer = deserializeValue( serializeValue( entry ) );
         
         assertEquals( entry, entrySer );
     }
     
-    
+  
 }

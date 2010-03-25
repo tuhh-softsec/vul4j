@@ -53,7 +53,7 @@ import org.slf4j.LoggerFactory;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public final class DefaultClientEntry extends AbstractEntry<String> implements ClientEntry
+public final class DefaultClientEntry extends AbstractEntry<String> //implements ClientEntry
 {
     /** Used for serialization */
     private static final long serialVersionUID = 2L;

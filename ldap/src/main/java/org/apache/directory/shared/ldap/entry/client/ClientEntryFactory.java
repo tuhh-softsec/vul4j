@@ -18,6 +18,8 @@
  */
 package org.apache.directory.shared.ldap.entry.client;
 
+import org.apache.directory.shared.ldap.entry.Entry;
+
 
 /**
  * Document me!
@@ -27,5 +29,5 @@ package org.apache.directory.shared.ldap.entry.client;
  */
 public interface ClientEntryFactory
 {
-    ClientEntry newEntry();
+    Entry newEntry();
 }
