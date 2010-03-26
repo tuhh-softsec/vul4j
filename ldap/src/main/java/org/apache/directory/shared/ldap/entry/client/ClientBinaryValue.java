@@ -31,6 +31,7 @@ import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.NotImplementedException;
 import org.apache.directory.shared.ldap.entry.AbstractValue;
 import org.apache.directory.shared.ldap.entry.Value;
+import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.Normalizer;
 import org.apache.directory.shared.ldap.schema.comparators.ByteArrayComparator;
 import org.apache.directory.shared.ldap.util.StringTools;
@@ -50,11 +51,13 @@ import org.slf4j.LoggerFactory;
 public class ClientBinaryValue extends AbstractValue<byte[]>
 {
     /** Used for serialization */
-    private static final long serialVersionUID = 2L;
+    protected static final long serialVersionUID = 2L;
     
     /** logger for reporting errors that might not be handled properly upstream */
-    private static final Logger LOG = LoggerFactory.getLogger( ClientBinaryValue.class );
-
+    protected static final Logger LOG = LoggerFactory.getLogger( ClientBinaryValue.class );
+    
+    /** reference to the attributeType which is not serialized */
+    protected transient AttributeType attributeType;
 
     /**
      * Creates a ServerBinaryValue without an initial wrapped value.

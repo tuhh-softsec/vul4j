@@ -36,8 +36,6 @@ import org.apache.directory.shared.ldap.schema.MatchingRule;
 import org.apache.directory.shared.ldap.schema.Normalizer;
 import org.apache.directory.shared.ldap.schema.comparators.ByteArrayComparator;
 import org.apache.directory.shared.ldap.util.StringTools;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * A server side schema aware wrapper around a binary attribute value.
@@ -50,20 +48,6 @@ import org.slf4j.LoggerFactory;
  */
 public class ServerBinaryValue extends ClientBinaryValue
 {
-    /** Used for serialization */
-    private static final long serialVersionUID = 2L;
-
-    /** logger for reporting errors that might not be handled properly upstream */
-    private static final Logger LOG = LoggerFactory.getLogger( ServerBinaryValue.class );
-
-    /** used to dynamically lookup the attributeType when/if deserializing */
-    //@SuppressWarnings ( { "FieldCanBeLocal", "UnusedDeclaration" } )
-    //private final String oid;
-
-    /** reference to the attributeType which is not serialized */
-    private transient AttributeType attributeType;
-
-
     // -----------------------------------------------------------------------
     // utility methods
     // -----------------------------------------------------------------------
@@ -574,23 +558,6 @@ public class ServerBinaryValue extends ClientBinaryValue
         }
 
         return mr.getLdapComparator();
-    }
-
-
-    /**
-     * @return a copy of the current value
-     */
-    public ServerBinaryValue clone()
-    {
-        ServerBinaryValue clone = ( ServerBinaryValue ) super.clone();
-
-        if ( normalizedValue != null )
-        {
-            clone.normalizedValue = new byte[normalizedValue.length];
-            System.arraycopy( normalizedValue, 0, clone.normalizedValue, 0, normalizedValue.length );
-        }
-
-        return clone;
     }
 
 
