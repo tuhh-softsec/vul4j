@@ -160,18 +160,118 @@ public class SchemaUtils
 
 
     /**
-     * Renders qdescrs into a new buffer.
-     * 
-     * @param qdescrs
-     *            the quoted description strings to render
+     * Renders qdescrs into a new buffer.<br>
+     * <pre>
+     * descrs ::= qdescr | '(' WSP qdescrlist WSP ')'
+     * qdescrlist ::= [ qdescr ( SP qdescr )* ]
+     * qdescr     ::= SQUOTE descr SQUOTE
+     * </pre>
+     * @param qdescrs the quoted description strings to render
      * @return the string buffer the qdescrs are rendered into
      */
-    public static StringBuffer render( List<String> qdescrs )
+    /* No qualifier */ static StringBuffer renderQDescrs( StringBuffer buf, List<String> qdescrs )
     {
-        StringBuffer buf = new StringBuffer();
-        return render( buf, qdescrs );
+        if ( ( qdescrs == null ) || ( qdescrs.size() == 0 ) )
+        {
+            return buf;
+        }
+        
+        if ( qdescrs.size() == 1 )
+        {
+            buf.append( '\'' ).append( qdescrs.get( 0 ) ).append( '\'' );
+        }
+        else
+        {
+            buf.append( "( " );
+            
+            for ( String qdescr : qdescrs )
+            {
+                buf.append( '\'' ).append( qdescr ).append( "' " );
+            }
+            
+            buf.append( ")" );
+        }
+
+        return buf;
     }
 
+
+    /**
+     * Renders oids into a new buffer.<br>
+     * <pre>
+     * oids    ::= oid | '(' WSP oidlist WSP ')'
+     * oidlist ::= oid ( WSP '$' WSP oid )*
+     * </pre>
+     * 
+     * @param qdescrs the quoted description strings to render
+     * @return the string buffer the qdescrs are rendered into
+     */
+    private static StringBuffer renderOids( StringBuffer buf, List<String> oids )
+    {
+        if ( oids.size() == 1 )
+        {
+            buf.append( oids.get( 0 ) );
+        }
+        else
+        {
+            buf.append( "( " );
+            
+            boolean isFirst = true;
+            
+            for ( String oid : oids )
+            {
+                if ( isFirst )
+                {
+                    isFirst = false;
+                }
+                else
+                {
+                    buf.append( " $ " );
+                }
+                
+                buf.append( oid );
+            }
+            
+            buf.append( " )" );
+        }
+
+        return buf;
+    }
+
+
+    /**
+     * Renders QDString into a new buffer.<br>
+     * <pre>
+     * 
+     * @param qdescrs the quoted description strings to render
+     * @return the string buffer the qdescrs are rendered into
+     */
+    private static StringBuffer renderQDString( StringBuffer buf, String qdString )
+    {
+        buf.append(  '\'' );
+        
+        for ( char c : qdString.toCharArray() )
+        {
+            switch ( c )
+            {
+                case 0x27 :
+                    buf.append( "\\27" );
+                    break;
+                    
+                case 0x5C :
+                    buf.append( "\\5C" );
+                    break;
+                    
+                default :
+                    buf.append( c );
+                    break;
+            }
+        }
+        
+        buf.append(  '\'' );
+     
+        return buf;
+    }
 
     // ------------------------------------------------------------------------
     // objectClass list rendering operations
@@ -188,6 +288,7 @@ public class SchemaUtils
     public static StringBuffer render( ObjectClass[] ocs )
     {
         StringBuffer buf = new StringBuffer();
+        
         return render( buf, ocs );
     }
 
@@ -215,6 +316,7 @@ public class SchemaUtils
         else
         {
             buf.append( "( " );
+            
             for ( int ii = 0; ii < ocs.length; ii++ )
             {
                 if ( ii + 1 < ocs.length )
@@ -226,6 +328,7 @@ public class SchemaUtils
                     buf.append( ocs[ii].getName() );
                 }
             }
+            
             buf.append( " )" );
         }
 
@@ -344,31 +447,32 @@ public class SchemaUtils
     {
         StringBuffer buf = new StringBuffer();
         buf.append( "( " ).append( oc.getOid() );
+        
+        List<String> names = oc.getNames();
 
-        if ( oc.getNames() != null && oc.getNames().size() > 0 )
+        if ( ( names != null ) && ( names.size() > 0 ) )
         {
             buf.append( " NAME " );
-            render( buf, oc.getNames() ).append( " " );
-        }
-        else
-        {
-            buf.append( " " );
+            renderQDescrs( buf, names );
         }
 
         if ( oc.getDescription() != null )
         {
-            buf.append( "DESC " ).append( "'" ).append( oc.getDescription() ).append( "' " );
+            buf.append( " DESC " );
+            renderQDString( buf, oc.getDescription() );
         }
 
         if ( oc.isObsolete() )
         {
-            buf.append( " OBSOLETE " );
+            buf.append( " OBSOLETE" );
         }
 
-        if ( ( oc.getSuperiorOids() != null ) && ( oc.getSuperiorOids().size() > 0 ) )
+        List<String> superiorOids = oc.getSuperiorOids();
+        
+        if ( ( superiorOids != null ) && ( superiorOids.size() > 0 ) )
         {
-            buf.append( "SUP " );
-            render( buf, oc.getSuperiorOids() );
+            buf.append( " SUP " );
+            renderOids( buf, superiorOids );
         }
 
         if ( oc.getType() != null )
@@ -376,16 +480,20 @@ public class SchemaUtils
             buf.append( " " ).append( oc.getType() );
         }
 
-        if ( ( oc.getMustAttributeTypeOids() != null ) && ( oc.getMustAttributeTypeOids().size() > 0 ) )
+        List<String> must = oc.getMustAttributeTypeOids();
+        
+        if ( ( must != null ) && ( must.size() > 0 ) )
         {
             buf.append( " MUST " );
-            render( buf, oc.getMustAttributeTypeOids() );
+            renderOids( buf, must );
         }
 
-        if ( ( oc.getMayAttributeTypeOids() != null ) && ( oc.getMayAttributeTypeOids().size() > 0 ) )
+        List<String> may = oc.getMayAttributeTypeOids();
+
+        if ( ( may != null ) && ( may.size() > 0 ) )
         {
             buf.append( " MAY " );
-            render( buf, oc.getMayAttributeTypeOids() );
+            renderOids( buf, may );
         }
 
         buf.append( " X-SCHEMA '" );
@@ -463,20 +571,18 @@ public class SchemaUtils
     {
         StringBuffer buf = new StringBuffer();
         buf.append( "( " ).append( at.getOid() );
+        List<String> names = at.getNames();
 
-        if ( at.getNames() != null && at.getNames().size() > 0 )
+        if ( ( names != null ) && ( names.size() > 0 ) )
         {
             buf.append( " NAME " );
-            render( buf, at.getNames() ).append( " " );
-        }
-        else
-        {
-            buf.append( " " );
+            renderQDescrs( buf, names );
         }
 
         if ( at.getDescription() != null )
         {
-            buf.append( "DESC " ).append( "'" ).append( at.getDescription() ).append( "' " );
+            buf.append( " DESC " );
+            renderQDString( buf, at.getDescription() );
         }
 
         if ( at.isObsolete() )
@@ -786,20 +892,19 @@ public class SchemaUtils
     {
         StringBuffer buf = new StringBuffer();
         buf.append( "( " ).append( mr.getOid() );
+        
+        List<String> names = mr.getNames();
 
-        if ( mr.getNames() != null && mr.getNames().size() > 0 )
+        if ( ( names != null ) && ( names.size() > 0 ) )
         {
             buf.append( " NAME " );
-            render( buf, mr.getNames() ).append( " " );
-        }
-        else
-        {
-            buf.append( " " );
+            renderQDescrs( buf, names );
         }
 
         if ( mr.getDescription() != null )
         {
-            buf.append( "DESC " ).append( "'" ).append( mr.getDescription() ).append( "' " );
+            buf.append( " DESC " );
+            renderQDString( buf, mr.getDescription() );
         }
 
         if ( mr.isObsolete() )
@@ -807,10 +912,7 @@ public class SchemaUtils
             buf.append( " OBSOLETE" );
         }
 
-        if ( mr.getSyntax() != null )
-        {
-            buf.append( " SYNTAX " ).append( mr.getSyntax().getOid() );
-        }
+        buf.append( " SYNTAX " ).append( mr.getSyntax().getOid() );
 
         buf.append( " X-SCHEMA '" );
         buf.append( mr.getSchemaName() );
@@ -851,11 +953,12 @@ public class SchemaUtils
     public static StringBuffer render( LdapSyntax syntax )
     {
         StringBuffer buf = new StringBuffer();
-        buf.append( "( " ).append( syntax.getOid() ).append( " " );
+        buf.append( "( " ).append( syntax.getOid() );
 
         if ( syntax.getDescription() != null )
         {
-            buf.append( "DESC " ).append( "'" ).append( syntax.getDescription() ).append( "' " );
+            buf.append( " DESC " );
+            renderQDString( buf, syntax.getDescription() );
         }
 
         buf.append( " X-SCHEMA '" );
@@ -885,14 +988,35 @@ public class SchemaUtils
     public static StringBuffer render( MatchingRuleUse mru )
     {
         StringBuffer buf = new StringBuffer();
-        buf.append( "( " ).append( mru.getOid() ).append( " NAME " );
-        render( buf, mru.getNames() ).append( " " );
+        buf.append( "( " ).append( mru.getOid() );
+        
+        List<String> names = mru.getNames();
+
+        if ( ( names != null ) && ( names.size() > 0 ) )
+        {
+            buf.append( " NAME " );
+            renderQDescrs( buf, names );
+        }
 
         if ( mru.getDescription() != null )
         {
-            buf.append( "DESC " ).append( "'" ).append( mru.getDescription() ).append( "' " );
+            buf.append( " DESC " );
+            renderQDString( buf, mru.getDescription() );
         }
-
+        
+        if ( mru.isObsolete )
+        {
+            buf.append(  " OBSOLETE" );
+        }
+        
+        List<String> applies = mru.getApplicableAttributeOids();
+        
+        if ( ( applies != null ) && ( applies.size() > 0 ) )
+        {
+            buf.append( " APPLIES " );
+            renderOids( buf, applies );
+        }
+        
         buf.append( " X-SCHEMA '" );
         buf.append( mru.getSchemaName() );
         buf.append( "'" );
@@ -912,12 +1036,57 @@ public class SchemaUtils
     public static StringBuffer render( DITContentRule dcr )
     {
         StringBuffer buf = new StringBuffer();
-        buf.append( "( " ).append( dcr.getOid() ).append( " NAME " );
-        render( buf, dcr.getNames() ).append( " " );
-
+        buf.append( "( " ).append( dcr.getOid() );
+        
+        List<String> names = dcr.getNames();
+        
+        if ( ( names != null ) && ( names.size() > 0 ) )
+        {
+            buf.append( " NAME " );
+            renderQDescrs( buf, names );
+        }
+        
         if ( dcr.getDescription() != null )
         {
-            buf.append( "DESC " ).append( "'" ).append( dcr.getDescription() ).append( "' " );
+            buf.append( " DESC " );
+            renderQDString( buf, dcr.getDescription() );
+        }
+
+        if ( dcr.isObsolete )
+        {
+            buf.append( " OBSOLETE" );
+        }
+
+        List<String> aux = dcr.getAuxObjectClassOids();
+        
+        if ( ( aux != null ) && ( aux.size() > 0 ) )
+        {
+            buf.append( " AUX " );
+            renderOids( buf, aux );
+        }
+
+        List<String> must = dcr.getMustAttributeTypeOids();
+        
+        if ( ( must != null ) && ( must.size() > 0 ) )
+        {
+            buf.append( " MUST " );
+            renderOids( buf, must );
+        }
+
+        List<String> may = dcr.getMayAttributeTypeOids();
+        
+        if ( ( may != null ) && ( may.size() > 0 ) )
+        {
+            buf.append( " MAY " );
+            renderOids( buf, may );
+        }
+
+        List<String> not = dcr.getNotAttributeTypeOids();
+        
+        if ( ( not != null ) && ( not.size() > 0 ) )
+        {
+            buf.append( " AUX " );
+            renderOids( buf, not );
         }
 
         buf.append( " X-SCHEMA '" );
@@ -939,13 +1108,31 @@ public class SchemaUtils
     public static StringBuffer render( DITStructureRule dsr )
     {
         StringBuffer buf = new StringBuffer();
-        buf.append( "( " ).append( dsr.getOid() ).append( " NAME " );
-        render( buf, dsr.getNames() ).append( " " );
-
+        buf.append( "( " ).append( dsr.getOid() );
+        
+        List<String> names = dsr.getNames();
+        
+        if ( ( names != null ) && ( names.size() > 0 ) )
+        {
+            buf.append( " NAME " );
+            renderQDescrs( buf, names );
+        }
+        
         if ( dsr.getDescription() != null )
         {
-            buf.append( "DESC " ).append( "'" ).append( dsr.getDescription() ).append( "' " );
+            buf.append( " DESC " );
+            renderQDString( buf, dsr.getDescription() );
         }
+
+        if ( dsr.isObsolete )
+        {
+            buf.append( " OBSOLETE" );
+        }
+
+        buf.append( " FORM " ).append( dsr.getForm() );
+
+        List<Integer> ruleIds = dsr.getSuperRules();
+        // TODO : Add the rendering
 
         buf.append( " X-SCHEMA '" );
         buf.append( dsr.getSchemaName() );
@@ -961,13 +1148,28 @@ public class SchemaUtils
     public static StringBuffer render( NameForm nf )
     {
         StringBuffer buf = new StringBuffer();
-        buf.append( "( " ).append( nf.getOid() ).append( " NAME " );
-        render( buf, nf.getNames() ).append( " " );
+        buf.append( "( " ).append( nf.getOid() );
+        
+        List<String> names = nf.getNames();
+
+        if ( ( names != null ) && ( names.size() > 0 ) )
+        {
+            buf.append( " NAME " );
+            renderQDescrs( buf, names );
+        }
 
         if ( nf.getDescription() != null )
         {
-            buf.append( "DESC " ).append( "'" ).append( nf.getDescription() ).append( "' " );
+            buf.append( " DESC " );
+            renderQDString( buf, nf.getDescription() );
         }
+
+        if ( nf.isObsolete )
+        {
+            buf.append( " OBSOLETE" );
+        }
+
+        // TODO : implement rendering for OC, MUST and MAY
 
         buf.append( " X-SCHEMA '" );
         buf.append( nf.getSchemaName() );
@@ -987,19 +1189,20 @@ public class SchemaUtils
      */
     public static String render( LoadableSchemaObject description )
     {
-        StringBuilder buf = new StringBuilder();
-        buf.append( "( " ).append( description.getOid() ).append( " " );
+        StringBuffer buf = new StringBuffer();
+        buf.append( "( " ).append( description.getOid() );
 
         if ( description.getDescription() != null )
         {
-            buf.append( "DESC " ).append( "'" ).append( description.getDescription() ).append( "' " );
+            buf.append( " DESC " );
+            renderQDString( buf, description.getDescription() );
         }
 
-        buf.append( "FQCN " ).append( description.getFqcn() ).append( " " );
+        buf.append( " FQCN " ).append( description.getFqcn() );
 
         if ( !StringTools.isEmpty( description.getBytecode() ) )
         {
-            buf.append( "BYTECODE " ).append( description.getBytecode() );
+            buf.append( " BYTECODE " ).append( description.getBytecode() );
         }
 
         buf.append( " X-SCHEMA '" );

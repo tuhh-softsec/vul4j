@@ -117,29 +117,28 @@ public class SchemaUtilsTest
     @Test
     public void testRenderQdescrs()
     {
-        assertEquals( "", SchemaUtils.render( (List<String>)null ).toString() );
-        assertEquals( "", SchemaUtils.render( Arrays.asList( new String[]
+        assertEquals( "", SchemaUtils.renderQDescrs( new StringBuffer(), (List<String>)null ).toString() );
+        assertEquals( "", SchemaUtils.renderQDescrs(  new StringBuffer(), Arrays.asList( new String[]
             {} ) ).toString() );
-        assertEquals( "'name1'", SchemaUtils.render( Arrays.asList( new String[]
+        assertEquals( "'name1'", SchemaUtils.renderQDescrs( new StringBuffer(), Arrays.asList( new String[]
             { "name1" } ) ).toString() );
-        assertEquals( "( 'name1' 'name2' )", SchemaUtils.render( Arrays.asList( new String[]
+        assertEquals( "( 'name1' 'name2' )", SchemaUtils.renderQDescrs( new StringBuffer(), Arrays.asList( new String[]
             { "name1", "name2" } ) ).toString() );
-        assertEquals( "( 'name1' 'name2' 'name3' )", SchemaUtils.render( Arrays.asList( new String[]
+        assertEquals( "( 'name1' 'name2' 'name3' )", SchemaUtils.renderQDescrs( new StringBuffer(), Arrays.asList( new String[]
             { "name1", "name2", "name3" } ) ).toString() );
 
-        StringBuffer buf = new StringBuffer();
-        assertEquals( "", SchemaUtils.render( buf, (List<String>)null ).toString() );
+        assertEquals( "", SchemaUtils.renderQDescrs( new StringBuffer(), (List<String>)null ).toString() );
 
-        assertEquals( "", SchemaUtils.render( Arrays.asList( new String[]
+        assertEquals( "", SchemaUtils.renderQDescrs( new StringBuffer(), Arrays.asList( new String[]
             {} ) ).toString() );
 
-        assertEquals( "'name1'", SchemaUtils.render( Arrays.asList( new String[]
+        assertEquals( "'name1'", SchemaUtils.renderQDescrs( new StringBuffer(), Arrays.asList( new String[]
             { "name1" } ) ).toString() );
 
-        assertEquals( "( 'name1' 'name2' )", SchemaUtils.render( Arrays.asList( new String[]
+        assertEquals( "( 'name1' 'name2' )", SchemaUtils.renderQDescrs( new StringBuffer(), Arrays.asList( new String[]
             { "name1", "name2" } ) ).toString() );
 
-        assertEquals( "( 'name1' 'name2' 'name3' )", SchemaUtils.render( Arrays.asList( new String[]
+        assertEquals( "( 'name1' 'name2' 'name3' )", SchemaUtils.renderQDescrs( new StringBuffer(), Arrays.asList( new String[]
             { "name1", "name2", "name3" } ) ).toString() );
     }
 }
