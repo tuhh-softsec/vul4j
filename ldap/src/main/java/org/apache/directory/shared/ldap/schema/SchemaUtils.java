@@ -1169,7 +1169,19 @@ public class SchemaUtils
             buf.append( " OBSOLETE" );
         }
 
-        // TODO : implement rendering for OC, MUST and MAY
+        buf.append( " OC " );
+        buf.append( nf.getStructuralObjectClass().getName() );
+        
+        buf.append( " MUST " );
+        renderOids( buf, nf.getMustAttributeTypeOids() );
+        
+        List<String> may = nf.getMayAttributeTypeOids();
+        
+        if ( ( may != null ) && ( may.size() > 0 ) )
+        {
+            buf.append( " MAY " );
+            renderOids( buf, may );
+        }
 
         buf.append( " X-SCHEMA '" );
         buf.append( nf.getSchemaName() );

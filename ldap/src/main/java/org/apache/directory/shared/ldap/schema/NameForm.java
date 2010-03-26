@@ -194,7 +194,7 @@ public class NameForm extends AbstractSchemaObject
      * @return the ObjectClass this NameForm is for
      * @throws LdapException If the structuralObjectClass is invalid
      */
-    public ObjectClass getStructuralObjectClass() throws LdapException
+    public ObjectClass getStructuralObjectClass()
     {
         return structuralObjectClass;
     }
@@ -247,7 +247,7 @@ public class NameForm extends AbstractSchemaObject
      * @return the AttributeTypes OIDs of the must use attributes
      * @throws LdapException if there is a failure resolving one AttributeTyoe
      */
-    public List<String> getMustAttributeTypeOids() throws LdapException
+    public List<String> getMustAttributeTypeOids()
     {
         return Collections.unmodifiableList( mustAttributeTypeOids );
     }
@@ -362,7 +362,7 @@ public class NameForm extends AbstractSchemaObject
      * @return the AttributeTypes OIDs of the may use attributes
      * @throws LdapException if there is a failure resolving one AttributeTyoe
      */
-    public List<String> getMayAttributeTypeOids() throws LdapException
+    public List<String> getMayAttributeTypeOids()
     {
         return Collections.unmodifiableList( mayAttributeTypeOids );
     }
