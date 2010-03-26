@@ -310,7 +310,7 @@ public final class DefaultServerAttribute extends DefaultClientAttribute impleme
                 catch( LdapException ne )
                 {
                     // The value can't be normalized : we don't add it.
-                    LOG.error( I18n.err( I18n.ERR_04449, val ) );
+                    LOG.error( I18n.err( I18n.ERR_04449, StringTools.dumpBytes( val ) ) );
                     return 0;
                 }
                 
@@ -320,7 +320,7 @@ public final class DefaultServerAttribute extends DefaultClientAttribute impleme
                 }
                 else
                 {
-                    LOG.error( I18n.err( I18n.ERR_04450, val ) );
+                    LOG.error( I18n.err( I18n.ERR_04450, StringTools.dumpBytes( val ) ) );
                 }
             }
             
