@@ -128,7 +128,7 @@ public class ClientModificationTest
         
         attribute.remove( "test2" );
         
-        EntryAttribute clonedAttribute = (ClientAttribute)clone.getAttribute();
+        EntryAttribute clonedAttribute = clone.getAttribute();
         
         assertEquals( 1, mod.getAttribute().size() );
         assertTrue( mod.getAttribute().contains( "test1" ) );

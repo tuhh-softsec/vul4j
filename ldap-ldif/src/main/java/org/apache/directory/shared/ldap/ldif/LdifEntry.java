@@ -34,7 +34,7 @@ import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Modification;
 import org.apache.directory.shared.ldap.entry.ModificationOperation;
 import org.apache.directory.shared.ldap.entry.Value;
-import org.apache.directory.shared.ldap.entry.client.ClientEntry;
+import org.apache.directory.shared.ldap.entry.client.ClientEntryFactory;
 import org.apache.directory.shared.ldap.entry.client.ClientModification;
 import org.apache.directory.shared.ldap.entry.client.ClientStringValue;
 import org.apache.directory.shared.ldap.entry.client.DefaultClientAttribute;
@@ -85,7 +85,7 @@ public class LdifEntry implements Cloneable, Externalizable
     private boolean deleteOldRdn;
 
     /** the entry */
-    private ClientEntry entry;
+    private Entry entry;
 
     
     /** The control */
@@ -553,7 +553,7 @@ public class LdifEntry implements Cloneable, Externalizable
 
         if ( entry != null )
         {
-            clone.entry = (ClientEntry)entry.clone();
+            clone.entry = entry.clone();
         }
 
         return clone;
@@ -927,7 +927,7 @@ public class LdifEntry implements Cloneable, Externalizable
         // Read the changeType
         int type = in.readInt();
         changeType = ChangeType.getChangeType( type );
-        entry = (ClientEntry)in.readObject();
+        entry = (Entry)in.readObject();
         
         switch ( changeType )
         {

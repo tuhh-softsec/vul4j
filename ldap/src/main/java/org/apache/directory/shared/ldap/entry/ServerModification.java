@@ -86,9 +86,9 @@ public class ServerModification implements Modification
         {
             AttributeType at = null;
             
-            if ( modAttribute instanceof ServerAttribute )
+            if ( modAttribute instanceof DefaultServerAttribute )
             {
-                at = ((ServerAttribute)modAttribute).getAttributeType();
+                at = ((EntryAttribute)modAttribute).getAttributeType();
             }
             else
             {
@@ -155,7 +155,7 @@ public class ServerModification implements Modification
      */
     public void setAttribute( EntryAttribute attribute )
     {
-        this.attribute = (ServerAttribute)attribute;
+        this.attribute = (EntryAttribute)attribute;
     }
     
 
@@ -167,7 +167,7 @@ public class ServerModification implements Modification
     public Modification toClientModification()
     {
         ModificationOperation newOperation = operation;
-        EntryAttribute newAttribute = ((ServerAttribute)attribute).toClientAttribute();
+        EntryAttribute newAttribute = attribute.toClientAttribute();
         Modification newModification = new ClientModification( newOperation, newAttribute );
         
         return newModification;
@@ -232,7 +232,7 @@ public class ServerModification implements Modification
         {
             ServerModification clone = (ServerModification)super.clone();
             
-            clone.attribute = (ServerAttribute)this.attribute.clone();
+            clone.attribute = (EntryAttribute)this.attribute.clone();
             return clone;
         }
         catch ( CloneNotSupportedException cnse )

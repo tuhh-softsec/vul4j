@@ -156,7 +156,7 @@ public final class DefaultServerEntry extends AbstractEntry<AttributeType> imple
      */
     private void createAttribute( String upId, AttributeType attributeType, byte[]... values ) 
     {
-        ServerAttribute attribute = new DefaultServerAttribute( attributeType, values );
+        EntryAttribute attribute = new DefaultServerAttribute( attributeType, values );
         attribute.setUpId( upId, attributeType );
         attributes.put( attributeType, attribute );
     }
@@ -170,7 +170,7 @@ public final class DefaultServerEntry extends AbstractEntry<AttributeType> imple
      */
     private void createAttribute( String upId, AttributeType attributeType, String... values ) 
     {
-        ServerAttribute attribute = new DefaultServerAttribute( attributeType, values );
+        EntryAttribute attribute = new DefaultServerAttribute( attributeType, values );
         attribute.setUpId( upId, attributeType );
         attributes.put( attributeType, attribute );
     }
@@ -184,7 +184,7 @@ public final class DefaultServerEntry extends AbstractEntry<AttributeType> imple
      */
     private void createAttribute( String upId, AttributeType attributeType, Value<?>... values ) 
     {
-        ServerAttribute attribute = new DefaultServerAttribute( attributeType, values );
+        EntryAttribute attribute = new DefaultServerAttribute( attributeType, values );
         attribute.setUpId( upId, attributeType );
         attributes.put( attributeType, attribute );
     }
@@ -279,13 +279,9 @@ public final class DefaultServerEntry extends AbstractEntry<AttributeType> imple
             try
             {
                 // First get the AttributeType
-                AttributeType attributeType = null;
+                AttributeType attributeType = attribute.getAttributeType();
 
-                if ( attribute instanceof ServerAttribute )
-                {
-                    attributeType = ((ServerAttribute)attribute).getAttributeType();
-                }
-                else
+                if ( attributeType == null )
                 {
                     attributeType = schemaManager.lookupAttributeTypeRegistry( attribute.getId() );
                 }
@@ -468,7 +464,7 @@ public final class DefaultServerEntry extends AbstractEntry<AttributeType> imple
      * @param dn The DN for this serverEntry. Can be null
      * @param attributes The list of attributes to create
      */
-    public DefaultServerEntry( SchemaManager schemaManager, DN dn, ServerAttribute... attributes )
+    public DefaultServerEntry( SchemaManager schemaManager, DN dn, EntryAttribute... attributes )
     {
         if ( dn == null )
         {
@@ -483,7 +479,7 @@ public final class DefaultServerEntry extends AbstractEntry<AttributeType> imple
 
         initObjectClassAT( schemaManager );
 
-        for ( ServerAttribute attribute:attributes )
+        for ( EntryAttribute attribute:attributes )
         {
             // Store a new ServerAttribute
             try
@@ -654,7 +650,7 @@ public final class DefaultServerEntry extends AbstractEntry<AttributeType> imple
     {
         for ( EntryAttribute attribute:attributes )
         {
-            ServerAttribute serverAttribute = (ServerAttribute)attribute;
+            EntryAttribute serverAttribute = (EntryAttribute)attribute;
             AttributeType attributeType = serverAttribute.getAttributeType();
             
             if ( this.attributes.containsKey( attributeType ) )
@@ -709,7 +705,7 @@ public final class DefaultServerEntry extends AbstractEntry<AttributeType> imple
             throw new UnsupportedOperationException( message );
         }
 
-        ServerAttribute attribute = (ServerAttribute)attributes.get( attributeType );
+        EntryAttribute attribute = (EntryAttribute)attributes.get( attributeType );
         
         upId = getUpId( upId, attributeType );
         
@@ -759,7 +755,7 @@ public final class DefaultServerEntry extends AbstractEntry<AttributeType> imple
         
         upId = getUpId( upId, attributeType );
         
-        ServerAttribute attribute = (ServerAttribute)attributes.get( attributeType );
+        EntryAttribute attribute = (EntryAttribute)attributes.get( attributeType );
     
         if ( attribute != null )
         {
@@ -795,7 +791,7 @@ public final class DefaultServerEntry extends AbstractEntry<AttributeType> imple
         
         upId = getUpId( upId, attributeType );
 
-        ServerAttribute attribute = (ServerAttribute)attributes.get( attributeType );
+        EntryAttribute attribute = (EntryAttribute)attributes.get( attributeType );
         
         if ( attribute != null )
         {
@@ -959,7 +955,7 @@ public final class DefaultServerEntry extends AbstractEntry<AttributeType> imple
                 return this.attributes.size() == 0;
             }
             
-            if ( !this.attributes.containsKey( ((ServerAttribute)entryAttribute).getAttributeType() ) )
+            if ( !this.attributes.containsKey( ((EntryAttribute)entryAttribute).getAttributeType() ) )
             {
                 return false;
             }
@@ -1225,7 +1221,7 @@ public final class DefaultServerEntry extends AbstractEntry<AttributeType> imple
         }
         
         // We have to check that we are checking the ObjectClass attributeType
-        if ( !((ServerAttribute)objectClass).getAttributeType().equals( OBJECT_CLASS_AT ) )
+        if ( !((EntryAttribute)objectClass).getAttributeType().equals( OBJECT_CLASS_AT ) )
         {
             return false;
         }
@@ -1402,7 +1398,7 @@ public final class DefaultServerEntry extends AbstractEntry<AttributeType> imple
                 throw new IllegalArgumentException( message );
             }
             
-            EntryAttribute removed = this.attributes.put( ((ServerAttribute)serverAttribute).getAttributeType(), serverAttribute );
+            EntryAttribute removed = this.attributes.put( ((EntryAttribute)serverAttribute).getAttributeType(), serverAttribute );
             
             if ( removed != null )
             {
@@ -1884,9 +1880,9 @@ public final class DefaultServerEntry extends AbstractEntry<AttributeType> imple
         
         for ( EntryAttribute serverAttribute:attributes )
         {
-            if ( this.attributes.containsKey( ((ServerAttribute)serverAttribute).getAttributeType() ) )
+            if ( this.attributes.containsKey( ((EntryAttribute)serverAttribute).getAttributeType() ) )
             {
-                this.attributes.remove( ((ServerAttribute)serverAttribute).getAttributeType() );
+                this.attributes.remove( ((EntryAttribute)serverAttribute).getAttributeType() );
                 removedAttributes.add( serverAttribute );
             }
         }
@@ -2240,7 +2236,7 @@ public final class DefaultServerEntry extends AbstractEntry<AttributeType> imple
         // Convert each attribute 
         for ( EntryAttribute serverAttribute:this )
         {
-            EntryAttribute clientAttribute = ((ServerAttribute)serverAttribute).toClientAttribute();
+            EntryAttribute clientAttribute = serverAttribute.toClientAttribute();
             clientEntry.add( clientAttribute );
         }
         
@@ -2277,7 +2273,7 @@ public final class DefaultServerEntry extends AbstractEntry<AttributeType> imple
         
         for ( EntryAttribute entryAttribute : attributes.values() )
         {
-            ServerAttribute value = (ServerAttribute)entryAttribute.clone();
+            EntryAttribute value = (EntryAttribute)entryAttribute.clone();
             clone.attributes.put( value.getAttributeType(), value );
         }
         
@@ -2458,7 +2454,7 @@ public final class DefaultServerEntry extends AbstractEntry<AttributeType> imple
         
         for ( EntryAttribute attribute:other )
         {
-            EntryAttribute attr = attributes.get( ((ServerAttribute)attribute).getAttributeType() );
+            EntryAttribute attr = attributes.get( ((EntryAttribute)attribute).getAttributeType() );
             
             if ( attr == null )
             {
@@ -2509,7 +2505,7 @@ public final class DefaultServerEntry extends AbstractEntry<AttributeType> imple
         {
             for ( EntryAttribute attribute:attributes.values() )
             {
-                if ( !((ServerAttribute)attribute).getAttributeType().equals( OBJECT_CLASS_AT ) )
+                if ( !((EntryAttribute)attribute).getAttributeType().equals( OBJECT_CLASS_AT ) )
                 {
                     sb.append( attribute );
                 }

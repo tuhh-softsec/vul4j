@@ -379,7 +379,7 @@ public class DefaultClientAttributeTest
         assertEquals( "test", attr.getUpId() );
         
         attr.setUpId(  "  TEST  " );
-        assertEquals( "TEST", attr.getUpId() );
+        assertEquals( "  TEST  ", attr.getUpId() );
     }
 
 
@@ -426,7 +426,7 @@ public class DefaultClientAttributeTest
         assertEquals( "test", attr.getId() );
         
         attr.setUpId( " Test " );
-        assertEquals( "Test", attr.getUpId() );
+        assertEquals( " Test ", attr.getUpId() );
         assertEquals( "test", attr.getId() );
     }
 
@@ -437,7 +437,7 @@ public class DefaultClientAttributeTest
     @Test
     public void testIsValidSyntaxChecker() throws LdapException
     {
-        ClientAttribute attr = new DefaultClientAttribute( "test" );
+        EntryAttribute attr = new DefaultClientAttribute( "test" );
         
         attr.add( "test", "another test" );
         

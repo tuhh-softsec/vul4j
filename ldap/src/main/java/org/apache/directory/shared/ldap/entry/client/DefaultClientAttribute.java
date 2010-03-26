@@ -30,10 +30,13 @@ import java.util.Set;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.exception.LdapInvalidAttributeValueException;
 
+import org.apache.directory.shared.asn1.primitives.OID;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
+import org.apache.directory.shared.ldap.entry.ServerStringValue;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
+import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.SyntaxChecker;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
@@ -49,11 +52,13 @@ import org.slf4j.LoggerFactory;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public class DefaultClientAttribute implements ClientAttribute
+public class DefaultClientAttribute implements EntryAttribute
 {
     /** logger for reporting errors that might not be handled properly upstream */
     private static final Logger LOG = LoggerFactory.getLogger( DefaultClientAttribute.class );
-    
+
+    /** The associated AttributeType */
+    protected AttributeType attributeType;
     
     /** The set of contained values */
     protected Set<Value<?>> values = new LinkedHashSet<Value<?>>();
@@ -61,7 +66,7 @@ public class DefaultClientAttribute implements ClientAttribute
     /** The User provided ID */
     protected String upId;
 
-    /** The normalized ID */
+    /** The normalized ID (will be the OID if we have a AttributeType) */
     protected String id;
 
     /** Tells if the attribute is Human Readable or not. When not set, 
@@ -270,7 +275,10 @@ public class DefaultClientAttribute implements ClientAttribute
 
     /**
      * Set the user provided ID. It will also set the ID, normalizing
-     * the upId (removing spaces before and after, and lowercasing it)
+     * the upId (removing spaces before and after, and lowercasing it)<br>
+     * <br>
+     * If the Attribute already has an AttributeType, then the upId must
+     * be either the AttributeType name, or OID
      *
      * @param upId The attribute ID
      * @throws IllegalArgumentException If the ID is empty or null or
@@ -278,15 +286,114 @@ public class DefaultClientAttribute implements ClientAttribute
      */
     public void setUpId( String upId )
     {
-        this.upId = StringTools.trim( upId );
+        setUpId( upId, null );
+    }
+
+    
+    /**
+     * Check that the upId is either a name or the OID of a given AT
+     */
+    private boolean areCompatible( String id, AttributeType attributeType )
+    {
+        // First, get rid of the options, if any
+        int optPos = id.indexOf( ";" );
+        String idNoOption = id;
         
-        if ( this.upId.length() == 0 )
+        if ( optPos != -1 )
         {
-            this.upId = null;
-            throw new IllegalArgumentException( I18n.err( I18n.ERR_04132 ) );
+            idNoOption = id.substring( 0, optPos );
+        }
+        
+        // Check that we find the ID in the AT names
+        for ( String name : attributeType.getNames() )
+        {
+            if ( name.equalsIgnoreCase( idNoOption ) )
+            {
+                return true;
+            }
+        }
+        
+        // Not found in names, check the OID
+        if ( OID.isOID( id )  && attributeType.getOid().equals( id ) )
+        {
+            return true;
         }
 
-        this.id = StringTools.lowerCaseAscii( this.upId );
+        return false;
+    }
+    
+
+    /**
+     * <p>
+     * Set the user provided ID. If we have none, the upId is assigned
+     * the attributetype's name. If it does not have any name, we will
+     * use the OID.
+     * </p>
+     * <p>
+     * If we have an upId and an AttributeType, they must be compatible. :
+     *  - if the upId is an OID, it must be the AttributeType's OID
+     *  - otherwise, its normalized form must be equals to ones of
+     *  the attributeType's names.
+     * </p>
+     * <p>
+     * In any case, the ATtributeType will be changed. The caller is responsible for
+     * the present values to be compatoble with the new AttributeType.
+     * </p>
+     *
+     * @param upId The attribute ID
+     * @param attributeType The associated attributeType
+     */
+    public void setUpId( String upId, AttributeType attributeType )
+    {
+        String trimmed = StringTools.trim( upId );
+
+        if ( StringTools.isEmpty( trimmed ) && ( attributeType == null ) )
+        {
+            throw new IllegalArgumentException( "Cannot set a null ID with a null AttributeType" );
+        }
+        
+        String id = StringTools.toLowerCase( trimmed );
+        
+        if ( attributeType == null )
+        {
+            if ( this.attributeType == null )
+            {
+                this.upId = upId;
+                this.id = id;
+                return;
+            }    
+            else
+            {
+                if ( areCompatible( id, this.attributeType ) )
+                {
+                    this.upId = upId;
+                    this.id = id;
+                    return;
+                }
+                else
+                {
+                    return;
+                }
+            }
+        }
+        
+        if ( StringTools.isEmpty( id ) )
+        {
+            this.attributeType = attributeType;
+            this.upId = attributeType.getName();
+            this.id = StringTools.trim( this.upId );
+            return;
+        }
+
+        if ( areCompatible( id, attributeType ) )
+        {
+            this.upId = upId;
+            this.id = id;
+            this.attributeType = attributeType;
+            return;
+        }
+
+        throw new IllegalArgumentException( "ID '" + id + "' and AttributeType '" + attributeType.getName() + "' are not compatible " );
     }
 
 
@@ -1243,6 +1350,120 @@ public class DefaultClientAttribute implements ClientAttribute
         return add( vals.toArray( valArray ) );
     }
     
+
+
+    /**
+     * Get the attribute type associated with this ServerAttribute.
+     *
+     * @return the attributeType associated with this entry attribute
+     */
+    public AttributeType getAttributeType()
+    {
+        return attributeType;
+    }
+    
+    
+    /**
+     * <p>
+     * Set the attribute type associated with this ServerAttribute.
+     * </p>
+     * <p>
+     * The current attributeType will be replaced. It is the responsibility of
+     * the caller to insure that the existing values are compatible with the new
+     * AttributeType
+     * </p>
+     *
+     * @param attributeType the attributeType associated with this entry attribute
+     */
+    public void setAttributeType( AttributeType attributeType )
+    {
+        if ( attributeType == null )
+        {
+            throw new IllegalArgumentException( "The AttributeType parameter should not be null" );
+        }
+
+        this.attributeType = attributeType;
+        setUpId( null, attributeType );
+        
+        if ( attributeType.getSyntax().isHumanReadable() )
+        {
+            isHR = true;
+        }
+        else
+        {
+            isHR = false;
+        }
+    }
+    
+    
+    /**
+     * <p>
+     * Check if the current attribute type is of the expected attributeType
+     * </p>
+     * <p>
+     * This method won't tell if the current attribute is a descendant of 
+     * the attributeType. For instance, the "CN" serverAttribute will return
+     * false if we ask if it's an instance of "Name". 
+     * </p> 
+     *
+     * @param attributeId The AttributeType ID to check
+     * @return True if the current attribute is of the expected attributeType
+     * @throws LdapInvalidAttributeValueException If there is no AttributeType
+     */
+    public boolean instanceOf( String attributeId ) throws LdapInvalidAttributeValueException
+    {
+        String trimmedId = StringTools.trim( attributeId );
+        
+        if ( StringTools.isEmpty( trimmedId ) )
+        {
+            return false;
+        }
+        
+        String normId = StringTools.lowerCaseAscii( trimmedId );
+        
+        for ( String name:attributeType.getNames() )
+        {
+            if ( normId.equalsIgnoreCase( name ) )
+            {
+                return true;
+            }
+        }
+        
+        return normId.equalsIgnoreCase( attributeType.getOid() );
+    }
+
+    
+    /**
+     * Convert the ServerAttribute to a ClientAttribute
+     *
+     * @return An instance of ClientAttribute
+     */
+    public EntryAttribute toClientAttribute()
+    {
+        // Create the new EntryAttribute
+        EntryAttribute clientAttribute = new DefaultClientAttribute( upId );
+        
+        // Copy the values
+        for ( Value<?> value:this )
+        {
+            Value<?> clientValue = null;
+            
+            if ( value instanceof ServerStringValue )
+            {
+                clientValue = new ClientStringValue( value.getString() );
+            }
+            else
+            {
+                clientValue = new ClientBinaryValue( value.getBytes() );
+            }
+            
+            clientAttribute.add( clientValue );
+        }
+        
+        return clientAttribute;
+    }
+
+
     //-------------------------------------------------------------------------
     // Overloaded Object classes
     //-------------------------------------------------------------------------

@@ -142,7 +142,7 @@ public class ClientModification implements Modification
      */
     public void setAttribute( EntryAttribute attribute )
     {
-        this.attribute = (ClientAttribute)attribute;
+        this.attribute = attribute;
     }
     
     
@@ -208,7 +208,7 @@ public class ClientModification implements Modification
         operation = ModificationOperation.getOperation( op );
         
         // Read the attribute
-        attribute = (ClientAttribute)in.readObject();
+        attribute = (EntryAttribute)in.readObject();
     }
     
     
@@ -238,7 +238,7 @@ public class ClientModification implements Modification
         {
             ClientModification clone = (ClientModification)super.clone();
             
-            clone.attribute = (ClientAttribute)this.attribute.clone();
+            clone.attribute = this.attribute.clone();
             return clone;
         }
         catch ( CloneNotSupportedException cnse )

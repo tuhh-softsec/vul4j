@@ -179,7 +179,7 @@ public final class DefaultClientEntry extends AbstractEntry<String> //implements
             else
             {
                 // Stores the attribute into the entry
-                this.attributes.put( attribute.getId(), (ClientAttribute)attribute );
+                this.attributes.put( attribute.getId(), attribute );
             }
         }
     }
@@ -508,7 +508,7 @@ public final class DefaultClientEntry extends AbstractEntry<String> //implements
         String id = getId( upId );
         
         // Create a new attribute
-        ClientAttribute clientAttribute = new DefaultClientAttribute( upId, values );
+        EntryAttribute clientAttribute = new DefaultClientAttribute( upId, values );
 
         // Replace the previous one, and return it back
         return attributes.put( id, clientAttribute );
@@ -534,7 +534,7 @@ public final class DefaultClientEntry extends AbstractEntry<String> //implements
         String id = getId( upId );
         
         // Create a new attribute
-        ClientAttribute clientAttribute = new DefaultClientAttribute( upId, values );
+        EntryAttribute clientAttribute = new DefaultClientAttribute( upId, values );
 
         // Replace the previous one, and return it back
         return attributes.put( id, clientAttribute );
@@ -560,7 +560,7 @@ public final class DefaultClientEntry extends AbstractEntry<String> //implements
         String id = getId( upId );
         
         // Create a new attribute
-        ClientAttribute clientAttribute = new DefaultClientAttribute( upId, values );
+        EntryAttribute clientAttribute = new DefaultClientAttribute( upId, values );
 
         // Replace the previous one, and return it back
         return attributes.put( id, clientAttribute );
@@ -609,7 +609,7 @@ public final class DefaultClientEntry extends AbstractEntry<String> //implements
                 returnedClientAttributes.add( attributes.remove( id ) );
             }
 
-            ClientAttribute newAttribute = new DefaultClientAttribute( upId );
+            EntryAttribute newAttribute = new DefaultClientAttribute( upId );
             attributes.put( id, newAttribute );
         }
         
@@ -649,7 +649,7 @@ public final class DefaultClientEntry extends AbstractEntry<String> //implements
             }
             
             // add the new one
-            this.attributes.put( id, (ClientAttribute)attribute );            
+            this.attributes.put( id, (EntryAttribute)attribute );            
         }
         
         // return the previous attributes

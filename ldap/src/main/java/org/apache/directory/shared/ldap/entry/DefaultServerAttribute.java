@@ -32,7 +32,6 @@ import org.apache.directory.shared.ldap.entry.client.ClientBinaryValue;
 import org.apache.directory.shared.ldap.entry.client.ClientStringValue;
 import org.apache.directory.shared.ldap.entry.client.DefaultClientAttribute;
 import org.apache.directory.shared.ldap.exception.LdapException;
-import org.apache.directory.shared.ldap.exception.LdapInvalidAttributeValueException;
 import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
@@ -45,38 +44,12 @@ import org.slf4j.LoggerFactory;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public final class DefaultServerAttribute extends DefaultClientAttribute implements ServerAttribute
+public final class DefaultServerAttribute extends DefaultClientAttribute implements EntryAttribute
 {
     public static final long serialVersionUID = 1L;
     
     /** logger for reporting errors that might not be handled properly upstream */
     private static final Logger LOG = LoggerFactory.getLogger( DefaultServerAttribute.class );
-    
-    /** The associated AttributeType */
-    private AttributeType attributeType;
-    
-    
-    //-----------------------------------------------------------------------
-    // utility methods
-    //-----------------------------------------------------------------------
-    /**
-     * Private helper method used to set an UpId from an attributeType
-     * 
-     * @param at The attributeType for which we want the upID
-     * @return the ID of the given attributeType
-     */
-    private String getUpId( AttributeType at )
-    {
-        String atUpId = at.getName();
-        
-        if ( atUpId == null )
-        {
-            atUpId = at.getOid();
-        }
-        
-        return atUpId;
-    }
-    
     
     //-------------------------------------------------------------------------
     // Constructors
@@ -97,7 +70,7 @@ public final class DefaultServerAttribute extends DefaultClientAttribute impleme
         this.id = attribute.getId();
         this.upId = attribute.getUpId();
 
-        if ( attribute instanceof ServerAttribute )
+        if ( attributeType == null )
         {
             isHR = attribute.isHR();
 
@@ -185,7 +158,7 @@ public final class DefaultServerAttribute extends DefaultClientAttribute impleme
         }
 
         setAttributeType( attributeType );
-        setUpId( upId );
+        setUpId( upId, attributeType );
     }
 
 
@@ -652,56 +625,8 @@ public final class DefaultServerAttribute extends DefaultClientAttribute impleme
         
         return true;
     }
-
-
-    /**
-     * Get the attribute type associated with this ServerAttribute.
-     *
-     * @return the attributeType associated with this entry attribute
-     */
-    public AttributeType getAttributeType()
-    {
-        return attributeType;
-    }
     
     
-    /**
-     * <p>
-     * Check if the current attribute type is of the expected attributeType
-     * </p>
-     * <p>
-     * This method won't tell if the current attribute is a descendant of 
-     * the attributeType. For instance, the "CN" serverAttribute will return
-     * false if we ask if it's an instance of "Name". 
-     * </p> 
-     *
-     * @param attributeId The AttributeType ID to check
-     * @return True if the current attribute is of the expected attributeType
-     * @throws LdapInvalidAttributeValueException If there is no AttributeType
-     */
-    public boolean instanceOf( String attributeId ) throws LdapInvalidAttributeValueException
-    {
-        String trimmedId = StringTools.trim( attributeId );
-        
-        if ( StringTools.isEmpty( trimmedId ) )
-        {
-            return false;
-        }
-        
-        String normId = StringTools.lowerCaseAscii( trimmedId );
-        
-        for ( String name:attributeType.getNames() )
-        {
-            if ( normId.equalsIgnoreCase( name ) )
-            {
-                return true;
-            }
-        }
-        
-        return normId.equalsIgnoreCase( attributeType.getOid() );
-    }
-    
-
     /**
      * <p>
      * Checks to see if this attribute is valid along with the values it contains.
@@ -847,39 +772,6 @@ public final class DefaultServerAttribute extends DefaultClientAttribute impleme
     
     /**
      * <p>
-     * Set the attribute type associated with this ServerAttribute.
-     * </p>
-     * <p>
-     * The current attributeType will be replaced. It is the responsibility of
-     * the caller to insure that the existing values are compatible with the new
-     * AttributeType
-     * </p>
-     *
-     * @param attributeType the attributeType associated with this entry attribute
-     */
-    public void setAttributeType( AttributeType attributeType )
-    {
-        if ( attributeType == null )
-        {
-            throw new IllegalArgumentException( "The AttributeType parameter should not be null" );
-        }
-
-        this.attributeType = attributeType;
-        setUpId( null, attributeType );
-        
-        if ( attributeType.getSyntax().isHumanReadable() )
-        {
-            isHR = true;
-        }
-        else
-        {
-            isHR = false;
-        }
-    }
-    
-    
-    /**
-     * <p>
      * Overload the ClientAttribte isHR method : we can't change this flag
      * for a ServerAttribute, as the HR is already set using the AttributeType.
      * Set the attribute to Human Readable or to Binary. 
@@ -974,7 +866,7 @@ public final class DefaultServerAttribute extends DefaultClientAttribute impleme
      * </p>
      *
      * @param upId The attribute ID
-     */
+     *
     public void setUpId( String upId )
     {
         if ( !StringTools.isEmpty( StringTools.trim( upId  ) ) )
@@ -987,7 +879,7 @@ public final class DefaultServerAttribute extends DefaultClientAttribute impleme
                     // Everything is fine, store the upId.
                     // This should not happen...
                     super.setUpId( upId );
-                    
+                    return;
                 }
             }
             else
@@ -1012,131 +904,17 @@ public final class DefaultServerAttribute extends DefaultClientAttribute impleme
                 {
                     // We have an OID : stores it
                     super.setUpId( upId );
+                    return;
                 }
-            }
-        }
-    }
-    
-    
-    /**
-     * <p>
-     * Set the user provided ID. If we have none, the upId is assigned
-     * the attributetype's name. If it does not have any name, we will
-     * use the OID.
-     * </p>
-     * <p>
-     * If we have an upId and an AttributeType, they must be compatible. :
-     *  - if the upId is an OID, it must be the AttributeType's OID
-     *  - otherwise, its normalized form must be equals to ones of
-     *  the attributeType's names.
-     * </p>
-     * <p>
-     * In any case, the ATtributeType will be changed. The caller is responsible for
-     * the present values to be compatoble with the new AttributeType.
-     * </p>
-     *
-     * @param upId The attribute ID
-     * @param attributeType The associated attributeType
-     */
-    public void setUpId( String upId, AttributeType attributeType )
-    {
-        if ( StringTools.isEmpty( StringTools.trim( upId  ) ) )
-        {
-            super.setUpId( getUpId( attributeType ) );
-            this.attributeType = attributeType;
-        }
-        else
-        {
-            String name = attributeType.getName();
-            
-            if ( name == null )
-            {
-                // If the name is null, then we may have to store an OID
-                if ( OID.isOID( upId )  && attributeType.getOid().equals( upId ) )
-                {
-                    //  Everything is fine, store the upId. 
-                    super.setUpId( upId );
-                    this.attributeType = attributeType;
-                }
-                else
-                {
-                    // We have a difference or the upId is not a valid OID :
-                    // we will use the attributeTypeOID in this case.
-                    LOG.warn( "The upID ({}) is not an OID or is different from the AttributeType OID({})",
-                        upId, attributeType.getOid() );
-                    super.setUpId( attributeType.getOid() );
-                    this.attributeType = attributeType;
-                }
-            }
-            else
-            {
-                // We have at least one name. Check that the normalized upId
-                // is one of those names. Otherwise, the upId may be an OID too.
-                // In this case, it must be equals to the attributeType OID.
-                String normUpId = StringTools.lowerCaseAscii( StringTools.trim( upId ) );
                 
-                for ( String atId:attributeType.getNames() )
-                {
-                    if ( atId.equalsIgnoreCase( normUpId ) )
-                    {
-                        // Found ! We can store the upId and get out
-                        super.setUpId( upId );
-                        this.attributeType = attributeType;
-                        return;
-                    }
-                }
+                return;
+            }
+        }
+        
+        return;
+    }
     
-                // UpId was not found in names. It should be an OID, or if not, we 
-                // will use the AttributeType name.
-                if ( OID.isOID( normUpId ) && attributeType.getOid().equals( normUpId ) )
-                {
-                    // We have an OID : stores it
-                    super.setUpId( upId );
-                    this.attributeType = attributeType;
-                }
-                else
-                {
-                    String message = I18n.err( I18n.ERR_04453, upId, attributeType.getOid() );
-                    // Not a valid OID : use the AttributeTypes OID name instead
-                    LOG.error( message );
-                    throw new IllegalArgumentException( message );
-                }
-            }
-        }
-    }
-
-
-    /**
-     * Convert the ServerAttribute to a ClientAttribute
-     *
-     * @return An instance of ClientAttribute
-     */
-    public EntryAttribute toClientAttribute()
-    {
-        // Create the new EntryAttribute
-        EntryAttribute clientAttribute = new DefaultClientAttribute( upId );
-        
-        // Copy the values
-        for ( Value<?> value:this )
-        {
-            Value<?> clientValue = null;
-            
-            if ( value instanceof ServerStringValue )
-            {
-                clientValue = new ClientStringValue( value.getString() );
-            }
-            else
-            {
-                clientValue = new ClientBinaryValue( value.getBytes() );
-            }
-            
-            clientAttribute.add( clientValue );
-        }
-        
-        return clientAttribute;
-    }
-
-
+    
     //-------------------------------------------------------------------------
     // Serialization methods
     //-------------------------------------------------------------------------
@@ -1276,10 +1054,10 @@ public final class DefaultServerAttribute extends DefaultClientAttribute impleme
      * 
      * @return a clone of the current attribute
      */
-    public ServerAttribute clone()
+    public EntryAttribute clone()
     {
         // clone the structure by cloner the inherited class
-        ServerAttribute clone = (ServerAttribute)super.clone();
+        EntryAttribute clone = (EntryAttribute)super.clone();
         
         // We are done !
         return clone;
@@ -1298,12 +1076,12 @@ public final class DefaultServerAttribute extends DefaultClientAttribute impleme
             return true;
         }
         
-        if ( ! (obj instanceof ServerAttribute ) )
+        if ( ! (obj instanceof EntryAttribute ) )
         {
             return false;
         }
         
-        ServerAttribute other = (ServerAttribute)obj;
+        EntryAttribute other = (EntryAttribute)obj;
         
         if ( !attributeType.equals( other.getAttributeType() ) )
         {

@@ -478,7 +478,7 @@ public class LdifUtils
         {
             StringBuilder lineBuffer = new StringBuilder();
             
-            lineBuffer.append( attr.getId() );
+            lineBuffer.append( attr.getUpId() );
             
             // First, deal with null value (which is valid)
             if ( value.isNull() )

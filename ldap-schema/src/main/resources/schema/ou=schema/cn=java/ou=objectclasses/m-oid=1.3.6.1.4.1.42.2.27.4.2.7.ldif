@@ -10,7 +10,6 @@ m-supObjectClass: javaObject
 m-typeObjectClass: AUXILIARY
 m-may: javaReferenceAddress
 m-may: javaFactory
-entryUUID:: h00TrOdXSSetsPaZmZyjkQ==
 createtimestamp: 20090818022732Z
 entrycsn: 20090818052732.846000Z#000000#000#000000
 creatorsname: uid=admin,ou=system
