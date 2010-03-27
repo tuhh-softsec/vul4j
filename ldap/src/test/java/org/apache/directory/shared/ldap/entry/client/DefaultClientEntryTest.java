@@ -40,6 +40,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
+import org.apache.directory.shared.ldap.entry.BinaryValue;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Value;
@@ -411,7 +412,7 @@ public class DefaultClientEntryTest
         assertTrue( attributeSN.contains( value1 ) );
         assertTrue( attributeSN.contains( value2 ) );
         
-        Value<byte[]> value4 = new ClientBinaryValue( BYTES1 );
+        Value<byte[]> value4 = new BinaryValue( BYTES1 );
         entry.add( "l", value1, value4 );
         assertEquals( 3, entry.size() );
         EntryAttribute attributeL = entry.get( "l" );
@@ -583,10 +584,10 @@ public class DefaultClientEntryTest
         Value<String> strValue3 = new ClientStringValue( "test3" );
         Value<String> strNullValue = new ClientStringValue( null);
 
-        Value<byte[]> binValue1 = new ClientBinaryValue( BYTES1 );
-        Value<byte[]> binValue2 = new ClientBinaryValue( BYTES2 );
-        Value<byte[]> binValue3 = new ClientBinaryValue( BYTES3 );
-        Value<byte[]> binNullValue = new ClientBinaryValue( null );
+        Value<byte[]> binValue1 = new BinaryValue( BYTES1 );
+        Value<byte[]> binValue2 = new BinaryValue( BYTES2 );
+        Value<byte[]> binValue3 = new BinaryValue( BYTES3 );
+        Value<byte[]> binNullValue = new BinaryValue( (byte[])null );
 
         assertTrue( entry.contains( "CN", strValue1, strValue2, strNullValue ) );
         assertTrue( entry.contains( "userpassword", binValue1, binValue2, binNullValue ) );
@@ -943,10 +944,10 @@ public class DefaultClientEntryTest
         Value<String> strValueTop2 = new ClientStringValue( "top" );
         Value<String> strNullValue = new ClientStringValue( null);
 
-        Value<byte[]> binValue1 = new ClientBinaryValue( BYTES1 );
-        Value<byte[]> binValue2 = new ClientBinaryValue( BYTES2 );
-        Value<byte[]> binValue3 = new ClientBinaryValue( BYTES1 );
-        Value<byte[]> binNullValue = new ClientBinaryValue( null );
+        Value<byte[]> binValue1 = new BinaryValue( BYTES1 );
+        Value<byte[]> binValue2 = new BinaryValue( BYTES2 );
+        Value<byte[]> binValue3 = new BinaryValue( BYTES1 );
+        Value<byte[]> binNullValue = new BinaryValue( (byte[])null );
 
         try
         {
@@ -1139,10 +1140,10 @@ public class DefaultClientEntryTest
         Value<String> strValue3 = new ClientStringValue( "test3" );
         Value<String> strNullValue = new ClientStringValue( null);
 
-        Value<byte[]> binValue1 = new ClientBinaryValue( BYTES1 );
-        Value<byte[]> binValue2 = new ClientBinaryValue( BYTES2 );
-        Value<byte[]> binValue3 = new ClientBinaryValue( BYTES3 );
-        Value<byte[]> binNullValue = new ClientBinaryValue( null );
+        Value<byte[]> binValue1 = new BinaryValue( BYTES1 );
+        Value<byte[]> binValue2 = new BinaryValue( BYTES2 );
+        Value<byte[]> binValue3 = new BinaryValue( BYTES3 );
+        Value<byte[]> binNullValue = new BinaryValue( (byte[])null );
         
         assertTrue( entry.remove( "cn", strValue1, strNullValue ) );
         assertTrue( entry.contains( "cn", strValue2 ) );
@@ -1239,9 +1240,9 @@ public class DefaultClientEntryTest
         Value<String> strValuePerson = new ClientStringValue( "person" );
         Value<String> strNullValue = new ClientStringValue( null);
 
-        Value<byte[]> binValue1 = new ClientBinaryValue( BYTES1 );
-        Value<byte[]> binValue2 = new ClientBinaryValue( BYTES2 );
-        Value<byte[]> binNullValue = new ClientBinaryValue( null );
+        Value<byte[]> binValue1 = new BinaryValue( BYTES1 );
+        Value<byte[]> binValue2 = new BinaryValue( BYTES2 );
+        Value<byte[]> binNullValue = new BinaryValue( (byte[])null );
         
         entry.put( "ObjectClass", strValueTop, strValuePerson, strNullValue );
         entry.put( "UserPassword", binValue1, binValue2, binNullValue );

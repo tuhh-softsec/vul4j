@@ -23,7 +23,7 @@ package org.apache.directory.shared.ldap.schema.normalizers;
 import java.io.UnsupportedEncodingException;
 
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.entry.client.ClientBinaryValue;
+import org.apache.directory.shared.ldap.entry.BinaryValue;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.name.NameComponentNormalizer;
 import org.apache.directory.shared.ldap.schema.AttributeType;
@@ -123,7 +123,7 @@ public class ConcreteNameComponentNormalizer implements NameComponentNormalizer
                 String unescaped = unescape( value );
                 byte[] valBytes = unescaped.getBytes( "UTF-8" );
                 
-                return lookup( name ).normalize( new ClientBinaryValue( valBytes ) ); 
+                return lookup( name ).normalize( new BinaryValue( valBytes ) ); 
             }
             catch ( UnsupportedEncodingException uee )
             {
@@ -145,7 +145,7 @@ public class ConcreteNameComponentNormalizer implements NameComponentNormalizer
         
         if ( !attributeType.getSyntax().isHumanReadable() )
         {
-            return lookup( name ).normalize( new ClientBinaryValue( value ) );
+            return lookup( name ).normalize( new BinaryValue( value ) );
         }
         else
         {
@@ -178,7 +178,7 @@ public class ConcreteNameComponentNormalizer implements NameComponentNormalizer
      */
     public Object normalizeByOid( String oid, byte[] value ) throws LdapException
     {
-        return lookup( oid ).normalize( new ClientBinaryValue( value ) );
+        return lookup( oid ).normalize( new BinaryValue( value ) );
     }
 
 

@@ -28,8 +28,8 @@ import org.apache.directory.shared.ldap.codec.AttributeValueAssertion;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.search.AttributeValueAssertionFilter;
 import org.apache.directory.shared.ldap.codec.search.SearchRequestCodec;
+import org.apache.directory.shared.ldap.entry.BinaryValue;
 import org.apache.directory.shared.ldap.entry.Value;
-import org.apache.directory.shared.ldap.entry.client.ClientBinaryValue;
 import org.apache.directory.shared.ldap.entry.client.ClientStringValue;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
@@ -70,11 +70,11 @@ public class InitAssertionValueFilterAction extends GrammarAction
 
         if ( tlv.getLength() != 0 )
         {
-            assertionValue = new ClientBinaryValue( tlv.getValue().getData() );
+            assertionValue = new BinaryValue( tlv.getValue().getData() );
         }
         else
         {
-            assertionValue = new ClientBinaryValue( StringTools.EMPTY_BYTES );
+            assertionValue = new BinaryValue( StringTools.EMPTY_BYTES );
         }
 
         AttributeValueAssertionFilter terminalFilter = ( AttributeValueAssertionFilter ) searchRequest
@@ -85,11 +85,11 @@ public class InitAssertionValueFilterAction extends GrammarAction
         {
             if ( tlv.getLength() != 0 )
             {
-                assertionValue = new ClientBinaryValue( tlv.getValue().getData() );
+                assertionValue = new BinaryValue( tlv.getValue().getData() );
             }
             else
             {
-                assertionValue = new ClientBinaryValue( StringTools.EMPTY_BYTES );
+                assertionValue = new BinaryValue( StringTools.EMPTY_BYTES );
             }
             
             assertion.setAssertionValue( assertionValue );

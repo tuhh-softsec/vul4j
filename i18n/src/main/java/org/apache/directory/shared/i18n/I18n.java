@@ -615,6 +615,9 @@ public class I18n
     public static final String ERR_04470 = "ERR_04470";
     public static final String ERR_04471 = "ERR_04471";
     public static final String ERR_04472 = "ERR_04472";
+    public static final String ERR_04473 = "ERR_04473";
+    public static final String ERR_04474 = "ERR_04474";
+    public static final String ERR_04475 = "ERR_04475";
 
 	// ldap-constants
 	public static final String ERR_05001 = "ERR_05001";

@@ -20,8 +20,8 @@
 package org.apache.directory.shared.ldap.schema.normalizers;
 
 
+import org.apache.directory.shared.ldap.entry.BinaryValue;
 import org.apache.directory.shared.ldap.entry.Value;
-import org.apache.directory.shared.ldap.entry.client.ClientBinaryValue;
 import org.apache.directory.shared.ldap.schema.normalizers.BooleanNormalizer;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
@@ -66,8 +66,8 @@ public class BooleanNormalizerTest
     @Test
     public void testNormalizeByteValue() throws Exception
     {
-        assertEquals( "TRUE", normalizer.normalize( new ClientBinaryValue( "tRuE".getBytes() ) ).getString() );
-        assertEquals( "TRUE", normalizer.normalize( new ClientBinaryValue( "true".getBytes() ) ).getString() );
+        assertEquals( "TRUE", normalizer.normalize( new BinaryValue( "tRuE".getBytes() ) ).getString() );
+        assertEquals( "TRUE", normalizer.normalize( new BinaryValue( "true".getBytes() ) ).getString() );
     }
 
 }

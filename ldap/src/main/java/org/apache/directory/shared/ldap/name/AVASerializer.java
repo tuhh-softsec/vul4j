@@ -23,8 +23,8 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
+import org.apache.directory.shared.ldap.entry.BinaryValue;
 import org.apache.directory.shared.ldap.entry.Value;
-import org.apache.directory.shared.ldap.entry.client.ClientBinaryValue;
 import org.apache.directory.shared.ldap.entry.client.ClientStringValue;
 import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.util.StringTools;
@@ -184,8 +184,8 @@ public class AVASerializer
     
                 AVA atav = 
                     new AVA( upType, normType, 
-                        new ClientBinaryValue( upValue) , 
-                        new ClientBinaryValue( normValue ), upName );
+                        new BinaryValue( upValue) , 
+                        new BinaryValue( normValue ), upName );
                 
                 return atav;
             }

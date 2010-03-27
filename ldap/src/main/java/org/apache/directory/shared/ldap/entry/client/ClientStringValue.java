@@ -30,6 +30,9 @@ import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.NotImplementedException;
 import org.apache.directory.shared.ldap.entry.AbstractValue;
 import org.apache.directory.shared.ldap.entry.Value;
+import org.apache.directory.shared.ldap.schema.AttributeType;
+import org.apache.directory.shared.ldap.schema.LdapComparator;
+import org.apache.directory.shared.ldap.schema.MatchingRule;
 import org.apache.directory.shared.ldap.schema.Normalizer;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
@@ -50,11 +53,13 @@ public class ClientStringValue extends AbstractValue<String>
     /** Used for serialization */
     private static final long serialVersionUID = 2L;
     
-    
     /** logger for reporting errors that might not be handled properly upstream */
-    private static final Logger LOG = LoggerFactory.getLogger( ClientStringValue.class );
+    protected static final Logger LOG = LoggerFactory.getLogger( ClientStringValue.class );
 
-    
+    /** reference to the attributeType which is not serialized */
+    protected transient AttributeType attributeType;
+
+
     // -----------------------------------------------------------------------
     // Constructors
     // -----------------------------------------------------------------------
@@ -246,12 +251,39 @@ public class ClientStringValue extends AbstractValue<String>
         // stored in an attribute - the binary version does the same 
         if ( isNull() )
         {
+            if ( attributeType != null )
+            {
+                // return the OID hashcode if the value is null. 
+                return attributeType.getOid().hashCode();
+            }
+            
             return 0;
         }
 
         // If the normalized value is null, will default to wrapped
         // which cannot be null at this point.
-        return getNormalizedValue().hashCode();
+        // If the normalized value is null, will default to wrapped
+        // which cannot be null at this point.
+        int h = 0;
+
+        String normalized = getNormalizedValue();
+        
+        if ( normalized != null )
+        {
+            h = normalized.hashCode();
+        }
+        else
+        {
+            h = 17;
+        }
+        
+        // Add the OID hashcode if we have an AttributeType
+        if ( attributeType != null )
+        {
+            h = h*37 + attributeType.getOid().hashCode();
+        }
+        
+        return h;
     }
 
 
@@ -390,8 +422,257 @@ public class ClientStringValue extends AbstractValue<String>
         // and flush the data
         out.flush();
     }
+
+    
+    /**
+     * Get the associated AttributeType
+     * @return The AttributeType
+     */
+    public AttributeType getAttributeType()
+    {
+        return attributeType;
+    }
+
+    
+    /**
+     * Check if the value is stored into an instance of the given 
+     * AttributeType, or one of its ascendant.
+     * 
+     * For instance, if the Value is associated with a CommonName,
+     * checking for Name will match.
+     * 
+     * @param attributeType The AttributeType we are looking at
+     * @return <code>true</code> if the value is associated with the given
+     * attributeType or one of its ascendant
+     */
+    public boolean instanceOf( AttributeType attributeType ) throws LdapException
+    {
+        if ( attributeType != null )
+        {
+            if ( this.attributeType.equals( attributeType ) )
+            {
+                return true;
+            }
+    
+            return this.attributeType.isDescendantOf( attributeType );
+        }
+        
+        return false;
+    }
+
+
+    /**
+     *  Check the attributeType member. It should not be null, 
+     *  and it should contains a syntax.
+     */
+    protected String checkAttributeType( AttributeType attributeType )
+    {
+        if ( attributeType == null )
+        {
+            return "The AttributeType parameter should not be null";
+        }
+        
+        if ( attributeType.getSyntax() == null )
+        {
+            return "There is no Syntax associated with this attributeType";
+        }
+
+        return null;
+    }
+
+    
+    /**
+     * Gets a comparator using getMatchingRule() to resolve the matching
+     * that the comparator is extracted from.
+     *
+     * @return a comparator associated with the attributeType or null if one cannot be found
+     * @throws LdapException if resolution of schema entities fail
+     */
+    protected LdapComparator<? super Object> getLdapComparator() throws LdapException
+    {
+        if ( attributeType != null )
+        {
+            MatchingRule mr = getMatchingRule();
+    
+            if ( mr == null )
+            {
+                return null;
+            }
+    
+            return mr.getLdapComparator();
+        }
+        else
+        {
+            return null;
+        }
+    }
     
     
+    /**
+     * Find a matchingRule to use for normalization and comparison.  If an equality
+     * matchingRule cannot be found it checks to see if other matchingRules are
+     * available: SUBSTR, and ORDERING.  If a matchingRule cannot be found null is
+     * returned.
+     *
+     * @return a matchingRule or null if one cannot be found for the attributeType
+     * @throws LdapException if resolution of schema entities fail
+     */
+    protected MatchingRule getMatchingRule() throws LdapException
+    {
+        if ( attributeType != null )
+        {
+            MatchingRule mr = attributeType.getEquality();
+    
+            if ( mr == null )
+            {
+                mr = attributeType.getOrdering();
+            }
+    
+            if ( mr == null )
+            {
+                mr = attributeType.getSubstring();
+            }
+    
+            return mr;
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+
+    /**
+     * Gets a normalizer using getMatchingRule() to resolve the matchingRule
+     * that the normalizer is extracted from.
+     *
+     * @return a normalizer associated with the attributeType or null if one cannot be found
+     * @throws LdapException if resolution of schema entities fail
+     */
+    protected Normalizer getNormalizer() throws LdapException
+    {
+        if ( attributeType != null )
+        {
+            MatchingRule mr = getMatchingRule();
+    
+            if ( mr == null )
+            {
+                return null;
+            }
+    
+            return mr.getNormalizer();
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    
+    /**
+     * We will write the value and the normalized value, only
+     * if the normalized value is different.
+     * 
+     * If the value is empty, a flag is written at the beginning with 
+     * the value true, otherwise, a false is written.
+     * 
+     * The data will be stored following this structure :
+     *  [empty value flag]
+     *  [UP value]
+     *  [normalized] (will be false if the value can't be normalized)
+     *  [same] (a flag set to true if the normalized value equals the UP value)
+     *  [Norm value] (the normalized value if different from the UP value)
+     *  
+     *  @param out the buffer in which we will stored the serialized form of the value
+     *  @throws IOException if we can't write into the buffer
+     */
+    public void serialize( ObjectOutput out ) throws IOException
+    {
+        if ( wrapped != null )
+        {
+            // write a flag indicating that the value is not null
+            out.writeBoolean( true );
+            
+            // Write the data
+            out.writeUTF( wrapped );
+            
+            // Normalize the data
+            try
+            {
+                normalize();
+                out.writeBoolean( true );
+                
+                if ( wrapped.equals( normalizedValue ) )
+                {
+                    out.writeBoolean( true );
+                }
+                else
+                {
+                    out.writeBoolean( false );
+                    out.writeUTF( normalizedValue );
+                }
+            }
+            catch ( LdapException ne )
+            {
+                // The value can't be normalized, we don't write the 
+                // normalized value.
+                normalizedValue = null;
+                out.writeBoolean( false );
+            }
+        }
+        else
+        {
+            // Write a flag indicating that the value is null
+            out.writeBoolean( false );
+        }
+        
+        out.flush();
+    }
+
+    
+    /**
+     * Deserialize a ServerStringValue. 
+     *
+     * @param in the buffer containing the bytes with the serialized value
+     * @throws IOException 
+     * @throws ClassNotFoundException
+     */
+    public void deserialize( ObjectInput in ) throws IOException, ClassNotFoundException
+    {
+        // If the value is null, the flag will be set to false
+        if ( !in.readBoolean() )
+        {
+            set( null );
+            normalizedValue = null;
+            return;
+        }
+        
+        // Read the value
+        String wrapped = in.readUTF();
+        
+        set( wrapped );
+        
+        // Read the normalized flag
+        normalized = in.readBoolean();
+        
+        if ( normalized )
+        {
+            normalized = true;
+
+            // Read the 'same' flag
+            if ( in.readBoolean() )
+            {
+                normalizedValue = wrapped;
+            }
+            else
+            {
+                // The normalized value is different. Read it
+                normalizedValue = in.readUTF();
+            }
+        }
+    }
+
+
     /**
      * @see Object#toString()
      */

@@ -23,8 +23,8 @@ package org.apache.directory.shared.ldap.filter;
 import java.text.ParseException;
 
 import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.entry.BinaryValue;
 import org.apache.directory.shared.ldap.entry.Value;
-import org.apache.directory.shared.ldap.entry.client.ClientBinaryValue;
 import org.apache.directory.shared.ldap.util.AttributeUtils;
 import org.apache.directory.shared.ldap.util.Position;
 import org.apache.directory.shared.ldap.util.StringTools;
@@ -266,11 +266,11 @@ public class FilterParser
             byte[] result = new byte[ current ];
             System.arraycopy( value, 0, result, 0, current );
             
-            return new ClientBinaryValue( result );
+            return new BinaryValue( result );
         }
         else
         {
-            return new ClientBinaryValue();
+            return new BinaryValue();
         }
     }
 
@@ -396,7 +396,7 @@ public class FilterParser
         else if ( StringTools.isCharASCII( filter, pos.start, ')' ) )
         {
             // An empty equality Node
-            return new EqualityNode( attr, new ClientBinaryValue() );
+            return new EqualityNode( attr, new BinaryValue() );
         }
         else
         {

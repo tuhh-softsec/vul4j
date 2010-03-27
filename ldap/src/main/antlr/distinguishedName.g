@@ -29,7 +29,7 @@ import java.util.Map;
 import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
 import javax.naming.NameParser;
 import org.apache.directory.shared.ldap.entry.client.ClientStringValue;
-import org.apache.directory.shared.ldap.entry.client.ClientBinaryValue;
+import org.apache.directory.shared.ldap.entry.BinaryValue;
 import org.apache.directory.shared.ldap.schema.parsers.ParserMonitor;
 import org.apache.directory.shared.ldap.util.StringTools;
 
@@ -315,8 +315,8 @@ attributeTypeAndValue [RDN rdn] returns [String upName = ""]
                     ava = new AVA(
                         type,
                         type,
-                        new ClientBinaryValue( (byte[])value.value ), 
-                        new ClientBinaryValue( (byte[])value.value ),
+                        new BinaryValue( (byte[])value.value ), 
+                        new BinaryValue( (byte[])value.value ),
                         upName
                     );
                 }

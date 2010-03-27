@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.directory.shared.ldap.entry.client;
+package org.apache.directory.shared.ldap.entry;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -32,6 +32,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Arrays;
 
+import org.apache.directory.shared.ldap.entry.BinaryValue;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.schema.Normalizer;
@@ -41,12 +42,12 @@ import org.junit.Test;
 
 /**
  * 
- * Test the ClientBinaryValue class
+ * Test the BinaryValue class
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public class ClientBinaryValueTest
+public class BinaryValueTest
 {
     private static final byte[] BYTES1 = new byte[]{0x01, 0x02, 0x03, 0x04};
     private static final byte[] BYTES2 = new byte[]{(byte)0x81, (byte)0x82, (byte)0x83, (byte)0x84};
@@ -71,7 +72,7 @@ public class ClientBinaryValueTest
                     newVal[i++] = (byte)(b & 0x007F); 
                 }
                 
-                return new ClientBinaryValue( StringTools.trim( newVal ) );
+                return new BinaryValue( StringTools.trim( newVal ) );
             }
 
             throw new IllegalStateException( "expected byte[] to normalize" );
@@ -95,7 +96,7 @@ public class ClientBinaryValueTest
         {
             if ( value.isBinary() )
             {
-                return new ClientBinaryValue( StringTools.EMPTY_BYTES );
+                return new BinaryValue( StringTools.EMPTY_BYTES );
             }
 
             throw new IllegalStateException( "expected byte[] to normalize" );
@@ -123,9 +124,9 @@ public class ClientBinaryValueTest
     
     
     /**
-     * Serialize a ClientBinaryValue
+     * Serialize a BinaryValue
      */
-    private ByteArrayOutputStream serializeValue( ClientBinaryValue value ) throws IOException
+    private ByteArrayOutputStream serializeValue( BinaryValue value ) throws IOException
     {
         ObjectOutputStream oOut = null;
         ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -160,9 +161,9 @@ public class ClientBinaryValueTest
     
     
     /**
-     * Deserialize a ClientBinaryValue
+     * Deserialize a BinaryValue
      */
-    private ClientBinaryValue deserializeValue( ByteArrayOutputStream out ) throws IOException, ClassNotFoundException
+    private BinaryValue deserializeValue( ByteArrayOutputStream out ) throws IOException, ClassNotFoundException
     {
         ObjectInputStream oIn = null;
         ByteArrayInputStream in = new ByteArrayInputStream( out.toByteArray() );
@@ -171,7 +172,7 @@ public class ClientBinaryValueTest
         {
             oIn = new ObjectInputStream( in );
 
-            ClientBinaryValue value = ( ClientBinaryValue ) oIn.readObject();
+            BinaryValue value = ( BinaryValue ) oIn.readObject();
 
             return value;
         }
@@ -199,7 +200,7 @@ public class ClientBinaryValueTest
     @Test
     public void testHashCode()
     {
-        ClientBinaryValue cbv = new ClientBinaryValue();
+        BinaryValue cbv = new BinaryValue();
         assertEquals( 0, cbv.hashCode() );
         
         cbv.set( StringTools.EMPTY_BYTES );
@@ -215,7 +216,7 @@ public class ClientBinaryValueTest
     @Test
     public void testClear() throws LdapException
     {
-        ClientBinaryValue cbv = new ClientBinaryValue( BYTES2 );
+        BinaryValue cbv = new BinaryValue( BYTES2 );
         cbv.normalize( BINARY_NORMALIZER );
         cbv.isValid( BINARY_CHECKER );
         
@@ -233,9 +234,9 @@ public class ClientBinaryValueTest
 
 
     @Test
-    public void testClientBinaryValueNull() throws LdapException
+    public void testBinaryValueNull() throws LdapException
     {
-        ClientBinaryValue cbv = new ClientBinaryValue( null );
+        BinaryValue cbv = new BinaryValue( (byte[])null );
         
         assertNull( cbv.get() );
         assertFalse( cbv.isNormalized() );
@@ -246,9 +247,9 @@ public class ClientBinaryValueTest
 
 
     @Test
-    public void testClientBinaryValueEmpty() throws LdapException
+    public void testBinaryValueEmpty() throws LdapException
     {
-        ClientBinaryValue cbv = new ClientBinaryValue( StringTools.EMPTY_BYTES );
+        BinaryValue cbv = new BinaryValue( StringTools.EMPTY_BYTES );
         
         assertTrue( Arrays.equals( StringTools.EMPTY_BYTES, cbv.getBytes() ) );
         assertTrue( Arrays.equals( StringTools.EMPTY_BYTES, cbv.getCopy() ) );
@@ -263,9 +264,9 @@ public class ClientBinaryValueTest
 
 
     @Test
-    public void testClientBinaryValue() throws LdapException
+    public void testBinaryValue() throws LdapException
     {
-        ClientBinaryValue cbv = new ClientBinaryValue( BYTES1 );
+        BinaryValue cbv = new BinaryValue( BYTES1 );
         
         assertTrue( Arrays.equals( BYTES1, cbv.getBytes() ) );
         assertTrue( Arrays.equals( BYTES1, cbv.getCopy() ) );
@@ -281,7 +282,7 @@ public class ClientBinaryValueTest
     @Test
     public void testSetByteArray() throws LdapException
     {
-        ClientBinaryValue cbv = new ClientBinaryValue();
+        BinaryValue cbv = new BinaryValue();
         
         cbv.set( BYTES1 );
         
@@ -299,7 +300,7 @@ public class ClientBinaryValueTest
     @Test
     public void testGetNormalizedValueCopy()  throws LdapException
     {
-        ClientBinaryValue cbv = new ClientBinaryValue( BYTES2 );
+        BinaryValue cbv = new BinaryValue( BYTES2 );
         
         assertTrue( Arrays.equals( BYTES2, cbv.getBytes() ) );
         assertTrue( Arrays.equals( BYTES2, cbv.getCopy() ) );
@@ -321,7 +322,7 @@ public class ClientBinaryValueTest
     @Test
     public void testNormalizeNormalizer() throws LdapException
     {
-        ClientBinaryValue cbv = new ClientBinaryValue();
+        BinaryValue cbv = new BinaryValue();
         
         cbv.normalize( BINARY_NORMALIZER );
         assertTrue( cbv.isNormalized() );
@@ -350,8 +351,8 @@ public class ClientBinaryValueTest
     @Test
     public void testCompareToValueOfbyte() throws LdapException
     {
-        ClientBinaryValue cbv1 = new ClientBinaryValue();
-        ClientBinaryValue cbv2 = new ClientBinaryValue();
+        BinaryValue cbv1 = new BinaryValue();
+        BinaryValue cbv2 = new BinaryValue();
         
         assertEquals( 0, cbv1.compareTo( cbv2 ) );
         
@@ -372,8 +373,8 @@ public class ClientBinaryValueTest
     @Test
     public void testEquals() throws LdapException
     {
-        ClientBinaryValue cbv1 = new ClientBinaryValue();
-        ClientBinaryValue cbv2 = new ClientBinaryValue();
+        BinaryValue cbv1 = new BinaryValue();
+        BinaryValue cbv2 = new BinaryValue();
         
         assertEquals( cbv1, cbv2 );
         
@@ -394,8 +395,8 @@ public class ClientBinaryValueTest
     @Test
     public void testClone()
     {
-        ClientBinaryValue cbv = new ClientBinaryValue();
-        ClientBinaryValue copy = cbv.clone();
+        BinaryValue cbv = new BinaryValue();
+        BinaryValue copy = cbv.clone();
         
         assertEquals( cbv, copy );
         
@@ -415,7 +416,7 @@ public class ClientBinaryValueTest
     @Test
     public void testGetCopy()
     {
-        ClientBinaryValue cbv = new ClientBinaryValue();
+        BinaryValue cbv = new BinaryValue();
         
         assertNull( cbv.getCopy() );
         
@@ -437,8 +438,8 @@ public class ClientBinaryValueTest
     @Test
     public void testCompareTo() throws LdapException
     {
-        ClientBinaryValue cbv1 = new ClientBinaryValue();
-        ClientBinaryValue cbv2 = new ClientBinaryValue();
+        BinaryValue cbv1 = new BinaryValue();
+        BinaryValue cbv2 = new BinaryValue();
         
         assertEquals( 0, cbv1.compareTo( cbv2 ) );
         
@@ -468,7 +469,7 @@ public class ClientBinaryValueTest
     @Test
     public void testToString()
     {
-        ClientBinaryValue cbv = new ClientBinaryValue();
+        BinaryValue cbv = new BinaryValue();
         
         assertEquals( "null", cbv.toString() );
 
@@ -486,7 +487,7 @@ public class ClientBinaryValueTest
     @Test
     public void testGetReference()
     {
-        ClientBinaryValue cbv = new ClientBinaryValue();
+        BinaryValue cbv = new BinaryValue();
         
         assertNull( cbv.getReference() );
         
@@ -508,7 +509,7 @@ public class ClientBinaryValueTest
     @Test
     public void testGet()
     {
-        ClientBinaryValue cbv = new ClientBinaryValue();
+        BinaryValue cbv = new BinaryValue();
         
         assertNull( cbv.get() );
         
@@ -530,7 +531,7 @@ public class ClientBinaryValueTest
     @Test
     public void testGetNormalizedValue() throws LdapException
     {
-        ClientBinaryValue cbv = new ClientBinaryValue();
+        BinaryValue cbv = new BinaryValue();
         
         assertFalse( cbv.isNormalized() );
 
@@ -551,7 +552,7 @@ public class ClientBinaryValueTest
     @Test
     public void testGetNormalizedValueReference() throws LdapException
     {
-        ClientBinaryValue cbv = new ClientBinaryValue();
+        BinaryValue cbv = new BinaryValue();
         
         assertFalse( cbv.isNormalized() );
 
@@ -572,7 +573,7 @@ public class ClientBinaryValueTest
     @Test
     public void testIsNull()
     {
-        ClientBinaryValue cbv = new ClientBinaryValue();
+        BinaryValue cbv = new BinaryValue();
         
         assertTrue( cbv.isNull() );
         
@@ -590,7 +591,7 @@ public class ClientBinaryValueTest
     @Test
     public void testIsValid() throws LdapException
     {
-        ClientBinaryValue cbv = new ClientBinaryValue();
+        BinaryValue cbv = new BinaryValue();
         
         assertFalse( cbv.isValid() );
         cbv.isValid( BINARY_CHECKER );
@@ -616,7 +617,7 @@ public class ClientBinaryValueTest
     @Test
     public void testIsValidSyntaxChecker() throws LdapException
     {
-        ClientBinaryValue cbv = new ClientBinaryValue();
+        BinaryValue cbv = new BinaryValue();
         
         assertTrue( cbv.isValid( BINARY_CHECKER ) ) ;
         
@@ -634,7 +635,7 @@ public class ClientBinaryValueTest
     @Test
     public void testNormalize() throws LdapException
     {
-        ClientBinaryValue cbv = new ClientBinaryValue();
+        BinaryValue cbv = new BinaryValue();
         
         cbv.normalize();
         assertTrue( cbv.isNormalized() );
@@ -655,7 +656,7 @@ public class ClientBinaryValueTest
     @Test
     public void testSet() throws LdapException
     {
-        ClientBinaryValue cbv = new ClientBinaryValue();
+        BinaryValue cbv = new BinaryValue();
         
         cbv.set( null );
         assertNull( cbv.get() );
@@ -682,7 +683,7 @@ public class ClientBinaryValueTest
     @Test
     public void testIsNormalized() throws LdapException
     {
-        ClientBinaryValue cbv = new ClientBinaryValue();
+        BinaryValue cbv = new BinaryValue();
         
         assertFalse( cbv.isNormalized() );
         
@@ -705,14 +706,14 @@ public class ClientBinaryValueTest
     @Test
     public void testSetNormalized() throws LdapException
     {
-        ClientBinaryValue cbv = new ClientBinaryValue();
+        BinaryValue cbv = new BinaryValue();
         
         assertFalse( cbv.isNormalized() );
         
         cbv.setNormalized( true );
         assertTrue( cbv.isNormalized() );
         
-        cbv.set(  BYTES2 );
+        cbv.set( BYTES2 );
         assertFalse( cbv.isNormalized() );
         
         cbv.normalize( BINARY_NORMALIZER );
@@ -721,8 +722,8 @@ public class ClientBinaryValueTest
         assertTrue( cbv.isNormalized() );
         
         cbv.setNormalized( false );
-        assertTrue( Arrays.equals( BYTES1, cbv.getNormalizedValue() ) );
-        assertFalse( cbv.isNormalized() );
+        assertTrue( Arrays.equals( BYTES2, cbv.getNormalizedValue() ) );
+        assertTrue( cbv.isNormalized() );
 
         cbv.normalize( BINARY_NORMALIZER );
         cbv.clear();
@@ -736,13 +737,13 @@ public class ClientBinaryValueTest
     @Test
     public void testSerializeStandard() throws LdapException, IOException, ClassNotFoundException
     {
-        ClientBinaryValue cbv = new ClientBinaryValue();
+        BinaryValue cbv = new BinaryValue();
         cbv.setNormalized( true );
         cbv.set( BYTES2 );
         cbv.normalize( BINARY_NORMALIZER );
         cbv.isValid( BINARY_CHECKER );
 
-        ClientBinaryValue cbvSer = deserializeValue( serializeValue( cbv ) );
+        BinaryValue cbvSer = deserializeValue( serializeValue( cbv ) );
          assertNotSame( cbv, cbvSer );
          assertTrue( Arrays.equals( cbv.getReference(), cbvSer.getReference() ) );
          assertTrue( Arrays.equals( cbv.getNormalizedValueReference(), cbvSer.getNormalizedValueReference() ) );
@@ -757,16 +758,16 @@ public class ClientBinaryValueTest
     @Test
     public void testSerializeNotNormalized() throws LdapException, IOException, ClassNotFoundException
     {
-        ClientBinaryValue cbv = new ClientBinaryValue();
+        BinaryValue cbv = new BinaryValue();
         cbv.setNormalized( false );
         cbv.set( BYTES2 );
         cbv.isValid( BINARY_CHECKER );
 
-        ClientBinaryValue cbvSer = deserializeValue( serializeValue( cbv ) );
+        BinaryValue cbvSer = deserializeValue( serializeValue( cbv ) );
          assertNotSame( cbv, cbvSer );
          assertTrue( Arrays.equals( cbv.getReference(), cbvSer.getReference() ) );
          assertTrue( Arrays.equals( cbv.getReference(), cbvSer.getNormalizedValueReference() ) );
-         assertFalse( cbvSer.isNormalized() );
+         assertTrue( cbvSer.isNormalized() );
          assertFalse( cbvSer.isValid() );
     }
     
@@ -777,13 +778,13 @@ public class ClientBinaryValueTest
     @Test
     public void testSerializeEmptyNormalized() throws LdapException, IOException, ClassNotFoundException
     {
-        ClientBinaryValue cbv = new ClientBinaryValue();
+        BinaryValue cbv = new BinaryValue();
         cbv.setNormalized( true );
         cbv.set( BYTES2 );
         cbv.isValid( BINARY_CHECKER );
         cbv.normalize( BINARY_NORMALIZER_EMPTY );
 
-        ClientBinaryValue cbvSer = deserializeValue( serializeValue( cbv ) );
+        BinaryValue cbvSer = deserializeValue( serializeValue( cbv ) );
          assertNotSame( cbv, cbvSer );
          assertTrue( Arrays.equals( cbv.getReference(), cbvSer.getReference() ) );
          assertTrue( Arrays.equals( cbv.getNormalizedValueReference(), cbvSer.getNormalizedValueReference() ) );
@@ -798,13 +799,13 @@ public class ClientBinaryValueTest
     @Test
     public void testSerializeNullValue() throws LdapException, IOException, ClassNotFoundException
     {
-        ClientBinaryValue cbv = new ClientBinaryValue();
+        BinaryValue cbv = new BinaryValue();
         cbv.setNormalized( true );
         cbv.set( null );
         cbv.isValid( BINARY_CHECKER );
         cbv.normalize( BINARY_NORMALIZER );
 
-        ClientBinaryValue cbvSer = deserializeValue( serializeValue( cbv ) );
+        BinaryValue cbvSer = deserializeValue( serializeValue( cbv ) );
          assertNotSame( cbv, cbvSer );
          assertTrue( Arrays.equals( cbv.getReference(), cbvSer.getReference() ) );
          assertTrue( Arrays.equals( cbv.getNormalizedValueReference(), cbvSer.getNormalizedValueReference() ) );
@@ -819,13 +820,13 @@ public class ClientBinaryValueTest
     @Test
     public void testSerializeEmptyValue() throws LdapException, IOException, ClassNotFoundException
     {
-        ClientBinaryValue cbv = new ClientBinaryValue();
+        BinaryValue cbv = new BinaryValue();
         cbv.setNormalized( true );
         cbv.set( StringTools.EMPTY_BYTES );
         cbv.isValid( BINARY_CHECKER );
         cbv.normalize( BINARY_NORMALIZER );
 
-        ClientBinaryValue cbvSer = deserializeValue( serializeValue( cbv ) );
+        BinaryValue cbvSer = deserializeValue( serializeValue( cbv ) );
          assertNotSame( cbv, cbvSer );
          assertTrue( Arrays.equals( cbv.getReference(), cbvSer.getReference() ) );
          assertTrue( Arrays.equals( cbv.getNormalizedValueReference(), cbvSer.getNormalizedValueReference() ) );
@@ -840,16 +841,16 @@ public class ClientBinaryValueTest
     @Test
     public void testSerializeEmptyValueNotNormalized() throws LdapException, IOException, ClassNotFoundException
     {
-        ClientBinaryValue cbv = new ClientBinaryValue();
+        BinaryValue cbv = new BinaryValue();
         cbv.setNormalized( false );
         cbv.set( StringTools.EMPTY_BYTES );
         cbv.isValid( BINARY_CHECKER );
 
-        ClientBinaryValue cbvSer = deserializeValue( serializeValue( cbv ) );
+        BinaryValue cbvSer = deserializeValue( serializeValue( cbv ) );
          assertNotSame( cbv, cbvSer );
          assertTrue( Arrays.equals( cbv.getReference(), cbvSer.getReference() ) );
          assertTrue( Arrays.equals( cbv.getNormalizedValueReference(), cbvSer.getNormalizedValueReference() ) );
-         assertFalse( cbvSer.isNormalized() );
+         assertTrue( cbvSer.isNormalized() );
          assertFalse( cbvSer.isValid() );
     }
 }

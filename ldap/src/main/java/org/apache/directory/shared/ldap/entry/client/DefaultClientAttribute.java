@@ -32,6 +32,7 @@ import org.apache.directory.shared.ldap.exception.LdapInvalidAttributeValueExcep
 
 import org.apache.directory.shared.asn1.primitives.OID;
 import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.entry.BinaryValue;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.ServerStringValue;
 import org.apache.directory.shared.ldap.entry.Value;
@@ -493,7 +494,7 @@ public class DefaultClientAttribute implements EntryAttribute
     public int add( Value<?>... vals )
     {
         int nbAdded = 0;
-        ClientBinaryValue nullBinaryValue = null;
+        BinaryValue nullBinaryValue = null;
         ClientStringValue nullStringValue = null;
         boolean nullValueAdded = false;
         
@@ -510,7 +511,7 @@ public class DefaultClientAttribute implements EntryAttribute
                     // know later if we add some new value.
                     // We have to do that because we are using a Set,
                     // and we can't remove the first element of the Set.
-                    nullBinaryValue = new ClientBinaryValue( null );
+                    nullBinaryValue = new BinaryValue( (byte[])null );
                     nullStringValue = new ClientStringValue( null );
                     
                     values.add( nullBinaryValue );
@@ -521,7 +522,7 @@ public class DefaultClientAttribute implements EntryAttribute
                 else if ( !isHR )
                 {
                     // The attribute type is binary.
-                    nullBinaryValue = new ClientBinaryValue( null );
+                    nullBinaryValue = new BinaryValue( (byte[])null );
                     
                     // Don't add a value if it already exists. 
                     if ( !values.contains( nullBinaryValue ) )
@@ -560,7 +561,7 @@ public class DefaultClientAttribute implements EntryAttribute
                     {
                         // The attributeType is binary, convert the
                         // value to a BinaryValue
-                        ClientBinaryValue cbv = new ClientBinaryValue();
+                        BinaryValue cbv = new BinaryValue();
                         cbv.set( val.getBytes() );
                         
                         if ( !contains( cbv ) )
@@ -678,7 +679,7 @@ public class DefaultClientAttribute implements EntryAttribute
                 }
                 
                 // Now call the add(Value) method
-                if ( add( new ClientBinaryValue( valBytes ) ) == 1 )
+                if ( add( new BinaryValue( valBytes ) ) == 1 )
                 {
                     nbAdded++;
                 }
@@ -755,7 +756,7 @@ public class DefaultClientAttribute implements EntryAttribute
         {
             for ( byte[] val:vals )
             {
-                if ( add( new ClientBinaryValue( val ) ) == 1 )
+                if ( add( new BinaryValue( val ) ) == 1 )
                 {
                     nbAdded++;
                 }
@@ -840,7 +841,7 @@ public class DefaultClientAttribute implements EntryAttribute
                     String stringVal = val.getString();
                     
                     // We have to convert the binary value to a String
-                    if ( ! values.contains( new ClientBinaryValue( StringTools.getBytesUtf8( stringVal ) ) ) )
+                    if ( ! values.contains( new BinaryValue( StringTools.getBytesUtf8( stringVal ) ) ) )
                     {
                         return false;
                     }
@@ -893,7 +894,7 @@ public class DefaultClientAttribute implements EntryAttribute
             {
                 byte[] binaryVal = StringTools.getBytesUtf8( val );
 
-                if ( !contains( new ClientBinaryValue( binaryVal ) ) )
+                if ( !contains( new BinaryValue( binaryVal ) ) )
                 {
                     return false;
                 }
@@ -929,7 +930,7 @@ public class DefaultClientAttribute implements EntryAttribute
             // don't find one in the values
             for ( byte[] val:vals )
             {
-                if ( !contains( new ClientBinaryValue( val ) ) )
+                if ( !contains( new BinaryValue( val ) ) )
                 {
                     return false;
                 }
@@ -1193,7 +1194,7 @@ public class DefaultClientAttribute implements EntryAttribute
             // The attribute type is not HR, we can directly process the values
             for ( byte[] val:vals )
             {
-                ClientBinaryValue value = new ClientBinaryValue( val );
+                BinaryValue value = new BinaryValue( val );
                 removed &= values.remove( value );
             }
         }
@@ -1250,7 +1251,7 @@ public class DefaultClientAttribute implements EntryAttribute
             // to byte[] before removing them
             for ( String val:vals )
             {
-                ClientBinaryValue value = new ClientBinaryValue( StringTools.getBytesUtf8( val ) );
+                BinaryValue value = new BinaryValue( StringTools.getBytesUtf8( val ) );
                 removed &= values.remove( value );
             }
         }
@@ -1454,7 +1455,7 @@ public class DefaultClientAttribute implements EntryAttribute
             }
             else
             {
-                clientValue = new ClientBinaryValue( value.getBytes() );
+                clientValue = new BinaryValue( value.getBytes() );
             }
             
             clientAttribute.add( clientValue );

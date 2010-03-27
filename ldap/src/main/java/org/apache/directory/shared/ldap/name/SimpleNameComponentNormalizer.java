@@ -22,7 +22,7 @@ package org.apache.directory.shared.ldap.name;
 
 
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.entry.client.ClientBinaryValue;
+import org.apache.directory.shared.ldap.entry.BinaryValue;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.schema.Normalizer;
@@ -63,7 +63,7 @@ public class SimpleNameComponentNormalizer implements NameComponentNormalizer
 
     public Object normalizeByName( String name, byte[] val ) throws LdapException
     {
-        return normalizer.normalize( new ClientBinaryValue( val ) );
+        return normalizer.normalize( new BinaryValue( val ) );
     }
 
 
@@ -75,7 +75,7 @@ public class SimpleNameComponentNormalizer implements NameComponentNormalizer
 
     public Object normalizeByOid( String oid, byte[] val ) throws LdapException
     {
-        return normalizer.normalize( new ClientBinaryValue( val ) );
+        return normalizer.normalize( new BinaryValue( val ) );
     }
 
 

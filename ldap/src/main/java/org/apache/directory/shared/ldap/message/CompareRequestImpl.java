@@ -21,8 +21,8 @@ package org.apache.directory.shared.ldap.message;
 
 
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
+import org.apache.directory.shared.ldap.entry.BinaryValue;
 import org.apache.directory.shared.ldap.entry.Value;
-import org.apache.directory.shared.ldap.entry.client.ClientBinaryValue;
 import org.apache.directory.shared.ldap.entry.client.ClientStringValue;
 import org.apache.directory.shared.ldap.message.internal.InternalCompareRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalCompareResponse;
@@ -132,7 +132,7 @@ public class CompareRequestImpl extends AbstractAbandonableRequest implements In
     {
         if ( attrVal != null )
         {
-            this.attrVal = new ClientBinaryValue( attrVal );
+            this.attrVal = new BinaryValue( attrVal );
         }
         else
         {

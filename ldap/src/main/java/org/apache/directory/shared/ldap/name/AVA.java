@@ -27,8 +27,8 @@ import java.io.ObjectOutput;
 import java.util.Arrays;
 
 import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.entry.BinaryValue;
 import org.apache.directory.shared.ldap.entry.Value;
-import org.apache.directory.shared.ldap.entry.client.ClientBinaryValue;
 import org.apache.directory.shared.ldap.entry.client.ClientStringValue;
 import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
@@ -146,7 +146,7 @@ public class AVA implements Cloneable, Comparable, Externalizable
      */
     public AVA( String upType, String normType, byte[] upValue, byte[] normValue ) throws LdapInvalidDnException
     {
-        this( upType, normType, new ClientBinaryValue( upValue ), new ClientBinaryValue( normValue ) );
+        this( upType, normType, new BinaryValue( upValue ), new BinaryValue( normValue ) );
     }
 
 
@@ -908,12 +908,12 @@ public class AVA implements Cloneable, Comparable, Externalizable
             int upValueLength = in.readInt();
             byte[] upValueBytes = new byte[upValueLength];
             in.readFully( upValueBytes );
-            upValue = new ClientBinaryValue( upValueBytes );
+            upValue = new BinaryValue( upValueBytes );
 
             int valueLength = in.readInt();
             byte[] normValueBytes = new byte[valueLength];
             in.readFully( normValueBytes );
-            normValue = new ClientBinaryValue( normValueBytes );
+            normValue = new BinaryValue( normValueBytes );
         }
     }
     

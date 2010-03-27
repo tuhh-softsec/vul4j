@@ -37,6 +37,7 @@ import java.util.List;
 
 import javax.naming.directory.InvalidAttributeValueException;
 
+import org.apache.directory.shared.ldap.entry.BinaryValue;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.exception.LdapException;
@@ -55,7 +56,7 @@ import org.junit.Test;
 public class DefaultClientAttributeTest
 {
     private static final Value<String> NULL_STRING_VALUE = new ClientStringValue( null );
-    private static final Value<byte[]> NULL_BINARY_VALUE = new ClientBinaryValue( null );
+    private static final Value<byte[]> NULL_BINARY_VALUE = new BinaryValue( (byte[])null );
     private static final byte[] BYTES1 = new byte[]{ 'a', 'b' };
     private static final byte[] BYTES2 = new byte[]{ 'b' };
     private static final byte[] BYTES3 = new byte[]{ 'c' };
@@ -66,10 +67,10 @@ public class DefaultClientAttributeTest
     private static final ClientStringValue STR_VALUE3 = new ClientStringValue( "c" );
     private static final ClientStringValue STR_VALUE4 = new ClientStringValue( "d" );
 
-    private static final ClientBinaryValue BIN_VALUE1 = new ClientBinaryValue( BYTES1 );
-    private static final ClientBinaryValue BIN_VALUE2 = new ClientBinaryValue( BYTES2 );
-    private static final ClientBinaryValue BIN_VALUE3 = new ClientBinaryValue( BYTES3 );
-    private static final ClientBinaryValue BIN_VALUE4 = new ClientBinaryValue( BYTES4 );
+    private static final BinaryValue BIN_VALUE1 = new BinaryValue( BYTES1 );
+    private static final BinaryValue BIN_VALUE2 = new BinaryValue( BYTES2 );
+    private static final BinaryValue BIN_VALUE3 = new BinaryValue( BYTES3 );
+    private static final BinaryValue BIN_VALUE4 = new BinaryValue( BYTES4 );
 
     
     
@@ -487,7 +488,7 @@ public class DefaultClientAttributeTest
         
         EntryAttribute attr2 = new DefaultClientAttribute( "test" );
         
-        nbAdded = attr2.add( new ClientBinaryValue( null ) );
+        nbAdded = attr2.add( new BinaryValue( (byte[])null ) );
         assertEquals( 1, nbAdded );
         assertFalse( attr2.isHR() );
         assertEquals( NULL_BINARY_VALUE, attr2.get() );
@@ -502,7 +503,7 @@ public class DefaultClientAttributeTest
         
         EntryAttribute attr4 = new DefaultClientAttribute( "test" );
         
-        nbAdded = attr4.add( new ClientBinaryValue( BYTES1 ), new ClientBinaryValue( BYTES2 ) );
+        nbAdded = attr4.add( new BinaryValue( BYTES1 ), new BinaryValue( BYTES2 ) );
         assertEquals( 2, nbAdded );
         assertFalse( attr4.isHR() );
         assertTrue( attr4.contains( BYTES1 ) );
@@ -510,7 +511,7 @@ public class DefaultClientAttributeTest
         
         EntryAttribute attr5 = new DefaultClientAttribute( "test" );
         
-        nbAdded = attr5.add( new ClientStringValue( "c" ), new ClientBinaryValue( BYTES1 ) );
+        nbAdded = attr5.add( new ClientStringValue( "c" ), new BinaryValue( BYTES1 ) );
         assertEquals( 2, nbAdded );
         assertTrue( attr5.isHR() );
         assertTrue( attr5.contains( "ab" ) );
@@ -518,7 +519,7 @@ public class DefaultClientAttributeTest
 
         EntryAttribute attr6 = new DefaultClientAttribute( "test" );
         
-        nbAdded = attr6.add( new ClientBinaryValue( BYTES1 ), new ClientStringValue( "c" ) );
+        nbAdded = attr6.add( new BinaryValue( BYTES1 ), new ClientStringValue( "c" ) );
         assertEquals( 2, nbAdded );
         assertFalse( attr6.isHR() );
         assertTrue( attr6.contains( BYTES1 ) );
@@ -526,7 +527,7 @@ public class DefaultClientAttributeTest
 
         EntryAttribute attr7 = new DefaultClientAttribute( "test" );
         
-        nbAdded = attr7.add( new ClientBinaryValue( null ), new ClientStringValue( "c" ) );
+        nbAdded = attr7.add( new BinaryValue( (byte[])null ), new ClientStringValue( "c" ) );
         assertEquals( 2, nbAdded );
         assertFalse( attr7.isHR() );
         assertTrue( attr7.contains( NULL_BINARY_VALUE ) );
@@ -534,7 +535,7 @@ public class DefaultClientAttributeTest
 
         EntryAttribute attr8 = new DefaultClientAttribute( "test" );
         
-        nbAdded = attr8.add( new ClientStringValue( null ), new ClientBinaryValue( BYTES1 ) );
+        nbAdded = attr8.add( new ClientStringValue( null ), new BinaryValue( BYTES1 ) );
         assertEquals( 2, nbAdded );
         assertTrue( attr8.isHR() );
         assertTrue( attr8.contains( NULL_STRING_VALUE ) );

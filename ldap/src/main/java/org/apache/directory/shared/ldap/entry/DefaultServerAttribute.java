@@ -28,7 +28,6 @@ import javax.naming.NamingException;
 
 import org.apache.directory.shared.asn1.primitives.OID;
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.entry.client.ClientBinaryValue;
 import org.apache.directory.shared.ldap.entry.client.ClientStringValue;
 import org.apache.directory.shared.ldap.entry.client.DefaultClientAttribute;
 import org.apache.directory.shared.ldap.exception.LdapException;
@@ -100,11 +99,11 @@ public final class DefaultServerAttribute extends DefaultClientAttribute impleme
                     else
                     {
                         // We have to convert the value to a binary value first
-                        serverValue = new ServerBinaryValue( attributeType, 
+                        serverValue = new BinaryValue( attributeType, 
                             clientValue.getBytes() );
                     }
                 }
-                else if ( clientValue instanceof ClientBinaryValue )
+                else if ( clientValue instanceof BinaryValue )
                 {
                     if ( isHR )
                     {
@@ -114,7 +113,7 @@ public final class DefaultServerAttribute extends DefaultClientAttribute impleme
                     }
                     else
                     {
-                        serverValue = new ServerBinaryValue( attributeType, clientValue.getBytes() );
+                        serverValue = new BinaryValue( attributeType, clientValue.getBytes() );
                     }
                 }
 
@@ -301,7 +300,7 @@ public final class DefaultServerAttribute extends DefaultClientAttribute impleme
             
             for ( byte[] val:vals )
             {
-                Value<?> value = new ServerBinaryValue( attributeType, val );
+                Value<?> value = new BinaryValue( attributeType, val );
                 
                 try
                 {
@@ -430,33 +429,34 @@ public final class DefaultServerAttribute extends DefaultClientAttribute impleme
             {
                 if ( val == null )
                 {
-                    Value<byte[]> nullSV = new ServerBinaryValue( attributeType, (byte[])null );
+                    Value<byte[]> nullSV = new BinaryValue( attributeType, (byte[])null );
                     
                     if ( values.add( nullSV ) )
                     {
                         nbAdded++;
                     }
                 }
-                else if ( ( val instanceof ClientBinaryValue ) )
-                {
-                    Value<byte[]> serverBinaryValue = new ServerBinaryValue( attributeType, val.getBytes() ); 
-                    
-                    if ( values.add( serverBinaryValue ) )
-                    {
-                        nbAdded++;
-                    }
-                }
-                else if ( val instanceof ServerBinaryValue )
-                {
-                    if ( values.add( val ) )
-                    {
-                        nbAdded++;
-                    }
-                }
                 else
                 {
-                    String message = I18n.err( I18n.ERR_04452 );
-                    LOG.error( message );
+                    if ( val instanceof BinaryValue )
+                    {
+                        BinaryValue binaryValue = (BinaryValue)val;
+                        
+                        if ( binaryValue.getAttributeType() == null )
+                        {
+                            binaryValue = new BinaryValue( attributeType, val.getBytes() ); 
+                        }
+    
+                        if ( values.add( binaryValue ) )
+                        {
+                            nbAdded++;
+                        }
+                    }
+                    else
+                    {
+                        String message = I18n.err( I18n.ERR_04452 );
+                        LOG.error( message );
+                    }
                 }
             }
         }
@@ -496,7 +496,7 @@ public final class DefaultServerAttribute extends DefaultClientAttribute impleme
             // don't find one in the values
             for ( byte[] val:vals )
             {
-                ServerBinaryValue value = new ServerBinaryValue( attributeType, val );
+                BinaryValue value = new BinaryValue( attributeType, val );
                 
                 try
                 {
@@ -608,7 +608,7 @@ public final class DefaultServerAttribute extends DefaultClientAttribute impleme
         {
             for ( Value<?> val:vals )
             {
-                if ( val instanceof ClientBinaryValue )
+                if ( val instanceof BinaryValue )
                 {
                     if ( !values.contains( val ) )
                     {
@@ -682,7 +682,7 @@ public final class DefaultServerAttribute extends DefaultClientAttribute impleme
         
         for ( byte[] val:vals )
         {
-            ServerBinaryValue value = new ServerBinaryValue( attributeType, val );
+            BinaryValue value = new BinaryValue( attributeType, val );
             removed &= values.remove( value );
         }
         
@@ -749,14 +749,16 @@ public final class DefaultServerAttribute extends DefaultClientAttribute impleme
         {
             for ( Value<?> val:vals )
             {
-                if ( val instanceof ClientBinaryValue )
+                if ( val instanceof BinaryValue )
                 {
-                    ServerBinaryValue sbv = new ServerBinaryValue( attributeType, (byte[])val.get() );
-                    removed &= values.remove( sbv );
-                }
-                else if ( val instanceof ServerBinaryValue )
-                {
-                    removed &= values.remove( val );
+                    BinaryValue binaryValue = (BinaryValue)val;
+                    
+                    if ( binaryValue.getAttributeType() == null )
+                    {
+                        binaryValue = new BinaryValue( attributeType, (byte[])val.get() );
+                    }
+                    
+                    removed &= values.remove( binaryValue );
                 }
                 else
                 {
@@ -973,7 +975,7 @@ public final class DefaultServerAttribute extends DefaultClientAttribute impleme
                 }
                 else
                 {
-                    ((ServerBinaryValue)value).serialize( out );
+                    ((BinaryValue)value).serialize( out );
                 }
             }
         }
@@ -1025,8 +1027,8 @@ public final class DefaultServerAttribute extends DefaultClientAttribute impleme
                 }
                 else
                 {
-                    value  = new ServerBinaryValue( attributeType );
-                    ((ServerBinaryValue)value).deserialize( in );
+                    value  = new BinaryValue( attributeType );
+                    ((BinaryValue)value).deserialize( in );
                 }
                 
                 try

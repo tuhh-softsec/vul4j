@@ -61,8 +61,8 @@ import org.apache.directory.shared.ldap.codec.search.OrFilter;
 import org.apache.directory.shared.ldap.codec.search.PresentFilter;
 import org.apache.directory.shared.ldap.codec.search.SearchRequestCodec;
 import org.apache.directory.shared.ldap.codec.search.SubstringFilter;
+import org.apache.directory.shared.ldap.entry.BinaryValue;
 import org.apache.directory.shared.ldap.entry.Value;
-import org.apache.directory.shared.ldap.entry.client.ClientBinaryValue;
 import org.apache.directory.shared.ldap.entry.client.ClientStringValue;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
@@ -2480,7 +2480,7 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
                 {
                     if ( ParserUtils.isBase64BinaryValue( xpp, typeValue ) )
                     {
-                        Value<byte[]> value = new ClientBinaryValue( Base64.decode( nextText.trim().toCharArray() ) );
+                        Value<byte[]> value = new BinaryValue( Base64.decode( nextText.trim().toCharArray() ) );
                         assertion.setAssertionValue( value );
                     }
                     else
@@ -2618,7 +2618,7 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
                     if ( ParserUtils.isBase64BinaryValue( xpp, typeValue ) )
                     {
                         filter.setMatchValue( 
-                            new ClientBinaryValue( 
+                            new BinaryValue( 
                                 Base64.decode( nextText.trim().toCharArray() ) ) );
                     }
                     else

@@ -24,8 +24,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.entry.BinaryValue;
 import org.apache.directory.shared.ldap.entry.Value;
-import org.apache.directory.shared.ldap.entry.client.ClientBinaryValue;
 import org.apache.directory.shared.ldap.entry.client.ClientStringValue;
 
 
@@ -156,9 +156,9 @@ public abstract class AbstractExprNode implements ExprNode
 
         if ( value.isBinary() )
         {
-            sb = new StringBuilder( ((ClientBinaryValue)value).getReference().length * 3 );
+            sb = new StringBuilder( ((BinaryValue)value).getReference().length * 3 );
             
-            for ( byte b:((ClientBinaryValue)value).getReference() )
+            for ( byte b:((BinaryValue)value).getReference() )
             {
                 if ( ( b < 0x7F ) && ( b >= 0 ) )
                 {
