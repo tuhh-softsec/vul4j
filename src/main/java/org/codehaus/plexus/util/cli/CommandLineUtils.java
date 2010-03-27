@@ -21,6 +21,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -270,6 +272,30 @@ public abstract class CommandLineUtils
     public static Properties getSystemEnvVars( boolean caseSensitive )
         throws IOException
     {
+        
+        // check if it's 1.5+ run 
+        
+        Method getenvMethod = getEnvMethod();
+        if ( getenvMethod != null )
+        {
+            try
+            {
+                return getEnvFromSystem( getenvMethod, caseSensitive );
+            }
+            catch ( IllegalAccessException e )
+            {
+                throw new IOException( e.getMessage() );
+            }
+            catch ( IllegalArgumentException e )
+            {
+                throw new IOException( e.getMessage() );
+            }
+            catch ( InvocationTargetException e )
+            {
+                throw new IOException( e.getMessage() );
+            }
+        }
+        
         Process p = null;
 
         try
@@ -589,5 +615,39 @@ public abstract class CommandLineUtils
         }
         return result.toString();
     }
-
+    
+    private static Method getEnvMethod()
+    {
+        try
+        {
+            return System.class.getMethod( "getenv", null );
+        }
+        catch ( NoSuchMethodException e )
+        {
+            return null;
+        }
+        catch ( SecurityException e )
+        {
+            return null;
+        }
+    }
+    
+    private static Properties getEnvFromSystem( Method method, boolean caseSensitive )
+        throws IllegalAccessException, IllegalArgumentException, InvocationTargetException
+    {
+        Properties envVars = new Properties();
+        Map envs = (Map) method.invoke( null, null );
+        Iterator iterator = envs.keySet().iterator();
+        while ( iterator.hasNext() )
+        {
+            String key = (String) iterator.next();
+            String value = (String) envs.get( key );
+            if ( !caseSensitive )
+            {
+                key = key.toUpperCase( Locale.ENGLISH );
+            }
+            envVars.put( key, value );
+        }
+        return envVars;
+    }
 }
