@@ -590,11 +590,11 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
 
     /**
      * Tells if the current DN is a parent of another DN.<br>
-     * For instance, <b>dc=com</b> is a child
+     * For instance, <b>dc=com</b> is a parent
      * of <b>dc=example, dc=com</b>
      * 
      * @param dn The child
-     * @return true if the given DN is a child of the current DN 
+     * @return true if the current DN is a parent of the given DN
      */
     public boolean isParentOf( String dn )
     {
@@ -611,11 +611,11 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
 
     /**
      * Tells if the current DN is a parent of another DN.<br>
-     * For instance, <b>dc=com</b> is a child
+     * For instance, <b>dc=com</b> is a parent
      * of <b>dc=example, dc=com</b>
      * 
      * @param dn The child
-     * @return true if the given DN is a child of the current DN 
+     * @return true if the current DN is a parent of the given DN
      */
     public boolean isParentOf( DN dn )
     {
@@ -634,7 +634,7 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
      * of <b>dc=com</b>
      * 
      * @param dn The parent
-     * @return true if the given DN is a parent of the current DN 
+     * @return true if the current DN is a child of the given DN
      */
     public boolean isChildOf( String dn )
     {
@@ -655,7 +655,7 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
      * of <b>dc=com</b>
      * 
      * @param dn The parent
-     * @return true if the given DN is a parent of the current DN 
+     * @return true if the current DN is a child of the given DN
      */
     public boolean isChildOf( DN dn )
     {
