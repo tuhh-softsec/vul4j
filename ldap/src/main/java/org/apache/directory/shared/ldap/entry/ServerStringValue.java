@@ -188,28 +188,6 @@ public class ServerStringValue extends ClientStringValue
 
 
     /**
-     * Uses the syntaxChecker associated with the attributeType to check if the
-     * value is valid.  Repeated calls to this method do not attempt to re-check
-     * the syntax of the wrapped value every time if the wrapped value does not
-     * change. Syntax checks only result on the first check, and when the wrapped
-     * value changes.
-     *
-     * @see Value#isValid()
-     */
-    public final boolean isValid()
-    {
-        if ( valid != null )
-        {
-            return valid;
-        }
-
-        valid = attributeType.getSyntax().getSyntaxChecker().isValidSyntax( get() );
-        
-        return valid;
-    }
-
-
-    /**
      * @see Value#compareTo(Object)
      * @throws IllegalStateException on failures to extract the comparator, or the
      * normalizers needed to perform the required comparisons based on the schema

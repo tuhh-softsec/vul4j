@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.directory.shared.ldap.entry.client;
+package org.apache.directory.shared.ldap.entry;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
+import org.apache.directory.shared.ldap.entry.client.ClientStringValue;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.schema.normalizers.DeepTrimToLowerNormalizer;
 import org.apache.directory.shared.ldap.schema.syntaxCheckers.Ia5StringSyntaxChecker;
@@ -43,7 +44,7 @@ import org.junit.Test;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public class ClientStringValueTest
+public class StringValueTest
 {
     /**
      * Serialize a ClientStringValue
@@ -552,11 +553,11 @@ public class ClientStringValueTest
         csv.isValid( new Ia5StringSyntaxChecker() );
 
         ClientStringValue csvSer = deserializeValue( serializeValue( csv ) );
-         assertNotSame( csv, csvSer );
-         assertEquals( csv.get(), csvSer.get() );
-         assertEquals( csv.getNormalizedValue(), csvSer.getNormalizedValue() );
-         assertTrue( csvSer.isNormalized() );
-         assertFalse( csvSer.isValid() );
+        assertNotSame( csv, csvSer );
+        assertEquals( csv.get(), csvSer.get() );
+        assertEquals( csv.getNormalizedValue(), csvSer.getNormalizedValue() );
+        assertTrue( csvSer.isNormalized() );
+        assertFalse( csvSer.isValid() );
     }
     
     
