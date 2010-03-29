@@ -253,6 +253,7 @@ public abstract class CommandLineUtils
      * @return The shell environment variables, can be empty but never <code>null</code>.
      * @throws IOException If the environment variables could not be queried from the shell.
      * @see System#getenv() System.getenv() API, new in JDK 5.0, to get the same result
+     * <b>since 2.0.2 System#getenv() will be used if available in the current running jvm.</b>
      */
     public static Properties getSystemEnvVars()
         throws IOException
@@ -268,6 +269,7 @@ public abstract class CommandLineUtils
      * @return Properties object of (possibly modified) envar keys mapped to their values.
      * @throws IOException
      * @see System#getenv() System.getenv() API, new in JDK 5.0, to get the same result
+     * <b>since 2.0.2 System#getenv() will be used if available in the current running jvm.</b>
      */
     public static Properties getSystemEnvVars( boolean caseSensitive )
         throws IOException
