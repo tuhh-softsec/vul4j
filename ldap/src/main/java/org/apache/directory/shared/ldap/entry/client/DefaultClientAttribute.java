@@ -34,7 +34,6 @@ import org.apache.directory.shared.asn1.primitives.OID;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.entry.BinaryValue;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
-import org.apache.directory.shared.ldap.entry.ServerStringValue;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.schema.AttributeType;
@@ -512,7 +511,7 @@ public class DefaultClientAttribute implements EntryAttribute
                     // We have to do that because we are using a Set,
                     // and we can't remove the first element of the Set.
                     nullBinaryValue = new BinaryValue( (byte[])null );
-                    nullStringValue = new ClientStringValue( null );
+                    nullStringValue = new ClientStringValue( (String)null );
                     
                     values.add( nullBinaryValue );
                     values.add( nullStringValue );
@@ -535,7 +534,7 @@ public class DefaultClientAttribute implements EntryAttribute
                 else
                 {
                     // The attribute is HR
-                    nullStringValue = new ClientStringValue( null );
+                    nullStringValue = new ClientStringValue( (String)null );
                     
                     // Don't add a value if it already exists. 
                     if ( !values.contains( nullStringValue ) )
@@ -1449,7 +1448,7 @@ public class DefaultClientAttribute implements EntryAttribute
         {
             Value<?> clientValue = null;
             
-            if ( value instanceof ServerStringValue )
+            if ( value instanceof ClientStringValue )
             {
                 clientValue = new ClientStringValue( value.getString() );
             }

@@ -582,7 +582,7 @@ public class DefaultClientEntryTest
         Value<String> strValue1 = new ClientStringValue( "test1" );
         Value<String> strValue2 = new ClientStringValue( "test2" );
         Value<String> strValue3 = new ClientStringValue( "test3" );
-        Value<String> strNullValue = new ClientStringValue( null);
+        Value<String> strNullValue = new ClientStringValue( (String)null);
 
         Value<byte[]> binValue1 = new BinaryValue( BYTES1 );
         Value<byte[]> binValue2 = new BinaryValue( BYTES2 );
@@ -942,7 +942,7 @@ public class DefaultClientEntryTest
         Value<String> strValueTop = new ClientStringValue( "top" );
         Value<String> strValuePerson = new ClientStringValue( "person" );
         Value<String> strValueTop2 = new ClientStringValue( "top" );
-        Value<String> strNullValue = new ClientStringValue( null);
+        Value<String> strNullValue = new ClientStringValue( (String)null );
 
         Value<byte[]> binValue1 = new BinaryValue( BYTES1 );
         Value<byte[]> binValue2 = new BinaryValue( BYTES2 );
@@ -1138,7 +1138,7 @@ public class DefaultClientEntryTest
         Value<String> strValue1 = new ClientStringValue( "test1" );
         Value<String> strValue2 = new ClientStringValue( "test2" );
         Value<String> strValue3 = new ClientStringValue( "test3" );
-        Value<String> strNullValue = new ClientStringValue( null);
+        Value<String> strNullValue = new ClientStringValue( (String)null );
 
         Value<byte[]> binValue1 = new BinaryValue( BYTES1 );
         Value<byte[]> binValue2 = new BinaryValue( BYTES2 );
@@ -1238,7 +1238,7 @@ public class DefaultClientEntryTest
         
         Value<String> strValueTop = new ClientStringValue( "top" );
         Value<String> strValuePerson = new ClientStringValue( "person" );
-        Value<String> strNullValue = new ClientStringValue( null);
+        Value<String> strNullValue = new ClientStringValue( (String)null );
 
         Value<byte[]> binValue1 = new BinaryValue( BYTES1 );
         Value<byte[]> binValue2 = new BinaryValue( BYTES2 );

@@ -69,7 +69,7 @@ public class ACIItemParser
     /**
      * Creates a normalizing ACIItem parser.
      */
-    public ACIItemParser(NameComponentNormalizer normalizer, Map<String, OidNormalizer> oidsMap )
+    public ACIItemParser( NameComponentNormalizer normalizer, Map<String, OidNormalizer> oidsMap )
     {
         this.lexer = new ReusableAntlrACIItemLexer( new StringReader( "" ) );
         this.parser = new ReusableAntlrACIItemParser( lexer );

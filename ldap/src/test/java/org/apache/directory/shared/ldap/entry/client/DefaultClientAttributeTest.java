@@ -55,7 +55,7 @@ import org.junit.Test;
  */
 public class DefaultClientAttributeTest
 {
-    private static final Value<String> NULL_STRING_VALUE = new ClientStringValue( null );
+    private static final Value<String> NULL_STRING_VALUE = new ClientStringValue( (String)null );
     private static final Value<byte[]> NULL_BINARY_VALUE = new BinaryValue( (byte[])null );
     private static final byte[] BYTES1 = new byte[]{ 'a', 'b' };
     private static final byte[] BYTES2 = new byte[]{ 'b' };
@@ -481,7 +481,7 @@ public class DefaultClientAttributeTest
     {
         EntryAttribute attr1 = new DefaultClientAttribute( "test" );
         
-        int nbAdded = attr1.add( new ClientStringValue( null ) );
+        int nbAdded = attr1.add( new ClientStringValue( (String)null ) );
         assertEquals( 1, nbAdded );
         assertTrue( attr1.isHR() );
         assertEquals( NULL_STRING_VALUE, attr1.get() );
@@ -535,7 +535,7 @@ public class DefaultClientAttributeTest
 
         EntryAttribute attr8 = new DefaultClientAttribute( "test" );
         
-        nbAdded = attr8.add( new ClientStringValue( null ), new BinaryValue( BYTES1 ) );
+        nbAdded = attr8.add( new ClientStringValue( (String)null ), new BinaryValue( BYTES1 ) );
         assertEquals( 2, nbAdded );
         assertTrue( attr8.isHR() );
         assertTrue( attr8.contains( NULL_STRING_VALUE ) );

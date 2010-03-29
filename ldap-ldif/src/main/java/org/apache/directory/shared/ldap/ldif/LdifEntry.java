@@ -34,7 +34,6 @@ import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Modification;
 import org.apache.directory.shared.ldap.entry.ModificationOperation;
 import org.apache.directory.shared.ldap.entry.Value;
-import org.apache.directory.shared.ldap.entry.client.ClientEntryFactory;
 import org.apache.directory.shared.ldap.entry.client.ClientModification;
 import org.apache.directory.shared.ldap.entry.client.ClientStringValue;
 import org.apache.directory.shared.ldap.entry.client.DefaultClientAttribute;
@@ -224,7 +223,7 @@ public class LdifEntry implements Cloneable, Externalizable
             
             if ( value == null )
             {
-                value = new ClientStringValue( null );
+                value = new ClientStringValue( (String)null );
                 attr = new DefaultClientAttribute( id, (Value<?>)value );
             }
             else

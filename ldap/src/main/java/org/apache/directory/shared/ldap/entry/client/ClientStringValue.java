@@ -64,7 +64,7 @@ public class ClientStringValue extends AbstractValue<String>
     // Constructors
     // -----------------------------------------------------------------------
     /**
-     * Creates a ServerStringValue without an initial wrapped value.
+     * Creates a ClientStringValue without an initial wrapped value.
      */
     public ClientStringValue()
     {
@@ -74,7 +74,34 @@ public class ClientStringValue extends AbstractValue<String>
 
 
     /**
-     * Creates a ServerStringValue with an initial wrapped String value.
+     * Creates a ClientStringValue without an initial wrapped value.
+     *
+     * @param attributeType the schema type associated with this ClientStringValue
+     */
+    public ClientStringValue( AttributeType attributeType )
+    {
+        if ( attributeType == null )
+        {
+            throw new IllegalArgumentException( I18n.err( I18n.ERR_04442 ) );
+        }
+
+        if ( attributeType.getSyntax() == null )
+        {
+            throw new IllegalArgumentException( I18n.err( I18n.ERR_04445 ) );
+        }
+
+        if ( ! attributeType.getSyntax().isHumanReadable() )
+        {
+            LOG.warn( "Treating a value of a binary attribute {} as a String: " +
+                    "\nthis could cause data corruption!", attributeType.getName() );
+        }
+
+        this.attributeType = attributeType;
+    }
+
+
+    /**
+     * Creates a ClientStringValue with an initial wrapped String value.
      *
      * @param wrapped the value to wrap which can be null
      */
@@ -83,6 +110,37 @@ public class ClientStringValue extends AbstractValue<String>
         this.wrapped = wrapped;
         normalized = false;
         valid = null;
+    }
+
+
+    /**
+     * Creates a ClientStringValue with an initial wrapped String value.
+     *
+     * @param attributeType the schema type associated with this ClientStringValue
+     * @param wrapped the value to wrap which can be null
+     */
+    public ClientStringValue( AttributeType attributeType, String wrapped )
+    {
+        this( attributeType );
+        this.wrapped = wrapped;
+    }
+
+
+    /**
+     * Creates a ClientStringValue with an initial wrapped String value and
+     * a normalized value.
+     *
+     * @param attributeType the schema type associated with this ClientStringValue
+     * @param wrapped the value to wrap which can be null
+     * @param normalizedValue the normalized value
+     */
+    /** No protection */ ClientStringValue( AttributeType attributeType, String wrapped, String normalizedValue, boolean valid )
+    {
+        this( wrapped );
+        this.normalized = true;
+        this.attributeType = attributeType;
+        this.normalizedValue = normalizedValue;
+        this.valid = valid;
     }
 
 
@@ -140,15 +198,59 @@ public class ClientStringValue extends AbstractValue<String>
     {
         if ( isNull() )
         {
+            normalized = true;
             return null;
         }
 
+        if ( !normalized )
+        {
+            try
+            {
+                normalize();
+            }
+            catch ( LdapException ne )
+            {
+                String message = "Cannot normalize the value :" + ne.getLocalizedMessage();
+                LOG.info( message );
+                normalized = false;
+            }
+        }
+        
         if ( normalizedValue == null )
         {
             return wrapped;
         }
 
         return normalizedValue;
+    }
+    
+    
+    public void apply( AttributeType attributeType )
+    {
+        if ( this.attributeType != null ) 
+        {
+            if ( !attributeType.equals( this.attributeType ) )
+            {
+                throw new IllegalArgumentException( I18n.err( I18n.ERR_04476, attributeType.getName(), this.attributeType.getName() ) );
+            }
+            else
+            {
+                return;
+            }
+        }
+        
+        this.attributeType = attributeType;
+        
+        try
+        {
+            normalize();
+        }
+        catch ( LdapException ne )
+        {
+            String message = I18n.err( I18n.ERR_04447, ne.getLocalizedMessage() );
+            LOG.info( message );
+            normalized = false;
+        }
     }
 
 
@@ -164,6 +266,38 @@ public class ClientStringValue extends AbstractValue<String>
     }
 
 
+    /**
+     * Compute the normalized (canonical) representation for the wrapped string.
+     * If the wrapped String is null, the normalized form will be null too.  
+     *
+     * @throws LdapException if the value cannot be properly normalized
+     */
+    public void normalize() throws LdapException
+    {
+        // If the value is already normalized, get out.
+        if ( normalized )
+        {
+            return;
+        }
+        
+        if ( attributeType != null )
+        {
+            Normalizer normalizer = getNormalizer();
+    
+            if ( normalizer == null )
+            {
+                normalizedValue = wrapped;
+            }
+            else
+            {
+                normalizedValue = ( String ) normalizer.normalize( wrapped );
+            }
+    
+            normalized = true;
+        }
+    }
+
+    
     /**
      * Normalize the value. For a client String value, applies the given normalizer.
      * 
@@ -209,17 +343,45 @@ public class ClientStringValue extends AbstractValue<String>
             return 1;
         }
 
-        if ( value instanceof ClientStringValue )
-        {
-            ClientStringValue stringValue = ( ClientStringValue ) value;
-            
-            return getNormalizedValue().compareTo( stringValue.getNormalizedValue() );
-        }
-        else 
+        if ( !( value instanceof ClientStringValue ) )
         {
             String message = I18n.err( I18n.ERR_04128, toString(), value.getClass() );
             LOG.error( message );
             throw new NotImplementedException( message );
+        }
+        
+        ClientStringValue stringValue = ( ClientStringValue ) value;
+        
+        if ( attributeType != null )
+        {
+            if ( stringValue.getAttributeType() == null )
+            {
+                return getNormalizedValue().compareTo( stringValue.getNormalizedValue() );
+            }
+            else
+            {
+                if ( !attributeType.equals( stringValue.getAttributeType() ) )
+                {
+                    String message = I18n.err( I18n.ERR_04128, toString(), value.getClass() );
+                    LOG.error( message );
+                    throw new NotImplementedException( message );
+                }
+            }
+        }
+        else 
+        {
+            return getNormalizedValue().compareTo( stringValue.getNormalizedValue() );
+        }
+            
+        try
+        {
+            return getLdapComparator().compare( getNormalizedValue(), stringValue.getNormalizedValue() );
+        }
+        catch ( LdapException e )
+        {
+            String msg = I18n.err( I18n.ERR_04443, this, value );
+            LOG.error( msg, e );
+            throw new IllegalStateException( msg, e );
         }
     }
 
@@ -310,9 +472,70 @@ public class ClientStringValue extends AbstractValue<String>
         {
             return other.isNull();
         }
-        
-        // Test the normalized values
-        return this.getNormalizedValue().equals( other.getNormalizedValue() );
+       
+        // If we have an attributeType, it must be equal
+        // We should also use the comparator if we have an AT
+        if ( attributeType != null )
+        {
+            if ( other.attributeType != null )
+            {
+                if ( !attributeType.equals( other.attributeType ) )
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return this.getNormalizedValue().equals( other.getNormalizedValue() );
+            }
+        }
+        else if ( other.attributeType != null )
+        {
+            return this.getNormalizedValue().equals( other.getNormalizedValue() );
+        }
+
+        // Shortcut : compare the values without normalization
+        // If they are equal, we may avoid a normalization.
+        // Note : if two values are equal, then their normalized
+        // value are equal too if their attributeType are equal. 
+        if ( getReference().equals( other.getReference() ) )
+        {
+            return true;
+        }
+
+        if ( attributeType != null )
+        {
+            try
+            {
+                LdapComparator<? super Object> comparator = getLdapComparator();
+
+                // Compare normalized values
+                if ( comparator == null )
+                {
+                    return getNormalizedValue().equals( other.getNormalizedValue() );
+                }
+                else
+                {
+                    if ( isNormalized() )
+                    {
+                        return comparator.compare( getNormalizedValue(), other.getNormalizedValue() ) == 0;
+                    }
+                    else
+                    {
+                        Normalizer normalizer = attributeType.getEquality().getNormalizer();
+                        return comparator.compare( normalizer.normalize( get() ), normalizer.normalize( other.get() ) ) == 0;
+                    }
+                }
+            }
+            catch ( LdapException ne )
+            {
+                return false;
+            }
+        }
+        else
+        {
+            return this.getNormalizedValue().equals( other.getNormalizedValue() );
+        }
     }
     
     
@@ -660,7 +883,7 @@ public class ClientStringValue extends AbstractValue<String>
 
     
     /**
-     * Deserialize a ServerStringValue. 
+     * Deserialize a ClientStringValue. 
      *
      * @param in the buffer containing the bytes with the serialized value
      * @throws IOException 

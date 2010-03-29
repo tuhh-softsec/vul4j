@@ -606,7 +606,7 @@ public class StringValueTest
     @Test
     public void testSerializeNullValue() throws LdapException, IOException, ClassNotFoundException
     {
-        ClientStringValue csv = new ClientStringValue( null );
+        ClientStringValue csv = new ClientStringValue( (String)null );
         csv.setNormalized( true );
         csv.isValid( new Ia5StringSyntaxChecker() );
         csv.normalize( new DeepTrimToLowerNormalizer( "1.1.1" ) );

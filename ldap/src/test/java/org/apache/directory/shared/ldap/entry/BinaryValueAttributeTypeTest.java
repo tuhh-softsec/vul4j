@@ -35,8 +35,8 @@ import java.io.ObjectOutputStream;
 import java.util.Arrays;
 
 import org.apache.directory.shared.ldap.entry.BinaryValue;
-import org.apache.directory.shared.ldap.entry.ServerStringValue;
 import org.apache.directory.shared.ldap.entry.Value;
+import org.apache.directory.shared.ldap.entry.client.ClientStringValue;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.LdapSyntax;
@@ -204,7 +204,7 @@ public class BinaryValueAttributeTypeTest
     {
         try
         {
-            new BinaryValue( null, (byte[])null );
+            new BinaryValue( null, null );
             fail();
         }
         catch ( IllegalArgumentException iae )
@@ -330,7 +330,7 @@ public class BinaryValueAttributeTypeTest
         BinaryValue value4 = new BinaryValue( at1, new byte[]{0x01} );
         BinaryValue value5 = new BinaryValue( at1, null );
         BinaryValue value6 = new BinaryValue( at, new byte[]{0x01, 0x02} );
-        ServerStringValue value7 = new ServerStringValue( EntryUtils.getIA5StringAttributeType(), 
+        ClientStringValue value7 = new ClientStringValue( EntryUtils.getIA5StringAttributeType(), 
             "test" );
         
         assertTrue( value1.equals( value1 ) );

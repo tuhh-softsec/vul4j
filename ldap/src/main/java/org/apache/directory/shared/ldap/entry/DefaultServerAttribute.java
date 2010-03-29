@@ -94,7 +94,7 @@ public final class DefaultServerAttribute extends DefaultClientAttribute impleme
                 {
                     if ( isHR )
                     {
-                        serverValue = new ServerStringValue( attributeType, clientValue.getString() );
+                        serverValue = new ClientStringValue( attributeType, clientValue.getString() );
                     }
                     else
                     {
@@ -108,7 +108,7 @@ public final class DefaultServerAttribute extends DefaultClientAttribute impleme
                     if ( isHR )
                     {
                         // We have to convert the value to a String value first
-                        serverValue = new ServerStringValue( attributeType, 
+                        serverValue = new ClientStringValue( attributeType, 
                             clientValue.getString() );
                     }
                     else
@@ -358,7 +358,7 @@ public final class DefaultServerAttribute extends DefaultClientAttribute impleme
             
             for ( String val:vals )
             {
-                Value<String> newValue = new ServerStringValue( attributeType, val );
+                Value<String> newValue = new ClientStringValue( attributeType, val );
                 
                 if ( add( newValue ) != 0 )
                 {
@@ -395,26 +395,23 @@ public final class DefaultServerAttribute extends DefaultClientAttribute impleme
             {
                 if ( ( val == null ) || val.isNull() )
                 {
-                    Value<String> nullSV = new ServerStringValue( attributeType, (String)null );
+                    Value<String> nullSV = new ClientStringValue( attributeType, (String)null );
                     
                     if ( values.add( nullSV ) )
                     {
                         nbAdded++;
                     }
                 }
-                else if ( val instanceof ServerStringValue )
-                {
-                    if ( values.add( val ) )
-                    {
-                        nbAdded++;
-                    }
-                }
                 else if ( val instanceof ClientStringValue )
                 {
-                    // If we get a Client value, convert it to a Server value first 
-                    Value<String> serverStringValue = new ServerStringValue( attributeType, val.getString() ); 
+                    ClientStringValue stringValue = (ClientStringValue)val;
                     
-                    if ( values.add( serverStringValue ) )
+                    if ( stringValue.getAttributeType() == null )
+                    {
+                        stringValue.apply( attributeType );
+                    }
+                    
+                    if ( values.add( val ) )
                     {
                         nbAdded++;
                     }
@@ -543,7 +540,7 @@ public final class DefaultServerAttribute extends DefaultClientAttribute impleme
             // don't find one in the values
             for ( String val:vals )
             {
-                ServerStringValue value = new ServerStringValue( attributeType, val );
+                ClientStringValue value = new ClientStringValue( attributeType, val );
                 
                 if ( !values.contains( value ) )
                 {
@@ -581,18 +578,16 @@ public final class DefaultServerAttribute extends DefaultClientAttribute impleme
         {
             for ( Value<?> val:vals )
             {
-                if ( val instanceof ServerStringValue )
+                if ( val instanceof ClientStringValue )
                 {
-                    if ( !values.contains( val ) )
-                    {
-                        return false;
-                    }
-                }
-                else if ( val instanceof ClientStringValue )
-                {
-                    ServerStringValue serverValue = new ServerStringValue( attributeType, val.isNull() ? (String)null : val.getString() );
+                    ClientStringValue stringValue = (ClientStringValue)val;
                     
-                    if ( !values.contains( serverValue ) )
+                    if ( stringValue.getAttributeType() == null )
+                    {
+                        stringValue.apply( attributeType );
+                    }
+                    
+                    if ( !values.contains( val ) )
                     {
                         return false;
                     }
@@ -706,7 +701,7 @@ public final class DefaultServerAttribute extends DefaultClientAttribute impleme
         
         for ( String val:vals )
         {
-            ServerStringValue value = new ServerStringValue( attributeType, val );
+            ClientStringValue value = new ClientStringValue( attributeType, val );
             removed &= values.remove( value );
         }
         
@@ -732,12 +727,14 @@ public final class DefaultServerAttribute extends DefaultClientAttribute impleme
             {
                 if ( val instanceof ClientStringValue )
                 {
-                    ServerStringValue ssv = new ServerStringValue( attributeType, (String)val.get() );
-                    removed &= values.remove( ssv );
-                }
-                else if ( val instanceof ServerStringValue )
-                {
-                    removed &= values.remove( val );
+                    ClientStringValue stringValue = (ClientStringValue)val;
+                    
+                    if ( stringValue.getAttributeType() == null )
+                    {
+                        stringValue.apply( attributeType );
+                    }
+                    
+                    removed &= values.remove( stringValue );
                 }
                 else
                 {
@@ -969,9 +966,9 @@ public final class DefaultServerAttribute extends DefaultClientAttribute impleme
             for ( Value<?> value:values )
             {
                 // Write the value, using the correct method
-                if ( value instanceof ServerStringValue )
+                if ( value instanceof ClientStringValue )
                 {
-                    ((ServerStringValue)value).serialize( out );
+                    ((ClientStringValue)value).serialize( out );
                 }
                 else
                 {
@@ -1022,8 +1019,8 @@ public final class DefaultServerAttribute extends DefaultClientAttribute impleme
                 
                 if ( isHR )
                 {
-                    value  = new ServerStringValue( attributeType );
-                    ((ServerStringValue)value).deserialize( in );
+                    value  = new ClientStringValue( attributeType );
+                    ((ClientStringValue)value).deserialize( in );
                 }
                 else
                 {
