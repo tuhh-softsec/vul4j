@@ -25,7 +25,7 @@ import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.schema.Normalizer;
 import org.apache.directory.shared.ldap.schema.SchemaManager;
 import org.apache.directory.shared.ldap.schema.registries.Registries;
-import org.apache.directory.shared.ldap.util.SynchronizedLRUMap;
+//import org.apache.directory.shared.ldap.util.SynchronizedLRUMap;
 
 
 /**
@@ -43,7 +43,7 @@ public class CachingNormalizer extends Normalizer
     public static final int CACHE_MAX = 250;
 
     /** Least recently used cache */
-    private final SynchronizedLRUMap cache;
+    //private final SynchronizedLRUMap cache;
 
     /** The underlying decorated Normalizer */
     protected final Normalizer normalizer;
@@ -77,7 +77,7 @@ public class CachingNormalizer extends Normalizer
     {
         super( normalizer.getOid() );
         this.normalizer = normalizer;
-        cache = new SynchronizedLRUMap( cacheSz );
+        //cache = new SynchronizedLRUMap( cacheSz );
     }
 
 
@@ -115,15 +115,16 @@ public class CachingNormalizer extends Normalizer
             return null;
         }
 
-        Value<?> result = ( Value<?> ) cache.get( value );
+        //Value<?> result = ( Value<?> ) cache.get( value );
 
-        if ( result != null )
-        {
-            return result;
-        }
+        //if ( result != null )
+        //{
+        //    return result;
+        //}
 
         Value<?> normalized = normalizer.normalize( value );
-        cache.put( value, normalized );
+        //cache.put( value, normalized );
+        
         return normalized;
     }
 
@@ -138,15 +139,15 @@ public class CachingNormalizer extends Normalizer
             return null;
         }
 
-        String normalized = ( String ) cache.get( value );
+        //String normalized = ( String ) cache.get( value );
 
-        if ( normalized != null )
-        {
-            return normalized;
-        }
+        //if ( normalized != null )
+        //{
+        //    return normalized;
+        //}
 
-        normalized = normalizer.normalize( value );
-        cache.put( value, normalized );
+        String normalized = normalizer.normalize( value );
+        //cache.put( value, normalized );
         return normalized;
     }
 
