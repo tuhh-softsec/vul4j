@@ -29,7 +29,7 @@ import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.search.AttributeValueAssertionFilter;
 import org.apache.directory.shared.ldap.codec.search.SearchRequestCodec;
 import org.apache.directory.shared.ldap.entry.BinaryValue;
-import org.apache.directory.shared.ldap.entry.ClientStringValue;
+import org.apache.directory.shared.ldap.entry.StringValue;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
@@ -98,11 +98,11 @@ public class InitAssertionValueFilterAction extends GrammarAction
         {
             if ( tlv.getLength() != 0 )
             {
-                assertionValue = new ClientStringValue( StringTools.utf8ToString( tlv.getValue().getData() ) );
+                assertionValue = new StringValue( StringTools.utf8ToString( tlv.getValue().getData() ) );
             }
             else
             {
-                assertionValue = new ClientStringValue( "" );
+                assertionValue = new StringValue( "" );
             }
             
             assertion.setAssertionValue(assertionValue );

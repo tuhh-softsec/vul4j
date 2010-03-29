@@ -46,13 +46,13 @@ import org.slf4j.LoggerFactory;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public class ClientStringValue extends AbstractValue<String>
+public class StringValue extends AbstractValue<String>
 {
     /** Used for serialization */
     private static final long serialVersionUID = 2L;
     
     /** logger for reporting errors that might not be handled properly upstream */
-    protected static final Logger LOG = LoggerFactory.getLogger( ClientStringValue.class );
+    protected static final Logger LOG = LoggerFactory.getLogger( StringValue.class );
 
     /** reference to the attributeType which is not serialized */
     protected transient AttributeType attributeType;
@@ -62,9 +62,9 @@ public class ClientStringValue extends AbstractValue<String>
     // Constructors
     // -----------------------------------------------------------------------
     /**
-     * Creates a ClientStringValue without an initial wrapped value.
+     * Creates a StringValue without an initial wrapped value.
      */
-    public ClientStringValue()
+    public StringValue()
     {
         normalized = false;
         valid = null;
@@ -72,11 +72,11 @@ public class ClientStringValue extends AbstractValue<String>
 
 
     /**
-     * Creates a ClientStringValue without an initial wrapped value.
+     * Creates a StringValue without an initial wrapped value.
      *
-     * @param attributeType the schema type associated with this ClientStringValue
+     * @param attributeType the schema type associated with this StringValue
      */
-    public ClientStringValue( AttributeType attributeType )
+    public StringValue( AttributeType attributeType )
     {
         if ( attributeType == null )
         {
@@ -99,11 +99,11 @@ public class ClientStringValue extends AbstractValue<String>
 
 
     /**
-     * Creates a ClientStringValue with an initial wrapped String value.
+     * Creates a StringValue with an initial wrapped String value.
      *
      * @param wrapped the value to wrap which can be null
      */
-    public ClientStringValue( String wrapped )
+    public StringValue( String wrapped )
     {
         this.wrapped = wrapped;
         normalized = false;
@@ -112,12 +112,12 @@ public class ClientStringValue extends AbstractValue<String>
 
 
     /**
-     * Creates a ClientStringValue with an initial wrapped String value.
+     * Creates a StringValue with an initial wrapped String value.
      *
-     * @param attributeType the schema type associated with this ClientStringValue
+     * @param attributeType the schema type associated with this StringValue
      * @param wrapped the value to wrap which can be null
      */
-    public ClientStringValue( AttributeType attributeType, String wrapped )
+    public StringValue( AttributeType attributeType, String wrapped )
     {
         this( attributeType );
         this.wrapped = wrapped;
@@ -125,14 +125,14 @@ public class ClientStringValue extends AbstractValue<String>
 
 
     /**
-     * Creates a ClientStringValue with an initial wrapped String value and
+     * Creates a StringValue with an initial wrapped String value and
      * a normalized value.
      *
-     * @param attributeType the schema type associated with this ClientStringValue
+     * @param attributeType the schema type associated with this StringValue
      * @param wrapped the value to wrap which can be null
      * @param normalizedValue the normalized value
      */
-    /** No protection */ ClientStringValue( AttributeType attributeType, String wrapped, String normalizedValue, boolean valid )
+    StringValue( AttributeType attributeType, String wrapped, String normalizedValue, boolean valid )
     {
         this( wrapped );
         this.normalized = true;
@@ -341,14 +341,14 @@ public class ClientStringValue extends AbstractValue<String>
             return 1;
         }
 
-        if ( !( value instanceof ClientStringValue ) )
+        if ( !( value instanceof StringValue ) )
         {
             String message = I18n.err( I18n.ERR_04128, toString(), value.getClass() );
             LOG.error( message );
             throw new NotImplementedException( message );
         }
         
-        ClientStringValue stringValue = ( ClientStringValue ) value;
+        StringValue stringValue = ( StringValue ) value;
         
         if ( attributeType != null )
         {
@@ -392,9 +392,9 @@ public class ClientStringValue extends AbstractValue<String>
      * 
      * @return a copy of the current value
      */
-    public ClientStringValue clone()
+    public StringValue clone()
     {
-        return (ClientStringValue)super.clone();
+        return (StringValue)super.clone();
     }
 
 
@@ -450,7 +450,7 @@ public class ClientStringValue extends AbstractValue<String>
     /**
      * @see Object#equals(Object)
      * 
-     * Two ClientStringValue are equals if their normalized values are equal
+     * Two StringValue are equals if their normalized values are equal
      */
     public boolean equals( Object obj )
     {
@@ -459,12 +459,12 @@ public class ClientStringValue extends AbstractValue<String>
             return true;
         }
 
-        if ( ! ( obj instanceof ClientStringValue ) )
+        if ( ! ( obj instanceof StringValue ) )
         {
             return false;
         }
 
-        ClientStringValue other = ( ClientStringValue ) obj;
+        StringValue other = ( StringValue ) obj;
         
         if ( this.isNull() )
         {
@@ -881,7 +881,7 @@ public class ClientStringValue extends AbstractValue<String>
 
     
     /**
-     * Deserialize a ClientStringValue. 
+     * Deserialize a StringValue. 
      *
      * @param in the buffer containing the bytes with the serialized value
      * @throws IOException 

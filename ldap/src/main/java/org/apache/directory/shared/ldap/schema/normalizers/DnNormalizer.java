@@ -21,7 +21,7 @@ package org.apache.directory.shared.ldap.schema.normalizers;
 
 
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
-import org.apache.directory.shared.ldap.entry.ClientStringValue;
+import org.apache.directory.shared.ldap.entry.StringValue;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.name.DN;
@@ -64,7 +64,7 @@ public class DnNormalizer extends Normalizer
         dn = new DN( dnStr );
         
         dn.normalize( schemaManager.getNormalizerMapping() );
-        return new ClientStringValue( dn.getNormName() );
+        return new StringValue( dn.getNormName() );
     }
 
 

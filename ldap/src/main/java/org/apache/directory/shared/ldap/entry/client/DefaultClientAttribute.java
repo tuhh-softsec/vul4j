@@ -33,7 +33,7 @@ import org.apache.directory.shared.ldap.exception.LdapInvalidAttributeValueExcep
 import org.apache.directory.shared.asn1.primitives.OID;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.entry.BinaryValue;
-import org.apache.directory.shared.ldap.entry.ClientStringValue;
+import org.apache.directory.shared.ldap.entry.StringValue;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
@@ -110,13 +110,13 @@ public class DefaultClientAttribute implements EntryAttribute
         // The value can be null, this is a valid value.
         if ( vals[0] == null )
         {
-             add( new ClientStringValue() );
+             add( new StringValue() );
         }
         else
         {
             for ( Value<?> val:vals )
             {
-                if ( ( val instanceof ClientStringValue ) || ( val.isBinary() ) )
+                if ( ( val instanceof StringValue ) || ( val.isBinary() ) )
                 {
                     add( val );
                 }
@@ -198,7 +198,7 @@ public class DefaultClientAttribute implements EntryAttribute
     {
         Value<?> value = get();
         
-        if ( value instanceof ClientStringValue )
+        if ( value instanceof StringValue )
         {
             return value.getString();
         }
@@ -495,7 +495,7 @@ public class DefaultClientAttribute implements EntryAttribute
     {
         int nbAdded = 0;
         BinaryValue nullBinaryValue = null;
-        ClientStringValue nullStringValue = null;
+        StringValue nullStringValue = null;
         boolean nullValueAdded = false;
         
         for ( Value<?> val:vals )
@@ -512,7 +512,7 @@ public class DefaultClientAttribute implements EntryAttribute
                     // We have to do that because we are using a Set,
                     // and we can't remove the first element of the Set.
                     nullBinaryValue = new BinaryValue( (byte[])null );
-                    nullStringValue = new ClientStringValue( (String)null );
+                    nullStringValue = new StringValue( (String)null );
                     
                     values.add( nullBinaryValue );
                     values.add( nullStringValue );
@@ -535,7 +535,7 @@ public class DefaultClientAttribute implements EntryAttribute
                 else
                 {
                     // The attribute is HR
-                    nullStringValue = new ClientStringValue( (String)null );
+                    nullStringValue = new StringValue( (String)null );
                     
                     // Don't add a value if it already exists. 
                     if ( !values.contains( nullStringValue ) )
@@ -547,7 +547,7 @@ public class DefaultClientAttribute implements EntryAttribute
             else
             {
                 // Let's check the value type. 
-                if ( val instanceof ClientStringValue )
+                if ( val instanceof StringValue )
                 {
                     // We have a String value
                     if ( isHR == null )
@@ -603,7 +603,7 @@ public class DefaultClientAttribute implements EntryAttribute
                     {
                         // The attribute Type is HR, convert the
                         // value to a StringValue
-                        ClientStringValue csv = new ClientStringValue();
+                        StringValue csv = new StringValue();
                         csv.set( val.getString() );
                         
                         if ( !contains( csv ) )
@@ -659,7 +659,7 @@ public class DefaultClientAttribute implements EntryAttribute
                 // Call the add(Value) method, if not already present
                 if ( !contains( val ) )
                 {
-                    if ( add( new ClientStringValue( val ) ) == 1 )
+                    if ( add( new StringValue( val ) ) == 1 )
                     {
                         nbAdded++;
                     }
@@ -745,7 +745,7 @@ public class DefaultClientAttribute implements EntryAttribute
                 // Now call the add(Value) method, if not already present
                 if ( !contains( val ) )
                 {
-                    if ( add( new ClientStringValue( valString ) ) == 1 )
+                    if ( add( new StringValue( valString ) ) == 1 )
                     {
                         nbAdded++;
                     }
@@ -803,7 +803,7 @@ public class DefaultClientAttribute implements EntryAttribute
             // contained in the object
             for ( Value<?> val:vals )
             {
-                if ( val instanceof ClientStringValue )
+                if ( val instanceof StringValue )
                 {
                     if ( !values.contains( val ) )
                     {
@@ -815,7 +815,7 @@ public class DefaultClientAttribute implements EntryAttribute
                     byte[] binaryVal = val.getBytes();
                     
                     // We have to convert the binary value to a String
-                    if ( ! values.contains( new ClientStringValue( StringTools.utf8ToString( binaryVal ) ) ) )
+                    if ( ! values.contains( new StringValue( StringTools.utf8ToString( binaryVal ) ) ) )
                     {
                         return false;
                     }
@@ -878,7 +878,7 @@ public class DefaultClientAttribute implements EntryAttribute
             // don't find one in the values
             for ( String val:vals )
             {
-                if ( !contains( new ClientStringValue( val ) ) )
+                if ( !contains( new StringValue( val ) ) )
                 {
                     return false;
                 }
@@ -946,7 +946,7 @@ public class DefaultClientAttribute implements EntryAttribute
             {
                 String stringVal = StringTools.utf8ToString( val );
 
-                if ( !contains( new ClientStringValue( stringVal ) ) )
+                if ( !contains( new StringValue( stringVal ) ) )
                 {
                     return false;
                 }
@@ -1140,7 +1140,7 @@ public class DefaultClientAttribute implements EntryAttribute
         {
             for ( Value<?> val:vals )
             {
-                if ( val instanceof ClientStringValue )
+                if ( val instanceof StringValue )
                 {
                     removed &= values.remove( val );
                 }
@@ -1148,7 +1148,7 @@ public class DefaultClientAttribute implements EntryAttribute
                 {
                     // Convert the binary value to a string value
                     byte[] binaryVal = val.getBytes();
-                    removed &= values.remove( new ClientStringValue( StringTools.utf8ToString( binaryVal ) ) );
+                    removed &= values.remove( new StringValue( StringTools.utf8ToString( binaryVal ) ) );
                 }
             }
         }
@@ -1204,7 +1204,7 @@ public class DefaultClientAttribute implements EntryAttribute
             // to String before removing them
             for ( byte[] val:vals )
             {
-                ClientStringValue value = new ClientStringValue( StringTools.utf8ToString( val ) );
+                StringValue value = new StringValue( StringTools.utf8ToString( val ) );
                 removed &= values.remove( value );
             }
         }
@@ -1241,7 +1241,7 @@ public class DefaultClientAttribute implements EntryAttribute
             // The attribute type is HR, we can directly process the values
             for ( String val:vals )
             {
-                ClientStringValue value = new ClientStringValue( val );
+                StringValue value = new StringValue( val );
                 removed &= values.remove( value );
             }
         }
@@ -1449,9 +1449,9 @@ public class DefaultClientAttribute implements EntryAttribute
         {
             Value<?> clientValue = null;
             
-            if ( value instanceof ClientStringValue )
+            if ( value instanceof StringValue )
             {
-                clientValue = new ClientStringValue( value.getString() );
+                clientValue = new StringValue( value.getString() );
             }
             else
             {

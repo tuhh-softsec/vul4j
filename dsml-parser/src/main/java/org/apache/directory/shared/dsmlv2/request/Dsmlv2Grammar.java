@@ -62,7 +62,7 @@ import org.apache.directory.shared.ldap.codec.search.PresentFilter;
 import org.apache.directory.shared.ldap.codec.search.SearchRequestCodec;
 import org.apache.directory.shared.ldap.codec.search.SubstringFilter;
 import org.apache.directory.shared.ldap.entry.BinaryValue;
-import org.apache.directory.shared.ldap.entry.ClientStringValue;
+import org.apache.directory.shared.ldap.entry.StringValue;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
@@ -2485,7 +2485,7 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
                     }
                     else
                     {
-                        Value<String> value = new ClientStringValue( nextText.trim() );
+                        Value<String> value = new StringValue( nextText.trim() );
                         assertion.setAssertionValue( value );
                     }
                 }
@@ -2624,7 +2624,7 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
                     else
                     {
                         filter.setMatchValue( 
-                            new ClientStringValue( nextText.trim() ) );
+                            new StringValue( nextText.trim() ) );
                     }
                 }
             }

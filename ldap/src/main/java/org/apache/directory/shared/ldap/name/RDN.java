@@ -33,7 +33,7 @@ import java.util.TreeSet;
 import org.apache.commons.collections.MultiMap;
 import org.apache.commons.collections.map.MultiValueMap;
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.entry.ClientStringValue;
+import org.apache.directory.shared.ldap.entry.StringValue;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
@@ -242,7 +242,7 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
      */
     public RDN( String upType, String normType, String upValue, String normValue ) throws LdapInvalidDnException
     {
-        addAttributeTypeAndValue( upType, normType, new ClientStringValue( upValue ), new ClientStringValue( normValue ) );
+        addAttributeTypeAndValue( upType, normType, new StringValue( upValue ), new StringValue( normValue ) );
 
         upName = upType + '=' + upValue;
         start = 0;
@@ -264,7 +264,7 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
      */
     public RDN( String upType, String upValue ) throws LdapInvalidDnException
     {
-        addAttributeTypeAndValue( upType, upType, new ClientStringValue( upValue ), new ClientStringValue( upValue ) );
+        addAttributeTypeAndValue( upType, upType, new StringValue( upValue ), new StringValue( upValue ) );
 
         upName = upType + '=' + upValue;
         start = 0;

@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import org.apache.directory.shared.ldap.entry.ClientStringValue;
+import org.apache.directory.shared.ldap.entry.StringValue;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.schema.Normalizer;
@@ -288,7 +288,7 @@ public class SubstringNode extends LeafNode
 
         if ( null != initialPattern )
         {
-            buf.append( AbstractExprNode.escapeFilterValue( new ClientStringValue( initialPattern ) ) ).append( '*' );
+            buf.append( AbstractExprNode.escapeFilterValue( new StringValue( initialPattern ) ) ).append( '*' );
         }
         else
         {
@@ -299,14 +299,14 @@ public class SubstringNode extends LeafNode
         {
             for ( String any:anyPattern )
             {
-                buf.append( AbstractExprNode.escapeFilterValue( new ClientStringValue( any ) ) );
+                buf.append( AbstractExprNode.escapeFilterValue( new StringValue( any ) ) );
                 buf.append( '*' );
             }
         }
 
         if ( null != finalPattern )
         {
-            buf.append( AbstractExprNode.escapeFilterValue( new ClientStringValue( finalPattern ) ) );
+            buf.append( AbstractExprNode.escapeFilterValue( new StringValue( finalPattern ) ) );
         }
 
         buf.append( super.toString() );

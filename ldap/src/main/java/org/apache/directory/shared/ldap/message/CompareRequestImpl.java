@@ -22,7 +22,7 @@ package org.apache.directory.shared.ldap.message;
 
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.entry.BinaryValue;
-import org.apache.directory.shared.ldap.entry.ClientStringValue;
+import org.apache.directory.shared.ldap.entry.StringValue;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.message.internal.InternalCompareRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalCompareResponse;
@@ -118,7 +118,7 @@ public class CompareRequestImpl extends AbstractAbandonableRequest implements In
      */
     public void setAssertionValue( String attrVal )
     {
-        this.attrVal = new ClientStringValue( attrVal );
+        this.attrVal = new StringValue( attrVal );
     }
 
 

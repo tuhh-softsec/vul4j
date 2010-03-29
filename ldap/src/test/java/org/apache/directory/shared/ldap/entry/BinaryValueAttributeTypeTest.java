@@ -329,7 +329,7 @@ public class BinaryValueAttributeTypeTest
         BinaryValue value4 = new BinaryValue( at1, new byte[]{0x01} );
         BinaryValue value5 = new BinaryValue( at1, null );
         BinaryValue value6 = new BinaryValue( at, new byte[]{0x01, 0x02} );
-        ClientStringValue value7 = new ClientStringValue( EntryUtils.getIA5StringAttributeType(), 
+        StringValue value7 = new StringValue( EntryUtils.getIA5StringAttributeType(), 
             "test" );
         
         assertTrue( value1.equals( value1 ) );

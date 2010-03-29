@@ -21,7 +21,7 @@ package org.apache.directory.shared.ldap.schema.normalizers;
 
 
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
-import org.apache.directory.shared.ldap.entry.ClientStringValue;
+import org.apache.directory.shared.ldap.entry.StringValue;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.schema.Normalizer;
@@ -60,7 +60,7 @@ public class BooleanNormalizer extends Normalizer
 
         String strValue = value.getString();
         
-        return new ClientStringValue( strValue.trim().toUpperCase() );
+        return new StringValue( strValue.trim().toUpperCase() );
     }
 
     

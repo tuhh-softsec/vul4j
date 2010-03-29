@@ -53,7 +53,7 @@ import org.junit.Test;
 
 
 /**
- * Tests that the ClientStringValue class works properly as expected.
+ * Tests that the StringValue class works properly as expected.
  *
  * Some notes while conducting tests:
  *
@@ -93,9 +93,9 @@ public class StringValueAttributeTypeTest
     
     
     /**
-     * Serialize a ClientStringValue
+     * Serialize a StringValue
      */
-    private ByteArrayOutputStream serializeValue( ClientStringValue value ) throws IOException
+    private ByteArrayOutputStream serializeValue( StringValue value ) throws IOException
     {
         ObjectOutputStream oOut = null;
         ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -130,9 +130,9 @@ public class StringValueAttributeTypeTest
     
     
     /**
-     * Deserialize a ClientStringValue
+     * Deserialize a StringValue
      */
-    private ClientStringValue deserializeValue( ByteArrayOutputStream out, AttributeType at ) throws IOException, ClassNotFoundException
+    private StringValue deserializeValue( ByteArrayOutputStream out, AttributeType at ) throws IOException, ClassNotFoundException
     {
         ObjectInputStream oIn = null;
         ByteArrayInputStream in = new ByteArrayInputStream( out.toByteArray() );
@@ -141,7 +141,7 @@ public class StringValueAttributeTypeTest
         {
             oIn = new ObjectInputStream( in );
 
-            ClientStringValue value = new ClientStringValue( at );
+            StringValue value = new StringValue( at );
             value.deserialize( oIn );
 
             return value;
@@ -175,7 +175,7 @@ public class StringValueAttributeTypeTest
     {
         AttributeType attribute = EntryUtils.getIA5StringAttributeType();
         
-        ClientStringValue value = new ClientStringValue( attribute, null );
+        StringValue value = new StringValue( attribute, null );
         
         assertNull( value.get() );
         assertTrue( value.isNull() );
@@ -189,7 +189,7 @@ public class StringValueAttributeTypeTest
     {
         AttributeType attribute = EntryUtils.getIA5StringAttributeType();
         
-        ClientStringValue value = new ClientStringValue( attribute, null );
+        StringValue value = new StringValue( attribute, null );
         
         assertFalse( value.isNormalized() );
         assertNull( value.getNormalizedValue() );
@@ -216,7 +216,7 @@ public class StringValueAttributeTypeTest
     {
         AttributeType attribute = EntryUtils.getIA5StringAttributeType();
         
-        ClientStringValue value = new ClientStringValue( attribute, null );
+        StringValue value = new StringValue( attribute, null );
         assertTrue( value.isValid() );
 
         value.set( "" );
@@ -237,7 +237,7 @@ public class StringValueAttributeTypeTest
     public void testNormalize() throws LdapException
     {
         AttributeType attribute = EntryUtils.getIA5StringAttributeType();
-        ClientStringValue ssv = new ClientStringValue( attribute );
+        StringValue ssv = new StringValue( attribute );
 
         ssv.normalize();
         assertEquals( null, ssv.getNormalizedValue() );
@@ -259,7 +259,7 @@ public class StringValueAttributeTypeTest
     public void testInstanceOf() throws LdapException
     {
         AttributeType attribute = EntryUtils.getIA5StringAttributeType();
-        ClientStringValue ssv = new ClientStringValue( attribute );
+        StringValue ssv = new StringValue( attribute );
         
         assertTrue( ssv.instanceOf( attribute ) );
         
@@ -276,7 +276,7 @@ public class StringValueAttributeTypeTest
     public void testgetAttributeType()
     {
         AttributeType attribute = EntryUtils.getIA5StringAttributeType();
-        ClientStringValue ssv = new ClientStringValue( attribute );
+        StringValue ssv = new StringValue( attribute );
         
         assertEquals( attribute, ssv.getAttributeType() );
     }    
@@ -290,13 +290,13 @@ public class StringValueAttributeTypeTest
         AttributeType at1 = EntryUtils.getIA5StringAttributeType();
         AttributeType at2 = EntryUtils.getBytesAttributeType();
         
-        ClientStringValue value1 = new ClientStringValue( at1, "test" );
-        ClientStringValue value2 = new ClientStringValue( at1, "test" );
-        ClientStringValue value3 = new ClientStringValue( at1, "TEST" );
-        ClientStringValue value4 = new ClientStringValue( at1, "tes" );
-        ClientStringValue value5 = new ClientStringValue( at1, null );
+        StringValue value1 = new StringValue( at1, "test" );
+        StringValue value2 = new StringValue( at1, "test" );
+        StringValue value3 = new StringValue( at1, "TEST" );
+        StringValue value4 = new StringValue( at1, "tes" );
+        StringValue value5 = new StringValue( at1, null );
         BinaryValue valueBytes = new BinaryValue( at2, new byte[]{0x01} );
-        ClientStringValue valueString = new ClientStringValue( at, "test" );
+        StringValue valueString = new StringValue( at, "test" );
         
         assertTrue( value1.equals( value1 ) );
         assertTrue( value1.equals( value2 ) );
@@ -326,7 +326,7 @@ public class StringValueAttributeTypeTest
     {
         try
         {
-            new ClientStringValue( null, null );
+            new StringValue( null, null );
             fail();
         }
         catch ( IllegalArgumentException iae )
@@ -339,7 +339,7 @@ public class StringValueAttributeTypeTest
         
         try
         {
-            new ClientStringValue( attribute );
+            new StringValue( attribute );
             fail();
         }
         catch ( IllegalArgumentException iae )
@@ -356,9 +356,9 @@ public class StringValueAttributeTypeTest
     @Test public void testHashCode()
     {
         AttributeType at1 = EntryUtils.getCaseIgnoringAttributeNoNumbersType();
-        ClientStringValue v0 = new ClientStringValue( at1, "Alex" );
-        ClientStringValue v1 = new ClientStringValue( at1, "ALEX" );
-        ClientStringValue v2 = new ClientStringValue( at1, "alex" );
+        StringValue v0 = new StringValue( at1, "Alex" );
+        StringValue v1 = new StringValue( at1, "ALEX" );
+        StringValue v2 = new StringValue( at1, "alex" );
         
         assertEquals( v0.hashCode(), v1.hashCode() );
         assertEquals( v0.hashCode(), v2.hashCode() );
@@ -372,12 +372,12 @@ public class StringValueAttributeTypeTest
         assertTrue( v1.isValid() );
         assertTrue( v2.isValid() );
 
-        ClientStringValue v3 = new ClientStringValue( at1, "Timber" );
+        StringValue v3 = new StringValue( at1, "Timber" );
         
         assertTrue( v3.isValid() );
         assertNotSame( v0.hashCode(), v3.hashCode() );
 
-        ClientStringValue v4 = new ClientStringValue( at, "Alex" );
+        StringValue v4 = new StringValue( at, "Alex" );
         
         assertNotSame( v0.hashCode(), v4.hashCode() );
     }
@@ -390,13 +390,13 @@ public class StringValueAttributeTypeTest
     public void testCompareTo()
     {
         AttributeType at1 = EntryUtils.getCaseIgnoringAttributeNoNumbersType();
-        ClientStringValue v0 = new ClientStringValue( at1, "Alex" );
-        ClientStringValue v1 = new ClientStringValue( at1, "ALEX" );
+        StringValue v0 = new StringValue( at1, "Alex" );
+        StringValue v1 = new StringValue( at1, "ALEX" );
         
         assertEquals( 0, v0.compareTo( v1 ) );
         assertEquals( 0, v1.compareTo( v0 ) );
 
-        ClientStringValue v2 = new ClientStringValue( at1, null );
+        StringValue v2 = new StringValue( at1, null );
         
         assertEquals( 1, v0.compareTo( v2 ) );
         assertEquals( -1, v2.compareTo( v0 ) );
@@ -410,9 +410,9 @@ public class StringValueAttributeTypeTest
     public void testClone() throws LdapException
     {
         AttributeType at1 = EntryUtils.getCaseIgnoringAttributeNoNumbersType();
-        ClientStringValue ssv = new ClientStringValue( at1, "Test" );
+        StringValue ssv = new StringValue( at1, "Test" );
         
-        ClientStringValue ssv1 = ssv.clone();
+        StringValue ssv1 = ssv.clone();
         
         assertEquals( ssv, ssv1 );
         
@@ -502,24 +502,24 @@ public class StringValueAttributeTypeTest
         at.setSyntax( s );
 
         // check that normalization and syntax checks work as expected
-        ClientStringValue value = new ClientStringValue( at, "HIGH" );
+        StringValue value = new StringValue( at, "HIGH" );
         assertEquals( value.get(), value.get() );
         assertTrue( value.isValid() );
-        value = new ClientStringValue( at, "high" );
+        value = new StringValue( at, "high" );
         assertFalse( value.isValid() );
 
         // create a bunch to best tested for equals and in containers
-        ClientStringValue v0 = new ClientStringValue( at, "LOW" );
+        StringValue v0 = new StringValue( at, "LOW" );
         assertTrue( v0.isValid() );
-        ClientStringValue v1 = new ClientStringValue( at, "LOW" );
+        StringValue v1 = new StringValue( at, "LOW" );
         assertTrue( v1.isValid() );
-        ClientStringValue v2 = new ClientStringValue( at, "MEDIUM" );
+        StringValue v2 = new StringValue( at, "MEDIUM" );
         assertTrue( v2.isValid() );
-        ClientStringValue v3 = new ClientStringValue( at, "HIGH" );
+        StringValue v3 = new StringValue( at, "HIGH" );
         assertTrue( v3.isValid() );
-        ClientStringValue v4 = new ClientStringValue( at );
+        StringValue v4 = new StringValue( at );
         assertFalse( v4.isValid() );
-        ClientStringValue v5 = new ClientStringValue( at );
+        StringValue v5 = new StringValue( at );
         assertFalse( v5.isValid() );
 
         // check equals
@@ -537,7 +537,7 @@ public class StringValueAttributeTypeTest
         assertTrue( v3.compareTo( v2 ) > 0 );
 
         // add all except v1 and v5 to a set
-        HashSet<ClientStringValue> set = new HashSet<ClientStringValue>();
+        HashSet<StringValue> set = new HashSet<StringValue>();
         set.add( v0 );
         set.add( v2 );
         set.add( v3 );
@@ -589,17 +589,17 @@ public class StringValueAttributeTypeTest
     @Test public void testAcceptAllNoNormalization()
     {
         // check that normalization and syntax checks work as expected
-        ClientStringValue value = new ClientStringValue( at, "hello" );
+        StringValue value = new StringValue( at, "hello" );
         assertEquals( value.get(), value.get() );
         assertTrue( value.isValid() );
 
         // create a bunch to best tested for equals and in containers
-        ClientStringValue v0 = new ClientStringValue( at, "hello" );
-        ClientStringValue v1 = new ClientStringValue( at, "hello" );
-        ClientStringValue v2 = new ClientStringValue( at, "next0" );
-        ClientStringValue v3 = new ClientStringValue( at, "next1" );
-        ClientStringValue v4 = new ClientStringValue( at );
-        ClientStringValue v5 = new ClientStringValue( at );
+        StringValue v0 = new StringValue( at, "hello" );
+        StringValue v1 = new StringValue( at, "hello" );
+        StringValue v2 = new StringValue( at, "next0" );
+        StringValue v3 = new StringValue( at, "next1" );
+        StringValue v4 = new StringValue( at );
+        StringValue v5 = new StringValue( at );
 
         // check equals
         assertTrue( v0.equals( v1 ) );
@@ -610,7 +610,7 @@ public class StringValueAttributeTypeTest
         assertFalse( v3.equals( v2 ) );
 
         // add all except v1 and v5 to a set
-        HashSet<ClientStringValue> set = new HashSet<ClientStringValue>();
+        HashSet<StringValue> set = new HashSet<StringValue>();
         set.add( v0 );
         set.add( v2 );
         set.add( v3 );
@@ -621,7 +621,7 @@ public class StringValueAttributeTypeTest
         assertTrue( "since v4.equals( v5 ) and v4 was added then this should be true", set.contains( v5 ) );
 
         // check ordering based on the comparator
-        ArrayList<ClientStringValue> list = new ArrayList<ClientStringValue>();
+        ArrayList<StringValue> list = new ArrayList<StringValue>();
         list.add( v1 );
         list.add( v3 );
         list.add( v5 );
@@ -629,9 +629,9 @@ public class StringValueAttributeTypeTest
         list.add( v2 );
         list.add( v4 );
 
-        Comparator<ClientStringValue> c = new Comparator<ClientStringValue>()
+        Comparator<StringValue> c = new Comparator<StringValue>()
         {
-            public int compare( ClientStringValue o1, ClientStringValue o2 )
+            public int compare( StringValue o1, StringValue o2 )
             {
                 String n1 = null;
                 String n2 = null;
@@ -684,7 +684,7 @@ public class StringValueAttributeTypeTest
     @Test public void testNormalizedStringValueSerialization() throws LdapException, IOException, ClassNotFoundException
     {
         // First check with a value which will be normalized
-        ClientStringValue ssv = new ClientStringValue( at, "  Test   Test  " );
+        StringValue ssv = new StringValue( at, "  Test   Test  " );
         
         ssv.normalize();
         String normalized = ssv.getNormalizedValue();
@@ -692,7 +692,7 @@ public class StringValueAttributeTypeTest
         assertEquals( "test test", normalized );
         assertEquals( "  Test   Test  ", ssv.getString() );
         
-        ClientStringValue ssvSer = deserializeValue( serializeValue( ssv ), at );
+        StringValue ssvSer = deserializeValue( serializeValue( ssv ), at );
         
         assertEquals( ssv, ssvSer );
    }
@@ -704,7 +704,7 @@ public class StringValueAttributeTypeTest
     @Test public void testNoNormalizedStringValueSerialization() throws LdapException, IOException, ClassNotFoundException
     {
         // First check with a value which will be normalized
-        ClientStringValue ssv = new ClientStringValue( at, "test" );
+        StringValue ssv = new StringValue( at, "test" );
         
         ssv.normalize();
         String normalized = ssv.getNormalizedValue();
@@ -712,7 +712,7 @@ public class StringValueAttributeTypeTest
         assertEquals( "test", normalized );
         assertEquals( "test", ssv.getString() );
         
-        ClientStringValue ssvSer = deserializeValue( serializeValue( ssv ), at );
+        StringValue ssvSer = deserializeValue( serializeValue( ssv ), at );
         
         assertEquals( ssv, ssvSer );
    }
@@ -724,7 +724,7 @@ public class StringValueAttributeTypeTest
     @Test public void testNullStringValueSerialization() throws LdapException, IOException, ClassNotFoundException
     {
         // First check with a value which will be normalized
-        ClientStringValue ssv = new ClientStringValue( at );
+        StringValue ssv = new StringValue( at );
         
         ssv.normalize();
         String normalized = ssv.getNormalizedValue();
@@ -732,7 +732,7 @@ public class StringValueAttributeTypeTest
         assertNull( normalized );
         assertNull( ssv.get() );
         
-        ClientStringValue ssvSer = deserializeValue( serializeValue( ssv ), at );
+        StringValue ssvSer = deserializeValue( serializeValue( ssv ), at );
         
         assertEquals( ssv, ssvSer );
    }
@@ -744,7 +744,7 @@ public class StringValueAttributeTypeTest
     @Test public void testEmptyStringValueSerialization() throws LdapException, IOException, ClassNotFoundException
     {
         // First check with a value which will be normalized
-        ClientStringValue ssv = new ClientStringValue( at, "" );
+        StringValue ssv = new StringValue( at, "" );
         
         ssv.normalize();
         String normalized = ssv.getNormalizedValue();
@@ -752,7 +752,7 @@ public class StringValueAttributeTypeTest
         assertEquals( "", normalized );
         assertEquals( "", ssv.getString() );
         
-        ClientStringValue ssvSer = deserializeValue( serializeValue( ssv ), at );
+        StringValue ssvSer = deserializeValue( serializeValue( ssv ), at );
         
         assertEquals( ssv, ssvSer );
     }
@@ -764,11 +764,11 @@ public class StringValueAttributeTypeTest
     @Test public void testStringValueEmptyNormalizedSerialization() throws LdapException, IOException, ClassNotFoundException
     {
         // First check with a value which will be normalized
-        ClientStringValue ssv = new ClientStringValue( at, "  " );
+        StringValue ssv = new StringValue( at, "  " );
         
         assertEquals( "  ", ssv.getString() );
         
-        ClientStringValue ssvSer = deserializeValue( serializeValue( ssv ), at );
+        StringValue ssvSer = deserializeValue( serializeValue( ssv ), at );
         
         assertEquals( ssv, ssvSer );
     }

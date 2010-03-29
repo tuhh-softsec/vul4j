@@ -22,7 +22,7 @@ package org.apache.directory.shared.ldap.schema.normalizers;
 
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
-import org.apache.directory.shared.ldap.entry.ClientStringValue;
+import org.apache.directory.shared.ldap.entry.StringValue;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.exception.LdapOtherException;
@@ -77,7 +77,7 @@ public class NameOrNumericIdNormalizer extends Normalizer
 
         if ( strValue.length() == 0 )
         {
-            return new ClientStringValue( "" );
+            return new StringValue( "" );
         }
 
         // if value is a numeric id then return it as is
@@ -91,7 +91,7 @@ public class NameOrNumericIdNormalizer extends Normalizer
 
         if ( oid != null )
         {
-            return new ClientStringValue( oid );
+            return new StringValue( oid );
         }
 
         // if all else fails

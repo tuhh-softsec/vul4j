@@ -24,7 +24,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
 import org.apache.directory.shared.ldap.entry.BinaryValue;
-import org.apache.directory.shared.ldap.entry.ClientStringValue;
+import org.apache.directory.shared.ldap.entry.StringValue;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.util.StringTools;
@@ -164,8 +164,8 @@ public class AVASerializer
         {
             if ( isHR )
             {
-                Value<String> upValue = new ClientStringValue( in.readUTF() );
-                Value<String> normValue = new ClientStringValue( in.readUTF() );
+                Value<String> upValue = new StringValue( in.readUTF() );
+                Value<String> normValue = new StringValue( in.readUTF() );
                 
                 AVA atav = 
                     new AVA( upType, normType, upValue, normValue, upName );

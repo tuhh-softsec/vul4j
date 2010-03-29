@@ -29,7 +29,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.directory.shared.ldap.entry.ClientStringValue;
+import org.apache.directory.shared.ldap.entry.StringValue;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Modification;
@@ -223,7 +223,7 @@ public class LdifEntry implements Cloneable, Externalizable
             
             if ( value == null )
             {
-                value = new ClientStringValue( (String)null );
+                value = new StringValue( (String)null );
                 attr = new DefaultClientAttribute( id, (Value<?>)value );
             }
             else

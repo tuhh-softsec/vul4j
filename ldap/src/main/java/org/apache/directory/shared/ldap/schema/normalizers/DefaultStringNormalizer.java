@@ -20,7 +20,7 @@
 package org.apache.directory.shared.ldap.schema.normalizers;
 
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
-import org.apache.directory.shared.ldap.entry.ClientStringValue;
+import org.apache.directory.shared.ldap.entry.StringValue;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.schema.Normalizer;
@@ -60,10 +60,10 @@ public class DefaultStringNormalizer extends Normalizer
         
         if ( StringTools.isEmpty( str ) )
         {
-            return new ClientStringValue( str );
+            return new StringValue( str );
         }
         
-        return new ClientStringValue( str );
+        return new StringValue( str );
     }
 
     

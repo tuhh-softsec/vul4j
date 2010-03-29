@@ -166,7 +166,7 @@ public class EntryUtils
             {
                 if ( !value.isBinary() )
                 {
-                    return new ClientStringValue( value.getString().toLowerCase() );
+                    return new StringValue( value.getString().toLowerCase() );
                 }
 
                 throw new IllegalStateException( I18n.err( I18n.ERR_04474 ) );

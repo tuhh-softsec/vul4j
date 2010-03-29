@@ -21,7 +21,7 @@ package org.apache.directory.shared.ldap.schema.normalizers;
 
 
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
-import org.apache.directory.shared.ldap.entry.ClientStringValue;
+import org.apache.directory.shared.ldap.entry.StringValue;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.schema.Normalizer;
@@ -61,16 +61,16 @@ public class ObjectIdentifierNormalizer extends Normalizer
 
         if ( str.length() == 0 )
         {
-            return new ClientStringValue( "" );
+            return new StringValue( "" );
         }
         else if ( Character.isDigit( str.charAt( 0 ) ) )
         {
             // We do this test to avoid a lowerCasing which cost time
-            return new ClientStringValue( str );
+            return new StringValue( str );
         }
         else
         {
-            return new ClientStringValue( str.toLowerCase() );
+            return new StringValue( str.toLowerCase() );
         }
     }
     

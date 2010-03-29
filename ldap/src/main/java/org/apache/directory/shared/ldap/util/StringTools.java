@@ -39,7 +39,7 @@ import javax.naming.InvalidNameException;
 import org.apache.directory.shared.asn1.codec.binary.Hex;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.entry.BinaryValue;
-import org.apache.directory.shared.ldap.entry.ClientStringValue;
+import org.apache.directory.shared.ldap.entry.StringValue;
 import org.apache.directory.shared.ldap.schema.syntaxCheckers.UuidSyntaxChecker;
 
 
@@ -1054,9 +1054,9 @@ public class StringTools
             {
                 return dumpBytes( ( byte[] ) object );
             }
-            else if ( object instanceof ClientStringValue )
+            else if ( object instanceof StringValue )
             {
-                return ( ( ClientStringValue ) object ).get();
+                return ( ( StringValue ) object ).get();
             }
             else if ( object instanceof BinaryValue )
             {

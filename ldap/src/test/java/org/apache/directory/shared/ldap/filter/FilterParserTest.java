@@ -29,7 +29,7 @@ import static org.junit.Assert.fail;
 import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 
-import org.apache.directory.shared.ldap.entry.ClientStringValue;
+import org.apache.directory.shared.ldap.entry.StringValue;
 import org.junit.Test;
 
 
@@ -605,7 +605,7 @@ public class FilterParserTest
         assertTrue( node instanceof SubstringNode );
 
         assertEquals( 4, node.getAny().size() );
-        assertFalse( node.getAny().contains( new ClientStringValue( "" ) ) );
+        assertFalse( node.getAny().contains( new StringValue( "" ) ) );
         assertTrue( node.getAny().contains( "e" ) );
         assertTrue( node.getAny().contains( "b" ) );
         assertTrue( node.getAny().contains( "c" ) );
@@ -647,7 +647,7 @@ public class FilterParserTest
         assertTrue( node instanceof SubstringNode );
 
         assertEquals( 4, node.getAny().size() );
-        assertFalse( node.getAny().contains( new ClientStringValue( "" ) ) );
+        assertFalse( node.getAny().contains( new StringValue( "" ) ) );
         assertTrue( node.getAny().contains( "e" ) );
         assertTrue( node.getAny().contains( "b" ) );
         assertTrue( node.getAny().contains( "c" ) );

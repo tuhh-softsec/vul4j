@@ -89,11 +89,11 @@ public final class DefaultServerAttribute extends DefaultClientAttribute impleme
                 Value<?> serverValue = null; 
 
                 // We have to convert the value first
-                if ( clientValue instanceof ClientStringValue )
+                if ( clientValue instanceof StringValue )
                 {
                     if ( isHR )
                     {
-                        serverValue = new ClientStringValue( attributeType, clientValue.getString() );
+                        serverValue = new StringValue( attributeType, clientValue.getString() );
                     }
                     else
                     {
@@ -107,7 +107,7 @@ public final class DefaultServerAttribute extends DefaultClientAttribute impleme
                     if ( isHR )
                     {
                         // We have to convert the value to a String value first
-                        serverValue = new ClientStringValue( attributeType, 
+                        serverValue = new StringValue( attributeType, 
                             clientValue.getString() );
                     }
                     else
@@ -357,7 +357,7 @@ public final class DefaultServerAttribute extends DefaultClientAttribute impleme
             
             for ( String val:vals )
             {
-                Value<String> newValue = new ClientStringValue( attributeType, val );
+                Value<String> newValue = new StringValue( attributeType, val );
                 
                 if ( add( newValue ) != 0 )
                 {
@@ -394,16 +394,16 @@ public final class DefaultServerAttribute extends DefaultClientAttribute impleme
             {
                 if ( ( val == null ) || val.isNull() )
                 {
-                    Value<String> nullSV = new ClientStringValue( attributeType, (String)null );
+                    Value<String> nullSV = new StringValue( attributeType, (String)null );
                     
                     if ( values.add( nullSV ) )
                     {
                         nbAdded++;
                     }
                 }
-                else if ( val instanceof ClientStringValue )
+                else if ( val instanceof StringValue )
                 {
-                    ClientStringValue stringValue = (ClientStringValue)val;
+                    StringValue stringValue = (StringValue)val;
                     
                     if ( stringValue.getAttributeType() == null )
                     {
@@ -539,7 +539,7 @@ public final class DefaultServerAttribute extends DefaultClientAttribute impleme
             // don't find one in the values
             for ( String val:vals )
             {
-                ClientStringValue value = new ClientStringValue( attributeType, val );
+                StringValue value = new StringValue( attributeType, val );
                 
                 if ( !values.contains( value ) )
                 {
@@ -577,9 +577,9 @@ public final class DefaultServerAttribute extends DefaultClientAttribute impleme
         {
             for ( Value<?> val:vals )
             {
-                if ( val instanceof ClientStringValue )
+                if ( val instanceof StringValue )
                 {
-                    ClientStringValue stringValue = (ClientStringValue)val;
+                    StringValue stringValue = (StringValue)val;
                     
                     if ( stringValue.getAttributeType() == null )
                     {
@@ -700,7 +700,7 @@ public final class DefaultServerAttribute extends DefaultClientAttribute impleme
         
         for ( String val:vals )
         {
-            ClientStringValue value = new ClientStringValue( attributeType, val );
+            StringValue value = new StringValue( attributeType, val );
             removed &= values.remove( value );
         }
         
@@ -724,9 +724,9 @@ public final class DefaultServerAttribute extends DefaultClientAttribute impleme
         {
             for ( Value<?> val:vals )
             {
-                if ( val instanceof ClientStringValue )
+                if ( val instanceof StringValue )
                 {
-                    ClientStringValue stringValue = (ClientStringValue)val;
+                    StringValue stringValue = (StringValue)val;
                     
                     if ( stringValue.getAttributeType() == null )
                     {
@@ -965,9 +965,9 @@ public final class DefaultServerAttribute extends DefaultClientAttribute impleme
             for ( Value<?> value:values )
             {
                 // Write the value, using the correct method
-                if ( value instanceof ClientStringValue )
+                if ( value instanceof StringValue )
                 {
-                    ((ClientStringValue)value).serialize( out );
+                    ((StringValue)value).serialize( out );
                 }
                 else
                 {
@@ -1018,8 +1018,8 @@ public final class DefaultServerAttribute extends DefaultClientAttribute impleme
                 
                 if ( isHR )
                 {
-                    value  = new ClientStringValue( attributeType );
-                    ((ClientStringValue)value).deserialize( in );
+                    value  = new StringValue( attributeType );
+                    ((StringValue)value).deserialize( in );
                 }
                 else
                 {

@@ -25,7 +25,7 @@ import java.text.ParseException;
 
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
-import org.apache.directory.shared.ldap.entry.ClientStringValue;
+import org.apache.directory.shared.ldap.entry.StringValue;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.exception.LdapInvalidAttributeValueException;
@@ -75,7 +75,7 @@ public class GeneralizedTimeNormalizer extends Normalizer
         {
             String normalized = PrepareString.normalize( value.getString(), PrepareString.StringType.DIRECTORY_STRING );
 
-            return new ClientStringValue( normalized );
+            return new StringValue( normalized );
         }
         catch ( IOException ioe )
         {

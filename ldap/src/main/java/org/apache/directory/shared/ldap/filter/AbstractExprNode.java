@@ -25,7 +25,7 @@ import java.util.Map;
 
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.entry.BinaryValue;
-import org.apache.directory.shared.ldap.entry.ClientStringValue;
+import org.apache.directory.shared.ldap.entry.StringValue;
 import org.apache.directory.shared.ldap.entry.Value;
 
 
@@ -202,10 +202,10 @@ public abstract class AbstractExprNode implements ExprNode
                 }
             }
             
-            return new ClientStringValue( sb.toString() );
+            return new StringValue( sb.toString() );
         }
 
-        val = ( ( ClientStringValue ) value ).getString();
+        val = ( ( StringValue ) value ).getString();
         
         for ( int i = 0; i < val.length(); i++ )
         {
@@ -250,7 +250,7 @@ public abstract class AbstractExprNode implements ExprNode
             }
         }
 
-        return ( sb == null ? value : new ClientStringValue( sb.toString() ) );
+        return ( sb == null ? value : new StringValue( sb.toString() ) );
     }
 
 

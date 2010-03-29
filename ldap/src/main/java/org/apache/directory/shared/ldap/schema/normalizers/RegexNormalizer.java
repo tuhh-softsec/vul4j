@@ -23,7 +23,7 @@ package org.apache.directory.shared.ldap.schema.normalizers;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.directory.shared.ldap.entry.ClientStringValue;
+import org.apache.directory.shared.ldap.entry.StringValue;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.schema.Normalizer;
 
@@ -95,7 +95,7 @@ public class RegexNormalizer extends Normalizer
                 str = matchers[i].replaceAll( str );
             }
 
-            return new ClientStringValue( str );
+            return new StringValue( str );
         }
 
         return value;

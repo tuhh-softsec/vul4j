@@ -28,7 +28,7 @@ import java.util.Arrays;
 
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.entry.BinaryValue;
-import org.apache.directory.shared.ldap.entry.ClientStringValue;
+import org.apache.directory.shared.ldap.entry.StringValue;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
@@ -125,7 +125,7 @@ public class AVA implements Cloneable, Comparable, Externalizable
      */
     public AVA( String upType, String normType, String upValue, String normValue ) throws LdapInvalidDnException
     {
-        this( upType, normType, new ClientStringValue( upValue ), new ClientStringValue( normValue ) );
+        this( upType, normType, new StringValue( upValue ), new StringValue( normValue ) );
     }
 
 
@@ -437,11 +437,11 @@ public class AVA implements Cloneable, Comparable, Externalizable
 
         if ( StringTools.isEmpty( newValue ) )
         {
-            this.normValue = new ClientStringValue( "" );
+            this.normValue = new StringValue( "" );
         }
         else
         {
-            this.normValue = new ClientStringValue( newValue );
+            this.normValue = new StringValue( newValue );
         }
 
         upName = upName.substring( 0, upName.indexOf( '=' ) + 1 ) + value;
@@ -900,8 +900,8 @@ public class AVA implements Cloneable, Comparable, Externalizable
         
         if ( isHR )
         {
-            upValue = new ClientStringValue( in.readUTF() );
-            normValue = new ClientStringValue( in.readUTF() );
+            upValue = new StringValue( in.readUTF() );
+            normValue = new StringValue( in.readUTF() );
         }
         else
         {

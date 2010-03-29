@@ -41,7 +41,7 @@ import java.util.Set;
 
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.entry.BinaryValue;
-import org.apache.directory.shared.ldap.entry.ClientStringValue;
+import org.apache.directory.shared.ldap.entry.StringValue;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Value;
@@ -392,7 +392,7 @@ public class DefaultClientEntryTest
     {
         Entry entry = new DefaultClientEntry();
         
-        Value<String> value = new ClientStringValue( (String)null );
+        Value<String> value = new StringValue( (String)null );
         
         entry.add( "cn", value );
         assertEquals( 1, entry.size() );
@@ -401,9 +401,9 @@ public class DefaultClientEntryTest
         assertNotNull( attributeCN.get() );
         assertNull( attributeCN.get().get() );
         
-        Value<String> value1 = new ClientStringValue( "test1" );
-        Value<String> value2 = new ClientStringValue( "test2" );
-        Value<String> value3 = new ClientStringValue( "test1" );
+        Value<String> value1 = new StringValue( "test1" );
+        Value<String> value2 = new StringValue( "test2" );
+        Value<String> value3 = new StringValue( "test1" );
 
         entry.add( "sn", value1, value2, value3 );
         assertEquals( 2, entry.size() );
@@ -580,10 +580,10 @@ public class DefaultClientEntryTest
 
         entry.add( attrCN, attrPWD );
         
-        Value<String> strValue1 = new ClientStringValue( "test1" );
-        Value<String> strValue2 = new ClientStringValue( "test2" );
-        Value<String> strValue3 = new ClientStringValue( "test3" );
-        Value<String> strNullValue = new ClientStringValue( (String)null);
+        Value<String> strValue1 = new StringValue( "test1" );
+        Value<String> strValue2 = new StringValue( "test2" );
+        Value<String> strValue3 = new StringValue( "test3" );
+        Value<String> strNullValue = new StringValue( (String)null);
 
         Value<byte[]> binValue1 = new BinaryValue( BYTES1 );
         Value<byte[]> binValue2 = new BinaryValue( BYTES2 );
@@ -940,10 +940,10 @@ public class DefaultClientEntryTest
     {
         Entry entry = new DefaultClientEntry( EXAMPLE_DN );
         
-        Value<String> strValueTop = new ClientStringValue( "top" );
-        Value<String> strValuePerson = new ClientStringValue( "person" );
-        Value<String> strValueTop2 = new ClientStringValue( "top" );
-        Value<String> strNullValue = new ClientStringValue( (String)null );
+        Value<String> strValueTop = new StringValue( "top" );
+        Value<String> strValuePerson = new StringValue( "person" );
+        Value<String> strValueTop2 = new StringValue( "top" );
+        Value<String> strNullValue = new StringValue( (String)null );
 
         Value<byte[]> binValue1 = new BinaryValue( BYTES1 );
         Value<byte[]> binValue2 = new BinaryValue( BYTES2 );
@@ -1136,10 +1136,10 @@ public class DefaultClientEntryTest
 
         entry.add( attrCN, attrPWD );
         
-        Value<String> strValue1 = new ClientStringValue( "test1" );
-        Value<String> strValue2 = new ClientStringValue( "test2" );
-        Value<String> strValue3 = new ClientStringValue( "test3" );
-        Value<String> strNullValue = new ClientStringValue( (String)null );
+        Value<String> strValue1 = new StringValue( "test1" );
+        Value<String> strValue2 = new StringValue( "test2" );
+        Value<String> strValue3 = new StringValue( "test3" );
+        Value<String> strNullValue = new StringValue( (String)null );
 
         Value<byte[]> binValue1 = new BinaryValue( BYTES1 );
         Value<byte[]> binValue2 = new BinaryValue( BYTES2 );
@@ -1237,9 +1237,9 @@ public class DefaultClientEntryTest
         
         assertEquals( "ClientEntry\n    dn: dc=example,dc=com\n", entry.toString() );
         
-        Value<String> strValueTop = new ClientStringValue( "top" );
-        Value<String> strValuePerson = new ClientStringValue( "person" );
-        Value<String> strNullValue = new ClientStringValue( (String)null );
+        Value<String> strValueTop = new StringValue( "top" );
+        Value<String> strValuePerson = new StringValue( "person" );
+        Value<String> strNullValue = new StringValue( (String)null );
 
         Value<byte[]> binValue1 = new BinaryValue( BYTES1 );
         Value<byte[]> binValue2 = new BinaryValue( BYTES2 );

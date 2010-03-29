@@ -22,7 +22,7 @@ package org.apache.directory.shared.ldap.schema.normalizers;
 
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
-import org.apache.directory.shared.ldap.entry.ClientStringValue;
+import org.apache.directory.shared.ldap.entry.StringValue;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.name.DN;
@@ -85,7 +85,7 @@ public class UniqueMemberNormalizer extends Normalizer
                 
                 dn.normalize( schemaManager.getNormalizerMapping() );
                 
-                return new ClientStringValue( dn.getNormName() + '#' + uid );
+                return new StringValue( dn.getNormName() + '#' + uid );
             }
             else
             {
@@ -96,7 +96,7 @@ public class UniqueMemberNormalizer extends Normalizer
         {
             // No UID, the strValue is a DN
             // Return the normalized DN
-            return new ClientStringValue( new DN( nameAndUid ).getNormName() );
+            return new StringValue( new DN( nameAndUid ).getNormName() );
         }
     }
 
