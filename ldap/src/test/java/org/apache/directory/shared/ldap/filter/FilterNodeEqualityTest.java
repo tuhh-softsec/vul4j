@@ -20,7 +20,7 @@
 package org.apache.directory.shared.ldap.filter;
 
 
-import org.apache.directory.shared.ldap.entry.client.ClientStringValue;
+import org.apache.directory.shared.ldap.entry.ClientStringValue;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;

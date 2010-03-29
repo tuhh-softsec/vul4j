@@ -31,7 +31,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import org.apache.directory.shared.ldap.entry.client.ClientStringValue;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.schema.normalizers.DeepTrimToLowerNormalizer;
 import org.apache.directory.shared.ldap.schema.syntaxCheckers.Ia5StringSyntaxChecker;
@@ -121,7 +120,7 @@ public class StringValueTest
     
     
     /**
-     * Test method for {@link org.apache.directory.shared.ldap.entry.client.ClientStringValue#hashCode()}.
+     * Test method for {@link org.apache.directory.shared.ldap.entry.ClientStringValue#hashCode()}.
      */
     @Test
     public void testHashCode()
@@ -138,7 +137,7 @@ public class StringValueTest
 
 
     /**
-     * Test method for {@link org.apache.directory.shared.ldap.entry.client.ClientStringValue#ClientStringValue()}.
+     * Test method for {@link org.apache.directory.shared.ldap.entry.ClientStringValue#ClientStringValue()}.
      */
     @Test
     public void testClientStringValueNull() throws LdapException
@@ -154,7 +153,7 @@ public class StringValueTest
 
 
     /**
-     * Test method for {@link org.apache.directory.shared.ldap.entry.client.ClientStringValue#ClientStringValue(java.lang.String)}.
+     * Test method for {@link org.apache.directory.shared.ldap.entry.ClientStringValue#ClientStringValue(java.lang.String)}.
      */
     @Test
     public void testClientStringValueEmpty() throws LdapException
@@ -172,7 +171,7 @@ public class StringValueTest
 
 
     /**
-     * Test method for {@link org.apache.directory.shared.ldap.entry.client.ClientStringValue#ClientStringValue(java.lang.String)}.
+     * Test method for {@link org.apache.directory.shared.ldap.entry.ClientStringValue#ClientStringValue(java.lang.String)}.
      */
     @Test
     public void testClientStringValueString() throws LdapException
@@ -189,7 +188,7 @@ public class StringValueTest
 
 
     /**
-     * Test method for {@link org.apache.directory.shared.ldap.entry.client.ClientStringValue#get()}.
+     * Test method for {@link org.apache.directory.shared.ldap.entry.ClientStringValue#get()}.
      */
     @Test
     public void testGet()
@@ -207,7 +206,7 @@ public class StringValueTest
 
 
     /**
-     * Test method for {@link org.apache.directory.shared.ldap.entry.client.ClientStringValue#getCopy()}.
+     * Test method for {@link org.apache.directory.shared.ldap.entry.ClientStringValue#getCopy()}.
      */
     @Test
     public void testGetCopy()
@@ -225,7 +224,7 @@ public class StringValueTest
 
 
     /**
-     * Test method for {@link org.apache.directory.shared.ldap.entry.client.ClientStringValue#set(java.lang.String)}.
+     * Test method for {@link org.apache.directory.shared.ldap.entry.ClientStringValue#set(java.lang.String)}.
      */
     @Test
     public void testSet() throws LdapException
@@ -255,7 +254,7 @@ public class StringValueTest
 
 
     /**
-     * Test method for {@link org.apache.directory.shared.ldap.entry.client.ClientStringValue#isNull()}.
+     * Test method for {@link org.apache.directory.shared.ldap.entry.ClientStringValue#isNull()}.
      */
     @Test
     public void testIsNull()
@@ -274,7 +273,7 @@ public class StringValueTest
 
 
     /**
-     * Test method for {@link org.apache.directory.shared.ldap.entry.client.ClientStringValue#clear()}.
+     * Test method for {@link org.apache.directory.shared.ldap.entry.ClientStringValue#clear()}.
      */
     @Test
     public void testClear() throws LdapException
@@ -294,7 +293,7 @@ public class StringValueTest
 
 
     /**
-     * Test method for {@link org.apache.directory.shared.ldap.entry.client.ClientStringValue#isNormalized()}.
+     * Test method for {@link org.apache.directory.shared.ldap.entry.ClientStringValue#isNormalized()}.
      */
     @Test
     public void testIsNormalized() throws LdapException
@@ -317,7 +316,7 @@ public class StringValueTest
 
 
     /**
-     * Test method for {@link org.apache.directory.shared.ldap.entry.client.ClientStringValue#setNormalized(boolean)}.
+     * Test method for {@link org.apache.directory.shared.ldap.entry.ClientStringValue#setNormalized(boolean)}.
      */
     @Test
     public void testSetNormalized() throws LdapException
@@ -348,7 +347,7 @@ public class StringValueTest
 
 
     /**
-     * Test method for {@link org.apache.directory.shared.ldap.entry.client.ClientStringValue#getNormalizedValue()}.
+     * Test method for {@link org.apache.directory.shared.ldap.entry.ClientStringValue#getNormalizedValue()}.
      */
     @Test
     public void testGetNormalizedValue() throws LdapException
@@ -371,7 +370,7 @@ public class StringValueTest
 
 
     /**
-     * Test method for {@link org.apache.directory.shared.ldap.entry.client.ClientStringValue#getNormalizedValueCopy()}.
+     * Test method for {@link org.apache.directory.shared.ldap.entry.ClientStringValue#getNormalizedValueCopy()}.
      */
     @Test
     public void getNormalizedValueCopy() throws LdapException
@@ -394,7 +393,7 @@ public class StringValueTest
 
     
     /**
-     * Test method for {@link org.apache.directory.shared.ldap.entry.client.ClientStringValue#normalize(org.apache.directory.shared.ldap.schema.Normalizer)}.
+     * Test method for {@link org.apache.directory.shared.ldap.entry.ClientStringValue#normalize(org.apache.directory.shared.ldap.schema.Normalizer)}.
      */
     @Test
     public void testNormalize() throws LdapException
@@ -418,7 +417,7 @@ public class StringValueTest
 
 
     /**
-     * Test method for {@link org.apache.directory.shared.ldap.entry.client.ClientStringValue#isValid(org.apache.directory.shared.ldap.schema.SyntaxChecker)}.
+     * Test method for {@link org.apache.directory.shared.ldap.entry.ClientStringValue#isValid(org.apache.directory.shared.ldap.schema.SyntaxChecker)}.
      */
     @Test
     public void testIsValid() throws LdapException
@@ -433,7 +432,7 @@ public class StringValueTest
 
 
     /**
-     * Test method for {@link org.apache.directory.shared.ldap.entry.client.ClientStringValue#compareTo(org.apache.directory.shared.ldap.entry.Value)}.
+     * Test method for {@link org.apache.directory.shared.ldap.entry.ClientStringValue#compareTo(org.apache.directory.shared.ldap.entry.Value)}.
      */
     @Test
     public void testCompareTo() throws LdapException
@@ -467,7 +466,7 @@ public class StringValueTest
 
 
     /**
-     * Test method for {@link org.apache.directory.shared.ldap.entry.client.ClientStringValue#clone()}.
+     * Test method for {@link org.apache.directory.shared.ldap.entry.ClientStringValue#clone()}.
      */
     @Test
     public void testClone() throws LdapException
@@ -496,7 +495,7 @@ public class StringValueTest
 
 
     /**
-     * Test method for {@link org.apache.directory.shared.ldap.entry.client.ClientStringValue#equals(java.lang.Object)}.
+     * Test method for {@link org.apache.directory.shared.ldap.entry.ClientStringValue#equals(java.lang.Object)}.
      */
     @Test
     public void testEquals() throws LdapException
@@ -521,7 +520,7 @@ public class StringValueTest
 
 
     /**
-     * Test method for {@link org.apache.directory.shared.ldap.entry.client.ClientStringValue#toString()}.
+     * Test method for {@link org.apache.directory.shared.ldap.entry.ClientStringValue#toString()}.
      */
     @Test
     public void testToString()

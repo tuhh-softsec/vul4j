@@ -28,7 +28,7 @@ import java.util.Map;
 
 import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
 import javax.naming.NameParser;
-import org.apache.directory.shared.ldap.entry.client.ClientStringValue;
+import org.apache.directory.shared.ldap.entry.ClientStringValue;
 import org.apache.directory.shared.ldap.entry.BinaryValue;
 import org.apache.directory.shared.ldap.schema.parsers.ParserMonitor;
 import org.apache.directory.shared.ldap.util.StringTools;

@@ -56,7 +56,7 @@ import org.apache.directory.shared.ldap.name.RDN;
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.constants.AuthenticationLevel;
 import org.apache.directory.shared.ldap.schema.normalizers.OidNormalizer;
-import org.apache.directory.shared.ldap.entry.client.ClientStringValue;
+import org.apache.directory.shared.ldap.entry.ClientStringValue;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

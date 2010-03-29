@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.directory.shared.ldap.entry.client;
+package org.apache.directory.shared.ldap.entry;
 
 
 import java.io.Externalizable;
@@ -28,8 +28,6 @@ import org.apache.directory.shared.ldap.exception.LdapException;
 
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.NotImplementedException;
-import org.apache.directory.shared.ldap.entry.AbstractValue;
-import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.LdapComparator;
 import org.apache.directory.shared.ldap.schema.MatchingRule;

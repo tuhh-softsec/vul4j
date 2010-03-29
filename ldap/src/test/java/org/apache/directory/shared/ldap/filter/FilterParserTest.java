@@ -29,7 +29,7 @@ import static org.junit.Assert.fail;
 import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 
-import org.apache.directory.shared.ldap.entry.client.ClientStringValue;
+import org.apache.directory.shared.ldap.entry.ClientStringValue;
 import org.junit.Test;
 
 
