@@ -18,6 +18,7 @@ package net.webassembletool.wicket.container;
 import net.webassembletool.wicket.utils.BlockUtils;
 import net.webassembletool.wicket.utils.WATParamResponse;
 import net.webassembletool.wicket.utils.WATTemplateResponse;
+import net.webassembletool.wicket.utils.WATWicketConfiguration;
 
 import org.apache.wicket.Response;
 import org.apache.wicket.markup.ComponentTag;
@@ -94,6 +95,14 @@ public class WATParam extends WebMarkupContainer {
 	protected void onComponentTagBody(MarkupStream markupStream,
 			ComponentTag openTag) {
 
+		// For unit tests, WAT can be disabled. This component will then behave
+		// like a standard MarkupContainer.
+		if (WATWicketConfiguration.isDisableHttpRequests()) {
+			super.onComponentTagBody(markupStream, openTag);
+			return;
+		}
+
+		// Normal processing.
 		Response r = getResponse();
 
 		if (r instanceof WATTemplateResponse) {
