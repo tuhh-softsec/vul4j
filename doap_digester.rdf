@@ -23,7 +23,7 @@
     <category rdf:resource="http://projects.apache.org/category/library"/>
     <license rdf:resource="http://usefulinc.com/doap/licenses/asl20"/>
     <bug-database rdf:resource="http://issues.apache.org/jira/browse/DIGESTER"/>
-    <download-page rdf:resource="http://jakarta.apache.org/site/downloads/downloads_commons-digester.cgi"/>
+    <download-page rdf:resource="http://commons.apache.org/digester/download_digester.cgi"/>
     <asfext:pmc rdf:resource="http://commons.apache.org/"/>
     <shortdesc xml:lang="en">Rule based XML-&gt;Java object mapping module</shortdesc>
     <description xml:lang="en">
