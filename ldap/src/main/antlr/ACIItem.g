@@ -56,7 +56,7 @@ import org.apache.directory.shared.ldap.name.RDN;
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.constants.AuthenticationLevel;
 import org.apache.directory.shared.ldap.schema.normalizers.OidNormalizer;
-import org.apache.directory.shared.ldap.entry.ClientStringValue;
+import org.apache.directory.shared.ldap.entry.StringValue;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -1238,7 +1238,7 @@ item returns [ LeafNode node ]
     :
     ID_item ( SP )* COLON ( SP )* oid=oid
     {
-        node = new EqualityNode( SchemaConstants.OBJECT_CLASS_AT , new ClientStringValue( oid ) );
+        node = new EqualityNode( SchemaConstants.OBJECT_CLASS_AT , new StringValue( oid ) );
     }
     ;
 
