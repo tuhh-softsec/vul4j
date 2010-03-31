@@ -24,7 +24,7 @@ import net.webassembletool.Driver;
 import net.webassembletool.DriverFactory;
 import net.webassembletool.HttpErrorPage;
 import net.webassembletool.wicket.utils.ResponseWriter;
-import net.webassembletool.wicket.utils.WATTemplateResponse;
+import net.webassembletool.wicket.utils.WATNullResponse;
 import net.webassembletool.wicket.utils.WATWicketConfiguration;
 
 import org.apache.wicket.Response;
@@ -64,19 +64,52 @@ import org.apache.wicket.protocol.http.servlet.ServletWebRequest;
 public class WATBlock extends WebMarkupContainer {
 
 	private static final long serialVersionUID = 1L;
-	private String block = null;
-	String page = null;
+	private String blockName = null;
+	private String page = null;
+	private final boolean parseAbsoluteUrl = false;
+	private String provider = null;
 
 	/**
 	 * Create an include block
 	 * 
 	 * @param id
+	 *            Wicket id
 	 * @param page
+	 *            relative url
+	 * @param blockName
+	 *            block name in target content
 	 */
-	public WATBlock(String id, String page, String block) {
+	public WATBlock(String id, String page) {
 		super(id);
 		this.page = page;
-		this.block = block;
+	}
+
+	/**
+	 * Create an include block
+	 * 
+	 * @param id
+	 *            Wicket id
+	 * @param page
+	 *            relative url
+	 * @param blockName
+	 *            block name in target content
+	 */
+	public WATBlock(String id, String page, String blockName) {
+		super(id);
+		this.page = page;
+		this.blockName = blockName;
+	}
+
+	public String getBlockName() {
+		return blockName;
+	}
+
+	public String getProvider() {
+		return provider;
+	}
+
+	public boolean isParseAbsoluteUrl() {
+		return parseAbsoluteUrl;
 	}
 
 	/*
@@ -98,21 +131,46 @@ public class WATBlock extends WebMarkupContainer {
 		}
 
 		Response originalResponse = getRequestCycle().getResponse();
-		WATTemplateResponse watResponse = new WATTemplateResponse();
+
+		// Drop block content
+		WATNullResponse watResponse = new WATNullResponse();
 		getRequestCycle().setResponse(watResponse);
 		super.onComponentTagBody(markupStream, openTag);
 		getRequestCycle().setResponse(originalResponse);
 
+		// Get web request and response.
 		ServletWebRequest servletWebRequest = (ServletWebRequest) getRequest();
 		HttpServletRequest request = servletWebRequest.getHttpServletRequest();
 
 		WebResponse webResponse = (WebResponse) getResponse();
 		HttpServletResponse response = webResponse.getHttpServletResponse();
 
-		Driver driver = DriverFactory.getInstance();
+		// Create driver
+		Driver driver = null;
+		if (provider == null) {
+			driver = DriverFactory.getInstance();
+		} else {
+			driver = DriverFactory.getInstance(provider);
+		}
+
+		if (parseAbsoluteUrl) {
+			HashMap<String, String> replaceRules = new HashMap<String, String>();
+
+			String baseUrl = driver.getBaseURL();
+			int baseUrlEnd = baseUrl.indexOf('/', baseUrl.indexOf("//") + 2);
+			if (baseUrlEnd > 0) {
+				baseUrl = baseUrl.substring(0, baseUrlEnd);
+			}
+			replaceRules.put("href=(\"|')/(.*)(\"|')", "href=$1" + baseUrl
+					+ "/$2$3");
+			replaceRules.put("src=(\"|')/(.*)(\"|')", "src=$1" + baseUrl
+					+ "/$2$3");
+		}
+
+		// Render Block
 		try {
-			driver.renderBlock(page, block,
-					new ResponseWriter(originalResponse), request, response,
+			driver.renderBlock(page, blockName, new ResponseWriter(
+					originalResponse), request, response,
 					new HashMap<String, String>(),
 					new HashMap<String, String>(), false);
 		} catch (IOException e) {
@@ -121,4 +179,13 @@ public class WATBlock extends WebMarkupContainer {
 			e.printStackTrace();
 		}
 	}
+
+	public void setBlockName(String block) {
+		this.blockName = block;
+	}
+
+	public void setProvider(String provider) {
+		this.provider = provider;
+	}
+
 }

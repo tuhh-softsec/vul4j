@@ -24,7 +24,7 @@ import net.webassembletool.Driver;
 import net.webassembletool.DriverFactory;
 import net.webassembletool.HttpErrorPage;
 import net.webassembletool.wicket.utils.ResponseWriter;
-import net.webassembletool.wicket.utils.WATTemplateResponse;
+import net.webassembletool.wicket.utils.WATNullResponse;
 import net.webassembletool.wicket.utils.WATWicketConfiguration;
 
 import org.apache.wicket.Response;
@@ -101,7 +101,7 @@ public class WATTemplate extends WebMarkupContainer {
 		}
 
 		Response originalResponse = getRequestCycle().getResponse();
-		WATTemplateResponse watResponse = new WATTemplateResponse();
+		WATNullResponse watResponse = new WATNullResponse();
 		getRequestCycle().setResponse(watResponse);
 		super.onComponentTagBody(markupStream, openTag);
 		getRequestCycle().setResponse(originalResponse);

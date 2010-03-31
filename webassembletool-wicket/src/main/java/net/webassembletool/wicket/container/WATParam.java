@@ -17,7 +17,7 @@ package net.webassembletool.wicket.container;
 
 import net.webassembletool.wicket.utils.BlockUtils;
 import net.webassembletool.wicket.utils.WATParamResponse;
-import net.webassembletool.wicket.utils.WATTemplateResponse;
+import net.webassembletool.wicket.utils.WATNullResponse;
 import net.webassembletool.wicket.utils.WATWicketConfiguration;
 
 import org.apache.wicket.Response;
@@ -105,8 +105,8 @@ public class WATParam extends WebMarkupContainer {
 		// Normal processing.
 		Response r = getResponse();
 
-		if (r instanceof WATTemplateResponse) {
-			WATTemplateResponse watResponse = (WATTemplateResponse) r;
+		if (r instanceof WATNullResponse) {
+			WATNullResponse watResponse = (WATNullResponse) r;
 			WATParamResponse watParamResponse = new WATParamResponse();
 
 			// Set buffered response.

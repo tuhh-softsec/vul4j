@@ -31,7 +31,7 @@ import org.apache.wicket.protocol.http.WebResponse;
  * @see WATTemplate
  * @see Response
  */
-public class WATTemplateResponse extends WebResponse {
+public class WATNullResponse extends WebResponse {
 	private final Map<String, String> blocks = new HashMap<String, String>();
 
 	/**
