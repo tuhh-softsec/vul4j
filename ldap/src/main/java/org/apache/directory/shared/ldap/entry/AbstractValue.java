@@ -22,6 +22,10 @@ package org.apache.directory.shared.ldap.entry;
 import org.apache.directory.shared.ldap.exception.LdapException;
 
 import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.schema.AttributeType;
+import org.apache.directory.shared.ldap.schema.LdapComparator;
+import org.apache.directory.shared.ldap.schema.MatchingRule;
+import org.apache.directory.shared.ldap.schema.Normalizer;
 import org.apache.directory.shared.ldap.schema.SyntaxChecker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,9 +42,11 @@ public abstract class AbstractValue<T> implements Value<T>
     /** logger for reporting errors that might not be handled properly upstream */
     private static final Logger LOG = LoggerFactory.getLogger( AbstractValue.class );
 
-    
+    /** reference to the attributeType zssociated with the value */
+    protected transient AttributeType attributeType;
+
     /** the wrapped binary value */
-    protected T wrapped;
+    protected T wrappedValue;
     
     /** the canonical representation of the wrapped value */
     protected T normalizedValue;
@@ -53,18 +59,6 @@ public abstract class AbstractValue<T> implements Value<T>
 
     /** A flag set if the normalized data is different from the wrapped data */
     protected transient boolean same;
-    
-    /**
-     * Reset the value
-     */
-    public void clear()
-    {
-        wrapped = null;
-        normalized = false;
-        normalizedValue = null;
-        valid = null;
-    }
-
     
     /**
      * {@inheritDoc}
@@ -92,10 +86,164 @@ public abstract class AbstractValue<T> implements Value<T>
      */
     public T getReference()
     {
-        return wrapped;
+        return wrappedValue;
     }
 
     
+    /**
+     * Get the associated AttributeType
+     * @return The AttributeType
+     */
+    public AttributeType getAttributeType()
+    {
+        return attributeType;
+    }
+
+    
+    public void apply( AttributeType attributeType )
+    {
+        if ( this.attributeType != null ) 
+        {
+            if ( !attributeType.equals( this.attributeType ) )
+            {
+                throw new IllegalArgumentException( I18n.err( I18n.ERR_04476, attributeType.getName(), this.attributeType.getName() ) );
+            }
+            else
+            {
+                return;
+            }
+        }
+        
+        this.attributeType = attributeType;
+        
+        try
+        {
+            normalize();
+        }
+        catch ( LdapException ne )
+        {
+            String message = I18n.err( I18n.ERR_04447, ne.getLocalizedMessage() );
+            LOG.info( message );
+            normalized = false;
+        }
+    }
+
+
+    /**
+     * Gets a comparator using getMatchingRule() to resolve the matching
+     * that the comparator is extracted from.
+     *
+     * @return a comparator associated with the attributeType or null if one cannot be found
+     * @throws LdapException if resolution of schema entities fail
+     */
+    protected LdapComparator<T> getLdapComparator() throws LdapException
+    {
+        if ( attributeType != null )
+        {
+            MatchingRule mr = getMatchingRule();
+    
+            if ( mr == null )
+            {
+                return null;
+            }
+    
+            return (LdapComparator<T>)mr.getLdapComparator();
+        }
+        else
+        {
+            return null;
+        }
+    }
+    
+    
+    /**
+     * Find a matchingRule to use for normalization and comparison.  If an equality
+     * matchingRule cannot be found it checks to see if other matchingRules are
+     * available: SUBSTR, and ORDERING.  If a matchingRule cannot be found null is
+     * returned.
+     *
+     * @return a matchingRule or null if one cannot be found for the attributeType
+     * @throws LdapException if resolution of schema entities fail
+     */
+    protected MatchingRule getMatchingRule() throws LdapException
+    {
+        if ( attributeType != null )
+        {
+            MatchingRule mr = attributeType.getEquality();
+    
+            if ( mr == null )
+            {
+                mr = attributeType.getOrdering();
+            }
+    
+            if ( mr == null )
+            {
+                mr = attributeType.getSubstring();
+            }
+    
+            return mr;
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+
+    /**
+     * Gets a normalizer using getMatchingRule() to resolve the matchingRule
+     * that the normalizer is extracted from.
+     *
+     * @return a normalizer associated with the attributeType or null if one cannot be found
+     * @throws LdapException if resolution of schema entities fail
+     */
+    protected Normalizer getNormalizer() throws LdapException
+    {
+        if ( attributeType != null )
+        {
+            MatchingRule mr = getMatchingRule();
+    
+            if ( mr == null )
+            {
+                return null;
+            }
+    
+            return mr.getNormalizer();
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    
+    /**
+     * Check if the value is stored into an instance of the given 
+     * AttributeType, or one of its ascendant.
+     * 
+     * For instance, if the Value is associated with a CommonName,
+     * checking for Name will match.
+     * 
+     * @param attributeType The AttributeType we are looking at
+     * @return <code>true</code> if the value is associated with the given
+     * attributeType or one of its ascendant
+     */
+    public boolean instanceOf( AttributeType attributeType ) throws LdapException
+    {
+        if ( ( attributeType != null ) && this.attributeType.equals( attributeType ) )
+        {
+            if ( this.attributeType.equals( attributeType ) )
+            {
+                return true;
+            }
+            
+            return this.attributeType.isDescendantOf( attributeType );
+        }
+
+        return false;
+    }
+
+
     /**
      * Gets a copy of the wrapped binary value.
      * 
@@ -147,7 +295,7 @@ public abstract class AbstractValue<T> implements Value<T>
 
         if ( normalizedValue == null )
         {
-            return wrapped;
+            return wrappedValue;
         }
 
         return normalizedValue;
@@ -162,7 +310,7 @@ public abstract class AbstractValue<T> implements Value<T>
      */
     public final boolean isNull()
     {
-        return wrapped == null; 
+        return wrappedValue == null; 
     }
     
     
@@ -175,26 +323,35 @@ public abstract class AbstractValue<T> implements Value<T>
     }
 
     
-    /**
-     * Check if the Valid flag is set or not. This flag is set by a call
-     * to the isValid( SyntaxChecker ) method for client values. It is overridden
-     * for server values.
-     * 
-     * if the flag is not set, returns <code>false</code>
+    /** 
+     * Uses the syntaxChecker associated with the attributeType to check if the
+     * value is valid.  Repeated calls to this method do not attempt to re-check
+     * the syntax of the wrapped value every time if the wrapped value does not
+     * change. Syntax checks only result on the first check, and when the wrapped
+     * value changes.
      *
-     * @see ServerValue#isValid()
+     * @see Value#isValid()
      */
-    public boolean isValid()
+    public final boolean isValid()
     {
         if ( valid != null )
         {
             return valid;
         }
 
-        return false;
+        if ( attributeType != null )
+        {
+            valid = attributeType.getSyntax().getSyntaxChecker().isValidSyntax( get() );
+        }
+        else
+        {
+            valid = false;
+        }
+        
+        return valid;
     }
-
-
+    
+    
     /**
      * Uses the syntaxChecker associated with the attributeType to check if the
      * value is valid.  Repeated calls to this method do not attempt to re-check
@@ -206,11 +363,6 @@ public abstract class AbstractValue<T> implements Value<T>
      */
     public final boolean isValid( SyntaxChecker syntaxChecker ) throws LdapException
     {
-        if ( valid != null )
-        {
-            return valid;
-        }
-        
         if ( syntaxChecker == null )
         {
             String message = I18n.err( I18n.ERR_04139, toString() );
@@ -219,6 +371,7 @@ public abstract class AbstractValue<T> implements Value<T>
         }
         
         valid = syntaxChecker.isValidSyntax( getReference() );
+        
         return valid;
     }
 
@@ -232,7 +385,7 @@ public abstract class AbstractValue<T> implements Value<T>
     public void normalize() throws LdapException
     {
         normalized = true;
-        normalizedValue = wrapped;
+        normalizedValue = wrappedValue;
     }
 
 

@@ -214,26 +214,6 @@ public class BinaryValueTest
 
 
     @Test
-    public void testClear() throws LdapException
-    {
-        BinaryValue cbv = new BinaryValue( BYTES2 );
-        cbv.normalize( BINARY_NORMALIZER );
-        cbv.isValid( BINARY_CHECKER );
-        
-        cbv.clear();
-        assertTrue( cbv.isNull() );
-        assertFalse( cbv.isNormalized() );
-        assertFalse( cbv.isValid() );
-        assertNull( cbv.get() );
-        assertNull( cbv.getCopy() );
-        assertNull( cbv.getReference() );
-        assertNull( cbv.getNormalizedValue() );
-        assertNull( cbv.getNormalizedValueCopy() );
-        assertNull( cbv.getNormalizedValueReference() );
-    }
-
-
-    @Test
     public void testBinaryValueNull() throws LdapException
     {
         BinaryValue cbv = new BinaryValue( (byte[])null );
@@ -478,9 +458,6 @@ public class BinaryValueTest
 
         cbv.set( BYTES1 );
         assertEquals( "'0x01 0x02 0x03 0x04 '", cbv.toString() );
-        
-        cbv.clear();
-        assertEquals( "null", cbv.toString() );
     }
 
 
@@ -582,9 +559,6 @@ public class BinaryValueTest
         
         cbv.set( BYTES1 );
         assertFalse( cbv.isNull() );
-        
-        cbv.clear();
-        assertTrue( cbv.isNull() );
     }
 
 
@@ -726,8 +700,6 @@ public class BinaryValueTest
         assertTrue( cbv.isNormalized() );
 
         cbv.normalize( BINARY_NORMALIZER );
-        cbv.clear();
-        assertFalse( cbv.isNormalized() );
     }
     
     

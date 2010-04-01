@@ -30,7 +30,6 @@ import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.NotImplementedException;
 import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.LdapComparator;
-import org.apache.directory.shared.ldap.schema.MatchingRule;
 import org.apache.directory.shared.ldap.schema.Normalizer;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
@@ -53,9 +52,6 @@ public class StringValue extends AbstractValue<String>
     
     /** logger for reporting errors that might not be handled properly upstream */
     protected static final Logger LOG = LoggerFactory.getLogger( StringValue.class );
-
-    /** reference to the attributeType which is not serialized */
-    protected transient AttributeType attributeType;
 
 
     // -----------------------------------------------------------------------
@@ -101,11 +97,11 @@ public class StringValue extends AbstractValue<String>
     /**
      * Creates a StringValue with an initial wrapped String value.
      *
-     * @param wrapped the value to wrap which can be null
+     * @param value the value to wrap which can be null
      */
-    public StringValue( String wrapped )
+    public StringValue( String value )
     {
-        this.wrapped = wrapped;
+        this.wrappedValue = value;
         normalized = false;
         valid = null;
     }
@@ -117,28 +113,10 @@ public class StringValue extends AbstractValue<String>
      * @param attributeType the schema type associated with this StringValue
      * @param wrapped the value to wrap which can be null
      */
-    public StringValue( AttributeType attributeType, String wrapped )
+    public StringValue( AttributeType attributeType, String value )
     {
         this( attributeType );
-        this.wrapped = wrapped;
-    }
-
-
-    /**
-     * Creates a StringValue with an initial wrapped String value and
-     * a normalized value.
-     *
-     * @param attributeType the schema type associated with this StringValue
-     * @param wrapped the value to wrap which can be null
-     * @param normalizedValue the normalized value
-     */
-    StringValue( AttributeType attributeType, String wrapped, String normalizedValue, boolean valid )
-    {
-        this( wrapped );
-        this.normalized = true;
-        this.attributeType = attributeType;
-        this.normalizedValue = normalizedValue;
-        this.valid = valid;
+        this.wrappedValue = value;
     }
 
 
@@ -154,7 +132,7 @@ public class StringValue extends AbstractValue<String>
     {
         // The String is immutable, we can safely return the internal
         // object without copying it.
-        return wrapped;
+        return wrappedValue;
     }
     
     
@@ -166,11 +144,11 @@ public class StringValue extends AbstractValue<String>
      *
      * @see ServerValue#set(Object)
      */
-    public final void set( String wrapped )
+    public final void set( String value )
     {
         // Why should we invalidate the normalized value if it's we're setting the
         // wrapper to it's current value?
-        if ( !StringTools.isEmpty( wrapped ) && wrapped.equals( getString() ) )
+        if ( !StringTools.isEmpty( value ) && value.equals( getString() ) )
         {
             return;
         }
@@ -178,7 +156,7 @@ public class StringValue extends AbstractValue<String>
         normalizedValue = null;
         normalized = false;
         valid = null;
-        this.wrapped = wrapped;
+        this.wrappedValue = value;
     }
 
 
@@ -216,42 +194,13 @@ public class StringValue extends AbstractValue<String>
         
         if ( normalizedValue == null )
         {
-            return wrapped;
+            return wrappedValue;
         }
 
         return normalizedValue;
     }
     
     
-    public void apply( AttributeType attributeType )
-    {
-        if ( this.attributeType != null ) 
-        {
-            if ( !attributeType.equals( this.attributeType ) )
-            {
-                throw new IllegalArgumentException( I18n.err( I18n.ERR_04476, attributeType.getName(), this.attributeType.getName() ) );
-            }
-            else
-            {
-                return;
-            }
-        }
-        
-        this.attributeType = attributeType;
-        
-        try
-        {
-            normalize();
-        }
-        catch ( LdapException ne )
-        {
-            String message = I18n.err( I18n.ERR_04447, ne.getLocalizedMessage() );
-            LOG.info( message );
-            normalized = false;
-        }
-    }
-
-
     /**
      * Gets a copy of the the normalized (canonical) representation 
      * for the wrapped value.
@@ -284,11 +233,11 @@ public class StringValue extends AbstractValue<String>
     
             if ( normalizer == null )
             {
-                normalizedValue = wrapped;
+                normalizedValue = wrappedValue;
             }
             else
             {
-                normalizedValue = ( String ) normalizer.normalize( wrapped );
+                normalizedValue = ( String ) normalizer.normalize( wrappedValue );
             }
     
             normalized = true;
@@ -309,7 +258,7 @@ public class StringValue extends AbstractValue<String>
     {
         if ( normalizer != null )
         {
-            normalizedValue = (String)normalizer.normalize( wrapped );
+            normalizedValue = (String)normalizer.normalize( wrappedValue );
             normalized = true;
         }
     }
@@ -505,7 +454,7 @@ public class StringValue extends AbstractValue<String>
         {
             try
             {
-                LdapComparator<? super Object> comparator = getLdapComparator();
+                LdapComparator<String> comparator = getLdapComparator();
 
                 // Compare normalized values
                 if ( comparator == null )
@@ -549,40 +498,11 @@ public class StringValue extends AbstractValue<String>
 
     
     /**
-     * Uses the syntaxChecker associated with the attributeType to check if the
-     * value is valid.  Repeated calls to this method do not attempt to re-check
-     * the syntax of the wrapped value every time if the wrapped value does not
-     * change. Syntax checks only result on the first check, and when the wrapped
-     * value changes.
-     *
-     * @see Value#isValid()
-     */
-    public final boolean isValid()
-    {
-        if ( valid != null )
-        {
-            return valid;
-        }
-
-        if ( attributeType != null )
-        {
-            valid = attributeType.getSyntax().getSyntaxChecker().isValidSyntax( get() );
-        }
-        else
-        {
-            valid = false;
-        }
-        
-        return valid;
-    }
-    
-    
-    /**
      * @return The length of the interned value
      */
     public int length()
     {
-        return wrapped != null ? wrapped.length() : 0;
+        return wrappedValue != null ? wrappedValue.length() : 0;
     }
     
     
@@ -592,7 +512,7 @@ public class StringValue extends AbstractValue<String>
      */
     public byte[] getBytes()
     {
-        return StringTools.getBytesUtf8( wrapped );
+        return StringTools.getBytesUtf8( wrappedValue );
     }
     
     
@@ -603,7 +523,7 @@ public class StringValue extends AbstractValue<String>
      */
     public String getString()
     {
-        return wrapped != null ? wrapped : "";
+        return wrappedValue != null ? wrappedValue : "";
     }
     
     
@@ -615,7 +535,7 @@ public class StringValue extends AbstractValue<String>
         // Read the wrapped value, if it's not null
         if ( in.readBoolean() )
         {
-            wrapped = in.readUTF();
+            wrappedValue = in.readUTF();
         }
         
         // Read the isNormalized flag
@@ -638,10 +558,10 @@ public class StringValue extends AbstractValue<String>
     public void writeExternal( ObjectOutput out ) throws IOException
     {
         // Write the wrapped value, if it's not null
-        if ( wrapped != null )
+        if ( wrappedValue != null )
         {
             out.writeBoolean( true );
-            out.writeUTF( wrapped );
+            out.writeUTF( wrappedValue );
         }
         else
         {
@@ -675,151 +595,6 @@ public class StringValue extends AbstractValue<String>
 
     
     /**
-     * Get the associated AttributeType
-     * @return The AttributeType
-     */
-    public AttributeType getAttributeType()
-    {
-        return attributeType;
-    }
-
-    
-    /**
-     * Check if the value is stored into an instance of the given 
-     * AttributeType, or one of its ascendant.
-     * 
-     * For instance, if the Value is associated with a CommonName,
-     * checking for Name will match.
-     * 
-     * @param attributeType The AttributeType we are looking at
-     * @return <code>true</code> if the value is associated with the given
-     * attributeType or one of its ascendant
-     */
-    public boolean instanceOf( AttributeType attributeType ) throws LdapException
-    {
-        if ( attributeType != null )
-        {
-            if ( this.attributeType.equals( attributeType ) )
-            {
-                return true;
-            }
-    
-            return this.attributeType.isDescendantOf( attributeType );
-        }
-        
-        return false;
-    }
-
-
-    /**
-     *  Check the attributeType member. It should not be null, 
-     *  and it should contains a syntax.
-     */
-    protected String checkAttributeType( AttributeType attributeType )
-    {
-        if ( attributeType == null )
-        {
-            return "The AttributeType parameter should not be null";
-        }
-        
-        if ( attributeType.getSyntax() == null )
-        {
-            return "There is no Syntax associated with this attributeType";
-        }
-
-        return null;
-    }
-
-    
-    /**
-     * Gets a comparator using getMatchingRule() to resolve the matching
-     * that the comparator is extracted from.
-     *
-     * @return a comparator associated with the attributeType or null if one cannot be found
-     * @throws LdapException if resolution of schema entities fail
-     */
-    protected LdapComparator<? super Object> getLdapComparator() throws LdapException
-    {
-        if ( attributeType != null )
-        {
-            MatchingRule mr = getMatchingRule();
-    
-            if ( mr == null )
-            {
-                return null;
-            }
-    
-            return mr.getLdapComparator();
-        }
-        else
-        {
-            return null;
-        }
-    }
-    
-    
-    /**
-     * Find a matchingRule to use for normalization and comparison.  If an equality
-     * matchingRule cannot be found it checks to see if other matchingRules are
-     * available: SUBSTR, and ORDERING.  If a matchingRule cannot be found null is
-     * returned.
-     *
-     * @return a matchingRule or null if one cannot be found for the attributeType
-     * @throws LdapException if resolution of schema entities fail
-     */
-    protected MatchingRule getMatchingRule() throws LdapException
-    {
-        if ( attributeType != null )
-        {
-            MatchingRule mr = attributeType.getEquality();
-    
-            if ( mr == null )
-            {
-                mr = attributeType.getOrdering();
-            }
-    
-            if ( mr == null )
-            {
-                mr = attributeType.getSubstring();
-            }
-    
-            return mr;
-        }
-        else
-        {
-            return null;
-        }
-    }
-
-
-    /**
-     * Gets a normalizer using getMatchingRule() to resolve the matchingRule
-     * that the normalizer is extracted from.
-     *
-     * @return a normalizer associated with the attributeType or null if one cannot be found
-     * @throws LdapException if resolution of schema entities fail
-     */
-    protected Normalizer getNormalizer() throws LdapException
-    {
-        if ( attributeType != null )
-        {
-            MatchingRule mr = getMatchingRule();
-    
-            if ( mr == null )
-            {
-                return null;
-            }
-    
-            return mr.getNormalizer();
-        }
-        else
-        {
-            return null;
-        }
-    }
-
-    
-    /**
      * We will write the value and the normalized value, only
      * if the normalized value is different.
      * 
@@ -838,13 +613,13 @@ public class StringValue extends AbstractValue<String>
      */
     public void serialize( ObjectOutput out ) throws IOException
     {
-        if ( wrapped != null )
+        if ( wrappedValue != null )
         {
             // write a flag indicating that the value is not null
             out.writeBoolean( true );
             
             // Write the data
-            out.writeUTF( wrapped );
+            out.writeUTF( wrappedValue );
             
             // Normalize the data
             try
@@ -852,7 +627,7 @@ public class StringValue extends AbstractValue<String>
                 normalize();
                 out.writeBoolean( true );
                 
-                if ( wrapped.equals( normalizedValue ) )
+                if ( wrappedValue.equals( normalizedValue ) )
                 {
                     out.writeBoolean( true );
                 }
@@ -928,6 +703,6 @@ public class StringValue extends AbstractValue<String>
      */
     public String toString()
     {
-        return wrapped == null ? "null": wrapped;
+        return wrappedValue == null ? "null": wrappedValue;
     }
 }

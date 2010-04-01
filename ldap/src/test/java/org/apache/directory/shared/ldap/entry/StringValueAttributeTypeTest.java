@@ -410,25 +410,25 @@ public class StringValueAttributeTypeTest
     public void testClone() throws LdapException
     {
         AttributeType at1 = EntryUtils.getCaseIgnoringAttributeNoNumbersType();
-        StringValue ssv = new StringValue( at1, "Test" );
+        StringValue sv = new StringValue( at1, "Test" );
         
-        StringValue ssv1 = ssv.clone();
+        StringValue sv1 = sv.clone();
         
-        assertEquals( ssv, ssv1 );
+        assertEquals( sv, sv1 );
         
-        ssv.set( "" );
+        sv.set( "" );
         
-        assertNotSame( ssv, ssv1 );
-        assertEquals( "", ssv.getString() );
+        assertNotSame( sv, sv1 );
+        assertEquals( "", sv.getString() );
         
-        ssv.set(  "  This is    a   TEST  " );
-        ssv1 = ssv.clone();
+        sv.set(  "  This is    a   TEST  " );
+        sv1 = sv.clone();
         
-        assertEquals( ssv, ssv1 );
+        assertEquals( sv, sv1 );
         
-        ssv.normalize();
+        sv.normalize();
         
-        assertEquals( ssv, ssv1 );
+        assertEquals( sv, sv1 );
     }
     
 

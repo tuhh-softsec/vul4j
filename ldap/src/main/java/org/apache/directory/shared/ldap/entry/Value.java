@@ -107,12 +107,6 @@ public interface Value<T> extends Cloneable, Externalizable, Comparable<Value<T>
     
     
     /**
-     * Reset the value
-     */
-    void clear();
-    
-    
-    /**
      * Tells if the value has already be normalized or not.
      *
      * @return <code>true</code> if the value has already been normalized.

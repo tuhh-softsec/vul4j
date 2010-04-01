@@ -32,8 +32,11 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 import org.apache.directory.shared.ldap.exception.LdapException;
+import org.apache.directory.shared.ldap.schema.comparators.StringComparator;
 import org.apache.directory.shared.ldap.schema.normalizers.DeepTrimToLowerNormalizer;
 import org.apache.directory.shared.ldap.schema.syntaxCheckers.Ia5StringSyntaxChecker;
+import org.apache.directory.shared.ldap.schema.syntaxCheckers.OctetStringSyntaxChecker;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -45,6 +48,9 @@ import org.junit.Test;
  */
 public class StringValueTest
 {
+    //----------------------------------------------------------------------------------
+    // Helper method
+    //----------------------------------------------------------------------------------
     /**
      * Serialize a StringValue
      */
@@ -117,8 +123,56 @@ public class StringValueTest
             }
         }
     }
-    
-    
+
+
+    //----------------------------------------------------------------------------------
+    // Test the clone() method
+    //----------------------------------------------------------------------------------
+    /**
+     * Test cloning an empty value
+     */
+    @Test
+    public void testCloneEmptyValue() throws LdapException
+    {
+        StringValue sv = new StringValue();
+        
+        StringValue sv1 = (StringValue)sv.clone();
+        
+        assertEquals( sv, sv1 );
+        
+        sv.set( "" );
+        
+        assertNotSame( sv, sv1 );
+        assertNull( sv1.get() );
+        assertEquals( "", sv.getString() );
+    }
+
+
+    /**
+     * Test cloning a value
+     */
+    @Test
+    public void testCloneValue() throws LdapException
+    {
+        StringValue sv = new StringValue( "  This is    a   TEST  " );
+        
+        StringValue sv1 = (StringValue)sv.clone();
+        
+        sv1 = sv.clone();
+        
+        assertEquals( sv, sv1 );
+        assertEquals( "  This is    a   TEST  ", sv.getString() );
+
+        sv.normalize( new DeepTrimToLowerNormalizer( "1.1.1" ) );
+        
+        assertNotSame( sv, sv1 );
+        assertEquals( "  This is    a   TEST  ", sv1.getString() );
+        assertEquals( "  This is    a   TEST  ", sv1.getNormalizedValue() );
+        assertEquals( "  This is    a   TEST  ", sv.getString() );
+        assertEquals( "this is a test", sv.getNormalizedValue() );
+    }
+
+
     /**
      * Test method for {@link org.apache.directory.shared.ldap.entry.StringValue#hashCode()}.
      */
@@ -199,9 +253,6 @@ public class StringValueTest
         
         csv.set( "" );
         assertEquals( "", csv.get() );
-        
-        csv.clear();
-        assertNull( csv.get() );
     }
 
 
@@ -217,9 +268,6 @@ public class StringValueTest
         
         csv.set( "" );
         assertEquals( "", csv.getCopy() );
-        
-        csv.clear();
-        assertNull( csv.getCopy() );
     }
 
 
@@ -266,32 +314,9 @@ public class StringValueTest
         
         csv.set( "test" );
         assertFalse( csv.isNull() );
-        
-        csv.clear();
-        assertTrue( csv.isNull() );
     }
 
-
-    /**
-     * Test method for {@link org.apache.directory.shared.ldap.entry.StringValue#clear()}.
-     */
-    @Test
-    public void testClear() throws LdapException
-    {
-        StringValue csv = new StringValue();
-        
-        csv.clear();
-        assertTrue( csv.isNull() );
-        
-        csv.set( "test" );
-        assertTrue( csv.isValid( new Ia5StringSyntaxChecker() ) );
-        csv.clear();
-        assertTrue( csv.isNull() );
-        assertTrue( csv.isValid( new Ia5StringSyntaxChecker() ) );
-        assertFalse( csv.isNormalized() );
-    }
-
-
+    
     /**
      * Test method for {@link org.apache.directory.shared.ldap.entry.StringValue#isNormalized()}.
      */
@@ -341,8 +366,6 @@ public class StringValueTest
         assertFalse( csv.isNormalized() );
 
         csv.normalize( new DeepTrimToLowerNormalizer( "1.1.1" ) );
-        csv.clear();
-        assertFalse( csv.isNormalized() );
     }
 
 
@@ -362,10 +385,6 @@ public class StringValueTest
         csv.normalize( new DeepTrimToLowerNormalizer( "1.1.1" ) );
         
         assertEquals( "this is a test", csv.getNormalizedValue() );
-
-        csv.clear();
-        assertFalse( csv.isNormalized() );
-        assertEquals( null, csv.getNormalizedValue() );
     }
 
 
@@ -385,10 +404,6 @@ public class StringValueTest
         csv.normalize( new DeepTrimToLowerNormalizer( "1.1.1" ) );
         
         assertEquals( "this is a test", csv.getNormalizedValueCopy() );
-
-        csv.clear();
-        assertFalse( csv.isNormalized() );
-        assertEquals( null, csv.getNormalizedValueCopy() );
     }
 
     
@@ -466,35 +481,6 @@ public class StringValueTest
 
 
     /**
-     * Test method for {@link org.apache.directory.shared.ldap.entry.StringValue#clone()}.
-     */
-    @Test
-    public void testClone() throws LdapException
-    {
-        StringValue csv = new StringValue();
-        
-        StringValue csv1 = (StringValue)csv.clone();
-        
-        assertEquals( csv, csv1 );
-        
-        csv.set( "" );
-        
-        assertNotSame( csv, csv1 );
-        assertNull( csv1.get() );
-        assertEquals( "", csv.getString() );
-        
-        csv.set(  "  This is    a   TEST  " );
-        csv1 = csv.clone();
-        
-        assertEquals( csv, csv1 );
-        
-        csv.normalize( new DeepTrimToLowerNormalizer( "1.1.1" ) );
-        
-        assertNotSame( csv, csv1 );
-    }
-
-
-    /**
      * Test method for {@link org.apache.directory.shared.ldap.entry.StringValue#equals(java.lang.Object)}.
      */
     @Test
@@ -534,9 +520,6 @@ public class StringValueTest
 
         csv.set( "Test" );
         assertEquals( "Test", csv.toString() );
-        
-        csv.clear();
-        assertEquals( "null", csv.toString() );
     }
     
     
