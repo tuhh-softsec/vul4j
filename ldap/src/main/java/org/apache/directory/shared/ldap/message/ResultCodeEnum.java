@@ -1849,8 +1849,7 @@ public enum ResultCodeEnum
     // ------------------------------------------------------------------------
 
     /**
-     * A set of ResultCodes containing those that may correspond to a
-     * {@link NamingException}.
+     * A set of ResultCodes containing those that may correspond to NamingException.
      * <ul>
      * <li><a href="#OPERATIONSERROR">operationsError(1)</a></li>
      * <li><a href="#ALIAS_PROBLEM">aliasProblem(33)</a></li>
