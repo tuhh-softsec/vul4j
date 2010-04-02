@@ -261,12 +261,12 @@ public class BinaryValueAttributeTypeTest
     {
         AttributeType attribute = EntryUtils.getBytesAttributeType();
         byte[] val = new byte[]{0x01};
-        BinaryValue value = new BinaryValue( attribute );
+        BinaryValue bv = new BinaryValue( attribute );
         
-        value.set( val );
-        assertTrue( Arrays.equals( val, value.getReference() ) );
-        assertFalse( value.isNull() );
-        assertTrue( Arrays.equals( val, value.getCopy() ) );
+        bv = new BinaryValue( val );
+        assertTrue( Arrays.equals( val, bv.getReference() ) );
+        assertFalse( bv.isNull() );
+        assertTrue( Arrays.equals( val, bv.get() ) );
     }
     
     
@@ -281,7 +281,7 @@ public class BinaryValueAttributeTypeTest
         
         assertTrue( Arrays.equals( val, value.getReference() ) );
         assertFalse( value.isNull() );
-        assertTrue( Arrays.equals( val, value.getCopy() ) );
+        assertTrue( Arrays.equals( val, value.get() ) );
     }
     
     
@@ -292,27 +292,26 @@ public class BinaryValueAttributeTypeTest
     public void testClone() throws LdapException
     {
         AttributeType at1 = EntryUtils.getBytesAttributeType();
-        BinaryValue sbv = new BinaryValue( at1, null );
+        BinaryValue bv = new BinaryValue( at1, null );
+        BinaryValue bv1 = bv.clone();
         
-        BinaryValue sbv1 = sbv.clone();
+        assertEquals( bv, bv1 );
         
-        assertEquals( sbv, sbv1 );
+        bv = new BinaryValue( StringTools.EMPTY_BYTES );
         
-        sbv.set( StringTools.EMPTY_BYTES );
+        assertNotSame( bv, bv1 );
+        assertTrue( Arrays.equals( StringTools.EMPTY_BYTES, bv.getBytes() ) );
         
-        assertNotSame( sbv, sbv1 );
-        assertTrue( Arrays.equals( StringTools.EMPTY_BYTES, sbv.getBytes() ) );
+        bv = new BinaryValue( BYTES2 );
+        bv1 = bv.clone();
         
-        sbv.set(  BYTES2 );
-        sbv1 = sbv.clone();
+        assertEquals( bv, bv1 );
         
-        assertEquals( sbv, sbv1 );
-        
-        sbv.normalize();
+        bv.normalize();
         
         // Even if we didn't normalized sbv2, it should be equal to sbv,
         // as if they have the same AT, and the same value, they are equal.
-        assertEquals( sbv, sbv1 );
+        assertEquals( bv, bv1 );
     }
     
 
@@ -470,22 +469,22 @@ public class BinaryValueAttributeTypeTest
     public void testSame() throws LdapException
     {
         AttributeType attribute = EntryUtils.getBytesAttributeType();
-        BinaryValue sbv = new BinaryValue( attribute );
+        BinaryValue bv = new BinaryValue( attribute );
 
-        sbv.normalize();
-        assertTrue( sbv.isSame() );
+        bv.normalize();
+        assertTrue( bv.isSame() );
         
-        sbv.set( StringTools.EMPTY_BYTES );
-        sbv.normalize();
-        assertTrue( sbv.isSame() );
+        bv = new BinaryValue( attribute, StringTools.EMPTY_BYTES );
+        bv.normalize();
+        assertTrue( bv.isSame() );
 
-        sbv.set( BYTES1 );
-        sbv.normalize();
-        assertTrue( sbv.isSame() );
+        bv = new BinaryValue( attribute, BYTES1 );
+        bv.normalize();
+        assertTrue( bv.isSame() );
 
-        sbv.set( BYTES2 );
-        sbv.normalize();
-        assertFalse( sbv.isSame() );
+        bv = new BinaryValue( attribute, BYTES2 );
+        bv.normalize();
+        assertFalse( bv.isSame() );
     }
     
     
@@ -513,18 +512,18 @@ public class BinaryValueAttributeTypeTest
     public void testNormalize() throws LdapException
     {
         AttributeType attribute = EntryUtils.getBytesAttributeType();
-        BinaryValue sbv = new BinaryValue( attribute );
+        BinaryValue bv = new BinaryValue( attribute );
 
-        sbv.normalize();
-        assertEquals( null, sbv.getNormalizedValue() );
+        bv.normalize();
+        assertEquals( null, bv.getNormalizedValue() );
         
-        sbv.set( StringTools.EMPTY_BYTES );
-        sbv.normalize();
-        assertTrue( Arrays.equals( StringTools.EMPTY_BYTES, sbv.getNormalizedValue() ) );
+        bv = new BinaryValue( attribute, StringTools.EMPTY_BYTES );
+        bv.normalize();
+        assertTrue( Arrays.equals( StringTools.EMPTY_BYTES, bv.getNormalizedValue() ) );
 
-        sbv.set( BYTES2 );
-        sbv.normalize();
-        assertTrue( Arrays.equals( BYTES1, sbv.getNormalizedValue() ) );
+        bv = new BinaryValue( attribute, BYTES2 );
+        bv.normalize();
+        assertTrue( Arrays.equals( BYTES1, bv.getNormalizedValue() ) );
     }
     
 

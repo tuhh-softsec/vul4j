@@ -50,23 +50,9 @@ public interface Value<T> extends Cloneable, Externalizable, Comparable<Value<T>
     
     
     /**
-     * @return Tells if the wrapped value and the normalized value are the same 
-     */
-    boolean isSame();
-
-    
-    /**
-     * Sets the wrapped value.
+     * Get the wrapped value. It will return a copy, not a reference.
      *
-     * @param wrapped the value to set: either a String, URI, or a byte[]
-     */
-    void set( T wrapped );
-    
-
-    /**
-     * Get the wrapped value.
-     *
-     * @return the wrapped value
+     * @return a copy of the wrapped value
      */
     T get();
     
@@ -96,14 +82,6 @@ public interface Value<T> extends Cloneable, Externalizable, Comparable<Value<T>
      * @return a reference on the wrapped value.
      */
     T getReference();
-    
-    
-    /**
-     * Get a copy of the stored value.
-     *
-     * @return a copy of the stored value.
-     */
-    T getCopy();
     
     
     /**

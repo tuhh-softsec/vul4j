@@ -132,48 +132,6 @@ public class BinaryValue extends AbstractValue<byte[]>
     }
 
 
-    // -----------------------------------------------------------------------
-    // Value<String> Methods
-    // -----------------------------------------------------------------------
-    /*
-     * Sets the wrapped binary value.  Has the side effect of setting the
-     * normalizedValue and the valid flags to null if the wrapped value is
-     * different than what is already set.  These cached values must be
-     * recomputed to be correct with different values.
-     *
-     * @see ServerValue#set(Object)
-     */
-    public final void set( byte[] value )
-    {
-        // Why should we invalidate the normalized value if it's we're setting the
-        // wrapper to it's current value?
-        if ( wrappedValue != null )
-        {
-            if ( Arrays.equals( value, wrappedValue ) )
-            {
-                return;
-            }
-        }
-
-        normalizedValue = null;
-        normalized = false;
-        valid = null;
-        
-        if ( value == null )
-        {
-            this.wrappedValue = null;
-        }
-        else
-        {
-            this.wrappedValue = new byte[ value.length ];
-            System.arraycopy( value, 0, this.wrappedValue, 0, value.length );
-        }
-    }
-
-
-    // -----------------------------------------------------------------------
-    // ServerValue<String> Methods
-    // -----------------------------------------------------------------------
     /**
      * Gets a direct reference to the normalized representation for the
      * wrapped value of this ServerValue wrapper. Implementations will most
@@ -533,20 +491,18 @@ public class BinaryValue extends AbstractValue<byte[]>
 
 
     /**
-     * Gets a copy of the binary value.
-     *
-     * @return a copy of the binary value
+     * {@inheritDoc}
      */
-    public byte[] getCopy()
+    public byte[] get()
     {
         if ( wrappedValue == null )
         {
             return null;
         }
-
         
         final byte[] copy = new byte[ wrappedValue.length ];
         System.arraycopy( wrappedValue, 0, copy, 0, wrappedValue.length );
+        
         return copy;
     }
     
@@ -579,7 +535,7 @@ public class BinaryValue extends AbstractValue<byte[]>
      */
     public byte[] getBytes()
     {
-        return getCopy();
+        return get();
     }
     
     

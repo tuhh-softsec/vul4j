@@ -128,7 +128,7 @@ public class StringValue extends AbstractValue<String>
      *
      * @return A copy of the stored value.
      */
-    public String getCopy()
+    public String get()
     {
         // The String is immutable, we can safely return the internal
         // object without copying it.
@@ -136,30 +136,6 @@ public class StringValue extends AbstractValue<String>
     }
     
     
-    /**
-     * Sets the wrapped String value.  Has the side effect of setting the
-     * normalizedValue and the valid flags to null if the wrapped value is
-     * different than what is already set.  These cached values must be
-     * recomputed to be correct with different values.
-     *
-     * @see ServerValue#set(Object)
-     */
-    public final void set( String value )
-    {
-        // Why should we invalidate the normalized value if it's we're setting the
-        // wrapper to it's current value?
-        if ( !StringTools.isEmpty( value ) && value.equals( getString() ) )
-        {
-            return;
-        }
-
-        normalizedValue = null;
-        normalized = false;
-        valid = null;
-        this.wrappedValue = value;
-    }
-
-
     /**
      * Gets the normalized (canonical) representation for the wrapped string.
      * If the wrapped String is null, null is returned, otherwise the normalized
@@ -667,7 +643,7 @@ public class StringValue extends AbstractValue<String>
         // If the value is null, the flag will be set to false
         if ( !in.readBoolean() )
         {
-            set( null );
+            wrappedValue = null;
             normalizedValue = null;
             return;
         }
@@ -675,7 +651,7 @@ public class StringValue extends AbstractValue<String>
         // Read the value
         String wrapped = in.readUTF();
         
-        set( wrapped );
+        wrappedValue = wrapped;
         
         // Read the normalized flag
         normalized = in.readBoolean();

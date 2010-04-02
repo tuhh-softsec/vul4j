@@ -32,11 +32,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 import org.apache.directory.shared.ldap.exception.LdapException;
-import org.apache.directory.shared.ldap.schema.comparators.StringComparator;
 import org.apache.directory.shared.ldap.schema.normalizers.DeepTrimToLowerNormalizer;
 import org.apache.directory.shared.ldap.schema.syntaxCheckers.Ia5StringSyntaxChecker;
-import org.apache.directory.shared.ldap.schema.syntaxCheckers.OctetStringSyntaxChecker;
-import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -140,11 +137,11 @@ public class StringValueTest
         
         assertEquals( sv, sv1 );
         
-        sv.set( "" );
+        StringValue sv2 = new StringValue( "" );
         
-        assertNotSame( sv, sv1 );
+        assertNotSame( sv2, sv1 );
         assertNull( sv1.get() );
-        assertEquals( "", sv.getString() );
+        assertEquals( "", sv2.getString() );
     }
 
 
@@ -247,12 +244,11 @@ public class StringValueTest
     @Test
     public void testGet()
     {
-        StringValue csv = new StringValue( "test" );
+        StringValue sv = new StringValue( "test" );
+        assertEquals( "test", sv.get() );
         
-        assertEquals( "test", csv.get() );
-        
-        csv.set( "" );
-        assertEquals( "", csv.get() );
+        StringValue sv2 = new StringValue( "" );
+        assertEquals( "", sv2.get() );
     }
 
 
@@ -262,12 +258,12 @@ public class StringValueTest
     @Test
     public void testGetCopy()
     {
-        StringValue csv = new StringValue( "test" );
+        StringValue sv = new StringValue( "test" );
         
-        assertEquals( "test", csv.getCopy() );
+        assertEquals( "test", sv.get() );
         
-        csv.set( "" );
-        assertEquals( "", csv.getCopy() );
+        StringValue sv2 = new StringValue( "" );
+        assertEquals( "", sv2.get() );
     }
 
 
@@ -277,27 +273,26 @@ public class StringValueTest
     @Test
     public void testSet() throws LdapException
     {
-        StringValue csv = new StringValue();
+        StringValue sv = new StringValue( (String)null );
         
-        csv.set( null );
-        assertNull( csv.get() );
-        assertFalse( csv.isNormalized() );
-        assertTrue( csv.isValid( new Ia5StringSyntaxChecker() ) );
-        assertTrue( csv.isNull() );
+        assertNull( sv.get() );
+        assertFalse( sv.isNormalized() );
+        assertTrue( sv.isValid( new Ia5StringSyntaxChecker() ) );
+        assertTrue( sv.isNull() );
 
-        csv.set( "" );
-        assertNotNull( csv.get() );
-        assertEquals( "", csv.get() );
-        assertFalse( csv.isNormalized() );
-        assertTrue( csv.isValid( new Ia5StringSyntaxChecker() ) );
-        assertFalse( csv.isNull() );
+        sv = new StringValue( "" );
+        assertNotNull( sv.get() );
+        assertEquals( "", sv.get() );
+        assertFalse( sv.isNormalized() );
+        assertTrue( sv.isValid( new Ia5StringSyntaxChecker() ) );
+        assertFalse( sv.isNull() );
 
-        csv.set( "Test" );
-        assertNotNull( csv.get() );
-        assertEquals( "Test", csv.get() );
-        assertFalse( csv.isNormalized() );
-        assertTrue( csv.isValid( new Ia5StringSyntaxChecker() ) );
-        assertFalse( csv.isNull() );
+        sv = new StringValue( "Test" );
+        assertNotNull( sv.get() );
+        assertEquals( "Test", sv.get() );
+        assertFalse( sv.isNormalized() );
+        assertTrue( sv.isValid( new Ia5StringSyntaxChecker() ) );
+        assertFalse( sv.isNull() );
     }
 
 
@@ -307,13 +302,11 @@ public class StringValueTest
     @Test
     public void testIsNull()
     {
-        StringValue csv = new StringValue();
+        StringValue sv = new StringValue( (String)null );
+        assertTrue( sv.isNull() );
         
-        csv.set( null );
-        assertTrue( csv.isNull() );
-        
-        csv.set( "test" );
-        assertFalse( csv.isNull() );
+        sv = new StringValue( "test" );
+        assertFalse( sv.isNull() );
     }
 
     
@@ -323,20 +316,17 @@ public class StringValueTest
     @Test
     public void testIsNormalized() throws LdapException
     {
-        StringValue csv = new StringValue();
+        StringValue sv = new StringValue( "  This is    a   TEST  " );
         
-        assertFalse( csv.isNormalized() );
+        assertFalse( sv.isNormalized() );
         
-        csv.set(  "  This is    a   TEST  " );
-        assertFalse( csv.isNormalized() );
+        sv.normalize( new DeepTrimToLowerNormalizer( "1.1.1" ) );
         
-        csv.normalize( new DeepTrimToLowerNormalizer( "1.1.1" ) );
+        assertEquals( "this is a test", sv.getNormalizedValue() );
+        assertTrue( sv.isNormalized() );
         
-        assertEquals( "this is a test", csv.getNormalizedValue() );
-        assertTrue( csv.isNormalized() );
-        
-        csv.set( "test" );
-        assertFalse( csv.isNormalized() );
+        sv = new StringValue( "test" );
+        assertFalse( sv.isNormalized() );
     }
 
 
@@ -346,26 +336,26 @@ public class StringValueTest
     @Test
     public void testSetNormalized() throws LdapException
     {
-        StringValue csv = new StringValue();
+        StringValue sv = new StringValue();
         
-        assertFalse( csv.isNormalized() );
+        assertFalse( sv.isNormalized() );
         
-        csv.setNormalized( true );
-        assertTrue( csv.isNormalized() );
+        sv.setNormalized( true );
+        assertTrue( sv.isNormalized() );
         
-        csv.set(  "  This is    a   TEST  " );
-        assertFalse( csv.isNormalized() );
+        sv = new StringValue( "  This is    a   TEST  " );
+        assertFalse( sv.isNormalized() );
         
-        csv.normalize( new DeepTrimToLowerNormalizer( "1.1.1" ) );
+        sv.normalize( new DeepTrimToLowerNormalizer( "1.1.1" ) );
         
-        assertEquals( "this is a test", csv.getNormalizedValue() );
-        assertTrue( csv.isNormalized() );
+        assertEquals( "this is a test", sv.getNormalizedValue() );
+        assertTrue( sv.isNormalized() );
         
-        csv.setNormalized( false );
-        assertEquals( "this is a test", csv.getNormalizedValue() );
-        assertFalse( csv.isNormalized() );
+        sv.setNormalized( false );
+        assertEquals( "this is a test", sv.getNormalizedValue() );
+        assertFalse( sv.isNormalized() );
 
-        csv.normalize( new DeepTrimToLowerNormalizer( "1.1.1" ) );
+        sv.normalize( new DeepTrimToLowerNormalizer( "1.1.1" ) );
     }
 
 
@@ -375,16 +365,16 @@ public class StringValueTest
     @Test
     public void testGetNormalizedValue() throws LdapException
     {
-        StringValue csv = new StringValue();
+        StringValue sv = new StringValue();
         
-        assertEquals( null, csv.getNormalizedValue() );
+        assertEquals( null, sv.getNormalizedValue() );
         
-        csv.set(  "  This is    a   TEST  " );
-        assertEquals( "  This is    a   TEST  ", csv.getNormalizedValue() );
+        sv = new StringValue( "  This is    a   TEST  " );
+        assertEquals( "  This is    a   TEST  ", sv.getNormalizedValue() );
         
-        csv.normalize( new DeepTrimToLowerNormalizer( "1.1.1" ) );
+        sv.normalize( new DeepTrimToLowerNormalizer( "1.1.1" ) );
         
-        assertEquals( "this is a test", csv.getNormalizedValue() );
+        assertEquals( "this is a test", sv.getNormalizedValue() );
     }
 
 
@@ -394,16 +384,16 @@ public class StringValueTest
     @Test
     public void getNormalizedValueCopy() throws LdapException
     {
-        StringValue csv = new StringValue();
+        StringValue sv = new StringValue();
         
-        assertEquals( null, csv.getNormalizedValueCopy() );
+        assertEquals( null, sv.getNormalizedValueCopy() );
         
-        csv.set(  "  This is    a   TEST  " );
-        assertEquals( "  This is    a   TEST  ", csv.getNormalizedValueCopy() );
+        sv = new StringValue( "  This is    a   TEST  " );
+        assertEquals( "  This is    a   TEST  ", sv.getNormalizedValueCopy() );
         
-        csv.normalize( new DeepTrimToLowerNormalizer( "1.1.1" ) );
+        sv.normalize( new DeepTrimToLowerNormalizer( "1.1.1" ) );
         
-        assertEquals( "this is a test", csv.getNormalizedValueCopy() );
+        assertEquals( "this is a test", sv.getNormalizedValueCopy() );
     }
 
     
@@ -413,21 +403,21 @@ public class StringValueTest
     @Test
     public void testNormalize() throws LdapException
     {
-        StringValue csv = new StringValue();
+        StringValue sv = new StringValue();
 
-        csv.normalize( new DeepTrimToLowerNormalizer( "1.1.1" ) );
-        assertEquals( null, csv.getNormalizedValue() );
+        sv.normalize( new DeepTrimToLowerNormalizer( "1.1.1" ) );
+        assertEquals( null, sv.getNormalizedValue() );
         
-        csv.set( "" );
-        csv.normalize( new DeepTrimToLowerNormalizer( "1.1.1" ) );
-        assertEquals( "", csv.getNormalizedValue() );
+        sv = new StringValue( "" );
+        sv.normalize( new DeepTrimToLowerNormalizer( "1.1.1" ) );
+        assertEquals( "", sv.getNormalizedValue() );
 
-        csv.set(  "  This is    a   TEST  " );
-        assertEquals( "  This is    a   TEST  ", csv.getNormalizedValue() );
+        sv = new StringValue(  "  This is    a   TEST  " );
+        assertEquals( "  This is    a   TEST  ", sv.getNormalizedValue() );
         
-        csv.normalize( new DeepTrimToLowerNormalizer( "1.1.1" ) );
+        sv.normalize( new DeepTrimToLowerNormalizer( "1.1.1" ) );
         
-        assertEquals( "this is a test", csv.getNormalizedValue() );
+        assertEquals( "this is a test", sv.getNormalizedValue() );
     }
 
 
@@ -437,12 +427,12 @@ public class StringValueTest
     @Test
     public void testIsValid() throws LdapException
     {
-        StringValue csv = new StringValue( "Test" );
+        StringValue sv = new StringValue( "Test" );
         
-        assertTrue( csv.isValid( new Ia5StringSyntaxChecker() ) );
+        assertTrue( sv.isValid( new Ia5StringSyntaxChecker() ) );
         
-        csv.set(  "é" );
-        assertFalse( csv.isValid( new Ia5StringSyntaxChecker() ) );
+        sv = new StringValue( "é" );
+        assertFalse( sv.isValid( new Ia5StringSyntaxChecker() ) );
     }
 
 
@@ -452,31 +442,31 @@ public class StringValueTest
     @Test
     public void testCompareTo() throws LdapException
     {
-        StringValue csv1 = new StringValue();
-        StringValue csv2 = new StringValue();
+        StringValue sv1 = new StringValue();
+        StringValue sv2 = new StringValue();
         
-        assertEquals( 0, csv1.compareTo( csv2 ) );
+        assertEquals( 0, sv1.compareTo( sv2 ) );
         
-        csv1.set( "Test" );
-        assertEquals( 1, csv1.compareTo( csv2 ) );
-        assertEquals( -1, csv2.compareTo( csv1 ) );
+        sv1 = new StringValue( "Test" );
+        assertEquals( 1, sv1.compareTo( sv2 ) );
+        assertEquals( -1, sv2.compareTo( sv1 ) );
         
-        csv2.set( "Test" );
-        assertEquals( 0, csv1.compareTo( csv2 ) );
+        sv2 = new StringValue( "Test" );
+        assertEquals( 0, sv1.compareTo( sv2 ) );
 
         // Now check that the equals method works on normalized values.
-        csv1.set(  "  This is    a TEST   " );
-        csv2.set( "this is a test" );
-        csv1.normalize( new DeepTrimToLowerNormalizer( "1.1.1" ) );
-        assertEquals( 0, csv1.compareTo( csv2 ) );
+        sv1 = new StringValue(  "  This is    a TEST   " );
+        sv2 = new StringValue( "this is a test" );
+        sv1.normalize( new DeepTrimToLowerNormalizer( "1.1.1" ) );
+        assertEquals( 0, sv1.compareTo( sv2 ) );
         
-        csv1.set( "a" );
-        csv2.set( "b" );
-        assertEquals( -1, csv1.compareTo( csv2 ) );
+        sv1 = new StringValue( "a" );
+        sv2 = new StringValue( "b" );
+        assertEquals( -1, sv1.compareTo( sv2 ) );
 
-        csv1.set( "b" );
-        csv2.set( "a" );
-        assertEquals( 1, csv1.compareTo( csv2 ) );
+        sv1 = new StringValue( "b" );
+        sv2 = new StringValue( "a" );
+        assertEquals( 1, sv1.compareTo( sv2 ) );
     }
 
 
@@ -486,22 +476,22 @@ public class StringValueTest
     @Test
     public void testEquals() throws LdapException
     {
-        StringValue csv1 = new StringValue();
-        StringValue csv2 = new StringValue();
+        StringValue sv1 = new StringValue();
+        StringValue sv2 = new StringValue();
         
-        assertEquals( csv1, csv2 );
+        assertEquals( sv1, sv2 );
         
-        csv1.set( "Test" );
-        assertNotSame( csv1, csv2 );
+        sv1 = new StringValue( "Test" );
+        assertNotSame( sv1, sv2 );
         
-        csv2.set( "Test" );
-        assertEquals( csv1, csv2 );
+        sv2 = new StringValue( "Test" );
+        assertEquals( sv1, sv2 );
 
         // Now check that the equals method works on normalized values.
-        csv1.set(  "  This is    a TEST   " );
-        csv2.set( "this is a test" );
-        csv1.normalize( new DeepTrimToLowerNormalizer( "1.1.1" ) );
-        assertEquals( csv1, csv2 );
+        sv1 = new StringValue( "  This is    a TEST   " );
+        sv2 = new StringValue( "this is a test" );
+        sv1.normalize( new DeepTrimToLowerNormalizer( "1.1.1" ) );
+        assertEquals( sv1, sv2 );
     }
 
 
@@ -511,15 +501,15 @@ public class StringValueTest
     @Test
     public void testToString()
     {
-        StringValue csv = new StringValue();
+        StringValue sv = new StringValue();
         
-        assertEquals( "null", csv.toString() );
+        assertEquals( "null", sv.toString() );
 
-        csv.set( "" );
-        assertEquals( "", csv.toString() );
+        sv = new StringValue( "" );
+        assertEquals( "", sv.toString() );
 
-        csv.set( "Test" );
-        assertEquals( "Test", csv.toString() );
+        sv = new StringValue( "Test" );
+        assertEquals( "Test", sv.toString() );
     }
     
     

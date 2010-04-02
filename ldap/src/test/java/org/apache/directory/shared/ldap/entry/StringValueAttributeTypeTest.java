@@ -189,21 +189,21 @@ public class StringValueAttributeTypeTest
     {
         AttributeType attribute = EntryUtils.getIA5StringAttributeType();
         
-        StringValue value = new StringValue( attribute, null );
+        StringValue sv = new StringValue( attribute, null );
         
-        assertFalse( value.isNormalized() );
-        assertNull( value.getNormalizedValue() );
-        assertTrue( value.isNormalized() );
+        assertFalse( sv.isNormalized() );
+        assertNull( sv.getNormalizedValue() );
+        assertTrue( sv.isNormalized() );
 
-        value.set( "" );
-        assertFalse( value.isNormalized() );
-        assertEquals( "", value.getNormalizedValue() );
-        assertTrue( value.isNormalized() );
+        sv = new StringValue( attribute, "" );
+        assertFalse( sv.isNormalized() );
+        assertEquals( "", sv.getNormalizedValue() );
+        assertTrue( sv.isNormalized() );
 
-        value.set( "TEST" );
-        assertFalse( value.isNormalized() );
-        assertEquals( "test", value.getNormalizedValue() );
-        assertTrue( value.isNormalized() );
+        sv = new StringValue( attribute, "TEST" );
+        assertFalse( sv.isNormalized() );
+        assertEquals( "test", sv.getNormalizedValue() );
+        assertTrue( sv.isNormalized() );
     }
     
 
@@ -216,17 +216,17 @@ public class StringValueAttributeTypeTest
     {
         AttributeType attribute = EntryUtils.getIA5StringAttributeType();
         
-        StringValue value = new StringValue( attribute, null );
-        assertTrue( value.isValid() );
+        StringValue sv = new StringValue( attribute, null );
+        assertTrue( sv.isValid() );
 
-        value.set( "" );
-        assertTrue( value.isValid() );
+        sv = new StringValue( attribute, "" );
+        assertTrue( sv.isValid() );
 
-        value.set( "TEST" );
-        assertTrue( value.isValid() );
+        sv = new StringValue( attribute, "TEST" );
+        assertTrue( sv.isValid() );
 
-        value.set( "testlong" );
-        assertFalse( value.isValid() );
+        sv = new StringValue( attribute, "testlong" );
+        assertFalse( sv.isValid() );
     }
     
     
@@ -237,18 +237,18 @@ public class StringValueAttributeTypeTest
     public void testNormalize() throws LdapException
     {
         AttributeType attribute = EntryUtils.getIA5StringAttributeType();
-        StringValue ssv = new StringValue( attribute );
+        StringValue sv = new StringValue( attribute );
 
-        ssv.normalize();
-        assertEquals( null, ssv.getNormalizedValue() );
+        sv.normalize();
+        assertEquals( null, sv.getNormalizedValue() );
         
-        ssv.set( "" );
-        ssv.normalize();
-        assertEquals( "", ssv.getNormalizedValue() );
+        sv = new StringValue( attribute, "" );
+        sv.normalize();
+        assertEquals( "", sv.getNormalizedValue() );
 
-        ssv.set(  "  This is    a   TEST  " );
-        ssv.normalize();
-        assertEquals( "this is a test", ssv.getNormalizedValue() );
+        sv = new StringValue( attribute, "  This is    a   TEST  " );
+        sv.normalize();
+        assertEquals( "this is a test", sv.getNormalizedValue() );
     }
     
 
@@ -416,12 +416,12 @@ public class StringValueAttributeTypeTest
         
         assertEquals( sv, sv1 );
         
-        sv.set( "" );
+        sv = new StringValue( "" );
         
         assertNotSame( sv, sv1 );
         assertEquals( "", sv.getString() );
         
-        sv.set(  "  This is    a   TEST  " );
+        sv = new StringValue( "  This is    a   TEST  " );
         sv1 = sv.clone();
         
         assertEquals( sv, sv1 );

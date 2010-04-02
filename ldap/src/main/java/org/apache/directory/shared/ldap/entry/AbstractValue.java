@@ -245,18 +245,6 @@ public abstract class AbstractValue<T> implements Value<T>
 
 
     /**
-     * Gets a copy of the wrapped binary value.
-     * 
-     * @return a copy of the binary value that is wrapped
-     */
-    public T get()
-    {
-        // Just call the specific Client copy method.
-        return getCopy();
-    }
-
-    
-    /**
      * Gets the normalized (canonical) representation for the wrapped value.
      * If the wrapped value is null, null is returned, otherwise the normalized
      * form is returned.  If the normalized Value is null, then the wrapped 
@@ -273,7 +261,7 @@ public abstract class AbstractValue<T> implements Value<T>
 
         if ( normalizedValue == null )
         {
-            return getCopy();
+            return get();
         }
 
         return getNormalizedValueCopy();
@@ -315,9 +303,11 @@ public abstract class AbstractValue<T> implements Value<T>
     
     
     /**
+     * This method is only used for serialization/deserialization
+     * 
      * @return Tells if the wrapped value and the normalized value are the same 
      */
-    public final boolean isSame()
+    /* no qualifier */ final boolean isSame()
     {
         return same;
     }
@@ -389,14 +379,6 @@ public abstract class AbstractValue<T> implements Value<T>
     }
 
 
-    /**
-     * Sets this value's wrapped value to a copy of the src array.
-     *
-     * @param wrapped the byte array to use as the wrapped value
-     */
-    public abstract void set( T wrapped );
-
-    
     /**
      * Tells if the value has already be normalized or not.
      *

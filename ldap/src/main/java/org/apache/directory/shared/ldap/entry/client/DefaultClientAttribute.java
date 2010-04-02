@@ -561,12 +561,11 @@ public class DefaultClientAttribute implements EntryAttribute
                     {
                         // The attributeType is binary, convert the
                         // value to a BinaryValue
-                        BinaryValue cbv = new BinaryValue();
-                        cbv.set( val.getBytes() );
+                        BinaryValue bv = new BinaryValue( val.getBytes() );
                         
-                        if ( !contains( cbv ) )
+                        if ( !contains( bv ) )
                         {
-                            values.add( cbv );
+                            values.add( bv );
                             nbAdded++;
                         }
                     }
@@ -603,12 +602,11 @@ public class DefaultClientAttribute implements EntryAttribute
                     {
                         // The attribute Type is HR, convert the
                         // value to a StringValue
-                        StringValue csv = new StringValue();
-                        csv.set( val.getString() );
+                        StringValue sv = new StringValue( val.getString() );
                         
-                        if ( !contains( csv ) )
+                        if ( !contains( sv ) )
                         {
-                            values.add( csv );
+                            values.add( sv );
                             nbAdded++;
                         }
                     }
