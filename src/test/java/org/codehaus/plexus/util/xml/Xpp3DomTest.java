@@ -234,4 +234,39 @@ public class Xpp3DomTest
         assertEquals( "two", item[1].getValue() );
         assertEquals( "three", item[2].getValue() );
     }
+
+    public void testShouldNotChangeUponMergeWithItselfWhenFirstOrLastSubItemIsEmpty()
+        throws Exception
+    {
+        String configStr = "<configuration><items><item/><item>test</item><item/></items></configuration>";
+        Xpp3Dom dominantConfig = Xpp3DomBuilder.build( new StringReader( configStr ) );
+        Xpp3Dom recessiveConfig = Xpp3DomBuilder.build( new StringReader( configStr ) );
+
+        Xpp3Dom result = Xpp3Dom.mergeXpp3Dom( dominantConfig, recessiveConfig );
+        Xpp3Dom items = result.getChild( "items" );
+
+        assertEquals( 3, items.getChildCount() );
+
+        assertEquals( null, items.getChild( 0 ).getValue() );
+        assertEquals( "test", items.getChild( 1 ).getValue() );
+        assertEquals( null, items.getChild( 2 ).getValue() );
+    }
+
+    public void testShouldCopyRecessiveChildrenNotPresentInTarget()
+        throws Exception
+    {
+        String dominantStr = "<configuration><foo>x</foo></configuration>";
+        String recessiveStr = "<configuration><bar>y</bar></configuration>";
+        Xpp3Dom dominantConfig = Xpp3DomBuilder.build( new StringReader( dominantStr ) );
+        Xpp3Dom recessiveConfig = Xpp3DomBuilder.build( new StringReader( recessiveStr ) );
+
+        Xpp3Dom result = Xpp3Dom.mergeXpp3Dom( dominantConfig, recessiveConfig );
+
+        assertEquals( 2, result.getChildCount() );
+
+        assertEquals( "x", result.getChild( "foo" ).getValue() );
+        assertEquals( "y", result.getChild( "bar" ).getValue() );
+        assertNotSame( result.getChild( "bar" ), recessiveConfig.getChild( "bar" ) );
+    }
+
 }

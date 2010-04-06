@@ -21,7 +21,9 @@ import org.codehaus.plexus.util.xml.pull.XmlSerializer;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -364,51 +366,70 @@ public class Xpp3Dom
                 }
             }
 
-            boolean mergeChildren = true;
-
-            if ( childMergeOverride != null )
+            if ( recessive.getChildCount() > 0 )
             {
-                mergeChildren = childMergeOverride.booleanValue();
-            }
-            else
-            {
-                String childMergeMode = dominant.getAttribute( CHILDREN_COMBINATION_MODE_ATTRIBUTE );
+                boolean mergeChildren = true;
 
-                if ( CHILDREN_COMBINATION_APPEND.equals( childMergeMode ) )
+                if ( childMergeOverride != null )
                 {
-                    mergeChildren = false;
-                }
-            }
-
-            Xpp3Dom[] dominantChildren = null;
-            if ( !mergeChildren )
-            {
-                dominantChildren = dominant.getChildren();
-                // remove these now, so we can append them to the recessive list later.
-                dominant.childList.clear();
-            }
-
-            int recessiveChildCount = recessive.getChildCount();
-            for ( int i = 0; i < recessiveChildCount; i++ )
-            {
-                Xpp3Dom recessiveChild = recessive.getChild( i );
-                Xpp3Dom dominantChild = dominant.getChild( recessiveChild.getName() );
-                if ( mergeChildren && ( dominantChild != null ) )
-                {
-                    mergeIntoXpp3Dom( dominantChild, recessiveChild, childMergeOverride );
+                    mergeChildren = childMergeOverride.booleanValue();
                 }
                 else
                 {
-                    dominant.addChild( new Xpp3Dom( recessiveChild ) );
-                }
-            }
+                    String childMergeMode = dominant.getAttribute( CHILDREN_COMBINATION_MODE_ATTRIBUTE );
 
-            if ( !mergeChildren )
-            {
-                // now, re-add these children so they'll be appended to the recessive list.
-                for ( int i = 0; i < dominantChildren.length; i++ )
+                    if ( CHILDREN_COMBINATION_APPEND.equals( childMergeMode ) )
+                    {
+                        mergeChildren = false;
+                    }
+                }
+
+                if ( !mergeChildren )
                 {
-                    dominant.addChild( dominantChildren[i] );
+                    Xpp3Dom[] dominantChildren = dominant.getChildren();
+                    // remove these now, so we can append them to the recessive list later.
+                    dominant.childList.clear();
+
+                    for ( int i = 0, recessiveChildCount = recessive.getChildCount(); i < recessiveChildCount; i++ )
+                    {
+                        Xpp3Dom recessiveChild = recessive.getChild( i );
+                        dominant.addChild( new Xpp3Dom( recessiveChild ) );
+                    }
+
+                    // now, re-add these children so they'll be appended to the recessive list.
+                    for ( int i = 0; i < dominantChildren.length; i++ )
+                    {
+                        dominant.addChild( dominantChildren[i] );
+                    }
+                }
+                else
+                {
+                    Map commonChildren = new HashMap();
+
+                    for ( Iterator it = recessive.childMap.keySet().iterator(); it.hasNext(); )
+                    {
+                        String childName = (String) it.next();
+                        Xpp3Dom[] dominantChildren = dominant.getChildren( childName );
+                        if ( dominantChildren.length > 0 )
+                        {
+                            commonChildren.put( childName, Arrays.asList( dominantChildren ).iterator() );
+                        }
+                    }
+
+                    for ( int i = 0, recessiveChildCount = recessive.getChildCount(); i < recessiveChildCount; i++ )
+                    {
+                        Xpp3Dom recessiveChild = recessive.getChild( i );
+                        Iterator it = (Iterator) commonChildren.get( recessiveChild.getName() );
+                        if ( it == null )
+                        {
+                            dominant.addChild( new Xpp3Dom( recessiveChild ) );
+                        }
+                        else if ( it.hasNext() )
+                        {
+                            Xpp3Dom dominantChild = (Xpp3Dom) it.next();
+                            mergeIntoXpp3Dom( dominantChild, recessiveChild, childMergeOverride );
+                        }
+                    }
                 }
             }
         }
