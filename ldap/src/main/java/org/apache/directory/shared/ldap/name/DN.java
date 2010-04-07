@@ -1193,7 +1193,7 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
         }
         else
         {
-            normName = newRdn + "," + normName;
+            normName = newRdn.getNormName() + "," + normName;
             upName = newRdn.getName() + "," + upName;
         }
         
