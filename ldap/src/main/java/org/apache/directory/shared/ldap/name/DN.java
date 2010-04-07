@@ -1144,6 +1144,35 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
 
 
     /**
+     * Adds the RDNs in the left to right order
+     * i.e adding ou=users followed by ou=system forms the DN ou=users,ou=system 
+     * 
+     * @param newRdn the normalized RDN to be added
+     * @return the DN formed after adding the given RDN, this will already be in a normalized form
+     *         cause of adding normalized RDNs
+     */
+    public DN addNormalizedInOrder( RDN newRdn )
+    {
+        rdns.add( newRdn );
+
+        if (rdns.size() == 1 )
+        {
+            normName = newRdn.getNormName();
+            upName = newRdn.getName();
+        }
+        else
+        {
+            normName = normName + "," + newRdn.getNormName();
+            upName = upName + "," + newRdn.getName();
+        }
+        
+        bytes = StringTools.getBytesUtf8( normName );
+
+        return this;
+    }
+    
+    
+    /**
      * Adds a single normalized RDN to the (leaf) end of this name.
      *
      * @param newRdn the RDN to add

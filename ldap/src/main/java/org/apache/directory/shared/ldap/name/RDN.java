@@ -112,7 +112,7 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
 {
     /** The LoggerFactory used by this class */
     protected static final Logger LOG = LoggerFactory.getLogger( RDN.class );
-    
+
     /** An empty RDN */
     public static final RDN EMPTY_RDN = new RDN();
 
@@ -183,6 +183,9 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
 
     /** Constant used in comparisons */
     public static final int EQUAL = 0;
+
+    /** parent RDN's id */
+    private long parentId = -1;
 
 
     /**
@@ -387,8 +390,8 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
                 break;
         }
     }
-    
-    
+
+
     /**
      * Transform a RDN by changing the value to its OID counterpart and
      * normalizing the value accordingly to its type.
@@ -404,10 +407,8 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
         normalize();
         this.upName = upName;
 
-        
         return this;
     }
-
 
 
     /**
@@ -975,7 +976,7 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
             return false;
         }
 
-        return compareTo( (RDN)rdn ) == EQUAL;
+        return compareTo( ( RDN ) rdn ) == EQUAL;
     }
 
 
@@ -1339,6 +1340,7 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
      * We should write all those ATAVs sequencially, following the 
      * structure :
      * 
+     * <li>parentId</li> The parent entry's Id
      * <li>nbAtavs</li> The number of ATAVs to write. Can't be 0.
      * <li>upName</li> The User provided RDN
      * <li>normName</li> The normalized RDN. It can be empty if the normalized
@@ -1355,6 +1357,9 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
      */
     public void writeExternal( ObjectOutput out ) throws IOException
     {
+        // write the parent Id first 
+        out.writeLong( parentId );
+
         out.writeInt( nbAtavs );
         out.writeUTF( upName );
 
@@ -1403,6 +1408,9 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
      */
     public void readExternal( ObjectInput in ) throws IOException, ClassNotFoundException
     {
+        // parent Id
+        parentId = in.readLong();
+
         // Read the ATAV number
         nbAtavs = in.readInt();
 
@@ -1459,4 +1467,25 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
     {
         return upName == null ? "" : upName;
     }
+
+
+    /**
+     * for INTERNAL use only
+     * @return long gives the parent ID of this RDN
+     */
+    public long _getParentId()
+    {
+        return parentId;
+    }
+
+
+    /**
+     * for INTERNAL use only
+     * @param parentId parent RDN's ID
+     */
+    public void _setParentId( long parentId )
+    {
+        this.parentId = parentId;
+    }
+
 }

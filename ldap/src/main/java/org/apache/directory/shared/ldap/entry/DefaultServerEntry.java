@@ -34,7 +34,8 @@ import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.entry.client.DefaultClientEntry;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.name.DN;
-import org.apache.directory.shared.ldap.name.DnSerializer;
+import org.apache.directory.shared.ldap.name.RDN;
+import org.apache.directory.shared.ldap.name.RdnSerializer;
 import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.SchemaManager;
 import org.apache.directory.shared.ldap.util.StringTools;
@@ -2298,8 +2299,8 @@ public final class DefaultServerEntry extends AbstractEntry<AttributeType> imple
      * Serialize a server entry.
      * 
      * The structure is the following :
-     * 
-     * <b>[DN]</b> : The entry DN. can be empty
+     * <b>[a byte] : if the DN is empty 0 will be written else 1
+     * <b>[RDN]</b> : The entry's RDN.
      * <b>[numberAttr]</b> : the bumber of attributes. Can be 0 
      * <b>[attribute's oid]*</b> : The attribute's OID to get back 
      * the attributeType on deserialization
@@ -2311,8 +2312,17 @@ public final class DefaultServerEntry extends AbstractEntry<AttributeType> imple
     public void serialize( ObjectOutput out ) throws IOException
     {
         // First, the DN
-        // Write the DN
-        DnSerializer.serialize( dn, out );
+        // Write the RDN of the DN
+        
+        if( dn.getRdn() == null )
+        {
+            out.writeByte( 0 );
+        }
+        else
+        {
+            out.writeByte( 1 );
+            RdnSerializer.serialize( dn.getRdn(), out );
+        }
         
         // Then the attributes.
         out.writeInt( attributes.size() );
@@ -2360,7 +2370,14 @@ public final class DefaultServerEntry extends AbstractEntry<AttributeType> imple
     public void deserialize( ObjectInput in ) throws IOException, ClassNotFoundException
     {
         // Read the DN
-        dn = DnSerializer.deserialize( in );
+        dn = new DN();
+
+        byte b = in.readByte();
+        if( b == 1 )
+        {
+            RDN rdn = RdnSerializer.deserialize( in );
+            dn.add( rdn );
+        }
         
         // Read the number of attributes
         int nbAttributes = in.readInt();
