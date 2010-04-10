@@ -38,9 +38,6 @@
     <fileSet>
       <directory>src</directory>
     </fileSet>
-    <fileSet>
-      <directory>xdocs</directory>
-    </fileSet>
   </fileSets>
 </assembly>
 
