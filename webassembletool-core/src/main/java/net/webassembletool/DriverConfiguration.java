@@ -3,16 +3,21 @@ package net.webassembletool;
 import java.util.Properties;
 
 import net.webassembletool.authentication.RemoteUserAuthenticationHandler;
+import net.webassembletool.renderers.ResourceFixupRenderer;
 
 /**
  * Driver configuration parameters
  * 
  * @author Francois-Xavier Bonnet
+ * @contributor Nicolas Richeton
  */
 class DriverConfiguration {
 	private final String instanceName;
 	private final String baseURL;
 	private String uriEncoding = "ISO-8859-1";
+	private boolean fixResources = false;
+	private String visibleBaseURL = null;
+	private int fixMode = ResourceFixupRenderer.RELATIVE;
 	private int maxConnectionsPerHost = 20;
 	private int timeout = 1000;
 	private boolean useCache = true;
@@ -66,7 +71,40 @@ class DriverConfiguration {
 		if (props.getProperty("preserveHost") != null)
 			preserveHost = Boolean.parseBoolean(props
 					.getProperty("preserveHost"));
+
+		// Fix resources
+		if (props.getProperty("fixResources") != null) {
+			fixResources = Boolean.parseBoolean(props
+					.getProperty("fixResources"));
+			// Fix resources mode
+			if (props.getProperty("fixMode") != null) {
+				if ("absolute".equalsIgnoreCase(props
+						.getProperty("fixMode"))) {
+					this.fixMode = ResourceFixupRenderer.ABSOLUTE;
+				}
+			}
+			// Visible base url
+			if (props.getProperty("visibleUrlBase") != null) {
+				visibleBaseURL = props
+						.getProperty("visibleUrlBase");
+			} else {
+				visibleBaseURL = baseURL;
+			}
+		}
+
 		properties = props;
+	}
+
+	public int getFixMode() {
+		return fixMode;
+	}
+
+	public boolean isFixResources() {
+		return fixResources;
+	}
+
+	public String getVisibleBaseURL() {
+		return visibleBaseURL;
 	}
 
 	public boolean isPreserveHost() {

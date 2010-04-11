@@ -23,6 +23,7 @@ import net.webassembletool.output.Output;
 import net.webassembletool.output.StringOutput;
 import net.webassembletool.output.TextOnlyStringOutput;
 import net.webassembletool.regexp.ReplaceRenderer;
+import net.webassembletool.renderers.ResourceFixupRenderer;
 import net.webassembletool.resource.NullResource;
 import net.webassembletool.resource.Resource;
 import net.webassembletool.resource.ResourceUtils;
@@ -55,6 +56,7 @@ import org.apache.http.params.HttpParams;
  * depending on the needs.
  * 
  * @author Francois-Xavier Bonnet
+ * @contributor Nicolas Richeton
  */
 public class Driver {
 	private static final Log LOG = LogFactory.getLog(Driver.class);
@@ -303,13 +305,24 @@ public class Driver {
 	public final void render(String page, Map<String, String> parameters,
 			Appendable writer, HttpServletRequest originalRequest,
 			HttpServletResponse response, Renderer... renderers)
-			throws IOException, HttpErrorPage {                
-                String resultingpage = VariablesResolver.replaceAllVariables(page);
-		ResourceContext resourceContext = new ResourceContext(this, resultingpage,
-				parameters, originalRequest, response);
+			throws IOException, HttpErrorPage {
+		String resultingpage = VariablesResolver.replaceAllVariables(page);
+		ResourceContext resourceContext = new ResourceContext(this,
+				resultingpage, parameters, originalRequest, response);
 		resourceContext.setPreserveHost(config.isPreserveHost());
 		StringOutput stringOutput = getResourceAsString(resourceContext);
 		String currentValue = stringOutput.toString();
+
+		// Fix resources
+		if (config.isFixResources()) {
+			ResourceFixupRenderer fixup = new ResourceFixupRenderer(config
+					.getVisibleBaseURL(), page, config.getFixMode());
+			StringWriter stringWriter = new StringWriter();
+			fixup.render(currentValue, stringWriter);
+			currentValue = stringWriter.toString();
+		}
+		
+		// Process all renderers
 		for (Renderer renderer : renderers) {
 			StringWriter stringWriter = new StringWriter();
 			renderer.render(currentValue, stringWriter);
