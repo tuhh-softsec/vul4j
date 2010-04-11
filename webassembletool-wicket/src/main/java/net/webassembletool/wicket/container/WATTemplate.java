@@ -16,6 +16,7 @@ package net.webassembletool.wicket.container;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -27,6 +28,8 @@ import net.webassembletool.wicket.utils.ResponseWriter;
 import net.webassembletool.wicket.utils.WATNullResponse;
 import net.webassembletool.wicket.utils.WATWicketConfiguration;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.Response;
 import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.MarkupStream;
@@ -67,9 +70,12 @@ import org.apache.wicket.protocol.http.servlet.ServletWebRequest;
  * 
  */
 public class WATTemplate extends WebMarkupContainer {
-
+	private static Log logger = LogFactory.getLog(WATTemplate.class);
 	private static final long serialVersionUID = 1L;
-	String page = null;
+	private final String name = null;
+	private String page = null;
+	private final HashMap<String, String> params = new HashMap<String, String>();
+	private final Map<String, String> replaceRules = new HashMap<String, String>();
 
 	/**
 	 * Create a template block
@@ -80,6 +86,18 @@ public class WATTemplate extends WebMarkupContainer {
 	public WATTemplate(String id, String page) {
 		super(id);
 		this.page = page;
+	}
+
+	/**
+	 * Add replace rule.
+	 * 
+	 * @param regexp
+	 *            The regex to match in the template
+	 * @param replacement
+	 *            The content wich will replace the matched value.
+	 */
+	public void addReplaceRule(String regexp, String replacement) {
+		replaceRules.put(regexp, replacement);
 	}
 
 	/*
@@ -114,14 +132,14 @@ public class WATTemplate extends WebMarkupContainer {
 
 		Driver driver = DriverFactory.getInstance();
 		try {
-			driver.renderTemplate(page, null, new ResponseWriter(
+			driver.renderTemplate(page, name, new ResponseWriter(
 					originalResponse), request, response, watResponse
-					.getBlocks(), new HashMap<String, String>(),
-					new HashMap<String, String>(), false);
+					.getBlocks(), replaceRules, params, false);
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error(e);
 		} catch (HttpErrorPage e) {
-			e.printStackTrace();
+			logger.error(e);
 		}
 	}
+
 }
