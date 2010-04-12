@@ -76,8 +76,6 @@ public class WATBlock extends WebMarkupContainer {
 	 *            Wicket id
 	 * @param page
 	 *            relative url
-	 * @param blockName
-	 *            block name in target content
 	 */
 	public WATBlock(String id, String page) {
 		super(id);

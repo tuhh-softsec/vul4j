@@ -40,7 +40,7 @@ public class WATParamResponse extends WebResponse {
 	/**
 	 * Get buffered content.
 	 * 
-	 * @return
+	 * @return the content
 	 */
 	public String getContent() {
 		return new String(baos.toByteArray());
