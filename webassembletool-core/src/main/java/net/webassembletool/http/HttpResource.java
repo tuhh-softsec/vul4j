@@ -86,7 +86,8 @@ public class HttpResource extends Resource {
 		String location = httpClientResponse.getHeader("Location");
 		if (location != null) {
 			// In case of a redirect, we need to rewrite the location header to
-			// match provider application and remove any jsessionid in the URL
+			// match
+			// provider application and remove any jsessionid in the URL
 			location = rewriteLocation(location);
 			location = removeSessionId(location);
 			output.addHeader("Location", location);
@@ -110,17 +111,34 @@ public class HttpResource extends Resource {
 	private String rewriteLocation(String location) {
 		// Location header rewriting
 		HttpServletRequest request = target.getOriginalRequest();
+
 		String originalBase = request.getScheme() + "://"
 				+ request.getServerName() + ":" + request.getServerPort()
 				+ request.getContextPath() + request.getServletPath();
 		if (request.getPathInfo() != null) {
 			originalBase += request.getPathInfo();
 		}
-		int pos = originalBase.indexOf(target.getRelUrl());
-		originalBase = originalBase.substring(0, pos + 1);
+
+		// Note: this code was rewritten for 2.6. While the new code seems
+		// better suited for all cases, it may change the behavior of client
+		// application.
+
+		// Look for the relUrl starting from the end of the url
+		int pos = originalBase.lastIndexOf(target.getRelUrl());
+
+		if (pos >= 0) {
+			// Remove relUrl from originalBase.
+			originalBase = originalBase.substring(0, pos);
+			// Add '/' at the end if absent
+			String driverBaseUrl = target.getDriver().getBaseURL();
+			if (originalBase.charAt(originalBase.length() - 1) != '/'
+					&& driverBaseUrl.charAt(driverBaseUrl.length() - 1) != '/') {
+				originalBase += "/";
+			}
+		}
+
 		return location.replaceFirst(target.getDriver().getBaseURL(),
 				originalBase);
-
 	}
 
 	private void removeSessionId(InputStream inputStream, Output output)

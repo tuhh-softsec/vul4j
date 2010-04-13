@@ -25,13 +25,15 @@ public class ResourceFixupRenderer implements Renderer {
 	public static final int ABSOLUTE = 0;
 	public static final int RELATIVE = 1;
 	public static final char SLASH = '/';
-	private String server = null;
-	private String pagePath = null;
+	private final String attributeSeparator = "\"";
+	private String contextAdd = null;
+	private String contextRemove = null;
 	private int mode = ABSOLUTE;
-	private String attributeSeparator = "\"";
-	private Pattern pHref = Pattern.compile("<([^>]+)(src|href)="
+	private String pagePath = null;
+	private final Pattern pHref = Pattern.compile("<([^>]+)(src|href|action)="
 			+ attributeSeparator + "([^" + attributeSeparator + "]+)"
 			+ attributeSeparator + "([^>]*)>");
+	private String server = null;
 
 	/**
 	 * Creates a renderer which fixes urls. The domain name and the url path are
@@ -51,21 +53,28 @@ public class ResourceFixupRenderer implements Renderer {
 	 * <li>images/image.png is replaced by /context/images/image.png</li>
 	 * </ul>
 	 * 
-	 * @param baseUrl
+	 * @param visibleBaseUrl
+	 *            Base url (same as configured in provider).
 	 * @param pageFullPath
+	 *            Page as used in tag lib or using API
 	 * @param mode
 	 *            ResourceFixupRenderer.ABSOLUTE or
 	 *            ResourceFixupRenderer.RELATIVE
+	 * 
 	 * @throws MalformedURLException
 	 */
-	public ResourceFixupRenderer(String baseUrl, String pageFullPath, int mode)
-			throws MalformedURLException {
+	public ResourceFixupRenderer(String baseUrl, String visibleBaseUrl,
+			String pageFullPath, int mode) throws MalformedURLException {
 		this.mode = mode;
-		
+
 		// Clean up input
-		String cleanBaseUrl  = baseUrl; 
-		if( cleanBaseUrl.charAt(cleanBaseUrl.length() - 1 ) == SLASH){
-			cleanBaseUrl = cleanBaseUrl.substring(0, cleanBaseUrl.length() -1 );
+		String cleanBaseUrl = baseUrl;
+		if (visibleBaseUrl != null) {
+			cleanBaseUrl = visibleBaseUrl;
+		}
+
+		if (cleanBaseUrl.charAt(cleanBaseUrl.length() - 1) == SLASH) {
+			cleanBaseUrl = cleanBaseUrl.substring(0, cleanBaseUrl.length() - 1);
 		}
 		URL url = new URL(cleanBaseUrl + SLASH + pageFullPath);
 
@@ -81,6 +90,58 @@ public class ResourceFixupRenderer implements Renderer {
 				pagePath = pagePath.substring(0, indexSlash);
 			}
 		}
+
+		// Check if we are going to replace context
+		if (baseUrl != null && !baseUrl.equals(visibleBaseUrl)) {
+			contextRemove = new URL(baseUrl).getPath();
+			contextAdd = new URL(visibleBaseUrl).getPath();
+		}
+
+	}
+
+	/**
+	 * Fix an url according to the chosen mode.
+	 * 
+	 * @param urlParam
+	 *            the url to fix.
+	 * @return the fixed url.
+	 */
+	private String fixUrl(String urlParam) {
+		String url = urlParam;
+
+		// Do not process 0-length urls
+		if (url.length() == 0) {
+			return url;
+		}
+
+		// Keep absolute and javascript urls untouched.
+		if (url.startsWith("http://") || url.startsWith("https://")
+				|| url.startsWith("#") || url.startsWith("javascript:")) {
+			return url;
+		}
+
+		// Add domain to context absolute urls
+		if (url.charAt(0) == SLASH) {
+
+			if (contextRemove != null && url.startsWith(contextRemove)) {
+				url = url.substring(contextRemove.length());
+				url = contextAdd + url;
+			}
+
+			if (mode == ABSOLUTE) {
+				url = server + url;
+			}
+			return url;
+		}
+
+		// Process relative urls
+		if (mode == ABSOLUTE) {
+			url = server + pagePath + SLASH + url;
+		} else {
+			url = pagePath + SLASH + url;
+		}
+
+		return url;
 	}
 
 	/**
@@ -118,38 +179,4 @@ public class ResourceFixupRenderer implements Renderer {
 		return resultBuffer.toString();
 	}
 
-	/**
-	 * Fix an url according to the chosen mode.
-	 * 
-	 * @param urlParam
-	 *            the url to fix.
-	 * @return the fixed url.
-	 */
-	private String fixUrl(String urlParam) {
-		String url = urlParam;
-
-		// Do not process 0-length urls
-		if (url.length() == 0)
-			return url;
-
-		// Keep absolute and javascript urls untouched.
-		if (url.startsWith("http://") || url.startsWith("https://")
-				|| url.startsWith("#") || url.startsWith("javascript:"))
-			return url;
-
-		// Add domain to context absolute urls
-		if (url.charAt(0) == SLASH) {
-			if (mode == ABSOLUTE)
-				url = server + url;
-			return url;
-		}
-
-		// Process relative urls
-		if (mode == ABSOLUTE)
-			url = server + pagePath + SLASH + url;
-		else
-			url = pagePath + SLASH + url;
-
-		return url;
-	}
 }

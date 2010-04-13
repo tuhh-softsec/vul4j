@@ -318,7 +318,8 @@ public class Driver {
 		// Fix resources
 		if (config.isFixResources()) {
 			ResourceFixupRenderer fixup = new ResourceFixupRenderer(config
-					.getVisibleBaseURL(), page, config.getFixMode());
+					.getBaseURL(), config.getVisibleBaseURL(), page, config
+					.getFixMode());
 			StringWriter stringWriter = new StringWriter();
 			fixup.render(currentValue, stringWriter);
 			currentValue = stringWriter.toString();
