@@ -137,8 +137,6 @@ public class HttpResource extends Resource {
 			}
 		}
 
-		System.out.println("originalBase " + originalBase);
-		System.out.println("driverBaseUrl " + driverBaseUrl);
 		return location.replaceFirst(driverBaseUrl, originalBase);
 	}
 

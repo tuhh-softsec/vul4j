@@ -212,50 +212,56 @@ public class RewriteProxyServlet extends HttpServlet {
 			if (m.matches()) {
 				// Rule matched.
 
-				// Get query string.
-				String originalQueryString = request.getQueryString();
-				if (originalQueryString == null) {
-					originalQueryString = "$QUERY";
-				}
-
 				// Create new URL
 				String newUrl = relUrl;
 				if (conf.getRewrite() != null) {
 					newUrl = conf.getRewrite();
 				}
 
-				// Create new query string
-
-				String newQueryString = "";
-				if (conf.getQueryRewrite() != null) {
-					newQueryString = conf.getQueryRewrite();
-				}
-
-				// Do replacements.
-				newQueryString = newQueryString.replace("$QUERY",
-						originalQueryString);
+				String targetQueryString = null;
 
 				for (int i = 1; i < m.groupCount() + 1; i++) {
 					newUrl = newUrl.replace("$" + i, m.group(i));
-					newQueryString = newQueryString
-							.replace("$" + i, m.group(i));
 				}
 
-				// clear query string if empty
-				if ("".equals(newQueryString)) {
-					newQueryString = null;
+				// Process Query string
+				if (conf.getQueryRewrite() != null) {
+					// Create new query string
+					targetQueryString = conf.getQueryRewrite();
+
+					// Get query string.
+					String originalQueryString = request.getQueryString();
+					if (originalQueryString == null) {
+						originalQueryString = "";
+					}
+
+					// Do replacements.
+					targetQueryString = targetQueryString.replace("$QUERY",
+							originalQueryString);
+					for (int i = 1; i < m.groupCount() + 1; i++) {
+
+						targetQueryString = targetQueryString.replace("$" + i,
+								m.group(i));
+					}
+
+					// clear query string if empty
+					if ("".equals(targetQueryString)) {
+						targetQueryString = null;
+					}
+				} else {
+					targetQueryString = request.getQueryString();
 				}
 
 				// Nice log
 				if (logger.isDebugEnabled()) {
 					logger.debug("Proxying " + relUrl + " to " + newUrl
-							+ " w/ query " + newQueryString);
+							+ " w/ query " + targetQueryString);
 				}
 
 				// Proxy request and return.
 				try {
 					DriverFactory.getInstance(conf.getProvider()).proxy(newUrl,
-							new ReverseHttpRequest(request, newQueryString),
+							new ReverseHttpRequest(request, targetQueryString),
 							response);
 					return;
 				} catch (HttpErrorPage e) {
