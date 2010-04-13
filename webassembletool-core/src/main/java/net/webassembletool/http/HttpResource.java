@@ -126,19 +126,20 @@ public class HttpResource extends Resource {
 		// Look for the relUrl starting from the end of the url
 		int pos = originalBase.lastIndexOf(target.getRelUrl());
 
+		String driverBaseUrl = target.getDriver().getBaseURL();
 		if (pos >= 0) {
 			// Remove relUrl from originalBase.
 			originalBase = originalBase.substring(0, pos);
 			// Add '/' at the end if absent
-			String driverBaseUrl = target.getDriver().getBaseURL();
 			if (originalBase.charAt(originalBase.length() - 1) != '/'
-					&& driverBaseUrl.charAt(driverBaseUrl.length() - 1) != '/') {
+					&& driverBaseUrl.charAt(driverBaseUrl.length() - 1) == '/') {
 				originalBase += "/";
 			}
 		}
 
-		return location.replaceFirst(target.getDriver().getBaseURL(),
-				originalBase);
+		System.out.println("originalBase " + originalBase);
+		System.out.println("driverBaseUrl " + driverBaseUrl);
+		return location.replaceFirst(driverBaseUrl, originalBase);
 	}
 
 	private void removeSessionId(InputStream inputStream, Output output)
