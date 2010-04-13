@@ -215,7 +215,7 @@ public class RewriteProxyServlet extends HttpServlet {
 				// Get query string.
 				String originalQueryString = request.getQueryString();
 				if (originalQueryString == null) {
-					originalQueryString = "";
+					originalQueryString = "$QUERY";
 				}
 
 				// Create new URL
@@ -239,6 +239,11 @@ public class RewriteProxyServlet extends HttpServlet {
 					newUrl = newUrl.replace("$" + i, m.group(i));
 					newQueryString = newQueryString
 							.replace("$" + i, m.group(i));
+				}
+
+				// clear query string if empty
+				if ("".equals(newQueryString)) {
+					newQueryString = null;
 				}
 
 				// Nice log
