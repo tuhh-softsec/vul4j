@@ -95,8 +95,9 @@ public class Driver {
 			ThreadSafeClientConnManager connectionManager = new ThreadSafeClientConnManager(
 					httpParams, schemeRegistry);
 			httpClient = new DefaultHttpClient(connectionManager, httpParams);
-		} else
+		} else {
 			httpClient = null;
+		}
 		// Proxy settings
 		if (config.getProxyHost() != null) {
 			HttpHost proxy = new HttpHost(config.getProxyHost(), config
@@ -105,10 +106,11 @@ public class Driver {
 					proxy);
 		}
 		// Cache
-		if (config.isUseCache())
+		if (config.isUseCache()) {
 			cache = new Cache();
-		else
+		} else {
 			cache = null;
+		}
 		// Authentication handler
 		LOG.debug("Using authenticationHandler: "
 				+ config.getAuthenticationHandler());
@@ -321,7 +323,7 @@ public class Driver {
 			fixup.render(currentValue, stringWriter);
 			currentValue = stringWriter.toString();
 		}
-		
+
 		// Process all renderers
 		for (Renderer renderer : renderers) {
 			StringWriter stringWriter = new StringWriter();
@@ -356,8 +358,9 @@ public class Driver {
 		request.setCharacterEncoding(config.getUriEncoding());
 		resourceContext.setProxy(true);
 		resourceContext.setPreserveHost(config.isPreserveHost());
-		if (!authenticationHandler.beforeProxy(resourceContext))
+		if (!authenticationHandler.beforeProxy(resourceContext)) {
 			return;
+		}
 		if (renderers.length == 0) {
 			// As we don't have any transformation to apply, we don't even
 			// have to retrieve the resource if it is already in browser's
@@ -426,22 +429,25 @@ public class Driver {
 					if (config.getCacheRefreshDelay() <= 0) {
 						// Auto http cache
 						if (Rfc2616.needsValidation(resourceContext,
-								cachedResource))
+								cachedResource)) {
 							needsValidation = true;
+						}
 					} else {
 						// Forced expiration delay
 						if (Rfc2616.requiresRefresh(resourceContext)
 								|| Rfc2616.getAge(cachedResource) > config
-										.getCacheRefreshDelay() * 1000)
+										.getCacheRefreshDelay() * 1000) {
 							needsValidation = true;
+						}
 					}
 				}
 				if (LOG.isDebugEnabled()) {
 					String message = "Needs validation=" + needsValidation;
 					message += " cacheRefreshDelay="
 							+ config.getCacheRefreshDelay();
-					if (cachedResource != null)
+					if (cachedResource != null) {
 						message += " cachedResource=" + cachedResource;
+					}
 					LOG.debug(message);
 				}
 				if (needsValidation) {
@@ -468,12 +474,17 @@ public class Driver {
 							.getLocalBase(), resourceContext));
 					multipleOutput.addOutput(fileOutput);
 				}
-				Map<String, String> validators = cache.getValidators(
-						resourceContext, cachedResource);
-				httpResource = new HttpResource(httpClient, resourceContext,
-						validators);
-				httpResource = cache.select(resourceContext, cachedResource,
-						httpResource);
+				if (cache != null) {
+					Map<String, String> validators = cache.getValidators(
+							resourceContext, cachedResource);
+					httpResource = new HttpResource(httpClient,
+							resourceContext, validators);
+					httpResource = cache.select(resourceContext,
+							cachedResource, httpResource);
+				} else {
+					httpResource = new HttpResource(httpClient,
+							resourceContext, null);
+				}
 				// If there is an error, we will try to reuse an old cache entry
 				if (!httpResource.isError()) {
 					Rfc2616.renderResource(httpResource, multipleOutput);
@@ -508,9 +519,10 @@ public class Driver {
 			} else if (fileResource != null) {
 				Rfc2616.renderResource(fileResource, multipleOutput);
 				return;
-			} else
+			} else {
 				// Resource could not be loaded at all
 				Rfc2616.renderResource(new NullResource(), multipleOutput);
+			}
 		} catch (Throwable t) {
 			// In case there was a problem during rendering (client abort for
 			// exemple), all the output
@@ -520,19 +532,24 @@ public class Driver {
 			if (memoryOutput != null) {
 				memoryOutput = null;
 			}
-			if (fileOutput != null)
+			if (fileOutput != null) {
 				fileOutput.delete();
+			}
 			throw new ResponseException(httpUrl + " could not be retrieved", t);
 		} finally {
 			// Free all the resources
-			if (cachedResource != null)
+			if (cachedResource != null) {
 				cachedResource.release();
-			if (memoryOutput != null)
+			}
+			if (memoryOutput != null) {
 				cache.put(resourceContext, memoryOutput.toResource());
-			if (httpResource != null)
+			}
+			if (httpResource != null) {
 				httpResource.release();
-			if (fileResource != null)
+			}
+			if (fileResource != null) {
 				fileResource.release();
+			}
 		}
 	}
 

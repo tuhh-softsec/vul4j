@@ -3,7 +3,6 @@ package net.webassembletool.http;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -31,7 +30,7 @@ public class HttpResource extends Resource {
 	private final static Log LOG = LogFactory.getLog(HttpResource.class);
 	private HttpClientResponse httpClientResponse;
 	private final ResourceContext target;
-	private String url;
+	private final String url;
 
 	public HttpResource(HttpClient httpClient, ResourceContext resourceContext,
 			Map<String, String> validators) throws IOException {
@@ -39,8 +38,9 @@ public class HttpResource extends Resource {
 		this.url = ResourceUtils.getHttpUrlWithQueryString(resourceContext);
 		// Retrieve session and other cookies
 		HttpContext httpContext = null;
-		if (resourceContext.getUserContext() != null)
+		if (resourceContext.getUserContext() != null) {
 			httpContext = resourceContext.getUserContext().getHttpContext();
+		}
 		HttpServletRequest originalRequest = resourceContext
 				.getOriginalRequest();
 		AuthenticationHandler authenticationHandler = resourceContext
@@ -49,12 +49,12 @@ public class HttpResource extends Resource {
 		boolean preserveHost = resourceContext.isPreserveHost();
 		HttpClientRequest httpClientRequest = new HttpClientRequest(url,
 				originalRequest, proxy, preserveHost);
-		for (Iterator<Entry<String, String>> iterator = validators.entrySet()
-				.iterator(); iterator.hasNext();) {
-			Entry<String, String> header = iterator.next();
-			LOG.debug("Adding validator: " + header.getKey() + ": "
-					+ header.getValue());
-			httpClientRequest.addHeader(header.getKey(), header.getValue());
+		if (validators != null) {
+			for (Entry<String, String> header : validators.entrySet()) {
+				LOG.debug("Adding validator: " + header.getKey() + ": "
+						+ header.getValue());
+				httpClientRequest.addHeader(header.getKey(), header.getValue());
+			}
 		}
 		authenticationHandler.preRequest(httpClientRequest, resourceContext);
 		httpClientResponse = httpClientRequest.execute(httpClient, httpContext);
@@ -71,10 +71,11 @@ public class HttpResource extends Resource {
 			httpClientResponse = httpClientRequest.execute(httpClient,
 					httpContext);
 		}
-		if (isError())
+		if (isError()) {
 			LOG.warn("Problem retrieving URL: " + url + ": "
 					+ httpClientResponse.getStatusCode() + " "
 					+ httpClientResponse.getStatusText());
+		}
 	}
 
 	@Override
@@ -85,20 +86,20 @@ public class HttpResource extends Resource {
 		String location = httpClientResponse.getHeader("Location");
 		if (location != null) {
 			// In case of a redirect, we need to rewrite the location header to
-			// match
-			// provider application and remove any jsessionid in the URL
+			// match provider application and remove any jsessionid in the URL
 			location = rewriteLocation(location);
 			location = removeSessionId(location);
 			output.addHeader("Location", location);
 		}
 		String charset = httpClientResponse.getContentCharset();
-		if (charset != null)
+		if (charset != null) {
 			output.setCharsetName(charset);
+		}
 		try {
 			output.open();
-			if (httpClientResponse.getException() != null)
+			if (httpClientResponse.getException() != null) {
 				output.write(httpClientResponse.getStatusText());
-			else {
+			} else {
 				removeSessionId(httpClientResponse.openStream(), output);
 			}
 		} finally {
@@ -112,8 +113,9 @@ public class HttpResource extends Resource {
 		String originalBase = request.getScheme() + "://"
 				+ request.getServerName() + ":" + request.getServerPort()
 				+ request.getContextPath() + request.getServletPath();
-		if (request.getPathInfo() != null)
+		if (request.getPathInfo() != null) {
 			originalBase += request.getPathInfo();
+		}
 		int pos = originalBase.indexOf(target.getRelUrl());
 		originalBase = originalBase.substring(0, pos + 1);
 		return location.replaceFirst(target.getDriver().getBaseURL(),
@@ -130,13 +132,15 @@ public class HttpResource extends Resource {
 			IOUtils.copy(inputStream, output.getOutputStream());
 		} else {
 			String charset = httpClientResponse.getContentCharset();
-			if (charset == null)
+			if (charset == null) {
 				charset = "ISO-8859-1";
+			}
 			String content = IOUtils.toString(inputStream, charset);
 			content = removeSessionId(jsessionid, content);
-			if (output.getHeader("Content-length") != null)
+			if (output.getHeader("Content-length") != null) {
 				output.setHeader("Content-length", Integer.toString(content
 						.length()));
+			}
 			OutputStream outputStream = output.getOutputStream();
 			IOUtils.write(content, outputStream, charset);
 		}
@@ -149,10 +153,11 @@ public class HttpResource extends Resource {
 	}
 
 	private String removeSessionId(String sessionId, String src) {
-		if (sessionId == null)
+		if (sessionId == null) {
 			return src;
-		else
+		} else {
 			return RewriteUtils.removeSessionId(sessionId, src);
+		}
 	}
 
 	@Override
@@ -175,8 +180,9 @@ public class HttpResource extends Resource {
 		result.append(" ");
 		result.append(ResourceUtils.getHttpUrlWithQueryString(target));
 		result.append("\n");
-		if (target.getUserContext() != null)
+		if (target.getUserContext() != null) {
 			result.append(target.getUserContext().toString());
+		}
 		return result.toString();
 	}
 
