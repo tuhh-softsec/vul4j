@@ -11,11 +11,12 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
+import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.conn.ConnectionPoolTimeoutException;
+import org.apache.http.message.BasicHttpRequest;
 import org.apache.http.protocol.ExecutionContext;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
@@ -30,10 +31,12 @@ public class HttpClientResponse {
 	private Exception exception;
 	private InputStream inputStream;
 
-	public HttpClientResponse(HttpUriRequest httpUriRequest,
-			HttpClient httpClient, HttpContext httpContext) {
+	public HttpClientResponse(HttpHost httpHost,
+			BasicHttpRequest basicHttpRequest, HttpClient httpClient,
+			HttpContext httpContext) {
 		try {
-			httpResponse = httpClient.execute(httpUriRequest, httpContext);
+			httpResponse = httpClient.execute(httpHost, basicHttpRequest,
+					httpContext);
 			statusCode = httpResponse.getStatusLine().getStatusCode();
 			statusText = httpResponse.getStatusLine().getReasonPhrase();
 			httpEntity = httpResponse.getEntity();
@@ -44,53 +47,57 @@ public class HttpClientResponse {
 			} else {
 				// Calculating the URL we may have been redirected to, as
 				// automatic redirect following is activated
-				HttpUriRequest finalRequest = (HttpUriRequest) httpContext
+				HttpRequest finalRequest = (HttpRequest) httpContext
 						.getAttribute(ExecutionContext.HTTP_REQUEST);
 				HttpHost host = (HttpHost) httpContext
 						.getAttribute(ExecutionContext.HTTP_TARGET_HOST);
 				currentLocation = host.getSchemeName() + "://";
 				currentLocation += host.getHostName();
-				if (host.getPort() != -1)
+				if (host.getPort() != -1) {
 					currentLocation += ":" + host.getPort();
-				currentLocation += finalRequest.getURI().normalize().toString();
+				}
+				currentLocation += finalRequest.getRequestLine().getUri();
 			}
 		} catch (ConnectionPoolTimeoutException e) {
 			exception = e;
 			statusCode = HttpServletResponse.SC_GATEWAY_TIMEOUT;
 			statusText = "Connect timeout retrieving URL: "
-					+ httpUriRequest.getURI();
+					+ basicHttpRequest.getRequestLine().toString();
 			LOG.warn(
 					"Connect timeout retrieving URL, connection pool exhausted: "
-							+ httpUriRequest.getURI(), e);
+							+ basicHttpRequest.getRequestLine().toString(), e);
 		} catch (ConnectTimeoutException e) {
 			exception = e;
 			statusCode = HttpServletResponse.SC_GATEWAY_TIMEOUT;
 			statusText = "Connect timeout retrieving URL: "
-					+ httpUriRequest.getURI();
+					+ basicHttpRequest.getRequestLine().toString();
 			LOG.warn("Connect timeout retrieving URL: "
-					+ httpUriRequest.getURI());
+					+ basicHttpRequest.getRequestLine().toString());
 		} catch (SocketTimeoutException e) {
 			exception = e;
 			statusCode = HttpServletResponse.SC_GATEWAY_TIMEOUT;
 			statusText = "Socket timeout retrieving URL: "
-					+ httpUriRequest.getURI();
+					+ basicHttpRequest.getRequestLine().toString();
 			LOG.warn("Socket timeout retrieving URL: "
-					+ httpUriRequest.getURI());
+					+ basicHttpRequest.getRequestLine().toString());
 		} catch (IOException e) {
 			exception = e;
 			statusCode = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
-			statusText = "Error retrieving URL: " + httpUriRequest.getURI();
-			LOG.error("Error retrieving URL: " + httpUriRequest.getURI(), e);
+			statusText = "Error retrieving URL: "
+					+ basicHttpRequest.getRequestLine().toString();
+			LOG.error("Error retrieving URL: "
+					+ basicHttpRequest.getRequestLine().toString(), e);
 		}
 	}
 
 	public void finish() {
-		if (httpEntity != null)
+		if (httpEntity != null) {
 			try {
 				httpEntity.consumeContent();
 			} catch (IOException e) {
 				LOG.warn("Could not close response stream properly", e);
 			}
+		}
 	}
 
 	public Exception getException() {
@@ -110,10 +117,11 @@ public class HttpClientResponse {
 	}
 
 	public String getContentCharset() {
-		if (httpEntity == null)
+		if (httpEntity == null) {
 			return null;
-		else
+		} else {
 			return EntityUtils.getContentCharSet(httpEntity);
+		}
 	}
 
 	public InputStream openStream() throws IllegalStateException, IOException {
@@ -122,21 +130,24 @@ public class HttpClientResponse {
 	}
 
 	public String getHeader(String name) {
-		if (httpResponse == null)
+		if (httpResponse == null) {
 			return null;
+		}
 		Header header = httpResponse.getFirstHeader(name);
-		if (header != null)
+		if (header != null) {
 			return header.getValue();
-		else
+		} else {
 			return null;
+		}
 	}
 
 	@Override
 	public String toString() {
 		String result = statusCode + " " + statusText;
 		if (statusCode == HttpServletResponse.SC_MOVED_PERMANENTLY
-				|| statusCode == HttpServletResponse.SC_MOVED_TEMPORARILY)
+				|| statusCode == HttpServletResponse.SC_MOVED_TEMPORARILY) {
 			result += " -> " + currentLocation;
+		}
 		return result;
 	}
 }

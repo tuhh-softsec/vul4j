@@ -1,9 +1,10 @@
 package net.webassembletool.http;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map.Entry;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -12,43 +13,63 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpHost;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.params.ClientPNames;
 import org.apache.http.client.params.CookiePolicy;
 import org.apache.http.entity.InputStreamEntity;
+import org.apache.http.message.BasicHttpEntityEnclosingRequest;
+import org.apache.http.message.BasicHttpRequest;
 import org.apache.http.params.CoreProtocolPNames;
 import org.apache.http.protocol.HttpContext;
 
 public class HttpClientRequest {
 	private final static Log LOG = LogFactory.getLog(HttpClientRequest.class);
 	private String uri;
-	private HttpServletRequest originalRequest;
+	private final HttpServletRequest originalRequest;
 	private boolean proxy;
-	private HttpUriRequest httpUriRequest;
+	private BasicHttpRequest httpRequest;
 	private HashMap<String, String> headers;
 	private boolean preserveHost = false;
 
 	public HttpClientRequest(String uri, HttpServletRequest originalRequest,
 			boolean proxy, boolean preserveHost) {
-		this.uri = uri;
+		// FIXME HTTPClient 4 uses URI class that is too much restrictive about
+		// allowed characters. We have to escape some characters like |{}[]
+		// but this may have some side effects.
+		// https://issues.apache.org/jira/browse/HTTPCLIENT-900
+		this.uri = escapeUnsafeCharacters(uri);
 		this.originalRequest = originalRequest;
 		this.proxy = proxy;
 		this.preserveHost = preserveHost;
+	}
+
+	private String escapeUnsafeCharacters(String url) {
+		final String[] UNSAFE = { "{", "}", "|", "\\", "^", "~", "[", "]", "`" };
+		final String[] ESCAPED = { "%7B", "%7D", "%7C", "%5C", "%5E", "%7E",
+				"%5B", "%5D", "%60" };
+		String result = url;
+		for (int i = 0; i < UNSAFE.length; i++) {
+			result = result.replaceAll(Pattern.quote(UNSAFE[i]), ESCAPED[i]);
+		}
+		return result;
 	}
 
 	public HttpClientResponse execute(HttpClient httpClient,
 			HttpContext httpContext) throws IOException {
 		buildHttpMethod();
 		HttpClientResponse result;
-		HttpHost httpHost = null;
+		URL url = new URL(uri);
+		HttpHost httpHost = new HttpHost(url.getHost(), url.getPort(), url
+				.getProtocol());
+		// Preserve host if required
 		if (preserveHost) {
-			httpHost = new HttpHost(originalRequest.getServerName(),
-					originalRequest.getServerPort(), originalRequest
-							.getScheme());
-			httpUriRequest.getParams().setParameter(ClientPNames.VIRTUAL_HOST,
-					httpHost);
+			HttpHost virtualHost = new HttpHost(
+					originalRequest.getServerName(), originalRequest
+							.getServerPort(), originalRequest.getScheme());
+			httpRequest.getParams().setParameter(ClientPNames.VIRTUAL_HOST,
+					virtualHost);
 		}
-		result = new HttpClientResponse(httpUriRequest, httpClient, httpContext);
+		result = new HttpClientResponse(httpHost, httpRequest, httpClient,
+				httpContext);
 		LOG.debug(toString() + " -> " + result.toString());
 		return result;
 	}
@@ -64,30 +85,34 @@ public class HttpClientRequest {
 			throws IOException {
 		long contentLengthLong = -1;
 		String contentLength = req.getHeader("Content-length");
-		if (contentLength != null)
+		if (contentLength != null) {
 			contentLengthLong = Long.parseLong(contentLength);
+		}
 		InputStreamEntity inputStreamEntity = new InputStreamEntity(req
 				.getInputStream(), contentLengthLong);
 		String contentType = req.getContentType();
-		if (contentType != null)
+		if (contentType != null) {
 			inputStreamEntity.setContentType(contentType);
+		}
 		String contentEncoding = req.getHeader("Content-Encoding");
-		if (contentEncoding != null)
+		if (contentEncoding != null) {
 			inputStreamEntity.setContentEncoding(contentEncoding);
+		}
 		httpEntityEnclosingRequest.setEntity(inputStreamEntity);
 	}
 
 	private void buildHttpMethod() throws IOException {
 		String method;
-		if (proxy)
+		if (proxy) {
 			method = originalRequest.getMethod();
-		else
+		} else {
 			method = "GET";
+		}
 		if ("GET".equalsIgnoreCase(method) || "HEAD".equalsIgnoreCase(method)
 				|| "OPTIONS".equalsIgnoreCase(method)
 				|| "TRACE".equalsIgnoreCase(method)
 				|| "DELETE".equalsIgnoreCase(method)) {
-			httpUriRequest = new GenericHttpRequest(method, uri);
+			httpRequest = new BasicHttpRequest(method, uri);
 		} else if ("POST".equalsIgnoreCase(method)
 				|| "PUT".equalsIgnoreCase(method)
 				|| "PROPFIND".equalsIgnoreCase(method)
@@ -97,29 +122,32 @@ public class HttpClientRequest {
 				|| "MOVE".equalsIgnoreCase(method)
 				|| "LOCK".equalsIgnoreCase(method)
 				|| "UNLOCK".equalsIgnoreCase(method)) {
-			GenericHttpEntityEnclosingRequest genericHttpEntityEnclosingRequest = new GenericHttpEntityEnclosingRequest(
+			BasicHttpEntityEnclosingRequest genericHttpEntityEnclosingRequest = new BasicHttpEntityEnclosingRequest(
 					method, uri);
 			copyEntity(originalRequest, genericHttpEntityEnclosingRequest);
-			httpUriRequest = genericHttpEntityEnclosingRequest;
-		} else
+			httpRequest = genericHttpEntityEnclosingRequest;
+		} else {
 			throw new UnsupportedHttpMethodException(method + " " + uri);
-		if (proxy)
-			httpUriRequest.getParams().setParameter(
-					ClientPNames.HANDLE_REDIRECTS, false);
-		else
-			httpUriRequest.getParams().setParameter(
-					ClientPNames.HANDLE_REDIRECTS, true);
+		}
+		if (proxy) {
+			httpRequest.getParams().setParameter(ClientPNames.HANDLE_REDIRECTS,
+					false);
+		} else {
+			httpRequest.getParams().setParameter(ClientPNames.HANDLE_REDIRECTS,
+					true);
+		}
 		// Use browser compatibility cookie policy. This policy is the closest
 		// to the behavior of a real browser.
-		httpUriRequest.getParams().setParameter(ClientPNames.COOKIE_POLICY,
+		httpRequest.getParams().setParameter(ClientPNames.COOKIE_POLICY,
 				CookiePolicy.BROWSER_COMPATIBILITY);
 		// We use the same user-agent and accept headers that the one sent by
 		// the browser as some web sites generate different pages and scripts
 		// depending on the browser
 		String userAgent = originalRequest.getHeader("User-Agent");
-		if (userAgent != null)
-			httpUriRequest.getParams().setParameter(
-					CoreProtocolPNames.USER_AGENT, userAgent);
+		if (userAgent != null) {
+			httpRequest.getParams().setParameter(CoreProtocolPNames.USER_AGENT,
+					userAgent);
+		}
 		copyRequestHeader("Accept");
 		copyRequestHeader("Accept-Encoding");
 		copyRequestHeader("Accept-Language");
@@ -127,10 +155,8 @@ public class HttpClientRequest {
 		copyRequestHeader("Cache-control");
 		copyRequestHeader("Pragma");
 		if (headers != null) {
-			for (Iterator<Entry<String, String>> iterator = headers.entrySet()
-					.iterator(); iterator.hasNext();) {
-				Entry<String, String> entry = iterator.next();
-				httpUriRequest.addHeader(entry.getKey(), entry.getValue());
+			for (Entry<String, String> entry : headers.entrySet()) {
+				httpRequest.addHeader(entry.getKey(), entry.getValue());
 			}
 		}
 	}
@@ -138,20 +164,22 @@ public class HttpClientRequest {
 	private void copyRequestHeader(String name) {
 		if (originalRequest != null) {
 			String value = originalRequest.getHeader(name);
-			if (value != null)
-				httpUriRequest.setHeader(name, value);
+			if (value != null) {
+				httpRequest.setHeader(name, value);
+			}
 		}
 	}
 
 	public void addHeader(String name, String value) {
-		if (headers == null)
+		if (headers == null) {
 			headers = new HashMap<String, String>();
+		}
 		headers.put(name, value);
 	}
 
 	@Override
 	public String toString() {
-		return httpUriRequest.getMethod() + " " + uri;
+		return httpRequest.getRequestLine().toString();
 	}
 
 	public boolean isProxy() {

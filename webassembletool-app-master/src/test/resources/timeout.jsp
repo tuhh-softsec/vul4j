@@ -10,6 +10,6 @@
 <body style="background-color: yellow">
 Nothing should appear bellow as the included block is too slow to be fetched
 <br />
-504 Socket timeout retrieving URL: http://localhost:8080/webassembletool-app-provider/timeout.jsp
+504 Socket timeout retrieving URL: GET http://localhost:8080/webassembletool-app-provider/timeout.jsp HTTP/1.1
 </body>
 </html>
