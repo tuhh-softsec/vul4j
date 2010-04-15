@@ -1,7 +1,10 @@
 package net.webassembletool.authentication;
 
+import java.io.IOException;
+import java.io.Writer;
 import java.util.Properties;
 
+import net.webassembletool.HttpErrorPage;
 import net.webassembletool.ResourceContext;
 import net.webassembletool.UserContext;
 import net.webassembletool.http.HttpClientRequest;
@@ -26,19 +29,27 @@ public class RemoteUserAuthenticationHandler implements AuthenticationHandler {
 			ResourceContext requestContext) {
 		UserContext userContext = requestContext.getUserContext();
 		String remoteUser = null;
-		if (userContext != null && userContext.getUser() != null)
+		if (userContext != null && userContext.getUser() != null) {
 			remoteUser = userContext.getUser();
-		else if (requestContext.getOriginalRequest().getRemoteUser() != null)
+		} else if (requestContext.getOriginalRequest().getRemoteUser() != null) {
 			remoteUser = requestContext.getOriginalRequest().getRemoteUser();
-		if (remoteUser != null)
+		}
+		if (remoteUser != null) {
 			request.addHeader("X_REMOTE_USER", remoteUser);
+		}
 	}
 
 	public void init(Properties properties) {
-		// Nothing to do		
+		// Nothing to do
 	}
 
 	public boolean beforeProxy(ResourceContext requestContext) {
 		return true;
+	}
+
+	public void render(String src, Writer out) throws IOException,
+			HttpErrorPage {
+		// Just copy src to out
+		out.write(src);
 	}
 }

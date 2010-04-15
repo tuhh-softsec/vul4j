@@ -3,6 +3,7 @@ package net.webassembletool.authentication;
 import java.io.IOException;
 import java.util.Properties;
 
+import net.webassembletool.Renderer;
 import net.webassembletool.ResourceContext;
 import net.webassembletool.http.HttpClientRequest;
 import net.webassembletool.http.HttpClientResponse;
@@ -20,7 +21,7 @@ import net.webassembletool.http.HttpClientResponse;
  * @author Francois-Xavier Bonnet
  * 
  */
-public interface AuthenticationHandler {
+public interface AuthenticationHandler extends Renderer {
 
 	public void init(Properties properties);
 
@@ -35,7 +36,8 @@ public interface AuthenticationHandler {
 	 * @return true if the processing must continue, false if the response has
 	 *         already been sent to the client.
 	 */
-	public boolean beforeProxy(ResourceContext requestContext) throws IOException;
+	public boolean beforeProxy(ResourceContext requestContext)
+			throws IOException;
 
 	/**
 	 * Method called before sending a request to the destination server.

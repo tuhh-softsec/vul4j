@@ -315,6 +315,13 @@ public class Driver {
 		StringOutput stringOutput = getResourceAsString(resourceContext);
 		String currentValue = stringOutput.toString();
 
+		// Call the AuthenticationHandler if any to filter the result
+		if (authenticationHandler != null) {
+			StringWriter filtered = new StringWriter();
+			authenticationHandler.render(currentValue, filtered);
+			currentValue = filtered.toString();
+		}
+
 		// Fix resources
 		if (config.isFixResources()) {
 			ResourceFixupRenderer fixup = new ResourceFixupRenderer(config
