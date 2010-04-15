@@ -115,6 +115,9 @@ public class Sing99Bob {
 @SomeAnnotation("this is a value")
 
 // the end
+
+// Test case for bug #2986341
+Binary binaryData = Binary.fromBase64("SGVsbG8gV29ybGQh");
 ]]>
 	</code>
 </example-document>

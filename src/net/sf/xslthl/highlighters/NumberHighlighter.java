@@ -118,7 +118,10 @@ public class NumberHighlighter extends Highlighter {
 	 */
 	@Override
 	public boolean startsWith(CharIter in) {
-		if (in.getPosition() > 0 && Character.isLetter(in.prev())) {
+		if (in.getPosition() > 0
+		        && (Character.isLetter(in.prev()) || isDigit(in.prev()))) {
+			// If the previous character was a number, then this cannot be the
+			// start of a number. fixes bug #2986341
 			return false;
 		}
 		if (prefix != null) {
