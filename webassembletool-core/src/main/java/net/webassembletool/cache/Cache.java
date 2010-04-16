@@ -5,6 +5,7 @@ import java.util.Map;
 import net.webassembletool.HttpErrorPage;
 import net.webassembletool.ResourceContext;
 import net.webassembletool.resource.Resource;
+import net.webassembletool.resource.ResourceUtils;
 
 /**
  * Represents a local interface to caching system.
@@ -21,7 +22,7 @@ public class Cache {
 	}
 
 	private CacheEntry getCacheEntry(ResourceContext resourceContext) {
-		String url = resourceContext.getRelUrl();
+		String url = ResourceUtils.getHttpUrlWithQueryString(resourceContext);
 		CacheEntry cacheEntry = (CacheEntry) storage.get(url);
 		if (cacheEntry == null) {
 			cacheEntry = new CacheEntry(url, storage);

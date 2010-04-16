@@ -562,7 +562,9 @@ public class Driver {
 	}
 
 	/**
-	 * This method returns the content of an url.
+	 * This method returns the content of an url as a StringOutput. The result
+	 * is cached into the request scope in order not to send several requests if
+	 * you need serveral blocks in the same page to build the final page.
 	 * 
 	 * @param target
 	 *            the target resource
@@ -571,13 +573,25 @@ public class Driver {
 	 */
 	protected StringOutput getResourceAsString(ResourceContext target)
 			throws HttpErrorPage {
-		StringOutput stringOutput = new StringOutput();
-		renderResource(target, stringOutput);
-		if (stringOutput.getStatusCode() != HttpServletResponse.SC_OK) {
-			throw new HttpErrorPage(stringOutput.getStatusCode(), stringOutput
-					.getStatusMessage(), stringOutput.toString());
+		StringOutput result = null;
+		String url = ResourceUtils.getHttpUrlWithQueryString(target);
+		HttpServletRequest request = target.getOriginalRequest();
+		boolean cacheable = Rfc2616.isCacheable(target);
+		if (cacheable) {
+			result = (StringOutput) request.getAttribute(url);
 		}
-		return stringOutput;
+		if (result == null) {
+			result = new StringOutput();
+			renderResource(target, result);
+			if (cacheable) {
+				request.setAttribute(url, result);
+			}
+		}
+		if (result.getStatusCode() != HttpServletResponse.SC_OK) {
+			throw new HttpErrorPage(result.getStatusCode(), result
+					.getStatusMessage(), result.toString());
+		}
+		return result;
 	}
 
 	private final String getContextKey() {

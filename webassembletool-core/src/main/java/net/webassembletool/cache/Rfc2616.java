@@ -38,40 +38,43 @@ public class Rfc2616 {
 
 		public final static CacheControlResponseHeader parse(Resource resource) {
 			String cacheControlString = resource.getHeader("Cache-control");
-			if (cacheControlString == null)
+			if (cacheControlString == null) {
 				return null;
+			}
 			CacheControlResponseHeader result = new CacheControlResponseHeader();
 			String[] split = cacheControlString.split(",");
 			for (int i = 0; i < split.length; i++) {
 				String[] token = split[i].trim().split("=");
-				if (token[0].equalsIgnoreCase("public"))
+				if (token[0].equalsIgnoreCase("public")) {
 					result._public = true;
-				else if (token[0].equalsIgnoreCase("private"))
+				} else if (token[0].equalsIgnoreCase("private")) {
 					result._private = true;
-				else if (token[0].equalsIgnoreCase("no-cache"))
+				} else if (token[0].equalsIgnoreCase("no-cache")) {
 					result.noCache = true;
-				else if (token[0].equalsIgnoreCase("no-store"))
+				} else if (token[0].equalsIgnoreCase("no-store")) {
 					result.noStore = true;
-				else if (token[0].equalsIgnoreCase("must-revalidate"))
+				} else if (token[0].equalsIgnoreCase("must-revalidate")) {
 					result.mustRevalidate = true;
-				else if (token[0].equalsIgnoreCase("proxy-revalidate"))
+				} else if (token[0].equalsIgnoreCase("proxy-revalidate")) {
 					result.proxyRevalidate = true;
-				else if (token[0].equalsIgnoreCase("max-age")) {
+				} else if (token[0].equalsIgnoreCase("max-age")) {
 					result.maxAge = new Long(-1);
-					if (token.length == 2)
+					if (token.length == 2) {
 						try {
 							result.maxAge = Long.parseLong(token[1]);
 						} catch (NumberFormatException e) {
 							// Invalid max-age, assume -1 no cache
 						}
+					}
 				} else if (token[0].equalsIgnoreCase("s-max-age")) {
 					result.sMaxAge = new Long(-1);
-					if (token.length == 2)
+					if (token.length == 2) {
 						try {
 							result.maxAge = Long.parseLong(token[1]);
 						} catch (NumberFormatException e) {
 							// Invalid max-age, assume -1 no cache
 						}
+					}
 				}
 			}
 			return result;
@@ -89,8 +92,9 @@ public class Rfc2616 {
 			for (int i = 0; i < varyStringSplit.length; i++) {
 				String key = varyStringSplit[i];
 				String value = request.getHeader(key);
-				if (value != null)
+				if (value != null) {
 					result.put(key, value);
+				}
 			}
 			return result;
 		}
@@ -100,17 +104,18 @@ public class Rfc2616 {
 	public final static boolean varyMatches(ResourceContext resourceContext,
 			Resource resource) {
 		Map<String, String> vary = getVary(resourceContext, resource);
-		if (vary == null)
+		if (vary == null) {
 			return true;
-		else {
+		} else {
 			HttpServletRequest request = resourceContext.getOriginalRequest();
 			for (Iterator<Entry<String, String>> iterator = vary.entrySet()
 					.iterator(); iterator.hasNext();) {
 				Entry<String, String> header = iterator.next();
 				String key = header.getKey();
 				String value = header.getValue();
-				if (!value.equals(request.getHeader(key)))
+				if (!value.equals(request.getHeader(key))) {
 					return false;
+				}
 			}
 			return true;
 		}
@@ -118,16 +123,18 @@ public class Rfc2616 {
 
 	public final static boolean needsValidation(
 			ResourceContext resourceContext, CachedResponse resource) {
-		if (resource == null)
+		if (resource == null) {
 			return true;
+		}
 		return requiresRefresh(resourceContext) || isStale(resource);
 	}
 
 	public final static boolean isStale(CachedResponse resource) {
 		Date date = getDate(resource);
 		Date expiration = getHeuristicExpiration(resource);
-		if (date == null || expiration == null)
+		if (date == null || expiration == null) {
 			return true;
+		}
 		Date nowOnOriginServer = new Date(getAge(resource) + date.getTime());
 		return (nowOnOriginServer.after(expiration));
 	}
@@ -139,16 +146,19 @@ public class Rfc2616 {
 	public final static boolean etagMatches(ResourceContext resourceContext,
 			Resource resource) {
 		String etag = getEtag(resource);
-		if (etag == null)
+		if (etag == null) {
 			return true;
+		}
 		HttpServletRequest request = resourceContext.getOriginalRequest();
 		String ifNoneMatch = request.getHeader("If-none-match");
-		if (ifNoneMatch == null)
+		if (ifNoneMatch == null) {
 			return true;
+		}
 		String[] ifNoneMatchSplit = ifNoneMatch.split(",");
 		for (int i = 0; i < ifNoneMatchSplit.length; i++) {
-			if (ifNoneMatchSplit[i].equals(etag))
+			if (ifNoneMatchSplit[i].equals(etag)) {
 				return true;
+			}
 		}
 		return false;
 	}
@@ -163,10 +173,12 @@ public class Rfc2616 {
 		CacheControlResponseHeader cacheControl = CacheControlResponseHeader
 				.parse(resource);
 		if (cacheControl != null) {
-			if (cacheControl.maxAge != null)
+			if (cacheControl.maxAge != null) {
 				maxAge = cacheControl.maxAge;
-			if (cacheControl.sMaxAge != null)
+			}
+			if (cacheControl.sMaxAge != null) {
 				maxAge = cacheControl.sMaxAge;
+			}
 		}
 		if (maxAge != null) {
 			// maxAge directive found according to HTTP/1.1
@@ -174,8 +186,9 @@ public class Rfc2616 {
 
 		}
 		Date expires = getDateHeader(resource, "Expires");
-		if (expires != null)
+		if (expires != null) {
 			return expires;
+		}
 		return null;
 	}
 
@@ -185,8 +198,9 @@ public class Rfc2616 {
 
 	public final static Date getHeuristicExpiration(Resource resource) {
 		Date expiration = getExpiration(resource);
-		if (expiration != null)
+		if (expiration != null) {
 			return expiration;
+		}
 		Date date = getDate(resource);
 		if (date == null) {
 			return null;
@@ -212,21 +226,33 @@ public class Rfc2616 {
 		if (cacheControl == null) {
 			// Check expire header, if not a valid date, assume no cache
 			if (resource.getHeader("Expires") != null
-					&& getDateHeader(resource, "Expires") == null)
+					&& getDateHeader(resource, "Expires") == null) {
 				return false;
+			}
 		}
-		if (cacheControl._public)
+		if (cacheControl._public) {
 			return true;
+		}
 		if (cacheControl._private || cacheControl.noCache
 				|| cacheControl.noStore || cacheControl.mustRevalidate
-				|| cacheControl.proxyRevalidate || cacheControl.maxAge <= 0)
+				|| cacheControl.proxyRevalidate || cacheControl.maxAge <= 0) {
 			return false;
+		}
 		return true;
 	}
 
+	/**
+	 * A Resource is cacheable if the HTTP method is GET or HEAD according to
+	 * HTTP specification. Additionnaly, if we are not in proxy mode, the driver
+	 * will send a GET method as we are not proxying the original request but
+	 * only including an element. In that case, the response is cacheable.
+	 * 
+	 * @param context
+	 * @return true if the resource is cacheable
+	 */
 	public final static boolean isCacheable(ResourceContext context) {
 		String method = context.getOriginalRequest().getMethod();
-		return "GET".equalsIgnoreCase(method)
+		return !context.isProxy() || "GET".equalsIgnoreCase(method)
 				|| "HEAD".equalsIgnoreCase(method);
 	}
 
@@ -234,12 +260,15 @@ public class Rfc2616 {
 			CachedResponse cachedResponse) {
 		String method = resourceContext.getOriginalRequest().getMethod();
 		if (!"HEAD".equalsIgnoreCase(method)
-				&& !cachedResponse.hasResponseBody())
+				&& !cachedResponse.hasResponseBody()) {
 			return false;
-		if (!etagMatches(resourceContext, cachedResponse))
+		}
+		if (!etagMatches(resourceContext, cachedResponse)) {
 			return false;
-		if (!varyMatches(resourceContext, cachedResponse))
+		}
+		if (!varyMatches(resourceContext, cachedResponse)) {
 			return false;
+		}
 		return true;
 	}
 
@@ -270,16 +299,18 @@ public class Rfc2616 {
 	public final static boolean requiresRefresh(ResourceContext context) {
 		HttpServletRequest originalRequest = context.getOriginalRequest();
 		String pragma = originalRequest.getHeader("Pragma");
-		if ("no-cache".equalsIgnoreCase(pragma))
+		if ("no-cache".equalsIgnoreCase(pragma)) {
 			return true;
+		}
 		String cacheControl = originalRequest.getHeader("Cache-control");
 		if (cacheControl != null) {
 			cacheControl = cacheControl.toLowerCase();
 			if (cacheControl.contains("no-cache")
 					|| cacheControl.contains("no-store")
 					|| cacheControl.contains("must-revalidate")
-					|| cacheControl.contains("max-age=0"))
+					|| cacheControl.contains("max-age=0")) {
 				return true;
+			}
 		}
 		return false;
 	}
@@ -315,8 +346,9 @@ public class Rfc2616 {
 	private final static void copyHeader(Resource resource, Output output,
 			String name) {
 		String value = resource.getHeader(name);
-		if (value != null)
+		if (value != null) {
 			output.setHeader(name, value);
+		}
 	}
 
 }
