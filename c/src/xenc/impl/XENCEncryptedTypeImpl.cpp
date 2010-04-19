@@ -1,5 +1,5 @@
 /*
- * Copyright 2003-2005 The Apache Software Foundation.
+ * Copyright 2003-2010 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -323,25 +323,31 @@ TXFMChain * XENCEncryptedTypeImpl::createCipherTXFMChain(void) {
 		// Given we already have this in memory, we transcode to
 		// local code page and then transform
 
-		char * b64 = XMLString::transcode(mp_cipherData->getCipherValue()->getCipherString());
-		ArrayJanitor<char> j_b64(b64);
+		char* b64 = XMLString::transcode(mp_cipherData->getCipherValue()->getCipherString());
 
-		TXFMSB *sb;
-		XSECnew(sb, TXFMSB(mp_env->getParentDocument()));
+		try {
+            TXFMSB *sb;
+            XSECnew(sb, TXFMSB(mp_env->getParentDocument()));
 
-		sb->setInput(safeBuffer(b64));
+            sb->setInput(safeBuffer(b64));
 
-		// Create a chain
-		XSECnew(chain, TXFMChain(sb));
+            // Create a chain
+            XSECnew(chain, TXFMChain(sb));
 
-		// Create a base64 decoder
-		TXFMBase64 * tb64;
-		XSECnew(tb64, TXFMBase64(mp_env->getParentDocument()));
+            // Create a base64 decoder
+            TXFMBase64 * tb64;
+            XSECnew(tb64, TXFMBase64(mp_env->getParentDocument()));
 
-		chain->appendTxfm(tb64);
+            chain->appendTxfm(tb64);
 
-		return chain;
+            XMLString::release(&b64);
 
+            return chain;
+		}
+        catch (...) {
+            XMLString::release(&b64);
+            throw;
+		}
 	}
 
 	else if (mp_cipherData->getCipherDataType() == XENCCipherData::REFERENCE_TYPE) {

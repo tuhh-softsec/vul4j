@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2005 The Apache Software Foundation.
+ * Copyright 2002-2010 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -61,6 +61,7 @@ void safeBuffer::checkAndExpand(xsecsize_t size) {
 	xsecsize_t newBufferSize = size * 2;
 
 	unsigned char * newBuffer = new unsigned char[newBufferSize];
+	memset((void *) newBuffer, 0, newBufferSize);
 	memcpy(newBuffer, buffer, bufferSize);
 
 	// If we are sensitive, clean the old buffer
@@ -103,6 +104,7 @@ safeBuffer::safeBuffer(xsecsize_t initialSize) {
 
 	bufferSize = initialSize;
 	buffer = new unsigned char[initialSize];
+	memset((void *) buffer, 0, bufferSize);
 	mp_XMLCh = NULL;
 	m_isSensitive = false;
 
@@ -112,6 +114,7 @@ safeBuffer::safeBuffer() {
 
 	bufferSize = DEFAULT_SAFE_BUFFER_SIZE;
 	buffer = new unsigned char[bufferSize];
+	memset((void *) buffer, 0, bufferSize);
 	mp_XMLCh = NULL;
 	m_bufferType = BUFFER_UNKNOWN;
 	m_isSensitive = false;
@@ -123,6 +126,7 @@ safeBuffer::safeBuffer(const char * inStr, xsecsize_t initialSize) {
     bufferSize = ((xsecsize_t) strlen(inStr) > initialSize ? (xsecsize_t) (strlen(inStr) * 2) : initialSize);
 
 	buffer = new unsigned char[bufferSize];
+	memset((void *) buffer, 0, bufferSize);
 	strcpy((char *) buffer, inStr);
 	mp_XMLCh = NULL;
 	m_bufferType = BUFFER_CHAR;
