@@ -63,6 +63,7 @@ public abstract class AbstractValue<T> implements Value<T>
     /**
      * {@inheritDoc}
      */
+    @SuppressWarnings("unchecked")
     public Value<T> clone()
     {
         try
@@ -78,11 +79,7 @@ public abstract class AbstractValue<T> implements Value<T>
     
     
     /**
-     * Gets a reference to the wrapped binary value.
-     * 
-     * Warning ! The value is not copied !!!
-     *
-     * @return a direct handle on the binary value that is wrapped
+     * {@inheritDoc}
      */
     public T getReference()
     {
@@ -91,8 +88,7 @@ public abstract class AbstractValue<T> implements Value<T>
 
     
     /**
-     * Get the associated AttributeType
-     * @return The AttributeType
+     * {@inheritDoc}
      */
     public AttributeType getAttributeType()
     {
@@ -100,18 +96,40 @@ public abstract class AbstractValue<T> implements Value<T>
     }
 
     
+    /**
+     * {@inheritDoc}
+     */
     public void apply( AttributeType attributeType )
     {
         if ( this.attributeType != null ) 
         {
             if ( !attributeType.equals( this.attributeType ) )
             {
-                throw new IllegalArgumentException( I18n.err( I18n.ERR_04476, attributeType.getName(), this.attributeType.getName() ) );
+                String message = I18n.err( I18n.ERR_04476, attributeType.getName(), this.attributeType.getName() );
+                LOG.info( message );
+                throw new IllegalArgumentException( message );
             }
             else
             {
                 return;
             }
+        }
+        
+        // First, check that the value is syntaxically correct
+        try
+        {
+            if ( ! isValid( attributeType.getSyntax().getSyntaxChecker() ) )
+            {
+                String message = I18n.err( I18n.ERR_04476, attributeType.getName(), this.attributeType.getName() );
+                LOG.info( message );
+                throw new IllegalArgumentException( message );
+            }
+        }
+        catch ( LdapException le )
+        {
+            String message = I18n.err( I18n.ERR_04447, le.getLocalizedMessage() );
+            LOG.info( message );
+            normalized = false;
         }
         
         this.attributeType = attributeType;
@@ -136,7 +154,8 @@ public abstract class AbstractValue<T> implements Value<T>
      * @return a comparator associated with the attributeType or null if one cannot be found
      * @throws LdapException if resolution of schema entities fail
      */
-    protected LdapComparator<T> getLdapComparator() throws LdapException
+    @SuppressWarnings("unchecked")
+    protected final LdapComparator<T> getLdapComparator() throws LdapException
     {
         if ( attributeType != null )
         {
@@ -165,7 +184,7 @@ public abstract class AbstractValue<T> implements Value<T>
      * @return a matchingRule or null if one cannot be found for the attributeType
      * @throws LdapException if resolution of schema entities fail
      */
-    protected MatchingRule getMatchingRule() throws LdapException
+    protected final MatchingRule getMatchingRule() throws LdapException
     {
         if ( attributeType != null )
         {
@@ -197,7 +216,7 @@ public abstract class AbstractValue<T> implements Value<T>
      * @return a normalizer associated with the attributeType or null if one cannot be found
      * @throws LdapException if resolution of schema entities fail
      */
-    protected Normalizer getNormalizer() throws LdapException
+    protected final Normalizer getNormalizer() throws LdapException
     {
         if ( attributeType != null )
         {
@@ -218,15 +237,7 @@ public abstract class AbstractValue<T> implements Value<T>
 
     
     /**
-     * Check if the value is stored into an instance of the given 
-     * AttributeType, or one of its ascendant.
-     * 
-     * For instance, if the Value is associated with a CommonName,
-     * checking for Name will match.
-     * 
-     * @param attributeType The AttributeType we are looking at
-     * @return <code>true</code> if the value is associated with the given
-     * attributeType or one of its ascendant
+     * {@inheritDoc}
      */
     public boolean instanceOf( AttributeType attributeType ) throws LdapException
     {
@@ -245,34 +256,7 @@ public abstract class AbstractValue<T> implements Value<T>
 
 
     /**
-     * Gets the normalized (canonical) representation for the wrapped value.
-     * If the wrapped value is null, null is returned, otherwise the normalized
-     * form is returned.  If the normalized Value is null, then the wrapped 
-     * value is returned
-     *
-     * @return gets the normalized value
-     */
-    public T getNormalizedValue()
-    {
-        if ( isNull() )
-        {
-            return null;
-        }
-
-        if ( normalizedValue == null )
-        {
-            return get();
-        }
-
-        return getNormalizedValueCopy();
-    }
-
-
-    /**
-     * Gets a reference to the the normalized (canonical) representation 
-     * for the wrapped value.
-     *
-     * @return gets a reference to the normalized value
+     * {@inheritDoc}
      */
     public T getNormalizedValueReference()
     {
@@ -292,9 +276,7 @@ public abstract class AbstractValue<T> implements Value<T>
 
     
     /**
-     * Check if the contained value is null or not
-     * 
-     * @return <code>true</code> if the inner value is null.
+     * {@inheritDoc}
      */
     public final boolean isNull()
     {
@@ -313,14 +295,8 @@ public abstract class AbstractValue<T> implements Value<T>
     }
 
     
-    /** 
-     * Uses the syntaxChecker associated with the attributeType to check if the
-     * value is valid.  Repeated calls to this method do not attempt to re-check
-     * the syntax of the wrapped value every time if the wrapped value does not
-     * change. Syntax checks only result on the first check, and when the wrapped
-     * value changes.
-     *
-     * @see Value#isValid()
+    /**
+     * {@inheritDoc}
      */
     public final boolean isValid()
     {
@@ -343,13 +319,7 @@ public abstract class AbstractValue<T> implements Value<T>
     
     
     /**
-     * Uses the syntaxChecker associated with the attributeType to check if the
-     * value is valid.  Repeated calls to this method do not attempt to re-check
-     * the syntax of the wrapped value every time if the wrapped value does not
-     * change. Syntax checks only result on the first check, and when the wrapped
-     * value changes.
-     *
-     * @see ServerValue#isValid()
+     * {@inheritDoc}
      */
     public final boolean isValid( SyntaxChecker syntaxChecker ) throws LdapException
     {
@@ -367,10 +337,7 @@ public abstract class AbstractValue<T> implements Value<T>
 
 
     /**
-     * Normalize the value. In order to use this method, the Value
-     * must be schema aware.
-     * 
-     * @exception LdapException If the value cannot be normalized
+     * {@inheritDoc}
      */
     public void normalize() throws LdapException
     {
@@ -380,9 +347,7 @@ public abstract class AbstractValue<T> implements Value<T>
 
 
     /**
-     * Tells if the value has already be normalized or not.
-     *
-     * @return <code>true</code> if the value has already been normalized.
+     * {@inheritDoc}
      */
     public final boolean isNormalized()
     {
@@ -391,9 +356,7 @@ public abstract class AbstractValue<T> implements Value<T>
 
     
     /**
-     * Set the normalized flag.
-     * 
-     * @param the value : true or false
+     * {@inheritDoc}
      */
     public final void setNormalized( boolean normalized )
     {

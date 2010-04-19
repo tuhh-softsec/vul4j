@@ -370,13 +370,13 @@ public class BinaryValueAttributeTypeTest
         AttributeType attribute = EntryUtils.getBytesAttributeType();
         
         BinaryValue value = new BinaryValue( attribute, null );
-        assertNull( value.getNormalizedValueCopy() );
+        assertNull( value.getNormalizedValue() );
 
         value = new BinaryValue( attribute, StringTools.EMPTY_BYTES );
-        assertTrue( Arrays.equals(  StringTools.EMPTY_BYTES, value.getNormalizedValueCopy() ) );
+        assertTrue( Arrays.equals(  StringTools.EMPTY_BYTES, value.getNormalizedValue() ) );
 
         value = new BinaryValue( attribute, BYTES2 );
-        assertTrue( Arrays.equals( BYTES1, value.getNormalizedValueCopy() ) );
+        assertTrue( Arrays.equals( BYTES1, value.getNormalizedValue() ) );
     }
     
     

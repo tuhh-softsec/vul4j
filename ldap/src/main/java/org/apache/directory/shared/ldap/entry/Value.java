@@ -24,6 +24,7 @@ import java.io.Externalizable;
 
 import org.apache.directory.shared.ldap.exception.LdapException;
 
+import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.Normalizer;
 import org.apache.directory.shared.ldap.schema.SyntaxChecker;
 
@@ -37,7 +38,17 @@ import org.apache.directory.shared.ldap.schema.SyntaxChecker;
  */
 public interface Value<T> extends Cloneable, Externalizable, Comparable<Value<T>>
 {
+    /**
+     * Apply an AttributeType to the current Value, normalizing it.
+     *
+     * @param attributeType The AttributeType to apply
+     */
+    void apply( AttributeType attributeType );
     
+
+    /**
+     * @return A cloned value
+     */
     Value<T> clone();
     
     
@@ -48,6 +59,28 @@ public interface Value<T> extends Cloneable, Externalizable, Comparable<Value<T>
      */
     boolean isNull();
     
+    
+    /**
+     * Get the associated AttributeType
+     * 
+     * @return The AttributeType
+     */
+    AttributeType getAttributeType();
+
+    
+    /**
+     * Check if the value is stored into an instance of the given 
+     * AttributeType, or one of its ascendant.
+     * 
+     * For instance, if the Value is associated with a CommonName,
+     * checking for Name will match.
+     * 
+     * @param attributeType The AttributeType we are looking at
+     * @return <code>true</code> if the value is associated with the given
+     * attributeType or one of its ascendant
+     */
+    boolean instanceOf( AttributeType attributeType ) throws LdapException;
+
     
     /**
      * Get the wrapped value. It will return a copy, not a reference.
@@ -77,9 +110,11 @@ public interface Value<T> extends Cloneable, Externalizable, Comparable<Value<T>
     
     
     /**
-     * Get a reference on the stored value.
+     * Gets a reference to the wrapped binary value.
+     * 
+     * Warning ! The value is not copied !!!
      *
-     * @return a reference on the wrapped value.
+     * @return a direct handle on the binary value that is wrapped
      */
     T getReference();
     
@@ -92,17 +127,24 @@ public interface Value<T> extends Cloneable, Externalizable, Comparable<Value<T>
     boolean isNormalized();
     
     
-    /**
-     * Tells if the value is valid. The value must have already been
-     * validated at least once through a call to isValid( SyntaxChecker ).  
-     * 
+    /** 
+     * Uses the syntaxChecker associated with the attributeType to check if the
+     * value is valid.  Repeated calls to this method do not attempt to re-check
+     * the syntax of the wrapped value every time if the wrapped value does not
+     * change. Syntax checks only result on the first check, and when the wrapped
+     * value changes.
+     *
      * @return <code>true</code> if the value is valid
      */
     boolean isValid();
 
     
     /**
-     * Tells if the value is valid wrt a Syntax checker
+     * Uses the syntaxChecker associated with the attributeType to check if the
+     * value is valid.  Repeated calls to this method do not attempt to re-check
+     * the syntax of the wrapped value every time if the wrapped value does not
+     * change. Syntax checks only result on the first check, and when the wrapped
+     * value changes.
      * 
      * @param checker the SyntaxChecker to use to validate the value
      * @return <code>true</code> if the value is valid
@@ -139,15 +181,6 @@ public interface Value<T> extends Cloneable, Externalizable, Comparable<Value<T>
      * @return gets a reference to the normalized value
      */
     T getNormalizedValueReference();
-
-    
-    /**
-     * Gets a copy of the the normalized (canonical) representation 
-     * for the wrapped value.
-     *
-     * @return gets a copy of the normalized value
-     */
-    T getNormalizedValueCopy();
 
     
     /**

@@ -379,21 +379,21 @@ public class StringValueTest
 
 
     /**
-     * Test method for {@link org.apache.directory.shared.ldap.entry.StringValue#getNormalizedValueCopy()}.
+     * Test method for {@link org.apache.directory.shared.ldap.entry.StringValue#getNormalizedValue()}.
      */
     @Test
     public void getNormalizedValueCopy() throws LdapException
     {
         StringValue sv = new StringValue();
         
-        assertEquals( null, sv.getNormalizedValueCopy() );
+        assertEquals( null, sv.getNormalizedValue() );
         
         sv = new StringValue( "  This is    a   TEST  " );
-        assertEquals( "  This is    a   TEST  ", sv.getNormalizedValueCopy() );
+        assertEquals( "  This is    a   TEST  ", sv.getNormalizedValue() );
         
         sv.normalize( new DeepTrimToLowerNormalizer( "1.1.1" ) );
         
-        assertEquals( "this is a test", sv.getNormalizedValueCopy() );
+        assertEquals( "this is a test", sv.getNormalizedValue() );
     }
 
     

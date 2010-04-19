@@ -141,7 +141,7 @@ public class BinaryValue extends AbstractValue<byte[]>
      * @return the normalized version of the wrapped value
      * @throws LdapException if schema entity resolution fails or normalization fails
      */
-    public byte[] getNormalizedValueCopy()
+    public byte[] getNormalizedValue()
     {
         if ( isNull() )
         {
@@ -217,22 +217,6 @@ public class BinaryValue extends AbstractValue<byte[]>
     }
 
     
-    /**
-     * Gets the normalized (canonical) representation for the wrapped byte[].
-     * If the wrapped byte[] is null, null is returned, otherwise the normalized
-     * form is returned.  If the normalizedValue is null, then this method
-     * will attempt to generate it from the wrapped value: repeated calls to
-     * this method do not unnecessarily normalize the wrapped value.  Only changes
-     * to the wrapped value result in attempts to normalize the wrapped value.
-     *
-     * @return gets the normalized value
-     */
-    public byte[] getNormalizedValue()
-    {
-        return getNormalizedValueCopy();
-    }
-
-
     /**
      * Normalize the value. For a client String value, applies the given normalizer.
      * 

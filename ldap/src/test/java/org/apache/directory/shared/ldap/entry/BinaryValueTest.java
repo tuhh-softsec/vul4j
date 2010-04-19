@@ -292,7 +292,7 @@ public class BinaryValueTest
         assertTrue( Arrays.equals( BYTES2, cbv.getNormalizedValue() ) );
         
         cbv.normalize( BINARY_NORMALIZER );
-        byte[] copy = cbv.getNormalizedValueCopy();
+        byte[] copy = cbv.getNormalizedValue();
         assertTrue( Arrays.equals( BYTES1, copy ) );
         cbv.getNormalizedValueReference()[0]=0x11;
         assertTrue( Arrays.equals( BYTES1, copy ) );

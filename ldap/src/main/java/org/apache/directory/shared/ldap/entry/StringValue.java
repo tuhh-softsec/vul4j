@@ -178,18 +178,6 @@ public class StringValue extends AbstractValue<String>
     
     
     /**
-     * Gets a copy of the the normalized (canonical) representation 
-     * for the wrapped value.
-     *
-     * @return gets a copy of the normalized value
-     */
-    public String getNormalizedValueCopy()
-    {
-        return getNormalizedValue();
-    }
-
-
-    /**
      * Compute the normalized (canonical) representation for the wrapped string.
      * If the wrapped String is null, the normalized form will be null too.  
      *
