@@ -122,12 +122,12 @@ public abstract class CommandLineUtils
     }
 
     /**
-     * @param cl
-     * @param systemIn
-     * @param systemOut
-     * @param systemErr
-     * @param timeoutInSeconds
-     * @return
+     * @param cl  The command line to execute
+     * @param systemIn  The input to read from, must be thread safe
+     * @param systemOut  A consumer that receives output, must be thread safe
+     * @param systemErr  A consumer that receives system error stream output, must be thread safe
+     * @param timeoutInSeconds Positive integer to specify timeout, zero and negative integers for no timeout.
+     * @return A return value, see {@link Process#exitValue()}
      * @throws CommandLineException or CommandLineTimeOutException if time out occurs
      */
     public static int executeCommandLine( Commandline cl, InputStream systemIn, StreamConsumer systemOut,

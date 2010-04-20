@@ -66,10 +66,11 @@ public class StreamFeeder
         {
             close();
 
-            done = true;
 
             synchronized ( this )
             {
+                done = true;
+
                 this.notifyAll();
             }
         }

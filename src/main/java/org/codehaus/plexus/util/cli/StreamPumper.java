@@ -153,10 +153,10 @@ public class StreamPumper
         {
             IOUtil.close( in );
 
-            done = true;
-
             synchronized ( this )
             {
+                done = true;
+
                 this.notifyAll();
             }
         }
