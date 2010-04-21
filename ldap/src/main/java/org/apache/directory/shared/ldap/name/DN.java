@@ -1265,6 +1265,24 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
 
 
     /**
+     * Gets the parent DN of this DN. Null if this DN doesn't have a parent, i.e. because it
+     * is the empty DN.
+     *
+     * @return the parent DN of this DN
+     * @throws LdapInvalidDnException
+     */
+    public DN getParent() throws LdapInvalidDnException
+    {
+        if ( isEmpty() )
+        {
+            return null;
+        }
+
+        return getPrefix( size() - 1 );
+    }
+
+
+    /**
      * {@inheritDoc}
      */
     public Object clone()

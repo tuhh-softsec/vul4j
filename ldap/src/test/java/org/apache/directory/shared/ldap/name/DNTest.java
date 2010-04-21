@@ -20,6 +20,8 @@
 package org.apache.directory.shared.ldap.name;
 
 
+import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertNull;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
@@ -2354,6 +2356,41 @@ public class DNTest
 
         name.add( "cn=HomeDir" );
         assertEquals( "cn=HomeDir,cn=John,ou=Marketing,ou=East", name.toString() );
+    }
+
+
+    /**
+     * Tests getParent().
+     */
+    @Test
+    public void testGetParent() throws Exception
+    {
+        DN empty = new DN();
+        assertNull( empty.getParent() );
+
+        DN one = new DN( "cn=test" );
+        assertNotNull( one.getParent() );
+        assertTrue( one.getParent().isEmpty() );
+
+        DN two = new DN( "cn=test,o=acme" );
+        assertNotNull( two.getParent() );
+        assertFalse( two.getParent().isEmpty() );
+        assertEquals( "o=acme", two.getParent().getName() );
+
+        DN three = new DN( "cn=test,dc=example,dc=com" );
+        three.normalize( oids );
+        DN threeParent = three.getParent();
+        assertNotNull( threeParent );
+        assertFalse( threeParent.isEmpty() );
+        assertEquals( "dc=example,dc=com", threeParent.getName() );
+        assertEquals( 2, threeParent.getRdns().size() );
+
+        DN five = new DN( "uid=user1,ou=sales,ou=users,dc=example,dc=com" );
+        DN fiveParent = five.getParent();
+        assertNotNull( fiveParent );
+        assertFalse( fiveParent.isEmpty() );
+        assertEquals( "ou=sales,ou=users,dc=example,dc=com", fiveParent.getName() );
+        assertEquals( 4, fiveParent.getRdns().size() );
     }
 
 
