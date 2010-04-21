@@ -121,7 +121,6 @@ public class RewriteProxyServlet extends HttpServlet {
 
 		/**
 		 * @see javax.servlet.http.HttpServletRequestWrapper#getQueryString()
-		 *      {@inheritDoc}
 		 */
 		@Override
 		public String getQueryString() {
