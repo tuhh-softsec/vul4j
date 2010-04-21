@@ -16,6 +16,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.conn.ConnectionPoolTimeoutException;
+import org.apache.http.conn.HttpHostConnectException;
 import org.apache.http.message.BasicHttpRequest;
 import org.apache.http.protocol.ExecutionContext;
 import org.apache.http.protocol.HttpContext;
@@ -58,35 +59,26 @@ public class HttpClientResponse {
 				}
 				currentLocation += finalRequest.getRequestLine().getUri();
 			}
+		} catch (HttpHostConnectException e) {
+			exception = e;
+			statusCode = HttpServletResponse.SC_BAD_GATEWAY;
+			statusText = "Connection refused";
 		} catch (ConnectionPoolTimeoutException e) {
 			exception = e;
 			statusCode = HttpServletResponse.SC_GATEWAY_TIMEOUT;
-			statusText = "Connect timeout retrieving URL: "
-					+ basicHttpRequest.getRequestLine().toString();
-			LOG.warn(
-					"Connect timeout retrieving URL, connection pool exhausted: "
-							+ basicHttpRequest.getRequestLine().toString(), e);
+			statusText = "Connection pool timeout";
 		} catch (ConnectTimeoutException e) {
 			exception = e;
 			statusCode = HttpServletResponse.SC_GATEWAY_TIMEOUT;
-			statusText = "Connect timeout retrieving URL: "
-					+ basicHttpRequest.getRequestLine().toString();
-			LOG.warn("Connect timeout retrieving URL: "
-					+ basicHttpRequest.getRequestLine().toString());
+			statusText = "Connect timeout";
 		} catch (SocketTimeoutException e) {
 			exception = e;
 			statusCode = HttpServletResponse.SC_GATEWAY_TIMEOUT;
-			statusText = "Socket timeout retrieving URL: "
-					+ basicHttpRequest.getRequestLine().toString();
-			LOG.warn("Socket timeout retrieving URL: "
-					+ basicHttpRequest.getRequestLine().toString());
+			statusText = "Socket timeout";
 		} catch (IOException e) {
 			exception = e;
 			statusCode = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
-			statusText = "Error retrieving URL: "
-					+ basicHttpRequest.getRequestLine().toString();
-			LOG.error("Error retrieving URL: "
-					+ basicHttpRequest.getRequestLine().toString(), e);
+			statusText = "Error retrieving URL";
 		}
 	}
 
