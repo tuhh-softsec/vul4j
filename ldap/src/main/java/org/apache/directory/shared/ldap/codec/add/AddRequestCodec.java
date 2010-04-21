@@ -34,9 +34,9 @@ import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
+import org.apache.directory.shared.ldap.entry.DefaultEntryAttribute;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
-import org.apache.directory.shared.ldap.entry.client.DefaultClientAttribute;
 import org.apache.directory.shared.ldap.entry.client.DefaultClientEntry;
 import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.util.StringTools;
@@ -175,7 +175,7 @@ public class AddRequestCodec extends LdapMessageCodec
         }
 
         // fix this to use AttributeImpl(type.getString().toLowerCase())
-        currentAttribute = new DefaultClientAttribute( type );
+        currentAttribute = new DefaultEntryAttribute( type );
         entry.put( currentAttribute );
     }
 

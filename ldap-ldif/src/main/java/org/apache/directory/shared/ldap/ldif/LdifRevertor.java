@@ -26,12 +26,12 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.entry.DefaultEntryAttribute;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Modification;
 import org.apache.directory.shared.ldap.entry.ModificationOperation;
 import org.apache.directory.shared.ldap.entry.client.ClientModification;
-import org.apache.directory.shared.ldap.entry.client.DefaultClientAttribute;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.name.AVA;
@@ -186,7 +186,7 @@ public class LdifRevertor
                     if ( ( mod.get() == null ) && ( previous == null ) )
                     {
                         reverseModification = new ClientModification( ModificationOperation.REPLACE_ATTRIBUTE,
-                            new DefaultClientAttribute( mod.getId() ) );
+                            new DefaultEntryAttribute( mod.getId() ) );
                         reverseModifications.add( 0, reverseModification );
                         continue;
                     }
@@ -200,7 +200,7 @@ public class LdifRevertor
 
                     if ( previous == null )
                     {
-                        EntryAttribute emptyAttribute = new DefaultClientAttribute( mod.getId() );
+                        EntryAttribute emptyAttribute = new DefaultEntryAttribute( mod.getId() );
                         reverseModification = new ClientModification( ModificationOperation.REPLACE_ATTRIBUTE,
                             emptyAttribute );
                         reverseModifications.add( 0, reverseModification );
@@ -351,7 +351,7 @@ public class LdifRevertor
                 // Create the modification, which is an Remove
                 Modification modification = new ClientModification( 
                     ModificationOperation.REMOVE_ATTRIBUTE, 
-                    new DefaultClientAttribute( ava.getUpType(), ava.getUpValue().getString() ) );
+                    new DefaultEntryAttribute( ava.getUpType(), ava.getUpValue().getString() ) );
                 
                 restored.addModificationItem( modification );
             }

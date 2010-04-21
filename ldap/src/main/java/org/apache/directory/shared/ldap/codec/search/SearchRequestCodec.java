@@ -38,8 +38,8 @@ import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
+import org.apache.directory.shared.ldap.entry.DefaultEntryAttribute;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
-import org.apache.directory.shared.ldap.entry.client.DefaultClientAttribute;
 import org.apache.directory.shared.ldap.filter.SearchScope;
 import org.apache.directory.shared.ldap.name.DN;
 
@@ -157,7 +157,7 @@ public class SearchRequestCodec extends LdapMessageCodec
      */
     public void addAttribute( String attribute )
     {
-        attributes.add( new DefaultClientAttribute( attribute ) );
+        attributes.add( new DefaultEntryAttribute( attribute ) );
     }
 
 

@@ -27,9 +27,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
+import org.apache.directory.shared.ldap.entry.DefaultEntryAttribute;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
-import org.apache.directory.shared.ldap.entry.client.DefaultClientAttribute;
 import org.apache.directory.shared.ldap.entry.client.DefaultClientEntry;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.message.control.Control;
@@ -58,7 +58,7 @@ public class AddRequestImplTest
      */
     private EntryAttribute getAttribute( String id )
     {
-        EntryAttribute attr = new DefaultClientAttribute( id );
+        EntryAttribute attr = new DefaultEntryAttribute( id );
         attr.add( "value0" );
         attr.add( "value1" );
         attr.add( "value2" );

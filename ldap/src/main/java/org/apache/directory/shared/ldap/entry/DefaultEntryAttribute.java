@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.directory.shared.ldap.entry.client;
+package org.apache.directory.shared.ldap.entry;
 
 
 import java.io.Externalizable;
@@ -32,10 +32,6 @@ import org.apache.directory.shared.ldap.exception.LdapInvalidAttributeValueExcep
 
 import org.apache.directory.shared.asn1.primitives.OID;
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.entry.BinaryValue;
-import org.apache.directory.shared.ldap.entry.StringValue;
-import org.apache.directory.shared.ldap.entry.EntryAttribute;
-import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.SyntaxChecker;
@@ -53,10 +49,10 @@ import org.slf4j.LoggerFactory;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public class DefaultClientAttribute implements EntryAttribute
+public class DefaultEntryAttribute implements EntryAttribute
 {
     /** logger for reporting errors that might not be handled properly upstream */
-    private static final Logger LOG = LoggerFactory.getLogger( DefaultClientAttribute.class );
+    private static final Logger LOG = LoggerFactory.getLogger( DefaultEntryAttribute.class );
 
     /** The associated AttributeType */
     protected AttributeType attributeType;
@@ -156,7 +152,7 @@ public class DefaultClientAttribute implements EntryAttribute
     /**
      * Create a new instance of a EntryAttribute, without ID nor value.
      */
-    public DefaultClientAttribute()
+    public DefaultEntryAttribute()
     {
     }
 
@@ -166,7 +162,7 @@ public class DefaultClientAttribute implements EntryAttribute
      * 
      * @param attributeType the attributeType for the empty attribute added into the entry
      */
-    public DefaultClientAttribute( AttributeType attributeType )
+    public DefaultEntryAttribute( AttributeType attributeType )
     {
         if ( attributeType == null )
         {
@@ -180,7 +176,7 @@ public class DefaultClientAttribute implements EntryAttribute
     /**
      * Create a new instance of a EntryAttribute, without value.
      */
-    public DefaultClientAttribute( String upId )
+    public DefaultEntryAttribute( String upId )
     {
         setUpId( upId );
     }
@@ -192,7 +188,7 @@ public class DefaultClientAttribute implements EntryAttribute
      * @param upId the ID for the added attributeType
      * @param attributeType the added AttributeType
      */
-    public DefaultClientAttribute( String upId, AttributeType attributeType )
+    public DefaultEntryAttribute( String upId, AttributeType attributeType )
     {
         if ( attributeType == null ) 
         {
@@ -217,7 +213,7 @@ public class DefaultClientAttribute implements EntryAttribute
      * @param attributeType the attribute type according to the schema
      * @param vals an initial set of values for this attribute
      */
-    public DefaultClientAttribute( String upId, Value<?>... vals )
+    public DefaultEntryAttribute( String upId, Value<?>... vals )
     {
         // The value can be null, this is a valid value.
         if ( vals[0] == null )
@@ -251,7 +247,7 @@ public class DefaultClientAttribute implements EntryAttribute
      * @param attributeType The attributeType added on creation
      * @param vals The added value for this attribute
      */
-    public DefaultClientAttribute( AttributeType attributeType, String... vals )
+    public DefaultEntryAttribute( AttributeType attributeType, String... vals )
     {
         this( null, attributeType, vals );
     }
@@ -264,7 +260,7 @@ public class DefaultClientAttribute implements EntryAttribute
      * @param attributeType The attributeType added on creation
      * @param vals the added values for this attribute
      */
-    public DefaultClientAttribute( String upId, AttributeType attributeType, String... vals )
+    public DefaultEntryAttribute( String upId, AttributeType attributeType, String... vals )
     {
         if ( attributeType == null )
         {
@@ -290,7 +286,7 @@ public class DefaultClientAttribute implements EntryAttribute
      * @param attributeType the attribute type according to the schema
      * @param vals an initial set of values for this attribute
      */
-    public DefaultClientAttribute( String upId, AttributeType attributeType, Value<?>... vals )
+    public DefaultEntryAttribute( String upId, AttributeType attributeType, Value<?>... vals )
     {
         if ( attributeType == null )
         {
@@ -313,7 +309,7 @@ public class DefaultClientAttribute implements EntryAttribute
      * @param attributeType the attribute type according to the schema
      * @param vals an initial set of values for this attribute
      */
-    public DefaultClientAttribute( AttributeType attributeType, Value<?>... vals )
+    public DefaultEntryAttribute( AttributeType attributeType, Value<?>... vals )
     {
         this( null, attributeType, vals );
     }
@@ -322,7 +318,7 @@ public class DefaultClientAttribute implements EntryAttribute
     /**
      * Create a new instance of a EntryAttribute.
      */
-    public DefaultClientAttribute( String upId, String... vals )
+    public DefaultEntryAttribute( String upId, String... vals )
     {
         add( vals );
         setUpId( upId );
@@ -332,7 +328,7 @@ public class DefaultClientAttribute implements EntryAttribute
     /**
      * Create a new instance of a EntryAttribute, with some byte[] values.
      */
-    public DefaultClientAttribute( String upId, byte[]... vals )
+    public DefaultEntryAttribute( String upId, byte[]... vals )
     {
         add( vals );
         setUpId( upId );
@@ -345,7 +341,7 @@ public class DefaultClientAttribute implements EntryAttribute
      * @param attributeType The attributeType added on creation
      * @param vals The value for the added attribute
      */
-    public DefaultClientAttribute( AttributeType attributeType, byte[]... vals )
+    public DefaultEntryAttribute( AttributeType attributeType, byte[]... vals )
     {
         this( null, attributeType, vals );
     }
@@ -358,7 +354,7 @@ public class DefaultClientAttribute implements EntryAttribute
      * @param attributeType the AttributeType to be added
      * @param vals the values for the added attribute
      */
-    public DefaultClientAttribute( String upId, AttributeType attributeType, byte[]... vals )
+    public DefaultEntryAttribute( String upId, AttributeType attributeType, byte[]... vals )
     {
         if ( attributeType == null )
         {
@@ -380,7 +376,7 @@ public class DefaultClientAttribute implements EntryAttribute
      * @param attributeType The attribute's type 
      * @param attribute The attribute to be copied
      */
-    public DefaultClientAttribute( AttributeType attributeType, EntryAttribute attribute )
+    public DefaultEntryAttribute( AttributeType attributeType, EntryAttribute attribute )
     {
         // Copy the common values. isHR is only available on a ServerAttribute 
         this.attributeType = attributeType;
@@ -2169,7 +2165,7 @@ public class DefaultClientAttribute implements EntryAttribute
     public EntryAttribute toClientAttribute()
     {
         // Create the new EntryAttribute
-        EntryAttribute clientAttribute = new DefaultClientAttribute( upId );
+        EntryAttribute clientAttribute = new DefaultEntryAttribute( upId );
         
         // Copy the values
         for ( Value<?> value:this )
@@ -2310,7 +2306,7 @@ public class DefaultClientAttribute implements EntryAttribute
     {
         try
         {
-            DefaultClientAttribute attribute = (DefaultClientAttribute)super.clone();
+            DefaultEntryAttribute attribute = (DefaultEntryAttribute)super.clone();
             
             attribute.values = new LinkedHashSet<Value<?>>( values.size() );
             

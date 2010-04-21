@@ -35,6 +35,7 @@ import org.apache.directory.shared.ldap.exception.LdapException;
 
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.entry.AbstractEntry;
+import org.apache.directory.shared.ldap.entry.DefaultEntryAttribute;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Value;
@@ -212,7 +213,7 @@ public final class DefaultClientEntry extends AbstractEntry<String> //implements
         {
             // We have to create a new Attribute and set the values
             // and the upId
-            attributes.put( id, new DefaultClientAttribute( upId, values ) );
+            attributes.put( id, new DefaultEntryAttribute( upId, values ) );
         }
     }
 
@@ -245,7 +246,7 @@ public final class DefaultClientEntry extends AbstractEntry<String> //implements
         {
             // We have to create a new Attribute and set the values
             // and the upId
-            attributes.put( id, new DefaultClientAttribute( upId, values ) );
+            attributes.put( id, new DefaultEntryAttribute( upId, values ) );
         }
     }
 
@@ -277,7 +278,7 @@ public final class DefaultClientEntry extends AbstractEntry<String> //implements
         {
             // We have to create a new Attribute and set the values
             // and the upId
-            attributes.put( id, new DefaultClientAttribute( upId, values ) );
+            attributes.put( id, new DefaultEntryAttribute( upId, values ) );
         }
     }
 
@@ -508,7 +509,7 @@ public final class DefaultClientEntry extends AbstractEntry<String> //implements
         String id = getId( upId );
         
         // Create a new attribute
-        EntryAttribute clientAttribute = new DefaultClientAttribute( upId, values );
+        EntryAttribute clientAttribute = new DefaultEntryAttribute( upId, values );
 
         // Replace the previous one, and return it back
         return attributes.put( id, clientAttribute );
@@ -534,7 +535,7 @@ public final class DefaultClientEntry extends AbstractEntry<String> //implements
         String id = getId( upId );
         
         // Create a new attribute
-        EntryAttribute clientAttribute = new DefaultClientAttribute( upId, values );
+        EntryAttribute clientAttribute = new DefaultEntryAttribute( upId, values );
 
         // Replace the previous one, and return it back
         return attributes.put( id, clientAttribute );
@@ -560,7 +561,7 @@ public final class DefaultClientEntry extends AbstractEntry<String> //implements
         String id = getId( upId );
         
         // Create a new attribute
-        EntryAttribute clientAttribute = new DefaultClientAttribute( upId, values );
+        EntryAttribute clientAttribute = new DefaultEntryAttribute( upId, values );
 
         // Replace the previous one, and return it back
         return attributes.put( id, clientAttribute );
@@ -609,7 +610,7 @@ public final class DefaultClientEntry extends AbstractEntry<String> //implements
                 returnedClientAttributes.add( attributes.remove( id ) );
             }
 
-            EntryAttribute newAttribute = new DefaultClientAttribute( upId );
+            EntryAttribute newAttribute = new DefaultEntryAttribute( upId );
             attributes.put( id, newAttribute );
         }
         
@@ -993,7 +994,7 @@ public final class DefaultClientEntry extends AbstractEntry<String> //implements
         for ( int i = 0; i < nbAttributes; i++ )
         {
             // Read each attribute
-            EntryAttribute attribute = (DefaultClientAttribute)in.readObject();
+            EntryAttribute attribute = (DefaultEntryAttribute)in.readObject();
             
             attributes.put( attribute.getId(), attribute );
         }

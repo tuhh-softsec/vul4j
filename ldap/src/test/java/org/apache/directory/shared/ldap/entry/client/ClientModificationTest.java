@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
+import org.apache.directory.shared.ldap.entry.DefaultEntryAttribute;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Modification;
 import org.apache.directory.shared.ldap.entry.ModificationOperation;
@@ -120,7 +121,7 @@ public class ClientModificationTest
     @Test 
     public void testCreateServerModification()
     {
-        EntryAttribute attribute = new DefaultClientAttribute( "cn" );
+        EntryAttribute attribute = new DefaultEntryAttribute( "cn" );
         attribute.add( "test1", "test2" );
         
         Modification mod = new ClientModification( ModificationOperation.ADD_ATTRIBUTE, attribute );
@@ -142,7 +143,7 @@ public class ClientModificationTest
     @Test
     public void testSerializationModificationADD() throws ClassNotFoundException, IOException
     {
-        EntryAttribute attribute = new DefaultClientAttribute( "cn" );
+        EntryAttribute attribute = new DefaultEntryAttribute( "cn" );
         attribute.add( "test1", "test2" );
         
         ClientModification mod = new ClientModification( ModificationOperation.ADD_ATTRIBUTE, attribute );
@@ -156,7 +157,7 @@ public class ClientModificationTest
     @Test
     public void testSerializationModificationREPLACE() throws ClassNotFoundException, IOException
     {
-        EntryAttribute attribute = new DefaultClientAttribute( "cn" );
+        EntryAttribute attribute = new DefaultEntryAttribute( "cn" );
         attribute.add( "test1", "test2" );
         
         ClientModification mod = new ClientModification( ModificationOperation.REPLACE_ATTRIBUTE, attribute );
@@ -170,7 +171,7 @@ public class ClientModificationTest
     @Test
     public void testSerializationModificationREMOVE() throws ClassNotFoundException, IOException
     {
-        EntryAttribute attribute = new DefaultClientAttribute( "cn" );
+        EntryAttribute attribute = new DefaultEntryAttribute( "cn" );
         attribute.add( "test1", "test2" );
         
         ClientModification mod = new ClientModification( ModificationOperation.REMOVE_ATTRIBUTE, attribute );

@@ -29,6 +29,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.directory.shared.ldap.entry.DefaultEntryAttribute;
 import org.apache.directory.shared.ldap.entry.StringValue;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
@@ -36,7 +37,6 @@ import org.apache.directory.shared.ldap.entry.Modification;
 import org.apache.directory.shared.ldap.entry.ModificationOperation;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.entry.client.ClientModification;
-import org.apache.directory.shared.ldap.entry.client.DefaultClientAttribute;
 import org.apache.directory.shared.ldap.entry.client.DefaultClientEntry;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
@@ -224,7 +224,7 @@ public class LdifEntry implements Cloneable, Externalizable
             if ( value == null )
             {
                 value = new StringValue( (String)null );
-                attr = new DefaultClientAttribute( id, (Value<?>)value );
+                attr = new DefaultEntryAttribute( id, (Value<?>)value );
             }
             else
             {
@@ -370,7 +370,7 @@ public class LdifEntry implements Cloneable, Externalizable
     {
         if ( "dn".equalsIgnoreCase( attributeId ) )
         {
-            return new DefaultClientAttribute( "dn", entry.getDn().getName() );
+            return new DefaultEntryAttribute( "dn", entry.getDn().getName() );
         }
 
         return entry.get( attributeId );
@@ -962,7 +962,7 @@ public class LdifEntry implements Cloneable, Externalizable
                 {
                     int operation = in.readInt();
                     String modStr = in.readUTF();
-                    DefaultClientAttribute value = (DefaultClientAttribute)in.readObject();
+                    DefaultEntryAttribute value = (DefaultEntryAttribute)in.readObject();
                     
                     addModificationItem( ModificationOperation.getOperation( operation ), modStr, value );
                 }

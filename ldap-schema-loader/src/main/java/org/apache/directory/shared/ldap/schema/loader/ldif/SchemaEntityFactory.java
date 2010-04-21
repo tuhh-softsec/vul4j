@@ -31,10 +31,10 @@ import org.apache.directory.shared.asn1.primitives.OID;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.constants.MetaSchemaConstants;
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
+import org.apache.directory.shared.ldap.entry.DefaultEntryAttribute;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Value;
-import org.apache.directory.shared.ldap.entry.client.DefaultClientAttribute;
 import org.apache.directory.shared.ldap.exception.LdapInvalidAttributeValueException;
 import org.apache.directory.shared.ldap.exception.LdapUnwillingToPerformException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
@@ -1074,7 +1074,7 @@ public class SchemaEntityFactory implements EntityFactory
         }
 
         byte[] bytecode = Base64.decode( byteCodeString.toCharArray() );
-        EntryAttribute attr = new DefaultClientAttribute( MetaSchemaConstants.M_BYTECODE_AT, bytecode );
+        EntryAttribute attr = new DefaultEntryAttribute( MetaSchemaConstants.M_BYTECODE_AT, bytecode );
 
         return attr;
     }

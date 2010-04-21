@@ -30,11 +30,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
+import org.apache.directory.shared.ldap.entry.DefaultEntryAttribute;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Modification;
 import org.apache.directory.shared.ldap.entry.ModificationOperation;
 import org.apache.directory.shared.ldap.entry.client.ClientModification;
-import org.apache.directory.shared.ldap.entry.client.DefaultClientAttribute;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.message.internal.InternalModifyRequest;
@@ -72,19 +72,19 @@ public class ModifyRequestImplTest
             // do nothing
         }
 
-        EntryAttribute attr = new DefaultClientAttribute( "attr0" );
+        EntryAttribute attr = new DefaultEntryAttribute( "attr0" );
         attr.add( "val0" );
         attr.add( "val1" );
         attr.add( "val2" );
         Modification item = new ClientModification( ModificationOperation.ADD_ATTRIBUTE, attr );
         req.addModification( item );
 
-        attr = new DefaultClientAttribute( "attr1" );
+        attr = new DefaultEntryAttribute( "attr1" );
         attr.add( "val3" );
         item = new ClientModification( ModificationOperation.REMOVE_ATTRIBUTE, attr );
         req.addModification( item );
 
-        attr = new DefaultClientAttribute( "attr2" );
+        attr = new DefaultEntryAttribute( "attr2" );
         attr.add( "val4" );
         attr.add( "val5" );
         item = new ClientModification( ModificationOperation.REPLACE_ATTRIBUTE, attr );
@@ -158,7 +158,7 @@ public class ModifyRequestImplTest
     public void testNotEqualDiffModOps()
     {
         ModifyRequestImpl req0 = getRequest();
-        EntryAttribute attr = new DefaultClientAttribute( "attr3" );
+        EntryAttribute attr = new DefaultEntryAttribute( "attr3" );
         attr.add( "val0" );
         attr.add( "val1" );
         attr.add( "val2" );
@@ -166,7 +166,7 @@ public class ModifyRequestImplTest
         req0.addModification( item );
 
         ModifyRequestImpl req1 = getRequest();
-        attr = new DefaultClientAttribute( "attr3" );
+        attr = new DefaultEntryAttribute( "attr3" );
         attr.add( "val0" );
         attr.add( "val1" );
         attr.add( "val2" );
@@ -185,7 +185,7 @@ public class ModifyRequestImplTest
     public void testNotEqualDiffModCount()
     {
         ModifyRequestImpl req0 = getRequest();
-        EntryAttribute attr = new DefaultClientAttribute( "attr3" );
+        EntryAttribute attr = new DefaultEntryAttribute( "attr3" );
         attr.add( "val0" );
         attr.add( "val1" );
         attr.add( "val2" );
@@ -206,7 +206,7 @@ public class ModifyRequestImplTest
     public void testNotEqualDiffModIds()
     {
         ModifyRequestImpl req0 = getRequest();
-        EntryAttribute attr = new DefaultClientAttribute( "attr3" );
+        EntryAttribute attr = new DefaultEntryAttribute( "attr3" );
         attr.add( "val0" );
         attr.add( "val1" );
         attr.add( "val2" );
@@ -214,7 +214,7 @@ public class ModifyRequestImplTest
         req0.addModification( item );
 
         ModifyRequestImpl req1 = getRequest();
-        attr = new DefaultClientAttribute( "attr4" );
+        attr = new DefaultEntryAttribute( "attr4" );
         attr.add( "val0" );
         attr.add( "val1" );
         attr.add( "val2" );
@@ -233,7 +233,7 @@ public class ModifyRequestImplTest
     public void testNotEqualDiffModValues()
     {
         ModifyRequestImpl req0 = getRequest();
-        EntryAttribute attr = new DefaultClientAttribute( "attr3" );
+        EntryAttribute attr = new DefaultEntryAttribute( "attr3" );
         attr.add( "val0" );
         attr.add( "val1" );
         attr.add( "val2" );
@@ -241,7 +241,7 @@ public class ModifyRequestImplTest
         req0.addModification( item );
 
         ModifyRequestImpl req1 = getRequest();
-        attr = new DefaultClientAttribute( "attr3" );
+        attr = new DefaultEntryAttribute( "attr3" );
         attr.add( "val0" );
         attr.add( "val1" );
         attr.add( "val2" );
@@ -265,19 +265,19 @@ public class ModifyRequestImplTest
             public Collection<Modification> getModificationItems()
             {
                 List<Modification> list = new ArrayList<Modification>();
-                EntryAttribute attr = new DefaultClientAttribute( "attr0" );
+                EntryAttribute attr = new DefaultEntryAttribute( "attr0" );
                 attr.add( "val0" );
                 attr.add( "val1" );
                 attr.add( "val2" );
                 Modification item = new ClientModification( ModificationOperation.ADD_ATTRIBUTE, attr );
                 list.add( item );
 
-                attr = new DefaultClientAttribute( "attr1" );
+                attr = new DefaultEntryAttribute( "attr1" );
                 attr.add( "val3" );
                 item = new ClientModification( ModificationOperation.REMOVE_ATTRIBUTE, attr );
                 list.add( item );
 
-                attr = new DefaultClientAttribute( "attr2" );
+                attr = new DefaultEntryAttribute( "attr2" );
                 attr.add( "val4" );
                 attr.add( "val5" );
                 item = new ClientModification( ModificationOperation.REPLACE_ATTRIBUTE, attr );

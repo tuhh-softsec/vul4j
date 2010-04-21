@@ -32,12 +32,12 @@ import java.util.List;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.BasicAttributes;
 
+import org.apache.directory.shared.ldap.entry.DefaultEntryAttribute;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Modification;
 import org.apache.directory.shared.ldap.entry.ModificationOperation;
 import org.apache.directory.shared.ldap.entry.client.ClientModification;
-import org.apache.directory.shared.ldap.entry.client.DefaultClientAttribute;
 import org.apache.directory.shared.ldap.entry.client.DefaultClientEntry;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
@@ -97,7 +97,7 @@ public class LdifRevertorTest
         
         Entry deletedEntry = new DefaultClientEntry( dn );
         
-        EntryAttribute oc = new DefaultClientAttribute( "objectClass" );
+        EntryAttribute oc = new DefaultEntryAttribute( "objectClass" );
         oc.add( "top", "person" );
         
         deletedEntry.put( oc );
@@ -124,7 +124,7 @@ public class LdifRevertorTest
     {
         Entry modifiedEntry = buildEntry();
         
-        EntryAttribute ou = new DefaultClientAttribute( "ou" );
+        EntryAttribute ou = new DefaultEntryAttribute( "ou" );
         ou.add( "apache", "acme corp" );
         modifiedEntry.put( ou );
 
@@ -132,7 +132,7 @@ public class LdifRevertorTest
 
         Modification mod = new ClientModification( 
             ModificationOperation.REMOVE_ATTRIBUTE, 
-            new DefaultClientAttribute( "ou", "acme corp" ) );
+            new DefaultEntryAttribute( "ou", "acme corp" ) );
 
         LdifEntry reversed = LdifRevertor.reverseModify( dn,
                 Collections.<Modification>singletonList( mod ), modifiedEntry );
@@ -168,7 +168,7 @@ public class LdifRevertorTest
     {
         Entry modifiedEntry = buildEntry();
         
-        EntryAttribute ou = new DefaultClientAttribute( "ou" );
+        EntryAttribute ou = new DefaultEntryAttribute( "ou" );
         ou.add( "apache", "acme corp" );
         modifiedEntry.put( ou );
 
@@ -176,7 +176,7 @@ public class LdifRevertorTest
 
         Modification mod = new ClientModification(
             ModificationOperation.REMOVE_ATTRIBUTE, 
-            new DefaultClientAttribute( "ou" ) );
+            new DefaultEntryAttribute( "ou" ) );
 
         LdifEntry reversed = LdifRevertor.reverseModify( dn,
                 Collections.<Modification>singletonList( mod ), modifiedEntry );
@@ -213,7 +213,7 @@ public class LdifRevertorTest
     {
         Entry modifiedEntry = buildEntry();
 
-        EntryAttribute ou = new DefaultClientAttribute( "ou", "apache", "acme corp" );
+        EntryAttribute ou = new DefaultEntryAttribute( "ou", "apache", "acme corp" );
         modifiedEntry.put( ou );
         
         DN dn = new DN( "cn=test, ou=system" );
@@ -256,13 +256,13 @@ public class LdifRevertorTest
     {
         Entry modifiedEntry = buildEntry();
         
-        EntryAttribute ou = new DefaultClientAttribute( "ou" );
+        EntryAttribute ou = new DefaultEntryAttribute( "ou" );
         ou.add( "apache", "acme corp" );
         modifiedEntry.put( ou );
 
         DN dn = new DN( "cn=test, ou=system" );
 
-        EntryAttribute ouModified = new DefaultClientAttribute( "ou" );
+        EntryAttribute ouModified = new DefaultEntryAttribute( "ou" );
         ouModified.add( "directory" );
         ouModified.add( "BigCompany inc." );
         
@@ -305,7 +305,7 @@ public class LdifRevertorTest
         
         DN dn = new DN( "cn=test, ou=system" );
         
-        EntryAttribute newOu = new DefaultClientAttribute( "ou" );
+        EntryAttribute newOu = new DefaultEntryAttribute( "ou" );
         newOu.add( "apache" );
         newOu.add( "acme corp" );
 
@@ -347,7 +347,7 @@ public class LdifRevertorTest
     {
         Entry modifiedEntry = buildEntry();
 
-        EntryAttribute ou = new DefaultClientAttribute( "ou" );
+        EntryAttribute ou = new DefaultEntryAttribute( "ou" );
         ou.add( "apache" );
         ou.add( "acme corp" );
         modifiedEntry.put( ou );
@@ -355,7 +355,7 @@ public class LdifRevertorTest
         DN dn = new DN( "cn=test, ou=system" );
         
         Modification mod = new ClientModification( 
-            ModificationOperation.REPLACE_ATTRIBUTE, new DefaultClientAttribute( "ou" ) );
+            ModificationOperation.REPLACE_ATTRIBUTE, new DefaultEntryAttribute( "ou" ) );
 
         LdifEntry reversed = LdifRevertor.reverseModify( dn,
                 Collections.<Modification>singletonList( mod ), modifiedEntry );
@@ -485,27 +485,27 @@ public class LdifRevertorTest
         // First, inject the 'ou'
         
         Modification mod = new ClientModification( 
-            ModificationOperation.ADD_ATTRIBUTE, new DefaultClientAttribute( "ou", "BigCompany inc." ) );
+            ModificationOperation.ADD_ATTRIBUTE, new DefaultEntryAttribute( "ou", "BigCompany inc." ) );
         modifications.add( mod );
 
         // Remove the 'l'
         mod = new ClientModification(
-            ModificationOperation.REMOVE_ATTRIBUTE, new DefaultClientAttribute( "l" ) );
+            ModificationOperation.REMOVE_ATTRIBUTE, new DefaultEntryAttribute( "l" ) );
         modifications.add( mod );
         
         // Add 'l=FR'
         mod = new ClientModification( 
-            ModificationOperation.ADD_ATTRIBUTE, new DefaultClientAttribute( "l", "FR" ) );
+            ModificationOperation.ADD_ATTRIBUTE, new DefaultEntryAttribute( "l", "FR" ) );
         modifications.add( mod );
 
         // Replace it with 'l=USA'
         mod = new ClientModification( 
-            ModificationOperation.REPLACE_ATTRIBUTE, new DefaultClientAttribute( "l", "USA" ) );
+            ModificationOperation.REPLACE_ATTRIBUTE, new DefaultEntryAttribute( "l", "USA" ) );
         modifications.add( mod );
 
         // Replace the ou value
         mod = new ClientModification( 
-            ModificationOperation.REPLACE_ATTRIBUTE, new DefaultClientAttribute( "ou", "apache" ) );
+            ModificationOperation.REPLACE_ATTRIBUTE, new DefaultEntryAttribute( "ou", "apache" ) );
         modifications.add( mod );
         
         LdifEntry reversedEntry = LdifRevertor.reverseModify( dn, modifications, initialEntry.getEntry() );
@@ -550,7 +550,7 @@ public class LdifRevertorTest
     {
         Entry modifiedEntry = buildEntry();
 
-        EntryAttribute ou = new DefaultClientAttribute( "ou" );
+        EntryAttribute ou = new DefaultEntryAttribute( "ou" );
         ou.add( "apache" );
         ou.add( "acme corp" );
         modifiedEntry.put( ou );
@@ -558,7 +558,7 @@ public class LdifRevertorTest
         DN dn = new DN( "cn=test, ou=system" );
         Modification mod = new ClientModification(
             ModificationOperation.ADD_ATTRIBUTE, 
-            new DefaultClientAttribute( "ou", "BigCompany inc." ) );
+            new DefaultEntryAttribute( "ou", "BigCompany inc." ) );
 
         LdifEntry reversed = LdifRevertor.reverseModify( dn,
                 Collections.<Modification>singletonList( mod ), modifiedEntry );
@@ -595,7 +595,7 @@ public class LdifRevertorTest
         DN dn = new DN( "cn=test, ou=system" );
         Modification mod = new ClientModification(
             ModificationOperation.ADD_ATTRIBUTE, 
-            new DefaultClientAttribute( "ou", "BigCompany inc." ) );
+            new DefaultEntryAttribute( "ou", "BigCompany inc." ) );
 
         LdifEntry reversed = LdifRevertor.reverseModify( dn,
                 Collections.<Modification>singletonList( mod ), modifiedEntry );

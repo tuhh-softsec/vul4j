@@ -22,9 +22,9 @@ package org.apache.directory.shared.converter.schema;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.directory.shared.ldap.entry.DefaultEntryAttribute;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
-import org.apache.directory.shared.ldap.entry.client.DefaultClientAttribute;
 import org.apache.directory.shared.ldap.entry.client.DefaultClientEntry;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.ldif.LdifUtils;
@@ -147,7 +147,7 @@ public abstract class SchemaElementImpl implements SchemaElement
         else
         {
             Entry entry = new DefaultClientEntry();
-            EntryAttribute attribute = new DefaultClientAttribute( "m-name" );
+            EntryAttribute attribute = new DefaultEntryAttribute( "m-name" );
             
             for ( String name:names )
             {
@@ -172,7 +172,7 @@ public abstract class SchemaElementImpl implements SchemaElement
         else
         {
             Entry entry = new DefaultClientEntry();
-            EntryAttribute attribute = new DefaultClientAttribute( "m-description", description );
+            EntryAttribute attribute = new DefaultEntryAttribute( "m-description", description );
 
             entry.put( attribute );
             
@@ -198,7 +198,7 @@ public abstract class SchemaElementImpl implements SchemaElement
         StringBuilder sb = new StringBuilder();
         
         Entry entry = new DefaultClientEntry();
-        EntryAttribute attribute = new DefaultClientAttribute( ID ); 
+        EntryAttribute attribute = new DefaultEntryAttribute( ID ); 
 
         for ( String extension:extensions )
         {

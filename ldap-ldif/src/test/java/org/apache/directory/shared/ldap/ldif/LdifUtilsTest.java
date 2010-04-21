@@ -34,9 +34,9 @@ import javax.naming.directory.Attributes;
 import javax.naming.directory.BasicAttribute;
 import javax.naming.directory.BasicAttributes;
 
+import org.apache.directory.shared.ldap.entry.DefaultEntryAttribute;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
-import org.apache.directory.shared.ldap.entry.client.DefaultClientAttribute;
 import org.apache.directory.shared.ldap.entry.client.DefaultClientEntry;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.exception.LdapInvalidAttributeValueException;
@@ -343,7 +343,7 @@ public class LdifUtilsTest
         entry.setDn( "cn=Saarbr\u00FCcken, dc=example, dc=com" );
         entry.setChangeType( ChangeType.Add );
         
-        EntryAttribute oc = new DefaultClientAttribute( "objectClass" );
+        EntryAttribute oc = new DefaultEntryAttribute( "objectClass" );
         oc.add( "top", "person", "inetorgPerson" );
         
         entry.addAttribute( oc );

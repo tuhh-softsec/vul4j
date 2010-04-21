@@ -25,7 +25,6 @@ import java.io.ObjectOutput;
 
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.entry.client.ClientModification;
-import org.apache.directory.shared.ldap.entry.client.DefaultClientAttribute;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.SchemaManager;
@@ -92,7 +91,7 @@ public class ServerModification implements Modification
                 at = schemaManager.lookupAttributeTypeRegistry( modAttribute.getId() );
             }
             
-            attribute = new DefaultClientAttribute( at, modAttribute );
+            attribute = new DefaultEntryAttribute( at, modAttribute );
         }
         catch ( LdapException ne )
         {
@@ -283,10 +282,10 @@ public class ServerModification implements Modification
         // Lookup for tha associated AttributeType
         AttributeType attributeType = schemaManager.lookupAttributeTypeRegistry( oid );
         
-        attribute = new DefaultClientAttribute( attributeType );
+        attribute = new DefaultEntryAttribute( attributeType );
         
         // Read the attribute
-        ((DefaultClientAttribute)attribute).deserialize( in );
+        ((DefaultEntryAttribute)attribute).deserialize( in );
     }
     
     
@@ -303,13 +302,13 @@ public class ServerModification implements Modification
         // Write the operation
         out.writeInt( operation.getValue() );
         
-        AttributeType at = ((DefaultClientAttribute)attribute).getAttributeType();
+        AttributeType at = ((DefaultEntryAttribute)attribute).getAttributeType();
         
         // Write the attribute's oid
         out.writeUTF( at.getOid() );
         
         // Write the attribute
-        ((DefaultClientAttribute)attribute).serialize( out );
+        ((DefaultEntryAttribute)attribute).serialize( out );
     }
     
     

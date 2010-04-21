@@ -24,11 +24,11 @@ import java.io.UnsupportedEncodingException;
 import javax.naming.directory.Attributes;
 
 import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.entry.DefaultEntryAttribute;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Modification;
 import org.apache.directory.shared.ldap.entry.Value;
-import org.apache.directory.shared.ldap.entry.client.DefaultClientAttribute;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.exception.LdapInvalidAttributeValueException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
@@ -362,7 +362,7 @@ public class LdifUtils
                 
                 
                 // Stores the new RDN
-                EntryAttribute newRdn = new DefaultClientAttribute( "newrdn", entry.getNewRdn() );
+                EntryAttribute newRdn = new DefaultEntryAttribute( "newrdn", entry.getNewRdn() );
                 sb.append( convertToLdif( newRdn, length ) );
 
                 // Stores the deleteoldrdn flag
@@ -382,7 +382,7 @@ public class LdifUtils
                 // Stores the optional newSuperior
                 if ( ! StringTools.isEmpty( entry.getNewSuperior() ) )
                 {
-                    EntryAttribute newSuperior = new DefaultClientAttribute( "newsuperior", entry.getNewSuperior() );
+                    EntryAttribute newSuperior = new DefaultEntryAttribute( "newsuperior", entry.getNewSuperior() );
                     sb.append( convertToLdif( newSuperior, length ) );
                 }
                 

@@ -41,6 +41,7 @@ import java.util.Set;
 
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.entry.BinaryValue;
+import org.apache.directory.shared.ldap.entry.DefaultEntryAttribute;
 import org.apache.directory.shared.ldap.entry.StringValue;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
@@ -77,10 +78,10 @@ public class DefaultClientEntryTest
         {
             Entry entry = new DefaultClientEntry( EXAMPLE_DN );
             
-            EntryAttribute attrOC = new DefaultClientAttribute( "objectClass", "top", "person" );
-            EntryAttribute attrCN = new DefaultClientAttribute( "cn", "test1", "test2" );
-            EntryAttribute attrSN = new DefaultClientAttribute( "sn", "Test1", "Test2" );
-            EntryAttribute attrPWD = new DefaultClientAttribute( "userPassword", BYTES1, BYTES2 );
+            EntryAttribute attrOC = new DefaultEntryAttribute( "objectClass", "top", "person" );
+            EntryAttribute attrCN = new DefaultEntryAttribute( "cn", "test1", "test2" );
+            EntryAttribute attrSN = new DefaultEntryAttribute( "sn", "Test1", "Test2" );
+            EntryAttribute attrPWD = new DefaultEntryAttribute( "userPassword", BYTES1, BYTES2 );
             
             entry.put( attrOC, attrCN, attrSN, attrPWD );
             
@@ -269,9 +270,9 @@ public class DefaultClientEntryTest
     @Test
     public void testDefaultClientEntryLdapDNEntryAttributeArray()
     {
-        EntryAttribute attrOC = new DefaultClientAttribute( "objectClass", "top", "person" );
-        EntryAttribute attrCN = new DefaultClientAttribute( "cn", "test1", "test2" );
-        EntryAttribute attrPWD = new DefaultClientAttribute( "userPassword", BYTES1, BYTES2 );
+        EntryAttribute attrOC = new DefaultEntryAttribute( "objectClass", "top", "person" );
+        EntryAttribute attrCN = new DefaultEntryAttribute( "cn", "test1", "test2" );
+        EntryAttribute attrPWD = new DefaultEntryAttribute( "userPassword", BYTES1, BYTES2 );
         
         Entry entry = new DefaultClientEntry( EXAMPLE_DN, attrOC, attrCN, attrPWD );
         
@@ -317,7 +318,7 @@ public class DefaultClientEntryTest
         EntryAttribute attr = entry.get( "objectclass" );
         assertEquals( 2, attr.size() );
         
-        EntryAttribute attrCN2 = new DefaultClientAttribute( "cn", "test1", "test3" );
+        EntryAttribute attrCN2 = new DefaultEntryAttribute( "cn", "test1", "test3" );
         entry.add( attrCN2 );
         assertEquals( 4, entry.size() );
         attr = entry.get( "cn" );
@@ -496,10 +497,10 @@ public class DefaultClientEntryTest
     {
         Entry entry = new DefaultClientEntry( EXAMPLE_DN );
         
-        EntryAttribute attrOC = new DefaultClientAttribute( "objectClass", "top", "person" );
-        EntryAttribute attrCN = new DefaultClientAttribute( "cn", "test1", "test2" );
-        EntryAttribute attrSN = new DefaultClientAttribute( "sn", "Test1", "Test2" );
-        EntryAttribute attrPWD = new DefaultClientAttribute( "userPassword", BYTES1, BYTES2 );
+        EntryAttribute attrOC = new DefaultEntryAttribute( "objectClass", "top", "person" );
+        EntryAttribute attrCN = new DefaultEntryAttribute( "cn", "test1", "test2" );
+        EntryAttribute attrSN = new DefaultEntryAttribute( "sn", "Test1", "Test2" );
+        EntryAttribute attrPWD = new DefaultEntryAttribute( "userPassword", BYTES1, BYTES2 );
 
         assertFalse( entry.contains( attrOC, attrCN ) );
         
@@ -524,7 +525,7 @@ public class DefaultClientEntryTest
         
         assertFalse( entry.containsAttribute( "objectClass" ) );
         
-        EntryAttribute attrPWD = new DefaultClientAttribute( "userPassword", BYTES1, (byte[])null, BYTES2 );
+        EntryAttribute attrPWD = new DefaultEntryAttribute( "userPassword", BYTES1, (byte[])null, BYTES2 );
 
         entry.add( attrPWD );
         
@@ -548,10 +549,10 @@ public class DefaultClientEntryTest
         
         assertFalse( entry.containsAttribute( "objectClass" ) );
         
-        EntryAttribute attrOC = new DefaultClientAttribute( "objectClass", "top", "person" );
-        EntryAttribute attrCN = new DefaultClientAttribute( "cn", "test1", "test2" );
-        EntryAttribute attrSN = new DefaultClientAttribute( "sn", "Test1", "Test2", (String)null );
-        EntryAttribute attrPWD = new DefaultClientAttribute( "userPassword", BYTES1, BYTES2 );
+        EntryAttribute attrOC = new DefaultEntryAttribute( "objectClass", "top", "person" );
+        EntryAttribute attrCN = new DefaultEntryAttribute( "cn", "test1", "test2" );
+        EntryAttribute attrSN = new DefaultEntryAttribute( "sn", "Test1", "Test2", (String)null );
+        EntryAttribute attrPWD = new DefaultEntryAttribute( "userPassword", BYTES1, BYTES2 );
 
         entry.add( attrOC, attrCN, attrSN, attrPWD );
         
@@ -577,8 +578,8 @@ public class DefaultClientEntryTest
         
         assertFalse( entry.containsAttribute( "objectClass" ) );
         
-        EntryAttribute attrCN = new DefaultClientAttribute( "cn", "test1", "test2", (String)null );
-        EntryAttribute attrPWD = new DefaultClientAttribute( "userPassword", BYTES1, BYTES2, (byte[])null );
+        EntryAttribute attrCN = new DefaultEntryAttribute( "cn", "test1", "test2", (String)null );
+        EntryAttribute attrPWD = new DefaultEntryAttribute( "userPassword", BYTES1, BYTES2, (byte[])null );
 
         entry.add( attrCN, attrPWD );
         
@@ -610,10 +611,10 @@ public class DefaultClientEntryTest
         
         assertFalse( entry.containsAttribute( "objectClass" ) );
         
-        EntryAttribute attrOC = new DefaultClientAttribute( "objectClass", "top", "person" );
-        EntryAttribute attrCN = new DefaultClientAttribute( "cn", "test1", "test2" );
-        EntryAttribute attrSN = new DefaultClientAttribute( "sn", "Test1", "Test2" );
-        EntryAttribute attrPWD = new DefaultClientAttribute( "userPassword", BYTES1, BYTES2 );
+        EntryAttribute attrOC = new DefaultEntryAttribute( "objectClass", "top", "person" );
+        EntryAttribute attrCN = new DefaultEntryAttribute( "cn", "test1", "test2" );
+        EntryAttribute attrSN = new DefaultEntryAttribute( "sn", "Test1", "Test2" );
+        EntryAttribute attrPWD = new DefaultEntryAttribute( "userPassword", BYTES1, BYTES2 );
 
         entry.add( attrOC, attrCN, attrSN, attrPWD );
         
@@ -648,10 +649,10 @@ public class DefaultClientEntryTest
         entry2.setDn( EXAMPLE_DN );
         assertEquals( entry1, entry2 );
 
-        EntryAttribute attrOC = new DefaultClientAttribute( "objectClass", "top", "person" );
-        EntryAttribute attrCN = new DefaultClientAttribute( "cn", "test1", "test2" );
-        EntryAttribute attrSN = new DefaultClientAttribute( "sn", "Test1", "Test2" );
-        EntryAttribute attrPWD = new DefaultClientAttribute( "userPassword", BYTES1, BYTES2 );
+        EntryAttribute attrOC = new DefaultEntryAttribute( "objectClass", "top", "person" );
+        EntryAttribute attrCN = new DefaultEntryAttribute( "cn", "test1", "test2" );
+        EntryAttribute attrSN = new DefaultEntryAttribute( "sn", "Test1", "Test2" );
+        EntryAttribute attrPWD = new DefaultEntryAttribute( "userPassword", BYTES1, BYTES2 );
         
         entry1.put( attrOC, attrCN, attrSN, attrPWD );
         entry2.put( attrOC, attrCN, attrSN );
@@ -660,8 +661,8 @@ public class DefaultClientEntryTest
         entry2.put( attrPWD );
         assertEquals( entry1, entry2 );
         
-        EntryAttribute attrL1 = new DefaultClientAttribute( "l", "Paris", "New-York" );
-        EntryAttribute attrL2 = new DefaultClientAttribute( "l", "Paris", "Tokyo" );
+        EntryAttribute attrL1 = new DefaultEntryAttribute( "l", "Paris", "New-York" );
+        EntryAttribute attrL2 = new DefaultEntryAttribute( "l", "Paris", "Tokyo" );
         
         entry1.put( attrL1 );
         entry2.put( attrL1 );
@@ -689,10 +690,10 @@ public class DefaultClientEntryTest
         
         assertNull( entry.get( "objectClass" ) );
         
-        EntryAttribute attrOC = new DefaultClientAttribute( "objectClass", "top", "person" );
-        EntryAttribute attrCN = new DefaultClientAttribute( "cn", "test1", "test2" );
-        EntryAttribute attrSN = new DefaultClientAttribute( "sn", "Test1", "Test2" );
-        EntryAttribute attrPWD = new DefaultClientAttribute( "userPassword", BYTES1, BYTES2 );
+        EntryAttribute attrOC = new DefaultEntryAttribute( "objectClass", "top", "person" );
+        EntryAttribute attrCN = new DefaultEntryAttribute( "cn", "test1", "test2" );
+        EntryAttribute attrSN = new DefaultEntryAttribute( "sn", "Test1", "Test2" );
+        EntryAttribute attrPWD = new DefaultEntryAttribute( "userPassword", BYTES1, BYTES2 );
 
         entry.add( attrOC, attrCN, attrSN, attrPWD );
         
@@ -742,10 +743,10 @@ public class DefaultClientEntryTest
         assertEquals( entry1.hashCode(), entry2.hashCode() );
         
         
-        EntryAttribute attrOC = new DefaultClientAttribute( "objectClass", "top", "person" );
-        EntryAttribute attrCN = new DefaultClientAttribute( "cn", "test1", "test2" );
-        EntryAttribute attrSN = new DefaultClientAttribute( "sn", "Test1", "Test2" );
-        EntryAttribute attrPWD = new DefaultClientAttribute( "userPassword", BYTES1, BYTES2 );
+        EntryAttribute attrOC = new DefaultEntryAttribute( "objectClass", "top", "person" );
+        EntryAttribute attrCN = new DefaultEntryAttribute( "cn", "test1", "test2" );
+        EntryAttribute attrSN = new DefaultEntryAttribute( "sn", "Test1", "Test2" );
+        EntryAttribute attrPWD = new DefaultEntryAttribute( "userPassword", BYTES1, BYTES2 );
 
         entry1.add( attrOC, attrCN, attrSN, attrPWD );
         entry2.add( attrOC, attrCN, attrSN, attrPWD );
@@ -770,7 +771,7 @@ public class DefaultClientEntryTest
         assertFalse( entry.containsAttribute( "objectClass" ) );
         assertFalse( entry.hasObjectClass( "top" ) );
         
-        entry.add( new DefaultClientAttribute( "objectClass", "top", "person" ) );
+        entry.add( new DefaultEntryAttribute( "objectClass", "top", "person" ) );
         
         assertTrue( entry.hasObjectClass( "top" ) );
         assertTrue( entry.hasObjectClass( "person" ) );
@@ -819,10 +820,10 @@ public class DefaultClientEntryTest
     {
         Entry entry = new DefaultClientEntry( EXAMPLE_DN );
         
-        EntryAttribute attrOC = new DefaultClientAttribute( "objectClass", "top", "person" );
-        EntryAttribute attrCN = new DefaultClientAttribute( "cn", "test1", "test2" );
-        EntryAttribute attrSN = new DefaultClientAttribute( "sn", "Test1", "Test2" );
-        EntryAttribute attrPWD = new DefaultClientAttribute( "userPassword", BYTES1, BYTES2 );
+        EntryAttribute attrOC = new DefaultEntryAttribute( "objectClass", "top", "person" );
+        EntryAttribute attrCN = new DefaultEntryAttribute( "cn", "test1", "test2" );
+        EntryAttribute attrSN = new DefaultEntryAttribute( "sn", "Test1", "Test2" );
+        EntryAttribute attrPWD = new DefaultEntryAttribute( "userPassword", BYTES1, BYTES2 );
         
         List<EntryAttribute> removed = entry.put( attrOC, attrCN, attrSN, attrPWD );
         
@@ -833,7 +834,7 @@ public class DefaultClientEntryTest
         assertTrue( entry.containsAttribute( "  sn  " ) );
         assertTrue( entry.containsAttribute( "userPassword" ) );
         
-        EntryAttribute attrCN2 = new DefaultClientAttribute( "cn", "test3", "test4" );
+        EntryAttribute attrCN2 = new DefaultEntryAttribute( "cn", "test3", "test4" );
         removed = entry.put( attrCN2 );
         assertEquals( 4, entry.size() );
         assertEquals( 1, removed.size() );
@@ -1022,10 +1023,10 @@ public class DefaultClientEntryTest
     {
         Entry entry = new DefaultClientEntry( EXAMPLE_DN );
 
-        EntryAttribute attrOC = new DefaultClientAttribute( "objectClass", "top", "person" );
-        EntryAttribute attrCN = new DefaultClientAttribute( "cn", "test1", "test2" );
-        EntryAttribute attrSN = new DefaultClientAttribute( "sn", "Test1", "Test2" );
-        EntryAttribute attrPWD = new DefaultClientAttribute( "userPassword", BYTES1, BYTES2 );
+        EntryAttribute attrOC = new DefaultEntryAttribute( "objectClass", "top", "person" );
+        EntryAttribute attrCN = new DefaultEntryAttribute( "cn", "test1", "test2" );
+        EntryAttribute attrSN = new DefaultEntryAttribute( "sn", "Test1", "Test2" );
+        EntryAttribute attrPWD = new DefaultEntryAttribute( "userPassword", BYTES1, BYTES2 );
         
         entry.put( attrOC, attrCN, attrSN, attrPWD );
         
@@ -1050,10 +1051,10 @@ public class DefaultClientEntryTest
     {
         Entry entry = new DefaultClientEntry( EXAMPLE_DN );
         
-        EntryAttribute attrOC = new DefaultClientAttribute( "objectClass", "top", "person" );
-        EntryAttribute attrCN = new DefaultClientAttribute( "cn", "test1", "test2" );
-        EntryAttribute attrSN = new DefaultClientAttribute( "sn", "Test1", "Test2" );
-        EntryAttribute attrPWD = new DefaultClientAttribute( "userPassword", BYTES1, BYTES2 );
+        EntryAttribute attrOC = new DefaultEntryAttribute( "objectClass", "top", "person" );
+        EntryAttribute attrCN = new DefaultEntryAttribute( "cn", "test1", "test2" );
+        EntryAttribute attrSN = new DefaultEntryAttribute( "sn", "Test1", "Test2" );
+        EntryAttribute attrPWD = new DefaultEntryAttribute( "userPassword", BYTES1, BYTES2 );
         
         entry.put( attrOC, attrCN, attrSN, attrPWD );
         
@@ -1082,7 +1083,7 @@ public class DefaultClientEntryTest
     {
         Entry entry = new DefaultClientEntry( EXAMPLE_DN );
         
-        EntryAttribute attrPWD = new DefaultClientAttribute( "userPassword", BYTES1, (byte[])null, BYTES2 );
+        EntryAttribute attrPWD = new DefaultEntryAttribute( "userPassword", BYTES1, (byte[])null, BYTES2 );
 
         entry.put( attrPWD );
         assertTrue( entry.remove( "userPassword", (byte[])null ) );
@@ -1133,8 +1134,8 @@ public class DefaultClientEntryTest
     {
         Entry entry = new DefaultClientEntry( EXAMPLE_DN );
 
-        EntryAttribute attrCN = new DefaultClientAttribute( "cn", "test1", "test2", (String)null );
-        EntryAttribute attrPWD = new DefaultClientAttribute( "userPassword", BYTES1, BYTES2, (byte[])null );
+        EntryAttribute attrCN = new DefaultEntryAttribute( "cn", "test1", "test2", (String)null );
+        EntryAttribute attrPWD = new DefaultEntryAttribute( "userPassword", BYTES1, BYTES2, (byte[])null );
 
         entry.add( attrCN, attrPWD );
         
