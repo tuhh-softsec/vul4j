@@ -324,13 +324,15 @@ public class DefaultClientEntryTest
         assertEquals( 3, attr.size() );
         assertTrue( attr.contains( "test1", "test2", "test3" ) );
         
-        // Check adding some byte[] values (they will be transformed to Strings)
-        attrCN2.put( BYTES1, BYTES2 );
+        // Check adding some byte[] values (they will not be transformed to Strings)
+        attrCN2.clear();
+        attrCN2.add( BYTES1, BYTES2 );
         entry.add( attrCN2 );
         assertEquals( 4, entry.size() );
         attr = entry.get( "cn" );
-        assertEquals( 5, attr.size() );
-        assertTrue( attr.contains( "test1", "test2", "test3", "ab", "b" ) );
+        assertEquals( 3, attr.size() );
+        assertTrue( attr.contains( "test1", "test2", "test3" ) );
+        assertFalse( attr.contains( "ab", "b" ) );
     }
 
 

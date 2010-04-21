@@ -31,6 +31,7 @@ import java.util.Set;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.NotImplementedException;
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
+import org.apache.directory.shared.ldap.entry.client.DefaultClientAttribute;
 import org.apache.directory.shared.ldap.entry.client.DefaultClientEntry;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.name.DN;
@@ -157,7 +158,7 @@ public final class DefaultServerEntry extends AbstractEntry<AttributeType> imple
      */
     private void createAttribute( String upId, AttributeType attributeType, byte[]... values ) 
     {
-        EntryAttribute attribute = new DefaultServerAttribute( attributeType, values );
+        EntryAttribute attribute = new DefaultClientAttribute( attributeType, values );
         attribute.setUpId( upId, attributeType );
         attributes.put( attributeType, attribute );
     }
@@ -171,7 +172,7 @@ public final class DefaultServerEntry extends AbstractEntry<AttributeType> imple
      */
     private void createAttribute( String upId, AttributeType attributeType, String... values ) 
     {
-        EntryAttribute attribute = new DefaultServerAttribute( attributeType, values );
+        EntryAttribute attribute = new DefaultClientAttribute( attributeType, values );
         attribute.setUpId( upId, attributeType );
         attributes.put( attributeType, attribute );
     }
@@ -185,7 +186,7 @@ public final class DefaultServerEntry extends AbstractEntry<AttributeType> imple
      */
     private void createAttribute( String upId, AttributeType attributeType, Value<?>... values ) 
     {
-        EntryAttribute attribute = new DefaultServerAttribute( attributeType, values );
+        EntryAttribute attribute = new DefaultClientAttribute( attributeType, values );
         attribute.setUpId( upId, attributeType );
         attributes.put( attributeType, attribute );
     }
@@ -288,7 +289,7 @@ public final class DefaultServerEntry extends AbstractEntry<AttributeType> imple
                 }
                 
                 // Create a new ServerAttribute.
-                EntryAttribute serverAttribute = new DefaultServerAttribute( attributeType, attribute );
+                EntryAttribute serverAttribute = new DefaultClientAttribute( attributeType, attribute );
                 
                 // And store it
                 add( serverAttribute );
@@ -1466,7 +1467,8 @@ public final class DefaultServerEntry extends AbstractEntry<AttributeType> imple
             throw new UnsupportedOperationException( message );
         }
 
-        EntryAttribute attribute = new DefaultServerAttribute( upId, attributeType, values );
+        EntryAttribute attribute = new DefaultClientAttribute( upId, attributeType, values );
+        
         return attributes.put( attributeType, attribute );
     }
 
@@ -1528,7 +1530,8 @@ public final class DefaultServerEntry extends AbstractEntry<AttributeType> imple
             }
         }
         
-        EntryAttribute attribute = new DefaultServerAttribute( upId, attributeType, values );
+        EntryAttribute attribute = new DefaultClientAttribute( upId, attributeType, values );
+        
         return attributes.put( attributeType, attribute );
     }
 
@@ -1581,7 +1584,8 @@ public final class DefaultServerEntry extends AbstractEntry<AttributeType> imple
             upId = getUpId( upId, attributeType );
         }
         
-        EntryAttribute attribute = new DefaultServerAttribute( upId, attributeType, values );
+        EntryAttribute attribute = new DefaultClientAttribute( upId, attributeType, values );
+        
         return attributes.put( attributeType, attribute );
     }
 
@@ -2148,7 +2152,7 @@ public final class DefaultServerEntry extends AbstractEntry<AttributeType> imple
                 continue;
             }
             
-            EntryAttribute attribute = attributes.put( attributeType, new DefaultServerAttribute( attributeType ) );
+            EntryAttribute attribute = attributes.put( attributeType, new DefaultClientAttribute( attributeType ) );
 
             if ( attribute != null )
             {
@@ -2205,7 +2209,7 @@ public final class DefaultServerEntry extends AbstractEntry<AttributeType> imple
             }
             
             EntryAttribute attribute = attributes.put( attributeType, 
-                new DefaultServerAttribute( upId, attributeType ));
+                new DefaultClientAttribute( upId, attributeType ));
             
             if ( attribute != null )
             {
@@ -2340,7 +2344,7 @@ public final class DefaultServerEntry extends AbstractEntry<AttributeType> imple
             out.writeUTF( oid );
             
             // Get the attribute
-            DefaultServerAttribute attribute = (DefaultServerAttribute)attributes.get( attributeType );
+            DefaultClientAttribute attribute = (DefaultClientAttribute)attributes.get( attributeType );
 
             // Write the attribute
             attribute.serialize( out );
@@ -2393,7 +2397,7 @@ public final class DefaultServerEntry extends AbstractEntry<AttributeType> imple
                 AttributeType attributeType = schemaManager.lookupAttributeTypeRegistry( oid );
                 
                 // Create the attribute we will read
-                DefaultServerAttribute attribute = new DefaultServerAttribute( attributeType );
+                EntryAttribute attribute = new DefaultClientAttribute( attributeType );
                 
                 // Read the attribute
                 attribute.deserialize( in );

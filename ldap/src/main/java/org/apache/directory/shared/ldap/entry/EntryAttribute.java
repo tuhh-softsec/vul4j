@@ -19,6 +19,8 @@
 package org.apache.directory.shared.ldap.entry;
 
 import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
 import java.util.Iterator;
 import java.util.List;
 
@@ -241,6 +243,12 @@ public interface EntryAttribute extends Iterable<Value<?>>, Cloneable, Externali
 
     
     /**
+     * @see Externalizable#readExternal(ObjectInput)
+     */
+    void deserialize( ObjectInput in ) throws IOException, ClassNotFoundException;
+
+    
+    /**
      * <p>
      * Get the first value of this attribute. If there is none, 
      * null is returned.
@@ -367,7 +375,7 @@ public interface EntryAttribute extends Iterable<Value<?>>, Cloneable, Externali
      *
      * @param val some values to be put which may be null
      * @return the number of added values, or 0 if none has been added
-     */
+     *
     int put( String... vals );
 
 
@@ -382,7 +390,7 @@ public interface EntryAttribute extends Iterable<Value<?>>, Cloneable, Externali
      *
      * @param val some values to be put which may be null
      * @return the number of added values, or 0 if none has been added
-     */
+     *
     int put( byte[]... vals );
 
     
@@ -397,7 +405,7 @@ public interface EntryAttribute extends Iterable<Value<?>>, Cloneable, Externali
      *
      * @param val some values to be put which may be null
      * @return the number of added values, or 0 if none has been added
-     */
+     *
     int put( Value<?>... vals );
 
 
@@ -414,7 +422,7 @@ public interface EntryAttribute extends Iterable<Value<?>>, Cloneable, Externali
      *
      * @param vals the values to be put
      * @return the number of added values, or 0 if none has been added
-     */
+     *
     int put( List<Value<?>> vals );
 
 

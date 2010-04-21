@@ -19,12 +19,12 @@
 package org.apache.directory.shared.ldap.entry.client;
 
 
+import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.apache.directory.shared.ldap.exception.LdapException;
@@ -73,8 +73,84 @@ public class DefaultClientAttribute implements EntryAttribute
     /** Tells if the attribute is Human Readable or not. When not set, 
      * this flag is null. */
     protected Boolean isHR;
+    
+    //-------------------------------------------------------------------------
+    // Helper methods
+    //-------------------------------------------------------------------------
+    private Value<String> createStringValue( AttributeType attributeType, String value )
+    {
+        Value<String> stringValue = null;
+        
+        if ( attributeType != null )
+        {
+            stringValue = new StringValue( attributeType, value );
+            
+            try
+            {
+                stringValue.normalize();
+            }
+            catch( LdapException ne )
+            {
+                // The value can't be normalized : we don't add it.
+                LOG.error( I18n.err( I18n.ERR_04449, value ) );
+                return null;
+            }
+    
+            if ( !stringValue.isValid() )
+            {
+                // The value is not valid : we don't add it.
+                LOG.error( I18n.err( I18n.ERR_04450, value ) );
+                return null;
+            }
+        }
+        else
+        {
+            stringValue = new StringValue( value );
+        }
+        
+        return stringValue;
+    }
 
 
+    private Value<byte[]> createBinaryValue( AttributeType attributeType, byte[] value )
+    {
+        Value<byte[]> binaryValue = null;
+        
+        if ( attributeType != null )
+        {
+            binaryValue = new BinaryValue( attributeType, value );
+            
+            try
+            {
+                binaryValue.normalize();
+            }
+            catch( LdapException ne )
+            {
+                // The value can't be normalized : we don't add it.
+                LOG.error( I18n.err( I18n.ERR_04449, value ) );
+                return null;
+            }
+            
+            if ( !binaryValue.isValid() )
+            {
+                // The value is not valid : we don't add it.
+                LOG.error( I18n.err( I18n.ERR_04450, value ) );
+                return null;
+            }
+        }
+        else
+        {
+            binaryValue = new BinaryValue( value );
+        }
+        
+        return binaryValue;
+    }
+
+
+
+    //-------------------------------------------------------------------------
+    // Constructors
+    //-------------------------------------------------------------------------
     // maybe have some additional convenience constructors which take
     // an initial value as a string or a byte[]
     /**
@@ -86,11 +162,47 @@ public class DefaultClientAttribute implements EntryAttribute
 
 
     /**
+     * Create a new instance of a EntryAttribute, without ID nor value.
+     * 
+     * @param attributeType the attributeType for the empty attribute added into the entry
+     */
+    public DefaultClientAttribute( AttributeType attributeType )
+    {
+        if ( attributeType == null )
+        {
+            throw new IllegalArgumentException( I18n.err( I18n.ERR_04442 ) );
+        }
+        
+        setAttributeType( attributeType );
+    }
+
+
+    /**
      * Create a new instance of a EntryAttribute, without value.
      */
     public DefaultClientAttribute( String upId )
     {
         setUpId( upId );
+    }
+
+
+    /**
+     * Create a new instance of a EntryAttribute, without value.
+     * 
+     * @param upId the ID for the added attributeType
+     * @param attributeType the added AttributeType
+     */
+    public DefaultClientAttribute( String upId, AttributeType attributeType )
+    {
+        if ( attributeType == null ) 
+        {
+            String message = I18n.err( I18n.ERR_04442 );
+            LOG.error( message );
+            throw new IllegalArgumentException( message );
+        }
+
+        setAttributeType( attributeType );
+        setUpId( upId, attributeType );
     }
 
 
@@ -134,6 +246,80 @@ public class DefaultClientAttribute implements EntryAttribute
 
 
     /**
+     * Create a new instance of a EntryAttribute, without ID but with some values.
+     * 
+     * @param attributeType The attributeType added on creation
+     * @param vals The added value for this attribute
+     */
+    public DefaultClientAttribute( AttributeType attributeType, String... vals )
+    {
+        this( null, attributeType, vals );
+    }
+
+
+    /**
+     * Create a new instance of a EntryAttribute.
+     * 
+     * @param upId the ID for the added attribute
+     * @param attributeType The attributeType added on creation
+     * @param vals the added values for this attribute
+     */
+    public DefaultClientAttribute( String upId, AttributeType attributeType, String... vals )
+    {
+        if ( attributeType == null )
+        {
+            throw new IllegalArgumentException( I18n.err( I18n.ERR_04442 ) );
+        }
+
+        setAttributeType( attributeType );
+        add( vals );
+        setUpId( upId, attributeType );
+    }
+
+
+    /**
+     * Doc me more!
+     *
+     * If the value does not correspond to the same attributeType, then it's
+     * wrapped value is copied into a new Value which uses the specified
+     * attributeType.
+     * 
+     * Otherwise, the value is stored, but as a reference. It's not a copy.
+     *
+     * @param upId the ID of the added attribute
+     * @param attributeType the attribute type according to the schema
+     * @param vals an initial set of values for this attribute
+     */
+    public DefaultClientAttribute( String upId, AttributeType attributeType, Value<?>... vals )
+    {
+        if ( attributeType == null )
+        {
+            throw new IllegalArgumentException( I18n.err( I18n.ERR_04442 ) );
+        }
+        
+        setAttributeType( attributeType );
+        setUpId( upId, attributeType );
+        add( vals );
+    }
+
+
+    /**
+     * Doc me more!
+     *
+     * If the value does not correspond to the same attributeType, then it's
+     * wrapped value is copied into a new Value which uses the specified
+     * attributeType.
+     *
+     * @param attributeType the attribute type according to the schema
+     * @param vals an initial set of values for this attribute
+     */
+    public DefaultClientAttribute( AttributeType attributeType, Value<?>... vals )
+    {
+        this( null, attributeType, vals );
+    }
+
+
+    /**
      * Create a new instance of a EntryAttribute.
      */
     public DefaultClientAttribute( String upId, String... vals )
@@ -153,6 +339,108 @@ public class DefaultClientAttribute implements EntryAttribute
     }
 
 
+    /**
+     * Create a new instance of a EntryAttribute, with some byte[] values.
+     * 
+     * @param attributeType The attributeType added on creation
+     * @param vals The value for the added attribute
+     */
+    public DefaultClientAttribute( AttributeType attributeType, byte[]... vals )
+    {
+        this( null, attributeType, vals );
+    }
+
+
+    /**
+     * Create a new instance of a EntryAttribute, with some byte[] values.
+     * 
+     * @param upId the ID for the added attribute
+     * @param attributeType the AttributeType to be added
+     * @param vals the values for the added attribute
+     */
+    public DefaultClientAttribute( String upId, AttributeType attributeType, byte[]... vals )
+    {
+        if ( attributeType == null )
+        {
+            throw new IllegalArgumentException( I18n.err( I18n.ERR_04442 ) );
+        }
+
+        setAttributeType( attributeType );
+        add( vals );
+        setUpId( upId, attributeType );
+    }
+    
+    
+    /**
+     * 
+     * Creates a new instance of DefaultServerAttribute, by copying
+     * another attribute, which can be a ClientAttribute. If the other
+     * attribute is a ServerAttribute, it will be copied.
+     *
+     * @param attributeType The attribute's type 
+     * @param attribute The attribute to be copied
+     */
+    public DefaultClientAttribute( AttributeType attributeType, EntryAttribute attribute )
+    {
+        // Copy the common values. isHR is only available on a ServerAttribute 
+        this.attributeType = attributeType;
+        this.id = attribute.getId();
+        this.upId = attribute.getUpId();
+
+        if ( attributeType == null )
+        {
+            isHR = attribute.isHR();
+
+            // Copy all the values
+            for ( Value<?> value:attribute )
+            {
+                add( value.clone() );
+            }
+        }
+        else
+        {
+            
+            isHR = attributeType.getSyntax().isHumanReadable();
+
+            // Copy all the values
+            for ( Value<?> clientValue:attribute )
+            {
+                Value<?> serverValue = null; 
+
+                // We have to convert the value first
+                if ( clientValue instanceof StringValue )
+                {
+                    if ( isHR )
+                    {
+                        serverValue = new StringValue( attributeType, clientValue.getString() );
+                    }
+                    else
+                    {
+                        // We have to convert the value to a binary value first
+                        serverValue = new BinaryValue( attributeType, 
+                            clientValue.getBytes() );
+                    }
+                }
+                else if ( clientValue instanceof BinaryValue )
+                {
+                    if ( isHR )
+                    {
+                        // We have to convert the value to a String value first
+                        serverValue = new StringValue( attributeType, 
+                            clientValue.getString() );
+                    }
+                    else
+                    {
+                        serverValue = new BinaryValue( attributeType, clientValue.getBytes() );
+                    }
+                }
+
+                add( serverValue );
+            }
+        }
+    }
+
+    
     /**
      * <p>
      * Get the byte[] value, if and only if the value is known to be Binary,
@@ -232,14 +520,17 @@ public class DefaultClientAttribute implements EntryAttribute
      */
     public void setHR( boolean isHR )
     {
-        this.isHR = isHR;
         //TODO : deal with the values, we may have to convert them.
+
+        if ( attributeType == null )
+        {
+            this.isHR = isHR;
+        }
     }
 
     
     /**
-     * Set the normalized ID. The ID will be lowercased, and spaces
-     * will be trimmed. 
+     * Set the Attribute ID. 
      *
      * @param id The attribute ID
      * @throws IllegalArgumentException If the ID is empty or null or
@@ -247,13 +538,52 @@ public class DefaultClientAttribute implements EntryAttribute
      */
     public void setId( String id )
     {
-        this.id = StringTools.trim( StringTools.lowerCaseAscii( id ) );
+        String newId = StringTools.trim( StringTools.lowerCaseAscii( id ) );
 
-        if ( this.id.length() == 0 )
+        if ( newId.length() == 0 )
         {
-            this.id = null;
             throw new IllegalArgumentException( I18n.err( I18n.ERR_04132 ) );
         }
+        
+        if ( attributeType != null )
+        {
+            if ( attributeType.getName() == null )
+            {
+                // If the name is null, then we may have to store an OID
+                if ( !OID.isOID( newId )  || !attributeType.getOid().equals( newId ) )
+                {
+                    // This is an error
+                    throw new IllegalArgumentException( I18n.err( I18n.ERR_04132 ) );
+                }
+            }
+            else
+            {
+                // We have at least one name. Check that the normalized upId
+                // is one of those names. Otherwise, the upId may be an OID too.
+                // In this case, it must be equals to the attributeType OID.
+                for ( String atName:attributeType.getNames() )
+                {
+                    if ( atName.equalsIgnoreCase( newId ) )
+                    {
+                        // Found ! We can store the upId and get out
+                        this.id = newId;
+                        this.upId = id;
+                        
+                        return;
+                    }
+                }
+                
+                // Last case, the UpId is an OID
+                if ( !OID.isOID( newId ) || !attributeType.getOid().equals( newId ) )
+                {
+                    // The id is incorrect : this is not allowed 
+                    throw new IllegalArgumentException( I18n.err( I18n.ERR_04455, id, attributeType.getName() ) );
+                }
+            }
+        }
+
+        this.id = newId;
+        this.upId = id;
     }
 
     
@@ -421,6 +751,22 @@ public class DefaultClientAttribute implements EntryAttribute
      */
     public boolean isValid() throws LdapException
     {
+        if ( attributeType != null )
+        {
+            // First check if the attribute has more than one value
+            // if the attribute is supposed to be SINGLE_VALUE
+            if ( attributeType.isSingleValued() && ( values.size() > 1 ) )
+            {
+                return false;
+            }
+
+            // Check that we can have no value for this attributeType
+            if ( values.size() == 0 )
+            {
+                return attributeType.getSyntax().getSyntaxChecker().isValidSyntax( null );
+            }
+        }
+
         for ( Value<?> value:values )
         {
             if ( !value.isValid() )
@@ -498,116 +844,190 @@ public class DefaultClientAttribute implements EntryAttribute
         StringValue nullStringValue = null;
         boolean nullValueAdded = false;
         
-        for ( Value<?> val:vals )
+        if ( attributeType != null )
         {
-            if ( val == null )
+            for ( Value<?> val:vals )
             {
-                // We have a null value. If the HR flag is not set, we will consider 
-                // that the attribute is not HR. We may change this later
-                if ( isHR == null )
+                if ( attributeType.getSyntax().isHumanReadable() )
                 {
-                    // This is the first value. Add both types, as we 
-                    // don't know yet the attribute type's, but we may
-                    // know later if we add some new value.
-                    // We have to do that because we are using a Set,
-                    // and we can't remove the first element of the Set.
-                    nullBinaryValue = new BinaryValue( (byte[])null );
-                    nullStringValue = new StringValue( (String)null );
-                    
-                    values.add( nullBinaryValue );
-                    values.add( nullStringValue );
-                    nullValueAdded = true;
-                    nbAdded++;
-                }
-                else if ( !isHR )
-                {
-                    // The attribute type is binary.
-                    nullBinaryValue = new BinaryValue( (byte[])null );
-                    
-                    // Don't add a value if it already exists. 
-                    if ( !values.contains( nullBinaryValue ) )
+                    if ( ( val == null ) || val.isNull() )
                     {
-                        values.add( nullBinaryValue );
-                        nbAdded++;
+                        Value<String> nullSV = new StringValue( attributeType, (String)null );
+                        
+                        if ( values.add( nullSV ) )
+                        {
+                            nbAdded++;
+                        }
                     }
-                    
+                    else if ( val instanceof StringValue )
+                    {
+                        StringValue stringValue = (StringValue)val;
+                        
+                        if ( stringValue.getAttributeType() == null )
+                        {
+                            stringValue.apply( attributeType );
+                        }
+                        
+                        if ( values.add( val ) )
+                        {
+                            nbAdded++;
+                        }
+                    }
+                    else
+                    {
+                        String message = I18n.err( I18n.ERR_04451 );
+                        LOG.error( message );
+                    }
                 }
                 else
                 {
-                    // The attribute is HR
-                    nullStringValue = new StringValue( (String)null );
-                    
-                    // Don't add a value if it already exists. 
-                    if ( !values.contains( nullStringValue ) )
+                    if ( val == null )
                     {
-                        values.add( nullStringValue );
+                        Value<byte[]> nullSV = new BinaryValue( attributeType, (byte[])null );
+                        
+                        if ( values.add( nullSV ) )
+                        {
+                            nbAdded++;
+                        }
+                    }
+                    else
+                    {
+                        if ( val instanceof BinaryValue )
+                        {
+                            BinaryValue binaryValue = (BinaryValue)val;
+                            
+                            if ( binaryValue.getAttributeType() == null )
+                            {
+                                binaryValue = new BinaryValue( attributeType, val.getBytes() ); 
+                            }
+        
+                            if ( values.add( binaryValue ) )
+                            {
+                                nbAdded++;
+                            }
+                        }
+                        else
+                        {
+                            String message = I18n.err( I18n.ERR_04452 );
+                            LOG.error( message );
+                        }
                     }
                 }
             }
-            else
+        }
+        else
+        {
+            for ( Value<?> val:vals )
             {
-                // Let's check the value type. 
-                if ( val instanceof StringValue )
+                if ( val == null )
                 {
-                    // We have a String value
+                    // We have a null value. If the HR flag is not set, we will consider 
+                    // that the attribute is not HR. We may change this later
                     if ( isHR == null )
                     {
-                        // The attribute type will be set to HR
-                        isHR = true;
-                        values.add( val );
+                        // This is the first value. Add both types, as we 
+                        // don't know yet the attribute type's, but we may
+                        // know later if we add some new value.
+                        // We have to do that because we are using a Set,
+                        // and we can't remove the first element of the Set.
+                        nullBinaryValue = new BinaryValue( (byte[])null );
+                        nullStringValue = new StringValue( (String)null );
+                        
+                        values.add( nullBinaryValue );
+                        values.add( nullStringValue );
+                        nullValueAdded = true;
                         nbAdded++;
                     }
                     else if ( !isHR )
                     {
-                        // The attributeType is binary, convert the
-                        // value to a BinaryValue
-                        BinaryValue bv = new BinaryValue( val.getBytes() );
+                        // The attribute type is binary.
+                        nullBinaryValue = new BinaryValue( (byte[])null );
                         
-                        if ( !contains( bv ) )
+                        // Don't add a value if it already exists. 
+                        if ( !values.contains( nullBinaryValue ) )
                         {
-                            values.add( bv );
+                            values.add( nullBinaryValue );
                             nbAdded++;
                         }
+                        
                     }
                     else
                     {
-                        // The attributeType is HR, simply add the value
-                        if ( !contains( val ) )
+                        // The attribute is HR
+                        nullStringValue = new StringValue( (String)null );
+                        
+                        // Don't add a value if it already exists. 
+                        if ( !values.contains( nullStringValue ) )
                         {
-                            values.add( val );
-                            nbAdded++;
+                            values.add( nullStringValue );
                         }
                     }
                 }
                 else
                 {
-                    // We have a Binary value
-                    if ( isHR == null )
+                    // Let's check the value type. 
+                    if ( val instanceof StringValue )
                     {
-                        // The attribute type will be set to binary
-                        isHR = false;
-                        values.add( val );
-                        nbAdded++;
-                    }
-                    else if ( !isHR )
-                    {
-                        // The attributeType is not HR, simply add the value if it does not already exist
-                        if ( !contains( val ) )
+                        // We have a String value
+                        if ( isHR == null )
                         {
+                            // The attribute type will be set to HR
+                            isHR = true;
                             values.add( val );
                             nbAdded++;
+                        }
+                        else if ( !isHR )
+                        {
+                            // The attributeType is binary, convert the
+                            // value to a BinaryValue
+                            BinaryValue bv = new BinaryValue( val.getBytes() );
+                            
+                            if ( !contains( bv ) )
+                            {
+                                values.add( bv );
+                                nbAdded++;
+                            }
+                        }
+                        else
+                        {
+                            // The attributeType is HR, simply add the value
+                            if ( !contains( val ) )
+                            {
+                                values.add( val );
+                                nbAdded++;
+                            }
                         }
                     }
                     else
                     {
-                        // The attribute Type is HR, convert the
-                        // value to a StringValue
-                        StringValue sv = new StringValue( val.getString() );
-                        
-                        if ( !contains( sv ) )
+                        // We have a Binary value
+                        if ( isHR == null )
                         {
-                            values.add( sv );
+                            // The attribute type will be set to binary
+                            isHR = false;
+                            values.add( val );
                             nbAdded++;
+                        }
+                        else if ( !isHR )
+                        {
+                            // The attributeType is not HR, simply add the value if it does not already exist
+                            if ( !contains( val ) )
+                            {
+                                values.add( val );
+                                nbAdded++;
+                            }
+                        }
+                        else
+                        {
+                            // The attribute Type is HR, convert the
+                            // value to a StringValue
+                            StringValue sv = new StringValue( val.getString() );
+                            
+                            if ( !contains( sv ) )
+                            {
+                                values.add( sv );
+                                nbAdded++;
+                            }
                         }
                     }
                 }
@@ -650,14 +1070,55 @@ public class DefaultClientAttribute implements EntryAttribute
         }
 
         // Check the attribute type.
-        if ( isHR )
+        if ( attributeType == null )
         {
-            for ( String val:vals )
+            if ( isHR )
             {
-                // Call the add(Value) method, if not already present
-                if ( !contains( val ) )
+                for ( String val:vals )
                 {
-                    if ( add( new StringValue( val ) ) == 1 )
+                    Value<String> value = createStringValue( attributeType, val );
+                    
+                    if ( value == null )
+                    {
+                        // The value can't be normalized : we don't add it.
+                        LOG.error( I18n.err( I18n.ERR_04449, val ) );
+                        continue;
+                    }
+                    
+                    // Call the add(Value) method, if not already present
+                    if ( add( value ) == 1 )
+                    {
+                        nbAdded++;
+                    }
+                    else
+                    {
+                        LOG.error( I18n.err( I18n.ERR_04450, val ) );
+                    }
+                }
+            }
+            else
+            {
+                // The attribute is binary. Transform the String to byte[]
+                for ( String val:vals )
+                {
+                    byte[] valBytes = null;
+                    
+                    if ( val != null )
+                    {
+                        valBytes = StringTools.getBytesUtf8( val );
+                    }
+                    
+                    Value<byte[]> value = createBinaryValue( attributeType, valBytes );
+                    
+                    if ( value == null )
+                    {
+                        // The value can't be normalized or is invalid : we don't add it.
+                        LOG.error( I18n.err( I18n.ERR_04449, val ) );
+                        continue;
+                    }
+                    
+                    // Now call the add(Value) method
+                    if ( add( value ) == 1 )
                     {
                         nbAdded++;
                     }
@@ -666,20 +1127,56 @@ public class DefaultClientAttribute implements EntryAttribute
         }
         else
         {
-            // The attribute is binary. Transform the String to byte[]
-            for ( String val:vals )
+            if ( isHR )
             {
-                byte[] valBytes = null;
-                
-                if ( val != null )
+                for ( String val:vals )
                 {
-                    valBytes = StringTools.getBytesUtf8( val );
+                    Value<String> value = createStringValue( attributeType, val );
+                    
+                    if ( value == null )
+                    {
+                        // The value can't be normalized : we don't add it.
+                        LOG.error( I18n.err( I18n.ERR_04449, val ) );
+                        continue;
+                    }
+                    
+                    // Call the add(Value) method, if not already present
+                    if ( add( value ) == 1 )
+                    {
+                        nbAdded++;
+                    }
+                    else
+                    {
+                        LOG.error( I18n.err( I18n.ERR_04450, val ) );
+                    }
                 }
-                
-                // Now call the add(Value) method
-                if ( add( new BinaryValue( valBytes ) ) == 1 )
+            }
+            else
+            {
+                // The attribute is binary. Transform the String to byte[]
+                for ( String val:vals )
                 {
-                    nbAdded++;
+                    byte[] valBytes = null;
+                    
+                    if ( val != null )
+                    {
+                        valBytes = StringTools.getBytesUtf8( val );
+                    }
+                    
+                    Value<byte[]> value = createBinaryValue( attributeType, valBytes );
+                    
+                    if ( value == null )
+                    {
+                        // The value can't be normalized or is invalid : we don't add it.
+                        LOG.error( I18n.err( I18n.ERR_04449, val ) );
+                        continue;
+                    }
+                    
+                    // Now call the add(Value) method
+                    if ( add( value ) == 1 )
+                    {
+                        nbAdded++;
+                    }
                 }
             }
         }
@@ -726,39 +1223,48 @@ public class DefaultClientAttribute implements EntryAttribute
         {
             isHR = false;
         }
-
-        // Check the attribute type.
-        if ( isHR )
+        
+        if ( !isHR )
         {
-            // The attribute is HR. Transform the byte[] to String
             for ( byte[] val:vals )
             {
-                String valString = null;
+                Value<byte[]> value = null;
                 
-                if ( val != null )
+                if ( attributeType == null )
                 {
-                    valString = StringTools.utf8ToString( val );
+                    value = new BinaryValue( val );
+                }
+                else
+                {
+                    value = new BinaryValue( attributeType, val );
+                    
+                    try
+                    {
+                        value.normalize();
+                    }
+                    catch( LdapException ne )
+                    {
+                        // The value can't be normalized : we don't add it.
+                        LOG.error( I18n.err( I18n.ERR_04449, StringTools.dumpBytes( val ) ) );
+                        return 0;
+                    }
                 }
                 
-                // Now call the add(Value) method, if not already present
-                if ( !contains( val ) )
+                if ( add( value ) != 0 )
                 {
-                    if ( add( new StringValue( valString ) ) == 1 )
-                    {
-                        nbAdded++;
-                    }
+                    nbAdded++;
+                }
+                else
+                {
+                    LOG.error( I18n.err( I18n.ERR_04450, StringTools.dumpBytes( val ) ) );
                 }
             }
         }
         else
         {
-            for ( byte[] val:vals )
-            {
-                if ( add( new BinaryValue( val ) ) == 1 )
-                {
-                    nbAdded++;
-                }
-            }
+            // We can't add Binary values into a String Attribute
+            LOG.info( I18n.err( I18n.ERR_04451 ) );
+            return 0;
         }
         
         return nbAdded;
@@ -794,53 +1300,105 @@ public class DefaultClientAttribute implements EntryAttribute
             return false;
         }
 
-        if ( isHR )
+        if ( attributeType == null )
         {
-            // Iterate through all the values, convert the Binary values
-            // to String values, and quit id any of the values is not
-            // contained in the object
-            for ( Value<?> val:vals )
+            if ( isHR )
             {
-                if ( val instanceof StringValue )
+                // Iterate through all the values, convert the Binary values
+                // to String values, and quit id any of the values is not
+                // contained in the object
+                for ( Value<?> val:vals )
                 {
-                    if ( !values.contains( val ) )
+                    if ( val instanceof StringValue )
                     {
-                        return false;
+                        if ( !values.contains( val ) )
+                        {
+                            return false;
+                        }
+                    }
+                    else
+                    {
+                        byte[] binaryVal = val.getBytes();
+                        
+                        // We have to convert the binary value to a String
+                        if ( ! values.contains( new StringValue( StringTools.utf8ToString( binaryVal ) ) ) )
+                        {
+                            return false;
+                        }
                     }
                 }
-                else
+            }
+            else
+            {
+                // Iterate through all the values, convert the String values
+                // to binary values, and quit id any of the values is not
+                // contained in the object
+                for ( Value<?> val:vals )
                 {
-                    byte[] binaryVal = val.getBytes();
-                    
-                    // We have to convert the binary value to a String
-                    if ( ! values.contains( new StringValue( StringTools.utf8ToString( binaryVal ) ) ) )
+                    if ( val.isBinary() )
                     {
-                        return false;
+                        if ( !values.contains( val ) )
+                        {
+                            return false;
+                        }
+                    }
+                    else
+                    {
+                        String stringVal = val.getString();
+                        
+                        // We have to convert the binary value to a String
+                        if ( ! values.contains( new BinaryValue( StringTools.getBytesUtf8( stringVal ) ) ) )
+                        {
+                            return false;
+                        }
                     }
                 }
             }
         }
         else
         {
-            // Iterate through all the values, convert the String values
-            // to binary values, and quit id any of the values is not
-            // contained in the object
-            for ( Value<?> val:vals )
+            // Iterate through all the values, and quit if we 
+            // don't find one in the values. We have to separate the check
+            // depending on the isHR flag value.
+            if ( isHR )
             {
-                if ( val.isBinary() )
+                for ( Value<?> val:vals )
                 {
-                    if ( !values.contains( val ) )
+                    if ( val instanceof StringValue )
                     {
+                        StringValue stringValue = (StringValue)val;
+                        
+                        if ( stringValue.getAttributeType() == null )
+                        {
+                            stringValue.apply( attributeType );
+                        }
+                        
+                        if ( !values.contains( val ) )
+                        {
+                            return false;
+                        }
+                    }
+                    else
+                    {
+                        // Not a String value
                         return false;
                     }
                 }
-                else
+            }
+            else
+            {
+                for ( Value<?> val:vals )
                 {
-                    String stringVal = val.getString();
-                    
-                    // We have to convert the binary value to a String
-                    if ( ! values.contains( new BinaryValue( StringTools.getBytesUtf8( stringVal ) ) ) )
+                    if ( val instanceof BinaryValue )
                     {
+                        if ( !values.contains( val ) )
+                        {
+                            return false;
+                        }
+                    }
+                    else
+                    {
+                        // Not a Binary value
                         return false;
                     }
                 }
@@ -870,32 +1428,81 @@ public class DefaultClientAttribute implements EntryAttribute
             return false;
         }
 
-        if ( isHR )
+        if ( attributeType == null )
         {
-            // Iterate through all the values, and quit if we 
-            // don't find one in the values
-            for ( String val:vals )
+            if ( isHR )
             {
-                if ( !contains( new StringValue( val ) ) )
+                // Iterate through all the values, and quit if we 
+                // don't find one in the values
+                if ( attributeType != null )
                 {
-                    return false;
+                    for ( String val:vals )
+                    {
+                        Value<String> value = createStringValue( attributeType, val );
+                        
+                        if ( value == null )
+                        {
+                            // The value can't be normalized : we don't add it.
+                            LOG.error( I18n.err( I18n.ERR_04449, val ) );
+                            return false;
+                        }
+    
+                        if ( !contains( value ) )
+                        {
+                            return false;
+                        }
+                    }
+                }
+                else
+                {
+                    for ( String val:vals )
+                    {
+                        
+                        if ( !contains( new StringValue( val ) ) )
+                        {
+                            return false;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                // As the attribute type is binary, we have to convert 
+                // the values before checking for them in the values
+                // Iterate through all the values, and quit if we 
+                // don't find one in the values
+                for ( String val:vals )
+                {
+                    byte[] binaryVal = StringTools.getBytesUtf8( val );
+    
+                    if ( !contains( new BinaryValue( binaryVal ) ) )
+                    {
+                        return false;
+                    }
                 }
             }
         }
         else
         {
-            // As the attribute type is binary, we have to convert 
-            // the values before checking for them in the values
-            // Iterate through all the values, and quit if we 
-            // don't find one in the values
-            for ( String val:vals )
+            if ( isHR )
             {
-                byte[] binaryVal = StringTools.getBytesUtf8( val );
-
-                if ( !contains( new BinaryValue( binaryVal ) ) )
+                // Iterate through all the values, and quit if we 
+                // don't find one in the values
+                for ( String val:vals )
                 {
-                    return false;
+                    StringValue value = new StringValue( attributeType, val );
+                    
+                    if ( !values.contains( value ) )
+                    {
+                        return false;
+                    }
                 }
+                
+                return true;
+            }
+            else
+            {
+                return false;
             }
         }
         
@@ -922,32 +1529,67 @@ public class DefaultClientAttribute implements EntryAttribute
             return false;
         }
 
-        if ( !isHR )
+        if ( attributeType == null )
         {
-            // Iterate through all the values, and quit if we 
-            // don't find one in the values
-            for ( byte[] val:vals )
+            if ( !isHR )
             {
-                if ( !contains( new BinaryValue( val ) ) )
+                // Iterate through all the values, and quit if we 
+                // don't find one in the values
+                for ( byte[] val:vals )
                 {
-                    return false;
+                    if ( !contains( new BinaryValue( val ) ) )
+                    {
+                        return false;
+                    }
+                }
+            }
+            else
+            {
+                // As the attribute type is String, we have to convert 
+                // the values before checking for them in the values
+                // Iterate through all the values, and quit if we 
+                // don't find one in the values
+                for ( byte[] val:vals )
+                {
+                    String stringVal = StringTools.utf8ToString( val );
+    
+                    if ( !contains( new StringValue( stringVal ) ) )
+                    {
+                        return false;
+                    }
                 }
             }
         }
         else
         {
-            // As the attribute type is String, we have to convert 
-            // the values before checking for them in the values
-            // Iterate through all the values, and quit if we 
-            // don't find one in the values
-            for ( byte[] val:vals )
+            if ( !isHR )
             {
-                String stringVal = StringTools.utf8ToString( val );
-
-                if ( !contains( new StringValue( stringVal ) ) )
+                // Iterate through all the values, and quit if we 
+                // don't find one in the values
+                for ( byte[] val:vals )
                 {
-                    return false;
+                    BinaryValue value = new BinaryValue( attributeType, val );
+                    
+                    try
+                    {
+                        value.normalize();
+                    }
+                    catch ( LdapException ne )
+                    {
+                        return false;
+                    }
+                    
+                    if ( !values.contains( value ) )
+                    {
+                        return false;
+                    }
                 }
+                
+                return true;
+            }
+            else
+            {
+                return false;
             }
         }
         
@@ -1134,27 +1776,78 @@ public class DefaultClientAttribute implements EntryAttribute
         
         boolean removed = true;
         
-        if ( isHR )
+        if ( attributeType == null )
         {
-            for ( Value<?> val:vals )
+            if ( isHR )
             {
-                if ( val instanceof StringValue )
+                for ( Value<?> val:vals )
+                {
+                    if ( val instanceof StringValue )
+                    {
+                        removed &= values.remove( val );
+                    }
+                    else
+                    {
+                        // Convert the binary value to a string value
+                        byte[] binaryVal = val.getBytes();
+                        removed &= values.remove( new StringValue( StringTools.utf8ToString( binaryVal ) ) );
+                    }
+                }
+            }
+            else
+            {
+                for ( Value<?> val:vals )
                 {
                     removed &= values.remove( val );
-                }
-                else
-                {
-                    // Convert the binary value to a string value
-                    byte[] binaryVal = val.getBytes();
-                    removed &= values.remove( new StringValue( StringTools.utf8ToString( binaryVal ) ) );
                 }
             }
         }
         else
         {
-            for ( Value<?> val:vals )
+            // Loop through all the values to remove. If one of
+            // them is not present, the method will return false.
+            // As the attribute may be HR or not, we have two separated treatments
+            if ( isHR )
             {
-                removed &= values.remove( val );
+                for ( Value<?> val:vals )
+                {
+                    if ( val instanceof StringValue )
+                    {
+                        StringValue stringValue = (StringValue)val;
+                        
+                        if ( stringValue.getAttributeType() == null )
+                        {
+                            stringValue.apply( attributeType );
+                        }
+                        
+                        removed &= values.remove( stringValue );
+                    }
+                    else
+                    {
+                        removed = false;
+                    }
+                }
+            }
+            else
+            {
+                for ( Value<?> val:vals )
+                {
+                    if ( val instanceof BinaryValue )
+                    {
+                        BinaryValue binaryValue = (BinaryValue)val;
+                        
+                        if ( binaryValue.getAttributeType() == null )
+                        {
+                            binaryValue.apply( attributeType );
+                        }
+                        
+                        removed &= values.remove( binaryValue );
+                    }
+                    else
+                    {
+                        removed = false;
+                    }
+                }
             }
         }
         
@@ -1187,23 +1880,41 @@ public class DefaultClientAttribute implements EntryAttribute
         
         boolean removed = true;
         
-        if ( !isHR )
+        if ( attributeType == null )
         {
-            // The attribute type is not HR, we can directly process the values
-            for ( byte[] val:vals )
+            if ( !isHR )
             {
-                BinaryValue value = new BinaryValue( val );
-                removed &= values.remove( value );
+                // The attribute type is not HR, we can directly process the values
+                for ( byte[] val:vals )
+                {
+                    BinaryValue value = new BinaryValue( val );
+                    removed &= values.remove( value );
+                }
+            }
+            else
+            {
+                // The attribute type is String, we have to convert the values
+                // to String before removing them
+                for ( byte[] val:vals )
+                {
+                    StringValue value = new StringValue( StringTools.utf8ToString( val ) );
+                    removed &= values.remove( value );
+                }
             }
         }
         else
         {
-            // The attribute type is String, we have to convert the values
-            // to String before removing them
-            for ( byte[] val:vals )
+            if ( !isHR ) 
             {
-                StringValue value = new StringValue( StringTools.utf8ToString( val ) );
-                removed &= values.remove( value );
+                for ( byte[] val:vals )
+                {
+                    BinaryValue value = new BinaryValue( attributeType, val );
+                    removed &= values.remove( value );
+                }
+            }
+            else
+            {
+                removed = false;
             }
         }
         
@@ -1234,23 +1945,41 @@ public class DefaultClientAttribute implements EntryAttribute
         
         boolean removed = true;
         
-        if ( isHR )
+        if ( attributeType == null )
         {
-            // The attribute type is HR, we can directly process the values
-            for ( String val:vals )
+            if ( isHR )
             {
-                StringValue value = new StringValue( val );
-                removed &= values.remove( value );
+                // The attribute type is HR, we can directly process the values
+                for ( String val:vals )
+                {
+                    StringValue value = new StringValue( val );
+                    removed &= values.remove( value );
+                }
+            }
+            else
+            {
+                // The attribute type is binary, we have to convert the values
+                // to byte[] before removing them
+                for ( String val:vals )
+                {
+                    BinaryValue value = new BinaryValue( StringTools.getBytesUtf8( val ) );
+                    removed &= values.remove( value );
+                }
             }
         }
         else
         {
-            // The attribute type is binary, we have to convert the values
-            // to byte[] before removing them
-            for ( String val:vals )
+            if ( isHR )
             {
-                BinaryValue value = new BinaryValue( StringTools.getBytesUtf8( val ) );
-                removed &= values.remove( value );
+                for ( String val:vals )
+                {
+                    StringValue value = new StringValue( attributeType, val );
+                    removed &= values.remove( value );
+                }
+            }
+            else
+            {
+                removed = false;
             }
         }
         
@@ -1280,7 +2009,7 @@ public class DefaultClientAttribute implements EntryAttribute
      *
      * @param val some values to be put which may be null
      * @return the number of added values, or 0 if none has been added
-     */
+     *
     public int put( String... vals )
     {
         values.clear();
@@ -1299,7 +2028,7 @@ public class DefaultClientAttribute implements EntryAttribute
      *
      * @param val some values to be put which may be null
      * @return the number of added values, or 0 if none has been added
-     */
+     *
     public int put( byte[]... vals )
     {
         values.clear();
@@ -1318,7 +2047,7 @@ public class DefaultClientAttribute implements EntryAttribute
      *
      * @param val some values to be put which may be null
      * @return the number of added values, or 0 if none has been added
-     */
+     *
     public int put( Value<?>... vals )
     {
         values.clear();
@@ -1339,7 +2068,7 @@ public class DefaultClientAttribute implements EntryAttribute
      *
      * @param vals the values to be put
      * @return the number of added values, or 0 if none has been added
-     */
+     *
     public int put( List<Value<?>> vals )
     {
         values.clear();
@@ -1492,6 +2221,11 @@ public class DefaultClientAttribute implements EntryAttribute
             h = h*17 + value.hashCode();
         }
         
+        if ( attributeType != null )
+        {
+            h = h*17 + attributeType.hashCode();
+        }
+        
         return h;
     }
     
@@ -1528,7 +2262,14 @@ public class DefaultClientAttribute implements EntryAttribute
             }
             else
             {
-                if ( !id.equals( other.getId() ) )
+                if ( attributeType != null )
+                {
+                    if ( !attributeType.equals( other.getAttributeType() ) )
+                    {
+                        return false;
+                    }
+                }
+                else if ( !id.equals( other.getId() ) )
                 {
                     return false;
                 }
@@ -1553,7 +2294,12 @@ public class DefaultClientAttribute implements EntryAttribute
             }
         }
         
-        return true;
+        if ( attributeType == null )
+        {
+            return other.getAttributeType() == null;
+        }
+        
+        return attributeType.equals( other.getAttributeType() );
     }
     
     
@@ -1616,6 +2362,109 @@ public class DefaultClientAttribute implements EntryAttribute
     }
 
 
+    
+    
+    /**
+     * @see Externalizable#writeExternal(ObjectOutput)
+     * <p>
+     * 
+     * This is the place where we serialize attributes, and all theirs
+     * elements. 
+     * 
+     * The inner structure is the same as the client attribute, but we can't call
+     * it as we won't be able to serialize the serverValues
+     * 
+     */
+    public void serialize( ObjectOutput out ) throws IOException
+    {
+        // Write the UPId (the id will be deduced from the upID)
+        out.writeUTF( upId );
+        
+        // Write the HR flag, if not null
+        if ( isHR != null )
+        {
+            out.writeBoolean( true );
+            out.writeBoolean( isHR );
+        }
+        else
+        {
+            out.writeBoolean( false );
+        }
+        
+        // Write the number of values
+        out.writeInt( size() );
+        
+        if ( size() > 0 ) 
+        {
+            // Write each value
+            for ( Value<?> value:values )
+            {
+                // Write the value, using the correct method
+                if ( value instanceof StringValue )
+                {
+                    ((StringValue)value).serialize( out );
+                }
+                else
+                {
+                    ((BinaryValue)value).serialize( out );
+                }
+            }
+        }
+    }
+
+    
+    /**
+     * @see Externalizable#readExternal(ObjectInput)
+     */
+    public void deserialize( ObjectInput in ) throws IOException, ClassNotFoundException
+    {
+        // Read the ID and the UPId
+        upId = in.readUTF();
+        
+        // Compute the id
+        setUpId( upId );
+        
+        // Read the HR flag, if not null
+        if ( in.readBoolean() )
+        {
+            isHR = in.readBoolean();
+        }
+
+        // Read the number of values
+        int nbValues = in.readInt();
+
+        if ( nbValues > 0 )
+        {
+            for ( int i = 0; i < nbValues; i++ )
+            {
+                Value<?> value = null;
+                
+                if ( isHR )
+                {
+                    value  = new StringValue( attributeType );
+                    ((StringValue)value).deserialize( in );
+                }
+                else
+                {
+                    value  = new BinaryValue( attributeType );
+                    ((BinaryValue)value).deserialize( in );
+                }
+                
+                try
+                {
+                    value.normalize();
+                }
+                catch ( LdapException ne )
+                {
+                    // Do nothing...
+                }
+                    
+                values.add( value );
+            }
+        }
+    }
+    
+    
     /**
      * @see Externalizable#writeExternal(ObjectOutput)
      * <p>

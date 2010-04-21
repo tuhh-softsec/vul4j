@@ -307,7 +307,9 @@ public abstract class AbstractValue<T> implements Value<T>
 
         if ( attributeType != null )
         {
-            valid = attributeType.getSyntax().getSyntaxChecker().isValidSyntax( get() );
+            SyntaxChecker syntaxChecker = attributeType.getSyntax().getSyntaxChecker();
+            T value = getNormalizedValue();
+            valid = syntaxChecker.isValidSyntax( value );
         }
         else
         {

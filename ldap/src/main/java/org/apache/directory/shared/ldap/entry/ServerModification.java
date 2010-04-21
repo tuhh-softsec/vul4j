@@ -25,6 +25,7 @@ import java.io.ObjectOutput;
 
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.entry.client.ClientModification;
+import org.apache.directory.shared.ldap.entry.client.DefaultClientAttribute;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.SchemaManager;
@@ -84,18 +85,14 @@ public class ServerModification implements Modification
         
         try
         {
-            AttributeType at = null;
+            AttributeType at = modAttribute.getAttributeType();
             
-            if ( modAttribute instanceof DefaultServerAttribute )
-            {
-                at = ((EntryAttribute)modAttribute).getAttributeType();
-            }
-            else
+            if ( at == null )
             {
                 at = schemaManager.lookupAttributeTypeRegistry( modAttribute.getId() );
             }
             
-            attribute = new DefaultServerAttribute( at, modAttribute );
+            attribute = new DefaultClientAttribute( at, modAttribute );
         }
         catch ( LdapException ne )
         {
@@ -286,10 +283,10 @@ public class ServerModification implements Modification
         // Lookup for tha associated AttributeType
         AttributeType attributeType = schemaManager.lookupAttributeTypeRegistry( oid );
         
-        attribute = new DefaultServerAttribute( attributeType );
+        attribute = new DefaultClientAttribute( attributeType );
         
         // Read the attribute
-        ((DefaultServerAttribute)attribute).deserialize( in );
+        ((DefaultClientAttribute)attribute).deserialize( in );
     }
     
     
@@ -306,13 +303,13 @@ public class ServerModification implements Modification
         // Write the operation
         out.writeInt( operation.getValue() );
         
-        AttributeType at = ((DefaultServerAttribute)attribute).getAttributeType();
+        AttributeType at = ((DefaultClientAttribute)attribute).getAttributeType();
         
         // Write the attribute's oid
         out.writeUTF( at.getOid() );
         
         // Write the attribute
-        ((DefaultServerAttribute)attribute).serialize( out );
+        ((DefaultClientAttribute)attribute).serialize( out );
     }
     
     

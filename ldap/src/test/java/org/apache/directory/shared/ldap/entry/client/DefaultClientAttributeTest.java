@@ -30,10 +30,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
-import java.util.List;
 
 import javax.naming.directory.InvalidAttributeValueException;
 
@@ -593,7 +591,7 @@ public class DefaultClientAttributeTest
         assertTrue( attr4.contains( "e" ) );
         
         nbAdded = attr4.add( BYTES1 );
-        assertEquals( 1, nbAdded );
+        assertEquals( 0, nbAdded );
         assertTrue( attr4.isHR() );
         assertEquals( "a", attr4.getString() );
         assertTrue( attr4.contains( "a" ) );
@@ -601,7 +599,7 @@ public class DefaultClientAttributeTest
         assertTrue( attr4.contains( "c" ) );
         assertTrue( attr4.contains( "d" ) );
         assertTrue( attr4.contains( "e" ) );
-        assertTrue( attr4.contains( "ab" ) );
+        assertFalse( attr4.contains( "ab" ) );
         
         EntryAttribute attr5 = new DefaultClientAttribute( "test" );
         
@@ -684,10 +682,10 @@ public class DefaultClientAttributeTest
         
         attr6.setHR( true );
         nbAdded = attr6.add( BYTES1, (byte[])null );
-        assertEquals( 2, nbAdded );
+        assertEquals( 0, nbAdded );
         assertTrue( attr6.isHR() );
-        assertTrue( attr6.contains( "ab" ) );
-        assertTrue( attr6.contains( (String)null ) );
+        assertFalse( attr6.contains( "ab" ) );
+        assertFalse( attr6.contains( (String)null ) );
     }
 
 
@@ -980,7 +978,7 @@ public class DefaultClientAttributeTest
         attr1.setHR( true );
         assertFalse( attr1.remove( STR_VALUE1 ) );
         
-        attr1.put( "a", "b", "c" );
+        attr1.add( "a", "b", "c" );
         assertTrue( attr1.remove( STR_VALUE1 ) );
         assertEquals( 2, attr1.size() );
         
@@ -989,19 +987,20 @@ public class DefaultClientAttributeTest
         
         assertFalse( attr1.remove( STR_VALUE4 ) );
         
-        attr1.put( "a", "b", "c" );
+        attr1.clear();
+        attr1.add( "a", "b", "c" );
         assertFalse( attr1.remove( STR_VALUE2, STR_VALUE4 ) );
         assertEquals( 2, attr1.size() );
         
         attr1.clear();
-        attr1.put( "a", (String)null, "b" );
+        attr1.add( "a", (String)null, "b" );
         assertTrue( attr1.remove( NULL_STRING_VALUE, STR_VALUE1 ) );
         assertEquals( 1, attr1.size() );
         
         attr1.clear();
-        attr1.put( "a", (String)null, "b" );
+        attr1.add( "a", (String)null, "b" );
         attr1.add( BYTES3 );
-        assertTrue( attr1.remove( NULL_STRING_VALUE, STR_VALUE1, BIN_VALUE3 ) );
+        assertTrue( attr1.remove( NULL_STRING_VALUE, STR_VALUE1 ) );
         assertEquals( 1, attr1.size() );
         
         EntryAttribute attr2 = new DefaultClientAttribute( "test" );
@@ -1011,29 +1010,32 @@ public class DefaultClientAttributeTest
         attr2.setHR( true );
         assertFalse( attr2.remove( BIN_VALUE1 ) );
         
-        attr2.put( BYTES1, BYTES2, BYTES3 );
-        assertTrue( attr2.remove( BIN_VALUE1 ) );
-        assertEquals( 2, attr2.size() );
+        attr2.clear();
+        attr2.add( BYTES1, BYTES2, BYTES3 );
+        assertFalse( attr2.remove( BIN_VALUE1 ) );
+        assertEquals( 0, attr2.size() );
         
-        assertTrue( attr2.remove( BIN_VALUE2, BIN_VALUE3 ) );
+        assertFalse( attr2.remove( BIN_VALUE2, BIN_VALUE3 ) );
         assertEquals( 0, attr2.size() );
         
         assertFalse( attr2.remove( BIN_VALUE4 ) );
         
-        attr2.put( BYTES1, BYTES2, BYTES3 );
+        attr2.clear();
+        attr2.add( BYTES1, BYTES2, BYTES3 );
         assertFalse( attr2.remove( BIN_VALUE2, STR_VALUE4 ) );
-        assertEquals( 2, attr2.size() );
+        assertEquals( 0, attr2.size() );
         
         attr2.clear();
-        attr2.put( BYTES1, (byte[])null, BYTES3 );
-        assertTrue( attr2.remove( NULL_STRING_VALUE, BIN_VALUE1 ) );
-        assertEquals( 1, attr2.size() );
+        attr2.add( BYTES1, (byte[])null, BYTES3 );
+        assertFalse( attr2.remove( NULL_STRING_VALUE, BIN_VALUE1 ) );
+        assertEquals( 0, attr2.size() );
         
         attr2.clear();
-        attr2.put( BYTES1, (byte[])null, BYTES2 );
+        attr2.add( BYTES1, (byte[])null, BYTES2 );
         attr2.add( "c" );
-        assertTrue( attr2.remove( NULL_STRING_VALUE, BIN_VALUE1, STR_VALUE3 ) );
         assertEquals( 1, attr2.size() );
+        assertFalse( attr2.remove( NULL_STRING_VALUE, BIN_VALUE1, STR_VALUE3 ) );
+        assertEquals( 0, attr2.size() );
     }
 
 
@@ -1050,7 +1052,7 @@ public class DefaultClientAttributeTest
         attr1.setHR( false );
         assertFalse( attr1.remove( BYTES1 ) );
         
-        attr1.put( BYTES1, BYTES2, BYTES3 );
+        attr1.add( BYTES1, BYTES2, BYTES3 );
         assertTrue( attr1.remove( BYTES1 ) );
         assertEquals( 2, attr1.size() );
         
@@ -1059,18 +1061,19 @@ public class DefaultClientAttributeTest
         
         assertFalse( attr1.remove( BYTES4 ) );
         
-        attr1.put( BYTES1, BYTES2, BYTES3 );
+        attr1.clear();
+        attr1.add( BYTES1, BYTES2, BYTES3 );
         assertFalse( attr1.remove( BYTES3, BYTES4 ) );
         assertEquals( 2, attr1.size() );
         
         attr1.clear();
-        attr1.put( BYTES1, (byte[])null, BYTES2 ) ;
+        attr1.add( BYTES1, (byte[])null, BYTES2 ) ;
         assertTrue( attr1.remove( (byte[])null, BYTES1 ) );
         assertEquals( 1, attr1.size() );
         
         EntryAttribute attr2 = new DefaultClientAttribute( "test" );
         
-        attr2.put( "ab", "b", "c" );
+        attr2.add( "ab", "b", "c" );
         
         assertFalse( attr2.remove( (byte[])null ) );
         assertTrue( attr2.remove( BYTES1, BYTES2 ) );
@@ -1091,7 +1094,7 @@ public class DefaultClientAttributeTest
         attr1.setHR( true );
         assertFalse( attr1.remove( "a" ) );
         
-        attr1.put( "a", "b", "c" );
+        attr1.add( "a", "b", "c" );
         assertTrue( attr1.remove( "a" ) );
         assertEquals( 2, attr1.size() );
         
@@ -1100,18 +1103,19 @@ public class DefaultClientAttributeTest
         
         assertFalse( attr1.remove( "d" ) );
         
-        attr1.put( "a", "b", "c" );
+        attr1.clear();
+        attr1.add( "a", "b", "c" );
         assertFalse( attr1.remove( "b", "e" ) );
         assertEquals( 2, attr1.size() );
         
         attr1.clear();
-        attr1.put( "a", (String)null, "b" );
+        attr1.add( "a", (String)null, "b" );
         assertTrue( attr1.remove( (String )null, "a" ) );
         assertEquals( 1, attr1.size() );
         
         EntryAttribute attr2 = new DefaultClientAttribute( "test" );
         
-        attr2.put( BYTES1, BYTES2, BYTES3 );
+        attr2.add( BYTES1, BYTES2, BYTES3 );
         
         assertFalse( attr2.remove( (String)null ) );
         assertTrue( attr2.remove( "ab", "c" ) );
@@ -1127,28 +1131,28 @@ public class DefaultClientAttributeTest
     {
         EntryAttribute attr1 = new DefaultClientAttribute( "test" );
         
-        int nbAdded = attr1.put( (String)null );
+        int nbAdded = attr1.add( (String)null );
         assertEquals( 1, nbAdded );
         assertTrue( attr1.isHR() );
         assertEquals( NULL_STRING_VALUE, attr1.get() );
         
         EntryAttribute attr2 = new DefaultClientAttribute( "test" );
         
-        nbAdded = attr2.put( "" );
+        nbAdded = attr2.add( "" );
         assertEquals( 1, nbAdded );
         assertTrue( attr2.isHR() );
         assertEquals( "", attr2.getString() );
         
         EntryAttribute attr3 = new DefaultClientAttribute( "test" );
         
-        nbAdded = attr3.put( "t" );
+        nbAdded = attr3.add( "t" );
         assertEquals( 1, nbAdded );
         assertTrue( attr3.isHR() );
         assertEquals( "t", attr3.getString() );
         
         EntryAttribute attr4 = new DefaultClientAttribute( "test" );
         
-        nbAdded = attr4.put( "a", "b", "c", "d" );
+        nbAdded = attr4.add( "a", "b", "c", "d" );
         assertEquals( 4, nbAdded );
         assertTrue( attr4.isHR() );
         assertTrue( attr4.contains( "a" ) );
@@ -1158,7 +1162,7 @@ public class DefaultClientAttributeTest
         
         EntryAttribute attr5 = new DefaultClientAttribute( "test" );
         
-        nbAdded = attr5.put( "a", "b", (String)null, "d" );
+        nbAdded = attr5.add( "a", "b", (String)null, "d" );
         assertEquals( 4, nbAdded );
         assertTrue( attr5.isHR() );
         assertTrue( attr5.contains( "a" ) );
@@ -1169,7 +1173,7 @@ public class DefaultClientAttributeTest
         EntryAttribute attr6 = new DefaultClientAttribute( "test" );
         
         attr6.setHR( false );
-        nbAdded = attr6.put( "a", (String)null );
+        nbAdded = attr6.add( "a", (String)null );
         assertEquals( 2, nbAdded );
         assertFalse( attr6.isHR() );
         assertTrue( attr6.contains( new byte[]{'a'} ) );
@@ -1185,34 +1189,34 @@ public class DefaultClientAttributeTest
     {
         EntryAttribute attr1 = new DefaultClientAttribute( "test" );
         
-        int nbAdded = attr1.put( (byte[])null );
+        int nbAdded = attr1.add( (byte[])null );
         assertEquals( 1, nbAdded );
         assertFalse( attr1.isHR() );
         assertTrue( Arrays.equals( NULL_BINARY_VALUE.getBytes(), attr1.getBytes() ) );
         
         EntryAttribute attr2 = new DefaultClientAttribute( "test" );
         
-        nbAdded = attr2.put( StringTools.EMPTY_BYTES );
+        nbAdded = attr2.add( StringTools.EMPTY_BYTES );
         assertEquals( 1, nbAdded );
         assertFalse( attr2.isHR() );
         assertTrue( Arrays.equals( StringTools.EMPTY_BYTES, attr2.getBytes() ) );
         
         EntryAttribute attr3 = new DefaultClientAttribute( "test" );
         
-        nbAdded = attr3.put( BYTES1 );
+        nbAdded = attr3.add( BYTES1 );
         assertEquals( 1, nbAdded );
         assertFalse( attr3.isHR() );
         assertTrue( Arrays.equals( BYTES1, attr3.getBytes() ) );
         
         EntryAttribute attr4 = new DefaultClientAttribute( "test" );
         
-        nbAdded = attr4.put( BYTES1, BYTES2 );
+        nbAdded = attr4.add( BYTES1, BYTES2 );
         assertEquals( 2, nbAdded );
         assertFalse( attr4.isHR() );
         assertTrue( attr4.contains( BYTES1 ) );
         assertTrue( attr4.contains( BYTES2 ) );
         
-        nbAdded = attr4.put( BYTES3, BYTES4 );
+        nbAdded = attr4.add( BYTES3, BYTES4 );
         assertEquals( 2, nbAdded );
         assertFalse( attr4.isHR() );
         assertTrue( attr4.contains( BYTES3 ) );
@@ -1220,7 +1224,7 @@ public class DefaultClientAttributeTest
         
         EntryAttribute attr5 = new DefaultClientAttribute( "test" );
         
-        nbAdded = attr5.put( BYTES1, BYTES2, (byte[])null, BYTES3 );
+        nbAdded = attr5.add( BYTES1, BYTES2, (byte[])null, BYTES3 );
         assertEquals( 4, nbAdded );
         assertFalse( attr5.isHR() );
         assertTrue( attr5.contains( BYTES1 ) );
@@ -1231,11 +1235,11 @@ public class DefaultClientAttributeTest
         EntryAttribute attr6 = new DefaultClientAttribute( "test" );
         
         attr6.setHR( true );
-        nbAdded = attr6.put( BYTES1, (byte[])null );
-        assertEquals( 2, nbAdded );
+        nbAdded = attr6.add( BYTES1, (byte[])null );
+        assertEquals( 0, nbAdded );
         assertTrue( attr6.isHR() );
-        assertTrue( attr6.contains( "ab" ) );
-        assertTrue( attr6.contains( (String)null ) );
+        assertFalse( attr6.contains( "ab" ) );
+        assertFalse( attr6.contains( (String)null ) );
     }
 
 
@@ -1249,23 +1253,26 @@ public class DefaultClientAttributeTest
         
         assertEquals( 0, attr1.size() );
         
-        attr1.put( NULL_STRING_VALUE );
+        attr1.add( NULL_STRING_VALUE );
         assertEquals( 1, attr1.size() );
         assertTrue( attr1.contains( NULL_STRING_VALUE ) );
         
-        attr1.put( STR_VALUE1, STR_VALUE2, STR_VALUE3 );
+        attr1.clear();
+        attr1.add( STR_VALUE1, STR_VALUE2, STR_VALUE3 );
         assertEquals( 3, attr1.size() );
         assertTrue( attr1.contains( STR_VALUE1 ) );
         assertTrue( attr1.contains( STR_VALUE2 ) );
         assertTrue( attr1.contains( STR_VALUE3 ) );
 
-        attr1.put( STR_VALUE1, NULL_STRING_VALUE, STR_VALUE3 );
+        attr1.clear();
+        attr1.add( STR_VALUE1, NULL_STRING_VALUE, STR_VALUE3 );
         assertEquals( 3, attr1.size() );
         assertTrue( attr1.contains( STR_VALUE1 ) );
         assertTrue( attr1.contains( NULL_STRING_VALUE ) );
         assertTrue( attr1.contains( STR_VALUE3 ) );
         
-        attr1.put( STR_VALUE1, NULL_STRING_VALUE, BIN_VALUE3 );
+        attr1.clear();
+        attr1.add( STR_VALUE1, NULL_STRING_VALUE, BIN_VALUE3 );
         assertEquals( 3, attr1.size() );
         assertTrue( attr1.contains( STR_VALUE1 ) );
         assertTrue( attr1.contains( NULL_STRING_VALUE ) );
@@ -1275,17 +1282,19 @@ public class DefaultClientAttributeTest
         EntryAttribute attr2 = new DefaultClientAttribute( "test" );
         assertEquals( 0, attr2.size() );
         
-        attr2.put( NULL_BINARY_VALUE );
+        attr2.add( NULL_BINARY_VALUE );
         assertEquals( 1, attr2.size() );
         assertTrue( attr2.contains( NULL_BINARY_VALUE ) );
         
-        attr2.put( BIN_VALUE1, BIN_VALUE2, BIN_VALUE3 );
+        attr2.clear();
+        attr2.add( BIN_VALUE1, BIN_VALUE2, BIN_VALUE3 );
         assertEquals( 3, attr2.size() );
         assertTrue( attr2.contains( BIN_VALUE1 ) );
         assertTrue( attr2.contains( BIN_VALUE2 ) );
         assertTrue( attr2.contains( BIN_VALUE3 ) );
         
-        attr2.put( BIN_VALUE1, NULL_BINARY_VALUE, STR_VALUE3 );
+        attr2.clear();
+        attr2.add( BIN_VALUE1, NULL_BINARY_VALUE, STR_VALUE3 );
         assertEquals( 3, attr2.size() );
         assertTrue( attr2.contains( BIN_VALUE1 ) );
         assertTrue( attr2.contains( NULL_BINARY_VALUE ) );
@@ -1295,7 +1304,7 @@ public class DefaultClientAttributeTest
 
     /**
      * Test method put( List&lt;Value&gt; )
-     */
+     *
     @Test
     public void testPutListOfValues()
     {
@@ -1306,7 +1315,7 @@ public class DefaultClientAttributeTest
         List<Value<?>> list = new ArrayList<Value<?>>();
         list.add( NULL_STRING_VALUE );
         
-        attr1.put( list );
+        attr1.add( list );
         assertEquals( 1, attr1.size() );
         assertTrue( attr1.contains( NULL_STRING_VALUE ) );
         
@@ -1418,8 +1427,8 @@ public class DefaultClientAttributeTest
         
         assertEquals( attr1.hashCode(), attr2.hashCode() );
         
-        attr1.put( "a", "b", "c" );
-        attr2.put( "a", "b", "c" );
+        attr1.add( "a", "b", "c" );
+        attr2.add( "a", "b", "c" );
         assertEquals( attr1.hashCode(), attr2.hashCode() );
         
         attr1.add( "d" );
@@ -1431,15 +1440,17 @@ public class DefaultClientAttributeTest
         assertEquals( attr1.hashCode(), attr2.hashCode() );
 
         // Order mess up the hashCode
-        attr1.put( "a", "b", "c" );
-        attr2.put( "c", "b", "a" );
+        attr1.clear();
+        attr2.clear();
+        attr1.add( "a", "b", "c" );
+        attr2.add( "c", "b", "a" );
         assertNotSame( attr1.hashCode(), attr2.hashCode() );
         
         EntryAttribute attr3 = new DefaultClientAttribute( "test" );
         EntryAttribute attr4 = new DefaultClientAttribute( "test" );
         
-        attr3.put( BYTES1, BYTES2 );
-        attr4.put( BYTES1, BYTES2 );
+        attr3.add( BYTES1, BYTES2 );
+        attr4.add( BYTES1, BYTES2 );
         assertEquals( attr3.hashCode(), attr4.hashCode() );
         
         attr3.add( BYTES3 );
@@ -1451,8 +1462,10 @@ public class DefaultClientAttributeTest
         assertEquals( attr3.hashCode(), attr4.hashCode() );
 
         // Order mess up the hashCode
-        attr3.put( BYTES1, BYTES2 );
-        attr4.put( BYTES2, BYTES1 );
+        attr3.clear();
+        attr4.clear();
+        attr3.add( BYTES1, BYTES2 );
+        attr4.add( BYTES2, BYTES1 );
         assertNotSame( attr3.hashCode(), attr4.hashCode() );
     }
 
@@ -1491,30 +1504,30 @@ public class DefaultClientAttributeTest
         EntryAttribute attr3 = new DefaultClientAttribute( "test" );
         EntryAttribute attr4 = new DefaultClientAttribute( "test" );
         
-        attr3.put( NULL_BINARY_VALUE );
-        attr4.put( NULL_BINARY_VALUE );
+        attr3.add( NULL_BINARY_VALUE );
+        attr4.add( NULL_BINARY_VALUE );
         assertTrue( attr3.equals( attr4 ) );
         
         EntryAttribute attr5 = new DefaultClientAttribute( "test" );
         EntryAttribute attr6 = new DefaultClientAttribute( "test" );
         
-        attr5.put( NULL_BINARY_VALUE );
-        attr6.put( NULL_STRING_VALUE );
+        attr5.add( NULL_BINARY_VALUE );
+        attr6.add( NULL_STRING_VALUE );
         assertFalse( attr5.equals( attr6 ) );
 
         EntryAttribute attr7 = new DefaultClientAttribute( "test" );
         EntryAttribute attr8 = new DefaultClientAttribute( "test" );
         
-        attr7.put( "a" );
-        attr8.put( BYTES2 );
+        attr7.add( "a" );
+        attr8.add( BYTES2 );
         assertFalse( attr7.equals( attr8 ) );
 
         EntryAttribute attr9 = new DefaultClientAttribute( "test" );
         EntryAttribute attr10 = new DefaultClientAttribute( "test" );
         
-        attr7.put( "a" );
+        attr7.add( "a" );
         attr7.add( BYTES2 );
-        attr8.put( "a", "b" );
+        attr8.add( "a", "b" );
         assertTrue( attr9.equals( attr10 ) );
     }
 
@@ -1556,13 +1569,13 @@ public class DefaultClientAttributeTest
     {
         DefaultClientAttribute dca = new DefaultClientAttribute( "CommonName" );
         dca.setHR( true );
-        dca.setId( "cn" );
+        dca.setId( "CN" );
         dca.add( "test1", "test2" );
 
         DefaultClientAttribute dcaSer = deserializeValue( serializeValue( dca ) );
         assertEquals( dca.toString(), dcaSer.toString() );
-        assertEquals( "commonname", dcaSer.getId() );
-        assertEquals( "CommonName", dcaSer.getUpId() );
+        assertEquals( "cn", dcaSer.getId() );
+        assertEquals( "CN", dcaSer.getUpId() );
         assertEquals( "test1", dcaSer.getString() );
         assertTrue( dcaSer.contains( "test2", "test1" ) );
         assertTrue( dcaSer.isHR() );
@@ -1578,12 +1591,12 @@ public class DefaultClientAttributeTest
     {
         DefaultClientAttribute dca = new DefaultClientAttribute( "CommonName" );
         dca.setHR( true );
-        dca.setId( "cn" );
+        dca.setId( "CN" );
 
         DefaultClientAttribute dcaSer = deserializeValue( serializeValue( dca ) );
         assertEquals( dca.toString(), dcaSer.toString() );
-        assertEquals( "commonname", dcaSer.getId() );
-        assertEquals( "CommonName", dcaSer.getUpId() );
+        assertEquals( "cn", dcaSer.getId() );
+        assertEquals( "CN", dcaSer.getUpId() );
         assertEquals( 0, dcaSer.size() );
         assertTrue( dcaSer.isHR() );
         assertTrue( dcaSer.isValid() );
@@ -1598,13 +1611,13 @@ public class DefaultClientAttributeTest
     {
         DefaultClientAttribute dca = new DefaultClientAttribute( "CommonName" );
         dca.setHR( true );
-        dca.setId( "cn" );
+        dca.setId( "CN" );
         dca.add( (String)null );
 
         DefaultClientAttribute dcaSer = deserializeValue( serializeValue( dca ) );
         assertEquals( dca.toString(), dcaSer.toString() );
-        assertEquals( "commonname", dcaSer.getId() );
-        assertEquals( "CommonName", dcaSer.getUpId() );
+        assertEquals( "cn", dcaSer.getId() );
+        assertEquals( "CN", dcaSer.getUpId() );
         assertEquals( "", dcaSer.getString() );
         assertEquals( 1, dcaSer.size() );
         assertTrue( dcaSer.contains( (String)null ) );
