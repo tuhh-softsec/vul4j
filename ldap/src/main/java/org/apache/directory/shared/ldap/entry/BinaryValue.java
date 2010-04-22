@@ -78,7 +78,9 @@ public class BinaryValue extends AbstractValue<byte[]>
     {
         if ( attributeType == null )
         {
-            throw new IllegalArgumentException( I18n.err( I18n.ERR_04442 ) );
+            String message = I18n.err( I18n.ERR_04442_NULL_AT_NOT_ALLOWED );
+            LOG.error( message );
+            throw new IllegalArgumentException( message );
         }
 
         if ( attributeType.getSyntax() == null )

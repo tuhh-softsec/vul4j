@@ -166,7 +166,9 @@ public class DefaultEntryAttribute implements EntryAttribute
     {
         if ( attributeType == null )
         {
-            throw new IllegalArgumentException( I18n.err( I18n.ERR_04442 ) );
+            String message = I18n.err( I18n.ERR_04442_NULL_AT_NOT_ALLOWED );
+            LOG.error( message );
+            throw new IllegalArgumentException( message );
         }
         
         setAttributeType( attributeType );
@@ -192,7 +194,7 @@ public class DefaultEntryAttribute implements EntryAttribute
     {
         if ( attributeType == null ) 
         {
-            String message = I18n.err( I18n.ERR_04442 );
+            String message = I18n.err( I18n.ERR_04442_NULL_AT_NOT_ALLOWED );
             LOG.error( message );
             throw new IllegalArgumentException( message );
         }
@@ -264,7 +266,9 @@ public class DefaultEntryAttribute implements EntryAttribute
     {
         if ( attributeType == null )
         {
-            throw new IllegalArgumentException( I18n.err( I18n.ERR_04442 ) );
+            String message = I18n.err( I18n.ERR_04442_NULL_AT_NOT_ALLOWED );
+            LOG.error( message );
+            throw new IllegalArgumentException( message );
         }
 
         setAttributeType( attributeType );
@@ -290,7 +294,9 @@ public class DefaultEntryAttribute implements EntryAttribute
     {
         if ( attributeType == null )
         {
-            throw new IllegalArgumentException( I18n.err( I18n.ERR_04442 ) );
+            String message = I18n.err( I18n.ERR_04442_NULL_AT_NOT_ALLOWED );
+            LOG.error( message );
+            throw new IllegalArgumentException( message );
         }
         
         setAttributeType( attributeType );
@@ -358,7 +364,7 @@ public class DefaultEntryAttribute implements EntryAttribute
     {
         if ( attributeType == null )
         {
-            throw new IllegalArgumentException( I18n.err( I18n.ERR_04442 ) );
+            throw new IllegalArgumentException( I18n.err( I18n.ERR_04442_NULL_AT_NOT_ALLOWED ) );
         }
 
         setAttributeType( attributeType );

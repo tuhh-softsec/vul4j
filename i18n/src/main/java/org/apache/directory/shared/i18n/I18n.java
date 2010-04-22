@@ -584,7 +584,7 @@ public class I18n
 	public static final String ERR_04439 = "ERR_04439";
 	public static final String ERR_04440 = "ERR_04440";
     public static final String ERR_04441 = "ERR_04441";
-    public static final String ERR_04442 = "ERR_04442";
+    public static final String ERR_04442_NULL_AT_NOT_ALLOWED = "ERR_04442_NULL_AT_NOT_ALLOWED";
     public static final String ERR_04443 = "ERR_04443";
     public static final String ERR_04444 = "ERR_04444";
     public static final String ERR_04445 = "ERR_04445";
