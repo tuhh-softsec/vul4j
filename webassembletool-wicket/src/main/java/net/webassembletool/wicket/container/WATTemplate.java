@@ -15,7 +15,6 @@
 package net.webassembletool.wicket.container;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,15 +24,10 @@ import net.webassembletool.Driver;
 import net.webassembletool.DriverFactory;
 import net.webassembletool.HttpErrorPage;
 import net.webassembletool.wicket.utils.ResponseWriter;
-import net.webassembletool.wicket.utils.WATNullResponse;
-import net.webassembletool.wicket.utils.WATWicketConfiguration;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.Response;
-import org.apache.wicket.markup.ComponentTag;
-import org.apache.wicket.markup.MarkupStream;
-import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.protocol.http.WebResponse;
 import org.apache.wicket.protocol.http.servlet.ServletWebRequest;
 
@@ -69,13 +63,11 @@ import org.apache.wicket.protocol.http.servlet.ServletWebRequest;
  * @see WATParam
  * 
  */
-public class WATTemplate extends WebMarkupContainer {
+public class WATTemplate extends AbstractWatDriverContainer {
 	private static Log logger = LogFactory.getLog(WATTemplate.class);
 	private static final long serialVersionUID = 1L;
 	private final String name = null;
 	private String page = null;
-	private final HashMap<String, String> params = new HashMap<String, String>();
-	private final Map<String, String> replaceRules = new HashMap<String, String>();
 
 	/**
 	 * Create a template block
@@ -88,42 +80,10 @@ public class WATTemplate extends WebMarkupContainer {
 		this.page = page;
 	}
 
-	/**
-	 * Add replace rule.
-	 * 
-	 * @param regexp
-	 *            The regex to match in the template
-	 * @param replacement
-	 *            The content wich will replace the matched value.
-	 */
-	public void addReplaceRule(String regexp, String replacement) {
-		replaceRules.put(regexp, replacement);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.apache.wicket.MarkupContainer#onComponentTagBody(org.apache.wicket
-	 * .markup.MarkupStream, org.apache.wicket.markup.ComponentTag)
-	 */
 	@Override
-	protected void onComponentTagBody(MarkupStream markupStream,
-			ComponentTag openTag) {
-
-		// For unit tests, WAT can be disabled. This component will then behave
-		// like a standard MarkupContainer.
-		if (WATWicketConfiguration.isDisableHttpRequests()) {
-			super.onComponentTagBody(markupStream, openTag);
-			return;
-		}
-
+	public void process(Map<String, String> blocks, Map<String, String> params,
+			Map<String, String> replaceRules) {
 		Response originalResponse = getRequestCycle().getResponse();
-		WATNullResponse watResponse = new WATNullResponse();
-		getRequestCycle().setResponse(watResponse);
-		super.onComponentTagBody(markupStream, openTag);
-		getRequestCycle().setResponse(originalResponse);
-
 		ServletWebRequest servletWebRequest = (ServletWebRequest) getRequest();
 		HttpServletRequest request = servletWebRequest.getHttpServletRequest();
 
@@ -133,13 +93,14 @@ public class WATTemplate extends WebMarkupContainer {
 		Driver driver = DriverFactory.getInstance();
 		try {
 			driver.renderTemplate(page, name, new ResponseWriter(
-					originalResponse), request, response, watResponse
-					.getBlocks(), replaceRules, params, false);
+					originalResponse), request, response, blocks, replaceRules,
+					params, false);
 		} catch (IOException e) {
 			logger.error(e);
 		} catch (HttpErrorPage e) {
 			logger.error(e);
 		}
+
 	}
 
 }

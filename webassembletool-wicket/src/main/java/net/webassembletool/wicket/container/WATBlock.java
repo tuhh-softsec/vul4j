@@ -16,6 +16,7 @@ package net.webassembletool.wicket.container;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -24,15 +25,9 @@ import net.webassembletool.Driver;
 import net.webassembletool.DriverFactory;
 import net.webassembletool.HttpErrorPage;
 import net.webassembletool.wicket.utils.ResponseWriter;
-import net.webassembletool.wicket.utils.WATNullResponse;
-import net.webassembletool.wicket.utils.WATWicketConfiguration;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.wicket.Response;
-import org.apache.wicket.markup.ComponentTag;
-import org.apache.wicket.markup.MarkupStream;
-import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.protocol.http.WebResponse;
 import org.apache.wicket.protocol.http.servlet.ServletWebRequest;
 
@@ -63,13 +58,13 @@ import org.apache.wicket.protocol.http.servlet.ServletWebRequest;
  * @author Nicolas Richeton
  * 
  */
-public class WATBlock extends WebMarkupContainer {
+public class WATBlock extends AbstractWatDriverContainer {
 	private static final Log LOG = LogFactory.getLog(WATBlock.class);
 
 	private static final long serialVersionUID = 1L;
 	private String blockName = null;
 	private String page = null;
-	private final boolean parseAbsoluteUrl = false;
+	private boolean parseAbsoluteUrl = false;
 	private String provider = null;
 
 	/**
@@ -113,31 +108,9 @@ public class WATBlock extends WebMarkupContainer {
 		return parseAbsoluteUrl;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.apache.wicket.MarkupContainer#onComponentTagBody(org.apache.wicket
-	 * .markup.MarkupStream, org.apache.wicket.markup.ComponentTag)
-	 */
 	@Override
-	protected void onComponentTagBody(MarkupStream markupStream,
-			ComponentTag openTag) {
-
-		// For unit tests, WAT can be disabled. This component will then behave
-		// like a standard MarkupContainer.
-		if (WATWicketConfiguration.isDisableHttpRequests()) {
-			super.onComponentTagBody(markupStream, openTag);
-			return;
-		}
-
-		Response originalResponse = getRequestCycle().getResponse();
-
-		// Drop block content
-		WATNullResponse watResponse = new WATNullResponse();
-		getRequestCycle().setResponse(watResponse);
-		super.onComponentTagBody(markupStream, openTag);
-		getRequestCycle().setResponse(originalResponse);
+	public void process(Map<String, String> blocks, Map<String, String> params,
+			Map<String, String> replaceRules) {
 
 		// Get web request and response.
 		ServletWebRequest servletWebRequest = (ServletWebRequest) getRequest();
@@ -156,7 +129,6 @@ public class WATBlock extends WebMarkupContainer {
 		}
 
 		if (parseAbsoluteUrl) {
-			HashMap<String, String> replaceRules = new HashMap<String, String>();
 
 			String baseUrl = driver.getBaseURL();
 			int baseUrlEnd = baseUrl.indexOf('/', baseUrl.indexOf("//") + 2);
@@ -171,19 +143,33 @@ public class WATBlock extends WebMarkupContainer {
 
 		// Render Block
 		try {
-			driver.renderBlock(page, blockName, new ResponseWriter(
-					originalResponse), request, response,
+			driver.renderBlock(page, blockName,
+					new ResponseWriter(webResponse), request, response,
 					new HashMap<String, String>(),
 					new HashMap<String, String>(), false);
 		} catch (IOException e) {
 			LOG.error(e.getMessage(), e);
 		} catch (HttpErrorPage e) {
-			LOG.error(e.getMessage(), e);
+			// Insert default content
+			String errorContent = blocks.get(WAT_ERROR_PREFIX
+					+ e.getStatusCode());
+			if (errorContent == null) {
+				errorContent = blocks.get(WAT_ERROR_PREFIX);
+			}
+			if (errorContent != null) {
+				webResponse.write(errorContent);
+			}
+			LOG.warn(e.getMessage() + ": " + driver.getBaseURL() + page);
 		}
+
 	}
 
 	public void setBlockName(String block) {
 		this.blockName = block;
+	}
+
+	public void setParseAbsoluteUrl(boolean parseAbsoluteUrl) {
+		this.parseAbsoluteUrl = parseAbsoluteUrl;
 	}
 
 	public void setProvider(String provider) {

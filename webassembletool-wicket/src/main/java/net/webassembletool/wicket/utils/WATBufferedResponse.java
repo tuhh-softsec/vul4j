@@ -20,6 +20,8 @@ import java.io.OutputStream;
 
 import net.webassembletool.wicket.container.WATParam;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.Response;
 import org.apache.wicket.protocol.http.WebResponse;
 
@@ -27,13 +29,14 @@ import org.apache.wicket.protocol.http.WebResponse;
  * A Wicket Response implementation used by the WATParam container. Any content
  * written to this reponse is buffered and will not be sent to the servlet
  * response. Content can be retrieved using
- * {@link WATParamResponse#getContent()}.
+ * {@link WATBufferedResponse#getContent()}.
  * 
  * @author Nicolas Richeton
  * @see WATParam
  * @see Response
  */
-public class WATParamResponse extends WebResponse {
+public class WATBufferedResponse extends WebResponse {
+	private static final Log LOG = LogFactory.getLog(WATBufferedResponse.class);
 
 	private final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
@@ -62,7 +65,7 @@ public class WATParamResponse extends WebResponse {
 		try {
 			baos.write(string.toString().getBytes());
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOG.error(e.getMessage(), e);
 		}
 	}
 }
