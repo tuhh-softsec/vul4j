@@ -108,6 +108,13 @@ public class WATBlock extends AbstractWatDriverContainer {
 		return parseAbsoluteUrl;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * 
+	 * @see net.webassembletool.wicket.container.AbstractWatDriverContainer#process
+	 *      (java.util.Map, java.util.Map, java.util.Map)
+	 */
 	@Override
 	public void process(Map<String, String> blocks, Map<String, String> params,
 			Map<String, String> replaceRules) {
@@ -148,17 +155,11 @@ public class WATBlock extends AbstractWatDriverContainer {
 					new HashMap<String, String>(),
 					new HashMap<String, String>(), false);
 		} catch (IOException e) {
+			this.sendErrorContent(blocks, webResponse, null);
 			LOG.error(e.getMessage(), e);
 		} catch (HttpErrorPage e) {
 			// Insert default content
-			String errorContent = blocks.get(WAT_ERROR_PREFIX
-					+ e.getStatusCode());
-			if (errorContent == null) {
-				errorContent = blocks.get(WAT_ERROR_PREFIX);
-			}
-			if (errorContent != null) {
-				webResponse.write(errorContent);
-			}
+			this.sendErrorContent(blocks, webResponse, e.getStatusCode());
 			LOG.warn(e.getMessage() + ": " + driver.getBaseURL() + page);
 		}
 

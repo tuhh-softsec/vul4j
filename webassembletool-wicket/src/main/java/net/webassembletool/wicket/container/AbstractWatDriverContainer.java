@@ -119,6 +119,33 @@ public abstract class AbstractWatDriverContainer extends WebMarkupContainer {
 
 	}
 
+	/**
+	 * This method is called when the component is rendered. This is the place
+	 * to do the specific processing and call Driver.
+	 * 
+	 * @param blocks
+	 * @param params
+	 * @param replaceRules
+	 */
 	public abstract void process(Map<String, String> blocks,
 			Map<String, String> params, Map<String, String> replaceRules);
+
+	/**
+	 * Write error content according to the error.
+	 * 
+	 * @param blocks
+	 * @param response
+	 * @param httpStatusCode
+	 */
+	protected void sendErrorContent(Map<String, String> blocks,
+			Response response, Integer httpStatusCode) {
+
+		String errorContent = blocks.get(WAT_ERROR_PREFIX + httpStatusCode);
+		if (errorContent == null) {
+			errorContent = blocks.get(WAT_ERROR_PREFIX);
+		}
+		if (errorContent != null) {
+			response.write(errorContent);
+		}
+	}
 }
