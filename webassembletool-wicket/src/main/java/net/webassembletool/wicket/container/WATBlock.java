@@ -27,6 +27,8 @@ import net.webassembletool.wicket.utils.ResponseWriter;
 import net.webassembletool.wicket.utils.WATNullResponse;
 import net.webassembletool.wicket.utils.WATWicketConfiguration;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.Response;
 import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.MarkupStream;
@@ -62,6 +64,7 @@ import org.apache.wicket.protocol.http.servlet.ServletWebRequest;
  * 
  */
 public class WATBlock extends WebMarkupContainer {
+	private static final Log LOG = LogFactory.getLog(WATBlock.class);
 
 	private static final long serialVersionUID = 1L;
 	private String blockName = null;
@@ -145,6 +148,7 @@ public class WATBlock extends WebMarkupContainer {
 
 		// Create driver
 		Driver driver = null;
+
 		if (provider == null) {
 			driver = DriverFactory.getInstance();
 		} else {
@@ -172,9 +176,9 @@ public class WATBlock extends WebMarkupContainer {
 					new HashMap<String, String>(),
 					new HashMap<String, String>(), false);
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOG.error(e.getMessage(), e);
 		} catch (HttpErrorPage e) {
-			e.printStackTrace();
+			LOG.error(e.getMessage(), e);
 		}
 	}
 
