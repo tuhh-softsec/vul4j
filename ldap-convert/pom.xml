@@ -58,6 +58,12 @@
       <groupId>${groupId}</groupId>
       <version>${version}</version>
     </dependency>
+    
+    <dependency>
+      <groupId>antlr</groupId>
+      <artifactId>antlr</artifactId>
+      <version>${antlr.version}</version>
+    </dependency>
   </dependencies>
 
   <build>

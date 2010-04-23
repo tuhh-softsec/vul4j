@@ -53,6 +53,24 @@
     </dependency> 
     
     <dependency>
+      <artifactId>shared-asn1</artifactId>
+      <groupId>${groupId}</groupId>
+      <version>${version}</version>
+    </dependency> 
+    
+    <dependency>
+      <groupId>dom4j</groupId>
+      <artifactId>dom4j</artifactId>
+      <version>${dom4j.version}</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>xml-apis</groupId>
+      <artifactId>xml-apis</artifactId>
+      <version>${xml.apis.version}</version>
+    </dependency>
+    
+    <dependency>
       <groupId>dom4j</groupId>
       <artifactId>dom4j</artifactId>
       <version>${dom4j.version}</version>
