@@ -27,7 +27,6 @@ import net.webassembletool.wicket.utils.ResponseWriter;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.wicket.Response;
 import org.apache.wicket.protocol.http.WebResponse;
 import org.apache.wicket.protocol.http.servlet.ServletWebRequest;
 
@@ -83,7 +82,6 @@ public class WATTemplate extends AbstractWatDriverContainer {
 	@Override
 	public void process(Map<String, String> blocks, Map<String, String> params,
 			Map<String, String> replaceRules) {
-		Response originalResponse = getRequestCycle().getResponse();
 		ServletWebRequest servletWebRequest = (ServletWebRequest) getRequest();
 		HttpServletRequest request = servletWebRequest.getHttpServletRequest();
 
@@ -92,9 +90,8 @@ public class WATTemplate extends AbstractWatDriverContainer {
 
 		Driver driver = DriverFactory.getInstance();
 		try {
-			driver.renderTemplate(page, name, new ResponseWriter(
-					originalResponse), request, response, blocks, replaceRules,
-					params, false);
+			driver.renderTemplate(page, name, new ResponseWriter(webResponse),
+					request, response, blocks, replaceRules, params, false);
 		} catch (IOException e) {
 			logger.error(e);
 		} catch (HttpErrorPage e) {
