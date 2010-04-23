@@ -41,7 +41,7 @@
     <antlr.version>2.7.7</antlr.version>
     <commons.collections.version>3.2.1</commons.collections.version>
     <commons.io.version>1.4</commons.io.version>
-    <commons.lang.version>2.4</commons.lang.version>
+    <commons.lang.version>2.5</commons.lang.version>
     <commons.pool.version>1.5.4</commons.pool.version>
     <dom4j.version>1.6.1</dom4j.version>
     <junit.version>4.7</junit.version>
