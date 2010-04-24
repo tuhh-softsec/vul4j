@@ -44,7 +44,7 @@
     <commons.lang.version>2.5</commons.lang.version>
     <commons.pool.version>1.5.4</commons.pool.version>
     <dom4j.version>1.6.1</dom4j.version>
-    <junit.version>4.7</junit.version>
+    <junit.version>4.8.1</junit.version>
     <log4j.version>1.2.14</log4j.version>
     <mina.core.version>2.0.0-RC1</mina.core.version>
     <slf4j.api.version>1.5.10</slf4j.api.version>
