@@ -114,60 +114,61 @@ public class StreamPumperTest extends TestCase
         assertEquals( "This a test string" + lineSeparator, sw.toString() );
         pumper.close();
     }
-}
-
-/**
- * Used by the test to track whether a line actually got consumed or not.
- */
-class TestConsumer implements StreamConsumer
-{
-
-    private List lines = new ArrayList();
 
     /**
-     * Checks to see if this consumer consumed a particular line. This method
-     * will wait up to timeout number of milliseconds for the line to get
-     * consumed.
-     *
-     * @param testLine Line to test for.
-     * @param timeout  Number of milliseconds to wait for the line.
-     * @return true if the line gets consumed, else false.
+     * Used by the test to track whether a line actually got consumed or not.
      */
-    public boolean wasLineConsumed( String testLine, long timeout )
+    static class TestConsumer
+        implements StreamConsumer
     {
 
-        long start = System.currentTimeMillis();
-        long trialTime = 0;
+        private List lines = new ArrayList();
 
-        do
+        /**
+         * Checks to see if this consumer consumed a particular line. This method will wait up to timeout number of
+         * milliseconds for the line to get consumed.
+         * 
+         * @param testLine Line to test for.
+         * @param timeout Number of milliseconds to wait for the line.
+         * @return true if the line gets consumed, else false.
+         */
+        public boolean wasLineConsumed( String testLine, long timeout )
         {
-            if ( lines.contains( testLine ) )
-            {
-                return true;
-            }
 
-            //Sleep a bit.
-            try
-            {
-                Thread.sleep( 10 );
-            }
-            catch ( InterruptedException e )
-            {
-                //ignoring...
-            }
+            long start = System.currentTimeMillis();
+            long trialTime = 0;
 
-            //How long have been waiting for the line?
-            trialTime = System.currentTimeMillis() - start;
+            do
+            {
+                if ( lines.contains( testLine ) )
+                {
+                    return true;
+                }
 
+                // Sleep a bit.
+                try
+                {
+                    Thread.sleep( 10 );
+                }
+                catch ( InterruptedException e )
+                {
+                    // ignoring...
+                }
+
+                // How long have been waiting for the line?
+                trialTime = System.currentTimeMillis() - start;
+
+            }
+            while ( trialTime < timeout );
+
+            // If we got here, then the line wasn't consumed within the timeout
+            return false;
         }
-        while ( trialTime < timeout );
 
-        //If we got here, then the line wasn't consume within the timeout
-        return false;
+        public void consumeLine( String line )
+        {
+            lines.add( line );
+        }
     }
 
-    public void consumeLine( String line )
-    {
-        lines.add( line );
-    }
 }
