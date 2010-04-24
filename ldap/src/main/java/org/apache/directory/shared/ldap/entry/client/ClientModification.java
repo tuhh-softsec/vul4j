@@ -23,11 +23,16 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import javax.naming.directory.DirContext;
-
+import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.entry.DefaultEntryAttribute;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Modification;
 import org.apache.directory.shared.ldap.entry.ModificationOperation;
+import org.apache.directory.shared.ldap.exception.LdapException;
+import org.apache.directory.shared.ldap.schema.AttributeType;
+import org.apache.directory.shared.ldap.schema.SchemaManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * An internal implementation for a ModificationItem. The name has been
@@ -39,14 +44,15 @@ import org.apache.directory.shared.ldap.entry.ModificationOperation;
 public class ClientModification implements Modification
 {
     /** The modification operation */
-    private ModificationOperation operation;
+    protected ModificationOperation operation;
     
     /** The attribute which contains the modification */
-    private EntryAttribute attribute;
+    protected EntryAttribute attribute;
  
-    
+    /** logger for reporting errors that might not be handled properly upstream */
+    protected static final Logger LOG = LoggerFactory.getLogger( Modification.class );
+
     /**
-     * 
      * Creates a new instance of ClientModification.
      *
      * @param operation The modification operation
@@ -60,7 +66,35 @@ public class ClientModification implements Modification
     
     
     /**
-     * 
+     * Creates a new instance of ClientModification.
+     *
+     * @param schemaManager The schema manager 
+     * @param operation The modification operation
+     */
+    public ClientModification( SchemaManager schemaManager, Modification modification )
+    {
+        operation = modification.getOperation();
+        
+        EntryAttribute modAttribute = modification.getAttribute();
+        
+        try
+        {
+            AttributeType at = modAttribute.getAttributeType();
+            
+            if ( at == null )
+            {
+                at = schemaManager.lookupAttributeTypeRegistry( modAttribute.getId() );
+            }
+            
+            attribute = new DefaultEntryAttribute( at, modAttribute );
+        }
+        catch ( LdapException ne )
+        {
+            // The attributeType is incorrect. Log, but do nothing otherwise.
+            LOG.error( I18n.err( I18n.ERR_04472, modAttribute.getId() ) );
+        }
+    }
+    /**
      * Creates a new instance of ClientModification.
      */
     public ClientModification()
@@ -69,21 +103,7 @@ public class ClientModification implements Modification
     
     
     /**
-     * 
-     * Creates a new instance of ClientModification.
-     *
-     * @param operation The modification operation
-     * @param attribute The asociated attribute 
-     */
-    public ClientModification( int operation, EntryAttribute attribute )
-    {
-        setOperation( operation );
-        this.attribute = attribute;
-    }
-    
-    
-    /**
-     *  @return the operation
+     * {@inheritDoc}
      */
     public ModificationOperation getOperation()
     {
@@ -98,27 +118,12 @@ public class ClientModification implements Modification
      */
     public void setOperation( int operation )
     {
-        switch ( operation )
-        {
-            case DirContext.ADD_ATTRIBUTE :
-                this.operation = ModificationOperation.ADD_ATTRIBUTE;
-                break;
-
-            case DirContext.REPLACE_ATTRIBUTE :
-                this.operation = ModificationOperation.REPLACE_ATTRIBUTE;
-                break;
-            
-            case DirContext.REMOVE_ATTRIBUTE :
-                this.operation = ModificationOperation.REMOVE_ATTRIBUTE;
-                break;
-        }
+        this.operation = ModificationOperation.getOperation( operation );
     }
 
     
     /**
-     * Store the modification operation
-     *
-     * @param operation The DirContext value to assign
+     * {@inheritDoc}
      */
     public void setOperation( ModificationOperation operation )
     {
@@ -127,7 +132,7 @@ public class ClientModification implements Modification
         
     
     /**
-     * @return the attribute containing the modifications
+     * {@inheritDoc}
      */
     public EntryAttribute getAttribute()
     {
@@ -150,28 +155,27 @@ public class ClientModification implements Modification
      * @see Object#equals(Object)
      * @return <code>true</code> if both values are equal
      */
-    public boolean equals( Object o )
+    public boolean equals( Object that )
     {
         // Basic equals checks
-        if ( this == o )
+        if ( this == that )
         {
             return true;
         }
         
-        if ( ! (o instanceof ClientModification ) )
+        if ( ! (that instanceof Modification ) )
         {
             return false;
         }
         
-        Modification otherModification = (ClientModification)o;
+        Modification otherModification = (Modification)that;
         
         // Check the operation
-        if ( !operation.equals( otherModification.getOperation() ) )
+        if ( operation != otherModification.getOperation() )
         {
             return false;
         }
 
-        
         // Check the attribute
         if ( attribute == null )
         {
@@ -226,6 +230,58 @@ public class ClientModification implements Modification
         out.flush();
     }
     
+    
+    /**
+     * Serialize a ClientModification.
+     */
+    public void serialize( ObjectOutput out ) throws IOException
+    {
+        if ( attribute == null )
+        {
+            throw new IOException( I18n.err( I18n.ERR_04471 ) );
+        }
+        
+        // Write the operation
+        out.writeInt( operation.getValue() );
+        
+        AttributeType at = attribute.getAttributeType();
+        
+        // Write the attribute's oid
+        out.writeUTF( at.getOid() );
+        
+        // Write the attribute
+        ((DefaultEntryAttribute)attribute).serialize( out );
+    }
+    
+    
+    /**
+     * Deserialize a ServerModification
+     * 
+     * @param in The buffer containing the serialized value
+     * @param atRegistry The AttributeType registry
+     * @throws IOException If we weren't able to deserialize the data
+     * @throws ClassNotFoundException if we weren't able to construct a Modification instance
+     * @throws LdapException If we didn't found the AttributeType in the registries
+     */
+    public void deserialize( ObjectInput in, SchemaManager schemaManager ) throws IOException, ClassNotFoundException, LdapException
+    {
+        // Read the operation
+        int op = in.readInt();
+        
+        operation = ModificationOperation.getOperation( op );
+        
+        // Read the attribute OID
+        String oid = in.readUTF();
+        
+        // Lookup for tha associated AttributeType
+        AttributeType attributeType = schemaManager.lookupAttributeTypeRegistry( oid );
+        
+        attribute = new DefaultEntryAttribute( attributeType );
+        
+        // Read the attribute
+        ((DefaultEntryAttribute)attribute).deserialize( in );
+    }
+
     
     /**
      * Clone a modification
