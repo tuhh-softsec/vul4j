@@ -54,6 +54,18 @@
       <groupId>${groupId}</groupId>
       <version>${version}</version>
     </dependency> 
+
+    <dependency>
+      <artifactId>shared-ldap-schema</artifactId>
+      <groupId>${groupId}</groupId>
+      <version>${version}</version>
+    </dependency>
+
+    <dependency>
+      <artifactId>shared-ldap</artifactId>
+      <groupId>${groupId}</groupId>
+      <version>${version}</version>
+    </dependency>
   </dependencies>
 
   <build>

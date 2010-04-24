@@ -62,6 +62,12 @@
       <groupId>${groupId}</groupId>
       <version>${version}</version>
     </dependency> 
+
+    <dependency>
+      <artifactId>shared-asn1</artifactId>
+      <groupId>${groupId}</groupId>
+      <version>${version}</version>
+    </dependency>
   </dependencies>
 
   <build>
