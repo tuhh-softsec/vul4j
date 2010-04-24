@@ -53,6 +53,8 @@ package org.codehaus.plexus.util.cli;
  */
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -113,6 +115,65 @@ public class StreamPumperTest extends TestCase
         System.out.println( "aaa" + sw.toString() );
         assertEquals( "This a test string" + lineSeparator, sw.toString() );
         pumper.close();
+    }
+
+    public void testPumperReadsInputStreamUntilEndEvenIfConsumerFails()
+    {
+        // the number of bytes generated should surely exceed the read buffer used by the pumper
+        GeneratorInputStream gis = new GeneratorInputStream( 1024 * 1024 * 4 );
+        StreamPumper pumper = new StreamPumper( gis, new FailingConsumer() );
+        pumper.run();
+        assertEquals( "input stream was not fully consumed, producer deadlocks", gis.size, gis.read );
+        assertTrue( gis.closed );
+        assertNotNull( pumper.getException() );
+    }
+
+    static class GeneratorInputStream
+        extends InputStream
+    {
+
+        final int size;
+
+        int read = 0;
+
+        boolean closed = false;
+
+        public GeneratorInputStream( int size )
+        {
+            this.size = size;
+        }
+
+        public int read()
+            throws IOException
+        {
+            if ( read < size )
+            {
+                read++;
+                return '\n';
+            }
+            else
+            {
+                return -1;
+            }
+        }
+
+        public void close()
+            throws IOException
+        {
+            closed = true;
+        }
+
+    }
+
+    static class FailingConsumer
+        implements StreamConsumer
+    {
+
+        public void consumeLine( String line )
+        {
+            throw new NullPointerException( "too bad, the consumer is badly implemented..." );
+        }
+
     }
 
     /**
