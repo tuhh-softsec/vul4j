@@ -224,7 +224,7 @@ public abstract class CommandLineUtils
 
             if ( errorPumper.getException() != null )
             {
-                throw new CommandLineException( "Error inside systemOut parser", outputPumper.getException() );
+                throw new CommandLineException( "Error inside systemErr parser", errorPumper.getException() );
             }
 
             return returnValue;
