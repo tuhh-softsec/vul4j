@@ -21,6 +21,7 @@ package org.apache.directory.shared.ldap.filter;
 
 
 import org.apache.directory.shared.ldap.message.AliasDerefMode;
+import org.apache.directory.shared.ldap.name.DN;
 
 
 /**
@@ -36,7 +37,7 @@ public class ScopeNode extends AbstractExprNode
     private final SearchScope scope;
 
     /** the search base */
-    private final String baseDn;
+    private final DN baseDn;
 
     /** the alias dereferencing mode */
     private final AliasDerefMode aliasDerefAliases;
@@ -49,7 +50,7 @@ public class ScopeNode extends AbstractExprNode
      * @param baseDn the search base
      * @param scope the search scope
      */
-    public ScopeNode( AliasDerefMode aliasDerefAliases, String baseDn, SearchScope scope )
+    public ScopeNode( AliasDerefMode aliasDerefAliases, DN baseDn, SearchScope scope )
     {
         super( AssertionType.SCOPE );
         this.scope = scope;
@@ -96,7 +97,7 @@ public class ScopeNode extends AbstractExprNode
      * 
      * @return the base dn
      */
-    public String getBaseDn()
+    public DN getBaseDn()
     {
         return baseDn;
     }
