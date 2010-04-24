@@ -128,39 +128,31 @@ public class StreamPumper
     {
         try
         {
-            String s;
-            try
+            for ( String line = in.readLine(); line != null; line = in.readLine() )
             {
-                s = in.readLine();
-
-                while ( s != null )
+                try
                 {
-                    try
+                    if ( exception == null )
                     {
-                        if ( exception == null)
-                        {
-                            consumeLine( s );
-                        }
+                        consumeLine( line );
                     }
-                    catch ( Exception t )
-                    {
-                        exception = t;
-                    }
+                }
+                catch ( Exception t )
+                {
+                    exception = t;
+                }
 
-                    if ( out != null )
-                    {
-                        out.println( s );
+                if ( out != null )
+                {
+                    out.println( line );
 
-                        out.flush();
-                    }
-
-                    s = in.readLine();
+                    out.flush();
                 }
             }
-            catch ( IOException e )
-            {
-                exception = e;
-            }
+        }
+        catch ( IOException e )
+        {
+            exception = e;
         }
         finally
         {
