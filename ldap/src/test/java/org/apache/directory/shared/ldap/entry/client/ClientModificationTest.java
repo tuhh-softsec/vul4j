@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
+import org.apache.directory.shared.ldap.entry.DefaultModification;
 import org.apache.directory.shared.ldap.entry.DefaultEntryAttribute;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Modification;
@@ -37,7 +38,7 @@ import org.junit.Test;
 
 
 /**
- * Test the ClientModification class
+ * Test the DefaultModification class
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
@@ -45,9 +46,9 @@ import org.junit.Test;
 public class ClientModificationTest
 {
     /**
-     * Serialize a ClientModification
+     * Serialize a DefaultModification
      */
-    private ByteArrayOutputStream serializeValue( ClientModification value ) throws IOException
+    private ByteArrayOutputStream serializeValue( DefaultModification value ) throws IOException
     {
         ObjectOutputStream oOut = null;
         ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -82,9 +83,9 @@ public class ClientModificationTest
     
     
     /**
-     * Deserialize a ClientModification
+     * Deserialize a DefaultModification
      */
-    private ClientModification deserializeValue( ByteArrayOutputStream out ) throws IOException, ClassNotFoundException
+    private DefaultModification deserializeValue( ByteArrayOutputStream out ) throws IOException, ClassNotFoundException
     {
         ObjectInputStream oIn = null;
         ByteArrayInputStream in = new ByteArrayInputStream( out.toByteArray() );
@@ -93,7 +94,7 @@ public class ClientModificationTest
         {
             oIn = new ObjectInputStream( in );
 
-            ClientModification value = ( ClientModification ) oIn.readObject();
+            DefaultModification value = ( DefaultModification ) oIn.readObject();
 
             return value;
         }
@@ -124,7 +125,7 @@ public class ClientModificationTest
         EntryAttribute attribute = new DefaultEntryAttribute( "cn" );
         attribute.add( "test1", "test2" );
         
-        Modification mod = new ClientModification( ModificationOperation.ADD_ATTRIBUTE, attribute );
+        Modification mod = new DefaultModification( ModificationOperation.ADD_ATTRIBUTE, attribute );
         Modification clone = mod.clone();
         
         attribute.remove( "test2" );
@@ -146,7 +147,7 @@ public class ClientModificationTest
         EntryAttribute attribute = new DefaultEntryAttribute( "cn" );
         attribute.add( "test1", "test2" );
         
-        ClientModification mod = new ClientModification( ModificationOperation.ADD_ATTRIBUTE, attribute );
+        DefaultModification mod = new DefaultModification( ModificationOperation.ADD_ATTRIBUTE, attribute );
         
         Modification modSer = deserializeValue( serializeValue( mod ) );
         
@@ -160,7 +161,7 @@ public class ClientModificationTest
         EntryAttribute attribute = new DefaultEntryAttribute( "cn" );
         attribute.add( "test1", "test2" );
         
-        ClientModification mod = new ClientModification( ModificationOperation.REPLACE_ATTRIBUTE, attribute );
+        DefaultModification mod = new DefaultModification( ModificationOperation.REPLACE_ATTRIBUTE, attribute );
         
         Modification modSer = deserializeValue( serializeValue( mod ) );
         
@@ -174,7 +175,7 @@ public class ClientModificationTest
         EntryAttribute attribute = new DefaultEntryAttribute( "cn" );
         attribute.add( "test1", "test2" );
         
-        ClientModification mod = new ClientModification( ModificationOperation.REMOVE_ATTRIBUTE, attribute );
+        DefaultModification mod = new DefaultModification( ModificationOperation.REMOVE_ATTRIBUTE, attribute );
         
         Modification modSer = deserializeValue( serializeValue( mod ) );
         
@@ -185,7 +186,7 @@ public class ClientModificationTest
     @Test
     public void testSerializationModificationNoAttribute() throws ClassNotFoundException, IOException
     {
-        ClientModification mod = new ClientModification();
+        DefaultModification mod = new DefaultModification();
         
         mod.setOperation( ModificationOperation.ADD_ATTRIBUTE );
         

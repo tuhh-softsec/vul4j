@@ -27,8 +27,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
+import org.apache.directory.shared.ldap.entry.DefaultModification;
 import org.apache.directory.shared.ldap.entry.Modification;
-import org.apache.directory.shared.ldap.entry.client.ClientModification;
 import org.apache.directory.shared.ldap.message.internal.InternalModifyRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalModifyResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalResultResponse;
@@ -232,7 +232,7 @@ public class ModifyRequestImpl extends AbstractAbandonableRequest implements Int
             }
             else
                 
-            if ( !item.equals((ClientModification) mods.get( i ) ) )
+            if ( !item.equals((DefaultModification) mods.get( i ) ) )
             {
                 return false;
             }
@@ -261,7 +261,7 @@ public class ModifyRequestImpl extends AbstractAbandonableRequest implements Int
             for ( int i = 0; i < mods.size(); i++ )
             {
 
-                ClientModification modification = ( ClientModification ) mods.get( i );
+                DefaultModification modification = ( DefaultModification ) mods.get( i );
 
                 sb.append( "            Modification[" ).append( i ).append( "]\n" );
                 sb.append( "                Operation : " );

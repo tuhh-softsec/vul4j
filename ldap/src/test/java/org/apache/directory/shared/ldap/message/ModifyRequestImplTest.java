@@ -30,11 +30,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
+import org.apache.directory.shared.ldap.entry.DefaultModification;
 import org.apache.directory.shared.ldap.entry.DefaultEntryAttribute;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Modification;
 import org.apache.directory.shared.ldap.entry.ModificationOperation;
-import org.apache.directory.shared.ldap.entry.client.ClientModification;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.message.internal.InternalModifyRequest;
@@ -76,18 +76,18 @@ public class ModifyRequestImplTest
         attr.add( "val0" );
         attr.add( "val1" );
         attr.add( "val2" );
-        Modification item = new ClientModification( ModificationOperation.ADD_ATTRIBUTE, attr );
+        Modification item = new DefaultModification( ModificationOperation.ADD_ATTRIBUTE, attr );
         req.addModification( item );
 
         attr = new DefaultEntryAttribute( "attr1" );
         attr.add( "val3" );
-        item = new ClientModification( ModificationOperation.REMOVE_ATTRIBUTE, attr );
+        item = new DefaultModification( ModificationOperation.REMOVE_ATTRIBUTE, attr );
         req.addModification( item );
 
         attr = new DefaultEntryAttribute( "attr2" );
         attr.add( "val4" );
         attr.add( "val5" );
-        item = new ClientModification( ModificationOperation.REPLACE_ATTRIBUTE, attr );
+        item = new DefaultModification( ModificationOperation.REPLACE_ATTRIBUTE, attr );
         req.addModification( item );
 
         return req;
@@ -162,7 +162,7 @@ public class ModifyRequestImplTest
         attr.add( "val0" );
         attr.add( "val1" );
         attr.add( "val2" );
-        Modification item = new ClientModification( ModificationOperation.ADD_ATTRIBUTE, attr );
+        Modification item = new DefaultModification( ModificationOperation.ADD_ATTRIBUTE, attr );
         req0.addModification( item );
 
         ModifyRequestImpl req1 = getRequest();
@@ -170,7 +170,7 @@ public class ModifyRequestImplTest
         attr.add( "val0" );
         attr.add( "val1" );
         attr.add( "val2" );
-        item = new ClientModification( ModificationOperation.REMOVE_ATTRIBUTE, attr );
+        item = new DefaultModification( ModificationOperation.REMOVE_ATTRIBUTE, attr );
         req0.addModification( item );
 
         assertFalse( req0.equals( req1 ) );
@@ -189,7 +189,7 @@ public class ModifyRequestImplTest
         attr.add( "val0" );
         attr.add( "val1" );
         attr.add( "val2" );
-        Modification item = new ClientModification( ModificationOperation.ADD_ATTRIBUTE, attr );
+        Modification item = new DefaultModification( ModificationOperation.ADD_ATTRIBUTE, attr );
         req0.addModification( item );
 
         ModifyRequestImpl req1 = getRequest();
@@ -210,7 +210,7 @@ public class ModifyRequestImplTest
         attr.add( "val0" );
         attr.add( "val1" );
         attr.add( "val2" );
-        Modification item = new ClientModification( ModificationOperation.ADD_ATTRIBUTE, attr );
+        Modification item = new DefaultModification( ModificationOperation.ADD_ATTRIBUTE, attr );
         req0.addModification( item );
 
         ModifyRequestImpl req1 = getRequest();
@@ -218,7 +218,7 @@ public class ModifyRequestImplTest
         attr.add( "val0" );
         attr.add( "val1" );
         attr.add( "val2" );
-        item = new ClientModification( ModificationOperation.ADD_ATTRIBUTE, attr );
+        item = new DefaultModification( ModificationOperation.ADD_ATTRIBUTE, attr );
         req0.addModification( item );
 
         assertFalse( req0.equals( req1 ) );
@@ -237,7 +237,7 @@ public class ModifyRequestImplTest
         attr.add( "val0" );
         attr.add( "val1" );
         attr.add( "val2" );
-        Modification item = new ClientModification( ModificationOperation.ADD_ATTRIBUTE, attr );
+        Modification item = new DefaultModification( ModificationOperation.ADD_ATTRIBUTE, attr );
         req0.addModification( item );
 
         ModifyRequestImpl req1 = getRequest();
@@ -246,7 +246,7 @@ public class ModifyRequestImplTest
         attr.add( "val1" );
         attr.add( "val2" );
         attr.add( "val3" );
-        item = new ClientModification( ModificationOperation.ADD_ATTRIBUTE, attr );
+        item = new DefaultModification( ModificationOperation.ADD_ATTRIBUTE, attr );
         req0.addModification( item );
 
         assertFalse( req0.equals( req1 ) );
@@ -269,18 +269,18 @@ public class ModifyRequestImplTest
                 attr.add( "val0" );
                 attr.add( "val1" );
                 attr.add( "val2" );
-                Modification item = new ClientModification( ModificationOperation.ADD_ATTRIBUTE, attr );
+                Modification item = new DefaultModification( ModificationOperation.ADD_ATTRIBUTE, attr );
                 list.add( item );
 
                 attr = new DefaultEntryAttribute( "attr1" );
                 attr.add( "val3" );
-                item = new ClientModification( ModificationOperation.REMOVE_ATTRIBUTE, attr );
+                item = new DefaultModification( ModificationOperation.REMOVE_ATTRIBUTE, attr );
                 list.add( item );
 
                 attr = new DefaultEntryAttribute( "attr2" );
                 attr.add( "val4" );
                 attr.add( "val5" );
-                item = new ClientModification( ModificationOperation.REPLACE_ATTRIBUTE, attr );
+                item = new DefaultModification( ModificationOperation.REPLACE_ATTRIBUTE, attr );
                 list.add( item );
 
                 return list;

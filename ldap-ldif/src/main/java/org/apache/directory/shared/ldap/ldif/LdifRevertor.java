@@ -26,12 +26,12 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.entry.DefaultModification;
 import org.apache.directory.shared.ldap.entry.DefaultEntryAttribute;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Modification;
 import org.apache.directory.shared.ldap.entry.ModificationOperation;
-import org.apache.directory.shared.ldap.entry.client.ClientModification;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.name.AVA;
@@ -142,7 +142,7 @@ public class LdifRevertor
                         continue;
                     }
 
-                    Modification reverseModification = new ClientModification( ModificationOperation.REMOVE_ATTRIBUTE,
+                    Modification reverseModification = new DefaultModification( ModificationOperation.REMOVE_ATTRIBUTE,
                         mod );
                     reverseModifications.add( 0, reverseModification );
                     break;
@@ -160,12 +160,12 @@ public class LdifRevertor
 
                     if ( mod.get() == null )
                     {
-                        reverseModification = new ClientModification( ModificationOperation.ADD_ATTRIBUTE, previous );
+                        reverseModification = new DefaultModification( ModificationOperation.ADD_ATTRIBUTE, previous );
                         reverseModifications.add( 0, reverseModification );
                         break;
                     }
 
-                    reverseModification = new ClientModification( ModificationOperation.ADD_ATTRIBUTE, mod );
+                    reverseModification = new DefaultModification( ModificationOperation.ADD_ATTRIBUTE, mod );
                     reverseModifications.add( 0, reverseModification );
                     break;
 
@@ -185,7 +185,7 @@ public class LdifRevertor
                      */
                     if ( ( mod.get() == null ) && ( previous == null ) )
                     {
-                        reverseModification = new ClientModification( ModificationOperation.REPLACE_ATTRIBUTE,
+                        reverseModification = new DefaultModification( ModificationOperation.REPLACE_ATTRIBUTE,
                             new DefaultEntryAttribute( mod.getId() ) );
                         reverseModifications.add( 0, reverseModification );
                         continue;
@@ -193,7 +193,7 @@ public class LdifRevertor
 
                     if ( mod.get() == null )
                     {
-                        reverseModification = new ClientModification( ModificationOperation.REPLACE_ATTRIBUTE, previous );
+                        reverseModification = new DefaultModification( ModificationOperation.REPLACE_ATTRIBUTE, previous );
                         reverseModifications.add( 0, reverseModification );
                         continue;
                     }
@@ -201,13 +201,13 @@ public class LdifRevertor
                     if ( previous == null )
                     {
                         EntryAttribute emptyAttribute = new DefaultEntryAttribute( mod.getId() );
-                        reverseModification = new ClientModification( ModificationOperation.REPLACE_ATTRIBUTE,
+                        reverseModification = new DefaultModification( ModificationOperation.REPLACE_ATTRIBUTE,
                             emptyAttribute );
                         reverseModifications.add( 0, reverseModification );
                         continue;
                     }
 
-                    reverseModification = new ClientModification( ModificationOperation.REPLACE_ATTRIBUTE, previous );
+                    reverseModification = new DefaultModification( ModificationOperation.REPLACE_ATTRIBUTE, previous );
                     reverseModifications.add( 0, reverseModification );
                     break;
 
@@ -349,7 +349,7 @@ public class LdifRevertor
                    ava.getNormValue().equals( oldRdn.getNormValue() ) ) )
             {
                 // Create the modification, which is an Remove
-                Modification modification = new ClientModification( 
+                Modification modification = new DefaultModification( 
                     ModificationOperation.REMOVE_ATTRIBUTE, 
                     new DefaultEntryAttribute( ava.getUpType(), ava.getUpValue().getString() ) );
                 

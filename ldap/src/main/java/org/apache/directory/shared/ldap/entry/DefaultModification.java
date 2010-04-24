@@ -17,17 +17,13 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.entry.client;
+package org.apache.directory.shared.ldap.entry;
 
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.entry.DefaultEntryAttribute;
-import org.apache.directory.shared.ldap.entry.EntryAttribute;
-import org.apache.directory.shared.ldap.entry.Modification;
-import org.apache.directory.shared.ldap.entry.ModificationOperation;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.SchemaManager;
@@ -41,7 +37,7 @@ import org.slf4j.LoggerFactory;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public class ClientModification implements Modification
+public class DefaultModification implements Modification
 {
     /** The modification operation */
     protected ModificationOperation operation;
@@ -53,12 +49,12 @@ public class ClientModification implements Modification
     protected static final Logger LOG = LoggerFactory.getLogger( Modification.class );
 
     /**
-     * Creates a new instance of ClientModification.
+     * Creates a new instance of DefaultModification.
      *
      * @param operation The modification operation
      * @param attribute The asociated attribute 
      */
-    public ClientModification( ModificationOperation operation, EntryAttribute attribute )
+    public DefaultModification( ModificationOperation operation, EntryAttribute attribute )
     {
         this.operation = operation;
         this.attribute = attribute;
@@ -66,12 +62,12 @@ public class ClientModification implements Modification
     
     
     /**
-     * Creates a new instance of ClientModification.
+     * Creates a new instance of DefaultModification.
      *
      * @param schemaManager The schema manager 
      * @param operation The modification operation
      */
-    public ClientModification( SchemaManager schemaManager, Modification modification )
+    public DefaultModification( SchemaManager schemaManager, Modification modification )
     {
         operation = modification.getOperation();
         
@@ -95,9 +91,9 @@ public class ClientModification implements Modification
         }
     }
     /**
-     * Creates a new instance of ClientModification.
+     * Creates a new instance of DefaultModification.
      */
-    public ClientModification()
+    public DefaultModification()
     {
     }
     
@@ -232,7 +228,7 @@ public class ClientModification implements Modification
     
     
     /**
-     * Serialize a ClientModification.
+     * Serialize a DefaultModification.
      */
     public void serialize( ObjectOutput out ) throws IOException
     {
@@ -288,11 +284,11 @@ public class ClientModification implements Modification
      * 
      * @return  a copied instance of the current modification
      */
-    public ClientModification clone()
+    public DefaultModification clone()
     {
         try
         {
-            ClientModification clone = (ClientModification)super.clone();
+            DefaultModification clone = (DefaultModification)super.clone();
             
             clone.attribute = this.attribute.clone();
             return clone;

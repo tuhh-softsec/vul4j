@@ -29,6 +29,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.directory.shared.ldap.entry.DefaultModification;
 import org.apache.directory.shared.ldap.entry.DefaultEntryAttribute;
 import org.apache.directory.shared.ldap.entry.StringValue;
 import org.apache.directory.shared.ldap.entry.Entry;
@@ -36,7 +37,6 @@ import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Modification;
 import org.apache.directory.shared.ldap.entry.ModificationOperation;
 import org.apache.directory.shared.ldap.entry.Value;
-import org.apache.directory.shared.ldap.entry.client.ClientModification;
 import org.apache.directory.shared.ldap.entry.client.DefaultClientEntry;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
@@ -196,7 +196,7 @@ public class LdifEntry implements Cloneable, Externalizable
     {
         if ( changeType == ChangeType.Modify )
         {
-            Modification item = new ClientModification( modOp, attr );
+            Modification item = new DefaultModification( modOp, attr );
             modificationList.add( item );
             modificationItems.put( attr.getId(), item );
         }
@@ -231,7 +231,7 @@ public class LdifEntry implements Cloneable, Externalizable
                 attr = (EntryAttribute)value;
             }
 
-            Modification item = new ClientModification( modOp, attr );
+            Modification item = new DefaultModification( modOp, attr );
             modificationList.add( item );
             modificationItems.put( id, item );
         }
@@ -532,7 +532,7 @@ public class LdifEntry implements Cloneable, Externalizable
         {
             for ( Modification modif:modificationList )
             {
-                Modification modifClone = new ClientModification( modif.getOperation(), 
+                Modification modifClone = new DefaultModification( modif.getOperation(), 
                     (EntryAttribute) modif.getAttribute().clone() );
                 clone.modificationList.add( modifClone );
             }
@@ -543,7 +543,7 @@ public class LdifEntry implements Cloneable, Externalizable
             for ( String key:modificationItems.keySet() )
             {
                 Modification modif = modificationItems.get( key );
-                Modification modifClone = new ClientModification( modif.getOperation(), 
+                Modification modifClone = new DefaultModification( modif.getOperation(), 
                     (EntryAttribute) modif.getAttribute().clone() );
                 clone.modificationItems.put( key, modifClone );
             }

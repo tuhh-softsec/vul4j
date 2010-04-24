@@ -32,12 +32,12 @@ import java.util.List;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.BasicAttributes;
 
+import org.apache.directory.shared.ldap.entry.DefaultModification;
 import org.apache.directory.shared.ldap.entry.DefaultEntryAttribute;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Modification;
 import org.apache.directory.shared.ldap.entry.ModificationOperation;
-import org.apache.directory.shared.ldap.entry.client.ClientModification;
 import org.apache.directory.shared.ldap.entry.client.DefaultClientEntry;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
@@ -130,7 +130,7 @@ public class LdifRevertorTest
 
         DN dn = new DN( "cn=test, ou=system" );
 
-        Modification mod = new ClientModification( 
+        Modification mod = new DefaultModification( 
             ModificationOperation.REMOVE_ATTRIBUTE, 
             new DefaultEntryAttribute( "ou", "acme corp" ) );
 
@@ -174,7 +174,7 @@ public class LdifRevertorTest
 
         DN dn = new DN( "cn=test, ou=system" );
 
-        Modification mod = new ClientModification(
+        Modification mod = new DefaultModification(
             ModificationOperation.REMOVE_ATTRIBUTE, 
             new DefaultEntryAttribute( "ou" ) );
 
@@ -218,7 +218,7 @@ public class LdifRevertorTest
         
         DN dn = new DN( "cn=test, ou=system" );
         
-        Modification mod = new ClientModification(
+        Modification mod = new DefaultModification(
             ModificationOperation.REMOVE_ATTRIBUTE, ou );
 
         LdifEntry reversed = LdifRevertor.reverseModify( dn, 
@@ -266,7 +266,7 @@ public class LdifRevertorTest
         ouModified.add( "directory" );
         ouModified.add( "BigCompany inc." );
         
-        Modification mod = new ClientModification(
+        Modification mod = new DefaultModification(
             ModificationOperation.REPLACE_ATTRIBUTE, ouModified );
 
         LdifEntry reversed = LdifRevertor.reverseModify( dn,
@@ -310,7 +310,7 @@ public class LdifRevertorTest
         newOu.add( "acme corp" );
 
         
-        Modification mod = new ClientModification(
+        Modification mod = new DefaultModification(
             ModificationOperation.REPLACE_ATTRIBUTE, newOu );
 
         LdifEntry reversed = LdifRevertor.reverseModify( dn,
@@ -354,7 +354,7 @@ public class LdifRevertorTest
         
         DN dn = new DN( "cn=test, ou=system" );
         
-        Modification mod = new ClientModification( 
+        Modification mod = new DefaultModification( 
             ModificationOperation.REPLACE_ATTRIBUTE, new DefaultEntryAttribute( "ou" ) );
 
         LdifEntry reversed = LdifRevertor.reverseModify( dn,
@@ -484,27 +484,27 @@ public class LdifRevertorTest
 
         // First, inject the 'ou'
         
-        Modification mod = new ClientModification( 
+        Modification mod = new DefaultModification( 
             ModificationOperation.ADD_ATTRIBUTE, new DefaultEntryAttribute( "ou", "BigCompany inc." ) );
         modifications.add( mod );
 
         // Remove the 'l'
-        mod = new ClientModification(
+        mod = new DefaultModification(
             ModificationOperation.REMOVE_ATTRIBUTE, new DefaultEntryAttribute( "l" ) );
         modifications.add( mod );
         
         // Add 'l=FR'
-        mod = new ClientModification( 
+        mod = new DefaultModification( 
             ModificationOperation.ADD_ATTRIBUTE, new DefaultEntryAttribute( "l", "FR" ) );
         modifications.add( mod );
 
         // Replace it with 'l=USA'
-        mod = new ClientModification( 
+        mod = new DefaultModification( 
             ModificationOperation.REPLACE_ATTRIBUTE, new DefaultEntryAttribute( "l", "USA" ) );
         modifications.add( mod );
 
         // Replace the ou value
-        mod = new ClientModification( 
+        mod = new DefaultModification( 
             ModificationOperation.REPLACE_ATTRIBUTE, new DefaultEntryAttribute( "ou", "apache" ) );
         modifications.add( mod );
         
@@ -556,7 +556,7 @@ public class LdifRevertorTest
         modifiedEntry.put( ou );
         
         DN dn = new DN( "cn=test, ou=system" );
-        Modification mod = new ClientModification(
+        Modification mod = new DefaultModification(
             ModificationOperation.ADD_ATTRIBUTE, 
             new DefaultEntryAttribute( "ou", "BigCompany inc." ) );
 
@@ -593,7 +593,7 @@ public class LdifRevertorTest
         Entry modifiedEntry = buildEntry();
         
         DN dn = new DN( "cn=test, ou=system" );
-        Modification mod = new ClientModification(
+        Modification mod = new DefaultModification(
             ModificationOperation.ADD_ATTRIBUTE, 
             new DefaultEntryAttribute( "ou", "BigCompany inc." ) );
 

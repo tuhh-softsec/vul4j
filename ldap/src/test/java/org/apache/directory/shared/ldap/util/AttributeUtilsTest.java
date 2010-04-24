@@ -27,13 +27,13 @@ import static org.junit.Assert.assertTrue;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.directory.shared.ldap.entry.DefaultModification;
 import org.apache.directory.shared.ldap.entry.DefaultEntryAttribute;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Modification;
 import org.apache.directory.shared.ldap.entry.ModificationOperation;
 import org.apache.directory.shared.ldap.entry.Value;
-import org.apache.directory.shared.ldap.entry.client.ClientModification;
 import org.apache.directory.shared.ldap.entry.client.DefaultClientEntry;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.junit.Test;
@@ -54,7 +54,7 @@ public class AttributeUtilsTest
     {
         Entry entry = new DefaultClientEntry();
         EntryAttribute attr = new DefaultEntryAttribute( "cn", "test" );
-        Modification modification = new ClientModification( ModificationOperation.ADD_ATTRIBUTE, attr );
+        Modification modification = new DefaultModification( ModificationOperation.ADD_ATTRIBUTE, attr );
         AttributeUtils.applyModification( entry, modification );
         assertNotNull( entry.get(  "cn" ) );
         assertEquals( 1, entry.size() );
@@ -73,7 +73,7 @@ public class AttributeUtilsTest
         assertEquals( 1, entry.size() );
 
         EntryAttribute attr = new DefaultEntryAttribute( "cn", "test" );
-        Modification modification = new ClientModification( ModificationOperation.ADD_ATTRIBUTE, attr );
+        Modification modification = new DefaultModification( ModificationOperation.ADD_ATTRIBUTE, attr );
 
         AttributeUtils.applyModification( entry, modification );
         assertNotNull( entry.get(  "cn" ) );
@@ -94,7 +94,7 @@ public class AttributeUtilsTest
         assertEquals( 1, entry.size() );
 
         EntryAttribute attr = new DefaultEntryAttribute( "cn", "test" );
-        Modification modification = new ClientModification( ModificationOperation.ADD_ATTRIBUTE, attr );
+        Modification modification = new DefaultModification( ModificationOperation.ADD_ATTRIBUTE, attr );
         AttributeUtils.applyModification( entry, modification );
         assertNotNull( entry.get(  "cn" ) );
         assertEquals( 1, entry.size() );
@@ -132,7 +132,7 @@ public class AttributeUtilsTest
         assertEquals( 1, entry.size() );
 
         EntryAttribute attr = new DefaultEntryAttribute( "cn", "test" );
-        Modification modification = new ClientModification( ModificationOperation.ADD_ATTRIBUTE, attr );
+        Modification modification = new DefaultModification( ModificationOperation.ADD_ATTRIBUTE, attr );
         AttributeUtils.applyModification( entry, modification );
         assertNotNull( entry.get( "cn" ) );
         assertEquals( 1, entry.size() );
@@ -168,7 +168,7 @@ public class AttributeUtilsTest
 
         EntryAttribute attr = new DefaultEntryAttribute( "cn", "test" );
 
-        Modification modification = new ClientModification( ModificationOperation.REMOVE_ATTRIBUTE, attr );
+        Modification modification = new DefaultModification( ModificationOperation.REMOVE_ATTRIBUTE, attr );
         AttributeUtils.applyModification( entry, modification );
         assertNull( entry.get( "cn" ) );
         assertEquals( 0, entry.size() );
@@ -188,7 +188,7 @@ public class AttributeUtilsTest
         
         EntryAttribute cn = new DefaultEntryAttribute( "cn", "test" );
         
-        Modification modification = new ClientModification( ModificationOperation.REMOVE_ATTRIBUTE, cn );
+        Modification modification = new DefaultModification( ModificationOperation.REMOVE_ATTRIBUTE, cn );
         
         AttributeUtils.applyModification( entry, modification );
         
@@ -213,7 +213,7 @@ public class AttributeUtilsTest
         
         EntryAttribute attr = new DefaultEntryAttribute( "cn", "test" );
         
-        Modification modification = new ClientModification( ModificationOperation.REMOVE_ATTRIBUTE, attr );
+        Modification modification = new DefaultModification( ModificationOperation.REMOVE_ATTRIBUTE, attr );
         
         AttributeUtils.applyModification( entry, modification );
         
@@ -236,7 +236,7 @@ public class AttributeUtilsTest
         
         EntryAttribute attr = new DefaultEntryAttribute( "cn", "test" );
 
-        Modification modification = new ClientModification( ModificationOperation.REMOVE_ATTRIBUTE, attr );
+        Modification modification = new DefaultModification( ModificationOperation.REMOVE_ATTRIBUTE, attr );
         
         AttributeUtils.applyModification( entry, modification );
         
@@ -259,7 +259,7 @@ public class AttributeUtilsTest
         
         EntryAttribute attr = new DefaultEntryAttribute( "cn", "test" );
         
-        Modification modification = new ClientModification( ModificationOperation.REMOVE_ATTRIBUTE, attr );
+        Modification modification = new DefaultModification( ModificationOperation.REMOVE_ATTRIBUTE, attr );
         
         AttributeUtils.applyModification( entry, modification );
         
@@ -296,7 +296,7 @@ public class AttributeUtilsTest
         EntryAttribute attr = new DefaultEntryAttribute( "cn", "test" );
 
         
-        Modification modification = new ClientModification( ModificationOperation.REPLACE_ATTRIBUTE, attr );
+        Modification modification = new DefaultModification( ModificationOperation.REPLACE_ATTRIBUTE, attr );
         AttributeUtils.applyModification( entry, modification );
         assertNotNull( entry.get( "cn" ) );
         assertEquals( 1, entry.size() );
@@ -317,7 +317,7 @@ public class AttributeUtilsTest
         
         EntryAttribute attr = new DefaultEntryAttribute( "cn" );
 
-        Modification modification = new ClientModification( ModificationOperation.REPLACE_ATTRIBUTE, attr );
+        Modification modification = new DefaultModification( ModificationOperation.REPLACE_ATTRIBUTE, attr );
         AttributeUtils.applyModification( entry, modification );
         assertNull( entry.get( "cn" ) );
         assertEquals( 0, entry.size() );
@@ -340,7 +340,7 @@ public class AttributeUtilsTest
         
         EntryAttribute newOu = new DefaultEntryAttribute( "ou", "Big Company", "directory" );
         
-        Modification modification = new ClientModification( ModificationOperation.REPLACE_ATTRIBUTE, newOu );
+        Modification modification = new DefaultModification( ModificationOperation.REPLACE_ATTRIBUTE, newOu );
         
         AttributeUtils.applyModification( entry, modification );
         
@@ -384,7 +384,7 @@ public class AttributeUtilsTest
         
         EntryAttribute newOu = new DefaultEntryAttribute( "ou" );
         
-        Modification modification = new ClientModification( ModificationOperation.REPLACE_ATTRIBUTE, newOu );
+        Modification modification = new DefaultModification( ModificationOperation.REPLACE_ATTRIBUTE, newOu );
         
         AttributeUtils.applyModification( entry, modification );
         
