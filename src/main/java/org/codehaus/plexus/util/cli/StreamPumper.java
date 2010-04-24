@@ -73,6 +73,7 @@ package org.codehaus.plexus.util.cli;
 import org.codehaus.plexus.util.IOUtil;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -89,11 +90,13 @@ import java.io.PrintWriter;
 public class StreamPumper
     extends Thread
 {
-    private BufferedReader in;
+    private final BufferedReader in;
 
-    private StreamConsumer consumer = null;
+    private final StreamConsumer consumer;
 
-    private PrintWriter out = null;
+    private final PrintWriter out;
+
+    private volatile Exception exception = null;
 
     private static final int SIZE = 1024;
 
@@ -101,26 +104,22 @@ public class StreamPumper
 
     public StreamPumper( InputStream in )
     {
-        this.in = new BufferedReader( new InputStreamReader( in ), SIZE );
+        this( in, (StreamConsumer) null );
     }
 
     public StreamPumper( InputStream in, StreamConsumer consumer )
     {
-        this( in );
-
-        this.consumer = consumer;
+        this( in, null, consumer );
     }
 
     public StreamPumper( InputStream in, PrintWriter writer )
     {
-        this( in );
-
-        out = writer;
+        this( in, writer, null );
     }
 
     public StreamPumper( InputStream in, PrintWriter writer, StreamConsumer consumer )
     {
-        this( in );
+        this.in = new BufferedReader( new InputStreamReader( in ), SIZE );
         this.out = writer;
         this.consumer = consumer;
     }
@@ -129,25 +128,39 @@ public class StreamPumper
     {
         try
         {
-            String s = in.readLine();
-
-            while ( s != null )
+            String s;
+            try
             {
-                consumeLine( s );
-
-                if ( out != null )
-                {
-                    out.println( s );
-
-                    out.flush();
-                }
-
                 s = in.readLine();
+
+                while ( s != null )
+                {
+                    try
+                    {
+                        if ( exception == null)
+                        {
+                            consumeLine( s );
+                        }
+                    }
+                    catch ( Exception t )
+                    {
+                        exception = t;
+                    }
+
+                    if ( out != null )
+                    {
+                        out.println( s );
+
+                        out.flush();
+                    }
+
+                    s = in.readLine();
+                }
             }
-        }
-        catch ( Throwable e )
-        {
-            // Catched everything so the streams will be closed and flagged as done.
+            catch ( IOException e )
+            {
+                exception = e;
+            }
         }
         finally
         {
@@ -178,6 +191,11 @@ public class StreamPumper
     public boolean isDone()
     {
         return done;
+    }
+
+    public Exception getException()
+    {
+        return exception;
     }
 
     private void consumeLine( String line )

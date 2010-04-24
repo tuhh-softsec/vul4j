@@ -217,6 +217,16 @@ public abstract class CommandLineUtils
 
             processes.remove( new Long( cl.getPid() ) );
 
+            if ( outputPumper.getException() != null )
+            {
+                throw new CommandLineException( "Error inside systemOut parser", outputPumper.getException() );
+            }
+
+            if ( errorPumper.getException() != null )
+            {
+                throw new CommandLineException( "Error inside systemOut parser", outputPumper.getException() );
+            }
+
             return returnValue;
         }
         catch ( InterruptedException ex )
