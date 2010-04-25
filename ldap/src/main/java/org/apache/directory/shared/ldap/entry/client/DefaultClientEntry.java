@@ -166,14 +166,151 @@ public class DefaultClientEntry implements Entry
     }
 
     
+    /**
+     * Add a new EntryAttribute, with its upId. If the upId is null,
+     * default to the AttributeType name.
+     * 
+     * Updates the AttributeMap.
+     */
+    protected void createAttribute( String upId, AttributeType attributeType, byte[]... values ) 
+    {
+        EntryAttribute attribute = new DefaultEntryAttribute( attributeType, values );
+        attribute.setUpId( upId, attributeType );
+        attributes.put( attributeType.getOid(), attribute );
+    }
+    
+    
+    /**
+     * Add a new EntryAttribute, with its upId. If the upId is null,
+     * default to the AttributeType name.
+     * 
+     * Updates the AttributeMap.
+     */
+    protected void createAttribute( String upId, AttributeType attributeType, String... values ) 
+    {
+        EntryAttribute attribute = new DefaultEntryAttribute( attributeType, values );
+        attribute.setUpId( upId, attributeType );
+        attributes.put( attributeType.getOid(), attribute );
+    }
+    
+    
+    /**
+     * Add a new EntryAttribute, with its upId. If the upId is null,
+     * default to the AttributeType name.
+     * 
+     * Updates the AttributeMap.
+     */
+    protected void createAttribute( String upId, AttributeType attributeType, Value<?>... values ) 
+    {
+        EntryAttribute attribute = new DefaultEntryAttribute( attributeType, values );
+        attribute.setUpId( upId, attributeType );
+        attributes.put( attributeType.getOid(), attribute );
+    }
+    
+    
     //-------------------------------------------------------------------------
     // Entry methods
     //-------------------------------------------------------------------------
     /**
-     * Add some Attributes to the current Entry.
-     *
-     * @param attributes The attributes to add
-     * @throws LdapException If we can't add any of the attributes
+     * {@inheritDoc}
+     */
+    public void add( AttributeType attributeType, byte[]... values ) throws LdapException
+    {
+        if ( attributeType == null )
+        {
+            String message = I18n.err( I18n.ERR_04460 );
+            LOG.error( message );
+            throw new IllegalArgumentException( message );
+        }
+        
+        // ObjectClass with binary values are not allowed
+        if ( attributeType.equals( OBJECT_CLASS_AT ) )
+        {
+            String message = I18n.err( I18n.ERR_04461 );
+            LOG.error(  message  );
+            throw new UnsupportedOperationException( message );
+        }
+
+        EntryAttribute attribute = attributes.get( attributeType.getOid() );
+        
+        if ( attribute != null )
+        {
+            // This Attribute already exist, we add the values 
+            // into it
+            attribute.add( values );
+        }
+        else
+        {
+            // We have to create a new Attribute and set the values.
+            // The upId, which is set to null, will be setup by the 
+            // createAttribute method
+            createAttribute( null, attributeType, values );
+        }
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void add( AttributeType attributeType, String... values ) throws LdapException
+    {    
+        if ( attributeType == null )
+        {
+            String message = I18n.err( I18n.ERR_04460 );
+            LOG.error( message );
+            throw new IllegalArgumentException( message );
+        }
+        
+        EntryAttribute attribute = attributes.get( attributeType.getOid() );
+        
+        if ( attribute != null )
+        {
+            // This Attribute already exist, we add the values 
+            // into it
+            attribute.add( values );
+        }
+        else
+        {
+            // We have to create a new Attribute and set the values.
+            // The upId, which is set to null, will be setup by the 
+            // createAttribute method
+            createAttribute( null, attributeType, values );
+        }
+    }
+
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void add( AttributeType attributeType, Value<?>... values ) throws LdapException
+    {
+        if ( attributeType == null )
+        {
+            String message = I18n.err( I18n.ERR_04460 );
+            LOG.error( message );
+            throw new IllegalArgumentException( message );
+        }
+        
+        EntryAttribute attribute = attributes.get( attributeType.getOid() );
+    
+        if ( attribute != null )
+        {
+            // This Attribute already exist, we add the values 
+            // into it
+            attribute.add( values );
+        }
+        else
+        {
+            // We have to create a new Attribute and set the values.
+            // The upId, which is set to null, will be setup by the 
+            // createAttribute method
+            createAttribute( null, attributeType, values );
+        }
+    }
+
+
+    /**
+     * {@inheritDoc}
      */
     public void add( EntryAttribute... attributes ) throws LdapException
     {

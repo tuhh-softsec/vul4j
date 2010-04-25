@@ -37,69 +37,6 @@ public interface ServerEntry extends Entry, Cloneable
     /**
      * <p>
      * Add an attribute (represented by its AttributeType and some binary values) into an 
-     * entry.
-     * </p>
-     * <p> 
-     * If we already have an attribute with the same values, the duplicated values 
-     * are not added (duplicated values are not allowed)
-     * </p>
-     * <p>
-     * If the value cannot be added, or if the AttributeType is null or invalid, 
-     * a LdapException is thrown.
-     * </p>
-     *
-     * @param attributeType The attribute Type.
-     * @param values The list of binary values to inject. It can be empty.
-     * @throws LdapException If the attribute does not exist
-     */
-    void add( AttributeType attributeType, byte[]... values ) throws LdapException;
-
-    
-    /**
-     * <p>
-     * Add an attribute (represented by its AttributeType and some String values) into an 
-     * entry.
-     * </p>
-     * <p> 
-     * If we already have an attribute with the same values, the duplicated values 
-     * are not added (duplicated values are not allowed)
-     * </p>
-     * <p> 
-     * If the value cannot be added, or if the AttributeType is null or invalid, 
-     * a LdapException is thrown.
-     * </p>
-     * 
-     * @param attributeType The attribute Type
-     * @param values The list of binary values to inject. It can be empty
-     * @throws LdapException If the attribute does not exist
-     */
-    void add( AttributeType attributeType, String... values ) throws LdapException;
-
-    
-    /**
-     * <p>
-     * Add an attribute (represented by its AttributeType and some values) into an 
-     * entry.
-     * </p>
-     * <p> 
-     * If we already have an attribute with the same values, the duplicated values 
-     * are not added (duplicated values are not allowed)
-     * </p>
-     * <p>
-     * If the value cannot be added, or if the AttributeType is null or invalid, 
-     * a LdapException is thrown.
-     * </p>
-     *
-     * @param attributeType The attribute Type
-     * @param values The list of binary values to inject. It can be empty
-     * @throws LdapException If the attribute does not exist
-     */
-    void add( AttributeType attributeType, Value<?>... values ) throws LdapException;
-
-    
-    /**
-     * <p>
-     * Add an attribute (represented by its AttributeType and some binary values) into an 
      * entry. Set the User Provider ID at the same time
      * </p>
      * <p> 
