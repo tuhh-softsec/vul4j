@@ -167,6 +167,36 @@ public class DefaultClientEntry implements Entry
 
     
     /**
+     * Get the UpId if it was null.
+     */
+    public static String getUpId( String upId, AttributeType attributeType )
+    {
+        String normUpId = StringTools.trim( upId );
+
+        if ( ( attributeType == null ) )
+        {
+            if ( StringTools.isEmpty( normUpId ) )
+            {
+                String message = I18n.err( I18n.ERR_04458 );
+                LOG.error( message );
+                throw new IllegalArgumentException( message );
+            }
+        }
+        else if ( StringTools.isEmpty( normUpId ) )
+        {
+            upId = attributeType.getName();
+            
+            if ( StringTools.isEmpty( upId ) )
+            {
+                upId = attributeType.getOid();
+            }
+        }
+        
+        return upId;
+    }
+
+    
+    /**
      * Add a new EntryAttribute, with its upId. If the upId is null,
      * default to the AttributeType name.
      * 
@@ -310,6 +340,139 @@ public class DefaultClientEntry implements Entry
 
 
     /**
+     * <p>
+     * Add an attribute (represented by its AttributeType and some binary values) into an 
+     * entry. Set the User Provider ID at the same time
+     * </p>
+     * <p> 
+     * If we already have an attribute with the same values, nothing is done 
+     * (duplicated values are not allowed)
+     * </p>
+     * <p>
+     * If the value cannot be added, or if the AttributeType is null or invalid, 
+     * a LdapException is thrown.
+     * </p>
+     *
+     * @param upId The user provided ID for the added AttributeType
+     * @param attributeType The attribute Type.
+     * @param values The list of binary values to add. It can be empty.
+     * @throws LdapException If the attribute does not exist
+     */
+    public void add( String upId, AttributeType attributeType, byte[]... values ) throws LdapException
+    {
+        // ObjectClass with binary values are not allowed
+        if ( attributeType.equals( OBJECT_CLASS_AT ) )
+        {
+            String message = I18n.err( I18n.ERR_04461 );
+            LOG.error(  message  );
+            throw new UnsupportedOperationException( message );
+        }
+
+        EntryAttribute attribute = (EntryAttribute)attributes.get( attributeType.getOid() );
+        
+        upId = getUpId( upId, attributeType );
+        
+        if ( attribute != null )
+        {
+            // This Attribute already exist, we add the values 
+            // into it
+            attribute.add( values );
+            attribute.setUpId( upId, attributeType );
+        }
+        else
+        {
+            // We have to create a new Attribute and set the values
+            // and the upId
+            createAttribute( upId, attributeType, values );
+        }
+    }
+
+
+    /**
+     * <p>
+     * Add an attribute (represented by its AttributeType and some values) into an 
+     * entry. Set the User Provider ID at the same time
+     * </p>
+     * <p> 
+     * If we already have an attribute with the same values, nothing is done 
+     * (duplicated values are not allowed)
+     * </p>
+     * <p>
+     * If the value cannot be added, or if the AttributeType is null or invalid, 
+     * a LdapException is thrown.
+     * </p>
+     *
+     * @param upId The user provided ID for the added AttributeType
+     * @param attributeType The attribute Type.
+     * @param values The list of values to add. It can be empty.
+     * @throws LdapException If the attribute does not exist
+     */
+    public void add( String upId, AttributeType attributeType, Value<?>... values ) throws LdapException
+    {
+        if ( attributeType == null )
+        {
+            String message = I18n.err( I18n.ERR_04460 );
+            LOG.error( message );
+            throw new IllegalArgumentException( message );
+        }
+        
+        upId = getUpId( upId, attributeType );
+        
+        EntryAttribute attribute = (EntryAttribute)attributes.get( attributeType.getOid() );
+    
+        if ( attribute != null )
+        {
+            // This Attribute already exist, we add the values 
+            // into it
+            attribute.add( values );
+            attribute.setUpId( upId, attributeType );
+        }
+        else
+        {
+            createAttribute( upId, attributeType, values );
+        }
+    }
+
+    
+    /**
+     * Adds a new attribute with some String values into an entry, setting
+     * the User Provided ID in the same time.
+     *
+     * @param upId The User provided ID
+     * @param attributeType The associated AttributeType
+     * @param values The String values to store into the new Attribute
+     * @throws LdapException 
+     */
+    public void add( String upId, AttributeType attributeType, String... values ) throws LdapException
+    {
+        if ( attributeType == null )
+        {
+            String message = I18n.err( I18n.ERR_04460 );
+            LOG.error( message );
+            throw new IllegalArgumentException( message );
+        }
+        
+        upId = getUpId( upId, attributeType );
+
+        EntryAttribute attribute = (EntryAttribute)attributes.get( attributeType.getOid() );
+        
+        if ( attribute != null )
+        {
+            // This Attribute already exist, we add the values 
+            // into it
+            attribute.add( values );
+            attribute.setUpId( upId, attributeType );
+        }
+        else
+        {
+            // We have to create a new Attribute and set the values
+            // and the upId
+            createAttribute( upId, attributeType, values );
+        }
+    }
+
+
+    /**
      * {@inheritDoc}
      */
     public void add( EntryAttribute... attributes ) throws LdapException
@@ -378,22 +541,29 @@ public class DefaultClientEntry implements Entry
         // First, transform the upID to a valid ID
         String id = getId( upId );
         
-        // Now, check to see if we already have such an attribute
-        EntryAttribute attribute = attributes.get( id );
-        
-        if ( attribute != null )
+        if ( schemaManager != null )
         {
-            // This Attribute already exist, we add the values 
-            // into it. (If the values already exists, they will
-            // not be added, but this is done in the add() method)
-            attribute.add( values );
-            attribute.setUpId( upId );
+            add( upId, schemaManager.lookupAttributeTypeRegistry( id ), values );
         }
         else
         {
-            // We have to create a new Attribute and set the values
-            // and the upId
-            attributes.put( id, new DefaultEntryAttribute( upId, values ) );
+            // Now, check to see if we already have such an attribute
+            EntryAttribute attribute = attributes.get( id );
+            
+            if ( attribute != null )
+            {
+                // This Attribute already exist, we add the values 
+                // into it. (If the values already exists, they will
+                // not be added, but this is done in the add() method)
+                attribute.add( values );
+                attribute.setUpId( upId );
+            }
+            else
+            {
+                // We have to create a new Attribute and set the values
+                // and the upId
+                attributes.put( id, new DefaultEntryAttribute( upId, values ) );
+            }
         }
     }
 
@@ -411,22 +581,29 @@ public class DefaultClientEntry implements Entry
         // First, transform the upID to a valid ID
         String id = getId( upId );
 
-        // Now, check to see if we already have such an attribute
-        EntryAttribute attribute = attributes.get( id );
-        
-        if ( attribute != null )
+        if ( schemaManager != null )
         {
-            // This Attribute already exist, we add the values 
-            // into it. (If the values already exists, they will
-            // not be added, but this is done in the add() method)
-            attribute.add( values );
-            attribute.setUpId( upId );
+            add( upId, schemaManager.lookupAttributeTypeRegistry( upId ), values );
         }
         else
         {
-            // We have to create a new Attribute and set the values
-            // and the upId
-            attributes.put( id, new DefaultEntryAttribute( upId, values ) );
+            // Now, check to see if we already have such an attribute
+            EntryAttribute attribute = attributes.get( id );
+            
+            if ( attribute != null )
+            {
+                // This Attribute already exist, we add the values 
+                // into it. (If the values already exists, they will
+                // not be added, but this is done in the add() method)
+                attribute.add( values );
+                attribute.setUpId( upId );
+            }
+            else
+            {
+                // We have to create a new Attribute and set the values
+                // and the upId
+                attributes.put( id, new DefaultEntryAttribute( upId, values ) );
+            }
         }
     }
 
@@ -443,22 +620,29 @@ public class DefaultClientEntry implements Entry
         // First, transform the upID to a valid ID
         String id = getId( upId );
 
-        // Now, check to see if we already have such an attribute
-        EntryAttribute attribute = attributes.get( id );
-        
-        if ( attribute != null )
+        if ( schemaManager != null )
         {
-            // This Attribute already exist, we add the values 
-            // into it. (If the values already exists, they will
-            // not be added, but this is done in the add() method)
-            attribute.add( values );
-            attribute.setUpId( upId );
+            add( upId, schemaManager.lookupAttributeTypeRegistry( upId ), values );
         }
         else
         {
-            // We have to create a new Attribute and set the values
-            // and the upId
-            attributes.put( id, new DefaultEntryAttribute( upId, values ) );
+            // Now, check to see if we already have such an attribute
+            EntryAttribute attribute = attributes.get( id );
+            
+            if ( attribute != null )
+            {
+                // This Attribute already exist, we add the values 
+                // into it. (If the values already exists, they will
+                // not be added, but this is done in the add() method)
+                attribute.add( values );
+                attribute.setUpId( upId );
+            }
+            else
+            {
+                // We have to create a new Attribute and set the values
+                // and the upId
+                attributes.put( id, new DefaultEntryAttribute( upId, values ) );
+            }
         }
     }
 
