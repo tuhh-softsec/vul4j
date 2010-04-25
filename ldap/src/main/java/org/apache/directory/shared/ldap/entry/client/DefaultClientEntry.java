@@ -340,23 +340,7 @@ public class DefaultClientEntry implements Entry
 
 
     /**
-     * <p>
-     * Add an attribute (represented by its AttributeType and some binary values) into an 
-     * entry. Set the User Provider ID at the same time
-     * </p>
-     * <p> 
-     * If we already have an attribute with the same values, nothing is done 
-     * (duplicated values are not allowed)
-     * </p>
-     * <p>
-     * If the value cannot be added, or if the AttributeType is null or invalid, 
-     * a LdapException is thrown.
-     * </p>
-     *
-     * @param upId The user provided ID for the added AttributeType
-     * @param attributeType The attribute Type.
-     * @param values The list of binary values to add. It can be empty.
-     * @throws LdapException If the attribute does not exist
+     * {@inheritDoc}
      */
     public void add( String upId, AttributeType attributeType, byte[]... values ) throws LdapException
     {
@@ -389,23 +373,7 @@ public class DefaultClientEntry implements Entry
 
 
     /**
-     * <p>
-     * Add an attribute (represented by its AttributeType and some values) into an 
-     * entry. Set the User Provider ID at the same time
-     * </p>
-     * <p> 
-     * If we already have an attribute with the same values, nothing is done 
-     * (duplicated values are not allowed)
-     * </p>
-     * <p>
-     * If the value cannot be added, or if the AttributeType is null or invalid, 
-     * a LdapException is thrown.
-     * </p>
-     *
-     * @param upId The user provided ID for the added AttributeType
-     * @param attributeType The attribute Type.
-     * @param values The list of values to add. It can be empty.
-     * @throws LdapException If the attribute does not exist
+     * {@inheritDoc}
      */
     public void add( String upId, AttributeType attributeType, Value<?>... values ) throws LdapException
     {
@@ -435,13 +403,7 @@ public class DefaultClientEntry implements Entry
 
     
     /**
-     * Adds a new attribute with some String values into an entry, setting
-     * the User Provided ID in the same time.
-     *
-     * @param upId The User provided ID
-     * @param attributeType The associated AttributeType
-     * @param values The String values to store into the new Attribute
-     * @throws LdapException 
+     * {@inheritDoc}
      */
     public void add( String upId, AttributeType attributeType, String... values ) throws LdapException
     {
@@ -530,11 +492,7 @@ public class DefaultClientEntry implements Entry
 
     
     /**
-     * Add an attribute (represented by its ID and binary values) into an entry. 
-     *
-     * @param upId The attribute ID
-     * @param values The list of binary values to inject. It can be empty
-     * @throws LdapException If the attribute does not exist
+     * {@inheritDoc}
      */
     public void add( String upId, byte[]... values ) throws LdapException
     {
@@ -569,12 +527,7 @@ public class DefaultClientEntry implements Entry
 
 
     /**
-     * Add some String values to the current Entry.
-     *
-     * @param upId The user provided ID of the attribute we want to add 
-     * some values to
-     * @param values The list of String values to add
-     * @throws LdapException If we can't add any of the values
+     * {@inheritDoc}
      */
     public void add( String upId, String... values ) throws LdapException
     {
@@ -609,11 +562,7 @@ public class DefaultClientEntry implements Entry
 
 
     /**
-     * Add an attribute (represented by its ID and Value values) into an entry. 
-     *
-     * @param upId The attribute ID
-     * @param values The list of Value values to inject. It can be empty
-     * @throws LdapException If the attribute does not exist
+     * {@inheritDoc}
      */
     public void add( String upId, Value<?>... values ) throws LdapException
     {
@@ -851,11 +800,45 @@ public class DefaultClientEntry implements Entry
         {
             String id = getId( alias );
             
-            return attributes.get( id );
+            if ( schemaManager != null )
+            {
+                try
+                {
+                    AttributeType attributeType = schemaManager.lookupAttributeTypeRegistry( id );
+                    
+                    return attributes.get( attributeType.getOid() );
+                }
+                catch ( LdapException ne )
+                {
+                    String message = ne.getLocalizedMessage();
+                    LOG.error( message );
+                    return null;
+                }
+            }
+            else
+            {
+                return attributes.get( id );
+            }
         }
         catch( IllegalArgumentException iea )
         {
             LOG.error( I18n.err( I18n.ERR_04134, alias ) );
+            return null;
+        }
+    }
+    
+    
+    /**
+     * {@inheritDoc}
+     */
+    public EntryAttribute get( AttributeType attributeType )
+    {
+        if ( attributeType != null )
+        {
+            return attributes.get( attributeType.getOid() );
+        }
+        else
+        {
             return null;
         }
     }

@@ -701,65 +701,6 @@ public final class DefaultServerEntry extends DefaultClientEntry implements Serv
         return true;
     }
 
-    
-    /**
-     * <p>
-     * Returns the attribute with the specified AttributeType. The return value
-     * is <code>null</code> if no match is found.  
-     * </p>
-     *
-     * @param attributeType The attributeType we are looking for.
-     * @return the attribute associated with the AttributeType.
-     */
-    /**
-     * Returns the attribute associated with an AttributeType
-     * 
-     * @param attributeType the AttributeType we are looking for
-     * @return the associated attribute
-     */
-    public EntryAttribute get( AttributeType attributeType )
-    {
-        if ( attributeType != null )
-        {
-            return attributes.get( attributeType.getOid() );
-        }
-        else
-        {
-            return null;
-        }
-    }
-
-
-    /**
-     * <p>
-     * Returns the attribute with the specified alias. The return value
-     * is <code>null</code> if no match is found.  
-     * </p>
-     * <p>An Attribute with an id different from the supplied alias may 
-     * be returned: for example a call with 'cn' may in some implementations 
-     * return an Attribute whose getId() field returns 'commonName'.
-     * </p>
-     * <p>
-     * If the attributeType is not found, returns null.
-     * </p>
-     *
-     * @param alias an aliased name of the attribute identifier
-     * @return the attribute associated with the alias
-     */
-    public EntryAttribute get( String alias )
-    {
-        try
-        {
-            return get( schemaManager.lookupAttributeTypeRegistry( StringTools.trim( StringTools.toLowerCase( alias ) ) ) );
-        }
-        catch ( LdapException ne )
-        {
-            String message = ne.getLocalizedMessage();
-            LOG.error( message );
-            return null;
-        }
-    }
-
 
     /**
      * Gets all the attributes type

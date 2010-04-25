@@ -702,7 +702,7 @@ public class DefaultClientEntryTest
         
         assertEquals( attribute, attrCN );
         
-        assertNull( entry.get( null ) );
+        assertNull( entry.get( (String)null ) );
         assertNull( entry.get( "  " ) );
         assertNull( entry.get( "l" ) );
     }
