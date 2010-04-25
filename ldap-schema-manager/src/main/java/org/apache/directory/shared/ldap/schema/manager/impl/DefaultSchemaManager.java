@@ -120,7 +120,7 @@ public class DefaultSchemaManager implements SchemaManager
     /** A flag indicating that the SchemaManager is relaxed or not */
     private boolean isRelaxed = STRICT;
 
-    /** Two flags for RELAXED and STRUCT */
+    /** Two flags for RELAXED and STRICT */
     public static final boolean STRICT = false;
     public static final boolean RELAXED = true;
 
