@@ -2162,37 +2162,6 @@ public class DefaultEntryAttribute implements EntryAttribute
         return normId.equalsIgnoreCase( attributeType.getOid() );
     }
 
-    
-    /**
-     * Convert the ServerAttribute to a ClientAttribute
-     *
-     * @return An instance of ClientAttribute
-     */
-    public EntryAttribute toClientAttribute()
-    {
-        // Create the new EntryAttribute
-        EntryAttribute clientAttribute = new DefaultEntryAttribute( upId );
-        
-        // Copy the values
-        for ( Value<?> value:this )
-        {
-            Value<?> clientValue = null;
-            
-            if ( value instanceof StringValue )
-            {
-                clientValue = new StringValue( value.getString() );
-            }
-            else
-            {
-                clientValue = new BinaryValue( value.getBytes() );
-            }
-            
-            clientAttribute.add( clientValue );
-        }
-        
-        return clientAttribute;
-    }
-
 
     //-------------------------------------------------------------------------
     // Overloaded Object classes
@@ -2313,6 +2282,7 @@ public class DefaultEntryAttribute implements EntryAttribute
         try
         {
             DefaultEntryAttribute attribute = (DefaultEntryAttribute)super.clone();
+            attribute.setUpId( upId );
             
             attribute.values = new LinkedHashSet<Value<?>>( values.size() );
             

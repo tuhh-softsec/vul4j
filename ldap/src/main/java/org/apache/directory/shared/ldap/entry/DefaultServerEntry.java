@@ -2240,7 +2240,7 @@ public final class DefaultServerEntry extends AbstractEntry<AttributeType> imple
         // Convert each attribute 
         for ( EntryAttribute serverAttribute:this )
         {
-            EntryAttribute clientAttribute = serverAttribute.toClientAttribute();
+            EntryAttribute clientAttribute = serverAttribute.clone();
             clientEntry.add( clientAttribute );
         }
         

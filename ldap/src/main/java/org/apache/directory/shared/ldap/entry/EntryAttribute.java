@@ -22,7 +22,6 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.util.Iterator;
-import java.util.List;
 
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.exception.LdapInvalidAttributeValueException;
@@ -567,12 +566,4 @@ public interface EntryAttribute extends Iterable<Value<?>>, Cloneable, Externali
      * @throws LdapException if there is a failure to check syntaxes of values
      */
     boolean isValid( SyntaxChecker checker) throws LdapException;
-    
-    
-    /**
-     * Convert the ServerAttribute to a ClientAttribute
-     *
-     * @return An instance of ClientAttribute
-     */
-    EntryAttribute toClientAttribute();
 }
