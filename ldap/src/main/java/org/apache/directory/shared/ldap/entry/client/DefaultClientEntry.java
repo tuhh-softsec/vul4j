@@ -23,7 +23,9 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
@@ -32,13 +34,13 @@ import java.util.TreeMap;
 import org.apache.directory.shared.ldap.exception.LdapException;
 
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.entry.AbstractEntry;
 import org.apache.directory.shared.ldap.entry.DefaultEntryAttribute;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.schema.AttributeType;
+import org.apache.directory.shared.ldap.schema.SchemaManager;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,7 +55,7 @@ import org.slf4j.LoggerFactory;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public class DefaultClientEntry extends AbstractEntry
+public class DefaultClientEntry implements Entry
 {
     /** Used for serialization */
     private static final long serialVersionUID = 2L;
@@ -61,6 +63,19 @@ public class DefaultClientEntry extends AbstractEntry
     /** The logger for this class */
     private static final Logger LOG = LoggerFactory.getLogger( DefaultClientEntry.class );
 
+    /** The DN for this entry */
+    protected DN dn;
+    
+    /** A map containing all the attributes for this entry */
+    protected Map<String, EntryAttribute> attributes = new HashMap<String, EntryAttribute>();
+    
+    /** A speedup to get the ObjectClass attribute */
+    protected static transient AttributeType OBJECT_CLASS_AT;
+
+    /** The SchemaManager */
+    protected SchemaManager schemaManager;
+
+    
     //-------------------------------------------------------------------------
     // Constructors
     //-------------------------------------------------------------------------
@@ -318,35 +333,42 @@ public class DefaultClientEntry extends AbstractEntry
      */
     public Entry clone()
     {
-        // First, clone the structure
-        DefaultClientEntry clone = (DefaultClientEntry)super.clone();
-        
-        // Just in case ... Should *never* happen
-        if ( clone == null )
+        try
+        {
+            // First, clone the structure
+            DefaultClientEntry clone = (DefaultClientEntry)super.clone();
+            
+            // Just in case ... Should *never* happen
+            if ( clone == null )
+            {
+                return null;
+            }
+            
+            // An Entry has a DN and many attributes.
+            // First, clone the DN, if not null.
+            if ( dn != null )
+            {
+                clone.setDn( (DN)dn.clone() );
+            }
+            
+            // then clone the ClientAttribute Map.
+            clone.attributes = (Map<String, EntryAttribute>)(((HashMap<String, EntryAttribute>)attributes).clone());
+            
+            // now clone all the attributes
+            clone.attributes.clear();
+            
+            for ( EntryAttribute attribute:attributes.values() )
+            {
+                clone.attributes.put( attribute.getId(), attribute.clone() );
+            }
+            
+            // We are done !
+            return clone;
+        }
+        catch ( CloneNotSupportedException cnse )
         {
             return null;
         }
-        
-        // An Entry has a DN and many attributes.
-        // First, clone the DN, if not null.
-        if ( dn != null )
-        {
-            clone.setDn( (DN)dn.clone() );
-        }
-        
-        // then clone the ClientAttribute Map.
-        clone.attributes = (Map<String, EntryAttribute>)(((HashMap<String, EntryAttribute>)attributes).clone());
-        
-        // now clone all the attributes
-        clone.attributes.clear();
-        
-        for ( EntryAttribute attribute:attributes.values() )
-        {
-            clone.attributes.put( attribute.getId(), attribute.clone() );
-        }
-        
-        // We are done !
-        return clone;
     }
     
 
@@ -955,6 +977,61 @@ public class DefaultClientEntry extends AbstractEntry
     }
 
 
+    /**
+     * Get this entry's DN.
+     *
+     * @return The entry's DN
+     */
+    public DN getDn()
+    {
+        return dn;
+    }
+
+
+    /**
+     * Set this entry's DN.
+     *
+     * @param dn The DN associated with this entry
+     */
+    public void setDn( DN dn )
+    {
+        this.dn = dn;
+    }
+    
+    
+    /**
+     * Remove all the attributes for this entry. The DN is not reset
+     */
+    public void clear()
+    {
+        attributes.clear();
+    }
+    
+    
+    /**
+     * Returns an enumeration containing the zero or more attributes in the
+     * collection. The behavior of the enumeration is not specified if the
+     * attribute collection is changed.
+     *
+     * @return an enumeration of all contained attributes
+     */
+    public Iterator<EntryAttribute> iterator()
+    {
+        return Collections.unmodifiableMap( attributes ).values().iterator();
+    }
+    
+
+    /**
+     * Returns the number of attributes.
+     *
+     * @return the number of attributes
+     */
+    public int size()
+    {
+        return attributes.size();
+    }
+    
+    
     /**
      * @see Externalizable#writeExternal(ObjectOutput)<p>
      * 
