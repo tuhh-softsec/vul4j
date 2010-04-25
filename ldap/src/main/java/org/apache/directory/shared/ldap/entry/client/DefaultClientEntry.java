@@ -38,6 +38,7 @@ import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.name.DN;
+import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,7 +53,7 @@ import org.slf4j.LoggerFactory;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public final class DefaultClientEntry extends AbstractEntry
+public class DefaultClientEntry extends AbstractEntry
 {
     /** Used for serialization */
     private static final long serialVersionUID = 2L;
@@ -164,21 +165,50 @@ public final class DefaultClientEntry extends AbstractEntry
         // Loop on all the added attributes
         for ( EntryAttribute attribute:attributes )
         {
-            // If the attribute already exist, we will add the new values.
-            if ( contains( attribute ) )
+            AttributeType attributeType = attribute.getAttributeType();
+            
+            if ( attributeType != null )
             {
-                EntryAttribute existingAttr = get( attribute.getId() );
+                String oid = attributeType.getOid();
                 
-                // Loop on all the values, and add them to the existing attribute
-                for ( Value<?> value:attribute )
+                if ( this.attributes.containsKey( oid ) )
                 {
-                    existingAttr.add( value );
+                    // We already have an attribute with the same AttributeType
+                    // Just add the new values into it.
+                    EntryAttribute existingAttribute = this.attributes.get( oid );
+                    
+                    for ( Value<?> value:attribute )
+                    {
+                        existingAttribute.add( value );
+                    }
+                    
+                    // And update the upId
+                    existingAttribute.setUpId( attribute.getUpId() );
+                }
+                else
+                {
+                    // The attributeType does not exist, add it
+                    this.attributes.put( oid, attribute );
                 }
             }
             else
             {
-                // Stores the attribute into the entry
-                this.attributes.put( attribute.getId(), attribute );
+                // If the attribute already exist, we will add the new values.
+                if ( contains( attribute ) )
+                {
+                    EntryAttribute existingAttribute = get( attribute.getId() );
+                    
+                    // Loop on all the values, and add them to the existing attribute
+                    for ( Value<?> value:attribute )
+                    {
+                        existingAttribute.add( value );
+                    }
+                }
+                else
+                {
+                    // Stores the attribute into the entry
+                    this.attributes.put( attribute.getId(), attribute );
+                }
             }
         }
     }

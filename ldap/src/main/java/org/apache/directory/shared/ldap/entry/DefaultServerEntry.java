@@ -53,7 +53,7 @@ import org.slf4j.LoggerFactory;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public final class DefaultServerEntry extends AbstractEntry implements ServerEntry
+public final class DefaultServerEntry extends DefaultClientEntry implements ServerEntry
 {
     /** Used for serialization */
     private static final long serialVersionUID = 2L;
@@ -645,8 +645,7 @@ public final class DefaultServerEntry extends AbstractEntry implements ServerEnt
     {
         for ( EntryAttribute attribute:attributes )
         {
-            EntryAttribute serverAttribute = (EntryAttribute)attribute;
-            AttributeType attributeType = serverAttribute.getAttributeType();
+            AttributeType attributeType = attribute.getAttributeType();
             
             if ( this.attributes.containsKey( attributeType.getOid() ) )
             {
@@ -654,13 +653,13 @@ public final class DefaultServerEntry extends AbstractEntry implements ServerEnt
                 // Just add the new values into it.
                 EntryAttribute oldAttribute = this.attributes.get( attributeType.getOid() );
                 
-                for ( Value<?> value:serverAttribute )
+                for ( Value<?> value:attribute )
                 {
                     oldAttribute.add( value );
                 }
                 
                 // And update the upId
-                oldAttribute.setUpId( serverAttribute.getUpId() );
+                oldAttribute.setUpId( attribute.getUpId() );
             }
             else
             {
