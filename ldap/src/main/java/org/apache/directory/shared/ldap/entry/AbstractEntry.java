@@ -35,13 +35,13 @@ import org.apache.directory.shared.ldap.schema.SchemaManager;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public abstract class AbstractEntry<K> implements Entry
+public abstract class AbstractEntry implements Entry
 {
     /** The DN for this entry */
     protected DN dn;
     
     /** A map containing all the attributes for this entry */
-    protected Map<K, EntryAttribute> attributes = new HashMap<K, EntryAttribute>();
+    protected Map<String, EntryAttribute> attributes = new HashMap<String, EntryAttribute>();
     
     /** A speedup to get the ObjectClass attribute */
     protected static transient AttributeType OBJECT_CLASS_AT;

@@ -24,6 +24,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -52,7 +53,7 @@ import org.slf4j.LoggerFactory;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public final class DefaultServerEntry extends AbstractEntry<AttributeType> implements ServerEntry
+public final class DefaultServerEntry extends AbstractEntry implements ServerEntry
 {
     /** Used for serialization */
     private static final long serialVersionUID = 2L;
@@ -152,7 +153,7 @@ public final class DefaultServerEntry extends AbstractEntry<AttributeType> imple
     {
         EntryAttribute attribute = new DefaultEntryAttribute( attributeType, values );
         attribute.setUpId( upId, attributeType );
-        attributes.put( attributeType, attribute );
+        attributes.put( attributeType.getOid(), attribute );
     }
     
     
@@ -166,7 +167,7 @@ public final class DefaultServerEntry extends AbstractEntry<AttributeType> imple
     {
         EntryAttribute attribute = new DefaultEntryAttribute( attributeType, values );
         attribute.setUpId( upId, attributeType );
-        attributes.put( attributeType, attribute );
+        attributes.put( attributeType.getOid(), attribute );
     }
     
     
@@ -180,7 +181,7 @@ public final class DefaultServerEntry extends AbstractEntry<AttributeType> imple
     {
         EntryAttribute attribute = new DefaultEntryAttribute( attributeType, values );
         attribute.setUpId( upId, attributeType );
-        attributes.put( attributeType, attribute );
+        attributes.put( attributeType.getOid(), attribute );
     }
     
     
@@ -265,7 +266,7 @@ public final class DefaultServerEntry extends AbstractEntry<AttributeType> imple
         }
         
         // Init the attributes map
-        attributes = new HashMap<AttributeType, EntryAttribute>( entry.size() );
+        attributes = new HashMap<String, EntryAttribute>( entry.size() );
         
         // and copy all the attributes
         for ( EntryAttribute attribute:entry )
@@ -526,7 +527,7 @@ public final class DefaultServerEntry extends AbstractEntry<AttributeType> imple
             throw new UnsupportedOperationException( message );
         }
 
-        EntryAttribute attribute = attributes.get( attributeType );
+        EntryAttribute attribute = attributes.get( attributeType.getOid() );
         
         if ( attribute != null )
         {
@@ -571,7 +572,7 @@ public final class DefaultServerEntry extends AbstractEntry<AttributeType> imple
             throw new IllegalArgumentException( message );
         }
         
-        EntryAttribute attribute = attributes.get( attributeType );
+        EntryAttribute attribute = attributes.get( attributeType.getOid() );
         
         if ( attribute != null )
         {
@@ -616,7 +617,7 @@ public final class DefaultServerEntry extends AbstractEntry<AttributeType> imple
             throw new IllegalArgumentException( message );
         }
         
-        EntryAttribute attribute = attributes.get( attributeType );
+        EntryAttribute attribute = attributes.get( attributeType.getOid() );
     
         if ( attribute != null )
         {
@@ -647,11 +648,11 @@ public final class DefaultServerEntry extends AbstractEntry<AttributeType> imple
             EntryAttribute serverAttribute = (EntryAttribute)attribute;
             AttributeType attributeType = serverAttribute.getAttributeType();
             
-            if ( this.attributes.containsKey( attributeType ) )
+            if ( this.attributes.containsKey( attributeType.getOid() ) )
             {
                 // We already have an attribute with the same AttributeType
                 // Just add the new values into it.
-                EntryAttribute oldAttribute = this.attributes.get( attributeType );
+                EntryAttribute oldAttribute = this.attributes.get( attributeType.getOid() );
                 
                 for ( Value<?> value:serverAttribute )
                 {
@@ -664,7 +665,7 @@ public final class DefaultServerEntry extends AbstractEntry<AttributeType> imple
             else
             {
                 // The attributeType does not exist, add it
-                this.attributes.put( attributeType, attribute );
+                this.attributes.put( attributeType.getOid(), attribute );
             }
         }
     }
@@ -699,7 +700,7 @@ public final class DefaultServerEntry extends AbstractEntry<AttributeType> imple
             throw new UnsupportedOperationException( message );
         }
 
-        EntryAttribute attribute = (EntryAttribute)attributes.get( attributeType );
+        EntryAttribute attribute = (EntryAttribute)attributes.get( attributeType.getOid() );
         
         upId = getUpId( upId, attributeType );
         
@@ -749,7 +750,7 @@ public final class DefaultServerEntry extends AbstractEntry<AttributeType> imple
         
         upId = getUpId( upId, attributeType );
         
-        EntryAttribute attribute = (EntryAttribute)attributes.get( attributeType );
+        EntryAttribute attribute = (EntryAttribute)attributes.get( attributeType.getOid() );
     
         if ( attribute != null )
         {
@@ -785,7 +786,7 @@ public final class DefaultServerEntry extends AbstractEntry<AttributeType> imple
         
         upId = getUpId( upId, attributeType );
 
-        EntryAttribute attribute = (EntryAttribute)attributes.get( attributeType );
+        EntryAttribute attribute = (EntryAttribute)attributes.get( attributeType.getOid() );
         
         if ( attribute != null )
         {
@@ -857,7 +858,7 @@ public final class DefaultServerEntry extends AbstractEntry<AttributeType> imple
             return false;
         }
         
-        EntryAttribute attribute = attributes.get( attributeType );
+        EntryAttribute attribute = attributes.get( attributeType.getOid() );
         
         if ( attribute != null )
         {
@@ -885,7 +886,7 @@ public final class DefaultServerEntry extends AbstractEntry<AttributeType> imple
             return false;
         }
 
-        EntryAttribute attribute = attributes.get( attributeType );
+        EntryAttribute attribute = attributes.get( attributeType.getOid() );
         
         if ( attribute != null )
         {
@@ -913,7 +914,7 @@ public final class DefaultServerEntry extends AbstractEntry<AttributeType> imple
             return false;
         }
         
-        EntryAttribute attribute = attributes.get( attributeType );
+        EntryAttribute attribute = attributes.get( attributeType.getOid() );
         
         if ( attribute != null )
         {
@@ -949,7 +950,7 @@ public final class DefaultServerEntry extends AbstractEntry<AttributeType> imple
                 return this.attributes.size() == 0;
             }
             
-            if ( !this.attributes.containsKey( ((EntryAttribute)entryAttribute).getAttributeType() ) )
+            if ( !this.attributes.containsKey( ((EntryAttribute)entryAttribute).getAttributeType().getOid() ) )
             {
                 return false;
             }
@@ -983,7 +984,7 @@ public final class DefaultServerEntry extends AbstractEntry<AttributeType> imple
                 return false;
             }
             
-            EntryAttribute attribute = attributes.get( attributeType );
+            EntryAttribute attribute = attributes.get( attributeType.getOid() );
             
             if ( attribute != null )
             {
@@ -1025,7 +1026,7 @@ public final class DefaultServerEntry extends AbstractEntry<AttributeType> imple
                 return false;
             }
             
-            EntryAttribute attribute = attributes.get( attributeType );
+            EntryAttribute attribute = attributes.get( attributeType.getOid() );
             
             if ( attribute != null )
             {
@@ -1067,7 +1068,7 @@ public final class DefaultServerEntry extends AbstractEntry<AttributeType> imple
                 return false;
             }
 
-            EntryAttribute attribute = attributes.get( attributeType );
+            EntryAttribute attribute = attributes.get( attributeType.getOid() );
             
             if ( attribute != null )
             {
@@ -1093,7 +1094,7 @@ public final class DefaultServerEntry extends AbstractEntry<AttributeType> imple
      */
     public boolean containsAttribute( AttributeType attributeType )
     {
-        return attributes.containsKey( attributeType );
+        return attributes.containsKey( attributeType.getOid() );
     }
 
     
@@ -1109,7 +1110,7 @@ public final class DefaultServerEntry extends AbstractEntry<AttributeType> imple
         {
             try
             {
-                if ( !this.attributes.containsKey( getAttributeType( attribute ) ) )
+                if ( !this.attributes.containsKey( getAttributeType( attribute ).getOid() ) )
                 {
                     return false;
                 }
@@ -1141,7 +1142,14 @@ public final class DefaultServerEntry extends AbstractEntry<AttributeType> imple
      */
     public EntryAttribute get( AttributeType attributeType )
     {
-        return attributes.get( attributeType );
+        if ( attributeType != null )
+        {
+            return attributes.get( attributeType.getOid() );
+        }
+        else
+        {
+            return null;
+        }
     }
 
 
@@ -1183,7 +1191,14 @@ public final class DefaultServerEntry extends AbstractEntry<AttributeType> imple
      */
     public Set<AttributeType> getAttributeTypes()
     {
-        return attributes.keySet();
+        Set<AttributeType> attributeTypes = new HashSet<AttributeType>();
+        
+        for ( EntryAttribute attribute:attributes.values() )
+        {
+            attributeTypes.add( attribute.getAttributeType() );
+        }
+        
+        return attributeTypes;
     }
     
     
@@ -1220,7 +1235,7 @@ public final class DefaultServerEntry extends AbstractEntry<AttributeType> imple
             return false;
         }
         
-        EntryAttribute attribute = attributes.get( OBJECT_CLASS_AT );
+        EntryAttribute attribute = attributes.get( OBJECT_CLASS_AT.getOid() );
         
         if ( attribute == null )
         {
@@ -1392,7 +1407,7 @@ public final class DefaultServerEntry extends AbstractEntry<AttributeType> imple
                 throw new IllegalArgumentException( message );
             }
             
-            EntryAttribute removed = this.attributes.put( ((EntryAttribute)serverAttribute).getAttributeType(), serverAttribute );
+            EntryAttribute removed = this.attributes.put( ((EntryAttribute)serverAttribute).getAttributeType().getOid(), serverAttribute );
             
             if ( removed != null )
             {
@@ -1431,25 +1446,34 @@ public final class DefaultServerEntry extends AbstractEntry<AttributeType> imple
     {
         if ( attributeType == null )
         {
-            String message = I18n.err( I18n.ERR_04460 );
-            LOG.error( message );
-            throw new IllegalArgumentException( message );
-        }
-
-        if ( !StringTools.isEmpty( upId ) )
-        {
-            AttributeType tempAT = getAttributeType( upId );
-        
-            if ( !tempAT.equals( attributeType ) )
+            try
             {
-                String message = I18n.err( I18n.ERR_04463, upId, attributeType );
+                attributeType = getAttributeType( upId );
+            }
+            catch ( Exception e )
+            {
+                String message = I18n.err( I18n.ERR_04460 );
                 LOG.error( message );
                 throw new IllegalArgumentException( message );
             }
         }
         else
         {
-            upId = getUpId( upId, attributeType );
+            if ( !StringTools.isEmpty( upId ) )
+            {
+                AttributeType tempAT = getAttributeType( upId );
+            
+                if ( !tempAT.equals( attributeType ) )
+                {
+                    String message = I18n.err( I18n.ERR_04463, upId, attributeType );
+                    LOG.error( message );
+                    throw new IllegalArgumentException( message );
+                }
+            }
+            else
+            {
+                upId = getUpId( upId, attributeType );
+            }
         }
         
         if ( attributeType.equals( OBJECT_CLASS_AT ) )
@@ -1461,7 +1485,7 @@ public final class DefaultServerEntry extends AbstractEntry<AttributeType> imple
 
         EntryAttribute attribute = new DefaultEntryAttribute( upId, attributeType, values );
         
-        return attributes.put( attributeType, attribute );
+        return attributes.put( attributeType.getOid(), attribute );
     }
 
 
@@ -1496,7 +1520,7 @@ public final class DefaultServerEntry extends AbstractEntry<AttributeType> imple
             {
                 attributeType = getAttributeType( upId );
             }
-            catch ( IllegalArgumentException iae )
+            catch ( Exception e )
             {
                 String message = I18n.err( I18n.ERR_04460 );
                 LOG.error( message );
@@ -1524,7 +1548,7 @@ public final class DefaultServerEntry extends AbstractEntry<AttributeType> imple
         
         EntryAttribute attribute = new DefaultEntryAttribute( upId, attributeType, values );
         
-        return attributes.put( attributeType, attribute );
+        return attributes.put( attributeType.getOid(), attribute );
     }
 
 
@@ -1555,30 +1579,39 @@ public final class DefaultServerEntry extends AbstractEntry<AttributeType> imple
     {
         if ( attributeType == null )
         {
-            String message = I18n.err( I18n.ERR_04460 );
-            LOG.error( message );
-            throw new IllegalArgumentException( message );
-        }
-
-        if ( !StringTools.isEmpty( upId ) )
-        {
-            AttributeType tempAT = getAttributeType( upId );
-        
-            if ( !tempAT.equals( attributeType ) )
+            try
             {
-                String message = I18n.err( I18n.ERR_04463, upId, attributeType );
+                attributeType = getAttributeType( upId );
+            }
+            catch ( Exception e )
+            {
+                String message = I18n.err( I18n.ERR_04460 );
                 LOG.error( message );
                 throw new IllegalArgumentException( message );
             }
         }
         else
         {
-            upId = getUpId( upId, attributeType );
+            if ( !StringTools.isEmpty( upId ) )
+            {
+                AttributeType tempAT = getAttributeType( upId );
+            
+                if ( !tempAT.equals( attributeType ) )
+                {
+                    String message = I18n.err( I18n.ERR_04463, upId, attributeType );
+                    LOG.error( message );
+                    throw new IllegalArgumentException( message );
+                }
+            }
+            else
+            {
+                upId = getUpId( upId, attributeType );
+            }
         }
         
         EntryAttribute attribute = new DefaultEntryAttribute( upId, attributeType, values );
         
-        return attributes.put( attributeType, attribute );
+        return attributes.put( attributeType.getOid(), attribute );
     }
 
 
@@ -1699,9 +1732,14 @@ public final class DefaultServerEntry extends AbstractEntry<AttributeType> imple
      */
     public boolean remove( AttributeType attributeType, byte[]... values ) throws LdapException
     {
+        if ( attributeType == null )
+        {
+            return false;
+        }
+        
         try
         {
-            EntryAttribute attribute = attributes.get( attributeType );
+            EntryAttribute attribute = attributes.get( attributeType.getOid() );
             
             if ( attribute == null )
             {
@@ -1717,7 +1755,7 @@ public final class DefaultServerEntry extends AbstractEntry<AttributeType> imple
             if ( attribute.size() == 0 )
             {
                 // No mare values, remove the attribute
-                attributes.remove( attributeType );
+                attributes.remove( attributeType.getOid() );
                 
                 return true;
             }
@@ -1764,9 +1802,14 @@ public final class DefaultServerEntry extends AbstractEntry<AttributeType> imple
      */
     public boolean remove( AttributeType attributeType, String... values ) throws LdapException
     {
+        if ( attributeType == null )
+        {
+            return false;
+        }
+        
         try
         {
-            EntryAttribute attribute = attributes.get( attributeType );
+            EntryAttribute attribute = attributes.get( attributeType.getOid() );
             
             if ( attribute == null )
             {
@@ -1782,7 +1825,7 @@ public final class DefaultServerEntry extends AbstractEntry<AttributeType> imple
             if ( attribute.size() == 0 )
             {
                 // No mare values, remove the attribute
-                attributes.remove( attributeType );
+                attributes.remove( attributeType.getOid() );
                 
                 return true;
             }
@@ -1829,9 +1872,14 @@ public final class DefaultServerEntry extends AbstractEntry<AttributeType> imple
      */
     public boolean remove( AttributeType attributeType, Value<?>... values ) throws LdapException
     {
+        if ( attributeType == null )
+        {
+            return false;
+        }
+        
         try
         {
-            EntryAttribute attribute = attributes.get( attributeType );
+            EntryAttribute attribute = attributes.get( attributeType.getOid() );
             
             if ( attribute == null )
             {
@@ -1847,7 +1895,7 @@ public final class DefaultServerEntry extends AbstractEntry<AttributeType> imple
             if ( attribute.size() == 0 )
             {
                 // No mare values, remove the attribute
-                attributes.remove( attributeType );
+                attributes.remove( attributeType.getOid() );
                 
                 return true;
             }
@@ -1877,9 +1925,9 @@ public final class DefaultServerEntry extends AbstractEntry<AttributeType> imple
         
         for ( EntryAttribute serverAttribute:attributes )
         {
-            if ( this.attributes.containsKey( ((EntryAttribute)serverAttribute).getAttributeType() ) )
+            if ( this.attributes.containsKey( ((EntryAttribute)serverAttribute).getAttributeType().getOid() ) )
             {
-                this.attributes.remove( ((EntryAttribute)serverAttribute).getAttributeType() );
+                this.attributes.remove( ((EntryAttribute)serverAttribute).getAttributeType().getOid() );
                 removedAttributes.add( serverAttribute );
             }
         }
@@ -2031,7 +2079,7 @@ public final class DefaultServerEntry extends AbstractEntry<AttributeType> imple
      */
     public List<EntryAttribute> removeAttributes( AttributeType... attributes )
     {
-        if ( attributes.length == 0 )
+        if ( ( attributes == null ) || ( attributes.length == 0 ) )
         {
             return null;
         }
@@ -2040,7 +2088,12 @@ public final class DefaultServerEntry extends AbstractEntry<AttributeType> imple
         
         for ( AttributeType attributeType:attributes )
         {
-            EntryAttribute attr = this.attributes.remove( attributeType );
+            if ( attributeType == null )
+            {
+                continue;
+            }
+            
+            EntryAttribute attr = this.attributes.remove( attributeType.getOid() );
             
             if ( attr != null )
             {
@@ -2098,7 +2151,7 @@ public final class DefaultServerEntry extends AbstractEntry<AttributeType> imple
                 continue;
             }
     
-            EntryAttribute attr = this.attributes.remove( attributeType );
+            EntryAttribute attr = this.attributes.remove( attributeType.getOid() );
             
             if ( attr != null )
             {
@@ -2144,7 +2197,7 @@ public final class DefaultServerEntry extends AbstractEntry<AttributeType> imple
                 continue;
             }
             
-            EntryAttribute attribute = attributes.put( attributeType, new DefaultEntryAttribute( attributeType ) );
+            EntryAttribute attribute = attributes.put( attributeType.getOid(), new DefaultEntryAttribute( attributeType ) );
 
             if ( attribute != null )
             {
@@ -2200,7 +2253,7 @@ public final class DefaultServerEntry extends AbstractEntry<AttributeType> imple
                 continue;
             }
             
-            EntryAttribute attribute = attributes.put( attributeType, 
+            EntryAttribute attribute = attributes.put( attributeType.getOid(), 
                 new DefaultEntryAttribute( upId, attributeType ));
             
             if ( attribute != null )
@@ -2263,7 +2316,7 @@ public final class DefaultServerEntry extends AbstractEntry<AttributeType> imple
         }
         
         // clone the ServerAttribute Map
-        clone.attributes = (Map<AttributeType, EntryAttribute>)(((HashMap<AttributeType, EntryAttribute>)attributes).clone());
+        clone.attributes = (Map<String, EntryAttribute>)(((HashMap<String, EntryAttribute>)attributes).clone());
         
         // now clone all the servrAttributes
         clone.attributes.clear();
@@ -2271,7 +2324,7 @@ public final class DefaultServerEntry extends AbstractEntry<AttributeType> imple
         for ( EntryAttribute entryAttribute : attributes.values() )
         {
             EntryAttribute value = (EntryAttribute)entryAttribute.clone();
-            clone.attributes.put( value.getAttributeType(), value );
+            clone.attributes.put( value.getAttributeType().getOid(), value );
         }
         
         // We are done !
@@ -2327,7 +2380,7 @@ public final class DefaultServerEntry extends AbstractEntry<AttributeType> imple
         // here, to be able to restore it in the readExternal :
         // we need access to the registries, which are not available
         // in the ServerAttribute class.
-        for ( AttributeType attributeType:attributes.keySet() )
+        for ( AttributeType attributeType:getAttributeTypes() )
         {
             // Write the oid to be able to restore the AttributeType when deserializing
             // the attribute
@@ -2336,7 +2389,7 @@ public final class DefaultServerEntry extends AbstractEntry<AttributeType> imple
             out.writeUTF( oid );
             
             // Get the attribute
-            DefaultEntryAttribute attribute = (DefaultEntryAttribute)attributes.get( attributeType );
+            DefaultEntryAttribute attribute = (DefaultEntryAttribute)attributes.get( attributeType.getOid() );
 
             // Write the attribute
             attribute.serialize( out );
@@ -2394,7 +2447,7 @@ public final class DefaultServerEntry extends AbstractEntry<AttributeType> imple
                 // Read the attribute
                 attribute.deserialize( in );
                 
-                attributes.put( attributeType, attribute );
+                attributes.put( attributeType.getOid(), attribute );
             }
             catch ( LdapException ne )
             {
@@ -2467,7 +2520,7 @@ public final class DefaultServerEntry extends AbstractEntry<AttributeType> imple
         
         for ( EntryAttribute attribute:other )
         {
-            EntryAttribute attr = attributes.get( ((EntryAttribute)attribute).getAttributeType() );
+            EntryAttribute attr = attributes.get( ((EntryAttribute)attribute).getAttributeType().getOid() );
             
             if ( attr == null )
             {
