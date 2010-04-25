@@ -60,15 +60,8 @@ public final class DefaultServerEntry extends AbstractEntry<AttributeType> imple
     /** The logger for this class */
     private static final Logger LOG = LoggerFactory.getLogger( DefaultServerEntry.class );
 
-    /** A speedup to get the ObjectClass attribute */
-    private static transient AttributeType OBJECT_CLASS_AT;
-    
     /** A mutex to manage synchronization*/
     private static transient Object MUTEX = new Object();
-    
-    /** The SchemaManager */
-    private SchemaManager schemaManager;
-
 
     //-------------------------------------------------------------------------
     // Helper methods

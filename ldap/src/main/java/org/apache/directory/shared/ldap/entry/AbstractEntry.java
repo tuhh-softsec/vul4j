@@ -24,6 +24,8 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.directory.shared.ldap.name.DN;
+import org.apache.directory.shared.ldap.schema.AttributeType;
+import org.apache.directory.shared.ldap.schema.SchemaManager;
 
 
 /**
@@ -41,6 +43,12 @@ public abstract class AbstractEntry<K> implements Entry
     /** A map containing all the attributes for this entry */
     protected Map<K, EntryAttribute> attributes = new HashMap<K, EntryAttribute>();
     
+    /** A speedup to get the ObjectClass attribute */
+    protected static transient AttributeType OBJECT_CLASS_AT;
+
+    /** The SchemaManager */
+    protected SchemaManager schemaManager;
+
     
     /**
      * Get this entry's DN.

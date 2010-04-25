@@ -40,6 +40,7 @@ import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.name.DN;
+import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,7 +55,7 @@ import org.slf4j.LoggerFactory;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public final class DefaultClientEntry extends AbstractEntry<String> //implements ClientEntry
+public final class DefaultClientEntry extends AbstractEntry<String>
 {
     /** Used for serialization */
     private static final long serialVersionUID = 2L;
@@ -924,12 +925,6 @@ public final class DefaultClientEntry extends AbstractEntry<String> //implements
             LOG.error( I18n.err( I18n.ERR_04138, upId ) );
             return false;
         }
-    }
-
-
-    public Iterator<EntryAttribute> iterator()
-    {
-        return Collections.unmodifiableMap( attributes ).values().iterator();
     }
 
 
