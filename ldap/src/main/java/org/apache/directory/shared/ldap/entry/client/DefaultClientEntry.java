@@ -25,12 +25,15 @@ import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import org.apache.directory.shared.ldap.NotImplementedException;
 import org.apache.directory.shared.ldap.exception.LdapException;
 
 import org.apache.directory.shared.i18n.I18n;
@@ -845,6 +848,25 @@ public class DefaultClientEntry implements Entry
 
 
     /**
+     * {@inheritDoc}
+     */
+    public Set<AttributeType> getAttributeTypes()
+    {
+        Set<AttributeType> attributeTypes = new HashSet<AttributeType>();
+        
+        for ( EntryAttribute attribute:attributes.values() )
+        {
+            if ( attribute.getAttributeType() != null )
+            { 
+                attributeTypes.add( attribute.getAttributeType() );
+            }
+        }
+        
+        return attributeTypes;
+    }
+    
+    
+    /**
      * <p>
      * Put an attribute (represented by its ID and some binary values) into an entry. 
      * </p>
@@ -1326,6 +1348,36 @@ public class DefaultClientEntry implements Entry
     
 
     /**
+     * {@inheritDoc}
+     */
+    public boolean isValid()
+    {
+        // @TODO Implement me !
+        throw new NotImplementedException();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isValid( EntryAttribute objectClass )
+    {
+        // @TODO Implement me !
+        throw new NotImplementedException();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isValid( String objectClass )
+    {
+        // @TODO Implement me !
+        throw new NotImplementedException();
+    }
+
+
+    /**
      * Returns the number of attributes.
      *
      * @return the number of attributes
@@ -1433,15 +1485,19 @@ public class DefaultClientEntry implements Entry
 
     
     /**
-     * Tells if an entry has a specific ObjectClass value
-     * 
-     * @param objectClass The ObjectClass we want to check
-     * @return <code>true</code> if the ObjectClass value is present 
-     * in the ObjectClass attribute
+     * {@inheritDoc}
      */
     public boolean hasObjectClass( String objectClass )
     {
-        return contains( "objectclass", objectClass );
+        if ( schemaManager != null )
+        {
+            return contains( OBJECT_CLASS_AT.getOid(), objectClass );
+
+        }
+        else
+        {
+            return contains( "objectclass", objectClass );
+        }
     }
 
 
@@ -1506,22 +1562,48 @@ public class DefaultClientEntry implements Entry
     {
         StringBuilder sb = new StringBuilder();
         
-        sb.append( "ClientEntry\n" );
-        sb.append( "    dn: " ).append( dn.getName() ).append( '\n' );
+        sb.append( "Entry\n" );
+        sb.append( "    dn" );
+
+        if ( dn.isNormalized() )
+        {
+            sb.append( "[n]" );
+        }
+        
+        sb.append( ": " );
+        sb.append( dn.getName() );
+        sb.append( '\n' );
         
         // First dump the ObjectClass attribute
-        if ( containsAttribute( "objectClass" ) )
+        if ( schemaManager != null )
         {
-            EntryAttribute objectClass = get( "objectclass" );
-            
-            sb.append( objectClass );
+            // First dump the ObjectClass attribute
+            if ( containsAttribute( OBJECT_CLASS_AT.getOid() ) )
+            {
+                EntryAttribute objectClass = get( OBJECT_CLASS_AT );
+                
+                sb.append( objectClass );
+            }
+        }
+        else
+        {
+            if ( containsAttribute( "objectClass" ) )
+            {
+                EntryAttribute objectClass = get( "objectclass" );
+                
+                sb.append( objectClass );
+            }
         }
         
         if ( attributes.size() != 0 )
         {
             for ( EntryAttribute attribute:attributes.values() )
             {
-                if ( !attribute.getId().equals( "objectclass" ) )
+                if ( attribute.getAttributeType() != OBJECT_CLASS_AT )
+                {
+                    sb.append( attribute );
+                }
+                else if ( !attribute.getId().equals( "objectclass" ) )
                 {
                     sb.append( attribute );
                 }

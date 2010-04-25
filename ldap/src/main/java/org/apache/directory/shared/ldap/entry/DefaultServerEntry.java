@@ -30,7 +30,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.NotImplementedException;
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.entry.client.DefaultClientEntry;
 import org.apache.directory.shared.ldap.exception.LdapException;
@@ -703,37 +702,6 @@ public final class DefaultServerEntry extends DefaultClientEntry implements Serv
 
 
     /**
-     * Gets all the attributes type
-     *
-     * @return The combined set of all the attributes, including ObjectClass.
-     */
-    public Set<AttributeType> getAttributeTypes()
-    {
-        Set<AttributeType> attributeTypes = new HashSet<AttributeType>();
-        
-        for ( EntryAttribute attribute:attributes.values() )
-        {
-            attributeTypes.add( attribute.getAttributeType() );
-        }
-        
-        return attributeTypes;
-    }
-    
-    
-    /**
-     * Tells if an entry has a specific ObjectClass value
-     * 
-     * @param objectClass The ObjectClass ID we want to check
-     * @return <code>true</code> if the ObjectClass value is present 
-     * in the ObjectClass attribute
-     */
-    public boolean hasObjectClass( String objectClass )
-    {
-        return contains( OBJECT_CLASS_AT, objectClass );
-    }
-
-    
-    /**
      * Tells if an entry has a specific ObjectClass Attribute
      * 
      * @param objectClass The ObjectClass we want to check
@@ -774,54 +742,6 @@ public final class DefaultServerEntry extends DefaultClientEntry implements Serv
     }
 
     
-    /**
-     * Fail fast check performed to determine entry consistency according to schema
-     * characteristics.
-     *
-     * @return true if the entry, it's attributes and their values are consistent
-     * with the schema
-     */
-    public boolean isValid()
-    {
-        // @TODO Implement me !
-        throw new NotImplementedException();
-    }
-
-
-    /**
-     * Check performed to determine entry consistency according to the schema
-     * requirements of a particular objectClass.  The entry must be of that objectClass
-     * to return true: meaning if the entry's objectClass attribute does not contain
-     * the objectClass argument, then false should be returned.
-     *
-     * @param objectClass the objectClass to use while checking for validity
-     * @return true if the entry, it's attributes and their values are consistent
-     * with the objectClass
-     */
-    public boolean isValid( EntryAttribute objectClass )
-    {
-        // @TODO Implement me !
-        throw new NotImplementedException();
-    }
-
-
-    /**
-     * Check performed to determine entry consistency according to the schema
-     * requirements of a particular objectClass.  The entry must be of that objectClass
-     * to return true: meaning if the entry's objectClass attribute does not contain
-     * the objectClass argument, then false should be returned.
-     *
-     * @param objectClass the objectClass to use while checking for validity
-     * @return true if the entry, it's attributes and their values are consistent
-     * with the objectClass
-     */
-    public boolean isValid( String objectClass )
-    {
-        // @TODO Implement me !
-        throw new NotImplementedException();
-    }
-
-
     /**
      * <p>
      * Places a new attribute with the supplied AttributeType and binary values 
@@ -2052,50 +1972,5 @@ public final class DefaultServerEntry extends DefaultClientEntry implements Serv
         }
         
         return true;
-    }
-        
-    /**
-     * @see Object#toString()
-     */
-    public String toString()
-    {
-        StringBuilder sb = new StringBuilder();
-        
-        sb.append( "ServerEntry\n" );
-        sb.append( "    dn" );
-        
-        if ( dn.isNormalized() )
-        {
-            sb.append( "[n]: " );
-            sb.append( dn.getName() );
-        }
-        else
-        {
-            sb.append( "[]: " );
-            sb.append( dn );
-        }
-        
-        sb.append( '\n' );
-        
-        // First dump the ObjectClass attribute
-        if ( containsAttribute( OBJECT_CLASS_AT ) )
-        {
-            EntryAttribute objectClass = get( OBJECT_CLASS_AT );
-            
-            sb.append( objectClass );
-        }
-        
-        if ( attributes.size() != 0 )
-        {
-            for ( EntryAttribute attribute:attributes.values() )
-            {
-                if ( !((EntryAttribute)attribute).getAttributeType().equals( OBJECT_CLASS_AT ) )
-                {
-                    sb.append( attribute );
-                }
-            }
-        }
-        
-        return sb.toString();
     }
 }

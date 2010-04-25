@@ -1238,7 +1238,7 @@ public class DefaultClientEntryTest
     {
         Entry entry = new DefaultClientEntry( EXAMPLE_DN );
         
-        assertEquals( "ClientEntry\n    dn: dc=example,dc=com\n", entry.toString() );
+        assertEquals( "Entry\n    dn: dc=example,dc=com\n", entry.toString() );
         
         Value<String> strValueTop = new StringValue( "top" );
         Value<String> strValuePerson = new StringValue( "person" );
@@ -1252,7 +1252,7 @@ public class DefaultClientEntryTest
         entry.put( "UserPassword", binValue1, binValue2, binNullValue );
 
         String expected = 
-            "ClientEntry\n" +
+            "Entry\n" +
             "    dn: dc=example,dc=com\n" +
             "    ObjectClass: top\n" +
             "    ObjectClass: person\n" +

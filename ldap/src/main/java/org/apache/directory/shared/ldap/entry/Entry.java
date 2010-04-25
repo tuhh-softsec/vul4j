@@ -22,6 +22,7 @@ package org.apache.directory.shared.ldap.entry;
 import java.io.Externalizable;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.directory.shared.ldap.exception.LdapException;
 
@@ -111,6 +112,14 @@ public interface Entry extends Cloneable, Iterable<EntryAttribute>, Externalizab
 
 
     /**
+     * Gets all the attributes type
+     *
+     * @return The combined set of all the attributes.
+     */
+    Set<AttributeType> getAttributeTypes();
+    
+    
+    /**
      * <p>
      * Put some new ClientAttribute using the User Provided ID. 
      * No value is inserted. 
@@ -132,6 +141,42 @@ public interface Entry extends Cloneable, Iterable<EntryAttribute>, Externalizab
      * @param dn The DN associated with this entry
      */
     void setDn( DN dn );
+
+
+    /**
+     * Fail fast check performed to determine entry consistency according to schema
+     * characteristics.
+     *
+     * @return true if the entry, it's attributes and their values are consistent
+     * with the schema
+     */
+    boolean isValid();
+
+
+    /**
+     * Check performed to determine entry consistency according to the schema
+     * requirements of a particular objectClass.  The entry must be of that objectClass
+     * to return true: meaning if the entry's objectClass attribute does not contain
+     * the objectClass argument, then false should be returned.
+     *
+     * @param objectClass the objectClass to use while checking for validity
+     * @return true if the entry, it's attributes and their values are consistent
+     * with the objectClass
+     */
+    boolean isValid( String objectClass );
+
+    
+    /**
+     * Check performed to determine entry consistency according to the schema
+     * requirements of a particular objectClass.  The entry must be of that objectClass
+     * to return true: meaning if the entry's objectClass attribute does not contain
+     * the objectClass argument, then false should be returned.
+     *
+     * @param objectClass the objectClass to use while checking for validity
+     * @return true if the entry, it's attributes and their values are consistent
+     * with the objectClass
+     */
+    boolean isValid( EntryAttribute objectClass );
 
 
     /**
