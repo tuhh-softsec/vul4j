@@ -10,7 +10,7 @@
   </parent>
 
   <artifactId>plexus-archiver</artifactId>
-  <version>1.0</version>
+  <version>1.0.1-SNAPSHOT</version>
 
   <name>Plexus Archiver Component</name>
 
@@ -39,10 +39,4 @@
       <version>1.0</version>
     </dependency>
   </dependencies>
-
-  <scm>
-    <connection>scm:svn:http://svn.codehaus.org/plexus/plexus-components/tags/plexus-archiver-1.0</connection>
-    <developerConnection>scm:svn:https://svn.codehaus.org/plexus/plexus-components/tags/plexus-archiver-1.0</developerConnection>
-    <url>http://fisheye.codehaus.org/browse/plexus/plexus-components/tags/plexus-archiver-1.0</url>
-  </scm>
 </project>
