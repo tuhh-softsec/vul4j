@@ -1764,18 +1764,26 @@ public class DefaultClientEntry implements Entry
      */
     public boolean remove( String upId, byte[]... values ) throws LdapException
     {
-        try
+        if ( StringTools.isEmpty( upId ) )
+        {
+            String message = I18n.err( I18n.ERR_04457_NULL_ATTRIBUTE_ID );
+            LOG.info( message );
+            return false;
+        }
+        
+        if ( schemaManager == null )
         {
             String id = getId( upId );
-            
+
             EntryAttribute attribute = get( id );
-            
+
             if ( attribute == null )
             {
                 // Can't remove values from a not existing attribute !
                 return false;
             }
             
+
             int nbOldValues = attribute.size();
             
             // Remove the values
@@ -1800,11 +1808,26 @@ public class DefaultClientEntry implements Entry
                 return false;
             }
         }
-        catch ( IllegalArgumentException iae )
+        else
         {
-            LOG.error( I18n.err( I18n.ERR_04138, upId ) );
-            return false;
+            try
+            {
+                AttributeType attributeType = getAttributeType( upId );
+
+                return remove( attributeType, values );
+            }
+            catch ( LdapException ne )
+            {
+                LOG.error( I18n.err( I18n.ERR_04465, upId ) );
+                return false;
+            }
+            catch ( IllegalArgumentException iae )
+            {
+                LOG.error( I18n.err( I18n.ERR_04466, upId ) );
+                return false;
+            }
         }
+            
     }
 
 
@@ -1831,7 +1854,14 @@ public class DefaultClientEntry implements Entry
      */
     public boolean remove( String upId, String... values ) throws LdapException
     {
-        try
+        if ( StringTools.isEmpty( upId ) )
+        {
+            String message = I18n.err( I18n.ERR_04457_NULL_ATTRIBUTE_ID );
+            LOG.info( message );
+            return false;
+        }
+
+        if ( schemaManager == null )
         {
             String id = getId( upId );
             
@@ -1867,10 +1897,24 @@ public class DefaultClientEntry implements Entry
                 return false;
             }
         }
-        catch ( IllegalArgumentException iae )
+        else
         {
-            LOG.error( I18n.err( I18n.ERR_04138, upId ) );
-            return false;
+            try
+            {
+                AttributeType attributeType = getAttributeType( upId );
+
+                return remove( attributeType, values );
+            }
+            catch ( LdapException ne )
+            {
+                LOG.error( I18n.err( I18n.ERR_04465, upId ) );
+                return false;
+            }
+            catch ( IllegalArgumentException iae )
+            {
+                LOG.error( I18n.err( I18n.ERR_04466, upId ) );
+                return false;
+            }
         }
     }
 
@@ -1898,7 +1942,14 @@ public class DefaultClientEntry implements Entry
      */
     public boolean remove( String upId, Value<?>... values ) throws LdapException
     {
-        try
+        if ( StringTools.isEmpty( upId ) )
+        {
+            String message = I18n.err( I18n.ERR_04457_NULL_ATTRIBUTE_ID );
+            LOG.info( message );
+            return false;
+        }
+
+        if ( schemaManager == null )
         {
             String id = getId( upId );
             
@@ -1934,10 +1985,24 @@ public class DefaultClientEntry implements Entry
                 return false;
             }
         }
-        catch ( IllegalArgumentException iae )
+        else
         {
-            LOG.error( I18n.err( I18n.ERR_04138, upId ) );
-            return false;
+            try
+            {
+                AttributeType attributeType = getAttributeType( upId );
+
+                return remove( attributeType, values );
+            }
+            catch ( LdapException ne )
+            {
+                LOG.error( I18n.err( I18n.ERR_04465, upId ) );
+                return false;
+            }
+            catch ( IllegalArgumentException iae )
+            {
+                LOG.error( I18n.err( I18n.ERR_04466, upId ) );
+                return false;
+            }
         }
     }
 
