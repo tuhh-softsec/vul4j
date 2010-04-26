@@ -570,14 +570,104 @@ public interface Entry extends Cloneable, Iterable<EntryAttribute>, Externalizab
 
 
     /**
-      * Removes the specified attributes. The removed attributes are
-      * returned by this method. If there were no attribute the return value
-      * is <code>null</code>.
-      *
-      * @param attributes the attributes to be removed
-      * @return the removed attribute, if exists; otherwise <code>null</code>
-      */
+     * <p>
+     * Removes the specified binary values from an attribute.
+     * </p>
+     * <p>
+     * If at least one value is removed, this method returns <code>true</code>.
+     * </p>
+     * <p>
+     * If there is no more value after having removed the values, the attribute
+     * will be removed too.
+     * </p>
+     * <p>
+     * If the attribute does not exist, nothing is done and the method returns 
+     * <code>false</code>
+     * </p> 
+     *
+     * @param attributeType The attribute type  
+     * @param values the values to be removed
+     * @return <code>true</code> if at least a value is removed, <code>false</code>
+     * if not all the values have been removed or if the attribute does not exist. 
+     */
+    boolean remove( AttributeType attributeType, byte[]... values ) throws LdapException;
+
+    
+    /**
+     * <p>
+     * Removes the specified String values from an attribute.
+     * </p>
+     * <p>
+     * If at least one value is removed, this method returns <code>true</code>.
+     * </p>
+     * <p>
+     * If there is no more value after having removed the values, the attribute
+     * will be removed too.
+     * </p>
+     * <p>
+     * If the attribute does not exist, nothing is done and the method returns 
+     * <code>false</code>
+     * </p> 
+     *
+     * @param attributeType The attribute type  
+     * @param values the values to be removed
+     * @return <code>true</code> if at least a value is removed, <code>false</code>
+     * if not all the values have been removed or if the attribute does not exist. 
+     */
+    boolean remove( AttributeType attributeType, String... values ) throws LdapException;
+
+    
+    /**
+     * <p>
+     * Removes the specified values from an attribute.
+     * </p>
+     * <p>
+     * If at least one value is removed, this method returns <code>true</code>.
+     * </p>
+     * <p>
+     * If there is no more value after having removed the values, the attribute
+     * will be removed too.
+     * </p>
+     * <p>
+     * If the attribute does not exist, nothing is done and the method returns 
+     * <code>false</code>
+     * </p> 
+     *
+     * @param attributeType The attribute type  
+     * @param values the values to be removed
+     * @return <code>true</code> if at least a value is removed, <code>false</code>
+     * if not all the values have been removed or if the attribute does not exist. 
+     */
+    boolean remove( AttributeType attributeType, Value<?>... values ) throws LdapException;
+
+    
+    /**
+     * Removes the specified attributes. The removed attributes are
+     * returned by this method. If there were no attribute the return value
+     * is <code>null</code>.
+     *
+     * @param attributes the attributes to be removed
+     * @return the removed attribute, if exists; otherwise <code>null</code>
+     */
     List<EntryAttribute> remove( EntryAttribute... attributes ) throws LdapException;
+    
+
+    /**
+     * <p>
+     * Removes the attribute with the specified AttributeTypes. 
+     * </p>
+     * <p>
+     * The removed attribute are returned by this method. 
+     * </p>
+     * <p>
+     * If there is no attribute with the specified AttributeTypes,
+     * the return value is <code>null</code>.
+     * </p>
+     *
+     * @param attributes the AttributeTypes to be removed
+     * @return the removed attributes, if any, as a list; otherwise <code>null</code>
+     */
+    List<EntryAttribute> removeAttributes( AttributeType... attributes );
 
 
     /**

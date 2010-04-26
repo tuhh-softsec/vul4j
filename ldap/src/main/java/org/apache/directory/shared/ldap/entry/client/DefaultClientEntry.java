@@ -248,7 +248,7 @@ public class DefaultClientEntry implements Entry
     {
         if ( StringTools.isEmpty( StringTools.trim( upId ) ) )
         {
-            String message = I18n.err( I18n.ERR_04457 );
+            String message = I18n.err( I18n.ERR_04457_NULL_ATTRIBUTE_ID );
             LOG.error( message );
             throw new IllegalArgumentException( message );
         }
@@ -267,7 +267,7 @@ public class DefaultClientEntry implements Entry
     {
         if ( attributeType == null )
         {
-            String message = I18n.err( I18n.ERR_04460 );
+            String message = I18n.err( I18n.ERR_04460_ATTRIBUTE_TYPE_NULL_NOT_ALLOWED );
             LOG.error( message );
             throw new IllegalArgumentException( message );
         }
@@ -305,7 +305,7 @@ public class DefaultClientEntry implements Entry
     {    
         if ( attributeType == null )
         {
-            String message = I18n.err( I18n.ERR_04460 );
+            String message = I18n.err( I18n.ERR_04460_ATTRIBUTE_TYPE_NULL_NOT_ALLOWED );
             LOG.error( message );
             throw new IllegalArgumentException( message );
         }
@@ -335,7 +335,7 @@ public class DefaultClientEntry implements Entry
     {
         if ( attributeType == null )
         {
-            String message = I18n.err( I18n.ERR_04460 );
+            String message = I18n.err( I18n.ERR_04460_ATTRIBUTE_TYPE_NULL_NOT_ALLOWED );
             LOG.error( message );
             throw new IllegalArgumentException( message );
         }
@@ -398,7 +398,7 @@ public class DefaultClientEntry implements Entry
     {
         if ( attributeType == null )
         {
-            String message = I18n.err( I18n.ERR_04460 );
+            String message = I18n.err( I18n.ERR_04460_ATTRIBUTE_TYPE_NULL_NOT_ALLOWED );
             LOG.error( message );
             throw new IllegalArgumentException( message );
         }
@@ -428,7 +428,7 @@ public class DefaultClientEntry implements Entry
     {
         if ( attributeType == null )
         {
-            String message = I18n.err( I18n.ERR_04460 );
+            String message = I18n.err( I18n.ERR_04460_ATTRIBUTE_TYPE_NULL_NOT_ALLOWED );
             LOG.error( message );
             throw new IllegalArgumentException( message );
         }
@@ -517,7 +517,7 @@ public class DefaultClientEntry implements Entry
     {
         if ( StringTools.isEmpty( upId ) )
         {
-            String message = I18n.err( I18n.ERR_04460 );
+            String message = I18n.err( I18n.ERR_04457_NULL_ATTRIBUTE_ID );
             LOG.error( message );
             throw new IllegalArgumentException( message );
         }
@@ -559,7 +559,7 @@ public class DefaultClientEntry implements Entry
     {
         if ( StringTools.isEmpty( upId ) )
         {
-            String message = I18n.err( I18n.ERR_04460 );
+            String message = I18n.err( I18n.ERR_04457_NULL_ATTRIBUTE_ID );
             LOG.error( message );
             throw new IllegalArgumentException( message );
         }
@@ -601,7 +601,7 @@ public class DefaultClientEntry implements Entry
     {
         if ( StringTools.isEmpty( upId ) )
         {
-            String message = I18n.err( I18n.ERR_04460 );
+            String message = I18n.err( I18n.ERR_04457_NULL_ATTRIBUTE_ID );
             LOG.error( message );
             throw new IllegalArgumentException( message );
         }
@@ -1062,7 +1062,7 @@ public class DefaultClientEntry implements Entry
     {
         if ( StringTools.isEmpty( upId ) )
         {
-            String message = I18n.err( I18n.ERR_04460 );
+            String message = I18n.err( I18n.ERR_04457_NULL_ATTRIBUTE_ID );
             LOG.error( message );
             throw new IllegalArgumentException( message );
         }
@@ -1101,7 +1101,7 @@ public class DefaultClientEntry implements Entry
     {
         if ( StringTools.isEmpty( upId ) )
         {
-            String message = I18n.err( I18n.ERR_04460 );
+            String message = I18n.err( I18n.ERR_04457_NULL_ATTRIBUTE_ID );
             LOG.error( message );
             throw new IllegalArgumentException( message );
         }
@@ -1140,7 +1140,7 @@ public class DefaultClientEntry implements Entry
     {
         if ( StringTools.isEmpty( upId ) )
         {
-            String message = I18n.err( I18n.ERR_04460 );
+            String message = I18n.err( I18n.ERR_04457_NULL_ATTRIBUTE_ID );
             LOG.error( message );
             throw new IllegalArgumentException( message );
         }
@@ -1302,7 +1302,7 @@ public class DefaultClientEntry implements Entry
             }
             catch ( Exception e )
             {
-                String message = I18n.err( I18n.ERR_04460 );
+                String message = I18n.err( I18n.ERR_04477_NO_VALID_AT_FOR_THIS_ID );
                 LOG.error( message );
                 throw new IllegalArgumentException( message );
             }
@@ -1352,7 +1352,7 @@ public class DefaultClientEntry implements Entry
             }
             catch ( Exception e )
             {
-                String message = I18n.err( I18n.ERR_04460 );
+                String message = I18n.err( I18n.ERR_04477_NO_VALID_AT_FOR_THIS_ID );
                 LOG.error( message );
                 throw new IllegalArgumentException( message );
             }
@@ -1395,7 +1395,7 @@ public class DefaultClientEntry implements Entry
             }
             catch ( Exception e )
             {
-                String message = I18n.err( I18n.ERR_04460 );
+                String message = I18n.err( I18n.ERR_04477_NO_VALID_AT_FOR_THIS_ID );
                 LOG.error( message );
                 throw new IllegalArgumentException( message );
             }
@@ -1432,12 +1432,35 @@ public class DefaultClientEntry implements Entry
     {
         List<EntryAttribute> removedAttributes = new ArrayList<EntryAttribute>();
         
-        for ( EntryAttribute attribute:attributes )
+        if ( schemaManager == null )
         {
-            if ( contains( attribute.getId() ) )
+            for ( EntryAttribute attribute:attributes )
             {
-                this.attributes.remove( attribute.getId() );
-                removedAttributes.add( attribute );
+                if ( contains( attribute.getId() ) )
+                {
+                    this.attributes.remove( attribute.getId() );
+                    removedAttributes.add( attribute );
+                }
+            }
+        }
+        else
+        {
+            for ( EntryAttribute attribute:attributes )
+            {
+                AttributeType attributeType = attribute.getAttributeType();
+                
+                if ( attributeType == null )
+                {
+                    String message = I18n.err( I18n.ERR_04460_ATTRIBUTE_TYPE_NULL_NOT_ALLOWED );
+                    LOG.error( message );
+                    throw new IllegalArgumentException( message );
+                }
+                
+                if ( this.attributes.containsKey( attributeType.getOid() ) )
+                {
+                    this.attributes.remove( attributeType.getOid() );
+                    removedAttributes.add( attribute );
+                }
             }
         }
         
@@ -1445,6 +1468,212 @@ public class DefaultClientEntry implements Entry
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
+    public boolean remove( AttributeType attributeType, byte[]... values ) throws LdapException
+    {
+        if ( attributeType == null )
+        {
+            return false;
+        }
+        
+        try
+        {
+            EntryAttribute attribute = attributes.get( attributeType.getOid() );
+            
+            if ( attribute == null )
+            {
+                // Can't remove values from a not existing attribute !
+                return false;
+            }
+            
+            int nbOldValues = attribute.size();
+            
+            // Remove the values
+            attribute.remove( values );
+            
+            if ( attribute.size() == 0 )
+            {
+                // No mare values, remove the attribute
+                attributes.remove( attributeType.getOid() );
+                
+                return true;
+            }
+            
+            if ( nbOldValues != attribute.size() )
+            {
+                // At least one value have been removed, return true.
+                return true;
+            }
+            else
+            {
+                // No values have been removed, return false.
+                return false;
+            }
+        }
+        catch ( IllegalArgumentException iae )
+        {
+            LOG.error( I18n.err( I18n.ERR_04465, attributeType ) );
+            return false;
+        }
+    }
+    
+    
+    /**
+     * {@inheritDoc}
+     */
+    public boolean remove( AttributeType attributeType, String... values ) throws LdapException
+    {
+        if ( attributeType == null )
+        {
+            return false;
+        }
+        
+        try
+        {
+            EntryAttribute attribute = attributes.get( attributeType.getOid() );
+            
+            if ( attribute == null )
+            {
+                // Can't remove values from a not existing attribute !
+                return false;
+            }
+            
+            int nbOldValues = attribute.size();
+            
+            // Remove the values
+            attribute.remove( values );
+            
+            if ( attribute.size() == 0 )
+            {
+                // No mare values, remove the attribute
+                attributes.remove( attributeType.getOid() );
+                
+                return true;
+            }
+            
+            if ( nbOldValues != attribute.size() )
+            {
+                // At least one value have been removed, return true.
+                return true;
+            }
+            else
+            {
+                // No values have been removed, return false.
+                return false;
+            }
+        }
+        catch ( IllegalArgumentException iae )
+        {
+            LOG.error( I18n.err( I18n.ERR_04465, attributeType ) );
+            return false;
+        }
+    }
+    
+    
+    /**
+     * {@inheritDoc}
+     */
+    public boolean remove( AttributeType attributeType, Value<?>... values ) throws LdapException
+    {
+        if ( attributeType == null )
+        {
+            return false;
+        }
+        
+        try
+        {
+            EntryAttribute attribute = attributes.get( attributeType.getOid() );
+            
+            if ( attribute == null )
+            {
+                // Can't remove values from a not existing attribute !
+                return false;
+            }
+            
+            int nbOldValues = attribute.size();
+            
+            // Remove the values
+            attribute.remove( values );
+            
+            if ( attribute.size() == 0 )
+            {
+                // No mare values, remove the attribute
+                attributes.remove( attributeType.getOid() );
+                
+                return true;
+            }
+            
+            if ( nbOldValues != attribute.size() )
+            {
+                // At least one value have been removed, return true.
+                return true;
+            }
+            else
+            {
+                // No values have been removed, return false.
+                return false;
+            }
+        }
+        catch ( IllegalArgumentException iae )
+        {
+            LOG.error( I18n.err( I18n.ERR_04465, attributeType ) );
+            return false;
+        }
+    }
+    
+    
+    /**
+     * <p>
+     * Removes the attribute with the specified AttributeTypes. 
+     * </p>
+     * <p>
+     * The removed attribute are returned by this method. 
+     * </p>
+     * <p>
+     * If there is no attribute with the specified AttributeTypes,
+     * the return value is <code>null</code>.
+     * </p>
+     *
+     * @param attributes the AttributeTypes to be removed
+     * @return the removed attributes, if any, as a list; otherwise <code>null</code>
+     */
+    public List<EntryAttribute> removeAttributes( AttributeType... attributes )
+    {
+        if ( ( attributes == null ) || ( attributes.length == 0 ) || ( schemaManager == null ) )
+        {
+            return null;
+        }
+        
+        List<EntryAttribute> removed = new ArrayList<EntryAttribute>( attributes.length );
+        
+        for ( AttributeType attributeType:attributes )
+        {
+            if ( attributeType == null )
+            {
+                continue;
+            }
+            
+            EntryAttribute attr = this.attributes.remove( attributeType.getOid() );
+            
+            if ( attr != null )
+            {
+                removed.add( attr );
+            }
+        }
+        
+        if ( removed.size() == 0 )
+        {
+            return null;
+        }
+        else
+        {
+            return removed;
+        }
+    }
+    
+    
     /**
      * {@inheritDoc}
      */
@@ -1457,19 +1686,47 @@ public class DefaultClientEntry implements Entry
         
         List<EntryAttribute> removed = new ArrayList<EntryAttribute>( attributes.length );
         
-        for ( String attribute:attributes )
+        if ( schemaManager == null )
         {
-            EntryAttribute attr = get( attribute );
-            
-            if ( attr != null )
+            for ( String attribute:attributes )
             {
-                removed.add( this.attributes.remove( attr.getId() ) );
+                EntryAttribute attr = get( attribute );
+                
+                if ( attr != null )
+                {
+                    removed.add( this.attributes.remove( attr.getId() ) );
+                }
+                else
+                {
+                    String message = I18n.err( I18n.ERR_04137, attribute );
+                    LOG.warn( message );
+                    continue;
+                }
             }
-            else
+        }
+        else
+        {
+            for ( String attribute:attributes )
             {
-                String message = I18n.err( I18n.ERR_04137, attribute );
-                LOG.warn( message );
-                continue;
+                AttributeType attributeType = null;
+                
+                try
+                {
+                    attributeType = schemaManager.lookupAttributeTypeRegistry( attribute );
+                }
+                catch ( LdapException ne )
+                {
+                    String message = "The attribute '" + attribute + "' does not exist in the entry";
+                    LOG.warn( message );
+                    continue;
+                }
+        
+                EntryAttribute attr = this.attributes.remove( attributeType.getOid() );
+                
+                if ( attr != null )
+                {
+                    removed.add( attr );
+                }
             }
         }
         

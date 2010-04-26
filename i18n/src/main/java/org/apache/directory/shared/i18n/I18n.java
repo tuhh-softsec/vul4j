@@ -599,10 +599,10 @@ public class I18n
     public static final String ERR_04454 = "ERR_04454";
     public static final String ERR_04455 = "ERR_04455";
     public static final String ERR_04456 = "ERR_04456";
-    public static final String ERR_04457 = "ERR_04457";
+    public static final String ERR_04457_NULL_ATTRIBUTE_ID = "ERR_04457_NULL_ATTRIBUTE_ID";
     public static final String ERR_04458 = "ERR_04458";
     public static final String ERR_04459 = "ERR_04459";
-    public static final String ERR_04460 = "ERR_04460";
+    public static final String ERR_04460_ATTRIBUTE_TYPE_NULL_NOT_ALLOWED = "ERR_04460_ATTRIBUTE_TYPE_NULL_NOT_ALLOWED";
     public static final String ERR_04461 = "ERR_04461";
     public static final String ERR_04462 = "ERR_04462";
     public static final String ERR_04463 = "ERR_04463";
@@ -619,6 +619,7 @@ public class I18n
     public static final String ERR_04474 = "ERR_04474";
     public static final String ERR_04475 = "ERR_04475";
     public static final String ERR_04476 = "ERR_04476";
+    public static final String ERR_04477_NO_VALID_AT_FOR_THIS_ID = "ERR_04477_NO_VALID_AT_FOR_THIS_ID";
 
 	// ldap-constants
 	public static final String ERR_05001 = "ERR_05001";
