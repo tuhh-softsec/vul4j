@@ -1177,38 +1177,124 @@ public class DefaultClientEntry implements Entry
      */
     public List<EntryAttribute> set( String... upIds )
     {
-        if ( upIds == null )
+        if ( ( upIds == null ) || ( upIds.length == 0 ) )
         {
             String message = I18n.err( I18n.ERR_04135 );
             LOG.error( message );
             throw new IllegalArgumentException( message );
         }
         
-        List<EntryAttribute> returnedClientAttributes = new ArrayList<EntryAttribute>();
+        List<EntryAttribute> removed = new ArrayList<EntryAttribute>();
+        boolean added = false;
         
-        // Now, loop on all the attributeType to add
-        for ( String upId:upIds )
+        if ( schemaManager == null )
         {
-            String id = StringTools.trim( StringTools.toLowerCase( upId ) );
-            
-            if ( id == null )
+            // Now, loop on all the attributeType to add
+            for ( String upId:upIds )
             {
-                String message = I18n.err( I18n.ERR_04136 );
-                LOG.error( message );
-                throw new IllegalArgumentException( message );
-            }
-            
-            if ( attributes.containsKey( id ) )
-            {
-                // Add the removed serverAttribute to the list
-                returnedClientAttributes.add( attributes.remove( id ) );
-            }
+                if ( upId == null )
+                {
+                    String message = I18n.err( I18n.ERR_04135 );
+                    LOG.info( message );
+                    throw new IllegalArgumentException( message );
+                }
+                
+                String id = getId( upId );
 
-            EntryAttribute newAttribute = new DefaultEntryAttribute( upId );
-            attributes.put( id, newAttribute );
+                if ( attributes.containsKey( id ) )
+                {
+                    // Add the removed serverAttribute to the list
+                    removed.add( attributes.remove( id ) );
+                }
+    
+                EntryAttribute newAttribute = new DefaultEntryAttribute( upId );
+                attributes.put( id, newAttribute );
+                added = true;
+            }
+        }
+        else
+        {
+            for ( String upId:upIds )
+            {
+                if ( upId == null )
+                {
+                    String message = I18n.err( I18n.ERR_04135 );
+                    LOG.info( message );
+                    throw new IllegalArgumentException( message );
+                }
+                
+                // Search for the corresponding AttributeType, based on the upID 
+                AttributeType attributeType = null;
+                
+                try
+                {
+                    attributeType = getAttributeType( upId );
+                }
+                catch ( LdapException ne )
+                {
+                    LOG.warn( "Trying to add a bad attribute type '{}', error : ", upId, ne.getLocalizedMessage() );
+                    continue;
+                }
+                catch ( IllegalArgumentException iae )
+                {
+                    LOG.warn( "Trying to add a bad attribute type '{}', error : ", upId, iae.getLocalizedMessage() );
+                    continue;
+                }
+                
+                String oid = attributeType.getOid();
+                
+                if ( attributes.containsKey( oid ) )
+                {
+                    removed.add( attributes.get( oid ) );
+                }
+                
+                attributes.put( oid, new DefaultEntryAttribute( upId, attributeType ) );
+                added = true;
+            }
         }
         
-        return returnedClientAttributes;
+        if ( ( !added ) || ( removed.size() == 0 ) ) 
+        {
+            return null;
+        }
+        
+        return removed;
+    }
+
+    
+    /**
+     * {@inheritDoc}     
+     **/
+    public List<EntryAttribute> set( AttributeType... attributeTypes )
+    {
+        List<EntryAttribute> removed = new ArrayList<EntryAttribute>();
+        
+        // Now, loop on all the attributeType to add
+        for ( AttributeType attributeType:attributeTypes )
+        {
+            if ( attributeType == null )
+            {
+                String message = I18n.err( I18n.ERR_04467 );
+                LOG.error( message );
+                continue;
+            }
+            
+            EntryAttribute attribute = attributes.put( attributeType.getOid(), new DefaultEntryAttribute( attributeType ) );
+
+            if ( attribute != null )
+            {
+                removed.add( attribute );
+            }
+        }
+        
+        if ( removed.size() == 0 )
+        {
+            return null;
+        }
+        else
+        {
+            return removed;
+        }
     }
 
     
@@ -2220,6 +2306,43 @@ public class DefaultClientEntry implements Entry
         {
             return contains( "objectclass", objectClass );
         }
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean hasObjectClass( EntryAttribute objectClass )
+    {
+        if ( objectClass == null )
+        {
+            return false;
+        }
+        
+        // We have to check that we are checking the ObjectClass attributeType
+        if ( !objectClass.getAttributeType().equals( OBJECT_CLASS_AT ) )
+        {
+            return false;
+        }
+        
+        EntryAttribute attribute = attributes.get( OBJECT_CLASS_AT.getOid() );
+        
+        if ( attribute == null )
+        {
+            // The entry does not have an ObjectClass attribute
+            return false;
+        }
+        
+        for ( Value<?> value:objectClass )
+        {
+            // Loop on all the values, and check if they are present
+            if ( !attribute.contains( value.getString() ) )
+            {
+                return false;
+            }
+        }
+        
+        return true;
     }
 
 

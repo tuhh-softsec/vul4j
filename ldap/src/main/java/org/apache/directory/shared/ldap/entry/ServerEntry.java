@@ -35,41 +35,7 @@ import org.apache.directory.shared.ldap.schema.AttributeType;
 public interface ServerEntry extends Entry
 {
     /**
-     * Tells if an entry has a specific ObjectClass Attribute
-     * 
-     * @param objectClass The ObjectClass we want to check
-     * @return <code>true</code> if the ObjectClass value is present 
-     * in the ObjectClass attribute
-     */
-    boolean hasObjectClass( EntryAttribute objectClass );
-
-    
-    /**
-     * <p>
-     * Put some new attributes using the attributeTypes. 
-     * No value is inserted. 
-     * </p>
-     * <p>
-     * If an existing Attribute is found, it will be replaced by an
-     * empty attribute, and returned to the caller.
-     * </p>
-     * 
-     * @param attributeTypes The AttributeTypes to add.
-     * @return A list of replaced Attributes, of <code>null</code> if no attribute are removed.
-     */
-    List<EntryAttribute> set( AttributeType... attributeTypes );
-
-
-    /**
      * A clone method to produce a clone of the current object
      */
     Entry clone();
-    
-    
-    /**
-     * Convert the ServerEntry to a ClientEntry
-     *
-     * @return An instance of ClientEntry
-     */
-    Entry toClientEntry() throws LdapException;
 }

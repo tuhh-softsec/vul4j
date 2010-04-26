@@ -776,7 +776,7 @@ public class DefaultClientEntryTest
         assertTrue( entry.hasObjectClass( "top" ) );
         assertTrue( entry.hasObjectClass( "person" ) );
         assertFalse( entry.hasObjectClass( "inetorgperson" ) );
-        assertFalse( entry.hasObjectClass( null ) );
+        assertFalse( entry.hasObjectClass( (String)null ) );
         assertFalse( entry.hasObjectClass( "" ) );
     }
 
