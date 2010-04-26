@@ -646,18 +646,7 @@ public class DefaultClientEntry implements Entry
     
 
     /**
-     * <p>
-     * Checks if an entry contains a list of attributes.
-     * </p>
-     * <p>
-     * If the list is null or empty, this method will return <code>true</code>
-     * if the entry has no attribute, <code>false</code> otherwise.
-     * </p>
-     *
-     * @param attributes The Attributes to look for
-     * @return <code>true</code> if all the attributes are found within 
-     * the entry, <code>false</code> if at least one of them is not present.
-     * @throws LdapException If the attribute does not exist
+     * {@inheritDoc}
      */
     public boolean contains( EntryAttribute... attributes ) throws LdapException
     {
@@ -679,31 +668,113 @@ public class DefaultClientEntry implements Entry
     
     
     /**
-     * Checks if an entry contains a specific attribute
-     *
-     * @param attributes The Attributes to look for
-     * @return <code>true</code> if the attributes are found within the entry
-     * @throws LdapException If the attribute does not exist
+     * {@inheritDoc}
      */
     public boolean contains( String upId ) throws LdapException
     {
+        if ( StringTools.isEmpty( upId ) )
+        {
+            return false;
+        }
+        
         String id = getId( upId );
         
         return attributes.containsKey( id );
     }
 
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean contains( AttributeType attributeType, byte[]... values )
+    {
+        if ( attributeType == null )
+        {
+            return false;
+        }
+        
+        EntryAttribute attribute = attributes.get( attributeType.getOid() );
+        
+        if ( attribute != null )
+        {
+            return attribute.contains( values );
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean contains( AttributeType attributeType, String... values )
+    {
+        if ( attributeType == null )
+        {
+            return false;
+        }
+        
+        EntryAttribute attribute = attributes.get( attributeType.getOid() );
+        
+        if ( attribute != null )
+        {
+            return attribute.contains( values );
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean contains( AttributeType attributeType, Value<?>... values )
+    {
+        if ( attributeType == null )
+        {
+            return false;
+        }
+        
+        EntryAttribute attribute = attributes.get( attributeType.getOid() );
+        
+        if ( attribute != null )
+        {
+            return attribute.contains( values );
+        }
+        else
+        {
+            return false;
+        }
+    }
+    
     
     /**
-     * Checks if an entry contains an attribute with some binary values.
-     *
-     * @param id The Attribute we are looking for.
-     * @param values The searched values.
-     * @return <code>true</code> if all the values are found within the attribute,
-     * false if at least one value is not present or if the ID is not valid. 
+     * {@inheritDoc}
      */
     public boolean contains( String upId, byte[]... values )
     {
+        if ( StringTools.isEmpty( upId ) )
+        {
+            return false;
+        }
+        
         String id = getId( upId );
+        
+        if ( schemaManager != null )
+        {
+            try
+            {
+                return contains( schemaManager.lookupAttributeTypeRegistry( id ), values );
+            }
+            catch ( LdapException le )
+            {
+                return false;
+            }
+        }
         
         EntryAttribute attribute = attributes.get( id );
         
@@ -717,16 +788,29 @@ public class DefaultClientEntry implements Entry
     
     
     /**
-     * Checks if an entry contains an attribute with some String values.
-     *
-     * @param id The Attribute we are looking for.
-     * @param values The searched values.
-     * @return <code>true</code> if all the values are found within the attribute,
-     * false if at least one value is not present or if the ID is not valid. 
+     * {@inheritDoc}
      */
     public boolean contains( String upId, String... values )
     {
+        if ( StringTools.isEmpty( upId ) )
+        {
+            return false;
+        }
+        
         String id = getId( upId );
+
+        if ( schemaManager != null )
+        {
+            try
+            {
+                return contains( schemaManager.lookupAttributeTypeRegistry( id ), values );
+            }
+            catch ( LdapException le )
+            {
+                return false;
+            }
+        }
+        
         
         EntryAttribute attribute = attributes.get( id );
         
@@ -740,16 +824,29 @@ public class DefaultClientEntry implements Entry
     
     
     /**
-     * Checks if an entry contains an attribute with some values.
-     *
-     * @param id The Attribute we are looking for.
-     * @param values The searched values.
-     * @return <code>true</code> if all the values are found within the attribute,
-     * false if at least one value is not present or if the ID is not valid. 
+     * {@inheritDoc}
      */
     public boolean contains( String upId, Value<?>... values )
     {
+        if ( StringTools.isEmpty( upId ) )
+        {
+            return false;
+        }
+        
         String id = getId( upId );
+
+        if ( schemaManager != null )
+        {
+            try
+            {
+                return contains( schemaManager.lookupAttributeTypeRegistry( id ), values );
+            }
+            catch ( LdapException le )
+            {
+                return false;
+            }
+        }
+        
         
         EntryAttribute attribute = attributes.get( id );
         
@@ -763,10 +860,7 @@ public class DefaultClientEntry implements Entry
     
     
     /**
-     * Checks if an entry contains some specific attributes.
-     *
-     * @param attributes The Attributes to look for.
-     * @return <code>true</code> if the attributes are all found within the entry.
+     * {@inheritDoc}
      */
     public boolean containsAttribute( String... attributes )
     {

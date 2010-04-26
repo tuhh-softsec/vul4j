@@ -32,47 +32,8 @@ import org.apache.directory.shared.ldap.schema.AttributeType;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public interface ServerEntry extends Entry, Cloneable
+public interface ServerEntry extends Entry
 {
-    // -----------------------------------------------------------------------
-    // Container (get/put/remove) Methods
-    // -----------------------------------------------------------------------
-    /**
-     * Checks if an entry contains an attribute with some given binary values.
-     *
-     * @param attributeType The Attribute we are looking for.
-     * @param values The searched values.
-     * @return <code>true</code> if all the values are found within the attribute,
-     * <code>false</code> otherwise, or if the attributes does not exist.
-     * @throws LdapException If the attribute does not exists
-     */
-    boolean contains( AttributeType attributeType, byte[]... values );
-
-
-    /**
-     * Checks if an entry contains an attribute with some given String values.
-     *
-     * @param attributeType The Attribute we are looking for.
-     * @param values The searched values.
-     * @return <code>true</code> if all the values are found within the attribute,
-     * <code>false</code> otherwise, or if the attributes does not exist.
-     * @throws LdapException If the attribute does not exists
-     */
-    boolean contains( AttributeType attributeType, String... values );
-
-
-    /**
-     * Checks if an entry contains an attribute with some given binary values.
-     *
-     * @param attributeType The Attribute we are looking for.
-     * @param values The searched values.
-     * @return <code>true</code> if all the values are found within the attribute,
-     * <code>false</code> otherwise, or if the attributes does not exist.
-     * @throws LdapException If the attribute does not exists
-     */
-    boolean contains( AttributeType attributeType, Value<?>... values );
-
-
     /**
      * Checks if an entry contains a specific AttributeType.
      *
