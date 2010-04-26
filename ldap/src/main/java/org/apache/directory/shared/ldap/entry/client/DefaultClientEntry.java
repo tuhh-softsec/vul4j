@@ -515,6 +515,13 @@ public class DefaultClientEntry implements Entry
      */
     public void add( String upId, byte[]... values ) throws LdapException
     {
+        if ( StringTools.isEmpty( upId ) )
+        {
+            String message = I18n.err( I18n.ERR_04460 );
+            LOG.error( message );
+            throw new IllegalArgumentException( message );
+        }
+        
         // First, transform the upID to a valid ID
         String id = getId( upId );
         
@@ -550,6 +557,13 @@ public class DefaultClientEntry implements Entry
      */
     public void add( String upId, String... values ) throws LdapException
     {
+        if ( StringTools.isEmpty( upId ) )
+        {
+            String message = I18n.err( I18n.ERR_04460 );
+            LOG.error( message );
+            throw new IllegalArgumentException( message );
+        }
+        
         // First, transform the upID to a valid ID
         String id = getId( upId );
 
@@ -585,6 +599,13 @@ public class DefaultClientEntry implements Entry
      */
     public void add( String upId, Value<?>... values ) throws LdapException
     {
+        if ( StringTools.isEmpty( upId ) )
+        {
+            String message = I18n.err( I18n.ERR_04460 );
+            LOG.error( message );
+            throw new IllegalArgumentException( message );
+        }
+        
         // First, transform the upID to a valid ID
         String id = getId( upId );
 
@@ -963,17 +984,7 @@ public class DefaultClientEntry implements Entry
     
     
     /**
-     * <p>
-     * Returns the attribute with the specified alias. The return value
-     * is <code>null</code> if no match is found.  
-     * </p>
-     * <p>An Attribute with an id different from the supplied alias may 
-     * be returned: for example a call with 'cn' may in some implementations 
-     * return an Attribute whose getId() field returns 'commonName'.
-     * </p>
-     *
-     * @param alias an aliased name of the attribute identifier
-     * @return the attribute associated with the alias
+     * {@inheritDoc}
      */
     public EntryAttribute get( String alias )
     {
@@ -1045,95 +1056,124 @@ public class DefaultClientEntry implements Entry
     
     
     /**
-     * <p>
-     * Put an attribute (represented by its ID and some binary values) into an entry. 
-     * </p>
-     * <p> 
-     * If the attribute already exists, the previous attribute will be 
-     * replaced and returned.
-     * </p>
-     *
-     * @param upId The attribute ID
-     * @param values The list of binary values to put. It can be empty.
-     * @return The replaced attribute
+     * {@inheritDoc}
      */
     public EntryAttribute put( String upId, byte[]... values )
     {
-        // Get the normalized form of the ID
-        String id = getId( upId );
+        if ( StringTools.isEmpty( upId ) )
+        {
+            String message = I18n.err( I18n.ERR_04460 );
+            LOG.error( message );
+            throw new IllegalArgumentException( message );
+        }
         
-        // Create a new attribute
-        EntryAttribute clientAttribute = new DefaultEntryAttribute( upId, values );
+        if ( schemaManager == null )
+        {
+            // Get the normalized form of the ID
+            String id = getId( upId );
 
-        // Replace the previous one, and return it back
-        return attributes.put( id, clientAttribute );
+            // Create a new attribute
+            EntryAttribute clientAttribute = new DefaultEntryAttribute( upId, values );
+    
+            // Replace the previous one, and return it back
+            return attributes.put( id, clientAttribute );
+        }
+        else
+        {
+            try
+            {
+                return put( upId, getAttributeType( upId ), values );
+            }
+            catch ( LdapException ne )
+            {
+                String message = I18n.err( I18n.ERR_04464, upId, ne.getLocalizedMessage() );
+                LOG.error( message );
+                throw new IllegalArgumentException( message );
+            }
+        }
     }
 
 
     /**
-     * <p>
-     * Put an attribute (represented by its ID and some String values) into an entry. 
-     * </p>
-     * <p> 
-     * If the attribute already exists, the previous attribute will be 
-     * replaced and returned.
-     * </p>
-     *
-     * @param upId The attribute ID
-     * @param values The list of String values to put. It can be empty.
-     * @return The replaced attribute
+     * {@inheritDoc}
      */
     public EntryAttribute put( String upId, String... values )
     {
-        // Get the normalized form of the ID
-        String id = getId( upId );
+        if ( StringTools.isEmpty( upId ) )
+        {
+            String message = I18n.err( I18n.ERR_04460 );
+            LOG.error( message );
+            throw new IllegalArgumentException( message );
+        }
         
-        // Create a new attribute
-        EntryAttribute clientAttribute = new DefaultEntryAttribute( upId, values );
-
-        // Replace the previous one, and return it back
-        return attributes.put( id, clientAttribute );
+        if ( schemaManager == null )
+        {
+            // Get the normalized form of the ID
+            String id = getId( upId );
+            
+            // Create a new attribute
+            EntryAttribute clientAttribute = new DefaultEntryAttribute( upId, values );
+    
+            // Replace the previous one, and return it back
+            return attributes.put( id, clientAttribute );
+        }
+        else
+        {
+            try
+            {
+                return put( upId, getAttributeType( upId ), values );
+            }
+            catch ( LdapException ne )
+            {
+                String message = I18n.err( I18n.ERR_04464, upId, ne.getLocalizedMessage() );
+                LOG.error( message );
+                throw new IllegalArgumentException( message );
+            }
+        }
     }
 
 
     /**
-     * <p>
-     * Put an attribute (represented by its ID and some values) into an entry. 
-     * </p>
-     * <p> 
-     * If the attribute already exists, the previous attribute will be 
-     * replaced and returned.
-     * </p>
-     *
-     * @param upId The attribute ID
-     * @param values The list of values to put. It can be empty.
-     * @return The replaced attribute
+     * {@inheritDoc}
      */
     public EntryAttribute put( String upId, Value<?>... values )
     {
-        // Get the normalized form of the ID
-        String id = getId( upId );
+        if ( StringTools.isEmpty( upId ) )
+        {
+            String message = I18n.err( I18n.ERR_04460 );
+            LOG.error( message );
+            throw new IllegalArgumentException( message );
+        }
         
-        // Create a new attribute
-        EntryAttribute clientAttribute = new DefaultEntryAttribute( upId, values );
-
-        // Replace the previous one, and return it back
-        return attributes.put( id, clientAttribute );
+        if ( schemaManager == null )
+        {
+            // Get the normalized form of the ID
+            String id = getId( upId );
+            
+            // Create a new attribute
+            EntryAttribute clientAttribute = new DefaultEntryAttribute( upId, values );
+    
+            // Replace the previous one, and return it back
+            return attributes.put( id, clientAttribute );
+        }
+        else
+        {
+            try
+            {
+                return put( upId, getAttributeType( upId ), values );
+            }
+            catch ( LdapException ne )
+            {
+                String message = I18n.err( I18n.ERR_04464, upId, ne.getLocalizedMessage() );
+                LOG.error( message );
+                throw new IllegalArgumentException( message );
+            }
+        }
     }
 
 
     /**
-     * <p>
-     * Put some new ClientAttribute using the User Provided ID. 
-     * No value is inserted. 
-     * </p>
-     * <p>
-     * If an existing Attribute is found, it will be replaced by an
-     * empty attribute, and returned to the caller.
-     * </p>
-     * 
-     * @param upIds The user provided IDs of the AttributeTypes to add.
-     * @return A list of replaced Attributes.
+     * {@inheritDoc}
      */
     public List<EntryAttribute> set( String... upIds )
     {
@@ -1173,38 +1213,48 @@ public class DefaultClientEntry implements Entry
 
     
     /**
-     * <p>
-     * Places attributes in the attribute collection. 
-     * </p>
-     * <p>If there is already an attribute with the same ID as any of the 
-     * new attributes, the old ones are removed from the collection and 
-     * are returned by this method. If there was no attribute with the 
-     * same ID the return value is <code>null</code>.
-     *</p>
-     *
-     * @param attributes the attributes to be put
-     * @return the old attributes with the same OID, if exist; otherwise
-     *         <code>null</code>
-     * @exception LdapException if the operation fails
+     * {@inheritDoc}
      */
     public List<EntryAttribute> put( EntryAttribute... attributes ) throws LdapException
     {
         // First, get the existing attributes
         List<EntryAttribute> previous = new ArrayList<EntryAttribute>();
         
-        for ( EntryAttribute attribute:attributes )
+        if ( schemaManager == null )
         {
-            String id = attribute.getId();
-            
-            if ( contains( id ) )
+            for ( EntryAttribute attribute:attributes )
             {
-                // Store the attribute and remove it from the list
-                previous.add( get( id ) );
-                this.attributes.remove( id );
+                String id = attribute.getId();
+                
+                if ( contains( id ) )
+                {
+                    // Store the attribute and remove it from the list
+                    previous.add( get( id ) );
+                    this.attributes.remove( id );
+                }
+                
+                // add the new one
+                this.attributes.put( id, (EntryAttribute)attribute );            
             }
-            
-            // add the new one
-            this.attributes.put( id, (EntryAttribute)attribute );            
+        }
+        else
+        {
+            for ( EntryAttribute attribute:attributes )
+            {
+                if ( attribute == null )
+                {
+                    String message = I18n.err( I18n.ERR_04462 );
+                    LOG.error( message );
+                    throw new IllegalArgumentException( message );
+                }
+                
+                EntryAttribute removed = this.attributes.put( attribute.getAttributeType().getOid(), attribute );
+                
+                if ( removed != null )
+                {
+                    previous.add( removed );
+                }
+            }
         }
         
         // return the previous attributes
