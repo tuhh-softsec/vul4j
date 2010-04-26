@@ -241,6 +241,22 @@ public class DefaultClientEntry implements Entry
     }
     
     
+    /**
+     * Returns the attributeType from an Attribute ID.
+     */
+    protected AttributeType getAttributeType( String upId ) throws LdapException
+    {
+        if ( StringTools.isEmpty( StringTools.trim( upId ) ) )
+        {
+            String message = I18n.err( I18n.ERR_04457 );
+            LOG.error( message );
+            throw new IllegalArgumentException( message );
+        }
+        
+        return schemaManager.lookupAttributeTypeRegistry( upId );
+    }
+
+    
     //-------------------------------------------------------------------------
     // Entry methods
     //-------------------------------------------------------------------------
@@ -1196,6 +1212,172 @@ public class DefaultClientEntry implements Entry
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
+    public EntryAttribute put( AttributeType attributeType, byte[]... values ) throws LdapException
+    {
+        return put( null, attributeType, values );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public EntryAttribute put( AttributeType attributeType, String... values ) throws LdapException
+    {
+        return put( null, attributeType, values );
+    }
+
+    
+    /**
+     * {@inheritDoc}
+     */
+    public EntryAttribute put( AttributeType attributeType, Value<?>... values ) throws LdapException
+    {
+        return put( null, attributeType, values );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public EntryAttribute put( String upId, AttributeType attributeType, byte[]... values ) throws LdapException
+    {
+        if ( attributeType == null )
+        {
+            try
+            {
+                attributeType = getAttributeType( upId );
+            }
+            catch ( Exception e )
+            {
+                String message = I18n.err( I18n.ERR_04460 );
+                LOG.error( message );
+                throw new IllegalArgumentException( message );
+            }
+        }
+        else
+        {
+            if ( !StringTools.isEmpty( upId ) )
+            {
+                AttributeType tempAT = getAttributeType( upId );
+            
+                if ( !tempAT.equals( attributeType ) )
+                {
+                    String message = I18n.err( I18n.ERR_04463, upId, attributeType );
+                    LOG.error( message );
+                    throw new IllegalArgumentException( message );
+                }
+            }
+            else
+            {
+                upId = getUpId( upId, attributeType );
+            }
+        }
+        
+        if ( attributeType.equals( OBJECT_CLASS_AT ) )
+        {
+            String message = I18n.err( I18n.ERR_04461 );
+            LOG.error( message );
+            throw new UnsupportedOperationException( message );
+        }
+
+        EntryAttribute attribute = new DefaultEntryAttribute( upId, attributeType, values );
+        
+        return attributes.put( attributeType.getOid(), attribute );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public EntryAttribute put( String upId, AttributeType attributeType, String... values ) throws LdapException
+    {
+        if ( attributeType == null )
+        {
+            try
+            {
+                attributeType = getAttributeType( upId );
+            }
+            catch ( Exception e )
+            {
+                String message = I18n.err( I18n.ERR_04460 );
+                LOG.error( message );
+                throw new IllegalArgumentException( message );
+            }
+        }
+        else
+        {
+            if ( !StringTools.isEmpty( upId ) )
+            {
+                AttributeType tempAT = getAttributeType( upId );
+            
+                if ( !tempAT.equals( attributeType ) )
+                {
+                    String message = I18n.err( I18n.ERR_04463, upId, attributeType );
+                    LOG.error( message );
+                    throw new IllegalArgumentException( message );
+                }
+            }
+            else
+            {
+                upId = getUpId( upId, attributeType );
+            }
+        }
+        
+        EntryAttribute attribute = new DefaultEntryAttribute( upId, attributeType, values );
+        
+        return attributes.put( attributeType.getOid(), attribute );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public EntryAttribute put( String upId, AttributeType attributeType, Value<?>... values ) throws LdapException
+    {
+        if ( attributeType == null )
+        {
+            try
+            {
+                attributeType = getAttributeType( upId );
+            }
+            catch ( Exception e )
+            {
+                String message = I18n.err( I18n.ERR_04460 );
+                LOG.error( message );
+                throw new IllegalArgumentException( message );
+            }
+        }
+        else
+        {
+            if ( !StringTools.isEmpty( upId ) )
+            {
+                AttributeType tempAT = getAttributeType( upId );
+            
+                if ( !tempAT.equals( attributeType ) )
+                {
+                    String message = I18n.err( I18n.ERR_04463, upId, attributeType );
+                    LOG.error( message );
+                    throw new IllegalArgumentException( message );
+                }
+            }
+            else
+            {
+                upId = getUpId( upId, attributeType );
+            }
+        }
+        
+        EntryAttribute attribute = new DefaultEntryAttribute( upId, attributeType, values );
+        
+        return attributes.put( attributeType.getOid(), attribute );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
     public List<EntryAttribute> remove( EntryAttribute... attributes ) throws LdapException
     {
         List<EntryAttribute> removedAttributes = new ArrayList<EntryAttribute>();
@@ -1214,19 +1396,7 @@ public class DefaultClientEntry implements Entry
 
 
     /**
-     * <p>
-     * Removes the attribute with the specified alias. 
-     * </p>
-     * <p>
-     * The removed attribute are returned by this method. 
-     * </p>
-     * <p>
-     * If there is no attribute with the specified alias,
-     * the return value is <code>null</code>.
-     * </p>
-     *
-     * @param attributes an aliased name of the attribute to be removed
-     * @return the removed attributes, if any, as a list; otherwise <code>null</code>
+     * {@inheritDoc}
      */
     public List<EntryAttribute> removeAttributes( String... attributes )
     {
