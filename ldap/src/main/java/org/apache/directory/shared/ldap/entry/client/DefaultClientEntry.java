@@ -650,22 +650,42 @@ public class DefaultClientEntry implements Entry
      */
     public boolean contains( EntryAttribute... attributes ) throws LdapException
     {
-        for ( EntryAttribute attribute:attributes )
+        if ( schemaManager == null )
         {
-            if ( attribute == null )
+            for ( EntryAttribute attribute:attributes )
             {
-                return this.attributes.size() == 0;
+                if ( attribute == null )
+                {
+                    return this.attributes.size() == 0;
+                }
+                
+                if ( !this.attributes.containsKey( attribute.getId() ) )
+                {
+                    return false;
+                }
             }
-            
-            if ( !this.attributes.containsKey( attribute.getId() ) )
+        }
+        else
+        {
+            for ( EntryAttribute entryAttribute:attributes )
             {
-                return false;
+                if ( entryAttribute == null )
+                {
+                    return this.attributes.size() == 0;
+                }
+                
+                AttributeType attributeType = entryAttribute.getAttributeType();
+                
+                if ( ( entryAttribute == null ) || !this.attributes.containsKey( attributeType.getOid() ) )
+                {
+                    return false;
+                }
             }
         }
         
         return true;
     }
-    
+
     
     /**
      * {@inheritDoc}
@@ -679,10 +699,77 @@ public class DefaultClientEntry implements Entry
         
         String id = getId( upId );
         
+        if ( schemaManager != null )
+        {
+            try
+            {
+                return containsAttribute( schemaManager.lookupAttributeTypeRegistry( id ) );
+            }
+            catch ( LdapException le )
+            {
+                return false;
+            }
+        }
+        
         return attributes.containsKey( id );
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
+    public boolean containsAttribute( String... attributes )
+    {
+        if ( schemaManager == null )
+        {
+            for ( String attribute:attributes )
+            {
+                String id = getId( attribute );
+        
+                if ( !this.attributes.containsKey( id ) )
+                {
+                    return false;
+                }
+            }
+            
+            return true;
+        }
+        else
+        {
+            for ( String attribute:attributes )
+            {
+                try
+                {
+                    if ( !containsAttribute( schemaManager.lookupAttributeTypeRegistry( attribute ) ) )
+                    {
+                        return false;
+                    }
+                }
+                catch ( LdapException ne )
+                {
+                    return false;
+                }
+            }
+        
+            return true;
+        }
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean containsAttribute( AttributeType attributeType )
+    {
+        if ( attributeType == null )
+        {
+            return false;
+        }
+        
+        return attributes.containsKey( attributeType.getOid() );
+    }
+
+    
     /**
      * {@inheritDoc}
      */
@@ -858,25 +945,6 @@ public class DefaultClientEntry implements Entry
         return attribute.contains( values );
     }
     
-    
-    /**
-     * {@inheritDoc}
-     */
-    public boolean containsAttribute( String... attributes )
-    {
-        for ( String attribute:attributes )
-        {
-            String id = getId( attribute );
-    
-            if ( !this.attributes.containsKey( id ) )
-            {
-                return false;
-            }
-        }
-        
-        return true;
-    }
-
     
     /**
      * <p>
@@ -1545,7 +1613,25 @@ public class DefaultClientEntry implements Entry
             // Read each attribute
             EntryAttribute attribute = (DefaultEntryAttribute)in.readObject();
             
-            attributes.put( attribute.getId(), attribute );
+            if ( schemaManager != null )
+            {
+                try
+                {
+                    AttributeType attributeType = schemaManager.lookupAttributeTypeRegistry( attribute.getId() );
+
+                    attributes.put( attributeType.getOid(), attribute );
+                }
+                catch (LdapException le  )
+                {
+                    String message = le.getLocalizedMessage();
+                    LOG.error( message );
+                    throw new IOException( message );
+                }
+            }
+            else
+            {
+                attributes.put( attribute.getId(), attribute );
+            }
         }
     }
     

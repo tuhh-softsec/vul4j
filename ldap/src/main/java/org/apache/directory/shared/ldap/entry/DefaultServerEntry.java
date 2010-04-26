@@ -418,78 +418,6 @@ public final class DefaultServerEntry extends DefaultClientEntry implements Serv
     // API
     //-------------------------------------------------------------------------
     /**
-     * <p>
-     * Checks if an entry contains a list of attributes.
-     * </p>
-     * <p>
-     * If the list is null or empty, this method will return <code>true</code>
-     * if the entry has no attribute, <code>false</code> otherwise.
-     * </p>
-     *
-     * @param attributes The Attributes to look for
-     * @return <code>true</code> if all the attributes are found within 
-     * the entry, <code>false</code> if at least one of them is not present.
-     * @throws LdapException If the attribute does not exist
-     */
-    public boolean contains( EntryAttribute... attributes ) throws LdapException
-    {
-        for ( EntryAttribute entryAttribute:attributes )
-        {
-            if ( entryAttribute == null )
-            {
-                return this.attributes.size() == 0;
-            }
-            
-            if ( !this.attributes.containsKey( ((EntryAttribute)entryAttribute).getAttributeType().getOid() ) )
-            {
-                return false;
-            }
-        }
-        
-        return true;
-    }
-
-
-    /**
-     * Checks if an entry contains a specific AttributeType.
-     *
-     * @param attributeType The AttributeType to look for.
-     * @return <code>true</code> if the attribute is found within the entry.
-     */
-    public boolean containsAttribute( AttributeType attributeType )
-    {
-        return attributes.containsKey( attributeType.getOid() );
-    }
-
-    
-    /**
-     * Checks if an entry contains some specific attributes.
-     *
-     * @param attributes The Attributes to look for.
-     * @return <code>true</code> if the attributes are all found within the entry.
-     */
-    public boolean containsAttribute( String... attributes )
-    {
-        for ( String attribute:attributes )
-        {
-            try
-            {
-                if ( !this.attributes.containsKey( getAttributeType( attribute ).getOid() ) )
-                {
-                    return false;
-                }
-            }
-            catch ( LdapException ne )
-            {
-                return false;
-            }
-        }
-        
-        return true;
-    }
-
-
-    /**
      * Tells if an entry has a specific ObjectClass Attribute
      * 
      * @param objectClass The ObjectClass we want to check
@@ -1559,18 +1487,6 @@ public final class DefaultServerEntry extends DefaultClientEntry implements Serv
     
 
     /**
-     * @see java.io.Externalizable#writeExternal(ObjectOutput)
-     * 
-     * We can't use this method for a ServerEntry, as we have to feed the entry
-     * with an registries reference
-     */
-    public void writeExternal( ObjectOutput out ) throws IOException
-    {
-        throw new IllegalStateException( I18n.err( I18n.ERR_04469 ) );
-    }
-    
-    
-    /**
      * Serialize a server entry.
      * 
      * The structure is the following :
@@ -1622,18 +1538,6 @@ public final class DefaultServerEntry extends DefaultClientEntry implements Serv
         }
     }
 
-    
-    /**
-     * @see java.io.Externalizable#readExternal(ObjectInput)
-     * 
-     * We can't use this method for a ServerEntry, as we have to feed the entry
-     * with an registries reference
-     */
-    public void readExternal( ObjectInput in ) throws IOException, ClassNotFoundException
-    {
-        throw new IllegalStateException( I18n.err( I18n.ERR_04468 ) );
-    }
-    
     
     /**
      * Deserialize a server entry. 

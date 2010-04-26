@@ -35,15 +35,6 @@ import org.apache.directory.shared.ldap.schema.AttributeType;
 public interface ServerEntry extends Entry
 {
     /**
-     * Checks if an entry contains a specific AttributeType.
-     *
-     * @param attributeType The AttributeType to look for.
-     * @return <code>true</code> if the attribute is found within the entry.
-     */
-    boolean containsAttribute( AttributeType attributeType );
-
-    
-    /**
      * Tells if an entry has a specific ObjectClass Attribute
      * 
      * @param objectClass The ObjectClass we want to check
