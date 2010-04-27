@@ -60,6 +60,9 @@ public abstract class AbstractValue<T> implements Value<T>
     /** A flag set if the normalized data is different from the wrapped data */
     protected transient boolean same;
     
+    /** The computed hashcode. We don't want to compute it each time the hashcode() method is called */
+    protected volatile int h;
+
     /**
      * {@inheritDoc}
      */
@@ -144,6 +147,9 @@ public abstract class AbstractValue<T> implements Value<T>
             LOG.info( message );
             normalized = false;
         }
+        
+        h=0;
+        hashCode();
     }
 
 
@@ -345,6 +351,8 @@ public abstract class AbstractValue<T> implements Value<T>
     {
         normalized = true;
         normalizedValue = wrappedValue;
+        h = 0;
+        hashCode();
     }
 
 

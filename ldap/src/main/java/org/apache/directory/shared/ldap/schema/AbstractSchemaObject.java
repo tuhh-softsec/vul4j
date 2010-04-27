@@ -109,7 +109,7 @@ public abstract class AbstractSchemaObject implements SchemaObject
     /** A locked to avoid modifications when set to true */
     protected volatile boolean locked;
     
-    /** The hashcoe for this schemaObject */
+    /** The hashcode for this schemaObject */
     private int h;
 
 

@@ -51,8 +51,7 @@ public class StringValue extends AbstractValue<String>
     private static final long serialVersionUID = 2L;
     
     /** logger for reporting errors that might not be handled properly upstream */
-    protected static final Logger LOG = LoggerFactory.getLogger( StringValue.class );
-
+    private static final Logger LOG = LoggerFactory.getLogger( StringValue.class );
 
     // -----------------------------------------------------------------------
     // Constructors
@@ -322,40 +321,41 @@ public class StringValue extends AbstractValue<String>
      */
     public int hashCode()
     {
-        // return zero if the value is null so only one null value can be
-        // stored in an attribute - the binary version does the same 
-        if ( isNull() )
+        if ( h == 0 )
         {
-            if ( attributeType != null )
+            // return zero if the value is null so only one null value can be
+            // stored in an attribute - the binary version does the same 
+            if ( isNull() )
             {
-                // return the OID hashcode if the value is null. 
-                return attributeType.getOid().hashCode();
+                if ( attributeType != null )
+                {
+                    // return the OID hashcode if the value is null. 
+                    return attributeType.getOid().hashCode();
+                }
+                
+                return 0;
+            }
+    
+            // If the normalized value is null, will default to wrapped
+            // which cannot be null at this point.
+            // If the normalized value is null, will default to wrapped
+            // which cannot be null at this point.
+            String normalized = getNormalizedValue();
+            
+            if ( normalized != null )
+            {
+                h = normalized.hashCode();
+            }
+            else
+            {
+                h = 17;
             }
             
-            return 0;
-        }
-
-        // If the normalized value is null, will default to wrapped
-        // which cannot be null at this point.
-        // If the normalized value is null, will default to wrapped
-        // which cannot be null at this point.
-        int h = 0;
-
-        String normalized = getNormalizedValue();
-        
-        if ( normalized != null )
-        {
-            h = normalized.hashCode();
-        }
-        else
-        {
-            h = 17;
-        }
-        
-        // Add the OID hashcode if we have an AttributeType
-        if ( attributeType != null )
-        {
-            h = h*37 + attributeType.getOid().hashCode();
+            // Add the OID hashcode if we have an AttributeType
+            if ( attributeType != null )
+            {
+                h = h*37 + attributeType.getOid().hashCode();
+            }
         }
         
         return h;
@@ -515,6 +515,8 @@ public class StringValue extends AbstractValue<String>
                 normalizedValue = in.readUTF();
             }
         }
+        
+        h = 0;
     }
 
     

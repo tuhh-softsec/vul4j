@@ -30,8 +30,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.SortedMap;
-import java.util.TreeMap;
 
 import org.apache.directory.shared.ldap.NotImplementedException;
 import org.apache.directory.shared.ldap.exception.LdapException;
@@ -77,6 +75,9 @@ public class DefaultClientEntry implements Entry
 
     /** The SchemaManager */
     protected SchemaManager schemaManager;
+
+    /** The computed hashcode. We don't want to compute it each time the hashcode() method is called */
+    private volatile int h;
 
     
     //-------------------------------------------------------------------------
@@ -2112,6 +2113,9 @@ public class DefaultClientEntry implements Entry
     public void setDn( DN dn )
     {
         this.dn = dn;
+        
+        // Resash the object
+        rehash();
     }
     
     
@@ -2264,18 +2268,13 @@ public class DefaultClientEntry implements Entry
     }
     
     
-    /**
-     * Get the hash code of this ClientEntry.
-     *
-     * @see java.lang.Object#hashCode()
-     * @return the instance's hash code 
-     */
-    public int hashCode()
+    private void rehash()
     {
-        int result = 37;
+        h = 37;
+        h = h*17 + dn.hashCode();
         
-        result = result*17 + dn.hashCode();
-        
+        /*
+        // We have to sort the Attributes if we want to compare two entries
         SortedMap<String, EntryAttribute> sortedMap = new TreeMap<String, EntryAttribute>();
         
         for ( String id:attributes.keySet() )
@@ -2285,10 +2284,26 @@ public class DefaultClientEntry implements Entry
         
         for ( String id:sortedMap.keySet() )
         {
-            result = result*17 + sortedMap.get( id ).hashCode();
+            h = h*17 + sortedMap.get( id ).hashCode();
+        }
+        */
+    }
+    
+    /**
+     * Get the hash code of this ClientEntry. The Attributes will be sorted
+     * before the comparison can be done.
+     *
+     * @see java.lang.Object#hashCode()
+     * @return the instance's hash code 
+     */
+    public int hashCode()
+    {
+        if ( h == 0 )
+        {
+            rehash();
         }
         
-        return result;
+        return h;
     }
 
     

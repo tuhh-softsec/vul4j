@@ -50,10 +50,13 @@ import org.slf4j.LoggerFactory;
 public class BinaryValue extends AbstractValue<byte[]>
 {
     /** Used for serialization */
-    protected static final long serialVersionUID = 2L;
+    public static final long serialVersionUID = 2L;
     
     /** logger for reporting errors that might not be handled properly upstream */
-    protected static final Logger LOG = LoggerFactory.getLogger( BinaryValue.class );
+    private static final Logger LOG = LoggerFactory.getLogger( BinaryValue.class );
+    
+    /** The computed hashcode. We don't want to compute it each time the hashcode() method is called */
+    private volatile int h;
     
     /**
      * Creates a BinaryValue without an initial wrapped value.
@@ -342,23 +345,24 @@ public class BinaryValue extends AbstractValue<byte[]>
     // -----------------------------------------------------------------------
     // Object Methods
     // -----------------------------------------------------------------------
-
-
     /**
      * @see Object#hashCode()
      * @return the instance's hashcode 
      */
     public int hashCode()
     {
-        // return zero if the value is null so only one null value can be
-        // stored in an attribute - the string version does the same
-        if ( isNull() )
+        if ( h == 0 )
         {
-            return 0;
+            // return zero if the value is null so only one null value can be
+            // stored in an attribute - the string version does the same
+            if ( isNull() )
+            {
+                return 0;
+            }
+            
+            byte[] normalizedValue = getNormalizedValueReference();
+            h = Arrays.hashCode( normalizedValue );
         }
-        
-        byte[] normalizedValue = getNormalizedValueReference();
-        int h = Arrays.hashCode( normalizedValue );
 
         return h;
     }
@@ -571,6 +575,8 @@ public class BinaryValue extends AbstractValue<byte[]>
                 }
             }
         }
+        
+        h = 0;
     }
 
     

@@ -19,13 +19,6 @@
 package org.apache.directory.shared.ldap.entry;
 
 
-import java.util.List;
-import java.util.Set;
-
-import org.apache.directory.shared.ldap.exception.LdapException;
-import org.apache.directory.shared.ldap.schema.AttributeType;
-
-
 /**
  * A server side entry which is schema aware.
  *

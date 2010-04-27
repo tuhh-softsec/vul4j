@@ -537,27 +537,6 @@ public final class DefaultServerEntry extends DefaultClientEntry implements Serv
             }
         }
     }
-    
-    
-    /**
-    * Gets the hashCode of this ServerEntry.
-    *
-    * @see java.lang.Object#hashCode()
-     * @return the instance's hash code 
-     */
-    public int hashCode()
-    {
-        int result = 37;
-        
-        result = result*17 + dn.hashCode();
-        
-        for ( EntryAttribute attribute:attributes.values() )
-        {
-            result = result*17 + attribute.hashCode();
-        }
-
-        return result;
-    }
 
     
     /**

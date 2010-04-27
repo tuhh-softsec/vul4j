@@ -26,6 +26,8 @@ import java.io.ObjectOutput;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.exception.LdapInvalidAttributeValueException;
@@ -35,6 +37,7 @@ import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.SyntaxChecker;
+import org.apache.directory.shared.ldap.util.ArrayUtils;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,20 +58,23 @@ public class DefaultEntryAttribute implements EntryAttribute
     private static final Logger LOG = LoggerFactory.getLogger( DefaultEntryAttribute.class );
 
     /** The associated AttributeType */
-    protected AttributeType attributeType;
+    private AttributeType attributeType;
     
     /** The set of contained values */
-    protected Set<Value<?>> values = new LinkedHashSet<Value<?>>();
+    private Set<Value<?>> values = new LinkedHashSet<Value<?>>();
     
     /** The User provided ID */
-    protected String upId;
+    private String upId;
 
     /** The normalized ID (will be the OID if we have a AttributeType) */
-    protected String id;
+    private String id;
 
     /** Tells if the attribute is Human Readable or not. When not set, 
      * this flag is null. */
-    protected Boolean isHR;
+    private Boolean isHR;
+    
+    /** The computed hashcode. We don't want to compute it each time the hashcode() method is called */
+    private volatile int h;
     
     //-------------------------------------------------------------------------
     // Helper methods
@@ -527,6 +533,9 @@ public class DefaultEntryAttribute implements EntryAttribute
         if ( attributeType == null )
         {
             this.isHR = isHR;
+            
+            // Compute the hashCode
+            rehash();
         }
     }
 
@@ -571,6 +580,9 @@ public class DefaultEntryAttribute implements EntryAttribute
                         this.id = newId;
                         this.upId = id;
                         
+                        // Compute the hashCode
+                        rehash();
+                        
                         return;
                     }
                 }
@@ -586,6 +598,9 @@ public class DefaultEntryAttribute implements EntryAttribute
 
         this.id = newId;
         this.upId = id;
+        
+        // Compute the hashCode
+        rehash();
     }
 
     
@@ -693,6 +708,10 @@ public class DefaultEntryAttribute implements EntryAttribute
             {
                 this.upId = upId;
                 this.id = id;
+                
+                // Compute the hashCode
+                rehash();
+
                 return;
             }    
             else
@@ -701,6 +720,10 @@ public class DefaultEntryAttribute implements EntryAttribute
                 {
                     this.upId = upId;
                     this.id = id;
+                    
+                    // Compute the hashCode
+                    rehash();
+
                     return;
                 }
                 else
@@ -715,6 +738,10 @@ public class DefaultEntryAttribute implements EntryAttribute
             this.attributeType = attributeType;
             this.upId = attributeType.getName();
             this.id = StringTools.trim( this.upId );
+            
+            // Compute the hashCode
+            rehash();
+
             return;
         }
 
@@ -723,6 +750,10 @@ public class DefaultEntryAttribute implements EntryAttribute
             this.upId = upId;
             this.id = id;
             this.attributeType = attributeType;
+            
+            // Compute the hashCode
+            rehash();
+
             return;
         }
 
@@ -2123,6 +2154,9 @@ public class DefaultEntryAttribute implements EntryAttribute
         {
             isHR = false;
         }
+        
+        // Compute the hashCode
+        rehash();
     }
     
     
@@ -2167,15 +2201,11 @@ public class DefaultEntryAttribute implements EntryAttribute
     // Overloaded Object classes
     //-------------------------------------------------------------------------
     /**
-     * The hashCode is based on the id, the isHR flag and 
-     * on the internal values.
-     *  
-     * @see Object#hashCode()
-     * @return the instance's hashcode 
+     * A helper method to rehash the hashCode
      */
-    public int hashCode()
+    private void rehash()
     {
-        int h = 37;
+        h = 37;
         
         if ( isHR != null )
         {
@@ -2187,14 +2217,57 @@ public class DefaultEntryAttribute implements EntryAttribute
             h = h*17 + id.hashCode();
         }
         
-        for ( Value<?> value:values )
+        /*
+        // We have to sort the values if we wnt to correctly compare two Attributes
+        if ( isHR )
         {
-            h = h*17 + value.hashCode();
+            SortedSet<String> sortedSet = new TreeSet<String>();
+
+            for ( Value<?> value:values )
+            {
+                sortedSet.add( (String)value.getNormalizedValueReference() );
+            }
+            
+            for ( String value:sortedSet )
+            {
+                h = h*17 + value.hashCode();
+            }
         }
+        else
+        {
+            SortedSet<byte[]> sortedSet = new TreeSet<byte[]>();
+            
+            for ( Value<?> value:values )
+            {
+                sortedSet.add( (byte[])value.getNormalizedValueReference() );
+            }
+            
+            for ( byte[] value:sortedSet )
+            {
+                h = h*17 + ArrayUtils.hashCode( value );
+            }
+        }
+        */
         
         if ( attributeType != null )
         {
             h = h*17 + attributeType.hashCode();
+        }
+    }
+
+    
+    /**
+     * The hashCode is based on the id, the isHR flag and 
+     * on the internal values.
+     *  
+     * @see Object#hashCode()
+     * @return the instance's hashcode 
+     */
+    public int hashCode()
+    {
+        if ( h == 0 )
+        {
+            rehash();
         }
         
         return h;
