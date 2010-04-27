@@ -19,9 +19,6 @@
 package org.apache.directory.shared.ldap.entry;
 
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,8 +27,6 @@ import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.entry.client.DefaultClientEntry;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.name.DN;
-import org.apache.directory.shared.ldap.name.RDN;
-import org.apache.directory.shared.ldap.name.RdnSerializer;
 import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.SchemaManager;
 import org.slf4j.Logger;
@@ -433,108 +428,5 @@ public final class DefaultServerEntry extends DefaultClientEntry implements Serv
         
         // We are done !
         return clone;
-    }
-    
-
-    /**
-     * Serialize a server entry.
-     * 
-     * The structure is the following :
-     * <b>[a byte] : if the DN is empty 0 will be written else 1
-     * <b>[RDN]</b> : The entry's RDN.
-     * <b>[numberAttr]</b> : the bumber of attributes. Can be 0 
-     * <b>[attribute's oid]*</b> : The attribute's OID to get back 
-     * the attributeType on deserialization
-     * <b>[Attribute]*</b> The attribute
-     * 
-     * @param out the buffer in which the data will be serialized
-     * @throws IOException if the serialization failed
-     */
-    public void serialize( ObjectOutput out ) throws IOException
-    {
-        // First, the DN
-        // Write the RDN of the DN
-        
-        if( dn.getRdn() == null )
-        {
-            out.writeByte( 0 );
-        }
-        else
-        {
-            out.writeByte( 1 );
-            RdnSerializer.serialize( dn.getRdn(), out );
-        }
-        
-        // Then the attributes.
-        out.writeInt( attributes.size() );
-        
-        // Iterate through the keys. We store the Attribute
-        // here, to be able to restore it in the readExternal :
-        // we need access to the registries, which are not available
-        // in the ServerAttribute class.
-        for ( AttributeType attributeType:getAttributeTypes() )
-        {
-            // Write the oid to be able to restore the AttributeType when deserializing
-            // the attribute
-            String oid = attributeType.getOid();
-            
-            out.writeUTF( oid );
-            
-            // Get the attribute
-            DefaultEntryAttribute attribute = (DefaultEntryAttribute)attributes.get( attributeType.getOid() );
-
-            // Write the attribute
-            attribute.serialize( out );
-        }
-    }
-
-    
-    /**
-     * Deserialize a server entry. 
-     * 
-     * @param in The buffer containing the serialized serverEntry
-     * @throws IOException if there was a problem when deserializing
-     * @throws ClassNotFoundException if we can't deserialize an expected object
-     */
-    public void deserialize( ObjectInput in ) throws IOException, ClassNotFoundException
-    {
-        // Read the DN
-        dn = new DN();
-
-        byte b = in.readByte();
-        if( b == 1 )
-        {
-            RDN rdn = RdnSerializer.deserialize( in );
-            dn.add( rdn );
-        }
-        
-        // Read the number of attributes
-        int nbAttributes = in.readInt();
-        
-        // Read the attributes
-        for ( int i = 0; i < nbAttributes; i++ )
-        {
-            // Read the attribute's OID
-            String oid = in.readUTF();
-            
-            try
-            {
-                AttributeType attributeType = schemaManager.lookupAttributeTypeRegistry( oid );
-                
-                // Create the attribute we will read
-                EntryAttribute attribute = new DefaultEntryAttribute( attributeType );
-                
-                // Read the attribute
-                attribute.deserialize( in );
-                
-                attributes.put( attributeType.getOid(), attribute );
-            }
-            catch ( LdapException ne )
-            {
-                // We weren't able to find the OID. The attribute will not be added
-                LOG.warn( I18n.err( I18n.ERR_04470, oid ) );
-                
-            }
-        }
     }
 }
