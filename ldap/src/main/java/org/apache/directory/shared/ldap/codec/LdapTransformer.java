@@ -624,24 +624,24 @@ public class LdapTransformer
                     {
                         filter = new AttributeValueAssertionFilter( LdapConstants.GREATER_OR_EQUAL_FILTER );
                         AttributeValueAssertion assertion = new AttributeValueAssertion();
-                        assertion.setAttributeDesc( ((EqualityNode<?>)exprNode).getAttribute() );
-                        assertion.setAssertionValue( ((EqualityNode<?>)exprNode).getValue() );
+                        assertion.setAttributeDesc( ((GreaterEqNode<?>)exprNode).getAttribute() );
+                        assertion.setAssertionValue( ((GreaterEqNode<?>)exprNode).getValue() );
                         ((AttributeValueAssertionFilter)filter).setAssertion( assertion );
                     }
                     else if ( exprNode instanceof LessEqNode<?> ) 
                     {
                         filter = new AttributeValueAssertionFilter( LdapConstants.LESS_OR_EQUAL_FILTER );
                         AttributeValueAssertion assertion = new AttributeValueAssertion();
-                        assertion.setAttributeDesc( ((EqualityNode<?>)exprNode).getAttribute() );
-                        assertion.setAssertionValue( ((EqualityNode<?>)exprNode).getValue() );
+                        assertion.setAttributeDesc( ((LessEqNode<?>)exprNode).getAttribute() );
+                        assertion.setAssertionValue( ((LessEqNode<?>)exprNode).getValue() );
                         ((AttributeValueAssertionFilter)filter).setAssertion( assertion );
                     }
                     else if ( exprNode instanceof ApproximateNode<?> )
                     {
                         filter = new AttributeValueAssertionFilter( LdapConstants.APPROX_MATCH_FILTER );
                         AttributeValueAssertion assertion = new AttributeValueAssertion();
-                        assertion.setAttributeDesc( ((EqualityNode<?>)exprNode).getAttribute() );
-                        assertion.setAssertionValue( ((EqualityNode<?>)exprNode).getValue() );
+                        assertion.setAttributeDesc( ((ApproximateNode<?>)exprNode).getAttribute() );
+                        assertion.setAssertionValue( ((ApproximateNode<?>)exprNode).getValue() );
                         ((AttributeValueAssertionFilter)filter).setAssertion( assertion );
                     }
                 }
