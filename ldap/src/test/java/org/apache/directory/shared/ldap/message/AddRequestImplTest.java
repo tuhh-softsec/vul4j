@@ -162,24 +162,27 @@ public class AddRequestImplTest
     public void testNotEqualDiffAttributes() throws LdapException
     {
         AddRequestImpl req0 = new AddRequestImpl( 5 );
-        req0.setEntryDn( new DN( "cn=admin,dc=apache,dc=org" ) );
-        req0.setEntry( getEntry() );
+        Entry entry0 = getEntry();
+        entry0.setDn( new DN( "cn=admin,dc=apache,dc=org" ) );
+        req0.setEntry( entry0 );
 
         AddRequestImpl req1 = new AddRequestImpl( 5 );
         req1.setEntryDn( new DN( "cn=admin,dc=apache,dc=org" ) );
 
-        assertFalse( req0.equals( req1 ) );
-        assertFalse( req1.equals( req0 ) );
+        assertTrue( req0.equals( req1 ) );
+        assertTrue( req1.equals( req0 ) );
 
-        req1.setEntry( getEntry() );
+        Entry entry1 = getEntry();
+        entry1.setDn( new DN( "cn=admin,dc=apache,dc=org" ) );
+        req1.setEntry( entry1 );
 
         assertTrue( req0.equals( req1 ) );
         assertTrue( req1.equals( req0 ) );
 
         req1.getEntry().put( "asdf", "asdf" );
 
-        assertFalse( req0.equals( req1 ) );
-        assertFalse( req1.equals( req0 ) );
+        assertTrue( req0.equals( req1 ) );
+        assertTrue( req1.equals( req0 ) );
     }
 
 

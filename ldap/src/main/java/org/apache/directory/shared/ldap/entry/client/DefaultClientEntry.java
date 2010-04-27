@@ -2367,7 +2367,6 @@ public class DefaultClientEntry implements Entry
     public boolean equals( Object o )
     {
         // Short circuit
-
         if ( this == o )
         {
             return true;
@@ -2395,7 +2394,11 @@ public class DefaultClientEntry implements Entry
                 return false;
             }
         }
+
+        // That's it
+        return true;
         
+        /*
         // They must have the same number of attributes
         if ( size() != other.size() )
         {
@@ -2412,6 +2415,7 @@ public class DefaultClientEntry implements Entry
         }
         
         return true;
+        */
     }
         
 
