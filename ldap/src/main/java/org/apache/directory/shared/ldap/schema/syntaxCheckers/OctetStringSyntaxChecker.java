@@ -65,6 +65,7 @@ public class OctetStringSyntaxChecker extends SyntaxChecker
      */
     public boolean isValidSyntax( Object value )
     {
-        return ( value != null );
+        // Always true.
+        return true;
     }
 }

@@ -20,7 +20,6 @@
 package org.apache.directory.shared.ldap.schema.syntax;
 
 
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.apache.directory.shared.ldap.schema.syntaxCheckers.OctetStringSyntaxChecker;
@@ -41,7 +40,7 @@ public class OctetStringSyntaxCheckerTest
     @Test
     public void testNullString()
     {
-        assertFalse( checker.isValidSyntax( null ) );
+        assertTrue( checker.isValidSyntax( null ) );
     }
 
 
