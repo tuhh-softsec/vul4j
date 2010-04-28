@@ -587,6 +587,13 @@ public class DefaultEntry implements Entry
             throw new IllegalArgumentException( message );
         }
         
+        if ( ( values == null ) || ( values.length == 0 ) )
+        {
+            String message = I18n.err( I18n.ERR_04478_NO_VALUE_NOT_ALLOWED );
+            LOG.error( message );
+            throw new IllegalArgumentException( message );
+        }
+        
         // ObjectClass with binary values are not allowed
         if ( attributeType.equals( OBJECT_CLASS_AT ) )
         {

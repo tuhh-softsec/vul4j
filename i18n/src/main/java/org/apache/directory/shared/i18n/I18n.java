@@ -620,6 +620,8 @@ public class I18n
     public static final String ERR_04475 = "ERR_04475";
     public static final String ERR_04476 = "ERR_04476";
     public static final String ERR_04477_NO_VALID_AT_FOR_THIS_ID = "ERR_04477_NO_VALID_AT_FOR_THIS_ID";
+    public static final String ERR_04478_NO_VALUE_NOT_ALLOWED = "ERR_04478_NO_VALUE_NOT_ALLOWED";
+    public static final String ERR_04479_INVALID_SYNTAX_VALUE = "ERR_04479_INVALID_SYNTAX_VALUE";
 
 	// ldap-constants
 	public static final String ERR_05001 = "ERR_05001";

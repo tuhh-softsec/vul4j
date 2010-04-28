@@ -32,6 +32,7 @@ import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.LdapComparator;
 import org.apache.directory.shared.ldap.schema.Normalizer;
+import org.apache.directory.shared.ldap.schema.SyntaxChecker;
 import org.apache.directory.shared.ldap.schema.comparators.ByteArrayComparator;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
@@ -133,7 +134,21 @@ public class BinaryValue extends AbstractValue<byte[]>
     public BinaryValue( AttributeType attributeType, byte[] value )
     {
         this( attributeType );
-        this.wrappedValue = value;
+        SyntaxChecker syntaxChecker = attributeType.getSyntax().getSyntaxChecker();
+        
+        if ( syntaxChecker != null ) 
+        {
+            if ( syntaxChecker.isValidSyntax( value ) )
+            {
+                this.wrappedValue = value;
+            }
+            else
+            {
+                String msg = I18n.err( I18n.ERR_04479_INVALID_SYNTAX_VALUE, value, attributeType.getName() );
+                LOG.info( msg );
+                throw new IllegalArgumentException( msg );
+            }
+        }
     }
 
 

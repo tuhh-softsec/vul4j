@@ -429,8 +429,15 @@ public class BinaryValueAttributeTypeTest
         value = new BinaryValue( attribute, new byte[]{0x01, 0x02} );
         assertTrue( value.isValid() );
 
-        value = new BinaryValue( attribute, new byte[]{0x01, 0x02, 0x03, 0x04, 0x05, 0x06} );
-        assertFalse( value.isValid() );
+        try
+        {
+            value = new BinaryValue( attribute, new byte[]{0x01, 0x02, 0x03, 0x04, 0x05, 0x06} );
+            fail();
+        }
+        catch ( IllegalArgumentException iae )
+        {
+            assertTrue( true );
+        }
     }
     
     

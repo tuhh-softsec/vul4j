@@ -26,8 +26,6 @@ import java.io.ObjectOutput;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.exception.LdapInvalidAttributeValueException;
@@ -37,7 +35,6 @@ import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.SyntaxChecker;
-import org.apache.directory.shared.ldap.util.ArrayUtils;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -916,11 +913,19 @@ public class DefaultEntryAttribute implements EntryAttribute
                 {
                     if ( val == null )
                     {
-                        Value<byte[]> nullSV = new BinaryValue( attributeType, (byte[])null );
-                        
-                        if ( values.add( nullSV ) )
+                        if ( attributeType.getSyntax().getSyntaxChecker().isValidSyntax( val ) )
                         {
-                            nbAdded++;
+                            Value<byte[]> nullSV = new BinaryValue( attributeType, (byte[])null );
+                            
+                            if ( values.add( nullSV ) )
+                            {
+                                nbAdded++;
+                            }
+                        }
+                        else
+                        {
+                            String message = I18n.err( I18n.ERR_04452 );
+                            LOG.error( message );
                         }
                     }
                     else
