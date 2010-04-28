@@ -65,7 +65,7 @@ import org.apache.wicket.protocol.http.servlet.ServletWebRequest;
 public class WATTemplate extends AbstractWatDriverContainer {
 	private static Log logger = LogFactory.getLog(WATTemplate.class);
 	private static final long serialVersionUID = 1L;
-	private final String name = null;
+	private String name = null;
 	private String page = null;
 
 	/**
@@ -77,6 +77,10 @@ public class WATTemplate extends AbstractWatDriverContainer {
 	public WATTemplate(String id, String page) {
 		super(id);
 		this.page = page;
+	}
+
+	public String getName() {
+		return name;
 	}
 
 	@Override
@@ -98,6 +102,10 @@ public class WATTemplate extends AbstractWatDriverContainer {
 			logger.error(e);
 		}
 
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 }
