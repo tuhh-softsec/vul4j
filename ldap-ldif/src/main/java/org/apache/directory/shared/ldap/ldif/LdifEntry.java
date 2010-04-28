@@ -29,6 +29,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.directory.shared.ldap.entry.DefaultEntry;
 import org.apache.directory.shared.ldap.entry.DefaultModification;
 import org.apache.directory.shared.ldap.entry.DefaultEntryAttribute;
 import org.apache.directory.shared.ldap.entry.StringValue;
@@ -37,7 +38,6 @@ import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Modification;
 import org.apache.directory.shared.ldap.entry.ModificationOperation;
 import org.apache.directory.shared.ldap.entry.Value;
-import org.apache.directory.shared.ldap.entry.client.DefaultClientEntry;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.message.control.Control;
@@ -98,7 +98,7 @@ public class LdifEntry implements Cloneable, Externalizable
         changeType = ChangeType.Add; // Default LDIF content
         modificationList = new LinkedList<Modification>();
         modificationItems = new HashMap<String, Modification>();
-        entry = new DefaultClientEntry( (DN)null );
+        entry = new DefaultEntry( (DN)null );
         control = null;
     }
 

@@ -27,10 +27,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
+import org.apache.directory.shared.ldap.entry.DefaultEntry;
 import org.apache.directory.shared.ldap.entry.DefaultEntryAttribute;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
-import org.apache.directory.shared.ldap.entry.client.DefaultClientEntry;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.message.internal.InternalAddRequest;
@@ -73,7 +73,7 @@ public class AddRequestImplTest
      */
     private Entry getEntry()
     {
-        Entry entry = new DefaultClientEntry();
+        Entry entry = new DefaultEntry();
         
         try
         {

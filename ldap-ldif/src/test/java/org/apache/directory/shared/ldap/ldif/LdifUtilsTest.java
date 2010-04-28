@@ -34,10 +34,10 @@ import javax.naming.directory.Attributes;
 import javax.naming.directory.BasicAttribute;
 import javax.naming.directory.BasicAttributes;
 
+import org.apache.directory.shared.ldap.entry.DefaultEntry;
 import org.apache.directory.shared.ldap.entry.DefaultEntryAttribute;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
-import org.apache.directory.shared.ldap.entry.client.DefaultClientEntry;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.exception.LdapInvalidAttributeValueException;
 import org.apache.directory.shared.ldap.name.DN;
@@ -395,7 +395,7 @@ public class LdifUtilsTest
         DN dn = new DN( "cn=john doe, dc=example, dc=com" );
         DN newSuperior = new DN( "ou=system" );
 
-        Entry entry = new DefaultClientEntry( dn );
+        Entry entry = new DefaultEntry( dn );
         entry.add( "objectClass", "person", "uidObject" );
         entry.add( "cn", "john doe", "jack doe" );
         entry.add( "sn", "doe" );
@@ -427,7 +427,7 @@ public class LdifUtilsTest
         DN dn = new DN( "cn=john doe, dc=example, dc=com" );
         DN newSuperior = new DN( "ou=system" );
 
-        Entry entry = new DefaultClientEntry( dn );
+        Entry entry = new DefaultEntry( dn );
         entry.add( "objectClass", "person", "uidObject" );
         entry.add( "cn", "john doe" );
         entry.add( "sn", "doe" );

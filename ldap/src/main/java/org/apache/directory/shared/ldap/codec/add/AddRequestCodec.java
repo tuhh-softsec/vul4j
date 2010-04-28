@@ -34,10 +34,10 @@ import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
+import org.apache.directory.shared.ldap.entry.DefaultEntry;
 import org.apache.directory.shared.ldap.entry.DefaultEntryAttribute;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
-import org.apache.directory.shared.ldap.entry.client.DefaultClientEntry;
 import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
@@ -101,7 +101,7 @@ public class AddRequestCodec extends LdapMessageCodec
     public AddRequestCodec()
     {
         super();
-        entry = new DefaultClientEntry();
+        entry = new DefaultEntry();
     }
 
 
@@ -133,7 +133,7 @@ public class AddRequestCodec extends LdapMessageCodec
      */
     public void initEntry()
     {
-        entry = new DefaultClientEntry();
+        entry = new DefaultEntry();
     }
 
 

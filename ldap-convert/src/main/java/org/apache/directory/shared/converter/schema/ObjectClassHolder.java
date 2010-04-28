@@ -24,8 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
+import org.apache.directory.shared.ldap.entry.DefaultEntry;
 import org.apache.directory.shared.ldap.entry.Entry;
-import org.apache.directory.shared.ldap.entry.client.DefaultClientEntry;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.ldif.LdifUtils;
 import org.apache.directory.shared.ldap.name.DN;
@@ -215,7 +215,7 @@ public class ObjectClassHolder extends SchemaElementImpl
         String dn = "m-oid=" + oid + ", " + SchemaConstants.OBJECT_CLASSES_PATH + ", cn=" + RDN.escapeValue( schemaName ) + ", ou=schema";
 
         // First dump the DN only
-        Entry entry = new DefaultClientEntry( new DN( dn ) );
+        Entry entry = new DefaultEntry( new DN( dn ) );
         sb.append( LdifUtils.convertEntryToLdif( entry ) );
 
         return sb.toString();

@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.directory.shared.ldap.entry.client;
+package org.apache.directory.shared.ldap.entry;
 
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -35,10 +35,6 @@ import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.exception.LdapException;
 
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.entry.DefaultEntryAttribute;
-import org.apache.directory.shared.ldap.entry.Entry;
-import org.apache.directory.shared.ldap.entry.EntryAttribute;
-import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.name.RDN;
 import org.apache.directory.shared.ldap.name.RdnSerializer;
@@ -58,13 +54,13 @@ import org.slf4j.LoggerFactory;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public class DefaultClientEntry implements Entry
+public class DefaultEntry implements Entry
 {
     /** Used for serialization */
     private static final long serialVersionUID = 2L;
     
     /** The logger for this class */
-    private static final Logger LOG = LoggerFactory.getLogger( DefaultClientEntry.class );
+    private static final Logger LOG = LoggerFactory.getLogger( DefaultEntry.class );
 
     /** The DN for this entry */
     protected DN dn;
@@ -89,11 +85,11 @@ public class DefaultClientEntry implements Entry
     // Constructors
     //-------------------------------------------------------------------------
     /**
-     * Creates a new instance of DefaultClientEntry. 
+     * Creates a new instance of DefaultEntry. 
      * <p>
      * This entry <b>must</b> be initialized before being used !
      */
-    public DefaultClientEntry()
+    public DefaultEntry()
     {
         schemaManager = null;
         dn = DN.EMPTY_DN;
@@ -102,7 +98,7 @@ public class DefaultClientEntry implements Entry
 
     /**
      * <p>
-     * Creates a new instance of DefaultClientEntry, schema aware. 
+     * Creates a new instance of DefaultEntry, schema aware. 
      * </p>
      * <p>
      * No attributes will be created.
@@ -110,7 +106,7 @@ public class DefaultClientEntry implements Entry
      * 
      * @param schemaManager The reference to the schemaManager
      */
-    public DefaultClientEntry( SchemaManager schemaManager )
+    public DefaultEntry( SchemaManager schemaManager )
     {
         this.schemaManager = schemaManager;
         dn = DN.EMPTY_DN;
@@ -121,12 +117,12 @@ public class DefaultClientEntry implements Entry
 
 
     /**
-     * Creates a new instance of DefaultClientEntry, with a 
+     * Creates a new instance of DefaultEntry, with a 
      * DN. 
      * 
      * @param dn The DN for this serverEntry. Can be null.
      */
-    public DefaultClientEntry( DN dn )
+    public DefaultEntry( DN dn )
     {
         this.dn = dn;
     }
@@ -134,7 +130,7 @@ public class DefaultClientEntry implements Entry
 
     /**
      * <p>
-     * Creates a new instance of DefaultClientEntry, schema aware. 
+     * Creates a new instance of DefaultEntry, schema aware. 
      * </p>
      * <p>
      * No attributes will be created.
@@ -143,7 +139,7 @@ public class DefaultClientEntry implements Entry
      * @param schemaManager The reference to the schemaManager
      * @param dn The DN for this serverEntry. Can be null.
      */
-    public DefaultClientEntry( SchemaManager schemaManager, DN dn )
+    public DefaultEntry( SchemaManager schemaManager, DN dn )
     {
         if ( dn == null )
         {
@@ -162,13 +158,13 @@ public class DefaultClientEntry implements Entry
 
 
     /**
-     * Creates a new instance of DefaultClientEntry, with a 
+     * Creates a new instance of DefaultEntry, with a 
      * DN and a list of IDs. 
      * 
      * @param dn The DN for this serverEntry. Can be null.
      * @param upIds The list of attributes to create.
      */
-    public DefaultClientEntry( DN dn, String... upIds )
+    public DefaultEntry( DN dn, String... upIds )
     {
         this.dn = dn;
 
@@ -182,7 +178,7 @@ public class DefaultClientEntry implements Entry
     
     /**
      * <p>
-     * Creates a new instance of DefaultClientEntry, copying 
+     * Creates a new instance of DefaultEntry, copying 
      * another entry. 
      * </p>
      * <p>
@@ -192,7 +188,7 @@ public class DefaultClientEntry implements Entry
      * @param schemaManager The reference to the schemaManager
      * @param entry the entry to copy
      */
-    public DefaultClientEntry( SchemaManager schemaManager, Entry entry )
+    public DefaultEntry( SchemaManager schemaManager, Entry entry )
     {
         this.schemaManager = schemaManager;
 
@@ -254,7 +250,7 @@ public class DefaultClientEntry implements Entry
 
 
     /**
-     * Creates a new instance of DefaultClientEntry, with a 
+     * Creates a new instance of DefaultEntry, with a 
      * DN, a list of ID and schema aware. 
      * <p>
      * No attributes will be created except the ObjectClass attribute,
@@ -266,7 +262,7 @@ public class DefaultClientEntry implements Entry
      * @param dn The DN for this serverEntry. Can be null.
      * @param upIds The list of attributes to create.
      */
-    public DefaultClientEntry( SchemaManager schemaManager, DN dn, String... upIds )
+    public DefaultEntry( SchemaManager schemaManager, DN dn, String... upIds )
     {
         if ( dn == null )
         {
@@ -287,14 +283,14 @@ public class DefaultClientEntry implements Entry
     
     /**
      * <p>
-     * Creates a new instance of DefaultClientEntry, with a 
+     * Creates a new instance of DefaultEntry, with a 
      * DN and a list of EntryAttributes.
      * </p> 
      * 
      * @param dn The DN for this serverEntry. Can be null
      * @param attributes The list of attributes to create
      */
-    public DefaultClientEntry( DN dn, EntryAttribute... attributes )
+    public DefaultEntry( DN dn, EntryAttribute... attributes )
     {
         this.dn = dn;
 
@@ -312,7 +308,7 @@ public class DefaultClientEntry implements Entry
 
     
     /**
-     * Creates a new instance of DefaultClientEntry, with a 
+     * Creates a new instance of DefaultEntry, with a 
      * DN, a list of ServerAttributes and schema aware. 
      * <p>
      * No attributes will be created except the ObjectClass attribute,
@@ -324,7 +320,7 @@ public class DefaultClientEntry implements Entry
      * @param dn The DN for this serverEntry. Can be null
      * @param attributes The list of attributes to create
      */
-    public DefaultClientEntry( SchemaManager schemaManager, DN dn, EntryAttribute... attributes )
+    public DefaultEntry( SchemaManager schemaManager, DN dn, EntryAttribute... attributes )
     {
         if ( dn == null )
         {
@@ -354,7 +350,7 @@ public class DefaultClientEntry implements Entry
     }
     /**
      * <p>
-     * Creates a new instance of DefaultClientEntry, with a 
+     * Creates a new instance of DefaultEntry, with a 
      * DN, a list of attributeTypes and schema aware. 
      * </p>
      * <p>
@@ -369,7 +365,7 @@ public class DefaultClientEntry implements Entry
      * @param dn The DN for this serverEntry. Can be null.
      * @param attributeTypes The list of attributes to create, without value.
      */
-    public DefaultClientEntry( SchemaManager schemaManager, DN dn, AttributeType... attributeTypes )
+    public DefaultEntry( SchemaManager schemaManager, DN dn, AttributeType... attributeTypes )
     {
         if ( dn == null )
         {
@@ -392,7 +388,7 @@ public class DefaultClientEntry implements Entry
     
     /**
      * <p>
-     * Creates a new instance of DefaultClientEntry, with a 
+     * Creates a new instance of DefaultEntry, with a 
      * DN, an attributeType with the user provided ID, and schema aware. 
      * </p>
      * <p>
@@ -411,7 +407,7 @@ public class DefaultClientEntry implements Entry
      * @param attributeType The attribute to create, without value.
      * @param upId The User Provided ID fro this AttributeType
      */
-    public DefaultClientEntry( SchemaManager schemaManager, DN dn, AttributeType attributeType, String upId )
+    public DefaultEntry( SchemaManager schemaManager, DN dn, AttributeType attributeType, String upId )
     {
         if ( dn == null )
         {
@@ -965,7 +961,7 @@ public class DefaultClientEntry implements Entry
         try
         {
             // First, clone the structure
-            DefaultClientEntry clone = (DefaultClientEntry)super.clone();
+            DefaultEntry clone = (DefaultEntry)super.clone();
             
             // Just in case ... Should *never* happen
             if ( clone == null )
@@ -2847,12 +2843,12 @@ public class DefaultClientEntry implements Entry
             return true;
         }
         
-        if ( ! ( o instanceof DefaultClientEntry ) )
+        if ( ! ( o instanceof DefaultEntry ) )
         {
             return false;
         }
         
-        DefaultClientEntry other = (DefaultClientEntry)o;
+        DefaultEntry other = (DefaultEntry)o;
         
         // Both DN must be equal
         if ( dn == null )

@@ -34,12 +34,12 @@ import javax.naming.directory.BasicAttributes;
 import javax.naming.directory.InvalidAttributeIdentifierException;
 
 import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.entry.DefaultEntry;
 import org.apache.directory.shared.ldap.entry.DefaultEntryAttribute;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Modification;
 import org.apache.directory.shared.ldap.entry.Value;
-import org.apache.directory.shared.ldap.entry.client.DefaultClientEntry;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.exception.LdapInvalidAttributeTypeException;
 import org.apache.directory.shared.ldap.name.DN;
@@ -1207,7 +1207,7 @@ public class AttributeUtils
         {
             try
             {
-                Entry entry = new DefaultClientEntry( dn );
+                Entry entry = new DefaultEntry( dn );
 
                 for ( NamingEnumeration<? extends Attribute> attrs = attributes.getAll(); attrs.hasMoreElements(); )
                 {

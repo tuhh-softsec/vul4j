@@ -20,10 +20,10 @@
 package org.apache.directory.shared.ldap.message;
 
 
+import org.apache.directory.shared.ldap.entry.DefaultEntry;
 import org.apache.directory.shared.ldap.entry.DefaultEntryAttribute;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
-import org.apache.directory.shared.ldap.entry.client.DefaultClientEntry;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.message.SearchResponseEntryImpl;
 import org.apache.directory.shared.ldap.name.DN;
@@ -64,7 +64,7 @@ public class SearchResponseEntryImplTest
      */
     private Entry getEntry() throws LdapException
     {
-        Entry attrs = new DefaultClientEntry();
+        Entry attrs = new DefaultEntry();
         attrs.put( getEntry( "attr0" ) );
         attrs.put( getEntry( "attr1" ) );
         attrs.put( getEntry( "attr2" ) );

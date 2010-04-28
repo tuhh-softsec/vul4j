@@ -29,9 +29,9 @@ import javax.naming.directory.Attributes;
 import javax.naming.directory.BasicAttributes;
 
 import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.entry.DefaultEntry;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
-import org.apache.directory.shared.ldap.entry.client.DefaultClientEntry;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -270,7 +270,7 @@ public class LdifAttributesReader extends LdifReader
             return null;
         }
 
-        Entry entry = new DefaultClientEntry();
+        Entry entry = new DefaultEntry();
 
         // Now, let's iterate through the other lines
         for ( String line:lines )
@@ -443,7 +443,7 @@ public class LdifAttributesReader extends LdifReader
 
         if ( StringTools.isEmpty( ldif ) )
         {
-            return new DefaultClientEntry();
+            return new DefaultEntry();
         }
 
         StringReader strIn = new StringReader( ldif );

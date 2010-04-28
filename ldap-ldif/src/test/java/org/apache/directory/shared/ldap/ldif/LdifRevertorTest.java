@@ -32,13 +32,13 @@ import java.util.List;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.BasicAttributes;
 
+import org.apache.directory.shared.ldap.entry.DefaultEntry;
 import org.apache.directory.shared.ldap.entry.DefaultModification;
 import org.apache.directory.shared.ldap.entry.DefaultEntryAttribute;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Modification;
 import org.apache.directory.shared.ldap.entry.ModificationOperation;
-import org.apache.directory.shared.ldap.entry.client.DefaultClientEntry;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.name.DN;
@@ -58,7 +58,7 @@ public class LdifRevertorTest
      */
     private Entry buildEntry()
     {
-        Entry entry = new DefaultClientEntry();
+        Entry entry = new DefaultEntry();
         entry.put( "objectclass", "top", "person" );
         entry.put( "cn", "test" );
         entry.put( "sn", "joe doe" );
@@ -95,7 +95,7 @@ public class LdifRevertorTest
     {
         DN dn = new DN( "dc=apache, dc=com" );
         
-        Entry deletedEntry = new DefaultClientEntry( dn );
+        Entry deletedEntry = new DefaultEntry( dn );
         
         EntryAttribute oc = new DefaultEntryAttribute( "objectClass" );
         oc.add( "top", "person" );
@@ -694,7 +694,7 @@ public class LdifRevertorTest
         RDN oldRdn = new RDN( "cn=test" );
         RDN newRdn = new RDN( "cn=joe" );
 
-        Entry entry = new DefaultClientEntry( dn );
+        Entry entry = new DefaultEntry( dn );
         entry.put( "cn", "test" );
         entry.put( "objectClass", "person", "top" );
         entry.put( "sn", "this is a test" );
@@ -738,7 +738,7 @@ public class LdifRevertorTest
         RDN oldRdn = new RDN( "cn=test" );
         RDN newRdn = new RDN( "cn=small" );
 
-        Entry entry = new DefaultClientEntry( dn );
+        Entry entry = new DefaultEntry( dn );
         entry.put( "cn", "test", "small" );
         entry.put( "objectClass", "person", "top" );
         entry.put( "sn", "this is a test" );
@@ -781,7 +781,7 @@ public class LdifRevertorTest
         RDN oldRdn = new RDN( "cn=test" );
         RDN newRdn = new RDN( "cn=joe" );
 
-        Entry entry = new DefaultClientEntry( dn );
+        Entry entry = new DefaultEntry( dn );
         entry.put( "cn", "test" );
         entry.put( "objectClass", "person", "top" );
         entry.put( "sn", "this is a test" );
@@ -825,7 +825,7 @@ public class LdifRevertorTest
         RDN oldRdn = new RDN( "cn=test" );
         RDN newRdn = new RDN( "cn=small" );
 
-        Entry entry = new DefaultClientEntry( dn );
+        Entry entry = new DefaultEntry( dn );
         entry.put( "cn", "test", "small" );
         entry.put( "objectClass", "person", "top" );
         entry.put( "sn", "this is a test" );
@@ -870,7 +870,7 @@ public class LdifRevertorTest
         RDN oldRdn = new RDN( "cn=small+cn=test" );
         RDN newRdn = new RDN( "cn=joe" );
 
-        Entry entry = new DefaultClientEntry( dn );
+        Entry entry = new DefaultEntry( dn );
         entry.put( "cn", "test", "small" );
         entry.put( "objectClass", "person", "top" );
         entry.put( "sn", "this is a test" );
@@ -916,7 +916,7 @@ public class LdifRevertorTest
         RDN oldRdn = new RDN( "cn=small+cn=test" );
         RDN newRdn = new RDN( "cn=big" );
 
-        Entry entry = new DefaultClientEntry( dn );
+        Entry entry = new DefaultEntry( dn );
         entry.put( "cn", "test", "small", "big" );
         entry.put( "objectClass", "person", "top" );
         entry.put( "sn", "this is a test" );
@@ -961,7 +961,7 @@ public class LdifRevertorTest
         RDN oldRdn = new RDN( "cn=small+cn=test" );
         RDN newRdn = new RDN( "cn=joe" );
 
-        Entry entry = new DefaultClientEntry( dn );
+        Entry entry = new DefaultEntry( dn );
         entry.put( "cn", "test", "small" );
         entry.put( "objectClass", "person", "top" );
         entry.put( "sn", "this is a test" );
@@ -1007,7 +1007,7 @@ public class LdifRevertorTest
         RDN oldRdn = new RDN( "cn=small+cn=test" );
         RDN newRdn = new RDN( "cn=big" );
 
-        Entry entry = new DefaultClientEntry( dn );
+        Entry entry = new DefaultEntry( dn );
         entry.put( "cn", "test", "small", "big" );
         entry.put( "objectClass", "person", "top" );
         entry.put( "sn", "this is a test" );
@@ -1051,7 +1051,7 @@ public class LdifRevertorTest
         RDN oldRdn = new RDN( "cn=small+cn=test" );
         RDN newRdn = new RDN( "cn=test" );
 
-        Entry entry = new DefaultClientEntry( dn );
+        Entry entry = new DefaultEntry( dn );
         entry.put( "cn", "test", "small" );
         entry.put( "objectClass", "person", "top" );
         entry.put( "sn", "this is a test" );
@@ -1095,7 +1095,7 @@ public class LdifRevertorTest
         RDN oldRdn = new RDN( "cn=small+cn=test" );
         RDN newRdn = new RDN( "cn=test" );
 
-        Entry entry = new DefaultClientEntry( dn );
+        Entry entry = new DefaultEntry( dn );
         entry.put( "cn", "test", "small" );
         entry.put( "objectClass", "person", "top" );
         entry.put( "sn", "this is a test" );
@@ -1140,7 +1140,7 @@ public class LdifRevertorTest
         RDN oldRdn = new RDN( "cn=test" );
         RDN newRdn = new RDN( "cn=joe+cn=plumber" );
 
-        Entry entry = new DefaultClientEntry( dn );
+        Entry entry = new DefaultEntry( dn );
         entry.put( "cn", "test", "small" );
         entry.put( "objectClass", "person", "top" );
         entry.put( "sn", "this is a test" );
@@ -1185,7 +1185,7 @@ public class LdifRevertorTest
         RDN oldRdn = new RDN( "cn=test" );
         RDN newRdn = new RDN( "cn=joe+cn=small" );
 
-        Entry entry = new DefaultClientEntry( dn );
+        Entry entry = new DefaultEntry( dn );
         entry.put( "cn", "test", "small" );
         entry.put( "objectClass", "person", "top" );
         entry.put( "sn", "this is a test" );
@@ -1243,7 +1243,7 @@ public class LdifRevertorTest
         RDN oldRdn = new RDN( "cn=test" );
         RDN newRdn = new RDN( "cn=joe+cn=plumber" );
 
-        Entry entry = new DefaultClientEntry( dn );
+        Entry entry = new DefaultEntry( dn );
         entry.put( "cn", "test", "small" );
         entry.put( "objectClass", "person", "top" );
         entry.put( "sn", "this is a test" );
@@ -1288,7 +1288,7 @@ public class LdifRevertorTest
         RDN oldRdn = new RDN( "cn=test" );
         RDN newRdn = new RDN( "cn=joe+cn=small" );
 
-        Entry entry = new DefaultClientEntry( dn );
+        Entry entry = new DefaultEntry( dn );
         entry.put( "cn", "test", "small" );
         entry.put( "objectClass", "person", "top" );
         entry.put( "sn", "this is a test" );
@@ -1346,7 +1346,7 @@ public class LdifRevertorTest
         RDN oldRdn = new RDN( "cn=test" );
         RDN newRdn = new RDN( "cn=small+cn=test" );
 
-        Entry entry = new DefaultClientEntry( dn );
+        Entry entry = new DefaultEntry( dn );
         entry.put( "cn", "test", "big" );
         entry.put( "objectClass", "person", "top" );
         entry.put( "sn", "this is a test" );
@@ -1393,7 +1393,7 @@ public class LdifRevertorTest
         RDN oldRdn = new RDN( "cn=test" );
         RDN newRdn = new RDN( "cn=small+cn=test+cn=big" );
 
-        Entry entry = new DefaultClientEntry( dn );
+        Entry entry = new DefaultEntry( dn );
         entry.put( "cn", "test", "big" );
         entry.put( "objectClass", "person", "top" );
         entry.put( "sn", "this is a test" );
@@ -1451,7 +1451,7 @@ public class LdifRevertorTest
         RDN oldRdn = new RDN( "cn=test" );
         RDN newRdn = new RDN( "cn=small+cn=test" );
 
-        Entry entry = new DefaultClientEntry( dn );
+        Entry entry = new DefaultEntry( dn );
         entry.put( "cn", "test", "big" );
         entry.put( "objectClass", "person", "top" );
         entry.put( "sn", "this is a test" );
@@ -1496,7 +1496,7 @@ public class LdifRevertorTest
         RDN oldRdn = new RDN( "cn=test" );
         RDN newRdn = new RDN( "cn=small+cn=test+cn=big" );
 
-        Entry entry = new DefaultClientEntry( dn );
+        Entry entry = new DefaultEntry( dn );
         entry.put( "cn", "test", "big" );
         entry.put( "objectClass", "person", "top" );
         entry.put( "sn", "this is a test" );
@@ -1555,7 +1555,7 @@ public class LdifRevertorTest
         RDN oldRdn = new RDN( "cn=small+cn=test" );
         RDN newRdn = new RDN( "cn=joe+cn=plumber" );
 
-        Entry entry = new DefaultClientEntry( dn );
+        Entry entry = new DefaultEntry( dn );
         entry.put( "cn", "test", "big", "small" );
         entry.put( "objectClass", "person", "top" );
         entry.put( "sn", "this is a test" );
@@ -1601,7 +1601,7 @@ public class LdifRevertorTest
         RDN oldRdn = new RDN( "cn=small+cn=test" );
         RDN newRdn = new RDN( "cn=joe+cn=big" );
 
-        Entry entry = new DefaultClientEntry( dn );
+        Entry entry = new DefaultEntry( dn );
         entry.put( "cn", "test", "big", "small" );
         entry.put( "objectClass", "person", "top" );
         entry.put( "sn", "this is a test" );
@@ -1660,7 +1660,7 @@ public class LdifRevertorTest
         RDN oldRdn = new RDN( "cn=small+cn=test" );
         RDN newRdn = new RDN( "cn=joe+cn=plumber" );
 
-        Entry entry = new DefaultClientEntry( dn );
+        Entry entry = new DefaultEntry( dn );
         entry.put( "cn", "test", "big", "small" );
         entry.put( "objectClass", "person", "top" );
         entry.put( "sn", "this is a test" );
@@ -1706,7 +1706,7 @@ public class LdifRevertorTest
         RDN oldRdn = new RDN( "cn=small+cn=test" );
         RDN newRdn = new RDN( "cn=joe+cn=big" );
 
-        Entry entry = new DefaultClientEntry( dn );
+        Entry entry = new DefaultEntry( dn );
         entry.put( "cn", "test", "big", "small" );
         entry.put( "objectClass", "person", "top" );
         entry.put( "sn", "this is a test" );
@@ -1765,7 +1765,7 @@ public class LdifRevertorTest
         RDN oldRdn = new RDN( "cn=small+cn=test" );
         RDN newRdn = new RDN( "cn=joe+cn=test" );
 
-        Entry entry = new DefaultClientEntry( dn );
+        Entry entry = new DefaultEntry( dn );
         entry.put( "cn", "test", "big", "small" );
         entry.put( "objectClass", "person", "top" );
         entry.put( "sn", "this is a test" );
@@ -1811,7 +1811,7 @@ public class LdifRevertorTest
         RDN oldRdn = new RDN( "cn=small+cn=test" );
         RDN newRdn = new RDN( "cn=big+cn=test" );
 
-        Entry entry = new DefaultClientEntry( dn );
+        Entry entry = new DefaultEntry( dn );
         entry.put( "cn", "test", "big", "small" );
         entry.put( "objectClass", "person", "top" );
         entry.put( "sn", "this is a test" );
@@ -1857,7 +1857,7 @@ public class LdifRevertorTest
         RDN oldRdn = new RDN( "cn=small+cn=test" );
         RDN newRdn = new RDN( "cn=joe+cn=test" );
 
-        Entry entry = new DefaultClientEntry( dn );
+        Entry entry = new DefaultEntry( dn );
         entry.put( "cn", "test", "big", "small" );
         entry.put( "objectClass", "person", "top" );
         entry.put( "sn", "this is a test" );
@@ -1903,7 +1903,7 @@ public class LdifRevertorTest
         RDN oldRdn = new RDN( "cn=small+cn=test" );
         RDN newRdn = new RDN( "cn=big+cn=test" );
 
-        Entry entry = new DefaultClientEntry( dn );
+        Entry entry = new DefaultEntry( dn );
         entry.put( "cn", "test", "big", "small" );
         entry.put( "objectClass", "person", "top" );
         entry.put( "sn", "this is a test" );

@@ -36,10 +36,10 @@ import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
+import org.apache.directory.shared.ldap.entry.DefaultEntry;
 import org.apache.directory.shared.ldap.entry.DefaultEntryAttribute;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
-import org.apache.directory.shared.ldap.entry.client.DefaultClientEntry;
 import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.util.StringTools;
 
@@ -74,7 +74,7 @@ public class SearchResultEntryCodec extends LdapMessageCodec
     private byte[] objectNameBytes;
 
     /** The entry */
-    private Entry entry = new DefaultClientEntry();
+    private Entry entry = new DefaultEntry();
 
     /** The current attribute being decoded */
     private EntryAttribute currentAttributeValue;

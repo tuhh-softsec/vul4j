@@ -41,6 +41,7 @@ import java.util.Set;
 
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.entry.BinaryValue;
+import org.apache.directory.shared.ldap.entry.DefaultEntry;
 import org.apache.directory.shared.ldap.entry.DefaultEntryAttribute;
 import org.apache.directory.shared.ldap.entry.StringValue;
 import org.apache.directory.shared.ldap.entry.Entry;
@@ -55,7 +56,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * A test class for the DefaultClientEntry class
+ * A test class for the DefaultEntry class
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
@@ -76,7 +77,7 @@ public class DefaultClientEntryTest
     {
         try
         {
-            Entry entry = new DefaultClientEntry( EXAMPLE_DN );
+            Entry entry = new DefaultEntry( EXAMPLE_DN );
             
             EntryAttribute attrOC = new DefaultEntryAttribute( "objectClass", "top", "person" );
             EntryAttribute attrCN = new DefaultEntryAttribute( "cn", "test1", "test2" );
@@ -198,12 +199,12 @@ public class DefaultClientEntryTest
 
 
     /**
-     * Test method for DefaultClientEntry()
+     * Test method for DefaultEntry()
      */
     @Test
     public void testDefaultClientEntry()
     {
-        Entry entry = new DefaultClientEntry();
+        Entry entry = new DefaultEntry();
         
         assertNotNull( entry );
         assertEquals( DN.EMPTY_DN, entry.getDn() );
@@ -212,12 +213,12 @@ public class DefaultClientEntryTest
 
 
     /**
-     * Test method for DefaultClientEntry( DN )
+     * Test method for DefaultEntry( DN )
      */
     @Test
     public void testDefaultClientEntryLdapDN()
     {
-        Entry entry = new DefaultClientEntry( EXAMPLE_DN );
+        Entry entry = new DefaultEntry( EXAMPLE_DN );
         
         assertNotNull( entry );
         assertNotNull( entry.getDn() );
@@ -227,12 +228,12 @@ public class DefaultClientEntryTest
 
 
     /**
-     * Test method for DefaultClientEntry( DN, String... )
+     * Test method for DefaultEntry( DN, String... )
      */
     @Test
     public void testDefaultClientEntryLdapDNStringArray()
     {
-        Entry entry = new DefaultClientEntry( EXAMPLE_DN, "ObjectClass", "cn", "sn" );
+        Entry entry = new DefaultEntry( EXAMPLE_DN, "ObjectClass", "cn", "sn" );
         
         assertNotNull( entry );
         assertNotNull( entry.getDn() );
@@ -244,7 +245,7 @@ public class DefaultClientEntryTest
 
         try
         {
-            new DefaultClientEntry( EXAMPLE_DN, "ObjectClass", (String)null, "sn" );
+            new DefaultEntry( EXAMPLE_DN, "ObjectClass", (String)null, "sn" );
             fail();
         }
         catch( IllegalArgumentException iae )
@@ -254,7 +255,7 @@ public class DefaultClientEntryTest
 
         try
         {
-            new DefaultClientEntry( EXAMPLE_DN, "ObjectClass", " ", "sn" );
+            new DefaultEntry( EXAMPLE_DN, "ObjectClass", " ", "sn" );
             fail();
         }
         catch( IllegalArgumentException iae )
@@ -265,7 +266,7 @@ public class DefaultClientEntryTest
 
 
     /**
-     * Test method for DefaultClientEntry( DN, EntryAttribute... )
+     * Test method for DefaultEntry( DN, EntryAttribute... )
      */
     @Test
     public void testDefaultClientEntryLdapDNEntryAttributeArray()
@@ -274,7 +275,7 @@ public class DefaultClientEntryTest
         EntryAttribute attrCN = new DefaultEntryAttribute( "cn", "test1", "test2" );
         EntryAttribute attrPWD = new DefaultEntryAttribute( "userPassword", BYTES1, BYTES2 );
         
-        Entry entry = new DefaultClientEntry( EXAMPLE_DN, attrOC, attrCN, attrPWD );
+        Entry entry = new DefaultEntry( EXAMPLE_DN, attrOC, attrCN, attrPWD );
         
         assertNotNull( entry );
         assertNotNull( entry.getDn() );
@@ -284,7 +285,7 @@ public class DefaultClientEntryTest
         assertTrue( entry.containsAttribute( "CN" ) );
         assertTrue( entry.containsAttribute( "userPassword" ) );
         
-        entry = new DefaultClientEntry( EXAMPLE_DN, attrOC, attrCN, attrOC );
+        entry = new DefaultEntry( EXAMPLE_DN, attrOC, attrCN, attrOC );
         assertNotNull( entry );
         assertNotNull( entry.getDn() );
         assertEquals( EXAMPLE_DN, entry.getDn() );
@@ -292,7 +293,7 @@ public class DefaultClientEntryTest
         assertTrue( entry.containsAttribute( "OBJECTCLASS" ) );
         assertTrue( entry.containsAttribute( "CN" ) );
         
-        entry = new DefaultClientEntry( EXAMPLE_DN, attrOC, (EntryAttribute)null );
+        entry = new DefaultEntry( EXAMPLE_DN, attrOC, (EntryAttribute)null );
         assertNotNull( entry );
         assertNotNull( entry.getDn() );
         assertEquals( EXAMPLE_DN, entry.getDn() );
@@ -343,7 +344,7 @@ public class DefaultClientEntryTest
     @Test
     public void testAddStringByteArrayArray() throws LdapException
     {
-        Entry entry = new DefaultClientEntry();
+        Entry entry = new DefaultEntry();
         
         entry.add( "userPassword", (byte[])null );
         assertEquals( 1, entry.size() );
@@ -368,7 +369,7 @@ public class DefaultClientEntryTest
     @Test
     public void testAddStringStringArray() throws LdapException
     {
-        Entry entry = new DefaultClientEntry();
+        Entry entry = new DefaultEntry();
         
         entry.add( "cn", (String)null );
         assertEquals( 1, entry.size() );
@@ -393,7 +394,7 @@ public class DefaultClientEntryTest
     @Test
     public void testAddStringValueArray() throws LdapException
     {
-        Entry entry = new DefaultClientEntry();
+        Entry entry = new DefaultEntry();
         
         Value<String> value = new StringValue( (String)null );
         
@@ -437,7 +438,7 @@ public class DefaultClientEntryTest
     @Test
     public void testClear() throws LdapException
     {
-        Entry entry = new DefaultClientEntry( EXAMPLE_DN );
+        Entry entry = new DefaultEntry( EXAMPLE_DN );
         
         assertEquals( 0, entry.size() );
         assertNull( entry.get( "ObjectClass" ) );
@@ -461,7 +462,7 @@ public class DefaultClientEntryTest
     @Test
     public void testClone() throws LdapException
     {
-        Entry entry1 = new DefaultClientEntry();
+        Entry entry1 = new DefaultEntry();
         
         Entry entry2 = entry1.clone();
         
@@ -495,7 +496,7 @@ public class DefaultClientEntryTest
     @Test
     public void testContainsEntryAttributeArray() throws LdapException
     {
-        Entry entry = new DefaultClientEntry( EXAMPLE_DN );
+        Entry entry = new DefaultEntry( EXAMPLE_DN );
         
         EntryAttribute attrOC = new DefaultEntryAttribute( "objectClass", "top", "person" );
         EntryAttribute attrCN = new DefaultEntryAttribute( "cn", "test1", "test2" );
@@ -521,7 +522,7 @@ public class DefaultClientEntryTest
     @Test
     public void testContainsStringByteArray() throws LdapException
     {
-        Entry entry = new DefaultClientEntry( EXAMPLE_DN );
+        Entry entry = new DefaultEntry( EXAMPLE_DN );
         
         assertFalse( entry.containsAttribute( "objectClass" ) );
         
@@ -545,7 +546,7 @@ public class DefaultClientEntryTest
     @Test
     public void testContainsStringStringArray() throws LdapException
     {
-        Entry entry = new DefaultClientEntry( EXAMPLE_DN );
+        Entry entry = new DefaultEntry( EXAMPLE_DN );
         
         assertFalse( entry.containsAttribute( "objectClass" ) );
         
@@ -574,7 +575,7 @@ public class DefaultClientEntryTest
     @Test
     public void testContainsStringValueArray() throws LdapException
     {
-        Entry entry = new DefaultClientEntry( EXAMPLE_DN );
+        Entry entry = new DefaultEntry( EXAMPLE_DN );
         
         assertFalse( entry.containsAttribute( "objectClass" ) );
         
@@ -607,7 +608,7 @@ public class DefaultClientEntryTest
     @Test
     public void testContainsAttribute() throws LdapException
     {
-        Entry entry = new DefaultClientEntry( EXAMPLE_DN );
+        Entry entry = new DefaultEntry( EXAMPLE_DN );
         
         assertFalse( entry.containsAttribute( "objectClass" ) );
         
@@ -638,8 +639,8 @@ public class DefaultClientEntryTest
     @Test
     public void testEqualsObject() throws LdapException
     {
-        Entry entry1 = new DefaultClientEntry();
-        Entry entry2 = new DefaultClientEntry();
+        Entry entry1 = new DefaultEntry();
+        Entry entry2 = new DefaultEntry();
         
         assertEquals( entry1, entry2 );
         
@@ -686,7 +687,7 @@ public class DefaultClientEntryTest
     @Test
     public void testGet() throws LdapException
     {
-        Entry entry = new DefaultClientEntry( EXAMPLE_DN );
+        Entry entry = new DefaultEntry( EXAMPLE_DN );
         
         assertNull( entry.get( "objectClass" ) );
         
@@ -714,7 +715,7 @@ public class DefaultClientEntryTest
     @Test
     public void testGetDn() throws LdapException 
     {
-        Entry entry = new DefaultClientEntry( EXAMPLE_DN );
+        Entry entry = new DefaultEntry( EXAMPLE_DN );
         
         assertEquals( EXAMPLE_DN, entry.getDn() );
         
@@ -731,8 +732,8 @@ public class DefaultClientEntryTest
     @Test
     public void testHashCode() throws LdapException, LdapException
     {
-        Entry entry1 = new DefaultClientEntry( EXAMPLE_DN );
-        Entry entry2 = new DefaultClientEntry( EXAMPLE_DN );
+        Entry entry1 = new DefaultEntry( EXAMPLE_DN );
+        Entry entry2 = new DefaultEntry( EXAMPLE_DN );
         
         assertEquals( entry1.hashCode(), entry2.hashCode() );
         
@@ -753,7 +754,7 @@ public class DefaultClientEntryTest
 
         assertEquals( entry1.hashCode(), entry2.hashCode() );
         
-        Entry entry3 = new DefaultClientEntry( EXAMPLE_DN );
+        Entry entry3 = new DefaultEntry( EXAMPLE_DN );
         entry3.add( attrOC, attrSN, attrCN, attrPWD );
 
         assertEquals( entry1.hashCode(), entry3.hashCode() );
@@ -766,7 +767,7 @@ public class DefaultClientEntryTest
     @Test
     public void testHasObjectClass() throws LdapException
     {
-        Entry entry = new DefaultClientEntry( EXAMPLE_DN );
+        Entry entry = new DefaultEntry( EXAMPLE_DN );
         
         assertFalse( entry.containsAttribute( "objectClass" ) );
         assertFalse( entry.hasObjectClass( "top" ) );
@@ -818,7 +819,7 @@ public class DefaultClientEntryTest
     @Test
     public void testPutEntryAttributeArray() throws LdapException
     {
-        Entry entry = new DefaultClientEntry( EXAMPLE_DN );
+        Entry entry = new DefaultEntry( EXAMPLE_DN );
         
         EntryAttribute attrOC = new DefaultEntryAttribute( "objectClass", "top", "person" );
         EntryAttribute attrCN = new DefaultEntryAttribute( "cn", "test1", "test2" );
@@ -849,7 +850,7 @@ public class DefaultClientEntryTest
     @Test
     public void testPutStringByteArrayArray()
     {
-        Entry entry = new DefaultClientEntry( EXAMPLE_DN );
+        Entry entry = new DefaultEntry( EXAMPLE_DN );
         
         try
         {
@@ -895,7 +896,7 @@ public class DefaultClientEntryTest
     @Test
     public void testPutStringStringArray()
     {
-        Entry entry = new DefaultClientEntry( EXAMPLE_DN );
+        Entry entry = new DefaultEntry( EXAMPLE_DN );
         
         try
         {
@@ -941,7 +942,7 @@ public class DefaultClientEntryTest
     @Test
     public void testPutStringValueArray()
     {
-        Entry entry = new DefaultClientEntry( EXAMPLE_DN );
+        Entry entry = new DefaultEntry( EXAMPLE_DN );
         
         Value<String> strValueTop = new StringValue( "top" );
         Value<String> strValuePerson = new StringValue( "person" );
@@ -1021,7 +1022,7 @@ public class DefaultClientEntryTest
     @Test
     public void testRemoveAttributesStringArray() throws LdapException
     {
-        Entry entry = new DefaultClientEntry( EXAMPLE_DN );
+        Entry entry = new DefaultEntry( EXAMPLE_DN );
 
         EntryAttribute attrOC = new DefaultEntryAttribute( "objectClass", "top", "person" );
         EntryAttribute attrCN = new DefaultEntryAttribute( "cn", "test1", "test2" );
@@ -1049,7 +1050,7 @@ public class DefaultClientEntryTest
     @Test
     public void testRemoveEntryAttributeArray() throws LdapException
     {
-        Entry entry = new DefaultClientEntry( EXAMPLE_DN );
+        Entry entry = new DefaultEntry( EXAMPLE_DN );
         
         EntryAttribute attrOC = new DefaultEntryAttribute( "objectClass", "top", "person" );
         EntryAttribute attrCN = new DefaultEntryAttribute( "cn", "test1", "test2" );
@@ -1081,7 +1082,7 @@ public class DefaultClientEntryTest
     @Test
     public void testRemoveStringByteArrayArray() throws LdapException
     {
-        Entry entry = new DefaultClientEntry( EXAMPLE_DN );
+        Entry entry = new DefaultEntry( EXAMPLE_DN );
         
         EntryAttribute attrPWD = new DefaultEntryAttribute( "userPassword", BYTES1, (byte[])null, BYTES2 );
 
@@ -1132,7 +1133,7 @@ public class DefaultClientEntryTest
     @Test
     public void testRemoveStringValueArray() throws LdapException
     {
-        Entry entry = new DefaultClientEntry( EXAMPLE_DN );
+        Entry entry = new DefaultEntry( EXAMPLE_DN );
 
         EntryAttribute attrCN = new DefaultEntryAttribute( "cn", "test1", "test2", (String)null );
         EntryAttribute attrPWD = new DefaultEntryAttribute( "userPassword", BYTES1, BYTES2, (byte[])null );
@@ -1171,7 +1172,7 @@ public class DefaultClientEntryTest
     @Test
     public void testSet() throws LdapException
     {
-        Entry entry = new DefaultClientEntry( EXAMPLE_DN );
+        Entry entry = new DefaultEntry( EXAMPLE_DN );
 
         entry.add( "ObjectClass", "top", "person" );
         entry.add( "cn", "test1", "test2" );
@@ -1201,7 +1202,7 @@ public class DefaultClientEntryTest
     @Test
     public void testSetDn()
     {
-        Entry entry = new DefaultClientEntry();
+        Entry entry = new DefaultEntry();
         
         assertEquals( DN.EMPTY_DN, entry.getDn() );
         
@@ -1216,7 +1217,7 @@ public class DefaultClientEntryTest
     @Test
     public void testSize() throws LdapException
     {
-        Entry entry = new DefaultClientEntry( EXAMPLE_DN );
+        Entry entry = new DefaultEntry( EXAMPLE_DN );
         
         assertEquals( 0, entry.size() );
         entry.add( "ObjectClass", "top", "person" );
@@ -1231,12 +1232,12 @@ public class DefaultClientEntryTest
 
     
     /**
-     * Test method for for {@link org.apache.directory.shared.ldap.entry.client.DefaultClientEntry#toString()}.
+     * Test method for for {@link org.apache.directory.shared.ldap.entry.DefaultEntry#toString()}.
      */
     @Test
     public void testToString()
     {
-        Entry entry = new DefaultClientEntry( EXAMPLE_DN );
+        Entry entry = new DefaultEntry( EXAMPLE_DN );
         
         assertEquals( "Entry\n    dn: dc=example,dc=com\n", entry.toString() );
         
@@ -1276,7 +1277,7 @@ public class DefaultClientEntryTest
         dn.normalize( oids );
         
         byte[] password = StringTools.getBytesUtf8( "secret" );
-        Entry entry = new DefaultClientEntry( dn);
+        Entry entry = new DefaultEntry( dn);
         entry.add( "ObjectClass", "top", "person" );
         entry.add( "cn", "test1" );
         entry.add( "userPassword", password );
@@ -1294,7 +1295,7 @@ public class DefaultClientEntryTest
     public void testSerializeEntryWithNoDN() throws LdapException, IOException, ClassNotFoundException
     {
         byte[] password = StringTools.getBytesUtf8( "secret" );
-        Entry entry = new DefaultClientEntry();
+        Entry entry = new DefaultEntry();
         entry.add( "ObjectClass", "top", "person" );
         entry.add( "cn", "test1" );
         entry.add( "userPassword", password );
@@ -1311,7 +1312,7 @@ public class DefaultClientEntryTest
     @Test
     public void testSerializeEntryWithNoDNNoAttribute() throws LdapException, IOException, ClassNotFoundException
     {
-        Entry entry = new DefaultClientEntry();
+        Entry entry = new DefaultEntry();
 
         Entry entrySer = deserializeValue( serializeValue( entry ) );
         
@@ -1329,7 +1330,7 @@ public class DefaultClientEntryTest
         
         dn.normalize( oids );
         
-        Entry entry = new DefaultClientEntry( dn );
+        Entry entry = new DefaultEntry( dn );
 
         Entry entrySer = deserializeValue( serializeValue( entry ) );
         

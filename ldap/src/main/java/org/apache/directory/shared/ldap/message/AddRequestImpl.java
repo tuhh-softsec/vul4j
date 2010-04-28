@@ -22,8 +22,8 @@ package org.apache.directory.shared.ldap.message;
 
 
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
+import org.apache.directory.shared.ldap.entry.DefaultEntry;
 import org.apache.directory.shared.ldap.entry.Entry;
-import org.apache.directory.shared.ldap.entry.client.DefaultClientEntry;
 import org.apache.directory.shared.ldap.message.internal.InternalAddRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalAddResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalResultResponse;
@@ -59,7 +59,7 @@ public class AddRequestImpl extends AbstractAbandonableRequest implements Intern
     public AddRequestImpl(final int id)
     {
         super( id, TYPE );
-        entry = new DefaultClientEntry();
+        entry = new DefaultEntry();
     }
 
 

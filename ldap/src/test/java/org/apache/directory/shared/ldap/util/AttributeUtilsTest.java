@@ -27,6 +27,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.directory.shared.ldap.entry.DefaultEntry;
 import org.apache.directory.shared.ldap.entry.DefaultModification;
 import org.apache.directory.shared.ldap.entry.DefaultEntryAttribute;
 import org.apache.directory.shared.ldap.entry.Entry;
@@ -34,7 +35,6 @@ import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Modification;
 import org.apache.directory.shared.ldap.entry.ModificationOperation;
 import org.apache.directory.shared.ldap.entry.Value;
-import org.apache.directory.shared.ldap.entry.client.DefaultClientEntry;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.junit.Test;
 
@@ -52,7 +52,7 @@ public class AttributeUtilsTest
     @Test
     public void testApplyAddModificationToEmptyEntry() throws LdapException
     {
-        Entry entry = new DefaultClientEntry();
+        Entry entry = new DefaultEntry();
         EntryAttribute attr = new DefaultEntryAttribute( "cn", "test" );
         Modification modification = new DefaultModification( ModificationOperation.ADD_ATTRIBUTE, attr );
         AttributeUtils.applyModification( entry, modification );
@@ -68,7 +68,7 @@ public class AttributeUtilsTest
     @Test
     public void testApplyAddModificationToEntry() throws LdapException
     {
-        Entry entry = new DefaultClientEntry();
+        Entry entry = new DefaultEntry();
         entry.add( "dc", "apache" );
         assertEquals( 1, entry.size() );
 
@@ -89,7 +89,7 @@ public class AttributeUtilsTest
     @Test
     public void testApplyAddModificationToEntryWithValues() throws LdapException
     {
-        Entry entry = new DefaultClientEntry();
+        Entry entry = new DefaultEntry();
         entry.put( "cn", "apache" );
         assertEquals( 1, entry.size() );
 
@@ -127,7 +127,7 @@ public class AttributeUtilsTest
     @Test
     public void testApplyAddModificationToEntryWithSameValue() throws LdapException
     {
-        Entry entry = new DefaultClientEntry();
+        Entry entry = new DefaultEntry();
         entry.put( "cn", "test", "apache" );
         assertEquals( 1, entry.size() );
 
@@ -164,7 +164,7 @@ public class AttributeUtilsTest
     @Test
     public void testApplyRemoveModificationFromEmptyEntry() throws LdapException
     {
-        Entry entry = new DefaultClientEntry();
+        Entry entry = new DefaultEntry();
 
         EntryAttribute attr = new DefaultEntryAttribute( "cn", "test" );
 
@@ -181,7 +181,7 @@ public class AttributeUtilsTest
     @Test
     public void testApplyRemoveModificationFromEntryAttributeNotPresent() throws LdapException
     {
-        Entry entry = new DefaultClientEntry();
+        Entry entry = new DefaultEntry();
 
         EntryAttribute dc = new DefaultEntryAttribute( "dc", "apache" );
         entry.put( dc );
@@ -206,7 +206,7 @@ public class AttributeUtilsTest
     @Test
     public void testApplyRemoveModificationFromEntryAttributeNotSameValue() throws LdapException
     {
-        Entry entry = new DefaultClientEntry();
+        Entry entry = new DefaultEntry();
 
         EntryAttribute cn = new DefaultEntryAttribute( "cn", "apache" );
         entry.put( cn );
@@ -231,7 +231,7 @@ public class AttributeUtilsTest
     @Test
     public void testApplyRemoveModificationFromEntrySameAttributeSameValue() throws LdapException
     {
-        Entry entry = new DefaultClientEntry();
+        Entry entry = new DefaultEntry();
         entry.put( "cn", "test" );
         
         EntryAttribute attr = new DefaultEntryAttribute( "cn", "test" );
@@ -254,7 +254,7 @@ public class AttributeUtilsTest
     @Test
     public void testApplyRemoveModificationFromEntrySameAttributeValues() throws LdapException
     {
-        Entry entry = new DefaultClientEntry();
+        Entry entry = new DefaultEntry();
         entry.put( "cn", "test", "apache" );
         
         EntryAttribute attr = new DefaultEntryAttribute( "cn", "test" );
@@ -291,7 +291,7 @@ public class AttributeUtilsTest
     @Test
     public void testApplyModifyModificationFromEmptyEntry() throws LdapException
     {
-        Entry entry = new DefaultClientEntry();
+        Entry entry = new DefaultEntry();
         
         EntryAttribute attr = new DefaultEntryAttribute( "cn", "test" );
 
@@ -313,7 +313,7 @@ public class AttributeUtilsTest
     @Test
     public void testApplyModifyEmptyModificationFromEmptyEntry() throws LdapException
     {
-        Entry entry = new DefaultClientEntry();
+        Entry entry = new DefaultEntry();
         
         EntryAttribute attr = new DefaultEntryAttribute( "cn" );
 
@@ -334,7 +334,7 @@ public class AttributeUtilsTest
     @Test
     public void testApplyModifyAttributeModification() throws LdapException
     {
-        Entry entry = new DefaultClientEntry();
+        Entry entry = new DefaultEntry();
         entry.put( "cn", "test" );
         entry.put( "ou", "apache", "acme corp" );
         
@@ -378,7 +378,7 @@ public class AttributeUtilsTest
     @Test
     public void testApplyModifyModificationRemoveAttribute() throws LdapException
     {
-        Entry entry = new DefaultClientEntry();
+        Entry entry = new DefaultEntry();
         entry.put(  "cn", "test" );
         entry.put( "ou", "apache", "acme corp" );
         
