@@ -18,7 +18,6 @@
  */
 package org.apache.directory.shared.ldap.entry.client;
 
-
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
@@ -32,6 +31,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.directory.shared.ldap.NotImplementedException;
+import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.exception.LdapException;
 
 import org.apache.directory.shared.i18n.I18n;
@@ -81,6 +81,9 @@ public class DefaultClientEntry implements Entry
     /** The computed hashcode. We don't want to compute it each time the hashcode() method is called */
     private volatile int h;
 
+    /** A mutex to manage synchronization*/
+    private static transient Object MUTEX = new Object();
+
     
     //-------------------------------------------------------------------------
     // Constructors
@@ -92,12 +95,33 @@ public class DefaultClientEntry implements Entry
      */
     public DefaultClientEntry()
     {
+        schemaManager = null;
         dn = DN.EMPTY_DN;
     }
 
 
     /**
-     * Creates a new instance of DefaultServerEntry, with a 
+     * <p>
+     * Creates a new instance of DefaultClientEntry, schema aware. 
+     * </p>
+     * <p>
+     * No attributes will be created.
+     * </p> 
+     * 
+     * @param schemaManager The reference to the schemaManager
+     */
+    public DefaultClientEntry( SchemaManager schemaManager )
+    {
+        this.schemaManager = schemaManager;
+        dn = DN.EMPTY_DN;
+
+        // Initialize the ObjectClass object
+        initObjectClassAT( schemaManager );
+    }
+
+
+    /**
+     * Creates a new instance of DefaultClientEntry, with a 
      * DN. 
      * 
      * @param dn The DN for this serverEntry. Can be null.
@@ -109,7 +133,36 @@ public class DefaultClientEntry implements Entry
 
 
     /**
-     * Creates a new instance of DefaultServerEntry, with a 
+     * <p>
+     * Creates a new instance of DefaultClientEntry, schema aware. 
+     * </p>
+     * <p>
+     * No attributes will be created.
+     * </p> 
+     * 
+     * @param schemaManager The reference to the schemaManager
+     * @param dn The DN for this serverEntry. Can be null.
+     */
+    public DefaultClientEntry( SchemaManager schemaManager, DN dn )
+    {
+        if ( dn == null )
+        {
+            dn = DN.EMPTY_DN;
+        }
+        else
+        {
+            this.dn = dn;
+        }
+        
+        this.schemaManager = schemaManager;
+
+        // Initialize the ObjectClass object
+        initObjectClassAT( schemaManager );
+    }
+
+
+    /**
+     * Creates a new instance of DefaultClientEntry, with a 
      * DN and a list of IDs. 
      * 
      * @param dn The DN for this serverEntry. Can be null.
@@ -124,6 +177,111 @@ public class DefaultClientEntry implements Entry
             // Add a new AttributeType without value
             set( upId );
         }
+    }
+
+    
+    /**
+     * <p>
+     * Creates a new instance of DefaultClientEntry, copying 
+     * another entry. 
+     * </p>
+     * <p>
+     * No attributes will be created.
+     * </p> 
+     * 
+     * @param schemaManager The reference to the schemaManager
+     * @param entry the entry to copy
+     */
+    public DefaultClientEntry( SchemaManager schemaManager, Entry entry )
+    {
+        this.schemaManager = schemaManager;
+
+        // Initialize the ObjectClass object
+        initObjectClassAT( schemaManager );
+
+        // We will clone the existing entry, because it may be normalized
+        if ( entry.getDn() != null )
+        {
+            dn = (DN)entry.getDn().clone();
+        }
+        else
+        {
+            dn = DN.EMPTY_DN;
+        }
+        
+        if ( !dn.isNormalized( ) )
+        {
+            try
+            {
+                // The dn must be normalized
+                dn.normalize( schemaManager.getNormalizerMapping() );
+            }
+            catch ( LdapException ne )
+            {
+                LOG.warn( "The DN '" + entry.getDn() + "' cannot be normalized" );
+            }
+        }
+        
+        // Init the attributes map
+        attributes = new HashMap<String, EntryAttribute>( entry.size() );
+        
+        // and copy all the attributes
+        for ( EntryAttribute attribute:entry )
+        {
+            try
+            {
+                // First get the AttributeType
+                AttributeType attributeType = attribute.getAttributeType();
+
+                if ( attributeType == null )
+                {
+                    attributeType = schemaManager.lookupAttributeTypeRegistry( attribute.getId() );
+                }
+                
+                // Create a new ServerAttribute.
+                EntryAttribute serverAttribute = new DefaultEntryAttribute( attributeType, attribute );
+                
+                // And store it
+                add( serverAttribute );
+            }
+            catch ( LdapException ne )
+            {
+                // Just log a warning
+                LOG.warn( "The attribute '" + attribute.getId() + "' cannot be stored" );
+            }
+        }
+    }
+
+
+    /**
+     * Creates a new instance of DefaultClientEntry, with a 
+     * DN, a list of ID and schema aware. 
+     * <p>
+     * No attributes will be created except the ObjectClass attribute,
+     * which will contains "top". 
+     * <p>
+     * If any of the AttributeType does not exist, they are simply discarded.
+     * 
+     * @param schemaManager The reference to the schemaManager
+     * @param dn The DN for this serverEntry. Can be null.
+     * @param upIds The list of attributes to create.
+     */
+    public DefaultClientEntry( SchemaManager schemaManager, DN dn, String... upIds )
+    {
+        if ( dn == null )
+        {
+            dn = DN.EMPTY_DN;
+        }
+        else
+        {
+            this.dn = dn;
+        }
+        
+        this.schemaManager = schemaManager;
+
+        initObjectClassAT( schemaManager );
+
+        set( upIds );
     }
 
     
@@ -153,9 +311,167 @@ public class DefaultClientEntry implements Entry
     }
 
     
+    /**
+     * Creates a new instance of DefaultClientEntry, with a 
+     * DN, a list of ServerAttributes and schema aware. 
+     * <p>
+     * No attributes will be created except the ObjectClass attribute,
+     * which will contains "top". 
+     * <p>
+     * If any of the AttributeType does not exist, they are simply discarded.
+     * 
+     * @param schemaManager The reference to the schemaManager
+     * @param dn The DN for this serverEntry. Can be null
+     * @param attributes The list of attributes to create
+     */
+    public DefaultClientEntry( SchemaManager schemaManager, DN dn, EntryAttribute... attributes )
+    {
+        if ( dn == null )
+        {
+            dn = DN.EMPTY_DN;
+        }
+        else
+        {
+            this.dn = dn;
+        }
+        
+        this.schemaManager = schemaManager;
+
+        initObjectClassAT( schemaManager );
+
+        for ( EntryAttribute attribute:attributes )
+        {
+            // Store a new ServerAttribute
+            try
+            {
+                put( attribute );
+            }
+            catch ( LdapException ne )
+            {
+                LOG.warn( "The ServerAttribute '{}' does not exist. It has been discarded", attribute );
+            }
+        }
+    }
+    /**
+     * <p>
+     * Creates a new instance of DefaultClientEntry, with a 
+     * DN, a list of attributeTypes and schema aware. 
+     * </p>
+     * <p>
+     * The newly created entry is fed with the list of attributeTypes. No
+     * values are associated with those attributeTypes.
+     * </p>
+     * <p>
+     * If any of the AttributeType does not exist, they it's simply discarded.
+     * </p>
+     * 
+     * @param schemaManager The reference to the schemaManager
+     * @param dn The DN for this serverEntry. Can be null.
+     * @param attributeTypes The list of attributes to create, without value.
+     */
+    public DefaultClientEntry( SchemaManager schemaManager, DN dn, AttributeType... attributeTypes )
+    {
+        if ( dn == null )
+        {
+            dn = DN.EMPTY_DN;
+        }
+        else
+        {
+            this.dn = dn;
+        }
+
+        this.schemaManager = schemaManager;
+
+        // Initialize the ObjectClass object
+        initObjectClassAT( schemaManager );
+
+        // Add the attributeTypes
+        set( attributeTypes );
+    }
+
+    
+    /**
+     * <p>
+     * Creates a new instance of DefaultClientEntry, with a 
+     * DN, an attributeType with the user provided ID, and schema aware. 
+     * </p>
+     * <p>
+     * The newly created entry is fed with the given attributeType. No
+     * values are associated with this attributeType.
+     * </p>
+     * <p>
+     * If the AttributeType does not exist, they it's simply discarded.
+     * </p>
+     * <p>
+     * We also check that the normalized upID equals the AttributeType ID
+     * </p>
+     * 
+     * @param schemaManager The reference to the schemaManager
+     * @param dn The DN for this serverEntry. Can be null.
+     * @param attributeType The attribute to create, without value.
+     * @param upId The User Provided ID fro this AttributeType
+     */
+    public DefaultClientEntry( SchemaManager schemaManager, DN dn, AttributeType attributeType, String upId )
+    {
+        if ( dn == null )
+        {
+            dn = DN.EMPTY_DN;
+        }
+        else
+        {
+            this.dn = dn;
+        }
+        
+        this.schemaManager = schemaManager;
+
+        // Initialize the ObjectClass object
+        initObjectClassAT( schemaManager );
+
+        try
+        {
+            put( upId, attributeType, (String)null );
+        }
+        catch ( LdapException ne )
+        {
+            // Just discard the AttributeType
+            LOG.error( I18n.err( I18n.ERR_04459, upId, ne.getLocalizedMessage() ) );
+        }
+    }
+
+    
     //-------------------------------------------------------------------------
     // Helper methods
     //-------------------------------------------------------------------------
+    /**
+     * This method is used to initialize the OBJECT_CLASS_AT attributeType.
+     * 
+     * We want to do it only once, so it's a synchronized method. Note that
+     * the alternative would be to call the lookup() every time, but this won't
+     * be very efficient, as it will get the AT from a map, which is also
+     * synchronized, so here, we have a very minimal cost.
+     * 
+     * We can't do it once as a static part in the body of this class, because
+     * the access to the registries is mandatory to get back the AttributeType.
+     */
+    private void initObjectClassAT( SchemaManager schemaManager )
+    {
+        try
+        {
+            if ( OBJECT_CLASS_AT == null )
+            {
+                synchronized ( MUTEX )
+                {
+                    OBJECT_CLASS_AT = schemaManager.lookupAttributeTypeRegistry( SchemaConstants.OBJECT_CLASS_AT );
+                }
+            }
+        }
+        catch ( LdapException ne )
+        {
+            // do nothing...
+        }
+    }
+
+    
     private String getId( String upId ) throws IllegalArgumentException
     {
         String id = StringTools.trim( StringTools.toLowerCase( upId ) );
@@ -661,7 +977,7 @@ public class DefaultClientEntry implements Entry
             // First, clone the DN, if not null.
             if ( dn != null )
             {
-                clone.setDn( (DN)dn.clone() );
+                clone.dn = (DN)dn.clone();
             }
             
             // then clone the ClientAttribute Map.
@@ -670,9 +986,21 @@ public class DefaultClientEntry implements Entry
             // now clone all the attributes
             clone.attributes.clear();
             
-            for ( EntryAttribute attribute:attributes.values() )
+            if ( schemaManager != null )
             {
-                clone.attributes.put( attribute.getId(), attribute.clone() );
+                for ( EntryAttribute attribute:attributes.values() )
+                {
+                    String oid = attribute.getAttributeType().getOid();
+                    clone.attributes.put( oid, attribute.clone() );
+                }
+            }
+            else
+            {
+                for ( EntryAttribute attribute:attributes.values() )
+                {
+                    clone.attributes.put( attribute.getId(), attribute.clone() );
+                }
+                
             }
             
             // We are done !
@@ -2270,8 +2598,6 @@ public class DefaultClientEntry implements Entry
     }
     
     
-    
-
     /**
      * Serialize an Entry.
      * 
@@ -2341,7 +2667,7 @@ public class DefaultClientEntry implements Entry
             }
         }
     }
-
+    
     
     /**
      * Deserialize an entry. 
@@ -2616,7 +2942,7 @@ public class DefaultClientEntry implements Entry
                 {
                     sb.append( attribute );
                 }
-                else if ( !attribute.getId().equals( "objectclass" ) )
+                else if ( !attribute.getId().equalsIgnoreCase( "objectclass" ) )
                 {
                     sb.append( attribute );
                 }

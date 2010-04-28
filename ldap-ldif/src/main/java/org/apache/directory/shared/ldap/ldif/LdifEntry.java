@@ -98,7 +98,7 @@ public class LdifEntry implements Cloneable, Externalizable
         changeType = ChangeType.Add; // Default LDIF content
         modificationList = new LinkedList<Modification>();
         modificationItems = new HashMap<String, Modification>();
-        entry = new DefaultClientEntry( null );
+        entry = new DefaultClientEntry( (DN)null );
         control = null;
     }
 
