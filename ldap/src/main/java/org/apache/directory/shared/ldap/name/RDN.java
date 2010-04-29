@@ -184,9 +184,6 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
     /** Constant used in comparisons */
     public static final int EQUAL = 0;
 
-    /** parent RDN's id */
-    private long parentId = -1;
-
 
     /**
      * A empty constructor.
@@ -1357,9 +1354,6 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
      */
     public void writeExternal( ObjectOutput out ) throws IOException
     {
-        // write the parent Id first 
-        out.writeLong( parentId );
-
         out.writeInt( nbAtavs );
         out.writeUTF( upName );
 
@@ -1408,9 +1402,6 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
      */
     public void readExternal( ObjectInput in ) throws IOException, ClassNotFoundException
     {
-        // parent Id
-        parentId = in.readLong();
-
         // Read the ATAV number
         nbAtavs = in.readInt();
 
@@ -1466,26 +1457,6 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
     public String toString()
     {
         return upName == null ? "" : upName;
-    }
-
-
-    /**
-     * for INTERNAL use only
-     * @return long gives the parent ID of this RDN
-     */
-    public long _getParentId()
-    {
-        return parentId;
-    }
-
-
-    /**
-     * for INTERNAL use only
-     * @param parentId parent RDN's ID
-     */
-    public void _setParentId( long parentId )
-    {
-        this.parentId = parentId;
     }
 
 }

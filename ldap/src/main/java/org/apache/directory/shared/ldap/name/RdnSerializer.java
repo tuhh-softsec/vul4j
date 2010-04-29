@@ -62,8 +62,6 @@ public class RdnSerializer
      */
     public static void serialize( RDN rdn, ObjectOutput out ) throws IOException
     {
-        out.writeLong( rdn._getParentId() );
-        
         out.writeInt( rdn.getNbAtavs() );
         out.writeUTF( rdn.getName() );
         out.writeUTF( rdn.getNormName() );
@@ -103,8 +101,6 @@ public class RdnSerializer
      */
     public static RDN deserialize( ObjectInput in ) throws IOException
     {
-        long parentId = in.readLong();
-        
         // Read the ATAV number
         int nbAtavs = in.readInt();
         
@@ -125,7 +121,6 @@ public class RdnSerializer
         
         // Now creates the RDN
         RDN rdn = new RDN( length, start, upName, normName );
-        rdn._setParentId( parentId );
 
         // Read through the Atavs
         switch ( nbAtavs )
