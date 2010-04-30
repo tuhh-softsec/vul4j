@@ -200,6 +200,29 @@ public enum AliasDerefMode
     }
 
 
+    /**
+     * get the AliasDerefMode corresponding to the integer value passed
+     *
+     * @param val the AliasDerefMode's integer value
+     * @return the AliasDerefMode whose value is equivalent to the given integer value
+     */
+    public static AliasDerefMode getDerefMode( int val )
+    {
+        switch( val )
+        {
+            case 0: return NEVER_DEREF_ALIASES;
+            
+            case 1: return DEREF_IN_SEARCHING;
+            
+            case 2: return DEREF_FINDING_BASE_OBJ;
+            
+            case 3: return DEREF_ALWAYS;
+            
+            default: throw new IllegalArgumentException( "Unknown derefmode " + val );
+        }
+    }
+    
+    
     public String getJndiValue()
     {
         return jndiValue;
