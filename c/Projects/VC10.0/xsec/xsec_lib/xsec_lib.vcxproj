@@ -1,0 +1,804 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug No Xalan|Win32">
+      <Configuration>Debug No Xalan</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug No Xalan|x64">
+      <Configuration>Debug No Xalan</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release No Xalan|Win32">
+      <Configuration>Release No Xalan</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release No Xalan|x64">
+      <Configuration>Release No Xalan</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{D5B5A007-E873-4D12-B4AF-60811AFD9EF1}</ProjectGuid>
+    <RootNamespace>xsec_lib</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release No Xalan|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug No Xalan|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release No Xalan|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug No Xalan|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release No Xalan|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug No Xalan|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release No Xalan|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug No Xalan|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../../../Build/$(Platform)/VC10/$(Configuration)/</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../../../Build/$(Platform)/VC10/$(Configuration)/obj/</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../../../Build/$(Platform)/VC10/$(Configuration)/</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../../../Build/$(Platform)/VC10/$(Configuration)/obj/</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../../../../Build/$(Platform)/VC10/$(Configuration)/</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../../../../Build/$(Platform)/VC10/$(Configuration)/obj/</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../../../../Build/$(Platform)/VC10/$(Configuration)/</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../../../../Build/$(Platform)/VC10/$(Configuration)/obj/</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug No Xalan|Win32'">../../../../Build/$(Platform)/VC10/$(Configuration)/</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug No Xalan|Win32'">../../../../Build/$(Platform)/VC10/$(Configuration)/obj/</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug No Xalan|Win32'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug No Xalan|x64'">../../../../Build/$(Platform)/VC10/$(Configuration)/</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug No Xalan|x64'">../../../../Build/$(Platform)/VC10/$(Configuration)/obj/</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug No Xalan|x64'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release No Xalan|Win32'">../../../../Build/$(Platform)/VC10/$(Configuration)/</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release No Xalan|Win32'">../../../../Build/$(Platform)/VC10/$(Configuration)/obj/</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release No Xalan|Win32'">false</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release No Xalan|x64'">../../../../Build/$(Platform)/VC10/$(Configuration)/</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release No Xalan|x64'">../../../../Build/$(Platform)/VC10/$(Configuration)/obj/</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release No Xalan|x64'">false</LinkIncremental>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug No Xalan|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug No Xalan|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug No Xalan|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug No Xalan|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug No Xalan|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug No Xalan|x64'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release No Xalan|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release No Xalan|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release No Xalan|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release No Xalan|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release No Xalan|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release No Xalan|x64'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <PreBuildEvent>
+      <Message>Create Header files</Message>
+      <Command>mkdir ..\..\..\..\include
+mkdir ..\..\..\..\include\xsec
+del /q /s ..\..\..\..\include\xsec\*.*
+xcopy /I /s /f ..\..\..\..\src\*.hpp ..\..\..\..\include\xsec
+</Command>
+    </PreBuildEvent>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>../../../../include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;_XSEC_DO_MEMDEBUG;WIN32;_DEBUG;_WINDOWS;_USRDLL;XSEC_LIB_EXPORTS;PROJ_CANON;PROJ_DSIG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <PrecompiledHeaderFile>
+      </PrecompiledHeaderFile>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <BrowseInformation>true</BrowseInformation>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>xerces-c_3D.lib;Xalan-C_1D.lib;crypt32.lib;libeay32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)xsec_1_6D.dll</OutputFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)xsec_lib.pdb</ProgramDatabaseFile>
+      <SubSystem>Windows</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>$(OutDir)xsec_1D.lib</ImportLibrary>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <PreBuildEvent>
+      <Message>Create Header files</Message>
+      <Command>mkdir ..\..\..\..\include
+mkdir ..\..\..\..\include\xsec
+del /q /s ..\..\..\..\include\xsec\*.*
+xcopy /I /s /f ..\..\..\..\src\*.hpp ..\..\..\..\include\xsec
+</Command>
+    </PreBuildEvent>
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>../../../../include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_XSEC_DO_MEMDEBUG;WIN32;_DEBUG;_WINDOWS;_USRDLL;XSEC_LIB_EXPORTS;PROJ_CANON;PROJ_DSIG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <PrecompiledHeaderFile>
+      </PrecompiledHeaderFile>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <BrowseInformation>true</BrowseInformation>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>xerces-c_3D.lib;Xalan-C_1D.lib;crypt32.lib;libeay32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)xsec_1_6D.dll</OutputFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)xsec_lib.pdb</ProgramDatabaseFile>
+      <SubSystem>Windows</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>$(OutDir)xsec_1D.lib</ImportLibrary>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <PreBuildEvent>
+      <Message>Create Header files</Message>
+      <Command>mkdir ..\..\..\..\include
+mkdir ..\..\..\..\include\xsec
+del /q /s ..\..\..\..\include\xsec\*.*
+xcopy /I /s /f ..\..\..\..\src\*.hpp ..\..\..\..\include\xsec
+</Command>
+    </PreBuildEvent>
+    <ClCompile>
+      <AdditionalIncludeDirectories>../../../../include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;WIN32;NDEBUG;_WINDOWS;_USRDLL;XSEC_LIB_EXPORTS;PROJ_CANON;PROJ_DSIG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <PrecompiledHeaderFile>
+      </PrecompiledHeaderFile>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>xerces-c_3.lib;crypt32.lib;libeay32.lib;Xalan-C_1.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)xsec_1_6.dll</OutputFile>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>$(OutDir)xsec_1.lib</ImportLibrary>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <PreBuildEvent>
+      <Message>Create Header files</Message>
+      <Command>mkdir ..\..\..\..\include
+mkdir ..\..\..\..\include\xsec
+del /q /s ..\..\..\..\include\xsec\*.*
+xcopy /I /s /f ..\..\..\..\src\*.hpp ..\..\..\..\include\xsec
+</Command>
+    </PreBuildEvent>
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <AdditionalIncludeDirectories>../../../../include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;XSEC_LIB_EXPORTS;PROJ_CANON;PROJ_DSIG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <PrecompiledHeaderFile>
+      </PrecompiledHeaderFile>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>xerces-c_3.lib;crypt32.lib;libeay32.lib;Xalan-C_1.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)xsec_1_6.dll</OutputFile>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>$(OutDir)xsec_1.lib</ImportLibrary>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug No Xalan|Win32'">
+    <PreBuildEvent>
+      <Message>Create Header files</Message>
+      <Command>mkdir ..\..\..\..\include
+mkdir ..\..\..\..\include\xsec
+del /q /s ..\..\..\..\include\xsec\*.*
+xcopy /I /s /f ..\..\..\..\src\*.hpp ..\..\..\..\include\xsec
+</Command>
+    </PreBuildEvent>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>../../../../include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;_XSEC_DO_MEMDEBUG;WIN32;_DEBUG;_WINDOWS;_USRDLL;XSEC_LIB_EXPORTS;PROJ_CANON;PROJ_DSIG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <PrecompiledHeaderFile>
+      </PrecompiledHeaderFile>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <BrowseInformation>true</BrowseInformation>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>xerces-c_3D.lib;crypt32.lib;libeay32D.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)xsec_1_6D.dll</OutputFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>$(OutDir)xsec_1D.lib</ImportLibrary>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug No Xalan|x64'">
+    <PreBuildEvent>
+      <Message>Create Header files</Message>
+      <Command>mkdir ..\..\..\..\include
+mkdir ..\..\..\..\include\xsec
+del /q /s ..\..\..\..\include\xsec\*.*
+xcopy /I /s /f ..\..\..\..\src\*.hpp ..\..\..\..\include\xsec
+</Command>
+    </PreBuildEvent>
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>../../../../include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;_XSEC_DO_MEMDEBUG;WIN32;_DEBUG;_WINDOWS;_USRDLL;XSEC_LIB_EXPORTS;PROJ_CANON;PROJ_DSIG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <PrecompiledHeaderFile>
+      </PrecompiledHeaderFile>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <BrowseInformation>true</BrowseInformation>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>xerces-c_3D.lib;crypt32.lib;libeay32D.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)xsec_1_6D.dll</OutputFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>$(OutDir)xsec_1D.lib</ImportLibrary>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release No Xalan|Win32'">
+    <PreBuildEvent>
+      <Message>Create Header files</Message>
+      <Command>mkdir ..\..\..\..\include
+mkdir ..\..\..\..\include\xsec
+del /q /s ..\..\..\..\include\xsec\*.*
+xcopy /I /s /f ..\..\..\..\src\*.hpp ..\..\..\..\include\xsec
+</Command>
+    </PreBuildEvent>
+    <ClCompile>
+      <AdditionalIncludeDirectories>../../../../include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;WIN32;NDEBUG;_WINDOWS;_USRDLL;XSEC_LIB_EXPORTS;PROJ_CANON;PROJ_DSIG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <PrecompiledHeaderFile>
+      </PrecompiledHeaderFile>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+      <WarningLevel>Level3</WarningLevel>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>xerces-c_3.lib;crypt32.lib;libeay32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)xsec_1_6.dll</OutputFile>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>$(OutDir)xsec_1.lib</ImportLibrary>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release No Xalan|x64'">
+    <PreBuildEvent>
+      <Message>Create Header files</Message>
+      <Command>mkdir ..\..\..\..\include
+mkdir ..\..\..\..\include\xsec
+del /q /s ..\..\..\..\include\xsec\*.*
+xcopy /I /s /f ..\..\..\..\src\*.hpp ..\..\..\..\include\xsec
+</Command>
+    </PreBuildEvent>
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <AdditionalIncludeDirectories>../../../../include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;WIN32;NDEBUG;_WINDOWS;_USRDLL;XSEC_LIB_EXPORTS;PROJ_CANON;PROJ_DSIG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <PrecompiledHeaderFile>
+      </PrecompiledHeaderFile>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+      <WarningLevel>Level3</WarningLevel>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>xerces-c_3.lib;crypt32.lib;libeay32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)xsec_1_6.dll</OutputFile>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>$(OutDir)xsec_1.lib</ImportLibrary>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\src\canon\XSECC14n20010315.cpp" />
+    <ClCompile Include="..\..\..\..\src\canon\XSECCanon.cpp" />
+    <ClCompile Include="..\..\..\..\src\canon\XSECXMLNSStack.cpp" />
+    <ClCompile Include="..\..\..\..\src\dsig\DSIGAlgorithmHandlerDefault.cpp" />
+    <ClCompile Include="..\..\..\..\src\dsig\DSIGConstants.cpp" />
+    <ClCompile Include="..\..\..\..\src\dsig\DSIGKeyInfoExt.cpp" />
+    <ClCompile Include="..\..\..\..\src\dsig\DSIGKeyInfoList.cpp" />
+    <ClCompile Include="..\..\..\..\src\dsig\DSIGKeyInfoMgmtData.cpp" />
+    <ClCompile Include="..\..\..\..\src\dsig\DSIGKeyInfoName.cpp" />
+    <ClCompile Include="..\..\..\..\src\dsig\DSIGKeyInfoPGPData.cpp" />
+    <ClCompile Include="..\..\..\..\src\dsig\DSIGKeyInfoSPKIData.cpp" />
+    <ClCompile Include="..\..\..\..\src\dsig\DSIGKeyInfoValue.cpp" />
+    <ClCompile Include="..\..\..\..\src\dsig\DSIGKeyInfoX509.cpp" />
+    <ClCompile Include="..\..\..\..\src\dsig\DSIGObject.cpp" />
+    <ClCompile Include="..\..\..\..\src\dsig\DSIGReference.cpp" />
+    <ClCompile Include="..\..\..\..\src\dsig\DSIGReferenceList.cpp" />
+    <ClCompile Include="..\..\..\..\src\dsig\DSIGSignature.cpp" />
+    <ClCompile Include="..\..\..\..\src\dsig\DSIGSignedInfo.cpp" />
+    <ClCompile Include="..\..\..\..\src\dsig\DSIGTransform.cpp" />
+    <ClCompile Include="..\..\..\..\src\dsig\DSIGTransformBase64.cpp" />
+    <ClCompile Include="..\..\..\..\src\dsig\DSIGTransformC14n.cpp" />
+    <ClCompile Include="..\..\..\..\src\dsig\DSIGTransformEnvelope.cpp" />
+    <ClCompile Include="..\..\..\..\src\dsig\DSIGTransformList.cpp" />
+    <ClCompile Include="..\..\..\..\src\dsig\DSIGTransformXPath.cpp" />
+    <ClCompile Include="..\..\..\..\src\dsig\DSIGTransformXPathFilter.cpp" />
+    <ClCompile Include="..\..\..\..\src\dsig\DSIGTransformXSL.cpp" />
+    <ClCompile Include="..\..\..\..\src\dsig\DSIGXPathFilterExpr.cpp" />
+    <ClCompile Include="..\..\..\..\src\dsig\DSIGXPathHere.cpp" />
+    <ClCompile Include="..\..\..\..\src\enc\XSECCryptoBase64.cpp" />
+    <ClCompile Include="..\..\..\..\src\enc\XSECCryptoException.cpp" />
+    <ClCompile Include="..\..\..\..\src\enc\XSECCryptoUtils.cpp" />
+    <ClCompile Include="..\..\..\..\src\enc\XSECCryptoX509.cpp" />
+    <ClCompile Include="..\..\..\..\src\enc\XSECKeyInfoResolverDefault.cpp" />
+    <ClCompile Include="..\..\..\..\src\enc\OpenSSL\OpenSSLCryptoBase64.cpp" />
+    <ClCompile Include="..\..\..\..\src\enc\OpenSSL\OpenSSLCryptoHash.cpp" />
+    <ClCompile Include="..\..\..\..\src\enc\OpenSSL\OpenSSLCryptoHashHMAC.cpp" />
+    <ClCompile Include="..\..\..\..\src\enc\OpenSSL\OpenSSLCryptoKeyDSA.cpp" />
+    <ClCompile Include="..\..\..\..\src\enc\OpenSSL\OpenSSLCryptoKeyHMAC.cpp" />
+    <ClCompile Include="..\..\..\..\src\enc\OpenSSL\OpenSSLCryptoKeyRSA.cpp" />
+    <ClCompile Include="..\..\..\..\src\enc\OpenSSL\OpenSSLCryptoProvider.cpp" />
+    <ClCompile Include="..\..\..\..\src\enc\OpenSSL\OpenSSLCryptoSymmetricKey.cpp" />
+    <ClCompile Include="..\..\..\..\src\enc\OpenSSL\OpenSSLCryptoX509.cpp" />
+    <ClCompile Include="..\..\..\..\src\enc\WinCAPI\WinCAPICryptoHash.cpp" />
+    <ClCompile Include="..\..\..\..\src\enc\WinCAPI\WinCAPICryptoHashHMAC.cpp" />
+    <ClCompile Include="..\..\..\..\src\enc\WinCAPI\WinCAPICryptoKeyDSA.cpp" />
+    <ClCompile Include="..\..\..\..\src\enc\WinCAPI\WinCAPICryptoKeyHMAC.cpp" />
+    <ClCompile Include="..\..\..\..\src\enc\WinCAPI\WinCAPICryptoKeyRSA.cpp" />
+    <ClCompile Include="..\..\..\..\src\enc\WinCAPI\WinCAPICryptoProvider.cpp" />
+    <ClCompile Include="..\..\..\..\src\enc\WinCAPI\WinCAPICryptoSymmetricKey.cpp" />
+    <ClCompile Include="..\..\..\..\src\enc\WinCAPI\WinCAPICryptoX509.cpp" />
+    <ClCompile Include="..\..\..\..\src\enc\XSCrypt\XSCryptCryptoBase64.cpp" />
+    <ClCompile Include="..\..\..\..\src\enc\NSS\NSSCryptoHash.cpp" />
+    <ClCompile Include="..\..\..\..\src\enc\NSS\NSSCryptoHashHMAC.cpp" />
+    <ClCompile Include="..\..\..\..\src\enc\NSS\NSSCryptoKeyDSA.cpp" />
+    <ClCompile Include="..\..\..\..\src\enc\NSS\NSSCryptoKeyHMAC.cpp" />
+    <ClCompile Include="..\..\..\..\src\enc\NSS\NSSCryptoKeyRSA.cpp" />
+    <ClCompile Include="..\..\..\..\src\enc\NSS\NSSCryptoProvider.cpp" />
+    <ClCompile Include="..\..\..\..\src\enc\NSS\NSSCryptoSymmetricKey.cpp" />
+    <ClCompile Include="..\..\..\..\src\enc\NSS\NSSCryptoX509.cpp" />
+    <ClCompile Include="..\..\..\..\src\utils\XSECBinTXFMInputStream.cpp" />
+    <ClCompile Include="..\..\..\..\src\utils\XSECDOMUtils.cpp" />
+    <ClCompile Include="..\..\..\..\src\utils\XSECNameSpaceExpander.cpp" />
+    <ClCompile Include="..\..\..\..\src\utils\XSECPlatformUtils.cpp" />
+    <ClCompile Include="..\..\..\..\src\utils\XSECSafeBuffer.cpp" />
+    <ClCompile Include="..\..\..\..\src\utils\XSECSafeBufferFormatter.cpp" />
+    <ClCompile Include="..\..\..\..\src\utils\XSECSOAPRequestorSimple.cpp" />
+    <ClCompile Include="..\..\..\..\src\utils\XSECTXFMInputSource.cpp" />
+    <ClCompile Include="..\..\..\..\src\utils\XSECXPathNodeList.cpp" />
+    <ClCompile Include="..\..\..\..\src\utils\winutils\XSECBinHTTPURIInputStream.cpp" />
+    <ClCompile Include="..\..\..\..\src\utils\winutils\XSECSOAPRequestorSimpleWin32.cpp" />
+    <ClCompile Include="..\..\..\..\src\utils\winutils\XSECURIResolverGenericWin32.cpp" />
+    <ClCompile Include="..\..\..\..\src\framework\XSECAlgorithmMapper.cpp" />
+    <ClCompile Include="..\..\..\..\src\framework\XSECEnv.cpp" />
+    <ClCompile Include="..\..\..\..\src\framework\XSECError.cpp" />
+    <ClCompile Include="..\..\..\..\src\framework\XSECException.cpp" />
+    <ClCompile Include="..\..\..\..\src\framework\XSECProvider.cpp" />
+    <ClCompile Include="..\..\..\..\src\framework\XSECURIResolverXerces.cpp" />
+    <ClCompile Include="..\..\..\..\src\transformers\TXFMBase.cpp" />
+    <ClCompile Include="..\..\..\..\src\transformers\TXFMBase64.cpp" />
+    <ClCompile Include="..\..\..\..\src\transformers\TXFMC14n.cpp" />
+    <ClCompile Include="..\..\..\..\src\transformers\TXFMChain.cpp" />
+    <ClCompile Include="..\..\..\..\src\transformers\TXFMCipher.cpp" />
+    <ClCompile Include="..\..\..\..\src\transformers\TXFMConcatChains.cpp" />
+    <ClCompile Include="..\..\..\..\src\transformers\TXFMDocObject.cpp" />
+    <ClCompile Include="..\..\..\..\src\transformers\TXFMEnvelope.cpp" />
+    <ClCompile Include="..\..\..\..\src\transformers\TXFMMD5.cpp" />
+    <ClCompile Include="..\..\..\..\src\transformers\TXFMOutputFile.cpp" />
+    <ClCompile Include="..\..\..\..\src\transformers\TXFMParser.cpp" />
+    <ClCompile Include="..\..\..\..\src\transformers\TXFMSB.cpp" />
+    <ClCompile Include="..\..\..\..\src\transformers\TXFMSHA1.cpp" />
+    <ClCompile Include="..\..\..\..\src\transformers\TXFMURL.cpp" />
+    <ClCompile Include="..\..\..\..\src\transformers\TXFMXPath.cpp" />
+    <ClCompile Include="..\..\..\..\src\transformers\TXFMXPathFilter.cpp" />
+    <ClCompile Include="..\..\..\..\src\transformers\TXFMXSL.cpp" />
+    <ClCompile Include="..\..\..\..\src\xenc\impl\XENCAlgorithmHandlerDefault.cpp" />
+    <ClCompile Include="..\..\..\..\src\xenc\impl\XENCCipherDataImpl.cpp" />
+    <ClCompile Include="..\..\..\..\src\xenc\impl\XENCCipherImpl.cpp" />
+    <ClCompile Include="..\..\..\..\src\xenc\impl\XENCCipherReferenceImpl.cpp" />
+    <ClCompile Include="..\..\..\..\src\xenc\impl\XENCCipherValueImpl.cpp" />
+    <ClCompile Include="..\..\..\..\src\xenc\impl\XENCEncryptedDataImpl.cpp" />
+    <ClCompile Include="..\..\..\..\src\xenc\impl\XENCEncryptedKeyImpl.cpp" />
+    <ClCompile Include="..\..\..\..\src\xenc\impl\XENCEncryptedTypeImpl.cpp" />
+    <ClCompile Include="..\..\..\..\src\xenc\impl\XENCEncryptionMethodImpl.cpp" />
+    <ClCompile Include="..\..\..\..\src\xkms\XKMSConstants.cpp" />
+    <ClCompile Include="..\..\..\..\src\xkms\impl\XKMSAuthenticationImpl.cpp" />
+    <ClCompile Include="..\..\..\..\src\xkms\impl\XKMSCompoundRequestImpl.cpp" />
+    <ClCompile Include="..\..\..\..\src\xkms\impl\XKMSCompoundResultImpl.cpp" />
+    <ClCompile Include="..\..\..\..\src\xkms\impl\XKMSKeyBindingAbstractTypeImpl.cpp" />
+    <ClCompile Include="..\..\..\..\src\xkms\impl\XKMSKeyBindingImpl.cpp" />
+    <ClCompile Include="..\..\..\..\src\xkms\impl\XKMSLocateRequestImpl.cpp" />
+    <ClCompile Include="..\..\..\..\src\xkms\impl\XKMSLocateResultImpl.cpp" />
+    <ClCompile Include="..\..\..\..\src\xkms\impl\XKMSMessageAbstractTypeImpl.cpp" />
+    <ClCompile Include="..\..\..\..\src\xkms\impl\XKMSMessageFactoryImpl.cpp" />
+    <ClCompile Include="..\..\..\..\src\xkms\impl\XKMSNotBoundAuthentication.cpp" />
+    <ClCompile Include="..\..\..\..\src\xkms\impl\XKMSPendingRequestImpl.cpp" />
+    <ClCompile Include="..\..\..\..\src\xkms\impl\XKMSPrototypeKeyBindingImpl.cpp" />
+    <ClCompile Include="..\..\..\..\src\xkms\impl\XKMSQueryKeyBindingImpl.cpp" />
+    <ClCompile Include="..\..\..\..\src\xkms\impl\XKMSRecoverKeyBindingImpl.cpp" />
+    <ClCompile Include="..\..\..\..\src\xkms\impl\XKMSRecoverRequestImpl.cpp" />
+    <ClCompile Include="..\..\..\..\src\xkms\impl\XKMSRecoverResultImpl.cpp" />
+    <ClCompile Include="..\..\..\..\src\xkms\impl\XKMSRegisterRequestImpl.cpp" />
+    <ClCompile Include="..\..\..\..\src\xkms\impl\XKMSRegisterResultImpl.cpp" />
+    <ClCompile Include="..\..\..\..\src\xkms\impl\XKMSReissueKeyBindingImpl.cpp" />
+    <ClCompile Include="..\..\..\..\src\xkms\impl\XKMSReissueRequestImpl.cpp" />
+    <ClCompile Include="..\..\..\..\src\xkms\impl\XKMSReissueResultImpl.cpp" />
+    <ClCompile Include="..\..\..\..\src\xkms\impl\XKMSRequestAbstractTypeImpl.cpp" />
+    <ClCompile Include="..\..\..\..\src\xkms\impl\XKMSRespondWithImpl.cpp" />
+    <ClCompile Include="..\..\..\..\src\xkms\impl\XKMSResponseMechanismImpl.cpp" />
+    <ClCompile Include="..\..\..\..\src\xkms\impl\XKMSResultImpl.cpp" />
+    <ClCompile Include="..\..\..\..\src\xkms\impl\XKMSResultTypeImpl.cpp" />
+    <ClCompile Include="..\..\..\..\src\xkms\impl\XKMSRevokeKeyBindingImpl.cpp" />
+    <ClCompile Include="..\..\..\..\src\xkms\impl\XKMSRevokeRequestImpl.cpp" />
+    <ClCompile Include="..\..\..\..\src\xkms\impl\XKMSRevokeResultImpl.cpp" />
+    <ClCompile Include="..\..\..\..\src\xkms\impl\XKMSRSAKeyPairImpl.cpp" />
+    <ClCompile Include="..\..\..\..\src\xkms\impl\XKMSStatusImpl.cpp" />
+    <ClCompile Include="..\..\..\..\src\xkms\impl\XKMSStatusRequestImpl.cpp" />
+    <ClCompile Include="..\..\..\..\src\xkms\impl\XKMSStatusResultImpl.cpp" />
+    <ClCompile Include="..\..\..\..\src\xkms\impl\XKMSUnverifiedKeyBindingImpl.cpp" />
+    <ClCompile Include="..\..\..\..\src\xkms\impl\XKMSUseKeyWithImpl.cpp" />
+    <ClCompile Include="..\..\..\..\src\xkms\impl\XKMSValidateRequestImpl.cpp" />
+    <ClCompile Include="..\..\..\..\src\xkms\impl\XKMSValidateResultImpl.cpp" />
+    <ClCompile Include="..\..\..\..\src\xkms\impl\XKMSValidityIntervalImpl.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\src\canon\XSECC14n20010315.hpp" />
+    <ClInclude Include="..\..\..\..\src\canon\XSECCanon.hpp" />
+    <ClInclude Include="..\..\..\..\src\canon\XSECXMLNSStack.hpp" />
+    <ClInclude Include="..\..\..\..\src\dsig\DSIGAlgorithmHandlerDefault.hpp" />
+    <ClInclude Include="..\..\..\..\src\dsig\DSIGConstants.hpp" />
+    <ClInclude Include="..\..\..\..\src\dsig\DSIGKeyInfo.hpp" />
+    <ClInclude Include="..\..\..\..\src\dsig\DSIGKeyInfoExt.hpp" />
+    <ClInclude Include="..\..\..\..\src\dsig\DSIGKeyInfoList.hpp" />
+    <ClInclude Include="..\..\..\..\src\dsig\DSIGKeyInfoMgmtData.hpp" />
+    <ClInclude Include="..\..\..\..\src\dsig\DSIGKeyInfoName.hpp" />
+    <ClInclude Include="..\..\..\..\src\dsig\DSIGKeyInfoPGPData.hpp" />
+    <ClInclude Include="..\..\..\..\src\dsig\DSIGKeyInfoSPKIData.hpp" />
+    <ClInclude Include="..\..\..\..\src\dsig\DSIGKeyInfoValue.hpp" />
+    <ClInclude Include="..\..\..\..\src\dsig\DSIGKeyInfoX509.hpp" />
+    <ClInclude Include="..\..\..\..\src\dsig\DSIGObject.hpp" />
+    <ClInclude Include="..\..\..\..\src\dsig\DSIGReference.hpp" />
+    <ClInclude Include="..\..\..\..\src\dsig\DSIGReferenceList.hpp" />
+    <ClInclude Include="..\..\..\..\src\dsig\DSIGSignature.hpp" />
+    <ClInclude Include="..\..\..\..\src\dsig\DSIGSignedInfo.hpp" />
+    <ClInclude Include="..\..\..\..\src\dsig\DSIGTransform.hpp" />
+    <ClInclude Include="..\..\..\..\src\dsig\DSIGTransformBase64.hpp" />
+    <ClInclude Include="..\..\..\..\src\dsig\DSIGTransformC14n.hpp" />
+    <ClInclude Include="..\..\..\..\src\dsig\DSIGTransformEnvelope.hpp" />
+    <ClInclude Include="..\..\..\..\src\dsig\DSIGTransformList.hpp" />
+    <ClInclude Include="..\..\..\..\src\dsig\DSIGTransformXPath.hpp" />
+    <ClInclude Include="..\..\..\..\src\dsig\DSIGTransformXPathFilter.hpp" />
+    <ClInclude Include="..\..\..\..\src\dsig\DSIGTransformXSL.hpp" />
+    <ClInclude Include="..\..\..\..\src\dsig\DSIGXPathFilterExpr.hpp" />
+    <ClInclude Include="..\..\..\..\src\dsig\DSIGXPathHere.hpp" />
+    <ClInclude Include="..\..\..\..\src\framework\resource.h" />
+    <ClInclude Include="..\..\..\..\src\enc\XSECCryptoBase64.hpp" />
+    <ClInclude Include="..\..\..\..\src\enc\XSECCryptoException.hpp" />
+    <ClInclude Include="..\..\..\..\src\enc\XSECCryptoHash.hpp" />
+    <ClInclude Include="..\..\..\..\src\enc\XSECCryptoKey.hpp" />
+    <ClInclude Include="..\..\..\..\src\enc\XSECCryptoKeyDSA.hpp" />
+    <ClInclude Include="..\..\..\..\src\enc\XSECCryptoKeyHMAC.hpp" />
+    <ClInclude Include="..\..\..\..\src\enc\XSECCryptoKeyRSA.hpp" />
+    <ClInclude Include="..\..\..\..\src\enc\XSECCryptoProvider.hpp" />
+    <ClInclude Include="..\..\..\..\src\enc\XSECCryptoSymmetricKey.hpp" />
+    <ClInclude Include="..\..\..\..\src\enc\XSECCryptoUtils.hpp" />
+    <ClInclude Include="..\..\..\..\src\enc\XSECCryptoX509.hpp" />
+    <ClInclude Include="..\..\..\..\src\enc\XSECKeyInfoResolver.hpp" />
+    <ClInclude Include="..\..\..\..\src\enc\XSECKeyInfoResolverDefault.hpp" />
+    <ClInclude Include="..\..\..\..\src\enc\OpenSSL\OpenSSLCryptoBase64.hpp" />
+    <ClInclude Include="..\..\..\..\src\enc\OpenSSL\OpenSSLCryptoHash.hpp" />
+    <ClInclude Include="..\..\..\..\src\enc\OpenSSL\OpenSSLCryptoHashHMAC.hpp" />
+    <ClInclude Include="..\..\..\..\src\enc\OpenSSL\OpenSSLCryptoKeyDSA.hpp" />
+    <ClInclude Include="..\..\..\..\src\enc\OpenSSL\OpenSSLCryptoKeyHMAC.hpp" />
+    <ClInclude Include="..\..\..\..\src\enc\OpenSSL\OpenSSLCryptoKeyRSA.hpp" />
+    <ClInclude Include="..\..\..\..\src\enc\OpenSSL\OpenSSLCryptoProvider.hpp" />
+    <ClInclude Include="..\..\..\..\src\enc\OpenSSL\OpenSSLCryptoSymmetricKey.hpp" />
+    <ClInclude Include="..\..\..\..\src\enc\OpenSSL\OpenSSLCryptoX509.hpp" />
+    <ClInclude Include="..\..\..\..\src\enc\WinCAPI\WinCAPICryptoHash.hpp" />
+    <ClInclude Include="..\..\..\..\src\enc\WinCAPI\WinCAPICryptoHashHMAC.hpp" />
+    <ClInclude Include="..\..\..\..\src\enc\WinCAPI\WinCAPICryptoKeyDSA.hpp" />
+    <ClInclude Include="..\..\..\..\src\enc\WinCAPI\WinCAPICryptoKeyHMAC.hpp" />
+    <ClInclude Include="..\..\..\..\src\enc\WinCAPI\WinCAPICryptoKeyRSA.hpp" />
+    <ClInclude Include="..\..\..\..\src\enc\WinCAPI\WinCAPICryptoProvider.hpp" />
+    <ClInclude Include="..\..\..\..\src\enc\WinCAPI\WinCAPICryptoSymmetricKey.hpp" />
+    <ClInclude Include="..\..\..\..\src\enc\WinCAPI\WinCAPICryptoX509.hpp" />
+    <ClInclude Include="..\..\..\..\src\enc\XSCrypt\XSCryptCryptoBase64.hpp" />
+    <ClInclude Include="..\..\..\..\src\enc\NSS\NSSCryptoHash.hpp" />
+    <ClInclude Include="..\..\..\..\src\enc\NSS\NSSCryptoHashHMAC.hpp" />
+    <ClInclude Include="..\..\..\..\src\enc\NSS\NSSCryptoKeyDSA.hpp" />
+    <ClInclude Include="..\..\..\..\src\enc\NSS\NSSCryptoKeyHMAC.hpp" />
+    <ClInclude Include="..\..\..\..\src\enc\NSS\NSSCryptoKeyRSA.hpp" />
+    <ClInclude Include="..\..\..\..\src\enc\NSS\NSSCryptoProvider.hpp" />
+    <ClInclude Include="..\..\..\..\src\enc\NSS\NSSCryptoSymmetricKey.hpp" />
+    <ClInclude Include="..\..\..\..\src\enc\NSS\NSSCryptoX509.hpp" />
+    <ClInclude Include="..\..\..\..\src\utils\XSECBinTXFMInputStream.hpp" />
+    <ClInclude Include="..\..\..\..\src\utils\XSECDOMUtils.hpp" />
+    <ClInclude Include="..\..\..\..\src\utils\XSECNameSpaceExpander.hpp" />
+    <ClInclude Include="..\..\..\..\src\utils\XSECPlatformUtils.hpp" />
+    <ClInclude Include="..\..\..\..\src\utils\XSECSafeBuffer.hpp" />
+    <ClInclude Include="..\..\..\..\src\utils\XSECSafeBufferFormatter.hpp" />
+    <ClInclude Include="..\..\..\..\src\utils\XSECSOAPRequestor.hpp" />
+    <ClInclude Include="..\..\..\..\src\utils\XSECSOAPRequestorSimple.hpp" />
+    <ClInclude Include="..\..\..\..\src\utils\XSECTXFMInputSource.hpp" />
+    <ClInclude Include="..\..\..\..\src\utils\XSECXPathNodeList.hpp" />
+    <ClInclude Include="..\..\..\..\src\utils\winutils\XSECBinHTTPURIInputStream.hpp" />
+    <ClInclude Include="..\..\..\..\src\utils\winutils\XSECURIResolverGenericWin32.hpp" />
+    <ClInclude Include="..\..\..\..\src\framework\XSECAlgorithmHandler.hpp" />
+    <ClInclude Include="..\..\..\..\src\framework\XSECAlgorithmMapper.hpp" />
+    <ClInclude Include="..\..\..\..\src\framework\XSECDefs.hpp" />
+    <ClInclude Include="..\..\..\..\src\framework\XSECEnv.hpp" />
+    <ClInclude Include="..\..\..\..\src\framework\XSECError.hpp" />
+    <ClInclude Include="..\..\..\..\src\framework\XSECException.hpp" />
+    <ClInclude Include="..\..\..\..\src\framework\XSECProvider.hpp" />
+    <ClInclude Include="..\..\..\..\src\framework\XSECURIResolver.hpp" />
+    <ClInclude Include="..\..\..\..\src\framework\XSECURIResolverXerces.hpp" />
+    <ClInclude Include="..\..\..\..\src\framework\XSECW32Config.hpp" />
+    <ClInclude Include="..\..\..\..\src\transformers\TXFMBase.hpp" />
+    <ClInclude Include="..\..\..\..\src\transformers\TXFMBase64.hpp" />
+    <ClInclude Include="..\..\..\..\src\transformers\TXFMC14n.hpp" />
+    <ClInclude Include="..\..\..\..\src\transformers\TXFMChain.hpp" />
+    <ClInclude Include="..\..\..\..\src\transformers\TXFMCipher.hpp" />
+    <ClInclude Include="..\..\..\..\src\transformers\TXFMConcatChains.hpp" />
+    <ClInclude Include="..\..\..\..\src\transformers\TXFMDocObject.hpp" />
+    <ClInclude Include="..\..\..\..\src\transformers\TXFMEnvelope.hpp" />
+    <ClInclude Include="..\..\..\..\src\transformers\TXFMMD5.hpp" />
+    <ClInclude Include="..\..\..\..\src\transformers\TXFMOutputFile.hpp" />
+    <ClInclude Include="..\..\..\..\src\transformers\TXFMParser.hpp" />
+    <ClInclude Include="..\..\..\..\src\transformers\TXFMSB.hpp" />
+    <ClInclude Include="..\..\..\..\src\transformers\TXFMSHA1.hpp" />
+    <ClInclude Include="..\..\..\..\src\transformers\TXFMURL.hpp" />
+    <ClInclude Include="..\..\..\..\src\transformers\TXFMXPath.hpp" />
+    <ClInclude Include="..\..\..\..\src\transformers\TXFMXPathFilter.hpp" />
+    <ClInclude Include="..\..\..\..\src\transformers\TXFMXSL.hpp" />
+    <ClInclude Include="..\..\..\..\src\xenc\XENCCipher.hpp" />
+    <ClInclude Include="..\..\..\..\src\xenc\XENCCipherData.hpp" />
+    <ClInclude Include="..\..\..\..\src\xenc\XENCCipherReference.hpp" />
+    <ClInclude Include="..\..\..\..\src\xenc\XENCCipherValue.hpp" />
+    <ClInclude Include="..\..\..\..\src\xenc\XENCEncryptedData.hpp" />
+    <ClInclude Include="..\..\..\..\src\xenc\XENCEncryptedKey.hpp" />
+    <ClInclude Include="..\..\..\..\src\xenc\XENCEncryptedType.hpp" />
+    <ClInclude Include="..\..\..\..\src\xenc\XENCEncryptionMethod.hpp" />
+    <ClInclude Include="..\..\..\..\src\xenc\impl\XENCAlgorithmHandlerDefault.hpp" />
+    <ClInclude Include="..\..\..\..\src\xenc\impl\XENCCipherDataImpl.hpp" />
+    <ClInclude Include="..\..\..\..\src\xenc\impl\XENCCipherImpl.hpp" />
+    <ClInclude Include="..\..\..\..\src\xenc\impl\XENCCipherReferenceImpl.hpp" />
+    <ClInclude Include="..\..\..\..\src\xenc\impl\XENCCipherValueImpl.hpp" />
+    <ClInclude Include="..\..\..\..\src\xenc\impl\XENCEncryptedDataImpl.hpp" />
+    <ClInclude Include="..\..\..\..\src\xenc\impl\XENCEncryptedKeyImpl.hpp" />
+    <ClInclude Include="..\..\..\..\src\xenc\impl\XENCEncryptedTypeImpl.hpp" />
+    <ClInclude Include="..\..\..\..\src\xenc\impl\XENCEncryptionMethodImpl.hpp" />
+    <ClInclude Include="..\..\..\..\src\xkms\XKMSAuthentication.hpp" />
+    <ClInclude Include="..\..\..\..\src\xkms\XKMSCompoundRequest.hpp" />
+    <ClInclude Include="..\..\..\..\src\xkms\XKMSCompoundResult.hpp" />
+    <ClInclude Include="..\..\..\..\src\xkms\XKMSConstants.hpp" />
+    <ClInclude Include="..\..\..\..\src\xkms\XKMSKeyBinding.hpp" />
+    <ClInclude Include="..\..\..\..\src\xkms\XKMSKeyBindingAbstractType.hpp" />
+    <ClInclude Include="..\..\..\..\src\xkms\XKMSLocateRequest.hpp" />
+    <ClInclude Include="..\..\..\..\src\xkms\XKMSLocateResult.hpp" />
+    <ClInclude Include="..\..\..\..\src\xkms\XKMSMessageAbstractType.hpp" />
+    <ClInclude Include="..\..\..\..\src\xkms\XKMSMessageFactory.hpp" />
+    <ClInclude Include="..\..\..\..\src\xkms\XKMSNotBoundAuthentication.hpp" />
+    <ClInclude Include="..\..\..\..\src\xkms\XKMSPendingRequest.hpp" />
+    <ClInclude Include="..\..\..\..\src\xkms\XKMSPrototypeKeyBinding.hpp" />
+    <ClInclude Include="..\..\..\..\src\xkms\XKMSQueryKeyBinding.hpp" />
+    <ClInclude Include="..\..\..\..\src\xkms\XKMSRecoverKeyBinding.hpp" />
+    <ClInclude Include="..\..\..\..\src\xkms\XKMSRecoverRequest.hpp" />
+    <ClInclude Include="..\..\..\..\src\xkms\XKMSRecoverResult.hpp" />
+    <ClInclude Include="..\..\..\..\src\xkms\XKMSRegisterRequest.hpp" />
+    <ClInclude Include="..\..\..\..\src\xkms\XKMSRegisterResult.hpp" />
+    <ClInclude Include="..\..\..\..\src\xkms\XKMSReissueKeyBinding.hpp" />
+    <ClInclude Include="..\..\..\..\src\xkms\XKMSReissueRequest.hpp" />
+    <ClInclude Include="..\..\..\..\src\xkms\XKMSReissueResult.hpp" />
+    <ClInclude Include="..\..\..\..\src\xkms\XKMSRequestAbstractType.hpp" />
+    <ClInclude Include="..\..\..\..\src\xkms\XKMSRespondWith.hpp" />
+    <ClInclude Include="..\..\..\..\src\xkms\XKMSResponseMechanism.hpp" />
+    <ClInclude Include="..\..\..\..\src\xkms\XKMSResult.hpp" />
+    <ClInclude Include="..\..\..\..\src\xkms\XKMSResultType.hpp" />
+    <ClInclude Include="..\..\..\..\src\xkms\XKMSRevokeKeyBinding.hpp" />
+    <ClInclude Include="..\..\..\..\src\xkms\XKMSRevokeRequest.hpp" />
+    <ClInclude Include="..\..\..\..\src\xkms\XKMSRevokeResult.hpp" />
+    <ClInclude Include="..\..\..\..\src\xkms\XKMSRSAKeyPair.hpp" />
+    <ClInclude Include="..\..\..\..\src\xkms\XKMSStatus.hpp" />
+    <ClInclude Include="..\..\..\..\src\xkms\XKMSStatusRequest.hpp" />
+    <ClInclude Include="..\..\..\..\src\xkms\XKMSStatusResult.hpp" />
+    <ClInclude Include="..\..\..\..\src\xkms\XKMSUnverifiedKeyBinding.hpp" />
+    <ClInclude Include="..\..\..\..\src\xkms\XKMSUseKeyWith.hpp" />
+    <ClInclude Include="..\..\..\..\src\xkms\XKMSValidateRequest.hpp" />
+    <ClInclude Include="..\..\..\..\src\xkms\XKMSValidateResult.hpp" />
+    <ClInclude Include="..\..\..\..\src\xkms\XKMSValidityInterval.hpp" />
+    <ClInclude Include="..\..\..\..\src\xkms\impl\XKMSAuthenticationImpl.hpp" />
+    <ClInclude Include="..\..\..\..\src\xkms\impl\XKMSCompoundRequestImpl.hpp" />
+    <ClInclude Include="..\..\..\..\src\xkms\impl\XKMSCompoundResultImpl.hpp" />
+    <ClInclude Include="..\..\..\..\src\xkms\impl\XKMSKeyBindingAbstractTypeImpl.hpp" />
+    <ClInclude Include="..\..\..\..\src\xkms\impl\XKMSKeyBindingImpl.hpp" />
+    <ClInclude Include="..\..\..\..\src\xkms\impl\XKMSLocateRequestImpl.hpp" />
+    <ClInclude Include="..\..\..\..\src\xkms\impl\XKMSLocateResultImpl.hpp" />
+    <ClInclude Include="..\..\..\..\src\xkms\impl\XKMSMessageAbstractTypeImpl.hpp" />
+    <ClInclude Include="..\..\..\..\src\xkms\impl\XKMSMessageFactoryImpl.hpp" />
+    <ClInclude Include="..\..\..\..\src\xkms\impl\XKMSNotBoundAuthenticationImpl.hpp" />
+    <ClInclude Include="..\..\..\..\src\xkms\impl\XKMSPendingRequestImpl.hpp" />
+    <ClInclude Include="..\..\..\..\src\xkms\impl\XKMSPrototypeKeyBindingImpl.hpp" />
+    <ClInclude Include="..\..\..\..\src\xkms\impl\XKMSQueryKeyBindingImpl.hpp" />
+    <ClInclude Include="..\..\..\..\src\xkms\impl\XKMSRecoverKeyBindingImpl.hpp" />
+    <ClInclude Include="..\..\..\..\src\xkms\impl\XKMSRecoverRequestImpl.hpp" />
+    <ClInclude Include="..\..\..\..\src\xkms\impl\XKMSRecoverResultImpl.hpp" />
+    <ClInclude Include="..\..\..\..\src\xkms\impl\XKMSRegisterRequestImpl.hpp" />
+    <ClInclude Include="..\..\..\..\src\xkms\impl\XKMSRegisterResultImpl.hpp" />
+    <ClInclude Include="..\..\..\..\src\xkms\impl\XKMSReissueKeyBindingImpl.hpp" />
+    <ClInclude Include="..\..\..\..\src\xkms\impl\XKMSReissueRequestImpl.hpp" />
+    <ClInclude Include="..\..\..\..\src\xkms\impl\XKMSReissueResultImpl.hpp" />
+    <ClInclude Include="..\..\..\..\src\xkms\impl\XKMSRequestAbstractTypeImpl.hpp" />
+    <ClInclude Include="..\..\..\..\src\xkms\impl\XKMSRespondWithImpl.hpp" />
+    <ClInclude Include="..\..\..\..\src\xkms\impl\XKMSResponseMechanismImpl.hpp" />
+    <ClInclude Include="..\..\..\..\src\xkms\impl\XKMSResultImpl.hpp" />
+    <ClInclude Include="..\..\..\..\src\xkms\impl\XKMSResultTypeImpl.hpp" />
+    <ClInclude Include="..\..\..\..\src\xkms\impl\XKMSRevokeKeyBindingImpl.hpp" />
+    <ClInclude Include="..\..\..\..\src\xkms\impl\XKMSRevokeRequestImpl.hpp" />
+    <ClInclude Include="..\..\..\..\src\xkms\impl\XKMSRevokeResultImpl.hpp" />
+    <ClInclude Include="..\..\..\..\src\xkms\impl\XKMSRSAKeyPairImpl.hpp" />
+    <ClInclude Include="..\..\..\..\src\xkms\impl\XKMSStatusImpl.hpp" />
+    <ClInclude Include="..\..\..\..\src\xkms\impl\XKMSStatusRequestImpl.hpp" />
+    <ClInclude Include="..\..\..\..\src\xkms\impl\XKMSStatusResultImpl.hpp" />
+    <ClInclude Include="..\..\..\..\src\xkms\impl\XKMSUnverifiedKeyBindingImpl.hpp" />
+    <ClInclude Include="..\..\..\..\src\xkms\impl\XKMSUseKeyWithImpl.hpp" />
+    <ClInclude Include="..\..\..\..\src\xkms\impl\XKMSValidateRequestImpl.hpp" />
+    <ClInclude Include="..\..\..\..\src\xkms\impl\XKMSValidateResultImpl.hpp" />
+    <ClInclude Include="..\..\..\..\src\xkms\impl\XKMSValidityIntervalImpl.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\..\..\..\src\framework\version.rc" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
