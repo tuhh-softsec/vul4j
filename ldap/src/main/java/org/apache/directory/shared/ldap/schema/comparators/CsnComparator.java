@@ -21,6 +21,7 @@ package org.apache.directory.shared.ldap.schema.comparators;
 
 
 import org.apache.directory.shared.ldap.csn.Csn;
+import org.apache.directory.shared.ldap.entry.StringValue;
 import org.apache.directory.shared.ldap.schema.LdapComparator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,7 +39,7 @@ import org.slf4j.LoggerFactory;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public class CsnComparator extends LdapComparator<String>
+public class CsnComparator extends LdapComparator<Object>
 {
     /** A logger for this class */
     private static final Logger LOG = LoggerFactory.getLogger( CsnComparator.class );
@@ -59,46 +60,47 @@ public class CsnComparator extends LdapComparator<String>
     /**
      * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
      */
-    public int compare( String csnStr1, String csnStr2 )
+    public int compare( Object csnObj1, Object csnObj2 )
     {
-        LOG.debug( "comparing CSN objects '{}' with '{}'", csnStr1, csnStr2 );
+        LOG.debug( "comparing CSN objects '{}' with '{}'", csnObj1, csnObj2 );
 
         // -------------------------------------------------------------------
         // Handle some basis cases
         // -------------------------------------------------------------------
-        if ( csnStr1 == null )
+        if ( csnObj1 == null )
         {
-            return ( csnStr2 == null ) ? 0 : -1;
+            return ( csnObj2 == null ) ? 0 : -1;
         }
         
-        if ( csnStr2 == null )
+        if ( csnObj2 == null )
         {
             return 1;
+        }
+        
+        String csnStr1 = null;
+        String csnStr2 = null;
+        
+        if( csnObj1 instanceof StringValue )
+        {
+            csnStr1 = ( ( StringValue ) csnObj1 ).get();
+        }
+        else
+        {
+            csnStr1 = csnObj1.toString();
+        }
+
+        if( csnObj2 instanceof StringValue )
+        {
+            csnStr2 = ( ( StringValue ) csnObj2 ).get();
+        }
+        else
+        {
+            csnStr2 = csnObj2.toString();
         }
         
         Csn csn1 = new Csn( csnStr1 );
         Csn csn2 = new Csn( csnStr2 );
         
-        if ( csn1.getTimestamp() != csn2.getTimestamp() )
-        {
-            return ( csn1.getTimestamp() < csn2.getTimestamp() ? -1 : 1 );
-        }
-        
-        if ( csn1.getChangeCount() != csn2.getChangeCount() )
-        {
-            return ( csn1.getChangeCount() < csn2.getChangeCount() ? -1 : 1 );
-        }
-        
-        if ( csn1.getReplicaId() != csn2.getReplicaId() )
-        {
-            return ( csn1.getReplicaId() < csn2.getReplicaId() ? -1 : 1 );
-        }
-        
-        if ( csn1.getOperationNumber() != csn2.getOperationNumber() )
-        {
-            return ( csn1.getOperationNumber() < csn2.getOperationNumber() ? -1 : 1 );
-        }
-        
-        return 0;
+        return csn1.compareTo( csn2 );
     }
 }
