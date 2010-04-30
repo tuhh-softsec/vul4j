@@ -41,8 +41,8 @@ This package contains the utility programs.
 %package -n libxml-security-c16
 Summary:    Apache XML security C++ library
 Group:      Development/Libraries
-Provides:   xml-security-c = %{version}
-Obsoletes:  xml-security-c
+Provides:   xml-security-c = %{version}-%{release}
+Obsoletes:  xml-security-c < %{version}-%{release}
 
 %description -n libxml-security-c16
 The xml-security-c library is a C++ implementation of the XML Digital Signature
@@ -55,7 +55,7 @@ This package contains just the shared library.
 %package -n libxml-security-c-devel
 Summary:	Development files for the Apache C++ XML security library
 Group:		Development/Libraries
-Requires:	libxml-security-c16 = %{version}
+Requires:	libxml-security-c16 = %{version}-%{release}
 Requires:	openssl-devel
 %if 0%{?suse_version} > 1030
 Requires:	libXerces-c-devel
@@ -64,8 +64,8 @@ Requires:	libXerces-c-devel
 Requires:	libxerces-c-devel
 %{?_with_xalan:Requires: xalan-c-devel}
 %endif
-Provides:   xml-security-c-devel = %{version}
-Obsoletes:  xml-security-c-devel
+Provides:   xml-security-c-devel = %{version}-%{release}
+Obsoletes:  xml-security-c-devel < %{version}-%{release}
 
 %description -n libxml-security-c-devel
 The xml-security-c library is a C++ implementation of the XML Digital Signature
