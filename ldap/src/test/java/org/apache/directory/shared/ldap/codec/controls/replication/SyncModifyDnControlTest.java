@@ -46,13 +46,13 @@ public class SyncModifyDnControlTest
     public void testDecodeSyncModifyDnControlWithMoveOperation()
     {
         Asn1Decoder decoder = new SyncModifyDnControlDecoder();
-        ByteBuffer bb = ByteBuffer.allocate( 28 );
+        ByteBuffer bb = ByteBuffer.allocate( 0x12 );
         bb.put( new byte[]
             { 
-              0x30, 0x1A,                                // SyncModifyDnControl ::= SEQUENCE {
-                 0x04, 0x07, 'u','i','d','=','j','i','m', //     entryDn LDAPDN
-                ( byte )0x0080, 0x07,                     //     move
-                  0x04, 0x05, 'o','u','=','d','c'         //     newSuperiorDn LDAPDN
+              0x30, 0x10,                                // SyncModifyDnControl ::= SEQUENCE {
+                0x04, 0x07, 'u','i','d','=','j','i','m', //     entryDn LDAPDN
+                ( byte )0x80, 0x05,                     //     move
+                  'o','u','=','d','c'         //     newSuperiorDn LDAPDN
             } );
         bb.flip();
 
