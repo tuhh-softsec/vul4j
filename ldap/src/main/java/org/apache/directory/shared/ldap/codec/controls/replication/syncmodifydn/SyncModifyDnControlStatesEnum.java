@@ -73,7 +73,7 @@ public class SyncModifyDnControlStatesEnum implements IStates
     public static final int MOVE_AND_RENAME_DEL_OLD_RDN_STATE = 10;
 
     /** terminal state */
-    public static final int LAST_SYNC_MODDN_VALUE_STATE = 10;
+    public static final int LAST_SYNC_MODDN_VALUE_STATE = 11;
     
     // =========================================================================
     // States debug strings

@@ -117,7 +117,7 @@ public class SyncModifyDnControl extends AbstractControl
                 syncModDnSeqLength += 1 + TLV.getNbBytes( renameLen ) + renameLen;
                 break;
 
-            case MOVEANDREANAME:
+            case MOVEANDRENAME:
                 moveAndRenameLen = 1 + TLV.getNbBytes( newSuperiorDn.length() ) + newSuperiorDn.length();
                 moveAndRenameLen += 1 + TLV.getNbBytes( newRdn.length() ) + newRdn.length();
                 // deleteOldRdn
@@ -127,9 +127,7 @@ public class SyncModifyDnControl extends AbstractControl
                 break;
         }
 
-        valueLength = 1 + TLV.getNbBytes( syncModDnSeqLength ) + syncModDnSeqLength;
-
-        return super.computeLength( valueLength );
+        return super.computeLength( syncModDnSeqLength );
     }
 
 
@@ -172,7 +170,7 @@ public class SyncModifyDnControl extends AbstractControl
                 Value.encode( buffer, deleteOldRdn );
                 break;
 
-            case MOVEANDREANAME:
+            case MOVEANDRENAME:
                 buffer.put( ( byte ) SyncModifyDnControlTags.MOVEANDRENAME_TAG.getValue() );
                 buffer.put( TLV.getBytes( moveAndRenameLen ) );
                 Value.encode( buffer, newSuperiorDn );
@@ -219,7 +217,7 @@ public class SyncModifyDnControl extends AbstractControl
                         Value.encode( buffer, deleteOldRdn );
                         break;
 
-                    case MOVEANDREANAME:
+                    case MOVEANDRENAME:
                         buffer.put( ( byte ) SyncModifyDnControlTags.MOVEANDRENAME_TAG.getValue() );
                         buffer.put( TLV.getBytes( moveAndRenameLen ) );
                         Value.encode( buffer, newSuperiorDn );
