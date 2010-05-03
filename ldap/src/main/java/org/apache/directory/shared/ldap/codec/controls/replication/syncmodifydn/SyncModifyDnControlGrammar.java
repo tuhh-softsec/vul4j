@@ -173,44 +173,31 @@ public class SyncModifyDnControlGrammar extends AbstractGrammar
         /**
          * read the newSuperiorDn
          * move-name       [0] LDAPDN
-         *
-        super.transitions[SyncModifyDnControlStatesEnum.MOVE_DN_STATE][UniversalTag.OCTET_STRING_TAG] = new GrammarTransition(
-            SyncModifyDnControlStatesEnum.MOVE_DN_STATE, SyncModifyDnControlStatesEnum.NEW_SUPERIOR_DN_STATE,
-            UniversalTag.OCTET_STRING_TAG, new GrammarAction( "Set SyncModifyDnControl newSuperiorDn" )
+         */
+        super.transitions[SyncModifyDnControlStatesEnum.ENTRY_DN_STATE][SyncModifyDnControlTags.RENAME_TAG.getValue()] = new GrammarTransition(
+            SyncModifyDnControlStatesEnum.ENTRY_DN_STATE, SyncModifyDnControlStatesEnum.RENAME_STATE,
+            SyncModifyDnControlTags.RENAME_TAG.getValue(), new GrammarAction( "enter SyncModifyDnControl rename choice" )
             {
                 public void action( IAsn1Container container ) throws DecoderException
                 {
                     SyncModifyDnControlContainer syncModifyDnControlContainer = ( SyncModifyDnControlContainer ) container;
-                    Value value = syncModifyDnControlContainer.getCurrentTLV().getValue();
+                    syncModifyDnControlContainer.getSyncModifyDnControl().setModDnType( SyncModifyDnType.RENAME );
 
-                    String newSuperiorDn = StringTools.utf8ToString( value.getData() );
-
-                    if ( IS_DEBUG )
-                    {
-                        LOG.debug( "newSuperiorDn = {}", newSuperiorDn );
-                    }
-
-                    syncModifyDnControlContainer.getSyncModifyDnControl().setNewSuperiorDn( newSuperiorDn );
-
-                    // We can have an END transition
-                    syncModifyDnControlContainer.grammarEndAllowed( true );
+                    syncModifyDnControlContainer.grammarEndAllowed( false );
                 }
             } );
 
-        // elecharny, the below transitions are wrong, but if the above code for reading the 'move' CHOICE's superiorDN is solved
-        // will take the cue from there and try fixing the below for 'rename' and 'moveAndRename' CHOICE
         /** 
-         * Transition from entryDN to newRdn
+         * Transition from rename's RENAME state to newRdn
          * 
          * Rename SEQUENCE {
          *     new-rdn RDN,
-         *     delete-old-rdn BOOLEAN
          * }
          *            
          * Stores the newRdn value
-         *
-        super.transitions[SyncModifyDnControlStatesEnum.NEW_SUPERIOR_DN_STATE][SyncModifyDnControlTags.RENAME_TAG.getValue()] = new GrammarTransition(
-            SyncModifyDnControlStatesEnum.NEW_SUPERIOR_DN_STATE, SyncModifyDnControlStatesEnum.NEW_RDN_STATE,
+         */
+        super.transitions[SyncModifyDnControlStatesEnum.RENAME_STATE][UniversalTag.OCTET_STRING_TAG] = new GrammarTransition(
+            SyncModifyDnControlStatesEnum.RENAME_STATE, SyncModifyDnControlStatesEnum.RENAME_NEW_RDN_STATE,
             UniversalTag.OCTET_STRING_TAG, new GrammarAction( "Set SyncModifyDnControl newRdn value" )
             {
                 public void action( IAsn1Container container ) throws DecoderException
@@ -228,22 +215,23 @@ public class SyncModifyDnControlGrammar extends AbstractGrammar
                     syncModifyDnControlContainer.getSyncModifyDnControl().setNewRdn( newRdn );
 
                     // terminal state
-                    syncModifyDnControlContainer.grammarEndAllowed( true );
+                    syncModifyDnControlContainer.grammarEndAllowed( false );
                 }
             } );
+       
         
         /** 
-         * Transition from entryDN to deleteOldRdn
-         *  MoveAndRename SEQUENCE {
-         *      superior-name   LDAPDN
-         *      new-rd RDN,
-         *      delete-old-rdn BOOLEAN
-         *  }
-         *     
-         * Stores the deleteOldRdn flag
-         *
-        super.transitions[SyncModifyDnControlStatesEnum.NEW_RDN_STATE][UniversalTag.BOOLEAN_TAG] = new GrammarTransition(
-            SyncModifyDnControlStatesEnum.NEW_RDN_STATE, SyncModifyDnControlStatesEnum.DEL_OLD_RDN_STATE,
+         * Transition from rename's RENAME newRdn to deleteOldRdn
+         * 
+         * Rename SEQUENCE {
+         *   ....
+         *   deleteOldRdn 
+         * }
+         *            
+         * Stores the deleteOldRdn value
+         */
+        super.transitions[SyncModifyDnControlStatesEnum.RENAME_NEW_RDN_STATE][UniversalTag.BOOLEAN_TAG] = new GrammarTransition(
+            SyncModifyDnControlStatesEnum.RENAME_NEW_RDN_STATE, SyncModifyDnControlStatesEnum.RENAME_DEL_OLD_RDN_STATE,
             UniversalTag.BOOLEAN_TAG, new GrammarAction( "Set SyncModifyDnControl deleteOldRdn value" )
             {
                 public void action( IAsn1Container container ) throws DecoderException
@@ -258,7 +246,7 @@ public class SyncModifyDnControlGrammar extends AbstractGrammar
                         LOG.debug( "deleteOldRdn = {}", deleteOldRdn );
                     }
 
-                    if( deleteOldRdn == 1 )
+                    if( deleteOldRdn != 0 )
                     {
                         syncModifyDnControlContainer.getSyncModifyDnControl().setDeleteOldRdn( true );
                     }
@@ -266,7 +254,127 @@ public class SyncModifyDnControlGrammar extends AbstractGrammar
                     // terminal state
                     syncModifyDnControlContainer.grammarEndAllowed( true );
                 }
-            } );*/
+            } );
+        
+
+        /** 
+         * Transition from entryDN to moveAndRename SEQUENCE
+         *  MoveAndRename SEQUENCE {
+         *     
+         * Stores the deleteOldRdn flag
+         */
+        super.transitions[SyncModifyDnControlStatesEnum.ENTRY_DN_STATE][SyncModifyDnControlTags.MOVEANDRENAME_TAG.getValue()] = new GrammarTransition(
+            SyncModifyDnControlStatesEnum.ENTRY_DN_STATE, SyncModifyDnControlStatesEnum.MOVE_AND_RENAME_STATE,
+            SyncModifyDnControlTags.MOVEANDRENAME_TAG.getValue(), new GrammarAction( "enter SyncModifyDnControl moveAndRename choice" )
+            {
+                public void action( IAsn1Container container ) throws DecoderException
+                {
+                    SyncModifyDnControlContainer syncModifyDnControlContainer = ( SyncModifyDnControlContainer ) container;
+                    syncModifyDnControlContainer.getSyncModifyDnControl().setModDnType( SyncModifyDnType.MOVEANDRENAME );
+
+                    syncModifyDnControlContainer.grammarEndAllowed( false );
+                }
+            } );
+
+        /** 
+         * Transition from MOVE_AND_RENAME_STATE to newSuperiorDn
+         * 
+         * MoveAndRename SEQUENCE {
+         *      superior-name   LDAPDN
+         *      ....
+         *            
+         * Stores the newRdn value
+         */
+        super.transitions[SyncModifyDnControlStatesEnum.MOVE_AND_RENAME_STATE][UniversalTag.OCTET_STRING_TAG] = new GrammarTransition(
+            SyncModifyDnControlStatesEnum.MOVE_AND_RENAME_STATE, SyncModifyDnControlStatesEnum.MOVE_AND_RENAME_NEW_SUPERIOR_DN_STATE,
+            UniversalTag.OCTET_STRING_TAG, new GrammarAction( "Set SyncModifyDnControl moveAndRename state's newSuperirorDN value" )
+            {
+                public void action( IAsn1Container container ) throws DecoderException
+                {
+                    SyncModifyDnControlContainer syncModifyDnControlContainer = ( SyncModifyDnControlContainer ) container;
+                    Value value = syncModifyDnControlContainer.getCurrentTLV().getValue();
+
+                    String newSuperirorDn = StringTools.utf8ToString( value.getData() );
+
+                    if ( IS_DEBUG )
+                    {
+                        LOG.debug( "newSuperirorDn = {}", newSuperirorDn );
+                    }
+
+                    syncModifyDnControlContainer.getSyncModifyDnControl().setNewSuperiorDn( newSuperirorDn );
+
+                    // terminal state
+                    syncModifyDnControlContainer.grammarEndAllowed( false );
+                }
+            } );
+
+        /** 
+         * Transition from moveAndRename's newSuperiorDn to newRdn
+         * 
+         * MoveAndRename SEQUENCE {
+         *      superior-name   LDAPDN
+         *      ....
+         *            
+         * Stores the newRdn value
+         */
+        super.transitions[SyncModifyDnControlStatesEnum.MOVE_AND_RENAME_NEW_SUPERIOR_DN_STATE][UniversalTag.OCTET_STRING_TAG] = new GrammarTransition(
+            SyncModifyDnControlStatesEnum.MOVE_AND_RENAME_NEW_SUPERIOR_DN_STATE, SyncModifyDnControlStatesEnum.MOVE_AND_RENAME_NEW_RDN_STATE,
+            UniversalTag.OCTET_STRING_TAG, new GrammarAction( "Set SyncModifyDnControl moveAndRename state's newRdn value" )
+            {
+                public void action( IAsn1Container container ) throws DecoderException
+                {
+                    SyncModifyDnControlContainer syncModifyDnControlContainer = ( SyncModifyDnControlContainer ) container;
+                    Value value = syncModifyDnControlContainer.getCurrentTLV().getValue();
+
+                    String newRdn = StringTools.utf8ToString( value.getData() );
+
+                    if ( IS_DEBUG )
+                    {
+                        LOG.debug( "newRdn = {}", newRdn );
+                    }
+
+                    syncModifyDnControlContainer.getSyncModifyDnControl().setNewRdn( newRdn );
+
+                    // terminal state
+                    syncModifyDnControlContainer.grammarEndAllowed( false );
+                }
+            } );
+        
+
+        /** 
+         * Transition from moveAndRename's newRdn to deleteOldRdn
+         *  MoveAndRename SEQUENCE {
+         *      ....
+         *      delete-old-rdn BOOLEAN
+         *     
+         * Stores the deleteOldRdn flag
+         */
+        super.transitions[SyncModifyDnControlStatesEnum.MOVE_AND_RENAME_NEW_RDN_STATE][UniversalTag.BOOLEAN_TAG] = new GrammarTransition(
+            SyncModifyDnControlStatesEnum.MOVE_AND_RENAME_NEW_RDN_STATE, SyncModifyDnControlStatesEnum.MOVE_AND_RENAME_DEL_OLD_RDN_STATE,
+            UniversalTag.BOOLEAN_TAG, new GrammarAction( "Set SyncModifyDnControl deleteOldRdn value" )
+            {
+                public void action( IAsn1Container container ) throws DecoderException
+                {
+                    SyncModifyDnControlContainer syncModifyDnControlContainer = ( SyncModifyDnControlContainer ) container;
+                    Value value = syncModifyDnControlContainer.getCurrentTLV().getValue();
+
+                    byte deleteOldRdn = value.getData()[0];
+
+                    if ( IS_DEBUG )
+                    {
+                        LOG.debug( "deleteOldRdn = {}", deleteOldRdn );
+                    }
+
+                    if( deleteOldRdn != 0 )
+                    {
+                        syncModifyDnControlContainer.getSyncModifyDnControl().setDeleteOldRdn( true );
+                    }
+
+                    // terminal state
+                    syncModifyDnControlContainer.grammarEndAllowed( true );
+                }
+            } );
+
     }
 
 
