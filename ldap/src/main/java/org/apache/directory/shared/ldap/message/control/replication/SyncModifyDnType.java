@@ -30,7 +30,7 @@ public enum SyncModifyDnType
 {
     MOVE( 0 ),
     RENAME( 1 ),
-    MOVEANDREANAME( 2 );
+    MOVEANDRENAME( 2 );
     
     /** Internal value for each tag */
     private int value;
@@ -58,7 +58,7 @@ public enum SyncModifyDnType
             
             case 1 : return RENAME;
             
-            case 2 : return MOVEANDREANAME;
+            case 2 : return MOVEANDRENAME;
         }
         
         throw new IllegalArgumentException( "unknown modify dn operantion type " + value );
