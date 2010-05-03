@@ -45,29 +45,35 @@ public class SyncModifyDnControlStatesEnum implements IStates
     /** Sequence Value */
     public static final int SYNC_MODDN_VALUE_SEQUENCE_STATE = 1;
 
-//    /** modDn control's entryDN */
-//    public static final int ENTRY_DN_STATE = 1;
+    /** modDn control's entryDN */
+    public static final int ENTRY_DN_STATE = 2;
     
     /** modDn control's move operation state */
-    public static final int MOVE_DN_STATE = 2;
+    public static final int MOVE_STATE = 3;
     
-    /** modDn control's newSuperiorDN */
-    public static final int NEW_SUPERIOR_DN_STATE = 3;
+    /** modDn rename sequence */
+    public static final int RENAME_STATE = 4;
 
-    /** modDn control's rename operation state */
-    public static final int RENAME_DN_STATE = 5;
-    
-    /** modDn control's newRDN */
-    public static final int NEW_RDN_STATE = 6;
+    /** modDn rename sequence */
+    public static final int MOVE_AND_RENAME_STATE = 5;
 
-    /** modDn control's rename operation state */
-    public static final int MOVE_AND_RENAME_DN_STATE = 7;
+    /** modDn control's rename newRDN */
+    public static final int RENAME_NEW_RDN_STATE = 6;
+
+    /** modDn control's rename deleteOldRdn flag */
+    public static final int RENAME_DEL_OLD_RDN_STATE = 7;
     
-    /** modDn control's deleteOldRdn flag */
-    public static final int DEL_OLD_RDN_STATE = 8;
+    /** modDn control's move and rename newSuperiorDN */
+    public static final int MOVE_AND_RENAME_NEW_SUPERIOR_DN_STATE = 8;
+
+    /** modDn control's move and rename newRDN */
+    public static final int MOVE_AND_RENAME_NEW_RDN_STATE = 9;
+
+    /** modDn control's move and rename deleteOldRdn flag */
+    public static final int MOVE_AND_RENAME_DEL_OLD_RDN_STATE = 10;
 
     /** terminal state */
-    public static final int LAST_SYNC_MODDN_VALUE_STATE = 9;
+    public static final int LAST_SYNC_MODDN_VALUE_STATE = 10;
     
     // =========================================================================
     // States debug strings
@@ -76,14 +82,16 @@ public class SyncModifyDnControlStatesEnum implements IStates
     private static String[] syncModifyDnString = new String[]
         { 
         "START_SYNC_MODDN", 
-//        "SYNC_MODDN_VALUE_SEQUENCE_STATE", 
+        "SYNC_MODDN_VALUE_SEQUENCE_STATE", 
         "ENTRY_DN_STATE",
-        "MOVE_DN_STATE", 
-        "NEW_SUPERIOR_DN_STATE",
-        "RENAME_DN_STATE",
-        "NEW_RDN_STATE",
-        "MOVE_AND_RENAME_DN_STATE",
-        "DEL_OLD_RDN_STATE"
+        "MOVE_STATE", 
+        "RENAME_STATE",
+        "MOVE_AND_RENAME_STATE",
+        "RENAME_NEW_RDN_STATE",
+        "RENAME_DEL_OLD_RDN_STATE",
+        "MOVE_AND_RENAME_NEW_SUPERIOR_DN_STATE",
+        "MOVE_AND_RENAME_NEW_RDN_STATE",
+        "MOVE_AND_RENAME_DEL_OLD_RDN_STATE",
         };
 
     /** The instance */
