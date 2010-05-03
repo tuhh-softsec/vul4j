@@ -76,20 +76,10 @@ public abstract class LdapMessageCodec extends AbstractAsn1Object
     /** The controls sequence length */
     private int controlsSequenceLength;
 
-    private Map<String, Control> codecControls = new HashMap<String, Control>();
-
-
-    // ~ Constructors
-    // -------------------------------------------------------------------------------
-
-    /**
-     * Creates a new LdapMessage object.
-     */
-    public LdapMessageCodec()
+    private static Map<String, Control> codecControls = new HashMap<String, Control>();
+    
+    static
     {
-        super();
-        // We should not create this kind of object directly
-        
         // Initialize the different known Controls
         Control control = new PersistentSearchControl();
         codecControls.put( control.getOid(), control );
@@ -123,6 +113,19 @@ public abstract class LdapMessageCodec extends AbstractAsn1Object
         
         control = new SyncStateValueControl();
         codecControls.put( control.getOid(), control );
+    }
+
+
+    // ~ Constructors
+    // -------------------------------------------------------------------------------
+
+    /**
+     * Creates a new LdapMessage object.
+     */
+    public LdapMessageCodec()
+    {
+        // We should not create this kind of object directly
+        super();
     }
 
 
