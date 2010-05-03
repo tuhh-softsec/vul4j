@@ -28,7 +28,7 @@ import org.apache.commons.functor.core.composite.UnaryNot;
  *
  * @version $Revision$ $Date$
  */
-public final class RetainMatching<T> implements BinaryProcedure<Iterator<T>, UnaryPredicate<? super T>>, Serializable {
+public final class RetainMatching<T> implements BinaryProcedure<Iterator<? extends T>, UnaryPredicate<? super T>>, Serializable {
     private static final RetainMatching<Object> INSTANCE = new RetainMatching<Object>();
     
     private RemoveMatching<T> removeMatching = new RemoveMatching<T>();
@@ -38,7 +38,7 @@ public final class RetainMatching<T> implements BinaryProcedure<Iterator<T>, Una
      * @param left {@link Iterator}
      * @param right {@link UnaryPredicate}
      */
-    public void run(Iterator<T> left, UnaryPredicate<? super T> right) {
+    public void run(Iterator<? extends T> left, UnaryPredicate<? super T> right) {
         removeMatching.run(left, UnaryNot.not(right));
     }
 
