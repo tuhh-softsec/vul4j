@@ -119,7 +119,7 @@ public class SyncStateValueControlGrammar extends AbstractGrammar
                     {
                         // Check that the value is into the allowed interval
                         int syncStateType = IntegerDecoder.parse( value, SyncStateTypeEnum.PRESENT.getValue(),
-                            SyncStateTypeEnum.DELETE.getValue() );
+                            SyncStateTypeEnum.MOVEANDRENAME.getValue() );
 
                         SyncStateTypeEnum syncStateTypeEnum = SyncStateTypeEnum.getSyncStateType( syncStateType );
 

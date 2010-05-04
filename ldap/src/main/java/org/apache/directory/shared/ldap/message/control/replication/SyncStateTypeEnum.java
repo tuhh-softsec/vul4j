@@ -30,7 +30,12 @@ import org.apache.directory.shared.i18n.I18n;
  *            present (0),
  *            add (1),
  *            modify (2),
- *            delete (3)
+ *            delete (3),
+ *            
+ *            #includes the below ApacheDS specific values
+ *            move(4),
+ *            rename(5),
+ *            moveAndRename(6)
  *   }
  *   
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
@@ -38,7 +43,7 @@ import org.apache.directory.shared.i18n.I18n;
  */
 public enum SyncStateTypeEnum
 {
-    PRESENT(0), ADD(1), MODIFY(2), DELETE(3);
+    PRESENT(0), ADD(1), MODIFY(2), DELETE(3), MOVE(4), RENAME(5), MOVEANDRENAME(6);
 
     /** the internal value */
     private int value;
@@ -89,7 +94,19 @@ public enum SyncStateTypeEnum
         {
             return DELETE;
         }
-
+        else if ( value == MOVE.value )
+        {
+            return MOVE;
+        }
+        else if ( value == RENAME.value )
+        {
+            return RENAME;
+        }
+        else if ( value == MOVEANDRENAME.value )
+        {
+            return MOVEANDRENAME;
+        }
+        
         throw new IllegalArgumentException( I18n.err( I18n.ERR_04163, value ) );
     }
 
