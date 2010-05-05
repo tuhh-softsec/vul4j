@@ -329,4 +329,73 @@ public class SyncStateValueControlTest
             assertTrue( true );
         }
     }
+    
+    
+    /**
+     * Test the decoding of a SyncStateValue control with a refreshOnly mode
+     * and MODDN state type
+     */
+    @Test
+    public void testDecodeSyncStateValueControlWithModDnStateType()
+    {
+        Asn1Decoder decoder = new SyncStateValueControlDecoder();
+        ByteBuffer bb = ByteBuffer.allocate( 16 );
+        bb.put( new byte[]
+            { 
+              0x30, ( byte ) 14,               // SyncStateValue ::= SEQUENCE {
+                0x0A, 0x01, 0x04,              //     state ENUMERATED {
+                                               //         present (0)
+                                               //     }
+                0x04, 0x03, 'a', 'b', 'c',     //     entryUUID syncUUID OPTIONAL,
+                0x04, 0x04, 'x', 'k', 'c', 'd' //     cookie syncCookie OPTIONAL,
+            } );
+        bb.flip();
+
+        SyncStateValueControlContainer container = new SyncStateValueControlContainer();
+        container.setSyncStateValueControl( new SyncStateValueControl() );
+
+        try
+        {
+            decoder.decode( bb, container );
+        }
+        catch ( DecoderException de )
+        {
+            de.printStackTrace();
+            fail( de.getMessage() );
+        }
+
+        SyncStateValueControl syncStateValue = container.getSyncStateValueControl();
+        assertEquals( SyncStateTypeEnum.MODDN, syncStateValue.getSyncStateType() );
+        assertEquals( "abc", StringTools.utf8ToString( syncStateValue.getEntryUUID() ) );
+        assertEquals( "xkcd", StringTools.utf8ToString( syncStateValue.getCookie() ) );
+
+        // Check the encoding
+        try
+        {
+            ByteBuffer buffer = ByteBuffer.allocate( 0x2E );
+            buffer.put( new byte[]
+                { 
+                  0x30, 0x2C,                            // Control
+                    0x04, 0x18,                          // OID (SuncStateValue)
+                      '1', '.', '3', '.', '6', '.', '1', '.', 
+                      '4', '.', '1', '.', '4', '2', '0', '3', 
+                      '.', '1', '.', '9', '.', '1', '.', '2',
+                    0x04, 0x10,
+                      0x30, 0x0E,                        // SyncStateValue ::= SEQUENCE {
+                        0x0A, 0x01, 0x04,                //     state ENUMERATED {
+                                                         //         present (0)
+                                                         //     }
+                        0x04, 0x03, 'a', 'b', 'c',       //     entryUUID syncUUID OPTIONAL,
+                        0x04, 0x04, 'x', 'k', 'c', 'd'   //     cookie syncCookie OPTIONAL,
+                } );
+            buffer.flip();
+
+            ByteBuffer encoded = syncStateValue.encode( ByteBuffer.allocate( syncStateValue.computeLength() ) );
+            assertEquals( StringTools.dumpBytes( buffer.array() ), StringTools.dumpBytes( encoded.array() ) );
+        }
+        catch ( EncoderException ee )
+        {
+            fail( ee.getMessage() );
+        }
+    }
 }
