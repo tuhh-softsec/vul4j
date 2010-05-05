@@ -81,14 +81,15 @@ public class SyncModifyDnControlTest
         try
         {
 
-            ByteBuffer buffer = ByteBuffer.allocate( 48 );
+            ByteBuffer buffer = ByteBuffer.allocate( 50 );
             buffer.put( new byte[]
                 { 
-                  0x30, 0x2E,                            // Control
+                  0x30, 0x30,                            // Control
                     0x04, 0x18,                          // OID (SuncStateValue)
                       '1', '.', '3', '.', '6', '.', '1', '.', 
                       '4', '.', '1', '.', '4', '2', '0', '3', 
                       '.', '1', '.', '9', '.', '1', '.', '5',
+                     0x04, 0x14, 
                      0x30, 0x12, 
                       0x04, 0x07, 'u','i','d','=','j','i','m', //     entryDn entryDn
                       ( byte )0x80, 0x07,                     //     move
@@ -144,14 +145,15 @@ public class SyncModifyDnControlTest
         try
         {
 
-            ByteBuffer buffer = ByteBuffer.allocate( 51 );
+            ByteBuffer buffer = ByteBuffer.allocate( 53 );
             buffer.put( new byte[]
                 { 
-                  0x30, 0x31,                            // Control
+                  0x30, 0x33,                            // Control
                     0x04, 0x18,                          // OID (SuncStateValue)
                       '1', '.', '3', '.', '6', '.', '1', '.', 
                       '4', '.', '1', '.', '4', '2', '0', '3', 
                       '.', '1', '.', '9', '.', '1', '.', '5',
+                      0x04, 0x17,
                       0x30, 0x15,                                // SyncModifyDnControl ::= SEQUENCE {
                       0x04, 0x07, 'u','i','d','=','j','i','m', //     entryDn LDAPDN
                       ( byte )0x00A1, 0x0A,                    //     rename
@@ -209,14 +211,15 @@ public class SyncModifyDnControlTest
         try
         {
 
-            ByteBuffer buffer = ByteBuffer.allocate( 58 );
+            ByteBuffer buffer = ByteBuffer.allocate( 60 );
             buffer.put( new byte[]
                 { 
-                  0x30, 0x38,                            // Control
+                  0x30, 0x3A,                            // Control
                     0x04, 0x18,                          // OID (SuncStateValue)
                       '1', '.', '3', '.', '6', '.', '1', '.', 
                       '4', '.', '1', '.', '4', '2', '0', '3', 
                       '.', '1', '.', '9', '.', '1', '.', '5',
+                      0x04, 0x1E,
                       0x30, 0x1C,                                // SyncModifyDnControl ::= SEQUENCE {
                       0x04, 0x07, 'u','i','d','=','j','i','m', //     entryDn LDAPDN
                       ( byte )0x00A2, 0x11,                    //     rename

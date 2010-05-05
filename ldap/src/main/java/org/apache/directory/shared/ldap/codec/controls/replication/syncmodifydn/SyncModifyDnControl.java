@@ -127,7 +127,9 @@ public class SyncModifyDnControl extends AbstractControl
                 break;
         }
 
-        return super.computeLength( syncModDnSeqLength );
+        valueLength = 1 + TLV.getNbBytes( syncModDnSeqLength ) + syncModDnSeqLength;
+        
+        return super.computeLength( valueLength );
     }
 
 
@@ -148,6 +150,10 @@ public class SyncModifyDnControl extends AbstractControl
         // Encode the Control envelop
         super.encode( buffer );
 
+        // Encode the OCTET_STRING tag
+        buffer.put( UniversalTag.OCTET_STRING_TAG );
+        buffer.put( TLV.getBytes( valueLength ) );
+        
         // Encode the SEQ 
         buffer.put( UniversalTag.SEQUENCE_TAG );
         buffer.put( TLV.getBytes( syncModDnSeqLength ) );
