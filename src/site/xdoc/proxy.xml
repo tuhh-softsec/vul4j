@@ -1,42 +1,136 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document>
 	<properties>
-		<title>Reverse proxy</title>
+		<title>Reverse proxy servlets</title>
 		<author email="fxbonnet@users.sourceforge.net">Francois-Xavier Bonnet</author>
+		<author email="nricheton@users.sourceforge.net">Nicolas Richeton</author>
 	</properties>
 	<body>
-		<p>
-			The toolkit includes a reverse proxy servlet that can be used to
-			serve
-			static resources
-			from a distant application and can use the cache
-			to improve performance.
+		<section name="Reverse proxy servlets">
+			<p>
+				The toolkit includes two reverse proxy servlets which can be used
+				to
+				serve
+				static resources
+				from a distant application and can use the
+				cache
+				to improve performance.
 		</p>
-		<section name="Configuration">
-			<p>
-				The reverse proxy is a servlet that has to be configured in the web.xml
-				file.
+			<p>These servlet can also be used to start a Web Assemble Tool-based
+				application without installing a separate Apache http server.</p>
+
+			<subsection name="Basic reverse proxy">
+
+				<h4>Configuration</h4>
+				<p>
+					The reverse proxy is a servlet that has to be configured in the
+					web.xml
+					file.
 </p>
-<source>
+				<source>
 &lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd"&gt;
+&lt;!DOCTYPE
+web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application
+2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd"&gt;
 &lt;web-app&gt;
-	&lt;servlet&gt;
-		&lt;servlet-name&gt;proxy&lt;/servlet-name&gt;
-		&lt;servlet-class&gt;net.webassembletool.ProxyServlet&lt;/servlet-class&gt;
-	&lt;/servlet&gt;
-	&lt;servlet-mapping&gt;
-		&lt;servlet-name&gt;proxy&lt;/servlet-name&gt;
-		&lt;url-pattern&gt;/images/*&lt;/url-pattern&gt;
-	&lt;/servlet-mapping&gt;
-&lt;/web-app&gt;
-</source>
-		</section>
-		<section name="Other reverse proxy solutions">
-			<p>
-				In a production environment under very heavy load it may be more
-				efficient to use instead other tools such as Apache mod_proxy
+&lt;servlet&gt;
+&lt;servlet-name&gt;proxy&lt;/servlet-name&gt;
+&lt;servlet-class&gt;net.webassembletool.ProxyServlet&lt;/servlet-class&gt;
+&lt;/servlet&gt;
+&lt;servlet-mapping&gt;
+&lt;servlet-name&gt;proxy&lt;/servlet-name&gt;
+&lt;url-pattern&gt;/images/*&lt;/url-pattern&gt;
+&lt;/servlet-mapping&gt;
+&lt;/web-app&gt; </source>
+			</subsection>
+			<subsection name="Rewrite reverse proxy">
+
+				<h4>Description</h4>
+				<p>This servlet has the ability to internally rewrite url and query
+					string before processing the request. This is a simple alternative
+					to Apache + mod_rewrite + mod_proxy. </p>
+				<p>
+					Once configured, this servlet is
+					<b>equivalent</b>
+					to the following
+					<b>Apache configuration</b>
+					:
+				</p>
+				<source>
+RewriteEngine On
+ProxyRequests Off
+&lt;Proxy *&gt;
+Order deny,allow
+Allow from all
+&lt;/Proxy&gt;
+
+# URL rewriting
+RewriteRule ^/myurl(/?.*)$ http://localhost:8080/webappcontext$1 [P,L]
+
+# URL + query rewriting
+RewriteCond %{QUERY_STRING} ^(.+)$
+RewriteRule ^/myurl(/?.*)$
+http://localhost:8080/webappcontext$1?%1&amp;additionnalparam=value   [P,L]
+
+
+&lt;Location /myurl&gt;
+ProxyPassReverse http://localhost:8080/webappcontext
+ProxyPassReverseCookiePath /webappcontext /
+&lt;/Location&gt; </source>
+
+				<h4>Configuration</h4>
+				<p>Add this servlet to your web application. You can also create a
+					dedicated application deployed on the ROOT context. This way you have full control on the url.</p>
+				<source>
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE
+web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application
+2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd"&gt;
+&lt;web-app&gt;
+&lt;servlet&gt;
+&lt;servlet-name&gt;proxy&lt;/servlet-name&gt;
+&lt;servlet-class&gt;net.webassembletool.RewriteProxyServlet&lt;/servlet-class&gt;
+&lt;/servlet&gt;
+&lt;servlet-mapping&gt;
+&lt;servlet-name&gt;proxy&lt;/servlet-name&gt;
+&lt;url-pattern&gt;/images/*&lt;/url-pattern&gt;
+&lt;/servlet-mapping&gt;
+&lt;/web-app&gt; </source>
+					
+					
+					<p>Then the proxy has to be configured in both net/webassembletool/driver.properties and net/webassembletool/rewrite-proxy.properties :</p>
+					<p>driver.properties</p>
+						<source>
+#net/webassembletool/driver.properties
+
+
+webapp.remoteUrlBase=http://localhost:8080/webappcontext/
+					</source>
+					<p>rewrite-proxy.properties</p>
+					<source>
+#net/webassembletool/rewrite-proxy.properties
+
+# Rule 1. (replace &lt;rulename1&gt; bythe real rule name)
+&lt;rulename1&gt;.pattern=^/myurl(/?.*)$
+&lt;rulename1&gt;.rewrite=$1
+&lt;rulename1&gt;.provider=webapp
+
+
+# Rule 2 (replace &lt;rulename2&gt; bythe real rule name)
+&lt;rulename2&gt;.pattern=^/myurl(/?.*)$
+&lt;rulename2&gt;.queryPattern=^(.+)$
+&lt;rulename2&gt;.rewrite=$1
+&lt;rulename2&gt;.queryRewrite=$1&amp;additionnalparam=value
+&lt;rulename2&gt;.provider=webapp
+					</source>
+			</subsection>
+
+			<subsection name="Other reverse proxy solutions">
+				<p>
+					In a production environment under very heavy load it may be more
+					efficient to use instead other tools such as Apache mod_proxy
 </p>
+			</subsection>
 		</section>
 	</body>
 </document>
