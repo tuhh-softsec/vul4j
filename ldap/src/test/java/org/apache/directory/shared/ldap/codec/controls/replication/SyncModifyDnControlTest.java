@@ -81,19 +81,18 @@ public class SyncModifyDnControlTest
         try
         {
 
-            ByteBuffer buffer = ByteBuffer.allocate( 50 );
+            ByteBuffer buffer = ByteBuffer.allocate( 48 );
             buffer.put( new byte[]
                 { 
-                  0x30, 0x30,                            // Control
+                  0x30, 0x2E,                            // Control
                     0x04, 0x18,                          // OID (SuncStateValue)
                       '1', '.', '3', '.', '6', '.', '1', '.', 
                       '4', '.', '1', '.', '4', '2', '0', '3', 
                       '.', '1', '.', '9', '.', '1', '.', '5',
-                     0x04, 0x14, 
-                     0x30, 0x12, 
+                     0x04, 0x12, 
+                     0x30, 0x10, 
                       0x04, 0x07, 'u','i','d','=','j','i','m', //     entryDn entryDn
-                      ( byte )0x80, 0x07,                     //     move
-                    0x04, 0x05,
+                      ( byte )0x80, 0x05,                     //     move
                       'o','u','=','d','c'         //     newSuperiorDn LDAPDN
                 } );
             buffer.flip();

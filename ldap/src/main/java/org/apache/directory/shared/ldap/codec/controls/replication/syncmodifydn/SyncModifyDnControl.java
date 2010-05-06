@@ -26,6 +26,7 @@ import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.asn1.codec.EncoderException;
+import org.apache.directory.shared.asn1.util.Asn1StringUtils;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.controls.AbstractControl;
 import org.apache.directory.shared.ldap.message.control.replication.SyncModifyDnType;
@@ -66,7 +67,6 @@ public class SyncModifyDnControl extends AbstractControl
     /** global length for the control */
     private int syncModDnSeqLength;
 
-    private int moveLen = 0;
     private int renameLen = 0;
     private int moveAndRenameLen = 0;
 
@@ -104,8 +104,8 @@ public class SyncModifyDnControl extends AbstractControl
         switch ( modDnType )
         {
             case MOVE:
-                moveLen = 1 + TLV.getNbBytes( newSuperiorDn.length() ) + newSuperiorDn.length();
-                syncModDnSeqLength += 1 + TLV.getNbBytes( moveLen ) + moveLen;
+                int moveLen = 1 + TLV.getNbBytes( newSuperiorDn.length() ) + newSuperiorDn.length();
+                syncModDnSeqLength += moveLen; //1 + TLV.getNbBytes( moveLen ) + moveLen;
                 break;
 
             case RENAME:
@@ -165,8 +165,8 @@ public class SyncModifyDnControl extends AbstractControl
         {
             case MOVE:
                 buffer.put( ( byte ) SyncModifyDnControlTags.MOVE_TAG.getValue() );
-                buffer.put( TLV.getBytes( moveLen ) );
-                Value.encode( buffer, newSuperiorDn );
+                buffer.put( TLV.getBytes( newSuperiorDn.length() ) );
+                buffer.put( Asn1StringUtils.getBytesUtf8( newSuperiorDn ) );
                 break;
 
             case RENAME:
@@ -212,8 +212,8 @@ public class SyncModifyDnControl extends AbstractControl
                 {
                     case MOVE:
                         buffer.put( ( byte ) SyncModifyDnControlTags.MOVE_TAG.getValue() );
-                        buffer.put( TLV.getBytes( moveLen ) );
-                        Value.encode( buffer, newSuperiorDn );
+                        buffer.put( TLV.getBytes( newSuperiorDn.length() ) );
+                        buffer.put( Asn1StringUtils.getBytesUtf8( newSuperiorDn ) );
                         break;
 
                     case RENAME:
