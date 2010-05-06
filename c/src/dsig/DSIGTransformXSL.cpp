@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2005 The Apache Software Foundation.
+ * Copyright 2002-2010 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -162,9 +162,12 @@ DOMNode * DSIGTransformXSL::setStylesheet(DOMNode * stylesheet) {
 
 	DOMNode * ret = mp_stylesheetNode;
 
-	if (mp_stylesheetNode != 0) {
+	if (mp_stylesheetNode) {
 		mp_txfmNode->insertBefore(stylesheet, mp_stylesheetNode);
 		mp_txfmNode->removeChild(mp_stylesheetNode);
+	}
+	else {
+	    mp_txfmNode->appendChild(stylesheet);
 	}
 
 	mp_stylesheetNode = stylesheet;
