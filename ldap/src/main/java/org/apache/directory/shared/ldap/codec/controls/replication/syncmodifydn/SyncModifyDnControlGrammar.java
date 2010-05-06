@@ -159,7 +159,7 @@ public class SyncModifyDnControlGrammar extends AbstractGrammar
                     
                     if ( IS_DEBUG )
                     {
-                        LOG.debug( "ModDN entryDn = {}", newSuperiorDn );
+                        LOG.debug( "ModDN newSuperiorDn = {}", newSuperiorDn );
                     }
                     
                     syncModifyDnControlContainer.getSyncModifyDnControl().setNewSuperiorDn( newSuperiorDn );
