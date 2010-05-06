@@ -31,6 +31,8 @@ import org.apache.commons.logging.LogFactory;
  * <br/>
  * # Regexp for url matching.<br/>
  * 01.pattern=^/([a-z]{2})/application1/(.*)$<br/>
+ * # Regexp for query matching.<br/>
+ * 01.queryPattern=^(.+)$<br/>
  * # Rewrite to the following url. $1 - $n are available from the previously matched <br/>
  * # pattern.<br/>
  * 01.rewrite=$2<br/>
@@ -57,41 +59,50 @@ public class RewriteProxyServlet extends HttpServlet {
 	 */
 	public class ReverseConfiguration {
 
-		private Pattern matchPattern;
+		private Pattern urlMatchPattern;
 		private String provider;
+		private Pattern queryMatchPattern;
 		private String queryRewrite;
-		private String rewrite;
+		private String urlRewrite;
 
-		public Pattern getMatchPattern() {
-			return matchPattern;
+		public Pattern getUrlMatchPattern() {
+			return urlMatchPattern;
 		}
 
 		public String getProvider() {
 			return provider;
 		}
 
+		public Pattern getQueryMatchPattern() {
+			return queryMatchPattern;
+		}
+
 		public String getQueryRewrite() {
 			return queryRewrite;
 		}
 
-		public String getRewrite() {
-			return rewrite;
+		public String getUrlRewrite() {
+			return urlRewrite;
 		}
 
-		public void setMatchPattern(Pattern matchPattern) {
-			this.matchPattern = matchPattern;
+		public void setUrlMatchPattern(Pattern matchPattern) {
+			this.urlMatchPattern = matchPattern;
 		}
 
 		public void setProvider(String provider) {
 			this.provider = provider;
 		}
 
+		public void setQueryMatchPattern(Pattern queryMatchPattern) {
+			this.queryMatchPattern = queryMatchPattern;
+		}
+
 		public void setQueryRewrite(String queryRewrite) {
 			this.queryRewrite = queryRewrite;
 		}
 
-		public void setRewrite(String rewrite) {
-			this.rewrite = rewrite;
+		public void setUrlRewrite(String rewrite) {
+			this.urlRewrite = rewrite;
 		}
 
 	}
@@ -172,9 +183,11 @@ public class RewriteProxyServlet extends HttpServlet {
 				if ("provider".equals(attribute)) {
 					currentConf.setProvider(value);
 				} else if ("pattern".equals(attribute)) {
-					currentConf.setMatchPattern(Pattern.compile(value));
+					currentConf.setUrlMatchPattern(Pattern.compile(value));
 				} else if ("rewrite".equals(attribute)) {
-					currentConf.setRewrite(value);
+					currentConf.setUrlRewrite(value);
+				} else if ("queryPattern".equals(attribute)) {
+					currentConf.setQueryMatchPattern(Pattern.compile(value));
 				} else if ("queryRewrite".equals(attribute)) {
 					currentConf.setQueryRewrite(value);
 				}
@@ -206,41 +219,41 @@ public class RewriteProxyServlet extends HttpServlet {
 
 		// Look for rule.
 		for (ReverseConfiguration conf : configuration) {
-			Matcher m = conf.getMatchPattern().matcher(relUrl);
+			// Match url
+			Matcher urlMatcher = conf.getUrlMatchPattern().matcher(relUrl);
 
-			if (m.matches()) {
+			// Match query if necessary
+			Matcher queryMatcher = null;
+			if (conf.getQueryMatchPattern() != null) {
+				queryMatcher = conf.getQueryMatchPattern().matcher(
+						getStringNotNull(request.getQueryString()));
+			}
+
+			if (urlMatcher.matches()
+					&& (queryMatcher == null || queryMatcher.matches())) {
 				// Rule matched.
 
 				// Create new URL
 				String newUrl = relUrl;
-				if (conf.getRewrite() != null) {
-					newUrl = conf.getRewrite();
+				if (conf.getUrlRewrite() != null) {
+					newUrl = conf.getUrlRewrite();
+				}
+
+				for (int i = 1; i < urlMatcher.groupCount() + 1; i++) {
+					newUrl = newUrl.replace("$" + i, urlMatcher.group(i));
 				}
 
 				String targetQueryString = null;
 
-				for (int i = 1; i < m.groupCount() + 1; i++) {
-					newUrl = newUrl.replace("$" + i, m.group(i));
-				}
-
 				// Process Query string
-				if (conf.getQueryRewrite() != null) {
+				if (queryMatcher != null) {
 					// Create new query string
-					targetQueryString = conf.getQueryRewrite();
-
-					// Get query string.
-					String originalQueryString = request.getQueryString();
-					if (originalQueryString == null) {
-						originalQueryString = "";
-					}
+					targetQueryString = getStringNotNull(conf.getQueryRewrite());
 
 					// Do replacements.
-					targetQueryString = targetQueryString.replace("$QUERY",
-							originalQueryString);
-					for (int i = 1; i < m.groupCount() + 1; i++) {
-
+					for (int i = 1; i < queryMatcher.groupCount() + 1; i++) {
 						targetQueryString = targetQueryString.replace("$" + i,
-								m.group(i));
+								queryMatcher.group(i));
 					}
 
 					// clear query string if empty
@@ -268,5 +281,12 @@ public class RewriteProxyServlet extends HttpServlet {
 				}
 			}
 		}
+	}
+
+	private String getStringNotNull(String str) {
+		if (str == null) {
+			return "";
+		}
+		return str;
 	}
 }
