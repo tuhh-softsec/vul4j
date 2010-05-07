@@ -5,6 +5,19 @@
 	<packaging>pom</packaging>
 	<name>webassembletool</name>
 	<version>2.7-SNAPSHOT</version>
+	<ciManagement>
+		<system>continuum</system>
+		<url>http://java.nantes.intranet:8082/continuum/projectGroupSummary.action?projectGroupId=36</url>
+		<notifiers>
+			<notifier>
+				<sendOnSuccess>false</sendOnSuccess>
+				<sendOnWarning>false</sendOnWarning>
+				<configuration>
+					<address>altha@smile.fr</address>
+				</configuration>
+			</notifier>
+		</notifiers>
+	</ciManagement>
 	<inceptionYear>2008</inceptionYear>
 	<mailingLists>
 		<mailingList>
