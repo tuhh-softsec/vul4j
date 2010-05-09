@@ -20,7 +20,6 @@
 package org.apache.directory.shared.ldap.schema.comparators;
 
 
-import org.apache.directory.shared.ldap.csn.Csn;
 import org.apache.directory.shared.ldap.entry.StringValue;
 import org.apache.directory.shared.ldap.schema.LdapComparator;
 import org.slf4j.Logger;
@@ -63,6 +62,11 @@ public class CsnComparator extends LdapComparator<Object>
     public int compare( Object csnObj1, Object csnObj2 )
     {
         LOG.debug( "comparing CSN objects '{}' with '{}'", csnObj1, csnObj2 );
+        
+        if ( csnObj1 == csnObj2 )
+        {
+            return 0;
+        }
 
         // -------------------------------------------------------------------
         // Handle some basis cases
@@ -80,7 +84,7 @@ public class CsnComparator extends LdapComparator<Object>
         String csnStr1 = null;
         String csnStr2 = null;
         
-        if( csnObj1 instanceof StringValue )
+        if ( csnObj1 instanceof StringValue )
         {
             csnStr1 = ( ( StringValue ) csnObj1 ).get();
         }
@@ -89,7 +93,7 @@ public class CsnComparator extends LdapComparator<Object>
             csnStr1 = csnObj1.toString();
         }
 
-        if( csnObj2 instanceof StringValue )
+        if ( csnObj2 instanceof StringValue )
         {
             csnStr2 = ( ( StringValue ) csnObj2 ).get();
         }
@@ -98,9 +102,6 @@ public class CsnComparator extends LdapComparator<Object>
             csnStr2 = csnObj2.toString();
         }
         
-        Csn csn1 = new Csn( csnStr1 );
-        Csn csn2 = new Csn( csnStr2 );
-        
-        return csn1.compareTo( csn2 );
+        return csnStr1.compareTo( csnStr2 );
     }
 }
