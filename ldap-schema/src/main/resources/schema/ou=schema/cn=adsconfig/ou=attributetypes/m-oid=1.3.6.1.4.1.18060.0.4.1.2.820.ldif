@@ -1,0 +1,15 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.1.2.820, ou=attributeTypes, cn=adsconfig, ou=schema
+objectclass: metaAttributeType
+objectclass: metaTop
+objectclass: top
+m-oid: 1.3.6.1.4.1.18060.0.4.1.2.820
+entrycsn: 20100509111919.472000Z#000000#000#000000
+m-name: ads-replBase
+m-description: base DN of the DIT to be replicated
+m-supAttributeType: distinguishedName
+m-equality: distinguishedNameMatch
+m-ordering: distinguishedNameMatch
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.12
+m-length: 0
+m-singleValue: TRUE
