@@ -36,8 +36,8 @@
   <dependencies>
     <dependency>
       <artifactId>shared-i18n</artifactId>
-      <groupId>${groupId}</groupId>
-      <version>${version}</version>
+      <groupId>${project.groupId}</groupId>
+      <version>${project.version}</version>
     </dependency> 
   </dependencies>
 </project>
