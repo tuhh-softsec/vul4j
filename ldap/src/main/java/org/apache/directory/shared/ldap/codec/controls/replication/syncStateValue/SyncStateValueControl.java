@@ -198,10 +198,7 @@ public class SyncStateValueControl  extends AbstractControl
      */
     public byte[] getValue()
     {
-        // FIXME the value is being cached and is not getting updated
-        // reason for this is yet to be identified
-        // till then force calculating value everytime getValue() is called
-        //if ( value == null )
+        if ( value == null )
         {
             try
             { 
