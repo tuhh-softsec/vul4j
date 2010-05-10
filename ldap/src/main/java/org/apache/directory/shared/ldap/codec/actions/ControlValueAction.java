@@ -71,12 +71,9 @@ public class ControlValueAction extends GrammarAction
         }
         else
         {
-            if ( decoder == null )
-            {
-                // No decoder : store the raw value
-                control.setValue( value.getData() );
-            }
-            else
+            control.setValue( value.getData() );
+
+            if ( decoder != null )
             {
                 decoder.decode( value.getData(), control );
             }
