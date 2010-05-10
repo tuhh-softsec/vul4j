@@ -26,6 +26,8 @@ import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.util.StringTools;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -36,6 +38,12 @@ import org.apache.directory.shared.ldap.util.StringTools;
  */
 public class ControlImpl extends AbstractControl 
 {
+    /** The logger */
+    static final Logger LOG = LoggerFactory.getLogger( ControlImpl.class );
+
+    /** Speedup for logs */
+    static final boolean IS_DEBUG = LOG.isDebugEnabled();
+
     /**
      * Default constructor.
      */
@@ -56,6 +64,11 @@ public class ControlImpl extends AbstractControl
     {
         if ( value != null )
         {
+            if ( IS_DEBUG )
+            {
+                LOG.debug( "Control payoad for {} : {}", getOid(), StringTools.dumpBytes( value ) );
+            }
+            
             this.value = new byte[ value.length ];
             System.arraycopy( value, 0, this.value, 0, value.length );
         } 
