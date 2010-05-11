@@ -6,6 +6,7 @@ Changes since 1.5.1
 * Fix for bug#49255, vector index bug (SC)
 * Fix for bug#49257, stylesheet append bug (SC)
 * Fix for bug#49260, header guard in XPath transform header (SC)
+* Fix for bug#49264, string release crash (SC)
 * Expose algorithm URI on Signature and Reference objects (SC)
 * White/blacklisting of otherwise registered algorithms (SC)
 

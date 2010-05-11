@@ -239,7 +239,8 @@ utils_sources = \
   ../src/utils/XSECSOAPRequestorSimple.cpp \
   ../src/utils/XSECSOAPRequestor.hpp \
   ../src/utils/XSECNameSpaceExpander.cpp \
-  ../src/utils/XSECPlatformUtils.cpp
+  ../src/utils/XSECPlatformUtils.cpp \
+  ../src/utils/XSECAutoPtr.hpp
 
 # XML Encryption
 

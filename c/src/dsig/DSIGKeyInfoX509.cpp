@@ -33,6 +33,8 @@
 
 #include <xercesc/util/Janitor.hpp>
 
+#include "../utils/XSECAutoPtr.hpp"
+
 XERCES_CPP_NAMESPACE_USE
 
 // --------------------------------------------------------------------------------
@@ -566,8 +568,7 @@ void DSIGKeyInfoX509::appendX509Certificate(const XMLCh * base64Certificate) {
 	m_X509List.push_back(h);
 	h->mp_encodedX509 = b64Txt->getNodeValue();
 	h->mp_cryptoX509 = XSECPlatformUtils::g_cryptoProvider->X509();
-	char * charX509 = XMLString::transcode(h->mp_encodedX509);
-	ArrayJanitor<char> j_charX509(charX509);
-	h->mp_cryptoX509->loadX509Base64Bin(charX509, (unsigned int) strlen(charX509));
+	XSECAutoPtrChar charX509(h->mp_encodedX509);
+	h->mp_cryptoX509->loadX509Base64Bin(charX509.get(), (unsigned int) strlen(charX509.get()));
 	
 }
