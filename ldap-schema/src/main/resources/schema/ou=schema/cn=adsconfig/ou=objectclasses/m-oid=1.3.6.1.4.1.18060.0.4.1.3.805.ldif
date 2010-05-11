@@ -13,3 +13,4 @@ m-must: ads-replBase
 m-must: ads-replLastSentCsn
 m-must: ads-replScope
 m-must: ads-replSearchFilter
+m-may: ads-replRefreshNPersist
