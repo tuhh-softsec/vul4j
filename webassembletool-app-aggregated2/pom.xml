@@ -12,5 +12,13 @@
 	</parent>
 	<build>
 		<finalName>webassembletool-app-aggregated2</finalName>
+		<plugins>
+			<plugin>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<configuration>
+					<skip>true</skip>
+				</configuration>
+			</plugin>
+		</plugins>
 	</build>
 </project>
