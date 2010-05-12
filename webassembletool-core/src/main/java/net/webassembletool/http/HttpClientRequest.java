@@ -14,6 +14,7 @@ import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpHost;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.params.ClientPNames;
+import org.apache.http.client.params.ClientParamBean;
 import org.apache.http.client.params.CookiePolicy;
 import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.message.BasicHttpEntityEnclosingRequest;
@@ -62,11 +63,19 @@ public class HttpClientRequest {
 				.getProtocol());
 		// Preserve host if required
 		if (preserveHost) {
+			// original port is -1 for default port(80),
+			// the real port otherwise
+			int originalport = -1;
+			if (originalRequest.getServerPort() != 80) {
+				originalport = originalRequest.getServerPort();
+
+			}
 			HttpHost virtualHost = new HttpHost(
-					originalRequest.getServerName(), originalRequest
-							.getServerPort(), originalRequest.getScheme());
-			httpRequest.getParams().setParameter(ClientPNames.VIRTUAL_HOST,
-					virtualHost);
+					originalRequest.getServerName(), originalport,
+					originalRequest.getScheme());
+			ClientParamBean clientParamBean = new ClientParamBean(httpRequest
+					.getParams());
+			clientParamBean.setVirtualHost(virtualHost);
 		}
 		result = new HttpClientResponse(httpHost, httpRequest, httpClient,
 				httpContext);
