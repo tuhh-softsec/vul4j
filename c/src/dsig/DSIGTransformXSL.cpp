@@ -35,7 +35,64 @@
 #include <xsec/utils/XSECDOMUtils.hpp>
 #include <xsec/framework/XSECError.hpp>
 
+#include <xercesc/dom/DOM.hpp>
+#include <xercesc/framework/MemBufFormatTarget.hpp>
+#include <xercesc/util/XMLUniDefs.hpp>
+#include <xercesc/util/Janitor.hpp>
+
 XERCES_CPP_NAMESPACE_USE
+
+class XSECDomToSafeBuffer {
+public:
+    XSECDomToSafeBuffer::XSECDomToSafeBuffer(DOMNode *node);
+    virtual ~XSECDomToSafeBuffer() {}
+
+    operator const safeBuffer&() const {
+        return m_buffer;
+    }
+private:
+    safeBuffer m_buffer;
+};
+
+XSECDomToSafeBuffer::XSECDomToSafeBuffer(DOMNode* node)
+{
+    static const XMLCh _LS[] = {chLatin_L, chLatin_S, chNull};
+    DOMImplementationLS* impl = DOMImplementationRegistry::getDOMImplementation(_LS);
+
+    MemBufFormatTarget* target = new MemBufFormatTarget;
+    Janitor<MemBufFormatTarget> j_target(target);
+
+#if defined (XSEC_XERCES_DOMLSSERIALIZER)
+    // DOM L3 version as per Xerces 3.0 API
+    DOMLSSerializer* theSerializer = impl->createLSSerializer();
+    Janitor<DOMLSSerializer> j_theSerializer(theSerializer);
+
+    DOMLSOutput *theOutput = impl->createLSOutput();
+    Janitor<DOMLSOutput> j_theOutput(theOutput);
+    theOutput->setByteStream(target);
+#else
+    DOMWriter* theSerializer = impl->createDOMWriter();
+    Janitor<DOMWriter> j_theSerializer(theSerializer);
+#endif
+
+    try
+    {
+#if defined (XSEC_XERCES_DOMLSSERIALIZER)
+        theSerializer->write(node, theOutput);
+#else
+        theSerializer->writeNode(target, *node);
+#endif
+        m_buffer.sbMemcpyIn(0, target->getRawBuffer(), target->getLen());
+    }
+    catch(const XMLException&)
+    {
+        throw XSECException(XSECException::UnknownError);
+    }
+    catch(const DOMException&)
+    {
+        throw XSECException(XSECException::UnknownError);
+    }
+}
 
 // --------------------------------------------------------------------------------
 //           Constructors and Destructors
@@ -96,25 +153,9 @@ void DSIGTransformXSL::appendTransformer(TXFMChain * input) {
 	XSECnew(x, TXFMXSL(mp_txfmNode->getOwnerDocument()));
 	input->appendTxfm(x);
 	
-	// Again use C14n (convenient) to translate to a SafeBuffer
-	
-	XSECC14n20010315 c14n(mp_txfmNode->getOwnerDocument(), mp_stylesheetNode);
-	safeBuffer sbStyleSheet;
-	unsigned int size, count;
-	unsigned char buf[512];
-	size = 0;
-	
-	while ((count = c14n.outputBuffer(buf, 512)) != 0) {
-		
-		sbStyleSheet.sbMemcpyIn(size, buf, count);
-		size += count;
-		
-	}
-	
-	sbStyleSheet[size] = '\0';		// Terminate as though a string
-	
-	x->evaluateStyleSheet(sbStyleSheet);
-
+	// Patch to avoid c14n of stylesheet
+    XSECDomToSafeBuffer sbStyleSheet(mp_stylesheetNode);
+    x->evaluateStyleSheet(sbStyleSheet);
 #endif /* NO_XSLT */
 
 }
