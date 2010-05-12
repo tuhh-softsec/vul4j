@@ -63,12 +63,12 @@ public class HttpClientRequest {
 				.getProtocol());
 		// Preserve host if required
 		if (preserveHost) {
-			// original port is -1 for default port(80),
+			// original port is -1 for default ports(80, 443),
 			// the real port otherwise
 			int originalport = -1;
-			if (originalRequest.getServerPort() != 80) {
+			if (originalRequest.getServerPort() != 80
+					&& originalRequest.getServerPort() != 443) {
 				originalport = originalRequest.getServerPort();
-
 			}
 			HttpHost virtualHost = new HttpHost(
 					originalRequest.getServerName(), originalport,
