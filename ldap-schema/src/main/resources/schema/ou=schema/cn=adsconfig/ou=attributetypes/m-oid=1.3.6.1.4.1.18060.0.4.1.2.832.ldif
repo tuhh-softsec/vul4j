@@ -1,0 +1,15 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.1.2.832, ou=attributeTypes, cn=adsconfig, ou=schema
+objectclass: metaAttributeType
+objectclass: metaTop
+objectclass: top
+m-oid: 1.3.6.1.4.1.18060.0.4.1.2.832
+entrycsn: 20100512154913.538000Z#000000#000#000000
+m-name: ads-replProviderImpl
+m-description: fully qualified name of replication provider implementation class 
+m-equality: caseExactIA5Match
+m-ordering: caseExactOrderingMatch
+m-substr: caseExactSubstringsMatch
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.26
+m-length: 0
+m-singleValue: TRUE

@@ -15,9 +15,11 @@ m-may: ads-replAttribute
 m-may: ads-replProvPort
 m-may: ads-replRefreshInterval
 m-may: ads-replRefreshNPersist
-m-may: ads-replScope
+m-may: ads-replSearchScope
 m-may: ads-replSearchFilter
 m-may: ads-replSearchSizeLimit
 m-may: ads-replSearchTimeOut
 m-may: ads-replUserDn
 m-may: ads-replUserPassword
+m-may: ads-replCookie
+m-may: ads-enabled
