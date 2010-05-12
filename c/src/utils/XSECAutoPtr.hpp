@@ -51,7 +51,7 @@ class XSECAutoPtrChar
     XSECAutoPtrChar(const XSECAutoPtrChar&);
     XSECAutoPtrChar& operator=(const XSECAutoPtrChar&);
 public:
-    XSECAutoPtrChar() : m_buf(nullptr) {
+    XSECAutoPtrChar() : m_buf(NULL) {
     }
 
     XSECAutoPtrChar(const XMLCh* src) : m_buf(xercesc::XMLString::transcode(src)) {
@@ -69,7 +69,7 @@ public:
     }
 
     char* release() {
-        char* temp=m_buf; m_buf=nullptr; return temp;
+        char* temp=m_buf; m_buf=NULL; return temp;
     }
 
 private:
@@ -88,7 +88,7 @@ class XSECAutoPtrXMLCh
     XSECAutoPtrXMLCh(const XSECAutoPtrXMLCh&);
     XSECAutoPtrXMLCh& operator=(const XSECAutoPtrXMLCh&);
 public:
-    XSECAutoPtrXMLCh() : m_buf(nullptr) {
+    XSECAutoPtrXMLCh() : m_buf(NULL) {
     }
 
     XSECAutoPtrXMLCh(const char* src) : m_buf(xercesc::XMLString::transcode(src)) {
@@ -106,7 +106,7 @@ public:
     }
 
     XMLCh* release() {
-        XMLCh* temp=m_buf; m_buf=nullptr; return temp;
+        XMLCh* temp=m_buf; m_buf=NULL; return temp;
     }
 
 private:
