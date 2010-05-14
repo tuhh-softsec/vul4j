@@ -52,8 +52,8 @@ public class MasterTest extends TestCase {
 		WebResponse resp = webConversation.getResponse(req);
 		assertEquals("Status should be 200", HttpServletResponse.SC_OK, resp
 				.getResponseCode());
-                String strResponse = resp.getText().replaceAll("\r","");
-                String strResource = getResource(resultResource).replaceAll("\r","");
+		String strResponse = resp.getText().replaceAll("\r", "");
+		String strResource = getResource(resultResource).replaceAll("\r", "");
 		assertEquals(strResource, strResponse);
 	}
 
@@ -71,7 +71,8 @@ public class MasterTest extends TestCase {
 
 	public void testBlock() throws Exception {
 		doSimpleTest("block.jsp");
-                doSimpleTest("blockvariables.jsp","block.jsp");
+		doSimpleTest("blocks.jsp");
+		doSimpleTest("blockvariables.jsp", "block.jsp");
 	}
 
 	public void testError500() throws Exception {

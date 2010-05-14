@@ -14,6 +14,9 @@
 	<div style="background-color: aqua">Bloc de contenu<br />
 	<img src="images/smile.jpg" />&lt;--image gérée par le provider</div>
 </assemble:block></div>
+<assemble:block name="block2">
+	<div style="background-color: aqua">Autre bloc de contenu<br />
+</assemble:block>
 <div>Fin de la page</div>
 </body>
 </html>
