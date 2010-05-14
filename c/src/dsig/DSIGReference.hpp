@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2005 The Apache Software Foundation.
+ * Copyright 2002-2010 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -271,7 +271,27 @@ public:
 	
 	void setPreHashTXFM(TXFMBase * t);
 
+   /**
+    * \brief Set the Id attribute of the DSIGReference
+    *
+    * This method allows applications to set the Id attribute of the DSIGReference
+    * as described in http://www.w3.org/TR/xmldsig-core/#sec-Reference.
+    *
+    *
+    * @param id The value for this reference.
+    */
+   void setId(const XMLCh *id);
 
+   /**
+    * \brief Set the Type attribute of the DSIGReference
+    *
+    * This method allows applications to set the Type attribute of the DSIGReference
+    * as described in http://www.w3.org/TR/xmldsig-core/#sec-Reference.
+    *
+    *
+    * @param type The value for this reference.
+    */
+   void setType(const XMLCh *type);
 	//@}
 
 	/** @name Getting Information */

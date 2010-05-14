@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2005 The Apache Software Foundation.
+ * Copyright 2002-2010 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -400,6 +400,29 @@ void DSIGReference::setPreHashTXFM(TXFMBase * t) {
 	mp_preHash = t;
 
 }
+
+//           setId
+// --------------------------------------------------------------------------------
+
+void DSIGReference::setId(const XMLCh *id) {
+
+    if (mp_referenceNode)
+        ((DOMElement*)mp_referenceNode)->setAttributeNS(NULL, MAKE_UNICODE_STRING("Id"), id);
+
+}
+
+// --------------------------------------------------------------------------------
+//           setType
+// --------------------------------------------------------------------------------
+
+void DSIGReference::setType(const XMLCh *type) {
+
+    if (mp_referenceNode)
+        ((DOMElement*)mp_referenceNode)->setAttributeNS(NULL, MAKE_UNICODE_STRING("Type"), type);
+
+}
+
+// --------------------------------------------------------------------------------
 
 // --------------------------------------------------------------------------------
 //           isManifest
