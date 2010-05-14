@@ -264,21 +264,8 @@
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>findbugs-maven-plugin</artifactId>
         <configuration>
-          <xmlOutput>false</xmlOutput>
-          <!--
-            <xmlOutput>true|false</xmlOutput>
-            <xmlOutputDirectory>directory location of xml findbugs report</xmlOutputDirectory>
-            <threshold>High|Normal|Low|Exp|Ignore</threshold>
-            <effort>Min|Default|Max</effort>
-            <excludeFilterFile>findbugs-exclude.xml</excludeFilterFile>
-            <includeFilterFile>findbugs-include.xml</includeFilterFile>
-            <visitors>FindDeadLocalStores,UnreadFields</visitors>
-            <omitVisitors>FindDeadLocalStores,UnreadFields</omitVisitors>
-            <onlyAnalyze>org.codehaus.mojo.findbugs.*</onlyAnalyze>
-            <pluginList>/libs/fb-contrib/fb-contrib-2.8.0.jar</pluginList>
-            <debug>true|false</debug>
-            <relaxed>true|false</relaxed>
-          -->
+          <xrefLocation>${project.reporting.outputDirectory}/../xref</xrefLocation>
+          <xrefTestLocation>${project.reporting.outputDirectory}/../xref-test</xrefTestLocation>
         </configuration>
       </plugin>
 
@@ -290,6 +277,20 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
+      </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>versions-maven-plugin</artifactId>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>dependency-updates-report</report>
+              <report>plugin-updates-report</report>
+              <report>property-updates-report</report>
+            </reports>
+          </reportSet>
+        </reportSets>
       </plugin>
     </plugins>
   </reporting>
