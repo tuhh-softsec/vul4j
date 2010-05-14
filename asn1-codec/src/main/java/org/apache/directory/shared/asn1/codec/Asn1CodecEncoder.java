@@ -6,16 +6,16 @@
  *  to you under the Apache License, Version 2.0 (the
  *  "License"); you may not use this file except in compliance
  *  with the License.  You may obtain a copy of the License at
- *  
+ *
  *    http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing,
  *  software distributed under the License is distributed on an
  *  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  *  KIND, either express or implied.  See the License for the
  *  specific language governing permissions and limitations
- *  under the License. 
- *  
+ *  under the License.
+ *
  */
 package org.apache.directory.shared.asn1.codec;
 
@@ -34,24 +34,35 @@ import org.apache.mina.filter.codec.ProtocolEncoderOutput;
 
 
 /**
- * Adapts {@link StatefulEncoder} to MINA <tt>ProtocolEncoder</tt>
- * 
+ * Adapts {@link StatefulEncoder} to MINA <tt>ProtocolEncoder</tt>.
+ *
  * @author The Apache Directory Project (mina-dev@directory.apache.org)
- * @version $Rev$, $Date$, 
+ * @version $Rev$, $Date$,
  */
 public class Asn1CodecEncoder implements ProtocolEncoder
 {
+    /** The associated encoder */
     private final StatefulEncoder encoder;
+
+    /** The encoder callback */
     private final EncoderCallbackImpl callback = new EncoderCallbackImpl();
 
 
+    /**
+     * Creates a new instance of Asn1CodecEncoder.
+     *
+     * @param encoder The associacted encoder
+     */
     public Asn1CodecEncoder( StatefulEncoder encoder )
     {
-        encoder.setCallback( callback );
         this.encoder = encoder;
+        this.encoder.setCallback( callback );
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public void encode( IoSession session, Object message, ProtocolEncoderOutput out ) throws EncoderException
     {
         callback.encOut = out;
@@ -59,27 +70,38 @@ public class Asn1CodecEncoder implements ProtocolEncoder
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public void dispose( IoSession session ) throws Exception
     {
     }
 
 
+    /**
+     * A Callback implementation.
+     */
     private class EncoderCallbackImpl implements EncoderCallback
     {
+        /** The queue in which the encoded message is written */
         private ProtocolEncoderOutput encOut;
 
 
+        /**
+         * {@inheritDoc}
+         */
         public void encodeOccurred( StatefulEncoder codec, Object encoded )
         {
-            if( encoded instanceof java.nio.ByteBuffer )
+            if ( encoded instanceof java.nio.ByteBuffer )
             {
                 java.nio.ByteBuffer buf = ( java.nio.ByteBuffer ) encoded;
                 IoBuffer wrappedBuf = IoBuffer.wrap( buf );
                 encOut.write( wrappedBuf );
             }
-            else if( encoded instanceof Object[] )
+            else if ( encoded instanceof Object[] )
             {
                 Object[] bufArray = ( Object[] ) encoded;
+                
                 for ( Object buf : bufArray )
                 {
                     this.encodeOccurred( codec, buf );
@@ -87,33 +109,35 @@ public class Asn1CodecEncoder implements ProtocolEncoder
 
                 encOut.mergeAll();
             }
-            else if( encoded instanceof Iterator )
+            else if ( encoded instanceof Iterator )
             {
                 Iterator it = ( Iterator ) encoded;
-                while( it.hasNext() )
+                
+                while ( it.hasNext() )
                 {
                     this.encodeOccurred( codec, it.next() );
                 }
-                
+
                 encOut.mergeAll();
             }
-            else if( encoded instanceof Collection )
+            else if ( encoded instanceof Collection )
             {
                 for ( Object o : ( ( Collection ) encoded ) )
                 {
                     this.encodeOccurred( codec, o );
                 }
-                
+
                 encOut.mergeAll();
             }
-            else if( encoded instanceof Enumeration )
+            else if ( encoded instanceof Enumeration )
             {
                 Enumeration e = ( Enumeration ) encoded;
-                while( e.hasMoreElements() )
+
+                while ( e.hasMoreElements() )
                 {
                     this.encodeOccurred( codec, e.nextElement() );
                 }
-                
+
                 encOut.mergeAll();
             }
             else
