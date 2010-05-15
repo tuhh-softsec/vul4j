@@ -449,6 +449,8 @@ public class DefaultEntry implements Entry
      * We can't do it once as a static part in the body of this class, because
      * the access to the registries is mandatory to get back the AttributeType.
      */
+    // This will suppress PMD.EmptyCatchBlock warnings in this method
+    @SuppressWarnings("PMD.EmptyCatchBlock")
     private void initObjectClassAT( SchemaManager schemaManager )
     {
         try

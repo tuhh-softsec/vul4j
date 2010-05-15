@@ -281,6 +281,8 @@ public class Registries implements SchemaLoaderListener, Cloneable
      * @param name The name we are looking at
      * @return The associated OID
      */
+    // This will suppress PMD.EmptyCatchBlock warnings in this method
+    @SuppressWarnings("PMD.EmptyCatchBlock")
     public String getOid( String name )
     {
         // we have many possible Registries to look at.
@@ -1244,6 +1246,8 @@ public class Registries implements SchemaLoaderListener, Cloneable
     }
 
 
+    // This will suppress PMD.EmptyCatchBlock warnings in this method
+    @SuppressWarnings("PMD.EmptyCatchBlock")
     private void resolveRecursive( ObjectClass objectClass, Set<String> processed, List<Throwable> errors )
     {
         // Process the Superiors, if any

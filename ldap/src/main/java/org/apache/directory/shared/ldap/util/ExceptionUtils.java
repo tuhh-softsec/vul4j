@@ -324,6 +324,8 @@ public class ExceptionUtils
      *            the name of the method to find and invoke
      * @return the wrapped exception, or <code>null</code> if not found
      */
+    // This will suppress PMD.EmptyCatchBlock warnings in this method
+    @SuppressWarnings("PMD.EmptyCatchBlock")
     private static Throwable getCauseUsingMethodName( Throwable throwable, String methodName )
     {
         Method method = null;
@@ -369,6 +371,8 @@ public class ExceptionUtils
      *            the name of the attribute to examine
      * @return the wrapped exception, or <code>null</code> if not found
      */
+    // This will suppress PMD.EmptyCatchBlock warnings in this method
+    @SuppressWarnings("PMD.EmptyCatchBlock")
     private static Throwable getCauseUsingFieldName( Throwable throwable, String fieldName )
     {
         Field field = null;
@@ -435,6 +439,8 @@ public class ExceptionUtils
      *         <code>false</code>
      * @since 2.0
      */
+    // This will suppress PMD.EmptyCatchBlock warnings in this method
+    @SuppressWarnings("PMD.EmptyCatchBlock")
     public static boolean isNestedThrowable( Throwable throwable )
     {
         if ( throwable == null )

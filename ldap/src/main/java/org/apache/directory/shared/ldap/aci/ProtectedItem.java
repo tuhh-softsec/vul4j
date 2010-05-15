@@ -409,6 +409,8 @@ public abstract class ProtectedItem implements Serializable
         }
 
 
+        // This will suppress PMD.EmptyCatchBlock warnings in this method
+        @SuppressWarnings("PMD.EmptyCatchBlock")
         public String toString()
         {
             StringBuilder buf = new StringBuilder();

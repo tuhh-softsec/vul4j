@@ -177,6 +177,8 @@ public class SearchResultEntryCodec extends LdapMessageCodec
      * 
      * @param type The attribute's name
      */
+    // This will suppress PMD.EmptyCatchBlock warnings in this method
+    @SuppressWarnings("PMD.EmptyCatchBlock")
     public void addAttributeValues( String type )
     {
         currentAttributeValue = new DefaultEntryAttribute( type );

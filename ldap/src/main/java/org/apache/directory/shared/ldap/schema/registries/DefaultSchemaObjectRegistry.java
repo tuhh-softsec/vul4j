@@ -352,6 +352,8 @@ public abstract class DefaultSchemaObjectRegistry<T extends SchemaObject> implem
     /**
      * {@inheritDoc}
      */
+    // This will suppress PMD.EmptyCatchBlock warnings in this method
+    @SuppressWarnings("PMD.EmptyCatchBlock")
     public SchemaObjectRegistry<T> copy( SchemaObjectRegistry<T> original )
     {
         // Fill the byName and OidRegistry maps, the type has already be copied

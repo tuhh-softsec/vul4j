@@ -290,6 +290,8 @@ public abstract class SpringClassUtils
      * @return the static method, or <code>null</code> if no static method was found
      * @throws IllegalArgumentException if the method name is blank or the clazz is null
      */
+    // This will suppress PMD.EmptyCatchBlock warnings in this method
+    @SuppressWarnings("PMD.EmptyCatchBlock")
     public static Method getStaticMethod( Class clazz, String methodName, Class[] args )
     {
         try
