@@ -21,8 +21,6 @@
 package org.apache.directory.shared.ldap.subtree;
 
 
-import org.apache.directory.shared.ldap.subtree.AntlrSubtreeSpecificationChecker;
-
 import antlr.TokenStream;
 
 

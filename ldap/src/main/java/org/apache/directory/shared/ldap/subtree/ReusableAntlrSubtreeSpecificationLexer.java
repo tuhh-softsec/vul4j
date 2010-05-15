@@ -23,8 +23,6 @@ package org.apache.directory.shared.ldap.subtree;
 
 import java.io.Reader;
 
-import org.apache.directory.shared.ldap.subtree.AntlrSubtreeSpecificationLexer;
-
 import antlr.CharBuffer;
 import antlr.LexerSharedInputState;
 

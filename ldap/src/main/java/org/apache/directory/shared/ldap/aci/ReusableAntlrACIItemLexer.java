@@ -23,8 +23,6 @@ package org.apache.directory.shared.ldap.aci;
 
 import java.io.Reader;
 
-import org.apache.directory.shared.ldap.aci.AntlrACIItemLexer;
-
 import antlr.CharBuffer;
 import antlr.LexerSharedInputState;
 

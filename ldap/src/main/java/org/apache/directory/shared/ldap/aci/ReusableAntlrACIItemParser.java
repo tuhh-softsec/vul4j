@@ -21,8 +21,6 @@
 package org.apache.directory.shared.ldap.aci;
 
 
-import org.apache.directory.shared.ldap.aci.AntlrACIItemParser;
-
 import antlr.TokenStream;
 
 
