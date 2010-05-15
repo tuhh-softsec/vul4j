@@ -141,6 +141,11 @@ public abstract class AbstractSchemaLoader implements SchemaLoader
 
     protected Schema getSchema( Entry entry ) throws Exception
     {
+        if ( entry == null )
+        {
+            throw new NullPointerException( I18n.err( I18n.ERR_04261 ) );
+        }
+
         EntryAttribute objectClasses = entry.get( SchemaConstants.OBJECT_CLASS_AT );
         boolean isSchema = false;
 
@@ -162,11 +167,6 @@ public abstract class AbstractSchemaLoader implements SchemaLoader
         String owner;
         String[] dependencies = StringTools.EMPTY_STRINGS;
         boolean isDisabled = false;
-
-        if ( entry == null )
-        {
-            throw new NullPointerException( I18n.err( I18n.ERR_04261 ) );
-        }
 
         if ( entry.get( SchemaConstants.CN_AT ) == null )
         {
