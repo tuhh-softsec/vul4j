@@ -53,7 +53,7 @@ public class DefaultClosureMonitor implements ClosureMonitor
             // not going to sync because who cares if it takes a little longer 
             // to stop but we need to set cause before toggling closed state 
             // or else check for closure can throw null cause 
-            cause = null;
+            cause = new CursorClosedException();
             closed = true;
         }
     }
