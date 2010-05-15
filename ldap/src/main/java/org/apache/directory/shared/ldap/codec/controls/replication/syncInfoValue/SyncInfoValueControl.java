@@ -21,6 +21,7 @@ package org.apache.directory.shared.ldap.codec.controls.replication.syncInfoValu
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
@@ -589,7 +590,7 @@ public class SyncInfoValueControl extends AbstractControl
                             sb.append( ", " );
                         }
                         
-                        sb.append( syncUUID );
+                        sb.append( Arrays.toString ( syncUUID ) );
                     }
                     
                     sb.append( '\n' );
