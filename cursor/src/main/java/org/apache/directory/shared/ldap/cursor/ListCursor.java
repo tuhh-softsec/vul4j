@@ -67,6 +67,10 @@ public class ListCursor<E> extends AbstractCursor<E>
      */
     public ListCursor( Comparator<E> comparator, int start, List<E> list, int end )
     {
+    	if ( list == null )
+    	{
+    		list = Collections.emptyList();
+    	}
         if ( ( start < 0  )|| ( start > list.size() ) )
         {
             throw new IllegalArgumentException( I18n.err( I18n.ERR_02005, start ) );
@@ -85,16 +89,7 @@ public class ListCursor<E> extends AbstractCursor<E>
         }
 
         this.comparator = comparator;
-
-        if ( list != null )
-        {
-            this.list = list;
-        }
-        else
-        {
-            this.list = Collections.emptyList();
-        }
-
+        this.list = list;
         this.start = start;
         this.end = end;
     }
