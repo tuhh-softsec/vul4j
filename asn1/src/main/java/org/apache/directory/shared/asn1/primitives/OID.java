@@ -6,16 +6,16 @@
  *  to you under the Apache License, Version 2.0 (the
  *  "License"); you may not use this file except in compliance
  *  with the License.  You may obtain a copy of the License at
- *  
+ *
  *    http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing,
  *  software distributed under the License is distributed on an
  *  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  *  KIND, either express or implied.  See the License for the
  *  specific language governing permissions and limitations
- *  under the License. 
- *  
+ *  under the License.
+ *
  */
 package org.apache.directory.shared.asn1.primitives;
 
@@ -29,40 +29,41 @@ import org.apache.directory.shared.i18n.I18n;
 
 
 /**
- * This class implement an OID (Object Identifier). 
- * 
- * An OID is encoded as a list of bytes representing integers. 
- * 
+ * This class implement an OID (Object Identifier).
+ *
+ * An OID is encoded as a list of bytes representing integers.
+ *
  * An OID has a numeric representation where number are separated with dots :
  * SPNEGO Oid = 1.3.6.1.5.5.2
- * 
+ *
  * Translating from a byte list to a dot separated list of number follows the rules :
  * - the first number is in [0..2]
  * - the second number is in [0..39] if the first number is 0 or 1
  * - the first byte has a value equal to : number 1 * 40 + number two
  * - the upper bit of a byte is set if the next byte is a part of the number
- * 
- * For instance, the SPNEGO Oid (1.3.6.1.5.5.2) will be encoded : 
- * 1.3 -> 0x2B (1*40 + 3 = 43 = 0x2B) 
- * .6  -> 0x06 
- * .1  -> 0x01 
- * .5  -> 0x05 
- * .5  -> 0x05 
- * .2  -> 0x02 
- * 
+ *
+ * For instance, the SPNEGO Oid (1.3.6.1.5.5.2) will be encoded :
+ * 1.3 -> 0x2B (1*40 + 3 = 43 = 0x2B)
+ * .6  -> 0x06
+ * .1  -> 0x01
+ * .5  -> 0x05
+ * .5  -> 0x05
+ * .2  -> 0x02
+ *
  * The Kerberos V5 Oid (1.2.840.48018.1.2.2)  will be encoded :
- * 1.2   -> 0x2A (1*40 + 2 = 42 = 0x2A) 
+ * 1.2   -> 0x2A (1*40 + 2 = 42 = 0x2A)
  * 840   -> 0x86 0x48 (840 = 6 * 128 + 72 = (0x06 | 0x80) 0x48 = 0x86 0x48
  * 48018 -> 0x82 0xF7 0x12 (2 * 128 * 128 + 119 * 128 + 18 = (0x02 | 0x80) (0x77 | 0x80) 0x12
  * .1    -> 0x01
  * .2    -> 0x02
  * .2    -> 0x02
- *  
+ *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
 public class OID implements Serializable
 {
+    /** Internal Serial UUID version */
     private static final long serialVersionUID = 1L;
 
     // ~ Instance fields
@@ -70,14 +71,13 @@ public class OID implements Serializable
 
     /** The OID as a array of int */
     private long[] oidValues;
-    
+
     /** Th hashcode, computed only once */
     private int hash;
 
 
     // ~ Constructors
     // -------------------------------------------------------------------------------
-
     /**
      * Creates a new OID object.
      */
@@ -91,9 +91,9 @@ public class OID implements Serializable
 
     /**
      * Create a new OID object from a byte array
-     * 
+     *
      * @param oid the byte array containing the OID
-     * @throws DecoderException if the byte array does not contain a 
+     * @throws DecoderException if the byte array does not contain a
      * valid OID
      */
     public OID( byte[] oid ) throws DecoderException
@@ -105,9 +105,9 @@ public class OID implements Serializable
 
     /**
      * Create a new OID object from a String
-     * 
+     *
      * @param oid The String which is supposed to be an OID
-     * @throws DecoderException if the byte array does not contain a 
+     * @throws DecoderException if the byte array does not contain a
      * valid OID
      */
     public OID( String oid ) throws DecoderException
@@ -122,13 +122,12 @@ public class OID implements Serializable
     /**
      * Set the OID. It will be translated from a byte array to an internal
      * representation.
-     * 
+     *
      * @param oid The bytes containing the OID
-     * @throws DecoderException if the byte array does not contains a valid OID 
+     * @throws DecoderException if the byte array does not contains a valid OID
      */
     public void setOID( byte[] oid ) throws DecoderException
     {
-
         if ( oid == null )
         {
             throw new DecoderException( I18n.err( I18n.ERR_00032 ) );
@@ -141,7 +140,6 @@ public class OID implements Serializable
 
         // First, we have to calculate the number of int to allocate
         int nbValues = 1;
-
         int pos = 0;
 
         while ( pos < oid.length )
@@ -198,7 +196,6 @@ public class OID implements Serializable
 
         while ( pos < oid.length )
         {
-
             if ( oid[pos] >= 0 )
             {
                 oidValues[nbValues++] = ( accumulator << 7 ) + oid[pos];
@@ -211,24 +208,23 @@ public class OID implements Serializable
 
             pos++;
         }
-        
+
         hash = computeHashCode();
     }
 
 
     /**
      * Set the OID. It will be translated from a String to an internal
-     * representation. 
-     * 
+     * representation.
+     *
      * The syntax will be controled in respect with this rule :
      * OID = ( [ '0' | '1' ] '.' [ 0 .. 39 ] | '2' '.' int) ( '.' int )*
-     * 
+     *
      * @param oid The String containing the OID
-     * @throws DecoderException if the byte array does not contains a valid OID 
+     * @throws DecoderException if the byte array does not contains a valid OID
      */
     public void setOID( String oid ) throws DecoderException
     {
-
         if ( ( oid == null ) || ( oid.length() == 0 ) )
         {
             throw new DecoderException( I18n.err( I18n.ERR_00032 ) );
@@ -241,13 +237,10 @@ public class OID implements Serializable
         // Count the number of int to allocate.
         for ( char c:chars )
         {
-
             if ( c == '.' )
             {
-
                 if ( dotSeen )
                 {
-
                     // Two dots, that's an error !
                     throw new DecoderException( I18n.err( I18n.ERR_00033, oid ) );
                 }
@@ -279,13 +272,10 @@ public class OID implements Serializable
         // The first value
         switch ( chars[pos] )
         {
-
-            case '0': // itu-t
-            case '1': // iso
+            case '0' : // itu-t
+            case '1' : // iso
+            case '2' : // joint-iso-itu-t
                 ituOrIso = true;
-            // fallthrough
-
-            case '2': // joint-iso-itu-t
                 oidValues[intPos++] = chars[pos++] - '0';
                 break;
 
@@ -305,13 +295,10 @@ public class OID implements Serializable
 
         for ( int i = pos; i < chars.length; i++ )
         {
-
             if ( chars[i] == '.' )
             {
-
                 if ( dotSeen )
                 {
-
                     // Two dots, that's an error !
                     throw new DecoderException( I18n.err( I18n.ERR_00033, oid ) );
                 }
@@ -334,25 +321,22 @@ public class OID implements Serializable
             {
                 dotSeen = false;
                 value = ( ( value * 10 ) + chars[i] ) - '0';
-
             }
             else
             {
-
                 // We don't have a number, this is an error
                 throw new DecoderException( I18n.err( I18n.ERR_00033, oid ) );
             }
         }
 
         oidValues[intPos] = value;
-
         hash = computeHashCode();
     }
 
 
     /**
      * Get an array of long from the OID
-     * 
+     *
      * @return An array of long representing the OID
      */
     public long[] getOIDValues()
@@ -363,7 +347,7 @@ public class OID implements Serializable
 
     /**
      * Get the number of bytes necessary to store the OID
-     * 
+     *
      * @return An int representing the length of the OID
      */
     public int getOIDLength()
@@ -424,7 +408,7 @@ public class OID implements Serializable
 
     /**
      * Get an array of bytes from the OID
-     * 
+     *
      * @return An array of int representing the OID
      */
     public byte[] getOID()
@@ -517,13 +501,13 @@ public class OID implements Serializable
      * Compute the hash code for this object. No need to compute
      * it live when calling the hashCode() method, as an OID
      * never change.
-     * 
+     *
      * @return the OID's hash code
      */
     private int computeHashCode()
     {
         int h = 37;
-        
+
         for ( long val:oidValues )
         {
             int low = (int)(val & 0x0000FFFFL);
@@ -531,10 +515,11 @@ public class OID implements Serializable
             h = h*17 + high;
             h = h*17 + low;
         }
-        
+
         return h;
     }
-    
+
+
     /**
      * Check that an OID is valid
      * @param oid The oid to be checked
@@ -554,13 +539,10 @@ public class OID implements Serializable
         // Count the number of int to allocate.
         for ( byte b:bytes )
         {
-
             if ( b == '.' )
             {
-
                 if ( dotSeen )
                 {
-
                     // Two dots, that's an error !
                     return false;
                 }
@@ -589,17 +571,13 @@ public class OID implements Serializable
         // The first value
         switch ( bytes[pos++] )
         {
-
-            case '0': // itu-t
-                // fallthrough
-            case '1': // iso
+            case '0' : // itu-t
+            case '1' : // iso
+            case '2' : // joint-iso-itu-t
                 ituOrIso = true;
-                // fallthrough
-
-            case '2': // joint-iso-itu-t
                 break;
 
-            default: // error, this value is not allowed
+            default : // error, this value is not allowed
                 return false;
         }
 
@@ -615,10 +593,8 @@ public class OID implements Serializable
 
         for ( int i = pos; i < bytes.length; i++ )
         {
-
             if ( bytes[i] == '.' )
             {
-
                 if ( dotSeen )
                 {
                     // Two dots, that's an error !
@@ -653,15 +629,15 @@ public class OID implements Serializable
 
         return !dotSeen;
     }
-    
+
+
     /**
      * Get the OID as a String
-     * 
+     *
      * @return A String representing the OID
      */
     public String toString()
     {
-
         StringBuffer sb = new StringBuffer();
 
         if ( oidValues != null )
@@ -678,31 +654,37 @@ public class OID implements Serializable
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public int hashCode()
     {
         return hash;
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean equals( Object oid )
     {
         if ( this == oid )
         {
             return true;
         }
-        
+
         if ( oid == null )
         {
             return false;
         }
-        
+
         if ( oid.getClass() != this.getClass() )
         {
             return false;
         }
-        
+
         OID instance = (OID)oid;
-       
+
         if ( instance.hash != hash )
         {
             return false;
@@ -712,5 +694,4 @@ public class OID implements Serializable
             return Arrays.equals( instance.oidValues, oidValues );
         }
     }
-    
 }
