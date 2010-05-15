@@ -98,7 +98,7 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
         statesEnum = Dsmlv2StatesEnum.getInstance();
 
         // Create the transitions table
-        super.transitions = ( HashMap<Tag, GrammarTransition>[] ) Array.newInstance( HashMap.class, 200 );; // TODO Change this value
+        super.transitions = ( HashMap<Tag, GrammarTransition>[] ) Array.newInstance( HashMap.class, 200 ); // TODO Change this value
 
         //====================================================
         //  Transitions concerning : BATCH REQUEST
