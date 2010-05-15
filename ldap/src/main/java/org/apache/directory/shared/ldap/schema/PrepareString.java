@@ -4552,8 +4552,6 @@ public class PrepareString
         {
             throw new InvalidCharacterException( c );
         }
-        
-        return;
     }
     
     /**

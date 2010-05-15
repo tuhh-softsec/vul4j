@@ -990,8 +990,6 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
             LOG.error( I18n.err( I18n.ERR_12038 ) );
             throw new LdapLdifException( I18n.err( I18n.ERR_12039 ) );
         }
-
-        return;
     }
 
 
@@ -1555,8 +1553,6 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
         {
             lines.add( sb.toString() );
         }
-
-        return;
     }
 
 

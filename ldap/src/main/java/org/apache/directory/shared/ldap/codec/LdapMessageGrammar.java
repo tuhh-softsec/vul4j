@@ -184,8 +184,6 @@ public class LdapMessageGrammar extends AbstractGrammar
                         // This will generate a PROTOCOL_ERROR
                         throw new DecoderException( I18n.err( I18n.ERR_04067 ) );
                     }
-
-                    return;
                 }
             } );
 
@@ -244,8 +242,6 @@ public class LdapMessageGrammar extends AbstractGrammar
                         // This will generate a PROTOCOL_ERROR                        
                         throw new DecoderException( ide.getMessage() );
                     }
-
-                    return;
                 }
             } );
 
@@ -310,8 +306,6 @@ public class LdapMessageGrammar extends AbstractGrammar
                     
                     // We can quit now
                     ldapMessageContainer.grammarEndAllowed( true );
-
-                    return;
                 }
             } );
 
@@ -552,8 +546,6 @@ public class LdapMessageGrammar extends AbstractGrammar
                         // This will generate a PROTOCOL_ERROR
                         throw new DecoderException( ide.getMessage() );
                     }
-
-                    return;
                 }
             } );
 
@@ -610,8 +602,6 @@ public class LdapMessageGrammar extends AbstractGrammar
                     {
                         log.debug( " The Bind name is {}", bindRequestMessage.getName() );
                     }
-
-                    return;
                 }
             } );
 
@@ -724,8 +714,6 @@ public class LdapMessageGrammar extends AbstractGrammar
                     {
                         log.debug( "The SaslCredential has been created" );
                     }
-
-                    return;
                 }
             } );
 
@@ -768,8 +756,6 @@ public class LdapMessageGrammar extends AbstractGrammar
                     {
                         log.debug( "The mechanism is : {}", authentication.getMechanism() );
                     }
-
-                    return;
                 }
             } );
 
@@ -813,8 +799,6 @@ public class LdapMessageGrammar extends AbstractGrammar
                     {
                         log.debug( "The credentials are : {}", credentials.getCredentials() );
                     }
-
-                    return;
                 }
             } );
 
@@ -2233,8 +2217,6 @@ public class LdapMessageGrammar extends AbstractGrammar
                     {
                         log.debug( "Modifying DN {}", entry );
                     }
-
-                    return;
                 }
             } );
 
@@ -2433,8 +2415,6 @@ public class LdapMessageGrammar extends AbstractGrammar
                     {
                         log.debug( "New superior DN {}", newSuperior );
                     }
-
-                    return;
                 }
             } );
 
@@ -3678,8 +3658,6 @@ public class LdapMessageGrammar extends AbstractGrammar
                     searchRequest.setBaseObject( baseObject );
 
                     log.debug( "Searching with root DN : {}", baseObject );
-
-                    return;
                 }
             } );
 
@@ -3741,8 +3719,6 @@ public class LdapMessageGrammar extends AbstractGrammar
                                 break;
                         }
                     }
-
-                    return;
                 }
             } );
 
@@ -3809,7 +3785,6 @@ public class LdapMessageGrammar extends AbstractGrammar
                                 break;
                         }
                     }
-                    return;
                 }
             } );
 
@@ -3855,8 +3830,6 @@ public class LdapMessageGrammar extends AbstractGrammar
                     {
                         log.debug( "The sizeLimit value is set to {} objects", Long.valueOf( sizeLimit ) );
                     }
-
-                    return;
                 }
             } );
 
@@ -3903,8 +3876,6 @@ public class LdapMessageGrammar extends AbstractGrammar
                     {
                         log.debug( "The timeLimit value is set to {} seconds", Integer.valueOf( timeLimit ) );
                     }
-
-                    return;
                 }
             } );
 
@@ -3953,7 +3924,6 @@ public class LdapMessageGrammar extends AbstractGrammar
                         log.debug( "The search will return {}", ( searchRequest.isTypesOnly() ? "only attributs type"
                             : "attributes types and values" ) );
                     }
-                    return;
                 }
             } );
 
