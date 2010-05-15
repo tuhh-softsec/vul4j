@@ -28,6 +28,8 @@ package org.apache.directory.shared.ldap.constants;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev:$
  */
+// This will suppress PMD.AvoidUsingHardCodedIP warnings in this class
+@SuppressWarnings("PMD.AvoidUsingHardCodedIP")
 public interface SchemaConstants
 {
     // SchemaEntity names
