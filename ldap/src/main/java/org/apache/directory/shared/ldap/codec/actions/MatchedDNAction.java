@@ -117,7 +117,5 @@ public class MatchedDNAction extends GrammarAction
         {
             log.debug( "The matchedDN is " + ldapResult.getMatchedDN() );
         }
-
-        return;
     }
 }

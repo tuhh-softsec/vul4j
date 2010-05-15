@@ -80,7 +80,5 @@ public class ServerSASLCredsAction extends GrammarAction
         {
             log.debug( "The SASL credentials value is : {}", StringTools.dumpBytes( bindResponseMessage.getServerSaslCreds() ) );
         }
-
-        return;
     }
 }

@@ -652,8 +652,6 @@ public class Value implements Serializable
         {
             throw new EncoderException( I18n.err( I18n.ERR_00004 ) );
         }
-
-        return;
     }
 
     /**
@@ -687,8 +685,6 @@ public class Value implements Serializable
         {
             throw new EncoderException( I18n.err( I18n.ERR_00004 ) );
         }
-
-        return;
     }
 
 
@@ -725,8 +721,6 @@ public class Value implements Serializable
         {
             throw new EncoderException( I18n.err( I18n.ERR_00004 ) );
         }
-
-        return;
     }
 
 
@@ -759,8 +753,6 @@ public class Value implements Serializable
         {
             throw new EncoderException( I18n.err( I18n.ERR_00004 ) );
         }
-
-        return;
     }
 
 
@@ -789,8 +781,6 @@ public class Value implements Serializable
         {
             throw new EncoderException( I18n.err( I18n.ERR_00004 ) );
         }
-
-        return;
     }
 
 
@@ -819,8 +809,6 @@ public class Value implements Serializable
         {
             throw new EncoderException( I18n.err( I18n.ERR_00004 ) );
         }
-
-        return;
     }
 
 
@@ -850,8 +838,6 @@ public class Value implements Serializable
         {
             throw new EncoderException( I18n.err( I18n.ERR_00004 ) );
         }
-
-        return;
     }
 
 
@@ -880,8 +866,6 @@ public class Value implements Serializable
         {
             throw new EncoderException( I18n.err( I18n.ERR_00004 ) );
         }
-
-        return;
     }
 
 
@@ -908,8 +892,6 @@ public class Value implements Serializable
         {
             throw new EncoderException( I18n.err( I18n.ERR_00004 ) );
         }
-
-        return;
     }
 
 

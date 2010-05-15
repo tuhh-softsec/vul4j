@@ -2648,8 +2648,6 @@ public class StringTools
         }
         
         pos.end = pos.start;
-
-        return;
     }
 
 
@@ -2686,8 +2684,6 @@ public class StringTools
         }
         
         pos.end = pos.start;
-
-        return;
     }
 
     

@@ -80,7 +80,5 @@ public class AttributeDescAction extends GrammarAction
         {
             log.debug( "Decoded Attribute Description : {}", attributeDescription );
         }
-
-        return;
     }
 }

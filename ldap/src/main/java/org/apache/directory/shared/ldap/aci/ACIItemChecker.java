@@ -102,8 +102,6 @@ public class ACIItemChecker
         {
             throw new ParseException( I18n.err( I18n.ERR_00004, spec, e.getLocalizedMessage() ), e.getColumn() );
         }
-
-        return;
     }
 
 

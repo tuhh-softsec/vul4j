@@ -2085,8 +2085,6 @@ public class Registries implements SchemaLoaderListener, Cloneable
         {
             using.put( wrapper, uses );
         }
-
-        return;
     }
 
 
@@ -2122,8 +2120,6 @@ public class Registries implements SchemaLoaderListener, Cloneable
         {
             usedBy.put( wrapper, uses );
         }
-
-        return;
     }
 
 

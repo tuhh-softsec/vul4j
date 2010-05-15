@@ -96,7 +96,5 @@ public class StoreReferenceAction extends GrammarAction
 
         // We can have an END transition
         ldapMessageContainer.grammarEndAllowed( true );
-
-        return;
     }
 }

@@ -852,8 +852,6 @@ public class Asn1Decoder implements ITLVBerDecoderMBean
 
             LOG.debug( "<<<==========================================" );
         }
-
-        return;
     }
 
 

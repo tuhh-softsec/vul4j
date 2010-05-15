@@ -81,7 +81,5 @@ public class ErrorMessageAction extends GrammarAction
         {
             log.debug( "The error message is : " + ldapResult.getErrorMessage() );
         }
-
-        return;
     }
 }
