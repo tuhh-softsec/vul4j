@@ -95,4 +95,44 @@ public abstract class AbstractCursor<E> implements Cursor<E>
     {
         return new CursorIterator<E>( this );
     }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isAfterLast() throws Exception
+    {
+        throw new UnsupportedOperationException( I18n.err( I18n.ERR_02014_UNSUPPORTED_OPERATION, getClass().getName()
+            .concat( "." ).concat( "isAfterLast()" ) ) );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isBeforeFirst() throws Exception
+    {
+        throw new UnsupportedOperationException( I18n.err( I18n.ERR_02014_UNSUPPORTED_OPERATION, getClass().getName()
+            .concat( "." ).concat( "isBeforeFirst()" ) ) );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isFirst() throws Exception
+    {
+        throw new UnsupportedOperationException( I18n.err( I18n.ERR_02014_UNSUPPORTED_OPERATION, getClass().getName()
+            .concat( "." ).concat( "isFirst()" ) ) );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isLast() throws Exception
+    {
+        throw new UnsupportedOperationException( I18n.err( I18n.ERR_02014_UNSUPPORTED_OPERATION, getClass().getName()
+            .concat( "." ).concat( "isLast()" ) ) );
+    }
 }

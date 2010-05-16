@@ -181,6 +181,7 @@ public class SingletonCursor<E> extends AbstractCursor<E>
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isFirst() throws Exception
     {
         checkNotClosed( "()" );
@@ -191,6 +192,7 @@ public class SingletonCursor<E> extends AbstractCursor<E>
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isLast() throws Exception
     {
         checkNotClosed( "()" );
@@ -201,6 +203,7 @@ public class SingletonCursor<E> extends AbstractCursor<E>
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isAfterLast() throws Exception
     {
         checkNotClosed( "()" );
@@ -211,6 +214,7 @@ public class SingletonCursor<E> extends AbstractCursor<E>
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isBeforeFirst() throws Exception
     {
         checkNotClosed( "()" );

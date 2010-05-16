@@ -354,6 +354,7 @@ public class ListCursor<E> extends AbstractCursor<E>
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isFirst() throws Exception
     {
         checkNotClosed( "isFirst()" );
@@ -364,6 +365,7 @@ public class ListCursor<E> extends AbstractCursor<E>
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isLast() throws Exception
     {
         checkNotClosed( "isLast()" );
@@ -374,6 +376,7 @@ public class ListCursor<E> extends AbstractCursor<E>
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isAfterLast() throws Exception
     {
         checkNotClosed( "isAfterLast()" );
@@ -384,6 +387,7 @@ public class ListCursor<E> extends AbstractCursor<E>
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isBeforeFirst() throws Exception
     {
         checkNotClosed( "isBeforeFirst()" );
