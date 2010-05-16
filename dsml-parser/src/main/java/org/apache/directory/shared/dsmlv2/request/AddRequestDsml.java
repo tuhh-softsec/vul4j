@@ -189,7 +189,7 @@ public class AddRequestDsml extends AbstractRequestDsml
     /**
      * Set the added DN.
      * 
-     * @param entry The entry DN to set.
+     * @param entryDn The entry DN to set.
      */
     public void setEntryDn( DN entryDn )
     {
