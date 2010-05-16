@@ -85,6 +85,7 @@ public class PagedResultsControl extends AbstractControl
     {
         super( CONTROL_OID );
         
+        cookie = StringTools.EMPTY_BYTES;
         decoder = new PagedResultsControlDecoder();
     }
 
@@ -233,7 +234,27 @@ public class PagedResultsControl extends AbstractControl
      */
     public int getCookieValue()
     {
-        int value = ((cookie[0]&0x00FF)<<24) + ((cookie[1]&0x00FF)<<16) + ((cookie[2]&0x00FF)<<8) + (cookie[3]&0x00FF);
+        int value = 0;
+        
+        switch ( cookie.length )
+        {
+            case 1 :
+                value = cookie[0]&0x00FF;
+                break;
+                
+            case 2 :
+                value = ((cookie[0]&0x00FF)<<8) + (cookie[1]&0x00FF);
+                break;
+                
+            case 3 :
+                value = ((cookie[0]&0x00FF)<<16) + ((cookie[1]&0x00FF)<<8) + (cookie[2]&0x00FF);
+                break;
+                
+            case 4 :
+                value = ((cookie[0]&0x00FF)<<24) + ((cookie[1]&0x00FF)<<16) + ((cookie[2]&0x00FF)<<8) + (cookie[3]&0x00FF);
+                break;
+                
+        }
         
         return value;
     }
