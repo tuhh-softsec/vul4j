@@ -206,12 +206,10 @@ public class LdifEntry implements Cloneable, Externalizable
     /**
      * Add a modification item
      * 
-     * @param modOp The operation. One of : 
+     * @param modOp The modification operation value. One of : 
      *  - ModificationOperation.ADD_ATTRIBUTE
      *  - ModificationOperation.REMOVE_ATTRIBUTE 
      *  - ModificationOperation.REPLACE_ATTRIBUTE
-     * 
-     * @param modOp The modification operation value
      * @param id The attribute's ID
      * @param value The attribute's value
      */

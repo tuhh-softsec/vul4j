@@ -51,7 +51,7 @@ public interface SchemaLoader
     Schema getSchema( String schemaName );
 
 
-    /**
+    /*
      * Loads a set of schemas.  A best effort should be made to load the dependended 
      * schemas that these schemas may rely on even if they are not included in the collection.
      * 
@@ -84,7 +84,7 @@ public interface SchemaLoader
      * @throws Exception if any kind of problems are encountered during the load
      *
     void load( Schema schema, Registries registries, boolean isDepLoad ) throws Exception;
-    
+    */
     
     /**
      * Build a list of AttributeTypes read from the underlying storage for
@@ -143,7 +143,7 @@ public interface SchemaLoader
      * @param schemaNames the schema names from which DitContentRules are loaded
      * @throws Exception if there are failures accessing DitContentRule information
      */
-    List<Entry> loadDitContentRules( String... schemanames ) throws Exception;
+    List<Entry> loadDitContentRules( String... schemaNames ) throws Exception;
 
 
     /**
@@ -163,7 +163,7 @@ public interface SchemaLoader
      * @param schemaNames the schema names from which DitStructureRules are loaded
      * @throws Exception if there are failures accessing DitStructureRule information
      */
-    List<Entry> loadDitStructureRules( String... schemanames ) throws Exception;
+    List<Entry> loadDitStructureRules( String... schemaNames ) throws Exception;
 
 
     /**
@@ -203,7 +203,7 @@ public interface SchemaLoader
      * @param schemaNames the schema names from which MatchingRuleUses are loaded
      * @throws Exception if there are failures accessing MatchingRuleUses information
      */
-    List<Entry> loadMatchingRuleUses( String... schemanames ) throws Exception;
+    List<Entry> loadMatchingRuleUses( String... schemaNames ) throws Exception;
 
 
     /**
@@ -223,7 +223,7 @@ public interface SchemaLoader
      * @param schemaNames the schema names from which NameForms are loaded
      * @throws Exception if there are failures accessing NameForms information
      */
-    List<Entry> loadNameForms( String... schemanames ) throws Exception;
+    List<Entry> loadNameForms( String... schemaNames ) throws Exception;
 
 
     /**
@@ -303,7 +303,7 @@ public interface SchemaLoader
      * @param schemaNames the schema names from which SyntaxCheckers are loaded
      * @throws Exception if there are failures accessing SyntaxChecker information
      */
-    List<Entry> loadSyntaxCheckers( String... schemanames ) throws Exception;
+    List<Entry> loadSyntaxCheckers( String... schemaNames ) throws Exception;
 
 
     /**

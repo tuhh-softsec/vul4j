@@ -162,7 +162,7 @@ public class MatchingRuleUse extends AbstractSchemaObject
     /**
      * Set the matchingRule's AttributeType OIDs the MRU applies to.
      *
-     * @param applicableAttributes The AttributeType OIDs list
+     * @param applicableAttributeOids The AttributeType OIDs list
      */
     public void setApplicableAttributeOids( List<String> applicableAttributeOids )
     {
@@ -230,7 +230,7 @@ public class MatchingRuleUse extends AbstractSchemaObject
     /**
      * Add a matchingRule's AttributeType the MRU applies to.
      *
-     * @param oid A matchingRule's AttributeType the MRU applies to
+     * @param attributeType A matchingRule's AttributeType the MRU applies to
      */
     public void addApplicableAttribute( AttributeType attributeType )
     {

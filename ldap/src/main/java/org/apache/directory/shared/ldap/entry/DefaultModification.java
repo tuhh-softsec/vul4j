@@ -65,7 +65,7 @@ public class DefaultModification implements Modification
      * Creates a new instance of DefaultModification.
      *
      * @param schemaManager The schema manager 
-     * @param operation The modification operation
+     * @param modification The modification
      */
     public DefaultModification( SchemaManager schemaManager, Modification modification )
     {
@@ -254,7 +254,7 @@ public class DefaultModification implements Modification
      * Deserialize a ServerModification
      * 
      * @param in The buffer containing the serialized value
-     * @param atRegistry The AttributeType registry
+     * @param schemaManager The schema manager to use
      * @throws IOException If we weren't able to deserialize the data
      * @throws ClassNotFoundException if we weren't able to construct a Modification instance
      * @throws LdapException If we didn't found the AttributeType in the registries

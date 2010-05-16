@@ -853,7 +853,6 @@ public class AttributeUtils
      *
      * @param str The OID to parse
      * @param pos The current position in the string
-     * @return A valid OID
      * @throws ParseException If we don't have a valid OID
      */
     public static void parseOID( String str, Position pos ) throws ParseException
@@ -1067,7 +1066,7 @@ public class AttributeUtils
     }
 
 
-    /**
+    /*
      * Check if an attribute contains a specific value and remove it using the associated
      * matchingRule for the attribute type supplied.
      *
@@ -1189,13 +1188,13 @@ public class AttributeUtils
 
         return null;
     }
+    */
 
 
     /**
      * Convert a BasicAttributes or a AttributesImpl to a ServerEntry
      *
      * @param attributes the BasicAttributes or AttributesImpl instance to convert
-     * @param registries The registries, needed ro build a ServerEntry
      * @param dn The DN which is needed by the ServerEntry 
      * @return An instance of a ServerEntry object
      * 
@@ -1296,7 +1295,6 @@ public class AttributeUtils
      * Convert a BasicAttribute or a AttributeImpl to a EntryAttribute
      *
      * @param attribute the BasicAttributes or AttributesImpl instance to convert
-     * @param attributeType
      * @return An instance of a ClientEntry object
      * 
      * @throws InvalidAttributeIdentifierException If we had an incorrect attribute

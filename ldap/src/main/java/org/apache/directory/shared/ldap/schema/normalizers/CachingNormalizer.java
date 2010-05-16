@@ -57,7 +57,6 @@ public class CachingNormalizer extends Normalizer
      * Creates a CachingNormalizer that decorates another normalizer using a
      * default cache size.  This Normalizer delegates 
      * 
-     * @param oid The MR OID to use with this Normalizer
      * @param normalizer the underlying Normalizer being decorated
      */
     public CachingNormalizer( Normalizer normalizer )

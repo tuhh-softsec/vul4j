@@ -43,8 +43,8 @@ public class ParserDescriptionUtils
     /**
      * Checks two schema objectClasses for an exact match.
      *
-     * @param ocd0 the first objectClass to compare
-     * @param ocd1 the second objectClass to compare
+     * @param oc0 the first objectClass to compare
+     * @param oc1 the second objectClass to compare
      * @return true if both objectClasses match exactly, false otherwise
      */
     public static boolean objectClassesMatch( ObjectClass oc0, ObjectClass oc1 ) throws NamingException
@@ -101,8 +101,8 @@ public class ParserDescriptionUtils
     /**
      * Checks two schema attributeTypes for an exact match.
      *
-     * @param atd0 the first attributeType to compare
-     * @param atd1 the second attributeType to compare
+     * @param at0 the first attributeType to compare
+     * @param at1 the second attributeType to compare
      * @return true if both attributeTypes match exactly, false otherwise
      */
     public static boolean attributeTypesMatch( AttributeType at0, AttributeType at1 )
@@ -180,8 +180,8 @@ public class ParserDescriptionUtils
     /**
      * Checks to see if two matchingRule match exactly.
      *
-     * @param mrd0 the first matchingRule to compare
-     * @param mrd1 the second matchingRule to compare
+     * @param matchingRule0 the first matchingRule to compare
+     * @param matchingRule1 the second matchingRule to compare
      * @return true if the matchingRules match exactly, false otherwise
      */
     public static boolean matchingRulesMatch( MatchingRule matchingRule0, MatchingRule matchingRule1 )
@@ -221,8 +221,8 @@ public class ParserDescriptionUtils
      * not compared because doing so would raise an exception since syntax 
      * descriptions do not support the OBSOLETE flag.
      * 
-     * @param lsd0 the first schema description to compare 
-     * @param lsd1 the second schema description to compare 
+     * @param so0 the first schema description to compare 
+     * @param so1 the second schema description to compare 
      * @return true if the descriptions match exactly, false otherwise
      */
     public static boolean descriptionsMatch( SchemaObject so0, SchemaObject so1 )
@@ -310,8 +310,8 @@ public class ParserDescriptionUtils
      * Checks to see if the alias names of a schema description match another 
      * description.  The order of the alias names do matter.
      *
-     * @param asd0 the schema description to compare
-     * @param asd1 the schema description to compare
+     * @param so0 the schema description to compare
+     * @param so1 the schema description to compare
      * @return true if alias names match exactly, false otherwise
      */
     public static boolean aliasNamesMatch( SchemaObject so0, SchemaObject so1 )

@@ -112,7 +112,7 @@ public class StringValue extends AbstractValue<String>
      * Creates a StringValue with an initial wrapped String value.
      *
      * @param attributeType the schema type associated with this StringValue
-     * @param wrapped the value to wrap which can be null
+     * @param value the value to wrap which can be null
      */
     public StringValue( AttributeType attributeType, String value )
     {
@@ -216,7 +216,7 @@ public class StringValue extends AbstractValue<String>
      * It supposes that the client has access to the schema in order to select the
      * appropriate normalizer.
      * 
-     * @param Normalizer The normalizer to apply to the value
+     * @param normalizer The normalizer to apply to the value
      * @exception LdapException If the value cannot be normalized
      */
     public final void normalize( Normalizer normalizer ) throws LdapException
@@ -233,7 +233,7 @@ public class StringValue extends AbstractValue<String>
     // Comparable<String> Methods
     // -----------------------------------------------------------------------
     /**
-     * @see ServerValue#compareTo(ServerValue)
+     * @see ServerValue#compareTo(Value)
      * @throws IllegalStateException on failures to extract the comparator, or the
      * normalizers needed to perform the required comparisons based on the schema
      */

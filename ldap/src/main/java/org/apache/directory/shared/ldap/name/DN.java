@@ -128,7 +128,7 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
     /**
      * Copies a DN to an DN.
      *
-     * @param name composed of String name components.
+     * @param dn composed of String name components.
      * @throws LdapInvalidDnException If the Name is invalid.
      */
     public DN( DN dn ) throws LdapInvalidDnException
@@ -191,7 +191,7 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
      *     baseDn);
      * </pre>
      *
-     * @param upNames
+     * @param upRdns
      * @throws LdapInvalidDnException
      */
     public DN( String... upRdns ) throws LdapInvalidDnException

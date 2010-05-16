@@ -209,7 +209,7 @@ public abstract class AbstractSchemaLoader implements SchemaLoader
     }
 
 
-    /**
+    /*
      * {@inheritDoc}
      *
     public List<Throwable> loadWithDependencies( Registries registries, boolean check, Schema... schemas ) throws Exception

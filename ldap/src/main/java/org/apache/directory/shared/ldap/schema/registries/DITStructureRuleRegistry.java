@@ -39,7 +39,7 @@ public interface DITStructureRuleRegistry extends SchemaObjectRegistry<DITStruct
      * Checks to see if an DITStructureRule exists in the registry, by its
      * ruleId. 
      * 
-     * @param oid the object identifier or name of the DITStructureRule
+     * @param ruleId the rule identifier of the DITStructureRule
      * @return true if a DITStructureRule definition exists for the ruleId, false
      * otherwise
      */
@@ -65,7 +65,7 @@ public interface DITStructureRuleRegistry extends SchemaObjectRegistry<DITStruct
     /**
      * Gets the name of the schema this schema object is associated with.
      *
-     * @param id the object identifier or the name
+     * @param ruleId the object identifier
      * @return the schema name
      * @throws LdapException if the schema object does not exist
      */

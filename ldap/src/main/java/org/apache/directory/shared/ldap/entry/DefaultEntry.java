@@ -2270,7 +2270,7 @@ public class DefaultEntry implements Entry
      * </p> 
      *
      * @param upId The attribute ID  
-     * @param attributes the attributes to be removed
+     * @param values the attributes to be removed
      * @return <code>true</code> if at least a value is removed, <code>false</code>
      * if not all the values have been removed or if the attribute does not exist. 
      */
@@ -2358,7 +2358,7 @@ public class DefaultEntry implements Entry
      * </p> 
      *
      * @param upId The attribute ID  
-     * @param attributes the attributes to be removed
+     * @param values the attributes to be removed
      * @return <code>true</code> if at least a value is removed, <code>false</code>
      * if not all the values have been removed or if the attribute does not exist. 
      */

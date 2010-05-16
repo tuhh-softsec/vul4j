@@ -114,7 +114,7 @@ public class SyntaxCheckerDescriptionSchemaParser extends AbstractSchemaParser
     /**
      * Parses a SyntaxChecker description
      * 
-     * @param The SyntaxChecker description to parse
+     * @param schemaDescription The SyntaxChecker description to parse
      * @return An instance of SyntaxCheckerDescription
      */
     public SyntaxCheckerDescription parse( String schemaDescription ) throws ParseException

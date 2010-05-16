@@ -198,7 +198,7 @@ public class DITContentRule extends AbstractSchemaObject
     /**
      * Add an Auxiliary ObjectClass
      *
-     * @param oid The ObjectClass
+     * @param objectClass The ObjectClass
      */
     public void addAuxObjectClasses( ObjectClass objectClass )
     {
@@ -444,7 +444,7 @@ public class DITContentRule extends AbstractSchemaObject
     /**
      * Sets the list of required AttributeTypes
      *
-     * @param mayAttributeTypes the list of required AttributeTypes
+     * @param mustAttributeTypes the list of required AttributeTypes
      */
     public void setMustAttributeTypes( List<AttributeType> mustAttributeTypes )
     {
@@ -548,7 +548,7 @@ public class DITContentRule extends AbstractSchemaObject
     /**
      * Sets the list of precluded AttributeTypes
      *
-     * @param mayAttributeTypes the list of precluded AttributeTypes
+     * @param notAttributeTypes the list of precluded AttributeTypes
      */
     public void setNotAttributeTypes( List<AttributeType> notAttributeTypes )
     {

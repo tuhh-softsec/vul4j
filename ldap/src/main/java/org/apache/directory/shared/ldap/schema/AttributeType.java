@@ -734,7 +734,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
     /**
      * Tells if this AttributeType is Single Valued or not
      *
-     * @param singleValue True if the AttributeType is single-valued
+     * @param singleValued True if the AttributeType is single-valued
      */
     public void setSingleValued( boolean singleValued )
     {
@@ -995,7 +995,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
     /**
      * Sets the superior oid for this AttributeType
      *
-     * @param superior The superior oid for this AttributeType
+     * @param superiorOid The superior oid for this AttributeType
      */
     public void setSuperior( String superiorOid )
     {
@@ -1071,7 +1071,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
     /**
      * Sets the Syntax OID for this AttributeType
      *
-     * @param superiorOid The syntax OID for this AttributeType
+     * @param syntaxOid The syntax OID for this AttributeType
      */
     public void setSyntaxOid( String syntaxOid )
     {

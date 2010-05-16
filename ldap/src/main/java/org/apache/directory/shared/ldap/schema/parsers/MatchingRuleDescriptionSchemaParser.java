@@ -110,7 +110,7 @@ public class MatchingRuleDescriptionSchemaParser extends AbstractSchemaParser
     /**
      * Parses a MatchingRule description
      * 
-     * @param The MatchingRule description to parse
+     * @param schemaDescription The MatchingRule description to parse
      * @return An instance of MatchingRule
      */
     public MatchingRule parse( String schemaDescription ) throws ParseException

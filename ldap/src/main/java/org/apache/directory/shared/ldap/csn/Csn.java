@@ -618,7 +618,7 @@ public class Csn implements Serializable, Comparable<Csn>
      * negative integer, zero, or a positive integer as this object is less
      * than, equal to, or greater than the specified object.<p>
      * 
-     * @param   o the Object to be compared.
+     * @param   csn the Object to be compared.
      * @return  a negative integer, zero, or a positive integer as this object
      *      is less than, equal to, or greater than the specified object.
      */

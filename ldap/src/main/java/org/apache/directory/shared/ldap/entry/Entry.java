@@ -115,7 +115,7 @@ public interface Entry extends Cloneable, Iterable<EntryAttribute>, Externalizab
     /**
      * Returns the attribute associated with an AttributeType
      * 
-     * @param the AttributeType we are looking for
+     * @param attributeType the AttributeType we are looking for
      * @return the associated attribute
      */
     EntryAttribute get( AttributeType attributeType );
@@ -713,7 +713,7 @@ public interface Entry extends Cloneable, Iterable<EntryAttribute>, Externalizab
      * </p> 
      *
      * @param upId The attribute ID  
-     * @param attributes the attributes to be removed
+     * @param values the attributes to be removed
      * @return <code>true</code> if at least a value is removed, <code>false</code>
      * if not all the values have been removed or if the attribute does not exist. 
      */
@@ -737,7 +737,7 @@ public interface Entry extends Cloneable, Iterable<EntryAttribute>, Externalizab
      * </p> 
      *
      * @param upId The attribute ID  
-     * @param attributes the attributes to be removed
+     * @param values the attributes to be removed
      * @return <code>true</code> if at least a value is removed, <code>false</code>
      * if no values have been removed or if the attribute does not exist. 
      */
@@ -761,7 +761,7 @@ public interface Entry extends Cloneable, Iterable<EntryAttribute>, Externalizab
      * </p> 
      *
      * @param upId The attribute ID  
-     * @param attributes the attributes to be removed
+     * @param values the attributes to be removed
      * @return <code>true</code> if at least a value is removed, <code>false</code>
      * if not all the values have been removed or if the attribute does not exist. 
      */
@@ -863,7 +863,7 @@ public interface Entry extends Cloneable, Iterable<EntryAttribute>, Externalizab
     /**
      * Checks if an entry contains an attribute with some binary values.
      *
-     * @param id The Attribute we are looking for.
+     * @param upId The Attribute we are looking for.
      * @param values The searched values.
      * @return <code>true</code> if all the values are found within the attribute,
      * false if at least one value is not present or if the ID is not valid. 
@@ -874,7 +874,7 @@ public interface Entry extends Cloneable, Iterable<EntryAttribute>, Externalizab
     /**
      * Checks if an entry contains an attribute with some String values.
      *
-     * @param id The Attribute we are looking for.
+     * @param upId The Attribute we are looking for.
      * @param values The searched values.
      * @return <code>true</code> if all the values are found within the attribute,
      * false if at least one value is not present or if the ID is not valid. 
@@ -885,7 +885,7 @@ public interface Entry extends Cloneable, Iterable<EntryAttribute>, Externalizab
     /**
      * Checks if an entry contains an attribute with some values.
      *
-     * @param id The Attribute we are looking for.
+     * @param upId The Attribute we are looking for.
      * @param values The searched values.
      * @return <code>true</code> if all the values are found within the attribute,
      * false if at least one value is not present or if the ID is not valid. 

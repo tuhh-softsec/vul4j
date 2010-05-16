@@ -111,7 +111,7 @@ public class DITContentRuleDescriptionSchemaParser extends AbstractSchemaParser
     /**
      * Parses a DITContentRule description
      * 
-     * @param The DITContentRule description to parse
+     * @param schemaDescription The DITContentRule description to parse
      * @return An instance of DITContentRule
      */
     public DITContentRule parse( String schemaDescription ) throws ParseException

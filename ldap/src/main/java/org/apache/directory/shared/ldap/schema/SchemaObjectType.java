@@ -64,7 +64,6 @@ public enum SchemaObjectType
     /**
      * Get the RDN associated with a schemaObjectType
      *
-     * @param schemaObjectType The type we want the RDN for
      * @return The associated RDN
      */
     public String getRdn()

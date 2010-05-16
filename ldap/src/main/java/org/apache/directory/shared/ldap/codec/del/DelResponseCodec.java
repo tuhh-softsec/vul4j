@@ -98,7 +98,6 @@ public class DelResponseCodec extends LdapResponseCodec
      * Encode the DelResponse message to a PDU.
      * 
      * @param buffer The buffer where to put the PDU
-     * @return The PDU.
      */
     protected void encodeProtocolOp( ByteBuffer buffer ) throws EncoderException
     {

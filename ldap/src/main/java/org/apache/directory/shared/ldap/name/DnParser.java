@@ -79,7 +79,7 @@ public enum DnParser
     /**
      * Parse a DN.
      *
-     * @param dn The DN to be parsed
+     * @param name The DN to be parsed
      * @param rdns The list that will contain the RDNs
      * @throws LdapInvalidDnException If the DN is invalid
      */
@@ -100,7 +100,7 @@ public enum DnParser
     /**
      * Validate a DN
      *
-     * @param dn The DN to be parsed
+     * @param name The DN to be parsed
      *            
      * @return <code>true</code> if the DN is valid
      */

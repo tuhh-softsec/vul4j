@@ -103,7 +103,6 @@ public class MatchingRule extends AbstractSchemaObject
      * Creates a new instance of MatchingRule.
      *
      * @param oid The MatchingRule OID
-     * @param registries The Registries reference
      */
     public MatchingRule( String oid )
     {
@@ -263,7 +262,7 @@ public class MatchingRule extends AbstractSchemaObject
     /**
      * Sets the Syntax
      *
-     * @param oid The Syntax
+     * @param ldapSyntax The Syntax
      */
     public void setSyntax( LdapSyntax ldapSyntax )
     {
@@ -283,7 +282,7 @@ public class MatchingRule extends AbstractSchemaObject
     /**
      * Update the associated Syntax, even if the SchemaObject is readOnly
      *
-     * @param oid The Syntax
+     * @param ldapSyntax The Syntax
      */
     public void updateSyntax( LdapSyntax ldapSyntax )
     {
@@ -313,7 +312,7 @@ public class MatchingRule extends AbstractSchemaObject
     /**
      * Sets the LdapComparator
      *
-     * @param oid The LdapComparator
+     * @param ldapComparator The LdapComparator
      */
     public void setLdapComparator( LdapComparator<?> ldapComparator )
     {
@@ -332,7 +331,7 @@ public class MatchingRule extends AbstractSchemaObject
     /**
      * Update the associated Comparator, even if the SchemaObject is readOnly
      *
-     * @param oid The LdapComparator
+     * @param ldapComparator The LdapComparator
      */
     public void updateLdapComparator( LdapComparator<?> ldapComparator )
     {
@@ -361,7 +360,7 @@ public class MatchingRule extends AbstractSchemaObject
     /**
      * Sets the Normalizer
      *
-     * @param oid The Normalizer
+     * @param normalizer The Normalizer
      */
     public void setNormalizer( Normalizer normalizer )
     {
@@ -380,7 +379,7 @@ public class MatchingRule extends AbstractSchemaObject
     /**
      * Update the associated Normalizer, even if the SchemaObject is readOnly
      *
-     * @param oid The Normalizer
+     * @param normalizer The Normalizer
      */
     public void updateNormalizer( Normalizer normalizer )
     {

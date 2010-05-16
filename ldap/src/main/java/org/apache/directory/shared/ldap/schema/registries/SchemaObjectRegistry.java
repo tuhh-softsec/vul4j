@@ -49,7 +49,7 @@ public interface SchemaObjectRegistry<T extends SchemaObject>
     /**
      * Gets the name of the schema this schema object is associated with.
      *
-     * @param id the object identifier or the name
+     * @param oid the object identifier or the name
      * @return the schema name
      * @throws LdapException if the schema object does not exist
      */
@@ -124,7 +124,7 @@ public interface SchemaObjectRegistry<T extends SchemaObject>
     /**
      * Removes the SchemaObject registered with this registry.
      * 
-     * @param T the schemaObject to unregister
+     * @param schemaObject the schemaObject to unregister
      * @throws LdapException if the schemaObject can't be unregistered is invalid
      */
     T unregister( T schemaObject ) throws LdapException;

@@ -249,6 +249,14 @@
           <minmemory>512m</minmemory>
           <maxmemory>1g</maxmemory>
           <linksource>true</linksource>
+          <tags>
+            <tag>
+              <name>todo</name>
+              <!-- todo tag for all places -->
+              <placement>a</placement>
+              <head>To do:</head>
+            </tag>
+          </tags>
         </configuration>
         <reportSets>
           <reportSet>

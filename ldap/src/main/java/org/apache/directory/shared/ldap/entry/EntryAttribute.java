@@ -140,7 +140,7 @@ public interface EntryAttribute extends Iterable<Value<?>>, Cloneable, Externali
      * is a null length value, then this value will be considered as
      * a binary value.
      * </p>
-     * @param vals some new values to be added which may be null
+     * @param val some new values to be added which may be null
      * @return the number of added values, or 0 if none has been added
      */
     int add( Value<?>... val );
@@ -363,7 +363,7 @@ public interface EntryAttribute extends Iterable<Value<?>>, Cloneable, Externali
     String getString() throws LdapInvalidAttributeValueException;
 
     
-    /**
+    /*
      * Puts some values to this attribute.
      * <p>
      * The new values will replace the previous values.
@@ -423,6 +423,7 @@ public interface EntryAttribute extends Iterable<Value<?>>, Cloneable, Externali
      * @return the number of added values, or 0 if none has been added
      *
     int put( List<Value<?>> vals );
+    */
 
 
     /**
@@ -455,7 +456,7 @@ public interface EntryAttribute extends Iterable<Value<?>>, Cloneable, Externali
      * to String
      * </p>
      *
-     * @param vals the values to be removed
+     * @param val the values to be removed
      * @return true if all the values are removed, otherwise false
      */
     boolean remove( byte[]... val );

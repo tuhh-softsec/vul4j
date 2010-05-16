@@ -227,7 +227,7 @@ public class AddRequestCodec extends LdapMessageCodec
     /**
      * Set the added DN.
      * 
-     * @param entry The DN to set.
+     * @param entryDn The DN to set.
      */
     public void setEntryDn( DN entryDn )
     {
@@ -356,7 +356,6 @@ public class AddRequestCodec extends LdapMessageCodec
      *         0x04 LL attributeValue 
      * 
      * @param buffer The buffer where to put the PDU
-     * @return The PDU.
      */
     protected void encodeProtocolOp( ByteBuffer buffer ) throws EncoderException
     {

@@ -109,7 +109,7 @@ public class NameFormDescriptionSchemaParser extends AbstractSchemaParser
     /**
      * Parses a NameForm description
      * 
-     * @param The NameForm description to parse
+     * @param schemaDescription The NameForm description to parse
      * @return An instance of NameForm
      */
     public NameForm parse( String schemaDescription ) throws ParseException

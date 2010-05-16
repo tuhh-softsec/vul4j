@@ -82,7 +82,6 @@ public class CsnFactory
      * This method is <b>not</b> to be used except for test purposes.
      * 
      * @param timestamp The timestamp to use
-     * @param replicaId Replica ID.  ReplicaID must be 1-3 digit value
      * @param changeCount The change count to use
      */
     public Csn newInstance( long timestamp, int changeCount )

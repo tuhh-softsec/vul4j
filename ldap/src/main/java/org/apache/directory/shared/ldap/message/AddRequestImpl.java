@@ -81,7 +81,7 @@ public class AddRequestImpl extends AbstractAbandonableRequest implements Intern
     /**
      * Sets the distinguished name of the entry to add.
      * 
-     * @param entry the Dn of the added entry.
+     * @param dn the Dn of the added entry.
      */
     public void setEntryDn( DN dn )
     {

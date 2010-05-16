@@ -230,7 +230,6 @@ public class CompareRequestCodec extends LdapMessageCodec
      *       0x04 LL assertionValue
      * 
      * @param buffer The buffer where to put the PDU
-     * @return The PDU.
      */
     protected void encodeProtocolOp( ByteBuffer buffer ) throws EncoderException
     {

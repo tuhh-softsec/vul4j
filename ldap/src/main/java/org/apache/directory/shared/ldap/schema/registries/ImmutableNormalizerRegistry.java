@@ -47,7 +47,7 @@ public class ImmutableNormalizerRegistry implements NormalizerRegistry
     /**
      * Creates a new immutable NormalizerRegistry instance.
      * 
-     * @param The wrapped Normalizer registry 
+     * @param normalizerRegistry The wrapped Normalizer registry 
      */
     public ImmutableNormalizerRegistry( NormalizerRegistry normalizerRegistry )
     {

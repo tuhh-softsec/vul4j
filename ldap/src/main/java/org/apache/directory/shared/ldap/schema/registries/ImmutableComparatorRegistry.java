@@ -47,7 +47,7 @@ public class ImmutableComparatorRegistry implements ComparatorRegistry
     /**
      * Creates a new immutable ComparatorRegistry instance.
      * 
-     * @param The wrapped LdapComparator registry 
+     * @param comparatorRegistry The wrapped LdapComparator registry 
      */
     public ImmutableComparatorRegistry( ComparatorRegistry comparatorRegistry )
     {

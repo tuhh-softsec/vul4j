@@ -266,7 +266,7 @@ public class SearchParams
 
 
     /**
-     * @param controls the controls to set
+     * @param control the controls to set
      */
     public void addControl( Control control )
     {

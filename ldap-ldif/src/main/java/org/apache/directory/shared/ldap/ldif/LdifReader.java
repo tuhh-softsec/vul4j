@@ -364,7 +364,7 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
     /**
      * A constructor which takes a File
      * 
-     * @param in
+     * @param file
      *            A File containing ldif formated input
      * @throws LdapLdifException
      *             If the file cannot be processed or if the format is incorrect
@@ -1855,7 +1855,7 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
      * The main entry point of the LdifParser. It reads a buffer and returns a
      * List of entries.
      * 
-     * @param inf
+     * @param reader
      *            The buffer being processed
      * @return A list of entries
      * @throws LdapLdifException

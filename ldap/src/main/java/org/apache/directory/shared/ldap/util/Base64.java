@@ -87,7 +87,7 @@ public class Base64
      * than throwing an error. It does this by pre-parsing the input and
      * generating from that a count of VALID input characters.
      * 
-     * @param a_data
+     * @param data
      *            data to decode.
      * @return the decoded binary data.
      */

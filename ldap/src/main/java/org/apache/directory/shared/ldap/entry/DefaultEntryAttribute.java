@@ -215,7 +215,6 @@ public class DefaultEntryAttribute implements EntryAttribute
      * Otherwise, the value is stored, but as a reference. It's not a copy.
      *
      * @param upId
-     * @param attributeType the attribute type according to the schema
      * @param vals an initial set of values for this attribute
      */
     public DefaultEntryAttribute( String upId, Value<?>... vals )
@@ -864,7 +863,7 @@ public class DefaultEntryAttribute implements EntryAttribute
      * is a null length value, then this value will be considered as
      * a binary value.
      * </p>
-     * @param val some new values to be added which may be null
+     * @param vals some new values to be added which may be null
      * @return the number of added values, or 0 if none has been added
      */
     public int add( Value<?>... vals )
@@ -1248,7 +1247,7 @@ public class DefaultEntryAttribute implements EntryAttribute
      * the current attribute, otherwise this type will be set while
      * adding the first value, using the value's type to set the flag.
      *
-     * @param val some new values to be added which may be null
+     * @param vals some new values to be added which may be null
      * @return the number of added values, or 0 if none has been added
      */
     public int add( byte[]... vals )
@@ -2036,7 +2035,7 @@ public class DefaultEntryAttribute implements EntryAttribute
     }
     
     
-    /**
+    /*
      * Puts some values to this attribute.
      * <p>
      * The new values will replace the previous values.
@@ -2115,6 +2114,7 @@ public class DefaultEntryAttribute implements EntryAttribute
         Value<?>[] valArray = new Value<?>[vals.size()];
         return add( vals.toArray( valArray ) );
     }
+    */
     
 
 

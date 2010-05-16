@@ -196,7 +196,6 @@ public class IntermediateResponseCodec extends LdapResponseCodec
      *     [0x81 LL responseValue]
      * 
      * @param buffer The buffer where to put the PDU
-     * @return The PDU.
      */
     protected void encodeProtocolOp( ByteBuffer buffer ) throws EncoderException
     {

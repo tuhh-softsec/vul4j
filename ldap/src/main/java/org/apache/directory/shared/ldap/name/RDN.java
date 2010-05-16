@@ -393,7 +393,6 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
      * Transform a RDN by changing the value to its OID counterpart and
      * normalizing the value accordingly to its type.
      *
-     * @param rdn The RDN to modify.
      * @param oidsMap The map of all existing oids and normalizer.
      * @throws LdapException If the RDN is invalid.
      */
@@ -747,7 +746,7 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
      * <li>Order of ATAV is not important If the RDNs are not equals, a positive number is
      * returned if the first RDN is greater, negative otherwise
      *
-     * @param object
+     * @param rdn
      * @return 0 if both rdn are equals. -1 if the current RDN is inferior, 1 if
      *         the current Rdn is superior, UNDEFINED otherwise.
      */

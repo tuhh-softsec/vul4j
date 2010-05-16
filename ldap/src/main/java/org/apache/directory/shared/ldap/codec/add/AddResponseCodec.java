@@ -101,7 +101,6 @@ public class AddResponseCodec extends LdapResponseCodec
      * Encode the AddResponse message to a PDU.
      * 
      * @param buffer The buffer where to put the PDU
-     * @return The PDU.
      */
     protected void encodeProtocolOp( ByteBuffer buffer ) throws EncoderException
     {

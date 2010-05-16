@@ -380,7 +380,7 @@ public class AVA implements Cloneable, Comparable, Externalizable
     /**
      * Store the value of a AVA.
      *
-     * @param value The user provided value of the AVA
+     * @param upValue The user provided value of the AVA
      * @param normValue The normalized value
      */
     public void setValue( Value<?> upValue, Value<?> normValue )

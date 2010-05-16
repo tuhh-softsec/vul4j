@@ -436,7 +436,7 @@ public interface SchemaManager
     /**
      * Lookup for an AttributeType in the AttributeType registry
      * 
-     * @param String oid the OID we are looking for
+     * @param oid the OID we are looking for
      * @return The found AttributeType 
      * @throws LdapException if the OID is not found in the AttributeType registry
      */
@@ -446,7 +446,7 @@ public interface SchemaManager
     /**
      * Lookup for a Comparator in the Comparator registry
      * 
-     * @param String oid the OID we are looking for
+     * @param oid the OID we are looking for
      * @return The found Comparator 
      * @throws LdapException if the OID is not found in the Comparator registry
      */
@@ -456,7 +456,7 @@ public interface SchemaManager
     /**
      * Lookup for a MatchingRule in the MatchingRule registry
      * 
-     * @param String oid the OID we are looking for
+     * @param oid the OID we are looking for
      * @return The found MatchingRule 
      * @throws LdapException if the OID is not found in the MatchingRule registry
      */
@@ -466,7 +466,7 @@ public interface SchemaManager
     /**
      * Lookup for a Normalizer in the Normalizer registry
      * 
-     * @param String oid the OID we are looking for
+     * @param oid the OID we are looking for
      * @return The found Normalizer 
      * @throws LdapException if the OID is not found in the Normalizer registry
      */
@@ -476,7 +476,7 @@ public interface SchemaManager
     /**
      * Lookup for a ObjectClass in the ObjectClass registry
      * 
-     * @param String oid the OID we are looking for
+     * @param oid the OID we are looking for
      * @return The found ObjectClass 
      * @throws LdapException if the OID is not found in the ObjectClass registry
      */
@@ -486,7 +486,7 @@ public interface SchemaManager
     /**
      * Lookup for an LdapSyntax in the LdapSyntax registry
      * 
-     * @param String oid the OID we are looking for
+     * @param oid the OID we are looking for
      * @return The found LdapSyntax 
      * @throws LdapException if the OID is not found in the LdapSyntax registry
      */
@@ -496,7 +496,7 @@ public interface SchemaManager
     /**
      * Lookup for a SyntaxChecker in the SyntaxChecker registry
      * 
-     * @param String oid the OID we are looking for
+     * @param oid the OID we are looking for
      * @return The found SyntaxChecker 
      * @throws LdapException if the OID is not found in the SyntaxChecker registry
      */
@@ -672,7 +672,7 @@ public interface SchemaManager
     /**
      * Removes the registered attributeType from the attributeTypeRegistry 
      * 
-     * @param String the attributeType OID to unregister
+     * @param attributeTypeOid the attributeType OID to unregister
      * @throws LdapException if the attributeType is invalid
      */
     SchemaObject unregisterAttributeType( String attributeTypeOid ) throws LdapException;
@@ -681,7 +681,7 @@ public interface SchemaManager
     /**
      * Removes the registered Comparator from the ComparatorRegistry 
      * 
-     * @param String the Comparator OID to unregister
+     * @param comparatorOid the Comparator OID to unregister
      * @throws LdapException if the Comparator is invalid
      */
     SchemaObject unregisterComparator( String comparatorOid ) throws LdapException;
@@ -690,7 +690,7 @@ public interface SchemaManager
     /**
      * Removes the registered DitControlRule from the DitControlRuleRegistry 
      * 
-     * @param String the DitControlRule OID to unregister
+     * @param ditControlRuleOid the DitControlRule OID to unregister
      * @throws LdapException if the DitControlRule is invalid
      */
     SchemaObject unregisterDitControlRule( String ditControlRuleOid ) throws LdapException;
@@ -699,7 +699,7 @@ public interface SchemaManager
     /**
      * Removes the registered DitStructureRule from the DitStructureRuleRegistry 
      * 
-     * @param String the DitStructureRule OID to unregister
+     * @param ditStructureRuleOid the DitStructureRule OID to unregister
      * @throws LdapException if the DitStructureRule is invalid
      */
     SchemaObject unregisterDitStructureRule( String ditStructureRuleOid ) throws LdapException;
@@ -708,7 +708,7 @@ public interface SchemaManager
     /**
      * Removes the registered MatchingRule from the MatchingRuleRegistry 
      * 
-     * @param String the MatchingRuleRule OID to unregister
+     * @param matchingRuleOid the MatchingRuleRule OID to unregister
      * @throws LdapException if the MatchingRule is invalid
      */
     SchemaObject unregisterMatchingRule( String matchingRuleOid ) throws LdapException;
@@ -717,7 +717,7 @@ public interface SchemaManager
     /**
      * Removes the registered MatchingRuleUse from the MatchingRuleUseRegistry 
      * 
-     * @param String the MatchingRuleUse OID to unregister
+     * @param matchingRuleUseOid the MatchingRuleUse OID to unregister
      * @throws LdapException if the MatchingRuleUse is invalid
      */
     SchemaObject unregisterMatchingRuleUse( String matchingRuleUseOid ) throws LdapException;
@@ -726,7 +726,7 @@ public interface SchemaManager
     /**
      * Removes the registered NameForm from the NameFormRegistry 
      * 
-     * @param String the NameForm OID to unregister
+     * @param nameFormOid the NameForm OID to unregister
      * @throws LdapException if the NameForm is invalid
      */
     SchemaObject unregisterNameForm( String nameFormOid ) throws LdapException;
@@ -735,7 +735,7 @@ public interface SchemaManager
     /**
      * Removes the registered Normalizer from the NormalizerRegistry 
      * 
-     * @param String the Normalizer OID to unregister
+     * @param normalizerOid the Normalizer OID to unregister
      * @throws LdapException if the Normalizer is invalid
      */
     SchemaObject unregisterNormalizer( String normalizerOid ) throws LdapException;
@@ -744,7 +744,7 @@ public interface SchemaManager
     /**
      * Removes the registered ObjectClass from the ObjectClassRegistry 
      * 
-     * @param String the ObjectClass OID to unregister
+     * @param objectClassOid the ObjectClass OID to unregister
      * @throws LdapException if the ObjectClass is invalid
      */
     SchemaObject unregisterObjectClass( String objectClassOid ) throws LdapException;
@@ -753,7 +753,7 @@ public interface SchemaManager
     /**
      * Removes the registered LdapSyntax from the LdapSyntaxRegistry 
      * 
-     * @param String the LdapSyntax OID to unregister
+     * @param ldapSyntaxOid the LdapSyntax OID to unregister
      * @throws LdapException if the LdapSyntax is invalid
      */
     SchemaObject unregisterLdapSyntax( String ldapSyntaxOid ) throws LdapException;
@@ -762,7 +762,7 @@ public interface SchemaManager
     /**
      * Removes the registered SyntaxChecker from the SyntaxCheckerRegistry 
      * 
-     * @param String the SyntaxChecker OID to unregister
+     * @param syntaxCheckerOid the SyntaxChecker OID to unregister
      * @throws LdapException if the SyntaxChecker is invalid
      */
     SchemaObject unregisterSyntaxChecker( String syntaxCheckerOid ) throws LdapException;

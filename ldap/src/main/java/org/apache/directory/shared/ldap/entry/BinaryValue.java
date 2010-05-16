@@ -61,8 +61,6 @@ public class BinaryValue extends AbstractValue<byte[]>
     
     /**
      * Creates a BinaryValue without an initial wrapped value.
-     *
-     * @param attributeType the schema type associated with this BinaryValue
      */
     public BinaryValue()
     {
@@ -104,7 +102,6 @@ public class BinaryValue extends AbstractValue<byte[]>
     /**
      * Creates a BinaryValue with an initial wrapped binary value.
      *
-     * @param attributeType the schema type associated with this BinaryValue
      * @param value the binary value to wrap which may be null, or a zero length byte array
      */
     public BinaryValue( byte[] value )
@@ -243,7 +240,7 @@ public class BinaryValue extends AbstractValue<byte[]>
      * It supposes that the client has access to the schema in order to select the
      * appropriate normalizer.
      * 
-     * @param Normalizer The normalizer to apply to the value
+     * @param normalizer The normalizer to apply to the value
      * @exception LdapException If the value cannot be normalized
      */
     public final void normalize( Normalizer normalizer ) throws LdapException
@@ -299,7 +296,7 @@ public class BinaryValue extends AbstractValue<byte[]>
     
     /**
      *
-     * @see ServerValue#compareTo(ServerValue)
+     * @see ServerValue#compareTo(Value)
      * @throws IllegalStateException on failures to extract the comparator, or the
      * normalizers needed to perform the required comparisons based on the schema
      */

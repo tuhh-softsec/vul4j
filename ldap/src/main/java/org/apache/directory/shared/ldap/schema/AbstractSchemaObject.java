@@ -418,7 +418,6 @@ public abstract class AbstractSchemaObject implements SchemaObject
     /**
      * Tells if this SchemaObject is enabled.
      *  
-     * @param schemaEnabled the associated schema status
      * @return true if the SchemaObject is enabled, or if it depends on 
      * an enabled schema
      */
@@ -467,7 +466,7 @@ public abstract class AbstractSchemaObject implements SchemaObject
     /**
      * Sets the SchemaObject readOnly flag
      * 
-     * @param enabled The current SchemaObject ReadOnly status
+     * @param isReadOnly The current SchemaObject ReadOnly status
      */
     public void setReadOnly( boolean isReadOnly )
     {
@@ -544,8 +543,7 @@ public abstract class AbstractSchemaObject implements SchemaObject
     /**
      * Add an extensions with their values. (Actually do a copy)
      * 
-     * @param key The extension key
-     * @param values The associated values
+     * @param extensions The extensions map
      */
     public void setExtensions( Map<String, List<String>> extensions )
     {

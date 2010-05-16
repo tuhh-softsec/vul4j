@@ -105,7 +105,7 @@ public class LdapSyntaxDescriptionSchemaParser extends AbstractSchemaParser
     /**
      * Parses a LdapSyntax description
      * 
-     * @param The LdapSyntax description to parse
+     * @param schemaDescription The LdapSyntax description to parse
      * @return An instance of LdapSyntax
      */
     public LdapSyntax parse( String schemaDescription ) throws ParseException

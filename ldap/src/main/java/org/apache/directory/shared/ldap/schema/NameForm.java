@@ -124,7 +124,6 @@ public class NameForm extends AbstractSchemaObject
      * Creates a new instance of MatchingRule.
      *
      * @param oid The MatchingRule OID
-     * @param registries The Registries reference
      */
     public NameForm( String oid )
     {
@@ -203,7 +202,7 @@ public class NameForm extends AbstractSchemaObject
     /**
      * Sets the structural object class this rule applies to
      * 
-     * @param structuralObjectClass the structural object class to set
+     * @param structuralObjectClassOid the structural object class to set
      */
     public void setStructuralObjectClassOid( String structuralObjectClassOid )
     {
@@ -288,7 +287,7 @@ public class NameForm extends AbstractSchemaObject
     /**
      * Sets the list of required AttributeTypes
      *
-     * @param mayAttributeTypes the list of required AttributeTypes
+     * @param mustAttributeTypes the list of required AttributeTypes
      */
     public void setMustAttributeTypes( List<AttributeType> mustAttributeTypes )
     {

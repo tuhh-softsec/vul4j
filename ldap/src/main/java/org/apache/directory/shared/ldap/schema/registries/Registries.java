@@ -140,7 +140,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
     /**
      * Creates a new instance of Registries.
      *
-     * @param oidRegistry the OID registry
+     * @param schemaManager the schema manager
      */
     public Registries( SchemaManager schemaManager )
     {
@@ -2686,7 +2686,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
     /**
      * Change the Registries behavior regarding disabled SchemaObject element.
      *
-     * @param acceptDisabled If <code>false</code>, then the Registries won't accept
+     * @param disabledAccepted If <code>false</code>, then the Registries won't accept
      * disabled SchemaObject or enabled SchemaObject from disabled schema 
      */
     public void setDisabledAccepted( boolean disabledAccepted )

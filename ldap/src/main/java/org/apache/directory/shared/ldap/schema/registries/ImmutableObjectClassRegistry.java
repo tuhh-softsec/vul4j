@@ -48,7 +48,7 @@ public class ImmutableObjectClassRegistry implements ObjectClassRegistry, Clonea
     /**
      * Creates a new instance of ImmutableAttributeTypeRegistry.
      *
-     * @param atRegistry The wrapped Attrib uteType registry
+     * @param ocRegistry The wrapped Attrib uteType registry
      */
     public ImmutableObjectClassRegistry( ObjectClassRegistry ocRegistry )
     {

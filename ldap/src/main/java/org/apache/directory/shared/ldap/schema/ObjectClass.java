@@ -532,7 +532,7 @@ public class ObjectClass extends AbstractSchemaObject
     /**
      * Add some required AttributeType OIDs
      *
-     * @param oid The attributeType OIDs
+     * @param oids The attributeType OIDs
      */
     public void addMustAttributeTypeOids( String... oids )
     {
@@ -624,7 +624,7 @@ public class ObjectClass extends AbstractSchemaObject
     /**
      * Update the associated MUST AttributeType, even if the SchemaObject is readOnly
      *
-     * @param mayAttributeTypes the list of allowed AttributeTypes
+     * @param mustAttributeTypes the list of allowed AttributeTypes
      */
     public void updateMustAttributeTypes( List<AttributeType> mustAttributeTypes )
     {

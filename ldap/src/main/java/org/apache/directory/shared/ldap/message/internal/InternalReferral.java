@@ -99,7 +99,7 @@ public interface InternalReferral
     /**
      * Adds an LDAPv3 URL to this Referral.
      * 
-     * @param a_url
+     * @param url
      *            the LDAPv3 URL to add
      */
     void addLdapUrl( String url );
@@ -108,7 +108,7 @@ public interface InternalReferral
     /**
      * Removes an LDAPv3 URL to this Referral.
      * 
-     * @param a_url
+     * @param url
      *            the LDAPv3 URL to remove
      */
     void removeLdapUrl( String url );

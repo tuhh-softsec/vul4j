@@ -174,8 +174,7 @@ public class OidRegistry implements Iterable<SchemaObject>
     /**
      * Adds an OID name pair to the registry.
      * 
-     * @param type The SchemaObjectType the oid belongs to
-     * @param oid the OID to add or associate a new name with
+     * @param schemaObject The SchemaObject the oid belongs to
      */
     public void register( SchemaObject schemaObject ) throws LdapException
     {

@@ -131,7 +131,6 @@ public class DelRequestCodec extends LdapMessageCodec
      * 0x4A LL entry
      * 
      * @param buffer The buffer where to put the PDU
-     * @return The PDU.
      */
     protected void encodeProtocolOp( ByteBuffer buffer ) throws EncoderException
     {

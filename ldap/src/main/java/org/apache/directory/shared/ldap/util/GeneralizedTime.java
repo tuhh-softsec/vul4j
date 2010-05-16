@@ -583,7 +583,7 @@ public class GeneralizedTime implements Comparable<GeneralizedTime>
      * 
      * @param format the target format
      * @param fractionDelimiter the target fraction delimiter, may be null
-     * @param fractionLenth the fraction length
+     * @param fractionLength the fraction length
      * @param timeZoneFormat the target time zone format
      * 
      * @return the string

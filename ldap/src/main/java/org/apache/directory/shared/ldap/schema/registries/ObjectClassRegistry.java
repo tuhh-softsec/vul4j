@@ -65,7 +65,8 @@ public interface ObjectClassRegistry extends SchemaObjectRegistry<ObjectClass>,
      * Store the ObjectClass into a map associating an ObjectClass to its
      * descendants.
      * 
-     * @param attributeType The ObjectClass to register
+     * @param objectClass The ObjectClass to register
+     * @param ancestors Its ancestors
      * @throws LdapException If something went wrong
      */
     void registerDescendants( ObjectClass objectClass, List<ObjectClass> ancestors ) 
@@ -77,7 +78,7 @@ public interface ObjectClassRegistry extends SchemaObjectRegistry<ObjectClass>,
      * descendants.
      * 
      * @param attributeType The ObjectClass to unregister
-     * @param ancestor its ancestor 
+     * @param ancestors its ancestors 
      * @throws LdapException If something went wrong
      */
     void unregisterDescendants( ObjectClass attributeType, List<ObjectClass> ancestors ) 

@@ -707,7 +707,7 @@ public class SchemaUtils
      *     USAGE indicates the application of this attribute type; and
      *     &lt;extensions&gt; describe extensions.
      * </pre>
-     * @param atd the AttributeTypeDescription to render the description for
+     * @param attributeType the AttributeTypeDescription to render the description for
      * @return the StringBuffer containing the rendered attributeType description
      * @throws LdapException if there are problems accessing the objects
      * associated with the attribute type.
