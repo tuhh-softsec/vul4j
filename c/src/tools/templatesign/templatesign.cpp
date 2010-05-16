@@ -1132,12 +1132,10 @@ int main(int argc, char **argv) {
 
 	// Use the internal URI resolver
 #if defined(_WIN32)
-	XSECURIResolverGenericWin32 
+	XSECURIResolverGenericWin32* theResolver = new XSECURIResolverGenericWin32();
 #else
-	XSECURIResolverGenericUnix 
-#endif
-			theResolver;
-
+	XSECURIResolverGenericUnix* theResolver = new XSECURIResolverGenericUnix();
+#endif 
      
 	// Map out base path of the file
 	char * filename=argv[argc-1];
@@ -1172,8 +1170,8 @@ int main(int argc, char **argv) {
 	// The last "\\" must prefix the filename
 	baseURI[lastSlash + 1] = '\0';
 
-	theResolver.setBaseURI(MAKE_UNICODE_STRING(baseURI));
-	sig->setURIResolver(&theResolver);
+	theResolver->setBaseURI(MAKE_UNICODE_STRING(baseURI));
+	sig->setURIResolver(theResolver);
 
 	try {
 		sig->load();
@@ -1360,6 +1358,7 @@ int main(int argc, char **argv) {
 	prov->releaseSignature(sig);
 	delete parser;
 	delete prov;
+    delete theResolver;
 
 	XSECPlatformUtils::Terminate();
 #ifndef XSEC_NO_XALAN
