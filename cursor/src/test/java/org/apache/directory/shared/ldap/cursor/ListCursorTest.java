@@ -46,7 +46,7 @@ public class ListCursorTest
 
         // close test
         cursor.close();
-        assertClosed( cursor, "cursor.isCloased() should return true after closing the cursor", true );
+        assertClosed( cursor, "cursor.isClosed() should return true after closing the cursor", true );
     }
 
 
@@ -58,7 +58,7 @@ public class ListCursorTest
 
         // close test
         cursor.close();
-        assertClosed( cursor, "cursor.isCloased() should return true after closing the cursor", true );
+        assertClosed( cursor, "cursor.isClosed() should return true after closing the cursor", true );
 
         // bad bounds: start = end is senseless
         try
@@ -157,7 +157,7 @@ public class ListCursorTest
 
         // close test
         cursor.close();
-        assertClosed( cursor, "cursor.isCloased() should return true after closing the cursor", true );
+        assertClosed( cursor, "cursor.isClosed() should return true after closing the cursor", true );
 
         // bad bounds: start = end is senseless
         try
