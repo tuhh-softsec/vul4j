@@ -22,6 +22,7 @@ package org.apache.directory.shared.ldap.util;
 
 import java.lang.reflect.Array;
 
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.directory.shared.i18n.I18n;
 
 
