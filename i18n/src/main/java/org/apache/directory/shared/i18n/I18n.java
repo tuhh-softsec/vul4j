@@ -99,6 +99,7 @@ public class I18n
 	public static final String ERR_02011 = "ERR_02011";
 	public static final String ERR_02012 = "ERR_02012";
 	public static final String ERR_02013 = "ERR_02013";
+	public static final String ERR_02014_UNSUPPORTED_OPERATION = "ERR_02014_UNSUPPORTED_OPERATION";
 
 	// dsml-parser
 	public static final String ERR_03001 = "ERR_03001";
@@ -788,7 +789,7 @@ public class I18n
      *
      * @param err The error code
      * @param args The argument(s)
-     * @return
+     * @return The translated error
      */
     public static String err( String err, Object... args )
     {
@@ -823,7 +824,7 @@ public class I18n
      *
      * @param msg The message
      * @param args The argument(s)
-     * @return
+     * @return The translated error
      */
     public static String msg( String msg, Object... args )
     {

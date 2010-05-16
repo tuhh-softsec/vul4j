@@ -118,6 +118,30 @@ public interface Cursor<E> extends Iterable<E>
 
 
     /**
+     * Is this Cursor positioned at the first element.
+     *
+     * @return true if this cursor is positioned at the first element, 
+     * false otherwise
+     * @throws Exception if there are problems querying the position of this Cursor
+     * or if this Cursor is closed
+     * @throws UnsupportedOperationException if this method is not supported
+     */
+    boolean isFirst() throws Exception;
+
+    
+    /**
+     * Is this Cursor positioned before the first element.
+     *
+     * @return true if this cursor is positioned before the first element, 
+     * false otherwise
+     * @throws Exception if there are problems querying the position of this Cursor
+     * or if this Cursor is closed
+     * @throws UnsupportedOperationException if this method is not supported
+     */
+    boolean isBeforeFirst() throws Exception;
+
+    
+    /**
      * Positions this Cursor at the last element.
      *
      * @return true if the position has been successfully changed to the last
@@ -129,6 +153,30 @@ public interface Cursor<E> extends Iterable<E>
     boolean last() throws Exception;
 
 
+    /**
+     * Is this Cursor positioned at the last element.
+     *
+     * @return true if this cursor is positioned at the last element, 
+     * false otherwise
+     * @throws Exception if there are problems querying the position of this Cursor
+     * or if this Cursor is closed
+     * @throws UnsupportedOperationException if this method is not supported
+     */
+    boolean isLast() throws Exception;
+
+    
+    /**
+     * Is this Cursor positioned after the last element.
+     *
+     * @return true if this cursor is positioned after the last element, 
+     * false otherwise
+     * @throws Exception if there are problems querying the position of this Cursor
+     * or if this Cursor is closed
+     * @throws UnsupportedOperationException if this method is not supported
+     */
+    boolean isAfterLast() throws Exception;
+
+    
     /**
      * Checks if this Cursor is closed.  Calls to this operation should not
      * fail with exceptions if and only if the cursor is in the closed state.
