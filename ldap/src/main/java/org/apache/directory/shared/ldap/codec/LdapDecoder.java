@@ -128,7 +128,14 @@ public class LdapDecoder implements ProviderDecoder
     
                     position = size;
                     
-                    log.debug( StringTools.dumpBytes( array ) );
+                    if ( array.length == 0 )
+                    {
+                        log.debug( "NULL buffer, what the HELL ???" );
+                    }
+                    else
+                    {
+                        log.debug( StringTools.dumpBytes( array ) );
+                    }
                 }
                 
                 if ( ldapMessageContainer.getState() == TLVStateEnum.PDU_DECODED )
