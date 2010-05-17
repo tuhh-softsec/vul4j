@@ -75,7 +75,6 @@
     <module>ldap-constants</module>
     <module>ldap-schema</module>
     <module>ldap-schema-loader</module>
-    <module>ldap-schema-dao</module>
     <module>ldap-schema-manager</module>
     <module>asn1-codec</module>
     <module>ldap-convert</module>
