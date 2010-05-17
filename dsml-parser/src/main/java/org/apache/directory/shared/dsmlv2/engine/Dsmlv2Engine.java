@@ -439,17 +439,16 @@ public class Dsmlv2Engine
         }
 
         LdapResponseCodec realResponse = (LdapResponseCodec)response;
+        ResultCodeEnum resultCode = realResponse.getLdapResult().getResultCode();
 
-        if ( !continueOnError )
+        if ( ( !continueOnError ) 
+                && ( resultCode != ResultCodeEnum.SUCCESS )
+                && ( resultCode != ResultCodeEnum.COMPARE_TRUE )
+                && ( resultCode != ResultCodeEnum.COMPARE_FALSE )
+                && ( resultCode != ResultCodeEnum.REFERRAL ) )
         {
-            if ( ( realResponse.getLdapResult().getResultCode() != ResultCodeEnum.SUCCESS )
-                && ( realResponse.getLdapResult().getResultCode() != ResultCodeEnum.COMPARE_TRUE )
-                && ( realResponse.getLdapResult().getResultCode() != ResultCodeEnum.COMPARE_FALSE )
-                && ( realResponse.getLdapResult().getResultCode() != ResultCodeEnum.REFERRAL ) )
-            {
-                // Turning on Exit flag
-                exit = true;
-            }
+            // Turning on Exit flag
+            exit = true;
         }
     }
 

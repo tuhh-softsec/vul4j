@@ -1389,13 +1389,10 @@ public class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGrammar
             }
             // descr
             attributeValue = xpp.getAttributeValue( "", "descr" );
-            if ( attributeValue != null )
-            {
-                if ( DSMLV2_DESCR_TAGS.contains( attributeValue ) == false )
-                {
-                    throw new XmlPullParserException( I18n.err( I18n.ERR_03011, attributeValue ), xpp, null );
-                }
 
+            if ( ( attributeValue != null ) && ( DSMLV2_DESCR_TAGS.contains( attributeValue ) == false ) )
+            {
+                throw new XmlPullParserException( I18n.err( I18n.ERR_03011, attributeValue ), xpp, null );
             }
         }
     };
