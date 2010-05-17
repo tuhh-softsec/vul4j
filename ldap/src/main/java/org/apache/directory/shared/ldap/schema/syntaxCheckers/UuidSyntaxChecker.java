@@ -45,9 +45,10 @@ public class UuidSyntaxChecker extends SyntaxChecker
     // Tells if the byte is alphanumeric
     private static boolean isHex( byte b )
     {
-        return ( b > 0 ) && StringTools.ALPHA_DIGIT[b];
+        return StringTools.isHex( b );
     }
 
+    
     /**
      * Creates a new instance of UUIDSyntaxChecker.
      */

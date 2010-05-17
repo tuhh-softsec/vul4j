@@ -88,7 +88,7 @@ public class StringTools
     private static final int UTF8_SIX_BYTES = 0x00FC;
 
     /** &lt;alpha> ::= [0x41-0x5A] | [0x61-0x7A] */
-    public static final boolean[] ALPHA =
+    private static final boolean[] ALPHA =
         { 
             false, false, false, false, false, false, false, false, 
             false, false, false, false, false, false, false, false, 
@@ -109,7 +109,7 @@ public class StringTools
         };
 
     /** &lt;alpha-lower-case> ::= [0x61-0x7A] */
-    public static final boolean[] ALPHA_LOWER_CASE =
+    private static final boolean[] ALPHA_LOWER_CASE =
         { 
             false, false, false, false, false, false, false, false, 
             false, false, false, false, false, false, false, false, 
@@ -130,7 +130,7 @@ public class StringTools
         };
 
     /** &lt;alpha-upper-case> ::= [0x41-0x5A] */
-    public static final boolean[] ALPHA_UPPER_CASE =
+    private static final boolean[] ALPHA_UPPER_CASE =
         { 
             false, false, false, false, false, false, false, false, 
             false, false, false, false, false, false, false, false, 
@@ -151,7 +151,7 @@ public class StringTools
         };
 
     /** &lt;alpha-digit> | &lt;digit> */
-    public static final boolean[] ALPHA_DIGIT =
+    private static final boolean[] ALPHA_DIGIT =
         { 
             false, false, false, false, false, false, false, false, 
             false, false, false, false, false, false, false, false, 
@@ -172,7 +172,7 @@ public class StringTools
         };
 
     /** &lt;alpha> | &lt;digit> | '-' */
-    public static final boolean[] CHAR =
+    private static final boolean[] CHAR =
         { 
             false, false, false, false, false, false, false, false, 
             false, false, false, false, false, false, false, false, 
@@ -288,34 +288,6 @@ public class StringTools
             -1, 10, 11, 12, 13, 14, 15, -1, -1, -1, -1, -1, -1, -1, -1, -1  // 60 -> 6F ( a, b, c, d, e, f )
         };
 
-    /** lowerCase = 'a' .. 'z', '0'..'9', '-' */
-    private static final char[] LOWER_CASE =
-        { 
-              0,   0,   0,   0,   0,   0,   0,   0, 
-              0,   0,   0,   0,   0,   0,   0,   0, 
-              0,   0,   0,   0,   0,   0,   0,   0, 
-              0,   0,   0,   0,   0,   0,   0,   0, 
-              0,   0,   0,   0,   0,   0,   0,   0, 
-              0,   0,   0,   0,   0, '-',   0,   0, 
-            '0', '1', '2', '3', '4', '5', '6', '7', 
-            '8', '9',   0,   0,   0,   0,   0,   0, 
-              0, 'a', 'b', 'c', 'd', 'e', 'f', 'g', 
-            'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 
-            'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 
-            'x', 'y', 'z',   0,   0,   0,   0,   0, 
-              0, 'a', 'b', 'c', 'd', 'e', 'f', 'g', 
-            'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 
-            'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 
-            'x', 'y', 'z',   0,   0,   0,   0,   0, 
-              0,   0,   0,   0,   0,   0,   0,   0, 
-              0,   0,   0,   0,   0,   0,   0,   0, 
-              0,   0,   0,   0,   0,   0,   0,   0, 
-              0,   0,   0,   0,   0,   0,   0,   0, 
-              0,   0,   0,   0,   0,   0,   0,   0, 
-              0,   0,   0,   0,   0,   0,   0,   0, 
-              0,   0,   0,   0,   0,   0,   0,   0, 
-              0,   0,   0,   0,   0,   0,   0,   0 
-        };
     
     private static final char[] TO_LOWER_CASE =
     {
@@ -1847,6 +1819,20 @@ public class StringTools
         
         return HEX_VALUE[c];
     }
+
+
+    /**
+     * Check if the current byte is an Hex Char 
+     * &lt;hex> ::= [0x30-0x39] | [0x41-0x46] | [0x61-0x66]
+     * 
+     * @param byte The byte we want to check
+     * @return <code>true</code> if the current byte is a Hex byte
+     */
+    public static final boolean isHex( byte b )
+    {
+        return ( ( b | 0x7F ) == 0x7F ) || HEX[b];
+    }
+
 
     /**
      * Check if the current character is an Hex Char &lt;hex> ::= [0x30-0x39] |
