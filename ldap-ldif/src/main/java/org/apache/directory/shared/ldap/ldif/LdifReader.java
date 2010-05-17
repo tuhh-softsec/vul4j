@@ -850,6 +850,7 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
             else if ( StringTools.isCharASCII( controlValue, criticalPos + 1, '<' ) )
             {
                 // File contained value
+                // TODO : Add the missing code
             }
             else
             {

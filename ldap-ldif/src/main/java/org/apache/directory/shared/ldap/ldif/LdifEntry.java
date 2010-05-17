@@ -43,7 +43,6 @@ import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.name.RDN;
-import org.apache.directory.shared.ldap.util.StringTools;
 
 
 /**
@@ -554,93 +553,6 @@ public class LdifEntry implements Cloneable, Externalizable
         }
 
         return clone;
-    }
-    
-    /**
-     * Dumps the attributes
-     * @return A String representing the attributes
-     */
-    private String dumpAttributes()
-    {
-        StringBuffer sb = new StringBuffer();
-        
-        for ( EntryAttribute attribute:entry )
-        {
-            if ( attribute == null )
-            {
-                sb.append( "        Null attribute\n" );
-                continue;
-            }
-            
-            sb.append( "        ").append( attribute.getId() ).append( ":\n" );
-            
-            for ( Value<?> value:attribute )
-            {
-                if ( !value.isBinary() )
-                {
-                    sb.append(  "            " ).append( value.getString() ).append('\n' );
-                }
-                else
-                {
-                    sb.append(  "            " ).append( StringTools.dumpBytes( value.getBytes() ) ).append('\n' );
-                }
-            }
-        }
-        
-        return sb.toString();
-    }
-    
-    /**
-     * Dumps the modifications
-     * @return A String representing the modifications
-     */
-    private String dumpModificationItems()
-    {
-        StringBuffer sb = new StringBuffer();
-        
-        for ( Modification modif:modificationList )
-        {
-            sb.append( "            Operation: " );
-            
-            switch ( modif.getOperation() )
-            {
-                case ADD_ATTRIBUTE :
-                    sb.append( "ADD\n" );
-                    break;
-                    
-                case REMOVE_ATTRIBUTE :
-                    sb.append( "REMOVE\n" );
-                    break;
-                    
-                case REPLACE_ATTRIBUTE :
-                    sb.append( "REPLACE \n" );
-                    break;
-                    
-                default :
-                    break; // Do nothing
-            }
-            
-            EntryAttribute attribute = modif.getAttribute();
-            
-            sb.append( "                Attribute: " ).append( attribute.getId() ).append( '\n' );
-            
-            if ( attribute.size() != 0 )
-            {
-                for ( Value<?> value:attribute )
-                {
-                    if ( !value.isBinary() )
-                    {
-                        sb.append(  "                " ).append( value.getString() ).append('\n' );
-                    }
-                    else
-                    {
-                        sb.append(  "                " ).append( StringTools.dumpBytes( value.getBytes() ) ).append('\n' );
-                    }
-                }
-            }
-        }
-        
-        return sb.toString();
     }
 
     

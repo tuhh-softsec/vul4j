@@ -288,7 +288,7 @@ public class LdifRevertor
     /**
      * A small helper class to compute the simple revert.
      */
-    private static LdifEntry revertEntry( List<LdifEntry> entries, Entry entry, DN newDn, 
+    private static LdifEntry revertEntry( Entry entry, DN newDn, 
         DN newSuperior, RDN oldRdn, RDN newRdn ) throws LdapInvalidDnException
     {
         LdifEntry reverted = new LdifEntry();
@@ -468,8 +468,7 @@ public class LdifRevertor
                 throw new LdapInvalidDnException( I18n.err( I18n.ERR_12080 ) ); 
             }
 
-            reverted =
-                revertEntry( entries, entry, newDn, newSuperior, oldRdn, newRdn );
+            reverted = revertEntry( entry, newDn, newSuperior, oldRdn, newRdn );
 
             entries.add( reverted );
         }
