@@ -751,10 +751,14 @@ public class DefaultSchemaManager implements SchemaManager
      */
     private void addDitContentRules( Schema schema, Registries registries ) throws Exception
     {
-        for ( Entry entry : schemaLoader.loadDitContentRules( schema ) )
-        {
+    	if ( !schemaLoader.loadDitContentRules( schema ).isEmpty() )
+    	{
             throw new NotImplementedException( I18n.err( I18n.ERR_11003 ) );
-        }
+    	}
+        // for ( Entry entry : schemaLoader.loadDitContentRules( schema ) )
+        // {
+        //     throw new NotImplementedException( I18n.err( I18n.ERR_11003 ) );
+        // }
     }
 
 
@@ -763,10 +767,14 @@ public class DefaultSchemaManager implements SchemaManager
      */
     private void addDitStructureRules( Schema schema, Registries registries ) throws Exception
     {
-        for ( Entry entry : schemaLoader.loadDitStructureRules( schema ) )
-        {
+    	if ( !schemaLoader.loadDitStructureRules( schema ).isEmpty() )
+    	{
             throw new NotImplementedException( I18n.err( I18n.ERR_11004 ) );
-        }
+    	}
+        // for ( Entry entry : schemaLoader.loadDitStructureRules( schema ) )
+        // {
+        //     throw new NotImplementedException( I18n.err( I18n.ERR_11004 ) );
+        // }
     }
 
 
@@ -789,10 +797,14 @@ public class DefaultSchemaManager implements SchemaManager
      */
     private void addMatchingRuleUses( Schema schema, Registries registries ) throws Exception
     {
-        for ( Entry entry : schemaLoader.loadMatchingRuleUses( schema ) )
-        {
+    	if ( !schemaLoader.loadMatchingRuleUses( schema ).isEmpty() )
+    	{
             throw new NotImplementedException( I18n.err( I18n.ERR_11005 ) );
-        }
+    	}
+        // for ( Entry entry : schemaLoader.loadMatchingRuleUses( schema ) )
+        // {
+        //     throw new NotImplementedException( I18n.err( I18n.ERR_11005 ) );
+        // }
     }
 
 
@@ -801,10 +813,14 @@ public class DefaultSchemaManager implements SchemaManager
      */
     private void addNameForms( Schema schema, Registries registries ) throws Exception
     {
-        for ( Entry entry : schemaLoader.loadNameForms( schema ) )
-        {
+    	if ( !schemaLoader.loadNameForms( schema ).isEmpty() )
+    	{
             throw new NotImplementedException( I18n.err( I18n.ERR_11006 ) );
-        }
+    	}
+        // for ( Entry entry : schemaLoader.loadNameForms( schema ) )
+        // {
+        //     throw new NotImplementedException( I18n.err( I18n.ERR_11006 ) );
+        // }
     }
 
 
