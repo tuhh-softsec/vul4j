@@ -127,14 +127,22 @@ public class DefaultSchemaLdifExtractor implements SchemaLdifExtractor
     {
         if ( !outputDirectory.exists() )
         {
-            outputDirectory.mkdir();
+            if ( !outputDirectory.mkdirs() )
+            {
+                throw new IOException( I18n.err( I18n.ERR_09001_DIRECTORY_CREATION_FAILED, outputDirectory
+                    .getAbsolutePath() ) );
+            }
         }
 
         File schemaDirectory = new File( outputDirectory, SCHEMA_SUBDIR );
 
         if ( !schemaDirectory.exists() )
         {
-            schemaDirectory.mkdir();
+            if ( !schemaDirectory.mkdirs() )
+            {
+                throw new IOException( I18n.err( I18n.ERR_09001_DIRECTORY_CREATION_FAILED, schemaDirectory
+                    .getAbsolutePath() ) );
+            }
         }
         else if ( !overwrite )
         {
@@ -186,7 +194,11 @@ public class DefaultSchemaLdifExtractor implements SchemaLdifExtractor
 
         if ( !destination.getParentFile().exists() )
         {
-            destination.getParentFile().mkdirs();
+            if ( !destination.getParentFile().mkdirs() )
+            {
+                throw new IOException( I18n.err( I18n.ERR_09001_DIRECTORY_CREATION_FAILED, destination.getParentFile()
+                    .getAbsolutePath() ) );
+            }
         }
 
         if ( !source.getParentFile().exists() )
@@ -399,7 +411,11 @@ public class DefaultSchemaLdifExtractor implements SchemaLdifExtractor
 
             if ( !destination.getParentFile().exists() )
             {
-                destination.getParentFile().mkdirs();
+                if ( !destination.getParentFile().mkdirs() )
+                {
+                    throw new IOException( I18n.err( I18n.ERR_09001_DIRECTORY_CREATION_FAILED, destination
+                        .getParentFile().getAbsolutePath() ) );
+                }
             }
 
             FileOutputStream out = new FileOutputStream( destination );
