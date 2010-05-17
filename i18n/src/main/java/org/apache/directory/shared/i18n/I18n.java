@@ -646,9 +646,6 @@ public class I18n
 	public static final String ERR_08005 = "ERR_08005";
 	public static final String ERR_08006 = "ERR_08006";
 	
-	// ldap-schema-dao
-	// no exceptions to translate
-	
 	// ldap-schema-loader
 	public static final String ERR_10001 = "ERR_10001";
 	public static final String ERR_10002 = "ERR_10002";
