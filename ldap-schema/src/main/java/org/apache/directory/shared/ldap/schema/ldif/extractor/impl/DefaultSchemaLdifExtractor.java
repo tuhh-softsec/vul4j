@@ -80,10 +80,10 @@ public class DefaultSchemaLdifExtractor implements SchemaLdifExtractor
         this.outputDirectory = outputDirectory;
         this.schemaDirectory = new File( outputDirectory, SCHEMA_SUBDIR );
 
-        if ( ! outputDirectory.exists() )
+        if ( !outputDirectory.exists() )
         {
             LOG.debug( "Creating output directory: {}", outputDirectory );
-            if( ! outputDirectory.mkdir() )
+            if ( !outputDirectory.mkdir() )
             {
                 LOG.error( "Failed to create outputDirectory: {}", outputDirectory );
             }
@@ -93,7 +93,7 @@ public class DefaultSchemaLdifExtractor implements SchemaLdifExtractor
             LOG.debug( "Output directory exists: no need to create." );
         }
 
-        if ( ! schemaDirectory.exists() )
+        if ( !schemaDirectory.exists() )
         {
             LOG.info( "Schema directory '{}' does NOT exist: extracted state set to false.", schemaDirectory );
             extracted = false;
@@ -125,26 +125,26 @@ public class DefaultSchemaLdifExtractor implements SchemaLdifExtractor
      */
     public void extractOrCopy( boolean overwrite ) throws IOException
     {
-        if ( ! outputDirectory.exists() )
+        if ( !outputDirectory.exists() )
         {
             outputDirectory.mkdir();
         }
 
         File schemaDirectory = new File( outputDirectory, SCHEMA_SUBDIR );
 
-        if ( ! schemaDirectory.exists() )
+        if ( !schemaDirectory.exists() )
         {
             schemaDirectory.mkdir();
         }
-        else if ( ! overwrite )
+        else if ( !overwrite )
         {
             throw new IOException( I18n.err( I18n.ERR_08001, schemaDirectory.getAbsolutePath() ) );
         }
 
         Pattern pattern = Pattern.compile( ".*schema/ou=schema.*\\.ldif" );
-        Map<String,Boolean> list = ResourceMap.getResources( pattern );
+        Map<String, Boolean> list = ResourceMap.getResources( pattern );
 
-        for ( Entry<String,Boolean> entry : list.entrySet() )
+        for ( Entry<String, Boolean> entry : list.entrySet() )
         {
             if ( entry.getValue() )
             {
@@ -157,8 +157,8 @@ public class DefaultSchemaLdifExtractor implements SchemaLdifExtractor
             }
         }
     }
-    
-    
+
+
     /**
      * Extracts the LDIF files from a Jar file or copies exploded LDIF
      * resources without overwriting the resources if the schema has
@@ -170,8 +170,8 @@ public class DefaultSchemaLdifExtractor implements SchemaLdifExtractor
     {
         extractOrCopy( false );
     }
-    
-    
+
+
     /**
      * Copies a file line by line from the source file argument to the 
      * destination file argument.
@@ -183,38 +183,38 @@ public class DefaultSchemaLdifExtractor implements SchemaLdifExtractor
     private void copyFile( File source, File destination ) throws IOException
     {
         LOG.debug( "copyFile(): source = {}, destination = {}", source, destination );
-        
-        if ( ! destination.getParentFile().exists() )
+
+        if ( !destination.getParentFile().exists() )
         {
             destination.getParentFile().mkdirs();
         }
-        
-        if ( ! source.getParentFile().exists() )
+
+        if ( !source.getParentFile().exists() )
         {
             throw new FileNotFoundException( I18n.err( I18n.ERR_08002, source.getAbsolutePath() ) );
         }
-        
+
         FileWriter out = new FileWriter( destination );
-        
+
         try
         {
             LdifReader ldifReader = new LdifReader( source );
             boolean first = true;
             LdifEntry ldifEntry = null;
-            
+
             while ( ldifReader.hasNext() )
             {
                 if ( first )
                 {
                     ldifEntry = ldifReader.next();
-                    
+
                     if ( ldifEntry.get( SchemaConstants.ENTRY_UUID_AT ) == null )
                     {
                         // No UUID, let's create one
                         UUID entryUuid = UUID.randomUUID();
                         ldifEntry.addAttribute( SchemaConstants.ENTRY_UUID_AT, entryUuid.toString() );
                     }
-                    
+
                     first = false;
                 }
                 else
@@ -227,10 +227,10 @@ public class DefaultSchemaLdifExtractor implements SchemaLdifExtractor
             }
 
             ldifReader.close();
-            
+
             // Add the version at the first line, to avoid a warning
             String ldifString = "version: 1\n" + ldifEntry.toString();
-            
+
             out.write( ldifString );
             out.flush();
         }
@@ -254,7 +254,7 @@ public class DefaultSchemaLdifExtractor implements SchemaLdifExtractor
         }
     }
 
-    
+
     /**
      * Assembles the destination file by appending file components previously
      * pushed on the fileComponentStack argument.
@@ -265,16 +265,16 @@ public class DefaultSchemaLdifExtractor implements SchemaLdifExtractor
     private File assembleDestinationFile( Stack<String> fileComponentStack )
     {
         File destinationFile = outputDirectory.getAbsoluteFile();
-        
-        while ( ! fileComponentStack.isEmpty() )
+
+        while ( !fileComponentStack.isEmpty() )
         {
             destinationFile = new File( destinationFile, fileComponentStack.pop() );
         }
-        
+
         return destinationFile;
     }
-    
-    
+
+
     /**
      * Calculates the destination file.
      *
@@ -286,7 +286,7 @@ public class DefaultSchemaLdifExtractor implements SchemaLdifExtractor
         File parent = resource.getParentFile();
         Stack<String> fileComponentStack = new Stack<String>();
         fileComponentStack.push( resource.getName() );
-        
+
         while ( parent != null )
         {
             if ( parent.getName().equals( "schema" ) )
@@ -295,18 +295,17 @@ public class DefaultSchemaLdifExtractor implements SchemaLdifExtractor
                 // schema/schema base path. So we need to add one more 
                 // schema component to all LDIF files minus this schema.ldif
                 fileComponentStack.push( "schema" );
-                
+
                 return assembleDestinationFile( fileComponentStack );
             }
 
             fileComponentStack.push( parent.getName() );
-            
-            if ( parent.equals( parent.getParentFile() )
-                    || parent.getParentFile() == null )
+
+            if ( parent.equals( parent.getParentFile() ) || parent.getParentFile() == null )
             {
                 throw new IllegalStateException( I18n.err( I18n.ERR_08005 ) );
             }
-            
+
             parent = parent.getParentFile();
         }
 
@@ -329,8 +328,8 @@ public class DefaultSchemaLdifExtractor implements SchemaLdifExtractor
 
         throw new IllegalStateException( I18n.err( I18n.ERR_08006 ) );
     }
-    
-    
+
+
     /**
      * Gets the DBFILE resource from within a jar off the base path.  If another jar
      * with such a DBFILE resource exists then an error will result since the resource
@@ -340,8 +339,9 @@ public class DefaultSchemaLdifExtractor implements SchemaLdifExtractor
      * @param resourceDescription human description of the resource
      * @return the InputStream to read the contents of the resource
      * @throws IOException if there are problems reading or finding a unique copy of the resource
-     */                                                                                                
-    public static InputStream getUniqueResourceAsStream( String resourceName, String resourceDescription ) throws IOException
+     */
+    public static InputStream getUniqueResourceAsStream( String resourceName, String resourceDescription )
+        throws IOException
     {
         resourceName = BASE_PATH + resourceName;
         URL result = getUniqueResource( resourceName, resourceDescription );
@@ -357,8 +357,7 @@ public class DefaultSchemaLdifExtractor implements SchemaLdifExtractor
      * @return the URL to the resource in the Jar file
      * @throws IOException if there is an IO error
      */
-    public static URL getUniqueResource( String resourceName, String resourceDescription )
-            throws IOException
+    public static URL getUniqueResource( String resourceName, String resourceDescription ) throws IOException
     {
         Enumeration<URL> resources = DefaultSchemaLdifExtractor.class.getClassLoader().getResources( resourceName );
         if ( !resources.hasMoreElements() )
@@ -368,11 +367,11 @@ public class DefaultSchemaLdifExtractor implements SchemaLdifExtractor
         URL result = resources.nextElement();
         if ( resources.hasMoreElements() )
         {
-            throw new UniqueResourceException( resourceName, result, resources, resourceDescription);
+            throw new UniqueResourceException( resourceName, result, resources, resourceDescription );
         }
         return result;
     }
-    
+
 
     /**
      * Extracts the LDIF schema resource from a Jar.
@@ -397,12 +396,12 @@ public class DefaultSchemaLdifExtractor implements SchemaLdifExtractor
             {
                 return;
             }
-        
-            if ( ! destination.getParentFile().exists() )
+
+            if ( !destination.getParentFile().exists() )
             {
                 destination.getParentFile().mkdirs();
             }
-            
+
             FileOutputStream out = new FileOutputStream( destination );
             try
             {
@@ -412,7 +411,8 @@ public class DefaultSchemaLdifExtractor implements SchemaLdifExtractor
                     out.write( buf, 0, readCount );
                 }
                 out.flush();
-            } finally
+            }
+            finally
             {
                 out.close();
             }
