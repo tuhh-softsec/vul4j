@@ -1011,7 +1011,7 @@ public class DefaultSchemaManager implements SchemaManager
     public boolean loadRelaxed( String... schemaNames ) throws Exception
     {
         Schema[] schemas = toArray( schemaNames );
-        return false;
+        return loadRelaxed( schemas );
     }
 
 
