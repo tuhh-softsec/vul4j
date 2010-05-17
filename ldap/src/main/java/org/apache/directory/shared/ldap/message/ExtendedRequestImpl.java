@@ -191,40 +191,35 @@ public class ExtendedRequestImpl extends InternalAbstractRequest implements Inte
         }
 
         InternalExtendedRequest req = ( InternalExtendedRequest ) obj;
-        if ( oid != null && req.getOid() == null )
+        
+        if ( ( oid != null ) && ( req.getOid() == null ) )
         {
             return false;
         }
 
-        if ( oid == null && req.getOid() != null )
+        if ( ( oid == null ) && ( req.getOid() != null ) )
         {
             return false;
         }
 
-        if ( oid != null && req.getOid() != null )
-        {
-            if ( !oid.equals( req.getOid() ) )
-            {
-                return false;
-            }
-        }
-
-        if ( payload != null && req.getPayload() == null )
+        if ( ( oid != null ) && ( req.getOid() != null ) &&  !oid.equals( req.getOid() ) )
         {
             return false;
         }
 
-        if ( payload == null && req.getPayload() != null )
+        if ( ( payload != null ) && ( req.getPayload() == null ) )
         {
             return false;
         }
 
-        if ( payload != null && req.getPayload() != null )
+        if ( ( payload == null ) && ( req.getPayload() != null ) )
         {
-            if ( !Arrays.equals( payload, req.getPayload() ) )
-            {
-                return false;
-            }
+            return false;
+        }
+
+        if ( ( payload != null ) && ( req.getPayload() != null ) && !Arrays.equals( payload, req.getPayload() ) )
+        {
+            return false;
         }
 
         return true;

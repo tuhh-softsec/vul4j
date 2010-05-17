@@ -178,7 +178,7 @@ public class SearchResultEntryCodec extends LdapMessageCodec
      * @param type The attribute's name
      */
     // This will suppress PMD.EmptyCatchBlock warnings in this method
-    @SuppressWarnings("PMD.EmptyCatchBlock")
+    @SuppressWarnings( "PMD.EmptyCatchBlock" )
     public void addAttributeValues( String type )
     {
         currentAttributeValue = new DefaultEntryAttribute( type );
@@ -384,20 +384,17 @@ public class SearchResultEntryCodec extends LdapMessageCodec
                     int localValuesLength = valsLength.get( attributeNumber );
                     buffer.put( TLV.getBytes( localValuesLength ) );
 
-                    if ( attribute.size() != 0 )
+                    if ( attribute.size() > 0 )
                     {
-                        if ( attribute.size() > 0 )
+                        for ( org.apache.directory.shared.ldap.entry.Value<?> value : attribute )
                         {
-                            for ( org.apache.directory.shared.ldap.entry.Value<?> value : attribute )
+                            if ( !value.isBinary() )
                             {
-                                if ( !value.isBinary() )
-                                {
-                                    Value.encode( buffer, value.getString() );
-                                }
-                                else
-                                {
-                                    Value.encode( buffer, value.getBytes() );
-                                }
+                                Value.encode( buffer, value.getString() );
+                            }
+                            else
+                            {
+                                Value.encode( buffer, value.getBytes() );
                             }
                         }
                     }

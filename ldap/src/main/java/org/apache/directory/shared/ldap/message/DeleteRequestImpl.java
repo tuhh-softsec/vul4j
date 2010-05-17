@@ -155,12 +155,9 @@ public class DeleteRequestImpl extends AbstractAbandonableRequest implements Int
             return false;
         }
 
-        if ( name != null && req.getName() != null )
+        if ( ( name != null ) && ( req.getName() != null ) && !name.equals( req.getName() ) )
         {
-            if ( !name.equals( req.getName() ) )
-            {
-                return false;
-            }
+            return false;
         }
 
         return true;

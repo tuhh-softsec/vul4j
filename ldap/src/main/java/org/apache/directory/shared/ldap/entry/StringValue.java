@@ -507,13 +507,10 @@ public class StringValue extends AbstractValue<String>
         // Read the isNormalized flag
         normalized = in.readBoolean();
         
-        if ( normalized )
+        if ( ( normalized ) && ( in.readBoolean() ) )
         {
             // Read the normalized value, if not null
-            if ( in.readBoolean() )
-            {
-                normalizedValue = in.readUTF();
-            }
+            normalizedValue = in.readUTF();
         }
         
         h = 0;

@@ -227,12 +227,9 @@ public class CompareRequestImpl extends AbstractAbandonableRequest implements In
             return false;
         }
 
-        if ( ( name != null ) && ( reqName != null ) )
+        if ( ( name != null ) && ( reqName != null ) && !name.equals( req.getName() ) )
         {
-            if ( !name.equals( req.getName() ) )
-            {
-                return false;
-            }
+            return false;
         }
 
         String reqId = req.getAttributeId();
@@ -247,12 +244,9 @@ public class CompareRequestImpl extends AbstractAbandonableRequest implements In
             return false;
         }
 
-        if ( ( attrId != null ) && ( reqId != null ) )
+        if ( ( attrId != null ) && ( reqId != null ) && !attrId.equals( reqId ) )
         {
-            if ( !attrId.equals( reqId ) )
-            {
-                return false;
-            }
+            return false;
         }
 
         Value<?> reqVal = req.getAssertionValue();
