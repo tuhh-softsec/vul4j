@@ -415,7 +415,7 @@ public class SchemaEntityFactory implements EntityFactory
             // the one we got in the Comparator entry
             Constructor<?> constructor = clazz.getConstructor();
             comparator = ( LdapComparator<?> ) clazz.newInstance();
-            
+
             if ( !comparator.getOid().equals( oid ) )
             {
                 String msg = I18n.err( I18n.ERR_10015, oid, comparator.getOid() );
@@ -544,7 +544,7 @@ public class SchemaEntityFactory implements EntityFactory
 
         // Create the normalizer instance
         normalizer = ( Normalizer ) clazz.newInstance();
-        
+
         // Update the common fields
         normalizer.setBytecode( byteCodeStr );
         normalizer.setFqcn( className );
@@ -894,7 +894,7 @@ public class SchemaEntityFactory implements EntityFactory
         if ( !schemaManager.isSchemaLoaded( schemaName ) )
         {
             // The schema is not loaded, this is an error
-            String msg = I18n.err( I18n.ERR_10026, entry.getDn().getName(),  schemaName );
+            String msg = I18n.err( I18n.ERR_10026, entry.getDn().getName(), schemaName );
             LOG.warn( msg );
             throw new LdapUnwillingToPerformException( ResultCodeEnum.UNWILLING_TO_PERFORM, msg );
         }
@@ -1092,7 +1092,8 @@ public class SchemaEntityFactory implements EntityFactory
      *  - isEnabled
      * @throws LdapInvalidAttributeValueException 
      */
-    private void setSchemaObjectProperties( SchemaObject schemaObject, Entry entry, Schema schema ) throws LdapInvalidAttributeValueException
+    private void setSchemaObjectProperties( SchemaObject schemaObject, Entry entry, Schema schema )
+        throws LdapInvalidAttributeValueException
     {
         // The isObsolete field
         EntryAttribute mObsolete = entry.get( MetaSchemaConstants.M_OBSOLETE_AT );
