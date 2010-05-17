@@ -41,10 +41,10 @@ public class Tag
     private int type;
 
     /** This int represents a START tag */
-    public static int START = 0;
+    public static final int START = 0;
 
     /** This int represents a END tag */
-    public static int END = 1;
+    public static final int END = 1;
 
 
     /**
