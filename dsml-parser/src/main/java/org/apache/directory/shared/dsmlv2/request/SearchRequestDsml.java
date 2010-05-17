@@ -36,6 +36,7 @@ import org.apache.directory.shared.ldap.codec.search.PresentFilter;
 import org.apache.directory.shared.ldap.codec.search.SearchRequestCodec;
 import org.apache.directory.shared.ldap.codec.search.SubstringFilter;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
+import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.filter.SearchScope;
 import org.dom4j.Element;
 import org.dom4j.Namespace;
@@ -270,7 +271,7 @@ public class SearchRequestDsml extends AbstractRequestDsml
             {
                 newElement.addAttribute( "name", assertion.getAttributeDesc() );
 
-                Object value = assertion.getAssertionValue();
+                Value<?> value = assertion.getAssertionValue();
                 if ( value != null )
                 {
                     if ( ParserUtils.needsBase64Encoding( value ) )
@@ -287,7 +288,7 @@ public class SearchRequestDsml extends AbstractRequestDsml
                     }
                     else
                     {
-                        newElement.addElement( "value" ).setText( ( String ) value );
+                        newElement.addElement( "value" ).setText( value.getString() );
                     }
                 }
             }
@@ -308,7 +309,7 @@ public class SearchRequestDsml extends AbstractRequestDsml
 
             ExtensibleMatchFilter extensibleMatchFilter = ( ExtensibleMatchFilter ) filter;
 
-            Object value = extensibleMatchFilter.getMatchValue();
+            Value<?> value = extensibleMatchFilter.getMatchValue();
             if ( value != null )
             {
                 if ( ParserUtils.needsBase64Encoding( value ) )
@@ -323,7 +324,7 @@ public class SearchRequestDsml extends AbstractRequestDsml
                 }
                 else
                 {
-                    newElement.addElement( "value" ).setText( ( String ) value );
+                    newElement.addElement( "value" ).setText( value.getString() );
                 }
             }
 
