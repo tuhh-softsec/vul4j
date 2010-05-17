@@ -83,7 +83,7 @@ public class MatchingRuleDescriptionSyntaxChecker extends SyntaxChecker
 
         if ( value == null )
         {
-            LOG.debug( "Syntax invalid for '{}'", value );
+            LOG.debug( "Syntax invalid for 'null'" );
             return false;
         }
 

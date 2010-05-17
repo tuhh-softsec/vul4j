@@ -62,7 +62,7 @@ public class Ia5StringSyntaxChecker extends SyntaxChecker
 
         if ( value == null )
         {
-            LOG.debug( "Syntax valid for '{}'", value );
+            LOG.debug( "Syntax invalid for 'null'" );
             return true;
         }
         

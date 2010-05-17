@@ -64,7 +64,7 @@ public class BooleanSyntaxChecker extends SyntaxChecker
 
         if ( value == null )
         {
-            LOG.debug( "Syntax invalid for '{}'", strValue );
+            LOG.debug( "Syntax invalid for 'null'" );
             return false;
         }
         
