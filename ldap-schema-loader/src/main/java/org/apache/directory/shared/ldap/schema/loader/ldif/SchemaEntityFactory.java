@@ -1041,23 +1041,22 @@ public class SchemaEntityFactory implements EntityFactory
     }
 
 
-    /**
+    /*
      * Process the ByteCode attribute
      */
-    private EntryAttribute getByteCode( Entry entry, String objectType )
-    {
-        EntryAttribute byteCode = entry.get( MetaSchemaConstants.M_BYTECODE_AT );
-
-        if ( byteCode == null )
-        {
-            String msg = I18n.err( I18n.ERR_10028, objectType, MetaSchemaConstants.M_BYTECODE_AT );
-            LOG.warn( msg );
-            throw new NullPointerException( msg );
-        }
-
-        return byteCode;
-    }
-
+    //    private EntryAttribute getByteCode( Entry entry, String objectType )
+    //    {
+    //        EntryAttribute byteCode = entry.get( MetaSchemaConstants.M_BYTECODE_AT );
+    //
+    //        if ( byteCode == null )
+    //        {
+    //            String msg = I18n.err( I18n.ERR_10028, objectType, MetaSchemaConstants.M_BYTECODE_AT );
+    //            LOG.warn( msg );
+    //            throw new NullPointerException( msg );
+    //        }
+    //
+    //        return byteCode;
+    //    }
 
     /**
      * Process the ByteCode attribute
