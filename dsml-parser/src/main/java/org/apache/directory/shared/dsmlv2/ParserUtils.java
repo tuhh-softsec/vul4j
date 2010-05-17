@@ -21,6 +21,7 @@
 package org.apache.directory.shared.dsmlv2;
 
 
+import java.util.Arrays;
 import java.util.List;
 
 import javax.xml.transform.Transformer;
@@ -218,7 +219,7 @@ public class ParserUtils
                     controlElement.addAttribute( "criticality", "true" );
                 }
 
-                Object value = control.getValue();
+                byte[] value = control.getValue();
                 
                 if ( value != null )
                 {
@@ -236,7 +237,7 @@ public class ParserUtils
                     }
                     else
                     {
-                        controlElement.addElement( "controlValue" ).setText( ( String ) value );
+                        controlElement.addElement( "controlValue" ).setText( Arrays.toString( value ));
                     }
                 }
             }
