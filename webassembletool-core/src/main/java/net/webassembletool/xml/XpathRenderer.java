@@ -20,6 +20,7 @@ import javax.xml.xpath.XPathFactory;
 
 import net.webassembletool.HttpErrorPage;
 import net.webassembletool.Renderer;
+import net.webassembletool.ResourceContext;
 import nu.validator.htmlparser.common.DoctypeExpectation;
 import nu.validator.htmlparser.common.XmlViolationPolicy;
 import nu.validator.htmlparser.dom.HtmlDocumentBuilder;
@@ -63,8 +64,8 @@ public class XpathRenderer implements Renderer {
 	}
 
 	/** {@inheritDoc} */
-	public void render(String src, Writer out) throws IOException,
-			HttpErrorPage {
+	public void render(ResourceContext requestContext, String src, Writer out)
+			throws IOException, HttpErrorPage {
 		try {
 			HtmlDocumentBuilder htmlDocumentBuilder = new HtmlDocumentBuilder(
 					XmlViolationPolicy.ALLOW);

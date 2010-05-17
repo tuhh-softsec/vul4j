@@ -25,13 +25,13 @@ public class ResourceFixupRendererTest extends TestCase {
 		Writer out = new StringWriter();
 		ResourceFixupRenderer tested = new ResourceFixupRenderer(base, base,
 				page, ResourceFixupRenderer.ABSOLUTE);
-		tested.render(input, out);
+		tested.render(null, input, out);
 		assertEquals(expectedOutputAbsolute, out.toString());
 
 		out = new StringWriter();
 		tested = new ResourceFixupRenderer(base, base, page,
 				ResourceFixupRenderer.RELATIVE);
-		tested.render(input, out);
+		tested.render(null, input, out);
 		assertEquals(expectedOutputRelative, out.toString());
 	}
 
@@ -46,13 +46,13 @@ public class ResourceFixupRendererTest extends TestCase {
 		Writer out = new StringWriter();
 		ResourceFixupRenderer tested = new ResourceFixupRenderer(base, newBase,
 				page, ResourceFixupRenderer.ABSOLUTE);
-		tested.render(input, out);
+		tested.render(null, input, out);
 		assertEquals(expectedOutputAbsolute, out.toString());
 
 		out = new StringWriter();
 		tested = new ResourceFixupRenderer(base, newBase, page,
 				ResourceFixupRenderer.RELATIVE);
-		tested.render(input, out);
+		tested.render(null, input, out);
 		assertEquals(expectedOutputRelative, out.toString());
 	}
 
@@ -66,13 +66,13 @@ public class ResourceFixupRendererTest extends TestCase {
 		Writer out = new StringWriter();
 		ResourceFixupRenderer tested = new ResourceFixupRenderer(base, base,
 				page, ResourceFixupRenderer.ABSOLUTE);
-		tested.render(input, out);
+		tested.render(null, input, out);
 		assertEquals(expectedOutputAbsolute, out.toString());
 
 		out = new StringWriter();
 		tested = new ResourceFixupRenderer(base, base, page,
 				ResourceFixupRenderer.RELATIVE);
-		tested.render(input, out);
+		tested.render(null, input, out);
 		assertEquals(expectedOutputRelative, out.toString());
 	}
 

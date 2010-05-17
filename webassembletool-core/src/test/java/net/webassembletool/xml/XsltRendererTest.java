@@ -25,7 +25,9 @@ public class XsltRendererTest extends TestCase {
 		template += "</xsl:stylesheet>";
 		StringWriter out = new StringWriter();
 		XsltRenderer tested = new XsltRenderer(template);
-		tested.render(src, out);
-		assertEquals("<body xmlns=\"http://www.w3.org/1999/xhtml\">The body<br/></body>", out.toString());
+		tested.render(null, src, out);
+		assertEquals(
+				"<body xmlns=\"http://www.w3.org/1999/xhtml\">The body<br/></body>",
+				out.toString());
 	}
 }

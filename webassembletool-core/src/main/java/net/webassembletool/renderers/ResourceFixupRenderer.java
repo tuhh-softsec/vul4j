@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 
 import net.webassembletool.HttpErrorPage;
 import net.webassembletool.Renderer;
+import net.webassembletool.ResourceContext;
 
 /**
  * This renderer fixes links to resources, images and pages in pages retrieved
@@ -147,8 +148,8 @@ public class ResourceFixupRenderer implements Renderer {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void render(String src, Writer out) throws IOException,
-			HttpErrorPage {
+	public void render(ResourceContext requestContext, String src, Writer out)
+			throws IOException, HttpErrorPage {
 		out.write(replace(src).toString());
 	}
 

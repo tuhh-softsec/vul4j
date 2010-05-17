@@ -17,6 +17,7 @@ import javax.xml.transform.stream.StreamSource;
 
 import net.webassembletool.HttpErrorPage;
 import net.webassembletool.Renderer;
+import net.webassembletool.ResourceContext;
 import nu.validator.htmlparser.common.DoctypeExpectation;
 import nu.validator.htmlparser.common.XmlViolationPolicy;
 import nu.validator.htmlparser.sax.HtmlParser;
@@ -39,21 +40,27 @@ public class XsltRenderer implements Renderer {
 	private final Transformer transformer;
 
 	/**
-	 * @param template The path to the xsl template, relative to the context root
-	 * @param ctx The servlet context
-	 * @throws IOException If an error occurs while writing to the output
+	 * @param template
+	 *            The path to the xsl template, relative to the context root
+	 * @param ctx
+	 *            The servlet context
+	 * @throws IOException
+	 *             If an error occurs while writing to the output
 	 */
 	public XsltRenderer(String template, ServletContext ctx) throws IOException {
 		InputStream templateStream = ctx.getResourceAsStream(template);
-		if (templateStream == null)
+		if (templateStream == null) {
 			throw new ProcessingFailedException("Template " + template
 					+ " not found");
+		}
 		transformer = createTransformer(templateStream);
 	}
 
 	/**
-	 * @param xsl The xsl template to apply as a String
-	 * @throws IOException If an error occurs while writing to the output
+	 * @param xsl
+	 *            The xsl template to apply as a String
+	 * @throws IOException
+	 *             If an error occurs while writing to the output
 	 */
 	public XsltRenderer(String xsl) throws IOException {
 		InputStream templateStream = IOUtils.toInputStream(xsl);
@@ -74,8 +81,8 @@ public class XsltRenderer implements Renderer {
 	}
 
 	/** {@inheritDoc} */
-	public void render(String src, Writer out) throws IOException,
-			HttpErrorPage {
+	public void render(ResourceContext requestContext, String src, Writer out)
+			throws IOException, HttpErrorPage {
 		try {
 			HtmlParser htmlParser = new HtmlParser(XmlViolationPolicy.ALLOW);
 			htmlParser

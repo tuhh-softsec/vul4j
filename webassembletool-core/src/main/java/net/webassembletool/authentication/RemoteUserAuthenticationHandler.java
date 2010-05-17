@@ -47,8 +47,8 @@ public class RemoteUserAuthenticationHandler implements AuthenticationHandler {
 		return true;
 	}
 
-	public void render(String src, Writer out) throws IOException,
-			HttpErrorPage {
+	public void render(ResourceContext requestContext, String src, Writer out)
+			throws IOException, HttpErrorPage {
 		// Just copy src to out
 		out.write(src);
 	}

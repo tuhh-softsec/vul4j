@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
 
 import net.webassembletool.HttpErrorPage;
 import net.webassembletool.Renderer;
+import net.webassembletool.ResourceContext;
 import net.webassembletool.parser.Parser;
 
 import org.apache.commons.logging.Log;
@@ -45,15 +46,16 @@ public class TemplateRenderer implements Renderer, Appendable {
 		this.name = name;
 		this.params = params;
 		this.page = page;
-		if (name == null)
+		if (name == null) {
 			write = true;
-		else
+		} else {
 			write = false;
+		}
 	}
 
 	/** {@inheritDoc} */
-	public void render(String content, Writer out) throws IOException,
-			HttpErrorPage {
+	public void render(ResourceContext requestContext, String content,
+			Writer out) throws IOException, HttpErrorPage {
 		LOG.debug("Rendering block " + name + " in page " + page);
 		this.out = out;
 		if (content == null) {
@@ -80,21 +82,24 @@ public class TemplateRenderer implements Renderer, Appendable {
 	}
 
 	public Appendable append(CharSequence csq) throws IOException {
-		if (write)
+		if (write) {
 			out.append(csq);
+		}
 		return this;
 	}
 
 	public Appendable append(char c) throws IOException {
-		if (write)
+		if (write) {
 			out.append(c);
+		}
 		return this;
 	}
 
 	public Appendable append(CharSequence csq, int start, int end)
 			throws IOException {
-		if (write)
+		if (write) {
 			out.append(csq, start, end);
+		}
 		return this;
 	}
 

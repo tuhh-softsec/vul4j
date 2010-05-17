@@ -318,7 +318,8 @@ public class Driver {
 		// Call the AuthenticationHandler if any to filter the result
 		if (authenticationHandler != null) {
 			StringWriter filtered = new StringWriter();
-			authenticationHandler.render(currentValue, filtered);
+			authenticationHandler.render(resourceContext, currentValue,
+					filtered);
 			currentValue = filtered.toString();
 		}
 
@@ -328,14 +329,14 @@ public class Driver {
 					.getBaseURL(), config.getVisibleBaseURL(), page, config
 					.getFixMode());
 			StringWriter stringWriter = new StringWriter();
-			fixup.render(currentValue, stringWriter);
+			fixup.render(resourceContext, currentValue, stringWriter);
 			currentValue = stringWriter.toString();
 		}
 
 		// Process all renderers
 		for (Renderer renderer : renderers) {
 			StringWriter stringWriter = new StringWriter();
-			renderer.render(currentValue, stringWriter);
+			renderer.render(resourceContext, currentValue, stringWriter);
 			currentValue = stringWriter.toString();
 		}
 		writer.append(currentValue);
@@ -391,7 +392,7 @@ public class Driver {
 			String currentValue = textOutput.toString();
 			for (Renderer renderer : renderers) {
 				StringWriter stringWriter = new StringWriter();
-				renderer.render(currentValue, stringWriter);
+				renderer.render(resourceContext, currentValue, stringWriter);
 				currentValue = stringWriter.toString();
 			}
 			// Write the result to the OutpuStream

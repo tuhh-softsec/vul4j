@@ -88,8 +88,8 @@ public class CasAuthenticationHandler implements AuthenticationHandler {
 		httpServletRequest.setAttribute(SECOND_REQUEST, true);
 	}
 
-	public void render(String src, Writer out) throws IOException,
-			HttpErrorPage {
+	public void render(ResourceContext requestContext, String src, Writer out)
+			throws IOException, HttpErrorPage {
 		// Just copy src to out
 		out.write(src);
 	}

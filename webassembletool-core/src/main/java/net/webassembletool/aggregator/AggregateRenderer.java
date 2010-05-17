@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.webassembletool.HttpErrorPage;
 import net.webassembletool.Renderer;
+import net.webassembletool.ResourceContext;
 import net.webassembletool.parser.Parser;
 
 /**
@@ -51,11 +52,12 @@ public class AggregateRenderer implements Renderer, Appendable {
 	}
 
 	/** {@inheritDoc} */
-	public void render(String content, Writer out) throws IOException,
-			HttpErrorPage {
+	public void render(ResourceContext requestContext, String content,
+			Writer out) throws IOException, HttpErrorPage {
 		this.out = out;
-		if (content == null)
+		if (content == null) {
 			return;
+		}
 		PARSER.parse(content, this);
 	}
 

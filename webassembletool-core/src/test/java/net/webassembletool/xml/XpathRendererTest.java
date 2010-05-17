@@ -18,7 +18,7 @@ public class XpathRendererTest extends TestCase {
 		String src = "<html><body>The body<br></body></html>";
 		StringWriter out = new StringWriter();
 		XpathRenderer tested = new XpathRenderer("//html:body");
-		tested.render(src, out);
+		tested.render(null, src, out);
 		assertEquals(
 				"<body xmlns=\"http://www.w3.org/1999/xhtml\">The body<br/></body>",
 				out.toString());
@@ -34,7 +34,7 @@ public class XpathRendererTest extends TestCase {
 		String src = "<html><body>The body<br></body></html>";
 		StringWriter out = new StringWriter();
 		XpathRenderer tested = new XpathRenderer("//html:body", "html");
-		tested.render(src, out);
+		tested.render(null, src, out);
 		assertEquals(
 				"<body xmlns=\"http://www.w3.org/1999/xhtml\">The body<br></body>",
 				out.toString());
