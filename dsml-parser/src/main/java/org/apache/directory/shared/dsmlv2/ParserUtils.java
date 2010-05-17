@@ -269,7 +269,7 @@ public class ParserUtils
 
 
     /**
-     * XML Pretty Printer XSLT Tranformation
+     * XML Pretty Printer XSLT Transformation
      * 
      * @param document
      *      the Dom4j Document
@@ -288,8 +288,9 @@ public class ParserUtils
         }
         catch ( TransformerConfigurationException e1 )
         {
-            // TODO Auto-generated catch block
             e1.printStackTrace();
+            // return original document
+            return document;
         }
 
         // now lets style the given document
@@ -301,8 +302,9 @@ public class ParserUtils
         }
         catch ( TransformerException e )
         {
-            // TODO Auto-generated catch block
             e.printStackTrace();
+            // return original document
+            return document;
         }
 
         // return the transformed document
