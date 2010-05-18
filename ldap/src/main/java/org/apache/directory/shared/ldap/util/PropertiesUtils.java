@@ -21,9 +21,9 @@ package org.apache.directory.shared.ldap.util;
 
 
 import java.io.File;
-import java.io.InputStream;
-import java.io.IOException;
 import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Properties;
@@ -115,6 +115,8 @@ public class PropertiesUtils
      *            a class to use for relative path references
      * @return the static properties
      */
+    // This will suppress PMD.EmptyCatchBlock warnings in this method
+    @SuppressWarnings("PMD.EmptyCatchBlock")
     public static Properties getStaticProperties( Class<?> ref )
     {
         final Properties properties = new Properties();
@@ -132,6 +134,20 @@ public class PropertiesUtils
             {
                 return properties;
             }
+            finally
+            {
+                if ( input != null )
+                {
+                    try
+                    {
+                        input.close();
+                    }
+                    catch ( IOException e )
+                    {
+                        // Empty catch, we can't more than trying to close
+                    }
+                }
+            }
         }
 
         return properties;
@@ -147,6 +163,8 @@ public class PropertiesUtils
      *            the relative path to the resoruce
      * @return the static properties
      */
+    // This will suppress PMD.EmptyCatchBlock warnings in this method
+    @SuppressWarnings("PMD.EmptyCatchBlock")
     public static Properties getStaticProperties( Class<?> ref, String path )
     {
         Properties properties = new Properties();
@@ -164,6 +182,20 @@ public class PropertiesUtils
         catch ( IOException e )
         {
             return properties;
+        }
+        finally
+        {
+            if ( input != null )
+            {
+                try
+                {
+                    input.close();
+                }
+                catch ( IOException e )
+                {
+                    // Empty catch, we can't more than trying to close
+                }
+            }
         }
 
         return properties;
@@ -221,6 +253,8 @@ public class PropertiesUtils
      *            the path to the resource
      * @return the loaded or new Properties
      */
+    // This will suppress PMD.EmptyCatchBlock warnings in this method
+    @SuppressWarnings("PMD.EmptyCatchBlock")
     public static Properties getProperties( ClassLoader classloader, String path )
     {
         Properties properties = new Properties();
@@ -235,6 +269,20 @@ public class PropertiesUtils
             catch ( IOException e )
             {
                 return properties;
+            }
+            finally
+            {
+                if ( input != null )
+                {
+                    try
+                    {
+                        input.close();
+                    }
+                    catch ( IOException e )
+                    {
+                        // Empty catch, we can't more than trying to close
+                    }
+                }
             }
         }
 
@@ -252,6 +300,8 @@ public class PropertiesUtils
      *            the relative path to the resource
      * @return the loaded or new Properties
      */
+    // This will suppress PMD.EmptyCatchBlock warnings in this method
+    @SuppressWarnings("PMD.EmptyCatchBlock")
     public static Properties getProperties( Class<?> clazz, String path )
     {
         Properties properties = new Properties();
@@ -266,6 +316,20 @@ public class PropertiesUtils
             catch ( IOException e )
             {
                 return properties;
+            }
+            finally
+            {
+                if ( input != null )
+                {
+                    try
+                    {
+                        input.close();
+                    }
+                    catch ( IOException e )
+                    {
+                        // Empty catch, we can't more than trying to close
+                    }
+                }
             }
         }
 
