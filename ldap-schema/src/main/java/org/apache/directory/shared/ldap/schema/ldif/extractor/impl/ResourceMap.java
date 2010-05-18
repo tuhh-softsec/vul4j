@@ -22,6 +22,7 @@ package org.apache.directory.shared.ldap.schema.ldif.extractor.impl;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,6 +30,9 @@ import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -39,11 +43,24 @@ import java.util.zip.ZipFile;
  */
 public class ResourceMap
 {
+    /** the system property which can be used to load schema from a user specified
+     *  resource like a absolute path to a directory or jar file.
+     *  This is useful to start embedded DirectoryService in a servlet container environment
+     *  
+     *  usage: -Dschema.resource.location=/tmp/schema 
+     *                OR
+     *         -Dschema.resource.location=/tmp/shared-ldap-schema-0.9.18.jar
+     *  */
+    private static final String SCHEMA_RESOURCE_LOCATION = "schema.resource.location";
+    
+    private static final Logger LOG = LoggerFactory.getLogger( ResourceMap.class );
+    
    /**
-    * For all elements of java.class.path get a Map of resources
-    * Pattern pattern = Pattern.compile(".*").  The keys represent
-    * resource names and the boolean parameter indicates whether or
-    * not the resource is in a Jar file.
+    * For all elements of java.class.path OR from the resource name set in the 
+    * system property 'schema.resource.location' get a Map of resources
+    * Pattern pattern = Pattern.compile(".*").  
+    * The keys represent resource names and the boolean parameter indicates
+    * whether or not the resource is in a Jar file.
     * 
     * @param pattern the pattern to match
     * @return the resources with markers - true if resource is in Jar
@@ -51,12 +68,32 @@ public class ResourceMap
     public static Map<String,Boolean> getResources( Pattern pattern )
     {
         HashMap<String,Boolean> retval = new HashMap<String,Boolean>();
-        String classPath = System.getProperty( "java.class.path", "." );
-        String[] classPathElements = classPath.split( File.pathSeparator );
+    
+        String schemaResourceLoc = System.getProperty( SCHEMA_RESOURCE_LOCATION, "" );
         
-        for ( String element : classPathElements )
+        if( schemaResourceLoc.trim().length() > 0 )
         {
-            getResources( retval, element, pattern );
+            LOG.debug( "loading from the user provider schema resource {}", schemaResourceLoc );
+            
+            File file = new File( schemaResourceLoc );
+            if( file.exists() )
+            {
+                getResources( retval, schemaResourceLoc, pattern );
+            }
+            else
+            {
+                LOG.error( "unable to load schema from the given resource value {}", schemaResourceLoc );
+            }
+        }
+        else
+        {
+            String classPath = System.getProperty( "java.class.path", "." );
+            String[] classPathElements = classPath.split( File.pathSeparator );
+            
+            for ( String element : classPathElements )
+            {
+                getResources( retval, element, pattern );
+            }
         }
         
         return retval;
