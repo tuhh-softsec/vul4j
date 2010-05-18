@@ -20,7 +20,6 @@
 package org.apache.directory.shared.ldap.util;
 
 
-
 import java.io.File;
 import java.io.InputStream;
 import java.io.IOException;
@@ -309,7 +308,7 @@ public class PropertiesUtils
         }
 
         Enumeration<?> list = expanded.propertyNames();
-        
+
         while ( list.hasMoreElements() )
         {
             String key = ( String ) list.nextElement();
@@ -416,13 +415,13 @@ public class PropertiesUtils
         /*
          * H A N D L E S I N G L E V A L U E D K E Y S
          */
-        for ( Object key:keys.keySet() )
+        for ( Object key : keys.keySet() )
         {
-            String value = discover( (String)key, sources, haltOnDiscovery );
+            String value = discover( ( String ) key, sources, haltOnDiscovery );
 
             if ( value != null )
             {
-                keys.setProperty( (String)key, value );
+                keys.setProperty( ( String ) key, value );
             }
         }
     }
