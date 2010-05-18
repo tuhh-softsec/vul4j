@@ -233,7 +233,7 @@ options    {
             {
                 throw new SemanticException( element + " appears twice.", token.getFilename(), token.getLine() , token.getColumn() );
             }
-            elementMap.put(element, new Integer(1));
+            elementMap.put(element, Integer.valueOf(1));
         }
         boolean contains(String element) 
         {

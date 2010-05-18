@@ -290,20 +290,20 @@ public class DITStructureRuleDescriptionSchemaParserTest
         value = "( 1 FORM 1.1 SUP 1 )";
         ditStructureRule = parser.parseDITStructureRuleDescription( value );
         assertEquals( 1, ditStructureRule.getSuperRules().size() );
-        assertEquals( new Integer( 1 ), ditStructureRule.getSuperRules().get( 0 ) );
+        assertEquals( Integer.valueOf( 1 ), ditStructureRule.getSuperRules().get( 0 ) );
 
         // SUP single number
         value = "( 1 FORM 1.1 SUP ( 1 ) )";
         ditStructureRule = parser.parseDITStructureRuleDescription( value );
         assertEquals( 1, ditStructureRule.getSuperRules().size() );
-        assertEquals( new Integer( 1 ), ditStructureRule.getSuperRules().get( 0 ) );
+        assertEquals( Integer.valueOf( 1 ), ditStructureRule.getSuperRules().get( 0 ) );
 
         // SUP multi number
         value = "( 1 FORM 1.1 SUP(12345 67890))";
         ditStructureRule = parser.parseDITStructureRuleDescription( value );
         assertEquals( 2, ditStructureRule.getSuperRules().size() );
-        assertEquals( new Integer( 12345 ), ditStructureRule.getSuperRules().get( 0 ) );
-        assertEquals( new Integer( 67890 ), ditStructureRule.getSuperRules().get( 1 ) );
+        assertEquals( Integer.valueOf( 12345 ), ditStructureRule.getSuperRules().get( 0 ) );
+        assertEquals( Integer.valueOf( 67890 ), ditStructureRule.getSuperRules().get( 1 ) );
 
         // non-numeric not allowed
         value = "( 1 FORM 1.1 SUP test )";
@@ -367,9 +367,9 @@ public class DITStructureRuleDescriptionSchemaParserTest
         assertTrue( ditStructureRule.isObsolete() );
         assertEquals( "2.3.4.5.6.7.8.9.0.1", ditStructureRule.getForm() );
         assertEquals( 3, ditStructureRule.getSuperRules().size() );
-        assertEquals( new Integer( 1 ), ditStructureRule.getSuperRules().get( 0 ) );
-        assertEquals( new Integer( 1234567890 ), ditStructureRule.getSuperRules().get( 1 ) );
-        assertEquals( new Integer( 5 ), ditStructureRule.getSuperRules().get( 2 ) );
+        assertEquals( Integer.valueOf( 1 ), ditStructureRule.getSuperRules().get( 0 ) );
+        assertEquals( Integer.valueOf( 1234567890 ), ditStructureRule.getSuperRules().get( 1 ) );
+        assertEquals( Integer.valueOf( 5 ), ditStructureRule.getSuperRules().get( 2 ) );
         assertEquals( 2, ditStructureRule.getExtensions().size() );
         assertNotNull( ditStructureRule.getExtensions().get( "X-TEST-a" ) );
         assertEquals( 2, ditStructureRule.getExtensions().get( "X-TEST-a" ).size() );
