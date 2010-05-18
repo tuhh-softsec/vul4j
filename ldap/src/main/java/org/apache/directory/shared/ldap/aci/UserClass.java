@@ -154,6 +154,10 @@ public abstract class UserClass implements Serializable
         }
 
 
+        /**
+         * {@inheritDoc}
+         */
+        @Override
         public boolean equals( Object o )
         {
             if ( this == o )
@@ -173,6 +177,23 @@ public abstract class UserClass implements Serializable
             }
 
             return false;
+        }
+
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public int hashCode()
+        {
+            int result = 37;
+
+            for ( DN dn : this.names )
+            {
+                result = result * 17 + dn.hashCode();
+            }
+
+            return result;
         }
 
 
