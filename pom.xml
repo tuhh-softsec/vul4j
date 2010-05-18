@@ -300,6 +300,32 @@
           </reportSet>
         </reportSets>
       </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>rat-maven-plugin</artifactId>
+        <version>1.0-alpha-3</version>
+        <configuration>
+          <excludes>
+            <!-- MAVEN_DEFAULT_EXCLUDES -->
+            <exclude>**/target/**/*</exclude>
+            <exclude>**/cobertura.ser</exclude>
+            <!-- ECLIPSE_DEFAULT_EXCLUDES -->
+            <exclude>**/.classpath</exclude>
+            <exclude>**/.project</exclude>
+            <exclude>**/.settings/**/*</exclude>
+            <!-- IDEA_DEFAULT_EXCLUDES -->
+            <exclude>**/*.iml</exclude>
+            <exclude>**/*.ipr</exclude>
+            <exclude>**/*.iws</exclude>
+            <!-- MANIFEST_MF_EXCLUDES -->
+            <exclude>**/MANIFEST.MF</exclude>
+            <!-- Generated ldif files -->
+            <exclude>ldap-schema/src/main/resources/schema/**</exclude>
+            <!-- Files having a Bouncy Castle license -->
+            <exclude>asn1/src/main/java/org/apache/directory/shared/asn1/der/*.java</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
     </plugins>
   </reporting>
 
