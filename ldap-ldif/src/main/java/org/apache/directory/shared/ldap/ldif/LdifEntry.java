@@ -567,7 +567,7 @@ public class LdifEntry implements Cloneable, Externalizable
         }
         catch ( LdapException ne )
         {
-            return null;
+            return "";
         }
     }
     
