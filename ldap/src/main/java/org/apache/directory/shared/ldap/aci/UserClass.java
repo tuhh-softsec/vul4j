@@ -141,7 +141,14 @@ public abstract class UserClass implements Serializable
          */
         protected NamedUserClass( Set<DN> names )
         {
-            this.names = Collections.unmodifiableSet( new HashSet<DN>( names ) );
+            if ( names == null )
+            {
+                this.names = Collections.unmodifiableSet( new HashSet<DN>() );
+            }
+            else
+            {
+                this.names = Collections.unmodifiableSet( new HashSet<DN>( names ) );
+            }
         }
 
 
