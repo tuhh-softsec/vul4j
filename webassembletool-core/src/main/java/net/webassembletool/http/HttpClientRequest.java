@@ -22,6 +22,14 @@ import org.apache.http.message.BasicHttpRequest;
 import org.apache.http.params.CoreProtocolPNames;
 import org.apache.http.protocol.HttpContext;
 
+/**
+ * Request to a remote Http server.
+ * 
+ * @author François-Xavier Bonnet
+ * @author Alexis Thaveau
+ * @author Nicolas Richeton
+ * 
+ */
 public class HttpClientRequest {
 	private final static Log LOG = LogFactory.getLog(HttpClientRequest.class);
 	private String uri;
@@ -77,9 +85,15 @@ public class HttpClientRequest {
 					.getParams());
 			clientParamBean.setVirtualHost(virtualHost);
 		}
+
+		// Do the request
 		result = new HttpClientResponse(httpHost, httpRequest, httpClient,
 				httpContext);
-		LOG.debug(toString() + " -> " + result.toString());
+
+		if (LOG.isDebugEnabled()) {
+			LOG.debug(toString() + " -> " + result.toString());
+		}
+
 		return result;
 	}
 
