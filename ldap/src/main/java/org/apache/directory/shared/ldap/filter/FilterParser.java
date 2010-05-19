@@ -213,7 +213,6 @@ public class FilterParser
      */
     private static Value<?> parseAssertionValue( String filter, Position pos, boolean preserveEscapedChars ) throws ParseException
     {
-        int start = pos.start;
         char c = StringTools.charAt( filter, pos.start );
         
         // Create a buffer big enough to contain the value once converted

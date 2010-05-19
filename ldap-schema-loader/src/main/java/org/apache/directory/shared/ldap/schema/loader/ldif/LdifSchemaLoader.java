@@ -22,21 +22,17 @@ package org.apache.directory.shared.ldap.schema.loader.ldif;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.constants.MetaSchemaConstants;
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.ldif.LdifEntry;
 import org.apache.directory.shared.ldap.ldif.LdifReader;
-import org.apache.directory.shared.ldap.ldif.LdifUtils;
 import org.apache.directory.shared.ldap.schema.registries.AbstractSchemaLoader;
 import org.apache.directory.shared.ldap.schema.registries.Schema;
-import org.apache.directory.shared.ldap.util.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,13 +59,6 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
 
     /** Speedup for DEBUG mode */
     private static final boolean IS_DEBUG = LOG.isDebugEnabled();
-
-    /**
-     * the administrator DN - very ADS specific but we need some DN here for
-     * the modifiers name when the system modifies by itself enabled and 
-     * disabled schemas in the repository.
-     */
-    private static final String ADMIN_SYSTEM_DN = "uid=admin,ou=system";
 
     /** directory containing the schema LDIF file for ou=schema */
     private final File baseDirectory;
@@ -244,69 +233,6 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
     }
 
     
-    /**
-     * Utility method used to enable a specific schema on disk in the LDIF
-     * based schema repository.  This method will remove the m-disabled AT
-     * in the schema file and update the modifiersName and modifyTimestamp.
-     * 
-     * The modifiersName and modifyTimestamp on the schema.ldif file will
-     * also be updated to indicate a change to the schema.
-     *
-     * @param schema the disabled schema to enable
-     * @throws Exception if there are problems writing changes back to disk
-     */
-    private void enableSchema( Schema schema ) throws Exception
-    {
-        // -------------------------------------------------------------------
-        // Modifying the foo schema foo.ldif file to be enabled but still
-        // have to now update the timestamps and update the modifiersName
-        // -------------------------------------------------------------------
-
-        File schemaLdifFile = new File( new File( baseDirectory, SchemaConstants.OU_SCHEMA ), "cn="
-            + schema.getSchemaName() + "." + LDIF_EXT );
-        LdifReader reader = new LdifReader( schemaLdifFile );
-        LdifEntry ldifEntry = reader.next();
-        Entry entry = ldifEntry.getEntry();
-
-        entry.removeAttributes( "changeType" );
-        entry.removeAttributes( SchemaConstants.MODIFIERS_NAME_AT );
-        entry.removeAttributes( SchemaConstants.MODIFY_TIMESTAMP_AT );
-        entry.removeAttributes( MetaSchemaConstants.M_DISABLED_AT );
-
-        entry.add( SchemaConstants.MODIFIERS_NAME_AT, ADMIN_SYSTEM_DN );
-        entry.add( SchemaConstants.MODIFY_TIMESTAMP_AT, DateUtils.getGeneralizedTime() );
-
-        FileWriter out = new FileWriter( schemaLdifFile );
-        out.write( LdifUtils.convertEntryToLdif( entry ) );
-        out.flush();
-        out.close();
-
-        // -------------------------------------------------------------------
-        // Now we need to update the timestamp on the schema.ldif file which
-        // shows that something changed below the schema directory in schema
-        // -------------------------------------------------------------------
-
-        schemaLdifFile = new File( baseDirectory, "ou=schema." + LDIF_EXT );
-        reader = new LdifReader( schemaLdifFile );
-        ldifEntry = reader.next();
-        entry = ldifEntry.getEntry();
-
-        entry.removeAttributes( "changeType" );
-        entry.removeAttributes( SchemaConstants.MODIFIERS_NAME_AT );
-        entry.removeAttributes( SchemaConstants.MODIFY_TIMESTAMP_AT );
-
-        entry.add( SchemaConstants.MODIFIERS_NAME_AT, ADMIN_SYSTEM_DN );
-        entry.add( SchemaConstants.MODIFY_TIMESTAMP_AT, DateUtils.getGeneralizedTime() );
-
-        out = new FileWriter( schemaLdifFile );
-        out.write( LdifUtils.convertEntryToLdif( entry ) );
-        out.flush();
-        out.close();
-
-        reader.close();
-    }
-
-
     /**
      * Utility method to get the file for a schema directory.
      *

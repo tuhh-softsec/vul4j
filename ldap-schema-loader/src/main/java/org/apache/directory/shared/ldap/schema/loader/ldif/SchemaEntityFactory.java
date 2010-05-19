@@ -21,7 +21,6 @@ package org.apache.directory.shared.ldap.schema.loader.ldif;
 
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -73,13 +72,6 @@ public class SchemaEntityFactory implements EntityFactory
 {
     /** Slf4j logger */
     private final static Logger LOG = LoggerFactory.getLogger( SchemaEntityFactory.class );
-
-    /** for fast debug checks */
-    private static final boolean IS_DEBUG = LOG.isDebugEnabled();
-
-    /** Used for looking up the setRegistries(Registries) method */
-    private final static Class<?>[] parameterTypes = new Class[]
-        { Registries.class };
 
     private static final List<String> EMPTY_LIST = new ArrayList<String>();
     private static final String[] EMPTY_ARRAY = new String[]
@@ -413,7 +405,7 @@ public class SchemaEntityFactory implements EntityFactory
             // Ok, let's try with the constructor without argument.
             // In this case, we will have to check that the OID is the same than
             // the one we got in the Comparator entry
-            Constructor<?> constructor = clazz.getConstructor();
+            clazz.getConstructor();
             comparator = ( LdapComparator<?> ) clazz.newInstance();
 
             if ( !comparator.getOid().equals( oid ) )
@@ -641,42 +633,6 @@ public class SchemaEntityFactory implements EntityFactory
 
         // return the resulting Normalizer
         return normalizer;
-    }
-
-
-    /**
-     * Uses reflection to see if a setRegistries( Registries ) method exists on the
-     * object's class.  If so then the registries are dependency injected into the 
-     * new schema object.
-     * 
-     * @param obj a schema object to have a Registries dependency injected.
-     */
-    private void injectRegistries( Object obj, Registries targetRegistries ) throws Exception
-    {
-        Method method = null;
-
-        try
-        {
-            method = obj.getClass().getMethod( "setRegistries", parameterTypes );
-        }
-        catch ( NoSuchMethodException e )
-        {
-            if ( IS_DEBUG )
-            {
-                LOG.debug( obj.getClass() + " has no setRegistries() method." );
-            }
-
-            return;
-        }
-
-        if ( method == null )
-        {
-            return;
-        }
-
-        Object[] args = new Object[]
-            { targetRegistries };
-        method.invoke( obj, args );
     }
 
 

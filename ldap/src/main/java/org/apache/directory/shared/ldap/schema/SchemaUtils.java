@@ -1105,6 +1105,7 @@ public class SchemaUtils
     /**
      * NOT FULLY IMPLEMENTED!
      */
+    @SuppressWarnings("PMD.UnusedLocalVariable") // Remove me when the TODO is fixed 
     public static StringBuffer render( DITStructureRule dsr )
     {
         StringBuffer buf = new StringBuffer();

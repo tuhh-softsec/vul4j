@@ -31,7 +31,6 @@ import org.apache.directory.shared.asn1.codec.stateful.EncoderCallback;
 import org.apache.directory.shared.asn1.codec.stateful.EncoderMonitor;
 import org.apache.directory.shared.asn1.codec.stateful.StatefulEncoder;
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.codec.add.AddRequestCodec;
 import org.apache.directory.shared.ldap.message.spi.Provider;
 import org.apache.directory.shared.ldap.message.spi.ProviderEncoder;
 import org.apache.directory.shared.ldap.message.spi.ProviderException;
@@ -286,48 +285,5 @@ public class LdapEncoder implements ProviderEncoder
         {
             this.channel = Channels.newChannel( out );
         }
-    }
-    
-    
-    private static ByteBuffer encodeAsn1( AddRequestCodec addRequest )
-    {
-        //int length = computeLength( addRequest );
-        return null;
-    }
-    
-    
-    private static ByteBuffer encodeAsn1( LdapMessageCodec message ) throws EncoderException
-    {
-        ByteBuffer buffer = null;
-        
-        switch ( message.getMessageType() )
-        {
-            case ABANDON_REQUEST :
-                return encodeAsn1( message );
-                
-            case ADD_REQUEST :
-            case ADD_RESPONSE :
-            case BIND_REQUEST :
-            case BIND_RESPONSE :
-            case COMPARE_REQUEST :
-            case COMPARE_RESPONSE :
-            case DEL_REQUEST :
-            case DEL_RESPONSE :
-            case EXTENDED_REQUEST :
-            case EXTENDED_RESPONSE :
-            case INTERMEDIATE_RESPONSE :
-            case MODIFY_REQUEST :
-            case MODIFY_RESPONSE :
-            case MODIFYDN_REQUEST :
-            case MODIFYDN_RESPONSE :
-            case SEARCH_REQUEST :
-            case SEARCH_RESULT_DONE :
-            case SEARCH_RESULT_ENTRY :
-            case SEARCH_RESULT_REFERENCE  :
-            case UNBIND_REQUEST :
-            
-        }
-        
-        return buffer;
     }
 }

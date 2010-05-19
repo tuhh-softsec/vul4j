@@ -33,8 +33,6 @@ import org.apache.directory.shared.ldap.message.internal.InternalModifyRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalModifyResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalResultResponse;
 import org.apache.directory.shared.ldap.name.DN;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 /**
@@ -46,9 +44,6 @@ import org.slf4j.LoggerFactory;
 public class ModifyRequestImpl extends AbstractAbandonableRequest implements InternalModifyRequest
 {
     static final long serialVersionUID = -505803669028990304L;
-
-    /** The logger */
-    private static final transient Logger LOG = LoggerFactory.getLogger( ModifyRequestImpl.class );
 
     /** Dn of the entry to modify or PDU's <b>object</b> field */
     private DN name;

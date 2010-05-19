@@ -696,6 +696,7 @@ public class DITContentRule extends AbstractSchemaObject
     /**
      * @see Object#equals(Object)
      */
+    @SuppressWarnings("PMD.UnusedLocalVariable") // Remove me when the TODO is fixed 
     public boolean equals( Object o )
     {
         if ( !super.equals( o ) )

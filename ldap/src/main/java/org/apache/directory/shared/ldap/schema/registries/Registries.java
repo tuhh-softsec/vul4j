@@ -134,6 +134,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
     protected Map<SchemaObjectWrapper, Set<SchemaObjectWrapper>> using;
 
     /** A reference on the schema Manager */
+    @SuppressWarnings("PMD.UnusedPrivateField") // False positive 
     private SchemaManager schemaManager;
 
 
@@ -2601,8 +2602,6 @@ public class Registries implements SchemaLoaderListener, Cloneable
                 }
                 catch ( LdapException ne )
                 {
-                    int i = 0;
-                    i++;
                     // Nothing to do
                 }
             }

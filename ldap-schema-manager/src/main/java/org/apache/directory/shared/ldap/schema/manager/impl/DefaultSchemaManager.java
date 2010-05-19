@@ -258,25 +258,6 @@ public class DefaultSchemaManager implements SchemaManager
     }
 
     
-    /**
-     * Tells if there are schemaObjects for a given schema from the registries
-     */
-    private boolean hasSchemaObjects( Schema schema, Registries registries ) throws Exception
-    {
-        Map<String, Set<SchemaObjectWrapper>> schemaObjects = registries.getObjectBySchemaName();
-        Set<SchemaObjectWrapper> content = schemaObjects.get( StringTools.toLowerCase( schema.getSchemaName() ) );
-
-        if ( ( content == null ) || content.isEmpty() )
-        {
-            return false;
-        }
-        else
-        {
-            return true;
-        }
-    }
-
-
     //-----------------------------------------------------------------------
     // API methods
     //-----------------------------------------------------------------------
@@ -692,6 +673,7 @@ public class DefaultSchemaManager implements SchemaManager
      * - isRelaxed
      * - disabledAccepted
      */
+    @SuppressWarnings("PMD.UnusedPrivateMethod") // False positive
     private boolean unload( Registries registries, Schema schema ) throws Exception
     {
         if ( schema == null )
