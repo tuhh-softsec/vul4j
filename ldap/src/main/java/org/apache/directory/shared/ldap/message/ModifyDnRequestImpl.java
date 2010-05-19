@@ -233,6 +233,33 @@ public class ModifyDnRequestImpl extends AbstractAbandonableRequest implements I
 
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode()
+    {
+        int hash = 37;
+        if ( name != null )
+        {
+            hash = hash * 17 + name.hashCode();
+        }
+        hash = hash * 17 + ( deleteOldRdn ? 0 : 1 );
+
+        if ( newRdn != null )
+        {
+            hash = hash * 17 + newRdn.hashCode();
+        }
+        if ( newSuperior != null )
+        {
+            hash = hash * 17 + newSuperior.hashCode();
+        }
+        hash = hash * 17 + super.hashCode();
+
+        return hash;
+    }
+
+
+    /**
      * Checks to see of an object equals this ModifyDnRequest stub. The equality
      * presumes all ModifyDnRequest specific properties are the same.
      * 

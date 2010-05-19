@@ -84,6 +84,23 @@ public class SearchResponseReferenceImpl extends InternalAbstractResponse implem
 
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode()
+    {
+        int hash = 37;
+        if ( this.referral != null )
+        {
+            hash = hash * 17 + this.referral.hashCode();
+        }
+        hash = hash * 17 + super.hashCode();
+
+        return hash;
+    }
+
+
+    /**
      * Checks to see if an object is equal to this SearchResponseReference stub.
      * 
      * @param obj

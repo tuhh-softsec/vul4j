@@ -55,6 +55,20 @@ public class SearchResponseDoneImpl extends InternalAbstractResultResponse imple
 
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode()
+    {
+        int hash = 37;
+        hash = hash * 17 + getLdapResult().hashCode();
+        hash = hash * 17 + super.hashCode();
+
+        return hash;
+    }
+
+
+    /**
      * Checks for equality by using the underlying LdapResult objects of this
      * SearchResponseDone stub.
      * 

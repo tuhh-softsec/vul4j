@@ -169,6 +169,27 @@ public class ExtendedRequestImpl extends InternalAbstractRequest implements Inte
 
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode()
+    {
+        int hash = 37;
+        if ( oid != null )
+        {
+            hash = hash * 17 + oid.hashCode();
+        }
+        if ( payload != null )
+        {
+            hash = hash * 17 + Arrays.hashCode( payload );
+        }
+        hash = hash * 17 + super.hashCode();
+
+        return hash;
+    }
+
+
+    /**
      * Checks to see if an object equals this ExtendedRequest.
      * 
      * @param obj

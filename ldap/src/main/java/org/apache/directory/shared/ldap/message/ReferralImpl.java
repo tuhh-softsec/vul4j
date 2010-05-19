@@ -85,6 +85,25 @@ public class ReferralImpl implements InternalReferral
 
 
     /**
+     * @see Object#hashCode()
+     * @return the instance's hash code 
+     */
+    public int hashCode()
+    {
+        int hash = 37;
+        hash = hash * 17 + urls.size();
+
+        // Order doesn't matter, so just add the url hashCode
+        for ( String url : urls )
+        {
+            hash = hash + url.hashCode();
+        }
+
+        return hash;
+    }
+
+
+    /**
      * Compares this Referral implementation to see if it is the same as
      * another. The classes do not have to be the same implementation to return
      * true. Both this and the compared Referral must have the same entries

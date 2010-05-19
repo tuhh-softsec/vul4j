@@ -47,7 +47,7 @@ public class CompareRequestImplTest
     private static final Map<String, Control> EMPTY_CONTROL_MAP = new HashMap<String, Control>();
 
     /**
-     * Tests the same object referrence for equality.
+     * Tests the same object reference for equality.
      */
     @Test
     public void testEqualsSameObj()
@@ -75,6 +75,37 @@ public class CompareRequestImplTest
 
         assertTrue( req0.equals( req1 ) );
         assertTrue( req1.equals( req0 ) );
+    }
+
+
+    /**
+     * Tests the same object reference for equal hashCode.
+     */
+    @Test
+    public void testHashCodeSameObj()
+    {
+        CompareRequestImpl req = new CompareRequestImpl( 5 );
+        assertTrue( req.hashCode() == req.hashCode() );
+    }
+
+
+    /**
+     * Tests for equal hashCode using exact copies.
+     */
+    @Test
+    public void testHashCodeExactCopy() throws LdapException
+    {
+        CompareRequestImpl req0 = new CompareRequestImpl( 5 );
+        req0.setName( new DN( "cn=admin,dc=example,dc=com" ) );
+        req0.setAttributeId( "objectClass" );
+        req0.setAssertionValue( "top" );
+
+        CompareRequestImpl req1 = new CompareRequestImpl( 5 );
+        req1.setName( new DN( "cn=admin,dc=example,dc=com" ) );
+        req1.setAttributeId( "objectClass" );
+        req1.setAssertionValue( "top" );
+
+        assertTrue( req0.hashCode() == req1.hashCode() );
     }
 
 

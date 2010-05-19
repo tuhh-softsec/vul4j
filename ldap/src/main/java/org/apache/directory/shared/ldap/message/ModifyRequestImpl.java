@@ -21,6 +21,7 @@ package org.apache.directory.shared.ldap.message;
 
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
@@ -164,6 +165,28 @@ public class ModifyRequestImpl extends AbstractAbandonableRequest implements Int
         }
 
         return response;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode()
+    {
+        int hash = 37;
+        if ( name != null )
+        {
+            hash = hash * 17 + name.hashCode();
+        }
+        hash = hash * 17 + mods.size();
+        for ( int i = 0; i < mods.size(); i++ )
+        {
+            hash = hash * 17 + ( ( DefaultModification ) mods.get( i ) ).hashCode();
+        }
+        hash = hash * 17 + super.hashCode();
+
+        return hash;
     }
 
 

@@ -140,6 +140,27 @@ public class ExtendedResponseImpl extends InternalAbstractResultResponse impleme
 
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode()
+    {
+        int hash = 37;
+        if ( oid != null )
+        {
+            hash = hash * 17 + oid.hashCode();
+        }
+        if ( value != null )
+        {
+            hash = hash * 17 + Arrays.hashCode( value );
+        }
+        hash = hash * 17 + super.hashCode();
+
+        return hash;
+    }
+
+
+    /**
      * Checks to see if an object equals this ExtendedRequest.
      * 
      * @param obj

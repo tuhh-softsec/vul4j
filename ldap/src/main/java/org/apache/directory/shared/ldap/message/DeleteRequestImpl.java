@@ -122,6 +122,23 @@ public class DeleteRequestImpl extends AbstractAbandonableRequest implements Int
 
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode()
+    {
+        int hash = 37;
+        if ( name != null )
+        {
+            hash = hash * 17 + name.hashCode();
+        }
+        hash = hash * 17 + super.hashCode();
+
+        return hash;
+    }
+
+
+    /**
      * Checks to see if an object is equivalent to this DeleteRequest. First
      * there's a quick test to see if the obj is the same object as this one -
      * if so true is returned. Next if the super method fails false is returned.

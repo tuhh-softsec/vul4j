@@ -95,7 +95,7 @@ public class ModifyRequestImplTest
 
 
     /**
-     * Tests the same object referrence for equality.
+     * Tests the same object reference for equality.
      */
     @Test
     public void testEqualsSameObj()
@@ -114,6 +114,29 @@ public class ModifyRequestImplTest
         ModifyRequestImpl req0 = getRequest();
         ModifyRequestImpl req1 = getRequest();
         assertTrue( req0.equals( req1 ) );
+    }
+
+
+    /**
+     * Tests the same object reference for equal hashCode.
+     */
+    @Test
+    public void testHashCodeSameObj()
+    {
+        ModifyRequestImpl req = getRequest();
+        assertTrue( req.hashCode() == req.hashCode() );
+    }
+
+
+    /**
+     * Tests for equal hashCode using exact copies.
+     */
+    @Test
+    public void testHashCodeExactCopy()
+    {
+        ModifyRequestImpl req0 = getRequest();
+        ModifyRequestImpl req1 = getRequest();
+        assertTrue( req0.hashCode() == req1.hashCode() );
     }
 
 

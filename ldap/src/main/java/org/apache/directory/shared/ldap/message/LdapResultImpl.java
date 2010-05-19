@@ -177,6 +177,31 @@ public class LdapResultImpl implements InternalLdapResult
 
 
     /**
+     * @see Object#hashCode()
+     * @return the instance's hash code 
+     */
+    public int hashCode()
+    {
+        int hash = 37;
+        if ( referral != null )
+        {
+            hash = hash * 17 + referral.hashCode();
+        }
+        hash = hash * 17 + resultCode.hashCode();
+        if ( errorMessage != null )
+        {
+            hash = hash * 17 + errorMessage.hashCode();
+        }
+        if ( matchedDn != null )
+        {
+            hash = hash * 17 + matchedDn.hashCode();
+        }
+
+        return hash;
+    }
+
+
+    /**
      * @param obj The object to compare with
      * @return <code>true</code> if both objects are equals
      */
