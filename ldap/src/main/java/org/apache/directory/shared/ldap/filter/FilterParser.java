@@ -83,7 +83,7 @@ public class FilterParser
                     pos.start++;
 
                     // Get the assertionValue
-                    node.setValue( parseAssertionValue( filter, pos, true ) );
+                    node.setValue( parseAssertionValue( filter, pos ) );
 
                     return node;
                 }
@@ -98,7 +98,7 @@ public class FilterParser
                         pos.start += 2;
 
                         // Get the assertionValue
-                        node.setValue( parseAssertionValue( filter, pos, true ) );
+                        node.setValue( parseAssertionValue( filter, pos ) );
 
                         return node;
                     }
@@ -145,7 +145,7 @@ public class FilterParser
                     pos.start++;
 
                     // Get the assertionValue
-                    node.setValue( parseAssertionValue( filter, pos, true ) );
+                    node.setValue( parseAssertionValue( filter, pos ) );
 
                     return node;
                 }
@@ -160,7 +160,7 @@ public class FilterParser
                         pos.start += 2;
 
                         // Get the assertionValue
-                        node.setValue( parseAssertionValue( filter, pos, true ) );
+                        node.setValue( parseAssertionValue( filter, pos ) );
 
                         return node;
                     }
@@ -211,7 +211,7 @@ public class FilterParser
      * HEX            = '0'-'9' / 'A'-'F' / 'a'-'f'
      * unicodeSubset     = %x01-27 / %x2B-5B / %x5D-FFFF
      */
-    private static Value<?> parseAssertionValue( String filter, Position pos, boolean preserveEscapedChars ) throws ParseException
+    private static Value<?> parseAssertionValue( String filter, Position pos ) throws ParseException
     {
         char c = StringTools.charAt( filter, pos.start );
         
@@ -271,12 +271,6 @@ public class FilterParser
         {
             return new BinaryValue();
         }
-    }
-
-
-    private static Value<?> parseAssertionValue( String filter, Position pos ) throws ParseException
-    {
-        return parseAssertionValue( filter, pos, false );
     }
 
 

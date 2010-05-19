@@ -59,7 +59,6 @@ import org.apache.directory.shared.ldap.codec.search.SearchResultDoneCodec;
 import org.apache.directory.shared.ldap.codec.search.SearchResultEntryCodec;
 import org.apache.directory.shared.ldap.codec.search.SearchResultReferenceCodec;
 import org.apache.directory.shared.ldap.codec.search.SubstringFilter;
-import org.apache.directory.shared.ldap.codec.unbind.UnBindRequestCodec;
 import org.apache.directory.shared.ldap.codec.util.LdapURLEncodingException;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Modification;
@@ -783,11 +782,10 @@ public class LdapTransformer
      * Transform an UnBindRequest message from a CodecMessage to a
      * InternalMessage
      * 
-     * @param codecMessage The message to transform
      * @param messageId The message Id
      * @return A Internal UnBindRequestImpl
      */
-    private static InternalMessage transformUnBindRequest( LdapMessageCodec codecMessage, int messageId )
+    private static InternalMessage transformUnBindRequest( int messageId )
     {
         return new UnbindRequestImpl( messageId );
     }
@@ -821,7 +819,7 @@ public class LdapTransformer
                 break;
 
             case UNBIND_REQUEST :
-                internalMessage = transformUnBindRequest( (UnBindRequestCodec)codecMessage, messageId );
+                internalMessage = transformUnBindRequest( messageId );
                 break;
 
             case SEARCH_REQUEST :

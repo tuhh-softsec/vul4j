@@ -673,8 +673,8 @@ public class DefaultSchemaManager implements SchemaManager
      * - isRelaxed
      * - disabledAccepted
      */
-    @SuppressWarnings("PMD.UnusedPrivateMethod")
     // False positive
+    @SuppressWarnings("PMD.UnusedPrivateMethod")
     private boolean unload( Registries registries, Schema schema ) throws Exception
     {
         if ( schema == null )
@@ -732,6 +732,8 @@ public class DefaultSchemaManager implements SchemaManager
     /**
      * Add all the Schema's DitContentRules
      */
+    // Not yet implemented, but may be used
+    @SuppressWarnings("PMD.UnusedFormalParameter")
     private void addDitContentRules( Schema schema, Registries registries ) throws Exception
     {
         if ( !schemaLoader.loadDitContentRules( schema ).isEmpty() )
@@ -748,6 +750,8 @@ public class DefaultSchemaManager implements SchemaManager
     /**
      * Add all the Schema's DitStructureRules
      */
+    // Not yet implemented, but may be used
+    @SuppressWarnings("PMD.UnusedFormalParameter")
     private void addDitStructureRules( Schema schema, Registries registries ) throws Exception
     {
         if ( !schemaLoader.loadDitStructureRules( schema ).isEmpty() )
@@ -778,6 +782,8 @@ public class DefaultSchemaManager implements SchemaManager
     /**
      * Add all the Schema's MatchingRuleUses
      */
+    // Not yet implemented, but may be used
+    @SuppressWarnings("PMD.UnusedFormalParameter")
     private void addMatchingRuleUses( Schema schema, Registries registries ) throws Exception
     {
         if ( !schemaLoader.loadMatchingRuleUses( schema ).isEmpty() )
@@ -794,6 +800,8 @@ public class DefaultSchemaManager implements SchemaManager
     /**
      * Add all the Schema's NameForms
      */
+    // Not yet implemented, but may be used
+    @SuppressWarnings("PMD.UnusedFormalParameter")
     private void addNameForms( Schema schema, Registries registries ) throws Exception
     {
         if ( !schemaLoader.loadNameForms( schema ).isEmpty() )
