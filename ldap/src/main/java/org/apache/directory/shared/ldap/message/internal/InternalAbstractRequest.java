@@ -69,7 +69,7 @@ public class InternalAbstractRequest extends InternalAbstractMessage implements 
 
     /**
      * {@inheritDoc}
-     */
+     *
     @Override
     public boolean equals( Object obj )
     {
