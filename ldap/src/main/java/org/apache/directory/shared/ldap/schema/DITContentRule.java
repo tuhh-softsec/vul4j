@@ -207,13 +207,10 @@ public class DITContentRule extends AbstractSchemaObject
             throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
         }
         
-        if ( !isReadOnly )
+        if ( !isReadOnly && !auxObjectClassOids.contains( objectClass.getOid() ) )
         {
-            if ( !auxObjectClassOids.contains( objectClass.getOid() ) )
-            {
-                auxObjectClasses.add( objectClass );
-                auxObjectClassOids.add( objectClass.getOid() );
-            }
+            auxObjectClasses.add( objectClass );
+            auxObjectClassOids.add( objectClass.getOid() );
         }
     }
 
@@ -309,13 +306,10 @@ public class DITContentRule extends AbstractSchemaObject
             throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
         }
         
-        if ( !isReadOnly )
+        if ( !isReadOnly && !mayAttributeTypeOids.contains( attributeType.getOid() ) )
         {
-            if ( !mayAttributeTypeOids.contains( attributeType.getOid() ) )
-            {
-                mayAttributeTypes.add( attributeType );
-                mayAttributeTypeOids.add( attributeType.getOid() );
-            }
+            mayAttributeTypes.add( attributeType );
+            mayAttributeTypeOids.add( attributeType.getOid() );
         }
     }
 
@@ -413,13 +407,10 @@ public class DITContentRule extends AbstractSchemaObject
             throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
         }
         
-        if ( !isReadOnly )
+        if ( !isReadOnly && !mustAttributeTypeOids.contains( attributeType.getOid() ) )
         {
-            if ( !mustAttributeTypeOids.contains( attributeType.getOid() ) )
-            {
-                mustAttributeTypes.add( attributeType );
-                mustAttributeTypeOids.add( attributeType.getOid() );
-            }
+            mustAttributeTypes.add( attributeType );
+            mustAttributeTypeOids.add( attributeType.getOid() );
         }
     }
 
@@ -517,13 +508,10 @@ public class DITContentRule extends AbstractSchemaObject
             throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
         }
         
-        if ( !isReadOnly )
+        if ( !isReadOnly && !notAttributeTypeOids.contains( attributeType.getOid() ) )
         {
-            if ( !notAttributeTypeOids.contains( attributeType.getOid() ) )
-            {
-                notAttributeTypes.add( attributeType );
-                notAttributeTypeOids.add( attributeType.getOid() );
-            }
+            notAttributeTypes.add( attributeType );
+            notAttributeTypeOids.add( attributeType.getOid() );
         }
     }
 

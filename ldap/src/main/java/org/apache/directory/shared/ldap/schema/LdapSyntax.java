@@ -247,6 +247,7 @@ public class LdapSyntax extends AbstractSchemaObject
      * @param registries The Registries
      * @exception If the Syntx is not valid 
      */
+    @SuppressWarnings("PMD.CollapsibleIfStatements") // Used because of comments
     public void removeFromRegistries( List<Throwable> errors, Registries registries ) throws LdapException
     {
         if ( registries != null )

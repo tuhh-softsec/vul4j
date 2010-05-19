@@ -149,12 +149,10 @@ public class IntermediateResponseImpl extends InternalAbstractResultResponse imp
             return false;
         }
 
-        if ( ( oid != null ) && ( resp.getResponseName() != null ) )
+        if ( ( oid != null ) && ( resp.getResponseName() != null ) && !oid.equals( 
+            resp.getResponseName() ) )
         {
-            if ( !oid.equals( resp.getResponseName() ) )
-            {
-                return false;
-            }
+            return false;
         }
 
         if ( ( value != null ) && ( resp.getResponseValue() == null ) )
@@ -167,12 +165,10 @@ public class IntermediateResponseImpl extends InternalAbstractResultResponse imp
             return false;
         }
 
-        if ( ( value != null ) && ( resp.getResponseValue() != null ) )
+        if ( ( value != null ) && ( resp.getResponseValue() != null ) && !Arrays.equals( value,
+            resp.getResponseValue() ) )
         {
-            if ( !Arrays.equals( value, resp.getResponseValue() ) )
-            {
-                return false;
-            }
+            return false;
         }
 
         return true;

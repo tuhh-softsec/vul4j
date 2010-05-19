@@ -263,12 +263,9 @@ public class ModifyDnRequestImpl extends AbstractAbandonableRequest implements I
             return false;
         }
 
-        if ( name != null && req.getName() != null )
+        if ( name != null && req.getName() != null && !name.equals( req.getName() ) )
         {
-            if ( !name.equals( req.getName() ) )
-            {
-                return false;
-            }
+            return false;
         }
 
         if ( deleteOldRdn != req.getDeleteOldRdn() )
@@ -286,12 +283,9 @@ public class ModifyDnRequestImpl extends AbstractAbandonableRequest implements I
             return false;
         }
 
-        if ( newRdn != null && req.getNewRdn() != null )
+        if ( newRdn != null && req.getNewRdn() != null && !newRdn.equals( req.getNewRdn() ) )
         {
-            if ( !newRdn.equals( req.getNewRdn() ) )
-            {
-                return false;
-            }
+            return false;
         }
 
         if ( newSuperior != null && req.getNewSuperior() == null )
@@ -304,12 +298,9 @@ public class ModifyDnRequestImpl extends AbstractAbandonableRequest implements I
             return false;
         }
 
-        if ( newSuperior != null && req.getNewSuperior() != null )
+        if ( newSuperior != null && req.getNewSuperior() != null && !newSuperior.equals( req.getNewSuperior() ) )
         {
-            if ( !newSuperior.equals( req.getNewSuperior() ) )
-            {
-                return false;
-            }
+            return false;
         }
 
         return true;

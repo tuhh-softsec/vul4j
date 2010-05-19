@@ -206,12 +206,9 @@ public class LdapResultImpl implements InternalLdapResult
             return false;
         }
 
-        if ( referral != null && result.getReferral() != null )
+        if ( referral != null && result.getReferral() != null && !referral.equals( result.getReferral() ) )
         {
-            if ( !referral.equals( result.getReferral() ) )
-            {
-                return false;
-            }
+            return false;
         }
 
         if ( !resultCode.equals( result.getResultCode() ) )

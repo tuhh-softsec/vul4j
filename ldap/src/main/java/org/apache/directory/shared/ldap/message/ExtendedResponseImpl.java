@@ -172,12 +172,9 @@ public class ExtendedResponseImpl extends InternalAbstractResultResponse impleme
             return false;
         }
 
-        if ( oid != null && resp.getResponseName() != null )
+        if ( oid != null && resp.getResponseName() != null && !oid.equals( resp.getResponseName() ) )
         {
-            if ( !oid.equals( resp.getResponseName() ) )
-            {
-                return false;
-            }
+            return false;
         }
 
         if ( value != null && resp.getResponse() == null )
@@ -190,12 +187,9 @@ public class ExtendedResponseImpl extends InternalAbstractResultResponse impleme
             return false;
         }
 
-        if ( value != null && resp.getResponse() != null )
+        if ( value != null && resp.getResponse() != null && !Arrays.equals( value, resp.getResponse() ) )
         {
-            if ( !Arrays.equals( value, resp.getResponse() ) )
-            {
-                return false;
-            }
+            return false;
         }
 
         return true;

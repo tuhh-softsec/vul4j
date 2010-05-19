@@ -497,12 +497,9 @@ public class StringTools
             ch = buf[i];
 
             // filter out all uppercase characters
-            if ( toLowerCase )
+            if ( toLowerCase && Character.isUpperCase( ch ) )
             {
-                if ( Character.isUpperCase( ch ) )
-                {
-                    ch = Character.toLowerCase( ch );
-                }
+                ch = Character.toLowerCase( ch );
             }
 
             // Check to see if we should add space
@@ -887,6 +884,7 @@ public class StringTools
      * @return the filter accepted path component Strings in the order
      *         encountered
      */
+    @SuppressWarnings("PMD.CollapsibleIfStatements") // Used because of comments
     public static final List<String> getPaths( String paths, FileFilter filter )
     {
         int start = 0;

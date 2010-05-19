@@ -73,13 +73,10 @@ public abstract class AbstractSchemaLoader implements SchemaLoader
             listener.schemaLoaded( schema );
         }
 
-        if ( registries instanceof SchemaLoaderListener )
+        if ( registries instanceof SchemaLoaderListener && registries != listener )
         {
-            if ( registries != listener )
-            {
-                SchemaLoaderListener listener = ( SchemaLoaderListener ) registries;
-                listener.schemaLoaded( schema );
-            }
+            SchemaLoaderListener listener = ( SchemaLoaderListener ) registries;
+            listener.schemaLoaded( schema );
         }
     }
 

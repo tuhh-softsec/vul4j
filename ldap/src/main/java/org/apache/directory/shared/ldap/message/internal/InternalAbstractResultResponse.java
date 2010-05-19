@@ -110,12 +110,9 @@ public abstract class InternalAbstractResultResponse extends InternalAbstractRes
             return false;
         }
 
-        if ( getLdapResult() != null && resp.getLdapResult() != null )
+        if ( getLdapResult() != null && resp.getLdapResult() != null && !getLdapResult().equals( resp.getLdapResult() ) )
         {
-            if ( !getLdapResult().equals( resp.getLdapResult() ) )
-            {
-                return false;
-            }
+            return false;
         }
 
         return true;

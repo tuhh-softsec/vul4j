@@ -113,12 +113,9 @@ public class SearchResponseReferenceImpl extends InternalAbstractResponse implem
             return false;
         }
 
-        if ( this.referral != null && resp.getReferral() != null )
+        if ( this.referral != null && resp.getReferral() != null && !this.referral.equals( resp.getReferral() ) )
         {
-            if ( !this.referral.equals( resp.getReferral() ) )
-            {
-                return false;
-            }
+            return false;
         }
 
         return true;

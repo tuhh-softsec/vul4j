@@ -342,13 +342,10 @@ public class NameForm extends AbstractSchemaObject
             throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
         }
         
-        if ( !isReadOnly )
+        if ( !isReadOnly && !mustAttributeTypeOids.contains( attributeType.getOid() ) )
         {
-            if ( !mustAttributeTypeOids.contains( attributeType.getOid() ) )
-            {
-                mustAttributeTypes.add( attributeType );
-                mustAttributeTypeOids.add( attributeType.getOid() );
-            }
+            mustAttributeTypes.add( attributeType );
+            mustAttributeTypeOids.add( attributeType.getOid() );
         }
     }
 
@@ -457,13 +454,10 @@ public class NameForm extends AbstractSchemaObject
             throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
         }
         
-        if ( !isReadOnly )
+        if ( !isReadOnly && !mayAttributeTypeOids.contains( attributeType.getOid() ) )
         {
-            if ( !mayAttributeTypeOids.contains( attributeType.getOid() ) )
-            {
-                mayAttributeTypes.add( attributeType );
-                mayAttributeTypeOids.add( attributeType.getOid() );
-            }
+            mayAttributeTypes.add( attributeType );
+            mayAttributeTypeOids.add( attributeType.getOid() );
         }
     }
 

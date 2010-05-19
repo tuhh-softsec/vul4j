@@ -561,13 +561,10 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
      */
     private void checkCollective( List<Throwable> errors, Registries registries )
     {
-        if ( superior != null )
+        if ( superior != null && superior.isCollective() )
         {
-            if ( superior.isCollective() )
-            {
-                // An AttributeType will be collective if its superior is collective
-                this.isCollective = true;
-            }
+            // An AttributeType will be collective if its superior is collective
+            this.isCollective = true;
         }
 
         if ( isCollective() && ( usage != UsageEnum.USER_APPLICATIONS ) )

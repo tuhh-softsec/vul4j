@@ -410,20 +410,14 @@ public class SearchRequestImpl extends AbstractAbandonableRequest implements Int
             return false;
         }
 
-        if ( req.getAttributes() == null && attributes != null )
+        if ( req.getAttributes() == null && attributes != null && attributes.size() > 0 )
         {
-            if ( attributes.size() > 0 )
-            {
-                return false;
-            }
+            return false;
         }
 
-        if ( req.getAttributes() != null && attributes == null )
+        if ( req.getAttributes() != null && attributes == null && req.getAttributes().size() > 0 )
         {
-            if ( req.getAttributes().size() > 0 )
-            {
-                return false;
-            }
+            return false;
         }
 
         if ( req.getAttributes() != null && attributes != null )

@@ -204,12 +204,9 @@ public class ModifyRequestImpl extends AbstractAbandonableRequest implements Int
             return false;
         }
 
-        if ( name != null && req.getName() != null )
+        if ( name != null && req.getName() != null && !name.equals( req.getName() ) )
         {
-            if ( !name.equals( req.getName() ) )
-            {
-                return false;
-            }
+            return false;
         }
 
         if ( req.getModificationItems().size() != mods.size() )
