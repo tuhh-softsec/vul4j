@@ -68,9 +68,34 @@ public class InternalAbstractRequest extends InternalAbstractMessage implements 
 
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean equals( Object obj )
+    {
+        if ( obj == this )
+        {
+            return true;
+        }
+
+        if ( ( obj == null ) || !( obj instanceof InternalAbstractMessage ) )
+        {
+            return false;
+        }
+        
+        if ( hasResponse != ( ( InternalRequest) obj ).hasResponse() )
+        {
+            return false;
+        }
+        return super.equals( obj );
+    }
+
+
+    /**
      * @see Object#hashCode()
      * @return the instance's hash code 
      */
+    @Override
     public int hashCode()
     {
         int hash = 37;

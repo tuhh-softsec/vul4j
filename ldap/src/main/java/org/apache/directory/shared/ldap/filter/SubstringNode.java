@@ -249,9 +249,58 @@ public class SubstringNode extends LeafNode
 
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean equals( Object obj )
+    {
+        if ( obj == this )
+        {
+            return true;
+        }
+
+        if ( ( obj == null ) || !( obj instanceof SubstringNode ) )
+        {
+            return false;
+        }
+        SubstringNode that = ( SubstringNode ) obj;
+        if ( initialPattern == null )
+        {
+            if ( that.initialPattern != null )
+            {
+                return false;
+            }
+        }
+        else
+        {
+            if ( !initialPattern.equals( that.initialPattern ) )
+            {
+                return false;
+            }
+        }
+        if ( finalPattern == null )
+        {
+            if ( that.finalPattern != null )
+            {
+                return false;
+            }
+        }
+        else
+        {
+            if ( !finalPattern.equals( that.finalPattern ) )
+            {
+                return false;
+            }
+        }
+        return super.equals( obj );
+    }
+
+
+    /**
      * @see Object#hashCode()
      * @return the instance's hash code 
      */
+    @Override
     public int hashCode()
     {
         int h = 37;

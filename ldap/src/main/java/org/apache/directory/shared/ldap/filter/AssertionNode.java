@@ -20,6 +20,7 @@
 package org.apache.directory.shared.ldap.filter;
 
 import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.message.internal.InternalRequest;
 
 
 /**
@@ -128,9 +129,56 @@ public abstract class AssertionNode extends AbstractExprNode
 
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean equals( Object obj )
+    {
+        if ( obj == this )
+        {
+            return true;
+        }
+
+        if ( ( obj == null ) || !( obj instanceof AssertionNode ) )
+        {
+            return false;
+        }
+        AssertionNode that = ( AssertionNode ) obj;
+        if ( assertion == null ) {
+            if ( that.assertion != null)
+            {
+                return false;
+            }
+        }
+        else
+        {
+            if ( !assertion.equals( that.assertion ) )
+            {
+                return false;
+            }
+        }
+        if ( desc == null ) {
+            if ( that.desc != null)
+            {
+                return false;
+            }
+        }
+        else
+        {
+            if ( !desc.equals( that.desc ) )
+            {
+                return false;
+            }
+        }
+        return super.equals( obj );
+    }
+
+
+    /**
      * @see Object#hashCode()
      * @return the instance's hash code 
      */
+    @Override
     public int hashCode()
     {
         int h = 37;

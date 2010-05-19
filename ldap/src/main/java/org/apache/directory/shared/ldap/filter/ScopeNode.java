@@ -124,9 +124,62 @@ public class ScopeNode extends AbstractExprNode
 
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean equals( Object obj )
+    {
+        if ( obj == this )
+        {
+            return true;
+        }
+
+        if ( ( obj == null ) || !( obj instanceof ScopeNode ) )
+        {
+            return false;
+        }
+        ScopeNode that = ( ScopeNode ) obj;
+        if ( aliasDerefAliases == null )
+        {
+            if ( that.aliasDerefAliases != null )
+            {
+                return false;
+            }
+        }
+        else
+        {
+            if ( !aliasDerefAliases.equals( that.aliasDerefAliases ) )
+            {
+                return false;
+            }
+        }
+        if ( baseDn == null )
+        {
+            if ( that.baseDn != null )
+            {
+                return false;
+            }
+        }
+        else
+        {
+            if ( !baseDn.equals( that.baseDn ) )
+            {
+                return false;
+            }
+        }
+        if ( scope.getScope() != that.scope.getScope() )
+        {
+            return false;
+        }
+        return super.equals( obj );
+    }
+
+
+    /**
      * @see Object#hashCode()
      * @return the instance's hash code 
      */
+    @Override
     public int hashCode()
     {
         int h = 37;

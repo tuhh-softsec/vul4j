@@ -169,9 +169,42 @@ public class ExtensibleNode extends LeafNode
 
     
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean equals( Object obj )
+    {
+        if ( obj == this )
+        {
+            return true;
+        }
+
+        if ( ( obj == null ) || !( obj instanceof ExtensibleNode ) )
+        {
+            return false;
+        }
+        ExtensibleNode that = ( ExtensibleNode ) obj;
+        if ( dnAttributes != that.dnAttributes )
+        {
+            return false;
+        }
+        if ( !matchingRuleId.equals( that.matchingRuleId ) )
+        {
+            return false;
+        }
+        if ( !value.equals( that.value ) )
+        {
+            return false;
+        }
+        return super.equals( obj );
+    }
+
+
+    /**
      * @see Object#hashCode()
      * @return the instance's hash code 
      */
+    @Override
     public int hashCode()
     {
         int h = 37;
