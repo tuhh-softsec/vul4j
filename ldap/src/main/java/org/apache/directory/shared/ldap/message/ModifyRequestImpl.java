@@ -21,7 +21,6 @@ package org.apache.directory.shared.ldap.message;
 
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;

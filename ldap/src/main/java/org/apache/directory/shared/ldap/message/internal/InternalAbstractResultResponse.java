@@ -71,6 +71,23 @@ public abstract class InternalAbstractResultResponse extends InternalAbstractRes
 
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode()
+    {
+        int hash = 37;
+        if ( getLdapResult() != null )
+        {
+            hash = hash * 17 + getLdapResult().hashCode();
+        }
+        hash = hash * 17 + super.hashCode();
+        
+        return hash;
+    }
+
+
+    /**
      * Checks to see if an object is equal to this AbstractResultResponse. First
      * the object is checked to see if it is this AbstractResultResponse
      * instance if so it returns true. Next it checks if the super method
@@ -82,6 +99,7 @@ public abstract class InternalAbstractResultResponse extends InternalAbstractRes
      *            the object to compare to this LdapResult containing response
      * @return true if they objects are equivalent false otherwise
      */
+    @Override
     public boolean equals( Object obj )
     {
         if ( obj == this )

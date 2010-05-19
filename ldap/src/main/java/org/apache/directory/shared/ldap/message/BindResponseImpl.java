@@ -104,6 +104,20 @@ public class BindResponseImpl extends InternalAbstractResultResponse implements 
 
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode()
+    {
+        int hash = 37;
+        hash = hash * 17 + Arrays.hashCode( serverSaslCreds );
+        hash = hash * 17 + super.hashCode();
+
+        return hash;
+    }
+
+
+    /**
      * Checks to see if this BindResponse is equal to another BindResponse. The
      * implementation and lockable properties are not factored into the
      * evaluation of equality. Only the messageId, saslCredentials and the

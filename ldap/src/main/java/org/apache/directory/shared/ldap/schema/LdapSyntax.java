@@ -285,8 +285,24 @@ public class LdapSyntax extends AbstractSchemaObject
 
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode()
+    {
+        int hash = 37;
+        hash = hash * 17 + ( isHumanReadable ? 0 : 1 );
+        hash = hash * 17 + syntaxChecker.getOid().hashCode(); 
+        hash = hash * 17 + super.hashCode();
+        
+        return hash;
+    }
+
+
+    /**
      * @see Object#equals()
      */
+    @Override
     public boolean equals( Object o )
     {
         if ( !super.equals( o ) )

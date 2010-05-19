@@ -424,8 +424,34 @@ public class MatchingRule extends AbstractSchemaObject
 
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode()
+    {
+        int hash = 37;
+        if ( ldapComparator != null )
+        {
+            hash = hash * 17 + ldapComparator.hashCode();
+        }
+        if ( normalizer != null )
+        {
+            hash = hash * 17 + normalizer.hashCode();
+        }
+        if ( ldapSyntaxOid != null )
+        {
+            hash = hash * 17 + ldapSyntaxOid.hashCode();
+        }
+        hash = hash * 17 + super.hashCode();
+        
+        return hash;
+    }
+
+
+    /**
      * @see Object#equals()
      */
+    @Override
     public boolean equals( Object o )
     {
         if ( !super.equals( o ) )

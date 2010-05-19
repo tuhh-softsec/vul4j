@@ -280,8 +280,24 @@ public class MatchingRuleUse extends AbstractSchemaObject
 
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode()
+    {
+        int hash = 37;
+        
+        // TODO complete when equals() is complete
+        hash = hash * 17 + super.hashCode();
+        
+        return hash;
+    }
+
+
+    /**
      * @see Object#equals(Object)
      */
+    @Override
     @SuppressWarnings("PMD.UnusedLocalVariable") // Remove me when the TODO is fixed 
     public boolean equals( Object o )
     {

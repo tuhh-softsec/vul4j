@@ -123,6 +123,24 @@ public class CertGenerationResponse extends ExtendedResponseImpl
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode()
+    {
+        int hash = 37;
+        // Seems simple but look at the equals() method ...
+        hash = hash * 17 + getClass().getName().hashCode();
+
+        return hash;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public boolean equals( Object obj )
     {
         if ( obj == this )

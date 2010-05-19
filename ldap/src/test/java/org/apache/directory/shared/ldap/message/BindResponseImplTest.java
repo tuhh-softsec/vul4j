@@ -66,6 +66,29 @@ public class BindResponseImplTest
 
 
     /**
+     * Tests to make sure the same object has the same hashCode.
+     */
+    @Test
+    public void testHashCodeSameObj()
+    {
+        BindResponseImpl resp = new BindResponseImpl( 1 );
+        assertTrue( resp.hashCode() == resp.hashCode() );
+    }
+
+
+    /**
+     * Tests to make sure newly created objects with same id have the same hashCode.
+     */
+    @Test
+    public void testHashCodeNewWithSameId()
+    {
+        BindResponseImpl resp0 = new BindResponseImpl( 1 );
+        BindResponseImpl resp1 = new BindResponseImpl( 1 );
+        assertTrue( resp1.hashCode() == resp0.hashCode() );
+    }
+
+
+    /**
      * Tests to make sure newly created objects with same different id are not
      * equal.
      */
@@ -129,5 +152,41 @@ public class BindResponseImplTest
 
         assertTrue( "loaded carbon copies should be equal", resp0.equals( resp1 ) );
         assertTrue( "loaded carbon copies should be equal", resp1.equals( resp0 ) );
+    }
+
+
+    /**
+     * Tests for equal hashCode of two fully loaded identical BindResponse PDUs.
+     */
+    @Test
+    public void testHashCodeWithTheWorks() throws LdapException
+    {
+        LdapResultImpl r0 = new LdapResultImpl();
+        LdapResultImpl r1 = new LdapResultImpl();
+
+        r0.setErrorMessage( "blah blah blah" );
+        r1.setErrorMessage( "blah blah blah" );
+
+        r0.setMatchedDn( new DN( "dc=example,dc=com" ) );
+        r1.setMatchedDn( new DN( "dc=example,dc=com" ) );
+
+        r0.setResultCode( ResultCodeEnum.TIME_LIMIT_EXCEEDED );
+        r1.setResultCode( ResultCodeEnum.TIME_LIMIT_EXCEEDED );
+
+        InternalReferral refs0 = new ReferralImpl();
+        refs0.addLdapUrl( "ldap://someserver.com" );
+        refs0.addLdapUrl( "ldap://anotherserver.org" );
+
+        InternalReferral refs1 = new ReferralImpl();
+        refs1.addLdapUrl( "ldap://someserver.com" );
+        refs1.addLdapUrl( "ldap://anotherserver.org" );
+
+        BindResponseImpl resp0 = new BindResponseImpl( 1 );
+        BindResponseImpl resp1 = new BindResponseImpl( 1 );
+
+        resp0.setServerSaslCreds( "password".getBytes() );
+        resp1.setServerSaslCreds( "password".getBytes() );
+
+        assertTrue( resp0.hashCode() == resp1.hashCode() );
     }
 }
