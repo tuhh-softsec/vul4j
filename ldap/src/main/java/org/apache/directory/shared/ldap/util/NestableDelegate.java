@@ -65,7 +65,7 @@ public class NestableDelegate implements Serializable
      * 
      * @since 2.0
      */
-    public static boolean topDown = true;
+    public static final boolean topDown = true;
 
     /**
      * Whether to trim the repeated stack trace. This public flag may be set by
@@ -73,7 +73,7 @@ public class NestableDelegate implements Serializable
      * 
      * @since 2.0
      */
-    public static boolean trimStackFrames = true;
+    public static final boolean trimStackFrames = true;
 
 
     /**
