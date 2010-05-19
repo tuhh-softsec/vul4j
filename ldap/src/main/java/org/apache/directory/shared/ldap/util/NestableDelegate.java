@@ -65,7 +65,7 @@ public class NestableDelegate implements Serializable
      * 
      * @since 2.0
      */
-    public static final boolean topDown = true;
+    public static final boolean TOP_DOWN = true;
 
     /**
      * Whether to trim the repeated stack trace. This public flag may be set by
@@ -319,7 +319,7 @@ public class NestableDelegate implements Serializable
      * Throwable class has a <code>getCause</code> method (i.e. running on
      * jre1.4 or higher), this method just uses Throwable's printStackTrace()
      * method. Otherwise, generates the stack-trace, by taking into account the
-     * 'topDown' and 'trimStackFrames' parameters. The topDown and
+     * 'TOP_DOWN' and 'trimStackFrames' parameters. The TOP_DOWN and
      * trimStackFrames are set to 'true' by default (produces jre1.4-like stack
      * trace).
      * 
@@ -352,9 +352,9 @@ public class NestableDelegate implements Serializable
             throwable = ExceptionUtils.getCause( throwable );
         }
 
-        // If NOT topDown, reverse the stack
+        // If NOT TOP_DOWN, reverse the stack
         String separatorLine = "Caused by: ";
-        if ( !topDown )
+        if ( !TOP_DOWN )
         {
             separatorLine = "Rethrown as: ";
             Collections.reverse( stacks );
