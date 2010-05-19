@@ -19,10 +19,13 @@
  */
 package org.apache.directory.shared.ldap.message.extended;
 
+
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.message.ExtendedResponseImpl;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.util.StringTools;
+
+
 /**
  * 
  * The response sent back from the server after the CertGeneration extended operation is performed.
@@ -34,32 +37,33 @@ public class CertGenerationResponse extends ExtendedResponseImpl
 {
     /** The serial version UUID */
     private static final long serialVersionUID = 1L;
-    
+
     /** The CertGenerationResponse OID */
     public static final String EXTENSION_OID = "1.3.6.1.4.1.18060.0.1.9";
 
-    public CertGenerationResponse(int messageId, ResultCodeEnum rcode)
+
+    public CertGenerationResponse( int messageId, ResultCodeEnum rcode )
     {
         super( messageId, EXTENSION_OID );
 
         switch ( rcode )
         {
-            case SUCCESS :
-            case OPERATIONS_ERROR :
-            case INSUFFICIENT_ACCESS_RIGHTS :
+            case SUCCESS:
+            case OPERATIONS_ERROR:
+            case INSUFFICIENT_ACCESS_RIGHTS:
                 break;
-            
+
             default:
                 throw new IllegalArgumentException( I18n.err( I18n.ERR_04166, ResultCodeEnum.SUCCESS,
-                		ResultCodeEnum.OPERATIONS_ERROR, ResultCodeEnum.INSUFFICIENT_ACCESS_RIGHTS ) );
+                    ResultCodeEnum.OPERATIONS_ERROR, ResultCodeEnum.INSUFFICIENT_ACCESS_RIGHTS ) );
         }
-        
+
         super.getLdapResult().setMatchedDn( null );
         super.getLdapResult().setResultCode( rcode );
     }
 
 
-    public CertGenerationResponse(int messageId)
+    public CertGenerationResponse( int messageId )
     {
         super( messageId, EXTENSION_OID );
         super.getLdapResult().setMatchedDn( null );

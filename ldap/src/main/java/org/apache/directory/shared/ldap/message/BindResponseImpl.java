@@ -51,7 +51,7 @@ public class BindResponseImpl extends InternalAbstractResultResponse implements 
      * @param id
      *            the session unique message id
      */
-    public BindResponseImpl(final int id)
+    public BindResponseImpl( final int id )
     {
         super( id, TYPE );
     }
@@ -75,7 +75,7 @@ public class BindResponseImpl extends InternalAbstractResultResponse implements 
             return null;
         }
 
-        final byte[] copy = new byte[ serverSaslCreds.length ];
+        final byte[] copy = new byte[serverSaslCreds.length];
         System.arraycopy( serverSaslCreds, 0, copy, 0, serverSaslCreds.length );
         return copy;
     }
@@ -93,9 +93,11 @@ public class BindResponseImpl extends InternalAbstractResultResponse implements 
     {
         if ( serverSaslCreds != null )
         {
-            this.serverSaslCreds = new byte[ serverSaslCreds.length ];
+            this.serverSaslCreds = new byte[serverSaslCreds.length];
             System.arraycopy( serverSaslCreds, 0, this.serverSaslCreds, 0, serverSaslCreds.length );
-        } else {
+        }
+        else
+        {
             this.serverSaslCreds = null;
         }
     }
@@ -132,7 +134,7 @@ public class BindResponseImpl extends InternalAbstractResultResponse implements 
 
         InternalBindResponse response = ( InternalBindResponse ) obj;
         byte[] creds = response.getServerSaslCreds();
-        
+
         if ( serverSaslCreds == null )
         {
             if ( creds != null )
@@ -144,7 +146,7 @@ public class BindResponseImpl extends InternalAbstractResultResponse implements 
         {
             return false;
         }
-        
+
         return Arrays.equals( serverSaslCreds, creds );
     }
 
@@ -162,7 +164,8 @@ public class BindResponseImpl extends InternalAbstractResultResponse implements 
 
         if ( serverSaslCreds != null )
         {
-            sb.append( "        Server sasl credentials : '" ).append( StringTools.dumpBytes( serverSaslCreds ) ).append( "'\n" );
+            sb.append( "        Server sasl credentials : '" ).append( StringTools.dumpBytes( serverSaslCreds ) )
+                .append( "'\n" );
         }
 
         return sb.toString();

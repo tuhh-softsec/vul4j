@@ -42,32 +42,32 @@ public class GracefulShutdownResponse extends ExtendedResponseImpl
     private static final byte[] EMPTY_RESPONSE = new byte[0];
 
 
-    public GracefulShutdownResponse(int messageId, ResultCodeEnum rcode)
+    public GracefulShutdownResponse( int messageId, ResultCodeEnum rcode )
     {
         super( messageId, EXTENSION_OID );
 
         switch ( rcode )
         {
-            case SUCCESS :
+            case SUCCESS:
                 break;
-            
-            case OPERATIONS_ERROR :
+
+            case OPERATIONS_ERROR:
                 break;
-            
-            case INSUFFICIENT_ACCESS_RIGHTS :
+
+            case INSUFFICIENT_ACCESS_RIGHTS:
                 break;
-            
+
             default:
                 throw new IllegalArgumentException( I18n.err( I18n.ERR_04166, ResultCodeEnum.SUCCESS,
-                		ResultCodeEnum.OPERATIONS_ERROR, ResultCodeEnum.INSUFFICIENT_ACCESS_RIGHTS ) );
+                    ResultCodeEnum.OPERATIONS_ERROR, ResultCodeEnum.INSUFFICIENT_ACCESS_RIGHTS ) );
         }
-        
+
         super.getLdapResult().setMatchedDn( null );
         super.getLdapResult().setResultCode( rcode );
     }
 
 
-    public GracefulShutdownResponse(int messageId)
+    public GracefulShutdownResponse( int messageId )
     {
         super( messageId, EXTENSION_OID );
         super.getLdapResult().setMatchedDn( null );

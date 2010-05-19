@@ -19,6 +19,7 @@
  */
 package org.apache.directory.shared.ldap.message.internal;
 
+
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 
 
@@ -46,7 +47,7 @@ public class InternalAbstractRequest extends InternalAbstractMessage implements 
      * @param hasResponse
      *            flag indicating if this request generates a response
      */
-    protected InternalAbstractRequest(final int id, final MessageTypeEnum type, boolean hasResponse)
+    protected InternalAbstractRequest( final int id, final MessageTypeEnum type, boolean hasResponse )
     {
         super( id, type );
 
@@ -64,7 +65,8 @@ public class InternalAbstractRequest extends InternalAbstractMessage implements 
     {
         return hasResponse;
     }
-    
+
+
     /**
      * @see Object#hashCode()
      * @return the instance's hash code 
@@ -72,9 +74,9 @@ public class InternalAbstractRequest extends InternalAbstractMessage implements 
     public int hashCode()
     {
         int hash = 37;
-        hash = hash*17 + (hasResponse ? 0 : 1 );
-        hash = hash*17 + super.hashCode();
-        
+        hash = hash * 17 + ( hasResponse ? 0 : 1 );
+        hash = hash * 17 + super.hashCode();
+
         return hash;
     }
 }

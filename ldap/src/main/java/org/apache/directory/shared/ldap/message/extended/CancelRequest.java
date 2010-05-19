@@ -61,6 +61,7 @@ public class CancelRequest extends ExtendedRequestImpl
     /** The requestName for this extended request */
     public static final String EXTENSION_OID = "1.3.6.1.1.8";
 
+
     /**
      * 
      * Creates a new instance of CancelRequest.
@@ -72,11 +73,11 @@ public class CancelRequest extends ExtendedRequestImpl
     {
         super( messageId );
         setOid( EXTENSION_OID );
-        
+
         this.cancelId = cancelId;
     }
 
-    
+
     /**
      * Encode the request
      */
@@ -87,7 +88,8 @@ public class CancelRequest extends ExtendedRequestImpl
 
         payload = cancel.encode().array();
     }
-    
+
+
     /**
      * Gets the extended request's <b>requestValue</b> portion of the PDU. The
      * form of the data is request specific and is determined by the extended
@@ -109,7 +111,7 @@ public class CancelRequest extends ExtendedRequestImpl
                 throw new RuntimeException( e );
             }
         }
-        
+
         return super.getPayload();
     }
 
@@ -119,19 +121,21 @@ public class CancelRequest extends ExtendedRequestImpl
      * 
      * @param payload byte array of data encapsulating ext. req. parameters
      */
-    public void setPayload( byte[] payload ) 
+    public void setPayload( byte[] payload )
     {
         CancelDecoder decoder = new CancelDecoder();
-        
+
         try
         {
             Cancel cancel = ( Cancel ) decoder.decode( payload );
 
             if ( payload != null )
             {
-                this.payload = new byte[ payload.length ];
+                this.payload = new byte[payload.length];
                 System.arraycopy( payload, 0, this.payload, 0, payload.length );
-            } else {
+            }
+            else
+            {
                 this.payload = null;
             }
             this.cancelId = cancel.getCancelId();
@@ -167,4 +171,3 @@ public class CancelRequest extends ExtendedRequestImpl
         return response;
     }
 }
-

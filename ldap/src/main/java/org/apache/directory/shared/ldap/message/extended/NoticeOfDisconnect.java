@@ -114,7 +114,8 @@ public class NoticeOfDisconnect extends ExtendedResponseImpl
 
     public static final NoticeOfDisconnect PROTOCOLERROR = new NoticeOfDisconnect( ResultCodeEnum.PROTOCOL_ERROR );
 
-    public static final NoticeOfDisconnect STRONGAUTHREQUIRED = new NoticeOfDisconnect( ResultCodeEnum.STRONG_AUTH_REQUIRED );
+    public static final NoticeOfDisconnect STRONGAUTHREQUIRED = new NoticeOfDisconnect(
+        ResultCodeEnum.STRONG_AUTH_REQUIRED );
 
 
     private NoticeOfDisconnect( ResultCodeEnum rcode )
@@ -123,20 +124,20 @@ public class NoticeOfDisconnect extends ExtendedResponseImpl
 
         switch ( rcode )
         {
-            case UNAVAILABLE :
+            case UNAVAILABLE:
                 break;
-                
-            case PROTOCOL_ERROR :
+
+            case PROTOCOL_ERROR:
                 break;
-                
-            case STRONG_AUTH_REQUIRED :
+
+            case STRONG_AUTH_REQUIRED:
                 break;
-                
+
             default:
                 throw new IllegalArgumentException( I18n.err( I18n.ERR_04166, ResultCodeEnum.UNAVAILABLE,
                     ResultCodeEnum.PROTOCOL_ERROR, ResultCodeEnum.STRONG_AUTH_REQUIRED ) );
         }
-        
+
         super.getLdapResult().setErrorMessage( rcode.toString() + ": The server will disconnect!" );
         super.getLdapResult().setMatchedDn( null );
         super.getLdapResult().setResultCode( rcode );
@@ -147,7 +148,6 @@ public class NoticeOfDisconnect extends ExtendedResponseImpl
     // ExtendedResponse Interface Method Implementations
     // ------------------------------------------------------------------------
 
-    
     /**
      * Gets the reponse OID specific encoded response values.
      * 
