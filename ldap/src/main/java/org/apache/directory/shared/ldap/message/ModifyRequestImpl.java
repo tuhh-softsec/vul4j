@@ -65,7 +65,7 @@ public class ModifyRequestImpl extends AbstractAbandonableRequest implements Int
      * @param id
      *            the sequential message identifier
      */
-    public ModifyRequestImpl(final int id)
+    public ModifyRequestImpl( final int id )
     {
         super( id, TYPE );
     }
@@ -223,8 +223,8 @@ public class ModifyRequestImpl extends AbstractAbandonableRequest implements Int
                 }
             }
             else
-                
-            if ( !item.equals((DefaultModification) mods.get( i ) ) )
+
+            if ( !item.equals( ( DefaultModification ) mods.get( i ) ) )
             {
                 return false;
             }

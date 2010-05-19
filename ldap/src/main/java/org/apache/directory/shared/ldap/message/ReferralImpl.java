@@ -19,6 +19,7 @@
  */
 package org.apache.directory.shared.ldap.message;
 
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -26,7 +27,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.directory.shared.ldap.message.internal.InternalReferral;
-
 
 
 /**
@@ -113,7 +113,7 @@ public class ReferralImpl implements InternalReferral
             }
 
             Iterator<String> list = urls.iterator();
-            
+
             while ( list.hasNext() )
             {
                 // if one of our urls is not contained in the obj return false

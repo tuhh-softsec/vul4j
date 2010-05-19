@@ -25,6 +25,7 @@ import java.util.Arrays;
 import org.apache.directory.shared.ldap.message.internal.InternalAbstractResultResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalExtendedResponse;
 
+
 /**
  * Lockable ExtendedResponse implementation
  * 
@@ -81,7 +82,7 @@ public class ExtendedResponseImpl extends InternalAbstractResultResponse impleme
             return null;
         }
 
-        final byte[] copy = new byte[ value.length ];
+        final byte[] copy = new byte[value.length];
         System.arraycopy( value, 0, copy, 0, value.length );
         return copy;
     }
@@ -97,14 +98,16 @@ public class ExtendedResponseImpl extends InternalAbstractResultResponse impleme
     {
         if ( value != null )
         {
-            this.value = new byte[ value.length ];
+            this.value = new byte[value.length];
             System.arraycopy( value, 0, this.value, 0, value.length );
-        } else {
+        }
+        else
+        {
             this.value = null;
         }
     }
-    
-    
+
+
     public void setOid( String oid )
     {
         this.oid = oid;
@@ -154,7 +157,7 @@ public class ExtendedResponseImpl extends InternalAbstractResultResponse impleme
         {
             return false;
         }
-        
+
         if ( !( obj instanceof InternalExtendedResponse ) )
         {
             return false;

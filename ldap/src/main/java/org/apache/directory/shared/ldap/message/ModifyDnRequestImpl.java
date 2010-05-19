@@ -19,6 +19,7 @@
  */
 package org.apache.directory.shared.ldap.message;
 
+
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.message.internal.InternalModifyDnRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalModifyDnResponse;
@@ -63,7 +64,7 @@ public class ModifyDnRequestImpl extends AbstractAbandonableRequest implements I
      * @param id
      *            the seq id of this message
      */
-    public ModifyDnRequestImpl(final int id)
+    public ModifyDnRequestImpl( final int id )
     {
         super( id, TYPE );
     }
@@ -319,7 +320,7 @@ public class ModifyDnRequestImpl extends AbstractAbandonableRequest implements I
 
         sb.append( "    ModifyDN Response\n" );
         sb.append( "        Entry : '" ).append( name ).append( "'\n" );
-        if( newRdn != null )
+        if ( newRdn != null )
         {
             sb.append( "        New RDN : '" ).append( newRdn.toString() ).append( "'\n" );
         }

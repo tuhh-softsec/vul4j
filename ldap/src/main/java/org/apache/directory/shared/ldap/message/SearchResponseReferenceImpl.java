@@ -19,6 +19,7 @@
  */
 package org.apache.directory.shared.ldap.message;
 
+
 import org.apache.directory.shared.ldap.message.internal.InternalAbstractResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalReferral;
 import org.apache.directory.shared.ldap.message.internal.InternalSearchResponseReference;
@@ -49,7 +50,7 @@ public class SearchResponseReferenceImpl extends InternalAbstractResponse implem
      * @param id
      *            the session unique message id
      */
-    public SearchResponseReferenceImpl(final int id)
+    public SearchResponseReferenceImpl( final int id )
     {
         super( id, TYPE );
     }

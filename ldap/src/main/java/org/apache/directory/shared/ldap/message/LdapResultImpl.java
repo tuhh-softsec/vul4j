@@ -20,6 +20,7 @@
 
 package org.apache.directory.shared.ldap.message;
 
+
 import org.apache.directory.shared.ldap.message.internal.InternalLdapResult;
 import org.apache.directory.shared.ldap.message.internal.InternalReferral;
 import org.apache.directory.shared.ldap.name.DN;
@@ -267,241 +268,241 @@ public class LdapResultImpl implements InternalLdapResult
         switch ( resultCode )
         {
 
-            case SUCCESS :
+            case SUCCESS:
                 sb.append( " success\n" );
                 break;
 
-            case OPERATIONS_ERROR :
+            case OPERATIONS_ERROR:
                 sb.append( " operationsError\n" );
                 break;
 
-            case PROTOCOL_ERROR :
+            case PROTOCOL_ERROR:
                 sb.append( " protocolError\n" );
                 break;
 
-            case TIME_LIMIT_EXCEEDED :
+            case TIME_LIMIT_EXCEEDED:
                 sb.append( " timeLimitExceeded\n" );
                 break;
 
-            case SIZE_LIMIT_EXCEEDED :
+            case SIZE_LIMIT_EXCEEDED:
                 sb.append( " sizeLimitExceeded\n" );
                 break;
 
-            case COMPARE_FALSE :
+            case COMPARE_FALSE:
                 sb.append( " compareFalse\n" );
                 break;
 
-            case COMPARE_TRUE :
+            case COMPARE_TRUE:
                 sb.append( " compareTrue\n" );
                 break;
 
-            case AUTH_METHOD_NOT_SUPPORTED :
+            case AUTH_METHOD_NOT_SUPPORTED:
                 sb.append( " authMethodNotSupported\n" );
                 break;
 
-            case STRONG_AUTH_REQUIRED :
+            case STRONG_AUTH_REQUIRED:
                 sb.append( " strongAuthRequired\n" );
                 break;
 
-            case REFERRAL :
+            case REFERRAL:
                 sb.append( " referral -- new\n" );
                 break;
 
-            case ADMIN_LIMIT_EXCEEDED :
+            case ADMIN_LIMIT_EXCEEDED:
                 sb.append( " adminLimitExceeded -- new\n" );
                 break;
 
-            case UNAVAILABLE_CRITICAL_EXTENSION :
+            case UNAVAILABLE_CRITICAL_EXTENSION:
                 sb.append( " unavailableCriticalExtension -- new\n" );
                 break;
 
-            case CONFIDENTIALITY_REQUIRED :
+            case CONFIDENTIALITY_REQUIRED:
                 sb.append( " confidentialityRequired -- new\n" );
                 break;
 
-            case SASL_BIND_IN_PROGRESS :
+            case SASL_BIND_IN_PROGRESS:
                 sb.append( " saslBindInProgress -- new\n" );
                 break;
 
-            case NO_SUCH_ATTRIBUTE :
+            case NO_SUCH_ATTRIBUTE:
                 sb.append( " noSuchAttribute\n" );
                 break;
 
-            case UNDEFINED_ATTRIBUTE_TYPE :
+            case UNDEFINED_ATTRIBUTE_TYPE:
                 sb.append( " undefinedAttributeType\n" );
                 break;
 
-            case INAPPROPRIATE_MATCHING :
+            case INAPPROPRIATE_MATCHING:
                 sb.append( " inappropriateMatching\n" );
                 break;
 
-            case CONSTRAINT_VIOLATION :
+            case CONSTRAINT_VIOLATION:
                 sb.append( " constraintViolation\n" );
                 break;
 
-            case ATTRIBUTE_OR_VALUE_EXISTS :
+            case ATTRIBUTE_OR_VALUE_EXISTS:
                 sb.append( " attributeOrValueExists\n" );
                 break;
 
-            case INVALID_ATTRIBUTE_SYNTAX :
+            case INVALID_ATTRIBUTE_SYNTAX:
                 sb.append( " invalidAttributeSyntax\n" );
                 break;
 
-            case NO_SUCH_OBJECT :
+            case NO_SUCH_OBJECT:
                 sb.append( " noSuchObject\n" );
                 break;
 
-            case ALIAS_PROBLEM :
+            case ALIAS_PROBLEM:
                 sb.append( " aliasProblem\n" );
                 break;
 
-            case INVALID_DN_SYNTAX :
+            case INVALID_DN_SYNTAX:
                 sb.append( " invalidDNSyntax\n" );
                 break;
 
-            case ALIAS_DEREFERENCING_PROBLEM :
+            case ALIAS_DEREFERENCING_PROBLEM:
                 sb.append( " aliasDereferencingProblem\n" );
                 break;
 
-            case INAPPROPRIATE_AUTHENTICATION :
+            case INAPPROPRIATE_AUTHENTICATION:
                 sb.append( " inappropriateAuthentication\n" );
                 break;
 
-            case INVALID_CREDENTIALS :
+            case INVALID_CREDENTIALS:
                 sb.append( " invalidCredentials\n" );
                 break;
 
-            case INSUFFICIENT_ACCESS_RIGHTS :
+            case INSUFFICIENT_ACCESS_RIGHTS:
                 sb.append( " insufficientAccessRights\n" );
                 break;
 
-            case BUSY :
+            case BUSY:
                 sb.append( " busy\n" );
                 break;
 
-            case UNAVAILABLE :
+            case UNAVAILABLE:
                 sb.append( " unavailable\n" );
                 break;
 
-            case UNWILLING_TO_PERFORM :
+            case UNWILLING_TO_PERFORM:
                 sb.append( " unwillingToPerform\n" );
                 break;
 
-            case LOOP_DETECT :
+            case LOOP_DETECT:
                 sb.append( " loopDetect\n" );
                 break;
 
-            case NAMING_VIOLATION :
+            case NAMING_VIOLATION:
                 sb.append( " namingViolation\n" );
                 break;
 
-            case OBJECT_CLASS_VIOLATION :
+            case OBJECT_CLASS_VIOLATION:
                 sb.append( " objectClassViolation\n" );
                 break;
 
-            case NOT_ALLOWED_ON_NON_LEAF :
+            case NOT_ALLOWED_ON_NON_LEAF:
                 sb.append( " notAllowedOnNonLeaf\n" );
                 break;
 
-            case NOT_ALLOWED_ON_RDN :
+            case NOT_ALLOWED_ON_RDN:
                 sb.append( " notAllowedOnRDN\n" );
                 break;
 
-            case ENTRY_ALREADY_EXISTS :
+            case ENTRY_ALREADY_EXISTS:
                 sb.append( " entryAlreadyExists\n" );
                 break;
 
-            case OBJECT_CLASS_MODS_PROHIBITED :
+            case OBJECT_CLASS_MODS_PROHIBITED:
                 sb.append( " objectClassModsProhibited\n" );
                 break;
 
-            case AFFECTS_MULTIPLE_DSAS :
+            case AFFECTS_MULTIPLE_DSAS:
                 sb.append( " affectsMultipleDSAs -- new\n" );
                 break;
 
-            case OTHER :
+            case OTHER:
                 sb.append( " other\n" );
                 break;
-                
-            default :
+
+            default:
                 switch ( resultCode.getResultCode() )
                 {
-                    case 9 :
+                    case 9:
                         sb.append( " -- 9 reserved --\n" );
                         break;
-                        
-                    case 22 :
+
+                    case 22:
                     case 23:
-                    case 24 :
-                    case 25 :
-                    case 26 :
-                    case 27 :
-                    case 28 :
-                    case 29 :
-                    case 30 :
-                    case 31 :
+                    case 24:
+                    case 25:
+                    case 26:
+                    case 27:
+                    case 28:
+                    case 29:
+                    case 30:
+                    case 31:
                         sb.append( " -- 22-31 unused --\n" );
                         break;
 
-                    case 35 :
+                    case 35:
                         sb.append( " -- 35 reserved for undefined isLeaf --\n" );
                         break;
-                                
-                    case 37 :
-                    case 38 :
-                    case 39 :
-                    case 40 :
-                    case 41 :
-                    case 42 :
-                    case 43 :
-                    case 44 :
-                    case 45 :
-                    case 46 :
-                    case 47 :
+
+                    case 37:
+                    case 38:
+                    case 39:
+                    case 40:
+                    case 41:
+                    case 42:
+                    case 43:
+                    case 44:
+                    case 45:
+                    case 46:
+                    case 47:
                         sb.append( " -- 37-47 unused --\n" );
                         break;
 
-                    case 55 :
-                    case 56 :
-                    case 57 :
-                    case 58 :
-                    case 59 :
-                    case 60 :
-                    case 61 :
-                    case 62 :
-                    case 63 :
+                    case 55:
+                    case 56:
+                    case 57:
+                    case 58:
+                    case 59:
+                    case 60:
+                    case 61:
+                    case 62:
+                    case 63:
                         sb.append( " -- 55-63 unused --\n" );
                         break;
 
-                    case 70 :
+                    case 70:
                         sb.append( " -- 70 reserved for CLDAP --\n" );
                         break;
 
-                    case 72 :
-                    case 73 :
-                    case 74 :
-                    case 75 :
-                    case 76 :
-                    case 77 :
-                    case 78 :
-                    case 79 :
+                    case 72:
+                    case 73:
+                    case 74:
+                    case 75:
+                    case 76:
+                    case 77:
+                    case 78:
+                    case 79:
                         sb.append( " -- 72-79 unused --\n" );
                         break;
 
-                    case 81 :
-                    case 82 :
-                    case 83 :
-                    case 84 :
-                    case 85 :
-                    case 86 :
-                    case 87 :
-                    case 88 :
-                    case 89 :
-                    case 90 :
+                    case 81:
+                    case 82:
+                    case 83:
+                    case 84:
+                    case 85:
+                    case 86:
+                    case 87:
+                    case 88:
+                    case 89:
+                    case 90:
                         sb.append( " -- 81-90 reserved for APIs --" );
                         break;
-                        
-                    default :
+
+                    default:
                         sb.append( "Unknown error code : " ).append( resultCode );
                         break;
                 }

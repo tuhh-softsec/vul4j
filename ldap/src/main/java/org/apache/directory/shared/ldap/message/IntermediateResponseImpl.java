@@ -25,6 +25,7 @@ import java.util.Arrays;
 import org.apache.directory.shared.ldap.message.internal.InternalAbstractResultResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalIntermediateResponse;
 
+
 /**
  * IntermediateResponse implementation
  * 
@@ -67,7 +68,7 @@ public class IntermediateResponseImpl extends InternalAbstractResultResponse imp
             return null;
         }
 
-        final byte[] copy = new byte[ value.length ];
+        final byte[] copy = new byte[value.length];
         System.arraycopy( value, 0, copy, 0, value.length );
         return copy;
     }
@@ -82,14 +83,16 @@ public class IntermediateResponseImpl extends InternalAbstractResultResponse imp
     {
         if ( value != null )
         {
-            this.value = new byte[ value.length ];
+            this.value = new byte[value.length];
             System.arraycopy( value, 0, this.value, 0, value.length );
-        } else {
+        }
+        else
+        {
             this.value = null;
         }
     }
-    
-    
+
+
     /**
      * Gets the OID uniquely identifying this Intemediate response (a.k.a. its
      * name).
@@ -131,7 +134,7 @@ public class IntermediateResponseImpl extends InternalAbstractResultResponse imp
         {
             return false;
         }
-        
+
         if ( !( obj instanceof InternalIntermediateResponse ) )
         {
             return false;
@@ -149,8 +152,7 @@ public class IntermediateResponseImpl extends InternalAbstractResultResponse imp
             return false;
         }
 
-        if ( ( oid != null ) && ( resp.getResponseName() != null ) && !oid.equals( 
-            resp.getResponseName() ) )
+        if ( ( oid != null ) && ( resp.getResponseName() != null ) && !oid.equals( resp.getResponseName() ) )
         {
             return false;
         }
@@ -165,8 +167,8 @@ public class IntermediateResponseImpl extends InternalAbstractResultResponse imp
             return false;
         }
 
-        if ( ( value != null ) && ( resp.getResponseValue() != null ) && !Arrays.equals( value,
-            resp.getResponseValue() ) )
+        if ( ( value != null ) && ( resp.getResponseValue() != null )
+            && !Arrays.equals( value, resp.getResponseValue() ) )
         {
             return false;
         }

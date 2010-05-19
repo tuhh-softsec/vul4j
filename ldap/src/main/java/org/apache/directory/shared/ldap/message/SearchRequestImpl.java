@@ -85,7 +85,7 @@ public class SearchRequestImpl extends AbstractAbandonableRequest implements Int
      * @param id
      *            the sequential message identifier
      */
-    public SearchRequestImpl(final int id)
+    public SearchRequestImpl( final int id )
     {
         super( id, MessageTypeEnum.SEARCH_REQUEST );
     }
@@ -428,7 +428,7 @@ public class SearchRequestImpl extends AbstractAbandonableRequest implements Int
             }
 
             Iterator<String> list = attributes.iterator();
-            
+
             while ( list.hasNext() )
             {
                 if ( !req.getAttributes().contains( list.next() ) )
@@ -448,25 +448,26 @@ public class SearchRequestImpl extends AbstractAbandonableRequest implements Int
         return myFilterString.equals( reqFilterString );
     }
 
+
     /**
      * Return a string the represent a SearchRequest
      */
     public String toString()
     {
-        StringBuilder    sb = new StringBuilder();
+        StringBuilder sb = new StringBuilder();
 
         sb.append( "    SearchRequest\n" );
         sb.append( "        baseDn : '" ).append( baseDn ).append( "'\n" );
-        
+
         if ( filter != null )
         {
             sb.append( "        filter : '" );
             sb.append( filter.toString() );
             sb.append( "'\n" );
         }
-        
+
         sb.append( "        scope : " );
-        
+
         switch ( scope )
         {
             case OBJECT:
@@ -481,9 +482,9 @@ public class SearchRequestImpl extends AbstractAbandonableRequest implements Int
                 sb.append( "whole subtree" );
                 break;
         }
-        
+
         sb.append( '\n' );
-        
+
         sb.append( "        typesOnly : " ).append( typesOnly ).append( '\n' );
 
         sb.append( "        Size Limit : " );
@@ -536,12 +537,12 @@ public class SearchRequestImpl extends AbstractAbandonableRequest implements Int
         sb.append( '\n' );
         sb.append( "        attributes : " );
 
-        boolean         isFirst = true;
+        boolean isFirst = true;
 
         if ( attributes != null )
         {
             Iterator<String> it = attributes.iterator();
-            
+
             while ( it.hasNext() )
             {
                 if ( isFirst )
@@ -552,10 +553,10 @@ public class SearchRequestImpl extends AbstractAbandonableRequest implements Int
                 {
                     sb.append( ", " );
                 }
-                
+
                 sb.append( '\'' ).append( it.next() ).append( '\'' );
             }
-            
+
         }
 
         sb.append( '\n' );

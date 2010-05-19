@@ -62,7 +62,7 @@ public class ExtendedRequestImpl extends InternalAbstractRequest implements Inte
      * @param id
      *            the sequential message identifier
      */
-    public ExtendedRequestImpl(final int id)
+    public ExtendedRequestImpl( final int id )
     {
         super( id, TYPE, true );
     }
@@ -110,7 +110,7 @@ public class ExtendedRequestImpl extends InternalAbstractRequest implements Inte
             return null;
         }
 
-        final byte[] copy = new byte[ payload.length ];
+        final byte[] copy = new byte[payload.length];
         System.arraycopy( payload, 0, copy, 0, payload.length );
         return copy;
     }
@@ -126,9 +126,11 @@ public class ExtendedRequestImpl extends InternalAbstractRequest implements Inte
     {
         if ( payload != null )
         {
-            this.payload = new byte[ payload.length ];
+            this.payload = new byte[payload.length];
             System.arraycopy( payload, 0, this.payload, 0, payload.length );
-        } else {
+        }
+        else
+        {
             this.payload = null;
         }
     }
@@ -184,14 +186,14 @@ public class ExtendedRequestImpl extends InternalAbstractRequest implements Inte
         {
             return false;
         }
-        
+
         if ( !( obj instanceof InternalExtendedRequest ) )
         {
             return false;
         }
 
         InternalExtendedRequest req = ( InternalExtendedRequest ) obj;
-        
+
         if ( ( oid != null ) && ( req.getOid() == null ) )
         {
             return false;
@@ -202,7 +204,7 @@ public class ExtendedRequestImpl extends InternalAbstractRequest implements Inte
             return false;
         }
 
-        if ( ( oid != null ) && ( req.getOid() != null ) &&  !oid.equals( req.getOid() ) )
+        if ( ( oid != null ) && ( req.getOid() != null ) && !oid.equals( req.getOid() ) )
         {
             return false;
         }

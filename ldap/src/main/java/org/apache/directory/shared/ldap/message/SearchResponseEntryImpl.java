@@ -132,7 +132,7 @@ public class SearchResponseEntryImpl extends InternalAbstractResponse implements
         {
             return false;
         }
-        
+
         InternalSearchResponseEntry resp = ( InternalSearchResponseEntry ) obj;
 
         return entry.equals( resp.getEntry() );
