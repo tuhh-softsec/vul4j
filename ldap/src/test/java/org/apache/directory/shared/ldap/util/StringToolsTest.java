@@ -47,29 +47,6 @@ import static org.junit.Assert.assertFalse;
 public class StringToolsTest
 {
     @Test
-    public void testDecodeEscapedHex() throws Exception
-    {
-        assertEquals( "Ferry", StringTools.decodeEscapedHex( "\\46\\65\\72\\72\\79" ) );
-        assertEquals( "Ferry", StringTools.decodeEscapedHex( "Fe\\72\\72\\79" ) );
-        assertEquals( "Ferry", StringTools.decodeEscapedHex( "Fe\\72\\72y" ) );
-        assertEquals( "Ferry", StringTools.decodeEscapedHex( "Fe\\72ry" ) );
-
-        assertEquals( "<DC", StringTools.decodeEscapedHex( "\\<DC" ) );
-        assertEquals( ">DC", StringTools.decodeEscapedHex( "\\>DC" ) );
-        assertEquals( "\"DC", StringTools.decodeEscapedHex( "\\\"DC" ) );
-        assertEquals( "+DC", StringTools.decodeEscapedHex( "\\+DC" ) );
-        assertEquals( ",DC", StringTools.decodeEscapedHex( "\\,DC" ) );
-        assertEquals( ";DC", StringTools.decodeEscapedHex( "\\;DC" ) );
-        assertEquals( "=DC", StringTools.decodeEscapedHex( "\\=DC" ) );
-        assertEquals( " DC", StringTools.decodeEscapedHex( "\\ DC" ) );
-        assertEquals( "#DC", StringTools.decodeEscapedHex( "\\#DC" ) );
-
-        // test a corner case: ESC ESC HEX HEX
-        assertEquals( "\\DC", StringTools.decodeEscapedHex( "\\5CDC" ) );
-        assertEquals( "\\DC", StringTools.decodeEscapedHex( "\\\\DC" ) );
-    }
-    
-    @Test
     public void testDecodeHexString() throws Exception
     {
         // weird stuff - corner cases
