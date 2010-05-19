@@ -43,7 +43,7 @@ public class LaunchDiagnosticUiRequest extends ExtendedRequestImpl
     private static final byte[] EMPTY_PAYLOAD = new byte[0];
 
 
-    public LaunchDiagnosticUiRequest(int messageId)
+    public LaunchDiagnosticUiRequest( int messageId )
     {
         super( messageId );
         setOid( EXTENSION_OID );

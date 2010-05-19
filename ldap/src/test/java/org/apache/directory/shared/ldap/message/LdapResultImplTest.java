@@ -176,6 +176,74 @@ public class LdapResultImplTest
 
 
     /**
+     * Tests to make sure the two same objects have equal HashCode.
+     */
+    @Test
+    public void testHashCodeSameObj()
+    {
+        LdapResultImpl r0 = new LdapResultImpl();
+        assertTrue( r0.hashCode() == r0.hashCode() );
+    }
+
+
+    /**
+     * Tests to make sure a default LdapResultImpl has equal hashCode another one just
+     * created.
+     */
+    @Test
+    public void testHashCodeDefaultCopy()
+    {
+        LdapResultImpl r0 = new LdapResultImpl();
+        LdapResultImpl r1 = new LdapResultImpl();
+
+        assertTrue( r0.hashCode() == r1.hashCode() );
+    }
+
+
+    /**
+     * Tests for equal hashCode when the lockable parent is not the same.
+     */
+    @Test
+    public void testHashCodeDiffLockableParent()
+    {
+        LdapResultImpl r0 = new LdapResultImpl();
+        LdapResultImpl r1 = new LdapResultImpl();
+
+        assertTrue( r0.hashCode() == r1.hashCode() );
+    }
+
+
+    /**
+     * Tests two non default carbon copies for equal hashCode.
+     */
+    @Test
+    public void testHashCodeCarbonCopy() throws LdapException
+    {
+        LdapResultImpl r0 = new LdapResultImpl();
+        LdapResultImpl r1 = new LdapResultImpl();
+
+        r0.setErrorMessage( "blah blah blah" );
+        r1.setErrorMessage( "blah blah blah" );
+
+        r0.setMatchedDn( new DN( "dc=example,dc=com" ) );
+        r1.setMatchedDn( new DN( "dc=example,dc=com" ) );
+
+        r0.setResultCode( ResultCodeEnum.TIME_LIMIT_EXCEEDED );
+        r1.setResultCode( ResultCodeEnum.TIME_LIMIT_EXCEEDED );
+
+        InternalReferral refs0 = new ReferralImpl();
+        refs0.addLdapUrl( "ldap://someserver.com" );
+        refs0.addLdapUrl( "ldap://anotherserver.org" );
+
+        InternalReferral refs1 = new ReferralImpl();
+        refs1.addLdapUrl( "ldap://someserver.com" );
+        refs1.addLdapUrl( "ldap://anotherserver.org" );
+
+        assertTrue( r0.hashCode() == r1.hashCode() );
+    }
+
+
+    /**
      * Tests for inequality when the error message is different.
      */
     @Test

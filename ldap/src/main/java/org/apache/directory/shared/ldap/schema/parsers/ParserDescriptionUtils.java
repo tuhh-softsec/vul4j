@@ -234,12 +234,9 @@ public class ParserDescriptionUtils
         }
         
         // check that the obsolete flag is equal but not for syntaxes
-        if ( ( so0 instanceof LdapSyntax ) || ( so1 instanceof LdapSyntax ) )
+        if ( ( ( so0 instanceof LdapSyntax ) || ( so1 instanceof LdapSyntax ) ) && so0.isObsolete() != so1.isObsolete() )
         {
-            if ( so0.isObsolete() != so1.isObsolete() )
-            {
-                return false;
-            }
+            return false;
         }
         
         // check that the description matches

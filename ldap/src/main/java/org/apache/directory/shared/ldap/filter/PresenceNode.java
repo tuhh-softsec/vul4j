@@ -41,14 +41,6 @@ public final class PresenceNode extends LeafNode
 
     
     /**
-     * Clone the Node
-     */
-    @Override public ExprNode clone()
-    {
-        return super.clone();
-    }
-
-    /**
      * @see java.lang.Object#toString()
      * @return A string representing the AndNode
      */

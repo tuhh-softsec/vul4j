@@ -197,6 +197,36 @@ public class CompareRequestImpl extends AbstractAbandonableRequest implements In
 
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode()
+    {
+        int hash = 37;
+        if ( name != null )
+        {
+            hash = hash * 17 + name.hashCode();
+        }
+        if ( attrId != null )
+        {
+            hash = hash * 17 + attrId.hashCode();
+        }
+        if ( attrVal != null )
+        {
+            hash = hash * 17 + attrVal.hashCode();
+        }
+        Value<?> reqVal = getAssertionValue();
+        if ( reqVal != null )
+        {
+            hash = hash * 17 + reqVal.hashCode();
+        }
+        hash = hash * 17 + super.hashCode();
+
+        return hash;
+    }
+
+
+    /**
      * Checks to see if an object is equivalent to this CompareRequest.
      * 
      * @param obj the obj to compare with this CompareRequest
@@ -282,7 +312,7 @@ public class CompareRequestImpl extends AbstractAbandonableRequest implements In
         sb.append( "        Entry : '" ).append( name.toString() ).append( "'\n" );
         sb.append( "        Attribute description : '" ).append( attrId ).append( "'\n" );
         sb.append( "        Attribute value : '" );
-        
+
         if ( !attrVal.isBinary() )
         {
             sb.append( attrVal.get() );
@@ -290,8 +320,8 @@ public class CompareRequestImpl extends AbstractAbandonableRequest implements In
         else
         {
             byte[] binVal = attrVal.getBytes();
-            sb.append( StringTools.utf8ToString( binVal ) ).append( '/' ).append(
-                StringTools.dumpBytes( binVal ) ).append( "'\n" );
+            sb.append( StringTools.utf8ToString( binVal ) ).append( '/' ).append( StringTools.dumpBytes( binVal ) )
+                .append( "'\n" );
         }
 
         return sb.toString();

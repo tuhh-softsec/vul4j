@@ -47,7 +47,7 @@ public class ExtendedRequestImplTest
     private static final Map<String, Control> EMPTY_CONTROL_MAP = new HashMap<String, Control>();
 
     /**
-     * Tests the same object referrence for equality.
+     * Tests the same object reference for equality.
      */
     @Test
     public void testEqualsSameObj()
@@ -73,6 +73,35 @@ public class ExtendedRequestImplTest
 
         assertTrue( req0.equals( req1 ) );
         assertTrue( req1.equals( req0 ) );
+    }
+
+
+    /**
+     * Tests the same object reference for equal hashCode.
+     */
+    @Test
+    public void testHashCodeSameObj()
+    {
+        ExtendedRequestImpl req = new ExtendedRequestImpl( 5 );
+        assertTrue( req.hashCode() == req.hashCode() );
+    }
+
+
+    /**
+     * Tests for equal hashCode using exact copies.
+     */
+    @Test
+    public void testHashCodeExactCopy()
+    {
+        ExtendedRequestImpl req0 = new ExtendedRequestImpl( 5 );
+        req0.setOid( "1.1.1.1" );
+        req0.setPayload( "Hello World!".getBytes() );
+
+        ExtendedRequestImpl req1 = new ExtendedRequestImpl( 5 );
+        req1.setOid( "1.1.1.1" );
+        req1.setPayload( "Hello World!".getBytes() );
+
+        assertTrue( req0.hashCode() == req1.hashCode() );
     }
 
 

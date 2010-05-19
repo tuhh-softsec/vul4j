@@ -19,6 +19,7 @@
  */
 package org.apache.directory.shared.ldap.message;
 
+
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.message.internal.InternalDeleteRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalDeleteResponse;
@@ -53,7 +54,7 @@ public class DeleteRequestImpl extends AbstractAbandonableRequest implements Int
      * @param id
      *            the sequential message identifier
      */
-    public DeleteRequestImpl(final int id)
+    public DeleteRequestImpl( final int id )
     {
         super( id, TYPE );
     }
@@ -117,6 +118,23 @@ public class DeleteRequestImpl extends AbstractAbandonableRequest implements Int
         }
 
         return response;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode()
+    {
+        int hash = 37;
+        if ( name != null )
+        {
+            hash = hash * 17 + name.hashCode();
+        }
+        hash = hash * 17 + super.hashCode();
+
+        return hash;
     }
 
 

@@ -73,7 +73,7 @@ public class SearchResponseEntryImplTest
 
 
     /**
-     * Tests for equality when the same object referrence is used.
+     * Tests for equality when the same object reference is used.
      */
     @Test
     public void testEqualsSameObject()
@@ -99,6 +99,35 @@ public class SearchResponseEntryImplTest
 
         assertTrue( "exact copies should be equal", resp0.equals( resp1 ) );
         assertTrue( "exact copies should be equal", resp1.equals( resp0 ) );
+    }
+
+
+    /**
+     * Tests for equal hashCode when the same object reference is used.
+     */
+    @Test
+    public void testHashCodeSameObject()
+    {
+        SearchResponseEntryImpl resp = new SearchResponseEntryImpl( 5 );
+        assertTrue( resp.hashCode() == resp.hashCode() );
+    }
+
+
+    /**
+     * Tests for equal hashCode when an exact copy is compared.
+     */
+    @Test
+    public void testHashCodeExactCopy() throws LdapException
+    {
+        SearchResponseEntryImpl resp0 = new SearchResponseEntryImpl( 5 );
+        resp0.setEntry( getEntry() );
+        resp0.setObjectName( new DN( "dc=example,dc=com" ) );
+
+        SearchResponseEntryImpl resp1 = new SearchResponseEntryImpl( 5 );
+        resp1.setEntry( getEntry() );
+        resp1.setObjectName( new DN( "dc=example,dc=com" ) );
+
+        assertTrue( resp0.hashCode() == resp1.hashCode() );
     }
 
 

@@ -19,6 +19,7 @@
  */
 package org.apache.directory.shared.ldap.message;
 
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -26,7 +27,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.directory.shared.ldap.message.internal.InternalReferral;
-
 
 
 /**
@@ -85,6 +85,25 @@ public class ReferralImpl implements InternalReferral
 
 
     /**
+     * @see Object#hashCode()
+     * @return the instance's hash code 
+     */
+    public int hashCode()
+    {
+        int hash = 37;
+        hash = hash * 17 + urls.size();
+
+        // Order doesn't matter, so just add the url hashCode
+        for ( String url : urls )
+        {
+            hash = hash + url.hashCode();
+        }
+
+        return hash;
+    }
+
+
+    /**
      * Compares this Referral implementation to see if it is the same as
      * another. The classes do not have to be the same implementation to return
      * true. Both this and the compared Referral must have the same entries
@@ -113,7 +132,7 @@ public class ReferralImpl implements InternalReferral
             }
 
             Iterator<String> list = urls.iterator();
-            
+
             while ( list.hasNext() )
             {
                 // if one of our urls is not contained in the obj return false

@@ -42,15 +42,6 @@ public class ApproximateNode<T> extends SimpleNode<T>
 
     
     /**
-     * Return a cloned node
-     */
-    @Override public ExprNode clone()
-    {
-        return super.clone();
-    }
-    
-    
-    /**
      * @see Object#toString()
      * @return A string representing the AndNode
      */

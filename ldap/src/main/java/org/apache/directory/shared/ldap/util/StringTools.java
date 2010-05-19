@@ -497,12 +497,9 @@ public class StringTools
             ch = buf[i];
 
             // filter out all uppercase characters
-            if ( toLowerCase )
+            if ( toLowerCase && Character.isUpperCase( ch ) )
             {
-                if ( Character.isUpperCase( ch ) )
-                {
-                    ch = Character.toLowerCase( ch );
-                }
+                ch = Character.toLowerCase( ch );
             }
 
             // Check to see if we should add space
@@ -887,6 +884,7 @@ public class StringTools
      * @return the filter accepted path component Strings in the order
      *         encountered
      */
+    @SuppressWarnings("PMD.CollapsibleIfStatements") // Used because of comments
     public static final List<String> getPaths( String paths, FileFilter filter )
     {
         int start = 0;
@@ -3397,89 +3395,6 @@ public class StringTools
 
 
     /**
-     * Decodes sequences of escaped hex within an attribute's value into 
-     * a UTF-8 String.  The hex is decoded inline and the complete decoded
-     * String is returned.
-     * 
-     * @param str the string containing hex escapes
-     * @return the decoded string
-     */
-    public static final String decodeEscapedHex( String str ) throws InvalidNameException
-    {
-        if ( str == null )
-        {
-            throw new InvalidNameException( I18n.err( I18n.ERR_04433 ) );
-        }
-        
-        int length = str.length();
-        
-        if ( length == 0 )
-        {
-            throw new InvalidNameException( I18n.err( I18n.ERR_04434 ) );
-        }
-        
-        // create buffer and add everything before start of scan
-        StringBuffer buf = new StringBuffer();
-        ByteBuffer bb = new ByteBuffer();
-        boolean escaped = false;
-        
-        // start scaning until we find an escaped series of bytes
-        for ( int ii = 0; ii < length; ii++ )
-        {
-            char c = str.charAt( ii );
-            
-            if ( !escaped && c == '\\' )
-            {
-                // we have the start of a hex escape sequence
-                if ( isHex( str, ii+1 ) && isHex ( str, ii+2 ) )
-                {
-                    bb.clear();
-                    int advancedBy = collectEscapedHexBytes( bb, str, ii );
-                    ii+=advancedBy-1;
-                    buf.append( StringTools.utf8ToString( bb.buffer(), bb.position() ) );
-                    escaped = false;
-                    continue;
-                }
-                else
-                {
-                    // It may be an escaped char ( ' ', '"', '#', '+', ',', ';', '<', '=', '>', '\' )
-                    escaped = true;
-                    continue;
-                }
-            }
-            
-            if ( escaped )
-            {
-                if ( DNUtils.isPairCharOnly( c ) )
-                {
-                    // It is an escaped char ( ' ', '"', '#', '+', ',', ';', '<', '=', '>', '\' )
-                    // Stores it into the buffer without the '\'
-                    escaped = false;
-                    buf.append( c );
-                    continue;
-                }
-                else
-                {
-                    throw new InvalidNameException( I18n.err( I18n.ERR_04435 ) );
-                }
-            }
-            else
-            {
-                buf.append( str.charAt( ii ) );
-            }
-        }
-        
-        if ( escaped )
-        {
-            // We should not have a '\' at the end of the string
-            throw new InvalidNameException( I18n.err( I18n.ERR_04436 ) );
-        }
-
-        return buf.toString();
-    }
-
-
-    /**
      * Convert an escaoed list of bytes to a byte[]
      * 
      * @param str the string containing hex escapes
@@ -3530,39 +3445,6 @@ public class StringTools
     }
 
 
-    /**
-     * Collects an hex sequence from a string, and returns the value
-     * as an integer, after having modified the initial value (the escaped
-     * hex value is transsformed to the byte it represents).
-     *
-     * @param bb the buffer which will contain the unescaped byte
-     * @param str the initial string with ecaped chars 
-     * @param index the position in the string of the escaped data
-     * @return the byte as an integer
-     */
-    public static int collectEscapedHexBytes( ByteBuffer bb, String str, int index )
-    {
-        int advanceBy = 0;
-        
-        for ( int ii = index; ii < str.length(); ii += 3, advanceBy += 3 )
-        {
-            // we have the start of a hex escape sequence
-            if ( ( str.charAt( ii ) == '\\' ) && isHex( str, ii+1 ) && isHex ( str, ii+2 ) )
-            {
-                int bite = ( StringTools.HEX_VALUE[str.charAt( ii+1 )] << 4 ) + 
-                    StringTools.HEX_VALUE[str.charAt( ii+2 )];
-                bb.append( bite );
-            }
-            else
-            {
-                break;
-            }
-        }
-        
-        return advanceBy;
-    }
-    
-    
     /**
      * Thansform an array of ASCII bytes to a string. the byte array should contains
      * only values in [0, 127].

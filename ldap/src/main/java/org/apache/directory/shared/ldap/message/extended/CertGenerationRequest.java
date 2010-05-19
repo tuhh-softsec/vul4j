@@ -53,6 +53,7 @@ public class CertGenerationRequest extends ExtendedRequestImpl
 
     public static final String EXTENSION_OID = "1.3.6.1.4.1.18060.0.1.8";
 
+
     /**
      * 
      * Creates a new instance of CertGenerationRequest.
@@ -67,7 +68,7 @@ public class CertGenerationRequest extends ExtendedRequestImpl
     {
         super( messageId );
         setOid( EXTENSION_OID );
-        
+
         this.certGenObj = new CertGenerationObject();
         certGenObj.setTargetDN( targerDN );
         certGenObj.setIssuerDN( issuerDN );

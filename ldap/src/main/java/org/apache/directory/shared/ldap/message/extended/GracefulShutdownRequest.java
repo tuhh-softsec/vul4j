@@ -65,13 +65,13 @@ public class GracefulShutdownRequest extends ExtendedRequestImpl
     private int delay;
 
 
-    public GracefulShutdownRequest(int messageId)
+    public GracefulShutdownRequest( int messageId )
     {
         this( messageId, UNDETERMINED, NOW );
     }
 
 
-    public GracefulShutdownRequest(int messageId, int timeOffline, int delay)
+    public GracefulShutdownRequest( int messageId, int timeOffline, int delay )
     {
         super( messageId );
         setOid( EXTENSION_OID );
@@ -97,9 +97,11 @@ public class GracefulShutdownRequest extends ExtendedRequestImpl
             GracefulShutdown gs = ( GracefulShutdown ) decoder.decode( payload );
             if ( payload != null )
             {
-                this.payload = new byte[ payload.length ];
+                this.payload = new byte[payload.length];
                 System.arraycopy( payload, 0, this.payload, 0, payload.length );
-            } else {
+            }
+            else
+            {
                 this.payload = null;
             }
             this.timeOffline = gs.getTimeOffline();

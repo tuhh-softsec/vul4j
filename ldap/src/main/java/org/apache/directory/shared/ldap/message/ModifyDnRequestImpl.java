@@ -19,6 +19,7 @@
  */
 package org.apache.directory.shared.ldap.message;
 
+
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.message.internal.InternalModifyDnRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalModifyDnResponse;
@@ -63,7 +64,7 @@ public class ModifyDnRequestImpl extends AbstractAbandonableRequest implements I
      * @param id
      *            the seq id of this message
      */
-    public ModifyDnRequestImpl(final int id)
+    public ModifyDnRequestImpl( final int id )
     {
         super( id, TYPE );
     }
@@ -232,6 +233,33 @@ public class ModifyDnRequestImpl extends AbstractAbandonableRequest implements I
 
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode()
+    {
+        int hash = 37;
+        if ( name != null )
+        {
+            hash = hash * 17 + name.hashCode();
+        }
+        hash = hash * 17 + ( deleteOldRdn ? 0 : 1 );
+
+        if ( newRdn != null )
+        {
+            hash = hash * 17 + newRdn.hashCode();
+        }
+        if ( newSuperior != null )
+        {
+            hash = hash * 17 + newSuperior.hashCode();
+        }
+        hash = hash * 17 + super.hashCode();
+
+        return hash;
+    }
+
+
+    /**
      * Checks to see of an object equals this ModifyDnRequest stub. The equality
      * presumes all ModifyDnRequest specific properties are the same.
      * 
@@ -263,12 +291,9 @@ public class ModifyDnRequestImpl extends AbstractAbandonableRequest implements I
             return false;
         }
 
-        if ( name != null && req.getName() != null )
+        if ( name != null && req.getName() != null && !name.equals( req.getName() ) )
         {
-            if ( !name.equals( req.getName() ) )
-            {
-                return false;
-            }
+            return false;
         }
 
         if ( deleteOldRdn != req.getDeleteOldRdn() )
@@ -286,12 +311,9 @@ public class ModifyDnRequestImpl extends AbstractAbandonableRequest implements I
             return false;
         }
 
-        if ( newRdn != null && req.getNewRdn() != null )
+        if ( newRdn != null && req.getNewRdn() != null && !newRdn.equals( req.getNewRdn() ) )
         {
-            if ( !newRdn.equals( req.getNewRdn() ) )
-            {
-                return false;
-            }
+            return false;
         }
 
         if ( newSuperior != null && req.getNewSuperior() == null )
@@ -304,12 +326,9 @@ public class ModifyDnRequestImpl extends AbstractAbandonableRequest implements I
             return false;
         }
 
-        if ( newSuperior != null && req.getNewSuperior() != null )
+        if ( newSuperior != null && req.getNewSuperior() != null && !newSuperior.equals( req.getNewSuperior() ) )
         {
-            if ( !newSuperior.equals( req.getNewSuperior() ) )
-            {
-                return false;
-            }
+            return false;
         }
 
         return true;
@@ -328,7 +347,7 @@ public class ModifyDnRequestImpl extends AbstractAbandonableRequest implements I
 
         sb.append( "    ModifyDN Response\n" );
         sb.append( "        Entry : '" ).append( name ).append( "'\n" );
-        if( newRdn != null )
+        if ( newRdn != null )
         {
             sb.append( "        New RDN : '" ).append( newRdn.toString() ).append( "'\n" );
         }

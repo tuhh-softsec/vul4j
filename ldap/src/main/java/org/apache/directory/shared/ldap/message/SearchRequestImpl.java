@@ -85,7 +85,7 @@ public class SearchRequestImpl extends AbstractAbandonableRequest implements Int
      * @param id
      *            the sequential message identifier
      */
-    public SearchRequestImpl(final int id)
+    public SearchRequestImpl( final int id )
     {
         super( id, MessageTypeEnum.SEARCH_REQUEST );
     }
@@ -354,6 +354,41 @@ public class SearchRequestImpl extends AbstractAbandonableRequest implements Int
 
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode()
+    {
+        int hash = 37;
+        if ( baseDn != null )
+        {
+            hash = hash * 17 + baseDn.hashCode();
+        }
+        hash = hash * 17 + aliasDerefMode.hashCode();
+        hash = hash * 17 + scope.hashCode();
+        hash = hash * 17 + Long.valueOf( sizeLimit ).hashCode();
+        hash = hash * 17 + timeLimit;
+        hash = hash * 17 + ( typesOnly ? 0 : 1 );
+        if ( attributes != null )
+        {
+            hash = hash * 17 + attributes.size();
+
+            // Order doesn't matter, thus just add hashCode
+            for ( String attr : attributes )
+            {
+                hash = hash + attr.hashCode();
+            }
+        }
+        BranchNormalizedVisitor visitor = new BranchNormalizedVisitor();
+        filter.accept( visitor );
+        hash = hash * 17 + filter.toString().hashCode();
+        hash = hash * 17 + super.hashCode();
+
+        return hash;
+    }
+
+
+    /**
      * Checks to see if two search requests are equal. The Lockable properties
      * and the get/set context specific parameters are not consulted to
      * determine equality. The filter expression tree comparison will normalize
@@ -410,20 +445,14 @@ public class SearchRequestImpl extends AbstractAbandonableRequest implements Int
             return false;
         }
 
-        if ( req.getAttributes() == null && attributes != null )
+        if ( req.getAttributes() == null && attributes != null && attributes.size() > 0 )
         {
-            if ( attributes.size() > 0 )
-            {
-                return false;
-            }
+            return false;
         }
 
-        if ( req.getAttributes() != null && attributes == null )
+        if ( req.getAttributes() != null && attributes == null && req.getAttributes().size() > 0 )
         {
-            if ( req.getAttributes().size() > 0 )
-            {
-                return false;
-            }
+            return false;
         }
 
         if ( req.getAttributes() != null && attributes != null )
@@ -434,7 +463,7 @@ public class SearchRequestImpl extends AbstractAbandonableRequest implements Int
             }
 
             Iterator<String> list = attributes.iterator();
-            
+
             while ( list.hasNext() )
             {
                 if ( !req.getAttributes().contains( list.next() ) )
@@ -454,25 +483,26 @@ public class SearchRequestImpl extends AbstractAbandonableRequest implements Int
         return myFilterString.equals( reqFilterString );
     }
 
+
     /**
      * Return a string the represent a SearchRequest
      */
     public String toString()
     {
-        StringBuilder    sb = new StringBuilder();
+        StringBuilder sb = new StringBuilder();
 
         sb.append( "    SearchRequest\n" );
         sb.append( "        baseDn : '" ).append( baseDn ).append( "'\n" );
-        
+
         if ( filter != null )
         {
             sb.append( "        filter : '" );
             sb.append( filter.toString() );
             sb.append( "'\n" );
         }
-        
+
         sb.append( "        scope : " );
-        
+
         switch ( scope )
         {
             case OBJECT:
@@ -487,9 +517,9 @@ public class SearchRequestImpl extends AbstractAbandonableRequest implements Int
                 sb.append( "whole subtree" );
                 break;
         }
-        
+
         sb.append( '\n' );
-        
+
         sb.append( "        typesOnly : " ).append( typesOnly ).append( '\n' );
 
         sb.append( "        Size Limit : " );
@@ -542,12 +572,12 @@ public class SearchRequestImpl extends AbstractAbandonableRequest implements Int
         sb.append( '\n' );
         sb.append( "        attributes : " );
 
-        boolean         isFirst = true;
+        boolean isFirst = true;
 
         if ( attributes != null )
         {
             Iterator<String> it = attributes.iterator();
-            
+
             while ( it.hasNext() )
             {
                 if ( isFirst )
@@ -558,10 +588,10 @@ public class SearchRequestImpl extends AbstractAbandonableRequest implements Int
                 {
                     sb.append( ", " );
                 }
-                
+
                 sb.append( '\'' ).append( it.next() ).append( '\'' );
             }
-            
+
         }
 
         sb.append( '\n' );

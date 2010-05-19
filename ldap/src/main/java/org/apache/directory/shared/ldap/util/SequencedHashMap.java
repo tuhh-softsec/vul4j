@@ -37,6 +37,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
+import org.apache.commons.collections.KeyValue;
 import org.apache.directory.shared.i18n.I18n;
 
 

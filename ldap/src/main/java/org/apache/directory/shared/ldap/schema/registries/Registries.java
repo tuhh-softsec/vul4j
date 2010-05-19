@@ -134,6 +134,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
     protected Map<SchemaObjectWrapper, Set<SchemaObjectWrapper>> using;
 
     /** A reference on the schema Manager */
+    @SuppressWarnings("PMD.UnusedPrivateField") // False positive 
     private SchemaManager schemaManager;
 
 
@@ -666,6 +667,8 @@ public class Registries implements SchemaLoaderListener, Cloneable
     /**
      * Build the DitContentRule references
      */
+    // Remove me when TODO is implemented
+    @SuppressWarnings("PMD.UnusedFormalParameter")
     private void buildDitContentRuleReferences( List<Throwable> errors )
     {
         for ( DITContentRule ditContentRule : ditContentRuleRegistry )
@@ -678,6 +681,8 @@ public class Registries implements SchemaLoaderListener, Cloneable
     /**
      * Build the DitStructureRule references
      */
+    // Remove me when TODO is implemented
+    @SuppressWarnings("PMD.UnusedFormalParameter")
     private void buildDitStructureRuleReferences( List<Throwable> errors )
     {
         for ( DITStructureRule ditStructureRule : ditStructureRuleRegistry )
@@ -781,6 +786,8 @@ public class Registries implements SchemaLoaderListener, Cloneable
     /**
      * Build the NameForm references
      */
+    // Remove me when TODO is implemented
+    @SuppressWarnings("PMD.UnusedFormalParameter")
     private void buildNameFormReferences( List<Throwable> errors )
     {
         for ( NameForm nameFormRule : nameFormRegistry )
@@ -1730,6 +1737,8 @@ public class Registries implements SchemaLoaderListener, Cloneable
      * @param schemaObject The SchemaObject we want to deregister
      * @throws LdapException If the removal failed
      */
+    // Remove me when TODO is implemented
+    @SuppressWarnings("PMD.UnusedFormalParameter")
     private SchemaObject unregister( List<Throwable> errors, SchemaObject schemaObject ) throws LdapException
     {
         LOG.debug( "Unregistering {}:{}", schemaObject.getObjectType(), schemaObject.getOid() );
@@ -2601,8 +2610,6 @@ public class Registries implements SchemaLoaderListener, Cloneable
                 }
                 catch ( LdapException ne )
                 {
-                    int i = 0;
-                    i++;
                     // Nothing to do
                 }
             }

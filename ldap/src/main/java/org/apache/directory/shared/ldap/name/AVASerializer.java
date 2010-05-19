@@ -153,8 +153,8 @@ public class AVASerializer
     public static AVA deserialize( ObjectInput in ) throws IOException
     {
         String upName = in.readUTF();
-        int start = in.readInt();
-        int length = in.readInt();
+        in.readInt(); // start
+        in.readInt(); // length
         String upType = in.readUTF();
         String normType = in.readUTF();
         

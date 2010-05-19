@@ -22,7 +22,6 @@ package org.apache.directory.shared.ldap.schema.ldif.extractor.impl;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;

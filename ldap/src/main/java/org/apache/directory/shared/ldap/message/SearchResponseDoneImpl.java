@@ -19,6 +19,7 @@
  */
 package org.apache.directory.shared.ldap.message;
 
+
 import org.apache.directory.shared.ldap.message.internal.InternalAbstractResultResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalLdapResult;
 import org.apache.directory.shared.ldap.message.internal.InternalSearchResponseDone;
@@ -47,9 +48,23 @@ public class SearchResponseDoneImpl extends InternalAbstractResultResponse imple
      * @param id
      *            the session unique message id
      */
-    public SearchResponseDoneImpl(final int id)
+    public SearchResponseDoneImpl( final int id )
     {
         super( id, TYPE );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode()
+    {
+        int hash = 37;
+        hash = hash * 17 + getLdapResult().hashCode();
+        hash = hash * 17 + super.hashCode();
+
+        return hash;
     }
 
 

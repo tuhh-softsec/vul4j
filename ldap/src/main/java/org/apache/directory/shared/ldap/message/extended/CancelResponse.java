@@ -19,10 +19,13 @@
  */
 package org.apache.directory.shared.ldap.message.extended;
 
+
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.message.ExtendedResponseImpl;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.util.StringTools;
+
+
 /**
  * 
  * The response sent back from the server after the Cancel extended operation is performed.
@@ -35,6 +38,7 @@ public class CancelResponse extends ExtendedResponseImpl
     /** The serial version UUID */
     private static final long serialVersionUID = 1L;
 
+
     /**
      * Create a new CancelResponse object
      * @param messageId The messageId
@@ -46,18 +50,18 @@ public class CancelResponse extends ExtendedResponseImpl
 
         switch ( rcode )
         {
-            case SUCCESS :
+            case SUCCESS:
             case CANCELED:
-            case CANNOT_CANCEL :
-            case NO_SUCH_OPERATION :
-            case TOO_LATE :
+            case CANNOT_CANCEL:
+            case NO_SUCH_OPERATION:
+            case TOO_LATE:
                 break;
-            
+
             default:
                 throw new IllegalArgumentException( I18n.err( I18n.ERR_04166, ResultCodeEnum.SUCCESS,
-                		ResultCodeEnum.OPERATIONS_ERROR, ResultCodeEnum.INSUFFICIENT_ACCESS_RIGHTS ) );
+                    ResultCodeEnum.OPERATIONS_ERROR, ResultCodeEnum.INSUFFICIENT_ACCESS_RIGHTS ) );
         }
-        
+
         super.getLdapResult().setMatchedDn( null );
         super.getLdapResult().setResultCode( rcode );
     }

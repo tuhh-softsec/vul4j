@@ -21,6 +21,7 @@ package org.apache.directory.shared.ldap.message;
 
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
@@ -33,8 +34,6 @@ import org.apache.directory.shared.ldap.message.internal.InternalModifyRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalModifyResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalResultResponse;
 import org.apache.directory.shared.ldap.name.DN;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 /**
@@ -46,9 +45,6 @@ import org.slf4j.LoggerFactory;
 public class ModifyRequestImpl extends AbstractAbandonableRequest implements InternalModifyRequest
 {
     static final long serialVersionUID = -505803669028990304L;
-
-    /** The logger */
-    private static final transient Logger LOG = LoggerFactory.getLogger( ModifyRequestImpl.class );
 
     /** Dn of the entry to modify or PDU's <b>object</b> field */
     private DN name;
@@ -70,7 +66,7 @@ public class ModifyRequestImpl extends AbstractAbandonableRequest implements Int
      * @param id
      *            the sequential message identifier
      */
-    public ModifyRequestImpl(final int id)
+    public ModifyRequestImpl( final int id )
     {
         super( id, TYPE );
     }
@@ -173,6 +169,28 @@ public class ModifyRequestImpl extends AbstractAbandonableRequest implements Int
 
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode()
+    {
+        int hash = 37;
+        if ( name != null )
+        {
+            hash = hash * 17 + name.hashCode();
+        }
+        hash = hash * 17 + mods.size();
+        for ( int i = 0; i < mods.size(); i++ )
+        {
+            hash = hash * 17 + ( ( DefaultModification ) mods.get( i ) ).hashCode();
+        }
+        hash = hash * 17 + super.hashCode();
+
+        return hash;
+    }
+
+
+    /**
      * Checks to see if ModifyRequest stub equals another by factoring in checks
      * for the name and modification items of the request.
      * 
@@ -204,12 +222,9 @@ public class ModifyRequestImpl extends AbstractAbandonableRequest implements Int
             return false;
         }
 
-        if ( name != null && req.getName() != null )
+        if ( name != null && req.getName() != null && !name.equals( req.getName() ) )
         {
-            if ( !name.equals( req.getName() ) )
-            {
-                return false;
-            }
+            return false;
         }
 
         if ( req.getModificationItems().size() != mods.size() )
@@ -231,8 +246,8 @@ public class ModifyRequestImpl extends AbstractAbandonableRequest implements Int
                 }
             }
             else
-                
-            if ( !item.equals((DefaultModification) mods.get( i ) ) )
+
+            if ( !item.equals( ( DefaultModification ) mods.get( i ) ) )
             {
                 return false;
             }

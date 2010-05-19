@@ -20,46 +20,29 @@
 package org.apache.directory.shared.ldap.util;
 
 
-import java.io.PipedInputStream;
-import java.io.IOException;
+import java.util.List;
 
 
 /**
- * A piped input stream that fixes the "Read end Dead" issue when a single
- * thread is used.
+ * <p>
+ * Provides utilities for manipulating and examining <code>Throwable</code>
+ * objects.
+ * </p>
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public class ParserPipedInputStream extends PipedInputStream
+public class LdapExceptionUtils
 {
-    protected synchronized void receive( int b ) throws IOException
+    public static String printErrors( List<Throwable> errors )
     {
-        while ( in == out )
+        StringBuilder sb = new StringBuilder();
+        
+        for ( Throwable error:errors )
         {
-            /* full: kick any waiting readers */
-            notifyAll();
-            try
-            {
-                wait( 1000 );
-            }
-            catch ( InterruptedException ex )
-            {
-                throw new java.io.InterruptedIOException();
-            }
+            sb.append( "Error : " ).append( error.getMessage() ).append( "\n" );
         }
-
-        if ( in < 0 )
-        {
-            in = 0;
-            out = 0;
-        }
-
-        buffer[in++] = ( byte ) ( b & 0xFF );
-
-        if ( in >= buffer.length )
-        {
-            in = 0;
-        }
+        
+        return sb.toString();
     }
 }

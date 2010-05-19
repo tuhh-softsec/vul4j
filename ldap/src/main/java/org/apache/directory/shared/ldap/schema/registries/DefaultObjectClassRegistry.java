@@ -33,8 +33,6 @@ import org.apache.directory.shared.ldap.exception.LdapNoSuchAttributeException;
 import org.apache.directory.shared.ldap.schema.ObjectClass;
 import org.apache.directory.shared.ldap.schema.SchemaObject;
 import org.apache.directory.shared.ldap.schema.SchemaObjectType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 /**
@@ -46,12 +44,6 @@ import org.slf4j.LoggerFactory;
 public class DefaultObjectClassRegistry extends DefaultSchemaObjectRegistry<ObjectClass> 
     implements ObjectClassRegistry
 {
-    /** static class logger */
-    private static final Logger LOG = LoggerFactory.getLogger( DefaultObjectClassRegistry.class );
-
-    /** Speedup for DEBUG mode */
-    private static final boolean IS_DEBUG = LOG.isDebugEnabled();
-
     /** maps OIDs to a Set of descendants for that OID */
     private Map<String,Set<ObjectClass>> oidToDescendants;
 

@@ -31,8 +31,8 @@ import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.BasicAttribute;
 import javax.naming.directory.BasicAttributes;
-import javax.naming.directory.InvalidAttributeIdentifierException;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.entry.DefaultEntry;
 import org.apache.directory.shared.ldap.entry.DefaultEntryAttribute;
@@ -357,12 +357,9 @@ public class AttributeUtils
                 {
                     Object value = values.nextElement();
     
-                    if ( value instanceof byte[] )
+                    if ( value instanceof byte[] && ArrayUtils.isEquals( comparedBytes, value ) )
                     {
-                        if ( ArrayUtils.isEquals( comparedBytes, value ) )
-                        {
-                            return true;
-                        }
+                        return true;
                     }
                 }
             }
@@ -405,12 +402,9 @@ public class AttributeUtils
                 {
                     Object attrVal = attrVals.nextElement();
 
-                    if ( attrVal instanceof String )
+                    if ( attrVal instanceof String &&  strVal.equalsIgnoreCase( ( String ) attrVal ) )
                     {
-                        if ( strVal.equalsIgnoreCase( ( String ) attrVal ) )
-                        {
-                            return true;
-                        }
+                        return true;
                     }
                 }
             }
@@ -424,13 +418,9 @@ public class AttributeUtils
                 {
                     Object attrVal = attrVals.nextElement();
 
-                    if ( attrVal instanceof byte[] )
+                    if ( attrVal instanceof byte[]  &&  Arrays.equals( ( byte[] ) attrVal, valueBytes ) )
                     {
-                        if ( Arrays.equals( ( byte[] ) attrVal, valueBytes ) )
-                        {
-                            return true;
-                        }
-
+                        return true;
                     }
                 }
             }

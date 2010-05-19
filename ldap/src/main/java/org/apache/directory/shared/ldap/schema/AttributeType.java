@@ -529,7 +529,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
     /**
      * Check the constraints for the Usage field.
      */
-    private void checkUsage( List<Throwable> errors, Registries registries )
+    private void checkUsage( List<Throwable> errors )
     {
         // Check that the AT usage is the same that its superior
         if ( ( superior != null ) && ( usage != superior.getUsage() ) )
@@ -559,15 +559,12 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
     /**
      * Check the constraints for the Collective field.
      */
-    private void checkCollective( List<Throwable> errors, Registries registries )
+    private void checkCollective( List<Throwable> errors )
     {
-        if ( superior != null )
+        if ( superior != null && superior.isCollective() )
         {
-            if ( superior.isCollective() )
-            {
-                // An AttributeType will be collective if its superior is collective
-                this.isCollective = true;
-            }
+            // An AttributeType will be collective if its superior is collective
+            this.isCollective = true;
         }
 
         if ( isCollective() && ( usage != UsageEnum.USER_APPLICATIONS ) )
@@ -618,10 +615,10 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
             buildSubstring( errors, registries );
 
             // Check the USAGE
-            checkUsage( errors, registries );
+            checkUsage( errors );
 
             // Check the COLLECTIVE element
-            checkCollective( errors, registries );
+            checkCollective( errors );
 
             // Inject the attributeType into the oid/normalizer map
             attributeTypeRegistry.addMappingFor( this );

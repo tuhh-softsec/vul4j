@@ -188,6 +188,29 @@ public class SearchResponseDoneImplTest
 
 
     /**
+     * Tests for equal hashCode using the same object.
+     */
+    @Test
+    public void testHashCodeSameObj()
+    {
+        SearchResponseDoneImpl resp = createStub();
+        assertTrue( resp.hashCode() == resp.hashCode() );
+    }
+
+
+    /**
+     * Tests for equal hashCode using an exact copy.
+     */
+    @Test
+    public void testHashCodeExactCopy()
+    {
+        SearchResponseDoneImpl resp0 = createStub();
+        SearchResponseDoneImpl resp1 = createStub();
+        assertTrue( resp0.hashCode() == resp1.hashCode() );
+    }
+
+
+    /**
      * Tests inequality when messageIds are different.
      */
     @Test

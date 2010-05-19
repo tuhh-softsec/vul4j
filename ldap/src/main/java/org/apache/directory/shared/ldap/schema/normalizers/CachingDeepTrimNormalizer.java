@@ -20,7 +20,6 @@
 package org.apache.directory.shared.ldap.schema.normalizers;
 
 
-import org.apache.directory.shared.ldap.schema.registries.Registries;
 
 
 /**
@@ -42,14 +41,5 @@ public class CachingDeepTrimNormalizer extends CachingNormalizer
     public CachingDeepTrimNormalizer()
     {
         super( new DeepTrimNormalizer() );
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public void setRegistries( Registries registries )
-    {
-        super.setRegistries( registries );
     }
 }

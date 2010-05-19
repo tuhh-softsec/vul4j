@@ -25,6 +25,7 @@ import java.util.Arrays;
 import org.apache.directory.shared.ldap.message.internal.InternalAbstractResultResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalExtendedResponse;
 
+
 /**
  * Lockable ExtendedResponse implementation
  * 
@@ -81,7 +82,7 @@ public class ExtendedResponseImpl extends InternalAbstractResultResponse impleme
             return null;
         }
 
-        final byte[] copy = new byte[ value.length ];
+        final byte[] copy = new byte[value.length];
         System.arraycopy( value, 0, copy, 0, value.length );
         return copy;
     }
@@ -97,14 +98,16 @@ public class ExtendedResponseImpl extends InternalAbstractResultResponse impleme
     {
         if ( value != null )
         {
-            this.value = new byte[ value.length ];
+            this.value = new byte[value.length];
             System.arraycopy( value, 0, this.value, 0, value.length );
-        } else {
+        }
+        else
+        {
             this.value = null;
         }
     }
-    
-    
+
+
     public void setOid( String oid )
     {
         this.oid = oid;
@@ -137,6 +140,27 @@ public class ExtendedResponseImpl extends InternalAbstractResultResponse impleme
 
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode()
+    {
+        int hash = 37;
+        if ( oid != null )
+        {
+            hash = hash * 17 + oid.hashCode();
+        }
+        if ( value != null )
+        {
+            hash = hash * 17 + Arrays.hashCode( value );
+        }
+        hash = hash * 17 + super.hashCode();
+
+        return hash;
+    }
+
+
+    /**
      * Checks to see if an object equals this ExtendedRequest.
      * 
      * @param obj
@@ -154,7 +178,7 @@ public class ExtendedResponseImpl extends InternalAbstractResultResponse impleme
         {
             return false;
         }
-        
+
         if ( !( obj instanceof InternalExtendedResponse ) )
         {
             return false;
@@ -172,12 +196,9 @@ public class ExtendedResponseImpl extends InternalAbstractResultResponse impleme
             return false;
         }
 
-        if ( oid != null && resp.getResponseName() != null )
+        if ( oid != null && resp.getResponseName() != null && !oid.equals( resp.getResponseName() ) )
         {
-            if ( !oid.equals( resp.getResponseName() ) )
-            {
-                return false;
-            }
+            return false;
         }
 
         if ( value != null && resp.getResponse() == null )
@@ -190,12 +211,9 @@ public class ExtendedResponseImpl extends InternalAbstractResultResponse impleme
             return false;
         }
 
-        if ( value != null && resp.getResponse() != null )
+        if ( value != null && resp.getResponse() != null && !Arrays.equals( value, resp.getResponse() ) )
         {
-            if ( !Arrays.equals( value, resp.getResponse() ) )
-            {
-                return false;
-            }
+            return false;
         }
 
         return true;

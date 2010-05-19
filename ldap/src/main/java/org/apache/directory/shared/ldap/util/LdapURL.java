@@ -363,6 +363,7 @@ public class LdapURL
      *         apply to the byte buffer TODO check that the topLabel is valid
      *         (it must start with an alpha)
      */
+    @SuppressWarnings("PMD.CollapsibleIfStatements") // Used because of comments
     private int parseHost( char[] chars, int pos )
     {
 
@@ -400,17 +401,13 @@ public class LdapURL
                 }
 
                 // Let's check the string we had before the dot.
-                if ( isHostNumber )
+                if ( isHostNumber &&  nbDots < 4 )
                 {
 
-                    if ( nbDots < 4 )
+                    // We had only digits. It may be an IP adress? Check it
+                    if ( ipElem[nbDots] > 65535 )
                     {
-
-                        // We had only digits. It may be an IP adress? Check it
-                        if ( ipElem[nbDots] > 65535 )
-                        {
-                            invalidIp = true;
-                        }
+                        invalidIp = true;
                     }
                 }
 

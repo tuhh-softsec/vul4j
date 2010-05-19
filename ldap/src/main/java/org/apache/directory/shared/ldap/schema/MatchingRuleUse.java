@@ -217,12 +217,9 @@ public class MatchingRuleUse extends AbstractSchemaObject
             throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
         }
         
-        if ( !isReadOnly )
+        if ( !isReadOnly && !applicableAttributeOids.contains( oid ) )
         {
-            if ( !applicableAttributeOids.contains( oid ) )
-            {
-                applicableAttributeOids.add( oid );
-            }
+            applicableAttributeOids.add( oid );
         }
     }
 
@@ -239,13 +236,10 @@ public class MatchingRuleUse extends AbstractSchemaObject
             throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
         }
         
-        if ( !isReadOnly )
+        if ( !isReadOnly && !applicableAttributeOids.contains( attributeType.getOid() ) )
         {
-            if ( !applicableAttributeOids.contains( attributeType.getOid() ) )
-            {
-                applicableAttributes.add( attributeType );
-                applicableAttributeOids.add( attributeType.getOid() );
-            }
+            applicableAttributes.add( attributeType );
+            applicableAttributeOids.add( attributeType.getOid() );
         }
     }
 
@@ -288,6 +282,7 @@ public class MatchingRuleUse extends AbstractSchemaObject
     /**
      * @see Object#equals(Object)
      */
+    @SuppressWarnings("PMD.UnusedLocalVariable") // Remove me when the TODO is fixed 
     public boolean equals( Object o )
     {
         if ( !super.equals( o ) )

@@ -92,6 +92,57 @@ public class ReferralImplTest
 
 
     /**
+     * Tests to make sure to get equal hashCode for the same exact object.
+     */
+    @Test
+    public void testHashCodeSameObject()
+    {
+        ReferralImpl refs = new ReferralImpl();
+        assertTrue( refs.hashCode() == refs.hashCode() );
+    }
+
+
+    /**
+     * Tests to make sure to get equal hashCode for two objects that are the
+     * same exact copy of one another.
+     */
+    @Test
+    public void testHashCodeExactCopy()
+    {
+        ReferralImpl refs0 = new ReferralImpl();
+        refs0.addLdapUrl( "ldap://blah0" );
+        refs0.addLdapUrl( "ldap://blah1" );
+        refs0.addLdapUrl( "ldap://blah2" );
+        ReferralImpl refs1 = new ReferralImpl();
+        refs1.addLdapUrl( "ldap://blah0" );
+        refs1.addLdapUrl( "ldap://blah1" );
+        refs1.addLdapUrl( "ldap://blah2" );
+        assertTrue( refs0.hashCode() == refs1.hashCode() );
+    }
+
+
+    /**
+     * Tests to make sure to get equal hashCode for two objects that are the
+     * same exact copy of one another but there are redundant entries.
+     */
+    @Test
+    public void testHashCodeExactCopyWithRedundancy()
+    {
+        ReferralImpl refs0 = new ReferralImpl();
+        refs0.addLdapUrl( "ldap://blah0" );
+        refs0.addLdapUrl( "ldap://blah1" );
+        refs0.addLdapUrl( "ldap://blah2" );
+        refs0.addLdapUrl( "ldap://blah2" );
+        ReferralImpl refs1 = new ReferralImpl();
+        refs1.addLdapUrl( "ldap://blah0" );
+        refs1.addLdapUrl( "ldap://blah1" );
+        refs1.addLdapUrl( "ldap://blah2" );
+        refs1.addLdapUrl( "ldap://blah2" );
+        assertTrue( refs0.hashCode() == refs1.hashCode() );
+    }
+
+
+    /**
      * Tests to make sure the equals method works for two objects that are the
      * not exact copies of one another but have the same number of URLs.
      */

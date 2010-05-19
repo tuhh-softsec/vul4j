@@ -19,6 +19,7 @@
  */
 package org.apache.directory.shared.ldap.message.extended;
 
+
 import java.nio.ByteBuffer;
 
 import javax.naming.NamingException;
@@ -52,7 +53,7 @@ public class StoredProcedureRequest extends ExtendedRequestImpl
 
     private StoredProcedure procedure;
 
-    
+
     public StoredProcedureRequest( int messageId )
     {
         super( messageId );
@@ -81,7 +82,7 @@ public class StoredProcedureRequest extends ExtendedRequestImpl
     {
         StoredProcedureDecoder decoder = new StoredProcedureDecoder();
         StoredProcedureContainer container = new StoredProcedureContainer();
-        
+
         try
         {
             decoder.decode( ByteBuffer.wrap( payload ), container );
@@ -147,71 +148,70 @@ public class StoredProcedureRequest extends ExtendedRequestImpl
     // Parameters of the Extended Request Payload
     // -----------------------------------------------------------------------
 
-
     public String getLanguage()
     {
         return procedure.getLanguage();
     }
-    
-    
+
+
     public void setLanguage( String language )
     {
         this.procedure.setLanguage( language );
     }
 
-    
+
     public void setProcedure( String procedure )
     {
         this.procedure.setProcedure( StringTools.getBytesUtf8( procedure ) );
     }
 
-    
+
     public String getProcedureSpecification()
     {
         return StringTools.utf8ToString( procedure.getProcedure() );
     }
-    
-    
+
+
     public int size()
     {
         return this.procedure.getParameters().size();
     }
-    
-    
+
+
     public Object getParameterType( int index )
     {
-        if ( ! this.procedure.getLanguage().equals( "java" ) )
+        if ( !this.procedure.getLanguage().equals( "java" ) )
         {
             return procedure.getParameters().get( index ).getType();
         }
 
         return getJavaParameterType( index );
     }
-    
-    
+
+
     public Class<?> getJavaParameterType( int index )
     {
         throw new NotImplementedException( I18n.err( I18n.ERR_04175 ) );
     }
-    
-    
+
+
     public Object getParameterValue( int index )
     {
-        if ( ! this.procedure.getLanguage().equals( "java" ) )
+        if ( !this.procedure.getLanguage().equals( "java" ) )
         {
             return procedure.getParameters().get( index ).getValue();
         }
 
         return getJavaParameterValue( index );
     }
-    
-    
+
+
     public Object getJavaParameterValue( int index )
     {
         throw new NotImplementedException( I18n.err( I18n.ERR_04176 ) );
     }
-    
-    
+
+
     public void addParameter( Object type, Object value )
     {
         /**
@@ -230,14 +230,14 @@ public class StoredProcedureRequest extends ExtendedRequestImpl
          * Replacing this code with the one below without the conditional check.
          
          */
-        
+
         StoredProcedureParameter parameter = new StoredProcedureParameter();
         parameter.setType( ( byte[] ) type );
         parameter.setValue( ( byte[] ) value );
         this.procedure.addParameter( parameter );
 
         // below here try to convert parameters to their appropriate byte[] representations
-        
+
         /**
          * FIXME: What is this for?
          * 

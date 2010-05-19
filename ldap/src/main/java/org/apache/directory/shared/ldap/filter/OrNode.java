@@ -54,15 +54,6 @@ public class OrNode extends BranchNode
 
     
     /**
-     * Clone the Node
-     */
-    @Override public ExprNode clone()
-    {
-        return super.clone();
-    }
-
-
-    /**
      * Creates an empty OrNode
      */
     public OrNode()

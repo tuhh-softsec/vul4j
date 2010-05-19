@@ -109,6 +109,23 @@ public class SearchResponseEntryImpl extends InternalAbstractResponse implements
 
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode()
+    {
+        int hash = 37;
+        if ( entry != null )
+        {
+            hash = hash * 17 + entry.hashCode();
+        }
+        hash = hash * 17 + super.hashCode();
+
+        return hash;
+    }
+
+
+    /**
      * Checks for equality by comparing the objectName, and attributes
      * properties of this Message after delegating to the super.equals() method.
      * 
@@ -132,7 +149,7 @@ public class SearchResponseEntryImpl extends InternalAbstractResponse implements
         {
             return false;
         }
-        
+
         InternalSearchResponseEntry resp = ( InternalSearchResponseEntry ) obj;
 
         return entry.equals( resp.getEntry() );

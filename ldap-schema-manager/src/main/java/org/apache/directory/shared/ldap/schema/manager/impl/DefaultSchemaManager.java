@@ -36,7 +36,6 @@ import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.exception.LdapProtocolErrorException;
 import org.apache.directory.shared.ldap.exception.LdapUnwillingToPerformException;
-//import org.apache.directory.shared.ldap.exception.LdapSchemaViolationException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.schema.AttributeType;
@@ -113,7 +112,7 @@ public class DefaultSchemaManager implements SchemaManager
 
     /** the normalized name for the schema modification attributes */
     private DN schemaModificationAttributesDN;
-    
+
     /** A Map containing all the schema being dependent from a schema */
     private Map<String, Set<String>> schemaDependences = new HashMap<String, Set<String>>();
 
@@ -197,14 +196,15 @@ public class DefaultSchemaManager implements SchemaManager
         for ( String schemaName : schemas )
         {
             Schema schema = schemaLoader.getSchema( schemaName );
-            
+
             if ( schema != null )
             {
                 schemaArray[n++] = schema;
             }
             else
             {
-                throw new LdapUnwillingToPerformException( ResultCodeEnum.UNWILLING_TO_PERFORM, I18n.err( I18n.ERR_11001, schemaName ) );
+                throw new LdapUnwillingToPerformException( ResultCodeEnum.UNWILLING_TO_PERFORM, I18n.err(
+                    I18n.ERR_11001, schemaName ) );
             }
         }
 
@@ -216,7 +216,7 @@ public class DefaultSchemaManager implements SchemaManager
     {
         // Create a content container for this schema
         registries.addSchema( schema.getSchemaName() );
-        
+
         // And inject any existig SchemaObject into the registries 
         addComparators( schema, registries );
         addNormalizers( schema, registries );
@@ -254,25 +254,6 @@ public class DefaultSchemaManager implements SchemaManager
         for ( SchemaObject schemaObject : toBeDeleted )
         {
             registries.delete( errors, schemaObject );
-        }
-    }
-
-    
-    /**
-     * Tells if there are schemaObjects for a given schema from the registries
-     */
-    private boolean hasSchemaObjects( Schema schema, Registries registries ) throws Exception
-    {
-        Map<String, Set<SchemaObjectWrapper>> schemaObjects = registries.getObjectBySchemaName();
-        Set<SchemaObjectWrapper> content = schemaObjects.get( StringTools.toLowerCase( schema.getSchemaName() ) );
-
-        if ( ( content == null ) || content.isEmpty() )
-        {
-            return false;
-        }
-        else
-        {
-            return true;
         }
     }
 
@@ -531,7 +512,7 @@ public class DefaultSchemaManager implements SchemaManager
         {
             return true;
         }
-        
+
         boolean loaded = false;
 
         // Reset the errors if not null
@@ -547,7 +528,7 @@ public class DefaultSchemaManager implements SchemaManager
         // Load the schemas
         for ( Schema schema : schemas )
         {
-            if ( !load( clonedRegistries, schema ) && ( ! errors.isEmpty() ) )
+            if ( !load( clonedRegistries, schema ) && ( !errors.isEmpty() ) )
             {
                 return false;
             }
@@ -570,26 +551,26 @@ public class DefaultSchemaManager implements SchemaManager
                 for ( Schema schema : schemas )
                 {
                     load( registries, schema );
-                    
+
                     // Update the schema dependences if needed
-                    
+
                     if ( schema.getDependencies() != null )
                     {
                         for ( String dep : schema.getDependencies() )
                         {
                             Set<String> deps = schemaDependences.get( dep );
-                            
+
                             if ( deps == null )
                             {
                                 deps = new HashSet<String>();
                                 deps.add( schema.getSchemaName() );
                             }
-                            
+
                             // Replace the dependences
                             schemaDependences.put( dep, deps );
                         }
                     }
-                    
+
                     // add the schema to the schemaLoader
                     schemaLoader.addSchema( schema );
                 }
@@ -618,7 +599,7 @@ public class DefaultSchemaManager implements SchemaManager
         {
             return true;
         }
-        
+
         Schema[] schemas = toArray( schemaNames );
 
         return load( schemas );
@@ -661,7 +642,7 @@ public class DefaultSchemaManager implements SchemaManager
         else
         {
             LOG.info( "Loading {} enabled schema: \n{}", schema.getSchemaName(), schema );
-            
+
             // Check that the dependencies, if any, are correct
             if ( schema.getDependencies() != null )
             {
@@ -692,6 +673,8 @@ public class DefaultSchemaManager implements SchemaManager
      * - isRelaxed
      * - disabledAccepted
      */
+    // False positive
+    @SuppressWarnings("PMD.UnusedPrivateMethod")
     private boolean unload( Registries registries, Schema schema ) throws Exception
     {
         if ( schema == null )
@@ -749,12 +732,14 @@ public class DefaultSchemaManager implements SchemaManager
     /**
      * Add all the Schema's DitContentRules
      */
+    // Not yet implemented, but may be used
+    @SuppressWarnings("PMD.UnusedFormalParameter")
     private void addDitContentRules( Schema schema, Registries registries ) throws Exception
     {
-    	if ( !schemaLoader.loadDitContentRules( schema ).isEmpty() )
-    	{
+        if ( !schemaLoader.loadDitContentRules( schema ).isEmpty() )
+        {
             throw new NotImplementedException( I18n.err( I18n.ERR_11003 ) );
-    	}
+        }
         // for ( Entry entry : schemaLoader.loadDitContentRules( schema ) )
         // {
         //     throw new NotImplementedException( I18n.err( I18n.ERR_11003 ) );
@@ -765,12 +750,14 @@ public class DefaultSchemaManager implements SchemaManager
     /**
      * Add all the Schema's DitStructureRules
      */
+    // Not yet implemented, but may be used
+    @SuppressWarnings("PMD.UnusedFormalParameter")
     private void addDitStructureRules( Schema schema, Registries registries ) throws Exception
     {
-    	if ( !schemaLoader.loadDitStructureRules( schema ).isEmpty() )
-    	{
+        if ( !schemaLoader.loadDitStructureRules( schema ).isEmpty() )
+        {
             throw new NotImplementedException( I18n.err( I18n.ERR_11004 ) );
-    	}
+        }
         // for ( Entry entry : schemaLoader.loadDitStructureRules( schema ) )
         // {
         //     throw new NotImplementedException( I18n.err( I18n.ERR_11004 ) );
@@ -795,12 +782,14 @@ public class DefaultSchemaManager implements SchemaManager
     /**
      * Add all the Schema's MatchingRuleUses
      */
+    // Not yet implemented, but may be used
+    @SuppressWarnings("PMD.UnusedFormalParameter")
     private void addMatchingRuleUses( Schema schema, Registries registries ) throws Exception
     {
-    	if ( !schemaLoader.loadMatchingRuleUses( schema ).isEmpty() )
-    	{
+        if ( !schemaLoader.loadMatchingRuleUses( schema ).isEmpty() )
+        {
             throw new NotImplementedException( I18n.err( I18n.ERR_11005 ) );
-    	}
+        }
         // for ( Entry entry : schemaLoader.loadMatchingRuleUses( schema ) )
         // {
         //     throw new NotImplementedException( I18n.err( I18n.ERR_11005 ) );
@@ -811,12 +800,14 @@ public class DefaultSchemaManager implements SchemaManager
     /**
      * Add all the Schema's NameForms
      */
+    // Not yet implemented, but may be used
+    @SuppressWarnings("PMD.UnusedFormalParameter")
     private void addNameForms( Schema schema, Registries registries ) throws Exception
     {
-    	if ( !schemaLoader.loadNameForms( schema ).isEmpty() )
-    	{
+        if ( !schemaLoader.loadNameForms( schema ).isEmpty() )
+        {
             throw new NotImplementedException( I18n.err( I18n.ERR_11006 ) );
-    	}
+        }
         // for ( Entry entry : schemaLoader.loadNameForms( schema ) )
         // {
         //     throw new NotImplementedException( I18n.err( I18n.ERR_11006 ) );
@@ -969,7 +960,7 @@ public class DefaultSchemaManager implements SchemaManager
             {
                 load( registries, schema );
             }
-            
+
             return true;
         }
         else
@@ -978,7 +969,7 @@ public class DefaultSchemaManager implements SchemaManager
             {
                 schema.disable();
             }
-            
+
             return false;
         }
     }
@@ -1190,7 +1181,7 @@ public class DefaultSchemaManager implements SchemaManager
         {
             errors.clear();
         }
-        
+
         // Work on a cloned and relaxed registries
         Registries clonedRegistries = cloneRegistries();
         clonedRegistries.setRelaxed();
@@ -1218,18 +1209,18 @@ public class DefaultSchemaManager implements SchemaManager
                 for ( Schema schema : schemas )
                 {
                     unload( registries, schema );
-                    
+
                     // Update the schema dependences
                     for ( String dep : schema.getDependencies() )
                     {
                         Set<String> deps = schemaDependences.get( dep );
-                        
+
                         if ( deps != null )
                         {
                             deps.remove( schema.getSchemaName() );
                         }
                     }
-                    
+
                     schemaLoader.removeSchema( schema );
                 }
 
@@ -1555,8 +1546,8 @@ public class DefaultSchemaManager implements SchemaManager
 
         return false;
     }
-    
-    
+
+
     /**
      * Get the inner SchemaObject if it's not a C/N/SC
      */
@@ -1614,8 +1605,8 @@ public class DefaultSchemaManager implements SchemaManager
             else
             {
                 // We have an invalid SchemaObject, no need to go any further
-                Throwable error = new LdapUnwillingToPerformException( ResultCodeEnum.UNWILLING_TO_PERFORM,
-                		I18n.err( I18n.ERR_11007, schemaObject.getOid() ) );
+                Throwable error = new LdapUnwillingToPerformException( ResultCodeEnum.UNWILLING_TO_PERFORM, I18n.err(
+                    I18n.ERR_11007, schemaObject.getOid() ) );
                 errors.add( error );
             }
         }
@@ -1656,8 +1647,7 @@ public class DefaultSchemaManager implements SchemaManager
             // The new schemaObject's OID must not already exist
             if ( checkOidExist( copy ) )
             {
-                Throwable error = new LdapProtocolErrorException(
-                		I18n.err( I18n.ERR_11008, schemaObject.getOid() ) );
+                Throwable error = new LdapProtocolErrorException( I18n.err( I18n.ERR_11008, schemaObject.getOid() ) );
                 errors.add( error );
 
                 return false;
@@ -1669,8 +1659,8 @@ public class DefaultSchemaManager implements SchemaManager
             if ( schemaName == null )
             {
                 // The schema associated with the SchemzaObject does not exist. This is not valid.
-                Throwable error = new LdapUnwillingToPerformException( ResultCodeEnum.UNWILLING_TO_PERFORM, I18n.err( I18n.ERR_11009, schemaObject.getOid(),
-                        		copy.getSchemaName() ) );
+                Throwable error = new LdapUnwillingToPerformException( ResultCodeEnum.UNWILLING_TO_PERFORM, I18n.err(
+                    I18n.ERR_11009, schemaObject.getOid(), copy.getSchemaName() ) );
                 errors.add( error );
 
                 return false;
@@ -1759,8 +1749,7 @@ public class DefaultSchemaManager implements SchemaManager
             // The new schemaObject's OID must exist
             if ( !checkOidExist( schemaObject ) )
             {
-                Throwable error = new LdapProtocolErrorException( 
-                		I18n.err( I18n.ERR_11011, schemaObject.getOid() ) );
+                Throwable error = new LdapProtocolErrorException( I18n.err( I18n.ERR_11011, schemaObject.getOid() ) );
                 errors.add( error );
                 return false;
             }
@@ -2005,7 +1994,7 @@ public class DefaultSchemaManager implements SchemaManager
         return !isRelaxed;
     }
 
-    
+
     /**
      * {@inheritDoc}
      */

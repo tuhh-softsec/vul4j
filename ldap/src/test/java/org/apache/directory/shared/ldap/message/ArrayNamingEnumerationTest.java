@@ -22,8 +22,8 @@ package org.apache.directory.shared.ldap.message;
 
 import java.util.NoSuchElementException;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.directory.shared.ldap.message.ArrayNamingEnumeration;
-import org.apache.directory.shared.ldap.util.ArrayUtils;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;

@@ -73,7 +73,7 @@ public class ModifyDnRequestImplTest
 
 
     /**
-     * Tests the same object referrence for equality.
+     * Tests the same object reference for equality.
      */
     @Test
     public void testEqualsSameObj()
@@ -109,6 +109,45 @@ public class ModifyDnRequestImplTest
 
         assertTrue( req0.equals( req1 ) );
     }
+
+
+    /**
+    * Tests the same object reference for equal hashCode
+    */
+   @Test
+   public void testHashCodeSameObj()
+   {
+       ModifyDnRequestImpl req = new ModifyDnRequestImpl( 5 );
+       assertTrue( req.hashCode() == req.hashCode() );
+   }
+
+
+   /**
+    * Tests for equal hashCode using exact copies.
+    */
+   @Test
+   public void testHashCodeExactCopy0()
+   {
+       ModifyDnRequestImpl req0 = getRequest();
+       ModifyDnRequestImpl req1 = getRequest();
+
+       assertTrue( req0.hashCode() == req1.hashCode() );
+   }
+
+
+   /**
+    * Tests for equal hashCode using exact copies.
+    */
+   @Test
+   public void testHashCodeExactCopy1()
+   {
+       ModifyDnRequestImpl req0 = getRequest();
+       req0.setNewSuperior( null );
+       ModifyDnRequestImpl req1 = getRequest();
+       req1.setNewSuperior( null );
+
+       assertTrue( req0.hashCode() == req1.hashCode() );
+   }
 
 
     /**

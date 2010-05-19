@@ -228,6 +228,29 @@ public class ExtendedResponseImplTest
 
 
     /**
+     * Tests for equal hashCode using the same object.
+     */
+    @Test
+    public void testHashCodeSameObj()
+    {
+        ExtendedResponseImpl resp = createStub();
+        assertTrue( resp.hashCode() == resp.hashCode() );
+    }
+
+
+    /**
+     * Tests for equal hashCode using an exact copy.
+     */
+    @Test
+    public void testHashCodeExactCopy()
+    {
+        ExtendedResponseImpl resp0 = createStub();
+        ExtendedResponseImpl resp1 = createStub();
+        assertTrue( resp0.hashCode() == resp1.hashCode() );
+    }
+
+
+    /**
      * Tests inequality when messageIds are different.
      */
     @Test

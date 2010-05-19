@@ -19,6 +19,7 @@
  */
 package org.apache.directory.shared.ldap.message.internal;
 
+
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.message.LdapResultImpl;
 
@@ -48,7 +49,7 @@ public abstract class InternalAbstractResultResponse extends InternalAbstractRes
      * @param type
      *            the message type of the response
      */
-    protected InternalAbstractResultResponse(final int id, final MessageTypeEnum type)
+    protected InternalAbstractResultResponse( final int id, final MessageTypeEnum type )
     {
         super( id, type );
     }
@@ -110,12 +111,9 @@ public abstract class InternalAbstractResultResponse extends InternalAbstractRes
             return false;
         }
 
-        if ( getLdapResult() != null && resp.getLdapResult() != null )
+        if ( getLdapResult() != null && resp.getLdapResult() != null && !getLdapResult().equals( resp.getLdapResult() ) )
         {
-            if ( !getLdapResult().equals( resp.getLdapResult() ) )
-            {
-                return false;
-            }
+            return false;
         }
 
         return true;

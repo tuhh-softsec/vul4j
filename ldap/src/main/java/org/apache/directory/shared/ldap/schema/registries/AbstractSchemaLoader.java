@@ -35,8 +35,6 @@ import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.util.StringTools;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 /**
@@ -47,9 +45,6 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class AbstractSchemaLoader implements SchemaLoader
 {
-    /** static class logger */
-    private static final Logger LOG = LoggerFactory.getLogger( AbstractSchemaLoader.class );
-
     protected SchemaLoaderListener listener;
 
     /** 
@@ -73,13 +68,10 @@ public abstract class AbstractSchemaLoader implements SchemaLoader
             listener.schemaLoaded( schema );
         }
 
-        if ( registries instanceof SchemaLoaderListener )
+        if ( registries instanceof SchemaLoaderListener && registries != listener )
         {
-            if ( registries != listener )
-            {
-                SchemaLoaderListener listener = ( SchemaLoaderListener ) registries;
-                listener.schemaLoaded( schema );
-            }
+            SchemaLoaderListener listener = ( SchemaLoaderListener ) registries;
+            listener.schemaLoaded( schema );
         }
     }
 

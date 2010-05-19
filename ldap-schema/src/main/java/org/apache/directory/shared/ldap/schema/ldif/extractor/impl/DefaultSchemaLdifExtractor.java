@@ -125,13 +125,10 @@ public class DefaultSchemaLdifExtractor implements SchemaLdifExtractor
      */
     public void extractOrCopy( boolean overwrite ) throws IOException
     {
-        if ( !outputDirectory.exists() )
+        if ( !outputDirectory.exists() && !outputDirectory.mkdirs() )
         {
-            if ( !outputDirectory.mkdirs() )
-            {
-                throw new IOException( I18n.err( I18n.ERR_09001_DIRECTORY_CREATION_FAILED, outputDirectory
-                    .getAbsolutePath() ) );
-            }
+            throw new IOException( I18n.err( I18n.ERR_09001_DIRECTORY_CREATION_FAILED, outputDirectory
+                .getAbsolutePath() ) );
         }
 
         File schemaDirectory = new File( outputDirectory, SCHEMA_SUBDIR );
@@ -192,13 +189,10 @@ public class DefaultSchemaLdifExtractor implements SchemaLdifExtractor
     {
         LOG.debug( "copyFile(): source = {}, destination = {}", source, destination );
 
-        if ( !destination.getParentFile().exists() )
+        if ( !destination.getParentFile().exists() && !destination.getParentFile().mkdirs() )
         {
-            if ( !destination.getParentFile().mkdirs() )
-            {
-                throw new IOException( I18n.err( I18n.ERR_09001_DIRECTORY_CREATION_FAILED, destination.getParentFile()
-                    .getAbsolutePath() ) );
-            }
+            throw new IOException( I18n.err( I18n.ERR_09001_DIRECTORY_CREATION_FAILED, destination.getParentFile()
+                .getAbsolutePath() ) );
         }
 
         if ( !source.getParentFile().exists() )
@@ -409,13 +403,10 @@ public class DefaultSchemaLdifExtractor implements SchemaLdifExtractor
                 return;
             }
 
-            if ( !destination.getParentFile().exists() )
+            if ( !destination.getParentFile().exists() && !destination.getParentFile().mkdirs() )
             {
-                if ( !destination.getParentFile().mkdirs() )
-                {
-                    throw new IOException( I18n.err( I18n.ERR_09001_DIRECTORY_CREATION_FAILED, destination
-                        .getParentFile().getAbsolutePath() ) );
-                }
+                throw new IOException( I18n.err( I18n.ERR_09001_DIRECTORY_CREATION_FAILED, destination
+                    .getParentFile().getAbsolutePath() ) );
             }
 
             FileOutputStream out = new FileOutputStream( destination );

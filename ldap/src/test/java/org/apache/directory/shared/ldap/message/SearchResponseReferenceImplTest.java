@@ -63,7 +63,7 @@ public class SearchResponseReferenceImplTest
 
 
     /**
-     * Tests for equality when the same object referrence is used.
+     * Tests for equality when the same object reference is used.
      */
     @Test
     public void testEqualsSameObject()
@@ -165,6 +165,33 @@ public class SearchResponseReferenceImplTest
 
         assertFalse( "using Object.equal() should NOT be equal", resp0.equals( resp1 ) );
         assertTrue( "same but different implementations should be equal", resp1.equals( resp0 ) );
+    }
+
+
+    /**
+     * Tests for equal hashCode when the same object reference is used.
+     */
+    @Test
+    public void testHashCodeSameObject()
+    {
+        SearchResponseReferenceImpl resp = new SearchResponseReferenceImpl( 5 );
+        getReferral( resp );
+        assertTrue( resp.hashCode() == resp.hashCode() );
+    }
+
+
+    /**
+     * Tests for equal hashCode when an exact copy is compared.
+     */
+    @Test
+    public void testHashCodeExactCopy()
+    {
+        SearchResponseReferenceImpl resp0 = new SearchResponseReferenceImpl( 5 );
+        getReferral( resp0 );
+        SearchResponseReferenceImpl resp1 = new SearchResponseReferenceImpl( 5 );
+        getReferral( resp1 );
+
+        assertTrue( resp0.hashCode() == resp1.hashCode() );
     }
 
 

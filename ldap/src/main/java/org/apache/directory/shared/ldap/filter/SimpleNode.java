@@ -60,7 +60,7 @@ public abstract class SimpleNode<T> extends LeafNode
 
     
     /**
-     * Clone the Node
+     * Makes a full clone in new memory space of the current node and children
      */
     @Override public ExprNode clone()
     {

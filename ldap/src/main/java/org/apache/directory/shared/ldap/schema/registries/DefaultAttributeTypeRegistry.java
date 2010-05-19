@@ -50,9 +50,6 @@ public class DefaultAttributeTypeRegistry extends DefaultSchemaObjectRegistry<At
     /** static class logger */
     private static final Logger LOG = LoggerFactory.getLogger( DefaultAttributeTypeRegistry.class );
 
-    /** Speedup for DEBUG mode */
-    private static final boolean IS_DEBUG = LOG.isDebugEnabled();
-
     /** cached Oid/normalizer mapping */
     private transient Map<String, OidNormalizer> oidNormalizerMap;
 

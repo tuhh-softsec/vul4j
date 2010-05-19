@@ -19,6 +19,7 @@
  */
 package org.apache.directory.shared.ldap.message;
 
+
 import org.apache.directory.shared.ldap.message.internal.InternalAbstractResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalReferral;
 import org.apache.directory.shared.ldap.message.internal.InternalSearchResponseReference;
@@ -49,7 +50,7 @@ public class SearchResponseReferenceImpl extends InternalAbstractResponse implem
      * @param id
      *            the session unique message id
      */
-    public SearchResponseReferenceImpl(final int id)
+    public SearchResponseReferenceImpl( final int id )
     {
         super( id, TYPE );
     }
@@ -79,6 +80,23 @@ public class SearchResponseReferenceImpl extends InternalAbstractResponse implem
     public void setReferral( InternalReferral referral )
     {
         this.referral = referral;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode()
+    {
+        int hash = 37;
+        if ( this.referral != null )
+        {
+            hash = hash * 17 + this.referral.hashCode();
+        }
+        hash = hash * 17 + super.hashCode();
+
+        return hash;
     }
 
 
@@ -113,12 +131,9 @@ public class SearchResponseReferenceImpl extends InternalAbstractResponse implem
             return false;
         }
 
-        if ( this.referral != null && resp.getReferral() != null )
+        if ( this.referral != null && resp.getReferral() != null && !this.referral.equals( resp.getReferral() ) )
         {
-            if ( !this.referral.equals( resp.getReferral() ) )
-            {
-                return false;
-            }
+            return false;
         }
 
         return true;
