@@ -19,6 +19,7 @@
  */
 package org.apache.directory.shared.ldap.util;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.directory.shared.i18n.I18n;
 
 

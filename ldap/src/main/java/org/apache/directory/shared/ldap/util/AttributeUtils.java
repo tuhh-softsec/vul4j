@@ -32,6 +32,7 @@ import javax.naming.directory.Attributes;
 import javax.naming.directory.BasicAttribute;
 import javax.naming.directory.BasicAttributes;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.entry.DefaultEntry;
 import org.apache.directory.shared.ldap.entry.DefaultEntryAttribute;
