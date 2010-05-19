@@ -45,17 +45,6 @@ public class LeafNode extends AbstractExprNode
     }
     
     /**
-     * Makes a full clone in new memory space of the current node and children
-     * 
-     * @return the clone
-     */
-    @Override public ExprNode clone()
-    {
-        return super.clone();
-    }
-    
-
-    /**
      * Gets whether this node is a leaf - the answer is always true here.
      * 
      * @return true always

@@ -43,17 +43,6 @@ public class EqualityNode<T> extends SimpleNode<T>
     }
 
     /**
-     * Makes a full clone in new memory space of the current node and children
-     * 
-     * @return the clone
-     */
-    @Override public ExprNode clone()
-    {
-        return super.clone();
-    }
-
-
-    /**
      * Creates a new Equality object.
      * 
      * @param attribute the attribute name

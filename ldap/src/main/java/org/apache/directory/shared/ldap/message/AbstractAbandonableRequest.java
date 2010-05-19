@@ -99,9 +99,12 @@ public class AbstractAbandonableRequest extends InternalAbstractRequest implemen
         } );
     }
 
-    
+
+    // False positive
+    @SuppressWarnings("PMD.UselessOverridingMethod")
     class RequestObservable extends Observable
     {
+        @Override
         public void setChanged()
         {
             super.setChanged();

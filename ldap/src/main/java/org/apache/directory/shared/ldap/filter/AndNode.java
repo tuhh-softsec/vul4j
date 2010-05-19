@@ -53,15 +53,6 @@ public class AndNode extends BranchNode
 
     
     /**
-     * Clone the AndNode
-     */
-    @Override public ExprNode clone()
-    {
-        return super.clone();
-    }
-
-
-    /**
      * Creates an empty AndNode
      */
     public AndNode()
