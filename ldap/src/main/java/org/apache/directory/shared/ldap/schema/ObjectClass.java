@@ -142,7 +142,7 @@ public class ObjectClass extends AbstractSchemaObject
                             if ( superior.objectClassType != ObjectClassTypeEnum.ABSTRACT )
                             {
                                 // An ABSTRACT OC can only inherit from ABSTRACT OCs
-                                String msg = I18n.err( I18n.ERR_04318, oid , superior.getObjectType() , superior );
+                                String msg = I18n.err( I18n.ERR_04318, oid, superior.getObjectType(), superior );
 
                                 Throwable error = new LdapProtocolErrorException( msg );
                                 errors.add( error );
@@ -328,7 +328,7 @@ public class ObjectClass extends AbstractSchemaObject
         }
     }
 
-    
+
     /**
      * Remove the ObjectClass from the registries, updating the references to
      * other SchemaObject.
@@ -410,7 +410,7 @@ public class ObjectClass extends AbstractSchemaObject
         {
             throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
         }
-        
+
         if ( !isReadOnly )
         {
             for ( String oid : oids )
@@ -432,7 +432,7 @@ public class ObjectClass extends AbstractSchemaObject
         {
             throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
         }
-        
+
         if ( !isReadOnly )
         {
             for ( AttributeType attributeType : attributeTypes )
@@ -456,7 +456,7 @@ public class ObjectClass extends AbstractSchemaObject
         {
             throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
         }
-        
+
         if ( !isReadOnly )
         {
             this.mayAttributeTypeOids = mayAttributeTypeOids;
@@ -475,7 +475,7 @@ public class ObjectClass extends AbstractSchemaObject
         {
             throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
         }
-        
+
         if ( !isReadOnly )
         {
             this.mayAttributeTypes = mayAttributeTypes;
@@ -540,7 +540,7 @@ public class ObjectClass extends AbstractSchemaObject
         {
             throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
         }
-        
+
         if ( !isReadOnly )
         {
             for ( String oid : oids )
@@ -562,7 +562,7 @@ public class ObjectClass extends AbstractSchemaObject
         {
             throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
         }
-        
+
         if ( !isReadOnly )
         {
             for ( AttributeType attributeType : attributeTypes )
@@ -586,7 +586,7 @@ public class ObjectClass extends AbstractSchemaObject
         {
             throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
         }
-        
+
         if ( !isReadOnly )
         {
             this.mustAttributeTypeOids = mustAttributeTypeOids;
@@ -605,7 +605,7 @@ public class ObjectClass extends AbstractSchemaObject
         {
             throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
         }
-        
+
         if ( !isReadOnly )
         {
             this.mustAttributeTypes = mustAttributeTypes;
@@ -674,7 +674,7 @@ public class ObjectClass extends AbstractSchemaObject
         {
             throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
         }
-        
+
         if ( !isReadOnly )
         {
             for ( String oid : oids )
@@ -699,7 +699,7 @@ public class ObjectClass extends AbstractSchemaObject
         {
             throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
         }
-        
+
         if ( !isReadOnly )
         {
             for ( ObjectClass objectClass : objectClasses )
@@ -725,7 +725,7 @@ public class ObjectClass extends AbstractSchemaObject
         {
             throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
         }
-        
+
         if ( !isReadOnly )
         {
             this.superiors = superiors;
@@ -772,7 +772,7 @@ public class ObjectClass extends AbstractSchemaObject
         {
             throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
         }
-        
+
         if ( !isReadOnly )
         {
             this.superiorOids = superiorOids;
@@ -802,7 +802,7 @@ public class ObjectClass extends AbstractSchemaObject
         {
             throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
         }
-        
+
         if ( !isReadOnly )
         {
             this.objectClassType = objectClassType;
