@@ -370,6 +370,7 @@ public class Driver {
 		if (!authenticationHandler.beforeProxy(resourceContext)) {
 			return;
 		}
+
 		if (renderers.length == 0) {
 			// As we don't have any transformation to apply, we don't even
 			// have to retrieve the resource if it is already in browser's
@@ -390,6 +391,17 @@ public class Driver {
 			}
 			LOG.debug("'" + relUrl + "' is text : will apply renderers.");
 			String currentValue = textOutput.toString();
+
+			// Fix resources
+			if (config.isFixResources()) {
+				ResourceFixupRenderer fixup = new ResourceFixupRenderer(config
+						.getBaseURL(), config.getVisibleBaseURL(), relUrl,
+						config.getFixMode());
+				StringWriter stringWriter = new StringWriter();
+				fixup.render(resourceContext, currentValue, stringWriter);
+				currentValue = stringWriter.toString();
+			}
+
 			for (Renderer renderer : renderers) {
 				StringWriter stringWriter = new StringWriter();
 				renderer.render(resourceContext, currentValue, stringWriter);
