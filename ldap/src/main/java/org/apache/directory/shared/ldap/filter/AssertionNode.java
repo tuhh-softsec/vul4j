@@ -20,7 +20,6 @@
 package org.apache.directory.shared.ldap.filter;
 
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.message.internal.InternalRequest;
 
 
 /**
