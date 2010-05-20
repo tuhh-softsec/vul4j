@@ -909,34 +909,9 @@ public class ObjectClass extends AbstractSchemaObject
     public int hashCode()
     {
         int hash = 37;
-
-        hash = hash * 17 + super.hashCode();
-        hash = hash * 17 + objectClassType.hashCode();
-        hash = hash * 17 + superiorOids.size();
-        // Order doesn't matters, thus just add the hashCode
-        for ( String oid : superiorOids )
-        {
-            hash = hash + oid.hashCode();
-        }
-        hash = hash * 17 + superiors.size();
-        // Order doesn't matters, thus just add the hashCode
-        for ( ObjectClass oid : superiors )
-        {
-            hash = hash + oid.hashCode();
-        }
-        hash = hash * 17 + mayAttributeTypeOids.size();
-        // Order doesn't matters, thus just add the hashCode
-        for ( String oid : mayAttributeTypeOids )
-        {
-            hash = hash + oid.hashCode();
-        }
-        hash = hash * 17 + mayAttributeTypes.size();
-        // Order doesn't matters, thus just add the hashCode
-        for ( AttributeType oid : mayAttributeTypes )
-        {
-            hash = hash + oid.hashCode();
-        }
-        hash = hash * 17 + superiorOids.hashCode();
+        
+        // Th eObjectClass hashcode is entirelly defined by it's OID
+        hash = hash * 17 + oid.hashCode();
 
         return hash;
     }
