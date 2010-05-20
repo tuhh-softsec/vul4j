@@ -77,7 +77,12 @@ public class ResourceFixupRenderer implements Renderer {
 		if (cleanBaseUrl.charAt(cleanBaseUrl.length() - 1) == SLASH) {
 			cleanBaseUrl = cleanBaseUrl.substring(0, cleanBaseUrl.length() - 1);
 		}
-		URL url = new URL(cleanBaseUrl + SLASH + pageFullPath);
+
+		String cleanPageFullPath = pageFullPath;
+		if (cleanPageFullPath.charAt(0) == SLASH) {
+			cleanPageFullPath = cleanPageFullPath.substring(1);
+		}
+		URL url = new URL(cleanBaseUrl + SLASH + cleanPageFullPath);
 
 		// Split url
 		server = url.getProtocol() + "://" + url.getHost();

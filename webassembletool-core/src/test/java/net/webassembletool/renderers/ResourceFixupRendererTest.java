@@ -79,7 +79,7 @@ public class ResourceFixupRendererTest extends TestCase {
 	public void testUrlSanitizing2() throws IOException, HttpErrorPage {
 		String base = "http://myapp/context/";
 		String visibleBase = "http://app2/";
-		String page = "page/";
+		String page = "/page/";
 		final String input = "  <a href=\"../styles/style.css\"/> <img src=\"images/logo.png\"/> <a href=\"/context/page/page1.htm\">link</a> <img src=\"http://www.google.com/logo.com\"/>";
 		final String expectedOutputRelative = "  <a href=\"/page/../styles/style.css\"/> <img src=\"/page/images/logo.png\"/> <a href=\"/page/page1.htm\">link</a> <img src=\"http://www.google.com/logo.com\"/>";
 		final String expectedOutputAbsolute = "  <a href=\"http://app2/page/../styles/style.css\"/> <img src=\"http://app2/page/images/logo.png\"/> <a href=\"http://app2/page/page1.htm\">link</a> <img src=\"http://www.google.com/logo.com\"/>";
