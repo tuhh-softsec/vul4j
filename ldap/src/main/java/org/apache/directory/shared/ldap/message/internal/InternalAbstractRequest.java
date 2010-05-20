@@ -69,7 +69,7 @@ public class InternalAbstractRequest extends InternalAbstractMessage implements 
 
     /**
      * {@inheritDoc}
-     *
+     */
     @Override
     public boolean equals( Object obj )
     {
@@ -78,7 +78,7 @@ public class InternalAbstractRequest extends InternalAbstractMessage implements 
             return true;
         }
 
-        if ( ( obj == null ) || !( obj instanceof InternalAbstractMessage ) )
+        if ( ( obj == null ) || !( obj instanceof InternalRequest ) )
         {
             return false;
         }
