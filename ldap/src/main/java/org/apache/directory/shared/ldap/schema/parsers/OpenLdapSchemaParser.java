@@ -195,6 +195,8 @@ public class OpenLdapSchemaParser extends AbstractSchemaParser
     }
 
 
+    // False positive
+    @SuppressWarnings("PMD.EmptyIfStmt")
     private void resolveObjectIdentifierMacro( OpenLdapObjectIdentifierMacro macro ) throws ParseException
     {
         String rawOidOrNameSuffix = macro.getRawOidOrNameSuffix();

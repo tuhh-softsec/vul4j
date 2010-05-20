@@ -2500,6 +2500,8 @@ public class Registries implements SchemaLoaderListener, Cloneable
      * - first clone the SchemaObjetc registries
      * - second restore the relation between them
      */
+    // False positive
+    @SuppressWarnings("PMD.EmptyCatchBlock")
     public Registries clone() throws CloneNotSupportedException
     {
         // First clone the structure
