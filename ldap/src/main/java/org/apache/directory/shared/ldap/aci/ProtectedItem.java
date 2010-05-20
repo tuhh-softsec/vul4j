@@ -40,6 +40,8 @@ import org.apache.directory.shared.ldap.filter.ExprNode;
  */
 public abstract class ProtectedItem implements Serializable
 {
+    private static final long serialVersionUID = 4727233664478810613L;
+
     /**
      * The entry contents as a whole. In case of a family member, it also means
      * the entry content of each subordinate family member within the same
@@ -103,6 +105,23 @@ public abstract class ProtectedItem implements Serializable
         }
 
 
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public int hashCode()
+        {
+            int hash = 37;
+            hash = hash * 17 + getClass().getName().hashCode();
+
+            return hash;
+        }
+
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
         public boolean equals( Object o )
         {
             if ( this == o )
@@ -203,6 +222,8 @@ public abstract class ProtectedItem implements Serializable
      */
     private abstract static class AttributeTypeProtectedItem extends ProtectedItem
     {
+        private static final long serialVersionUID = 8425056384389605434L;
+
         protected final Collection<String> attributeTypes;
 
 
@@ -226,6 +247,23 @@ public abstract class ProtectedItem implements Serializable
         }
 
 
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public int hashCode()
+        {
+            int hash = 37;
+            hash = hash * 17 + attributeTypes.hashCode();
+
+            return hash;
+        }
+
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
         public boolean equals( Object o )
         {
             if ( this == o )
@@ -391,6 +429,24 @@ public abstract class ProtectedItem implements Serializable
         }
 
 
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public int hashCode()
+        {
+            int hash = 37;
+            hash = hash * 17 + attributes.hashCode();
+            hash = hash * 17 + super.hashCode();
+
+            return hash;
+        }
+
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
         public boolean equals( Object o )
         {
             if ( !super.equals( o ) )
@@ -480,6 +536,23 @@ public abstract class ProtectedItem implements Serializable
         }
 
 
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public int hashCode()
+        {
+            int hash = 37;
+            hash = hash * 17 + items.hashCode();
+
+            return hash;
+        }
+
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
         public boolean equals( Object o )
         {
             if ( !super.equals( o ) )
@@ -562,6 +635,23 @@ public abstract class ProtectedItem implements Serializable
         }
 
 
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public int hashCode()
+        {
+            int hash = 37;
+            hash = hash * 17 + filter.hashCode();
+
+            return hash;
+        }
+
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
         public boolean equals( Object o )
         {
             if ( this == o )
@@ -628,6 +718,22 @@ public abstract class ProtectedItem implements Serializable
         }
 
 
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public int hashCode()
+        {
+            int hash = 37;
+            hash = hash * 17 + value;
+            return hash;
+        }
+
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
         public boolean equals( Object o )
         {
             if ( this == o )
@@ -687,6 +793,24 @@ public abstract class ProtectedItem implements Serializable
         }
 
 
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public int hashCode()
+        {
+            int hash = 37;
+            hash = hash * 17 + items.hashCode();
+            hash = hash * 17 + super.hashCode();
+
+            return hash;
+        }
+
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
         public boolean equals( Object o )
         {
             if ( !super.equals( o ) )
