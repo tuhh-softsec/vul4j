@@ -20,8 +20,8 @@
 package org.apache.directory.shared.ldap.aci;
 
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -39,19 +39,16 @@ import org.junit.Test;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public class NameTest
+public class UserClass_NameTest
 {
-    private Name nameInstanceA;
-    private Name nameInstanceB;
-    private Name nameInstanceC;
-    private Name nameInstanceD;
+    private Name nameA;
+    private Name nameACopy;
+    private Name nameB;
+    private Name nameC;
 
 
     /**
      * Initialize name instances
-     * 
-     * nameInstanceA is equal to nameInstanceB
-     * NameInstanceC is different
      */
     @Before
     public void initNames() throws LdapInvalidDnException
@@ -72,41 +69,72 @@ public class NameTest
         dnSetD.add( new DN( "b=bb" ) );
         dnSetD.add( new DN( "c=cc" ) );
 
-        nameInstanceA = new Name( dnSetA );
-        nameInstanceB = new Name( dnSetB );
-        nameInstanceC = new Name( dnSetC );
-        nameInstanceD = new Name( dnSetD );
+        nameA = new Name( dnSetA );
+        nameACopy = new Name( dnSetB );
+        nameB = new Name( dnSetC );
+        nameC = new Name( dnSetD );
     }
 
 
-    /**
-     * Tests for equality.
-     */
     @Test
-    public void testEqual() throws Exception
+    public void testEqualsNull() throws Exception
     {
-        assertFalse( nameInstanceA.equals( null ) );
-        assertTrue( nameInstanceA.equals( nameInstanceA ) );
-        assertTrue( nameInstanceA.equals( nameInstanceB ) );
-        assertTrue( nameInstanceB.equals( nameInstanceA ) );
-        assertTrue( nameInstanceB.equals( nameInstanceC ) );
-        assertTrue( nameInstanceA.equals( nameInstanceC ) );
-        assertFalse( nameInstanceA.equals( nameInstanceD ) );
-        assertFalse( nameInstanceB.equals( nameInstanceD ) );
+        assertFalse( nameA.equals( null ) );
     }
 
 
-    /**
-     * Tests for hashCode.
-     * 
-     * Only test hashCode for equal object as they must have an equal hashCode.
-     * For non equal object the hashCode can be equal.
-     */
     @Test
-    public void testHashCode() throws Exception
+    public void testEqualsReflexive() throws Exception
     {
-        assertTrue( nameInstanceA.hashCode() == nameInstanceB.hashCode() );
-        assertTrue( nameInstanceB.hashCode() == nameInstanceC.hashCode() );
-        assertTrue( nameInstanceA.hashCode() == nameInstanceC.hashCode() );
+        assertEquals( nameA, nameA );
+    }
+
+
+    @Test
+    public void testHashCodeReflexive() throws Exception
+    {
+        assertEquals( nameA.hashCode(), nameA.hashCode() );
+    }
+
+
+    @Test
+    public void testEqualsSymmetric() throws Exception
+    {
+        assertEquals( nameA, nameACopy );
+        assertEquals( nameACopy, nameA );
+    }
+
+
+    @Test
+    public void testHashCodeSymmetric() throws Exception
+    {
+        assertEquals( nameA.hashCode(), nameACopy.hashCode() );
+        assertEquals( nameACopy.hashCode(), nameA.hashCode() );
+    }
+
+
+    @Test
+    public void testEqualsTransitive() throws Exception
+    {
+        assertEquals( nameA, nameACopy );
+        assertEquals( nameACopy, nameB );
+        assertEquals( nameA, nameB );
+    }
+
+
+    @Test
+    public void testHashCodeTransitive() throws Exception
+    {
+        assertEquals( nameA.hashCode(), nameACopy.hashCode() );
+        assertEquals( nameACopy.hashCode(), nameB.hashCode() );
+        assertEquals( nameA.hashCode(), nameB.hashCode() );
+    }
+
+
+    @Test
+    public void testNotEqualDiffValue() throws Exception
+    {
+        assertFalse( nameA.equals( nameC ) );
+        assertFalse( nameC.equals( nameA ) );
     }
 }
