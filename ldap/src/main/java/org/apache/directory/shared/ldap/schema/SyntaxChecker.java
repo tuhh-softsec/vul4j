@@ -85,8 +85,23 @@ public abstract class SyntaxChecker extends LoadableSchemaObject
 
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode()
+    {
+        int hash = 37;
+        hash = hash * 17 + getClass().getName().hashCode();
+        hash=hash * 17 + super.hashCode();
+        
+        return hash;
+    }
+
+
+    /**
      * @see Object#equals()
      */
+    @Override
     public boolean equals( Object o )
     {
         if ( !super.equals( o ) )
