@@ -693,23 +693,6 @@ public class LdifEntry implements Cloneable, Externalizable
         {
             case Add :
                 // Checks the attributes
-                if ( entry == null )
-                {
-                    if ( otherEntry.entry != null )
-                    {
-                        return false;
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-                
-                if ( otherEntry.entry == null )
-                {
-                    return false;
-                }
-                
                 if ( entry.size() != otherEntry.entry.size() )
                 {
                     return false;
