@@ -39,6 +39,8 @@ import org.apache.directory.shared.ldap.subtree.SubtreeSpecification;
  */
 public abstract class UserClass implements Serializable
 {
+    private static final long serialVersionUID = -123919984184219893L;
+
     /**
      * Every directory user (with possible requirements for
      * authenticationLevel).
@@ -131,6 +133,7 @@ public abstract class UserClass implements Serializable
      */
     private static abstract class NamedUserClass extends UserClass
     {
+        private static final long serialVersionUID = 8571875984468893621L;
         protected final Set<DN> names;
 
 
@@ -321,6 +324,23 @@ public abstract class UserClass implements Serializable
         }
 
 
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public int hashCode()
+        {
+            int hash = 37;
+            hash = hash * 17 + subtreeSpecifications.hashCode();
+
+            return hash;
+        }
+
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
         public boolean equals( Object o )
         {
             if ( this == o )
