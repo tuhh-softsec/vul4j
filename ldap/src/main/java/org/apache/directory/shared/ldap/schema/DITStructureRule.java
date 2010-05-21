@@ -252,21 +252,6 @@ public class DITStructureRule extends AbstractSchemaObject
 
 
     /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int hashCode()
-    {
-        int hash = 37;
-        
-        // TODO: Fix me when equals() is implemented
-        hash = hash * 17 + getClass().getName().hashCode();
-
-        return hash;
-    }
-
-
-    /**
      * @see Object#equals(Object)
      */
     @Override

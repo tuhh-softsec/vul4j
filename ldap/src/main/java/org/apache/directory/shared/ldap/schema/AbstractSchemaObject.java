@@ -625,9 +625,16 @@ public abstract class AbstractSchemaObject implements SchemaObject
 
 
     /**
+     * This method is final to forbid the inherited classes to implement
+     * it. This has been done for performances reasons : the hashcode should 
+     * be computed only once, and stored locally.
+     * 
+     * The hashcode is currently computed in the lock() method, which is a hack
+     * that should be fixed.
+     * 
      * @see Object#hashCode()
      */
-    public int hashCode()
+    public final int hashCode()
     {
         return h;
     }

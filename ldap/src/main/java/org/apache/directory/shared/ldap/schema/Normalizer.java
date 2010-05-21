@@ -91,20 +91,6 @@ public abstract class Normalizer extends LoadableSchemaObject
 
 
     /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int hashCode()
-    {
-        int hash = 37;
-        hash = hash * 17 + super.hashCode();
-        hash = hash * 17 + getClass().getName().hashCode();
-        
-        return hash;
-    }
-
-
-    /**
      * @see Object#equals()
      */
     @Override

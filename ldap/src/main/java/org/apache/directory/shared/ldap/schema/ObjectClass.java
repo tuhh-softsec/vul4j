@@ -903,21 +903,6 @@ public class ObjectClass extends AbstractSchemaObject
 
 
     /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int hashCode()
-    {
-        int hash = 37;
-        
-        // Th eObjectClass hashcode is entirelly defined by it's OID
-        hash = hash * 17 + oid.hashCode();
-
-        return hash;
-    }
-
-
-    /**
      * @see Object#equals(Object)
      */
     @Override

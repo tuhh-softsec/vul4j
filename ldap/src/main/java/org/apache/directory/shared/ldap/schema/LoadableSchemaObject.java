@@ -151,26 +151,6 @@ public abstract class LoadableSchemaObject extends AbstractSchemaObject
 
 
     /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int hashCode()
-    {
-        int hash = 37;
-        
-        // Add hashCodes from fields used in equals() 'Check the byteCode' TODO
-        // TODO
-        if ( fqcn != null )
-        {
-            hash = hash * 17 + fqcn.hashCode();
-        }
-        hash = hash * 17 + super.hashCode();
-        
-        return hash;
-    }
-
-
-    /**
      * @see Object#equals()
      */
     @Override
