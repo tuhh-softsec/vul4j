@@ -23,13 +23,12 @@ package org.apache.directory.shared.ldap.aci;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.directory.shared.ldap.aci.ProtectedItem.RestrictedBy;
 import org.apache.directory.shared.ldap.aci.ProtectedItem.RestrictedByItem;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -56,19 +55,20 @@ public class ProtectedItem_RestrictedByTest
         RestrictedByItem rbiA = new RestrictedByItem( "aa", "aa" );
         RestrictedByItem rbiB = new RestrictedByItem( "bb", "bb" );
         RestrictedByItem rbiC = new RestrictedByItem( "cc", "cc" );
+        RestrictedByItem rbiD = new RestrictedByItem( "dd", "dd" );
 
-        Collection<RestrictedByItem> colA = new ArrayList<RestrictedByItem>();
+        Set<RestrictedByItem> colA = new HashSet<RestrictedByItem>();
         colA.add( rbiA );
         colA.add( rbiB );
         colA.add( rbiC );
-        Collection<RestrictedByItem> colB = new ArrayList<RestrictedByItem>();
+        Set<RestrictedByItem> colB = new HashSet<RestrictedByItem>();
         colB.add( rbiA );
         colB.add( rbiB );
         colB.add( rbiC );
-        Collection<RestrictedByItem> colC = new ArrayList<RestrictedByItem>();
+        Set<RestrictedByItem> colC = new HashSet<RestrictedByItem>();
         colC.add( rbiB );
         colC.add( rbiC );
-        colC.add( rbiA );
+        colC.add( rbiD );
 
         restrictedByA = new RestrictedBy( colA );
         restrictedByACopy = new RestrictedBy( colA );
@@ -99,7 +99,6 @@ public class ProtectedItem_RestrictedByTest
 
 
     @Test
-    @Ignore
     public void testEqualsSymmetric() throws Exception
     {
         assertEquals( restrictedByA, restrictedByACopy );
@@ -108,7 +107,6 @@ public class ProtectedItem_RestrictedByTest
 
 
     @Test
-    @Ignore
     public void testHashCodeSymmetric() throws Exception
     {
         assertEquals( restrictedByA.hashCode(), restrictedByACopy.hashCode() );
@@ -117,7 +115,6 @@ public class ProtectedItem_RestrictedByTest
 
 
     @Test
-    @Ignore
     public void testEqualsTransitive() throws Exception
     {
         assertEquals( restrictedByA, restrictedByACopy );
@@ -127,7 +124,6 @@ public class ProtectedItem_RestrictedByTest
 
 
     @Test
-    @Ignore
     public void testHashCodeTransitive() throws Exception
     {
         assertEquals( restrictedByA.hashCode(), restrictedByACopy.hashCode() );

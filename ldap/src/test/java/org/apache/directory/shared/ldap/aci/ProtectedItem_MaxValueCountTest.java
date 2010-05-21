@@ -23,13 +23,12 @@ package org.apache.directory.shared.ldap.aci;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.directory.shared.ldap.aci.ProtectedItem.MaxValueCount;
 import org.apache.directory.shared.ldap.aci.ProtectedItem.MaxValueCountItem;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -57,19 +56,20 @@ public class ProtectedItem_MaxValueCountTest
         MaxValueCountItem mvciA = new MaxValueCountItem( "aa", 1 );
         MaxValueCountItem mvciB = new MaxValueCountItem( "bb", 2 );
         MaxValueCountItem mvciC = new MaxValueCountItem( "cc", 3 );
+        MaxValueCountItem mvciD = new MaxValueCountItem( "dd", 4 );
 
-        Collection<MaxValueCountItem> colA = new ArrayList<MaxValueCountItem>();
+        Set<MaxValueCountItem> colA = new HashSet<MaxValueCountItem>();
         colA.add( mvciA );
         colA.add( mvciB );
         colA.add( mvciC );
-        Collection<MaxValueCountItem> colB = new ArrayList<MaxValueCountItem>();
+        Set<MaxValueCountItem> colB = new HashSet<MaxValueCountItem>();
         colB.add( mvciA );
         colB.add( mvciB );
         colB.add( mvciC );
-        Collection<MaxValueCountItem> colC = new ArrayList<MaxValueCountItem>();
+        Set<MaxValueCountItem> colC = new HashSet<MaxValueCountItem>();
         colC.add( mvciB );
         colC.add( mvciC );
-        colC.add( mvciA );
+        colC.add( mvciD );
 
         maxValueCountA = new MaxValueCount( colA );
         maxValueCountACopy = new MaxValueCount( colA );
@@ -93,7 +93,6 @@ public class ProtectedItem_MaxValueCountTest
 
 
     @Test
-    @Ignore
     public void testHashCodeReflexive() throws Exception
     {
         assertEquals( maxValueCountA.hashCode(), maxValueCountA.hashCode() );
@@ -101,7 +100,6 @@ public class ProtectedItem_MaxValueCountTest
 
 
     @Test
-    @Ignore
     public void testEqualsSymmetric() throws Exception
     {
         assertEquals( maxValueCountA, maxValueCountACopy );
@@ -110,7 +108,6 @@ public class ProtectedItem_MaxValueCountTest
 
 
     @Test
-    @Ignore
     public void testHashCodeSymmetric() throws Exception
     {
         assertEquals( maxValueCountA.hashCode(), maxValueCountACopy.hashCode() );
@@ -119,7 +116,6 @@ public class ProtectedItem_MaxValueCountTest
 
 
     @Test
-    @Ignore
     public void testEqualsTransitive() throws Exception
     {
         assertEquals( maxValueCountA, maxValueCountACopy );
@@ -129,7 +125,6 @@ public class ProtectedItem_MaxValueCountTest
 
 
     @Test
-    @Ignore
     public void testHashCodeTransitive() throws Exception
     {
         assertEquals( maxValueCountA.hashCode(), maxValueCountACopy.hashCode() );

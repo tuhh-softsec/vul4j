@@ -23,12 +23,11 @@ package org.apache.directory.shared.ldap.aci;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.directory.shared.ldap.aci.ProtectedItem.SelfValue;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -52,18 +51,18 @@ public class ProtectedItem_SelfValueTest
     @Before
     public void initNames() throws Exception
     {
-        Collection<String> colA = new ArrayList<String>();
+        Set<String> colA = new HashSet<String>();
         colA.add( "aa" );
         colA.add( "bb" );
         colA.add( "cc" );
-        Collection<String> colB = new ArrayList<String>();
+        Set<String> colB = new HashSet<String>();
         colB.add( "aa" );
         colB.add( "bb" );
         colB.add( "cc" );
-        Collection<String> colC = new ArrayList<String>();
+        Set<String> colC = new HashSet<String>();
         colC.add( "bb" );
         colC.add( "cc" );
-        colC.add( "aa" );
+        colC.add( "dd" );
 
         selfValueA = new SelfValue( colA );
         selfValueACopy = new SelfValue( colA );
@@ -94,7 +93,6 @@ public class ProtectedItem_SelfValueTest
 
 
     @Test
-    @Ignore
     public void testEqualsSymmetric() throws Exception
     {
         assertEquals( selfValueA, selfValueACopy );
@@ -103,7 +101,6 @@ public class ProtectedItem_SelfValueTest
 
 
     @Test
-    @Ignore
     public void testHashCodeSymmetric() throws Exception
     {
         assertEquals( selfValueA.hashCode(), selfValueACopy.hashCode() );
@@ -112,7 +109,6 @@ public class ProtectedItem_SelfValueTest
 
 
     @Test
-    @Ignore
     public void testEqualsTransitive() throws Exception
     {
         assertEquals( selfValueA, selfValueACopy );
@@ -122,7 +118,6 @@ public class ProtectedItem_SelfValueTest
 
 
     @Test
-    @Ignore
     public void testHashCodeTransitive() throws Exception
     {
         assertEquals( selfValueA.hashCode(), selfValueACopy.hashCode() );

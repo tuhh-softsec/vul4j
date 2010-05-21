@@ -21,10 +21,9 @@ package org.apache.directory.shared.ldap.aci;
 
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.Set;
 
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
@@ -113,7 +112,6 @@ public abstract class ProtectedItem implements Serializable
         {
             int hash = 37;
             hash = hash * 17 + getClass().getName().hashCode();
-
             return hash;
         }
 
@@ -224,7 +222,7 @@ public abstract class ProtectedItem implements Serializable
     {
         private static final long serialVersionUID = 8425056384389605434L;
 
-        protected final Collection<String> attributeTypes;
+        protected final Set<String> attributeTypes;
 
 
         /**
@@ -232,9 +230,9 @@ public abstract class ProtectedItem implements Serializable
          * 
          * @param attributeTypes the collection of attirbute IDs
          */
-        protected AttributeTypeProtectedItem( Collection<String> attributeTypes )
+        protected AttributeTypeProtectedItem( Set<String> attributeTypes )
         {
-            this.attributeTypes = Collections.unmodifiableCollection( attributeTypes );
+            this.attributeTypes = Collections.unmodifiableSet( attributeTypes );
         }
 
 
@@ -255,7 +253,6 @@ public abstract class ProtectedItem implements Serializable
         {
             int hash = 37;
             hash = hash * 17 + attributeTypes.hashCode();
-
             return hash;
         }
 
@@ -331,7 +328,7 @@ public abstract class ProtectedItem implements Serializable
          * @param attributeTypes
          *            the collection of attribute IDs.
          */
-        public AttributeType( Collection<String> attributeTypes )
+        public AttributeType( Set<String> attributeTypes )
         {
             super( attributeTypes );
         }
@@ -357,7 +354,7 @@ public abstract class ProtectedItem implements Serializable
          * @param attributeTypes
          *            the collection of attribute IDs.
          */
-        public AllAttributeValues( Collection<String> attributeTypes )
+        public AllAttributeValues( Set<String> attributeTypes )
         {
             super( attributeTypes );
         }
@@ -387,7 +384,7 @@ public abstract class ProtectedItem implements Serializable
          * 
          * @param attributeTypes the collection of attribute IDs.
          */
-        public SelfValue( Collection<String> attributeTypes )
+        public SelfValue( Set<String> attributeTypes )
         {
             super( attributeTypes );
         }
@@ -405,7 +402,7 @@ public abstract class ProtectedItem implements Serializable
     public static class AttributeValue extends ProtectedItem
     {
         private static final long serialVersionUID = -258318397837951363L;
-        private final Collection<Attribute> attributes;
+        private final Set<Attribute> attributes;
 
 
         /**
@@ -414,9 +411,9 @@ public abstract class ProtectedItem implements Serializable
          * @param attributes
          *            the collection of {@link Attribute}s.
          */
-        public AttributeValue( Collection<Attribute> attributes )
+        public AttributeValue( Set<Attribute> attributes )
         {
-            this.attributes = Collections.unmodifiableCollection( attributes );
+            this.attributes = Collections.unmodifiableSet( attributes );
         }
 
 
@@ -437,8 +434,6 @@ public abstract class ProtectedItem implements Serializable
         {
             int hash = 37;
             hash = hash * 17 + attributes.hashCode();
-            hash = hash * 17 + super.hashCode();
-
             return hash;
         }
 
@@ -449,7 +444,12 @@ public abstract class ProtectedItem implements Serializable
         @Override
         public boolean equals( Object o )
         {
-            if ( !super.equals( o ) )
+            if ( this == o )
+            {
+                return true;
+            }
+
+            if ( o == null )
             {
                 return false;
             }
@@ -512,7 +512,7 @@ public abstract class ProtectedItem implements Serializable
     {
         private static final long serialVersionUID = 5261651541488944572L;
 
-        private final Collection<ProtectedItem.MaxValueCountItem> items;
+        private final Set<ProtectedItem.MaxValueCountItem> items;
 
 
         /**
@@ -521,9 +521,9 @@ public abstract class ProtectedItem implements Serializable
          * @param items
          *            the collection of {@link MaxValueCountItem}s.
          */
-        public MaxValueCount( Collection<MaxValueCountItem> items )
+        public MaxValueCount( Set<MaxValueCountItem> items )
         {
-            this.items = Collections.unmodifiableCollection( new ArrayList<MaxValueCountItem>( items ) );
+            this.items = Collections.unmodifiableSet( items );
         }
 
 
@@ -544,7 +544,6 @@ public abstract class ProtectedItem implements Serializable
         {
             int hash = 37;
             hash = hash * 17 + items.hashCode();
-
             return hash;
         }
 
@@ -555,7 +554,12 @@ public abstract class ProtectedItem implements Serializable
         @Override
         public boolean equals( Object o )
         {
-            if ( !super.equals( o ) )
+            if ( this == o )
+            {
+                return true;
+            }
+
+            if ( o == null )
             {
                 return false;
             }
@@ -643,7 +647,6 @@ public abstract class ProtectedItem implements Serializable
         {
             int hash = 37;
             hash = hash * 17 + filter.hashCode();
-
             return hash;
         }
 
@@ -770,7 +773,7 @@ public abstract class ProtectedItem implements Serializable
     public static class RestrictedBy extends ProtectedItem
     {
         private static final long serialVersionUID = -8157637446588058799L;
-        private final Collection<RestrictedByItem> items;
+        private final Set<RestrictedByItem> items;
 
 
         /**
@@ -778,9 +781,9 @@ public abstract class ProtectedItem implements Serializable
          * 
          * @param items the collection of {@link RestrictedByItem}s.
          */
-        public RestrictedBy( Collection<RestrictedByItem> items )
+        public RestrictedBy( Set<RestrictedByItem> items )
         {
-            this.items = Collections.unmodifiableCollection( items );
+            this.items = Collections.unmodifiableSet( items );
         }
 
 
@@ -801,8 +804,6 @@ public abstract class ProtectedItem implements Serializable
         {
             int hash = 37;
             hash = hash * 17 + items.hashCode();
-            hash = hash * 17 + super.hashCode();
-
             return hash;
         }
 
@@ -813,7 +814,12 @@ public abstract class ProtectedItem implements Serializable
         @Override
         public boolean equals( Object o )
         {
-            if ( !super.equals( o ) )
+            if ( this == o )
+            {
+                return true;
+            }
+
+            if ( o == null )
             {
                 return false;
             }

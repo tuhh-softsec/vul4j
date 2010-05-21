@@ -23,15 +23,14 @@ package org.apache.directory.shared.ldap.aci;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.naming.directory.Attribute;
 import javax.naming.directory.BasicAttribute;
 
 import org.apache.directory.shared.ldap.aci.ProtectedItem.AttributeValue;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -62,19 +61,21 @@ public class ProtectedItem_AttributeValueTest
         attrB.add( "bb" );
         Attribute attrC = new BasicAttribute( "cc" );
         attrC.add( "cc" );
+        Attribute attrD = new BasicAttribute( "dd" );
+        attrD.add( "dd" );
 
-        Collection<Attribute> colA = new ArrayList<Attribute>();
+        Set<Attribute> colA = new HashSet<Attribute>();
         colA.add( attrA );
         colA.add( attrB );
         colA.add( attrC );
-        Collection<Attribute> colB = new ArrayList<Attribute>();
+        Set<Attribute> colB = new HashSet<Attribute>();
         colB.add( attrA );
         colB.add( attrB );
         colB.add( attrC );
-        Collection<Attribute> colC = new ArrayList<Attribute>();
+        Set<Attribute> colC = new HashSet<Attribute>();
         colC.add( attrB );
         colC.add( attrC );
-        colC.add( attrA );
+        colC.add( attrD );
 
         attributeValueA = new AttributeValue( colA );
         attributeValueACopy = new AttributeValue( colA );
@@ -105,7 +106,6 @@ public class ProtectedItem_AttributeValueTest
 
 
     @Test
-    @Ignore
     public void testEqualsSymmetric() throws Exception
     {
         assertEquals( attributeValueA, attributeValueACopy );
@@ -114,7 +114,6 @@ public class ProtectedItem_AttributeValueTest
 
 
     @Test
-    @Ignore
     public void testHashCodeSymmetric() throws Exception
     {
         assertEquals( attributeValueA.hashCode(), attributeValueACopy.hashCode() );
@@ -123,7 +122,6 @@ public class ProtectedItem_AttributeValueTest
 
 
     @Test
-    @Ignore
     public void testEqualsTransitive() throws Exception
     {
         assertEquals( attributeValueA, attributeValueACopy );
@@ -133,7 +131,6 @@ public class ProtectedItem_AttributeValueTest
 
 
     @Test
-    @Ignore
     public void testHashCodeTransitive() throws Exception
     {
         assertEquals( attributeValueA.hashCode(), attributeValueACopy.hashCode() );
