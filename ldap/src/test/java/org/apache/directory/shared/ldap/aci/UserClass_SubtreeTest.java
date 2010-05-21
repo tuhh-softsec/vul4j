@@ -23,14 +23,14 @@ package org.apache.directory.shared.ldap.aci;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.directory.shared.ldap.aci.UserClass.Subtree;
+import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.subtree.BaseSubtreeSpecification;
 import org.apache.directory.shared.ldap.subtree.SubtreeSpecification;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -55,21 +55,22 @@ public class UserClass_SubtreeTest
     public void initNames() throws Exception
     {
         SubtreeSpecification subtreeSpecA = new BaseSubtreeSpecification();
-        SubtreeSpecification subtreeSpecB = new BaseSubtreeSpecification( );
-        SubtreeSpecification subtreeSpecC = new BaseSubtreeSpecification( );
+        SubtreeSpecification subtreeSpecB = new BaseSubtreeSpecification();
+        SubtreeSpecification subtreeSpecC = new BaseSubtreeSpecification();
+        SubtreeSpecification subtreeSpecD = new BaseSubtreeSpecification( new DN( "cn=dummy" ) );
 
-        Collection<SubtreeSpecification> colA = new ArrayList<SubtreeSpecification>();
+        Set<SubtreeSpecification> colA = new HashSet<SubtreeSpecification>();
         colA.add( subtreeSpecA );
         colA.add( subtreeSpecB );
         colA.add( subtreeSpecC );
-        Collection<SubtreeSpecification> colB = new ArrayList<SubtreeSpecification>();
+        Set<SubtreeSpecification> colB = new HashSet<SubtreeSpecification>();
         colB.add( subtreeSpecA );
         colB.add( subtreeSpecB );
         colB.add( subtreeSpecC );
-        Collection<SubtreeSpecification> colC = new ArrayList<SubtreeSpecification>();
+        Set<SubtreeSpecification> colC = new HashSet<SubtreeSpecification>();
         colC.add( subtreeSpecB );
         colC.add( subtreeSpecC );
-        colC.add( subtreeSpecA );
+        colC.add( subtreeSpecD );
 
         subtreeA = new Subtree( colA );
         subtreeACopy = new Subtree( colA );
@@ -100,7 +101,6 @@ public class UserClass_SubtreeTest
 
 
     @Test
-    @Ignore
     public void testEqualsSymmetric() throws Exception
     {
         assertEquals( subtreeA, subtreeACopy );
@@ -109,7 +109,6 @@ public class UserClass_SubtreeTest
 
 
     @Test
-    @Ignore
     public void testHashCodeSymmetric() throws Exception
     {
         assertEquals( subtreeA.hashCode(), subtreeACopy.hashCode() );
@@ -118,7 +117,6 @@ public class UserClass_SubtreeTest
 
 
     @Test
-    @Ignore
     public void testEqualsTransitive() throws Exception
     {
         assertEquals( subtreeA, subtreeACopy );
@@ -128,7 +126,6 @@ public class UserClass_SubtreeTest
 
 
     @Test
-    @Ignore
     public void testHashCodeTransitive() throws Exception
     {
         assertEquals( subtreeA.hashCode(), subtreeACopy.hashCode() );

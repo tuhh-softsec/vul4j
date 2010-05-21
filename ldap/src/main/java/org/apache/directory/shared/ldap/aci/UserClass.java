@@ -21,8 +21,6 @@ package org.apache.directory.shared.ldap.aci;
 
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -299,7 +297,7 @@ public abstract class UserClass implements Serializable
     {
         private static final long serialVersionUID = 3949337699049701332L;
 
-        protected final Collection<SubtreeSpecification> subtreeSpecifications;
+        protected final Set<SubtreeSpecification> subtreeSpecifications;
 
 
         /**
@@ -308,17 +306,16 @@ public abstract class UserClass implements Serializable
          * @param subtreeSpecs
          *            the collection of unrefined {@link SubtreeSpecification}s.
          */
-        public Subtree( Collection<SubtreeSpecification> subtreeSpecs )
+        public Subtree( Set<SubtreeSpecification> subtreeSpecs )
         {
-            this.subtreeSpecifications = Collections.unmodifiableCollection( new ArrayList<SubtreeSpecification>(
-                subtreeSpecs ) );
+            this.subtreeSpecifications = Collections.unmodifiableSet( subtreeSpecs );
         }
 
 
         /**
          * Returns the collection of unrefined {@link SubtreeSpecification}s.
          */
-        public Collection<SubtreeSpecification> getSubtreeSpecifications()
+        public Set<SubtreeSpecification> getSubtreeSpecifications()
         {
             return subtreeSpecifications;
         }
