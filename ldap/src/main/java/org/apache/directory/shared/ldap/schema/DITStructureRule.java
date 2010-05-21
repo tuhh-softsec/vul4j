@@ -81,6 +81,8 @@ import org.apache.directory.shared.ldap.NotImplementedException;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
+// super.hashCode is final
+@SuppressWarnings("PMD.OverrideBothEqualsAndHashcode")
 public class DITStructureRule extends AbstractSchemaObject
 {
     /** The serialVersionUID */

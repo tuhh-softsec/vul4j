@@ -34,6 +34,8 @@ import org.apache.directory.shared.ldap.message.ResultCodeEnum;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
+// super.hashCode is final
+@SuppressWarnings("PMD.OverrideBothEqualsAndHashcode")
 public abstract class SyntaxChecker extends LoadableSchemaObject
 {
     /** The serialversionUID */

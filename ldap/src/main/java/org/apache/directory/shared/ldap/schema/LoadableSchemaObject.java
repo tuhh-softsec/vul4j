@@ -34,6 +34,8 @@ import org.apache.directory.shared.ldap.util.StringTools;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev: 437007 $
  */
+// super.hashCode is final
+@SuppressWarnings("PMD.OverrideBothEqualsAndHashcode")
 public abstract class LoadableSchemaObject extends AbstractSchemaObject
 {
     /** The serialVersionUID */

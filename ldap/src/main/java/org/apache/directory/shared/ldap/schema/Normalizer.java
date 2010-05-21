@@ -30,6 +30,8 @@ import org.apache.directory.shared.ldap.exception.LdapException;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
+// super.hashCode is final
+@SuppressWarnings("PMD.OverrideBothEqualsAndHashcode")
 public abstract class Normalizer extends LoadableSchemaObject
 {
     /** The serialversionUID */
