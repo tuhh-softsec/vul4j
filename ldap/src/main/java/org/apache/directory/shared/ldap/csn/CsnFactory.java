@@ -19,8 +19,6 @@
  */
 package org.apache.directory.shared.ldap.csn;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
 
 /**
  * Generates a new {@link Csn}.
@@ -33,18 +31,21 @@ public class CsnFactory
     private static volatile long lastTimestamp;
     
     /** The integer used to disambiguate CSN generated at the same time */
-    private AtomicInteger changeCount;
+    private int changeCount;
     
     /** The replicaId to use for every CSN created by this factory */
     private int replicaId;
 
     /** A special instance ID for a purge CSN */
     private static final int PURGE_INSTANCEID = 0x0FFF;
+    
+    /** A lock used during the instance creation */
+    private Object lock = new Object();
 
 
     public CsnFactory( int replicaId )
     {
-        changeCount = new AtomicInteger( 0 );
+        changeCount = 0;
         this.replicaId = replicaId;
     }
 
@@ -56,23 +57,27 @@ public class CsnFactory
      */
     public Csn newInstance()
     {
-        synchronized ( changeCount )
+        int changeCount = 0;
+        
+        synchronized ( lock )
         {
             long newTimestamp = System.currentTimeMillis();
             
             // We will be able to generate 2 147 483 647 CSNs each 10 ms max
             if ( lastTimestamp == newTimestamp )
             {
-                changeCount.incrementAndGet();
+                this.changeCount++;
             }
             else
             {
                 lastTimestamp = newTimestamp;
-                changeCount.set( 0 );
+                this.changeCount = 0;
             }
+            
+            changeCount = this.changeCount;
         }
 
-        return new Csn( lastTimestamp, changeCount.get(), replicaId, 0 );
+        return new Csn( lastTimestamp, changeCount, replicaId, 0 );
     }
 
 
