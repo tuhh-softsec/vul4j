@@ -1242,6 +1242,8 @@ public class LdapTransformer
      * @param msg the message to transform
      * @return the msg transformed
      */
+    @edu.umd.cs.findbugs.annotations.SuppressWarnings(value="NP_NULL_ON_SOME_PATH",
+        justification="The number of Ldap Message we are dealing with is finite, and we won't ever have to deal with any other unexpected one")
     public static Object transform( InternalMessage msg )
     {
         if ( IS_DEBUG )
