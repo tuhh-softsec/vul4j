@@ -283,7 +283,7 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
      */
     RDN( int start, int length, String upName, String normName )
     {
-        this.start = 0;
+        this.start = start;
         this.length = length;
         this.upName = upName;
         this.normName = normName;
