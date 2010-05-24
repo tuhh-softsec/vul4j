@@ -851,7 +851,7 @@ public class DescriptionUtils
                     }
                     else
                     {
-                        sb.append( " " );
+                        sb.append( " $ " );
                     }
 
                     sb.append( '\'' ).append( schemaObject.getName() ).append( '\'' );
