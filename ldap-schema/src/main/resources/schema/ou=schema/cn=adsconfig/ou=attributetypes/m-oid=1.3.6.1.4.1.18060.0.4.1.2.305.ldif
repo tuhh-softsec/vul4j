@@ -9,7 +9,7 @@ m-ordering: caseExactOrderingMatch
 m-oid: 1.3.6.1.4.1.18060.0.4.1.2.305
 entrycsn: 20100111202216.594000Z#000000#000#000000
 m-substr: caseExactSubstringsMatch
-m-syntax: 1.3.6.1.4.1.1466.115.121.1.44
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.26
 objectclass: metaTop
 objectclass: metaAttributeType
 objectclass: top
