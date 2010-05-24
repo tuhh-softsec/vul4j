@@ -9,7 +9,7 @@ m-name: ads-replConsumer
 m-description: class to hold a replication consumer details
 m-must: ads-dsReplicaId
 m-must: ads-replAliasDerefMode
-m-must: ads-replBase
+m-must: ads-searchBaseDN
 m-must: ads-replLastSentCsn
 m-must: ads-replSearchScope
 m-must: ads-replSearchFilter

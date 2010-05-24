@@ -8,7 +8,7 @@ entrycsn: 20100511145902.546000Z#000000#000#000000
 m-name: ads-replProvider
 m-description: replication provider configuration
 m-must: ads-dsReplicaId
-m-must: ads-replBase
+m-must: ads-searchBaseDN
 m-must: ads-replProvHostName
 m-may: ads-replAliasDerefMode
 m-may: ads-replAttribute
