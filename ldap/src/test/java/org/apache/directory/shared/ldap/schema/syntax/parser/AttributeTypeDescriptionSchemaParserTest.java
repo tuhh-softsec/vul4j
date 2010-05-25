@@ -1068,4 +1068,27 @@ public class AttributeTypeDescriptionSchemaParserTest
         }
     }
 
+
+    /**
+     * Tests without EQUALITY
+     * 
+     * @throws ParseException
+     */
+    @Test
+    public void testNoqualityMR() throws ParseException
+    {
+        String value = "( 2.5.4.58 NAME 'attributeCertificateAttribute' " + "DESC 'attribute certificate use ;binary' "
+            + "SYNTAX 1.3.6.1.4.1.1466.115.121.1.8 ) ";
+        AttributeType attributeType = parser.parseAttributeTypeDescription( value );
+
+        assertEquals( "2.5.4.58", attributeType.getOid() );
+        assertEquals( 1, attributeType.getNames().size() );
+        assertEquals( "attributeCertificateAttribute", attributeType.getNames().get( 0 ) );
+        assertEquals( "attribute certificate use ;binary", attributeType.getDescription() );
+        assertNull( attributeType.getSuperiorOid() );
+        assertNull( attributeType.getEqualityOid() );
+        assertEquals( "1.3.6.1.4.1.1466.115.121.1.8", attributeType.getSyntaxOid() );
+        assertEquals( UsageEnum.USER_APPLICATIONS, attributeType.getUsage() );
+        assertEquals( 0, attributeType.getExtensions().size() );
+    }
 }

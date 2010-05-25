@@ -52,7 +52,6 @@ import org.apache.directory.shared.ldap.schema.comparators.ComparableComparator;
 import org.apache.directory.shared.ldap.schema.comparators.CsnComparator;
 import org.apache.directory.shared.ldap.schema.ldif.extractor.SchemaLdifExtractor;
 import org.apache.directory.shared.ldap.schema.ldif.extractor.impl.DefaultSchemaLdifExtractor;
-import org.apache.directory.shared.ldap.schema.loader.ldif.LdifSchemaLoader;
 import org.apache.directory.shared.ldap.schema.manager.impl.DefaultSchemaManager;
 import org.apache.directory.shared.ldap.schema.normalizers.NoOpNormalizer;
 import org.apache.directory.shared.ldap.schema.syntaxCheckers.OctetStringSyntaxChecker;
@@ -381,6 +380,32 @@ public class SchemaManagerAddTest
         assertFalse( isATPresent( schemaManager, "1.1.0" ) );
         assertEquals( atrSize, schemaManager.getAttributeTypeRegistry().size() );
         assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
+    }
+
+
+    /**
+     * Try to inject an AttributeType without EQUALITY MR
+     */
+    @Test
+    public void testAddAttributeTypeNoEqualityMR() throws Exception
+    {
+        SchemaManager schemaManager = loadSystem();
+        int atrSize = schemaManager.getAttributeTypeRegistry().size();
+        int goidSize = schemaManager.getGlobalOidRegistry().size();
+
+        AttributeType attributeType = new AttributeType( "1.1.0" );
+        attributeType.setSyntaxOid( "1.3.6.1.4.1.1466.115.121.1.8 " );
+        attributeType.setUsage( UsageEnum.USER_APPLICATIONS );
+
+        // It should be OK
+        assertTrue( schemaManager.add( attributeType ) );
+
+        List<Throwable> errors = schemaManager.getErrors();
+        assertEquals( 0, errors.size() );
+
+        assertTrue( isATPresent( schemaManager, "1.1.0" ) );
+        assertEquals( atrSize + 1, schemaManager.getAttributeTypeRegistry().size() );
+        assertEquals( goidSize + 1, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -998,7 +1023,7 @@ public class SchemaManagerAddTest
 
         assertEquals( 1, errors.size() );
         Throwable error = errors.get( 0 );
-        
+
         assertTrue( error instanceof LdapProtocolErrorException );
 
         assertEquals( mrrSize, schemaManager.getMatchingRuleRegistry().size() );
