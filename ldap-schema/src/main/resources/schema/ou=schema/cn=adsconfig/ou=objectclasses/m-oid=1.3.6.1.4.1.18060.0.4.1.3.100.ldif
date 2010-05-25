@@ -24,4 +24,5 @@ m-may: ads-dsReplication
 m-may: ads-dsSyncPeriodMillis
 m-may: ads-dsTestEntries
 m-may: ads-enabled
+m-may: description
 

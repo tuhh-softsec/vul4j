@@ -17,4 +17,4 @@ m-may: ads-transportBacklog
 m-may: ads-transportEnableSSL
 m-may: ads-transportNbThreads
 m-may: ads-enabled
-
+m-may: description
