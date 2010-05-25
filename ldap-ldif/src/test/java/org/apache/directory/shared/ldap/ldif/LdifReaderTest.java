@@ -1194,7 +1194,7 @@ public class LdifReaderTest
         }
         catch (Exception ne)
         {
-        	assertTrue(I18n.err(I18n.ERR_12070), ne.getMessage().startsWith(I18n.ERR_12070));
+        	assertTrue( I18n.err( I18n.ERR_12070 ), ne.getMessage().startsWith( I18n.ERR_12070.getErrorCode() ) );
         }
     }
 
