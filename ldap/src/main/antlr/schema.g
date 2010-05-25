@@ -222,7 +222,7 @@ options    {
     static class NoidLen
     {
         String noid = "";
-        int len = 0;
+        long len = 0L;
     }
     static class ElementTracker
     {

@@ -20,21 +20,22 @@
 package org.apache.directory.shared.ldap.schema.syntax.parser;
 
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.text.ParseException;
 
+import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.UsageEnum;
 import org.apache.directory.shared.ldap.schema.parser.ConsoleParserMonitor;
-import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.parsers.AttributeTypeDescriptionSchemaParser;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.fail;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 
 
 /**
@@ -135,12 +136,14 @@ public class AttributeTypeDescriptionSchemaParserTest
         // SUP descr, no space
         value = "(1.1 SYNTAX1.1 SUPabcdefghijklmnopqrstuvwxyz-ABCDEFGHIJKLMNOPQRSTUVWXYZ-0123456789)";
         attributeType = parser.parseAttributeTypeDescription( value );
-        assertEquals( "abcdefghijklmnopqrstuvwxyz-ABCDEFGHIJKLMNOPQRSTUVWXYZ-0123456789", attributeType.getSuperiorOid() );
+        assertEquals( "abcdefghijklmnopqrstuvwxyz-ABCDEFGHIJKLMNOPQRSTUVWXYZ-0123456789", attributeType
+            .getSuperiorOid() );
 
         // SUP descr, newline
         value = "\t(\t1.1\tSYNTAX\t1.1\tSUP\tabcdefghijklmnopqrstuvwxyz-ABCDEFGHIJKLMNOPQRSTUVWXYZ-0123456789\t)\t";
         attributeType = parser.parseAttributeTypeDescription( value );
-        assertEquals( "abcdefghijklmnopqrstuvwxyz-ABCDEFGHIJKLMNOPQRSTUVWXYZ-0123456789", attributeType.getSuperiorOid() );
+        assertEquals( "abcdefghijklmnopqrstuvwxyz-ABCDEFGHIJKLMNOPQRSTUVWXYZ-0123456789", attributeType
+            .getSuperiorOid() );
 
         // quoted SUP value
         value = "( 1.1 SYNTAX 1.1 SUP 'name' )";
@@ -220,12 +223,14 @@ public class AttributeTypeDescriptionSchemaParserTest
         // EQUALITY descr, no space
         value = "(1.1 SYNTAX1.1 EQUALITYabcdefghijklmnopqrstuvwxyz-ABCDEFGHIJKLMNOPQRSTUVWXYZ-0123456789)";
         attributeType = parser.parseAttributeTypeDescription( value );
-        assertEquals( "abcdefghijklmnopqrstuvwxyz-ABCDEFGHIJKLMNOPQRSTUVWXYZ-0123456789", attributeType.getEqualityOid() );
+        assertEquals( "abcdefghijklmnopqrstuvwxyz-ABCDEFGHIJKLMNOPQRSTUVWXYZ-0123456789", attributeType
+            .getEqualityOid() );
 
         // EQUALITY descr, newline
         value = "\n(\n1.1\nSYNTAX\n1.1\nEQUALITY\nabcdefghijklmnopqrstuvwxyz-ABCDEFGHIJKLMNOPQRSTUVWXYZ-0123456789\n)\n";
         attributeType = parser.parseAttributeTypeDescription( value );
-        assertEquals( "abcdefghijklmnopqrstuvwxyz-ABCDEFGHIJKLMNOPQRSTUVWXYZ-0123456789", attributeType.getEqualityOid() );
+        assertEquals( "abcdefghijklmnopqrstuvwxyz-ABCDEFGHIJKLMNOPQRSTUVWXYZ-0123456789", attributeType
+            .getEqualityOid() );
 
         // quoted value
         value = "( 1.1 SYNTAX 1.1 EQUALITY 'caseExcactMatch' )";
@@ -264,12 +269,14 @@ public class AttributeTypeDescriptionSchemaParserTest
         // ORDERING descr, no space
         value = "(1.1 SYNTAX1.1 ORDERINGabcdefghijklmnopqrstuvwxyz-ABCDEFGHIJKLMNOPQRSTUVWXYZ-0123456789)";
         attributeType = parser.parseAttributeTypeDescription( value );
-        assertEquals( "abcdefghijklmnopqrstuvwxyz-ABCDEFGHIJKLMNOPQRSTUVWXYZ-0123456789", attributeType.getOrderingOid() );
+        assertEquals( "abcdefghijklmnopqrstuvwxyz-ABCDEFGHIJKLMNOPQRSTUVWXYZ-0123456789", attributeType
+            .getOrderingOid() );
 
         // ORDERING descr, newline
         value = "\r(\r1.1\rSYNTAX\r1.1\rORDERING\rabcdefghijklmnopqrstuvwxyz-ABCDEFGHIJKLMNOPQRSTUVWXYZ-0123456789\r)\r";
         attributeType = parser.parseAttributeTypeDescription( value );
-        assertEquals( "abcdefghijklmnopqrstuvwxyz-ABCDEFGHIJKLMNOPQRSTUVWXYZ-0123456789", attributeType.getOrderingOid() );
+        assertEquals( "abcdefghijklmnopqrstuvwxyz-ABCDEFGHIJKLMNOPQRSTUVWXYZ-0123456789", attributeType
+            .getOrderingOid() );
 
         // quoted value
         value = "( 1.1 SYNTAX 1.1 ORDERING 'generalizedTimeOrderingMatch' )";
@@ -357,7 +364,7 @@ public class AttributeTypeDescriptionSchemaParserTest
         attributeType = parser.parseAttributeTypeDescription( value );
         assertEquals( "1.2.3.4567.8.9.0", attributeType.getSyntaxOid() );
         assertEquals( 0, attributeType.getSyntaxLength() );
-        
+
         // quoted numericoid
         value = "( 1.1 SYNTAX '1.2.3.4567.8.9.0' )";
         attributeType = parser.parseAttributeTypeDescription( value );
@@ -443,17 +450,16 @@ public class AttributeTypeDescriptionSchemaParserTest
         }
 
         // length overflow
-        value = "( 1.1 SYNTAX 1.2.3.4{123456789012} )";
+        value = "( 1.1 SYNTAX 1.2.3.4{123456789012234567890} )";
         try
         {
             attributeType = parser.parseAttributeTypeDescription( value );
-            fail( "Exception expected, invalid SYNTAX 1.2.3.4{123456789012} (length overflow)" );
+            fail( "Exception expected, invalid SYNTAX 1.2.3.4{12345678901234567890} (length overflow)" );
         }
         catch ( NumberFormatException nfe )
         {
             // expected
         }
-
     }
 
 
@@ -660,11 +666,13 @@ public class AttributeTypeDescriptionSchemaParserTest
 
         assertEquals( "1.2.3.4.5.6.7.8.9.0", attributeType.getOid() );
         assertEquals( 2, attributeType.getNames().size() );
-        assertEquals( "abcdefghijklmnopqrstuvwxyz-ABCDEFGHIJKLMNOPQRSTUVWXYZ-0123456789", attributeType.getNames().get( 0 ) );
+        assertEquals( "abcdefghijklmnopqrstuvwxyz-ABCDEFGHIJKLMNOPQRSTUVWXYZ-0123456789", attributeType.getNames().get(
+            0 ) );
         assertEquals( "test", attributeType.getNames().get( 1 ) );
         assertEquals( "Descripton \u00E4\u00F6\u00FC\u00DF \u90E8\u9577", attributeType.getDescription() );
         assertTrue( attributeType.isObsolete() );
-        assertEquals( "abcdefghijklmnopqrstuvwxyz-ABCDEFGHIJKLMNOPQRSTUVWXYZ-0123456789", attributeType.getSuperiorOid() );
+        assertEquals( "abcdefghijklmnopqrstuvwxyz-ABCDEFGHIJKLMNOPQRSTUVWXYZ-0123456789", attributeType
+            .getSuperiorOid() );
         assertEquals( "2.3.4.5.6.7.8.9.0.1", attributeType.getEqualityOid() );
         assertEquals( "3.4.5.6.7.8.9.0.1.2", attributeType.getOrderingOid() );
         assertEquals( "4.5.6.7.8.9.0.1.2.3", attributeType.getSubstringOid() );

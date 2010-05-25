@@ -151,7 +151,7 @@ noidlen returns [AntlrSchemaParser.NoidLen noidlen = new AntlrSchemaParser.NoidL
         (WHSP)?
         (RPAR)?
         (
-            l:LEN { noidlen.len = Integer.parseInt(l.getText()); }
+            l:LEN { noidlen.len = Long.parseLong(l.getText()); }
             (QUOTE)?
             (WHSP)?
             (RPAR)?
@@ -184,7 +184,7 @@ quirksNoidlen returns [AntlrSchemaParser.NoidLen noidlen = new AntlrSchemaParser
         (WHSP)?
         (RPAR)?
         (
-            l:LEN { noidlen.len = Integer.parseInt(l.getText()); }
+            l:LEN { noidlen.len = Long.parseLong(l.getText()); }
             (QUOTE)?
             (WHSP)?
             (RPAR)?

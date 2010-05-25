@@ -192,7 +192,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
     private UsageEnum usage = UsageEnum.USER_APPLICATIONS;
 
     /** the length of this attribute in bytes */
-    private int syntaxLength = 0;
+    private long syntaxLength = 0L;
 
 
     /**
@@ -739,7 +739,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
         {
             throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
         }
-        
+
         if ( !isReadOnly )
         {
             this.isSingleValued = singleValued;
@@ -769,7 +769,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
         {
             throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
         }
-        
+
         if ( !isReadOnly )
         {
             this.canUserModify = canUserModify;
@@ -799,7 +799,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
         {
             throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
         }
-        
+
         this.isCollective = collective;
     }
 
@@ -815,7 +815,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
         {
             throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
         }
-        
+
         if ( !isReadOnly )
         {
             this.isCollective = collective;
@@ -850,7 +850,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
         {
             throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
         }
-        
+
         if ( !isReadOnly )
         {
             this.usage = usage;
@@ -874,7 +874,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
         {
             throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
         }
-        
+
         this.usage = usage;
     }
 
@@ -884,7 +884,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
      * 
      * @return the length of the attribute
      */
-    public int getSyntaxLength()
+    public long getSyntaxLength()
     {
         return syntaxLength;
     }
@@ -896,13 +896,13 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
      * 
      * @param length the new length to set
      */
-    public void setSyntaxLength( int length )
+    public void setSyntaxLength( long length )
     {
         if ( locked )
         {
             throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
         }
-        
+
         if ( !isReadOnly )
         {
             this.syntaxLength = length;
@@ -961,7 +961,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
         {
             throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
         }
-        
+
         if ( !isReadOnly )
         {
             this.superiorOid = superiorOid;
@@ -980,7 +980,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
         {
             throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
         }
-        
+
         if ( !isReadOnly )
         {
             this.superior = superior;
@@ -1000,7 +1000,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
         {
             throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
         }
-        
+
         if ( !isReadOnly )
         {
             this.superiorOid = superiorOid;
@@ -1019,7 +1019,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
         {
             throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
         }
-        
+
         this.superior = superior;
         this.superiorOid = superior.getOid();
     }
@@ -1076,7 +1076,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
         {
             throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
         }
-        
+
         if ( !isReadOnly )
         {
             this.syntaxOid = syntaxOid;
@@ -1095,7 +1095,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
         {
             throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
         }
-        
+
         if ( !isReadOnly )
         {
             this.syntax = syntax;
@@ -1115,7 +1115,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
         {
             throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
         }
-        
+
         this.syntax = syntax;
         this.syntaxOid = syntax.getOid();
     }
@@ -1172,7 +1172,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
         {
             throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
         }
-        
+
         if ( !isReadOnly )
         {
             this.equalityOid = equalityOid;
@@ -1191,7 +1191,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
         {
             throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
         }
-        
+
         if ( !isReadOnly )
         {
             this.equality = equality;
@@ -1211,7 +1211,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
         {
             throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
         }
-        
+
         this.equality = equality;
         this.equalityOid = equality.getOid();
     }
@@ -1268,7 +1268,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
         {
             throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
         }
-        
+
         if ( !isReadOnly )
         {
             this.orderingOid = orderingOid;
@@ -1287,7 +1287,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
         {
             throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
         }
-        
+
         if ( !isReadOnly )
         {
             this.ordering = ordering;
@@ -1307,7 +1307,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
         {
             throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
         }
-        
+
         this.ordering = ordering;
         this.orderingOid = ordering.getOid();
     }
@@ -1364,7 +1364,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
         {
             throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
         }
-        
+
         if ( !isReadOnly )
         {
             this.substringOid = substrOid;
@@ -1383,7 +1383,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
         {
             throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
         }
-        
+
         if ( !isReadOnly )
         {
             this.substring = substring;
@@ -1403,7 +1403,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
         {
             throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
         }
-        
+
         this.substring = substring;
         this.substringOid = substring.getOid();
     }
