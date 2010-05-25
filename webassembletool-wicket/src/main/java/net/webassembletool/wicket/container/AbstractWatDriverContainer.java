@@ -17,6 +17,8 @@ package net.webassembletool.wicket.container;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.webassembletool.Driver;
+import net.webassembletool.DriverFactory;
 import net.webassembletool.wicket.utils.WATNullResponse;
 import net.webassembletool.wicket.utils.WATWicketConfiguration;
 
@@ -67,6 +69,7 @@ public abstract class AbstractWatDriverContainer extends WebMarkupContainer {
 	public static final String WAT_ERROR_PREFIX = "net.webassembletool.error";
 
 	private final Map<String, String> params = new HashMap<String, String>();
+	private String provider = null;
 	private final Map<String, String> replaceRules = new HashMap<String, String>();
 
 	/**
@@ -89,6 +92,24 @@ public abstract class AbstractWatDriverContainer extends WebMarkupContainer {
 	 */
 	public void addReplaceRule(String regexp, String replacement) {
 		replaceRules.put(regexp, replacement);
+	}
+
+	/**
+	 * Get current driver, according to provider.
+	 * 
+	 * @see AbstractWatDriverContainer#setProvider(String);
+	 * @return current WAT Driver
+	 */
+	protected Driver getDriver() {
+		if (provider == null) {
+			return DriverFactory.getInstance();
+		} else {
+			return DriverFactory.getInstance(provider);
+		}
+	}
+
+	public String getProvider() {
+		return provider;
 	}
 
 	/*
@@ -148,4 +169,9 @@ public abstract class AbstractWatDriverContainer extends WebMarkupContainer {
 			response.write(errorContent);
 		}
 	}
+
+	public void setProvider(String provider) {
+		this.provider = provider;
+	}
+
 }

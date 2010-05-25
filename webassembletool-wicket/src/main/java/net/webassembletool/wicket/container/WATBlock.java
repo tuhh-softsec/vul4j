@@ -22,7 +22,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.webassembletool.Driver;
-import net.webassembletool.DriverFactory;
 import net.webassembletool.HttpErrorPage;
 import net.webassembletool.wicket.utils.ResponseWriter;
 
@@ -65,7 +64,6 @@ public class WATBlock extends AbstractWatDriverContainer {
 	private String blockName = null;
 	private String page = null;
 	private boolean parseAbsoluteUrl = false;
-	private String provider = null;
 
 	/**
 	 * Create an include block
@@ -100,10 +98,6 @@ public class WATBlock extends AbstractWatDriverContainer {
 		return blockName;
 	}
 
-	public String getProvider() {
-		return provider;
-	}
-
 	public boolean isParseAbsoluteUrl() {
 		return parseAbsoluteUrl;
 	}
@@ -127,13 +121,7 @@ public class WATBlock extends AbstractWatDriverContainer {
 		HttpServletResponse response = webResponse.getHttpServletResponse();
 
 		// Create driver
-		Driver driver = null;
-
-		if (provider == null) {
-			driver = DriverFactory.getInstance();
-		} else {
-			driver = DriverFactory.getInstance(provider);
-		}
+		Driver driver = getDriver();
 
 		if (parseAbsoluteUrl) {
 
@@ -171,10 +159,6 @@ public class WATBlock extends AbstractWatDriverContainer {
 
 	public void setParseAbsoluteUrl(boolean parseAbsoluteUrl) {
 		this.parseAbsoluteUrl = parseAbsoluteUrl;
-	}
-
-	public void setProvider(String provider) {
-		this.provider = provider;
 	}
 
 }

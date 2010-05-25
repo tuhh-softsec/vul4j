@@ -21,7 +21,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.webassembletool.Driver;
-import net.webassembletool.DriverFactory;
 import net.webassembletool.HttpErrorPage;
 import net.webassembletool.wicket.utils.ResponseWriter;
 
@@ -92,7 +91,7 @@ public class WATTemplate extends AbstractWatDriverContainer {
 		WebResponse webResponse = (WebResponse) getResponse();
 		HttpServletResponse response = webResponse.getHttpServletResponse();
 
-		Driver driver = DriverFactory.getInstance();
+		Driver driver = getDriver();
 		try {
 			driver.renderTemplate(page, name, new ResponseWriter(webResponse),
 					request, response, blocks, replaceRules, params, false);
