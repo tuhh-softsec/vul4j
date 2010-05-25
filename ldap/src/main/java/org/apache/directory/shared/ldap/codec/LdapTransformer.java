@@ -253,11 +253,7 @@ public class LdapTransformer
         
         internalLdapResult.setResultCode( codecLdapResult.getResultCode() );
 
-        if ( codecLdapResult.getReferrals() == null )
-        {
-            
-        }
-        else
+        if ( codecLdapResult.getReferrals() != null )
         {
             ReferralImpl referral = new ReferralImpl();
             
