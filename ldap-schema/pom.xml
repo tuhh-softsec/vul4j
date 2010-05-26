@@ -76,12 +76,9 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <groupId>org.apache.maven.plugins</groupId>
         <configuration>
-          <systemProperties>
-            <property>
-              <name>workingDirectory</name>
-              <value>${basedir}/target</value>
-            </property>
-          </systemProperties>
+          <systemPropertyVariables>
+            <workingDirectory>${basedir}/target</workingDirectory>
+          </systemPropertyVariables>
         </configuration>
       </plugin>
     </plugins>
