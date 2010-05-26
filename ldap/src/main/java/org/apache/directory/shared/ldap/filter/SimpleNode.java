@@ -39,7 +39,7 @@ public abstract class SimpleNode<T> extends LeafNode
     /* TODO - why are these here if not used? */
     /** Constants for comparisons : > */
     public static final boolean EVAL_GREATER = true;
-    
+
     /* TODO - why are these here if not used? */
     /** Constants for comparisons : < */
     public static final boolean EVAL_LESSER = false;
@@ -58,17 +58,18 @@ public abstract class SimpleNode<T> extends LeafNode
         this.value = value;
     }
 
-    
+
     /**
      * Makes a full clone in new memory space of the current node and children
      */
-    @Override public ExprNode clone()
+    @Override
+    public ExprNode clone()
     {
         ExprNode clone = super.clone();
-        
+
         // Clone the value
-        ((SimpleNode<T>)clone).value = value.clone(); 
-        
+        ( ( SimpleNode<T> ) clone ).value = value.clone();
+
         return clone;
     }
 
@@ -83,12 +84,13 @@ public abstract class SimpleNode<T> extends LeafNode
         return value;
     }
 
+
     /** 
      * @return representation of value, escaped for use in a filter if required 
      */
     public Value<?> getEscapedValue()
     {
-        return AbstractExprNode.escapeFilterValue( value );
+        return escapeFilterValue( value );
     }
 
 
@@ -171,7 +173,7 @@ public abstract class SimpleNode<T> extends LeafNode
             return true;
         }
 
-        if ( !( other instanceof SimpleNode ) )
+        if ( !( other instanceof SimpleNode<?> ) )
         {
             return false;
         }
