@@ -76,7 +76,7 @@ public class IntegerComparator extends LdapComparator<Object>
      */
     private int compare( Long backendValue, Long assertValue )
     {
-        LOG.debug( "comparing IntegerOrdering objects '{}' with '{}'", backendValue, assertValue );
+        LOG.debug( "comparing Integer objects '{}' with '{}'", backendValue, assertValue );
 
         // First, shortcut the process by comparing
         // references. If they are equals, then o1 and o2
@@ -94,32 +94,6 @@ public class IntegerComparator extends LdapComparator<Object>
             return ( backendValue == null ? -1 : 1 );
         }
 
-        // Both objects must be stored as String for numeric.
-        // But we need to normalize the values first.
-        /*
-        try
-        {
-            backendValue = PrepareString.normalize( ( String ) backendValue, PrepareString.StringType.NUMERIC_STRING );
-        }
-        catch ( IOException e )
-        {
-            throw new IllegalArgumentException( I18n.err( I18n.ERR_04224, backendValue ) );
-        }
-        try
-        {
-            assertValue = PrepareString.normalize( ( String ) assertValue, PrepareString.StringType.NUMERIC_STRING );
-        }
-        catch ( IOException e )
-        {
-            throw new IllegalArgumentException( I18n.err( I18n.ERR_04224, assertValue ) );
-        }
-
-        BigInteger b1 = new BigInteger( ( String ) backendValue );
-        BigInteger b2 = new BigInteger( ( String ) assertValue );
-        */
-
-        //return b1.compareTo( b2 );
-
         return backendValue.compareTo( assertValue );
     }
 
@@ -129,7 +103,7 @@ public class IntegerComparator extends LdapComparator<Object>
      */
     private int compare( String backendValue, String assertValue )
     {
-        LOG.debug( "comparing IntegerOrdering objects '{}' with '{}'", backendValue, assertValue );
+        LOG.debug( "comparing Integer objects '{}' with '{}'", backendValue, assertValue );
 
         // First, shortcut the process by comparing
         // references. If they are equals, then o1 and o2
