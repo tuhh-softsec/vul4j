@@ -39,6 +39,7 @@ public class StringComparator extends LdapComparator<String>
     /** The serialVersionUID */
     private static final long serialVersionUID = 1L;
 
+
     /**
      * The StringComparator constructor. Its OID is the StringMatch matching
      * rule OID.
@@ -48,13 +49,19 @@ public class StringComparator extends LdapComparator<String>
         super( oid );
     }
 
+
     /**
      * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
      */
     public int compare( String s1, String s2 )
     {
         LOG.debug( "comparing String objects '{}' with '{}'", s1, s2 );
-        
+
+        if ( s1 == s2 )
+        {
+            return 0;
+        }
+
         // -------------------------------------------------------------------
         // Handle some basis cases
         // -------------------------------------------------------------------
@@ -62,12 +69,12 @@ public class StringComparator extends LdapComparator<String>
         {
             return ( s2 == null ) ? 0 : -1;
         }
-        
+
         if ( s2 == null )
         {
             return 1;
         }
-        
+
         return s1.compareTo( s2 );
     }
 }

@@ -45,7 +45,7 @@ public class NumericStringComparator extends LdapComparator<String>
 
 
     /**
-     * The IntegerOrderingComparator constructor. Its OID is the numericStringOrderingMatch matching
+     * The IntegerComparator constructor. Its OID is the numericStringOrderingMatch matching
      * rule OID.
      */
     public NumericStringComparator( String oid )

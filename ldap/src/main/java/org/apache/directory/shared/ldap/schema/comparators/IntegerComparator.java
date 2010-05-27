@@ -36,20 +36,20 @@ import org.slf4j.LoggerFactory;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev: 437007 $
  */
-public class IntegerOrderingComparator extends LdapComparator<String>
+public class IntegerComparator extends LdapComparator<Object>
 {
     /** A logger for this class */
-    private static final Logger LOG = LoggerFactory.getLogger( IntegerOrderingComparator.class );
+    private static final Logger LOG = LoggerFactory.getLogger( IntegerComparator.class );
 
     /** The serialVersionUID */
     private static final long serialVersionUID = 1L;
 
 
     /**
-     * The IntegerOrderingComparator constructor. Its OID is the IntegerOrderingMatch matching
+     * The IntegerComparator constructor. Its OID is the IntegerOrderingMatch matching
      * rule OID.
      */
-    public IntegerOrderingComparator( String oid )
+    public IntegerComparator( String oid )
     {
         super( oid );
     }
@@ -58,7 +58,76 @@ public class IntegerOrderingComparator extends LdapComparator<String>
     /**
      * Implementation of the Compare method
      */
-    public int compare( String backendValue, String assertValue )
+    public int compare( Object v1, Object v2 )
+    {
+        if ( v1 instanceof String )
+        {
+            return compare( ( String ) v1, ( String ) v2 );
+        }
+        else
+        {
+            return compare( ( Long ) v1, ( Long ) v2 );
+        }
+    }
+
+
+    /**
+     * Implementation of the Compare method
+     */
+    private int compare( Long backendValue, Long assertValue )
+    {
+        LOG.debug( "comparing IntegerOrdering objects '{}' with '{}'", backendValue, assertValue );
+
+        // First, shortcut the process by comparing
+        // references. If they are equals, then o1 and o2
+        // reference the same object
+        if ( backendValue == assertValue )
+        {
+            return 0;
+        }
+
+        // Then, deal with one of o1 or o2 being null
+        // Both can't be null, because then they would 
+        // have been caught by the previous test
+        if ( ( backendValue == null ) || ( assertValue == null ) )
+        {
+            return ( backendValue == null ? -1 : 1 );
+        }
+
+        // Both objects must be stored as String for numeric.
+        // But we need to normalize the values first.
+        /*
+        try
+        {
+            backendValue = PrepareString.normalize( ( String ) backendValue, PrepareString.StringType.NUMERIC_STRING );
+        }
+        catch ( IOException e )
+        {
+            throw new IllegalArgumentException( I18n.err( I18n.ERR_04224, backendValue ) );
+        }
+        try
+        {
+            assertValue = PrepareString.normalize( ( String ) assertValue, PrepareString.StringType.NUMERIC_STRING );
+        }
+        catch ( IOException e )
+        {
+            throw new IllegalArgumentException( I18n.err( I18n.ERR_04224, assertValue ) );
+        }
+
+        BigInteger b1 = new BigInteger( ( String ) backendValue );
+        BigInteger b2 = new BigInteger( ( String ) assertValue );
+        */
+
+        //return b1.compareTo( b2 );
+
+        return backendValue.compareTo( assertValue );
+    }
+
+
+    /**
+     * Implementation of the Compare method
+     */
+    private int compare( String backendValue, String assertValue )
     {
         LOG.debug( "comparing IntegerOrdering objects '{}' with '{}'", backendValue, assertValue );
 
@@ -97,8 +166,9 @@ public class IntegerOrderingComparator extends LdapComparator<String>
             throw new IllegalArgumentException( I18n.err( I18n.ERR_04224, assertValue ) );
         }
 
-        BigInteger b1 = new BigInteger( backendValue );
-        BigInteger b2 = new BigInteger( assertValue );
+        BigInteger b1 = new BigInteger( ( String ) backendValue );
+        BigInteger b2 = new BigInteger( ( String ) assertValue );
+
         return b1.compareTo( b2 );
     }
 }

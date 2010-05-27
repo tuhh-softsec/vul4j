@@ -46,7 +46,7 @@ public class UniqueMemberComparator extends LdapComparator<String>
 
 
     /**
-     * The IntegerOrderingComparator constructor. Its OID is the IntegerOrderingMatch matching
+     * The IntegerComparator constructor. Its OID is the IntegerOrderingMatch matching
      * rule OID.
      */
     public UniqueMemberComparator( String oid )

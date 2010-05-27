@@ -33,7 +33,7 @@ import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.MatchingRule;
 import org.apache.directory.shared.ldap.schema.SchemaManager;
 import org.apache.directory.shared.ldap.schema.comparators.GeneralizedTimeComparator;
-import org.apache.directory.shared.ldap.schema.comparators.IntegerOrderingComparator;
+import org.apache.directory.shared.ldap.schema.comparators.IntegerComparator;
 import org.apache.directory.shared.ldap.schema.comparators.NumericStringComparator;
 import org.apache.directory.shared.ldap.schema.comparators.TelephoneNumberComparator;
 import org.apache.directory.shared.ldap.schema.ldif.extractor.SchemaLdifExtractor;
@@ -142,16 +142,16 @@ public class MatchingRuleTest
         MatchingRule mr1 = schemaManager.lookupMatchingRuleRegistry( "integerMatch" );
         assertEquals( NumericNormalizer.class.getName(), mr1.getNormalizer().getClass().getName() );
         assertEquals( "1234567890", mr1.getNormalizer().normalize( " 1 234 567 890 " ) );
-        //assertEquals( IntegerOrderingComparator.class.getName(), mr1.getLdapComparator().getClass().getName() );
+        //assertEquals( IntegerComparator.class.getName(), mr1.getLdapComparator().getClass().getName() );
         //assertEquals( 0, mr1.getLdapComparator().compare( " 1 234 567 890 ", "1234567890" ) );
 
         MatchingRule mr2 = schemaManager.lookupMatchingRuleRegistry( "integerOrderingMatch" );
         assertEquals( NumericNormalizer.class.getName(), mr2.getNormalizer().getClass().getName() );
         assertEquals( "1234567890", mr2.getNormalizer().normalize( " 1 234 567 890 " ) );
-        assertEquals( IntegerOrderingComparator.class.getName(), mr2.getLdapComparator().getClass().getName() );
-        assertEquals( 0, mr2.getLdapComparator().compare( " 1 234 567 890 ", "1234567890" ) );
-        assertTrue( mr2.getLdapComparator().compare( " 1 2 3  ", " 2 3 4" ) < 0 );
-        assertTrue( mr2.getLdapComparator().compare( " 1 2 3 4 ", " 2 3 4" ) > 0 );
+        assertEquals( IntegerComparator.class.getName(), mr2.getLdapComparator().getClass().getName() );
+        assertEquals( 0, mr2.getLdapComparator().compare( 1234567890L, 1234567890L ) );
+        assertTrue( mr2.getLdapComparator().compare( 123L, 234L ) < 0 );
+        assertTrue( mr2.getLdapComparator().compare( 1234L, 234L ) > 0 );
 
         // test a real attribute type: uidNumber
         AttributeType at = schemaManager.lookupAttributeTypeRegistry( "uidNumber" );

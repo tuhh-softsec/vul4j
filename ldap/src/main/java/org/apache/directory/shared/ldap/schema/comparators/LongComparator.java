@@ -36,7 +36,8 @@ public class LongComparator extends LdapComparator<Long>
      * Version id for serialization.
      */
     static final long serialVersionUID = 1L;
-    
+
+
     /**
      * The LongComparator constructor. Its OID is the IntegerOrderingMatch matching
      * rule OID.
@@ -56,20 +57,21 @@ public class LongComparator extends LdapComparator<Long>
      */
     public int compare( Long obj1, Long obj2 )
     {
-        try
+        if ( obj1 == obj2 )
         {
-            return obj1.compareTo( obj2 );
+            return 0;
         }
-        catch ( NullPointerException npe )
+
+        if ( obj1 == null )
         {
-            if ( obj1 == null )
-            {
-                throw new IllegalArgumentException( I18n.err( I18n.ERR_04219 ) );
-            }
-            else
-            {
-                throw new IllegalArgumentException( I18n.err( I18n.ERR_04220 ));
-            }
+            throw new IllegalArgumentException( I18n.err( I18n.ERR_04219_ARGUMENT1_NULL ) );
         }
+
+        if ( obj2 == null )
+        {
+            throw new IllegalArgumentException( I18n.err( I18n.ERR_04220_ARGUMENT2_NULL ) );
+        }
+
+        return obj1.compareTo( obj2 );
     }
 }
