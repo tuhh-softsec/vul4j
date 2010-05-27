@@ -1,3 +1,17 @@
+/* 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
 package net.webassembletool.http;
 
 import java.io.IOException;
@@ -17,11 +31,15 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.conn.ConnectionPoolTimeoutException;
 import org.apache.http.conn.HttpHostConnectException;
-import org.apache.http.message.BasicHttpRequest;
 import org.apache.http.protocol.ExecutionContext;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 
+/**
+ * @author François-Xavier Bonnet
+ * @author Nicolas Richeton
+ * 
+ */
 public class HttpClientResponse {
 	private final static Log LOG = LogFactory.getLog(HttpClientResponse.class);
 	private HttpResponse httpResponse;
@@ -32,9 +50,8 @@ public class HttpClientResponse {
 	private Exception exception;
 	private InputStream inputStream;
 
-	public HttpClientResponse(HttpHost httpHost,
-			BasicHttpRequest basicHttpRequest, HttpClient httpClient,
-			HttpContext httpContext) {
+	public HttpClientResponse(HttpHost httpHost, HttpRequest basicHttpRequest,
+			HttpClient httpClient, HttpContext httpContext) {
 		try {
 			httpResponse = httpClient.execute(httpHost, basicHttpRequest,
 					httpContext);
@@ -131,6 +148,19 @@ public class HttpClientResponse {
 		} else {
 			return null;
 		}
+	}
+
+	public String[] getHeaders(String name) {
+		Header[] headers = httpResponse.getAllHeaders();
+		String[] result = null;
+		if (headers != null) {
+			result = new String[headers.length];
+			for (int i = 0; i < headers.length; i++) {
+				Header h = headers[i];
+				result[i] = h.getValue();
+			}
+		}
+		return result;
 	}
 
 	@Override

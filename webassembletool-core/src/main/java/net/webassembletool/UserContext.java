@@ -16,7 +16,7 @@ package net.webassembletool;
 
 import java.io.Serializable;
 
-import net.webassembletool.http.SerializableBasicCookieStore;
+import net.webassembletool.cookie.CustomCookieStore;
 import net.webassembletool.http.SerializableBasicHttpContext;
 
 import org.apache.http.client.CookieStore;
@@ -36,17 +36,14 @@ import org.apache.http.protocol.HttpContext;
 public class UserContext implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private String user;
-	private final HttpContext httpContext;
+	private CustomCookieStore cookieStore = null;
+	private HttpContext httpContext = null;
 
-	public HttpContext getHttpContext() {
-		return httpContext;
-	}
-
-	private final CookieStore cookieStore;
-
-	public UserContext() {
-		// Create a local instance of cookie store
-		cookieStore = new SerializableBasicCookieStore();
+	public void init() {
+		if (cookieStore == null) {
+			throw new IllegalArgumentException(
+					"cookieStore implementation not set");
+		}
 		// Create local HTTP context
 		httpContext = new SerializableBasicHttpContext();
 		// Bind custom cookie store to the local context
@@ -57,12 +54,20 @@ public class UserContext implements Serializable {
 		return cookieStore;
 	}
 
+	public void setCookieStore(CustomCookieStore cookieStore) {
+		this.cookieStore = cookieStore;
+	}
+
 	public String getUser() {
 		return user;
 	}
 
 	public void setUser(String user) {
 		this.user = user;
+	}
+
+	public HttpContext getHttpContext() {
+		return httpContext;
 	}
 
 	/**

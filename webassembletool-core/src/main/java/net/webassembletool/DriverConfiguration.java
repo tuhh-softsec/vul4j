@@ -1,8 +1,21 @@
+/* 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
 package net.webassembletool;
 
 import java.util.Properties;
 
-import net.webassembletool.authentication.RemoteUserAuthenticationHandler;
 import net.webassembletool.renderers.ResourceFixupRenderer;
 
 /**
@@ -11,7 +24,7 @@ import net.webassembletool.renderers.ResourceFixupRenderer;
  * @author Francois-Xavier Bonnet
  * @contributor Nicolas Richeton
  */
-class DriverConfiguration {
+public class DriverConfiguration {
 	private final String instanceName;
 	private final String baseURL;
 	private String uriEncoding = "ISO-8859-1";
@@ -28,49 +41,77 @@ class DriverConfiguration {
 	private String proxyHost;
 	private int proxyPort = 0;
 	private boolean filterJsessionid = true;
-	private String authenticationHandler = RemoteUserAuthenticationHandler.class
-			.getName();
-	private Properties properties;
+	private String authenticationHandler = null;
+	private final Properties properties;
 	private boolean preserveHost = false;
+	private String cookieStore = null;
+	private String filter = null;
+
+	public String getFilter() {
+		return filter;
+	}
 
 	public DriverConfiguration(String instanceName, Properties props) {
 		this.instanceName = instanceName;
 		// Remote application settings
 		baseURL = props.getProperty("remoteUrlBase");
-		if (props.getProperty("uriEncoding") != null)
+		if (props.getProperty("uriEncoding") != null) {
 			uriEncoding = props.getProperty("uriEncoding");
-		if (props.getProperty("maxConnectionsPerHost") != null)
+		}
+		if (props.getProperty("maxConnectionsPerHost") != null) {
 			maxConnectionsPerHost = Integer.parseInt(props
 					.getProperty("maxConnectionsPerHost"));
-		if (props.getProperty("timeout") != null)
+		}
+		if (props.getProperty("timeout") != null) {
 			timeout = Integer.parseInt(props.getProperty("timeout"));
+		}
 		// Cache settings
-		if (props.getProperty("cacheRefreshDelay") != null)
+		if (props.getProperty("cacheRefreshDelay") != null) {
 			cacheRefreshDelay = Integer.parseInt(props
 					.getProperty("cacheRefreshDelay"));
-		if (props.getProperty("cacheMaxFileSize") != null)
+		}
+		if (props.getProperty("cacheMaxFileSize") != null) {
 			cacheMaxFileSize = Integer.parseInt(props
 					.getProperty("cacheMaxFileSize"));
+		}
 		// Local file system settings
 		localBase = props.getProperty("localBase");
-		if (props.getProperty("putInCache") != null)
+		if (props.getProperty("putInCache") != null) {
 			putInCache = Boolean.parseBoolean(props.getProperty("putInCache"));
+		}
 		// proxy settings
 		if (props.getProperty("proxyHost") != null
 				&& props.getProperty("proxyPort") != null) {
 			proxyHost = props.getProperty("proxyHost");
 			proxyPort = Integer.parseInt(props.getProperty("proxyPort"));
 		}
-		if (props.getProperty("useCache") != null)
+		if (props.getProperty("useCache") != null) {
 			useCache = Boolean.parseBoolean(props.getProperty("useCache"));
-		if (props.getProperty("filterJsessionid") != null)
+		}
+		if (props.getProperty("filterJsessionid") != null) {
 			filterJsessionid = Boolean.parseBoolean(props
 					.getProperty("filterJsessionid"));
-		if (props.getProperty("authenticationHandler") != null)
+		}
+
+		// Authentification handler
+		if (props.getProperty("authenticationHandler") != null) {
 			authenticationHandler = props.getProperty("authenticationHandler");
-		if (props.getProperty("preserveHost") != null)
+		}
+
+		// Cookie Store
+		if (props.getProperty("cookieStore") != null) {
+			cookieStore = props.getProperty("cookieStore");
+		}
+
+		// Wat Filter
+		if (props.getProperty("filter") != null) {
+			filter = props.getProperty("filter");
+		}
+
+		if (props.getProperty("preserveHost") != null) {
 			preserveHost = Boolean.parseBoolean(props
 					.getProperty("preserveHost"));
+		}
 
 		// Fix resources
 		if (props.getProperty("fixResources") != null) {
@@ -78,15 +119,13 @@ class DriverConfiguration {
 					.getProperty("fixResources"));
 			// Fix resources mode
 			if (props.getProperty("fixMode") != null) {
-				if ("absolute".equalsIgnoreCase(props
-						.getProperty("fixMode"))) {
+				if ("absolute".equalsIgnoreCase(props.getProperty("fixMode"))) {
 					this.fixMode = ResourceFixupRenderer.ABSOLUTE;
 				}
 			}
 			// Visible base url
 			if (props.getProperty("visibleUrlBase") != null) {
-				visibleBaseURL = props
-						.getProperty("visibleUrlBase");
+				visibleBaseURL = props.getProperty("visibleUrlBase");
 			} else {
 				visibleBaseURL = baseURL;
 			}
@@ -169,6 +208,14 @@ class DriverConfiguration {
 
 	public Properties getProperties() {
 		return properties;
+	}
+
+	public void setCookieStore(String cookieStore) {
+		this.cookieStore = cookieStore;
+	}
+
+	public String getCookieStore() {
+		return cookieStore;
 	}
 
 }

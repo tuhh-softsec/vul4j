@@ -12,7 +12,7 @@
  * limitations under the License.
  *
  */
-package net.webassembletool.http;
+package net.webassembletool.cookie;
 
 import java.io.Serializable;
 

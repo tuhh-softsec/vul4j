@@ -1,3 +1,17 @@
+/* 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
 package net.webassembletool;
 
 import java.io.IOException;
@@ -14,8 +28,11 @@ import net.webassembletool.cache.Cache;
 import net.webassembletool.cache.CacheOutput;
 import net.webassembletool.cache.CachedResponse;
 import net.webassembletool.cache.Rfc2616;
+import net.webassembletool.cookie.CustomCookieStore;
+import net.webassembletool.extension.ExtensionFactory;
 import net.webassembletool.file.FileOutput;
 import net.webassembletool.file.FileResource;
+import net.webassembletool.filter.Filter;
 import net.webassembletool.http.HttpResource;
 import net.webassembletool.http.ResponseOutput;
 import net.webassembletool.output.MultipleOutput;
@@ -63,11 +80,10 @@ public class Driver {
 	private final DriverConfiguration config;
 	private final Cache cache;
 	private final HttpClient httpClient;
-	private AuthenticationHandler authenticationHandler;
+	private final AuthenticationHandler authenticationHandler;
+	private final Filter filter;
 
-	public AuthenticationHandler getAuthenticationHandler() {
-		return authenticationHandler;
-	}
+	private ExtensionFactory extension = null;
 
 	public Driver(String name, Properties props) {
 		LOG.debug("Initializing instance: " + name);
@@ -111,20 +127,18 @@ public class Driver {
 		} else {
 			cache = null;
 		}
+
+		extension = new ExtensionFactory(config);
+
 		// Authentication handler
-		LOG.debug("Using authenticationHandler: "
-				+ config.getAuthenticationHandler());
-		try {
-			authenticationHandler = (AuthenticationHandler) Class.forName(
-					config.getAuthenticationHandler()).newInstance();
-		} catch (InstantiationException e) {
-			throw new ConfigurationException(e);
-		} catch (IllegalAccessException e) {
-			throw new ConfigurationException(e);
-		} catch (ClassNotFoundException e) {
-			throw new ConfigurationException(e);
-		}
-		authenticationHandler.init(config.getProperties());
+		authenticationHandler = extension
+				.getExtension(AuthenticationHandler.class);
+		filter = extension.getExtension(Filter.class);
+
+	}
+
+	public AuthenticationHandler getAuthenticationHandler() {
+		return authenticationHandler;
 	}
 
 	public final UserContext getContext(HttpServletRequest request) {
@@ -133,6 +147,9 @@ public class Driver {
 		UserContext context = (UserContext) session.getAttribute(key);
 		if (context == null) {
 			context = new UserContext();
+			context.setCookieStore(extension
+					.getExtension(CustomCookieStore.class));
+			context.init();
 			setContext(context, request);
 		}
 		return context;
@@ -609,5 +626,9 @@ public class Driver {
 
 	private final String getContextKey() {
 		return UserContext.class.getName() + "#" + config.getInstanceName();
+	}
+
+	public Filter getFilter() {
+		return filter;
 	}
 }

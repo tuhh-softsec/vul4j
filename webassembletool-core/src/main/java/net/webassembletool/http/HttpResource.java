@@ -1,3 +1,17 @@
+/* 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
 package net.webassembletool.http;
 
 import java.io.IOException;
@@ -11,6 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import net.webassembletool.ResourceContext;
 import net.webassembletool.authentication.AuthenticationHandler;
 import net.webassembletool.cache.Rfc2616;
+import net.webassembletool.filter.Filter;
 import net.webassembletool.output.Output;
 import net.webassembletool.resource.Resource;
 import net.webassembletool.resource.ResourceUtils;
@@ -25,6 +40,7 @@ import org.apache.http.protocol.HttpContext;
  * Resource implementation pointing to a resource on an external application.
  * 
  * @author Francois-Xavier Bonnet
+ * @author Nicolas Richeton
  */
 public class HttpResource extends Resource {
 	private final static Log LOG = LogFactory.getLog(HttpResource.class);
@@ -56,7 +72,14 @@ public class HttpResource extends Resource {
 				httpClientRequest.addHeader(header.getKey(), header.getValue());
 			}
 		}
+		// Auth handler
 		authenticationHandler.preRequest(httpClientRequest, resourceContext);
+
+		// Filter
+		Filter filter = resourceContext.getDriver().getFilter();
+		if (filter != null) {
+			filter.preRequest(httpClientRequest, resourceContext);
+		}
 		httpClientResponse = httpClientRequest.execute(httpClient, httpContext);
 		// Authentication challenge
 		while (authenticationHandler.needsNewRequest(httpClientResponse,
@@ -66,8 +89,13 @@ public class HttpResource extends Resource {
 			httpClientResponse.finish();
 			httpClientRequest = new HttpClientRequest(url, originalRequest,
 					proxy, preserveHost);
+			// Auth handler
 			authenticationHandler
 					.preRequest(httpClientRequest, resourceContext);
+			// Filter
+			if (filter != null) {
+				filter.preRequest(httpClientRequest, resourceContext);
+			}
 			httpClientResponse = httpClientRequest.execute(httpClient,
 					httpContext);
 		}
@@ -83,6 +111,10 @@ public class HttpResource extends Resource {
 		output.setStatus(httpClientResponse.getStatusCode(), httpClientResponse
 				.getStatusText());
 		Rfc2616.copyHeaders(this, output);
+		Filter filter = target.getDriver().getFilter();
+		if (filter != null) {
+			filter.postRequest(httpClientResponse, output, target);
+		}
 		String location = httpClientResponse.getHeader("Location");
 		if (location != null) {
 			// In case of a redirect, we need to rewrite the location header to
