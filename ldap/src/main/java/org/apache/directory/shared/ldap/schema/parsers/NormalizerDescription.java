@@ -20,6 +20,7 @@
 
 package org.apache.directory.shared.ldap.schema.parsers;
 
+
 import org.apache.directory.shared.ldap.schema.LoadableSchemaObject;
 import org.apache.directory.shared.ldap.schema.SchemaObjectType;
 
@@ -32,19 +33,20 @@ import org.apache.directory.shared.ldap.schema.SchemaObjectType;
  */
 public class NormalizerDescription extends LoadableSchemaObject
 {
-	/** SerialVersionUID */
-	private static final long serialVersionUID = 1L;
+    /** SerialVersionUID */
+    private static final long serialVersionUID = 1L;
 
-	/**
-	 * Default constructor for a NormalizerDecription
-	 * @param oid The SyntaxChecker OID
-	 */
-	public NormalizerDescription( String oid ) 
-	{
-		super( SchemaObjectType.NORMALIZER, oid );
-	}
 
-    
+    /**
+     * Default constructor for a NormalizerDecription
+     * @param oid The SyntaxChecker OID
+     */
+    public NormalizerDescription( String oid )
+    {
+        super( SchemaObjectType.NORMALIZER, oid );
+    }
+
+
     /**
      * @see Object#toString()
      */

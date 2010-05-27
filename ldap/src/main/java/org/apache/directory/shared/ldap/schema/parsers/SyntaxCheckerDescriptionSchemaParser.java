@@ -41,6 +41,7 @@ public class SyntaxCheckerDescriptionSchemaParser extends AbstractSchemaParser
     /** The LoggerFactory used by this class */
     protected static final Logger LOG = LoggerFactory.getLogger( SyntaxCheckerDescriptionSchemaParser.class );
 
+
     /**
      * Creates a schema parser instance.
      */
@@ -88,7 +89,7 @@ public class SyntaxCheckerDescriptionSchemaParser extends AbstractSchemaParser
 
         try
         {
-        	SyntaxCheckerDescription syntaxChecker = parser.syntaxCheckerDescription();
+            SyntaxCheckerDescription syntaxChecker = parser.syntaxCheckerDescription();
 
             // Update the schemaName
             setSchemaName( syntaxChecker );

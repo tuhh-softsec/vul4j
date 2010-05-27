@@ -30,14 +30,15 @@ package org.apache.directory.shared.ldap.schema.registries;
  */
 public interface SchemaLoaderListener
 {
-	/**
-	 * Listener method called to indicate a loader or other agent finished 
-	 * loading the schema objects for a schema into the Registries.
-	 * 
-	 * @param schema the Schema that was loaded
-	 */
+    /**
+     * Listener method called to indicate a loader or other agent finished 
+     * loading the schema objects for a schema into the Registries.
+     * 
+     * @param schema the Schema that was loaded
+     */
     void schemaLoaded( Schema schema );
-    
+
+
     /**
      * Listener method called to indicate an agent finished loading the schema
      * objects for a schema into the Registries.

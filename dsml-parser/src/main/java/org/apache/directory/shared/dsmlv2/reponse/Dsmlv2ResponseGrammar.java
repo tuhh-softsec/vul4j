@@ -326,8 +326,8 @@ public class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGrammar
 
         // State: [EXTENDED_RESPONSE_ERROR_MESSAGE_END] - Tag: <response>
         super.transitions[Dsmlv2StatesEnum.EXTENDED_RESPONSE_ERROR_MESSAGE_END].put( new Tag( "response", Tag.START ),
-            new GrammarTransition( Dsmlv2StatesEnum.EXTENDED_RESPONSE_ERROR_MESSAGE_END,
-                Dsmlv2StatesEnum.RESPONSE_END, extendedResponseAddResponse ) );
+            new GrammarTransition( Dsmlv2StatesEnum.EXTENDED_RESPONSE_ERROR_MESSAGE_END, Dsmlv2StatesEnum.RESPONSE_END,
+                extendedResponseAddResponse ) );
 
         // State: [EXTENDED_RESPONSE_ERROR_MESSAGE_END] - Tag: </extendedResponse>
         super.transitions[Dsmlv2StatesEnum.EXTENDED_RESPONSE_ERROR_MESSAGE_END].put( new Tag( "extendedResponse",
@@ -341,8 +341,8 @@ public class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGrammar
 
         // State: [EXTENDED_RESPONSE_REFERRAL_END] - Tag: <responseName>
         super.transitions[Dsmlv2StatesEnum.EXTENDED_RESPONSE_REFERRAL_END].put( new Tag( "responseName", Tag.START ),
-            new GrammarTransition( Dsmlv2StatesEnum.EXTENDED_RESPONSE_REFERRAL_END,
-                Dsmlv2StatesEnum.RESPONSE_NAME_END, extendedResponseAddResponseName ) );
+            new GrammarTransition( Dsmlv2StatesEnum.EXTENDED_RESPONSE_REFERRAL_END, Dsmlv2StatesEnum.RESPONSE_NAME_END,
+                extendedResponseAddResponseName ) );
 
         // State: [EXTENDED_RESPONSE_REFERRAL_END] - Tag: <reponse>
         super.transitions[Dsmlv2StatesEnum.EXTENDED_RESPONSE_REFERRAL_END].put( new Tag( "reponse", Tag.START ),
@@ -766,7 +766,7 @@ public class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGrammar
             attributeValue = xpp.getAttributeValue( "", "requestID" );
             if ( attributeValue != null )
             {
-            	batchResponse.setRequestID( ParserUtils.parseAndVerifyRequestID( attributeValue, xpp ) );
+                batchResponse.setRequestID( ParserUtils.parseAndVerifyRequestID( attributeValue, xpp ) );
             }
         }
     };
@@ -835,8 +835,8 @@ public class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGrammar
             attributeValue = xpp.getAttributeValue( "", "requestID" );
             if ( attributeValue != null )
             {
-            	bindResponse.setMessageId( ParserUtils.parseAndVerifyRequestID( attributeValue, xpp ) );
-               
+                bindResponse.setMessageId( ParserUtils.parseAndVerifyRequestID( attributeValue, xpp ) );
+
             }
             // MatchedDN
             attributeValue = xpp.getAttributeValue( "", "matchedDN" );
@@ -877,7 +877,7 @@ public class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGrammar
             attributeValue = xpp.getAttributeValue( "", "requestID" );
             if ( attributeValue != null )
             {
-            	compareResponse.setMessageId( ParserUtils.parseAndVerifyRequestID( attributeValue, xpp ) );
+                compareResponse.setMessageId( ParserUtils.parseAndVerifyRequestID( attributeValue, xpp ) );
             }
             // MatchedDN
             attributeValue = xpp.getAttributeValue( "", "matchedDN" );
@@ -918,7 +918,7 @@ public class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGrammar
             attributeValue = xpp.getAttributeValue( "", "requestID" );
             if ( attributeValue != null )
             {
-            	delResponse.setMessageId( ParserUtils.parseAndVerifyRequestID( attributeValue, xpp ) );        
+                delResponse.setMessageId( ParserUtils.parseAndVerifyRequestID( attributeValue, xpp ) );
             }
             // MatchedDN
             attributeValue = xpp.getAttributeValue( "", "matchedDN" );
@@ -959,7 +959,7 @@ public class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGrammar
             attributeValue = xpp.getAttributeValue( "", "requestID" );
             if ( attributeValue != null )
             {
-            	modifyResponse.setMessageId( ParserUtils.parseAndVerifyRequestID( attributeValue, xpp ) );
+                modifyResponse.setMessageId( ParserUtils.parseAndVerifyRequestID( attributeValue, xpp ) );
             }
             // MatchedDN
             attributeValue = xpp.getAttributeValue( "", "matchedDN" );
@@ -1000,7 +1000,7 @@ public class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGrammar
             attributeValue = xpp.getAttributeValue( "", "requestID" );
             if ( attributeValue != null )
             {
-            	modifyDNResponse.setMessageId( ParserUtils.parseAndVerifyRequestID( attributeValue, xpp ) );  
+                modifyDNResponse.setMessageId( ParserUtils.parseAndVerifyRequestID( attributeValue, xpp ) );
             }
             // MatchedDN
             attributeValue = xpp.getAttributeValue( "", "matchedDN" );
@@ -1041,7 +1041,7 @@ public class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGrammar
             attributeValue = xpp.getAttributeValue( "", "requestID" );
             if ( attributeValue != null )
             {
-            	extendedResponse.setMessageId( ParserUtils.parseAndVerifyRequestID( attributeValue, xpp ) );
+                extendedResponse.setMessageId( ParserUtils.parseAndVerifyRequestID( attributeValue, xpp ) );
             }
             // MatchedDN
             attributeValue = xpp.getAttributeValue( "", "matchedDN" );
@@ -1078,7 +1078,7 @@ public class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGrammar
             attributeValue = xpp.getAttributeValue( "", "requestID" );
             if ( attributeValue != null )
             {
-            	errorResponse.setMessageId( ParserUtils.parseAndVerifyRequestID( attributeValue, xpp ) );
+                errorResponse.setMessageId( ParserUtils.parseAndVerifyRequestID( attributeValue, xpp ) );
             }
             // type
             attributeValue = xpp.getAttributeValue( "", "type" );
@@ -1137,7 +1137,7 @@ public class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGrammar
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
             ErrorResponse errorResponse = ( ErrorResponse ) container.getBatchResponse().getCurrentResponse();
-            
+
             XmlPullParser xpp = container.getParser();
             try
             {
@@ -1166,7 +1166,8 @@ public class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGrammar
      * @param parent the parent 
      * @throws XmlPullParserException
      */
-    private void createAndAddControl( Dsmlv2Container container, LdapMessageCodec parent ) throws XmlPullParserException
+    private void createAndAddControl( Dsmlv2Container container, LdapMessageCodec parent )
+        throws XmlPullParserException
     {
         Control control = null;
 
@@ -1176,14 +1177,14 @@ public class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGrammar
         String attributeValue;
         // TYPE
         attributeValue = xpp.getAttributeValue( "", "type" );
-        
+
         if ( attributeValue != null )
         {
             if ( !OID.isOID( attributeValue ) )
             {
                 throw new XmlPullParserException( I18n.err( I18n.ERR_03006 ), xpp, null );
             }
-            
+
             control = new ControlImpl( attributeValue );
             parent.addControl( control );
         }
@@ -1193,7 +1194,7 @@ public class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGrammar
         }
         // CRITICALITY
         attributeValue = xpp.getAttributeValue( "", "criticality" );
-        
+
         if ( attributeValue != null )
         {
             if ( attributeValue.equals( "true" ) )
@@ -1274,10 +1275,10 @@ public class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGrammar
         {
             // We have to catch the type Attribute Value before going to the next Text node
             String typeValue = ParserUtils.getXsiTypeAttributeValue( xpp );
-            
+
             // Getting the value
             String nextText = xpp.nextText();
-            
+
             if ( !nextText.equals( "" ) )
             {
                 if ( ParserUtils.isBase64BinaryValue( xpp, typeValue ) )
@@ -1507,7 +1508,7 @@ public class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGrammar
             attributeValue = xpp.getAttributeValue( "", "requestID" );
             if ( attributeValue != null )
             {
-            	searchResponse.setMessageId( ParserUtils.parseAndVerifyRequestID( attributeValue, xpp ) );
+                searchResponse.setMessageId( ParserUtils.parseAndVerifyRequestID( attributeValue, xpp ) );
             }
         }
     };
@@ -1534,7 +1535,7 @@ public class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGrammar
             attributeValue = xpp.getAttributeValue( "", "requestID" );
             if ( attributeValue != null )
             {
-            	searchResultEntry.setMessageId( ParserUtils.parseAndVerifyRequestID( attributeValue, xpp ) );
+                searchResultEntry.setMessageId( ParserUtils.parseAndVerifyRequestID( attributeValue, xpp ) );
             }
             // dn
             attributeValue = xpp.getAttributeValue( "", "dn" );
@@ -1578,7 +1579,7 @@ public class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGrammar
             attributeValue = xpp.getAttributeValue( "", "requestID" );
             if ( attributeValue != null )
             {
-            	searchResultReference.setMessageId( ParserUtils.parseAndVerifyRequestID( attributeValue, xpp ) );
+                searchResultReference.setMessageId( ParserUtils.parseAndVerifyRequestID( attributeValue, xpp ) );
             }
         }
     };
@@ -1607,7 +1608,7 @@ public class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGrammar
             attributeValue = xpp.getAttributeValue( "", "requestID" );
             if ( attributeValue != null )
             {
-            	searchResultDone.setMessageId( ParserUtils.parseAndVerifyRequestID( attributeValue, xpp ) );
+                searchResultDone.setMessageId( ParserUtils.parseAndVerifyRequestID( attributeValue, xpp ) );
             }
             // MatchedDN
             attributeValue = xpp.getAttributeValue( "", "matchedDN" );
@@ -1669,7 +1670,7 @@ public class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGrammar
             {
                 // We have to catch the type Attribute Value before going to the next Text node
                 String typeValue = ParserUtils.getXsiTypeAttributeValue( xpp );
-                
+
                 // Getting the value
                 String nextText = xpp.nextText();
                 if ( ParserUtils.isBase64BinaryValue( xpp, typeValue ) )
@@ -1742,7 +1743,8 @@ public class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGrammar
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            ExtendedResponseCodec extendedResponse = ( ExtendedResponseCodec ) container.getBatchResponse().getCurrentResponse();
+            ExtendedResponseCodec extendedResponse = ( ExtendedResponseCodec ) container.getBatchResponse()
+                .getCurrentResponse();
 
             XmlPullParser xpp = container.getParser();
             try
@@ -1752,7 +1754,7 @@ public class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGrammar
                 {
                     extendedResponse.setResponseName( new OID( nextText.trim() ) );
                 }
-                
+
             }
             catch ( IOException e )
             {
@@ -1772,14 +1774,15 @@ public class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGrammar
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            ExtendedResponseCodec extendedResponse = ( ExtendedResponseCodec ) container.getBatchResponse().getCurrentResponse();
+            ExtendedResponseCodec extendedResponse = ( ExtendedResponseCodec ) container.getBatchResponse()
+                .getCurrentResponse();
 
             XmlPullParser xpp = container.getParser();
             try
             {
                 // We have to catch the type Attribute Value before going to the next Text node
                 String typeValue = ParserUtils.getXsiTypeAttributeValue( xpp );
-                
+
                 // Getting the value
                 String nextText = xpp.nextText();
                 if ( ParserUtils.isBase64BinaryValue( xpp, typeValue ) )

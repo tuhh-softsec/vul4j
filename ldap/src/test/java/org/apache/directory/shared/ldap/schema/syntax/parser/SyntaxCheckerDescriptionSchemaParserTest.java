@@ -102,8 +102,8 @@ public class SyntaxCheckerDescriptionSchemaParserTest
         value = "( 1.1 FQCN org.apache.directory.SimpleSyntaxChecker BYTECODE ABCDEFGHIJKLMNOPQRSTUVWXYZ+/abcdefghijklmnopqrstuvwxyz0123456789==== )";
         syntaxCheckerDescription = parser.parseSyntaxCheckerDescription( value );
         assertNotNull( syntaxCheckerDescription.getBytecode() );
-        assertEquals( "ABCDEFGHIJKLMNOPQRSTUVWXYZ+/abcdefghijklmnopqrstuvwxyz0123456789====", 
-        		syntaxCheckerDescription.getBytecode() );
+        assertEquals( "ABCDEFGHIJKLMNOPQRSTUVWXYZ+/abcdefghijklmnopqrstuvwxyz0123456789====", syntaxCheckerDescription
+            .getBytecode() );
     }
 
 

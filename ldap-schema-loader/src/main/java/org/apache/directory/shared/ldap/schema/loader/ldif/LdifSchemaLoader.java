@@ -209,7 +209,7 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
         if ( registries.isSchemaLoaded( schema.getSchemaName() ) )
         {
             LOG.info( "Will not attempt to load already loaded '{}' " +
-            		"schema: \n{}", schema.getSchemaName(), schema );
+                    "schema: \n{}", schema.getSchemaName(), schema );
             return;
         }
         

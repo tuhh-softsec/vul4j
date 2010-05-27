@@ -23,7 +23,6 @@ package org.apache.directory.shared.ldap.schema.comparators;
 import java.util.Comparator;
 
 import org.apache.directory.shared.ldap.exception.LdapException;
-
 import org.apache.directory.shared.ldap.schema.LdapComparator;
 import org.apache.directory.shared.ldap.schema.Normalizer;
 import org.slf4j.Logger;
@@ -37,7 +36,7 @@ import org.slf4j.LoggerFactory;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-/* no qualifier*/ class NormalizingComparator extends LdapComparator<String>
+/* no qualifier*/class NormalizingComparator extends LdapComparator<String>
 {
     /** A logger for this class */
     private static final Logger LOG = LoggerFactory.getLogger( NormalizingComparator.class );
@@ -99,8 +98,8 @@ import org.slf4j.LoggerFactory;
 
         return comparator.compare( n1, n2 );
     }
-    
-    
+
+
     /**
      * Makes sure we update the oid property of the contained normalizer and 
      * comparator.
@@ -110,8 +109,8 @@ import org.slf4j.LoggerFactory;
     @Override
     public void setOid( String oid )
     {
-    	super.setOid( oid );
-    	normalizer.setOid( oid );
-    	comparator.setOid( oid );
-    }    
+        super.setOid( oid );
+        normalizer.setOid( oid );
+        comparator.setOid( oid );
+    }
 }

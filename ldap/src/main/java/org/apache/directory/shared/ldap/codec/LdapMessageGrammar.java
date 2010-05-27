@@ -20,8 +20,6 @@
 package org.apache.directory.shared.ldap.codec;
 
 
-import org.apache.directory.shared.ldap.exception.LdapException;
-
 import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.AbstractGrammar;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
@@ -98,6 +96,7 @@ import org.apache.directory.shared.ldap.codec.search.SearchResultEntryCodec;
 import org.apache.directory.shared.ldap.codec.search.SearchResultReferenceCodec;
 import org.apache.directory.shared.ldap.codec.search.SubstringFilter;
 import org.apache.directory.shared.ldap.codec.unbind.UnBindRequestCodec;
+import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.filter.SearchScope;
 import org.apache.directory.shared.ldap.message.AddResponseImpl;
@@ -236,8 +235,8 @@ public class LdapMessageGrammar extends AbstractGrammar
                     }
                     catch ( IntegerDecoderException ide )
                     {
-                        log.error( I18n.err( I18n.ERR_04070, StringTools.dumpBytes( value.getData() ), 
-                        		ide.getLocalizedMessage() ) );
+                        log.error( I18n.err( I18n.ERR_04070, StringTools.dumpBytes( value.getData() ), ide
+                            .getLocalizedMessage() ) );
 
                         // This will generate a PROTOCOL_ERROR                        
                         throw new DecoderException( ide.getMessage() );
@@ -285,7 +284,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                 {
 
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-                    
+
                     // Create the  UnbindRequest LdapMessage instance and store it in the container
                     UnBindRequestCodec unbindRequest = new UnBindRequestCodec();
                     unbindRequest.setMessageId( ldapMessageContainer.getMessageId() );
@@ -303,7 +302,6 @@ public class LdapMessageGrammar extends AbstractGrammar
                         throw new DecoderException( I18n.err( I18n.ERR_04072 ) );
                     }
 
-                    
                     // We can quit now
                     ldapMessageContainer.grammarEndAllowed( true );
                 }
@@ -364,8 +362,8 @@ public class LdapMessageGrammar extends AbstractGrammar
                         }
                         catch ( LdapInvalidDnException ine )
                         {
-                            String msg = I18n.err( I18n.ERR_04074, dnStr, StringTools.dumpBytes( dnBytes ),
-                            		ine.getLocalizedMessage() );
+                            String msg = I18n.err( I18n.ERR_04074, dnStr, StringTools.dumpBytes( dnBytes ), ine
+                                .getLocalizedMessage() );
                             log.error( msg );
 
                             DeleteResponseImpl response = new DeleteResponseImpl( delRequest.getMessageId() );
@@ -451,7 +449,8 @@ public class LdapMessageGrammar extends AbstractGrammar
                     }
                     catch ( IntegerDecoderException ide )
                     {
-                        log.error( I18n.err( I18n.ERR_04076, StringTools.dumpBytes( value.getData() ), ide.getMessage() ) );
+                        log.error( I18n
+                            .err( I18n.ERR_04076, StringTools.dumpBytes( value.getData() ), ide.getMessage() ) );
 
                         // This will generate a PROTOCOL_ERROR
                         throw new DecoderException( ide.getMessage() );
@@ -541,7 +540,8 @@ public class LdapMessageGrammar extends AbstractGrammar
                     }
                     catch ( IntegerDecoderException ide )
                     {
-                        log.error( I18n.err( I18n.ERR_04078, StringTools.dumpBytes( value.getData() ), ide.getMessage() ) );
+                        log.error( I18n
+                            .err( I18n.ERR_04078, StringTools.dumpBytes( value.getData() ), ide.getMessage() ) );
 
                         // This will generate a PROTOCOL_ERROR
                         throw new DecoderException( ide.getMessage() );
@@ -587,8 +587,8 @@ public class LdapMessageGrammar extends AbstractGrammar
                         }
                         catch ( LdapInvalidDnException ine )
                         {
-                            String msg = "Incorrect DN given : " + dnStr + " ("
-                                + StringTools.dumpBytes( dnBytes ) + ") is invalid";
+                            String msg = "Incorrect DN given : " + dnStr + " (" + StringTools.dumpBytes( dnBytes )
+                                + ") is invalid";
                             log.error( "{} : {}", msg, ine.getMessage() );
 
                             BindResponseImpl response = new BindResponseImpl( bindRequestMessage.getMessageId() );
@@ -907,8 +907,7 @@ public class LdapMessageGrammar extends AbstractGrammar
         //     referral   [3] Referral OPTIONNAL }
         //
         // Initialiaze the referrals list 
-        super.transitions[LdapStatesEnum.ERROR_MESSAGE_BR_STATE][LdapConstants.LDAP_RESULT_REFERRAL_SEQUENCE_TAG] = 
-            new GrammarTransition(
+        super.transitions[LdapStatesEnum.ERROR_MESSAGE_BR_STATE][LdapConstants.LDAP_RESULT_REFERRAL_SEQUENCE_TAG] = new GrammarTransition(
             LdapStatesEnum.ERROR_MESSAGE_BR_STATE, LdapStatesEnum.REFERRALS_BR_STATE,
             LdapConstants.LDAP_RESULT_REFERRAL_SEQUENCE_TAG, new InitReferralsAction() );
 
@@ -1014,8 +1013,7 @@ public class LdapMessageGrammar extends AbstractGrammar
         //     referral   [3] Referral OPTIONNAL }
         //
         // Initialiaze the referrals list 
-        super.transitions[LdapStatesEnum.ERROR_MESSAGE_STATE][LdapConstants.LDAP_RESULT_REFERRAL_SEQUENCE_TAG] = 
-            new GrammarTransition(
+        super.transitions[LdapStatesEnum.ERROR_MESSAGE_STATE][LdapConstants.LDAP_RESULT_REFERRAL_SEQUENCE_TAG] = new GrammarTransition(
             LdapStatesEnum.ERROR_MESSAGE_STATE, LdapStatesEnum.REFERRALS_STATE,
             LdapConstants.LDAP_RESULT_REFERRAL_SEQUENCE_TAG, new GrammarAction( "Init referrals list" )
             {
@@ -1408,7 +1406,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                 public void action( IAsn1Container container )
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-                    
+
                     // Now, we can allocate the ModifyRequest Object
                     ModifyRequestCodec modifyRequest = new ModifyRequestCodec();
                     modifyRequest.setMessageId( ldapMessageContainer.getMessageId() );
@@ -1454,8 +1452,8 @@ public class LdapMessageGrammar extends AbstractGrammar
                         }
                         catch ( LdapInvalidDnException ine )
                         {
-                            String msg = "Invalid DN given : " + dnStr + " ("
-                                + StringTools.dumpBytes( dnBytes ) + ") is invalid";
+                            String msg = "Invalid DN given : " + dnStr + " (" + StringTools.dumpBytes( dnBytes )
+                                + ") is invalid";
                             log.error( "{} : {}", msg, ine.getMessage() );
 
                             ModifyResponseImpl response = new ModifyResponseImpl( modifyRequest.getMessageId() );
@@ -1831,7 +1829,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                 {
 
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-                    
+
                     // Now, we can allocate the AddRequest Object
                     AddRequestCodec addRequest = new AddRequestCodec();
                     addRequest.setMessageId( ldapMessageContainer.getMessageId() );
@@ -1896,8 +1894,8 @@ public class LdapMessageGrammar extends AbstractGrammar
                         }
                         catch ( LdapInvalidDnException ine )
                         {
-                            String msg = "Invalid DN given : " + dnStr + " ("
-                                + StringTools.dumpBytes( dnBytes ) + ") is invalid";
+                            String msg = "Invalid DN given : " + dnStr + " (" + StringTools.dumpBytes( dnBytes )
+                                + ") is invalid";
                             log.error( "{} : {}", msg, ine.getMessage() );
 
                             AddResponseImpl response = new AddResponseImpl( addRequest.getMessageId() );
@@ -2201,8 +2199,8 @@ public class LdapMessageGrammar extends AbstractGrammar
                         }
                         catch ( LdapInvalidDnException ine )
                         {
-                            String msg = "Invalid DN given : " + dnStr + " ("
-                                + StringTools.dumpBytes( dnBytes ) + ") is invalid";
+                            String msg = "Invalid DN given : " + dnStr + " (" + StringTools.dumpBytes( dnBytes )
+                                + ") is invalid";
                             log.error( "{} : {}", msg, ine.getMessage() );
 
                             ModifyDnResponseImpl response = new ModifyDnResponseImpl( modifyDNRequest.getMessageId() );
@@ -2269,8 +2267,8 @@ public class LdapMessageGrammar extends AbstractGrammar
                         }
                         catch ( LdapInvalidDnException ine )
                         {
-                            String msg = "Invalid new RDN given : " + dnStr + " ("
-                                + StringTools.dumpBytes( dnBytes ) + ") is invalid";
+                            String msg = "Invalid new RDN given : " + dnStr + " (" + StringTools.dumpBytes( dnBytes )
+                                + ") is invalid";
                             log.error( "{} : {}", msg, ine.getMessage() );
 
                             ModifyDnResponseImpl response = new ModifyDnResponseImpl( modifyDNRequest.getMessageId() );
@@ -2322,7 +2320,8 @@ public class LdapMessageGrammar extends AbstractGrammar
                     }
                     catch ( BooleanDecoderException bde )
                     {
-                        log.error( I18n.err( I18n.ERR_04091, StringTools.dumpBytes( value.getData() ), bde.getMessage() ) );
+                        log.error( I18n
+                            .err( I18n.ERR_04091, StringTools.dumpBytes( value.getData() ), bde.getMessage() ) );
 
                         // This will generate a PROTOCOL_ERROR                        
                         throw new DecoderException( bde.getMessage() );
@@ -2353,8 +2352,7 @@ public class LdapMessageGrammar extends AbstractGrammar
         //     newSuperior [0] LDAPDN OPTIONAL }
         //
         // Stores the new superior
-        super.transitions[LdapStatesEnum.DELETE_OLD_RDN_STATE][LdapConstants.MODIFY_DN_REQUEST_NEW_SUPERIOR_TAG] = 
-            new GrammarTransition(
+        super.transitions[LdapStatesEnum.DELETE_OLD_RDN_STATE][LdapConstants.MODIFY_DN_REQUEST_NEW_SUPERIOR_TAG] = new GrammarTransition(
             LdapStatesEnum.DELETE_OLD_RDN_STATE, LdapStatesEnum.NEW_SUPERIOR_STATE,
             LdapConstants.MODIFY_DN_REQUEST_NEW_SUPERIOR_TAG, new GrammarAction( "Store new superior" )
             {
@@ -2396,8 +2394,8 @@ public class LdapMessageGrammar extends AbstractGrammar
                         }
                         catch ( LdapInvalidDnException ine )
                         {
-                            String msg = "Invalid new superior DN given : " + dnStr
-                                + " (" + StringTools.dumpBytes( dnBytes ) + ") is invalid";
+                            String msg = "Invalid new superior DN given : " + dnStr + " ("
+                                + StringTools.dumpBytes( dnBytes ) + ") is invalid";
                             log.error( "{} : {}", msg, ine.getMessage() );
 
                             ModifyDnResponseImpl response = new ModifyDnResponseImpl( modifyDNRequest.getMessageId() );
@@ -2457,7 +2455,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                 {
 
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-                    
+
                     // Now, we can allocate the ModifyDnResponse Object
                     ModifyDNResponseCodec modifyDnResponse = new ModifyDNResponseCodec();
                     modifyDnResponse.setMessageId( ldapMessageContainer.getMessageId() );
@@ -2550,8 +2548,8 @@ public class LdapMessageGrammar extends AbstractGrammar
                         }
                         catch ( LdapInvalidDnException ine )
                         {
-                            String msg = "Invalid DN given : " + dnStr + " ("
-                                + StringTools.dumpBytes( dnBytes ) + ") is invalid";
+                            String msg = "Invalid DN given : " + dnStr + " (" + StringTools.dumpBytes( dnBytes )
+                                + ") is invalid";
                             log.error( "{} : {}", msg, ine.getMessage() );
 
                             CompareResponseImpl response = new CompareResponseImpl( compareRequest.getMessageId() );
@@ -2764,7 +2762,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                 public void action( IAsn1Container container ) throws DecoderException
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-                    
+
                     // Now, we can allocate the SearchResultReference Object
                     SearchResultReferenceCodec searchResultReference = new SearchResultReferenceCodec();
                     searchResultReference.setMessageId( ldapMessageContainer.getMessageId() );
@@ -2822,7 +2820,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                 public void action( IAsn1Container container ) throws DecoderException
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-                    
+
                     // Now, we can allocate the ExtendedRequest Object
                     ExtendedRequestCodec extendedRequest = new ExtendedRequestCodec();
                     extendedRequest.setMessageId( ldapMessageContainer.getMessageId() );
@@ -3032,8 +3030,7 @@ public class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // 
-        super.transitions[LdapStatesEnum.ERROR_MESSAGE_ER_STATE][LdapConstants.LDAP_RESULT_REFERRAL_SEQUENCE_TAG] = 
-            new GrammarTransition(
+        super.transitions[LdapStatesEnum.ERROR_MESSAGE_ER_STATE][LdapConstants.LDAP_RESULT_REFERRAL_SEQUENCE_TAG] = new GrammarTransition(
             LdapStatesEnum.ERROR_MESSAGE_ER_STATE, LdapStatesEnum.REFERRALS_ER_STATE,
             LdapConstants.LDAP_RESULT_REFERRAL_SEQUENCE_TAG, new InitReferralsAction() );
 
@@ -3066,8 +3063,7 @@ public class LdapMessageGrammar extends AbstractGrammar
         // URI ::= LDAPString
         //
         // Adda new Referral
-        super.transitions[LdapStatesEnum.REFERRAL_ER_STATE][LdapConstants.EXTENDED_RESPONSE_RESPONSE_NAME_TAG] = 
-            new GrammarTransition(
+        super.transitions[LdapStatesEnum.REFERRAL_ER_STATE][LdapConstants.EXTENDED_RESPONSE_RESPONSE_NAME_TAG] = new GrammarTransition(
             LdapStatesEnum.REFERRAL_ER_STATE, LdapStatesEnum.RESPONSE_NAME_STATE,
             LdapConstants.EXTENDED_RESPONSE_RESPONSE_NAME_TAG, new ResponseNameAction() );
 
@@ -3117,8 +3113,7 @@ public class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Stores the response name
-        super.transitions[LdapStatesEnum.ERROR_MESSAGE_ER_STATE][LdapConstants.EXTENDED_RESPONSE_RESPONSE_NAME_TAG] = 
-            new GrammarTransition(
+        super.transitions[LdapStatesEnum.ERROR_MESSAGE_ER_STATE][LdapConstants.EXTENDED_RESPONSE_RESPONSE_NAME_TAG] = new GrammarTransition(
             LdapStatesEnum.ERROR_MESSAGE_ER_STATE, LdapStatesEnum.RESPONSE_NAME_STATE,
             LdapConstants.EXTENDED_RESPONSE_RESPONSE_NAME_TAG, new ResponseNameAction() );
 
@@ -3158,8 +3153,7 @@ public class LdapMessageGrammar extends AbstractGrammar
         //     response       [11] OCTET STRING OPTIONAL}
         //
         // Stores the response
-        super.transitions[LdapStatesEnum.ERROR_MESSAGE_ER_STATE][LdapConstants.EXTENDED_RESPONSE_RESPONSE_TAG] = 
-            new GrammarTransition(
+        super.transitions[LdapStatesEnum.ERROR_MESSAGE_ER_STATE][LdapConstants.EXTENDED_RESPONSE_RESPONSE_TAG] = new GrammarTransition(
             LdapStatesEnum.ERROR_MESSAGE_ER_STATE, LdapStatesEnum.RESPONSE_STATE,
             LdapConstants.EXTENDED_RESPONSE_RESPONSE_TAG, new ResponseAction() );
 
@@ -3175,7 +3169,6 @@ public class LdapMessageGrammar extends AbstractGrammar
             LdapStatesEnum.RESPONSE_STATE, LdapStatesEnum.CONTROLS_STATE, LdapConstants.CONTROLS_TAG,
             new ControlsInitAction() );
 
-
         // --------------------------------------------------------------------------------------------
         // Transition from Message Id to IntermediateResponse Message
         // --------------------------------------------------------------------------------------------
@@ -3184,8 +3177,8 @@ public class LdapMessageGrammar extends AbstractGrammar
         //
         // Creates the IntermediateResponse object
         super.transitions[LdapStatesEnum.MESSAGE_ID_STATE][LdapConstants.INTERMEDIATE_RESPONSE_TAG] = new GrammarTransition(
-            LdapStatesEnum.MESSAGE_ID_STATE, LdapStatesEnum.INTERMEDIATE_RESPONSE_STATE, LdapConstants.INTERMEDIATE_RESPONSE_TAG,
-            new GrammarAction( "Init Intermediate Response" )
+            LdapStatesEnum.MESSAGE_ID_STATE, LdapStatesEnum.INTERMEDIATE_RESPONSE_STATE,
+            LdapConstants.INTERMEDIATE_RESPONSE_TAG, new GrammarAction( "Init Intermediate Response" )
             {
                 public void action( IAsn1Container container ) throws DecoderException
                 {
@@ -3370,9 +3363,8 @@ public class LdapMessageGrammar extends AbstractGrammar
         //
         // Stores the value
         super.transitions[LdapStatesEnum.INTERMEDIATE_RESPONSE_VALUE_STATE][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
-            LdapStatesEnum.INTERMEDIATE_RESPONSE_VALUE_STATE, LdapStatesEnum.CONTROLS_STATE, LdapConstants.CONTROLS_TAG,
-            new ControlsInitAction() );
-
+            LdapStatesEnum.INTERMEDIATE_RESPONSE_VALUE_STATE, LdapStatesEnum.CONTROLS_STATE,
+            LdapConstants.CONTROLS_TAG, new ControlsInitAction() );
 
         // --------------------------------------------------------------------------------------------
         // Controls
@@ -3450,16 +3442,16 @@ public class LdapMessageGrammar extends AbstractGrammar
                         // This will generate a PROTOCOL_ERROR
                         throw new DecoderException( I18n.err( I18n.ERR_04099, oidValue ) );
                     }
-                    
+
                     // get the Control for this OID
                     control = message.getCodecControl( oidValue );
-                    
+
                     if ( control == null )
                     {
                         // This control is unknown, we will create a neutral control
                         control = new ControlImpl( oidValue );
                     }
-                    
+
                     // The control may be null, if not known
                     message.addControl( control );
 
@@ -3511,7 +3503,8 @@ public class LdapMessageGrammar extends AbstractGrammar
                     }
                     catch ( BooleanDecoderException bde )
                     {
-                        log.error( I18n.err( I18n.ERR_04100, StringTools.dumpBytes( value.getData() ), bde.getMessage() ) );
+                        log.error( I18n
+                            .err( I18n.ERR_04100, StringTools.dumpBytes( value.getData() ), bde.getMessage() ) );
 
                         // This will generate a PROTOCOL_ERROR
                         throw new DecoderException( bde.getMessage() );
@@ -3598,7 +3591,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                 public void action( IAsn1Container container )
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-                    
+
                     // Now, we can allocate the SearchRequest Object
                     SearchRequestCodec searchRequest = new SearchRequestCodec();
                     searchRequest.setMessageId( ldapMessageContainer.getMessageId() );
@@ -3645,8 +3638,8 @@ public class LdapMessageGrammar extends AbstractGrammar
                         }
                         catch ( LdapInvalidDnException ine )
                         {
-                            String msg = "Invalid root DN given : " + dnStr + " ("
-                                + StringTools.dumpBytes( dnBytes ) + ") is invalid";
+                            String msg = "Invalid root DN given : " + dnStr + " (" + StringTools.dumpBytes( dnBytes )
+                                + ") is invalid";
                             log.error( "{} : {}", msg, ine.getMessage() );
 
                             SearchResponseDoneImpl response = new SearchResponseDoneImpl( searchRequest.getMessageId() );
@@ -3697,7 +3690,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                     catch ( IntegerDecoderException ide )
                     {
                         log.error( I18n.err( I18n.ERR_04101, value.toString() ) );
-                        throw new DecoderException( I18n.err( I18n.ERR_04101,  value.toString() ) );
+                        throw new DecoderException( I18n.err( I18n.ERR_04101, value.toString() ) );
                     }
 
                     searchRequest.setScope( SearchScope.getSearchScope( scope ) );
@@ -3914,7 +3907,8 @@ public class LdapMessageGrammar extends AbstractGrammar
                     }
                     catch ( BooleanDecoderException bde )
                     {
-                        log.error( I18n.err( I18n.ERR_04105, StringTools.dumpBytes( value.getData() ), bde.getMessage() ) );
+                        log.error( I18n
+                            .err( I18n.ERR_04105, StringTools.dumpBytes( value.getData() ), bde.getMessage() ) );
 
                         throw new DecoderException( bde.getMessage() );
                     }
@@ -4799,8 +4793,7 @@ public class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init NOT filter
-        super.transitions[LdapStatesEnum.ASSERTION_VALUE_FILTER_STATE][LdapConstants.EQUALITY_MATCH_FILTER_TAG] = 
-            new GrammarTransition(
+        super.transitions[LdapStatesEnum.ASSERTION_VALUE_FILTER_STATE][LdapConstants.EQUALITY_MATCH_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.ASSERTION_VALUE_FILTER_STATE, LdapStatesEnum.EQUALITY_MATCH_STATE,
             LdapConstants.EQUALITY_MATCH_FILTER_TAG, new InitEqualityMatchFilterAction() );
 
@@ -4836,8 +4829,7 @@ public class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init Greater Or Equal filter
-        super.transitions[LdapStatesEnum.ASSERTION_VALUE_FILTER_STATE][LdapConstants.GREATER_OR_EQUAL_FILTER_TAG] = 
-            new GrammarTransition(
+        super.transitions[LdapStatesEnum.ASSERTION_VALUE_FILTER_STATE][LdapConstants.GREATER_OR_EQUAL_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.ASSERTION_VALUE_FILTER_STATE, LdapStatesEnum.GREATER_OR_EQUAL_STATE,
             LdapConstants.GREATER_OR_EQUAL_FILTER_TAG, new InitGreaterOrEqualFilterAction() );
 
@@ -4855,8 +4847,7 @@ public class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init Less Or Equal filter
-        super.transitions[LdapStatesEnum.ASSERTION_VALUE_FILTER_STATE][LdapConstants.LESS_OR_EQUAL_FILTER_TAG] = 
-            new GrammarTransition(
+        super.transitions[LdapStatesEnum.ASSERTION_VALUE_FILTER_STATE][LdapConstants.LESS_OR_EQUAL_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.ASSERTION_VALUE_FILTER_STATE, LdapStatesEnum.LESS_OR_EQUAL_STATE,
             LdapConstants.LESS_OR_EQUAL_FILTER_TAG, new InitLessOrEqualFilterAction() );
 
@@ -4892,8 +4883,7 @@ public class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init Approx Match filter
-        super.transitions[LdapStatesEnum.ASSERTION_VALUE_FILTER_STATE][LdapConstants.APPROX_MATCH_FILTER_TAG] = 
-            new GrammarTransition(
+        super.transitions[LdapStatesEnum.ASSERTION_VALUE_FILTER_STATE][LdapConstants.APPROX_MATCH_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.ASSERTION_VALUE_FILTER_STATE, LdapStatesEnum.APPROX_MATCH_STATE,
             LdapConstants.APPROX_MATCH_FILTER_TAG, new InitApproxMatchFilterAction() );
 
@@ -4911,8 +4901,7 @@ public class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init Assertion Value Filter filter
-        super.transitions[LdapStatesEnum.ASSERTION_VALUE_FILTER_STATE][LdapConstants.EXTENSIBLE_MATCH_FILTER_TAG] = 
-            new GrammarTransition(
+        super.transitions[LdapStatesEnum.ASSERTION_VALUE_FILTER_STATE][LdapConstants.EXTENSIBLE_MATCH_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.ASSERTION_VALUE_FILTER_STATE, LdapStatesEnum.EXTENSIBLE_MATCH_STATE,
             LdapConstants.EXTENSIBLE_MATCH_FILTER_TAG, new InitExtensibleMatchFilterAction() );
 
@@ -6182,7 +6171,8 @@ public class LdapMessageGrammar extends AbstractGrammar
                     }
                     catch ( BooleanDecoderException bde )
                     {
-                        log.error( I18n.err( I18n.ERR_04110, StringTools.dumpBytes( value.getData() ), bde.getMessage() ) );
+                        log.error( I18n
+                            .err( I18n.ERR_04110, StringTools.dumpBytes( value.getData() ), bde.getMessage() ) );
 
                         throw new DecoderException( bde.getMessage() );
                     }

@@ -39,24 +39,23 @@ import org.apache.directory.shared.ldap.constants.JndiPropertyConstants;
 public enum AliasDerefMode
 {
     /** Alias handling mode value that treats aliases like entries */
-    NEVER_DEREF_ALIASES( 0, "never" ),
+    NEVER_DEREF_ALIASES(0, "never"),
 
     /** Alias handling mode value that dereferences only when searching */
-    DEREF_IN_SEARCHING( 1, "searching" ),
+    DEREF_IN_SEARCHING(1, "searching"),
 
     /** Alias handling mode value that dereferences only in finding the base */
-    DEREF_FINDING_BASE_OBJ( 2, "finding" ),
+    DEREF_FINDING_BASE_OBJ(2, "finding"),
 
     /** Alias handling mode value that dereferences always */
-    DEREF_ALWAYS( 3, "always" );
-
+    DEREF_ALWAYS(3, "always");
 
     /** Stores the integer value of each element of the enumeration */
     private int value;
     /** Stores the integer value of each element of the enumeration */
     private String jndiValue;
 
-    
+
     /**
      * Private constructor so no other instances can be created other than the
      * public static constants in this class.
@@ -65,11 +64,11 @@ public enum AliasDerefMode
      */
     private AliasDerefMode( int value, String jndiValue )
     {
-       this.value = value;
-       this.jndiValue = jndiValue;
+        this.value = value;
+        this.jndiValue = jndiValue;
     }
 
-    
+
     /**
      * @return The value associated with the current element.
      */
@@ -77,6 +76,7 @@ public enum AliasDerefMode
     {
         return value;
     }
+
 
     /**
      * Gets the enumeration from by extracting the value for the JNDI LDAP
@@ -91,7 +91,7 @@ public enum AliasDerefMode
     public static AliasDerefMode getEnum( Map<String, Object> env )
     {
         String property = ( String ) env.get( JndiPropertyConstants.JNDI_LDAP_DAP_DEREF_ALIASES );
-        
+
         if ( null == property )
         {
             return DEREF_ALWAYS;
@@ -117,11 +117,12 @@ public enum AliasDerefMode
             else
             {
                 throw new IllegalArgumentException( I18n.err( I18n.ERR_04186, property,
-                		JndiPropertyConstants.JNDI_LDAP_DAP_DEREF_ALIASES ) );
+                    JndiPropertyConstants.JNDI_LDAP_DAP_DEREF_ALIASES ) );
             }
         }
     }
-    
+
+
     /**
      * Checks to see if we dereference while searching and finding the base.
      * 
@@ -154,18 +155,18 @@ public enum AliasDerefMode
     {
         switch ( this )
         {
-            case DEREF_ALWAYS :
+            case DEREF_ALWAYS:
                 return true;
-            
-            case DEREF_FINDING_BASE_OBJ :
+
+            case DEREF_FINDING_BASE_OBJ:
                 return false;
-            
-            case DEREF_IN_SEARCHING :
+
+            case DEREF_IN_SEARCHING:
                 return true;
-            
-            case NEVER_DEREF_ALIASES :
+
+            case NEVER_DEREF_ALIASES:
                 return false;
-            
+
             default:
                 throw new IllegalArgumentException( I18n.err( I18n.ERR_04187 ) );
         }
@@ -182,18 +183,18 @@ public enum AliasDerefMode
     {
         switch ( this )
         {
-            case DEREF_ALWAYS :
+            case DEREF_ALWAYS:
                 return true;
-            
-            case DEREF_FINDING_BASE_OBJ :
+
+            case DEREF_FINDING_BASE_OBJ:
                 return true;
-            
-            case DEREF_IN_SEARCHING :
+
+            case DEREF_IN_SEARCHING:
                 return false;
-            
-            case NEVER_DEREF_ALIASES :
+
+            case NEVER_DEREF_ALIASES:
                 return false;
-            
+
             default:
                 throw new IllegalArgumentException( "Class has bug: check for valid enumeration values" );
         }
@@ -208,21 +209,26 @@ public enum AliasDerefMode
      */
     public static AliasDerefMode getDerefMode( int val )
     {
-        switch( val )
+        switch ( val )
         {
-            case 0: return NEVER_DEREF_ALIASES;
-            
-            case 1: return DEREF_IN_SEARCHING;
-            
-            case 2: return DEREF_FINDING_BASE_OBJ;
-            
-            case 3: return DEREF_ALWAYS;
-            
-            default: throw new IllegalArgumentException( "Unknown derefmode " + val );
+            case 0:
+                return NEVER_DEREF_ALIASES;
+
+            case 1:
+                return DEREF_IN_SEARCHING;
+
+            case 2:
+                return DEREF_FINDING_BASE_OBJ;
+
+            case 3:
+                return DEREF_ALWAYS;
+
+            default:
+                throw new IllegalArgumentException( "Unknown derefmode " + val );
         }
     }
-    
-    
+
+
     public String getJndiValue()
     {
         return jndiValue;

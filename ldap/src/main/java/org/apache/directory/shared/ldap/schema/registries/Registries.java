@@ -32,8 +32,8 @@ import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.constants.MetaSchemaConstants;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.exception.LdapProtocolErrorException;
-import org.apache.directory.shared.ldap.exception.LdapUnwillingToPerformException;
 import org.apache.directory.shared.ldap.exception.LdapSchemaViolationException;
+import org.apache.directory.shared.ldap.exception.LdapUnwillingToPerformException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.DITContentRule;
@@ -134,7 +134,8 @@ public class Registries implements SchemaLoaderListener, Cloneable
     protected Map<SchemaObjectWrapper, Set<SchemaObjectWrapper>> using;
 
     /** A reference on the schema Manager */
-    @SuppressWarnings("PMD.UnusedPrivateField") // False positive 
+    @SuppressWarnings("PMD.UnusedPrivateField")
+    // False positive 
     private SchemaManager schemaManager;
 
 
@@ -1010,8 +1011,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
         else
         {
             // This is an error. 
-            Throwable error = new LdapProtocolErrorException( 
-            		I18n.err( I18n.ERR_04294, matchingRule.getOid() ) );
+            Throwable error = new LdapProtocolErrorException( I18n.err( I18n.ERR_04294, matchingRule.getOid() ) );
             errors.add( error );
         }
 
@@ -1021,8 +1021,8 @@ public class Registries implements SchemaLoaderListener, Cloneable
         if ( normalizer == null )
         {
             // Ok, no normalizer, this is an error
-            Throwable error = new LdapSchemaViolationException( ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX,
-            		I18n.err( I18n.ERR_04295, matchingRule.getOid() ) );
+            Throwable error = new LdapSchemaViolationException( ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX, I18n.err(
+                I18n.ERR_04295, matchingRule.getOid() ) );
             errors.add( error );
         }
 
@@ -1032,8 +1032,8 @@ public class Registries implements SchemaLoaderListener, Cloneable
         if ( comparator == null )
         {
             // Ok, no comparator, this is an error
-            Throwable error = new LdapSchemaViolationException( ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX,
-            		I18n.err( I18n.ERR_04296, matchingRule.getOid() ) );
+            Throwable error = new LdapSchemaViolationException( ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX, I18n.err(
+                I18n.ERR_04296, matchingRule.getOid() ) );
             errors.add( error );
         }
     }
@@ -1077,8 +1077,8 @@ public class Registries implements SchemaLoaderListener, Cloneable
                 else
                 {
                     // Not allowed : we have a cyle
-                    Throwable error = new LdapSchemaViolationException( ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX,
-                        I18n.err( I18n.ERR_04297, attributeType.getOid() ) );
+                    Throwable error = new LdapSchemaViolationException( ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX, I18n
+                        .err( I18n.ERR_04297, attributeType.getOid() ) );
                     errors.add( error );
                     return;
                 }
@@ -1109,8 +1109,8 @@ public class Registries implements SchemaLoaderListener, Cloneable
             {
                 // This is an error. if the AT does not have a Syntax,
                 // then it must have a superior, which syntax is get from.
-                Throwable error = new LdapSchemaViolationException( ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX,
-                    I18n.err( I18n.ERR_04298, attributeType.getOid() ) );
+                Throwable error = new LdapSchemaViolationException( ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX, I18n.err(
+                    I18n.ERR_04298, attributeType.getOid() ) );
                 errors.add( error );
             }
         }
@@ -1289,7 +1289,8 @@ public class Registries implements SchemaLoaderListener, Cloneable
                 else
                 {
                     // Not allowed : we have a cyle
-                    Throwable error = new LdapProtocolErrorException( I18n.err( I18n.ERR_04300, objectClass.getOid(), superior) );
+                    Throwable error = new LdapProtocolErrorException( I18n.err( I18n.ERR_04300, objectClass.getOid(),
+                        superior ) );
                     errors.add( error );
                     return;
                 }
@@ -1356,7 +1357,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
 
         // Build the SchemaObject references
         buildReference( errors, schemaObject );
-        
+
         // Lock the SchemaObject
         schemaObject.lock();
 
@@ -1828,19 +1829,19 @@ public class Registries implements SchemaLoaderListener, Cloneable
         if ( content != null )
         {
             SchemaObjectWrapper schemaObjectWrapper = new SchemaObjectWrapper( schemaObject );
-    
+
             if ( content.contains( schemaObjectWrapper ) )
             {
                 // remove the schemaObject
                 content.remove( schemaObjectWrapper );
-    
+
                 // Update the global OidRegistry if the SchemaObject is not
                 // an instance of LoadableSchemaObject
                 if ( !( schemaObject instanceof LoadableSchemaObject ) )
                 {
                     globalOidRegistry.unregister( schemaObject.getOid() );
                 }
-    
+
                 LOG.debug( "Unregistered {}:{}", schemaObject.getObjectType(), schemaObject.getOid() );
             }
             else
@@ -2598,7 +2599,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
 
                 try
                 {
-                    if ( ! ( original instanceof LoadableSchemaObject ) )
+                    if ( !( original instanceof LoadableSchemaObject ) )
                     {
                         SchemaObject copy = clone.globalOidRegistry.getSchemaObject( original.getOid() );
                         SchemaObjectWrapper newWrapper = new SchemaObjectWrapper( copy );
@@ -2607,7 +2608,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
                     else
                     {
                         SchemaObjectWrapper newWrapper = new SchemaObjectWrapper( original );
-                        objects.add(  newWrapper );
+                        objects.add( newWrapper );
                     }
                 }
                 catch ( LdapException ne )

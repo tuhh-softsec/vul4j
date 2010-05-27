@@ -24,7 +24,6 @@ import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.util.Asn1StringUtils;
 import org.apache.directory.shared.i18n.I18n;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,6 +62,7 @@ public abstract class AbstractGrammar implements IGrammar
     /** The grammar's states */
     protected IStates statesEnum;
 
+
     /** Default constructor */
     public AbstractGrammar()
     {
@@ -92,6 +92,7 @@ public abstract class AbstractGrammar implements IGrammar
     {
         this.name = name;
     }
+
 
     /**
      * Get the transition associated with the state and tag
@@ -128,13 +129,14 @@ public abstract class AbstractGrammar implements IGrammar
         byte tagByte = container.getCurrentTLV().getTag();
 
         // We will loop until no more actions are to be executed
-        GrammarTransition transition = ( ( AbstractGrammar ) container.getGrammar() ).getTransition( currentState, tagByte );
+        GrammarTransition transition = ( ( AbstractGrammar ) container.getGrammar() ).getTransition( currentState,
+            tagByte );
 
         if ( transition == null )
         {
 
-            String errorMessage = I18n.err( I18n.ERR_00001, currentGrammar.getStatesEnum().getState( currentState ), 
-            		Asn1StringUtils.dumpByte( tagByte ) );
+            String errorMessage = I18n.err( I18n.ERR_00001, currentGrammar.getStatesEnum().getState( currentState ),
+                Asn1StringUtils.dumpByte( tagByte ) );
 
             log.error( errorMessage );
 

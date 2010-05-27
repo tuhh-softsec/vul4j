@@ -21,8 +21,8 @@ package org.apache.directory.shared.ldap.cursor;
 
 import java.io.IOException;
 import java.util.Collections;
-import java.util.List;
 import java.util.Comparator;
+import java.util.List;
 
 import org.apache.directory.shared.i18n.I18n;
 
@@ -38,16 +38,16 @@ public class ListCursor<E> extends AbstractCursor<E>
 {
     /** The inner List */
     private final List<E> list;
-    
+
     /** The associated comparator */
     private final Comparator<E> comparator;
-    
+
     /** The starting position for the cursor in the list. It can be > 0 */
     private final int start;
-    
+
     /** The ending position for the cursor in the list. It can be < List.size() */
     private final int end;
-    
+
     /** The current position in the list */
     private int index = -1;
 
@@ -67,11 +67,11 @@ public class ListCursor<E> extends AbstractCursor<E>
      */
     public ListCursor( Comparator<E> comparator, int start, List<E> list, int end )
     {
-    	if ( list == null )
-    	{
-    		list = Collections.emptyList();
-    	}
-        if ( ( start < 0  )|| ( start > list.size() ) )
+        if ( list == null )
+        {
+            list = Collections.emptyList();
+        }
+        if ( ( start < 0 ) || ( start > list.size() ) )
         {
             throw new IllegalArgumentException( I18n.err( I18n.ERR_02005, start ) );
         }
@@ -346,7 +346,7 @@ public class ListCursor<E> extends AbstractCursor<E>
             index = end - 1;
             return true;
         }
-        
+
         return false;
     }
 
@@ -474,7 +474,7 @@ public class ListCursor<E> extends AbstractCursor<E>
     public E get() throws Exception
     {
         checkNotClosed( "get()" );
-        
+
         if ( index < start || index >= end )
         {
             throw new IOException( I18n.err( I18n.ERR_02009 ) );

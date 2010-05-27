@@ -213,7 +213,8 @@ public class Dsmlv2Engine
         {
             // Unable to connect to server
             // We create a new ErrorResponse and return the XML response.
-            ErrorResponse errorResponse = new ErrorResponse( 0, ErrorResponseType.COULD_NOT_CONNECT, e.getLocalizedMessage() );
+            ErrorResponse errorResponse = new ErrorResponse( 0, ErrorResponseType.COULD_NOT_CONNECT, e
+                .getLocalizedMessage() );
             batchResponse.addResponse( errorResponse );
             return batchResponse.toDsml();
         }
@@ -228,8 +229,8 @@ public class Dsmlv2Engine
         catch ( XmlPullParserException e )
         {
             // We create a new ErrorResponse and return the XML response.
-            ErrorResponse errorResponse = new ErrorResponse( 0, ErrorResponseType.MALFORMED_REQUEST, I18n.err(I18n.ERR_03001, e.getLocalizedMessage(),
-                e.getLineNumber(), e.getColumnNumber() ) );
+            ErrorResponse errorResponse = new ErrorResponse( 0, ErrorResponseType.MALFORMED_REQUEST, I18n.err(
+                I18n.ERR_03001, e.getLocalizedMessage(), e.getLineNumber(), e.getColumnNumber() ) );
             batchResponse.addResponse( errorResponse );
             return batchResponse.toDsml();
         }
@@ -248,8 +249,8 @@ public class Dsmlv2Engine
         catch ( XmlPullParserException e )
         {
             // We create a new ErrorResponse and return the XML response.
-            ErrorResponse errorResponse = new ErrorResponse( 0, ErrorResponseType.MALFORMED_REQUEST, I18n.err(I18n.ERR_03001, e.getLocalizedMessage(),
-                e.getLineNumber(), e.getColumnNumber() ) );
+            ErrorResponse errorResponse = new ErrorResponse( 0, ErrorResponseType.MALFORMED_REQUEST, I18n.err(
+                I18n.ERR_03001, e.getLocalizedMessage(), e.getLineNumber(), e.getColumnNumber() ) );
             batchResponse.addResponse( errorResponse );
             return batchResponse.toDsml();
         }
@@ -262,7 +263,8 @@ public class Dsmlv2Engine
                 && ( request.getMessageId() == 0 ) )
             {
                 // Then we have to send an errorResponse
-                ErrorResponse errorResponse = new ErrorResponse( 0, ErrorResponseType.MALFORMED_REQUEST, I18n.err( I18n.ERR_03002 ) );
+                ErrorResponse errorResponse = new ErrorResponse( 0, ErrorResponseType.MALFORMED_REQUEST, I18n
+                    .err( I18n.ERR_03002 ) );
                 batchResponse.addResponse( errorResponse );
                 return batchResponse.toDsml();
             }
@@ -274,8 +276,8 @@ public class Dsmlv2Engine
             catch ( Exception e )
             {
                 // We create a new ErrorResponse and return the XML response.
-                ErrorResponse errorResponse = new ErrorResponse( 0, ErrorResponseType.GATEWAY_INTERNAL_ERROR,
-                    I18n.err( I18n.ERR_03003, e.getMessage() ) );
+                ErrorResponse errorResponse = new ErrorResponse( 0, ErrorResponseType.GATEWAY_INTERNAL_ERROR, I18n.err(
+                    I18n.ERR_03003, e.getMessage() ) );
                 batchResponse.addResponse( errorResponse );
                 return batchResponse.toDsml();
             }
@@ -294,8 +296,8 @@ public class Dsmlv2Engine
             catch ( XmlPullParserException e )
             {
                 // We create a new ErrorResponse and return the XML response.
-                ErrorResponse errorResponse = new ErrorResponse( 0, ErrorResponseType.MALFORMED_REQUEST, I18n.err( I18n.ERR_03001,
-                		e.getLocalizedMessage(), e.getLineNumber(), e.getColumnNumber() ) );
+                ErrorResponse errorResponse = new ErrorResponse( 0, ErrorResponseType.MALFORMED_REQUEST, I18n.err(
+                    I18n.ERR_03001, e.getLocalizedMessage(), e.getLineNumber(), e.getColumnNumber() ) );
                 batchResponse.addResponse( errorResponse );
                 return batchResponse.toDsml();
             }
@@ -324,7 +326,7 @@ public class Dsmlv2Engine
 
         bb.clear();
         bb.position( bb.capacity() );
-        
+
         // Get the response
         LdapMessageCodec response = null;
 
@@ -332,120 +334,118 @@ public class Dsmlv2Engine
 
         switch ( response.getMessageType() )
         {
-            case ADD_RESPONSE :
-                AddResponseCodec addResponse = (AddResponseCodec)response;
+            case ADD_RESPONSE:
+                AddResponseCodec addResponse = ( AddResponseCodec ) response;
                 copyMessageIdAndControls( response, addResponse );
-    
+
                 AddResponseDsml addResponseDsml = new AddResponseDsml( addResponse );
                 batchResponse.addResponse( addResponseDsml );
                 break;
-                
-            case BIND_RESPONSE :
-                BindResponseCodec bindResponse = (BindResponseCodec)response;
+
+            case BIND_RESPONSE:
+                BindResponseCodec bindResponse = ( BindResponseCodec ) response;
                 copyMessageIdAndControls( response, bindResponse );
-    
+
                 AuthResponseDsml authResponseDsml = new AuthResponseDsml( bindResponse );
                 batchResponse.addResponse( authResponseDsml );
                 break;
-                
-            case COMPARE_RESPONSE :
-                CompareResponseCodec compareResponse = (CompareResponseCodec)response;
+
+            case COMPARE_RESPONSE:
+                CompareResponseCodec compareResponse = ( CompareResponseCodec ) response;
                 copyMessageIdAndControls( response, compareResponse );
-    
+
                 CompareResponseDsml compareResponseDsml = new CompareResponseDsml( compareResponse );
                 batchResponse.addResponse( compareResponseDsml );
                 break;
 
-            case DEL_RESPONSE :
-                DelResponseCodec delResponse = (DelResponseCodec)response;
+            case DEL_RESPONSE:
+                DelResponseCodec delResponse = ( DelResponseCodec ) response;
                 copyMessageIdAndControls( response, delResponse );
-    
+
                 DelResponseDsml delResponseDsml = new DelResponseDsml( delResponse );
                 batchResponse.addResponse( delResponseDsml );
                 break;
-                
-            case MODIFY_RESPONSE :
-                ModifyResponseCodec modifyResponse = (ModifyResponseCodec)response;
+
+            case MODIFY_RESPONSE:
+                ModifyResponseCodec modifyResponse = ( ModifyResponseCodec ) response;
                 copyMessageIdAndControls( response, modifyResponse );
-    
+
                 ModifyResponseDsml modifyResponseDsml = new ModifyResponseDsml( modifyResponse );
                 batchResponse.addResponse( modifyResponseDsml );
                 break;
 
-            case MODIFYDN_RESPONSE :
-                ModifyDNResponseCodec modifyDNResponse = (ModifyDNResponseCodec)response;
+            case MODIFYDN_RESPONSE:
+                ModifyDNResponseCodec modifyDNResponse = ( ModifyDNResponseCodec ) response;
                 copyMessageIdAndControls( response, modifyDNResponse );
-    
+
                 ModDNResponseDsml modDNResponseDsml = new ModDNResponseDsml( modifyDNResponse );
                 batchResponse.addResponse( modDNResponseDsml );
                 break;
 
-            case EXTENDED_RESPONSE :
-                ExtendedResponseCodec extendedResponse = (ExtendedResponseCodec)response;
+            case EXTENDED_RESPONSE:
+                ExtendedResponseCodec extendedResponse = ( ExtendedResponseCodec ) response;
                 copyMessageIdAndControls( response, extendedResponse );
-    
+
                 ExtendedResponseDsml extendedResponseDsml = new ExtendedResponseDsml( extendedResponse );
                 batchResponse.addResponse( extendedResponseDsml );
                 break;
 
-            case SEARCH_RESULT_ENTRY :
-            case SEARCH_RESULT_REFERENCE :
-            case SEARCH_RESULT_DONE :
+            case SEARCH_RESULT_ENTRY:
+            case SEARCH_RESULT_REFERENCE:
+            case SEARCH_RESULT_DONE:
                 // A SearchResponse can contains multiple responses of 3 types:
                 //     - 0 to n SearchResultEntry
                 //     - O to n SearchResultReference
                 //     - 1 (only) SearchResultDone
                 // So we have to include those individual responses in a "General" SearchResponse
                 SearchResponseDsml searchResponseDsml = null;
-    
+
                 // RequestID
                 int requestID = response.getMessageId();
-                
+
                 while ( MessageTypeEnum.SEARCH_RESULT_DONE != response.getMessageType() )
                 {
                     if ( MessageTypeEnum.SEARCH_RESULT_ENTRY == response.getMessageType() )
                     {
-                        SearchResultEntryCodec sre = (SearchResultEntryCodec)response;
+                        SearchResultEntryCodec sre = ( SearchResultEntryCodec ) response;
                         copyMessageIdAndControls( response, sre );
-    
+
                         SearchResultEntryDsml searchResultEntryDsml = new SearchResultEntryDsml( sre );
-                        searchResponseDsml = new SearchResponseDsml( (LdapMessageCodec)sre );
-    
+                        searchResponseDsml = new SearchResponseDsml( ( LdapMessageCodec ) sre );
+
                         if ( requestID != 0 )
                         {
                             searchResponseDsml.setMessageId( requestID );
                         }
-    
+
                         searchResponseDsml.addResponse( searchResultEntryDsml );
                     }
                     else if ( MessageTypeEnum.SEARCH_RESULT_REFERENCE == response.getMessageType() )
                     {
-                        SearchResultReferenceCodec srr = (SearchResultReferenceCodec)response;
+                        SearchResultReferenceCodec srr = ( SearchResultReferenceCodec ) response;
                         copyMessageIdAndControls( response, srr );
-    
+
                         SearchResultReferenceDsml searchResultReferenceDsml = new SearchResultReferenceDsml( srr );
                         searchResponseDsml.addResponse( searchResultReferenceDsml );
                     }
-    
+
                     response = readResponse( bb );
                 }
-    
-                SearchResultDoneCodec srd = (SearchResultDoneCodec)response;
+
+                SearchResultDoneCodec srd = ( SearchResultDoneCodec ) response;
                 copyMessageIdAndControls( response, srd );
-    
+
                 SearchResultDoneDsml searchResultDoneDsml = new SearchResultDoneDsml( srd );
                 searchResponseDsml.addResponse( searchResultDoneDsml );
                 break;
         }
 
-        LdapResponseCodec realResponse = (LdapResponseCodec)response;
+        LdapResponseCodec realResponse = ( LdapResponseCodec ) response;
         ResultCodeEnum resultCode = realResponse.getLdapResult().getResultCode();
 
-        if ( ( !continueOnError ) 
-                && ( resultCode != ResultCodeEnum.SUCCESS )
-                && ( resultCode != ResultCodeEnum.COMPARE_TRUE )
-                && ( resultCode != ResultCodeEnum.COMPARE_FALSE )
-                && ( resultCode != ResultCodeEnum.REFERRAL ) )
+        if ( ( !continueOnError ) && ( resultCode != ResultCodeEnum.SUCCESS )
+            && ( resultCode != ResultCodeEnum.COMPARE_TRUE ) && ( resultCode != ResultCodeEnum.COMPARE_FALSE )
+            && ( resultCode != ResultCodeEnum.REFERRAL ) )
         {
             // Turning on Exit flag
             exit = true;
@@ -456,7 +456,7 @@ public class Dsmlv2Engine
     private void copyMessageIdAndControls( LdapMessageCodec from, LdapMessageCodec to )
     {
         to.setMessageId( from.getMessageId() );
-        
+
         for ( Control control : from.getControls() )
         {
             to.addControl( control );
