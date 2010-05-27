@@ -23,7 +23,6 @@ package org.apache.directory.shared.ldap.codec.bind;
 import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
 
-import org.apache.directory.shared.asn1.Asn1Object;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.asn1.codec.EncoderException;
@@ -55,7 +54,7 @@ public class SaslCredentials extends LdapAuthentication
      * Any mechanism defined in RFC 2222 : KERBEROS_V4, GSSAPI, SKEY, EXTERNAL
      */
     private String mechanism;
-    
+
     /** The mechanism bytes */
     private byte[] mechanismBytes;
 
@@ -70,12 +69,15 @@ public class SaslCredentials extends LdapAuthentication
 
 
     /**
-     * @see Asn1Object#Asn1Object
+     * 
+     * Creates a new instance of SaslCredentials.
+     *
      */
     public SaslCredentials()
     {
         super();
     }
+
 
     // ~ Methods
     // ------------------------------------------------------------------------------------
@@ -92,7 +94,7 @@ public class SaslCredentials extends LdapAuthentication
             return null;
         }
 
-        final byte[] copy = new byte[ credentials.length ];
+        final byte[] copy = new byte[credentials.length];
         System.arraycopy( credentials, 0, copy, 0, credentials.length );
         return copy;
     }
@@ -107,9 +109,11 @@ public class SaslCredentials extends LdapAuthentication
     {
         if ( credentials != null )
         {
-            this.credentials = new byte[ credentials.length ];
+            this.credentials = new byte[credentials.length];
             System.arraycopy( credentials, 0, this.credentials, 0, credentials.length );
-        } else {
+        }
+        else
+        {
             this.credentials = null;
         }
     }
@@ -214,7 +218,7 @@ public class SaslCredentials extends LdapAuthentication
         catch ( BufferOverflowException boe )
         {
             log.error( I18n.err( I18n.ERR_04005 ) );
-            throw new EncoderException( I18n.err( I18n.ERR_04005)  );
+            throw new EncoderException( I18n.err( I18n.ERR_04005 ) );
         }
 
         return buffer;
@@ -235,9 +239,7 @@ public class SaslCredentials extends LdapAuthentication
 
         if ( credentials != null )
         {
-            sb.append( "\n            Credentials :'" ).
-                append( StringTools.dumpBytes(  credentials ) ).
-                append( '\'' );
+            sb.append( "\n            Credentials :'" ).append( StringTools.dumpBytes( credentials ) ).append( '\'' );
         }
 
         return sb.toString();

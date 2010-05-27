@@ -22,7 +22,6 @@ package org.apache.directory.shared.ldap.codec.search.controls.entryChange;
 
 import java.nio.ByteBuffer;
 
-import org.apache.directory.shared.asn1.Asn1Object;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
@@ -95,7 +94,7 @@ public class EntryChangeControl extends AbstractControl
 
     /** The previous DN */
     private DN previousDn = null;
-    
+
     /** A temporary storage for the previous DN */
     private byte[] previousDnBytes = null;
 
@@ -104,16 +103,18 @@ public class EntryChangeControl extends AbstractControl
 
 
     /**
-     * @see Asn1Object#Asn1Object
+     * 
+     * Creates a new instance of EntryChangeControl.
+     *
      */
     public EntryChangeControl()
     {
         super( CONTROL_OID );
-        
+
         decoder = new EntryChangeControlDecoder();
     }
 
-    
+
     /**
      * Compute the EntryChangeControl length 
      * 
@@ -165,7 +166,7 @@ public class EntryChangeControl extends AbstractControl
 
         // Encode the Control envelop
         super.encode( buffer );
-        
+
         // Encode the OCTET_STRING tag
         buffer.put( UniversalTag.OCTET_STRING_TAG );
         buffer.put( TLV.getBytes( valueLength ) );
@@ -181,16 +182,16 @@ public class EntryChangeControl extends AbstractControl
         {
             Value.encode( buffer, previousDnBytes );
         }
-        
+
         if ( changeNumber != UNDEFINED_CHANGE_NUMBER )
         {
             Value.encode( buffer, changeNumber );
         }
-        
+
         return buffer;
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
@@ -199,27 +200,27 @@ public class EntryChangeControl extends AbstractControl
         if ( value == null )
         {
             try
-            { 
+            {
                 computeLength();
                 ByteBuffer buffer = ByteBuffer.allocate( valueLength );
-                
+
                 buffer.put( UniversalTag.SEQUENCE_TAG );
                 buffer.put( TLV.getBytes( eccSeqLength ) );
-        
+
                 buffer.put( UniversalTag.ENUMERATED_TAG );
                 buffer.put( ( byte ) 1 );
                 buffer.put( Value.getBytes( changeType.getValue() ) );
-        
+
                 if ( previousDn != null )
                 {
                     Value.encode( buffer, previousDnBytes );
                 }
-                
+
                 if ( changeNumber != UNDEFINED_CHANGE_NUMBER )
                 {
                     Value.encode( buffer, changeNumber );
                 }
-                
+
                 value = buffer.array();
             }
             catch ( Exception e )
@@ -227,7 +228,7 @@ public class EntryChangeControl extends AbstractControl
                 return null;
             }
         }
-        
+
         return value;
     }
 
@@ -288,7 +289,7 @@ public class EntryChangeControl extends AbstractControl
         sb.append( "        critical : " ).append( isCritical() ).append( '\n' );
         sb.append( "        changeType   : '" ).append( changeType ).append( "'\n" );
         sb.append( "        previousDN   : '" ).append( previousDn ).append( "'\n" );
-        
+
         if ( changeNumber == UNDEFINED_CHANGE_NUMBER )
         {
             sb.append( "        changeNumber : '" ).append( "UNDEFINED" ).append( "'\n" );
@@ -297,7 +298,7 @@ public class EntryChangeControl extends AbstractControl
         {
             sb.append( "        changeNumber : '" ).append( changeNumber ).append( "'\n" );
         }
-        
+
         return sb.toString();
     }
 }

@@ -20,8 +20,6 @@
 package org.apache.directory.shared.ldap.exception;
 
 
-import javax.naming.TimeLimitExceededException;
-
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 
 
@@ -39,7 +37,9 @@ public class LdapTimeLimitExceededException extends LdapOperationException
 
 
     /**
-     * @see TimeLimitExceededException#TimeLimitExceededException()
+     * 
+     * Creates a new instance of LdapTimeLimitExceededException.
+     *
      */
     public LdapTimeLimitExceededException()
     {
@@ -48,7 +48,10 @@ public class LdapTimeLimitExceededException extends LdapOperationException
 
 
     /**
-     * @see TimeLimitExceededException#TimeLimitExceededException(String)
+     * 
+     * Creates a new instance of LdapTimeLimitExceededException.
+     *
+     * @param explanation The associated error message
      */
     public LdapTimeLimitExceededException( String explanation )
     {

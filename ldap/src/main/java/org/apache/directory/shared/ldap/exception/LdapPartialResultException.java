@@ -19,9 +19,9 @@
  */
 package org.apache.directory.shared.ldap.exception;
 
-import javax.naming.ReferralException;
 
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
+
 
 /**
  * A {@link LdapOperationException} which associates a resultCode namely the
@@ -35,8 +35,12 @@ public class LdapPartialResultException extends AbstractLdapReferralException
     /** The serial version UUID */
     static final long serialVersionUID = 1L;
 
+
     /**
-     * @see ReferralException#ReferralException(java.lang.String)
+     * 
+     * Creates a new instance of LdapPartialResultException.
+     *
+     * @param explanation The associated error message
      */
     public LdapPartialResultException( String explanation )
     {

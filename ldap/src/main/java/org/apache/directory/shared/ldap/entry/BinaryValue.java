@@ -26,9 +26,8 @@ import java.io.ObjectOutput;
 import java.util.Arrays;
 import java.util.Comparator;
 
-import org.apache.directory.shared.ldap.exception.LdapException;
-
 import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.LdapComparator;
 import org.apache.directory.shared.ldap.schema.Normalizer;
@@ -52,13 +51,14 @@ public class BinaryValue extends AbstractValue<byte[]>
 {
     /** Used for serialization */
     public static final long serialVersionUID = 2L;
-    
+
     /** logger for reporting errors that might not be handled properly upstream */
     private static final Logger LOG = LoggerFactory.getLogger( BinaryValue.class );
-    
+
     /** The computed hashcode. We don't want to compute it each time the hashcode() method is called */
     private volatile int h;
-    
+
+
     /**
      * Creates a BinaryValue without an initial wrapped value.
      */
@@ -69,8 +69,8 @@ public class BinaryValue extends AbstractValue<byte[]>
         valid = null;
         normalizedValue = null;
     }
-    
-    
+
+
     /**
      * Creates a BinaryValue without an initial wrapped value.
      *
@@ -108,20 +108,20 @@ public class BinaryValue extends AbstractValue<byte[]>
     {
         if ( value != null )
         {
-            this.wrappedValue = new byte[ value.length ];
+            this.wrappedValue = new byte[value.length];
             System.arraycopy( value, 0, this.wrappedValue, 0, value.length );
         }
         else
         {
             this.wrappedValue = null;
         }
-        
+
         normalized = false;
         valid = null;
         normalizedValue = null;
     }
-    
-    
+
+
     /**
      * Creates a BinaryValue with an initial wrapped binary value.
      *
@@ -132,8 +132,8 @@ public class BinaryValue extends AbstractValue<byte[]>
     {
         this( attributeType );
         SyntaxChecker syntaxChecker = attributeType.getSyntax().getSyntaxChecker();
-        
-        if ( syntaxChecker != null ) 
+
+        if ( syntaxChecker != null )
         {
             if ( syntaxChecker.isValidSyntax( value ) )
             {
@@ -166,7 +166,7 @@ public class BinaryValue extends AbstractValue<byte[]>
         }
 
         if ( !normalized )
-        {      
+        {
             try
             {
                 normalize();
@@ -181,7 +181,7 @@ public class BinaryValue extends AbstractValue<byte[]>
 
         if ( normalizedValue != null )
         {
-            byte[] copy = new byte[ normalizedValue.length ];
+            byte[] copy = new byte[normalizedValue.length];
             System.arraycopy( normalizedValue, 0, copy, 0, normalizedValue.length );
             return copy;
         }
@@ -190,8 +190,8 @@ public class BinaryValue extends AbstractValue<byte[]>
             return StringTools.EMPTY_BYTES;
         }
     }
-    
-    
+
+
     /**
      * Gets the normalized (canonical) representation for the wrapped string.
      * If the wrapped String is null, null is returned, otherwise the normalized
@@ -233,7 +233,7 @@ public class BinaryValue extends AbstractValue<byte[]>
         }
     }
 
-    
+
     /**
      * Normalize the value. For a client String value, applies the given normalizer.
      * 
@@ -268,7 +268,7 @@ public class BinaryValue extends AbstractValue<byte[]>
         }
     }
 
-    
+
     /**
      * {@inheritDoc}
      */
@@ -293,7 +293,7 @@ public class BinaryValue extends AbstractValue<byte[]>
         }
     }
 
-    
+
     /**
      *
      * @see ServerValue#compareTo(Value)
@@ -315,14 +315,14 @@ public class BinaryValue extends AbstractValue<byte[]>
         }
         else
         {
-            if ( ( value == null ) || value.isNull() ) 
+            if ( ( value == null ) || value.isNull() )
             {
                 return 1;
             }
         }
 
         BinaryValue binaryValue = ( BinaryValue ) value;
-        
+
         if ( attributeType != null )
         {
             try
@@ -371,7 +371,7 @@ public class BinaryValue extends AbstractValue<byte[]>
             {
                 return 0;
             }
-            
+
             byte[] normalizedValue = getNormalizedValueReference();
             h = Arrays.hashCode( normalizedValue );
         }
@@ -394,19 +394,19 @@ public class BinaryValue extends AbstractValue<byte[]>
         {
             return true;
         }
-        
-        if ( ! ( obj instanceof BinaryValue ) )
+
+        if ( !( obj instanceof BinaryValue ) )
         {
             return false;
         }
 
         BinaryValue other = ( BinaryValue ) obj;
-        
+
         if ( isNull() )
         {
             return other.isNull();
         }
-        
+
         // If we have an attributeType, it must be equal
         // We should also use the comparator if we have an AT
         if ( attributeType != null )
@@ -440,7 +440,7 @@ public class BinaryValue extends AbstractValue<byte[]>
             // We have an AttributeType, we eed to use the comparator
             try
             {
-                Comparator<byte[]> comparator = (Comparator<byte[]>)getLdapComparator();
+                Comparator<byte[]> comparator = ( Comparator<byte[]> ) getLdapComparator();
 
                 // Compare normalized values
                 if ( comparator == null )
@@ -474,20 +474,20 @@ public class BinaryValue extends AbstractValue<byte[]>
      */
     public BinaryValue clone()
     {
-        BinaryValue clone = (BinaryValue)super.clone();
-        
+        BinaryValue clone = ( BinaryValue ) super.clone();
+
         if ( normalizedValue != null )
         {
-            clone.normalizedValue = new byte[ normalizedValue.length ];
+            clone.normalizedValue = new byte[normalizedValue.length];
             System.arraycopy( normalizedValue, 0, clone.normalizedValue, 0, normalizedValue.length );
         }
-        
+
         if ( wrappedValue != null )
         {
-            clone.wrappedValue = new byte[ wrappedValue.length ];
+            clone.wrappedValue = new byte[wrappedValue.length];
             System.arraycopy( wrappedValue, 0, clone.wrappedValue, 0, wrappedValue.length );
         }
-        
+
         return clone;
     }
 
@@ -501,14 +501,14 @@ public class BinaryValue extends AbstractValue<byte[]>
         {
             return null;
         }
-        
-        final byte[] copy = new byte[ wrappedValue.length ];
+
+        final byte[] copy = new byte[wrappedValue.length];
         System.arraycopy( wrappedValue, 0, copy, 0, wrappedValue.length );
-        
+
         return copy;
     }
-    
-    
+
+
     /**
      * Tells if the current value is Binary or String
      * 
@@ -518,8 +518,8 @@ public class BinaryValue extends AbstractValue<byte[]>
     {
         return true;
     }
-    
-    
+
+
     /**
      * @return The length of the interned value
      */
@@ -539,8 +539,8 @@ public class BinaryValue extends AbstractValue<byte[]>
     {
         return get();
     }
-    
-    
+
+
     /**
      * Get the wrapped value as a String.
      *
@@ -550,8 +550,8 @@ public class BinaryValue extends AbstractValue<byte[]>
     {
         return StringTools.utf8ToString( wrappedValue );
     }
-    
-    
+
+
     /**
      * @see Externalizable#readExternal(ObjectInput)
      */
@@ -559,39 +559,39 @@ public class BinaryValue extends AbstractValue<byte[]>
     {
         // Read the wrapped value, if it's not null
         int wrappedLength = in.readInt();
-        
+
         if ( wrappedLength >= 0 )
         {
             wrappedValue = new byte[wrappedLength];
-            
+
             if ( wrappedLength > 0 )
             {
                 in.read( wrappedValue );
             }
         }
-        
+
         // Read the isNormalized flag
         normalized = in.readBoolean();
-        
+
         if ( normalized )
         {
             int normalizedLength = in.readInt();
-            
+
             if ( normalizedLength >= 0 )
             {
                 normalizedValue = new byte[normalizedLength];
-                
+
                 if ( normalizedLength > 0 )
                 {
                     in.read( normalizedValue );
                 }
             }
         }
-        
+
         h = 0;
     }
 
-    
+
     /**
      * @see Externalizable#writeExternal(ObjectOutput)
      */
@@ -601,7 +601,7 @@ public class BinaryValue extends AbstractValue<byte[]>
         if ( wrappedValue != null )
         {
             out.writeInt( wrappedValue.length );
-            
+
             if ( wrappedValue.length > 0 )
             {
                 out.write( wrappedValue, 0, wrappedValue.length );
@@ -611,17 +611,17 @@ public class BinaryValue extends AbstractValue<byte[]>
         {
             out.writeInt( -1 );
         }
-        
+
         // Write the isNormalized flag
         if ( normalized )
         {
             out.writeBoolean( true );
-            
+
             // Write the normalized value, if not null
             if ( normalizedValue != null )
             {
                 out.writeInt( normalizedValue.length );
-                
+
                 if ( normalizedValue.length > 0 )
                 {
                     out.write( normalizedValue, 0, normalizedValue.length );
@@ -637,8 +637,8 @@ public class BinaryValue extends AbstractValue<byte[]>
             out.writeBoolean( false );
         }
     }
-    
-    
+
+
     /**
      * We will write the value and the normalized value, only
      * if the normalized value is different.
@@ -790,8 +790,8 @@ public class BinaryValue extends AbstractValue<byte[]>
             }
         }
     }
-    
-    
+
+
     /**
      * Dumps binary in hex with label.
      *
@@ -807,9 +807,9 @@ public class BinaryValue extends AbstractValue<byte[]>
         {
             // Just dump the first 16 bytes...
             byte[] copy = new byte[16];
-            
+
             System.arraycopy( wrappedValue, 0, copy, 0, 16 );
-            
+
             return "'" + StringTools.dumpBytes( copy ) + "...'";
         }
         else

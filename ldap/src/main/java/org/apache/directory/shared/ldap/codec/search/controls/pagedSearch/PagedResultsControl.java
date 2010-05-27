@@ -22,7 +22,6 @@ package org.apache.directory.shared.ldap.codec.search.controls.pagedSearch;
 
 import java.nio.ByteBuffer;
 
-import org.apache.directory.shared.asn1.Asn1Object;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
@@ -71,25 +70,28 @@ public class PagedResultsControl extends AbstractControl
 
     /** The number of entries to return, or returned */
     private int size;
-    
+
     /** The exchanged cookie */
     private byte[] cookie;
 
     /** The entry change global length */
     private int pscSeqLength;
 
+
     /**
-     * @see Asn1Object#Asn1Object
+     * 
+     * Creates a new instance of PagedResultsControl.
+     *
      */
     public PagedResultsControl()
     {
         super( CONTROL_OID );
-        
+
         cookie = StringTools.EMPTY_BYTES;
         decoder = new PagedResultsControlDecoder();
     }
 
-    
+
     /**
      * Compute the PagedSearchControl length, which is the sum
      * of the control length and the value length.
@@ -108,7 +110,7 @@ public class PagedResultsControl extends AbstractControl
         int sizeLength = 1 + 1 + Value.getNbBytes( size );
 
         int cookieLength = 0;
-        
+
         if ( cookie != null )
         {
             cookieLength = 1 + TLV.getNbBytes( cookie.length ) + cookie.length;
@@ -142,22 +144,22 @@ public class PagedResultsControl extends AbstractControl
 
         // Encode the Control envelop
         super.encode( buffer );
-        
+
         // Encode the OCTET_STRING tag
         buffer.put( UniversalTag.OCTET_STRING_TAG );
         buffer.put( TLV.getBytes( valueLength ) );
-        
+
         // Now encode the PagedSearch specific part
         buffer.put( UniversalTag.SEQUENCE_TAG );
         buffer.put( TLV.getBytes( pscSeqLength ) );
 
         Value.encode( buffer, size );
         Value.encode( buffer, cookie );
-        
+
         return buffer;
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
@@ -166,17 +168,17 @@ public class PagedResultsControl extends AbstractControl
         if ( value == null )
         {
             try
-            { 
+            {
                 computeLength();
                 ByteBuffer buffer = ByteBuffer.allocate( valueLength );
-                
+
                 // Now encode the PagedSearch specific part
                 buffer.put( UniversalTag.SEQUENCE_TAG );
                 buffer.put( TLV.getBytes( pscSeqLength ) );
 
                 Value.encode( buffer, size );
                 Value.encode( buffer, cookie );
-                
+
                 value = buffer.array();
             }
             catch ( Exception e )
@@ -184,7 +186,7 @@ public class PagedResultsControl extends AbstractControl
                 return null;
             }
         }
-        
+
         return value;
     }
 
@@ -228,38 +230,39 @@ public class PagedResultsControl extends AbstractControl
         this.cookie = cookie;
     }
 
-    
+
     /**
      * @return The integer value for the current cookie
      */
     public int getCookieValue()
     {
         int value = 0;
-        
+
         switch ( cookie.length )
         {
-            case 1 :
-                value = cookie[0]&0x00FF;
+            case 1:
+                value = cookie[0] & 0x00FF;
                 break;
-                
-            case 2 :
-                value = ((cookie[0]&0x00FF)<<8) + (cookie[1]&0x00FF);
+
+            case 2:
+                value = ( ( cookie[0] & 0x00FF ) << 8 ) + ( cookie[1] & 0x00FF );
                 break;
-                
-            case 3 :
-                value = ((cookie[0]&0x00FF)<<16) + ((cookie[1]&0x00FF)<<8) + (cookie[2]&0x00FF);
+
+            case 3:
+                value = ( ( cookie[0] & 0x00FF ) << 16 ) + ( ( cookie[1] & 0x00FF ) << 8 ) + ( cookie[2] & 0x00FF );
                 break;
-                
-            case 4 :
-                value = ((cookie[0]&0x00FF)<<24) + ((cookie[1]&0x00FF)<<16) + ((cookie[2]&0x00FF)<<8) + (cookie[3]&0x00FF);
+
+            case 4:
+                value = ( ( cookie[0] & 0x00FF ) << 24 ) + ( ( cookie[1] & 0x00FF ) << 16 )
+                    + ( ( cookie[2] & 0x00FF ) << 8 ) + ( cookie[3] & 0x00FF );
                 break;
-                
+
         }
-        
+
         return value;
     }
-    
-    
+
+
     /**
      * Return a String representing this PagedSearchControl.
      */
@@ -272,7 +275,7 @@ public class PagedResultsControl extends AbstractControl
         sb.append( "        critical : " ).append( isCritical() ).append( '\n' );
         sb.append( "        size   : '" ).append( size ).append( "'\n" );
         sb.append( "        cookie   : '" ).append( StringTools.dumpBytes( cookie ) ).append( "'\n" );
-        
+
         return sb.toString();
     }
 }

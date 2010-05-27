@@ -22,7 +22,6 @@ package org.apache.directory.shared.ldap.codec.extended.operations.gracefulShutd
 
 import java.nio.ByteBuffer;
 
-import org.apache.directory.shared.asn1.Asn1Object;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
@@ -50,13 +49,17 @@ public class GracefulShutdown extends GracefulAction
     /** Length of the sequence */
     private int gracefulSequenceLength;
 
+
     /**
-     * @see Asn1Object#Asn1Object
+     * 
+     * Creates a new instance of GracefulShutdown.
+     *
      */
     public GracefulShutdown()
     {
         super();
     }
+
 
     /**
      * Compute the GracefulShutdown length 

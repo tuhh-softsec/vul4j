@@ -24,7 +24,6 @@ import java.util.Hashtable;
 
 import javax.naming.Context;
 import javax.naming.NamingException;
-import javax.naming.ReferralException;
 
 import org.apache.directory.shared.ldap.NotImplementedException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
@@ -45,13 +44,16 @@ public class AbstractLdapReferralException extends LdapOperationException
 
     /** The remaining DN */
     private DN remainingDn;
-    
+
     /** TODO */
     private Object resolvedObject;
 
 
     /**
-     * @see ReferralException#ReferralException(java.lang.String)
+     * 
+     * Creates a new instance of AbstractLdapReferralException.
+     *
+     * @param explanation The associated message
      */
     public AbstractLdapReferralException( String explanation )
     {
@@ -86,8 +88,8 @@ public class AbstractLdapReferralException extends LdapOperationException
     {
         throw new NotImplementedException();
     }
-    
-    
+
+
     /**
      * @return the remainingDn
      */

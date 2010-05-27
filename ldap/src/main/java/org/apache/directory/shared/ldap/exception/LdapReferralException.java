@@ -27,7 +27,6 @@ import java.util.List;
 
 import javax.naming.Context;
 import javax.naming.NamingException;
-import javax.naming.ReferralException;
 
 import org.apache.directory.shared.ldap.NotImplementedException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
@@ -51,16 +50,19 @@ public class LdapReferralException extends AbstractLdapReferralException
 
     /** The current index in the list of referrals */
     private int index = 0;
-    
+
     /** The remaining DN */
     private DN remainingDn;
-    
+
     /** TODO */
     private Object resolvedObject;
 
 
     /**
-     * @see ReferralException#ReferralException()
+     * 
+     * Creates a new instance of LdapReferralException.
+     *
+     * @param refs The list of referrals
      */
     public LdapReferralException( Collection<String> refs )
     {
@@ -70,7 +72,11 @@ public class LdapReferralException extends AbstractLdapReferralException
 
 
     /**
-     * @see ReferralException#ReferralException(java.lang.String)
+     * 
+     * Creates a new instance of LdapReferralException.
+     *
+     * @param refs The list of referrals
+     * @param explanation The associated error message
      */
     public LdapReferralException( Collection<String> refs, String explanation )
     {
@@ -119,8 +125,8 @@ public class LdapReferralException extends AbstractLdapReferralException
     {
         throw new NotImplementedException();
     }
-    
-    
+
+
     /**
      * @return the remainingDn
      */
