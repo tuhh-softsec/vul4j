@@ -4,7 +4,6 @@ dn: m-oid=1.3.6.1.4.1.18060.0.4.1.3.150, ou=objectClasses, cn=adsconfig, ou=sche
 createtimestamp: 20100111145217Z
 m-must: ads-partitionId
 m-must: ads-partitionSuffix
-m-must: ads-partitionIndexedAttributes
 m-oid: 1.3.6.1.4.1.18060.0.4.1.3.150
 entrycsn: 20100111202217.958000Z#000000#000#000000
 m-description: A generic partition
