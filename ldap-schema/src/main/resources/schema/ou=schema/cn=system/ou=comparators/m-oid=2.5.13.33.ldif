@@ -3,7 +3,7 @@ dn: m-oid=2.5.13.33,ou=comparators,cn=system,ou=schema
 createtimestamp: 20090818022727Z
 m-oid: 2.5.13.33
 entrycsn: 20090818052727.972000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.comparators.ComparableComparator
+m-fqcn: org.apache.directory.shared.ldap.schema.comparators.WordComparator
 objectclass: metaComparator
 objectclass: metaTop
 objectclass: top
