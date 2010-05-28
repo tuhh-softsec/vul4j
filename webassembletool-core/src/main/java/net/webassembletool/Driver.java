@@ -16,9 +16,12 @@ package net.webassembletool;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 import java.util.Properties;
 
+import javax.net.ssl.SSLContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -60,6 +63,7 @@ import org.apache.http.conn.params.ConnRoutePNames;
 import org.apache.http.conn.scheme.PlainSocketFactory;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
+import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.params.BasicHttpParams;
@@ -92,6 +96,20 @@ public class Driver {
 		if (config.getBaseURL() != null) {
 			// Create and initialize scheme registry
 			SchemeRegistry schemeRegistry = new SchemeRegistry();
+			try {
+				SSLContext sslContext = SSLContext.getInstance("TLS");
+				sslContext.init(null, null, null);
+				SSLSocketFactory sslSocketFactory = new SSLSocketFactory(
+						sslContext);
+				sslSocketFactory
+						.setHostnameVerifier(SSLSocketFactory.STRICT_HOSTNAME_VERIFIER);
+				Scheme https = new Scheme("https", sslSocketFactory, 443);
+				schemeRegistry.register(https);
+			} catch (NoSuchAlgorithmException e) {
+				throw new ConfigurationException(e);
+			} catch (KeyManagementException e) {
+				throw new ConfigurationException(e);
+			}
 			schemeRegistry.register(new Scheme("http", PlainSocketFactory
 					.getSocketFactory(), 80));
 			// Create an HttpClient with the ThreadSafeClientConnManager.
