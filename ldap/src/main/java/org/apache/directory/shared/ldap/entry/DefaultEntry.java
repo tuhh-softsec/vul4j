@@ -18,6 +18,8 @@
  */
 package org.apache.directory.shared.ldap.entry;
 
+
+import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
@@ -30,11 +32,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.NotImplementedException;
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.exception.LdapException;
-
-import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.name.RDN;
 import org.apache.directory.shared.ldap.name.RdnSerializer;
@@ -58,16 +59,16 @@ public class DefaultEntry implements Entry
 {
     /** Used for serialization */
     private static final long serialVersionUID = 2L;
-    
+
     /** The logger for this class */
     private static final Logger LOG = LoggerFactory.getLogger( DefaultEntry.class );
 
     /** The DN for this entry */
     protected DN dn;
-    
+
     /** A map containing all the attributes for this entry */
     protected Map<String, EntryAttribute> attributes = new HashMap<String, EntryAttribute>();
-    
+
     /** A speedup to get the ObjectClass attribute */
     protected static transient AttributeType OBJECT_CLASS_AT;
 
@@ -80,7 +81,7 @@ public class DefaultEntry implements Entry
     /** A mutex to manage synchronization*/
     private static transient Object MUTEX = new Object();
 
-    
+
     //-------------------------------------------------------------------------
     // Constructors
     //-------------------------------------------------------------------------
@@ -149,7 +150,7 @@ public class DefaultEntry implements Entry
         {
             this.dn = dn;
         }
-        
+
         this.schemaManager = schemaManager;
 
         // Initialize the ObjectClass object
@@ -168,14 +169,14 @@ public class DefaultEntry implements Entry
     {
         this.dn = dn;
 
-        for ( String upId:upIds )
+        for ( String upId : upIds )
         {
             // Add a new AttributeType without value
             set( upId );
         }
     }
 
-    
+
     /**
      * <p>
      * Creates a new instance of DefaultEntry, copying 
@@ -198,14 +199,14 @@ public class DefaultEntry implements Entry
         // We will clone the existing entry, because it may be normalized
         if ( entry.getDn() != null )
         {
-            dn = (DN)entry.getDn().clone();
+            dn = ( DN ) entry.getDn().clone();
         }
         else
         {
             dn = DN.EMPTY_DN;
         }
-        
-        if ( !dn.isNormalized( ) )
+
+        if ( !dn.isNormalized() )
         {
             try
             {
@@ -217,12 +218,12 @@ public class DefaultEntry implements Entry
                 LOG.warn( "The DN '" + entry.getDn() + "' cannot be normalized" );
             }
         }
-        
+
         // Init the attributes map
         attributes = new HashMap<String, EntryAttribute>( entry.size() );
-        
+
         // and copy all the attributes
-        for ( EntryAttribute attribute:entry )
+        for ( EntryAttribute attribute : entry )
         {
             try
             {
@@ -233,10 +234,10 @@ public class DefaultEntry implements Entry
                 {
                     attributeType = schemaManager.lookupAttributeTypeRegistry( attribute.getId() );
                 }
-                
+
                 // Create a new ServerAttribute.
                 EntryAttribute serverAttribute = new DefaultEntryAttribute( attributeType, attribute );
-                
+
                 // And store it
                 add( serverAttribute );
             }
@@ -272,7 +273,7 @@ public class DefaultEntry implements Entry
         {
             this.dn = dn;
         }
-        
+
         this.schemaManager = schemaManager;
 
         initObjectClassAT( schemaManager );
@@ -280,7 +281,7 @@ public class DefaultEntry implements Entry
         set( upIds );
     }
 
-    
+
     /**
      * <p>
      * Creates a new instance of DefaultEntry, with a 
@@ -294,19 +295,19 @@ public class DefaultEntry implements Entry
     {
         this.dn = dn;
 
-        for ( EntryAttribute attribute:attributes )
+        for ( EntryAttribute attribute : attributes )
         {
             if ( attribute == null )
             {
                 continue;
             }
-            
+
             // Store a new ClientAttribute
             this.attributes.put( attribute.getId(), attribute );
         }
     }
 
-    
+
     /**
      * Creates a new instance of DefaultEntry, with a 
      * DN, a list of ServerAttributes and schema aware. 
@@ -330,12 +331,12 @@ public class DefaultEntry implements Entry
         {
             this.dn = dn;
         }
-        
+
         this.schemaManager = schemaManager;
 
         initObjectClassAT( schemaManager );
 
-        for ( EntryAttribute attribute:attributes )
+        for ( EntryAttribute attribute : attributes )
         {
             // Store a new ServerAttribute
             try
@@ -348,6 +349,8 @@ public class DefaultEntry implements Entry
             }
         }
     }
+
+
     /**
      * <p>
      * Creates a new instance of DefaultEntry, with a 
@@ -385,7 +388,7 @@ public class DefaultEntry implements Entry
         set( attributeTypes );
     }
 
-    
+
     /**
      * <p>
      * Creates a new instance of DefaultEntry, with a 
@@ -417,7 +420,7 @@ public class DefaultEntry implements Entry
         {
             this.dn = dn;
         }
-        
+
         this.schemaManager = schemaManager;
 
         // Initialize the ObjectClass object
@@ -425,7 +428,7 @@ public class DefaultEntry implements Entry
 
         try
         {
-            put( upId, attributeType, (String)null );
+            put( upId, attributeType, ( String ) null );
         }
         catch ( LdapException ne )
         {
@@ -434,7 +437,7 @@ public class DefaultEntry implements Entry
         }
     }
 
-    
+
     //-------------------------------------------------------------------------
     // Helper methods
     //-------------------------------------------------------------------------
@@ -469,23 +472,23 @@ public class DefaultEntry implements Entry
         }
     }
 
-    
+
     private String getId( String upId ) throws IllegalArgumentException
     {
         String id = StringTools.trim( StringTools.toLowerCase( upId ) );
-        
+
         // If empty, throw an error
-        if ( ( id == null ) || ( id.length() == 0 ) ) 
+        if ( ( id == null ) || ( id.length() == 0 ) )
         {
             String message = I18n.err( I18n.ERR_04133 );
             LOG.error( message );
             throw new IllegalArgumentException( message );
         }
-        
+
         return id;
     }
 
-    
+
     /**
      * Get the UpId if it was null.
      */
@@ -505,59 +508,59 @@ public class DefaultEntry implements Entry
         else if ( StringTools.isEmpty( normUpId ) )
         {
             upId = attributeType.getName();
-            
+
             if ( StringTools.isEmpty( upId ) )
             {
                 upId = attributeType.getOid();
             }
         }
-        
+
         return upId;
     }
 
-    
+
     /**
      * Add a new EntryAttribute, with its upId. If the upId is null,
      * default to the AttributeType name.
      * 
      * Updates the AttributeMap.
      */
-    protected void createAttribute( String upId, AttributeType attributeType, byte[]... values ) 
+    protected void createAttribute( String upId, AttributeType attributeType, byte[]... values )
     {
         EntryAttribute attribute = new DefaultEntryAttribute( attributeType, values );
         attribute.setUpId( upId, attributeType );
         attributes.put( attributeType.getOid(), attribute );
     }
-    
-    
+
+
     /**
      * Add a new EntryAttribute, with its upId. If the upId is null,
      * default to the AttributeType name.
      * 
      * Updates the AttributeMap.
      */
-    protected void createAttribute( String upId, AttributeType attributeType, String... values ) 
+    protected void createAttribute( String upId, AttributeType attributeType, String... values )
     {
         EntryAttribute attribute = new DefaultEntryAttribute( attributeType, values );
         attribute.setUpId( upId, attributeType );
         attributes.put( attributeType.getOid(), attribute );
     }
-    
-    
+
+
     /**
      * Add a new EntryAttribute, with its upId. If the upId is null,
      * default to the AttributeType name.
      * 
      * Updates the AttributeMap.
      */
-    protected void createAttribute( String upId, AttributeType attributeType, Value<?>... values ) 
+    protected void createAttribute( String upId, AttributeType attributeType, Value<?>... values )
     {
         EntryAttribute attribute = new DefaultEntryAttribute( attributeType, values );
         attribute.setUpId( upId, attributeType );
         attributes.put( attributeType.getOid(), attribute );
     }
-    
-    
+
+
     /**
      * Returns the attributeType from an Attribute ID.
      */
@@ -569,11 +572,11 @@ public class DefaultEntry implements Entry
             LOG.error( message );
             throw new IllegalArgumentException( message );
         }
-        
+
         return schemaManager.lookupAttributeTypeRegistry( upId );
     }
 
-    
+
     //-------------------------------------------------------------------------
     // Entry methods
     //-------------------------------------------------------------------------
@@ -588,24 +591,24 @@ public class DefaultEntry implements Entry
             LOG.error( message );
             throw new IllegalArgumentException( message );
         }
-        
+
         if ( ( values == null ) || ( values.length == 0 ) )
         {
             String message = I18n.err( I18n.ERR_04478_NO_VALUE_NOT_ALLOWED );
             LOG.error( message );
             throw new IllegalArgumentException( message );
         }
-        
+
         // ObjectClass with binary values are not allowed
         if ( attributeType.equals( OBJECT_CLASS_AT ) )
         {
             String message = I18n.err( I18n.ERR_04461 );
-            LOG.error(  message  );
+            LOG.error( message );
             throw new UnsupportedOperationException( message );
         }
 
         EntryAttribute attribute = attributes.get( attributeType.getOid() );
-        
+
         if ( attribute != null )
         {
             // This Attribute already exist, we add the values 
@@ -626,16 +629,16 @@ public class DefaultEntry implements Entry
      * {@inheritDoc}
      */
     public void add( AttributeType attributeType, String... values ) throws LdapException
-    {    
+    {
         if ( attributeType == null )
         {
             String message = I18n.err( I18n.ERR_04460_ATTRIBUTE_TYPE_NULL_NOT_ALLOWED );
             LOG.error( message );
             throw new IllegalArgumentException( message );
         }
-        
+
         EntryAttribute attribute = attributes.get( attributeType.getOid() );
-        
+
         if ( attribute != null )
         {
             // This Attribute already exist, we add the values 
@@ -651,7 +654,7 @@ public class DefaultEntry implements Entry
         }
     }
 
-    
+
     /**
      * {@inheritDoc}
      */
@@ -663,9 +666,9 @@ public class DefaultEntry implements Entry
             LOG.error( message );
             throw new IllegalArgumentException( message );
         }
-        
+
         EntryAttribute attribute = attributes.get( attributeType.getOid() );
-    
+
         if ( attribute != null )
         {
             // This Attribute already exist, we add the values 
@@ -691,14 +694,14 @@ public class DefaultEntry implements Entry
         if ( attributeType.equals( OBJECT_CLASS_AT ) )
         {
             String message = I18n.err( I18n.ERR_04461 );
-            LOG.error(  message  );
+            LOG.error( message );
             throw new UnsupportedOperationException( message );
         }
 
-        EntryAttribute attribute = (EntryAttribute)attributes.get( attributeType.getOid() );
-        
+        EntryAttribute attribute = ( EntryAttribute ) attributes.get( attributeType.getOid() );
+
         upId = getUpId( upId, attributeType );
-        
+
         if ( attribute != null )
         {
             // This Attribute already exist, we add the values 
@@ -726,11 +729,11 @@ public class DefaultEntry implements Entry
             LOG.error( message );
             throw new IllegalArgumentException( message );
         }
-        
+
         upId = getUpId( upId, attributeType );
-        
-        EntryAttribute attribute = (EntryAttribute)attributes.get( attributeType.getOid() );
-    
+
+        EntryAttribute attribute = ( EntryAttribute ) attributes.get( attributeType.getOid() );
+
         if ( attribute != null )
         {
             // This Attribute already exist, we add the values 
@@ -744,7 +747,7 @@ public class DefaultEntry implements Entry
         }
     }
 
-    
+
     /**
      * {@inheritDoc}
      */
@@ -756,11 +759,11 @@ public class DefaultEntry implements Entry
             LOG.error( message );
             throw new IllegalArgumentException( message );
         }
-        
+
         upId = getUpId( upId, attributeType );
 
-        EntryAttribute attribute = (EntryAttribute)attributes.get( attributeType.getOid() );
-        
+        EntryAttribute attribute = ( EntryAttribute ) attributes.get( attributeType.getOid() );
+
         if ( attribute != null )
         {
             // This Attribute already exist, we add the values 
@@ -783,25 +786,25 @@ public class DefaultEntry implements Entry
     public void add( EntryAttribute... attributes ) throws LdapException
     {
         // Loop on all the added attributes
-        for ( EntryAttribute attribute:attributes )
+        for ( EntryAttribute attribute : attributes )
         {
             AttributeType attributeType = attribute.getAttributeType();
-            
+
             if ( attributeType != null )
             {
                 String oid = attributeType.getOid();
-                
+
                 if ( this.attributes.containsKey( oid ) )
                 {
                     // We already have an attribute with the same AttributeType
                     // Just add the new values into it.
                     EntryAttribute existingAttribute = this.attributes.get( oid );
-                    
-                    for ( Value<?> value:attribute )
+
+                    for ( Value<?> value : attribute )
                     {
                         existingAttribute.add( value );
                     }
-                    
+
                     // And update the upId
                     existingAttribute.setUpId( attribute.getUpId() );
                 }
@@ -817,9 +820,9 @@ public class DefaultEntry implements Entry
                 if ( contains( attribute ) )
                 {
                     EntryAttribute existingAttribute = get( attribute.getId() );
-                    
+
                     // Loop on all the values, and add them to the existing attribute
-                    for ( Value<?> value:attribute )
+                    for ( Value<?> value : attribute )
                     {
                         existingAttribute.add( value );
                     }
@@ -833,7 +836,7 @@ public class DefaultEntry implements Entry
         }
     }
 
-    
+
     /**
      * {@inheritDoc}
      */
@@ -845,10 +848,10 @@ public class DefaultEntry implements Entry
             LOG.error( message );
             throw new IllegalArgumentException( message );
         }
-        
+
         // First, transform the upID to a valid ID
         String id = getId( upId );
-        
+
         if ( schemaManager != null )
         {
             add( upId, schemaManager.lookupAttributeTypeRegistry( id ), values );
@@ -857,7 +860,7 @@ public class DefaultEntry implements Entry
         {
             // Now, check to see if we already have such an attribute
             EntryAttribute attribute = attributes.get( id );
-            
+
             if ( attribute != null )
             {
                 // This Attribute already exist, we add the values 
@@ -887,7 +890,7 @@ public class DefaultEntry implements Entry
             LOG.error( message );
             throw new IllegalArgumentException( message );
         }
-        
+
         // First, transform the upID to a valid ID
         String id = getId( upId );
 
@@ -899,7 +902,7 @@ public class DefaultEntry implements Entry
         {
             // Now, check to see if we already have such an attribute
             EntryAttribute attribute = attributes.get( id );
-            
+
             if ( attribute != null )
             {
                 // This Attribute already exist, we add the values 
@@ -929,7 +932,7 @@ public class DefaultEntry implements Entry
             LOG.error( message );
             throw new IllegalArgumentException( message );
         }
-        
+
         // First, transform the upID to a valid ID
         String id = getId( upId );
 
@@ -941,7 +944,7 @@ public class DefaultEntry implements Entry
         {
             // Now, check to see if we already have such an attribute
             EntryAttribute attribute = attributes.get( id );
-            
+
             if ( attribute != null )
             {
                 // This Attribute already exist, we add the values 
@@ -970,30 +973,31 @@ public class DefaultEntry implements Entry
         try
         {
             // First, clone the structure
-            DefaultEntry clone = (DefaultEntry)super.clone();
-            
+            DefaultEntry clone = ( DefaultEntry ) super.clone();
+
             // Just in case ... Should *never* happen
             if ( clone == null )
             {
                 return null;
             }
-            
+
             // An Entry has a DN and many attributes.
             // First, clone the DN, if not null.
             if ( dn != null )
             {
-                clone.dn = (DN)dn.clone();
+                clone.dn = ( DN ) dn.clone();
             }
-            
+
             // then clone the ClientAttribute Map.
-            clone.attributes = (Map<String, EntryAttribute>)(((HashMap<String, EntryAttribute>)attributes).clone());
-            
+            clone.attributes = ( Map<String, EntryAttribute> ) ( ( ( HashMap<String, EntryAttribute> ) attributes )
+                .clone() );
+
             // now clone all the attributes
             clone.attributes.clear();
-            
+
             if ( schemaManager != null )
             {
-                for ( EntryAttribute attribute:attributes.values() )
+                for ( EntryAttribute attribute : attributes.values() )
                 {
                     String oid = attribute.getAttributeType().getOid();
                     clone.attributes.put( oid, attribute.clone() );
@@ -1001,13 +1005,13 @@ public class DefaultEntry implements Entry
             }
             else
             {
-                for ( EntryAttribute attribute:attributes.values() )
+                for ( EntryAttribute attribute : attributes.values() )
                 {
                     clone.attributes.put( attribute.getId(), attribute.clone() );
                 }
-                
+
             }
-            
+
             // We are done !
             return clone;
         }
@@ -1016,7 +1020,7 @@ public class DefaultEntry implements Entry
             return null;
         }
     }
-    
+
 
     /**
      * {@inheritDoc}
@@ -1025,13 +1029,13 @@ public class DefaultEntry implements Entry
     {
         if ( schemaManager == null )
         {
-            for ( EntryAttribute attribute:attributes )
+            for ( EntryAttribute attribute : attributes )
             {
                 if ( attribute == null )
                 {
                     return this.attributes.size() == 0;
                 }
-                
+
                 if ( !this.attributes.containsKey( attribute.getId() ) )
                 {
                     return false;
@@ -1040,26 +1044,26 @@ public class DefaultEntry implements Entry
         }
         else
         {
-            for ( EntryAttribute entryAttribute:attributes )
+            for ( EntryAttribute entryAttribute : attributes )
             {
                 if ( entryAttribute == null )
                 {
                     return this.attributes.size() == 0;
                 }
-                
+
                 AttributeType attributeType = entryAttribute.getAttributeType();
-                
+
                 if ( ( entryAttribute == null ) || !this.attributes.containsKey( attributeType.getOid() ) )
                 {
                     return false;
                 }
             }
         }
-        
+
         return true;
     }
 
-    
+
     /**
      * {@inheritDoc}
      */
@@ -1069,9 +1073,9 @@ public class DefaultEntry implements Entry
         {
             return false;
         }
-        
+
         String id = getId( upId );
-        
+
         if ( schemaManager != null )
         {
             try
@@ -1083,7 +1087,7 @@ public class DefaultEntry implements Entry
                 return false;
             }
         }
-        
+
         return attributes.containsKey( id );
     }
 
@@ -1095,21 +1099,21 @@ public class DefaultEntry implements Entry
     {
         if ( schemaManager == null )
         {
-            for ( String attribute:attributes )
+            for ( String attribute : attributes )
             {
                 String id = getId( attribute );
-        
+
                 if ( !this.attributes.containsKey( id ) )
                 {
                     return false;
                 }
             }
-            
+
             return true;
         }
         else
         {
-            for ( String attribute:attributes )
+            for ( String attribute : attributes )
             {
                 try
                 {
@@ -1123,7 +1127,7 @@ public class DefaultEntry implements Entry
                     return false;
                 }
             }
-        
+
             return true;
         }
     }
@@ -1138,11 +1142,11 @@ public class DefaultEntry implements Entry
         {
             return false;
         }
-        
+
         return attributes.containsKey( attributeType.getOid() );
     }
 
-    
+
     /**
      * {@inheritDoc}
      */
@@ -1152,9 +1156,9 @@ public class DefaultEntry implements Entry
         {
             return false;
         }
-        
+
         EntryAttribute attribute = attributes.get( attributeType.getOid() );
-        
+
         if ( attribute != null )
         {
             return attribute.contains( values );
@@ -1175,9 +1179,9 @@ public class DefaultEntry implements Entry
         {
             return false;
         }
-        
+
         EntryAttribute attribute = attributes.get( attributeType.getOid() );
-        
+
         if ( attribute != null )
         {
             return attribute.contains( values );
@@ -1198,9 +1202,9 @@ public class DefaultEntry implements Entry
         {
             return false;
         }
-        
+
         EntryAttribute attribute = attributes.get( attributeType.getOid() );
-        
+
         if ( attribute != null )
         {
             return attribute.contains( values );
@@ -1210,8 +1214,8 @@ public class DefaultEntry implements Entry
             return false;
         }
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
@@ -1221,9 +1225,9 @@ public class DefaultEntry implements Entry
         {
             return false;
         }
-        
+
         String id = getId( upId );
-        
+
         if ( schemaManager != null )
         {
             try
@@ -1235,18 +1239,18 @@ public class DefaultEntry implements Entry
                 return false;
             }
         }
-        
+
         EntryAttribute attribute = attributes.get( id );
-        
+
         if ( attribute == null )
         {
             return false;
         }
-        
+
         return attribute.contains( values );
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
@@ -1256,7 +1260,7 @@ public class DefaultEntry implements Entry
         {
             return false;
         }
-        
+
         String id = getId( upId );
 
         if ( schemaManager != null )
@@ -1270,19 +1274,18 @@ public class DefaultEntry implements Entry
                 return false;
             }
         }
-        
-        
+
         EntryAttribute attribute = attributes.get( id );
-        
+
         if ( attribute == null )
         {
             return false;
         }
-        
+
         return attribute.contains( values );
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
@@ -1292,7 +1295,7 @@ public class DefaultEntry implements Entry
         {
             return false;
         }
-        
+
         String id = getId( upId );
 
         if ( schemaManager != null )
@@ -1306,19 +1309,18 @@ public class DefaultEntry implements Entry
                 return false;
             }
         }
-        
-        
+
         EntryAttribute attribute = attributes.get( id );
-        
+
         if ( attribute == null )
         {
             return false;
         }
-        
+
         return attribute.contains( values );
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
@@ -1327,13 +1329,13 @@ public class DefaultEntry implements Entry
         try
         {
             String id = getId( alias );
-            
+
             if ( schemaManager != null )
             {
                 try
                 {
                     AttributeType attributeType = schemaManager.lookupAttributeTypeRegistry( id );
-                    
+
                     return attributes.get( attributeType.getOid() );
                 }
                 catch ( LdapException ne )
@@ -1348,14 +1350,14 @@ public class DefaultEntry implements Entry
                 return attributes.get( id );
             }
         }
-        catch( IllegalArgumentException iea )
+        catch ( IllegalArgumentException iea )
         {
             LOG.error( I18n.err( I18n.ERR_04134, alias ) );
             return null;
         }
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
@@ -1378,19 +1380,19 @@ public class DefaultEntry implements Entry
     public Set<AttributeType> getAttributeTypes()
     {
         Set<AttributeType> attributeTypes = new HashSet<AttributeType>();
-        
-        for ( EntryAttribute attribute:attributes.values() )
+
+        for ( EntryAttribute attribute : attributes.values() )
         {
             if ( attribute.getAttributeType() != null )
-            { 
+            {
                 attributeTypes.add( attribute.getAttributeType() );
             }
         }
-        
+
         return attributeTypes;
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
@@ -1402,7 +1404,7 @@ public class DefaultEntry implements Entry
             LOG.error( message );
             throw new IllegalArgumentException( message );
         }
-        
+
         if ( schemaManager == null )
         {
             // Get the normalized form of the ID
@@ -1410,7 +1412,7 @@ public class DefaultEntry implements Entry
 
             // Create a new attribute
             EntryAttribute clientAttribute = new DefaultEntryAttribute( upId, values );
-    
+
             // Replace the previous one, and return it back
             return attributes.put( id, clientAttribute );
         }
@@ -1441,15 +1443,15 @@ public class DefaultEntry implements Entry
             LOG.error( message );
             throw new IllegalArgumentException( message );
         }
-        
+
         if ( schemaManager == null )
         {
             // Get the normalized form of the ID
             String id = getId( upId );
-            
+
             // Create a new attribute
             EntryAttribute clientAttribute = new DefaultEntryAttribute( upId, values );
-    
+
             // Replace the previous one, and return it back
             return attributes.put( id, clientAttribute );
         }
@@ -1480,15 +1482,15 @@ public class DefaultEntry implements Entry
             LOG.error( message );
             throw new IllegalArgumentException( message );
         }
-        
+
         if ( schemaManager == null )
         {
             // Get the normalized form of the ID
             String id = getId( upId );
-            
+
             // Create a new attribute
             EntryAttribute clientAttribute = new DefaultEntryAttribute( upId, values );
-    
+
             // Replace the previous one, and return it back
             return attributes.put( id, clientAttribute );
         }
@@ -1519,14 +1521,14 @@ public class DefaultEntry implements Entry
             LOG.error( message );
             throw new IllegalArgumentException( message );
         }
-        
+
         List<EntryAttribute> removed = new ArrayList<EntryAttribute>();
         boolean added = false;
-        
+
         if ( schemaManager == null )
         {
             // Now, loop on all the attributeType to add
-            for ( String upId:upIds )
+            for ( String upId : upIds )
             {
                 if ( upId == null )
                 {
@@ -1534,7 +1536,7 @@ public class DefaultEntry implements Entry
                     LOG.info( message );
                     throw new IllegalArgumentException( message );
                 }
-                
+
                 String id = getId( upId );
 
                 if ( attributes.containsKey( id ) )
@@ -1542,7 +1544,7 @@ public class DefaultEntry implements Entry
                     // Add the removed serverAttribute to the list
                     removed.add( attributes.remove( id ) );
                 }
-    
+
                 EntryAttribute newAttribute = new DefaultEntryAttribute( upId );
                 attributes.put( id, newAttribute );
                 added = true;
@@ -1550,7 +1552,7 @@ public class DefaultEntry implements Entry
         }
         else
         {
-            for ( String upId:upIds )
+            for ( String upId : upIds )
             {
                 if ( upId == null )
                 {
@@ -1558,10 +1560,10 @@ public class DefaultEntry implements Entry
                     LOG.info( message );
                     throw new IllegalArgumentException( message );
                 }
-                
+
                 // Search for the corresponding AttributeType, based on the upID 
                 AttributeType attributeType = null;
-                
+
                 try
                 {
                     attributeType = getAttributeType( upId );
@@ -1576,37 +1578,37 @@ public class DefaultEntry implements Entry
                     LOG.warn( "Trying to add a bad attribute type '{}', error : ", upId, iae.getLocalizedMessage() );
                     continue;
                 }
-                
+
                 String oid = attributeType.getOid();
-                
+
                 if ( attributes.containsKey( oid ) )
                 {
                     removed.add( attributes.get( oid ) );
                 }
-                
+
                 attributes.put( oid, new DefaultEntryAttribute( upId, attributeType ) );
                 added = true;
             }
         }
-        
-        if ( ( !added ) || ( removed.size() == 0 ) ) 
+
+        if ( ( !added ) || ( removed.size() == 0 ) )
         {
             return null;
         }
-        
+
         return removed;
     }
 
-    
+
     /**
      * {@inheritDoc}     
      **/
     public List<EntryAttribute> set( AttributeType... attributeTypes )
     {
         List<EntryAttribute> removed = new ArrayList<EntryAttribute>();
-        
+
         // Now, loop on all the attributeType to add
-        for ( AttributeType attributeType:attributeTypes )
+        for ( AttributeType attributeType : attributeTypes )
         {
             if ( attributeType == null )
             {
@@ -1614,15 +1616,16 @@ public class DefaultEntry implements Entry
                 LOG.error( message );
                 continue;
             }
-            
-            EntryAttribute attribute = attributes.put( attributeType.getOid(), new DefaultEntryAttribute( attributeType ) );
+
+            EntryAttribute attribute = attributes.put( attributeType.getOid(),
+                new DefaultEntryAttribute( attributeType ) );
 
             if ( attribute != null )
             {
                 removed.add( attribute );
             }
         }
-        
+
         if ( removed.size() == 0 )
         {
             return null;
@@ -1633,7 +1636,7 @@ public class DefaultEntry implements Entry
         }
     }
 
-    
+
     /**
      * {@inheritDoc}
      */
@@ -1641,27 +1644,27 @@ public class DefaultEntry implements Entry
     {
         // First, get the existing attributes
         List<EntryAttribute> previous = new ArrayList<EntryAttribute>();
-        
+
         if ( schemaManager == null )
         {
-            for ( EntryAttribute attribute:attributes )
+            for ( EntryAttribute attribute : attributes )
             {
                 String id = attribute.getId();
-                
+
                 if ( contains( id ) )
                 {
                     // Store the attribute and remove it from the list
                     previous.add( get( id ) );
                     this.attributes.remove( id );
                 }
-                
+
                 // add the new one
-                this.attributes.put( id, (EntryAttribute)attribute );            
+                this.attributes.put( id, ( EntryAttribute ) attribute );
             }
         }
         else
         {
-            for ( EntryAttribute attribute:attributes )
+            for ( EntryAttribute attribute : attributes )
             {
                 if ( attribute == null )
                 {
@@ -1669,16 +1672,22 @@ public class DefaultEntry implements Entry
                     LOG.error( message );
                     throw new IllegalArgumentException( message );
                 }
-                
+
+                if ( attribute.getAttributeType() == null )
+                {
+                    AttributeType attributeType = schemaManager.lookupAttributeTypeRegistry( attribute.getId() );
+                    attribute.setAttributeType( attributeType );
+                }
+
                 EntryAttribute removed = this.attributes.put( attribute.getAttributeType().getOid(), attribute );
-                
+
                 if ( removed != null )
                 {
                     previous.add( removed );
                 }
             }
         }
-        
+
         // return the previous attributes
         return previous;
     }
@@ -1701,7 +1710,7 @@ public class DefaultEntry implements Entry
         return put( null, attributeType, values );
     }
 
-    
+
     /**
      * {@inheritDoc}
      */
@@ -1734,7 +1743,7 @@ public class DefaultEntry implements Entry
             if ( !StringTools.isEmpty( upId ) )
             {
                 AttributeType tempAT = getAttributeType( upId );
-            
+
                 if ( !tempAT.equals( attributeType ) )
                 {
                     String message = I18n.err( I18n.ERR_04463, upId, attributeType );
@@ -1747,7 +1756,7 @@ public class DefaultEntry implements Entry
                 upId = getUpId( upId, attributeType );
             }
         }
-        
+
         if ( attributeType.equals( OBJECT_CLASS_AT ) )
         {
             String message = I18n.err( I18n.ERR_04461 );
@@ -1756,7 +1765,7 @@ public class DefaultEntry implements Entry
         }
 
         EntryAttribute attribute = new DefaultEntryAttribute( upId, attributeType, values );
-        
+
         return attributes.put( attributeType.getOid(), attribute );
     }
 
@@ -1784,7 +1793,7 @@ public class DefaultEntry implements Entry
             if ( !StringTools.isEmpty( upId ) )
             {
                 AttributeType tempAT = getAttributeType( upId );
-            
+
                 if ( !tempAT.equals( attributeType ) )
                 {
                     String message = I18n.err( I18n.ERR_04463, upId, attributeType );
@@ -1797,9 +1806,9 @@ public class DefaultEntry implements Entry
                 upId = getUpId( upId, attributeType );
             }
         }
-        
+
         EntryAttribute attribute = new DefaultEntryAttribute( upId, attributeType, values );
-        
+
         return attributes.put( attributeType.getOid(), attribute );
     }
 
@@ -1827,7 +1836,7 @@ public class DefaultEntry implements Entry
             if ( !StringTools.isEmpty( upId ) )
             {
                 AttributeType tempAT = getAttributeType( upId );
-            
+
                 if ( !tempAT.equals( attributeType ) )
                 {
                     String message = I18n.err( I18n.ERR_04463, upId, attributeType );
@@ -1840,9 +1849,9 @@ public class DefaultEntry implements Entry
                 upId = getUpId( upId, attributeType );
             }
         }
-        
+
         EntryAttribute attribute = new DefaultEntryAttribute( upId, attributeType, values );
-        
+
         return attributes.put( attributeType.getOid(), attribute );
     }
 
@@ -1853,10 +1862,10 @@ public class DefaultEntry implements Entry
     public List<EntryAttribute> remove( EntryAttribute... attributes ) throws LdapException
     {
         List<EntryAttribute> removedAttributes = new ArrayList<EntryAttribute>();
-        
+
         if ( schemaManager == null )
         {
-            for ( EntryAttribute attribute:attributes )
+            for ( EntryAttribute attribute : attributes )
             {
                 if ( contains( attribute.getId() ) )
                 {
@@ -1867,17 +1876,17 @@ public class DefaultEntry implements Entry
         }
         else
         {
-            for ( EntryAttribute attribute:attributes )
+            for ( EntryAttribute attribute : attributes )
             {
                 AttributeType attributeType = attribute.getAttributeType();
-                
+
                 if ( attributeType == null )
                 {
                     String message = I18n.err( I18n.ERR_04460_ATTRIBUTE_TYPE_NULL_NOT_ALLOWED );
                     LOG.error( message );
                     throw new IllegalArgumentException( message );
                 }
-                
+
                 if ( this.attributes.containsKey( attributeType.getOid() ) )
                 {
                     this.attributes.remove( attributeType.getOid() );
@@ -1885,7 +1894,7 @@ public class DefaultEntry implements Entry
                 }
             }
         }
-        
+
         return removedAttributes;
     }
 
@@ -1899,30 +1908,30 @@ public class DefaultEntry implements Entry
         {
             return false;
         }
-        
+
         try
         {
             EntryAttribute attribute = attributes.get( attributeType.getOid() );
-            
+
             if ( attribute == null )
             {
                 // Can't remove values from a not existing attribute !
                 return false;
             }
-            
+
             int nbOldValues = attribute.size();
-            
+
             // Remove the values
             attribute.remove( values );
-            
+
             if ( attribute.size() == 0 )
             {
                 // No mare values, remove the attribute
                 attributes.remove( attributeType.getOid() );
-                
+
                 return true;
             }
-            
+
             if ( nbOldValues != attribute.size() )
             {
                 // At least one value have been removed, return true.
@@ -1940,8 +1949,8 @@ public class DefaultEntry implements Entry
             return false;
         }
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
@@ -1951,30 +1960,30 @@ public class DefaultEntry implements Entry
         {
             return false;
         }
-        
+
         try
         {
             EntryAttribute attribute = attributes.get( attributeType.getOid() );
-            
+
             if ( attribute == null )
             {
                 // Can't remove values from a not existing attribute !
                 return false;
             }
-            
+
             int nbOldValues = attribute.size();
-            
+
             // Remove the values
             attribute.remove( values );
-            
+
             if ( attribute.size() == 0 )
             {
                 // No mare values, remove the attribute
                 attributes.remove( attributeType.getOid() );
-                
+
                 return true;
             }
-            
+
             if ( nbOldValues != attribute.size() )
             {
                 // At least one value have been removed, return true.
@@ -1992,8 +2001,8 @@ public class DefaultEntry implements Entry
             return false;
         }
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
@@ -2003,30 +2012,30 @@ public class DefaultEntry implements Entry
         {
             return false;
         }
-        
+
         try
         {
             EntryAttribute attribute = attributes.get( attributeType.getOid() );
-            
+
             if ( attribute == null )
             {
                 // Can't remove values from a not existing attribute !
                 return false;
             }
-            
+
             int nbOldValues = attribute.size();
-            
+
             // Remove the values
             attribute.remove( values );
-            
+
             if ( attribute.size() == 0 )
             {
                 // No mare values, remove the attribute
                 attributes.remove( attributeType.getOid() );
-                
+
                 return true;
             }
-            
+
             if ( nbOldValues != attribute.size() )
             {
                 // At least one value have been removed, return true.
@@ -2044,8 +2053,8 @@ public class DefaultEntry implements Entry
             return false;
         }
     }
-    
-    
+
+
     /**
      * <p>
      * Removes the attribute with the specified AttributeTypes. 
@@ -2067,24 +2076,24 @@ public class DefaultEntry implements Entry
         {
             return null;
         }
-        
+
         List<EntryAttribute> removed = new ArrayList<EntryAttribute>( attributes.length );
-        
-        for ( AttributeType attributeType:attributes )
+
+        for ( AttributeType attributeType : attributes )
         {
             if ( attributeType == null )
             {
                 continue;
             }
-            
+
             EntryAttribute attr = this.attributes.remove( attributeType.getOid() );
-            
+
             if ( attr != null )
             {
                 removed.add( attr );
             }
         }
-        
+
         if ( removed.size() == 0 )
         {
             return null;
@@ -2094,8 +2103,8 @@ public class DefaultEntry implements Entry
             return removed;
         }
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
@@ -2105,15 +2114,15 @@ public class DefaultEntry implements Entry
         {
             return null;
         }
-        
+
         List<EntryAttribute> removed = new ArrayList<EntryAttribute>( attributes.length );
-        
+
         if ( schemaManager == null )
         {
-            for ( String attribute:attributes )
+            for ( String attribute : attributes )
             {
                 EntryAttribute attr = get( attribute );
-                
+
                 if ( attr != null )
                 {
                     removed.add( this.attributes.remove( attr.getId() ) );
@@ -2128,10 +2137,10 @@ public class DefaultEntry implements Entry
         }
         else
         {
-            for ( String attribute:attributes )
+            for ( String attribute : attributes )
             {
                 AttributeType attributeType = null;
-                
+
                 try
                 {
                     attributeType = schemaManager.lookupAttributeTypeRegistry( attribute );
@@ -2142,16 +2151,16 @@ public class DefaultEntry implements Entry
                     LOG.warn( message );
                     continue;
                 }
-        
+
                 EntryAttribute attr = this.attributes.remove( attributeType.getOid() );
-                
+
                 if ( attr != null )
                 {
                     removed.add( attr );
                 }
             }
         }
-        
+
         if ( removed.size() == 0 )
         {
             return null;
@@ -2192,7 +2201,7 @@ public class DefaultEntry implements Entry
             LOG.info( message );
             return false;
         }
-        
+
         if ( schemaManager == null )
         {
             String id = getId( upId );
@@ -2204,21 +2213,20 @@ public class DefaultEntry implements Entry
                 // Can't remove values from a not existing attribute !
                 return false;
             }
-            
 
             int nbOldValues = attribute.size();
-            
+
             // Remove the values
             attribute.remove( values );
-            
+
             if ( attribute.size() == 0 )
             {
                 // No mare values, remove the attribute
                 attributes.remove( id );
-                
+
                 return true;
             }
-            
+
             if ( nbOldValues != attribute.size() )
             {
                 // At least one value have been removed, return true.
@@ -2249,7 +2257,7 @@ public class DefaultEntry implements Entry
                 return false;
             }
         }
-            
+
     }
 
 
@@ -2286,28 +2294,28 @@ public class DefaultEntry implements Entry
         if ( schemaManager == null )
         {
             String id = getId( upId );
-            
+
             EntryAttribute attribute = get( id );
-            
+
             if ( attribute == null )
             {
                 // Can't remove values from a not existing attribute !
                 return false;
             }
-            
+
             int nbOldValues = attribute.size();
-            
+
             // Remove the values
             attribute.remove( values );
-            
+
             if ( attribute.size() == 0 )
             {
                 // No mare values, remove the attribute
                 attributes.remove( id );
-                
+
                 return true;
             }
-            
+
             if ( nbOldValues != attribute.size() )
             {
                 // At least one value have been removed, return true.
@@ -2374,28 +2382,28 @@ public class DefaultEntry implements Entry
         if ( schemaManager == null )
         {
             String id = getId( upId );
-            
+
             EntryAttribute attribute = get( id );
-            
+
             if ( attribute == null )
             {
                 // Can't remove values from a not existing attribute !
                 return false;
             }
-            
+
             int nbOldValues = attribute.size();
-            
+
             // Remove the values
             attribute.remove( values );
-            
+
             if ( attribute.size() == 0 )
             {
                 // No mare values, remove the attribute
                 attributes.remove( id );
-                
+
                 return true;
             }
-            
+
             if ( nbOldValues != attribute.size() )
             {
                 // At least one value have been removed, return true.
@@ -2448,12 +2456,12 @@ public class DefaultEntry implements Entry
     public void setDn( DN dn )
     {
         this.dn = dn;
-        
+
         // Resash the object
         rehash();
     }
-    
-    
+
+
     /**
      * Remove all the attributes for this entry. The DN is not reset
      */
@@ -2461,8 +2469,8 @@ public class DefaultEntry implements Entry
     {
         attributes.clear();
     }
-    
-    
+
+
     /**
      * Returns an enumeration containing the zero or more attributes in the
      * collection. The behavior of the enumeration is not specified if the
@@ -2474,7 +2482,7 @@ public class DefaultEntry implements Entry
     {
         return Collections.unmodifiableMap( attributes ).values().iterator();
     }
-    
+
 
     /**
      * {@inheritDoc}
@@ -2515,8 +2523,8 @@ public class DefaultEntry implements Entry
     {
         return attributes.size();
     }
-    
-    
+
+
     /**
      * @see Externalizable#writeExternal(ObjectOutput)<p>
      * 
@@ -2547,39 +2555,39 @@ public class DefaultEntry implements Entry
             // Write the DN
             out.writeObject( dn );
         }
-        
+
         // Then the attributes. 
         // Store the attributes' nulber first
         out.writeInt( attributes.size() );
-        
+
         // Iterate through the keys.
-        for ( EntryAttribute attribute:attributes.values() )
+        for ( EntryAttribute attribute : attributes.values() )
         {
             // Store the attribute
             out.writeObject( attribute );
         }
-        
+
         out.flush();
     }
 
-    
+
     /**
      * @see Externalizable#readExternal(ObjectInput)
      */
     public void readExternal( ObjectInput in ) throws IOException, ClassNotFoundException
     {
         // Read the DN
-        dn = (DN)in.readObject();
-        
+        dn = ( DN ) in.readObject();
+
         // Read the number of attributes
         int nbAttributes = in.readInt();
-        
+
         // Read the attributes
         for ( int i = 0; i < nbAttributes; i++ )
         {
             // Read each attribute
-            EntryAttribute attribute = (DefaultEntryAttribute)in.readObject();
-            
+            EntryAttribute attribute = ( DefaultEntryAttribute ) in.readObject();
+
             if ( schemaManager != null )
             {
                 try
@@ -2588,7 +2596,7 @@ public class DefaultEntry implements Entry
 
                     attributes.put( attributeType.getOid(), attribute );
                 }
-                catch (LdapException le  )
+                catch ( LdapException le )
                 {
                     String message = le.getLocalizedMessage();
                     LOG.error( message );
@@ -2601,8 +2609,8 @@ public class DefaultEntry implements Entry
             }
         }
     }
-    
-    
+
+
     /**
      * Serialize an Entry.
      * 
@@ -2621,7 +2629,7 @@ public class DefaultEntry implements Entry
     {
         // First, the DN
         // Write the RDN of the DN
-        if( dn.getRdn() == null )
+        if ( dn.getRdn() == null )
         {
             out.writeByte( 0 );
         }
@@ -2630,27 +2638,27 @@ public class DefaultEntry implements Entry
             out.writeByte( 1 );
             RdnSerializer.serialize( dn.getRdn(), out );
         }
-        
+
         // Then the attributes.
         out.writeInt( attributes.size() );
-        
+
         if ( schemaManager != null )
         {
             // Iterate through the keys. We store the Attribute
             // here, to be able to restore it in the readExternal :
             // we need access to the registries, which are not available
             // in the ServerAttribute class.
-            for ( AttributeType attributeType:getAttributeTypes() )
+            for ( AttributeType attributeType : getAttributeTypes() )
             {
                 // Write the oid to be able to restore the AttributeType when deserializing
                 // the attribute
                 String oid = attributeType.getOid();
-                
+
                 out.writeUTF( oid );
-                
+
                 // Get the attribute
-                DefaultEntryAttribute attribute = (DefaultEntryAttribute)attributes.get( attributeType.getOid() );
-    
+                DefaultEntryAttribute attribute = ( DefaultEntryAttribute ) attributes.get( attributeType.getOid() );
+
                 // Write the attribute
                 attribute.serialize( out );
             }
@@ -2658,22 +2666,22 @@ public class DefaultEntry implements Entry
         else
         {
             // Loop on the Attribute ID
-            for ( String id:attributes.keySet() )
+            for ( String id : attributes.keySet() )
             {
                 // Write the id to be able to restore the AttributeType when deserializing
                 // the attribute
                 out.writeUTF( id );
-                
+
                 // Get the attribute
-                DefaultEntryAttribute attribute = (DefaultEntryAttribute)attributes.get( id );
-    
+                DefaultEntryAttribute attribute = ( DefaultEntryAttribute ) attributes.get( id );
+
                 // Write the attribute
                 attribute.serialize( out );
             }
         }
     }
-    
-    
+
+
     /**
      * Deserialize an entry. 
      * 
@@ -2687,16 +2695,16 @@ public class DefaultEntry implements Entry
         dn = new DN();
 
         byte b = in.readByte();
-     
-        if( b == 1 )
+
+        if ( b == 1 )
         {
             RDN rdn = RdnSerializer.deserialize( in );
             dn.add( rdn );
         }
-        
+
         // Read the number of attributes
         int nbAttributes = in.readInt();
-        
+
         if ( schemaManager != null )
         {
             // Read the attributes
@@ -2704,24 +2712,24 @@ public class DefaultEntry implements Entry
             {
                 // Read the attribute's OID
                 String oid = in.readUTF();
-                
+
                 try
                 {
                     AttributeType attributeType = schemaManager.lookupAttributeTypeRegistry( oid );
-                    
+
                     // Create the attribute we will read
                     EntryAttribute attribute = new DefaultEntryAttribute( attributeType );
-                    
+
                     // Read the attribute
                     attribute.deserialize( in );
-                    
+
                     attributes.put( attributeType.getOid(), attribute );
                 }
                 catch ( LdapException ne )
                 {
                     // We weren't able to find the OID. The attribute will not be added
                     LOG.warn( I18n.err( I18n.ERR_04470, oid ) );
-                    
+
                 }
             }
         }
@@ -2732,27 +2740,27 @@ public class DefaultEntry implements Entry
             {
                 // Read the attribute's ID
                 String id = in.readUTF();
-                
+
                 // Create the attribute we will read
                 EntryAttribute attribute = new DefaultEntryAttribute( id );
-                
+
                 // Read the attribute
                 attribute.deserialize( in );
-                
+
                 attributes.put( id, attribute );
             }
         }
     }
 
-    
+
     /**
      * A helper method to recompute the hash code
      */
     private void rehash()
     {
         h = 37;
-        h = h*17 + dn.hashCode();
-        
+        h = h * 17 + dn.hashCode();
+
         /*
         // We have to sort the Attributes if we want to compare two entries
         SortedMap<String, EntryAttribute> sortedMap = new TreeMap<String, EntryAttribute>();
@@ -2768,7 +2776,8 @@ public class DefaultEntry implements Entry
         }
         */
     }
-    
+
+
     /**
      * Get the hash code of this ClientEntry. The Attributes will be sorted
      * before the comparison can be done.
@@ -2782,11 +2791,11 @@ public class DefaultEntry implements Entry
         {
             rehash();
         }
-        
+
         return h;
     }
 
-    
+
     /**
      * {@inheritDoc}
      */
@@ -2813,22 +2822,22 @@ public class DefaultEntry implements Entry
         {
             return false;
         }
-        
+
         // We have to check that we are checking the ObjectClass attributeType
         if ( !objectClass.getAttributeType().equals( OBJECT_CLASS_AT ) )
         {
             return false;
         }
-        
+
         EntryAttribute attribute = attributes.get( OBJECT_CLASS_AT.getOid() );
-        
+
         if ( attribute == null )
         {
             // The entry does not have an ObjectClass attribute
             return false;
         }
-        
-        for ( Value<?> value:objectClass )
+
+        for ( Value<?> value : objectClass )
         {
             // Loop on all the values, and check if they are present
             if ( !attribute.contains( value.getString() ) )
@@ -2836,7 +2845,7 @@ public class DefaultEntry implements Entry
                 return false;
             }
         }
-        
+
         return true;
     }
 
@@ -2851,14 +2860,14 @@ public class DefaultEntry implements Entry
         {
             return true;
         }
-        
-        if ( ! ( o instanceof DefaultEntry ) )
+
+        if ( !( o instanceof DefaultEntry ) )
         {
             return false;
         }
-        
-        DefaultEntry other = (DefaultEntry)o;
-        
+
+        DefaultEntry other = ( DefaultEntry ) o;
+
         // Both DN must be equal
         if ( dn == null )
         {
@@ -2877,7 +2886,7 @@ public class DefaultEntry implements Entry
 
         // That's it
         return true;
-        
+
         /*
         // They must have the same number of attributes
         if ( size() != other.size() )
@@ -2897,7 +2906,7 @@ public class DefaultEntry implements Entry
         return true;
         */
     }
-        
+
 
     /**
      * @see Object#toString()
@@ -2905,7 +2914,7 @@ public class DefaultEntry implements Entry
     public String toString()
     {
         StringBuilder sb = new StringBuilder();
-        
+
         sb.append( "Entry\n" );
         sb.append( "    dn" );
 
@@ -2913,11 +2922,11 @@ public class DefaultEntry implements Entry
         {
             sb.append( "[n]" );
         }
-        
+
         sb.append( ": " );
         sb.append( dn.getName() );
         sb.append( '\n' );
-        
+
         // First dump the ObjectClass attribute
         if ( schemaManager != null )
         {
@@ -2925,7 +2934,7 @@ public class DefaultEntry implements Entry
             if ( containsAttribute( OBJECT_CLASS_AT.getOid() ) )
             {
                 EntryAttribute objectClass = get( OBJECT_CLASS_AT );
-                
+
                 sb.append( objectClass );
             }
         }
@@ -2934,14 +2943,14 @@ public class DefaultEntry implements Entry
             if ( containsAttribute( "objectClass" ) )
             {
                 EntryAttribute objectClass = get( "objectclass" );
-                
+
                 sb.append( objectClass );
             }
         }
-        
+
         if ( attributes.size() != 0 )
         {
-            for ( EntryAttribute attribute:attributes.values() )
+            for ( EntryAttribute attribute : attributes.values() )
             {
                 if ( attribute.getAttributeType() != OBJECT_CLASS_AT )
                 {
@@ -2953,7 +2962,7 @@ public class DefaultEntry implements Entry
                 }
             }
         }
-        
+
         return sb.toString();
     }
 }
