@@ -2955,10 +2955,34 @@ public class DefaultEntry implements Entry
                 if ( attribute.getAttributeType() != OBJECT_CLASS_AT )
                 {
                     sb.append( attribute );
+                    continue;
                 }
-                else if ( !attribute.getId().equalsIgnoreCase( "objectclass" ) )
+
+                String id = attribute.getId();
+
+                if ( schemaManager != null )
                 {
-                    sb.append( attribute );
+                    try
+                    {
+                        AttributeType attributeType = schemaManager.lookupAttributeTypeRegistry( id );
+
+                        if ( attributeType != OBJECT_CLASS_AT )
+                        {
+                            sb.append( attribute );
+                        }
+                    }
+                    catch ( LdapException le )
+                    {
+                        // Not found...
+                    }
+                }
+                else
+                {
+                    if ( !SchemaConstants.OBJECT_CLASS_AT.equalsIgnoreCase( id )
+                        && !SchemaConstants.OBJECT_CLASS_AT_OID.equalsIgnoreCase( id ) )
+                    {
+                        sb.append( attribute );
+                    }
                 }
             }
         }
