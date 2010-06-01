@@ -56,6 +56,8 @@ public class LdifUtils
     /** The default length for a line in a ldif file */
     private static final int DEFAULT_LINE_LENGTH = 80;
     
+    private static final String LINE_SEPARATOR = System.getProperty( "line.separator" );
+    
     static
     {
         // Initialization of the array that will be used to match the first char.
@@ -200,6 +202,26 @@ public class LdifUtils
         return convertEntryToLdif( entry, DEFAULT_LINE_LENGTH );
     }
     
+
+    /**
+     * Convert an Entry to LDIF including a version number at the top
+     * @param entry the Entry to convert
+     * @param includeVersionInfo flag to tell whether to include version number or not
+     * @return the corresponding LDIF code as a String
+     * @throws LdapException If a naming exception is encountered.
+     */    
+    public static String convertEntryToLdif( Entry entry, boolean includeVersionInfo ) throws LdapException
+    {
+        String ldif = convertEntryToLdif( entry, DEFAULT_LINE_LENGTH );
+        
+        if( includeVersionInfo )
+        {
+            ldif = "version: 1" + LINE_SEPARATOR + ldif;
+        }
+        
+        return ldif;
+    }
+
     
     /**
      * Convert all the Entry's attributes to LDIF. The DN is not written
