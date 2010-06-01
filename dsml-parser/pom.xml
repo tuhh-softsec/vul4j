@@ -35,6 +35,18 @@
 
   <dependencies>
     <dependency>
+      <artifactId>shared-i18n</artifactId>
+      <groupId>${project.groupId}</groupId>
+      <version>${project.version}</version>
+    </dependency>
+    
+    <dependency>
+      <artifactId>shared-asn1</artifactId>
+      <groupId>${project.groupId}</groupId>
+      <version>${project.version}</version>
+    </dependency>
+    
+    <dependency>
       <artifactId>shared-ldap</artifactId>
       <groupId>${project.groupId}</groupId>
       <version>${project.version}</version>
@@ -44,19 +56,7 @@
       <artifactId>shared-ldif</artifactId>
       <groupId>${project.groupId}</groupId>
       <version>${project.version}</version>
-    </dependency> 
-    
-    <dependency>
-      <artifactId>shared-i18n</artifactId>
-      <groupId>${project.groupId}</groupId>
-      <version>${project.version}</version>
-    </dependency> 
-    
-    <dependency>
-      <artifactId>shared-asn1</artifactId>
-      <groupId>${project.groupId}</groupId>
-      <version>${project.version}</version>
-    </dependency> 
+    </dependency>
     
     <dependency>
       <groupId>dom4j</groupId>
@@ -71,12 +71,6 @@
     </dependency>
     
     <dependency>
-      <groupId>dom4j</groupId>
-      <artifactId>dom4j</artifactId>
-      <version>${dom4j.version}</version>
-    </dependency>
-    
-    <dependency>
       <groupId>xpp3</groupId>
       <artifactId>xpp3</artifactId>
       <version>${xpp3.version}</version>
@@ -86,7 +80,7 @@
       <groupId>findbugs</groupId>
       <artifactId>annotations</artifactId>
       <version>${findbugs.annotations.version}</version>
-      <scope>compile</scope>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
 </project>

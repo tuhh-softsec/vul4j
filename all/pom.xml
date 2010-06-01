@@ -57,13 +57,13 @@
     </dependency>
 
     <dependency>
-      <artifactId>shared-ldap</artifactId>
+      <artifactId>shared-i18n</artifactId>
       <groupId>${project.groupId}</groupId>
       <version>${project.version}</version>
     </dependency>
 
     <dependency>
-      <artifactId>shared-ldif</artifactId>
+      <artifactId>shared-ldap</artifactId>
       <groupId>${project.groupId}</groupId>
       <version>${project.version}</version>
     </dependency>
@@ -93,12 +93,6 @@
     </dependency>
 
     <dependency>
-      <artifactId>shared-ldap-schema-dao</artifactId>
-      <groupId>${project.groupId}</groupId>
-      <version>${project.version}</version>
-    </dependency>
-
-    <dependency>
       <artifactId>shared-ldap-schema-loader</artifactId>
       <groupId>${project.groupId}</groupId>
       <version>${project.version}</version>
@@ -106,6 +100,12 @@
 
     <dependency>
       <artifactId>shared-ldap-schema-manager</artifactId>
+      <groupId>${project.groupId}</groupId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+      <artifactId>shared-ldif</artifactId>
       <groupId>${project.groupId}</groupId>
       <version>${project.version}</version>
     </dependency>

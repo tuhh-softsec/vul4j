@@ -41,7 +41,13 @@
       <artifactId>shared-i18n</artifactId>
       <groupId>${project.groupId}</groupId>
       <version>${project.version}</version>
-    </dependency>  
+    </dependency>
+
+    <dependency>
+      <artifactId>shared-asn1</artifactId>
+      <groupId>${project.groupId}</groupId>
+      <version>${project.version}</version>
+    </dependency>
 
     <dependency>
       <artifactId>shared-ldap</artifactId>

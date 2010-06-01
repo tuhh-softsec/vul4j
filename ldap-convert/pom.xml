@@ -28,7 +28,7 @@
   </parent>
   
   <artifactId>shared-ldap-converter</artifactId>
-  <name>Apache Directory Shared Ldap Converters</name>
+  <name>Apache Directory Shared LDAP Converters</name>
   <inceptionYear>2007</inceptionYear>
 
   <issueManagement>
@@ -57,6 +57,12 @@
       <artifactId>shared-ldap</artifactId>
       <groupId>${project.groupId}</groupId>
       <version>${project.version}</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
+      <version>${commons.lang.version}</version>
     </dependency>
     
     <dependency>

@@ -28,7 +28,7 @@
   </parent>
   
   <artifactId>shared-ldap</artifactId>
-  <name>Apache Directory Shared Ldap</name>
+  <name>Apache Directory Shared LDAP</name>
   <inceptionYear>2004</inceptionYear>
 
   <issueManagement>
@@ -81,7 +81,7 @@
       <groupId>findbugs</groupId>
       <artifactId>annotations</artifactId>
       <version>${findbugs.annotations.version}</version>
-      <scope>compile</scope>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
 
