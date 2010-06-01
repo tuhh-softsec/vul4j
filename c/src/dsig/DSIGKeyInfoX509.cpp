@@ -31,8 +31,6 @@
 #include <xsec/dsig/DSIGSignature.hpp>
 #include <xsec/framework/XSECEnv.hpp>
 
-#include <xercesc/util/Janitor.hpp>
-
 #include "../utils/XSECAutoPtr.hpp"
 
 XERCES_CPP_NAMESPACE_USE
@@ -144,24 +142,31 @@ void DSIGKeyInfoX509::load(void) {
 			// See if it's a known element type
 			if (strEquals(getDSIGLocalName(tmpElt), "X509Certificate")) {
 
+			    // Loop over Text nodes until we successfully load a certificate.
+			    // If we run out, throw out the last exception raised.
+
 				X509Holder * h;
-
+                XSECCryptoX509* cryptoX509 = XSECPlatformUtils::g_cryptoProvider->X509();
 				DOMNode *certElt = findFirstChildOfType(tmpElt, DOMNode::TEXT_NODE);
+				while (certElt) {
+                    XSECAutoPtrChar charX509(certElt->getNodeValue());
+				    try {
+                        cryptoX509->loadX509Base64Bin(charX509.get(), (int) strlen(charX509.get()));
 
-				if (certElt != 0) {
-	
-					XSECnew(h, X509Holder);
-
-					// Add to the list
-					
-					m_X509List.push_back(h);
-
-					h->mp_encodedX509 = certElt->getNodeValue();
-					h->mp_cryptoX509 = XSECPlatformUtils::g_cryptoProvider->X509();
-					char * charX509 = XMLString::transcode(h->mp_encodedX509);
-					ArrayJanitor<char> j_charX509(charX509);
-					h->mp_cryptoX509->loadX509Base64Bin(charX509, (int) strlen(charX509));
-
+	                    // Add to the list
+                        XSECnew(h, X509Holder);
+	                    m_X509List.push_back(h);
+	                    h->mp_encodedX509 = certElt->getNodeValue();
+	                    h->mp_cryptoX509 = cryptoX509;
+	                    break;
+				    }
+				    catch (XSECCryptoException&) {
+	                    certElt = findNextChildOfType(certElt, DOMNode::TEXT_NODE);
+	                    if (!certElt) {
+	                        delete cryptoX509;
+	                        throw;
+	                    }
+				    }
 				}
 			}
 
@@ -448,7 +453,6 @@ void DSIGKeyInfoX509::setX509SubjectName(const XMLCh * name) {
 	mp_X509SubjectName = XMLString::replicate(name);
 	
 	XMLCh * encodedName = encodeDName(name);
-	ArrayJanitor<XMLCh> j_encodedName(encodedName);
 
 	if (mp_X509SubjectNameTextNode == 0) {
 
@@ -475,6 +479,7 @@ void DSIGKeyInfoX509::setX509SubjectName(const XMLCh * name) {
 		mp_X509SubjectNameTextNode->setNodeValue(encodedName);
 
 	}
+	XMLString::release(&encodedName);
 }
 
 void DSIGKeyInfoX509::setX509IssuerSerial(const XMLCh * name, const XMLCh * serial) {
@@ -485,7 +490,6 @@ void DSIGKeyInfoX509::setX509IssuerSerial(const XMLCh * name, const XMLCh * seri
 	mp_X509IssuerName = XMLString::replicate(name);
 	
 	XMLCh * encodedName = encodeDName(name);
-	ArrayJanitor<XMLCh> j_encodedName(encodedName);
 
 	if (mp_X509IssuerNameTextNode == 0) {
 
@@ -535,6 +539,7 @@ void DSIGKeyInfoX509::setX509IssuerSerial(const XMLCh * name, const XMLCh * seri
 
 	}
 
+	XMLString::release(&encodedName);
 }
 
 void DSIGKeyInfoX509::setRawRetrievalURI(const XMLCh * uri) {
