@@ -153,7 +153,7 @@ void OpenSSLCryptoX509::loadX509Base64Bin(const char * buf, unsigned int len) {
 	if (mp_X509 == NULL) {
 
 		throw XSECCryptoException(XSECCryptoException::X509Error,
-		"OpenSSL:X509 - Error transating Base64 DER encoding into OpenSSL X509 structure");
+		"OpenSSL:X509 - Error translating Base64 DER encoding into OpenSSL X509 structure");
 
 	}
 
