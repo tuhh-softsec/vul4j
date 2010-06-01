@@ -41,4 +41,22 @@ public class LdapException extends Exception
     {
         super( message );
     }
+
+    
+    public LdapException()
+    {
+    }
+
+    
+    public LdapException( Throwable cause )
+    {
+        super( cause );
+    }
+
+
+    public LdapException( String explanation, Throwable cause )
+    {
+        super( explanation, cause );
+    }
+
 }
