@@ -34,29 +34,40 @@ public class LdapException extends Exception
     
     /**
      * Creates a new instance of LdapException.
-     *
-     * @param message The exception message
      */
-    public LdapException( String message )
-    {
-        super( message );
-    }
-
-    
     public LdapException()
     {
     }
 
     
+    /**
+     * Creates a new instance of LdapException.
+     *
+     * @param explanation The message associated with the exception
+     */
+    public LdapException( String explanation )
+    {
+        super( explanation );
+    }
+
+    
+    /**
+     * Creates a new instance of LdapException.
+     */
     public LdapException( Throwable cause )
     {
         super( cause );
     }
 
 
+    /**
+     * Creates a new instance of LdapException.
+     *
+     * @param explanation The message associated with the exception
+     * @param cause The root cause for this exception
+     */
     public LdapException( String explanation, Throwable cause )
     {
         super( explanation, cause );
     }
-
 }
