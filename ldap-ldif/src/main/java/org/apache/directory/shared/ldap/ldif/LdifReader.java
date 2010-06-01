@@ -1459,7 +1459,7 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
         }
         else
         {
-            LOG.warn( "No version information : assuming version: 1" );
+            LOG.info( "No version information : assuming version: 1" );
         }
 
         return ver;
