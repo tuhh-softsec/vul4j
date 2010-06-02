@@ -23,18 +23,19 @@ import org.apache.directory.shared.i18n.I18n;
 
 
 /**
- * An enumeration that represents the level of authentication.
+ * An enumeration that represents the level of authentication. We have 5 
+ * different levels :
+ * <ul>
+ * <li>NONE : anonymous</li>
+ * <li>SIMPLE : Simple authentication</li>
+ * <li>STRONG : SASL or external authentication</li>
+ * <li>UNAUTHENT>A special case when just doing some auditing</li>
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
 public enum AuthenticationLevel
 {
-    /**
-     * Invalid authentication type
-     */
-    INVALID(-1, "invalid" ),
-    
     /**
      * No authentication (anonymous access)
      */
@@ -55,8 +56,10 @@ public enum AuthenticationLevel
      */
     UNAUTHENT( 3, "unauthent" );
     
+    /** The internal numeric value */
     private int level;
     
+    /** The level name */
     private final String name;
 
     private AuthenticationLevel( int level, String name )
@@ -83,12 +86,22 @@ public enum AuthenticationLevel
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public String toString()
     {
         return name;
     }
-    
-    
+
+
+    /**
+     * Return the AuthenticationLevel  associated with the given numeric level. This
+     * is used by the serialization process.
+     *
+     * @param val The numeric level we are looking at
+     * @return The associated AuthenticationLevel
+     */
     public static AuthenticationLevel getLevel( int val )
     {
         switch( val )
