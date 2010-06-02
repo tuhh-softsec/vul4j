@@ -1318,8 +1318,7 @@ public class LdapTransformer
 
 
     /**
-     * TODO finish this implementation. Takes Codec Controls, transforming 
-     * them to Internal Controls and populates the Internal message with them.
+     * Copy the codec controls into the internal message
      *
      * @param codecMessage the Codec message
      * @param msg the Internal message
