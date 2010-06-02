@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <!--
   Licensed to the Apache Software Foundation (ASF) under one
   or more contributor license agreements.  See the NOTICE file
@@ -18,7 +17,6 @@
   specific language governing permissions and limitations
   under the License.
 -->
-
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
@@ -29,58 +27,47 @@
 
   <artifactId>shared-dsml-parser</artifactId>
   <name>Apache Directory Shared DSML Parser</name>
-  <packaging>jar</packaging>
 
-  <description />
-
-  <dependencies>
+  <dependencies>    
     <dependency>
-      <artifactId>shared-i18n</artifactId>
       <groupId>${project.groupId}</groupId>
-      <version>${project.version}</version>
-    </dependency>
-    
-    <dependency>
       <artifactId>shared-asn1</artifactId>
-      <groupId>${project.groupId}</groupId>
-      <version>${project.version}</version>
     </dependency>
     
     <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>shared-i18n</artifactId>
+    </dependency>
+    
+    <dependency>
+      <groupId>${project.groupId}</groupId>
       <artifactId>shared-ldap</artifactId>
-      <groupId>${project.groupId}</groupId>
-      <version>${project.version}</version>
     </dependency>
     
     <dependency>
-      <artifactId>shared-ldif</artifactId>
       <groupId>${project.groupId}</groupId>
-      <version>${project.version}</version>
+      <artifactId>shared-ldif</artifactId>
     </dependency>
     
     <dependency>
       <groupId>dom4j</groupId>
       <artifactId>dom4j</artifactId>
-      <version>${dom4j.version}</version>
-    </dependency>
-    
-    <dependency>
-      <groupId>xml-apis</groupId>
-      <artifactId>xml-apis</artifactId>
-      <version>${xml.apis.version}</version>
-    </dependency>
-    
-    <dependency>
-      <groupId>xpp3</groupId>
-      <artifactId>xpp3</artifactId>
-      <version>${xpp3.version}</version>
     </dependency>
 
     <dependency>
       <groupId>findbugs</groupId>
       <artifactId>annotations</artifactId>
-      <version>${findbugs.annotations.version}</version>
       <scope>provided</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>xml-apis</groupId>
+      <artifactId>xml-apis</artifactId>
+    </dependency>
+    
+    <dependency>
+      <groupId>xpp3</groupId>
+      <artifactId>xpp3</artifactId>
     </dependency>
   </dependencies>
 </project>

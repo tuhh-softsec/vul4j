@@ -34,11 +34,13 @@
   <properties>
     <projectName>ApacheDS-Shared</projectName>
     <distMgmtSiteUrl>scpexe://people.apache.org/www/directory.apache.org/shared/gen-docs/${version}/</distMgmtSiteUrl>
+    
+    <!-- Set versions for depending projects -->
     <skin.version>1.0.1</skin.version>
     <org.apache.directory.shared.version>0.9.20-SNAPSHOT</org.apache.directory.shared.version>
     <org.apache.directory.buildtools.directory-checkstyle.version>0.1-SNAPSHOT</org.apache.directory.buildtools.directory-checkstyle.version>
     
-    <!-- Jar's version -->
+    <!-- Set versions for depending jars -->
     <antlr.version>2.7.7</antlr.version>
     <commons.collections.version>3.2.1</commons.collections.version>
     <commons.io.version>1.4</commons.io.version>
@@ -102,6 +104,95 @@
 
   <dependencyManagement>
     <dependencies>
+      <!-- Project sub-modules dependencies -->
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>shared-asn1</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>shared-asn1-codec</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>shared-cursor</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>shared-dsml-parser</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>shared-i18n</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>shared-ldap</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>shared-ldap-constants</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>shared-ldap-converter</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>shared-ldap-jndi</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>shared-ldap-schema</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>shared-ldap-schema-loader</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>shared-ldap-schema-manager</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>shared-ldif</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      
+      <!-- Mina dependencies -->
+
+      <dependency>
+        <groupId>org.apache.mina</groupId>
+        <artifactId>mina-core</artifactId>
+        <version>${mina.core.version}</version>
+      </dependency>
+
+      <!-- Commons dependencies -->
+      
       <dependency>
         <groupId>commons-collections</groupId>
         <artifactId>commons-collections</artifactId>
@@ -121,6 +212,14 @@
       </dependency>
 
       <dependency>
+        <groupId>commons-pool</groupId>
+        <artifactId>commons-pool</artifactId>
+        <version>${commons.pool.version}</version>
+      </dependency>
+      
+      <!-- Logging dependencies -->
+
+      <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-api</artifactId>
         <version>${slf4j.api.version}</version>
@@ -137,17 +236,25 @@
         <artifactId>log4j</artifactId>
         <version>${log4j.version}</version>
       </dependency>
-
-      <dependency>
-        <groupId>commons-pool</groupId>
-        <artifactId>commons-pool</artifactId>
-        <version>${commons.pool.version}</version>
-      </dependency>
+      
+      <!-- Other dependencies -->
 
       <dependency>
         <groupId>antlr</groupId>
         <artifactId>antlr</artifactId>
         <version>${antlr.version}</version>
+      </dependency>
+      
+      <dependency>
+        <groupId>dom4j</groupId>
+        <artifactId>dom4j</artifactId>
+        <version>${dom4j.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>findbugs</groupId>
+        <artifactId>annotations</artifactId>
+        <version>${findbugs.annotations.version}</version>
       </dependency>
 
       <dependency>
@@ -155,17 +262,11 @@
         <artifactId>junit</artifactId>
         <version>${junit.version}</version>
       </dependency>
-
-      <dependency>
-        <groupId>org.apache.mina</groupId>
-        <artifactId>mina-core</artifactId>
-        <version>${mina.core.version}</version>
-      </dependency>
       
       <dependency>
-        <groupId>dom4j</groupId>
-        <artifactId>dom4j</artifactId>
-        <version>${dom4j.version}</version>
+        <groupId>xml-apis</groupId>
+        <artifactId>xml-apis</artifactId>
+        <version>${xml.apis.version}</version>
       </dependency>
       
       <dependency>

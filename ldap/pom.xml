@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <!--
   Licensed to the Apache Software Foundation (ASF) under one
   or more contributor license agreements.  See the NOTICE file
@@ -18,7 +17,6 @@
   specific language governing permissions and limitations
   under the License.
 -->
-
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
@@ -29,58 +27,43 @@
   
   <artifactId>shared-ldap</artifactId>
   <name>Apache Directory Shared LDAP</name>
-  <inceptionYear>2004</inceptionYear>
 
-  <issueManagement>
-    <system>jira</system>
-    <url>http://issues.apache.org/jira/browse/DIRSERVER</url>
-  </issueManagement>
-
-  <description>
-    Common LDAP packages used by clients and servers.
-  </description>
+  <description>Common LDAP packages used by clients and servers</description>
 
   <dependencies>
     <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>shared-asn1</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>shared-i18n</artifactId>
+    </dependency> 
+
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>shared-ldap-constants</artifactId>
+    </dependency>
+    
+    <dependency>
+      <groupId>antlr</groupId>
+      <artifactId>antlr</artifactId>
+    </dependency>
+    
+    <dependency>
       <groupId>commons-lang</groupId>
       <artifactId>commons-lang</artifactId>
-      <version>${commons.lang.version}</version>
     </dependency>
 
     <dependency>
       <groupId>commons-collections</groupId>
       <artifactId>commons-collections</artifactId>
-      <version>${commons.collections.version}</version>
-    </dependency>
-
-    <dependency>
-      <artifactId>shared-asn1</artifactId>
-      <groupId>${project.groupId}</groupId>
-      <version>${project.version}</version>
-    </dependency>
-
-    <dependency>
-      <artifactId>shared-ldap-constants</artifactId>
-      <groupId>${project.groupId}</groupId>
-      <version>${project.version}</version>
-    </dependency>
-
-    <dependency>
-      <artifactId>shared-i18n</artifactId>
-      <groupId>${project.groupId}</groupId>
-      <version>${project.version}</version>
-    </dependency> 
-    
-    <dependency>
-      <groupId>antlr</groupId>
-      <artifactId>antlr</artifactId>
-      <version>${antlr.version}</version>
     </dependency>
 
     <dependency>
       <groupId>findbugs</groupId>
       <artifactId>annotations</artifactId>
-      <version>${findbugs.annotations.version}</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>
@@ -127,4 +110,3 @@
     </plugins>
   </build>
 </project>
-
