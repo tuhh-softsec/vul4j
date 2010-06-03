@@ -23,7 +23,6 @@ package org.apache.directory.shared.ldap.subtree;
 
 import java.io.StringReader;
 import java.text.ParseException;
-import java.util.Map;
 
 import org.apache.directory.shared.i18n.I18n;
 
@@ -48,20 +47,6 @@ public class SubtreeSpecificationChecker
 
     /** the antlr generated lexer being wrapped */
     private ReusableAntlrSubtreeSpecificationCheckerLexer lexer;
-
-
-    /**
-     * Creates a subtree specification parser.
-     */
-    public SubtreeSpecificationChecker( Map oidsMap )
-    {
-        StringReader in = new StringReader( "" ); // place holder for the
-                                                    // first input
-        this.lexer = new ReusableAntlrSubtreeSpecificationCheckerLexer( in );
-        this.parser = new ReusableAntlrSubtreeSpecificationChecker( lexer );
-        this.parser.init(); // this method MUST be called while we cannot do
-                            // constructor overloading for antlr generated parser
-    }
 
 
     /**
