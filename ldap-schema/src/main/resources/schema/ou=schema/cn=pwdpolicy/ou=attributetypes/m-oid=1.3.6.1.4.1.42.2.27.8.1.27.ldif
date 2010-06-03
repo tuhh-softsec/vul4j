@@ -1,0 +1,16 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.42.2.27.8.1.27,ou=attributeTypes,cn=pwdpolicy,ou=schema
+m-ordering: generalizedTimeOrderingMatch
+m-singleValue: TRUE
+m-oid: 1.3.6.1.4.1.42.2.27.8.1.27
+m-description: The time the password becomes enabled
+m-noUserModification: TRUE
+objectclass: metaTop
+objectclass: metaAttributeType
+objectclass: top
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.24
+m-usage: directoryOperation
+m-name: pwdStartTime
+creatorsName: 0.9.2342.19200300.100.1.1=admin,2.5.4.11=system
+m-equality: generalizedTimeMatch
+m-length: 0
