@@ -20,7 +20,6 @@
 package org.apache.directory.shared.ldap.exception;
 
 
-import javax.naming.NamingException;
 
 
 /**
@@ -29,7 +28,7 @@ import javax.naming.NamingException;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public class OperationAbandonedException extends NamingException
+public class OperationAbandonedException extends LdapException
 {
     /** The serial version UUID */
     static final long serialVersionUID = 1L;
