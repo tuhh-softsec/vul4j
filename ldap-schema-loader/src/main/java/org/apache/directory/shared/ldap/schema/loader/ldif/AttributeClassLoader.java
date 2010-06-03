@@ -20,12 +20,12 @@
 package org.apache.directory.shared.ldap.schema.loader.ldif;
 
 
-import javax.naming.NamingException;
-import javax.naming.directory.InvalidAttributeValueException;
-
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Value;
+import org.apache.directory.shared.ldap.exception.LdapException;
+import org.apache.directory.shared.ldap.exception.LdapInvalidAttributeValueException;
+import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 
 
 /**
@@ -45,11 +45,11 @@ public class AttributeClassLoader extends ClassLoader
     }
     
     
-    public void setAttribute( EntryAttribute attribute ) throws NamingException
+    public void setAttribute( EntryAttribute attribute ) throws LdapException
     {
         if ( attribute.isHR() )
         {
-            throw new InvalidAttributeValueException( I18n.err( I18n.ERR_10001 ) );
+            throw new LdapInvalidAttributeValueException( ResultCodeEnum.CONSTRAINT_VIOLATION, I18n.err( I18n.ERR_10001 ) );
         }
         
         this.attribute = attribute;

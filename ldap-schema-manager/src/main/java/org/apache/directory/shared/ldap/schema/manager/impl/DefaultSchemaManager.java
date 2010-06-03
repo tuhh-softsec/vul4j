@@ -20,6 +20,7 @@
 package org.apache.directory.shared.ldap.schema.manager.impl;
 
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -34,6 +35,7 @@ import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
+import org.apache.directory.shared.ldap.exception.LdapOtherException;
 import org.apache.directory.shared.ldap.exception.LdapProtocolErrorException;
 import org.apache.directory.shared.ldap.exception.LdapUnwillingToPerformException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
@@ -166,29 +168,36 @@ public class DefaultSchemaManager implements SchemaManager
      * Clone the registries before doing any modification on it. Relax it
      * too so that we can update it. 
      */
-    private Registries cloneRegistries() throws Exception
+    private Registries cloneRegistries() throws LdapException
     {
-        // Relax the controls at first
-        errors = new ArrayList<Throwable>();
-
-        // Clone the Registries
-        Registries clonedRegistries = registries.clone();
-
-        // And update references. We may have errors, that may be fixed
-        // by the new loaded schemas.
-        errors = clonedRegistries.checkRefInteg();
-
-        // Now, relax the cloned Registries if there is no error
-        clonedRegistries.setRelaxed();
-
-        return clonedRegistries;
+        try
+        {
+            // Relax the controls at first
+            errors = new ArrayList<Throwable>();
+    
+            // Clone the Registries
+            Registries clonedRegistries = registries.clone();
+    
+            // And update references. We may have errors, that may be fixed
+            // by the new loaded schemas.
+            errors = clonedRegistries.checkRefInteg();
+    
+            // Now, relax the cloned Registries if there is no error
+            clonedRegistries.setRelaxed();
+    
+            return clonedRegistries;
+        }
+        catch ( CloneNotSupportedException cnse )
+        {
+            throw new LdapOtherException( cnse.getMessage() );
+        }
     }
 
 
     /**
      * Transform a String[] array of schema to a Schema[]
      */
-    private Schema[] toArray( String... schemas ) throws Exception
+    private Schema[] toArray( String... schemas ) throws LdapException
     {
         Schema[] schemaArray = new Schema[schemas.length];
         int n = 0;
@@ -212,23 +221,30 @@ public class DefaultSchemaManager implements SchemaManager
     }
 
 
-    private void addSchemaObjects( Schema schema, Registries registries ) throws Exception
+    private void addSchemaObjects( Schema schema, Registries registries ) throws LdapException
     {
         // Create a content container for this schema
         registries.addSchema( schema.getSchemaName() );
 
-        // And inject any existig SchemaObject into the registries 
-        addComparators( schema, registries );
-        addNormalizers( schema, registries );
-        addSyntaxCheckers( schema, registries );
-        addSyntaxes( schema, registries );
-        addMatchingRules( schema, registries );
-        addAttributeTypes( schema, registries );
-        addObjectClasses( schema, registries );
-        addMatchingRuleUses( schema, registries );
-        addDitContentRules( schema, registries );
-        addNameForms( schema, registries );
-        addDitStructureRules( schema, registries );
+        // And inject any existing SchemaObject into the registries 
+        try
+        {
+            addComparators( schema, registries );
+            addNormalizers( schema, registries );
+            addSyntaxCheckers( schema, registries );
+            addSyntaxes( schema, registries );
+            addMatchingRules( schema, registries );
+            addAttributeTypes( schema, registries );
+            addObjectClasses( schema, registries );
+            addMatchingRuleUses( schema, registries );
+            addDitContentRules( schema, registries );
+            addNameForms( schema, registries );
+            addDitStructureRules( schema, registries );
+        }
+        catch ( IOException ioe )
+        {
+            throw new LdapOtherException( ioe.getMessage() );
+        }
 
         // TODO Add some listener handling at this point
         //notifyListenerOrRegistries( schema, registries );
@@ -238,7 +254,7 @@ public class DefaultSchemaManager implements SchemaManager
     /**
      * Delete all the schemaObjects for a given schema from the registries
      */
-    private void deleteSchemaObjects( Schema schema, Registries registries ) throws Exception
+    private void deleteSchemaObjects( Schema schema, Registries registries ) throws LdapException
     {
         Map<String, Set<SchemaObjectWrapper>> schemaObjects = registries.getObjectBySchemaName();
         Set<SchemaObjectWrapper> content = schemaObjects.get( StringTools.toLowerCase( schema.getSchemaName() ) );
@@ -264,7 +280,7 @@ public class DefaultSchemaManager implements SchemaManager
     /**
      * {@inheritDoc}
      */
-    public boolean disable( Schema... schemas ) throws Exception
+    public boolean disable( Schema... schemas ) throws LdapException
     {
         boolean disabled = false;
 
@@ -321,7 +337,7 @@ public class DefaultSchemaManager implements SchemaManager
     /**
      * {@inheritDoc}
      */
-    public boolean disable( String... schemaNames ) throws Exception
+    public boolean disable( String... schemaNames ) throws LdapException
     {
         Schema[] schemas = toArray( schemaNames );
 
@@ -371,7 +387,7 @@ public class DefaultSchemaManager implements SchemaManager
     /**
      * {@inheritDoc}
      */
-    public boolean enable( Schema... schemas ) throws Exception
+    public boolean enable( Schema... schemas ) throws LdapException
     {
         boolean enabled = false;
 
@@ -429,7 +445,7 @@ public class DefaultSchemaManager implements SchemaManager
     /**
      * {@inheritDoc}
      */
-    public boolean enable( String... schemaNames ) throws Exception
+    public boolean enable( String... schemaNames ) throws LdapException
     {
         Schema[] schemas = toArray( schemaNames );
         return enable( schemas );
@@ -506,7 +522,7 @@ public class DefaultSchemaManager implements SchemaManager
     /**
      * {@inheritDoc}
      */
-    public boolean load( Schema... schemas ) throws Exception
+    public boolean load( Schema... schemas ) throws LdapException
     {
         if ( schemas.length == 0 )
         {
@@ -611,7 +627,7 @@ public class DefaultSchemaManager implements SchemaManager
      * - isRelaxed
      * - disabledAccepted
      */
-    private boolean load( Registries registries, Schema schema ) throws Exception
+    private boolean load( Registries registries, Schema schema ) throws LdapException
     {
         if ( schema == null )
         {
@@ -675,7 +691,7 @@ public class DefaultSchemaManager implements SchemaManager
      */
     // False positive
     @SuppressWarnings("PMD.UnusedPrivateMethod")
-    private boolean unload( Registries registries, Schema schema ) throws Exception
+    private boolean unload( Registries registries, Schema schema ) throws LdapException
     {
         if ( schema == null )
         {
@@ -704,7 +720,7 @@ public class DefaultSchemaManager implements SchemaManager
     /**
      * Add all the Schema's AttributeTypes
      */
-    private void addAttributeTypes( Schema schema, Registries registries ) throws Exception
+    private void addAttributeTypes( Schema schema, Registries registries ) throws LdapException, IOException
     {
         for ( Entry entry : schemaLoader.loadAttributeTypes( schema ) )
         {
@@ -718,7 +734,7 @@ public class DefaultSchemaManager implements SchemaManager
     /**
      * Add all the Schema's comparators
      */
-    private void addComparators( Schema schema, Registries registries ) throws Exception
+    private void addComparators( Schema schema, Registries registries ) throws LdapException, IOException
     {
         for ( Entry entry : schemaLoader.loadComparators( schema ) )
         {
@@ -734,16 +750,12 @@ public class DefaultSchemaManager implements SchemaManager
      */
     // Not yet implemented, but may be used
     @SuppressWarnings("PMD.UnusedFormalParameter")
-    private void addDitContentRules( Schema schema, Registries registries ) throws Exception
+    private void addDitContentRules( Schema schema, Registries registries ) throws LdapException, IOException
     {
         if ( !schemaLoader.loadDitContentRules( schema ).isEmpty() )
         {
             throw new NotImplementedException( I18n.err( I18n.ERR_11003 ) );
         }
-        // for ( Entry entry : schemaLoader.loadDitContentRules( schema ) )
-        // {
-        //     throw new NotImplementedException( I18n.err( I18n.ERR_11003 ) );
-        // }
     }
 
 
@@ -752,23 +764,19 @@ public class DefaultSchemaManager implements SchemaManager
      */
     // Not yet implemented, but may be used
     @SuppressWarnings("PMD.UnusedFormalParameter")
-    private void addDitStructureRules( Schema schema, Registries registries ) throws Exception
+    private void addDitStructureRules( Schema schema, Registries registries ) throws LdapException, IOException
     {
         if ( !schemaLoader.loadDitStructureRules( schema ).isEmpty() )
         {
             throw new NotImplementedException( I18n.err( I18n.ERR_11004 ) );
         }
-        // for ( Entry entry : schemaLoader.loadDitStructureRules( schema ) )
-        // {
-        //     throw new NotImplementedException( I18n.err( I18n.ERR_11004 ) );
-        // }
     }
 
 
     /**
      * Add all the Schema's MatchingRules
      */
-    private void addMatchingRules( Schema schema, Registries registries ) throws Exception
+    private void addMatchingRules( Schema schema, Registries registries ) throws LdapException, IOException
     {
         for ( Entry entry : schemaLoader.loadMatchingRules( schema ) )
         {
@@ -784,7 +792,7 @@ public class DefaultSchemaManager implements SchemaManager
      */
     // Not yet implemented, but may be used
     @SuppressWarnings("PMD.UnusedFormalParameter")
-    private void addMatchingRuleUses( Schema schema, Registries registries ) throws Exception
+    private void addMatchingRuleUses( Schema schema, Registries registries ) throws LdapException, IOException
     {
         if ( !schemaLoader.loadMatchingRuleUses( schema ).isEmpty() )
         {
@@ -802,23 +810,19 @@ public class DefaultSchemaManager implements SchemaManager
      */
     // Not yet implemented, but may be used
     @SuppressWarnings("PMD.UnusedFormalParameter")
-    private void addNameForms( Schema schema, Registries registries ) throws Exception
+    private void addNameForms( Schema schema, Registries registries ) throws LdapException, IOException
     {
         if ( !schemaLoader.loadNameForms( schema ).isEmpty() )
         {
             throw new NotImplementedException( I18n.err( I18n.ERR_11006 ) );
         }
-        // for ( Entry entry : schemaLoader.loadNameForms( schema ) )
-        // {
-        //     throw new NotImplementedException( I18n.err( I18n.ERR_11006 ) );
-        // }
     }
 
 
     /**
      * Add all the Schema's Normalizers
      */
-    private void addNormalizers( Schema schema, Registries registries ) throws Exception
+    private void addNormalizers( Schema schema, Registries registries ) throws LdapException, IOException
     {
         for ( Entry entry : schemaLoader.loadNormalizers( schema ) )
         {
@@ -832,7 +836,7 @@ public class DefaultSchemaManager implements SchemaManager
     /**
      * Add all the Schema's ObjectClasses
      */
-    private void addObjectClasses( Schema schema, Registries registries ) throws Exception
+    private void addObjectClasses( Schema schema, Registries registries ) throws LdapException, IOException
     {
         for ( Entry entry : schemaLoader.loadObjectClasses( schema ) )
         {
@@ -846,7 +850,7 @@ public class DefaultSchemaManager implements SchemaManager
     /**
      * Add all the Schema's Syntaxes
      */
-    private void addSyntaxes( Schema schema, Registries registries ) throws Exception
+    private void addSyntaxes( Schema schema, Registries registries ) throws LdapException, IOException
     {
         for ( Entry entry : schemaLoader.loadSyntaxes( schema ) )
         {
@@ -860,7 +864,7 @@ public class DefaultSchemaManager implements SchemaManager
     /**Add
      * Register all the Schema's SyntaxCheckers
      */
-    private void addSyntaxCheckers( Schema schema, Registries registries ) throws Exception
+    private void addSyntaxCheckers( Schema schema, Registries registries ) throws LdapException, IOException
     {
         for ( Entry entry : schemaLoader.loadSyntaxCheckers( schema ) )
         {
@@ -881,7 +885,7 @@ public class DefaultSchemaManager implements SchemaManager
      * @throws Exception If the registering failed
      */
     private SchemaObject addSchemaObject( Registries registries, SchemaObject schemaObject, Schema schema )
-        throws Exception
+        throws LdapException
     {
         if ( registries.isRelaxed() )
         {
@@ -934,7 +938,7 @@ public class DefaultSchemaManager implements SchemaManager
     /**
      * {@inheritDoc}
      */
-    public boolean loadDisabled( Schema... schemas ) throws Exception
+    public boolean loadDisabled( Schema... schemas ) throws LdapException
     {
         // Work on a cloned and relaxed registries
         Registries clonedRegistries = cloneRegistries();
@@ -978,7 +982,7 @@ public class DefaultSchemaManager implements SchemaManager
     /**
      * {@inheritDoc}
      */
-    public boolean loadDisabled( String... schemaNames ) throws Exception
+    public boolean loadDisabled( String... schemaNames ) throws LdapException
     {
         Schema[] schemas = toArray( schemaNames );
 
@@ -1172,7 +1176,7 @@ public class DefaultSchemaManager implements SchemaManager
     /**
      * {@inheritDoc}
      */
-    public boolean unload( Schema... schemas ) throws Exception
+    public boolean unload( Schema... schemas ) throws LdapException
     {
         boolean unloaded = false;
 
@@ -1242,7 +1246,7 @@ public class DefaultSchemaManager implements SchemaManager
     /**
      * {@inheritDoc}
      */
-    public boolean unload( String... schemaNames ) throws Exception
+    public boolean unload( String... schemaNames ) throws LdapException
     {
         Schema[] schemas = toArray( schemaNames );
 
@@ -1621,7 +1625,7 @@ public class DefaultSchemaManager implements SchemaManager
     /**
      * {@inheritDoc}
      */
-    public boolean add( SchemaObject schemaObject ) throws Exception
+    public boolean add( SchemaObject schemaObject ) throws LdapException
     {
         // First, clear the errors
         errors.clear();
@@ -1684,7 +1688,16 @@ public class DefaultSchemaManager implements SchemaManager
             if ( schema.isEnabled() && copy.isEnabled() )
             {
                 // As we may break the registries, work on a cloned registries
-                Registries clonedRegistries = registries.clone();
+                Registries clonedRegistries = null;
+                
+                try
+                {
+                    clonedRegistries = registries.clone();
+                }
+                catch ( CloneNotSupportedException cnse )
+                {
+                    throw new LdapOtherException( cnse.getMessage() );
+                }
 
                 // Inject the new SchemaObject in the cloned registries
                 clonedRegistries.add( errors, copy );
@@ -1731,7 +1744,7 @@ public class DefaultSchemaManager implements SchemaManager
     /**
      * {@inheritDoc}
      */
-    public boolean delete( SchemaObject schemaObject ) throws Exception
+    public boolean delete( SchemaObject schemaObject ) throws LdapException
     {
         // First, clear the errors
         errors.clear();
@@ -1788,7 +1801,16 @@ public class DefaultSchemaManager implements SchemaManager
             if ( schema.isEnabled() && schemaObject.isEnabled() )
             {
                 // As we may break the registries, work on a cloned registries
-                Registries clonedRegistries = registries.clone();
+                Registries clonedRegistries = null;
+                
+                try
+                {
+                    clonedRegistries = registries.clone();
+                }
+                catch ( CloneNotSupportedException cnse )
+                {
+                    throw new LdapOtherException( cnse.getMessage() );
+                }
 
                 // Delete the SchemaObject from the cloned registries
                 clonedRegistries.delete( errors, toDelete );

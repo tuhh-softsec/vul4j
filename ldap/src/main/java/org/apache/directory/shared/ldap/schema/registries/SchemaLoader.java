@@ -20,10 +20,12 @@
 package org.apache.directory.shared.ldap.schema.registries;
 
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 
 import org.apache.directory.shared.ldap.entry.Entry;
+import org.apache.directory.shared.ldap.exception.LdapException;
 
 
 /**
@@ -93,7 +95,7 @@ public interface SchemaLoader
      * @param schemas the schemas from which AttributeTypes are loaded
      * @throws Exception if there are failures accessing AttributeType information
      */
-    List<Entry> loadAttributeTypes( Schema... schemas ) throws Exception;
+    List<Entry> loadAttributeTypes( Schema... schemas ) throws LdapException, IOException;
 
 
     /**
@@ -113,7 +115,7 @@ public interface SchemaLoader
      * @param schemas the schemas from which Comparators are loaded
      * @throws Exception if there are failures accessing Comparator information
      */
-    List<Entry> loadComparators( Schema... schemas ) throws Exception;
+    List<Entry> loadComparators( Schema... schemas ) throws LdapException, IOException;
 
 
     /**
@@ -133,7 +135,7 @@ public interface SchemaLoader
      * @param schemas the schemas from which DitContentRules are loaded
      * @throws Exception if there are failures accessing DitContentRule information
      */
-    List<Entry> loadDitContentRules( Schema... schemas ) throws Exception;
+    List<Entry> loadDitContentRules( Schema... schemas ) throws LdapException, IOException;
 
 
     /**
@@ -153,7 +155,7 @@ public interface SchemaLoader
      * @param schemas the schemas from which DitStructureRules are loaded
      * @throws Exception if there are failures accessing DitStructureRule information
      */
-    List<Entry> loadDitStructureRules( Schema... schemas ) throws Exception;
+    List<Entry> loadDitStructureRules( Schema... schemas ) throws LdapException, IOException;
 
 
     /**
@@ -173,7 +175,7 @@ public interface SchemaLoader
      * @param schemas the schemas from which MatchingRules are loaded
      * @throws Exception if there are failures accessing MatchingRule information
      */
-    List<Entry> loadMatchingRules( Schema... schemas ) throws Exception;
+    List<Entry> loadMatchingRules( Schema... schemas ) throws LdapException, IOException;
 
 
     /**
@@ -193,7 +195,7 @@ public interface SchemaLoader
      * @param schemas the schemas from which MatchingRuleUses are loaded
      * @throws Exception if there are failures accessing MatchingRuleUse information
      */
-    List<Entry> loadMatchingRuleUses( Schema... schemas ) throws Exception;
+    List<Entry> loadMatchingRuleUses( Schema... schemas ) throws LdapException, IOException;
 
 
     /**
@@ -213,7 +215,7 @@ public interface SchemaLoader
      * @param schemas the schemas from which NameForms are loaded
      * @throws Exception if there are failures accessing NameForm information
      */
-    List<Entry> loadNameForms( Schema... schemas ) throws Exception;
+    List<Entry> loadNameForms( Schema... schemas ) throws LdapException, IOException;
 
 
     /**
@@ -233,7 +235,7 @@ public interface SchemaLoader
      * @param schemas the schemas from which Normalizers are loaded
      * @throws Exception if there are failures accessing Normalizer information
      */
-    List<Entry> loadNormalizers( Schema... schemas ) throws Exception;
+    List<Entry> loadNormalizers( Schema... schemas ) throws LdapException, IOException;
 
 
     /**
@@ -253,7 +255,7 @@ public interface SchemaLoader
      * @param schemas the schemas from which ObjectClasses are loaded
      * @throws Exception if there are failures accessing ObjectClass information
      */
-    List<Entry> loadObjectClasses( Schema... schemas ) throws Exception;
+    List<Entry> loadObjectClasses( Schema... schemas ) throws LdapException, IOException;
 
 
     /**
@@ -273,7 +275,7 @@ public interface SchemaLoader
      * @param schemas the schemas from which Syntaxes are loaded
      * @throws Exception if there are failures accessing Syntax information
      */
-    List<Entry> loadSyntaxes( Schema... schemas ) throws Exception;
+    List<Entry> loadSyntaxes( Schema... schemas ) throws LdapException, IOException;
 
 
     /**
@@ -293,7 +295,7 @@ public interface SchemaLoader
      * @param schemas the schemas from which SyntaxCheckers are loaded
      * @throws Exception if there are failures accessing SyntaxChecker information
      */
-    List<Entry> loadSyntaxCheckers( Schema... schemas ) throws Exception;
+    List<Entry> loadSyntaxCheckers( Schema... schemas ) throws LdapException, IOException;
 
 
     /**

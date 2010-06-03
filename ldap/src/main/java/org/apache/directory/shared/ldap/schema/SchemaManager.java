@@ -69,7 +69,7 @@ public interface SchemaManager
      * @return true if the schemas have been loaded and the registries is consistent
      * @throws Exception @TODO 
      */
-    boolean load( Schema... schemas ) throws Exception;
+    boolean load( Schema... schemas ) throws LdapException;
 
 
     /**
@@ -211,7 +211,7 @@ public interface SchemaManager
      * @return true if the schemas have been loaded
      * @throws Exception @TODO 
      */
-    boolean loadDisabled( String... schemas ) throws Exception;
+    boolean loadDisabled( String... schemas ) throws LdapException;
 
 
     /**
@@ -249,7 +249,7 @@ public interface SchemaManager
      * @param schemas The list of Schema to unload
      * @return True if all the schemas have been unloaded
      */
-    boolean unload( String... schemas ) throws Exception;
+    boolean unload( String... schemas ) throws LdapException;
 
 
     //---------------------------------------------------------------------------------
@@ -280,7 +280,7 @@ public interface SchemaManager
      *  @return true if the Registries is still consistent, false otherwise.
      *  @throws If something went wrong
      */
-    boolean enable( String... schemas ) throws Exception;
+    boolean enable( String... schemas ) throws LdapException;
 
 
     /**
@@ -354,7 +354,7 @@ public interface SchemaManager
      *  @return true if the Registries is still consistent, false otherwise.
      *  @throws If something went wrong
      */
-    boolean disable( String... schemas ) throws Exception;
+    boolean disable( String... schemas ) throws LdapException;
 
 
     /**
@@ -649,10 +649,10 @@ public interface SchemaManager
      *
      * @param schemaObject the SchemaObject to register
      * @return true if the addition has been made, false if there were some errors
-     * @throws Exception if the SchemaObject is already registered or
+     * @throws LdapException if the SchemaObject is already registered or
      * the registration operation is not supported
      */
-    boolean add( SchemaObject schemaObject ) throws Exception;
+    boolean add( SchemaObject schemaObject ) throws LdapException;
 
 
     /**
@@ -666,7 +666,7 @@ public interface SchemaManager
      * @throws Exception if the SchemaObject is not registered or
      * the deletion operation is not supported
      */
-    boolean delete( SchemaObject schemaObject ) throws Exception;
+    boolean delete( SchemaObject schemaObject ) throws LdapException;
 
 
     /**

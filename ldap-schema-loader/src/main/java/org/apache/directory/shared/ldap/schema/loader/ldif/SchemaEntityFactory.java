@@ -34,6 +34,7 @@ import org.apache.directory.shared.ldap.entry.DefaultEntryAttribute;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Value;
+import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.exception.LdapInvalidAttributeValueException;
 import org.apache.directory.shared.ldap.exception.LdapUnwillingToPerformException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
@@ -197,7 +198,7 @@ public class SchemaEntityFactory implements EntityFactory
     /**
      * {@inheritDoc}
      */
-    public Schema getSchema( Entry entry ) throws Exception
+    public Schema getSchema( Entry entry ) throws LdapException
     {
         String name;
         String owner;
@@ -206,19 +207,19 @@ public class SchemaEntityFactory implements EntityFactory
 
         if ( entry == null )
         {
-            throw new NullPointerException( I18n.err( I18n.ERR_10010 ) );
+            throw new IllegalArgumentException( I18n.err( I18n.ERR_10010 ) );
         }
 
         if ( entry.get( SchemaConstants.CN_AT ) == null )
         {
-            throw new NullPointerException( I18n.err( I18n.ERR_10011 ) );
+            throw new IllegalArgumentException( I18n.err( I18n.ERR_10011 ) );
         }
 
         name = entry.get( SchemaConstants.CN_AT ).getString();
 
         if ( entry.get( SchemaConstants.CREATORS_NAME_AT ) == null )
         {
-            throw new NullPointerException( I18n.err( I18n.ERR_10012, SchemaConstants.CREATORS_NAME_AT ) );
+            throw new IllegalArgumentException( I18n.err( I18n.ERR_10012, SchemaConstants.CREATORS_NAME_AT ) );
         }
 
         owner = entry.get( SchemaConstants.CREATORS_NAME_AT ).getString();
@@ -287,7 +288,7 @@ public class SchemaEntityFactory implements EntityFactory
      * {@inheritDoc}
      */
     public SyntaxChecker getSyntaxChecker( SchemaManager schemaManager, Entry entry, Registries targetRegistries,
-        String schemaName ) throws Exception
+        String schemaName ) throws LdapException
     {
         checkEntry( entry, SchemaConstants.SYNTAX_CHECKER );
 
@@ -319,14 +320,21 @@ public class SchemaEntityFactory implements EntityFactory
         // The ByteCode
         EntryAttribute byteCode = entry.get( MetaSchemaConstants.M_BYTECODE_AT );
 
-        // Class load the syntaxChecker
-        SyntaxChecker syntaxChecker = classLoadSyntaxChecker( oid, className, byteCode );
-
-        // Update the common fields
-        setSchemaObjectProperties( syntaxChecker, entry, schema );
-
-        // return the resulting syntaxChecker
-        return syntaxChecker;
+        try
+        {
+            // Class load the syntaxChecker
+            SyntaxChecker syntaxChecker = classLoadSyntaxChecker( oid, className, byteCode );
+    
+            // Update the common fields
+            setSchemaObjectProperties( syntaxChecker, entry, schema );
+    
+            // return the resulting syntaxChecker
+            return syntaxChecker;
+        }
+        catch ( Exception e )
+        {
+            throw new LdapUnwillingToPerformException( ResultCodeEnum.UNWILLING_TO_PERFORM, e.getMessage() );
+        }
     }
 
 
@@ -469,7 +477,7 @@ public class SchemaEntityFactory implements EntityFactory
      * {@inheritDoc}
      */
     public LdapComparator<?> getLdapComparator( SchemaManager schemaManager, Entry entry, Registries targetRegistries,
-        String schemaName ) throws Exception
+        String schemaName ) throws LdapException
     {
         checkEntry( entry, SchemaConstants.COMPARATOR );
 
@@ -501,14 +509,21 @@ public class SchemaEntityFactory implements EntityFactory
         // The ByteCode
         EntryAttribute byteCode = entry.get( MetaSchemaConstants.M_BYTECODE_AT );
 
-        // Class load the comparator
-        LdapComparator<?> comparator = classLoadComparator( schemaManager, oid, fqcn, byteCode );
+        try
+        {
+            // Class load the comparator
+            LdapComparator<?> comparator = classLoadComparator( schemaManager, oid, fqcn, byteCode );
+    
+            // Update the common fields
+            setSchemaObjectProperties( comparator, entry, schema );
 
-        // Update the common fields
-        setSchemaObjectProperties( comparator, entry, schema );
-
-        // return the resulting comparator
-        return comparator;
+            // return the resulting comparator
+            return comparator;
+        }
+        catch ( Exception e )
+        {
+            throw new LdapUnwillingToPerformException( ResultCodeEnum.UNWILLING_TO_PERFORM, e.getMessage() );
+        }
     }
 
 
@@ -593,7 +608,7 @@ public class SchemaEntityFactory implements EntityFactory
      * {@inheritDoc}
      */
     public Normalizer getNormalizer( SchemaManager schemaManager, Entry entry, Registries targetRegistries,
-        String schemaName ) throws Exception
+        String schemaName ) throws LdapException
     {
         checkEntry( entry, SchemaConstants.NORMALIZER );
 
@@ -625,14 +640,21 @@ public class SchemaEntityFactory implements EntityFactory
         // The ByteCode
         EntryAttribute byteCode = entry.get( MetaSchemaConstants.M_BYTECODE_AT );
 
-        // Class load the Normalizer
-        Normalizer normalizer = classLoadNormalizer( schemaManager, oid, className, byteCode );
-
-        // Update the common fields
-        setSchemaObjectProperties( normalizer, entry, schema );
-
-        // return the resulting Normalizer
-        return normalizer;
+        try
+        {
+            // Class load the Normalizer
+            Normalizer normalizer = classLoadNormalizer( schemaManager, oid, className, byteCode );
+    
+            // Update the common fields
+            setSchemaObjectProperties( normalizer, entry, schema );
+    
+            // return the resulting Normalizer
+            return normalizer;
+        }
+        catch ( Exception e )
+        {
+            throw new LdapUnwillingToPerformException( ResultCodeEnum.UNWILLING_TO_PERFORM, e.getMessage() );
+        }
     }
 
 
@@ -764,7 +786,7 @@ public class SchemaEntityFactory implements EntityFactory
      * {@inheritDoc}
      */
     public ObjectClass getObjectClass( SchemaManager schemaManager, Entry entry, Registries targetRegistries,
-        String schemaName ) throws Exception
+        String schemaName ) throws LdapException
     {
         checkEntry( entry, SchemaConstants.OBJECT_CLASS );
 

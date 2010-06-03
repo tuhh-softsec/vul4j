@@ -21,6 +21,7 @@ package org.apache.directory.shared.ldap.schema.loader.ldif;
 
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
@@ -31,6 +32,7 @@ import java.util.regex.Pattern;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.entry.Entry;
+import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.ldif.LdifEntry;
 import org.apache.directory.shared.ldap.ldif.LdifReader;
 import org.apache.directory.shared.ldap.schema.ldif.extractor.impl.DefaultSchemaLdifExtractor;
@@ -80,7 +82,7 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
     }
 
 
-    private final URL getResource( String resource, String msg ) throws Exception
+    private final URL getResource( String resource, String msg ) throws IOException
     {
         if ( RESOURCE_MAP.get( resource ) )
         {
@@ -157,7 +159,7 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
     /**
      * {@inheritDoc}
      */
-    public List<Entry> loadComparators( Schema... schemas ) throws Exception
+    public List<Entry> loadComparators( Schema... schemas ) throws LdapException, IOException
     {
         List<Entry> comparatorList = new ArrayList<Entry>();
 
@@ -193,7 +195,7 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
     /**
      * {@inheritDoc}
      */
-    public List<Entry> loadSyntaxCheckers( Schema... schemas ) throws Exception
+    public List<Entry> loadSyntaxCheckers( Schema... schemas ) throws LdapException, IOException
     {
         List<Entry> syntaxCheckerList = new ArrayList<Entry>();
 
@@ -229,7 +231,7 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
     /**
      * {@inheritDoc}
      */
-    public List<Entry> loadNormalizers( Schema... schemas ) throws Exception
+    public List<Entry> loadNormalizers( Schema... schemas ) throws LdapException, IOException
     {
         List<Entry> normalizerList = new ArrayList<Entry>();
 
@@ -265,7 +267,7 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
     /**
      * {@inheritDoc}
      */
-    public List<Entry> loadMatchingRules( Schema... schemas ) throws Exception
+    public List<Entry> loadMatchingRules( Schema... schemas ) throws LdapException, IOException
     {
         List<Entry> matchingRuleList = new ArrayList<Entry>();
 
@@ -301,7 +303,7 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
     /**
      * {@inheritDoc}
      */
-    public List<Entry> loadSyntaxes( Schema... schemas ) throws Exception
+    public List<Entry> loadSyntaxes( Schema... schemas ) throws LdapException, IOException
     {
         List<Entry> syntaxList = new ArrayList<Entry>();
 
@@ -337,7 +339,7 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
     /**
      * {@inheritDoc}
      */
-    public List<Entry> loadAttributeTypes( Schema... schemas ) throws Exception
+    public List<Entry> loadAttributeTypes( Schema... schemas ) throws LdapException, IOException
     {
         List<Entry> attributeTypeList = new ArrayList<Entry>();
 
@@ -375,7 +377,7 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
     /**
      * {@inheritDoc}
      */
-    public List<Entry> loadMatchingRuleUses( Schema... schemas ) throws Exception
+    public List<Entry> loadMatchingRuleUses( Schema... schemas ) throws LdapException, IOException
     {
         List<Entry> matchingRuleUseList = new ArrayList<Entry>();
 
@@ -412,7 +414,7 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
     /**
      * {@inheritDoc}
      */
-    public List<Entry> loadNameForms( Schema... schemas ) throws Exception
+    public List<Entry> loadNameForms( Schema... schemas ) throws LdapException, IOException
     {
         List<Entry> nameFormList = new ArrayList<Entry>();
 
@@ -448,7 +450,7 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
     /**
      * {@inheritDoc}
      */
-    public List<Entry> loadDitContentRules( Schema... schemas ) throws Exception
+    public List<Entry> loadDitContentRules( Schema... schemas ) throws LdapException, IOException
     {
         List<Entry> ditContentRulesList = new ArrayList<Entry>();
 
@@ -485,7 +487,7 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
     /**
      * {@inheritDoc}
      */
-    public List<Entry> loadDitStructureRules( Schema... schemas ) throws Exception
+    public List<Entry> loadDitStructureRules( Schema... schemas ) throws LdapException, IOException
     {
         List<Entry> ditStructureRuleList = new ArrayList<Entry>();
 
@@ -522,7 +524,7 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
     /**
      * {@inheritDoc}
      */
-    public List<Entry> loadObjectClasses( Schema... schemas ) throws Exception
+    public List<Entry> loadObjectClasses( Schema... schemas ) throws LdapException, IOException
     {
         List<Entry> objectClassList = new ArrayList<Entry>();
 

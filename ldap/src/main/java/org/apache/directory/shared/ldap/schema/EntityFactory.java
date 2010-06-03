@@ -78,7 +78,7 @@ public interface EntityFactory
      * @throws LdapException if anything fails during loading
      */
     LdapComparator<?> getLdapComparator( SchemaManager schemaManager, Entry entry, 
-        Registries targetRegistries, String schemaName ) throws Exception;
+        Registries targetRegistries, String schemaName ) throws LdapException;
     
 
     /**
@@ -119,7 +119,7 @@ public interface EntityFactory
      * @throws LdapException if anything fails during loading
      */
     Normalizer getNormalizer( SchemaManager schemaManager, Entry entry, Registries targetRegistries, String schemaName ) 
-        throws Exception;
+        throws LdapException;
     
     
     /**
@@ -131,7 +131,7 @@ public interface EntityFactory
      * @return
      * @throws Exception
      */
-    ObjectClass getObjectClass( SchemaManager schemaManager, Entry entry, Registries targetRegistries, String schemaName ) throws Exception;
+    ObjectClass getObjectClass( SchemaManager schemaManager, Entry entry, Registries targetRegistries, String schemaName ) throws LdapException;
     
     
     /**
@@ -156,7 +156,7 @@ public interface EntityFactory
      * @return the loaded SyntaxChecker
      * @throws LdapException if anything fails during loading
      */
-    SyntaxChecker getSyntaxChecker( SchemaManager schemaManager, Entry entry, Registries targetRegistries, String schemaName ) throws Exception;
+    SyntaxChecker getSyntaxChecker( SchemaManager schemaManager, Entry entry, Registries targetRegistries, String schemaName ) throws LdapException;
     
 
     /**
