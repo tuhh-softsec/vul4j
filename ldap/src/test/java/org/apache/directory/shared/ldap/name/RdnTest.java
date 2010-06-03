@@ -622,7 +622,7 @@ public class RdnTest
     {
         RDN rdn = new RDN( " a = b + a = f + g = h + c = d " );
 
-        assertEquals( "b", rdn.getNormValue() );
+        assertEquals( "b", rdn.getNormValue().getString() );
     }
 
 

@@ -913,7 +913,7 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
      * 
      * @return The first User provided value of this RDN
      */
-    public String getUpValue()
+    public Value<?> getUpValue()
     {
         switch ( nbAtavs )
         {
@@ -921,10 +921,10 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
                 return null;
 
             case 1:
-                return atav.getUpValue().getString();
+                return atav.getUpValue();
 
             default:
-                return ( ( TreeSet<AVA> ) atavs ).first().getUpValue().getString();
+                return ( ( TreeSet<AVA> ) atavs ).first().getUpValue();
         }
     }
 
@@ -934,7 +934,7 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
      *
      * @return The first normalized value of this RDN
      */
-    public String getNormValue()
+    public Value<?> getNormValue()
     {
         switch ( nbAtavs )
         {
@@ -942,10 +942,10 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
                 return null;
 
             case 1:
-                return atav.getNormValue().getString();
+                return atav.getNormValue();
 
             default:
-                return ( ( TreeSet<AVA> ) atavs ).first().getNormValue().getString();
+                return ( ( TreeSet<AVA> ) atavs ).first().getNormValue();
         }
     }
 

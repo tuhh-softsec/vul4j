@@ -346,7 +346,7 @@ public class LdifRevertor
             // in the previous modification
             if ( !entry.contains( ava.getNormType(), ava.getNormValue().getString() ) &&
                  !(ava.getNormType().equals( oldRdn.getNormType() ) &&
-                   ava.getNormValue().getString().equals( oldRdn.getNormValue() ) ) )
+                   ava.getNormValue().getString().equals( oldRdn.getNormValue().getString() ) ) )
             {
                 // Create the modification, which is an Remove
                 Modification modification = new DefaultModification( 
