@@ -285,69 +285,6 @@ public class AVA implements Cloneable, Comparable, Externalizable
 
 
     /**
-     * Store a new type
-     *
-     * @param upType The AVA User Provided type
-     * @param type The AVA type
-     * 
-     * @throws LdapInvalidDnException if the type or upType are empty or null.
-     * If the upName is invalid.
-     */
-    public void setType( String upType, String type ) throws LdapInvalidDnException
-    {
-        if ( StringTools.isEmpty( type ) || StringTools.isEmpty( type.trim() ) )
-        {
-            String message = I18n.err( I18n.ERR_04188 );
-            LOG.error( message );
-            throw new LdapInvalidDnException( ResultCodeEnum.INVALID_DN_SYNTAX, message );
-        }
-        
-        if ( StringTools.isEmpty( upType ) || StringTools.isEmpty( upType.trim() ) )
-        {
-            String message = I18n.err( I18n.ERR_04189 );
-            LOG.error( message );
-            throw new LdapInvalidDnException( ResultCodeEnum.INVALID_DN_SYNTAX, message );
-        }
-        
-        int equalPosition = upName.indexOf( '=' );
-        
-        if ( equalPosition <= 1 )
-        {
-            String message = I18n.err( I18n.ERR_04190 ); 
-            LOG.error( message );
-            throw new LdapInvalidDnException( ResultCodeEnum.INVALID_DN_SYNTAX, message );
-        }
-
-        normType = type.trim().toLowerCase();
-        this.upType = upType;
-        upName = upType + upName.substring( equalPosition );
-        start = -1;
-        length = upName.length();
-    }
-
-
-    /**
-     * Store the type, after having trimmed and lowercased it.
-     *
-     * @param type The AVA type
-     */
-    public void setTypeNormalized( String type ) throws LdapInvalidDnException
-    {
-        if ( StringTools.isEmpty( type ) || StringTools.isEmpty( type.trim() ) )
-        {
-            LOG.error( I18n.err( I18n.ERR_04191 ) );
-            throw new LdapInvalidDnException( ResultCodeEnum.INVALID_DN_SYNTAX, I18n.err( I18n.ERR_04191 ) );
-        }
-
-        normType = type.trim().toLowerCase();
-        upType = type;
-        upName = type + upName.substring( upName.indexOf( '=' ) );
-        start = -1;
-        length = upName.length();
-    }
-
-
-    /**
      * Get the Value of a AVA
      *
      * @return The value
@@ -375,22 +312,6 @@ public class AVA implements Cloneable, Comparable, Externalizable
     public String getNormName()
     {
         return normalize();
-    }
-
-
-    /**
-     * Store the value of a AVA.
-     *
-     * @param upValue The user provided value of the AVA
-     * @param normValue The normalized value
-     */
-    public void setValue( Value<?> upValue, Value<?> normValue )
-    {
-        this.normValue = normValue;
-        this.upValue = upValue;
-        upName = upName.substring( 0, upName.indexOf( '=' ) + 1 ) + upValue;
-        start = -1;
-        length = upName.length();
     }
 
 
@@ -424,30 +345,6 @@ public class AVA implements Cloneable, Comparable, Externalizable
     public String getUpName()
     {
         return upName;
-    }
-
-
-    /**
-     * Store the value of a AVA, after having trimmed it.
-     *
-     * @param value The value of the AVA
-     */
-    public void setValueNormalized( String value )
-    {
-        String newValue = StringTools.trim( value );
-
-        if ( StringTools.isEmpty( newValue ) )
-        {
-            this.normValue = new StringValue( "" );
-        }
-        else
-        {
-            this.normValue = new StringValue( newValue );
-        }
-
-        upName = upName.substring( 0, upName.indexOf( '=' ) + 1 ) + value;
-        start = -1;
-        length = upName.length();
     }
 
 

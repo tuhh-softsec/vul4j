@@ -532,6 +532,8 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
     /**
      * Sets the up name.
      * 
+     * Package private because DN is immutable, only used by the DN parser.
+     * 
      * @param upName the new up name
      */
     void setUpName( String upName )

@@ -826,10 +826,13 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
 
 
     /**
-     * Set the User Provided Name
+     * Set the User Provided Name.
+     * 
+     * Package private because RDN is immutable, only used by the DN parser.
+     * 
      * @param upName the User Provided dame 
      */
-    public void setUpName( String upName )
+    void setUpName( String upName )
     {
         this.upName = upName;
     }
