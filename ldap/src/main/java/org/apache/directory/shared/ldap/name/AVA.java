@@ -33,6 +33,7 @@ import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.ldap.util.UTFUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -856,11 +857,11 @@ public class AVA implements Cloneable, Comparable, Externalizable
             throw new IOException( message );
         }
         
-        out.writeUTF( upName );
+        UTFUtils.writeUTF( out, upName );
         out.writeInt( start );
         out.writeInt( length );
-        out.writeUTF( upType );
-        out.writeUTF( normType );
+        UTFUtils.writeUTF( out, upType );
+        UTFUtils.writeUTF( out, normType );
         
         boolean isHR = !normValue.isBinary();
         
@@ -868,8 +869,8 @@ public class AVA implements Cloneable, Comparable, Externalizable
         
         if ( isHR )
         {
-            out.writeUTF( upValue.getString() );
-            out.writeUTF( normValue.getString() );
+            UTFUtils.writeUTF( out, upValue.getString() );
+            UTFUtils.writeUTF( out, normValue.getString() );
         }
         else
         {
@@ -890,18 +891,18 @@ public class AVA implements Cloneable, Comparable, Externalizable
      */
     public void readExternal( ObjectInput in ) throws IOException, ClassNotFoundException
     {
-        upName = in.readUTF();
+        upName = UTFUtils.readUTF( in );
         start = in.readInt();
         length = in.readInt();
-        upType = in.readUTF();
-        normType = in.readUTF();
+        upType = UTFUtils.readUTF( in );
+        normType = UTFUtils.readUTF( in );
         
         boolean isHR = in.readBoolean();
         
         if ( isHR )
         {
-            upValue = new StringValue( in.readUTF() );
-            normValue = new StringValue( in.readUTF() );
+            upValue = new StringValue( UTFUtils.readUTF( in ) );
+            normValue = new StringValue( UTFUtils.readUTF( in ) );
         }
         else
         {

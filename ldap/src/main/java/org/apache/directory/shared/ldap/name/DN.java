@@ -43,6 +43,7 @@ import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.schema.normalizers.OidNormalizer;
 import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.ldap.util.UTFUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -1595,18 +1596,18 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
         }
         
         // Write the UPName
-        out.writeUTF( upName );
+        UTFUtils.writeUTF( out, upName );
         
         // Write the NormName if different
         if ( isNormalized() )
         {
             if ( upName.equals( normName ) )
             {
-                out.writeUTF( "" );
+                UTFUtils.writeUTF( out, "" );
             }
             else
             {
-                out.writeUTF( normName );
+                UTFUtils.writeUTF( out, normName );
             }
         }
         else
@@ -1643,10 +1644,10 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
     public void readExternal( ObjectInput in ) throws IOException , ClassNotFoundException
     {
         // Read the UPName
-        upName = in.readUTF();
+        upName = UTFUtils.readUTF( in );
         
         // Read the NormName
-        normName = in.readUTF();
+        normName = UTFUtils.readUTF( in );
         
         if ( normName.length() == 0 )
         {

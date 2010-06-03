@@ -25,6 +25,7 @@ import java.io.ObjectOutput;
 
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.ldap.util.UTFUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,18 +67,18 @@ public class DnSerializer
         }
         
         // Write the UPName
-        out.writeUTF( dn.getName() );
+        UTFUtils.writeUTF( out, dn.getName() );
         
         // Write the NormName if different
         if ( dn.isNormalized() )
         {
             if ( dn.getName().equals( dn.getNormName() ) )
             {
-                out.writeUTF( "" );
+                UTFUtils.writeUTF( out, "" );
             }
             else
             {
-                out.writeUTF( dn.getNormName() );
+                UTFUtils.writeUTF( out, dn.getNormName() );
             }
         }
         else
@@ -115,10 +116,10 @@ public class DnSerializer
     public static DN deserialize( ObjectInput in ) throws IOException
     {
         // Read the UPName
-        String upName = in.readUTF();
+        String upName = UTFUtils.readUTF( in );
         
         // Read the NormName
-        String normName = in.readUTF();
+        String normName = UTFUtils.readUTF( in );
         
         if ( normName.length() == 0 )
         {

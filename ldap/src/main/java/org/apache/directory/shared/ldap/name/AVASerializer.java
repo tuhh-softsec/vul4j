@@ -28,6 +28,7 @@ import org.apache.directory.shared.ldap.entry.StringValue;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.ldap.util.UTFUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -114,11 +115,11 @@ public class AVASerializer
             throw new IOException( message );
         }
         
-        out.writeUTF( atav.getUpName() );
+        UTFUtils.writeUTF( out, atav.getUpName() );
         out.writeInt( atav.getStart() );
         out.writeInt( atav.getLength() );
-        out.writeUTF( atav.getUpType() );
-        out.writeUTF( atav.getNormType() );
+        UTFUtils.writeUTF( out, atav.getUpType() );
+        UTFUtils.writeUTF( out, atav.getNormType() );
         
         boolean isHR = !atav.getNormValue().isBinary();
         
@@ -126,8 +127,8 @@ public class AVASerializer
         
         if ( isHR )
         {
-            out.writeUTF( atav.getUpValue().getString() );
-            out.writeUTF( atav.getNormValue().getString() );
+            UTFUtils.writeUTF( out, atav.getUpValue().getString() );
+            UTFUtils.writeUTF( out, atav.getNormValue().getString() );
         }
         else
         {
@@ -152,11 +153,11 @@ public class AVASerializer
      */
     public static AVA deserialize( ObjectInput in ) throws IOException
     {
-        String upName = in.readUTF();
+        String upName = UTFUtils.readUTF( in );
         in.readInt(); // start
         in.readInt(); // length
-        String upType = in.readUTF();
-        String normType = in.readUTF();
+        String upType = UTFUtils.readUTF( in );
+        String normType = UTFUtils.readUTF( in );
         
         boolean isHR = in.readBoolean();
 
@@ -164,8 +165,8 @@ public class AVASerializer
         {
             if ( isHR )
             {
-                Value<String> upValue = new StringValue( in.readUTF() );
-                Value<String> normValue = new StringValue( in.readUTF() );
+                Value<String> upValue = new StringValue( UTFUtils.readUTF( in ) );
+                Value<String> normValue = new StringValue( UTFUtils.readUTF( in ) );
                 
                 AVA atav = 
                     new AVA( upType, normType, upValue, normValue, upName );

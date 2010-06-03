@@ -42,6 +42,7 @@ import org.apache.directory.shared.ldap.name.RdnSerializer;
 import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.SchemaManager;
 import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.ldap.util.UTFUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -2654,7 +2655,7 @@ public class DefaultEntry implements Entry
                 // the attribute
                 String oid = attributeType.getOid();
 
-                out.writeUTF( oid );
+                UTFUtils.writeUTF( out, oid );
 
                 // Get the attribute
                 DefaultEntryAttribute attribute = ( DefaultEntryAttribute ) attributes.get( attributeType.getOid() );
@@ -2670,7 +2671,7 @@ public class DefaultEntry implements Entry
             {
                 // Write the id to be able to restore the AttributeType when deserializing
                 // the attribute
-                out.writeUTF( id );
+                UTFUtils.writeUTF( out, id );
 
                 // Get the attribute
                 DefaultEntryAttribute attribute = ( DefaultEntryAttribute ) attributes.get( id );
@@ -2711,7 +2712,7 @@ public class DefaultEntry implements Entry
             for ( int i = 0; i < nbAttributes; i++ )
             {
                 // Read the attribute's OID
-                String oid = in.readUTF();
+                String oid = UTFUtils.readUTF( in );
 
                 try
                 {
@@ -2739,7 +2740,7 @@ public class DefaultEntry implements Entry
             for ( int i = 0; i < nbAttributes; i++ )
             {
                 // Read the attribute's ID
-                String id = in.readUTF();
+                String id = UTFUtils.readUTF( in );
 
                 // Create the attribute we will read
                 EntryAttribute attribute = new DefaultEntryAttribute( id );

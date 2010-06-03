@@ -36,6 +36,7 @@ import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.SyntaxChecker;
 import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.ldap.util.UTFUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -2428,7 +2429,7 @@ public class DefaultEntryAttribute implements EntryAttribute
     public void serialize( ObjectOutput out ) throws IOException
     {
         // Write the UPId (the id will be deduced from the upID)
-        out.writeUTF( upId );
+        UTFUtils.writeUTF( out, upId );
         
         // Write the HR flag, if not null
         if ( isHR != null )
@@ -2471,7 +2472,7 @@ public class DefaultEntryAttribute implements EntryAttribute
     public void deserialize( ObjectInput in ) throws IOException, ClassNotFoundException
     {
         // Read the ID and the UPId
-        upId = in.readUTF();
+        upId = UTFUtils.readUTF( in );
         
         // Compute the id
         setUpId( upId );
@@ -2530,7 +2531,7 @@ public class DefaultEntryAttribute implements EntryAttribute
     public void writeExternal( ObjectOutput out ) throws IOException
     {
         // Write the UPId (the id will be deduced from the upID)
-        out.writeUTF( upId );
+        UTFUtils.writeUTF( out, upId );
         
         // Write the HR flag, if not null
         if ( isHR != null )
@@ -2566,7 +2567,7 @@ public class DefaultEntryAttribute implements EntryAttribute
     public void readExternal( ObjectInput in ) throws IOException, ClassNotFoundException
     {
         // Read the ID and the UPId
-        upId = in.readUTF();
+        upId = UTFUtils.readUTF( in );
         
         // Compute the id
         setUpId( upId );

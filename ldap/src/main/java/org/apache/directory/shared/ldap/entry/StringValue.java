@@ -19,10 +19,12 @@
 package org.apache.directory.shared.ldap.entry;
 
 
+import java.io.DataOutputStream;
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
 
 import org.apache.directory.shared.ldap.exception.LdapException;
 
@@ -32,6 +34,7 @@ import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.LdapComparator;
 import org.apache.directory.shared.ldap.schema.Normalizer;
 import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.ldap.util.UTFUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -501,7 +504,7 @@ public class StringValue extends AbstractValue<String>
         // Read the wrapped value, if it's not null
         if ( in.readBoolean() )
         {
-            wrappedValue = in.readUTF();
+            wrappedValue = UTFUtils.readUTF( in );
         }
         
         // Read the isNormalized flag
@@ -510,7 +513,7 @@ public class StringValue extends AbstractValue<String>
         if ( ( normalized ) && ( in.readBoolean() ) )
         {
             // Read the normalized value, if not null
-            normalizedValue = in.readUTF();
+            normalizedValue = UTFUtils.readUTF( in );
         }
         
         h = 0;
@@ -526,7 +529,7 @@ public class StringValue extends AbstractValue<String>
         if ( wrappedValue != null )
         {
             out.writeBoolean( true );
-            out.writeUTF( wrappedValue );
+            UTFUtils.writeUTF( out, wrappedValue );
         }
         else
         {
@@ -542,7 +545,7 @@ public class StringValue extends AbstractValue<String>
             if ( normalizedValue != null )
             {
                 out.writeBoolean( true );
-                out.writeUTF( normalizedValue );
+                UTFUtils.writeUTF( out, normalizedValue );
             }
             else
             {
@@ -584,7 +587,7 @@ public class StringValue extends AbstractValue<String>
             out.writeBoolean( true );
             
             // Write the data
-            out.writeUTF( wrappedValue );
+            UTFUtils.writeUTF( out, wrappedValue );
             
             // Normalize the data
             try
@@ -599,7 +602,7 @@ public class StringValue extends AbstractValue<String>
                 else
                 {
                     out.writeBoolean( false );
-                    out.writeUTF( normalizedValue );
+                    UTFUtils.writeUTF( out,  normalizedValue );
                 }
             }
             catch ( LdapException ne )
@@ -638,7 +641,7 @@ public class StringValue extends AbstractValue<String>
         }
         
         // Read the value
-        String wrapped = in.readUTF();
+        String wrapped = UTFUtils.readUTF( in );
         
         wrappedValue = wrapped;
         
@@ -657,7 +660,7 @@ public class StringValue extends AbstractValue<String>
             else
             {
                 // The normalized value is different. Read it
-                normalizedValue = in.readUTF();
+                normalizedValue = UTFUtils.readUTF( in );
             }
         }
     }

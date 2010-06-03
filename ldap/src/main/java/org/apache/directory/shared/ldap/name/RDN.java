@@ -38,6 +38,7 @@ import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.schema.normalizers.OidNormalizer;
 import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.ldap.util.UTFUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -1353,15 +1354,15 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
     public void writeExternal( ObjectOutput out ) throws IOException
     {
         out.writeInt( nbAtavs );
-        out.writeUTF( upName );
+        UTFUtils.writeUTF( out, upName );
 
         if ( upName.equals( normName ) )
         {
-            out.writeUTF( "" );
+            UTFUtils.writeUTF( out, "" );
         }
         else
         {
-            out.writeUTF( normName );
+            UTFUtils.writeUTF( out, normName );
         }
 
         out.writeInt( start );
@@ -1404,10 +1405,10 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
         nbAtavs = in.readInt();
 
         // Read the UPName
-        upName = in.readUTF();
+        upName = UTFUtils.readUTF( in );
 
         // Read the normName
-        normName = in.readUTF();
+        normName = UTFUtils.readUTF( in );
 
         if ( StringTools.isEmpty( normName ) )
         {
