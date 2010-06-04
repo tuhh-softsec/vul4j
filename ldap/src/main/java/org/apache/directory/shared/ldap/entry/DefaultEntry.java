@@ -145,7 +145,7 @@ public class DefaultEntry implements Entry
     {
         if ( dn == null )
         {
-            dn = DN.EMPTY_DN;
+            this.dn = DN.EMPTY_DN;
         }
         else
         {
@@ -268,7 +268,7 @@ public class DefaultEntry implements Entry
     {
         if ( dn == null )
         {
-            dn = DN.EMPTY_DN;
+            this.dn = DN.EMPTY_DN;
         }
         else
         {
@@ -326,7 +326,7 @@ public class DefaultEntry implements Entry
     {
         if ( dn == null )
         {
-            dn = DN.EMPTY_DN;
+            this.dn = DN.EMPTY_DN;
         }
         else
         {
@@ -373,7 +373,7 @@ public class DefaultEntry implements Entry
     {
         if ( dn == null )
         {
-            dn = DN.EMPTY_DN;
+            this.dn = DN.EMPTY_DN;
         }
         else
         {
@@ -415,7 +415,7 @@ public class DefaultEntry implements Entry
     {
         if ( dn == null )
         {
-            dn = DN.EMPTY_DN;
+            this.dn = DN.EMPTY_DN;
         }
         else
         {
