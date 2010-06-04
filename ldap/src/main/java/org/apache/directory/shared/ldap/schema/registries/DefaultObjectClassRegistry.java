@@ -163,7 +163,7 @@ public class DefaultObjectClassRegistry extends DefaultSchemaObjectRegistry<Obje
                 
                 if ( descendants.size() == 0 )
                 {
-                    oidToDescendants.remove( descendants );
+                    oidToDescendants.remove( ancestor.getOid() );
                 }
             }
             

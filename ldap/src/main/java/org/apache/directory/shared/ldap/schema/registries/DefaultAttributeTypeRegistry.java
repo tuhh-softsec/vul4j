@@ -178,7 +178,7 @@ public class DefaultAttributeTypeRegistry extends DefaultSchemaObjectRegistry<At
 
             if ( descendants.size() == 0 )
             {
-                oidToDescendantSet.remove( descendants );
+                oidToDescendantSet.remove( ancestor.getOid() );
             }
         }
 
