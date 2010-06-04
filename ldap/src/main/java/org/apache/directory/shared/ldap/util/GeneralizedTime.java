@@ -599,10 +599,10 @@ public class GeneralizedTime implements Comparable<GeneralizedTime>
 
         NumberFormat twoDigits = new DecimalFormat( "00" );
         NumberFormat fourDigits = new DecimalFormat( "00" );
-        String fractionFormat = "";
+        StringBuffer fractionFormat = new StringBuffer( "" );
         for ( int i = 0; i < fractionLength && i < 3; i++ )
         {
-            fractionFormat += "0";
+            fractionFormat.append( "0" );
         }
 
         StringBuilder sb = new StringBuilder();
@@ -622,7 +622,7 @@ public class GeneralizedTime implements Comparable<GeneralizedTime>
                 sb.append( twoDigits.format( calendar.get( Calendar.MINUTE ) ) );
                 sb.append( twoDigits.format( calendar.get( Calendar.SECOND ) ) );
 
-                NumberFormat fractionDigits = new DecimalFormat( fractionFormat );
+                NumberFormat fractionDigits = new DecimalFormat( fractionFormat.toString() );
                 sb.append( fractionDelimiter == FractionDelimiter.COMMA ? ',' : '.' );
                 sb.append( fractionDigits.format( calendar.get( Calendar.MILLISECOND ) ) );
                 break;
