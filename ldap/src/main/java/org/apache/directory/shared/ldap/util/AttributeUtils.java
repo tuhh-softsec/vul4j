@@ -108,7 +108,7 @@ public class AttributeUtils
 
         if ( value1 == null )
         {
-            return ( value2 == null );
+            return false;
         }
 
         if ( value1 instanceof byte[] )
