@@ -25,6 +25,7 @@ import java.nio.ByteBuffer;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.exception.LdapException;
 
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
@@ -274,8 +275,13 @@ public class AddRequestCodec extends LdapMessageCodec
      *                    +--> ...
      *                    +--> 0x04 L7-m-n value
      */
-    protected int computeLengthProtocolOp()
+    protected int computeLengthProtocolOp() throws IllegalArgumentException
     {
+        if ( entry == null )
+        {
+            throw new IllegalArgumentException( I18n.err( I18n.ERR_04481_ENTRY_NULL_VALUE ) );
+        }
+        
         // The entry
         addRequestLength = 1 + TLV.getNbBytes( DN.getNbBytes( entry.getDn() ) ) + DN.getNbBytes( entry.getDn() );
 
@@ -357,8 +363,13 @@ public class AddRequestCodec extends LdapMessageCodec
      * 
      * @param buffer The buffer where to put the PDU
      */
-    protected void encodeProtocolOp( ByteBuffer buffer ) throws EncoderException
+    protected void encodeProtocolOp( ByteBuffer buffer ) throws EncoderException, IllegalArgumentException
     {
+        if ( entry == null )
+        {
+            throw new IllegalArgumentException( I18n.err( I18n.ERR_04481_ENTRY_NULL_VALUE ) );
+        }
+        
         try
         {
             // The AddRequest Tag
