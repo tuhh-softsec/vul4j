@@ -66,8 +66,9 @@ public class InitSubstringsFilterAction extends GrammarAction
 
         if ( expectedLength == 0 )
         {
-            log.error( I18n.err( I18n.ERR_04012 ) );
-            throw new DecoderException( I18n.err( I18n.ERR_04012 ) );
+            String msg = I18n.err( I18n.ERR_04012 );
+            log.error( msg );
+            throw new DecoderException( msg );
         }
 
         // We can allocate the SearchRequest

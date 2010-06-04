@@ -98,8 +98,9 @@ public class LdapEncoder implements ProviderEncoder
         }
         catch ( EncoderException e )
         {
-            log.error( I18n.err( I18n.ERR_04065, obj, e.getLocalizedMessage() ) );
-            ProviderException pe = new ProviderException( provider, I18n.err( I18n.ERR_04065, obj, e.getLocalizedMessage() ) );
+            String msg = I18n.err( I18n.ERR_04065, obj, e.getLocalizedMessage() );
+            log.error( msg );
+            ProviderException pe = new ProviderException( provider, msg );
             throw pe;
         }
     }
@@ -134,8 +135,9 @@ public class LdapEncoder implements ProviderEncoder
         }
         catch ( EncoderException e )
         {
-            log.error( I18n.err( I18n.ERR_04065, obj, e.getLocalizedMessage() ) );
-            ProviderException pe = new ProviderException( provider, I18n.err( I18n.ERR_04065, obj, e.getLocalizedMessage() ) );
+            String msg = I18n.err( I18n.ERR_04065, obj, e.getLocalizedMessage() );
+            log.error( msg );
+            ProviderException pe = new ProviderException( provider, msg );
             throw pe;
         }
     }
@@ -169,8 +171,9 @@ public class LdapEncoder implements ProviderEncoder
         }
         catch ( EncoderException e )
         {
-            log.error( I18n.err( I18n.ERR_04065,  obj, e.getLocalizedMessage() ) );
-            ProviderException pe = new ProviderException( provider, I18n.err( I18n.ERR_04065, obj, e.getLocalizedMessage() ) );
+            String msg = I18n.err( I18n.ERR_04065,  obj, e.getLocalizedMessage() );
+            log.error( msg );
+            ProviderException pe = new ProviderException( provider, msg );
             throw pe;
         }
     }

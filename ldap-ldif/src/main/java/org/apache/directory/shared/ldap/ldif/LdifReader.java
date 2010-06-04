@@ -301,14 +301,16 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
 
         if ( !file.exists() )
         {
-            LOG.error( I18n.err( I18n.ERR_12010, file.getAbsoluteFile() ) );
-            throw new LdapLdifException( I18n.err( I18n.ERR_12010, file.getAbsoluteFile() ) );
+            String msg = I18n.err( I18n.ERR_12010, file.getAbsoluteFile() );
+            LOG.error( msg );
+            throw new LdapLdifException( msg );
         }
 
         if ( !file.canRead() )
         {
-            LOG.error( I18n.err( I18n.ERR_12011, file.getName() ) );
-            throw new LdapLdifException( I18n.err( I18n.ERR_12011, file.getName() ) );
+            String msg = I18n.err( I18n.ERR_12011, file.getName() );
+            LOG.error( msg );
+            throw new LdapLdifException( msg );
         }
 
         try
@@ -317,8 +319,9 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
         }
         catch ( FileNotFoundException fnfe )
         {
-            LOG.error( I18n.err( I18n.ERR_12010, file.getAbsoluteFile() ) );
-            throw new LdapLdifException( I18n.err( I18n.ERR_12010, file.getAbsoluteFile() ) );
+            String msg = I18n.err( I18n.ERR_12010, file.getAbsoluteFile() );
+            LOG.error( msg );
+            throw new LdapLdifException( msg );
         }
         catch ( LdapInvalidDnException lide )
         {
@@ -373,14 +376,16 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
     {
         if ( !file.exists() )
         {
-            LOG.error( I18n.err( I18n.ERR_12010, file.getAbsoluteFile() ) );
-            throw new LdapLdifException( I18n.err( I18n.ERR_12010, file.getAbsoluteFile() ) );
+            String msg = I18n.err( I18n.ERR_12010, file.getAbsoluteFile() );
+            LOG.error( msg );
+            throw new LdapLdifException( msg );
         }
 
         if ( !file.canRead() )
         {
-            LOG.error( I18n.err( I18n.ERR_12011, file.getName() ) );
-            throw new LdapLdifException( I18n.err( I18n.ERR_12011, file.getName() ) );
+            String msg = I18n.err( I18n.ERR_12011, file.getName() );
+            LOG.error( msg );
+            throw new LdapLdifException( msg );
         }
 
         try
@@ -389,8 +394,9 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
         }
         catch ( FileNotFoundException fnfe )
         {
-            LOG.error( I18n.err( I18n.ERR_12010, file.getAbsoluteFile() ) );
-            throw new LdapLdifException( I18n.err( I18n.ERR_12010, file.getAbsoluteFile() ) );
+            String msg = I18n.err( I18n.ERR_12010, file.getAbsoluteFile() );
+            LOG.error( msg );
+            throw new LdapLdifException( msg );
         }
         catch ( LdapInvalidDnException lide )
         {
@@ -433,7 +439,7 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
     }
 
 
-    // <fill> ::= ' ' <fill> | ���
+    // <fill> ::= ' ' <fill> | ���������
     private static void parseFill( char[] document, Position position )
     {
 

@@ -69,8 +69,9 @@ public class ResponseNameAction extends GrammarAction
         // OID
         if ( tlv.getLength() == 0 )
         {
-            log.error( I18n.err( I18n.ERR_04017 ) );
-            throw new DecoderException( I18n.err( I18n.ERR_04017 ) );
+            String msg = I18n.err( I18n.ERR_04017 );
+            log.error( msg );
+            throw new DecoderException( msg );
         }
         else
         {

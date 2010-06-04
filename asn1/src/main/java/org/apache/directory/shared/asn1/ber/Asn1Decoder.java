@@ -233,8 +233,9 @@ public class Asn1Decoder implements ITLVBerDecoderMBean
 
                 if ( expectedLength > 4 )
                 {
-                    LOG.error( I18n.err( I18n.ERR_00005 ) );
-                    throw new DecoderException( I18n.err( I18n.ERR_00005 ) );
+                    String msg = I18n.err( I18n.ERR_00005 );
+                    LOG.error( msg );
+                    throw new DecoderException( msg );
                 }
 
                 tlv.setLength( 0 );
@@ -244,8 +245,9 @@ public class Asn1Decoder implements ITLVBerDecoderMBean
             }
             else
             {
-                LOG.error( I18n.err( I18n.ERR_00006 ) );
-                throw new DecoderException( I18n.err( I18n.ERR_00006 ) );
+                String msg = I18n.err( I18n.ERR_00006 );
+                LOG.error( msg );
+                throw new DecoderException( msg );
             }
 
             return MORE;
@@ -363,8 +365,9 @@ public class Asn1Decoder implements ITLVBerDecoderMBean
         
         if ( tlv == null )
         {
-            LOG.error( I18n.err( I18n.ERR_00007 ) );
-            throw new DecoderException( I18n.err( I18n.ERR_00007 ) );
+            String msg = I18n.err( I18n.ERR_00007 );
+            LOG.error( msg );
+            throw new DecoderException( msg );
         }
         
         int length = tlv.getLength();

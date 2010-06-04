@@ -67,8 +67,9 @@ public class StoreAnyAction extends GrammarAction
 
         if ( tlv.getLength() == 0 )
         {
-            log.error( I18n.err( I18n.ERR_04019 ) );
-            throw new DecoderException( I18n.err( I18n.ERR_04019 ) );
+            String msg = I18n.err( I18n.ERR_04019 );
+            log.error( msg );
+            throw new DecoderException( msg );
         }
 
         String any = StringTools.utf8ToString( tlv.getValue().getData() );

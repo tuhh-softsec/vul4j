@@ -67,8 +67,9 @@ public class StoreFinalAction extends GrammarAction
 
         if ( tlv.getLength() == 0 )
         {
-            log.error( I18n.err( I18n.ERR_04020 ) );
-            throw new DecoderException( I18n.err( I18n.ERR_04020 ) );
+            String msg = I18n.err( I18n.ERR_04020 );
+            log.error( msg );
+            throw new DecoderException( msg );
         }
 
         String finalValue = StringTools.utf8ToString( tlv.getValue().getData() );

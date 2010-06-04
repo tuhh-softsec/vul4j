@@ -102,8 +102,9 @@ public class StoredProcedureGrammar extends AbstractGrammar
                     if ( tlv.getLength() == 0 )
                     {
                         // We can't have a void language !
-                        log.error( I18n.err( I18n.ERR_04038 ) );
-                        throw new DecoderException( I18n.err( I18n.ERR_04038 ) );
+                        String msg = I18n.err( I18n.ERR_04038 );
+                        log.error( msg );
+                        throw new DecoderException( msg );
                     }
                     else
                     {
@@ -145,8 +146,9 @@ public class StoredProcedureGrammar extends AbstractGrammar
                     if ( tlv.getLength() == 0 )
                     {
                         // We can't have a void procedure !
-                        log.error( I18n.err( I18n.ERR_04039 ) );
-                        throw new DecoderException( I18n.err( I18n.ERR_04039 ) );
+                        String msg = I18n.err( I18n.ERR_04039 );
+                        log.error( msg );
+                        throw new DecoderException( msg );
                     }
                     else
                     {
@@ -211,8 +213,9 @@ public class StoredProcedureGrammar extends AbstractGrammar
                     if ( tlv.getLength() == 0 )
                     {
                         // We can't have a void parameter type !
-                        log.error( I18n.err( I18n.ERR_04040 ) );
-                        throw new DecoderException( I18n.err( I18n.ERR_04040 ) );
+                        String msg = I18n.err( I18n.ERR_04040 );
+                        log.error( msg );
+                        throw new DecoderException( msg );
                     }
                     else
                     {
@@ -256,8 +259,9 @@ public class StoredProcedureGrammar extends AbstractGrammar
                     if ( tlv.getLength() == 0 )
                     {
                         // We can't have a void parameter value !
-                        log.error( I18n.err( I18n.ERR_04041 ) );
-                        throw new DecoderException( I18n.err( I18n.ERR_04041 ) );
+                        String msg = I18n.err( I18n.ERR_04041 );
+                        log.error( msg );
+                        throw new DecoderException( msg );
                     }
                     else
                     {
@@ -278,8 +282,9 @@ public class StoredProcedureGrammar extends AbstractGrammar
                         }
                         else
                         {
-                            log.error( I18n.err( I18n.ERR_04042 ) );
-                            throw new DecoderException( I18n.err( I18n.ERR_04042 ) );
+                            String msg = I18n.err( I18n.ERR_04042 );
+                            log.error( msg );
+                            throw new DecoderException( msg );
                         }
                     }
 

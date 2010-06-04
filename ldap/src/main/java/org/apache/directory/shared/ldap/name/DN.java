@@ -1419,8 +1419,9 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
         else
         {
             // The type is empty : this is not possible...
-            LOG.error( I18n.err( I18n.ERR_04209 ) );
-            throw new LdapInvalidDnException( ResultCodeEnum.INVALID_DN_SYNTAX, I18n.err( I18n.ERR_04209 ) );
+            String msg = I18n.err( I18n.ERR_04209 );
+            LOG.error( msg );
+            throw new LdapInvalidDnException( ResultCodeEnum.INVALID_DN_SYNTAX, msg );
         }
     }
 

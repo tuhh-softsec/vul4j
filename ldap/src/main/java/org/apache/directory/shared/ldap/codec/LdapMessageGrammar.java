@@ -2856,9 +2856,10 @@ public class LdapMessageGrammar extends AbstractGrammar
                     // OID
                     if ( tlv.getLength() == 0 )
                     {
-                        log.error( I18n.err( I18n.ERR_04095 ) );
+                        String msg = I18n.err( I18n.ERR_04095 );
+                        log.error( msg );
                         // This will generate a PROTOCOL_ERROR                        
-                        throw new DecoderException( I18n.err( I18n.ERR_04095 ) );
+                        throw new DecoderException( msg );
                     }
                     else
                     {
@@ -3220,9 +3221,10 @@ public class LdapMessageGrammar extends AbstractGrammar
                     // OID.
                     if ( tlv.getLength() == 0 )
                     {
-                        log.error( I18n.err( I18n.ERR_04095 ) );
+                        String msg = I18n.err( I18n.ERR_04095 );
+                        log.error( msg );
                         // This will generate a PROTOCOL_ERROR                        
-                        throw new DecoderException( I18n.err( I18n.ERR_04095 ) );
+                        throw new DecoderException( msg );
                     }
                     else
                     {
@@ -3381,10 +3383,11 @@ public class LdapMessageGrammar extends AbstractGrammar
                 // The Length should be null
                 if ( expectedLength == 0 )
                 {
-                    log.error( I18n.err( I18n.ERR_04096 ) );
+                    String msg = I18n.err( I18n.ERR_04096 );
+                    log.error( msg );
 
                     // This will generate a PROTOCOL_ERROR
-                    throw new DecoderException( I18n.err( I18n.ERR_04096 ) );
+                    throw new DecoderException( msg );
                 }
             }
         };
@@ -3425,10 +3428,11 @@ public class LdapMessageGrammar extends AbstractGrammar
                     // We have to handle the special case of a 0 length OID
                     if ( tlv.getLength() == 0 )
                     {
-                        log.error( I18n.err( I18n.ERR_04097 ) );
+                        String msg = I18n.err( I18n.ERR_04097 );
+                        log.error( msg );
 
                         // This will generate a PROTOCOL_ERROR
-                        throw new DecoderException( I18n.err( I18n.ERR_04097 ) );
+                        throw new DecoderException( msg );
                     }
 
                     byte[] value = tlv.getValue().getData();
@@ -3689,8 +3693,9 @@ public class LdapMessageGrammar extends AbstractGrammar
                     }
                     catch ( IntegerDecoderException ide )
                     {
-                        log.error( I18n.err( I18n.ERR_04101, value.toString() ) );
-                        throw new DecoderException( I18n.err( I18n.ERR_04101, value.toString() ) );
+                        String msg = I18n.err( I18n.ERR_04101, value.toString() );
+                        log.error( msg );
+                        throw new DecoderException( msg );
                     }
 
                     searchRequest.setScope( SearchScope.getSearchScope( scope ) );
@@ -3751,8 +3756,9 @@ public class LdapMessageGrammar extends AbstractGrammar
                     }
                     catch ( IntegerDecoderException ide )
                     {
-                        log.error( I18n.err( I18n.ERR_04102, value.toString() ) );
-                        throw new DecoderException( I18n.err( I18n.ERR_04102, value.toString() ) );
+                        String msg = I18n.err( I18n.ERR_04102, value.toString() );
+                        log.error( msg );
+                        throw new DecoderException( msg );
                     }
 
                     searchRequest.setDerefAliases( derefAliases );
@@ -3813,8 +3819,9 @@ public class LdapMessageGrammar extends AbstractGrammar
                     }
                     catch ( LongDecoderException lde )
                     {
-                        log.error( I18n.err( I18n.ERR_04103, value.toString() ) );
-                        throw new DecoderException( I18n.err( I18n.ERR_04103, value.toString() ) );
+                        String msg = I18n.err( I18n.ERR_04103, value.toString() );
+                        log.error( msg );
+                        throw new DecoderException( msg );
                     }
 
                     searchRequest.setSizeLimit( sizeLimit );
@@ -3859,8 +3866,9 @@ public class LdapMessageGrammar extends AbstractGrammar
                     }
                     catch ( IntegerDecoderException ide )
                     {
-                        log.error( I18n.err( I18n.ERR_04104, value.toString() ) );
-                        throw new DecoderException( I18n.err( I18n.ERR_04104, value.toString() ) );
+                        String msg = I18n.err( I18n.ERR_04104, value.toString() );
+                        log.error( msg );
+                        throw new DecoderException( msg );
                     }
 
                     searchRequest.setTimeLimit( timeLimit );
@@ -5039,8 +5047,9 @@ public class LdapMessageGrammar extends AbstractGrammar
 
                     if ( tlv.getLength() == 0 )
                     {
-                        log.error( I18n.err( I18n.ERR_04106 ) );
-                        throw new DecoderException( I18n.err( I18n.ERR_04106 ) );
+                        String msg = I18n.err( I18n.ERR_04106 );
+                        log.error( msg );
+                        throw new DecoderException( msg );
                     }
                     else
                     {
@@ -5112,8 +5121,9 @@ public class LdapMessageGrammar extends AbstractGrammar
 
                     if ( tlv.getLength() == 0 )
                     {
-                        log.error( I18n.err( I18n.ERR_04108 ) );
-                        throw new DecoderException( I18n.err( I18n.ERR_04108 ) );
+                        String msg = I18n.err( I18n.ERR_04108 );
+                        log.error( msg );
+                        throw new DecoderException( msg );
                     }
 
                     substringFilter.setInitialSubstrings( StringTools.utf8ToString( tlv.getValue().getData() ) );
@@ -6033,7 +6043,8 @@ public class LdapMessageGrammar extends AbstractGrammar
 
                     if ( tlv.getLength() == 0 )
                     {
-                        log.error( I18n.err( I18n.ERR_04109 ) );
+                        String msg = I18n.err( I18n.ERR_04109 );
+                        log.error( msg );
 
                         // It will generate a PROTOCOL_ERROR
                         throw new DecoderException( I18n.err( I18n.ERR_04109 ) );

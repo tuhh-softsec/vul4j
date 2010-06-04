@@ -64,8 +64,9 @@ public class StoreTypeMatchingRuleAction extends GrammarAction
 
         if ( tlv.getLength() == 0 )
         {
-            log.error( I18n.err( I18n.ERR_04022 ) );
-            throw new DecoderException( I18n.err( I18n.ERR_04022 ) );
+            String msg = I18n.err( I18n.ERR_04022 );
+            log.error( msg );
+            throw new DecoderException( msg );
         }
         else
         {

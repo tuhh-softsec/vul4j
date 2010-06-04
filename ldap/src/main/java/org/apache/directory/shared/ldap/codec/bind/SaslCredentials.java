@@ -197,8 +197,9 @@ public class SaslCredentials extends LdapAuthentication
     {
         if ( buffer == null )
         {
-            log.error( I18n.err( I18n.ERR_04023 ) );
-            throw new EncoderException( I18n.err( I18n.ERR_04023 ) );
+            String msg = I18n.err( I18n.ERR_04023 );
+            log.error( msg );
+            throw new EncoderException( msg );
         }
 
         try
@@ -217,8 +218,9 @@ public class SaslCredentials extends LdapAuthentication
         }
         catch ( BufferOverflowException boe )
         {
-            log.error( I18n.err( I18n.ERR_04005 ) );
-            throw new EncoderException( I18n.err( I18n.ERR_04005 ) );
+            String msg = I18n.err( I18n.ERR_04005 );
+            log.error( msg );
+            throw new EncoderException( msg );
         }
 
         return buffer;

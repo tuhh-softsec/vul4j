@@ -67,8 +67,9 @@ public class InitAttributeDescFilterAction extends GrammarAction
 
         if ( tlv.getLength() == 0 )
         {
-            log.error( I18n.err( I18n.ERR_04007 ) );
-            throw new DecoderException( I18n.err( I18n.ERR_04007 ) );
+            String msg = I18n.err( I18n.ERR_04007 );
+            log.error( msg );
+            throw new DecoderException( msg );
         }
         else
         {

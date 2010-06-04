@@ -63,8 +63,9 @@ public class InitOrFilterAction extends GrammarAction
 
         if ( tlv.getLength() == 0 )
         {
-            log.error( I18n.err( I18n.ERR_04010 ) );
-            throw new DecoderException( I18n.err( I18n.ERR_04010 ) );
+            String msg = I18n.err( I18n.ERR_04010 );
+            log.error( msg );
+            throw new DecoderException( msg );
         }
 
         SearchRequestCodec searchRequest = ldapMessageContainer.getSearchRequest();
