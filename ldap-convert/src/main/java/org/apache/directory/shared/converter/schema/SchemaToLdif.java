@@ -118,7 +118,7 @@ public class SchemaToLdif
         if ( schema == null )
         {
             log.error( I18n.err( I18n.ERR_06005 ) );
-            throw new NullPointerException( I18n.err( I18n.ERR_06006 ) );
+            throw new IllegalArgumentException( I18n.err( I18n.ERR_06006 ) );
         }
 
         InputStream in = schema.getInput();

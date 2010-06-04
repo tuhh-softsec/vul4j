@@ -81,7 +81,7 @@ public class ACITuple implements Serializable
     {
         if ( authenticationLevel == null )
         {
-            throw new NullPointerException( I18n.err( I18n.ERR_04003) );
+            throw new IllegalArgumentException( I18n.err( I18n.ERR_04003) );
         }
 
         if ( precedence < 0 || precedence > 255 )

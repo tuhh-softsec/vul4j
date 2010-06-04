@@ -61,15 +61,17 @@ public abstract class ACIItem implements Serializable
     {
         if ( identificationTag == null )
         {
-            throw new NullPointerException( I18n.err( I18n.ERR_04001 ) );
+            throw new IllegalArgumentException( I18n.err( I18n.ERR_04001 ) );
         }
+        
         if ( precedence < 0 || precedence > 255 )
         {
             throw new IllegalArgumentException( I18n.err( I18n.ERR_04002, precedence ) );
         }
+        
         if ( authenticationLevel == null )
         {
-            throw new NullPointerException( I18n.err( I18n.ERR_04003 ) );
+            throw new IllegalArgumentException( I18n.err( I18n.ERR_04003 ) );
         }
 
         this.identificationTag = identificationTag;

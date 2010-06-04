@@ -42,7 +42,7 @@ public abstract class AbstractCursor<E> implements Cursor<E>
     {
         if ( monitor == null )
         {
-            throw new NullPointerException( I18n.err( I18n.ERR_02001 ) );
+            throw new IllegalArgumentException( I18n.err( I18n.ERR_02001 ) );
         }
         
         this.monitor = monitor;

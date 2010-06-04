@@ -40,8 +40,9 @@ public abstract class AbstractTupleCursor<K, V> implements TupleCursor<K, V>
     {
         if ( monitor == null )
         {
-            throw new NullPointerException( "monitor" );
+            throw new IllegalArgumentException( "monitor" );
         }
+        
         this.monitor = monitor;
     }
 

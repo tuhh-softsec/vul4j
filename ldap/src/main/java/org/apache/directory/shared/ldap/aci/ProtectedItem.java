@@ -623,7 +623,7 @@ public abstract class ProtectedItem implements Serializable
         {
             if ( filter == null )
             {
-                throw new NullPointerException( "filter" );
+                throw new IllegalArgumentException( "filter" );
             }
 
             this.filter = filter;

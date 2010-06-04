@@ -101,7 +101,7 @@ public class SchemaEntityFactory implements EntityFactory
         {
             String msg = I18n.err( I18n.ERR_10005, objectType, MetaSchemaConstants.M_OID_AT );
             LOG.warn( msg );
-            throw new NullPointerException( msg );
+            throw new IllegalArgumentException( msg );
         }
 
         String oid = mOid.getString();
@@ -130,7 +130,7 @@ public class SchemaEntityFactory implements EntityFactory
         {
             String msg = I18n.err( I18n.ERR_10005, objectType, MetaSchemaConstants.M_OID_AT );
             LOG.warn( msg );
-            throw new NullPointerException( msg );
+            throw new IllegalArgumentException( msg );
         }
 
         if ( !OID.isOID( oid ) )
@@ -153,7 +153,7 @@ public class SchemaEntityFactory implements EntityFactory
         {
             String msg = I18n.err( I18n.ERR_10007, schemaEntity );
             LOG.warn( msg );
-            throw new NullPointerException( msg );
+            throw new IllegalArgumentException( msg );
         }
     }
 
@@ -167,7 +167,7 @@ public class SchemaEntityFactory implements EntityFactory
         {
             String msg = I18n.err( I18n.ERR_10008, schemaEntity );
             LOG.warn( msg );
-            throw new NullPointerException( msg );
+            throw new IllegalArgumentException( msg );
         }
     }
 
@@ -993,7 +993,7 @@ public class SchemaEntityFactory implements EntityFactory
         {
             String msg = I18n.err( I18n.ERR_10028, objectType, MetaSchemaConstants.M_FQCN_AT );
             LOG.warn( msg );
-            throw new NullPointerException( msg );
+            throw new IllegalArgumentException( msg );
         }
 
         return mFqcn.getString();
@@ -1012,30 +1012,13 @@ public class SchemaEntityFactory implements EntityFactory
         {
             String msg = I18n.err( I18n.ERR_10028, objectType, MetaSchemaConstants.M_FQCN_AT );
             LOG.warn( msg );
-            throw new NullPointerException( msg );
+            throw new IllegalArgumentException( msg );
         }
 
         return mFqcn;
     }
 
-
-    /*
-     * Process the ByteCode attribute
-     */
-    //    private EntryAttribute getByteCode( Entry entry, String objectType )
-    //    {
-    //        EntryAttribute byteCode = entry.get( MetaSchemaConstants.M_BYTECODE_AT );
-    //
-    //        if ( byteCode == null )
-    //        {
-    //            String msg = I18n.err( I18n.ERR_10028, objectType, MetaSchemaConstants.M_BYTECODE_AT );
-    //            LOG.warn( msg );
-    //            throw new NullPointerException( msg );
-    //        }
-    //
-    //        return byteCode;
-    //    }
-
+    
     /**
      * Process the ByteCode attribute
      */
@@ -1047,7 +1030,7 @@ public class SchemaEntityFactory implements EntityFactory
         {
             String msg = I18n.err( I18n.ERR_10028, objectType, MetaSchemaConstants.M_BYTECODE_AT );
             LOG.warn( msg );
-            throw new NullPointerException( msg );
+            throw new IllegalArgumentException( msg );
         }
 
         byte[] bytecode = Base64.decode( byteCodeString.toCharArray() );

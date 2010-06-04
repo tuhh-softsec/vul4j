@@ -25,9 +25,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.naming.NamingException;
+
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.entry.DefaultModification;
 import org.apache.directory.shared.ldap.entry.DefaultEntryAttribute;
+import org.apache.directory.shared.ldap.entry.DefaultModification;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Modification;
@@ -256,12 +258,12 @@ public class LdifRevertor
 
         if ( newSuperiorDn == null )
         {
-            throw new NullPointerException( I18n.err( I18n.ERR_12074 ) );
+            throw new IllegalArgumentException( I18n.err( I18n.ERR_12074 ) );
         }
 
         if ( modifiedDn == null )
         {
-            throw new NullPointerException( I18n.err( I18n.ERR_12075 ) );
+            throw new IllegalArgumentException( I18n.err( I18n.ERR_12075 ) );
         }
 
         if ( modifiedDn.size() == 0 )
@@ -433,12 +435,12 @@ public class LdifRevertor
 
         if ( newRdn == null )
         {
-            throw new NullPointerException( I18n.err( I18n.ERR_12077 ) );
+            throw new IllegalArgumentException( I18n.err( I18n.ERR_12077 ) );
         }
 
         if ( parentDn == null )
         {
-            throw new NullPointerException( I18n.err( I18n.ERR_12078 ) );
+            throw new IllegalArgumentException( I18n.err( I18n.ERR_12078 ) );
         }
 
         if ( parentDn.size() == 0 )
