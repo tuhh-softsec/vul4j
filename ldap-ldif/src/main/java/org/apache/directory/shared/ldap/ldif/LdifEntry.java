@@ -582,7 +582,7 @@ public class LdifEntry implements Cloneable, Externalizable
     {
         int result = 37;
 
-        if ( entry.getDn() != null )
+        if ( entry != null && entry.getDn() != null )
         {
             result = result*17 + entry.getDn().hashCode();
         }
