@@ -1472,36 +1472,12 @@ public class DefaultEntryAttribute implements EntryAttribute
         {
             if ( isHR )
             {
-                // Iterate through all the values, and quit if we 
-                // don't find one in the values
-                if ( attributeType != null )
+                for ( String val:vals )
                 {
-                    for ( String val:vals )
+                    
+                    if ( !contains( new StringValue( val ) ) )
                     {
-                        Value<String> value = createStringValue( attributeType, val );
-                        
-                        if ( value == null )
-                        {
-                            // The value can't be normalized : we don't add it.
-                            LOG.error( I18n.err( I18n.ERR_04449, val ) );
-                            return false;
-                        }
-    
-                        if ( !contains( value ) )
-                        {
-                            return false;
-                        }
-                    }
-                }
-                else
-                {
-                    for ( String val:vals )
-                    {
-                        
-                        if ( !contains( new StringValue( val ) ) )
-                        {
-                            return false;
-                        }
+                        return false;
                     }
                 }
             }
