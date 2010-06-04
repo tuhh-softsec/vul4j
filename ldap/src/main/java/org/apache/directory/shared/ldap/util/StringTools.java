@@ -25,6 +25,7 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -3345,7 +3346,17 @@ public class StringTools
                 Method method = Charset.class.getMethod( "defaultCharset", new Class[0] );
                 defaultCharset = ((Charset) method.invoke( null, new Object[0]) ).name();
             } 
-            catch (Exception e) 
+            catch (NoSuchMethodException e) 
+            {
+                // fall back to old method
+                defaultCharset = new OutputStreamWriter( new ByteArrayOutputStream() ).getEncoding();
+            }
+            catch (InvocationTargetException e) 
+            {
+                // fall back to old method
+                defaultCharset = new OutputStreamWriter( new ByteArrayOutputStream() ).getEncoding();
+            }
+            catch (IllegalAccessException e) 
             {
                 // fall back to old method
                 defaultCharset = new OutputStreamWriter( new ByteArrayOutputStream() ).getEncoding();
