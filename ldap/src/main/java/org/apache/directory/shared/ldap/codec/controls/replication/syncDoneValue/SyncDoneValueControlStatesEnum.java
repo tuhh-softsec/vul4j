@@ -46,7 +46,7 @@ public class SyncDoneValueControlStatesEnum implements IStates
     /** terminal state */
     public static final int LAST_SYNC_DONE_VALUE_STATE = 4;
     
-    public static String[] syncDoneValueString = new String[]
+    public static final String[] syncDoneValueString = new String[]
        {
        "START_STATE",
        "SYNC_DONE_VALUE_SEQUENCE_STATE",
