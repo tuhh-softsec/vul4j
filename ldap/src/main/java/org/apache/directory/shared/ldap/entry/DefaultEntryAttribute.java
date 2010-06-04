@@ -867,6 +867,8 @@ public class DefaultEntryAttribute implements EntryAttribute
      * @param vals some new values to be added which may be null
      * @return the number of added values, or 0 if none has been added
      */
+    @edu.umd.cs.findbugs.annotations.SuppressWarnings( value="NP_LOAD_OF_KNOWN_NULL_VALUE", 
+        justification="Validity of null depends on the checker")
     public int add( Value<?>... vals )
     {
         int nbAdded = 0;
