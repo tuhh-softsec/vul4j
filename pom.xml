@@ -278,6 +278,13 @@
   </dependencyManagement>
 
   <dependencies>
+    <!-- for Java5 findbugs annotations are required in each module at compile time -->
+    <dependency>
+      <groupId>findbugs</groupId>
+      <artifactId>annotations</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
     <!-- common logging interface -->
     <dependency>
       <groupId>org.slf4j</groupId>

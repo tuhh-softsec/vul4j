@@ -60,12 +60,6 @@
       <groupId>commons-collections</groupId>
       <artifactId>commons-collections</artifactId>
     </dependency>
-
-    <dependency>
-      <groupId>findbugs</groupId>
-      <artifactId>annotations</artifactId>
-      <scope>provided</scope>
-    </dependency>
   </dependencies>
 
   <build>

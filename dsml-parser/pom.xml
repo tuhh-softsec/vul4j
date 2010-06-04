@@ -55,12 +55,6 @@
     </dependency>
 
     <dependency>
-      <groupId>findbugs</groupId>
-      <artifactId>annotations</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    
-    <dependency>
       <groupId>xml-apis</groupId>
       <artifactId>xml-apis</artifactId>
     </dependency>
