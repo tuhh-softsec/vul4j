@@ -115,7 +115,7 @@ public class AttributeTypeUsageSyntaxChecker extends SyntaxChecker
                 }
                 else
                 {
-                    LOG.debug( "Syntax valid for '{}'", value );
+                    LOG.debug( "Syntax invalid for '{}'", value );
                     
                 }
                 
