@@ -566,7 +566,10 @@ public class BinaryValue extends AbstractValue<byte[]>
 
             if ( wrappedLength > 0 )
             {
-                in.read( wrappedValue );
+                if ( in.read( wrappedValue ) == -1 )
+                {
+                    throw new IOException( I18n.err( I18n.ERR_04480_END_OF_STREAM ) );
+                }
             }
         }
 
@@ -775,7 +778,10 @@ public class BinaryValue extends AbstractValue<byte[]>
                         normalizedValue = new byte[normalizedLength];
 
                         // Read the normalized value
-                        in.read( normalizedValue, 0, normalizedLength );
+                        if ( in.read( normalizedValue, 0, normalizedLength ) == -1 )
+                        {
+                            throw new IOException( I18n.err( I18n.ERR_04480_END_OF_STREAM ) );
+                        }
                     }
                     else
                     {
