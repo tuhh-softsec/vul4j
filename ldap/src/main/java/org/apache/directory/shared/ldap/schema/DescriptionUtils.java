@@ -790,11 +790,11 @@ public class DescriptionUtils
 
     private static void getExtensions( StringBuilder sb, Map<String, List<String>> extensions )
     {
-        for ( String key : extensions.keySet() )
+        for ( Map.Entry<String, List<String>> extension : extensions.entrySet())
         {
-            sb.append( key ).append( " " );
+            sb.append( extension.getKey() ).append( " " );
 
-            List<String> values = extensions.get( key );
+            List<String> values = extension.getValue();
 
             if ( ( values != null ) && ( values.size() != 0 ) )
             {
