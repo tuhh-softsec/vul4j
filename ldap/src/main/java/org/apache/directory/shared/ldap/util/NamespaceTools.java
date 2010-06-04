@@ -115,14 +115,7 @@ public class NamespaceTools
     {
         DN rdn = null;
         
-        if ( descendant instanceof DN )
-        {
-            rdn = ( DN ) descendant.clone();
-        }
-        else
-        {
-            rdn = new DN( descendant.toString() );
-        }
+        rdn = ( DN ) descendant.clone();
 
         if ( rdn.isChildOf( ancestor ) )
         {
