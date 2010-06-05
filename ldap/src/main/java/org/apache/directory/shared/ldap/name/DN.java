@@ -745,9 +745,22 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
     
     
     /**
-     * {@inheritDoc}
+     * Tells if the DN contains no RDN
+     * 
+     * @return <code>true</code> if the DN is empty
      */
     public boolean isEmpty()
+    {
+        return ( rdns.size() == 0 );
+    }
+    
+    
+    /**
+     * Tells if the DN is the RootDSE DN (ie, an empty DN)
+     * 
+     * @return <code>true</code> if the DN is the RootDSE's DN
+     */
+    public boolean isRootDSE()
     {
         return ( rdns.size() == 0 );
     }
