@@ -28,7 +28,6 @@ import org.apache.directory.shared.ldap.message.ResultCodeEnum;
  * result code.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public class LdapInvalidDnException extends LdapOperationException
 {

@@ -30,7 +30,6 @@ import org.apache.directory.shared.ldap.message.internal.InternalIntermediateRes
  * IntermediateResponse implementation
  * 
  * @author <a href="mailto:dev@directory.apache.org"> Apache Directory Project</a>
- * @version $Rev: 905344 $
  */
 public class IntermediateResponseImpl extends InternalAbstractResultResponse implements InternalIntermediateResponse
 {

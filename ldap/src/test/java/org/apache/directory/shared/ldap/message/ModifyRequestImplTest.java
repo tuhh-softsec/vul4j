@@ -47,7 +47,6 @@ import org.junit.Test;
  * Test case for the ModifyRequestImpl class.
  * 
  * @author <a href="mailto:dev@directory.apache.org"> Apache Directory Project</a>
- * @version $Rev$
  */
 public class ModifyRequestImplTest
 {

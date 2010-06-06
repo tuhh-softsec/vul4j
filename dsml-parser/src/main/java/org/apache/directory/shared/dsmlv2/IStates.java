@@ -25,7 +25,6 @@ package org.apache.directory.shared.dsmlv2;
  * This interface is used to store the different states of a grammar.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public interface IStates
 {

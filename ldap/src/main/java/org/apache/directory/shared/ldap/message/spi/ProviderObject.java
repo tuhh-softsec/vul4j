@@ -26,7 +26,6 @@ package org.apache.directory.shared.ldap.message.spi;
  * implementations with the appropriate provider.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Revision$
  */
 public interface ProviderObject
 {

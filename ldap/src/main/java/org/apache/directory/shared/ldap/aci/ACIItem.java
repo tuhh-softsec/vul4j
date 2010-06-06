@@ -35,7 +35,6 @@ import org.apache.directory.shared.ldap.constants.AuthenticationLevel;
  * specification.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public abstract class ACIItem implements Serializable
 {

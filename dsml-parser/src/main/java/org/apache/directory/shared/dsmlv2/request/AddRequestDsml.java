@@ -37,7 +37,6 @@ import org.dom4j.QName;
  * DSML Decorator for AddRequest
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public class AddRequestDsml extends AbstractRequestDsml
 {

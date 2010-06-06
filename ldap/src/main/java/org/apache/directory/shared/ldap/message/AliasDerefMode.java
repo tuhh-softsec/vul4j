@@ -34,7 +34,6 @@ import org.apache.directory.shared.ldap.constants.JndiPropertyConstants;
  * different settings.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Revision$
  */
 public enum AliasDerefMode
 {

@@ -30,7 +30,6 @@ import org.junit.Test;
  * Test the CSN comparator
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public class CsnComparatorTest
 {

@@ -106,7 +106,6 @@ import org.slf4j.LoggerFactory;
  * are not case sensitive, we can say that a = A
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable<AVA>
 {

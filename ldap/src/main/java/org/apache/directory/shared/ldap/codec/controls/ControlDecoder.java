@@ -29,7 +29,6 @@ import org.apache.directory.shared.ldap.message.control.Control;
  * An interface for decoders of controls.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$, 
  */
 public interface ControlDecoder
 {

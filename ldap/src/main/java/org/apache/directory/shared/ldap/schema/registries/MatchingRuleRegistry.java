@@ -27,7 +27,6 @@ import org.apache.directory.shared.ldap.schema.MatchingRule;
  * An AttributeType registry service interface.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public interface MatchingRuleRegistry extends SchemaObjectRegistry<MatchingRule>,
     Iterable<MatchingRule>

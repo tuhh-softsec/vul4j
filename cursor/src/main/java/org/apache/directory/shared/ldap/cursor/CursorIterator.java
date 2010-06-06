@@ -30,7 +30,6 @@ import org.apache.directory.shared.i18n.I18n;
  * constructs.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $$Rev$$
  */
 public class CursorIterator<E> implements Iterator<E>
 {

@@ -24,7 +24,6 @@ package org.apache.directory.shared.ldap.codec.extended.operations;
  * Graceful Disconnect and Shutdown extended operation constants
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public class GracefulActionConstants
 {

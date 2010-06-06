@@ -29,7 +29,6 @@ import org.slf4j.LoggerFactory;
  * A binary value (universal value acceptor) syntax checker.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev: 736240 $
  */
 public class BinarySyntaxChecker extends SyntaxChecker
 {

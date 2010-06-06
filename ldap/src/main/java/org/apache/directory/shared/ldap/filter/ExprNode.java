@@ -26,7 +26,6 @@ package org.apache.directory.shared.ldap.filter;
  * expression tree implement.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Revision$
  */
 public interface ExprNode extends Cloneable
 {

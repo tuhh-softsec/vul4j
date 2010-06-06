@@ -27,7 +27,6 @@ import org.apache.directory.shared.ldap.message.internal.InternalResultResponseR
  * Super interface for all request messages returning only one type of response.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public interface SingleReplyRequest extends InternalResultResponseRequest
 {

@@ -23,7 +23,6 @@ package org.apache.directory.shared.ldap.filter;
  * All the different kind of assertions.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev: 470116 $
  */
 public enum AssertionType
 {

@@ -31,7 +31,6 @@ import org.xmlpull.v1.XmlPullParser;
  * It used by the DSML Parser to store information.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public class Dsmlv2Container implements Container
 {

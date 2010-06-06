@@ -33,7 +33,6 @@ package org.apache.directory.shared.ldap.message.control.replication;
  * 
  * @see <a href="http://www.faqs.org/rfcs/rfc4533.html">RFC 4533</a>
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev: $
  *
  */
 public enum SynchronizationModeEnum

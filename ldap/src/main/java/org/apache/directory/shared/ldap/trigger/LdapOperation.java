@@ -25,7 +25,6 @@ package org.apache.directory.shared.ldap.trigger;
  * An enumeration that represents change inducing LDAP operations.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev:$, $Date:$
  */
 public class LdapOperation
 {

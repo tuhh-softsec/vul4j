@@ -38,7 +38,6 @@ import antlr.LexerSharedInputState;
  * 
  * @see <a href="http://www.faqs.org/rfcs/rfc3672.html">RFC 3672</a>
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev: 437007 $
  */
 class ReusableAntlrACIItemCheckerLexer extends AntlrACIItemCheckerLexer
 {

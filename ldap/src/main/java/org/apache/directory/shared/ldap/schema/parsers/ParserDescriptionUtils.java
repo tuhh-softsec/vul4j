@@ -36,7 +36,6 @@ import org.apache.directory.shared.ldap.schema.SchemaObject;
  * Utilities for dealing with various schema descriptions.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public class ParserDescriptionUtils
 {

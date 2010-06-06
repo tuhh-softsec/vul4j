@@ -30,7 +30,6 @@ import org.apache.directory.shared.ldap.util.unicode.InvalidCharacterException;
  * This class implements the 6 steps described in RFC 4518
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public class PrepareString
 {

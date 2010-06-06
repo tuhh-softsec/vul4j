@@ -25,7 +25,6 @@ import org.apache.directory.shared.ldap.constants.SchemaConstants;
  * A SyntaxChecker for the Normalizer schema element
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev: 437007 $
  */
 public class NormalizerSyntaxChecker extends Ia5StringSyntaxChecker
 {

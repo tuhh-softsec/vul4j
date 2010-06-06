@@ -45,7 +45,6 @@ import org.slf4j.LoggerFactory;
  * &lt;SEMI&gt;    = %x3B ; semicolon (";")<br/>
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public class ObjectNameSyntaxChecker extends SyntaxChecker
 {

@@ -27,7 +27,6 @@ import org.apache.directory.shared.ldap.message.internal.InternalAddResponse;
  * AddResponse implementation.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public class AddResponseImpl extends InternalAbstractResultResponse implements InternalAddResponse
 {

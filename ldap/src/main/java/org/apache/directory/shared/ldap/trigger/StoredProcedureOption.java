@@ -26,7 +26,6 @@ package org.apache.directory.shared.ldap.trigger;
  * Just a marker interface for Stored Procedure Options.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev:$, $Date:$
  */
 public interface StoredProcedureOption
 {

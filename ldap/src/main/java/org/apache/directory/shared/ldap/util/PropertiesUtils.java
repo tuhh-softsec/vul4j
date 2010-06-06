@@ -36,7 +36,6 @@ import org.apache.directory.shared.ldap.NotImplementedException;
  * properties, on disk, via URLS or as resources.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public class PropertiesUtils
 {

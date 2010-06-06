@@ -38,7 +38,6 @@ import org.apache.directory.shared.ldap.schema.ObjectClassTypeEnum;
  * definition found within an OpenLDAP schema configuration file.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev: 437016 $
  */
 public class ObjectClassHolder extends SchemaElementImpl
 {

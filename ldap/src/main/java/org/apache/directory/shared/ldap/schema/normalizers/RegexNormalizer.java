@@ -32,7 +32,6 @@ import org.apache.directory.shared.ldap.schema.Normalizer;
  * A Normalizer that uses Perl5 based regular expressions to normalize values.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public class RegexNormalizer extends Normalizer
 {

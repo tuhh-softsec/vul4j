@@ -51,7 +51,6 @@ import org.apache.directory.shared.ldap.message.control.replication.Synchronizat
  * a message Id, a operation (protocolOp) and one ore more Controls.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$, 
  */
 public abstract class LdapMessageCodec extends AbstractAsn1Object
 {

@@ -26,7 +26,6 @@ import java.util.Comparator;
  * also implements the Comparator interface
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev: 437007 $
  */
 public abstract class LdapComparator<T> extends LoadableSchemaObject implements Comparator<T>
 {

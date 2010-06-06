@@ -36,7 +36,6 @@ package org.apache.directory.shared.ldap.message.internal;
  * property.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Revision$
  */
 public interface InternalResponse extends InternalMessage
 {

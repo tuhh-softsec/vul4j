@@ -41,7 +41,6 @@ import org.apache.directory.shared.ldap.util.StringTools;
  * An abstract class with a utility method and setListener() implemented.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public abstract class AbstractSchemaLoader implements SchemaLoader
 {

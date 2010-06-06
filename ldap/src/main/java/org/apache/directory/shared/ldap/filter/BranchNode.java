@@ -31,7 +31,6 @@ import org.apache.commons.collections.CollectionUtils;
  * logical operators within the filter expression.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public class BranchNode extends AbstractExprNode
 {

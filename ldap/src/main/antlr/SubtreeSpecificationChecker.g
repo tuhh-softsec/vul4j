@@ -42,7 +42,6 @@ import org.slf4j.LoggerFactory;
  *
  * @see <a href="http://www.faqs.org/rfcs/rfc3672.html">RFC 3672</a>
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 class AntlrSubtreeSpecificationChecker extends Parser;
 
@@ -351,7 +350,6 @@ refinements
  *
  * @see <a href="http://www.faqs.org/rfcs/rfc3672.html">RFC 3672</a>
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 class AntlrSubtreeSpecificationCheckerLexer extends Lexer;
 

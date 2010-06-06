@@ -34,7 +34,6 @@ import org.slf4j.LoggerFactory;
  * A class for the integerOrderingMatch matchingRule (RFC 4517, par. 4.2.20)
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev: 437007 $
  */
 public class IntegerComparator extends LdapComparator<Object>
 {

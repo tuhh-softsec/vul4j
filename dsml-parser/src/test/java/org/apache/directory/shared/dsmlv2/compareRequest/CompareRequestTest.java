@@ -38,7 +38,6 @@ import org.junit.Test;
  * Tests for the Compare Request parsing
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public class CompareRequestTest extends AbstractTest
 {

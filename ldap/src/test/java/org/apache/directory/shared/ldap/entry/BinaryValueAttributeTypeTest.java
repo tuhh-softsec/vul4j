@@ -59,7 +59,6 @@ import org.junit.Test;
  * </ul>
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public class BinaryValueAttributeTypeTest
 {

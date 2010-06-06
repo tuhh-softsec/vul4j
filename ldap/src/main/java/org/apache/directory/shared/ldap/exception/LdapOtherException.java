@@ -28,7 +28,6 @@ import org.apache.directory.shared.ldap.message.ResultCodeEnum;
  * {@link ResultCodeEnum#OTHER} value with the type.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev: 477298 $
  */
 public class LdapOtherException extends LdapOperationException
 {

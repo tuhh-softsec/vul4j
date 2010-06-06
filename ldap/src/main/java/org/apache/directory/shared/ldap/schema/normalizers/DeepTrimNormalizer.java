@@ -38,7 +38,6 @@ import org.apache.directory.shared.ldap.schema.PrepareString;
  * thereby preserving tokenization order.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public class DeepTrimNormalizer extends Normalizer
 {

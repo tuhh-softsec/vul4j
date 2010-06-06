@@ -34,7 +34,6 @@ import org.slf4j.LoggerFactory;
  * A genericcodec Control.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev: 764131 $, $Date: 2009-04-11 03:03:00 +0200 (Sat, 11 Apr 2009) $, 
  */
 public class ControlImpl extends AbstractControl 
 {

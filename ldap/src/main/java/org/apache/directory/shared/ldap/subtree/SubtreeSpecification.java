@@ -31,7 +31,6 @@ import java.util.Set;
  * subtree specification to be included within subentries.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public interface SubtreeSpecification
 {

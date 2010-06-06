@@ -33,7 +33,6 @@ import static org.junit.Assert.assertTrue;
  * There are also many test cases in SchemaParserMatchingRuleUseDescriptionTest.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public class MatchingRuleUseDescriptionSyntaxCheckerTest
 {

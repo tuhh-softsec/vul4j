@@ -68,7 +68,6 @@ import org.xmlpull.v1.XmlPullParserException;
  * This Class represents the DSMLv2 Response Grammar
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGrammar
 {

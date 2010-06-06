@@ -24,7 +24,6 @@ package org.apache.directory.shared.asn1.ber.tlv;
  * Stores the different states of a PDU parsing.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public class TLVStateEnum
 {

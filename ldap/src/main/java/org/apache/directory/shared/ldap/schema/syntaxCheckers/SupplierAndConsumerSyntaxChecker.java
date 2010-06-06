@@ -29,7 +29,6 @@ import org.slf4j.LoggerFactory;
  * A SyntaxChecker which verifies that a value is a supplier and consummer according to RFC 2252.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev: 488616 $
  */
 public class SupplierAndConsumerSyntaxChecker extends SyntaxChecker
 {

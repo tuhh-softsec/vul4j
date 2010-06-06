@@ -30,7 +30,6 @@ import org.apache.directory.shared.ldap.message.ResultCodeEnum;
  * extended operation.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public class LaunchDiagnosticUiResponse extends ExtendedResponseImpl
 {

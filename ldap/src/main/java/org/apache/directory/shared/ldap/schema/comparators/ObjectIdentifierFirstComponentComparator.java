@@ -31,7 +31,6 @@ import org.slf4j.LoggerFactory;
  * A comparator for Comparators. We compare the OIDs
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public class ObjectIdentifierFirstComponentComparator extends LdapComparator<String>
 {

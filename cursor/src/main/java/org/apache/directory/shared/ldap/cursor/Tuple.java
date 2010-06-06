@@ -24,7 +24,6 @@ package org.apache.directory.shared.ldap.cursor;
  * A key/value tuple for simple two column persistent Tables with sorted keys.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public class Tuple<K, V>
 {

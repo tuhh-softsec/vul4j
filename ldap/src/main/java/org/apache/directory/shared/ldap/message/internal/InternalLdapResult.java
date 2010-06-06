@@ -38,7 +38,6 @@ import org.apache.directory.shared.ldap.name.DN;
  * </pre>
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Revision$
  */
 public interface InternalLdapResult
 {

@@ -34,7 +34,6 @@ import org.junit.Test;
  * Test the AttributeTypeRegistry
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public class AttributeTypeRegistryTest
 {

@@ -26,7 +26,6 @@ import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
  * Unbind protocol request message used to end a client session.
  * 
  * @author <a href="mailto:dev@directory.apache.org"> Apache Directory Project</a>
- * @version $Rev$
  */
 public interface InternalUnbindRequest extends InternalRequest
 {

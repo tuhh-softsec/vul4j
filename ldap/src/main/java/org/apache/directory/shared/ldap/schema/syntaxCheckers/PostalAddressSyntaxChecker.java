@@ -35,7 +35,6 @@ import org.slf4j.LoggerFactory;
  * <dstring-list> = "$" <dstring> <dstring-list> | e
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public class PostalAddressSyntaxChecker extends SyntaxChecker
 {

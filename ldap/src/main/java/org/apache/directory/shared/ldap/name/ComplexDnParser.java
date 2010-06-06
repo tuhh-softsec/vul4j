@@ -31,7 +31,6 @@ import org.apache.directory.shared.ldap.message.ResultCodeEnum;
  * A DN parser that is able to parse complex DNs. This is an Antlr based parser.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev: 664290 $, $Date: 2008-06-07 08:28:06 +0200 (Sa, 07 Jun 2008) $
  */
 public class ComplexDnParser
 {

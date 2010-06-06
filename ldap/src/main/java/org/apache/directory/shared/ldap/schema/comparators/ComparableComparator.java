@@ -32,7 +32,6 @@ import org.slf4j.LoggerFactory;
  * Compares two objects taking into account that one might be a Comparable.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public class ComparableComparator<T> extends LdapComparator<Comparable<T>>
 {

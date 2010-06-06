@@ -29,7 +29,6 @@ import org.slf4j.LoggerFactory;
  * A SyntaxChecker which verifies that a value is a DataQualitySyntax.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev: 488616 $
  */
 public class DataQualitySyntaxSyntaxChecker extends SyntaxChecker
 {

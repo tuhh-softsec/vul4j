@@ -26,7 +26,6 @@ import java.io.Externalizable;
  * chosen so that it does not conflict with @see ModificationItem
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public interface Modification extends Cloneable, Externalizable
 {

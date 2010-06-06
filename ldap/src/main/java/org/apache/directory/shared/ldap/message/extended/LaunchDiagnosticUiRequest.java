@@ -32,7 +32,6 @@ import org.apache.directory.shared.ldap.message.ExtendedRequestImpl;
  * Any failures to launch the UI will return a operationsError(1) result code.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public class LaunchDiagnosticUiRequest extends ExtendedRequestImpl
 {

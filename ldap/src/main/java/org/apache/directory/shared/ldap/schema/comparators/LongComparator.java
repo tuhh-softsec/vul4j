@@ -28,7 +28,6 @@ import org.apache.directory.shared.ldap.schema.LdapComparator;
  * Compares Long keys and values within a table.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Revision: 437007 $
  */
 public class LongComparator extends LdapComparator<Long>
 {

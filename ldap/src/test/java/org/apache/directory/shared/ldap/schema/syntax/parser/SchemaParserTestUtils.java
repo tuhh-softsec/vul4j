@@ -39,7 +39,6 @@ import org.apache.directory.shared.ldap.schema.parsers.AbstractSchemaParser;
  * for many schema parsers like OID, name, desc, extension.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public class SchemaParserTestUtils
 {

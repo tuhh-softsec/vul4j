@@ -26,7 +26,6 @@ import org.apache.directory.shared.ldap.message.AbandonListener;
  * A request which can be abandoned.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public interface InternalAbandonableRequest extends InternalRequest
 {

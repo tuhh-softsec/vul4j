@@ -31,7 +31,6 @@ import org.slf4j.LoggerFactory;
  * An CSN syntax checker.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev: 736240 $
  */
 public class CsnSyntaxChecker extends SyntaxChecker
 {

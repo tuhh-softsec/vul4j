@@ -27,7 +27,6 @@ import java.io.IOException;
  * Extracts LDIF files for the schema repository.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public interface SchemaLdifExtractor
 {

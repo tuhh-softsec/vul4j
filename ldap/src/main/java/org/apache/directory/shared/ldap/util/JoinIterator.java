@@ -30,7 +30,6 @@ import org.apache.directory.shared.i18n.I18n;
  * An Iterator that joins the results of many iterators.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public class JoinIterator implements Iterator
 {

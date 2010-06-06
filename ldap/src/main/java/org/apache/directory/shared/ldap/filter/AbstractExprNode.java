@@ -33,7 +33,6 @@ import org.apache.directory.shared.ldap.entry.Value;
  * Abstract implementation of a expression node.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public abstract class AbstractExprNode implements ExprNode
 {

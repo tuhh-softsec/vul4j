@@ -29,7 +29,6 @@ import org.apache.directory.shared.ldap.message.internal.InternalSearchResponseD
  * SearchResponseDone implementation
  * 
  * @author <a href="mailto:dev@directory.apache.org"> Apache Directory Project</a>
- * @version $Rev$
  */
 public class SearchResponseDoneImpl extends InternalAbstractResultResponse implements InternalSearchResponseDone
 {

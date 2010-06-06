@@ -32,7 +32,6 @@ import java.util.Collections;
  * A simple implementation of the SubtreeSpecification interface.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public class BaseSubtreeSpecification implements SubtreeSpecification
 {

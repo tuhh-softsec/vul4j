@@ -38,7 +38,6 @@ import org.apache.directory.shared.ldap.message.spi.ProviderException;
  * Encoding rules flushing the PDU out to an OutputStream.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public final class MessageEncoder implements ProviderEncoder
 {

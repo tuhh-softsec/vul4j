@@ -30,7 +30,6 @@ import org.slf4j.LoggerFactory;
  * It has been removed in RFC 4517
  *  
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev: 488616 $
  */
 public class SupportedAlgorithmSyntaxChecker extends BinarySyntaxChecker
 {

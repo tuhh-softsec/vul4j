@@ -32,7 +32,6 @@ import org.slf4j.LoggerFactory;
  * UUID ::= OCTET STRING (SIZE(16)) -- constrained to an UUID [RFC4122]
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev: 736240 $
  */
 public class UuidSyntaxChecker extends SyntaxChecker
 {

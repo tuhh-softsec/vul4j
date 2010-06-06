@@ -34,7 +34,6 @@ import org.apache.directory.shared.ldap.util.StringTools;
  * The default Schema interface implementation.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public class DefaultSchema implements Schema
 {

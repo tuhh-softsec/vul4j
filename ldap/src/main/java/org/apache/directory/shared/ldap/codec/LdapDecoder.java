@@ -42,7 +42,6 @@ import org.slf4j.LoggerFactory;
  * The LdapDecoder decodes ASN.1 BER encoded PDUs.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$, 
  */
 public class LdapDecoder implements ProviderDecoder
 {

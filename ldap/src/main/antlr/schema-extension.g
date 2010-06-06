@@ -31,7 +31,6 @@ import java.util.List;
  * An antlr generated schema lexer. This is a sub-lexer.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 class AntlrSchemaExtensionLexer extends Lexer;
 
@@ -78,7 +77,6 @@ protected QUOTED_STRING : ( QUOTE (~'\'')* QUOTE ) ;
  * extensions according to RFC4512.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 class AntlrSchemaExtensionParser extends Parser;
 options    {

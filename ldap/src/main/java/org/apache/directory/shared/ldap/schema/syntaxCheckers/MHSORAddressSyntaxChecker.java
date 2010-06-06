@@ -30,7 +30,6 @@ import org.slf4j.LoggerFactory;
  * MHSORAddress.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev: 488616 $
  */
 public class MHSORAddressSyntaxChecker extends SyntaxChecker
 {

@@ -56,7 +56,6 @@ import org.slf4j.LoggerFactory;
  * SPACE   = %x20                ; space (" ")
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public class PrintableStringSyntaxChecker extends SyntaxChecker
 {

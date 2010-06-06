@@ -34,7 +34,6 @@ import org.apache.directory.shared.ldap.schema.SyntaxChecker;
  * values can be a String or a byte[].
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public interface Value<T> extends Cloneable, Externalizable, Comparable<Value<T>>
 {

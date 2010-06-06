@@ -40,7 +40,6 @@ import org.slf4j.LoggerFactory;
  * An OID is unique, and associated with a SO.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public class OidRegistry implements Iterable<SchemaObject>
 {

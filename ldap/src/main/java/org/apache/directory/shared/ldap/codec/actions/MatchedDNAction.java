@@ -40,7 +40,6 @@ import org.slf4j.LoggerFactory;
  * The action used to set the LdapResult matched DN.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$, 
  */
 public class MatchedDNAction extends GrammarAction
 {

@@ -29,7 +29,6 @@ import org.apache.directory.shared.ldap.message.ResultCodeEnum;
  * it corresponds to by associating an LDAP specific result code with it.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public class LdapSchemaViolationException extends LdapOperationException
 {

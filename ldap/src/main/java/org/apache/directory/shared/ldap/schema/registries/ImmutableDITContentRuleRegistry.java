@@ -36,7 +36,6 @@ import org.apache.directory.shared.ldap.schema.SchemaObjectType;
  * An immutable wrapper of the DITContentRule registry.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev: 828111 $
  */
 public class ImmutableDITContentRuleRegistry implements DITContentRuleRegistry
 {

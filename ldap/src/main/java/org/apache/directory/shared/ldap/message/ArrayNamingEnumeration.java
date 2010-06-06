@@ -28,7 +28,6 @@ import javax.naming.NamingEnumeration;
  * A NamingEnumeration over an array of objects.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public class ArrayNamingEnumeration<T> implements NamingEnumeration<T>
 {

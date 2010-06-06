@@ -50,7 +50,6 @@ import org.slf4j.LoggerFactory;
  * This class is used only for tests.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Revision$
  */
 public class JarLdifSchemaLoader extends AbstractSchemaLoader
 {

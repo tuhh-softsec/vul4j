@@ -33,7 +33,6 @@ import org.apache.directory.shared.ldap.schema.SyntaxChecker;
  * will be the base interface for the ServerAttribute and ClientAttribute.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public interface EntryAttribute extends Iterable<Value<?>>, Cloneable, Externalizable
 {

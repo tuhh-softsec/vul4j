@@ -32,7 +32,6 @@ import org.apache.mina.filter.codec.ProtocolDecoderOutput;
  * Adapts {@link StatefulDecoder} to MINA <tt>ProtocolDecoder</tt>.
  *
  * @author The Apache Directory Project (mina-dev@directory.apache.org)
- * @version $Rev$, $Date$,
  */
 public class Asn1CodecDecoder extends ProtocolDecoderAdapter
 {

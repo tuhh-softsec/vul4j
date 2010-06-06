@@ -28,7 +28,6 @@ import org.apache.directory.shared.ldap.message.LdapResultImpl;
  * Abstract base for a Lockable ResultResponse message.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Revision$
  */
 public abstract class InternalAbstractResultResponse extends InternalAbstractResponse implements InternalResultResponse
 {

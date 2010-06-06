@@ -42,7 +42,6 @@ import org.slf4j.LoggerFactory;
  * An AttributeType registry service default implementation.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev: 828111 $
  */
 public class DefaultAttributeTypeRegistry extends DefaultSchemaObjectRegistry<AttributeType> implements
     AttributeTypeRegistry

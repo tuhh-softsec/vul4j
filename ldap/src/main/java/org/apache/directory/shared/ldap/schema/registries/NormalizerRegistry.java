@@ -27,7 +27,6 @@ import org.apache.directory.shared.ldap.schema.Normalizer;
  * Normalizer registry service class.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public interface NormalizerRegistry extends SchemaObjectRegistry<Normalizer>,
     Iterable<Normalizer>

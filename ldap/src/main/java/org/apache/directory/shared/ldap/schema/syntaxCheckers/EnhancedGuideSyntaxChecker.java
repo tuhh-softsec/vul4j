@@ -31,7 +31,6 @@ import org.slf4j.LoggerFactory;
  * Implemented as binary right now...
  *  
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev: 488616 $
  */
 public class EnhancedGuideSyntaxChecker extends BinarySyntaxChecker
 {

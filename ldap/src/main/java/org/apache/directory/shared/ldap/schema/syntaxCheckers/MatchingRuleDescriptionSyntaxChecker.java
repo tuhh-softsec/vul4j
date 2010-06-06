@@ -49,7 +49,6 @@ import org.slf4j.LoggerFactory;
  * </pre>
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public class MatchingRuleDescriptionSyntaxChecker extends SyntaxChecker
 {

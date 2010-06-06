@@ -44,7 +44,6 @@ import static org.junit.Assert.fail;
  * Tests the OpenLDAP schema parser.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev: 437016 $
  */
 public class OpenLdapSchemaParserTest
 {

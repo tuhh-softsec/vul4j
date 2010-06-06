@@ -41,7 +41,6 @@ import org.slf4j.LoggerFactory;
  * to normalize the name component value.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public class ConcreteNameComponentNormalizer implements NameComponentNormalizer
 {

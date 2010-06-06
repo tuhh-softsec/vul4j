@@ -51,7 +51,6 @@ import org.slf4j.LoggerFactory;
  * Extracts LDIF files for the schema repository onto a destination directory.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev: 664295 $
  */
 public class DefaultSchemaLdifExtractor implements SchemaLdifExtractor
 {

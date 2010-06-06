@@ -30,7 +30,6 @@ import java.util.TimeZone;
  * Gets the generalized time using the "Z" form of the g-time-zone.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public class DateUtils
 {

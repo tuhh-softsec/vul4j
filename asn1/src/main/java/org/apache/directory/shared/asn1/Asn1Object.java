@@ -30,7 +30,6 @@ import org.apache.directory.shared.asn1.codec.EncoderException;
  * An abstract class which implements basic TLV operations.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public interface Asn1Object
 {

@@ -24,7 +24,6 @@ package org.apache.directory.shared.ldap.message.internal;
  * Ldap protocol request messages derive from this super interface.
  * 
  * @author <a href="mailto:dev@directory.apache.org"> Apache Directory Project</a>
- * @version $Rev$
  */
 public interface InternalRequest extends InternalMessage
 {

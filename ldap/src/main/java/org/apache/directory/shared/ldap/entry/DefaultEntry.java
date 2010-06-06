@@ -54,7 +54,6 @@ import org.slf4j.LoggerFactory;
  * This class is final, it should not be extended.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public class DefaultEntry implements Entry
 {

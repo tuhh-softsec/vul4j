@@ -32,7 +32,6 @@ import org.junit.Test;
  * Unit tests class for ACIItem checker (wrapper).
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev: 437007 $
  */
 public class ACIItemChekerTest
 {

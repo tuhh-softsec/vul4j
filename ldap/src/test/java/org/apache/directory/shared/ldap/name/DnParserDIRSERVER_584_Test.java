@@ -31,7 +31,6 @@ import static org.junit.Assert.fail;
  * Testcase devised specifically for DIRSERVER-584.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$, 
  * @see <a href="https://issues.apache.org/jira/browse/DIRSERVER-584">DIRSERVER-584</a>
  */
 public class DnParserDIRSERVER_584_Test

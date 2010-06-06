@@ -32,7 +32,6 @@ import javax.naming.NamingEnumeration;
  * throws a NoSuchElementException.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Revision$
  */
 public class EmptyEnumeration<T> implements NamingEnumeration<T>
 {

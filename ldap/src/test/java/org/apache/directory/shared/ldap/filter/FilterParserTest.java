@@ -37,7 +37,6 @@ import org.junit.Test;
  * Tests the FilterParserImpl class.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev: 575783 $
  */
 public class FilterParserTest
 {

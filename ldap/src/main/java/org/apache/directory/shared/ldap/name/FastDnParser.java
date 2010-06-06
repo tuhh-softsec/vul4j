@@ -36,7 +36,6 @@ import org.apache.directory.shared.ldap.util.StringTools;
  * any special character an {@link TooComplexException} is thrown.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev: 664290 $, $Date: 2008-06-07 08:28:06 +0200 (Sa, 07 Jun 2008) $
  */
 public enum FastDnParser
 {

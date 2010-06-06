@@ -25,7 +25,6 @@ package org.apache.directory.shared.ldap.entry;
  * DirContext.REMOVE_ATTRIBUTE, DirContext.REPLACE_ATTRIBUTE
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public enum ModificationOperation
 {

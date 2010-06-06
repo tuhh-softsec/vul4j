@@ -36,7 +36,6 @@ package org.apache.directory.shared.ldap.cursor;
  * UnsupportedOperationExceptions.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public interface Cursor<E> extends Iterable<E>
 {

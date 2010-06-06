@@ -43,7 +43,6 @@ import org.slf4j.LoggerFactory;
  * LDAP BER provider's encoder.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public class LdapEncoder implements ProviderEncoder
 {

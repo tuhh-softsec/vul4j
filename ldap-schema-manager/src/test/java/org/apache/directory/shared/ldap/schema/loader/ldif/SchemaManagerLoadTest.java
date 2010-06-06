@@ -164,7 +164,6 @@ import org.junit.Test;
  *   OID: 141
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public class SchemaManagerLoadTest
 {

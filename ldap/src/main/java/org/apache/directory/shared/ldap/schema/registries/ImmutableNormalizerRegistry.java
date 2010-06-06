@@ -36,7 +36,6 @@ import org.apache.directory.shared.ldap.schema.SchemaObjectType;
  * An immutable wrapper of the Normalizer registry.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev: 831344 $
  */
 public class ImmutableNormalizerRegistry implements NormalizerRegistry
 {

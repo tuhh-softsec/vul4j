@@ -121,7 +121,6 @@ import org.slf4j.LoggerFactory;
  * an action is to be added or modified, this is where the work is to be done !
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$, 
  */
 public class LdapMessageGrammar extends AbstractGrammar
 {

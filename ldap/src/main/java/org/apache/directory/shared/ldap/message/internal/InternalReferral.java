@@ -79,7 +79,6 @@ import java.util.Collection;
  * </pre>
  * 
  * @author <a href="mailto:dev@directory.apache.org"> Apache Directory Project</a>
- * @version $Rev$
  * TODO This interface should be located in a url package under common to be
  *       constructed from a LDAPv3 URL parser. The interface will eventually
  *       look very different once url support is added: for one it will add and

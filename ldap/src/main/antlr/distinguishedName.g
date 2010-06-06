@@ -39,7 +39,6 @@ import org.apache.directory.shared.ldap.util.StringTools;
  * An antlr generated DN lexer.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 class AntlrDnLexer extends Lexer;
 
@@ -124,7 +123,6 @@ LUTF1_REST :
  * An antlr generated DN parser.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 class AntlrDnParser extends Parser;
 options    {

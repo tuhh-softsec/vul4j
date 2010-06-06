@@ -31,7 +31,6 @@ import org.slf4j.LoggerFactory;
  * The SID is supposed to be an hexadecimal number between 0x0 and 0xfff
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public class CsnSidComparator extends LdapComparator<String>
 {

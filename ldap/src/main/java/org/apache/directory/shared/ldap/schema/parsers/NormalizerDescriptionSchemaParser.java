@@ -34,7 +34,6 @@ import antlr.TokenStreamException;
  * A parser for ApacheDS normalizer descriptions.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public class NormalizerDescriptionSchemaParser extends AbstractSchemaParser
 {

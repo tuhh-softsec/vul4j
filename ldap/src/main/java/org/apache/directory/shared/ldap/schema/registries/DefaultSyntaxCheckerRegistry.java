@@ -32,7 +32,6 @@ import org.slf4j.LoggerFactory;
  * SyntaxChecker registry component's service interface.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev: 831344 $
  */
 public class DefaultSyntaxCheckerRegistry extends  DefaultSchemaObjectRegistry<SyntaxChecker>
     implements SyntaxCheckerRegistry

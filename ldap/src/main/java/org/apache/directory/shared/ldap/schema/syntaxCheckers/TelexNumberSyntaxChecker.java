@@ -37,7 +37,6 @@ import org.slf4j.LoggerFactory;
  * answerback    = PrintableString
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public class TelexNumberSyntaxChecker extends SyntaxChecker
 {

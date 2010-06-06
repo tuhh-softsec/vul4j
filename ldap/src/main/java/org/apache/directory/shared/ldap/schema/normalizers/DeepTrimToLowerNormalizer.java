@@ -39,7 +39,6 @@ import org.apache.directory.shared.ldap.schema.PrepareString;
  * it lower cases all characters.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public class DeepTrimToLowerNormalizer extends Normalizer
 {

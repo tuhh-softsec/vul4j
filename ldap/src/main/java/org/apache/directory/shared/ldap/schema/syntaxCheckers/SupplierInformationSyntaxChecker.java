@@ -29,7 +29,6 @@ import org.slf4j.LoggerFactory;
  * A SyntaxChecker which verifies that a value is a supplier information according to RFC 2252.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev: 488616 $
  */
 public class SupplierInformationSyntaxChecker extends SyntaxChecker
 {

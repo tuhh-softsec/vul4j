@@ -43,7 +43,6 @@ import org.apache.directory.shared.ldap.message.control.replication.SyncModifyDn
  *       extension provided by Apache Directory Server
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev:$, $Date: 
  */
 public class SyncModifyDnControl extends AbstractControl
 {

@@ -32,7 +32,6 @@ import org.apache.directory.shared.ldap.schema.normalizers.OidNormalizer;
  * An AttributeType registry service interface.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public interface AttributeTypeRegistry extends SchemaObjectRegistry<AttributeType>, Iterable<AttributeType>
 {

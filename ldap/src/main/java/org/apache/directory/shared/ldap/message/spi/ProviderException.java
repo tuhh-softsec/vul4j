@@ -28,7 +28,6 @@ import org.apache.directory.shared.ldap.message.MessageException;
  * This exception is thrown when provider specific errors occur.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Revision$
  */
 public class ProviderException extends MessageException
 {

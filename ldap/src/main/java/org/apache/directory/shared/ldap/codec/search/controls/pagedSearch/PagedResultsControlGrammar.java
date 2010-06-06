@@ -49,7 +49,6 @@ import org.slf4j.LoggerFactory;
  * }
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev: 664290 $, $Date: 2008-06-07 08:28:06 +0200 (Sat, 07 Jun 2008) $, 
  */
 public class PagedResultsControlGrammar extends AbstractGrammar
 {

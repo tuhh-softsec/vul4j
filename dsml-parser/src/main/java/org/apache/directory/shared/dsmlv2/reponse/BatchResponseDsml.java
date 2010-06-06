@@ -34,7 +34,6 @@ import org.dom4j.Element;
  * This class represents the Batch Response. It can be used to generate an the XML String of a BatchResponse.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public class BatchResponseDsml
 {

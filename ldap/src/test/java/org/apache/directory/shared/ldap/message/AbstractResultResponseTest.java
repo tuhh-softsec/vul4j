@@ -37,7 +37,6 @@ import org.junit.Test;
  * TestCase for the methods of the AbstractResultResponse class.
  * 
  * @author <a href="mailto:dev@directory.apache.org"> Apache Directory Project</a>
- * @version $Rev$
  */
 public class AbstractResultResponseTest
 {

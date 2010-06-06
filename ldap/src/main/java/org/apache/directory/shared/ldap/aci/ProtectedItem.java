@@ -35,7 +35,6 @@ import org.apache.directory.shared.ldap.filter.ExprNode;
  * Defines the items to which the access controls apply.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public abstract class ProtectedItem implements Serializable
 {

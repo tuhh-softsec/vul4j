@@ -43,7 +43,6 @@ import org.apache.directory.shared.ldap.schema.AttributeType;
  * This interface is used by the serverEntry and clientEntry interfaces.
  *</p>
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public interface Entry extends Cloneable, Iterable<EntryAttribute>, Externalizable
 {

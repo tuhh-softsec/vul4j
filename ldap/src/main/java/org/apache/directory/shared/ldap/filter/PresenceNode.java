@@ -25,7 +25,6 @@ package org.apache.directory.shared.ldap.filter;
  * for presence.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Revision$
  */
 public final class PresenceNode extends LeafNode
 {

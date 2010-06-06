@@ -24,7 +24,6 @@ package org.apache.directory.shared.ldap.filter;
  * A monitor for FilterParsers.
  * 
  * @author <a href="mailto:dev@directory.apache.org"> Apache Directory Project</a>
- * @version $Rev$
  */
 public interface FilterParserMonitor
 {

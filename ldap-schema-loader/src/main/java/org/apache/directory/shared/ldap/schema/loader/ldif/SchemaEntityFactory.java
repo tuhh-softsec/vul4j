@@ -67,7 +67,6 @@ import org.slf4j.LoggerFactory;
  * Showing how it's done ...
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public class SchemaEntityFactory implements EntityFactory
 {

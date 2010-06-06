@@ -36,7 +36,6 @@ import antlr.TokenStreamException;
  * without having to recreate them every time.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev: 437007 $
  */
 public class ACIItemChecker
 {

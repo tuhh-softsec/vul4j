@@ -36,7 +36,6 @@ import org.apache.directory.shared.ldap.util.StringTools;
  * A syncDoneValue object as described in rfc4533.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public class SyncDoneValueControl extends AbstractControl
 {

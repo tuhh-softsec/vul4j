@@ -37,7 +37,6 @@ import org.slf4j.LoggerFactory;
  * A DITStructureRule registry's service default implementation.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev: 828111 $
  */
 public class DefaultDITStructureRuleRegistry extends DefaultSchemaObjectRegistry<DITStructureRule>
     implements DITStructureRuleRegistry

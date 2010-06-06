@@ -40,7 +40,6 @@ import org.apache.directory.shared.ldap.name.DN;
  * DelRequest ::= [APPLICATION 10] LDAPDN
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$, 
  */
 public class DelRequestCodec extends LdapMessageCodec
 {

@@ -26,7 +26,6 @@ package org.apache.directory.shared.dsmlv2;
  * purpose
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public class Dsmlv2StatesEnum implements IStates
 {

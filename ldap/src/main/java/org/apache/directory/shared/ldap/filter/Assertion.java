@@ -30,7 +30,6 @@ import org.apache.directory.shared.ldap.entry.Entry;
  * being returned by a search.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Revision$
  */
 public interface Assertion extends Cloneable
 {

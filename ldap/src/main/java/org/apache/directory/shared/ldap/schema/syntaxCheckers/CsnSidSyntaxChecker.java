@@ -29,7 +29,6 @@ import org.slf4j.LoggerFactory;
  * An CSN SID syntax checker.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev: 736240 $
  */
 public class CsnSidSyntaxChecker extends SyntaxChecker
 {

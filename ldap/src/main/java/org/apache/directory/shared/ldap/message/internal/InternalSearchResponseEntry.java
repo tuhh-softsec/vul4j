@@ -31,7 +31,6 @@ import org.apache.directory.shared.ldap.name.DN;
  * the client in response to a search request message.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Revision$
  */
 public interface InternalSearchResponseEntry extends InternalResponse
 {

@@ -69,7 +69,6 @@ import org.apache.directory.shared.ldap.schema.syntaxCheckers.OctetStringSyntaxC
  *      ldapbis [MODELS]</a>
  * @see DescriptionUtils#getDescription(Syntax)
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev: 437007 $
  */
 // super.hashCode is final
 @SuppressWarnings("PMD.OverrideBothEqualsAndHashcode")

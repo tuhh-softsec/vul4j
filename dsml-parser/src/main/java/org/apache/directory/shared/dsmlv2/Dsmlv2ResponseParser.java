@@ -42,7 +42,6 @@ import org.xmlpull.v1.XmlPullParserFactory;
  * It can be used to parse a DSMLv2 Response input.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public class Dsmlv2ResponseParser
 {

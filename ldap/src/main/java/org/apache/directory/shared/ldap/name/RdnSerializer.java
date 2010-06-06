@@ -32,7 +32,6 @@ import org.slf4j.LoggerFactory;
  * A helper class which serialize and deserialize a RDN
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public class RdnSerializer
 {

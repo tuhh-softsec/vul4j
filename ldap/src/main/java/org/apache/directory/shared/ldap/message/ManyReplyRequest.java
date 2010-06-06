@@ -28,7 +28,6 @@ import org.apache.directory.shared.ldap.message.internal.InternalResultResponseR
  * single request.
  * 
  * @author <a href="mailto:dev@directory.apache.org"> Apache Directory Project</a>
- * @version $Rev$
  */
 public interface ManyReplyRequest extends InternalResultResponseRequest
 {

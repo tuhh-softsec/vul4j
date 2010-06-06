@@ -27,7 +27,6 @@ import org.junit.Test;
  * The unit tests for methods on UsageEnum.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev: 485048 $
  */
 public class UsageEnumTest
 {

@@ -45,7 +45,6 @@ import static org.junit.Assert.fail;
  * Tests for the Compare Response parsing
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public class BatchRequestTest extends AbstractTest
 {

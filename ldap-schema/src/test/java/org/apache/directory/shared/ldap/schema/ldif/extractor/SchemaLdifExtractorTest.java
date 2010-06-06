@@ -34,7 +34,6 @@ import org.junit.Test;
  * Tests the DefaultSchemaLdifExtractor class.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public class SchemaLdifExtractorTest
 {

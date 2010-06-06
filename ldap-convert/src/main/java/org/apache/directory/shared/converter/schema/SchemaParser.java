@@ -41,7 +41,6 @@ import antlr.TokenStreamException;
  * A reusable wrapper for antlr generated schema parsers.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public class SchemaParser
 {

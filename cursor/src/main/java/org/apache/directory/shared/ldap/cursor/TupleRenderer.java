@@ -25,7 +25,6 @@ package org.apache.directory.shared.ldap.cursor;
  * human readable potentially binary data.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public interface TupleRenderer
 {

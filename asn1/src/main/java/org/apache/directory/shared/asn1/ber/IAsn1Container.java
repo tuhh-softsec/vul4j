@@ -29,7 +29,6 @@ import org.apache.directory.shared.asn1.ber.tlv.TLV;
  * Every ASN1 container must implement this interface.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public interface IAsn1Container
 {

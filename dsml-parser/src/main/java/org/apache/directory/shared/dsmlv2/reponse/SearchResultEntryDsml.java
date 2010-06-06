@@ -38,7 +38,6 @@ import org.dom4j.QName;
  * DSML Decorator for SearchResultEntry
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public class SearchResultEntryDsml extends LdapResponseDecorator implements DsmlDecorator
 {

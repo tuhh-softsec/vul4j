@@ -29,7 +29,6 @@ import org.slf4j.LoggerFactory;
  * A comparator for UUID. We simply use the UUID compareTo method.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public class UUIDComparator extends LdapComparator<String>
 {

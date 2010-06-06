@@ -48,7 +48,6 @@ import org.junit.Test;
  * A test class for SchemaManager enable/disable and loadAllEnbled() methods. 
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public class SchemaManagerEnableDisableLoadTest
 {

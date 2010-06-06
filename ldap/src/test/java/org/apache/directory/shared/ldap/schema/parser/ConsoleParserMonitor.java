@@ -27,7 +27,6 @@ import org.apache.directory.shared.ldap.schema.parsers.ParserMonitor;
  * to get this monitor to trace parser production execution.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev: 437016 $
  */
 public class ConsoleParserMonitor implements ParserMonitor
 {

@@ -39,7 +39,6 @@ import org.apache.directory.shared.ldap.util.StringTools;
  * Asn1Object class to be seen as a member of the LdapMessage CHOICE.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$, 
  */
 public class BindRequestCodec extends LdapMessageCodec
 {

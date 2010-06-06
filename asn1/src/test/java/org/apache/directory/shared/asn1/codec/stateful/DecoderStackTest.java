@@ -34,7 +34,6 @@ import static org.junit.Assert.assertNotSame;
  * Tests the DecoderStack.
  * 
  * @author <a href="mailto:dev@directory.apache.org"> Apache Directory Project</a>
- * @version $Rev$
  */
 public class DecoderStackTest
 {

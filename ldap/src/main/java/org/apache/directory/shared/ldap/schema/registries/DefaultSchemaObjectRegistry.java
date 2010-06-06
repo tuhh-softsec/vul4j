@@ -40,7 +40,6 @@ import org.slf4j.LoggerFactory;
  * Common schema object registry interface.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public abstract class DefaultSchemaObjectRegistry<T extends SchemaObject> implements SchemaObjectRegistry<T>,
     Iterable<T>

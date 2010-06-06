@@ -46,7 +46,6 @@ import org.junit.Test;
  * Tests for the Search Result Done Response parsing
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public class SearchResultDoneTest extends AbstractResponseTest
 {

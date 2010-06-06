@@ -46,7 +46,6 @@ import org.apache.directory.shared.ldap.util.AttributeUtils;
  * A helper class which provides methods to reverse a LDIF modification operation. 
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public class LdifRevertor
 {

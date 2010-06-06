@@ -29,7 +29,6 @@ import org.slf4j.LoggerFactory;
  * A class for the bitStringMatch matchingRule (RFC 4517, par. 4.2.1)
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev: 437007 $
  */
 public class BitStringComparator extends LdapComparator<String>
 {

@@ -27,7 +27,6 @@ import org.apache.directory.shared.ldap.entry.Value;
  * A assertion value node for LessOrEqual.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Revision: 519266 $
  */
 public class LessEqNode<T> extends SimpleNode<T>
 {

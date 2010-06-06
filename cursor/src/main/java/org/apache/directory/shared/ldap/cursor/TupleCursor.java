@@ -27,7 +27,6 @@ package org.apache.directory.shared.ldap.cursor;
  * inefficiencies encountered when scanning over Tuples.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $$Rev$$
  */
 public interface TupleCursor<K, V> extends Cursor<Tuple<K, V>>
 {

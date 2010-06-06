@@ -30,7 +30,6 @@ import org.slf4j.LoggerFactory;
  * according to RFC 2252.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev: 488616 $
  */
 public class ProtocolInformationSyntaxChecker extends SyntaxChecker
 {

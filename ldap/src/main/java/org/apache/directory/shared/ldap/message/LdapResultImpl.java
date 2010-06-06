@@ -30,7 +30,6 @@ import org.apache.directory.shared.ldap.name.DN;
  * LdapResult implementation.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Revision$
  */
 public class LdapResultImpl implements InternalLdapResult
 {

@@ -29,7 +29,6 @@ import javax.naming.NamingEnumeration;
  * A NamingEnumeration over an Iterator.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Revision$
  */
 public class IteratorNamingEnumeration<T> implements NamingEnumeration<T>
 {

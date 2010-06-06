@@ -39,7 +39,6 @@ import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
  * LDAPResult It's a Response, so it inherites from LdapResponse.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$, 
  */
 public class SearchResultDoneCodec extends LdapResponseCodec
 {

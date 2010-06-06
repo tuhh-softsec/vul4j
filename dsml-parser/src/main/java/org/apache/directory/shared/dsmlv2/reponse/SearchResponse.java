@@ -37,7 +37,6 @@ import org.apache.directory.shared.ldap.codec.search.SearchResultReferenceCodec;
  * This class represents the DSML Search Response
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public class SearchResponse extends LdapResponseCodec
 {

@@ -25,7 +25,6 @@ package org.apache.directory.shared.asn1.codec.stateful;
  * one starts a new encoder.
  * 
  * @author <a href="mailto:dev@directory.apache.org"> Apache Directory Project</a>
- * @version $Rev$
  */
 public abstract class AbstractStatefulEncoder implements StatefulEncoder
 {

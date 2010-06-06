@@ -27,7 +27,6 @@ import org.apache.directory.shared.ldap.entry.Value;
  * Filter expression tree node for extensible assertions.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Revision$
  */
 public class ExtensibleNode extends LeafNode
 {

@@ -35,7 +35,6 @@ import static org.junit.Assert.assertNotNull;
  * TooComplexException is expected.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev: 696620 $, $Date: 2008-09-18 12:09:30 +0200 (Do, 18 Sep 2008) $, 
  */
 public class FastDnParserTest
 {

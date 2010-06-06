@@ -29,7 +29,6 @@ import org.xmlpull.v1.XmlPullParserException;
  * in all the implementong classes.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public interface IAction
 {

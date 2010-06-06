@@ -24,7 +24,6 @@ package org.apache.directory.shared.ldap.message;
  * An enum used to store the BindRequest state.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public enum BindStatus
 {

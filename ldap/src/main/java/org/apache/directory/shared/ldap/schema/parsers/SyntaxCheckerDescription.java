@@ -29,7 +29,6 @@ import org.apache.directory.shared.ldap.schema.SchemaObjectType;
  * An ApacheDS specific schema description for a SyntaxChecker.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public class SyntaxCheckerDescription extends LoadableSchemaObject
 {

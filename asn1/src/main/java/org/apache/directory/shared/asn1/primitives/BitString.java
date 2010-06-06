@@ -30,7 +30,6 @@ import org.apache.directory.shared.i18n.I18n;
  * an array of int.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public class BitString implements Serializable
 {

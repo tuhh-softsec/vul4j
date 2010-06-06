@@ -28,7 +28,6 @@ import org.apache.directory.shared.i18n.I18n;
  * Parse and decode a Long value.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev: 664290 $, $Date: 2008-06-07 08:28:06 +0200 (Sat, 07 Jun 2008) $
  */
 public class LongDecoder
 {

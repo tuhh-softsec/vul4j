@@ -23,7 +23,6 @@ package org.apache.directory.shared.ldap.codec.controls.replication.syncInfoValu
  * An enumeration to store the tags used to encode and decode the syncInfoValue control.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev:$, $Date: 
  */
 public enum SyncInfoValueTags
 {

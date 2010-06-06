@@ -40,7 +40,6 @@ import org.slf4j.LoggerFactory;
  * and store them in a specified target entry in the DIT.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public class CertGenerationRequest extends ExtendedRequestImpl
 {

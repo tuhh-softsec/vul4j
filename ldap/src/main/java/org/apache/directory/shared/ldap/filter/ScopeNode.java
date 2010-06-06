@@ -29,7 +29,6 @@ import org.apache.directory.shared.ldap.name.DN;
  * scope of the search.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public class ScopeNode extends AbstractExprNode
 {

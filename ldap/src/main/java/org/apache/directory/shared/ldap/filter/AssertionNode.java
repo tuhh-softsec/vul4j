@@ -30,7 +30,6 @@ import org.apache.directory.shared.i18n.I18n;
  * search algorithm.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Revision$
  */
 public abstract class AssertionNode extends AbstractExprNode
 {

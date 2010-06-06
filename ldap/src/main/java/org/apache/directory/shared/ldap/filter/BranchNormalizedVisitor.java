@@ -39,7 +39,6 @@ import java.util.TreeSet;
  * inconsitancies in order hence normalizing the branch node's child order.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public class BranchNormalizedVisitor implements FilterVisitor
 {

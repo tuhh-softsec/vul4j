@@ -31,7 +31,6 @@ import java.util.List;
  * on the classpath.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev: 664295 $ $Date: 2008-06-07 10:48:16 +0300 (Sat, 07 Jun 2008) $
  */
 public class UniqueResourceException extends RuntimeException
 {

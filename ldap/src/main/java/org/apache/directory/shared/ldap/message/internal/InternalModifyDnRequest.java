@@ -65,7 +65,6 @@ import org.apache.directory.shared.ldap.name.RDN;
  * time in fact it might have no choice to comply with name forms.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Revision$
  */
 public interface InternalModifyDnRequest extends SingleReplyRequest, InternalAbandonableRequest
 {

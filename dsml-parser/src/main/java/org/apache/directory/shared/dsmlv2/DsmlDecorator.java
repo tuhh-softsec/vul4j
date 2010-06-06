@@ -28,7 +28,6 @@ import org.dom4j.Element;
  * This interface defines the methods that must be implemented to define a DSML Decorator
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public interface DsmlDecorator
 {

@@ -34,7 +34,6 @@ import org.slf4j.LoggerFactory;
  * IA5String          = *(%x00-7F)
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev: 437007 $
  */
 public class Ia5StringSyntaxChecker extends SyntaxChecker
 {

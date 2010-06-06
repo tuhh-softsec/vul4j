@@ -29,7 +29,6 @@ import org.dom4j.Element;
  * DSML Decorator for AbandonRequest
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public class AbandonRequestDsml extends AbstractRequestDsml
 {

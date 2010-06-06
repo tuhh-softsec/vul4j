@@ -26,7 +26,6 @@ import org.junit.Test;
  * Test the OidRegistry class
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public class OidRegistryTest
 {

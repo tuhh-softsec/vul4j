@@ -33,7 +33,6 @@ import org.slf4j.LoggerFactory;
  * that the DN is valid, we don't need to verify each of the RDN syntax.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public class DNSyntaxChecker extends SyntaxChecker
 {

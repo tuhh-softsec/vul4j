@@ -28,7 +28,6 @@ import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
  * client in response to a search request message.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Revision$
  */
 public interface InternalSearchResponseReference extends InternalResponse
 {

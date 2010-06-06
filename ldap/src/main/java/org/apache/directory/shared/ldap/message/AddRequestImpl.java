@@ -34,7 +34,6 @@ import org.apache.directory.shared.ldap.name.DN;
  * Lockable add request implemenation.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public class AddRequestImpl extends AbstractAbandonableRequest implements InternalAddRequest
 {

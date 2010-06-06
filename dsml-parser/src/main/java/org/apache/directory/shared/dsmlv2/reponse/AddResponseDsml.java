@@ -31,7 +31,6 @@ import org.dom4j.Element;
  * DSML Decorator for AddResponse
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public class AddResponseDsml extends LdapResponseDecorator implements DsmlDecorator
 {

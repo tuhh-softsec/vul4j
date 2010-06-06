@@ -34,7 +34,6 @@ import org.slf4j.LoggerFactory;
  * DirectoryString = 1*UTF8
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev: 437007 $
  */
 public class DirectoryStringSyntaxChecker extends SyntaxChecker
 {

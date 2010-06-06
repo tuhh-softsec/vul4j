@@ -33,7 +33,6 @@ import org.apache.directory.shared.ldap.message.internal.InternalAbstractRequest
  * type.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public class AbstractAbandonableRequest extends InternalAbstractRequest implements InternalAbandonableRequest
 {

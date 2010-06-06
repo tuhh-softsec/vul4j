@@ -72,7 +72,6 @@ import org.slf4j.LoggerFactory;
  * The antlr generated ACIItem parser.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 class AntlrACIItemParser extends Parser;
 
@@ -1314,7 +1313,6 @@ refinements returns [ List<ExprNode> children ]
   * The parser's primary lexer.
   *
   * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
-  * @version $Rev$
   */
 class AntlrACIItemLexer extends Lexer;
 

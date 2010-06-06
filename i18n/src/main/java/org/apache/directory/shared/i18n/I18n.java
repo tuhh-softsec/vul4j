@@ -31,7 +31,6 @@ import java.util.ResourceBundle;
  * About formatting see also {@link MessageFormat}
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public enum I18n
 {

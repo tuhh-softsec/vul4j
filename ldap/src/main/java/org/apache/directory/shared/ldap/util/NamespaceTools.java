@@ -32,7 +32,6 @@ import org.apache.directory.shared.ldap.name.DN;
  * Tools dealing with common Naming operations.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Revision$
  */
 public class NamespaceTools
 {

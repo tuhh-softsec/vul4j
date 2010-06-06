@@ -37,7 +37,6 @@ import org.junit.Test;
  * Unit tests class UserClass.Name.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public class UserClass_NameTest
 {

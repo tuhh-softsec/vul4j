@@ -31,7 +31,6 @@ import org.apache.directory.shared.ldap.util.StringTools;
  * The response sent back from the server after the CertGeneration extended operation is performed.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public class CertGenerationResponse extends ExtendedResponseImpl
 {

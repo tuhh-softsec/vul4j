@@ -38,7 +38,6 @@ import java.util.Map;
  * resolver is used we can create mock or almost right implementations.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public interface NormalizerMappingResolver
 {

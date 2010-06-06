@@ -48,7 +48,6 @@ import org.slf4j.LoggerFactory;
  * shutdown.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public class GracefulDisconnect extends ExtendedResponseImpl
 {

@@ -23,7 +23,6 @@ package org.apache.directory.shared.ldap.constants;
  * An enum to store all the security constants used in the server
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev:$
  */
 public enum LdapSecurityConstants
 {

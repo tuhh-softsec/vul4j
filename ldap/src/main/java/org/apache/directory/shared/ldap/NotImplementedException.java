@@ -28,7 +28,6 @@ package org.apache.directory.shared.ldap;
  * called ReadOnlyException.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Revision$
  */
 public class NotImplementedException extends RuntimeException
 {

@@ -32,7 +32,6 @@ import org.slf4j.LoggerFactory;
  * all space and "-" characters are skipped during the comparison. 
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public class TelephoneNumberComparator extends LdapComparator<String>
 {

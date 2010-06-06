@@ -84,7 +84,6 @@ import org.apache.directory.shared.ldap.schema.registries.Registries;
  *      href="http://www.ietf.org/internet-drafts/draft-ietf-ldapbis-syntaxes-09.txt">ldapbis
  *      [SYNTAXES]</a>
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 // super.hashCode is final
 @SuppressWarnings("PMD.OverrideBothEqualsAndHashcode")

@@ -30,7 +30,6 @@ import org.apache.directory.shared.ldap.message.internal.InternalExtendedRespons
  * Lockable ExtendedResponse implementation
  * 
  * @author <a href="mailto:dev@directory.apache.org"> Apache Directory Project</a>
- * @version $Rev$
  */
 public class ExtendedResponseImpl extends InternalAbstractResultResponse implements InternalExtendedResponse
 {

@@ -27,7 +27,6 @@ import org.apache.directory.shared.asn1.codec.EncoderException;
  * Define the transform method to be implemented by all the codec Controls
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public interface CodecControl
 {

@@ -27,7 +27,6 @@ import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
  * progress.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public interface InternalAbandonRequest extends InternalRequest
 {

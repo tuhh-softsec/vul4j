@@ -40,7 +40,6 @@ import org.apache.directory.shared.ldap.name.DN;
  * Lockable SearchRequest implementation.
  * 
  * @author <a href="mailto:dev@directory.apache.org"> Apache Directory Project</a>
- * @version $Rev$
  */
 public class SearchRequestImpl extends AbstractAbandonableRequest implements InternalSearchRequest
 {

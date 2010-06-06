@@ -40,7 +40,6 @@ import org.junit.Test;
  * TestCase for the ModifyDnRequestImpl class.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public class ModifyDnRequestImplTest
 {

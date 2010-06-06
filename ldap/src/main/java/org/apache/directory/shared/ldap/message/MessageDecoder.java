@@ -40,7 +40,6 @@ import java.util.Hashtable;
  * demarshaling it into a Message instance using a BER library provider.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public final class MessageDecoder implements ProviderDecoder
 {

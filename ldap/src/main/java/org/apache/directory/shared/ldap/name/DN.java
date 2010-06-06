@@ -65,7 +65,6 @@ import org.slf4j.LoggerFactory;
  * is the first RDN (RDN[n]).
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN>
 {

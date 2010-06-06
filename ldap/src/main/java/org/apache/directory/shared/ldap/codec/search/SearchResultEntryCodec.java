@@ -63,7 +63,6 @@ import org.apache.directory.shared.ldap.util.StringTools;
  * by one, followed by a searchResultDone message.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$, 
  */
 public class SearchResultEntryCodec extends LdapMessageCodec
 {

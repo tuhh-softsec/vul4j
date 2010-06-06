@@ -55,7 +55,6 @@ import org.junit.Test;
  *     boolean loadWithDepsRelaxed( String... schemas ) throws Exception
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public class SchemaManagerLoadWithDepsTest
 {

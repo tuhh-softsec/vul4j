@@ -85,7 +85,6 @@ import org.xmlpull.v1.XmlPullParserException;
  * The format used for request and responses is the DSMLv2 format.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public class Dsmlv2Engine
 {

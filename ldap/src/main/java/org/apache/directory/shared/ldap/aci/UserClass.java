@@ -33,7 +33,6 @@ import org.apache.directory.shared.ldap.subtree.SubtreeSpecification;
  * Defines a set of zero or more users the permissions apply to.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public abstract class UserClass implements Serializable
 {

@@ -36,7 +36,6 @@ package org.apache.directory.shared.asn1.codec;
  * </p>
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Id$
  */
 public interface Decoder
 {

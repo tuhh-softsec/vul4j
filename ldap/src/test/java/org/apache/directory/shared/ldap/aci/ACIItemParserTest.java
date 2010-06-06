@@ -32,7 +32,6 @@ import static org.junit.Assert.assertEquals;
  * Unit tests class for ACIItem parser (wrapper).
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public class ACIItemParserTest
 {

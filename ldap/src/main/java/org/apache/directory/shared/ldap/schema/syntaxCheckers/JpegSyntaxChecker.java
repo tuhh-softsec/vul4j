@@ -39,7 +39,6 @@ import org.slf4j.LoggerFactory;
  * We will check for those 11 bytes, except the length.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev: 437007 $
  */
 public class JpegSyntaxChecker extends SyntaxChecker
 {

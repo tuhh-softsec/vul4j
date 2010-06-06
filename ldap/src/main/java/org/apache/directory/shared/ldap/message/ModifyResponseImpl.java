@@ -26,7 +26,6 @@ import org.apache.directory.shared.ldap.message.internal.InternalModifyResponse;
 /**
  * Lockable ModifyResponse implementation
  * 
- * @version $Rev$
  */
 public class ModifyResponseImpl extends InternalAbstractResultResponse implements InternalModifyResponse
 {

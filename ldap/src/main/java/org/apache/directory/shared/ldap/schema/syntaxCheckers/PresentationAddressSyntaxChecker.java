@@ -30,7 +30,6 @@ import org.slf4j.LoggerFactory;
  * This syntax is defined in RFC 1278, but it has not been implemented.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev: 488616 $
  */
 public class PresentationAddressSyntaxChecker extends BinarySyntaxChecker
 {

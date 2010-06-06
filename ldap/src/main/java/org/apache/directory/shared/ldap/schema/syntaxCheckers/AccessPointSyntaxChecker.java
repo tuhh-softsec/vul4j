@@ -29,7 +29,6 @@ import org.slf4j.LoggerFactory;
  * A SyntaxChecker which verifies that a value is an AccessPoint.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev: 488616 $
  */
 public class AccessPointSyntaxChecker extends SyntaxChecker
 {

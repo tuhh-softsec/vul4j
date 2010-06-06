@@ -57,7 +57,6 @@ import org.junit.Test;
  * A test class for SchemaManager, testing the deletion of a SchemaObject.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public class SchemaManagerDelTest
 {

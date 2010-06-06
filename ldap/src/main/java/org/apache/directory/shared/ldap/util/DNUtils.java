@@ -24,7 +24,6 @@ package org.apache.directory.shared.ldap.util;
  * Utility class used by the DN Parser.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public class DNUtils
 {

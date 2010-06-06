@@ -28,7 +28,6 @@ import java.util.NoSuchElementException;
  * An enumeration wrapper around an array.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public class ArrayEnumeration implements Enumeration
 {

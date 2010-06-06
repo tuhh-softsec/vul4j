@@ -37,7 +37,6 @@ import org.junit.Test;
  * A test case for the UTFUtils methods 
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public class UTFUtilsTest
 {

@@ -49,7 +49,6 @@ import org.apache.directory.shared.ldap.util.GeneralizedTime.TimeZoneFormat;
  * </ul>
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev: 491034 $
  */
 public class GeneralizedTimeNormalizer extends Normalizer
 {

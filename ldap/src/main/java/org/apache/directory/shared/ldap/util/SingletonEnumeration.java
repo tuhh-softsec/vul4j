@@ -29,7 +29,6 @@ import java.util.NoSuchElementException;
  * A NamingEnumeration over a single element.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Revision$
  */
 public class SingletonEnumeration<T> implements NamingEnumeration<T>
 {

@@ -29,7 +29,6 @@ import org.slf4j.LoggerFactory;
  * A comparator for the objectIdentifierMatch matchingRule.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public class ObjectIdentifierComparator extends LdapComparator<Object>
 {

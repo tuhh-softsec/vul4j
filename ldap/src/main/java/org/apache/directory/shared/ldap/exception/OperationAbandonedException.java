@@ -26,7 +26,6 @@ package org.apache.directory.shared.ldap.exception;
  * Marker exception thrown when an operation is cancelled.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public class OperationAbandonedException extends LdapException
 {

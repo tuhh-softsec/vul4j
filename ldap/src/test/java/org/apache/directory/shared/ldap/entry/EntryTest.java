@@ -59,7 +59,6 @@ import org.junit.Test;
  * A test class for the DefaultEntry class
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public class EntryTest
 {

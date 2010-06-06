@@ -24,7 +24,6 @@ package org.apache.directory.shared.ldap.aci;
  * An enumeration that represents grants or denials of {@link MicroOperation}s.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public class GrantAndDenial
 {

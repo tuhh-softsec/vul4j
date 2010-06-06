@@ -44,7 +44,6 @@ import org.apache.directory.shared.ldap.util.StringTools;
  *                 newSuperior     [0] LDAPDN OPTIONAL }
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$, 
  */
 public class ModifyDNRequestCodec extends LdapMessageCodec
 {

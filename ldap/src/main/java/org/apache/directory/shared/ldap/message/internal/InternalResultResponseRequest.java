@@ -24,7 +24,6 @@ package org.apache.directory.shared.ldap.message.internal;
  * A request who's one or more responses contains an LdapResult.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public interface InternalResultResponseRequest extends InternalRequest
 {

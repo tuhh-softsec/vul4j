@@ -31,7 +31,6 @@ import org.apache.directory.shared.i18n.I18n;
  * put() in order to prevent duplicate keyed entries to be added.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public class NoDuplicateKeysMap extends HashMap
 {

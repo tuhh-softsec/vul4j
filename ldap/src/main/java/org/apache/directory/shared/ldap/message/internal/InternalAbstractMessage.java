@@ -35,7 +35,6 @@ import org.apache.directory.shared.ldap.message.control.Control;
  * Abstract message base class.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public abstract class InternalAbstractMessage implements InternalMessage
 {

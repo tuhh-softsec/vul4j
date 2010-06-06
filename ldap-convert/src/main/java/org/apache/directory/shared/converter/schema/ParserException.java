@@ -22,7 +22,6 @@ package org.apache.directory.shared.converter.schema;
 /**
  * An exception thrown if we have an error while parsing a schema file.
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public class ParserException extends Exception
 {

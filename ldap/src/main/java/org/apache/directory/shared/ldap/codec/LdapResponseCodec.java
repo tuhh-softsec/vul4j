@@ -31,7 +31,6 @@ import org.apache.directory.shared.i18n.I18n;
  * A generic LdapResponse Object. It will contain the LdapResult.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$, 
  */
 public abstract class LdapResponseCodec extends LdapMessageCodec
 {

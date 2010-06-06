@@ -35,7 +35,6 @@ import org.apache.directory.shared.ldap.name.DN;
  * {@link ResultCodeEnum#REFERRAL} resultCode with the exception.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev: 923448 $
  */
 public class AbstractLdapReferralException extends LdapOperationException
 {

@@ -32,7 +32,6 @@ import org.slf4j.LoggerFactory;
  * with the Apache DS meta schema format
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public class SchemaToLdif
 {

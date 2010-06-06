@@ -27,7 +27,6 @@ package org.apache.directory.shared.ldap.schema;
  * type and its OID.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public class SchemaObjectWrapper
 {

@@ -29,7 +29,6 @@ import org.slf4j.LoggerFactory;
  * A comparator for Strings.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public class StringComparator extends LdapComparator<String>
 {

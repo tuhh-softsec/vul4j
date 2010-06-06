@@ -25,7 +25,6 @@ package org.apache.directory.shared.ldap.util;
  * decoding of base32 characters to raw bytes.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Revision: 664290 $
  */
 public class Base32
 {

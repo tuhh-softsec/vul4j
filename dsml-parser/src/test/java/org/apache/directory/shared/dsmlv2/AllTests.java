@@ -52,7 +52,6 @@ import org.junit.runners.Suite;
  * This is the complete Test Suite for DSMLv2 Parser (Request and Response)
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({

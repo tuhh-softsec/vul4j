@@ -43,7 +43,6 @@ import org.slf4j.LoggerFactory;
  * Anything that is not matched by this regexp will not be considered as a word.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public class WordComparator extends LdapComparator<String>
 {

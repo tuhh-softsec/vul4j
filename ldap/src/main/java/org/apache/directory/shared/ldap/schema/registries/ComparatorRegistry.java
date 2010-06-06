@@ -28,7 +28,6 @@ import org.apache.directory.shared.ldap.schema.LdapComparator;
  * Comparator registry component's service class.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public interface ComparatorRegistry extends SchemaObjectRegistry<LdapComparator<?>>,
     Iterable<LdapComparator<?>>

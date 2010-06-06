@@ -33,7 +33,6 @@ import org.slf4j.LoggerFactory;
  * A helper class which serialize and deserialize a DN
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public class DnSerializer
 {

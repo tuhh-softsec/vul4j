@@ -26,7 +26,6 @@ import org.apache.directory.shared.ldap.exception.LdapException;
  * An exception throws when we get an error while parsing a LDIF file.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev: 923395 $
  */
 public class LdapLdifException extends LdapException
 {

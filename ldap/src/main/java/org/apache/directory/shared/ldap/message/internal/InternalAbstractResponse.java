@@ -26,7 +26,6 @@ import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
  * Abstract base for a Lockable Response message.
  * 
  * @author <a href="mailto:dev@directory.apache.org"> Apache Directory Project</a>
- * @version $Rev$
  */
 public abstract class InternalAbstractResponse extends InternalAbstractMessage implements InternalResponse
 {

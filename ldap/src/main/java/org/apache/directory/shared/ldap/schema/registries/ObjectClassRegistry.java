@@ -31,7 +31,6 @@ import org.apache.directory.shared.ldap.schema.ObjectClass;
  * ObjectClass registry service interface.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public interface ObjectClassRegistry extends SchemaObjectRegistry<ObjectClass>,
     Iterable<ObjectClass>

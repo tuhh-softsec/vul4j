@@ -35,7 +35,6 @@ import antlr.TokenStreamException;
  * A parser for RFC 4512 matching rule descriptions.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public class MatchingRuleDescriptionSchemaParser extends AbstractSchemaParser
 {

@@ -32,7 +32,6 @@ import org.apache.directory.shared.ldap.message.ResultCodeEnum;
  * A class loader that loads classes from an attribute within an entry.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$ $Date$
  */
 public class AttributeClassLoader extends ClassLoader
 {

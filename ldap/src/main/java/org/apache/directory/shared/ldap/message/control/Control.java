@@ -25,7 +25,6 @@ package org.apache.directory.shared.ldap.message.control;
  * controls may be associated with a protocol message.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev: 764131 $
  */
 public interface Control
 {

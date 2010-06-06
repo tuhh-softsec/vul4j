@@ -28,7 +28,6 @@ import org.apache.directory.shared.ldap.schema.SyntaxChecker;
  * SyntaxChecker registry component's service interface.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public interface SyntaxCheckerRegistry extends SchemaObjectRegistry<SyntaxChecker>,
     Iterable<SyntaxChecker>

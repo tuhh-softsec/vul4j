@@ -33,7 +33,6 @@ import org.apache.directory.shared.ldap.message.control.Control;
  * A decoder for SyncInfoValueControl.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev: 741888 $, $Date: 2009-02-07 13:57:03 +0100 (Sat, 07 Feb 2009) $, 
  */
 public class SyncInfoValueControlDecoder extends Asn1Decoder implements ControlDecoder
 {

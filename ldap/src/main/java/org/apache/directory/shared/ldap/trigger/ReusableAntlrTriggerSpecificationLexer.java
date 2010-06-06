@@ -39,7 +39,6 @@ import antlr.LexerSharedInputState;
  * an ANTLR Interest Group mail</a> .
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev:$
  */
 class ReusableAntlrTriggerSpecificationLexer extends AntlrTriggerSpecificationLexer
 {

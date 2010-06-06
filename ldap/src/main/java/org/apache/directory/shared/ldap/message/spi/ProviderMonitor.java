@@ -28,7 +28,6 @@ import java.util.Properties;
  * A Provider monitor's callback interface.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public interface ProviderMonitor
 {

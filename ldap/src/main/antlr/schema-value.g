@@ -32,7 +32,6 @@ import org.apache.directory.shared.ldap.schema.parsers.ParserMonitor;
  * An antlr generated schema lexer. This is a sub-lexer.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 class AntlrSchemaValueLexer extends Lexer;
 
@@ -105,7 +104,6 @@ DESCR_OR_QUIRKS_DESCR :
  * numericoid, oid, oids, qdescr, qdescrs according to RFC4512.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 class AntlrSchemaValueParser extends Parser;
 options    {

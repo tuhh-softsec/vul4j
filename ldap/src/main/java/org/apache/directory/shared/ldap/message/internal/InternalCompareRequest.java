@@ -30,7 +30,6 @@ import org.apache.directory.shared.ldap.name.DN;
  * an attribute value assertion.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Revision$
  */
 public interface InternalCompareRequest extends SingleReplyRequest, InternalAbandonableRequest
 {

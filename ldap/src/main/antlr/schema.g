@@ -48,7 +48,6 @@ import org.apache.directory.shared.ldap.schema.UsageEnum;
  * An antlr generated schema main lexer.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 class AntlrSchemaLexer extends Lexer;
 
@@ -178,7 +177,6 @@ DSA_OPERATION : ( "dsaoperation" (WHSP)? ) ;
  * An antlr generated schema main parser.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 class AntlrSchemaParser extends Parser;
 options    {

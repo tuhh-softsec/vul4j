@@ -29,7 +29,6 @@ import org.apache.directory.shared.ldap.message.ResultCodeEnum;
  * carrying with it the corresponding result codes for this condition.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public class LdapUnwillingToPerformException extends LdapOperationException
 {

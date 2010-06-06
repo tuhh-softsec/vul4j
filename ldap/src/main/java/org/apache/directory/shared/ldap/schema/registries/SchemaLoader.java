@@ -32,7 +32,6 @@ import org.apache.directory.shared.ldap.exception.LdapException;
  * Loads schemas into registres.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public interface SchemaLoader
 {

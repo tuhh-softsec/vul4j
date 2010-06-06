@@ -28,7 +28,6 @@ import org.apache.directory.shared.ldap.schema.SchemaObjectType;
  * An NameForm registry's service default implementation.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev: 828111 $
  */
 public class DefaultNameFormRegistry extends DefaultSchemaObjectRegistry<NameForm>
     implements NameFormRegistry

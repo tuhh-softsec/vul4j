@@ -35,7 +35,6 @@ import org.apache.directory.shared.ldap.schema.UsageEnum;
  * OpenLDAP schema configuration file.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev: 476875 $
  */
 public class AttributeTypeHolder extends SchemaElementImpl
 {

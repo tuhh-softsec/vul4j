@@ -25,7 +25,6 @@ package org.apache.directory.shared.ldap.cursor;
  * underlying structure has changed after the Cursor has been created.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public class InconsistentCursorStateException extends Exception
 {

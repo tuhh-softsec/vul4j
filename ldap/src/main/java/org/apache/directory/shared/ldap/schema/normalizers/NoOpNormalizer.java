@@ -28,7 +28,6 @@ import org.apache.directory.shared.ldap.schema.Normalizer;
  * No op (pass through or do nothing) normalizer returning what its given.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public class NoOpNormalizer extends Normalizer
 {

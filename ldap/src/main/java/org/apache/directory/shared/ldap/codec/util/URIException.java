@@ -25,7 +25,6 @@ package org.apache.directory.shared.ldap.codec.util;
  * The URI parsing and escape encoding exception.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Revision$ $Date: 2002/03/14 15:14:01
  */
 public class URIException extends Exception
 {

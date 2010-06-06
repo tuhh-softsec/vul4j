@@ -40,7 +40,6 @@ import org.junit.Test;
  * Test case for CertGenerate extended operation request.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public class CertGenerationRequestTest
 {

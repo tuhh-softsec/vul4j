@@ -26,7 +26,6 @@ package org.apache.directory.shared.ldap.schema.registries;
  * being loaded or unloaded.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public interface SchemaLoaderListener
 {

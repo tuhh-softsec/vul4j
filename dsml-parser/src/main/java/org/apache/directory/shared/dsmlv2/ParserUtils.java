@@ -53,7 +53,6 @@ import org.xmlpull.v1.XmlPullParserException;
  * This class is a Helper class for the DSML Parser
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public class ParserUtils
 {

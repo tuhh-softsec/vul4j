@@ -35,7 +35,6 @@ import org.apache.directory.shared.ldap.message.internal.InternalReferral;
  * default implementations will be used once a parser for an LdapUrl is created.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public class ReferralImpl implements InternalReferral
 {

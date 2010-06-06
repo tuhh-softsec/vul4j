@@ -34,7 +34,6 @@ import org.apache.directory.shared.ldap.codec.LdapProvider;
  * Provider implementations and their SPI implementation classes.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Revision$
  */
 public abstract class Provider
 {

@@ -28,7 +28,6 @@ import org.apache.directory.shared.ldap.message.ResultCodeEnum;
  * {@link ResultCodeEnum#AFFECTS_MULTIPLE_DSAS} value with the type.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev: 477298 $
  */
 public class LdapAffectMultipleDsaException extends LdapOperationException
 {

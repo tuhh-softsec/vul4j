@@ -31,7 +31,6 @@ import org.apache.directory.shared.ldap.name.DN;
  * Delete request implementation.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public class DeleteRequestImpl extends AbstractAbandonableRequest implements InternalDeleteRequest
 {

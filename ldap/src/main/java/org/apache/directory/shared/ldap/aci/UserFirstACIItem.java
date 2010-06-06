@@ -33,7 +33,6 @@ import org.apache.directory.shared.ldap.constants.AuthenticationLevel;
  * {@link ProtectedItem}s each {@link UserClass} will have. (18.4.2.4. X.501)
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public class UserFirstACIItem extends ACIItem
 {

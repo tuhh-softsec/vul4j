@@ -27,7 +27,6 @@ import org.apache.directory.shared.ldap.schema.NameForm;
  * An NameForm registry service interface.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public interface NameFormRegistry extends SchemaObjectRegistry<NameForm>,
     Iterable<NameForm>

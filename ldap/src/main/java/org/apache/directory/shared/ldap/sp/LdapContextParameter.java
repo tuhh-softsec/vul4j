@@ -28,7 +28,6 @@ import java.io.Serializable;
  * A class for representing the special SP parameter: $ldapContext.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev:$
  */
 public class LdapContextParameter implements Serializable
 {

@@ -38,7 +38,6 @@ import org.junit.Test;
  * Unit tests for {@link org.apache.directory.shared.ldap.trigger.TriggerSpecificationParser}.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev:$, $Date:$
  */
 public class TriggerSpecificationParserTest
 {

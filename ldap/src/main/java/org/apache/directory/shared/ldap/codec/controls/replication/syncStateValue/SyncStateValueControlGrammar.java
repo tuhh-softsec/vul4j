@@ -56,7 +56,6 @@ import org.slf4j.LoggerFactory;
  *  }
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev: 741888 $, $Date: 2009-02-07 13:57:03 +0100 (Sat, 07 Feb 2009) $, 
  */
 public class SyncStateValueControlGrammar extends AbstractGrammar
 {

@@ -33,7 +33,6 @@ import org.apache.directory.shared.ldap.message.control.Control;
  * A decoder for PSearchControls.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$, 
  */
 public class PersistentSearchControlDecoder extends Asn1Decoder implements ControlDecoder
 {

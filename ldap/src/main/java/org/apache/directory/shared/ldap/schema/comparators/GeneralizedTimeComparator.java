@@ -35,7 +35,6 @@ import org.slf4j.LoggerFactory;
  * A class for the generalizedTimeOrderingMatch matchingRule (RFC 4517, par. 4.2.17)
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev: 437007 $
  */
 public class GeneralizedTimeComparator extends LdapComparator<String>
 {

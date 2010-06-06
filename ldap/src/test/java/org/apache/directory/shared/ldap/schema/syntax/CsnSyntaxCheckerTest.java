@@ -29,7 +29,6 @@ import static org.junit.Assert.assertTrue;
  * Test cases for CsnSyntaxChecker.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public class CsnSyntaxCheckerTest
 {

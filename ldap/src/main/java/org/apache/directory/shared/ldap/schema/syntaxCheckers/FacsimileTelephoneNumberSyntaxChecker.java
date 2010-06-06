@@ -49,7 +49,6 @@ import org.slf4j.LoggerFactory;
  * which can be initialized to other values
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public class FacsimileTelephoneNumberSyntaxChecker extends TelephoneNumberSyntaxChecker
 {

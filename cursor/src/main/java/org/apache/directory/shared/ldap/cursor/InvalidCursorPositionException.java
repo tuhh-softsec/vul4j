@@ -24,7 +24,6 @@ package org.apache.directory.shared.ldap.cursor;
  * get is made.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public class InvalidCursorPositionException extends Exception
 {

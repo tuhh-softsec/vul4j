@@ -26,7 +26,6 @@ import org.apache.directory.shared.ldap.message.internal.InternalAbandonableRequ
  * A listener interested in abandon operations performed on requests.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public interface AbandonListener
 {

@@ -29,7 +29,6 @@ import org.apache.directory.shared.ldap.name.DN;
  * session. Does not yet contain interfaces for SASL authentication mechanisms.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public interface InternalBindRequest extends SingleReplyRequest, InternalAbandonableRequest
 {

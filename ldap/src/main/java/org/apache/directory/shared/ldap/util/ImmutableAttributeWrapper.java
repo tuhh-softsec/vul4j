@@ -31,7 +31,6 @@ import org.apache.directory.shared.i18n.I18n;
  * A read only wrapper around an Attributes object.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public class ImmutableAttributeWrapper implements Attribute
 {

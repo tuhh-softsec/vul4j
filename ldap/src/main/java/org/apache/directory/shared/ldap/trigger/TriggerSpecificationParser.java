@@ -37,7 +37,6 @@ import antlr.TokenStreamException;
  * pair without having to recreate them every time.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev:$, $Date:$
  */
 public class TriggerSpecificationParser
 {

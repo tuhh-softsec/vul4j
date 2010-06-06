@@ -27,7 +27,6 @@ import org.apache.directory.shared.ldap.message.ResultCodeEnum;
  * This Class helps to get resultCodeDesc for a ResultCode of a LdapResult.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public class LdapResultEnum
 {

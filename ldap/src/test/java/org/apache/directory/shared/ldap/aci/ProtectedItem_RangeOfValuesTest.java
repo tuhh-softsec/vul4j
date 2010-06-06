@@ -34,7 +34,6 @@ import org.junit.Test;
  * Unit tests class ProtectedItem.RangeOfValues.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public class ProtectedItem_RangeOfValuesTest
 {

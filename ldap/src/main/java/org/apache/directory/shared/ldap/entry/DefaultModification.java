@@ -36,7 +36,6 @@ import org.slf4j.LoggerFactory;
  * chosen so that it does not conflict with @see ModificationItem
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public class DefaultModification implements Modification
 {

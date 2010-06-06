@@ -49,7 +49,6 @@ import org.apache.directory.shared.ldap.schema.registries.SyntaxCheckerRegistry;
  * with a SchemaLoader, in charge of loading the schemas from the disk.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public interface SchemaManager
 {

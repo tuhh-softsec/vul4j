@@ -36,7 +36,6 @@ import org.apache.directory.shared.ldap.schema.SyntaxChecker;
  * An immutable wrapper of the SyntaxChecker registry.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev: 831344 $
  */
 public class ImmutableSyntaxCheckerRegistry implements SyntaxCheckerRegistry
 {

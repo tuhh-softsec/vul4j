@@ -32,7 +32,6 @@ import org.slf4j.LoggerFactory;
  * A Comparator registry service default implementation.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev: 828111 $
  */
 public class DefaultComparatorRegistry extends DefaultSchemaObjectRegistry<LdapComparator<?>>
     implements ComparatorRegistry

@@ -52,7 +52,6 @@ import org.slf4j.LoggerFactory;
  * </pre>
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev: 664290 $, $Date: 2008-06-07 11:58:06 +0530 (Sat, 07 Jun 2008) $, 
  */
 
 public class CertGenerationGrammar extends AbstractGrammar

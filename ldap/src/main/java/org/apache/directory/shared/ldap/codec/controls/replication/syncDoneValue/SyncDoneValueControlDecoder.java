@@ -34,7 +34,6 @@ import org.apache.directory.shared.ldap.message.control.Control;
  * A ASN.1 decoder for SyncDoneValueControl.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public class SyncDoneValueControlDecoder extends Asn1Decoder implements ControlDecoder
 {

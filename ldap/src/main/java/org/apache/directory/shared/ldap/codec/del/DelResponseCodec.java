@@ -37,7 +37,6 @@ import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
  * DelResponse ::= [APPLICATION 11] LDAPResult
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$, 
  */
 public class DelResponseCodec extends LdapResponseCodec
 {

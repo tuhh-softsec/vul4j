@@ -29,7 +29,6 @@ import org.apache.directory.shared.asn1.ber.grammar.IStates;
  * debugging purposes.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev: 741888 $, $Date: 2009-02-07 13:57:03 +0100 (Sat, 07 Feb 2009) $, 
  */
 public class SyncStateValueControlStatesEnum implements IStates
 {

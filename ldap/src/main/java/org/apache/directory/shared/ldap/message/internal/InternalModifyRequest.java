@@ -94,7 +94,6 @@ import org.apache.directory.shared.ldap.name.DN;
  *  can.
  *  
  *  @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- *  @version $Revision$
  * 
  */
 public interface InternalModifyRequest extends SingleReplyRequest, InternalAbandonableRequest

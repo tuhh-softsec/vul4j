@@ -32,7 +32,6 @@ import org.apache.directory.shared.i18n.I18n;
  * <li>UNAUTHENT>A special case when just doing some auditing</li>
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public enum AuthenticationLevel
 {

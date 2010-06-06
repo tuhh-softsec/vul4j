@@ -28,7 +28,6 @@ import org.apache.directory.shared.ldap.exception.LdapException;
  * Normalizers of ldap name component attributes and their values.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Revision$
  */
 public interface NameComponentNormalizer
 {

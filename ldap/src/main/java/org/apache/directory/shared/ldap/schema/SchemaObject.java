@@ -63,7 +63,6 @@ import org.apache.directory.shared.ldap.schema.registries.Registries;
  * <b>numericOid</b> : DitStructureRule, 
  * <b>obsolete</b> : LdapSyntax, Comparator, Normalizer, SyntaxChecker
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public interface SchemaObject extends Serializable
 {

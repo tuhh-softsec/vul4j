@@ -27,7 +27,6 @@ import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
  * This exception is used to signal, that the complex parser should be used.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public class TooComplexException extends LdapInvalidDnException
 {

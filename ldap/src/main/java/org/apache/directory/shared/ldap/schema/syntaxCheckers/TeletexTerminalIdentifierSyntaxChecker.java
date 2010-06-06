@@ -40,7 +40,6 @@ import org.slf4j.LoggerFactory;
  * ttx-value-octet = %x00-23 | (%x5C "24") | %x25-5B | (%x5C "5C") | %x5D-FF
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public class TeletexTerminalIdentifierSyntaxChecker extends SyntaxChecker
 {

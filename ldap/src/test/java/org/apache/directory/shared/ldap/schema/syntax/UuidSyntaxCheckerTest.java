@@ -31,7 +31,6 @@ import static org.junit.Assert.assertTrue;
  * Test cases for UuidSyntaxChecker.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public class UuidSyntaxCheckerTest
 {

@@ -29,7 +29,6 @@ import org.slf4j.LoggerFactory;
  * A class for the BooleanComparator matchingRule (RFC 4517, par. 4.2.2)
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev: 437007 $
  */
 public class BooleanComparator extends LdapComparator<String>
 {

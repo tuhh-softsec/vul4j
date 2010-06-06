@@ -29,7 +29,6 @@ import org.apache.directory.shared.i18n.I18n;
  * An abstract TupleCursor.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $$Rev$$
  */
 public abstract class AbstractTupleCursor<K, V> implements TupleCursor<K, V>
 {

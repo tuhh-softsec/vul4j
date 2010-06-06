@@ -45,7 +45,6 @@ import org.slf4j.LoggerFactory;
  * and invalidates them when the wrapped value changes.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public class BinaryValue extends AbstractValue<byte[]>
 {

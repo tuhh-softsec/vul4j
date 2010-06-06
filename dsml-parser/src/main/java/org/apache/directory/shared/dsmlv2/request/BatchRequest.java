@@ -31,7 +31,6 @@ import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
  * This class represents the Batch Request of a DSML Request
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public class BatchRequest
 {
@@ -49,7 +48,6 @@ public class BatchRequest
      * This enum represents the different types of processing for a Batch Request 
      *
      * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
-     * @version $Rev$, $Date$
      */
     public enum Processing
     {
@@ -65,8 +63,7 @@ public class BatchRequest
      * This enum represents the different types of on error handling for a BatchRequest
      *
      * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
-     * @version $Rev$, $Date$
-     */
+         */
     public enum OnError
     {
         RESUME, EXIT
@@ -81,8 +78,7 @@ public class BatchRequest
      * This enum represents the different types of response order for a Batch Request
      *
      * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
-     * @version $Rev$, $Date$
-     */
+         */
     public enum ResponseOrder
     {
         SEQUENTIAL, UNORDERED

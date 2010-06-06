@@ -35,7 +35,6 @@ import org.apache.directory.shared.ldap.codec.search.controls.ChangeType;
  * A persistence search object
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$, 
  */
 public class PersistentSearchControl extends AbstractControl
 {

@@ -29,7 +29,6 @@ import static org.junit.Assert.assertEquals;
  * Test cases for MHSORAddressSyntaxChecker.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public class MHSORAddressSyntaxCheckerTest
 {

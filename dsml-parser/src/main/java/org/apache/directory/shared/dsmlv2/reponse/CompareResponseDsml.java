@@ -31,7 +31,6 @@ import org.dom4j.Element;
  * DSML Decorator for CompareResponse
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public class CompareResponseDsml extends LdapResponseDecorator implements DsmlDecorator
 {

@@ -34,7 +34,6 @@ import org.dom4j.Element;
  * Search Result Reference and SearchResultDone).
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public class SearchResponseDsml extends LdapResponseDecorator implements DsmlDecorator
 {

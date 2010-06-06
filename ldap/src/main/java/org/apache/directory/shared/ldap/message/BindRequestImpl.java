@@ -36,7 +36,6 @@ import org.apache.directory.shared.ldap.util.StringTools;
  * session. Does not yet contain interfaces for SASL authentication mechanisms.
  * 
  * @author <a href="mailto:dev@directory.apache.org"> Apache Directory Project</a>
- * @version $Rev$
  */
 public class BindRequestImpl extends AbstractAbandonableRequest implements InternalBindRequest
 {

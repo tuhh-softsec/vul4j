@@ -40,7 +40,6 @@ import org.slf4j.LoggerFactory;
  * ASN.1 BER Grammar for Stored Procedure Extended Operation
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$, 
  */
 public class StoredProcedureGrammar extends AbstractGrammar
 {

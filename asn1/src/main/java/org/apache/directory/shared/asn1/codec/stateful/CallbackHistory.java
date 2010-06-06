@@ -30,7 +30,6 @@ import java.util.LinkedList;
  * operation.
  * 
  * @author <a href="mailto:dev@directory.apache.org"> Apache Directory Project</a>
- * @version $Rev$
  */
 public class CallbackHistory implements DecoderCallback, EncoderCallback
 {

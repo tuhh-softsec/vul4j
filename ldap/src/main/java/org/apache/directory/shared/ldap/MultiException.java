@@ -32,7 +32,6 @@ import java.util.Iterator;
  * This exception is thrown when Base class for nested exceptions.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Revision$
  */
 public class MultiException extends Exception
 {

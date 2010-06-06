@@ -32,7 +32,6 @@ import org.apache.directory.shared.ldap.util.StringTools;
  * contain some compiled Java class to implement the specific logic.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev: 437007 $
  */
 // super.hashCode is final
 @SuppressWarnings("PMD.OverrideBothEqualsAndHashcode")

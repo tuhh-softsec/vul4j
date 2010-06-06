@@ -32,7 +32,6 @@ import org.apache.directory.shared.asn1.codec.stateful.StatefulEncoder;
  * stubs are expected to implement this interface.
  * 
  * @author <a href="mailto:dev@directory.apache.org"> Apache Directory Project</a>
- * @version $Rev$
  */
 public interface ProviderEncoder extends ProviderObject, StatefulEncoder
 {

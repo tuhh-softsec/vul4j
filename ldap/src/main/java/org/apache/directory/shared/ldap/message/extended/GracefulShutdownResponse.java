@@ -31,7 +31,6 @@ import org.apache.directory.shared.ldap.message.ResultCodeEnum;
  * connected clients are sent a GracefulDisconnect unsolicited notification.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public class GracefulShutdownResponse extends ExtendedResponseImpl
 {

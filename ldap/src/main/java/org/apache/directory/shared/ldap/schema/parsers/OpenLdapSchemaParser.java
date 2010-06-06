@@ -46,7 +46,6 @@ import antlr.TokenStreamException;
  * A reusable wrapper for antlr generated OpenLDAP schema parsers.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev: 494164 $
  */
 public class OpenLdapSchemaParser extends AbstractSchemaParser
 {

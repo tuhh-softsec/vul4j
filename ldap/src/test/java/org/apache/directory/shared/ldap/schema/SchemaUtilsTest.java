@@ -31,7 +31,6 @@ import static org.junit.Assert.assertEquals;
  * The unit tests for methods on SchemaUtils.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public class SchemaUtilsTest
 {

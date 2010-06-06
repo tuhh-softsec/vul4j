@@ -37,7 +37,6 @@ import org.apache.directory.shared.ldap.util.AttributeUtils;
  * Trigger Execution Subentries and Trigger Specifications.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev:$
  */
 public class TriggerUtils
 {

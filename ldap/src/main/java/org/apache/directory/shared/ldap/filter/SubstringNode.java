@@ -34,7 +34,6 @@ import org.apache.directory.shared.ldap.util.StringTools;
  * Filter expression tree node used to represent a substring assertion.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Revision$
  */
 public class SubstringNode extends LeafNode
 {

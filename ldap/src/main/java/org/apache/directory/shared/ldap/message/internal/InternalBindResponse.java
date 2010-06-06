@@ -28,7 +28,6 @@ import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
  * status of the client's request for authentication.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public interface InternalBindResponse extends InternalResultResponse
 {

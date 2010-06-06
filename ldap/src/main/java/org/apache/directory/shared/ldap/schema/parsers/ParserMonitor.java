@@ -24,7 +24,6 @@ package org.apache.directory.shared.ldap.schema.parsers;
  * A monitor for the OpenLdap parser.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev: 437016 $
  */
 public interface ParserMonitor
 {

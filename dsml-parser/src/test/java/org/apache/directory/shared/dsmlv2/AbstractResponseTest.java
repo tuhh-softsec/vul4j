@@ -30,7 +30,6 @@ import static org.junit.Assert.fail;
  * This class had to be used to create a Response TestCase
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public abstract class AbstractResponseTest
 {

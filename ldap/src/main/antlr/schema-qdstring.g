@@ -32,7 +32,6 @@ import org.apache.directory.shared.ldap.schema.parsers.ParserMonitor;
  * An antlr generated schema lexer. This is a sub-lexer.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 class AntlrSchemaQdstringLexer extends Lexer;
 
@@ -69,7 +68,6 @@ QDSTRING : ( QUOTE (~'\'')* QUOTE ) ;
  * qdstring and qdstrings according to RFC4512.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 class AntlrSchemaQdstringParser extends Parser;
 options    {

@@ -33,7 +33,6 @@ import org.apache.directory.shared.ldap.schema.SyntaxChecker;
  * OCTET   = %x00-FF ; Any octet (8-bit data unit)
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev: 437007 $
  */
 public class OctetStringSyntaxChecker extends SyntaxChecker
 {

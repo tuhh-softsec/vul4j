@@ -27,7 +27,6 @@ import org.apache.directory.shared.i18n.I18n;
  * Exception thrown when a Character is invalid
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public class InvalidCharacterException extends IOException
 {

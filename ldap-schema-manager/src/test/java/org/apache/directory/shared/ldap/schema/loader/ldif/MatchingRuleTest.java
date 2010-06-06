@@ -52,7 +52,6 @@ import org.junit.Test;
  * Tests that matching rules of the schema use correct normalizers and comparators.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public class MatchingRuleTest
 {

@@ -31,7 +31,6 @@ import org.apache.directory.shared.ldap.schema.registries.Registries;
  * Caches previously normalized values.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public class CachingNormalizer extends Normalizer
 {

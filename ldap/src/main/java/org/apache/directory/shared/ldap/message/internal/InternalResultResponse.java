@@ -24,7 +24,6 @@ package org.apache.directory.shared.ldap.message.internal;
  * An LDAP Response that contains an LDAPResult structure within it.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Revision$
  */
 public interface InternalResultResponse extends InternalResponse
 {

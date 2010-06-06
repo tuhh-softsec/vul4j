@@ -38,7 +38,6 @@ import static org.junit.Assert.assertFalse;
  * Tests the DateUtils class methods.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev: 542077 $
  */
 public class GeneralizedTimeTest
 {

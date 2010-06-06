@@ -36,7 +36,6 @@ import org.slf4j.LoggerFactory;
 .*  The case is NOT ignored.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public class AttributeTypeUsageSyntaxChecker extends SyntaxChecker
 {

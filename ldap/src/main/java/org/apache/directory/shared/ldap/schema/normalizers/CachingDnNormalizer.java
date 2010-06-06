@@ -31,7 +31,6 @@ import org.apache.directory.shared.ldap.schema.SchemaManager;
  * normalized values.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public class CachingDnNormalizer extends CachingNormalizer
 {

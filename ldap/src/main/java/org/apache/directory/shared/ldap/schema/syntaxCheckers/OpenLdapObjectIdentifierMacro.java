@@ -28,7 +28,6 @@ package org.apache.directory.shared.ldap.schema.syntaxCheckers;
  * <code>objectIdentifier &lt;name&gt; { &lt;oid&gt; | &lt;name&gt;[:&lt;suffix&gt;] }</code>
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public class OpenLdapObjectIdentifierMacro
 {

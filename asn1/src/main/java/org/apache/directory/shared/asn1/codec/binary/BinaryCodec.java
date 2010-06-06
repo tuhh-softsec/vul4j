@@ -35,7 +35,6 @@ import org.apache.directory.shared.i18n.I18n;
  * @todo also might be good to generate boolean[] from byte[] et. cetera.
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @since 1.3
- * @version $Id $
  */
 public class BinaryCodec implements BinaryDecoder, BinaryEncoder
 {

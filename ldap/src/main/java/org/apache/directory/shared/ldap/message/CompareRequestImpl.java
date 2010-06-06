@@ -35,7 +35,6 @@ import org.apache.directory.shared.ldap.util.StringTools;
  * Comparison request implementation.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public class CompareRequestImpl extends AbstractAbandonableRequest implements InternalCompareRequest
 {

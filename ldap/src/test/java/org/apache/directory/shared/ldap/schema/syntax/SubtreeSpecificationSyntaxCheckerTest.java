@@ -30,7 +30,6 @@ import static org.junit.Assert.assertEquals;
  * Test cases for SubtreeSpecificationSyntaxChecker.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public class SubtreeSpecificationSyntaxCheckerTest
 {

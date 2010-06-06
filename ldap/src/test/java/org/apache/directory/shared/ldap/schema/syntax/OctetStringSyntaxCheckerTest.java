@@ -30,7 +30,6 @@ import org.junit.Test;
  * Test cases for OctetStringSyntaxChecker.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public class OctetStringSyntaxCheckerTest
 {

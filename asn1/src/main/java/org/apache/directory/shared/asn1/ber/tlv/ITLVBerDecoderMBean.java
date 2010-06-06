@@ -25,7 +25,6 @@ import org.apache.directory.shared.asn1.codec.DecoderException;
 
 /**
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public interface ITLVBerDecoderMBean
 {

@@ -33,7 +33,6 @@ import org.apache.directory.shared.i18n.I18n;
  * 
  * @since 1.1
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Id$
  */
 public class Hex implements BinaryEncoder, BinaryDecoder
 {

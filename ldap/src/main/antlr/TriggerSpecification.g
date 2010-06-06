@@ -49,7 +49,6 @@ import org.slf4j.LoggerFactory;
  * @see http://docs.safehaus.org/display/APACHEDS/Grammar+for+Triggers
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev:$, $Date:$
  */
 class AntlrTriggerSpecificationParser extends Parser;
 
@@ -450,7 +449,6 @@ distinguishedName returns [ DN name ]
   * The parser's primary lexer.
   *
   * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
-  * @version $Rev$
   */
 class AntlrTriggerSpecificationLexer extends Lexer;
 

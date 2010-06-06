@@ -43,7 +43,6 @@ import java.io.Externalizable;
  * </p>
  * 
  * @since Commons Collections 1.0
- * @version $Revision$ $Date$
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 public final class SynchronizedLRUMap extends SequencedHashMap implements Externalizable

@@ -28,7 +28,6 @@ import org.apache.directory.shared.ldap.exception.LdapException;
  * Converts attribute values to a canonical form.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 // super.hashCode is final
 @SuppressWarnings("PMD.OverrideBothEqualsAndHashcode")

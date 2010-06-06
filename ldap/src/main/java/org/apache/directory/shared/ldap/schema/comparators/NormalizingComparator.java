@@ -34,7 +34,6 @@ import org.slf4j.LoggerFactory;
  * comparator to compare them.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 /* no qualifier*/class NormalizingComparator extends LdapComparator<String>
 {

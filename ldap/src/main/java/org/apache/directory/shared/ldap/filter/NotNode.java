@@ -29,7 +29,6 @@ import org.apache.directory.shared.i18n.I18n;
  * Node representing an Not connector in a filter operation
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev: 517453 $
  */
 public class NotNode extends BranchNode
 {

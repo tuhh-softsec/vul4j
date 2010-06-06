@@ -41,7 +41,6 @@ import org.apache.directory.shared.ldap.message.extended.StoredProcedureResponse
  * A utility class for working with Java Stored Procedures at the base level.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev:$
  */
 public class JavaStoredProcUtils
 {

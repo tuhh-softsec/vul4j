@@ -42,7 +42,6 @@ import org.slf4j.LoggerFactory;
  * for Graceful Shutdown</a>.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public class GracefulShutdownRequest extends ExtendedRequestImpl
 {

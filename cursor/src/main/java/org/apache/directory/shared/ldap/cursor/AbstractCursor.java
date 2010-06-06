@@ -28,7 +28,6 @@ import org.apache.directory.shared.i18n.I18n;
  * Simple class that contains often used Cursor code.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public abstract class AbstractCursor<E> implements Cursor<E>
 {

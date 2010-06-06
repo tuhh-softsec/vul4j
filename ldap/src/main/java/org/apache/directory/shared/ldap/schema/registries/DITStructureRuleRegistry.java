@@ -30,7 +30,6 @@ import org.apache.directory.shared.ldap.schema.DITStructureRule;
  * An DITStructureRule registry service interface.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public interface DITStructureRuleRegistry extends SchemaObjectRegistry<DITStructureRule>,
     Iterable<DITStructureRule>

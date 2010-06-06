@@ -27,7 +27,6 @@ import java.util.List;
  * Node representing an AND connector in a filter operation
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev: 517453 $
  */
 public class AndNode extends BranchNode
 {

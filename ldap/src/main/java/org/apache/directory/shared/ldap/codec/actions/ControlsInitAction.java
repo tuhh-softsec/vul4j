@@ -35,7 +35,6 @@ import org.slf4j.LoggerFactory;
  * The action used to initialize a control.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$, 
  */
 public class ControlsInitAction extends GrammarAction
 {

@@ -44,7 +44,6 @@ import org.slf4j.LoggerFactory;
  * maxInt INTEGER ::= 2147483647 -- (2^^31 - 1) --
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$, 
  */
 public class AbandonRequestCodec extends LdapMessageCodec
 {

@@ -39,7 +39,6 @@ import org.slf4j.LoggerFactory;
  * A container for Search parameters. It replaces the SearchControls.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public class SearchParams
 {

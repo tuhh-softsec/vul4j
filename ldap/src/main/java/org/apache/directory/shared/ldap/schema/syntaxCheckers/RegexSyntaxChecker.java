@@ -32,7 +32,6 @@ import org.slf4j.LoggerFactory;
  * values.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev: 736240 $
  */
 public class RegexSyntaxChecker extends SyntaxChecker
 {

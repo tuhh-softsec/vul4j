@@ -28,7 +28,6 @@ import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
  * messages for a single search request (ExtendedRequest or Control).
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Revision: 905344 $
  */
 public interface InternalIntermediateResponse extends InternalResponse
 {

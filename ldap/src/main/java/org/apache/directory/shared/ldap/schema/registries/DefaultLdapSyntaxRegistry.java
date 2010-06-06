@@ -27,7 +27,6 @@ import org.apache.directory.shared.ldap.schema.SchemaObjectType;
  * A LdapSyntax registry's service default implementation.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev: 828111 $
  */
 public class DefaultLdapSyntaxRegistry extends DefaultSchemaObjectRegistry<LdapSyntax>
     implements LdapSyntaxRegistry

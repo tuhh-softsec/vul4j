@@ -37,7 +37,6 @@ import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
  * ModifyDNResponse ::= [APPLICATION 13] LDAPResult
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$, 
  */
 public class ModifyDNResponseCodec extends LdapResponseCodec
 {

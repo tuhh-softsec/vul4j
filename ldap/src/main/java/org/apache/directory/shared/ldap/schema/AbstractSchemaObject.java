@@ -69,7 +69,6 @@ import org.apache.directory.shared.ldap.util.StringTools;
  * <b>numericOid</b> : DitStructureRule, 
  * <b>obsolete</b> : LdapSyntax, Comparator, Normalizer, SyntaxChecker
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev: 885381 $
  */
 public abstract class AbstractSchemaObject implements SchemaObject
 {

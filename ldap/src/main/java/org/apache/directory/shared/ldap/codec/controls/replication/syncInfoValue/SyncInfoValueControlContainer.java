@@ -27,7 +27,6 @@ import org.apache.directory.shared.asn1.ber.AbstractContainer;
  * A container for the SyncInfoValue control
  *  
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev: 741888 $, $Date: 2009-02-07 13:57:03 +0100 (Sat, 07 Feb 2009) $, 
  */
 public class SyncInfoValueControlContainer extends AbstractContainer
 {

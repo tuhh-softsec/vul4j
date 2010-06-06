@@ -25,7 +25,6 @@ import org.apache.directory.shared.ldap.entry.Value;
  * A simple assertion value node.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Revision: 519266 $
  */
 public class ApproximateNode<T> extends SimpleNode<T>
 {

@@ -59,7 +59,6 @@ import org.slf4j.LoggerFactory;
  * Document this class.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public class Registries implements SchemaLoaderListener, Cloneable
 {

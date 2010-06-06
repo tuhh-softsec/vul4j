@@ -34,7 +34,6 @@ import org.apache.directory.shared.asn1.codec.DecoderException;
  * registered DecoderCallback is called.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public interface StatefulDecoder
 {

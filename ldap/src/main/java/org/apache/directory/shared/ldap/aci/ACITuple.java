@@ -36,7 +36,6 @@ import org.apache.directory.shared.ldap.constants.AuthenticationLevel;
  * accepted by ACDF (Access Control Decision Function, 18.8, X.501)
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public class ACITuple implements Serializable
 {

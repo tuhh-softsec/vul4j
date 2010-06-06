@@ -31,7 +31,6 @@ import org.apache.directory.shared.ldap.schema.Normalizer;
  * A normalizer for the objectIdentifierMatch matching rule.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public class ObjectIdentifierNormalizer extends Normalizer
 {

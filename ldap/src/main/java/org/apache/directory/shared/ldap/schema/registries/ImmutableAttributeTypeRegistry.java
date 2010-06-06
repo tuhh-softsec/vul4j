@@ -37,7 +37,6 @@ import org.apache.directory.shared.ldap.schema.normalizers.OidNormalizer;
  * An immutable wrapper of the AttributeType registry.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev: 828111 $
  */
 public class ImmutableAttributeTypeRegistry implements AttributeTypeRegistry
 {

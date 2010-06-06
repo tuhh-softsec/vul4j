@@ -31,7 +31,6 @@ import org.slf4j.LoggerFactory;
  * to contain an OctetString.
  *  
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev: 488616 $
  */
 public class FaxSyntaxChecker extends BinarySyntaxChecker
 {

@@ -32,11 +32,8 @@
 /**
  * Unix crypt(3C) utility
  *
- * @version     0.9, 11/25/96
- * @author     Aki Yoshida
- */
-
-/**
+ * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
+ *
  * modified April 2001
  * by Iris Van den Broeke, Daniel Deville
  */
@@ -60,12 +57,8 @@ import org.apache.directory.shared.i18n.I18n;
   /**
    * Unix crypt(3C) utility
    *
-   * @version     0.9, 11/25/96
-   * @author  Aki Yoshida
-   */
-  
-  /**
-   * modified April 2001
+     * @author  Aki Yoshida
+   * 2001
    * by Iris Van den Broeke, Daniel Deville
    */
   
@@ -74,8 +67,7 @@ import org.apache.directory.shared.i18n.I18n;
   /** Unix Crypt.
    * Implements the one way cryptography used by Unix systems for
    * simple password protection.
-   * @version $Id: UnixCrypt.java,v 1.1 2005/10/05 14:09:14 janb Exp $
-   * @author Greg Wilkins (gregw)
+     * @author Greg Wilkins (gregw)
    */
   public class UnixCrypt extends Object
   {

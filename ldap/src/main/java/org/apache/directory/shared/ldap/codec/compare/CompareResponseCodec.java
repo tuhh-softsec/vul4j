@@ -36,7 +36,6 @@ import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
  * CompareResponse ::= [APPLICATION 15] LDAPResult
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$, 
  */
 public class CompareResponseCodec extends LdapResponseCodec
 {

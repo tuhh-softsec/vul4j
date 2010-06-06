@@ -32,7 +32,6 @@ import org.apache.directory.shared.ldap.name.RDN;
  * Lockable ModifyDNRequest implementation.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public class ModifyDnRequestImpl extends AbstractAbandonableRequest implements InternalModifyDnRequest
 {

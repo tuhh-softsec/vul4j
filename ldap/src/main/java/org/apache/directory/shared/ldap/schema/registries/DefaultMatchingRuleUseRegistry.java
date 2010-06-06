@@ -31,7 +31,6 @@ import org.apache.directory.shared.ldap.schema.SchemaObjectType;
  * they refer to.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev: 828111 $
  */
 public class DefaultMatchingRuleUseRegistry extends DefaultSchemaObjectRegistry<MatchingRuleUse>
     implements MatchingRuleUseRegistry

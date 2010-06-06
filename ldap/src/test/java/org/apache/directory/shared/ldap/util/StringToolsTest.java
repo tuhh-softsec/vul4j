@@ -42,7 +42,6 @@ import static org.junit.Assert.assertFalse;
  * Tests the StringTools class methods.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public class StringToolsTest
 {

@@ -49,7 +49,6 @@ import static org.junit.Assert.assertNotNull;
  * Unit tests class for Subtree Specification parser (wrapper).
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public class SubtreeSpecificationParserTest
 {

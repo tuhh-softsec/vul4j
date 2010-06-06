@@ -31,7 +31,6 @@ import org.dom4j.Element;
  * DSML Decorator for AuthResponse
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public class AuthResponseDsml extends LdapResponseDecorator implements DsmlDecorator
 {

@@ -40,7 +40,6 @@ import org.slf4j.LoggerFactory;
  * delivered but should copy the data if they need it over the long term.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
 */
 public class Asn1Decoder implements ITLVBerDecoderMBean
 {

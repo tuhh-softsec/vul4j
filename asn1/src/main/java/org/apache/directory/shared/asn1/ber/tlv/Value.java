@@ -35,7 +35,6 @@ import org.apache.directory.shared.i18n.I18n;
  * This class stores the data decoded from a TLV.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public class Value implements Serializable
 {

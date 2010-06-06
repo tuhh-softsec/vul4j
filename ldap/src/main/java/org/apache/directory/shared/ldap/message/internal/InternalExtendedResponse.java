@@ -27,7 +27,6 @@ import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
  * request message.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Revision$
  */
 public interface InternalExtendedResponse extends InternalResultResponse, javax.naming.ldap.ExtendedResponse
 {

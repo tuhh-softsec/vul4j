@@ -26,7 +26,6 @@ import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
  * Decorator abstract class for LdapRequest
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public class LdapRequestDecorator extends LdapMessageDecorator
 {

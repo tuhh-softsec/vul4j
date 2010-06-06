@@ -139,7 +139,6 @@ import org.slf4j.LoggerFactory;
  *      ldapbis [MODELS]</a>
  * @see DescriptionUtils#getDescription(AttributeType)
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public class AttributeType extends AbstractSchemaObject implements Cloneable
 {

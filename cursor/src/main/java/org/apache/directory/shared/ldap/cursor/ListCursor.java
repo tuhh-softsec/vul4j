@@ -32,7 +32,6 @@ import org.apache.directory.shared.i18n.I18n;
  * Cursor may be limited to a specific range within the list.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public class ListCursor<E> extends AbstractCursor<E>
 {

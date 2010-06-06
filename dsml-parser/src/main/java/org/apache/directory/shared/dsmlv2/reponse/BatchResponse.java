@@ -31,7 +31,6 @@ import org.apache.directory.shared.ldap.codec.LdapResponseCodec;
  * This class represents the Batch Response of a DSML Response
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public class BatchResponse
 {

@@ -41,7 +41,6 @@ import java.util.List;
  * </ul>
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Revision$
  */
 public interface FilterVisitor
 {

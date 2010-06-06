@@ -30,7 +30,6 @@ import static org.junit.Assert.assertFalse;
  * Tests the equals() methods of filter nodes.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev: 575783 $
  */
 public class FilterNodeEqualityTest
 {

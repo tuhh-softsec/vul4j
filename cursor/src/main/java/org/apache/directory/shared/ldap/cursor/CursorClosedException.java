@@ -24,7 +24,6 @@ package org.apache.directory.shared.ldap.cursor;
  * attempted on a closed Cursor.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public class CursorClosedException extends Exception
 {

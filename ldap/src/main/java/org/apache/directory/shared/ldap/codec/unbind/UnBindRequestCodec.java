@@ -41,7 +41,6 @@ import org.slf4j.LoggerFactory;
  * This ldapObject is empty.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$, 
  */
 public class UnBindRequestCodec extends LdapMessageCodec
 {

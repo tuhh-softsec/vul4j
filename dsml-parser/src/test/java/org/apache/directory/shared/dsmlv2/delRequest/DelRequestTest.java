@@ -38,7 +38,6 @@ import org.junit.Test;
  * Tests for the Del Request parsing
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public class DelRequestTest extends AbstractTest
 {

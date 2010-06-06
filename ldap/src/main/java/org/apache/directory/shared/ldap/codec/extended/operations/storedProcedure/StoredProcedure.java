@@ -40,7 +40,6 @@ import org.apache.directory.shared.ldap.util.StringTools;
  * Stored Procedure Extended Operation bean
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$, 
  */
 public class StoredProcedure extends AbstractAsn1Object
 {

@@ -32,7 +32,6 @@ import org.slf4j.LoggerFactory;
  * A Normalizer registry's service default implementation.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev: 831344 $
  */
 public class DefaultNormalizerRegistry extends DefaultSchemaObjectRegistry<Normalizer>
     implements NormalizerRegistry

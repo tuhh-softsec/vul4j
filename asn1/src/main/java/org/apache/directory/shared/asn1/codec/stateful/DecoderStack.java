@@ -30,7 +30,6 @@ import org.apache.directory.shared.asn1.codec.DecoderException;
  * forming a linear staged decoder pipeline.
  * 
  * @author <a href="mailto:dev@directory.apache.org"> Apache Directory Project</a>
- * @version $Rev$
  */
 public class DecoderStack extends AbstractStatefulDecoder
 {
@@ -159,8 +158,7 @@ public class DecoderStack extends AbstractStatefulDecoder
      * 
      * @author <a href="mailto:dev@directory.apache.org"> Apache Directory
      *         Project</a>
-     * @version $Rev$
-     */
+         */
     class ChainingCallback implements DecoderCallback
     {
         /** the source decoder calling this callback */

@@ -37,7 +37,6 @@ import org.junit.Test;
  * Tests the SyntaxCheckerDescriptionSchemaParser class.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public class SyntaxCheckerDescriptionSchemaParserTest
 {

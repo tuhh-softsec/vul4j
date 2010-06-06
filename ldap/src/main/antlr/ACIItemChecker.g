@@ -36,7 +36,6 @@ import org.apache.directory.shared.ldap.name.NameComponentNormalizer;
  * The antlr generated ACIItem checker.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 class AntlrACIItemChecker extends Parser;
 
@@ -593,8 +592,7 @@ refinements
   * The parser's primary lexer.
   *
   * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
-  * @version $Rev$
-  */
+   */
 class AntlrACIItemCheckerLexer extends Lexer;
 
 

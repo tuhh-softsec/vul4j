@@ -32,7 +32,6 @@ import javax.naming.spi.InitialContextFactory;
  * implementation of the JVM.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public class UniversalContextFactory implements InitialContextFactory
 {

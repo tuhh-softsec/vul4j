@@ -61,7 +61,6 @@ import org.slf4j.LoggerFactory;
  *
  * @see <a href="http://www.faqs.org/rfcs/rfc3672.html">RFC 3672</a>
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 class AntlrSubtreeSpecificationParser extends Parser;
 
@@ -476,7 +475,6 @@ refinements returns [ List<ExprNode> children ]
  *
  * @see <a href="http://www.faqs.org/rfcs/rfc3672.html">RFC 3672</a>
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 class AntlrSubtreeSpecificationLexer extends Lexer;
 

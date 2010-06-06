@@ -25,7 +25,6 @@ package org.apache.directory.shared.ldap.constants;
  * See http://java.sun.com/j2se/1.5.0/docs/guide/jndi/jndi-ldap-gl.html
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public class JndiPropertyConstants
 {

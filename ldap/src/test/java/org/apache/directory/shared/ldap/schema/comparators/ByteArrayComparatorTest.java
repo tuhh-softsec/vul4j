@@ -29,7 +29,6 @@ import org.junit.Test;
  * Testcase to test the ByteArrayComparator.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public class ByteArrayComparatorTest
 {

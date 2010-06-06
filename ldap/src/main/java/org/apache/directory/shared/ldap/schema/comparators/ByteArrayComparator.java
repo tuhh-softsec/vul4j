@@ -30,7 +30,6 @@ import org.slf4j.LoggerFactory;
  * A comparator for byte[]s.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public class ByteArrayComparator extends LdapComparator<byte[]>
 {

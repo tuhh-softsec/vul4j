@@ -40,7 +40,6 @@ import org.apache.directory.shared.ldap.util.StringTools;
  * Various utility methods for schema functions and objects.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public class SchemaUtils
 {

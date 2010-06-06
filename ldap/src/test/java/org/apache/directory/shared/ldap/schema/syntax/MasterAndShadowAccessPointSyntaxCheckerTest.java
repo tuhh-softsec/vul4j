@@ -29,7 +29,6 @@ import static org.junit.Assert.assertEquals;
  * Test cases for MasterAndShadowAccessPointSyntaxChecker.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public class MasterAndShadowAccessPointSyntaxCheckerTest
 {

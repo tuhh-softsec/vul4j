@@ -34,7 +34,6 @@ import org.apache.directory.shared.ldap.schema.SchemaManager;
  * registry will be used by the server after instantiation in deserialization.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public class UniqueMemberComparator extends LdapComparator<String>
 {

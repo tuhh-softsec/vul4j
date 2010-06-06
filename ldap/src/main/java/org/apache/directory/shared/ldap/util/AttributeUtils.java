@@ -57,7 +57,6 @@ import org.apache.directory.shared.ldap.schema.normalizers.NoOpNormalizer;
  * A set of utility fuctions for working with Attributes.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public class AttributeUtils
 {

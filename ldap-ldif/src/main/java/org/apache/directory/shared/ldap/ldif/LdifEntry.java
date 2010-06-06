@@ -57,7 +57,6 @@ import org.apache.directory.shared.ldap.util.UTFUtils;
  * - DN modified entries
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public class LdifEntry implements Cloneable, Externalizable
 {

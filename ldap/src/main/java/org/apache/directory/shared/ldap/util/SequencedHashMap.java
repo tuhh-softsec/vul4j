@@ -56,7 +56,6 @@ import org.apache.directory.shared.i18n.I18n;
  * or use explicit synchronization controls.
  * 
  * @since Commons Collections 2.0
- * @version $Revision$ $Date$
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 public class SequencedHashMap implements Map, Cloneable, Externalizable

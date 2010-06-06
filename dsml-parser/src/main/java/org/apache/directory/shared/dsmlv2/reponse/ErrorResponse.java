@@ -46,7 +46,6 @@ import org.dom4j.Element;
  * </ul>
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public class ErrorResponse extends LdapResponseCodec implements DsmlDecorator
 {
@@ -54,7 +53,6 @@ public class ErrorResponse extends LdapResponseCodec implements DsmlDecorator
      * This enum represents the different types of error response
      *
      * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
-     * @version $Rev$, $Date$
      */
     public enum ErrorResponseType
     {

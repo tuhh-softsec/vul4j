@@ -29,7 +29,6 @@ import org.apache.directory.shared.ldap.schema.MatchingRuleUse;
  * Their OID is really the OID of the MatchingRule they refer to.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public interface MatchingRuleUseRegistry extends SchemaObjectRegistry<MatchingRuleUse>,
     Iterable<MatchingRuleUse>

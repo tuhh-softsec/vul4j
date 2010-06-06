@@ -43,7 +43,6 @@ import org.slf4j.LoggerFactory;
  * An extended operation requesting the server to execute a stored procedure.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
  */
 public class StoredProcedureRequest extends ExtendedRequestImpl
 {

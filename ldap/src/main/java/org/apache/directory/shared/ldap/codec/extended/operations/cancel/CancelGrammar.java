@@ -50,7 +50,6 @@ import org.slf4j.LoggerFactory;
  * </pre>
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev: 687720 $, $Date: 2008-08-21 14:05:50 +0200 (Thu, 21 Aug 2008) $, 
  */
 public class CancelGrammar extends AbstractGrammar
 {

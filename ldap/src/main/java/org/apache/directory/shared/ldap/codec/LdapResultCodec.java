@@ -41,7 +41,6 @@ import org.apache.directory.shared.ldap.util.StringTools;
  * A ldapObject to store the LdapResult
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$, 
  */
 public class LdapResultCodec extends AbstractAsn1Object
 {

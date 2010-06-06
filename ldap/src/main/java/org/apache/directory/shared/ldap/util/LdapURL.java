@@ -62,7 +62,6 @@ import org.apache.directory.shared.ldap.name.DN;
  * xtoken     = ("X-" / "x-") token
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$, 
  */
 public class LdapURL
 {
@@ -1795,8 +1794,7 @@ public class LdapURL
      * An inner bean to hold extension information.
      *
      * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
-     * @version $Rev$, $Date$
-     */
+         */
     public static class Extension
     {
         private boolean isCritical;

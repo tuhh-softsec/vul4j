@@ -34,7 +34,6 @@ import org.apache.directory.shared.ldap.name.DN;
  * Search request protocol message interface.
  * 
  * @author <a href="mailto:dev@directory.apache.org"> Apache Directory Project</a>
- * @version $Rev$
  */
 public interface InternalSearchRequest extends ManyReplyRequest, InternalAbandonableRequest
 {
