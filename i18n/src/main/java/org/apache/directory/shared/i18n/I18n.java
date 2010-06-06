@@ -31,6 +31,7 @@ import java.util.ResourceBundle;
  * About formatting see also {@link MessageFormat}
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
+ * @version $Rev$, $Date$
  */
 public enum I18n
 {
@@ -792,7 +793,10 @@ public enum I18n
     }
 
     /**
+     * <p>Getter for the field <code>errorCode</code>.</p>
+     *
      * @return the errorCode
+     * @since 0.9.20
      */
     public String getErrorCode()
     {
@@ -806,7 +810,7 @@ public enum I18n
     .getBundle( "org/apache/directory/shared/i18n/messages" );
 
     /**
-     * 
+     *
      * Translate an error code with argument(s)
      *
      * @param err The error code
@@ -841,7 +845,7 @@ public enum I18n
 
 
     /**
-     * 
+     *
      * Translate a message with argument(s)
      *
      * @param msg The message
