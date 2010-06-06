@@ -119,7 +119,7 @@ public class AVA implements Cloneable, Comparable, Externalizable
      * Note that the upValue should <b>not</b> be null or empty, or resolved
      * to an empty string after having trimmed it. 
      *
-     * @param upType The Usrr Provided type
+     * @param upType The User Provided type
      * @param normType The normalized type
      * @param upValue The User Provided value
      * @param normValue The normalized value
@@ -140,7 +140,7 @@ public class AVA implements Cloneable, Comparable, Externalizable
      * Note that the upValue should <b>not</b> be null or empty, or resolved
      * to an empty string after having trimmed it. 
      *
-     * @param upType The Usrr Provided type
+     * @param upType The User Provided type
      * @param normType The normalized type
      * @param upValue The User Provided value
      * @param normValue The normalized value
@@ -159,7 +159,7 @@ public class AVA implements Cloneable, Comparable, Externalizable
      * Note that the upValue should <b>not</b> be null or empty, or resolved
      * to an empty string after having trimmed it. 
      *
-     * @param upType The Usrr Provided type
+     * @param upType The User Provided type
      * @param normType The normalized type
      * @param upValue The User Provided value
      * @param normValue The normalized value
