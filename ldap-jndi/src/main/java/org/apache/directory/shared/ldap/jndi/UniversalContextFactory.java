@@ -37,7 +37,8 @@ public class UniversalContextFactory implements InitialContextFactory
 {
     private static final String SUN_ICF_FQCN = "com.sun.jndi.ldap.LdapCtxFactory";
     private static final String IBM_ICF_FQCN = "com.ibm.jndi.LDAPCtxFactory";
-    private static final String BEA_ICF_FQCN = SUN_ICF_FQCN;  // JRocket might use SUN classes
+    private static final String BEA_ICF_FQCN = SUN_ICF_FQCN;  // BEA JRocket might use SUN classes
+    private static final String ORACLE_FQCN = BEA_ICF_FQCN;  // Oracle JRocket is the former BEA JRockit
     private static final String ICF_FQCN;
     
     
@@ -55,6 +56,10 @@ public class UniversalContextFactory implements InitialContextFactory
             ICF_FQCN = SUN_ICF_FQCN;
         }
         else if ( jvmVendor.equalsIgnoreCase( "BEA Systems, Inc." ) )
+        {
+            ICF_FQCN = ORACLE_FQCN;
+        }
+        else if ( jvmVendor.equalsIgnoreCase( "Oracle Corporation" ) )
         {
             ICF_FQCN = BEA_ICF_FQCN;
         }
