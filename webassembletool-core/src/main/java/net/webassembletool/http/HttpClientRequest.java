@@ -101,12 +101,14 @@ public class HttpClientRequest {
 			clientParamBean.setVirtualHost(virtualHost);
 		}
 
+		long start = System.currentTimeMillis();
 		// Do the request
 		result = new HttpClientResponse(httpHost, httpRequest, httpClient,
 				httpContext);
-
+		long end = System.currentTimeMillis();
 		if (LOG.isDebugEnabled()) {
-			LOG.debug(toString() + " -> " + result.toString());
+			LOG.debug(toString() + " -> " + result.toString() + " ("
+					+ (end - start) + " ms)");
 		}
 
 		return result;
