@@ -39,7 +39,7 @@ import org.junit.Test;
  * TestCases for the methods of the BindRequestImpl class.
  * 
  * @author <a href="mailto:dev@directory.apache.org"> Apache Directory Project</a>
- *         $Rev$
+ *         $Rev: 923524 $
  */
 public class BindRequestImplTest
 {

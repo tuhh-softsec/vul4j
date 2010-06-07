@@ -36,7 +36,7 @@ import static org.junit.Assert.assertTrue;
  * Tests the methods of the LdapResultImpl class.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- *         $Rev$
+ *         $Rev: 946251 $
  */
 public class LdapResultImplTest
 {

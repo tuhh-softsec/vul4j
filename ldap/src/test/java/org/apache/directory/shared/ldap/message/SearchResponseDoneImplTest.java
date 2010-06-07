@@ -39,7 +39,7 @@ import org.junit.Test;
  * TestCases for the SearchResponseImpl class methods.
  * 
  * @author <a href="mailto:dev@directory.apache.org"> Apache Directory Project</a>
- *         $Rev$
+ *         $Rev: 946251 $
  */
 public class SearchResponseDoneImplTest
 {

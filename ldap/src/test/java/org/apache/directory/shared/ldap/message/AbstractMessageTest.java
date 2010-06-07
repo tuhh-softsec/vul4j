@@ -33,7 +33,7 @@ import org.junit.Test;
  * Test cases for the AbstractMessage class' methods.
  * 
  * @author <a href="mailto:dev@directory.apache.org"> Apache Directory Project</a>
- *         $Rev$
+ *         $Rev: 910150 $
  */
 public class AbstractMessageTest
 {

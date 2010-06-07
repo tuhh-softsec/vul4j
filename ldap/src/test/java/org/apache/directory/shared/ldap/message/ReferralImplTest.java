@@ -34,7 +34,7 @@ import static org.junit.Assert.assertTrue;
  * Tests the ReferralImpl class.
  * 
  * @author <a href="mailto:dev@directory.apache.org"> Apache Directory Project</a>
- *         $Rev$
+ *         $Rev: 946251 $
  */
 public class ReferralImplTest
 {

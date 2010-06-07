@@ -30,7 +30,7 @@ import org.apache.directory.shared.ldap.message.spi.ProviderException;
  * The specific BER provider for LDAP.
  * 
  * @author <a href="mailto:dev@directory.apache.org"> Apache Directory Project</a>
- *         $Rev$
+ *         $Rev: 903719 $
  */
 public class LdapProvider extends Provider
 {

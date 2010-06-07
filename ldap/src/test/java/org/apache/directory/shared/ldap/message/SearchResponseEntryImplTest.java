@@ -37,7 +37,7 @@ import static org.junit.Assert.assertTrue;
  * Test cases for the methods of the SearchResponseEntryImpl class.
  * 
  * @author <a href="mailto:dev@directory.apache.org"> Apache Directory Project</a>
- *         $Rev$
+ *         $Rev: 946251 $
  */
 public class SearchResponseEntryImplTest
 {

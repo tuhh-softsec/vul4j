@@ -27,7 +27,7 @@ import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
  * search request message.
  * 
  * @author <a href="mailto:dev@directory.apache.org"> Apache Directory Project</a>
- *         $Rev$
+ *         $Rev: 910150 $
  */
 public interface InternalSearchResponseDone extends InternalResultResponse
 {
