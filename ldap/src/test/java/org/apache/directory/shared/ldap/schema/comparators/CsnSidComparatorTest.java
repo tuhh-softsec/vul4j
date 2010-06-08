@@ -21,8 +21,11 @@ package org.apache.directory.shared.ldap.schema.comparators;
 
 import static org.junit.Assert.assertEquals;
 
+import org.apache.directory.junit.tools.Concurrent;
+import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 
 /**
@@ -30,6 +33,8 @@ import org.junit.Test;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
+@RunWith(ConcurrentJunitRunner.class)
+@Concurrent(threads = 6)
 public class CsnSidComparatorTest
 {
     private CsnSidComparator comparator;

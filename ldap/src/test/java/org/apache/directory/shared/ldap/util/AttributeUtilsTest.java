@@ -28,6 +28,8 @@ import static org.junit.Assert.assertTrue;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.directory.junit.tools.Concurrent;
+import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.entry.DefaultEntry;
 import org.apache.directory.shared.ldap.entry.DefaultEntryAttribute;
 import org.apache.directory.shared.ldap.entry.DefaultModification;
@@ -39,12 +41,15 @@ import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 /**
  * A test case for the AttributeUtils methods 
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
+@RunWith(ConcurrentJunitRunner.class)
+@Concurrent(threads = 6)
 public class AttributeUtilsTest
 {
 

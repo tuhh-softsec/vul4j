@@ -29,11 +29,14 @@ import java.util.Map;
 import javax.naming.NamingException;
 import javax.naming.ldap.ExtendedResponse;
 
+import org.apache.directory.junit.tools.Concurrent;
+import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.message.internal.InternalExtendedRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalResultResponse;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 
 /**
@@ -41,6 +44,8 @@ import org.junit.Test;
  * 
  * @author <a href="mailto:dev@directory.apache.org"> Apache Directory Project</a>
  */
+@RunWith(ConcurrentJunitRunner.class)
+@Concurrent(threads = 6)
 public class ExtendedRequestImplTest
 {
     private static final Map<String, Control> EMPTY_CONTROL_MAP = new HashMap<String, Control>();

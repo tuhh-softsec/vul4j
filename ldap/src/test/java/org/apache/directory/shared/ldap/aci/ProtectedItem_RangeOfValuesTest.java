@@ -23,11 +23,14 @@ package org.apache.directory.shared.ldap.aci;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
+import org.apache.directory.junit.tools.Concurrent;
+import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.aci.ProtectedItem.RangeOfValues;
 import org.apache.directory.shared.ldap.filter.ExprNode;
 import org.apache.directory.shared.ldap.filter.FilterParser;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 
 /**
@@ -35,6 +38,8 @@ import org.junit.Test;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
+@RunWith(ConcurrentJunitRunner.class)
+@Concurrent(threads = 6)
 public class ProtectedItem_RangeOfValuesTest
 {
     RangeOfValues rangeOfValuesA;

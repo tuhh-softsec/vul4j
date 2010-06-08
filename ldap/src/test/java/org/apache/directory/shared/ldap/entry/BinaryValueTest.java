@@ -32,6 +32,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Arrays;
 
+import org.apache.directory.junit.tools.Concurrent;
+import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.entry.BinaryValue;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.exception.LdapException;
@@ -39,6 +41,7 @@ import org.apache.directory.shared.ldap.schema.Normalizer;
 import org.apache.directory.shared.ldap.schema.SyntaxChecker;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 /**
  * 
@@ -46,6 +49,8 @@ import org.junit.Test;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
+@RunWith(ConcurrentJunitRunner.class)
+@Concurrent(threads = 6)
 public class BinaryValueTest
 {
     private static final byte[] BYTES1 = new byte[]{0x01, 0x02, 0x03, 0x04};

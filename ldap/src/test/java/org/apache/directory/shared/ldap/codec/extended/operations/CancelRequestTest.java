@@ -27,6 +27,8 @@ import static org.junit.Assert.fail;
 
 import java.nio.ByteBuffer;
 
+import org.apache.directory.junit.tools.Concurrent;
+import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.codec.DecoderException;
@@ -36,6 +38,7 @@ import org.apache.directory.shared.ldap.codec.extended.operations.cancel.CancelC
 import org.apache.directory.shared.ldap.codec.extended.operations.cancel.CancelDecoder;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 
 /*
@@ -43,6 +46,8 @@ import org.junit.Test;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
+@RunWith(ConcurrentJunitRunner.class)
+@Concurrent(threads = 6)
 public class CancelRequestTest
 {
     /**

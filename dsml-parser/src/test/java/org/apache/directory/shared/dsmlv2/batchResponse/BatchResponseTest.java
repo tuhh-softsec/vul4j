@@ -21,6 +21,8 @@
 package org.apache.directory.shared.dsmlv2.batchResponse;
 
 
+import org.apache.directory.junit.tools.Concurrent;
+import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.dsmlv2.AbstractResponseTest;
 import org.apache.directory.shared.dsmlv2.Dsmlv2ResponseParser;
 import org.apache.directory.shared.dsmlv2.reponse.BatchResponse;
@@ -35,6 +37,8 @@ import org.apache.directory.shared.ldap.codec.extended.ExtendedResponseCodec;
 import org.apache.directory.shared.ldap.codec.modify.ModifyResponseCodec;
 import org.apache.directory.shared.ldap.codec.modifyDn.ModifyDNResponseCodec;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -44,6 +48,8 @@ import static org.junit.Assert.fail;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
+@RunWith(ConcurrentJunitRunner.class)
+@Concurrent(threads = 6)
 public class BatchResponseTest extends AbstractResponseTest
 {
     /**

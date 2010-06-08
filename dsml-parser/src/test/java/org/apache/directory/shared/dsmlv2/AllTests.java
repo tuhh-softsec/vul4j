@@ -21,6 +21,7 @@
 package org.apache.directory.shared.dsmlv2;
 
 
+import org.apache.directory.junit.tools.ConcurrentSuite;
 import org.apache.directory.shared.dsmlv2.abandonRequest.AbandonRequestTest;
 import org.apache.directory.shared.dsmlv2.addRequest.AddRequestTest;
 import org.apache.directory.shared.dsmlv2.addResponse.AddResponseTest;
@@ -53,7 +54,7 @@ import org.junit.runners.Suite;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-@RunWith(Suite.class)
+@RunWith(ConcurrentSuite.class)
 @Suite.SuiteClasses({
     AbandonRequestTest.class,
     AddRequestTest.class,

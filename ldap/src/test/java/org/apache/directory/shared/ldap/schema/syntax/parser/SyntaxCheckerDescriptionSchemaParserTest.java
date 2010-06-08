@@ -26,18 +26,22 @@ import static org.junit.Assert.assertNull;
 
 import java.text.ParseException;
 
+import org.apache.directory.junit.tools.Concurrent;
+import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.schema.parsers.SyntaxCheckerDescription;
 import org.apache.directory.shared.ldap.schema.parsers.SyntaxCheckerDescriptionSchemaParser;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
+import org.junit.runner.RunWith;
 
 /**
  * Tests the SyntaxCheckerDescriptionSchemaParser class.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
+@RunWith(ConcurrentJunitRunner.class)
+@Concurrent(threads = 6)
 public class SyntaxCheckerDescriptionSchemaParserTest
 {
     private static final String OID = "1.3.6.1.4.1.18060.0.4.0.2.10000";

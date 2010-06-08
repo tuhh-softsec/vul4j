@@ -19,18 +19,24 @@
  */
 package org.apache.directory.shared.ldap.schema.syntax;
 
-import java.math.BigInteger;
-
-import org.apache.directory.shared.ldap.schema.syntaxCheckers.JavaIntegerSyntaxChecker;
-import org.junit.Test;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+
+import java.math.BigInteger;
+
+import org.apache.directory.junit.tools.Concurrent;
+import org.apache.directory.junit.tools.ConcurrentJunitRunner;
+import org.apache.directory.shared.ldap.schema.syntaxCheckers.JavaIntegerSyntaxChecker;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 /**
  * Test cases for IntegerSyntaxChecker.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
+@RunWith(ConcurrentJunitRunner.class)
+@Concurrent(threads = 6)
 public class JavaIntegerSyntaxCheckerTest
 {
     JavaIntegerSyntaxChecker checker = new JavaIntegerSyntaxChecker();

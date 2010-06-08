@@ -29,6 +29,8 @@ import static org.junit.Assert.fail;
 
 import java.text.ParseException;
 
+import org.apache.directory.junit.tools.Concurrent;
+import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.UsageEnum;
 import org.apache.directory.shared.ldap.schema.parser.ConsoleParserMonitor;
@@ -36,13 +38,15 @@ import org.apache.directory.shared.ldap.schema.parsers.AttributeTypeDescriptionS
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
+import org.junit.runner.RunWith;
 
 /**
  * Tests the AttributeTypeDescriptionSchemaParser class.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
+@RunWith(ConcurrentJunitRunner.class)
+@Concurrent(threads = 6)
 public class AttributeTypeDescriptionSchemaParserTest
 {
     /** the parser instance */

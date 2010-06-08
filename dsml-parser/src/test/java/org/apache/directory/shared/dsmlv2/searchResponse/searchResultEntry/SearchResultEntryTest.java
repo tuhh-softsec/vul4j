@@ -29,6 +29,8 @@ import static org.junit.Assert.fail;
 import java.io.UnsupportedEncodingException;
 import java.util.Iterator;
 
+import org.apache.directory.junit.tools.Concurrent;
+import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.dsmlv2.AbstractResponseTest;
 import org.apache.directory.shared.dsmlv2.Dsmlv2ResponseParser;
 import org.apache.directory.shared.dsmlv2.reponse.SearchResponse;
@@ -39,12 +41,15 @@ import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 /**
  * Tests for the Search Result Entry Response parsing
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
+@RunWith(ConcurrentJunitRunner.class)
+@Concurrent(threads = 6)
 public class SearchResultEntryTest extends AbstractResponseTest
 {
     /**

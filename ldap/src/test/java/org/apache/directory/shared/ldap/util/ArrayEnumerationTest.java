@@ -20,21 +20,25 @@
 package org.apache.directory.shared.ldap.util;
 
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.NoSuchElementException;
 
-import org.apache.directory.shared.ldap.util.ArrayEnumeration;
+import org.apache.directory.junit.tools.Concurrent;
+import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.junit.Test;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.fail;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertNotNull;
-
+import org.junit.runner.RunWith;
 
 /**
  * Tests the ArrayEnumeration class.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
+@RunWith(ConcurrentJunitRunner.class)
+@Concurrent(threads = 6)
 public class ArrayEnumerationTest
 {
     @Test

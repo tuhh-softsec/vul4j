@@ -35,6 +35,8 @@ import java.util.Iterator;
 
 import javax.naming.directory.InvalidAttributeValueException;
 
+import org.apache.directory.junit.tools.Concurrent;
+import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.entry.BinaryValue;
 import org.apache.directory.shared.ldap.entry.DefaultEntryAttribute;
 import org.apache.directory.shared.ldap.entry.StringValue;
@@ -46,12 +48,15 @@ import org.apache.directory.shared.ldap.schema.syntaxCheckers.Ia5StringSyntaxChe
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 /**
  * Test the DefaultEntryAttribute class
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
+@RunWith(ConcurrentJunitRunner.class)
+@Concurrent(threads = 6)
 public class DefaultEntryAttributeTest
 {
     private static final Value<String> NULL_STRING_VALUE = new StringValue( (String)null );

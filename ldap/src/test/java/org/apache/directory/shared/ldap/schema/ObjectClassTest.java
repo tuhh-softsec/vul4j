@@ -23,15 +23,19 @@ package org.apache.directory.shared.ldap.schema;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
+import org.apache.directory.junit.tools.Concurrent;
+import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.junit.Before;
 import org.junit.Test;
-
+import org.junit.runner.RunWith;
 
 /**
  * Unit tests class ObjectClass.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
+@RunWith(ConcurrentJunitRunner.class)
+@Concurrent(threads = 6)
 public class ObjectClassTest
 {
     ObjectClass objectClassA;

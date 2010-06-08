@@ -19,17 +19,22 @@
  */
 package org.apache.directory.shared.ldap.schema.syntax;
 
-import org.apache.directory.shared.ldap.schema.syntaxCheckers.MHSORAddressSyntaxChecker;
-
-import org.junit.Test;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import org.apache.directory.junit.tools.Concurrent;
+import org.apache.directory.junit.tools.ConcurrentJunitRunner;
+import org.apache.directory.shared.ldap.schema.syntaxCheckers.MHSORAddressSyntaxChecker;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 /**
  * Test cases for MHSORAddressSyntaxChecker.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
+@RunWith(ConcurrentJunitRunner.class)
+@Concurrent(threads = 6)
 public class MHSORAddressSyntaxCheckerTest
 {
     MHSORAddressSyntaxChecker checker = new MHSORAddressSyntaxChecker();

@@ -16,8 +16,7 @@
   KIND, either express or implied.  See the License for the
   specific language governing permissions and limitations
   under the License.
--->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+--><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.apache.directory.project</groupId>
@@ -37,6 +36,7 @@
     
     <!-- Set versions for depending projects -->
     <skin.version>1.0.1</skin.version>
+    <org.apache.directory.junit.junit-addons.version>0.1-SNAPSHOT</org.apache.directory.junit.junit-addons.version>
     <org.apache.directory.shared.version>0.9.20-SNAPSHOT</org.apache.directory.shared.version>
     <org.apache.directory.buildtools.directory-checkstyle.version>0.1-SNAPSHOT</org.apache.directory.buildtools.directory-checkstyle.version>
     
@@ -105,6 +105,12 @@
   <dependencyManagement>
     <dependencies>
       <!-- Project sub-modules dependencies -->
+      <dependency>
+        <groupId>org.apache.directory.junit</groupId>
+        <artifactId>junit-addons</artifactId>
+        <version>${org.apache.directory.junit.junit-addons.version}</version>
+      </dependency>
+
       <dependency>
         <groupId>${project.groupId}</groupId>
         <artifactId>shared-asn1</artifactId>

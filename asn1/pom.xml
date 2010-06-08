@@ -33,5 +33,10 @@
       <groupId>${project.groupId}</groupId>
       <artifactId>shared-i18n</artifactId>
     </dependency> 
+    <dependency>
+      <groupId>org.apache.directory.junit</groupId>
+      <artifactId>junit-addons</artifactId>
+      <scope>test</scope>
+    </dependency> 
   </dependencies>
 </project>

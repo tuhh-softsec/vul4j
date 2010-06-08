@@ -20,11 +20,14 @@
 package org.apache.directory.shared.ldap.schema.syntax;
 
 
-import org.apache.directory.shared.ldap.schema.syntaxCheckers.MatchingRuleDescriptionSyntaxChecker;
-
-import org.junit.Test;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+
+import org.apache.directory.junit.tools.Concurrent;
+import org.apache.directory.junit.tools.ConcurrentJunitRunner;
+import org.apache.directory.shared.ldap.schema.syntaxCheckers.MatchingRuleDescriptionSyntaxChecker;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 
 /**
@@ -34,6 +37,8 @@ import static org.junit.Assert.assertTrue;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
+@RunWith(ConcurrentJunitRunner.class)
+@Concurrent(threads = 6)
 public class MatchingRuleDescriptionSyntaxCheckerTest
 {
     private MatchingRuleDescriptionSyntaxChecker checker = new MatchingRuleDescriptionSyntaxChecker();

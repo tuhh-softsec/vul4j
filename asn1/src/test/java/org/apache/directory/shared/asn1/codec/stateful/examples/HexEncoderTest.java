@@ -23,6 +23,8 @@ package org.apache.directory.shared.asn1.codec.stateful.examples;
 import java.nio.ByteBuffer;
 import java.util.Random;
 
+import org.apache.directory.junit.tools.Concurrent;
+import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.asn1.codec.binary.Hex;
 import org.apache.directory.shared.asn1.codec.stateful.EncoderCallback;
@@ -30,6 +32,8 @@ import org.apache.directory.shared.asn1.codec.stateful.StatefulEncoder;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+
 import static org.junit.Assert.fail;
 
 
@@ -39,6 +43,8 @@ import static org.junit.Assert.fail;
  * @author <a href="mailto:dev@directory.apache.org"> Apache Directory Project</a>
  *         $Rev$
  */
+@RunWith(ConcurrentJunitRunner.class)
+@Concurrent(threads = 6)
 public class HexEncoderTest implements EncoderCallback
 {
     HexEncoder encoder = null;
