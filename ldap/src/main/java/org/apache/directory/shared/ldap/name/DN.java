@@ -1284,9 +1284,8 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
      * is the empty DN.
      *
      * @return the parent DN of this DN
-     * @throws LdapInvalidDnException
      */
-    public DN getParent() throws LdapInvalidDnException
+    public DN getParent()
     {
         if ( isEmpty() )
         {
