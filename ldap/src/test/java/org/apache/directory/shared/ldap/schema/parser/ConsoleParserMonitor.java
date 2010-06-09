@@ -19,10 +19,7 @@
  */
 package org.apache.directory.shared.ldap.schema.parser;
 
-import org.apache.directory.junit.tools.Concurrent;
-import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.schema.parsers.ParserMonitor;
-import org.junit.runner.RunWith;
 
 
 /**
@@ -31,8 +28,6 @@ import org.junit.runner.RunWith;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-@RunWith(ConcurrentJunitRunner.class)
-@Concurrent(threads = 6)
 public class ConsoleParserMonitor implements ParserMonitor
 {
     public static final String TRACE_KEY = "maven.eve.schema.parser.trace";

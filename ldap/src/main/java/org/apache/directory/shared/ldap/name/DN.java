@@ -1548,10 +1548,8 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
         while ( localRdns.hasMoreElements() )
         {
             RDN rdn = localRdns.nextElement();
-            String localUpName = rdn.getName();
-            rdnOidToName( rdn, oidsMap );
-            rdn.normalize();
-            rdn.setUpName( localUpName );
+            
+            rdn.normalize( oidsMap );
         }
 
         normalizeInternal();

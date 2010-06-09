@@ -35,6 +35,7 @@ import org.apache.commons.collections.map.MultiValueMap;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.entry.StringValue;
 import org.apache.directory.shared.ldap.entry.Value;
+import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.schema.normalizers.OidNormalizer;
 import org.apache.directory.shared.ldap.util.StringTools;
@@ -183,6 +184,9 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
     /** Constant used in comparisons */
     public static final int EQUAL = 0;
 
+    /** A flag used to tell if the RDN has been normalized */
+    private boolean normalized;
+
 
     /**
      * A empty constructor.
@@ -194,6 +198,7 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
         // treeSet.
         upName = "";
         normName = "";
+        normalized = false;
     }
 
 
@@ -224,6 +229,8 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
             normName = "";
             length = 0;
         }
+
+        normalized = false;
     }
 
 
@@ -248,6 +255,9 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
         length = upName.length();
         // create the internal normalized form
         normalize();
+        
+        // As strange as it seems, the RDN is *not* normalized against the schema at this point
+        normalized = false;
     }
 
 
@@ -270,6 +280,9 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
         length = upName.length();
         // create the internal normalized form
         normalize();
+        
+        // As strange as it seems, the RDN is *not* normalized against the schema at this point
+        normalized = false;
     }
 
 
@@ -287,6 +300,7 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
         this.length = length;
         this.upName = upName;
         this.normName = normName;
+        normalized = false;
     }
 
 
@@ -304,6 +318,7 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
         this.upName = rdn.getName();
         this.start = rdn.start;
         this.length = rdn.length;
+        normalized = rdn.normalized;
 
         switch ( rdn.getNbAtavs() )
         {
@@ -401,6 +416,7 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
         DN.rdnOidToName( this, oidsMap );
         normalize();
         this.upName = upName;
+        normalized = true;
 
         return this;
     }
@@ -527,6 +543,7 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
         upName = "";
         start = -1;
         length = 0;
+        normalized = false;
     }
 
 
@@ -1292,6 +1309,17 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
         String value = StringTools.utf8ToString( attrValue );
 
         return escapeValue( value );
+    }
+    
+    
+    /**
+     * Tells if the RDN has already been normalized or not
+     *
+     * @return <code>true</code> if the RDN is already normalized.
+     */
+    public boolean isNormalized()
+    {
+        return normalized;
     }
 
 
