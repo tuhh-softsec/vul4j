@@ -1,0 +1,28 @@
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+	<!--
+		This script defines the view on the project builders section for CCM Builder.
+	-->
+  <f:entry title="CCM Version">
+  	<select class="setting-input" name="CCMBuilder.ccmName">
+      <option>(Default)</option>
+      <j:forEach var="inst" items="${descriptor.installations}">
+        <f:option selected="${inst.name==instance.ccmName}">${inst.name}</f:option>
+      </j:forEach>
+    </select>
+  </f:entry>
+  
+  <f:entry title="Project source folder" help="${rootURL}/../plugin/ccm/help-SrcFolder.html">
+	  <f:textbox name="CCMBuilder.srcFolder" value="${instance.srcFolder}" />
+  </f:entry>
+  
+  <f:advanced>
+	  <f:entry title="Recursive?" help="${rootURL}/../plugin/ccm/help-Recursive.html">
+		  <f:checkbox name="CCMBuilder.recursive" value="${instance.recursive}" checked="${instance.recursive}" />
+	  </f:entry> 
+	  
+	  <f:entry title="Number of metrics" help="${rootURL}/../plugin/ccm/help-NumMetrics.html">
+		  <f:textbox name="CCMBuilder.numMetrics" value="${instance.numMetrics}" />
+	  </f:entry>
+  </f:advanced>
+  
+</j:jelly>

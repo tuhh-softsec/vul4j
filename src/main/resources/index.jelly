@@ -1,0 +1,8 @@
+<!--
+  This view is used to render the plugin list page.
+
+  Since we don't really have anything dynamic here, let's just use static HTML. 
+-->
+<div>
+  This plugin is a CCM Builder for scanning for Cyclomatic Complexity in class source-code files.
+</div>
