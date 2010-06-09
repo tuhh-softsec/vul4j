@@ -3659,4 +3659,36 @@ public class DNTest
         
         assertEquals( 3, count );
     }
+    
+    
+    @Test
+    public void testIsParentOfTrue() throws Exception
+    {
+        DN dn = new DN( "ou=example, dc=apache, dc=org" );
+        DN parent1 = new DN( "ou=example,dc=apache, dc=org" );
+        DN parent2 = new DN( "dc=apache, dc=org" );
+        DN parent3 = new DN( "dc=org" );
+        DN notParent = new DN( "ou=example,dc=apache, dc=com" );
+        
+        assertTrue( parent1.isParentOf( dn ) );
+        assertTrue( parent2.isParentOf( dn ) );
+        assertTrue( parent3.isParentOf( dn ) );
+        assertFalse( notParent.isParentOf( dn ) );
+    }
+    
+    
+    @Test
+    public void testIsChildOfTrue() throws Exception
+    {
+        DN dn = new DN( "ou=example, dc=apache, dc=org" );
+        DN parent1 = new DN( "ou=example,dc=apache, dc=org" );
+        DN parent2 = new DN( "dc=apache, dc=org" );
+        DN parent3 = new DN( "dc=org" );
+        DN notParent = new DN( "dc=apache, dc=com" );
+        
+        assertTrue( dn.isChildOf( parent1 ) );
+        assertTrue( dn.isChildOf( parent2 ) );
+        assertTrue( dn.isChildOf( parent3 ) );
+        assertFalse( notParent.isChildOf( dn ) );
+    }
 }
