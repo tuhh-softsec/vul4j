@@ -14,14 +14,14 @@
  */
 package net.webassembletool.extension;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 
 import net.webassembletool.ConfigurationException;
 import net.webassembletool.DriverConfiguration;
 import net.webassembletool.authentication.AuthenticationHandler;
-import net.webassembletool.authentication.RemoteUserAuthenticationHandler;
 import net.webassembletool.cookie.CustomCookieStore;
-import net.webassembletool.cookie.SerializableBasicCookieStore;
 import net.webassembletool.filter.Filter;
 
 import org.apache.commons.logging.Log;
@@ -41,7 +41,14 @@ public class ExtensionFactory {
 			.getName();
 	private static final String EXTENSION_AUTHENTIFICATION_HANDLER = AuthenticationHandler.class
 			.getName();
+
+	// Store class name for each Extension (Filter,Cookie,AuthenticationHandler)
 	private final HashMap<String, String> classes = new HashMap<String, String>();
+
+	// Store instance for each Extension (Filter,Cookie,AuthenticationHandler)
+	private final Map<String, Extension> instances = Collections
+			.synchronizedMap(new HashMap<String, Extension>());
+
 	private final DriverConfiguration conf;
 
 	/**
@@ -74,33 +81,25 @@ public class ExtensionFactory {
 
 		String className = classes.get(clazz.getName());
 
-		if (className == null) {
-			if (EXTENSION_COOKIE_STORE.equals(clazz.getName())
-					&& className == null) {
-				className = SerializableBasicCookieStore.class.getName();
-			} else if (EXTENSION_AUTHENTIFICATION_HANDLER.equals(clazz
-					.getName())
-					&& className == null) {
-				className = RemoteUserAuthenticationHandler.class.getName();
-			}
-		}
-
 		if (className != null) {
-			try {
-				if (LOG.isDebugEnabled()) {
-					LOG.debug("Creating  " + className + " as "
-							+ clazz.getName());
+			if (instances.get(className) == null) {
+				try {
+					if (LOG.isDebugEnabled()) {
+						LOG.debug("Creating  " + className + " as "
+								+ clazz.getName());
+					}
+					result = (T) Class.forName(className).newInstance();
+					result.init(conf.getProperties());
+					instances.put(className, result);
+				} catch (InstantiationException e) {
+					throw new ConfigurationException(e);
+				} catch (IllegalAccessException e) {
+					throw new ConfigurationException(e);
+				} catch (ClassNotFoundException e) {
+					throw new ConfigurationException(e);
 				}
-
-				result = (T) Class.forName(className).newInstance();
-				result.init(conf.getProperties());
-			} catch (InstantiationException e) {
-				throw new ConfigurationException(e);
-			} catch (IllegalAccessException e) {
-				throw new ConfigurationException(e);
-			} catch (ClassNotFoundException e) {
-				throw new ConfigurationException(e);
 			}
+			result = (T) instances.get(className);
 		}
 		return result;
 	}

@@ -16,6 +16,8 @@ package net.webassembletool;
 
 import java.util.Properties;
 
+import net.webassembletool.authentication.RemoteUserAuthenticationHandler;
+import net.webassembletool.cookie.SerializableBasicCookieStore;
 import net.webassembletool.renderers.ResourceFixupRenderer;
 
 /**
@@ -41,10 +43,10 @@ public class DriverConfiguration {
 	private String proxyHost;
 	private int proxyPort = 0;
 	private boolean filterJsessionid = true;
-	private String authenticationHandler = null;
+	private String authenticationHandler = RemoteUserAuthenticationHandler.class.getName();
 	private final Properties properties;
 	private boolean preserveHost = false;
-	private String cookieStore = null;
+	private String cookieStore = SerializableBasicCookieStore.class.getName();
 	private String filter = null;
 
 	public String getFilter() {
