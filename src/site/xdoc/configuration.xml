@@ -132,6 +132,24 @@
                     <td>No</td>
                     <td>false</td>
                 </tr>
+                <tr>
+                    <td>cookieStore</td>
+                    <td>The cookieStore to use. Must be a class that implements net.webassembletool.cookie.CustomCookieStore</td>
+                    <td>No</td>
+                    <td>net.webassembletool.cookie.SerializableBasicCookieStore</td>
+                </tr>
+                <tr>
+                    <td>authenticationHandler</td>
+                    <td>The <a href="authentication.html">authenticationHandler</a> to use. Must be a class that implements net.webassembletool.authentication.AuthenticationHandler</td>
+                    <td>No</td>
+                    <td>net.webassembletool.authentication.RemoteUserAuthenticationHandler</td>
+                </tr> 
+				<tr>
+                    <td>filter</td>
+                    <td>The request filter to use. Must be a class that implements net.webassembletool.filter.Filter</td>
+                    <td>No</td>
+                    <td></td>
+                </tr>   
 			</table>
 
 		</section>
