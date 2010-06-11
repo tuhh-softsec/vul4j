@@ -195,6 +195,6 @@
 	</distributionManagement>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-                <currentVersion>${pom.version}</currentVersion>
+        <currentVersion>${project.version}</currentVersion>
 	</properties>
 </project>
