@@ -33,7 +33,8 @@ public enum ChangeType
     Modify( 1 ),
     ModDn( 2 ),
     ModRdn( 3 ),
-    Delete( 4 );
+    Delete( 4 ),
+    None(-1);
     
     /** Add ordinal value */
     public static final int ADD_ORDINAL = 0;
@@ -49,6 +50,9 @@ public enum ChangeType
 
     /** Delete ordinal value */
     public static final int DELETE_ORDINAL = 4;
+
+    /** None ordinal value */
+    public static final int NONE_ORDINAL = -1;
 
     /* the ordinal value for a change type */
     private final int changeType;
@@ -79,6 +83,8 @@ public enum ChangeType
     {
         switch( val )
         {
+            case -1: return None;
+            
             case 0: return Add;
             
             case 1: return Modify;

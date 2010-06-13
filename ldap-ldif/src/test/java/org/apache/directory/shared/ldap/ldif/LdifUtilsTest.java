@@ -36,6 +36,7 @@ import javax.naming.directory.BasicAttributes;
 
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
+import org.apache.directory.shared.ldap.codec.controls.ManageDsaITControl;
 import org.apache.directory.shared.ldap.entry.DefaultEntry;
 import org.apache.directory.shared.ldap.entry.DefaultEntryAttribute;
 import org.apache.directory.shared.ldap.entry.Entry;
@@ -357,8 +358,6 @@ public class LdifUtilsTest
         entry.addAttribute( "sn", "test" );
 
         LdifUtils.convertToLdif( entry, 15 );
-        //Attributes result = LdifUtils.convertFromLdif( ldif );
-        //assertEquals( entry, result );
     }
     
     
@@ -483,5 +482,67 @@ public class LdifUtilsTest
         {
             assertTrue( true );
         }
+    }
+    
+    
+    @Test
+    public void testConvertEntryNoControls() throws Exception 
+    {
+        String expected = 
+            "dn: ou=test\n" +
+            "ObjectClass: top\n" +
+            "ObjectClass: metaTop\n" +
+            "ObjectClass: metaSyntax\n" +
+            "m-oid: 1.2.3.4\n" +
+            "m-description: description\n\n";
+        
+        LdifEntry entry = new LdifEntry();
+        
+        entry.setDn( "ou=test" );
+        entry.addAttribute( "ObjectClass", "top" );
+        entry.addAttribute( "ObjectClass", "metaTop" );
+        entry.addAttribute( "ObjectClass", "metaSyntax" );
+        entry.addAttribute( "m-oid", "1.2.3.4" );
+        entry.addAttribute( "m-description", "description" );
+        
+        String converted = LdifUtils.convertToLdif( entry );
+        
+        assertNotNull( converted );
+        assertEquals( expected, converted );
+    }
+
+
+    
+    
+    @Test
+    public void testConvertEntryOneControl() throws Exception 
+    {
+        String expected = 
+            "dn: ou=test\n" +
+            "control: 2.16.840.1.113730.3.4.2 false\n" +
+            "changetype: add\n" +
+            "ObjectClass: top\n" +
+            "ObjectClass: metaTop\n" +
+            "ObjectClass: metaSyntax\n" +
+            "m-oid: 1.2.3.4\n" +
+            "m-description: description\n\n";
+        
+        LdifEntry entry = new LdifEntry();
+        
+        entry.setDn( "ou=test" );
+        entry.addAttribute( "ObjectClass", "top" );
+        entry.addAttribute( "ObjectClass", "metaTop" );
+        entry.addAttribute( "ObjectClass", "metaSyntax" );
+        entry.addAttribute( "m-oid", "1.2.3.4" );
+        entry.addAttribute( "m-description", "description" );
+        
+        ManageDsaITControl control = new ManageDsaITControl();
+        
+        entry.addControl( control );
+        
+        String converted = LdifUtils.convertToLdif( entry );
+        
+        assertNotNull( converted );
+        assertEquals( expected, converted );
     }
 }

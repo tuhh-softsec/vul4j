@@ -28,7 +28,9 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.directory.shared.ldap.codec.controls.ControlImpl;
 import org.apache.directory.shared.ldap.entry.DefaultEntry;
 import org.apache.directory.shared.ldap.entry.DefaultModification;
 import org.apache.directory.shared.ldap.entry.DefaultEntryAttribute;
@@ -86,19 +88,19 @@ public class LdifEntry implements Cloneable, Externalizable
     private Entry entry;
 
     
-    /** The control */
-    private Control control;
+    /** The controls */
+    private Map<String, Control> controls;
 
     /**
      * Creates a new Entry object.
      */
     public LdifEntry()
     {
-        changeType = ChangeType.Add; // Default LDIF content
+        changeType = ChangeType.None; // Default LDIF content
         modificationList = new LinkedList<Modification>();
         modificationItems = new HashMap<String, Modification>();
         entry = new DefaultEntry( (DN)null );
-        control = null;
+        controls = null;
     }
 
     
@@ -312,8 +314,15 @@ public class LdifEntry implements Cloneable, Externalizable
     /**
      * Get the change type
      * 
-     * @return The change type. One of : ADD = 0; MODIFY = 1; MODDN = 2; MODRDN =
-     *         3; DELETE = 4;
+     * @return The change type. One of : 
+     * <ul>
+     * <li>ADD</li>
+     * <li>MODIFY</li>
+     * <li>MODDN</li>
+     * <li>MODRDN</li>
+     * <li>DELETE</li>
+     * <li>NONE</li>
+     * </ul>
      */
     public ChangeType getChangeType()
     {
@@ -447,6 +456,25 @@ public class LdifEntry implements Cloneable, Externalizable
         this.newSuperior = newSuperior;
     }
 
+    
+    /**
+     * @return True if there is this is a content ldif
+     */
+    public boolean isLdifContent()
+    {
+        return changeType == ChangeType.None;
+    }
+
+    
+    /**
+     * @return True if there is this is a change ldif
+     */
+    public boolean isLdifChange()
+    {
+        return changeType != ChangeType.None;
+    }
+
+    
     /**
      * @return True if the entry is an ADD entry
      */
@@ -454,6 +482,7 @@ public class LdifEntry implements Cloneable, Externalizable
     {
         return changeType == ChangeType.Add;
     }
+    
 
     /**
      * @return True if the entry is a DELETE entry
@@ -463,6 +492,7 @@ public class LdifEntry implements Cloneable, Externalizable
         return changeType == ChangeType.Delete;
     }
 
+    
     /**
      * @return True if the entry is a MODDN entry
      */
@@ -471,6 +501,7 @@ public class LdifEntry implements Cloneable, Externalizable
         return changeType == ChangeType.ModDn;
     }
 
+    
     /**
      * @return True if the entry is a MODRDN entry
      */
@@ -479,6 +510,7 @@ public class LdifEntry implements Cloneable, Externalizable
         return changeType == ChangeType.ModRdn;
     }
 
+    
     /**
      * @return True if the entry is a MODIFY entry
      */
@@ -487,6 +519,7 @@ public class LdifEntry implements Cloneable, Externalizable
         return changeType == ChangeType.Modify;
     }
 
+    
     /**
      * Tells if the current entry is a added one
      *
@@ -494,26 +527,64 @@ public class LdifEntry implements Cloneable, Externalizable
      */
     public boolean isEntry()
     {
-        return changeType == ChangeType.Add;
+        return ( changeType == ChangeType.None ) || ( changeType == ChangeType.Add );
     }
+    
+    
+    /**
+     * @return true if the entry has some controls
+     */
+    public boolean hasControls()
+    {
+        return controls != null;
+    }
+    
+    
+    /**
+     * @return The set of controls for this entry
+     */
+    public Map<String, Control> getControls()
+    {
+        return controls;
+    }
+    
 
     /**
      * @return The associated control, if any
      */
-    public Control getControl()
+    public Control getControl( String oid )
     {
-        return control;
+        if ( controls != null )
+        {
+            return controls.get( oid );
+        }
+        
+        return null;
     }
 
     /**
      * Add a control to the entry
      * 
-     * @param control
-     *            The control
+     * @param control The added control
      */
-    public void setControl( Control control )
+    public void addControl( Control control )
     {
-        this.control = control;
+        if ( control == null )
+        {
+            throw new IllegalArgumentException( "The added control must not be null" );
+        }
+        
+        if ( changeType == ChangeType.None )
+        {
+            changeType = ChangeType.Add;
+        }
+        
+        if ( controls == null )
+        {
+            controls = new ConcurrentHashMap<String, Control>();
+        }
+        
+        controls.put( control.getOid(), control );
     }
 
     /**
@@ -640,9 +711,12 @@ public class LdifEntry implements Cloneable, Externalizable
             }
         }
 
-        if ( control != null )
+        if ( controls != null )
         {
-            result = result * 17 + control.hashCode();
+            for ( String control : controls.keySet() )
+            {
+                result = result * 17 + control.hashCode();
+            }
         }
 
         return result;
@@ -796,13 +870,53 @@ public class LdifEntry implements Cloneable, Externalizable
                 break; // do nothing
         }
         
-        if ( control != null )
+        if ( controls != null )
         {
-            return control.equals( otherEntry.control );
+            Map<String, Control> otherControls = otherEntry.controls;
+            
+            if ( otherControls == null )
+            {
+                return false;
+            }
+            
+            if ( controls.size() != otherControls.size() )
+            {
+                return false;
+            }
+            
+            for ( String controlOid : controls.keySet() )
+            {
+                if ( !otherControls.containsKey( controlOid ) )
+                {
+                    return false;
+                }
+                
+                Control thisControl = controls.get( controlOid );
+                Control otherControl = otherControls.get( controlOid );
+                
+                if ( thisControl == null )
+                {
+                    if ( otherControl != null )
+                    {
+                        return false;
+                    }
+                    
+                    continue;
+                }
+                else
+                {
+                    if ( !thisControl.equals( otherControl ) )
+                    {
+                        return false;
+                    }
+                }
+            }
+            
+            return true;
         }
         else 
         {
-            return otherEntry.control == null;
+            return otherEntry.controls == null;
         }
     }
 
@@ -865,8 +979,37 @@ public class LdifEntry implements Cloneable, Externalizable
         
         if ( in.available() > 0 )
         {
-            // We have a control
-            control = (Control)in.readObject();
+            // We have at least a control
+            int nbControls = in.readInt();
+            
+            if ( nbControls > 0 )
+            {
+                controls = new ConcurrentHashMap<String, Control>( nbControls );
+                
+                for ( int i = 0; i < nbControls; i++ )
+                {
+                    String controlOid = in.readUTF();
+                    boolean isCritical = in.readBoolean();
+                    boolean hasValue = in.readBoolean();
+                    Control control = new ControlImpl(controlOid );
+                    control.setCritical( isCritical );
+                    
+                    if ( hasValue )
+                    {
+                        int valueLength = in.readInt();
+                        byte[] value = new byte[valueLength];
+                        
+                        if ( valueLength > 0 )
+                        {
+                            in.read( value );
+                        }
+                        
+                        control.setValue( value );
+                    }
+                    
+                    controls.put( controlOid, control );
+                }
+            }
         }
     }
 
@@ -937,11 +1080,28 @@ public class LdifEntry implements Cloneable, Externalizable
                 break;
         }
         
-        if ( control != null )
+        // The controls
+        if ( controls != null )
         {
             // Write the control
-            out.writeObject( control );
+            out.writeInt( controls.size() );
             
+            for ( Control control : controls.values() )
+            {
+                UTFUtils.writeUTF( out, control.getOid() );
+                out.writeBoolean( control.isCritical() );
+                out.writeBoolean( control.hasValue() );
+                
+                if ( control.hasValue() )
+                {
+                    out.writeInt( control.getValue().length );
+                    
+                    if ( control.getValue().length > 0 )
+                    {
+                        out.write( control.getValue() );
+                    }
+                }
+            }
         }
         
         // and flush the result

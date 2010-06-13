@@ -1322,7 +1322,7 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
 
                 // Parse the control
                 control = parseControl( line.substring( "control:".length() ) );
-                entry.setControl( control );
+                entry.addControl( control );
             }
             else if ( lowerLine.startsWith( "changetype:" ) )
             {

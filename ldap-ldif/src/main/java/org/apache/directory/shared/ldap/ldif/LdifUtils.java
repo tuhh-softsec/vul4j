@@ -32,6 +32,7 @@ import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.exception.LdapInvalidAttributeValueException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
+import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.util.AttributeUtils;
 import org.apache.directory.shared.ldap.util.Base64;
@@ -344,21 +345,41 @@ public class LdifUtils
         // Dump the ChangeType
         String changeType = entry.getChangeType().toString().toLowerCase();
         
-        if ( entry.getChangeType() != ChangeType.Modify )
+        if ( entry.getChangeType() != ChangeType.None )
         {
+            // First dump the controls if any
+            if ( entry.hasControls() )
+            {
+                for ( Control control : entry.getControls().values() )
+                {
+                    StringBuilder controlStr = new StringBuilder();
+                    
+                    controlStr.append( "control: " ).append( control.getOid() );
+                    controlStr.append( " " ).append( control.isCritical() );
+                    
+                    if ( control.hasValue() )
+                    {
+                        controlStr.append( "::" ).append( Base64.encode( control.getValue() ) );
+                    }
+                    
+                    sb.append( stripLineToNChars( controlStr.toString(), length ) );
+                    sb.append( '\n' );
+                }
+            }
+            
             sb.append( stripLineToNChars( "changetype: " + changeType, length ) );
             sb.append( '\n' );
         }
 
         switch ( entry.getChangeType() )
         {
-            case Delete :
-                if ( entry.getEntry() != null )
+            case None : 
+                if ( entry.hasControls() )
                 {
-                    throw new LdapException( I18n.err( I18n.ERR_12081 ) );
+                    sb.append( stripLineToNChars( "changetype: " + ChangeType.Add, length ) );
                 }
                 
-                break;
+                // Fallthrough
                 
             case Add :
                 if ( ( entry.getEntry() == null ) )
@@ -370,6 +391,14 @@ public class LdifUtils
                 for ( EntryAttribute attribute:entry.getEntry() )
                 {
                     sb.append( convertToLdif( attribute, length ) );
+                }
+                
+                break;
+
+            case Delete :
+                if ( entry.getEntry() != null )
+                {
+                    throw new LdapException( I18n.err( I18n.ERR_12081 ) );
                 }
                 
                 break;
