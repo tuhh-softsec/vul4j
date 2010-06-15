@@ -25,6 +25,7 @@ import java.nio.ByteBuffer;
 
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
+import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.controls.AbstractControl;
@@ -88,25 +89,31 @@ public class PasswordPolicyResponseControl extends AbstractControl
         // Encode the Control envelop
         super.encode( buffer );
 
-        // Encode the OCTET_STRING tag
-        buffer.put( UniversalTag.OCTET_STRING_TAG );
-        buffer.put( TLV.getBytes( valueLength ) );
+        if( controlLen > 0 )
+        {
+            // Encode the OCTET_STRING tag
+            buffer.put( UniversalTag.OCTET_STRING_TAG );
+            buffer.put( TLV.getBytes( valueLength ) );
+        }
 
         if ( timeBeforeExpiration >= 0 )
         {
             buffer.put( ( byte ) PasswordPolicyResponseControlTags.TIME_BEFORE_EXPIRATION_TAG.getValue() );
             buffer.put( TLV.getBytes( timeBeforeExpiration ) );
+            buffer.put( Value.getBytes( timeBeforeExpiration ) );
         }
         else if ( graceAuthNsRemaining >= 0 )
         {
             buffer.put( ( byte ) PasswordPolicyResponseControlTags.GRACE_AUTHNS_REMAINING_TAG.getValue() );
             buffer.put( TLV.getBytes( graceAuthNsRemaining ) );
+            buffer.put( Value.getBytes( graceAuthNsRemaining ) );
         }
 
         if ( ppolicyError != null )
         {
             buffer.put( UniversalTag.ENUMERATED_TAG );
             buffer.put( TLV.getBytes( ppolicyError.getValue() ) );
+            buffer.put( Value.getBytes( ppolicyError.getValue() ) );
         }
 
         return buffer;
