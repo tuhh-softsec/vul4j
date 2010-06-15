@@ -34,7 +34,7 @@ import org.junit.runner.RunWith;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 @RunWith(ConcurrentJunitRunner.class)
-@Concurrent(threads = 6)
+@Concurrent()
 public class CertificateListSyntaxCheckerTest
 {
     CertificateListSyntaxChecker checker = new CertificateListSyntaxChecker();

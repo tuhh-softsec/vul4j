@@ -41,7 +41,7 @@ import org.junit.runner.RunWith;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 @RunWith(ConcurrentJunitRunner.class)
-@Concurrent(threads = 6)
+@Concurrent()
 public class SyntaxCheckerDescriptionSchemaParserTest
 {
     private static final String OID = "1.3.6.1.4.1.18060.0.4.0.2.10000";

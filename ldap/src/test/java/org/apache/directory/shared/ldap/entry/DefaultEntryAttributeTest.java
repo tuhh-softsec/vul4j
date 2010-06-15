@@ -56,7 +56,7 @@ import org.junit.runner.RunWith;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 @RunWith(ConcurrentJunitRunner.class)
-@Concurrent(threads = 6)
+@Concurrent()
 public class DefaultEntryAttributeTest
 {
     private static final Value<String> NULL_STRING_VALUE = new StringValue( (String)null );

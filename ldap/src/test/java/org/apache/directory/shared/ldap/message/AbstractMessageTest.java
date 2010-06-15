@@ -39,7 +39,7 @@ import org.junit.runner.RunWith;
  *         $Rev: 910150 $
  */
 @RunWith(ConcurrentJunitRunner.class)
-@Concurrent(threads = 6)
+@Concurrent()
 public class AbstractMessageTest
 {
     /**

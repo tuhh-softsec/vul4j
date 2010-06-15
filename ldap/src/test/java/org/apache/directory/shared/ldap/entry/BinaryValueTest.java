@@ -50,7 +50,7 @@ import org.junit.runner.RunWith;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 @RunWith(ConcurrentJunitRunner.class)
-@Concurrent(threads = 6)
+@Concurrent()
 public class BinaryValueTest
 {
     private static final byte[] BYTES1 = new byte[]{0x01, 0x02, 0x03, 0x04};

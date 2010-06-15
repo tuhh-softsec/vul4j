@@ -34,7 +34,7 @@ import org.junit.runner.RunWith;
 
 
 @RunWith(ConcurrentJunitRunner.class)
-@Concurrent(threads = 6)
+@Concurrent()
 public class TestSchemaToLdif
 {
     private static final String HEADER = 

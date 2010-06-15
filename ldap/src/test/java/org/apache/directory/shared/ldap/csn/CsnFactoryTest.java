@@ -35,7 +35,7 @@ import static org.junit.Assert.assertFalse;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 @RunWith(ConcurrentJunitRunner.class)
-@Concurrent(threads = 6)
+@Concurrent()
 public class CsnFactoryTest
 {
     private static final int NUM_GENERATES = 10;

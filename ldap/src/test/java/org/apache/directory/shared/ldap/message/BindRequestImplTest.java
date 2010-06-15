@@ -45,7 +45,7 @@ import org.junit.runner.RunWith;
  *         $Rev: 923524 $
  */
 @RunWith(ConcurrentJunitRunner.class)
-@Concurrent(threads = 6)
+@Concurrent()
 public class BindRequestImplTest
 {
     private static final Map<String, Control> EMPTY_CONTROL_MAP = new HashMap<String, Control>();

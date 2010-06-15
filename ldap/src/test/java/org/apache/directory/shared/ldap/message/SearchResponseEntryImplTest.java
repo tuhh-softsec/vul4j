@@ -44,7 +44,7 @@ import static org.junit.Assert.assertTrue;
  *         $Rev: 946251 $
  */
 @RunWith(ConcurrentJunitRunner.class)
-@Concurrent(threads = 6)
+@Concurrent()
 public class SearchResponseEntryImplTest
 {
     /**

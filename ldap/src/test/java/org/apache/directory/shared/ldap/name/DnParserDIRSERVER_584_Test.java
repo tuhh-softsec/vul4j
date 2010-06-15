@@ -38,7 +38,7 @@ import static org.junit.Assert.fail;
  * @see <a href="https://issues.apache.org/jira/browse/DIRSERVER-584">DIRSERVER-584</a>
  */
 @RunWith(ConcurrentJunitRunner.class)
-@Concurrent(threads = 6)
+@Concurrent()
 public class DnParserDIRSERVER_584_Test
 {
    /**

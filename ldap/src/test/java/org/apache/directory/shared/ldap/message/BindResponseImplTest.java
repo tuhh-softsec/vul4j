@@ -43,7 +43,7 @@ import static org.junit.Assert.assertTrue;
  *         $Rev: 946353 $
  */
 @RunWith(ConcurrentJunitRunner.class)
-@Concurrent(threads = 6)
+@Concurrent()
 public class BindResponseImplTest
 
 {

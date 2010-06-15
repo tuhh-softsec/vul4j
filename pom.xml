@@ -106,12 +106,6 @@
     <dependencies>
       <!-- Project sub-modules dependencies -->
       <dependency>
-        <groupId>org.apache.directory.junit</groupId>
-        <artifactId>junit-addons</artifactId>
-        <version>${org.apache.directory.junit.junit-addons.version}</version>
-      </dependency>
-
-      <dependency>
         <groupId>${project.groupId}</groupId>
         <artifactId>shared-asn1</artifactId>
         <version>${project.version}</version>
@@ -223,6 +217,14 @@
         <version>${commons.pool.version}</version>
       </dependency>
       
+      <!-- Test dependencies -->
+
+      <dependency>
+        <groupId>org.apache.directory.junit</groupId>
+        <artifactId>junit-addons</artifactId>
+        <version>${org.apache.directory.junit.junit-addons.version}</version>
+      </dependency>
+
       <!-- Logging dependencies -->
 
       <dependency>

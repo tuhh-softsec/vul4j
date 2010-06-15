@@ -41,7 +41,7 @@ import org.junit.runner.RunWith;
 
 
 @RunWith(ConcurrentJunitRunner.class)
-@Concurrent(threads = 6)
+@Concurrent()
 public class LdapControlTest
 {
     /**

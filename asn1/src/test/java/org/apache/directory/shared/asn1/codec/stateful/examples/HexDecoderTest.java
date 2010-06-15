@@ -44,7 +44,7 @@ import static org.junit.Assert.fail;
  *         $Rev$
  */
 @RunWith(ConcurrentJunitRunner.class)
-@Concurrent(threads = 6)
+@Concurrent()
 public class HexDecoderTest implements DecoderCallback
 {
     private HexDecoder decoder = null;
