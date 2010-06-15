@@ -644,6 +644,7 @@ public class LdapTransformer
                     // Transform Substring Nodes
                     filter = new SubstringFilter();
 
+                    ((SubstringFilter)filter).setType( ((SubstringNode)exprNode).getAttribute() );
                     String initialString = ((SubstringNode)exprNode).getInitial();
                     String finalString = ((SubstringNode)exprNode).getFinal();
                     List<String> anyStrings = ((SubstringNode)exprNode).getAny();
