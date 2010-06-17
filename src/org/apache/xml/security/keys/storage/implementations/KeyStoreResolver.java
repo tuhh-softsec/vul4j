@@ -1,6 +1,6 @@
 
 /*
- * Copyright  1999-2004 The Apache Software Foundation.
+ * Copyright  1999-2010 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -19,13 +19,13 @@ package org.apache.xml.security.keys.storage.implementations;
 
 import java.security.KeyStore;
 import java.security.KeyStoreException;
-import java.security.cert.X509Certificate;
+import java.security.cert.Certificate;
 import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 import org.apache.xml.security.keys.storage.StorageResolverException;
 import org.apache.xml.security.keys.storage.StorageResolverSpi;
-
 
 /**
  * Makes the Certificates from a JAVA {@link KeyStore} object available to the
@@ -38,9 +38,6 @@ public class KeyStoreResolver extends StorageResolverSpi {
    /** Field _keyStore */
    KeyStore _keyStore = null;
 
-   /** Field _iterator */
-   Iterator _iterator = null;
-
    /**
     * Constructor KeyStoreResolver
     *
@@ -49,12 +46,17 @@ public class KeyStoreResolver extends StorageResolverSpi {
     */
    public KeyStoreResolver(KeyStore keyStore) throws StorageResolverException {
       this._keyStore = keyStore;
-      this._iterator = new KeyStoreIterator(this._keyStore);
+      // Do a quick check on the keystore
+      try {
+         _keyStore.aliases();
+      } catch (KeyStoreException ex) {
+         throw new StorageResolverException("generic.EmptyMessage", ex);
+      }
    }
 
    /** @inheritDoc */
    public Iterator getIterator() {
-      return this._iterator;
+      return new KeyStoreIterator(this._keyStore);
    }
 
    /**
@@ -70,39 +72,54 @@ public class KeyStoreResolver extends StorageResolverSpi {
 
       /** Field _aliases */
       Enumeration _aliases = null;
+      
+      /** Field _nextCert */
+      Certificate _nextCert = null;
 
       /**
        * Constructor KeyStoreIterator
        *
        * @param keyStore
-       * @throws StorageResolverException
        */
-      public KeyStoreIterator(KeyStore keyStore)
-              throws StorageResolverException {
-
+      public KeyStoreIterator(KeyStore keyStore) {
          try {
             this._keyStore = keyStore;
             this._aliases = this._keyStore.aliases();
          } catch (KeyStoreException ex) {
-            throw new StorageResolverException("generic.EmptyMessage", ex);
+            // empty Enumeration
+            this._aliases = new Enumeration() {
+               public boolean hasMoreElements() {
+                  return false;
+               }
+               public Object nextElement() {
+                  return null;
+               }
+            };
          }
       }
 
       /** @inheritDoc */
       public boolean hasNext() {
-         return this._aliases.hasMoreElements();
+         if (_nextCert == null)
+            _nextCert = findNextCert();
+
+         return (_nextCert != null);
       }
 
       /** @inheritDoc */
       public Object next() {
-
-         String alias = (String) this._aliases.nextElement();
-
-         try {
-            return this._keyStore.getCertificate(alias);
-         } catch (KeyStoreException ex) {
-            return null;
+         if (_nextCert == null) {
+            // maybe caller did not call hasNext()
+            _nextCert = findNextCert();
+            
+            if (_nextCert == null) {
+                throw new NoSuchElementException();
+            }
          }
+         
+         Certificate ret = _nextCert;
+         _nextCert = null;
+         return ret;
       }
 
       /**
@@ -113,32 +130,24 @@ public class KeyStoreResolver extends StorageResolverSpi {
          throw new UnsupportedOperationException(
             "Can't remove keys from KeyStore");
       }
-   }
+      
+      // Find the next entry that contains a certificate and return it.
+      // In particular, this skips over entries containing symmetric keys.
+      private Certificate findNextCert() {
+         while (this._aliases.hasMoreElements()) {
+             String alias = (String) this._aliases.nextElement();
+             try {
+                Certificate cert = this._keyStore.getCertificate(alias);
+                if (cert != null)
+                   return cert;
+             } catch (KeyStoreException ex) {
+                return null;
+             }
+         }
 
-   /**
-    * Method main
-    *
-    * @param unused
-    * @throws Exception
-    */
-   public static void main(String unused[]) throws Exception {
-
-      KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());
-
-      ks.load(
-         new java.io.FileInputStream(
-         "data/org/apache/xml/security/samples/input/keystore.jks"),
-            "xmlsecurity".toCharArray());
-
-      KeyStoreResolver krs = new KeyStoreResolver(ks);
-
-      for (Iterator i = krs.getIterator(); i.hasNext(); ) {
-         X509Certificate cert = (X509Certificate) i.next();
-         byte[] ski =
-            org.apache.xml.security.keys.content.x509.XMLX509SKI
-               .getSKIBytesFromCert(cert);
-
-         System.out.println(org.apache.xml.security.utils.Base64.encode(ski));
+         return null;
       }
+      
    }
+   
 }
