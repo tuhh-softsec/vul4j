@@ -1,6 +1,6 @@
 Changes since 1.5.1
 =====================================
-* Fix for bug#48676 in RetrievalMethod handler (SC)
+* Fix for bug#48676, RetrievalMethod handler (SC)
 * Fix for bug#45867, support for >1 CRL per KeyInfo (SC)
 * Fix for bug#49148, buffer initialization issue (SC)
 * Fix for bug#49255, vector index bug (SC)
@@ -10,6 +10,7 @@ Changes since 1.5.1
 * Fix for bug#44983, improper c14n of XSLT (SC)
 * Fix for bug#49289, setters for Reference Type/Id (SC)
 * Fix for bug#49371, skip comments in X509Certificate elements (SC)
+* Fix for bug#49459, more header guards (SC)
 * Expose algorithm URI on Signature and Reference objects (SC)
 * White/blacklisting of otherwise registered algorithms (SC)
 

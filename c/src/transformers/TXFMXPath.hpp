@@ -23,6 +23,9 @@
  *
  */
 
+#ifndef TXFMXPATH_INCLUDE
+#define TXFMXPATH_INCLUDE
+
 #include <xsec/transformers/TXFMBase.hpp>
 #include <xsec/utils/XSECSafeBuffer.hpp>
 #include <xsec/canon/XSECC14n20010315.hpp>
@@ -105,5 +108,7 @@ public:
 private:
 	TXFMXPath();
 };
+
+#endif
 
 #endif

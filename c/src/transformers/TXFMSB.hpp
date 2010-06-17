@@ -23,6 +23,9 @@
  *
  */
 
+#ifndef TXFMSB_INCLUDE
+#define TXFMSB_INCLUDE
+
 #include <xsec/transformers/TXFMBase.hpp>
 #include <xsec/utils/XSECSafeBuffer.hpp>
 
@@ -66,4 +69,6 @@ public:
 private:
 	TXFMSB();
 };
+
+#endif
 

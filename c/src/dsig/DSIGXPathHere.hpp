@@ -23,6 +23,9 @@
  *
  */
 
+#ifndef DSIGXPATHHERE_INCLUDE
+#define DSIGXPATHHERE_INCLUDE
+
 #include <xsec/framework/XSECDefs.hpp>
 
 #include <xercesc/util/PlatformUtils.hpp>
@@ -132,6 +135,7 @@ private:
 
 #endif
 
+#endif
 
 
 

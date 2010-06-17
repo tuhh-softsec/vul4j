@@ -25,6 +25,9 @@
  *
  */
 
+#ifndef TXFMDOCOBJECT_INCLUDE
+#define TXFMDOCOBJECT_INCLUDE
+
 #include <xsec/transformers/TXFMBase.hpp>
 #include <xsec/utils/XSECSafeBuffer.hpp>
 #include <xsec/framework/XSECEnv.hpp>
@@ -92,3 +95,4 @@ private:
 	TXFMDocObject();
 };
 
+#endif
