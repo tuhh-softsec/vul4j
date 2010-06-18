@@ -1,5 +1,7 @@
 Changelog for "Apache xml-security" <http://santuario.apache.org/>
 New in v1.4.4-SNAPSHOT
+    Fixed Bug 49458: StorageResolver always exhausted after first use. Thanks to Clement Pellerin.
+    Fixed Bug 49456: StorageResolver.next() gives ClassCastException. Thanks to Clement Pellerin.
     Fixed Bug 49450: KeyStoreResolver always exhausted after first use. Thanks to Clement Pellerin.
     Fixed Bug 49447: KeyStoreResolver iterator returns null for symmetric keys. Thanks to Clement Pellerin.
     Fixed Bug 48368: Digest Value of References inside Manifest - calculation order problem

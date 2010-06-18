@@ -1,6 +1,6 @@
 
 /*
- * Copyright  1999-2004 The Apache Software Foundation.
+ * Copyright  1999-2010 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -53,9 +53,6 @@ public class CertsInFilesystemDirectoryResolver extends StorageResolverSpi {
    /** Field _certs */
    private List _certs = new ArrayList();
 
-   /** Field _iterator */
-   Iterator _iterator = null;
-
    /**
     *
     *
@@ -68,8 +65,6 @@ public class CertsInFilesystemDirectoryResolver extends StorageResolverSpi {
       this._merlinsCertificatesDir = directoryName;
 
       this.readCertsFromHarddrive();
-
-      this._iterator = new FilesystemIterator(this._certs);
    }
 
    /**
@@ -144,7 +139,7 @@ public class CertsInFilesystemDirectoryResolver extends StorageResolverSpi {
 
    /** @inheritDoc */
    public Iterator getIterator() {
-      return this._iterator;
+      return new FilesystemIterator(this._certs);
    }
 
    /**

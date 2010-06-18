@@ -1,6 +1,6 @@
 
 /*
- * Copyright 1999-2009 The Apache Software Foundation.
+ * Copyright 1999-2010 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -34,20 +34,16 @@ public class SingleCertificateResolver extends StorageResolverSpi {
    /** Field _certificate */
    X509Certificate _certificate = null;
 
-   /** Field _iterator */
-   Iterator _iterator = null;
-
    /**
     * @param x509cert the single {@link X509Certificate}
     */
    public SingleCertificateResolver(X509Certificate x509cert) {
       this._certificate = x509cert;
-      this._iterator = new InternalIterator(this._certificate);
    }
 
    /** @inheritDoc */
    public Iterator getIterator() {
-      return this._iterator;
+      return new InternalIterator(this._certificate);
    }
 
    /**

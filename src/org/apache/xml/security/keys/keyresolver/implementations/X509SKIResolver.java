@@ -1,6 +1,6 @@
 
 /*
- * Copyright  1999-2004 The Apache Software Foundation.
+ * Copyright  1999-2010 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ package org.apache.xml.security.keys.keyresolver.implementations;
 
 import java.security.PublicKey;
 import java.security.cert.X509Certificate;
+import java.util.Iterator;
 
 
 import org.apache.xml.security.exceptions.XMLSecurityException;
@@ -119,8 +120,9 @@ public class X509SKIResolver extends KeyResolverSpi {
                new XMLX509SKI(x509childNodes[i], BaseURI);
          }
 
-         while (storage.hasNext()) {
-            X509Certificate cert = storage.next();
+         Iterator storageIterator = storage.getIterator();
+         while (storageIterator.hasNext()) {
+            X509Certificate cert = (X509Certificate)storageIterator.next();
             XMLX509SKI certSKI = new XMLX509SKI(element.getOwnerDocument(), cert);
 
             for (int i = 0; i < x509childObject.length; i++) {
