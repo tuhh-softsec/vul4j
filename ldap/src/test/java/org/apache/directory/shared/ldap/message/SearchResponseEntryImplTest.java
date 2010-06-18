@@ -20,6 +20,9 @@
 package org.apache.directory.shared.ldap.message;
 
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.entry.DefaultEntry;
@@ -27,14 +30,9 @@ import org.apache.directory.shared.ldap.entry.DefaultEntryAttribute;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.exception.LdapException;
-import org.apache.directory.shared.ldap.message.SearchResponseEntryImpl;
 import org.apache.directory.shared.ldap.name.DN;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 
 /**
@@ -153,26 +151,5 @@ public class SearchResponseEntryImplTest
 
         assertFalse( "different object names should not be equal", resp1.equals( resp0 ) );
         assertFalse( "different object names should not be equal", resp0.equals( resp1 ) );
-    }
-
-
-    /**
-     * Tests for inequality when the attributes are not the same.
-     */
-    @Ignore
-    @Test
-    public void testNotEqualDiffAttributes() throws LdapException
-    {
-        SearchResponseEntryImpl resp0 = new SearchResponseEntryImpl( 5 );
-        resp0.setEntry( getEntry() );
-        resp0.getEntry().put( "abc", "123" );
-        resp0.setObjectName( new DN( "dc=apache,dc=org" ) );
-
-        SearchResponseEntryImpl resp1 = new SearchResponseEntryImpl( 5 );
-        resp1.setEntry( getEntry() );
-        resp1.setObjectName( new DN( "dc=apache,dc=org" ) );
-
-        assertFalse( "different attributes should not be equal", resp1.equals( resp0 ) );
-        assertFalse( "different attributes should not be equal", resp0.equals( resp1 ) );
     }
 }
