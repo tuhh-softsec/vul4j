@@ -6,6 +6,7 @@ import hudson.plugins.ccm.model.Metric;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -16,18 +17,23 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-public class CCMParser {
+public class CCMResultParser {
 
 	private final CCM ccmNode = new CCM();
 	
-	private BuildListener listener;
+	private PrintStream ps;
 	
-	public CCMParser(BuildListener listener)
+	public CCMResultParser()
 	{
-		this.listener = listener;	
+		this.ps = System.out;
 	}
 	
-	public void parse(File ccmOutputFile) 
+	public CCMResultParser(BuildListener listener)
+	{
+		this.ps = listener.getLogger();	
+	}
+	
+	public CCM parse(File ccmOutputFile) 
 	throws IOException
 	{
 	
@@ -42,6 +48,8 @@ public class CCMParser {
 			Element rootElement = (Element)mainNode.item(0);
 			
 			parseMetrics( rootElement );
+			
+			return this.ccmNode;
 			
 		} catch (SAXException e) {
 			throw new IOException(e);
@@ -78,7 +86,7 @@ public class CCMParser {
 				complexity = Integer.parseInt(complexityElement.getTextContent());
 			} catch ( NumberFormatException nfe )
 			{
-				this.listener.getLogger().println("Invalid complexity element: " + complexity);
+				this.ps.println("Invalid complexity element: " + complexity);
 			}
 		}
 		return complexity;

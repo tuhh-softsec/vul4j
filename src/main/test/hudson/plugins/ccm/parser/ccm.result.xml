@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+<ccm>
+  <metric>
+    <complexity>7</complexity>
+    <unit>downloading::ResponseFile</unit>
+    <classification>simple, without much risk</classification>
+    <file>\downloading.aspx.cs</file>
+  </metric>
+  <metric>
+    <complexity>2</complexity>
+    <unit>area::OnInit</unit>
+    <classification>simple, without much risk</classification>
+    <file>\area.aspx.cs</file>
+  </metric>
+  <metric>
+    <complexity>2</complexity>
+    <unit>area::OnPreRender</unit>
+    <classification>simple, without much risk</classification>
+    <file>\area.aspx.cs</file>
+  </metric>
+  <metric>
+    <complexity>2</complexity>
+    <unit>CachedEvent::Invoke</unit>
+    <classification>simple, without much risk</classification>
+    <file>\CachedEvent.cs</file>
+  </metric>
+  <metric>
+    <complexity>2</complexity>
+    <unit>conditional::OnInit</unit>
+    <classification>simple, without much risk</classification>
+    <file>\conditional.aspx.cs</file>
+  </metric>
+  <metric>
+    <complexity>2</complexity>
+    <unit>downloading::Page_Load</unit>
+    <classification>simple, without much risk</classification>
+    <file>\downloading.aspx.cs</file>
+  </metric>
+  <metric>
+    <complexity>2</complexity>
+    <unit>downloading::fileDownload</unit>
+    <classification>simple, without much risk</classification>
+    <file>\downloading.aspx.cs</file>
+  </metric>
+  <metric>
+    <complexity>2</complexity>
+    <unit>dynamicForm::OnInit</unit>
+    <classification>simple, without much risk</classification>
+    <file>\dynamicForm.aspx.cs</file>
+  </metric>
+  <metric>
+    <complexity>2</complexity>
+    <unit>OnNossoEvento</unit>
+    <classification>simple, without much risk</classification>
+    <file>\NossoEvento.cs</file>
+  </metric>
+  <metric>
+    <complexity>2</complexity>
+    <unit>pending::OnInit</unit>
+    <classification>simple, without much risk</classification>
+    <file>\pending.aspx.cs</file>
+  </metric>
+  <metric>
+    <complexity>2</complexity>
+    <unit>request::OnInit</unit>
+    <classification>simple, without much risk</classification>
+    <file>\request.aspx.cs</file>
+  </metric>
+  <metric>
+    <complexity>2</complexity>
+    <unit>role::OnInit</unit>
+    <classification>simple, without much risk</classification>
+    <file>\role.aspx.cs</file>
+  </metric>
+  <metric>
+    <complexity>2</complexity>
+    <unit>searchRequest::OnInit</unit>
+    <classification>simple, without much risk</classification>
+    <file>\searchRequest.aspx.cs</file>
+  </metric>
+  <metric>
+    <complexity>2</complexity>
+    <unit>searchRequest::Page_Load</unit>
+    <classification>simple, without much risk</classification>
+    <file>\searchRequest.aspx.cs</file>
+  </metric>
+  <metric>
+    <complexity>2</complexity>
+    <unit>service::OnInit</unit>
+    <classification>simple, without much risk</classification>
+    <file>\service.aspx.cs</file>
+  </metric>
+  <metric>
+    <complexity>2</complexity>
+    <unit>status::OnInit</unit>
+    <classification>simple, without much risk</classification>
+    <file>\status.aspx.cs</file>
+  </metric>
+  <metric>
+    <complexity>2</complexity>
+    <unit>transition::OnInit</unit>
+    <classification>simple, without much risk</classification>
+    <file>\transition.aspx.cs</file>
+  </metric>
+  <metric>
+    <complexity>2</complexity>
+    <unit>unityType::OnInit</unit>
+    <classification>simple, without much risk</classification>
+    <file>\unityType.aspx.cs</file>
+  </metric>
+  <metric>
+    <complexity>2</complexity>
+    <unit>user::OnInit</unit>
+    <classification>simple, without much risk</classification>
+    <file>\user.aspx.cs</file>
+  </metric>
+  <metric>
+    <complexity>2</complexity>
+    <unit>workFlow::OnInit</unit>
+    <classification>simple, without much risk</classification>
+    <file>\workFlow.aspx.cs</file>
+  </metric>
+  <metric>
+    <complexity>1</complexity>
+    <unit>area::Page_Load</unit>
+    <classification>simple, without much risk</classification>
+    <file>\area.aspx.cs</file>
+  </metric>
+  <metric>
+    <complexity>1</complexity>
+    <unit>area::events_ActiveNewFormClicked</unit>
+    <classification>simple, without much risk</classification>
+    <file>\area.aspx.cs</file>
+  </metric>
+  <metric>
+    <complexity>1</complexity>
+    <unit>area::events_ActiveFormClicked</unit>
+    <classification>simple, without much risk</classification>
+    <file>\area.aspx.cs</file>
+  </metric>
+  <metric>
+    <complexity>1</complexity>
+    <unit>area::events_ActiveTabsClicked</unit>
+    <classification>simple, without much risk</classification>
+    <file>\area.aspx.cs</file>
+  </metric>
+  <metric>
+    <complexity>1</complexity>
+    <unit>ObjectEventArgs::ObjectEventArgs</unit>
+    <classification>simple, without much risk</classification>
+    <file>\ButtonEvents.cs</file>
+  </metric>
+  <metric>
+    <complexity>1</complexity>
+    <unit>ObjectEventArgs::ObjectEventArgs</unit>
+    <classification>simple, without much risk</classification>
+    <file>\ButtonEvents.cs</file>
+  </metric>
+  <metric>
+    <complexity>1</complexity>
+    <unit>BaseEvents::BaseEvents</unit>
+    <classification>simple, without much risk</classification>
+    <file>\ButtonEvents.cs</file>
+  </metric>
+  <metric>
+    <complexity>1</complexity>
+    <unit>CachedEvent::CachedEvent</unit>
+    <classification>simple, without much risk</classification>
+    <file>\CachedEvent.cs</file>
+  </metric>
+  <metric>
+    <complexity>1</complexity>
+    <unit>CachedEvent::Listeners::set</unit>
+    <classification>simple, without much risk</classification>
+    <file>\CachedEvent.cs</file>
+  </metric>
+  <metric>
+    <complexity>1</complexity>
+    <unit>CachedEvent::Listeners::get</unit>
+    <classification>simple, without much risk</classification>
+    <file>\CachedEvent.cs</file>
+  </metric>
+</ccm>

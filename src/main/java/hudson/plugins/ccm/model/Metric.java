@@ -54,4 +54,15 @@ public class Metric implements Serializable {
 		this.file = file;
 	}
 	
+	public String toString()
+	{
+		StringBuffer sb = new StringBuffer();
+		sb.append("## Metric ##\n");
+		sb.append("CC: " + complexity + "\n");
+		sb.append("Classification: " + classification + "\n");
+		sb.append("File: " + file + "\n");
+		sb.append("Unit: " + unit + "\n");
+		return sb.toString();
+	}
+	
 }
