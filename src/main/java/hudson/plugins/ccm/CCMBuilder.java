@@ -8,8 +8,6 @@ import hudson.model.AbstractBuild;
 import hudson.model.Build;
 import hudson.model.BuildListener;
 import hudson.model.Descriptor;
-import hudson.plugins.ccm.model.CCM;
-import hudson.plugins.ccm.util.FileUtil;
 import hudson.tasks.Builder;
 import hudson.util.ArgumentListBuilder;
 
@@ -160,8 +158,6 @@ extends Builder {
     	
     	ArgumentListBuilder args = new ArgumentListBuilder();
     	
-    	final String resultFileName = "ccm.result.xml";
-    	
     	CCMInstallation installation = getCCM();
     	String execName = installation.getPathToCCM();
     	if ( installation == null )
@@ -189,8 +185,6 @@ extends Builder {
 			return false;
 		}
 		args.add(new File(workspace.getName(), "ccm.config.xml"));
-		args.add(">");
-		args.add(new File(workspace.getName(), resultFileName));
 		
 		//According to the Ant builder source code, in order to launch a program 
         //from the command line in windows, we must wrap it into cmd.exe.  This 
@@ -198,19 +192,16 @@ extends Builder {
         if(!launcher.isUnix()) {
             args.prepend("cmd.exe","/C");
             args.add("&&","exit","%%ERRORLEVEL%%");
-        } 
+        } else {
+        	listener.fatalError("CCM can be run only in Win platforms.");
+        	return false;
+        }
         
         // Try to execute the command
         listener.getLogger().println("Executing command: "+args.toStringWithQuote());
         try {
             Map<String,String> env = build.getEnvironment(listener);
             int r = launcher.launch().cmds(args).envs(env).stdout(listener).pwd(build.getModuleRoot()).join();
-            
-            // TBD: Alert Blunck about this.
-            listener.getLogger().println("Fixing CCM XML header");
-            
-            FileUtil.fixCCMXmlHeader(new File(workspace.getName(), resultFileName));
-            
             return r==0;
         } catch (IOException e) {
             Util.displayIOException(e,listener);
@@ -219,7 +210,5 @@ extends Builder {
         }
         
     }
-
-	
     
 }
