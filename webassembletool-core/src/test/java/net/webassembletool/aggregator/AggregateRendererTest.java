@@ -29,6 +29,15 @@ public class AggregateRendererTest extends TestCase {
 				.addResource(
 						"",
 						"before <!--$beginblock$myblock$-->some text goes here<!--$endblock$myblock$--> after");
+		provider
+				.addResource(
+						"/testNested",
+						"before <!--$beginblock$myblock$--> nested <!--$includeblock$mock$/testInclude$--> some text <!--$endincludeblock$--> /nested <!--$endblock$myblock$--> after");
+		provider
+				.addResource(
+						"/testNestedTemplate",
+						"before <!--$begintemplate$myblock$--> nested <!--$includeblock$mock$/testInclude$--> some text <!--$endincludeblock$--> /nested <!--$endtemplate$myblock$--> after");
+
 	}
 
 	public void testIncludeBlockNoBlockName() throws IOException, HttpErrorPage {
@@ -51,6 +60,24 @@ public class AggregateRendererTest extends TestCase {
 		tested.render(null, page, out);
 		assertEquals("content some text goes here end", out.toString());
 
+	}
+
+	public void testIncludeBlockNested() throws IOException, HttpErrorPage {
+		String page = "content <!--$includeblock$mock$/testNested$myblock$--> some text <!--$endincludeblock$--> end";
+		AggregateRenderer tested = new AggregateRenderer(null, null);
+		StringWriter out = new StringWriter();
+		tested.render(null, page, out);
+		assertEquals("content  nested Test include /nested  end", out
+				.toString());
+	}
+
+	public void testIncludeTemplateNested() throws IOException, HttpErrorPage {
+		String page = "content <!--$includetemplate$mock$/testNestedTemplate$myblock$--> some text <!--$endincludetemplate$--> end";
+		AggregateRenderer tested = new AggregateRenderer(null, null);
+		StringWriter out = new StringWriter();
+		tested.render(null, page, out);
+		assertEquals("content  nested Test include /nested  end", out
+				.toString());
 	}
 
 	public void testIncludeBlockRoot() throws IOException, HttpErrorPage {

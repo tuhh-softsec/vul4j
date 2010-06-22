@@ -26,29 +26,31 @@ public class IncludeTemplateElement implements Element {
 		}
 
 	};
-        private Driver driver;
-        private String page;
-        private String name;
-	private Map<String, String> params = new HashMap<String, String>();
+	private Driver driver;
+	private String page;
+	private String name;
+	private final Map<String, String> params = new HashMap<String, String>();
 	private AggregateRenderer aggregateRenderer;
 	private Appendable out;
 
-    	public void doStartTag(String tag, Appendable out, ElementStack stack)
+	public void doStartTag(String tag, Appendable out, ElementStack stack)
 			throws IOException, HttpErrorPage {
 		this.out = out;
 		aggregateRenderer = stack.findAncestorWithClass(this,
 				AggregateRenderer.class);
-                ElementAttributes tagAttributes = ElementAttributesFactory.createElementAttributes(tag);
+		ElementAttributes tagAttributes = ElementAttributesFactory
+				.createElementAttributes(tag);
 		this.driver = tagAttributes.getDriver();
-                this.page = tagAttributes.getPage();
-                this.name = tagAttributes.getName();
-		
+		this.page = tagAttributes.getPage();
+		this.name = tagAttributes.getName();
+
 	}
 
 	public void doEndTag(String tag) throws IOException, HttpErrorPage {
 		driver.render(page, null, out, aggregateRenderer.getRequest(),
 				aggregateRenderer.getResponse(), new TemplateRenderer(name,
-						params, page));
+						params, page), new AggregateRenderer(aggregateRenderer
+						.getRequest(), aggregateRenderer.getResponse()));
 	}
 
 	public ElementType getType() {

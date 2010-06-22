@@ -31,17 +31,20 @@ public class IncludeBlockElement implements Element {
 	}
 
 	public void doStartTag(String tag, Appendable out, ElementStack stack)
-			throws IOException, HttpErrorPage {                
-                
-                ElementAttributes tagAttributes = ElementAttributesFactory.createElementAttributes(tag);
+			throws IOException, HttpErrorPage {
+
+		ElementAttributes tagAttributes = ElementAttributesFactory
+				.createElementAttributes(tag);
 		AggregateRenderer aggregateRenderer = stack.findAncestorWithClass(this,
 				AggregateRenderer.class);
-                Driver driver = tagAttributes.getDriver();
-                String page = tagAttributes.getPage();
-                String name = tagAttributes.getName();
-                
+		Driver driver = tagAttributes.getDriver();
+		String page = tagAttributes.getPage();
+		String name = tagAttributes.getName();
+
 		driver.render(page, null, out, aggregateRenderer.getRequest(),
-				aggregateRenderer.getResponse(), new BlockRenderer(name, page));
+				aggregateRenderer.getResponse(), new BlockRenderer(name, page),
+				new AggregateRenderer(aggregateRenderer.getRequest(),
+						aggregateRenderer.getResponse()));
 	}
 
 	public ElementType getType() {

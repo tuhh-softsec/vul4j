@@ -119,6 +119,16 @@ public class AggregatorTest extends TestCase {
 		doSimpleTest("template-mixed-encodings.jsp");
 	}
 
+	/**
+	 * Test for a nested include : aggregated1 includes a block from aggregated2
+	 * and the block from aggregated2 includes a block from aggregated1
+	 * 
+	 * @throws Exception
+	 */
+	public void testNestedInclude() throws Exception {
+		doSimpleTest("nestedinclude.html");
+	}
+
 	public void testPageGzip() throws Exception {
 		doSimpleTest("page-gzip.jsp");
 	}
