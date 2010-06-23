@@ -1,5 +1,5 @@
 /*
- * Copyright 2004-2005 The Apache Software Foundation.
+ * Copyright 2004-2010 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,6 +41,8 @@
 #include <xsec/utils/XSECSafeBuffer.hpp>
 #include <xsec/framework/XSECError.hpp>
 
+#include "../../utils/XSECAutoPtr.hpp"
+
 #include <xercesc/dom/DOM.hpp>
 #include <xercesc/util/XMLNetAccessor.hpp>
 #include <xercesc/util/XMLString.hpp>
@@ -81,24 +83,16 @@ DOMDocument * XSECSOAPRequestorSimple::doRequest(DOMDocument * request) {
     //   and transcode them back to ASCII.
     //
     const XMLCh*        hostName = m_uri.getHost();
-    char*               hostNameAsCharStar = XMLString::transcode(hostName);
-    ArrayJanitor<char>  janBuf1(hostNameAsCharStar);
+    XSECAutoPtrChar     hostNameAsCharStar(hostName);
 
     const XMLCh*        path = m_uri.getPath();
-    char*               pathAsCharStar = XMLString::transcode(path);
-    ArrayJanitor<char>  janBuf2(pathAsCharStar);
+    XSECAutoPtrChar     pathAsCharStar(path);
 
     const XMLCh*        fragment = m_uri.getFragment();
-    char*               fragmentAsCharStar = 0;
-    if (fragment)
-        fragmentAsCharStar = XMLString::transcode(fragment);
-    ArrayJanitor<char>  janBuf3(fragmentAsCharStar);
+    XSECAutoPtrChar     fragmentAsCharStar(fragment);
 
     const XMLCh*        query = m_uri.getQueryString();
-    char*               queryAsCharStar = 0;
-    if (query)
-        queryAsCharStar = XMLString::transcode(query);
-    ArrayJanitor<char>  janBuf4(queryAsCharStar);		
+    XSECAutoPtrChar     queryAsCharStar(query);
 
     unsigned short      portNumber = (unsigned short) m_uri.getPort();
 
@@ -113,9 +107,9 @@ DOMDocument * XSECSOAPRequestorSimple::doRequest(DOMDocument * request) {
     struct sockaddr_in  sa;
 
 
-    if ((hostEntPtr = gethostbyname(hostNameAsCharStar)) == NULL)
+    if ((hostEntPtr = gethostbyname(hostNameAsCharStar.get())) == NULL)
     {
-        unsigned long  numAddress = inet_addr(hostNameAsCharStar);
+        unsigned long  numAddress = inet_addr(hostNameAsCharStar.get());
         if (numAddress == 0)
         {
             ThrowXML(NetAccessorException,
@@ -157,18 +151,18 @@ DOMDocument * XSECSOAPRequestorSimple::doRequest(DOMDocument * request) {
     memset(fBuffer, 0, sizeof(fBuffer));
 
     strcpy(fBuffer, "POST ");
-    strcat(fBuffer, pathAsCharStar);
+    strcat(fBuffer, pathAsCharStar.get());
 
-    if (queryAsCharStar != 0)
+    if (queryAsCharStar.get() != 0)
     {
         // Tack on a ? before the fragment
         strcat(fBuffer,"?");
-        strcat(fBuffer, queryAsCharStar);
+        strcat(fBuffer, queryAsCharStar.get());
     }
 
-    if (fragmentAsCharStar != 0)
+    if (fragmentAsCharStar.get() != 0)
     {
-        strcat(fBuffer, fragmentAsCharStar);
+        strcat(fBuffer, fragmentAsCharStar.get());
     }
     strcat(fBuffer, " HTTP/1.0\r\n");
 
@@ -176,7 +170,7 @@ DOMDocument * XSECSOAPRequestorSimple::doRequest(DOMDocument * request) {
 
 
     strcat(fBuffer, "Host: ");
-    strcat(fBuffer, hostNameAsCharStar);
+    strcat(fBuffer, hostNameAsCharStar.get());
     if (portNumber != 80)
     {
         int i = strlen(fBuffer);
@@ -310,9 +304,9 @@ DOMDocument * XSECSOAPRequestorSimple::doRequest(DOMDocument * request) {
 		return doRequest(request);
 #endif
 		XMLCh * recString = XMLString::transcode(redirectBuf);
-		ArrayJanitor<XMLCh> j_recString(recString);
 
 		XSECSOAPRequestorSimple recurse(recString);
+		XSEC_RELEASE_XMLCH(recString);
 		return recurse.doRequest(request);
 
 	}

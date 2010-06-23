@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2005 The Apache Software Foundation.
+ * Copyright 2002-2010 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,14 +29,6 @@
 #include <xercesc/util/XMLString.hpp>
 
 XERCES_CPP_NAMESPACE_USE
-
-#undef XSEC_RELEASE_XMLCH
-
-#if defined (XSEC_XERCES_XMLSTRING_HAS_RELEASE)
-#    define XSEC_RELEASE_XMLCH(x) XMLString::release((XMLCh **) &x)
-#else
-#    define XSEC_RELEASE_XMLCH(x) delete[] x;
-#endif
 
 
 // --------------------------------------------------------------------------------
@@ -1821,8 +1813,13 @@ void XKMSConstants::create() {
 
 void XKMSConstants::destroy() {
 
-	XSEC_RELEASE_XMLCH(s_unicodeStrURIXKMS);
-	XSEC_RELEASE_XMLCH(s_unicodeStrURISOAP11);
-	XSEC_RELEASE_XMLCH(s_unicodeStrURISOAP12);
-
+    XMLCh* temp1 = const_cast<XMLCh*>(s_unicodeStrURIXKMS);
+    XMLCh* temp2 = const_cast<XMLCh*>(s_unicodeStrURISOAP11);
+    XMLCh* temp3 = const_cast<XMLCh*>(s_unicodeStrURISOAP12);
+	XSEC_RELEASE_XMLCH(temp1);
+	XSEC_RELEASE_XMLCH(temp2);
+	XSEC_RELEASE_XMLCH(temp3);
+    s_unicodeStrURIXKMS = NULL;
+    s_unicodeStrURISOAP11 = NULL;
+    s_unicodeStrURISOAP12 = NULL;
 }

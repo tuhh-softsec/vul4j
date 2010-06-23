@@ -287,7 +287,7 @@ DOMDocumentFragment * XENCCipherImpl::deSerialise(safeBuffer &content, DOMNode *
 
     char* trailer = transcodeToUTF8(sb.rawXMLChBuffer());
     sbt.sbStrcatIn(trailer);
-    XMLString::release(&trailer);
+    XSEC_RELEASE_XMLCH(trailer);
 
     // Now we need to parse the document
     XercesDOMParser* parser = NULL;
@@ -306,11 +306,11 @@ DOMDocumentFragment * XENCCipherImpl::deSerialise(safeBuffer &content, DOMNode *
     catch (...) {
         delete memIS;
         delete parser;
-        XMLString::release(&prefix);
+        XSEC_RELEASE_XMLCH(prefix);
         throw;
     }
 
-    XMLString::release(&prefix);
+    XSEC_RELEASE_XMLCH(prefix);
     Janitor<XercesDOMParser> j_parser(parser);
     Janitor<MemBufInputSource> j_memIS(memIS);
 

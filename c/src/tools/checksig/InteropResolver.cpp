@@ -344,7 +344,6 @@ bool InteropResolver::checkMatch(DSIGKeyInfoList * lst, X509 * x) {
 				char * cski = XMLString::transcode(ski);
 				int clen = (int) strlen(cski);
 				unsigned char * xski = new unsigned char[clen];
-				ArrayJanitor<char> j_cski(cski);
 				ArrayJanitor <unsigned char> j_xski(xski);
 
 				// Decode
@@ -353,6 +352,7 @@ bool InteropResolver::checkMatch(DSIGKeyInfoList * lst, X509 * x) {
 				b64.decodeInit();
 				int xlen = b64.decode((unsigned char *) cski, clen, xski, clen);
 				xlen += b64.decodeFinish(&xski[xlen], clen - xlen);
+                XSEC_RELEASE_XMLCH(cski);
 
 				if (xlen != 0) {
 
@@ -433,10 +433,10 @@ XSECCryptoKey * InteropResolver::openCertURI(const XMLCh * uri) {
 
 	safeBuffer fname;
 	char * u = XMLString::transcode(uri);
-	ArrayJanitor<char> j_u(u);
 	fname.sbTranscodeIn(mp_baseURI);
 	fname.sbStrcatIn("/");
 	fname.sbStrcatIn(u);
+	XSEC_RELEASE_XMLCH(u);
 
 #if defined(_WIN32)
 	reverseSlash(fname);
@@ -544,7 +544,6 @@ XSECCryptoKey * InteropResolver::resolveKey(DSIGKeyInfoList * lst) {
 		OpenSSLCryptoBase64 b64;
 		char * transb64cert = XMLString::transcode(b64cert);
 		unsigned char * x509buf = new unsigned char[strlen(transb64cert)];
-		ArrayJanitor<char> j_transb64cert(transb64cert);
 		ArrayJanitor<unsigned char> j_x509buf(x509buf);
 
 		int x509bufLen;
@@ -554,6 +553,7 @@ XSECCryptoKey * InteropResolver::resolveKey(DSIGKeyInfoList * lst) {
 		b64.decodeInit();
 		x509bufLen = b64.decode((unsigned char *) transb64cert, (unsigned int) strlen(transb64cert), x509buf, (unsigned int) strlen(transb64cert));
 		x509bufLen += b64.decodeFinish(&x509buf[x509bufLen], (unsigned int) strlen(transb64cert) - x509bufLen);
+		XSEC_RELEASE_XMLCH(transb64cert);
 
 		if (x509bufLen > 0) {
 #if defined(XSEC_OPENSSL_D2IX509_CONST_BUFFER)
@@ -572,7 +572,6 @@ XSECCryptoKey * InteropResolver::resolveKey(DSIGKeyInfoList * lst) {
 		// Now the CRL
 		char * transb64crl = XMLString::transcode(b64crl);
 		unsigned char * crlbuf = new unsigned char[strlen(transb64crl)];
-		ArrayJanitor<char> j_transb64crl(transb64crl);
 		ArrayJanitor<unsigned char> j_crlbuf(crlbuf);
 
 		int crlbufLen;
@@ -582,6 +581,7 @@ XSECCryptoKey * InteropResolver::resolveKey(DSIGKeyInfoList * lst) {
 		b64.decodeInit();
 		crlbufLen = b64.decode((unsigned char*) transb64crl, (unsigned int) strlen(transb64crl), crlbuf, (unsigned int) strlen(transb64crl));
 		crlbufLen += b64.decodeFinish(&crlbuf[crlbufLen], (unsigned int) strlen(transb64crl) - crlbufLen);
+		XSEC_RELEASE_XMLCH(transb64crl);
 
 		if (crlbufLen > 0) {
 #if defined(XSEC_OPENSSL_D2IX509_CONST_BUFFER)

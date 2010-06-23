@@ -1,5 +1,5 @@
 /*
- * Copyright 2004-2005 The Apache Software Foundation.
+ * Copyright 2004-2010 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,6 +30,8 @@
 #include <xsec/utils/XSECDOMUtils.hpp>
 #include <xsec/utils/XSECSOAPRequestorSimple.hpp>
 #include <xsec/xkms/XKMSConstants.hpp>
+
+#include "../utils/XSECAutoPtr.hpp"
 
 #include <stdio.h>
 #include <string.h>
@@ -308,11 +310,10 @@ DOMDocument * XSECSOAPRequestorSimple::parseAndUnwrap(const char * buf, unsigned
 
 		retDoc->release();
 
-		char * msg = XMLString::transcode(sb.rawXMLChBuffer());
-		ArrayJanitor<char> j_msg(msg);
+		XSECAutoPtrChar msg(sb.rawXMLChBuffer());
 
 		throw XSECException(XSECException::HTTPURIInputStreamError,
-							msg);
+							msg.get());
 	}
 
 

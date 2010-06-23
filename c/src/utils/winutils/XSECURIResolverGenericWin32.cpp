@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2005 The Apache Software Foundation.
+ * Copyright 2002-2010 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -82,6 +82,8 @@ XERCES_CPP_NAMESPACE_USE
 #include <xsec/utils/winutils/XSECBinHTTPURIInputStream.hpp>
 #include <xsec/utils/XSECDOMUtils.hpp>
 
+#include "../../utils/XSECAutoPtr.hpp"
+
 static const XMLCh gFileScheme[] = {
 
 	chLatin_f,
@@ -125,7 +127,7 @@ mp_baseURI(NULL) {
 XSECURIResolverGenericWin32::~XSECURIResolverGenericWin32() {
 
 	if (mp_baseURI != NULL)
-		XMLString::release(&mp_baseURI);
+	    XSEC_RELEASE_XMLCH(mp_baseURI);
 
 }
 
@@ -157,27 +159,25 @@ BinInputStream * XSECURIResolverGenericWin32::resolveURI(const XMLCh * uri) {
 		// XMLUri relative paths are broken, so we need to strip out ".."
 		// Doesn't fix the whole problem, but gets us somewhere
 
-		XMLCh * b = XMLString::replicate(mp_baseURI);
-		ArrayJanitor<XMLCh> j_b(b);
-		XMLCh * r = XMLString::replicate(uri);
-		ArrayJanitor<XMLCh> j_r(r);
+		XSECAutoPtrXMLCh b(mp_baseURI);
+		XSECAutoPtrXMLCh r(uri);
 
 		int index = 0;
-		while (XMLString::startsWith(&(r[index]), DOTDOT_SLASH)) {
+		while (XMLString::startsWith(&(r.get()[index]), DOTDOT_SLASH)) {
 
 			// Strip the last segment of the base
 
-			int lastIndex = XMLString::lastIndexOf(b, XERCES_CPP_NAMESPACE_QUALIFIER chForwardSlash);
+			int lastIndex = XMLString::lastIndexOf(b.get(), XERCES_CPP_NAMESPACE_QUALIFIER chForwardSlash);
 			if (lastIndex > 0)
-				b[lastIndex] = 0;
+				const_cast<XMLCh*>(b.get())[lastIndex] = 0;
 
 			index += 3;
 
 		}
 
-		XSECnew(turi, XMLUri(b));
+		XSECnew(turi, XMLUri(b.get()));
 		Janitor<XMLUri> j_turi(turi);
-		XSECnew(xmluri, XMLUri(turi, &(r[index])));
+		XSECnew(xmluri, XMLUri(turi, &(r.get()[index])));
 
 #else
 		turi = new XMLUri(mp_baseURI);
@@ -205,11 +205,12 @@ BinInputStream * XSECURIResolverGenericWin32::resolveURI(const XMLCh * uri) {
 
 			// Clean hex escapes
 			XMLCh * realPath = cleanURIEscapes(xmluri->getPath());
-			ArrayJanitor<XMLCh> j_realPath(realPath);
 
 			// Localhost
 
             BinFileInputStream* retStrm = new BinFileInputStream(realPath);
+            XSEC_RELEASE_XMLCH(realPath);
+
             if (!retStrm->getIsOpen())
             {
                 delete retStrm;
@@ -272,7 +273,7 @@ XSECURIResolver * XSECURIResolverGenericWin32::clone(void) {
 void XSECURIResolverGenericWin32::setBaseURI(const XMLCh * uri) {
 
 	if (mp_baseURI != NULL)
-		XMLString::release(&mp_baseURI);
+	    XSEC_RELEASE_XMLCH(mp_baseURI);
 
 	mp_baseURI = XMLString::replicate(uri);
 

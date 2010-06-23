@@ -1,5 +1,5 @@
 /*
- * Copyright 2003-2005 The Apache Software Foundation.
+ * Copyright 2003-2010 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,6 +35,8 @@
 #include <xsec/enc/XSECCryptoSymmetricKey.hpp>
 #include <xsec/framework/XSECError.hpp>
 #include <xsec/utils/XSECDOMUtils.hpp>
+
+#include "../../utils/XSECAutoPtr.hpp"
 
 #include "XENCAlgorithmHandlerDefault.hpp"
 
@@ -595,10 +597,9 @@ unsigned int XENCAlgorithmHandlerDefault::doRSADecryptToSafeBuffer(
 		unsigned int sz = 0;
 		if (oaepParams != NULL) {
 
-			char * oaepParamsStr = XMLString::transcode(oaepParams);
-			ArrayJanitor<char> j_oaepParamsStr(oaepParamsStr);
+			XSECAutoPtrChar oaepParamsStr(oaepParams);
 
-			unsigned int bufLen = (unsigned int) strlen(oaepParamsStr);
+			unsigned int bufLen = (unsigned int) strlen(oaepParamsStr.get());
 			oaepParamsBuf = new unsigned char[bufLen];
 			ArrayJanitor<unsigned char> j_oaepParamsBuf(oaepParamsBuf);
 
@@ -607,7 +608,7 @@ unsigned int XENCAlgorithmHandlerDefault::doRSADecryptToSafeBuffer(
 			Janitor<XSECCryptoBase64> j_b64(b64);
 
 			b64->decodeInit();
-			sz = b64->decode((unsigned char *) oaepParamsStr, bufLen, oaepParamsBuf, bufLen);
+			sz = b64->decode((unsigned char *) oaepParamsStr.get(), bufLen, oaepParamsBuf, bufLen);
 			sz += b64->decodeFinish(&oaepParamsBuf[sz], bufLen - sz);
 
 			rsa->setOAEPparams(oaepParamsBuf, sz);
@@ -800,10 +801,9 @@ bool XENCAlgorithmHandlerDefault::doRSAEncryptToSafeBuffer(
 			sz += b64->encodeFinish(&oaepParamsB64[sz], (oaepParamsLen * 2)  - sz);
 			oaepParamsB64[sz] = '\0';
 
-			XMLCh * xBuf = XMLString::transcode((char *) oaepParamsB64);
-			ArrayJanitor<XMLCh> j_xBuf(xBuf);
+			XSECAutoPtrXMLCh xBuf((char *) oaepParamsB64);
 
-			encryptionMethod->setOAEPparams(xBuf);
+			encryptionMethod->setOAEPparams(xBuf.get());
 
 		}
 

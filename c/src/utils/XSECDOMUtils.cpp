@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2005 The Apache Software Foundation.
+ * Copyright 2002-2010 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -711,7 +711,6 @@ XMLCh * cleanURIEscapes(const XMLCh * str) {
 	// Taken from Xerces XMLURI.cpp
 
 	XMLCh * retPath = XMLString::replicate(str);
-	ArrayJanitor<XMLCh> j_retPath(retPath);
 
 	xsecsize_t len = XMLString::stringLen(retPath);
 	int percentIndex = XMLString::indexOf(retPath, chPercent, 0);
@@ -721,7 +720,7 @@ XMLCh * cleanURIEscapes(const XMLCh * str) {
 		if (percentIndex+2 >= len ||
 			!isHexDigit(retPath[percentIndex+1]) ||
 			!isHexDigit(retPath[percentIndex+2]))
-
+		    XSEC_RELEASE_XMLCH(retPath);
 			throw XSECException(XSECException::ErrorOpeningURI,
 					"Bad escape sequence in URI");
 
@@ -739,7 +738,6 @@ XMLCh * cleanURIEscapes(const XMLCh * str) {
 
 	}
 
-	j_retPath.release();
 	return retPath;
 
 }

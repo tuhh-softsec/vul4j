@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2005 The Apache Software Foundation.
+ * Copyright 2002-2010 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -4255,9 +4255,9 @@ int doRequest(int argc, char ** argv, int paramCount) {
 				request->setNonce(r->getNonce());
 				request->setOriginalRequestId(request->getId());
 				XMLCh * myId = generateId();
-				ArrayJanitor<XMLCh> j_myId(myId);
 
 				request->setId(myId);
+				XSEC_RELEASE_XMLCH(myId);
 
 				responseDoc->release();
 				responseDoc = req.doRequest(doc);

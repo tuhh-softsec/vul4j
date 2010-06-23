@@ -479,7 +479,7 @@ void DSIGKeyInfoX509::setX509SubjectName(const XMLCh * name) {
 		mp_X509SubjectNameTextNode->setNodeValue(encodedName);
 
 	}
-	XMLString::release(&encodedName);
+	XSEC_RELEASE_XMLCH(encodedName);
 }
 
 void DSIGKeyInfoX509::setX509IssuerSerial(const XMLCh * name, const XMLCh * serial) {
@@ -539,7 +539,7 @@ void DSIGKeyInfoX509::setX509IssuerSerial(const XMLCh * name, const XMLCh * seri
 
 	}
 
-	XMLString::release(&encodedName);
+	XSEC_RELEASE_XMLCH(encodedName);
 }
 
 void DSIGKeyInfoX509::setRawRetrievalURI(const XMLCh * uri) {

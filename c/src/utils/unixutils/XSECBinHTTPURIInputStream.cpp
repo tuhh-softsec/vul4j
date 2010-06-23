@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2005 The Apache Software Foundation.
+ * Copyright 2002-2010 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -71,6 +71,8 @@
 #include <xsec/framework/XSECError.hpp>
 #include <xsec/utils/unixutils/XSECBinHTTPURIInputStream.hpp>
 
+#include "../../utils/XSECAutoPtr.hpp"
+
 #include <xercesc/util/XMLNetAccessor.hpp>
 #include <xercesc/util/XMLString.hpp>
 #include <xercesc/util/XMLExceptMsgs.hpp>
@@ -86,24 +88,16 @@ int XSECBinHTTPURIInputStream::getSocketHandle(const XMLUri&  urlSource) {
     //   and transcode them back to ASCII.
     //
     const XMLCh*        hostName = urlSource.getHost();
-    char*               hostNameAsCharStar = XMLString::transcode(hostName);
-    ArrayJanitor<char>  janBuf1(hostNameAsCharStar);
+    XSECAutoPtrChar     hostNameAsCharStar(hostName);
 
     const XMLCh*        path = urlSource.getPath();
-    char*               pathAsCharStar = XMLString::transcode(path);
-    ArrayJanitor<char>  janBuf2(pathAsCharStar);
+    XSECAutoPtrChar     pathAsCharStar(path);
 
     const XMLCh*        fragment = urlSource.getFragment();
-    char*               fragmentAsCharStar = 0;
-    if (fragment)
-        fragmentAsCharStar = XMLString::transcode(fragment);
-    ArrayJanitor<char>  janBuf3(fragmentAsCharStar);
+    XSECAutoPtrChar     fragmentAsCharStar(fragment);
 
     const XMLCh*        query = urlSource.getQueryString();
-    char*               queryAsCharStar = 0;
-    if (query)
-        queryAsCharStar = XMLString::transcode(query);
-    ArrayJanitor<char>  janBuf4(queryAsCharStar);
+    XSECAutoPtrChar     queryAsCharStar(query);
 
     unsigned short      portNumber = (unsigned short) urlSource.getPort();
 	if (portNumber == USHRT_MAX)
@@ -116,9 +110,9 @@ int XSECBinHTTPURIInputStream::getSocketHandle(const XMLUri&  urlSource) {
     struct sockaddr_in  sa;
 
 
-    if ((hostEntPtr = gethostbyname(hostNameAsCharStar)) == NULL)
+    if ((hostEntPtr = gethostbyname(hostNameAsCharStar.get())) == NULL)
     {
-        unsigned long  numAddress = inet_addr(hostNameAsCharStar);
+        unsigned long  numAddress = inet_addr(hostNameAsCharStar.get());
         if (numAddress == 0)
         {
             ThrowXML(NetAccessorException,
@@ -157,25 +151,25 @@ int XSECBinHTTPURIInputStream::getSocketHandle(const XMLUri&  urlSource) {
     // To do:  We should really support http 1.1.  This implementation
     //         is weak.
     strcpy(fBuffer, "GET ");
-    strcat(fBuffer, pathAsCharStar);
+    strcat(fBuffer, pathAsCharStar.get());
 
-    if (queryAsCharStar != 0)
+    if (queryAsCharStar.get() != 0)
     {
         size_t n = strlen(fBuffer);
         fBuffer[n] = XERCES_CPP_NAMESPACE_QUALIFIER chQuestion;
         fBuffer[n+1] = XERCES_CPP_NAMESPACE_QUALIFIER chNull;
-        strcat(fBuffer, queryAsCharStar);
+        strcat(fBuffer, queryAsCharStar.get());
     }
 
-    if (fragmentAsCharStar != 0)
+    if (fragmentAsCharStar.get() != 0)
     {
-        strcat(fBuffer, fragmentAsCharStar);
+        strcat(fBuffer, fragmentAsCharStar.get());
     }
     strcat(fBuffer, " HTTP/1.0\r\n");
 
 
     strcat(fBuffer, "Host: ");
-    strcat(fBuffer, hostNameAsCharStar);
+    strcat(fBuffer, hostNameAsCharStar.get());
     if (portNumber != 80)
     {
         int i = strlen(fBuffer);
@@ -273,10 +267,9 @@ int XSECBinHTTPURIInputStream::getSocketHandle(const XMLUri&  urlSource) {
 		redirectBuf[q] = '\0';
 
 		// Try to find this location
-		XMLCh * redirectBufTrans = XMLString::transcode(redirectBuf);
-		ArrayJanitor<XMLCh> j_redirectBufTrans(redirectBufTrans);
+        XSECAutoPtrXMLCh redirectBufTrans(redirectBuf);
 
-		return getSocketHandle(XMLUri(redirectBufTrans));
+		return getSocketHandle(XMLUri(redirectBufTrans.get()));
 	}
 
     else if (httpResponse != 200)

@@ -30,6 +30,7 @@
 #include "XENCCipherDataImpl.hpp"
 #include "XENCEncryptedTypeImpl.hpp"
 #include "XENCEncryptionMethodImpl.hpp"
+#include "../../utils/XSECAutoPtr.hpp"
 
 #include <xsec/xenc/XENCEncryptedKey.hpp>
 
@@ -323,13 +324,13 @@ TXFMChain * XENCEncryptedTypeImpl::createCipherTXFMChain(void) {
 		// Given we already have this in memory, we transcode to
 		// local code page and then transform
 
-		char* b64 = XMLString::transcode(mp_cipherData->getCipherValue()->getCipherString());
+		XSECAutoPtrChar b64(mp_cipherData->getCipherValue()->getCipherString());
 
 		try {
             TXFMSB *sb;
             XSECnew(sb, TXFMSB(mp_env->getParentDocument()));
 
-            sb->setInput(safeBuffer(b64));
+            sb->setInput(safeBuffer(b64.get()));
 
             // Create a chain
             XSECnew(chain, TXFMChain(sb));
@@ -340,12 +341,9 @@ TXFMChain * XENCEncryptedTypeImpl::createCipherTXFMChain(void) {
 
             chain->appendTxfm(tb64);
 
-            XMLString::release(&b64);
-
             return chain;
 		}
         catch (...) {
-            XMLString::release(&b64);
             throw;
 		}
 	}

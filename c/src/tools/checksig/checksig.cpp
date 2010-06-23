@@ -451,7 +451,6 @@ int evaluate(int argc, char ** argv) {
 		// The last "\\" must prefix the filename
 		baseURI[lastSlash + 1] = '\0';
 		XMLCh * baseURIXMLCh = XMLString::transcode(baseURI);
-		ArrayJanitor<XMLCh> j_baseURIXMLCh(baseURIXMLCh);
 
 		XMLUri uri(MAKE_UNICODE_STRING(baseURI));
 
@@ -473,6 +472,7 @@ int evaluate(int argc, char ** argv) {
 
 		}
 #endif
+		XSEC_RELEASE_XMLCH(baseURIXMLCh);
 
 	}
 

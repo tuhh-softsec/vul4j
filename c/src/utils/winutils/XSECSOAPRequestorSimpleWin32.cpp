@@ -1,5 +1,5 @@
 /*
- * Copyright 2004-2005 The Apache Software Foundation.
+ * Copyright 2004-2010 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,6 +33,8 @@
 #include <xsec/utils/XSECDOMUtils.hpp>
 #include <xsec/xkms/XKMSConstants.hpp>
 
+#include "../../utils/XSECAutoPtr.hpp"
+
 #define _WINSOCKAPI_
 
 #define INCL_WINSOCK_API_TYPEDEFS 1
@@ -52,7 +54,6 @@
 #include <xercesc/util/XMLNetAccessor.hpp>
 #include <xercesc/util/XMLString.hpp>
 #include <xercesc/util/XMLExceptMsgs.hpp>
-#include <xercesc/util/Janitor.hpp>
 #include <xercesc/util/XMLUniDefs.hpp>
 
 XERCES_CPP_NAMESPACE_USE
@@ -79,7 +80,6 @@ DOMDocument * XSECSOAPRequestorSimple::doRequest(DOMDocument * request) {
 
 
 	char * content = wrapAndSerialise(request);
-	ArrayJanitor<char> janContent(content);
 
 	// First we need to serialise
 
@@ -92,24 +92,16 @@ DOMDocument * XSECSOAPRequestorSimple::doRequest(DOMDocument * request) {
     //   and transcode them back to ASCII.
     //
     const XMLCh*        hostName = m_uri.getHost();
-    char*               hostNameAsCharStar = XMLString::transcode(hostName);
-    ArrayJanitor<char>  janBuf1(hostNameAsCharStar);
+    XSECAutoPtrChar     hostNameAsCharStar(hostName);
 
     const XMLCh*        path = m_uri.getPath();
-    char*               pathAsCharStar = XMLString::transcode(path);
-    ArrayJanitor<char>  janBuf2(pathAsCharStar);
+    XSECAutoPtrChar     pathAsCharStar(path);
 
     const XMLCh*        fragment = m_uri.getFragment();
-    char*               fragmentAsCharStar = 0;
-    if (fragment)
-        fragmentAsCharStar = XMLString::transcode(fragment);
-    ArrayJanitor<char>  janBuf3(fragmentAsCharStar);
+    XSECAutoPtrChar     fragmentAsCharStar(fragment);
 
     const XMLCh*        query = m_uri.getQueryString();
-    char*               queryAsCharStar = 0;
-    if (query)
-        queryAsCharStar = XMLString::transcode(query);
-    ArrayJanitor<char>  janBuf4(queryAsCharStar);		
+    XSECAutoPtrChar     queryAsCharStar(query);
 
     unsigned short      portNumber = (unsigned short) m_uri.getPort();
 
@@ -124,11 +116,12 @@ DOMDocument * XSECSOAPRequestorSimple::doRequest(DOMDocument * request) {
     struct sockaddr_in  sa;
 
 
-    if ((hostEntPtr = XSECBinHTTPURIInputStream::gethostbyname(hostNameAsCharStar)) == NULL)
+    if ((hostEntPtr = XSECBinHTTPURIInputStream::gethostbyname(hostNameAsCharStar.get())) == NULL)
     {
-        unsigned long  numAddress = XSECBinHTTPURIInputStream::inet_addr(hostNameAsCharStar);
+        unsigned long  numAddress = XSECBinHTTPURIInputStream::inet_addr(hostNameAsCharStar.get());
         if (numAddress == INADDR_NONE)
         {
+            XSEC_RELEASE_XMLCH(content);
             // Call WSAGetLastError() to get the error number.
 	        throw XSECException(XSECException::HTTPURIInputStreamError,
 							"Error reported resolving IP address");
@@ -137,6 +130,7 @@ DOMDocument * XSECSOAPRequestorSimple::doRequest(DOMDocument * request) {
                 XSECBinHTTPURIInputStream::gethostbyaddr((const char *) &numAddress,
                               sizeof(unsigned long), AF_INET)) == NULL)
         {
+            XSEC_RELEASE_XMLCH(content);
             // Call WSAGetLastError() to get the error number.
 	        throw XSECException(XSECException::HTTPURIInputStreamError,
 							"Error reported resolving IP address");
@@ -151,6 +145,7 @@ DOMDocument * XSECSOAPRequestorSimple::doRequest(DOMDocument * request) {
     SOCKET s = XSECBinHTTPURIInputStream::socket(hostEntPtr->h_addrtype, SOCK_STREAM, 0);
     if (s == INVALID_SOCKET)
     {
+        XSEC_RELEASE_XMLCH(content);
         // Call WSAGetLastError() to get the error number.
         throw XSECException(XSECException::HTTPURIInputStreamError,
 							"Error reported creating socket");
@@ -159,6 +154,7 @@ DOMDocument * XSECSOAPRequestorSimple::doRequest(DOMDocument * request) {
     if (XSECBinHTTPURIInputStream::connect((unsigned short) s, 
 		(struct sockaddr *) &sa, sizeof(sa)) == SOCKET_ERROR)
     {
+        XSEC_RELEASE_XMLCH(content);
         // Call WSAGetLastError() to get the error number.
         throw XSECException(XSECException::HTTPURIInputStreamError,
 							"Error reported connecting to socket");
@@ -176,18 +172,18 @@ DOMDocument * XSECSOAPRequestorSimple::doRequest(DOMDocument * request) {
     memset(fBuffer, 0, sizeof(fBuffer));
 
     strcpy(fBuffer, "POST ");
-    strcat(fBuffer, pathAsCharStar);
+    strcat(fBuffer, pathAsCharStar.get());
 
-    if (queryAsCharStar != 0)
+    if (queryAsCharStar.get() != 0)
     {
         // Tack on a ? before the fragment
         strcat(fBuffer,"?");
-        strcat(fBuffer, queryAsCharStar);
+        strcat(fBuffer, queryAsCharStar.get());
     }
 
-    if (fragmentAsCharStar != 0)
+    if (fragmentAsCharStar.get() != 0)
     {
-        strcat(fBuffer, fragmentAsCharStar);
+        strcat(fBuffer, fragmentAsCharStar.get());
     }
     strcat(fBuffer, " HTTP/1.0\r\n");
 
@@ -195,7 +191,7 @@ DOMDocument * XSECSOAPRequestorSimple::doRequest(DOMDocument * request) {
 
 
     strcat(fBuffer, "Host: ");
-    strcat(fBuffer, hostNameAsCharStar);
+    strcat(fBuffer, hostNameAsCharStar.get());
     if (portNumber != 80)
     {
         strcat(fBuffer, ":");
@@ -223,6 +219,7 @@ DOMDocument * XSECSOAPRequestorSimple::doRequest(DOMDocument * request) {
     if ((aLent = XSECBinHTTPURIInputStream::send((unsigned short) s, 
 		fBuffer, lent, 0)) != lent)
     {
+        XSEC_RELEASE_XMLCH(content);
         // Call WSAGetLastError() to get the error number.
         throw XSECException(XSECException::HTTPURIInputStreamError,
 							"Error reported writing to socket");
@@ -234,10 +231,12 @@ DOMDocument * XSECSOAPRequestorSimple::doRequest(DOMDocument * request) {
     if ((aLent = XSECBinHTTPURIInputStream::send((unsigned short) s, 
 		content, lent, 0)) != lent)
     {
+        XSEC_RELEASE_XMLCH(content);
         // Call WSAGetLastError() to get the error number.
         throw XSECException(XSECException::HTTPURIInputStreamError,
 							"Error reported writing to socket");
     }
+    XSEC_RELEASE_XMLCH(content);
 
     //
     // get the response, check the http header for errors from the server.
@@ -339,7 +338,6 @@ DOMDocument * XSECSOAPRequestorSimple::doRequest(DOMDocument * request) {
 		redirectBuf[q] = '\0';
 		
 		// Try to find this location
-		m_uri;
 		m_uri = XMLUri(XMLString::transcode(redirectBuf));
 
 		return doRequest(request);

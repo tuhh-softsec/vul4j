@@ -33,10 +33,8 @@
 #include <xsec/transformers/TXFMBase.hpp>
 
 #include <xercesc/util/XMLUniDefs.hpp>
-#include <xercesc/util/Janitor.hpp>
 
 XSEC_USING_XERCES(XMLString);
-XSEC_USING_XERCES(ArrayJanitor);
 
 // Standard includes
 
@@ -653,8 +651,8 @@ void safeBuffer::sbXMLChCat8(const char * str) {
 	checkBufferType(BUFFER_UNICODE);
 
 	XMLCh * toAdd = transcodeFromUTF8((const unsigned char *) str);
-	ArrayJanitor<XMLCh> j_toAdd(toAdd);
 	sbXMLChCat(toAdd);
+	XSEC_RELEASE_XMLCH(toAdd);
 
 }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2003-2005 The Apache Software Foundation.
+ * Copyright 2003-2010 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -656,9 +656,9 @@ int evaluate(int argc, char ** argv) {
 				baseURI[lastSlash + 1] = '\0';
 
 				XMLCh * uriT = XMLString::transcode(baseURI);
-				ArrayJanitor<XMLCh> j_uriT(uriT);
 
 				XencInteropResolver ires(doc, &(uriT[8]));
+				XSEC_RELEASE_XMLCH(uriT);
 				cipher->setKeyInfoResolver(&ires);
 
 			}

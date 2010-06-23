@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2005 The Apache Software Foundation.
+ * Copyright 2002-2010 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -86,9 +86,9 @@
 #endif
 
 #if defined (XSEC_XERCES_XMLSTRING_HAS_RELEASE)
-#    define XSEC_RELEASE_XMLCH(x) XMLString::release(&x)
+#    define XSEC_RELEASE_XMLCH(x) XMLString::release(&(x))
 #else
-#    define XSEC_RELEASE_XMLCH(x) delete[] x;
+#    define XSEC_RELEASE_XMLCH(x) delete[] (x);
 #endif
 
 // --------------------------------------------------------------------------------

@@ -61,7 +61,7 @@ public:
     }
 
     ~XSECAutoPtrChar() {
-        xercesc::XMLString::release(&m_buf);
+        XSEC_RELEASE_XMLCH(m_buf);
     }
 
     const char* get() const {
@@ -98,7 +98,7 @@ public:
     }
 
     ~XSECAutoPtrXMLCh() {
-        xercesc::XMLString::release(&m_buf);
+        XSEC_RELEASE_XMLCH(m_buf);
     }
 
     const XMLCh* get() const {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2005 The Apache Software Foundation.
+ * Copyright 2002-2010 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,8 +31,6 @@
 #include <xsec/utils/XSECDOMUtils.hpp>
 #include <xsec/dsig/DSIGSignature.hpp>
 #include <xsec/framework/XSECEnv.hpp>
-
-#include <xercesc/util/Janitor.hpp>
 
 XERCES_CPP_NAMESPACE_USE
 
@@ -152,10 +150,8 @@ DOMElement * DSIGKeyInfoName::createBlankKeyName(const XMLCh * name, bool isDNam
 
 		mp_decodedDName = XMLString::replicate(name);
 		XMLCh * encodedName = encodeDName(name);
-		ArrayJanitor<XMLCh> j_encodedName(encodedName);
-
 		mp_keyNameTextNode = doc->createTextNode(encodedName);
-
+		XSEC_RELEASE_XMLCH(encodedName);
 	}
 
 	else
@@ -193,10 +189,8 @@ void DSIGKeyInfoName::setKeyName(const XMLCh * name, bool isDName) {
 
 		mp_decodedDName = XMLString::replicate(name);
 		XMLCh * encodedName = encodeDName(name);
-		ArrayJanitor<XMLCh> j_encodedName(encodedName);
-
 		mp_keyNameTextNode->setNodeValue(encodedName);
-
+		XSEC_RELEASE_XMLCH(encodedName);
 	}
 
 	else {

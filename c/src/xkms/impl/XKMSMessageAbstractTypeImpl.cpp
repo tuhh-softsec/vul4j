@@ -1,5 +1,5 @@
 /*
- * Copyright 2004-2005 The Apache Software Foundation.
+ * Copyright 2004-2010 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -216,14 +216,12 @@ DOMElement * XKMSMessageAbstractTypeImpl::createBlankMessageAbstractType(
 	// Setup the id
 	XMLCh * myId;
 
-	if (id != NULL)
-		myId = XMLString::replicate(id);
-	else
+	if (id == NULL)
 		myId = generateId();
 
-	ArrayJanitor<XMLCh> j_myId(myId);
-
-	mp_messageAbstractTypeElement->setAttributeNS(NULL, XKMSConstants::s_tagId, myId);
+	mp_messageAbstractTypeElement->setAttributeNS(NULL, XKMSConstants::s_tagId, id ? id : myId);
+	if (id == NULL)
+	    XSEC_RELEASE_XMLCH(myId);
 #if defined (XSEC_XERCES_HAS_SETIDATTRIBUTE)
 	mp_messageAbstractTypeElement->setIdAttributeNS(NULL, XKMSConstants::s_tagId);
 #endif

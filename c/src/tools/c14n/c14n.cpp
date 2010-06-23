@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2009 The Apache Software Foundation.
+ * Copyright 2002-2010 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -168,7 +168,7 @@ int main(int argc, char **argv) {
     if (id) {
         XMLCh* temp = XMLString::transcode(id);
         subtree = theDOM->getElementById(temp);
-        XMLString::release(&temp);
+        XSEC_RELEASE_XMLCH(temp);
         if (!subtree) {
             cerr << "ID reference did not resolve" << endl;
             exit(1);

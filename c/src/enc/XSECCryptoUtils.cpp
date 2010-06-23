@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2005 The Apache Software Foundation.
+ * Copyright 2002-2010 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,6 +35,8 @@
 #include <xercesc/util/Janitor.hpp>
 #include <xercesc/util/XMLString.hpp>
 #include <xercesc/util/XMLUniDefs.hpp>
+
+#include "../utils/XSECAutoPtr.hpp"
 
 XERCES_CPP_NAMESPACE_USE
 
@@ -73,16 +75,14 @@ int SASLCleanXKMSPassPhrase(unsigned char * input, int inputLen, safeBuffer &out
 	// Currently we only check for prohibited unput for chars < 0xFFFF and drop any
 	// chars over 0xFFFF
 
-	XMLCh * uinput, *uoutput;
 	unsigned char * inp = new unsigned char[inputLen + 1];
 	ArrayJanitor<unsigned char> j_inp(inp);
 	memcpy(inp, input, inputLen);
 	inp[inputLen] = '\0';
 
-	uinput = XMLString::transcode((char *) inp);
-	xsecsize_t l = XMLString::stringLen(uinput);
-	uoutput = new XMLCh[l + 1];
-	ArrayJanitor<XMLCh> j_uinput(uinput);
+	XSECAutoPtrXMLCh uinput((char *) inp);
+	xsecsize_t l = XMLString::stringLen(uinput.get());
+	XMLCh* uoutput = new XMLCh[l + 1];
 	ArrayJanitor<XMLCh> j_uoutput(uoutput);
 
 	xsecsize_t i, j;
@@ -92,7 +92,7 @@ int SASLCleanXKMSPassPhrase(unsigned char * input, int inputLen, safeBuffer &out
 
 	for (i = 0; i < l; ++i) {
 		
-		ch1 = uinput[i];
+		ch1 = uinput.get()[i];
 		// Case one - char is < 0x10000
 		if (ch1 < 0xD800 || ch1 > 0xDFFF) {
 
@@ -237,11 +237,11 @@ int SASLCleanXKMSPassPhrase(unsigned char * input, int inputLen, safeBuffer &out
 
 	// Now transcode
 	char * utf8output= transcodeToUTF8(uoutput);
-	ArrayJanitor<char> j_utf8output(utf8output);
 	output.sbStrcpyIn(utf8output);
 
-	return (int) strlen(utf8output);
-
+	int ret = (int)strlen(utf8output);
+	XSEC_RELEASE_XMLCH(utf8output);
+	return ret;
 }
 
 int DSIG_EXPORT CalculateXKMSAuthenticationKey(unsigned char * input, int inputLen, unsigned char * output, int maxOutputLen) {
@@ -392,11 +392,10 @@ unsigned int DSIG_EXPORT DecodeFromBase64XMLCh(const XMLCh * input, unsigned cha
 	XSECCryptoBase64 * b64 = XSECPlatformUtils::g_cryptoProvider->base64();
 	Janitor<XSECCryptoBase64> j_b64(b64);
 
-	char * tinput = XMLString::transcode(input);
-	ArrayJanitor<char> j_tinput(tinput);
+	XSECAutoPtrChar tinput(input);
 
 	b64->decodeInit();
-	unsigned int j = b64->decode((unsigned char *) tinput, (unsigned int) strlen(tinput), output, maxOutputLen - 1);
+	unsigned int j = b64->decode((unsigned char *) tinput.get(), (unsigned int) strlen(tinput.get()), output, maxOutputLen - 1);
 	j += b64->decodeFinish(&output[j], maxOutputLen - j - 1);
 
 	return j;
