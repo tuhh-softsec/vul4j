@@ -25,7 +25,6 @@ import java.util.Map;
 
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.exception.LdapException;
-import org.apache.directory.shared.ldap.exception.LdapNoSuchAttributeException;
 import org.apache.directory.shared.ldap.exception.LdapUnwillingToPerformException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.schema.AttributeType;
@@ -206,14 +205,7 @@ public class ImmutableAttributeTypeRegistry implements AttributeTypeRegistry
      */
     public String getOidByName( String name ) throws LdapException
     {
-        try
-        { 
-            return immutableAttributeTypeRegistry.getOidByName( name );
-        }
-        catch ( LdapException le )
-        {
-            throw new LdapNoSuchAttributeException( le.getMessage() );
-        }
+        return immutableAttributeTypeRegistry.getOidByName( name );
     }
 
 
