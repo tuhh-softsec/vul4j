@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2005 The Apache Software Foundation.
+ * Copyright 2002-2010 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -133,28 +133,6 @@ void levelSet(int level) {
 
 }
 
-inline 
-void outputHashMethod(hashMethod hm) {
-
-	switch (hm) {
-
-	case (HASH_SHA1) :
-
-		cout << "SHA-1";
-		break;
-
-	case (HASH_MD5) :
-
-		cout << "MD5";
-		break;
-
-	default :
-
-		cout << "Unknown algorithm (or not yet set)";
-
-	}
-}
-
 void outputTransform(DSIGTransform * t, int level) {
 
 	switch (t->getTransformType()) {
@@ -165,16 +143,24 @@ void outputTransform(DSIGTransform * t, int level) {
 		return;
 
 	case (TRANSFORM_C14N) : 
-		cout << "c14n canonicalisation ";
+		cout << "c14n 1.0 canonicalisation ";
 		if (((DSIGTransformC14n *) t)->getCanonicalizationMethod() == CANON_C14N_NOC)
 			cout << "(without comments)" << endl;
 		else
 			cout << "(with comments)" << endl;
 		return;
 
-	case (TRANSFORM_EXC_C14N) :
+	case (TRANSFORM_C14N11) : 
+		cout << "c14n 1.1 canonicalisation ";
+		if (((DSIGTransformC14n *) t)->getCanonicalizationMethod() == CANON_C14N11_NOC)
+			cout << "(without comments)" << endl;
+		else
+			cout << "(with comments)" << endl;
+		return;
 
-		cout << "Exclusive c14n canonicalisation ";
+    case (TRANSFORM_EXC_C14N) :
+
+		cout << "Exclusive c14n 1.0 canonicalisation ";
 		if (((DSIGTransformC14n *) t)->getCanonicalizationMethod() == CANON_C14NE_NOC)
 			cout << "(without comments)" << endl;
 		else
@@ -284,9 +270,10 @@ void outputReferences(DSIGReferenceList *rl, int level) {
 		levelSet(level + 1);
 		cout << "URI : \"" << X2C(rl->item(i)->getURI()).str() << "\"" << endl;
 		levelSet(level + 1);
-		cout << "Digest Method : ";
-		outputHashMethod(rl->item(i)->getHashMethod());
-		cout << endl;
+		cout << "Digest Algorithm : ";
+        char* alg = XMLString::transcode(rl->item(i)->getAlgorithmURI());
+        cout << (alg ? alg : "Unknown") << endl;
+        XSEC_RELEASE_XMLCH(alg);
 
 		// Now the transforms
 		DSIGTransformList * tl = rl->item(i)->getTransforms();
@@ -327,22 +314,32 @@ void outputSignatureInfo(DSIGSignature *sig, bool skipReferences) {
 
 	case (CANON_C14N_NOC) :
 
-		cout << "c14n (without comments)";
+		cout << "c14n 1.0 (without comments)";
 		break;
 
 	case (CANON_C14N_COM) :
 
-		cout << "c14n (with comments)";
+		cout << "c14n 1.0 (with comments)";
 		break;
 
-	case (CANON_C14NE_NOC) :
+	case (CANON_C14N11_NOC) :
 
-		cout << "exclusive c14n (without comments)";
+		cout << "c14n 1.1 (without comments)";
+		break;
+
+	case (CANON_C14N11_COM) :
+
+		cout << "c14n 1.1 (with comments)";
+		break;
+
+    case (CANON_C14NE_NOC) :
+
+		cout << "exclusive c14n 1.0 (without comments)";
 		break;
 
 	case (CANON_C14NE_COM) :
 
-		cout << "exclusive c14n (with comments)";
+		cout << "exclusive c14n 1.0 (with comments)";
 		break;
 
 	default :
@@ -354,35 +351,10 @@ void outputSignatureInfo(DSIGSignature *sig, bool skipReferences) {
 
 	cout << endl;
 
-	cout << "    Digest Method : ";
-	outputHashMethod(sig->getHashMethod());
-	cout << endl;
-
-	cout << "    Signature Algorithm : ";
-	switch (sig->getSignatureMethod()) {
-
-	case (SIGNATURE_DSA) :
-
-		cout << "DSA";
-		break;
-
-	case (SIGNATURE_RSA) :
-
-		cout << "RSA";
-		break;
-
-	case (SIGNATURE_HMAC) :
-
-		cout << "HMAC";
-		break;
-
-	default :
-
-		cout << "Unknown (or not yet set)";
-
-	}
-
-	cout << endl;
+    cout << "    Signature Algorithm : ";
+    char* alg = XMLString::transcode(sig->getAlgorithmURI());
+    cout << (alg ? alg : "Unknown") << endl;
+    XSEC_RELEASE_XMLCH(alg);
 
 	// Read in the references and output
 
