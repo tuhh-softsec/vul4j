@@ -1,6 +1,6 @@
 
 /*
- * Copyright  1999-2004 The Apache Software Foundation.
+ * Copyright  1999-2010 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,8 +16,6 @@
  *
  */
 package org.apache.xml.security.keys.keyresolver;
-
-
 
 import java.security.PublicKey;
 import java.security.cert.X509Certificate;
@@ -42,8 +40,8 @@ import org.w3c.dom.Node;
 public class KeyResolver {
 
    /** {@link org.apache.commons.logging} logging facility */
-    static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(KeyResolver.class.getName());
+   static org.apache.commons.logging.Log log = 
+      org.apache.commons.logging.LogFactory.getLog(KeyResolver.class.getName());
 
    /** Field _alreadyInitialized */
    static boolean _alreadyInitialized = false;
@@ -76,13 +74,19 @@ public class KeyResolver {
    /**
     * Method length
     *
-    * @return the length of resolvers registed
+    * @return the length of resolvers registered
     */
    public static int length() {
       return KeyResolver._resolverVector.size();
    }
 
+   /**
+    * This method is called when a KeyResolver is successful
+    * with the hope that this information can improve performance.
+    * @param hintI
+    */
    public static void hit(Iterator hintI) {
+	   // Move the successful KeyResolver to the beginning of the list
 	   ResolverIterator hint = (ResolverIterator) hintI;
 	   int i = hint.i;
 	   if (i!=1 && hint.res ==_resolverVector) {
@@ -96,7 +100,7 @@ public class KeyResolver {
    }
 
    /**
-    * Method getInstance
+    * Method getX509Certificate
     *
     * @param element
     * @param BaseURI
@@ -140,8 +144,9 @@ public class KeyResolver {
 
       throw new KeyResolverException("utils.resolver.noClass", exArgs);
    }
+   
    /**
-    * Method getInstance
+    * Method getPublicKey
     *
     * @param element
     * @param BaseURI
@@ -154,6 +159,7 @@ public class KeyResolver {
            Element element, String BaseURI, StorageResolver storage)
               throws KeyResolverException {
 	  
+      // use the old vector to not be hit by updates
 	  List resolverVector = KeyResolver._resolverVector;
       for (int i = 0; i < resolverVector.size(); i++) {
 		  KeyResolver resolver=
@@ -211,9 +217,9 @@ public class KeyResolver {
     * {@link org.apache.xml.security.keys.KeyInfo#registerInternalKeyResolver}.
     *
     * @param className
- * @throws InstantiationException 
- * @throws IllegalAccessException 
- * @throws ClassNotFoundException 
+    * @throws InstantiationException 
+    * @throws IllegalAccessException 
+    * @throws ClassNotFoundException 
     */
    public static void register(String className) throws ClassNotFoundException, IllegalAccessException, InstantiationException {
       KeyResolver._resolverVector.add(new KeyResolver(className));
@@ -228,11 +234,29 @@ public class KeyResolver {
     * @param className
     */
    public static void registerAtStart(String className) {
-      KeyResolver._resolverVector.add(0, className);
+       // For backwards compatibility, use a RuntimeException instead of adding a throws clause
+       KeyResolver resolver = null;
+       Exception ex = null;
+       
+       try {
+           resolver = new KeyResolver(className);
+       } catch (ClassNotFoundException e) {
+           ex = e;
+       } catch (IllegalAccessException e) {
+           ex = e;
+       } catch (InstantiationException e) {
+           ex = e;
+       }
+       
+       if (ex != null) {
+           throw new IllegalArgumentException("Invalid KeyResolver class name", ex);
+       }
+       
+       KeyResolver._resolverVector.add(0, resolver);
    }
 
    /**
-    * Method resolve
+    * Method resolvePublicKey
     *
     * @param element
     * @param BaseURI
@@ -319,35 +343,39 @@ public class KeyResolver {
       return this._resolverSpi.getClass().getName();
    }
 
+   /**
+    * Iterate over the KeyResolverSpi instances
+    */
    static class ResolverIterator implements Iterator {
-	   List res;
-		Iterator it;
-		int i;
-	   public ResolverIterator(List list) {
-		res = list;
-		it = res.iterator();
-	}
-		public boolean hasNext() {
-			// TODO Auto-generated method stub
-			return it.hasNext();
-		}
+        List res;
+        Iterator it;
+        int i;
 
-		public Object next() {
-			i++;
-			KeyResolver resolver = (KeyResolver) it.next();
-		      if (resolver==null) {
-		         throw new RuntimeException("utils.resolver.noClass");
-		      }
+        public ResolverIterator(List list) {
+            res = list;
+            it = res.iterator();
+        }
 
-		      return resolver._resolverSpi;
-		}
+        public boolean hasNext() {
+            return it.hasNext();
+        }
 
-		public void remove() {
-			// TODO Auto-generated method stub
-			
-		}
-	
+        public Object next() {
+            i++;
+            KeyResolver resolver = (KeyResolver) it.next();
+            if (resolver == null) {
+                throw new RuntimeException("utils.resolver.noClass");
+            }
+
+            return resolver._resolverSpi;
+        }
+
+        public void remove() {
+            throw new UnsupportedOperationException(
+                    "Can't remove resolvers using the iterator");
+        }
 	};
+	
 	public static Iterator iterator() {
 		return new ResolverIterator(_resolverVector);
    }
