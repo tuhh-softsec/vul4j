@@ -4,7 +4,7 @@
 	<artifactId>webassembletool</artifactId>
 	<packaging>pom</packaging>
 	<name>webassembletool</name>
-	<version>2.12</version>
+	<version>2.13-SNAPSHOT</version>
 	<ciManagement>
 		<system>continuum</system>
 		<url>http://java.nantes.intranet:8082/continuum/projectGroupSummary.action?projectGroupId=36</url>
@@ -70,9 +70,9 @@
 		</developer>
 	</developers>
 	<scm>
-		<connection>scm:svn:https://webassembletool.svn.sourceforge.net/svnroot/webassembletool/tags/webassembletool-2.12</connection>
-		<developerConnection>scm:svn:https://webassembletool.svn.sourceforge.net/svnroot/webassembletool/tags/webassembletool-2.12</developerConnection>
-		<url>http://webassembletool.svn.sourceforge.net/viewvc/webassembletool/tags/webassembletool-2.12</url>
+		<connection>scm:svn:https://webassembletool.svn.sourceforge.net/svnroot/webassembletool/trunk</connection>
+		<developerConnection>scm:svn:https://webassembletool.svn.sourceforge.net/svnroot/webassembletool/trunk</developerConnection>
+		<url>http://webassembletool.svn.sourceforge.net/viewvc/webassembletool/trunk/</url>
 	</scm>
 	<build>
 		<plugins>
