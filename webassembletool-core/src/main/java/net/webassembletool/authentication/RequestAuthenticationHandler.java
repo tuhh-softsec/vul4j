@@ -30,15 +30,16 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * Forward session attributes as request headers.
+ * Forward session and/or request attributes as request headers.
  * 
  * @author Nicolas Richeton
  */
-public class SessionAuthenticationHandler implements AuthenticationHandler {
+public class RequestAuthenticationHandler implements AuthenticationHandler {
 	private String headerPrefix = "X-ATTR-";
 	private static Log logger = LogFactory
-			.getLog(SessionAuthenticationHandler.class);
+			.getLog(RequestAuthenticationHandler.class);
 	private final ArrayList<String> sessionAttributes = new ArrayList<String>();
+	private final ArrayList<String> requestAttributes = new ArrayList<String>();
 
 	/**
 	 * {@inheritDoc}
@@ -56,11 +57,11 @@ public class SessionAuthenticationHandler implements AuthenticationHandler {
 	 * @see net.webassembletool.authentication.AuthenticationHandler#init(java.util.Properties)
 	 */
 	public void init(Properties properties) {
-		// Attributes
-		String attributesProperty = (String) properties
+		// Attributes for session
+		String sessionAttributesProperty = (String) properties
 				.get("forwardSessionAttributes");
-		if (attributesProperty != null) {
-			String attributes[] = attributesProperty.split(",");
+		if (sessionAttributesProperty != null) {
+			String attributes[] = sessionAttributesProperty.split(",");
 			for (String attribute : attributes) {
 				sessionAttributes.add(attribute.trim());
 				if (logger.isInfoEnabled()) {
@@ -68,6 +69,20 @@ public class SessionAuthenticationHandler implements AuthenticationHandler {
 				}
 			}
 		}
+
+		// Attributes for request
+		String requestAttributesProperty = (String) properties
+				.get("forwardRequestAttributes");
+		if (requestAttributesProperty != null) {
+			String attributes[] = requestAttributesProperty.split(",");
+			for (String attribute : attributes) {
+				requestAttributes.add(attribute.trim());
+				if (logger.isInfoEnabled()) {
+					logger.info("Forwading request attribute: " + attribute);
+				}
+			}
+		}
+
 		// Prefix name
 		String headerPrefixProperty = (String) properties.get("headerPrefix");
 		if (headerPrefixProperty != null) {
@@ -99,21 +114,35 @@ public class SessionAuthenticationHandler implements AuthenticationHandler {
 		if (logger.isDebugEnabled()) {
 			logger.debug("preRequest");
 		}
+		// Process session
 		HttpSession session = requestContext.getOriginalRequest().getSession(
 				false);
 
-		if (session != null) {
-
+		if (session != null && sessionAttributes != null) {
 			for (String attribute : sessionAttributes) {
 				String value = (String) session.getAttribute(attribute);
 				if (value != null) {
 					if (logger.isDebugEnabled()) {
-						logger.debug("Adding attribute " + attribute + " ("
-								+ value + ") as header (" + headerPrefix
+						logger.debug("Adding session attribute " + attribute
+								+ " (" + value + ") as header (" + headerPrefix
 								+ attribute + ")");
 					}
 					request.addHeader(headerPrefix + attribute, value);
 				}
+			}
+		}
+
+		// Process request
+		for (String attribute : requestAttributes) {
+			String value = (String) requestContext.getOriginalRequest()
+					.getAttribute(attribute);
+			if (value != null) {
+				if (logger.isDebugEnabled()) {
+					logger.debug("Adding request attribute " + attribute + " ("
+							+ value + ") as header (" + headerPrefix
+							+ attribute + ")");
+				}
+				request.addHeader(headerPrefix + attribute, value);
 			}
 		}
 	}
