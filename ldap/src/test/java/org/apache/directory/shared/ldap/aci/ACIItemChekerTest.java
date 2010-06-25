@@ -201,21 +201,6 @@ public class ACIItemChekerTest
 
 
     @Test
-    public void testItemFirstComponentsOrderDoesNotMatter() throws Exception
-    {
-        String spec = " {  identificationTag  \"id1\" , precedence 114  , authenticationLevel simple  , "
-            + "itemOrUserFirst itemFirst  :{ itemPermissions { { userClasses {allUsers  , userGroup { \"1.2=y,z=t\"  , \"a=b,c=d\" } "
-            + " , subtree { { base \"ou=people\" } } }   , grantsAndDenials  {  denyCompare  , grantModify } },"
-            + "{ precedence 10, userClasses {allUsers  , userGroup { \"1.2=y,z=t\"  , \"a=b,c=d\" } "
-            + " , subtree { { base \"ou=people\" } } }   , grantsAndDenials  {  denyCompare  , grantModify } } },protectedItems  { entry  , attributeType { 1.2.3    , ou }  , "
-            + " attributeValue { ou=people  , cn=Ersin  }  , rangeOfValues (cn=ErsinEr) , "
-            + "classes and : { item: xyz , or:{item:X,item:Y}   }}  " + " }}";
-
-        checker.parse( spec );
-    }
-
-
-    @Test
     public void testRestrictedValueComponentsOrderDoesNotMatter() throws Exception
     {
         String spec = "{ identificationTag \"id2\"   , precedence 14, authenticationLevel none  , "

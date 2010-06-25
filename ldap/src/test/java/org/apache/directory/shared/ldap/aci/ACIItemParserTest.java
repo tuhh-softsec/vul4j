@@ -21,16 +21,16 @@
 package org.apache.directory.shared.ldap.aci;
 
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
+
 import java.text.ParseException;
 
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import static org.junit.Assert.fail;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertEquals;
 
 /**
  * Unit tests class for ACIItem parser (wrapper).
@@ -374,22 +374,6 @@ public class ACIItemParserTest
             + "rangeOfValues (cn=ErsinEr) }  , grantsAndDenials { grantBrowse } } }, userClasses {  allUsers  , name { \"ou=people,cn=ersin\" }, "
             + "subtree {{ base \"ou=system\" }, { base \"ou=ORGANIZATIONUNIT\","
             + "minimum  1, maximum   2 } } } }  }   ";
-
-        ACIItem item = parser.parse( spec );
-        checkItemToString( spec, item );
-    }
-
-
-    @Test 
-    public void testItemFirstComponentsOrderDoesNotMatter() throws Exception
-    {
-        String spec = " {  identificationTag  \"id1\" , precedence 114  , authenticationLevel simple  , "
-            + "itemOrUserFirst itemFirst  :{ itemPermissions { { userClasses {allUsers  , userGroup { \"1.2=y,z=t\"  , \"a=b,c=d\" } "
-            + " , subtree { { base \"ou=people\" } } }   , grantsAndDenials  {  denyCompare  , grantModify } },"
-            + "{ precedence 10, userClasses {allUsers  , userGroup { \"1.2=y,z=t\"  , \"a=b,c=d\" } "
-            + " , subtree { { base \"ou=people\" } } }   , grantsAndDenials  {  denyCompare  , grantModify } } },protectedItems  { entry  , attributeType { 1.2.3    , ou }  , "
-            + " attributeValue { ou=people  , cn=Ersin  }  , rangeOfValues (cn=ErsinEr) , "
-            + "classes and : { item: xyz , or:{item:X,item:Y}   }}  " + " }}";
 
         ACIItem item = parser.parse( spec );
         checkItemToString( spec, item );

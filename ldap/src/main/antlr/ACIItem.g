@@ -348,13 +348,7 @@ itemFirst
     :
     ID_itemFirst ( SP )* COLON ( SP )*
         OPEN_CURLY ( SP )*
-            ( 
-              protectedItems ( SP )*
-                SEP ( SP )* itemPermissions
-            | // relaxing
-              itemPermissions ( SP )*
-                SEP ( SP )* protectedItems
-            )
+          protectedItems ( SP )* SEP ( SP )* itemPermissions
         ( SP )* CLOSE_CURLY
     {
         isItemFirstACIItem = true;

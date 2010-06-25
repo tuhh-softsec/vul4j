@@ -36,8 +36,7 @@ import org.apache.directory.shared.ldap.constants.AuthenticationLevel;
  */
 public class ItemFirstACIItem extends ACIItem
 {
-    private static final long serialVersionUID = -8199453391060356463L;
-
+    /** The list of protected items ( userClasses or userPermissions ) */
     private final Collection<ProtectedItem> protectedItems;
 
     private final Collection<ItemPermission> itemPermissions;

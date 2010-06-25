@@ -212,21 +212,6 @@ public class ACIItemSyntaxCheckerTest
 
 
     @Test
-    public void testItemFirstComponentsOrderDoesNotMatter()
-    {
-        String spec = " {  identificationTag  \"id1\" , precedence 114  , authenticationLevel simple  , "
-            + "itemOrUserFirst itemFirst  :{ itemPermissions { { userClasses {allUsers  , userGroup { \"1.2=y,z=t\"  , \"a=b,c=d\" } "
-            + " , subtree { { base \"ou=people\" } } }   , grantsAndDenials  {  denyCompare  , grantModify } },"
-            + "{ precedence 10, userClasses {allUsers  , userGroup { \"1.2=y,z=t\"  , \"a=b,c=d\" } "
-            + " , subtree { { base \"ou=people\" } } }   , grantsAndDenials  {  denyCompare  , grantModify } } },protectedItems  { entry  , attributeType { 1.2.3    , ou }  , "
-            + " attributeValue { ou=people  , cn=Ersin  }  , rangeOfValues (cn=ErsinEr) , "
-            + "classes and : { item: xyz , or:{item:X,item:Y}   }}  " + " }}";
-
-        assertTrue( checker.isValidSyntax( spec ) );
-    }
-
-
-    @Test
     public void testRestrictedValueComponentsOrderDoesNotMatter()
     {
         String spec = "{ identificationTag \"id2\"   , precedence 14, authenticationLevel none  , "
