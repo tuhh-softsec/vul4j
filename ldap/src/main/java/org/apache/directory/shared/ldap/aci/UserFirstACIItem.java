@@ -162,8 +162,9 @@ public class UserFirstACIItem extends ACIItem
         {
             Set<GrantAndDenial> grants = userPermission.getGrants();
             Set<GrantAndDenial> denials = userPermission.getDenials();
-            int precedence = userPermission.getPrecedence() >= 0 ? userPermission.getPrecedence() : this
-                .getPrecedence();
+            int precedence = userPermission.getPrecedence() != null ? 
+                userPermission.getPrecedence() :
+                this.getPrecedence();
 
             if ( grants.size() > 0 )
             {

@@ -126,4 +126,27 @@ public abstract class ACIItem
         
         return microOps;
     }
+
+
+    /**
+     * @see Object#toString()
+     */
+    public String toString()
+    {
+        StringBuilder buf = new StringBuilder();
+        
+        // identificationTag
+        buf.append( "identificationTag \"" );
+        buf.append( getIdentificationTag() );
+
+        // precedence
+        buf.append( "\", precedence " );
+        buf.append( getPrecedence() );
+        
+        // authenticationLevel
+        buf.append( ", authenticationLevel " );
+        buf.append( getAuthenticationLevel().getName() );
+        
+        return buf.toString();
+    }
 }

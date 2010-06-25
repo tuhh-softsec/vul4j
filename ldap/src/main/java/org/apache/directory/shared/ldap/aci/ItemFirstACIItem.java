@@ -39,23 +39,18 @@ public class ItemFirstACIItem extends ACIItem
     /** The list of protected items ( userClasses or userPermissions ) */
     private final Collection<ProtectedItem> protectedItems;
 
+    /** The associated permissions */
     private final Collection<ItemPermission> itemPermissions;
 
 
     /**
      * Creates a new instance.
      * 
-     * @param identificationTag
-     *            the id string of this item
-     * @param precedence
-     *            the precedence of this item
-     * @param authenticationLevel
-     *            the level of authentication required to this item
-     * @param protectedItems
-     *            the collection of {@link ProtectedItem}s this item protects
-     * @param itemPermissions
-     *            the collection of {@link ItemPermission}s each
-     *            <tt>protectedItems</tt> will have
+     * @param identificationTag the id string of this item
+     * @param precedence the precedence of this item
+     * @param authenticationLevel the level of authentication required to this item
+     * @param protectedItems the collection of {@link ProtectedItem}s this item protects
+     * @param itemPermissions the collection of {@link ItemPermission}s each <tt>protectedItems</tt> will have
      */
     public ItemFirstACIItem( String identificationTag, int precedence, AuthenticationLevel authenticationLevel,
         Collection<ProtectedItem> protectedItems, Collection<ItemPermission> itemPermissions )
@@ -85,21 +80,15 @@ public class ItemFirstACIItem extends ACIItem
     }
 
 
+    /**
+     * @see Object#toString()
+     */
     public String toString()
     {
         StringBuilder buf = new StringBuilder();
         
-        // identificationTag
-        buf.append( "{ identificationTag \"" );
-        buf.append( getIdentificationTag() );
-
-        // precedence
-        buf.append( "\", precedence " );
-        buf.append( getPrecedence() );
-        
-        // authenticationLevel
-        buf.append( ", authenticationLevel " );
-        buf.append( getAuthenticationLevel().getName() );
+        buf.append( "{" );
+        buf.append( super.toString() );
         
         // itemOrUserFirst
         buf.append( ", itemOrUserFirst itemFirst: { " );
@@ -156,8 +145,9 @@ public class ItemFirstACIItem extends ACIItem
         {
             Set<GrantAndDenial> grants = itemPermission.getGrants();
             Set<GrantAndDenial> denials = itemPermission.getDenials();
-            int precedence = itemPermission.getPrecedence() >= 0 ? itemPermission.getPrecedence() : this
-                .getPrecedence();
+            int precedence = itemPermission.getPrecedence() != null ? 
+                itemPermission.getPrecedence() :
+                this.getPrecedence();
 
             if ( grants.size() > 0 )
             {

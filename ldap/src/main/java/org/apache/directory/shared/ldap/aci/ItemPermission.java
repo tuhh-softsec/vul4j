@@ -49,7 +49,7 @@ public class ItemPermission extends Permission
      * @param userClasses
      *            the collection of {@link UserClass}es
      */
-    public ItemPermission( int precedence, Collection<GrantAndDenial> grantsAndDenials, Collection<UserClass> userClasses )
+    public ItemPermission( Integer precedence, Collection<GrantAndDenial> grantsAndDenials, Collection<UserClass> userClasses )
     {
         super( precedence, grantsAndDenials );
 
@@ -72,7 +72,7 @@ public class ItemPermission extends Permission
         
         buffer.append( "{ " );
 
-        if ( getPrecedence() >= 0 && getPrecedence() <= 255 )
+        if ( getPrecedence() != null )
         {
             buffer.append( "precedence " );
             buffer.append( getPrecedence() );

@@ -34,7 +34,7 @@ import java.util.Set;
  */
 public abstract class Permission implements Serializable
 {
-    private final int precedence;
+    private final Integer precedence;
 
     private final Set<GrantAndDenial> grantsAndDenials;
 
@@ -52,13 +52,8 @@ public abstract class Permission implements Serializable
      * @param grantsAndDenials
      *            the set of {@link GrantAndDenial}s
      */
-    protected Permission(int precedence, Collection<GrantAndDenial> grantsAndDenials)
+    protected Permission( Integer precedence, Collection<GrantAndDenial> grantsAndDenials)
     {
-        if ( precedence < 0 || precedence > 255 )
-        {
-            precedence = -1;
-        }
-
         this.precedence = precedence;
 
         Set<GrantAndDenial> tmpGrantsAndDenials = new HashSet<GrantAndDenial>();
@@ -88,7 +83,7 @@ public abstract class Permission implements Serializable
     /**
      * Returns the precedence of this permission.
      */
-    public int getPrecedence()
+    public Integer getPrecedence()
     {
         return precedence;
     }

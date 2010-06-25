@@ -545,7 +545,7 @@ public class ACIItemParserTest
             }
             else
             {
-                fail( "Got precedence " + precedence + ", excpected precedence 1 or 2." );
+                fail( "Got precedence " + precedence + ", expected precedence 1 or 2." );
             }
         }
     }

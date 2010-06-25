@@ -48,7 +48,7 @@ public class UserPermission extends Permission
      * @param protectedItems
      *            the collection of {@link ProtectedItem}s
      */
-    public UserPermission( int precedence, Collection<GrantAndDenial> grantsAndDenials, Collection<ProtectedItem> protectedItems )
+    public UserPermission( Integer precedence, Collection<GrantAndDenial> grantsAndDenials, Collection<ProtectedItem> protectedItems )
     {
         super( precedence, grantsAndDenials );
 
@@ -71,7 +71,7 @@ public class UserPermission extends Permission
         
         buf.append( "{ " );
 
-        if ( getPrecedence() >= 0 && getPrecedence() <= 255 )
+        if ( getPrecedence() != null )
         {
             buf.append( "precedence " );
             buf.append( getPrecedence() );

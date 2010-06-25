@@ -51,7 +51,7 @@ public class ACITuple implements Serializable
 
     private final boolean grant;
 
-    private final int precedence;
+    private final Integer precedence;
 
 
     /**
@@ -76,7 +76,7 @@ public class ACITuple implements Serializable
             Collection<ProtectedItem> protectedItems,
             Set<MicroOperation> microOperations, 
             boolean grant, 
-            int precedence )
+            Integer precedence )
     {
         if ( authenticationLevel == null )
         {
@@ -145,7 +145,7 @@ public class ACITuple implements Serializable
     /**
      * Returns the precedence of this tuple (<tt>0</tt>-<tt>255</tt>).
      */
-    public int getPrecedence()
+    public Integer getPrecedence()
     {
         return precedence;
     }
