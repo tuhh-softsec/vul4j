@@ -80,12 +80,12 @@ public class ACITuple implements Serializable
     {
         if ( authenticationLevel == null )
         {
-            throw new IllegalArgumentException( I18n.err( I18n.ERR_04003) );
+            throw new IllegalArgumentException( I18n.err( I18n.ERR_04003_NULL_AUTHENTICATION_LEVEL ) );
         }
 
         if ( precedence < 0 || precedence > 255 )
         {
-            throw new IllegalArgumentException( I18n.err( I18n.ERR_04002, precedence ) );
+            throw new IllegalArgumentException( I18n.err( I18n.ERR_04002_BAD_PRECENDENCE, precedence ) );
         }
 
         this.userClasses = Collections.unmodifiableCollection( new ArrayList<UserClass>( userClasses ) );

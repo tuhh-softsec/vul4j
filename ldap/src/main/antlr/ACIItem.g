@@ -180,19 +180,19 @@ tokens
 // parser productions
 // ----------------------------------------------------------------------------
 
-wrapperEntryPoint returns [ ACIItem l_ACIItem ]
+wrapperEntryPoint returns [ ACIItem aciItem ]
 {
     log.debug( "entered wrapperEntryPoint()" );
-    l_ACIItem = null;
+    aciItem = null;
 }
     :
-    ( SP )* l_ACIItem=theACIItem ( SP )* EOF
+    ( SP )* aciItem = theACIItem ( SP )* EOF
     ;
 
-theACIItem returns [ ACIItem ACIItem ]
+theACIItem returns [ ACIItem aciItem ]
 {
     log.debug( "entered theACIItem()" );
-    ACIItem = null;
+    aciItem = null;
     mainACIItemComponentsMonitor = new MandatoryComponentsMonitor( 
             new String [] { "identificationTag", "precedence", "authenticationLevel", "itemOrUserFirst" } );
 }
@@ -210,7 +210,7 @@ theACIItem returns [ ACIItem ACIItem ]
         
         if ( isItemFirstACIItem )
         {
-            ACIItem = new ItemFirstACIItem(
+            aciItem = new ItemFirstACIItem(
                     identificationTag,
                     aciPrecedence,
                     authenticationLevel,
@@ -219,14 +219,13 @@ theACIItem returns [ ACIItem ACIItem ]
         }
         else
         {
-            ACIItem = new UserFirstACIItem(
+            aciItem = new UserFirstACIItem(
                     identificationTag,
                     aciPrecedence,
                     authenticationLevel,
                     userClasses,
                     userPermissions );
         }
-        
     }
     ;
     

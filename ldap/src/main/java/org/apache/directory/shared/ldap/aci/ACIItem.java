@@ -20,7 +20,6 @@
 package org.apache.directory.shared.ldap.aci;
 
 
-import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -36,41 +35,40 @@ import org.apache.directory.shared.ldap.constants.AuthenticationLevel;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public abstract class ACIItem implements Serializable
+public abstract class ACIItem
 {
+    /** The ACIItemComponet identifier */
     private String identificationTag;
 
-    /* 0 ~ 255 */
+    /** The precedence : a number in [0 - 255] */
     private int precedence = 0;
 
+    /** The authentication level. One of 'none', 'simple' and 'strong' */
     private AuthenticationLevel authenticationLevel;
 
 
     /**
      * Creates a new instance
      * 
-     * @param identificationTag
-     *            the id string of this item
-     * @param precedence
-     *            the precedence of this item
-     * @param authenticationLevel
-     *            the level of authentication required to this item
+     * @param identificationTag the id string of this item
+     * @param precedence the precedence of this item
+     * @param authenticationLevel the level of authentication required to this item
      */
-    protected ACIItem(String identificationTag, int precedence, AuthenticationLevel authenticationLevel)
+    protected ACIItem( String identificationTag, int precedence, AuthenticationLevel authenticationLevel )
     {
         if ( identificationTag == null )
         {
-            throw new IllegalArgumentException( I18n.err( I18n.ERR_04001 ) );
+            throw new IllegalArgumentException( I18n.err( I18n.ERR_04001_NULL_IDENTIFICATION_TAG ) );
         }
         
-        if ( precedence < 0 || precedence > 255 )
+        if ( ( precedence < 0 ) || ( precedence > 255 ) )
         {
-            throw new IllegalArgumentException( I18n.err( I18n.ERR_04002, precedence ) );
+            throw new IllegalArgumentException( I18n.err( I18n.ERR_04002_BAD_PRECENDENCE, precedence ) );
         }
         
         if ( authenticationLevel == null )
         {
-            throw new IllegalArgumentException( I18n.err( I18n.ERR_04003 ) );
+            throw new IllegalArgumentException( I18n.err( I18n.ERR_04003_NULL_AUTHENTICATION_LEVEL ) );
         }
 
         this.identificationTag = identificationTag;
