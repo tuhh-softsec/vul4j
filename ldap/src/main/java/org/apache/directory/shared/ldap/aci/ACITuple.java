@@ -20,7 +20,6 @@
 package org.apache.directory.shared.ldap.aci;
 
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -37,38 +36,36 @@ import org.apache.directory.shared.ldap.constants.AuthenticationLevel;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class ACITuple implements Serializable
+public class ACITuple
 {
-    private static final long serialVersionUID = 4353150626941232371L;
-
+    /** The collection of {@link UserClass}es this tuple relates to **/
     private final Collection<UserClass> userClasses;
 
+    /** The level of authentication required */
     private final AuthenticationLevel authenticationLevel;
 
+    /** The collection of {@link ProtectedItem}s this tuple relates */
     private final Collection<ProtectedItem> protectedItems;
 
+    /** The set of {@link MicroOperation}s this tuple relates */
     private final Set<MicroOperation> microOperations;
 
+    /** Tells if this tuple grant some access */
     private final boolean grant;
 
+    /** The precedence for this tuple */
     private final Integer precedence;
 
 
     /**
      * Creates a new instance.
      * 
-     * @param userClasses
-     *            the collection of {@link UserClass}es this tuple relates to
-     * @param authenticationLevel
-     *            the level of authentication required
-     * @param protectedItems
-     *            the collection of {@link ProtectedItem}s this tuple relates
-     * @param microOperations
-     *            the set of {@link MicroOperation}s this tuple relates
-     * @param grant
-     *            <tt>true</tt> if and only if this tuple grants an access
-     * @param precedence
-     *            the precedence of this tuple (<tt>0</tt>-<tt>255</tt>)
+     * @param userClasses the collection of {@link UserClass}es this tuple relates to
+     * @param authenticationLevel the level of authentication required
+     * @param protectedItems the collection of {@link ProtectedItem}s this tuple relates
+     * @param microOperations the set of {@link MicroOperation}s this tuple relates
+     * @param grant <tt>true</tt> if and only if this tuple grants an access
+     * @param precedence the precedence of this tuple (<tt>0</tt>-<tt>255</tt>)
      */
     public ACITuple( 
             Collection<UserClass> userClasses, 

@@ -188,19 +188,6 @@ public class ACIItemChekerTest
 
 
     @Test
-    public void testUserFirstComponentsOrderDoesNotMatter() throws Exception
-    {
-        String spec = "{ identificationTag \"id2\"   , precedence 14, authenticationLevel none  , "
-            + "itemOrUserFirst userFirst:  { userPermissions { { protectedItems{ entry  , attributeType { cn  , ou }  , attributeValue {x=y,m=n,k=l} , "
-            + "rangeOfValues (cn=ErsinEr) }  , grantsAndDenials { grantBrowse } } }, userClasses {  allUsers  , name { \"ou=people,cn=ersin\" }, "
-            + "subtree {{ base \"ou=system\" }, { base \"ou=ORGANIZATIONUNIT\","
-            + "minimum  1, maximum   2 } } } }  }   ";
-
-        checker.parse( spec );
-    }
-
-
-    @Test
     public void testRestrictedValueComponentsOrderDoesNotMatter() throws Exception
     {
         String spec = "{ identificationTag \"id2\"   , precedence 14, authenticationLevel none  , "
@@ -228,19 +215,6 @@ public class ACIItemChekerTest
     }
 
 
-    @Test
-    public void testSubtreeSpecificationComponentsOrderDoesNotMatter() throws Exception
-    {
-        String spec = "{ identificationTag \"id2\"   , precedence 14, authenticationLevel none  , "
-            + "itemOrUserFirst userFirst:  { userPermissions { { protectedItems{ entry  , attributeType { cn  , ou }  , attributeValue {x=y,m=n,k=l} , "
-            + "rangeOfValues (cn=ErsinEr) }  , grantsAndDenials { grantBrowse } } }, userClasses {  allUsers  , name { \"ou=people,cn=ersin\" }, "
-            + "subtree {{ minimum 7, maximum 9, base \"ou=system\" }, { base \"ou=ORGANIZATIONUNIT\","
-            + " maximum   2, minimum  1 } } }  }  }   ";
-
-        checker.parse( spec );
-    }
-    
-    
     /**
      * Test case for DIRSERVER-891
      */

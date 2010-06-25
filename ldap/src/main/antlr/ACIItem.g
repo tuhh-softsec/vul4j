@@ -362,13 +362,7 @@ userFirst
     :
     ID_userFirst ( SP )* COLON ( SP )*
         OPEN_CURLY ( SP )*
-            (
-              userClasses ( SP )*
-                SEP ( SP )* userPermissions
-            | // relaxing
-              userPermissions ( SP )*
-                SEP ( SP )* userClasses
-            )
+              userClasses ( SP )* SEP ( SP )* userPermissions
         ( SP )* CLOSE_CURLY
     {
         isItemFirstACIItem = false;

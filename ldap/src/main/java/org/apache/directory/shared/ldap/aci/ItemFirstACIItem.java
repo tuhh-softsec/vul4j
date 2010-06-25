@@ -137,6 +137,11 @@ public class ItemFirstACIItem extends ACIItem
     }
 
 
+    /**
+     * Transform this protected Item and permissions to a set of Tuples
+     * 
+     * @return The list of created Tuples
+     */
     public Collection<ACITuple> toTuples()
     {
         Collection<ACITuple> tuples = new ArrayList<ACITuple>();
