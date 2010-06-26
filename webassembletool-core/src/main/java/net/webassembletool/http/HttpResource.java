@@ -19,6 +19,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.zip.GZIPInputStream;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -27,6 +28,7 @@ import net.webassembletool.authentication.AuthenticationHandler;
 import net.webassembletool.cache.Rfc2616;
 import net.webassembletool.filter.Filter;
 import net.webassembletool.output.Output;
+import net.webassembletool.output.UnsupportedContentEncodingException;
 import net.webassembletool.resource.Resource;
 import net.webassembletool.resource.ResourceUtils;
 
@@ -133,7 +135,19 @@ public class HttpResource extends Resource {
 			if (httpClientResponse.getException() != null) {
 				output.write(httpClientResponse.getStatusText());
 			} else {
-				removeSessionId(httpClientResponse.openStream(), output);
+				InputStream inputStream = httpClientResponse.openStream();
+				// Unzip the stream if necessary
+				String contentEncoding = getHeader("Content-encoding");
+				if (contentEncoding != null) {
+					if (!"gzip".equalsIgnoreCase(contentEncoding)
+							&& !"x-gzip".equalsIgnoreCase(contentEncoding)) {
+						throw new UnsupportedContentEncodingException(
+								"Content-encoding \"" + contentEncoding
+										+ "\" is not supported");
+					}
+					inputStream = new GZIPInputStream(inputStream);
+				}
+				removeSessionId(inputStream, output);
 			}
 		} finally {
 			output.close();

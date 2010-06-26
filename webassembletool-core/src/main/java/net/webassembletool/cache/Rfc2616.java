@@ -335,12 +335,17 @@ public class Rfc2616 {
 	public final static void copyHeaders(Resource resource, Output output) {
 		copyHeader(resource, output, "Date");
 		copyHeader(resource, output, "Content-Type");
-		copyHeader(resource, output, "Content-Length");
+		// Do not copy Content-encoding
+		// Do not copy Content-length header for gzipped streams as it will
+		// change ! OK this is not compliant with RFC 2616 but we need to do
+		// that as we often have to modify the content of the response
+		if (resource.getHeader("Content-encoding") == null) {
+			copyHeader(resource, output, "Content-Length");
+		}
 		copyHeader(resource, output, "Last-Modified");
 		copyHeader(resource, output, "ETag");
 		copyHeader(resource, output, "Expires");
 		copyHeader(resource, output, "Cache-control");
-		copyHeader(resource, output, "Content-encoding");
 	}
 
 	private final static void copyHeader(Resource resource, Output output,
