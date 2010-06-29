@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2005 The Apache Software Foundation.
+ * Copyright 2002-2010 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,6 +40,8 @@ mp_GTextNode(0),
 mp_YTextNode(0),
 mp_modulusTextNode(0),
 mp_exponentTextNode(0),
+mp_namedCurveElementNode(0),
+mp_ecPublicKeyTextNode(0),
 m_keyInfoType(KEYINFO_NOTSET) {
 
 		mp_keyInfoDOMNode = valueNode;
@@ -53,6 +55,8 @@ mp_GTextNode(0),
 mp_YTextNode(0),
 mp_modulusTextNode(0),
 mp_exponentTextNode(0),
+mp_namedCurveElementNode(0),
+mp_ecPublicKeyTextNode(0),
 m_keyInfoType(KEYINFO_NOTSET) {
 
 	mp_keyInfoDOMNode = NULL;
@@ -177,6 +181,41 @@ void DSIGKeyInfoValue::load(void) {
 
 	}
 
+    else if (strEquals(getDSIG11LocalName(child), "ECKeyValue")) {
+
+        m_keyInfoType = KEYINFO_VALUE_EC;
+
+        p = findFirstChildOfType(child, DOMNode::ELEMENT_NODE);
+        if (p == 0 || !strEquals(getDSIG11LocalName(p), "NamedCurve")) {
+			throw XSECException(XSECException::ExpectedDSIGChildNotFound,
+				"Expected <NamedCurve> node beneath <ECKeyValue> (<ECParameters> not supported)");
+        }
+
+        mp_namedCurveElementNode = p;
+
+		p = p->getNextSibling();
+
+		while (p != 0 && p->getNodeType() != DOMNode::ELEMENT_NODE)
+			p = p->getNextSibling();
+
+        if (p == 0 || !strEquals(getDSIG11LocalName(p), "PublicKey")) {
+			throw XSECException(XSECException::ExpectedDSIGChildNotFound,
+				"Expected <PublicKey> node beneath <ECKeyValue>");
+        }
+
+		val = findFirstChildOfType(p, DOMNode::TEXT_NODE);
+
+		if (val == 0) {
+
+			throw XSECException(XSECException::ExpectedDSIGChildNotFound,
+				"Expected a text node beneath <PublicKey>");
+
+		}
+		
+		mp_ecPublicKeyTextNode = val;
+
+    }
+
 	else {
 
 		throw XSECException(XSECException::UnknownKeyValue);
@@ -216,6 +255,42 @@ const XMLCh * DSIGKeyInfoValue::getRSAExponent(void) const {
 
 	if (mp_exponentTextNode != NULL)
 		return mp_exponentTextNode->getNodeValue();
+
+	return NULL;
+
+}
+
+// --------------------------------------------------------------------------------
+//           Get EC Values
+// --------------------------------------------------------------------------------
+
+const XMLCh* DSIGKeyInfoValue::getECNamedCurve(void) const {
+
+	if (m_keyInfoType != KEYINFO_VALUE_EC) {
+
+		throw XSECException(XSECException::KeyInfoError,
+			"Attempt to Get an EC NamedCurve from a non-ECValue KeyValue node");
+
+	}
+
+	if (mp_namedCurveElementNode != NULL)
+        return static_cast<DOMElement*>(mp_namedCurveElementNode)->getAttributeNS(NULL, DSIGConstants::s_unicodeStrURI);
+
+	return NULL;
+
+}
+
+const XMLCh * DSIGKeyInfoValue::getECPublicKey(void) const {
+
+	if (m_keyInfoType != KEYINFO_VALUE_EC) {
+
+		throw XSECException(XSECException::KeyInfoError,
+			"Attempt to Get an EC PublicKey from a non-ECValue KeyValue node");
+
+	}
+
+	if (mp_ecPublicKeyTextNode != NULL)
+		return mp_ecPublicKeyTextNode->getNodeValue();
 
 	return NULL;
 
@@ -291,7 +366,7 @@ void DSIGKeyInfoValue::setDSAP(const XMLCh * P) {
 	if (m_keyInfoType != KEYINFO_VALUE_DSA) {
 
 		throw XSECException(XSECException::KeyInfoError,
-			"Attempt to set a DSA value in a non-DSAValue KeyValue node");
+			"Attempt to set a DSA value in a non-DSA KeyValue node");
 
 	}
 
@@ -304,7 +379,7 @@ void DSIGKeyInfoValue::setDSAQ(const XMLCh * Q) {
 	if (m_keyInfoType != KEYINFO_VALUE_DSA) {
 
 		throw XSECException(XSECException::KeyInfoError,
-			"Attempt to set a DSA value in a non-DSAValue KeyValue node");
+			"Attempt to set a DSA value in a non-DSA KeyValue node");
 
 	}
 
@@ -317,7 +392,7 @@ void DSIGKeyInfoValue::setDSAG(const XMLCh * G) {
 	if (m_keyInfoType != KEYINFO_VALUE_DSA) {
 
 		throw XSECException(XSECException::KeyInfoError,
-			"Attempt to set a DSA value in a non-DSAValue KeyValue node");
+			"Attempt to set a DSA value in a non-DSA KeyValue node");
 
 	}
 
@@ -330,7 +405,7 @@ void DSIGKeyInfoValue::setDSAY(const XMLCh * Y) {
 	if (m_keyInfoType != KEYINFO_VALUE_DSA) {
 
 		throw XSECException(XSECException::KeyInfoError,
-			"Attempt to set a DSA value in a non-DSAValue KeyValue node");
+			"Attempt to set a DSA value in a non-DSA KeyValue node");
 
 	}
 
@@ -392,7 +467,7 @@ void DSIGKeyInfoValue::setRSAModulus(const XMLCh * modulus) {
 	if (m_keyInfoType != KEYINFO_VALUE_RSA) {
 
 		throw XSECException(XSECException::KeyInfoError,
-			"Attempt to set an RSA Modulus from a non-RSAValue KeyValue node");
+			"Attempt to set an RSA Modulus from a non-RSA KeyValue node");
 
 	}
 
@@ -405,12 +480,80 @@ void DSIGKeyInfoValue::setRSAExponent(const XMLCh * exponent) {
 	if (m_keyInfoType != KEYINFO_VALUE_RSA) {
 
 		throw XSECException(XSECException::KeyInfoError,
-			"Attempt to set an RSA Exponent from a non-RSAValue KeyValue node");
+			"Attempt to set an RSA Exponent from a non-RSA KeyValue node");
 
 	}
 
 	mp_exponentTextNode->setNodeValue(exponent);
 
+}
+
+DOMElement* DSIGKeyInfoValue::createBlankECKeyValue(const XMLCh * curveName, const XMLCh * publicKey) {
+
+	// Set our type
+	
+	m_keyInfoType = KEYINFO_VALUE_EC;
+
+	// Create the DOM Structure
+
+	safeBuffer str;
+	DOMDocument *doc = mp_env->getParentDocument();
+	const XMLCh * prefix = mp_env->getDSIGNSPrefix();
+	const XMLCh * prefix11 = mp_env->getDSIG11NSPrefix();
+
+	makeQName(str, prefix, "KeyValue");
+
+	DOMElement *ret = doc->createElementNS(DSIGConstants::s_unicodeStrURIDSIG, str.rawXMLChBuffer());
+	mp_keyInfoDOMNode = ret;
+
+	makeQName(str, prefix11, "ECKeyValue");
+	DOMElement * ec = doc->createElementNS(DSIGConstants::s_unicodeStrURIDSIG11, str.rawXMLChBuffer());
+	mp_env->doPrettyPrint(ret);
+	ret->appendChild(ec);
+	mp_env->doPrettyPrint(ec);
+	mp_env->doPrettyPrint(ret);
+
+	// Now create the value children
+
+	makeQName(str, prefix11, "NamedCurve");
+	DOMElement * v = doc->createElementNS(DSIGConstants::s_unicodeStrURIDSIG11, str.rawXMLChBuffer());
+	mp_namedCurveElementNode = v;
+	ec->appendChild(v);
+	mp_env->doPrettyPrint(ec);
+    v->setAttributeNS(NULL, DSIGConstants::s_unicodeStrURI, curveName);
+
+	makeQName(str, prefix11, "PublicKey");
+	v = doc->createElementNS(DSIGConstants::s_unicodeStrURIDSIG11, str.rawXMLChBuffer());
+	mp_ecPublicKeyTextNode = doc->createTextNode(publicKey);
+	ec->appendChild(v);
+	mp_env->doPrettyPrint(ec);
+	v->appendChild(mp_ecPublicKeyTextNode);
+
+	return ret;
+
+}
+
+void DSIGKeyInfoValue::setECNamedCurve(const XMLCh* curveName) {
+	if (m_keyInfoType != KEYINFO_VALUE_EC) {
+
+		throw XSECException(XSECException::KeyInfoError,
+			"Attempt to set an EC NamedCurve from a non-EC KeyValue node");
+
+	}
+
+    static_cast<DOMElement*>(mp_namedCurveElementNode)->setAttributeNS(NULL, DSIGConstants::s_unicodeStrURI, curveName);
+}
+
+void DSIGKeyInfoValue::setECPublicKey(const XMLCh* publicKey) {
+
+	if (m_keyInfoType != KEYINFO_VALUE_EC) {
+
+		throw XSECException(XSECException::KeyInfoError,
+			"Attempt to set an EC PublicKey from a non-EC KeyValue node");
+
+	}
+
+	mp_ecPublicKeyTextNode->setNodeValue(publicKey);
 }
 
 // --------------------------------------------------------------------------------

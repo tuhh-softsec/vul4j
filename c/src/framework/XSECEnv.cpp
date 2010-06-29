@@ -1,5 +1,5 @@
 /*
- * Copyright 2003-2005 The Apache Software Foundation.
+ * Copyright 2003-2010 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,6 +45,16 @@ XERCES_CPP_NAMESPACE_USE
 // --------------------------------------------------------------------------------
 //           Default prefix strings
 // --------------------------------------------------------------------------------
+
+const XMLCh s_default11Prefix[] = {
+
+	chLatin_d,
+	chLatin_s,
+    chDigit_1,
+    chDigit_1,
+	chNull
+
+};
 
 const XMLCh s_defaultECPrefix[] = {
 
@@ -115,6 +125,7 @@ XSECEnv::XSECEnv(DOMDocument *doc) {
 	mp_doc = doc;
 
 	mp_prefixNS = XMLString::replicate(DSIGConstants::s_unicodeStrEmpty);
+    mp_11PrefixNS = XMLString::replicate(s_default11Prefix);
 	mp_ecPrefixNS = XMLString::replicate(s_defaultECPrefix);
 	mp_xpfPrefixNS = XMLString::replicate(s_defaultXPFPrefix);
 	mp_xencPrefixNS = XMLString::replicate(s_defaultXENCPrefix);
@@ -141,6 +152,7 @@ XSECEnv::XSECEnv(const XSECEnv & theOther) {
 	mp_doc = theOther.mp_doc;
 
 	mp_prefixNS = XMLString::replicate(theOther.mp_prefixNS);
+    mp_11PrefixNS = XMLString::replicate(theOther.mp_11PrefixNS);
 	mp_ecPrefixNS = XMLString::replicate(theOther.mp_ecPrefixNS);
 	mp_xpfPrefixNS = XMLString::replicate(theOther.mp_xpfPrefixNS);
 	mp_xencPrefixNS = XMLString::replicate(theOther.mp_xencPrefixNS);
@@ -175,6 +187,10 @@ XSECEnv::~XSECEnv() {
 	if (mp_prefixNS != NULL) {
 		XSEC_RELEASE_XMLCH(mp_prefixNS);
 	}
+
+    if (mp_11PrefixNS != NULL) {
+        XSEC_RELEASE_XMLCH(mp_11PrefixNS);
+    }
 
 	if (mp_ecPrefixNS != NULL) {
 		XSEC_RELEASE_XMLCH(mp_ecPrefixNS);
@@ -244,6 +260,15 @@ void XSECEnv::setDSIGNSPrefix(const XMLCh * prefix) {
 		XSEC_RELEASE_XMLCH(mp_prefixNS);
 
 	mp_prefixNS = XMLString::replicate(prefix);
+
+}
+
+void XSECEnv::setDSIG11NSPrefix(const XMLCh * prefix) {
+
+	if (mp_11PrefixNS != NULL)
+		XSEC_RELEASE_XMLCH(mp_11PrefixNS);
+
+	mp_11PrefixNS = XMLString::replicate(prefix);
 
 }
 

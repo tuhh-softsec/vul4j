@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2005 The Apache Software Foundation.
+ * Copyright 2002-2010 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,6 +32,7 @@
 #include <xsec/framework/XSECError.hpp>
 #include <xsec/enc/OpenSSL/OpenSSLCryptoX509.hpp>
 #include <xsec/enc/OpenSSL/OpenSSLCryptoKeyDSA.hpp>
+#include <xsec/enc/OpenSSL/OpenSSLCryptoKeyEC.hpp>
 #include <xsec/enc/OpenSSL/OpenSSLCryptoKeyRSA.hpp>
 #include <xsec/enc/XSECCryptoException.hpp>
 #include <xsec/enc/XSCrypt/XSCryptCryptoBase64.hpp>
@@ -199,6 +200,13 @@ XSECCryptoKey::KeyType OpenSSLCryptoX509::getPublicKeyType() const {
 		ret = XSECCryptoKey::KEY_RSA_PUBLIC;
 		break;
 
+#if defined(XSEC_OPENSSL_HAVE_EC)
+	case EVP_PKEY_EC :
+
+		ret = XSECCryptoKey::KEY_EC_PUBLIC;
+		break;
+#endif
+
 	default :
 
 		ret = XSECCryptoKey::KEY_NONE;
@@ -241,6 +249,13 @@ XSECCryptoKey * OpenSSLCryptoX509::clonePublicKey() const {
 
 		ret = new OpenSSLCryptoKeyRSA(pkey);
 		break;
+
+#if defined(XSEC_OPENSSL_HAVE_EC)
+	case EVP_PKEY_EC :
+
+		ret = new OpenSSLCryptoKeyEC(pkey);
+		break;
+#endif
 
 	default :
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2005 The Apache Software Foundation.
+ * Copyright 2002-2010 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -88,7 +88,8 @@ public:
 		SymmetricError				= 8,
 		UnsupportedError			= 9,		// Called function is not supported
 		UnsupportedAlgorithm        = 10,
-		UnknownError				= 11		// Must be last!
+        ECError                     = 11,
+		UnknownError				= 12		// Must be last!
 
 	};
 

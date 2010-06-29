@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2005 The Apache Software Foundation.
+ * Copyright 2002-2010 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,6 +36,7 @@
 #include <xsec/enc/OpenSSL/OpenSSLCryptoBase64.hpp>
 #include <xsec/enc/OpenSSL/OpenSSLCryptoX509.hpp>
 #include <xsec/enc/OpenSSL/OpenSSLCryptoKeyDSA.hpp>
+#include <xsec/enc/OpenSSL/OpenSSLCryptoKeyEC.hpp>
 #include <xsec/enc/OpenSSL/OpenSSLCryptoKeyHMAC.hpp>
 #include <xsec/enc/OpenSSL/OpenSSLCryptoKeyRSA.hpp>
 #include <xsec/enc/OpenSSL/OpenSSLCryptoSymmetricKey.hpp>
@@ -44,8 +45,14 @@
 
 #include <xsec/enc/XSECCryptoException.hpp>
 
+#include <xercesc/util/Janitor.hpp>
+
+XSEC_USING_XERCES(ArrayJanitor);
+XSEC_USING_XERCES(Janitor);
+
 #include <openssl/rand.h>
 #include <openssl/err.h>
+#include <openssl/obj_mac.h>
 
 OpenSSLCryptoProvider::OpenSSLCryptoProvider() {
 
@@ -54,6 +61,80 @@ OpenSSLCryptoProvider::OpenSSLCryptoProvider() {
 
 	//SSLeay_add_all_algorithms();
 
+    // Populate curve names.
+    m_namedCurveMap["urn:oid:1.3.132.0.6"] = NID_secp112r1;
+    m_namedCurveMap["urn:oid:1.3.132.0.7"] = NID_secp112r2;
+    m_namedCurveMap["urn:oid:1.3.132.0.28"] = NID_secp128r1;
+    m_namedCurveMap["urn:oid:1.3.132.0.29"] = NID_secp128r2;
+    m_namedCurveMap["urn:oid:1.3.132.0.9"] = NID_secp160k1;
+    m_namedCurveMap["urn:oid:1.3.132.0.8"] = NID_secp160r1;
+    m_namedCurveMap["urn:oid:1.3.132.0.30"] = NID_secp160r2;
+    m_namedCurveMap["urn:oid:1.3.132.0.31"] = NID_secp192k1;
+    m_namedCurveMap["urn:oid:1.3.132.0.32"] = NID_secp224k1;
+    m_namedCurveMap["urn:oid:1.3.132.0.33"] = NID_secp224r1;
+    m_namedCurveMap["urn:oid:1.3.132.0.10"] = NID_secp256k1;
+    m_namedCurveMap["urn:oid:1.3.132.0.34"] = NID_secp384r1;
+    m_namedCurveMap["urn:oid:1.3.132.0.35"] = NID_secp521r1;
+
+    m_namedCurveMap["urn:oid:1.2.840.10045.3.1.1"] = NID_X9_62_prime192v1;
+    m_namedCurveMap["urn:oid:1.2.840.10045.3.1.2"] = NID_X9_62_prime192v2;
+    m_namedCurveMap["urn:oid:1.2.840.10045.3.1.3"] = NID_X9_62_prime192v3;
+    m_namedCurveMap["urn:oid:1.2.840.10045.3.1.4"] = NID_X9_62_prime239v1;
+    m_namedCurveMap["urn:oid:1.2.840.10045.3.1.5"] = NID_X9_62_prime239v2;
+    m_namedCurveMap["urn:oid:1.2.840.10045.3.1.6"] = NID_X9_62_prime239v3;
+    m_namedCurveMap["urn:oid:1.2.840.10045.3.1.7"] = NID_X9_62_prime256v1;
+
+    m_namedCurveMap["urn:oid:1.3.132.0.4"] = NID_sect113r1;
+    m_namedCurveMap["urn:oid:1.3.132.0.5"] = NID_sect113r2;
+    m_namedCurveMap["urn:oid:1.3.132.0.22"] = NID_sect131r1;
+    m_namedCurveMap["urn:oid:1.3.132.0.23"] = NID_sect131r2;
+    m_namedCurveMap["urn:oid:1.3.132.0.1"] = NID_sect163k1;
+    m_namedCurveMap["urn:oid:1.3.132.0.2"] = NID_sect163r1;
+    m_namedCurveMap["urn:oid:1.3.132.0.15"] = NID_sect163r2;
+    m_namedCurveMap["urn:oid:1.3.132.0.24"] = NID_sect193r1;
+    m_namedCurveMap["urn:oid:1.3.132.0.25"] = NID_sect193r2;
+    m_namedCurveMap["urn:oid:1.3.132.0.26"] = NID_sect233k1;
+    m_namedCurveMap["urn:oid:1.3.132.0.27"] = NID_sect233r1;
+    m_namedCurveMap["urn:oid:1.3.132.0.3"] = NID_sect239k1;
+    m_namedCurveMap["urn:oid:1.3.132.0.16"] = NID_sect283k1;
+    m_namedCurveMap["urn:oid:1.3.132.0.17"] = NID_sect283r1;
+    m_namedCurveMap["urn:oid:1.3.132.0.36"] = NID_sect409k1;
+    m_namedCurveMap["urn:oid:1.3.132.0.37"] = NID_sect409r1;
+    m_namedCurveMap["urn:oid:1.3.132.0.38"] = NID_sect571k1;
+    m_namedCurveMap["urn:oid:1.3.132.0.39"] = NID_sect571r1;
+
+    m_namedCurveMap["urn:oid:1.2.840.10045.3.0.1"] = NID_X9_62_c2pnb163v1;
+    m_namedCurveMap["urn:oid:1.2.840.10045.3.0.2"] = NID_X9_62_c2pnb163v2;
+    m_namedCurveMap["urn:oid:1.2.840.10045.3.0.3"] = NID_X9_62_c2pnb163v3;
+    m_namedCurveMap["urn:oid:1.2.840.10045.3.0.4"] = NID_X9_62_c2pnb176v1;
+    m_namedCurveMap["urn:oid:1.2.840.10045.3.0.5"] = NID_X9_62_c2tnb191v1;
+    m_namedCurveMap["urn:oid:1.2.840.10045.3.0.6"] = NID_X9_62_c2tnb191v2;
+    m_namedCurveMap["urn:oid:1.2.840.10045.3.0.7"] = NID_X9_62_c2tnb191v3;
+    m_namedCurveMap["urn:oid:1.2.840.10045.3.0.8"] = NID_X9_62_c2onb191v4;
+    m_namedCurveMap["urn:oid:1.2.840.10045.3.0.9"] = NID_X9_62_c2onb191v5;
+    m_namedCurveMap["urn:oid:1.2.840.10045.3.0.10"] = NID_X9_62_c2pnb208w1;
+    m_namedCurveMap["urn:oid:1.2.840.10045.3.0.11"] = NID_X9_62_c2tnb239v1;
+    m_namedCurveMap["urn:oid:1.2.840.10045.3.0.12"] = NID_X9_62_c2tnb239v2;
+    m_namedCurveMap["urn:oid:1.2.840.10045.3.0.13"] = NID_X9_62_c2tnb239v3;
+    m_namedCurveMap["urn:oid:1.2.840.10045.3.0.14"] = NID_X9_62_c2onb239v4;
+    m_namedCurveMap["urn:oid:1.2.840.10045.3.0.15"] = NID_X9_62_c2onb239v5;
+    m_namedCurveMap["urn:oid:1.2.840.10045.3.0.16"] = NID_X9_62_c2pnb272w1;
+    m_namedCurveMap["urn:oid:1.2.840.10045.3.0.17"] = NID_X9_62_c2pnb304w1;
+    m_namedCurveMap["urn:oid:1.2.840.10045.3.0.18"] = NID_X9_62_c2tnb359v1;
+    m_namedCurveMap["urn:oid:1.2.840.10045.3.0.19"] = NID_X9_62_c2pnb368w1;
+    m_namedCurveMap["urn:oid:1.2.840.10045.3.0.20"] = NID_X9_62_c2tnb431r1;
+
+    m_namedCurveMap["urn:oid:2.23.43.1.4.1"] = NID_wap_wsg_idm_ecid_wtls1;
+    m_namedCurveMap["urn:oid:2.23.43.1.4.3"] = NID_wap_wsg_idm_ecid_wtls3;
+    m_namedCurveMap["urn:oid:2.23.43.1.4.4"] = NID_wap_wsg_idm_ecid_wtls4;
+    m_namedCurveMap["urn:oid:2.23.43.1.4.5"] = NID_wap_wsg_idm_ecid_wtls5;
+    m_namedCurveMap["urn:oid:2.23.43.1.4.6"] = NID_wap_wsg_idm_ecid_wtls6;
+    m_namedCurveMap["urn:oid:2.23.43.1.4.7"] = NID_wap_wsg_idm_ecid_wtls7;
+    m_namedCurveMap["urn:oid:2.23.43.1.4.8"] = NID_wap_wsg_idm_ecid_wtls8;
+    m_namedCurveMap["urn:oid:2.23.43.1.4.9"] = NID_wap_wsg_idm_ecid_wtls9;
+    m_namedCurveMap["urn:oid:2.23.43.1.4.10"] = NID_wap_wsg_idm_ecid_wtls10;
+    m_namedCurveMap["urn:oid:2.23.43.1.4.11"] = NID_wap_wsg_idm_ecid_wtls11;
+    m_namedCurveMap["urn:oid:2.23.43.1.4.12"] = NID_wap_wsg_idm_ecid_wtls12;
 }
 
 
@@ -70,6 +151,15 @@ OpenSSLCryptoProvider::~OpenSSLCryptoProvider() {
 	ERR_remove_state(0);
 }
 
+int OpenSSLCryptoProvider::curveNameToNID(const char* curveName) const {
+
+    std::map<std::string,int>::const_iterator i = m_namedCurveMap.find(curveName);
+    if (i == m_namedCurveMap.end())
+   		throw XSECCryptoException(XSECCryptoException::UnsupportedError,
+			"OpenSSLCryptoProvider::curveNameToNID - curve name not recognized");
+    return i->second;
+
+}
 
 const XMLCh * OpenSSLCryptoProvider::getProviderName() const {
 
@@ -186,6 +276,16 @@ XSECCryptoKeyDSA * OpenSSLCryptoProvider::keyDSA() const {
 
 }
 
+XSECCryptoKeyEC * OpenSSLCryptoProvider::keyEC() const {
+	
+	OpenSSLCryptoKeyEC * ret;
+
+	XSECnew(ret, OpenSSLCryptoKeyEC());
+
+	return ret;
+
+}
+
 XSECCryptoKeyRSA * OpenSSLCryptoProvider::keyRSA() const {
 	
 	OpenSSLCryptoKeyRSA * ret;
@@ -194,6 +294,72 @@ XSECCryptoKeyRSA * OpenSSLCryptoProvider::keyRSA() const {
 
 	return ret;
 
+}
+
+XSECCryptoKey* OpenSSLCryptoProvider::keyDER(const char* buf, unsigned long len, bool base64) const {
+
+    EVP_PKEY* pkey = NULL;
+
+    if (base64) {
+	    int bufLen = len;
+	    unsigned char * outBuf;
+	    XSECnew(outBuf, unsigned char[len + 1]);
+	    ArrayJanitor<unsigned char> j_outBuf(outBuf);
+
+	    /* Had to move to our own Base64 decoder because it handles non-wrapped b64
+	       better.  Grrr. */
+
+	    XSCryptCryptoBase64 *b64;
+	    XSECnew(b64, XSCryptCryptoBase64);
+	    Janitor<XSCryptCryptoBase64> j_b64(b64);
+
+	    b64->decodeInit();
+	    bufLen = b64->decode((unsigned char *) buf, len, outBuf, len);
+	    bufLen += b64->decodeFinish(&outBuf[bufLen], len-bufLen);
+
+        BIO* b = BIO_new_mem_buf((void*)outBuf, bufLen);
+        pkey = d2i_PUBKEY_bio(b, NULL);
+        BIO_free(b);
+
+    }
+    else {
+
+        BIO* b = BIO_new_mem_buf((void*)buf, len);
+        pkey = d2i_PUBKEY_bio(b, NULL);
+        BIO_free(b);
+
+    }
+
+    if (pkey) {
+        XSECCryptoKey* ret = NULL;
+        try {
+            switch (pkey->type) {
+                case EVP_PKEY_RSA:
+                    ret = new OpenSSLCryptoKeyRSA(pkey);
+                    break;
+
+                case EVP_PKEY_DSA:
+                    ret = new OpenSSLCryptoKeyDSA(pkey);
+                    break;
+
+#if defined(XSEC_OPENSSL_HAVE_EC)
+                case EVP_PKEY_EC:
+                    ret = new OpenSSLCryptoKeyEC(pkey);
+                    break;
+#endif
+            }
+        }
+        catch (XSECCryptoException&) {
+            EVP_PKEY_free(pkey);
+            throw;
+        }
+
+        EVP_PKEY_free(pkey);
+        return ret;
+    }
+
+    throw XSECCryptoException(XSECCryptoException::UnsupportedError,
+		"OpenSSLCryptoProvider::keyDER - Error decoding public key"); 
 }
 
 

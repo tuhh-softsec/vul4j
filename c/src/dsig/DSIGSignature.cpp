@@ -80,8 +80,16 @@ void DSIGSignature::Initialise(void) {
 	XSECPlatformUtils::registerAlgorithmHandler(DSIGConstants::s_unicodeStrURIRSA_SHA256, def);
 	XSECPlatformUtils::registerAlgorithmHandler(DSIGConstants::s_unicodeStrURIRSA_SHA384, def);
 	XSECPlatformUtils::registerAlgorithmHandler(DSIGConstants::s_unicodeStrURIRSA_SHA512, def);
-	XSECPlatformUtils::registerAlgorithmHandler(DSIGConstants::s_unicodeStrURIDSA_SHA1, def);
-	XSECPlatformUtils::registerAlgorithmHandler(DSIGConstants::s_unicodeStrURIHMAC_SHA1, def);
+	
+    XSECPlatformUtils::registerAlgorithmHandler(DSIGConstants::s_unicodeStrURIDSA_SHA1, def);
+    XSECPlatformUtils::registerAlgorithmHandler(DSIGConstants::s_unicodeStrURIDSA_SHA256, def);
+
+    XSECPlatformUtils::registerAlgorithmHandler(DSIGConstants::s_unicodeStrURIECDSA_SHA1, def);
+	XSECPlatformUtils::registerAlgorithmHandler(DSIGConstants::s_unicodeStrURIECDSA_SHA256, def);
+	XSECPlatformUtils::registerAlgorithmHandler(DSIGConstants::s_unicodeStrURIECDSA_SHA384, def);
+	XSECPlatformUtils::registerAlgorithmHandler(DSIGConstants::s_unicodeStrURIECDSA_SHA512, def);
+
+    XSECPlatformUtils::registerAlgorithmHandler(DSIGConstants::s_unicodeStrURIHMAC_SHA1, def);
 	XSECPlatformUtils::registerAlgorithmHandler(DSIGConstants::s_unicodeStrURIHMAC_SHA224, def);
 	XSECPlatformUtils::registerAlgorithmHandler(DSIGConstants::s_unicodeStrURIHMAC_SHA256, def);
 	XSECPlatformUtils::registerAlgorithmHandler(DSIGConstants::s_unicodeStrURIHMAC_SHA384, def);

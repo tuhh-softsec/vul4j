@@ -1,5 +1,5 @@
 /*
- * Copyright 2003-2005 The Apache Software Foundation.
+ * Copyright 2003-2010 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -449,6 +449,36 @@ unsigned int DSIGAlgorithmHandlerDefault::signToSafeBuffer(
 
 		break;
 
+	case (XSECCryptoKey::KEY_EC_PRIVATE) :
+	case (XSECCryptoKey::KEY_EC_PAIR) :
+
+		if (sm != SIGNATURE_ECDSA) {
+
+			throw XSECException(XSECException::AlgorithmMapperError,
+				"Key type does not match <SignedInfo> signature type");
+
+		}
+
+		b64Len = ((XSECCryptoKeyEC *) key)->signBase64SignatureDSA(
+			hash, 
+			hashLen,
+			(char *) b64Buf, 
+			1024);
+
+		if (b64Len <= 0) {
+
+			throw XSECException(XSECException::AlgorithmMapperError,
+				"Unknown error occured during an ECDSA Signing operation");
+
+		}
+
+		if (b64Buf[b64Len-1] == '\n')
+			b64Buf[b64Len-1] = '\0';
+		else
+			b64Buf[b64Len] = '\0';
+
+		break;
+
 	case (XSECCryptoKey::KEY_HMAC) :
 
 		if (sm != SIGNATURE_HMAC) {
@@ -560,6 +590,24 @@ bool DSIGAlgorithmHandlerDefault::verifyBase64Signature(
 			sig,
 			(unsigned int) strlen(sig),
 			hm);
+
+		break;
+
+	case (XSECCryptoKey::KEY_EC_PUBLIC) :
+	case (XSECCryptoKey::KEY_EC_PAIR) :
+
+		if (sm != SIGNATURE_ECDSA) {
+
+			throw XSECException(XSECException::AlgorithmMapperError,
+				"Key type does not match <SignedInfo> signature type");
+
+		}
+
+		sigVfyRet = ((XSECCryptoKeyEC *) key)->verifyBase64SignatureDSA(
+			hash, 
+			hashLen,
+			(char *) sig, 
+			(unsigned int) strlen(sig));
 
 		break;
 

@@ -1,5 +1,5 @@
 #
-# Copyright 2006 The Apache Software Foundation.
+# Copyright 2006-2010 The Apache Software Foundation.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -39,6 +39,7 @@ lib_includes += \
   xsec/enc/XSECCryptoKeyHMAC.hpp \
   xsec/enc/XSECCryptoX509.hpp \
   xsec/enc/XSECCryptoKeyDSA.hpp \
+  xsec/enc/XSECCryptoKeyEC.hpp \
   xsec/enc/XSECKeyInfoResolver.hpp \
   xsec/enc/XSECCryptoHash.hpp \
   xsec/enc/XSECCryptoBase64.hpp \
@@ -61,6 +62,7 @@ lib_includes += \
   xsec/enc/OpenSSL/OpenSSLCryptoX509.hpp \
   xsec/enc/OpenSSL/OpenSSLCryptoHashHMAC.hpp \
   xsec/enc/OpenSSL/OpenSSLCryptoKeyDSA.hpp \
+  xsec/enc/OpenSSL/OpenSSLCryptoKeyEC.hpp \
   xsec/enc/OpenSSL/OpenSSLCryptoKeyHMAC.hpp \
   xsec/enc/OpenSSL/OpenSSLCryptoHash.hpp 
 
@@ -84,6 +86,7 @@ lib_includes += \
   xsec/dsig/DSIGKeyInfoX509.hpp \
   xsec/dsig/DSIGKeyInfoList.hpp \
   xsec/dsig/DSIGKeyInfoValue.hpp \
+  xsec/dsig/DSIGKeyInfoDEREncoded.hpp \
   xsec/dsig/DSIGTransformC14n.hpp \
   xsec/dsig/DSIGTransformXSL.hpp \
   xsec/dsig/DSIGKeyInfo.hpp \

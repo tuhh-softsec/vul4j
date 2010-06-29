@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2005 The Apache Software Foundation.
+ * Copyright 2002-2010 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,6 +38,7 @@ XSEC_USING_XERCES(XMLString);
 // Name Spaces
 
 #define URI_ID_DSIG		"http://www.w3.org/2000/09/xmldsig#"
+#define URI_ID_DSIG11	"http://www.w3.org/2009/xmldsig11#"
 #define URI_ID_EC		"http://www.w3.org/2001/10/xml-exc-c14n#"
 // Also used as algorithm ID for XPATH_FILTER
 #define URI_ID_XPF		"http://www.w3.org/2002/06/xmldsig-filter2"
@@ -88,7 +89,9 @@ XSEC_USING_XERCES(XMLString);
 
 #define URI_ID_SIG_BASE		"http://www.w3.org/2000/09/xmldsig#"
 #define URI_ID_SIG_BASEMORE	"http://www.w3.org/2001/04/xmldsig-more#"
+#define URI_ID_SIG_BASE11	"http://www.w3.org/2009/xmldsig11#"
 #define URI_ID_SIG_DSA		"dsa"
+#define URI_ID_SIG_ECDSA	"ecdsa"
 #define URI_ID_SIG_HMAC		"hmac"
 #define URI_ID_SIG_SHA1		"sha1"
 #define URI_ID_SIG_SHA224	"sha224"
@@ -99,6 +102,7 @@ XSEC_USING_XERCES(XMLString);
 #define URI_ID_SIG_MD5		"md5"
 
 #define URI_ID_DSA_SHA1		"http://www.w3.org/2000/09/xmldsig#dsa-sha1"
+#define URI_ID_DSA_SHA256	"http://www.w3.org/2009/xmldsig11#dsa-sha256"
 #define URI_ID_HMAC_SHA1	"http://www.w3.org/2000/09/xmldsig#hmac-sha1"
 #define URI_ID_HMAC_SHA224	"http://www.w3.org/2001/04/xmldsig-more#hmac-sha224"
 #define URI_ID_HMAC_SHA256	"http://www.w3.org/2001/04/xmldsig-more#hmac-sha256"
@@ -110,6 +114,10 @@ XSEC_USING_XERCES(XMLString);
 #define URI_ID_RSA_SHA384	"http://www.w3.org/2001/04/xmldsig-more#rsa-sha384"
 #define URI_ID_RSA_SHA512	"http://www.w3.org/2001/04/xmldsig-more#rsa-sha512"
 #define URI_ID_RSA_MD5		"http://www.w3.org/2001/04/xmldsig-more#rsa-md5"
+#define URI_ID_ECDSA_SHA1	"http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha1"
+#define URI_ID_ECDSA_SHA256	"http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha256"
+#define URI_ID_ECDSA_SHA384	"http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha384"
+#define URI_ID_ECDSA_SHA512	"http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha512"
 
 // Encryption defines
 #define URI_ID_XENC_ELEMENT	"http://www.w3.org/2001/04/xmlenc#Element"
@@ -145,7 +153,8 @@ enum signatureMethod {
 	SIGNATURE_NONE				= 0,			// No method defined
 	SIGNATURE_DSA				= 1, 			// DSA
 	SIGNATURE_HMAC				= 2,			// Hash MAC
-	SIGNATURE_RSA				= 3				// RSA
+	SIGNATURE_RSA				= 3,			// RSA
+	SIGNATURE_ECDSA				= 4				// ECDSA
 };
 
 
@@ -248,8 +257,10 @@ bool canonicalizationMethod2URI(safeBuffer &uri, canonicalizationMethod cm) {
 inline
 bool signatureHashMethod2URI(safeBuffer &uri, signatureMethod sm, hashMethod hm) {
 
-	if (hm < HASH_MD5)
+	if (hm < HASH_MD5 && sm != SIGNATURE_ECDSA)
 		uri = URI_ID_SIG_BASE;
+    else if (hm == HASH_SHA256 && sm == SIGNATURE_DSA)
+        uri = URI_ID_SIG_BASE11;
 	else
 		uri = URI_ID_SIG_BASEMORE;
 
@@ -268,6 +279,11 @@ bool signatureHashMethod2URI(safeBuffer &uri, signatureMethod sm, hashMethod hm)
 	case (SIGNATURE_RSA) :
 
 		uri.sbStrcatIn(URI_ID_SIG_RSA);
+		break;
+
+	case (SIGNATURE_ECDSA) :
+
+		uri.sbStrcatIn(URI_ID_SIG_ECDSA);
 		break;
 
 	default :
@@ -440,7 +456,7 @@ public:
 	// General strings
 
 	static const XMLCh * s_unicodeStrEmpty;		// ""
-	static const XMLCh * s_unicodeStrNL;			// "\n"
+	static const XMLCh * s_unicodeStrNL;		// "\n"
 	static const XMLCh * s_unicodeStrXmlns;		// "xmlns"
 	static const XMLCh * s_unicodeStrURI;		// "URI"
 
@@ -449,12 +465,14 @@ public:
 
 	// URI_IDs
 	static const XMLCh * s_unicodeStrURIDSIG;
+    static const XMLCh * s_unicodeStrURIDSIG11;
 	static const XMLCh * s_unicodeStrURIEC;
 	static const XMLCh * s_unicodeStrURIXPF;
 	static const XMLCh * s_unicodeStrURIXENC;
 
 	static const XMLCh * s_unicodeStrURISIGBASE;
 	static const XMLCh * s_unicodeStrURISIGBASEMORE;
+    static const XMLCh * s_unicodeStrURISIGBASE11;
 
 	static const XMLCh * s_unicodeStrURIRawX509;
 	static const XMLCh * s_unicodeStrURISHA1;
@@ -473,7 +491,9 @@ public:
     static const XMLCh * s_unicodeStrURIC14N11_COM;
 	static const XMLCh * s_unicodeStrURIEXC_C14N_NOC;
 	static const XMLCh * s_unicodeStrURIEXC_C14N_COM;
+
 	static const XMLCh * s_unicodeStrURIDSA_SHA1;
+    static const XMLCh * s_unicodeStrURIDSA_SHA256;
 
 	static const XMLCh * s_unicodeStrURIRSA_MD5;
 	static const XMLCh * s_unicodeStrURIRSA_SHA1;
@@ -481,6 +501,11 @@ public:
 	static const XMLCh * s_unicodeStrURIRSA_SHA256;
 	static const XMLCh * s_unicodeStrURIRSA_SHA384;
 	static const XMLCh * s_unicodeStrURIRSA_SHA512;
+
+	static const XMLCh * s_unicodeStrURIECDSA_SHA1;
+	static const XMLCh * s_unicodeStrURIECDSA_SHA256;
+	static const XMLCh * s_unicodeStrURIECDSA_SHA384;
+	static const XMLCh * s_unicodeStrURIECDSA_SHA512;
 
 	static const XMLCh * s_unicodeStrURIHMAC_SHA1;
 	static const XMLCh * s_unicodeStrURIHMAC_SHA224;
@@ -509,7 +534,7 @@ public:
 	// Internal Crypto Providers
 	static const XMLCh * s_unicodeStrPROVOpenSSL;
 	static const XMLCh * s_unicodeStrPROVWinCAPI;
-  static const XMLCh * s_unicodeStrPROVNSS;
+    static const XMLCh * s_unicodeStrPROVNSS;
 
 
 	DSIGConstants();

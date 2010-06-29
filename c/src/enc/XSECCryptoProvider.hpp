@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2005 The Apache Software Foundation.
+ * Copyright 2002-2010 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,6 +34,7 @@
 #include <xsec/enc/XSECCryptoBase64.hpp>
 #include <xsec/enc/XSECCryptoX509.hpp>
 #include <xsec/enc/XSECCryptoKeyDSA.hpp>
+#include <xsec/enc/XSECCryptoKeyEC.hpp>
 #include <xsec/enc/XSECCryptoKeyRSA.hpp>
 #include <xsec/enc/XSECCryptoSymmetricKey.hpp>
 
@@ -289,6 +290,31 @@ public :
 	virtual XSECCryptoKeyRSA		* keyRSA() const = 0;
 
 	/**
+	 * \brief Return an EC key implementation object.
+	 * 
+	 * Call used by the library to obtain an EC key object.
+	 *
+	 * @returns Pointer to the new EC key
+	 * @see XSECCryptoKeyEC
+	 */
+
+	virtual XSECCryptoKeyEC         * keyEC() const;
+
+	/**
+	 * \brief Return a key implementation object based on DER-encoded input.
+	 * 
+	 * Call used by the library to obtain a key object from a DER-encoded key.
+	 *
+     * @param buf       DER-encoded data
+     * @param buflen    length of data
+     * @param base64    true iff data is base64-encoded
+	 * @returns Pointer to the new key
+	 * @see XSECCryptoKey
+	 */
+
+	virtual XSECCryptoKey         * keyDER(const char* buf, unsigned long buflen, bool base64) const;
+
+    /**
 	 * \brief Return an X509 implementation object.
 	 * 
 	 * Call used by the library to obtain an object that can work

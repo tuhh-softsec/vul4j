@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2005 The Apache Software Foundation.
+ * Copyright 2002-2010 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,6 +30,7 @@
 #include <xsec/dsig/DSIGKeyInfoX509.hpp>
 #include <xsec/dsig/DSIGKeyInfoName.hpp>
 #include <xsec/dsig/DSIGKeyInfoValue.hpp>
+#include <xsec/dsig/DSIGKeyInfoDEREncoded.hpp>
 #include <xsec/dsig/DSIGKeyInfoPGPData.hpp>
 #include <xsec/dsig/DSIGKeyInfoSPKIData.hpp>
 #include <xsec/dsig/DSIGKeyInfoMgmtData.hpp>
@@ -163,6 +164,12 @@ bool DSIGKeyInfoList::addXMLKeyInfo(DOMNode *ki) {
 	else if (strEquals(getDSIGLocalName(ki), "MgmtData")) {
 
 		XSECnew(k, DSIGKeyInfoMgmtData(mp_env, ki));
+
+	}
+    
+    else if (strEquals(getDSIG11LocalName(ki), "DEREncodedKeyValue")) {
+
+		XSECnew(k, DSIGKeyInfoDEREncoded(mp_env, ki));
 
 	}
 
@@ -582,6 +589,28 @@ DSIGKeyInfoMgmtData * DSIGKeyInfoList::appendMgmtData(const XMLCh * data) {
 
 }
 
+DSIGKeyInfoDEREncoded * DSIGKeyInfoList::appendDEREncoded(const XMLCh * data) {
+
+	if (mp_keyInfoNode == NULL) {
+
+		throw XSECException(XSECException::KeyInfoError,
+			"KeyInfoList - Attempt to create DEREncodedKeyValue before creating KeyInfo");
+
+	}
+
+	DSIGKeyInfoDEREncoded * d;
+
+	XSECnew(d, DSIGKeyInfoDEREncoded(mp_env));
+
+	mp_keyInfoNode->appendChild(d->createBlankDEREncoded(data));
+	mp_env->doPrettyPrint(mp_keyInfoNode);
+
+	addKeyInfo(d);
+
+	return d;
+
+}
+
 // --------------------------------------------------------------------------------
 //           Some helper functions
 // --------------------------------------------------------------------------------
@@ -591,7 +620,7 @@ void DSIGKeyInfoList::addAndInsertKeyInfo(DSIGKeyInfo * ref) {
 	if (mp_keyInfoNode == NULL) {
 
 		throw XSECException(XSECException::KeyInfoError,
-			"KeyInfoList - Attempt to create MgmtData before creating KeyInfo");
+			"KeyInfoList - Attempt to create child before creating KeyInfo");
 
 	}
 

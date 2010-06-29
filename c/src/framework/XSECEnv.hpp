@@ -1,5 +1,5 @@
 /*
- * Copyright 2003-2005 The Apache Software Foundation.
+ * Copyright 2003-2010 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -91,11 +91,24 @@ public:
 	  * <p>If no prefix has been set, this attribute will be set as the default namespace</p>
 	  *
 	  * @see #createBlankSignature
-	  * @param prefix The UTF-16 encoided NS prefix to use for the XML 
+	  * @param prefix The UTF-16 encoded NS prefix to use for the XML 
 	  * Digital Signature nodes
 	  */
 
 	void setDSIGNSPrefix(const XMLCh * prefix);
+
+    /**
+	  * \brief Set the prefix be used for the DSIG 1.1 namespace.
+	  *
+	  * <p>When the XSEC library creates XML Element nodes, it uses the prefix here
+	  * for all nodes created.  By default, the library assumes that the default
+	  * namespace is used.</p>
+	  *
+	  * @param prefix The UTF-16 encoded NS prefix to use for the XML 
+	  * Digital Signature 1.1 nodes
+	  */
+
+	void setDSIG11NSPrefix(const XMLCh * prefix);
 
 	/**
 	  * \brief Set the prefix be used for the Exclusive Canonicalisation namespace.
@@ -109,7 +122,7 @@ public:
 	  * If no prefix is set, the default namespace will be used
 	  *
 	  * @see #createBlankSignature
-	  * @param prefix The UTF-16 encoided NS prefix to use for the XML 
+	  * @param prefix The UTF-16 encoded NS prefix to use for the XML 
 	  * Exclusive Canonicalisation nodes
 	  */
 
@@ -127,7 +140,7 @@ public:
 	  * If no prefix is set, the default namespace will be used
 	  *
 	  * @see #createBlankSignature
-	  * @param prefix The UTF-16 encoided NS prefix to use for the XPath
+	  * @param prefix The UTF-16 encoded NS prefix to use for the XPath
 	  * filter nodes
 	  */
 
@@ -162,6 +175,16 @@ public:
 	const XMLCh * getDSIGNSPrefix() const {return mp_prefixNS;}
 
 	/**
+	 * \brief Get the NS Prefix being used for DSIG 1.1 elements.
+	 *
+	 * @returns A pointer to the buffer holding the prefix
+	 * @see #setDSIG11NSPrefix
+	 *
+	 */
+
+	const XMLCh * getDSIG11NSPrefix() const {return mp_11PrefixNS;}
+
+    /**
 	 * \brief Get the NS being used for EC nodes
 	 *
 	 * @returns A pointer to the buffer holding the prefix
@@ -499,6 +522,7 @@ private:
 								* mp_doc;
 	// For creating functions
 	XMLCh 						* mp_prefixNS;
+    XMLCh                       * mp_11PrefixNS;
 	XMLCh						* mp_ecPrefixNS;
 	XMLCh						* mp_xpfPrefixNS;
 	XMLCh						* mp_xencPrefixNS;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2005 The Apache Software Foundation.
+ * Copyright 2002-2010 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,6 +32,10 @@
 #include <xsec/enc/XSECCryptoException.hpp>
 #include <xsec/enc/XSECCryptoUtils.hpp>
 #include <xsec/framework/XSECError.hpp>
+
+#include <xercesc/util/Janitor.hpp>
+
+XSEC_USING_XERCES(ArrayJanitor);
 
 #include <openssl/dsa.h>
 
@@ -157,19 +161,23 @@ bool OpenSSLCryptoKeyDSA::verifyBase64Signature(unsigned char * hashBuf,
 			"OpenSSL:DSA - Attempt to validate signature with empty key");
 	}
 
+    char * cleanedBase64Signature;
+	unsigned int cleanedBase64SignatureLen = 0;
+
+	cleanedBase64Signature =
+		XSECCryptoBase64::cleanBuffer(base64Signature, sigLen, cleanedBase64SignatureLen);
+	ArrayJanitor<char> j_cleanedBase64Signature(cleanedBase64Signature);
+
 	unsigned char sigVal[512];
 	int sigValLen;
-	int err;
 
 	EVP_ENCODE_CTX m_dctx;
-	int rc;
-
 	EVP_DecodeInit(&m_dctx);
-	rc = EVP_DecodeUpdate(&m_dctx,
+	int rc = EVP_DecodeUpdate(&m_dctx,
 						  sigVal,
 						  &sigValLen,
-						  (unsigned char *) base64Signature,
-						  sigLen);
+						  (unsigned char *) cleanedBase64Signature,
+						  cleanedBase64SignatureLen);
 
 	if (rc < 0) {
 
@@ -218,15 +226,9 @@ bool OpenSSLCryptoKeyDSA::verifyBase64Signature(unsigned char * hashBuf,
 	BN_free(R);
 	BN_free(S);
 
-	unsigned char sigValTranslatedBuf[256];
-	unsigned char * sigValTranslated = sigValTranslatedBuf;
-	int sigValTranslatedLen;
-
-	sigValTranslatedLen = i2d_DSA_SIG(dsa_sig, &sigValTranslated);
-
 	// Now we have a signature and a key - lets check
 
-	err = DSA_do_verify(hashBuf, hashLen, dsa_sig, mp_dsaKey);
+	int err = DSA_do_verify(hashBuf, hashLen, dsa_sig, mp_dsaKey);
 
 	DSA_SIG_free(dsa_sig);
 

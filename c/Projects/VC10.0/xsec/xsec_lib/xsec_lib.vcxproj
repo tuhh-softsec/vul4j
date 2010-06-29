@@ -453,6 +453,7 @@ xcopy /I /s /f ..\..\..\..\src\*.hpp ..\..\..\..\include\xsec
     <ClCompile Include="..\..\..\..\src\canon\XSECXMLNSStack.cpp" />
     <ClCompile Include="..\..\..\..\src\dsig\DSIGAlgorithmHandlerDefault.cpp" />
     <ClCompile Include="..\..\..\..\src\dsig\DSIGConstants.cpp" />
+    <ClCompile Include="..\..\..\..\src\dsig\DSIGKeyInfoDEREncoded.cpp" />
     <ClCompile Include="..\..\..\..\src\dsig\DSIGKeyInfoExt.cpp" />
     <ClCompile Include="..\..\..\..\src\dsig\DSIGKeyInfoList.cpp" />
     <ClCompile Include="..\..\..\..\src\dsig\DSIGKeyInfoMgmtData.cpp" />
@@ -476,8 +477,10 @@ xcopy /I /s /f ..\..\..\..\src\*.hpp ..\..\..\..\include\xsec
     <ClCompile Include="..\..\..\..\src\dsig\DSIGTransformXSL.cpp" />
     <ClCompile Include="..\..\..\..\src\dsig\DSIGXPathFilterExpr.cpp" />
     <ClCompile Include="..\..\..\..\src\dsig\DSIGXPathHere.cpp" />
+    <ClCompile Include="..\..\..\..\src\enc\OpenSSL\OpenSSLCryptoKeyEC.cpp" />
     <ClCompile Include="..\..\..\..\src\enc\XSECCryptoBase64.cpp" />
     <ClCompile Include="..\..\..\..\src\enc\XSECCryptoException.cpp" />
+    <ClCompile Include="..\..\..\..\src\enc\XSECCryptoProvider.cpp" />
     <ClCompile Include="..\..\..\..\src\enc\XSECCryptoUtils.cpp" />
     <ClCompile Include="..\..\..\..\src\enc\XSECCryptoX509.cpp" />
     <ClCompile Include="..\..\..\..\src\enc\XSECKeyInfoResolverDefault.cpp" />
@@ -598,6 +601,7 @@ xcopy /I /s /f ..\..\..\..\src\*.hpp ..\..\..\..\include\xsec
     <ClInclude Include="..\..\..\..\src\dsig\DSIGAlgorithmHandlerDefault.hpp" />
     <ClInclude Include="..\..\..\..\src\dsig\DSIGConstants.hpp" />
     <ClInclude Include="..\..\..\..\src\dsig\DSIGKeyInfo.hpp" />
+    <ClInclude Include="..\..\..\..\src\dsig\DSIGKeyInfoDEREncoded.hpp" />
     <ClInclude Include="..\..\..\..\src\dsig\DSIGKeyInfoExt.hpp" />
     <ClInclude Include="..\..\..\..\src\dsig\DSIGKeyInfoList.hpp" />
     <ClInclude Include="..\..\..\..\src\dsig\DSIGKeyInfoMgmtData.hpp" />
@@ -621,6 +625,8 @@ xcopy /I /s /f ..\..\..\..\src\*.hpp ..\..\..\..\include\xsec
     <ClInclude Include="..\..\..\..\src\dsig\DSIGTransformXSL.hpp" />
     <ClInclude Include="..\..\..\..\src\dsig\DSIGXPathFilterExpr.hpp" />
     <ClInclude Include="..\..\..\..\src\dsig\DSIGXPathHere.hpp" />
+    <ClInclude Include="..\..\..\..\src\enc\OpenSSL\OpenSSLCryptoKeyEC.hpp" />
+    <ClInclude Include="..\..\..\..\src\enc\XSECCryptoKeyEC.hpp" />
     <ClInclude Include="..\..\..\..\src\framework\resource.h" />
     <ClInclude Include="..\..\..\..\src\enc\XSECCryptoBase64.hpp" />
     <ClInclude Include="..\..\..\..\src\enc\XSECCryptoException.hpp" />

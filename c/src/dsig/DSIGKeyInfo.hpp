@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2009 The Apache Software Foundation.
+ * Copyright 2002-2010 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -73,14 +73,16 @@ public:
 	enum keyInfoType {
         KEYINFO_EXTENSION       = 0,            // Extension type unknown to library
 		KEYINFO_NOTSET			= 1,			// Empty key type
-		KEYINFO_X509			= 2,			// X509 Certificate (with embedded key)
+		KEYINFO_X509			= 2,			// X.509 Certificate-Related Data
 		KEYINFO_VALUE_DSA		= 3,			// DSA Key
-		KEYINFO_VALUE_RSA		= 4,
-		KEYINFO_NAME			= 5,			// A name of a key (application dependant)
-		KEYINFO_PGPDATA			= 6,			// A PGP key
-		KEYINFO_SPKIDATA		= 7,
+		KEYINFO_VALUE_RSA		= 4,            // RSA Key
+		KEYINFO_NAME			= 5,			// Name of a key (application dependant)
+		KEYINFO_PGPDATA			= 6,			// PGP Key
+		KEYINFO_SPKIDATA		= 7,            // SPKI Key
 		KEYINFO_MGMTDATA		= 8,			// Management data
-		KEYINFO_ENCRYPTEDKEY	= 9 			// XML Encryption - Encrypted Key
+		KEYINFO_ENCRYPTEDKEY	= 9, 			// XML Encryption - Encrypted Key
+        KEYINFO_VALUE_EC        = 10,           // ECC Key
+        KEYINFO_DERENCODED      = 11            // DER-Encoded Key
 	};
 
 public:

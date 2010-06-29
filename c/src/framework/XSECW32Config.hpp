@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2005 The Apache Software Foundation.
+ * Copyright 2002-2010 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -194,6 +194,7 @@
 
 #		define XSEC_OPENSSL_CONST_BUFFERS
 #		define XSEC_OPENSSL_HAVE_AES
+#       define XSEC_OPENSSL_HAVE_EC
 #		define XSEC_OPENSSL_CANSET_PADDING
 #		define XSEC_OPENSSL_HAVE_CRYPTO_CLEANUP_ALL_EX_DATA
 #	endif

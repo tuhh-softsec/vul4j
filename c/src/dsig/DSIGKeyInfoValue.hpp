@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2005 The Apache Software Foundation.
+ * Copyright 2002-2010 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -156,7 +156,23 @@ public:
 
 	const XMLCh * getRSAExponent(void) const;
 
-	//@}
+	/**
+	 * \brief Get NamedCurve URI
+	 *
+	 * @returns A pointer to the EC NamedCurve URI
+	 */
+
+	const XMLCh * getECNamedCurve(void) const;
+
+	/**
+	 * \brief Get EC Public Key
+	 *
+	 * @returns A pointer to the buffer containing the EC public key
+	 */
+
+	const XMLCh * getECPublicKey(void) const;
+
+    //@}
 
 	/** @name DSA Create and set functions */
 	//@{
@@ -224,11 +240,11 @@ public:
 	/**
 	 * \brief Create a blank RSA KeyValue
 	 *
-	 * Create a new RSA Value object and associated DOM structures.
+	 * Create a new RSAKeyValue object and associated DOM structures.
 	 *
 	 * @param modulus Base64 encoded value of Modulus to set
 	 * @param exponent Base64 encoded value of the Exponent to set
-	 * @returns The DOM structure of the RSAValue that has been created
+	 * @returns The DOM structure of the RSAKeyValue that has been created
 	 */
 	
 	XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * 
@@ -254,6 +270,45 @@ public:
 	 */
 
 	void setRSAExponent(const XMLCh * exponent);
+
+	//@}
+
+	/** @name EC Create and Set functions */
+	//@{
+
+	/**
+	 * \brief Create a blank EC KeyValue
+	 *
+	 * Create a new ECKeyValue object and associated DOM structures.
+	 *
+	 * @param curveName URI of NamedCurve to set
+	 * @param publicKey Base64 encoded key value to set
+	 * @returns The DOM structure of the ECKeyValue that has been created
+	 */
+	
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * 
+		createBlankECKeyValue(const XMLCh * curveName,
+			const XMLCh * publicKey);
+
+	/**
+	 * \brief Set the NamedCurve URI
+	 *
+	 * Set the URI of the NamedCurve within the element.
+	 *
+	 * @param curveName URI of NamedCurve to set
+	 */
+
+	void setECNamedCurve(const XMLCh * curveName);
+
+	/**
+	 * \brief Set the public key
+	 *
+	 * Set the base64 encoded public key
+	 *
+	 * @param publicKey Base64 encoded public key to set
+	 */
+
+	void setECPublicKey(const XMLCh * publicKey);
 
 	//@}
 
@@ -293,6 +348,11 @@ private:
 	
 	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode	* mp_modulusTextNode;
 	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode	* mp_exponentTextNode;
+
+    // EC
+
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode	* mp_namedCurveElementNode;
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode	* mp_ecPublicKeyTextNode;
 
 	// General
 

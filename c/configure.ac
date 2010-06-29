@@ -851,6 +851,10 @@ AC_TRY_LINK([#include <openssl/evp.h>],
 	[AC_DEFINE(XSEC_OPENSSL_HAVE_AES)],
 	[AC_MSG_RESULT([no])])
 
+AC_CHECK_DECL(EVP_PKEY_set1_EC_KEY,
+    [AC_DEFINE(XSEC_OPENSSL_HAVE_EC)],
+    ,[#include <openssl/evp.h>])
+
 AC_CHECK_DECL(EVP_CIPHER_CTX_set_padding,
 	[AC_DEFINE(XSEC_OPENSSL_CANSET_PADDING)],
 	,[#include <openssl/evp.h>])

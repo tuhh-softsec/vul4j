@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2005 The Apache Software Foundation.
+ * Copyright 2002-2010 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,6 +41,7 @@
 
 // Forward definitions
 class DSIGKeyInfoValue;
+class DSIGKeyInfoDEREncoded;
 class DSIGKeyInfoX509;
 class DSIGKeyInfoName;
 class DSIGKeyInfoPGPData;
@@ -278,6 +279,19 @@ public:
 						   const XMLCh * exponent);
 
 	/**
+	 * \brief Append an EC KeyValue element 
+	 *
+	 * Add a new KeyInfo element for an EC Value
+	 *
+	 * @param curveName URI (generally urn:oid:...) that identifies the curve
+	 * @param keyValue Base64 encoded public key
+	 * @returns A pointer to the created object.
+	 */
+
+	DSIGKeyInfoValue * appendECKeyValue(const XMLCh * curveName, 
+						   const XMLCh * keyValue);
+
+	/**
 	 * \brief Append a X509Data element.
 	 *
 	 * Add a new KeyInfo element for X509 data.
@@ -336,6 +350,17 @@ public:
 	 */
 
 	DSIGKeyInfoMgmtData * appendMgmtData(const XMLCh * data);
+
+	/**
+	 * \brief Append a DEREncodedKeyValue element
+	 *
+	 * Add a new KeyInfo element for a DEREncodedKeyValue
+	 *
+	 * @param data The data to set in the DEREncodedKeyValue element
+	 * @returns A pointer to the created object
+	 */
+
+	DSIGKeyInfoDEREncoded * appendDEREncoded(const XMLCh * data);
 
 	//@}
 

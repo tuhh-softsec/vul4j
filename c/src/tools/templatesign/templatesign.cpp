@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2005 The Apache Software Foundation.
+ * Copyright 2002-2010 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,6 +45,7 @@
 
 #if defined (HAVE_OPENSSL)
 #	include <xsec/enc/OpenSSL/OpenSSLCryptoKeyDSA.hpp>
+#	include <xsec/enc/OpenSSL/OpenSSLCryptoKeyEC.hpp>
 #	include <xsec/enc/OpenSSL/OpenSSLCryptoKeyRSA.hpp>
 #	include <xsec/enc/OpenSSL/OpenSSLCryptoKeyHMAC.hpp>
 #	include <xsec/enc/OpenSSL/OpenSSLCryptoX509.hpp>
@@ -545,6 +546,14 @@ void printUsage(void) {
 #	if defined (HAVE_WINCAPI)
 	cerr << "                     NOTE: Not usable if --wincapi previously set\n";
 #	endif
+#   if defined(XSEC_OPENSSL_HAVE_EC)
+	cerr << "        --eckey/-e  <ec private key file> <password>\n";
+	cerr << "                     <ec private key file> contains a PEM encoded private key\n";
+	cerr << "                     <password> is the password used to decrypt the key file\n";
+#   endif
+#	if defined (HAVE_WINCAPI)
+	cerr << "                     NOTE: Not usable if --wincapi previously set\n";
+#	endif
 	cerr << "        --rsakey/-r <rsa private key file> <password>\n";
 	cerr << "                     <rsa privatekey file> contains a PEM encoded private key\n";
 	cerr << "                     <password> is the password used to decrypt the key file\n";
@@ -658,10 +667,14 @@ int main(int argc, char **argv) {
 
 #if defined (HAVE_OPENSSL)
 
-		else if (_stricmp(argv[paramCount], "--dsakey") == 0 || _stricmp(argv[paramCount], "-d") == 0 ||
-			_stricmp(argv[paramCount], "--rsakey") == 0 || _stricmp(argv[paramCount], "-r") == 0) {
+		else if (_stricmp(argv[paramCount], "--dsakey") == 0 || _stricmp(argv[paramCount], "-d") == 0
+			|| _stricmp(argv[paramCount], "--rsakey") == 0 || _stricmp(argv[paramCount], "-r") == 0
+#   if defined(XSEC_OPENSSL_HAVE_EC)
+			|| _stricmp(argv[paramCount], "--eckey") == 0 || _stricmp(argv[paramCount], "-e") == 0
+#   endif
+            ) {
 
-			// DSA or RSA OpenSSL Key
+			// OpenSSL Key
 
 			if (paramCount + 3 >= argc) {
 
@@ -672,7 +685,7 @@ int main(int argc, char **argv) {
 
 			if (key != 0) {
 
-				cerr << "\nError loading RSA or DSA key - another key already loaded\n\n";
+				cerr << "\nError loading private key - another key already loaded\n\n";
 				printUsage();
 				exit(1);
 
@@ -719,7 +732,21 @@ int main(int argc, char **argv) {
 				// Create the XSEC OpenSSL interface
 				key = new OpenSSLCryptoKeyDSA(pkey);
 			}
-			else {
+#   if defined(XSEC_OPENSSL_HAVE_EC)
+			else if (_stricmp(argv[paramCount], "--eckey") == 0 || _stricmp(argv[paramCount], "-e") == 0) {
+
+				// Check type is correct
+
+				if (pkey->type != EVP_PKEY_EC) {
+					cerr << "EC Key requested, but OpenSSL loaded something else\n";
+					exit (1);
+				}
+
+				// Create the XSEC OpenSSL interface
+				key = new OpenSSLCryptoKeyEC(pkey);
+			}
+#   endif
+            else {
 				if (pkey->type != EVP_PKEY_RSA) {
 					cerr << "RSA Key requested, but OpenSSL loaded something else\n";
 					exit (1);
@@ -732,7 +759,7 @@ int main(int argc, char **argv) {
 
 			paramCount += 3;
 			
-		} /* argv[1] = "dsa/rsa" */
+		} /* argv[1] = "dsa/rsa/ec" */
 
 
 		else if (_stricmp(argv[paramCount], "--x509cert") == 0 || _stricmp(argv[paramCount], "-x") == 0) {
@@ -746,7 +773,7 @@ int main(int argc, char **argv) {
 
 			}
 
-			// Load the signing key
+			// Load the cert.
 			// For now just read a particular file
 
 			BIO * bioX509;
@@ -771,7 +798,7 @@ int main(int argc, char **argv) {
 
 			if (x == NULL) {
 
-				cerr << "Error loading certificate key\n\n";
+				cerr << "Error loading certificate\n\n";
 				ERR_print_errors(bio_err);
 				exit (1);
 

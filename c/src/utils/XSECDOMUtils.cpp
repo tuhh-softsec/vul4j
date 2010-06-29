@@ -53,6 +53,15 @@ const XMLCh * getDSIGLocalName(const DOMNode *node) {
 
 }
 
+const XMLCh * getDSIG11LocalName(const DOMNode *node) {
+
+	if (!strEquals(node->getNamespaceURI(), DSIGConstants::s_unicodeStrURIDSIG11))
+		return NULL; //DOMString("");
+	else
+		return node->getLocalName();
+
+}
+
 const XMLCh * getECLocalName(const DOMNode * node) {
 
 	// Exclusive Canonicalisation namespace

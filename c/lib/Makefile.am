@@ -1,5 +1,5 @@
 #
-# Copyright 2006 The Apache Software Foundation.
+# Copyright 2006-2010 The Apache Software Foundation.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -83,6 +83,8 @@ dsig_sources = \
   ../src/dsig/DSIGReferenceList.cpp \
   ../src/dsig/DSIGKeyInfoValue.hpp \
   ../src/dsig/DSIGKeyInfoValue.cpp \
+  ../src/dsig/DSIGKeyInfoDEREncoded.hpp \
+  ../src/dsig/DSIGKeyInfoDEREncoded.cpp \
   ../src/dsig/DSIGXPathHere.hpp \
   ../src/dsig/DSIGXPathHere.cpp \
   ../src/dsig/DSIGAlgorithmHandlerDefault.hpp \
@@ -147,7 +149,9 @@ enc_sources = \
   ../src/enc/XSCrypt/XSCryptCryptoBase64.hpp \
   ../src/enc/XSCrypt/XSCryptCryptoBase64.cpp \
   ../src/enc/XSECCryptoKeyDSA.hpp \
+  ../src/enc/XSECCryptoKeyEC.hpp \
   ../src/enc/XSECCryptoProvider.hpp \
+  ../src/enc/XSECCryptoProvider.cpp \
   ../src/enc/XSECKeyInfoResolver.hpp \
   ../src/enc/XSECCryptoSymmetricKey.hpp \
   ../src/enc/XSECCryptoException.hpp \
@@ -396,6 +400,7 @@ xkms_sources = \
 openssl_sources = \
   ../src/enc/OpenSSL/OpenSSLCryptoHashHMAC.cpp \
   ../src/enc/OpenSSL/OpenSSLCryptoKeyDSA.hpp \
+  ../src/enc/OpenSSL/OpenSSLCryptoKeyEC.hpp \
   ../src/enc/OpenSSL/OpenSSLCryptoKeyRSA.cpp \
   ../src/enc/OpenSSL/OpenSSLCryptoHash.cpp \
   ../src/enc/OpenSSL/OpenSSLCryptoProvider.hpp \
@@ -407,6 +412,7 @@ openssl_sources = \
   ../src/enc/OpenSSL/OpenSSLCryptoBase64.cpp \
   ../src/enc/OpenSSL/OpenSSLCryptoHash.hpp \
   ../src/enc/OpenSSL/OpenSSLCryptoKeyDSA.cpp \
+  ../src/enc/OpenSSL/OpenSSLCryptoKeyEC.cpp \
   ../src/enc/OpenSSL/OpenSSLCryptoKeyHMAC.hpp \
   ../src/enc/OpenSSL/OpenSSLCryptoHashHMAC.hpp \
   ../src/enc/OpenSSL/OpenSSLCryptoSymmetricKey.hpp \

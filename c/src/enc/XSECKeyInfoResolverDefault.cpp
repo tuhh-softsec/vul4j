@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2005 The Apache Software Foundation.
+ * Copyright 2002-2010 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,10 @@
 #include <xsec/enc/XSECKeyInfoResolverDefault.hpp>
 #include <xsec/dsig/DSIGKeyInfoX509.hpp>
 #include <xsec/dsig/DSIGKeyInfoValue.hpp>
+#include <xsec/dsig/DSIGKeyInfoDEREncoded.hpp>
 #include <xsec/framework/XSECError.hpp>
+
+#include "../utils/XSECAutoPtr.hpp"
 
 #include <xercesc/util/Janitor.hpp>
 
@@ -134,6 +137,32 @@ XSECCryptoKey * XSECKeyInfoResolverDefault::resolveKey(DSIGKeyInfoList * lst) {
 			return rsa;
 
 		}
+            break;
+
+        case (DSIGKeyInfo::KEYINFO_VALUE_EC) :
+        {
+
+            XSECCryptoKeyEC* ec = XSECPlatformUtils::g_cryptoProvider->keyEC();
+            Janitor<XSECCryptoKeyEC> j_ec(ec);
+
+            safeBuffer value;
+			value << (*mp_formatter << ((DSIGKeyInfoValue *) lst->item(i))->getECPublicKey());
+            XSECAutoPtrChar curve(((DSIGKeyInfoValue *) lst->item(i))->getECNamedCurve());
+            if (curve.get()) {
+                ec->loadPublicKeyBase64(curve.get(), value.rawCharBuffer(), (unsigned int) strlen(value.rawCharBuffer()));
+                j_ec.release();
+                return ec;
+            }
+        }
+            break;
+
+        case (DSIGKeyInfo::KEYINFO_DERENCODED) :
+        {
+            safeBuffer value;
+			value << (*mp_formatter << ((DSIGKeyInfoDEREncoded *) lst->item(i))->getData());
+            return XSECPlatformUtils::g_cryptoProvider->keyDER(value.rawCharBuffer(), (unsigned int)strlen(value.rawCharBuffer()), true);
+        }
+            break;
 
 		default :
 			break;

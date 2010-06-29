@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2005 The Apache Software Foundation.
+ * Copyright 2002-2010 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -70,7 +70,10 @@ public :
 		KEY_RSA_PRIVATE,
 		KEY_RSA_PAIR,
 		KEY_HMAC,
-		KEY_SYMMETRIC
+		KEY_SYMMETRIC,
+		KEY_EC_PUBLIC,
+		KEY_EC_PRIVATE,
+		KEY_EC_PAIR
 	
 	};
 
