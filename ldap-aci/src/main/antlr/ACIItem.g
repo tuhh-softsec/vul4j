@@ -31,9 +31,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Enumeration;
 
-import javax.naming.directory.Attribute;
-import javax.naming.directory.BasicAttribute;
-
 import org.apache.directory.shared.ldap.filter.BranchNode;
 import org.apache.directory.shared.ldap.filter.AndNode;
 import org.apache.directory.shared.ldap.filter.OrNode;
