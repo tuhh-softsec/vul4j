@@ -23,11 +23,10 @@ package org.apache.directory.shared.ldap.aci;
 
 import java.io.StringReader;
 import java.text.ParseException;
-import java.util.Map;
 
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.name.NameComponentNormalizer;
-import org.apache.directory.shared.ldap.schema.normalizers.OidNormalizer;
+import org.apache.directory.shared.ldap.schema.SchemaManager;
 
 import antlr.RecognitionException;
 import antlr.TokenStreamException;
@@ -54,12 +53,12 @@ public class ACIItemParser
     /**
      * Creates a ACIItem parser.
      */
-    public ACIItemParser( Map<String, OidNormalizer> oidsMap )
+    public ACIItemParser( SchemaManager schemaManager )
     {
         this.lexer = new ReusableAntlrACIItemLexer( new StringReader( "" ) );
         this.parser = new ReusableAntlrACIItemParser( lexer );
 
-        this.parser.init( oidsMap ); // this method MUST be called while we cannot do
+        this.parser.init( schemaManager ); // this method MUST be called while we cannot do
         // constructor overloading for antlr generated parser
         this.isNormalizing = false;
     }
@@ -68,13 +67,13 @@ public class ACIItemParser
     /**
      * Creates a normalizing ACIItem parser.
      */
-    public ACIItemParser( NameComponentNormalizer normalizer, Map<String, OidNormalizer> oidsMap )
+    public ACIItemParser( NameComponentNormalizer normalizer, SchemaManager schemaManager )
     {
         this.lexer = new ReusableAntlrACIItemLexer( new StringReader( "" ) );
         this.parser = new ReusableAntlrACIItemParser( lexer );
 
         this.parser.setNormalizer( normalizer );
-        this.parser.init( oidsMap ); // this method MUST be called while we cannot do
+        this.parser.init( schemaManager ); // this method MUST be called while we cannot do
         // constructor overloading for antlr generated parser
         this.isNormalizing = true;
     }

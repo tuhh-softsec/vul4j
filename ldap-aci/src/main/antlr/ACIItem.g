@@ -53,9 +53,9 @@ import org.apache.directory.shared.ldap.util.NoDuplicateKeysMap;
 import org.apache.directory.shared.ldap.util.OptionalComponentsMonitor;
 import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.name.RDN;
+import org.apache.directory.shared.ldap.schema.SchemaManager;
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.constants.AuthenticationLevel;
-import org.apache.directory.shared.ldap.schema.normalizers.OidNormalizer;
 import org.apache.directory.shared.ldap.entry.StringValue;
 import org.apache.directory.shared.ldap.aci.protectedItem.AllAttributeValuesItem;
 import org.apache.directory.shared.ldap.aci.protectedItem.AttributeTypeItem;
@@ -129,7 +129,9 @@ tokens
     private Integer precedence = null;
     private Set<GrantAndDenial> grantsAndDenials;
     private Set<UserPermission> userPermissions;
-    private Map<String, OidNormalizer> oidsMap;
+    
+    /** The SchemaManager */
+    private SchemaManager schemaManager;
     
     private Set<DN> chopBeforeExclusions;
     private Set<DN> chopAfterExclusions;
@@ -148,9 +150,9 @@ tokens
      *
      * @return the DnParser to be used for parsing Names
      */
-    public void init( Map<String, OidNormalizer> oidsMap )
+    public void init( SchemaManager schemaManager )
     {
-        this.oidsMap = oidsMap;
+        this.schemaManager = schemaManager;
     }
 
     /**
@@ -488,9 +490,9 @@ attributeValue
         // So, parse the set as a Dn and extract each attributeTypeAndValue
         DN attributeTypeAndValueSetAsDn = new DN( token.getText() );
         
-        if ( oidsMap != null )
+        if ( schemaManager != null )
         {        
-            attributeTypeAndValueSetAsDn.normalize( oidsMap );
+          attributeTypeAndValueSetAsDn.normalize( schemaManager.getNormalizerMapping() );
         }
         
         for ( RDN rdn :attributeTypeAndValueSetAsDn.getRdns() )
@@ -1172,9 +1174,9 @@ distinguishedName returns [ DN name ]
     token:SAFEUTF8STRING
     {
         name = new DN( token.getText() );
-        if ( oidsMap != null )
+        if ( schemaManager != null )
         {
-            name.normalize( oidsMap );
+            name.normalize( schemaManager.getNormalizerMapping() );
         }
         log.debug( "recognized a DistinguishedName: " + token.getText() );
     }
