@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import net.webassembletool.ResourceContext;
+import net.webassembletool.UserContext;
 
 import org.apache.http.cookie.Cookie;
 
@@ -15,14 +16,15 @@ public class RewriteUtils {
 
 	public final static String getSessionId(ResourceContext resourceContext) {
 		String jsessionid = null;
-		if (resourceContext.getUserContext() != null) {
-			List<Cookie> cookies = resourceContext.getUserContext()
-					.getCookieStore().getCookies();
-			for (Cookie cookie : cookies)
+		UserContext userContext = resourceContext.getUserContext(false);
+		if (userContext != null) {
+			List<Cookie> cookies = userContext.getCookieStore().getCookies();
+			for (Cookie cookie : cookies) {
 				if ("jsessionid".equalsIgnoreCase(cookie.getName())) {
 					jsessionid = cookie.getValue();
 					break;
 				}
+			}
 		}
 		return jsessionid;
 	}

@@ -23,7 +23,9 @@ import java.util.zip.GZIPInputStream;
 
 import javax.servlet.http.HttpServletRequest;
 
+import net.webassembletool.Driver;
 import net.webassembletool.ResourceContext;
+import net.webassembletool.UserContext;
 import net.webassembletool.authentication.AuthenticationHandler;
 import net.webassembletool.cache.Rfc2616;
 import net.webassembletool.filter.Filter;
@@ -54,13 +56,25 @@ public class HttpResource extends Resource {
 			Map<String, String> validators) throws IOException {
 		this.target = resourceContext;
 		this.url = ResourceUtils.getHttpUrlWithQueryString(resourceContext);
-		// Retrieve session and other cookies
-		HttpContext httpContext = null;
-		if (resourceContext.getUserContext() != null) {
-			httpContext = resourceContext.getUserContext().getHttpContext();
-		}
+
+		Driver driver = resourceContext.getDriver();
 		HttpServletRequest originalRequest = resourceContext
 				.getOriginalRequest();
+
+		// Retrieve session and other cookies
+		UserContext userContext = null;
+		boolean newUserContext = true;
+		if (driver.getUserContext(originalRequest, false) == null) {
+			// Create a temporary user context and cookie store.
+			userContext = driver.createNewUserContext();
+		} else {
+			userContext = driver.getUserContext(originalRequest, false);
+			newUserContext = false;
+		}
+		HttpContext httpContext = null;
+		httpContext = userContext.getHttpContext();
+
+		// Proceed with request
 		AuthenticationHandler authenticationHandler = resourceContext
 				.getDriver().getAuthenticationHandler();
 		boolean proxy = resourceContext.isProxy();
@@ -83,7 +97,14 @@ public class HttpResource extends Resource {
 			filter.preRequest(httpClientRequest, resourceContext);
 		}
 		httpClientResponse = httpClientRequest.execute(httpClient, httpContext);
-		// Authentication challenge
+
+		// Store context in session if cookies where created
+		if (newUserContext
+				&& userContext.getCookieStore().getCookies().size() > 0) {
+			resourceContext.getDriver().setUserContext(userContext,
+					originalRequest);
+		}
+
 		while (authenticationHandler.needsNewRequest(httpClientResponse,
 				resourceContext)) {
 			// We must first ensure that the connection is always released, if
@@ -100,7 +121,16 @@ public class HttpResource extends Resource {
 			}
 			httpClientResponse = httpClientRequest.execute(httpClient,
 					httpContext);
+
+			// Store context if cookies where created
+			if (newUserContext
+					&& userContext.getCookieStore().getCookies().size() > 0) {
+				resourceContext.getDriver().setUserContext(userContext,
+						originalRequest);
+			}
+
 		}
+
 		if (isError()) {
 			LOG.warn("Problem retrieving URL: " + url + ": "
 					+ httpClientResponse.getStatusCode() + " "
@@ -110,8 +140,8 @@ public class HttpResource extends Resource {
 
 	@Override
 	public void render(Output output) throws IOException {
-		output.setStatus(httpClientResponse.getStatusCode(), httpClientResponse
-				.getStatusText());
+		output.setStatus(httpClientResponse.getStatusCode(),
+				httpClientResponse.getStatusText());
 		Rfc2616.copyHeaders(this, output);
 		Filter filter = target.getDriver().getFilter();
 		if (filter != null) {
@@ -201,8 +231,8 @@ public class HttpResource extends Resource {
 			String content = IOUtils.toString(inputStream, charset);
 			content = removeSessionId(jsessionid, content);
 			if (output.getHeader("Content-length") != null) {
-				output.setHeader("Content-length", Integer.toString(content
-						.length()));
+				output.setHeader("Content-length",
+						Integer.toString(content.length()));
 			}
 			OutputStream outputStream = output.getOutputStream();
 			IOUtils.write(content, outputStream, charset);
@@ -243,8 +273,8 @@ public class HttpResource extends Resource {
 		result.append(" ");
 		result.append(ResourceUtils.getHttpUrlWithQueryString(target));
 		result.append("\n");
-		if (target.getUserContext() != null) {
-			result.append(target.getUserContext().toString());
+		if (target.getUserContext(false) != null) {
+			result.append(target.getUserContext(false).toString());
 		}
 		return result.toString();
 	}

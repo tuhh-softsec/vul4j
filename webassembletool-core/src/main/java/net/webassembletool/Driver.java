@@ -118,12 +118,12 @@ public class Driver {
 			HttpParams httpParams = new BasicHttpParams();
 			httpParams.setIntParameter(ConnManagerPNames.MAX_TOTAL_CONNECTIONS,
 					config.getMaxConnectionsPerHost());
-			httpParams.setLongParameter(ConnManagerPNames.TIMEOUT, config
-					.getTimeout());
+			httpParams.setLongParameter(ConnManagerPNames.TIMEOUT,
+					config.getTimeout());
 			httpParams.setIntParameter(CoreConnectionPNames.CONNECTION_TIMEOUT,
 					config.getTimeout());
-			httpParams.setIntParameter(CoreConnectionPNames.SO_TIMEOUT, config
-					.getTimeout());
+			httpParams.setIntParameter(CoreConnectionPNames.SO_TIMEOUT,
+					config.getTimeout());
 			httpParams.setBooleanParameter(
 					ClientPNames.ALLOW_CIRCULAR_REDIRECTS, true);
 			ThreadSafeClientConnManager connectionManager = new ThreadSafeClientConnManager(
@@ -134,8 +134,8 @@ public class Driver {
 		}
 		// Proxy settings
 		if (config.getProxyHost() != null) {
-			HttpHost proxy = new HttpHost(config.getProxyHost(), config
-					.getProxyPort(), "http");
+			HttpHost proxy = new HttpHost(config.getProxyHost(),
+					config.getProxyPort(), "http");
 			httpClient.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY,
 					proxy);
 		}
@@ -159,21 +159,53 @@ public class Driver {
 		return authenticationHandler;
 	}
 
-	public final UserContext getContext(HttpServletRequest request) {
-		HttpSession session = request.getSession(true);
-		String key = getContextKey();
-		UserContext context = (UserContext) session.getAttribute(key);
-		if (context == null) {
-			context = new UserContext();
-			context.setCookieStore(extension
-					.getExtension(CustomCookieStore.class));
-			context.init();
-			setContext(context, request);
+	/**
+	 * Get current user context in session or null if no context exists.
+	 * 
+	 * @param request
+	 *            http request
+	 * @param create
+	 *            if true and no current user context, it will be created and
+	 *            added to the session.
+	 * @return UserContext or null
+	 */
+	public final UserContext getUserContext(HttpServletRequest request,
+			boolean create) {
+		UserContext context = null;
+		HttpSession session = request.getSession(create);
+		if (session != null) {
+			String key = getContextKey();
+			context = (UserContext) session.getAttribute(key);
+			if (context == null && create) {
+				context = createNewUserContext();
+				setUserContext(context, request);
+			}
 		}
 		return context;
 	}
 
-	public final void setContext(UserContext context, HttpServletRequest request) {
+	/**
+	 * Return a new and initialized user context.
+	 * 
+	 * @return UserContext
+	 */
+	public UserContext createNewUserContext() {
+		UserContext context = new UserContext();
+		context.setCookieStore(extension.getExtension(CustomCookieStore.class));
+		context.init();
+		return context;
+	}
+
+	/**
+	 * Add user context to session.
+	 * 
+	 * @param context
+	 *            UserContext to save.
+	 * @param request
+	 *            http request.
+	 */
+	public final void setUserContext(UserContext context,
+			HttpServletRequest request) {
 		HttpSession session = request.getSession();
 		session.setAttribute(getContextKey(), context);
 	}
@@ -360,9 +392,9 @@ public class Driver {
 
 		// Fix resources
 		if (config.isFixResources()) {
-			ResourceFixupRenderer fixup = new ResourceFixupRenderer(config
-					.getBaseURL(), config.getVisibleBaseURL(), page, config
-					.getFixMode());
+			ResourceFixupRenderer fixup = new ResourceFixupRenderer(
+					config.getBaseURL(), config.getVisibleBaseURL(), page,
+					config.getFixMode());
 			StringWriter stringWriter = new StringWriter();
 			fixup.render(resourceContext, currentValue, stringWriter);
 			currentValue = stringWriter.toString();
@@ -429,9 +461,9 @@ public class Driver {
 
 			// Fix resources
 			if (config.isFixResources()) {
-				ResourceFixupRenderer fixup = new ResourceFixupRenderer(config
-						.getBaseURL(), config.getVisibleBaseURL(), relUrl,
-						config.getFixMode());
+				ResourceFixupRenderer fixup = new ResourceFixupRenderer(
+						config.getBaseURL(), config.getVisibleBaseURL(),
+						relUrl, config.getFixMode());
 				StringWriter stringWriter = new StringWriter();
 				fixup.render(resourceContext, currentValue, stringWriter);
 				currentValue = stringWriter.toString();
@@ -526,8 +558,8 @@ public class Driver {
 				// Prepare a FileOutput to store the result on the file system
 				if (config.isPutInCache()
 						&& Rfc2616.isCacheable(resourceContext)) {
-					fileOutput = new FileOutput(ResourceUtils.getFileUrl(config
-							.getLocalBase(), resourceContext));
+					fileOutput = new FileOutput(ResourceUtils.getFileUrl(
+							config.getLocalBase(), resourceContext));
 					multipleOutput.addOutput(fileOutput);
 				}
 				if (cache != null) {
@@ -636,8 +668,8 @@ public class Driver {
 			}
 		}
 		if (result.getStatusCode() != HttpServletResponse.SC_OK) {
-			throw new HttpErrorPage(result.getStatusCode(), result
-					.getStatusMessage(), result.toString());
+			throw new HttpErrorPage(result.getStatusCode(),
+					result.getStatusMessage(), result.toString());
 		}
 		return result;
 	}

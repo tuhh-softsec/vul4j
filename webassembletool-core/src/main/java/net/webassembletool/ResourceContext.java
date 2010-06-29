@@ -52,10 +52,11 @@ public class ResourceContext {
 			HttpServletResponse originalResponse) {
 		this.driver = driver;
 		this.relUrl = relUrl;
-		if (parameters != null)
+		if (parameters != null) {
 			this.parameters = parameters;
-		else
+		} else {
 			this.parameters = new HashMap<String, String>();
+		}
 		this.originalRequest = originalRequest;
 		this.originalResponse = originalResponse;
 	}
@@ -76,8 +77,8 @@ public class ResourceContext {
 		return proxy;
 	}
 
-	public UserContext getUserContext() {
-		return driver.getContext(originalRequest);
+	public UserContext getUserContext(boolean create) {
+		return driver.getUserContext(originalRequest, create);
 	}
 
 	public boolean isNeededForTransformation() {

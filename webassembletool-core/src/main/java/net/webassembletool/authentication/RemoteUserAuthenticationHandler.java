@@ -41,7 +41,7 @@ public class RemoteUserAuthenticationHandler implements AuthenticationHandler {
 
 	public void preRequest(HttpClientRequest request,
 			ResourceContext requestContext) {
-		UserContext userContext = requestContext.getUserContext();
+		UserContext userContext = requestContext.getUserContext(false);
 		String remoteUser = null;
 		if (userContext != null && userContext.getUser() != null) {
 			remoteUser = userContext.getUser();
