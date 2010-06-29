@@ -80,6 +80,7 @@
     <module>ldap-schema</module>
     <module>ldap-schema-loader</module>
     <module>ldap-schema-manager</module>
+    <module>ldap-aci</module>
     <module>asn1-codec</module>
     <module>ldap-convert</module>
     <module>cursor</module>
@@ -138,6 +139,12 @@
       <dependency>
         <groupId>${project.groupId}</groupId>
         <artifactId>shared-ldap</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>shared-ldap-aci</artifactId>
         <version>${project.version}</version>
       </dependency>
 
