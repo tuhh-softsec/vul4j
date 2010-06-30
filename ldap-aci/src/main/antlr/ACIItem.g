@@ -64,6 +64,7 @@ import org.apache.directory.shared.ldap.aci.protectedItem.AttributeValueItem;
 import org.apache.directory.shared.ldap.aci.protectedItem.SelfValueItem;
 import org.apache.directory.shared.ldap.aci.protectedItem.ClassesItem;
 import org.apache.directory.shared.ldap.aci.protectedItem.EntryItem;
+import org.apache.directory.shared.ldap.aci.protectedItem.RangeOfValuesItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -535,7 +536,7 @@ rangeOfValues
     token:RANGE_OF_VALUES_CANDIDATE
     {
         protectedItemsMap.put( "rangeOfValues",
-                new ProtectedItem.RangeOfValues(
+                new RangeOfValuesItem(
                         FilterParser.parse( token.getText() ) ) );
         log.debug( "filterParser parsed " + token.getText() );
     }

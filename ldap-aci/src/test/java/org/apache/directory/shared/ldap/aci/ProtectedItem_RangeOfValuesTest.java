@@ -25,7 +25,7 @@ import static org.junit.Assert.assertFalse;
 
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
-import org.apache.directory.shared.ldap.aci.ProtectedItem.RangeOfValues;
+import org.apache.directory.shared.ldap.aci.protectedItem.RangeOfValuesItem;
 import org.apache.directory.shared.ldap.filter.ExprNode;
 import org.apache.directory.shared.ldap.filter.FilterParser;
 import org.junit.Before;
@@ -42,10 +42,10 @@ import org.junit.runner.RunWith;
 @Concurrent()
 public class ProtectedItem_RangeOfValuesTest
 {
-    RangeOfValues rangeOfValuesA;
-    RangeOfValues rangeOfValuesACopy;
-    RangeOfValues rangeOfValuesB;
-    RangeOfValues rangeOfValuesC;
+    RangeOfValuesItem rangeOfValuesA;
+    RangeOfValuesItem rangeOfValuesACopy;
+    RangeOfValuesItem rangeOfValuesB;
+    RangeOfValuesItem rangeOfValuesC;
 
 
     /**
@@ -59,10 +59,10 @@ public class ProtectedItem_RangeOfValuesTest
         ExprNode filterB = FilterParser.parse( "(&(cn=test)(sn=test))" );
         ExprNode filterC = FilterParser.parse( "(&(cn=sample)(sn=sample))" );
 
-        rangeOfValuesA = new RangeOfValues( filterA );
-        rangeOfValuesACopy = new RangeOfValues( filterA );
-        rangeOfValuesB = new RangeOfValues( filterB );
-        rangeOfValuesC = new RangeOfValues( filterC );
+        rangeOfValuesA = new RangeOfValuesItem( filterA );
+        rangeOfValuesACopy = new RangeOfValuesItem( filterA );
+        rangeOfValuesB = new RangeOfValuesItem( filterB );
+        rangeOfValuesC = new RangeOfValuesItem( filterC );
     }
 
 

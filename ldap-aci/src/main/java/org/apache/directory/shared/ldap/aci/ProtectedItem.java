@@ -27,7 +27,6 @@ import java.util.Set;
 import org.apache.directory.shared.ldap.aci.protectedItem.AllUserAttributeTypesAndValuesItem;
 import org.apache.directory.shared.ldap.aci.protectedItem.AllUserAttributeTypesItem;
 import org.apache.directory.shared.ldap.aci.protectedItem.EntryItem;
-import org.apache.directory.shared.ldap.filter.ExprNode;
 
 
 /**
@@ -171,84 +170,6 @@ public abstract class ProtectedItem
         }
     }
 
-    /**
-     * Any attribute value which matches the specified filter, i.e. for which
-     * the specified filter evaluated on that attribute value would return TRUE.
-     */
-    public static class RangeOfValues extends ProtectedItem
-    {
-        private final ExprNode filter;
-
-
-        /**
-         * Creates a new instance.
-         * 
-         * @param filter
-         *            the expression
-         */
-        public RangeOfValues( ExprNode filter )
-        {
-            if ( filter == null )
-            {
-                throw new IllegalArgumentException( "filter" );
-            }
-
-            this.filter = filter;
-        }
-
-
-        /**
-         * Returns the expression.
-         */
-        public ExprNode getFilter()
-        {
-            return filter;
-        }
-
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public int hashCode()
-        {
-            int hash = 37;
-            hash = hash * 17 + filter.hashCode();
-            return hash;
-        }
-
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public boolean equals( Object o )
-        {
-            if ( this == o )
-            {
-                return true;
-            }
-
-            if ( o instanceof RangeOfValues )
-            {
-                RangeOfValues that = ( RangeOfValues ) o;
-                return this.filter.equals( that.filter );
-            }
-
-            return false;
-        }
-
-
-        public String toString()
-        {
-            StringBuilder buf = new StringBuilder();
-
-            buf.append( "rangeOfValues " );
-            buf.append( filter.toString() );
-
-            return buf.toString();
-        }
-    }
 
     /**
      * Restricts the maximum number of immediate subordinates of the superior
