@@ -80,6 +80,7 @@
     <module>ldap-schema</module>
     <module>ldap-schema-loader</module>
     <module>ldap-schema-manager</module>
+    <module>ldap-schema-manager-tests</module>
     <module>ldap-aci</module>
     <module>asn1-codec</module>
     <module>ldap-convert</module>
