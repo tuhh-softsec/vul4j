@@ -19,29 +19,21 @@
  */
 package org.apache.directory.shared.ldap.aci.protectedItem;
 
-import java.util.Set;
-
-import org.apache.directory.shared.ldap.schema.AttributeType;
+import org.apache.directory.shared.ldap.aci.ProtectedItem;
 
 /**
- * All attribute value information pertaining to specific attributes.
+ * All user attribute information associated with the entry, including all
+ * values of all user attributes.
  */
-public class AllAttributeValuesItem extends AbstractAttributeTypeProtectedItem
+public class AllUserAttributeTypesAndValuesItem extends ProtectedItem
 {
-    /**
-     * Creates a new instance.
-     * 
-     * @param attributeTypes the collection of attribute IDs.
-     */
-    public AllAttributeValuesItem( Set<AttributeType> attributeTypes )
+    public AllUserAttributeTypesAndValuesItem()
     {
-        super( attributeTypes );
     }
 
 
     public String toString()
     {
-        return "allAttributeValues " + super.toString();
+        return "allUserAttributeTypesAndValues";
     }
 }
-

@@ -25,6 +25,7 @@ import java.io.StringReader;
 import java.text.ParseException;
 
 import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.schema.SchemaManager;
 
 import antlr.RecognitionException;
 import antlr.TokenStreamException;
@@ -51,10 +52,11 @@ public class ACIItemChecker
     /**
      * Creates a ACIItem parser.
      */
-    public ACIItemChecker()
+    public ACIItemChecker( SchemaManager schemaManager )
     {
         this.lexer = new ReusableAntlrACIItemLexer( new StringReader( "" ) );
         this.checker = new ReusableAntlrACIItemParser( lexer );
+        this.checker.init( schemaManager );
         this.isNormalizing = false;
     }
 

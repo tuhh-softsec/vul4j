@@ -250,7 +250,7 @@ public class SchemaEntityFactory implements EntityFactory
     /**
      * Class load a syntaxChecker instance
      */
-    private SyntaxChecker classLoadSyntaxChecker( String oid, String className, EntryAttribute byteCode )
+    private SyntaxChecker classLoadSyntaxChecker( SchemaManager schemaManager, String oid, String className, EntryAttribute byteCode )
         throws Exception
     {
         // Try to class load the syntaxChecker
@@ -279,6 +279,9 @@ public class SchemaEntityFactory implements EntityFactory
         // Inject the new OID, as the loaded syntaxChecker might have its own
         syntaxChecker.setOid( oid );
 
+        // Inject the SchemaManager for the comparator who needs it
+        syntaxChecker.setSchemaManager( schemaManager );
+        
         return syntaxChecker;
     }
 
@@ -322,7 +325,7 @@ public class SchemaEntityFactory implements EntityFactory
         try
         {
             // Class load the syntaxChecker
-            SyntaxChecker syntaxChecker = classLoadSyntaxChecker( oid, className, byteCode );
+            SyntaxChecker syntaxChecker = classLoadSyntaxChecker( schemaManager, oid, className, byteCode );
     
             // Update the common fields
             setSchemaObjectProperties( syntaxChecker, entry, schema );
@@ -367,7 +370,7 @@ public class SchemaEntityFactory implements EntityFactory
         EntryAttribute byteCode = getByteCode( syntaxCheckerDescription, SchemaConstants.SYNTAX_CHECKER );
 
         // Class load the SyntaxChecker
-        SyntaxChecker syntaxChecker = classLoadSyntaxChecker( oid, fqcn, byteCode );
+        SyntaxChecker syntaxChecker = classLoadSyntaxChecker( schemaManager, oid, fqcn, byteCode );
 
         // Update the common fields
         setSchemaObjectProperties( syntaxChecker, syntaxCheckerDescription, schema );

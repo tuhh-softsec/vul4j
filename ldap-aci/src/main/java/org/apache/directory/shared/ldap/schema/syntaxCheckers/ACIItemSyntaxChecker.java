@@ -23,6 +23,7 @@ import java.text.ParseException;
 
 import org.apache.directory.shared.ldap.aci.ACIItemChecker;
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
+import org.apache.directory.shared.ldap.schema.SchemaManager;
 import org.apache.directory.shared.ldap.schema.SyntaxChecker;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
@@ -44,7 +45,7 @@ public class ACIItemSyntaxChecker extends SyntaxChecker
     private static final long serialVersionUID = 1L;
 
     /** An instance of ACI Item Checker */
-    private static final ACIItemChecker ACI_ITEM_CHECKER = new ACIItemChecker();
+    private static ACIItemChecker ACI_ITEM_CHECKER;
 
     /**
      * Creates a new instance of ACIItemSyntaxChecker
@@ -102,5 +103,14 @@ public class ACIItemSyntaxChecker extends SyntaxChecker
             LOG.debug( "Syntax invalid for '{}'", value );
             return false;
         }
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setSchemaManager( SchemaManager schemaManager )
+    {
+        ACI_ITEM_CHECKER = new ACIItemChecker( schemaManager );
     }
 }

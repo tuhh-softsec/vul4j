@@ -20,11 +20,12 @@
 package org.apache.directory.shared.ldap.aci;
 
 
-import java.io.Serializable;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.apache.directory.shared.ldap.aci.protectedItem.AllUserAttributeTypesAndValuesItem;
+import org.apache.directory.shared.ldap.aci.protectedItem.AllUserAttributeTypesItem;
 import org.apache.directory.shared.ldap.filter.ExprNode;
 
 
@@ -51,13 +52,13 @@ public abstract class ProtectedItem
      * All user attribute type information associated with the entry, but not
      * values associated with those attributes.
      */
-    public static final AllUserAttributeTypes ALL_USER_ATTRIBUTE_TYPES = new AllUserAttributeTypes();
+    public static final AllUserAttributeTypesItem ALL_USER_ATTRIBUTE_TYPES = new AllUserAttributeTypesItem();
 
     /**
      * All user attribute information associated with the entry, including all
      * values of all user attributes.
      */
-    public static final AllUserAttributeTypesAndValues ALL_USER_ATTRIBUTE_TYPES_AND_VALUES = new AllUserAttributeTypesAndValues();
+    public static final AllUserAttributeTypesAndValuesItem ALL_USER_ATTRIBUTE_TYPES_AND_VALUES = new AllUserAttributeTypesAndValuesItem();
 
 
     /**
@@ -77,8 +78,6 @@ public abstract class ProtectedItem
      */
     public static class Classes extends ProtectedItem
     {
-        private static final long serialVersionUID = -8553151906617285325L;
-
         private final ExprNode classes;
 
 
@@ -157,9 +156,6 @@ public abstract class ProtectedItem
      */
     public static class Entry extends ProtectedItem
     {
-        private static final long serialVersionUID = -6971482229815999874L;
-
-
         private Entry()
         {
         }
@@ -168,46 +164,6 @@ public abstract class ProtectedItem
         public String toString()
         {
             return "entry";
-        }
-    }
-
-    /**
-     * All user attribute type information associated with the entry, but not
-     * values associated with those attributes.
-     */
-    public static class AllUserAttributeTypes extends ProtectedItem
-    {
-        private static final long serialVersionUID = 3728652941148931359L;
-
-
-        private AllUserAttributeTypes()
-        {
-        }
-
-
-        public String toString()
-        {
-            return "allUserAttributeTypes";
-        }
-    }
-
-    /**
-     * All user attribute information associated with the entry, including all
-     * values of all user attributes.
-     */
-    public static class AllUserAttributeTypesAndValues extends ProtectedItem
-    {
-        private static final long serialVersionUID = 7250988885983604442L;
-
-
-        private AllUserAttributeTypesAndValues()
-        {
-        }
-
-
-        public String toString()
-        {
-            return "allUserAttributeTypesAndValues";
         }
     }
 
@@ -223,8 +179,6 @@ public abstract class ProtectedItem
      */
     public static class MaxValueCount extends ProtectedItem
     {
-        private static final long serialVersionUID = 5261651541488944572L;
-
         private final Set<ProtectedItem.MaxValueCountItem> items;
 
 
@@ -321,8 +275,6 @@ public abstract class ProtectedItem
      */
     public static class RangeOfValues extends ProtectedItem
     {
-        private static final long serialVersionUID = -8553151906617285325L;
-
         private final ExprNode filter;
 
 
@@ -408,8 +360,6 @@ public abstract class ProtectedItem
      */
     public static class MaxImmSub extends ProtectedItem
     {
-        private static final long serialVersionUID = -8553151906617285325L;
-
         private final int value;
 
 
@@ -485,7 +435,6 @@ public abstract class ProtectedItem
      */
     public static class RestrictedBy extends ProtectedItem
     {
-        private static final long serialVersionUID = -8157637446588058799L;
         private final Set<RestrictedByItem> items;
 
 
@@ -578,10 +527,8 @@ public abstract class ProtectedItem
     /**
      * An element of {@link MaxValueCount}.
      */
-    public static class MaxValueCountItem implements Serializable
+    public static class MaxValueCountItem
     {
-        private static final long serialVersionUID = 43697038363452113L;
-
         private String attributeType;
 
         private int maxCount;
@@ -630,10 +577,8 @@ public abstract class ProtectedItem
     /**
      * An element of {@link RestrictedBy}.
      */
-    public static class RestrictedByItem implements Serializable
+    public static class RestrictedByItem
     {
-        private static final long serialVersionUID = 4319052153538757099L;
-
         private String attributeType;
 
         private String valuesIn;

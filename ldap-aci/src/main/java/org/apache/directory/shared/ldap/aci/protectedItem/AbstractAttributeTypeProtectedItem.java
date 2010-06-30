@@ -24,13 +24,14 @@ import java.util.Iterator;
 import java.util.Set;
 
 import org.apache.directory.shared.ldap.aci.ProtectedItem;
+import org.apache.directory.shared.ldap.schema.AttributeType;
 
 /**
  * A base class for all items which protects attribute types (or its values)
  */
 public abstract class AbstractAttributeTypeProtectedItem extends ProtectedItem
 {
-    protected final Set<String> attributeTypes;
+    protected final Set<AttributeType> attributeTypes;
 
 
     /**
@@ -38,7 +39,7 @@ public abstract class AbstractAttributeTypeProtectedItem extends ProtectedItem
      * 
      * @param attributeTypes the collection of attirbute IDs
      */
-    protected AbstractAttributeTypeProtectedItem( Set<String> attributeTypes )
+    protected AbstractAttributeTypeProtectedItem( Set<AttributeType> attributeTypes )
     {
         this.attributeTypes = Collections.unmodifiableSet( attributeTypes );
     }
@@ -47,7 +48,7 @@ public abstract class AbstractAttributeTypeProtectedItem extends ProtectedItem
     /**
      * Returns an iterator of all attribute IDs.
      */
-    public Iterator<String> iterator()
+    public Iterator<AttributeType> iterator()
     {
         return attributeTypes.iterator();
     }
@@ -101,7 +102,7 @@ public abstract class AbstractAttributeTypeProtectedItem extends ProtectedItem
         buf.append( "{ " );
         boolean isFirst = true;
 
-        for ( String attributeType : attributeTypes )
+        for ( AttributeType attributeType : attributeTypes )
         {
             if ( isFirst )
             {
@@ -112,7 +113,7 @@ public abstract class AbstractAttributeTypeProtectedItem extends ProtectedItem
                 buf.append( ", " );
             }
 
-            buf.append( attributeType );
+            buf.append( attributeType.getName() );
         }
 
         buf.append( " }" );

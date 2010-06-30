@@ -29,6 +29,7 @@ import java.util.Set;
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.aci.protectedItem.SelfValueItem;
+import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -55,18 +56,18 @@ public class ProtectedItem_SelfValueTest
     @Before
     public void initNames() throws Exception
     {
-        Set<String> colA = new HashSet<String>();
-        colA.add( "aa" );
-        colA.add( "bb" );
-        colA.add( "cc" );
-        Set<String> colB = new HashSet<String>();
-        colB.add( "aa" );
-        colB.add( "bb" );
-        colB.add( "cc" );
-        Set<String> colC = new HashSet<String>();
-        colC.add( "bb" );
-        colC.add( "cc" );
-        colC.add( "dd" );
+        Set<AttributeType> colA = new HashSet<AttributeType>();
+        colA.add( new AttributeType( "aa" ) );
+        colA.add( new AttributeType( "bb" ) );
+        colA.add( new AttributeType( "cc" ) );
+        Set<AttributeType> colB = new HashSet<AttributeType>();
+        colB.add( new AttributeType( "aa" ) );
+        colB.add( new AttributeType( "bb" ) );
+        colB.add( new AttributeType( "cc" ) );
+        Set<AttributeType> colC = new HashSet<AttributeType>();
+        colC.add( new AttributeType( "bb" ) );
+        colC.add( new AttributeType( "cc" ) );
+        colC.add( new AttributeType( "dd" ) );
 
         selfValueA = new SelfValueItem( colA );
         selfValueACopy = new SelfValueItem( colA );

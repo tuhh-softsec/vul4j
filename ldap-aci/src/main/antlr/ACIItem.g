@@ -50,16 +50,18 @@ import org.apache.directory.shared.ldap.util.NoDuplicateKeysMap;
 import org.apache.directory.shared.ldap.util.OptionalComponentsMonitor;
 import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.name.RDN;
+import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.SchemaManager;
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.constants.AuthenticationLevel;
 import org.apache.directory.shared.ldap.entry.StringValue;
+import org.apache.directory.shared.ldap.entry.EntryAttribute;
+import org.apache.directory.shared.ldap.entry.DefaultEntryAttribute;
+import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.aci.protectedItem.AllAttributeValuesItem;
 import org.apache.directory.shared.ldap.aci.protectedItem.AttributeTypeItem;
 import org.apache.directory.shared.ldap.aci.protectedItem.AttributeValueItem;
 import org.apache.directory.shared.ldap.aci.protectedItem.SelfValueItem;
-import org.apache.directory.shared.ldap.entry.EntryAttribute;
-import org.apache.directory.shared.ldap.entry.DefaultEntryAttribute;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -440,7 +442,7 @@ allUserAttributeTypes
 attributeType
 {
     log.debug( "entered attributeType()" );
-    Set<String> attributeTypeSet = null;
+    Set<AttributeType> attributeTypeSet = null;
 }
     :
     ID_attributeType ( SP )+ attributeTypeSet=attributeTypeSet
@@ -452,7 +454,7 @@ attributeType
 allAttributeValues
 {
     log.debug( "entered allAttributeValues()" );
-    Set<String> attributeTypeSet = null;
+    Set<AttributeType> attributeTypeSet = null;
 }
     :
     ID_allAttributeValues ( SP )+ attributeTypeSet=attributeTypeSet
@@ -514,7 +516,7 @@ attributeValue
 selfValue
 {
     log.debug( "entered selfValue()" );
-    Set<String> attributeTypeSet = null;
+    Set<AttributeType> attributeTypeSet = null;
 }
     :
     ID_selfValue ( SP )+ attributeTypeSet=attributeTypeSet
@@ -650,21 +652,40 @@ restrictedValue returns [ ProtectedItem.RestrictedByItem restrictedValue ]
     }
     ;
 
-attributeTypeSet returns [ Set<String> attributeTypeSet ]
+attributeTypeSet returns [ Set<AttributeType> attributeTypeSet ]
 {
     log.debug( "entered attributeTypeSet()" );
     String oid = null;
-    attributeTypeSet = new HashSet<String>();
+    attributeTypeSet = new HashSet<AttributeType>();
+    AttributeType attributeType = null;
 }
     :
     OPEN_CURLY ( SP )*
         oid=oid ( SP )*
         {
-            attributeTypeSet.add( oid );
+            try
+            {
+                attributeType = schemaManager.lookupAttributeTypeRegistry( oid );
+                attributeTypeSet.add( attributeType );
+            }
+            catch ( LdapException le )
+            {
+                // The oid does not exist
+                // TODO : deal with such an exception
+            }
         }
             ( SEP ( SP )* oid=oid ( SP )*
             {
-                attributeTypeSet.add( oid );
+                try
+                {
+                    attributeType = schemaManager.lookupAttributeTypeRegistry( oid );
+                    attributeTypeSet.add( attributeType );
+                }
+                catch ( LdapException le )
+                {
+                    // The oid does not exist
+                    // TODO : deal with such an exception
+                }
             }
             )*
     CLOSE_CURLY

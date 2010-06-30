@@ -21,7 +21,6 @@ package org.apache.directory.shared.ldap.schema;
 
 
 import org.apache.directory.shared.ldap.exception.LdapException;
-
 import org.apache.directory.shared.ldap.exception.LdapInvalidAttributeValueException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 
@@ -85,6 +84,18 @@ public abstract class SyntaxChecker extends LoadableSchemaObject
     }
 
 
+    /**
+     * Store the SchemaManager in this instance. It may be necessary for some
+     * syntaxChecker which needs to have access to the oidNormalizer Map.
+     *
+     * @param schemaManager the schemaManager to store
+     */
+    public void setSchemaManager( SchemaManager schemaManager )
+    {
+        // Do nothing (general case).
+    }
+    
+    
     /**
      * @see Object#equals()
      */

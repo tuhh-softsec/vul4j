@@ -21,6 +21,8 @@ package org.apache.directory.shared.ldap.aci.protectedItem;
 
 import java.util.Set;
 
+import org.apache.directory.shared.ldap.schema.AttributeType;
+
 /**
  * The attribute value assertion corresponding to the current requestor. The
  * protected item selfValue applies only when the access controls are to be
@@ -36,7 +38,7 @@ public class SelfValueItem extends AbstractAttributeTypeProtectedItem
      * 
      * @param attributeTypes the collection of attribute IDs.
      */
-    public SelfValueItem( Set<String> attributeTypes )
+    public SelfValueItem( Set<AttributeType> attributeTypes )
     {
         super( attributeTypes );
     }

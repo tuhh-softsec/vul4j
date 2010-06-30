@@ -25,7 +25,10 @@ import static org.junit.Assert.assertTrue;
 
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
-import org.apache.directory.shared.ldap.schema.syntaxCheckers.ACIItemSyntaxChecker;
+import org.apache.directory.shared.ldap.schema.SchemaManager;
+import org.apache.directory.shared.ldap.schema.loader.ldif.JarLdifSchemaLoader;
+import org.apache.directory.shared.ldap.schema.manager.impl.DefaultSchemaManager;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -39,8 +42,17 @@ import org.junit.runner.RunWith;
 @Concurrent()
 public class ACIItemSyntaxCheckerTest
 {
-    ACIItemSyntaxChecker checker = new ACIItemSyntaxChecker();
+    private static ACIItemSyntaxChecker checker;
 
+    @BeforeClass
+    public static void init() throws Exception
+    {
+        JarLdifSchemaLoader loader = new JarLdifSchemaLoader();
+        SchemaManager schemaManager = new DefaultSchemaManager( loader );
+        schemaManager.loadAllEnabled();
+        checker = new ACIItemSyntaxChecker();
+        checker.setSchemaManager( schemaManager );
+    }
 
     @Test
     public void testNullString()

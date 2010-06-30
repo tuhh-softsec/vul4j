@@ -21,6 +21,8 @@ package org.apache.directory.shared.ldap.aci.protectedItem;
 
 import java.util.Set;
 
+import org.apache.directory.shared.ldap.schema.AttributeType;
+
 /**
  * Attribute type information pertaining to specific attributes but not
  * values associated with the type.
@@ -32,7 +34,7 @@ public class AttributeTypeItem extends AbstractAttributeTypeProtectedItem
      * 
      * @param attributeTypes the collection of attribute IDs.
      */
-    public AttributeTypeItem( Set<String> attributeTypes )
+    public AttributeTypeItem( Set<AttributeType> attributeTypes )
     {
         super( attributeTypes );
     }
