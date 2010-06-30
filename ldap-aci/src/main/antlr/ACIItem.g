@@ -62,6 +62,8 @@ import org.apache.directory.shared.ldap.aci.protectedItem.AllAttributeValuesItem
 import org.apache.directory.shared.ldap.aci.protectedItem.AttributeTypeItem;
 import org.apache.directory.shared.ldap.aci.protectedItem.AttributeValueItem;
 import org.apache.directory.shared.ldap.aci.protectedItem.SelfValueItem;
+import org.apache.directory.shared.ldap.aci.protectedItem.ClassesItem;
+import org.apache.directory.shared.ldap.aci.protectedItem.EntryItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -699,7 +701,7 @@ classes
     :
     ID_classes ( SP )+ classes=refinement
     {
-        protectedItemsMap.put( "classes", new ProtectedItem.Classes( classes ) );
+        protectedItemsMap.put( "classes", new ClassesItem( classes ) );
     }
     ;
 

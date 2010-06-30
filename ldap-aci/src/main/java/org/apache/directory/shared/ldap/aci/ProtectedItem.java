@@ -26,6 +26,7 @@ import java.util.Set;
 
 import org.apache.directory.shared.ldap.aci.protectedItem.AllUserAttributeTypesAndValuesItem;
 import org.apache.directory.shared.ldap.aci.protectedItem.AllUserAttributeTypesItem;
+import org.apache.directory.shared.ldap.aci.protectedItem.EntryItem;
 import org.apache.directory.shared.ldap.filter.ExprNode;
 
 
@@ -46,7 +47,7 @@ public abstract class ProtectedItem
      * present, since this latter element selects protected entries (and
      * subordinate family members) on the basis of their object class.
      */
-    public static final Entry ENTRY = new Entry();
+    public static final EntryItem ENTRY = new EntryItem();
 
     /**
      * All user attribute type information associated with the entry, but not
@@ -66,105 +67,6 @@ public abstract class ProtectedItem
      */
     protected ProtectedItem()
     {
-    }
-
-    /**
-     * The contents of entries (possibly a family member) which are restricted
-     * to those that have object class values that satisfy the predicate defined
-     * by Refinement (see 12.3.5), together (in the case of an ancestor or other
-     * family member) with the entry contents as a whole of each subordinate
-     * family member entry; it does not necessarily include the information in
-     * these entries.
-     */
-    public static class Classes extends ProtectedItem
-    {
-        private final ExprNode classes;
-
-
-        /**
-         * Creates a new instance.
-         * 
-         * @param classes
-         *            refinement
-         */
-        public Classes( ExprNode classes )
-        {
-            this.classes = classes;
-        }
-
-
-        public ExprNode getClasses()
-        {
-            return classes;
-        }
-
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public int hashCode()
-        {
-            int hash = 37;
-            hash = hash * 17 + getClass().getName().hashCode();
-            return hash;
-        }
-
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public boolean equals( Object o )
-        {
-            if ( this == o )
-            {
-                return true;
-            }
-
-            if ( o instanceof Classes )
-            {
-                Classes that = ( Classes ) o;
-                return this.classes.equals( that.classes );
-            }
-
-            return false;
-        }
-
-
-        /**
-         * @see Object#toString()
-         */
-        public String toString()
-        {
-            StringBuilder buf = new StringBuilder();
-
-            buf.append( "classes " );
-            classes.printRefinementToBuffer( buf );
-
-            return buf.toString();
-        }
-    }
-
-    /**
-     * The entry contents as a whole. In case of a family member, it also means
-     * the entry content of each subordinate family member within the same
-     * compound attribute. It does not necessarily include the information in
-     * these entries. This element shall be ignored if the classes element is
-     * present, since this latter element selects protected entries (and
-     * subordinate family members) on the basis of their object class.
-     */
-    public static class Entry extends ProtectedItem
-    {
-        private Entry()
-        {
-        }
-
-
-        public String toString()
-        {
-            return "entry";
-        }
     }
 
 

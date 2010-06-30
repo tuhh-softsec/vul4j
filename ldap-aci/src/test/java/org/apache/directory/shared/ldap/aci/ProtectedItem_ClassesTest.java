@@ -25,7 +25,7 @@ import static org.junit.Assert.assertFalse;
 
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
-import org.apache.directory.shared.ldap.aci.ProtectedItem.Classes;
+import org.apache.directory.shared.ldap.aci.protectedItem.ClassesItem;
 import org.apache.directory.shared.ldap.filter.ExprNode;
 import org.apache.directory.shared.ldap.filter.FilterParser;
 import org.junit.Before;
@@ -42,10 +42,10 @@ import org.junit.runner.RunWith;
 @Concurrent()
 public class ProtectedItem_ClassesTest
 {
-    Classes classesA;
-    Classes classesACopy;
-    Classes classesB;
-    Classes classesC;
+    ClassesItem classesA;
+    ClassesItem classesACopy;
+    ClassesItem classesB;
+    ClassesItem classesC;
 
 
     /**
@@ -57,10 +57,10 @@ public class ProtectedItem_ClassesTest
         ExprNode filterA = FilterParser.parse( "(&(cn=test)(sn=test))" );
         ExprNode filterB = FilterParser.parse( "(&(cn=test)(sn=test))" );
         ExprNode filterC = FilterParser.parse( "(&(cn=sample)(sn=sample))" );
-        classesA = new Classes( filterA );
-        classesACopy = new Classes( filterA );
-        classesB = new Classes( filterB );
-        classesC = new Classes( filterC );
+        classesA = new ClassesItem( filterA );
+        classesACopy = new ClassesItem( filterA );
+        classesB = new ClassesItem( filterB );
+        classesC = new ClassesItem( filterC );
     }
 
 
