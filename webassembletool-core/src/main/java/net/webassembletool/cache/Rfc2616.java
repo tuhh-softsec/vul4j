@@ -346,6 +346,9 @@ public class Rfc2616 {
 		copyHeader(resource, output, "ETag");
 		copyHeader(resource, output, "Expires");
 		copyHeader(resource, output, "Cache-control");
+		// FIXME: We have to copy all headers except those that the RFC says not
+		// to. For now, we just add a missing (and important) header
+		copyHeader(resource, output, "Content-Disposition");
 	}
 
 	private final static void copyHeader(Resource resource, Output output,
