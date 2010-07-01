@@ -11,9 +11,7 @@
 				existing web applications and aggregate them as
 				a single website.
 			</p>
-			<div>
-			<script type="text/javascript" src="http://www.ohloh.net/p/9896/widgets/project_basic_stats.js"></script>
-			</div>
+			<script type="text/javascript" src="http://www.ohloh.net/p/9896/widgets/project_partner_badge.js"></script>
 		</section>
 		<section name="Reverse proxy and ESI processor">
 			<p>
