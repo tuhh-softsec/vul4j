@@ -64,6 +64,9 @@ public class MaxValueCountElem
     }
 
 
+    /**
+     * @see Object#toString()
+     */
     public String toString()
     {
         return "{ type " + attributeType + ", maxCount " + maxCount + " }";

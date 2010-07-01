@@ -73,6 +73,9 @@ public class MaxImmSubItem extends ProtectedItem
     }
 
 
+    /**
+     * @see Object#toString()
+     */
     public String toString()
     {
         return "maxImmSub " + value;

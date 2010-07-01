@@ -34,8 +34,7 @@ public class RangeOfValuesItem extends ProtectedItem
     /**
      * Creates a new instance.
      * 
-     * @param filter
-     *            the expression
+     * @param filter the expression
      */
     public RangeOfValuesItem( ExprNode filter )
     {
@@ -90,6 +89,9 @@ public class RangeOfValuesItem extends ProtectedItem
     }
 
 
+    /**
+     * @see Object#toString()
+     */
     public String toString()
     {
         StringBuilder buf = new StringBuilder();

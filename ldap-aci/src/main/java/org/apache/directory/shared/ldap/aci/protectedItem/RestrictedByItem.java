@@ -99,6 +99,9 @@ public class RestrictedByItem extends ProtectedItem
     }
 
 
+    /**
+     * @see Object#toString()
+     */
     public String toString()
     {
         StringBuilder buf = new StringBuilder();

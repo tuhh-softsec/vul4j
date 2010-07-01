@@ -40,6 +40,9 @@ public class AttributeTypeItem extends AbstractAttributeTypeProtectedItem
     }
 
 
+    /**
+     * @see Object#toString()
+     */
     public String toString()
     {
         return "attributeType " + super.toString();

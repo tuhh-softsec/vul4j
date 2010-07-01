@@ -27,11 +27,17 @@ import org.apache.directory.shared.ldap.aci.ProtectedItem;
  */
 public class AllUserAttributeTypesItem extends ProtectedItem
 {
+    /**
+     * Creates a new instance of AllUserAttributeTypesItem.
+     */
     public AllUserAttributeTypesItem()
     {
     }
 
 
+    /**
+     * @see Object#toString()
+     */
     public String toString()
     {
         return "allUserAttributeTypes";

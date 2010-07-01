@@ -96,24 +96,31 @@ public class AttributeValueItem extends ProtectedItem
     }
 
 
-    // This will suppress PMD.EmptyCatchBlock warnings in this method
+    /**
+     * @see Object#toString()
+     */
     public String toString()
     {
         StringBuilder buf = new StringBuilder();
 
         buf.append( "attributeValue {" );
+        
+        boolean isFirst = true;
 
-        for ( Iterator<EntryAttribute> it = attributes.iterator(); it.hasNext(); )
+        for ( EntryAttribute attribute : attributes )
         {
-            EntryAttribute attribute = it.next();
-            buf.append( attribute.getId() );
-            buf.append( '=' );
-            buf.append( attribute.get( 0 ) );
-
-            if ( it.hasNext() )
+            if ( isFirst )
+            {
+                isFirst = false;
+            }
+            else
             {
                 buf.append( ", " );
             }
+            
+            buf.append( attribute.getId() );
+            buf.append( '=' );
+            buf.append( attribute.get( 0 ) );
         }
 
         buf.append( " }" );

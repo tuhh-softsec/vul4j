@@ -39,6 +39,9 @@ public class AllAttributeValuesItem extends AbstractAttributeTypeProtectedItem
     }
 
 
+    /**
+     * @see Object#toString()
+     */
     public String toString()
     {
         return "allAttributeValues " + super.toString();

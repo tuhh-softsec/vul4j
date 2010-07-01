@@ -44,6 +44,9 @@ public class SelfValueItem extends AbstractAttributeTypeProtectedItem
     }
 
 
+    /**
+     * @see Object#toString()
+     */
     public String toString()
     {
         return "selfValue " + super.toString();

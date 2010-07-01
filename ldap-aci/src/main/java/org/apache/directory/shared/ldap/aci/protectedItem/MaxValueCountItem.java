@@ -25,8 +25,7 @@ public class MaxValueCountItem extends ProtectedItem
     /**
      * Creates a new instance.
      * 
-     * @param items
-     *            the collection of {@link MaxValueCountElem}s.
+     * @param items the collection of {@link MaxValueCountElem}s.
      */
     public MaxValueCountItem( Set<MaxValueCountElem> items )
     {
@@ -81,6 +80,9 @@ public class MaxValueCountItem extends ProtectedItem
     }
 
 
+    /**
+     * @see Object#toString()
+     */
     public String toString()
     {
         StringBuilder buf = new StringBuilder();

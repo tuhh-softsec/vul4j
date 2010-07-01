@@ -31,11 +31,17 @@ import org.apache.directory.shared.ldap.aci.ProtectedItem;
  */
 public class EntryItem extends ProtectedItem
 {
+    /**
+     * Creates a new instance of EntryItem.
+     */
     public EntryItem()
     {
     }
 
 
+    /**
+     * @see Object#toString()
+     */
     public String toString()
     {
         return "entry";

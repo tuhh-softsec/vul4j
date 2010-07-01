@@ -64,6 +64,9 @@ public class RestrictedByElem
     }
 
 
+    /**
+     * @see Object#toString()
+     */
     public String toString()
     {
         return "{ type " + attributeType + ", valuesIn " + valuesIn + " }";
