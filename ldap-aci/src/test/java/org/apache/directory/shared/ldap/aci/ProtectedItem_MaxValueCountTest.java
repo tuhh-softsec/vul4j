@@ -28,8 +28,8 @@ import java.util.Set;
 
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
-import org.apache.directory.shared.ldap.aci.ProtectedItem.MaxValueCount;
 import org.apache.directory.shared.ldap.aci.protectedItem.MaxValueCountElem;
+import org.apache.directory.shared.ldap.aci.protectedItem.MaxValueCountItem;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -44,10 +44,10 @@ import org.junit.runner.RunWith;
 @Concurrent()
 public class ProtectedItem_MaxValueCountTest
 {
-    MaxValueCount maxValueCountA;
-    MaxValueCount maxValueCountACopy;
-    MaxValueCount maxValueCountB;
-    MaxValueCount maxValueCountC;
+    MaxValueCountItem maxValueCountA;
+    MaxValueCountItem maxValueCountACopy;
+    MaxValueCountItem maxValueCountB;
+    MaxValueCountItem maxValueCountC;
 
 
     /**
@@ -75,10 +75,10 @@ public class ProtectedItem_MaxValueCountTest
         colC.add( mvciC );
         colC.add( mvciD );
 
-        maxValueCountA = new MaxValueCount( colA );
-        maxValueCountACopy = new MaxValueCount( colA );
-        maxValueCountB = new MaxValueCount( colB );
-        maxValueCountC = new MaxValueCount( colC );
+        maxValueCountA = new MaxValueCountItem( colA );
+        maxValueCountACopy = new MaxValueCountItem( colA );
+        maxValueCountB = new MaxValueCountItem( colB );
+        maxValueCountC = new MaxValueCountItem( colC );
     }
 
 

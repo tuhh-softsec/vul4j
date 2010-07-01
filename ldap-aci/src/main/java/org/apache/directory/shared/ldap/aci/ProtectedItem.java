@@ -20,21 +20,28 @@
 package org.apache.directory.shared.ldap.aci;
 
 
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.Set;
-
 import org.apache.directory.shared.ldap.aci.protectedItem.AllUserAttributeTypesAndValuesItem;
 import org.apache.directory.shared.ldap.aci.protectedItem.AllUserAttributeTypesItem;
 import org.apache.directory.shared.ldap.aci.protectedItem.EntryItem;
-import org.apache.directory.shared.ldap.aci.protectedItem.MaxValueCountElem;
-import org.apache.directory.shared.ldap.aci.protectedItem.RestrictedByElem;
 
 
 /**
  * Defines the items to which the access controls apply.  It's one of the
  * following elements :
- * 
+ * <ul>
+ * <li>AllAttributeValuesItem</li>
+ * <li>AllUserAttributeTypesAndValuesItem</li>
+ * <li>AllUserAttributeTypesItem</li>
+ * <li>AttributeTypeItem</li>
+ * <li>AttributeValueItem</li>
+ * <li>ClassesItem</li>
+ * <li>EntryItem</li>
+ * <li>MaxImmSubItem</li>
+ * <li>MaxValueCountItem</li>
+ * <li>RangeOfValuesItem</li>
+ * <li>RestrictedByItem</li>
+ * <li>SelfValueItem</li>
+ * </ul>
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
@@ -68,284 +75,5 @@ public abstract class ProtectedItem
      */
     protected ProtectedItem()
     {
-    }
-
-
-    /**
-     * Restricts the maximum number of attribute values allowed for a specified
-     * attribute type. It is examined if the protected item is an attribute
-     * value of the specified type and the permission sought is add. Values of
-     * that attribute in the entry are counted without regard to context or
-     * access control and as though the operation which adds the values were
-     * successful. If the number of values in the attribute exceeds maxCount,
-     * the ACI item is treated as not granting add access.
-     */
-    public static class MaxValueCount extends ProtectedItem
-    {
-        private final Set<MaxValueCountElem> items;
-
-
-        /**
-         * Creates a new instance.
-         * 
-         * @param items
-         *            the collection of {@link MaxValueCountElem}s.
-         */
-        public MaxValueCount( Set<MaxValueCountElem> items )
-        {
-            this.items = Collections.unmodifiableSet( items );
-        }
-
-
-        /**
-         * Returns an iterator of all {@link MaxValueCountElem}s.
-         */
-        public Iterator<MaxValueCountElem> iterator()
-        {
-            return items.iterator();
-        }
-
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public int hashCode()
-        {
-            int hash = 37;
-            hash = hash * 17 + items.hashCode();
-            return hash;
-        }
-
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public boolean equals( Object o )
-        {
-            if ( this == o )
-            {
-                return true;
-            }
-
-            if ( o == null )
-            {
-                return false;
-            }
-
-            if ( o instanceof MaxValueCount )
-            {
-                MaxValueCount that = ( MaxValueCount ) o;
-                return this.items.equals( that.items );
-            }
-
-            return false;
-        }
-
-
-        public String toString()
-        {
-            StringBuilder buf = new StringBuilder();
-
-            buf.append( "maxValueCount {" );
-
-            boolean isFirst = true;
-
-            for ( MaxValueCountElem item : items )
-            {
-                if ( isFirst )
-                {
-                    isFirst = false;
-                }
-                else
-                {
-                    buf.append( ", " );
-                }
-
-                buf.append( item.toString() );
-            }
-
-            buf.append( "}" );
-
-            return buf.toString();
-        }
-    }
-
-
-    /**
-     * Restricts the maximum number of immediate subordinates of the superior
-     * entry to an entry being added or imported. It is examined if the
-     * protected item is an entry, the permission sought is add or import, and
-     * the immediate superior entry is in the same DSA as the entry being added
-     * or imported. Immediate subordinates of the superior entry are counted
-     * without regard to context or access control as though the entry addition
-     * or importing were successful. If the number of subordinates exceeds
-     * maxImmSub, the ACI item is treated as not granting add or import access.
-     */
-    public static class MaxImmSub extends ProtectedItem
-    {
-        private final int value;
-
-
-        /**
-         * Creates a new instance.
-         * 
-         * @param value
-         *            The maximum number of immediate subordinates
-         */
-        public MaxImmSub( int value )
-        {
-            this.value = value;
-        }
-
-
-        /**
-         * Returns the maximum number of immediate subordinates.
-         */
-        public int getValue()
-        {
-            return value;
-        }
-
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public int hashCode()
-        {
-            int hash = 37;
-            hash = hash * 17 + value;
-            return hash;
-        }
-
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public boolean equals( Object o )
-        {
-            if ( this == o )
-            {
-                return true;
-            }
-
-            if ( o instanceof MaxImmSub )
-            {
-                MaxImmSub that = ( MaxImmSub ) o;
-                return this.value == that.value;
-            }
-
-            return false;
-        }
-
-
-        public String toString()
-        {
-            return "maxImmSub " + value;
-        }
-    }
-
-    /**
-     * Restricts values added to the attribute type to being values that are
-     * already present in the same entry as values of the attribute valuesIn. It
-     * is examined if the protected item is an attribute value of the specified
-     * type and the permission sought is add. Values of the valuesIn attribute
-     * are checked without regard to context or access control and as though the
-     * operation which adds the values were successful. If the value to be added
-     * is not present in valuesIn the ACI item is treated as not granting add
-     * access.
-     */
-    public static class RestrictedBy extends ProtectedItem
-    {
-        private final Set<RestrictedByElem> items;
-
-
-        /**
-         * Creates a new instance.
-         * 
-         * @param items the collection of {@link RestrictedByElem}s.
-         */
-        public RestrictedBy( Set<RestrictedByElem> items )
-        {
-            this.items = Collections.unmodifiableSet( items );
-        }
-
-
-        /**
-         * Returns an iterator of all {@link RestrictedByElem}s.
-         */
-        public Iterator<RestrictedByElem> iterator()
-        {
-            return items.iterator();
-        }
-
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public int hashCode()
-        {
-            int hash = 37;
-            hash = hash * 17 + items.hashCode();
-            return hash;
-        }
-
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public boolean equals( Object o )
-        {
-            if ( this == o )
-            {
-                return true;
-            }
-
-            if ( o == null )
-            {
-                return false;
-            }
-
-            if ( o instanceof RestrictedBy )
-            {
-                RestrictedBy that = ( RestrictedBy ) o;
-                return this.items.equals( that.items );
-            }
-
-            return false;
-        }
-
-
-        public String toString()
-        {
-            StringBuilder buf = new StringBuilder();
-
-            buf.append( "restrictedBy {" );
-
-            boolean isFirst = true;
-
-            for ( RestrictedByElem item : items )
-            {
-                if ( isFirst )
-                {
-                    isFirst = false;
-                }
-                else
-                {
-                    buf.append( ", " );
-                }
-
-                buf.append( item.toString() );
-            }
-
-            buf.append( '}' );
-
-            return buf.toString();
-        }
     }
 }

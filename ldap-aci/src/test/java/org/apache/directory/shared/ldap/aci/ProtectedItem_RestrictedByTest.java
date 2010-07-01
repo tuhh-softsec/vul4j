@@ -28,8 +28,8 @@ import java.util.Set;
 
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
-import org.apache.directory.shared.ldap.aci.ProtectedItem.RestrictedBy;
 import org.apache.directory.shared.ldap.aci.protectedItem.RestrictedByElem;
+import org.apache.directory.shared.ldap.aci.protectedItem.RestrictedByItem;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -44,10 +44,10 @@ import org.junit.runner.RunWith;
 @Concurrent()
 public class ProtectedItem_RestrictedByTest
 {
-    RestrictedBy restrictedByA;
-    RestrictedBy restrictedByACopy;
-    RestrictedBy restrictedByB;
-    RestrictedBy restrictedByC;
+    RestrictedByItem restrictedByA;
+    RestrictedByItem restrictedByACopy;
+    RestrictedByItem restrictedByB;
+    RestrictedByItem restrictedByC;
 
 
     /**
@@ -74,10 +74,10 @@ public class ProtectedItem_RestrictedByTest
         colC.add( rbiC );
         colC.add( rbiD );
 
-        restrictedByA = new RestrictedBy( colA );
-        restrictedByACopy = new RestrictedBy( colA );
-        restrictedByB = new RestrictedBy( colB );
-        restrictedByC = new RestrictedBy( colC );
+        restrictedByA = new RestrictedByItem( colA );
+        restrictedByACopy = new RestrictedByItem( colA );
+        restrictedByB = new RestrictedByItem( colB );
+        restrictedByC = new RestrictedByItem( colC );
     }
 
 

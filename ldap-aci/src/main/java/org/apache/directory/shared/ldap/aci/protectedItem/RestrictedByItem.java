@@ -23,37 +23,41 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.Set;
 
-import javax.naming.directory.Attribute;
-
 import org.apache.directory.shared.ldap.aci.ProtectedItem;
-import org.apache.directory.shared.ldap.entry.EntryAttribute;
 
 /**
- * A specific value of specific attributes.
+ * Restricts values added to the attribute type to being values that are
+ * already present in the same entry as values of the attribute valuesIn. It
+ * is examined if the protected item is an attribute value of the specified
+ * type and the permission sought is add. Values of the valuesIn attribute
+ * are checked without regard to context or access control and as though the
+ * operation which adds the values were successful. If the value to be added
+ * is not present in valuesIn the ACI item is treated as not granting add
+ * access.
  */
-public class AttributeValueItem extends ProtectedItem
+public class RestrictedByItem extends ProtectedItem
 {
-    /** The protected Attributes */
-    private final Set<EntryAttribute> attributes;
+    /** The set of restricted elements */
+    private final Set<RestrictedByElem> items;
 
 
     /**
      * Creates a new instance.
      * 
-     * @param attributes the collection of {@link Attribute}s.
+     * @param items the collection of {@link RestrictedByElem}s.
      */
-    public AttributeValueItem( Set<EntryAttribute> attributes )
+    public RestrictedByItem( Set<RestrictedByElem> items )
     {
-        this.attributes = Collections.unmodifiableSet( attributes );
+        this.items = Collections.unmodifiableSet( items );
     }
 
 
     /**
-     * Returns an iterator of all {@link Attribute}s.
+     * Returns an iterator of all {@link RestrictedByElem}s.
      */
-    public Iterator<EntryAttribute> iterator()
+    public Iterator<RestrictedByElem> iterator()
     {
-        return attributes.iterator();
+        return items.iterator();
     }
 
 
@@ -64,7 +68,7 @@ public class AttributeValueItem extends ProtectedItem
     public int hashCode()
     {
         int hash = 37;
-        hash = hash * 17 + attributes.hashCode();
+        hash = hash * 17 + items.hashCode();
         return hash;
     }
 
@@ -85,38 +89,39 @@ public class AttributeValueItem extends ProtectedItem
             return false;
         }
 
-        if ( o instanceof AttributeValueItem )
+        if ( o instanceof RestrictedByItem )
         {
-            AttributeValueItem that = ( AttributeValueItem ) o;
-            
-            return this.attributes.equals( that.attributes );
+            RestrictedByItem that = ( RestrictedByItem ) o;
+            return this.items.equals( that.items );
         }
 
         return false;
     }
 
 
-    // This will suppress PMD.EmptyCatchBlock warnings in this method
     public String toString()
     {
         StringBuilder buf = new StringBuilder();
 
-        buf.append( "attributeValue {" );
+        buf.append( "restrictedBy {" );
 
-        for ( Iterator<EntryAttribute> it = attributes.iterator(); it.hasNext(); )
+        boolean isFirst = true;
+
+        for ( RestrictedByElem item : items )
         {
-            EntryAttribute attribute = it.next();
-            buf.append( attribute.getId() );
-            buf.append( '=' );
-            buf.append( attribute.get( 0 ) );
-
-            if ( it.hasNext() )
+            if ( isFirst )
+            {
+                isFirst = false;
+            }
+            else
             {
                 buf.append( ", " );
             }
+
+            buf.append( item.toString() );
         }
 
-        buf.append( " }" );
+        buf.append( '}' );
 
         return buf.toString();
     }

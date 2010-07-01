@@ -25,7 +25,7 @@ import static org.junit.Assert.assertFalse;
 
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
-import org.apache.directory.shared.ldap.aci.ProtectedItem.MaxImmSub;
+import org.apache.directory.shared.ldap.aci.protectedItem.MaxImmSubItem;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,10 +40,10 @@ import org.junit.runner.RunWith;
 @Concurrent()
 public class ProtectedItem_MaxImmSubTest
 {
-    MaxImmSub maxValueCountA;
-    MaxImmSub maxValueCountACopy;
-    MaxImmSub maxValueCountB;
-    MaxImmSub maxValueCountC;
+    MaxImmSubItem maxValueCountA;
+    MaxImmSubItem maxValueCountACopy;
+    MaxImmSubItem maxValueCountB;
+    MaxImmSubItem maxValueCountC;
 
 
     /**
@@ -52,10 +52,9 @@ public class ProtectedItem_MaxImmSubTest
     @Before
     public void initNames() throws Exception
     {
-
-        MaxImmSub misA = new MaxImmSub( 1 );
-        MaxImmSub misB = new MaxImmSub( 1 );
-        MaxImmSub misC = new MaxImmSub( 2 );
+        MaxImmSubItem misA = new MaxImmSubItem( 1 );
+        MaxImmSubItem misB = new MaxImmSubItem( 1 );
+        MaxImmSubItem misC = new MaxImmSubItem( 2 );
 
         maxValueCountA = misA;
         maxValueCountACopy = misA;

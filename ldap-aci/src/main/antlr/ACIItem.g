@@ -65,8 +65,11 @@ import org.apache.directory.shared.ldap.aci.protectedItem.SelfValueItem;
 import org.apache.directory.shared.ldap.aci.protectedItem.ClassesItem;
 import org.apache.directory.shared.ldap.aci.protectedItem.EntryItem;
 import org.apache.directory.shared.ldap.aci.protectedItem.RangeOfValuesItem;
+import org.apache.directory.shared.ldap.aci.protectedItem.MaxImmSubItem;
 import org.apache.directory.shared.ldap.aci.protectedItem.MaxValueCountElem;
+import org.apache.directory.shared.ldap.aci.protectedItem.MaxValueCountItem;
 import org.apache.directory.shared.ldap.aci.protectedItem.RestrictedByElem;
+import org.apache.directory.shared.ldap.aci.protectedItem.RestrictedByItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -569,7 +572,7 @@ maxValueCount
             )*
     CLOSE_CURLY
     {
-        protectedItemsMap.put( "maxValueCount", new ProtectedItem.MaxValueCount( maxValueCountSet ) );
+        protectedItemsMap.put( "maxValueCount", new MaxValueCountItem( maxValueCountSet ) );
     }
     ;
 
@@ -606,7 +609,7 @@ maxImmSub
     {
         
         protectedItemsMap.put( "maxImmSub",
-                new ProtectedItem.MaxImmSub(
+                new MaxImmSubItem(
                         token2Integer( token ) ) );
     }
     ;
@@ -631,7 +634,7 @@ restrictedBy
                     )*
         CLOSE_CURLY
     {
-        protectedItemsMap.put( "restrictedBy", new ProtectedItem.RestrictedBy( restrictedBy ) );
+        protectedItemsMap.put( "restrictedBy", new RestrictedByItem( restrictedBy ) );
     }
     ;
 

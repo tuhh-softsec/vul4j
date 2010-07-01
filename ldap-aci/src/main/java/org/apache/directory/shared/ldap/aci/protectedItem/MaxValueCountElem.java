@@ -19,14 +19,13 @@
  */
 package org.apache.directory.shared.ldap.aci.protectedItem;
 
-import org.apache.directory.shared.ldap.aci.ProtectedItem.MaxValueCount;
 
 /**
  * An element of {@link MaxValueCount}.
  */
 public class MaxValueCountElem
 {
-    /** The targetted AttributeType */
+    /** The targeted AttributeType */
     private String attributeType;
 
     /** The maximum number of accepted values for this attributeType */

@@ -19,10 +19,9 @@
  */
 package org.apache.directory.shared.ldap.aci.protectedItem;
 
-import org.apache.directory.shared.ldap.aci.ProtectedItem.RestrictedBy;
 
 /**
- * An element of {@link RestrictedBy}.
+ * An element of {@link RestrictedByItem}.
  */
 public class RestrictedByElem
 {
