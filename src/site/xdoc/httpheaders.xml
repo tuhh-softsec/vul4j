@@ -161,6 +161,10 @@
 						<td>Ignored (keep-alive managed by the servlet container)</td>
 					</tr>
 					<tr>
+						<td>Content-Disposition</td>
+						<td>Forwarded</td>
+					</tr>
+					<tr>
 						<td>Content-Encoding</td>
 						<td>Forwarded only for unparsed responses</td>
 					</tr>
