@@ -35,7 +35,8 @@
 	</licenses>
 	<description>Website assembling toolkit</description>
 	<issueManagement>
-		<url>http://sourceforge.net/tracker2/?group_id=209844</url>
+		<system>MantisBT</system>
+		<url>https://sourceforge.net/apps/mantisbt/webassembletool/view_all_bug_page.php</url>
 	</issueManagement>
 	<developers>
 		<developer>

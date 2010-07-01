@@ -8,6 +8,12 @@
 		<alt>Get Website assembling toolkit at SourceForge.net. Fast, secure and Free Open Source software downloads</alt>
 	</bannerLeft>
 	<body>
+	<links>
+      <item name="Maven repo" href="http://webassembletool.sourceforge.net/maven/repository/" />
+      <item name="Change log" href="https://sourceforge.net/apps/mantisbt/webassembletool/changelog_page.php"/>
+      <item name="Roadmap" href="https://sourceforge.net/apps/mantisbt/webassembletool/roadmap_page.php"/>
+    </links>
+    
 		<menu name="About">
 			<item href="index.html" name="Overview" />
 			<item href="features.html" name="Features" />
