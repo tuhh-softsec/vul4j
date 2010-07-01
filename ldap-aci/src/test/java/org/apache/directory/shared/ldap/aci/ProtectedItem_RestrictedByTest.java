@@ -30,6 +30,7 @@ import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.aci.protectedItem.RestrictedByElem;
 import org.apache.directory.shared.ldap.aci.protectedItem.RestrictedByItem;
+import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -56,10 +57,10 @@ public class ProtectedItem_RestrictedByTest
     @Before
     public void initNames() throws Exception
     {
-        RestrictedByElem rbiA = new RestrictedByElem( "aa", "aa" );
-        RestrictedByElem rbiB = new RestrictedByElem( "bb", "bb" );
-        RestrictedByElem rbiC = new RestrictedByElem( "cc", "cc" );
-        RestrictedByElem rbiD = new RestrictedByElem( "dd", "dd" );
+        RestrictedByElem rbiA = new RestrictedByElem( new AttributeType( "aa" ), new AttributeType( "aa" ) );
+        RestrictedByElem rbiB = new RestrictedByElem( new AttributeType( "bb" ), new AttributeType( "bb" ) );
+        RestrictedByElem rbiC = new RestrictedByElem( new AttributeType( "cc" ), new AttributeType( "cc" ) );
+        RestrictedByElem rbiD = new RestrictedByElem( new AttributeType( "dd" ), new AttributeType( "dd" ) );
 
         Set<RestrictedByElem> colA = new HashSet<RestrictedByElem>();
         colA.add( rbiA );

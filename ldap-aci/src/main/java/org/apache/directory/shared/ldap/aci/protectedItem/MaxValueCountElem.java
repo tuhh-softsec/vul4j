@@ -19,6 +19,8 @@
  */
 package org.apache.directory.shared.ldap.aci.protectedItem;
 
+import org.apache.directory.shared.ldap.schema.AttributeType;
+
 
 /**
  * An element of {@link MaxValueCount}.
@@ -26,7 +28,7 @@ package org.apache.directory.shared.ldap.aci.protectedItem;
 public class MaxValueCountElem
 {
     /** The targeted AttributeType */
-    private String attributeType;
+    private AttributeType attributeType;
 
     /** The maximum number of accepted values for this attributeType */
     private int maxCount;
@@ -39,7 +41,7 @@ public class MaxValueCountElem
      * @param maxCount the maximum count of the attribute allowed
      */
 
-    public MaxValueCountElem( String attributeType, int maxCount )
+    public MaxValueCountElem( AttributeType attributeType, int maxCount )
     {
         this.attributeType = attributeType;
         this.maxCount = maxCount;
@@ -47,9 +49,9 @@ public class MaxValueCountElem
 
 
     /**
-     * Returns the attribute ID to limit the maximum count.
+     * Returns the attribute to limit the maximum count.
      */
-    public String getAttributeType()
+    public AttributeType getAttributeType()
     {
         return attributeType;
     }
@@ -69,6 +71,6 @@ public class MaxValueCountElem
      */
     public String toString()
     {
-        return "{ type " + attributeType + ", maxCount " + maxCount + " }";
+        return "{ type " + attributeType.getName() + ", maxCount " + maxCount + " }";
     }
 }

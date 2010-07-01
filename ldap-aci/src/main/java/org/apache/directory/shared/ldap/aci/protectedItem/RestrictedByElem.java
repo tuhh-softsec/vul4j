@@ -19,6 +19,8 @@
  */
 package org.apache.directory.shared.ldap.aci.protectedItem;
 
+import org.apache.directory.shared.ldap.schema.AttributeType;
+
 
 /**
  * An element of {@link RestrictedByItem}.
@@ -26,10 +28,10 @@ package org.apache.directory.shared.ldap.aci.protectedItem;
 public class RestrictedByElem
 {
     // The AttributeType on which the restriction is applied */
-    private String attributeType;
+    private AttributeType attributeType;
 
-    /** The list of allowed values */
-    private String valuesIn;
+    /** The list of allowed AttributeType values */
+    private AttributeType valuesIn;
 
 
     /**
@@ -38,7 +40,7 @@ public class RestrictedByElem
      * @param attributeType the attribute type to restrict
      * @param valuesIn the attribute type only whose values are allowed in <tt>attributeType</tt>.
      */
-    public RestrictedByElem( String attributeType, String valuesIn )
+    public RestrictedByElem( AttributeType attributeType, AttributeType valuesIn )
     {
         this.attributeType = attributeType;
         this.valuesIn = valuesIn;
@@ -48,7 +50,7 @@ public class RestrictedByElem
     /**
      * Returns the attribute type to restrict.
      */
-    public String getAttributeType()
+    public AttributeType getAttributeType()
     {
         return attributeType;
     }
@@ -58,7 +60,7 @@ public class RestrictedByElem
      * Returns the attribute type only whose values are allowed in
      * <tt>attributeType</tt>.
      */
-    public String getValuesIn()
+    public AttributeType getValuesIn()
     {
         return valuesIn;
     }
@@ -69,6 +71,6 @@ public class RestrictedByElem
      */
     public String toString()
     {
-        return "{ type " + attributeType + ", valuesIn " + valuesIn + " }";
+        return "{ type " + attributeType.getName() + ", valuesIn " + valuesIn.getName() + " }";
     }
 }

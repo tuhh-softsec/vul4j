@@ -582,6 +582,7 @@ aMaxValueCount returns [ MaxValueCountElem maxValueCount ]
     maxValueCount = null;
     String oid = null;
     Token token = null;
+    AttributeType attributeType = null;
 }
     :
     OPEN_CURLY ( SP )*
@@ -596,7 +597,16 @@ aMaxValueCount returns [ MaxValueCountElem maxValueCount ]
         )
     ( SP )* CLOSE_CURLY
     {
-        maxValueCount = new MaxValueCountElem( oid, token2Integer( token ) );
+        try
+        {
+            attributeType = schemaManager.lookupAttributeTypeRegistry( oid );
+            maxValueCount = new MaxValueCountElem( attributeType, token2Integer( token ) );
+        }
+        catch ( LdapException le )
+        {
+              // The oid does not exist
+              // TODO : deal with such an exception
+        }
     }
     ;
 
@@ -644,6 +654,8 @@ restrictedValue returns [ RestrictedByElem restrictedValue ]
     String typeOid = null;
     String valuesInOid = null;
     restrictedValue = null;
+    AttributeType attributeType = null;
+    AttributeType valueInAttributeType = null;
 }
     :
     OPEN_CURLY ( SP )*
@@ -656,7 +668,17 @@ restrictedValue returns [ RestrictedByElem restrictedValue ]
         )
     ( SP )* CLOSE_CURLY
     {
-        restrictedValue = new RestrictedByElem( typeOid, valuesInOid );
+        try
+        {
+            attributeType = schemaManager.lookupAttributeTypeRegistry( typeOid );
+            valueInAttributeType = schemaManager.lookupAttributeTypeRegistry( valuesInOid );
+            restrictedValue = new RestrictedByElem( attributeType, valueInAttributeType );
+        }
+        catch ( LdapException le )
+        {
+              // The oid does not exist
+              // TODO : deal with such an exception
+        }
     }
     ;
 

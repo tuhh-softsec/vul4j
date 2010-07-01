@@ -423,12 +423,40 @@ public class ACIItemParserTest
     @Test 
     public void testMaxValueCountComponentsOrderDoesNotMatter() throws Exception
     {
-        String spec = "{ identificationTag \"id2\"   , precedence 14, authenticationLevel none  , "
-            + "itemOrUserFirst userFirst:  { userClasses {  allUsers  , name { \"ou=people,cn=ersin\" }, "
-            + "subtree {{ base \"ou=system\"}, { base \"ou=ORGANIZATIONUNIT\"," + "minimum  1, maximum   2 } } }  , "
-            + "userPermissions { { protectedItems{ entry  , "
-            + "maxValueCount { { type 10.11.12, maxCount 10 }, { maxCount 20, type 11.12.13  } } "
-            + " }  , grantsAndDenials { grantBrowse } } } }  }   ";
+        String spec = 
+            "{ " +
+            "  identificationTag \"id2\"   , " +
+            "  precedence 14, " +
+            "  authenticationLevel none  , " +
+            "  itemOrUserFirst userFirst:  " +
+            "  { " +
+            "    userClasses " +
+            "    {  " +
+            "      allUsers  , " +
+            "      name { \"ou=people,cn=ersin\" }, " +
+            "      subtree " +
+            "      {" +
+            "        { base \"ou=system\"}, " +
+            "        { base \"ou=ORGANIZATIONUNIT\", minimum  1, maximum   2 } " +
+            "      } " +
+            "    }  , "+
+            "    userPermissions " +
+            "    { " +
+            "      { " +
+            "        protectedItems" +
+            "        { " +
+            "          entry  , " +
+            "          maxValueCount " +
+            "          { " +
+            "            { type 2.5.4.3, maxCount 10 }, " +
+            "            { maxCount 20, type 2.5.4.3  } " +
+            "          } " +
+            "        }  , " +
+            "        grantsAndDenials { grantBrowse } " +
+            "      } " +
+            "    } " +
+            "  } " +
+            "}   ";
 
         ACIItem item = parser.parse( spec );
         checkItemToString( spec, item );
@@ -442,7 +470,7 @@ public class ACIItemParserTest
             + "itemOrUserFirst userFirst:  { userClasses {  allUsers  , name { \"ou=people,cn=ersin\" }, "
             + "subtree {{ base \"ou=system\" }, { base \"ou=ORGANIZATIONUNIT\"," + "minimum  1, maximum   2 } } }  , "
             + "userPermissions { { protectedItems{ entry  , "
-            + "restrictedBy { { type 10.11.12, valuesIn ou }, { valuesIn cn, type 11.12.13  } } "
+            + "restrictedBy { { type 2.5.4.3, valuesIn ou }, { valuesIn cn, type 2.5.4.3  } } "
             + " }  , grantsAndDenials { grantBrowse } } } }  }   ";
 
         ACIItem item = parser.parse( spec );

@@ -30,6 +30,7 @@ import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.aci.protectedItem.MaxValueCountElem;
 import org.apache.directory.shared.ldap.aci.protectedItem.MaxValueCountItem;
+import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -57,10 +58,10 @@ public class ProtectedItem_MaxValueCountTest
     public void initNames() throws Exception
     {
 
-        MaxValueCountElem mvciA = new MaxValueCountElem( "aa", 1 );
-        MaxValueCountElem mvciB = new MaxValueCountElem( "bb", 2 );
-        MaxValueCountElem mvciC = new MaxValueCountElem( "cc", 3 );
-        MaxValueCountElem mvciD = new MaxValueCountElem( "dd", 4 );
+        MaxValueCountElem mvciA = new MaxValueCountElem( new AttributeType( "aa" ), 1 );
+        MaxValueCountElem mvciB = new MaxValueCountElem( new AttributeType( "bb" ), 2 );
+        MaxValueCountElem mvciC = new MaxValueCountElem( new AttributeType( "cc" ), 3 );
+        MaxValueCountElem mvciD = new MaxValueCountElem( new AttributeType( "dd" ), 4 );
 
         Set<MaxValueCountElem> colA = new HashSet<MaxValueCountElem>();
         colA.add( mvciA );
