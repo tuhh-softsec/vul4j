@@ -27,6 +27,8 @@ import java.util.Set;
 import org.apache.directory.shared.ldap.aci.protectedItem.AllUserAttributeTypesAndValuesItem;
 import org.apache.directory.shared.ldap.aci.protectedItem.AllUserAttributeTypesItem;
 import org.apache.directory.shared.ldap.aci.protectedItem.EntryItem;
+import org.apache.directory.shared.ldap.aci.protectedItem.MaxValueCountElem;
+import org.apache.directory.shared.ldap.aci.protectedItem.RestrictedByElem;
 
 
 /**
@@ -80,25 +82,25 @@ public abstract class ProtectedItem
      */
     public static class MaxValueCount extends ProtectedItem
     {
-        private final Set<ProtectedItem.MaxValueCountItem> items;
+        private final Set<MaxValueCountElem> items;
 
 
         /**
          * Creates a new instance.
          * 
          * @param items
-         *            the collection of {@link MaxValueCountItem}s.
+         *            the collection of {@link MaxValueCountElem}s.
          */
-        public MaxValueCount( Set<MaxValueCountItem> items )
+        public MaxValueCount( Set<MaxValueCountElem> items )
         {
             this.items = Collections.unmodifiableSet( items );
         }
 
 
         /**
-         * Returns an iterator of all {@link MaxValueCountItem}s.
+         * Returns an iterator of all {@link MaxValueCountElem}s.
          */
-        public Iterator<MaxValueCountItem> iterator()
+        public Iterator<MaxValueCountElem> iterator()
         {
             return items.iterator();
         }
@@ -150,7 +152,7 @@ public abstract class ProtectedItem
 
             boolean isFirst = true;
 
-            for ( MaxValueCountItem item : items )
+            for ( MaxValueCountElem item : items )
             {
                 if ( isFirst )
                 {
@@ -258,24 +260,24 @@ public abstract class ProtectedItem
      */
     public static class RestrictedBy extends ProtectedItem
     {
-        private final Set<RestrictedByItem> items;
+        private final Set<RestrictedByElem> items;
 
 
         /**
          * Creates a new instance.
          * 
-         * @param items the collection of {@link RestrictedByItem}s.
+         * @param items the collection of {@link RestrictedByElem}s.
          */
-        public RestrictedBy( Set<RestrictedByItem> items )
+        public RestrictedBy( Set<RestrictedByElem> items )
         {
             this.items = Collections.unmodifiableSet( items );
         }
 
 
         /**
-         * Returns an iterator of all {@link RestrictedByItem}s.
+         * Returns an iterator of all {@link RestrictedByElem}s.
          */
-        public Iterator<RestrictedByItem> iterator()
+        public Iterator<RestrictedByElem> iterator()
         {
             return items.iterator();
         }
@@ -327,7 +329,7 @@ public abstract class ProtectedItem
 
             boolean isFirst = true;
 
-            for ( RestrictedByItem item : items )
+            for ( RestrictedByElem item : items )
             {
                 if ( isFirst )
                 {
@@ -344,107 +346,6 @@ public abstract class ProtectedItem
             buf.append( '}' );
 
             return buf.toString();
-        }
-    }
-
-    /**
-     * An element of {@link MaxValueCount}.
-     */
-    public static class MaxValueCountItem
-    {
-        private String attributeType;
-
-        private int maxCount;
-
-
-        /**
-         * Creates a new instance.
-         * 
-         * @param attributeType
-         *            the attribute ID to limit the maximum count
-         * @param maxCount
-         *            the maximum count of the attribute allowed
-         */
-
-        public MaxValueCountItem( String attributeType, int maxCount )
-        {
-            this.attributeType = attributeType;
-            this.maxCount = maxCount;
-        }
-
-
-        /**
-         * Returns the attribute ID to limit the maximum count.
-         */
-        public String getAttributeType()
-        {
-            return attributeType;
-        }
-
-
-        /**
-         * Returns the maximum count of the attribute allowed.
-         */
-        public int getMaxCount()
-        {
-            return maxCount;
-        }
-
-
-        public String toString()
-        {
-            return "{ type " + attributeType + ", maxCount " + maxCount + " }";
-        }
-    }
-
-    /**
-     * An element of {@link RestrictedBy}.
-     */
-    public static class RestrictedByItem
-    {
-        private String attributeType;
-
-        private String valuesIn;
-
-
-        /**
-         * Creates a new instance.
-         * 
-         * @param attributeType
-         *            the attribute type to restrict
-         * @param valuesIn
-         *            the attribute type only whose values are allowed in
-         *            <tt>attributeType</tt>.
-         */
-        public RestrictedByItem( String attributeType, String valuesIn )
-        {
-            this.attributeType = attributeType;
-            this.valuesIn = valuesIn;
-        }
-
-
-        /**
-         * Returns the attribute type to restrict.
-         */
-        public String getAttributeType()
-        {
-            return attributeType;
-        }
-
-
-        /**
-         * Returns the attribute type only whose values are allowed in
-         * <tt>attributeType</tt>.
-         */
-        public String getValuesIn()
-        {
-            return valuesIn;
-        }
-
-
-        public String toString()
-        {
-            return "{ type " + attributeType + ", valuesIn " + valuesIn + " }";
         }
     }
 }

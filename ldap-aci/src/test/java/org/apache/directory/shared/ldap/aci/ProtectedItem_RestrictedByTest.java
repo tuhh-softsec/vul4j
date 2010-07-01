@@ -29,7 +29,7 @@ import java.util.Set;
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.aci.ProtectedItem.RestrictedBy;
-import org.apache.directory.shared.ldap.aci.ProtectedItem.RestrictedByItem;
+import org.apache.directory.shared.ldap.aci.protectedItem.RestrictedByElem;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -56,20 +56,20 @@ public class ProtectedItem_RestrictedByTest
     @Before
     public void initNames() throws Exception
     {
-        RestrictedByItem rbiA = new RestrictedByItem( "aa", "aa" );
-        RestrictedByItem rbiB = new RestrictedByItem( "bb", "bb" );
-        RestrictedByItem rbiC = new RestrictedByItem( "cc", "cc" );
-        RestrictedByItem rbiD = new RestrictedByItem( "dd", "dd" );
+        RestrictedByElem rbiA = new RestrictedByElem( "aa", "aa" );
+        RestrictedByElem rbiB = new RestrictedByElem( "bb", "bb" );
+        RestrictedByElem rbiC = new RestrictedByElem( "cc", "cc" );
+        RestrictedByElem rbiD = new RestrictedByElem( "dd", "dd" );
 
-        Set<RestrictedByItem> colA = new HashSet<RestrictedByItem>();
+        Set<RestrictedByElem> colA = new HashSet<RestrictedByElem>();
         colA.add( rbiA );
         colA.add( rbiB );
         colA.add( rbiC );
-        Set<RestrictedByItem> colB = new HashSet<RestrictedByItem>();
+        Set<RestrictedByElem> colB = new HashSet<RestrictedByElem>();
         colB.add( rbiA );
         colB.add( rbiB );
         colB.add( rbiC );
-        Set<RestrictedByItem> colC = new HashSet<RestrictedByItem>();
+        Set<RestrictedByElem> colC = new HashSet<RestrictedByElem>();
         colC.add( rbiB );
         colC.add( rbiC );
         colC.add( rbiD );

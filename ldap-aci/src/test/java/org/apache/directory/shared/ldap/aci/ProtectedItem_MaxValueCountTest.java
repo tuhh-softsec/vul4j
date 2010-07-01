@@ -29,7 +29,7 @@ import java.util.Set;
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.aci.ProtectedItem.MaxValueCount;
-import org.apache.directory.shared.ldap.aci.ProtectedItem.MaxValueCountItem;
+import org.apache.directory.shared.ldap.aci.protectedItem.MaxValueCountElem;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -57,20 +57,20 @@ public class ProtectedItem_MaxValueCountTest
     public void initNames() throws Exception
     {
 
-        MaxValueCountItem mvciA = new MaxValueCountItem( "aa", 1 );
-        MaxValueCountItem mvciB = new MaxValueCountItem( "bb", 2 );
-        MaxValueCountItem mvciC = new MaxValueCountItem( "cc", 3 );
-        MaxValueCountItem mvciD = new MaxValueCountItem( "dd", 4 );
+        MaxValueCountElem mvciA = new MaxValueCountElem( "aa", 1 );
+        MaxValueCountElem mvciB = new MaxValueCountElem( "bb", 2 );
+        MaxValueCountElem mvciC = new MaxValueCountElem( "cc", 3 );
+        MaxValueCountElem mvciD = new MaxValueCountElem( "dd", 4 );
 
-        Set<MaxValueCountItem> colA = new HashSet<MaxValueCountItem>();
+        Set<MaxValueCountElem> colA = new HashSet<MaxValueCountElem>();
         colA.add( mvciA );
         colA.add( mvciB );
         colA.add( mvciC );
-        Set<MaxValueCountItem> colB = new HashSet<MaxValueCountItem>();
+        Set<MaxValueCountElem> colB = new HashSet<MaxValueCountElem>();
         colB.add( mvciA );
         colB.add( mvciB );
         colB.add( mvciC );
-        Set<MaxValueCountItem> colC = new HashSet<MaxValueCountItem>();
+        Set<MaxValueCountElem> colC = new HashSet<MaxValueCountElem>();
         colC.add( mvciB );
         colC.add( mvciC );
         colC.add( mvciD );

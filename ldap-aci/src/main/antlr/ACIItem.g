@@ -65,6 +65,8 @@ import org.apache.directory.shared.ldap.aci.protectedItem.SelfValueItem;
 import org.apache.directory.shared.ldap.aci.protectedItem.ClassesItem;
 import org.apache.directory.shared.ldap.aci.protectedItem.EntryItem;
 import org.apache.directory.shared.ldap.aci.protectedItem.RangeOfValuesItem;
+import org.apache.directory.shared.ldap.aci.protectedItem.MaxValueCountElem;
+import org.apache.directory.shared.ldap.aci.protectedItem.RestrictedByElem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -550,8 +552,8 @@ rangeOfValues
 maxValueCount
 {
     log.debug( "entered maxValueCount()" );
-    ProtectedItem.MaxValueCountItem maxValueCount = null;
-    Set<ProtectedItem.MaxValueCountItem> maxValueCountSet = new HashSet<ProtectedItem.MaxValueCountItem>();
+    MaxValueCountElem maxValueCount = null;
+    Set<MaxValueCountElem> maxValueCountSet = new HashSet<MaxValueCountElem>();
 }
     :
     ID_maxValueCount ( SP )+
@@ -571,7 +573,7 @@ maxValueCount
     }
     ;
 
-aMaxValueCount returns [ ProtectedItem.MaxValueCountItem maxValueCount ]
+aMaxValueCount returns [ MaxValueCountElem maxValueCount ]
 {
     log.debug( "entered aMaxValueCount()" );
     maxValueCount = null;
@@ -591,7 +593,7 @@ aMaxValueCount returns [ ProtectedItem.MaxValueCountItem maxValueCount ]
         )
     ( SP )* CLOSE_CURLY
     {
-        maxValueCount = new ProtectedItem.MaxValueCountItem( oid, token2Integer( token ) );
+        maxValueCount = new MaxValueCountElem( oid, token2Integer( token ) );
     }
     ;
 
@@ -612,8 +614,8 @@ maxImmSub
 restrictedBy
 {
     log.debug( "entered restrictedBy()" );
-    ProtectedItem.RestrictedByItem restrictedValue = null;
-    Set<ProtectedItem.RestrictedByItem> restrictedBy = new HashSet<ProtectedItem.RestrictedByItem>();
+    RestrictedByElem restrictedValue = null;
+    Set<RestrictedByElem> restrictedBy = new HashSet<RestrictedByElem>();
 }
     :
     ID_restrictedBy ( SP )+
@@ -633,7 +635,7 @@ restrictedBy
     }
     ;
 
-restrictedValue returns [ ProtectedItem.RestrictedByItem restrictedValue ]
+restrictedValue returns [ RestrictedByElem restrictedValue ]
 {
     log.debug( "entered restrictedValue()" );
     String typeOid = null;
@@ -651,7 +653,7 @@ restrictedValue returns [ ProtectedItem.RestrictedByItem restrictedValue ]
         )
     ( SP )* CLOSE_CURLY
     {
-        restrictedValue = new ProtectedItem.RestrictedByItem( typeOid, valuesInOid );
+        restrictedValue = new RestrictedByElem( typeOid, valuesInOid );
     }
     ;
 
