@@ -40,7 +40,6 @@ import org.apache.directory.shared.ldap.util.AttributeUtils;
  */
 public class TriggerUtils
 {
-    public static final String ADMINISTRATIVE_ROLE_ATTR = "administrativeRole";
     public static final String TRIGGER_EXECUTION_SPECIFIC_AREA_ATTR_VALUE = "triggerExecutionSpecificArea";
     public static final String TRIGGER_EXECUTION_SUBENTRY_OC = "triggerExecutionSubentry";
     public static final String ENTRY_TRIGGER_SPECIFICATION_ATTR = "entryTriggerSpecification";
@@ -49,12 +48,12 @@ public class TriggerUtils
     
     public static void defineTriggerExecutionSpecificPoint( LdapContext apCtx ) throws NamingException
     {
-        Attributes ap = apCtx.getAttributes( "", new String[] { ADMINISTRATIVE_ROLE_ATTR } );
-        Attribute administrativeRole = ap.get( ADMINISTRATIVE_ROLE_ATTR );
+        Attributes ap = apCtx.getAttributes( "", new String[] { SchemaConstants.ADMINISTRATIVE_ROLE_AT } );
+        Attribute administrativeRole = ap.get( SchemaConstants.ADMINISTRATIVE_ROLE_AT );
         if ( administrativeRole == null || 
             !AttributeUtils.containsValueCaseIgnore( administrativeRole, TRIGGER_EXECUTION_SPECIFIC_AREA_ATTR_VALUE ) )
         {
-            Attributes changes = new BasicAttributes( ADMINISTRATIVE_ROLE_ATTR, TRIGGER_EXECUTION_SPECIFIC_AREA_ATTR_VALUE, true );
+            Attributes changes = new BasicAttributes( SchemaConstants.ADMINISTRATIVE_ROLE_AT, TRIGGER_EXECUTION_SPECIFIC_AREA_ATTR_VALUE, true );
             apCtx.modifyAttributes( "", DirContext.ADD_ATTRIBUTE, changes );
         }
     }

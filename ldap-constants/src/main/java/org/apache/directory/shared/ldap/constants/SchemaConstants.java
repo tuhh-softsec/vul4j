@@ -291,6 +291,10 @@ public interface SchemaConstants
     String MODIFIERS_NAME_AT                        = "modifiersName";
     String MODIFIERS_NAME_AT_OID                    = "2.5.18.4";
     
+    // AdministrativeRole
+    String ADMINISTRATIVE_ROLE_AT                   = "administrativeRole";
+    String ADMINISTRATIVE_ROLE_AT_OID               = "2.5.18.5";
+    
     // SubtreeSpecification
     String SUBTREE_SPECIFICATION_AT                 = "subtreeSpecification";
     String SUBTREE_SPECIFICATION_AT_OID             = "2.5.18.6";
