@@ -1053,4 +1053,19 @@ public class FilterParserTest
         String str = "(objectguid=\\29\\4C\\04\\B5\\D4\\ED\\38\\46\\87\\EE\\77\\58\\5C\\32\\AD\\91)";
         FilterParser.parse( str );
     }
+
+
+    @Test
+    public void testAndFilterFollowed() throws ParseException
+    {
+        String str = "(&(ou~=people)(age>=30))} some more text";
+        BranchNode node = ( BranchNode ) FilterParser.parse( str );
+        assertEquals( 2, node.getChildren().size() );
+        assertTrue( node instanceof AndNode );
+        String str2 = node.toString();
+        assertTrue( str.startsWith( str2 ) );
+        assertEquals( "(&(ou~=people)(age>=30))", str2 );
+    }
+
+    
 }
