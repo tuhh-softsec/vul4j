@@ -663,6 +663,25 @@ public class FilterParser
     }
 
 
+    /**
+     * @see FilterParser#parse(String)
+     */
+    public static ExprNode parse( String filter, Position pos ) throws ParseException
+    {
+        // The filter must not be null. This is a defensive test
+        if ( StringTools.isEmpty( filter ) )
+        {
+            throw new ParseException( I18n.err( I18n.ERR_04158 ), 0 );
+        }
+
+        pos.start = 0;
+        pos.end = 0;
+        pos.length = filter.length();
+
+        return parseFilterInternal( filter, pos );
+    }
+
+    
     public void setFilterParserMonitor( FilterParserMonitor monitor )
     {
     }

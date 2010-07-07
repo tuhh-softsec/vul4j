@@ -1066,6 +1066,4 @@ public class FilterParserTest
         assertTrue( str.startsWith( str2 ) );
         assertEquals( "(&(ou~=people)(age>=30))", str2 );
     }
-
-    
 }

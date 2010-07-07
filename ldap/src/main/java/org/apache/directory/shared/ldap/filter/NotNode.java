@@ -174,24 +174,10 @@ public class NotNode extends BranchNode
      */
     public StringBuilder printRefinementToBuffer( StringBuilder buf )
     {
-        buf.append( "not: {" );
-        boolean isFirst = true;
+        buf.append( "not: " );
         
-        for ( ExprNode node:children )
-        {
-            if ( isFirst )
-            {
-                isFirst = false;
-            }
-            else
-            {
-                buf.append( ", " );
-            }
-            
-            node.printRefinementToBuffer( buf );
-        }
-        
-        buf.append( '}' );
+        // There is only one item for a not refinement
+        children.get( 0 ).printRefinementToBuffer( buf );
         
         return buf;
     }

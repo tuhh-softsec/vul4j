@@ -121,6 +121,7 @@ public class OrNode extends BranchNode
             if ( isFirst )
             {
                 isFirst = false;
+                buf.append( ' ' );
             }
             else
             {
@@ -130,7 +131,7 @@ public class OrNode extends BranchNode
             node.printRefinementToBuffer( buf );
         }
         
-        buf.append( '}' );
+        buf.append( " }" );
         
         return buf;
     }

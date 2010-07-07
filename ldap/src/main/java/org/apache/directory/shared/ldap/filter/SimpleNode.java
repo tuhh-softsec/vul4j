@@ -134,7 +134,10 @@ public abstract class SimpleNode<T> extends LeafNode
      */
     public StringBuilder printRefinementToBuffer( StringBuilder buf )
     {
-        if ( getAttribute() == null || !SchemaConstants.OBJECT_CLASS_AT.equalsIgnoreCase( getAttribute() ) )
+        if ( ( getAttribute() == null ) || 
+            !( SchemaConstants.OBJECT_CLASS_AT.equalsIgnoreCase( getAttribute() ) ||
+               SchemaConstants.OBJECT_CLASS_AT_OID.equalsIgnoreCase( getAttribute() ) )
+            )
         {
             throw new UnsupportedOperationException( I18n.err( I18n.ERR_04162, getAttribute() ) );
         }
