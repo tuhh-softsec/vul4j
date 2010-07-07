@@ -28,7 +28,7 @@ import org.apache.directory.shared.ldap.filter.ExprNode;
  */
 public class RangeOfValuesItem extends ProtectedItem
 {
-    private final ExprNode filter;
+    private final ExprNode refinement;
 
 
     /**
@@ -36,23 +36,23 @@ public class RangeOfValuesItem extends ProtectedItem
      * 
      * @param filter the expression
      */
-    public RangeOfValuesItem( ExprNode filter )
+    public RangeOfValuesItem( ExprNode refinement )
     {
-        if ( filter == null )
+        if ( refinement == null )
         {
-            throw new IllegalArgumentException( "filter" );
+            throw new IllegalArgumentException( "refinement" );
         }
 
-        this.filter = filter;
+        this.refinement = refinement;
     }
 
 
     /**
      * Returns the expression.
      */
-    public ExprNode getFilter()
+    public ExprNode getRefinement()
     {
-        return filter;
+        return refinement;
     }
 
 
@@ -63,7 +63,7 @@ public class RangeOfValuesItem extends ProtectedItem
     public int hashCode()
     {
         int hash = 37;
-        hash = hash * 17 + filter.hashCode();
+        hash = hash * 17 + refinement.hashCode();
         return hash;
     }
 
@@ -82,7 +82,7 @@ public class RangeOfValuesItem extends ProtectedItem
         if ( o instanceof RangeOfValuesItem )
         {
             RangeOfValuesItem that = ( RangeOfValuesItem ) o;
-            return this.filter.equals( that.filter );
+            return this.refinement.equals( that.refinement );
         }
 
         return false;
@@ -97,7 +97,7 @@ public class RangeOfValuesItem extends ProtectedItem
         StringBuilder buf = new StringBuilder();
 
         buf.append( "rangeOfValues " );
-        buf.append( filter.toString() );
+        buf.append( refinement.toString() );
 
         return buf.toString();
     }

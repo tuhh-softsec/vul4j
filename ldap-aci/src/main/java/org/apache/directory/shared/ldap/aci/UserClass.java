@@ -372,7 +372,7 @@ public abstract class UserClass implements Serializable
                     buffer.append( ", " );
                 }
 
-                ss.printToBuffer( buffer );
+                ss.toString( buffer );
             }
 
             buffer.append( " }" );
