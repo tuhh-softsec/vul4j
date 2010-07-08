@@ -343,6 +343,30 @@ public interface SchemaConstants
     String STRUCTURAL_OBJECT_CLASS_AT               = "structuralObjectClass";
     String STRUCTURAL_OBJECT_CLASS_AT_OID           = "2.5.21.9";
     
+    // AutonomousArea
+    String AUTONOMOUS_AREA_AT                       = "autonomousArea";
+    String UTONOMOUS_AREA_AT_OID                    = "2.5.23.1";
+    
+    // AccessControlSpecificArea
+    String ACCESS_CONTROL_SPECIFIC_AREA_AT          = "accessControlSpecificArea";
+    String ACCESS_CONTROL_SPECIFIC_AREA_AT_OID      = "2.5.23.2";
+    
+    // AccessControlInnerArea
+    String ACCESS_CONTROL_INNER_AREA_AT             = "accessControlInnerArea";
+    String ACCESS_CONTROL_INNER_AREA_AT_OID         = "2.5.23.3";
+    
+    // SubSchemaAdminSpecificArea
+    String SUB_SCHEMA_ADMIN_SPECIFIC_AREA_AT        = "subSchemaSpecificSpecificArea";
+    String SUB_SCHEMA_ADMIN_SPECIFIC_AREA_AT_OID    = "2.5.23.4";
+    
+    // CollectiveAttributeSpecificArea
+    String COLLECTIVE_ATTRIBUTE_SPECIFIC_AREA_AT    = "collectiveAttributeSpecificArea";
+    String COLLECTIVE_ATTRIBUTE_SPECIFIC_AREA_AT_OID= "2.5.23.5";
+    
+    // CollectiveAttributeInnerArea
+    String COLLECTIVE_ATTRIBUTE_INNER_AREA_AT       = "collectiveAttributeInnerArea";
+    String COLLECTIVE_ATTRIBUTE_INNER_AREA_AT_OID   = "2.5.23.6";
+    
     // AccessControlScheme
     String ACCESS_CONTROL_SCHEME_AT                 = "accessControlScheme";
     String ACCESS_CONTROL_SCHEME_OID                = "2.5.24.1";
