@@ -35,6 +35,7 @@ import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
+import org.apache.directory.shared.ldap.exception.LdapNoSuchAttributeException;
 import org.apache.directory.shared.ldap.exception.LdapOtherException;
 import org.apache.directory.shared.ldap.exception.LdapProtocolErrorException;
 import org.apache.directory.shared.ldap.exception.LdapUnwillingToPerformException;
@@ -1465,6 +1466,22 @@ public class DefaultSchemaManager implements SchemaManager
     public AttributeType lookupAttributeTypeRegistry( String oid ) throws LdapException
     {
         return registries.getAttributeTypeRegistry().lookup( StringTools.toLowerCase( oid ).trim() );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public AttributeType getAttributeType( String oid )
+    {
+        try
+        {
+            return registries.getAttributeTypeRegistry().lookup( StringTools.toLowerCase( oid ).trim() );
+        }
+        catch ( LdapException lnsae )
+        {
+            return null;
+        }
     }
 
 

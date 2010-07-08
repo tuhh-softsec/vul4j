@@ -159,6 +159,7 @@ public class ItemFirstACIItem extends ACIItem
                 tuples.add( new ACITuple( itemPermission.getUserClasses(), getAuthenticationLevel(), protectedItems,
                     toMicroOperations( grants ), true, precedence ) );
             }
+            
             if ( denials.size() > 0 )
             {
                 tuples.add( new ACITuple( itemPermission.getUserClasses(), getAuthenticationLevel(), protectedItems,

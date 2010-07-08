@@ -443,6 +443,17 @@ public interface SchemaManager
 
 
     /**
+     * Get an AttributeType in the AttributeType registry. This method won't
+     * throw an exception if the AttributeTyp is not found, it will just return
+     * null.
+     * 
+     * @param oid the OID we are looking for
+     * @return The found AttributeType, or null if not found
+     */
+    AttributeType getAttributeType( String oid );
+
+
+    /**
      * Lookup for a Comparator in the Comparator registry
      * 
      * @param oid the OID we are looking for
