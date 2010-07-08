@@ -67,39 +67,6 @@ public class NamespaceTools
 
 
     /**
-     * Checks to see if two names are siblings.
-     * 
-     * @param name1 the first name
-     * @param name2 the second name
-     * @return true if the names are siblings, false otherwise.
-     */
-    public static boolean isSibling( DN name1, DN name2 ) throws LdapInvalidDnException
-    {
-        if ( name1.size() == name2.size() )
-        {
-            DN parentDn = ( DN ) name1.clone();
-            parentDn.remove( name1.size() - 1 );
-            return name2.isChildOf( parentDn );
-        }
-
-        return false;
-    }
-
-
-    /**
-     * Tests to see if a candidate entry is a descendant of a base.
-     * 
-     * @param ancestor the base ancestor
-     * @param descendant the candidate to test for descendancy
-     * @return true if the candidate is a descendant
-     */
-    public static boolean isDescendant( DN ancestor, DN descendant )
-    {
-        return descendant.isChildOf( ancestor );
-    }
-
-
-    /**
      * Gets the relative name between an ancestor and a potential descendant.
      * Both name arguments must be normalized. The returned name is also
      * normalized.
@@ -131,42 +98,6 @@ public class NamespaceTools
         }
 
         return rdn;
-    }
-
-
-    /**
-     * Uses the algorithm in <a href="http://www.faqs.org/rfcs/rfc2247.html">RFC
-     * 2247</a> to infer an LDAP name from a Kerberos realm name or a DNS
-     * domain name.
-     * 
-     * @param realm the realm or domain name
-     * @return the LDAP name for the realm or domain
-     */
-    public static String inferLdapName( String realm )
-    {
-        if ( StringTools.isEmpty( realm ) )
-        {
-            return "";
-        }
-
-        StringBuffer buf = new StringBuffer( realm.length() );
-        buf.append( "dc=" );
-
-        int start = 0, end = 0;
-
-        // Replace all the '.' by ",dc=". The comma is added because
-        // the string is not supposed to start with a dot, so another
-        // dc=XXXX already exists in any cases.
-        // The realm is also not supposed to finish with a '.'
-        while ( ( end = realm.indexOf( '.', start ) ) != -1 )
-        {
-            buf.append( realm.substring( start, end ) ).append( ",dc=" );
-            start = end + 1;
-
-        }
-
-        buf.append( realm.substring( start ) );
-        return buf.toString();
     }
 
 
@@ -228,33 +159,5 @@ public class NamespaceTools
         }
 
         return comps.toArray( EMPTY_STRING_ARRAY );
-    }
-
-
-    /**
-     * Checks to see if a name has name complex name components in it.
-     * 
-     * @param name The name to check 
-     * @return <code>true</code> if the name has composite components
-     * @throws LdapInvalidDnException If the name is invalid
-     */
-    public static boolean hasCompositeComponents( String name ) throws LdapInvalidDnException
-    {
-        for ( int ii = name.length() - 1; ii >= 0; ii-- )
-        {
-            if ( name.charAt( ii ) == '+' )
-            {
-                if ( ii == 0 )
-                {
-                    throw new LdapInvalidDnException( I18n.err( I18n.ERR_04418, name ) );
-                }
-                if ( name.charAt( ii - 1 ) != '\\' )
-                {
-                    return true;
-                }
-            }
-        }
-
-        return false;
     }
 }

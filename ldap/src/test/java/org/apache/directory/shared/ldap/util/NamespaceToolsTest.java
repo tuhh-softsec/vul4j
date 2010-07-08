@@ -21,8 +21,6 @@ package org.apache.directory.shared.ldap.util;
 
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
@@ -41,51 +39,6 @@ import org.junit.runner.RunWith;
 @Concurrent()
 public class NamespaceToolsTest
 {
-    @Test
-    public void testNullRealm()
-    {
-        assertEquals( "", NamespaceTools.inferLdapName( null ) );
-    }
-
-
-    @Test
-    public void testEmptyRealm()
-    {
-        assertEquals( "", NamespaceTools.inferLdapName( "" ) );
-    }
-
-
-    @Test
-    public void testSingleElemRealm()
-    {
-        assertEquals( "dc=test", NamespaceTools.inferLdapName( "test" ) );
-    }
-
-
-    @Test
-    public void testTwoElemsRealm()
-    {
-        assertEquals( "dc=test,dc=com", NamespaceTools.inferLdapName( "test.com" ) );
-    }
-
-
-    @Test
-    public void testFullRealm()
-    {
-        assertEquals( "dc=CS,dc=UCL,dc=AC,dc=UK", NamespaceTools.inferLdapName( "CS.UCL.AC.UK" ) );
-    }
-
-
-    @Test
-    public void testHasCompositeComponents() throws LdapException
-    {
-        assertTrue( NamespaceTools.hasCompositeComponents( "givenName=Alex+sn=Karasulu" ) );
-        assertTrue( NamespaceTools.hasCompositeComponents( "givenName=Alex+sn=Karasulu+age=13" ) );
-        assertFalse( NamespaceTools.hasCompositeComponents( "cn=One\\+Two" ) );
-        assertFalse( NamespaceTools.hasCompositeComponents( "cn=Alex" ) );
-    }
-
-
     @Test
     public void testGetCompositeComponents() throws LdapException
     {

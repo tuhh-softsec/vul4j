@@ -653,7 +653,7 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
 
     /**
      * Tells if a DN is a child of another DN.<br>
-     * For instance, <b>dc=example, dc=com</b> is a child
+     * For instance, <b>dc=example, dc=apache, dc=com</b> is a child
      * of <b>dc=com</b>
      * 
      * @param dn The parent
