@@ -42,6 +42,9 @@ public abstract class AbstractExprNode implements ExprNode
     /** The node type */
     protected final AssertionType assertionType;
     
+    /** A flag set to true if the Node is Schema aware */
+    protected boolean isSchemaAware;
+    
     
     /**
      * Creates a node by setting abstract node type.
@@ -317,6 +320,18 @@ public abstract class AbstractExprNode implements ExprNode
         return annotations;
     }
 
+    
+    /**
+     * Tells if this Node is Schema aware.
+     * 
+     * @return true if the Node is SchemaAware
+     */
+    public boolean isSchemaAware()
+    {
+        return isSchemaAware;
+    }
+
+    
     /**
      * Default implementation for this method : just throw an exception.
      * 

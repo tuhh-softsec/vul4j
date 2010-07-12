@@ -46,7 +46,7 @@ public class FilterCloneTest
     @Test
     public void testItemFilter() throws ParseException
     {
-        SimpleNode node = ( SimpleNode ) FilterParser.parse( "(ou~=people)" );
+        SimpleNode node = ( SimpleNode ) FilterParser.parse( null, "(ou~=people)" );
         // just check that it doesnt throw for now
         node = (SimpleNode)node.clone();
         assertEquals( "ou", node.getAttribute() );
@@ -58,7 +58,7 @@ public class FilterCloneTest
     @Test
     public void testAndFilter() throws ParseException
     {
-        BranchNode node = ( BranchNode ) FilterParser.parse( "(&(ou~=people)(age>=30))" );
+        BranchNode node = ( BranchNode ) FilterParser.parse( null, "(&(ou~=people)(age>=30))" );
         // just check that it doesnt throw for now
         node = (BranchNode) node.clone();
         assertEquals( 2, node.getChildren().size() );
@@ -69,7 +69,7 @@ public class FilterCloneTest
     @Test
     public void testAndFilterOneChildOnly() throws ParseException
     {
-        BranchNode node = ( BranchNode ) FilterParser.parse( "(&(ou~=people))" );
+        BranchNode node = ( BranchNode ) FilterParser.parse( null, "(&(ou~=people))" );
         // just check that it doesnt throw for now
         node = (BranchNode)node.clone();
         assertEquals( 1, node.getChildren().size() );
@@ -80,7 +80,7 @@ public class FilterCloneTest
     @Test
     public void testOrFilter() throws ParseException
     {
-        BranchNode node = ( BranchNode ) FilterParser.parse( "(|(ou~=people)(age>=30))" );
+        BranchNode node = ( BranchNode ) FilterParser.parse( null, "(|(ou~=people)(age>=30))" );
         // just check that it doesnt throw for now
         node = (BranchNode)node.clone();
         assertEquals( 2, node.getChildren().size() );
@@ -91,7 +91,7 @@ public class FilterCloneTest
     @Test
     public void testOrFilterOneChildOnly() throws ParseException
     {
-        BranchNode node = ( BranchNode ) FilterParser.parse( "(|(age>=30))" );
+        BranchNode node = ( BranchNode ) FilterParser.parse( null, "(|(age>=30))" );
         // just check that it doesnt throw for now
         node = (BranchNode) node.clone();
         assertEquals( 1, node.getChildren().size() );
@@ -102,7 +102,7 @@ public class FilterCloneTest
     @Test
     public void testNotFilter() throws ParseException
     {
-        BranchNode node = ( BranchNode ) FilterParser.parse( "(!(&(ou~= people)(age>=30)))" );
+        BranchNode node = ( BranchNode ) FilterParser.parse( null, "(!(&(ou~= people)(age>=30)))" );
         // just check that it doesnt throw for now
         node = (BranchNode)node.clone();
         assertEquals( 1, node.getChildren().size() );
@@ -114,7 +114,7 @@ public class FilterCloneTest
     @Test
     public void testOptionAndEscapesFilter() throws ParseException
     {
-        SimpleNode node = ( SimpleNode ) FilterParser.parse( "(ou;lang-de>=\\23\\42asdl fkajsd)" );
+        SimpleNode node = ( SimpleNode ) FilterParser.parse( null, "(ou;lang-de>=\\23\\42asdl fkajsd)" );
         // just check that it doesnt throw for now
         node = (SimpleNode)node.clone();
         assertEquals( "ou;lang-de", node.getAttribute() );
@@ -126,7 +126,7 @@ public class FilterCloneTest
     @Test
     public void testOptionsAndEscapesFilter() throws ParseException
     {
-        SimpleNode node = ( SimpleNode ) FilterParser.parse( "(ou;lang-de;version-124>=\\23\\42asdl fkajsd)" );
+        SimpleNode node = ( SimpleNode ) FilterParser.parse( null, "(ou;lang-de;version-124>=\\23\\42asdl fkajsd)" );
         // just check that it doesnt throw for now
         node = (SimpleNode)node.clone();
         assertEquals( "ou;lang-de;version-124", node.getAttribute() );
@@ -138,7 +138,7 @@ public class FilterCloneTest
     @Test
     public void testNumericoidOptionsAndEscapesFilter() throws ParseException
     {
-        SimpleNode node = ( SimpleNode ) FilterParser.parse( "(1.3.4.2;lang-de;version-124>=\\23\\42asdl fkajsd)" );
+        SimpleNode node = ( SimpleNode ) FilterParser.parse( null, "(1.3.4.2;lang-de;version-124>=\\23\\42asdl fkajsd)" );
         // just check that it doesnt throw for now
         node = (SimpleNode)node.clone();
         assertEquals( "1.3.4.2;lang-de;version-124", node.getAttribute() );
@@ -149,7 +149,7 @@ public class FilterCloneTest
     @Test
     public void testPresentFilter() throws ParseException
     {
-        PresenceNode node = ( PresenceNode ) FilterParser.parse( "(ou=*)" );
+        PresenceNode node = ( PresenceNode ) FilterParser.parse( null, "(ou=*)" );
         // just check that it doesnt throw for now
         node = (PresenceNode) node.clone();
         assertEquals( "ou", node.getAttribute() );
@@ -160,7 +160,7 @@ public class FilterCloneTest
     @Test
     public void testNumericoidPresentFilter() throws ParseException
     {
-        PresenceNode node = ( PresenceNode ) FilterParser.parse( "(1.2.3.4=*)" );
+        PresenceNode node = ( PresenceNode ) FilterParser.parse( null, "(1.2.3.4=*)" );
         // just check that it doesnt throw for now
         node = ( PresenceNode )node.clone();
         assertEquals( "1.2.3.4", node.getAttribute() );
@@ -172,7 +172,7 @@ public class FilterCloneTest
     @Test
     public void testEqualsFilter() throws ParseException
     {
-        SimpleNode node = ( SimpleNode ) FilterParser.parse( "(ou=people)" );
+        SimpleNode node = ( SimpleNode ) FilterParser.parse( null, "(ou=people)" );
         // just check that it doesnt throw for now
         node = ( SimpleNode) node.clone();
         assertEquals( "ou", node.getAttribute() );
@@ -185,7 +185,7 @@ public class FilterCloneTest
     @Test
     public void testEqualsWithForwardSlashFilter() throws ParseException
     {
-        SimpleNode node = ( SimpleNode ) FilterParser.parse( "(ou=people/in/my/company)" );
+        SimpleNode node = ( SimpleNode ) FilterParser.parse( null, "(ou=people/in/my/company)" );
         // just check that it doesnt throw for now
         node = (SimpleNode) node.clone();
         assertEquals( "ou", node.getAttribute() );
@@ -197,7 +197,7 @@ public class FilterCloneTest
     @Test
     public void testExtensibleFilterForm1() throws ParseException
     {
-        ExtensibleNode node = ( ExtensibleNode ) FilterParser.parse( "(ou:dn:stupidMatch:=dummyAssertion\\23\\2A)" );
+        ExtensibleNode node = ( ExtensibleNode ) FilterParser.parse( null, "(ou:dn:stupidMatch:=dummyAssertion\\23\\2A)" );
         // just check that it doesnt throw for now
         node = ( ExtensibleNode ) node.clone();
         assertEquals( "ou", node.getAttribute() );
@@ -211,7 +211,7 @@ public class FilterCloneTest
     @Test
     public void testExtensibleFilterForm1WithNumericOid() throws ParseException
     {
-        ExtensibleNode node = ( ExtensibleNode ) FilterParser.parse( "(1.2.3.4:dn:1.3434.23.2:=dummyAssertion\\23\\2A)" );
+        ExtensibleNode node = ( ExtensibleNode ) FilterParser.parse( null, "(1.2.3.4:dn:1.3434.23.2:=dummyAssertion\\23\\2A)" );
         // just check that it doesnt throw for now
         node = ( ExtensibleNode )node.clone();
         assertEquals( "1.2.3.4", node.getAttribute() );
@@ -225,7 +225,7 @@ public class FilterCloneTest
     @Test
     public void testExtensibleFilterForm1NoDnAttr() throws ParseException
     {
-        ExtensibleNode node = ( ExtensibleNode ) FilterParser.parse( "(ou:stupidMatch:=dummyAssertion\\23\\2A)" );
+        ExtensibleNode node = ( ExtensibleNode ) FilterParser.parse( null, "(ou:stupidMatch:=dummyAssertion\\23\\2A)" );
         // just check that it doesnt throw for now
         node = ( ExtensibleNode ) node.clone();
         assertEquals( "ou", node.getAttribute() );
@@ -240,7 +240,7 @@ public class FilterCloneTest
     @Test
     public void testExtensibleFilterForm1NoAttrNoMatchingRule() throws ParseException
     {
-        ExtensibleNode node = ( ExtensibleNode ) FilterParser.parse( "(ou:=dummyAssertion\\23\\2A)" );
+        ExtensibleNode node = ( ExtensibleNode ) FilterParser.parse( null, "(ou:=dummyAssertion\\23\\2A)" );
         // just check that it doesnt throw for now
         node = (ExtensibleNode) node.clone();
         assertEquals( "ou", node.getAttribute() );
@@ -254,7 +254,7 @@ public class FilterCloneTest
     @Test
     public void testExtensibleFilterForm2() throws ParseException
     {
-        ExtensibleNode node = ( ExtensibleNode ) FilterParser.parse( "(:dn:stupidMatch:=dummyAssertion\\23\\2A)" );
+        ExtensibleNode node = ( ExtensibleNode ) FilterParser.parse( null, "(:dn:stupidMatch:=dummyAssertion\\23\\2A)" );
         // just check that it doesnt throw for now
         node = ( ExtensibleNode ) node.clone();
         assertEquals( null, node.getAttribute() );
@@ -268,7 +268,7 @@ public class FilterCloneTest
     @Test
     public void testExtensibleFilterForm2WithNumericOid() throws ParseException
     {
-        ExtensibleNode node = ( ExtensibleNode ) FilterParser.parse( "(:dn:1.3434.23.2:=dummyAssertion\\23\\2A)" );
+        ExtensibleNode node = ( ExtensibleNode ) FilterParser.parse( null, "(:dn:1.3434.23.2:=dummyAssertion\\23\\2A)" );
         assertEquals( null, node.getAttribute() );
         assertEquals( "dummyAssertion#*", node.getValue().getString() );
         assertEquals( "1.3434.23.2", node.getMatchingRuleId() );
@@ -280,7 +280,7 @@ public class FilterCloneTest
     @Test
     public void testExtensibleFilterForm2NoDnAttr() throws ParseException
     {
-        ExtensibleNode node1 = ( ExtensibleNode ) FilterParser.parse( "(:stupidMatch:=dummyAssertion\\23\\2A)" );
+        ExtensibleNode node1 = ( ExtensibleNode ) FilterParser.parse( null, "(:stupidMatch:=dummyAssertion\\23\\2A)" );
         // just check that it doesnt throw for now
         ExtensibleNode node = ( ExtensibleNode )node1.clone();
         assertEquals( null, node.getAttribute() );
@@ -294,7 +294,7 @@ public class FilterCloneTest
     @Test
     public void testExtensibleFilterForm2NoDnAttrWithNumericOidNoAttr() throws ParseException
     {
-        ExtensibleNode node = ( ExtensibleNode ) FilterParser.parse( "(:1.3434.23.2:=dummyAssertion\\23\\2A)" );
+        ExtensibleNode node = ( ExtensibleNode ) FilterParser.parse( null, "(:1.3434.23.2:=dummyAssertion\\23\\2A)" );
         // just check that it doesnt throw for now
         node = ( ExtensibleNode) node.clone();
         assertEquals( null, node.getAttribute() );
@@ -308,7 +308,7 @@ public class FilterCloneTest
     @Test
     public void testSubstringNoAnyNoFinal() throws ParseException
     {
-        SubstringNode node = ( SubstringNode ) FilterParser.parse( "(ou=foo*)" );
+        SubstringNode node = ( SubstringNode ) FilterParser.parse( null, "(ou=foo*)" );
         // just check that it doesnt throw for now
         node = ( SubstringNode ) node.clone();
         assertEquals( "ou", node.getAttribute() );
@@ -323,7 +323,7 @@ public class FilterCloneTest
     @Test
     public void testSubstringNoAny() throws ParseException
     {
-        SubstringNode node = ( SubstringNode ) FilterParser.parse( "(ou=foo*bar)" );
+        SubstringNode node = ( SubstringNode ) FilterParser.parse( null, "(ou=foo*bar)" );
         // just check that it doesnt throw for now
         node = ( SubstringNode ) node.clone();
         assertEquals( "ou", node.getAttribute() );
@@ -338,7 +338,7 @@ public class FilterCloneTest
     @Test
     public void testSubstringNoAnyNoIni() throws ParseException
     {
-        SubstringNode node = ( SubstringNode ) FilterParser.parse( "(ou=*bar)" );
+        SubstringNode node = ( SubstringNode ) FilterParser.parse( null, "(ou=*bar)" );
         // just check that it doesnt throw for now
         node = ( SubstringNode )node.clone();
         assertEquals( "ou", node.getAttribute() );
@@ -353,7 +353,7 @@ public class FilterCloneTest
     @Test
     public void testSubstringOneAny() throws ParseException
     {
-        SubstringNode node = ( SubstringNode ) FilterParser.parse( "(ou=foo*guy*bar)" );
+        SubstringNode node = ( SubstringNode ) FilterParser.parse( null, "(ou=foo*guy*bar)" );
         // just check that it doesnt throw for now
         node = ( SubstringNode )node.clone();
         assertEquals( "ou", node.getAttribute() );
@@ -369,7 +369,7 @@ public class FilterCloneTest
     @Test
     public void testSubstringManyAny() throws ParseException
     {
-        SubstringNode node = ( SubstringNode ) FilterParser.parse( "(ou=a*b*c*d*e*f)" );
+        SubstringNode node = ( SubstringNode ) FilterParser.parse( null, "(ou=a*b*c*d*e*f)" );
         // just check that it doesnt throw for now
         node = ( SubstringNode )node.clone();
         assertEquals( "ou", node.getAttribute() );
@@ -388,7 +388,7 @@ public class FilterCloneTest
     @Test
     public void testSubstringNoIniManyAny() throws ParseException
     {
-        SubstringNode node = ( SubstringNode ) FilterParser.parse( "(ou=*b*c*d*e*f)" );
+        SubstringNode node = ( SubstringNode ) FilterParser.parse( null, "(ou=*b*c*d*e*f)" );
         // just check that it doesnt throw for now
         node = ( SubstringNode )node.clone();
         assertEquals( "ou", node.getAttribute() );
@@ -407,7 +407,7 @@ public class FilterCloneTest
     @Test
     public void testSubstringManyAnyNoFinal() throws ParseException
     {
-        SubstringNode node = ( SubstringNode ) FilterParser.parse( "(ou=a*b*c*d*e*)" );
+        SubstringNode node = ( SubstringNode ) FilterParser.parse( null, "(ou=a*b*c*d*e*)" );
         // just check that it doesnt throw for now
         node = ( SubstringNode )node.clone();
         assertEquals( "ou", node.getAttribute() );
@@ -426,7 +426,7 @@ public class FilterCloneTest
     @Test
     public void testSubstringNoIniManyAnyNoFinal() throws ParseException
     {
-        SubstringNode node = ( SubstringNode ) FilterParser.parse( "(ou=*b*c*d*e*)" );
+        SubstringNode node = ( SubstringNode ) FilterParser.parse( null, "(ou=*b*c*d*e*)" );
         // just check that it doesnt throw for now
         node = ( SubstringNode ) node.clone();
         
@@ -446,7 +446,7 @@ public class FilterCloneTest
     @Test
     public void testSubstringNoAnyDoubleSpaceStar() throws ParseException
     {
-        SubstringNode node = ( SubstringNode ) FilterParser.parse( "(ou=foo* *bar)" );
+        SubstringNode node = ( SubstringNode ) FilterParser.parse( null, "(ou=foo* *bar)" );
         // just check that it doesnt throw for now
         node = ( SubstringNode )node.clone();
         
@@ -463,7 +463,7 @@ public class FilterCloneTest
     @Test
     public void testSubstringAnyDoubleSpaceStar() throws ParseException
     {
-        SubstringNode node = ( SubstringNode ) FilterParser.parse( "(ou=foo* a *bar)" );
+        SubstringNode node = ( SubstringNode ) FilterParser.parse( null, "(ou=foo* a *bar)" );
         // just check that it doesnt throw for now
         node = ( SubstringNode ) node.clone();
         
@@ -485,7 +485,7 @@ public class FilterCloneTest
     @Test
     public void testSubstringStarAnyStar() throws ParseException
     {
-        SubstringNode node = ( SubstringNode ) FilterParser.parse( "(ou=*foo*)" );
+        SubstringNode node = ( SubstringNode ) FilterParser.parse( null, "(ou=*foo*)" );
         // just check that it doesnt throw for now
         node = ( SubstringNode )node.clone();
         
@@ -502,7 +502,7 @@ public class FilterCloneTest
     @Test
     public void testEqualsFilterNullValue() throws ParseException
     {
-        SimpleNode node = ( SimpleNode ) FilterParser.parse( "(ou=)" );
+        SimpleNode node = ( SimpleNode ) FilterParser.parse( null, "(ou=)" );
         // just check that it doesnt throw for now
         node = ( SimpleNode )node.clone();
         
@@ -519,7 +519,7 @@ public class FilterCloneTest
     @Test
     public void testEqualsFilterWithPoundInValue() throws ParseException
     {
-        SimpleNode node = ( SimpleNode ) FilterParser.parse( "(uid=#f1)" );
+        SimpleNode node = ( SimpleNode ) FilterParser.parse( null, "(uid=#f1)" );
         // just check that it doesnt throw for now
         node = ( SimpleNode ) node.clone();
         assertEquals( "uid", node.getAttribute() );
@@ -531,7 +531,7 @@ public class FilterCloneTest
     @Test
     public void testLargeBusyFilter() throws ParseException
     {
-        ExprNode node1 = FilterParser.parse( "(&(|(2.5.4.3=h*)(2.5.4.4=h*)(2.16.840.1.113730.3.1.241=h*)(2.5.4.42=h*))(!(objectClass=computer))(|(objectClass=person)(objectClass=group)(objectClass=organizationalUnit)(objectClass=domain))(!(&(userAccountControl:1.2.840.113556.1.4.803:=2))))" );
+        ExprNode node1 = FilterParser.parse( null, "(&(|(2.5.4.3=h*)(2.5.4.4=h*)(2.16.840.1.113730.3.1.241=h*)(2.5.4.42=h*))(!(objectClass=computer))(|(objectClass=person)(objectClass=group)(objectClass=organizationalUnit)(objectClass=domain))(!(&(userAccountControl:1.2.840.113556.1.4.803:=2))))" );
         // just check that it doesnt throw for now
         ExprNode node = node1.clone();
         assertTrue(node instanceof AndNode);

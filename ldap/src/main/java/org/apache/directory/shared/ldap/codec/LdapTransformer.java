@@ -108,6 +108,7 @@ import org.apache.directory.shared.ldap.message.internal.InternalLdapResult;
 import org.apache.directory.shared.ldap.message.internal.InternalMessage;
 import org.apache.directory.shared.ldap.message.internal.InternalReferral;
 import org.apache.directory.shared.ldap.name.DN;
+import org.apache.directory.shared.ldap.schema.SchemaManager;
 import org.apache.directory.shared.ldap.util.LdapURL;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
@@ -473,14 +474,12 @@ public class LdapTransformer
                             break;
 
                         case LdapConstants.LESS_OR_EQUAL_FILTER:
-                            branch = new LessEqNode( ava.getAttributeDesc(), 
-                                ava.getAssertionValue() );
+                            branch = new LessEqNode( ava.getAttributeDesc(), ava.getAssertionValue() );
 
                             break;
 
                         case LdapConstants.APPROX_MATCH_FILTER:
-                            branch = new ApproximateNode( ava.getAttributeDesc(), 
-                                ava.getAssertionValue() );
+                            branch = new ApproximateNode( ava.getAttributeDesc(), ava.getAssertionValue() );
 
                             break;
                     }
@@ -520,13 +519,7 @@ public class LdapTransformer
                 {
                     // Transform Extensible Match Filter
                     ExtensibleMatchFilter filter = ( ExtensibleMatchFilter ) codecFilter;
-                    String attribute = null;
                     String matchingRule = null;
-
-                    if ( filter.getType() != null )
-                    {
-                        attribute = filter.getType();
-                    }
 
                     Value<?> value = filter.getMatchValue();
 
@@ -535,7 +528,7 @@ public class LdapTransformer
                         matchingRule = filter.getMatchingRule();
                     }
 
-                    branch = new ExtensibleNode( attribute, value, matchingRule, filter.isDnAttributes() );
+                    branch = new ExtensibleNode( filter.getType(), value, matchingRule, filter.isDnAttributes() );
                 }
 
                 return branch;
@@ -555,7 +548,7 @@ public class LdapTransformer
      * @param exprNode The filter to be transformed
      * @return A Codec filter
      */
-    public static Filter transformFilter( ExprNode exprNode )
+    public static Filter transformFilter( SchemaManager schemaManager, ExprNode exprNode )
     {
         if ( exprNode != null )
         {
@@ -586,7 +579,7 @@ public class LdapTransformer
                     {
                         try
                         {
-                            ((ConnectorFilter)filter).addFilter( transformFilter( child ) );
+                            ((ConnectorFilter)filter).addFilter( transformFilter( schemaManager, child ) );
                         }
                         catch ( DecoderException de )
                         {

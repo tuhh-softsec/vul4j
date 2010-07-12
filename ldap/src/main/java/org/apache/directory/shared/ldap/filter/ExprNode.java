@@ -56,6 +56,14 @@ public interface ExprNode extends Cloneable
 
     
     /**
+     * Tells if this Node is Schema aware.
+     * 
+     * @return true if the Node is SchemaAware
+     */
+    boolean isSchemaAware();
+    
+    
+    /**
      * Gets the assertion type of this node. Make it possible to use switch
      * statements on the node type.
      * 

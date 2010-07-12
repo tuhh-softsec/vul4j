@@ -25,6 +25,8 @@ import java.text.ParseException;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.entry.BinaryValue;
 import org.apache.directory.shared.ldap.entry.Value;
+import org.apache.directory.shared.ldap.exception.LdapException;
+import org.apache.directory.shared.ldap.schema.SchemaManager;
 import org.apache.directory.shared.ldap.util.AttributeUtils;
 import org.apache.directory.shared.ldap.util.Position;
 import org.apache.directory.shared.ldap.util.StringTools;
@@ -52,11 +54,20 @@ public class FilterParser
      *                  / ( [":dn"] ':' oid ":=" assertionvalue )
      * matchingrule   = ":" oid
      */
-    private static ExprNode parseExtensible( String attr, String filter, Position pos ) throws ParseException
+    private static ExprNode parseExtensible( SchemaManager schemaManager, String attribute, String filter, Position pos ) throws LdapException, ParseException
     {
-        ExtensibleNode node = new ExtensibleNode( attr );
+        ExtensibleNode node = null;
+        
+        if ( schemaManager != null )
+        {
+            node = new ExtensibleNode( schemaManager.lookupAttributeTypeRegistry( attribute ) );
+        }
+        else
+        {
+            node = new ExtensibleNode( attribute );
+        }
 
-        if ( attr != null )
+        if ( attribute != null )
         {
             // First check if we have a ":dn"
             if ( StringTools.areEquals( filter, pos.start, "dn" ) )
@@ -276,13 +287,22 @@ public class FilterParser
     /**
      * Parse a substring
      */
-    private static ExprNode parseSubstring( String attr, Value<?> initial, String filter, Position pos )
-        throws ParseException
+    private static ExprNode parseSubstring( SchemaManager schemaManager, String attribute, Value<?> initial, String filter, Position pos )
+        throws ParseException, LdapException
     {
         if ( StringTools.isCharASCII( filter, pos.start, '*' ) )
         {
             // We have found a '*' : this is a substring
-            SubstringNode node = new SubstringNode( attr );
+            SubstringNode node = null;
+            
+            if ( schemaManager != null )
+            {
+                node = new SubstringNode( schemaManager.lookupAttributeTypeRegistry( attribute ) );
+            }
+            else
+            {
+                node = new SubstringNode( attribute );
+            }
 
             if ( initial != null && !initial.isNull() )
             {
@@ -359,13 +379,13 @@ public class FilterParser
      * We have also to consider the difference between a substring and the
      * equality node : this last node does not contain a '*'
      *
-     * @param attr
+     * @param attributeType
      * @param filter
      * @param pos
      * @return
      */
-    private static ExprNode parsePresenceEqOrSubstring( String attr, String filter, Position pos )
-        throws ParseException
+    private static ExprNode parsePresenceEqOrSubstring( SchemaManager schemaManager, String attribute, String filter, Position pos )
+        throws ParseException, LdapException
     {
         if ( StringTools.isCharASCII( filter, pos.start, '*' ) )
         {
@@ -375,20 +395,34 @@ public class FilterParser
             if ( StringTools.isCharASCII( filter, pos.start, ')' ) )
             {
                 // This is a present node
-                return new PresenceNode( attr );
+                if ( schemaManager != null )
+                {
+                    return new PresenceNode( schemaManager.lookupAttributeTypeRegistry( attribute ) );
+                }
+                else
+                {
+                    return new PresenceNode( attribute );
+                }
             }
             else
             {
                 // Definitively a substring with no initial or an error
                 // Push back the '*' on the string
                 pos.start--;
-                return parseSubstring( attr, null, filter, pos );
+                return parseSubstring( schemaManager, attribute, null, filter, pos );
             }
         }
         else if ( StringTools.isCharASCII( filter, pos.start, ')' ) )
         {
             // An empty equality Node
-            return new EqualityNode( attr, new BinaryValue() );
+            if ( schemaManager != null )
+            {
+                return new EqualityNode( schemaManager.lookupAttributeTypeRegistry( attribute ), new BinaryValue() );
+            }
+            else
+            {
+                return new EqualityNode( attribute, new BinaryValue() );
+            }
         }
         else
         {
@@ -399,10 +433,17 @@ public class FilterParser
             if ( StringTools.isCharASCII( filter, pos.start, ')' ) )
             {
                 // This is an equality node
-                return new EqualityNode( attr, value );
+                if ( schemaManager != null )
+                {
+                    return new EqualityNode( schemaManager.lookupAttributeTypeRegistry( attribute ), value );
+                }
+                else
+                {
+                    return new EqualityNode( attribute, value );
+                }
             }
 
-            return parseSubstring( attr, value, filter, pos );
+            return parseSubstring( schemaManager, attribute, value, filter, pos );
         }
     }
 
@@ -420,10 +461,11 @@ public class FilterParser
      *                  
      * An item starts with an attribute or a colon.
      */
-    private static ExprNode parseItem( String filter, Position pos, char c ) throws ParseException
+    private static ExprNode parseItem( SchemaManager schemaManager, String filter, Position pos, char c ) 
+        throws ParseException, LdapException
     {
         LeafNode node = null;
-        String attr = null;
+        String attribute = null;
 
         if ( c == '\0' )
         {
@@ -433,13 +475,13 @@ public class FilterParser
         if ( c == ':' )
         {
             // If we have a colon, then the item is an extensible one
-            return parseExtensible( null, filter, pos );
+            return parseExtensible( schemaManager, null, filter, pos );
         }
         else
         {
             // We must have an attribute
-            attr = AttributeUtils.parseAttribute( filter, pos, true );
-
+            attribute = AttributeUtils.parseAttribute( filter, pos, true );
+            
             // Now, we may have a present, substring, simple or an extensible
             c = StringTools.charAt( filter, pos.start );
 
@@ -448,7 +490,7 @@ public class FilterParser
                 case '=':
                     // It can be a presence, an equal or a substring
                     pos.start++;
-                    return parsePresenceEqOrSubstring( attr, filter, pos );
+                    return parsePresenceEqOrSubstring( schemaManager, attribute, filter, pos );
 
                 case '~':
                     // Approximate node
@@ -463,7 +505,16 @@ public class FilterParser
                     pos.start++;
 
                     // Parse the value and create the node
-                    node = new ApproximateNode( attr, parseAssertionValue( filter, pos ) );
+                    if ( schemaManager == null )
+                    {
+                        node = new ApproximateNode( attribute, parseAssertionValue( filter, pos ) );
+                    }
+                    else
+                    {
+                        node = new ApproximateNode( schemaManager.lookupAttributeTypeRegistry( attribute ), 
+                                                        parseAssertionValue( filter, pos ) );
+                    }
+
                     return node;
 
                 case '>':
@@ -479,7 +530,15 @@ public class FilterParser
                     pos.start++;
 
                     // Parse the value and create the node
-                    node = new GreaterEqNode( attr, parseAssertionValue( filter, pos ) );
+                    if ( schemaManager == null )
+                    {
+                        node = new GreaterEqNode( attribute, parseAssertionValue( filter, pos ) );
+                    }
+                    else
+                    {
+                        node = new GreaterEqNode( schemaManager.lookupAttributeTypeRegistry( attribute ), 
+                                                    parseAssertionValue( filter, pos ) );
+                    }
                     return node;
 
                 case '<':
@@ -495,13 +554,22 @@ public class FilterParser
                     pos.start++;
 
                     // Parse the value and create the node
-                    node = new LessEqNode( attr, parseAssertionValue( filter, pos ) );
+                    if ( schemaManager == null )
+                    {
+                        node = new LessEqNode( attribute, parseAssertionValue( filter, pos ) );
+                    }
+                    else
+                    {
+                        node = new LessEqNode( schemaManager.lookupAttributeTypeRegistry( attribute ), parseAssertionValue( filter, pos ) );
+                        
+                    }
+
                     return node;
 
                 case ':':
                     // An extensible node
                     pos.start++;
-                    return parseExtensible( attr, filter, pos );
+                    return parseExtensible( schemaManager, attribute, filter, pos );
 
                 default:
                     // This is an error
@@ -521,18 +589,19 @@ public class FilterParser
      * 
      * @return
      */
-    private static ExprNode parseBranchNode( ExprNode node, String filter, Position pos ) throws ParseException
+    private static ExprNode parseBranchNode( SchemaManager schemaManager, ExprNode node, String filter, Position pos ) 
+        throws ParseException, LdapException
     {
         BranchNode bNode = ( BranchNode ) node;
 
         // We must have at least one filter
-        ExprNode child = parseFilterInternal( filter, pos );
+        ExprNode child = parseFilterInternal( schemaManager, filter, pos );
 
         // Add the child to the node children
         bNode.addNode( child );
 
         // Now, iterate recusively though all the remaining filters, if any
-        while ( ( child = parseFilterInternal( filter, pos ) ) != null )
+        while ( ( child = parseFilterInternal( schemaManager, filter, pos ) ) != null )
         {
             // Add the child to the node children
             bNode.addNode( child );
@@ -556,7 +625,8 @@ public class FilterParser
      *                    / ( [dnattrs]
      *                         matchingrule COLON EQUALS assertionvalue )
      */
-    private static ExprNode parseFilterComp( String filter, Position pos ) throws ParseException
+    private static ExprNode parseFilterComp( SchemaManager schemaManager, String filter, Position pos ) 
+        throws ParseException, LdapException
     {
         ExprNode node = null;
 
@@ -573,26 +643,26 @@ public class FilterParser
                 // This is a AND node
                 pos.start++;
                 node = new AndNode();
-                parseBranchNode( node, filter, pos );
+                parseBranchNode( schemaManager, node, filter, pos );
                 break;
 
             case '|':
                 // This is an OR node
                 pos.start++;
                 node = new OrNode();
-                parseBranchNode( node, filter, pos );
+                parseBranchNode( schemaManager, node, filter, pos );
                 break;
 
             case '!':
                 // This is a NOT node
                 pos.start++;
                 node = new NotNode();
-                parseBranchNode( node, filter, pos );
+                parseBranchNode( schemaManager, node, filter, pos );
                 break;
 
             default:
                 // This is an item
-                node = parseItem( filter, pos, c );
+                node = parseItem( schemaManager, filter, pos, c );
                 break;
 
         }
@@ -605,7 +675,8 @@ public class FilterParser
      * Pasre the grammar rule :
      * filter ::= '(' filterComp ')'
      */
-    private static ExprNode parseFilterInternal( String filter, Position pos ) throws ParseException
+    private static ExprNode parseFilterInternal( SchemaManager schemaManager, String filter, Position pos ) 
+        throws ParseException, LdapException
     {
         // Check for the left '('
         if ( !StringTools.isCharASCII( filter, pos.start, '(' ) )
@@ -624,7 +695,7 @@ public class FilterParser
         pos.start++;
 
         // parse the filter component
-        ExprNode node = parseFilterComp( filter, pos );
+        ExprNode node = parseFilterComp( schemaManager, filter, pos );
 
         if ( node == null )
         {
@@ -648,6 +719,15 @@ public class FilterParser
      */
     public static ExprNode parse( String filter ) throws ParseException
     {
+        return parse( null, filter );
+    }
+    
+    
+    /**
+     * @see FilterParser#parse(String)
+     */
+    public static ExprNode parse( SchemaManager schemaManager, String filter ) throws ParseException
+    {
         // The filter must not be null. This is a defensive test
         if ( StringTools.isEmpty( filter ) )
         {
@@ -659,14 +739,21 @@ public class FilterParser
         pos.end = 0;
         pos.length = filter.length();
 
-        return parseFilterInternal( filter, pos );
+        try
+        {
+            return parseFilterInternal( schemaManager, filter, pos );
+        }
+        catch ( LdapException le )
+        {
+            throw new ParseException( le.getMessage(), pos.start );
+        }
     }
 
 
     /**
      * @see FilterParser#parse(String)
      */
-    public static ExprNode parse( String filter, Position pos ) throws ParseException
+    public static ExprNode parse( SchemaManager schemaManager, String filter, Position pos ) throws ParseException
     {
         // The filter must not be null. This is a defensive test
         if ( StringTools.isEmpty( filter ) )
@@ -678,7 +765,14 @@ public class FilterParser
         pos.end = 0;
         pos.length = filter.length();
 
-        return parseFilterInternal( filter, pos );
+        try
+        {
+            return parseFilterInternal( schemaManager, filter, pos );
+        }
+        catch ( LdapException le )
+        {
+            throw new ParseException( le.getMessage(), pos.start );
+        }
     }
 
     

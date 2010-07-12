@@ -19,6 +19,8 @@
  */
 package org.apache.directory.shared.ldap.filter;
 
+import org.apache.directory.shared.ldap.schema.AttributeType;
+
 
 /**
  * Filter expression tree node representing a filter attribute value assertion
@@ -28,6 +30,17 @@ package org.apache.directory.shared.ldap.filter;
  */
 public final class PresenceNode extends LeafNode
 {
+    /**
+     * Creates a PresenceNode object based on an attribute.
+     * 
+     * @param attributeType the attributeType to assert the presence of
+     */
+    public PresenceNode( AttributeType attributeType )
+    {
+        super( attributeType, AssertionType.PRESENCE );
+    }
+
+    
     /**
      * Creates a PresenceNode object based on an attribute.
      * 
@@ -47,7 +60,18 @@ public final class PresenceNode extends LeafNode
     {
         StringBuilder buf = new StringBuilder();
         
-        buf.append( '(' ).append( getAttribute() ).append( "=*" );
+        buf.append( '(' );
+        
+        if ( attributeType != null )
+        {
+            buf.append( attributeType.getName() );
+        }
+        else
+        {
+            buf.append( attribute );
+        }
+        
+        buf.append( "=*" );
 
         buf.append( super.toString() );
 

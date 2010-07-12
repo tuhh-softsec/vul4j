@@ -53,6 +53,8 @@ public abstract class AssertionNode extends AbstractExprNode
     public AssertionNode( Assertion assertion )
     {
         this( assertion, "ASSERTION" );
+        
+        isSchemaAware = true;
     }
 
 

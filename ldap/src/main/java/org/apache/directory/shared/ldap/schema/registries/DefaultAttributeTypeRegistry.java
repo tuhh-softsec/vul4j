@@ -97,6 +97,17 @@ public class DefaultAttributeTypeRegistry extends DefaultSchemaObjectRegistry<At
     /**
      * {@inheritDoc}
      */
+    public boolean hasDescendants( AttributeType ancestor ) throws LdapException
+    {
+        String oid = ancestor.getOid();
+        Set<AttributeType> descendants = oidToDescendantSet.get( oid );
+        return ( descendants != null ) && !descendants.isEmpty();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
     @SuppressWarnings("unchecked")
     public Iterator<AttributeType> descendants( String ancestorId ) throws LdapException
     {
@@ -116,6 +127,24 @@ public class DefaultAttributeTypeRegistry extends DefaultSchemaObjectRegistry<At
         {
             throw new LdapNoSuchAttributeException( ne.getMessage() );
         }
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("unchecked")
+    public Iterator<AttributeType> descendants( AttributeType ancestor ) throws LdapException
+    {
+        String oid = ancestor.getOid();
+        Set<AttributeType> descendants = oidToDescendantSet.get( oid );
+
+        if ( descendants == null )
+        {
+            return Collections.EMPTY_SET.iterator();
+        }
+
+        return descendants.iterator();
     }
 
 

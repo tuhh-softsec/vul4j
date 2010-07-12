@@ -908,7 +908,7 @@ public class LdapURL
         try
         {
             filter = decode( new String( chars, pos, end - pos ) );
-            FilterParser.parse( filter );
+            FilterParser.parse( null, filter );
         }
         catch ( URIException ue )
         {

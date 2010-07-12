@@ -20,16 +20,14 @@
 package org.apache.directory.shared.ldap.filter;
 
 
-import org.apache.directory.junit.tools.Concurrent;
-import org.apache.directory.junit.tools.ConcurrentJunitRunner;
-import org.apache.directory.shared.ldap.filter.BranchNormalizedVisitor;
-import org.apache.directory.shared.ldap.filter.ExprNode;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+
+import org.apache.directory.junit.tools.Concurrent;
+import org.apache.directory.junit.tools.ConcurrentJunitRunner;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 
 /**
@@ -120,9 +118,9 @@ public class BranchNormalizedVisitorTest
 
         String filter2 = "(&(a=A)(|(c=C)(b=B)))";
 
-        String normalizedFilter1 = BranchNormalizedVisitor.getNormalizedFilter( filter1 );
+        String normalizedFilter1 = BranchNormalizedVisitor.getNormalizedFilter( null, filter1 );
 
-        String normalizedFilter2 = BranchNormalizedVisitor.getNormalizedFilter( filter2 );
+        String normalizedFilter2 = BranchNormalizedVisitor.getNormalizedFilter( null, filter2 );
 
         assertEquals( normalizedFilter1, normalizedFilter2 );
     }

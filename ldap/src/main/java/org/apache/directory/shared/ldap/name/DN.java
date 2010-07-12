@@ -661,12 +661,7 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
      */
     public boolean isChildOf( DN dn )
     {
-        if ( dn == null )
-        {
-            return true;
-        }
-
-        if ( dn.size() == 0 )
+        if ( ( dn == null ) || dn.isRootDSE() )
         {
             return true;
         }

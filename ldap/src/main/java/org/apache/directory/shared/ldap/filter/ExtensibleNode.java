@@ -21,6 +21,7 @@ package org.apache.directory.shared.ldap.filter;
 
 
 import org.apache.directory.shared.ldap.entry.Value;
+import org.apache.directory.shared.ldap.schema.AttributeType;
 
 
 /**
@@ -43,6 +44,19 @@ public class ExtensibleNode extends LeafNode
     /**
      * Creates a new emptyExtensibleNode object.
      * 
+     * @param attributeType the attributeType associated with this node
+     */
+    public ExtensibleNode( AttributeType attributeType )
+    {
+        super( attributeType, AssertionType.EXTENSIBLE );
+        
+        dnAttributes = false;
+    }
+
+    
+    /**
+     * Creates a new emptyExtensibleNode object.
+     * 
      * @param attribute the attribute associated with this node
      */
     public ExtensibleNode( String attribute )
@@ -52,6 +66,27 @@ public class ExtensibleNode extends LeafNode
         dnAttributes = false;
     }
 
+    
+    /**
+     * Creates a new ExtensibleNode object.
+     * 
+     * @param attributeType the attributeType used for the extensible assertion
+     * @param value the value to match for
+     * @param matchingRuleId the OID of the matching rule
+     * @param dnAttributes the dn attributes
+     */
+    public ExtensibleNode( AttributeType attributeType, Value<?> value, String matchingRuleId, boolean dnAttributes )
+    {
+        super( attributeType, AssertionType.EXTENSIBLE );
+
+        this.value = value;
+        this.matchingRuleId = matchingRuleId;
+        this.dnAttributes = dnAttributes;
+    }
+
+    
+
+    
     /**
      * Creates a new ExtensibleNode object.
      * 
@@ -68,7 +103,8 @@ public class ExtensibleNode extends LeafNode
         this.matchingRuleId = matchingRuleId;
         this.dnAttributes = dnAttributes;
     }
-
+    
+    
     /**
      * Makes a full clone in new memory space of the current node and children
      * 
@@ -183,6 +219,7 @@ public class ExtensibleNode extends LeafNode
             return false;
         }
         ExtensibleNode that = ( ExtensibleNode ) obj;
+        
         if ( dnAttributes != that.dnAttributes )
         {
             return false;
@@ -195,6 +232,7 @@ public class ExtensibleNode extends LeafNode
         {
             return false;
         }
+        
         return super.equals( obj );
     }
 
@@ -225,7 +263,17 @@ public class ExtensibleNode extends LeafNode
     {
         StringBuilder buf = new StringBuilder();
         
-        buf.append( '(' ).append( getAttribute() );
+        buf.append( '(' );
+        
+        if ( attributeType != null )
+        {
+            buf.append( attributeType.getName() );
+        }
+        else
+        {
+            buf.append( attribute );
+        }
+        
         buf.append( "-" );
         buf.append( dnAttributes );
         buf.append( "-EXTENSIBLE-" );

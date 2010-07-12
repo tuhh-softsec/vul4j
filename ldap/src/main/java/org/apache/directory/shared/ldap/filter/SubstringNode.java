@@ -26,6 +26,8 @@ import java.util.regex.Pattern;
 
 import org.apache.directory.shared.ldap.entry.StringValue;
 import org.apache.directory.shared.ldap.exception.LdapException;
+import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
+import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.Normalizer;
 import org.apache.directory.shared.ldap.util.StringTools;
 
@@ -50,6 +52,24 @@ public class SubstringNode extends LeafNode
      * Creates a new SubstringNode object with only one wildcard and no internal
      * any fragments between wildcards.
      * 
+     * @param attributeType the name of the attributeType to substring assert
+     * @param initialPattern the initial fragment
+     * @param finalPattern the final fragment
+     */
+    public SubstringNode( AttributeType attributeType, String initialPattern, String finalPattern )
+    {
+        super( attributeType, AssertionType.SUBSTRING );
+
+        anyPattern = new ArrayList<String>( 2 );
+        this.finalPattern = finalPattern;
+        this.initialPattern = initialPattern;
+    }
+
+    
+    /**
+     * Creates a new SubstringNode object with only one wildcard and no internal
+     * any fragments between wildcards.
+     * 
      * @param attribute the name of the attribute to substring assert
      * @param initialPattern the initial fragment
      * @param finalPattern the final fragment
@@ -59,6 +79,74 @@ public class SubstringNode extends LeafNode
         super( attribute, AssertionType.SUBSTRING );
 
         anyPattern = new ArrayList<String>( 2 );
+        this.finalPattern = finalPattern;
+        this.initialPattern = initialPattern;
+    }
+
+    
+    /**
+     * Creates a new SubstringNode object without any value
+     * 
+     * @param attribute the name of the attribute to substring assert
+     */
+    public SubstringNode( AttributeType attribute )
+    {
+        super( attribute, AssertionType.SUBSTRING );
+
+        anyPattern = new ArrayList<String>( 2 );
+        this.finalPattern = null;
+        this.initialPattern = null;
+    }
+
+
+    /**
+     * Creates a new SubstringNode object without any value
+     * 
+     * @param attributeType the attributeType to substring assert
+     */
+    public SubstringNode( String attributeType )
+    {
+        super( attributeType, AssertionType.SUBSTRING );
+
+        anyPattern = new ArrayList<String>( 2 );
+        this.finalPattern = null;
+        this.initialPattern = null;
+    }
+
+
+    /**
+     * Creates a new SubstringNode object more than one wildcard and an any
+     * list.
+     * 
+     * @param anyPattern list of internal fragments between wildcards
+     * @param attributeType the attributeType to substring assert
+     * @param initialPattern the initial fragment
+     * @param finalPattern the final fragment
+     */
+    public SubstringNode( List<String> anyPattern, AttributeType attributeType, String initialPattern, String finalPattern )
+    {
+        super( attributeType, AssertionType.SUBSTRING );
+
+        this.anyPattern = anyPattern;
+        this.finalPattern = finalPattern;
+        this.initialPattern = initialPattern;
+    }
+
+    
+    /**
+     * Creates a new SubstringNode object more than one wildcard and an any
+     * list.
+     * 
+     * @param anyPattern list of internal fragments between wildcards
+     * @param attribute the name of the attribute to substring assert
+     * @param initialPattern the initial fragment
+     * @param finalPattern the final fragment
+     */
+    public SubstringNode( List<String> anyPattern, String attribute, String initialPattern, String finalPattern )
+    {
+        super( attribute, AssertionType.SUBSTRING );
+
+        this.anyPattern = anyPattern;
         this.finalPattern = finalPattern;
         this.initialPattern = initialPattern;
     }
@@ -84,39 +172,6 @@ public class SubstringNode extends LeafNode
         return clone;
     }
 
-    /**
-     * Creates a new SubstringNode object without any value
-     * 
-     * @param attribute the name of the attribute to substring assert
-     */
-    public SubstringNode( String attribute )
-    {
-        super( attribute, AssertionType.SUBSTRING );
-
-        anyPattern = new ArrayList<String>( 2 );
-        this.finalPattern = null;
-        this.initialPattern = null;
-    }
-
-
-    /**
-     * Creates a new SubstringNode object more than one wildcard and an any
-     * list.
-     * 
-     * @param anyPattern list of internal fragments between wildcards
-     * @param attribute the name of the attribute to substring assert
-     * @param initialPattern the initial fragment
-     * @param finalPattern the final fragment
-     */
-    public SubstringNode( List<String> anyPattern, String attribute, String initialPattern, String finalPattern )
-    {
-        super( attribute, AssertionType.SUBSTRING );
-
-        this.anyPattern = anyPattern;
-        this.finalPattern = finalPattern;
-        this.initialPattern = initialPattern;
-    }
-
 
     /**
      * Gets the initial fragment.
@@ -128,6 +183,7 @@ public class SubstringNode extends LeafNode
         return initialPattern;
     }
     
+    
     /**
      * Set the initial pattern
      * @param initialPattern The initial pattern
@@ -137,6 +193,7 @@ public class SubstringNode extends LeafNode
         this.initialPattern = initialPattern;
     }
 
+    
     /**
      * Gets the final fragment or suffix.
      * 
@@ -263,6 +320,7 @@ public class SubstringNode extends LeafNode
             return false;
         }
         SubstringNode that = ( SubstringNode ) obj;
+        
         if ( initialPattern == null )
         {
             if ( that.initialPattern != null )
@@ -277,6 +335,7 @@ public class SubstringNode extends LeafNode
                 return false;
             }
         }
+        
         if ( finalPattern == null )
         {
             if ( that.finalPattern != null )
@@ -291,6 +350,7 @@ public class SubstringNode extends LeafNode
                 return false;
             }
         }
+        
         return super.equals( obj );
     }
 
@@ -329,7 +389,19 @@ public class SubstringNode extends LeafNode
     {
         StringBuilder buf = new StringBuilder();
         
-        buf.append( '(' ).append( getAttribute() ).append( '=' );
+        buf.append( '(' );
+        
+        if ( attributeType != null )
+        {
+            buf.append( attributeType.getName() );
+        }
+        else
+        {
+            buf.append( attribute );
+        }
+        
+
+        buf.append( '=' );
 
         if ( null != initialPattern )
         {

@@ -26,6 +26,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.apache.directory.shared.ldap.schema.SchemaManager;
+
 
 /**
  * Visitor which traverses a filter tree while normalizing the branch node
@@ -109,15 +111,14 @@ public class BranchNormalizedVisitor implements FilterVisitor
      * Normalizes a filter expression to a canonical representation while
      * retaining logical meaning of the expression.
      * 
-     * @param filter
-     *            the filter to normalize
+     * @param filter the filter to normalize
      * @return the normalized version of the filter
      * @throws java.text.ParseException
      *             if the filter is malformed
      */
-    public static String getNormalizedFilter( String filter ) throws ParseException
+    public static String getNormalizedFilter( SchemaManager schemaManager, String filter ) throws ParseException
     {
-        ExprNode originalNode = FilterParser.parse( filter );
+        ExprNode originalNode = FilterParser.parse( schemaManager, filter );
 
         return getNormalizedFilter( originalNode );
     }

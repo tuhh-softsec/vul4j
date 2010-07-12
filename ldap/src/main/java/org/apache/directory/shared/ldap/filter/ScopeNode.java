@@ -55,6 +55,7 @@ public class ScopeNode extends AbstractExprNode
         this.scope = scope;
         this.baseDn = baseDn;
         this.aliasDerefAliases = aliasDerefAliases;
+        isSchemaAware = true;
     }
 
     /**

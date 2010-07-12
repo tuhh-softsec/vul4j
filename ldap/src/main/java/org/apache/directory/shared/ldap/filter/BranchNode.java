@@ -55,6 +55,8 @@ public class BranchNode extends AbstractExprNode
         {
             this.children = childList;
         }
+        
+        isSchemaAware = true;
     }
 
 
@@ -87,6 +89,7 @@ public class BranchNode extends AbstractExprNode
         super( assertionType );
         
         this.children = new ArrayList<ExprNode>( 2 );
+        isSchemaAware = true;
     }
 
     

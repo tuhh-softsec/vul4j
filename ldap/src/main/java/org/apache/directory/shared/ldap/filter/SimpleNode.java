@@ -23,6 +23,7 @@ package org.apache.directory.shared.ldap.filter;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.entry.Value;
+import org.apache.directory.shared.ldap.schema.AttributeType;
 
 
 /**
@@ -54,6 +55,20 @@ public abstract class SimpleNode<T> extends LeafNode
     protected SimpleNode( String attribute, Value<T> value, AssertionType assertionType )
     {
         super( attribute, assertionType );
+        this.value = value;
+    }
+
+
+    /**
+     * Creates a new SimpleNode object.
+     * 
+     * @param attribute the attribute name
+     * @param value the value to test for
+     * @param assertionType the type of assertion represented by this ExprNode
+     */
+    protected SimpleNode( AttributeType attributeType, Value<T> value, AssertionType assertionType )
+    {
+        super( attributeType, assertionType );
         this.value = value;
     }
 
@@ -134,12 +149,21 @@ public abstract class SimpleNode<T> extends LeafNode
      */
     public StringBuilder printRefinementToBuffer( StringBuilder buf )
     {
-        if ( ( getAttribute() == null ) || 
-            !( SchemaConstants.OBJECT_CLASS_AT.equalsIgnoreCase( getAttribute() ) ||
-               SchemaConstants.OBJECT_CLASS_AT_OID.equalsIgnoreCase( getAttribute() ) )
-            )
+        if ( isSchemaAware )
         {
-            throw new UnsupportedOperationException( I18n.err( I18n.ERR_04162, getAttribute() ) );
+            if ( !attributeType.getOid().equals( SchemaConstants.OBJECT_CLASS_AT_OID ) )
+            {
+                throw new UnsupportedOperationException( I18n.err( I18n.ERR_04162, attribute ) );
+            }
+        }
+        else
+        {
+            if ( ( attribute == null ) || 
+                !( SchemaConstants.OBJECT_CLASS_AT.equalsIgnoreCase( attribute ) ||
+                  SchemaConstants.OBJECT_CLASS_AT_OID.equalsIgnoreCase( attribute ) ) )
+            {
+                throw new UnsupportedOperationException( I18n.err( I18n.ERR_04162, attribute ) );
+            }
         }
 
         buf.append( "item: " ).append( value );

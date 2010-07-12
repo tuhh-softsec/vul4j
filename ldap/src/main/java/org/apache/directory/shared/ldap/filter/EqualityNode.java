@@ -21,6 +21,7 @@ package org.apache.directory.shared.ldap.filter;
 
 
 import org.apache.directory.shared.ldap.entry.Value;
+import org.apache.directory.shared.ldap.schema.AttributeType;
 
 
 /**
@@ -33,24 +34,24 @@ public class EqualityNode<T> extends SimpleNode<T>
     /**
      * Creates a new Equality object.
      * 
+     * @param attributeType the attributeType
+     * @param value the value to test for
+     */
+    public EqualityNode( AttributeType attributeType, Value<T> value )
+    {
+        super( attributeType, value, AssertionType.EQUALITY );
+    }
+
+    
+    /**
+     * Creates a new Equality object.
+     * 
      * @param attribute the attribute name
      * @param value the value to test for
      */
     public EqualityNode( String attribute, Value<T> value )
     {
         super( attribute, value, AssertionType.EQUALITY );
-    }
-
-    /**
-     * Creates a new Equality object.
-     * 
-     * @param attribute the attribute name
-     * @param value the value to test for
-     * @param assertionType The node's type
-     */
-    protected EqualityNode( String attribute, Value<T> value, AssertionType assertionType )
-    {
-        super( attribute, value, assertionType );
     }
 
 
@@ -62,7 +63,18 @@ public class EqualityNode<T> extends SimpleNode<T>
     {
         StringBuilder buf = new StringBuilder();
     
-        buf.append( '(' ).append( getAttribute() ).append( "=" ).append( getEscapedValue() );
+        buf.append( '(' );
+        
+        if ( attributeType != null )
+        {
+            buf.append( attributeType.getName() );
+        }
+        else
+        {
+            buf.append( attribute );
+        }
+        
+        buf.append( "=" ).append( getEscapedValue() );
 
         buf.append( super.toString() );
         

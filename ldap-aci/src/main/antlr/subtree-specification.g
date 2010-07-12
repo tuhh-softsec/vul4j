@@ -49,6 +49,7 @@ import org.apache.directory.shared.ldap.util.OptionalComponentsMonitor;
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.entry.StringValue;
 import org.apache.directory.shared.ldap.exception.LdapException;
+import org.apache.directory.shared.ldap.schema.AttributeType;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -96,6 +97,9 @@ options
     /** The schemaManager */
     private SchemaManager schemaManager;
     
+    /** The ObjectClass AT */
+    AttributeType OBJECT_CLASS_AT;
+    
     private ComponentsMonitor subtreeSpecificationComponentsMonitor = null;
     
     
@@ -106,6 +110,8 @@ options
     public void init( SchemaManager schemaManager )
     {
         this.schemaManager = schemaManager;
+        OBJECT_CLASS_AT = schemaManager.getAttributeType( SchemaConstants.OBJECT_CLASS_AT );
+        
     }
     
     
@@ -327,7 +333,7 @@ filter returns [ ExprNode filterExpr = null ]
     log.debug( "entered filter()" );
 }
     :
-    ( filterToken:FILTER { filterExpr=FilterParser.parse( filterToken.getText() ); } )
+    ( filterToken:FILTER { filterExpr=FilterParser.parse( schemaManager, filterToken.getText() ); } )
     ;
     exception
     catch [Exception e]
@@ -396,7 +402,7 @@ item returns [ LeafNode node ]
     log.debug( "entered item()" );
     node = null;
     String oid = null;
-    ObjectClass objectClass = null;
+    ObjectClass objectClass;
 }
     :
     ID_item ( SP )* COLON ( SP )* oid=oid
@@ -411,7 +417,7 @@ item returns [ LeafNode node ]
               // TODO : deal with such an exception
         }
         
-        node = new EqualityNode( SchemaConstants.OBJECT_CLASS_AT, new StringValue( oid ) );
+        node = new EqualityNode( OBJECT_CLASS_AT, new StringValue( oid ) );
     }
     ;
 

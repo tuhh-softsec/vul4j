@@ -57,6 +57,18 @@ public interface AttributeTypeRegistry extends SchemaObjectRegistry<AttributeTyp
 
 
     /**
+     * Quick lookup to see if an attribute has descendants.
+     * 
+     * @param ancestor the attributeType we are looking for
+     * @return an Iterator over the AttributeTypes which have the ancestor
+     * within their superior chain to the top
+     * @throws LdapException if the ancestor attributeType cannot be 
+     * discerned from the ancestorId supplied
+     */
+    boolean hasDescendants( AttributeType ancestor ) throws LdapException;
+
+
+    /**
      * Get's an iterator over the set of descendant attributeTypes for
      * some ancestor's name alias or their OID.
      * 
@@ -67,6 +79,19 @@ public interface AttributeTypeRegistry extends SchemaObjectRegistry<AttributeTyp
      * discerned from the ancestorId supplied
      */
     Iterator<AttributeType> descendants( String ancestorId ) throws LdapException;
+
+
+    /**
+     * Get's an iterator over the set of descendant attributeTypes for
+     * some ancestor's name alias or their OID.
+     * 
+     * @param ancestor the AttributeType we are looking for
+     * @return an Iterator over the AttributeTypes which have the ancestor
+     * within their superior chain to the top
+     * @throws LdapException if the ancestor attributeType cannot be 
+     * discerned from the ancestorId supplied
+     */
+    Iterator<AttributeType> descendants( AttributeType ancestor ) throws LdapException;
 
 
     /**

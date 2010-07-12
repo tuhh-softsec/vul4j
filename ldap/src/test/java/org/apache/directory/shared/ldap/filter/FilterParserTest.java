@@ -917,7 +917,7 @@ public class FilterParserTest
     {
         try
         {
-            BranchNode node = ( BranchNode ) FilterParser.parse("(&(objectClass=nisNetgroup)(|(nisNetGroupTriple=a*a)(nisNetGroupTriple=\\28*,acc1,*\\29)))");
+            BranchNode node = ( BranchNode ) FilterParser.parse( "(&(objectClass=nisNetgroup)(|(nisNetGroupTriple=a*a)(nisNetGroupTriple=\\28*,acc1,*\\29)))");
             assertEquals( 2, node.getChildren().size() );
             
             assertTrue( node instanceof AndNode );

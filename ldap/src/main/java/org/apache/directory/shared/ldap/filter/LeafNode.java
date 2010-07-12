@@ -19,6 +19,8 @@
  */
 package org.apache.directory.shared.ldap.filter;
 
+import org.apache.directory.shared.ldap.schema.AttributeType;
+
 
 /**
  * Abstract base class for leaf nodes within the expression filter tree.
@@ -27,21 +29,46 @@ package org.apache.directory.shared.ldap.filter;
  */
 public class LeafNode extends AbstractExprNode
 {
+    /** attributeType on which this leaf is based */
+    protected AttributeType attributeType;
+    
     /** attribute on which this leaf is based */
-    private String attribute;
+    protected String attribute;
 
 
     /**
      * Creates a leaf node.
      * 
-     * @param attribute the attribute this node is based on
+     * @param attributeType the attribute this node is based on
+     * @param assertionType the type of this leaf node
+     */
+    protected LeafNode( AttributeType attributeType, AssertionType assertionType )
+    {
+        super( assertionType );
+        this.attributeType = attributeType;
+        
+        if ( attributeType != null )
+        {
+            this.attribute = attributeType.getName();
+            isSchemaAware = true;
+        }
+    }
+
+
+    /**
+     * Creates a leaf node.
+     * 
+     * @param attributeType the attribute this node is based on
      * @param assertionType the type of this leaf node
      */
     protected LeafNode( String attribute, AssertionType assertionType )
     {
         super( assertionType );
+        this.attributeType = null;
         this.attribute = attribute;
+        isSchemaAware = false;
     }
+    
     
     /**
      * Gets whether this node is a leaf - the answer is always true here.
@@ -51,6 +78,17 @@ public class LeafNode extends AbstractExprNode
     public final boolean isLeaf()
     {
         return true;
+    }
+
+
+    /**
+     * Gets the attributeType this leaf node is based on.
+     * 
+     * @return the attributeType asserted
+     */
+    public final AttributeType getAttributeType()
+    {
+        return attributeType;
     }
 
 
@@ -66,6 +104,23 @@ public class LeafNode extends AbstractExprNode
     
     
     /**
+     * Sets the attributeType this leaf node is based on.
+     * 
+     * @param attributeType the attributeType that is asserted by this filter node
+     */
+    public void setAttributeType( AttributeType attributeType )
+    {
+        this.attributeType = attributeType;
+        
+        if ( attributeType != null )
+        {
+            attribute = attributeType.getName();
+            isSchemaAware = true;
+        }
+    }
+    
+    
+    /**
      * Sets the attribute this leaf node is based on.
      * 
      * @param attribute the attribute that is asserted by this filter node
@@ -73,6 +128,7 @@ public class LeafNode extends AbstractExprNode
     public void setAttribute( String attribute )
     {
         this.attribute = attribute;
+        isSchemaAware = false;
     }
 
     
@@ -105,7 +161,15 @@ public class LeafNode extends AbstractExprNode
         int h = 37;
         
         h = h*17 + super.hashCode();
-        h = h*17 + attribute.hashCode();
+        
+        if ( attributeType != null )
+        {
+            h = h*17 + attributeType.hashCode();
+        }
+        else
+        {
+            h = h*17 + attribute.hashCode();
+        }
         
         return h;
     }
@@ -127,13 +191,21 @@ public class LeafNode extends AbstractExprNode
         {
             return false;
         }
+        
+        LeafNode otherNode = (LeafNode)other;
 
-        //noinspection SimplifiableIfStatement
         if ( other.getClass() != this.getClass() )
         {
             return false;
         }
             
-        return attribute.equals( ( ( LeafNode ) other ).getAttribute() );
+        if ( attributeType != null )
+        {
+            return attributeType.equals( otherNode.getAttributeType() );
+        }
+        else
+        {
+            return attribute.equalsIgnoreCase( otherNode.getAttribute() );
+        }
     }
 }

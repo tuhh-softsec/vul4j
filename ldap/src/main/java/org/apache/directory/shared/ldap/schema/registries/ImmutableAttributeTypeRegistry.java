@@ -77,9 +77,27 @@ public class ImmutableAttributeTypeRegistry implements AttributeTypeRegistry
     /**
      * {@inheritDoc}
      */
+    public boolean hasDescendants( AttributeType ancestor ) throws LdapException
+    {
+        return immutableAttributeTypeRegistry.hasDescendants( ancestor );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
     public Iterator<AttributeType> descendants( String ancestorId ) throws LdapException
     {
         return immutableAttributeTypeRegistry.descendants( ancestorId );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public Iterator<AttributeType> descendants( AttributeType ancestor ) throws LdapException
+    {
+        return immutableAttributeTypeRegistry.descendants( ancestor );
     }
 
 

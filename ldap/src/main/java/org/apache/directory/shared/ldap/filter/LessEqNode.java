@@ -21,6 +21,7 @@ package org.apache.directory.shared.ldap.filter;
 
 
 import org.apache.directory.shared.ldap.entry.Value;
+import org.apache.directory.shared.ldap.schema.AttributeType;
 
 
 /**
@@ -33,6 +34,18 @@ public class LessEqNode<T> extends SimpleNode<T>
     /**
      * Creates a new LessEqNode object.
      * 
+     * @param attributeType the attributeType
+     * @param value the value to test for
+     */
+    public LessEqNode( AttributeType attributeType, Value<T> value )
+    {
+        super( attributeType, value, AssertionType.LESSEQ );
+    }
+
+    
+    /**
+     * Creates a new LessEqNode object.
+     * 
      * @param attribute the attribute name
      * @param value the value to test for
      */
@@ -41,6 +54,7 @@ public class LessEqNode<T> extends SimpleNode<T>
         super( attribute, value, AssertionType.LESSEQ );
     }
 
+    
     /**
      * @see Object#toString()
      * @return A string representing the AndNode
@@ -49,7 +63,18 @@ public class LessEqNode<T> extends SimpleNode<T>
     {
         StringBuilder buf = new StringBuilder();
 
-        buf.append( '(' ).append( getAttribute() ).append( "<=" ).append( getEscapedValue() );
+        buf.append( '(' );
+        
+        if ( attributeType != null )
+        {
+            buf.append( attributeType.getName() );
+        }
+        else
+        {
+            buf.append( attribute );
+        }
+        
+        buf.append( "<=" ).append( getEscapedValue() );
 
         buf.append( super.toString() );
 
