@@ -99,20 +99,20 @@ public class PasswordPolicyResponseControl extends AbstractControl
         if ( timeBeforeExpiration >= 0 )
         {
             buffer.put( ( byte ) PasswordPolicyResponseControlTags.TIME_BEFORE_EXPIRATION_TAG.getValue() );
-            buffer.put( TLV.getBytes( timeBeforeExpiration ) );
+            buffer.put( TLV.getBytes( TLV.getNbBytes( timeBeforeExpiration ) ) );
             buffer.put( Value.getBytes( timeBeforeExpiration ) );
         }
         else if ( graceAuthNsRemaining >= 0 )
         {
             buffer.put( ( byte ) PasswordPolicyResponseControlTags.GRACE_AUTHNS_REMAINING_TAG.getValue() );
-            buffer.put( TLV.getBytes( graceAuthNsRemaining ) );
+            buffer.put( TLV.getBytes( TLV.getNbBytes( graceAuthNsRemaining ) ) );
             buffer.put( Value.getBytes( graceAuthNsRemaining ) );
         }
 
         if ( ppolicyError != null )
         {
             buffer.put( UniversalTag.ENUMERATED_TAG );
-            buffer.put( TLV.getBytes( ppolicyError.getValue() ) );
+            buffer.put( TLV.getBytes( TLV.getNbBytes( ppolicyError.getValue() ) ) );
             buffer.put( Value.getBytes( ppolicyError.getValue() ) );
         }
 
