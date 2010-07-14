@@ -26,6 +26,7 @@ import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.entry.BinaryValue;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.exception.LdapException;
+import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.SchemaManager;
 import org.apache.directory.shared.ldap.util.AttributeUtils;
 import org.apache.directory.shared.ldap.util.Position;
@@ -60,7 +61,16 @@ public class FilterParser
         
         if ( schemaManager != null )
         {
-            node = new ExtensibleNode( schemaManager.lookupAttributeTypeRegistry( attribute ) );
+            AttributeType attributeType = schemaManager.getAttributeType( attribute );
+            
+            if ( attributeType != null )
+            {
+                node = new ExtensibleNode( attributeType );
+            }
+            else
+            {
+                return UndefinedNode.UNDEFINED_NODE;
+            }
         }
         else
         {
@@ -297,14 +307,23 @@ public class FilterParser
             
             if ( schemaManager != null )
             {
-                node = new SubstringNode( schemaManager.lookupAttributeTypeRegistry( attribute ) );
+                AttributeType attributeType = schemaManager.lookupAttributeTypeRegistry( attribute );
+                
+                if ( attributeType != null )
+                {
+                    node = new SubstringNode( schemaManager.lookupAttributeTypeRegistry( attribute ) );
+                }
+                else
+                {
+                    return null;
+                }
             }
             else
             {
                 node = new SubstringNode( attribute );
             }
 
-            if ( initial != null && !initial.isNull() )
+            if ( ( initial != null ) && !initial.isNull() )
             {
                 // We have a substring starting with a value : val*...
                 // Set the initial value. It must be a String
@@ -397,7 +416,16 @@ public class FilterParser
                 // This is a present node
                 if ( schemaManager != null )
                 {
-                    return new PresenceNode( schemaManager.lookupAttributeTypeRegistry( attribute ) );
+                    AttributeType attributeType = schemaManager.getAttributeType( attribute );
+                    
+                    if ( attributeType != null )
+                    {
+                        return new PresenceNode( attributeType );
+                    }
+                    else
+                    {
+                        return null;
+                    }
                 }
                 else
                 {
@@ -417,7 +445,17 @@ public class FilterParser
             // An empty equality Node
             if ( schemaManager != null )
             {
-                return new EqualityNode( schemaManager.lookupAttributeTypeRegistry( attribute ), new BinaryValue() );
+                AttributeType attributeType = schemaManager.getAttributeType( attribute );
+                
+                if ( attributeType != null )
+                {
+                    return new EqualityNode( attributeType, new BinaryValue() );
+                }
+                
+                else
+                {
+                    return null;
+                }
             }
             else
             {
@@ -435,7 +473,16 @@ public class FilterParser
                 // This is an equality node
                 if ( schemaManager != null )
                 {
-                    return new EqualityNode( schemaManager.lookupAttributeTypeRegistry( attribute ), value );
+                    AttributeType attributeType = schemaManager.getAttributeType( attribute );
+                    
+                    if ( attributeType != null )
+                    {
+                        return new EqualityNode( attributeType, value );
+                    }
+                    else
+                    {
+                        return null;
+                    }
                 }
                 else
                 {
@@ -507,15 +554,21 @@ public class FilterParser
                     // Parse the value and create the node
                     if ( schemaManager == null )
                     {
-                        node = new ApproximateNode( attribute, parseAssertionValue( filter, pos ) );
+                        return new ApproximateNode( attribute, parseAssertionValue( filter, pos ) );
                     }
                     else
                     {
-                        node = new ApproximateNode( schemaManager.lookupAttributeTypeRegistry( attribute ), 
-                                                        parseAssertionValue( filter, pos ) );
+                        AttributeType attributeType = schemaManager.getAttributeType( attribute );
+                        
+                        if ( attributeType != null )
+                        {
+                            return new ApproximateNode( attributeType, parseAssertionValue( filter, pos ) );
+                        }
+                        else
+                        {
+                            return UndefinedNode.UNDEFINED_NODE;
+                        }
                     }
-
-                    return node;
 
                 case '>':
                     // Greater or equal node
@@ -532,14 +585,21 @@ public class FilterParser
                     // Parse the value and create the node
                     if ( schemaManager == null )
                     {
-                        node = new GreaterEqNode( attribute, parseAssertionValue( filter, pos ) );
+                        return new GreaterEqNode( attribute, parseAssertionValue( filter, pos ) );
                     }
                     else
                     {
-                        node = new GreaterEqNode( schemaManager.lookupAttributeTypeRegistry( attribute ), 
-                                                    parseAssertionValue( filter, pos ) );
+                        AttributeType attributeType = schemaManager.getAttributeType( attribute );
+                        
+                        if ( attributeType != null )
+                        {
+                            return new GreaterEqNode( attributeType, parseAssertionValue( filter, pos ) );
+                        }
+                        else
+                        {
+                            return UndefinedNode.UNDEFINED_NODE;
+                        }
                     }
-                    return node;
 
                 case '<':
                     // Less or equal node
@@ -556,15 +616,21 @@ public class FilterParser
                     // Parse the value and create the node
                     if ( schemaManager == null )
                     {
-                        node = new LessEqNode( attribute, parseAssertionValue( filter, pos ) );
+                        return new LessEqNode( attribute, parseAssertionValue( filter, pos ) );
                     }
                     else
                     {
-                        node = new LessEqNode( schemaManager.lookupAttributeTypeRegistry( attribute ), parseAssertionValue( filter, pos ) );
+                        AttributeType attributeType = schemaManager.getAttributeType( attribute );
                         
+                        if ( attributeType != null )
+                        {
+                            return new LessEqNode( attributeType, parseAssertionValue( filter, pos ) );
+                        }
+                        else
+                        {
+                            return UndefinedNode.UNDEFINED_NODE;
+                        }
                     }
-
-                    return node;
 
                 case ':':
                     // An extensible node
@@ -592,22 +658,46 @@ public class FilterParser
     private static ExprNode parseBranchNode( SchemaManager schemaManager, ExprNode node, String filter, Position pos ) 
         throws ParseException, LdapException
     {
-        BranchNode bNode = ( BranchNode ) node;
+        BranchNode branchNode = ( BranchNode ) node;
+        int nbChildren = 0;
 
         // We must have at least one filter
         ExprNode child = parseFilterInternal( schemaManager, filter, pos );
-
-        // Add the child to the node children
-        bNode.addNode( child );
-
-        // Now, iterate recusively though all the remaining filters, if any
-        while ( ( child = parseFilterInternal( schemaManager, filter, pos ) ) != null )
+        
+        if ( child != UndefinedNode.UNDEFINED_NODE )
         {
             // Add the child to the node children
-            bNode.addNode( child );
+            branchNode.addNode( child );
+            nbChildren++;
+        }
+        else if ( node instanceof AndNode )
+        {
+            return UndefinedNode.UNDEFINED_NODE;
         }
 
-        return node;
+        // Now, iterate recusively though all the remaining filters, if any
+        while ( ( child = parseFilterInternal( schemaManager, filter, pos ) ) != UndefinedNode.UNDEFINED_NODE )
+        {
+            // Add the child to the node children if not null
+            if ( child != null )
+            {
+                branchNode.addNode( child );
+                nbChildren++;
+            }
+            else if ( node instanceof AndNode )
+            {
+                return UndefinedNode.UNDEFINED_NODE;
+            }
+        }
+
+        if ( nbChildren > 0 )
+        {
+            return node;
+        }
+        else
+        {
+            return UndefinedNode.UNDEFINED_NODE;
+        }
     }
 
 
@@ -643,21 +733,21 @@ public class FilterParser
                 // This is a AND node
                 pos.start++;
                 node = new AndNode();
-                parseBranchNode( schemaManager, node, filter, pos );
+                node = parseBranchNode( schemaManager, node, filter, pos );
                 break;
 
             case '|':
                 // This is an OR node
                 pos.start++;
                 node = new OrNode();
-                parseBranchNode( schemaManager, node, filter, pos );
+                node = parseBranchNode( schemaManager, node, filter, pos );
                 break;
 
             case '!':
                 // This is a NOT node
                 pos.start++;
                 node = new NotNode();
-                parseBranchNode( schemaManager, node, filter, pos );
+                node = parseBranchNode( schemaManager, node, filter, pos );
                 break;
 
             default:
@@ -688,7 +778,7 @@ public class FilterParser
             }
             else
             {
-                return null;
+                return UndefinedNode.UNDEFINED_NODE;
             }
         }
 
@@ -697,9 +787,9 @@ public class FilterParser
         // parse the filter component
         ExprNode node = parseFilterComp( schemaManager, filter, pos );
 
-        if ( node == null )
+        if ( node == UndefinedNode.UNDEFINED_NODE )
         {
-            throw new ParseException( I18n.err( I18n.ERR_04156 ), pos.start );
+            return UndefinedNode.UNDEFINED_NODE;
         }
 
         // Check that we have a right ')'

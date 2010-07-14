@@ -20,48 +20,44 @@
 package org.apache.directory.shared.ldap.filter;
 
 /**
- * All the different kind of assertions.
- * 
+ * An empty class used for Undefined Nodes.
+ *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
+ * @version $Rev$, $Date$
  */
-public enum AssertionType
+public class UndefinedNode extends  AbstractExprNode
 {
-    /** equality assertion node */
-    EQUALITY,
-
-    /** presence assertion node */
-    PRESENCE,
-
-    /** substring match assertion node */
-    SUBSTRING,
-
-    /** greater than or equal to assertion node */
-    GREATEREQ,
-
-    /** less than or equal to assertion node */
-    LESSEQ,
-
-    /** approximate assertion node */
-    APPROXIMATE,
-
-    /** extensible match assertion node */
-    EXTENSIBLE,
-
-    /** scope assertion node */
-    SCOPE,
-
-    /** Predicate assertion node */
-    ASSERTION,
-
-    /** OR operator constant */
-    OR,
-
-    /** AND operator constant */
-    AND,
-
-    /** NOT operator constant */
-    NOT,
+    /** A static instance of this node */
+    public static final ExprNode UNDEFINED_NODE = new UndefinedNode();
     
-    /** Undefined operation */
-    UNDEFINED;
+    
+    /**
+     * Creates a new instance of UndefinedNode.
+     */
+    private UndefinedNode()
+    {
+        super( AssertionType.UNDEFINED );
+    }
+
+
+    @Override
+    public boolean isLeaf()
+    {
+        return false;
+    }
+
+
+    public Object accept( FilterVisitor visitor )
+    {
+        return null;
+    }
+    
+    
+    /**
+     * @see Object#toString()
+     */
+    public String toString()
+    {
+        return "Undefined";
+    }
 }
