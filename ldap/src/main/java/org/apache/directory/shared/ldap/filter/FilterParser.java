@@ -668,6 +668,12 @@ public class FilterParser
         {
             // Add the child to the node children
             branchNode.addNode( child );
+            
+            if ( branchNode instanceof NotNode )
+            {
+                return node;
+            }
+            
             nbChildren++;
         }
         else if ( node instanceof AndNode )
