@@ -42,7 +42,7 @@ public interface Cursor<E> extends Iterable<E>
     /**
      * Determines whether or not a call to get() will succeed.
      *
-     * @return true if the cursor is valid get() will succeed, false otherwise
+     * @return true if a call to the get() method will succeed, false otherwise
      */
     boolean available();
 
