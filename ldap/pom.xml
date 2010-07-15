@@ -87,7 +87,7 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-antlr-plugin</artifactId>
         <configuration>
-          <grammars>schema-extension.g schema-qdstring.g schema-value.g schema.g TriggerSpecification.g distinguishedName.g</grammars>
+          <grammars>schema-extension.g schema-qdstring.g schema-value.g schema.g TriggerSpecification.g distinguishedName.g ACIItem.g ACIItemChecker.g subtree-specification.g SubtreeSpecificationChecker.g</grammars>
         </configuration>
         <executions>
            <execution>
