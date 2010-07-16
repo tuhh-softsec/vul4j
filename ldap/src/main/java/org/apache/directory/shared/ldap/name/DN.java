@@ -1403,12 +1403,12 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
                 {
                     try
                     {
-                    return new AVA( 
-                        atav.getUpType(), 
-                        oidNormalizer.getAttributeTypeOid(), 
-                        atav.getUpValue(),
+                        return new AVA( 
+                            atav.getUpType(), 
+                            oidNormalizer.getAttributeTypeOid(), 
+                            atav.getUpValue(),
                             oidNormalizer.getNormalizer().normalize( atav.getNormValue() ),
-                        atav.getUpName() );
+                            atav.getUpName() );
                     }
                     catch ( LdapException le )
                     {

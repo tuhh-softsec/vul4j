@@ -326,12 +326,6 @@ public class StringValue extends AbstractValue<String>
             // stored in an attribute - the binary version does the same 
             if ( isNull() )
             {
-                if ( attributeType != null )
-                {
-                    // return the OID hashcode if the value is null. 
-                    return attributeType.getOid().hashCode();
-                }
-                
                 return 0;
             }
     
@@ -348,12 +342,6 @@ public class StringValue extends AbstractValue<String>
             else
             {
                 h = 17;
-            }
-            
-            // Add the OID hashcode if we have an AttributeType
-            if ( attributeType != null )
-            {
-                h = h*37 + attributeType.getOid().hashCode();
             }
         }
         
