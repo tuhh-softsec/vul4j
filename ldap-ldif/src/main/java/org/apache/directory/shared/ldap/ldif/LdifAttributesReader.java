@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
 
+import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.BasicAttributes;
@@ -429,10 +430,10 @@ public class LdifAttributesReader extends LdifReader
     
     
     /**
-     * A method which parses a ldif string and returns a list of Entry.
+     * A method which parses a ldif string and returns an Entry.
      * 
      * @param ldif The ldif string
-     * @return A list of Entry, or an empty List
+     * @return An entry
      * @throws LdapLdifException If something went wrong
      */
     // This will suppress PMD.EmptyCatchBlock warnings in this method

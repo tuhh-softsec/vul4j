@@ -705,5 +705,83 @@ public class LdifUtils
 
         return attributes;
     }
-}
 
+
+    /**
+     * Build a new Attributes instance from a LDIF list of lines. The values can be 
+     * either a complete AVA, or a couple of AttributeType ID and a value (a String or 
+     * a byte[]). The following sample shows the three cases :
+     * 
+     * <pre>
+     * Attribute attr = AttributeUtils.createAttributes(
+     *     "objectclass: top",
+     *     "cn", "My name",
+     *     "jpegPhoto", new byte[]{0x01, 0x02} );
+     * </pre>
+     * 
+     * @param avas The AttributeType and Values, using a ldif format, or a couple of 
+     * Attribute ID/Value
+     * @return An Attributes instance
+     * @throws LdapException If the data are invalid
+     * @throws LdapLdifException 
+     */
+    public static Entry createEntry( DN dn, Object... avas ) throws LdapException, LdapLdifException
+    {
+        StringBuilder sb = new StringBuilder();
+        int pos = 0;
+        boolean valueExpected = false;
+        
+        for ( Object ava : avas)
+        {
+            if ( !valueExpected )
+            {
+                if ( !(ava instanceof String) )
+                {
+                    throw new LdapInvalidAttributeValueException( ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX, I18n.err( I18n.ERR_12085, (pos+1) ) );
+                }
+                
+                String attribute = (String)ava;
+                sb.append( attribute );
+                
+                if ( attribute.indexOf( ':' ) != -1 )
+                {
+                    sb.append( '\n' );
+                }
+                else
+                {
+                    valueExpected = true;
+                }
+            }
+            else
+            {
+                if ( ava instanceof String )
+                {
+                    sb.append( ": " ).append( (String)ava ).append( '\n' );
+                }
+                else if ( ava instanceof byte[] )
+                {
+                    sb.append( ":: " );
+                    sb.append( new String( Base64.encode( (byte[] )ava ) ) );
+                    sb.append( '\n' );
+                }
+                else
+                {
+                    throw new LdapInvalidAttributeValueException( ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX, I18n.err( I18n.ERR_12086, (pos+1) ) );
+                }
+                
+                valueExpected = false;
+            }
+        }
+        
+        if ( valueExpected )
+        {
+            throw new LdapInvalidAttributeValueException( ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX, I18n.err( I18n.ERR_12087 ) );
+        }
+        
+        LdifAttributesReader reader = new LdifAttributesReader();
+        Entry entry = reader.parseEntry( sb.toString() );
+        entry.setDn( dn );
+
+        return entry;
+    }
+}

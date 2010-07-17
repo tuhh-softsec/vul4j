@@ -2952,36 +2952,25 @@ public class DefaultEntry implements Entry
         {
             for ( EntryAttribute attribute : attributes.values() )
             {
-                if ( attribute.getAttributeType() != OBJECT_CLASS_AT )
-                {
-                    sb.append( attribute );
-                    continue;
-                }
-
                 String id = attribute.getId();
 
                 if ( schemaManager != null )
                 {
-                    try
-                    {
-                        AttributeType attributeType = schemaManager.lookupAttributeTypeRegistry( id );
+                    AttributeType attributeType = schemaManager.getAttributeType( id );
 
-                        if ( attributeType != OBJECT_CLASS_AT )
-                        {
-                            sb.append( attribute );
-                        }
-                    }
-                    catch ( LdapException le )
+                    if ( attributeType != OBJECT_CLASS_AT )
                     {
-                        // Not found...
+                        sb.append( attribute );
+                        continue;
                     }
                 }
                 else
                 {
-                    if ( !SchemaConstants.OBJECT_CLASS_AT.equalsIgnoreCase( id )
-                        && !SchemaConstants.OBJECT_CLASS_AT_OID.equalsIgnoreCase( id ) )
+                    if ( !id.equalsIgnoreCase( SchemaConstants.OBJECT_CLASS_AT ) &&
+                         !id.equals( SchemaConstants.OBJECT_CLASS_AT_OID ) )
                     {
                         sb.append( attribute );
+                        continue;
                     }
                 }
             }
