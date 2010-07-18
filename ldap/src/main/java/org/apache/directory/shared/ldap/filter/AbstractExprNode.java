@@ -69,14 +69,6 @@ public abstract class AbstractExprNode implements ExprNode
 
 
     /**
-     * Tests to see if this node is a leaf or branch node.
-     * 
-     * @return true if the node is a leaf,false otherwise
-     */
-    public abstract boolean isLeaf();
-
-    
-    /**
      * @see Object#equals(Object)
      *@return <code>true</code> if both objects are equal 
      */
