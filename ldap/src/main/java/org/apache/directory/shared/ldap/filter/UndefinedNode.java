@@ -40,7 +40,6 @@ public class UndefinedNode extends  AbstractExprNode
     }
 
 
-    @Override
     public boolean isLeaf()
     {
         return false;
