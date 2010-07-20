@@ -365,43 +365,52 @@ public abstract class LdapMessageCodec extends AbstractAsn1Object
      */
     public ByteBuffer encode() throws EncoderException
     {
-        // Allocate the bytes buffer.
-        ByteBuffer bb = ByteBuffer.allocate( computeLength() );
-
         try
-        {
-            // The LdapMessage Sequence
-            bb.put( UniversalTag.SEQUENCE_TAG );
-
-            // The length has been calculated by the computeLength method
-            bb.put( TLV.getBytes( ldapMessageLength ) );
-        }
-        catch ( BufferOverflowException boe )
-        {
-            throw new EncoderException( I18n.err( I18n.ERR_04005 ) );
-        }
-
-        // The message Id
-        Value.encode( bb, messageId );
-
-        // Add the protocolOp part
-        encodeProtocolOp( bb );
-
-        // Do the same thing for Controls, if any.
-        if ( controls != null )
-        {
-            // Encode the controls
-            bb.put( ( byte ) LdapConstants.CONTROLS_TAG );
-            bb.put( TLV.getBytes( controlsLength ) );
-
-            // Encode each control
-            for ( Control control:controls )
+        {     
+            // Allocate the bytes buffer.
+            ByteBuffer bb = ByteBuffer.allocate( computeLength() );
+    
+            try
             {
-                ((CodecControl)control).encode( bb );
+                // The LdapMessage Sequence
+                bb.put( UniversalTag.SEQUENCE_TAG );
+    
+                // The length has been calculated by the computeLength method
+                bb.put( TLV.getBytes( ldapMessageLength ) );
             }
+            catch ( BufferOverflowException boe )
+            {
+                throw new EncoderException( I18n.err( I18n.ERR_04005 ) );
+            }
+    
+            // The message Id
+            Value.encode( bb, messageId );
+    
+            // Add the protocolOp part
+            encodeProtocolOp( bb );
+    
+            // Do the same thing for Controls, if any.
+            if ( controls != null )
+            {
+                // Encode the controls
+                bb.put( ( byte ) LdapConstants.CONTROLS_TAG );
+                bb.put( TLV.getBytes( controlsLength ) );
+    
+                // Encode each control
+                for ( Control control:controls )
+                {
+                    ((CodecControl)control).encode( bb );
+                }
+            }
+    
+            return bb;
         }
-
-        return bb;
+        catch ( EncoderException ee )
+        {
+            MessageEncoderException exception = new MessageEncoderException( messageId, ee.getMessage() );
+            
+            throw exception;
+        }
     }
 
 

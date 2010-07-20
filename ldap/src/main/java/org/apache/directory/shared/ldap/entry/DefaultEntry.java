@@ -2803,7 +2803,7 @@ public class DefaultEntry implements Entry
     {
         if ( schemaManager != null )
         {
-            return contains( OBJECT_CLASS_AT.getOid(), objectClass );
+            return contains( OBJECT_CLASS_AT, objectClass );
 
         }
         else

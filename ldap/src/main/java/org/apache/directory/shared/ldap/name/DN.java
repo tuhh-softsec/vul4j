@@ -1024,8 +1024,8 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
     public DN addAll( DN suffix ) throws LdapInvalidDnException
     {
         addAll( rdns.size(), suffix );
-        normalizeInternal();
-        toUpName();
+        //normalizeInternal();
+        //toUpName();
 
         return this;
     }
