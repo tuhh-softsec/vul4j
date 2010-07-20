@@ -33,6 +33,8 @@ XERCES_CPP_NAMESPACE_USE
 
 TXFMOutputFile::~TXFMOutputFile() {
 
+    if (f.is_open())
+        f.write("\n----- END -----\n", 17);
 	f.close();
 
 }
