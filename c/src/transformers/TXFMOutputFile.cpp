@@ -59,10 +59,12 @@ bool TXFMOutputFile::setFile(char * const fileName) {
 
 	using std::ios;
 
-	f.open(fileName, ios::binary);
+    f.open(fileName, ios::binary|ios::out|ios::app);
 
-	if (f.is_open())
+	if (f.is_open()) {
+        f.write("\n----- BEGIN -----\n", 19);
 		return true;
+    }
 
 	return false;
 

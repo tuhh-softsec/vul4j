@@ -32,21 +32,6 @@
 #include <xsec/dsig/DSIGObject.hpp>
 #include <xsec/dsig/DSIGReference.hpp>
 #include <xsec/dsig/DSIGTransformList.hpp>
-#include <xsec/transformers/TXFMDocObject.hpp>
-#include <xsec/transformers/TXFMOutputFile.hpp>
-#include <xsec/transformers/TXFMSHA1.hpp>
-#include <xsec/transformers/TXFMBase64.hpp>
-#include <xsec/transformers/TXFMC14n.hpp>
-#include <xsec/transformers/TXFMChain.hpp>
-#include <xsec/framework/XSECError.hpp>
-#include <xsec/framework/XSECAlgorithmHandler.hpp>
-#include <xsec/framework/XSECAlgorithmMapper.hpp>
-#include <xsec/enc/XSECCryptoKeyDSA.hpp>
-#include <xsec/enc/XSECCryptoKeyRSA.hpp>
-#include <xsec/utils/XSECDOMUtils.hpp>
-#include <xsec/utils/XSECBinTXFMInputStream.hpp>
-#include <xsec/framework/XSECURIResolver.hpp>
-#include <xsec/enc/XSECKeyInfoResolver.hpp>
 #include <xsec/dsig/DSIGKeyInfoValue.hpp>
 #include <xsec/dsig/DSIGKeyInfoX509.hpp>
 #include <xsec/dsig/DSIGKeyInfoName.hpp>
@@ -54,7 +39,23 @@
 #include <xsec/dsig/DSIGKeyInfoSPKIData.hpp>
 #include <xsec/dsig/DSIGKeyInfoMgmtData.hpp>
 #include <xsec/dsig/DSIGAlgorithmHandlerDefault.hpp>
+#include <xsec/enc/XSECCryptoKeyDSA.hpp>
+#include <xsec/enc/XSECCryptoKeyRSA.hpp>
+#include <xsec/enc/XSECKeyInfoResolver.hpp>
+#include <xsec/framework/XSECError.hpp>
+#include <xsec/framework/XSECAlgorithmHandler.hpp>
+#include <xsec/framework/XSECAlgorithmMapper.hpp>
 #include <xsec/framework/XSECEnv.hpp>
+#include <xsec/framework/XSECURIResolver.hpp>
+#include <xsec/transformers/TXFMDocObject.hpp>
+#include <xsec/transformers/TXFMOutputFile.hpp>
+#include <xsec/transformers/TXFMSHA1.hpp>
+#include <xsec/transformers/TXFMBase64.hpp>
+#include <xsec/transformers/TXFMC14n.hpp>
+#include <xsec/transformers/TXFMChain.hpp>
+#include <xsec/utils/XSECBinTXFMInputStream.hpp>
+#include <xsec/utils/XSECDOMUtils.hpp>
+#include <xsec/utils/XSECPlatformUtils.hpp>
 
 // Xerces includes
 
@@ -992,6 +993,11 @@ unsigned int DSIGSignature::calculateSignedInfoHash(unsigned char * hashBuf,
 	TXFMChain * chain = getSignedInfoInput();
 	Janitor<TXFMChain> j_chain(chain);
 
+	// Check for debugging sink for the data
+    TXFMBase* sink = XSECPlatformUtils::GetReferenceLoggingSink(mp_doc);
+    if (sink)
+        chain->appendTxfm(sink);
+
 	// Setup Hash
 	// First find the appropriate handler for the URI
 	XSECAlgorithmHandler * handler = 
@@ -1014,20 +1020,8 @@ unsigned int DSIGSignature::calculateSignedInfoHash(unsigned char * hashBuf,
 	}
 
 
-#if 0
-	TXFMOutputFile * of = new TXFMOutputFile(mp_doc);
-
-	of->setFile("Output");
-	of->setInput(hashVal);
-	hashVal=of;
-#endif
-
 	// Write hash to the buffer
-	int hashLen;
-
-	hashLen = chain->getLastTxfm()->readBytes((XMLByte *) hashBuf, hashBufLen);
-
-	return hashLen;
+	return chain->getLastTxfm()->readBytes((XMLByte *) hashBuf, hashBufLen);
 
 }
 

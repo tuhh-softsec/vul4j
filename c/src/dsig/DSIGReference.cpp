@@ -1267,12 +1267,10 @@ unsigned int DSIGReference::calculateHash(XMLByte *toFill, unsigned int maxToFil
 
 	}
 
-#if 0
-	TXFMOutputFile * of = new TXFMOutputFile(d);
-
-	of->setFile("Output");
-	chain->(of);
-#endif
+    // Check for debugging sink for the data
+    TXFMBase* sink = XSECPlatformUtils::GetReferenceLoggingSink(d);
+    if (sink)
+        chain->appendTxfm(sink);
 
 
 	// Get the mapping for the hash transform

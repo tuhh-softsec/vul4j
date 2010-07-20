@@ -33,8 +33,11 @@
 #include <xsec/dsig/DSIGSignature.hpp>
 #include <xsec/xkms/XKMSConstants.hpp>
 #include <xsec/framework/XSECAlgorithmMapper.hpp>
+#include <xsec/transformers/TXFMOutputFile.hpp>
 
 #include "../xenc/impl/XENCCipherImpl.hpp"
+
+XERCES_CPP_NAMESPACE_USE
 
 #if defined(_WIN32)
 #include <xsec/utils/winutils/XSECBinHTTPURIInputStream.hpp>
@@ -61,6 +64,8 @@ const XSECAlgorithmMapper * XSECPlatformUtils::g_algorithmMapper = NULL;
 
 XSECAlgorithmMapper * internalMapper = NULL;
 
+XSECPlatformUtils::TransformFactory* XSECPlatformUtils::g_loggingSink = NULL;
+
 // Determine default crypto provider
 
 #if defined (HAVE_OPENSSL)
@@ -74,6 +79,15 @@ XSECAlgorithmMapper * internalMapper = NULL;
 #		endif
 #	endif
 #endif
+
+TXFMBase* TXFMOutputFileFactory(DOMDocument* doc) {
+
+    TXFMOutputFile* sink = new TXFMOutputFile(doc);
+    if (sink)
+        sink->setFile(getenv("XSEC_DEBUG_FILE"));
+    return sink;
+
+}
 
 void XSECPlatformUtils::Initialise(XSECCryptoProvider * p) {
 
@@ -107,6 +121,9 @@ void XSECPlatformUtils::Initialise(XSECCryptoProvider * p) {
 	// Initialise the DSIGSignature class
 	DSIGSignature::Initialise();
 
+	const char* sink = getenv("XSEC_DEBUG_FILE");
+	if (sink && *sink)
+	    g_loggingSink = TXFMOutputFileFactory;
 };
 
 void XSECPlatformUtils::SetCryptoProvider(XSECCryptoProvider * p) {
@@ -118,6 +135,16 @@ void XSECPlatformUtils::SetCryptoProvider(XSECCryptoProvider * p) {
 
 }
 
+void XSECPlatformUtils::SetReferenceLoggingSink(TransformFactory* factory) {
+
+    g_loggingSink = factory;
+
+}
+
+TXFMBase* XSECPlatformUtils::GetReferenceLoggingSink(DOMDocument* doc) {
+
+    return (g_loggingSink ? g_loggingSink(doc) : NULL);
+}
 
 void XSECPlatformUtils::Terminate(void) {
 

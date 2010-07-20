@@ -28,11 +28,14 @@
 #ifndef XSECPLATFORMUTILS_INCLUDE
 #define XSECPLATFORMUTILS_INCLUDE
 
+#include <xercesc/dom/DOM.hpp>
+
 // XSEC
 
 #include <xsec/framework/XSECDefs.hpp>
 #include <xsec/enc/XSECCryptoProvider.hpp>
 
+class TXFMBase;
 class XSECAlgorithmMapper;
 class XSECAlgorithmHandler;
 
@@ -176,6 +179,27 @@ public :
 
     static void blacklistAlgorithm(const XMLCh* URI);
 
+    typedef TXFMBase* TransformFactory(XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument*);
+
+    /**
+     * \brief Installs logging support during Reference processing
+     *
+     * The function provided will be called during Reference computation
+     * to obtain a transform interface to place at the end of the
+     * transform chain. It will be given the chance to log or preserve
+     * the result of applying transforms to References during signing
+     * and verification operations.
+     */
+    static void SetReferenceLoggingSink(TransformFactory* factory);
+
+    /**
+     * \brief Returns a transform for logging of Reference processing
+     *
+     * @param doc   the DOM document containing the data being processed
+     * @return  a transform to install for logging of Reference data, or NULL
+     */
+    static TXFMBase* GetReferenceLoggingSink(XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument* doc);
+
 	/**
 	 * \brief Terminate
 	 *
@@ -189,6 +213,8 @@ public :
 
 	static void Terminate(void);
 
+private:
+	static TransformFactory* g_loggingSink;
 };
 
 
