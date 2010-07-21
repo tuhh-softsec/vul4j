@@ -22,7 +22,7 @@
 	  value="${product.version.major}.${product.version.minor}.${product.version.level}${product.version.qualifier}"/>
     <property name="product_version" 
 	  value="${product.version.major}_${product.version.minor}_${product.version.level}${product.version.qualifier}"/>
-    <property name="year" value="2000-2009"/>
+    <property name="year" value="2000-2010"/>
     <property name="copyright" 
 			  value="Copyright © ${year} Apache XML Project. All Rights Reserved."/>
 
@@ -54,13 +54,13 @@
     <property name="dir.manifest"       value="${dir.build.bin}/META-INF"/>
 
     <!-- library properties -->
-    <property name="lib.logging"        value="${dir.libs}/commons-logging.jar" />
-    <property name="lib.logging.api"    value="${dir.libs}/commons-logging-api.jar" />
+    <property name="lib.logging"        value="${dir.libs}/commons-logging-1.1.jar" />
+    <property name="lib.logging.api"    value="${dir.libs}/commons-logging-api-1.1.jar" />
     <property name="lib.log4j"          value="${dir.libs}/log4j-1.2.8.jar" />
-    <property name="lib.xalan.1"        value="${dir.libs}/xalan.jar" />
-    <property name="lib.xalan.2"        value="${dir.libs}/serializer.jar" />
-    <property name="lib.xalan.3"        value="${dir.libs}/xml-apis.jar" />
-    <property name="lib.xerces.1"       value="${dir.libs}/xercesImpl.jar" />
+    <property name="lib.xalan.1"        value="${dir.libs}/xalan-2.7.1.jar" />
+    <property name="lib.xalan.2"        value="${dir.libs}/serializer-2.7.1.jar" />
+    <property name="lib.xalan.3"        value="${dir.libs}/xml-apis-1.3.03.jar" />
+    <property name="lib.xerces.1"       value="${dir.libs}/xercesImpl-2.9.1.jar" />
     <property name="lib.jce"            value="${dir.libs}/${jce.provider.prefix}-${jce.provider.jar}" />
     <property name="lib.junit"		value="${dir.libs}/junit-3.8.1.jar" />
     <property name="lib.clover"		value="${dir.libs}/clover.jar" />
@@ -321,7 +321,7 @@
 
 	<!-- T E S T  T A R G E T S -->  
 	<!-- big test -->
-	<target name="test" depends="build.test"
+	<target name="test" depends="build.jar"
 		description="Starts all Junit tests">
 	    <delete dir="${dir.build.junit.xml}"/>
 	    <delete dir="${dir.build.junit.html}"/>
@@ -344,10 +344,15 @@
 	         IBM is 'magically' included in the test ;-))
 	    -->
 	    <available file="data/com/ibm/xss4j-20030127/enveloped-rsa.sig" property="ibm.available"/>
-            <copy file="${lib.xalan.1}" todir="${dir.build.libs2}"/>
-            <copy file="${lib.xalan.2}" todir="${dir.build.libs2}"/>
-            <copy file="${lib.xalan.3}" todir="${dir.build.libs2}"/>
-            <copy file="${lib.xerces.1}" todir="${dir.build.libs2}"/>
+        <copy file="${lib.xalan.1}" todir="${dir.build.libs2}"/>
+        <copy file="${lib.xalan.2}" todir="${dir.build.libs2}"/>
+        <copy file="${lib.xalan.3}" todir="${dir.build.libs2}"/>
+        <copy file="${lib.xerces.1}" todir="${dir.build.libs2}"/>
+        <copy file="${lib.logging.api}" todir="${dir.build.libs2}"/>
+        <copy file="${lib.logging}" todir="${dir.build.libs2}"/>
+        <copy file="${lib.junit}" todir="${dir.build.libs2}"/>
+        <copy file="${jar.library}" todir="${dir.build.libs2}"/>
+        <copy file="${jar.tests}" todir="${dir.build.libs2}"/>
 	    <junit filtertrace="true" fork="true" printsummary="on" 
 		   failureproperty="build.test.failed">
 	        <jvmarg value="-Djava.compiler=NONE"/>
@@ -357,6 +362,7 @@
                 <sysproperty key="proxyPort" value="${proxy.port}"/>
                 <sysproperty key="java.util.logging.config.file" 
 			     value="${basedir}/logging.properties"/>
+	            <sysproperty key="product.version" value="${product.version}"/>
 	        <classpath refid="id.classpath.test"/>
 	        <formatter type="xml"/>
 	        <!-- Also put output to screen -->
@@ -378,12 +384,21 @@
 	</target>
 
     <!-- Test JSR 105/XML DSig API -->
-    <target name="test_jsr105" depends="build.test"
+    <target name="test_jsr105" depends="build.jar"
 	    description="Runs JSR 105 interop and unit tests">
         <delete dir="${dir.build.junit.xml}"/>
         <delete dir="${dir.build.junit.html}"/>
         <mkdir dir="${dir.build.junit.xml}"/>
         <mkdir dir="${dir.build.junit.html}"/>
+        <copy file="${lib.xalan.1}" todir="${dir.build.libs2}"/>
+        <copy file="${lib.xalan.2}" todir="${dir.build.libs2}"/>
+        <copy file="${lib.xalan.3}" todir="${dir.build.libs2}"/>
+        <copy file="${lib.xerces.1}" todir="${dir.build.libs2}"/>
+        <copy file="${lib.logging.api}" todir="${dir.build.libs2}"/>
+        <copy file="${lib.logging}" todir="${dir.build.libs2}"/>
+        <copy file="${lib.junit}" todir="${dir.build.libs2}"/>
+        <copy file="${jar.library}" todir="${dir.build.libs2}"/>
+        <copy file="${jar.tests}" todir="${dir.build.libs2}"/>
         <junit filtertrace="true" fork="true" printsummary="on" 
 	       failureproperty="build.test.failed">
             <sysproperty key="basedir" value="${basedir}"/>

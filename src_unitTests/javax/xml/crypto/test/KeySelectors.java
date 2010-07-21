@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2009 The Apache Software Foundation.
+ * Copyright 2006-2010 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -27,8 +27,6 @@ import javax.xml.crypto.*;
 import javax.xml.crypto.dsig.*;
 import javax.xml.crypto.dsig.keyinfo.*;
 import javax.crypto.SecretKey;
-import sun.security.util.DerValue;
-import sun.security.x509.X500Name;
 
 
 /**
@@ -108,7 +106,6 @@ public class KeySelectors {
 			}
 		    }
 		    Iterator xi = xd.getContent().iterator();
-		    boolean hasCRL = false;
 		    while (xi.hasNext()) {
 			Object o = xi.next();
 			// skip non-X509Certificate entries
@@ -217,20 +214,19 @@ public class KeySelectors {
 	    Vector matchResult = new Vector();
 	    for (int j=0; j < pool.size(); j++) {
 		X509Certificate c = (X509Certificate) pool.get(j);
+		
 		switch (matchType) {
 		case MATCH_SUBJECT:
-		    try {
-		        if (c.getSubjectDN().equals(new X500Name((String)value))) {
+		    Principal p1 = new javax.security.auth.x500.X500Principal((String)value);
+	        if (c.getSubjectX500Principal().equals(p1)) {
 			    matchResult.add(c);
-		        }
-		    } catch (IOException ioe) { }
+	        }
 		    break;
 		case MATCH_ISSUER:
-		    try {
-		        if (c.getIssuerDN().equals(new X500Name((String)value))) {
+		    Principal p2 = new javax.security.auth.x500.X500Principal((String)value);
+	        if (c.getIssuerX500Principal().equals(p2)) {
 			    matchResult.add(c);
-		        }
-		    } catch (IOException ioe) { }
+	        }
 		    break;
 		case MATCH_SERIAL:
 		    if (c.getSerialNumber().equals(value)) {
@@ -241,15 +237,12 @@ public class KeySelectors {
 		case MATCH_SUBJECT_KEY_ID:
 		    byte[] extension = c.getExtensionValue("2.5.29.14");
 		    if (extension != null) {
-			try {
-			    DerValue derValue = new DerValue(extension);
-			    DerValue derValue2 = new DerValue(derValue.getOctetString());
-			    byte[] extVal = derValue2.getOctetString();
+			    byte extVal[] = new byte[extension.length - 4];
+			    System.arraycopy(extension, 4, extVal, 0, extVal.length);
 			    
 			    if (Arrays.equals(extVal, (byte[]) value)) {
-				matchResult.add(c);
+			        matchResult.add(c);
 			    }
-			} catch (IOException ex) { }
 		    }
 		    break;
 		case MATCH_CERTIFICATE:

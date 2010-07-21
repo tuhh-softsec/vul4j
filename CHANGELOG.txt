@@ -1,5 +1,6 @@
 Changelog for "Apache xml-security" <http://santuario.apache.org/>
 New in v1.4.4-SNAPSHOT
+    Fixed Bug 49629: Some changes to the build system.
     Fixed Bug 49483: KeyResolver.registerAtStart() leads to ClassCastException. Thanks to Clement Pellerin.
     Fixed Bug 49458: StorageResolver always exhausted after first use. Thanks to Clement Pellerin.
     Fixed Bug 49456: StorageResolver.next() gives ClassCastException. Thanks to Clement Pellerin.

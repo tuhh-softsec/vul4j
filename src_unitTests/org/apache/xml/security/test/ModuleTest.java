@@ -1,5 +1,5 @@
 /*
- * Copyright  2004 The Apache Software Foundation.
+ * Copyright  2004-2010 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -62,6 +62,7 @@ public class ModuleTest extends TestCase {
       suite.addTest(org.apache.xml.security.test.keys.content.x509.XMLX509CertificateTest.suite());
       suite.addTest(org.apache.xml.security.test.keys.storage.KeyStoreResolverTest.suite());
       suite.addTest(org.apache.xml.security.test.keys.storage.StorageResolverTest.suite());
+      suite.addTest(org.apache.xml.security.test.version.VersionTest.suite());
       // suite.addTest(org.apache.xml.security.test.algorithms.implementations.KeyWrapTest.suite());
       // suite.addTest(org.apache.xml.security.test.algorithms.implementations.BlockEncryptionTest.suite());
       //J+

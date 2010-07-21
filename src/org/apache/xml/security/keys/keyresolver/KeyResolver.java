@@ -249,7 +249,8 @@ public class KeyResolver {
        }
        
        if (ex != null) {
-           throw new IllegalArgumentException("Invalid KeyResolver class name", ex);
+           throw (IllegalArgumentException) new
+               IllegalArgumentException("Invalid KeyResolver class name").initCause(ex);
        }
        
        KeyResolver._resolverVector.add(0, resolver);

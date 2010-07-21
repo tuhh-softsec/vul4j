@@ -48,12 +48,12 @@ public final class XMLDSigRI extends Provider {
 
     static final long serialVersionUID = -5049765099299494554L;
 
-    private static final String INFO = "XMLDSig " + 
-    "(DOM XMLSignatureFactory; DOM KeyInfoFactory)";
+    private static final String INFO = "Apache Santuario XMLDSig " + 
+        "(DOM XMLSignatureFactory; DOM KeyInfoFactory)";
 
     public XMLDSigRI() {
 	/* We are the XMLDSig provider */
-	super("XMLDSig", 1.0, INFO);
+	super("XMLDSig", 1.44, INFO);
 	
 	final Map map = new HashMap();
         map.put("XMLSignatureFactory.DOM", 

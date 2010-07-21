@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2007 The Apache Software Foundation.
+ * Copyright 1999-2010 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -664,6 +664,12 @@ public class XMLCipherTester extends TestCase {
 	}
 
     public void testSerializedData() throws Exception {
+        
+        if (!haveISOPadding) {
+            log.warn("Test testSerializedData skipped as necessary algorithms not available");
+            return;
+        }
+        
         byte[] bits128 = {
             (byte) 0x10, (byte) 0x11, (byte) 0x12, (byte) 0x13,
             (byte) 0x14, (byte) 0x15, (byte) 0x16, (byte) 0x17,

@@ -1,5 +1,5 @@
 /*
- * Copyright  2007-2009 The Apache Software Foundation.
+ * Copyright  2007-2010 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,6 +17,10 @@
 package org.apache.xml.security.test.encryption;
 
 import java.io.ByteArrayInputStream;
+import java.security.NoSuchAlgorithmException;
+
+import javax.crypto.Cipher;
+import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESedeKeySpec;
@@ -28,6 +32,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import org.apache.xml.security.algorithms.JCEMapper;
 import org.apache.xml.security.encryption.XMLCipher;
 
 import junit.framework.Test;
@@ -35,6 +40,10 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 public class EncryptContentTest extends TestCase {
+    
+    /** {@link org.apache.commons.logging} logging facility */
+    static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(EncryptContentTest.class.getName());
 
     private static final String DATA =
 	"<users>\n" +
@@ -48,6 +57,7 @@ public class EncryptContentTest extends TestCase {
 
     private DocumentBuilder db;
     private SecretKey secretKey;
+    private boolean haveISOPadding;
 
     public static Test suite() throws Exception {
         return new TestSuite(EncryptContentTest.class);
@@ -71,9 +81,31 @@ public class EncryptContentTest extends TestCase {
 
 	TransformerFactory tf = TransformerFactory.newInstance();
 	tf.newTransformer();
+	
+	// Determine if we have ISO 10126 Padding - needed for Bulk AES or
+	// 3DES encryption
+
+	haveISOPadding = false;
+	String algorithmId = 
+	    JCEMapper.translateURItoJCEID(org.apache.xml.security.utils.EncryptionConstants.ALGO_ID_BLOCKCIPHER_AES128);
+
+	if (algorithmId != null) {
+	    try {
+	        if (Cipher.getInstance(algorithmId) != null)
+	            haveISOPadding = true;
+	    } catch (NoSuchAlgorithmException nsae) {
+	    } catch (NoSuchPaddingException nspe) {
+	    }
+	}
+
     }
 
     public void testContentRemoved() throws Exception {
+        
+        if (!haveISOPadding) {
+            log.warn("Test testContentRemoved skipped as necessary algorithms not available");
+            return;
+        }
 
 	Document doc = db.parse(new ByteArrayInputStream(DATA.getBytes("UTF8")));
 	NodeList dataToEncrypt = doc.getElementsByTagName("user");

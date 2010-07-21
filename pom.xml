@@ -192,6 +192,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
+                    <version>2.5</version>
                     <configuration>
                         <reportFormat>brief</reportFormat>
                         <useFile>false</useFile>
@@ -200,6 +201,9 @@
                         <includes>
                             <include>org/apache/xml/security/test/AllTests.java</include>
                         </includes>
+                        <systemPropertyVariables>
+                            <product.version>${project.version}</product.version>
+                        </systemPropertyVariables>
                     </configuration>
                 </plugin>
   
