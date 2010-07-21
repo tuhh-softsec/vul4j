@@ -7,7 +7,7 @@
 	<body>
 		<section name="Configuration">
 			<p>
-				Website Assembling Toolkit includes a full
+				ESIGate includes a full
 				<a href="http://www.w3.org/Protocols/rfc2616/rfc2616.html">RFC 2616</a>
 				compliant HTTP cache. The cache uses
 				<a href="http://www.opensymphony.com/oscache/">OsCache</a>

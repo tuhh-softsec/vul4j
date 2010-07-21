@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<project name="Website Assembling Toolkit">
+<project name="ESIGate">
         <version position="left"/>
 	<bannerLeft>
-		<name>Website Assembling Toolkit</name>
-		<src>http://sflogo.sourceforge.net/sflogo.php?group_id=209844&amp;type=16</src>
+		<name>ESIGate</name>
+		<src>images/logo.jpg</src>
 		<href>http://sourceforge.net/projects/webassembletool</href>
-		<alt>Get Website assembling toolkit at SourceForge.net. Fast, secure and Free Open Source software downloads</alt>
+		<alt>Get ESIGate at SourceForge.net. Fast, secure and Free Open Source software downloads</alt>
 	</bannerLeft>
 	<body>
 	<links>

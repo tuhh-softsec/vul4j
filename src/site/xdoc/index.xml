@@ -5,17 +5,16 @@
 		<author email="fxbonnet@users.sourceforge.net">Francois-Xavier Bonnet</author>
 	</properties>
 	<body>
-		<section name="Website Assembling Toolkit: build your portal without limit">
+		<section name="ESIGate (Website Assembling Toolkit)">
 			<p>
-				This toolkit was developped to help developpers to integrate
+				ESIGate (formerly known as "Website Assembling Toolkit")is a toolkit developped to help developpers to integrate
 				existing web applications and aggregate them as
 				a single website.
 			</p>
-			<script type="text/javascript" src="http://www.ohloh.net/p/9896/widgets/project_partner_badge.js"></script>
 		</section>
 		<section name="Reverse proxy and ESI processor">
 			<p>
-				The Website Assembling Toolkit can be used as a reverse proxy.
+				ESIGate can be used as a reverse proxy.
 				Proxied pages can parsed in order
 				to process inclusion instructions
 				that the applications insert.
@@ -35,7 +34,7 @@
 		</section>
 		<section name="Taglib">
 			<p>
-				The Website Assembling Toolkit offers a taglib that can be used in
+				ESIGate offers a taglib that can be used in
 				any JSP-based java web application.
 			</p>
 			<p>
@@ -76,5 +75,6 @@
 				<li>Reverse proxy</li>
 			</ul>
 		</section>
+		<script type="text/javascript" src="http://www.ohloh.net/p/9896/widgets/project_partner_badge.js"></script>
 	</body>
 </document>

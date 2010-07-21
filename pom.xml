@@ -33,7 +33,7 @@
 			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
 		</license>
 	</licenses>
-	<description>Website assembling toolkit</description>
+	<description>ESIGate</description>
 	<issueManagement>
 		<system>MantisBT</system>
 		<url>https://sourceforge.net/apps/mantisbt/webassembletool/view_all_bug_page.php</url>
@@ -144,7 +144,7 @@
 		</repository>
 		<repository>
 			<id>webassembletool-repository</id>
-			<name>Website Assembling Toolkit repository</name>
+			<name>ESIGate repository</name>
 			<url>http://webassembletool.sourceforge.net/maven/repository</url>
 			<snapshots>
 				<enabled>false</enabled>
@@ -152,7 +152,7 @@
 		</repository>
 		<repository>
 			<id>webassembletool-snapshots</id>
-			<name>Website Assembling Toolkit snapshots repository</name>
+			<name>ESIGate snapshots repository</name>
 			<url>http://webassembletool.sourceforge.net/maven/snapshots</url>
 			<releases>
 				<enabled>false</enabled>
@@ -190,7 +190,7 @@
 		</snapshotRepository>
 		<site>
 			<id>webassembletool-site</id>
-			<name>Website Assembling Toolkit</name>
+			<name>ESIGate</name>
 			<url>sftp://web.sourceforge.net/home/groups/w/we/webassembletool/htdocs</url>
 		</site>
 	</distributionManagement>
