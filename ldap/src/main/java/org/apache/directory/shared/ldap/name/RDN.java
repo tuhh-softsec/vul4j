@@ -37,6 +37,8 @@ import org.apache.directory.shared.ldap.entry.StringValue;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
+import org.apache.directory.shared.ldap.schema.AttributeType;
+import org.apache.directory.shared.ldap.schema.SchemaManager;
 import org.apache.directory.shared.ldap.schema.normalizers.OidNormalizer;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.apache.directory.shared.ldap.util.UTFUtils;
@@ -187,15 +189,31 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
     /** A flag used to tell if the RDN has been normalized */
     private boolean normalized;
 
+    /** the schema manager */
+    private transient SchemaManager schemaManager;
+
 
     /**
      * A empty constructor.
      */
     public RDN()
     {
+        this( ( SchemaManager ) null );
+    }
+
+
+    /**
+     * 
+     * Creates a new instance of RDN.
+     *
+     * @param schemaManager the schema manager
+     */
+    public RDN( SchemaManager schemaManager )
+    {
         // Don't waste space... This is not so often we have multiple
         // name-components in a RDN... So we won't initialize the Map and the
         // treeSet.
+        this.schemaManager = schemaManager;
         upName = "";
         normName = "";
         normalized = false;
@@ -206,9 +224,10 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
      * A constructor that parse a String representing a RDN.
      *
      * @param rdn The String containing the RDN to parse
+     * @param schemaManager the schema manager
      * @throws LdapInvalidDnException If the RDN is invalid
      */
-    public RDN( String rdn ) throws LdapInvalidDnException
+    public RDN( String rdn, SchemaManager schemaManager ) throws LdapInvalidDnException
     {
         start = 0;
 
@@ -219,7 +238,18 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
 
             // create the internal normalized form
             // and store the user provided form
-            normalize();
+            if ( schemaManager != null )
+            {
+                this.schemaManager = schemaManager;
+                normalize( schemaManager.getNormalizerMapping() );
+                normalized = true;
+            }
+            else
+            {
+                normalize();
+                normalized = false;
+            }
+
             upName = rdn;
             length = rdn.length();
         }
@@ -228,9 +258,20 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
             upName = "";
             normName = "";
             length = 0;
+            normalized = false;
         }
+    }
 
-        normalized = false;
+
+    /**
+     * A constructor that parse a String representing a RDN.
+     *
+     * @param rdn The String containing the RDN to parse 
+     * @throws LdapInvalidDnException
+     */
+    public RDN( String rdn ) throws LdapInvalidDnException
+    {
+        this( rdn, ( SchemaManager ) null );
     }
 
 
@@ -244,23 +285,43 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
      * @param upValue The user provided value of the RDN
      * @param normType The normalized provided type of the RDN
      * @param normValue The normalized provided value of the RDN
+     * @param schemaManager the schema manager
      * @throws LdapInvalidDnException If the RDN is invalid
      */
-    public RDN( String upType, String normType, String upValue, String normValue ) throws LdapInvalidDnException
+    public RDN( String upType, String normType, String upValue, String normValue, SchemaManager schemaManager ) throws LdapInvalidDnException
     {
+        this.schemaManager = schemaManager;
+
         addAttributeTypeAndValue( upType, normType, new StringValue( upValue ), new StringValue( normValue ) );
 
         upName = upType + '=' + upValue;
         start = 0;
         length = upName.length();
+        
         // create the internal normalized form
         normalize();
-        
-        // As strange as it seems, the RDN is *not* normalized against the schema at this point
-        normalized = false;
+
+        if( schemaManager != null )
+        {
+            normalized = true;
+        }
+        else
+        {
+            // As strange as it seems, the RDN is *not* normalized against the schema at this point
+            normalized = false;
+        }
     }
 
+    
+    /**
+     * @see #RDN(String, String, String, String, SchemaManager)
+     */
+    public RDN( String upType, String normType, String upValue, String normValue ) throws LdapInvalidDnException
+    {
+        this( upType, normType, upValue, normValue, null );
+    }
 
+    
     /**
      * A constructor that constructs a RDN from a type and a value. Constructs
      * an Rdn from the given attribute type and value. The string attribute
@@ -269,22 +330,42 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
      *
      * @param upType The user provided type of the RDN
      * @param upValue The user provided value of the RDN
+     * @param schemaManager the schema manager
      * @throws LdapInvalidDnException If the RDN is invalid
      */
-    public RDN( String upType, String upValue ) throws LdapInvalidDnException
+    public RDN( String upType, String upValue, SchemaManager schemaManager ) throws LdapInvalidDnException
     {
         addAttributeTypeAndValue( upType, upType, new StringValue( upValue ), new StringValue( upValue ) );
 
         upName = upType + '=' + upValue;
         start = 0;
         length = upName.length();
-        // create the internal normalized form
-        normalize();
         
-        // As strange as it seems, the RDN is *not* normalized against the schema at this point
-        normalized = false;
+        if( schemaManager != null )
+        {
+            this.schemaManager = schemaManager;
+            normalize( schemaManager.getNormalizerMapping() );
+            normalized = true;
+        }
+        else
+        {
+            // create the internal normalized form
+            normalize();
+            
+            // As strange as it seems, the RDN is *not* normalized against the schema at this point
+            normalized = false;
+        }
     }
 
+    
+    /**
+     * @see #RDN(String, String, SchemaManager)
+     */
+    public RDN( String upType, String upValue ) throws LdapInvalidDnException
+    {
+        this( upType, upValue, null );
+    }
+    
 
     /**
      * A constructor that constructs a RDN from a type, a position and a length.
@@ -300,7 +381,7 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
         this.length = length;
         this.upName = upName;
         this.normName = normName;
-        normalized = false;
+        normalized = true;            
     }
 
 
@@ -407,7 +488,7 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
      * Transform a RDN by changing the value to its OID counterpart and
      * normalizing the value accordingly to its type.
      *
-     * @param oidsMap The map of all existing oids and normalizer.
+     * @param oidsMap The mapping between names and oids.
      * @throws LdapException If the RDN is invalid.
      */
     public RDN normalize( Map<String, OidNormalizer> oidsMap ) throws LdapInvalidDnException
@@ -439,14 +520,28 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
         Value<?> value ) throws LdapInvalidDnException
     {
         // First, let's normalize the type
-        String normalizedType = StringTools.lowerCaseAscii( type );
         Value<?> normalizedValue = value;
+        String normalizedType = StringTools.lowerCaseAscii( type );
+        
+        if( schemaManager != null )
+        {
+            OidNormalizer oidNormalizer = schemaManager.getNormalizerMapping().get( normalizedType );
+            normalizedType = oidNormalizer.getAttributeTypeOid();
+            try
+            {
+                normalizedValue = oidNormalizer.getNormalizer().normalize( value );
+            }
+            catch( LdapException e )
+            {
+                throw new LdapInvalidDnException( e.getMessage() );
+            }
+        }
 
         switch ( nbAtavs )
         {
             case 0:
                 // This is the first AttributeTypeAndValue. Just stores it.
-                atav = new AVA( upType, type, upValue, normalizedValue );
+                atav = new AVA( upType, normalizedType, upValue, normalizedValue );
                 nbAtavs = 1;
                 atavType = normalizedType;
                 return;
@@ -469,7 +564,7 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
 
             default:
                 // add a new AttributeTypeAndValue
-                AVA newAtav = new AVA( upType, type, upValue, normalizedValue );
+                AVA newAtav = new AVA( upType, normalizedType, upValue, normalizedValue );
                 atavs.add( newAtav );
                 atavTypes.put( normalizedType, newAtav );
 
@@ -1310,8 +1405,8 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
 
         return escapeValue( value );
     }
-    
-    
+
+
     /**
      * Tells if the RDN has already been normalized or not
      *

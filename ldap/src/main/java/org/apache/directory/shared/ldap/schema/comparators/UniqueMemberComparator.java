@@ -169,8 +169,7 @@ public class UniqueMemberComparator extends LdapComparator<String>
         }
         else if ( obj instanceof String )
         {
-            dn = new DN( ( String ) obj );
-            dn.normalize( schemaManager.getNormalizerMapping() );
+            dn = new DN( ( String ) obj, schemaManager );
         }
         else
         {

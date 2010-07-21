@@ -80,8 +80,7 @@ public class DnComparator extends LdapComparator<Object>
         }
         else if ( obj instanceof String )
         {
-            dn = new DN( ( String ) obj );
-            dn.normalize( schemaManager.getNormalizerMapping() );
+            dn = new DN( ( String ) obj, schemaManager );
         }
         else
         {

@@ -41,6 +41,7 @@ import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
+import org.apache.directory.shared.ldap.schema.SchemaManager;
 import org.apache.directory.shared.ldap.schema.normalizers.OidNormalizer;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.apache.directory.shared.ldap.util.UTFUtils;
@@ -110,6 +111,8 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
     /** A null DN */
     public static final DN EMPTY_DN = new DN();
 
+    /** the schema manager */
+    private transient SchemaManager schemaManager;
 
     // ~ Methods
     // ------------------------------------------------------------------------------------
@@ -119,9 +122,28 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
      */
     public DN()
     {
+        this( ( SchemaManager ) null );
+    }
+
+    
+    /**
+     * Construct an empty DN object
+     */
+    public DN( SchemaManager schemaManger )
+    {
+        this.schemaManager = schemaManger;
         upName = "";
         normName = null;
         normalized = true;
+    }
+
+    
+    /**
+     * @see #DN(DN, SchemaManager)
+     */
+    public DN( DN dn ) throws LdapInvalidDnException
+    {
+       this( dn, null);
     }
 
 
@@ -129,10 +151,13 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
      * Copies a DN to an DN.
      *
      * @param dn composed of String name components.
+     * @param schemaManager the schema manager
      * @throws LdapInvalidDnException If the Name is invalid.
      */
-    public DN( DN dn ) throws LdapInvalidDnException
+    public DN( DN dn, SchemaManager schemaManager ) throws LdapInvalidDnException
     {
+        this.schemaManager = schemaManager;
+
         if ( ( dn != null ) && ( dn.size() != 0 ) )
         {
             for ( int ii = 0; ii < dn.size(); ii++ )
@@ -142,10 +167,17 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
             }
         }
 
-        normalized = false;
+        if( schemaManager != null )
+        {
+            normalized = true;
+        }
+        else
+        {
+            normalized = false;
+        }
     }
 
-
+    
     /**
      * Parse a String and checks that it is a valid DN <br>
      * <p>
@@ -160,20 +192,45 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
      */
     public DN( String upName ) throws LdapInvalidDnException
     {
+        this( upName, null );
+    }
+
+
+    
+    public DN( String upName, SchemaManager schemaManager ) throws LdapInvalidDnException
+    {
         if ( upName != null )
         {
             DnParser.parseInternal( upName, rdns );
         }
+        
+        if( schemaManager != null )
+        {
+            this.schemaManager = schemaManager;
+            normalize( schemaManager.getNormalizerMapping() );
+            normalized = true;
+        }
+        else
+        {
+            normalized = false;
 
-        // Stores the representations of a DN : internal (as a string and as a
-        // byte[]) and external.
-        normalizeInternal();
-        normalized = false;
+            // Stores the representations of a DN : internal (as a string and as a
+            // byte[]) and external.
+            normalizeInternal();
+        }
 
         this.upName = upName;
     }
 
+    /**
+     * @see #DN(SchemaManager, String...)
+     */
+    public DN( String... upRdns ) throws LdapInvalidDnException
+    {
+        this( null, upRdns );
+    }
 
+    
     /**
      * Creates a new instance of DN, using varargs to declare the RDNs. Each
      * String is either a full RDN, or a couple of AttributeType DI and a value.
@@ -191,10 +248,11 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
      *     baseDn);
      * </pre>
      *
+     * @param schemaManager the schema manager
      * @param upRdns
      * @throws LdapInvalidDnException
      */
-    public DN( String... upRdns ) throws LdapInvalidDnException
+    public DN( SchemaManager schemaManager, String... upRdns ) throws LdapInvalidDnException
     {
         StringBuilder sb = new StringBuilder();
         boolean valueExpected = false;
@@ -237,10 +295,21 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
         // byte[]) and external.
         upName = sb.toString();
         DnParser.parseInternal( upName, rdns );
-        normalizeInternal();
-        normalized = false;
+        
+        if( schemaManager != null )
+        {
+            this.schemaManager = schemaManager;
+            normalize( schemaManager.getNormalizerMapping() );
+            normalized = true;
+        }
+        else
+        {
+            normalized = false;
+            normalizeInternal();
+        }
     }
     
+
     /**
      * Create a DN when deserializing it.
      * 
@@ -269,7 +338,7 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
      */
     public static DN normalize( String name, Map<String, OidNormalizer> oidsMap ) throws LdapInvalidDnException
     {
-        if ( ( name == null ) || ( name.length() == 0 ) || ( oidsMap == null ) || ( oidsMap.size() == 0 ) )
+        if ( ( name == null ) || ( name.length() == 0 ) || ( oidsMap == null ) || ( oidsMap.isEmpty() ) )
         {
             return DN.EMPTY_DN;
         }
@@ -1102,7 +1171,7 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
         try
         {
             // We have to parse the nameComponent which is given as an argument
-            RDN newRdn = new RDN( comp );
+            RDN newRdn = new RDN( comp, schemaManager );
             
             rdns.add( 0, newRdn );
         }
@@ -1526,7 +1595,8 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
      */
     public DN normalize( Map<String, OidNormalizer> oidsMap ) throws LdapInvalidDnException
     {
-        if ( ( oidsMap == null ) || ( oidsMap.size() == 0 ) )
+        
+        if ( ( oidsMap == null ) || ( oidsMap.isEmpty() ) )
         {
             return this;
         }

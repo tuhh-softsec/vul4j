@@ -60,9 +60,8 @@ public class DnNormalizer extends Normalizer
         
         String dnStr = value.getString();
         
-        dn = new DN( dnStr );
+        dn = new DN( dnStr, schemaManager );
         
-        dn.normalize( schemaManager.getNormalizerMapping() );
         return new StringValue( dn.getNormName() );
     }
 
@@ -74,9 +73,8 @@ public class DnNormalizer extends Normalizer
     {
         DN dn = null;
         
-        dn = new DN( value );
+        dn = new DN( value, schemaManager );
         
-        dn.normalize( schemaManager.getNormalizerMapping() );
         return dn.getNormName();
     }
 
@@ -91,9 +89,8 @@ public class DnNormalizer extends Normalizer
     {
         DN dn = null;
         
-        dn = new DN( value );
+        dn = new DN( value, schemaManager );
         
-        dn.normalize( schemaManager.getNormalizerMapping() );
         return dn.getNormName();
     }
 
