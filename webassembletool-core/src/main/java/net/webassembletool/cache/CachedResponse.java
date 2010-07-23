@@ -2,10 +2,14 @@ package net.webassembletool.cache;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Map.Entry;
+import java.util.Properties;
+
+import javax.servlet.http.HttpServletRequest;
 
 import net.webassembletool.output.Output;
 import net.webassembletool.resource.Resource;
@@ -24,6 +28,7 @@ public class CachedResponse extends Resource {
 	private final int statusCode;
 	private final String statusMessage;
 	private final Date localDate = new Date();
+	private Map<String, String> requestHeaders;
 
 	public CachedResponse(byte[] byteArray, String charset, Properties headers,
 			int statusCode, String statusMessage) {
@@ -34,8 +39,13 @@ public class CachedResponse extends Resource {
 		this.statusMessage = statusMessage;
 	}
 
+	@Override
 	public boolean hasResponseBody() {
 		return !(byteArray == null);
+	}
+
+	public byte[] getByteArray() {
+		return byteArray;
 	}
 
 	public CachedResponse() {
@@ -45,6 +55,7 @@ public class CachedResponse extends Resource {
 		this.charset = null;
 		this.statusCode = 0;
 		this.statusMessage = null;
+		this.requestHeaders = null;
 	}
 
 	@Override
@@ -83,8 +94,9 @@ public class CachedResponse extends Resource {
 		for (Iterator<Map.Entry<Object, Object>> headersIterator = headers
 				.entrySet().iterator(); headersIterator.hasNext();) {
 			Map.Entry<Object, Object> entry = headersIterator.next();
-			if (key.equalsIgnoreCase(entry.getKey().toString()))
+			if (key.equalsIgnoreCase(entry.getKey().toString())) {
 				return entry.getValue().toString();
+			}
 		}
 		return null;
 	}
@@ -93,6 +105,7 @@ public class CachedResponse extends Resource {
 		headers.put(name, value);
 	}
 
+	@Override
 	public Date getLocalDate() {
 		return localDate;
 	}
@@ -104,4 +117,79 @@ public class CachedResponse extends Resource {
 				+ " hasBody=" + hasResponseBody();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @see net.webassembletool.resource.Resource#getRequestHeaders()
+	 */
+	@Override
+	public String getRequestHeader(String key) {
+		if (requestHeaders != null) {
+			for (String name : requestHeaders.keySet()) {
+				if (key.equalsIgnoreCase(name)) {
+					return requestHeaders.get(name);
+				}
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * Set headers which were used to get this resource.
+	 * 
+	 * @param requestHeaders
+	 */
+	public void setRequestHeader(String name, String value) {
+		if (requestHeaders == null) {
+			requestHeaders = new HashMap<String, String>();
+		}
+		this.requestHeaders.put(name, value);
+	}
+
+	/**
+	 * Set headers which were used to get this resource from the original
+	 * HttpServletRequest.
+	 * <p>
+	 * Headers can then be retrieved from HttpServletRequest#getRequestHeaders()
+	 * 
+	 * Headers will be
+	 * 
+	 * @param request
+	 */
+	public void setRequestHeadersFromRequest(HttpServletRequest request) {
+		@SuppressWarnings("unchecked")
+		Enumeration<String> e = request.getHeaderNames();
+		if (e != null && e.hasMoreElements()) {
+			HashMap<String, String> headers = new HashMap<String, String>();
+			while (e.hasMoreElements()) {
+				String name = e.nextElement();
+				headers.put(name, request.getHeader(name));
+			}
+
+			this.requestHeaders = headers;
+		} else {
+			this.requestHeaders = null;
+		}
+	}
+
+	public CachedResponseSummary getSummary() {
+		CachedResponseSummary s = new CachedResponseSummary();
+
+		s.setResponseBody(this.hasResponseBody());
+		s.setStatusCode(statusCode);
+		s.setLocalDate(localDate);
+
+		// Copy Response headers
+		Properties headers2 = new Properties();
+		headers2.putAll(headers);
+		s.setHeaders(headers2);
+
+		// Copy Request headers
+		Map<String, String> requestHeaders2 = new HashMap<String, String>();
+		requestHeaders2.putAll(requestHeaders);
+		s.setRequestHeaders(requestHeaders2);
+
+		return s;
+	}
 }

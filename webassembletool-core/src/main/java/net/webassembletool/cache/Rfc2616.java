@@ -14,12 +14,21 @@ import net.webassembletool.ResourceContext;
 import net.webassembletool.output.Output;
 import net.webassembletool.resource.Resource;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.impl.cookie.DateParseException;
 import org.apache.http.impl.cookie.DateUtils;
 
+/**
+ * Rfc2616 caching implementation.
+ * 
+ * @author Francois-Xavier Bonnet
+ * @author Nicolas Richeton
+ * 
+ */
 public class Rfc2616 {
+	private static final int SECONDS = 1000;
 	private static final Log LOG = LogFactory.getLog(Rfc2616.class);
 
 	private final static class CacheControlResponseHeader {
@@ -82,12 +91,57 @@ public class Rfc2616 {
 
 	}
 
-	public final static Map<String, String> getVary(
-			ResourceContext resourceContext, Resource resource) {
+	/**
+	 * Create a map of all headers and their values which are mentioned in the
+	 * Vary header of "resource".
+	 * 
+	 * <p>
+	 * This method is used to get the headers from an existing cached resource.
+	 * (Cache side)
+	 * 
+	 * <p>
+	 * When doing a new request on this resource, the cached resource can be
+	 * used if all headers values contained in the returned map are exactly the
+	 * same than the ones in the new request.
+	 * 
+	 * @param resource
+	 * @return
+	 */
+	public final static Map<String, String> getVary(Resource resource) {
 		String varyString = resource.getHeader("Vary");
 		if (varyString != null) {
 			Map<String, String> result = new HashMap<String, String>();
-			HttpServletRequest request = resourceContext.getOriginalRequest();
+			String[] varyStringSplit = varyString.split(",");
+			for (int i = 0; i < varyStringSplit.length; i++) {
+				String key = varyStringSplit[i];
+				String value = resource.getRequestHeader(key);
+
+				result.put(key, value);
+
+			}
+			return result;
+		}
+		return null;
+	}
+
+	/**
+	 * Create a map of all headers and their values in
+	 * resourceContext#getOriginalRequest() which are mentioned in the Vary
+	 * header of "resource".
+	 * 
+	 * <p>
+	 * This method is used to get the headers from a new, upcoming request.
+	 * (Client side)
+	 * 
+	 * @param resource
+	 * @return
+	 */
+	public final static Map<String, String> getVary(
+			ResourceContext resourceContext, Resource resource) {
+		HttpServletRequest request = resourceContext.getOriginalRequest();
+		String varyString = resource.getHeader("Vary");
+		if (varyString != null) {
+			Map<String, String> result = new HashMap<String, String>();
 			String[] varyStringSplit = varyString.split(",");
 			for (int i = 0; i < varyStringSplit.length; i++) {
 				String key = varyStringSplit[i];
@@ -101,9 +155,17 @@ public class Rfc2616 {
 		return null;
 	}
 
+	/**
+	 * Ensure that "resourceContext" matches "resource" according to the Vary
+	 * header of "resource". "resource" is usually a cached resource.
+	 * 
+	 * @param resourceContext
+	 * @param resource
+	 * @return true if resource matches according to "Vary"
+	 */
 	public final static boolean varyMatches(ResourceContext resourceContext,
 			Resource resource) {
-		Map<String, String> vary = getVary(resourceContext, resource);
+		Map<String, String> vary = getVary(resource);
 		if (vary == null) {
 			return true;
 		} else {
@@ -113,7 +175,8 @@ public class Rfc2616 {
 				Entry<String, String> header = iterator.next();
 				String key = header.getKey();
 				String value = header.getValue();
-				if (!value.equals(request.getHeader(key))) {
+
+				if (!StringUtils.equals(value, request.getHeader(key))) {
 					return false;
 				}
 			}
@@ -129,7 +192,7 @@ public class Rfc2616 {
 		return requiresRefresh(resourceContext) || isStale(resource);
 	}
 
-	public final static boolean isStale(CachedResponse resource) {
+	public final static boolean isStale(Resource resource) {
 		Date date = getDate(resource);
 		Date expiration = getHeuristicExpiration(resource);
 		if (date == null || expiration == null) {
@@ -182,7 +245,9 @@ public class Rfc2616 {
 		}
 		if (maxAge != null) {
 			// maxAge directive found according to HTTP/1.1
-			return new Date(date.getTime() + maxAge.longValue());
+			// Age is in seconds. See
+			// https://sourceforge.net/apps/mantisbt/webassembletool/view.php?id=17
+			return new Date(date.getTime() + maxAge.longValue() * SECONDS);
 
 		}
 		Date expires = getDateHeader(resource, "Expires");
@@ -216,7 +281,7 @@ public class Rfc2616 {
 		return null;
 	}
 
-	public final static long getAge(CachedResponse resource) {
+	public final static long getAge(Resource resource) {
 		return new Date().getTime() - resource.getLocalDate().getTime();
 	}
 
@@ -257,8 +322,9 @@ public class Rfc2616 {
 	}
 
 	public final static boolean matches(ResourceContext resourceContext,
-			CachedResponse cachedResponse) {
+			Resource cachedResponse) {
 		String method = resourceContext.getOriginalRequest().getMethod();
+
 		if (!"HEAD".equalsIgnoreCase(method)
 				&& !cachedResponse.hasResponseBody()) {
 			return false;
@@ -348,9 +414,25 @@ public class Rfc2616 {
 		copyHeader(resource, output, "Cache-control");
 		// FIXME: We have to copy all headers except those that the RFC says not
 		// to. For now, we just add a missing (and important) header
+		// See :
+		// https://sourceforge.net/apps/mantisbt/webassembletool/view.php?id=15
 		copyHeader(resource, output, "Content-Disposition");
+
+		// See
+		// https://sourceforge.net/apps/mantisbt/webassembletool/view.php?id=18
+		copyHeader(resource, output, "Vary");
 	}
 
+	/**
+	 * Copy header "name" from "resource" to "output".
+	 * 
+	 * @param resource
+	 *            source Resource
+	 * @param output
+	 *            target Output
+	 * @param name
+	 *            name of the header
+	 */
 	private final static void copyHeader(Resource resource, Output output,
 			String name) {
 		String value = resource.getHeader(name);

@@ -151,13 +151,15 @@ public class HttpClientResponse {
 	}
 
 	public String[] getHeaders(String name) {
-		Header[] headers = httpResponse.getAllHeaders();
 		String[] result = null;
-		if (headers != null) {
-			result = new String[headers.length];
-			for (int i = 0; i < headers.length; i++) {
-				Header h = headers[i];
-				result[i] = h.getValue();
+		if (httpResponse != null) {
+			Header[] headers = httpResponse.getAllHeaders();
+			if (headers != null) {
+				result = new String[headers.length];
+				for (int i = 0; i < headers.length; i++) {
+					Header h = headers[i];
+					result[i] = h.getValue();
+				}
 			}
 		}
 		return result;

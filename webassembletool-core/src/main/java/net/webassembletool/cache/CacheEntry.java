@@ -1,14 +1,14 @@
 package net.webassembletool.cache;
 
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.WeakHashMap;
 import java.util.Map.Entry;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -21,18 +21,44 @@ import net.webassembletool.resource.Resource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+/**
+ * @author Francois-Xavier Bonnet
+ * @author Nicolas Richeton
+ */
 class CacheEntry {
-	private final static Log LOG = LogFactory.getLog(CacheEntry.class);
+	private static Log LOG = LogFactory.getLog(CacheEntry.class);
 	private final String url;
-	private final Storage storage;
-	private Map<String, CachedResponse> cachedResponses = Collections
-			.synchronizedMap(new WeakHashMap<String, CachedResponse>());
-	private final static Pattern ETAG_PATTERN = Pattern
+	private transient Storage storage;
+	private transient boolean dirty;
+	private long lastClean = -1;
+	private static long CLEAN_DELAY = 15 * 60 * 1000; // 15 minutes;
+	// private static long CLEAN_DELAY = 5; // 15 minutes;
+
+	/**
+	 * A list a all responses for this ResourceContext. Only includes
+	 * informations which can be used to decide if a cached response matches to
+	 * a new resource context. On matching, the complete cache value need to be
+	 * retrieved from cached.
+	 * 
+	 * <p>
+	 * Responses described in responseSummaries may have been removed from
+	 * cache. In that case, the retrieve operation fails and the summary is
+	 * removed from this entry.
+	 * 
+	 */
+	private final List<CachedResponseSummary> responseSummaries = new CopyOnWriteArrayList<CachedResponseSummary>();
+
+	public String getUrl() {
+		return url;
+	}
+
+	private static Pattern ETAG_PATTERN = Pattern
 			.compile(",?\\s*((W/)?\"[^\"]*\")");
 
 	public CacheEntry(String url, Storage storage) {
 		this.url = url;
 		this.storage = storage;
+		this.dirty = false;
 	}
 
 	/**
@@ -40,25 +66,87 @@ class CacheEntry {
 	 * be valid or stale but Etag must match If-None-Match header from the
 	 * request and vary headers must be the same in the request and in the
 	 * original request that caused this entry to get cached.
+	 * <p>
+	 * Be sure to check CacheEntry#isDirty() on return. Entry content may have
+	 * been updated thus need to be persisted.
 	 * 
 	 * @param resourceContext
 	 * @return the first matching cache entry for this request
 	 */
 	public CachedResponse get(ResourceContext resourceContext) {
 		CachedResponse result = null;
-		for (Iterator<CachedResponse> iterator = cachedResponses.values()
-				.iterator(); iterator.hasNext();) {
-			CachedResponse cachedResponse = iterator.next();
-			if (Rfc2616.matches(resourceContext, cachedResponse)) {
-				result = cachedResponse;
-				String key = getCacheKey(resourceContext, result);
-				storage.touch(key);
-				if (LOG.isDebugEnabled()) {
-					LOG.debug("get(" + key + ")=" + result);
+
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("get(" + resourceContext.getRelUrl() + ")");
+		}
+
+		for (CachedResponseSummary summary : responseSummaries) {
+
+			if (Rfc2616.matches(resourceContext, summary)) {
+				CachedResponse cachedResponse = getCacheResponseAndClean(summary);
+
+				if (cachedResponse != null) {
+					result = cachedResponse;
+					storage.touch(summary.getCacheKey());
+					if (LOG.isDebugEnabled()) {
+						LOG.debug("get(" + summary + ")=" + result);
+					}
 				}
 			}
 		}
+
+		if (LOG.isDebugEnabled() && result == null) {
+			LOG.debug("get(" + resourceContext.getRelUrl() + ") : Not found.");
+		}
+
 		return result;
+	}
+
+	/**
+	 * 
+	 * Returns a cached response from cache. If the response is no longer in
+	 * cache, any reference in CacheEntry is cleaned and entry is marked dirty.
+	 * 
+	 * @param summary
+	 *            Summary of cached response
+	 * @return CachedResponse or null if no longer in cache.
+	 */
+	private CachedResponse getCacheResponseAndClean(
+			CachedResponseSummary summary) {
+		CachedResponse cachedResponse = (CachedResponse) storage.get(summary
+				.getCacheKey());
+
+		// Handle case when resource is no longer in cache.
+		if (cachedResponse == null) {
+			if (LOG.isDebugEnabled()) {
+				LOG.debug("Resource " + summary.getCacheKey()
+						+ "is no longer in cache. Removing");
+			}
+			if (responseSummaries.contains(summary)) {
+				responseSummaries.remove(summary);
+				dirty = true;
+			}
+		}
+
+		return cachedResponse;
+	}
+
+	/**
+	 * Return the first existing CacheResponse. If responses have been removed
+	 * from cache, entry is updated and marked dirty.
+	 * 
+	 * 
+	 * @return CachedResponse or null
+	 */
+	private CachedResponse getFirstCacheResponse() {
+		CachedResponse cachedResponse = null;
+		for (CachedResponseSummary summary : responseSummaries) {
+			cachedResponse = getCacheResponseAndClean(summary);
+			if (cachedResponse != null) {
+				break;
+			}
+		}
+		return cachedResponse;
 	}
 
 	/**
@@ -77,12 +165,14 @@ class CacheEntry {
 			CachedResponse cachedResponse) {
 		HashMap<String, String> result = new HashMap<String, String>();
 		String ifNoneMatch = getIfNoneMatch(resourceContext);
-		if (ifNoneMatch != null)
+		if (ifNoneMatch != null) {
 			result.put("If-None-Match", ifNoneMatch);
+		}
 		String ifModifiedSince = getIfModifiedSince(resourceContext,
 				cachedResponse);
-		if (ifModifiedSince != null)
+		if (ifModifiedSince != null) {
 			result.put("If-Modified-Since", ifModifiedSince);
+		}
 		return result;
 	}
 
@@ -101,19 +191,22 @@ class CacheEntry {
 				}
 			}
 		}
-		for (Iterator<CachedResponse> iterator = cachedResponses.values()
-				.iterator(); iterator.hasNext();) {
-			CachedResponse cachedResponse = iterator.next();
-			String etag = cachedResponse.getHeader("Etag");
-			if (etag != null && cachedResponse.hasResponseBody()) {
-				etags.add(etag);
+		for (CachedResponseSummary key : responseSummaries) {
+			CachedResponse cachedResponse = getCacheResponseAndClean(key);
+
+			if (cachedResponse != null) {
+				String etag = cachedResponse.getHeader("Etag");
+				if (etag != null && cachedResponse.hasResponseBody()) {
+					etags.add(etag);
+				}
 			}
 		}
 		if (!etags.isEmpty()) {
 			Iterator<String> iterator = etags.iterator();
 			String etagsString = iterator.next();
-			while (iterator.hasNext())
+			while (iterator.hasNext()) {
 				etagsString += ", " + iterator.next();
+			}
 			return etagsString;
 		}
 		return null;
@@ -135,8 +228,9 @@ class CacheEntry {
 		if (resourceContext.isNeededForTransformation()
 				|| requestedIfModifiedSinceDate == null
 				|| (cacheLastModifiedDate != null && cacheLastModifiedDate
-						.after(requestedIfModifiedSinceDate)))
+						.after(requestedIfModifiedSinceDate))) {
 			return cacheLastModifiedString;
+		}
 		return requestedIfModifiedSinceString;
 	}
 
@@ -144,6 +238,10 @@ class CacheEntry {
 	 * Selects the response to the request between a cache entry (if return code
 	 * is 304) and the resource sent by the server (if return code is 200).
 	 * Updates the cache.
+	 * 
+	 * <p>
+	 * Be sure to check CacheEntry#isDirty() on return. Entry content may have
+	 * been updated thus need to be persisted.
 	 * 
 	 * @param resourceContext
 	 * @param cachedResponse
@@ -154,6 +252,10 @@ class CacheEntry {
 	public Resource select(ResourceContext resourceContext,
 			CachedResponse cachedResponse, Resource newResource)
 			throws HttpErrorPage {
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("select(" + resourceContext.getRelUrl() + ")");
+		}
+
 		Resource result = null;
 		if (newResource.getStatusCode() == HttpServletResponse.SC_NOT_MODIFIED) {
 			String etag = Rfc2616.getEtag(newResource);
@@ -167,28 +269,32 @@ class CacheEntry {
 					if (!resourceContext.isNeededForTransformation()
 							&& sentIfModifiedSince.equals(resourceContext
 									.getOriginalRequest().getHeader(
-											"If-Modified-Since")))
+											"If-Modified-Since"))) {
 						result = newResource;
-					else
+					} else {
 						result = cachedResponse;
+					}
 				} else {
 					// Buggy behaviour from the server, it should not send a 304
 					// for a if-none-match request without the etag to select.
 					// Let's take the first.
-					if (cachedResponse != null)
+					if (cachedResponse != null) {
 						result = cachedResponse;
-					else if (cachedResponses.size() > 0)
-						result = cachedResponses.values().iterator().next();
+					} else if (getFirstCacheResponse() != null) {
+						result = getFirstCacheResponse();
+					}
 				}
 			} else {
 				if (!resourceContext.isNeededForTransformation()
-						&& Rfc2616.etagMatches(resourceContext, newResource))
+						&& Rfc2616.etagMatches(resourceContext, newResource)) {
 					result = newResource;
-				else
+				} else {
 					result = findByEtag(etag);
+				}
 			}
-			if (cachedResponse != null)
+			if (cachedResponse != null) {
 				updateHeaders(cachedResponse, newResource);
+			}
 			if (result == null) {
 				LOG.warn("Invalid 304 response, neededForTransformation: "
 						+ resourceContext.isNeededForTransformation()
@@ -200,24 +306,36 @@ class CacheEntry {
 		} else {
 			result = newResource;
 		}
+
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("select(" + resourceContext.getRelUrl() + ")=" + result);
+		}
+
 		return result;
 	}
 
 	private CachedResponse findByEtag(String etag) {
 		LOG.debug("findByEtag(" + etag + ")");
-		for (Iterator<CachedResponse> iterator = cachedResponses.values()
-				.iterator(); iterator.hasNext();) {
-			CachedResponse cachedResponse = iterator.next();
-			if (etag.equals(cachedResponse.getHeader("Etag")))
-				return cachedResponse;
+		for (CachedResponseSummary summary : responseSummaries) {
+
+			if (etag.equals(summary.getHeader("Etag"))) {
+				// seems the right resource. Try to get it from cache
+				CachedResponse cachedResponse = getCacheResponseAndClean(summary);
+				if (cachedResponse != null) {
+					return cachedResponse;
+				}
+				// Response was no longer in cache : continue.
+			}
+
 		}
 		return null;
 	}
 
 	private void copyHeader(Resource source, CachedResponse dest, String name) {
 		String value = source.getHeader(name);
-		if (value != null)
+		if (value != null) {
 			dest.setHeader(name, value);
+		}
 	}
 
 	private void updateHeaders(CachedResponse cachedResponse,
@@ -232,23 +350,82 @@ class CacheEntry {
 		copyHeader(newResource, cachedResponse, "Content-encoding");
 	}
 
+	/**
+	 * Add a response to the cache.
+	 * <p>
+	 * Be sure to check CacheEntry#isDirty() on return. Entry content will
+	 * probably be updated thus need to be persisted.
+	 * 
+	 * @param resourceContext
+	 *            must be the resourceContext used to get resource. Not the one
+	 *            of this cache entry.
+	 * @param resource
+	 *            the new response.
+	 */
 	public void put(ResourceContext resourceContext, CachedResponse resource) {
 		// Don't put in cache null or not modified responses
 		if (resource != null
 				&& resource.getStatusCode() != HttpServletResponse.SC_NOT_MODIFIED) {
+
+			// Inject headers from the original request.
+			resource.setRequestHeadersFromRequest(resourceContext
+					.getOriginalRequest());
+
 			String key = getCacheKey(resourceContext, resource);
-			cachedResponses.put(key, resource);
+
+			CachedResponseSummary summary = resource.getSummary();
+			summary.setCacheKey(key);
+
+			if (responseSummaries.contains(summary)) {
+				responseSummaries.remove(summary);
+			}
+			responseSummaries.add(summary);
 			storage.put(key, resource);
-			LOG.debug("put(" + key + ")");
+			dirty = true;
+			if (LOG.isDebugEnabled()) {
+				LOG.debug("put(" + key + ")");
+			}
+		}
+
+		// Cleanup
+		if (System.currentTimeMillis() - lastClean > CLEAN_DELAY) {
+			// Ensure only a single thread starts cleaning.
+			synchronized (this) {
+				if (System.currentTimeMillis() - lastClean > CLEAN_DELAY) {
+					for (CachedResponseSummary summary : responseSummaries) {
+						// Delete no longer existing responses.
+						getCacheResponseAndClean(summary);
+					}
+					lastClean = System.currentTimeMillis();
+				}
+			}
 		}
 	}
 
+	public boolean isDirty() {
+		return dirty;
+	}
+
+	public void setDirty(boolean dirty) {
+		this.dirty = dirty;
+	}
+
+	/**
+	 * Create a cache key depending on url, etag and Vary headers.
+	 * 
+	 * @param resourceContext
+	 * @param resource
+	 * @return
+	 */
 	private String getCacheKey(ResourceContext resourceContext,
 			CachedResponse resource) {
 		String cacheKey = url + " ";
 		String etag = Rfc2616.getEtag(resource);
-		if (etag != null)
+
+		if (etag != null) {
 			cacheKey += " etag=" + etag;
+		}
+
 		Map<String, String> vary = Rfc2616.getVary(resourceContext, resource);
 		if (vary != null) {
 			cacheKey += " vary={";
@@ -260,5 +437,13 @@ class CacheEntry {
 			cacheKey += "}";
 		}
 		return cacheKey;
+	}
+
+	public Storage getStorage() {
+		return storage;
+	}
+
+	public void setStorage(Storage storage) {
+		this.storage = storage;
 	}
 }
