@@ -32,7 +32,6 @@ class CacheEntry {
 	private transient boolean dirty;
 	private long lastClean = -1;
 	private static long CLEAN_DELAY = 15 * 60 * 1000; // 15 minutes;
-	// private static long CLEAN_DELAY = 5; // 15 minutes;
 
 	/**
 	 * A list a all responses for this ResourceContext. Only includes
