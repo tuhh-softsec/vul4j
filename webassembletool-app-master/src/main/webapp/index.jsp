@@ -24,6 +24,7 @@
 	<li><a href="xml.jsp">xslt and xpath example</a></li>
 	<li><a href="images/host.jsp">preserveHost example</a></li>
 	<li><a href="blockabsolute.jsp">Block example with absolute url</a></li>
+	<li><a href="vary.jsp">Block example with vary header</a></li>
 </ul>
 </body>
 </html>

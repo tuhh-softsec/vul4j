@@ -16,6 +16,7 @@
 	<li><a href="timeout.jsp">Timeout example</a></li>
 	<li><a href="error500.jsp">Error 500 example</a></li>
 	<li><a href="images/redirect.jsp">Redirect example</a></li>
+	<li><a href="vary.jsp">Vary example</a></li>
 </ul>
 </body>
 </html>
