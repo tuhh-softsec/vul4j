@@ -17,7 +17,7 @@ import com.meterware.httpunit.WebResponse;
  * 
  * @author Nicolas Richeton
  */
-public class VaryTest extends TestCase {
+public class VaryAggregatorTest extends TestCase {
 	private final static String APPLICATION_PATH = "http://localhost:8080/webassembletool-app-aggregator/";
 	private String sessionId = null;
 
