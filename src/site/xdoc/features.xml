@@ -81,8 +81,8 @@
 				<p>
 					The kit supports CAS protocol using the
 					<a
-						href="http://www.ja-sig.org/products/cas/overview/proxy_auth/index.html">proxy authentication mode</a>
-					and the JA-SIG CAS client.
+						href="http://www.jasig.org/cas/proxy-authentication">proxy authentication mode</a>
+					and the JASIG CAS client.
 				</p>
 			</subsection>
 		</section>

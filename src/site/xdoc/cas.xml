@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document>
 	<properties>
-		<title>Implementing SSO using JA-SIG CAS</title>
+		<title>Implementing SSO using JASIG CAS</title>
 		<author email="fxbonnet@users.sourceforge.net">Francois-Xavier Bonnet</author>
 	</properties>
 	<body>
 		<section name="Principles">
 			<p>
-				The toolkit can do CAS authentication using the JA-SIG CAS client.
+				The toolkit can do CAS authentication using the JASIG CAS client.
 				The
 				toolkit will
 				then use CAS
 				<a
-					href="http://www.ja-sig.org/products/cas/overview/proxy_auth/index.html">proxy authentication mode</a>
+					href="http://www.jasig.org/cas/proxy-authentication">proxy authentication mode</a>
 				to authenticate the user while processing block or template
 				includes.
 			</p>
