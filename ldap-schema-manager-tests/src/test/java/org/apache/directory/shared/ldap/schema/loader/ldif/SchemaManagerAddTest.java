@@ -6,16 +6,16 @@
  *  to you under the Apache License, Version 2.0 (the
  *  "License"); you may not use this file except in compliance
  *  with the License.  You may obtain a copy of the License at
- *  
+ *
  *    http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing,
  *  software distributed under the License is distributed on an
  *  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  *  KIND, either express or implied.  See the License for the
  *  specific language governing permissions and limitations
- *  under the License. 
- *  
+ *  under the License.
+ *
  */
 package org.apache.directory.shared.ldap.schema.loader.ldif;
 
@@ -263,6 +263,51 @@ public class SchemaManagerAddTest
 
 
     /**
+     * Try to inject an AttributeType which is a subtype of a Collective AT
+     */
+    @Test
+    public void testAddAttributeTypeSupCollectiveUser() throws Exception
+    {
+        SchemaManager schemaManager = loadSystem();
+        int atrSize = schemaManager.getAttributeTypeRegistry().size();
+        int goidSize = schemaManager.getGlobalOidRegistry().size();
+
+        // Create the collective attribute first
+        AttributeType attributeType = new AttributeType( "1.1.0" );
+        attributeType.setEqualityOid( "2.5.13.1" );
+        attributeType.setOrderingOid( null );
+        attributeType.setSubstringOid( null );
+        attributeType.setSyntaxOid( "1.3.6.1.4.1.1466.115.121.1.26" );
+        attributeType.setUsage( UsageEnum.USER_APPLICATIONS );
+        attributeType.setCollective( true );
+
+        // It should not fail
+        assertTrue( schemaManager.add( attributeType ) );
+
+        assertTrue( isATPresent( schemaManager, "1.1.0" ) );
+        assertEquals( atrSize + 1, schemaManager.getAttributeTypeRegistry().size() );
+        assertEquals( goidSize + 1, schemaManager.getGlobalOidRegistry().size() );
+
+        // Now try to create an AT which is a subtype of teh create collective attribute
+        AttributeType subType = new AttributeType( "1.1.1" );
+        subType.setEqualityOid( "2.5.13.1" );
+        subType.setOrderingOid( null );
+        subType.setSubstringOid( null );
+        subType.setSuperiorOid( "1.1.0" );
+        subType.setSyntaxOid( "1.3.6.1.4.1.1466.115.121.1.26" );
+        subType.setUsage( UsageEnum.USER_APPLICATIONS );
+        subType.setCollective( false );
+
+        // It should fail
+        assertFalse( schemaManager.add( subType ) );
+
+        assertFalse( isATPresent( schemaManager, "1.1.1" ) );
+        assertEquals( atrSize + 1, schemaManager.getAttributeTypeRegistry().size() );
+        assertEquals( goidSize + 1, schemaManager.getGlobalOidRegistry().size() );
+    }
+
+
+    /**
      * Try to inject an AttributeType which is Collective, but an operational AT
      */
     @Test
@@ -279,6 +324,40 @@ public class SchemaManagerAddTest
         attributeType.setSyntaxOid( "1.3.6.1.4.1.1466.115.121.1.26" );
         attributeType.setUsage( UsageEnum.DIRECTORY_OPERATION );
         attributeType.setCollective( true );
+
+        // It should fail
+        assertFalse( schemaManager.add( attributeType ) );
+
+        List<Throwable> errors = schemaManager.getErrors();
+        assertEquals( 1, errors.size() );
+        Throwable error = errors.get( 0 );
+
+        assertTrue( error instanceof LdapProtocolErrorException );
+
+        assertFalse( isATPresent( schemaManager, "1.1.0" ) );
+        assertEquals( atrSize, schemaManager.getAttributeTypeRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
+    }
+
+
+    /**
+     * Try to inject a single valued AttributeType which is Collective
+     */
+    @Test
+    public void testAddAttributeTypeCollectiveOperationalSigleValue() throws Exception
+    {
+        SchemaManager schemaManager = loadSystem();
+        int atrSize = schemaManager.getAttributeTypeRegistry().size();
+        int goidSize = schemaManager.getGlobalOidRegistry().size();
+
+        AttributeType attributeType = new AttributeType( "1.1.0" );
+        attributeType.setEqualityOid( "2.5.13.1" );
+        attributeType.setOrderingOid( null );
+        attributeType.setSubstringOid( null );
+        attributeType.setSyntaxOid( "1.3.6.1.4.1.1466.115.121.1.26" );
+        attributeType.setUsage( UsageEnum.USER_APPLICATIONS );
+        attributeType.setCollective( true );
+        attributeType.setSingleValued( true );
 
         // It should fail
         assertFalse( schemaManager.add( attributeType ) );
@@ -974,7 +1053,7 @@ public class SchemaManagerAddTest
 
 
     /**
-     * Try to inject a new MatchingRule with an existing AT name 
+     * Try to inject a new MatchingRule with an existing AT name
      */
     @Test
     public void testAddMatchingRuleExistingATName() throws Exception
@@ -1007,7 +1086,7 @@ public class SchemaManagerAddTest
 
 
     /**
-     * Try to inject a new MatchingRule with a not existing Syntax 
+     * Try to inject a new MatchingRule with a not existing Syntax
      */
     @Test
     public void testAddMatchingRuleNotExistingSyntax() throws Exception
@@ -1036,7 +1115,7 @@ public class SchemaManagerAddTest
 
 
     /**
-     * Try to inject a new MatchingRule with an existing AT name 
+     * Try to inject a new MatchingRule with an existing AT name
      */
     @Test
     public void testAddMatchingRuleNotExistingSchema() throws Exception
@@ -1428,6 +1507,49 @@ public class SchemaManagerAddTest
     }
 
 
+    /**
+     * Addition of an OC with a collective AT present in MUST or MAY.
+     */
+    @Test
+    public void testAddObjectClassNoSuperiorCollectiveATInMustOrMay() throws Exception
+    {
+        SchemaManager schemaManager = loadSystem();
+        schemaManager.loadWithDeps( "collective" );
+        int ocrSize = schemaManager.getObjectClassRegistry().size();
+        int goidSize = schemaManager.getGlobalOidRegistry().size();
+
+        // Check a addition in MUST
+        ObjectClass objectClassMust = new ObjectClass( "1.1.1" );
+        objectClassMust.addMustAttributeTypeOids( "c-o", "ref" );
+
+        // collective attribute in MUST : failure expected
+        assertFalse( schemaManager.add( objectClassMust ) );
+
+        assertEquals( 1, schemaManager.getErrors().size() );
+        assertTrue( schemaManager.getErrors().get( 0 ) instanceof LdapProtocolErrorException );
+
+        assertFalse( isOCPresent( schemaManager, "1.1.1" ) );
+
+        assertEquals( ocrSize, schemaManager.getObjectClassRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
+
+        // Check an addition in MAY
+        ObjectClass objectClassMay = new ObjectClass( "1.1.1" );
+        objectClassMay.addMayAttributeTypeOids( "c-o", "ref" );
+
+        // collective attribute in MAY : failure expected
+        assertFalse( schemaManager.add( objectClassMay ) );
+
+        assertEquals( 1, schemaManager.getErrors().size() );
+        assertTrue( schemaManager.getErrors().get( 0 ) instanceof LdapProtocolErrorException );
+
+        assertFalse( isOCPresent( schemaManager, "1.1.1" ) );
+
+        assertEquals( ocrSize, schemaManager.getObjectClassRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
+    }
+
+
     //-------------------------------------------------------------------------
     // Then, with superiors
     //-------------------------------------------------------------------------
@@ -1732,7 +1854,7 @@ public class SchemaManagerAddTest
     // Syntax addition tests
     //-------------------------------------------------------------------------
     /**
-     * Try to inject a new valid Syntax, with no SC : the associated SC 
+     * Try to inject a new valid Syntax, with no SC : the associated SC
      * will be the default OctetString SC
      */
     @Test

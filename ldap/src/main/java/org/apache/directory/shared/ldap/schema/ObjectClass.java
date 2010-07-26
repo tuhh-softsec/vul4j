@@ -6,16 +6,16 @@
  *  to you under the Apache License, Version 2.0 (the
  *  "License"); you may not use this file except in compliance
  *  with the License.  You may obtain a copy of the License at
- *  
+ *
  *    http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing,
  *  software distributed under the License is distributed on an
  *  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  *  KIND, either express or implied.  See the License for the
  *  specific language governing permissions and limitations
- *  under the License. 
- *  
+ *  under the License.
+ *
  */
 package org.apache.directory.shared.ldap.schema;
 
@@ -36,10 +36,10 @@ import org.apache.directory.shared.ldap.schema.registries.Registries;
  * <p>
  * According to ldapbis [MODELS]:
  * </p>
- * 
+ *
  * <pre>
  *  Object Class definitions are written according to the ABNF:
- *  
+ *
  *    ObjectClassDescription = LPAREN WSP
  *        numericoid                ; object identifier
  *        [ SP &quot;NAME&quot; SP qdescrs ]  ; short names (descriptors)
@@ -50,9 +50,9 @@ import org.apache.directory.shared.ldap.schema.registries.Registries;
  *        [ SP &quot;MUST&quot; SP oids ]     ; attribute types
  *        [ SP &quot;MAY&quot; SP oids ]      ; attribute types
  *        extensions WSP RPAREN
- * 
+ *
  *     kind = &quot;ABSTRACT&quot; / &quot;STRUCTURAL&quot; / &quot;AUXILIARY&quot;
- * 
+ *
  *   where:
  *     [numericoid] is object identifier assigned to this object class;
  *     NAME [qdescrs] are short names (descriptors) identifying this object
@@ -66,7 +66,7 @@ import org.apache.directory.shared.ldap.schema.registries.Registries;
  *         types, respectively; and
  *    [extensions] describe extensions.
  * </pre>
- * 
+ *
  * @see <a href="http://www.faqs.org/rfcs/rfc2252.html">RFC2252 Section 4.4</a>
  * @see <a
  *      href="http://www.ietf.org/internet-drafts/draft-ietf-ldapbis-models-11.txt">ldapbis
@@ -209,6 +209,16 @@ public class ObjectClass extends AbstractSchemaObject
                 {
                     AttributeType attributeType = atRegistry.lookup( mayAttributeTypeName );
 
+                    if ( attributeType.isCollective() )
+                    {
+                        // Collective Attributes are not allowed in MAY or MUST
+                        String msg = I18n.err( I18n.ERR_04485_COLLECTIVE_NOT_ALLOWED_IN_MAY, mayAttributeTypeName, oid );
+
+                        Throwable error = new LdapProtocolErrorException( msg );
+                        errors.add( error );
+                        break;
+                    }
+
                     if ( mayAttributeTypes.contains( attributeType ) )
                     {
                         // Already registered : this is an error
@@ -247,6 +257,16 @@ public class ObjectClass extends AbstractSchemaObject
                 try
                 {
                     AttributeType attributeType = atRegistry.lookup( mustAttributeTypeName );
+
+                    if ( attributeType.isCollective() )
+                    {
+                        // Collective Attributes are not allowed in MAY or MUST
+                        String msg = I18n.err( I18n.ERR_04484_COLLECTIVE_NOT_ALLOWED_IN_MUST, mustAttributeTypeName, oid );
+
+                        Throwable error = new LdapProtocolErrorException( msg );
+                        errors.add( error );
+                        break;
+                    }
 
                     if ( mustAttributeTypes.contains( attributeType ) )
                     {
@@ -308,7 +328,7 @@ public class ObjectClass extends AbstractSchemaObject
             buildMust( errors, registries );
 
             /**
-             * Add the OC references (using and usedBy) : 
+             * Add the OC references (using and usedBy) :
              * OC -> AT (MAY and MUST)
              * OC -> OC (SUPERIORS)
              */
@@ -333,13 +353,13 @@ public class ObjectClass extends AbstractSchemaObject
     /**
      * Remove the ObjectClass from the registries, updating the references to
      * other SchemaObject.
-     * 
-     * If one of the referenced SchemaObject does not exist (SUPERIORS, MAY, MUST), 
+     *
+     * If one of the referenced SchemaObject does not exist (SUPERIORS, MAY, MUST),
      * an exception is thrown.
      *
      * @param errors The errors we got while removing the ObjectClass from the registries
      * @param registries The Registries
-     * @exception If the ObjectClass is not valid 
+     * @exception If the ObjectClass is not valid
      */
     public void removeFromRegistries( List<Throwable> errors, Registries registries ) throws LdapException
     {
@@ -351,7 +371,7 @@ public class ObjectClass extends AbstractSchemaObject
             objectClassRegistry.unregisterDescendants( this, superiors );
 
             /**
-             * Remove the OC references (using and usedBy) : 
+             * Remove the OC references (using and usedBy) :
              * OC -> AT (for MAY and MUST)
              * OC -> OC
              */
@@ -644,7 +664,7 @@ public class ObjectClass extends AbstractSchemaObject
 
     /**
      * Gets the superclasses of this ObjectClass.
-     * 
+     *
      * @return the superclasses
      */
     public List<ObjectClass> getSuperiors()
@@ -655,7 +675,7 @@ public class ObjectClass extends AbstractSchemaObject
 
     /**
      * Gets the superclasses OIDsof this ObjectClass.
-     * 
+     *
      * @return the superclasses OIDs
      */
     public List<String> getSuperiorOids()
@@ -717,7 +737,7 @@ public class ObjectClass extends AbstractSchemaObject
 
     /**
      * Sets the superior object classes
-     * 
+     *
      * @param superiors the object classes to set
      */
     public void setSuperiors( List<ObjectClass> superiors )
@@ -744,7 +764,7 @@ public class ObjectClass extends AbstractSchemaObject
 
     /**
      * Update the associated SUPERIORS ObjectClasses, even if the SchemaObject is readOnly
-     * 
+     *
      * @param superiors the object classes to set
      */
     public void updateSuperiors( List<ObjectClass> superiors )
@@ -764,7 +784,7 @@ public class ObjectClass extends AbstractSchemaObject
 
     /**
      * Sets the superior object class OIDs
-     * 
+     *
      * @param superiorOids the object class OIDs to set
      */
     public void setSuperiorOids( List<String> superiorOids )
@@ -783,7 +803,7 @@ public class ObjectClass extends AbstractSchemaObject
 
     /**
      * Gets the type of this ObjectClass as a type safe enum.
-     * 
+     *
      * @return the ObjectClass type as an enum
      */
     public ObjectClassTypeEnum getType()
@@ -794,7 +814,7 @@ public class ObjectClass extends AbstractSchemaObject
 
     /**
      * Set the ObjectClass type, one of ABSTRACT, AUXILIARY or STRUCTURAL.
-     * 
+     *
      * @param objectClassType The ObjectClassType value
      */
     public void setType( ObjectClassTypeEnum objectClassType )
@@ -813,7 +833,7 @@ public class ObjectClass extends AbstractSchemaObject
 
     /**
      * Tells if the current ObjectClass is STRUCTURAL
-     * 
+     *
      * @return <code>true</code> if the ObjectClass is STRUCTURAL
      */
     public boolean isStructural()
@@ -824,7 +844,7 @@ public class ObjectClass extends AbstractSchemaObject
 
     /**
      * Tells if the current ObjectClass is ABSTRACT
-     * 
+     *
      * @return <code>true</code> if the ObjectClass is ABSTRACT
      */
     public boolean isAbstract()
@@ -835,7 +855,7 @@ public class ObjectClass extends AbstractSchemaObject
 
     /**
      * Tells if the current ObjectClass is AUXILIARY
-     * 
+     *
      * @return <code>true</code> if the ObjectClass is AUXILIARY
      */
     public boolean isAuxiliary()
