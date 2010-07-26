@@ -6,16 +6,16 @@
  *  to you under the Apache License, Version 2.0 (the
  *  "License"); you may not use this file except in compliance
  *  with the License.  You may obtain a copy of the License at
- *  
+ *
  *    http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing,
  *  software distributed under the License is distributed on an
  *  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  *  KIND, either express or implied.  See the License for the
  *  specific language governing permissions and limitations
- *  under the License. 
- *  
+ *  under the License.
+ *
  */
 package org.apache.directory.shared.ldap.ldif;
 
@@ -33,90 +33,93 @@ import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.entry.DefaultEntry;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
+import org.apache.directory.shared.ldap.exception.LdapException;
+import org.apache.directory.shared.ldap.schema.AttributeType;
+import org.apache.directory.shared.ldap.schema.SchemaManager;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * <pre>
- *  &lt;ldif-file&gt; ::= &quot;version:&quot; &lt;fill&gt; &lt;number&gt; &lt;seps&gt; &lt;dn-spec&gt; &lt;sep&gt; 
+ *  &lt;ldif-file&gt; ::= &quot;version:&quot; &lt;fill&gt; &lt;number&gt; &lt;seps&gt; &lt;dn-spec&gt; &lt;sep&gt;
  *  &lt;ldif-content-change&gt;
- *  
- *  &lt;ldif-content-change&gt; ::= 
- *    &lt;number&gt; &lt;oid&gt; &lt;options-e&gt; &lt;value-spec&gt; &lt;sep&gt; &lt;attrval-specs-e&gt; 
- *    &lt;ldif-attrval-record-e&gt; | 
- *    &lt;alpha&gt; &lt;chars-e&gt; &lt;options-e&gt; &lt;value-spec&gt; &lt;sep&gt; &lt;attrval-specs-e&gt; 
- *    &lt;ldif-attrval-record-e&gt; | 
- *    &quot;control:&quot; &lt;fill&gt; &lt;number&gt; &lt;oid&gt; &lt;spaces-e&gt; &lt;criticality&gt; 
- *    &lt;value-spec-e&gt; &lt;sep&gt; &lt;controls-e&gt; 
+ *
+ *  &lt;ldif-content-change&gt; ::=
+ *    &lt;number&gt; &lt;oid&gt; &lt;options-e&gt; &lt;value-spec&gt; &lt;sep&gt; &lt;attrval-specs-e&gt;
+ *    &lt;ldif-attrval-record-e&gt; |
+ *    &lt;alpha&gt; &lt;chars-e&gt; &lt;options-e&gt; &lt;value-spec&gt; &lt;sep&gt; &lt;attrval-specs-e&gt;
+ *    &lt;ldif-attrval-record-e&gt; |
+ *    &quot;control:&quot; &lt;fill&gt; &lt;number&gt; &lt;oid&gt; &lt;spaces-e&gt; &lt;criticality&gt;
+ *    &lt;value-spec-e&gt; &lt;sep&gt; &lt;controls-e&gt;
  *        &quot;changetype:&quot; &lt;fill&gt; &lt;changerecord-type&gt; &lt;ldif-change-record-e&gt; |
  *    &quot;changetype:&quot; &lt;fill&gt; &lt;changerecord-type&gt; &lt;ldif-change-record-e&gt;
- *                              
- *  &lt;ldif-attrval-record-e&gt; ::= &lt;seps&gt; &lt;dn-spec&gt; &lt;sep&gt; &lt;attributeType&gt; 
- *    &lt;options-e&gt; &lt;value-spec&gt; &lt;sep&gt; &lt;attrval-specs-e&gt; 
+ *
+ *  &lt;ldif-attrval-record-e&gt; ::= &lt;seps&gt; &lt;dn-spec&gt; &lt;sep&gt; &lt;attributeType&gt;
+ *    &lt;options-e&gt; &lt;value-spec&gt; &lt;sep&gt; &lt;attrval-specs-e&gt;
  *    &lt;ldif-attrval-record-e&gt; | e
- *                              
- *  &lt;ldif-change-record-e&gt; ::= &lt;seps&gt; &lt;dn-spec&gt; &lt;sep&gt; &lt;controls-e&gt; 
+ *
+ *  &lt;ldif-change-record-e&gt; ::= &lt;seps&gt; &lt;dn-spec&gt; &lt;sep&gt; &lt;controls-e&gt;
  *    &quot;changetype:&quot; &lt;fill&gt; &lt;changerecord-type&gt; &lt;ldif-change-record-e&gt; | e
- *                              
+ *
  *  &lt;dn-spec&gt; ::= &quot;dn:&quot; &lt;fill&gt; &lt;safe-string&gt; | &quot;dn::&quot; &lt;fill&gt; &lt;base64-string&gt;
- *                              
- *  &lt;controls-e&gt; ::= &quot;control:&quot; &lt;fill&gt; &lt;number&gt; &lt;oid&gt; &lt;spaces-e&gt; &lt;criticality&gt; 
+ *
+ *  &lt;controls-e&gt; ::= &quot;control:&quot; &lt;fill&gt; &lt;number&gt; &lt;oid&gt; &lt;spaces-e&gt; &lt;criticality&gt;
  *    &lt;value-spec-e&gt; &lt;sep&gt; &lt;controls-e&gt; | e
- *                              
+ *
  *  &lt;criticality&gt; ::= &quot;true&quot; | &quot;false&quot; | e
- *                              
+ *
  *  &lt;oid&gt; ::= '.' &lt;number&gt; &lt;oid&gt; | e
- *                              
- *  &lt;attrval-specs-e&gt; ::= &lt;number&gt; &lt;oid&gt; &lt;options-e&gt; &lt;value-spec&gt; &lt;sep&gt; 
- *  &lt;attrval-specs-e&gt; | 
+ *
+ *  &lt;attrval-specs-e&gt; ::= &lt;number&gt; &lt;oid&gt; &lt;options-e&gt; &lt;value-spec&gt; &lt;sep&gt;
+ *  &lt;attrval-specs-e&gt; |
  *    &lt;alpha&gt; &lt;chars-e&gt; &lt;options-e&gt; &lt;value-spec&gt; &lt;sep&gt; &lt;attrval-specs-e&gt; | e
- *                              
+ *
  *  &lt;value-spec-e&gt; ::= &lt;value-spec&gt; | e
- *  
- *  &lt;value-spec&gt; ::= ':' &lt;fill&gt; &lt;safe-string-e&gt; | 
- *    &quot;::&quot; &lt;fill&gt; &lt;base64-chars&gt; | 
+ *
+ *  &lt;value-spec&gt; ::= ':' &lt;fill&gt; &lt;safe-string-e&gt; |
+ *    &quot;::&quot; &lt;fill&gt; &lt;base64-chars&gt; |
  *    &quot;:&lt;&quot; &lt;fill&gt; &lt;url&gt;
- *  
+ *
  *  &lt;attributeType&gt; ::= &lt;number&gt; &lt;oid&gt; | &lt;alpha&gt; &lt;chars-e&gt;
- *  
+ *
  *  &lt;options-e&gt; ::= ';' &lt;char&gt; &lt;chars-e&gt; &lt;options-e&gt; |e
- *                              
+ *
  *  &lt;chars-e&gt; ::= &lt;char&gt; &lt;chars-e&gt; |  e
- *  
- *  &lt;changerecord-type&gt; ::= &quot;add&quot; &lt;sep&gt; &lt;attributeType&gt; &lt;options-e&gt; &lt;value-spec&gt; 
- *  &lt;sep&gt; &lt;attrval-specs-e&gt; | 
- *    &quot;delete&quot; &lt;sep&gt; | 
- *    &quot;modify&quot; &lt;sep&gt; &lt;mod-type&gt; &lt;fill&gt; &lt;attributeType&gt; &lt;options-e&gt; &lt;sep&gt; 
- *    &lt;attrval-specs-e&gt; &lt;sep&gt; '-' &lt;sep&gt; &lt;mod-specs-e&gt; | 
- *    &quot;moddn&quot; &lt;sep&gt; &lt;newrdn&gt; &lt;sep&gt; &quot;deleteoldrdn:&quot; &lt;fill&gt; &lt;0-1&gt; &lt;sep&gt; 
+ *
+ *  &lt;changerecord-type&gt; ::= &quot;add&quot; &lt;sep&gt; &lt;attributeType&gt; &lt;options-e&gt; &lt;value-spec&gt;
+ *  &lt;sep&gt; &lt;attrval-specs-e&gt; |
+ *    &quot;delete&quot; &lt;sep&gt; |
+ *    &quot;modify&quot; &lt;sep&gt; &lt;mod-type&gt; &lt;fill&gt; &lt;attributeType&gt; &lt;options-e&gt; &lt;sep&gt;
+ *    &lt;attrval-specs-e&gt; &lt;sep&gt; '-' &lt;sep&gt; &lt;mod-specs-e&gt; |
+ *    &quot;moddn&quot; &lt;sep&gt; &lt;newrdn&gt; &lt;sep&gt; &quot;deleteoldrdn:&quot; &lt;fill&gt; &lt;0-1&gt; &lt;sep&gt;
  *    &lt;newsuperior-e&gt; &lt;sep&gt; |
- *    &quot;modrdn&quot; &lt;sep&gt; &lt;newrdn&gt; &lt;sep&gt; &quot;deleteoldrdn:&quot; &lt;fill&gt; &lt;0-1&gt; &lt;sep&gt; 
+ *    &quot;modrdn&quot; &lt;sep&gt; &lt;newrdn&gt; &lt;sep&gt; &quot;deleteoldrdn:&quot; &lt;fill&gt; &lt;0-1&gt; &lt;sep&gt;
  *    &lt;newsuperior-e&gt; &lt;sep&gt;
- *  
+ *
  *  &lt;newrdn&gt; ::= ':' &lt;fill&gt; &lt;safe-string&gt; | &quot;::&quot; &lt;fill&gt; &lt;base64-chars&gt;
- *  
+ *
  *  &lt;newsuperior-e&gt; ::= &quot;newsuperior&quot; &lt;newrdn&gt; | e
- *  
- *  &lt;mod-specs-e&gt; ::= &lt;mod-type&gt; &lt;fill&gt; &lt;attributeType&gt; &lt;options-e&gt; 
+ *
+ *  &lt;mod-specs-e&gt; ::= &lt;mod-type&gt; &lt;fill&gt; &lt;attributeType&gt; &lt;options-e&gt;
  *    &lt;sep&gt; &lt;attrval-specs-e&gt; &lt;sep&gt; '-' &lt;sep&gt; &lt;mod-specs-e&gt; | e
- *  
+ *
  *  &lt;mod-type&gt; ::= &quot;add:&quot; | &quot;delete:&quot; | &quot;replace:&quot;
- *  
+ *
  *  &lt;url&gt; ::= &lt;a Uniform Resource Locator, as defined in [6]&gt;
- *  
- *  
- *  
+ *
+ *
+ *
  *  LEXICAL
  *  -------
- *  
+ *
  *  &lt;fill&gt;           ::= ' ' &lt;fill&gt; | e
  *  &lt;char&gt;           ::= &lt;alpha&gt; | &lt;digit&gt; | '-'
  *  &lt;number&gt;         ::= &lt;digit&gt; &lt;digits&gt;
  *  &lt;0-1&gt;            ::= '0' | '1'
  *  &lt;digits&gt;         ::= &lt;digit&gt; &lt;digits&gt; | e
  *  &lt;digit&gt;          ::= '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9'
- *  &lt;seps&gt;           ::= &lt;sep&gt; &lt;seps-e&gt; 
+ *  &lt;seps&gt;           ::= &lt;sep&gt; &lt;seps-e&gt;
  *  &lt;seps-e&gt;         ::= &lt;sep&gt; &lt;seps-e&gt; | e
  *  &lt;sep&gt;            ::= 0x0D 0x0A | 0x0A
  *  &lt;spaces&gt;         ::= ' ' &lt;spaces-e&gt;
@@ -130,17 +133,17 @@ import org.slf4j.LoggerFactory;
  *  &lt;base64-chars&gt;   ::= &lt;base64-char&gt; &lt;base64-chars&gt; | e
  *  &lt;base64-char&gt;    ::= 0x2B | 0x2F | [0x30-0x39] | 0x3D | [0x41-9x5A] | [0x61-0x7A]
  *  &lt;alpha&gt;          ::= [0x41-0x5A] | [0x61-0x7A]
- *  
+ *
  *  COMMENTS
  *  --------
  *  - The ldap-oid VN is not correct in the RFC-2849. It has been changed from 1*DIGIT 0*1(&quot;.&quot; 1*DIGIT) to
  *  DIGIT+ (&quot;.&quot; DIGIT+)*
  *  - The mod-spec lacks a sep between *attrval-spec and &quot;-&quot;.
  *  - The BASE64-UTF8-STRING should be BASE64-CHAR BASE64-STRING
- *  - The ValueSpec rule must accept multilines values. In this case, we have a LF followed by a 
+ *  - The ValueSpec rule must accept multilines values. In this case, we have a LF followed by a
  *  single space before the continued value.
  * </pre>
- * 
+ *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 public class LdifAttributesReader extends LdifReader
@@ -161,7 +164,7 @@ public class LdifAttributesReader extends LdifReader
 
     /**
      * Parse an AttributeType/AttributeValue
-     * 
+     *
      * @param attributes The entry where to store the value
      * @param line The line to parse
      * @param lowerLine The same line, lowercased
@@ -184,7 +187,7 @@ public class LdifAttributesReader extends LdifReader
 
         // Update the entry
         Attribute attribute = attributes.get( attributeType );
-        
+
         if ( attribute == null )
         {
             attributes.put( attributeType, attributeValue );
@@ -195,44 +198,83 @@ public class LdifAttributesReader extends LdifReader
         }
     }
 
-    
+
 
 
     /**
      * Parse an AttributeType/AttributeValue
-     * 
+     *
      * @param attributes The entry where to store the value
      * @param line The line to parse
      * @param lowerLine The same line, lowercased
      * @throws NamingException If anything goes wrong
      */
-    private void parseEntryAttribute( Entry entry, String line, String lowerLine ) throws LdapLdifException
+    private void parseEntryAttribute( SchemaManager schemaManager, Entry entry, String line, String lowerLine ) throws LdapLdifException
     {
         int colonIndex = line.indexOf( ':' );
 
-        String attributeType = lowerLine.substring( 0, colonIndex );
+        String attributeName = lowerLine.substring( 0, colonIndex );
+        AttributeType attributeType = null;
 
         // We should *not* have a DN twice
-        if ( attributeType.equals( "dn" ) )
+        if ( attributeName.equals( "dn" ) )
         {
             LOG.error( I18n.err( I18n.ERR_12002 ) );
             throw new LdapLdifException( I18n.err( I18n.ERR_12003 ) );
         }
 
+        if ( schemaManager != null )
+        {
+            if ( ( attributeType = schemaManager.getAttributeType( attributeName ) ) == null )
+            {
+                LOG.error( "" );
+                throw new LdapLdifException( "" );
+            }
+        }
+
         Object attributeValue = parseValue( line, colonIndex );
 
         // Update the entry
-        EntryAttribute attribute = entry.get( attributeType );
-        
+        EntryAttribute attribute = null;
+
+        if ( schemaManager == null )
+        {
+            attribute = entry.get( attributeName );
+        }
+        else
+        {
+            attribute = entry.get( attributeType );
+        }
+
         if ( attribute == null )
         {
-            if ( attributeValue instanceof String )
+            if ( schemaManager == null )
             {
-                entry.put( attributeType, (String)attributeValue );
+                if ( attributeValue instanceof String )
+                {
+                    entry.put( attributeName, (String)attributeValue );
+                }
+                else
+                {
+                    entry.put( attributeName, (byte[])attributeValue );
+                }
             }
             else
             {
-                entry.put( attributeType, (byte[])attributeValue );
+                try
+                {
+                    if ( attributeValue instanceof String )
+                    {
+                        entry.put( attributeName, attributeType, (String)attributeValue );
+                    }
+                    else
+                    {
+                        entry.put( attributeName, attributeType, (byte[])attributeValue );
+                    }
+                }
+                catch ( LdapException le )
+                {
+                }
             }
         }
         else
@@ -248,21 +290,21 @@ public class LdifAttributesReader extends LdifReader
         }
     }
 
-    
+
     /**
      * Parse a ldif file. The following rules are processed :
-     * 
+     *
      * &lt;ldif-file&gt; ::= &lt;ldif-attrval-record&gt; &lt;ldif-attrval-records&gt; |
      * &lt;ldif-change-record&gt; &lt;ldif-change-records&gt; &lt;ldif-attrval-record&gt; ::=
      * &lt;dn-spec&gt; &lt;sep&gt; &lt;attrval-spec&gt; &lt;attrval-specs&gt; &lt;ldif-change-record&gt; ::=
      * &lt;dn-spec&gt; &lt;sep&gt; &lt;controls-e&gt; &lt;changerecord&gt; &lt;dn-spec&gt; ::= "dn:" &lt;fill&gt;
      * &lt;distinguishedName&gt; | "dn::" &lt;fill&gt; &lt;base64-distinguishedName&gt;
      * &lt;changerecord&gt; ::= "changetype:" &lt;fill&gt; &lt;change-op&gt;
-     * 
+     *
      * @return The read entry
      * @throws LdapLdifException If the entry can't be read or is invalid
      */
-    private Entry parseEntry() throws LdapLdifException
+    private Entry parseEntry( SchemaManager schemaManager ) throws LdapLdifException
     {
         if ( ( lines == null ) || ( lines.size() == 0 ) )
         {
@@ -270,7 +312,16 @@ public class LdifAttributesReader extends LdifReader
             return null;
         }
 
-        Entry entry = new DefaultEntry();
+        Entry entry = null;
+
+        if ( schemaManager != null )
+        {
+            entry = new DefaultEntry( schemaManager );
+        }
+        else
+        {
+            entry = new DefaultEntry();
+        }
 
         // Now, let's iterate through the other lines
         for ( String line:lines )
@@ -295,7 +346,7 @@ public class LdifAttributesReader extends LdifReader
             }
             else if ( line.indexOf( ':' ) > 0 )
             {
-                parseEntryAttribute( entry, line, lowerLine );
+                parseEntryAttribute( schemaManager, entry, line, lowerLine );
             }
             else
             {
@@ -306,21 +357,21 @@ public class LdifAttributesReader extends LdifReader
         }
 
         LOG.debug( "Read an attributes : {}", entry );
-        
+
         return entry;
     }
 
 
     /**
      * Parse a ldif file. The following rules are processed :
-     * 
+     *
      * &lt;ldif-file&gt; ::= &lt;ldif-attrval-record&gt; &lt;ldif-attrval-records&gt; |
      * &lt;ldif-change-record&gt; &lt;ldif-change-records&gt; &lt;ldif-attrval-record&gt; ::=
      * &lt;dn-spec&gt; &lt;sep&gt; &lt;attrval-spec&gt; &lt;attrval-specs&gt; &lt;ldif-change-record&gt; ::=
      * &lt;dn-spec&gt; &lt;sep&gt; &lt;controls-e&gt; &lt;changerecord&gt; &lt;dn-spec&gt; ::= "dn:" &lt;fill&gt;
      * &lt;distinguishedName&gt; | "dn::" &lt;fill&gt; &lt;base64-distinguishedName&gt;
      * &lt;changerecord&gt; ::= "changetype:" &lt;fill&gt; &lt;change-op&gt;
-     * 
+     *
      * @return The read entry
      * @throws NamingException If the entry can't be read or is invalid
      */
@@ -368,14 +419,14 @@ public class LdifAttributesReader extends LdifReader
         }
 
         LOG.debug( "Read an attributes : {}", attributes );
-        
+
         return attributes;
     }
 
 
     /**
      * A method which parses a ldif string and returns a list of Attributes.
-     * 
+     *
      * @param ldif The ldif string
      * @return A list of Attributes, or an empty List
      * @throws LdapLdifException If something went wrong
@@ -400,7 +451,7 @@ public class LdifAttributesReader extends LdifReader
         try
         {
             readLines();
-            
+
             Attributes attributes = parseAttributes();
 
             if ( LOG.isDebugEnabled() )
@@ -427,11 +478,11 @@ public class LdifAttributesReader extends LdifReader
             }
         }
     }
-    
-    
+
+
     /**
      * A method which parses a ldif string and returns an Entry.
-     * 
+     *
      * @param ldif The ldif string
      * @return An entry
      * @throws LdapLdifException If something went wrong
@@ -456,8 +507,64 @@ public class LdifAttributesReader extends LdifReader
         try
         {
             readLines();
-            
-            Entry entry = parseEntry();
+
+            Entry entry = parseEntry( (SchemaManager)null );
+
+            if ( LOG.isDebugEnabled() )
+            {
+                LOG.debug( "Parsed {} entries.", ( entry == null ? 0 : 1 ) );
+            }
+
+            return entry;
+        }
+        catch (LdapLdifException ne)
+        {
+            LOG.error( I18n.err( I18n.ERR_12008, ne.getLocalizedMessage() ) );
+            throw new LdapLdifException( I18n.err( I18n.ERR_12009 ) );
+        }
+        finally
+        {
+            try
+            {
+                reader.close();
+            }
+            catch ( IOException ioe )
+            {
+                // Do nothing
+            }
+        }
+    }
+
+
+    /**
+     * A method which parses a ldif string and returns an Entry.
+     *
+     * @param ldif The ldif string
+     * @return An entry
+     * @throws LdapLdifException If something went wrong
+     */
+    // This will suppress PMD.EmptyCatchBlock warnings in this method
+    @SuppressWarnings("PMD.EmptyCatchBlock")
+    public Entry parseEntry( SchemaManager schemaManager, String ldif ) throws LdapLdifException
+    {
+        lines = new ArrayList<String>();
+        position = new Position();
+
+        LOG.debug( "Starts parsing ldif buffer" );
+
+        if ( StringTools.isEmpty( ldif ) )
+        {
+            return new DefaultEntry();
+        }
+
+        StringReader strIn = new StringReader( ldif );
+        reader = new BufferedReader( strIn );
+
+        try
+        {
+            readLines();
+
+            Entry entry = parseEntry( schemaManager );
 
             if ( LOG.isDebugEnabled() )
             {
