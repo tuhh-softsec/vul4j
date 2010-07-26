@@ -6,16 +6,16 @@
  *  to you under the Apache License, Version 2.0 (the
  *  "License"); you may not use this file except in compliance
  *  with the License.  You may obtain a copy of the License at
- *  
+ *
  *    http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing,
  *  software distributed under the License is distributed on an
  *  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  *  KIND, either express or implied.  See the License for the
  *  specific language governing permissions and limitations
- *  under the License. 
- *  
+ *  under the License.
+ *
  */
 package org.apache.directory.shared.ldap.schema;
 
@@ -42,12 +42,12 @@ import org.slf4j.LoggerFactory;
  * <p>
  * According to ldapbis [MODELS]:
  * </p>
- * 
+ *
  * <pre>
  *  4.1.2. Attribute Types
- *  
+ *
  *    Attribute Type definitions are written according to the ABNF:
- *  
+ *
  *      AttributeTypeDescription = LPAREN WSP
  *          numericoid                   ; object identifier
  *          [ SP &quot;NAME&quot; SP qdescrs ]     ; short names (descriptors)
@@ -63,12 +63,12 @@ import org.slf4j.LoggerFactory;
  *          [ SP &quot;NO-USER-MODIFICATION&quot; ]; not user modifiable
  *          [ SP &quot;USAGE&quot; SP usage ]      ; usage
  *          extensions WSP RPAREN        ; extensions
- *  
+ *
  *      usage = &quot;userApplications&quot;     / ; user
  *              &quot;directoryOperation&quot;   / ; directory operational
  *              &quot;distributedOperation&quot; / ; DSA-shared operational
  *              &quot;dSAOperation&quot;           ; DSA-specific operational
- *  
+ *
  *    where:
  *      [numericoid] is object identifier assigned to this attribute type;
  *      NAME [qdescrs] are short names (descriptors) identifying this
@@ -85,46 +85,46 @@ import org.slf4j.LoggerFactory;
  *          modifiable;
  *      USAGE indicates the application of this attribute type; and
  *      [extensions] describe extensions.
- *  
+ *
  *    Each attribute type description must contain at least one of the SUP
  *    or SYNTAX fields.
- *  
+ *
  *    Usage of userApplications, the default, indicates that attributes of
  *    this type represent user information.  That is, they are user
  *    attributes.
- *  
+ *
  *    COLLECTIVE requires usage userApplications.  Use of collective
  *    attribute types in LDAP is not discussed in this technical
  *    specification.
- *  
+ *
  *    A usage of directoryOperation, distributedOperation, or dSAOperation
  *    indicates that attributes of this type represent operational and/or
  *    administrative information.  That is, they are operational attributes.
- *  
+ *
  *    directoryOperation usage indicates that the attribute of this type is
  *    a directory operational attribute.  distributedOperation usage
  *    indicates that the attribute of this DSA-shared usage operational
  *    attribute.  dSAOperation usage indicates that the attribute of this
  *    type is a DSA-specific operational attribute.
- *  
+ *
  *    NO-USER-MODIFICATION requires an operational usage.
- *  
+ *
  *    Note that the [AttributeTypeDescription] does not list the matching
  *    rules which can be used with that attribute type in an extensibleMatch
  *    search filter.  This is done using the 'matchingRuleUse' attribute
  *    described in Section 4.1.4.
- *  
+ *
  *    This document refines the schema description of X.501 by requiring
  *    that the SYNTAX field in an [AttributeTypeDescription] be a string
  *    representation of an object identifier for the LDAP string syntax
  *    definition with an optional indication of the suggested minimum bound
  *    of a value of this attribute.
- *  
+ *
  *    A suggested minimum upper bound on the number of characters in a value
  *    with a string-based syntax, or the number of bytes in a value for all
  *    other syntaxes, may be indicated by appending this bound count inside
  *    of curly braces following the syntax's OBJECT IDENTIFIER in an
- *  
+ *
  *    Attribute Type Description.  This bound is not part of the syntax name
  *    itself.  For instance, &quot;1.3.6.4.1.1466.0{64}&quot; suggests that server
  *    implementations should allow a string to be 64 characters long,
@@ -132,7 +132,7 @@ import org.slf4j.LoggerFactory;
  *    of the Directory String syntax may be encoded in more than one octet
  *    since UTF-8 is a variable-length encoding.
  * </pre>
- * 
+ *
  * @see <a href="http://www.faqs.org/rfcs/rfc2252.html">RFC 2252 Section 4.2</a>
  * @see <a
  *      href="http://www.ietf.org/internet-drafts/draft-ietf-ldapbis-models-11.txt">
@@ -196,7 +196,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
 
     /**
      * Creates a AttributeType object using a unique OID.
-     * 
+     *
      * @param oid the OID for this AttributeType
      */
     public AttributeType( String oid )
@@ -235,6 +235,17 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
 
             if ( superior != null )
             {
+                // a special case : if the superior is collective, this is an error
+                if ( superior.isCollective )
+                {
+                    String msg = I18n.err( I18n.ERR_04482_CANNOT_SUBTYPE_COLLECTIVE, superior, getName() );
+
+                    Throwable error = new LdapProtocolErrorException( msg );
+                    errors.add( error );
+                    LOG.info( msg );
+                    return false;
+                }
+
                 this.superior = superior;
 
                 // Recursively update the superior if not already done. We don't recurse
@@ -560,7 +571,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
      */
     private void checkCollective( List<Throwable> errors )
     {
-        if ( superior != null && superior.isCollective() )
+        if ( ( superior != null ) && superior.isCollective() )
         {
             // An AttributeType will be collective if its superior is collective
             this.isCollective = true;
@@ -575,18 +586,28 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
             errors.add( error );
             LOG.info( msg );
         }
+
+        if ( isCollective() && isSingleValued() )
+        {
+            // A collective attribute must be multi-valued
+            String msg = I18n.err( I18n.ERR_04483_COLLECTIVE_NOT_MULTI_VALUED, getName() );
+
+            Throwable error = new LdapProtocolErrorException( msg );
+            errors.add( error );
+            LOG.info( msg );
+        }
     }
 
 
     /**
      * Inject the attributeType into the registries, updating the references to
      * other SchemaObject.
-     * 
-     * If one of the referenced SchemaObject does not exist (SUP, EQUALITY, ORDERING, SUBSTR, SYNTAX), 
+     *
+     * If one of the referenced SchemaObject does not exist (SUP, EQUALITY, ORDERING, SUBSTR, SYNTAX),
      * an exception is thrown.
      *
      * @param registries The Registries
-     * @exception If the AttributeType is not valid 
+     * @exception If the AttributeType is not valid
      */
     public void addToRegistries( List<Throwable> errors, Registries registries ) throws LdapException
     {
@@ -626,7 +647,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
             attributeTypeRegistry.registerDescendants( this, superior );
 
             /**
-             * Add the AT references (using and usedBy) : 
+             * Add the AT references (using and usedBy) :
              * AT -> MR (for EQUALITY, ORDERING and SUBSTR)
              * AT -> S
              * AT -> AT
@@ -662,12 +683,12 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
     /**
      * Remove the attributeType from the registries, updating the references to
      * other SchemaObject.
-     * 
-     * If one of the referenced SchemaObject does not exist (SUP, EQUALITY, ORDERING, SUBSTR, SYNTAX), 
+     *
+     * If one of the referenced SchemaObject does not exist (SUP, EQUALITY, ORDERING, SUBSTR, SYNTAX),
      * an exception is thrown.
      *
      * @param registries The Registries
-     * @exception If the AttributeType is not valid 
+     * @exception If the AttributeType is not valid
      */
     public void removeFromRegistries( List<Throwable> errors, Registries registries ) throws LdapException
     {
@@ -682,7 +703,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
             attributeTypeRegistry.unregisterDescendants( this, superior );
 
             /**
-             * Remove the AT references (using and usedBy) : 
+             * Remove the AT references (using and usedBy) :
              * AT -> MR (for EQUALITY, ORDERING and SUBSTR)
              * AT -> S
              * AT -> AT
@@ -717,7 +738,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
 
     /**
      * Gets whether or not this AttributeType is single-valued.
-     * 
+     *
      * @return true if only one value can exist for this AttributeType, false
      *         otherwise
      */
@@ -748,7 +769,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
 
     /**
      * Gets whether or not this AttributeType can be modified by a user.
-     * 
+     *
      * @return true if users can modify it, false if only the directory can.
      */
     public boolean isUserModifiable()
@@ -778,7 +799,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
 
     /**
      * Gets whether or not this AttributeType is a collective attribute.
-     * 
+     *
      * @return true if the attribute is collective, false otherwise
      */
     public boolean isCollective()
@@ -824,7 +845,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
 
     /**
      * Determines the usage for this AttributeType.
-     * 
+     *
      * @return a type safe UsageEnum
      */
     public UsageEnum getUsage()
@@ -880,7 +901,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
 
     /**
      * Gets a length limit for this AttributeType.
-     * 
+     *
      * @return the length of the attribute
      */
     public long getSyntaxLength()
@@ -892,7 +913,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
     /**
      * Sets the length limit of this AttributeType based on its associated
      * syntax.
-     * 
+     *
      * @param length the new length to set
      */
     public void setSyntaxLength( long length )
@@ -911,7 +932,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
 
     /**
      * Gets the the superior AttributeType of this AttributeType.
-     * 
+     *
      * @return the superior AttributeType for this AttributeType
      */
     public AttributeType getSuperior()
@@ -922,7 +943,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
 
     /**
      * Gets the OID of the superior AttributeType for this AttributeType.
-     * 
+     *
      * @return The OID of the superior AttributeType for this AttributeType.
      */
     public String getSuperiorOid()
@@ -933,7 +954,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
 
     /**
      * Gets the Name of the superior AttributeType for this AttributeType.
-     * 
+     *
      * @return The Name of the superior AttributeType for this AttributeType.
      */
     public String getSuperiorName()
@@ -1026,7 +1047,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
 
     /**
      * Gets the Syntax for this AttributeType's values.
-     * 
+     *
      * @return the value syntax
      */
     public LdapSyntax getSyntax()
@@ -1037,7 +1058,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
 
     /**
      * Gets the Syntax name for this AttributeType's values.
-     * 
+     *
      * @return the value syntax name
      */
     public String getSyntaxName()
@@ -1055,7 +1076,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
 
     /**
      * Gets the Syntax OID for this AttributeType's values.
-     * 
+     *
      * @return the value syntax's OID
      */
     public String getSyntaxOid()
@@ -1122,7 +1143,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
 
     /**
      * Gets the MatchingRule for this AttributeType used for equality matching.
-     * 
+     *
      * @return the equality matching rule
      */
     public MatchingRule getEquality()
@@ -1133,7 +1154,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
 
     /**
      * Gets the Equality OID for this AttributeType's values.
-     * 
+     *
      * @return the value Equality's OID
      */
     public String getEqualityOid()
@@ -1144,7 +1165,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
 
     /**
      * Gets the Equality Name for this AttributeType's values.
-     * 
+     *
      * @return the value Equality's Name
      */
     public String getEqualityName()
@@ -1218,7 +1239,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
 
     /**
      * Gets the MatchingRule for this AttributeType used for Ordering matching.
-     * 
+     *
      * @return the Ordering matching rule
      */
     public MatchingRule getOrdering()
@@ -1229,7 +1250,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
 
     /**
      * Gets the MatchingRule name for this AttributeType used for Ordering matching.
-     * 
+     *
      * @return the Ordering matching rule name
      */
     public String getOrderingName()
@@ -1247,7 +1268,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
 
     /**
      * Gets the Ordering OID for this AttributeType's values.
-     * 
+     *
      * @return the value Equality's OID
      */
     public String getOrderingOid()
@@ -1314,7 +1335,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
 
     /**
      * Gets the MatchingRule for this AttributeType used for Substr matching.
-     * 
+     *
      * @return the Substr matching rule
      */
     public MatchingRule getSubstring()
@@ -1325,7 +1346,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
 
     /**
      * Gets the MatchingRule name for this AttributeType used for Substring matching.
-     * 
+     *
      * @return the Substring matching rule name
      */
     public String getSubstringName()
@@ -1343,7 +1364,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
 
     /**
      * Gets the Substr OID for this AttributeType's values.
-     * 
+     *
      * @return the value Substr's OID
      */
     public String getSubstringOid()
