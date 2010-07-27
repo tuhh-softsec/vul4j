@@ -15,7 +15,6 @@ m-may: teletexTerminalIdentifier
 m-may: telephoneNumber
 m-may: internationaliSDNNumber
 m-may: facsimileTelephoneNumber
-m-may: preferredDeliveryMethod
 m-may: street
 m-may: postOfficeBox
 m-may: postalCode

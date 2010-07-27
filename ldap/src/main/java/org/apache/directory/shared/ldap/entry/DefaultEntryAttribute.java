@@ -1131,7 +1131,7 @@ public class DefaultEntryAttribute implements EntryAttribute
                     }
                     else
                     {
-                        LOG.error( I18n.err( I18n.ERR_04450, val ) );
+                        LOG.error( I18n.err( I18n.ERR_04486_VALUE_ALREADY_EXISTS, val, upId ) );
                     }
                 }
             }
@@ -1186,7 +1186,7 @@ public class DefaultEntryAttribute implements EntryAttribute
                     }
                     else
                     {
-                        LOG.error( I18n.err( I18n.ERR_04450, val ) );
+                        LOG.error( I18n.err( I18n.ERR_04486_VALUE_ALREADY_EXISTS, val, upId ) );
                     }
                 }
             }
@@ -1295,7 +1295,7 @@ public class DefaultEntryAttribute implements EntryAttribute
                 }
                 else
                 {
-                    LOG.error( I18n.err( I18n.ERR_04450, StringTools.dumpBytes( val ) ) );
+                    LOG.error( I18n.err( I18n.ERR_04486_VALUE_ALREADY_EXISTS, StringTools.dumpBytes( val ), upId ) );
                 }
             }
         }
