@@ -812,6 +812,7 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
         try
         {
             RDN rdn = ( RDN ) super.clone();
+            rdn.schemaManager = schemaManager;
 
             // The AttributeTypeAndValue is immutable. We won't clone it
 
