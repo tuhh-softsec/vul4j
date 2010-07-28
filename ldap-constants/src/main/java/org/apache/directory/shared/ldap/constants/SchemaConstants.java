@@ -465,10 +465,6 @@ public interface SchemaConstants
     String GOVERNING_STRUCTURE_RULE_AT              = "governingStructureRule";
     String GOVERNING_STRUCTURE_RULE_AT_OID          = "2.5.21.10";
 
-    // AutonomousArea
-    String AUTONOMOUS_AREA_AT                       = "autonomousArea";
-    String UTONOMOUS_AREA_AT_OID                    = "2.5.23.1";
-
     // AccessControlScheme
     String ACCESS_CONTROL_SCHEME_AT                 = "accessControlScheme";
     String ACCESS_CONTROL_SCHEME_OID                = "2.5.24.1";
@@ -935,6 +931,9 @@ public interface SchemaConstants
     String FEATURE_ALL_OPERATIONAL_ATTRIBUTES             = "1.3.6.1.4.1.4203.1.5.1";
 
     // ----Administrative roles -----------------------------------------------
+    // AutonomousArea
+    String AUTONOMOUS_AREA                                = "autonomousArea";
+    String AUTONOMOUS_AREA_OID                            = "2.5.23.1";
 
     // AccessControlSpecificArea
     String ACCESS_CONTROL_SPECIFIC_AREA                   = "accessControlSpecificArea";
