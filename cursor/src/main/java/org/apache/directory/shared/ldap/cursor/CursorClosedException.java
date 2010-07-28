@@ -29,6 +29,9 @@ public class CursorClosedException extends Exception
 {
     private static final long serialVersionUID = -5723233489761854394L;
 
+    /** A static exception to be used by the monitor */
+    public static final CursorClosedException INSTANCE = new CursorClosedException();
+
 
     public CursorClosedException()
     {
