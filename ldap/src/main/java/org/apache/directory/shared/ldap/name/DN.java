@@ -1369,7 +1369,6 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
         {
             DN dn = ( DN ) super.clone();
             dn.rdns = new ArrayList<RDN>();
-            dn.schemaManager = schemaManager;
 
             for ( RDN rdn : rdns )
             {
