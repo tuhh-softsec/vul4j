@@ -709,20 +709,22 @@ public class LdifUtils
 
 
     /**
-     * Build a new Attributes instance from a LDIF list of lines. The values can be
+     * Build a new Entry instance from a LDIF list of lines. The values can be
      * either a complete AVA, or a couple of AttributeType ID and a value (a String or
      * a byte[]). The following sample shows the three cases :
      *
      * <pre>
-     * Attribute attr = AttributeUtils.createAttributes(
+     * Entry entry = LdifUtils.createEntry(
+     *     new DN( "cn=test" ),
      *     "objectclass: top",
      *     "cn", "My name",
      *     "jpegPhoto", new byte[]{0x01, 0x02} );
      * </pre>
      *
+     * @param dn The Entry's DN
      * @param avas The AttributeType and Values, using a ldif format, or a couple of
      * Attribute ID/Value
-     * @return An Attributes instance
+     * @return An Entry instance
      * @throws LdapException If the data are invalid
      * @throws LdapLdifException
      */
@@ -733,20 +735,74 @@ public class LdifUtils
 
 
     /**
-     * Build a new Attributes instance from a LDIF list of lines. The values can be
+     * Build a new Entry instance from a LDIF list of lines. The values can be
      * either a complete AVA, or a couple of AttributeType ID and a value (a String or
      * a byte[]). The following sample shows the three cases :
      *
      * <pre>
-     * Attribute attr = AttributeUtils.createAttributes(
+     * Entry entry = LdifUtils.createEntry(
+     *     new DN( "cn=test" ),
      *     "objectclass: top",
      *     "cn", "My name",
      *     "jpegPhoto", new byte[]{0x01, 0x02} );
      * </pre>
      *
+     * @param dn The entry's DN as a String
      * @param avas The AttributeType and Values, using a ldif format, or a couple of
      * Attribute ID/Value
-     * @return An Attributes instance
+     * @return An Entry instance
+     * @throws LdapException If the data are invalid
+     * @throws LdapLdifException
+     */
+    public static Entry createEntry( String dn, Object... avas ) throws LdapException, LdapLdifException
+    {
+        return createEntry( null, new DN( dn ), avas );
+    }
+
+
+    /**
+     * Build a new Entry instance from a LDIF list of lines. The values can be
+     * either a complete AVA, or a couple of AttributeType ID and a value (a String or
+     * a byte[]). The following sample shows the three cases :
+     *
+     * <pre>
+     * Entry entry = LdifUtils.createEntry(
+     *     new DN( "cn=test" ),
+     *     "objectclass: top",
+     *     "cn", "My name",
+     *     "jpegPhoto", new byte[]{0x01, 0x02} );
+     * </pre>
+     *
+     * @param dn The entry's DN
+     * @param avas The AttributeType and Values, using a ldif format, or a couple of
+     * Attribute ID/Value
+     * @return An Entry instance
+     * @throws LdapException If the data are invalid
+     * @throws LdapLdifException
+     */
+    public static Entry createEntry( SchemaManager schemaManager, String dn, Object... avas ) throws LdapException, LdapLdifException
+    {
+        return createEntry( schemaManager, new DN( dn ), avas );
+    }
+
+
+    /**
+     * Build a new Entry instance from a LDIF list of lines. The values can be
+     * either a complete AVA, or a couple of AttributeType ID and a value (a String or
+     * a byte[]). The following sample shows the three cases :
+     *
+     * <pre>
+     * Entry entry = LdifUtils.createEntry(
+     *     new DN( "cn=test" ),
+     *     "objectclass: top",
+     *     "cn", "My name",
+     *     "jpegPhoto", new byte[]{0x01, 0x02} );
+     * </pre>
+     *
+     * @param dn The entry's DN
+     * @param avas The AttributeType and Values, using a ldif format, or a couple of
+     * Attribute ID/Value
+     * @return An Entry instance
      * @throws LdapException If the data are invalid
      * @throws LdapLdifException
      */
