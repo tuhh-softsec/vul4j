@@ -50,7 +50,7 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * The DN class contains a DN (Distinguished Name).
+ * The DN class contains a DN (Distinguished Name). This class is immutable.
  *
  * Its specification can be found in RFC 2253,
  * "UTF-8 String Representation of Distinguished Names".
@@ -133,7 +133,7 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
     {
         this.schemaManager = schemaManger;
         upName = "";
-        normName = null;
+        normName = "";
         normalized = true;
     }
 
@@ -163,19 +163,38 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
             for ( int ii = 0; ii < dn.size(); ii++ )
             {
                 String nameComponent = dn.get( ii );
-                add( nameComponent );
+                
+                if ( nameComponent.length() > 0 )
+                {
+                    RDN newRdn = new RDN( nameComponent, schemaManager );
+                    
+                    rdns.add( 0, newRdn );
+                }
             }
         }
 
+        toUpName();
+        
         if( schemaManager != null )
         {
-            normalized = true;
+            normalize( schemaManager.getNormalizerMapping() );
         }
         else
         {
+            normalizeInternal();
             normalized = false;
         }
     }
+
+
+    /**
+     * @see #DN(String, SchemaManager)
+     */
+    public DN( String upName ) throws LdapInvalidDnException
+    {
+        this( upName, null );
+    }
+
 
     
     /**
@@ -188,15 +207,9 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
      * </p>
      *
      * @param upName The String that contains the DN.
+     * @param schemaManager the schema manager (optional)
      * @throws LdapInvalidNameException if the String does not contain a valid DN.
      */
-    public DN( String upName ) throws LdapInvalidDnException
-    {
-        this( upName, null );
-    }
-
-
-    
     public DN( String upName, SchemaManager schemaManager ) throws LdapInvalidDnException
     {
         if ( upName != null )
@@ -208,7 +221,6 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
         {
             this.schemaManager = schemaManager;
             normalize( schemaManager.getNormalizerMapping() );
-            normalized = true;
         }
         else
         {
@@ -222,6 +234,7 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
         this.upName = upName;
     }
 
+    
     /**
      * @see #DN(SchemaManager, String...)
      */
@@ -311,7 +324,7 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
     
 
     /**
-     * Create a DN when deserializing it.
+     * Create a DN while deserializing it.
      * 
      * Note : this constructor is used only by the deserialization method.
      * @param upName The user provided name
@@ -326,7 +339,50 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
         this.bytes = bytes;
     }
 
+    
+    /**
+     * Creates a DN.
+     * 
+     * Note: This is mostly used internally in the server 
+     * 
+     * @param upName The user provided name
+     * @param normName the normalized name
+     * @param bytes the name as a byte[]
+     * @param rdnList the list of RDNs present in the DN
+     */
+    public DN( String upName, String normName, byte[] bytes, List<RDN> rdnList )
+    {
+        this( upName, normName, bytes );
+        rdns.addAll( rdnList );
+    }
 
+
+    /**
+     * 
+     * Creates a DN by based on the given RDN.
+     *
+     * @param rdn the RDN to be used in the DN
+     */
+    public DN( RDN rdn )
+    {
+        rdns.add( rdn );
+        
+        if( rdn.isNormalized() )
+        {
+            this.normName = rdn.getNormName();
+            this.upName = rdn.getName();
+            this.bytes = StringTools.getBytesUtf8( normName );
+            normalized = true;
+        }
+        else
+        {
+            normalizeInternal();
+            toUpName();
+            normalized = false;
+        }
+    }
+
+    
     /**
      * Static factory which creates a normalized DN from a String and a Map of OIDs.
      *
@@ -1032,59 +1088,40 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
      *
      * @param posn the index in this name at which to add the new components.
      *            Must be in the range [0,size()]. Note this is from the opposite end as rnds.get(posn)
-     * @param name the components to add
-     * @return the updated name (not a new one)
+     * @param dn the components to add
+     * @return a cloned and updated DN of the original DN, if no changes were applied the original DN will be returned
      * @throws ArrayIndexOutOfBoundsException
      *             if posn is outside the specified range
      * @throws LdapInvalidDnException
      *             if <tt>n</tt> is not a valid name, or if the addition of
      *             the components would violate the syntax rules of this name
      */
-    public DN addAllNormalized( int posn, DN name ) throws LdapInvalidDnException
+    public DN addAllNormalized( int posn, DN dn ) throws LdapInvalidDnException
     {
-        if ( name instanceof DN )
+        if ( ( dn == null ) || ( dn.size() == 0 ) )
         {
-            DN dn = (DN)name;
-            
-            if ( ( dn == null ) || ( dn.size() == 0 ) )
-            {
-                return this;
-            }
-
-            // Concatenate the rdns
-            rdns.addAll( size() - posn, dn.rdns );
-
-            if ( StringTools.isEmpty( normName ) )
-            {
-                normName = dn.normName;
-                bytes = dn.bytes;
-                upName = dn.upName;
-            }
-            else
-            {
-                normName = dn.normName + "," + normName;
-                bytes = StringTools.getBytesUtf8( normName );
-                upName = dn.upName + "," + upName;
-            }
+            return this;
+        }
+        
+        DN clonedDn = ( DN ) clone();
+        
+        // Concatenate the rdns
+        clonedDn.rdns.addAll( clonedDn.size() - posn, dn.rdns );
+        
+        if ( StringTools.isEmpty( normName ) )
+        {
+            clonedDn.normName = dn.normName;
+            clonedDn.bytes = dn.bytes;
+            clonedDn.upName = dn.upName;
         }
         else
         {
-            if ( ( name == null ) || ( name.size() == 0 ) )
-            {
-                return this;
-            }
-
-            for ( int i = name.size() - 1; i >= 0; i-- )
-            {
-                RDN rdn = new RDN( name.get( i ) );
-                rdns.add( size() - posn, rdn );
-            }
-
-            normalizeInternal();
-            toUpName();
+            clonedDn.normName = dn.normName + "," + normName;
+            clonedDn.bytes = StringTools.getBytesUtf8( normName );
+            clonedDn.upName = dn.upName + "," + upName;
         }
 
-        return this;
+        return clonedDn;
     }
 
     /**
@@ -1092,13 +1129,8 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
      */
     public DN addAll( DN suffix ) throws LdapInvalidDnException
     {
-        addAll( rdns.size(), suffix );
-        //normalizeInternal();
-        //toUpName();
-
-        return this;
+        return addAll( rdns.size(), suffix );
     }
-
 
     /**
      * {@inheritDoc}
@@ -1110,16 +1142,18 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
             return this;
         }
 
+        DN clonedDn = ( DN ) clone();
+        
         for ( int i = name.size() - 1; i >= 0; i-- )
         {
             RDN rdn = new RDN( name.get( i ) );
-            rdns.add( size() - posn, rdn );
+            clonedDn.rdns.add( clonedDn.size() - posn, rdn );
         }
 
-        normalizeInternal();
-        toUpName();
+        clonedDn.normalizeInternal();
+        clonedDn.toUpName();
 
-        return this;
+        return clonedDn;
     }
 
     
@@ -1133,26 +1167,28 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
             return this;
         }
 
+        DN clonedDn = ( DN ) clone();
+        
         // Concatenate the rdns
-        rdns.addAll( size() - posn, dn.rdns );
+        clonedDn.rdns.addAll( clonedDn.size() - posn, dn.rdns );
 
         // Regenerate the normalized name and the original string
-        if ( this.isNormalized() && dn.isNormalized() )
+        if ( clonedDn.isNormalized() && dn.isNormalized() )
         {
-            if ( this.size() != 0 )
+            if ( clonedDn.size() != 0 )
             {
-                normName = dn.getNormName() + "," + normName;
-                bytes = StringTools.getBytesUtf8( normName );
-                upName = dn.getName() + "," + upName;
+                clonedDn.normName = dn.getNormName() + "," + normName;
+                clonedDn.bytes = StringTools.getBytesUtf8( normName );
+                clonedDn.upName = dn.getName() + "," + upName;
             }
         }
         else
         {
-            normalizeInternal();
-            toUpName();
+            clonedDn.normalizeInternal();
+            clonedDn.toUpName();
         }
 
-        return this;
+        return clonedDn;
     }
 
 
@@ -1166,24 +1202,16 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
             return this;
         }
 
-        //FIXME this try-catch block is for the time being, during removal of
-        // java.naming.Name we have to remove this
-        try
-        {
-            // We have to parse the nameComponent which is given as an argument
-            RDN newRdn = new RDN( comp, schemaManager );
-            
-            rdns.add( 0, newRdn );
-        }
-        catch( LdapInvalidDnException le )
-        {
-            throw new LdapInvalidDnException( le.getMessage() );
-        }
+        DN clonedDn = ( DN ) clone();
+        // We have to parse the nameComponent which is given as an argument
+        RDN newRdn = new RDN( comp, schemaManager );
         
-        normalizeInternal();
-        toUpName();
+        clonedDn.rdns.add( 0, newRdn );
+        
+        clonedDn.normalizeInternal();
+        clonedDn.toUpName();
 
-        return this;
+        return clonedDn;
     }
 
 
@@ -1191,16 +1219,18 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
      * Adds a single RDN to the (leaf) end of this name.
      *
      * @param newRdn the RDN to add
-     * @return the updated name (not a new one)
+     * @return the updated cloned DN
      */
     public DN add( RDN newRdn )
     {
-        rdns.add( 0, newRdn );
+        DN clonedDn = ( DN ) clone();
         
-        normalizeInternal();
-        toUpName();
+        clonedDn.rdns.add( 0, newRdn );
+        
+        clonedDn.normalizeInternal();
+        clonedDn.toUpName();
 
-        return this;
+        return clonedDn;
     }
 
 
@@ -1213,72 +1243,47 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
      */
     public DN add( int pos, RDN newRdn )
     {
-        rdns.add( newRdn );
+        DN clonedDn = ( DN ) clone();
         
-        normalizeInternal();
-        toUpName();
+        clonedDn.rdns.add( newRdn );
+        
+        clonedDn.normalizeInternal();
+        clonedDn.toUpName();
 
-        return this;
+        return clonedDn;
     }
 
-
-    /**
-     * Adds the RDNs in the left to right order
-     * i.e adding ou=users followed by ou=system forms the DN ou=users,ou=system 
-     * 
-     * @param newRdn the normalized RDN to be added
-     * @return the DN formed after adding the given RDN, this will already be in a normalized form
-     *         cause of adding normalized RDNs
-     */
-    public DN addNormalizedInOrder( RDN newRdn )
-    {
-        rdns.add( newRdn );
-
-        if (rdns.size() == 1 )
-        {
-            normName = newRdn.getNormName();
-            upName = newRdn.getName();
-        }
-        else
-        {
-            normName = normName + "," + newRdn.getNormName();
-            upName = upName + "," + newRdn.getName();
-        }
-        
-        bytes = StringTools.getBytesUtf8( normName );
-
-        return this;
-    }
-    
     
     /**
      * Adds a single normalized RDN to the (leaf) end of this name.
      *
      * @param newRdn the RDN to add
-     * @return the updated name (not a new one)
+     * @return the cloned and updated DN
      */
     public DN addNormalized( RDN newRdn )
     {
-        rdns.add( 0, newRdn );
+        DN clonedDn = ( DN ) clone();
+        
+        clonedDn.rdns.add( 0, newRdn );
         
         // Avoid a call to the toNormName() method which
         // will iterate through all the rdns, when we only
         // have to build a new normName by using the current
         // RDN normalized name. The very same for upName.
-        if (rdns.size() == 1 )
+        if (clonedDn.rdns.size() == 1 )
         {
-            normName = newRdn.getNormName();
-            upName = newRdn.getName();
+            clonedDn.normName = newRdn.getNormName();
+            clonedDn.upName = newRdn.getName();
         }
         else
         {
-            normName = newRdn.getNormName() + "," + normName;
-            upName = newRdn.getName() + "," + upName;
+            clonedDn.normName = newRdn.getNormName() + "," + normName;
+            clonedDn.upName = newRdn.getName() + "," + upName;
         }
         
-        bytes = StringTools.getBytesUtf8( normName );
+        clonedDn.bytes = StringTools.getBytesUtf8( normName );
 
-        return this;
+        return clonedDn;
     }
 
 
@@ -1294,36 +1299,29 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
             throw new ArrayIndexOutOfBoundsException( message );
         }
 
-        //FIXME this try-catch block is for the time being, during removal of
-        // java.naming.Name we have to remove this
-        try
-        {
-            // We have to parse the nameComponent which is given as an argument
-            RDN newRdn = new RDN( comp );
-            
-            int realPos = size() - posn;
-            rdns.add( realPos, newRdn );
-        }
-        catch( LdapInvalidDnException le )
-        {
-            throw new LdapInvalidDnException( le.getMessage() );
-        }
+        // We have to parse the nameComponent which is given as an argument
+        RDN newRdn = new RDN( comp );
 
-        normalizeInternal();
-        toUpName();
+        DN clonedDn = ( DN ) clone();
+        
+        int realPos = clonedDn.size() - posn;
+        clonedDn.rdns.add( realPos, newRdn );
 
-        return this;
+        clonedDn.normalizeInternal();
+        clonedDn.toUpName();
+
+        return clonedDn;
     }
 
 
     /**
      * {@inheritDoc}
      */
-    public RDN remove( int posn ) throws LdapInvalidDnException
+    public DN remove( int posn ) throws LdapInvalidDnException
     {
         if ( rdns.size() == 0 )
         {
-            return RDN.EMPTY_RDN;
+            return this;
         }
 
         if ( ( posn < 0 ) || ( posn >= rdns.size() ) )
@@ -1333,16 +1331,28 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
             throw new ArrayIndexOutOfBoundsException( message );
         }
 
+        DN clonedDn = ( DN ) clone();
+        clonedDn._removeChild( posn );
+
+        return clonedDn;
+    }
+
+    
+    /**
+     * removes a child (RDN) present at the given position
+     *
+     * @param posn the index of the child's position
+     */
+    private void _removeChild( int posn )
+    {
         int realPos = size() - posn - 1;
-        RDN rdn = rdns.remove( realPos );
+        rdns.remove( realPos );
 
         normalizeInternal();
         toUpName();
-
-        return rdn;
     }
-
-
+    
+    
     /**
      * Gets the parent DN of this DN. Null if this DN doesn't have a parent, i.e. because it
      * is the empty DN.
@@ -1363,7 +1373,7 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
     /**
      * {@inheritDoc}
      */
-    public Object clone()
+    protected Object clone()
     {
         try
         {

@@ -22,6 +22,8 @@ package org.apache.directory.shared.ldap.name;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.util.StringTools;
@@ -134,14 +136,13 @@ public class DnSerializer
         // Read the RDNs. Is it's null, the number will be -1.
         int nbRdns = in.readInt();
         
-        DN dn = new DN( upName, normName, bytes );
-        
+        List<RDN> rdnList = new ArrayList<RDN>();
         for ( int i = 0; i < nbRdns; i++ )
         {
             RDN rdn = RdnSerializer.deserialize( in );
-            dn.add( 0, rdn );
+            rdnList.add( rdn );
         }
     
-        return dn;
+        return new DN( upName, normName, bytes, rdnList );
     }
 }

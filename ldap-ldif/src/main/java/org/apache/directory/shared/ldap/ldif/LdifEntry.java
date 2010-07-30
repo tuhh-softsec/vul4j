@@ -112,7 +112,7 @@ public class LdifEntry implements Cloneable, Externalizable
      */
     public void setDn( DN dn )
     {
-        entry.setDn( (DN)dn.clone() );
+        entry.setDn( dn );
     }
 
     

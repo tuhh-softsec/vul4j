@@ -268,12 +268,12 @@ public class LdifRevertor
             throw new IllegalArgumentException( I18n.err( I18n.ERR_12076 ) );
         }
 
-        currentParent = ( DN ) modifiedDn.clone();
+        currentParent = modifiedDn;
         currentRdn = currentParent.getRdn();
-        currentParent.remove( currentParent.size() - 1 );
+        currentParent = currentParent.remove( currentParent.size() - 1 );
 
-        newDn = ( DN ) newSuperiorDn.clone();
-        newDn.add( modifiedDn.getRdn() );
+        newDn = newSuperiorDn;
+        newDn = newDn.add( modifiedDn.getRdn() );
 
         entry.setChangeType( ChangeType.ModDn );
         entry.setDn( newDn );
@@ -298,7 +298,7 @@ public class LdifRevertor
         
         if ( newSuperior != null )
         {
-            DN restoredDn = (DN)((DN)newSuperior.clone()).add( newRdn ); 
+            DN restoredDn = newSuperior.add( newRdn ); 
             reverted.setDn( restoredDn );
         }
         else
@@ -317,9 +317,9 @@ public class LdifRevertor
         
         if ( newSuperior != null )
         {
-            DN oldSuperior = ( DN ) entry.getDn().clone();
+            DN oldSuperior = entry.getDn();
 
-            oldSuperior.remove( oldSuperior.size() - 1 );
+            oldSuperior = oldSuperior.remove( oldSuperior.size() - 1 );
             reverted.setNewSuperior( oldSuperior.getName() );
         }
 
@@ -371,7 +371,7 @@ public class LdifRevertor
 
         if ( newSuperior != null )
         {
-            DN restoredDn = (DN)((DN)newSuperior.clone()).add( newRdn ); 
+            DN restoredDn = newSuperior.add( newRdn ); 
             reverted.setDn( restoredDn );
         }
         else
@@ -383,9 +383,9 @@ public class LdifRevertor
         
         if ( newSuperior != null )
         {
-            DN oldSuperior = ( DN ) newDn.clone();
+            DN oldSuperior = newDn;
 
-            oldSuperior.remove( oldSuperior.size() - 1 );
+            oldSuperior = oldSuperior.remove( oldSuperior.size() - 1 );
             reverted.setNewSuperior( oldSuperior.getName() );
         }
         
@@ -445,12 +445,12 @@ public class LdifRevertor
             throw new IllegalArgumentException( I18n.err( I18n.ERR_12079 ) );
         }
 
-        parentDn = ( DN ) entry.getDn().clone();
+        parentDn = entry.getDn();
         RDN oldRdn = parentDn.getRdn();
 
-        newDn = ( DN ) parentDn.clone();
-        newDn.remove( newDn.size() - 1 );
-        newDn.add( newRdn );
+        newDn = parentDn;
+        newDn = newDn.remove( newDn.size() - 1 );
+        newDn = newDn.add( newRdn );
 
         List<LdifEntry> entries = new ArrayList<LdifEntry>( 1 );
         LdifEntry reverted = new LdifEntry();

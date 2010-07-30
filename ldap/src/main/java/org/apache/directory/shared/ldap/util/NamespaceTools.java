@@ -79,15 +79,13 @@ public class NamespaceTools
      */
     public static DN getRelativeName( DN ancestor, DN descendant ) throws LdapInvalidDnException
     {
-        DN rdn = null;
+        DN rdn = descendant;
         
-        rdn = ( DN ) descendant.clone();
-
         if ( rdn.isChildOf( ancestor ) )
         {
             for ( int ii = 0; ii < ancestor.size(); ii++ )
             {
-                rdn.remove( 0 );
+                rdn = rdn.remove( 0 );
             }
         }
         else

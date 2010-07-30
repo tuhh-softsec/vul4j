@@ -199,7 +199,7 @@ public class DefaultEntry implements Entry
         // We will clone the existing entry, because it may be normalized
         if ( entry.getDn() != null )
         {
-            dn = ( DN ) entry.getDn().clone();
+            dn = entry.getDn();
         }
         else
         {
@@ -982,11 +982,7 @@ public class DefaultEntry implements Entry
             }
 
             // An Entry has a DN and many attributes.
-            // First, clone the DN, if not null.
-            if ( dn != null )
-            {
-                clone.dn = ( DN ) dn.clone();
-            }
+            clone.dn = dn; // note that DN is immutable now
 
             // then clone the ClientAttribute Map.
             clone.attributes = ( Map<String, EntryAttribute> ) ( ( ( HashMap<String, EntryAttribute> ) attributes )
@@ -2692,14 +2688,14 @@ public class DefaultEntry implements Entry
     public void deserialize( ObjectInput in ) throws IOException, ClassNotFoundException
     {
         // Read the DN
-        dn = new DN();
+        dn = DN.EMPTY_DN;
 
         byte b = in.readByte();
 
         if ( b == 1 )
         {
             RDN rdn = RdnSerializer.deserialize( in );
-            dn.add( rdn );
+            dn = new DN( rdn );
         }
 
         // Read the number of attributes
