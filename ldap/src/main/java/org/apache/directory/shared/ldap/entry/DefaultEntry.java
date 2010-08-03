@@ -152,7 +152,9 @@ public class DefaultEntry implements Entry
         }
 
         this.schemaManager = schemaManager;
-
+        
+        normalizeDN( dn );
+        
         // Initialize the ObjectClass object
         initObjectClassAT( schemaManager );
     }
@@ -206,19 +208,8 @@ public class DefaultEntry implements Entry
             dn = DN.EMPTY_DN;
         }
 
-        if ( !dn.isNormalized() )
-        {
-            try
-            {
-                // The dn must be normalized
-                dn.normalize( schemaManager.getNormalizerMapping() );
-            }
-            catch ( LdapException ne )
-            {
-                LOG.warn( "The DN '" + entry.getDn() + "' cannot be normalized" );
-            }
-        }
-
+        normalizeDN( dn );
+        
         // Init the attributes map
         attributes = new HashMap<String, EntryAttribute>( entry.size() );
 
@@ -275,7 +266,9 @@ public class DefaultEntry implements Entry
         }
 
         this.schemaManager = schemaManager;
-
+        
+        normalizeDN( dn );
+        
         initObjectClassAT( schemaManager );
 
         set( upIds );
@@ -334,6 +327,8 @@ public class DefaultEntry implements Entry
 
         this.schemaManager = schemaManager;
 
+        normalizeDN( dn );
+        
         initObjectClassAT( schemaManager );
 
         for ( EntryAttribute attribute : attributes )
@@ -381,6 +376,8 @@ public class DefaultEntry implements Entry
 
         this.schemaManager = schemaManager;
 
+        normalizeDN( dn );
+        
         // Initialize the ObjectClass object
         initObjectClassAT( schemaManager );
 
@@ -423,6 +420,8 @@ public class DefaultEntry implements Entry
 
         this.schemaManager = schemaManager;
 
+        normalizeDN( dn );
+        
         // Initialize the ObjectClass object
         initObjectClassAT( schemaManager );
 
@@ -2973,5 +2972,27 @@ public class DefaultEntry implements Entry
         }
 
         return sb.toString();
+    }
+    
+    
+    /**
+     * normalizes the given DN if it was not already normalized
+     * 
+     * @param dn the DN to be normalized
+     */
+    private void normalizeDN( DN dn )
+    {
+        if ( !dn.isNormalized() )
+        {
+            try
+            {
+                // The dn must be normalized
+                dn.normalize( schemaManager.getNormalizerMapping() );
+            }
+            catch ( LdapException ne )
+            {
+                LOG.warn( "The DN '{}' cannot be normalized", dn );
+            }
+        }
     }
 }
