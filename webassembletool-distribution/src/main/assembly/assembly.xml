@@ -1,0 +1,57 @@
+<assembly>
+	<id>all</id>
+	<formats>
+		<format>zip</format>
+	</formats>
+	<dependencySets>
+		<dependencySet>
+			<includes>
+				<include>*:jar</include>
+			</includes>			
+			<unpack>false</unpack>
+			<useTransitiveDependencies>true</useTransitiveDependencies>
+			<outputDirectory>lib</outputDirectory>
+		</dependencySet>
+		<dependencySet>
+			<includes>
+				<include>*:war</include>
+			</includes>
+			<unpack>false</unpack>
+			<outputFileNameMapping>${artifact.artifactId}.${artifact.extension}
+			</outputFileNameMapping>
+			<useTransitiveDependencies>false</useTransitiveDependencies>
+			<outputDirectory>apps</outputDirectory>		
+		</dependencySet>
+	</dependencySets>
+
+
+	<fileSets>
+		<fileSet>
+			<directory>../src</directory>
+			<outputDirectory>src/webassembletool/src</outputDirectory>
+			<includes>
+				<include>**</include>
+			</includes>
+			<excludes>
+				<exclude>**/.*</exclude>
+				<exclude>**/.settings/**</exclude>
+				<exclude>**/target/**</exclude>
+			</excludes>
+		</fileSet>
+		<fileSet>
+			<directory>../</directory>
+			<outputDirectory>src/</outputDirectory>
+			<includes>
+				<include>webassembletool-*/src/**</include>
+			</includes>
+			<excludes>
+				<exclude>${artifactId}</exclude>
+			</excludes>
+		</fileSet>
+		<fileSet>
+			<directory>../src/main/resources</directory>
+			<outputDirectory>/</outputDirectory>
+		</fileSet>
+	</fileSets>
+
+</assembly> 
