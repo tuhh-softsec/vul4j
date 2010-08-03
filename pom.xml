@@ -33,7 +33,7 @@
   <description>
     A "functor" is an entity that serves the role of a function
     but can be operated upon like an object.  Commons Functor
-    defines common functor and functor-related iterfaces, 
+    defines common functor and functor-related interfaces,
     implementations, and utilities.
   </description>
   <url>http://commons.apache.org/sandbox/functor/</url>
@@ -115,10 +115,15 @@
     <plugins>
       <plugin>
         <artifactId>maven-checkstyle-plugin</artifactId>
-        <version>2.1</version>
+        <version>2.2</version>
         <configuration>
           <configLocation>${basedir}/checkstyle.xml</configLocation>
         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>cobertura-maven-plugin</artifactId>
+        <version>2.4</version>
       </plugin>
     </plugins>
   </reporting>
