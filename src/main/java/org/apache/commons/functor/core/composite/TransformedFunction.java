@@ -78,7 +78,7 @@ public class TransformedFunction<T> implements Function<T>, Serializable {
      */
     @Override
     public boolean equals(Object obj) {
-        return obj == this || obj instanceof TransformedFunction && equals((TransformedFunction<?>) obj);
+        return obj == this || obj instanceof TransformedFunction<?> && equals((TransformedFunction<?>) obj);
     }
 
     /**

@@ -51,10 +51,10 @@ public final class IsEmpty<A> implements UnaryPredicate<A>, Serializable {
      * {@inheritDoc}
      */
     public boolean test(A obj) {
-        if (obj instanceof Collection) {
+        if (obj instanceof Collection<?>) {
             return testCollection((Collection<?>) obj);
         }
-        if (obj instanceof Map) {
+        if (obj instanceof Map<?, ?>) {
             return testMap((Map<?, ?>) obj);
         }
         if (obj instanceof String) {
@@ -73,7 +73,7 @@ public final class IsEmpty<A> implements UnaryPredicate<A>, Serializable {
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        return that instanceof IsEmpty;
+        return that instanceof IsEmpty<?>;
     }
 
     /**

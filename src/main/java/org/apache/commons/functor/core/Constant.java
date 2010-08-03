@@ -119,7 +119,7 @@ public final class Constant<T> implements Function<T>, UnaryFunction<Object, T>,
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        return that == this || (that instanceof Constant && equals((Constant<?>) that));
+        return that == this || (that instanceof Constant<?> && equals((Constant<?>) that));
     }
 
     /**

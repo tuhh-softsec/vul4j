@@ -57,7 +57,7 @@ public final class IsNotSame<L, R> implements BinaryPredicate<L, R>, Serializabl
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        return that instanceof IsNotSame;
+        return that instanceof IsNotSame<?, ?>;
     }
 
     /**

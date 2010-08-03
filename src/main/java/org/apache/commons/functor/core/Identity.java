@@ -78,7 +78,7 @@ public final class Identity<T> implements UnaryFunction<T, T>, UnaryPredicate<T>
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        return (that instanceof Identity);
+        return (that instanceof Identity<?>);
     }
 
     /**

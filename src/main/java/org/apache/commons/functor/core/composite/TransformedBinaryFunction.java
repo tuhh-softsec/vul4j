@@ -78,7 +78,7 @@ public class TransformedBinaryFunction<L, R, T> implements BinaryFunction<L, R, 
      */
     @Override
     public boolean equals(Object obj) {
-        return obj == this || obj instanceof TransformedBinaryFunction
+        return obj == this || obj instanceof TransformedBinaryFunction<?, ?, ?>
                 && equals((TransformedBinaryFunction<?, ?, ?>) obj);
     }
 

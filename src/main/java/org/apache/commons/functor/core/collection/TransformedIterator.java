@@ -85,7 +85,7 @@ public final class TransformedIterator<E, T> implements Iterator<T> {
         if (obj == this) {
             return true;
         }
-        if (obj instanceof TransformedIterator == false) {
+        if (obj instanceof TransformedIterator<?, ?> == false) {
             return false;
         }
         TransformedIterator<?, ?> that = (TransformedIterator<?, ?>) obj;

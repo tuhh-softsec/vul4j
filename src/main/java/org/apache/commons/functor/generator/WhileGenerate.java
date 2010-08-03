@@ -75,7 +75,7 @@ public class WhileGenerate<E> extends BaseGenerator<E> {
         if (obj == this) {
             return true;
         }
-        if (obj instanceof WhileGenerate == false) {
+        if (obj instanceof WhileGenerate<?> == false) {
             return false;
         }
         WhileGenerate<?> other = (WhileGenerate<?>) obj;

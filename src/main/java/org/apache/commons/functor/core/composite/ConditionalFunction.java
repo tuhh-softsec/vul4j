@@ -85,7 +85,7 @@ public final class ConditionalFunction<T> implements Function<T>, Serializable {
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        return that == this || (that instanceof ConditionalFunction && equals((ConditionalFunction<?>) that));
+        return that == this || (that instanceof ConditionalFunction<?> && equals((ConditionalFunction<?>) that));
     }
 
     /**

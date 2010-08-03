@@ -28,7 +28,7 @@ import org.apache.commons.functor.UnaryFunction;
 public final class BinaryFunctionUnaryFunction<A, T> implements UnaryFunction<A, T> {
     private BinaryFunction<? super A, ? super A, ? extends T> function;
 
-    /**
+    /**``
      * Create a new BinaryFunctionUnaryFunction.
      * @param function to adapt
      */
@@ -44,7 +44,7 @@ public final class BinaryFunctionUnaryFunction<A, T> implements UnaryFunction<A,
      * {@inheritDoc}
      */
     public T evaluate(A obj) {
-        return function.evaluate(obj,obj);
+        return function.evaluate(obj, obj);
     }
 
     /**
@@ -52,7 +52,7 @@ public final class BinaryFunctionUnaryFunction<A, T> implements UnaryFunction<A,
      */
     @Override
     public boolean equals(Object obj) {
-        return obj == this || obj instanceof BinaryFunctionUnaryFunction
+        return obj == this || obj instanceof BinaryFunctionUnaryFunction<?, ?>
                 && equals((BinaryFunctionUnaryFunction<?, ?>) obj);
     }
 
@@ -83,8 +83,8 @@ public final class BinaryFunctionUnaryFunction<A, T> implements UnaryFunction<A,
 
     /**
      * Adapt a BinaryFunction as a UnaryFunction.
-     * @param <A>
-     * @param <T>
+     * @param <A> input type
+     * @param <T> result type
      * @param function to adapt
      * @return UnaryFunction<A, T>
      */

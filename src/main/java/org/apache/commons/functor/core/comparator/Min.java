@@ -68,7 +68,7 @@ public final class Min<T> implements BinaryFunction<T, T, T>, Serializable {
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        return that == this || (that instanceof Min && equals((Min<?>) that));
+        return that == this || (that instanceof Min<?> && equals((Min<?>) that));
     }
 
     /**

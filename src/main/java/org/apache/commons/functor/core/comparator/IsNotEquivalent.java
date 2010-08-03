@@ -81,7 +81,7 @@ public final class IsNotEquivalent<T> implements BinaryPredicate<T, T>, Serializ
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        return that == this || (that instanceof IsNotEquivalent && equals((IsNotEquivalent<?>) that));
+        return that == this || (that instanceof IsNotEquivalent<?> && equals((IsNotEquivalent<?>) that));
     }
 
     /**

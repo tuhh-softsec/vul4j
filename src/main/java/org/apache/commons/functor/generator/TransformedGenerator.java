@@ -70,7 +70,7 @@ public class TransformedGenerator<I, E> extends BaseGenerator<E> {
         if (obj == this) {
             return true;
         }
-        if (obj instanceof TransformedGenerator == false) {
+        if (obj instanceof TransformedGenerator<?, ?> == false) {
             return false;
         }
         TransformedGenerator<?, ?> other = (TransformedGenerator<?, ?>) obj;

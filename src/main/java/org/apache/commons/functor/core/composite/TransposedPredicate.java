@@ -70,7 +70,7 @@ public class TransposedPredicate<L, R> implements BinaryPredicate<L, R>, Seriali
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        return that == this || (that instanceof TransposedPredicate && equals((TransposedPredicate<?, ?>) that));
+        return that == this || (that instanceof TransposedPredicate<?, ?> && equals((TransposedPredicate<?, ?>) that));
     }
 
     /**

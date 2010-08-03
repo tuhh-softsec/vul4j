@@ -64,7 +64,7 @@ public final class IgnoreRightProcedure<L, R> implements BinaryProcedure<L, R>, 
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        return that == this || (that instanceof IgnoreRightProcedure && equals((IgnoreRightProcedure<?, ?>) that));
+        return that == this || (that instanceof IgnoreRightProcedure<?, ?> && equals((IgnoreRightProcedure<?, ?>) that));
     }
 
     /**
@@ -96,6 +96,8 @@ public final class IgnoreRightProcedure<L, R> implements BinaryProcedure<L, R>, 
 
     /**
      * Adapt a UnaryProcedure to the BinaryProcedure interface.
+     * @param <L> left type
+     * @param <R> right type
      * @param procedure UnaryProcedure to adapt
      * @return IgnoreRightProcedure
      */

@@ -86,7 +86,7 @@ public final class ConditionalUnaryFunction<A, T> implements UnaryFunction<A, T>
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        return that == this || (that instanceof ConditionalUnaryFunction && equals((ConditionalUnaryFunction<?, ?>) that));
+        return that == this || (that instanceof ConditionalUnaryFunction<?, ?> && equals((ConditionalUnaryFunction<?, ?>) that));
     }
 
     /**

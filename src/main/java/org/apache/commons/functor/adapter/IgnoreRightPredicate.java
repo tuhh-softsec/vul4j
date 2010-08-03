@@ -64,7 +64,7 @@ public final class IgnoreRightPredicate<L, R> implements BinaryPredicate<L, R>, 
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        return that == this || (that instanceof IgnoreRightPredicate && equals((IgnoreRightPredicate<?, ?>) that));
+        return that == this || (that instanceof IgnoreRightPredicate<?, ?> && equals((IgnoreRightPredicate<?, ?>) that));
     }
 
     /**
@@ -96,8 +96,8 @@ public final class IgnoreRightPredicate<L, R> implements BinaryPredicate<L, R>, 
 
     /**
      * Adapt a UnaryPredicate as an IgnoreRightPredicate
-     * @param <L>
-     * @param <R>
+     * @param <L> left type
+     * @param <R> right type
      * @param predicate to adapt
      * @return IgnoreRightPredicate<L, R>
      */

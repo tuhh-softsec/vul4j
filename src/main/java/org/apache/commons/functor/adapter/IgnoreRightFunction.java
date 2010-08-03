@@ -64,7 +64,7 @@ public final class IgnoreRightFunction<L, R, T> implements BinaryFunction<L, R, 
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        return that == this || (that instanceof IgnoreRightFunction && equals((IgnoreRightFunction<?, ?, ?>) that));
+        return that == this || (that instanceof IgnoreRightFunction<?, ?, ?> && equals((IgnoreRightFunction<?, ?, ?>) that));
     }
 
     /**
@@ -96,6 +96,9 @@ public final class IgnoreRightFunction<L, R, T> implements BinaryFunction<L, R, 
 
     /**
      * Adapt a UnaryFunction to the BinaryFunction interface.
+     * @param <L> left type
+     * @param <R> right type
+     * @param <T> result type
      * @param function UnaryFunction to adapt
      * @return IgnoreRightFunction
      */

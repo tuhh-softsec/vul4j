@@ -66,7 +66,8 @@ public final class BinaryPredicateBinaryFunction<L, R> implements BinaryFunction
      */
     public boolean equals(Object that) {
         return that == this
-                || (that instanceof BinaryPredicateBinaryFunction && equals((BinaryPredicateBinaryFunction<?, ?>) that));
+                || (that instanceof BinaryPredicateBinaryFunction<?, ?>
+                && equals((BinaryPredicateBinaryFunction<?, ?>) that));
     }
 
     /**
@@ -103,6 +104,8 @@ public final class BinaryPredicateBinaryFunction<L, R> implements BinaryFunction
      * When the given <code>BinaryPredicate</code> is <code>null</code>,
      * returns <code>null</code>.
      *
+     * @param <L> left type
+     * @param <R> right type
      * @param predicate the possibly-<code>null</code>
      *        {@link BinaryPredicate BinaryPredicate} to adapt
      * @return a <code>BinaryPredicateBinaryFunction</code> wrapping the given

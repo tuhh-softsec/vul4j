@@ -52,7 +52,6 @@ limitations under the License.
     <module name="OperatorWrap"/>
     <module name="TabCharacter"/>
     <module name="WhitespaceAfter"/>
-    <module name="WhitespaceAround"/>
 
     <module name="GenericIllegalRegexp">
       <property name="format" value="\s+$"/>

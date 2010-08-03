@@ -61,7 +61,7 @@ public final class ConditionalBinaryProcedure<L, R> implements BinaryProcedure<L
             BinaryProcedure<? super L, ? super R> thenProc) {
         this(ifPred, thenProc, NoOp.instance());
     }
-    
+
     /**
      * Create a new ConditionalBinaryProcedure.
      * @param ifPred to evaluate
@@ -100,7 +100,7 @@ public final class ConditionalBinaryProcedure<L, R> implements BinaryProcedure<L
      */
     public boolean equals(Object that) {
         return that == this
-                || (that instanceof ConditionalBinaryProcedure && equals((ConditionalBinaryProcedure<?, ?>) that));
+                || (that instanceof ConditionalBinaryProcedure<?, ?> && equals((ConditionalBinaryProcedure<?, ?>) that));
     }
 
     /**

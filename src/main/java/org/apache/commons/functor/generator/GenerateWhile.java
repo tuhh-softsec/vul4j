@@ -74,7 +74,7 @@ public class GenerateWhile<E> extends BaseGenerator<E> {
         if (obj == this) {
             return true;
         }
-        if (obj instanceof GenerateWhile == false) {
+        if (obj instanceof GenerateWhile<?> == false) {
             return false;
         }
         GenerateWhile<?> other = (GenerateWhile<?>) obj;

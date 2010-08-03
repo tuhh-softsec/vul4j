@@ -58,7 +58,7 @@ public final class ComparatorFunction<T> implements BinaryFunction<T, T, Integer
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        return that == this || (that instanceof ComparatorFunction && equals((ComparatorFunction<?>) that));
+        return that == this || (that instanceof ComparatorFunction<?> && equals((ComparatorFunction<?>) that));
     }
 
     /**

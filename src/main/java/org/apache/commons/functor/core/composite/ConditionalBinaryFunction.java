@@ -87,7 +87,7 @@ public final class ConditionalBinaryFunction<L, R, T> implements BinaryFunction<
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        return that == this || (that instanceof ConditionalBinaryFunction && equals((ConditionalBinaryFunction<?, ?, ?>) that));
+        return that == this || (that instanceof ConditionalBinaryFunction<?, ?, ?> && equals((ConditionalBinaryFunction<?, ?, ?>) that));
     }
 
     /**

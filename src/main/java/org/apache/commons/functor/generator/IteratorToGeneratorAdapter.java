@@ -66,7 +66,7 @@ public final class IteratorToGeneratorAdapter<E> extends BaseGenerator<E> {
         if (obj == this) {
             return true;
         }
-        if (obj instanceof IteratorToGeneratorAdapter == false) {
+        if (obj instanceof IteratorToGeneratorAdapter<?> == false) {
             return false;
         }
         IteratorToGeneratorAdapter<?> that = (IteratorToGeneratorAdapter<?>) obj;

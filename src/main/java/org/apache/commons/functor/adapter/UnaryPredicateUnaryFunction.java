@@ -69,7 +69,7 @@ public final class UnaryPredicateUnaryFunction<A> implements UnaryFunction<A, Bo
      */
     public boolean equals(Object that) {
         return that == this
-                || (that instanceof UnaryPredicateUnaryFunction && equals((UnaryPredicateUnaryFunction<?>) that));
+                || (that instanceof UnaryPredicateUnaryFunction<?> && equals((UnaryPredicateUnaryFunction<?>) that));
     }
 
     /**

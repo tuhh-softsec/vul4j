@@ -80,7 +80,7 @@ public final class IsGreaterThanOrEqual<T> implements BinaryPredicate<T, T>, Ser
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        return that == this || (that instanceof IsGreaterThanOrEqual && equals((IsGreaterThanOrEqual<?>) that));
+        return that == this || (that instanceof IsGreaterThanOrEqual<?> && equals((IsGreaterThanOrEqual<?>) that));
     }
 
     /**

@@ -65,7 +65,8 @@ public final class BinaryFunctionBinaryProcedure<L, R> implements BinaryProcedur
      */
     public boolean equals(Object that) {
         return that == this
-                || (that instanceof BinaryFunctionBinaryProcedure && equals((BinaryFunctionBinaryProcedure<?, ?>) that));
+                || (that instanceof BinaryFunctionBinaryProcedure<?, ?>
+                && equals((BinaryFunctionBinaryProcedure<?, ?>) that));
     }
 
     /**
@@ -102,6 +103,8 @@ public final class BinaryFunctionBinaryProcedure<L, R> implements BinaryProcedur
      * When the given <code>BinaryFunction</code> is <code>null</code>,
      * returns <code>null</code>.
      *
+     * @param <L> left type
+     * @param <R> right type
      * @param function the possibly-<code>null</code>
      *        {@link BinaryFunction BinaryFunction} to adapt
      * @return a <code>BinaryFunctionBinaryProcedure</code> wrapping the given

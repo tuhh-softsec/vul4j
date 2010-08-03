@@ -50,7 +50,7 @@ public final class BinaryPredicateUnaryPredicate<A> implements UnaryPredicate<A>
      */
     @Override
     public boolean equals(Object obj) {
-        return obj == this || obj instanceof BinaryPredicateUnaryPredicate
+        return obj == this || obj instanceof BinaryPredicateUnaryPredicate<?>
                 && equals((BinaryPredicateUnaryPredicate<?>) obj);
     }
 

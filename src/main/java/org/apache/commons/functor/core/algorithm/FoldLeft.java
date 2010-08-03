@@ -115,7 +115,7 @@ public class FoldLeft<T> implements UnaryFunction<Generator<T>, T>, BinaryFuncti
         if (obj == this) {
             return true;
         }
-        if (obj instanceof FoldLeft == false) {
+        if (obj instanceof FoldLeft<?> == false) {
             return false;
         }
         return ((FoldLeft<?>) obj).function.equals(function);

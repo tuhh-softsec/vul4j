@@ -70,7 +70,7 @@ public final class IsNull<A> implements UnaryPredicate<A>, Serializable {
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        return that instanceof IsNull;
+        return that instanceof IsNull<?>;
     }
 
     /**

@@ -68,7 +68,7 @@ public final class Max<T> implements BinaryFunction<T, T, T>, Serializable {
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        return that == this || (that instanceof Max && equals((Max<?>) that));
+        return that == this || (that instanceof Max<?> && equals((Max<?>) that));
     }
 
     /**

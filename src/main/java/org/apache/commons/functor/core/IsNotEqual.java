@@ -63,7 +63,7 @@ public final class IsNotEqual<L, R> implements BinaryPredicate<L, R>, Serializab
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        return that instanceof IsNotEqual;
+        return that instanceof IsNotEqual<?, ?>;
     }
 
     /**

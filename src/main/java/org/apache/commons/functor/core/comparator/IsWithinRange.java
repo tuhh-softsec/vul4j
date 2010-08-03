@@ -81,7 +81,7 @@ public class IsWithinRange<A extends Comparable<A>> implements UnaryPredicate<A>
         if (this == o) {
             return true;
         }
-        if (!(o instanceof IsWithinRange)) {
+        if (!(o instanceof IsWithinRange<?>)) {
             return false;
         }
         final IsWithinRange<?> isWithinRange = (IsWithinRange<?>) o;

@@ -75,7 +75,7 @@ public class UntilGenerate<E> extends BaseGenerator<E> {
         if (obj == this) {
             return true;
         }
-        if (obj instanceof UntilGenerate == false) {
+        if (obj instanceof UntilGenerate<?> == false) {
             return false;
         }
         UntilGenerate<?> other = (UntilGenerate<?>) obj;

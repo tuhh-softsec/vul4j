@@ -104,7 +104,7 @@ public final class UnaryAnd<A> extends BaseUnaryPredicateList<A> {
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        return that == this || (that instanceof UnaryAnd && equals((UnaryAnd<?>) that));
+        return that == this || (that instanceof UnaryAnd<?> && equals((UnaryAnd<?>) that));
     }
 
     /**

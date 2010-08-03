@@ -91,7 +91,7 @@ public final class CompositeUnaryProcedure<A> implements UnaryProcedure<A>, Seri
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        return that == this || (that instanceof CompositeUnaryProcedure && equals((CompositeUnaryProcedure<?>) that));
+        return that == this || (that instanceof CompositeUnaryProcedure<?> && equals((CompositeUnaryProcedure<?>) that));
     }
 
     /**

@@ -66,7 +66,7 @@ public final class IsEqual<L, R> implements BinaryPredicate<L, R>, Serializable 
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        return that instanceof IsEqual;
+        return that instanceof IsEqual<?, ?>;
     }
 
     /**

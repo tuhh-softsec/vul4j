@@ -79,7 +79,7 @@ public class TransformedBinaryProcedure<L, R> implements BinaryProcedure<L, R>, 
      */
     @Override
     public boolean equals(Object obj) {
-        return obj == this || obj instanceof TransformedBinaryProcedure
+        return obj == this || obj instanceof TransformedBinaryProcedure<?, ?>
                 && equals((TransformedBinaryProcedure<?, ?>) obj);
     }
 

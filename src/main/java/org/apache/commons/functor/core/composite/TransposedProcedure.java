@@ -70,7 +70,7 @@ public class TransposedProcedure<L, R> implements BinaryProcedure<L, R>, Seriali
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        return that == this || (that instanceof TransposedProcedure && equals((TransposedProcedure<?, ?>) that));
+        return that == this || (that instanceof TransposedProcedure<?, ?> && equals((TransposedProcedure<?, ?>) that));
     }
 
     /**

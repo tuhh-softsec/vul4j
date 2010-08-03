@@ -74,7 +74,7 @@ public class GenerateUntil<E> extends BaseGenerator<E> {
         if (obj == this) {
             return true;
         }
-        if (obj instanceof GenerateUntil == false) {
+        if (obj instanceof GenerateUntil<?> == false) {
             return false;
         }
         GenerateUntil<?> other = (GenerateUntil<?>) obj;

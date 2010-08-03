@@ -79,7 +79,7 @@ public final class IsLessThan<T> implements BinaryPredicate<T, T>, Serializable 
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        return that == this || (that instanceof IsLessThan && equals((IsLessThan<?>) that));
+        return that == this || (that instanceof IsLessThan<?> && equals((IsLessThan<?>) that));
     }
 
     /**

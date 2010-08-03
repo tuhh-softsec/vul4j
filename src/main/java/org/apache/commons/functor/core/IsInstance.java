@@ -51,7 +51,7 @@ public final class IsInstance<T> implements BinaryPredicate<T, Class<?>>, Serial
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        return that instanceof IsInstance;
+        return that instanceof IsInstance<?>;
     }
 
     /**

@@ -43,7 +43,7 @@ public final class Size<A> implements UnaryFunction<A, Integer>, Serializable {
      * {@inheritDoc}
      */
     public Integer evaluate(Object obj) {
-        if (obj instanceof Collection) {
+        if (obj instanceof Collection<?>) {
             return evaluate((Collection<?>) obj);
         }
         if (obj instanceof String) {
@@ -62,7 +62,7 @@ public final class Size<A> implements UnaryFunction<A, Integer>, Serializable {
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        return that instanceof Size;
+        return that instanceof Size<?>;
     }
 
     /**

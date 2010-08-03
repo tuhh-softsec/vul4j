@@ -64,7 +64,7 @@ public final class ProcedureUnaryProcedure<A> implements UnaryProcedure<A>, Seri
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        return that == this || (that instanceof ProcedureUnaryProcedure && equals((ProcedureUnaryProcedure<?>) that));
+        return that == this || (that instanceof ProcedureUnaryProcedure<?> && equals((ProcedureUnaryProcedure<?>) that));
     }
 
     /**

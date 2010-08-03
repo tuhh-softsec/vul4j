@@ -64,7 +64,8 @@ public final class FunctionUnaryFunction<A, T> implements UnaryFunction<A, T>, S
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        return that == this || (that instanceof FunctionUnaryFunction && equals((FunctionUnaryFunction<?, ?>) that));
+        return that == this || (that instanceof FunctionUnaryFunction<?, ?>
+                && equals((FunctionUnaryFunction<?, ?>) that));
     }
 
     /**
@@ -96,6 +97,8 @@ public final class FunctionUnaryFunction<A, T> implements UnaryFunction<A, T>, S
 
     /**
      * Adapt a Function to the UnaryFunction interface.
+     * @param <A> arg type
+     * @param <T> result type
      * @param function to adapt
      * @return FunctionUnaryFunction
      */

@@ -122,7 +122,7 @@ public class FoldRight<T> implements UnaryFunction<Generator<T>, T>, BinaryFunct
         if (obj == this) {
             return true;
         }
-        if (obj instanceof FoldRight == false) {
+        if (obj instanceof FoldRight<?> == false) {
             return false;
         }
         return ((FoldRight<?>) obj).function.equals(function);

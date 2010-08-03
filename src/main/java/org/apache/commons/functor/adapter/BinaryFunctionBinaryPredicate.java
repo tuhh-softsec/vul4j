@@ -22,19 +22,14 @@ import org.apache.commons.functor.BinaryFunction;
 import org.apache.commons.functor.BinaryPredicate;
 
 /**
- * Adapts a <code>Boolean</code>-valued
- * {@link BinaryFunction BinaryFunction}
- * to the {@link BinaryPredicate BinaryPredicate}
- * interface.
- * <p>
- * Note that although this class implements
- * {@link Serializable}, a given instance will
- * only be truly <code>Serializable</code> if the
- * underlying functor is.  Attempts to serialize
- * an instance whose delegate is not
- * <code>Serializable</code> will result in an exception.
- * </p>
- * @version $Revision$ $Date$
+ * Adapts a <code>Boolean</code>-valued {@link BinaryFunction BinaryFunction} to
+ * the {@link BinaryPredicate BinaryPredicate} interface. <p> Note that although
+ * this class implements {@link Serializable}, a given instance will only be
+ * truly <code>Serializable</code> if the underlying functor is. Attempts to
+ * serialize an instance whose delegate is not <code>Serializable</code> will
+ * result in an exception. </p>
+ * @version $Revision$ $Date: 2008-06-10 10:31:53 -0500 (Tue, 10 Jun
+ * 2008) $
  * @author Rodney Waldhoff
  */
 public final class BinaryFunctionBinaryPredicate<L, R> implements BinaryPredicate<L, R>, Serializable {
@@ -42,8 +37,8 @@ public final class BinaryFunctionBinaryPredicate<L, R> implements BinaryPredicat
     private BinaryFunction<? super L, ? super R, Boolean> function;
 
     /**
-     * Create an {@link BinaryPredicate BinaryPredicate} wrapping
-     * the given {@link BinaryFunction BinaryFunction}.
+     * Create an {@link BinaryPredicate BinaryPredicate} wrapping the given
+     * {@link BinaryFunction BinaryFunction}.
      * @param function the {@link BinaryFunction BinaryFunction} to wrap
      */
     public BinaryFunctionBinaryPredicate(BinaryFunction<? super L, ? super R, Boolean> function) {
@@ -54,13 +49,15 @@ public final class BinaryFunctionBinaryPredicate<L, R> implements BinaryPredicat
     }
 
     /**
-     * {@inheritDoc}
-     * Returns the <code>boolean</code> value of the non-<code>null</code>
-     * <code>Boolean</code> returned by the {@link BinaryFunction#evaluate evaluate}
-     * method of my underlying function.
-     *
-     * @throws NullPointerException if my underlying function returns <code>null</code>
-     * @throws ClassCastException if my underlying function returns a non-<code>Boolean</code>
+     * {@inheritDoc} Returns the <code>boolean</code> value of the
+     * non-<code>null</code> <code>Boolean</code> returned by the
+     * {@link BinaryFunction#evaluate evaluate} method of my underlying
+     * function.
+     * 
+     * @throws NullPointerException if my underlying function returns
+     * <code>null</code>
+     * @throws ClassCastException if my underlying function returns a
+     * non-<code>Boolean</code>
      */
     public boolean test(L left, R right) {
         return function.evaluate(left, right);
@@ -71,7 +68,8 @@ public final class BinaryFunctionBinaryPredicate<L, R> implements BinaryPredicat
      */
     public boolean equals(Object that) {
         return that == this
-                || (that instanceof BinaryFunctionBinaryPredicate && equals((BinaryFunctionBinaryPredicate<?, ?>) that));
+                || (that instanceof BinaryFunctionBinaryPredicate<?, ?>
+                && equals((BinaryFunctionBinaryPredicate<?, ?>) that));
     }
 
     /**
@@ -102,17 +100,19 @@ public final class BinaryFunctionBinaryPredicate<L, R> implements BinaryPredicat
     }
 
     /**
-     * Adapt the given, possibly-<code>null</code>,
-     * {@link BinaryFunction BinaryFunction} to the
-     * {@link BinaryPredicate BinaryPredicate} interface.
-     * When the given <code>BinaryFunction</code> is <code>null</code>,
-     * returns <code>null</code>.
-     *
-     * @param function the possibly-<code>null</code>
-     *        {@link BinaryFunction BinaryFunction} to adapt
+     * Adapt the given, possibly-<code>null</code>, {@link BinaryFunction
+     * BinaryFunction} to the {@link BinaryPredicate BinaryPredicate} interface.
+     * When the given <code>BinaryFunction</code> is <code>null</code>, returns
+     * <code>null</code>.
+     * 
+     * @param <L> left type
+     * @param <R> right type
+     * @param <T> result type
+     * @param function the possibly-<code>null</code> {@link BinaryFunction
+     * BinaryFunction} to adapt
      * @return a <code>BinaryFunctionBinaryPredicate</code> wrapping the given
-     *         {@link BinaryFunction BinaryFunction}, or <code>null</code>
-     *         if the given <code>BinaryFunction</code> is <code>null</code>
+     * {@link BinaryFunction BinaryFunction}, or <code>null</code> if the given
+     * <code>BinaryFunction</code> is <code>null</code>
      */
     public static <L, R, T> BinaryFunctionBinaryPredicate<L, R> adapt(
             BinaryFunction<? super L, ? super R, Boolean> function) {

@@ -64,7 +64,7 @@ public final class PredicateUnaryPredicate<A> implements UnaryPredicate<A>, Seri
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        return that == this || (that instanceof PredicateUnaryPredicate && equals((PredicateUnaryPredicate<?>) that));
+        return that == this || (that instanceof PredicateUnaryPredicate<?> && equals((PredicateUnaryPredicate<?>) that));
     }
 
     /**

@@ -97,7 +97,7 @@ public class BinarySequence<L, R> implements BinaryProcedure<L, R>, Serializable
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        return that == this || (that instanceof BinarySequence && equals((BinarySequence<?, ?>) that));
+        return that == this || (that instanceof BinarySequence<?, ?> && equals((BinarySequence<?, ?>) that));
     }
 
     /**

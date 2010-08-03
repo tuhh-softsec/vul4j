@@ -50,7 +50,7 @@ public final class BinaryProcedureUnaryProcedure<A> implements UnaryProcedure<A>
      */
     @Override
     public boolean equals(Object obj) {
-        return obj == this || obj instanceof BinaryProcedureUnaryProcedure
+        return obj == this || obj instanceof BinaryProcedureUnaryProcedure<?>
                 && equals((BinaryProcedureUnaryProcedure<?>) obj);
     }
 
@@ -84,8 +84,8 @@ public final class BinaryProcedureUnaryProcedure<A> implements UnaryProcedure<A>
 
     /**
      * Adapt a BinaryProcedure as a UnaryProcedure.
-     * @param <A>
-     * @param predicate BinaryProcedure to adapt
+     * @param <A> argument type
+     * @param procedure BinaryProcedure to adapt
      * @return UnaryProcedure<A>
      */
     public static <A> UnaryProcedure<A> adapt(BinaryProcedure<? super A, ? super A> procedure) {

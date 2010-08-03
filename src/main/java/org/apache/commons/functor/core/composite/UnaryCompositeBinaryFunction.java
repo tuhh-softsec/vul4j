@@ -101,7 +101,7 @@ public class UnaryCompositeBinaryFunction<L, R, T> implements BinaryFunction<L, 
      */
     public boolean equals(Object that) {
         return that == this
-                || (that instanceof UnaryCompositeBinaryFunction && equals((UnaryCompositeBinaryFunction<?, ?, ?>) that));
+                || (that instanceof UnaryCompositeBinaryFunction<?, ?, ?> && equals((UnaryCompositeBinaryFunction<?, ?, ?>) that));
     }
 
     /**

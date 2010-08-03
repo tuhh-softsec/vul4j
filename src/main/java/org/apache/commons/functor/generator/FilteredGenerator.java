@@ -68,7 +68,7 @@ public class FilteredGenerator<E> extends BaseGenerator<E> {
         if (obj == this) {
             return true;
         }
-        if (obj instanceof FilteredGenerator == false) {
+        if (obj instanceof FilteredGenerator<?> == false) {
             return false;
         }
         FilteredGenerator<?> other = (FilteredGenerator<?>) obj;

@@ -82,7 +82,7 @@ public class CompositeUnaryFunction<A, T> implements UnaryFunction<A, T>, Serial
          */
         @Override
         public boolean equals(Object obj) {
-            return obj == this || obj instanceof Helper && equals((Helper<?>) obj);
+            return obj == this || obj instanceof CompositeUnaryFunction<?, ?>.Helper<?> && equals((Helper<?>) obj);
         }
 
         private boolean equals(Helper<?> helper) {
@@ -124,7 +124,8 @@ public class CompositeUnaryFunction<A, T> implements UnaryFunction<A, T>, Serial
         this.function = function;
     }
 
-    private <X> CompositeUnaryFunction(UnaryFunction<? super X, ? extends T> following, UnaryFunction<? super A, ? extends X> preceding) {
+    private <X> CompositeUnaryFunction(UnaryFunction<? super X, ? extends T> following,
+            UnaryFunction<? super A, ? extends X> preceding) {
         this.function = new Helper<X>(following, preceding);
     }
 
@@ -152,7 +153,8 @@ public class CompositeUnaryFunction<A, T> implements UnaryFunction<A, T>, Serial
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        return that == this || (that instanceof CompositeUnaryFunction && equals((CompositeUnaryFunction<?, ?>) that));
+        return that == this
+                || (that instanceof CompositeUnaryFunction<?, ?> && equals((CompositeUnaryFunction<?, ?>) that));
     }
 
     /**

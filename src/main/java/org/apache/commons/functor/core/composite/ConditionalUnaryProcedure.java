@@ -94,7 +94,7 @@ public final class ConditionalUnaryProcedure<A> implements UnaryProcedure<A>, Se
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        return that == this || (that instanceof ConditionalUnaryProcedure && equals((ConditionalUnaryProcedure<?>) that));
+        return that == this || (that instanceof ConditionalUnaryProcedure<?> && equals((ConditionalUnaryProcedure<?>) that));
     }
 
     /**

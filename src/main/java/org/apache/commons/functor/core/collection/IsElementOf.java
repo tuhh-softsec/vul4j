@@ -54,7 +54,7 @@ public final class IsElementOf<L, R> implements BinaryPredicate<L, R>, Serializa
      * {@inheritDoc}
      */
     public boolean test(L obj, R col) {
-        if (col instanceof Collection) {
+        if (col instanceof Collection<?>) {
             return testCollection(obj, (Collection<?>) col);
         }
         if (null != col && col.getClass().isArray()) {
@@ -70,7 +70,7 @@ public final class IsElementOf<L, R> implements BinaryPredicate<L, R>, Serializa
      * {@inheritDoc}
      */
     public boolean equals(Object obj) {
-        return (obj instanceof IsElementOf);
+        return (obj instanceof IsElementOf<?, ?>);
     }
 
     /**
@@ -134,7 +134,7 @@ public final class IsElementOf<L, R> implements BinaryPredicate<L, R>, Serializa
     public static <A> UnaryPredicate<A> instance(Object obj) {
         if (null == obj) {
             throw new NullPointerException("Argument must not be null");
-        } else if (obj instanceof Collection) {
+        } else if (obj instanceof Collection<?>) {
             return new RightBoundPredicate<A, Object>(new IsElementOf<A, Object>(), obj);
         } else if (obj.getClass().isArray()) {
             return new RightBoundPredicate<A, Object>(new IsElementOf<A, Object>(), obj);

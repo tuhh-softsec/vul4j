@@ -65,7 +65,7 @@ public final class ProcedureFunction<T> implements Function<T>, Serializable {
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        return that == this || (that instanceof ProcedureFunction && equals((ProcedureFunction<?>) that));
+        return that == this || (that instanceof ProcedureFunction<?> && equals((ProcedureFunction<?>) that));
     }
 
     /**

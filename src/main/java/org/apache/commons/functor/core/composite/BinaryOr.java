@@ -105,7 +105,7 @@ public final class BinaryOr<L, R> extends BaseBinaryPredicateList<L, R> {
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        return that == this || (that instanceof BinaryOr && equals((BinaryOr<?, ?>) that));
+        return that == this || (that instanceof BinaryOr<?, ?> && equals((BinaryOr<?, ?>) that));
     }
 
     /**
