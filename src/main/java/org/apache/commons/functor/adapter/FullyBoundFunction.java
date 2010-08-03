@@ -38,13 +38,13 @@ import org.apache.commons.functor.Function;
  * @version $Revision$ $Date$
  * @author Matt Benson
  */
-public final class FullyBoundFunction<L, R, T> implements Function<T>, Serializable {
+public final class FullyBoundFunction<T> implements Function<T>, Serializable {
     /** The {@link BinaryFunction BinaryFunction} I'm wrapping. */
-    private BinaryFunction<? super L, ? super R, ? extends T> function;
+    private BinaryFunction<Object, Object, ? extends T> function;
     /** The left parameter to pass to that function. */
-    private L left;
+    private Object left;
     /** The right parameter to pass to that function. */
-    private R right;
+    private Object right;
 
     /**
      * Create a new FullyBoundFunction.
@@ -52,11 +52,12 @@ public final class FullyBoundFunction<L, R, T> implements Function<T>, Serializa
      * @param left the left side argument to use
      * @param right the right side argument to use
      */
-    public FullyBoundFunction(BinaryFunction<? super L, ? super R, ? extends T> function, L left, R right) {
+    @SuppressWarnings("unchecked")
+    public <L, R> FullyBoundFunction(BinaryFunction<? super L, ? super R, ? extends T> function, L left, R right) {
         if (function == null) {
             throw new IllegalArgumentException("BinaryFunction argument was null");
         }
-        this.function = function;
+        this.function = (BinaryFunction<Object, Object, T>) function;
         this.left = left;
         this.right = right;
     }
@@ -72,7 +73,7 @@ public final class FullyBoundFunction<L, R, T> implements Function<T>, Serializa
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        return that == this || (that instanceof FullyBoundFunction && equals((FullyBoundFunction<?, ?, ?>) that));
+        return that == this || (that instanceof FullyBoundFunction<?> && equals((FullyBoundFunction<?>) that));
     }
 
     /**
@@ -80,7 +81,7 @@ public final class FullyBoundFunction<L, R, T> implements Function<T>, Serializa
      * @param that FullyBoundFunction to test
      * @return boolean
      */
-    public boolean equals(FullyBoundFunction<?, ?, ?> that) {
+    public boolean equals(FullyBoundFunction<?> that) {
         return null != that && (null == function ? null == that.function : function.equals(that.function))
                 && (null == left ? null == that.left : left.equals(that.left))
                 && (null == right ? null == that.right : right.equals(that.right));
@@ -115,14 +116,17 @@ public final class FullyBoundFunction<L, R, T> implements Function<T>, Serializa
 
     /**
      * Adapt a BinaryFunction as a Function.
+     * @param <L> left type
+     * @param <R> right type
+     * @param <T> result type
      * @param function to adapt
      * @param left left side argument
      * @param right right side argument
      * @return FullyBoundFunction
      */
-    public static <L, R, T> FullyBoundFunction<L, R, T> bind(
+    public static <L, R, T> FullyBoundFunction<T> bind(
             BinaryFunction<? super L, ? super R, ? extends T> function, L left, R right) {
-        return null == function ? null : new FullyBoundFunction<L, R, T>(function, left, right);
+        return null == function ? null : new FullyBoundFunction<T>(function, left, right);
     }
 
 }

@@ -45,7 +45,8 @@ public final class BoundProcedure implements Procedure, Serializable {
     private Object param;
 
     /**
-     * Create a new BoundProcedure.
+     * Create a new BoundProcedure instance.
+     * @param <A> arg type
      * @param procedure the procedure to adapt
      * @param arg the constant argument to use
      */
@@ -115,6 +116,7 @@ public final class BoundProcedure implements Procedure, Serializable {
      * When the given <code>UnaryProcedure</code> is <code>null</code>,
      * returns <code>null</code>.
      *
+     * @param <A> arg type
      * @param procedure the possibly-<code>null</code>
      *        {@link UnaryProcedure UnaryProcedure} to adapt
      * @param arg the object to bind as a constant argument

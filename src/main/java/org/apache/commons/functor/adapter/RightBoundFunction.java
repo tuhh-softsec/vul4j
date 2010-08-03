@@ -67,7 +67,7 @@ public final class RightBoundFunction<L, R, T> implements UnaryFunction<L, T>, S
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        return that == this || (that instanceof RightBoundFunction && equals((RightBoundFunction<?, ?, ?>) that));
+        return that == this || (that instanceof RightBoundFunction<?, ?, ?> && equals((RightBoundFunction<?, ?, ?>) that));
     }
 
     /**

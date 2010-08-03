@@ -45,7 +45,7 @@ public class TestLeftBoundProcedure extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new LeftBoundProcedure<Object, Object>(NoOp.INSTANCE,"xyzzy");
+        return new LeftBoundProcedure<Object>(NoOp.INSTANCE,"xyzzy");
     }
 
     // Lifecycle
@@ -63,21 +63,21 @@ public class TestLeftBoundProcedure extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     public void testRun() throws Exception {
-        UnaryProcedure<Object> p = new LeftBoundProcedure<Object, Object>(
+        UnaryProcedure<Object> p = new LeftBoundProcedure<Object>(
                 new BinaryFunctionBinaryProcedure<Object, Object>(RightIdentity.FUNCTION), "foo");
         p.run(Boolean.TRUE);
         p.run(Boolean.FALSE);
     }
 
     public void testEquals() throws Exception {
-        UnaryProcedure<Object> f = new LeftBoundProcedure<Object, Object>(NoOp.INSTANCE, "xyzzy");
+        UnaryProcedure<Object> f = new LeftBoundProcedure<Object>(NoOp.INSTANCE, "xyzzy");
         assertEquals(f, f);
-        assertObjectsAreEqual(f, new LeftBoundProcedure<Object, Object>(NoOp.INSTANCE, "xyzzy"));
+        assertObjectsAreEqual(f, new LeftBoundProcedure<Object>(NoOp.INSTANCE, "xyzzy"));
         assertObjectsAreNotEqual(f, new NoOp());
-        assertObjectsAreNotEqual(f, new LeftBoundProcedure<Object, Object>(
+        assertObjectsAreNotEqual(f, new LeftBoundProcedure<Object>(
                 new BinaryFunctionBinaryProcedure<Object, Object>(RightIdentity.FUNCTION), "xyzzy"));
-        assertObjectsAreNotEqual(f, new LeftBoundProcedure<Object, Object>(NoOp.INSTANCE, "foo"));
-        assertObjectsAreNotEqual(f, new LeftBoundProcedure<Object, Object>(NoOp.INSTANCE, null));
+        assertObjectsAreNotEqual(f, new LeftBoundProcedure<Object>(NoOp.INSTANCE, "foo"));
+        assertObjectsAreNotEqual(f, new LeftBoundProcedure<Object>(NoOp.INSTANCE, null));
     }
 
     public void testAdaptNull() throws Exception {

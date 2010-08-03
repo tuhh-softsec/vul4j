@@ -45,7 +45,7 @@ public class TestFullyBoundPredicate extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new FullyBoundPredicate<Object, Object>(Constant.TRUE, null, "xyzzy");
+        return new FullyBoundPredicate(Constant.TRUE, null, "xyzzy");
     }
 
     // Lifecycle
@@ -63,19 +63,20 @@ public class TestFullyBoundPredicate extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     public void testTest() throws Exception {
-        Predicate p = new FullyBoundPredicate<Object, Boolean>(
-                new BinaryFunctionBinaryPredicate<Object, Boolean>(RightIdentity.<Object, Boolean> function()), "foo", Boolean.TRUE);
+        Predicate p = new FullyBoundPredicate(
+                new BinaryFunctionBinaryPredicate<Object, Boolean>(RightIdentity.<Object, Boolean> function()), "foo",
+                Boolean.TRUE);
         assertEquals(true, p.test());
     }
 
     public void testEquals() throws Exception {
-        Predicate p = new FullyBoundPredicate<Object, Boolean>(Constant.TRUE, "xyzzy", null);
+        Predicate p = new FullyBoundPredicate(Constant.TRUE, "xyzzy", null);
         assertEquals(p, p);
-        assertObjectsAreEqual(p, new FullyBoundPredicate<Object, Boolean>(Constant.TRUE, "xyzzy", null));
+        assertObjectsAreEqual(p, new FullyBoundPredicate(Constant.TRUE, "xyzzy", null));
         assertObjectsAreNotEqual(p, Constant.TRUE);
-        assertObjectsAreNotEqual(p, new FullyBoundPredicate<Object, Boolean>(Constant.FALSE, "xyzzy", null));
-        assertObjectsAreNotEqual(p, new FullyBoundPredicate<Object, Boolean>(Constant.TRUE, "foo", null));
-        assertObjectsAreNotEqual(p, new FullyBoundPredicate<Object, String>(Constant.TRUE, null, "xyzzy"));
+        assertObjectsAreNotEqual(p, new FullyBoundPredicate(Constant.FALSE, "xyzzy", null));
+        assertObjectsAreNotEqual(p, new FullyBoundPredicate(Constant.TRUE, "foo", null));
+        assertObjectsAreNotEqual(p, new FullyBoundPredicate(Constant.TRUE, null, "xyzzy"));
     }
 
     public void testAdaptNull() throws Exception {

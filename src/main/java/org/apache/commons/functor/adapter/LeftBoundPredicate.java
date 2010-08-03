@@ -38,30 +38,31 @@ import org.apache.commons.functor.UnaryPredicate;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-public final class LeftBoundPredicate<L, R> implements UnaryPredicate<R>, Serializable {
+public final class LeftBoundPredicate<A> implements UnaryPredicate<A>, Serializable {
 
     /** The {@link BinaryPredicate BinaryPredicate} I'm wrapping. */
-    private BinaryPredicate<? super L, ? super R> predicate;
+    private BinaryPredicate<Object, ? super A> predicate;
     /** The parameter to pass to that predicate. */
-    private L param;
+    private Object param;
 
     /**
      * Create a new LeftBoundPredicate.
      * @param predicate the predicate to adapt
      * @param arg the constant argument to use
      */
-    public LeftBoundPredicate(BinaryPredicate<? super L, ? super R> predicate, L arg) {
+    @SuppressWarnings("unchecked")
+    public <L> LeftBoundPredicate(BinaryPredicate<? super L, ? super A> predicate, L arg) {
         if (predicate == null) {
             throw new IllegalArgumentException("BinaryPredicate argument was null");
         }
-        this.predicate = predicate;
+        this.predicate = (BinaryPredicate<Object, ? super A>) predicate;
         this.param = arg;
     }
 
     /**
      * {@inheritDoc}
      */
-    public boolean test(R obj) {
+    public boolean test(A obj) {
         return predicate.test(param, obj);
     }
 
@@ -69,7 +70,7 @@ public final class LeftBoundPredicate<L, R> implements UnaryPredicate<R>, Serial
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        return that == this || (that instanceof LeftBoundPredicate && equals((LeftBoundPredicate<?, ?>) that));
+        return that == this || (that instanceof LeftBoundPredicate<?> && equals((LeftBoundPredicate<?>) that));
     }
 
     /**
@@ -77,7 +78,7 @@ public final class LeftBoundPredicate<L, R> implements UnaryPredicate<R>, Serial
      * @param that LeftBoundPredicate to test
      * @return boolean
      */
-    public boolean equals(LeftBoundPredicate<?, ?> that) {
+    public boolean equals(LeftBoundPredicate<?> that) {
         return null != that
                 && (null == predicate ? null == that.predicate : predicate.equals(that.predicate))
                 && (null == param ? null == that.param : param.equals(that.param));
@@ -112,7 +113,7 @@ public final class LeftBoundPredicate<L, R> implements UnaryPredicate<R>, Serial
      * @param arg Object argument to always send as the left operand to the wrapped function
      * @return LeftBoundPredicate
      */
-    public static <L, R> LeftBoundPredicate<L, R> bind(BinaryPredicate<? super L, ? super R> predicate, L arg) {
-        return null == predicate ? null : new LeftBoundPredicate<L, R>(predicate, arg);
+    public static <L, R> LeftBoundPredicate<R> bind(BinaryPredicate<? super L, ? super R> predicate, L arg) {
+        return null == predicate ? null : new LeftBoundPredicate<R>(predicate, arg);
     }
 }

@@ -38,29 +38,31 @@ import org.apache.commons.functor.UnaryFunction;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-public final class LeftBoundFunction<L, R, T> implements UnaryFunction<R, T>, Serializable {
+public final class LeftBoundFunction<A, T> implements UnaryFunction<A, T>, Serializable {
     /** The {@link BinaryFunction BinaryFunction} I'm wrapping. */
-    private BinaryFunction<? super L, ? super R, ? extends T> function;
+    private BinaryFunction<Object, ? super A, ? extends T> function;
     /** The parameter to pass to that function. */
-    private L param = null;
+    private Object param = null;
 
     /**
-     * Create a new LeftBoundFunction.
+     * Create a new LeftBoundFunction instance.
+     * @param <L> bound arg type
      * @param function the function to adapt
      * @param arg the constant argument to use
      */
-    public LeftBoundFunction(BinaryFunction<? super L, ? super R, ? extends T> function, L arg) {
+    @SuppressWarnings("unchecked")
+    public <L> LeftBoundFunction(BinaryFunction<? super L, ? super A, ? extends T> function, L arg) {
         if (function == null) {
             throw new IllegalArgumentException("BinaryFunction argument was null");
         }
-        this.function = function;
+        this.function = (BinaryFunction<Object, ? super A, ? extends T>) function;
         this.param = arg;
     }
 
     /**
      * {@inheritDoc}
      */
-    public T evaluate(R obj) {
+    public T evaluate(A obj) {
         return function.evaluate(param, obj);
     }
 
@@ -68,7 +70,7 @@ public final class LeftBoundFunction<L, R, T> implements UnaryFunction<R, T>, Se
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        return that == this || (that instanceof LeftBoundFunction && equals((LeftBoundFunction<?, ?, ?>) that));
+        return that == this || (that instanceof LeftBoundFunction<?, ?> && equals((LeftBoundFunction<?, ?>) that));
     }
 
     /**
@@ -76,7 +78,7 @@ public final class LeftBoundFunction<L, R, T> implements UnaryFunction<R, T>, Se
      * @param that LeftBoundFunction to test
      * @return boolean
      */
-    public boolean equals(LeftBoundFunction<?, ?, ?> that) {
+    public boolean equals(LeftBoundFunction<?, ?> that) {
         return null != that
                 && (null == function ? null == that.function : function.equals(that.function))
                 && (null == param ? null == that.param : param.equals(that.param));
@@ -107,12 +109,16 @@ public final class LeftBoundFunction<L, R, T> implements UnaryFunction<R, T>, Se
 
     /**
      * Adapt a BinaryFunction as a UnaryFunction.
+     * @param <L> left type
+     * @param <R> right type
+     * @param <T> result type
      * @param function to adapt
      * @param arg left side argument
      * @return LeftBoundFunction
      */
-    public static <L, R, T> LeftBoundFunction<L, R, T> bind(BinaryFunction<? super L, ? super R, ? extends T> function, L arg) {
-        return null == function ? null : new LeftBoundFunction<L, R, T>(function, arg);
+    public static <L, R, T> LeftBoundFunction<R, T> bind(
+            BinaryFunction<? super L, ? super R, ? extends T> function, L arg) {
+        return null == function ? null : new LeftBoundFunction<R, T>(function, arg);
     }
 
 }

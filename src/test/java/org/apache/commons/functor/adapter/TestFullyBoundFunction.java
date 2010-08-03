@@ -46,7 +46,7 @@ public class TestFullyBoundFunction extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new FullyBoundFunction<Object, Object, Object>(RightIdentity.FUNCTION, null, "xyzzy");
+        return new FullyBoundFunction<Object>(RightIdentity.FUNCTION, null, "xyzzy");
     }
 
     // Lifecycle
@@ -64,17 +64,17 @@ public class TestFullyBoundFunction extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     public void testEvaluate() throws Exception {
-        Function<Object> f = new FullyBoundFunction<String, Object, Object>(RightIdentity.FUNCTION, null, "foo");
+        Function<Object> f = new FullyBoundFunction<Object>(RightIdentity.FUNCTION, null, "foo");
         assertEquals("foo", f.evaluate());
     }
 
     public void testEquals() throws Exception {
-        Function<Object> f = new FullyBoundFunction<Object, Object, Object>(RightIdentity.FUNCTION, null, "xyzzy");
+        Function<Object> f = new FullyBoundFunction<Object>(RightIdentity.FUNCTION, null, "xyzzy");
         assertEquals(f, f);
-        assertObjectsAreEqual(f, new FullyBoundFunction<Object, Object, Object>(RightIdentity.FUNCTION, null, "xyzzy"));
+        assertObjectsAreEqual(f, new FullyBoundFunction<Object>(RightIdentity.FUNCTION, null, "xyzzy"));
         assertObjectsAreNotEqual(f, Constant.of("xyzzy"));
-        assertObjectsAreNotEqual(f, new FullyBoundFunction<Object, Object, Object>(LeftIdentity.FUNCTION, null, "xyzzy"));
-        assertObjectsAreNotEqual(f, new FullyBoundFunction<Object, Object, Object>(RightIdentity.FUNCTION, null, "bar"));
+        assertObjectsAreNotEqual(f, new FullyBoundFunction<Object>(LeftIdentity.FUNCTION, null, "xyzzy"));
+        assertObjectsAreNotEqual(f, new FullyBoundFunction<Object>(RightIdentity.FUNCTION, null, "bar"));
     }
 
     public void testAdaptNull() throws Exception {

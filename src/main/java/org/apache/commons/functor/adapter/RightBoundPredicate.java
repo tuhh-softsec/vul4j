@@ -68,7 +68,7 @@ public final class RightBoundPredicate<L, R> implements UnaryPredicate<L>, Seria
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        return that == this || (that instanceof RightBoundPredicate && equals((RightBoundPredicate<?, ?>) that));
+        return that == this || (that instanceof RightBoundPredicate<?, ?> && equals((RightBoundPredicate<?, ?>) that));
     }
 
     /**

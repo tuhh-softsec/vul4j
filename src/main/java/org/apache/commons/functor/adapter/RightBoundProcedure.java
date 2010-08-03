@@ -68,7 +68,7 @@ public final class RightBoundProcedure<L, R> implements UnaryProcedure<L>, Seria
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        return that == this || (that instanceof RightBoundProcedure && equals((RightBoundProcedure<?, ?>) that));
+        return that == this || (that instanceof RightBoundProcedure<?, ?> && equals((RightBoundProcedure<?, ?>) that));
     }
 
     /**

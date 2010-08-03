@@ -46,7 +46,7 @@ public class TestLeftBoundFunction extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new LeftBoundFunction<Object, Object, Object>(RightIdentity.FUNCTION,"xyzzy");
+        return new LeftBoundFunction<Object, Object>(RightIdentity.FUNCTION,"xyzzy");
     }
 
     // Lifecycle
@@ -64,17 +64,17 @@ public class TestLeftBoundFunction extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     public void testEvaluate() throws Exception {
-        UnaryFunction<Object, Object> f = new LeftBoundFunction<String, Object, Object>(RightIdentity.FUNCTION,"foo");
+        UnaryFunction<Object, Object> f = new LeftBoundFunction<Object, Object>(RightIdentity.FUNCTION,"foo");
         assertEquals("xyzzy",f.evaluate("xyzzy"));
     }
 
     public void testEquals() throws Exception {
-        UnaryFunction<Object, Object> f = new LeftBoundFunction<Object, Object, Object>(RightIdentity.FUNCTION,"xyzzy");
+        UnaryFunction<Object, Object> f = new LeftBoundFunction<Object, Object>(RightIdentity.FUNCTION,"xyzzy");
         assertEquals(f,f);
-        assertObjectsAreEqual(f,new LeftBoundFunction<Object, Object, Object>(RightIdentity.FUNCTION,"xyzzy"));
+        assertObjectsAreEqual(f,new LeftBoundFunction<Object, Object>(RightIdentity.FUNCTION,"xyzzy"));
         assertObjectsAreNotEqual(f,Constant.of("xyzzy"));
-        assertObjectsAreNotEqual(f,new LeftBoundFunction<Object, Object, Object>(LeftIdentity.FUNCTION,"xyzzy"));
-        assertObjectsAreNotEqual(f,new LeftBoundFunction<Object, Object, Object>(RightIdentity.FUNCTION,"bar"));
+        assertObjectsAreNotEqual(f,new LeftBoundFunction<Object, Object>(LeftIdentity.FUNCTION,"xyzzy"));
+        assertObjectsAreNotEqual(f,new LeftBoundFunction<Object, Object>(RightIdentity.FUNCTION,"bar"));
     }
 
     public void testAdaptNull() throws Exception {

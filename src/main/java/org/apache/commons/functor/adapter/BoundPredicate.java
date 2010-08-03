@@ -45,7 +45,8 @@ public final class BoundPredicate implements Predicate, Serializable {
     private Object param;
 
     /**
-     * Create a new BoundPredicate.
+     * Create a new BoundPredicate instance.
+     * @param <A> input type
      * @param predicate the predicate to adapt
      * @param arg the constant argument to use
      */
@@ -116,6 +117,7 @@ public final class BoundPredicate implements Predicate, Serializable {
      * When the given <code>UnaryPredicate</code> is <code>null</code>,
      * returns <code>null</code>.
      *
+     * @param <A> input type
      * @param predicate the possibly-<code>null</code>
      *        {@link UnaryPredicate UnaryPredicate} to adapt
      * @param arg the object to bind as a constant argument

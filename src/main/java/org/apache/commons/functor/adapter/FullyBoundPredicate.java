@@ -20,7 +20,6 @@ import java.io.Serializable;
 
 import org.apache.commons.functor.BinaryPredicate;
 import org.apache.commons.functor.Predicate;
-import org.apache.commons.functor.UnaryPredicate;
 
 /**
  * Adapts a
@@ -39,26 +38,29 @@ import org.apache.commons.functor.UnaryPredicate;
  * @version $Revision$ $Date$
  * @author Matt Benson
  */
-public final class FullyBoundPredicate<L, R> implements Predicate, Serializable {
+public final class FullyBoundPredicate implements Predicate, Serializable {
 
     /** The {@link BinaryPredicate BinaryPredicate} I'm wrapping. */
-    private BinaryPredicate<? super L, ? super R> predicate;
+    private BinaryPredicate<Object, Object> predicate;
     /** The left parameter to pass to that predicate. */
-    private L left;
+    private Object left;
     /** The right parameter to pass to that predicate. */
-    private R right;
+    private Object right;
 
     /**
-     * Create a new FullyBoundPredicate.
+     * Create a new FullyBoundPredicate instance.
+     * @param <L> left type
+     * @param <R> right type
      * @param predicate the predicate to adapt
      * @param left the left argument to use
      * @param right the right argument to use
      */
-    public FullyBoundPredicate(BinaryPredicate<? super L, ? super R> predicate, L left, R right) {
+    @SuppressWarnings("unchecked")
+    public <L, R> FullyBoundPredicate(BinaryPredicate<? super L, ? super R> predicate, L left, R right) {
         if (predicate == null) {
             throw new IllegalArgumentException("BinaryPredicate argument was null");
         }
-        this.predicate = predicate;
+        this.predicate = (BinaryPredicate<Object, Object>) predicate;
         this.left = left;
         this.right = right;
     }
@@ -74,7 +76,7 @@ public final class FullyBoundPredicate<L, R> implements Predicate, Serializable 
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        return that == this || (that instanceof FullyBoundPredicate && equals((FullyBoundPredicate<?, ?>) that));
+        return that == this || (that instanceof FullyBoundPredicate && equals((FullyBoundPredicate) that));
     }
 
     /**
@@ -82,7 +84,7 @@ public final class FullyBoundPredicate<L, R> implements Predicate, Serializable 
      * @param that FullyBoundPredicate to test
      * @return boolean
      */
-    public boolean equals(FullyBoundPredicate<?, ?> that) {
+    public boolean equals(FullyBoundPredicate that) {
         return null != that && (null == predicate ? null == that.predicate : predicate.equals(that.predicate))
                 && (null == left ? null == that.left : left.equals(that.left))
                 && (null == right ? null == that.right : right.equals(that.right));
@@ -118,11 +120,14 @@ public final class FullyBoundPredicate<L, R> implements Predicate, Serializable 
     /**
      * Adapt a BinaryPredicate to the Predicate interface.
      * @param predicate to adapt
+     * @param <L> left type
+     * @param <R> right type
      * @param left L argument to always send as the left operand to the wrapped function
      * @param right R argument to always send as the right operand to the wrapped function
      * @return FullyBoundPredicate
      */
-    public static <L, R> FullyBoundPredicate<L, R> bind(BinaryPredicate<? super L, ? super R> predicate, L left, R right) {
-        return null == predicate ? null : new FullyBoundPredicate<L, R>(predicate, left, right);
+    public static <L, R> FullyBoundPredicate bind(
+            BinaryPredicate<? super L, ? super R> predicate, L left, R right) {
+        return null == predicate ? null : new FullyBoundPredicate(predicate, left, right);
     }
 }

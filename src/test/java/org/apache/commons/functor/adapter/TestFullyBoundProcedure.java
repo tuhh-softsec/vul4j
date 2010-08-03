@@ -45,7 +45,7 @@ public class TestFullyBoundProcedure extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new FullyBoundProcedure<Object, Object>(NoOp.INSTANCE, "xyzzy", null);
+        return new FullyBoundProcedure(NoOp.INSTANCE, "xyzzy", null);
     }
 
     // Lifecycle
@@ -63,20 +63,20 @@ public class TestFullyBoundProcedure extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     public void testRun() throws Exception {
-        Procedure p = new FullyBoundProcedure<Object, Object>(new BinaryFunctionBinaryProcedure<Object, Object>(
+        Procedure p = new FullyBoundProcedure(new BinaryFunctionBinaryProcedure<Object, Object>(
                 RightIdentity.FUNCTION), "foo", null);
         p.run();
     }
 
     public void testEquals() throws Exception {
-        Procedure f = new FullyBoundProcedure<Object, Object>(NoOp.INSTANCE, "xyzzy", null);
+        Procedure f = new FullyBoundProcedure(NoOp.INSTANCE, "xyzzy", null);
         assertEquals(f, f);
-        assertObjectsAreEqual(f, new FullyBoundProcedure<Object, Object>(NoOp.INSTANCE, "xyzzy", null));
+        assertObjectsAreEqual(f, new FullyBoundProcedure(NoOp.INSTANCE, "xyzzy", null));
         assertObjectsAreNotEqual(f, new NoOp());
-        assertObjectsAreNotEqual(f, new FullyBoundProcedure<Object, Object>(
+        assertObjectsAreNotEqual(f, new FullyBoundProcedure(
                 new BinaryFunctionBinaryProcedure<Object, Object>(RightIdentity.FUNCTION), "xyzzy", null));
-        assertObjectsAreNotEqual(f, new FullyBoundProcedure<Object, Object>(NoOp.INSTANCE, "foo", null));
-        assertObjectsAreNotEqual(f, new FullyBoundProcedure<Object, Object>(NoOp.INSTANCE, null, null));
+        assertObjectsAreNotEqual(f, new FullyBoundProcedure(NoOp.INSTANCE, "foo", null));
+        assertObjectsAreNotEqual(f, new FullyBoundProcedure(NoOp.INSTANCE, null, null));
     }
 
     public void testAdaptNull() throws Exception {

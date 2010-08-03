@@ -38,25 +38,28 @@ import org.apache.commons.functor.Procedure;
  * @version $Revision$ $Date$
  * @author Matt Benson
  */
-public final class FullyBoundProcedure<L, R> implements Procedure, Serializable {
+public final class FullyBoundProcedure implements Procedure, Serializable {
     /** The {@link BinaryProcedure BinaryProcedure} I'm wrapping. */
-    private BinaryProcedure<? super L, ? super R> procedure;
+    private BinaryProcedure<Object, Object> procedure;
     /** The left parameter to pass to that procedure. */
-    private L left;
+    private Object left;
     /** The right parameter to pass to that procedure. */
-    private R right;
+    private Object right;
 
     /**
-     * Create a new FullyBoundProcedure.
+     * Create a new FullyBoundProcedure instance.
+     * @param <L> left type
+     * @param <R> right type
      * @param procedure the procedure to adapt
      * @param left the left argument to use
      * @param right the right argument to use
      */
-    public FullyBoundProcedure(BinaryProcedure<? super L, ? super R> procedure, L left, R right) {
+    @SuppressWarnings("unchecked")
+    public <L, R> FullyBoundProcedure(BinaryProcedure<? super L, ? super R> procedure, L left, R right) {
         if (procedure == null) {
             throw new IllegalArgumentException("BinaryProcedure argument was null");
         }
-        this.procedure = procedure;
+        this.procedure = (BinaryProcedure<Object, Object>) procedure;
         this.left = left;
         this.right = right;
     }
@@ -72,7 +75,7 @@ public final class FullyBoundProcedure<L, R> implements Procedure, Serializable 
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        return that == this || (that instanceof FullyBoundProcedure && equals((FullyBoundProcedure<?, ?>) that));
+        return that == this || (that instanceof FullyBoundProcedure && equals((FullyBoundProcedure) that));
     }
 
     /**
@@ -80,7 +83,7 @@ public final class FullyBoundProcedure<L, R> implements Procedure, Serializable 
      * @param that FullyBoundProcedure to test
      * @return boolean
      */
-    public boolean equals(FullyBoundProcedure<?, ?> that) {
+    public boolean equals(FullyBoundProcedure that) {
         return null != that && (null == procedure ? null == that.procedure : procedure.equals(that.procedure))
                 && (null == left ? null == that.left : left.equals(that.left))
                 && (null == right ? null == that.right : right.equals(that.right));
@@ -90,7 +93,7 @@ public final class FullyBoundProcedure<L, R> implements Procedure, Serializable 
      * {@inheritDoc}
      */
     public int hashCode() {
-        int hash = "LeftBoundProcedure".hashCode();
+        int hash = "FullyBoundProcedure".hashCode();
         if (null != procedure) {
             hash <<= 2;
             hash ^= procedure.hashCode();
@@ -115,13 +118,15 @@ public final class FullyBoundProcedure<L, R> implements Procedure, Serializable 
 
     /**
      * Adapt a BinaryProcedure to the Procedure interface.
+     * @param <L> left type
+     * @param <R> right type
      * @param procedure to adapt
      * @param left left side argument
      * @param right right side argument
      * @return FullyBoundProcedure
      */
-    public static <L, R> FullyBoundProcedure<L, R> bind(BinaryProcedure<? super L, ? super R> procedure, L left, R right) {
-        return null == procedure ? null : new FullyBoundProcedure<L, R>(procedure, left, right);
+    public static <L, R> FullyBoundProcedure bind(BinaryProcedure<? super L, ? super R> procedure, L left, R right) {
+        return null == procedure ? null : new FullyBoundProcedure(procedure, left, right);
     }
 
 }
