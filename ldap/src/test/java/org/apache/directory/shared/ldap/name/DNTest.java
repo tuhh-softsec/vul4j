@@ -2253,7 +2253,13 @@ public class DNTest
         assertEquals( name, new DN( "" ) );
 
         DN name4 = new DN( "ou=East" );
+        
+        assertTrue( name.isNormalized() );
+
         name = name.add( "ou=East" );
+        
+        assertFalse( name.isNormalized() );
+        
         assertEquals( name4, name );
 
         DN name3 = new DN( "ou=Marketing,ou=East" );
@@ -3708,5 +3714,50 @@ public class DNTest
         assertTrue( dn.isChildOf( parent2 ) );
         assertTrue( dn.isChildOf( parent3 ) );
         assertFalse( notParent.isChildOf( dn ) );
+    }
+    
+    
+    @Test
+    public void testNormalize() throws Exception
+    {
+        DN dn = new DN( "ou=system" );
+        assertFalse( dn.isNormalized() );
+        
+        dn = dn.add( "ou=users" );
+        assertFalse( dn.isNormalized() );
+        
+        dn.normalize( oidOids );
+        assertTrue( dn.isNormalized() );
+
+        dn = dn.add( "ou=x" );
+        assertFalse( dn.isNormalized() );
+
+        assertEquals( "ou=x,2.5.4.11=users,2.5.4.11=system", dn.getNormName() );
+        assertEquals( "ou=x,ou=users,ou=system", dn.getName() );
+        
+        dn.normalize( oidOids );
+        assertEquals( "2.5.4.11=x,2.5.4.11=users,2.5.4.11=system", dn.getNormName() );
+        assertEquals( "ou=x,ou=users,ou=system", dn.getName() );
+        
+        RDN rdn = new RDN( "ou=system" );
+        dn = new DN();
+        assertTrue( dn.isNormalized() );
+        
+        dn = dn.add( rdn );
+        assertFalse( dn.isNormalized() );
+        
+        dn.normalize( oidOids );
+        assertTrue( dn.isNormalized() );
+        
+        DN anotherDn = new DN( "ou=x,ou=users" );
+        
+        dn = dn.addAll( anotherDn );
+        assertFalse( dn.isNormalized() );
+        
+        dn.normalize( oidOids );
+        assertTrue( dn.isNormalized() );
+        
+        dn = dn.remove( 0 );
+        assertTrue( dn.isNormalized() );
     }
 }
