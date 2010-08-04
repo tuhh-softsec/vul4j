@@ -8,8 +8,8 @@ import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Map.Entry;
+import java.util.Properties;
 
 import net.webassembletool.ResourceContext;
 import net.webassembletool.output.Output;
@@ -43,8 +43,9 @@ public class FileResource extends Resource {
 			headersInputStream.close();
 			Iterator<Entry<Object, Object>> iterator = headers.entrySet()
 					.iterator();
-			if (!iterator.hasNext())
+			if (!iterator.hasNext()) {
 				throw new InvalidHeaderFileException("Invalid headers file");
+			}
 			Entry<Object, Object> header = iterator.next();
 			statusCode = Integer.parseInt(header.getKey().toString());
 			statusMessage = header.getValue().toString();
@@ -75,6 +76,10 @@ public class FileResource extends Resource {
 				output.addHeader(header.getKey(), header.getValue());
 			}
 		}
+		String charset = output.getHeader("content-encoding");
+		if (charset != null) {
+			output.setCharsetName(charset);
+		}
 		if (file != null) {
 			InputStream inputStream = new FileInputStream(file);
 			try {
@@ -98,8 +103,9 @@ public class FileResource extends Resource {
 
 	@Override
 	public String getHeader(String name) {
-		if (headersMap == null)
+		if (headersMap == null) {
 			return null;
+		}
 		return headersMap.get(name);
 	}
 }
