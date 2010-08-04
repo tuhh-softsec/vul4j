@@ -187,7 +187,9 @@ public class CachedResponse extends Resource {
 
 		// Copy Request headers
 		Map<String, String> requestHeaders2 = new HashMap<String, String>();
-		requestHeaders2.putAll(requestHeaders);
+		if (requestHeaders != null) {
+			requestHeaders2.putAll(requestHeaders);
+		}
 		s.setRequestHeaders(requestHeaders2);
 
 		return s;
