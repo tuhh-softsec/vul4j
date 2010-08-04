@@ -22,20 +22,23 @@ package org.apache.directory.shared.ldap.util.tree;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+
+import java.util.Map;
 
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.exception.LdapException;
+import org.apache.directory.shared.ldap.exception.LdapUnwillingToPerformException;
 import org.apache.directory.shared.ldap.name.DN;
-import org.junit.After;
-import org.junit.Before;
+import org.apache.directory.shared.ldap.name.RDN;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 
 /**
- * Test the Dn Nodes 
+ * Test the Dn Nodes
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
@@ -43,106 +46,630 @@ import org.junit.runner.RunWith;
 @Concurrent()
 public class TestDnNode
 {
-    /** A structure to hold all the DNs */
-    DnBranchNode<DN> dnLookupTree;
-    DN dn1;
-    DN dn2;
-    DN dn3;
-    DN dn4;
-    DN dn5;
-    DN dn6;
-
+    //---------------------------------------------------------------------------
+    // Test the Add( DN ) operation
+    //---------------------------------------------------------------------------
     /**
-     * Create the elements we will test
+     * Test the addition of a null DN
      */
-    @Before
-    public void setUp()  throws Exception
+    @Test( expected=LdapUnwillingToPerformException.class)
+    public void testAddNullDNNoElem() throws LdapException
     {
-        dnLookupTree = new DnBranchNode<DN>();
-        
-        dn1 = new DN( "dc=directory,dc=apache,dc=org" );
-        dn2 = new DN( "dc=mina,dc=apache,dc=org" );
-        dn3 = new DN( "dc=test,dc=com" );
-        dn4 = new DN( "dc=acme,dc=com" );
-        dn5 = new DN( "dc=acme,c=us,dc=com" );
-        dn6 = new DN( "dc=empty" );
+        DnNode<DN> tree = new DnNode<DN>();
 
-        dnLookupTree.add( dn1, dn1 );
-        dnLookupTree.add( dn2, dn2 );
-        dnLookupTree.add( dn3, dn3 );
-        dnLookupTree.add( dn4, dn4 );
-        dnLookupTree.add( dn5, dn5 );
-        dnLookupTree.add( dn6, dn6 );
-    }
-    
-    
-    /**
-     * Clean the tree
-     *
-     */
-    @After
-    public void tearDown()
-    {
-        dnLookupTree = null;
-    }
-    
-    
-    /**
-     * Test the addition of a single DN
-     */
-    @Test public void testNewTree() throws LdapException
-    {
-        /** A structure to hold all the DNs */
-        DnBranchNode<DN> dnLookupTree = new DnBranchNode<DN>();
-        
-        DN suffix = new DN( "dc=example, dc=com" );
-        
-        dnLookupTree.add( suffix, suffix );
-        
-        assertNotNull( dnLookupTree );
-        assertTrue( dnLookupTree instanceof DnBranchNode );
-        assertTrue( ((DnBranchNode<DN>)dnLookupTree).contains( "dc=com" ) );
-        
-        DnNode<DN> child = ((DnBranchNode<DN>)dnLookupTree).getChild( "dc=com" );
-        assertTrue( child instanceof DnBranchNode );
-        assertTrue( ((DnBranchNode<DN>)child).contains( "dc=example" ) );
-
-        child = ((DnBranchNode<DN>)child).getChild( "dc=example" );
-        assertEquals( suffix, ((DnLeafNode<DN>)child).getElement() );
+        tree.add( null );
     }
 
 
     /**
-     * Test additions in a tree 
+     * Test the addition of a DN with three RDN
      */
     @Test
-    public void testComplexTreeCreation() throws LdapException
+    public void testAdd3LevelDNNoElem() throws LdapException
     {
-        
-        assertTrue( dnLookupTree.hasParentElement( dn1 ) );
-        assertTrue( dnLookupTree.hasParentElement( dn2 ) );
-        assertTrue( dnLookupTree.hasParentElement( dn3 ) );
-        assertTrue( dnLookupTree.hasParentElement( dn4 ) );
-        assertTrue( dnLookupTree.hasParentElement( dn5 ) );
-        assertTrue( dnLookupTree.hasParentElement( dn6 ) );
-        assertTrue( dnLookupTree.hasParentElement( new DN( "dc=nothing,dc=empty" ) ) );
-        assertFalse( dnLookupTree.hasParentElement( new DN(  "dc=directory,dc=apache,dc=root" ) ) );
+        DnNode<DN> tree = new DnNode<DN>( DN.EMPTY_DN, null );
+        DN dn = new DN( "dc=c,dc=b,dc=a" );
+
+        tree.add( dn );
+
+        assertNotNull( tree );
+
+        Map<RDN, DnNode<DN>> children = tree.getChildren();
+        assertNotNull( children );
+
+        assertEquals( 1, children.size() );
+        assertNull( tree.getElement() );
+
+        DnNode<DN> level1 = children.get( new RDN( "dc=a" ) );
+        DnNode<DN> level2 = level1.getChildren().get( new RDN( "dc=b" ) );
+        DnNode<DN> level3 = level2.getChildren().get( new RDN( "dc=c" ) );
+
+        assertNotNull( level3 );
+        assertFalse( level3.hasElement() );
     }
-    
-    
+
+
     /**
-     * Test that we can add an entry twice without any problem
-     * TODO testAddEntryTwice.
-     *
+     * Test the addition of two DNs not overlapping
      */
     @Test
-    public void testAddEntryTwice() throws LdapException
+    public void testAdd2DistinctDNsNoElem() throws LdapException
     {
-        assertEquals( 6, dnLookupTree.size() );
+        DnNode<DN> tree = new DnNode<DN>();
+        DN dn1 = new DN( "dc=b,dc=a" );
+        DN dn2 = new DN( "dc=f,dc=e" );
 
-        dnLookupTree.add( dn1, dn1 );
-        
-        assertEquals( 6, dnLookupTree.size() );
+        tree.add( dn1 );
+        tree.add( dn2 );
+
+        assertNotNull( tree );
+
+        Map<RDN, DnNode<DN>> children = tree.getChildren();
+        assertNotNull( children );
+
+        assertEquals( 2, children.size() );
+        assertNull( tree.getElement() );
+
+        DnNode<DN> level1 = children.get( new RDN( "dc=a" ) );
+        DnNode<DN> level2 = level1.getChildren().get( new RDN( "dc=b" ) );
+
+        assertNotNull( level2 );
+        assertFalse( level2.hasElement() );
+
+        level1 = children.get( new RDN( "dc=e" ) );
+        level2 = level1.getChildren().get( new RDN( "dc=f" ) );
+
+        assertNotNull( level2 );
+        assertFalse( level2.hasElement() );
+    }
+
+
+    /**
+     * Test the addition of two overlapping DNs
+     */
+    @Test
+    public void testAdd2OverlappingDNsNoElem() throws LdapException
+    {
+        DnNode<DN> tree = new DnNode<DN>();
+        DN dn1 = new DN( "dc=b,dc=a" );
+        DN dn2 = new DN( "dc=f,dc=a" );
+
+        tree.add( dn1 );
+        tree.add( dn2 );
+
+        assertNotNull( tree );
+
+        Map<RDN, DnNode<DN>> children = tree.getChildren();
+        assertNotNull( children );
+
+        assertEquals( 1, children.size() );
+        assertNull( tree.getElement() );
+
+        DnNode<DN> level1 = children.get( new RDN( "dc=a" ) );
+        DnNode<DN> level2 = level1.getChildren().get( new RDN( "dc=b" ) );
+
+        Map<RDN, DnNode<DN>> childrenDn1 = level1.getChildren();
+        assertNotNull( childrenDn1 );
+
+        assertEquals( 2, childrenDn1.size() );
+        assertNull( level1.getElement() );
+
+        assertNotNull( level2 );
+        assertFalse( level2.hasElement() );
+
+        level1 = children.get( new RDN( "dc=a" ) );
+        level2 = level1.getChildren().get( new RDN( "dc=f" ) );
+
+        assertNotNull( level2 );
+        assertFalse( level2.hasElement() );
+    }
+
+
+    /**
+     * Test the addition of two equal DNs
+     */
+    @Test( expected=LdapUnwillingToPerformException.class)
+    public void testAdd2EqualDNsNoElem() throws LdapException
+    {
+        DnNode<DN> tree = new DnNode<DN>();
+        DN dn1 = new DN( "dc=b,dc=a" );
+        DN dn2 = new DN( "dc=b,dc=a" );
+
+        tree.add( dn1 );
+        tree.add( dn2 );
+    }
+
+
+    //---------------------------------------------------------------------------
+    // Test the Add( DN, N ) operation
+    //---------------------------------------------------------------------------
+    /**
+     * Test the addition of a null DN
+     */
+    @Test( expected=LdapUnwillingToPerformException.class)
+    public void testAddNullDN() throws LdapException
+    {
+        DnNode<DN> tree = new DnNode<DN>();
+
+        tree.add( (DN)null, null );
+    }
+
+
+    /**
+     * Test the addition of a DN with three RDN
+     */
+    @Test
+    public void testAdd3LevelDN() throws LdapException
+    {
+        DnNode<DN> tree = new DnNode<DN>();
+        DN dn = new DN( "dc=c,dc=b,dc=a" );
+
+        tree.add( dn, dn );
+
+        assertNotNull( tree );
+
+        Map<RDN, DnNode<DN>> children = tree.getChildren();
+        assertNotNull( children );
+
+        assertEquals( 1, children.size() );
+        assertNull( tree.getElement() );
+
+        DnNode<DN> level1 = children.get( new RDN( "dc=a" ) );
+        DnNode<DN> level2 = level1.getChildren().get( new RDN( "dc=b" ) );
+        DnNode<DN> level3 = level2.getChildren().get( new RDN( "dc=c" ) );
+
+        assertNotNull( level3 );
+        assertEquals( dn, level3.getElement() );
+    }
+
+
+    /**
+     * Test the addition of two DNs not overlapping
+     */
+    @Test
+    public void testAdd2DistinctDNs() throws LdapException
+    {
+        DnNode<DN> tree = new DnNode<DN>();
+        DN dn1 = new DN( "dc=b,dc=a" );
+        DN dn2 = new DN( "dc=f,dc=e" );
+
+        tree.add( dn1, dn1 );
+        tree.add( dn2, dn2 );
+
+        assertNotNull( tree );
+
+        Map<RDN, DnNode<DN>> children = tree.getChildren();
+        assertNotNull( children );
+
+        assertEquals( 2, children.size() );
+        assertNull( tree.getElement() );
+
+        DnNode<DN> level1 = children.get( new RDN( "dc=a" ) );
+        DnNode<DN> level2 = level1.getChildren().get( new RDN( "dc=b" ) );
+
+        assertNotNull( level2 );
+        assertEquals( dn1, level2.getElement() );
+
+        level1 = children.get( new RDN( "dc=e" ) );
+        level2 = level1.getChildren().get( new RDN( "dc=f" ) );
+
+        assertNotNull( level2 );
+        assertEquals( dn2, level2.getElement() );
+    }
+
+
+    /**
+     * Test the addition of two overlapping DNs
+     */
+    @Test
+    public void testAdd2OverlappingDNs() throws LdapException
+    {
+        DnNode<DN> tree = new DnNode<DN>();
+        DN dn1 = new DN( "dc=b,dc=a" );
+        DN dn2 = new DN( "dc=f,dc=a" );
+
+        tree.add( dn1, dn1 );
+        tree.add( dn2, dn2 );
+
+        assertNotNull( tree );
+
+        Map<RDN, DnNode<DN>> children = tree.getChildren();
+        assertNotNull( children );
+
+        assertEquals( 1, children.size() );
+        assertNull( tree.getElement() );
+
+        DnNode<DN> level1 = children.get( new RDN( "dc=a" ) );
+        DnNode<DN> level2 = level1.getChildren().get( new RDN( "dc=b" ) );
+
+        Map<RDN, DnNode<DN>> childrenDn1 = level1.getChildren();
+        assertNotNull( childrenDn1 );
+
+        assertEquals( 2, childrenDn1.size() );
+        assertNull( level1.getElement() );
+
+        assertNotNull( level2 );
+        assertEquals( dn1, level2.getElement() );
+
+        level1 = children.get( new RDN( "dc=a" ) );
+        level2 = level1.getChildren().get( new RDN( "dc=f" ) );
+
+        assertNotNull( level2 );
+        assertEquals( dn2, level2.getElement() );
+    }
+
+
+    /**
+     * Test the addition of two equal DNs
+     */
+    @Test( expected=LdapUnwillingToPerformException.class)
+    public void testAdd2EqualDNs() throws LdapException
+    {
+        DnNode<DN> tree = new DnNode<DN>();
+        DN dn1 = new DN( "dc=b,dc=a" );
+        DN dn2 = new DN( "dc=b,dc=a" );
+
+        tree.add( dn1, dn1 );
+        tree.add( dn2, dn2 );
+    }
+
+
+    //---------------------------------------------------------------------------
+    // Test the hasChildren method
+    //---------------------------------------------------------------------------
+    @Test
+    public void testHasChildren() throws Exception
+    {
+        DnNode<DN> tree = new DnNode<DN>();
+        DN dn1 = new DN( "dc=b,dc=a" );
+        tree.add( dn1 );
+
+        assertTrue( tree.hasChildren() );
+        Map<RDN, DnNode<DN>> children = tree.getChildren();
+        assertNotNull( children );
+
+        DnNode<DN> child = children.get( new RDN( "dc=a" ) );
+        assertTrue( child.hasChildren() );
+
+        children = child.getChildren();
+        child = children.get( new RDN( "dc=b" ) );
+        assertFalse( child.hasChildren() );
+    }
+
+
+    //---------------------------------------------------------------------------
+    // Test the hasChildren(DN) method
+    //---------------------------------------------------------------------------
+    @Test
+    public void testHasChildrenDN() throws Exception
+    {
+        DnNode<DN> tree = new DnNode<DN>();
+        DN dn1 = new DN( "dc=b,dc=a" );
+        tree.add( dn1 );
+
+        assertTrue( tree.hasChildren( new DN( "dc=a" ) ) );
+        assertFalse( tree.hasChildren( dn1 ) );
+    }
+
+
+    //---------------------------------------------------------------------------
+    // Test the isLeaf() method
+    //---------------------------------------------------------------------------
+    @Test
+    public void testIsLeaf() throws Exception
+    {
+        DnNode<DN> tree = new DnNode<DN>();
+        DN dn = new DN( "dc=c,dc=b,dc=a" );
+        tree.add( dn );
+
+        assertFalse( tree.isLeaf() );
+
+        DnNode<DN> child = tree.getChild( new RDN( "dc=a" ) );
+        assertFalse( child.isLeaf() );
+
+        child = child.getChild( new RDN( "dc=b" ) );
+        assertFalse( child.isLeaf() );
+
+        child = child.getChild( new RDN( "dc=c" ) );
+        assertTrue( child.isLeaf() );
+    }
+
+
+    //---------------------------------------------------------------------------
+    // Test the isLeaf(DN) method
+    //---------------------------------------------------------------------------
+    @Test
+    public void testIsLeafDN() throws Exception
+    {
+        DnNode<DN> tree = new DnNode<DN>();
+        DN dn1 = new DN( "dc=c,dc=b,dc=a" );
+        tree.add( dn1, dn1 );
+
+        DN dn2 = new DN( "dc=e,dc=a" );
+        tree.add( dn2 );
+
+        assertFalse( tree.isLeaf( DN.EMPTY_DN ) );
+        assertFalse( tree.isLeaf( new DN( "dc=a" ) ) );
+        assertFalse( tree.isLeaf( new DN( "dc=b,dc=a" ) ) );
+        assertTrue( tree.isLeaf( dn1 ) );
+        assertTrue( tree.isLeaf( dn2 ) );
+    }
+
+
+    //---------------------------------------------------------------------------
+    // Test the getElement() method
+    //---------------------------------------------------------------------------
+    @Test
+    public void testGetElement() throws Exception
+    {
+        DnNode<DN> tree = new DnNode<DN>();
+        DN dn = new DN( "dc=c,dc=b,dc=a" );
+        tree.add( dn, dn );
+
+        assertNull( tree.getElement() );
+
+        DnNode<DN> child = tree.getChild( new RDN( "dc=a" ) );
+        assertNull( child.getElement() );
+
+        child = child.getChild( new RDN( "dc=b" ) );
+        assertNull( child.getElement() );
+
+        child = child.getChild( new RDN( "dc=c" ) );
+        assertEquals( dn, child.getElement() );
+    }
+
+
+    //---------------------------------------------------------------------------
+    // Test the hasElement() method
+    //---------------------------------------------------------------------------
+    @Test
+    public void testHasElement() throws Exception
+    {
+        DnNode<DN> tree = new DnNode<DN>();
+        DN dn = new DN( "dc=c,dc=b,dc=a" );
+        tree.add( dn, dn );
+
+        assertFalse( tree.hasElement() );
+
+        DnNode<DN> child = tree.getChild( new RDN( "dc=a" ) );
+        assertFalse( child.hasElement() );
+
+        child = child.getChild( new RDN( "dc=b" ) );
+        assertFalse( child.hasElement() );
+
+        child = child.getChild( new RDN( "dc=c" ) );
+        assertTrue( child.hasElement() );
+    }
+
+
+    //---------------------------------------------------------------------------
+    // Test the getElement(DN) method
+    //---------------------------------------------------------------------------
+    @Test
+    public void testGetElementDN() throws Exception
+    {
+        DnNode<DN> tree = new DnNode<DN>();
+        DN dn1 = new DN( "dc=c,dc=b,dc=a" );
+        tree.add( dn1, dn1 );
+
+        DN dn2 = new DN( "dc=e,dc=a" );
+        tree.add( dn2, dn2 );
+
+        assertNull( tree.getElement( DN.EMPTY_DN ) );
+        assertNull( tree.getElement( new DN( "dc=a" ) ) );
+        assertNull( tree.getElement( new DN( "dc=b,dc=a" ) ) );
+        assertEquals( dn1, tree.getElement( dn1 ) );
+        assertEquals( dn2, tree.getElement( dn2 ) );
+        assertEquals( dn2, tree.getElement( new DN( "dc=g,dc=f,dc=e,dc=a" ) ) );
+    }
+
+
+    //---------------------------------------------------------------------------
+    // Test the hasElement(DN) method
+    //---------------------------------------------------------------------------
+    @Test
+    public void testHasElementDN() throws Exception
+    {
+        DnNode<DN> tree = new DnNode<DN>();
+        DN dn1 = new DN( "dc=c,dc=b,dc=a" );
+        tree.add( dn1, dn1 );
+
+        DN dn2 = new DN( "dc=e,dc=a" );
+        tree.add( dn2 );
+
+        assertFalse( tree.hasElement( DN.EMPTY_DN ) );
+        assertFalse( tree.hasElement( new DN( "dc=a" ) ) );
+        assertFalse( tree.hasElement( new DN( "dc=b,dc=a" ) ) );
+        assertTrue( tree.hasElement( dn1 ) );
+        assertFalse( tree.hasElement( dn2 ) );
+    }
+
+
+    //---------------------------------------------------------------------------
+    // Test the size() method
+    //---------------------------------------------------------------------------
+    @Test
+    public void testSize() throws LdapException
+    {
+        DnNode<DN> tree = new DnNode<DN>();
+        assertEquals( 1, tree.size() );
+
+        tree.add( new DN( "dc=b,dc=a" ) );
+        assertEquals( 3, tree.size() );
+
+        tree.add( new DN( "dc=f,dc=a" ) );
+        assertEquals( 4, tree.size() );
+
+        tree.add( new DN( "dc=a,dc=f,dc=a" ) );
+        assertEquals( 5, tree.size() );
+
+        tree.add( new DN( "dc=b,dc=f,dc=a" ) );
+        assertEquals( 6, tree.size() );
+
+        tree.add( new DN( "dc=z,dc=t" ) );
+        assertEquals( 8, tree.size() );
+    }
+
+
+    //---------------------------------------------------------------------------
+    // Test the getParent() method
+    //---------------------------------------------------------------------------
+    @Test
+    public void testGetParent() throws Exception
+    {
+        DnNode<DN> tree = new DnNode<DN>();
+        DN dn = new DN( "dc=c,dc=b,dc=a" );
+        tree.add( dn, dn );
+
+        assertNull( tree.getParent() );
+
+        DnNode<DN> child = tree.getChild( new RDN( "dc=a" ) );
+        assertEquals( tree, child.getParent() );
+
+        DnNode<DN> child1 = child.getChild( new RDN( "dc=b" ) );
+        assertEquals( child, child1.getParent() );
+
+        child = child1.getChild( new RDN( "dc=c" ) );
+        assertEquals( child1, child.getParent() );
+    }
+
+
+    //---------------------------------------------------------------------------
+    // Test the getNode(DN) method
+    //---------------------------------------------------------------------------
+    @Test
+    public void testGetNodeDN() throws Exception
+    {
+        DnNode<DN> tree = new DnNode<DN>();
+        DN dn1 = new DN( "dc=c,dc=b,dc=a" );
+        tree.add( dn1, dn1 );
+
+        DN dn2 = new DN( "dc=e,dc=a" );
+        tree.add( dn2, dn2 );
+
+        assertNull( tree.getNode( DN.EMPTY_DN ) );
+
+        DnNode<DN> child = tree.getChild( new RDN( "dc=a" ) );
+        assertEquals( child, tree.getNode( new DN( "dc=a" ) ) );
+
+        child = child.getChild( new RDN( "dc=b" ) );
+        assertEquals( child, tree.getNode( new DN( "dc=b,dc=a" ) ) );
+
+        child = child.getChild( new RDN( "dc=c" ) );
+        assertEquals( child, tree.getNode( new DN( "dc=c,dc=b,dc=a" ) ) );
+
+        assertEquals( child, tree.getNode( new DN( "dc=f,dc=e,dc=c,dc=b,dc=a" ) ) );
+    }
+
+
+    //---------------------------------------------------------------------------
+    // Test the hasParent() method
+    //---------------------------------------------------------------------------
+    @Test
+    public void testHasParent() throws Exception
+    {
+        DnNode<DN> tree = new DnNode<DN>();
+        DN dn = new DN( "dc=c,dc=b,dc=a" );
+        tree.add( dn, dn );
+
+        assertFalse( tree.hasParent() );
+
+        DnNode<DN> child = tree.getChild( new RDN( "dc=a" ) );
+        assertTrue( child.hasParent() );
+
+        DnNode<DN> child1 = child.getChild( new RDN( "dc=b" ) );
+        assertTrue( child1.hasParent() );
+
+        child = child1.getChild( new RDN( "dc=c" ) );
+        assertTrue( child.hasParent() );
+    }
+
+
+    //---------------------------------------------------------------------------
+    // Test the hasParent(DN) method
+    //---------------------------------------------------------------------------
+    @Test
+    public void testHasParentDN() throws Exception
+    {
+        DnNode<DN> tree = new DnNode<DN>();
+        DN dn1 = new DN( "dc=c,dc=b,dc=a" );
+        tree.add( dn1, dn1 );
+
+        DN dn2 = new DN( "dc=e,dc=a" );
+        tree.add( dn2, dn2 );
+
+        assertFalse( tree.hasParent( DN.EMPTY_DN ) );
+
+        DnNode<DN> child = tree.getChild( new RDN( "dc=a" ) );
+        assertTrue( tree.hasParent( new DN( "dc=a" ) ) );
+
+        child = child.getChild( new RDN( "dc=b" ) );
+        assertTrue( tree.hasParent( new DN( "dc=b,dc=a" ) ) );
+
+        child = child.getChild( new RDN( "dc=c" ) );
+        assertTrue( tree.hasParent( new DN( "dc=c,dc=b,dc=a" ) ) );
+
+        assertTrue( tree.hasParent( new DN( "dc=f,dc=e,dc=c,dc=b,dc=a" ) ) );
+    }
+
+
+    //---------------------------------------------------------------------------
+    // Test the getChild(RDN) method
+    //---------------------------------------------------------------------------
+    @Test
+    public void testGetChildRdn() throws Exception
+    {
+        DnNode<DN> tree = new DnNode<DN>();
+        DN dn = new DN( "dc=c,dc=b,dc=a" );
+        tree.add( dn, dn );
+
+        RDN rdnA = new RDN( "dc=a" );
+        RDN rdnB = new RDN( "dc=b" );
+        RDN rdnC = new RDN( "dc=c" );
+
+        DnNode<DN> child = tree.getChild( rdnA );
+        assertNotNull( child );
+        assertEquals( rdnA, child.getRdn() );
+
+        child = child.getChild( rdnB );
+        assertNotNull( child );
+        assertEquals( rdnB, child.getRdn() );
+
+        child = child.getChild( rdnC );
+        assertNotNull( child );
+        assertEquals( rdnC, child.getRdn() );
+    }
+
+
+    //---------------------------------------------------------------------------
+    // Test the contains(RDN) method
+    //---------------------------------------------------------------------------
+    @Test
+    public void testContains() throws Exception
+    {
+        DnNode<DN> tree = new DnNode<DN>();
+        DN dn = new DN( "dc=c,dc=b,dc=a" );
+        tree.add( dn, dn );
+
+        RDN rdnA = new RDN( "dc=a" );
+        RDN rdnB = new RDN( "dc=b" );
+        RDN rdnC = new RDN( "dc=c" );
+
+        assertTrue( tree.contains( rdnA ) );
+        assertFalse( tree.contains( rdnB ) );
+        assertFalse( tree.contains( rdnC ) );
+
+        DnNode<DN> child = tree.getChild( rdnA );
+
+        assertFalse( child.contains( rdnA ) );
+        assertTrue( child.contains( rdnB ) );
+        assertFalse( child.contains( rdnC ) );
+
+        child = child.getChild( rdnB );
+
+        assertFalse( child.contains( rdnA ) );
+        assertFalse( child.contains( rdnB ) );
+        assertTrue( child.contains( rdnC ) );
     }
 
     /**
@@ -151,58 +678,75 @@ public class TestDnNode
     @Test
     public void testComplexTreeDeletion() throws LdapException
     {
+        DnNode<DN> dnLookupTree = new DnNode<DN>();
+        DN dn1 = new DN( "dc=directory,dc=apache,dc=org" );
+        DN dn2 = new DN( "dc=mina,dc=apache,dc=org" );
+        DN dn3 = new DN( "dc=test,dc=com" );
+        DN dn4 = new DN( "dc=acme,dc=com" );
+        DN dn5 = new DN( "dc=acme,c=us,dc=com" );
+        DN dn6 = new DN( "dc=empty" );
+
+        dnLookupTree.add( dn1, dn1 );
+        dnLookupTree.add( dn2, dn2 );
+        dnLookupTree.add( dn3, dn3 );
+        dnLookupTree.add( dn4, dn4 );
+        dnLookupTree.add( dn5, dn5 );
+        dnLookupTree.add( dn6, dn6 );
+
+        assertEquals( 11, dnLookupTree.size() );
+
         dnLookupTree.remove( dn3 );
-        assertEquals( 5, dnLookupTree.size() );
-        assertTrue( dnLookupTree.hasParentElement( dn1 ) );
-        assertTrue( dnLookupTree.hasParentElement( dn2 ) );
-        assertTrue( dnLookupTree.hasParentElement( dn4 ) );
-        assertTrue( dnLookupTree.hasParentElement( dn5 ) );
-        assertTrue( dnLookupTree.hasParentElement( dn6 ) );
-        assertTrue( dnLookupTree.hasParentElement( new DN( "dc=nothing,dc=empty" ) ) );
-        assertFalse( dnLookupTree.hasParentElement( new DN(  "dc=directory,dc=apache,dc=root" ) ) );
+        assertEquals( 10, dnLookupTree.size() );
+        assertTrue( dnLookupTree.hasParent( dn1 ) );
+        assertTrue( dnLookupTree.hasParent( dn2 ) );
+        assertTrue( dnLookupTree.hasParent( dn4 ) );
+        assertTrue( dnLookupTree.hasParent( dn5 ) );
+        assertTrue( dnLookupTree.hasParent( dn6 ) );
+        assertTrue( dnLookupTree.hasParent( new DN( "dc=nothing,dc=empty" ) ) );
+        assertFalse( dnLookupTree.hasParent( new DN(  "dc=directory,dc=apache,dc=root" ) ) );
 
         dnLookupTree.remove( dn6 );
-        assertEquals( 4, dnLookupTree.size() );
-        assertTrue( dnLookupTree.hasParentElement( dn1 ) );
-        assertTrue( dnLookupTree.hasParentElement( dn2 ) );
-        assertTrue( dnLookupTree.hasParentElement( dn4 ) );
-        assertTrue( dnLookupTree.hasParentElement( dn5 ) );
-        assertFalse( dnLookupTree.hasParentElement( new DN( "dc=nothing,dc=empty" ) ) );
-        assertFalse( dnLookupTree.hasParentElement( new DN(  "dc=directory,dc=apache,dc=root" ) ) );
+        assertEquals( 9, dnLookupTree.size() );
+        assertTrue( dnLookupTree.hasParent( dn1 ) );
+        assertTrue( dnLookupTree.hasParent( dn2 ) );
+        assertTrue( dnLookupTree.hasParent( dn4 ) );
+        assertTrue( dnLookupTree.hasParent( dn5 ) );
+        assertFalse( dnLookupTree.hasParent( new DN( "dc=nothing,dc=empty" ) ) );
+        assertFalse( dnLookupTree.hasParent( new DN(  "dc=directory,dc=apache,dc=root" ) ) );
 
         dnLookupTree.remove( dn1 );
-        assertEquals( 3, dnLookupTree.size() );
-        assertTrue( dnLookupTree.hasParentElement( dn2 ) );
-        assertTrue( dnLookupTree.hasParentElement( dn4 ) );
-        assertTrue( dnLookupTree.hasParentElement( dn5 ) );
-        assertFalse( dnLookupTree.hasParentElement( new DN( "dc=nothing,dc=empty" ) ) );
-        assertFalse( dnLookupTree.hasParentElement( new DN(  "dc=directory,dc=apache,dc=root" ) ) );
+        assertEquals( 8, dnLookupTree.size() );
+        assertTrue( dnLookupTree.hasParent( dn2 ) );
+        assertTrue( dnLookupTree.hasParent( dn4 ) );
+        assertTrue( dnLookupTree.hasParent( dn5 ) );
+        assertFalse( dnLookupTree.hasParent( new DN( "dc=nothing,dc=empty" ) ) );
+        assertFalse( dnLookupTree.hasParent( new DN(  "dc=directory,dc=apache,dc=root" ) ) );
 
         // Should not change anything
         dnLookupTree.remove( dn3 );
-        assertEquals( 3, dnLookupTree.size() );
-        assertTrue( dnLookupTree.hasParentElement( dn2 ) );
-        assertTrue( dnLookupTree.hasParentElement( dn4 ) );
-        assertTrue( dnLookupTree.hasParentElement( dn5 ) );
-        assertFalse( dnLookupTree.hasParentElement( new DN( "dc=nothing,dc=empty" ) ) );
-        assertFalse( dnLookupTree.hasParentElement( new DN(  "dc=directory,dc=apache,dc=root" ) ) );
+        assertEquals( 8, dnLookupTree.size() );
+        assertTrue( dnLookupTree.hasParent( dn2 ) );
+        assertTrue( dnLookupTree.hasParent( dn4 ) );
+        assertTrue( dnLookupTree.hasParent( dn5 ) );
+        assertFalse( dnLookupTree.hasParent( new DN( "dc=nothing,dc=empty" ) ) );
+        assertFalse( dnLookupTree.hasParent( new DN(  "dc=directory,dc=apache,dc=root" ) ) );
 
         dnLookupTree.remove( dn5 );
-        assertEquals( 2, dnLookupTree.size() );
-        assertTrue( dnLookupTree.hasParentElement( dn2 ) );
-        assertTrue( dnLookupTree.hasParentElement( dn4 ) );
-        assertFalse( dnLookupTree.hasParentElement( new DN( "dc=nothing,dc=empty" ) ) );
-        assertFalse( dnLookupTree.hasParentElement( new DN(  "dc=directory,dc=apache,dc=root" ) ) );
+        assertEquals( 6, dnLookupTree.size() );
+        assertTrue( dnLookupTree.hasParent( dn2 ) );
+        assertTrue( dnLookupTree.hasParent( dn4 ) );
+        assertFalse( dnLookupTree.hasParent( new DN( "dc=nothing,dc=empty" ) ) );
+        assertFalse( dnLookupTree.hasParent( new DN(  "dc=directory,dc=apache,dc=root" ) ) );
 
         dnLookupTree.remove( dn2 );
-        assertEquals( 1, dnLookupTree.size() );
-        assertTrue( dnLookupTree.hasParentElement( dn4 ) );
-        assertFalse( dnLookupTree.hasParentElement( new DN( "dc=nothing,dc=empty" ) ) );
-        assertFalse( dnLookupTree.hasParentElement( new DN(  "dc=directory,dc=apache,dc=root" ) ) );
+        assertEquals( 3, dnLookupTree.size() );
+        assertTrue( dnLookupTree.hasParent( dn4 ) );
+        assertFalse( dnLookupTree.hasParent( new DN( "dc=nothing,dc=empty" ) ) );
+        assertFalse( dnLookupTree.hasParent( new DN(  "dc=directory,dc=apache,dc=root" ) ) );
 
         dnLookupTree.remove( dn4 );
-        assertEquals( 0, dnLookupTree.size() );
-        assertFalse( dnLookupTree.hasParentElement( new DN( "dc=nothing,dc=empty" ) ) );
-        assertFalse( dnLookupTree.hasParentElement( new DN(  "dc=directory,dc=apache,dc=root" ) ) );
+        assertEquals( 1, dnLookupTree.size() );
+        assertFalse( dnLookupTree.hasParent( new DN( "dc=nothing,dc=empty" ) ) );
+        assertFalse( dnLookupTree.hasParent( new DN(  "dc=directory,dc=apache,dc=root" ) ) );
     }
 }

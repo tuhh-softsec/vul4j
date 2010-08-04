@@ -22,9 +22,10 @@ package org.apache.directory.shared.ldap.subtree;
 import org.apache.directory.shared.ldap.util.StringTools;
 
 /**
-*
-* @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
-*/
+ * The Administrative roles
+ *
+ * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
+ */
 public enum AdministrativeRole
 {
     /** The AutonomousArea role */
