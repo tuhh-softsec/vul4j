@@ -40,9 +40,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
-import javax.naming.CompoundName;
 import javax.naming.InvalidNameException;
 import javax.naming.ldap.LdapName;
 
@@ -3016,29 +3014,6 @@ public class DNTest
         assertEquals(
             "0.9.2342.19200300.100.1.1=00123456789+2.5.4.3=pablo picasso,2.5.4.11=search,2.5.4.10=imc,2.5.4.6=us", name
                 .getName() );
-    }
-
-
-    @Test
-    public void testNameAddAll() throws LdapException, InvalidNameException
-    {
-        Properties props = new Properties();
-        props.setProperty( "jndi.syntax.direction", "right_to_left" );
-        props.setProperty( "jndi.syntax.separator", "," );
-        props.setProperty( "jndi.syntax.ignorecase", "true" );
-        props.setProperty( "jndi.syntax.trimblanks", "true" );
-
-        CompoundName name = new CompoundName( "cn=blah,dc=example,dc=com", props );
-        DN dn = new DN();
-        dn = dn.addAll( 0, name );
-
-        assertEquals( "cn=blah,dc=example,dc=com", dn.toString() );
-
-        name = new CompoundName( "cn=blah,dc=example,dc=com", props );
-        dn = new DN( "cn=xyz" );
-        dn = dn.addAll( 0, name );
-
-        assertEquals( "cn=xyz,cn=blah,dc=example,dc=com", dn.toString() );
     }
 
 

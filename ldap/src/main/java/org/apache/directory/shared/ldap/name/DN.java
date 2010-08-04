@@ -21,10 +21,6 @@
 package org.apache.directory.shared.ldap.name;
 
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -45,7 +41,6 @@ import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.schema.SchemaManager;
 import org.apache.directory.shared.ldap.schema.normalizers.OidNormalizer;
 import org.apache.directory.shared.ldap.util.StringTools;
-import org.apache.directory.shared.ldap.util.UTFUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -1138,39 +1133,6 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
         return addAll( rdns.size(), suffix );
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public DN addAll( int posn, Name name ) throws InvalidNameException, LdapInvalidDnException
-    {
-        if ( ( name == null ) || ( name.size() == 0 ) )
-        {
-            return this;
-        }
-
-        DN clonedDn = ( DN ) clone();
-        
-        for ( int i = name.size() - 1; i >= 0; i-- )
-        {
-            RDN rdn = new RDN( name.get( i ) );
-            clonedDn.rdns.add( clonedDn.size() - posn, rdn );
-        }
-
-        if( schemaManager != null )
-        {
-            clonedDn.normalize( schemaManager );
-        }
-        else
-        {
-            clonedDn.normalizeInternal();
-            clonedDn.normalized.set( false );
-        }
-        
-        clonedDn.toUpName();
-
-        return clonedDn;
-    }
-
     
     /**
      * {@inheritDoc}
@@ -1287,84 +1249,6 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
         }
         
         clonedDn.toUpName();
-
-        return clonedDn;
-    }
-
-
-    /**
-     * Adds a single RDN to a specific position.
-     *
-     * @param newRdn the RDN to add
-     * @param pos The position where we want to add the Rdn
-     * @return the updated name (not a new one)
-     */
-    public DN add( int pos, RDN newRdn )
-    {
-        DN clonedDn = ( DN ) clone();
-        
-        clonedDn.rdns.add( newRdn );
-        
-        // FIXME this try-catch block shouldn't be here
-        // instead this method should throw the LdapInvalidDnException
-        try
-        {
-            if( clonedDn.isNormalized() && newRdn.isNormalized() )
-            {
-                clonedDn.normalizeInternal();
-            }
-            else
-            {
-                if( schemaManager != null )
-                {
-                    clonedDn.normalize( schemaManager );
-                }
-                else
-                {
-                    clonedDn.normalizeInternal();
-                    clonedDn.normalized.set( false );
-                }
-            }
-        }
-        catch( LdapInvalidDnException e )
-        {
-            LOG.error( e.getMessage(), e );
-        }
-
-        clonedDn.toUpName();
-
-        return clonedDn;
-    }
-
-    
-    /**
-     * Adds a single normalized RDN to the (leaf) end of this name.
-     *
-     * @param newRdn the RDN to add
-     * @return the cloned and updated DN
-     */
-    public DN addNormalized( RDN newRdn )
-    {
-        DN clonedDn = ( DN ) clone();
-        
-        clonedDn.rdns.add( 0, newRdn );
-        
-        // Avoid a call to the toNormName() method which
-        // will iterate through all the rdns, when we only
-        // have to build a new normName by using the current
-        // RDN normalized name. The very same for upName.
-        if (clonedDn.rdns.size() == 1 )
-        {
-            clonedDn.normName = newRdn.getNormName();
-            clonedDn.upName = newRdn.getName();
-        }
-        else
-        {
-            clonedDn.normName = newRdn.getNormName() + "," + normName;
-            clonedDn.upName = newRdn.getName() + "," + upName;
-        }
-        
-        clonedDn.bytes = StringTools.getBytesUtf8( normName );
 
         return clonedDn;
     }
@@ -1787,111 +1671,6 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
     }
 
 
-    /**
-     * @see Externalizable#readExternal(ObjectInput)<p>
-     * 
-     * We have to store a DN data efficiently. Here is the structure :
-     * 
-     * <li>upName</li> The User provided DN<p>
-     * <li>normName</li> May be null if the normName is equaivalent to 
-     * the upName<p>
-     * <li>rdns</li> The rdn's List.<p>
-     * 
-     * for each rdn :
-     * <li>call the RDN write method</li>
-     *
-     *@param out The stream in which the DN will be serialized
-     *@throws IOException If the serialization fail
-     */
-    public void writeExternal( ObjectOutput out ) throws IOException
-    {
-        if ( upName == null )
-        {
-            String message = I18n.err( I18n.ERR_04210 );
-            LOG.error( message );
-            throw new IOException( message );
-        }
-        
-        // Write the UPName
-        UTFUtils.writeUTF( out, upName );
-        
-        // Write the NormName if different
-        if ( isNormalized() )
-        {
-            if ( upName.equals( normName ) )
-            {
-                UTFUtils.writeUTF( out, "" );
-            }
-            else
-            {
-                UTFUtils.writeUTF( out, normName );
-            }
-        }
-        else
-        {
-            String message = I18n.err( I18n.ERR_04211 );
-            LOG.error( message );
-            throw new IOException( message );
-        }
-        
-        // Should we store the byte[] ???
-        
-        // Write the RDNs. Is it's null, the number will be -1. 
-        out.writeInt( rdns.size() );
-
-        // Loop on the RDNs
-        for ( RDN rdn:rdns )
-        {
-            out.writeObject( rdn );
-        }
-    }
-
-
-    /**
-     * @see Externalizable#readExternal(ObjectInput)
-     * 
-     * We read back the data to create a new DN. The structure 
-     * read is exposed in the {@link DN#writeExternal(ObjectOutput)} 
-     * method<p>
-     * 
-     * @param in The stream from which the DN is read
-     * @throws IOException If the stream can't be read
-     * @throws ClassNotFoundException If the RDN can't be created 
-     */
-    public void readExternal( ObjectInput in ) throws IOException , ClassNotFoundException
-    {
-        // Read the UPName
-        upName = UTFUtils.readUTF( in );
-        
-        // Read the NormName
-        normName = UTFUtils.readUTF( in );
-        
-        if ( normName.length() == 0 )
-        {
-            // As the normName is equal to the upName,
-            // we didn't saved the nbnormName on disk.
-            // restore it by copying the upName.
-            normName = upName;
-        }
-        
-        // A serialized DN is always normalized.
-        normalized = new AtomicBoolean( true );
-            
-        // Should we read the byte[] ???
-        bytes = StringTools.getBytesUtf8( upName );
-        
-        // Read the RDNs. Is it's null, the number will be -1.
-        int nbRdns = in.readInt();
-        rdns = new ArrayList<RDN>( nbRdns );
-        
-        for ( int i = 0; i < nbRdns; i++ )
-        {
-            RDN rdn = (RDN)in.readObject();
-            rdns.add( rdn );
-        }
-    }
-    
-    
     /**
      * Convert a {@link javax.naming.Name} to a DN
      *
