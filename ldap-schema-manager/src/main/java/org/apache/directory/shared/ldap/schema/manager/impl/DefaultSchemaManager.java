@@ -6,16 +6,16 @@
  *  to you under the Apache License, Version 2.0 (the
  *  "License"); you may not use this file except in compliance
  *  with the License.  You may obtain a copy of the License at
- *  
+ *
  *    http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing,
  *  software distributed under the License is distributed on an
  *  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  *  KIND, either express or implied.  See the License for the
  *  specific language governing permissions and limitations
- *  under the License. 
- *  
+ *  under the License.
+ *
  */
 package org.apache.directory.shared.ldap.schema.manager.impl;
 
@@ -35,7 +35,6 @@ import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
-import org.apache.directory.shared.ldap.exception.LdapNoSuchAttributeException;
 import org.apache.directory.shared.ldap.exception.LdapOtherException;
 import org.apache.directory.shared.ldap.exception.LdapProtocolErrorException;
 import org.apache.directory.shared.ldap.exception.LdapUnwillingToPerformException;
@@ -166,7 +165,7 @@ public class DefaultSchemaManager implements SchemaManager
     //-----------------------------------------------------------------------
     /**
      * Clone the registries before doing any modification on it. Relax it
-     * too so that we can update it. 
+     * too so that we can update it.
      */
     private Registries cloneRegistries() throws LdapException
     {
@@ -174,17 +173,17 @@ public class DefaultSchemaManager implements SchemaManager
         {
             // Relax the controls at first
             errors = new ArrayList<Throwable>();
-    
+
             // Clone the Registries
             Registries clonedRegistries = registries.clone();
-    
+
             // And update references. We may have errors, that may be fixed
             // by the new loaded schemas.
             errors = clonedRegistries.checkRefInteg();
-    
+
             // Now, relax the cloned Registries if there is no error
             clonedRegistries.setRelaxed();
-    
+
             return clonedRegistries;
         }
         catch ( CloneNotSupportedException cnse )
@@ -226,7 +225,7 @@ public class DefaultSchemaManager implements SchemaManager
         // Create a content container for this schema
         registries.addSchema( schema.getSchemaName() );
 
-        // And inject any existing SchemaObject into the registries 
+        // And inject any existing SchemaObject into the registries
         try
         {
             addComparators( schema, registries );
@@ -876,7 +875,7 @@ public class DefaultSchemaManager implements SchemaManager
 
 
     /**
-     * Add the schemaObject into the registries. 
+     * Add the schemaObject into the registries.
      *
      * @param registries The Registries
      * @param schemaObject The SchemaObject containing the SchemaObject description
@@ -1262,7 +1261,7 @@ public class DefaultSchemaManager implements SchemaManager
         // Work on a cloned registries
         Registries clonedRegistries = cloneRegistries();
 
-        // Loop on all the schemas 
+        // Loop on all the schemas
         for ( Schema schema : schemas )
         {
             try
@@ -1686,7 +1685,7 @@ public class DefaultSchemaManager implements SchemaManager
                 return false;
             }
 
-            // At this point, the constructed AttributeType has not been checked against the 
+            // At this point, the constructed AttributeType has not been checked against the
             // existing Registries. It may be broken (missing SUP, or such), it will be checked
             // there, if the schema and the AttributeType are both enabled.
             Schema schema = getLoadedSchema( schemaName );
@@ -1705,7 +1704,7 @@ public class DefaultSchemaManager implements SchemaManager
             {
                 // As we may break the registries, work on a cloned registries
                 Registries clonedRegistries = null;
-                
+
                 try
                 {
                     clonedRegistries = registries.clone();
@@ -1818,7 +1817,7 @@ public class DefaultSchemaManager implements SchemaManager
             {
                 // As we may break the registries, work on a cloned registries
                 Registries clonedRegistries = null;
-                
+
                 try
                 {
                     clonedRegistries = registries.clone();
@@ -2011,10 +2010,10 @@ public class DefaultSchemaManager implements SchemaManager
 
 
     /**
-     * Tells if the SchemaManager is permissive or if it must be checked 
+     * Tells if the SchemaManager is permissive or if it must be checked
      * against inconsistencies.
      *
-     * @return True if SchemaObjects can be added even if they break the consistency 
+     * @return True if SchemaObjects can be added even if they break the consistency
      */
     public boolean isRelaxed()
     {
@@ -2025,7 +2024,7 @@ public class DefaultSchemaManager implements SchemaManager
     /**
      * Tells if the SchemaManager is strict.
      *
-     * @return True if SchemaObjects cannot be added if they break the consistency 
+     * @return True if SchemaObjects cannot be added if they break the consistency
      */
     public boolean isStrict()
     {
