@@ -6,16 +6,16 @@
  *  to you under the Apache License, Version 2.0 (the
  *  "License"); you may not use this file except in compliance
  *  with the License.  You may obtain a copy of the License at
- *  
+ *
  *    http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing,
  *  software distributed under the License is distributed on an
  *  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  *  KIND, either express or implied.  See the License for the
  *  specific language governing permissions and limitations
- *  under the License. 
- *  
+ *  under the License.
+ *
  */
 
 package org.apache.directory.shared.ldap.subtree;
@@ -44,7 +44,7 @@ import org.junit.runner.RunWith;
 
 /**
  * Unit tests class for Subtree Specification parser (wrapper).
- * 
+ *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 @RunWith(ConcurrentJunitRunner.class)
@@ -103,10 +103,10 @@ public class SubtreeSpecificationParserTest
 
     /** An invalid specification with completely unrelated content */
     private static final String INVALID_SILLY_THING = "How much wood would a wood chuck chuck if a wood chuck would chuck wood?";
-    
+
     /** holds multithreaded success value */
     boolean isSuccessMultithreaded = true;
-    
+
     /** The schema manager */
     private static SchemaManager schemaManager;
 
@@ -125,12 +125,12 @@ public class SubtreeSpecificationParserTest
     {
         JarLdifSchemaLoader loader = new JarLdifSchemaLoader();
         schemaManager = new DefaultSchemaManager( loader );
-        
+
         schemaManager.loadAllEnabled();
 
         checker = new SubtreeSpecificationChecker( schemaManager );
         parser = new SubtreeSpecificationParser( schemaManager );
-        
+
         TOP_OC = schemaManager.lookupObjectClassRegistry( "top" );
         ALIAS_OC = schemaManager.lookupObjectClassRegistry( "alias" );
         COUNTRY_OC = schemaManager.lookupObjectClassRegistry( "country" );
@@ -281,10 +281,10 @@ public class SubtreeSpecificationParserTest
         assertNotNull( ss );
 
         assertEquals( "ou=people", ss.getBase().toString() );
-        assertTrue( ss.getChopBeforeExclusions().contains( new DN( "x=y" ).normalize( schemaManager.getNormalizerMapping() ) ) );
-        assertTrue( ss.getChopBeforeExclusions().contains( new DN( "y=z" ).normalize( schemaManager.getNormalizerMapping() ) ) );
-        assertTrue( ss.getChopAfterExclusions().contains( new DN( "k=l" ).normalize( schemaManager.getNormalizerMapping() ) ) );
-        assertTrue( ss.getChopAfterExclusions().contains( new DN( "l=m" ).normalize( schemaManager.getNormalizerMapping() ) ) );
+        assertTrue( ss.getChopBeforeExclusions().contains( new DN( "x=y" ).normalize( schemaManager ) ) );
+        assertTrue( ss.getChopBeforeExclusions().contains( new DN( "y=z" ).normalize( schemaManager ) ) );
+        assertTrue( ss.getChopAfterExclusions().contains( new DN( "k=l" ).normalize( schemaManager ) ) );
+        assertTrue( ss.getChopAfterExclusions().contains( new DN( "l=m" ).normalize( schemaManager ) ) );
         assertEquals( 7, ss.getMinBaseDistance() );
         assertEquals( 77, ss.getMaxBaseDistance() );
     }
@@ -308,29 +308,29 @@ public class SubtreeSpecificationParserTest
         List<Refinement> orList = new ArrayList<Refinement>();
         orList.add( aliasItem );
         orList.add( personItem );
-        
+
         Refinement orRefinement = new OrRefinement( orList );
-        
+
         // The inner AND refinement and:{ item:2.5.6.0, or:... }
         List<Refinement> innerAndList = new ArrayList<Refinement>();
         innerAndList.add( topItem );
         innerAndList.add( orRefinement );
-        
+
         Refinement innerAndRefinement = new AndRefinement( innerAndList );
-        
+
         // The NOT refinement not:item:2.5.6.2
         Refinement notRefinement = new NotRefinement( countryItem );
-        
+
         // The outer AND refinement and:{and:..., not:...}
         List<Refinement> outerAndList = new ArrayList<Refinement>();
         outerAndList.add( innerAndRefinement );
         outerAndList.add( notRefinement );
-        
+
         Refinement outerAndRefinement = new AndRefinement( outerAndList );
 
         StringBuilder buffer = new StringBuilder();
         ss.getRefinement().printRefinementToBuffer( buffer );
-        
+
         //assertEquals( outerAndRefinement.toString(), buffer );
         assertEquals( "and: { and: { item: 2.5.6.0, or: { item: 2.5.6.1, item: person } }, not: item: 2.5.6.2 }", buffer.toString() );
     }
@@ -388,8 +388,8 @@ public class SubtreeSpecificationParserTest
             assertNotNull( e );
         }
     }
-    
-    
+
+
     /**
      * Test reusability, especially if the state is resetted.
      */

@@ -6,16 +6,16 @@
  *  to you under the Apache License, Version 2.0 (the
  *  "License"); you may not use this file except in compliance
  *  with the License.  You may obtain a copy of the License at
- *  
+ *
  *    http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing,
  *  software distributed under the License is distributed on an
  *  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  *  KIND, either express or implied.  See the License for the
  *  specific language governing permissions and limitations
- *  under the License. 
- *  
+ *  under the License.
+ *
  */
 package org.apache.directory.shared.ldap.name;
 
@@ -37,7 +37,6 @@ import org.apache.directory.shared.ldap.entry.StringValue;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
-import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.SchemaManager;
 import org.apache.directory.shared.ldap.schema.normalizers.OidNormalizer;
 import org.apache.directory.shared.ldap.util.StringTools;
@@ -151,7 +150,7 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
     /**
      * We also keep a set of types, in order to use manipulations. A type is
      * connected with the atav it represents.
-     * 
+     *
      * Note : there is no Generic available classes in commons-collection...
      */
     private MultiMap atavTypes = new MultiValueMap();
@@ -203,7 +202,7 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
 
 
     /**
-     * 
+     *
      * Creates a new instance of RDN.
      *
      * @param schemaManager the schema manager
@@ -266,7 +265,7 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
     /**
      * A constructor that parse a String representing a RDN.
      *
-     * @param rdn The String containing the RDN to parse 
+     * @param rdn The String containing the RDN to parse
      * @throws LdapInvalidDnException
      */
     public RDN( String rdn ) throws LdapInvalidDnException
@@ -297,7 +296,7 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
         upName = upType + '=' + upValue;
         start = 0;
         length = upName.length();
-        
+
         // create the internal normalized form
         normalize();
 
@@ -312,7 +311,7 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
         }
     }
 
-    
+
     /**
      * @see #RDN(String, String, String, String, SchemaManager)
      */
@@ -321,7 +320,7 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
         this( upType, normType, upValue, normValue, null );
     }
 
-    
+
     /**
      * A constructor that constructs a RDN from a type and a value. Constructs
      * an Rdn from the given attribute type and value. The string attribute
@@ -340,7 +339,7 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
         upName = upType + '=' + upValue;
         start = 0;
         length = upName.length();
-        
+
         if( schemaManager != null )
         {
             this.schemaManager = schemaManager;
@@ -351,13 +350,13 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
         {
             // create the internal normalized form
             normalize();
-            
+
             // As strange as it seems, the RDN is *not* normalized against the schema at this point
             normalized = false;
         }
     }
 
-    
+
     /**
      * @see #RDN(String, String, SchemaManager)
      */
@@ -365,7 +364,7 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
     {
         this( upType, upValue, null );
     }
-    
+
 
     /**
      * A constructor that constructs a RDN from a type, a position and a length.
@@ -381,7 +380,7 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
         this.length = length;
         this.upName = upName;
         this.normName = normName;
-        normalized = true;            
+        normalized = true;
     }
 
 
@@ -428,8 +427,8 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
 
     /**
      * Transform the external representation of the current RDN to an internal
-     * normalized form where : 
-     * - types are trimmed and lower cased 
+     * normalized form where :
+     * - types are trimmed and lower cased
      * - values are trimmed and lower cased
      */
     // WARNING : The protection level is left unspecified on purpose.
@@ -488,6 +487,25 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
      * Transform a RDN by changing the value to its OID counterpart and
      * normalizing the value accordingly to its type.
      *
+     * @param schemaManager The SchemaManager
+     * @throws LdapException If the RDN is invalid.
+     */
+    public RDN normalize( SchemaManager schemaManager ) throws LdapInvalidDnException
+    {
+        String upName = getName();
+        DN.rdnOidToName( this, schemaManager.getNormalizerMapping() );
+        normalize();
+        this.upName = upName;
+        normalized = true;
+
+        return this;
+    }
+
+
+    /**
+     * Transform a RDN by changing the value to its OID counterpart and
+     * normalizing the value accordingly to its type.
+     *
      * @param oidsMap The mapping between names and oids.
      * @throws LdapException If the RDN is invalid.
      */
@@ -522,7 +540,7 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
         // First, let's normalize the type
         Value<?> normalizedValue = value;
         String normalizedType = StringTools.lowerCaseAscii( type );
-        
+
         if( schemaManager != null )
         {
             OidNormalizer oidNormalizer = schemaManager.getNormalizerMapping().get( normalizedType );
@@ -649,7 +667,7 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
      * @param type
      *            The type of the NameArgument
      * @return The Value to be returned, or null if none found.
-     * @throws LdapInvalidDnException 
+     * @throws LdapInvalidDnException
      */
     public Object getValue( String type ) throws LdapInvalidDnException
     {
@@ -698,7 +716,7 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
     }
 
 
-    /** 
+    /**
      * Get the start position
      *
      * @return The start position in the DN
@@ -760,7 +778,7 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
 
 
     /**
-     * Retrieves the components of this RDN as an iterator of AttributeTypeAndValue. 
+     * Retrieves the components of this RDN as an iterator of AttributeTypeAndValue.
      * The effect on the iterator of updates to this RDN is undefined. If the
      * RDN has zero components, an empty (non-null) iterator is returned.
      *
@@ -804,7 +822,7 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
 
     /**
      * Clone the Rdn
-     * 
+     *
      * @return A clone of the current RDN
      */
     public Object clone()
@@ -849,11 +867,11 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
 
 
     /**
-     * Compares two RDNs. They are equals if : 
-     * <li>their have the same number of NC (AttributeTypeAndValue) 
-     * <li>each ATAVs are equals 
-     * <li>comparison of type are done case insensitive 
-     * <li>each value is equal, case sensitive 
+     * Compares two RDNs. They are equals if :
+     * <li>their have the same number of NC (AttributeTypeAndValue)
+     * <li>each ATAVs are equals
+     * <li>comparison of type are done case insensitive
+     * <li>each value is equal, case sensitive
      * <li>Order of ATAV is not important If the RDNs are not equals, a positive number is
      * returned if the first RDN is greater, negative otherwise
      *
@@ -938,10 +956,10 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
 
     /**
      * Set the User Provided Name.
-     * 
+     *
      * Package private because RDN is immutable, only used by the DN parser.
-     * 
-     * @param upName the User Provided dame 
+     *
+     * @param upName the User Provided dame
      */
     void setUpName( String upName )
     {
@@ -1024,7 +1042,7 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
 
     /**
      * Return the User Provided value
-     * 
+     *
      * @return The first User provided value of this RDN
      */
     public Value<?> getUpValue()
@@ -1422,7 +1440,7 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
       * Gets the hashcode of this rdn.
       *
       * @see java.lang.Object#hashCode()
-      * @return the instance's hash code 
+      * @return the instance's hash code
       */
     public int hashCode()
     {
@@ -1456,11 +1474,11 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
 
     /**
      * @see Externalizable#readExternal(ObjectInput)<p>
-     * 
+     *
      * A RDN is composed of on to many ATAVs (AttributeType And Value).
-     * We should write all those ATAVs sequencially, following the 
+     * We should write all those ATAVs sequencially, following the
      * structure :
-     * 
+     *
      * <li>parentId</li> The parent entry's Id
      * <li>nbAtavs</li> The number of ATAVs to write. Can't be 0.
      * <li>upName</li> The User provided RDN
@@ -1472,7 +1490,7 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
      * <li>start</li> The position of this ATAV in the upName string
      * <li>length</li> The ATAV user provided length
      * <li>Call the ATAV write method</li> The ATAV itself
-     * 
+     *
      * @param out The stream into which the serialized RDN will be put
      * @throws IOException If the stream can't be written
      */
@@ -1515,11 +1533,11 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
 
     /**
      * @see Externalizable#readExternal(ObjectInput)
-     * 
-     * We read back the data to create a new RDB. The structure 
-     * read is exposed in the {@link RDN#writeExternal(ObjectOutput)} 
+     *
+     * We read back the data to create a new RDB. The structure
+     * read is exposed in the {@link RDN#writeExternal(ObjectOutput)}
      * method<p>
-     * 
+     *
      * @param in The input stream from which the RDN will be read
      * @throws IOException If we can't read from the input stream
      * @throws ClassNotFoundException If we can't create a new RDN

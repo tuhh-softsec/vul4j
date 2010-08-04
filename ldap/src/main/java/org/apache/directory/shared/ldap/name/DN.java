@@ -6,16 +6,16 @@
  *  to you under the Apache License, Version 2.0 (the
  *  "License"); you may not use this file except in compliance
  *  with the License.  You may obtain a copy of the License at
- *  
+ *
  *    http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing,
  *  software distributed under the License is distributed on an
  *  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  *  KIND, either express or implied.  See the License for the
  *  specific language governing permissions and limitations
- *  under the License. 
- *  
+ *  under the License.
+ *
  */
 
 package org.apache.directory.shared.ldap.name;
@@ -121,7 +121,7 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
         this( ( SchemaManager ) null );
     }
 
-    
+
     /**
      * Construct an empty DN object
      */
@@ -133,7 +133,7 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
         normalized = new AtomicBoolean( true );
     }
 
-    
+
     /**
      * @see #DN(DN, SchemaManager)
      */
@@ -159,20 +159,20 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
             for ( int ii = 0; ii < dn.size(); ii++ )
             {
                 String nameComponent = dn.get( ii );
-                
+
                 if ( nameComponent.length() > 0 )
                 {
                     RDN newRdn = new RDN( nameComponent, schemaManager );
-                    
+
                     rdns.add( 0, newRdn );
                 }
             }
         }
 
         toUpName();
-        
+
         normalized = new AtomicBoolean();
-        
+
         if( schemaManager != null )
         {
             normalize( schemaManager.getNormalizerMapping() );
@@ -194,7 +194,7 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
     }
 
 
-    
+
     /**
      * Parse a String and checks that it is a valid DN <br>
      * <p>
@@ -214,9 +214,9 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
         {
             DnParser.parseInternal( upName, rdns );
         }
-        
+
         normalized = new AtomicBoolean();
-        
+
         if( schemaManager != null )
         {
             this.schemaManager = schemaManager;
@@ -234,7 +234,7 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
         this.upName = upName;
     }
 
-    
+
     /**
      * @see #DN(SchemaManager, String...)
      */
@@ -243,18 +243,18 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
         this( null, upRdns );
     }
 
-    
+
     /**
      * Creates a new instance of DN, using varargs to declare the RDNs. Each
      * String is either a full RDN, or a couple of AttributeType DI and a value.
      * If the String contains a '=' symbol, the the constructor will assume that
-     * the String arg contains afull RDN, otherwise, it will consider that the 
+     * the String arg contains afull RDN, otherwise, it will consider that the
      * following arg is the value.
      * An example of usage would be :
      * <pre>
      * String exampleName = "example";
      * String baseDn = "dc=apache,dc=org";
-     * 
+     *
      * DN dn = new DN(
      *     "cn=Test",
      *     "ou", exampleName,
@@ -270,7 +270,7 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
         StringBuilder sb = new StringBuilder();
         boolean valueExpected = false;
         boolean isFirst = true;
-        
+
         for ( String upRdn : upRdns )
         {
             if ( isFirst )
@@ -281,11 +281,11 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
             {
                 sb.append( ',' );
             }
-            
+
             if ( !valueExpected )
             {
                 sb.append( upRdn );
-                
+
                 if ( upRdn.indexOf( '=' ) == -1 )
                 {
                     valueExpected = true;
@@ -294,23 +294,23 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
             else
             {
                 sb.append( "=" ).append( upRdn );
-                
+
                 valueExpected = false;
             }
         }
-        
+
         if ( valueExpected )
         {
             throw new LdapInvalidDnException( ResultCodeEnum.INVALID_DN_SYNTAX, I18n.err( I18n.ERR_04202 ) );
         }
 
         normalized = new AtomicBoolean();
-        
+
         // Stores the representations of a DN : internal (as a string and as a
         // byte[]) and external.
         upName = sb.toString();
         DnParser.parseInternal( upName, rdns );
-        
+
         if( schemaManager != null )
         {
             this.schemaManager = schemaManager;
@@ -322,11 +322,11 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
             normalizeInternal();
         }
     }
-    
+
 
     /**
      * Create a DN while deserializing it.
-     * 
+     *
      * Note : this constructor is used only by the deserialization method.
      * @param upName The user provided name
      * @param normName the normalized name
@@ -340,12 +340,12 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
         this.bytes = bytes;
     }
 
-    
+
     /**
      * Creates a DN.
-     * 
-     * Note: This is mostly used internally in the server 
-     * 
+     *
+     * Note: This is mostly used internally in the server
+     *
      * @param upName The user provided name
      * @param normName the normalized name
      * @param bytes the name as a byte[]
@@ -359,7 +359,7 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
 
 
     /**
-     * 
+     *
      * Creates a DN by based on the given RDN.
      *
      * @param rdn the RDN to be used in the DN
@@ -367,7 +367,7 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
     public DN( RDN rdn )
     {
         rdns.add( rdn );
-        
+
         if( rdn.isNormalized() )
         {
             this.normName = rdn.getNormName();
@@ -383,7 +383,7 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
         }
     }
 
-    
+
     /**
      * Static factory which creates a normalized DN from a String and a Map of OIDs.
      *
@@ -401,9 +401,9 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
         }
 
         DN newDn = new DN( name );
-        
+
         Enumeration<RDN> rdns = newDn.getAllRdn();
-        
+
         // Loop on all RDNs
         while ( rdns.hasMoreElements() )
         {
@@ -413,10 +413,10 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
             rdn.normalize();
             rdn.setUpName( upName );
         }
-        
+
         newDn.normalizeInternal();
         newDn.normalized.set( true );
-        
+
         return newDn;
     }
 
@@ -656,9 +656,9 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
 
     /**
      * Sets the up name.
-     * 
+     *
      * Package private because DN is immutable, only used by the DN parser.
-     * 
+     *
      * @param upName the new up name
      */
     void setUpName( String upName )
@@ -678,7 +678,7 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
         {
             normName = toNormName();
         }
-        
+
         return normName;
     }
 
@@ -706,7 +706,7 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
 
     /**
      * Get an UTF-8 representation of the normalized form of the DN
-     * 
+     *
      * @param dn The DN.
      * @return A byte[] representation of the DN
      */
@@ -720,7 +720,7 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
      * Tells if the current DN is a parent of another DN.<br>
      * For instance, <b>dc=com</b> is a parent
      * of <b>dc=example, dc=com</b>
-     * 
+     *
      * @param dn The child
      * @return true if the current DN is a parent of the given DN
      */
@@ -735,13 +735,13 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
             return false;
         }
     }
-    
+
 
     /**
      * Tells if the current DN is a parent of another DN.<br>
      * For instance, <b>dc=com</b> is a parent
      * of <b>dc=example, dc=com</b>
-     * 
+     *
      * @param dn The child
      * @return true if the current DN is a parent of the given DN
      */
@@ -751,7 +751,7 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
         {
             return false;
         }
-        
+
         return dn.isChildOf( this );
     }
 
@@ -760,7 +760,7 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
      * Tells if a DN is a child of another DN.<br>
      * For instance, <b>dc=example, dc=com</b> is a child
      * of <b>dc=com</b>
-     * 
+     *
      * @param dn The parent
      * @return true if the current DN is a child of the given DN
      */
@@ -775,13 +775,13 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
             return false;
         }
     }
-    
+
 
     /**
      * Tells if a DN is a child of another DN.<br>
      * For instance, <b>dc=example, dc=apache, dc=com</b> is a child
      * of <b>dc=com</b>
-     * 
+     *
      * @param dn The parent
      * @return true if the current DN is a child of the given DN
      */
@@ -862,22 +862,22 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
 
         return true;
     }
-    
-    
+
+
     /**
      * Tells if the DN contains no RDN
-     * 
+     *
      * @return <code>true</code> if the DN is empty
      */
     public boolean isEmpty()
     {
         return ( rdns.size() == 0 );
     }
-    
-    
+
+
     /**
      * Tells if the DN is the RootDSE DN (ie, an empty DN)
-     * 
+     *
      * @return <code>true</code> if the DN is the RootDSE's DN
      */
     public boolean isRootDSE()
@@ -887,14 +887,14 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
 
 
     /**
-     * Get the given RDN as a String. The position is used in the 
-     * reverse order. Assuming that we have a DN like 
+     * Get the given RDN as a String. The position is used in the
+     * reverse order. Assuming that we have a DN like
      * <pre>dc=example,dc=apache,dc=org</pre>
      * then :
      * <li><code>get(0)</code> will return dc=org</li>
      * <li><code>get(1)</code> will return dc=apache</li>
      * <li><code>get(2)</code> will return dc=example</li>
-     * 
+     *
      * @param posn The position of the wanted RDN in the DN.
      */
     public String get( int posn )
@@ -1103,12 +1103,12 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
         {
             return this;
         }
-        
+
         DN clonedDn = ( DN ) clone();
-        
+
         // Concatenate the rdns
         clonedDn.rdns.addAll( clonedDn.size() - posn, dn.rdns );
-        
+
         if ( StringTools.isEmpty( normName ) )
         {
             clonedDn.normName = dn.normName;
@@ -1133,7 +1133,7 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
         return addAll( rdns.size(), suffix );
     }
 
-    
+
     /**
      * {@inheritDoc}
      */
@@ -1145,7 +1145,7 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
         }
 
         DN clonedDn = ( DN ) clone();
-        
+
         // Concatenate the rdns
         clonedDn.rdns.addAll( clonedDn.size() - posn, dn.rdns );
 
@@ -1170,7 +1170,7 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
                 clonedDn.normalizeInternal();
                 clonedDn.normalized.set( false );
             }
-            
+
             clonedDn.toUpName();
         }
 
@@ -1191,9 +1191,9 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
         DN clonedDn = ( DN ) clone();
         // We have to parse the nameComponent which is given as an argument
         RDN newRdn = new RDN( comp, schemaManager );
-        
+
         clonedDn.rdns.add( 0, newRdn );
-        
+
         if( schemaManager != null )
         {
             clonedDn.normalize( schemaManager );
@@ -1203,7 +1203,7 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
             clonedDn.normalizeInternal();
             clonedDn.normalized.set( false );
         }
-        
+
         clonedDn.toUpName();
 
         return clonedDn;
@@ -1219,9 +1219,9 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
     public DN add( RDN newRdn )
     {
         DN clonedDn = ( DN ) clone();
-        
+
         clonedDn.rdns.add( 0, newRdn );
-        
+
         // FIXME this try-catch block shouldn't be here
         // instead this method should throw the LdapInvalidDnException
         try
@@ -1247,7 +1247,7 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
         {
             LOG.error( e.getMessage(), e );
         }
-        
+
         clonedDn.toUpName();
 
         return clonedDn;
@@ -1270,7 +1270,7 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
         RDN newRdn = new RDN( comp );
 
         DN clonedDn = ( DN ) clone();
-        
+
         int realPos = clonedDn.size() - posn;
         clonedDn.rdns.add( realPos, newRdn );
 
@@ -1313,7 +1313,7 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
         return clonedDn;
     }
 
-    
+
     /**
      * removes a child (RDN) present at the given position
      *
@@ -1327,8 +1327,8 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
         normalizeInternal();
         toUpName();
     }
-    
-    
+
+
     /**
      * Gets the parent DN of this DN. Null if this DN doesn't have a parent, i.e. because it
      * is the empty DN.
@@ -1459,9 +1459,9 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
                 {
                     try
                     {
-                        return new AVA( 
-                            atav.getUpType(), 
-                            oidNormalizer.getAttributeTypeOid(), 
+                        return new AVA(
+                            atav.getUpType(),
+                            oidNormalizer.getAttributeTypeOid(),
                             atav.getUpValue(),
                             oidNormalizer.getNormalizer().normalize( atav.getNormValue() ),
                             atav.getUpName() );
@@ -1526,13 +1526,13 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
      * aliases. As we still have the UP name of each RDN, we will be able to
      * provide both representation of the DN. example : dn: 2.5.4.3=People,
      * dc=example, domainComponent=com will be transformed to : 2.5.4.3=People,
-     * 0.9.2342.19200300.100.1.25=example, 0.9.2342.19200300.100.1.25=com 
+     * 0.9.2342.19200300.100.1.25=example, 0.9.2342.19200300.100.1.25=com
      * because 2.5.4.3 is the OID for cn and dc is the first
-     * alias of the couple of aliases (dc, domaincomponent), which OID is 
-     * 0.9.2342.19200300.100.1.25. 
-     * This is really important do have such a representation, as 'cn' and 
+     * alias of the couple of aliases (dc, domaincomponent), which OID is
+     * 0.9.2342.19200300.100.1.25.
+     * This is really important do have such a representation, as 'cn' and
      * 'commonname' share the same OID.
-     * 
+     *
      * @param dn The DN to transform.
      * @param oidsMap The mapping between names and oids.
      * @return A normalized form of the DN.
@@ -1569,11 +1569,11 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
      * aliases. As we still have the UP name of each RDN, we will be able to
      * provide both representation of the DN. example : dn: 2.5.4.3=People,
      * dc=example, domainComponent=com will be transformed to : 2.5.4.3=People,
-     * 0.9.2342.19200300.100.1.25=example, 0.9.2342.19200300.100.1.25=com 
+     * 0.9.2342.19200300.100.1.25=example, 0.9.2342.19200300.100.1.25=com
      * because 2.5.4.3 is the OID for cn and dc is the first
-     * alias of the couple of aliases (dc, domaincomponent), which OID is 
-     * 0.9.2342.19200300.100.1.25. 
-     * This is really important do have such a representation, as 'cn' and 
+     * alias of the couple of aliases (dc, domaincomponent), which OID is
+     * 0.9.2342.19200300.100.1.25.
+     * This is really important do have such a representation, as 'cn' and
      * 'commonname' share the same OID.
      *
      * @param oidsMap The mapping between names and oids.
@@ -1582,7 +1582,7 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
      */
     public DN normalize( Map<String, OidNormalizer> oidsMap ) throws LdapInvalidDnException
     {
-        
+
         if ( ( oidsMap == null ) || ( oidsMap.isEmpty() ) )
         {
             return this;
@@ -1590,9 +1590,9 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
 
         if( normalized.get() )
         {
-           return this; 
+           return this;
         }
-        
+
         synchronized ( this )
         {
             if ( size() == 0 )
@@ -1600,33 +1600,33 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
                 normalized.set( true );
                 return this;
             }
-            
+
             Enumeration<RDN> localRdns = getAllRdn();
-            
+
             // Loop on all RDNs
             while ( localRdns.hasMoreElements() )
             {
                 RDN rdn = localRdns.nextElement();
-                
+
                 rdn.normalize( oidsMap );
             }
-            
+
             normalizeInternal();
-            
+
             normalized.set( true );
-            
+
             return this;
         }
     }
 
-    
+
     /**
      * normalizes the DN @see {@link #normalize(Map)} however
      * if the schema manager of the DN is null then sets the given schema manager
      * as the DN's schema manager.
-     * 
+     *
      * If both, the given schema manager and that of the DN are null then the
-     * {@link #normalizeInternal()} will be called. 
+     * {@link #normalizeInternal()} will be called.
      *
      */
     public DN normalize( SchemaManager schemaManager ) throws LdapInvalidDnException
@@ -1635,17 +1635,17 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
         {
             this.schemaManager = schemaManager;
         }
-        
+
         if( this.schemaManager != null )
         {
             return normalize( schemaManager.getNormalizerMapping() );
         }
 
         normalizeInternal();
-        
+
         return this;
     }
-    
+
 
     /**
      * Check if a DistinguishedName is syntactically valid.
@@ -1658,7 +1658,7 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
     {
         return DnParser.validateInternal( dn );
     }
-    
+
 
     /**
      * Tells if the DN has already been normalized or not
@@ -1682,7 +1682,7 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
         try
         {
             DN dn = new DN( name.toString() );
-        
+
             return dn;
         }
         catch ( LdapInvalidDnException lide )
@@ -1692,8 +1692,8 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
             return null;
         }
     }
-    
-    
+
+
     /**
      * Convert a DN to a {@link javax.naming.Name}
      *
@@ -1705,7 +1705,7 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
         try
         {
             Name name = new LdapName( dn.toString() );
-        
+
             return name;
         }
         catch ( InvalidNameException ine )

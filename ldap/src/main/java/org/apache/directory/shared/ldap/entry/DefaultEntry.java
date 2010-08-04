@@ -50,7 +50,7 @@ import org.slf4j.LoggerFactory;
 /**
  * A default implementation of a ServerEntry which should suite most
  * use cases.
- * 
+ *
  * This class is final, it should not be extended.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
@@ -86,7 +86,7 @@ public class DefaultEntry implements Entry
     // Constructors
     //-------------------------------------------------------------------------
     /**
-     * Creates a new instance of DefaultEntry. 
+     * Creates a new instance of DefaultEntry.
      * <p>
      * This entry <b>must</b> be initialized before being used !
      */
@@ -99,12 +99,12 @@ public class DefaultEntry implements Entry
 
     /**
      * <p>
-     * Creates a new instance of DefaultEntry, schema aware. 
+     * Creates a new instance of DefaultEntry, schema aware.
      * </p>
      * <p>
      * No attributes will be created.
-     * </p> 
-     * 
+     * </p>
+     *
      * @param schemaManager The reference to the schemaManager
      */
     public DefaultEntry( SchemaManager schemaManager )
@@ -118,9 +118,9 @@ public class DefaultEntry implements Entry
 
 
     /**
-     * Creates a new instance of DefaultEntry, with a 
-     * DN. 
-     * 
+     * Creates a new instance of DefaultEntry, with a
+     * DN.
+     *
      * @param dn The DN for this serverEntry. Can be null.
      */
     public DefaultEntry( DN dn )
@@ -131,12 +131,12 @@ public class DefaultEntry implements Entry
 
     /**
      * <p>
-     * Creates a new instance of DefaultEntry, schema aware. 
+     * Creates a new instance of DefaultEntry, schema aware.
      * </p>
      * <p>
      * No attributes will be created.
-     * </p> 
-     * 
+     * </p>
+     *
      * @param schemaManager The reference to the schemaManager
      * @param dn The DN for this serverEntry. Can be null.
      */
@@ -152,18 +152,18 @@ public class DefaultEntry implements Entry
         }
 
         this.schemaManager = schemaManager;
-        
+
         normalizeDN( dn );
-        
+
         // Initialize the ObjectClass object
         initObjectClassAT( schemaManager );
     }
 
 
     /**
-     * Creates a new instance of DefaultEntry, with a 
-     * DN and a list of IDs. 
-     * 
+     * Creates a new instance of DefaultEntry, with a
+     * DN and a list of IDs.
+     *
      * @param dn The DN for this serverEntry. Can be null.
      * @param upIds The list of attributes to create.
      */
@@ -181,13 +181,13 @@ public class DefaultEntry implements Entry
 
     /**
      * <p>
-     * Creates a new instance of DefaultEntry, copying 
-     * another entry. 
+     * Creates a new instance of DefaultEntry, copying
+     * another entry.
      * </p>
      * <p>
      * No attributes will be created.
-     * </p> 
-     * 
+     * </p>
+     *
      * @param schemaManager The reference to the schemaManager
      * @param entry the entry to copy
      */
@@ -209,7 +209,7 @@ public class DefaultEntry implements Entry
         }
 
         normalizeDN( dn );
-        
+
         // Init the attributes map
         attributes = new HashMap<String, EntryAttribute>( entry.size() );
 
@@ -242,14 +242,14 @@ public class DefaultEntry implements Entry
 
 
     /**
-     * Creates a new instance of DefaultEntry, with a 
-     * DN, a list of ID and schema aware. 
+     * Creates a new instance of DefaultEntry, with a
+     * DN, a list of ID and schema aware.
      * <p>
      * No attributes will be created except the ObjectClass attribute,
-     * which will contains "top". 
+     * which will contains "top".
      * <p>
      * If any of the AttributeType does not exist, they are simply discarded.
-     * 
+     *
      * @param schemaManager The reference to the schemaManager
      * @param dn The DN for this serverEntry. Can be null.
      * @param upIds The list of attributes to create.
@@ -266,9 +266,9 @@ public class DefaultEntry implements Entry
         }
 
         this.schemaManager = schemaManager;
-        
+
         normalizeDN( dn );
-        
+
         initObjectClassAT( schemaManager );
 
         set( upIds );
@@ -277,10 +277,10 @@ public class DefaultEntry implements Entry
 
     /**
      * <p>
-     * Creates a new instance of DefaultEntry, with a 
+     * Creates a new instance of DefaultEntry, with a
      * DN and a list of EntryAttributes.
-     * </p> 
-     * 
+     * </p>
+     *
      * @param dn The DN for this serverEntry. Can be null
      * @param attributes The list of attributes to create
      */
@@ -302,14 +302,14 @@ public class DefaultEntry implements Entry
 
 
     /**
-     * Creates a new instance of DefaultEntry, with a 
-     * DN, a list of ServerAttributes and schema aware. 
+     * Creates a new instance of DefaultEntry, with a
+     * DN, a list of ServerAttributes and schema aware.
      * <p>
      * No attributes will be created except the ObjectClass attribute,
-     * which will contains "top". 
+     * which will contains "top".
      * <p>
      * If any of the AttributeType does not exist, they are simply discarded.
-     * 
+     *
      * @param schemaManager The reference to the schemaManager
      * @param dn The DN for this serverEntry. Can be null
      * @param attributes The list of attributes to create
@@ -328,7 +328,7 @@ public class DefaultEntry implements Entry
         this.schemaManager = schemaManager;
 
         normalizeDN( dn );
-        
+
         initObjectClassAT( schemaManager );
 
         for ( EntryAttribute attribute : attributes )
@@ -348,8 +348,8 @@ public class DefaultEntry implements Entry
 
     /**
      * <p>
-     * Creates a new instance of DefaultEntry, with a 
-     * DN, a list of attributeTypes and schema aware. 
+     * Creates a new instance of DefaultEntry, with a
+     * DN, a list of attributeTypes and schema aware.
      * </p>
      * <p>
      * The newly created entry is fed with the list of attributeTypes. No
@@ -358,7 +358,7 @@ public class DefaultEntry implements Entry
      * <p>
      * If any of the AttributeType does not exist, they it's simply discarded.
      * </p>
-     * 
+     *
      * @param schemaManager The reference to the schemaManager
      * @param dn The DN for this serverEntry. Can be null.
      * @param attributeTypes The list of attributes to create, without value.
@@ -377,7 +377,7 @@ public class DefaultEntry implements Entry
         this.schemaManager = schemaManager;
 
         normalizeDN( dn );
-        
+
         // Initialize the ObjectClass object
         initObjectClassAT( schemaManager );
 
@@ -388,8 +388,8 @@ public class DefaultEntry implements Entry
 
     /**
      * <p>
-     * Creates a new instance of DefaultEntry, with a 
-     * DN, an attributeType with the user provided ID, and schema aware. 
+     * Creates a new instance of DefaultEntry, with a
+     * DN, an attributeType with the user provided ID, and schema aware.
      * </p>
      * <p>
      * The newly created entry is fed with the given attributeType. No
@@ -401,7 +401,7 @@ public class DefaultEntry implements Entry
      * <p>
      * We also check that the normalized upID equals the AttributeType ID
      * </p>
-     * 
+     *
      * @param schemaManager The reference to the schemaManager
      * @param dn The DN for this serverEntry. Can be null.
      * @param attributeType The attribute to create, without value.
@@ -421,7 +421,7 @@ public class DefaultEntry implements Entry
         this.schemaManager = schemaManager;
 
         normalizeDN( dn );
-        
+
         // Initialize the ObjectClass object
         initObjectClassAT( schemaManager );
 
@@ -442,12 +442,12 @@ public class DefaultEntry implements Entry
     //-------------------------------------------------------------------------
     /**
      * This method is used to initialize the OBJECT_CLASS_AT attributeType.
-     * 
+     *
      * We want to do it only once, so it's a synchronized method. Note that
      * the alternative would be to call the lookup() every time, but this won't
      * be very efficient, as it will get the AT from a map, which is also
      * synchronized, so here, we have a very minimal cost.
-     * 
+     *
      * We can't do it once as a static part in the body of this class, because
      * the access to the registries is mandatory to get back the AttributeType.
      */
@@ -521,7 +521,7 @@ public class DefaultEntry implements Entry
     /**
      * Add a new EntryAttribute, with its upId. If the upId is null,
      * default to the AttributeType name.
-     * 
+     *
      * Updates the AttributeMap.
      */
     protected void createAttribute( String upId, AttributeType attributeType, byte[]... values )
@@ -535,7 +535,7 @@ public class DefaultEntry implements Entry
     /**
      * Add a new EntryAttribute, with its upId. If the upId is null,
      * default to the AttributeType name.
-     * 
+     *
      * Updates the AttributeMap.
      */
     protected void createAttribute( String upId, AttributeType attributeType, String... values )
@@ -549,7 +549,7 @@ public class DefaultEntry implements Entry
     /**
      * Add a new EntryAttribute, with its upId. If the upId is null,
      * default to the AttributeType name.
-     * 
+     *
      * Updates the AttributeMap.
      */
     protected void createAttribute( String upId, AttributeType attributeType, Value<?>... values )
@@ -610,14 +610,14 @@ public class DefaultEntry implements Entry
 
         if ( attribute != null )
         {
-            // This Attribute already exist, we add the values 
+            // This Attribute already exist, we add the values
             // into it
             attribute.add( values );
         }
         else
         {
             // We have to create a new Attribute and set the values.
-            // The upId, which is set to null, will be setup by the 
+            // The upId, which is set to null, will be setup by the
             // createAttribute method
             createAttribute( null, attributeType, values );
         }
@@ -640,14 +640,14 @@ public class DefaultEntry implements Entry
 
         if ( attribute != null )
         {
-            // This Attribute already exist, we add the values 
+            // This Attribute already exist, we add the values
             // into it
             attribute.add( values );
         }
         else
         {
             // We have to create a new Attribute and set the values.
-            // The upId, which is set to null, will be setup by the 
+            // The upId, which is set to null, will be setup by the
             // createAttribute method
             createAttribute( null, attributeType, values );
         }
@@ -670,14 +670,14 @@ public class DefaultEntry implements Entry
 
         if ( attribute != null )
         {
-            // This Attribute already exist, we add the values 
+            // This Attribute already exist, we add the values
             // into it
             attribute.add( values );
         }
         else
         {
             // We have to create a new Attribute and set the values.
-            // The upId, which is set to null, will be setup by the 
+            // The upId, which is set to null, will be setup by the
             // createAttribute method
             createAttribute( null, attributeType, values );
         }
@@ -697,13 +697,13 @@ public class DefaultEntry implements Entry
             throw new UnsupportedOperationException( message );
         }
 
-        EntryAttribute attribute = ( EntryAttribute ) attributes.get( attributeType.getOid() );
+        EntryAttribute attribute = attributes.get( attributeType.getOid() );
 
         upId = getUpId( upId, attributeType );
 
         if ( attribute != null )
         {
-            // This Attribute already exist, we add the values 
+            // This Attribute already exist, we add the values
             // into it
             attribute.add( values );
             attribute.setUpId( upId, attributeType );
@@ -731,11 +731,11 @@ public class DefaultEntry implements Entry
 
         upId = getUpId( upId, attributeType );
 
-        EntryAttribute attribute = ( EntryAttribute ) attributes.get( attributeType.getOid() );
+        EntryAttribute attribute = attributes.get( attributeType.getOid() );
 
         if ( attribute != null )
         {
-            // This Attribute already exist, we add the values 
+            // This Attribute already exist, we add the values
             // into it
             attribute.add( values );
             attribute.setUpId( upId, attributeType );
@@ -761,11 +761,11 @@ public class DefaultEntry implements Entry
 
         upId = getUpId( upId, attributeType );
 
-        EntryAttribute attribute = ( EntryAttribute ) attributes.get( attributeType.getOid() );
+        EntryAttribute attribute = attributes.get( attributeType.getOid() );
 
         if ( attribute != null )
         {
-            // This Attribute already exist, we add the values 
+            // This Attribute already exist, we add the values
             // into it
             attribute.add( values );
             attribute.setUpId( upId, attributeType );
@@ -862,7 +862,7 @@ public class DefaultEntry implements Entry
 
             if ( attribute != null )
             {
-                // This Attribute already exist, we add the values 
+                // This Attribute already exist, we add the values
                 // into it. (If the values already exists, they will
                 // not be added, but this is done in the add() method)
                 attribute.add( values );
@@ -904,7 +904,7 @@ public class DefaultEntry implements Entry
 
             if ( attribute != null )
             {
-                // This Attribute already exist, we add the values 
+                // This Attribute already exist, we add the values
                 // into it. (If the values already exists, they will
                 // not be added, but this is done in the add() method)
                 attribute.add( values );
@@ -946,7 +946,7 @@ public class DefaultEntry implements Entry
 
             if ( attribute != null )
             {
-                // This Attribute already exist, we add the values 
+                // This Attribute already exist, we add the values
                 // into it. (If the values already exists, they will
                 // not be added, but this is done in the add() method)
                 attribute.add( values );
@@ -1556,7 +1556,7 @@ public class DefaultEntry implements Entry
                     throw new IllegalArgumentException( message );
                 }
 
-                // Search for the corresponding AttributeType, based on the upID 
+                // Search for the corresponding AttributeType, based on the upID
                 AttributeType attributeType = null;
 
                 try
@@ -1596,7 +1596,7 @@ public class DefaultEntry implements Entry
 
 
     /**
-     * {@inheritDoc}     
+     * {@inheritDoc}
      **/
     public List<EntryAttribute> set( AttributeType... attributeTypes )
     {
@@ -1654,7 +1654,7 @@ public class DefaultEntry implements Entry
                 }
 
                 // add the new one
-                this.attributes.put( id, ( EntryAttribute ) attribute );
+                this.attributes.put( id, attribute );
             }
         }
         else
@@ -2052,10 +2052,10 @@ public class DefaultEntry implements Entry
 
     /**
      * <p>
-     * Removes the attribute with the specified AttributeTypes. 
+     * Removes the attribute with the specified AttributeTypes.
      * </p>
      * <p>
-     * The removed attribute are returned by this method. 
+     * The removed attribute are returned by this method.
      * </p>
      * <p>
      * If there is no attribute with the specified AttributeTypes,
@@ -2179,14 +2179,14 @@ public class DefaultEntry implements Entry
      * will be removed too.
      * </p>
      * <p>
-     * If the attribute does not exist, nothing is done and the method returns 
+     * If the attribute does not exist, nothing is done and the method returns
      * <code>false</code>
-     * </p> 
+     * </p>
      *
-     * @param upId The attribute ID  
+     * @param upId The attribute ID
      * @param values the values to be removed
      * @return <code>true</code> if at least a value is removed, <code>false</code>
-     * if not all the values have been removed or if the attribute does not exist. 
+     * if not all the values have been removed or if the attribute does not exist.
      */
     public boolean remove( String upId, byte[]... values ) throws LdapException
     {
@@ -2268,14 +2268,14 @@ public class DefaultEntry implements Entry
      * will be removed too.
      * </p>
      * <p>
-     * If the attribute does not exist, nothing is done and the method returns 
+     * If the attribute does not exist, nothing is done and the method returns
      * <code>false</code>
-     * </p> 
+     * </p>
      *
-     * @param upId The attribute ID  
+     * @param upId The attribute ID
      * @param values the attributes to be removed
      * @return <code>true</code> if at least a value is removed, <code>false</code>
-     * if not all the values have been removed or if the attribute does not exist. 
+     * if not all the values have been removed or if the attribute does not exist.
      */
     public boolean remove( String upId, String... values ) throws LdapException
     {
@@ -2356,14 +2356,14 @@ public class DefaultEntry implements Entry
      * will be removed too.
      * </p>
      * <p>
-     * If the attribute does not exist, nothing is done and the method returns 
+     * If the attribute does not exist, nothing is done and the method returns
      * <code>false</code>
-     * </p> 
+     * </p>
      *
-     * @param upId The attribute ID  
+     * @param upId The attribute ID
      * @param values the attributes to be removed
      * @return <code>true</code> if at least a value is removed, <code>false</code>
-     * if not all the values have been removed or if the attribute does not exist. 
+     * if not all the values have been removed or if the attribute does not exist.
      */
     public boolean remove( String upId, Value<?>... values ) throws LdapException
     {
@@ -2522,7 +2522,7 @@ public class DefaultEntry implements Entry
 
     /**
      * @see Externalizable#writeExternal(ObjectOutput)<p>
-     * 
+     *
      * This is the place where we serialize entries, and all theirs
      * elements.
      * <p>
@@ -2551,7 +2551,7 @@ public class DefaultEntry implements Entry
             out.writeObject( dn );
         }
 
-        // Then the attributes. 
+        // Then the attributes.
         // Store the attributes' nulber first
         out.writeInt( attributes.size() );
 
@@ -2608,15 +2608,15 @@ public class DefaultEntry implements Entry
 
     /**
      * Serialize an Entry.
-     * 
+     *
      * The structure is the following :
      * <b>[a byte] : if the DN is empty 0 will be written else 1
      * <b>[RDN]</b> : The entry's RDN.
-     * <b>[numberAttr]</b> : the bumber of attributes. Can be 0 
-     * <b>[attribute's oid]*</b> : The attribute's OID to get back 
+     * <b>[numberAttr]</b> : the bumber of attributes. Can be 0
+     * <b>[attribute's oid]*</b> : The attribute's OID to get back
      * the attributeType on deserialization
      * <b>[Attribute]*</b> The attribute
-     * 
+     *
      * @param out the buffer in which the data will be serialized
      * @throws IOException if the serialization failed
      */
@@ -2678,8 +2678,8 @@ public class DefaultEntry implements Entry
 
 
     /**
-     * Deserialize an entry. 
-     * 
+     * Deserialize an entry.
+     *
      * @param in The buffer containing the serialized serverEntry
      * @throws IOException if there was a problem when deserializing
      * @throws ClassNotFoundException if we can't deserialize an expected object
@@ -2759,12 +2759,12 @@ public class DefaultEntry implements Entry
         /*
         // We have to sort the Attributes if we want to compare two entries
         SortedMap<String, EntryAttribute> sortedMap = new TreeMap<String, EntryAttribute>();
-        
+
         for ( String id:attributes.keySet() )
         {
             sortedMap.put( id, attributes.get( id ) );
         }
-        
+
         for ( String id:sortedMap.keySet() )
         {
             h = h*17 + sortedMap.get( id ).hashCode();
@@ -2778,7 +2778,7 @@ public class DefaultEntry implements Entry
      * before the comparison can be done.
      *
      * @see java.lang.Object#hashCode()
-     * @return the instance's hash code 
+     * @return the instance's hash code
      */
     public int hashCode()
     {
@@ -2888,7 +2888,7 @@ public class DefaultEntry implements Entry
         {
             return false;
         }
-        
+
         // Each attribute must be equal
         for ( EntryAttribute attribute:other )
         {
@@ -2897,7 +2897,7 @@ public class DefaultEntry implements Entry
                 return false;
             }
         }
-        
+
         return true;
         */
     }
@@ -2973,11 +2973,11 @@ public class DefaultEntry implements Entry
 
         return sb.toString();
     }
-    
-    
+
+
     /**
      * normalizes the given DN if it was not already normalized
-     * 
+     *
      * @param dn the DN to be normalized
      */
     private void normalizeDN( DN dn )
@@ -2987,7 +2987,7 @@ public class DefaultEntry implements Entry
             try
             {
                 // The dn must be normalized
-                dn.normalize( schemaManager.getNormalizerMapping() );
+                dn.normalize( schemaManager );
             }
             catch ( LdapException ne )
             {
