@@ -1,0 +1,118 @@
+#leftColumn {
+	width: 250px;
+}
+
+#bodyColumn {
+	margin-left: 300px;
+}
+
+#banner {
+	padding-left:60px;
+	position:absolute;
+	top:20px;
+	left:0px;
+	width:250px;
+	height:200px;
+	border:none;
+}
+#breadcrumbs {
+	padding: 10px 10px 3px 310px;
+	height:20px;
+	border:none;
+	background-color: inherit;
+	font-family:"Trebuchet MS", Arial, Helvetica, sans-serif;
+	font-size:0.9em;
+	color:#5b5b5b;
+}
+
+#bodyColumn {
+	margin-top:30px;
+}
+#navcolumn {
+	margin-top:170px;
+}
+.section {
+	padding-top:20px;
+	
+}
+body {
+	padding: 0px;
+	margin: 0px;
+	font-size:62.5%;
+	background-image:url(../images/bg.jpg);
+	background-position:left;
+	background-repeat:repeat-y;
+}
+body, td, select, input, li {
+ font-family:"Trebuchet MS", Arial, Helvetica, sans-serif;
+}
+li {
+	list-style-type: none;
+	background:url(../images/puce.gif) center left no-repeat;
+	padding-left: 15px;
+	color:#5b5b5b;
+	font-size:1em;
+}
+#navcolumn li {
+	background:url(../images/puce.gif) center left no-repeat;
+}
+.none {
+	color:#5b5b5b;
+	font-size:36px;
+}
+a:link {
+	color:#f66843;
+}
+a:visited {
+	color:#c35235;
+}
+a:active, a:hover {
+	color:#c35235;
+}
+h2 {
+	font-family:"Trebuchet MS", Arial, Helvetica, sans-serif;
+	color: #708691;
+	font-weight:bold;
+	font-size: 1.4em;
+	background-image:url(../images/bg_h2.jpg);
+	background-repeat:no-repeat;
+	padding:0px 10px 20px 25px;
+	border:none;
+	background-color: white;
+}
+h5 {
+	font-family:"Trebuchet MS", Arial, Helvetica, sans-serif;
+	padding: 4px 4px 4px 6px;
+	color: #708691;
+	font-weight:bold;
+	font-size: 1.4em;
+}
+p {
+	font-family:"Trebuchet MS", Arial, Helvetica, sans-serif;
+	font-size:1.2em;
+	color:#5b5b5b;
+}
+#navcolumn h5 {
+	background-image:url(../images/bg_nav.gif);
+	background-position:left bottom;
+	background-repeat:no-repeat;
+	padding:5px 5px 5ox 0px;
+	margin-top:8px;
+	margin-bottom:8px;
+	font-family:"Trebuchet MS", Arial, Helvetica, sans-serif;
+	color: #708691;
+	font-weight:bold;
+	font-size: 1.4em;
+	border:none;
+}
+#leftColumn {
+  margin: 10px 0 0 5px;
+  border: none;
+  background-color: inherit;
+}
+#navcolumn li.expanded {
+	background-image: none;
+}
+
+
+

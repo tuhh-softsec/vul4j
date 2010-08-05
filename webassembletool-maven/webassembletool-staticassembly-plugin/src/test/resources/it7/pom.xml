@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>fr.dirtech.moduletemplate</groupId>
+	<artifactId>it1</artifactId>
+	<version>0.1</version>
+	<name>Maven Plugin IT 7</name>
+	<description>Integration Test 7 for the Maven Plugin</description>
+	<build>		
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+				<includes>
+					<include>**/*.html</include>
+					<include>**/*.xml</include>
+				</includes>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>false</filtering>
+				<excludes>
+					<exclude>**/*.html</exclude>
+					<exclude>**/*.xml</exclude>
+				</excludes>
+			</resource>
+		</resources>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<configuration>
+					<encoding>UTF-8</encoding>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>net.webassembletool.maven</groupId>
+				<artifactId>webassembletool-staticassembly-plugin</artifactId>
+				<configuration></configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>

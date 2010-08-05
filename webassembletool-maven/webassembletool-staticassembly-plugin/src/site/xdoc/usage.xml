@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+	<properties>
+		<title>Usage</title>
+		<author email="athaveau@free.fr">Alexis Thaveau</author>
+	</properties>
+	<body>
+		<section name="Introduction">
+			<p>
+				This plugin, based on ESIGate API, generate a set of HTML pages
+				with reusable components.
+			</p>
+			<p>
+				<ul>
+					<li>Pages in folder src/main/resources/pages can use <a href="/taglib.html">Esigate taglib</a>
+						in order to include template or block</li>
+					<li>Modules in folder src/main/resources/modules are the template
+						and block to reuse </li>
+				</ul>
+
+
+			</p>
+		</section>
+		<section name="Generate project with archetype">
+			<p>
+				The simplest way is generate your project with the archetype :
+				<source><![CDATA[
+mvn archetype:generate 
+    -DarchetypeRepository=http://webassembletool.sourceforge.net/maven/repository 
+    -DarchetypeArtifactId=webassembletool-staticassembly-archetype
+    -DarchetypeGroupId=net.sourceforge.webassembletool.maven  -DarchetypeVersion=RELEASE
+]]></source>
+			</p>
+		</section>
+		<section name="Configuring the plugin in an existing project">
+			<p>				You can also add this plugin to an existing project.</p>
+				<p>
+				Add this plugin to the pom.xml :
+			</p>
+
+			<source><![CDATA[
+<project>
+  [...]
+  <build>
+    [...]
+    <plugins>
+       <plugin>
+          <groupId>net.webassembletool</groupId>
+          <artifactId>webassembletool-staticassembly-plugin</artifactId>
+       </plugin>
+       [...]
+</project>
+]]></source>
+
+			<p>
+				And add ESIGate repository
+				</p>
+			<source><![CDATA[
+<repositories>
+    <repository>
+       <id>webassembletool-repository</id>
+       <name>Website Assembling Toolkit repository</name>
+       <url>http://webassembletool.sourceforge.net/maven/repository</url>
+    </repository>
+</repositories>
+]]></source>
+
+			<p>
+				Create the following directory structure
+				<source><![CDATA[
+|--src/main/resources/
+                     |-- modules/
+                     |-- pages/
+]]></source>
+			</p>
+		</section>
+
+	</body>
+</document>

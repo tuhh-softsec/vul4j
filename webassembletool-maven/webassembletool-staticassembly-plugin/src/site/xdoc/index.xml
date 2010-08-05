@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+	<properties>
+		<title>Overview</title>
+		<author email="athaveau@free.fr">Alexis Thaveau</author>
+	</properties>
+	<body>
+		<section name="Maven staticassembly plugin">
+			<p>
+				This plugin, based on ESIGate API, generate a set of HTML pages with reusable components.
+			</p>
+		</section>
+		<script type="text/javascript" src="http://www.ohloh.net/p/9896/widgets/project_partner_badge.js"></script>
+	</body>
+</document>

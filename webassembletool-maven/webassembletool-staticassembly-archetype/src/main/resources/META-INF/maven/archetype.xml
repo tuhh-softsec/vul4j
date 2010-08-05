@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?><archetype>
+  <id>webassembletool-staticassembly-archetype</id>  
+  <resources>
+    <resource>src/main/resources</resource>        
+  </resources>
+</archetype>

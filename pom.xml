@@ -127,6 +127,7 @@
 		<module>webassembletool-app-casified-aggregator</module>
 		<module>webassembletool-app-facelet</module>
 		<module>webassembletool-distribution</module>
+		<module>webassembletool-maven</module>
 	</modules>
 	<repositories>
 		<repository>
