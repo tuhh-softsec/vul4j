@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<project name="ESIGate">
-        <version position="left"/>
+<project name="ESIGate"> 
+    <skin>
+	  <groupId>net.sourceforge.webassembletool.maven</groupId>
+      <artifactId>webassembletool-maven-skin</artifactId>
+      <version>${project.version}</version>      
+    </skin>
+    <version position="left"/>
 	<bannerLeft>
 		<name>ESIGate</name>
 		<src>images/logo.jpg</src>
