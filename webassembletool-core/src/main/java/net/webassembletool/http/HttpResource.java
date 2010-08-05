@@ -188,12 +188,7 @@ public class HttpResource extends Resource {
 		// Location header rewriting
 		HttpServletRequest request = target.getOriginalRequest();
 
-		String originalBase = request.getScheme() + "://"
-				+ request.getServerName() + ":" + request.getServerPort()
-				+ request.getContextPath() + request.getServletPath();
-		if (request.getPathInfo() != null) {
-			originalBase += request.getPathInfo();
-		}
+		String originalBase = request.getRequestURL().toString();
 
 		// Note: this code was rewritten for 2.6. While the new code seems
 		// better suited for all cases, it may change the behavior of client
