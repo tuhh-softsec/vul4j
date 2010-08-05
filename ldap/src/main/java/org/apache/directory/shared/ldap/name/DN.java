@@ -23,17 +23,12 @@ package org.apache.directory.shared.ldap.name;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import javax.naming.InvalidNameException;
-import javax.naming.Name;
-import javax.naming.ldap.LdapName;
-
+import org.apache.commons.collections.list.UnmodifiableList;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
@@ -92,6 +87,11 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
      *  The RDNs that are elements of the DN
      * NOTE THAT THESE ARE IN THE OPPOSITE ORDER FROM THAT IMPLIED BY THE JAVADOC!
      * Rdn[0] is rdns.get(n) and Rdn[n] is rdns.get(0)
+     * <br>
+     * For instance,if the DN is "dc=c, dc=b, dc=a", then the RDNs are stored as :
+     * [0] : dc=c
+     * [1] : dc=b
+     * [2] : dc=a
      */
     protected List<RDN> rdns = new ArrayList<RDN>( 5 );
 
@@ -109,6 +109,44 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
 
     /** the schema manager */
     private transient SchemaManager schemaManager;
+
+    /**
+     * An iterator over RDNs
+     */
+    private class RdnIterator implements Iterator<RDN>
+    {
+        // The current index
+        int index;
+
+        private RdnIterator()
+        {
+            index = rdns != null ? rdns.size() - 1 : -1;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public boolean hasNext()
+        {
+            return index >= 0;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public RDN next()
+        {
+            return index >= 0 ? rdns.get( index-- ) : null;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public void remove()
+        {
+            // Not implemented
+        }
+    }
 
     // ~ Methods
     // ------------------------------------------------------------------------------------
@@ -386,6 +424,9 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
 
     /**
      * Static factory which creates a normalized DN from a String and a Map of OIDs.
+     * <br>
+     * This method is for test purpose only, and as it's package protected, won't be usable
+     * out of this scope.
      *
      * @param name The DN as a String
      * @param oidsMap The OID mapping
@@ -393,7 +434,7 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
      * @throws LdapInvalidNameException If the DN is invalid.
      * @throws LdapInvalidDnException If something went wrong.
      */
-    public static DN normalize( String name, Map<String, OidNormalizer> oidsMap ) throws LdapInvalidDnException
+    /* No qualifier */ static DN normalize( String name, Map<String, OidNormalizer> oidsMap ) throws LdapInvalidDnException
     {
         if ( ( name == null ) || ( name.length() == 0 ) || ( oidsMap == null ) || ( oidsMap.isEmpty() ) )
         {
@@ -402,12 +443,8 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
 
         DN newDn = new DN( name );
 
-        Enumeration<RDN> rdns = newDn.getAllRdn();
-
-        // Loop on all RDNs
-        while ( rdns.hasMoreElements() )
+        for ( RDN rdn : newDn.rdns )
         {
-            RDN rdn = rdns.nextElement();
             String upName = rdn.getName();
             rdnOidToName( rdn, oidsMap );
             rdn.normalize();
@@ -962,58 +999,7 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
      */
     public List<RDN> getRdns()
     {
-        List<RDN> newRdns = new ArrayList<RDN>();
-
-        // We will clone the list, to avoid user modifications
-        for ( RDN rdn : rdns )
-        {
-            newRdns.add( ( RDN ) rdn.clone() );
-        }
-
-        return newRdns;
-    }
-
-
-    /**
-     * Retrieves the components of this name as an enumeration of strings. The
-     * effect on the enumeration of updates to this name is undefined. If the
-     * name has zero components, an empty (non-null) enumeration is returned.
-     * This starts at the root (rightmost) rdn.
-     *
-     * @return an enumeration of the components of this name, as Rdn
-     */
-    public Enumeration<RDN> getAllRdn()
-    {
-        /*
-         * Note that by accessing the name component using the get() method on
-         * the name rather than get() on the list we are reading components from
-         * right to left with increasing index values. LdapName.get() does the
-         * index translation on m_list for us.
-         */
-        return new Enumeration<RDN>()
-        {
-            private int pos;
-
-
-            public boolean hasMoreElements()
-            {
-                return pos < rdns.size();
-            }
-
-
-            public RDN nextElement()
-            {
-                if ( pos >= rdns.size() )
-                {
-                    LOG.error( I18n.err( I18n.ERR_04205 ) );
-                    throw new NoSuchElementException();
-                }
-
-                RDN rdn = rdns.get( rdns.size() - pos - 1 );
-                pos++;
-                return rdn;
-            }
-        };
+        return UnmodifiableList.decorate( rdns );
     }
 
 
@@ -1545,12 +1531,8 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
             return dn;
         }
 
-        Enumeration<RDN> rdns = dn.getAllRdn();
-
-        // Loop on all RDNs
-        while ( rdns.hasMoreElements() )
+        for ( RDN rdn : dn.rdns )
         {
-            RDN rdn = rdns.nextElement();
             String upName = rdn.getName();
             rdnOidToName( rdn, oidsMap );
             rdn.normalize();
@@ -1601,13 +1583,8 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
                 return this;
             }
 
-            Enumeration<RDN> localRdns = getAllRdn();
-
-            // Loop on all RDNs
-            while ( localRdns.hasMoreElements() )
+            for ( RDN rdn : rdns )
             {
-                RDN rdn = localRdns.nextElement();
-
                 rdn.normalize( oidsMap );
             }
 
@@ -1672,56 +1649,10 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
 
 
     /**
-     * Convert a {@link javax.naming.Name} to a DN
-     *
-     * @param name The Name to convert
-     * @return A DN
-     */
-    public static DN fromName( Name name )
-    {
-        try
-        {
-            DN dn = new DN( name.toString() );
-
-            return dn;
-        }
-        catch ( LdapInvalidDnException lide )
-        {
-            // TODO : check if we must throw an exception.
-            // Logically, the Name must be valid.
-            return null;
-        }
-    }
-
-
-    /**
-     * Convert a DN to a {@link javax.naming.Name}
-     *
-     * @param name The DN to convert
-     * @return A Name
-     */
-    public static Name toName( DN dn )
-    {
-        try
-        {
-            Name name = new LdapName( dn.toString() );
-
-            return name;
-        }
-        catch ( InvalidNameException ine )
-        {
-            // TODO : check if we must throw an exception.
-            // Logically, the DN must be valid.
-            return null;
-        }
-    }
-
-
-    /**
      * {@inheritDoc}
      */
     public Iterator<RDN> iterator()
     {
-        return rdns.iterator();
+        return new RdnIterator();
     }
 }
