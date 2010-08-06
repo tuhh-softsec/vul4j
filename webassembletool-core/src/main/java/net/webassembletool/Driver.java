@@ -524,7 +524,7 @@ public class Driver {
 						// Forced expiration delay
 						if (Rfc2616.requiresRefresh(resourceContext)
 								|| Rfc2616.getAge(cachedResource) > config
-										.getCacheRefreshDelay() * 1000) {
+										.getCacheRefreshDelay() * 1000L) {
 							needsValidation = true;
 						}
 					}
