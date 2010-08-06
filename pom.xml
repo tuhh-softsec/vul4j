@@ -121,7 +121,7 @@
 									<banLatest>true</banLatest>
 									<banRelease>true</banRelease>
 									<banSnapshots>true</banSnapshots>
-									<phases>clean,deploy,site</phases>									
+									<phases>clean,deploy,site</phases>
 								</requirePluginVersions>
 							</rules>
 						</configuration>
@@ -220,6 +220,11 @@
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-surefire-plugin</artifactId>
 					<version>2.5</version>
+				</plugin>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>sonar-maven-plugin</artifactId>
+					<version>1.0-beta-1</version>
 				</plugin>
 			</plugins>
 		</pluginManagement>
