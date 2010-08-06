@@ -66,8 +66,7 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
 					<skipTests>true</skipTests>
-				</configuration>
-				<version>2.4.3</version>
+				</configuration>				
 				<executions>
 					<execution>
 						<id>integration-test</id>
@@ -83,8 +82,7 @@
 			</plugin>
 			<plugin>
 				<groupId>org.codehaus.cargo</groupId>
-				<artifactId>cargo-maven2-plugin</artifactId>
-				<version>1.0</version>
+				<artifactId>cargo-maven2-plugin</artifactId>				
 				<executions>
 					<execution>
 						<id>start-container</id>

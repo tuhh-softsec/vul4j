@@ -1,11 +1,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<artifactId>webassembletool-maven</artifactId>
-		<groupId>net.sourceforge.webassembletool</groupId>
-		<version>2.15-SNAPSHOT</version>
-	</parent>
 	<groupId>net.sourceforge.webassembletool.maven</groupId>
 	<artifactId>webassembletool-staticassembly-archetype</artifactId>
 	<version>2.15-SNAPSHOT</version>
@@ -13,6 +8,11 @@
 	<name>webassembletool-staticassembly-archetype</name>
 	<description>Archetype that generate a staticassembly enabled project</description>
 	<inceptionYear>2010</inceptionYear>
+	<parent>		
+		<groupId>net.sourceforge.webassembletool</groupId>
+		<artifactId>webassembletool-maven</artifactId>
+		<version>2.15-SNAPSHOT</version>
+	</parent>	
 	<developers>
 		<developer>
 			<id>athaveau</id>			
