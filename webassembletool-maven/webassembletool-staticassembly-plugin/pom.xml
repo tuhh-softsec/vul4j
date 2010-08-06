@@ -7,13 +7,13 @@
 	<artifactId>webassembletool-staticassembly-plugin</artifactId>
 	<version>2.15-SNAPSHOT</version>
 	<packaging>maven-plugin</packaging>
-	<name>webassembletool-staticassembly-plugin Maven Plugin</name>		
+	<name>webassembletool-staticassembly-plugin</name>		
 	<parent>
 		<artifactId>webassembletool-maven</artifactId>
 		<groupId>net.sourceforge.webassembletool</groupId>
 		<version>2.15-SNAPSHOT</version>
 	</parent>	
-	<description>Maven plugins that assemble static resources.</description>
+	<description>Staticassembly Maven plugin Generate a set of HTML pages with reusable components found in modules folder.</description>
 	<inceptionYear>2010</inceptionYear>	
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

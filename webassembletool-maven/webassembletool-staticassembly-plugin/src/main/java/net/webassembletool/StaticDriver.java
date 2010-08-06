@@ -15,6 +15,7 @@
 package net.webassembletool;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 import net.webassembletool.output.StringOutput;
@@ -25,7 +26,7 @@ import net.webassembletool.output.StringOutput;
  * @author Alexis Thaveau
  */
 public class StaticDriver extends Driver {
-	private final HashMap<String, StringOutput> resources = new HashMap<String, StringOutput>();
+	private final Map<String, StringOutput> resources = new HashMap<String, StringOutput>();
 
 	public StaticDriver(String name, Properties props) {
 		super(name, props);

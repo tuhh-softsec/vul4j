@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.Properties;
 
 import net.webassembletool.Driver;
+import net.webassembletool.DriverFactory;
 import net.webassembletool.HttpErrorPage;
 import net.webassembletool.ResourceContext;
 import net.webassembletool.StaticDriver;
@@ -36,8 +37,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 
 /**
- * Generate a set of HTML pages with reusable components found in
- * modulesDirectory folder
+ * Generate a set of HTML pages with reusable components found in modules folder
  * 
  * @goal assembly
  * @phase generate-resources
@@ -48,10 +48,17 @@ import org.apache.maven.plugin.MojoFailureException;
 public class AssemblyMojo extends AbstractMojo {
 
 	/**
-	 * Filter html file
+	 * Filter page to generate
 	 */
 	private static IOFileFilter PAGES_TO_GENERATE_FILTER = new SuffixFileFilter(
 			".html");
+
+	/**
+	 * Filter components to configure
+	 */
+	private static IOFileFilter COMPONENTS_TO_CONFIGURE = new SuffixFileFilter(
+			".html");
+
 	/**
 	 * The directory containing pages to generate.
 	 * 
@@ -109,7 +116,6 @@ public class AssemblyMojo extends AbstractMojo {
 			throw new MojoExecutionException("Error", e);
 		} catch (IOException e) {
 			throw new MojoExecutionException("Error", e);
-		} finally {
 		}
 	}
 
@@ -142,7 +148,7 @@ public class AssemblyMojo extends AbstractMojo {
 
 		@SuppressWarnings("rawtypes")
 		Collection files = FileUtils.listFiles(this.modulesDirectory,
-				PAGES_TO_GENERATE_FILTER, FileFilterUtils.trueFileFilter());
+				COMPONENTS_TO_CONFIGURE, FileFilterUtils.trueFileFilter());
 		for (Object file : files) {
 			File source = (File) file;
 			String fileName = getRelativePath(modulesDirectory, source);
@@ -167,7 +173,7 @@ public class AssemblyMojo extends AbstractMojo {
 						+ " to " + outputDirectory.getPath());
 
 		FileUtils.copyDirectory(pagesDirectory, outputDirectory,
-				new NotFileFilter(PAGES_TO_GENERATE_FILTER), true);
+				new NotFileFilter(COMPONENTS_TO_CONFIGURE), true);
 
 	}
 
