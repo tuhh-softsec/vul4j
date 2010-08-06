@@ -259,11 +259,11 @@ public class RewriteProxyServlet extends HttpServlet {
 				} else if ("schemeRewrite".equals(attribute)) {
 					currentConf.setSchemeRewrite(value);
 				} else if ("redirect".equals(attribute)) {
-					currentConf.setRedirect(new Integer(value));
+					currentConf.setRedirect(Integer.valueOf(value));
 				} else if ("portPattern".equals(attribute)) {
-					currentConf.setPortPattern(new Integer(value));
+					currentConf.setPortPattern(Integer.valueOf(value));
 				} else if ("portRewrite".equals(attribute)) {
-					currentConf.setPortRewrite(new Integer(value));
+					currentConf.setPortRewrite(Integer.valueOf(value));
 				}
 
 				validateConfiguration(rule, currentConf);

@@ -28,6 +28,10 @@ import org.apache.http.impl.cookie.DateUtils;
  * 
  */
 public class Rfc2616 {
+	private Rfc2616() {
+
+	}
+
 	private static final int SECONDS = 1000;
 	private static final Log LOG = LogFactory.getLog(Rfc2616.class);
 
@@ -67,7 +71,7 @@ public class Rfc2616 {
 				} else if (token[0].equalsIgnoreCase("proxy-revalidate")) {
 					result.proxyRevalidate = true;
 				} else if (token[0].equalsIgnoreCase("max-age")) {
-					result.maxAge = new Long(-1);
+					result.maxAge = Long.valueOf(-1);
 					if (token.length == 2) {
 						try {
 							result.maxAge = Long.parseLong(token[1]);
@@ -76,7 +80,7 @@ public class Rfc2616 {
 						}
 					}
 				} else if (token[0].equalsIgnoreCase("s-max-age")) {
-					result.sMaxAge = new Long(-1);
+					result.sMaxAge = Long.valueOf(-1);
 					if (token.length == 2) {
 						try {
 							result.maxAge = Long.parseLong(token[1]);
