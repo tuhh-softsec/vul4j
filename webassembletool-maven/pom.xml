@@ -5,7 +5,8 @@
 	<artifactId>webassembletool-maven</artifactId>
 	<version>2.15-SNAPSHOT</version>
 	<packaging>pom</packaging>
-	<name>webassembletool-maven</name>		
+	<name>webassembletool-maven</name>	
+	<description>ESIGate Maven Root Project</description>	
 	<parent>		
 		<artifactId>webassembletool</artifactId>
 		<groupId>net.sourceforge.webassembletool</groupId>

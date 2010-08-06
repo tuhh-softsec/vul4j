@@ -75,5 +75,59 @@ mvn archetype:generate
 			</p>
 		</section>
 
+
+<section name="Advanced Configuration">
+
+	<subsection name="Bind to build lifecyle">
+	<p>To bind the plugin to the standard build lifecycle : </p>	
+	<source><![CDATA[
+<plugin>
+	<groupId>net.sourceforge.webassembletool.maven</groupId>
+	<artifactId>webassembletool-staticassembly-plugin</artifactId>
+	<version>${currentVersion}</version>
+	<executions>
+		<execution>
+			<phase>process-resources</phase>
+			<goals>
+				<goal>assembly</goal>
+			</goals>
+		</execution>
+	</executions>
+	<configuration>
+		<charset>UTF-8</charset>
+	</configuration>
+</plugin>	
+]]></source>
+</subsection>
+
+<subsection name="Filtering page before assembly">
+<p>
+Resources files (pages, modules) can be filtered before plugin execution :
+</p>
+<source><![CDATA[
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+				<includes>
+					<include>**/*.html</include>
+					<include>**/*.xml</include>
+				</includes>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>false</filtering>
+				<excludes>
+					<exclude>**/*.html</exclude>
+					<exclude>**/*.xml</exclude>
+				</excludes>
+			</resource>
+		</resources>
+]]></source>			
+	
+		</subsection>
+		
+
+</section>
 	</body>
 </document>

@@ -11,6 +11,7 @@
 	<version>2.15-SNAPSHOT</version>
 	<packaging>maven-archetype</packaging>
 	<name>webassembletool-staticassembly-archetype</name>
+	<description>Archetype that generate a staticassembly enabled project</description>
 	<inceptionYear>2010</inceptionYear>
 	<developers>
 		<developer>

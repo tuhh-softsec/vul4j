@@ -6,11 +6,7 @@
     <menu name="Overview">
       <item name="Introduction" href="index.html"/>
       <item name="Goals" href="plugin-info.html"/>
-      <item name="Usage" href="usage.html"/>      
-    </menu>
-
-    <menu name="Examples">
-      <item name="Complete pom.xml" href="examples/pom.html"/>     
+      <item name="Usage" href="usage.html"/>	             
     </menu>
 
     <menu ref="reports"/>
