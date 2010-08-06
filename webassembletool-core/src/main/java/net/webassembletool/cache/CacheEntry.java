@@ -202,11 +202,11 @@ class CacheEntry {
 		}
 		if (!etags.isEmpty()) {
 			Iterator<String> iterator = etags.iterator();
-			String etagsString = iterator.next();
+			StringBuilder etagsString = new StringBuilder(iterator.next());
 			while (iterator.hasNext()) {
-				etagsString += ", " + iterator.next();
+				etagsString.append(", ").append(iterator.next());
 			}
-			return etagsString;
+			return etagsString.toString();
 		}
 		return null;
 	}
@@ -418,24 +418,26 @@ class CacheEntry {
 	 */
 	private String getCacheKey(ResourceContext resourceContext,
 			CachedResponse resource) {
-		String cacheKey = url + " ";
+		StringBuilder cacheKey = new StringBuilder();
+		cacheKey.append(url).append(" ");
 		String etag = Rfc2616.getEtag(resource);
 
 		if (etag != null) {
-			cacheKey += " etag=" + etag;
+			cacheKey.append(" etag=").append(etag);
 		}
 
 		Map<String, String> vary = Rfc2616.getVary(resourceContext, resource);
 		if (vary != null) {
-			cacheKey += " vary={";
+			cacheKey.append(" vary={");
 			for (Iterator<Entry<String, String>> iterator = vary.entrySet()
 					.iterator(); iterator.hasNext();) {
 				Entry<String, String> header = iterator.next();
-				cacheKey += header.getKey() + "=" + header.getValue() + ";";
+				cacheKey.append(header.getKey()).append("=")
+						.append(header.getValue()).append(";");
 			}
-			cacheKey += "}";
+			cacheKey.append("}");
 		}
-		return cacheKey;
+		return cacheKey.toString();
 	}
 
 	public Storage getStorage() {
