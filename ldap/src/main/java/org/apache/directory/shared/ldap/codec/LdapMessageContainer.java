@@ -43,6 +43,8 @@ import org.apache.directory.shared.ldap.codec.search.SearchResultDoneCodec;
 import org.apache.directory.shared.ldap.codec.search.SearchResultEntryCodec;
 import org.apache.directory.shared.ldap.codec.search.SearchResultReferenceCodec;
 import org.apache.directory.shared.ldap.codec.unbind.UnBindRequestCodec;
+import org.apache.directory.shared.ldap.message.internal.InternalAddRequest;
+import org.apache.directory.shared.ldap.message.internal.InternalMessage;
 import org.apache.directory.shared.ldap.message.spi.BinaryAttributeDetector;
 
 
@@ -60,6 +62,9 @@ public class LdapMessageContainer extends AbstractContainer
 
     /** The ldap message */
     private LdapMessageCodec ldapMessage;
+
+    /** The internal ldap message */
+    private InternalMessage internalMessage;
 
     /** checks if attribute is binary */
     private final BinaryAttributeDetector binaryAttributeDetector;
@@ -117,6 +122,15 @@ public class LdapMessageContainer extends AbstractContainer
 
     
     /**
+     * @return Returns the ldapMessage.
+     */
+    public InternalMessage getInternalMessage()
+    {
+        return internalMessage;
+    }
+
+    
+    /**
      * @return Returns the LdapResponse.
      */
     public LdapResponseCodec getLdapResponse()
@@ -140,6 +154,15 @@ public class LdapMessageContainer extends AbstractContainer
     public AddRequestCodec getAddRequest()
     {
         return (AddRequestCodec)ldapMessage;
+    }
+
+    
+    /**
+     * @return Returns the InternalAddRequest stored in the container
+     */
+    public InternalAddRequest getInternalAddRequest()
+    {
+        return (InternalAddRequest)internalMessage;
     }
 
     
@@ -323,6 +346,18 @@ public class LdapMessageContainer extends AbstractContainer
     public void setLdapMessage( LdapMessageCodec ldapMessage )
     {
         this.ldapMessage = ldapMessage;
+    }
+
+    
+    /**
+     * Set a InternalMessage Object into the container. It will be completed by the
+     * ldapDecoder.
+     * 
+     * @param internalMessage The message to set.
+     */
+    public void setInternalMessage( InternalMessage internalMessage )
+    {
+        this.internalMessage = internalMessage;
     }
 
 

@@ -20,10 +20,12 @@
 package org.apache.directory.shared.ldap.message;
 
 
-
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.entry.DefaultEntry;
+import org.apache.directory.shared.ldap.entry.DefaultEntryAttribute;
 import org.apache.directory.shared.ldap.entry.Entry;
+import org.apache.directory.shared.ldap.entry.EntryAttribute;
+import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.message.internal.InternalAddRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalAddResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalResultResponse;
@@ -44,6 +46,9 @@ public class AddRequestImpl extends AbstractAbandonableRequest implements Intern
 
     private InternalAddResponse response;
 
+    /** The current attribute being decoded */
+    private EntryAttribute currentAttribute;
+
 
     // ------------------------------------------------------------------------
     // Constructors
@@ -55,7 +60,7 @@ public class AddRequestImpl extends AbstractAbandonableRequest implements Intern
      * @param id
      *            the sequence identifier of the AddRequest message.
      */
-    public AddRequestImpl(final int id)
+    public AddRequestImpl( final int id )
     {
         super( id, TYPE );
         entry = new DefaultEntry();
@@ -107,6 +112,68 @@ public class AddRequestImpl extends AbstractAbandonableRequest implements Intern
     public void setEntry( Entry entry )
     {
         this.entry = entry;
+    }
+
+
+    /**
+     * Create a new attributeValue
+     * 
+     * @param type The attribute's name (called 'type' in the grammar)
+     */
+    public void addAttributeType( String type ) throws LdapException
+    {
+        // do not create a new attribute if we have seen this attributeType before
+        if ( entry.get( type ) != null )
+        {
+            currentAttribute = entry.get( type );
+            return;
+        }
+
+        // fix this to use AttributeImpl(type.getString().toLowerCase())
+        currentAttribute = new DefaultEntryAttribute( type );
+        entry.put( currentAttribute );
+    }
+
+
+    /**
+     * @return Returns the currentAttribute type.
+     */
+    public String getCurrentAttributeType()
+    {
+        return currentAttribute.getId();
+    }
+
+
+    /**
+     * Add a new value to the current attribute
+     * 
+     * @param value The value to add
+     */
+    public void addAttributeValue( String value )
+    {
+        currentAttribute.add( value );
+    }
+
+
+    /**
+     * Add a new value to the current attribute
+     * 
+     * @param value The value to add
+     */
+    public void addAttributeValue( org.apache.directory.shared.ldap.entry.Value<?> value )
+    {
+        currentAttribute.add( value );
+    }
+
+
+    /**
+     * Add a new value to the current attribute
+     * 
+     * @param value The value to add
+     */
+    public void addAttributeValue( byte[] value )
+    {
+        currentAttribute.add( value );
     }
 
 
@@ -162,7 +229,7 @@ public class AddRequestImpl extends AbstractAbandonableRequest implements Intern
         {
             return true;
         }
-        
+
         // Check the object class. If null, it will exit.
         if ( !( obj instanceof InternalAddRequest ) )
         {
@@ -187,6 +254,7 @@ public class AddRequestImpl extends AbstractAbandonableRequest implements Intern
         }
     }
 
+
     /**
      * @see Object#hashCode()
      * @return the instance's hash code 
@@ -194,12 +262,13 @@ public class AddRequestImpl extends AbstractAbandonableRequest implements Intern
     public int hashCode()
     {
         int hash = 37;
-        hash = hash*17 + ( entry == null ? 0 : entry.hashCode() );
-        hash = hash*17 + ( response == null ? 0 : response.hashCode() );
-        hash = hash*17 + super.hashCode();
-        
+        hash = hash * 17 + ( entry == null ? 0 : entry.hashCode() );
+        hash = hash * 17 + ( response == null ? 0 : response.hashCode() );
+        hash = hash * 17 + super.hashCode();
+
         return hash;
     }
+
 
     /**
      * @see Object#toString()
@@ -209,7 +278,7 @@ public class AddRequestImpl extends AbstractAbandonableRequest implements Intern
         StringBuilder sb = new StringBuilder();
 
         sb.append( "    Add Request :\n" );
-        
+
         if ( entry == null )
         {
             sb.append( "            No entry\n" );

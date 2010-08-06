@@ -226,21 +226,22 @@ public class LdapTransformer
         internalMessage.setServerSaslCreds( bindResponse.getServerSaslCreds() );
         //transformControlsCodecToInternal( codecMessage, internalMessage );
         transformLdapResultCodecToInternal( bindResponse.getLdapResult(), internalMessage.getLdapResult() );
-        
+
         return internalMessage;
     }
 
-    
+
     /**
      * Transforms parameters of a Codec LdapResult into a Internal LdapResult.
      *
      * @param codecLdapResult the codec LdapResult representation
      * @param InternalResult the Internal LdapResult representation
      */
-    private static void transformLdapResultCodecToInternal( LdapResultCodec codecLdapResult, InternalLdapResult internalLdapResult )
+    private static void transformLdapResultCodecToInternal( LdapResultCodec codecLdapResult,
+        InternalLdapResult internalLdapResult )
     {
         internalLdapResult.setErrorMessage( codecLdapResult.getErrorMessage() );
-        
+
         try
         {
             internalLdapResult.setMatchedDn( new DN( codecLdapResult.getMatchedDN() ) );
@@ -250,22 +251,22 @@ public class LdapTransformer
             LOG.error( I18n.err( I18n.ERR_04111, codecLdapResult.getMatchedDN() ) );
             internalLdapResult.setMatchedDn( new DN() );
         }
-        
+
         internalLdapResult.setResultCode( codecLdapResult.getResultCode() );
 
         if ( codecLdapResult.getReferrals() != null )
         {
             ReferralImpl referral = new ReferralImpl();
-            
+
             for ( LdapURL url : codecLdapResult.getReferrals() )
             {
                 referral.addLdapUrl( url.toString() );
             }
-            
+
             internalLdapResult.setReferral( referral );
         }
     }
-    
+
 
     /**
      * Transform a CompareRequest message from a CodecMessage to a
@@ -394,7 +395,7 @@ public class LdapTransformer
         if ( modifyRequest.getModifications() != null )
         {
             // Loop through the modifications
-            for ( Modification modification:modifyRequest.getModifications() )
+            for ( Modification modification : modifyRequest.getModifications() )
             {
                 internalMessage.addModification( modification );
             }
@@ -437,7 +438,7 @@ public class LdapTransformer
                 // Loop on all AND/OR children
                 if ( filtersSet != null )
                 {
-                    for ( Filter filter:filtersSet )
+                    for ( Filter filter : filtersSet )
                     {
                         branch.addNode( transformFilter( filter ) );
                     }
@@ -462,14 +463,12 @@ public class LdapTransformer
                     switch ( ( ( AttributeValueAssertionFilter ) codecFilter ).getFilterType() )
                     {
                         case LdapConstants.EQUALITY_MATCH_FILTER:
-                            branch = new EqualityNode( ava.getAttributeDesc(), 
-                                ava.getAssertionValue() );
-                            
+                            branch = new EqualityNode( ava.getAttributeDesc(), ava.getAssertionValue() );
+
                             break;
 
                         case LdapConstants.GREATER_OR_EQUAL_FILTER:
-                            branch = new GreaterEqNode( ava.getAttributeDesc(),
-                                ava.getAssertionValue() );
+                            branch = new GreaterEqNode( ava.getAttributeDesc(), ava.getAssertionValue() );
 
                             break;
 
@@ -507,7 +506,7 @@ public class LdapTransformer
                     {
                         anyString = new ArrayList<String>();
 
-                        for ( String any:filter.getAnySubstrings() )
+                        for ( String any : filter.getAnySubstrings() )
                         {
                             anyString.add( any );
                         }
@@ -552,7 +551,7 @@ public class LdapTransformer
     {
         if ( exprNode != null )
         {
-            Filter filter  = null;
+            Filter filter = null;
 
             // Transform OR, AND or NOT leaves
             if ( exprNode instanceof BranchNode )
@@ -570,16 +569,16 @@ public class LdapTransformer
                     filter = new NotFilter();
                 }
 
-                List<ExprNode> children = ((BranchNode)exprNode).getChildren();
+                List<ExprNode> children = ( ( BranchNode ) exprNode ).getChildren();
 
                 // Loop on all AND/OR children
                 if ( children != null )
                 {
-                    for ( ExprNode child:children )
+                    for ( ExprNode child : children )
                     {
                         try
                         {
-                            ((ConnectorFilter)filter).addFilter( transformFilter( schemaManager, child ) );
+                            ( ( ConnectorFilter ) filter ).addFilter( transformFilter( schemaManager, child ) );
                         }
                         catch ( DecoderException de )
                         {
@@ -595,7 +594,7 @@ public class LdapTransformer
                 {
                     // Transform Presence Node
                     filter = new PresentFilter();
-                    ((PresentFilter)filter).setAttributeDescription( ((PresenceNode)exprNode).getAttribute() );
+                    ( ( PresentFilter ) filter ).setAttributeDescription( ( ( PresenceNode ) exprNode ).getAttribute() );
                 }
                 else if ( exprNode instanceof SimpleNode<?> )
                 {
@@ -603,33 +602,33 @@ public class LdapTransformer
                     {
                         filter = new AttributeValueAssertionFilter( LdapConstants.EQUALITY_MATCH_FILTER );
                         AttributeValueAssertion assertion = new AttributeValueAssertion();
-                        assertion.setAttributeDesc( ((EqualityNode<?>)exprNode).getAttribute() );
-                        assertion.setAssertionValue( ((EqualityNode<?>)exprNode).getValue() );
-                        ((AttributeValueAssertionFilter)filter).setAssertion( assertion );
+                        assertion.setAttributeDesc( ( ( EqualityNode<?> ) exprNode ).getAttribute() );
+                        assertion.setAssertionValue( ( ( EqualityNode<?> ) exprNode ).getValue() );
+                        ( ( AttributeValueAssertionFilter ) filter ).setAssertion( assertion );
                     }
-                    else if ( exprNode instanceof GreaterEqNode<?> ) 
+                    else if ( exprNode instanceof GreaterEqNode<?> )
                     {
                         filter = new AttributeValueAssertionFilter( LdapConstants.GREATER_OR_EQUAL_FILTER );
                         AttributeValueAssertion assertion = new AttributeValueAssertion();
-                        assertion.setAttributeDesc( ((GreaterEqNode<?>)exprNode).getAttribute() );
-                        assertion.setAssertionValue( ((GreaterEqNode<?>)exprNode).getValue() );
-                        ((AttributeValueAssertionFilter)filter).setAssertion( assertion );
+                        assertion.setAttributeDesc( ( ( GreaterEqNode<?> ) exprNode ).getAttribute() );
+                        assertion.setAssertionValue( ( ( GreaterEqNode<?> ) exprNode ).getValue() );
+                        ( ( AttributeValueAssertionFilter ) filter ).setAssertion( assertion );
                     }
-                    else if ( exprNode instanceof LessEqNode<?> ) 
+                    else if ( exprNode instanceof LessEqNode<?> )
                     {
                         filter = new AttributeValueAssertionFilter( LdapConstants.LESS_OR_EQUAL_FILTER );
                         AttributeValueAssertion assertion = new AttributeValueAssertion();
-                        assertion.setAttributeDesc( ((LessEqNode<?>)exprNode).getAttribute() );
-                        assertion.setAssertionValue( ((LessEqNode<?>)exprNode).getValue() );
-                        ((AttributeValueAssertionFilter)filter).setAssertion( assertion );
+                        assertion.setAttributeDesc( ( ( LessEqNode<?> ) exprNode ).getAttribute() );
+                        assertion.setAssertionValue( ( ( LessEqNode<?> ) exprNode ).getValue() );
+                        ( ( AttributeValueAssertionFilter ) filter ).setAssertion( assertion );
                     }
                     else if ( exprNode instanceof ApproximateNode<?> )
                     {
                         filter = new AttributeValueAssertionFilter( LdapConstants.APPROX_MATCH_FILTER );
                         AttributeValueAssertion assertion = new AttributeValueAssertion();
-                        assertion.setAttributeDesc( ((ApproximateNode<?>)exprNode).getAttribute() );
-                        assertion.setAssertionValue( ((ApproximateNode<?>)exprNode).getValue() );
-                        ((AttributeValueAssertionFilter)filter).setAssertion( assertion );
+                        assertion.setAttributeDesc( ( ( ApproximateNode<?> ) exprNode ).getAttribute() );
+                        assertion.setAssertionValue( ( ( ApproximateNode<?> ) exprNode ).getValue() );
+                        ( ( AttributeValueAssertionFilter ) filter ).setAssertion( assertion );
                     }
                 }
                 else if ( exprNode instanceof SubstringNode )
@@ -637,26 +636,26 @@ public class LdapTransformer
                     // Transform Substring Nodes
                     filter = new SubstringFilter();
 
-                    ((SubstringFilter)filter).setType( ((SubstringNode)exprNode).getAttribute() );
-                    String initialString = ((SubstringNode)exprNode).getInitial();
-                    String finalString = ((SubstringNode)exprNode).getFinal();
-                    List<String> anyStrings = ((SubstringNode)exprNode).getAny();
+                    ( ( SubstringFilter ) filter ).setType( ( ( SubstringNode ) exprNode ).getAttribute() );
+                    String initialString = ( ( SubstringNode ) exprNode ).getInitial();
+                    String finalString = ( ( SubstringNode ) exprNode ).getFinal();
+                    List<String> anyStrings = ( ( SubstringNode ) exprNode ).getAny();
 
                     if ( initialString != null )
                     {
-                        ((SubstringFilter)filter).setInitialSubstrings( initialString );
+                        ( ( SubstringFilter ) filter ).setInitialSubstrings( initialString );
                     }
 
                     if ( finalString != null )
                     {
-                        ((SubstringFilter)filter).setFinalSubstrings( finalString );
+                        ( ( SubstringFilter ) filter ).setFinalSubstrings( finalString );
                     }
 
                     if ( anyStrings != null )
                     {
-                        for ( String any:anyStrings )
+                        for ( String any : anyStrings )
                         {
-                            ((SubstringFilter)filter).addAnySubstrings( any );
+                            ( ( SubstringFilter ) filter ).addAnySubstrings( any );
                         }
                     }
                 }
@@ -664,24 +663,24 @@ public class LdapTransformer
                 {
                     // Transform Extensible Node
                     filter = new ExtensibleMatchFilter();
-                    
-                    String attribute = ((ExtensibleNode)exprNode).getAttribute();
-                    String matchingRule = ((ExtensibleNode)exprNode).getMatchingRuleId();
-                    boolean dnAttributes = ((ExtensibleNode)exprNode).hasDnAttributes();
-                    Value<?> value = ((ExtensibleNode)exprNode).getValue();
+
+                    String attribute = ( ( ExtensibleNode ) exprNode ).getAttribute();
+                    String matchingRule = ( ( ExtensibleNode ) exprNode ).getMatchingRuleId();
+                    boolean dnAttributes = ( ( ExtensibleNode ) exprNode ).hasDnAttributes();
+                    Value<?> value = ( ( ExtensibleNode ) exprNode ).getValue();
 
                     if ( attribute != null )
                     {
-                        ((ExtensibleMatchFilter)filter).setType( attribute );
+                        ( ( ExtensibleMatchFilter ) filter ).setType( attribute );
                     }
 
                     if ( matchingRule != null )
                     {
-                        ((ExtensibleMatchFilter)filter).setMatchingRule( matchingRule );
+                        ( ( ExtensibleMatchFilter ) filter ).setMatchingRule( matchingRule );
                     }
 
-                    ((ExtensibleMatchFilter)filter).setMatchValue( value );
-                    ((ExtensibleMatchFilter)filter).setDnAttributes( dnAttributes );
+                    ( ( ExtensibleMatchFilter ) filter ).setMatchValue( value );
+                    ( ( ExtensibleMatchFilter ) filter ).setDnAttributes( dnAttributes );
                 }
             }
 
@@ -753,7 +752,7 @@ public class LdapTransformer
 
             if ( ( attributes != null ) && ( attributes.size() != 0 ) )
             {
-                for ( EntryAttribute attribute:attributes )
+                for ( EntryAttribute attribute : attributes )
                 {
                     if ( attribute != null )
                     {
@@ -788,6 +787,11 @@ public class LdapTransformer
      */
     public static InternalMessage transform( Object obj )
     {
+        if ( obj instanceof InternalMessage )
+        {
+            return ( InternalMessage ) obj;
+        }
+
         LdapMessageCodec codecMessage = ( LdapMessageCodec ) obj;
         int messageId = codecMessage.getMessageId();
 
@@ -803,63 +807,62 @@ public class LdapTransformer
 
         switch ( messageType )
         {
-            case BIND_REQUEST :
-                internalMessage = transformBindRequest( (BindRequestCodec)codecMessage, messageId );
+            case BIND_REQUEST:
+                internalMessage = transformBindRequest( ( BindRequestCodec ) codecMessage, messageId );
                 break;
 
-            case UNBIND_REQUEST :
+            case UNBIND_REQUEST:
                 internalMessage = transformUnBindRequest( messageId );
                 break;
 
-            case SEARCH_REQUEST :
-                internalMessage = transformSearchRequest( (SearchRequestCodec)codecMessage, messageId );
+            case SEARCH_REQUEST:
+                internalMessage = transformSearchRequest( ( SearchRequestCodec ) codecMessage, messageId );
                 break;
 
-            case MODIFY_REQUEST :
-                internalMessage = transformModifyRequest( (ModifyRequestCodec)codecMessage, messageId );
+            case MODIFY_REQUEST:
+                internalMessage = transformModifyRequest( ( ModifyRequestCodec ) codecMessage, messageId );
                 break;
 
-            case ADD_REQUEST :
-                internalMessage = transformAddRequest( (AddRequestCodec)codecMessage, messageId );
+            case ADD_REQUEST:
+                internalMessage = transformAddRequest( ( AddRequestCodec ) codecMessage, messageId );
                 break;
 
-            case DEL_REQUEST :
-                internalMessage = transformDelRequest( (DelRequestCodec)codecMessage, messageId );
+            case DEL_REQUEST:
+                internalMessage = transformDelRequest( ( DelRequestCodec ) codecMessage, messageId );
                 break;
 
-            case MODIFYDN_REQUEST :
-                internalMessage = transformModifyDNRequest( (ModifyDNRequestCodec)codecMessage, messageId );
+            case MODIFYDN_REQUEST:
+                internalMessage = transformModifyDNRequest( ( ModifyDNRequestCodec ) codecMessage, messageId );
                 break;
 
-            case COMPARE_REQUEST :
-                internalMessage = transformCompareRequest( (CompareRequestCodec)codecMessage, messageId );
+            case COMPARE_REQUEST:
+                internalMessage = transformCompareRequest( ( CompareRequestCodec ) codecMessage, messageId );
                 break;
 
-            case ABANDON_REQUEST :
-                internalMessage = transformAbandonRequest( (AbandonRequestCodec)codecMessage, messageId );
+            case ABANDON_REQUEST:
+                internalMessage = transformAbandonRequest( ( AbandonRequestCodec ) codecMessage, messageId );
                 break;
 
-            case EXTENDED_REQUEST :
-                internalMessage = transformExtendedRequest( (ExtendedRequestCodec)codecMessage, messageId );
-                break;
-                
-            case BIND_RESPONSE :
-                internalMessage = transformBindResponse( (BindResponseCodec)codecMessage, messageId );
+            case EXTENDED_REQUEST:
+                internalMessage = transformExtendedRequest( ( ExtendedRequestCodec ) codecMessage, messageId );
                 break;
 
-            case SEARCH_RESULT_ENTRY :
-            case SEARCH_RESULT_DONE :
-            case SEARCH_RESULT_REFERENCE :
-            case MODIFY_RESPONSE :
-            case ADD_RESPONSE :
-            case DEL_RESPONSE :
-            case MODIFYDN_RESPONSE :
-            case COMPARE_RESPONSE :
-            case EXTENDED_RESPONSE :
-            case INTERMEDIATE_RESPONSE :
+            case BIND_RESPONSE:
+                internalMessage = transformBindResponse( ( BindResponseCodec ) codecMessage, messageId );
+                break;
+
+            case SEARCH_RESULT_ENTRY:
+            case SEARCH_RESULT_DONE:
+            case SEARCH_RESULT_REFERENCE:
+            case MODIFY_RESPONSE:
+            case ADD_RESPONSE:
+            case DEL_RESPONSE:
+            case MODIFYDN_RESPONSE:
+            case COMPARE_RESPONSE:
+            case EXTENDED_RESPONSE:
+            case INTERMEDIATE_RESPONSE:
                 // Nothing to do !
                 break;
-
 
             default:
                 throw new IllegalStateException( I18n.err( I18n.ERR_04113 ) );
@@ -887,7 +890,7 @@ public class LdapTransformer
 
         // Internal : String errorMessage -> Codec : LdapString errorMessage
         String errorMessage = internalLdapResult.getErrorMessage();
-        
+
         codecLdapResult.setErrorMessage( StringTools.isEmpty( errorMessage ) ? "" : errorMessage );
 
         // Internal : String matchedDn -> Codec : DN matchedDN
@@ -900,7 +903,7 @@ public class LdapTransformer
         {
             codecLdapResult.initReferrals();
 
-            for ( String referral:internalReferrals.getLdapUrls() )
+            for ( String referral : internalReferrals.getLdapUrls() )
             {
                 try
                 {
@@ -960,7 +963,8 @@ public class LdapTransformer
         }
 
         // Transform the ldapResult
-        bindResponseCodec.setLdapResult( transformLdapResult( ( LdapResultImpl ) internalBindResponse.getLdapResult() ) );
+        bindResponseCodec
+            .setLdapResult( transformLdapResult( ( LdapResultImpl ) internalBindResponse.getLdapResult() ) );
 
         return bindResponseCodec;
     }
@@ -991,11 +995,11 @@ public class LdapTransformer
             sasl.setMechanism( internalBindRequest.getSaslMechanism() );
             bindRequest.setAuthentication( sasl );
         }
-        
+
         bindRequest.setMessageId( internalBindRequest.getMessageId() );
         bindRequest.setName( internalBindRequest.getName() );
         bindRequest.setVersion( internalBindRequest.isVersion3() ? 3 : 2 );
-        
+
         return bindRequest;
     }
 
@@ -1080,7 +1084,7 @@ public class LdapTransformer
      */
     private static LdapMessageCodec transformIntermediateResponse( InternalMessage internalMessage )
     {
-        IntermediateResponseImpl internalIntermediateResponse = (IntermediateResponseImpl) internalMessage;
+        IntermediateResponseImpl internalIntermediateResponse = ( IntermediateResponseImpl ) internalMessage;
         IntermediateResponseCodec intermediateResponse = new IntermediateResponseCodec();
 
         // Internal : String oid -> Codec : String responseName
@@ -1207,7 +1211,7 @@ public class LdapTransformer
 
             if ( urls != null )
             {
-                for ( String url:urls)
+                for ( String url : urls )
                 {
                     try
                     {
@@ -1231,8 +1235,7 @@ public class LdapTransformer
      * @param msg the message to transform
      * @return the msg transformed
      */
-    @edu.umd.cs.findbugs.annotations.SuppressWarnings(value="NP_NULL_ON_SOME_PATH",
-        justification="The number of Ldap Message we are dealing with is finite, and we won't ever have to deal with any other unexpected one")
+    @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "NP_NULL_ON_SOME_PATH", justification = "The number of Ldap Message we are dealing with is finite, and we won't ever have to deal with any other unexpected one")
     public static Object transform( InternalMessage msg )
     {
         if ( IS_DEBUG )
@@ -1244,51 +1247,51 @@ public class LdapTransformer
 
         switch ( msg.getType() )
         {
-            case SEARCH_RESULT_ENTRY :
+            case SEARCH_RESULT_ENTRY:
                 codecMessage = transformSearchResultEntry( msg );
                 break;
-                
-            case SEARCH_RESULT_DONE :
+
+            case SEARCH_RESULT_DONE:
                 codecMessage = transformSearchResultDone( msg );
                 break;
-                
-            case SEARCH_RESULT_REFERENCE :
+
+            case SEARCH_RESULT_REFERENCE:
                 codecMessage = transformSearchResultReference( msg );
                 break;
-                
-            case BIND_RESPONSE :
+
+            case BIND_RESPONSE:
                 codecMessage = transformBindResponse( msg );
                 break;
-                
-            case BIND_REQUEST :
+
+            case BIND_REQUEST:
                 codecMessage = transformBindRequest( msg );
                 break;
-                
-            case ADD_RESPONSE :
+
+            case ADD_RESPONSE:
                 codecMessage = transformAddResponse( msg );
                 break;
-                
-            case COMPARE_RESPONSE :
+
+            case COMPARE_RESPONSE:
                 codecMessage = transformCompareResponse( msg );
                 break;
-                
-            case DEL_RESPONSE :
+
+            case DEL_RESPONSE:
                 codecMessage = transformDelResponse( msg );
                 break;
-         
-            case MODIFY_RESPONSE :
+
+            case MODIFY_RESPONSE:
                 codecMessage = transformModifyResponse( msg );
                 break;
 
-            case MODIFYDN_RESPONSE :
+            case MODIFYDN_RESPONSE:
                 codecMessage = transformModifyDNResponse( msg );
                 break;
-                
-            case EXTENDED_RESPONSE :
+
+            case EXTENDED_RESPONSE:
                 codecMessage = transformExtendedResponse( msg );
                 break;
-                
-            case INTERMEDIATE_RESPONSE :
+
+            case INTERMEDIATE_RESPONSE:
                 codecMessage = transformIntermediateResponse( msg );
                 break;
         }
@@ -1322,14 +1325,14 @@ public class LdapTransformer
         {
             return;
         }
-        
-        for ( final Control codecControl:codecMessage.getControls() )
+
+        for ( final Control codecControl : codecMessage.getControls() )
         {
             internalMessage.add( codecControl );
         }
     }
-    
-    
+
+
     /**
      * Transforms the controls
      * @param codecMessage The Codec SearchResultReference to produce
@@ -1341,8 +1344,8 @@ public class LdapTransformer
         {
             return;
         }
-        
-        for ( Control control:internalMessage.getControls().values() )
+
+        for ( Control control : internalMessage.getControls().values() )
         {
             codecMessage.addControl( control );
         }

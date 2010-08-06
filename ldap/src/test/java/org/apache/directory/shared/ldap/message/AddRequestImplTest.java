@@ -33,6 +33,7 @@ import org.apache.directory.shared.ldap.entry.DefaultEntry;
 import org.apache.directory.shared.ldap.entry.DefaultEntryAttribute;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
+import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.message.internal.InternalAddRequest;
@@ -52,7 +53,8 @@ import org.junit.runner.RunWith;
 public class AddRequestImplTest
 {
     private static final Map<String, Control> EMPTY_CONTROL_MAP = new HashMap<String, Control>();
-    
+
+
     /**
      * Creates and populates a AttributeImpl with a specific id.
      * 
@@ -78,7 +80,7 @@ public class AddRequestImplTest
     private Entry getEntry()
     {
         Entry entry = new DefaultEntry();
-        
+
         try
         {
             entry.put( getAttribute( "attr0" ) );
@@ -89,7 +91,7 @@ public class AddRequestImplTest
         {
             // Do nothing
         }
-        
+
         return entry;
     }
 
@@ -302,6 +304,32 @@ public class AddRequestImplTest
             public boolean hasControl( String oid )
             {
                 return false;
+            }
+
+
+            public void addAttributeType( String type ) throws LdapException
+            {
+            }
+
+
+            public void addAttributeValue( String value )
+            {
+            }
+
+
+            public void addAttributeValue( Value<?> value )
+            {
+            }
+
+
+            public void addAttributeValue( byte[] value )
+            {
+            }
+
+
+            public String getCurrentAttributeType()
+            {
+                return null;
             }
         };
 

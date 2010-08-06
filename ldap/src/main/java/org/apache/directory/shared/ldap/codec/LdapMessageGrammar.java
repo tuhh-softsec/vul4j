@@ -71,7 +71,6 @@ import org.apache.directory.shared.ldap.codec.actions.StoreMatchValueAction;
 import org.apache.directory.shared.ldap.codec.actions.StoreReferenceAction;
 import org.apache.directory.shared.ldap.codec.actions.StoreTypeMatchingRuleAction;
 import org.apache.directory.shared.ldap.codec.actions.ValueAction;
-import org.apache.directory.shared.ldap.codec.add.AddRequestCodec;
 import org.apache.directory.shared.ldap.codec.add.AddResponseCodec;
 import org.apache.directory.shared.ldap.codec.bind.BindRequestCodec;
 import org.apache.directory.shared.ldap.codec.bind.BindResponseCodec;
@@ -99,6 +98,7 @@ import org.apache.directory.shared.ldap.codec.unbind.UnBindRequestCodec;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.filter.SearchScope;
+import org.apache.directory.shared.ldap.message.AddRequestImpl;
 import org.apache.directory.shared.ldap.message.AddResponseImpl;
 import org.apache.directory.shared.ldap.message.BindResponseImpl;
 import org.apache.directory.shared.ldap.message.CompareResponseImpl;
@@ -108,6 +108,7 @@ import org.apache.directory.shared.ldap.message.ModifyResponseImpl;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.message.SearchResponseDoneImpl;
 import org.apache.directory.shared.ldap.message.control.Control;
+import org.apache.directory.shared.ldap.message.internal.InternalAddRequest;
 import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.name.RDN;
 import org.apache.directory.shared.ldap.util.StringTools;
@@ -1830,9 +1831,9 @@ public class LdapMessageGrammar extends AbstractGrammar
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
                     // Now, we can allocate the AddRequest Object
-                    AddRequestCodec addRequest = new AddRequestCodec();
-                    addRequest.setMessageId( ldapMessageContainer.getMessageId() );
-                    ldapMessageContainer.setLdapMessage( addRequest );
+                    int messageId = ldapMessageContainer.getMessageId();
+                    InternalAddRequest addRequest = new AddRequestImpl( messageId );
+                    ldapMessageContainer.setInternalMessage( addRequest );
 
                     // We will check that the request is not null
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
@@ -1864,7 +1865,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                 {
 
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-                    AddRequestCodec addRequest = ldapMessageContainer.getAddRequest();
+                    InternalAddRequest addRequest = ldapMessageContainer.getInternalAddRequest();
 
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
@@ -1949,7 +1950,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                 {
 
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-                    AddRequestCodec addRequest = ldapMessageContainer.getAddRequest();
+                    InternalAddRequest addRequest = ldapMessageContainer.getInternalAddRequest();
 
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
