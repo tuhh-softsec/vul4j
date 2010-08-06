@@ -92,7 +92,7 @@ public class DnNode<N>
         DnNode<N> rootNode = null;
 
         // No parent : add from the current position
-        for ( RDN rdn : dn )
+        for ( RDN rdn : dn.getRdns() )
         {
             if ( nbRdns == 0 )
             {
@@ -478,7 +478,7 @@ public class DnNode<N>
         // Ok, no children, same DN, let's remove what we can.
         parent = parent.getParent();
 
-        for ( RDN rdn : dn )
+        for ( RDN rdn : dn.getRdns() )
         {
             parent.children.remove( rdn );
 

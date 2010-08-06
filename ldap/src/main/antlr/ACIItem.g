@@ -502,7 +502,7 @@ attributeValue
           attributeTypeAndValueSetAsDn.normalize( schemaManager );
         }
         
-        for ( RDN rdn :attributeTypeAndValueSetAsDn.getRdns() )
+        for ( RDN rdn : attributeTypeAndValueSetAsDn )
         {
             attributeTypeAndValue = rdn.getNormName();
             attributeType = NamespaceTools.getRdnAttribute( attributeTypeAndValue );
