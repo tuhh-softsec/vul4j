@@ -1,15 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<project name="ESIGate - StaticAssembly Maven Plugin">  
-  
-    <version position="left"/>
-	<bannerLeft>
-		<name>ESIGate - StaticAssembly Maven Plugin</name>
-		<src>images/logo.jpg</src>
-		<href>http://sourceforge.net/projects/webassembletool</href>
-		<alt>Get ESIGate at SourceForge.net. Fast, secure and Free Open Source software downloads</alt>
-	</bannerLeft>
+<project>  
 	<body>
-    
     <menu ref="parent"/>
 
     <menu name="Overview">
