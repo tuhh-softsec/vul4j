@@ -5,8 +5,8 @@ import java.io.InputStream;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Map.Entry;
+import java.util.Properties;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -25,6 +25,10 @@ public class DriverFactory {
 	static {
 		// Load default settings
 		configure();
+	}
+
+	private DriverFactory() {
+
 	}
 
 	/** Loads all instancies according to default configuration file */
@@ -64,8 +68,8 @@ public class DriverFactory {
 				prefix = DEFAULT_INSTANCE;
 				name = propertyName;
 			} else {
-				prefix = propertyName.substring(0, propertyName
-						.lastIndexOf("."));
+				prefix = propertyName.substring(0,
+						propertyName.lastIndexOf("."));
 				name = propertyName
 						.substring(propertyName.lastIndexOf(".") + 1);
 			}

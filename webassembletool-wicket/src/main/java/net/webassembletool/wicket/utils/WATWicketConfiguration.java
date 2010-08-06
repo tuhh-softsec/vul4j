@@ -6,7 +6,6 @@ package net.webassembletool.wicket.utils;
  * @author Nicolas Richeton
  */
 public class WATWicketConfiguration {
-
 	// Disable WAT enables using unit tests without using the local or remote
 	// HTTP server for templates / blocks.
 	private static boolean disableHttpRequests = false;
@@ -30,5 +29,9 @@ public class WATWicketConfiguration {
 	 */
 	public static void setDisableHttpRequests(boolean disable) {
 		WATWicketConfiguration.disableHttpRequests = disable;
+	}
+
+	private WATWicketConfiguration() {
+
 	}
 }

@@ -83,4 +83,8 @@ public class DriverUtils {
 			throw new JspException(e);
 		}
 	}
+
+	private DriverUtils() {
+
+	}
 }

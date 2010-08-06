@@ -9,6 +9,11 @@ import net.webassembletool.UserContext;
 import org.apache.http.cookie.Cookie;
 
 public class RewriteUtils {
+
+	private RewriteUtils() {
+
+	}
+
 	public final static String removeSessionId(String sessionId, String page) {
 		String regexp = ";?jsessionid=" + Pattern.quote(sessionId);
 		return page.replaceAll(regexp, "");

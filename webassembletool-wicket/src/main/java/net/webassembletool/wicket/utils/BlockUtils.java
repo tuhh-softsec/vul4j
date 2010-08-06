@@ -52,4 +52,8 @@ public class BlockUtils {
 		}
 		return content;
 	}
+
+	private BlockUtils() {
+
+	}
 }
