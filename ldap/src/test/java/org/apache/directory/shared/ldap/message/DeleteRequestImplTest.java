@@ -49,6 +49,7 @@ public class DeleteRequestImplTest
 {
     private static final Map<String, Control> EMPTY_CONTROL_MAP = new HashMap<String, Control>();
 
+
     /**
      * Tests the same object reference for equality.
      */
@@ -237,6 +238,12 @@ public class DeleteRequestImplTest
             public boolean hasControl( String oid )
             {
                 return false;
+            }
+
+
+            public Control getCurrentControl()
+            {
+                return null;
             }
         };
 

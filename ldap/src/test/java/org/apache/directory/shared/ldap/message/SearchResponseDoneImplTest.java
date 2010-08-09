@@ -50,6 +50,7 @@ public class SearchResponseDoneImplTest
 {
     private static final Map<String, Control> EMPTY_CONTROL_MAP = new HashMap<String, Control>();
 
+
     /**
      * Creates and populates a SearchResponseDoneImpl stub for testing purposes.
      * 
@@ -60,7 +61,7 @@ public class SearchResponseDoneImplTest
         // Construct the Search response to test with results and referrals
         SearchResponseDoneImpl response = new SearchResponseDoneImpl( 45 );
         InternalLdapResult result = response.getLdapResult();
-        
+
         try
         {
             result.setMatchedDn( new DN( "dc=example,dc=com" ) );
@@ -69,7 +70,7 @@ public class SearchResponseDoneImplTest
         {
             // do nothing
         }
-        
+
         result.setResultCode( ResultCodeEnum.SUCCESS );
         ReferralImpl refs = new ReferralImpl();
         refs.addLdapUrl( "ldap://someserver.com" );
@@ -116,12 +117,12 @@ public class SearchResponseDoneImplTest
             public InternalLdapResult getLdapResult()
             {
                 LdapResultImpl result = new LdapResultImpl();
-                
+
                 try
                 {
                     result.setMatchedDn( new DN( "dc=example,dc=com" ) );
                 }
-                catch ( Exception e ) 
+                catch ( Exception e )
                 {
                     // Do nothing
                 }
@@ -184,6 +185,12 @@ public class SearchResponseDoneImplTest
             public boolean hasControl( String oid )
             {
                 return false;
+            }
+
+
+            public Control getCurrentControl()
+            {
+                return null;
             }
         };
 

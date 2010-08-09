@@ -30,6 +30,7 @@ import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.controls.CodecControl;
 import org.apache.directory.shared.ldap.codec.controls.ControlDecoder;
 import org.apache.directory.shared.ldap.message.control.Control;
+import org.apache.directory.shared.ldap.message.internal.InternalMessage;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,13 +56,23 @@ public class ControlValueAction extends GrammarAction
     {
         LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
         TLV tlv = ldapMessageContainer.getCurrentTLV();
-        LdapMessageCodec message = ldapMessageContainer.getLdapMessage();
+        Control control = null;
+
+        if ( !ldapMessageContainer.isInternal() )
+        {
+            LdapMessageCodec message = ldapMessageContainer.getLdapMessage();
+            control = message.getCurrentControl();
+        }
+        else
+        {
+            InternalMessage message = ldapMessageContainer.getInternalMessage();
+            control = message.getCurrentControl();
+        }
 
         // Get the current control
-        Control control = message.getCurrentControl();
         Value value = tlv.getValue();
 
-        ControlDecoder decoder = ((CodecControl)control).getDecoder();
+        ControlDecoder decoder = ( ( CodecControl ) control ).getDecoder();
 
         // Store the value - have to handle the special case of a 0 length value
         if ( tlv.getLength() == 0 )

@@ -76,7 +76,7 @@ public class LdapDecoder implements ProviderDecoder
         this.provider = provider;
         ldapMessageContainer = new LdapMessageContainer( binaryAttributeDetector );
         ldapDecoder = new Asn1Decoder();
-        
+
         ldapMessageContainer.setMaxPDUSize( maxPDUSize );
     }
 
@@ -110,23 +110,23 @@ public class LdapDecoder implements ProviderDecoder
             try
             {
                 ldapDecoder.decode( buf, ldapMessageContainer );
-    
+
                 if ( IS_DEBUG )
                 {
                     log.debug( "Decoding the PDU : " );
-    
+
                     int size = buf.position();
                     buf.flip();
-                    
-                    byte[] array = new byte[ size - position ];
-                    
+
+                    byte[] array = new byte[size - position];
+
                     for ( int i = position; i < size; i++ )
                     {
-                        array[ i ] = buf.get();
+                        array[i] = buf.get();
                     }
-    
+
                     position = size;
-                    
+
                     if ( array.length == 0 )
                     {
                         log.debug( "NULL buffer, what the HELL ???" );
@@ -136,7 +136,7 @@ public class LdapDecoder implements ProviderDecoder
                         log.debug( StringTools.dumpBytes( array ) );
                     }
                 }
-                
+
                 if ( ldapMessageContainer.getState() == TLVStateEnum.PDU_DECODED )
                 {
                     if ( IS_DEBUG )
@@ -144,8 +144,15 @@ public class LdapDecoder implements ProviderDecoder
                         log.debug( "Decoded LdapMessage : " + ldapMessageContainer.getLdapMessage() );
                         buf.mark();
                     }
-    
-                    decoderCallback.decodeOccurred( null, ldapMessageContainer.getLdapMessage() );
+
+                    if ( ldapMessageContainer.isInternal() )
+                    {
+                        decoderCallback.decodeOccurred( null, ldapMessageContainer.getInternalMessage() );
+                    }
+                    else
+                    {
+                        decoderCallback.decodeOccurred( null, ldapMessageContainer.getLdapMessage() );
+                    }
                     ldapMessageContainer.clean();
                 }
             }

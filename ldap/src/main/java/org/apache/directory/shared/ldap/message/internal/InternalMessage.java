@@ -53,7 +53,15 @@ public interface InternalMessage
      */
     Map<String, Control> getControls();
 
-    
+
+    /**
+     * Get the current Control Object
+     * 
+     * @return The current Control Object
+     */
+    Control getCurrentControl();
+
+
     /**
      * Checks whether or not this message has the specified control.
      *
@@ -61,7 +69,7 @@ public interface InternalMessage
      * @return true if this message has the control, false if it does not
      */
     boolean hasControl( String oid );
-    
+
 
     /**
      * Adds a control to this Message.

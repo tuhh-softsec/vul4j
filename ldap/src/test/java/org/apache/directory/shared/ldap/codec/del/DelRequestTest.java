@@ -25,7 +25,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.nio.ByteBuffer;
-import java.util.List;
+import java.util.Map;
 
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
@@ -33,11 +33,13 @@ import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.codec.EncoderException;
+import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.ResponseCarryingException;
 import org.apache.directory.shared.ldap.message.DeleteResponseImpl;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.message.control.Control;
+import org.apache.directory.shared.ldap.message.internal.InternalDeleteRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalMessage;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
@@ -64,15 +66,15 @@ public class DelRequestTest
         ByteBuffer stream = ByteBuffer.allocate( 0x27 );
 
         stream.put( new byte[]
-            {
-            0x30, 0x25,                 // LDAPMessage ::= SEQUENCE {
-              0x02, 0x01, 0x01,         // messageID MessageID
-                                        // CHOICE { ..., delRequest DelRequest, ...
-                                        // DelRequest ::= [APPLICATION 10] LDAPDN;
-              0x4A, 0x20, 
-                'c', 'n', '=', 't', 'e', 's', 't', 'M', 'o', 'd', 'i', 'f', 'y', ',', 'o', 'u', '=', 'u',
-                's', 'e', 'r', 's', ',', 'o', 'u', '=', 's', 'y', 's', 't', 'e', 'm' 
-            } );
+            { 0x30,
+                0x25, // LDAPMessage ::= SEQUENCE {
+                0x02,
+                0x01,
+                0x01, // messageID MessageID
+                // CHOICE { ..., delRequest DelRequest, ...
+                // DelRequest ::= [APPLICATION 10] LDAPDN;
+                0x4A, 0x20, 'c', 'n', '=', 't', 'e', 's', 't', 'M', 'o', 'd', 'i', 'f', 'y', ',', 'o', 'u', '=', 'u',
+                's', 'e', 'r', 's', ',', 'o', 'u', '=', 's', 'y', 's', 't', 'e', 'm' } );
 
         String decodedPdu = StringTools.dumpBytes( stream.array() );
         stream.flip();
@@ -92,18 +94,22 @@ public class DelRequestTest
         }
 
         // Check the decoded DelRequest PDU
-        DelRequestCodec delRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getDelRequest();
+        InternalDeleteRequest delRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getInternalDeleteRequest();
 
         assertEquals( 1, delRequest.getMessageId() );
-        assertEquals( "cn=testModify,ou=users,ou=system", delRequest.getEntry().toString() );
+        assertEquals( "cn=testModify,ou=users,ou=system", delRequest.getName().toString() );
 
         // Check the length
-        assertEquals( 0x27, delRequest.computeLength() );
+        DelRequestCodec delRequestCodec = new DelRequestCodec();
+        delRequestCodec.setEntry( delRequest.getName() );
+        delRequestCodec.setMessageId( delRequest.getMessageId() );
+
+        assertEquals( 0x27, delRequestCodec.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = delRequest.encode();
+            ByteBuffer bb = delRequestCodec.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -116,6 +122,7 @@ public class DelRequestTest
         }
     }
 
+
     /**
      * Test the decoding of a full DelRequest
      */
@@ -127,15 +134,15 @@ public class DelRequestTest
         ByteBuffer stream = ByteBuffer.allocate( 0x27 );
 
         stream.put( new byte[]
-            {
-            0x30, 0x25,                 // LDAPMessage ::= SEQUENCE {
-              0x02, 0x01, 0x01,         // messageID MessageID
-                                        // CHOICE { ..., delRequest DelRequest, ...
-                                        // DelRequest ::= [APPLICATION 10] LDAPDN;
-              0x4A, 0x20, 
-                'c', 'n', ':', 't', 'e', 's', 't', 'M', 'o', 'd', 'i', 'f', 'y', ',', 'o', 'u', '=', 'u',
-                's', 'e', 'r', 's', ',', 'o', 'u', '=', 's', 'y', 's', 't', 'e', 'm' 
-            } );
+            { 0x30,
+                0x25, // LDAPMessage ::= SEQUENCE {
+                0x02,
+                0x01,
+                0x01, // messageID MessageID
+                // CHOICE { ..., delRequest DelRequest, ...
+                // DelRequest ::= [APPLICATION 10] LDAPDN;
+                0x4A, 0x20, 'c', 'n', ':', 't', 'e', 's', 't', 'M', 'o', 'd', 'i', 'f', 'y', ',', 'o', 'u', '=', 'u',
+                's', 'e', 'r', 's', ',', 'o', 'u', '=', 's', 'y', 's', 't', 'e', 'm' } );
 
         stream.flip();
 
@@ -150,14 +157,16 @@ public class DelRequestTest
         catch ( DecoderException de )
         {
             assertTrue( de instanceof ResponseCarryingException );
-            InternalMessage response = ((ResponseCarryingException)de).getResponse();
+            InternalMessage response = ( ( ResponseCarryingException ) de ).getResponse();
             assertTrue( response instanceof DeleteResponseImpl );
-            assertEquals( ResultCodeEnum.INVALID_DN_SYNTAX, ((DeleteResponseImpl)response).getLdapResult().getResultCode() );
+            assertEquals( ResultCodeEnum.INVALID_DN_SYNTAX, ( ( DeleteResponseImpl ) response ).getLdapResult()
+                .getResultCode() );
             return;
         }
 
         fail( "We should not reach this point" );
     }
+
 
     /**
      * Test the decoding of an empty DelRequest
@@ -170,12 +179,11 @@ public class DelRequestTest
         ByteBuffer stream = ByteBuffer.allocate( 0x07 );
 
         stream.put( new byte[]
-            {
-            0x30, 0x05,                 // LDAPMessage ::= SEQUENCE {
-              0x02, 0x01, 0x01,         // messageID MessageID
-                                        // CHOICE { ..., delRequest DelRequest, ...
-                                        // DelRequest ::= [APPLICATION 10] LDAPDN;
-              0x4A, 0x00                // Empty DN
+            { 0x30, 0x05, // LDAPMessage ::= SEQUENCE {
+                0x02, 0x01, 0x01, // messageID MessageID
+                // CHOICE { ..., delRequest DelRequest, ...
+                // DelRequest ::= [APPLICATION 10] LDAPDN;
+                0x4A, 0x00 // Empty DN
             } );
 
         stream.flip();
@@ -208,17 +216,18 @@ public class DelRequestTest
 
         stream.put( new byte[]
             {
-            0x30, 0x42,                 // LDAPMessage ::= SEQUENCE {
-              0x02, 0x01, 0x01,         // messageID MessageID
-                                        // CHOICE { ..., delRequest DelRequest, ...
-                                        // DelRequest ::= [APPLICATION 10] LDAPDN;
-              0x4A, 0x20, 
-                'c', 'n', '=', 't', 'e', 's', 't', 'M', 'o', 'd', 'i', 'f', 'y', ',', 'o', 'u', '=', 'u',
-                's', 'e', 'r', 's', ',', 'o', 'u', '=', 's', 'y', 's', 't', 'e', 'm', 
-              ( byte ) 0xA0, 0x1B,      // A control
+                0x30,
+                0x42, // LDAPMessage ::= SEQUENCE {
+                0x02,
+                0x01,
+                0x01, // messageID MessageID
+                // CHOICE { ..., delRequest DelRequest, ...
+                // DelRequest ::= [APPLICATION 10] LDAPDN;
+                0x4A, 0x20, 'c', 'n', '=', 't', 'e', 's', 't', 'M', 'o', 'd', 'i', 'f', 'y', ',', 'o', 'u', '=', 'u',
+                's', 'e', 'r', 's', ',', 'o', 'u', '=', 's', 'y', 's', 't', 'e', 'm', ( byte ) 0xA0,
+                0x1B, // A control
                 0x30, 0x19, 0x04, 0x17, 0x32, 0x2E, 0x31, 0x36, 0x2E, 0x38, 0x34, 0x30, 0x2E, 0x31, 0x2E, 0x31, 0x31,
-                0x33, 0x37, 0x33, 0x30, 0x2E, 0x33, 0x2E, 0x34, 0x2E, 0x32 
-            } );
+                0x33, 0x37, 0x33, 0x30, 0x2E, 0x33, 0x2E, 0x34, 0x2E, 0x32 } );
 
         String decodedPdu = StringTools.dumpBytes( stream.array() );
         stream.flip();
@@ -238,27 +247,32 @@ public class DelRequestTest
         }
 
         // Check the decoded DelRequest PDU
-        DelRequestCodec delRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getDelRequest();
+        InternalDeleteRequest delRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getInternalDeleteRequest();
 
         assertEquals( 1, delRequest.getMessageId() );
-        assertEquals( "cn=testModify,ou=users,ou=system", delRequest.getEntry().toString() );
-
-        // Check the length
-        assertEquals( 0x44, delRequest.computeLength() );
+        assertEquals( "cn=testModify,ou=users,ou=system", delRequest.getName().toString() );
 
         // Check the Control
-        List<Control> controls = delRequest.getControls();
+        Map<String, Control> controls = delRequest.getControls();
 
         assertEquals( 1, controls.size() );
 
-        Control control = delRequest.getControls( 0 );
+        Control control = controls.get( "2.16.840.1.113730.3.4.2" );
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
         assertEquals( "", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
+
+        // Check the length
+        DelRequestCodec delRequestCodec = new DelRequestCodec();
+        delRequestCodec.setEntry( delRequest.getName() );
+        delRequestCodec.setMessageId( delRequest.getMessageId() );
+        ( ( LdapMessageCodec ) delRequestCodec ).addControl( control );
+
+        assertEquals( 0x44, delRequestCodec.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = delRequest.encode();
+            ByteBuffer bb = delRequestCodec.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 

@@ -26,7 +26,6 @@ import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,10 +43,12 @@ public class ControlsInitAction extends GrammarAction
     /** Speedup for logs */
     private static final boolean IS_DEBUG = log.isDebugEnabled();
 
+
     public ControlsInitAction()
     {
         super( "Initialize a control" );
     }
+
 
     /**
      * The initialization action
@@ -56,7 +57,6 @@ public class ControlsInitAction extends GrammarAction
     {
 
         LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-        LdapMessageCodec message = ldapMessageContainer.getLdapMessage();
 
         TLV tlv = ldapMessageContainer.getCurrentTLV();
         int expectedLength = tlv.getLength();
@@ -65,17 +65,22 @@ public class ControlsInitAction extends GrammarAction
         if ( expectedLength == 0 )
         {
             log.error( "The length of controls must not be null" );
-            
+
             // This will generate a PROTOCOL_ERROR
             throw new DecoderException( "The length of controls must not be null" );
         }
-        
+
         if ( IS_DEBUG )
         {
             log.debug( "A new list of controls has been initialized" );
         }
-        
-        // We can initialize the controls array
-        message.initControls();
+
+        if ( !ldapMessageContainer.isInternal() )
+        {
+            LdapMessageCodec message = ldapMessageContainer.getLdapMessage();
+
+            // We can initialize the controls array
+            message.initControls();
+        }
     }
 }

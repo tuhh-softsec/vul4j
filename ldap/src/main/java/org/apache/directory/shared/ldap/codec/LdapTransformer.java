@@ -29,7 +29,6 @@ import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.primitives.OID;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.abandon.AbandonRequestCodec;
-import org.apache.directory.shared.ldap.codec.add.AddRequestCodec;
 import org.apache.directory.shared.ldap.codec.add.AddResponseCodec;
 import org.apache.directory.shared.ldap.codec.bind.BindRequestCodec;
 import org.apache.directory.shared.ldap.codec.bind.BindResponseCodec;
@@ -37,7 +36,6 @@ import org.apache.directory.shared.ldap.codec.bind.SaslCredentials;
 import org.apache.directory.shared.ldap.codec.bind.SimpleAuthentication;
 import org.apache.directory.shared.ldap.codec.compare.CompareRequestCodec;
 import org.apache.directory.shared.ldap.codec.compare.CompareResponseCodec;
-import org.apache.directory.shared.ldap.codec.del.DelRequestCodec;
 import org.apache.directory.shared.ldap.codec.del.DelResponseCodec;
 import org.apache.directory.shared.ldap.codec.extended.ExtendedRequestCodec;
 import org.apache.directory.shared.ldap.codec.extended.ExtendedResponseCodec;
@@ -79,14 +77,12 @@ import org.apache.directory.shared.ldap.filter.PresenceNode;
 import org.apache.directory.shared.ldap.filter.SimpleNode;
 import org.apache.directory.shared.ldap.filter.SubstringNode;
 import org.apache.directory.shared.ldap.message.AbandonRequestImpl;
-import org.apache.directory.shared.ldap.message.AddRequestImpl;
 import org.apache.directory.shared.ldap.message.AddResponseImpl;
 import org.apache.directory.shared.ldap.message.AliasDerefMode;
 import org.apache.directory.shared.ldap.message.BindRequestImpl;
 import org.apache.directory.shared.ldap.message.BindResponseImpl;
 import org.apache.directory.shared.ldap.message.CompareRequestImpl;
 import org.apache.directory.shared.ldap.message.CompareResponseImpl;
-import org.apache.directory.shared.ldap.message.DeleteRequestImpl;
 import org.apache.directory.shared.ldap.message.DeleteResponseImpl;
 import org.apache.directory.shared.ldap.message.ExtendedRequestImpl;
 import org.apache.directory.shared.ldap.message.ExtendedResponseImpl;
@@ -143,27 +139,6 @@ public class LdapTransformer
 
         // Codec : int abandonnedMessageId -> Internal : int abandonId
         internalMessage.setAbandoned( abandonRequest.getAbandonedMessageId() );
-
-        return internalMessage;
-    }
-
-
-    /**
-     * Transform an AddRequest message from a addRequest to a InternalMessage
-     * 
-     * @param addRequest The message to transform
-     * @param messageId The message Id
-     * @return A Internal AddRequestImpl
-     */
-    private static InternalMessage transformAddRequest( AddRequestCodec addRequest, int messageId )
-    {
-        AddRequestImpl internalMessage = new AddRequestImpl( messageId );
-
-        // Codec : DN entry -> Internal : String name
-        internalMessage.setEntry( addRequest.getEntry() );
-
-        // Codec : Attributes attributes -> Internal : Attributes entry
-        internalMessage.setEntry( addRequest.getEntry() );
 
         return internalMessage;
     }
@@ -295,24 +270,6 @@ public class LdapTransformer
         {
             internalMessage.setAssertionValue( ( byte[] ) compareRequest.getAssertionValue() );
         }
-
-        return internalMessage;
-    }
-
-
-    /**
-     * Transform a DelRequest message from a CodecMessage to a InternalMessage
-     * 
-     * @param delRequest The message to transform
-     * @param messageId The message Id
-     * @return A Internal DeleteRequestImpl
-     */
-    private static InternalMessage transformDelRequest( DelRequestCodec delRequest, int messageId )
-    {
-        DeleteRequestImpl internalMessage = new DeleteRequestImpl( messageId );
-
-        // Codec : DN entry -> Internal : DN
-        internalMessage.setName( delRequest.getEntry() );
 
         return internalMessage;
     }
@@ -787,11 +744,6 @@ public class LdapTransformer
      */
     public static InternalMessage transform( Object obj )
     {
-        if ( obj instanceof InternalMessage )
-        {
-            return ( InternalMessage ) obj;
-        }
-
         LdapMessageCodec codecMessage = ( LdapMessageCodec ) obj;
         int messageId = codecMessage.getMessageId();
 
@@ -811,10 +763,6 @@ public class LdapTransformer
                 internalMessage = transformBindRequest( ( BindRequestCodec ) codecMessage, messageId );
                 break;
 
-            case UNBIND_REQUEST:
-                internalMessage = transformUnBindRequest( messageId );
-                break;
-
             case SEARCH_REQUEST:
                 internalMessage = transformSearchRequest( ( SearchRequestCodec ) codecMessage, messageId );
                 break;
@@ -823,24 +771,8 @@ public class LdapTransformer
                 internalMessage = transformModifyRequest( ( ModifyRequestCodec ) codecMessage, messageId );
                 break;
 
-            case ADD_REQUEST:
-                internalMessage = transformAddRequest( ( AddRequestCodec ) codecMessage, messageId );
-                break;
-
-            case DEL_REQUEST:
-                internalMessage = transformDelRequest( ( DelRequestCodec ) codecMessage, messageId );
-                break;
-
             case MODIFYDN_REQUEST:
                 internalMessage = transformModifyDNRequest( ( ModifyDNRequestCodec ) codecMessage, messageId );
-                break;
-
-            case COMPARE_REQUEST:
-                internalMessage = transformCompareRequest( ( CompareRequestCodec ) codecMessage, messageId );
-                break;
-
-            case ABANDON_REQUEST:
-                internalMessage = transformAbandonRequest( ( AbandonRequestCodec ) codecMessage, messageId );
                 break;
 
             case EXTENDED_REQUEST:

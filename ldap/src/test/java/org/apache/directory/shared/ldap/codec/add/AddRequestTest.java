@@ -37,6 +37,8 @@ import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.codec.DecoderException;
+import org.apache.directory.shared.asn1.codec.EncoderException;
+import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.ResponseCarryingException;
 import org.apache.directory.shared.ldap.entry.Entry;
@@ -48,7 +50,6 @@ import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.message.internal.InternalAddRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalMessage;
 import org.apache.directory.shared.ldap.util.StringTools;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -179,7 +180,11 @@ public class AddRequestTest
         }
 
         // Check the length
-        //assertEquals( 0x59, addRequest.computeLength() );
+        AddRequestCodec addRequestCodec = new AddRequestCodec();
+        addRequestCodec.setEntry( entry );
+        addRequestCodec.setMessageId( addRequest.getMessageId() );
+
+        assertEquals( 0x59, addRequestCodec.computeLength() );
     }
 
 
@@ -657,14 +662,17 @@ public class AddRequestTest
             assertEquals( "", value.getString() );
         }
 
-        /*
         // Check the length
-        assertEquals( 0x34, addRequest.computeLength() );
+        AddRequestCodec addRequestCodec = new AddRequestCodec();
+        addRequestCodec.setEntry( entry );
+        addRequestCodec.setMessageId( addRequest.getMessageId() );
+
+        assertEquals( 0x34, addRequestCodec.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = addRequest.encode();
+            ByteBuffer bb = addRequestCodec.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -675,7 +683,6 @@ public class AddRequestTest
             ee.printStackTrace();
             fail( ee.getMessage() );
         }
-        */
     }
 
 
@@ -683,7 +690,6 @@ public class AddRequestTest
      * Test the decoding of a AddRequest with a empty attributeList and a
      * control
      */
-    @Ignore
     @Test
     public void testDecodeAddRequestEmptyAttributeValueWithControl() throws NamingException
     {
@@ -763,14 +769,18 @@ public class AddRequestTest
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
         assertEquals( "", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
 
-        /*
         // Check the length
-        assertEquals( 0x51, addRequest.computeLength() );
+        AddRequestCodec addRequestCodec = new AddRequestCodec();
+        addRequestCodec.setEntry( entry );
+        addRequestCodec.setMessageId( addRequest.getMessageId() );
+        ( ( LdapMessageCodec ) addRequestCodec ).addControl( control );
+
+        assertEquals( 0x51, addRequestCodec.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = addRequest.encode();
+            ByteBuffer bb = addRequestCodec.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -781,6 +791,5 @@ public class AddRequestTest
             ee.printStackTrace();
             fail( ee.getMessage() );
         }
-        */
     }
 }

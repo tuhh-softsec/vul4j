@@ -47,6 +47,7 @@ public class SearchResponseReferenceImplTest
 {
     private static final Map<String, Control> EMPTY_CONTROL_MAP = new HashMap<String, Control>();
 
+
     /**
      * Creates a baseline referral to test with and adds it to the supplied
      * response object.
@@ -161,6 +162,12 @@ public class SearchResponseReferenceImplTest
             public boolean hasControl( String oid )
             {
                 return false;
+            }
+
+
+            public Control getCurrentControl()
+            {
+                return null;
             }
         };
 

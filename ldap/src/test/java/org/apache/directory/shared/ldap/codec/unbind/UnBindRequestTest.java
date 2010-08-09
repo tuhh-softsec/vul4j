@@ -25,7 +25,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.nio.ByteBuffer;
-import java.util.List;
+import java.util.Map;
 
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
@@ -33,9 +33,9 @@ import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.codec.EncoderException;
-import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.message.control.Control;
+import org.apache.directory.shared.ldap.message.internal.InternalUnbindRequest;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -58,11 +58,10 @@ public class UnBindRequestTest
 
         ByteBuffer stream = ByteBuffer.allocate( 0x07 );
         stream.put( new byte[]
-            { 
-            0x30, 0x05,                 // LDAPMessage ::=SEQUENCE {
-              0x02, 0x01, 0x01,         // messageID MessageID
-              0x42, 0x00,               // CHOICE { ..., unbindRequest UnbindRequest,...
-                                        // UnbindRequest ::= [APPLICATION 2] NULL
+            { 0x30, 0x05, // LDAPMessage ::=SEQUENCE {
+                0x02, 0x01, 0x01, // messageID MessageID
+                0x42, 0x00, // CHOICE { ..., unbindRequest UnbindRequest,...
+            // UnbindRequest ::= [APPLICATION 2] NULL
             } );
 
         String decodedPdu = StringTools.dumpBytes( stream.array() );
@@ -81,16 +80,20 @@ public class UnBindRequestTest
             fail( de.getMessage() );
         }
 
-        LdapMessageCodec ldapMessage = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
+        InternalUnbindRequest unbindRequest = ( ( LdapMessageContainer ) ldapMessageContainer )
+            .getInternalUnbindRequest();
 
-        assertEquals( 1, ldapMessage.getMessageId() );
+        assertEquals( 1, unbindRequest.getMessageId() );
 
         // Check the length
-        assertEquals( 7, ldapMessage.computeLength() );
+        UnBindRequestCodec unbindRequestCodec = new UnBindRequestCodec();
+        unbindRequestCodec.setMessageId( unbindRequest.getMessageId() );
+
+        assertEquals( 7, unbindRequestCodec.computeLength() );
 
         try
         {
-            ByteBuffer bb = ldapMessage.encode();
+            ByteBuffer bb = unbindRequestCodec.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -114,17 +117,17 @@ public class UnBindRequestTest
 
         ByteBuffer stream = ByteBuffer.allocate( 0x24 );
         stream.put( new byte[]
-            { 
-            0x30, 0x22,                 // LDAPMessage ::=SEQUENCE {
-              0x02, 0x01, 0x01,         // messageID MessageID
-              0x42, 0x00,               // CHOICE { ..., unbindRequest UnbindRequest,...
-                                        // UnbindRequest ::= [APPLICATION 2] NULL
-              ( byte ) 0xA0, 0x1B,      // A control
-                0x30, 0x19, 
-                  0x04, 0x17,
-                    '2', '.', '1', '6', '.', '8', '4', '0', '.', '1', '.', '1', '1', '3', '7', 
-                    '3', '0', '.', '3', '.', '4', '.', '2'
-            } );
+            { 0x30,
+                0x22, // LDAPMessage ::=SEQUENCE {
+                0x02, 0x01,
+                0x01, // messageID MessageID
+                0x42,
+                0x00, // CHOICE { ..., unbindRequest UnbindRequest,...
+                // UnbindRequest ::= [APPLICATION 2] NULL
+                ( byte ) 0xA0,
+                0x1B, // A control
+                0x30, 0x19, 0x04, 0x17, '2', '.', '1', '6', '.', '8', '4', '0', '.', '1', '.', '1', '1', '3', '7', '3',
+                '0', '.', '3', '.', '4', '.', '2' } );
 
         String decodedPdu = StringTools.dumpBytes( stream.array() );
         stream.flip();
@@ -142,25 +145,30 @@ public class UnBindRequestTest
             fail( de.getMessage() );
         }
 
-        LdapMessageCodec ldapMessage = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
+        InternalUnbindRequest unbindRequest = ( ( LdapMessageContainer ) ldapMessageContainer )
+            .getInternalUnbindRequest();
 
-        assertEquals( 1, ldapMessage.getMessageId() );
+        assertEquals( 1, unbindRequest.getMessageId() );
 
         // Check the Control
-        List<Control> controls = ldapMessage.getControls();
+        Map<String, Control> controls = unbindRequest.getControls();
 
         assertEquals( 1, controls.size() );
 
-        Control control = ldapMessage.getControls( 0 );
+        Control control = controls.get( "2.16.840.1.113730.3.4.2" );
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
         assertEquals( "", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
 
         // Check the length
-        assertEquals( 0x24, ldapMessage.computeLength() );
+        UnBindRequestCodec unbindRequestCodec = new UnBindRequestCodec();
+        unbindRequestCodec.setMessageId( unbindRequest.getMessageId() );
+        unbindRequestCodec.addControl( control );
+
+        assertEquals( 0x24, unbindRequestCodec.computeLength() );
 
         try
         {
-            ByteBuffer bb = ldapMessage.encode();
+            ByteBuffer bb = unbindRequestCodec.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -184,11 +192,10 @@ public class UnBindRequestTest
 
         ByteBuffer stream = ByteBuffer.allocate( 0x09 );
         stream.put( new byte[]
-            { 
-            0x30, 0x07,                 // LDAPMessage ::=SEQUENCE {
-              0x02, 0x01, 0x01,         // messageID MessageID
-              0x42, 0x02,               // CHOICE { ..., unbindRequest UnbindRequest,...
-                0x04, 0x00              // UnbindRequest ::= [APPLICATION 2] NULL
+            { 0x30, 0x07, // LDAPMessage ::=SEQUENCE {
+                0x02, 0x01, 0x01, // messageID MessageID
+                0x42, 0x02, // CHOICE { ..., unbindRequest UnbindRequest,...
+                0x04, 0x00 // UnbindRequest ::= [APPLICATION 2] NULL
 
             } );
 

@@ -50,6 +50,7 @@ public class ModifyDnRequestImplTest
 {
     private static final Map<String, Control> EMPTY_CONTROL_MAP = new HashMap<String, Control>();
 
+
     /**
      * Constructs a ModifyDnrequest to test.
      * 
@@ -60,7 +61,7 @@ public class ModifyDnRequestImplTest
         // Construct the ModifyDn request to test
         ModifyDnRequestImpl request = new ModifyDnRequestImpl( 45 );
         request.setDeleteOldRdn( true );
-        
+
         try
         {
             request.setName( new DN( "dc=admins,dc=apache,dc=org" ) );
@@ -71,7 +72,7 @@ public class ModifyDnRequestImplTest
         {
             // do nothing
         }
-        
+
         return request;
     }
 
@@ -118,40 +119,40 @@ public class ModifyDnRequestImplTest
     /**
     * Tests the same object reference for equal hashCode
     */
-   @Test
-   public void testHashCodeSameObj()
-   {
-       ModifyDnRequestImpl req = new ModifyDnRequestImpl( 5 );
-       assertTrue( req.hashCode() == req.hashCode() );
-   }
+    @Test
+    public void testHashCodeSameObj()
+    {
+        ModifyDnRequestImpl req = new ModifyDnRequestImpl( 5 );
+        assertTrue( req.hashCode() == req.hashCode() );
+    }
 
 
-   /**
-    * Tests for equal hashCode using exact copies.
-    */
-   @Test
-   public void testHashCodeExactCopy0()
-   {
-       ModifyDnRequestImpl req0 = getRequest();
-       ModifyDnRequestImpl req1 = getRequest();
+    /**
+     * Tests for equal hashCode using exact copies.
+     */
+    @Test
+    public void testHashCodeExactCopy0()
+    {
+        ModifyDnRequestImpl req0 = getRequest();
+        ModifyDnRequestImpl req1 = getRequest();
 
-       assertTrue( req0.hashCode() == req1.hashCode() );
-   }
+        assertTrue( req0.hashCode() == req1.hashCode() );
+    }
 
 
-   /**
-    * Tests for equal hashCode using exact copies.
-    */
-   @Test
-   public void testHashCodeExactCopy1()
-   {
-       ModifyDnRequestImpl req0 = getRequest();
-       req0.setNewSuperior( null );
-       ModifyDnRequestImpl req1 = getRequest();
-       req1.setNewSuperior( null );
+    /**
+     * Tests for equal hashCode using exact copies.
+     */
+    @Test
+    public void testHashCodeExactCopy1()
+    {
+        ModifyDnRequestImpl req0 = getRequest();
+        req0.setNewSuperior( null );
+        ModifyDnRequestImpl req1 = getRequest();
+        req1.setNewSuperior( null );
 
-       assertTrue( req0.hashCode() == req1.hashCode() );
-   }
+        assertTrue( req0.hashCode() == req1.hashCode() );
+    }
 
 
     /**
@@ -396,6 +397,12 @@ public class ModifyDnRequestImplTest
             public boolean hasControl( String oid )
             {
                 return false;
+            }
+
+
+            public Control getCurrentControl()
+            {
+                return null;
             }
         };
 

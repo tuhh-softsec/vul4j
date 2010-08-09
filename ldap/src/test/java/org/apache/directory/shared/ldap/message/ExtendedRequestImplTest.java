@@ -50,6 +50,7 @@ public class ExtendedRequestImplTest
 {
     private static final Map<String, Control> EMPTY_CONTROL_MAP = new HashMap<String, Control>();
 
+
     /**
      * Tests the same object reference for equality.
      */
@@ -213,7 +214,7 @@ public class ExtendedRequestImplTest
             }
 
 
-            public Map<String,Control> getControls()
+            public Map<String, Control> getControls()
             {
                 return EMPTY_CONTROL_MAP;
             }
@@ -280,6 +281,12 @@ public class ExtendedRequestImplTest
             public boolean hasControl( String oid )
             {
                 return false;
+            }
+
+
+            public Control getCurrentControl()
+            {
+                return null;
             }
         };
 

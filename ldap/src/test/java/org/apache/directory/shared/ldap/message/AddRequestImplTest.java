@@ -331,6 +331,12 @@ public class AddRequestImplTest
             {
                 return null;
             }
+
+
+            public Control getCurrentControl()
+            {
+                return null;
+            }
         };
 
         AddRequestImpl req1 = new AddRequestImpl( 5 );

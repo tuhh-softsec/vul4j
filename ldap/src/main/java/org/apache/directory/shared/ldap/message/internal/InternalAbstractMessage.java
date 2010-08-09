@@ -19,6 +19,7 @@
  */
 package org.apache.directory.shared.ldap.message.internal;
 
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -28,7 +29,6 @@ import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.codec.controls.CodecControl;
 import org.apache.directory.shared.ldap.message.MessageException;
 import org.apache.directory.shared.ldap.message.control.Control;
-
 
 
 /**
@@ -51,6 +51,9 @@ public abstract class InternalAbstractMessage implements InternalMessage
 
     /** Transient Message Parameter Hash */
     private final Map<Object, Object> parameters;
+
+    /** The current control */
+    private Control currentControl;
 
 
     /**
@@ -95,7 +98,18 @@ public abstract class InternalAbstractMessage implements InternalMessage
         return Collections.unmodifiableMap( controls );
     }
 
-    
+
+    /**
+     * Get the current Control Object
+     * 
+     * @return The current Control Object
+     */
+    public Control getCurrentControl()
+    {
+        return currentControl;
+    }
+
+
     /**
      * @see org.apache.directory.shared.ldap.message.internal.InternalMessage#hasControl(java.lang.String)
      */
@@ -103,7 +117,7 @@ public abstract class InternalAbstractMessage implements InternalMessage
     {
         return controls.containsKey( oid );
     }
-    
+
 
     /**
      * Adds a control to this Message.
@@ -117,6 +131,7 @@ public abstract class InternalAbstractMessage implements InternalMessage
     public void add( Control control ) throws MessageException
     {
         controls.put( control.getOid(), control );
+        currentControl = control;
     }
 
 
@@ -219,14 +234,14 @@ public abstract class InternalAbstractMessage implements InternalMessage
         }
 
         Map<String, Control> controls = msg.getControls();
-        
+
         if ( controls.size() != this.controls.size() )
         {
             return false;
         }
 
         Iterator<String> list = this.controls.keySet().iterator();
-        
+
         while ( list.hasNext() )
         {
             if ( !controls.containsKey( list.next() ) )
@@ -237,7 +252,8 @@ public abstract class InternalAbstractMessage implements InternalMessage
 
         return true;
     }
-    
+
+
     /**
      * @see Object#hashCode()
      * @return the instance's hash code 
@@ -245,11 +261,11 @@ public abstract class InternalAbstractMessage implements InternalMessage
     public int hashCode()
     {
         int hash = 37;
-        hash = hash*17 + id;
-        hash = hash*17 + ( type == null ? 0 : type.hashCode() );
-        hash = hash*17 + ( parameters == null ? 0 : parameters.hashCode() );
-        hash = hash*17 + ( controls == null ? 0 : controls.hashCode() );
-        
+        hash = hash * 17 + id;
+        hash = hash * 17 + ( type == null ? 0 : type.hashCode() );
+        hash = hash * 17 + ( parameters == null ? 0 : parameters.hashCode() );
+        hash = hash * 17 + ( controls == null ? 0 : controls.hashCode() );
+
         return hash;
     }
 

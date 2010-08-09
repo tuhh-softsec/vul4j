@@ -32,8 +32,8 @@ import java.util.Map;
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
-import org.apache.directory.shared.ldap.entry.DefaultModification;
 import org.apache.directory.shared.ldap.entry.DefaultEntryAttribute;
+import org.apache.directory.shared.ldap.entry.DefaultModification;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Modification;
 import org.apache.directory.shared.ldap.entry.ModificationOperation;
@@ -57,6 +57,7 @@ public class ModifyRequestImplTest
 {
     private static final Map<String, Control> EMPTY_CONTROL_MAP = new HashMap<String, Control>();
 
+
     /**
      * Builds a ModifyRequest for testing purposes.
      * 
@@ -66,8 +67,8 @@ public class ModifyRequestImplTest
     {
         // Construct the Modify request to test
         ModifyRequestImpl req = new ModifyRequestImpl( 45 );
-        
-        try 
+
+        try
         {
             req.setName( new DN( "cn=admin,dc=apache,dc=org" ) );
         }
@@ -425,6 +426,12 @@ public class ModifyRequestImplTest
             public boolean hasControl( String oid )
             {
                 return false;
+            }
+
+
+            public Control getCurrentControl()
+            {
+                return null;
             }
         };
 

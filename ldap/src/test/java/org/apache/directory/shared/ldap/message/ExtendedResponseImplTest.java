@@ -49,6 +49,7 @@ public class ExtendedResponseImplTest
 {
     private static final Map<String, Control> EMPTY_CONTROL_MAP = new HashMap<String, Control>();
 
+
     /**
      * Creates and populates a ExtendedResponseImpl stub for testing purposes.
      * 
@@ -61,7 +62,7 @@ public class ExtendedResponseImplTest
         response.setResponse( "Hello World!".getBytes() );
         response.setResponseName( "1.1.1.1" );
         InternalLdapResult result = response.getLdapResult();
-        
+
         try
         {
             result.setMatchedDn( new DN( "dc=example,dc=com" ) );
@@ -70,7 +71,7 @@ public class ExtendedResponseImplTest
         {
             // Do nothing
         }
-        
+
         result.setResultCode( ResultCodeEnum.SUCCESS );
         ReferralImpl refs = new ReferralImpl();
         refs.addLdapUrl( "ldap://someserver.com" );
@@ -142,16 +143,16 @@ public class ExtendedResponseImplTest
             public InternalLdapResult getLdapResult()
             {
                 LdapResultImpl result = new LdapResultImpl();
-                
-                try 
+
+                try
                 {
                     result.setMatchedDn( new DN( "dc=example,dc=com" ) );
                 }
-                catch ( LdapException ine ) 
+                catch ( LdapException ine )
                 {
                     // do nothing
                 }
-                
+
                 result.setResultCode( ResultCodeEnum.SUCCESS );
                 ReferralImpl refs = new ReferralImpl();
                 refs.addLdapUrl( "ldap://someserver.com" );
@@ -223,6 +224,12 @@ public class ExtendedResponseImplTest
             public boolean hasControl( String oid )
             {
                 return false;
+            }
+
+
+            public Control getCurrentControl()
+            {
+                return null;
             }
         };
 
