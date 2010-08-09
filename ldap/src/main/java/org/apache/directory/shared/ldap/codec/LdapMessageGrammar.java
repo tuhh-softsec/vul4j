@@ -71,10 +71,7 @@ import org.apache.directory.shared.ldap.codec.actions.StoreReferenceAction;
 import org.apache.directory.shared.ldap.codec.actions.StoreTypeMatchingRuleAction;
 import org.apache.directory.shared.ldap.codec.actions.ValueAction;
 import org.apache.directory.shared.ldap.codec.add.AddResponseCodec;
-import org.apache.directory.shared.ldap.codec.bind.BindRequestCodec;
 import org.apache.directory.shared.ldap.codec.bind.BindResponseCodec;
-import org.apache.directory.shared.ldap.codec.bind.SaslCredentials;
-import org.apache.directory.shared.ldap.codec.bind.SimpleAuthentication;
 import org.apache.directory.shared.ldap.codec.compare.CompareResponseCodec;
 import org.apache.directory.shared.ldap.codec.controls.ControlEnum;
 import org.apache.directory.shared.ldap.codec.controls.ControlImpl;
@@ -98,6 +95,7 @@ import org.apache.directory.shared.ldap.filter.SearchScope;
 import org.apache.directory.shared.ldap.message.AbandonRequestImpl;
 import org.apache.directory.shared.ldap.message.AddRequestImpl;
 import org.apache.directory.shared.ldap.message.AddResponseImpl;
+import org.apache.directory.shared.ldap.message.BindRequestImpl;
 import org.apache.directory.shared.ldap.message.BindResponseImpl;
 import org.apache.directory.shared.ldap.message.CompareRequestImpl;
 import org.apache.directory.shared.ldap.message.CompareResponseImpl;
@@ -111,6 +109,7 @@ import org.apache.directory.shared.ldap.message.UnbindRequestImpl;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.message.internal.InternalAbandonRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalAddRequest;
+import org.apache.directory.shared.ldap.message.internal.InternalBindRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalCompareRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalDeleteRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalMessage;
@@ -487,9 +486,8 @@ public class LdapMessageGrammar extends AbstractGrammar
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
                     // Create the BindRequest LdapMessage instance and store it in the container
-                    BindRequestCodec bindRequest = new BindRequestCodec();
-                    bindRequest.setMessageId( ldapMessageContainer.getMessageId() );
-                    ldapMessageContainer.setLdapMessage( bindRequest );
+                    InternalBindRequest bindRequest = new BindRequestImpl( ldapMessageContainer.getMessageId() );
+                    ldapMessageContainer.setInternalMessage( bindRequest );
 
                     // We will check that the request is not null
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
@@ -519,9 +517,8 @@ public class LdapMessageGrammar extends AbstractGrammar
             {
                 public void action( IAsn1Container container ) throws DecoderException
                 {
-
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-                    BindRequestCodec bindRequestMessage = ldapMessageContainer.getBindRequest();
+                    InternalBindRequest bindRequestMessage = ldapMessageContainer.getInternalBindRequest();
 
                     // The current TLV should be a integer between 1 and 127
                     // We get it and store it in Version
@@ -538,7 +535,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                             log.debug( "Ldap version ", Integer.valueOf( version ) );
                         }
 
-                        bindRequestMessage.setVersion( version );
+                        bindRequestMessage.setVersion3( version == 3 );
                     }
                     catch ( IntegerDecoderException ide )
                     {
@@ -567,7 +564,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                 public void action( IAsn1Container container ) throws DecoderException
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-                    BindRequestCodec bindRequestMessage = ldapMessageContainer.getBindRequest();
+                    InternalBindRequest bindRequestMessage = ldapMessageContainer.getInternalBindRequest();
 
                     // Get the Value and store it in the BindRequest
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
@@ -627,26 +624,20 @@ public class LdapMessageGrammar extends AbstractGrammar
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
-                    BindRequestCodec bindRequestMessage = ldapMessageContainer.getBindRequest();
+                    InternalBindRequest bindRequestMessage = ldapMessageContainer.getInternalBindRequest();
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
                     // Allocate the Authentication Object
-                    SimpleAuthentication authentication = null;
-
-                    authentication = new SimpleAuthentication();
-
-                    authentication.setParent( bindRequestMessage );
-
-                    bindRequestMessage.setAuthentication( authentication );
+                    bindRequestMessage.setSimple( true );
 
                     // We have to handle the special case of a 0 length simple
                     if ( tlv.getLength() == 0 )
                     {
-                        authentication.setSimple( StringTools.EMPTY_BYTES );
+                        bindRequestMessage.setCredentials( StringTools.EMPTY_BYTES );
                     }
                     else
                     {
-                        authentication.setSimple( tlv.getValue().getData() );
+                        bindRequestMessage.setCredentials( tlv.getValue().getData() );
                     }
 
                     // We can have an END transition
@@ -654,7 +645,8 @@ public class LdapMessageGrammar extends AbstractGrammar
 
                     if ( IS_DEBUG )
                     {
-                        log.debug( "The simple authentication is : {}", authentication.getSimple() );
+                        log.debug( "The simple authentication is : {}", StringTools.dumpBytes( bindRequestMessage
+                            .getCredentials() ) );
                     }
                 }
             } );
@@ -690,7 +682,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                 public void action( IAsn1Container container ) throws DecoderException
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-                    BindRequestCodec bindRequestMessage = ldapMessageContainer.getBindRequest();
+                    InternalBindRequest bindRequestMessage = ldapMessageContainer.getInternalBindRequest();
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
                     // We will check that the sasl is not null
@@ -705,12 +697,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                             bindRequestMessage.getName(), null );
                     }
 
-                    // Create the SaslCredentials Object
-                    SaslCredentials authentication = new SaslCredentials();
-
-                    authentication.setParent( bindRequestMessage );
-
-                    bindRequestMessage.setAuthentication( authentication );
+                    bindRequestMessage.setSimple( false );
 
                     if ( IS_DEBUG )
                     {
@@ -734,21 +721,18 @@ public class LdapMessageGrammar extends AbstractGrammar
                 public void action( IAsn1Container container ) throws DecoderException
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-                    BindRequestCodec bindRequestMessage = ldapMessageContainer.getBindRequest();
+                    InternalBindRequest bindRequestMessage = ldapMessageContainer.getInternalBindRequest();
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
-
-                    // Get the SaslCredentials Object
-                    SaslCredentials authentication = bindRequestMessage.getSaslAuthentication();
 
                     // We have to handle the special case of a 0 length
                     // mechanism
                     if ( tlv.getLength() == 0 )
                     {
-                        authentication.setMechanism( "" );
+                        bindRequestMessage.setSaslMechanism( "" );
                     }
                     else
                     {
-                        authentication.setMechanism( StringTools.utf8ToString( tlv.getValue().getData() ) );
+                        bindRequestMessage.setSaslMechanism( StringTools.utf8ToString( tlv.getValue().getData() ) );
                     }
 
                     // We can have an END transition
@@ -756,7 +740,7 @@ public class LdapMessageGrammar extends AbstractGrammar
 
                     if ( IS_DEBUG )
                     {
-                        log.debug( "The mechanism is : {}", authentication.getMechanism() );
+                        log.debug( "The mechanism is : {}", bindRequestMessage.getSaslMechanism() );
                     }
                 }
             } );
@@ -777,29 +761,29 @@ public class LdapMessageGrammar extends AbstractGrammar
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
-                    BindRequestCodec bindRequestMessage = ldapMessageContainer.getBindRequest();
+                    InternalBindRequest bindRequestMessage = ldapMessageContainer.getInternalBindRequest();
 
                     // Get the Value and store it in the BindRequest
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
-
-                    SaslCredentials credentials = bindRequestMessage.getSaslAuthentication();
 
                     // We have to handle the special case of a 0 length
                     // credentials
                     if ( tlv.getLength() == 0 )
                     {
-                        credentials.setCredentials( StringTools.EMPTY_BYTES );
+                        bindRequestMessage.setCredentials( StringTools.EMPTY_BYTES );
                     }
                     else
                     {
-                        credentials.setCredentials( tlv.getValue().getData() );
+                        bindRequestMessage.setCredentials( tlv.getValue().getData() );
                     }
 
                     // We can have an END transition
                     ldapMessageContainer.grammarEndAllowed( true );
+
                     if ( IS_DEBUG )
                     {
-                        log.debug( "The credentials are : {}", credentials.getCredentials() );
+                        log.debug( "The credentials are : {}", StringTools.dumpBytes( bindRequestMessage
+                            .getCredentials() ) );
                     }
                 }
             } );

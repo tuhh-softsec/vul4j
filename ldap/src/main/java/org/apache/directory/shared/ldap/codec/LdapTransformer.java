@@ -24,17 +24,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.directory.shared.asn1.Asn1Object;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.primitives.OID;
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.codec.abandon.AbandonRequestCodec;
 import org.apache.directory.shared.ldap.codec.add.AddResponseCodec;
 import org.apache.directory.shared.ldap.codec.bind.BindRequestCodec;
 import org.apache.directory.shared.ldap.codec.bind.BindResponseCodec;
 import org.apache.directory.shared.ldap.codec.bind.SaslCredentials;
 import org.apache.directory.shared.ldap.codec.bind.SimpleAuthentication;
-import org.apache.directory.shared.ldap.codec.compare.CompareRequestCodec;
 import org.apache.directory.shared.ldap.codec.compare.CompareResponseCodec;
 import org.apache.directory.shared.ldap.codec.del.DelResponseCodec;
 import org.apache.directory.shared.ldap.codec.extended.ExtendedRequestCodec;
@@ -76,12 +73,10 @@ import org.apache.directory.shared.ldap.filter.OrNode;
 import org.apache.directory.shared.ldap.filter.PresenceNode;
 import org.apache.directory.shared.ldap.filter.SimpleNode;
 import org.apache.directory.shared.ldap.filter.SubstringNode;
-import org.apache.directory.shared.ldap.message.AbandonRequestImpl;
 import org.apache.directory.shared.ldap.message.AddResponseImpl;
 import org.apache.directory.shared.ldap.message.AliasDerefMode;
 import org.apache.directory.shared.ldap.message.BindRequestImpl;
 import org.apache.directory.shared.ldap.message.BindResponseImpl;
-import org.apache.directory.shared.ldap.message.CompareRequestImpl;
 import org.apache.directory.shared.ldap.message.CompareResponseImpl;
 import org.apache.directory.shared.ldap.message.DeleteResponseImpl;
 import org.apache.directory.shared.ldap.message.ExtendedRequestImpl;
@@ -97,7 +92,6 @@ import org.apache.directory.shared.ldap.message.SearchRequestImpl;
 import org.apache.directory.shared.ldap.message.SearchResponseDoneImpl;
 import org.apache.directory.shared.ldap.message.SearchResponseEntryImpl;
 import org.apache.directory.shared.ldap.message.SearchResponseReferenceImpl;
-import org.apache.directory.shared.ldap.message.UnbindRequestImpl;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.message.extended.GracefulShutdownRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalLdapResult;
@@ -123,64 +117,6 @@ public class LdapTransformer
 
     /** A speedup for logger */
     private static final boolean IS_DEBUG = LOG.isDebugEnabled();
-
-
-    /**
-     * Transform an AbandonRequest message from a codec Message to an
-     * InternalMessage
-     * 
-     * @param codecMessage The message to transform
-     * @param messageId The message Id
-     * @return An internal AbandonRequest message
-     */
-    private static InternalMessage transformAbandonRequest( AbandonRequestCodec abandonRequest, int messageId )
-    {
-        AbandonRequestImpl internalMessage = new AbandonRequestImpl( messageId );
-
-        // Codec : int abandonnedMessageId -> Internal : int abandonId
-        internalMessage.setAbandoned( abandonRequest.getAbandonedMessageId() );
-
-        return internalMessage;
-    }
-
-
-    /**
-     * Transform a BindRequest message from a CodecMessage to a InternalMessage
-     * 
-     * @param bindRequest The message to transform
-     * @param messageId The message Id
-     * @return A Internal BindRequestImpl
-     */
-    private static InternalMessage transformBindRequest( BindRequestCodec bindRequest, int messageId )
-    {
-        BindRequestImpl internalMessage = new BindRequestImpl( messageId );
-
-        // Codec : int version -> Internal : boolean isVersion3
-        internalMessage.setVersion3( bindRequest.isLdapV3() );
-
-        // Codec : DN name -> Internal : DN name
-        internalMessage.setName( bindRequest.getName() );
-
-        // Codec : Asn1Object authentication instanceOf SimpleAuthentication ->
-        // Internal : boolean isSimple
-        // Codec : SimpleAuthentication OctetString simple -> Internal : byte []
-        // credentials
-        Asn1Object authentication = bindRequest.getAuthentication();
-
-        if ( authentication instanceof SimpleAuthentication )
-        {
-            internalMessage.setSimple( true );
-            internalMessage.setCredentials( ( ( SimpleAuthentication ) authentication ).getSimple() );
-        }
-        else
-        {
-            internalMessage.setSimple( false );
-            internalMessage.setCredentials( ( ( SaslCredentials ) authentication ).getCredentials() );
-            internalMessage.setSaslMechanism( ( ( SaslCredentials ) authentication ).getMechanism() );
-        }
-
-        return internalMessage;
-    }
 
 
     /**
@@ -240,38 +176,6 @@ public class LdapTransformer
 
             internalLdapResult.setReferral( referral );
         }
-    }
-
-
-    /**
-     * Transform a CompareRequest message from a CodecMessage to a
-     * InternalMessage
-     * 
-     * @param compareRequest The message to transform
-     * @param messageId The message Id
-     * @return A Internal CompareRequestImpl
-     */
-    private static InternalMessage transformCompareRequest( CompareRequestCodec compareRequest, int messageId )
-    {
-        CompareRequestImpl internalMessage = new CompareRequestImpl( messageId );
-
-        // Codec : DN entry -> Internal : private DN
-        internalMessage.setName( compareRequest.getEntry() );
-
-        // Codec : LdapString attributeDesc -> Internal : String attrId
-        internalMessage.setAttributeId( compareRequest.getAttributeDesc() );
-
-        // Codec : OctetString assertionValue -> Internal : byte[] attrVal
-        if ( compareRequest.getAssertionValue() instanceof String )
-        {
-            internalMessage.setAssertionValue( ( String ) compareRequest.getAssertionValue() );
-        }
-        else
-        {
-            internalMessage.setAssertionValue( ( byte[] ) compareRequest.getAssertionValue() );
-        }
-
-        return internalMessage;
     }
 
 
@@ -724,19 +628,6 @@ public class LdapTransformer
 
 
     /**
-     * Transform an UnBindRequest message from a CodecMessage to a
-     * InternalMessage
-     * 
-     * @param messageId The message Id
-     * @return A Internal UnBindRequestImpl
-     */
-    private static InternalMessage transformUnBindRequest( int messageId )
-    {
-        return new UnbindRequestImpl( messageId );
-    }
-
-
-    /**
      * Transform the Codec message to a internal message.
      * 
      * @param obj the object to transform
@@ -759,10 +650,6 @@ public class LdapTransformer
 
         switch ( messageType )
         {
-            case BIND_REQUEST:
-                internalMessage = transformBindRequest( ( BindRequestCodec ) codecMessage, messageId );
-                break;
-
             case SEARCH_REQUEST:
                 internalMessage = transformSearchRequest( ( SearchRequestCodec ) codecMessage, messageId );
                 break;

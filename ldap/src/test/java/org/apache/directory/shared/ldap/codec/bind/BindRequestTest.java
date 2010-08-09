@@ -21,11 +21,12 @@ package org.apache.directory.shared.ldap.codec.bind;
 
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.nio.ByteBuffer;
-import java.util.List;
+import java.util.Map;
 
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
@@ -38,6 +39,7 @@ import org.apache.directory.shared.ldap.codec.ResponseCarryingException;
 import org.apache.directory.shared.ldap.message.BindResponseImpl;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.message.control.Control;
+import org.apache.directory.shared.ldap.message.internal.InternalBindRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalMessage;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
@@ -161,20 +163,22 @@ public class BindRequestTest
 
         ByteBuffer stream = ByteBuffer.allocate( 0x35 );
         stream.put( new byte[]
-            { 
-            0x30, 0x33,                 // LDAPMessage ::=SEQUENCE {
-              0x02, 0x01, 0x01,         // messageID MessageID
-              0x60, 0x2E,               // CHOICE { ..., bindRequest BindRequest, ...
-                                        // BindRequest ::= APPLICATION[0] SEQUENCE {
-                0x02, 0x01, 0x03,       // version INTEGER (1..127),
-                0x04, 0x1F,             // name LDAPDN,
+            { 0x30,
+                0x33, // LDAPMessage ::=SEQUENCE {
+                0x02, 0x01,
+                0x01, // messageID MessageID
+                0x60,
+                0x2E, // CHOICE { ..., bindRequest BindRequest, ...
+                // BindRequest ::= APPLICATION[0] SEQUENCE {
+                0x02, 0x01,
+                0x03, // version INTEGER (1..127),
+                0x04,
+                0x1F, // name LDAPDN,
                 'u', 'i', 'd', '=', 'a', 'k', 'a', 'r', 'a', 's', 'u', 'l', 'u', ',', 'd', 'c', '=', 'e', 'x', 'a',
-                'm', 'p', 'l', 'e', ',', 'd', 'c', '=', 'c', 'o', 'm', 
-                ( byte ) 0x80, 0x08,    // authentication AuthenticationChoice
-                                        // AuthenticationChoice ::= CHOICE { simple [0] OCTET STRING,
-                                        // ...
-                  'p', 'a', 's', 's', 'w', 'o', 'r', 'd' 
-            } );
+                'm', 'p', 'l', 'e', ',', 'd', 'c', '=', 'c', 'o', 'm', ( byte ) 0x80, 0x08, // authentication AuthenticationChoice
+                // AuthenticationChoice ::= CHOICE { simple [0] OCTET STRING,
+                // ...
+                'p', 'a', 's', 's', 'w', 'o', 'r', 'd' } );
 
         String decodedPdu = StringTools.dumpBytes( stream.array() );
         stream.flip();
@@ -194,22 +198,30 @@ public class BindRequestTest
         }
 
         // Check the decoded BindRequest
-        BindRequestCodec bindRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getBindRequest();
+        InternalBindRequest bindRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getInternalBindRequest();
 
         assertEquals( 1, bindRequest.getMessageId() );
-        assertEquals( 3, bindRequest.getVersion() );
+        assertTrue( bindRequest.isVersion3() );
         assertEquals( "uid=akarasulu,dc=example,dc=com", bindRequest.getName().toString() );
-        assertEquals( true, ( bindRequest.getAuthentication() instanceof SimpleAuthentication ) );
-        assertEquals( "password", StringTools.utf8ToString( ( ( SimpleAuthentication ) bindRequest.getAuthentication() )
-            .getSimple() ) );
+        assertTrue( bindRequest.isSimple() );
+        assertEquals( "password", StringTools.utf8ToString( bindRequest.getCredentials() ) );
 
         // Check the length
-        assertEquals( 0x35, bindRequest.computeLength() );
+        BindRequestCodec bindRequestCodec = new BindRequestCodec();
+        bindRequestCodec.setMessageId( bindRequest.getMessageId() );
+        bindRequestCodec.setName( bindRequest.getName() );
+        bindRequestCodec.setVersion( bindRequest.getVersion3() ? 3 : 2 );
+
+        SimpleAuthentication simple = new SimpleAuthentication();
+        simple.setSimple( bindRequest.getCredentials() );
+        bindRequestCodec.setAuthentication( simple );
+
+        assertEquals( 0x35, bindRequestCodec.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = bindRequest.encode();
+            ByteBuffer bb = bindRequestCodec.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -222,6 +234,7 @@ public class BindRequestTest
         }
     }
 
+
     /**
      * Test the decoding of a BindRequest with Simple authentication and
      * controls
@@ -233,20 +246,22 @@ public class BindRequestTest
 
         ByteBuffer stream = ByteBuffer.allocate( 0x35 );
         stream.put( new byte[]
-            { 
-            0x30, 0x33,                 // LDAPMessage ::=SEQUENCE {
-              0x02, 0x01, 0x01,         // messageID MessageID
-              0x60, 0x2E,               // CHOICE { ..., bindRequest BindRequest, ...
-                                        // BindRequest ::= APPLICATION[0] SEQUENCE {
-                0x02, 0x01, 0x03,       // version INTEGER (1..127),
-                0x04, 0x1F,             // name LDAPDN,
-                  'u', 'i', 'd', ':', 'a', 'k', 'a', 'r', 'a', 's', 'u', 'l', 'u', ',', 'd', 'c', '=', 'e', 'x', 'a',
-                  'm', 'p', 'l', 'e', ',', 'd', 'c', '=', 'c', 'o', 'm', 
-                ( byte ) 0x80, 0x08,    // authentication AuthenticationChoice
-                                        // AuthenticationChoice ::= CHOICE { simple [0] OCTET STRING,
-                                        // ...
-                'p', 'a', 's', 's', 'w', 'o', 'r', 'd' 
-            } );
+            { 0x30,
+                0x33, // LDAPMessage ::=SEQUENCE {
+                0x02, 0x01,
+                0x01, // messageID MessageID
+                0x60,
+                0x2E, // CHOICE { ..., bindRequest BindRequest, ...
+                // BindRequest ::= APPLICATION[0] SEQUENCE {
+                0x02, 0x01,
+                0x03, // version INTEGER (1..127),
+                0x04,
+                0x1F, // name LDAPDN,
+                'u', 'i', 'd', ':', 'a', 'k', 'a', 'r', 'a', 's', 'u', 'l', 'u', ',', 'd', 'c', '=', 'e', 'x', 'a',
+                'm', 'p', 'l', 'e', ',', 'd', 'c', '=', 'c', 'o', 'm', ( byte ) 0x80, 0x08, // authentication AuthenticationChoice
+                // AuthenticationChoice ::= CHOICE { simple [0] OCTET STRING,
+                // ...
+                'p', 'a', 's', 's', 'w', 'o', 'r', 'd' } );
 
         stream.flip();
 
@@ -261,9 +276,10 @@ public class BindRequestTest
         catch ( DecoderException de )
         {
             assertTrue( de instanceof ResponseCarryingException );
-            InternalMessage response = ((ResponseCarryingException)de).getResponse();
+            InternalMessage response = ( ( ResponseCarryingException ) de ).getResponse();
             assertTrue( response instanceof BindResponseImpl );
-            assertEquals( ResultCodeEnum.INVALID_DN_SYNTAX, ((BindResponseImpl)response).getLdapResult().getResultCode() );
+            assertEquals( ResultCodeEnum.INVALID_DN_SYNTAX, ( ( BindResponseImpl ) response ).getLdapResult()
+                .getResultCode() );
             return;
         }
 
@@ -282,17 +298,15 @@ public class BindRequestTest
 
         ByteBuffer stream = ByteBuffer.allocate( 0x15 );
         stream.put( new byte[]
-            { 
-            0x30, 0x13,                 // LDAPMessage ::=SEQUENCE {
-              0x02, 0x01, 0x01,         // messageID MessageID
-              0x60, 0x0D,               // CHOICE { ..., bindRequest BindRequest, ...
-                                        // BindRequest ::= APPLICATION[0] SEQUENCE {
-                0x02, 0x01, 0x03,       // version INTEGER (1..127),
-                ( byte ) 0x80, 0x08,    // authentication AuthenticationChoice
-                                        // AuthenticationChoice ::= CHOICE { simple [0] OCTET STRING,
-                                        // ...
-                'p', 'a', 's', 's', 'w', 'o', 'r', 'd' 
-            } );
+            { 0x30, 0x13, // LDAPMessage ::=SEQUENCE {
+                0x02, 0x01, 0x01, // messageID MessageID
+                0x60, 0x0D, // CHOICE { ..., bindRequest BindRequest, ...
+                // BindRequest ::= APPLICATION[0] SEQUENCE {
+                0x02, 0x01, 0x03, // version INTEGER (1..127),
+                ( byte ) 0x80, 0x08, // authentication AuthenticationChoice
+                // AuthenticationChoice ::= CHOICE { simple [0] OCTET STRING,
+                // ...
+                'p', 'a', 's', 's', 'w', 'o', 'r', 'd' } );
 
         stream.flip();
 
@@ -325,18 +339,16 @@ public class BindRequestTest
 
         ByteBuffer stream = ByteBuffer.allocate( 0x16 );
         stream.put( new byte[]
-            { 
-            0x30, 0x14,                 // LDAPMessage ::=SEQUENCE {
-              0x02, 0x01, 0x01,         // messageID MessageID
-              0x60, 0x0F,               // CHOICE { ..., bindRequest BindRequest, ...
-                                        // BindRequest ::= APPLICATION[0] SEQUENCE {
-                0x02, 0x01, 0x03,       // version INTEGER (1..127),
-                0x04, 0x00,             // name LDAPDN,
-                ( byte ) 0x80, 0x08,    // authentication AuthenticationChoice
-                                        // AuthenticationChoice ::= CHOICE { simple [0] OCTET STRING,
-                                        // ...
-                'p', 'a', 's', 's', 'w', 'o', 'r', 'd' 
-            } );
+            { 0x30, 0x14, // LDAPMessage ::=SEQUENCE {
+                0x02, 0x01, 0x01, // messageID MessageID
+                0x60, 0x0F, // CHOICE { ..., bindRequest BindRequest, ...
+                // BindRequest ::= APPLICATION[0] SEQUENCE {
+                0x02, 0x01, 0x03, // version INTEGER (1..127),
+                0x04, 0x00, // name LDAPDN,
+                ( byte ) 0x80, 0x08, // authentication AuthenticationChoice
+                // AuthenticationChoice ::= CHOICE { simple [0] OCTET STRING,
+                // ...
+                'p', 'a', 's', 's', 'w', 'o', 'r', 'd' } );
 
         String decodedPdu = StringTools.dumpBytes( stream.array() );
 
@@ -357,22 +369,30 @@ public class BindRequestTest
         }
 
         // Check the decoded BindRequest
-        BindRequestCodec bindRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getBindRequest();
+        InternalBindRequest bindRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getInternalBindRequest();
 
         assertEquals( 1, bindRequest.getMessageId() );
-        assertEquals( 3, bindRequest.getVersion() );
+        assertTrue( bindRequest.isVersion3() );
         assertEquals( "", bindRequest.getName().toString() );
-        assertEquals( true, ( bindRequest.getAuthentication() instanceof SimpleAuthentication ) );
-        assertEquals( "password", StringTools.utf8ToString( ( ( SimpleAuthentication ) bindRequest.getAuthentication() )
-            .getSimple() ) );
+        assertTrue( bindRequest.isSimple() );
+        assertEquals( "password", StringTools.utf8ToString( bindRequest.getCredentials() ) );
 
         // Check the length
-        assertEquals( 0x16, bindRequest.computeLength() );
+        BindRequestCodec bindRequestCodec = new BindRequestCodec();
+        bindRequestCodec.setMessageId( bindRequest.getMessageId() );
+        bindRequestCodec.setName( bindRequest.getName() );
+        bindRequestCodec.setVersion( bindRequest.getVersion3() ? 3 : 2 );
+
+        SimpleAuthentication simple = new SimpleAuthentication();
+        simple.setSimple( bindRequest.getCredentials() );
+        bindRequestCodec.setAuthentication( simple );
+
+        assertEquals( 0x16, bindRequestCodec.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = bindRequest.encode();
+            ByteBuffer bb = bindRequestCodec.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -397,24 +417,25 @@ public class BindRequestTest
 
         ByteBuffer stream = ByteBuffer.allocate( 0x3A );
         stream.put( new byte[]
-            { 
-            0x30, 0x38,                 // LDAPMessage ::=SEQUENCE {
-              0x02, 0x01, 0x01,         // messageID MessageID
-              0x60, 0x33,               // CHOICE { ..., bindRequest BindRequest, ...
-                                        // BindRequest ::= APPLICATION[0] SEQUENCE {
-                0x02, 0x01, 0x03,       // version INTEGER (1..127),
-                0x04, 0x1F,             // name LDAPDN,
-                  'u', 'i', 'd', '=', 'a', 'k', 'a', 'r', 'a', 's', 'u', 'l', 'u', ',', 'd', 'c', '=', 'e', 'x', 'a',
-                  'm', 'p', 'l', 'e', ',', 'd', 'c', '=', 'c', 'o', 'm', 
-                ( byte ) 0xA3, 0x0D,    // authentication AuthenticationChoice
-                                        // AuthenticationChoice ::= CHOICE { ... sasl [3]
-                                        // SaslCredentials }
-                                        // SaslCredentials ::= SEQUENCE {
-                                        // mechanism LDAPSTRING,
-                                        // ...
-                  0x04, 0x0B, 
-                    'K', 'E', 'R', 'B', 'E', 'R', 'O', 'S', '_', 'V', '4' 
-            } );
+            { 0x30,
+                0x38, // LDAPMessage ::=SEQUENCE {
+                0x02, 0x01,
+                0x01, // messageID MessageID
+                0x60,
+                0x33, // CHOICE { ..., bindRequest BindRequest, ...
+                // BindRequest ::= APPLICATION[0] SEQUENCE {
+                0x02, 0x01,
+                0x03, // version INTEGER (1..127),
+                0x04,
+                0x1F, // name LDAPDN,
+                'u', 'i', 'd', '=', 'a', 'k', 'a', 'r', 'a', 's', 'u', 'l', 'u', ',', 'd', 'c', '=', 'e', 'x', 'a',
+                'm', 'p', 'l', 'e', ',', 'd', 'c', '=', 'c', 'o', 'm', ( byte ) 0xA3, 0x0D, // authentication AuthenticationChoice
+                // AuthenticationChoice ::= CHOICE { ... sasl [3]
+                // SaslCredentials }
+                // SaslCredentials ::= SEQUENCE {
+                // mechanism LDAPSTRING,
+                // ...
+                0x04, 0x0B, 'K', 'E', 'R', 'B', 'E', 'R', 'O', 'S', '_', 'V', '4' } );
 
         String decodedPdu = StringTools.dumpBytes( stream.array() );
         stream.flip();
@@ -434,21 +455,31 @@ public class BindRequestTest
         }
 
         // Check the decoded BindRequest
-        BindRequestCodec bindRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getBindRequest();
+        InternalBindRequest bindRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getInternalBindRequest();
 
         assertEquals( 1, bindRequest.getMessageId() );
-        assertEquals( 3, bindRequest.getVersion() );
+        assertTrue( bindRequest.isVersion3() );
         assertEquals( "uid=akarasulu,dc=example,dc=com", bindRequest.getName().toString() );
-        assertEquals( true, ( bindRequest.getAuthentication() instanceof SaslCredentials ) );
-        assertEquals( "KERBEROS_V4", ( ( SaslCredentials ) bindRequest.getAuthentication() ).getMechanism() );
+        assertFalse( bindRequest.isSimple() );
+        assertEquals( "KERBEROS_V4", bindRequest.getSaslMechanism() );
 
         // Check the length
-        assertEquals( 0x3A, bindRequest.computeLength() );
+        BindRequestCodec bindRequestCodec = new BindRequestCodec();
+        bindRequestCodec.setMessageId( bindRequest.getMessageId() );
+        bindRequestCodec.setName( bindRequest.getName() );
+        bindRequestCodec.setVersion( bindRequest.getVersion3() ? 3 : 2 );
+
+        SaslCredentials sasl = new SaslCredentials();
+        sasl.setCredentials( bindRequest.getCredentials() );
+        sasl.setMechanism( bindRequest.getSaslMechanism() );
+        bindRequestCodec.setAuthentication( sasl );
+
+        assertEquals( 0x3A, bindRequestCodec.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = bindRequest.encode();
+            ByteBuffer bb = bindRequestCodec.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -473,31 +504,30 @@ public class BindRequestTest
 
         ByteBuffer stream = ByteBuffer.allocate( 0x42 );
         stream.put( new byte[]
-            { 
-            0x30, 0x40,                 // LDAPMessage ::=SEQUENCE {
-              0x02, 0x01, 0x01,         // messageID MessageID
-              0x60, 0x3B,               // CHOICE { ..., bindRequest BindRequest, ...
-                                        // BindRequest ::= APPLICATION[0] SEQUENCE {
-                0x02, 0x01, 0x03,       // version INTEGER (1..127),
-                0x04, 0x1F,             // name LDAPDN,
+            { 0x30,
+                0x40, // LDAPMessage ::=SEQUENCE {
+                0x02, 0x01,
+                0x01, // messageID MessageID
+                0x60,
+                0x3B, // CHOICE { ..., bindRequest BindRequest, ...
+                // BindRequest ::= APPLICATION[0] SEQUENCE {
+                0x02, 0x01,
+                0x03, // version INTEGER (1..127),
+                0x04,
+                0x1F, // name LDAPDN,
                 'u', 'i', 'd', '=', 'a', 'k', 'a', 'r', 'a', 's', 'u', 'l', 'u', ',', 'd', 'c', '=', 'e', 'x', 'a',
-                'm', 'p', 'l', 'e', ',', 'd', 'c', '=', 'c', 'o', 'm', 
-                ( byte ) 0xA3, 0x15,    // authentication AuthenticationChoice
-                                        // }
-                                        // AuthenticationChoice ::= CHOICE { ... sasl [3]
-                                        // SaslCredentials }
-                                        // SaslCredentials ::= SEQUENCE {
-                                        // mechanism LDAPSTRING,
-                                        // ...
-                  0x04, 0x0B, 
-                    'K', 'E', 'R', 'B', 'E', 'R', 'O', 'S', '_', 'V', '4', 
-                  ( byte ) 0x04, 0x06,  // SaslCredentials ::= SEQUENCE {
-                                        // ...
-                                        // credentials OCTET STRING OPTIONAL }
-                                        // 
-                  'a', 'b', 'c', 'd', 'e', 'f' 
-            } );
-        
+                'm', 'p', 'l', 'e', ',', 'd', 'c', '=', 'c', 'o', 'm', ( byte ) 0xA3, 0x15, // authentication AuthenticationChoice
+                // }
+                // AuthenticationChoice ::= CHOICE { ... sasl [3]
+                // SaslCredentials }
+                // SaslCredentials ::= SEQUENCE {
+                // mechanism LDAPSTRING,
+                // ...
+                0x04, 0x0B, 'K', 'E', 'R', 'B', 'E', 'R', 'O', 'S', '_', 'V', '4', ( byte ) 0x04, 0x06, // SaslCredentials ::= SEQUENCE {
+                // ...
+                // credentials OCTET STRING OPTIONAL }
+                // 
+                'a', 'b', 'c', 'd', 'e', 'f' } );
 
         String decodedPdu = StringTools.dumpBytes( stream.array() );
         stream.flip();
@@ -517,23 +547,32 @@ public class BindRequestTest
         }
 
         // Check the decoded BindRequest
-        BindRequestCodec bindRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getBindRequest();
+        InternalBindRequest bindRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getInternalBindRequest();
 
         assertEquals( 1, bindRequest.getMessageId() );
-        assertEquals( 3, bindRequest.getVersion() );
+        assertTrue( bindRequest.isVersion3() );
         assertEquals( "uid=akarasulu,dc=example,dc=com", bindRequest.getName().toString() );
-        assertEquals( true, ( bindRequest.getAuthentication() instanceof SaslCredentials ) );
-        assertEquals( "KERBEROS_V4", ( ( SaslCredentials ) bindRequest.getAuthentication() ).getMechanism() );
-        assertEquals( "abcdef", StringTools.utf8ToString( ( ( SaslCredentials ) bindRequest.getAuthentication() )
-            .getCredentials() ) );
+        assertFalse( bindRequest.isSimple() );
+        assertEquals( "KERBEROS_V4", bindRequest.getSaslMechanism() );
+        assertEquals( "abcdef", StringTools.utf8ToString( bindRequest.getCredentials() ) );
 
         // Check the length
-        assertEquals( 0x42, bindRequest.computeLength() );
+        BindRequestCodec bindRequestCodec = new BindRequestCodec();
+        bindRequestCodec.setMessageId( bindRequest.getMessageId() );
+        bindRequestCodec.setName( bindRequest.getName() );
+        bindRequestCodec.setVersion( bindRequest.getVersion3() ? 3 : 2 );
+
+        SaslCredentials sasl = new SaslCredentials();
+        sasl.setCredentials( bindRequest.getCredentials() );
+        sasl.setMechanism( bindRequest.getSaslMechanism() );
+        bindRequestCodec.setAuthentication( sasl );
+
+        assertEquals( 0x42, bindRequestCodec.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = bindRequest.encode();
+            ByteBuffer bb = bindRequestCodec.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -558,29 +597,24 @@ public class BindRequestTest
 
         ByteBuffer stream = ByteBuffer.allocate( 0x23 );
         stream.put( new byte[]
-            { 
-            0x30, 0x21,                 // LDAPMessage ::=SEQUENCE {
-              0x02, 0x01, 0x01,         // messageID MessageID
-              0x60, 0x1C,               // CHOICE { ..., bindRequest BindRequest, ...
-                                        // BindRequest ::= APPLICATION[0] SEQUENCE {
-                0x02, 0x01, 0x03,       // version INTEGER (1..127),
-                0x04, 0x00,             // name LDAPDN,
-                ( byte ) 0xA3, 0x15,    // authentication AuthenticationChoice
-                                        // }
-                                        // AuthenticationChoice ::= CHOICE { ... sasl [3]
-                                        // SaslCredentials }
-                                        // SaslCredentials ::= SEQUENCE {
-                                        // mechanism LDAPSTRING,
-                                        // ...
-                  0x04, 0x0B, 
-                    'K', 'E', 'R', 'B', 'E', 'R', 'O', 'S', '_', 'V', '4', 
-                  ( byte ) 0x04, 0x06,  // SaslCredentials ::= SEQUENCE {
-                                        // ...
-                                        // credentials OCTET STRING OPTIONAL }
-                                        // 
-                    'a', 'b', 'c', 'd', 'e', 'f' 
-            } );
-        
+            { 0x30, 0x21, // LDAPMessage ::=SEQUENCE {
+                0x02, 0x01, 0x01, // messageID MessageID
+                0x60, 0x1C, // CHOICE { ..., bindRequest BindRequest, ...
+                // BindRequest ::= APPLICATION[0] SEQUENCE {
+                0x02, 0x01, 0x03, // version INTEGER (1..127),
+                0x04, 0x00, // name LDAPDN,
+                ( byte ) 0xA3, 0x15, // authentication AuthenticationChoice
+                // }
+                // AuthenticationChoice ::= CHOICE { ... sasl [3]
+                // SaslCredentials }
+                // SaslCredentials ::= SEQUENCE {
+                // mechanism LDAPSTRING,
+                // ...
+                0x04, 0x0B, 'K', 'E', 'R', 'B', 'E', 'R', 'O', 'S', '_', 'V', '4', ( byte ) 0x04, 0x06, // SaslCredentials ::= SEQUENCE {
+                // ...
+                // credentials OCTET STRING OPTIONAL }
+                // 
+                'a', 'b', 'c', 'd', 'e', 'f' } );
 
         String decodedPdu = StringTools.dumpBytes( stream.array() );
         stream.flip();
@@ -600,23 +634,32 @@ public class BindRequestTest
         }
 
         // Check the decoded BindRequest
-        BindRequestCodec bindRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getBindRequest();
+        InternalBindRequest bindRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getInternalBindRequest();
 
         assertEquals( 1, bindRequest.getMessageId() );
-        assertEquals( 3, bindRequest.getVersion() );
+        assertTrue( bindRequest.isVersion3() );
         assertEquals( "", bindRequest.getName().toString() );
-        assertEquals( true, ( bindRequest.getAuthentication() instanceof SaslCredentials ) );
-        assertEquals( "KERBEROS_V4", ( ( SaslCredentials ) bindRequest.getAuthentication() ).getMechanism() );
-        assertEquals( "abcdef", StringTools.utf8ToString( ( ( SaslCredentials ) bindRequest.getAuthentication() )
-            .getCredentials() ) );
+        assertFalse( bindRequest.isSimple() );
+        assertEquals( "KERBEROS_V4", bindRequest.getSaslMechanism() );
+        assertEquals( "abcdef", StringTools.utf8ToString( bindRequest.getCredentials() ) );
 
         // Check the length
-        assertEquals( 0x23, bindRequest.computeLength() );
+        BindRequestCodec bindRequestCodec = new BindRequestCodec();
+        bindRequestCodec.setMessageId( bindRequest.getMessageId() );
+        bindRequestCodec.setName( bindRequest.getName() );
+        bindRequestCodec.setVersion( bindRequest.getVersion3() ? 3 : 2 );
+
+        SaslCredentials sasl = new SaslCredentials();
+        sasl.setCredentials( bindRequest.getCredentials() );
+        sasl.setMechanism( bindRequest.getSaslMechanism() );
+        bindRequestCodec.setAuthentication( sasl );
+
+        assertEquals( 0x23, bindRequestCodec.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = bindRequest.encode();
+            ByteBuffer bb = bindRequestCodec.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -640,10 +683,9 @@ public class BindRequestTest
 
         ByteBuffer stream = ByteBuffer.allocate( 0x07 );
         stream.put( new byte[]
-            { 
-            0x30, 0x05,                 // LDAPMessage ::=SEQUENCE {
-              0x02, 0x01, 0x01,         // messageID MessageID
-              0x60, 0x00                // CHOICE { ..., bindRequest BindRequest, ...
+            { 0x30, 0x05, // LDAPMessage ::=SEQUENCE {
+                0x02, 0x01, 0x01, // messageID MessageID
+                0x60, 0x00 // CHOICE { ..., bindRequest BindRequest, ...
             } );
 
         stream.flip();
@@ -676,11 +718,10 @@ public class BindRequestTest
 
         ByteBuffer stream = ByteBuffer.allocate( 0x09 );
         stream.put( new byte[]
-            { 
-            0x30, 0x07,                 // LDAPMessage ::=SEQUENCE {
-              0x02, 0x01, 0x01,         // messageID MessageID
-              0x60, 0x02,               // CHOICE { ..., bindRequest BindRequest, ...
-                0x02, 0x00              // version INTEGER (1..127),
+            { 0x30, 0x07, // LDAPMessage ::=SEQUENCE {
+                0x02, 0x01, 0x01, // messageID MessageID
+                0x60, 0x02, // CHOICE { ..., bindRequest BindRequest, ...
+                0x02, 0x00 // version INTEGER (1..127),
             } );
 
         stream.flip();
@@ -713,11 +754,10 @@ public class BindRequestTest
 
         ByteBuffer stream = ByteBuffer.allocate( 0x0A );
         stream.put( new byte[]
-            { 
-            0x30, 0x08,                 // LDAPMessage ::=SEQUENCE {
-              0x02, 0x01, 0x01,         // messageID MessageID
-                0x60, 0x03,             // CHOICE { ..., bindRequest BindRequest, ...
-                0x02, 0x01, 0x00        // version INTEGER (1..127),
+            { 0x30, 0x08, // LDAPMessage ::=SEQUENCE {
+                0x02, 0x01, 0x01, // messageID MessageID
+                0x60, 0x03, // CHOICE { ..., bindRequest BindRequest, ...
+                0x02, 0x01, 0x00 // version INTEGER (1..127),
             } );
 
         stream.flip();
@@ -750,11 +790,10 @@ public class BindRequestTest
 
         ByteBuffer stream = ByteBuffer.allocate( 0x0A );
         stream.put( new byte[]
-            { 
-            0x30, 0x08,                 // LDAPMessage ::=SEQUENCE {
-              0x02, 0x01, 0x01,         // messageID MessageID
-                0x60, 0x03,             // CHOICE { ..., bindRequest BindRequest, ...
-                0x02, 0x01, 0x04        // version INTEGER (1..127),
+            { 0x30, 0x08, // LDAPMessage ::=SEQUENCE {
+                0x02, 0x01, 0x01, // messageID MessageID
+                0x60, 0x03, // CHOICE { ..., bindRequest BindRequest, ...
+                0x02, 0x01, 0x04 // version INTEGER (1..127),
             } );
 
         stream.flip();
@@ -787,12 +826,10 @@ public class BindRequestTest
 
         ByteBuffer stream = ByteBuffer.allocate( 0x0C );
         stream.put( new byte[]
-            { 
-            0x30, 0x0A,                 // LDAPMessage ::=SEQUENCE {
-              0x02, 0x01, 0x01,         // messageID MessageID
-                0x60, 0x04,             // CHOICE { ..., bindRequest BindRequest, ...
-                0x02, 0x02, 0x00, 
-                ( byte ) 0x80           // version INTEGER (1..127),
+            { 0x30, 0x0A, // LDAPMessage ::=SEQUENCE {
+                0x02, 0x01, 0x01, // messageID MessageID
+                0x60, 0x04, // CHOICE { ..., bindRequest BindRequest, ...
+                0x02, 0x02, 0x00, ( byte ) 0x80 // version INTEGER (1..127),
             } );
 
         stream.flip();
@@ -825,11 +862,10 @@ public class BindRequestTest
 
         ByteBuffer stream = ByteBuffer.allocate( 0x0A );
         stream.put( new byte[]
-            { 
-            0x30, 0x08,                 // LDAPMessage ::=SEQUENCE {
-              0x02, 0x01, 0x01,         // messageID MessageID
-                0x60, 0x03,             // CHOICE { ..., bindRequest BindRequest, ...
-                0x02, 0x01, 0x03        // version INTEGER (1..127),
+            { 0x30, 0x08, // LDAPMessage ::=SEQUENCE {
+                0x02, 0x01, 0x01, // messageID MessageID
+                0x60, 0x03, // CHOICE { ..., bindRequest BindRequest, ...
+                0x02, 0x01, 0x03 // version INTEGER (1..127),
             } );
 
         stream.flip();
@@ -862,11 +898,10 @@ public class BindRequestTest
 
         ByteBuffer stream = ByteBuffer.allocate( 0x0C );
         stream.put( new byte[]
-            { 
-            0x30, 0x0A,                 // LDAPMessage ::=SEQUENCE {
-              0x02, 0x01, 0x01,         // messageID MessageID
-              0x60, 0x05,               // CHOICE { ..., bindRequest BindRequest, ...
-                0x02, 0x01, 0x03,       // version INTEGER (1..127),
+            { 0x30, 0x0A, // LDAPMessage ::=SEQUENCE {
+                0x02, 0x01, 0x01, // messageID MessageID
+                0x60, 0x05, // CHOICE { ..., bindRequest BindRequest, ...
+                0x02, 0x01, 0x03, // version INTEGER (1..127),
                 0x04, 0x00 } );
 
         stream.flip();
@@ -899,11 +934,10 @@ public class BindRequestTest
 
         ByteBuffer stream = ByteBuffer.allocate( 0x0E );
         stream.put( new byte[]
-            { 
-            0x30, 0x0C,                 // LDAPMessage ::=SEQUENCE {
-              0x02, 0x01, 0x01,         // messageID MessageID
-              0x60, 0x07,               // CHOICE { ..., bindRequest BindRequest, ...
-                0x02, 0x01, 0x03,       // version INTEGER (1..127),
+            { 0x30, 0x0C, // LDAPMessage ::=SEQUENCE {
+                0x02, 0x01, 0x01, // messageID MessageID
+                0x60, 0x07, // CHOICE { ..., bindRequest BindRequest, ...
+                0x02, 0x01, 0x03, // version INTEGER (1..127),
                 0x04, 0x00, ( byte ) 0x80, 0x00 } );
 
         String decodedPdu = StringTools.dumpBytes( stream.array() );
@@ -924,21 +958,30 @@ public class BindRequestTest
         }
 
         // Check the decoded BindRequest
-        BindRequestCodec bindRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getBindRequest();
+        InternalBindRequest bindRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getInternalBindRequest();
 
         assertEquals( 1, bindRequest.getMessageId() );
-        assertEquals( 3, bindRequest.getVersion() );
+        assertTrue( bindRequest.isVersion3() );
         assertEquals( "", bindRequest.getName().toString() );
-        assertEquals( true, ( bindRequest.getAuthentication() instanceof SimpleAuthentication ) );
-        assertEquals( "", StringTools.utf8ToString( ( ( SimpleAuthentication ) bindRequest.getAuthentication() ).getSimple() ) );
+        assertTrue( bindRequest.isSimple() );
+        assertEquals( "", StringTools.utf8ToString( bindRequest.getCredentials() ) );
 
         // Check the length
-        assertEquals( 0x0E, bindRequest.computeLength() );
+        BindRequestCodec bindRequestCodec = new BindRequestCodec();
+        bindRequestCodec.setMessageId( bindRequest.getMessageId() );
+        bindRequestCodec.setName( bindRequest.getName() );
+        bindRequestCodec.setVersion( bindRequest.getVersion3() ? 3 : 2 );
+
+        SimpleAuthentication simple = new SimpleAuthentication();
+        simple.setSimple( bindRequest.getCredentials() );
+        bindRequestCodec.setAuthentication( simple );
+
+        assertEquals( 0x0E, bindRequestCodec.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = bindRequest.encode();
+            ByteBuffer bb = bindRequestCodec.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -962,14 +1005,11 @@ public class BindRequestTest
 
         ByteBuffer stream = ByteBuffer.allocate( 0x0E );
         stream.put( new byte[]
-            { 
-            0x30, 0x0C,                 // LDAPMessage ::=SEQUENCE {
-              0x02, 0x01, 0x01,         // messageID MessageID
-              0x60, 0x07,               // CHOICE { ..., bindRequest BindRequest, ...
-                0x02, 0x01, 0x03,       // version INTEGER (1..127),
-                0x04, 0x00, 
-                ( byte ) 0xA3, 0x00 
-            } );
+            { 0x30, 0x0C, // LDAPMessage ::=SEQUENCE {
+                0x02, 0x01, 0x01, // messageID MessageID
+                0x60, 0x07, // CHOICE { ..., bindRequest BindRequest, ...
+                0x02, 0x01, 0x03, // version INTEGER (1..127),
+                0x04, 0x00, ( byte ) 0xA3, 0x00 } );
 
         stream.flip();
 
@@ -984,9 +1024,10 @@ public class BindRequestTest
         catch ( DecoderException de )
         {
             assertTrue( de instanceof ResponseCarryingException );
-            InternalMessage response = ((ResponseCarryingException)de).getResponse();
+            InternalMessage response = ( ( ResponseCarryingException ) de ).getResponse();
             assertTrue( response instanceof BindResponseImpl );
-            assertEquals( ResultCodeEnum.INVALID_CREDENTIALS, ((BindResponseImpl)response).getLdapResult().getResultCode() );
+            assertEquals( ResultCodeEnum.INVALID_CREDENTIALS, ( ( BindResponseImpl ) response ).getLdapResult()
+                .getResultCode() );
             return;
         }
 
@@ -1004,15 +1045,11 @@ public class BindRequestTest
 
         ByteBuffer stream = ByteBuffer.allocate( 0x10 );
         stream.put( new byte[]
-            { 
-            0x30, 0x0E,                 // LDAPMessage ::=SEQUENCE {
-              0x02, 0x01, 0x01,         // messageID MessageID
-                0x60, 0x09,             // CHOICE { ..., bindRequest BindRequest, ...
-                0x02, 0x01, 0x03,       // version INTEGER (1..127),
-                0x04, 0x00, 
-                ( byte ) 0xA3, 0x02, 
-                  0x04, 0x00 
-            } );
+            { 0x30, 0x0E, // LDAPMessage ::=SEQUENCE {
+                0x02, 0x01, 0x01, // messageID MessageID
+                0x60, 0x09, // CHOICE { ..., bindRequest BindRequest, ...
+                0x02, 0x01, 0x03, // version INTEGER (1..127),
+                0x04, 0x00, ( byte ) 0xA3, 0x02, 0x04, 0x00 } );
 
         String decodedPdu = StringTools.dumpBytes( stream.array() );
         stream.flip();
@@ -1032,21 +1069,31 @@ public class BindRequestTest
         }
 
         // Check the decoded BindRequest
-        BindRequestCodec bindRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getBindRequest();
+        InternalBindRequest bindRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getInternalBindRequest();
 
         assertEquals( 1, bindRequest.getMessageId() );
-        assertEquals( 3, bindRequest.getVersion() );
+        assertTrue( bindRequest.isVersion3() );
         assertEquals( "", bindRequest.getName().toString() );
-        assertEquals( true, ( bindRequest.getAuthentication() instanceof SaslCredentials ) );
-        assertEquals( "", ( ( SaslCredentials ) bindRequest.getAuthentication() ).getMechanism() );
+        assertFalse( bindRequest.isSimple() );
+        assertEquals( "", bindRequest.getSaslMechanism() );
 
         // Check the length
-        assertEquals( 0x10, bindRequest.computeLength() );
+        BindRequestCodec bindRequestCodec = new BindRequestCodec();
+        bindRequestCodec.setMessageId( bindRequest.getMessageId() );
+        bindRequestCodec.setName( bindRequest.getName() );
+        bindRequestCodec.setVersion( bindRequest.getVersion3() ? 3 : 2 );
+
+        SaslCredentials sasl = new SaslCredentials();
+        sasl.setCredentials( bindRequest.getCredentials() );
+        sasl.setMechanism( bindRequest.getSaslMechanism() );
+        bindRequestCodec.setAuthentication( sasl );
+
+        assertEquals( 0x10, bindRequestCodec.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = bindRequest.encode();
+            ByteBuffer bb = bindRequestCodec.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -1114,15 +1161,11 @@ public class BindRequestTest
 
         ByteBuffer stream = ByteBuffer.allocate( 0x12 );
         stream.put( new byte[]
-            { 
-            0x30, 0x10,                 // LDAPMessage ::=SEQUENCE {
-              0x02, 0x01, 0x01,         // messageID MessageID
-                0x60, 0x0B,             // CHOICE { ..., bindRequest BindRequest, ...
-                  0x02, 0x01, 0x03,     // version INTEGER (1..127),
-                  0x04, 0x00, 
-                  ( byte ) 0xA3, 0x04, 
-                    0x04, 0x00, 
-                    0x04, 0x00, } );
+            { 0x30, 0x10, // LDAPMessage ::=SEQUENCE {
+                0x02, 0x01, 0x01, // messageID MessageID
+                0x60, 0x0B, // CHOICE { ..., bindRequest BindRequest, ...
+                0x02, 0x01, 0x03, // version INTEGER (1..127),
+                0x04, 0x00, ( byte ) 0xA3, 0x04, 0x04, 0x00, 0x04, 0x00, } );
 
         String decodedPdu = StringTools.dumpBytes( stream.array() );
         stream.flip();
@@ -1142,22 +1185,32 @@ public class BindRequestTest
         }
 
         // Check the decoded BindRequest
-        BindRequestCodec bindRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getBindRequest();
+        InternalBindRequest bindRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getInternalBindRequest();
 
         assertEquals( 1, bindRequest.getMessageId() );
-        assertEquals( 3, bindRequest.getVersion() );
+        assertTrue( bindRequest.isVersion3() );
         assertEquals( "", bindRequest.getName().toString() );
-        assertEquals( true, ( bindRequest.getAuthentication() instanceof SaslCredentials ) );
-        assertEquals( "", ( ( SaslCredentials ) bindRequest.getAuthentication() ).getMechanism() );
-        assertEquals( "", StringTools.utf8ToString( ( ( SaslCredentials ) bindRequest.getAuthentication() ).getCredentials() ) );
+        assertFalse( bindRequest.isSimple() );
+        assertEquals( "", bindRequest.getSaslMechanism() );
+        assertEquals( "", StringTools.utf8ToString( bindRequest.getCredentials() ) );
 
         // Check the length
-        assertEquals( 0x12, bindRequest.computeLength() );
+        BindRequestCodec bindRequestCodec = new BindRequestCodec();
+        bindRequestCodec.setMessageId( bindRequest.getMessageId() );
+        bindRequestCodec.setName( bindRequest.getName() );
+        bindRequestCodec.setVersion( bindRequest.getVersion3() ? 3 : 2 );
+
+        SaslCredentials sasl = new SaslCredentials();
+        sasl.setCredentials( bindRequest.getCredentials() );
+        sasl.setMechanism( bindRequest.getSaslMechanism() );
+        bindRequestCodec.setAuthentication( sasl );
+
+        assertEquals( 0x12, bindRequestCodec.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = bindRequest.encode();
+            ByteBuffer bb = bindRequestCodec.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -1182,19 +1235,18 @@ public class BindRequestTest
 
         ByteBuffer stream = ByteBuffer.allocate( 0x2F );
         stream.put( new byte[]
-            { 
-            0x30, 0x2D,                 // LDAPMessage ::=SEQUENCE {
-              0x02, 0x01, 0x01,         // messageID MessageID
-              0x60, 0x0B,               // CHOICE { ..., bindRequest BindRequest, ...
-                0x02, 0x01, 0x03,       // version INTEGER (1..127),
-                0x04, 0x00, 
-                ( byte ) 0xA3, 0x04, 
-                  0x04, 0x00, 
-                  0x04, 0x00, 
-              ( byte ) 0xA0, 0x1B,      // A control
+            { 0x30,
+                0x2D, // LDAPMessage ::=SEQUENCE {
+                0x02, 0x01,
+                0x01, // messageID MessageID
+                0x60,
+                0x0B, // CHOICE { ..., bindRequest BindRequest, ...
+                0x02, 0x01,
+                0x03, // version INTEGER (1..127),
+                0x04, 0x00, ( byte ) 0xA3, 0x04, 0x04, 0x00, 0x04, 0x00, ( byte ) 0xA0,
+                0x1B, // A control
                 0x30, 0x19, 0x04, 0x17, 0x32, 0x2E, 0x31, 0x36, 0x2E, 0x38, 0x34, 0x30, 0x2E, 0x31, 0x2E, 0x31, 0x31,
-                0x33, 0x37, 0x33, 0x30, 0x2E, 0x33, 0x2E, 0x34, 0x2E, 0x32 
-            } );
+                0x33, 0x37, 0x33, 0x30, 0x2E, 0x33, 0x2E, 0x34, 0x2E, 0x32 } );
 
         String decodedPdu = StringTools.dumpBytes( stream.array() );
         stream.flip();
@@ -1214,31 +1266,42 @@ public class BindRequestTest
         }
 
         // Check the decoded BindRequest
-        BindRequestCodec bindRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getBindRequest();
+        InternalBindRequest bindRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getInternalBindRequest();
 
         assertEquals( 1, bindRequest.getMessageId() );
-        assertEquals( 3, bindRequest.getVersion() );
+        assertTrue( bindRequest.isVersion3() );
         assertEquals( "", bindRequest.getName().toString() );
-        assertEquals( true, ( bindRequest.getAuthentication() instanceof SaslCredentials ) );
-        assertEquals( "", ( ( SaslCredentials ) bindRequest.getAuthentication() ).getMechanism() );
-        assertEquals( "", StringTools.utf8ToString( ( ( SaslCredentials ) bindRequest.getAuthentication() ).getCredentials() ) );
-
-        // Check the length
-        assertEquals( 0x2F, bindRequest.computeLength() );
+        assertFalse( bindRequest.isSimple() );
+        assertEquals( "", bindRequest.getSaslMechanism() );
+        assertEquals( "", StringTools.utf8ToString( bindRequest.getCredentials() ) );
 
         // Check the Control
-        List<Control> controls = bindRequest.getControls();
+        Map<String, Control> controls = bindRequest.getControls();
 
         assertEquals( 1, controls.size() );
 
-        Control control = bindRequest.getControls( 0 );
+        Control control = controls.get( "2.16.840.1.113730.3.4.2" );
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
         assertEquals( "", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
+
+        // Check the length
+        BindRequestCodec bindRequestCodec = new BindRequestCodec();
+        bindRequestCodec.setMessageId( bindRequest.getMessageId() );
+        bindRequestCodec.setName( bindRequest.getName() );
+        bindRequestCodec.setVersion( bindRequest.getVersion3() ? 3 : 2 );
+        bindRequestCodec.addControl( control );
+
+        SaslCredentials sasl = new SaslCredentials();
+        sasl.setCredentials( bindRequest.getCredentials() );
+        sasl.setMechanism( bindRequest.getSaslMechanism() );
+        bindRequestCodec.setAuthentication( sasl );
+
+        assertEquals( 0x2F, bindRequestCodec.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = bindRequest.encode();
+            ByteBuffer bb = bindRequestCodec.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -1262,18 +1325,18 @@ public class BindRequestTest
 
         ByteBuffer stream = ByteBuffer.allocate( 0x2D );
         stream.put( new byte[]
-            { 
-            0x30, 0x2B,                 // LDAPMessage ::=SEQUENCE {
-              0x02, 0x01, 0x01,         // messageID MessageID
-              0x60, 0x09,               // CHOICE { ..., bindRequest BindRequest, ...
-                0x02, 0x01, 0x03,       // version INTEGER (1..127),
-                0x04, 0x00, 
-                ( byte ) 0xA3, 0x02, 
-                  0x04, 0x00, 
-              ( byte ) 0xA0, 0x1B,      // A control
+            { 0x30,
+                0x2B, // LDAPMessage ::=SEQUENCE {
+                0x02, 0x01,
+                0x01, // messageID MessageID
+                0x60,
+                0x09, // CHOICE { ..., bindRequest BindRequest, ...
+                0x02, 0x01,
+                0x03, // version INTEGER (1..127),
+                0x04, 0x00, ( byte ) 0xA3, 0x02, 0x04, 0x00, ( byte ) 0xA0,
+                0x1B, // A control
                 0x30, 0x19, 0x04, 0x17, 0x32, 0x2E, 0x31, 0x36, 0x2E, 0x38, 0x34, 0x30, 0x2E, 0x31, 0x2E, 0x31, 0x31,
-                0x33, 0x37, 0x33, 0x30, 0x2E, 0x33, 0x2E, 0x34, 0x2E, 0x32 
-            } );
+                0x33, 0x37, 0x33, 0x30, 0x2E, 0x33, 0x2E, 0x34, 0x2E, 0x32 } );
 
         String decodedPdu = StringTools.dumpBytes( stream.array() );
         stream.flip();
@@ -1293,31 +1356,42 @@ public class BindRequestTest
         }
 
         // Check the decoded BindRequest
-        BindRequestCodec bindRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getBindRequest();
+        InternalBindRequest bindRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getInternalBindRequest();
 
         assertEquals( 1, bindRequest.getMessageId() );
-        assertEquals( 3, bindRequest.getVersion() );
+        assertTrue( bindRequest.isVersion3() );
         assertEquals( "", bindRequest.getName().toString() );
-        assertEquals( true, ( bindRequest.getAuthentication() instanceof SaslCredentials ) );
-        assertEquals( "", ( ( SaslCredentials ) bindRequest.getAuthentication() ).getMechanism() );
-        assertEquals( "", StringTools.utf8ToString( ( ( SaslCredentials ) bindRequest.getAuthentication() ).getCredentials() ) );
-
-        // Check the length
-        assertEquals( 0x2D, bindRequest.computeLength() );
+        assertFalse( bindRequest.isSimple() );
+        assertEquals( "", bindRequest.getSaslMechanism() );
+        assertEquals( "", StringTools.utf8ToString( bindRequest.getCredentials() ) );
 
         // Check the Control
-        List<Control> controls = bindRequest.getControls();
+        Map<String, Control> controls = bindRequest.getControls();
 
         assertEquals( 1, controls.size() );
 
-        Control control = bindRequest.getControls( 0 );
+        Control control = controls.get( "2.16.840.1.113730.3.4.2" );
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
         assertEquals( "", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
+
+        // Check the length
+        BindRequestCodec bindRequestCodec = new BindRequestCodec();
+        bindRequestCodec.setMessageId( bindRequest.getMessageId() );
+        bindRequestCodec.setName( bindRequest.getName() );
+        bindRequestCodec.setVersion( bindRequest.getVersion3() ? 3 : 2 );
+        bindRequestCodec.addControl( control );
+
+        SaslCredentials sasl = new SaslCredentials();
+        sasl.setCredentials( bindRequest.getCredentials() );
+        sasl.setMechanism( bindRequest.getSaslMechanism() );
+        bindRequestCodec.setAuthentication( sasl );
+
+        assertEquals( 0x2D, bindRequestCodec.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = bindRequest.encode();
+            ByteBuffer bb = bindRequestCodec.encode();
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
