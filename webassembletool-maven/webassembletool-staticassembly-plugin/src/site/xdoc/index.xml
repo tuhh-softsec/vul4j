@@ -2,7 +2,7 @@
 <document>
 	<properties>
 		<title>Overview</title>
-		<author email="athaveau@free.fr">Alexis Thaveau</author>
+		<author email="a.thaveau@free.fr">Alexis Thaveau</author>
 	</properties>
 	<body>
 		<section name="Maven staticassembly plugin">
