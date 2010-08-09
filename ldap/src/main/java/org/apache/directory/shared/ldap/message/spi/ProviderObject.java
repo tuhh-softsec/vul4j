@@ -35,7 +35,4 @@ public interface ProviderObject
      * @return Provider.
      */
     Provider getProvider();
-
-    /** @link dependency */
-    /* # Provider lnkProvider; */
 }
