@@ -14,9 +14,16 @@
 				<sendOnSuccess>false</sendOnSuccess>
 				<sendOnWarning>false</sendOnWarning>
 				<configuration>
-					<address>altha@smile.fr</address>
+					<address>alexis.thaveau@smile.fr</address>
 				</configuration>
 			</notifier>
+			<notifier>
+				<sendOnSuccess>false</sendOnSuccess>
+				<sendOnWarning>false</sendOnWarning>
+				<configuration>
+					<address>fxbonnet@users.sourceforge.net</address>
+				</configuration>
+			</notifier>			
 		</notifiers>
 	</ciManagement>
 	<inceptionYear>2008</inceptionYear>
@@ -68,7 +75,7 @@
 		<developer>
 			<id>athaveau</id>
 			<name>Alexis Thaveau</name>
-			<email>altha@smile.fr</email>
+			<email>alexis.thaveau@smile.fr</email>
 		</developer>
 	</developers>
 	<scm>
