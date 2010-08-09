@@ -108,19 +108,31 @@
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-assembly-plugin</artifactId>								
+				<artifactId>maven-assembly-plugin</artifactId>
 				<configuration>
 					<attach>false</attach>
 					<descriptors>
 						<descriptor>src/main/assembly/assembly.xml</descriptor>
 					</descriptors>
-					<outputDirectory>${project.build.directory}/distribution/${currentVersion}</outputDirectory>
+					<outputDirectory>${project.build.directory}/distribution</outputDirectory>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>wagon-maven-plugin</artifactId>
+				<version>1.0-beta-3</version>
+				<configuration>
+					<serverId>webassembletool-site</serverId>
+					<fromDir>${project.build.directory}/distribution</fromDir>
+					<url>sftp://frs.sourceforge.net/home/frs/project/w/we/webassembletool/webassembletool</url>					
+					<includes>*${currentVersion}*.zip</includes>
+					<toDir>${currentVersion}</toDir>
 				</configuration>
 			</plugin>
 		</plugins>
 	</build>
 	<profiles>
-		<!--  When releasing a project, this profile will upload assembly in sourceforge -->
+		<!-- When releasing a project, this profile will upload assembly in sourceforge -->
 		<profile>
 			<id>release</id>
 			<activation>
@@ -133,7 +145,7 @@
 				<plugins>
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-assembly-plugin</artifactId>						
+						<artifactId>maven-assembly-plugin</artifactId>
 						<executions>
 							<execution>
 								<id>make-assembly</id>
@@ -149,58 +161,16 @@
 						<artifactId>maven-deploy-plugin</artifactId>
 					</plugin>
 					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-antrun-plugin</artifactId>
-						<version>1.4</version>
-						<configuration>
-							<tasks>
-								<taskdef resource="net/sf/antcontrib/antcontrib.properties" />
-								<echo>deploiement sur le serveur</echo>
-								<input
-									message="enter your sourceforge account? format is 'login,webassembletool:password' (enter to skip)"
-									addproperty="sflogin" />
-
-								<scp
-									todir="${sflogin}@frs.sourceforge.net:/home/frs/project/w/we/webassembletool/webassembletool/"
-									failonerror="false">
-									<fileset dir="${project.build.directory}/distribution/" >
-										<include name="${currentVersion}/*"/>
-									</fileset>
-								</scp>
-
-							</tasks>
-						</configuration>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>wagon-maven-plugin</artifactId>						
 						<executions>
 							<execution>
 								<phase>deploy</phase>
 								<goals>
-									<goal>run</goal>
+									<goal>upload</goal>
 								</goals>
 							</execution>
 						</executions>
-						<dependencies>
-							<dependency>
-								<groupId>ant-contrib</groupId>
-								<artifactId>ant-contrib</artifactId>
-								<version>1.0b3</version>
-								<exclusions>
-									<exclusion>
-										<groupId>ant</groupId>
-										<artifactId>ant</artifactId>
-									</exclusion>
-								</exclusions>
-							</dependency>
-							<dependency>
-								<groupId>ant</groupId>
-								<artifactId>ant-jsch</artifactId>
-								<version>1.6.5</version>
-							</dependency>
-							<dependency>
-								<groupId>com.jcraft</groupId>
-								<artifactId>jsch</artifactId>
-								<version>0.1.25</version>
-							</dependency>
-						</dependencies>
 					</plugin>
 				</plugins>
 			</build>
