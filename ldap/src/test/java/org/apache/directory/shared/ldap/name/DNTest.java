@@ -388,9 +388,9 @@ public class DNTest
     }
 
 
-   /**
-     * test a simple DN with a # on first position
-     */
+    /**
+      * test a simple DN with a # on first position
+      */
     @Test
     public void testDnSharpFirst() throws LdapException, LdapException
     {
@@ -1116,7 +1116,7 @@ public class DNTest
     public void testDnStartsWithNull() throws LdapException
     {
         DN dn = new DN( "a=b, c=d,e = f" );
-        assertEquals( true, dn.isChildOf( (DN)null ) );
+        assertEquals( true, dn.isChildOf( ( DN ) null ) );
     }
 
 
@@ -1194,7 +1194,7 @@ public class DNTest
     public void testDnEndsWithNull() throws LdapException
     {
         DN dn = new DN( "a=b, c=d,e = f" );
-        assertEquals( true, dn.hasSuffix( (DN)null ) );
+        assertEquals( true, dn.hasSuffix( ( DN ) null ) );
     }
 
 
@@ -1586,7 +1586,7 @@ public class DNTest
         DN name = DnParser.getNameParser().parse( dn );
 
         assertEquals( dn, ( name ).getName() );
-        assertEquals( "cn=Emmanuel  L\u00E9charny", (name).getNormName() );
+        assertEquals( "cn=Emmanuel  L\u00E9charny", ( name ).getNormName() );
     }
 
 
@@ -1966,7 +1966,8 @@ public class DNTest
     public void testIterator() throws Exception
     {
         DN dn = new DN( "cn=Airline,cn=Website,cn=HomeDir,cn=John,ou=Marketing,ou=West" );
-        String[] expected = new String[]{ "ou=West", "ou=Marketing", "cn=John", "cn=HomeDir", "cn=Website", "cn=Airline" };
+        String[] expected = new String[]
+            { "ou=West", "ou=Marketing", "cn=John", "cn=HomeDir", "cn=Website", "cn=Airline" };
         int count = 0;
 
         for ( RDN rdn : dn )
@@ -2013,7 +2014,8 @@ public class DNTest
     {
         DN dn = new DN( "cn=HomeDir,cn=John,ou=Marketing,ou=East" );
 
-        String[] expected = new String[]{ "cn=HomeDir", "cn=John", "ou=Marketing", "ou=East" };
+        String[] expected = new String[]
+            { "cn=HomeDir", "cn=John", "ou=Marketing", "ou=East" };
 
         int i = 0;
 
@@ -2112,14 +2114,14 @@ public class DNTest
 
         assertTrue( nn3210.isChildOf( nn3210 ) );
 
-        assertTrue( "Starting DN fails with ADS DN",
-            new DN( "ou=foo,dc=apache,dc=org" ).isChildOf( new DN( "dc=apache,dc=org" ) ) );
+        assertTrue( "Starting DN fails with ADS DN", new DN( "ou=foo,dc=apache,dc=org" ).isChildOf( new DN(
+            "dc=apache,dc=org" ) ) );
 
-        assertTrue( "Starting DN fails with Java LdapName",
-            new DN( "ou=foo,dc=apache,dc=org" ).isChildOf( new DN( "dc=apache,dc=org" ) ) );
+        assertTrue( "Starting DN fails with Java LdapName", new DN( "ou=foo,dc=apache,dc=org" ).isChildOf( new DN(
+            "dc=apache,dc=org" ) ) );
 
-        assertTrue( "Starting DN fails with Java LdapName",
-            new DN( "dc=apache,dc=org" ).isChildOf( new DN( "dc=apache,dc=org" ) ) );
+        assertTrue( "Starting DN fails with Java LdapName", new DN( "dc=apache,dc=org" ).isChildOf( new DN(
+            "dc=apache,dc=org" ) ) );
     }
 
 
@@ -2507,7 +2509,7 @@ public class DNTest
 
         DN result = DN.normalize( name, oids );
 
-        assertTrue( (result).getNormName().equals( "ou=some people,dc=example,dc=com" ) );
+        assertTrue( ( result ).getNormName().equals( "ou=some people,dc=example,dc=com" ) );
     }
 
 
@@ -2563,7 +2565,7 @@ public class DNTest
         DN result = DN.normalize( name, oidOids );
 
         assertEquals(
-            (result).getNormName(),
+            ( result ).getNormName(),
             "0.9.2342.19200300.100.1.25=and some animals+2.5.4.11=some people,0.9.2342.19200300.100.1.25=example,0.9.2342.19200300.100.1.25=com" );
         assertTrue( ( result )
             .getName()
@@ -2666,7 +2668,7 @@ public class DNTest
      * Test for DIRSERVER-191
      */
     @Test
-    @Ignore( "from now onwards DN is not mutable" )
+    @Ignore("from now onwards DN is not mutable")
     public void testAddStringName() throws LdapException, InvalidNameException
     {
         LdapName jName = new LdapName( "cn=four,cn=three,cn=two,cn=one" );
@@ -2682,7 +2684,7 @@ public class DNTest
      * Test for DIRSERVER-191
      */
     @Test
-    @Ignore( "from now onwards DN is not mutable" )
+    @Ignore("from now onwards DN is not mutable")
     public void testAddIntString() throws LdapException, InvalidNameException
     {
         LdapName jName = new LdapName( "cn=four,cn=three,cn=two,cn=one" );
@@ -2706,7 +2708,7 @@ public class DNTest
      * Test for DIRSERVER-191
      */
     @Test
-    @Ignore( "from now onwards DN is not mutable" )
+    @Ignore("from now onwards DN is not mutable")
     public void testAddAllName() throws LdapException, InvalidNameException
     {
         LdapName jName = new LdapName( "cn=four,cn=three,cn=two,cn=one" );
@@ -2722,7 +2724,7 @@ public class DNTest
      * Test for DIRSERVER-191
      */
     @Test
-    @Ignore( "from now onwards DN is not mutable" )
+    @Ignore("from now onwards DN is not mutable")
     public void testAddAllIntName() throws LdapException, InvalidNameException
     {
         LdapName jName = new LdapName( "cn=four,cn=three,cn=two,cn=one" );
@@ -2769,12 +2771,12 @@ public class DNTest
         DN n10 = new DN( "cn=one,cn=zero" );
         DN n210 = new DN( "cn=two,cn=one,cn=zero" );
         DN n3210 = new DN( "cn=three,cn=two,cn=one,cn=zero" );
-        DN n321 =  new DN( "cn=three,cn=two,cn=one" );
-        DN n32 =  new DN( "cn=three,cn=two" );
-        DN n3 =  new DN( "cn=three" );
-        DN n21 =  new DN( "cn=two,cn=one" );
-        DN n2 =  new DN( "cn=two" );
-        DN n1 =  new DN( "cn=one" );
+        DN n321 = new DN( "cn=three,cn=two,cn=one" );
+        DN n32 = new DN( "cn=three,cn=two" );
+        DN n3 = new DN( "cn=three" );
+        DN n21 = new DN( "cn=two,cn=one" );
+        DN n2 = new DN( "cn=two" );
+        DN n1 = new DN( "cn=one" );
 
         assertTrue( n3210.hasSuffix( n3 ) );
         assertTrue( n3210.hasSuffix( n32 ) );
@@ -2796,7 +2798,7 @@ public class DNTest
      * Test for DIRSERVER-191
      */
     @Test
-    @Ignore( "from now onwards DN is not mutable" )
+    @Ignore("from now onwards DN is not mutable")
     public void testRemoveName() throws LdapException, InvalidNameException
     {
         LdapName jName = new LdapName( "cn=four,cn=three,cn=two,cn=one" );
@@ -2838,13 +2840,13 @@ public class DNTest
     {
         DN name1 = new DN( "cn=\"Kylie Minogue\",dc=example,dc=com" );
 
-        String[] expected = new String[]{ "cn=\"Kylie Minogue\"", "dc=example", "dc=com" };
+        String[] expected = new String[]
+            { "cn=\"Kylie Minogue\"", "dc=example", "dc=com" };
 
         List<RDN> j = name1.getRdns();
         int count = 0;
 
-
-        for ( RDN rdn:j )
+        for ( RDN rdn : j )
         {
             assertEquals( expected[count], rdn.getName() );
             count++;
@@ -3271,6 +3273,7 @@ public class DNTest
         assertEquals( dn, deserializeDN( serializeDN( dn ) ) );
     }
 
+
     @Test
     public void testCompositeRDN() throws LdapException
     {
@@ -3281,15 +3284,21 @@ public class DNTest
         assertEquals( "a=b+c=d+e=f,g=h", dn.toString() );
     }
 
+
     @Test
     public void testCompositeRDNOids() throws LdapException
     {
-        assertTrue( DN.isValid( "1.2.3.4.5=0+1.2.3.4.6=0+1.2.3.4.7=omnischmomni,2.5.4.3=subtree,0.9.2342.19200300.100.1.25=example,0.9.2342.19200300.100.1.25=com" ) );
+        assertTrue( DN
+            .isValid( "1.2.3.4.5=0+1.2.3.4.6=0+1.2.3.4.7=omnischmomni,2.5.4.3=subtree,0.9.2342.19200300.100.1.25=example,0.9.2342.19200300.100.1.25=com" ) );
 
-        DN dn = new DN( "1.2.3.4.5=0+1.2.3.4.6=0+1.2.3.4.7=omnischmomni,2.5.4.3=subtree,0.9.2342.19200300.100.1.25=example,0.9.2342.19200300.100.1.25=com" );
+        DN dn = new DN(
+            "1.2.3.4.5=0+1.2.3.4.6=0+1.2.3.4.7=omnischmomni,2.5.4.3=subtree,0.9.2342.19200300.100.1.25=example,0.9.2342.19200300.100.1.25=com" );
 
-        assertEquals( "1.2.3.4.5=0+1.2.3.4.6=0+1.2.3.4.7=omnischmomni,2.5.4.3=subtree,0.9.2342.19200300.100.1.25=example,0.9.2342.19200300.100.1.25=com", dn.toString() );
+        assertEquals(
+            "1.2.3.4.5=0+1.2.3.4.6=0+1.2.3.4.7=omnischmomni,2.5.4.3=subtree,0.9.2342.19200300.100.1.25=example,0.9.2342.19200300.100.1.25=com",
+            dn.toString() );
     }
+
 
     /**
      * Tests that AttributeTypeAndValues are correctly trimmed.
@@ -3310,7 +3319,7 @@ public class DNTest
         AVA atav3 = dn3.getRdn().getAtav();
         assertEquals( "cn", atav3.getUpType() );
         assertEquals( "ABC", atav3.getUpValue().getString() );
-        assertTrue( Arrays.equals( StringTools.getBytesUtf8( "ABC" ),atav3.getNormValue().getBytes() ) );
+        assertTrue( Arrays.equals( StringTools.getBytesUtf8( "ABC" ), atav3.getNormValue().getBytes() ) );
 
         // antlr parser:
         DN dn4 = new DN( " cn = \\41\\42\\43 , ou=system " );
@@ -3669,7 +3678,8 @@ public class DNTest
         DN dn = new DN( "sn=joe+cn=doe,dc=apache,dc=org" );
         int count = 0;
 
-        String[] expected = new String[]{ "sn=joe+cn=doe", "dc=apache", "dc=org" };
+        String[] expected = new String[]
+            { "sn=joe+cn=doe", "dc=apache", "dc=org" };
 
         for ( RDN rdn : dn.getRdns() )
         {
@@ -3755,5 +3765,17 @@ public class DNTest
 
         dn = dn.remove( 0 );
         assertTrue( dn.isNormalized() );
+    }
+
+
+    @Test
+    public void testParseDnWithSlash() throws Exception
+    {
+        String dnStr = "dc=/vehicles/v1/";
+
+        DN dn = new DN( dnStr );
+        dn.normalize( oids );
+
+        assertEquals( dnStr, dn.toString() );
     }
 }
