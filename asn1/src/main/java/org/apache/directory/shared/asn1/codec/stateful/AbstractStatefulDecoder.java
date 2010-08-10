@@ -50,10 +50,9 @@ public abstract class AbstractStatefulDecoder implements StatefulDecoder
     /**
      * Creates a stateful decoder with a callback.
      * 
-     * @param cb
-     *            the callback to use for this decoder
+     * @param cb the callback to use for this decoder
      */
-    public AbstractStatefulDecoder(DecoderCallback cb)
+    public AbstractStatefulDecoder( DecoderCallback cb )
     {
         setCallback( cb );
     }
@@ -62,10 +61,9 @@ public abstract class AbstractStatefulDecoder implements StatefulDecoder
     /**
      * Creates a stateful decoder with a monitor but no callback.
      * 
-     * @param monitor
-     *            the monitor to use for this decoder
+     * @param monitor the monitor to use for this decoder
      */
-    public AbstractStatefulDecoder(DecoderMonitor monitor)
+    public AbstractStatefulDecoder( DecoderMonitor monitor )
     {
         this.monitor = monitor;
     }
@@ -74,12 +72,10 @@ public abstract class AbstractStatefulDecoder implements StatefulDecoder
     /**
      * Creates a stateful decoder.
      * 
-     * @param cb
-     *            the callback to use for this decoder
-     * @param monitor
-     *            the monitor to use for this decoder
+     * @param cb the callback to use for this decoder
+     * @param monitor the monitor to use for this decoder
      */
-    public AbstractStatefulDecoder(DecoderCallback cb, DecoderMonitor monitor)
+    public AbstractStatefulDecoder( DecoderCallback cb, DecoderMonitor monitor )
     {
         this.monitor = monitor;
         setCallback( cb );
@@ -89,12 +85,8 @@ public abstract class AbstractStatefulDecoder implements StatefulDecoder
     // ------------------------------------------------------------------------
     // StatefulDecoder methods
     // ------------------------------------------------------------------------
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.apache.asn1.codec.stateful.StatefulDecoder#setCallback(
-     *      org.apache.asn1.codec.stateful.DecoderCallback)
+    /**
+     * {@inheritDoc}
      */
     public void setCallback( DecoderCallback cb )
     {
@@ -108,11 +100,17 @@ public abstract class AbstractStatefulDecoder implements StatefulDecoder
     }
 
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.apache.asn1.codec.stateful.StatefulDecoder#setDecoderMonitor(
-     *      org.apache.asn1.codec.stateful.DecoderMonitor)
+    /**
+     * {@inheritDoc}
+     */
+    public DecoderCallback getCallback()
+    {
+        return cb;
+    }
+
+
+    /**
+     * {@inheritDoc}
      */
     public void setDecoderMonitor( DecoderMonitor monitor )
     {

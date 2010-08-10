@@ -24,7 +24,7 @@ import org.apache.directory.shared.asn1.codec.DecoderException;
 
 
 /**
- * A decoder which decodes encoded data as it arrives in peices while
+ * A decoder which decodes encoded data as it arrives in pieces while
  * maintaining the state of the decode operation between the arrival of encoded
  * chunks. As chunks of encoded data arrive the decoder processes each chunk of
  * encoded data and maintains decoding state in between arrivals: it is hence
@@ -39,7 +39,7 @@ public interface StatefulDecoder
 {
     /**
      * Decodes a piece of encoded data. The nature of this call, synchronous
-     * verses asynchonous, with respect to driving the actual decoding of the
+     * verses asyncrhonous, with respect to driving the actual decoding of the
      * encoded data argument is determined by an implementation. A return from
      * this method does not guarantee any callbacks: zero or more callbacks may
      * occur during this call.
@@ -53,17 +53,13 @@ public interface StatefulDecoder
     /**
      * Sets the callback for this StatefulDecoder.
      * 
-     * @param cb
-     *            the callback to inform of a complete decode operation
+     * @param cb the callback to inform of a complete decode operation
      */
     void setCallback( DecoderCallback cb );
 
 
     /**
-     * Monitors all kinds of events that occur during processing.
-     * 
-     * @param monitor
-     *            to set for this StatefulDecoder
+     * @return The decoder callback
      */
-    void setDecoderMonitor( DecoderMonitor monitor );
+    DecoderCallback getCallback();
 }

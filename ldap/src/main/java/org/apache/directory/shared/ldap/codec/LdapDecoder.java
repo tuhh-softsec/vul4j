@@ -27,7 +27,6 @@ import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.ber.tlv.TLVStateEnum;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.codec.stateful.DecoderCallback;
-import org.apache.directory.shared.asn1.codec.stateful.DecoderMonitor;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.message.spi.BinaryAttributeDetector;
 import org.apache.directory.shared.ldap.message.spi.Provider;
@@ -290,16 +289,6 @@ public class LdapDecoder implements ProviderDecoder
 
 
     /**
-     * Not used ...
-     * 
-     * @deprecated
-     */
-    public void setDecoderMonitor( DecoderMonitor monitor )
-    {
-    }
-
-
-    /**
      * Set the callback to call when the PDU has been decoded
      * 
      * @param cb The callback
@@ -307,5 +296,14 @@ public class LdapDecoder implements ProviderDecoder
     public void setCallback( DecoderCallback cb )
     {
         decoderCallback = cb;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public DecoderCallback getCallback()
+    {
+        return decoderCallback;
     }
 }
