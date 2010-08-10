@@ -48,13 +48,4 @@ public interface StatefulEncoder
      * @param cb the callback to set on the underlying provider specific encoder
      */
     void setCallback( EncoderCallback cb );
-
-
-    /**
-     * Sets the monitor of the underlying implementation.
-     * 
-     * @param monitor the monitor to set on the underlying implementation
-     */
-    void setEncoderMonitor( EncoderMonitor monitor );
-
 }

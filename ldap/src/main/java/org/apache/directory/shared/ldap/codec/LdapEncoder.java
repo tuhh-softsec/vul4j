@@ -28,8 +28,6 @@ import java.nio.channels.WritableByteChannel;
 
 import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.asn1.codec.stateful.EncoderCallback;
-import org.apache.directory.shared.asn1.codec.stateful.EncoderMonitor;
-import org.apache.directory.shared.asn1.codec.stateful.StatefulEncoder;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.message.spi.Provider;
 import org.apache.directory.shared.ldap.message.spi.ProviderEncoder;
@@ -55,7 +53,7 @@ public class LdapEncoder implements ProviderEncoder
 
     /** A speedup for logger */
     private static final boolean IS_DEBUG = log.isDebugEnabled();
-    
+
     /** The associated Provider */
     final Provider provider;
 
@@ -71,7 +69,6 @@ public class LdapEncoder implements ProviderEncoder
     public LdapEncoder( Provider provider )
     {
         this.provider = provider;
-        encodeCallback = new OutputCallback();
     }
 
 
@@ -92,8 +89,21 @@ public class LdapEncoder implements ProviderEncoder
                 log.debug( "Encoding this LdapMessage : " + obj );
             }
 
-            ( ( OutputCallback ) encodeCallback ).attach( out );
-            encodeCallback.encodeOccurred( null, ( ( LdapMessageCodec ) obj ).encode() );
+            ByteBuffer encoded = ( ( LdapMessageCodec ) obj ).encode();
+
+            try
+            {
+                ( ( ByteBuffer ) encoded ).flip();
+                WritableByteChannel channel = Channels.newChannel( out );
+                channel.write( ( ByteBuffer ) encoded );
+            }
+            catch ( IOException e )
+            {
+                ProviderException pe = new ProviderException( provider, I18n.err( I18n.ERR_04065, "", e
+                    .getLocalizedMessage() ) );
+                throw pe;
+            }
+
         }
         catch ( EncoderException e )
         {
@@ -170,7 +180,7 @@ public class LdapEncoder implements ProviderEncoder
         }
         catch ( EncoderException e )
         {
-            String msg = I18n.err( I18n.ERR_04065,  obj, e.getLocalizedMessage() );
+            String msg = I18n.err( I18n.ERR_04065, obj, e.getLocalizedMessage() );
             log.error( msg );
             ProviderException pe = new ProviderException( provider, msg );
             throw pe;
@@ -201,7 +211,7 @@ public class LdapEncoder implements ProviderEncoder
         ByteBuffer encoded = encodeBlocking( obj );
         encodeCallback.encodeOccurred( null, encoded );
         //TM long t1 = System.nanoTime();
-        
+
         //TM synchronized (lock)
         //TM {
         //TM     cumul += (t1 - t0);
@@ -225,67 +235,5 @@ public class LdapEncoder implements ProviderEncoder
     public void setCallback( EncoderCallback cb )
     {
         encodeCallback = cb;
-    }
-
-
-    /**
-     * Not used ...
-     * 
-     * @deprecated
-     */
-    public void setEncoderMonitor( EncoderMonitor monitor )
-    {
-    }
-
-    /**
-     * The inner class used to write the PDU to a channel.
-     */
-    class OutputCallback implements EncoderCallback
-    {
-        /** The channel in which the PDU will be written */
-        private WritableByteChannel channel = null;
-
-
-        /**
-         * Callback to deliver a fully encoded object.
-         * 
-         * @param encoder the stateful encoder driving the callback
-         * @param encoded the object that was encoded
-         */
-        public void encodeOccurred( StatefulEncoder encoder, Object encoded )
-        {
-            try
-            {
-                ( ( ByteBuffer ) encoded ).flip();
-                channel.write( ( ByteBuffer ) encoded );
-            }
-            catch ( IOException e )
-            {
-                ProviderException pe = new ProviderException( provider, I18n.err( I18n.ERR_04065, "", e.getLocalizedMessage() ) );
-                throw pe;
-            }
-        }
-
-
-        /**
-         * Associate a channel to the callback
-         * 
-         * @param channel The channel to use to write a PDU
-         */
-        void attach( WritableByteChannel channel )
-        {
-            this.channel = channel;
-        }
-
-
-        /**
-         * Associate a OutputStream to the callback. A channel will be created.
-         * 
-         * @param out The OutputStream to use
-         */
-        void attach( OutputStream out )
-        {
-            this.channel = Channels.newChannel( out );
-        }
     }
 }

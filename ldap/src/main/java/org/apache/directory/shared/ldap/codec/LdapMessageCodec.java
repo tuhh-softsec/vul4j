@@ -23,9 +23,7 @@ package org.apache.directory.shared.ldap.codec;
 import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.directory.shared.asn1.AbstractAsn1Object;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
@@ -34,16 +32,8 @@ import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.controls.CodecControl;
-import org.apache.directory.shared.ldap.codec.controls.ManageDsaITControl;
-import org.apache.directory.shared.ldap.codec.controls.replication.syncDoneValue.SyncDoneValueControl;
-import org.apache.directory.shared.ldap.codec.controls.replication.syncInfoValue.SyncInfoValueControl;
-import org.apache.directory.shared.ldap.codec.controls.replication.syncRequestValue.SyncRequestValueControl;
-import org.apache.directory.shared.ldap.codec.controls.replication.syncStateValue.SyncStateValueControl;
-import org.apache.directory.shared.ldap.codec.search.controls.pagedSearch.PagedResultsControl;
-import org.apache.directory.shared.ldap.codec.search.controls.persistentSearch.PersistentSearchControl;
-import org.apache.directory.shared.ldap.codec.search.controls.subentries.SubentriesControl;
+import org.apache.directory.shared.ldap.codec.controls.ControlEnum;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.message.control.replication.SynchronizationInfoEnum;
 
 
 /**
@@ -74,45 +64,6 @@ public abstract class LdapMessageCodec extends AbstractAsn1Object
 
     /** The controls sequence length */
     private int controlsSequenceLength;
-
-    private static Map<String, Control> codecControls = new HashMap<String, Control>();
-    
-    static
-    {
-        // Initialize the different known Controls
-        Control control = new PersistentSearchControl();
-        codecControls.put( control.getOid(), control );
-
-        control = new ManageDsaITControl();
-        codecControls.put( control.getOid(), control );
-
-        control = new SubentriesControl();
-        codecControls.put( control.getOid(), control );
-
-        control = new PagedResultsControl();
-        codecControls.put( control.getOid(), control );
-        
-        control = new SyncDoneValueControl();
-        codecControls.put( control.getOid(), control );
-        
-        control = new SyncInfoValueControl( SynchronizationInfoEnum.NEW_COOKIE );
-        codecControls.put( control.getOid(), control );
-        
-        control = new SyncInfoValueControl( SynchronizationInfoEnum.REFRESH_DELETE );
-        codecControls.put( control.getOid(), control );
-        
-        control = new SyncInfoValueControl( SynchronizationInfoEnum.REFRESH_PRESENT );
-        codecControls.put( control.getOid(), control );
-        
-        control = new SyncInfoValueControl( SynchronizationInfoEnum.SYNC_ID_SET );
-        codecControls.put( control.getOid(), control );
-        
-        control = new SyncRequestValueControl();
-        codecControls.put( control.getOid(), control );
-        
-        control = new SyncStateValueControl();
-        codecControls.put( control.getOid(), control );
-    }
 
 
     // ~ Constructors
@@ -170,11 +121,11 @@ public abstract class LdapMessageCodec extends AbstractAsn1Object
     {
         return currentControl;
     }
-    
-    
+
+
     public Control getCodecControl( String oid )
     {
-        return codecControls.get( oid );
+        return ControlEnum.getControl( oid );
     }
 
 
@@ -186,12 +137,12 @@ public abstract class LdapMessageCodec extends AbstractAsn1Object
     public void addControl( Control control )
     {
         currentControl = control;
-        
+
         if ( controls == null )
         {
             controls = new ArrayList<Control>();
         }
-        
+
         controls.add( control );
     }
 
@@ -204,17 +155,17 @@ public abstract class LdapMessageCodec extends AbstractAsn1Object
      */
     public void addControls( List<Control> controls )
     {
-        if( this.controls == null )
+        if ( this.controls == null )
         {
             this.controls = controls;
         }
-        else if( controls != null )
+        else if ( controls != null )
         {
             this.controls.addAll( controls );
         }
     }
-    
-    
+
+
     /**
      * Init the controls array
      */
@@ -261,10 +212,10 @@ public abstract class LdapMessageCodec extends AbstractAsn1Object
      */
     public abstract String getMessageTypeName();
 
-    
+
     protected abstract int computeLengthProtocolOp();
 
-    
+
     /**
      * Compute the LdapMessage length LdapMessage : 
      * 0x30 L1 
@@ -316,15 +267,15 @@ public abstract class LdapMessageCodec extends AbstractAsn1Object
             controlsSequenceLength = 0;
 
             // We may have more than one control. ControlsLength is L4.
-            for ( Control control:controls )
+            for ( Control control : controls )
             {
-                controlsSequenceLength += ((CodecControl)control).computeLength();
+                controlsSequenceLength += ( ( CodecControl ) control ).computeLength();
             }
 
             // Computes the controls length
             controlsLength = controlsSequenceLength; // 1 + Length.getNbBytes(
-                                                     // controlsSequenceLength
-                                                     // ) + controlsSequenceLength;
+            // controlsSequenceLength
+            // ) + controlsSequenceLength;
 
             // Now, add the tag and the length of the controls length
             ldapMessageLength += 1 + TLV.getNbBytes( controlsSequenceLength ) + controlsSequenceLength;
@@ -336,8 +287,9 @@ public abstract class LdapMessageCodec extends AbstractAsn1Object
         return 1 + ldapMessageLength + TLV.getNbBytes( ldapMessageLength );
     }
 
-    
+
     protected abstract void encodeProtocolOp( ByteBuffer buffer ) throws EncoderException;
+
 
     /**
      * Generate the PDU which contains the encoded object. 
@@ -366,15 +318,15 @@ public abstract class LdapMessageCodec extends AbstractAsn1Object
     public ByteBuffer encode() throws EncoderException
     {
         try
-        {     
+        {
             // Allocate the bytes buffer.
             ByteBuffer bb = ByteBuffer.allocate( computeLength() );
-    
+
             try
             {
                 // The LdapMessage Sequence
                 bb.put( UniversalTag.SEQUENCE_TAG );
-    
+
                 // The length has been calculated by the computeLength method
                 bb.put( TLV.getBytes( ldapMessageLength ) );
             }
@@ -382,33 +334,33 @@ public abstract class LdapMessageCodec extends AbstractAsn1Object
             {
                 throw new EncoderException( I18n.err( I18n.ERR_04005 ) );
             }
-    
+
             // The message Id
             Value.encode( bb, messageId );
-    
+
             // Add the protocolOp part
             encodeProtocolOp( bb );
-    
+
             // Do the same thing for Controls, if any.
             if ( controls != null )
             {
                 // Encode the controls
                 bb.put( ( byte ) LdapConstants.CONTROLS_TAG );
                 bb.put( TLV.getBytes( controlsLength ) );
-    
+
                 // Encode each control
-                for ( Control control:controls )
+                for ( Control control : controls )
                 {
-                    ((CodecControl)control).encode( bb );
+                    ( ( CodecControl ) control ).encode( bb );
                 }
             }
-    
+
             return bb;
         }
         catch ( EncoderException ee )
         {
             MessageEncoderException exception = new MessageEncoderException( messageId, ee.getMessage() );
-            
+
             throw exception;
         }
     }
@@ -425,12 +377,12 @@ public abstract class LdapMessageCodec extends AbstractAsn1Object
 
         sb.append( "LdapMessage\n" );
         sb.append( "    message Id : " ).append( messageId ).append( '\n' );
-        
+
         sb.append( protocolOp ).append( '\n' );
 
         if ( controls != null )
         {
-            for ( Control control:controls )
+            for ( Control control : controls )
             {
                 sb.append( control );
             }
