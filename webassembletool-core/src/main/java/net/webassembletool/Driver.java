@@ -59,6 +59,7 @@ import org.apache.http.HttpHost;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.params.ClientPNames;
 import org.apache.http.conn.params.ConnManagerPNames;
+import org.apache.http.conn.params.ConnPerRouteBean;
 import org.apache.http.conn.params.ConnRoutePNames;
 import org.apache.http.conn.scheme.PlainSocketFactory;
 import org.apache.http.conn.scheme.Scheme;
@@ -124,6 +125,9 @@ public class Driver {
 					config.getTimeout());
 			httpParams.setIntParameter(CoreConnectionPNames.SO_TIMEOUT,
 					config.getTimeout());
+			httpParams.setParameter(
+					ConnManagerPNames.MAX_CONNECTIONS_PER_ROUTE,
+					new ConnPerRouteBean(config.getMaxConnectionsPerHost()));
 			httpParams.setBooleanParameter(
 					ClientPNames.ALLOW_CIRCULAR_REDIRECTS, true);
 			ThreadSafeClientConnManager connectionManager = new ThreadSafeClientConnManager(
