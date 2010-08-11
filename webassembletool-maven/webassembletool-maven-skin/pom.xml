@@ -3,12 +3,12 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.sourceforge.webassembletool.maven</groupId>
 	<artifactId>webassembletool-maven-skin</artifactId>
-	<version>2.15-SNAPSHOT</version>
+	<version>2.16-SNAPSHOT</version>
 	<name>webassembletool-maven-skin</name>
 	<description>ESIGate Site Skin</description>
 	<parent>
 		<groupId>net.sourceforge.webassembletool</groupId>
 		<artifactId>webassembletool-maven</artifactId>
-		<version>2.15-SNAPSHOT</version>
+		<version>2.16-SNAPSHOT</version>
 	</parent>
 </project>

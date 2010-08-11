@@ -14,5 +14,6 @@
 	<modules>
 		<module>webassembletool-staticassembly-plugin</module>
 		<module>webassembletool-staticassembly-archetype</module>
+		<module>webassembletool-maven-skin</module>
 	</modules>
 </project>
