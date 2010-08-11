@@ -96,12 +96,28 @@ public interface InternalReferral
 
 
     /**
+     * Gets an unmodifiable set of encoded referral urls.
+     * 
+     * @return the encoded url objects.
+     */
+    Collection<byte[]> getLdapUrlsBytes();
+
+
+    /**
      * Adds an LDAPv3 URL to this Referral.
      * 
      * @param url
      *            the LDAPv3 URL to add
      */
     void addLdapUrl( String url );
+
+
+    /**
+     * Adds an encoded LDAPv3 URL to this Referral.
+     * 
+     * @param urlBytes the encoded LDAPv3 URL to add
+     */
+    void addLdapUrlBytes( byte[] urlBytes );
 
 
     /**

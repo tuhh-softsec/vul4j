@@ -43,6 +43,9 @@ public class ReferralImpl implements InternalReferral
     /** Sequence of LDAPUrls composing this Referral */
     private final List<String> urls = new ArrayList<String>();
 
+    /** The encoded LdapURL */
+    private final List<byte[]> urlsBytes = new ArrayList<byte[]>();
+
 
     // ------------------------------------------------------------------------
     // LdapResult Interface Method Implementations
@@ -60,14 +63,31 @@ public class ReferralImpl implements InternalReferral
 
 
     /**
+     * {@inheritDoc}
+     */
+    public Collection<byte[]> getLdapUrlsBytes()
+    {
+        return urlsBytes;
+    }
+
+
+    /**
      * Adds an LDAPv3 URL to this Referral.
      * 
-     * @param url
-     *            the LDAPv3 URL to add
+     * @param url the LDAPv3 URL to add
      */
     public void addLdapUrl( String url )
     {
         urls.add( url );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void addLdapUrlBytes( byte[] urlBytes )
+    {
+        urlsBytes.add( urlBytes );
     }
 
 

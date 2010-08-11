@@ -95,7 +95,7 @@ public class LdapResultImpl implements InternalLdapResult
     /**
      * {@inheritDoc}
      */
-    public void setErrorMessage( byte[] errorMessageBytes )
+    public void setErrorMessageBytes( byte[] errorMessageBytes )
     {
         this.errorMessageBytes = errorMessageBytes;
     }

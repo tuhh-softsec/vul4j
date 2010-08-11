@@ -130,7 +130,7 @@ public interface InternalLdapResult
      * Set the encoded message's bytes
      * @param errorMessageBytes The encoded bytes
      */
-    void setErrorMessage( byte[] errorMessageBytes );
+    void setErrorMessageBytes( byte[] errorMessageBytes );
 
 
     /**

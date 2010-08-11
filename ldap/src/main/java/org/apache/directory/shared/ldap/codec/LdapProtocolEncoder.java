@@ -81,27 +81,45 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
     }
 
 
+    /**
+     * Generate the PDU which contains the encoded object. 
+     * 
+     * The generation is done in two phases : 
+     * - first, we compute the length of each part and the
+     * global PDU length 
+     * - second, we produce the PDU. 
+     * 
+     * <pre>
+     * 0x30 L1 
+     *   | 
+     *   +--> 0x02 L2 MessageId  
+     *   +--> ProtocolOp 
+     *   +--> Controls 
+     *   
+     * L2 = Length(MessageId)
+     * L1 = Length(0x02) + Length(L2) + L2 + Length(ProtocolOp) + Length(Controls)
+     * LdapMessageLength = Length(0x30) + Length(L1) + L1
+     * </pre>
+     * 
+     * @param message The message to encode
+     * @return A ByteBuffer that contains the PDU
+     * @throws EncoderException If anything goes wrong.
+     */
     private ByteBuffer encodeMessage( InternalMessage message ) throws EncoderException
     {
-        int length = computeLength( message );
+        int length = computeMessageLength( message );
 
-        return encodeMessage( length, message );
-    }
-
-
-    private ByteBuffer encodeMessage( int length, InternalMessage message ) throws EncoderException
-    {
         try
         {
-            ByteBuffer bb = ByteBuffer.allocate( length );
+            ByteBuffer buffer = ByteBuffer.allocate( length );
 
             try
             {
                 // The LdapMessage Sequence
-                bb.put( UniversalTag.SEQUENCE_TAG );
+                buffer.put( UniversalTag.SEQUENCE_TAG );
 
                 // The length has been calculated by the computeLength method
-                bb.put( TLV.getBytes( message.getMessageLength() ) );
+                buffer.put( TLV.getBytes( message.getMessageLength() ) );
             }
             catch ( BufferOverflowException boe )
             {
@@ -109,10 +127,10 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
             }
 
             // The message Id
-            Value.encode( bb, message.getMessageId() );
+            Value.encode( buffer, message.getMessageId() );
 
             // Add the protocolOp part
-            encodeProtocolOp( bb, message );
+            encodeProtocolOp( buffer, message );
 
             // Do the same thing for Controls, if any.
             Map<String, Control> controls = message.getControls();
@@ -120,17 +138,17 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
             if ( ( controls != null ) && ( controls.size() > 0 ) )
             {
                 // Encode the controls
-                bb.put( ( byte ) LdapConstants.CONTROLS_TAG );
-                bb.put( TLV.getBytes( message.getControlsLength() ) );
+                buffer.put( ( byte ) LdapConstants.CONTROLS_TAG );
+                buffer.put( TLV.getBytes( message.getControlsLength() ) );
 
                 // Encode each control
                 for ( Control control : controls.values() )
                 {
-                    ( ( CodecControl ) control ).encode( bb );
+                    ( ( CodecControl ) control ).encode( buffer );
                 }
             }
 
-            return bb;
+            return buffer;
         }
         catch ( EncoderException ee )
         {
@@ -153,7 +171,7 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
      * L1 = length(ProtocolOp) 
      * LdapMessage length = Length(0x30) + Length(L1) + MessageId length + L1
      */
-    private int computeLength( InternalMessage message )
+    private int computeMessageLength( InternalMessage message )
     {
         // The length of the MessageId. It's the sum of
         // - the tag (0x02), 1 byte
@@ -162,7 +180,7 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
         int ldapMessageLength = 1 + 1 + Value.getNbBytes( message.getMessageId() );
 
         // Get the protocolOp length
-        ldapMessageLength += computeLengthProtocolOp( message );
+        ldapMessageLength += computeProtocolOpLength( message );
         message.setMessageLength( ldapMessageLength );
 
         Map<String, Control> controls = message.getControls();
@@ -236,7 +254,7 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
      *      Length(0x01) + 1 + Length(0x04) + Length(L1) + L1 + Length(0x04) +
      *      Length(L2) + L2 + Length(0x83) + Length(L3) + L3
      */
-    public int computeLength( InternalLdapResult ldapResult )
+    private int computeLdapResultLength( InternalLdapResult ldapResult )
     {
         int ldapResultLength = 0;
 
@@ -258,6 +276,7 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
         // The errorMessage length
         byte[] errorMessageBytes = StringTools.getBytesUtf8( ldapResult.getErrorMessage() );
         ldapResultLength += 1 + TLV.getNbBytes( errorMessageBytes.length ) + errorMessageBytes.length;
+        ldapResult.setErrorMessageBytes( errorMessageBytes );
 
         InternalReferral referral = ldapResult.getReferral();
 
@@ -274,6 +293,7 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
                 {
                     byte[] ldapUrlBytes = StringTools.getBytesUtf8( ldapUrl );
                     referralsLength += 1 + TLV.getNbBytes( ldapUrlBytes.length ) + ldapUrlBytes.length;
+                    referral.addLdapUrlBytes( ldapUrlBytes );
                 }
 
                 // The referrals
@@ -286,28 +306,12 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
 
 
     /**
-     * Compute the LdapResponse length
-     */
-    private int computeLdapResultLength( InternalLdapResult ldapResult )
-    {
-        int ldapResponseLength = 0;
-
-        if ( ldapResult != null )
-        {
-            ldapResponseLength = computeLength( ldapResult );
-        }
-
-        return ldapResponseLength;
-    }
-
-
-    /**
      * Encode the LdapResult message to a PDU.
      * 
      * @param buffer The buffer where to put the PDU
      * @return The PDU.
      */
-    public ByteBuffer encodeLdapResult( ByteBuffer buffer, InternalLdapResult ldapResult ) throws EncoderException
+    private ByteBuffer encodeLdapResult( ByteBuffer buffer, InternalLdapResult ldapResult ) throws EncoderException
     {
         if ( buffer == null )
         {
@@ -454,7 +458,7 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
      *      Length(0x04) + Length(L2) + L2 + Length(authentication)
      * </pre>
      */
-    private int computeLengthProtocolOp( InternalMessage message )
+    private int computeProtocolOpLength( InternalMessage message )
     {
         switch ( message.getType() )
         {

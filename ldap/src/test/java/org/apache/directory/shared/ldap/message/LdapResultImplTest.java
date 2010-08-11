@@ -160,7 +160,7 @@ public class LdapResultImplTest
             }
 
 
-            public void setErrorMessage( byte[] errorMessageBytes )
+            public void setErrorMessageBytes( byte[] errorMessageBytes )
             {
             }
         };
