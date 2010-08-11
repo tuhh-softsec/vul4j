@@ -1,17 +1,15 @@
 <?xml version="1.0"?>
-<project
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.sourceforge.webassembletool.maven</groupId>
 	<artifactId>webassembletool-staticassembly-plugin</artifactId>
-	<version>2.15-SNAPSHOT</version>
+	<version>2.15</version>
 	<packaging>maven-plugin</packaging>
 	<name>webassembletool-staticassembly-plugin</name>		
 	<parent>
 		<artifactId>webassembletool-maven</artifactId>
 		<groupId>net.sourceforge.webassembletool</groupId>
-		<version>2.15-SNAPSHOT</version>
+		<version>2.15</version>
 	</parent>	
 	<description>Staticassembly Maven plugin Generate a set of HTML pages with reusable components found in modules folder.</description>
 	<inceptionYear>2010</inceptionYear>	
@@ -22,7 +20,7 @@
 		<dependency>
 			<groupId>net.sourceforge.webassembletool</groupId>
 			<artifactId>webassembletool-core</artifactId>
-			<version>2.15-SNAPSHOT</version>
+			<version>2.15</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>
