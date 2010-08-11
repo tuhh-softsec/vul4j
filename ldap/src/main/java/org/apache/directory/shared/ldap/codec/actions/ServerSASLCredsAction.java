@@ -25,7 +25,6 @@ import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
-import org.apache.directory.shared.ldap.codec.bind.BindResponseCodec;
 import org.apache.directory.shared.ldap.message.internal.InternalBindResponse;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
@@ -75,16 +74,8 @@ public class ServerSASLCredsAction extends GrammarAction
             serverSaslCreds = tlv.getValue().getData();
         }
 
-        if ( ldapMessageContainer.isInternal() )
-        {
-            InternalBindResponse response = ( InternalBindResponse ) ldapMessageContainer.getInternalMessage();
-            response.setServerSaslCreds( serverSaslCreds );
-        }
-        else
-        {
-            BindResponseCodec bindResponseMessage = ldapMessageContainer.getBindResponse();
-            bindResponseMessage.setServerSaslCreds( serverSaslCreds );
-        }
+        InternalBindResponse response = ( InternalBindResponse ) ldapMessageContainer.getInternalMessage();
+        response.setServerSaslCreds( serverSaslCreds );
 
         // We can have an END transition
         ldapMessageContainer.grammarEndAllowed( true );
