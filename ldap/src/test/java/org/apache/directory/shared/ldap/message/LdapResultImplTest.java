@@ -163,6 +163,17 @@ public class LdapResultImplTest
             public void setErrorMessageBytes( byte[] errorMessageBytes )
             {
             }
+
+
+            public int getReferralsLength()
+            {
+                return 0;
+            }
+
+
+            public void setReferralsLength( int referralsLength )
+            {
+            }
         };
 
         assertTrue( "r0 equals should see other impl r1 as equal", r0.equals( r1 ) );

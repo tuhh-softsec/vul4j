@@ -161,4 +161,17 @@ public interface InternalLdapResult
      *            optional referral on REFERRAL errors.
      */
     void setReferral( InternalReferral referral );
+
+
+    /**
+     * @return The total length of the Referral's URL
+     */
+    int getReferralsLength();
+
+
+    /**
+     * Set the length of all the referral' URL
+     * @param referralsLength The total length of the Referral
+     */
+    void setReferralsLength( int referralsLength );
 }

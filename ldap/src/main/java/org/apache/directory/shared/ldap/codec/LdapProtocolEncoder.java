@@ -32,8 +32,10 @@ import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.controls.CodecControl;
 import org.apache.directory.shared.ldap.message.BindResponseImpl;
+import org.apache.directory.shared.ldap.message.DeleteResponseImpl;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.message.internal.InternalBindResponse;
+import org.apache.directory.shared.ldap.message.internal.InternalDeleteResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalLdapResult;
 import org.apache.directory.shared.ldap.message.internal.InternalMessage;
 import org.apache.directory.shared.ldap.message.internal.InternalReferral;
@@ -97,7 +99,7 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
         int length = computeMessageLength( message );
         ByteBuffer buffer = ByteBuffer.allocate( length );
 
-        if ( message instanceof InternalBindResponse )
+        if ( ( message instanceof InternalBindResponse ) || ( message instanceof InternalDeleteResponse ) )
         {
             try
             {
@@ -270,6 +272,7 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
             byte[] matchedDNBytes = StringTools.getBytesUtf8( StringTools
                 .trimLeft( ldapResult.getMatchedDn().getName() ) );
             ldapResultLength += 1 + TLV.getNbBytes( matchedDNBytes.length ) + matchedDNBytes.length;
+            ldapResult.setMatchedDnBytes( matchedDNBytes );
         }
 
         // The errorMessage length
@@ -294,6 +297,8 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
                     referralsLength += 1 + TLV.getNbBytes( ldapUrlBytes.length ) + ldapUrlBytes.length;
                     referral.addLdapUrlBytes( ldapUrlBytes );
                 }
+
+                ldapResult.setReferralsLength( referralsLength );
 
                 // The referrals
                 ldapResultLength += 1 + TLV.getNbBytes( referralsLength ) + referralsLength;
@@ -340,20 +345,20 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
 
         if ( referral != null )
         {
-            Collection<String> ldapUrls = referral.getLdapUrls();
+            Collection<byte[]> ldapUrlsBytes = referral.getLdapUrlsBytes();
 
-            if ( ( ldapUrls != null ) && ( ldapUrls.size() != 0 ) )
+            if ( ( ldapUrlsBytes != null ) && ( ldapUrlsBytes.size() != 0 ) )
             {
                 // Encode the referrals sequence
                 // The referrals length MUST have been computed before !
                 buffer.put( ( byte ) LdapConstants.LDAP_RESULT_REFERRAL_SEQUENCE_TAG );
-                //buffer.put( TLV.getBytes( referralsLength ) );
+                buffer.put( TLV.getBytes( ldapResult.getReferralsLength() ) );
 
                 // Each referral
-                for ( String ldapUrl : ldapUrls )
+                for ( byte[] ldapUrlBytes : ldapUrlsBytes )
                 {
                     // Encode the current referral
-                    //Value.encode( buffer, referral.getBytesReference() );
+                    Value.encode( buffer, ldapUrlBytes );
                 }
             }
         }
@@ -392,6 +397,29 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
         bindResponse.setBindResponseLength( bindResponseLength );
 
         return 1 + TLV.getNbBytes( bindResponseLength ) + bindResponseLength;
+    }
+
+
+    /**
+     * Compute the DelResponse length 
+     * 
+     * DelResponse :
+     * 
+     * 0x6B L1
+     *  |
+     *  +--> LdapResult
+     * 
+     * L1 = Length(LdapResult)
+     * 
+     * Length(DelResponse) = Length(0x6B) + Length(L1) + L1
+     */
+    private int computeDeleteResponseLength( DeleteResponseImpl deleteResponse )
+    {
+        int deleteResponseLength = computeLdapResultLength( deleteResponse.getLdapResult() );
+
+        deleteResponse.setDeleteResponseLength( deleteResponseLength );
+
+        return 1 + TLV.getNbBytes( deleteResponseLength ) + deleteResponseLength;
     }
 
 
@@ -441,6 +469,29 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
 
 
     /**
+     * Encode the DelResponse message to a PDU.
+     * 
+     * @param buffer The buffer where to put the PDU
+     */
+    private void encodeDeleteResponse( ByteBuffer buffer, DeleteResponseImpl deleteResponse ) throws EncoderException
+    {
+        try
+        {
+            // The BindResponse Tag
+            buffer.put( LdapConstants.DEL_RESPONSE_TAG );
+            buffer.put( TLV.getBytes( deleteResponse.getDeleteResponseLength() ) );
+
+            // The LdapResult
+            encodeLdapResult( buffer, deleteResponse.getLdapResult() );
+        }
+        catch ( BufferOverflowException boe )
+        {
+            throw new EncoderException( I18n.err( I18n.ERR_04005 ) );
+        }
+    }
+
+
+    /**
      * Compute the BindRequest length 
      * 
      * BindRequest : 
@@ -464,6 +515,9 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
             case BIND_RESPONSE:
                 return computeBindResponseLength( ( BindResponseImpl ) message );
 
+            case DEL_RESPONSE:
+                return computeDeleteResponseLength( ( DeleteResponseImpl ) message );
+
             default:
                 return 0;
         }
@@ -476,6 +530,11 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
         {
             case BIND_RESPONSE:
                 encodeBindResponse( bb, ( BindResponseImpl ) message );
+                break;
+
+            case DEL_RESPONSE:
+                encodeDeleteResponse( bb, ( DeleteResponseImpl ) message );
+                break;
         }
     }
 }

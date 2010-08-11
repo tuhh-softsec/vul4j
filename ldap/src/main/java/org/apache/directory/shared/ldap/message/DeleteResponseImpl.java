@@ -19,6 +19,7 @@
  */
 package org.apache.directory.shared.ldap.message;
 
+
 import org.apache.directory.shared.ldap.message.internal.InternalAbstractResultResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalDeleteResponse;
 
@@ -30,6 +31,9 @@ import org.apache.directory.shared.ldap.message.internal.InternalDeleteResponse;
  */
 public class DeleteResponseImpl extends InternalAbstractResultResponse implements InternalDeleteResponse
 {
+
+    /** The encoded deleteResponse length */
+    private int deleteResponseLength;
 
     // ------------------------------------------------------------------------
     // Constructors
@@ -44,8 +48,26 @@ public class DeleteResponseImpl extends InternalAbstractResultResponse implement
      * @param id
      *            the session unique message id
      */
-    public DeleteResponseImpl(final int id)
+    public DeleteResponseImpl( final int id )
     {
         super( id, TYPE );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setDeleteResponseLength( int deleteResponseLength )
+    {
+        this.deleteResponseLength = deleteResponseLength;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public int getDeleteResponseLength()
+    {
+        return deleteResponseLength;
     }
 }

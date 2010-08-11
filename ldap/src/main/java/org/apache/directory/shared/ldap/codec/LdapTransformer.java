@@ -32,7 +32,6 @@ import org.apache.directory.shared.ldap.codec.bind.BindRequestCodec;
 import org.apache.directory.shared.ldap.codec.bind.SaslCredentials;
 import org.apache.directory.shared.ldap.codec.bind.SimpleAuthentication;
 import org.apache.directory.shared.ldap.codec.compare.CompareResponseCodec;
-import org.apache.directory.shared.ldap.codec.del.DelResponseCodec;
 import org.apache.directory.shared.ldap.codec.extended.ExtendedRequestCodec;
 import org.apache.directory.shared.ldap.codec.extended.ExtendedResponseCodec;
 import org.apache.directory.shared.ldap.codec.intermediate.IntermediateResponseCodec;
@@ -75,7 +74,6 @@ import org.apache.directory.shared.ldap.message.AddResponseImpl;
 import org.apache.directory.shared.ldap.message.AliasDerefMode;
 import org.apache.directory.shared.ldap.message.BindRequestImpl;
 import org.apache.directory.shared.ldap.message.CompareResponseImpl;
-import org.apache.directory.shared.ldap.message.DeleteResponseImpl;
 import org.apache.directory.shared.ldap.message.ExtendedRequestImpl;
 import org.apache.directory.shared.ldap.message.ExtendedResponseImpl;
 import org.apache.directory.shared.ldap.message.IntermediateResponseImpl;
@@ -751,25 +749,6 @@ public class LdapTransformer
 
 
     /**
-     * Transform a Internal DelResponse to a Codec DelResponse
-     * 
-     * @param internalMessage The incoming Internal DelResponse
-     * @return The DelResponseCodec instance
-     */
-    private static LdapMessageCodec transformDelResponse( InternalMessage internalMessage )
-    {
-        DeleteResponseImpl internalDelResponse = ( DeleteResponseImpl ) internalMessage;
-
-        DelResponseCodec delResponse = new DelResponseCodec();
-
-        // Transform the ldapResult
-        delResponse.setLdapResult( transformLdapResult( ( LdapResultImpl ) internalDelResponse.getLdapResult() ) );
-
-        return delResponse;
-    }
-
-
-    /**
      * Transform a Internal ExtendedResponse to a Codec ExtendedResponse
      * 
      * @param internalMessage The incoming Internal ExtendedResponse
@@ -995,10 +974,6 @@ public class LdapTransformer
 
             case COMPARE_RESPONSE:
                 codecMessage = transformCompareResponse( msg );
-                break;
-
-            case DEL_RESPONSE:
-                codecMessage = transformDelResponse( msg );
                 break;
 
             case MODIFY_RESPONSE:

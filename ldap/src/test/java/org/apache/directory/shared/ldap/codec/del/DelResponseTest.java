@@ -25,7 +25,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.nio.ByteBuffer;
-import java.util.List;
+import java.util.Map;
 
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
@@ -34,8 +34,10 @@ import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
+import org.apache.directory.shared.ldap.codec.LdapProtocolEncoder;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.message.control.Control;
+import org.apache.directory.shared.ldap.message.internal.InternalDeleteResponse;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -50,6 +52,10 @@ import org.junit.runner.RunWith;
 @Concurrent()
 public class DelResponseTest
 {
+    /** The encoder instance */
+    LdapProtocolEncoder encoder = new LdapProtocolEncoder();
+
+
     /**
      * Test the decoding of a DelResponse
      */
@@ -61,18 +67,24 @@ public class DelResponseTest
         ByteBuffer stream = ByteBuffer.allocate( 0x2D );
 
         stream.put( new byte[]
-            { 0x30, 0x2B, // LDAPMessage ::=SEQUENCE {
-                0x02, 0x01, 0x01, // messageID MessageID
-                0x6B, 0x26, // CHOICE { ..., delResponse DelResponse, ...
+            { 0x30,
+                0x2B, // LDAPMessage ::=SEQUENCE {
+                0x02, 0x01,
+                0x01, // messageID MessageID
+                0x6B,
+                0x26, // CHOICE { ..., delResponse DelResponse, ...
                 // DelResponse ::= [APPLICATION 11] LDAPResult
-                0x0A, 0x01, 0x21, // LDAPResult ::= SEQUENCE {
+                0x0A,
+                0x01,
+                0x21, // LDAPResult ::= SEQUENCE {
                 // resultCode ENUMERATED {
                 // success (0), ...
                 // },
-                0x04, 0x1F, // matchedDN LDAPDN,
+                0x04,
+                0x1F, // matchedDN LDAPDN,
                 'u', 'i', 'd', '=', 'a', 'k', 'a', 'r', 'a', 's', 'u', 'l', 'u', ',', 'd', 'c', '=', 'e', 'x', 'a',
                 'm', 'p', 'l', 'e', ',', 'd', 'c', '=', 'c', 'o', 'm', 0x04, 0x00 // errorMessage
-                                                                                    // LDAPString,
+            // LDAPString,
             // referral [3] Referral OPTIONAL }
             // }
             } );
@@ -95,20 +107,20 @@ public class DelResponseTest
         }
 
         // Check the decoded DelResponse PDU
-        DelResponseCodec delResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getDelResponse();
+        InternalDeleteResponse delResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getInternalDelResponse();
 
         assertEquals( 1, delResponse.getMessageId() );
         assertEquals( ResultCodeEnum.ALIAS_PROBLEM, delResponse.getLdapResult().getResultCode() );
-        assertEquals( "uid=akarasulu,dc=example,dc=com", delResponse.getLdapResult().getMatchedDN() );
+        assertEquals( "uid=akarasulu,dc=example,dc=com", delResponse.getLdapResult().getMatchedDn().getName() );
         assertEquals( "", delResponse.getLdapResult().getErrorMessage() );
-
-        // Check the length
-        assertEquals( 0x2D, delResponse.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = delResponse.encode();
+            ByteBuffer bb = encoder.encodeMessage( delResponse );
+
+            // Check the length
+            assertEquals( 0x02D, bb.limit() );
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -169,21 +181,33 @@ public class DelResponseTest
         ByteBuffer stream = ByteBuffer.allocate( 0x4A );
 
         stream.put( new byte[]
-            { 0x30, 0x48, // LDAPMessage ::=SEQUENCE {
-                0x02, 0x01, 0x01, // messageID MessageID
-                0x6B, 0x26, // CHOICE { ..., delResponse DelResponse, ...
+            {
+                0x30,
+                0x48, // LDAPMessage ::=SEQUENCE {
+                0x02,
+                0x01,
+                0x01, // messageID MessageID
+                0x6B,
+                0x26, // CHOICE { ..., delResponse DelResponse, ...
                 // DelResponse ::= [APPLICATION 11] LDAPResult
-                0x0A, 0x01, 0x21, // LDAPResult ::= SEQUENCE {
+                0x0A,
+                0x01,
+                0x21, // LDAPResult ::= SEQUENCE {
                 // resultCode ENUMERATED {
                 // success (0), ...
                 // },
-                0x04, 0x1F, // matchedDN LDAPDN,
+                0x04,
+                0x1F, // matchedDN LDAPDN,
                 'u', 'i', 'd', '=', 'a', 'k', 'a', 'r', 'a', 's', 'u', 'l', 'u', ',', 'd', 'c', '=', 'e', 'x', 'a',
-                'm', 'p', 'l', 'e', ',', 'd', 'c', '=', 'c', 'o', 'm', 0x04, 0x00, // errorMessage
-                                                                                    // LDAPString,
+                'm', 'p', 'l', 'e', ',', 'd', 'c', '=', 'c', 'o',
+                'm',
+                0x04,
+                0x00, // errorMessage
+                // LDAPString,
                 // referral [3] Referral OPTIONAL }
                 // }
-                ( byte ) 0xA0, 0x1B, // A control
+                ( byte ) 0xA0,
+                0x1B, // A control
                 0x30, 0x19, 0x04, 0x17, 0x32, 0x2E, 0x31, 0x36, 0x2E, 0x38, 0x34, 0x30, 0x2E, 0x31, 0x2E, 0x31, 0x31,
                 0x33, 0x37, 0x33, 0x30, 0x2E, 0x33, 0x2E, 0x34, 0x2E, 0x32
 
@@ -207,29 +231,29 @@ public class DelResponseTest
         }
 
         // Check the decoded DelResponse PDU
-        DelResponseCodec delResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getDelResponse();
+        InternalDeleteResponse delResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getInternalDelResponse();
 
         assertEquals( 1, delResponse.getMessageId() );
         assertEquals( ResultCodeEnum.ALIAS_PROBLEM, delResponse.getLdapResult().getResultCode() );
-        assertEquals( "uid=akarasulu,dc=example,dc=com", delResponse.getLdapResult().getMatchedDN() );
+        assertEquals( "uid=akarasulu,dc=example,dc=com", delResponse.getLdapResult().getMatchedDn().getName() );
         assertEquals( "", delResponse.getLdapResult().getErrorMessage() );
 
-        // Check the length
-        assertEquals( 0x4A, delResponse.computeLength() );
-
         // Check the Control
-        List<Control> controls = delResponse.getControls();
+        Map<String, Control> controls = delResponse.getControls();
 
         assertEquals( 1, controls.size() );
 
-        Control control = delResponse.getControls( 0 );
+        Control control = controls.get( "2.16.840.1.113730.3.4.2" );
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
         assertEquals( "", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = delResponse.encode();
+            ByteBuffer bb = encoder.encodeMessage( delResponse );
+
+            // Check the length
+            assertEquals( 0x4A, bb.limit() );
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 

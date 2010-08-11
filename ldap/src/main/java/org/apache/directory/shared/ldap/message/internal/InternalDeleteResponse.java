@@ -19,6 +19,7 @@
  */
 package org.apache.directory.shared.ldap.message.internal;
 
+
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 
 
@@ -32,4 +33,17 @@ public interface InternalDeleteResponse extends InternalResultResponse
 {
     /** Delete response message type enumeration value */
     MessageTypeEnum TYPE = MessageTypeEnum.DEL_RESPONSE;
+
+
+    /**
+     * Stores the encoded length for the DeleteResponse
+     * @param deleteResponseLength The encoded length
+     */
+    void setDeleteResponseLength( int deleteResponseLength );
+
+
+    /**
+     * @return The encoded DeleteResponse's length
+     */
+    int getDeleteResponseLength();
 }
