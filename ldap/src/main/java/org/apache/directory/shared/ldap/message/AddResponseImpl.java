@@ -19,6 +19,7 @@
  */
 package org.apache.directory.shared.ldap.message;
 
+
 import org.apache.directory.shared.ldap.message.internal.InternalAbstractResultResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalAddResponse;
 
@@ -30,6 +31,9 @@ import org.apache.directory.shared.ldap.message.internal.InternalAddResponse;
  */
 public class AddResponseImpl extends InternalAbstractResultResponse implements InternalAddResponse
 {
+    /** The encoded addResponse length */
+    private int addResponseLength;
+
     // ------------------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------------------
@@ -40,10 +44,9 @@ public class AddResponseImpl extends InternalAbstractResultResponse implements I
     /**
      * Creates a Lockable AddResponse as a reply to an AddRequest.
      * 
-     * @param id
-     *            the session unique message id
+     * @param id the session unique message id
      */
-    public AddResponseImpl(final int id)
+    public AddResponseImpl( final int id )
     {
         super( id, TYPE );
     }
@@ -63,5 +66,23 @@ public class AddResponseImpl extends InternalAbstractResultResponse implements I
         sb.append( super.toString() );
 
         return sb.toString();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setAddResponseLength( int addResponseLength )
+    {
+        this.addResponseLength = addResponseLength;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public int getAddResponseLength()
+    {
+        return addResponseLength;
     }
 }

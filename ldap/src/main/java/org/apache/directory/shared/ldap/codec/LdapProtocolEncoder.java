@@ -31,9 +31,11 @@ import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.controls.CodecControl;
+import org.apache.directory.shared.ldap.message.AddResponseImpl;
 import org.apache.directory.shared.ldap.message.BindResponseImpl;
 import org.apache.directory.shared.ldap.message.DeleteResponseImpl;
 import org.apache.directory.shared.ldap.message.control.Control;
+import org.apache.directory.shared.ldap.message.internal.InternalAddResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalBindResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalDeleteResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalLdapResult;
@@ -99,7 +101,8 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
         int length = computeMessageLength( message );
         ByteBuffer buffer = ByteBuffer.allocate( length );
 
-        if ( ( message instanceof InternalBindResponse ) || ( message instanceof InternalDeleteResponse ) )
+        if ( ( message instanceof InternalBindResponse ) || ( message instanceof InternalDeleteResponse )
+            || ( message instanceof InternalAddResponse ) )
         {
             try
             {
@@ -401,6 +404,29 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
 
 
     /**
+     * Compute the AddResponse length 
+     * 
+     * AddResponse : 
+     * 
+     * 0x69 L1
+     *  |
+     *  +--> LdapResult
+     * 
+     * L1 = Length(LdapResult)
+     * 
+     * Length(AddResponse) = Length(0x69) + Length(L1) + L1
+     */
+    private int computeAddResponseLength( AddResponseImpl addResponse )
+    {
+        int addResponseLength = computeLdapResultLength( addResponse.getLdapResult() );
+
+        addResponse.setAddResponseLength( addResponseLength );
+
+        return 1 + TLV.getNbBytes( addResponseLength ) + addResponseLength;
+    }
+
+
+    /**
      * Compute the DelResponse length 
      * 
      * DelResponse :
@@ -420,6 +446,29 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
         deleteResponse.setDeleteResponseLength( deleteResponseLength );
 
         return 1 + TLV.getNbBytes( deleteResponseLength ) + deleteResponseLength;
+    }
+
+
+    /**
+     * Encode the AddResponse message to a PDU.
+     * 
+     * @param buffer The buffer where to put the PDU
+     */
+    private void encodeAddResponse( ByteBuffer buffer, AddResponseImpl addResponse ) throws EncoderException
+    {
+        try
+        {
+            // The AddResponse Tag
+            buffer.put( LdapConstants.ADD_RESPONSE_TAG );
+            buffer.put( TLV.getBytes( addResponse.getAddResponseLength() ) );
+
+            // The LdapResult
+            encodeLdapResult( buffer, addResponse.getLdapResult() );
+        }
+        catch ( BufferOverflowException boe )
+        {
+            throw new EncoderException( I18n.err( I18n.ERR_04005 ) );
+        }
     }
 
 
@@ -477,7 +526,7 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
     {
         try
         {
-            // The BindResponse Tag
+            // The DelResponse Tag
             buffer.put( LdapConstants.DEL_RESPONSE_TAG );
             buffer.put( TLV.getBytes( deleteResponse.getDeleteResponseLength() ) );
 
@@ -492,26 +541,15 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
 
 
     /**
-     * Compute the BindRequest length 
-     * 
-     * BindRequest : 
-     * <pre>
-     * 0x60 L1 
-     *   | 
-     *   +--> 0x02 0x01 (1..127) version 
-     *   +--> 0x04 L2 name 
-     *   +--> authentication 
-     *   
-     * L2 = Length(name)
-     * L3/4 = Length(authentication) 
-     * Length(BindRequest) = Length(0x60) + Length(L1) + L1 + Length(0x02) + 1 + 1 + 
-     *      Length(0x04) + Length(L2) + L2 + Length(authentication)
-     * </pre>
+     * Compute the protocolOp length 
      */
     private int computeProtocolOpLength( InternalMessage message )
     {
         switch ( message.getType() )
         {
+            case ADD_RESPONSE:
+                return computeAddResponseLength( ( AddResponseImpl ) message );
+
             case BIND_RESPONSE:
                 return computeBindResponseLength( ( BindResponseImpl ) message );
 
@@ -528,6 +566,10 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
     {
         switch ( message.getType() )
         {
+            case ADD_RESPONSE:
+                encodeAddResponse( bb, ( AddResponseImpl ) message );
+                break;
+
             case BIND_RESPONSE:
                 encodeBindResponse( bb, ( BindResponseImpl ) message );
                 break;

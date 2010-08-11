@@ -21,10 +21,12 @@ package org.apache.directory.shared.ldap.codec;
 
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.nio.ByteBuffer;
+import java.util.Collection;
 
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
@@ -32,9 +34,9 @@ import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.codec.EncoderException;
-import org.apache.directory.shared.ldap.codec.add.AddResponseCodec;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
-import org.apache.directory.shared.ldap.util.LdapURL;
+import org.apache.directory.shared.ldap.message.internal.InternalAddResponse;
+import org.apache.directory.shared.ldap.message.internal.InternalReferral;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -50,6 +52,10 @@ import org.junit.runner.RunWith;
 @Concurrent()
 public class LdapResultTest
 {
+    /** The encoder instance */
+    LdapProtocolEncoder encoder = new LdapProtocolEncoder();
+
+
     // ~ Methods
     // ------------------------------------------------------------------------------------
 
@@ -284,19 +290,19 @@ public class LdapResultTest
         }
 
         // Check the decoded AddResponse
-        AddResponseCodec addResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getAddResponse();
+        InternalAddResponse addResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getInternalAddResponse();
 
         assertEquals( 1, addResponse.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, addResponse.getLdapResult().getResultCode() );
-        assertEquals( "", addResponse.getLdapResult().getMatchedDN() );
+        assertEquals( "", addResponse.getLdapResult().getMatchedDn().getName() );
         assertEquals( "", addResponse.getLdapResult().getErrorMessage() );
-
-        // Check the length
-        assertEquals( 0x0E, addResponse.computeLength() );
 
         try
         {
-            ByteBuffer bb = addResponse.encode();
+            ByteBuffer bb = encoder.encodeMessage( addResponse );
+
+            // Check the length
+            assertEquals( 0x0E, bb.limit() );
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -347,25 +353,27 @@ public class LdapResultTest
         }
 
         // Check the decoded AddResponse
-        AddResponseCodec addResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getAddResponse();
+        InternalAddResponse addResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getInternalAddResponse();
 
         assertEquals( 1, addResponse.getMessageId() );
         assertEquals( ResultCodeEnum.REFERRAL, addResponse.getLdapResult().getResultCode() );
-        assertEquals( "", addResponse.getLdapResult().getMatchedDN() );
+        assertEquals( "", addResponse.getLdapResult().getMatchedDn().getName() );
         assertEquals( "", addResponse.getLdapResult().getErrorMessage() );
 
-        assertEquals( 1, addResponse.getLdapResult().getReferrals().size() );
+        InternalReferral referral = addResponse.getLdapResult().getReferral();
 
-        LdapURL referral = addResponse.getLdapResult().getReferrals().get( 0 );
+        assertNotNull( referral );
+        assertEquals( 1, referral.getLdapUrls().size() );
+        Collection<String> ldapUrls = referral.getLdapUrls();
 
-        assertEquals( "ldap:///", referral.toString() );
-
-        // Check the length
-        assertEquals( 0x1A, addResponse.computeLength() );
+        assertTrue( ldapUrls.contains( "ldap:///" ) );
 
         try
         {
-            ByteBuffer bb = addResponse.encode();
+            ByteBuffer bb = encoder.encodeMessage( addResponse );
+
+            // Check the length
+            assertEquals( 0x1A, bb.limit() );
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -390,12 +398,18 @@ public class LdapResultTest
         ByteBuffer stream = ByteBuffer.allocate( 0x24 );
 
         stream.put( new byte[]
-            { 0x30, 0x22, // LDAPMessage ::=SEQUENCE {
-                0x02, 0x01, 0x01, // messageID MessageID
-                0x69, 0x1D, // CHOICE { ..., addResponse AddResponse, ...
-                0x0A, 0x01, 0x0A, // resultCode success (Referral)
-                0x04, 0x00, // Empty matched DN
-                0x04, 0x00, // Empty errorMessage
+            { 0x30,
+                0x22, // LDAPMessage ::=SEQUENCE {
+                0x02, 0x01,
+                0x01, // messageID MessageID
+                0x69,
+                0x1D, // CHOICE { ..., addResponse AddResponse, ...
+                0x0A, 0x01,
+                0x0A, // resultCode success (Referral)
+                0x04,
+                0x00, // Empty matched DN
+                0x04,
+                0x00, // Empty errorMessage
                 ( byte ) 0xA3, 0x14, 0x04, 0x08, 'l', 'd', 'a', 'p', ':', '/', '/', '/', 0x04, 0x08, 'l', 'd', 'a',
                 'p', ':', '/', '/', '/' } );
 
@@ -417,29 +431,32 @@ public class LdapResultTest
         }
 
         // Check the decoded AddResponse
-        AddResponseCodec addResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getAddResponse();
+        InternalAddResponse addResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getInternalAddResponse();
 
         assertEquals( 1, addResponse.getMessageId() );
         assertEquals( ResultCodeEnum.REFERRAL, addResponse.getLdapResult().getResultCode() );
-        assertEquals( "", addResponse.getLdapResult().getMatchedDN() );
+        assertEquals( "", addResponse.getLdapResult().getMatchedDn().getName() );
         assertEquals( "", addResponse.getLdapResult().getErrorMessage() );
 
-        assertEquals( 2, addResponse.getLdapResult().getReferrals().size() );
+        InternalReferral referral = addResponse.getLdapResult().getReferral();
 
-        LdapURL referral = addResponse.getLdapResult().getReferrals().get( 0 );
+        assertNotNull( referral );
 
-        assertEquals( "ldap:///", referral.toString() );
+        assertEquals( 2, referral.getLdapUrls().size() );
 
-        referral = addResponse.getLdapResult().getReferrals().get( 1 );
+        Collection<String> ldapUrls = referral.getLdapUrls();
 
-        assertEquals( "ldap:///", referral.toString() );
-
-        // Check the length
-        assertEquals( 0x24, addResponse.computeLength() );
+        for ( String ldapUrl : ldapUrls )
+        {
+            assertEquals( "ldap:///", ldapUrl );
+        }
 
         try
         {
-            ByteBuffer bb = addResponse.encode();
+            ByteBuffer bb = encoder.encodeMessage( addResponse );
+
+            // Check the length
+            assertEquals( 0x24, bb.limit() );
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -491,29 +508,37 @@ public class LdapResultTest
         }
 
         // Check the decoded AddResponse
-        AddResponseCodec addResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getAddResponse();
+        InternalAddResponse addResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getInternalAddResponse();
 
         assertEquals( 1, addResponse.getMessageId() );
         assertEquals( ResultCodeEnum.REFERRAL, addResponse.getLdapResult().getResultCode() );
-        assertEquals( "", addResponse.getLdapResult().getMatchedDN() );
+        assertEquals( "", addResponse.getLdapResult().getMatchedDn().getName() );
         assertEquals( "", addResponse.getLdapResult().getErrorMessage() );
 
-        assertEquals( 2, addResponse.getLdapResult().getReferrals().size() );
+        InternalReferral referral = addResponse.getLdapResult().getReferral();
 
-        LdapURL referral = addResponse.getLdapResult().getReferrals().get( 0 );
+        assertNotNull( referral );
 
-        assertEquals( "ldap:///", referral.toString() );
+        assertEquals( 2, referral.getLdapUrls().size() );
 
-        referral = addResponse.getLdapResult().getReferrals().get( 1 );
+        Collection<String> ldapUrls = referral.getLdapUrls();
 
-        assertEquals( "ldap:///", referral.toString() );
+        String[] expected = new String[]
+            { "ldap:///", "" };
+        int i = 0;
 
-        // Check the length
-        assertEquals( 0x1C, addResponse.computeLength() );
+        for ( String ldapUrl : ldapUrls )
+        {
+            assertEquals( expected[i], ldapUrl );
+            i++;
+        }
 
         try
         {
-            ByteBuffer bb = addResponse.encode();
+            ByteBuffer bb = encoder.encodeMessage( addResponse );
+
+            // Check the length
+            assertEquals( 0x1C, bb.limit() );
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 

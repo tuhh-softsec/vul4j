@@ -70,7 +70,6 @@ import org.apache.directory.shared.ldap.codec.actions.StoreMatchValueAction;
 import org.apache.directory.shared.ldap.codec.actions.StoreReferenceAction;
 import org.apache.directory.shared.ldap.codec.actions.StoreTypeMatchingRuleAction;
 import org.apache.directory.shared.ldap.codec.actions.ValueAction;
-import org.apache.directory.shared.ldap.codec.add.AddResponseCodec;
 import org.apache.directory.shared.ldap.codec.compare.CompareResponseCodec;
 import org.apache.directory.shared.ldap.codec.controls.ControlEnum;
 import org.apache.directory.shared.ldap.codec.controls.ControlImpl;
@@ -101,18 +100,23 @@ import org.apache.directory.shared.ldap.message.DeleteRequestImpl;
 import org.apache.directory.shared.ldap.message.DeleteResponseImpl;
 import org.apache.directory.shared.ldap.message.ModifyDnResponseImpl;
 import org.apache.directory.shared.ldap.message.ModifyResponseImpl;
+import org.apache.directory.shared.ldap.message.ReferralImpl;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.message.SearchResponseDoneImpl;
 import org.apache.directory.shared.ldap.message.UnbindRequestImpl;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.message.internal.InternalAbandonRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalAddRequest;
+import org.apache.directory.shared.ldap.message.internal.InternalAddResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalBindRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalBindResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalCompareRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalDeleteRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalDeleteResponse;
+import org.apache.directory.shared.ldap.message.internal.InternalLdapResult;
 import org.apache.directory.shared.ldap.message.internal.InternalMessage;
+import org.apache.directory.shared.ldap.message.internal.InternalReferral;
+import org.apache.directory.shared.ldap.message.internal.InternalResultResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalUnbindRequest;
 import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.name.RDN;
@@ -1005,8 +1009,6 @@ public class LdapMessageGrammar extends AbstractGrammar
                 public void action( IAsn1Container container ) throws DecoderException
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-                    LdapResponseCodec response = ldapMessageContainer.getLdapResponse();
-                    LdapResultCodec ldapResult = response.getLdapResult();
 
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
@@ -1021,7 +1023,22 @@ public class LdapMessageGrammar extends AbstractGrammar
                         throw new DecoderException( msg );
                     }
 
-                    ldapResult.initReferrals();
+                    if ( ldapMessageContainer.isInternal() )
+                    {
+                        InternalMessage response = ldapMessageContainer.getInternalMessage();
+                        InternalLdapResult ldapResult = ( ( InternalResultResponse ) response ).getLdapResult();
+
+                        InternalReferral referral = new ReferralImpl();
+
+                        ldapResult.setReferral( referral );
+                    }
+                    else
+                    {
+                        LdapResponseCodec response = ldapMessageContainer.getLdapResponse();
+                        LdapResultCodec ldapResult = response.getLdapResult();
+
+                        ldapResult.initReferrals();
+                    }
                 }
             } );
 
@@ -2045,9 +2062,8 @@ public class LdapMessageGrammar extends AbstractGrammar
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
                     // Now, we can allocate the AddResponse Object
-                    AddResponseCodec addResponse = new AddResponseCodec();
-                    addResponse.setMessageId( ldapMessageContainer.getMessageId() );
-                    ldapMessageContainer.setLdapMessage( addResponse );
+                    InternalAddResponse addResponse = new AddResponseImpl( ldapMessageContainer.getMessageId() );
+                    ldapMessageContainer.setInternalMessage( addResponse );
 
                     // We will check that the request is not null
                     TLV tlv = ldapMessageContainer.getCurrentTLV();

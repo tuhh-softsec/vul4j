@@ -27,7 +27,6 @@ import java.util.List;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.primitives.OID;
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.codec.add.AddResponseCodec;
 import org.apache.directory.shared.ldap.codec.bind.BindRequestCodec;
 import org.apache.directory.shared.ldap.codec.bind.SaslCredentials;
 import org.apache.directory.shared.ldap.codec.bind.SimpleAuthentication;
@@ -70,7 +69,6 @@ import org.apache.directory.shared.ldap.filter.OrNode;
 import org.apache.directory.shared.ldap.filter.PresenceNode;
 import org.apache.directory.shared.ldap.filter.SimpleNode;
 import org.apache.directory.shared.ldap.filter.SubstringNode;
-import org.apache.directory.shared.ldap.message.AddResponseImpl;
 import org.apache.directory.shared.ldap.message.AliasDerefMode;
 import org.apache.directory.shared.ldap.message.BindRequestImpl;
 import org.apache.directory.shared.ldap.message.CompareResponseImpl;
@@ -676,25 +674,6 @@ public class LdapTransformer
 
 
     /**
-     * Transform a Internal AddResponse to a Codec AddResponse
-     * 
-     * @param internalMessage The incoming Internal AddResponse
-     * @return The AddResponseCodec instance
-     */
-    private static LdapMessageCodec transformAddResponse( InternalMessage internalMessage )
-    {
-        AddResponseImpl internalAddResponse = ( AddResponseImpl ) internalMessage;
-
-        AddResponseCodec addResponse = new AddResponseCodec();
-
-        // Transform the ldapResult
-        addResponse.setLdapResult( transformLdapResult( ( LdapResultImpl ) internalAddResponse.getLdapResult() ) );
-
-        return addResponse;
-    }
-
-
-    /**
      * Transform a Internal BindRequest to a Codec BindRequest
      * 
      * @param internalMessage The incoming Internal BindRequest
@@ -966,10 +945,6 @@ public class LdapTransformer
 
             case BIND_REQUEST:
                 codecMessage = transformBindRequest( msg );
-                break;
-
-            case ADD_RESPONSE:
-                codecMessage = transformAddResponse( msg );
                 break;
 
             case COMPARE_RESPONSE:
