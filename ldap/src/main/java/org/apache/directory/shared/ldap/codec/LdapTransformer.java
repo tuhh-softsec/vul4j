@@ -29,7 +29,6 @@ import org.apache.directory.shared.asn1.primitives.OID;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.add.AddResponseCodec;
 import org.apache.directory.shared.ldap.codec.bind.BindRequestCodec;
-import org.apache.directory.shared.ldap.codec.bind.BindResponseCodec;
 import org.apache.directory.shared.ldap.codec.bind.SaslCredentials;
 import org.apache.directory.shared.ldap.codec.bind.SimpleAuthentication;
 import org.apache.directory.shared.ldap.codec.compare.CompareResponseCodec;
@@ -58,7 +57,6 @@ import org.apache.directory.shared.ldap.codec.util.LdapURLEncodingException;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Modification;
 import org.apache.directory.shared.ldap.entry.Value;
-import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.filter.AndNode;
 import org.apache.directory.shared.ldap.filter.ApproximateNode;
 import org.apache.directory.shared.ldap.filter.BranchNode;
@@ -76,7 +74,6 @@ import org.apache.directory.shared.ldap.filter.SubstringNode;
 import org.apache.directory.shared.ldap.message.AddResponseImpl;
 import org.apache.directory.shared.ldap.message.AliasDerefMode;
 import org.apache.directory.shared.ldap.message.BindRequestImpl;
-import org.apache.directory.shared.ldap.message.BindResponseImpl;
 import org.apache.directory.shared.ldap.message.CompareResponseImpl;
 import org.apache.directory.shared.ldap.message.DeleteResponseImpl;
 import org.apache.directory.shared.ldap.message.ExtendedRequestImpl;
@@ -94,10 +91,8 @@ import org.apache.directory.shared.ldap.message.SearchResponseEntryImpl;
 import org.apache.directory.shared.ldap.message.SearchResponseReferenceImpl;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.message.extended.GracefulShutdownRequest;
-import org.apache.directory.shared.ldap.message.internal.InternalLdapResult;
 import org.apache.directory.shared.ldap.message.internal.InternalMessage;
 import org.apache.directory.shared.ldap.message.internal.InternalReferral;
-import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.schema.SchemaManager;
 import org.apache.directory.shared.ldap.util.LdapURL;
 import org.apache.directory.shared.ldap.util.StringTools;
@@ -117,66 +112,6 @@ public class LdapTransformer
 
     /** A speedup for logger */
     private static final boolean IS_DEBUG = LOG.isDebugEnabled();
-
-
-    /**
-     * Transform a BindResponse message from a CodecMessage to a 
-     * InternalMessage.  This is used by clients which are receiving a 
-     * BindResponse PDU and must decode it to return the Internal 
-     * representation.
-     * 
-     * @param bindResponse The message to transform
-     * @param messageId The message Id
-     * @return a Internal BindResponseImpl
-     */
-    private static InternalMessage transformBindResponse( BindResponseCodec bindResponse, int messageId )
-    {
-        BindResponseImpl internalMessage = new BindResponseImpl( messageId );
-
-        // Codec : byte[] serverSaslcreds -> Internal : byte[] serverSaslCreds
-        internalMessage.setServerSaslCreds( bindResponse.getServerSaslCreds() );
-        //transformControlsCodecToInternal( codecMessage, internalMessage );
-        transformLdapResultCodecToInternal( bindResponse.getLdapResult(), internalMessage.getLdapResult() );
-
-        return internalMessage;
-    }
-
-
-    /**
-     * Transforms parameters of a Codec LdapResult into a Internal LdapResult.
-     *
-     * @param codecLdapResult the codec LdapResult representation
-     * @param InternalResult the Internal LdapResult representation
-     */
-    private static void transformLdapResultCodecToInternal( LdapResultCodec codecLdapResult,
-        InternalLdapResult internalLdapResult )
-    {
-        internalLdapResult.setErrorMessage( codecLdapResult.getErrorMessage() );
-
-        try
-        {
-            internalLdapResult.setMatchedDn( new DN( codecLdapResult.getMatchedDN() ) );
-        }
-        catch ( LdapInvalidDnException e )
-        {
-            LOG.error( I18n.err( I18n.ERR_04111, codecLdapResult.getMatchedDN() ) );
-            internalLdapResult.setMatchedDn( new DN() );
-        }
-
-        internalLdapResult.setResultCode( codecLdapResult.getResultCode() );
-
-        if ( codecLdapResult.getReferrals() != null )
-        {
-            ReferralImpl referral = new ReferralImpl();
-
-            for ( LdapURL url : codecLdapResult.getReferrals() )
-            {
-                referral.addLdapUrl( url.toString() );
-            }
-
-            internalLdapResult.setReferral( referral );
-        }
-    }
 
 
     /**
@@ -635,6 +570,11 @@ public class LdapTransformer
      */
     public static InternalMessage transform( Object obj )
     {
+        if ( obj instanceof InternalMessage )
+        {
+            return ( InternalMessage ) obj;
+        }
+
         LdapMessageCodec codecMessage = ( LdapMessageCodec ) obj;
         int messageId = codecMessage.getMessageId();
 
@@ -664,10 +604,6 @@ public class LdapTransformer
 
             case EXTENDED_REQUEST:
                 internalMessage = transformExtendedRequest( ( ExtendedRequestCodec ) codecMessage, messageId );
-                break;
-
-            case BIND_RESPONSE:
-                internalMessage = transformBindResponse( ( BindResponseCodec ) codecMessage, messageId );
                 break;
 
             case SEARCH_RESULT_ENTRY:
@@ -757,35 +693,6 @@ public class LdapTransformer
         addResponse.setLdapResult( transformLdapResult( ( LdapResultImpl ) internalAddResponse.getLdapResult() ) );
 
         return addResponse;
-    }
-
-
-    /**
-     * Transform a Internal BindResponse to a Codec BindResponse
-     * 
-     * @param internalMessage The incoming Internal BindResponse
-     * @return The BindResponseCodec instance
-     */
-    private static LdapMessageCodec transformBindResponse( InternalMessage internalMessage )
-    {
-        BindResponseImpl internalBindResponse = ( BindResponseImpl ) internalMessage;
-
-        BindResponseCodec bindResponseCodec = new BindResponseCodec();
-
-        // Internal : byte [] serverSaslCreds -> Codec : OctetString
-        // serverSaslCreds
-        byte[] serverSaslCreds = internalBindResponse.getServerSaslCreds();
-
-        if ( serverSaslCreds != null )
-        {
-            bindResponseCodec.setServerSaslCreds( serverSaslCreds );
-        }
-
-        // Transform the ldapResult
-        bindResponseCodec
-            .setLdapResult( transformLdapResult( ( LdapResultImpl ) internalBindResponse.getLdapResult() ) );
-
-        return bindResponseCodec;
     }
 
 
@@ -1076,10 +983,6 @@ public class LdapTransformer
 
             case SEARCH_RESULT_REFERENCE:
                 codecMessage = transformSearchResultReference( msg );
-                break;
-
-            case BIND_RESPONSE:
-                codecMessage = transformBindResponse( msg );
                 break;
 
             case BIND_REQUEST:

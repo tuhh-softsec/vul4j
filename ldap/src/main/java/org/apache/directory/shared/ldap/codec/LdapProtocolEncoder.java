@@ -55,29 +55,16 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
      * Encode a Ldap request and write it to the remote server.
      * 
      * @param session The session containing the LdapMessageContainer
-     * @param request The LDAP message we have to encode to a Byte stream
+     * @param message The LDAP message we have to encode to a Byte stream
      * @param out The callback we have to invoke when the message has been encoded 
      */
-    public void encode( IoSession session, Object request, ProtocolEncoderOutput out ) throws Exception
+    public void encode( IoSession session, Object message, ProtocolEncoderOutput out ) throws Exception
     {
-        InternalMessage message = ( InternalMessage ) request;
-        ByteBuffer bb = null;
+        ByteBuffer buffer = encodeMessage( ( InternalMessage ) message );
 
-        if ( message instanceof InternalBindResponse )
-        {
-            bb = encodeMessage( message );
-        }
-        else
-        {
-            LdapMessageCodec ldapRequest = ( LdapMessageCodec ) LdapTransformer.transform( ( InternalMessage ) request );
-            bb = ldapRequest.encode();
-        }
+        IoBuffer ioBuffer = IoBuffer.wrap( buffer );
 
-        bb.flip();
-
-        IoBuffer buffer = IoBuffer.wrap( bb );
-
-        out.write( buffer );
+        out.write( ioBuffer );
     }
 
 
@@ -105,57 +92,67 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
      * @return A ByteBuffer that contains the PDU
      * @throws EncoderException If anything goes wrong.
      */
-    private ByteBuffer encodeMessage( InternalMessage message ) throws EncoderException
+    public ByteBuffer encodeMessage( InternalMessage message ) throws EncoderException
     {
         int length = computeMessageLength( message );
+        ByteBuffer buffer = ByteBuffer.allocate( length );
 
-        try
+        if ( message instanceof InternalBindResponse )
         {
-            ByteBuffer buffer = ByteBuffer.allocate( length );
-
             try
             {
-                // The LdapMessage Sequence
-                buffer.put( UniversalTag.SEQUENCE_TAG );
-
-                // The length has been calculated by the computeLength method
-                buffer.put( TLV.getBytes( message.getMessageLength() ) );
-            }
-            catch ( BufferOverflowException boe )
-            {
-                throw new EncoderException( I18n.err( I18n.ERR_04005 ) );
-            }
-
-            // The message Id
-            Value.encode( buffer, message.getMessageId() );
-
-            // Add the protocolOp part
-            encodeProtocolOp( buffer, message );
-
-            // Do the same thing for Controls, if any.
-            Map<String, Control> controls = message.getControls();
-
-            if ( ( controls != null ) && ( controls.size() > 0 ) )
-            {
-                // Encode the controls
-                buffer.put( ( byte ) LdapConstants.CONTROLS_TAG );
-                buffer.put( TLV.getBytes( message.getControlsLength() ) );
-
-                // Encode each control
-                for ( Control control : controls.values() )
+                try
                 {
-                    ( ( CodecControl ) control ).encode( buffer );
+                    // The LdapMessage Sequence
+                    buffer.put( UniversalTag.SEQUENCE_TAG );
+
+                    // The length has been calculated by the computeLength method
+                    buffer.put( TLV.getBytes( message.getMessageLength() ) );
+                }
+                catch ( BufferOverflowException boe )
+                {
+                    throw new EncoderException( I18n.err( I18n.ERR_04005 ) );
+                }
+
+                // The message Id
+                Value.encode( buffer, message.getMessageId() );
+
+                // Add the protocolOp part
+                encodeProtocolOp( buffer, message );
+
+                // Do the same thing for Controls, if any.
+                Map<String, Control> controls = message.getControls();
+
+                if ( ( controls != null ) && ( controls.size() > 0 ) )
+                {
+                    // Encode the controls
+                    buffer.put( ( byte ) LdapConstants.CONTROLS_TAG );
+                    buffer.put( TLV.getBytes( message.getControlsLength() ) );
+
+                    // Encode each control
+                    for ( Control control : controls.values() )
+                    {
+                        ( ( CodecControl ) control ).encode( buffer );
+                    }
                 }
             }
+            catch ( EncoderException ee )
+            {
+                MessageEncoderException exception = new MessageEncoderException( message.getMessageId(), ee
+                    .getMessage() );
 
-            return buffer;
+                throw exception;
+            }
         }
-        catch ( EncoderException ee )
+        else
         {
-            MessageEncoderException exception = new MessageEncoderException( message.getMessageId(), ee.getMessage() );
-
-            throw exception;
+            LdapMessageCodec ldapRequest = ( LdapMessageCodec ) LdapTransformer.transform( message );
+            buffer = ldapRequest.encode();
         }
+
+        buffer.flip();
+
+        return buffer;
     }
 
 
@@ -181,7 +178,6 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
 
         // Get the protocolOp length
         ldapMessageLength += computeProtocolOpLength( message );
-        message.setMessageLength( ldapMessageLength );
 
         Map<String, Control> controls = message.getControls();
 
@@ -222,6 +218,9 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
             // Now, add the tag and the length of the controls length
             ldapMessageLength += 1 + TLV.getNbBytes( controlsSequenceLength ) + controlsSequenceLength;
         }
+
+        // Store the messageLength
+        message.setMessageLength( ldapMessageLength );
 
         // finally, calculate the global message size :
         // length(Tag) + Length(length) + length

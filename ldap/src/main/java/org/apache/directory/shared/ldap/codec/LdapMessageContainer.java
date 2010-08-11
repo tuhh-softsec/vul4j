@@ -46,6 +46,7 @@ import org.apache.directory.shared.ldap.codec.unbind.UnBindRequestCodec;
 import org.apache.directory.shared.ldap.message.internal.InternalAbandonRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalAddRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalBindRequest;
+import org.apache.directory.shared.ldap.message.internal.InternalBindResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalCompareRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalDeleteRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalMessage;
@@ -214,6 +215,15 @@ public class LdapMessageContainer extends AbstractContainer
     public BindResponseCodec getBindResponse()
     {
         return ( BindResponseCodec ) ldapMessage;
+    }
+
+
+    /**
+     * @return Returns the BindResponse stored in the container
+     */
+    public InternalBindResponse getInternalBindResponse()
+    {
+        return ( InternalBindResponse ) internalMessage;
     }
 
 

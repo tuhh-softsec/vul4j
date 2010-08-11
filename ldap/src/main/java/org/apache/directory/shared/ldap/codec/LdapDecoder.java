@@ -223,7 +223,14 @@ public class LdapDecoder implements ProviderDecoder
                     log.debug( "Decoded LdapMessage : " + ldapMessageContainer.getLdapMessage() );
                 }
 
-                return ldapMessageContainer.getLdapMessage();
+                if ( ldapMessageContainer.isInternal() )
+                {
+                    return ldapMessageContainer.getInternalBindResponse();
+                }
+                else
+                {
+                    return ldapMessageContainer.getLdapMessage();
+                }
             }
             else
             {
