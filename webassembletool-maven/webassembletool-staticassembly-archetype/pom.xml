@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.sourceforge.webassembletool.maven</groupId>
 	<artifactId>webassembletool-staticassembly-archetype</artifactId>
-	<version>2.15</version>
+	<version>2.16-SNAPSHOT</version>
 	<packaging>maven-archetype</packaging>
 	<name>webassembletool-staticassembly-archetype</name>
 	<description>Archetype that generate a staticassembly enabled project</description>
@@ -10,7 +10,7 @@
 	<parent>		
 		<groupId>net.sourceforge.webassembletool</groupId>
 		<artifactId>webassembletool-maven</artifactId>
-		<version>2.15</version>
+		<version>2.16-SNAPSHOT</version>
 	</parent>	
 	<developers>
 		<developer>
