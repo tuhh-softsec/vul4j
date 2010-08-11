@@ -231,6 +231,28 @@ public class ExtendedResponseImplTest
             {
                 return null;
             }
+
+
+            public int getControlsLength()
+            {
+                return 0;
+            }
+
+
+            public void setControlsLength( int controlsLength )
+            {
+            }
+
+
+            public int getMessageLength()
+            {
+                return 0;
+            }
+
+
+            public void setMessageLength( int messageLength )
+            {
+            }
         };
 
         assertTrue( resp0.equals( resp1 ) );

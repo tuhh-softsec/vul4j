@@ -19,6 +19,7 @@
  */
 package org.apache.directory.shared.ldap.message.internal;
 
+
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 
 
@@ -54,4 +55,17 @@ public interface InternalBindResponse extends InternalResultResponse
      *            the sasl auth. mech. specific credentials
      */
     void setServerSaslCreds( byte[] a_serverSaslCreds );
+
+
+    /**
+     * Stores the encoded length for the BindResponse
+     * @param bindResponseLength The encoded length
+     */
+    void setBindResponseLength( int bindResponseLength );
+
+
+    /**
+     * @return The encoded BindResponse's length
+     */
+    int getBindResponseLength();
 }

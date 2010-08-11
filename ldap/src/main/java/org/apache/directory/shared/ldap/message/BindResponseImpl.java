@@ -39,6 +39,9 @@ public class BindResponseImpl extends InternalAbstractResultResponse implements 
     /** optional property holding SASL authentication response parameters */
     private byte[] serverSaslCreds;
 
+    /** The encoded bindResponse length */
+    private int bindResponseLength;
+
 
     // ------------------------------------------------------------------------
     // Constructors
@@ -184,4 +187,21 @@ public class BindResponseImpl extends InternalAbstractResultResponse implements 
         return sb.toString();
     }
 
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setBindResponseLength( int bindResponseLength )
+    {
+        this.bindResponseLength = bindResponseLength;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public int getBindResponseLength()
+    {
+        return bindResponseLength;
+    }
 }

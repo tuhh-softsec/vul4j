@@ -245,6 +245,28 @@ public class DeleteRequestImplTest
             {
                 return null;
             }
+
+
+            public int getControlsLength()
+            {
+                return 0;
+            }
+
+
+            public void setControlsLength( int controlsLength )
+            {
+            }
+
+
+            public int getMessageLength()
+            {
+                return 0;
+            }
+
+
+            public void setMessageLength( int messageLength )
+            {
+            }
         };
 
         DeleteRequestImpl req1 = new DeleteRequestImpl( 5 );

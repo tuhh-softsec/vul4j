@@ -38,11 +38,17 @@ public class LdapResultImpl implements InternalLdapResult
     /** Lowest matched entry Dn - defaults to empty string */
     private DN matchedDn;
 
+    /** Temporary storage of the byte[] representing the matchedDN */
+    private byte[] matchedDNBytes;
+
     /** Referral associated with this LdapResult if the errorCode is REFERRAL */
     private InternalReferral referral;
 
     /** Decriptive error message - defaults to empty string */
     private String errorMessage;
+
+    /** Temporary storage for message bytes */
+    private byte[] errorMessageBytes;
 
     /** Resultant operation error code - defaults to SUCCESS */
     private ResultCodeEnum resultCode = ResultCodeEnum.SUCCESS;
@@ -65,6 +71,15 @@ public class LdapResultImpl implements InternalLdapResult
 
 
     /**
+     * {@inheritDoc}
+     */
+    public byte[] getErrorMessageBytes()
+    {
+        return errorMessageBytes;
+    }
+
+
+    /**
      * Sets the descriptive error message associated with the error code. May be
      * null for SUCCESS, COMPARETRUE, and COMPAREFALSE operations.
      * 
@@ -74,6 +89,15 @@ public class LdapResultImpl implements InternalLdapResult
     public void setErrorMessage( String errorMessage )
     {
         this.errorMessage = errorMessage;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setErrorMessage( byte[] errorMessageBytes )
+    {
+        this.errorMessageBytes = errorMessageBytes;
     }
 
 
@@ -97,15 +121,32 @@ public class LdapResultImpl implements InternalLdapResult
 
 
     /**
+     * {@inheritDoc}
+     */
+    public byte[] getMatchedDnBytes()
+    {
+        return matchedDNBytes;
+    }
+
+
+    /**
      * Sets the lowest entry in the directory that was matched.
      * 
      * @see #getMatchedDn()
-     * @param matchedDn
-     *            the Dn of the lowest matched entry.
+     * @param matchedDn the Dn of the lowest matched entry.
      */
     public void setMatchedDn( DN matchedDn )
     {
         this.matchedDn = matchedDn;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setMatchedDnBytes( byte[] matchedDNBytes )
+    {
+        this.matchedDNBytes = matchedDNBytes;
     }
 
 

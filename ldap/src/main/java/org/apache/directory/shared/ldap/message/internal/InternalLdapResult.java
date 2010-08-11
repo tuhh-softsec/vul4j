@@ -20,6 +20,7 @@
 
 package org.apache.directory.shared.ldap.message.internal;
 
+
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.name.DN;
 
@@ -79,13 +80,26 @@ public interface InternalLdapResult
 
 
     /**
+     * @return the encoded MatchedDN
+     */
+    byte[] getMatchedDnBytes();
+
+
+    /**
      * Sets the lowest entry in the directory that was matched.
      * 
      * @see #getMatchedDn()
-     * @param dn
-     *            the Dn of the lowest matched entry.
+     * @param dn the Dn of the lowest matched entry.
      */
     void setMatchedDn( DN dn );
+
+
+    /**
+     * Sets the encoded value for MatchedDn
+     * 
+     * @param matchedDNBytes The encoded MatchedDN
+     */
+    void setMatchedDnBytes( byte[] matchedDNBytes );
 
 
     /**
@@ -98,13 +112,25 @@ public interface InternalLdapResult
 
 
     /**
+     * @return The encoded Error message
+     */
+    byte[] getErrorMessageBytes();
+
+
+    /**
      * Sets the descriptive error message associated with the error code. May be
      * null for SUCCESS, COMPARETRUE, and COMPAREFALSE operations.
      * 
-     * @param errorMessage
-     *            the descriptive error message.
+     * @param errorMessage the descriptive error message.
      */
     void setErrorMessage( String errorMessage );
+
+
+    /**
+     * Set the encoded message's bytes
+     * @param errorMessageBytes The encoded bytes
+     */
+    void setErrorMessage( byte[] errorMessageBytes );
 
 
     /**

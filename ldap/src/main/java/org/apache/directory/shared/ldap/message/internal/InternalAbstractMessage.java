@@ -43,6 +43,9 @@ public abstract class InternalAbstractMessage implements InternalMessage
     /** Map of message controls using OID Strings for keys and Control values */
     private final Map<String, Control> controls;
 
+    /** The encoded controls length */
+    private int controlsLength;
+
     /** The session unique message sequence identifier */
     private final int id;
 
@@ -54,6 +57,9 @@ public abstract class InternalAbstractMessage implements InternalMessage
 
     /** The current control */
     private Control currentControl;
+
+    /** The encoded message length */
+    private int messageLength;
 
 
     /**
@@ -276,5 +282,41 @@ public abstract class InternalAbstractMessage implements InternalMessage
         {
             this.controls.put( c.getOid(), c );
         }
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setControlsLength( int controlsLength )
+    {
+        this.controlsLength = controlsLength;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public int getControlsLength()
+    {
+        return controlsLength;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setMessageLength( int messageLength )
+    {
+        this.messageLength = messageLength;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public int getMessageLength()
+    {
+        return messageLength;
     }
 }

@@ -337,6 +337,28 @@ public class AddRequestImplTest
             {
                 return null;
             }
+
+
+            public int getControlsLength()
+            {
+                return 0;
+            }
+
+
+            public void setControlsLength( int controlsLength )
+            {
+            }
+
+
+            public int getMessageLength()
+            {
+                return 0;
+            }
+
+
+            public void setMessageLength( int messageLength )
+            {
+            }
         };
 
         AddRequestImpl req1 = new AddRequestImpl( 5 );

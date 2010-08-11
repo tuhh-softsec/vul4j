@@ -72,6 +72,32 @@ public interface InternalMessage
 
 
     /**
+     * Stores the encoded length for the controls
+     * @param controlsLength The encoded length
+     */
+    void setControlsLength( int controlsLength );
+
+
+    /**
+     * @return The encoded Controls' length
+     */
+    int getControlsLength();
+
+
+    /**
+     * Stores the encoded length for the message
+     * @param messageLength The encoded length
+     */
+    void setMessageLength( int messageLength );
+
+
+    /**
+     * @return The encoded Message's length
+     */
+    int getMessageLength();
+
+
+    /**
      * Adds a control to this Message.
      * 
      * @param control

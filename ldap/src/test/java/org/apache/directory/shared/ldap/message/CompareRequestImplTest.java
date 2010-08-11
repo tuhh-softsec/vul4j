@@ -312,6 +312,28 @@ public class CompareRequestImplTest
             {
                 return null;
             }
+
+
+            public int getControlsLength()
+            {
+                return 0;
+            }
+
+
+            public void setControlsLength( int controlsLength )
+            {
+            }
+
+
+            public int getMessageLength()
+            {
+                return 0;
+            }
+
+
+            public void setMessageLength( int messageLength )
+            {
+            }
         };
 
         CompareRequestImpl req1 = new CompareRequestImpl( 5 );
