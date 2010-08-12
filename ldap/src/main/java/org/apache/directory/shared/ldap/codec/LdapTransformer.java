@@ -31,7 +31,6 @@ import org.apache.directory.shared.ldap.codec.bind.BindRequestCodec;
 import org.apache.directory.shared.ldap.codec.bind.SaslCredentials;
 import org.apache.directory.shared.ldap.codec.bind.SimpleAuthentication;
 import org.apache.directory.shared.ldap.codec.extended.ExtendedRequestCodec;
-import org.apache.directory.shared.ldap.codec.extended.ExtendedResponseCodec;
 import org.apache.directory.shared.ldap.codec.intermediate.IntermediateResponseCodec;
 import org.apache.directory.shared.ldap.codec.modify.ModifyRequestCodec;
 import org.apache.directory.shared.ldap.codec.modify.ModifyResponseCodec;
@@ -71,7 +70,6 @@ import org.apache.directory.shared.ldap.filter.SubstringNode;
 import org.apache.directory.shared.ldap.message.AliasDerefMode;
 import org.apache.directory.shared.ldap.message.BindRequestImpl;
 import org.apache.directory.shared.ldap.message.ExtendedRequestImpl;
-import org.apache.directory.shared.ldap.message.ExtendedResponseImpl;
 import org.apache.directory.shared.ldap.message.IntermediateResponseImpl;
 import org.apache.directory.shared.ldap.message.LdapResultImpl;
 import org.apache.directory.shared.ldap.message.ModifyDnRequestImpl;
@@ -706,39 +704,6 @@ public class LdapTransformer
 
 
     /**
-     * Transform a Internal ExtendedResponse to a Codec ExtendedResponse
-     * 
-     * @param internalMessage The incoming Internal ExtendedResponse
-     * @return The ExtendedResponseCodec instance
-     */
-    private static LdapMessageCodec transformExtendedResponse( InternalMessage internalMessage )
-    {
-        ExtendedResponseImpl internalExtendedResponse = ( ExtendedResponseImpl ) internalMessage;
-        ExtendedResponseCodec extendedResponse = new ExtendedResponseCodec();
-
-        // Internal : String oid -> Codec : OID responseName
-        try
-        {
-            extendedResponse.setResponseName( new OID( internalExtendedResponse.getResponseName() ) );
-        }
-        catch ( DecoderException de )
-        {
-            LOG.warn( "The OID " + internalExtendedResponse.getResponseName() + " is invalid : " + de.getMessage() );
-            extendedResponse.setResponseName( null );
-        }
-
-        // Internal : byte [] value -> Codec : Object response
-        extendedResponse.setResponse( internalExtendedResponse.getResponse() );
-
-        // Transform the ldapResult
-        extendedResponse.setLdapResult( transformLdapResult( ( LdapResultImpl ) internalExtendedResponse
-            .getLdapResult() ) );
-
-        return extendedResponse;
-    }
-
-
-    /**
      * Transform a Internal IntermediateResponse to a Codec IntermediateResponse
      * 
      * @param internalMessage The incoming Internal IntermediateResponse
@@ -931,10 +896,6 @@ public class LdapTransformer
 
             case MODIFYDN_RESPONSE:
                 codecMessage = transformModifyDNResponse( msg );
-                break;
-
-            case EXTENDED_RESPONSE:
-                codecMessage = transformExtendedResponse( msg );
                 break;
 
             case INTERMEDIATE_RESPONSE:

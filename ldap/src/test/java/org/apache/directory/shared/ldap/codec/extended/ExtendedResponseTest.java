@@ -25,7 +25,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.nio.ByteBuffer;
-import java.util.List;
+import java.util.Map;
 
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
@@ -34,8 +34,10 @@ import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
+import org.apache.directory.shared.ldap.codec.LdapProtocolEncoder;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.message.control.Control;
+import org.apache.directory.shared.ldap.message.internal.InternalExtendedResponse;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -50,6 +52,10 @@ import org.junit.runner.RunWith;
 @Concurrent()
 public class ExtendedResponseTest
 {
+    /** The encoder instance */
+    LdapProtocolEncoder encoder = new LdapProtocolEncoder();
+
+
     /**
      * Test the decoding of a full ExtendedResponse
      */
@@ -96,22 +102,23 @@ public class ExtendedResponseTest
         }
 
         // Check the decoded ExtendedResponse PDU
-        ExtendedResponseCodec extendedResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getExtendedResponse();
+        InternalExtendedResponse extendedResponse = ( ( LdapMessageContainer ) ldapMessageContainer )
+            .getInternalExtendedResponse();
 
         assertEquals( 1, extendedResponse.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, extendedResponse.getLdapResult().getResultCode() );
-        assertEquals( "", extendedResponse.getLdapResult().getMatchedDN() );
+        assertEquals( "", extendedResponse.getLdapResult().getMatchedDn().getName() );
         assertEquals( "", extendedResponse.getLdapResult().getErrorMessage() );
-        assertEquals( "1.3.6.1.5.5.2", extendedResponse.getResponseName() );
-        assertEquals( "value", StringTools.utf8ToString( ( byte[] ) extendedResponse.getResponse() ) );
-
-        // Check the length
-        assertEquals( 0x24, extendedResponse.computeLength() );
+        assertEquals( "1.3.6.1.5.5.2", extendedResponse.getID() );
+        assertEquals( "value", StringTools.utf8ToString( ( byte[] ) extendedResponse.getEncodedValue() ) );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = extendedResponse.encode();
+            ByteBuffer bb = encoder.encodeMessage( extendedResponse );
+
+            // Check the length
+            assertEquals( 0x24, bb.limit() );
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -136,32 +143,38 @@ public class ExtendedResponseTest
         ByteBuffer stream = ByteBuffer.allocate( 0x41 );
 
         stream.put( new byte[]
-            { 
-            0x30, 0x3F,                 // LDAPMessage ::= SEQUENCE {
-              0x02, 0x01, 0x01,         // messageID MessageID
-                                        // CHOICE { 
-                                        //    ..., 
-                                        //    extendedResp ExtendedResponse, 
-                                        //    ...
-              0x78, 0x1D,               // ExtendedResponse ::= [APPLICATION 23] SEQUENCE {
-                                        //   COMPONENTS OF LDAPResult,
-                0x0A, 0x01, 0x00,       //   LDAPResult ::= SEQUENCE {
-                                        //     resultCode ENUMERATED {
-                                        //         success (0), ...
-                                        //     },
-                0x04, 0x00,             //     matchedDN LDAPDN,
-                0x04, 0x00,             //     errorMessage LDAPString,
-                                        //     referral [3] Referral OPTIONAL }
-                ( byte ) 0x8A, 0x0D,    //   responseName [10] LDAPOID OPTIONAL,
-                  '1', '.', '3', '.', '6', '.', '1', '.', '5', '.', '5', '.', '2',
-                ( byte ) 0x8B, 0x05,    // response [11] OCTET STRING OPTIONAL } 
-                  'v', 'a', 'l', 'u', 'e', 
-              ( byte ) 0xA0, 0x1B,      // A control
-                0x30, 0x19, 
-                  0x04, 0x17,
-                    '2', '.', '1', '6', '.', '8', '4', '0', '.', '1', '.', '1', 
-                    '1', '3', '7', '3', '0', '.', '3', '.', '4', '.', '2'
-            } );
+            {
+                0x30,
+                0x3F, // LDAPMessage ::= SEQUENCE {
+                0x02,
+                0x01,
+                0x01, // messageID MessageID
+                // CHOICE { 
+                //    ..., 
+                //    extendedResp ExtendedResponse, 
+                //    ...
+                0x78,
+                0x1D, // ExtendedResponse ::= [APPLICATION 23] SEQUENCE {
+                //   COMPONENTS OF LDAPResult,
+                0x0A,
+                0x01,
+                0x00, //   LDAPResult ::= SEQUENCE {
+                //     resultCode ENUMERATED {
+                //         success (0), ...
+                //     },
+                0x04,
+                0x00, //     matchedDN LDAPDN,
+                0x04,
+                0x00, //     errorMessage LDAPString,
+                //     referral [3] Referral OPTIONAL }
+                ( byte ) 0x8A,
+                0x0D, //   responseName [10] LDAPOID OPTIONAL,
+                '1', '.', '3', '.', '6', '.', '1', '.', '5', '.', '5', '.', '2', ( byte ) 0x8B,
+                0x05, // response [11] OCTET STRING OPTIONAL } 
+                'v', 'a', 'l', 'u', 'e', ( byte ) 0xA0,
+                0x1B, // A control
+                0x30, 0x19, 0x04, 0x17, '2', '.', '1', '6', '.', '8', '4', '0', '.', '1', '.', '1', '1', '3', '7', '3',
+                '0', '.', '3', '.', '4', '.', '2' } );
 
         String decodedPdu = StringTools.dumpBytes( stream.array() );
         stream.flip();
@@ -181,31 +194,32 @@ public class ExtendedResponseTest
         }
 
         // Check the decoded ExtendedResponse PDU
-        ExtendedResponseCodec extendedResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getExtendedResponse();
+        InternalExtendedResponse extendedResponse = ( ( LdapMessageContainer ) ldapMessageContainer )
+            .getInternalExtendedResponse();
 
         assertEquals( 1, extendedResponse.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, extendedResponse.getLdapResult().getResultCode() );
-        assertEquals( "", extendedResponse.getLdapResult().getMatchedDN() );
+        assertEquals( "", extendedResponse.getLdapResult().getMatchedDn().getName() );
         assertEquals( "", extendedResponse.getLdapResult().getErrorMessage() );
-        assertEquals( "1.3.6.1.5.5.2", extendedResponse.getResponseName() );
-        assertEquals( "value", StringTools.utf8ToString( ( byte[] ) extendedResponse.getResponse() ) );
+        assertEquals( "1.3.6.1.5.5.2", extendedResponse.getID() );
+        assertEquals( "value", StringTools.utf8ToString( ( byte[] ) extendedResponse.getEncodedValue() ) );
 
         // Check the Control
-        List<Control> controls = extendedResponse.getControls();
+        Map<String, Control> controls = extendedResponse.getControls();
 
         assertEquals( 1, controls.size() );
 
-        Control control = extendedResponse.getControls( 0 );
+        Control control = controls.get( "2.16.840.1.113730.3.4.2" );
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
         assertEquals( "", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
-
-        // Check the length
-        assertEquals( 0x41, extendedResponse.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = extendedResponse.encode();
+            ByteBuffer bb = encoder.encodeMessage( extendedResponse );
+
+            // Check the length
+            assertEquals( 0x41, bb.limit() );
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -263,20 +277,21 @@ public class ExtendedResponseTest
         }
 
         // Check the decoded ExtendedResponse PDU
-        ExtendedResponseCodec extendedResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getExtendedResponse();
+        InternalExtendedResponse extendedResponse = ( ( LdapMessageContainer ) ldapMessageContainer )
+            .getInternalExtendedResponse();
 
         assertEquals( 1, extendedResponse.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, extendedResponse.getLdapResult().getResultCode() );
-        assertEquals( "", extendedResponse.getLdapResult().getMatchedDN() );
+        assertEquals( "", extendedResponse.getLdapResult().getMatchedDn().getName() );
         assertEquals( "", extendedResponse.getLdapResult().getErrorMessage() );
-
-        // Check the length
-        assertEquals( 0x0E, extendedResponse.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = extendedResponse.encode();
+            ByteBuffer bb = encoder.encodeMessage( extendedResponse );
+
+            // Check the length
+            assertEquals( 0x0E, bb.limit() );
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -301,20 +316,29 @@ public class ExtendedResponseTest
         ByteBuffer stream = ByteBuffer.allocate( 0x2B );
 
         stream.put( new byte[]
-            { 0x30, 0x29, // LDAPMessage ::= SEQUENCE {
-                0x02, 0x01, 0x01, // messageID MessageID
+            { 0x30,
+                0x29, // LDAPMessage ::= SEQUENCE {
+                0x02,
+                0x01,
+                0x01, // messageID MessageID
                 // CHOICE { ..., extendedResp Response, ...
-                0x78, 0x07, // ExtendedResponse ::= [APPLICATION 24] SEQUENCE {
+                0x78,
+                0x07, // ExtendedResponse ::= [APPLICATION 24] SEQUENCE {
                 // COMPONENTS OF LDAPResult,
-                0x0A, 0x01, 0x00, // LDAPResult ::= SEQUENCE {
+                0x0A,
+                0x01,
+                0x00, // LDAPResult ::= SEQUENCE {
                 // resultCode ENUMERATED {
                 // success (0), ...
                 // },
-                0x04, 0x00, // matchedDN LDAPDN,
-                0x04, 0x00, // errorMessage LDAPString,
+                0x04,
+                0x00, // matchedDN LDAPDN,
+                0x04,
+                0x00, // errorMessage LDAPString,
                 // referral [3] Referral OPTIONAL }
                 // responseName [0] LDAPOID,
-                ( byte ) 0xA0, 0x1B, // A control
+                ( byte ) 0xA0,
+                0x1B, // A control
                 0x30, 0x19, 0x04, 0x17, 0x32, 0x2E, 0x31, 0x36, 0x2E, 0x38, 0x34, 0x30, 0x2E, 0x31, 0x2E, 0x31, 0x31,
                 0x33, 0x37, 0x33, 0x30, 0x2E, 0x33, 0x2E, 0x34, 0x2E, 0x32 } );
 
@@ -336,29 +360,30 @@ public class ExtendedResponseTest
         }
 
         // Check the decoded ExtendedResponse PDU
-        ExtendedResponseCodec extendedResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getExtendedResponse();
+        InternalExtendedResponse extendedResponse = ( ( LdapMessageContainer ) ldapMessageContainer )
+            .getInternalExtendedResponse();
 
         assertEquals( 1, extendedResponse.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, extendedResponse.getLdapResult().getResultCode() );
-        assertEquals( "", extendedResponse.getLdapResult().getMatchedDN() );
+        assertEquals( "", extendedResponse.getLdapResult().getMatchedDn().getName() );
         assertEquals( "", extendedResponse.getLdapResult().getErrorMessage() );
 
         // Check the Control
-        List<Control> controls = extendedResponse.getControls();
+        Map<String, Control> controls = extendedResponse.getControls();
 
         assertEquals( 1, controls.size() );
 
-        Control control = extendedResponse.getControls( 0 );
+        Control control = controls.get( "2.16.840.1.113730.3.4.2" );
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
         assertEquals( "", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
-
-        // Check the length
-        assertEquals( 0x2B, extendedResponse.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = extendedResponse.encode();
+            ByteBuffer bb = encoder.encodeMessage( extendedResponse );
+
+            // Check the length
+            assertEquals( 0x2B, bb.limit() );
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -539,22 +564,23 @@ public class ExtendedResponseTest
         }
 
         // Check the decoded ExtendedResponse PDU
-        ExtendedResponseCodec extendedResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getExtendedResponse();
+        InternalExtendedResponse extendedResponse = ( ( LdapMessageContainer ) ldapMessageContainer )
+            .getInternalExtendedResponse();
 
         assertEquals( 1, extendedResponse.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, extendedResponse.getLdapResult().getResultCode() );
-        assertEquals( "", extendedResponse.getLdapResult().getMatchedDN() );
+        assertEquals( "", extendedResponse.getLdapResult().getMatchedDn().getName() );
         assertEquals( "", extendedResponse.getLdapResult().getErrorMessage() );
-        assertEquals( "1.3.6.1.5.5.2", extendedResponse.getResponseName() );
-        assertEquals( "", StringTools.utf8ToString( ( byte[] ) extendedResponse.getResponse() ) );
-
-        // Check the length
-        assertEquals( 0x1D, extendedResponse.computeLength() );
+        assertEquals( "1.3.6.1.5.5.2", extendedResponse.getID() );
+        assertEquals( "", StringTools.utf8ToString( ( byte[] ) extendedResponse.getEncodedValue() ) );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = extendedResponse.encode();
+            ByteBuffer bb = encoder.encodeMessage( extendedResponse );
+
+            // Check the length
+            assertEquals( 0x1D, bb.limit() );
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -579,20 +605,30 @@ public class ExtendedResponseTest
         ByteBuffer stream = ByteBuffer.allocate( 0x3A );
 
         stream.put( new byte[]
-            { 0x30, 0x38, // LDAPMessage ::= SEQUENCE {
-                0x02, 0x01, 0x01, // messageID MessageID
+            {
+                0x30,
+                0x38, // LDAPMessage ::= SEQUENCE {
+                0x02,
+                0x01,
+                0x01, // messageID MessageID
                 // CHOICE { ..., extendedResp Response, ...
-                0x78, 0x16, // ExtendedResponse ::= [APPLICATION 24] SEQUENCE {
+                0x78,
+                0x16, // ExtendedResponse ::= [APPLICATION 24] SEQUENCE {
                 // COMPONENTS OF LDAPResult,
-                0x0A, 0x01, 0x00, // LDAPResult ::= SEQUENCE {
+                0x0A,
+                0x01,
+                0x00, // LDAPResult ::= SEQUENCE {
                 // resultCode ENUMERATED {
                 // success (0), ...
                 // },
-                0x04, 0x00, // matchedDN LDAPDN,
-                0x04, 0x00, // errorMessage LDAPString,
+                0x04,
+                0x00, // matchedDN LDAPDN,
+                0x04,
+                0x00, // errorMessage LDAPString,
                 // referral [3] Referral OPTIONAL }
                 // responseName [0] LDAPOID,
-                ( byte ) 0x8A, 0x0D, '1', '.', '3', '.', '6', '.', '1', '.', '5', '.', '5', '.', '2', ( byte ) 0xA0,
+                ( byte ) 0x8A, 0x0D, '1', '.', '3', '.', '6', '.', '1', '.', '5', '.', '5', '.', '2',
+                ( byte ) 0xA0,
                 0x1B, // A control
                 0x30, 0x19, 0x04, 0x17, 0x32, 0x2E, 0x31, 0x36, 0x2E, 0x38, 0x34, 0x30, 0x2E, 0x31, 0x2E, 0x31, 0x31,
                 0x33, 0x37, 0x33, 0x30, 0x2E, 0x33, 0x2E, 0x34, 0x2E, 0x32 } );
@@ -615,31 +651,32 @@ public class ExtendedResponseTest
         }
 
         // Check the decoded ExtendedResponse PDU
-        ExtendedResponseCodec extendedResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getExtendedResponse();
+        InternalExtendedResponse extendedResponse = ( ( LdapMessageContainer ) ldapMessageContainer )
+            .getInternalExtendedResponse();
 
         assertEquals( 1, extendedResponse.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, extendedResponse.getLdapResult().getResultCode() );
-        assertEquals( "", extendedResponse.getLdapResult().getMatchedDN() );
+        assertEquals( "", extendedResponse.getLdapResult().getMatchedDn().getName() );
         assertEquals( "", extendedResponse.getLdapResult().getErrorMessage() );
-        assertEquals( "1.3.6.1.5.5.2", extendedResponse.getResponseName() );
-        assertEquals( "", StringTools.utf8ToString( ( byte[] ) extendedResponse.getResponse() ) );
+        assertEquals( "1.3.6.1.5.5.2", extendedResponse.getID() );
+        assertEquals( "", StringTools.utf8ToString( ( byte[] ) extendedResponse.getEncodedValue() ) );
 
         // Check the Control
-        List<Control> controls = extendedResponse.getControls();
+        Map<String, Control> controls = extendedResponse.getControls();
 
         assertEquals( 1, controls.size() );
 
-        Control control = extendedResponse.getControls( 0 );
+        Control control = controls.get( "2.16.840.1.113730.3.4.2" );
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
         assertEquals( "", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
-
-        // Check the length
-        assertEquals( 0x3A, extendedResponse.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = extendedResponse.encode();
+            ByteBuffer bb = encoder.encodeMessage( extendedResponse );
+
+            // Check the length
+            assertEquals( 0x3A, bb.limit() );
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -664,17 +701,25 @@ public class ExtendedResponseTest
         ByteBuffer stream = ByteBuffer.allocate( 0x1F );
 
         stream.put( new byte[]
-            { 0x30, 0x1D, // LDAPMessage ::= SEQUENCE {
-                0x02, 0x01, 0x01, // messageID MessageID
+            { 0x30,
+                0x1D, // LDAPMessage ::= SEQUENCE {
+                0x02,
+                0x01,
+                0x01, // messageID MessageID
                 // CHOICE { ..., extendedResp Response, ...
-                0x78, 0x18, // ExtendedResponse ::= [APPLICATION 24] SEQUENCE {
+                0x78,
+                0x18, // ExtendedResponse ::= [APPLICATION 24] SEQUENCE {
                 // COMPONENTS OF LDAPResult,
-                0x0A, 0x01, 0x00, // LDAPResult ::= SEQUENCE {
+                0x0A,
+                0x01,
+                0x00, // LDAPResult ::= SEQUENCE {
                 // resultCode ENUMERATED {
                 // success (0), ...
                 // },
-                0x04, 0x00, // matchedDN LDAPDN,
-                0x04, 0x00, // errorMessage LDAPString,
+                0x04,
+                0x00, // matchedDN LDAPDN,
+                0x04,
+                0x00, // errorMessage LDAPString,
                 // referral [3] Referral OPTIONAL }
                 // responseName [0] LDAPOID,
                 ( byte ) 0x8A, 0x0D, '1', '.', '3', '.', '6', '.', '1', '.', '5', '.', '5', '.', '2', ( byte ) 0x8B,
@@ -698,22 +743,23 @@ public class ExtendedResponseTest
         }
 
         // Check the decoded ExtendedResponse PDU
-        ExtendedResponseCodec extendedResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getExtendedResponse();
+        InternalExtendedResponse extendedResponse = ( ( LdapMessageContainer ) ldapMessageContainer )
+            .getInternalExtendedResponse();
 
         assertEquals( 1, extendedResponse.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, extendedResponse.getLdapResult().getResultCode() );
-        assertEquals( "", extendedResponse.getLdapResult().getMatchedDN() );
+        assertEquals( "", extendedResponse.getLdapResult().getMatchedDn().getName() );
         assertEquals( "", extendedResponse.getLdapResult().getErrorMessage() );
-        assertEquals( "1.3.6.1.5.5.2", extendedResponse.getResponseName() );
-        assertEquals( "", StringTools.utf8ToString( ( byte[] ) extendedResponse.getResponse() ) );
-
-        // Check the length
-        assertEquals( 0x1F, extendedResponse.computeLength() );
+        assertEquals( "1.3.6.1.5.5.2", extendedResponse.getID() );
+        assertEquals( "", StringTools.utf8ToString( ( byte[] ) extendedResponse.getEncodedValue() ) );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = extendedResponse.encode();
+            ByteBuffer bb = encoder.encodeMessage( extendedResponse );
+
+            // Check the length
+            assertEquals( 0x1F, bb.limit() );
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -739,21 +785,31 @@ public class ExtendedResponseTest
         ByteBuffer stream = ByteBuffer.allocate( 0x3C );
 
         stream.put( new byte[]
-            { 0x30, 0x3A, // LDAPMessage ::= SEQUENCE {
-                0x02, 0x01, 0x01, // messageID MessageID
+            {
+                0x30,
+                0x3A, // LDAPMessage ::= SEQUENCE {
+                0x02,
+                0x01,
+                0x01, // messageID MessageID
                 // CHOICE { ..., extendedResp Response, ...
-                0x78, 0x18, // ExtendedResponse ::= [APPLICATION 24] SEQUENCE {
+                0x78,
+                0x18, // ExtendedResponse ::= [APPLICATION 24] SEQUENCE {
                 // COMPONENTS OF LDAPResult,
-                0x0A, 0x01, 0x00, // LDAPResult ::= SEQUENCE {
+                0x0A,
+                0x01,
+                0x00, // LDAPResult ::= SEQUENCE {
                 // resultCode ENUMERATED {
                 // success (0), ...
                 // },
-                0x04, 0x00, // matchedDN LDAPDN,
-                0x04, 0x00, // errorMessage LDAPString,
+                0x04,
+                0x00, // matchedDN LDAPDN,
+                0x04,
+                0x00, // errorMessage LDAPString,
                 // referral [3] Referral OPTIONAL }
                 // responseName [0] LDAPOID,
                 ( byte ) 0x8A, 0x0D, '1', '.', '3', '.', '6', '.', '1', '.', '5', '.', '5', '.', '2', ( byte ) 0x8B,
-                0x00, ( byte ) 0xA0, 0x1B, // A control
+                0x00, ( byte ) 0xA0,
+                0x1B, // A control
                 0x30, 0x19, 0x04, 0x17, 0x32, 0x2E, 0x31, 0x36, 0x2E, 0x38, 0x34, 0x30, 0x2E, 0x31, 0x2E, 0x31, 0x31,
                 0x33, 0x37, 0x33, 0x30, 0x2E, 0x33, 0x2E, 0x34, 0x2E, 0x32 } );
 
@@ -775,31 +831,32 @@ public class ExtendedResponseTest
         }
 
         // Check the decoded ExtendedResponse PDU
-        ExtendedResponseCodec extendedResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getExtendedResponse();
+        InternalExtendedResponse extendedResponse = ( ( LdapMessageContainer ) ldapMessageContainer )
+            .getInternalExtendedResponse();
 
         assertEquals( 1, extendedResponse.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, extendedResponse.getLdapResult().getResultCode() );
-        assertEquals( "", extendedResponse.getLdapResult().getMatchedDN() );
+        assertEquals( "", extendedResponse.getLdapResult().getMatchedDn().getName() );
         assertEquals( "", extendedResponse.getLdapResult().getErrorMessage() );
-        assertEquals( "1.3.6.1.5.5.2", extendedResponse.getResponseName() );
-        assertEquals( "", StringTools.utf8ToString( ( byte[] ) extendedResponse.getResponse() ) );
+        assertEquals( "1.3.6.1.5.5.2", extendedResponse.getID() );
+        assertEquals( "", StringTools.utf8ToString( ( byte[] ) extendedResponse.getEncodedValue() ) );
 
         // Check the Control
-        List<Control> controls = extendedResponse.getControls();
+        Map<String, Control> controls = extendedResponse.getControls();
 
         assertEquals( 1, controls.size() );
 
-        Control control = extendedResponse.getControls( 0 );
+        Control control = controls.get( "2.16.840.1.113730.3.4.2" );
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
         assertEquals( "", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
-
-        // Check the length
-        assertEquals( 0x3C, extendedResponse.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = extendedResponse.encode();
+            ByteBuffer bb = encoder.encodeMessage( extendedResponse );
+
+            // Check the length
+            assertEquals( 0x3C, bb.limit() );
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 

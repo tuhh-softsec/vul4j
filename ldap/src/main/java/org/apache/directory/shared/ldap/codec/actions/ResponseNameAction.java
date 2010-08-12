@@ -27,7 +27,7 @@ import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.primitives.OID;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
-import org.apache.directory.shared.ldap.codec.extended.ExtendedResponseCodec;
+import org.apache.directory.shared.ldap.message.internal.InternalExtendedResponse;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,10 +46,12 @@ public class ResponseNameAction extends GrammarAction
     /** Speedup for logs */
     private static final boolean IS_DEBUG = log.isDebugEnabled();
 
+
     public ResponseNameAction()
     {
         super( "Store response name" );
     }
+
 
     /**
      * The initialization action
@@ -59,7 +61,7 @@ public class ResponseNameAction extends GrammarAction
         LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
         // We can allocate the ExtendedResponse Object
-        ExtendedResponseCodec extendedResponse = ldapMessageContainer.getExtendedResponse();
+        InternalExtendedResponse extendedResponse = ldapMessageContainer.getInternalExtendedResponse();
 
         // Get the Value and store it in the ExtendedResponse
         TLV tlv = ldapMessageContainer.getCurrentTLV();
@@ -74,8 +76,7 @@ public class ResponseNameAction extends GrammarAction
         }
         else
         {
-            extendedResponse
-                .setResponseName( new OID( StringTools.asciiBytesToString( tlv.getValue().getData() ) ) );
+            extendedResponse.setID( new OID( StringTools.asciiBytesToString( tlv.getValue().getData() ) ).toString() );
         }
 
         // We can have an END transition
@@ -83,7 +84,7 @@ public class ResponseNameAction extends GrammarAction
 
         if ( IS_DEBUG )
         {
-            log.debug( "OID read : {}", extendedResponse.getResponseName() );
+            log.debug( "OID read : {}", extendedResponse.getID() );
         }
     }
 }

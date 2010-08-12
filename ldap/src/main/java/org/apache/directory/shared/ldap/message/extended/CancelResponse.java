@@ -45,7 +45,7 @@ public class CancelResponse extends ExtendedResponseImpl
      */
     public CancelResponse( int messageId, ResultCodeEnum rcode )
     {
-        super( messageId, null );
+        super( messageId );
 
         switch ( rcode )
         {
@@ -68,7 +68,7 @@ public class CancelResponse extends ExtendedResponseImpl
 
     public CancelResponse( int messageId )
     {
-        super( messageId, null );
+        super( messageId );
         super.getLdapResult().setMatchedDn( null );
         super.getLdapResult().setResultCode( ResultCodeEnum.SUCCESS );
     }

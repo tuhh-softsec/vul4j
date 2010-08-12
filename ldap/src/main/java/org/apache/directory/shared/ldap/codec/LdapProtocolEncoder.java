@@ -35,11 +35,13 @@ import org.apache.directory.shared.ldap.message.AddResponseImpl;
 import org.apache.directory.shared.ldap.message.BindResponseImpl;
 import org.apache.directory.shared.ldap.message.CompareResponseImpl;
 import org.apache.directory.shared.ldap.message.DeleteResponseImpl;
+import org.apache.directory.shared.ldap.message.ExtendedResponseImpl;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.message.internal.InternalAddResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalBindResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalCompareResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalDeleteResponse;
+import org.apache.directory.shared.ldap.message.internal.InternalExtendedResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalLdapResult;
 import org.apache.directory.shared.ldap.message.internal.InternalMessage;
 import org.apache.directory.shared.ldap.message.internal.InternalReferral;
@@ -104,7 +106,8 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
         ByteBuffer buffer = ByteBuffer.allocate( length );
 
         if ( ( message instanceof InternalBindResponse ) || ( message instanceof InternalDeleteResponse )
-            || ( message instanceof InternalAddResponse ) || ( message instanceof InternalCompareResponse ) )
+            || ( message instanceof InternalAddResponse ) || ( message instanceof InternalCompareResponse )
+            || ( message instanceof InternalExtendedResponse ) )
         {
             try
             {
@@ -373,6 +376,29 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
 
 
     /**
+     * Compute the AddResponse length 
+     * 
+     * AddResponse : 
+     * 
+     * 0x69 L1
+     *  |
+     *  +--> LdapResult
+     * 
+     * L1 = Length(LdapResult)
+     * 
+     * Length(AddResponse) = Length(0x69) + Length(L1) + L1
+     */
+    private int computeAddResponseLength( AddResponseImpl addResponse )
+    {
+        int addResponseLength = computeLdapResultLength( addResponse.getLdapResult() );
+
+        addResponse.setAddResponseLength( addResponseLength );
+
+        return 1 + TLV.getNbBytes( addResponseLength ) + addResponseLength;
+    }
+
+
+    /**
      * Compute the BindResponse length 
      * 
      * BindResponse : 
@@ -402,29 +428,6 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
         bindResponse.setBindResponseLength( bindResponseLength );
 
         return 1 + TLV.getNbBytes( bindResponseLength ) + bindResponseLength;
-    }
-
-
-    /**
-     * Compute the AddResponse length 
-     * 
-     * AddResponse : 
-     * 
-     * 0x69 L1
-     *  |
-     *  +--> LdapResult
-     * 
-     * L1 = Length(LdapResult)
-     * 
-     * Length(AddResponse) = Length(0x69) + Length(L1) + L1
-     */
-    private int computeAddResponseLength( AddResponseImpl addResponse )
-    {
-        int addResponseLength = computeLdapResultLength( addResponse.getLdapResult() );
-
-        addResponse.setAddResponseLength( addResponseLength );
-
-        return 1 + TLV.getNbBytes( addResponseLength ) + addResponseLength;
     }
 
 
@@ -471,6 +474,54 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
         deleteResponse.setDeleteResponseLength( deleteResponseLength );
 
         return 1 + TLV.getNbBytes( deleteResponseLength ) + deleteResponseLength;
+    }
+
+
+    /**
+     * Compute the ExtendedResponse length
+     * 
+     * ExtendedResponse :
+     * 
+     * 0x78 L1
+     *  |
+     *  +--> LdapResult
+     * [+--> 0x8A L2 name
+     * [+--> 0x8B L3 response]]
+     * 
+     * L1 = Length(LdapResult)
+     *      [ + Length(0x8A) + Length(L2) + L2
+     *       [ + Length(0x8B) + Length(L3) + L3]]
+     * 
+     * Length(ExtendedResponse) = Length(0x78) + Length(L1) + L1
+     * 
+     * @return The ExtendedResponse length
+     */
+    private int computeExtendedResponseLength( InternalExtendedResponse extendedResponse )
+    {
+        int ldapResultLength = computeLdapResultLength( extendedResponse.getLdapResult() );
+
+        int extendedResponseLength = ldapResultLength;
+
+        String id = extendedResponse.getID();
+
+        if ( id != null )
+        {
+            byte[] idBytes = StringTools.getBytesUtf8( id );
+            extendedResponse.setIDBytes( idBytes );
+            int idLength = idBytes.length;
+            extendedResponseLength += 1 + TLV.getNbBytes( idLength ) + idLength;
+        }
+
+        byte[] encodedValue = extendedResponse.getEncodedValue();
+
+        if ( encodedValue != null )
+        {
+            extendedResponseLength += 1 + TLV.getNbBytes( encodedValue.length ) + encodedValue.length;
+        }
+
+        extendedResponse.setExtendedResponseLength( extendedResponseLength );
+
+        return 1 + TLV.getNbBytes( extendedResponseLength ) + extendedResponseLength;
     }
 
 
@@ -590,6 +641,64 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
 
 
     /**
+     * Encode the ExtendedResponse message to a PDU. 
+     * ExtendedResponse :
+     * LdapResult.encode()
+     * [0x8A LL response name]
+     * [0x8B LL response]
+     * 
+     * @param buffer The buffer where to put the PDU
+     * @return The PDU.
+     */
+    private void encodeExtendedResponse( ByteBuffer buffer, ExtendedResponseImpl extendedResponse )
+        throws EncoderException
+    {
+        try
+        {
+            // The ExtendedResponse Tag
+            buffer.put( LdapConstants.EXTENDED_RESPONSE_TAG );
+            buffer.put( TLV.getBytes( extendedResponse.getExtendedResponseLength() ) );
+
+            // The LdapResult
+            encodeLdapResult( buffer, extendedResponse.getLdapResult() );
+
+            // The ID, if any
+            byte[] idBytes = extendedResponse.getIDBytes();
+
+            if ( idBytes != null )
+            {
+                buffer.put( ( byte ) LdapConstants.EXTENDED_RESPONSE_RESPONSE_NAME_TAG );
+                buffer.put( TLV.getBytes( idBytes.length ) );
+
+                if ( idBytes.length != 0 )
+                {
+                    buffer.put( idBytes );
+                }
+            }
+
+            // The encodedValue, if any
+            byte[] encodedValue = extendedResponse.getEncodedValue();
+
+            if ( encodedValue != null )
+            {
+                buffer.put( ( byte ) LdapConstants.EXTENDED_RESPONSE_RESPONSE_TAG );
+
+                buffer.put( TLV.getBytes( encodedValue.length ) );
+
+                if ( encodedValue.length != 0 )
+                {
+                    buffer.put( encodedValue );
+                }
+            }
+        }
+        catch ( BufferOverflowException boe )
+        {
+            throw new EncoderException( I18n.err( I18n.ERR_04005 ) );
+        }
+    }
+
+
+    /**
      * Compute the protocolOp length 
      */
     private int computeProtocolOpLength( InternalMessage message )
@@ -607,6 +716,9 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
 
             case DEL_RESPONSE:
                 return computeDeleteResponseLength( ( DeleteResponseImpl ) message );
+
+            case EXTENDED_RESPONSE:
+                return computeExtendedResponseLength( ( ExtendedResponseImpl ) message );
 
             default:
                 return 0;
@@ -632,6 +744,10 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
 
             case DEL_RESPONSE:
                 encodeDeleteResponse( bb, ( DeleteResponseImpl ) message );
+                break;
+
+            case EXTENDED_RESPONSE:
+                encodeExtendedResponse( bb, ( ExtendedResponseImpl ) message );
                 break;
         }
     }

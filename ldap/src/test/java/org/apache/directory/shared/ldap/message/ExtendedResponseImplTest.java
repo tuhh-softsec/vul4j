@@ -59,8 +59,8 @@ public class ExtendedResponseImplTest
     {
         // Construct the Search response to test with results and referrals
         ExtendedResponseImpl response = new ExtendedResponseImpl( 45 );
-        response.setResponse( "Hello World!".getBytes() );
-        response.setResponseName( "1.1.1.1" );
+        response.setEncodedValue( "Hello World!".getBytes() );
+        response.setID( "1.1.1.1" );
         InternalLdapResult result = response.getLdapResult();
 
         try
@@ -118,24 +118,24 @@ public class ExtendedResponseImplTest
             private static final long serialVersionUID = 5297000474419901408L;
 
 
-            public String getResponseName()
+            public String getID()
             {
                 return "1.1.1.1";
             }
 
 
-            public void setResponseName( String a_oid )
+            public void setID( String a_oid )
             {
             }
 
 
-            public byte[] getResponse()
+            public byte[] getEncodedValue()
             {
                 return "Hello World!".getBytes();
             }
 
 
-            public void setResponse( byte[] a_value )
+            public void setEncodedValue( byte[] a_value )
             {
             }
 
@@ -204,18 +204,6 @@ public class ExtendedResponseImplTest
             }
 
 
-            public String getID()
-            {
-                return "1.1.1.1";
-            }
-
-
-            public byte[] getEncodedValue()
-            {
-                return getResponse();
-            }
-
-
             public void addAll( Control[] controls ) throws MessageException
             {
             }
@@ -251,6 +239,28 @@ public class ExtendedResponseImplTest
 
 
             public void setMessageLength( int messageLength )
+            {
+            }
+
+
+            public int getExtendedResponseLength()
+            {
+                return 0;
+            }
+
+
+            public void setExtendedResponseLength( int extendedResponseLength )
+            {
+            }
+
+
+            public byte[] getIDBytes()
+            {
+                return null;
+            }
+
+
+            public void setIDBytes( byte[] oidBytes )
             {
             }
         };
@@ -304,9 +314,9 @@ public class ExtendedResponseImplTest
     public void testNotEqualsDiffNames()
     {
         ExtendedResponseImpl resp0 = createStub();
-        resp0.setResponseName( "1.2.3.4" );
+        resp0.setID( "1.2.3.4" );
         ExtendedResponseImpl resp1 = createStub();
-        resp1.setResponseName( "1.2.3.4.5" );
+        resp1.setID( "1.2.3.4.5" );
 
         assertFalse( resp0.equals( resp1 ) );
         assertFalse( resp1.equals( resp0 ) );
@@ -320,9 +330,9 @@ public class ExtendedResponseImplTest
     public void testNotEqualsDiffResponses()
     {
         ExtendedResponseImpl resp0 = createStub();
-        resp0.setResponse( "abc".getBytes() );
+        resp0.setEncodedValue( "abc".getBytes() );
         ExtendedResponseImpl resp1 = createStub();
-        resp1.setResponse( "123".getBytes() );
+        resp1.setEncodedValue( "123".getBytes() );
 
         assertFalse( resp0.equals( resp1 ) );
         assertFalse( resp1.equals( resp0 ) );

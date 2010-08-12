@@ -25,7 +25,7 @@ import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
-import org.apache.directory.shared.ldap.codec.extended.ExtendedResponseCodec;
+import org.apache.directory.shared.ldap.message.internal.InternalExtendedResponse;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,10 +44,12 @@ public class ResponseAction extends GrammarAction
     /** Speedup for logs */
     private static final boolean IS_DEBUG = log.isDebugEnabled();
 
+
     public ResponseAction()
     {
         super( "Store response" );
     }
+
 
     /**
      * The initialization action
@@ -58,7 +60,7 @@ public class ResponseAction extends GrammarAction
         LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
         // We can allocate the ExtendedResponse Object
-        ExtendedResponseCodec extendedResponse = ldapMessageContainer.getExtendedResponse();
+        InternalExtendedResponse extendedResponse = ldapMessageContainer.getInternalExtendedResponse();
 
         // Get the Value and store it in the ExtendedResponse
         TLV tlv = ldapMessageContainer.getCurrentTLV();
@@ -67,11 +69,11 @@ public class ResponseAction extends GrammarAction
         // OID
         if ( tlv.getLength() == 0 )
         {
-            extendedResponse.setResponse( StringTools.EMPTY_BYTES );
+            extendedResponse.setEncodedValue( StringTools.EMPTY_BYTES );
         }
         else
         {
-            extendedResponse.setResponse( tlv.getValue().getData() );
+            extendedResponse.setEncodedValue( tlv.getValue().getData() );
         }
 
         // We can have an END transition
@@ -79,7 +81,7 @@ public class ResponseAction extends GrammarAction
 
         if ( IS_DEBUG )
         {
-            log.debug( "Extended value : {}", extendedResponse.getResponse() );
+            log.debug( "Extended value : {}", extendedResponse.getEncodedValue() );
         }
     }
 }

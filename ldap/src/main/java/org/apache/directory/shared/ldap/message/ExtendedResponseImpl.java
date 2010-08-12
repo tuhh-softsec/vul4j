@@ -27,7 +27,7 @@ import org.apache.directory.shared.ldap.message.internal.InternalExtendedRespons
 
 
 /**
- * Lockable ExtendedResponse implementation
+ * ExtendedResponse implementation
  * 
  * @author <a href="mailto:dev@directory.apache.org"> Apache Directory Project</a>
  */
@@ -38,8 +38,14 @@ public class ExtendedResponseImpl extends InternalAbstractResultResponse impleme
     /** Object identifier for the extended response */
     protected String oid;
 
+    /** The response name as a byte[] */
+    private byte[] oidBytes;
+
     /** Values encoded in the extended response payload */
     protected byte[] value;
+
+    /** The encoded extendedResponse length */
+    private int extendedResponseLength;
 
 
     // ------------------------------------------------------------------------
@@ -47,10 +53,9 @@ public class ExtendedResponseImpl extends InternalAbstractResultResponse impleme
     // ------------------------------------------------------------------------
 
     /**
-     * Creates a Lockable ExtendedResponse as a reply to an ExtendedRequest.
+     * Creates an ExtendedResponse as a reply to an ExtendedRequest.
      * 
-     * @param id
-     *            the session unique message id
+     * @param id the session unique message id
      */
     public ExtendedResponseImpl( final int id, String oid )
     {
@@ -68,32 +73,13 @@ public class ExtendedResponseImpl extends InternalAbstractResultResponse impleme
     // ------------------------------------------------------------------------
     // ExtendedResponse Interface Method Implementations
     // ------------------------------------------------------------------------
-
-    /**
-     * Gets the reponse OID specific encoded response values.
-     * 
-     * @return the response specific encoded response values.
-     */
-    public byte[] getResponse()
-    {
-        if ( value == null )
-        {
-            return null;
-        }
-
-        final byte[] copy = new byte[value.length];
-        System.arraycopy( value, 0, copy, 0, value.length );
-        return copy;
-    }
-
-
     /**
      * Sets the response OID specific encoded response values.
      * 
      * @param value
      *            the response specific encoded response values.
      */
-    public void setResponse( byte[] value )
+    public void setEncodedValue( byte[] value )
     {
         if ( value != null )
         {
@@ -107,21 +93,14 @@ public class ExtendedResponseImpl extends InternalAbstractResultResponse impleme
     }
 
 
-    public void setOid( String oid )
-    {
-        this.oid = oid;
-    }
-
-
     /**
-     * Gets the OID uniquely identifying this extended response (a.k.a. its
-     * name).
+     * Gets the OID bytes.
      * 
-     * @return the OID of the extended response type.
+     * @return the OID bytes of the extended response type.
      */
-    public String getResponseName()
+    public byte[] getIDBytes()
     {
-        return oid;
+        return oidBytes;
     }
 
 
@@ -129,12 +108,22 @@ public class ExtendedResponseImpl extends InternalAbstractResultResponse impleme
      * Sets the OID uniquely identifying this extended response (a.k.a. its
      * name).
      * 
-     * @param oid
-     *            the OID of the extended response type.
+     * @param oid the OID of the extended response type.
      */
-    public void setResponseName( String oid )
+    public void setID( String oid )
     {
         this.oid = oid;
+    }
+
+
+    /**
+     * Sets the OID bytes.
+     * 
+     * @param oidBytes the OID bytes of the extended response type.
+     */
+    public void setIDBytes( byte[] oidBytes )
+    {
+        this.oidBytes = oidBytes;
     }
 
 
@@ -185,32 +174,32 @@ public class ExtendedResponseImpl extends InternalAbstractResultResponse impleme
 
         InternalExtendedResponse resp = ( InternalExtendedResponse ) obj;
 
-        if ( oid != null && resp.getResponseName() == null )
+        if ( ( oid != null ) && ( resp.getID() == null ) )
         {
             return false;
         }
 
-        if ( oid == null && resp.getResponseName() != null )
+        if ( ( oid == null ) && ( resp.getID() != null ) )
         {
             return false;
         }
 
-        if ( oid != null && resp.getResponseName() != null && !oid.equals( resp.getResponseName() ) )
+        if ( ( oid != null ) && ( resp.getID() != null ) && !oid.equals( resp.getID() ) )
         {
             return false;
         }
 
-        if ( value != null && resp.getResponse() == null )
+        if ( ( value != null ) && ( resp.getEncodedValue() == null ) )
         {
             return false;
         }
 
-        if ( value == null && resp.getResponse() != null )
+        if ( ( value == null ) && ( resp.getEncodedValue() != null ) )
         {
             return false;
         }
 
-        if ( value != null && resp.getResponse() != null && !Arrays.equals( value, resp.getResponse() ) )
+        if ( ( value != null ) && ( resp.getEncodedValue() != null ) && !Arrays.equals( value, resp.getEncodedValue() ) )
         {
             return false;
         }
@@ -219,14 +208,50 @@ public class ExtendedResponseImpl extends InternalAbstractResultResponse impleme
     }
 
 
+    /**
+     * Gets the OID uniquely identifying this extended response (a.k.a. its
+     * name).
+     * 
+     * @return the OID of the extended response type.
+     */
     public String getID()
     {
-        return getResponseName();
+        return oid;
     }
 
 
+    /**
+     * Gets the reponse OID specific encoded response values.
+     * 
+     * @return the response specific encoded response values.
+     */
     public byte[] getEncodedValue()
     {
-        return getResponse();
+        if ( value == null )
+        {
+            return null;
+        }
+
+        final byte[] copy = new byte[value.length];
+        System.arraycopy( value, 0, copy, 0, value.length );
+        return copy;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setExtendedResponseLength( int extendedResponseLength )
+    {
+        this.extendedResponseLength = extendedResponseLength;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public int getExtendedResponseLength()
+    {
+        return extendedResponseLength;
     }
 }

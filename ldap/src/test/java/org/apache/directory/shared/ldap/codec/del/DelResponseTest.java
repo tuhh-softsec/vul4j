@@ -120,7 +120,7 @@ public class DelResponseTest
             ByteBuffer bb = encoder.encodeMessage( delResponse );
 
             // Check the length
-            assertEquals( 0x02D, bb.limit() );
+            assertEquals( 0x2D, bb.limit() );
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 

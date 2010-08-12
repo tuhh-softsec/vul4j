@@ -19,6 +19,7 @@
  */
 package org.apache.directory.shared.ldap.message.internal;
 
+
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 
 
@@ -40,17 +41,32 @@ public interface InternalExtendedResponse extends InternalResultResponse, javax.
      * 
      * @return the OID of the extended response type.
      */
-    String getResponseName();
+    String getID();
+
+
+    /**
+     * Gets the OID bytes.
+     * 
+     * @return the OID bytes of the extended response type.
+     */
+    byte[] getIDBytes();
 
 
     /**
      * Sets the OID uniquely identifying this extended response (a.k.a. its
      * name).
      * 
-     * @param oid
-     *            the OID of the extended response type.
+     * @param oidv the OID of the extended response type.
      */
-    void setResponseName( String oid );
+    void setID( String oid );
+
+
+    /**
+     * Sets the OID bytes.
+     * 
+     * @param oidBytes the OID bytes of the extended response type.
+     */
+    void setIDBytes( byte[] oidBytes );
 
 
     /**
@@ -58,7 +74,7 @@ public interface InternalExtendedResponse extends InternalResultResponse, javax.
      * 
      * @return the response specific encoded response values.
      */
-    byte[] getResponse();
+    byte[] getEncodedValue();
 
 
     /**
@@ -67,5 +83,18 @@ public interface InternalExtendedResponse extends InternalResultResponse, javax.
      * @param value
      *            the response specific encoded response values.
      */
-    void setResponse( byte[] value );
+    void setEncodedValue( byte[] value );
+
+
+    /**
+     * Stores the encoded length for the ExtendedResponse
+     * @param extendedResponseLength The encoded length
+     */
+    void setExtendedResponseLength( int extendedResponseLength );
+
+
+    /**
+     * @return The encoded ExtendedResponse's length
+     */
+    int getExtendedResponseLength();
 }
