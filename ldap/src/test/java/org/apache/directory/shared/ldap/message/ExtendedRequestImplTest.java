@@ -69,12 +69,12 @@ public class ExtendedRequestImplTest
     public void testEqualsExactCopy()
     {
         ExtendedRequestImpl req0 = new ExtendedRequestImpl( 5 );
-        req0.setOid( "1.1.1.1" );
-        req0.setPayload( "Hello World!".getBytes() );
+        req0.setID( "1.1.1.1" );
+        req0.setEncodedValue( "Hello World!".getBytes() );
 
         ExtendedRequestImpl req1 = new ExtendedRequestImpl( 5 );
-        req1.setOid( "1.1.1.1" );
-        req1.setPayload( "Hello World!".getBytes() );
+        req1.setID( "1.1.1.1" );
+        req1.setEncodedValue( "Hello World!".getBytes() );
 
         assertTrue( req0.equals( req1 ) );
         assertTrue( req1.equals( req0 ) );
@@ -99,12 +99,12 @@ public class ExtendedRequestImplTest
     public void testHashCodeExactCopy()
     {
         ExtendedRequestImpl req0 = new ExtendedRequestImpl( 5 );
-        req0.setOid( "1.1.1.1" );
-        req0.setPayload( "Hello World!".getBytes() );
+        req0.setID( "1.1.1.1" );
+        req0.setEncodedValue( "Hello World!".getBytes() );
 
         ExtendedRequestImpl req1 = new ExtendedRequestImpl( 5 );
-        req1.setOid( "1.1.1.1" );
-        req1.setPayload( "Hello World!".getBytes() );
+        req1.setID( "1.1.1.1" );
+        req1.setEncodedValue( "Hello World!".getBytes() );
 
         assertTrue( req0.hashCode() == req1.hashCode() );
     }
@@ -131,12 +131,12 @@ public class ExtendedRequestImplTest
     public void testNotEqualDiffOID()
     {
         ExtendedRequestImpl req0 = new ExtendedRequestImpl( 5 );
-        req0.setOid( "1.1.1.1" );
-        req0.setPayload( "Hello World!".getBytes() );
+        req0.setID( "1.1.1.1" );
+        req0.setEncodedValue( "Hello World!".getBytes() );
 
         ExtendedRequestImpl req1 = new ExtendedRequestImpl( 5 );
-        req0.setOid( "1.2.2.1" );
-        req0.setPayload( "Hello World!".getBytes() );
+        req0.setID( "1.2.2.1" );
+        req0.setEncodedValue( "Hello World!".getBytes() );
 
         assertFalse( req0.equals( req1 ) );
         assertFalse( req1.equals( req0 ) );
@@ -150,12 +150,12 @@ public class ExtendedRequestImplTest
     public void testNotEqualDiffValue()
     {
         ExtendedRequestImpl req0 = new ExtendedRequestImpl( 5 );
-        req0.setOid( "1.1.1.1" );
-        req0.setPayload( "Hello ".getBytes() );
+        req0.setID( "1.1.1.1" );
+        req0.setEncodedValue( "Hello ".getBytes() );
 
         ExtendedRequestImpl req1 = new ExtendedRequestImpl( 5 );
-        req0.setOid( "1.1.1.1" );
-        req0.setPayload( "World!".getBytes() );
+        req0.setID( "1.1.1.1" );
+        req0.setEncodedValue( "World!".getBytes() );
 
         assertFalse( req0.equals( req1 ) );
         assertFalse( req1.equals( req0 ) );
@@ -180,18 +180,18 @@ public class ExtendedRequestImplTest
             }
 
 
-            public void setOid( String oid )
+            public void setID( String oid )
             {
             }
 
 
-            public byte[] getPayload()
+            public byte[] getEncodedValue()
             {
                 return null;
             }
 
 
-            public void setPayload( byte[] payload )
+            public void setEncodedValue( byte[] payload )
             {
             }
 
@@ -255,12 +255,6 @@ public class ExtendedRequestImplTest
 
 
             public String getID()
-            {
-                return null;
-            }
-
-
-            public byte[] getEncodedValue()
             {
                 return null;
             }

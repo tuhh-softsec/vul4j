@@ -73,7 +73,7 @@ public class GracefulShutdownRequest extends ExtendedRequestImpl
     public GracefulShutdownRequest( int messageId, int timeOffline, int delay )
     {
         super( messageId );
-        setOid( EXTENSION_OID );
+        setID( EXTENSION_OID );
         this.timeOffline = timeOffline;
         this.delay = delay;
     }
@@ -142,7 +142,7 @@ public class GracefulShutdownRequest extends ExtendedRequestImpl
             }
         }
 
-        return super.getPayload();
+        return super.getEncodedValue();
     }
 
 

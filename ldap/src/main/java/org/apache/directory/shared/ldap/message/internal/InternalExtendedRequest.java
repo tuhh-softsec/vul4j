@@ -19,6 +19,7 @@
  */
 package org.apache.directory.shared.ldap.message.internal;
 
+
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.message.SingleReplyRequest;
 
@@ -70,16 +71,15 @@ public interface InternalExtendedRequest extends SingleReplyRequest, javax.namin
      * 
      * @return the dotted-decimal representation as a String of the OID
      */
-    String getOid();
+    String getID();
 
 
     /**
      * Sets the Object Idendifier corresponding to the extended request type.
      * 
-     * @param oid
-     *            the dotted-decimal representation as a String of the OID
+     * @param oid the dotted-decimal representation as a String of the OID
      */
-    void setOid( String oid );
+    void setID( String oid );
 
 
     /**
@@ -89,14 +89,13 @@ public interface InternalExtendedRequest extends SingleReplyRequest, javax.namin
      * 
      * @return byte array of data
      */
-    byte[] getPayload();
+    byte[] getEncodedValue();
 
 
     /**
      * Sets the extended request's <b>requestValue</b> portion of the PDU.
      * 
-     * @param payload
-     *            byte array of data encapsulating ext. req. parameters
+     * @param payload byte array of data encapsulating ext. req. parameters
      */
-    void setPayload( byte[] payload );
+    void setEncodedValue( byte[] payload );
 }

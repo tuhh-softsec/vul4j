@@ -66,7 +66,7 @@ public class CertGenerationRequest extends ExtendedRequestImpl
     public CertGenerationRequest( int messageId, String targerDN, String issuerDN, String subjectDN, String keyAlgorithm )
     {
         super( messageId );
-        setOid( EXTENSION_OID );
+        setID( EXTENSION_OID );
 
         this.certGenObj = new CertGenerationObject();
         certGenObj.setTargetDN( targerDN );

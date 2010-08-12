@@ -73,7 +73,6 @@ import org.apache.directory.shared.ldap.codec.actions.ValueAction;
 import org.apache.directory.shared.ldap.codec.controls.ControlEnum;
 import org.apache.directory.shared.ldap.codec.controls.ControlImpl;
 import org.apache.directory.shared.ldap.codec.extended.ExtendedRequestCodec;
-import org.apache.directory.shared.ldap.codec.intermediate.IntermediateResponseCodec;
 import org.apache.directory.shared.ldap.codec.modify.ModifyRequestCodec;
 import org.apache.directory.shared.ldap.codec.modifyDn.ModifyDNRequestCodec;
 import org.apache.directory.shared.ldap.codec.search.ExtensibleMatchFilter;
@@ -95,6 +94,7 @@ import org.apache.directory.shared.ldap.message.CompareResponseImpl;
 import org.apache.directory.shared.ldap.message.DeleteRequestImpl;
 import org.apache.directory.shared.ldap.message.DeleteResponseImpl;
 import org.apache.directory.shared.ldap.message.ExtendedResponseImpl;
+import org.apache.directory.shared.ldap.message.IntermediateResponseImpl;
 import org.apache.directory.shared.ldap.message.ModifyDnResponseImpl;
 import org.apache.directory.shared.ldap.message.ModifyResponseImpl;
 import org.apache.directory.shared.ldap.message.ReferralImpl;
@@ -112,6 +112,7 @@ import org.apache.directory.shared.ldap.message.internal.InternalCompareResponse
 import org.apache.directory.shared.ldap.message.internal.InternalDeleteRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalDeleteResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalExtendedResponse;
+import org.apache.directory.shared.ldap.message.internal.InternalIntermediateResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalLdapResult;
 import org.apache.directory.shared.ldap.message.internal.InternalMessage;
 import org.apache.directory.shared.ldap.message.internal.InternalModifyDnResponse;
@@ -3184,9 +3185,9 @@ public class LdapMessageGrammar extends AbstractGrammar
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
                     // Now, we can allocate the IntermediateResponse Object
-                    IntermediateResponseCodec intermediateResponse = new IntermediateResponseCodec();
-                    intermediateResponse.setMessageId( ldapMessageContainer.getMessageId() );
-                    ldapMessageContainer.setLdapMessage( intermediateResponse );
+                    InternalIntermediateResponse intermediateResponse = new IntermediateResponseImpl(
+                        ldapMessageContainer.getMessageId() );
+                    ldapMessageContainer.setInternalMessage( intermediateResponse );
 
                     log.debug( "Intermediate Response" );
                 }
@@ -3210,7 +3211,8 @@ public class LdapMessageGrammar extends AbstractGrammar
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
                     // We can get the IntermediateResponse Object
-                    IntermediateResponseCodec intermediateResponse = ldapMessageContainer.getIntermediateResponse();
+                    InternalIntermediateResponse intermediateResponse = ldapMessageContainer
+                        .getInternalIntermediateResponse();
 
                     // Get the Value and store it in the IntermediateResponse
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
@@ -3230,8 +3232,9 @@ public class LdapMessageGrammar extends AbstractGrammar
 
                         try
                         {
-                            OID oid = new OID( StringTools.utf8ToString( responseNameBytes ) );
-                            intermediateResponse.setResponseName( oid );
+                            String oidStr = StringTools.utf8ToString( responseNameBytes );
+                            OID oid = new OID( oidStr );
+                            intermediateResponse.setResponseName( oidStr );
                         }
                         catch ( DecoderException de )
                         {
@@ -3273,7 +3276,8 @@ public class LdapMessageGrammar extends AbstractGrammar
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
                     // We can get the IntermediateResponse Object
-                    IntermediateResponseCodec intermediateResponse = ldapMessageContainer.getIntermediateResponse();
+                    InternalIntermediateResponse intermediateResponse = ldapMessageContainer
+                        .getInternalIntermediateResponse();
 
                     // Get the Value and store it in the IntermediateResponse
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
@@ -3316,7 +3320,8 @@ public class LdapMessageGrammar extends AbstractGrammar
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
                     // We can allocate the ExtendedRequest Object
-                    IntermediateResponseCodec intermediateResponse = ldapMessageContainer.getIntermediateResponse();
+                    InternalIntermediateResponse intermediateResponse = ldapMessageContainer
+                        .getInternalIntermediateResponse();
 
                     // Get the Value and store it in the IntermediateResponse
                     TLV tlv = ldapMessageContainer.getCurrentTLV();

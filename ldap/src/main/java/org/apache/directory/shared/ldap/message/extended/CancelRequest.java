@@ -71,7 +71,7 @@ public class CancelRequest extends ExtendedRequestImpl
     public CancelRequest( int messageId, int cancelId )
     {
         super( messageId );
-        setOid( EXTENSION_OID );
+        setID( EXTENSION_OID );
 
         this.cancelId = cancelId;
     }
@@ -111,7 +111,7 @@ public class CancelRequest extends ExtendedRequestImpl
             }
         }
 
-        return super.getPayload();
+        return super.getEncodedValue();
     }
 
 

@@ -28,7 +28,6 @@ import org.apache.directory.shared.ldap.codec.compare.CompareRequestCodec;
 import org.apache.directory.shared.ldap.codec.controls.AbstractControl;
 import org.apache.directory.shared.ldap.codec.del.DelRequestCodec;
 import org.apache.directory.shared.ldap.codec.extended.ExtendedRequestCodec;
-import org.apache.directory.shared.ldap.codec.intermediate.IntermediateResponseCodec;
 import org.apache.directory.shared.ldap.codec.modify.ModifyRequestCodec;
 import org.apache.directory.shared.ldap.codec.modifyDn.ModifyDNRequestCodec;
 import org.apache.directory.shared.ldap.codec.search.SearchRequestCodec;
@@ -46,6 +45,7 @@ import org.apache.directory.shared.ldap.message.internal.InternalCompareResponse
 import org.apache.directory.shared.ldap.message.internal.InternalDeleteRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalDeleteResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalExtendedResponse;
+import org.apache.directory.shared.ldap.message.internal.InternalIntermediateResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalMessage;
 import org.apache.directory.shared.ldap.message.internal.InternalModifyDnResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalModifyResponse;
@@ -292,9 +292,9 @@ public class LdapMessageContainer extends AbstractContainer
     /**
      * @return Returns the IntermediateResponse stored in the container
      */
-    public IntermediateResponseCodec getIntermediateResponse()
+    public InternalIntermediateResponse getInternalIntermediateResponse()
     {
-        return ( IntermediateResponseCodec ) ldapMessage;
+        return ( InternalIntermediateResponse ) internalMessage;
     }
 
 

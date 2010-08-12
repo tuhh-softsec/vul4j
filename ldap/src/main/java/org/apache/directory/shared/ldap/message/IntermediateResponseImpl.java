@@ -38,8 +38,14 @@ public class IntermediateResponseImpl extends InternalAbstractResultResponse imp
     /** ResponseName for the intermediate response */
     protected String oid;
 
+    /** The response name as a byte[] */
+    private byte[] oidBytes;
+
     /** Response Value for the intermediate response */
     protected byte[] value;
+
+    /** The encoded intermediateResponse length */
+    private int intermediateResponseLength;
 
 
     // ------------------------------------------------------------------------
@@ -93,26 +99,46 @@ public class IntermediateResponseImpl extends InternalAbstractResultResponse imp
 
 
     /**
-     * Gets the OID uniquely identifying this Intemediate response (a.k.a. its
+     * Gets the OID uniquely identifying this Intermediate response (a.k.a. its
      * name).
      * 
-     * @return the OID of the Intemediate response type.
+     * @return the OID of the Intermediate response type.
      */
     public String getResponseName()
     {
-        return oid;
+        return ( ( oid == null ) ? "" : oid );
     }
 
 
     /**
-     * Sets the OID uniquely identifying this Intemediate response (a.k.a. its
+     * Gets the OID bytes
+     * 
+     * @return the OID bytes of the Intermediate response type.
+     */
+    public byte[] getOidBytes()
+    {
+        return oidBytes;
+    }
+
+
+    /**
+     * Sets the OID uniquely identifying this Intermediate response (a.k.a. its
      * name).
      * 
-     * @param oid the OID of the Intemediate response type.
+     * @param oid the OID of the Intermediate response type.
      */
     public void setResponseName( String oid )
     {
         this.oid = oid;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setOidBytes( byte[] oidBytes )
+    {
+        this.oidBytes = oidBytes;
     }
 
 
@@ -194,5 +220,23 @@ public class IntermediateResponseImpl extends InternalAbstractResultResponse imp
         }
 
         return true;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setIntermediateResponseLength( int intermediateResponseLength )
+    {
+        this.intermediateResponseLength = intermediateResponseLength;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public int getIntermediateResponseLength()
+    {
+        return intermediateResponseLength;
     }
 }

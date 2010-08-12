@@ -36,6 +36,7 @@ import org.apache.directory.shared.ldap.message.BindResponseImpl;
 import org.apache.directory.shared.ldap.message.CompareResponseImpl;
 import org.apache.directory.shared.ldap.message.DeleteResponseImpl;
 import org.apache.directory.shared.ldap.message.ExtendedResponseImpl;
+import org.apache.directory.shared.ldap.message.IntermediateResponseImpl;
 import org.apache.directory.shared.ldap.message.ModifyDnResponseImpl;
 import org.apache.directory.shared.ldap.message.ModifyResponseImpl;
 import org.apache.directory.shared.ldap.message.control.Control;
@@ -44,6 +45,7 @@ import org.apache.directory.shared.ldap.message.internal.InternalBindResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalCompareResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalDeleteResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalExtendedResponse;
+import org.apache.directory.shared.ldap.message.internal.InternalIntermediateResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalLdapResult;
 import org.apache.directory.shared.ldap.message.internal.InternalMessage;
 import org.apache.directory.shared.ldap.message.internal.InternalModifyDnResponse;
@@ -112,7 +114,7 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
         if ( ( message instanceof InternalBindResponse ) || ( message instanceof InternalDeleteResponse )
             || ( message instanceof InternalAddResponse ) || ( message instanceof InternalCompareResponse )
             || ( message instanceof InternalExtendedResponse ) || ( message instanceof InternalModifyResponse )
-            || ( message instanceof InternalModifyDnResponse ) )
+            || ( message instanceof InternalModifyDnResponse ) || ( message instanceof InternalIntermediateResponse ) )
         {
             try
             {
@@ -577,6 +579,49 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
 
 
     /**
+     * Compute the intermediateResponse length
+     * 
+     * intermediateResponse :
+     * 
+     * 0x79 L1
+     *  |
+     * [+--> 0x80 L2 name
+     * [+--> 0x81 L3 response]]
+     * 
+     * L1 = [ + Length(0x80) + Length(L2) + L2
+     *      [ + Length(0x81) + Length(L3) + L3]]
+     * 
+     * Length(IntermediateResponse) = Length(0x79) + Length(L1) + L1
+     * 
+     * @return The IntermediateResponse length
+     */
+    private int computeIntermediateResponseLength( InternalIntermediateResponse intermediateResponse )
+    {
+        int intermediateResponseLength = 0;
+
+        if ( !StringTools.isEmpty( intermediateResponse.getResponseName() ) )
+        {
+            byte[] responseNameBytes = StringTools.getBytesUtf8( intermediateResponse.getResponseName() );
+
+            int responseNameLength = responseNameBytes.length;
+            intermediateResponseLength += 1 + TLV.getNbBytes( responseNameLength ) + responseNameLength;
+            intermediateResponse.setOidBytes( responseNameBytes );
+        }
+
+        byte[] encodedValue = intermediateResponse.getResponseValue();
+
+        if ( encodedValue != null )
+        {
+            intermediateResponseLength += 1 + TLV.getNbBytes( encodedValue.length ) + encodedValue.length;
+        }
+
+        intermediateResponse.setIntermediateResponseLength( intermediateResponseLength );
+
+        return 1 + TLV.getNbBytes( intermediateResponseLength ) + intermediateResponseLength;
+    }
+
+
+    /**
      * Encode the AddResponse message to a PDU.
      * 
      * @param buffer The buffer where to put the PDU
@@ -750,6 +795,56 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
 
 
     /**
+     * Encode the IntermediateResponse message to a PDU. 
+     * IntermediateResponse :
+     *   0x79 LL
+     *     [0x80 LL response name]
+     *     [0x81 LL responseValue]
+     * 
+     * @param buffer The buffer where to put the PDU
+     */
+    private void encodeIntermediateResponse( ByteBuffer buffer, IntermediateResponseImpl intermediateResponse )
+        throws EncoderException
+    {
+        try
+        {
+            // The ExtendedResponse Tag
+            buffer.put( LdapConstants.INTERMEDIATE_RESPONSE_TAG );
+            buffer.put( TLV.getBytes( intermediateResponse.getIntermediateResponseLength() ) );
+
+            // The responseName, if any
+            byte[] responseNameBytes = intermediateResponse.getOidBytes();
+
+            if ( ( responseNameBytes != null ) && ( responseNameBytes.length != 0 ) )
+            {
+                buffer.put( ( byte ) LdapConstants.INTERMEDIATE_RESPONSE_NAME_TAG );
+                buffer.put( TLV.getBytes( responseNameBytes.length ) );
+                buffer.put( responseNameBytes );
+            }
+
+            // The encodedValue, if any
+            byte[] encodedValue = intermediateResponse.getResponseValue();
+
+            if ( encodedValue != null )
+            {
+                buffer.put( ( byte ) LdapConstants.INTERMEDIATE_RESPONSE_VALUE_TAG );
+
+                buffer.put( TLV.getBytes( encodedValue.length ) );
+
+                if ( encodedValue.length != 0 )
+                {
+                    buffer.put( encodedValue );
+                }
+            }
+        }
+        catch ( BufferOverflowException boe )
+        {
+            throw new EncoderException( I18n.err( I18n.ERR_04005 ) );
+        }
+    }
+
+
+    /**
      * Encode the ModifyResponse message to a PDU.
      * 
      * @param buffer The buffer where to put the PDU
@@ -818,6 +913,9 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
             case EXTENDED_RESPONSE:
                 return computeExtendedResponseLength( ( ExtendedResponseImpl ) message );
 
+            case INTERMEDIATE_RESPONSE:
+                return computeIntermediateResponseLength( ( IntermediateResponseImpl ) message );
+
             case MODIFY_RESPONSE:
                 return computeModifyResponseLength( ( ModifyResponseImpl ) message );
 
@@ -852,6 +950,10 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
 
             case EXTENDED_RESPONSE:
                 encodeExtendedResponse( bb, ( ExtendedResponseImpl ) message );
+                break;
+
+            case INTERMEDIATE_RESPONSE:
+                encodeIntermediateResponse( bb, ( IntermediateResponseImpl ) message );
                 break;
 
             case MODIFY_RESPONSE:

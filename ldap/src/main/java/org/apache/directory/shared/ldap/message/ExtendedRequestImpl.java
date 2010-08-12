@@ -72,24 +72,11 @@ public class ExtendedRequestImpl extends InternalAbstractRequest implements Inte
     // -----------------------------------------------------------------------
 
     /**
-     * Gets the Object Idendifier corresponding to the extended request type.
-     * This is the <b>requestName</b> portion of the ext. req. PDU.
-     * 
-     * @return the dotted-decimal representation as a String of the OID
-     */
-    public String getOid()
-    {
-        return oid;
-    }
-
-
-    /**
      * Sets the Object Idendifier corresponding to the extended request type.
      * 
-     * @param oid
-     *            the dotted-decimal representation as a String of the OID
+     * @param oid the dotted-decimal representation as a String of the OID
      */
-    public void setOid( String oid )
+    public void setID( String oid )
     {
         this.oid = oid;
     }
@@ -102,7 +89,7 @@ public class ExtendedRequestImpl extends InternalAbstractRequest implements Inte
      * 
      * @return byte array of data
      */
-    public byte[] getPayload()
+    public byte[] getEncodedValue()
     {
         if ( payload == null )
         {
@@ -118,10 +105,9 @@ public class ExtendedRequestImpl extends InternalAbstractRequest implements Inte
     /**
      * Sets the extended request's <b>requestValue</b> portion of the PDU.
      * 
-     * @param payload
-     *            byte array of data encapsulating ext. req. parameters
+     * @param payload byte array of data encapsulating ext. req. parameters
      */
-    public void setPayload( byte[] payload )
+    public void setEncodedValue( byte[] payload )
     {
         if ( payload != null )
         {
@@ -214,32 +200,33 @@ public class ExtendedRequestImpl extends InternalAbstractRequest implements Inte
 
         InternalExtendedRequest req = ( InternalExtendedRequest ) obj;
 
-        if ( ( oid != null ) && ( req.getOid() == null ) )
+        if ( ( oid != null ) && ( req.getID() == null ) )
         {
             return false;
         }
 
-        if ( ( oid == null ) && ( req.getOid() != null ) )
+        if ( ( oid == null ) && ( req.getID() != null ) )
         {
             return false;
         }
 
-        if ( ( oid != null ) && ( req.getOid() != null ) && !oid.equals( req.getOid() ) )
+        if ( ( oid != null ) && ( req.getID() != null ) && !oid.equals( req.getID() ) )
         {
             return false;
         }
 
-        if ( ( payload != null ) && ( req.getPayload() == null ) )
+        if ( ( payload != null ) && ( req.getEncodedValue() == null ) )
         {
             return false;
         }
 
-        if ( ( payload == null ) && ( req.getPayload() != null ) )
+        if ( ( payload == null ) && ( req.getEncodedValue() != null ) )
         {
             return false;
         }
 
-        if ( ( payload != null ) && ( req.getPayload() != null ) && !Arrays.equals( payload, req.getPayload() ) )
+        if ( ( payload != null ) && ( req.getEncodedValue() != null )
+            && !Arrays.equals( payload, req.getEncodedValue() ) )
         {
             return false;
         }
@@ -270,15 +257,15 @@ public class ExtendedRequestImpl extends InternalAbstractRequest implements Inte
     }
 
 
+    /**
+     * Gets the Object Idendifier corresponding to the extended request type.
+     * This is the <b>requestName</b> portion of the ext. req. PDU.
+     * 
+     * @return the dotted-decimal representation as a String of the OID
+     */
     public String getID()
     {
-        return getOid();
-    }
-
-
-    public byte[] getEncodedValue()
-    {
-        return getPayload();
+        return oid;
     }
 
 

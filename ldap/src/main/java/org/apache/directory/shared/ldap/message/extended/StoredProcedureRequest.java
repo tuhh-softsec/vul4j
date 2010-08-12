@@ -56,7 +56,7 @@ public class StoredProcedureRequest extends ExtendedRequestImpl
     public StoredProcedureRequest( int messageId )
     {
         super( messageId );
-        this.setOid( EXTENSION_OID );
+        this.setID( EXTENSION_OID );
         this.procedure = new StoredProcedure();
     }
 
@@ -64,7 +64,7 @@ public class StoredProcedureRequest extends ExtendedRequestImpl
     public StoredProcedureRequest( int messageId, String procedure, String language )
     {
         super( messageId );
-        this.setOid( EXTENSION_OID );
+        this.setID( EXTENSION_OID );
         this.procedure = new StoredProcedure();
         this.setLanguage( language );
         this.setProcedure( procedure );

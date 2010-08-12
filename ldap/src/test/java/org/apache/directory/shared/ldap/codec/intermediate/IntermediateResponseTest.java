@@ -25,7 +25,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.nio.ByteBuffer;
-import java.util.List;
+import java.util.Map;
 
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
@@ -34,7 +34,9 @@ import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
+import org.apache.directory.shared.ldap.codec.LdapProtocolEncoder;
 import org.apache.directory.shared.ldap.message.control.Control;
+import org.apache.directory.shared.ldap.message.internal.InternalIntermediateResponse;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -49,6 +51,10 @@ import org.junit.runner.RunWith;
 @Concurrent()
 public class IntermediateResponseTest
 {
+    /** The encoder instance */
+    LdapProtocolEncoder encoder = new LdapProtocolEncoder();
+
+
     /**
      * Test the decoding of a full IntermediateResponse
      */
@@ -60,16 +66,14 @@ public class IntermediateResponseTest
         ByteBuffer stream = ByteBuffer.allocate( 0x1D );
 
         stream.put( new byte[]
-            { 
-              0x30, 0x1B,               // LDAPMessage ::= SEQUENCE {
-                0x02, 0x01, 0x01,       // messageID MessageID
-                                        // CHOICE { ..., intermediateResponse IntermediateResponse, ...
-                0x79, 0x16,             // IntermediateResponse ::= [APPLICATION 25] SEQUENCE {
-                                        // responseName [0] LDAPOID,
-                  ( byte ) 0x80, 0x0D, '1', '.', '3', '.', '6', '.', '1', '.', '5', '.', '5', '.', '2',
-                                        // responseValue [1] OCTET STRING OPTIONAL }
-                  ( byte ) 0x81, 0x05, 'v', 'a', 'l', 'u', 'e' 
-            } );
+            { 0x30, 0x1B, // LDAPMessage ::= SEQUENCE {
+                0x02, 0x01, 0x01, // messageID MessageID
+                // CHOICE { ..., intermediateResponse IntermediateResponse, ...
+                0x79, 0x16, // IntermediateResponse ::= [APPLICATION 25] SEQUENCE {
+                // responseName [0] LDAPOID,
+                ( byte ) 0x80, 0x0D, '1', '.', '3', '.', '6', '.', '1', '.', '5', '.', '5', '.', '2',
+                // responseValue [1] OCTET STRING OPTIONAL }
+                ( byte ) 0x81, 0x05, 'v', 'a', 'l', 'u', 'e' } );
 
         String decodedPdu = StringTools.dumpBytes( stream.array() );
         stream.flip();
@@ -89,19 +93,20 @@ public class IntermediateResponseTest
         }
 
         // Check the decoded IntermediateResponse PDU
-        IntermediateResponseCodec intermediateResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getIntermediateResponse();
+        InternalIntermediateResponse intermediateResponse = ( ( LdapMessageContainer ) ldapMessageContainer )
+            .getInternalIntermediateResponse();
 
         assertEquals( 1, intermediateResponse.getMessageId() );
         assertEquals( "1.3.6.1.5.5.2", intermediateResponse.getResponseName() );
         assertEquals( "value", StringTools.utf8ToString( intermediateResponse.getResponseValue() ) );
 
-        // Check the length
-        assertEquals( 0x1D, intermediateResponse.computeLength() );
-
         // Check the encoding
         try
         {
-            ByteBuffer bb = intermediateResponse.encode();
+            ByteBuffer bb = encoder.encodeMessage( intermediateResponse );
+
+            // Check the length
+            assertEquals( 0x1D, bb.limit() );
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -126,21 +131,20 @@ public class IntermediateResponseTest
         ByteBuffer stream = ByteBuffer.allocate( 0x3A );
 
         stream.put( new byte[]
-            { 
-            0x30, 0x38,                 // LDAPMessage ::= SEQUENCE {
-              0x02, 0x01, 0x01,         // messageID MessageID
-                                        // CHOICE { ..., intermediateResponse IntermediateResponse, ...
-              0x79, 0x16,               // IntermediateResponse ::= [APPLICATION 25] SEQUENCE {
-                                        // responseName [0] LDAPOID,
+            { 0x30,
+                0x38, // LDAPMessage ::= SEQUENCE {
+                0x02, 0x01,
+                0x01, // messageID MessageID
+                // CHOICE { ..., intermediateResponse IntermediateResponse, ...
+                0x79,
+                0x16, // IntermediateResponse ::= [APPLICATION 25] SEQUENCE {
+                // responseName [0] LDAPOID,
                 ( byte ) 0x80, 0x0D, '1', '.', '3', '.', '6', '.', '1', '.', '5', '.', '5', '.', '2',
-                                        // requestValue [1] OCTET STRING OPTIONAL }
-                ( byte ) 0x81, 0x05, 'v', 'a', 'l', 'u', 'e', 
-              ( byte ) 0xA0, 0x1B,      // A control
-                0x30, 0x19, 
-                  0x04, 0x17,
-                    '2', '.', '1', '6', '.', '8', '4', '0', '.', '1', '.', '1', '1', '3', '7', '3', 
-                    '0', '.', '3', '.', '4', '.', '2'
-            } );
+                // requestValue [1] OCTET STRING OPTIONAL }
+                ( byte ) 0x81, 0x05, 'v', 'a', 'l', 'u', 'e', ( byte ) 0xA0,
+                0x1B, // A control
+                0x30, 0x19, 0x04, 0x17, '2', '.', '1', '6', '.', '8', '4', '0', '.', '1', '.', '1', '1', '3', '7', '3',
+                '0', '.', '3', '.', '4', '.', '2' } );
 
         String decodedPdu = StringTools.dumpBytes( stream.array() );
         stream.flip();
@@ -160,28 +164,29 @@ public class IntermediateResponseTest
         }
 
         // Check the decoded IntermediateResponse PDU
-        IntermediateResponseCodec intermediateResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getIntermediateResponse();
+        InternalIntermediateResponse intermediateResponse = ( ( LdapMessageContainer ) ldapMessageContainer )
+            .getInternalIntermediateResponse();
 
         assertEquals( 1, intermediateResponse.getMessageId() );
         assertEquals( "1.3.6.1.5.5.2", intermediateResponse.getResponseName() );
         assertEquals( "value", StringTools.utf8ToString( intermediateResponse.getResponseValue() ) );
 
         // Check the Control
-        List<Control> controls = intermediateResponse.getControls();
+        Map<String, Control> controls = intermediateResponse.getControls();
 
         assertEquals( 1, controls.size() );
 
-        Control control = intermediateResponse.getControls( 0 );
+        Control control = controls.get( "2.16.840.1.113730.3.4.2" );
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
         assertEquals( "", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
-
-        // Check the length
-        assertEquals( 0x3A, intermediateResponse.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = intermediateResponse.encode();
+            ByteBuffer bb = encoder.encodeMessage( intermediateResponse );
+
+            // Check the length
+            assertEquals( 0x3A, bb.limit() );
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -207,21 +212,20 @@ public class IntermediateResponseTest
         ByteBuffer stream = ByteBuffer.allocate( 0x33 );
 
         stream.put( new byte[]
-            { 
-            0x30, 0x31,                 // LDAPMessage ::= SEQUENCE {
-              0x02, 0x01, 0x01,         // messageID MessageID
-                                        // CHOICE { ..., intermediateResponse IntermediateResponse, ...
-              0x79, 0x0F,               // IntermediateResponse ::= [APPLICATION 25] SEQUENCE {
-                                        // responseName [0] LDAPOID,
-                ( byte ) 0x80, 0x0D, 
-                  '1', '.', '3', '.', '6', '.', '1', '.', '5', '.', '5', '.', '2',
-                                        // requestValue [1] OCTET STRING OPTIONAL }
-              ( byte ) 0xA0, 0x1B,      // A control
-                0x30, 0x19, 
-                  0x04, 0x17, 
-                    '2', '.', '1', '6', '.', '8', '4', '0', '.', '1', '.', '1', '1', '3', '7', '3', 
-                    '0', '.', '3', '.', '4', '.', '2'
-            } );
+            { 0x30,
+                0x31, // LDAPMessage ::= SEQUENCE {
+                0x02, 0x01,
+                0x01, // messageID MessageID
+                // CHOICE { ..., intermediateResponse IntermediateResponse, ...
+                0x79,
+                0x0F, // IntermediateResponse ::= [APPLICATION 25] SEQUENCE {
+                // responseName [0] LDAPOID,
+                ( byte ) 0x80, 0x0D, '1', '.', '3', '.', '6', '.', '1', '.', '5', '.', '5', '.', '2',
+                // requestValue [1] OCTET STRING OPTIONAL }
+                ( byte ) 0xA0,
+                0x1B, // A control
+                0x30, 0x19, 0x04, 0x17, '2', '.', '1', '6', '.', '8', '4', '0', '.', '1', '.', '1', '1', '3', '7', '3',
+                '0', '.', '3', '.', '4', '.', '2' } );
 
         String decodedPdu = StringTools.dumpBytes( stream.array() );
         stream.flip();
@@ -241,28 +245,29 @@ public class IntermediateResponseTest
         }
 
         // Check the decoded IntermediateResponse PDU
-        IntermediateResponseCodec intermediateResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getIntermediateResponse();
+        InternalIntermediateResponse intermediateResponse = ( ( LdapMessageContainer ) ldapMessageContainer )
+            .getInternalIntermediateResponse();
 
         assertEquals( 1, intermediateResponse.getMessageId() );
         assertEquals( "1.3.6.1.5.5.2", intermediateResponse.getResponseName() );
         assertEquals( "", StringTools.utf8ToString( intermediateResponse.getResponseValue() ) );
 
         // Check the Control
-        List<Control> controls = intermediateResponse.getControls();
+        Map<String, Control> controls = intermediateResponse.getControls();
 
         assertEquals( 1, controls.size() );
 
-        Control control = intermediateResponse.getControls( 0 );
+        Control control = controls.get( "2.16.840.1.113730.3.4.2" );
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
         assertEquals( "", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
-
-        // Check the length
-        assertEquals( 0x33, intermediateResponse.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = intermediateResponse.encode();
+            ByteBuffer bb = encoder.encodeMessage( intermediateResponse );
+
+            // Check the length
+            assertEquals( 0x33, bb.limit() );
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -287,11 +292,10 @@ public class IntermediateResponseTest
         ByteBuffer stream = ByteBuffer.allocate( 0x07 );
 
         stream.put( new byte[]
-            { 
-            0x30, 0x05,                 // LDAPMessage ::= SEQUENCE {
-              0x02, 0x01, 0x01,         // messageID MessageID
-                                        // CHOICE { ..., intermediateResponse IntermediateResponse, ...
-              0x79, 0x00,               // IntermediateResponse ::= [APPLICATION 25] SEQUENCE {
+            { 0x30, 0x05, // LDAPMessage ::= SEQUENCE {
+                0x02, 0x01, 0x01, // messageID MessageID
+                // CHOICE { ..., intermediateResponse IntermediateResponse, ...
+                0x79, 0x00, // IntermediateResponse ::= [APPLICATION 25] SEQUENCE {
             } );
 
         stream.flip();
@@ -323,13 +327,11 @@ public class IntermediateResponseTest
         ByteBuffer stream = ByteBuffer.allocate( 0x09 );
 
         stream.put( new byte[]
-            { 
-            0x30, 0x07,                 // LDAPMessage ::= SEQUENCE {
-              0x02, 0x01, 0x01,         // messageID MessageID
-                                        // CHOICE { ..., intermediateResponse IntermediateResponse, ...
-              0x79, 0x02,               // IntermediateResponse ::= [APPLICATION 25] SEQUENCE {
-                ( byte ) 0x80, 0x00 
-            } );
+            { 0x30, 0x07, // LDAPMessage ::= SEQUENCE {
+                0x02, 0x01, 0x01, // messageID MessageID
+                // CHOICE { ..., intermediateResponse IntermediateResponse, ...
+                0x79, 0x02, // IntermediateResponse ::= [APPLICATION 25] SEQUENCE {
+                ( byte ) 0x80, 0x00 } );
 
         stream.flip();
 
@@ -348,6 +350,7 @@ public class IntermediateResponseTest
         }
     }
 
+
     /**
      * Test the decoding of a bad name 
      */
@@ -359,15 +362,12 @@ public class IntermediateResponseTest
         ByteBuffer stream = ByteBuffer.allocate( 0x16 );
 
         stream.put( new byte[]
-            { 
-            0x30, 0x14,                 // LDAPMessage ::= SEQUENCE {
-              0x02, 0x01, 0x01,         // messageID MessageID
-                                        // CHOICE { ..., intermediateResponse IntermediateResponse, ...
-              0x79, 0x0F,               // IntermediateResponse ::= [APPLICATION 25] SEQUENCE {
-                                        // responseName [0] LDAPOID,
-                ( byte ) 0x80, 0x0D, 
-                  '1', '-', '3', '.', '6', '.', '1', '.', '5', '.', '5', '.', '2', 
-            } );
+            { 0x30, 0x14, // LDAPMessage ::= SEQUENCE {
+                0x02, 0x01, 0x01, // messageID MessageID
+                // CHOICE { ..., intermediateResponse IntermediateResponse, ...
+                0x79, 0x0F, // IntermediateResponse ::= [APPLICATION 25] SEQUENCE {
+                // responseName [0] LDAPOID,
+                ( byte ) 0x80, 0x0D, '1', '-', '3', '.', '6', '.', '1', '.', '5', '.', '5', '.', '2', } );
 
         stream.flip();
 
@@ -384,7 +384,8 @@ public class IntermediateResponseTest
         {
             assertTrue( true );
         }
-    }    
+    }
+
 
     /**
      * Test the decoding of a name only IntermediateResponse
@@ -397,15 +398,12 @@ public class IntermediateResponseTest
         ByteBuffer stream = ByteBuffer.allocate( 0x16 );
 
         stream.put( new byte[]
-            { 
-            0x30, 0x14,                 // LDAPMessage ::= SEQUENCE {
-              0x02, 0x01, 0x01,         // messageID MessageID
-                                        // CHOICE { ..., intermediateResponse IntermediateResponse, ...
-              0x79, 0x0F,               // IntermediateResponse ::= [APPLICATION 25] SEQUENCE {
-                                        // responseName [0] LDAPOID,
-                ( byte ) 0x80, 0x0D, 
-                  '1', '.', '3', '.', '6', '.', '1', '.', '5', '.', '5', '.', '2', 
-            } );
+            { 0x30, 0x14, // LDAPMessage ::= SEQUENCE {
+                0x02, 0x01, 0x01, // messageID MessageID
+                // CHOICE { ..., intermediateResponse IntermediateResponse, ...
+                0x79, 0x0F, // IntermediateResponse ::= [APPLICATION 25] SEQUENCE {
+                // responseName [0] LDAPOID,
+                ( byte ) 0x80, 0x0D, '1', '.', '3', '.', '6', '.', '1', '.', '5', '.', '5', '.', '2', } );
 
         String decodedPdu = StringTools.dumpBytes( stream.array() );
         stream.flip();
@@ -425,18 +423,19 @@ public class IntermediateResponseTest
         }
 
         // Check the decoded IntermediateResponse PDU
-        IntermediateResponseCodec intermediateResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getIntermediateResponse();
+        InternalIntermediateResponse intermediateResponse = ( ( LdapMessageContainer ) ldapMessageContainer )
+            .getInternalIntermediateResponse();
 
         assertEquals( 1, intermediateResponse.getMessageId() );
         assertEquals( "1.3.6.1.5.5.2", intermediateResponse.getResponseName() );
 
-        // Check the length
-        assertEquals( 0x16, intermediateResponse.computeLength() );
-
         // Check the encoding
         try
         {
-            ByteBuffer bb = intermediateResponse.encode();
+            ByteBuffer bb = encoder.encodeMessage( intermediateResponse );
+
+            // Check the length
+            assertEquals( 0x16, bb.limit() );
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -461,16 +460,16 @@ public class IntermediateResponseTest
         ByteBuffer stream = ByteBuffer.allocate( 0x18 );
 
         stream.put( new byte[]
-            { 
-            0x30, 0x16,                 // LDAPMessage ::= SEQUENCE {
-              0x02, 0x01, 0x01,         // messageID MessageID
-                                        // CHOICE { ..., intermediateResponse IntermediateResponse, ...
-              0x79, 0x11,               // IntermediateResponse ::= [APPLICATION 25] SEQUENCE {
-                                        // responseName [0] LDAPOID,
-                ( byte ) 0x80, 0x0D, 
-                  '1', '.', '3', '.', '6', '.', '1', '.', '5', '.', '5', '.', '2', 
-                ( byte ) 0x81, 0x00 
-            } );
+            { 0x30,
+                0x16, // LDAPMessage ::= SEQUENCE {
+                0x02, 0x01,
+                0x01, // messageID MessageID
+                // CHOICE { ..., intermediateResponse IntermediateResponse, ...
+                0x79,
+                0x11, // IntermediateResponse ::= [APPLICATION 25] SEQUENCE {
+                // responseName [0] LDAPOID,
+                ( byte ) 0x80, 0x0D, '1', '.', '3', '.', '6', '.', '1', '.', '5', '.', '5', '.', '2', ( byte ) 0x81,
+                0x00 } );
 
         String decodedPdu = StringTools.dumpBytes( stream.array() );
         stream.flip();
@@ -490,19 +489,20 @@ public class IntermediateResponseTest
         }
 
         // Check the decoded IntermediateResponse PDU
-        IntermediateResponseCodec intermediateResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getIntermediateResponse();
+        InternalIntermediateResponse intermediateResponse = ( ( LdapMessageContainer ) ldapMessageContainer )
+            .getInternalIntermediateResponse();
 
         assertEquals( 1, intermediateResponse.getMessageId() );
         assertEquals( "1.3.6.1.5.5.2", intermediateResponse.getResponseName() );
         assertEquals( "", StringTools.utf8ToString( intermediateResponse.getResponseValue() ) );
 
-        // Check the length
-        assertEquals( 0x18, intermediateResponse.computeLength() );
-
         // Check the encoding
         try
         {
-            ByteBuffer bb = intermediateResponse.encode();
+            ByteBuffer bb = encoder.encodeMessage( intermediateResponse );
+
+            // Check the length
+            assertEquals( 0x18, bb.limit() );
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -527,14 +527,12 @@ public class IntermediateResponseTest
         ByteBuffer stream = ByteBuffer.allocate( 0x0E );
 
         stream.put( new byte[]
-            { 
-              0x30, 0x0C,               // LDAPMessage ::= SEQUENCE {
-                0x02, 0x01, 0x01,       // messageID MessageID
-                                        // CHOICE { ..., intermediateResponse IntermediateResponse, ...
-                0x79, 0x07,             // IntermediateResponse ::= [APPLICATION 25] SEQUENCE {
-                                        // responseValue [1] OCTET STRING OPTIONAL,
-                  ( byte ) 0x81, 0x05, 'v', 'a', 'l', 'u', 'e' 
-            } );
+            { 0x30, 0x0C, // LDAPMessage ::= SEQUENCE {
+                0x02, 0x01, 0x01, // messageID MessageID
+                // CHOICE { ..., intermediateResponse IntermediateResponse, ...
+                0x79, 0x07, // IntermediateResponse ::= [APPLICATION 25] SEQUENCE {
+                // responseValue [1] OCTET STRING OPTIONAL,
+                ( byte ) 0x81, 0x05, 'v', 'a', 'l', 'u', 'e' } );
 
         String decodedPdu = StringTools.dumpBytes( stream.array() );
         stream.flip();
@@ -554,19 +552,20 @@ public class IntermediateResponseTest
         }
 
         // Check the decoded IntermediateResponse PDU
-        IntermediateResponseCodec intermediateResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getIntermediateResponse();
+        InternalIntermediateResponse intermediateResponse = ( ( LdapMessageContainer ) ldapMessageContainer )
+            .getInternalIntermediateResponse();
 
         assertEquals( 1, intermediateResponse.getMessageId() );
         assertEquals( "", intermediateResponse.getResponseName() );
         assertEquals( "value", StringTools.utf8ToString( intermediateResponse.getResponseValue() ) );
 
-        // Check the length
-        assertEquals( 0x0E, intermediateResponse.computeLength() );
-
         // Check the encoding
         try
         {
-            ByteBuffer bb = intermediateResponse.encode();
+            ByteBuffer bb = encoder.encodeMessage( intermediateResponse );
+
+            // Check the length
+            assertEquals( 0x0E, bb.limit() );
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -591,14 +590,12 @@ public class IntermediateResponseTest
         ByteBuffer stream = ByteBuffer.allocate( 0x16 );
 
         stream.put( new byte[]
-            { 
-              0x30, 0x14,               // LDAPMessage ::= SEQUENCE {
-                0x02, 0x01, 0x01,       // messageID MessageID
-                                        // CHOICE { ..., intermediateResponse IntermediateResponse, ...
-                0x79, 0x0F,             // IntermediateResponse ::= [APPLICATION 25] SEQUENCE {
-                                        // responseName [0] LDAPOID,
-                  ( byte ) 0x80, 0x0D, '1', '.', '3', '.', '6', '.', '1', '.', '5', '.', '5', '.', '2',
-            } );
+            { 0x30, 0x14, // LDAPMessage ::= SEQUENCE {
+                0x02, 0x01, 0x01, // messageID MessageID
+                // CHOICE { ..., intermediateResponse IntermediateResponse, ...
+                0x79, 0x0F, // IntermediateResponse ::= [APPLICATION 25] SEQUENCE {
+                // responseName [0] LDAPOID,
+                ( byte ) 0x80, 0x0D, '1', '.', '3', '.', '6', '.', '1', '.', '5', '.', '5', '.', '2', } );
 
         String decodedPdu = StringTools.dumpBytes( stream.array() );
         stream.flip();
@@ -618,19 +615,20 @@ public class IntermediateResponseTest
         }
 
         // Check the decoded IntermediateResponse PDU
-        IntermediateResponseCodec intermediateResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getIntermediateResponse();
+        InternalIntermediateResponse intermediateResponse = ( ( LdapMessageContainer ) ldapMessageContainer )
+            .getInternalIntermediateResponse();
 
         assertEquals( 1, intermediateResponse.getMessageId() );
         assertEquals( "1.3.6.1.5.5.2", intermediateResponse.getResponseName() );
         assertEquals( "", StringTools.utf8ToString( intermediateResponse.getResponseValue() ) );
 
-        // Check the length
-        assertEquals( 0x16, intermediateResponse.computeLength() );
-
         // Check the encoding
         try
         {
-            ByteBuffer bb = intermediateResponse.encode();
+            ByteBuffer bb = encoder.encodeMessage( intermediateResponse );
+
+            // Check the length
+            assertEquals( 0x16, bb.limit() );
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
