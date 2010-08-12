@@ -25,7 +25,6 @@ import org.apache.directory.shared.ldap.codec.abandon.AbandonRequestCodec;
 import org.apache.directory.shared.ldap.codec.add.AddRequestCodec;
 import org.apache.directory.shared.ldap.codec.bind.BindRequestCodec;
 import org.apache.directory.shared.ldap.codec.compare.CompareRequestCodec;
-import org.apache.directory.shared.ldap.codec.compare.CompareResponseCodec;
 import org.apache.directory.shared.ldap.codec.controls.AbstractControl;
 import org.apache.directory.shared.ldap.codec.del.DelRequestCodec;
 import org.apache.directory.shared.ldap.codec.extended.ExtendedRequestCodec;
@@ -46,6 +45,7 @@ import org.apache.directory.shared.ldap.message.internal.InternalAddResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalBindRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalBindResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalCompareRequest;
+import org.apache.directory.shared.ldap.message.internal.InternalCompareResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalDeleteRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalDeleteResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalMessage;
@@ -238,9 +238,9 @@ public class LdapMessageContainer extends AbstractContainer
     /**
      * @return Returns the CompareResponse stored in the container
      */
-    public CompareResponseCodec getCompareResponse()
+    public InternalCompareResponse getInternalCompareResponse()
     {
-        return ( CompareResponseCodec ) ldapMessage;
+        return ( InternalCompareResponse ) internalMessage;
     }
 
 

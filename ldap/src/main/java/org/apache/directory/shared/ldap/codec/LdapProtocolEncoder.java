@@ -33,10 +33,12 @@ import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.controls.CodecControl;
 import org.apache.directory.shared.ldap.message.AddResponseImpl;
 import org.apache.directory.shared.ldap.message.BindResponseImpl;
+import org.apache.directory.shared.ldap.message.CompareResponseImpl;
 import org.apache.directory.shared.ldap.message.DeleteResponseImpl;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.message.internal.InternalAddResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalBindResponse;
+import org.apache.directory.shared.ldap.message.internal.InternalCompareResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalDeleteResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalLdapResult;
 import org.apache.directory.shared.ldap.message.internal.InternalMessage;
@@ -102,7 +104,7 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
         ByteBuffer buffer = ByteBuffer.allocate( length );
 
         if ( ( message instanceof InternalBindResponse ) || ( message instanceof InternalDeleteResponse )
-            || ( message instanceof InternalAddResponse ) )
+            || ( message instanceof InternalAddResponse ) || ( message instanceof InternalCompareResponse ) )
         {
             try
             {
@@ -427,6 +429,29 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
 
 
     /**
+     * Compute the CompareResponse length 
+     * 
+     * CompareResponse :
+     * 
+     * 0x6F L1
+     *  |
+     *  +--> LdapResult
+     * 
+     * L1 = Length(LdapResult)
+     * 
+     * Length(CompareResponse) = Length(0x6F) + Length(L1) + L1
+     */
+    private int computeCompareResponseLength( CompareResponseImpl compareResponse )
+    {
+        int compareResponseLength = computeLdapResultLength( compareResponse.getLdapResult() );
+
+        compareResponse.setCompareResponseLength( compareResponseLength );
+
+        return 1 + TLV.getNbBytes( compareResponseLength ) + compareResponseLength;
+    }
+
+
+    /**
      * Compute the DelResponse length 
      * 
      * DelResponse :
@@ -518,6 +543,30 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
 
 
     /**
+     * Encode the CompareResponse message to a PDU.
+     * 
+     * @param buffer The buffer where to put the PDU
+     */
+    private void encodeCompareResponse( ByteBuffer buffer, CompareResponseImpl compareResponse )
+        throws EncoderException
+    {
+        try
+        {
+            // The CompareResponse Tag
+            buffer.put( LdapConstants.COMPARE_RESPONSE_TAG );
+            buffer.put( TLV.getBytes( compareResponse.getCompareResponseLength() ) );
+
+            // The LdapResult
+            encodeLdapResult( buffer, compareResponse.getLdapResult() );
+        }
+        catch ( BufferOverflowException boe )
+        {
+            throw new EncoderException( I18n.err( I18n.ERR_04005 ) );
+        }
+    }
+
+
+    /**
      * Encode the DelResponse message to a PDU.
      * 
      * @param buffer The buffer where to put the PDU
@@ -553,6 +602,9 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
             case BIND_RESPONSE:
                 return computeBindResponseLength( ( BindResponseImpl ) message );
 
+            case COMPARE_RESPONSE:
+                return computeCompareResponseLength( ( CompareResponseImpl ) message );
+
             case DEL_RESPONSE:
                 return computeDeleteResponseLength( ( DeleteResponseImpl ) message );
 
@@ -572,6 +624,10 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
 
             case BIND_RESPONSE:
                 encodeBindResponse( bb, ( BindResponseImpl ) message );
+                break;
+
+            case COMPARE_RESPONSE:
+                encodeCompareResponse( bb, ( CompareResponseImpl ) message );
                 break;
 
             case DEL_RESPONSE:

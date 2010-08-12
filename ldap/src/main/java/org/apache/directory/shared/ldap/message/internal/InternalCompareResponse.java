@@ -19,6 +19,7 @@
  */
 package org.apache.directory.shared.ldap.message.internal;
 
+
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 
 
@@ -32,4 +33,17 @@ public interface InternalCompareResponse extends InternalResultResponse
 {
     /** Compare response message type enumeration value */
     MessageTypeEnum TYPE = MessageTypeEnum.COMPARE_RESPONSE;
+
+
+    /**
+     * Stores the encoded length for the CompareResponse
+     * @param compareResponseLength The encoded length
+     */
+    void setCompareResponseLength( int compareResponseLength );
+
+
+    /**
+     * @return The encoded CompareResponse's length
+     */
+    int getCompareResponseLength();
 }

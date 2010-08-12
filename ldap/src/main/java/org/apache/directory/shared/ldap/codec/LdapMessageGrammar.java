@@ -70,7 +70,6 @@ import org.apache.directory.shared.ldap.codec.actions.StoreMatchValueAction;
 import org.apache.directory.shared.ldap.codec.actions.StoreReferenceAction;
 import org.apache.directory.shared.ldap.codec.actions.StoreTypeMatchingRuleAction;
 import org.apache.directory.shared.ldap.codec.actions.ValueAction;
-import org.apache.directory.shared.ldap.codec.compare.CompareResponseCodec;
 import org.apache.directory.shared.ldap.codec.controls.ControlEnum;
 import org.apache.directory.shared.ldap.codec.controls.ControlImpl;
 import org.apache.directory.shared.ldap.codec.extended.ExtendedRequestCodec;
@@ -111,6 +110,7 @@ import org.apache.directory.shared.ldap.message.internal.InternalAddResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalBindRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalBindResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalCompareRequest;
+import org.apache.directory.shared.ldap.message.internal.InternalCompareResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalDeleteRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalDeleteResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalLdapResult;
@@ -2713,9 +2713,9 @@ public class LdapMessageGrammar extends AbstractGrammar
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
                     // Now, we can allocate the CompareResponse Object
-                    CompareResponseCodec compareResponse = new CompareResponseCodec();
-                    compareResponse.setMessageId( ldapMessageContainer.getMessageId() );
-                    ldapMessageContainer.setLdapMessage( compareResponse );
+                    InternalCompareResponse compareResponse = new CompareResponseImpl( ldapMessageContainer
+                        .getMessageId() );
+                    ldapMessageContainer.setInternalMessage( compareResponse );
 
                     // We will check that the request is not null
                     TLV tlv = ldapMessageContainer.getCurrentTLV();

@@ -19,6 +19,7 @@
  */
 package org.apache.directory.shared.ldap.message;
 
+
 import org.apache.directory.shared.ldap.message.internal.InternalAbstractResultResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalCompareResponse;
 
@@ -30,6 +31,8 @@ import org.apache.directory.shared.ldap.message.internal.InternalCompareResponse
  */
 public class CompareResponseImpl extends InternalAbstractResultResponse implements InternalCompareResponse
 {
+    /** The encoded compareResponse length */
+    private int compareResponseLength;
 
     // ------------------------------------------------------------------------
     // Constructors
@@ -44,8 +47,27 @@ public class CompareResponseImpl extends InternalAbstractResultResponse implemen
      * @param id
      *            the session unique message id
      */
-    public CompareResponseImpl(final int id)
+    public CompareResponseImpl( final int id )
     {
         super( id, TYPE );
+    }
+
+
+    /**
+     * Stores the encoded length for the CompareResponse
+     * @param compareResponseLength The encoded length
+     */
+    public void setCompareResponseLength( int compareResponseLength )
+    {
+        this.compareResponseLength = compareResponseLength;
+    }
+
+
+    /**
+     * @return The encoded CompareResponse's length
+     */
+    public int getCompareResponseLength()
+    {
+        return compareResponseLength;
     }
 }

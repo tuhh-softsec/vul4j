@@ -30,7 +30,6 @@ import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.bind.BindRequestCodec;
 import org.apache.directory.shared.ldap.codec.bind.SaslCredentials;
 import org.apache.directory.shared.ldap.codec.bind.SimpleAuthentication;
-import org.apache.directory.shared.ldap.codec.compare.CompareResponseCodec;
 import org.apache.directory.shared.ldap.codec.extended.ExtendedRequestCodec;
 import org.apache.directory.shared.ldap.codec.extended.ExtendedResponseCodec;
 import org.apache.directory.shared.ldap.codec.intermediate.IntermediateResponseCodec;
@@ -71,7 +70,6 @@ import org.apache.directory.shared.ldap.filter.SimpleNode;
 import org.apache.directory.shared.ldap.filter.SubstringNode;
 import org.apache.directory.shared.ldap.message.AliasDerefMode;
 import org.apache.directory.shared.ldap.message.BindRequestImpl;
-import org.apache.directory.shared.ldap.message.CompareResponseImpl;
 import org.apache.directory.shared.ldap.message.ExtendedRequestImpl;
 import org.apache.directory.shared.ldap.message.ExtendedResponseImpl;
 import org.apache.directory.shared.ldap.message.IntermediateResponseImpl;
@@ -708,26 +706,6 @@ public class LdapTransformer
 
 
     /**
-     * Transform a Internal CompareResponse to a Codec CompareResponse
-     * 
-     * @param internalMessage The incoming Internal CompareResponse
-     * @return The CompareResponseCodec instance
-     */
-    private static LdapMessageCodec transformCompareResponse( InternalMessage internalMessage )
-    {
-        CompareResponseImpl internalCompareResponse = ( CompareResponseImpl ) internalMessage;
-
-        CompareResponseCodec compareResponse = new CompareResponseCodec();
-
-        // Transform the ldapResult
-        compareResponse
-            .setLdapResult( transformLdapResult( ( LdapResultImpl ) internalCompareResponse.getLdapResult() ) );
-
-        return compareResponse;
-    }
-
-
-    /**
      * Transform a Internal ExtendedResponse to a Codec ExtendedResponse
      * 
      * @param internalMessage The incoming Internal ExtendedResponse
@@ -945,10 +923,6 @@ public class LdapTransformer
 
             case BIND_REQUEST:
                 codecMessage = transformBindRequest( msg );
-                break;
-
-            case COMPARE_RESPONSE:
-                codecMessage = transformCompareResponse( msg );
                 break;
 
             case MODIFY_RESPONSE:
