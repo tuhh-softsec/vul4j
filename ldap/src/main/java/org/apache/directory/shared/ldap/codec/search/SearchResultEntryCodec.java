@@ -25,8 +25,6 @@ import java.nio.ByteBuffer;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.directory.shared.ldap.exception.LdapException;
-
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
@@ -40,6 +38,7 @@ import org.apache.directory.shared.ldap.entry.DefaultEntry;
 import org.apache.directory.shared.ldap.entry.DefaultEntryAttribute;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
+import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.util.StringTools;
 
@@ -116,7 +115,7 @@ public class SearchResultEntryCodec extends LdapMessageCodec
         return MessageTypeEnum.SEARCH_RESULT_ENTRY;
     }
 
-    
+
     /**
      * {@inheritDoc}
      */
@@ -177,7 +176,7 @@ public class SearchResultEntryCodec extends LdapMessageCodec
      * @param type The attribute's name
      */
     // This will suppress PMD.EmptyCatchBlock warnings in this method
-    @SuppressWarnings( "PMD.EmptyCatchBlock" )
+    @SuppressWarnings("PMD.EmptyCatchBlock")
     public void addAttributeValues( String type )
     {
         currentAttributeValue = new DefaultEntryAttribute( type );

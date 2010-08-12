@@ -82,7 +82,7 @@ public class SearchResponseEntryImplTest
     @Test
     public void testEqualsSameObject()
     {
-        SearchResponseEntryImpl resp = new SearchResponseEntryImpl( 5 );
+        SearchResultEntryImpl resp = new SearchResultEntryImpl( 5 );
         assertTrue( "the same object should be equal", resp.equals( resp ) );
     }
 
@@ -93,11 +93,11 @@ public class SearchResponseEntryImplTest
     @Test
     public void testEqualsExactCopy() throws LdapException
     {
-        SearchResponseEntryImpl resp0 = new SearchResponseEntryImpl( 5 );
+        SearchResultEntryImpl resp0 = new SearchResultEntryImpl( 5 );
         resp0.setEntry( getEntry() );
         resp0.setObjectName( new DN( "dc=example,dc=com" ) );
 
-        SearchResponseEntryImpl resp1 = new SearchResponseEntryImpl( 5 );
+        SearchResultEntryImpl resp1 = new SearchResultEntryImpl( 5 );
         resp1.setEntry( getEntry() );
         resp1.setObjectName( new DN( "dc=example,dc=com" ) );
 
@@ -112,7 +112,7 @@ public class SearchResponseEntryImplTest
     @Test
     public void testHashCodeSameObject()
     {
-        SearchResponseEntryImpl resp = new SearchResponseEntryImpl( 5 );
+        SearchResultEntryImpl resp = new SearchResultEntryImpl( 5 );
         assertTrue( resp.hashCode() == resp.hashCode() );
     }
 
@@ -123,11 +123,11 @@ public class SearchResponseEntryImplTest
     @Test
     public void testHashCodeExactCopy() throws LdapException
     {
-        SearchResponseEntryImpl resp0 = new SearchResponseEntryImpl( 5 );
+        SearchResultEntryImpl resp0 = new SearchResultEntryImpl( 5 );
         resp0.setEntry( getEntry() );
         resp0.setObjectName( new DN( "dc=example,dc=com" ) );
 
-        SearchResponseEntryImpl resp1 = new SearchResponseEntryImpl( 5 );
+        SearchResultEntryImpl resp1 = new SearchResultEntryImpl( 5 );
         resp1.setEntry( getEntry() );
         resp1.setObjectName( new DN( "dc=example,dc=com" ) );
 
@@ -141,11 +141,11 @@ public class SearchResponseEntryImplTest
     @Test
     public void testNotEqualDiffObjectName() throws LdapException
     {
-        SearchResponseEntryImpl resp0 = new SearchResponseEntryImpl( 5 );
+        SearchResultEntryImpl resp0 = new SearchResultEntryImpl( 5 );
         resp0.setEntry( getEntry() );
         resp0.setObjectName( new DN( "dc=apache,dc=org" ) );
 
-        SearchResponseEntryImpl resp1 = new SearchResponseEntryImpl( 5 );
+        SearchResultEntryImpl resp1 = new SearchResultEntryImpl( 5 );
         resp1.setEntry( getEntry() );
         resp1.setObjectName( new DN( "dc=example,dc=com" ) );
 

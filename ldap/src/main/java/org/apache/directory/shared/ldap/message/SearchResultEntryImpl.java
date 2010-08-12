@@ -22,7 +22,7 @@ package org.apache.directory.shared.ldap.message;
 
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.message.internal.InternalAbstractResponse;
-import org.apache.directory.shared.ldap.message.internal.InternalSearchResponseEntry;
+import org.apache.directory.shared.ldap.message.internal.InternalSearchResultEntry;
 import org.apache.directory.shared.ldap.name.DN;
 
 
@@ -31,7 +31,7 @@ import org.apache.directory.shared.ldap.name.DN;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class SearchResponseEntryImpl extends InternalAbstractResponse implements InternalSearchResponseEntry
+public class SearchResultEntryImpl extends InternalAbstractResponse implements InternalSearchResultEntry
 {
     static final long serialVersionUID = -8357316233060886637L;
 
@@ -49,7 +49,7 @@ public class SearchResponseEntryImpl extends InternalAbstractResponse implements
      * 
      * @param id the session unique message id
      */
-    public SearchResponseEntryImpl( final int id )
+    public SearchResultEntryImpl( final int id )
     {
         super( id, TYPE );
     }
@@ -144,12 +144,12 @@ public class SearchResponseEntryImpl extends InternalAbstractResponse implements
             return false;
         }
 
-        if ( !( obj instanceof InternalSearchResponseEntry ) )
+        if ( !( obj instanceof InternalSearchResultEntry ) )
         {
             return false;
         }
 
-        InternalSearchResponseEntry resp = ( InternalSearchResponseEntry ) obj;
+        InternalSearchResultEntry resp = ( InternalSearchResultEntry ) obj;
 
         return entry.equals( resp.getEntry() );
     }

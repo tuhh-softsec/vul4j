@@ -70,8 +70,8 @@ import org.apache.directory.shared.ldap.message.ModifyDnRequestImpl;
 import org.apache.directory.shared.ldap.message.ModifyRequestImpl;
 import org.apache.directory.shared.ldap.message.ReferralImpl;
 import org.apache.directory.shared.ldap.message.SearchRequestImpl;
-import org.apache.directory.shared.ldap.message.SearchResponseEntryImpl;
-import org.apache.directory.shared.ldap.message.SearchResponseReferenceImpl;
+import org.apache.directory.shared.ldap.message.SearchResultEntryImpl;
+import org.apache.directory.shared.ldap.message.SearchResultReferenceImpl;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.message.extended.GracefulShutdownRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalMessage;
@@ -701,7 +701,7 @@ public class LdapTransformer
      */
     private static LdapMessageCodec transformSearchResultEntry( InternalMessage internalMessage )
     {
-        SearchResponseEntryImpl internalSearchResultResponse = ( SearchResponseEntryImpl ) internalMessage;
+        SearchResultEntryImpl internalSearchResultResponse = ( SearchResultEntryImpl ) internalMessage;
         SearchResultEntryCodec searchResultEntry = new SearchResultEntryCodec();
 
         // Internal : DN dn -> Codec : DN objectName
@@ -723,7 +723,7 @@ public class LdapTransformer
      */
     private static LdapMessageCodec transformSearchResultReference( InternalMessage internalMessage )
     {
-        SearchResponseReferenceImpl internalSearchResponseReference = ( SearchResponseReferenceImpl ) internalMessage;
+        SearchResultReferenceImpl internalSearchResponseReference = ( SearchResultReferenceImpl ) internalMessage;
         SearchResultReferenceCodec searchResultReference = new SearchResultReferenceCodec();
 
         // Internal : Referral m_referral -> Codec: ArrayList

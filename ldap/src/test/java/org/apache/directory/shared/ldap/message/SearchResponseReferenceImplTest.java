@@ -31,7 +31,7 @@ import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.message.internal.InternalReferral;
-import org.apache.directory.shared.ldap.message.internal.InternalSearchResponseReference;
+import org.apache.directory.shared.ldap.message.internal.InternalSearchResultReference;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -56,7 +56,7 @@ public class SearchResponseReferenceImplTest
      *            the parent lockable
      * @return the newly created referral for testing
      */
-    private InternalReferral getReferral( InternalSearchResponseReference resp )
+    private InternalReferral getReferral( InternalSearchResultReference resp )
     {
         ReferralImpl ref = new ReferralImpl();
         resp.setReferral( ref );
@@ -73,7 +73,7 @@ public class SearchResponseReferenceImplTest
     @Test
     public void testEqualsSameObject()
     {
-        SearchResponseReferenceImpl resp = new SearchResponseReferenceImpl( 5 );
+        SearchResultReferenceImpl resp = new SearchResultReferenceImpl( 5 );
         getReferral( resp );
         assertTrue( "the same object should be equal", resp.equals( resp ) );
     }
@@ -85,9 +85,9 @@ public class SearchResponseReferenceImplTest
     @Test
     public void testEqualsExactCopy()
     {
-        SearchResponseReferenceImpl resp0 = new SearchResponseReferenceImpl( 5 );
+        SearchResultReferenceImpl resp0 = new SearchResultReferenceImpl( 5 );
         getReferral( resp0 );
-        SearchResponseReferenceImpl resp1 = new SearchResponseReferenceImpl( 5 );
+        SearchResultReferenceImpl resp1 = new SearchResultReferenceImpl( 5 );
         getReferral( resp1 );
 
         assertTrue( "exact copies should be equal", resp0.equals( resp1 ) );
@@ -101,7 +101,7 @@ public class SearchResponseReferenceImplTest
     @Test
     public void testEqualsDiffImpl()
     {
-        InternalSearchResponseReference resp0 = new InternalSearchResponseReference()
+        InternalSearchResultReference resp0 = new InternalSearchResultReference()
         {
             public InternalReferral getReferral()
             {
@@ -193,7 +193,7 @@ public class SearchResponseReferenceImplTest
             }
         };
 
-        SearchResponseReferenceImpl resp1 = new SearchResponseReferenceImpl( 5 );
+        SearchResultReferenceImpl resp1 = new SearchResultReferenceImpl( 5 );
         getReferral( resp1 );
 
         assertFalse( "using Object.equal() should NOT be equal", resp0.equals( resp1 ) );
@@ -207,7 +207,7 @@ public class SearchResponseReferenceImplTest
     @Test
     public void testHashCodeSameObject()
     {
-        SearchResponseReferenceImpl resp = new SearchResponseReferenceImpl( 5 );
+        SearchResultReferenceImpl resp = new SearchResultReferenceImpl( 5 );
         getReferral( resp );
         assertTrue( resp.hashCode() == resp.hashCode() );
     }
@@ -219,9 +219,9 @@ public class SearchResponseReferenceImplTest
     @Test
     public void testHashCodeExactCopy()
     {
-        SearchResponseReferenceImpl resp0 = new SearchResponseReferenceImpl( 5 );
+        SearchResultReferenceImpl resp0 = new SearchResultReferenceImpl( 5 );
         getReferral( resp0 );
-        SearchResponseReferenceImpl resp1 = new SearchResponseReferenceImpl( 5 );
+        SearchResultReferenceImpl resp1 = new SearchResultReferenceImpl( 5 );
         getReferral( resp1 );
 
         assertTrue( resp0.hashCode() == resp1.hashCode() );
@@ -234,9 +234,9 @@ public class SearchResponseReferenceImplTest
     @Test
     public void testNotEqualDiffUrls()
     {
-        SearchResponseReferenceImpl resp0 = new SearchResponseReferenceImpl( 5 );
+        SearchResultReferenceImpl resp0 = new SearchResultReferenceImpl( 5 );
         getReferral( resp0 );
-        SearchResponseReferenceImpl resp1 = new SearchResponseReferenceImpl( 5 );
+        SearchResultReferenceImpl resp1 = new SearchResultReferenceImpl( 5 );
         getReferral( resp1 );
         resp1.getReferral().addLdapUrl( "ldap://asdf.com???" );
 

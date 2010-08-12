@@ -20,52 +20,34 @@
 
 package org.apache.directory.shared.ldap.message.internal;
 
-
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
-import org.apache.directory.shared.ldap.entry.Entry;
-import org.apache.directory.shared.ldap.name.DN;
 
 
 /**
- * Search entry protocol response message used to return non referral entries to
- * the client in response to a search request message.
+ * Search reference protocol response message used to return referrals to the
+ * client in response to a search request message.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public interface InternalSearchResponseEntry extends InternalResponse
+public interface InternalSearchResultReference extends InternalResponse
 {
-    /** Search entry response message type enumeration value */
-    MessageTypeEnum TYPE = MessageTypeEnum.SEARCH_RESULT_ENTRY;
+    /** Search reference response message type enumeration value */
+    MessageTypeEnum TYPE = MessageTypeEnum.SEARCH_RESULT_REFERENCE;
 
 
     /**
-     * Gets the distinguished name of the entry object returned.
+     * Gets the sequence of LdapUrls as a Referral instance.
      * 
-     * @return the Dn of the entry returned.
+     * @return the sequence of LdapUrls
      */
-    DN getObjectName();
+    InternalReferral getReferral();
 
 
     /**
-     * Sets the distinguished name of the entry object returned.
+     * Sets the sequence of LdapUrls as a Referral instance.
      * 
-     * @param dn the Dn of the entry returned.
+     * @param a_referral
+     *            the sequence of LdapUrls
      */
-    void setObjectName( DN dn );
-
-
-    /**
-     * Gets the entry.
-     * 
-     * @return the entry
-     */
-    Entry getEntry();
-
-
-    /**
-     * Sets an entry
-     * 
-     * @param entry the entry
-     */
-    void setEntry( Entry entry );
+    void setReferral( InternalReferral a_referral );
 }
