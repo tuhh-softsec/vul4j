@@ -33,7 +33,6 @@ import org.apache.directory.shared.ldap.codec.bind.SimpleAuthentication;
 import org.apache.directory.shared.ldap.codec.extended.ExtendedRequestCodec;
 import org.apache.directory.shared.ldap.codec.intermediate.IntermediateResponseCodec;
 import org.apache.directory.shared.ldap.codec.modify.ModifyRequestCodec;
-import org.apache.directory.shared.ldap.codec.modify.ModifyResponseCodec;
 import org.apache.directory.shared.ldap.codec.modifyDn.ModifyDNRequestCodec;
 import org.apache.directory.shared.ldap.codec.modifyDn.ModifyDNResponseCodec;
 import org.apache.directory.shared.ldap.codec.search.AndFilter;
@@ -75,7 +74,6 @@ import org.apache.directory.shared.ldap.message.LdapResultImpl;
 import org.apache.directory.shared.ldap.message.ModifyDnRequestImpl;
 import org.apache.directory.shared.ldap.message.ModifyDnResponseImpl;
 import org.apache.directory.shared.ldap.message.ModifyRequestImpl;
-import org.apache.directory.shared.ldap.message.ModifyResponseImpl;
 import org.apache.directory.shared.ldap.message.ReferralImpl;
 import org.apache.directory.shared.ldap.message.SearchRequestImpl;
 import org.apache.directory.shared.ldap.message.SearchResponseDoneImpl;
@@ -737,25 +735,6 @@ public class LdapTransformer
 
 
     /**
-     * Transform a Internal ModifyResponse to a Codec ModifyResponse
-     * 
-     * @param internalMessage The incoming Internal ModifyResponse
-     * @return The ModifyResponseCodec instance
-     */
-    private static LdapMessageCodec transformModifyResponse( InternalMessage internalMessage )
-    {
-        ModifyResponseImpl internalModifyResponse = ( ModifyResponseImpl ) internalMessage;
-
-        ModifyResponseCodec modifyResponse = new ModifyResponseCodec();
-
-        // Transform the ldapResult
-        modifyResponse.setLdapResult( transformLdapResult( ( LdapResultImpl ) internalModifyResponse.getLdapResult() ) );
-
-        return modifyResponse;
-    }
-
-
-    /**
      * Transform a Internal ModifyDNResponse to a Codec ModifyDNResponse
      * 
      * @param internalMessage The incoming Internal ModifyDNResponse
@@ -888,10 +867,6 @@ public class LdapTransformer
 
             case BIND_REQUEST:
                 codecMessage = transformBindRequest( msg );
-                break;
-
-            case MODIFY_RESPONSE:
-                codecMessage = transformModifyResponse( msg );
                 break;
 
             case MODIFYDN_RESPONSE:

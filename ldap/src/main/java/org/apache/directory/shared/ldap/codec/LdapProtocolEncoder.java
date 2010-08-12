@@ -36,6 +36,7 @@ import org.apache.directory.shared.ldap.message.BindResponseImpl;
 import org.apache.directory.shared.ldap.message.CompareResponseImpl;
 import org.apache.directory.shared.ldap.message.DeleteResponseImpl;
 import org.apache.directory.shared.ldap.message.ExtendedResponseImpl;
+import org.apache.directory.shared.ldap.message.ModifyResponseImpl;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.message.internal.InternalAddResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalBindResponse;
@@ -44,6 +45,7 @@ import org.apache.directory.shared.ldap.message.internal.InternalDeleteResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalExtendedResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalLdapResult;
 import org.apache.directory.shared.ldap.message.internal.InternalMessage;
+import org.apache.directory.shared.ldap.message.internal.InternalModifyResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalReferral;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.apache.mina.core.buffer.IoBuffer;
@@ -107,7 +109,7 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
 
         if ( ( message instanceof InternalBindResponse ) || ( message instanceof InternalDeleteResponse )
             || ( message instanceof InternalAddResponse ) || ( message instanceof InternalCompareResponse )
-            || ( message instanceof InternalExtendedResponse ) )
+            || ( message instanceof InternalExtendedResponse ) || ( message instanceof InternalModifyResponse ) )
         {
             try
             {
@@ -526,6 +528,29 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
 
 
     /**
+     * Compute the ModifyResponse length 
+     * 
+     * ModifyResponse : 
+     * <pre>
+     * 0x67 L1 
+     *   | 
+     *   +--> LdapResult 
+     *   
+     * L1 = Length(LdapResult) 
+     * Length(ModifyResponse) = Length(0x67) + Length(L1) + L1
+     * </pre>
+     */
+    private int computeModifyResponseLength( ModifyResponseImpl modifyResponse )
+    {
+        int modifyResponseLength = computeLdapResultLength( modifyResponse.getLdapResult() );
+
+        modifyResponse.setModifyResponseLength( modifyResponseLength );
+
+        return 1 + TLV.getNbBytes( modifyResponseLength ) + modifyResponseLength;
+    }
+
+
+    /**
      * Encode the AddResponse message to a PDU.
      * 
      * @param buffer The buffer where to put the PDU
@@ -699,6 +724,29 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
 
 
     /**
+     * Encode the ModifyResponse message to a PDU.
+     * 
+     * @param buffer The buffer where to put the PDU
+     */
+    private void encodeModifyResponse( ByteBuffer buffer, ModifyResponseImpl modifyResponse ) throws EncoderException
+    {
+        try
+        {
+            // The ModifyResponse Tag
+            buffer.put( LdapConstants.MODIFY_RESPONSE_TAG );
+            buffer.put( TLV.getBytes( modifyResponse.getModifyResponseLength() ) );
+
+            // The LdapResult
+            encodeLdapResult( buffer, modifyResponse.getLdapResult() );
+        }
+        catch ( BufferOverflowException boe )
+        {
+            throw new EncoderException( I18n.err( I18n.ERR_04005 ) );
+        }
+    }
+
+
+    /**
      * Compute the protocolOp length 
      */
     private int computeProtocolOpLength( InternalMessage message )
@@ -719,6 +767,9 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
 
             case EXTENDED_RESPONSE:
                 return computeExtendedResponseLength( ( ExtendedResponseImpl ) message );
+
+            case MODIFY_RESPONSE:
+                return computeModifyResponseLength( ( ModifyResponseImpl ) message );
 
             default:
                 return 0;
@@ -748,6 +799,10 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
 
             case EXTENDED_RESPONSE:
                 encodeExtendedResponse( bb, ( ExtendedResponseImpl ) message );
+                break;
+
+            case MODIFY_RESPONSE:
+                encodeModifyResponse( bb, ( ModifyResponseImpl ) message );
                 break;
         }
     }

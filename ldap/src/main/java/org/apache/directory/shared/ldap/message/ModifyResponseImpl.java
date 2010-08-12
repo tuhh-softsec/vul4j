@@ -19,6 +19,7 @@
  */
 package org.apache.directory.shared.ldap.message;
 
+
 import org.apache.directory.shared.ldap.message.internal.InternalAbstractResultResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalModifyResponse;
 
@@ -29,6 +30,8 @@ import org.apache.directory.shared.ldap.message.internal.InternalModifyResponse;
  */
 public class ModifyResponseImpl extends InternalAbstractResultResponse implements InternalModifyResponse
 {
+    /** The encoded modifyResponse length */
+    private int modifyResponseLength;
 
     // ------------------------------------------------------------------------
     // Constructors
@@ -43,8 +46,26 @@ public class ModifyResponseImpl extends InternalAbstractResultResponse implement
      * @param id
      *            the sequence id for this response
      */
-    public ModifyResponseImpl(final int id)
+    public ModifyResponseImpl( final int id )
     {
         super( id, TYPE );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setModifyResponseLength( int modifyResponseLength )
+    {
+        this.modifyResponseLength = modifyResponseLength;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public int getModifyResponseLength()
+    {
+        return modifyResponseLength;
     }
 }

@@ -19,6 +19,7 @@
  */
 package org.apache.directory.shared.ldap.message.internal;
 
+
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 
 
@@ -31,4 +32,17 @@ public interface InternalModifyResponse extends InternalResultResponse
 {
     /** Modify response message type enumeration value */
     MessageTypeEnum TYPE = MessageTypeEnum.MODIFY_RESPONSE;
+
+
+    /**
+     * Stores the encoded length for the ModifyResponse
+     * @param modifyResponseLength The encoded length
+     */
+    void setModifyResponseLength( int modifyResponseLength );
+
+
+    /**
+     * @return The encoded ModifyResponse's length
+     */
+    int getModifyResponseLength();
 }

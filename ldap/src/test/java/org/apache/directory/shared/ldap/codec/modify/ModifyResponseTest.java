@@ -25,7 +25,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.nio.ByteBuffer;
-import java.util.List;
+import java.util.Map;
 
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
@@ -34,8 +34,10 @@ import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
+import org.apache.directory.shared.ldap.codec.LdapProtocolEncoder;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.message.control.Control;
+import org.apache.directory.shared.ldap.message.internal.InternalModifyResponse;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -50,6 +52,10 @@ import org.junit.runner.RunWith;
 @Concurrent()
 public class ModifyResponseTest
 {
+    /** The encoder instance */
+    LdapProtocolEncoder encoder = new LdapProtocolEncoder();
+
+
     /**
      * Test the decoding of a ModifyResponse
      */
@@ -93,20 +99,21 @@ public class ModifyResponseTest
         }
 
         // Check the decoded ModifyResponse PDU
-        ModifyResponseCodec modifyResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getModifyResponse();
+        InternalModifyResponse modifyResponse = ( ( LdapMessageContainer ) ldapMessageContainer )
+            .getInternalModifyResponse();
 
         assertEquals( 1, modifyResponse.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, modifyResponse.getLdapResult().getResultCode() );
-        assertEquals( "", modifyResponse.getLdapResult().getMatchedDN() );
+        assertEquals( "", modifyResponse.getLdapResult().getMatchedDn().getName() );
         assertEquals( "", modifyResponse.getLdapResult().getErrorMessage() );
-
-        // Check the length
-        assertEquals( 0x0E, modifyResponse.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = modifyResponse.encode();
+            ByteBuffer bb = encoder.encodeMessage( modifyResponse );
+
+            // Check the length
+            assertEquals( 0x0E, bb.limit() );
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -131,19 +138,27 @@ public class ModifyResponseTest
         ByteBuffer stream = ByteBuffer.allocate( 0x2B );
 
         stream.put( new byte[]
-            { 0x30, 0x29, // LDAPMessage ::=SEQUENCE {
-                0x02, 0x01, 0x01, // messageID MessageID
-                0x67, 0x07, // CHOICE { ..., modifyResponse ModifyResponse, ...
+            { 0x30,
+                0x29, // LDAPMessage ::=SEQUENCE {
+                0x02, 0x01,
+                0x01, // messageID MessageID
+                0x67,
+                0x07, // CHOICE { ..., modifyResponse ModifyResponse, ...
                 // ModifyResponse ::= [APPLICATION 7] LDAPResult
-                0x0A, 0x01, 0x00, // LDAPResult ::= SEQUENCE {
+                0x0A,
+                0x01,
+                0x00, // LDAPResult ::= SEQUENCE {
                 // resultCode ENUMERATED {
                 // success (0), ...
                 // },
-                0x04, 0x00, // matchedDN LDAPDN,
-                0x04, 0x00, // errorMessage LDAPString,
+                0x04,
+                0x00, // matchedDN LDAPDN,
+                0x04,
+                0x00, // errorMessage LDAPString,
                 // referral [3] Referral OPTIONAL }
                 // }
-                ( byte ) 0xA0, 0x1B, // A control
+                ( byte ) 0xA0,
+                0x1B, // A control
                 0x30, 0x19, 0x04, 0x17, 0x32, 0x2E, 0x31, 0x36, 0x2E, 0x38, 0x34, 0x30, 0x2E, 0x31, 0x2E, 0x31, 0x31,
                 0x33, 0x37, 0x33, 0x30, 0x2E, 0x33, 0x2E, 0x34, 0x2E, 0x32 } );
 
@@ -165,29 +180,30 @@ public class ModifyResponseTest
         }
 
         // Check the decoded ModifyResponse PDU
-        ModifyResponseCodec modifyResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getModifyResponse();
+        InternalModifyResponse modifyResponse = ( ( LdapMessageContainer ) ldapMessageContainer )
+            .getInternalModifyResponse();
 
         assertEquals( 1, modifyResponse.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, modifyResponse.getLdapResult().getResultCode() );
-        assertEquals( "", modifyResponse.getLdapResult().getMatchedDN() );
+        assertEquals( "", modifyResponse.getLdapResult().getMatchedDn().getName() );
         assertEquals( "", modifyResponse.getLdapResult().getErrorMessage() );
 
         // Check the Control
-        List<Control> controls = modifyResponse.getControls();
+        Map<String, Control> controls = modifyResponse.getControls();
 
         assertEquals( 1, controls.size() );
 
-        Control control = modifyResponse.getControls( 0 );
+        Control control = controls.get( "2.16.840.1.113730.3.4.2" );
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
         assertEquals( "", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
-
-        // Check the length
-        assertEquals( 0x2B, modifyResponse.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = modifyResponse.encode();
+            ByteBuffer bb = encoder.encodeMessage( modifyResponse );
+
+            // Check the length
+            assertEquals( 0x2B, bb.limit() );
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 

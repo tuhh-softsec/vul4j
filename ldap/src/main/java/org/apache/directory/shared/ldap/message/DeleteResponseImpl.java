@@ -31,7 +31,6 @@ import org.apache.directory.shared.ldap.message.internal.InternalDeleteResponse;
  */
 public class DeleteResponseImpl extends InternalAbstractResultResponse implements InternalDeleteResponse
 {
-
     /** The encoded deleteResponse length */
     private int deleteResponseLength;
 
