@@ -3,11 +3,12 @@
   <parent>
     <groupId>org.jvnet.hudson.plugins</groupId>
     <artifactId>plugin</artifactId>
-    <version>1.319</version><!-- which version of Hudson is this plugin built against? -->
+    <version>1.370</version><!-- which version of Hudson is this plugin built against? -->
     <relativePath>../pom.xml</relativePath>
   </parent>
 
   <artifactId>ccm</artifactId>
+  <groupId>br.eti.kinoshita</groupId>
   <packaging>hpi</packaging>
   <version>1.0-SNAPSHOT</version>
   <name>Hudson CCM Plugin</name>
@@ -20,4 +21,9 @@
   	</developer>
   </developers>
   
+  <properties>
+    <!-- which version of Hudson is this plugin built against? -->
+    <hudson.version>1.293</hudson.version>
+  </properties>
+
 </project>
