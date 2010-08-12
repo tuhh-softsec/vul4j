@@ -48,7 +48,7 @@ public interface InternalSearchRequest extends ManyReplyRequest, InternalAbandon
      */
     MessageTypeEnum[] RESPONSE_TYPES =
         { 
-        InternalSearchResponseDone.TYPE, 
+        InternalSearchResultDone.TYPE, 
         InternalSearchResponseEntry.TYPE, 
         InternalSearchResponseReference.TYPE, 
         InternalExtendedResponse.TYPE 

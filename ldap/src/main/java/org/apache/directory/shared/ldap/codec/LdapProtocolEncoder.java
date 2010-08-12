@@ -39,6 +39,7 @@ import org.apache.directory.shared.ldap.message.ExtendedResponseImpl;
 import org.apache.directory.shared.ldap.message.IntermediateResponseImpl;
 import org.apache.directory.shared.ldap.message.ModifyDnResponseImpl;
 import org.apache.directory.shared.ldap.message.ModifyResponseImpl;
+import org.apache.directory.shared.ldap.message.SearchResultDoneImpl;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.message.internal.InternalAddResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalBindResponse;
@@ -51,6 +52,7 @@ import org.apache.directory.shared.ldap.message.internal.InternalMessage;
 import org.apache.directory.shared.ldap.message.internal.InternalModifyDnResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalModifyResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalReferral;
+import org.apache.directory.shared.ldap.message.internal.InternalSearchResultDone;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.apache.mina.core.buffer.IoBuffer;
 import org.apache.mina.core.session.IoSession;
@@ -114,7 +116,8 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
         if ( ( message instanceof InternalBindResponse ) || ( message instanceof InternalDeleteResponse )
             || ( message instanceof InternalAddResponse ) || ( message instanceof InternalCompareResponse )
             || ( message instanceof InternalExtendedResponse ) || ( message instanceof InternalModifyResponse )
-            || ( message instanceof InternalModifyDnResponse ) || ( message instanceof InternalIntermediateResponse ) )
+            || ( message instanceof InternalModifyDnResponse ) || ( message instanceof InternalIntermediateResponse )
+            || ( message instanceof InternalSearchResultDone ) )
         {
             try
             {
@@ -533,6 +536,49 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
 
 
     /**
+     * Compute the intermediateResponse length
+     * 
+     * intermediateResponse :
+     * 
+     * 0x79 L1
+     *  |
+     * [+--> 0x80 L2 name
+     * [+--> 0x81 L3 response]]
+     * 
+     * L1 = [ + Length(0x80) + Length(L2) + L2
+     *      [ + Length(0x81) + Length(L3) + L3]]
+     * 
+     * Length(IntermediateResponse) = Length(0x79) + Length(L1) + L1
+     * 
+     * @return The IntermediateResponse length
+     */
+    private int computeIntermediateResponseLength( InternalIntermediateResponse intermediateResponse )
+    {
+        int intermediateResponseLength = 0;
+
+        if ( !StringTools.isEmpty( intermediateResponse.getResponseName() ) )
+        {
+            byte[] responseNameBytes = StringTools.getBytesUtf8( intermediateResponse.getResponseName() );
+
+            int responseNameLength = responseNameBytes.length;
+            intermediateResponseLength += 1 + TLV.getNbBytes( responseNameLength ) + responseNameLength;
+            intermediateResponse.setOidBytes( responseNameBytes );
+        }
+
+        byte[] encodedValue = intermediateResponse.getResponseValue();
+
+        if ( encodedValue != null )
+        {
+            intermediateResponseLength += 1 + TLV.getNbBytes( encodedValue.length ) + encodedValue.length;
+        }
+
+        intermediateResponse.setIntermediateResponseLength( intermediateResponseLength );
+
+        return 1 + TLV.getNbBytes( intermediateResponseLength ) + intermediateResponseLength;
+    }
+
+
+    /**
      * Compute the ModifyResponse length 
      * 
      * ModifyResponse : 
@@ -579,45 +625,25 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
 
 
     /**
-     * Compute the intermediateResponse length
+     * Compute the SearchResultDone length 
      * 
-     * intermediateResponse :
-     * 
-     * 0x79 L1
-     *  |
-     * [+--> 0x80 L2 name
-     * [+--> 0x81 L3 response]]
-     * 
-     * L1 = [ + Length(0x80) + Length(L2) + L2
-     *      [ + Length(0x81) + Length(L3) + L3]]
-     * 
-     * Length(IntermediateResponse) = Length(0x79) + Length(L1) + L1
-     * 
-     * @return The IntermediateResponse length
+     * SearchResultDone : 
+     * <pre>
+     * 0x65 L1 
+     *   | 
+     *   +--> LdapResult 
+     *   
+     * L1 = Length(LdapResult) 
+     * Length(SearchResultDone) = Length(0x65) + Length(L1) + L1
+     * </pre>
      */
-    private int computeIntermediateResponseLength( InternalIntermediateResponse intermediateResponse )
+    private int computeSearchResultDoneLength( SearchResultDoneImpl searchResultDone )
     {
-        int intermediateResponseLength = 0;
+        int searchResultDoneLength = computeLdapResultLength( searchResultDone.getLdapResult() );
 
-        if ( !StringTools.isEmpty( intermediateResponse.getResponseName() ) )
-        {
-            byte[] responseNameBytes = StringTools.getBytesUtf8( intermediateResponse.getResponseName() );
+        searchResultDone.setSearchResultDoneLength( searchResultDoneLength );
 
-            int responseNameLength = responseNameBytes.length;
-            intermediateResponseLength += 1 + TLV.getNbBytes( responseNameLength ) + responseNameLength;
-            intermediateResponse.setOidBytes( responseNameBytes );
-        }
-
-        byte[] encodedValue = intermediateResponse.getResponseValue();
-
-        if ( encodedValue != null )
-        {
-            intermediateResponseLength += 1 + TLV.getNbBytes( encodedValue.length ) + encodedValue.length;
-        }
-
-        intermediateResponse.setIntermediateResponseLength( intermediateResponseLength );
-
-        return 1 + TLV.getNbBytes( intermediateResponseLength ) + intermediateResponseLength;
+        return 1 + TLV.getNbBytes( searchResultDoneLength ) + searchResultDoneLength;
     }
 
 
@@ -892,6 +918,30 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
 
 
     /**
+     * Encode the SearchResultDone message to a PDU.
+     * 
+     * @param buffer The buffer where to put the PDU
+     */
+    private void encodeSearchResultDone( ByteBuffer buffer, SearchResultDoneImpl searchResultDone )
+        throws EncoderException
+    {
+        try
+        {
+            // The searchResultDone Tag
+            buffer.put( LdapConstants.SEARCH_RESULT_DONE_TAG );
+            buffer.put( TLV.getBytes( searchResultDone.getSearchResultDoneLength() ) );
+
+            // The LdapResult
+            encodeLdapResult( buffer, searchResultDone.getLdapResult() );
+        }
+        catch ( BufferOverflowException boe )
+        {
+            throw new EncoderException( I18n.err( I18n.ERR_04005 ) );
+        }
+    }
+
+
+    /**
      * Compute the protocolOp length 
      */
     private int computeProtocolOpLength( InternalMessage message )
@@ -921,6 +971,9 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
 
             case MODIFYDN_RESPONSE:
                 return computeModifyDnResponseLength( ( ModifyDnResponseImpl ) message );
+
+            case SEARCH_RESULT_DONE:
+                return computeSearchResultDoneLength( ( SearchResultDoneImpl ) message );
 
             default:
                 return 0;
@@ -963,6 +1016,9 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
             case MODIFYDN_RESPONSE:
                 encodeModifyDnResponse( bb, ( ModifyDnResponseImpl ) message );
                 break;
+
+            case SEARCH_RESULT_DONE:
+                encodeSearchResultDone( bb, ( SearchResultDoneImpl ) message );
         }
     }
 }

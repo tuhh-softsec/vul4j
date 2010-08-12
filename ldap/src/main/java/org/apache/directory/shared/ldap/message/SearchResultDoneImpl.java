@@ -22,7 +22,7 @@ package org.apache.directory.shared.ldap.message;
 
 import org.apache.directory.shared.ldap.message.internal.InternalAbstractResultResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalLdapResult;
-import org.apache.directory.shared.ldap.message.internal.InternalSearchResponseDone;
+import org.apache.directory.shared.ldap.message.internal.InternalSearchResultDone;
 
 
 /**
@@ -30,8 +30,10 @@ import org.apache.directory.shared.ldap.message.internal.InternalSearchResponseD
  * 
  * @author <a href="mailto:dev@directory.apache.org"> Apache Directory Project</a>
  */
-public class SearchResponseDoneImpl extends InternalAbstractResultResponse implements InternalSearchResponseDone
+public class SearchResultDoneImpl extends InternalAbstractResultResponse implements InternalSearchResultDone
 {
+    /** The encoded searchResultDone length */
+    private int searchResultDoneLength;
 
     // ------------------------------------------------------------------------
     // Constructors
@@ -47,7 +49,7 @@ public class SearchResponseDoneImpl extends InternalAbstractResultResponse imple
      * @param id
      *            the session unique message id
      */
-    public SearchResponseDoneImpl( final int id )
+    public SearchResultDoneImpl( final int id )
     {
         super( id, TYPE );
     }
@@ -88,7 +90,7 @@ public class SearchResponseDoneImpl extends InternalAbstractResultResponse imple
             return false;
         }
 
-        InternalLdapResult result = ( ( InternalSearchResponseDone ) obj ).getLdapResult();
+        InternalLdapResult result = ( ( InternalSearchResultDone ) obj ).getLdapResult();
 
         if ( !getLdapResult().equals( result ) )
         {
@@ -96,5 +98,40 @@ public class SearchResponseDoneImpl extends InternalAbstractResultResponse imple
         }
 
         return true;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setSearchResultDoneLength( int searchResultDoneLength )
+    {
+        this.searchResultDoneLength = searchResultDoneLength;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public int getSearchResultDoneLength()
+    {
+        return searchResultDoneLength;
+    }
+
+
+    /**
+     * Get a String representation of a SearchResultDone
+     * 
+     * @return A SearchResultDone String
+     */
+    public String toString()
+    {
+
+        StringBuffer sb = new StringBuffer();
+
+        sb.append( "    Search Result Done\n" );
+        sb.append( super.toString() );
+
+        return sb.toString();
     }
 }

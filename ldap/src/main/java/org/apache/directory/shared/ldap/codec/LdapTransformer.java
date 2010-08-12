@@ -41,7 +41,6 @@ import org.apache.directory.shared.ldap.codec.search.NotFilter;
 import org.apache.directory.shared.ldap.codec.search.OrFilter;
 import org.apache.directory.shared.ldap.codec.search.PresentFilter;
 import org.apache.directory.shared.ldap.codec.search.SearchRequestCodec;
-import org.apache.directory.shared.ldap.codec.search.SearchResultDoneCodec;
 import org.apache.directory.shared.ldap.codec.search.SearchResultEntryCodec;
 import org.apache.directory.shared.ldap.codec.search.SearchResultReferenceCodec;
 import org.apache.directory.shared.ldap.codec.search.SubstringFilter;
@@ -71,7 +70,6 @@ import org.apache.directory.shared.ldap.message.ModifyDnRequestImpl;
 import org.apache.directory.shared.ldap.message.ModifyRequestImpl;
 import org.apache.directory.shared.ldap.message.ReferralImpl;
 import org.apache.directory.shared.ldap.message.SearchRequestImpl;
-import org.apache.directory.shared.ldap.message.SearchResponseDoneImpl;
 import org.apache.directory.shared.ldap.message.SearchResponseEntryImpl;
 import org.apache.directory.shared.ldap.message.SearchResponseReferenceImpl;
 import org.apache.directory.shared.ldap.message.control.Control;
@@ -697,26 +695,6 @@ public class LdapTransformer
 
 
     /**
-     * Transform a Internal SearchResponseDone to a Codec SearchResultDone
-     * 
-     * @param internalMessage The incoming Internal SearchResponseDone
-     * @return The SearchResultDone instance
-     */
-    private static LdapMessageCodec transformSearchResultDone( InternalMessage internalMessage )
-    {
-        SearchResponseDoneImpl internalSearchResponseDone = ( SearchResponseDoneImpl ) internalMessage;
-        SearchResultDoneCodec searchResultDone = new SearchResultDoneCodec();
-
-        // Transform the ldapResult
-        searchResultDone.setLdapResult( transformLdapResult( ( LdapResultImpl ) internalSearchResponseDone
-            .getLdapResult() ) );
-
-        // Set the operation into the LdapMessage
-        return searchResultDone;
-    }
-
-
-    /**
      * Transform a Internal SearchResponseEntry to a Codec SearchResultEntry
      * 
      * @param internalMessage The incoming Internal SearchResponseEntry
@@ -797,10 +775,6 @@ public class LdapTransformer
         {
             case SEARCH_RESULT_ENTRY:
                 codecMessage = transformSearchResultEntry( msg );
-                break;
-
-            case SEARCH_RESULT_DONE:
-                codecMessage = transformSearchResultDone( msg );
                 break;
 
             case SEARCH_RESULT_REFERENCE:

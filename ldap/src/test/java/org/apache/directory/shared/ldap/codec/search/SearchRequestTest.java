@@ -48,7 +48,7 @@ import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.filter.SearchScope;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
-import org.apache.directory.shared.ldap.message.SearchResponseDoneImpl;
+import org.apache.directory.shared.ldap.message.SearchResultDoneImpl;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.message.internal.InternalMessage;
 import org.apache.directory.shared.ldap.schema.normalizers.DeepTrimToLowerNormalizer;
@@ -1687,8 +1687,8 @@ public class SearchRequestTest
         {
             assertTrue( de instanceof ResponseCarryingException );
             InternalMessage response = ((ResponseCarryingException)de).getResponse();
-            assertTrue( response instanceof SearchResponseDoneImpl );
-            assertEquals( ResultCodeEnum.INVALID_DN_SYNTAX, ((SearchResponseDoneImpl)response).getLdapResult().getResultCode() );
+            assertTrue( response instanceof SearchResultDoneImpl );
+            assertEquals( ResultCodeEnum.INVALID_DN_SYNTAX, ((SearchResultDoneImpl)response).getLdapResult().getResultCode() );
             return;
         }
 

@@ -32,7 +32,7 @@ import org.apache.directory.shared.ldap.filter.ExprNode;
 import org.apache.directory.shared.ldap.filter.SearchScope;
 import org.apache.directory.shared.ldap.message.internal.InternalResultResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalSearchRequest;
-import org.apache.directory.shared.ldap.message.internal.InternalSearchResponseDone;
+import org.apache.directory.shared.ldap.message.internal.InternalSearchResultDone;
 import org.apache.directory.shared.ldap.name.DN;
 
 
@@ -70,7 +70,7 @@ public class SearchRequestImpl extends AbstractAbandonableRequest implements Int
     private List<String> attributes = new ArrayList<String>();
 
     /** The final result containing SearchResponseDone response */
-    private InternalSearchResponseDone response;
+    private InternalSearchResultDone response;
 
 
     // ------------------------------------------------------------------------
@@ -345,7 +345,7 @@ public class SearchRequestImpl extends AbstractAbandonableRequest implements Int
     {
         if ( response == null )
         {
-            response = new SearchResponseDoneImpl( getMessageId() );
+            response = new SearchResultDoneImpl( getMessageId() );
         }
 
         return response;
