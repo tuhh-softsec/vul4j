@@ -36,6 +36,7 @@ import org.apache.directory.shared.ldap.message.BindResponseImpl;
 import org.apache.directory.shared.ldap.message.CompareResponseImpl;
 import org.apache.directory.shared.ldap.message.DeleteResponseImpl;
 import org.apache.directory.shared.ldap.message.ExtendedResponseImpl;
+import org.apache.directory.shared.ldap.message.ModifyDnResponseImpl;
 import org.apache.directory.shared.ldap.message.ModifyResponseImpl;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.message.internal.InternalAddResponse;
@@ -45,6 +46,7 @@ import org.apache.directory.shared.ldap.message.internal.InternalDeleteResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalExtendedResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalLdapResult;
 import org.apache.directory.shared.ldap.message.internal.InternalMessage;
+import org.apache.directory.shared.ldap.message.internal.InternalModifyDnResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalModifyResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalReferral;
 import org.apache.directory.shared.ldap.util.StringTools;
@@ -109,7 +111,8 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
 
         if ( ( message instanceof InternalBindResponse ) || ( message instanceof InternalDeleteResponse )
             || ( message instanceof InternalAddResponse ) || ( message instanceof InternalCompareResponse )
-            || ( message instanceof InternalExtendedResponse ) || ( message instanceof InternalModifyResponse ) )
+            || ( message instanceof InternalExtendedResponse ) || ( message instanceof InternalModifyResponse )
+            || ( message instanceof InternalModifyDnResponse ) )
         {
             try
             {
@@ -551,6 +554,29 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
 
 
     /**
+     * Compute the ModifyDNResponse length 
+     * 
+     * ModifyDNResponse : 
+     * <pre>
+     * 0x6D L1 
+     *   | 
+     *   +--> LdapResult 
+     *   
+     * L1 = Length(LdapResult) 
+     * Length(ModifyDNResponse) = Length(0x6D) + Length(L1) + L1
+     * </pre>
+     */
+    private int computeModifyDnResponseLength( ModifyDnResponseImpl modifyDnResponse )
+    {
+        int modifyDnResponseLength = computeLdapResultLength( modifyDnResponse.getLdapResult() );
+
+        modifyDnResponse.setModifyDnResponseLength( modifyDnResponseLength );
+
+        return 1 + TLV.getNbBytes( modifyDnResponseLength ) + modifyDnResponseLength;
+    }
+
+
+    /**
      * Encode the AddResponse message to a PDU.
      * 
      * @param buffer The buffer where to put the PDU
@@ -747,6 +773,30 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
 
 
     /**
+     * Encode the ModifyDnResponse message to a PDU.
+     * 
+     * @param buffer The buffer where to put the PDU
+     */
+    private void encodeModifyDnResponse( ByteBuffer buffer, ModifyDnResponseImpl modifyDnResponse )
+        throws EncoderException
+    {
+        try
+        {
+            // The ModifyResponse Tag
+            buffer.put( LdapConstants.MODIFY_DN_RESPONSE_TAG );
+            buffer.put( TLV.getBytes( modifyDnResponse.getModifyDnResponseLength() ) );
+
+            // The LdapResult
+            encodeLdapResult( buffer, modifyDnResponse.getLdapResult() );
+        }
+        catch ( BufferOverflowException boe )
+        {
+            throw new EncoderException( I18n.err( I18n.ERR_04005 ) );
+        }
+    }
+
+
+    /**
      * Compute the protocolOp length 
      */
     private int computeProtocolOpLength( InternalMessage message )
@@ -770,6 +820,9 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
 
             case MODIFY_RESPONSE:
                 return computeModifyResponseLength( ( ModifyResponseImpl ) message );
+
+            case MODIFYDN_RESPONSE:
+                return computeModifyDnResponseLength( ( ModifyDnResponseImpl ) message );
 
             default:
                 return 0;
@@ -803,6 +856,10 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
 
             case MODIFY_RESPONSE:
                 encodeModifyResponse( bb, ( ModifyResponseImpl ) message );
+                break;
+
+            case MODIFYDN_RESPONSE:
+                encodeModifyDnResponse( bb, ( ModifyDnResponseImpl ) message );
                 break;
         }
     }

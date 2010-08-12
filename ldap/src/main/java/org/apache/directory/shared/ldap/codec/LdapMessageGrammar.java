@@ -76,7 +76,6 @@ import org.apache.directory.shared.ldap.codec.extended.ExtendedRequestCodec;
 import org.apache.directory.shared.ldap.codec.intermediate.IntermediateResponseCodec;
 import org.apache.directory.shared.ldap.codec.modify.ModifyRequestCodec;
 import org.apache.directory.shared.ldap.codec.modifyDn.ModifyDNRequestCodec;
-import org.apache.directory.shared.ldap.codec.modifyDn.ModifyDNResponseCodec;
 import org.apache.directory.shared.ldap.codec.search.ExtensibleMatchFilter;
 import org.apache.directory.shared.ldap.codec.search.SearchRequestCodec;
 import org.apache.directory.shared.ldap.codec.search.SearchResultDoneCodec;
@@ -115,6 +114,7 @@ import org.apache.directory.shared.ldap.message.internal.InternalDeleteResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalExtendedResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalLdapResult;
 import org.apache.directory.shared.ldap.message.internal.InternalMessage;
+import org.apache.directory.shared.ldap.message.internal.InternalModifyDnResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalModifyResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalReferral;
 import org.apache.directory.shared.ldap.message.internal.InternalResultResponse;
@@ -2456,9 +2456,9 @@ public class LdapMessageGrammar extends AbstractGrammar
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
                     // Now, we can allocate the ModifyDnResponse Object
-                    ModifyDNResponseCodec modifyDnResponse = new ModifyDNResponseCodec();
-                    modifyDnResponse.setMessageId( ldapMessageContainer.getMessageId() );
-                    ldapMessageContainer.setLdapMessage( modifyDnResponse );
+                    InternalModifyDnResponse modifyDnResponse = new ModifyDnResponseImpl( ldapMessageContainer
+                        .getMessageId() );
+                    ldapMessageContainer.setInternalMessage( modifyDnResponse );
 
                     log.debug( "Modify DN response " );
                 }

@@ -25,7 +25,7 @@ import org.apache.directory.shared.ldap.message.internal.InternalModifyResponse;
 
 
 /**
- * Lockable ModifyResponse implementation
+ * ModifyResponse implementation
  * 
  */
 public class ModifyResponseImpl extends InternalAbstractResultResponse implements InternalModifyResponse
@@ -41,10 +41,9 @@ public class ModifyResponseImpl extends InternalAbstractResultResponse implement
 
 
     /**
-     * Creates a Lockable ModifyResponse as a reply to an ModifyRequest.
+     * Creates a ModifyResponse as a reply to an ModifyRequest.
      * 
-     * @param id
-     *            the sequence id for this response
+     * @param id the sequence id for this response
      */
     public ModifyResponseImpl( final int id )
     {

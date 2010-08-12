@@ -19,17 +19,20 @@
  */
 package org.apache.directory.shared.ldap.message;
 
+
 import org.apache.directory.shared.ldap.message.internal.InternalAbstractResultResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalModifyDnResponse;
 
 
 /**
- * Lockable ModifyDnResponse implementation
+ * ModifyDnResponse implementation
  * 
  * @author <a href="mailto:dev@directory.apache.org"> Apache Directory Project</a>
  */
 public class ModifyDnResponseImpl extends InternalAbstractResultResponse implements InternalModifyDnResponse
 {
+    /** The encoded modifyDnResponse length */
+    private int modifyDnResponseLength;
 
     // ------------------------------------------------------------------------
     // Constructors
@@ -39,13 +42,31 @@ public class ModifyDnResponseImpl extends InternalAbstractResultResponse impleme
 
 
     /**
-     * Creates a Lockable ModifyDnResponse as a reply to an ModifyDnRequest.
+     * Creates a ModifyDnResponse as a reply to an ModifyDnRequest.
      * 
-     * @param id
-     *            the sequence if of this response
+     * @param id the sequence if of this response
      */
-    public ModifyDnResponseImpl(final int id)
+    public ModifyDnResponseImpl( final int id )
     {
         super( id, TYPE );
     }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setModifyDnResponseLength( int modifyDnResponseLength )
+    {
+        this.modifyDnResponseLength = modifyDnResponseLength;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public int getModifyDnResponseLength()
+    {
+        return modifyDnResponseLength;
+    }
+
 }

@@ -34,7 +34,6 @@ import org.apache.directory.shared.ldap.codec.extended.ExtendedRequestCodec;
 import org.apache.directory.shared.ldap.codec.intermediate.IntermediateResponseCodec;
 import org.apache.directory.shared.ldap.codec.modify.ModifyRequestCodec;
 import org.apache.directory.shared.ldap.codec.modifyDn.ModifyDNRequestCodec;
-import org.apache.directory.shared.ldap.codec.modifyDn.ModifyDNResponseCodec;
 import org.apache.directory.shared.ldap.codec.search.AndFilter;
 import org.apache.directory.shared.ldap.codec.search.AttributeValueAssertionFilter;
 import org.apache.directory.shared.ldap.codec.search.ConnectorFilter;
@@ -72,7 +71,6 @@ import org.apache.directory.shared.ldap.message.ExtendedRequestImpl;
 import org.apache.directory.shared.ldap.message.IntermediateResponseImpl;
 import org.apache.directory.shared.ldap.message.LdapResultImpl;
 import org.apache.directory.shared.ldap.message.ModifyDnRequestImpl;
-import org.apache.directory.shared.ldap.message.ModifyDnResponseImpl;
 import org.apache.directory.shared.ldap.message.ModifyRequestImpl;
 import org.apache.directory.shared.ldap.message.ReferralImpl;
 import org.apache.directory.shared.ldap.message.SearchRequestImpl;
@@ -735,26 +733,6 @@ public class LdapTransformer
 
 
     /**
-     * Transform a Internal ModifyDNResponse to a Codec ModifyDNResponse
-     * 
-     * @param internalMessage The incoming Internal ModifyDNResponse
-     * @return The ModifyDnResponseCodec instance
-     */
-    private static LdapMessageCodec transformModifyDNResponse( InternalMessage internalMessage )
-    {
-        ModifyDnResponseImpl internalModifyDNResponse = ( ModifyDnResponseImpl ) internalMessage;
-
-        ModifyDNResponseCodec modifyDNResponse = new ModifyDNResponseCodec();
-
-        // Transform the ldapResult
-        modifyDNResponse.setLdapResult( transformLdapResult( ( LdapResultImpl ) internalModifyDNResponse
-            .getLdapResult() ) );
-
-        return modifyDNResponse;
-    }
-
-
-    /**
      * Transform a Internal SearchResponseDone to a Codec SearchResultDone
      * 
      * @param internalMessage The incoming Internal SearchResponseDone
@@ -867,10 +845,6 @@ public class LdapTransformer
 
             case BIND_REQUEST:
                 codecMessage = transformBindRequest( msg );
-                break;
-
-            case MODIFYDN_RESPONSE:
-                codecMessage = transformModifyDNResponse( msg );
                 break;
 
             case INTERMEDIATE_RESPONSE:
