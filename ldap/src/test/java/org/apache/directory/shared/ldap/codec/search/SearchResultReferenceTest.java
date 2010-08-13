@@ -21,12 +21,13 @@ package org.apache.directory.shared.ldap.codec.search;
 
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.nio.ByteBuffer;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.directory.junit.tools.Concurrent;
@@ -36,9 +37,10 @@ import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
-import org.apache.directory.shared.ldap.codec.util.LdapURLEncodingException;
+import org.apache.directory.shared.ldap.codec.LdapProtocolEncoder;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.util.LdapURL;
+import org.apache.directory.shared.ldap.message.internal.InternalReferral;
+import org.apache.directory.shared.ldap.message.internal.InternalSearchResultReference;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -53,6 +55,10 @@ import org.junit.runner.RunWith;
 @Concurrent()
 public class SearchResultReferenceTest
 {
+    /** The encoder instance */
+    LdapProtocolEncoder encoder = new LdapProtocolEncoder();
+
+
     /**
      * Test the decoding of a SearchResultReference
      */
@@ -82,12 +88,12 @@ public class SearchResultReferenceTest
             {
 
             0x30, ( byte ) 0x82, 0x03, ( byte ) 0xd4, // LDAPMessage
-                                                        // ::=SEQUENCE {
+                // ::=SEQUENCE {
                 0x02, 0x01, 0x01, // messageID MessageID
                 0x73, ( byte ) 0x82, 0x03, ( byte ) 0xcd, // CHOICE { ...,
-                                                            // searchResEntry
-                                                            // SearchResultEntry,
-                                                            // ...
+            // searchResEntry
+            // SearchResultEntry,
+            // ...
             // SearchResultReference ::= [APPLICATION 19] SEQUENCE OF LDAPURL
             } );
 
@@ -96,7 +102,7 @@ public class SearchResultReferenceTest
             stream.put( ( byte ) 0x04 );
             stream.put( ( byte ) ldapUrls[i].getBytes().length );
 
-            byte[] bytes = ldapUrls[i].getBytes();
+            byte[] bytes = StringTools.getBytesUtf8( ldapUrls[i] );
 
             for ( int j = 0; j < bytes.length; j++ )
             {
@@ -120,29 +126,27 @@ public class SearchResultReferenceTest
             fail( de.getMessage() );
         }
 
-        SearchResultReferenceCodec searchResultReference = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchResultReference();
+        InternalSearchResultReference searchResultReference = ( ( LdapMessageContainer ) ldapMessageContainer )
+            .getInternalSearchResultReference();
 
         assertEquals( 1, searchResultReference.getMessageId() );
 
         Set<String> ldapUrlsSet = new HashSet<String>();
 
-        try
+        for ( int i = 0; i < ldapUrls.length; i++ )
         {
-            for ( int i = 0; i < ldapUrls.length; i++ )
-            {
-                ldapUrlsSet.add( new LdapURL( ldapUrls[i].getBytes() ).toString() );
-            }
-        }
-        catch ( LdapURLEncodingException luee )
-        {
-            fail();
+            ldapUrlsSet.add( StringTools.utf8ToString( ldapUrls[i].getBytes() ) );
         }
 
-        for ( LdapURL ldapUrl:searchResultReference.getSearchResultReferences() )
+        InternalReferral referral = searchResultReference.getReferral();
+
+        assertNotNull( referral );
+
+        for ( String ldapUrl : referral.getLdapUrls() )
         {
-            if ( ldapUrlsSet.contains( ldapUrl.toString() ) )
+            if ( ldapUrlsSet.contains( ldapUrl ) )
             {
-                ldapUrlsSet.remove( ldapUrl.toString() );
+                ldapUrlsSet.remove( ldapUrl );
             }
             else
             {
@@ -152,13 +156,13 @@ public class SearchResultReferenceTest
 
         assertTrue( ldapUrlsSet.size() == 0 );
 
-        // Check the length
-        assertEquals( 0x3D8, searchResultReference.computeLength() );
-
         // Check the encoding
         try
         {
-            ByteBuffer bb = searchResultReference.encode();
+            ByteBuffer bb = encoder.encodeMessage( searchResultReference );
+
+            // Check the length
+            assertEquals( 0x3D8, bb.limit() );
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -201,12 +205,12 @@ public class SearchResultReferenceTest
             {
 
             0x30, ( byte ) 0x82, 0x03, ( byte ) 0xF1, // LDAPMessage
-                                                        // ::=SEQUENCE {
+                // ::=SEQUENCE {
                 0x02, 0x01, 0x01, // messageID MessageID
                 0x73, ( byte ) 0x82, 0x03, ( byte ) 0xcd, // CHOICE { ...,
-                                                            // searchResEntry
-                                                            // SearchResultEntry,
-                                                            // ...
+            // searchResEntry
+            // SearchResultEntry,
+            // ...
             // SearchResultReference ::= [APPLICATION 19] SEQUENCE OF LDAPURL
             } );
 
@@ -224,7 +228,8 @@ public class SearchResultReferenceTest
         }
 
         byte[] controlBytes = new byte[]
-            { ( byte ) 0xA0, 0x1B, // A control
+            { ( byte ) 0xA0,
+                0x1B, // A control
                 0x30, 0x19, 0x04, 0x17, 0x32, 0x2E, 0x31, 0x36, 0x2E, 0x38, 0x34, 0x30, 0x2E, 0x31, 0x2E, 0x31, 0x31,
                 0x33, 0x37, 0x33, 0x30, 0x2E, 0x33, 0x2E, 0x34, 0x2E, 0x32 };
 
@@ -241,7 +246,7 @@ public class SearchResultReferenceTest
 
         try
         {
-            ((LdapMessageContainer)ldapMessageContainer).clean();
+            ( ( LdapMessageContainer ) ldapMessageContainer ).clean();
             ldapDecoder.decode( stream, ldapMessageContainer );
         }
         catch ( DecoderException de )
@@ -249,32 +254,30 @@ public class SearchResultReferenceTest
             de.printStackTrace();
             fail( de.getMessage() );
         }
-        
+
         stream.flip();
-        
-        SearchResultReferenceCodec searchResultReference = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchResultReference();
+
+        InternalSearchResultReference searchResultReference = ( ( LdapMessageContainer ) ldapMessageContainer )
+            .getInternalSearchResultReference();
 
         assertEquals( 1, searchResultReference.getMessageId() );
 
         Set<String> ldapUrlsSet = new HashSet<String>();
 
-        try
+        for ( int i = 0; i < ldapUrls.length; i++ )
         {
-            for ( int i = 0; i < ldapUrls.length; i++ )
-            {
-                ldapUrlsSet.add( new LdapURL( ldapUrls[i].getBytes() ).toString() );
-            }
-        }
-        catch ( LdapURLEncodingException luee )
-        {
-            fail();
+            ldapUrlsSet.add( StringTools.utf8ToString( ldapUrls[i].getBytes() ) );
         }
 
-        for ( LdapURL ldapUrl:searchResultReference.getSearchResultReferences() )
+        InternalReferral referral = searchResultReference.getReferral();
+
+        assertNotNull( referral );
+
+        for ( String ldapUrl : referral.getLdapUrls() )
         {
-            if ( ldapUrlsSet.contains( ldapUrl.toString() ) )
+            if ( ldapUrlsSet.contains( ldapUrl ) )
             {
-                ldapUrlsSet.remove( ldapUrl.toString() );
+                ldapUrlsSet.remove( ldapUrl );
             }
             else
             {
@@ -285,21 +288,21 @@ public class SearchResultReferenceTest
         assertTrue( ldapUrlsSet.size() == 0 );
 
         // Check the Control
-        List<Control> controls = searchResultReference.getControls();
+        Map<String, Control> controls = searchResultReference.getControls();
 
         assertEquals( 1, controls.size() );
 
-        Control control = searchResultReference.getControls( 0 );
+        Control control = controls.get( "2.16.840.1.113730.3.4.2" );
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
         assertEquals( "", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
-
-        // Check the length
-        assertEquals( 0x3F5, searchResultReference.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = searchResultReference.encode();
+            ByteBuffer bb = encoder.encodeMessage( searchResultReference );
+
+            // Check the length
+            assertEquals( 0x3F5, bb.limit() );
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -329,7 +332,7 @@ public class SearchResultReferenceTest
             0x30, 0x05, // LDAPMessage ::=SEQUENCE {
                 0x02, 0x01, 0x01, // messageID MessageID
                 0x73, 0x00 // CHOICE { ..., searchResEntry SearchResultEntry,
-                            // ...
+            // ...
             // SearchResultReference ::= [APPLICATION 19] SEQUENCE OF LDAPURL
             } );
 
@@ -369,14 +372,14 @@ public class SearchResultReferenceTest
             0x30, 0x0F, // LDAPMessage ::=SEQUENCE {
                 0x02, 0x01, 0x01, // messageID MessageID
                 0x73, 0x0A, // CHOICE { ..., searchResEntry SearchResultEntry,
-                            // ...
+                // ...
                 0x04, 0x08, 'l', 'd', 'a', 'p', ':', '/', '/', '/' // SearchResultReference
-                                                                    // ::=
-                                                                    // [APPLICATION
-                                                                    // 19]
-                                                                    // SEQUENCE
-                                                                    // OF
-                                                                    // LDAPURL
+            // ::=
+            // [APPLICATION
+            // 19]
+            // SEQUENCE
+            // OF
+            // LDAPURL
             } );
 
         String decodedPdu = StringTools.dumpBytes( stream.array() );
@@ -395,21 +398,27 @@ public class SearchResultReferenceTest
             fail( de.getMessage() );
         }
 
-        SearchResultReferenceCodec searchResultReference = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchResultReference();
+        InternalSearchResultReference searchResultReference = ( ( LdapMessageContainer ) ldapMessageContainer )
+            .getInternalSearchResultReference();
 
         assertEquals( 1, searchResultReference.getMessageId() );
 
-        LdapURL ldapUrl = searchResultReference.getSearchResultReferences().get( 0 );
+        InternalReferral referral = searchResultReference.getReferral();
 
-        assertEquals( "ldap:///", ldapUrl.toString() );
+        assertNotNull( referral );
 
-        // Check the length
-        assertEquals( 0x11, searchResultReference.computeLength() );
+        for ( String ldapUrl : referral.getLdapUrls() )
+        {
+            assertEquals( "ldap:///", ldapUrl );
+        }
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = searchResultReference.encode();
+            ByteBuffer bb = encoder.encodeMessage( searchResultReference );
+
+            // Check the length
+            assertEquals( 0x11, bb.limit() );
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 

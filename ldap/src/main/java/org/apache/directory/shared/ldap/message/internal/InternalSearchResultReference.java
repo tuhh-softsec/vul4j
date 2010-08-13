@@ -20,6 +20,7 @@
 
 package org.apache.directory.shared.ldap.message.internal;
 
+
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 
 
@@ -46,8 +47,20 @@ public interface InternalSearchResultReference extends InternalResponse
     /**
      * Sets the sequence of LdapUrls as a Referral instance.
      * 
-     * @param a_referral
-     *            the sequence of LdapUrls
+     * @param referral the sequence of LdapUrls
      */
-    void setReferral( InternalReferral a_referral );
+    void setReferral( InternalReferral referral );
+
+
+    /**
+     * @return The encoded SearchResultReference's length
+     */
+    int getSearchResultReferenceLength();
+
+
+    /**
+     * Stores the encoded length for the SearchResultReference's
+     * @param searchResultReferenceLength The encoded length
+     */
+    void setSearchResultReferenceLength( int searchResultReferenceLength );
 }

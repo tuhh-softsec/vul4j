@@ -26,8 +26,10 @@ import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
-import org.apache.directory.shared.ldap.codec.search.SearchResultReferenceCodec;
 import org.apache.directory.shared.ldap.codec.util.LdapURLEncodingException;
+import org.apache.directory.shared.ldap.message.ReferralImpl;
+import org.apache.directory.shared.ldap.message.internal.InternalReferral;
+import org.apache.directory.shared.ldap.message.internal.InternalSearchResultReference;
 import org.apache.directory.shared.ldap.util.LdapURL;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
@@ -47,10 +49,12 @@ public class StoreReferenceAction extends GrammarAction
     /** Speedup for logs */
     private static final boolean IS_DEBUG = log.isDebugEnabled();
 
+
     public StoreReferenceAction()
     {
         super( "Store a reference" );
     }
+
 
     /**
      * The initialization action
@@ -60,30 +64,39 @@ public class StoreReferenceAction extends GrammarAction
 
         LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
-        SearchResultReferenceCodec searchResultReference = ldapMessageContainer.getSearchResultReference();
+        InternalSearchResultReference searchResultReference = ldapMessageContainer.getInternalSearchResultReference();
 
         // Get the Value and store it in the BindRequest
         TLV tlv = ldapMessageContainer.getCurrentTLV();
 
-        // We have to handle the special case of a 0 length server
-        // sasl credentials
+        // Get the referral, or create it if not existing
+        InternalReferral referral = searchResultReference.getReferral();
+
+        if ( referral == null )
+        {
+            referral = new ReferralImpl();
+            searchResultReference.setReferral( referral );
+        }
+
+        // We have to handle the special case of a 0 length list of referrals
         LdapURL url = LdapURL.EMPTY_URL;
 
         if ( tlv.getLength() == 0 )
         {
-            searchResultReference.addSearchResultReference( url );
+            referral.addLdapUrl( "" );
         }
         else
         {
+            String urlStr = StringTools.utf8ToString( tlv.getValue().getData() );
+
             try
             {
-                url = new LdapURL( tlv.getValue().getData() );
-                searchResultReference.addSearchResultReference( url );
+                url = new LdapURL( urlStr );
+                referral.addLdapUrl( urlStr );
             }
             catch ( LdapURLEncodingException luee )
             {
-                String badUrl = StringTools.utf8ToString( tlv.getValue().getData() );
-                log.error( I18n.err( I18n.ERR_04021, badUrl, luee.getMessage() ) );
+                log.error( I18n.err( I18n.ERR_04021, urlStr, luee.getMessage() ) );
                 throw new DecoderException( I18n.err( I18n.ERR_04016, luee.getMessage() ) );
             }
         }

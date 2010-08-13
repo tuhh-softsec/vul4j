@@ -46,6 +46,7 @@ import org.apache.directory.shared.ldap.message.ModifyDnResponseImpl;
 import org.apache.directory.shared.ldap.message.ModifyResponseImpl;
 import org.apache.directory.shared.ldap.message.SearchResultDoneImpl;
 import org.apache.directory.shared.ldap.message.SearchResultEntryImpl;
+import org.apache.directory.shared.ldap.message.SearchResultReferenceImpl;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.message.internal.InternalAddResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalBindResponse;
@@ -60,6 +61,7 @@ import org.apache.directory.shared.ldap.message.internal.InternalModifyResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalReferral;
 import org.apache.directory.shared.ldap.message.internal.InternalSearchResultDone;
 import org.apache.directory.shared.ldap.message.internal.InternalSearchResultEntry;
+import org.apache.directory.shared.ldap.message.internal.InternalSearchResultReference;
 import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.apache.mina.core.buffer.IoBuffer;
@@ -125,7 +127,8 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
             || ( message instanceof InternalAddResponse ) || ( message instanceof InternalCompareResponse )
             || ( message instanceof InternalExtendedResponse ) || ( message instanceof InternalModifyResponse )
             || ( message instanceof InternalModifyDnResponse ) || ( message instanceof InternalIntermediateResponse )
-            || ( message instanceof InternalSearchResultDone ) || ( message instanceof InternalSearchResultEntry ) )
+            || ( message instanceof InternalSearchResultDone ) || ( message instanceof InternalSearchResultEntry )
+            || ( message instanceof InternalSearchResultReference ) )
         {
             try
             {
@@ -306,29 +309,12 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
         ldapResultLength += 1 + TLV.getNbBytes( errorMessageBytes.length ) + errorMessageBytes.length;
         ldapResult.setErrorMessageBytes( errorMessageBytes );
 
-        InternalReferral referral = ldapResult.getReferral();
+        int referralLength = computeReferralLength( ldapResult.getReferral() );
 
-        if ( referral != null )
+        if ( referralLength != 0 )
         {
-            Collection<String> ldapUrls = referral.getLdapUrls();
-
-            if ( ( ldapUrls != null ) && ( ldapUrls.size() != 0 ) )
-            {
-                int referralsLength = 0;
-
-                // Each referral
-                for ( String ldapUrl : ldapUrls )
-                {
-                    byte[] ldapUrlBytes = StringTools.getBytesUtf8( ldapUrl );
-                    referralsLength += 1 + TLV.getNbBytes( ldapUrlBytes.length ) + ldapUrlBytes.length;
-                    referral.addLdapUrlBytes( ldapUrlBytes );
-                }
-
-                ldapResult.setReferralsLength( referralsLength );
-
-                // The referrals
-                ldapResultLength += 1 + TLV.getNbBytes( referralsLength ) + referralsLength;
-            }
+            // The referrals
+            ldapResultLength += 1 + TLV.getNbBytes( referralLength ) + referralLength;
         }
 
         return ldapResultLength;
@@ -371,25 +357,37 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
 
         if ( referral != null )
         {
-            Collection<byte[]> ldapUrlsBytes = referral.getLdapUrlsBytes();
-
-            if ( ( ldapUrlsBytes != null ) && ( ldapUrlsBytes.size() != 0 ) )
-            {
-                // Encode the referrals sequence
-                // The referrals length MUST have been computed before !
-                buffer.put( ( byte ) LdapConstants.LDAP_RESULT_REFERRAL_SEQUENCE_TAG );
-                buffer.put( TLV.getBytes( ldapResult.getReferralsLength() ) );
-
-                // Each referral
-                for ( byte[] ldapUrlBytes : ldapUrlsBytes )
-                {
-                    // Encode the current referral
-                    Value.encode( buffer, ldapUrlBytes );
-                }
-            }
+            encodeReferral( buffer, referral );
         }
 
         return buffer;
+    }
+
+
+    /**
+     * Encode the Referral message to a PDU.
+     * 
+     * @param buffer The buffer where to put the PDU
+     * @return The PDU.
+     */
+    private void encodeReferral( ByteBuffer buffer, InternalReferral referral ) throws EncoderException
+    {
+        Collection<byte[]> ldapUrlsBytes = referral.getLdapUrlsBytes();
+
+        if ( ( ldapUrlsBytes != null ) && ( ldapUrlsBytes.size() != 0 ) )
+        {
+            // Encode the referrals sequence
+            // The referrals length MUST have been computed before !
+            buffer.put( ( byte ) LdapConstants.LDAP_RESULT_REFERRAL_SEQUENCE_TAG );
+            buffer.put( TLV.getBytes( referral.getReferralLength() ) );
+
+            // Each referral
+            for ( byte[] ldapUrlBytes : ldapUrlsBytes )
+            {
+                // Encode the current referral
+                Value.encode( buffer, ldapUrlBytes );
+            }
+        }
     }
 
 
@@ -632,6 +630,40 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
     }
 
 
+    private int computeReferralLength( InternalReferral referral )
+    {
+        if ( referral != null )
+        {
+            Collection<String> ldapUrls = referral.getLdapUrls();
+
+            if ( ( ldapUrls != null ) && ( ldapUrls.size() != 0 ) )
+            {
+                int referralLength = 0;
+
+                // Each referral
+                for ( String ldapUrl : ldapUrls )
+                {
+                    byte[] ldapUrlBytes = StringTools.getBytesUtf8( ldapUrl );
+                    referralLength += 1 + TLV.getNbBytes( ldapUrlBytes.length ) + ldapUrlBytes.length;
+                    referral.addLdapUrlBytes( ldapUrlBytes );
+                }
+
+                referral.setReferralLength( referralLength );
+
+                return referralLength;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+        else
+        {
+            return 0;
+        }
+    }
+
+
     /**
      * Compute the SearchResultDone length 
      * 
@@ -779,6 +811,48 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
 
         // Return the result.
         return 1 + TLV.getNbBytes( searchResultEntryLength ) + searchResultEntryLength;
+    }
+
+
+    /**
+     * Compute the SearchResultReference length
+     * 
+     * SearchResultReference :
+     * <pre>
+     * 0x73 L1
+     *  |
+     *  +--> 0x04 L2 reference
+     *  +--> 0x04 L3 reference
+     *  +--> ...
+     *  +--> 0x04 Li reference
+     *  +--> ...
+     *  +--> 0x04 Ln reference
+     * 
+     * L1 = n*Length(0x04) + sum(Length(Li)) + sum(Length(reference[i]))
+     * 
+     * Length(SearchResultReference) = Length(0x73 + Length(L1) + L1
+     * </pre>
+     */
+    private int computeSearchResultReferenceLength( InternalSearchResultReference searchResultReference )
+    {
+        int searchResultReferenceLength = 0;
+
+        // We may have more than one reference.
+        InternalReferral referral = searchResultReference.getReferral();
+
+        int referralLength = computeReferralLength( referral );
+
+        if ( referralLength != 0 )
+        {
+            searchResultReference.setReferral( referral );
+
+            searchResultReferenceLength = referralLength;
+        }
+
+        // Store the length of the response 
+        searchResultReference.setSearchResultReferenceLength( searchResultReferenceLength );
+
+        return 1 + TLV.getNbBytes( searchResultReferenceLength ) + searchResultReferenceLength;
     }
 
 
@@ -1168,6 +1242,47 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
 
 
     /**
+     * Encode the SearchResultReference message to a PDU.
+     * 
+     * SearchResultReference :
+     * <pre>
+     * 0x73 LL
+     *   0x04 LL reference
+     *   [0x04 LL reference]*
+     * </pre>
+     * @param buffer The buffer where to put the PDU
+     * @return The PDU.
+     */
+    protected void encodeSearchResultReference( ByteBuffer buffer, InternalSearchResultReference searchResultReference )
+        throws EncoderException
+    {
+        try
+        {
+            // The SearchResultReference Tag
+            buffer.put( LdapConstants.SEARCH_RESULT_REFERENCE_TAG );
+            buffer.put( TLV.getBytes( searchResultReference.getSearchResultReferenceLength() ) );
+
+            // The referrals, if any
+            InternalReferral referral = searchResultReference.getReferral();
+
+            if ( referral != null )
+            {
+                // Each referral
+                for ( byte[] ldapUrlBytes : referral.getLdapUrlsBytes() )
+                {
+                    // Encode the current referral
+                    Value.encode( buffer, ldapUrlBytes );
+                }
+            }
+        }
+        catch ( BufferOverflowException boe )
+        {
+            throw new EncoderException( I18n.err( I18n.ERR_04005 ) );
+        }
+    }
+
+
+    /**
      * Compute the protocolOp length 
      */
     private int computeProtocolOpLength( InternalMessage message )
@@ -1203,6 +1318,9 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
 
             case SEARCH_RESULT_ENTRY:
                 return computeSearchResultEntryLength( ( SearchResultEntryImpl ) message );
+
+            case SEARCH_RESULT_REFERENCE:
+                return computeSearchResultReferenceLength( ( SearchResultReferenceImpl ) message );
 
             default:
                 return 0;
@@ -1252,6 +1370,11 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
 
             case SEARCH_RESULT_ENTRY:
                 encodeSearchResultEntry( bb, ( SearchResultEntryImpl ) message );
+                break;
+
+            case SEARCH_RESULT_REFERENCE:
+                encodeSearchResultReference( bb, ( SearchResultReferenceImpl ) message );
+                break;
         }
     }
 }

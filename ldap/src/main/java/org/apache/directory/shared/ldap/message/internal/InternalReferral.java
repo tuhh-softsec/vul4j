@@ -127,4 +127,17 @@ public interface InternalReferral
      *            the LDAPv3 URL to remove
      */
     void removeLdapUrl( String url );
+
+
+    /**
+     * @return The total length of the Referral
+     */
+    int getReferralLength();
+
+
+    /**
+     * Set the length of the referral
+     * @param referralLength The total length of the Referral
+     */
+    void setReferralLength( int referralLength );
 }

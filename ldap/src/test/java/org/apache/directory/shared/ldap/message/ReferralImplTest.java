@@ -220,6 +220,17 @@ public class ReferralImplTest
             {
                 return null;
             }
+
+
+            public int getReferralLength()
+            {
+                return 0;
+            }
+
+
+            public void setReferralLength( int referralLength )
+            {
+            }
         };
 
         ReferralImpl refs1 = new ReferralImpl();

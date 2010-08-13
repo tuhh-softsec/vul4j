@@ -46,10 +46,30 @@ public class ReferralImpl implements InternalReferral
     /** The encoded LdapURL */
     private final List<byte[]> urlsBytes = new ArrayList<byte[]>();
 
+    /** The length of the referral */
+    private int referralLength;
+
 
     // ------------------------------------------------------------------------
     // LdapResult Interface Method Implementations
     // ------------------------------------------------------------------------
+    /**
+     * {@inheritDoc}
+     */
+    public int getReferralLength()
+    {
+        return referralLength;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setReferralLength( int referralLength )
+    {
+        this.referralLength = referralLength;
+    }
+
 
     /**
      * Gets an unmodifiable set of alternative referral urls.

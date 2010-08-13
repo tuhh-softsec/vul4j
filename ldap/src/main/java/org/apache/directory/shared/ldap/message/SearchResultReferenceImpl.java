@@ -37,6 +37,12 @@ public class SearchResultReferenceImpl extends InternalAbstractResponse implemen
     /** Referral holding the reference urls */
     private InternalReferral referral;
 
+    /** The length of the referral */
+    private int referralLength;
+
+    /** The search result reference length */
+    private int searchResultReferenceLength;
+
 
     // ------------------------------------------------------------------------
     // Constructors
@@ -73,12 +79,29 @@ public class SearchResultReferenceImpl extends InternalAbstractResponse implemen
     /**
      * Sets the sequence of LdapUrls as a Referral instance.
      * 
-     * @param referral
-     *            the sequence of LdapUrls
+     * @param referral the sequence of LdapUrls
      */
     public void setReferral( InternalReferral referral )
     {
         this.referral = referral;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public int getReferralLength()
+    {
+        return referralLength;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setReferralLength( int referralLength )
+    {
+        this.referralLength = referralLength;
     }
 
 
@@ -136,5 +159,23 @@ public class SearchResultReferenceImpl extends InternalAbstractResponse implemen
         }
 
         return true;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public int getSearchResultReferenceLength()
+    {
+        return searchResultReferenceLength;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setSearchResultReferenceLength( int searchResultReferenceLength )
+    {
+        this.searchResultReferenceLength = searchResultReferenceLength;
     }
 }

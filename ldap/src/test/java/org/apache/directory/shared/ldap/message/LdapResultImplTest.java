@@ -138,7 +138,7 @@ public class LdapResultImplTest
             }
 
 
-            public void setReferral( InternalReferral a_referral )
+            public void setReferral( InternalReferral referral )
             {
             }
 
@@ -165,13 +165,13 @@ public class LdapResultImplTest
             }
 
 
-            public int getReferralsLength()
+            public int getReferralLength()
             {
                 return 0;
             }
 
 
-            public void setReferralsLength( int referralsLength )
+            public void setReferralLength( int referralLength )
             {
             }
         };

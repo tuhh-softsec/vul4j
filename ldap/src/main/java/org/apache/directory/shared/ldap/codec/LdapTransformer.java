@@ -21,7 +21,6 @@ package org.apache.directory.shared.ldap.codec;
 
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import org.apache.directory.shared.asn1.codec.DecoderException;
@@ -41,9 +40,7 @@ import org.apache.directory.shared.ldap.codec.search.NotFilter;
 import org.apache.directory.shared.ldap.codec.search.OrFilter;
 import org.apache.directory.shared.ldap.codec.search.PresentFilter;
 import org.apache.directory.shared.ldap.codec.search.SearchRequestCodec;
-import org.apache.directory.shared.ldap.codec.search.SearchResultReferenceCodec;
 import org.apache.directory.shared.ldap.codec.search.SubstringFilter;
-import org.apache.directory.shared.ldap.codec.util.LdapURLEncodingException;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Modification;
 import org.apache.directory.shared.ldap.entry.Value;
@@ -64,19 +61,13 @@ import org.apache.directory.shared.ldap.filter.SubstringNode;
 import org.apache.directory.shared.ldap.message.AliasDerefMode;
 import org.apache.directory.shared.ldap.message.BindRequestImpl;
 import org.apache.directory.shared.ldap.message.ExtendedRequestImpl;
-import org.apache.directory.shared.ldap.message.LdapResultImpl;
 import org.apache.directory.shared.ldap.message.ModifyDnRequestImpl;
 import org.apache.directory.shared.ldap.message.ModifyRequestImpl;
-import org.apache.directory.shared.ldap.message.ReferralImpl;
 import org.apache.directory.shared.ldap.message.SearchRequestImpl;
-import org.apache.directory.shared.ldap.message.SearchResultReferenceImpl;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.message.extended.GracefulShutdownRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalMessage;
-import org.apache.directory.shared.ldap.message.internal.InternalReferral;
 import org.apache.directory.shared.ldap.schema.SchemaManager;
-import org.apache.directory.shared.ldap.util.LdapURL;
-import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -612,53 +603,6 @@ public class LdapTransformer
 
 
     /**
-     * Transform a Ldapresult part of a Internal Response to a Codec LdapResult
-     * 
-     * @param InternalLdapResult the Internal LdapResult to transform
-     * @return A Codec LdapResult
-     */
-    private static LdapResultCodec transformLdapResult( LdapResultImpl internalLdapResult )
-    {
-        LdapResultCodec codecLdapResult = new LdapResultCodec();
-
-        // Internal : ResultCodeEnum resultCode -> Codec : int resultCode
-        codecLdapResult.setResultCode( internalLdapResult.getResultCode() );
-
-        // Internal : String errorMessage -> Codec : LdapString errorMessage
-        String errorMessage = internalLdapResult.getErrorMessage();
-
-        codecLdapResult.setErrorMessage( StringTools.isEmpty( errorMessage ) ? "" : errorMessage );
-
-        // Internal : String matchedDn -> Codec : DN matchedDN
-        codecLdapResult.setMatchedDN( internalLdapResult.getMatchedDn() );
-
-        // Internal : Referral referral -> Codec : ArrayList referrals
-        ReferralImpl internalReferrals = ( ReferralImpl ) internalLdapResult.getReferral();
-
-        if ( internalReferrals != null )
-        {
-            codecLdapResult.initReferrals();
-
-            for ( String referral : internalReferrals.getLdapUrls() )
-            {
-                try
-                {
-                    LdapURL ldapUrl = new LdapURL( referral.getBytes() );
-                    codecLdapResult.addReferral( ldapUrl );
-                }
-                catch ( LdapURLEncodingException lude )
-                {
-                    LOG.warn( "The referral " + referral + " is invalid : " + lude.getMessage() );
-                    codecLdapResult.addReferral( LdapURL.EMPTY_URL );
-                }
-            }
-        }
-
-        return codecLdapResult;
-    }
-
-
-    /**
      * Transform a Internal BindRequest to a Codec BindRequest
      * 
      * @param internalMessage The incoming Internal BindRequest
@@ -693,46 +637,6 @@ public class LdapTransformer
 
 
     /**
-     * Transform a Internal SearchResponseReference to a Codec
-     * SearchResultReference
-     * 
-     * @param internalMessage The incoming Internal SearchResponseReference
-     */
-    private static LdapMessageCodec transformSearchResultReference( InternalMessage internalMessage )
-    {
-        SearchResultReferenceImpl internalSearchResponseReference = ( SearchResultReferenceImpl ) internalMessage;
-        SearchResultReferenceCodec searchResultReference = new SearchResultReferenceCodec();
-
-        // Internal : Referral m_referral -> Codec: ArrayList
-        // searchResultReferences
-        InternalReferral referrals = internalSearchResponseReference.getReferral();
-
-        // Loop on all referals
-        if ( referrals != null )
-        {
-            Collection<String> urls = referrals.getLdapUrls();
-
-            if ( urls != null )
-            {
-                for ( String url : urls )
-                {
-                    try
-                    {
-                        searchResultReference.addSearchResultReference( new LdapURL( url ) );
-                    }
-                    catch ( LdapURLEncodingException luee )
-                    {
-                        LOG.warn( "The LdapURL " + url + " is incorrect : " + luee.getMessage() );
-                    }
-                }
-            }
-        }
-
-        return searchResultReference;
-    }
-
-
-    /**
      * Transform the internal message to a codec message.
      * 
      * @param msg the message to transform
@@ -750,10 +654,6 @@ public class LdapTransformer
 
         switch ( msg.getType() )
         {
-            case SEARCH_RESULT_REFERENCE:
-                codecMessage = transformSearchResultReference( msg );
-                break;
-
             case BIND_REQUEST:
                 codecMessage = transformBindRequest( msg );
                 break;

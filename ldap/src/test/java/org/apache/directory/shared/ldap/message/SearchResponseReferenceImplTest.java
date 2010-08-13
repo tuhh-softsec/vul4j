@@ -109,7 +109,7 @@ public class SearchResponseReferenceImplTest
             }
 
 
-            public void setReferral( InternalReferral a_referral )
+            public void setReferral( InternalReferral referral )
             {
             }
 
@@ -189,6 +189,17 @@ public class SearchResponseReferenceImplTest
 
 
             public void setMessageLength( int messageLength )
+            {
+            }
+
+
+            public int getSearchResultReferenceLength()
+            {
+                return 0;
+            }
+
+
+            public void setSearchResultReferenceLength( int searchResultReferenceLength )
             {
             }
         };

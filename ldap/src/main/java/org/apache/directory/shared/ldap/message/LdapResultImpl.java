@@ -53,31 +53,10 @@ public class LdapResultImpl implements InternalLdapResult
     /** Resultant operation error code - defaults to SUCCESS */
     private ResultCodeEnum resultCode = ResultCodeEnum.SUCCESS;
 
-    /** The length of all the referrals */
-    private int referralsLength;
-
 
     // ------------------------------------------------------------------------
     // LdapResult Interface Method Implementations
     // ------------------------------------------------------------------------
-    /**
-     * {@inheritDoc}
-     */
-    public int getReferralsLength()
-    {
-        return referralsLength;
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public void setReferralsLength( int referralsLength )
-    {
-        this.referralsLength = referralsLength;
-    }
-
-
     /**
      * Gets the descriptive error message associated with the error code. May be
      * null for SUCCESS, COMPARETRUE, COMPAREFALSE and REFERRAL operations.

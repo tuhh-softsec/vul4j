@@ -77,7 +77,6 @@ import org.apache.directory.shared.ldap.codec.modify.ModifyRequestCodec;
 import org.apache.directory.shared.ldap.codec.modifyDn.ModifyDNRequestCodec;
 import org.apache.directory.shared.ldap.codec.search.ExtensibleMatchFilter;
 import org.apache.directory.shared.ldap.codec.search.SearchRequestCodec;
-import org.apache.directory.shared.ldap.codec.search.SearchResultReferenceCodec;
 import org.apache.directory.shared.ldap.codec.search.SubstringFilter;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
@@ -99,6 +98,7 @@ import org.apache.directory.shared.ldap.message.ReferralImpl;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.message.SearchResultDoneImpl;
 import org.apache.directory.shared.ldap.message.SearchResultEntryImpl;
+import org.apache.directory.shared.ldap.message.SearchResultReferenceImpl;
 import org.apache.directory.shared.ldap.message.UnbindRequestImpl;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.message.internal.InternalAbandonRequest;
@@ -120,6 +120,7 @@ import org.apache.directory.shared.ldap.message.internal.InternalReferral;
 import org.apache.directory.shared.ldap.message.internal.InternalResultResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalSearchResultDone;
 import org.apache.directory.shared.ldap.message.internal.InternalSearchResultEntry;
+import org.apache.directory.shared.ldap.message.internal.InternalSearchResultReference;
 import org.apache.directory.shared.ldap.message.internal.InternalUnbindRequest;
 import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.name.RDN;
@@ -2775,9 +2776,9 @@ public class LdapMessageGrammar extends AbstractGrammar
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
                     // Now, we can allocate the SearchResultReference Object
-                    SearchResultReferenceCodec searchResultReference = new SearchResultReferenceCodec();
-                    searchResultReference.setMessageId( ldapMessageContainer.getMessageId() );
-                    ldapMessageContainer.setLdapMessage( searchResultReference );
+                    InternalSearchResultReference searchResultReference = new SearchResultReferenceImpl(
+                        ldapMessageContainer.getMessageId() );
+                    ldapMessageContainer.setInternalMessage( searchResultReference );
 
                     log.debug( "SearchResultReference response " );
                 }
