@@ -31,7 +31,6 @@ import org.apache.directory.shared.ldap.codec.extended.ExtendedRequestCodec;
 import org.apache.directory.shared.ldap.codec.modify.ModifyRequestCodec;
 import org.apache.directory.shared.ldap.codec.modifyDn.ModifyDNRequestCodec;
 import org.apache.directory.shared.ldap.codec.search.SearchRequestCodec;
-import org.apache.directory.shared.ldap.codec.search.SearchResultEntryCodec;
 import org.apache.directory.shared.ldap.codec.search.SearchResultReferenceCodec;
 import org.apache.directory.shared.ldap.codec.unbind.UnBindRequestCodec;
 import org.apache.directory.shared.ldap.message.internal.InternalAbandonRequest;
@@ -49,6 +48,7 @@ import org.apache.directory.shared.ldap.message.internal.InternalMessage;
 import org.apache.directory.shared.ldap.message.internal.InternalModifyDnResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalModifyResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalSearchResultDone;
+import org.apache.directory.shared.ldap.message.internal.InternalSearchResultEntry;
 import org.apache.directory.shared.ldap.message.internal.InternalUnbindRequest;
 import org.apache.directory.shared.ldap.message.spi.BinaryAttributeDetector;
 
@@ -344,11 +344,11 @@ public class LdapMessageContainer extends AbstractContainer
 
 
     /**
-     * @return Returns the SearchResultEntryCodec stored in the container
+     * @return Returns the SearchResultEntry stored in the container
      */
-    public SearchResultEntryCodec getSearchResultEntry()
+    public InternalSearchResultEntry getInternalSearchResultEntry()
     {
-        return ( SearchResultEntryCodec ) ldapMessage;
+        return ( InternalSearchResultEntry ) internalMessage;
     }
 
 

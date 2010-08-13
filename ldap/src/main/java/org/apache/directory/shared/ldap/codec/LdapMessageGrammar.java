@@ -77,7 +77,6 @@ import org.apache.directory.shared.ldap.codec.modify.ModifyRequestCodec;
 import org.apache.directory.shared.ldap.codec.modifyDn.ModifyDNRequestCodec;
 import org.apache.directory.shared.ldap.codec.search.ExtensibleMatchFilter;
 import org.apache.directory.shared.ldap.codec.search.SearchRequestCodec;
-import org.apache.directory.shared.ldap.codec.search.SearchResultEntryCodec;
 import org.apache.directory.shared.ldap.codec.search.SearchResultReferenceCodec;
 import org.apache.directory.shared.ldap.codec.search.SubstringFilter;
 import org.apache.directory.shared.ldap.exception.LdapException;
@@ -99,6 +98,7 @@ import org.apache.directory.shared.ldap.message.ModifyResponseImpl;
 import org.apache.directory.shared.ldap.message.ReferralImpl;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.message.SearchResultDoneImpl;
+import org.apache.directory.shared.ldap.message.SearchResultEntryImpl;
 import org.apache.directory.shared.ldap.message.UnbindRequestImpl;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.message.internal.InternalAbandonRequest;
@@ -119,6 +119,7 @@ import org.apache.directory.shared.ldap.message.internal.InternalModifyResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalReferral;
 import org.apache.directory.shared.ldap.message.internal.InternalResultResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalSearchResultDone;
+import org.apache.directory.shared.ldap.message.internal.InternalSearchResultEntry;
 import org.apache.directory.shared.ldap.message.internal.InternalUnbindRequest;
 import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.name.RDN;
@@ -1106,9 +1107,9 @@ public class LdapMessageGrammar extends AbstractGrammar
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
                     // Now, we can allocate the SearchResultEntry Object
-                    SearchResultEntryCodec searchResultEntry = new SearchResultEntryCodec();
-                    searchResultEntry.setMessageId( ldapMessageContainer.getMessageId() );
-                    ldapMessageContainer.setLdapMessage( searchResultEntry );
+                    InternalSearchResultEntry searchResultEntry = new SearchResultEntryImpl( ldapMessageContainer
+                        .getMessageId() );
+                    ldapMessageContainer.setInternalMessage( searchResultEntry );
                 }
             } );
 
@@ -1128,7 +1129,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                 {
 
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-                    SearchResultEntryCodec searchResultEntry = ldapMessageContainer.getSearchResultEntry();
+                    InternalSearchResultEntry searchResultEntry = ldapMessageContainer.getInternalSearchResultEntry();
 
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
@@ -1234,7 +1235,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                 public void action( IAsn1Container container ) throws DecoderException
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-                    SearchResultEntryCodec searchResultEntry = ldapMessageContainer.getSearchResultEntry();
+                    InternalSearchResultEntry searchResultEntry = ldapMessageContainer.getInternalSearchResultEntry();
 
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
@@ -1251,7 +1252,18 @@ public class LdapMessageGrammar extends AbstractGrammar
                     else
                     {
                         type = StringTools.getType( tlv.getValue().getData() );
-                        searchResultEntry.addAttributeValues( type );
+
+                        try
+                        {
+                            searchResultEntry.addAttribute( type );
+                        }
+                        catch ( LdapException ine )
+                        {
+                            // This is for the client side. We will never decode LdapResult on the server
+                            String msg = "The Attribute type " + type + "is invalid : " + ine.getMessage();
+                            log.error( "{} : {}", msg, ine.getMessage() );
+                            throw new DecoderException( msg, ine );
+                        }
                     }
 
                     if ( IS_DEBUG )

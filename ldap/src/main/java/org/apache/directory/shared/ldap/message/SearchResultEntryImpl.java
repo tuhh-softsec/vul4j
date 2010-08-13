@@ -20,7 +20,13 @@
 package org.apache.directory.shared.ldap.message;
 
 
+import java.util.List;
+
+import org.apache.directory.shared.ldap.entry.DefaultEntry;
+import org.apache.directory.shared.ldap.entry.DefaultEntryAttribute;
 import org.apache.directory.shared.ldap.entry.Entry;
+import org.apache.directory.shared.ldap.entry.EntryAttribute;
+import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.message.internal.InternalAbstractResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalSearchResultEntry;
 import org.apache.directory.shared.ldap.name.DN;
@@ -36,13 +42,30 @@ public class SearchResultEntryImpl extends InternalAbstractResponse implements I
     static final long serialVersionUID = -8357316233060886637L;
 
     /** Entry returned in response to search */
-    private Entry entry;
+    private Entry entry = new DefaultEntry();
+
+    /** The current attribute being decoded */
+    private EntryAttribute currentAttribute;
+
+    /** A temporary storage for the byte[] representing the objectName */
+    private byte[] objectNameBytes;
+
+    /** The search result entry length */
+    private int searchResultEntryLength;
+
+    /** The partial attributes length */
+    private int attributesLength;
+
+    /** The list of all attributes length */
+    private List<Integer> attributeLength;
+
+    /** The list of all vals length */
+    private List<Integer> valsLength;
 
 
     // ------------------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------------------
-
     /**
      * Creates a SearchResponseEntry as a reply to an SearchRequest to
      * indicate the end of a search operation.
@@ -71,6 +94,46 @@ public class SearchResultEntryImpl extends InternalAbstractResponse implements I
 
 
     /**
+     * Create a new attribute
+     * 
+     * @param type The attribute's type
+     */
+    public void addAttribute( String type ) throws LdapException
+    {
+        currentAttribute = new DefaultEntryAttribute( type );
+
+        entry.put( currentAttribute );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public EntryAttribute getCurrentAttribute()
+    {
+        return currentAttribute;
+    }
+
+
+    /**
+     * Add a new value to the current attribute
+     * 
+     * @param value The added value
+     */
+    public void addAttributeValue( Object value )
+    {
+        if ( value instanceof String )
+        {
+            currentAttribute.add( ( String ) value );
+        }
+        else
+        {
+            currentAttribute.add( ( byte[] ) value );
+        }
+    }
+
+
+    /**
      * Sets the entry.
      * 
      * @param entry the entry
@@ -93,10 +156,27 @@ public class SearchResultEntryImpl extends InternalAbstractResponse implements I
 
 
     /**
+     * {@inheritDoc}
+     */
+    public byte[] getObjectNameBytes()
+    {
+        return objectNameBytes;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setObjectNameBytes( byte[] objectNameBytes )
+    {
+        this.objectNameBytes = objectNameBytes;
+    }
+
+
+    /**
      * Sets the distinguished name of the entry object returned.
      * 
-     * @param objectName
-     *            the Dn of the entry returned.
+     * @param objectName the Dn of the entry returned.
      */
     public void setObjectName( DN objectName )
     {
@@ -174,5 +254,53 @@ public class SearchResultEntryImpl extends InternalAbstractResponse implements I
         }
 
         return sb.toString();
+    }
+
+
+    public int getSearchResultEntryLength()
+    {
+        return searchResultEntryLength;
+    }
+
+
+    public void setSearchResultEntryLength( int searchResultEntryLength )
+    {
+        this.searchResultEntryLength = searchResultEntryLength;
+    }
+
+
+    public int getAttributesLength()
+    {
+        return attributesLength;
+    }
+
+
+    public void setAttributesLength( int attributesLength )
+    {
+        this.attributesLength = attributesLength;
+    }
+
+
+    public List<Integer> getAttributeLength()
+    {
+        return attributeLength;
+    }
+
+
+    public void setAttributeLength( List<Integer> attributeLength )
+    {
+        this.attributeLength = attributeLength;
+    }
+
+
+    public List<Integer> getValsLength()
+    {
+        return valsLength;
+    }
+
+
+    public void setValsLength( List<Integer> valsLength )
+    {
+        this.valsLength = valsLength;
     }
 }
