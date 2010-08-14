@@ -1,5 +1,5 @@
 /*
- * Copyright  1999-2009 The Apache Software Foundation.
+ * Copyright  1999-2010 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -42,7 +42,9 @@ import junit.framework.TestSuite;
 public class SignatureTest extends TestCase {
     public final static String DS_NS = "http://www.w3.org/2000/09/xmldsig#";
 
-    public final static String KEYSTORE_DIRECTORY = System.getProperty("basedir") + "/data/";
+    private static final String BASEDIR = 
+        System.getProperty("basedir") == null ? "./": System.getProperty("basedir");
+    public final static String KEYSTORE_DIRECTORY = BASEDIR + "/data/";
     public final static String KEYSTORE_PASSWORD_STRING = "changeit";
     public final static char[] KEYSTORE_PASSWORD = KEYSTORE_PASSWORD_STRING
 			.toCharArray();

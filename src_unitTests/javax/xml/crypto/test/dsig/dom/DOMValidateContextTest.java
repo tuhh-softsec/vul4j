@@ -45,7 +45,8 @@ public class DOMValidateContextTest extends TestCase {
 
     public void setUp() throws Exception {
 	String fs = System.getProperty("file.separator");
-	File dir = new File(System.getProperty("basedir") + fs +
+	String base = System.getProperty("basedir") == null ? "./": System.getProperty("basedir");
+	File dir = new File(base + fs +
 	    "data" + fs + "ie" + fs + "baltimore" + fs + "merlin-examples",
 	    "merlin-xmldsig-twenty-three");
 	File input = new File(dir, "signature.xml");

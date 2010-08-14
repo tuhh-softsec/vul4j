@@ -1,6 +1,6 @@
 
 /*
- * Copyright  1999-2004 The Apache Software Foundation.
+ * Copyright  1999-2010 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -146,13 +146,8 @@ public class OfflineResolver extends ResourceResolverSpi {
       OfflineResolver._uriMap = new HashMap();
       OfflineResolver._mimeMap = new HashMap();
       
-      String basedir = System.getProperty("basedir");
-      if(basedir == null) {
-      	basedir = "/";
-      }
-      else {
-      	basedir = basedir + "/";
-      }
+      String basedir = 
+          System.getProperty("basedir") == null ? "./": System.getProperty("basedir") + "/";
 
       OfflineResolver.register("http://www.w3.org/TR/xml-stylesheet",
                                basedir + "data/org/w3c/www/TR/xml-stylesheet.html",

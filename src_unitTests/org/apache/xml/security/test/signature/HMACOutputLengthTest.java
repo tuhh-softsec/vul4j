@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 The Apache Software Foundation.
+ * Copyright 2009-2010 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ import org.apache.xml.security.signature.XMLSignatureException;
 import org.apache.xml.security.utils.Constants;
 
 public class HMACOutputLengthTest extends TestCase {
-
+    
     private static DocumentBuilderFactory dbf = null;
 
     protected void setUp() throws Exception {
@@ -48,7 +48,8 @@ public class HMACOutputLengthTest extends TestCase {
         org.apache.commons.logging.LogFactory.getLog
             (HMACOutputLengthTest.class.getName());
 
-    private static final String BASEDIR = System.getProperty("basedir");
+    private static final String BASEDIR = 
+        System.getProperty("basedir") == null ? "./": System.getProperty("basedir");
     private static final String SEP = System.getProperty("file.separator");
 
     public static Test suite() {

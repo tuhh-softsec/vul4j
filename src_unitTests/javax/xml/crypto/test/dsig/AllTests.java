@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2009 The Apache Software Foundation.
+ * Copyright 2006-2010 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -56,7 +56,7 @@ public class AllTests {
 		suite.addTestSuite(CanonicalizationMethodTest.class);
 		suite.addTestSuite(Baltimore18Test.class);
 		suite.addTestSuite(ComRSASecurityTest.class);
-		suite.addTestSuite(InteropC14nTest.class);
+		// suite.addTestSuite(InteropC14nTest.class);
 		suite.addTestSuite(TransformTest.class);
 		//$JUnit-END$
 		return suite;

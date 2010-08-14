@@ -128,6 +128,12 @@
                     <include>org/**/*.zip</include>
                 </includes>
             </testResource>
+            <testResource>
+                <directory>data</directory>
+                <includes>
+                    <include>**/*</include>
+                </includes>
+            </testResource>
         </testResources>
 
         <plugins>
@@ -140,6 +146,44 @@
                 </configuration>
             </plugin>
             
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>test-compile</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}</outputDirectory>
+                            <overWriteReleases>false</overWriteReleases>
+                            <overWriteSnapshots>false</overWriteSnapshots>
+                            <overWriteIfNewer>true</overWriteIfNewer>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>test-compile</phase>
+                        <goals>
+                            <goal>jar</goal>
+                            <goal>test-jar</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}</outputDirectory>
+                            <testClassesDirectory>${project.build.directory}/test-classes</testClassesDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
@@ -198,6 +242,7 @@
                         <useFile>false</useFile>
                         <forkMode>pertest</forkMode>
                         <childDelegation>false</childDelegation>
+                        <argLine>-Djava.endorsed.dirs=${basedir}/target</argLine>
                         <includes>
                             <include>org/apache/xml/security/test/AllTests.java</include>
                         </includes>
@@ -241,7 +286,7 @@
         <commons.logging.version>1.1</commons.logging.version>
         <xalan.version>2.7.1</xalan.version>
         <xerces.version>2.9.1</xerces.version>
-        <junit.version>3.8.1</junit.version>
+        <junit.version>4.8.1</junit.version>
     </properties>
     
     <dependencies>

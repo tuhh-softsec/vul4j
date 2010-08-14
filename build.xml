@@ -62,7 +62,7 @@
     <property name="lib.xalan.3"        value="${dir.libs}/xml-apis-1.3.03.jar" />
     <property name="lib.xerces.1"       value="${dir.libs}/xercesImpl-2.9.1.jar" />
     <property name="lib.jce"            value="${dir.libs}/${jce.provider.prefix}-${jce.provider.jar}" />
-    <property name="lib.junit"		value="${dir.libs}/junit-3.8.1.jar" />
+    <property name="lib.junit"		value="${dir.libs}/junit-4.8.1.jar" />
     <property name="lib.clover"		value="${dir.libs}/clover.jar" />
 
     <!-- XML Security libraries (for bin distribution) -->
@@ -346,10 +346,7 @@
 	    <available file="data/com/ibm/xss4j-20030127/enveloped-rsa.sig" property="ibm.available"/>
         <copy file="${lib.xalan.1}" todir="${dir.build.libs2}"/>
         <copy file="${lib.xalan.2}" todir="${dir.build.libs2}"/>
-        <copy file="${lib.xalan.3}" todir="${dir.build.libs2}"/>
-        <copy file="${lib.xerces.1}" todir="${dir.build.libs2}"/>
         <copy file="${lib.logging.api}" todir="${dir.build.libs2}"/>
-        <copy file="${lib.logging}" todir="${dir.build.libs2}"/>
         <copy file="${lib.junit}" todir="${dir.build.libs2}"/>
         <copy file="${jar.library}" todir="${dir.build.libs2}"/>
         <copy file="${jar.tests}" todir="${dir.build.libs2}"/>
@@ -392,10 +389,7 @@
         <mkdir dir="${dir.build.junit.html}"/>
         <copy file="${lib.xalan.1}" todir="${dir.build.libs2}"/>
         <copy file="${lib.xalan.2}" todir="${dir.build.libs2}"/>
-        <copy file="${lib.xalan.3}" todir="${dir.build.libs2}"/>
-        <copy file="${lib.xerces.1}" todir="${dir.build.libs2}"/>
         <copy file="${lib.logging.api}" todir="${dir.build.libs2}"/>
-        <copy file="${lib.logging}" todir="${dir.build.libs2}"/>
         <copy file="${lib.junit}" todir="${dir.build.libs2}"/>
         <copy file="${jar.library}" todir="${dir.build.libs2}"/>
         <copy file="${jar.tests}" todir="${dir.build.libs2}"/>

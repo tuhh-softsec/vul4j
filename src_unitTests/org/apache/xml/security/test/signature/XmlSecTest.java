@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 The Apache Software Foundation.
+ * Copyright 2008-2010 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -50,6 +50,9 @@ import junit.framework.TestSuite;
  * @author Frank Cornelis
  */
 public class XmlSecTest extends TestCase {
+    
+    private static final String BASEDIR = 
+        System.getProperty("basedir") == null ? "./": System.getProperty("basedir");
 
     static org.apache.commons.logging.Log log =
         org.apache.commons.logging.LogFactory.getLog
@@ -93,7 +96,7 @@ public class XmlSecTest extends TestCase {
             // get key & self-signed certificate from keystore
             String fs = System.getProperty("file.separator");
             FileInputStream fis = new FileInputStream
-                (System.getProperty("basedir") + fs + "data" + fs + "test.jks");
+                (BASEDIR + fs + "data" + fs + "test.jks");
             KeyStore ks = KeyStore.getInstance("JKS");
             ks.load(fis, "changeit".toCharArray());
             signingCert = (X509Certificate) ks.getCertificate("mullan");

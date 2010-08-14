@@ -33,7 +33,8 @@ import org.apache.xml.security.keys.storage.StorageResolver;
  */
 public class StorageResolverTest extends TestCase {
 
-	private static final String BASEDIR = System.getProperty("basedir");
+	private static final String BASEDIR = 
+	    System.getProperty("basedir") == null ? "./": System.getProperty("basedir");
 	private static final String SEP = System.getProperty("file.separator");
 
 	public StorageResolverTest() {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2009 The Apache Software Foundation.
+ * Copyright 2006-2010 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -216,8 +216,9 @@ public class CreateBaltimore23Test extends TestCase {
 	CertificateFactory cf = CertificateFactory.getInstance("X.509");
 	xds.add(signingCert);
 	String fs = System.getProperty("file.separator");
-	FileInputStream fis = new FileInputStream
-	    (System.getProperty("basedir") + fs + "data" + fs + "ie" + fs +
+	String base = System.getProperty("basedir") == null ? "./": System.getProperty("basedir");
+	FileInputStream fis = new FileInputStream(
+	    base + fs + "data" + fs + "ie" + fs +
 	     "baltimore" + fs + "merlin-examples" + fs + 
 	     "merlin-xmldsig-twenty-three" + fs + "certs" + fs + "crl");
 	X509CRL crl = (X509CRL) cf.generateCRL(fis);
@@ -618,9 +619,10 @@ public class CreateBaltimore23Test extends TestCase {
 
 	DOMValidateContext dvc = new DOMValidateContext
 	    (ks, doc.getDocumentElement());
+	String base = System.getProperty("basedir") == null ? "./": System.getProperty("basedir");
 	String fs = System.getProperty("file.separator");
 	File f = new File(
-	    System.getProperty("basedir") + fs + "data" + fs + "ie" + fs +
+	    base + fs + "data" + fs + "ie" + fs +
 	    "baltimore" + fs + "merlin-examples" + fs +
 	    "merlin-xmldsig-twenty-three" + fs);
 	dvc.setBaseURI(f.toURI().toString()); 

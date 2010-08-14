@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2009 The Apache Software Foundation.
+ * Copyright 1999-2010 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -106,10 +106,9 @@ public class BaltimoreTest extends InteropTest {
       ResourceResolverSpi resolver = new OfflineResolver();
       boolean followManifests = false;
       byte[] hmacKey = "secret".getBytes("ASCII");
-      boolean verify = false;
 
       try {
-         verify = this.verifyHMAC(filename, resolver, followManifests, hmacKey);
+         this.verifyHMAC(filename, resolver, followManifests, hmacKey);
          fail("HMACOutputLength Exception not caught");
       } catch (RuntimeException ex) {
          log.error("Verification crashed for " + filename);
@@ -365,10 +364,9 @@ public class BaltimoreTest extends InteropTest {
       ResourceResolverSpi resolver = new OfflineResolver();
       boolean followManifests = false;
       byte[] hmacKey = "secret".getBytes("ASCII");
-      boolean verify = false;
 
       try {
-         verify = this.verifyHMAC(filename, resolver, followManifests, hmacKey);
+         this.verifyHMAC(filename, resolver, followManifests, hmacKey);
          fail("HMACOutputLength Exception not caught");
       } catch (RuntimeException ex) {
          log.error("Verification crashed for " + filename);
