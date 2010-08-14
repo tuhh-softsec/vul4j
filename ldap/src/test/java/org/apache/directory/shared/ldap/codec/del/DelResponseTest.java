@@ -107,7 +107,7 @@ public class DelResponseTest
         }
 
         // Check the decoded DelResponse PDU
-        DeleteResponse delResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getInternalDelResponse();
+        DeleteResponse delResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getDeleteResponse();
 
         assertEquals( 1, delResponse.getMessageId() );
         assertEquals( ResultCodeEnum.ALIAS_PROBLEM, delResponse.getLdapResult().getResultCode() );
@@ -231,7 +231,7 @@ public class DelResponseTest
         }
 
         // Check the decoded DelResponse PDU
-        DeleteResponse delResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getInternalDelResponse();
+        DeleteResponse delResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getDeleteResponse();
 
         assertEquals( 1, delResponse.getMessageId() );
         assertEquals( ResultCodeEnum.ALIAS_PROBLEM, delResponse.getLdapResult().getResultCode() );

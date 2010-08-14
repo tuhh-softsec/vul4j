@@ -35,6 +35,8 @@ import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
+import org.apache.directory.shared.ldap.message.AbandonRequestImpl;
+import org.apache.directory.shared.ldap.message.LdapProtocolEncoder;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.message.internal.InternalAbandonRequest;
 import org.apache.directory.shared.ldap.util.StringTools;
@@ -51,6 +53,10 @@ import org.junit.runner.RunWith;
 @Concurrent()
 public class AbandonRequestTest
 {
+    /** The encoder instance */
+    LdapProtocolEncoder encoder = new LdapProtocolEncoder();
+
+
     /**
      * Test the decoding of a AbandonRequest with controls
      */
@@ -84,7 +90,6 @@ public class AbandonRequestTest
                 // controlType LDAPOID}
                 0x04, 0x0D, '1', '.', '3', '.', '6', '.', '1', '.', '5', '.', '5', '.', '4' } );
 
-        String decodedPdu = StringTools.dumpBytes( stream.array() );
         stream.flip();
 
         // Allocate a LdapMessageContainer Container
@@ -106,9 +111,8 @@ public class AbandonRequestTest
             .getInternalAbandonRequest();
 
         // Copy the message
-        AbandonRequestCodec abandonRequestCodec = new AbandonRequestCodec();
-        abandonRequestCodec.setMessageId( abandonRequest.getMessageId() );
-        abandonRequestCodec.setAbandonedMessageId( abandonRequest.getAbandoned() );
+        InternalAbandonRequest internalAbandonRequest = new AbandonRequestImpl( abandonRequest.getMessageId() );
+        internalAbandonRequest.setAbandoned( abandonRequest.getAbandoned() );
 
         assertEquals( 3, abandonRequest.getMessageId() );
         assertEquals( 2, abandonRequest.getAbandoned() );
@@ -122,37 +126,50 @@ public class AbandonRequestTest
         assertEquals( "1.3.6.1.5.5.1", control.getOid() );
         assertEquals( "0x61 0x62 0x63 0x64 0x65 0x66 ", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
         assertTrue( control.isCritical() );
-        abandonRequestCodec.addControl( control );
+        internalAbandonRequest.add( control );
 
         control = controls.get( "1.3.6.1.5.5.2" );
         assertEquals( "1.3.6.1.5.5.2", control.getOid() );
         assertEquals( "0x67 0x68 0x69 0x6A 0x6B 0x6C ", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
         assertFalse( control.isCritical() );
-        abandonRequestCodec.addControl( control );
+        internalAbandonRequest.add( control );
 
         control = controls.get( "1.3.6.1.5.5.3" );
         assertEquals( "1.3.6.1.5.5.3", control.getOid() );
         assertEquals( "", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
         assertTrue( control.isCritical() );
-        abandonRequestCodec.addControl( control );
+        internalAbandonRequest.add( control );
 
         control = controls.get( "1.3.6.1.5.5.4" );
         assertEquals( "1.3.6.1.5.5.4", control.getOid() );
         assertEquals( "", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
         assertFalse( control.isCritical() );
-        abandonRequestCodec.addControl( control );
-
-        // Check the length
-        assertEquals( 0x64, abandonRequestCodec.computeLength() );
+        internalAbandonRequest.add( control );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = abandonRequestCodec.encode();
+            ByteBuffer bb = encoder.encodeMessage( internalAbandonRequest );
 
-            String encodedPdu = StringTools.dumpBytes( bb.array() );
+            // Check the length
+            assertEquals( 0x64, bb.limit() );
 
-            assertEquals( decodedPdu, encodedPdu );
+            // Don't check the PDU, as control are in a Map, and can be in a different order
+            // So we decode the generated PDU, and we compare it with the initial message
+            try
+            {
+                ldapDecoder.decode( bb, ldapMessageContainer );
+            }
+            catch ( DecoderException de )
+            {
+                de.printStackTrace();
+                fail( de.getMessage() );
+            }
+
+            InternalAbandonRequest abandonRequest2 = ( ( LdapMessageContainer ) ldapMessageContainer )
+                .getInternalAbandonRequest();
+
+            assertEquals( abandonRequest, abandonRequest2 );
         }
         catch ( EncoderException ee )
         {
@@ -204,16 +221,16 @@ public class AbandonRequestTest
         assertEquals( 2, abandonRequest.getAbandoned() );
 
         // Check the length
-        AbandonRequestCodec abandonRequestCodec = new AbandonRequestCodec();
-        abandonRequestCodec.setMessageId( abandonRequest.getMessageId() );
-        abandonRequestCodec.setAbandonedMessageId( abandonRequest.getAbandoned() );
-
-        assertEquals( 10, abandonRequestCodec.computeLength() );
+        InternalAbandonRequest internalAbandonRequest = new AbandonRequestImpl( abandonRequest.getMessageId() );
+        internalAbandonRequest.setAbandoned( abandonRequest.getAbandoned() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = abandonRequestCodec.encode();
+            ByteBuffer bb = encoder.encodeMessage( internalAbandonRequest );
+
+            // Check the length
+            assertEquals( 0x0A, bb.limit() );
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 

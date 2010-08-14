@@ -100,8 +100,7 @@ public class CompareResponseTest
         }
 
         // Check the decoded CompareResponse PDU
-        CompareResponse compareResponse = ( ( LdapMessageContainer ) ldapMessageContainer )
-            .getInternalCompareResponse();
+        CompareResponse compareResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getCompareResponse();
 
         assertEquals( 1, compareResponse.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, compareResponse.getLdapResult().getResultCode() );
@@ -183,8 +182,7 @@ public class CompareResponseTest
         }
 
         // Check the decoded CompareResponse PDU
-        CompareResponse compareResponse = ( ( LdapMessageContainer ) ldapMessageContainer )
-            .getInternalCompareResponse();
+        CompareResponse compareResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getCompareResponse();
 
         assertEquals( 1, compareResponse.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, compareResponse.getLdapResult().getResultCode() );

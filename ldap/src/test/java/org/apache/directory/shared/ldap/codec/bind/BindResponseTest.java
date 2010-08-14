@@ -100,7 +100,7 @@ public class BindResponseTest
         }
 
         // Check the decoded BindResponse
-        BindResponse bindResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getInternalBindResponse();
+        BindResponse bindResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getBindResponse();
 
         assertEquals( 1, bindResponse.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, bindResponse.getLdapResult().getResultCode() );
@@ -189,7 +189,7 @@ public class BindResponseTest
         }
 
         // Check the decoded BindResponse
-        BindResponse bindResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getInternalBindResponse();
+        BindResponse bindResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getBindResponse();
 
         assertEquals( 1, bindResponse.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, bindResponse.getLdapResult().getResultCode() );
@@ -275,7 +275,7 @@ public class BindResponseTest
         }
 
         // Check the decoded BindResponse
-        BindResponse bindResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getInternalBindResponse();
+        BindResponse bindResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getBindResponse();
 
         assertEquals( 1, bindResponse.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, bindResponse.getLdapResult().getResultCode() );
@@ -361,7 +361,7 @@ public class BindResponseTest
         }
 
         // Check the decoded BindResponse
-        BindResponse bindResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getInternalBindResponse();
+        BindResponse bindResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getBindResponse();
 
         assertEquals( 1, bindResponse.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, bindResponse.getLdapResult().getResultCode() );
@@ -443,7 +443,7 @@ public class BindResponseTest
         }
 
         // Check the decoded BindResponse
-        BindResponse bindResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getInternalBindResponse();
+        BindResponse bindResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getBindResponse();
 
         assertEquals( 1, bindResponse.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, bindResponse.getLdapResult().getResultCode() );

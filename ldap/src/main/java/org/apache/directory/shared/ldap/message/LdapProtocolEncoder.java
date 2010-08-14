@@ -46,12 +46,13 @@ import org.apache.directory.shared.ldap.message.internal.BindResponse;
 import org.apache.directory.shared.ldap.message.internal.CompareResponse;
 import org.apache.directory.shared.ldap.message.internal.DeleteResponse;
 import org.apache.directory.shared.ldap.message.internal.ExtendedResponse;
+import org.apache.directory.shared.ldap.message.internal.InternalAbandonRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalIntermediateResponse;
-import org.apache.directory.shared.ldap.message.internal.LdapResult;
 import org.apache.directory.shared.ldap.message.internal.InternalMessage;
+import org.apache.directory.shared.ldap.message.internal.InternalReferral;
+import org.apache.directory.shared.ldap.message.internal.LdapResult;
 import org.apache.directory.shared.ldap.message.internal.ModifyDnResponse;
 import org.apache.directory.shared.ldap.message.internal.ModifyResponse;
-import org.apache.directory.shared.ldap.message.internal.InternalReferral;
 import org.apache.directory.shared.ldap.message.internal.SearchResultDone;
 import org.apache.directory.shared.ldap.message.internal.SearchResultEntry;
 import org.apache.directory.shared.ldap.message.internal.SearchResultReference;
@@ -121,7 +122,7 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
             || ( message instanceof ExtendedResponse ) || ( message instanceof ModifyResponse )
             || ( message instanceof ModifyDnResponse ) || ( message instanceof InternalIntermediateResponse )
             || ( message instanceof SearchResultDone ) || ( message instanceof SearchResultEntry )
-            || ( message instanceof SearchResultReference ) )
+            || ( message instanceof SearchResultReference ) || ( message instanceof InternalAbandonRequest ) )
         {
             try
             {
@@ -321,8 +322,7 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
      * @param buffer The buffer where to put the PDU
      * @return The PDU.
      */
-    private ByteBuffer encodeLdapResult( ByteBuffer buffer, LdapResult internalLdapResult )
-        throws EncoderException
+    private ByteBuffer encodeLdapResult( ByteBuffer buffer, LdapResult internalLdapResult ) throws EncoderException
     {
         LdapResultImpl ldapResult = ( LdapResultImpl ) internalLdapResult;
 
@@ -389,6 +389,22 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
 
 
     /**
+     * Compute the AbandonRequest length 
+     * 
+     * AbandonRequest : 
+     * 0x50 0x0(1..4) abandoned MessageId 
+     * 
+     * Length(AbandonRequest) = Length(0x50) + 1 + Length(abandoned MessageId)
+     */
+    private int computeAbandonRequestLength( AbandonRequestImpl abandonRequest )
+    {
+        int length = 1 + 1 + Value.getNbBytes( abandonRequest.getAbandoned() );
+
+        return length;
+    }
+
+
+    /**
      * Compute the AddResponse length 
      * 
      * AddResponse : 
@@ -408,6 +424,12 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
         addResponse.setAddResponseLength( addResponseLength );
 
         return 1 + TLV.getNbBytes( addResponseLength ) + addResponseLength;
+    }
+
+
+    private int computeBindRequestLength( BindRequestImpl bindRequest )
+    {
+        return 0;
     }
 
 
@@ -854,6 +876,31 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
 
 
     /**
+     * Encode the Abandon protocolOp part
+     */
+    private void encodeAbandonRequest( ByteBuffer buffer, AbandonRequestImpl abandonRequest ) throws EncoderException
+    {
+        try
+        {
+            // The tag
+            buffer.put( LdapConstants.ABANDON_REQUEST_TAG );
+
+            // The length. It has to be evaluated depending on
+            // the abandoned messageId value.
+            buffer.put( ( byte ) Value.getNbBytes( abandonRequest.getAbandoned() ) );
+
+            // The abandoned messageId
+            buffer.put( Value.getBytes( abandonRequest.getAbandoned() ) );
+        }
+        catch ( BufferOverflowException boe )
+        {
+            String msg = I18n.err( I18n.ERR_04005 );
+            throw new EncoderException( msg );
+        }
+    }
+
+
+    /**
      * Encode the AddResponse message to a PDU.
      * 
      * @param buffer The buffer where to put the PDU
@@ -873,6 +920,12 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
         {
             throw new EncoderException( I18n.err( I18n.ERR_04005 ) );
         }
+    }
+
+
+    private void encodeBindRequest( ByteBuffer bb, BindRequestImpl bindRequest ) throws EncoderException
+    {
+
     }
 
 
@@ -1286,8 +1339,14 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
     {
         switch ( message.getType() )
         {
+            case ABANDON_REQUEST:
+                return computeAbandonRequestLength( ( AbandonRequestImpl ) message );
+
             case ADD_RESPONSE:
                 return computeAddResponseLength( ( AddResponseImpl ) message );
+
+            case BIND_REQUEST:
+                return computeBindRequestLength( ( BindRequestImpl ) message );
 
             case BIND_RESPONSE:
                 return computeBindResponseLength( ( BindResponseImpl ) message );
@@ -1329,8 +1388,16 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
     {
         switch ( message.getType() )
         {
+            case ABANDON_REQUEST:
+                encodeAbandonRequest( bb, ( AbandonRequestImpl ) message );
+                break;
+
             case ADD_RESPONSE:
                 encodeAddResponse( bb, ( AddResponseImpl ) message );
+                break;
+
+            case BIND_REQUEST:
+                encodeBindRequest( bb, ( BindRequestImpl ) message );
                 break;
 
             case BIND_RESPONSE:

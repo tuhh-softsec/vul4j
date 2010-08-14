@@ -319,4 +319,25 @@ public abstract class InternalAbstractMessage implements InternalMessage
     {
         return messageLength;
     }
+
+
+    /**
+     * Get a String representation of a LdapMessage
+     * 
+     * @return A LdapMessage String
+     */
+    public String toString()
+    {
+        StringBuilder sb = new StringBuilder();
+
+        if ( controls != null )
+        {
+            for ( Control control : controls.values() )
+            {
+                sb.append( control );
+            }
+        }
+
+        return sb.toString();
+    }
 }

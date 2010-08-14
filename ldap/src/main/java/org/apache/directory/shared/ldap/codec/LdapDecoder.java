@@ -225,7 +225,7 @@ public class LdapDecoder implements ProviderDecoder
 
                 if ( ldapMessageContainer.isInternal() )
                 {
-                    return ldapMessageContainer.getInternalBindResponse();
+                    return ldapMessageContainer.getBindResponse();
                 }
                 else
                 {

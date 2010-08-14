@@ -39,12 +39,9 @@ public class InternalAbstractRequest extends InternalAbstractMessage implements 
     /**
      * Subclasses must provide these parameters via a super constructor call.
      * 
-     * @param id
-     *            the sequential message identifier
-     * @param type
-     *            the request type enum
-     * @param hasResponse
-     *            flag indicating if this request generates a response
+     * @param id the sequential message identifier
+     * @param type the request type enum
+     * @param hasResponse flag indicating if this request generates a response
      */
     protected InternalAbstractRequest( final int id, final MessageTypeEnum type, boolean hasResponse )
     {
@@ -81,8 +78,8 @@ public class InternalAbstractRequest extends InternalAbstractMessage implements 
         {
             return false;
         }
-        
-        if ( hasResponse != ( ( InternalRequest) obj ).hasResponse() )
+
+        if ( hasResponse != ( ( InternalRequest ) obj ).hasResponse() )
         {
             return false;
         }

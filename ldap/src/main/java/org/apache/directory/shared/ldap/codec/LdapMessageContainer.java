@@ -21,7 +21,6 @@ package org.apache.directory.shared.ldap.codec;
 
 
 import org.apache.directory.shared.asn1.ber.AbstractContainer;
-import org.apache.directory.shared.ldap.codec.abandon.AbandonRequestCodec;
 import org.apache.directory.shared.ldap.codec.add.AddRequestCodec;
 import org.apache.directory.shared.ldap.codec.bind.BindRequestCodec;
 import org.apache.directory.shared.ldap.codec.compare.CompareRequestCodec;
@@ -32,24 +31,24 @@ import org.apache.directory.shared.ldap.codec.modify.ModifyRequestCodec;
 import org.apache.directory.shared.ldap.codec.modifyDn.ModifyDNRequestCodec;
 import org.apache.directory.shared.ldap.codec.search.SearchRequestCodec;
 import org.apache.directory.shared.ldap.codec.unbind.UnBindRequestCodec;
-import org.apache.directory.shared.ldap.message.internal.InternalAbandonRequest;
-import org.apache.directory.shared.ldap.message.internal.InternalAddRequest;
 import org.apache.directory.shared.ldap.message.internal.AddResponse;
-import org.apache.directory.shared.ldap.message.internal.InternalBindRequest;
 import org.apache.directory.shared.ldap.message.internal.BindResponse;
-import org.apache.directory.shared.ldap.message.internal.InternalCompareRequest;
 import org.apache.directory.shared.ldap.message.internal.CompareResponse;
-import org.apache.directory.shared.ldap.message.internal.InternalDeleteRequest;
 import org.apache.directory.shared.ldap.message.internal.DeleteResponse;
 import org.apache.directory.shared.ldap.message.internal.ExtendedResponse;
+import org.apache.directory.shared.ldap.message.internal.InternalAbandonRequest;
+import org.apache.directory.shared.ldap.message.internal.InternalAddRequest;
+import org.apache.directory.shared.ldap.message.internal.InternalBindRequest;
+import org.apache.directory.shared.ldap.message.internal.InternalCompareRequest;
+import org.apache.directory.shared.ldap.message.internal.InternalDeleteRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalIntermediateResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalMessage;
+import org.apache.directory.shared.ldap.message.internal.InternalUnbindRequest;
 import org.apache.directory.shared.ldap.message.internal.ModifyDnResponse;
 import org.apache.directory.shared.ldap.message.internal.ModifyResponse;
 import org.apache.directory.shared.ldap.message.internal.SearchResultDone;
 import org.apache.directory.shared.ldap.message.internal.SearchResultEntry;
 import org.apache.directory.shared.ldap.message.internal.SearchResultReference;
-import org.apache.directory.shared.ldap.message.internal.InternalUnbindRequest;
 import org.apache.directory.shared.ldap.message.spi.BinaryAttributeDetector;
 
 
@@ -148,9 +147,9 @@ public class LdapMessageContainer extends AbstractContainer
     /**
      * @return Returns the AbandonRequest stored in the container
      */
-    public AbandonRequestCodec getAbandonRequest()
+    public InternalAbandonRequest getAbandonRequest()
     {
-        return ( AbandonRequestCodec ) ldapMessage;
+        return ( InternalAbandonRequest ) internalMessage;
     }
 
 
@@ -184,7 +183,7 @@ public class LdapMessageContainer extends AbstractContainer
     /**
      * @return Returns the AddResponse stored in the container
      */
-    public AddResponse getInternalAddResponse()
+    public AddResponse getAddResponse()
     {
         return ( AddResponse ) internalMessage;
     }
@@ -211,7 +210,7 @@ public class LdapMessageContainer extends AbstractContainer
     /**
      * @return Returns the BindResponse stored in the container
      */
-    public BindResponse getInternalBindResponse()
+    public BindResponse getBindResponse()
     {
         return ( BindResponse ) internalMessage;
     }
@@ -238,7 +237,7 @@ public class LdapMessageContainer extends AbstractContainer
     /**
      * @return Returns the CompareResponse stored in the container
      */
-    public CompareResponse getInternalCompareResponse()
+    public CompareResponse getCompareResponse()
     {
         return ( CompareResponse ) internalMessage;
     }
@@ -265,7 +264,7 @@ public class LdapMessageContainer extends AbstractContainer
     /**
      * @return Returns the DelResponse stored in the container
      */
-    public DeleteResponse getInternalDelResponse()
+    public DeleteResponse getDeleteResponse()
     {
         return ( DeleteResponse ) internalMessage;
     }

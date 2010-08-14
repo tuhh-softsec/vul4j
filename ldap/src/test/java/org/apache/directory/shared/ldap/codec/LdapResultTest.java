@@ -291,7 +291,7 @@ public class LdapResultTest
         }
 
         // Check the decoded AddResponse
-        AddResponse addResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getInternalAddResponse();
+        AddResponse addResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getAddResponse();
 
         assertEquals( 1, addResponse.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, addResponse.getLdapResult().getResultCode() );
@@ -354,7 +354,7 @@ public class LdapResultTest
         }
 
         // Check the decoded AddResponse
-        AddResponse addResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getInternalAddResponse();
+        AddResponse addResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getAddResponse();
 
         assertEquals( 1, addResponse.getMessageId() );
         assertEquals( ResultCodeEnum.REFERRAL, addResponse.getLdapResult().getResultCode() );
@@ -432,7 +432,7 @@ public class LdapResultTest
         }
 
         // Check the decoded AddResponse
-        AddResponse addResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getInternalAddResponse();
+        AddResponse addResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getAddResponse();
 
         assertEquals( 1, addResponse.getMessageId() );
         assertEquals( ResultCodeEnum.REFERRAL, addResponse.getLdapResult().getResultCode() );
@@ -509,7 +509,7 @@ public class LdapResultTest
         }
 
         // Check the decoded AddResponse
-        AddResponse addResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getInternalAddResponse();
+        AddResponse addResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getAddResponse();
 
         assertEquals( 1, addResponse.getMessageId() );
         assertEquals( ResultCodeEnum.REFERRAL, addResponse.getLdapResult().getResultCode() );
