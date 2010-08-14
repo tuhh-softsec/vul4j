@@ -28,8 +28,8 @@ import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.message.internal.InternalAbstractResponse;
-import org.apache.directory.shared.ldap.message.internal.InternalSearchResultEntry;
+import org.apache.directory.shared.ldap.message.internal.AbstractResponse;
+import org.apache.directory.shared.ldap.message.internal.SearchResultEntry;
 import org.apache.directory.shared.ldap.name.DN;
 
 
@@ -38,7 +38,7 @@ import org.apache.directory.shared.ldap.name.DN;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class SearchResultEntryImpl extends InternalAbstractResponse implements InternalSearchResultEntry
+public class SearchResultEntryImpl extends AbstractResponse implements SearchResultEntry
 {
     static final long serialVersionUID = -8357316233060886637L;
 
@@ -229,12 +229,12 @@ public class SearchResultEntryImpl extends InternalAbstractResponse implements I
             return false;
         }
 
-        if ( !( obj instanceof InternalSearchResultEntry ) )
+        if ( !( obj instanceof SearchResultEntry ) )
         {
             return false;
         }
 
-        InternalSearchResultEntry resp = ( InternalSearchResultEntry ) obj;
+        SearchResultEntry resp = ( SearchResultEntry ) obj;
 
         return entry.equals( resp.getEntry() );
     }

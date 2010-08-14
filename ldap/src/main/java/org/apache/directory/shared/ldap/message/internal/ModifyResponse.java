@@ -17,7 +17,6 @@
  *  under the License. 
  *  
  */
-
 package org.apache.directory.shared.ldap.message.internal;
 
 
@@ -25,29 +24,12 @@ import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 
 
 /**
- * Search reference protocol response message used to return referrals to the
- * client in response to a search request message.
+ * Modify protocol response message used to confirm the results of a modify
+ * request message.
  * 
- * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public interface InternalSearchResultReference extends InternalResponse
+public interface ModifyResponse extends ResultResponse
 {
-    /** Search reference response message type enumeration value */
-    MessageTypeEnum TYPE = MessageTypeEnum.SEARCH_RESULT_REFERENCE;
-
-
-    /**
-     * Gets the sequence of LdapUrls as a Referral instance.
-     * 
-     * @return the sequence of LdapUrls
-     */
-    InternalReferral getReferral();
-
-
-    /**
-     * Sets the sequence of LdapUrls as a Referral instance.
-     * 
-     * @param referral the sequence of LdapUrls
-     */
-    void setReferral( InternalReferral referral );
+    /** Modify response message type enumeration value */
+    MessageTypeEnum TYPE = MessageTypeEnum.MODIFY_RESPONSE;
 }

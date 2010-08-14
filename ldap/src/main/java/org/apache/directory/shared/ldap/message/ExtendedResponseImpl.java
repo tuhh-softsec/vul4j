@@ -23,7 +23,7 @@ package org.apache.directory.shared.ldap.message;
 import java.util.Arrays;
 
 import org.apache.directory.shared.ldap.message.internal.InternalAbstractResultResponse;
-import org.apache.directory.shared.ldap.message.internal.InternalExtendedResponse;
+import org.apache.directory.shared.ldap.message.internal.ExtendedResponse;
 import org.apache.directory.shared.ldap.util.StringTools;
 
 
@@ -32,7 +32,7 @@ import org.apache.directory.shared.ldap.util.StringTools;
  * 
  * @author <a href="mailto:dev@directory.apache.org"> Apache Directory Project</a>
  */
-public class ExtendedResponseImpl extends InternalAbstractResultResponse implements InternalExtendedResponse
+public class ExtendedResponseImpl extends InternalAbstractResultResponse implements ExtendedResponse
 {
     static final long serialVersionUID = -6646752766410531060L;
 
@@ -176,12 +176,12 @@ public class ExtendedResponseImpl extends InternalAbstractResultResponse impleme
             return false;
         }
 
-        if ( !( obj instanceof InternalExtendedResponse ) )
+        if ( !( obj instanceof ExtendedResponse ) )
         {
             return false;
         }
 
-        InternalExtendedResponse resp = ( InternalExtendedResponse ) obj;
+        ExtendedResponse resp = ( ExtendedResponse ) obj;
 
         if ( ( responseName != null ) && ( resp.getResponseName() == null ) )
         {

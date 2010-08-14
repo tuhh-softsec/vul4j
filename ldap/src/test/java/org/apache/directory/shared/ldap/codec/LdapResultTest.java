@@ -36,7 +36,7 @@ import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.ldap.message.LdapProtocolEncoder;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
-import org.apache.directory.shared.ldap.message.internal.InternalAddResponse;
+import org.apache.directory.shared.ldap.message.internal.AddResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalReferral;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
@@ -291,7 +291,7 @@ public class LdapResultTest
         }
 
         // Check the decoded AddResponse
-        InternalAddResponse addResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getInternalAddResponse();
+        AddResponse addResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getInternalAddResponse();
 
         assertEquals( 1, addResponse.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, addResponse.getLdapResult().getResultCode() );
@@ -354,7 +354,7 @@ public class LdapResultTest
         }
 
         // Check the decoded AddResponse
-        InternalAddResponse addResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getInternalAddResponse();
+        AddResponse addResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getInternalAddResponse();
 
         assertEquals( 1, addResponse.getMessageId() );
         assertEquals( ResultCodeEnum.REFERRAL, addResponse.getLdapResult().getResultCode() );
@@ -432,7 +432,7 @@ public class LdapResultTest
         }
 
         // Check the decoded AddResponse
-        InternalAddResponse addResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getInternalAddResponse();
+        AddResponse addResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getInternalAddResponse();
 
         assertEquals( 1, addResponse.getMessageId() );
         assertEquals( ResultCodeEnum.REFERRAL, addResponse.getLdapResult().getResultCode() );
@@ -509,7 +509,7 @@ public class LdapResultTest
         }
 
         // Check the decoded AddResponse
-        InternalAddResponse addResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getInternalAddResponse();
+        AddResponse addResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getInternalAddResponse();
 
         assertEquals( 1, addResponse.getMessageId() );
         assertEquals( ResultCodeEnum.REFERRAL, addResponse.getLdapResult().getResultCode() );

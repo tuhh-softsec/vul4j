@@ -17,19 +17,26 @@
  *  under the License. 
  *  
  */
+
 package org.apache.directory.shared.ldap.message.internal;
 
 
-import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
-
-
 /**
- * Modify protocol response message used to confirm the results of a modify
- * request message.
+ * Super interface used as a marker for all protocol response type messages.
+ * Note that only 2 response interfaces directly extend this interfaces. They
+ * are listed below:
+ * <ul>
+ * <li> SearchResponseEntry </li>
+ * <li> SearchResponseReference </li>
+ * </ul>
+ * <br>
+ * All other responses derive from the ResultResponse interface. These responses
+ * unlike the three above have an LdapResult component. The ResultResponse
+ * interface takes this into account providing a Response with an LdapResult
+ * property.
  * 
+ * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public interface InternalModifyResponse extends InternalResultResponse
+public interface Response extends InternalMessage
 {
-    /** Modify response message type enumeration value */
-    MessageTypeEnum TYPE = MessageTypeEnum.MODIFY_RESPONSE;
 }

@@ -29,7 +29,7 @@ import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.codec.controls.ControlImpl;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.message.internal.InternalAbstractResultResponse;
-import org.apache.directory.shared.ldap.message.internal.InternalLdapResult;
+import org.apache.directory.shared.ldap.message.internal.LdapResult;
 import org.apache.directory.shared.ldap.message.internal.InternalReferral;
 import org.apache.directory.shared.ldap.name.DN;
 import org.junit.Test;
@@ -74,8 +74,8 @@ public class AbstractResultResponseTest
         {
             private static final long serialVersionUID = 1L;
         };
-        InternalLdapResult r0 = msg0.getLdapResult();
-        InternalLdapResult r1 = msg1.getLdapResult();
+        LdapResult r0 = msg0.getLdapResult();
+        LdapResult r1 = msg1.getLdapResult();
 
         r0.setErrorMessage( "blah blah blah" );
         r1.setErrorMessage( "blah blah blah" );
@@ -113,8 +113,8 @@ public class AbstractResultResponseTest
         {
             private static final long serialVersionUID = 1L;
         };
-        InternalLdapResult r0 = msg0.getLdapResult();
-        InternalLdapResult r1 = msg1.getLdapResult();
+        LdapResult r0 = msg0.getLdapResult();
+        LdapResult r1 = msg1.getLdapResult();
 
         r0.setErrorMessage( "blah blah blah" );
         r1.setErrorMessage( "blah blah blah" );

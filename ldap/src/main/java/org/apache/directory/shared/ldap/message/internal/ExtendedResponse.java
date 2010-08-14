@@ -19,40 +19,52 @@
  */
 package org.apache.directory.shared.ldap.message.internal;
 
+
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
-import org.apache.directory.shared.ldap.message.SingleReplyRequest;
-import org.apache.directory.shared.ldap.name.DN;
 
 
 /**
- * Delete request protocol message used to remove an existing leaf entry from
- * the directory.
+ * Extended protocol response message used to confirm the results of a extended
+ * request message.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public interface InternalDeleteRequest extends SingleReplyRequest, InternalAbandonableRequest
+public interface ExtendedResponse extends ResultResponse, javax.naming.ldap.ExtendedResponse
 {
-    /** Delete request message type enumeration value */
-    MessageTypeEnum TYPE = MessageTypeEnum.DEL_REQUEST;
-
-    /** Delete response message type enumeration value */
-    MessageTypeEnum RESP_TYPE = DeleteResponse.TYPE;
+    /** Extended response message type enumeration value */
+    MessageTypeEnum TYPE = MessageTypeEnum.EXTENDED_RESPONSE;
 
 
     /**
-     * Gets the distinguished name of the leaf entry to be deleted by this
-     * request.
+     * Gets the OID uniquely identifying this extended response (a.k.a. its
+     * name).
      * 
-     * @return the DN of the leaf entry to delete.
+     * @return the OID of the extended response type.
      */
-    DN getName();
+    String getResponseName();
 
 
     /**
-     * Sets the distinguished name of the leaf entry to be deleted by this
-     * request.
+     * Sets the OID uniquely identifying this extended response (a.k.a. its
+     * name).
      * 
-     * @param name the DN of the leaf entry to delete.
+     * @param oidv the OID of the extended response type.
      */
-    void setName( DN name );
+    void setResponseName( String oid );
+
+
+    /**
+     * Gets the response OID specific encoded response values.
+     * 
+     * @return the response specific encoded response values.
+     */
+    byte[] getResponseValue();
+
+
+    /**
+     * Sets the response OID specific encoded response values.
+     * 
+     * @param responseValue the response specific encoded response values.
+     */
+    void setResponseValue( byte[] responseValue );
 }

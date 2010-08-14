@@ -34,5 +34,5 @@ public interface InternalResultResponseRequest extends InternalRequest
      * @return a result containing response with defaults and the messageId set
      *         in response to this specific request
      */
-    InternalResultResponse getResultResponse();
+    ResultResponse getResultResponse();
 }

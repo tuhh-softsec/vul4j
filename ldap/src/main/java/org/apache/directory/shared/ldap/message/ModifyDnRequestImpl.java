@@ -22,8 +22,8 @@ package org.apache.directory.shared.ldap.message;
 
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.message.internal.InternalModifyDnRequest;
-import org.apache.directory.shared.ldap.message.internal.InternalModifyDnResponse;
-import org.apache.directory.shared.ldap.message.internal.InternalResultResponse;
+import org.apache.directory.shared.ldap.message.internal.ModifyDnResponse;
+import org.apache.directory.shared.ldap.message.internal.ResultResponse;
 import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.name.RDN;
 
@@ -49,7 +49,7 @@ public class ModifyDnRequestImpl extends AbstractAbandonableRequest implements I
     /** PDU's <b>deleteOldRdn</b> flag */
     private boolean deleteOldRdn = false;
 
-    private InternalModifyDnResponse response;
+    private ModifyDnResponse response;
 
 
     // -----------------------------------------------------------------------
@@ -220,7 +220,7 @@ public class ModifyDnRequestImpl extends AbstractAbandonableRequest implements I
      * 
      * @return the result containing response for this request
      */
-    public InternalResultResponse getResultResponse()
+    public ResultResponse getResultResponse()
     {
         if ( response == null )
         {

@@ -21,9 +21,9 @@ package org.apache.directory.shared.ldap.message;
 
 
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.message.internal.InternalAbstractResponse;
+import org.apache.directory.shared.ldap.message.internal.AbstractResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalReferral;
-import org.apache.directory.shared.ldap.message.internal.InternalSearchResultReference;
+import org.apache.directory.shared.ldap.message.internal.SearchResultReference;
 
 
 /**
@@ -31,7 +31,7 @@ import org.apache.directory.shared.ldap.message.internal.InternalSearchResultRef
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class SearchResultReferenceImpl extends InternalAbstractResponse implements InternalSearchResultReference
+public class SearchResultReferenceImpl extends AbstractResponse implements SearchResultReference
 {
     static final long serialVersionUID = 7423807019951309810L;
 
@@ -143,7 +143,7 @@ public class SearchResultReferenceImpl extends InternalAbstractResponse implemen
             return false;
         }
 
-        InternalSearchResultReference resp = ( InternalSearchResultReference ) obj;
+        SearchResultReference resp = ( SearchResultReference ) obj;
 
         if ( this.referral != null && resp.getReferral() == null )
         {

@@ -72,7 +72,7 @@ public interface InternalModifyDnRequest extends SingleReplyRequest, InternalAba
     MessageTypeEnum TYPE = MessageTypeEnum.MODIFYDN_REQUEST;
 
     /** Modify DN response message type enumeration value */
-    MessageTypeEnum RESP_TYPE = InternalModifyDnResponse.TYPE;
+    MessageTypeEnum RESP_TYPE = ModifyDnResponse.TYPE;
 
 
     /**

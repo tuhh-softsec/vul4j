@@ -40,7 +40,7 @@ import org.apache.directory.shared.ldap.name.DN;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public interface InternalLdapResult
+public interface LdapResult
 {
     /**
      * Gets the result code enumeration associated with the response.

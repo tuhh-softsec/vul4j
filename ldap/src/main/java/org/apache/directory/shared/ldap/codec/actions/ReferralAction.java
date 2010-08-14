@@ -30,10 +30,10 @@ import org.apache.directory.shared.ldap.codec.LdapResponseCodec;
 import org.apache.directory.shared.ldap.codec.LdapResultCodec;
 import org.apache.directory.shared.ldap.codec.util.LdapURLEncodingException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
-import org.apache.directory.shared.ldap.message.internal.InternalLdapResult;
+import org.apache.directory.shared.ldap.message.internal.LdapResult;
 import org.apache.directory.shared.ldap.message.internal.InternalMessage;
 import org.apache.directory.shared.ldap.message.internal.InternalReferral;
-import org.apache.directory.shared.ldap.message.internal.InternalResultResponse;
+import org.apache.directory.shared.ldap.message.internal.ResultResponse;
 import org.apache.directory.shared.ldap.util.LdapURL;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
@@ -72,7 +72,7 @@ public class ReferralAction extends GrammarAction
         if ( ldapMessageContainer.isInternal() )
         {
             InternalMessage response = ldapMessageContainer.getInternalMessage();
-            InternalLdapResult ldapResult = ( ( InternalResultResponse ) response ).getLdapResult();
+            LdapResult ldapResult = ( ( ResultResponse ) response ).getLdapResult();
             InternalReferral referral = ldapResult.getReferral();
 
             if ( tlv.getLength() == 0 )

@@ -102,7 +102,7 @@ public interface InternalModifyRequest extends SingleReplyRequest, InternalAband
     MessageTypeEnum TYPE = MessageTypeEnum.MODIFY_REQUEST;
 
     /** Modify response message type enumeration value */
-    MessageTypeEnum RESP_TYPE = InternalModifyResponse.TYPE;
+    MessageTypeEnum RESP_TYPE = ModifyResponse.TYPE;
 
 
     /**

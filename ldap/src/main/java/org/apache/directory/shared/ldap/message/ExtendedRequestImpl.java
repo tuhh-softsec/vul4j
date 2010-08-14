@@ -28,7 +28,7 @@ import javax.naming.ldap.ExtendedResponse;
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.message.internal.InternalAbstractRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalExtendedRequest;
-import org.apache.directory.shared.ldap.message.internal.InternalResultResponse;
+import org.apache.directory.shared.ldap.message.internal.ResultResponse;
 import org.apache.directory.shared.ldap.util.StringTools;
 
 
@@ -47,7 +47,7 @@ public class ExtendedRequestImpl extends InternalAbstractRequest implements Inte
     /** Extended request's payload or <b>requestValue</b> */
     protected byte[] payload;
 
-    protected InternalResultResponse response;
+    protected ResultResponse response;
 
 
     // -----------------------------------------------------------------------
@@ -142,7 +142,7 @@ public class ExtendedRequestImpl extends InternalAbstractRequest implements Inte
      * 
      * @return the result containing response for this request
      */
-    public InternalResultResponse getResultResponse()
+    public ResultResponse getResultResponse()
     {
         if ( response == null )
         {

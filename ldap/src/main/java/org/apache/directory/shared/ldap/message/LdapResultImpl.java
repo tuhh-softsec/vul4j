@@ -21,7 +21,7 @@
 package org.apache.directory.shared.ldap.message;
 
 
-import org.apache.directory.shared.ldap.message.internal.InternalLdapResult;
+import org.apache.directory.shared.ldap.message.internal.LdapResult;
 import org.apache.directory.shared.ldap.message.internal.InternalReferral;
 import org.apache.directory.shared.ldap.name.DN;
 
@@ -31,7 +31,7 @@ import org.apache.directory.shared.ldap.name.DN;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class LdapResultImpl implements InternalLdapResult
+public class LdapResultImpl implements LdapResult
 {
     static final long serialVersionUID = -1446626887394613213L;
 
@@ -256,13 +256,13 @@ public class LdapResultImpl implements InternalLdapResult
         }
 
         // return false if object does not implement interface
-        if ( !( obj instanceof InternalLdapResult ) )
+        if ( !( obj instanceof LdapResult ) )
         {
             return false;
         }
 
         // compare all the like elements of the two LdapResult objects
-        InternalLdapResult result = ( InternalLdapResult ) obj;
+        LdapResult result = ( LdapResult ) obj;
 
         if ( referral == null && result.getReferral() != null )
         {

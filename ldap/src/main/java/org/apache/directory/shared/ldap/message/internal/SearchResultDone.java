@@ -24,20 +24,14 @@ import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 
 
 /**
- * Compare protocol response message used to confirm the results of a compare
- * request message.
+ * Search done protocol response message used to indicate the completion of a
+ * search request message.
  * 
- * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
+ * @author <a href="mailto:dev@directory.apache.org"> Apache Directory Project</a>
+ *         $Rev: 910150 $
  */
-public interface InternalCompareResponse extends InternalResultResponse
+public interface SearchResultDone extends ResultResponse
 {
-    /** Compare response message type enumeration value */
-    MessageTypeEnum TYPE = MessageTypeEnum.COMPARE_RESPONSE;
-
-
-    /**
-     * @return True if the compared response is a success
-     * @return
-     */
-    boolean isTrue();
+    /** Search done response message type enumeration value */
+    MessageTypeEnum TYPE = MessageTypeEnum.SEARCH_RESULT_DONE;
 }

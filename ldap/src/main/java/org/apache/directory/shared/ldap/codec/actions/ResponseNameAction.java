@@ -27,7 +27,7 @@ import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.primitives.OID;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
-import org.apache.directory.shared.ldap.message.internal.InternalExtendedResponse;
+import org.apache.directory.shared.ldap.message.internal.ExtendedResponse;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,7 +61,7 @@ public class ResponseNameAction extends GrammarAction
         LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
         // We can allocate the ExtendedResponse Object
-        InternalExtendedResponse extendedResponse = ldapMessageContainer.getInternalExtendedResponse();
+        ExtendedResponse extendedResponse = ldapMessageContainer.getInternalExtendedResponse();
 
         // Get the Value and store it in the ExtendedResponse
         TLV tlv = ldapMessageContainer.getCurrentTLV();

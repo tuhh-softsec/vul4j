@@ -37,7 +37,7 @@ import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.message.LdapProtocolEncoder;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.message.internal.InternalAddResponse;
+import org.apache.directory.shared.ldap.message.internal.AddResponse;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -97,7 +97,7 @@ public class AddResponseTest
         }
 
         // Check the decoded AddResponse
-        InternalAddResponse addResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getInternalAddResponse();
+        AddResponse addResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getInternalAddResponse();
 
         assertEquals( 1, addResponse.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, addResponse.getLdapResult().getResultCode() );
@@ -212,7 +212,7 @@ public class AddResponseTest
         }
 
         // Check the decoded AddResponse
-        InternalAddResponse addResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getInternalAddResponse();
+        AddResponse addResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getInternalAddResponse();
 
         assertEquals( 1, addResponse.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, addResponse.getLdapResult().getResultCode() );

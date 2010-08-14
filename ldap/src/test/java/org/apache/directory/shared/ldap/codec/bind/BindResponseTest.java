@@ -39,7 +39,7 @@ import org.apache.directory.shared.ldap.codec.search.controls.pagedSearch.PagedR
 import org.apache.directory.shared.ldap.message.LdapProtocolEncoder;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.message.internal.InternalBindResponse;
+import org.apache.directory.shared.ldap.message.internal.BindResponse;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -100,7 +100,7 @@ public class BindResponseTest
         }
 
         // Check the decoded BindResponse
-        InternalBindResponse bindResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getInternalBindResponse();
+        BindResponse bindResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getInternalBindResponse();
 
         assertEquals( 1, bindResponse.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, bindResponse.getLdapResult().getResultCode() );
@@ -189,7 +189,7 @@ public class BindResponseTest
         }
 
         // Check the decoded BindResponse
-        InternalBindResponse bindResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getInternalBindResponse();
+        BindResponse bindResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getInternalBindResponse();
 
         assertEquals( 1, bindResponse.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, bindResponse.getLdapResult().getResultCode() );
@@ -275,7 +275,7 @@ public class BindResponseTest
         }
 
         // Check the decoded BindResponse
-        InternalBindResponse bindResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getInternalBindResponse();
+        BindResponse bindResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getInternalBindResponse();
 
         assertEquals( 1, bindResponse.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, bindResponse.getLdapResult().getResultCode() );
@@ -361,7 +361,7 @@ public class BindResponseTest
         }
 
         // Check the decoded BindResponse
-        InternalBindResponse bindResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getInternalBindResponse();
+        BindResponse bindResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getInternalBindResponse();
 
         assertEquals( 1, bindResponse.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, bindResponse.getLdapResult().getResultCode() );
@@ -443,7 +443,7 @@ public class BindResponseTest
         }
 
         // Check the decoded BindResponse
-        InternalBindResponse bindResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getInternalBindResponse();
+        BindResponse bindResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getInternalBindResponse();
 
         assertEquals( 1, bindResponse.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, bindResponse.getLdapResult().getResultCode() );

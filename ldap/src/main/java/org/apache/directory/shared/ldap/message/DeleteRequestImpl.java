@@ -22,8 +22,8 @@ package org.apache.directory.shared.ldap.message;
 
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.message.internal.InternalDeleteRequest;
-import org.apache.directory.shared.ldap.message.internal.InternalDeleteResponse;
-import org.apache.directory.shared.ldap.message.internal.InternalResultResponse;
+import org.apache.directory.shared.ldap.message.internal.DeleteResponse;
+import org.apache.directory.shared.ldap.message.internal.ResultResponse;
 import org.apache.directory.shared.ldap.name.DN;
 
 
@@ -39,7 +39,7 @@ public class DeleteRequestImpl extends AbstractAbandonableRequest implements Int
     /** The distinguished name of the entry to delete */
     private DN name;
 
-    private InternalDeleteResponse response;
+    private DeleteResponse response;
 
 
     // ------------------------------------------------------------------------
@@ -109,7 +109,7 @@ public class DeleteRequestImpl extends AbstractAbandonableRequest implements Int
      * 
      * @return the result containing response for this request
      */
-    public InternalResultResponse getResultResponse()
+    public ResultResponse getResultResponse()
     {
         if ( response == null )
         {

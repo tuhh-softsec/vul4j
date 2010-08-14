@@ -25,8 +25,8 @@ import org.apache.directory.shared.ldap.entry.BinaryValue;
 import org.apache.directory.shared.ldap.entry.StringValue;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.message.internal.InternalCompareRequest;
-import org.apache.directory.shared.ldap.message.internal.InternalCompareResponse;
-import org.apache.directory.shared.ldap.message.internal.InternalResultResponse;
+import org.apache.directory.shared.ldap.message.internal.CompareResponse;
+import org.apache.directory.shared.ldap.message.internal.ResultResponse;
 import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.util.StringTools;
 
@@ -49,7 +49,7 @@ public class CompareRequestImpl extends AbstractAbandonableRequest implements In
     /** The value of the attribute used in the comparison */
     private Value<?> attrVal;
 
-    private InternalCompareResponse response;
+    private CompareResponse response;
 
 
     // ------------------------------------------------------------------------
@@ -184,7 +184,7 @@ public class CompareRequestImpl extends AbstractAbandonableRequest implements In
      * 
      * @return the result containing response for this request
      */
-    public InternalResultResponse getResultResponse()
+    public ResultResponse getResultResponse()
     {
         if ( response == null )
         {

@@ -30,8 +30,8 @@ import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.entry.DefaultModification;
 import org.apache.directory.shared.ldap.entry.Modification;
 import org.apache.directory.shared.ldap.message.internal.InternalModifyRequest;
-import org.apache.directory.shared.ldap.message.internal.InternalModifyResponse;
-import org.apache.directory.shared.ldap.message.internal.InternalResultResponse;
+import org.apache.directory.shared.ldap.message.internal.ModifyResponse;
+import org.apache.directory.shared.ldap.message.internal.ResultResponse;
 import org.apache.directory.shared.ldap.name.DN;
 
 
@@ -50,7 +50,7 @@ public class ModifyRequestImpl extends AbstractAbandonableRequest implements Int
     /** Sequence of modifications or PDU's <b>modification</b> seqence field */
     private List<Modification> mods = new ArrayList<Modification>();
 
-    private InternalModifyResponse response;
+    private ModifyResponse response;
 
 
     // ------------------------------------------------------------------------
@@ -155,7 +155,7 @@ public class ModifyRequestImpl extends AbstractAbandonableRequest implements Int
      * 
      * @return the result containing response for this request
      */
-    public InternalResultResponse getResultResponse()
+    public ResultResponse getResultResponse()
     {
         if ( response == null )
         {

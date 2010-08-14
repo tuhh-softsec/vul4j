@@ -29,9 +29,9 @@ import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.LdapResponseCodec;
 import org.apache.directory.shared.ldap.codec.LdapResultCodec;
 import org.apache.directory.shared.ldap.message.ReferralImpl;
-import org.apache.directory.shared.ldap.message.internal.InternalLdapResult;
+import org.apache.directory.shared.ldap.message.internal.LdapResult;
 import org.apache.directory.shared.ldap.message.internal.InternalReferral;
-import org.apache.directory.shared.ldap.message.internal.InternalResultResponse;
+import org.apache.directory.shared.ldap.message.internal.ResultResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -77,8 +77,8 @@ public class InitReferralsAction extends GrammarAction
 
         if ( ldapMessageContainer.isInternal() )
         {
-            InternalResultResponse response = ( InternalResultResponse ) ldapMessageContainer.getInternalMessage();
-            InternalLdapResult ldapResult = response.getLdapResult();
+            ResultResponse response = ( ResultResponse ) ldapMessageContainer.getInternalMessage();
+            LdapResult ldapResult = response.getLdapResult();
 
             InternalReferral referral = new ReferralImpl();
             ldapResult.setReferral( referral );

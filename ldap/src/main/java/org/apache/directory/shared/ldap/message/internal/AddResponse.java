@@ -17,6 +17,7 @@
  *  under the License. 
  *  
  */
+
 package org.apache.directory.shared.ldap.message.internal;
 
 
@@ -24,13 +25,13 @@ import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 
 
 /**
- * Modify DN protocol response message used to confirm the results of a modify
- * DN request message.
+ * Add protocol response message used to confirm the results of a add request
+ * message.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public interface InternalModifyDnResponse extends InternalResultResponse
+public interface AddResponse extends ResultResponse
 {
-    /** Modify DN response message type enumeration value */
-    MessageTypeEnum TYPE = MessageTypeEnum.MODIFYDN_RESPONSE;
+    /** Add response message type enumeration value */
+    MessageTypeEnum TYPE = MessageTypeEnum.ADD_RESPONSE;
 }

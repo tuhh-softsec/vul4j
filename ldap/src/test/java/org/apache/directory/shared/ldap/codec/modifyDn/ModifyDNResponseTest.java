@@ -37,7 +37,7 @@ import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.message.LdapProtocolEncoder;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.message.internal.InternalModifyDnResponse;
+import org.apache.directory.shared.ldap.message.internal.ModifyDnResponse;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -100,7 +100,7 @@ public class ModifyDNResponseTest
         }
 
         // Check the decoded ModifyDNResponse PDU
-        InternalModifyDnResponse modifyDnResponse = ( ( LdapMessageContainer ) ldapMessageContainer )
+        ModifyDnResponse modifyDnResponse = ( ( LdapMessageContainer ) ldapMessageContainer )
             .getInternalModifyDnResponse();
 
         assertEquals( 1, modifyDnResponse.getMessageId() );
@@ -183,7 +183,7 @@ public class ModifyDNResponseTest
         }
 
         // Check the decoded ModifyDNResponse PDU
-        InternalModifyDnResponse modifyDnResponse = ( ( LdapMessageContainer ) ldapMessageContainer )
+        ModifyDnResponse modifyDnResponse = ( ( LdapMessageContainer ) ldapMessageContainer )
             .getInternalModifyDnResponse();
 
         assertEquals( 1, modifyDnResponse.getMessageId() );

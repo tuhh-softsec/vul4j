@@ -25,8 +25,8 @@ import java.util.Arrays;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.message.internal.InternalBindRequest;
-import org.apache.directory.shared.ldap.message.internal.InternalBindResponse;
-import org.apache.directory.shared.ldap.message.internal.InternalResultResponse;
+import org.apache.directory.shared.ldap.message.internal.BindResponse;
+import org.apache.directory.shared.ldap.message.internal.ResultResponse;
 import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.util.StringTools;
 
@@ -63,7 +63,7 @@ public class BindRequestImpl extends AbstractAbandonableRequest implements Inter
     private boolean isVersion3 = true;
 
     /** The associated response */
-    public InternalBindResponse response;
+    public BindResponse response;
 
 
     // ------------------------------------------------------------------------
@@ -299,7 +299,7 @@ public class BindRequestImpl extends AbstractAbandonableRequest implements Inter
      * 
      * @return the result containing response for this request
      */
-    public InternalResultResponse getResultResponse()
+    public ResultResponse getResultResponse()
     {
         if ( response == null )
         {

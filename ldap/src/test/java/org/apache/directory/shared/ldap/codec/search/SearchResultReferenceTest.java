@@ -40,7 +40,7 @@ import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.message.LdapProtocolEncoder;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.message.internal.InternalReferral;
-import org.apache.directory.shared.ldap.message.internal.InternalSearchResultReference;
+import org.apache.directory.shared.ldap.message.internal.SearchResultReference;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -126,7 +126,7 @@ public class SearchResultReferenceTest
             fail( de.getMessage() );
         }
 
-        InternalSearchResultReference searchResultReference = ( ( LdapMessageContainer ) ldapMessageContainer )
+        SearchResultReference searchResultReference = ( ( LdapMessageContainer ) ldapMessageContainer )
             .getInternalSearchResultReference();
 
         assertEquals( 1, searchResultReference.getMessageId() );
@@ -257,7 +257,7 @@ public class SearchResultReferenceTest
 
         stream.flip();
 
-        InternalSearchResultReference searchResultReference = ( ( LdapMessageContainer ) ldapMessageContainer )
+        SearchResultReference searchResultReference = ( ( LdapMessageContainer ) ldapMessageContainer )
             .getInternalSearchResultReference();
 
         assertEquals( 1, searchResultReference.getMessageId() );
@@ -398,7 +398,7 @@ public class SearchResultReferenceTest
             fail( de.getMessage() );
         }
 
-        InternalSearchResultReference searchResultReference = ( ( LdapMessageContainer ) ldapMessageContainer )
+        SearchResultReference searchResultReference = ( ( LdapMessageContainer ) ldapMessageContainer )
             .getInternalSearchResultReference();
 
         assertEquals( 1, searchResultReference.getMessageId() );

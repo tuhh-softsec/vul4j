@@ -23,7 +23,7 @@ package org.apache.directory.shared.ldap.message;
 import java.util.Arrays;
 
 import org.apache.directory.shared.ldap.message.internal.InternalAbstractResultResponse;
-import org.apache.directory.shared.ldap.message.internal.InternalBindResponse;
+import org.apache.directory.shared.ldap.message.internal.BindResponse;
 import org.apache.directory.shared.ldap.util.StringTools;
 
 
@@ -32,7 +32,7 @@ import org.apache.directory.shared.ldap.util.StringTools;
  * 
  * @author <a href="mailto:dev@directory.apache.org"> Apache Directory Project</a>
  */
-public class BindResponseImpl extends InternalAbstractResultResponse implements InternalBindResponse
+public class BindResponseImpl extends InternalAbstractResultResponse implements BindResponse
 {
     static final long serialVersionUID = -5146809476518669755L;
 
@@ -138,7 +138,7 @@ public class BindResponseImpl extends InternalAbstractResultResponse implements 
             return true;
         }
 
-        if ( ( obj == null ) || !( obj instanceof InternalBindResponse ) )
+        if ( ( obj == null ) || !( obj instanceof BindResponse ) )
         {
             return false;
         }
@@ -148,7 +148,7 @@ public class BindResponseImpl extends InternalAbstractResultResponse implements 
             return false;
         }
 
-        InternalBindResponse response = ( InternalBindResponse ) obj;
+        BindResponse response = ( BindResponse ) obj;
         byte[] creds = response.getServerSaslCreds();
 
         if ( serverSaslCreds == null )

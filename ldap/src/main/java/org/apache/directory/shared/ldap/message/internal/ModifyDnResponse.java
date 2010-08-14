@@ -24,14 +24,13 @@ import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 
 
 /**
- * Search done protocol response message used to indicate the completion of a
- * search request message.
+ * Modify DN protocol response message used to confirm the results of a modify
+ * DN request message.
  * 
- * @author <a href="mailto:dev@directory.apache.org"> Apache Directory Project</a>
- *         $Rev: 910150 $
+ * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public interface InternalSearchResultDone extends InternalResultResponse
+public interface ModifyDnResponse extends ResultResponse
 {
-    /** Search done response message type enumeration value */
-    MessageTypeEnum TYPE = MessageTypeEnum.SEARCH_RESULT_DONE;
+    /** Modify DN response message type enumeration value */
+    MessageTypeEnum TYPE = MessageTypeEnum.MODIFYDN_RESPONSE;
 }

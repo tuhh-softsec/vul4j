@@ -24,34 +24,13 @@ import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 
 
 /**
- * Bind protocol response message used to confirm the results of a bind request
- * message. BindResponse consists simply of an indication from the server of the
- * status of the client's request for authentication.
+ * Delete protocol response message used to confirm the results of a delete
+ * request message.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public interface InternalBindResponse extends InternalResultResponse
+public interface DeleteResponse extends ResultResponse
 {
-    /** Bind response message type enumeration value */
-    MessageTypeEnum TYPE = MessageTypeEnum.BIND_RESPONSE;
-
-
-    /**
-     * Gets the optional property holding SASL authentication response parameters
-     * that are SASL mechanism specific. Will return null if the authentication
-     * is simple.
-     * 
-     * @return the sasl mech. specific credentials or null of auth. is simple
-     */
-    byte[] getServerSaslCreds();
-
-
-    /**
-     * Sets the optional property holding SASL authentication response paramters
-     * that are SASL mechanism specific. Leave null if authentication mode is
-     * simple.
-     * 
-     * @param serverSaslCreds the sasl auth. mech. specific credentials
-     */
-    void setServerSaslCreds( byte[] serverSaslCreds );
+    /** Delete response message type enumeration value */
+    MessageTypeEnum TYPE = MessageTypeEnum.DEL_RESPONSE;
 }

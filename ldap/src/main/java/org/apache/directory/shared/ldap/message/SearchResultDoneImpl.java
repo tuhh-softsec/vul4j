@@ -21,8 +21,8 @@ package org.apache.directory.shared.ldap.message;
 
 
 import org.apache.directory.shared.ldap.message.internal.InternalAbstractResultResponse;
-import org.apache.directory.shared.ldap.message.internal.InternalLdapResult;
-import org.apache.directory.shared.ldap.message.internal.InternalSearchResultDone;
+import org.apache.directory.shared.ldap.message.internal.LdapResult;
+import org.apache.directory.shared.ldap.message.internal.SearchResultDone;
 
 
 /**
@@ -30,7 +30,7 @@ import org.apache.directory.shared.ldap.message.internal.InternalSearchResultDon
  * 
  * @author <a href="mailto:dev@directory.apache.org"> Apache Directory Project</a>
  */
-public class SearchResultDoneImpl extends InternalAbstractResultResponse implements InternalSearchResultDone
+public class SearchResultDoneImpl extends InternalAbstractResultResponse implements SearchResultDone
 {
     /** The encoded searchResultDone length */
     private int searchResultDoneLength;
@@ -90,7 +90,7 @@ public class SearchResultDoneImpl extends InternalAbstractResultResponse impleme
             return false;
         }
 
-        InternalLdapResult result = ( ( InternalSearchResultDone ) obj ).getLdapResult();
+        LdapResult result = ( ( SearchResultDone ) obj ).getLdapResult();
 
         if ( !getLdapResult().equals( result ) )
         {

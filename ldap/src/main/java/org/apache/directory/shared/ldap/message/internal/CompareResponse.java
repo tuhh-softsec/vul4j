@@ -17,26 +17,27 @@
  *  under the License. 
  *  
  */
-
 package org.apache.directory.shared.ldap.message.internal;
 
 
+import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
+
+
 /**
- * Super interface used as a marker for all protocol response type messages.
- * Note that only 2 response interfaces directly extend this interfaces. They
- * are listed below:
- * <ul>
- * <li> SearchResponseEntry </li>
- * <li> SearchResponseReference </li>
- * </ul>
- * <br>
- * All other responses derive from the ResultResponse interface. These responses
- * unlike the three above have an LdapResult component. The ResultResponse
- * interface takes this into account providing a Response with an LdapResult
- * property.
+ * Compare protocol response message used to confirm the results of a compare
+ * request message.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public interface InternalResponse extends InternalMessage
+public interface CompareResponse extends ResultResponse
 {
+    /** Compare response message type enumeration value */
+    MessageTypeEnum TYPE = MessageTypeEnum.COMPARE_RESPONSE;
+
+
+    /**
+     * @return True if the compared response is a success
+     * @return
+     */
+    boolean isTrue();
 }

@@ -27,8 +27,8 @@ import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.message.internal.InternalAddRequest;
-import org.apache.directory.shared.ldap.message.internal.InternalAddResponse;
-import org.apache.directory.shared.ldap.message.internal.InternalResultResponse;
+import org.apache.directory.shared.ldap.message.internal.AddResponse;
+import org.apache.directory.shared.ldap.message.internal.ResultResponse;
 import org.apache.directory.shared.ldap.name.DN;
 
 
@@ -44,7 +44,7 @@ public class AddRequestImpl extends AbstractAbandonableRequest implements Intern
     /** A MultiMap of the new entry's attributes and their values */
     private Entry entry;
 
-    private InternalAddResponse response;
+    private AddResponse response;
 
     /** The current attribute being decoded */
     private EntryAttribute currentAttribute;
@@ -198,7 +198,7 @@ public class AddRequestImpl extends AbstractAbandonableRequest implements Intern
      * 
      * @return the result containing response for this request
      */
-    public InternalResultResponse getResultResponse()
+    public ResultResponse getResultResponse()
     {
         if ( response == null )
         {

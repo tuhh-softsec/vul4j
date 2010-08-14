@@ -62,7 +62,7 @@ public interface InternalExtendedRequest extends SingleReplyRequest, javax.namin
     MessageTypeEnum TYPE = MessageTypeEnum.EXTENDED_REQUEST;
 
     /** Extended response message type enumeration value */
-    MessageTypeEnum RESP_TYPE = InternalExtendedResponse.TYPE;
+    MessageTypeEnum RESP_TYPE = ExtendedResponse.TYPE;
 
 
     /**

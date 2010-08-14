@@ -31,8 +31,8 @@ import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.message.internal.InternalLdapResult;
-import org.apache.directory.shared.ldap.message.internal.InternalSearchResultDone;
+import org.apache.directory.shared.ldap.message.internal.LdapResult;
+import org.apache.directory.shared.ldap.message.internal.SearchResultDone;
 import org.apache.directory.shared.ldap.name.DN;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -60,7 +60,7 @@ public class SearchResponseDoneImplTest
     {
         // Construct the Search response to test with results and referrals
         SearchResultDoneImpl response = new SearchResultDoneImpl( 45 );
-        InternalLdapResult result = response.getLdapResult();
+        LdapResult result = response.getLdapResult();
 
         try
         {
@@ -112,9 +112,9 @@ public class SearchResponseDoneImplTest
     public void testEqualsDiffImpl()
     {
         SearchResultDoneImpl resp0 = createStub();
-        InternalSearchResultDone resp1 = new InternalSearchResultDone()
+        SearchResultDone resp1 = new SearchResultDone()
         {
-            public InternalLdapResult getLdapResult()
+            public LdapResult getLdapResult()
             {
                 LdapResultImpl result = new LdapResultImpl();
 

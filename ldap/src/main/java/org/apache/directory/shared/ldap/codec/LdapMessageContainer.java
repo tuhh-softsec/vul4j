@@ -34,21 +34,21 @@ import org.apache.directory.shared.ldap.codec.search.SearchRequestCodec;
 import org.apache.directory.shared.ldap.codec.unbind.UnBindRequestCodec;
 import org.apache.directory.shared.ldap.message.internal.InternalAbandonRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalAddRequest;
-import org.apache.directory.shared.ldap.message.internal.InternalAddResponse;
+import org.apache.directory.shared.ldap.message.internal.AddResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalBindRequest;
-import org.apache.directory.shared.ldap.message.internal.InternalBindResponse;
+import org.apache.directory.shared.ldap.message.internal.BindResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalCompareRequest;
-import org.apache.directory.shared.ldap.message.internal.InternalCompareResponse;
+import org.apache.directory.shared.ldap.message.internal.CompareResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalDeleteRequest;
-import org.apache.directory.shared.ldap.message.internal.InternalDeleteResponse;
-import org.apache.directory.shared.ldap.message.internal.InternalExtendedResponse;
+import org.apache.directory.shared.ldap.message.internal.DeleteResponse;
+import org.apache.directory.shared.ldap.message.internal.ExtendedResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalIntermediateResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalMessage;
-import org.apache.directory.shared.ldap.message.internal.InternalModifyDnResponse;
-import org.apache.directory.shared.ldap.message.internal.InternalModifyResponse;
-import org.apache.directory.shared.ldap.message.internal.InternalSearchResultDone;
-import org.apache.directory.shared.ldap.message.internal.InternalSearchResultEntry;
-import org.apache.directory.shared.ldap.message.internal.InternalSearchResultReference;
+import org.apache.directory.shared.ldap.message.internal.ModifyDnResponse;
+import org.apache.directory.shared.ldap.message.internal.ModifyResponse;
+import org.apache.directory.shared.ldap.message.internal.SearchResultDone;
+import org.apache.directory.shared.ldap.message.internal.SearchResultEntry;
+import org.apache.directory.shared.ldap.message.internal.SearchResultReference;
 import org.apache.directory.shared.ldap.message.internal.InternalUnbindRequest;
 import org.apache.directory.shared.ldap.message.spi.BinaryAttributeDetector;
 
@@ -184,9 +184,9 @@ public class LdapMessageContainer extends AbstractContainer
     /**
      * @return Returns the AddResponse stored in the container
      */
-    public InternalAddResponse getInternalAddResponse()
+    public AddResponse getInternalAddResponse()
     {
-        return ( InternalAddResponse ) internalMessage;
+        return ( AddResponse ) internalMessage;
     }
 
 
@@ -211,9 +211,9 @@ public class LdapMessageContainer extends AbstractContainer
     /**
      * @return Returns the BindResponse stored in the container
      */
-    public InternalBindResponse getInternalBindResponse()
+    public BindResponse getInternalBindResponse()
     {
-        return ( InternalBindResponse ) internalMessage;
+        return ( BindResponse ) internalMessage;
     }
 
 
@@ -238,9 +238,9 @@ public class LdapMessageContainer extends AbstractContainer
     /**
      * @return Returns the CompareResponse stored in the container
      */
-    public InternalCompareResponse getInternalCompareResponse()
+    public CompareResponse getInternalCompareResponse()
     {
-        return ( InternalCompareResponse ) internalMessage;
+        return ( CompareResponse ) internalMessage;
     }
 
 
@@ -265,9 +265,9 @@ public class LdapMessageContainer extends AbstractContainer
     /**
      * @return Returns the DelResponse stored in the container
      */
-    public InternalDeleteResponse getInternalDelResponse()
+    public DeleteResponse getInternalDelResponse()
     {
-        return ( InternalDeleteResponse ) internalMessage;
+        return ( DeleteResponse ) internalMessage;
     }
 
 
@@ -283,9 +283,9 @@ public class LdapMessageContainer extends AbstractContainer
     /**
      * @return Returns the ExtendedResponse stored in the container
      */
-    public InternalExtendedResponse getInternalExtendedResponse()
+    public ExtendedResponse getInternalExtendedResponse()
     {
-        return ( InternalExtendedResponse ) internalMessage;
+        return ( ExtendedResponse ) internalMessage;
     }
 
 
@@ -310,9 +310,9 @@ public class LdapMessageContainer extends AbstractContainer
     /**
      * @return Returns the ModifyResponse stored in the container
      */
-    public InternalModifyResponse getInternalModifyResponse()
+    public ModifyResponse getInternalModifyResponse()
     {
-        return ( InternalModifyResponse ) internalMessage;
+        return ( ModifyResponse ) internalMessage;
     }
 
 
@@ -328,9 +328,9 @@ public class LdapMessageContainer extends AbstractContainer
     /**
      * @return Returns the ModifyDnResponse stored in the container
      */
-    public InternalModifyDnResponse getInternalModifyDnResponse()
+    public ModifyDnResponse getInternalModifyDnResponse()
     {
-        return ( InternalModifyDnResponse ) internalMessage;
+        return ( ModifyDnResponse ) internalMessage;
     }
 
 
@@ -346,27 +346,27 @@ public class LdapMessageContainer extends AbstractContainer
     /**
      * @return Returns the SearchResultEntry stored in the container
      */
-    public InternalSearchResultEntry getInternalSearchResultEntry()
+    public SearchResultEntry getInternalSearchResultEntry()
     {
-        return ( InternalSearchResultEntry ) internalMessage;
+        return ( SearchResultEntry ) internalMessage;
     }
 
 
     /**
      * @return Returns the SearchResultReference stored in the container
      */
-    public InternalSearchResultReference getInternalSearchResultReference()
+    public SearchResultReference getInternalSearchResultReference()
     {
-        return ( InternalSearchResultReference ) internalMessage;
+        return ( SearchResultReference ) internalMessage;
     }
 
 
     /**
      * @return Returns the SearchResultDone stored in the container
      */
-    public InternalSearchResultDone getInternalSearchResultDone()
+    public SearchResultDone getInternalSearchResultDone()
     {
-        return ( InternalSearchResultDone ) internalMessage;
+        return ( SearchResultDone ) internalMessage;
     }
 
 

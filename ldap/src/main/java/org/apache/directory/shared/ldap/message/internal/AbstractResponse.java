@@ -19,18 +19,31 @@
  */
 package org.apache.directory.shared.ldap.message.internal;
 
+import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
+
 
 /**
- * An LDAP Response that contains an LDAPResult structure within it.
+ * Abstract base for a Lockable Response message.
  * 
- * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
+ * @author <a href="mailto:dev@directory.apache.org"> Apache Directory Project</a>
  */
-public interface InternalResultResponse extends InternalResponse
+public abstract class AbstractResponse extends InternalAbstractMessage implements Response
 {
+    // ------------------------------------------------------------------------
+    // Response Interface Method Implementations
+    // ------------------------------------------------------------------------
+
     /**
-     * Gets the LdapResult components of this Response.
+     * Allows subclasses based on the abstract type to create a response to a
+     * request.
      * 
-     * @return the LdapResult for this Response.
+     * @param id
+     *            the response eliciting this Request
+     * @param type
+     *            the message type of the response
      */
-    InternalLdapResult getLdapResult();
+    protected AbstractResponse(final int id, final MessageTypeEnum type)
+    {
+        super( id, type );
+    }
 }

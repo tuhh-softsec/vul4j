@@ -37,7 +37,7 @@ import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.message.LdapProtocolEncoder;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.message.internal.InternalCompareResponse;
+import org.apache.directory.shared.ldap.message.internal.CompareResponse;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -100,7 +100,7 @@ public class CompareResponseTest
         }
 
         // Check the decoded CompareResponse PDU
-        InternalCompareResponse compareResponse = ( ( LdapMessageContainer ) ldapMessageContainer )
+        CompareResponse compareResponse = ( ( LdapMessageContainer ) ldapMessageContainer )
             .getInternalCompareResponse();
 
         assertEquals( 1, compareResponse.getMessageId() );
@@ -183,7 +183,7 @@ public class CompareResponseTest
         }
 
         // Check the decoded CompareResponse PDU
-        InternalCompareResponse compareResponse = ( ( LdapMessageContainer ) ldapMessageContainer )
+        CompareResponse compareResponse = ( ( LdapMessageContainer ) ldapMessageContainer )
             .getInternalCompareResponse();
 
         assertEquals( 1, compareResponse.getMessageId() );

@@ -37,7 +37,7 @@ import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.message.LdapProtocolEncoder;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.message.internal.InternalSearchResultDone;
+import org.apache.directory.shared.ldap.message.internal.SearchResultDone;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -97,7 +97,7 @@ public class SearchResultDoneTest
             fail( de.getMessage() );
         }
 
-        InternalSearchResultDone searchResultDone = ( ( LdapMessageContainer ) ldapMessageContainer )
+        SearchResultDone searchResultDone = ( ( LdapMessageContainer ) ldapMessageContainer )
             .getInternalSearchResultDone();
 
         assertEquals( 1, searchResultDone.getMessageId() );
@@ -178,7 +178,7 @@ public class SearchResultDoneTest
             fail( de.getMessage() );
         }
 
-        InternalSearchResultDone searchResultDone = ( ( LdapMessageContainer ) ldapMessageContainer )
+        SearchResultDone searchResultDone = ( ( LdapMessageContainer ) ldapMessageContainer )
             .getInternalSearchResultDone();
 
         assertEquals( 1, searchResultDone.getMessageId() );

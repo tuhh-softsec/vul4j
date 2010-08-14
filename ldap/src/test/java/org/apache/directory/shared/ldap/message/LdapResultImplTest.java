@@ -26,7 +26,7 @@ import static org.junit.Assert.assertTrue;
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.exception.LdapException;
-import org.apache.directory.shared.ldap.message.internal.InternalLdapResult;
+import org.apache.directory.shared.ldap.message.internal.LdapResult;
 import org.apache.directory.shared.ldap.message.internal.InternalReferral;
 import org.apache.directory.shared.ldap.name.DN;
 import org.junit.Test;
@@ -91,7 +91,7 @@ public class LdapResultImplTest
     {
         LdapResultImpl r0 = new LdapResultImpl();
 
-        InternalLdapResult r1 = new InternalLdapResult()
+        LdapResult r1 = new LdapResult()
         {
             public ResultCodeEnum getResultCode()
             {

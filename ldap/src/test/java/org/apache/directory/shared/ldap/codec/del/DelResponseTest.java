@@ -37,7 +37,7 @@ import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.message.LdapProtocolEncoder;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.message.internal.InternalDeleteResponse;
+import org.apache.directory.shared.ldap.message.internal.DeleteResponse;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -107,7 +107,7 @@ public class DelResponseTest
         }
 
         // Check the decoded DelResponse PDU
-        InternalDeleteResponse delResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getInternalDelResponse();
+        DeleteResponse delResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getInternalDelResponse();
 
         assertEquals( 1, delResponse.getMessageId() );
         assertEquals( ResultCodeEnum.ALIAS_PROBLEM, delResponse.getLdapResult().getResultCode() );
@@ -231,7 +231,7 @@ public class DelResponseTest
         }
 
         // Check the decoded DelResponse PDU
-        InternalDeleteResponse delResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getInternalDelResponse();
+        DeleteResponse delResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getInternalDelResponse();
 
         assertEquals( 1, delResponse.getMessageId() );
         assertEquals( ResultCodeEnum.ALIAS_PROBLEM, delResponse.getLdapResult().getResultCode() );

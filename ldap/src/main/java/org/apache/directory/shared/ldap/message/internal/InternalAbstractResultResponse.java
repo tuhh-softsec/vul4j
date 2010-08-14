@@ -30,10 +30,10 @@ import org.apache.directory.shared.ldap.message.control.Control;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public abstract class InternalAbstractResultResponse extends InternalAbstractResponse implements InternalResultResponse
+public abstract class InternalAbstractResultResponse extends AbstractResponse implements ResultResponse
 {
     /** Response result components */
-    protected InternalLdapResult ldapResult = new LdapResultImpl();
+    protected LdapResult ldapResult = new LdapResultImpl();
 
 
     // ------------------------------------------------------------------------
@@ -61,7 +61,7 @@ public abstract class InternalAbstractResultResponse extends InternalAbstractRes
      * 
      * @return the LdapResult for this Response.
      */
-    public InternalLdapResult getLdapResult()
+    public LdapResult getLdapResult()
     {
         return ldapResult;
     }
@@ -109,12 +109,12 @@ public abstract class InternalAbstractResultResponse extends InternalAbstractRes
             return false;
         }
 
-        if ( !( obj instanceof InternalResultResponse ) )
+        if ( !( obj instanceof ResultResponse ) )
         {
             return false;
         }
 
-        InternalResultResponse resp = ( InternalResultResponse ) obj;
+        ResultResponse resp = ( ResultResponse ) obj;
 
         if ( ldapResult != null && resp.getLdapResult() == null )
         {

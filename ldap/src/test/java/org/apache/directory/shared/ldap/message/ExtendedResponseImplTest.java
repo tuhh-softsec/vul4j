@@ -31,8 +31,8 @@ import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.message.internal.InternalExtendedResponse;
-import org.apache.directory.shared.ldap.message.internal.InternalLdapResult;
+import org.apache.directory.shared.ldap.message.internal.ExtendedResponse;
+import org.apache.directory.shared.ldap.message.internal.LdapResult;
 import org.apache.directory.shared.ldap.name.DN;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -61,7 +61,7 @@ public class ExtendedResponseImplTest
         ExtendedResponseImpl response = new ExtendedResponseImpl( 45 );
         response.setResponseValue( "Hello World!".getBytes() );
         response.setResponseName( "1.1.1.1" );
-        InternalLdapResult result = response.getLdapResult();
+        LdapResult result = response.getLdapResult();
 
         try
         {
@@ -113,7 +113,7 @@ public class ExtendedResponseImplTest
     public void testEqualsDiffImpl()
     {
         ExtendedResponseImpl resp0 = createStub();
-        InternalExtendedResponse resp1 = new InternalExtendedResponse()
+        ExtendedResponse resp1 = new ExtendedResponse()
         {
             private static final long serialVersionUID = 5297000474419901408L;
 
@@ -162,7 +162,7 @@ public class ExtendedResponseImplTest
             }
 
 
-            public InternalLdapResult getLdapResult()
+            public LdapResult getLdapResult()
             {
                 LdapResultImpl result = new LdapResultImpl();
 

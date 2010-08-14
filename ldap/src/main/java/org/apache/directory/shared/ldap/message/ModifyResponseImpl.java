@@ -21,14 +21,14 @@ package org.apache.directory.shared.ldap.message;
 
 
 import org.apache.directory.shared.ldap.message.internal.InternalAbstractResultResponse;
-import org.apache.directory.shared.ldap.message.internal.InternalModifyResponse;
+import org.apache.directory.shared.ldap.message.internal.ModifyResponse;
 
 
 /**
  * ModifyResponse implementation
  * 
  */
-public class ModifyResponseImpl extends InternalAbstractResultResponse implements InternalModifyResponse
+public class ModifyResponseImpl extends InternalAbstractResultResponse implements ModifyResponse
 {
     /** The encoded modifyResponse length */
     private int modifyResponseLength;

@@ -21,7 +21,7 @@ package org.apache.directory.shared.ldap.message;
 
 
 import org.apache.directory.shared.ldap.message.internal.InternalAbstractResultResponse;
-import org.apache.directory.shared.ldap.message.internal.InternalAddResponse;
+import org.apache.directory.shared.ldap.message.internal.AddResponse;
 
 
 /**
@@ -29,7 +29,7 @@ import org.apache.directory.shared.ldap.message.internal.InternalAddResponse;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class AddResponseImpl extends InternalAbstractResultResponse implements InternalAddResponse
+public class AddResponseImpl extends InternalAbstractResultResponse implements AddResponse
 {
     /** The encoded addResponse length */
     private int addResponseLength;

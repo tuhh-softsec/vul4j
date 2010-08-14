@@ -40,7 +40,7 @@ import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.message.LdapProtocolEncoder;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.message.internal.InternalSearchResultEntry;
+import org.apache.directory.shared.ldap.message.internal.SearchResultEntry;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -112,7 +112,7 @@ public class SearchResultEntryTest
             fail( de.getMessage() );
         }
 
-        InternalSearchResultEntry searchResultEntry = ( ( LdapMessageContainer ) ldapMessageContainer )
+        SearchResultEntry searchResultEntry = ( ( LdapMessageContainer ) ldapMessageContainer )
             .getInternalSearchResultEntry();
 
         assertEquals( 1, searchResultEntry.getMessageId() );
@@ -213,7 +213,7 @@ public class SearchResultEntryTest
             fail( de.getMessage() );
         }
 
-        InternalSearchResultEntry searchResultEntry = ( ( LdapMessageContainer ) ldapMessageContainer )
+        SearchResultEntry searchResultEntry = ( ( LdapMessageContainer ) ldapMessageContainer )
             .getInternalSearchResultEntry();
 
         assertEquals( 1, searchResultEntry.getMessageId() );
@@ -324,7 +324,7 @@ public class SearchResultEntryTest
             fail( de.getMessage() );
         }
 
-        InternalSearchResultEntry searchResultEntry = ( ( LdapMessageContainer ) ldapMessageContainer )
+        SearchResultEntry searchResultEntry = ( ( LdapMessageContainer ) ldapMessageContainer )
             .getInternalSearchResultEntry();
 
         assertEquals( 2, searchResultEntry.getMessageId() );
@@ -543,7 +543,7 @@ public class SearchResultEntryTest
             fail( de.getMessage() );
         }
 
-        InternalSearchResultEntry searchResultEntry = ( ( LdapMessageContainer ) ldapMessageContainer )
+        SearchResultEntry searchResultEntry = ( ( LdapMessageContainer ) ldapMessageContainer )
             .getInternalSearchResultEntry();
 
         assertEquals( 1, searchResultEntry.getMessageId() );
@@ -818,7 +818,7 @@ public class SearchResultEntryTest
             fail( de.getMessage() );
         }
 
-        InternalSearchResultEntry searchResultEntry = ( ( LdapMessageContainer ) ldapMessageContainer )
+        SearchResultEntry searchResultEntry = ( ( LdapMessageContainer ) ldapMessageContainer )
             .getInternalSearchResultEntry();
 
         assertEquals( 1, searchResultEntry.getMessageId() );
@@ -905,7 +905,7 @@ public class SearchResultEntryTest
             fail( de.getMessage() );
         }
 
-        InternalSearchResultEntry searchResultEntry = ( ( LdapMessageContainer ) ldapMessageContainer )
+        SearchResultEntry searchResultEntry = ( ( LdapMessageContainer ) ldapMessageContainer )
             .getInternalSearchResultEntry();
 
         assertEquals( 1, searchResultEntry.getMessageId() );
@@ -995,7 +995,7 @@ public class SearchResultEntryTest
             fail( de.getMessage() );
         }
 
-        InternalSearchResultEntry searchResultEntry = ( ( LdapMessageContainer ) ldapMessageContainer )
+        SearchResultEntry searchResultEntry = ( ( LdapMessageContainer ) ldapMessageContainer )
             .getInternalSearchResultEntry();
 
         assertEquals( 1, searchResultEntry.getMessageId() );
@@ -1092,7 +1092,7 @@ public class SearchResultEntryTest
             fail( de.getMessage() );
         }
 
-        InternalSearchResultEntry searchResultEntry = ( ( LdapMessageContainer ) ldapMessageContainer )
+        SearchResultEntry searchResultEntry = ( ( LdapMessageContainer ) ldapMessageContainer )
             .getInternalSearchResultEntry();
 
         assertEquals( 1, searchResultEntry.getMessageId() );
@@ -1186,7 +1186,7 @@ public class SearchResultEntryTest
             fail( de.getMessage() );
         }
 
-        InternalSearchResultEntry searchResultEntry = ( ( LdapMessageContainer ) ldapMessageContainer )
+        SearchResultEntry searchResultEntry = ( ( LdapMessageContainer ) ldapMessageContainer )
             .getInternalSearchResultEntry();
 
         assertEquals( 1, searchResultEntry.getMessageId() );

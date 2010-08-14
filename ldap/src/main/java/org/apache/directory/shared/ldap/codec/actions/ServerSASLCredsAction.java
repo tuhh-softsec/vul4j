@@ -25,7 +25,7 @@ import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
-import org.apache.directory.shared.ldap.message.internal.InternalBindResponse;
+import org.apache.directory.shared.ldap.message.internal.BindResponse;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,7 +74,7 @@ public class ServerSASLCredsAction extends GrammarAction
             serverSaslCreds = tlv.getValue().getData();
         }
 
-        InternalBindResponse response = ( InternalBindResponse ) ldapMessageContainer.getInternalMessage();
+        BindResponse response = ( BindResponse ) ldapMessageContainer.getInternalMessage();
         response.setServerSaslCreds( serverSaslCreds );
 
         // We can have an END transition

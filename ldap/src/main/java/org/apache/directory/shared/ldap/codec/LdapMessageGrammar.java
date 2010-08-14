@@ -103,24 +103,24 @@ import org.apache.directory.shared.ldap.message.UnbindRequestImpl;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.message.internal.InternalAbandonRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalAddRequest;
-import org.apache.directory.shared.ldap.message.internal.InternalAddResponse;
+import org.apache.directory.shared.ldap.message.internal.AddResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalBindRequest;
-import org.apache.directory.shared.ldap.message.internal.InternalBindResponse;
+import org.apache.directory.shared.ldap.message.internal.BindResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalCompareRequest;
-import org.apache.directory.shared.ldap.message.internal.InternalCompareResponse;
+import org.apache.directory.shared.ldap.message.internal.CompareResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalDeleteRequest;
-import org.apache.directory.shared.ldap.message.internal.InternalDeleteResponse;
-import org.apache.directory.shared.ldap.message.internal.InternalExtendedResponse;
+import org.apache.directory.shared.ldap.message.internal.DeleteResponse;
+import org.apache.directory.shared.ldap.message.internal.ExtendedResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalIntermediateResponse;
-import org.apache.directory.shared.ldap.message.internal.InternalLdapResult;
+import org.apache.directory.shared.ldap.message.internal.LdapResult;
 import org.apache.directory.shared.ldap.message.internal.InternalMessage;
-import org.apache.directory.shared.ldap.message.internal.InternalModifyDnResponse;
-import org.apache.directory.shared.ldap.message.internal.InternalModifyResponse;
+import org.apache.directory.shared.ldap.message.internal.ModifyDnResponse;
+import org.apache.directory.shared.ldap.message.internal.ModifyResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalReferral;
-import org.apache.directory.shared.ldap.message.internal.InternalResultResponse;
-import org.apache.directory.shared.ldap.message.internal.InternalSearchResultDone;
-import org.apache.directory.shared.ldap.message.internal.InternalSearchResultEntry;
-import org.apache.directory.shared.ldap.message.internal.InternalSearchResultReference;
+import org.apache.directory.shared.ldap.message.internal.ResultResponse;
+import org.apache.directory.shared.ldap.message.internal.SearchResultDone;
+import org.apache.directory.shared.ldap.message.internal.SearchResultEntry;
+import org.apache.directory.shared.ldap.message.internal.SearchResultReference;
 import org.apache.directory.shared.ldap.message.internal.InternalUnbindRequest;
 import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.name.RDN;
@@ -833,7 +833,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
                     // Now, we can allocate the BindResponse Object
-                    InternalBindResponse bindResponse = new BindResponseImpl( ldapMessageContainer.getMessageId() );
+                    BindResponse bindResponse = new BindResponseImpl( ldapMessageContainer.getMessageId() );
                     ldapMessageContainer.setInternalMessage( bindResponse );
                 }
             } );
@@ -1030,7 +1030,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                     if ( ldapMessageContainer.isInternal() )
                     {
                         InternalMessage response = ldapMessageContainer.getInternalMessage();
-                        InternalLdapResult ldapResult = ( ( InternalResultResponse ) response ).getLdapResult();
+                        LdapResult ldapResult = ( ( ResultResponse ) response ).getLdapResult();
 
                         InternalReferral referral = new ReferralImpl();
 
@@ -1108,7 +1108,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
                     // Now, we can allocate the SearchResultEntry Object
-                    InternalSearchResultEntry searchResultEntry = new SearchResultEntryImpl( ldapMessageContainer
+                    SearchResultEntry searchResultEntry = new SearchResultEntryImpl( ldapMessageContainer
                         .getMessageId() );
                     ldapMessageContainer.setInternalMessage( searchResultEntry );
                 }
@@ -1130,7 +1130,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                 {
 
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-                    InternalSearchResultEntry searchResultEntry = ldapMessageContainer.getInternalSearchResultEntry();
+                    SearchResultEntry searchResultEntry = ldapMessageContainer.getInternalSearchResultEntry();
 
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
@@ -1236,7 +1236,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                 public void action( IAsn1Container container ) throws DecoderException
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-                    InternalSearchResultEntry searchResultEntry = ldapMessageContainer.getInternalSearchResultEntry();
+                    SearchResultEntry searchResultEntry = ldapMessageContainer.getInternalSearchResultEntry();
 
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
@@ -1386,7 +1386,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
                     // Now, we can allocate the SearchResultDone Object
-                    InternalSearchResultDone searchResultDone = new SearchResultDoneImpl( ldapMessageContainer
+                    SearchResultDone searchResultDone = new SearchResultDoneImpl( ldapMessageContainer
                         .getMessageId() );
                     ldapMessageContainer.setInternalMessage( searchResultDone );
 
@@ -1808,7 +1808,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
                     // Now, we can allocate the ModifyResponse Object
-                    InternalModifyResponse modifyResponse = new ModifyResponseImpl( ldapMessageContainer.getMessageId() );
+                    ModifyResponse modifyResponse = new ModifyResponseImpl( ldapMessageContainer.getMessageId() );
                     ldapMessageContainer.setInternalMessage( modifyResponse );
 
                     log.debug( "Modify response" );
@@ -2076,7 +2076,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
                     // Now, we can allocate the AddResponse Object
-                    InternalAddResponse addResponse = new AddResponseImpl( ldapMessageContainer.getMessageId() );
+                    AddResponse addResponse = new AddResponseImpl( ldapMessageContainer.getMessageId() );
                     ldapMessageContainer.setInternalMessage( addResponse );
 
                     // We will check that the request is not null
@@ -2125,7 +2125,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
                     // Now, we can allocate the DelResponse Object
-                    InternalDeleteResponse delResponse = new DeleteResponseImpl( ldapMessageContainer.getMessageId() );
+                    DeleteResponse delResponse = new DeleteResponseImpl( ldapMessageContainer.getMessageId() );
                     ldapMessageContainer.setInternalMessage( delResponse );
 
                     log.debug( "Del response " );
@@ -2470,7 +2470,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
                     // Now, we can allocate the ModifyDnResponse Object
-                    InternalModifyDnResponse modifyDnResponse = new ModifyDnResponseImpl( ldapMessageContainer
+                    ModifyDnResponse modifyDnResponse = new ModifyDnResponseImpl( ldapMessageContainer
                         .getMessageId() );
                     ldapMessageContainer.setInternalMessage( modifyDnResponse );
 
@@ -2727,7 +2727,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
                     // Now, we can allocate the CompareResponse Object
-                    InternalCompareResponse compareResponse = new CompareResponseImpl( ldapMessageContainer
+                    CompareResponse compareResponse = new CompareResponseImpl( ldapMessageContainer
                         .getMessageId() );
                     ldapMessageContainer.setInternalMessage( compareResponse );
 
@@ -2776,7 +2776,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
                     // Now, we can allocate the SearchResultReference Object
-                    InternalSearchResultReference searchResultReference = new SearchResultReferenceImpl(
+                    SearchResultReference searchResultReference = new SearchResultReferenceImpl(
                         ldapMessageContainer.getMessageId() );
                     ldapMessageContainer.setInternalMessage( searchResultReference );
 
@@ -2987,7 +2987,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
                     // Now, we can allocate the ExtendedResponse Object
-                    InternalExtendedResponse extendedResponse = new ExtendedResponseImpl( ldapMessageContainer
+                    ExtendedResponse extendedResponse = new ExtendedResponseImpl( ldapMessageContainer
                         .getMessageId() );
                     ldapMessageContainer.setInternalMessage( extendedResponse );
 

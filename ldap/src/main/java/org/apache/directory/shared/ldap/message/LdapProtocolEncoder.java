@@ -41,20 +41,20 @@ import org.apache.directory.shared.ldap.codec.controls.CodecControl;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.message.internal.InternalAddResponse;
-import org.apache.directory.shared.ldap.message.internal.InternalBindResponse;
-import org.apache.directory.shared.ldap.message.internal.InternalCompareResponse;
-import org.apache.directory.shared.ldap.message.internal.InternalDeleteResponse;
-import org.apache.directory.shared.ldap.message.internal.InternalExtendedResponse;
+import org.apache.directory.shared.ldap.message.internal.AddResponse;
+import org.apache.directory.shared.ldap.message.internal.BindResponse;
+import org.apache.directory.shared.ldap.message.internal.CompareResponse;
+import org.apache.directory.shared.ldap.message.internal.DeleteResponse;
+import org.apache.directory.shared.ldap.message.internal.ExtendedResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalIntermediateResponse;
-import org.apache.directory.shared.ldap.message.internal.InternalLdapResult;
+import org.apache.directory.shared.ldap.message.internal.LdapResult;
 import org.apache.directory.shared.ldap.message.internal.InternalMessage;
-import org.apache.directory.shared.ldap.message.internal.InternalModifyDnResponse;
-import org.apache.directory.shared.ldap.message.internal.InternalModifyResponse;
+import org.apache.directory.shared.ldap.message.internal.ModifyDnResponse;
+import org.apache.directory.shared.ldap.message.internal.ModifyResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalReferral;
-import org.apache.directory.shared.ldap.message.internal.InternalSearchResultDone;
-import org.apache.directory.shared.ldap.message.internal.InternalSearchResultEntry;
-import org.apache.directory.shared.ldap.message.internal.InternalSearchResultReference;
+import org.apache.directory.shared.ldap.message.internal.SearchResultDone;
+import org.apache.directory.shared.ldap.message.internal.SearchResultEntry;
+import org.apache.directory.shared.ldap.message.internal.SearchResultReference;
 import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.apache.mina.core.buffer.IoBuffer;
@@ -116,12 +116,12 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
         int length = computeMessageLength( message );
         ByteBuffer buffer = ByteBuffer.allocate( length );
 
-        if ( ( message instanceof InternalBindResponse ) || ( message instanceof InternalDeleteResponse )
-            || ( message instanceof InternalAddResponse ) || ( message instanceof InternalCompareResponse )
-            || ( message instanceof InternalExtendedResponse ) || ( message instanceof InternalModifyResponse )
-            || ( message instanceof InternalModifyDnResponse ) || ( message instanceof InternalIntermediateResponse )
-            || ( message instanceof InternalSearchResultDone ) || ( message instanceof InternalSearchResultEntry )
-            || ( message instanceof InternalSearchResultReference ) )
+        if ( ( message instanceof BindResponse ) || ( message instanceof DeleteResponse )
+            || ( message instanceof AddResponse ) || ( message instanceof CompareResponse )
+            || ( message instanceof ExtendedResponse ) || ( message instanceof ModifyResponse )
+            || ( message instanceof ModifyDnResponse ) || ( message instanceof InternalIntermediateResponse )
+            || ( message instanceof SearchResultDone ) || ( message instanceof SearchResultEntry )
+            || ( message instanceof SearchResultReference ) )
         {
             try
             {
@@ -277,7 +277,7 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
      *      Length(0x01) + 1 + Length(0x04) + Length(L1) + L1 + Length(0x04) +
      *      Length(L2) + L2 + Length(0x83) + Length(L3) + L3
      */
-    private int computeLdapResultLength( InternalLdapResult internalLdapResult )
+    private int computeLdapResultLength( LdapResult internalLdapResult )
     {
         LdapResultImpl ldapResult = ( LdapResultImpl ) internalLdapResult;
         int ldapResultLength = 0;
@@ -321,7 +321,7 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
      * @param buffer The buffer where to put the PDU
      * @return The PDU.
      */
-    private ByteBuffer encodeLdapResult( ByteBuffer buffer, InternalLdapResult internalLdapResult )
+    private ByteBuffer encodeLdapResult( ByteBuffer buffer, LdapResult internalLdapResult )
         throws EncoderException
     {
         LdapResultImpl ldapResult = ( LdapResultImpl ) internalLdapResult;

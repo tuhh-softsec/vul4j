@@ -17,6 +17,7 @@
  *  under the License. 
  *  
  */
+
 package org.apache.directory.shared.ldap.message.internal;
 
 
@@ -24,47 +25,29 @@ import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 
 
 /**
- * Extended protocol response message used to confirm the results of a extended
- * request message.
+ * Search reference protocol response message used to return referrals to the
+ * client in response to a search request message.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public interface InternalExtendedResponse extends InternalResultResponse, javax.naming.ldap.ExtendedResponse
+public interface SearchResultReference extends Response
 {
-    /** Extended response message type enumeration value */
-    MessageTypeEnum TYPE = MessageTypeEnum.EXTENDED_RESPONSE;
+    /** Search reference response message type enumeration value */
+    MessageTypeEnum TYPE = MessageTypeEnum.SEARCH_RESULT_REFERENCE;
 
 
     /**
-     * Gets the OID uniquely identifying this extended response (a.k.a. its
-     * name).
+     * Gets the sequence of LdapUrls as a Referral instance.
      * 
-     * @return the OID of the extended response type.
+     * @return the sequence of LdapUrls
      */
-    String getResponseName();
+    InternalReferral getReferral();
 
 
     /**
-     * Sets the OID uniquely identifying this extended response (a.k.a. its
-     * name).
+     * Sets the sequence of LdapUrls as a Referral instance.
      * 
-     * @param oidv the OID of the extended response type.
+     * @param referral the sequence of LdapUrls
      */
-    void setResponseName( String oid );
-
-
-    /**
-     * Gets the response OID specific encoded response values.
-     * 
-     * @return the response specific encoded response values.
-     */
-    byte[] getResponseValue();
-
-
-    /**
-     * Sets the response OID specific encoded response values.
-     * 
-     * @param responseValue the response specific encoded response values.
-     */
-    void setResponseValue( byte[] responseValue );
+    void setReferral( InternalReferral referral );
 }
