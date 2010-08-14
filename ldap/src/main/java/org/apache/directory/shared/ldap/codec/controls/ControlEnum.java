@@ -113,7 +113,7 @@ public enum ControlEnum
 
     /**
      * Create a new instance of the control identified by its oid
-     * @param oid The Control's oid
+     * @param responseName The Control's oid
      */
     private ControlEnum( Control control )
     {

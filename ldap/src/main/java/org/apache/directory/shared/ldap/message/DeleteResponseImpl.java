@@ -53,18 +53,19 @@ public class DeleteResponseImpl extends InternalAbstractResultResponse implement
 
 
     /**
-     * {@inheritDoc}
+     * Stores the encoded length for the DeleteResponse
+     * @param deleteResponseLength The encoded length
      */
-    public void setDeleteResponseLength( int deleteResponseLength )
+    /* No qualifier*/void setDeleteResponseLength( int deleteResponseLength )
     {
         this.deleteResponseLength = deleteResponseLength;
     }
 
 
     /**
-     * {@inheritDoc}
+     * @return The encoded DeleteResponse's length
      */
-    public int getDeleteResponseLength()
+    /* No qualifier*/int getDeleteResponseLength()
     {
         return deleteResponseLength;
     }

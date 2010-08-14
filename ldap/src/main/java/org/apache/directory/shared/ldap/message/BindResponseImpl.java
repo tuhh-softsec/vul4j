@@ -168,18 +168,19 @@ public class BindResponseImpl extends InternalAbstractResultResponse implements 
 
 
     /**
-     * {@inheritDoc}
+     * Stores the encoded length for the BindResponse
+     * @param bindResponseLength The encoded length
      */
-    public void setBindResponseLength( int bindResponseLength )
+    /* No qualifier*/void setBindResponseLength( int bindResponseLength )
     {
         this.bindResponseLength = bindResponseLength;
     }
 
 
     /**
-     * {@inheritDoc}
+     * @return The encoded BindResponse's length
      */
-    public int getBindResponseLength()
+    /* No qualifier */int getBindResponseLength()
     {
         return bindResponseLength;
     }

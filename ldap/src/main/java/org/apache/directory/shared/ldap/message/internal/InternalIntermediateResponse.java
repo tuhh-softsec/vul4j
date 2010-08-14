@@ -66,25 +66,4 @@ public interface InternalIntermediateResponse extends InternalResponse
      * @param value The responseValue
      */
     void setResponseValue( byte[] value );
-
-
-    /**
-     * Sets the OID bytes
-     * 
-     * @param oid the OID bytes of the Intermediate response type.
-     */
-    void setOidBytes( byte[] oidBytes );
-
-
-    /**
-     * Stores the encoded length for the IntermediateResponse
-     * @param intermediateResponseLength The encoded length
-     */
-    void setIntermediateResponseLength( int intermediateResponseLength );
-
-
-    /**
-     * @return The encoded IntermediateResponse's length
-     */
-    int getIntermediateResponseLength();
 }

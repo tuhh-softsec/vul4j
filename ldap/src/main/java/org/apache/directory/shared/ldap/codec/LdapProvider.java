@@ -19,6 +19,7 @@
  */
 package org.apache.directory.shared.ldap.codec;
 
+
 import org.apache.directory.shared.ldap.message.spi.BinaryAttributeDetector;
 import org.apache.directory.shared.ldap.message.spi.Provider;
 import org.apache.directory.shared.ldap.message.spi.ProviderDecoder;
@@ -83,7 +84,8 @@ public class LdapProvider extends Provider
      * @throws org.apache.directory.shared.ldap.message.spi.ProviderException
      *             if the provider or its decoder cannot be found
      */
-    public ProviderDecoder getDecoder( BinaryAttributeDetector binaryAttributeDetector, int maxPDUSize ) throws ProviderException
+    public ProviderDecoder getDecoder( BinaryAttributeDetector binaryAttributeDetector, int maxPDUSize )
+        throws ProviderException
     {
         return new LdapDecoder( this, binaryAttributeDetector, maxPDUSize );
     }

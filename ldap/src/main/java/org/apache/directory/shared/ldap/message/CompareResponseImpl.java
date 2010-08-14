@@ -56,7 +56,7 @@ public class CompareResponseImpl extends InternalAbstractResultResponse implemen
      * Stores the encoded length for the CompareResponse
      * @param compareResponseLength The encoded length
      */
-    public void setCompareResponseLength( int compareResponseLength )
+    /* No qualifier*/void setCompareResponseLength( int compareResponseLength )
     {
         this.compareResponseLength = compareResponseLength;
     }
@@ -65,7 +65,7 @@ public class CompareResponseImpl extends InternalAbstractResultResponse implemen
     /**
      * @return The encoded CompareResponse's length
      */
-    public int getCompareResponseLength()
+    /* No qualifier*/int getCompareResponseLength()
     {
         return compareResponseLength;
     }

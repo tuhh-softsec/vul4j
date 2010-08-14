@@ -36,19 +36,6 @@ public interface InternalCompareResponse extends InternalResultResponse
 
 
     /**
-     * Stores the encoded length for the CompareResponse
-     * @param compareResponseLength The encoded length
-     */
-    void setCompareResponseLength( int compareResponseLength );
-
-
-    /**
-     * @return The encoded CompareResponse's length
-     */
-    int getCompareResponseLength();
-
-
-    /**
      * @return True if the compared response is a success
      * @return
      */

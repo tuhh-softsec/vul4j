@@ -104,7 +104,7 @@ public class ExtendedResponseImpl extends InternalAbstractResultResponse impleme
      * 
      * @return the responseName bytes of the extended response type.
      */
-    public byte[] getResponseNameBytes()
+    /* No qualifier*/byte[] getResponseNameBytes()
     {
         return responseNameBytes;
     }
@@ -127,7 +127,7 @@ public class ExtendedResponseImpl extends InternalAbstractResultResponse impleme
      * 
      * @param oidBytes the OID bytes of the extended response type.
      */
-    public void setResponseNameBytes( byte[] responseNameBytes )
+    /* No qualifier*/void setResponseNameBytes( byte[] responseNameBytes )
     {
         this.responseNameBytes = responseNameBytes;
     }
@@ -270,18 +270,20 @@ public class ExtendedResponseImpl extends InternalAbstractResultResponse impleme
 
 
     /**
-     * {@inheritDoc}
+     * Stores the encoded length for the ExtendedResponse
+     * 
+     * @param extendedResponseLength The encoded length
      */
-    public void setExtendedResponseLength( int extendedResponseLength )
+    /* No qualifier*/void setExtendedResponseLength( int extendedResponseLength )
     {
         this.extendedResponseLength = extendedResponseLength;
     }
 
 
     /**
-     * {@inheritDoc}
+     * @return The encoded ExtendedResponse's length
      */
-    public int getExtendedResponseLength()
+    /* No qualifier*/int getExtendedResponseLength()
     {
         return extendedResponseLength;
     }

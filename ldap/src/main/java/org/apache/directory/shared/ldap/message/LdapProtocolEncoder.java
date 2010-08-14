@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.codec;
+package org.apache.directory.shared.ldap.message;
 
 
 import java.nio.BufferOverflowException;
@@ -33,20 +33,13 @@ import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.asn1.util.Asn1StringUtils;
 import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.codec.LdapConstants;
+import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
+import org.apache.directory.shared.ldap.codec.LdapTransformer;
+import org.apache.directory.shared.ldap.codec.MessageEncoderException;
 import org.apache.directory.shared.ldap.codec.controls.CodecControl;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
-import org.apache.directory.shared.ldap.message.AddResponseImpl;
-import org.apache.directory.shared.ldap.message.BindResponseImpl;
-import org.apache.directory.shared.ldap.message.CompareResponseImpl;
-import org.apache.directory.shared.ldap.message.DeleteResponseImpl;
-import org.apache.directory.shared.ldap.message.ExtendedResponseImpl;
-import org.apache.directory.shared.ldap.message.IntermediateResponseImpl;
-import org.apache.directory.shared.ldap.message.ModifyDnResponseImpl;
-import org.apache.directory.shared.ldap.message.ModifyResponseImpl;
-import org.apache.directory.shared.ldap.message.SearchResultDoneImpl;
-import org.apache.directory.shared.ldap.message.SearchResultEntryImpl;
-import org.apache.directory.shared.ldap.message.SearchResultReferenceImpl;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.message.internal.InternalAddResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalBindResponse;
@@ -512,9 +505,8 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
      * 
      * @return The ExtendedResponse length
      */
-    private int computeExtendedResponseLength( InternalExtendedResponse internalExtendedResponse )
+    private int computeExtendedResponseLength( ExtendedResponseImpl extendedResponse )
     {
-        ExtendedResponseImpl extendedResponse = ( ExtendedResponseImpl ) internalExtendedResponse;
         int ldapResultLength = computeLdapResultLength( extendedResponse.getLdapResult() );
 
         int extendedResponseLength = ldapResultLength;
@@ -559,7 +551,7 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
      * 
      * @return The IntermediateResponse length
      */
-    private int computeIntermediateResponseLength( InternalIntermediateResponse intermediateResponse )
+    private int computeIntermediateResponseLength( IntermediateResponseImpl intermediateResponse )
     {
         int intermediateResponseLength = 0;
 
@@ -569,7 +561,7 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
 
             int responseNameLength = responseNameBytes.length;
             intermediateResponseLength += 1 + TLV.getNbBytes( responseNameLength ) + responseNameLength;
-            intermediateResponse.setOidBytes( responseNameBytes );
+            intermediateResponse.setResponseNameBytes( responseNameBytes );
         }
 
         byte[] encodedValue = intermediateResponse.getResponseValue();
@@ -728,7 +720,7 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
      *                    +--> 0x04 L7-m-n value
      * </pre>
      */
-    private int computeSearchResultEntryLength( InternalSearchResultEntry searchResultEntry )
+    private int computeSearchResultEntryLength( SearchResultEntryImpl searchResultEntry )
     {
         DN dn = searchResultEntry.getObjectName();
 
@@ -834,7 +826,7 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
      * Length(SearchResultReference) = Length(0x73 + Length(L1) + L1
      * </pre>
      */
-    private int computeSearchResultReferenceLength( InternalSearchResultReference searchResultReference )
+    private int computeSearchResultReferenceLength( SearchResultReferenceImpl searchResultReference )
     {
         int searchResultReferenceLength = 0;
 
@@ -1049,7 +1041,7 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
             buffer.put( TLV.getBytes( intermediateResponse.getIntermediateResponseLength() ) );
 
             // The responseName, if any
-            byte[] responseNameBytes = intermediateResponse.getOidBytes();
+            byte[] responseNameBytes = intermediateResponse.getResponseNameBytes();
 
             if ( ( responseNameBytes != null ) && ( responseNameBytes.length != 0 ) )
             {

@@ -36,13 +36,13 @@ public class IntermediateResponseImpl extends InternalAbstractResultResponse imp
     static final long serialVersionUID = -6646752766410531060L;
 
     /** ResponseName for the intermediate response */
-    protected String oid;
+    protected String responseName;
 
     /** The response name as a byte[] */
-    private byte[] oidBytes;
+    private byte[] responseNameBytes;
 
     /** Response Value for the intermediate response */
-    protected byte[] value;
+    protected byte[] responseValue;
 
     /** The encoded intermediateResponse length */
     private int intermediateResponseLength;
@@ -68,13 +68,13 @@ public class IntermediateResponseImpl extends InternalAbstractResultResponse imp
      */
     public byte[] getResponseValue()
     {
-        if ( value == null )
+        if ( responseValue == null )
         {
             return null;
         }
 
-        final byte[] copy = new byte[value.length];
-        System.arraycopy( value, 0, copy, 0, value.length );
+        final byte[] copy = new byte[responseValue.length];
+        System.arraycopy( responseValue, 0, copy, 0, responseValue.length );
         return copy;
     }
 
@@ -88,12 +88,12 @@ public class IntermediateResponseImpl extends InternalAbstractResultResponse imp
     {
         if ( value != null )
         {
-            this.value = new byte[value.length];
-            System.arraycopy( value, 0, this.value, 0, value.length );
+            this.responseValue = new byte[value.length];
+            System.arraycopy( value, 0, this.responseValue, 0, value.length );
         }
         else
         {
-            this.value = null;
+            this.responseValue = null;
         }
     }
 
@@ -106,18 +106,18 @@ public class IntermediateResponseImpl extends InternalAbstractResultResponse imp
      */
     public String getResponseName()
     {
-        return ( ( oid == null ) ? "" : oid );
+        return ( ( responseName == null ) ? "" : responseName );
     }
 
 
     /**
-     * Gets the OID bytes
+     * Gets the ResponseName bytes
      * 
-     * @return the OID bytes of the Intermediate response type.
+     * @return the ResponseName bytes of the Intermediate response type.
      */
-    public byte[] getOidBytes()
+    /* No qualifier */byte[] getResponseNameBytes()
     {
-        return oidBytes;
+        return responseNameBytes;
     }
 
 
@@ -129,16 +129,18 @@ public class IntermediateResponseImpl extends InternalAbstractResultResponse imp
      */
     public void setResponseName( String oid )
     {
-        this.oid = oid;
+        this.responseName = oid;
     }
 
 
     /**
-     * {@inheritDoc}
+     * Sets the ResponseName bytes
+     * 
+     * @param oid the ResponseName bytes of the Intermediate response type.
      */
-    public void setOidBytes( byte[] oidBytes )
+    /* No qualifier */void setResponseNameBytes( byte[] responseNameBytes )
     {
-        this.oidBytes = oidBytes;
+        this.responseNameBytes = responseNameBytes;
     }
 
 
@@ -149,13 +151,13 @@ public class IntermediateResponseImpl extends InternalAbstractResultResponse imp
     public int hashCode()
     {
         int hash = 37;
-        if ( oid != null )
+        if ( responseName != null )
         {
-            hash = hash * 17 + oid.hashCode();
+            hash = hash * 17 + responseName.hashCode();
         }
-        if ( value != null )
+        if ( responseValue != null )
         {
-            hash = hash * 17 + Arrays.hashCode( value );
+            hash = hash * 17 + Arrays.hashCode( responseValue );
         }
         hash = hash * 17 + super.hashCode();
 
@@ -188,33 +190,34 @@ public class IntermediateResponseImpl extends InternalAbstractResultResponse imp
 
         InternalIntermediateResponse resp = ( InternalIntermediateResponse ) obj;
 
-        if ( ( oid != null ) && ( resp.getResponseName() == null ) )
+        if ( ( responseName != null ) && ( resp.getResponseName() == null ) )
         {
             return false;
         }
 
-        if ( ( oid == null ) && ( resp.getResponseName() != null ) )
+        if ( ( responseName == null ) && ( resp.getResponseName() != null ) )
         {
             return false;
         }
 
-        if ( ( oid != null ) && ( resp.getResponseName() != null ) && !oid.equals( resp.getResponseName() ) )
+        if ( ( responseName != null ) && ( resp.getResponseName() != null )
+            && !responseName.equals( resp.getResponseName() ) )
         {
             return false;
         }
 
-        if ( ( value != null ) && ( resp.getResponseValue() == null ) )
+        if ( ( responseValue != null ) && ( resp.getResponseValue() == null ) )
         {
             return false;
         }
 
-        if ( ( value == null ) && ( resp.getResponseValue() != null ) )
+        if ( ( responseValue == null ) && ( resp.getResponseValue() != null ) )
         {
             return false;
         }
 
-        if ( ( value != null ) && ( resp.getResponseValue() != null )
-            && !Arrays.equals( value, resp.getResponseValue() ) )
+        if ( ( responseValue != null ) && ( resp.getResponseValue() != null )
+            && !Arrays.equals( responseValue, resp.getResponseValue() ) )
         {
             return false;
         }
@@ -224,18 +227,20 @@ public class IntermediateResponseImpl extends InternalAbstractResultResponse imp
 
 
     /**
-     * {@inheritDoc}
+     * Stores the encoded length for the IntermediateResponse
+     * 
+     * @param intermediateResponseLength The encoded length
      */
-    public void setIntermediateResponseLength( int intermediateResponseLength )
+    /* No qualifier*/void setIntermediateResponseLength( int intermediateResponseLength )
     {
         this.intermediateResponseLength = intermediateResponseLength;
     }
 
 
     /**
-     * {@inheritDoc}
+     * @return The encoded IntermediateResponse's length
      */
-    public int getIntermediateResponseLength()
+    /* No qualifier*/int getIntermediateResponseLength()
     {
         return intermediateResponseLength;
     }

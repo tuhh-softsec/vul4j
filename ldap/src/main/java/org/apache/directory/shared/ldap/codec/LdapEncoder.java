@@ -27,7 +27,6 @@ import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
 import java.nio.channels.WritableByteChannel;
 import java.util.Collection;
-import java.util.Map;
 
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
@@ -35,10 +34,6 @@ import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.asn1.codec.stateful.EncoderCallback;
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.codec.controls.CodecControl;
-import org.apache.directory.shared.ldap.message.BindResponseImpl;
-import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.message.internal.InternalBindResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalLdapResult;
 import org.apache.directory.shared.ldap.message.internal.InternalMessage;
 import org.apache.directory.shared.ldap.message.internal.InternalReferral;
@@ -224,15 +219,8 @@ public class LdapEncoder implements ProviderEncoder
         InternalMessage message = ( InternalMessage ) request;
         ByteBuffer encoded = null;
 
-        if ( message instanceof InternalBindResponse )
-        {
-            encoded = encodeMessage( message );
-        }
-        else
-        {
-            LdapMessageCodec ldapRequest = ( LdapMessageCodec ) LdapTransformer.transform( ( InternalMessage ) request );
-            encoded = ldapRequest.encode();
-        }
+        LdapMessageCodec ldapRequest = ( LdapMessageCodec ) LdapTransformer.transform( ( InternalMessage ) request );
+        encoded = ldapRequest.encode();
 
         encoded.flip();
 
@@ -288,7 +276,7 @@ public class LdapEncoder implements ProviderEncoder
      * @param message The message to encode
      * @return A ByteBuffer that contains the PDU
      * @throws EncoderException If anything goes wrong.
-     */
+     *
     private ByteBuffer encodeMessage( InternalMessage message ) throws EncoderException
     {
         int length = computeMessageLength( message );
@@ -354,7 +342,7 @@ public class LdapEncoder implements ProviderEncoder
      * MessageId length = Length(0x02) + length(MessageId) + MessageId.length 
      * L1 = length(ProtocolOp) 
      * LdapMessage length = Length(0x30) + Length(L1) + MessageId length + L1
-     */
+     *
     private int computeMessageLength( InternalMessage message )
     {
         // The length of the MessageId. It's the sum of
@@ -546,7 +534,6 @@ public class LdapEncoder implements ProviderEncoder
         return buffer;
     }
 
-
     /**
      * Compute the BindResponse length 
      * 
@@ -560,7 +547,7 @@ public class LdapEncoder implements ProviderEncoder
      * L1 = Length(LdapResult) [ + Length(serverSaslCreds) ] 
      * Length(BindResponse) = Length(0x61) + Length(L1) + L1
      * </pre>
-     */
+     *
     private int computeBindResponseLength( BindResponseImpl bindResponse )
     {
         int ldapResultLength = computeLdapResultLength( bindResponse.getLdapResult() );
@@ -591,7 +578,7 @@ public class LdapEncoder implements ProviderEncoder
      * 
      * @param buffer The buffer where to put the PDU
      * @return The PDU.
-     */
+     *
     private void encodeBindResponse( ByteBuffer bb, BindResponseImpl bindResponse ) throws EncoderException
     {
         try
@@ -641,7 +628,7 @@ public class LdapEncoder implements ProviderEncoder
      * Length(BindRequest) = Length(0x60) + Length(L1) + L1 + Length(0x02) + 1 + 1 + 
      *      Length(0x04) + Length(L2) + L2 + Length(authentication)
      * </pre>
-     */
+     *
     private int computeProtocolOpLength( InternalMessage message )
     {
         switch ( message.getType() )
@@ -653,8 +640,9 @@ public class LdapEncoder implements ProviderEncoder
                 return 0;
         }
     }
+    */
 
-
+    /*
     private void encodeProtocolOp( ByteBuffer bb, InternalMessage message ) throws EncoderException
     {
         switch ( message.getType() )
@@ -663,4 +651,5 @@ public class LdapEncoder implements ProviderEncoder
                 encodeBindResponse( bb, ( BindResponseImpl ) message );
         }
     }
+    */
 }

@@ -53,18 +53,19 @@ public class AddResponseImpl extends InternalAbstractResultResponse implements I
 
 
     /**
-     * {@inheritDoc}
+     * Stores the encoded length for the AddResponse
+     * @param addResponseLength The encoded length
      */
-    public void setAddResponseLength( int addResponseLength )
+    /* No qualifier*/void setAddResponseLength( int addResponseLength )
     {
         this.addResponseLength = addResponseLength;
     }
 
 
     /**
-     * {@inheritDoc}
+     * @return The encoded AddResponse's length
      */
-    public int getAddResponseLength()
+    /* No qualifier */int getAddResponseLength()
     {
         return addResponseLength;
     }
