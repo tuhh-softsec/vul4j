@@ -34,17 +34,4 @@ public interface InternalSearchResultDone extends InternalResultResponse
 {
     /** Search done response message type enumeration value */
     MessageTypeEnum TYPE = MessageTypeEnum.SEARCH_RESULT_DONE;
-
-
-    /**
-     * Stores the encoded length for the SearchResultDone
-     * @param searchResultDoneLength The encoded length
-     */
-    void setSearchResultDoneLength( int searchResultDoneLength );
-
-
-    /**
-     * @return The encoded SearchResultDone's length
-     */
-    int getSearchResultDoneLength();
 }

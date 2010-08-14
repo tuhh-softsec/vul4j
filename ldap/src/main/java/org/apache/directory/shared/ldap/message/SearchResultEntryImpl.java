@@ -27,6 +27,7 @@ import org.apache.directory.shared.ldap.entry.DefaultEntryAttribute;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.exception.LdapException;
+import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.message.internal.InternalAbstractResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalSearchResultEntry;
 import org.apache.directory.shared.ldap.name.DN;
@@ -156,18 +157,22 @@ public class SearchResultEntryImpl extends InternalAbstractResponse implements I
 
 
     /**
-     * {@inheritDoc}
+     * Gets the distinguished name bytes of the entry object returned.
+     * 
+     * @return the Dn bytes of the entry returned.
      */
-    public byte[] getObjectNameBytes()
+    /*No qualifier*/byte[] getObjectNameBytes()
     {
         return objectNameBytes;
     }
 
 
     /**
-     * {@inheritDoc}
+     * Sets the distinguished name bytes of the entry object returned.
+     * 
+     * @param objectNameBytes the Dn bytes of the entry returned.
      */
-    public void setObjectNameBytes( byte[] objectNameBytes )
+    /*No qualifier*/void setObjectNameBytes( byte[] objectNameBytes )
     {
         this.objectNameBytes = objectNameBytes;
     }
@@ -236,6 +241,81 @@ public class SearchResultEntryImpl extends InternalAbstractResponse implements I
 
 
     /**
+     * @return The encoded SearchResultEntry's length
+     */
+    /*No qualifier*/int getSearchResultEntryLength()
+    {
+        return searchResultEntryLength;
+    }
+
+
+    /**
+     * Stores the encoded length for the SearchResultEntry
+     * @param searchResultEntryLength The encoded length
+     */
+    /*No qualifier*/void setSearchResultEntryLength( int searchResultEntryLength )
+    {
+        this.searchResultEntryLength = searchResultEntryLength;
+    }
+
+
+    /**
+     * @return The encoded PartialAttributeList's length
+     */
+    /*No qualifier*/int getAttributesLength()
+    {
+        return attributesLength;
+    }
+
+
+    /**
+     * Stores the encoded length for the Attributes
+     * @param attributeLength The list of encoded lengths
+     */
+    /*No qualifier*/void setAttributesLength( int attributesLength )
+    {
+        this.attributesLength = attributesLength;
+    }
+
+
+    /**
+     * @return The encoded PartialAttributeList's length
+     */
+    /*No qualifier*/List<Integer> getAttributeLength()
+    {
+        return attributeLength;
+    }
+
+
+    /**
+     * @return The list of encoded Attributes' length
+     */
+    /*No qualifier*/void setAttributeLength( List<Integer> attributeLength )
+    {
+        this.attributeLength = attributeLength;
+    }
+
+
+    /**
+     * @return The list of encoded values' length
+     */
+    /*No qualifier*/List<Integer> getValsLength()
+    {
+        return valsLength;
+    }
+
+
+    /**
+     * Stores the list of encoded length for the values 
+     * @param valsLength The list of encoded lengths
+     */
+    /*No qualifier*/void setValsLength( List<Integer> valsLength )
+    {
+        this.valsLength = valsLength;
+    }
+
+
+    /**
      * Return a string representation of a SearchResultEntry request
      */
     public String toString()
@@ -253,54 +333,15 @@ public class SearchResultEntryImpl extends InternalAbstractResponse implements I
             sb.append( "            No entry\n" );
         }
 
+        if ( ( controls != null ) && ( controls.size() != 0 ) )
+        {
+            for ( Control control : controls.values() )
+            {
+                sb.append( control );
+            }
+        }
+
         return sb.toString();
     }
 
-
-    public int getSearchResultEntryLength()
-    {
-        return searchResultEntryLength;
-    }
-
-
-    public void setSearchResultEntryLength( int searchResultEntryLength )
-    {
-        this.searchResultEntryLength = searchResultEntryLength;
-    }
-
-
-    public int getAttributesLength()
-    {
-        return attributesLength;
-    }
-
-
-    public void setAttributesLength( int attributesLength )
-    {
-        this.attributesLength = attributesLength;
-    }
-
-
-    public List<Integer> getAttributeLength()
-    {
-        return attributeLength;
-    }
-
-
-    public void setAttributeLength( List<Integer> attributeLength )
-    {
-        this.attributeLength = attributeLength;
-    }
-
-
-    public List<Integer> getValsLength()
-    {
-        return valsLength;
-    }
-
-
-    public void setValsLength( List<Integer> valsLength )
-    {
-        this.valsLength = valsLength;
-    }
 }

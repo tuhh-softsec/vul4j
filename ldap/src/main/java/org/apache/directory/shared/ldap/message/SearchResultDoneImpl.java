@@ -102,18 +102,19 @@ public class SearchResultDoneImpl extends InternalAbstractResultResponse impleme
 
 
     /**
-     * {@inheritDoc}
+     * Stores the encoded length for the SearchResultDone
+     * @param searchResultDoneLength The encoded length
      */
-    public void setSearchResultDoneLength( int searchResultDoneLength )
+    /*No qualifier*/void setSearchResultDoneLength( int searchResultDoneLength )
     {
         this.searchResultDoneLength = searchResultDoneLength;
     }
 
 
     /**
-     * {@inheritDoc}
+     * @return The encoded SearchResultDone's length
      */
-    public int getSearchResultDoneLength()
+    /*No qualifier*/int getSearchResultDoneLength()
     {
         return searchResultDoneLength;
     }
@@ -126,8 +127,7 @@ public class SearchResultDoneImpl extends InternalAbstractResultResponse impleme
      */
     public String toString()
     {
-
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
 
         sb.append( "    Search Result Done\n" );
         sb.append( super.toString() );

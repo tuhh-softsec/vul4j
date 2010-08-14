@@ -70,9 +70,9 @@ public class LdapResultImpl implements InternalLdapResult
 
 
     /**
-     * {@inheritDoc}
+     * @return The encoded Error message
      */
-    public byte[] getErrorMessageBytes()
+    /*No qualifier*/byte[] getErrorMessageBytes()
     {
         return errorMessageBytes;
     }
@@ -92,9 +92,10 @@ public class LdapResultImpl implements InternalLdapResult
 
 
     /**
-     * {@inheritDoc}
+     * Set the encoded message's bytes
+     * @param errorMessageBytes The encoded bytes
      */
-    public void setErrorMessageBytes( byte[] errorMessageBytes )
+    /*No qualifier*/void setErrorMessageBytes( byte[] errorMessageBytes )
     {
         this.errorMessageBytes = errorMessageBytes;
     }
@@ -120,9 +121,9 @@ public class LdapResultImpl implements InternalLdapResult
 
 
     /**
-     * {@inheritDoc}
+     * @return the encoded MatchedDN
      */
-    public byte[] getMatchedDnBytes()
+    /*No qualifier*/byte[] getMatchedDnBytes()
     {
         return matchedDNBytes;
     }
@@ -141,9 +142,11 @@ public class LdapResultImpl implements InternalLdapResult
 
 
     /**
-     * {@inheritDoc}
+     * Sets the encoded value for MatchedDn
+     * 
+     * @param matchedDNBytes The encoded MatchedDN
      */
-    public void setMatchedDnBytes( byte[] matchedDNBytes )
+    /*No qualifier*/void setMatchedDnBytes( byte[] matchedDNBytes )
     {
         this.matchedDNBytes = matchedDNBytes;
     }
@@ -323,8 +326,7 @@ public class LdapResultImpl implements InternalLdapResult
      */
     public String toString()
     {
-
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
 
         sb.append( "        Ldap Result\n" );
         sb.append( "            Result code : (" ).append( resultCode ).append( ')' );

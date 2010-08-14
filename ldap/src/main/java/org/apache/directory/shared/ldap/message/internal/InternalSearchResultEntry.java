@@ -21,8 +21,6 @@
 package org.apache.directory.shared.ldap.message.internal;
 
 
-import java.util.List;
-
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
@@ -56,22 +54,6 @@ public interface InternalSearchResultEntry extends InternalResponse
      * @param objectName the Dn of the entry returned.
      */
     void setObjectName( DN objectName );
-
-
-    /**
-     * Gets the distinguished name bytes of the entry object returned.
-     * 
-     * @return the Dn bytes of the entry returned.
-     */
-    byte[] getObjectNameBytes();
-
-
-    /**
-     * Sets the distinguished name bytes of the entry object returned.
-     * 
-     * @param objectNameBytes the Dn bytes of the entry returned.
-     */
-    void setObjectNameBytes( byte[] objectNameBytes );
 
 
     /**
@@ -110,56 +92,4 @@ public interface InternalSearchResultEntry extends InternalResponse
      * @param value The added value
      */
     void addAttributeValue( Object value );
-
-
-    /**
-     * @return The encoded SearchResultEntry's length
-     */
-    int getSearchResultEntryLength();
-
-
-    /**
-     * Stores the encoded length for the SearchResultEntry
-     * @param searchResultEntryLength The encoded length
-     */
-    void setSearchResultEntryLength( int searchResultEntryLength );
-
-
-    /**
-     * @return The encoded PartialAttributeList's length
-     */
-    int getAttributesLength();
-
-
-    /**
-     * Stores the encoded length for the PartialAttributeList
-     * @param attributesLength The encoded length
-     */
-    void setAttributesLength( int attributesLength );
-
-
-    /**
-     * @return The list of encoded Attributes' length
-     */
-    List<Integer> getAttributeLength();
-
-
-    /**
-     * Stores the encoded length for the Attributes
-     * @param attributeLength The list of encoded lengths
-     */
-    void setAttributeLength( List<Integer> attributeLength );
-
-
-    /**
-     * @return The list of encoded values' length
-     */
-    List<Integer> getValsLength();
-
-
-    /**
-     * Stores the list of encoded length for the values 
-     * @param valsLength The list of encoded lengths
-     */
-    void setValsLength( List<Integer> valsLength );
 }

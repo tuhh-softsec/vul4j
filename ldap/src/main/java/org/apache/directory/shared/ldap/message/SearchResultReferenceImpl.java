@@ -20,6 +20,7 @@
 package org.apache.directory.shared.ldap.message;
 
 
+import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.message.internal.InternalAbstractResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalReferral;
 import org.apache.directory.shared.ldap.message.internal.InternalSearchResultReference;
@@ -88,18 +89,19 @@ public class SearchResultReferenceImpl extends InternalAbstractResponse implemen
 
 
     /**
-     * {@inheritDoc}
+     * @return The encoded Referral's length
      */
-    public int getReferralLength()
+    /* No qualifier */int getReferralLength()
     {
         return referralLength;
     }
 
 
     /**
-     * {@inheritDoc}
+     * Stores the encoded length for the Referrals
+     * @param searchReferralLength The encoded length
      */
-    public void setReferralLength( int referralLength )
+    /* No qualifier */void setReferralLength( int referralLength )
     {
         this.referralLength = referralLength;
     }
@@ -163,19 +165,58 @@ public class SearchResultReferenceImpl extends InternalAbstractResponse implemen
 
 
     /**
-     * {@inheritDoc}
+     * @return The encoded SearchResultReference's length
      */
-    public int getSearchResultReferenceLength()
+    /* No qualifier */int getSearchResultReferenceLength()
     {
         return searchResultReferenceLength;
     }
 
 
     /**
-     * {@inheritDoc}
+     * Stores the encoded length for the SearchResultReference's
+     * @param searchResultReferenceLength The encoded length
      */
-    public void setSearchResultReferenceLength( int searchResultReferenceLength )
+    /* No qualifier */void setSearchResultReferenceLength( int searchResultReferenceLength )
     {
         this.searchResultReferenceLength = searchResultReferenceLength;
+    }
+
+
+    /**
+     * Returns the Search Result Reference string
+     * 
+     * @return The Search Result Reference string
+     */
+    public String toString()
+    {
+
+        StringBuilder sb = new StringBuilder();
+
+        sb.append( "    Search Result Reference\n" );
+
+        if ( ( referral == null ) || ( referral.getLdapUrls() == null ) || ( referral.getLdapUrls().size() == 0 ) )
+        {
+            sb.append( "        No Reference\n" );
+        }
+        else
+        {
+            sb.append( "        References\n" );
+
+            for ( String url : referral.getLdapUrls() )
+            {
+                sb.append( "            '" ).append( url ).append( "'\n" );
+            }
+        }
+
+        if ( ( controls != null ) && ( controls.size() != 0 ) )
+        {
+            for ( Control control : controls.values() )
+            {
+                sb.append( control );
+            }
+        }
+
+        return sb.toString();
     }
 }

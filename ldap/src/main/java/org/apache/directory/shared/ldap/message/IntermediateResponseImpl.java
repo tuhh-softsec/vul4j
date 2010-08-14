@@ -24,6 +24,7 @@ import java.util.Arrays;
 
 import org.apache.directory.shared.ldap.message.internal.InternalAbstractResultResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalIntermediateResponse;
+import org.apache.directory.shared.ldap.util.StringTools;
 
 
 /**
@@ -243,5 +244,34 @@ public class IntermediateResponseImpl extends InternalAbstractResultResponse imp
     /* No qualifier*/int getIntermediateResponseLength()
     {
         return intermediateResponseLength;
+    }
+
+
+    /**
+     * Get a String representation of an IntermediateResponse
+     * 
+     * @return An IntermediateResponse String
+     */
+    public String toString()
+    {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append( "    Intermediate Response\n" );
+
+        if ( responseName != null )
+        {
+            sb.append( "        Response name :'" ).append( responseName ).append( "'\n" );
+        }
+
+        if ( responseValue != null )
+        {
+            sb.append( "        ResponseValue :'" );
+            sb.append( StringTools.dumpBytes( responseValue ) );
+            sb.append( "'\n" );
+        }
+
+        sb.append( super.toString() );
+
+        return sb.toString();
     }
 }

@@ -53,20 +53,37 @@ public class ModifyDnResponseImpl extends InternalAbstractResultResponse impleme
 
 
     /**
-     * {@inheritDoc}
+     * @return The encoded ModifyDnResponse's length
      */
-    public void setModifyDnResponseLength( int modifyDnResponseLength )
+    /* No Qualifier*/void setModifyDnResponseLength( int modifyDnResponseLength )
     {
         this.modifyDnResponseLength = modifyDnResponseLength;
     }
 
 
     /**
-     * {@inheritDoc}
+     * Stores the encoded length for the ModifyDnResponse
+     * @param modifyDnResponseLength The encoded length
      */
-    public int getModifyDnResponseLength()
+    /* No Qualifier*/int getModifyDnResponseLength()
     {
         return modifyDnResponseLength;
     }
 
+
+    /**
+     * Get a String representation of a ModifyDNResponse
+     * 
+     * @return A ModifyDNResponse String
+     */
+    public String toString()
+    {
+
+        StringBuilder sb = new StringBuilder();
+
+        sb.append( "    Modify DN Response\n" );
+        sb.append( super.toString() );
+
+        return sb.toString();
+    }
 }

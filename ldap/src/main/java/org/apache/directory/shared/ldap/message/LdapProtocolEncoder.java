@@ -277,8 +277,9 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
      *      Length(0x01) + 1 + Length(0x04) + Length(L1) + L1 + Length(0x04) +
      *      Length(L2) + L2 + Length(0x83) + Length(L3) + L3
      */
-    private int computeLdapResultLength( InternalLdapResult ldapResult )
+    private int computeLdapResultLength( InternalLdapResult internalLdapResult )
     {
+        LdapResultImpl ldapResult = ( LdapResultImpl ) internalLdapResult;
         int ldapResultLength = 0;
 
         // The result code : always 3 bytes
@@ -320,8 +321,11 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
      * @param buffer The buffer where to put the PDU
      * @return The PDU.
      */
-    private ByteBuffer encodeLdapResult( ByteBuffer buffer, InternalLdapResult ldapResult ) throws EncoderException
+    private ByteBuffer encodeLdapResult( ByteBuffer buffer, InternalLdapResult internalLdapResult )
+        throws EncoderException
     {
+        LdapResultImpl ldapResult = ( LdapResultImpl ) internalLdapResult;
+
         if ( buffer == null )
         {
             throw new EncoderException( I18n.err( I18n.ERR_04023 ) );
@@ -1246,7 +1250,7 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
      * @param buffer The buffer where to put the PDU
      * @return The PDU.
      */
-    protected void encodeSearchResultReference( ByteBuffer buffer, InternalSearchResultReference searchResultReference )
+    protected void encodeSearchResultReference( ByteBuffer buffer, SearchResultReferenceImpl searchResultReference )
         throws EncoderException
     {
         try

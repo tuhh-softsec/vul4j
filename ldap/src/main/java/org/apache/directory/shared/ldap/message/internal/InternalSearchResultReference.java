@@ -50,17 +50,4 @@ public interface InternalSearchResultReference extends InternalResponse
      * @param referral the sequence of LdapUrls
      */
     void setReferral( InternalReferral referral );
-
-
-    /**
-     * @return The encoded SearchResultReference's length
-     */
-    int getSearchResultReferenceLength();
-
-
-    /**
-     * Stores the encoded length for the SearchResultReference's
-     * @param searchResultReferenceLength The encoded length
-     */
-    void setSearchResultReferenceLength( int searchResultReferenceLength );
 }

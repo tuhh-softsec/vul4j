@@ -52,19 +52,37 @@ public class ModifyResponseImpl extends InternalAbstractResultResponse implement
 
 
     /**
-     * {@inheritDoc}
+     * Stores the encoded length for the ModifyResponse
+     * @param modifyResponseLength The encoded length
      */
-    public void setModifyResponseLength( int modifyResponseLength )
+    /*No qualifier*/void setModifyResponseLength( int modifyResponseLength )
     {
         this.modifyResponseLength = modifyResponseLength;
     }
 
 
     /**
-     * {@inheritDoc}
+     * @return The encoded ModifyResponse's length
      */
-    public int getModifyResponseLength()
+    /*No qualifier*/int getModifyResponseLength()
     {
         return modifyResponseLength;
+    }
+
+
+    /**
+     * Get a String representation of a ModifyResponse
+     * 
+     * @return A ModifyResponse String
+     */
+    public String toString()
+    {
+
+        StringBuilder sb = new StringBuilder();
+
+        sb.append( "    Modify Response\n" );
+        sb.append( super.toString() );
+
+        return sb.toString();
     }
 }
