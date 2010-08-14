@@ -69,11 +69,11 @@ public class ResponseAction extends GrammarAction
         // OID
         if ( tlv.getLength() == 0 )
         {
-            extendedResponse.setEncodedValue( StringTools.EMPTY_BYTES );
+            extendedResponse.setResponseValue( StringTools.EMPTY_BYTES );
         }
         else
         {
-            extendedResponse.setEncodedValue( tlv.getValue().getData() );
+            extendedResponse.setResponseValue( tlv.getValue().getData() );
         }
 
         // We can have an END transition
@@ -81,7 +81,7 @@ public class ResponseAction extends GrammarAction
 
         if ( IS_DEBUG )
         {
-            log.debug( "Extended value : {}", extendedResponse.getEncodedValue() );
+            log.debug( "Extended value : {}", extendedResponse.getResponseValue() );
         }
     }
 }

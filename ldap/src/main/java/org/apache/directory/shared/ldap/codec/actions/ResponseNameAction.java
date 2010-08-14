@@ -76,7 +76,8 @@ public class ResponseNameAction extends GrammarAction
         }
         else
         {
-            extendedResponse.setID( new OID( StringTools.asciiBytesToString( tlv.getValue().getData() ) ).toString() );
+            extendedResponse.setResponseName( new OID( StringTools.asciiBytesToString( tlv.getValue().getData() ) )
+                .toString() );
         }
 
         // We can have an END transition
@@ -84,7 +85,7 @@ public class ResponseNameAction extends GrammarAction
 
         if ( IS_DEBUG )
         {
-            log.debug( "OID read : {}", extendedResponse.getID() );
+            log.debug( "OID read : {}", extendedResponse.getResponseName() );
         }
     }
 }

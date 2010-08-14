@@ -67,18 +67,20 @@ public class GracefulDisconnect extends ExtendedResponseImpl
     private InternalReferral replicatedContexts = new ReferralImpl();
 
 
-    public GracefulDisconnect( byte[] value ) throws DecoderException
+    public GracefulDisconnect( byte[] responseValue ) throws DecoderException
     {
         super( 0, EXTENSION_OID );
-        if ( value != null )
+
+        if ( responseValue != null )
         {
-            this.value = new byte[value.length];
-            System.arraycopy( value, 0, this.value, 0, value.length );
+            this.responseValue = new byte[responseValue.length];
+            System.arraycopy( responseValue, 0, this.responseValue, 0, responseValue.length );
         }
         else
         {
-            this.value = null;
+            this.responseValue = null;
         }
+
         decodeValue();
     }
 
@@ -86,7 +88,7 @@ public class GracefulDisconnect extends ExtendedResponseImpl
     public GracefulDisconnect( int timeOffline, int delay )
     {
         super( 0, EXTENSION_OID );
-        super.oid = EXTENSION_OID;
+        responseName = EXTENSION_OID;
         this.timeOffline = timeOffline;
         this.delay = delay;
 
@@ -94,9 +96,9 @@ public class GracefulDisconnect extends ExtendedResponseImpl
         buf.append( "The server will disconnect and will be unavailable for " ).append( timeOffline );
         buf.append( " minutes in " ).append( delay ).append( " seconds." );
 
-        super.getLdapResult().setErrorMessage( buf.toString() );
-        super.getLdapResult().setMatchedDn( null );
-        super.getLdapResult().setResultCode( ResultCodeEnum.UNAVAILABLE );
+        ldapResult.setErrorMessage( buf.toString() );
+        ldapResult.setMatchedDn( null );
+        ldapResult.setResultCode( ResultCodeEnum.UNAVAILABLE );
 
         encodeResponse();
     }
@@ -110,15 +112,15 @@ public class GracefulDisconnect extends ExtendedResponseImpl
         try
         {
             codec = ( org.apache.directory.shared.ldap.codec.extended.operations.gracefulDisconnect.GracefulDisconnect ) decoder
-                .decode( value );
+                .decode( responseValue );
             this.timeOffline = codec.getTimeOffline();
             this.delay = codec.getDelay();
-            super.getLdapResult().setResultCode( ResultCodeEnum.SUCCESS );
+            ldapResult.setResultCode( ResultCodeEnum.SUCCESS );
             List<LdapURL> contexts = codec.getReplicatedContexts();
 
-            for ( int ii = 0; ii < contexts.size(); ii++ )
+            for ( LdapURL ldapUrl : contexts )
             {
-                replicatedContexts.addLdapUrl( contexts.get( ii ).toString() );
+                replicatedContexts.addLdapUrl( ldapUrl.toString() );
             }
         }
         catch ( DecoderException e )
@@ -136,25 +138,26 @@ public class GracefulDisconnect extends ExtendedResponseImpl
         codec.setDelay( this.delay );
         Iterator<String> contexts = this.replicatedContexts.getLdapUrls().iterator();
 
-        while ( contexts.hasNext() )
+        for ( String ldapUrlStr : replicatedContexts.getLdapUrls() )
         {
-            String urlstr = ( String ) contexts.next();
-            LdapURL url = null;
+            LdapURL ldapUrl = null;
+
             try
             {
-                url = new LdapURL( urlstr );
+                ldapUrl = new LdapURL( ldapUrlStr );
             }
             catch ( LdapURLEncodingException e )
             {
-                log.error( I18n.err( I18n.ERR_04170, urlstr ), e );
+                log.error( I18n.err( I18n.ERR_04170, ldapUrlStr ), e );
                 continue;
             }
-            codec.addReplicatedContexts( url );
+
+            codec.addReplicatedContexts( ldapUrl );
         }
 
         try
         {
-            super.value = codec.encode().array();
+            super.responseValue = codec.encode().array();
         }
         catch ( EncoderException e )
         {
@@ -169,19 +172,19 @@ public class GracefulDisconnect extends ExtendedResponseImpl
     // ------------------------------------------------------------------------
 
     /**
-     * Gets the reponse OID specific encoded response values.
+     * Gets the response OID specific encoded response values.
      * 
      * @return the response specific encoded response values.
      */
-    public byte[] getResponse()
+    public byte[] getResponseValue()
     {
-        if ( value == null )
+        if ( responseValue == null )
         {
             encodeResponse();
         }
 
-        final byte[] copy = new byte[value.length];
-        System.arraycopy( value, 0, copy, 0, value.length );
+        final byte[] copy = new byte[responseValue.length];
+        System.arraycopy( responseValue, 0, copy, 0, responseValue.length );
         return copy;
     }
 
@@ -189,14 +192,14 @@ public class GracefulDisconnect extends ExtendedResponseImpl
     /**
      * Sets the reponse OID specific encoded response values.
      * 
-     * @param value
-     *            the response specific encoded response values.
+     * @param value the response specific encoded response values.
      */
-    public void setResponse( byte[] value )
+    public void setResponseValue( byte[] responseValue )
     {
-        ByteBuffer bb = ByteBuffer.wrap( value );
+        ByteBuffer bb = ByteBuffer.wrap( responseValue );
         GracefulDisconnectContainer container = new GracefulDisconnectContainer();
         Asn1Decoder decoder = new Asn1Decoder();
+
         try
         {
             decoder.decode( bb, container );
@@ -212,20 +215,19 @@ public class GracefulDisconnect extends ExtendedResponseImpl
         this.timeOffline = codec.getTimeOffline();
         List<LdapURL> contexts = codec.getReplicatedContexts();
 
-        for ( int ii = 0; ii < contexts.size(); ii++ )
+        for ( LdapURL ldapUrl : codec.getReplicatedContexts() )
         {
-            LdapURL url = contexts.get( ii );
-            replicatedContexts.addLdapUrl( url.toString() );
+            replicatedContexts.addLdapUrl( ldapUrl.toString() );
         }
 
-        if ( value != null )
+        if ( responseValue != null )
         {
-            this.value = new byte[value.length];
-            System.arraycopy( value, 0, this.value, 0, value.length );
+            this.responseValue = new byte[responseValue.length];
+            System.arraycopy( responseValue, 0, this.responseValue, 0, responseValue.length );
         }
         else
         {
-            this.value = null;
+            this.responseValue = null;
         }
     }
 
@@ -246,8 +248,7 @@ public class GracefulDisconnect extends ExtendedResponseImpl
      * Sets the OID uniquely identifying this extended response (a.k.a. its
      * name).
      * 
-     * @param oid
-     *            the OID of the extended response type.
+     * @param oid the OID of the extended response type.
      */
     public void setResponseName( String oid )
     {

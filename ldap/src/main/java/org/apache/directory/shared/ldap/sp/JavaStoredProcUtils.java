@@ -18,8 +18,8 @@
  *  
  */
 
-
 package org.apache.directory.shared.ldap.sp;
+
 
 import java.io.File;
 import java.io.IOException;
@@ -37,6 +37,7 @@ import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.message.extended.StoredProcedureRequest;
 import org.apache.directory.shared.ldap.message.extended.StoredProcedureResponse;
 
+
 /**
  * A utility class for working with Java Stored Procedures at the base level.
  *
@@ -45,7 +46,6 @@ import org.apache.directory.shared.ldap.message.extended.StoredProcedureResponse
 public class JavaStoredProcUtils
 {
 
-    
     /**
      * Returns the stream data of a Java class.
      * 
@@ -66,7 +66,7 @@ public class JavaStoredProcUtils
         File file = new File( url.getFile() );
         int size = ( int ) file.length();
         byte[] buf = new byte[size];
-        
+
         try
         {
             in.read( buf );
@@ -78,10 +78,11 @@ public class JavaStoredProcUtils
             ne.setRootCause( e );
             throw ne;
         }
-        
+
         return buf;
     }
-    
+
+
     /**
      * Loads a Java class's stream data as a subcontext of an LdapContext given.
      * 
@@ -96,21 +97,23 @@ public class JavaStoredProcUtils
     {
         byte[] buf = getClassFileAsStream( clazz );
         String fullClassName = clazz.getName();
-        
+
         Attributes attributes = new BasicAttributes( SchemaConstants.OBJECT_CLASS_AT, SchemaConstants.TOP_OC, true );
         attributes.get( SchemaConstants.OBJECT_CLASS_AT ).add( "storedProcUnit" );
         attributes.get( SchemaConstants.OBJECT_CLASS_AT ).add( "javaStoredProcUnit" );
         attributes.put( "storedProcLangId", "Java" );
         attributes.put( "storedProcUnitName", fullClassName );
         attributes.put( "javaByteCode", buf );
-        
-        ctx.createSubcontext( "storedProcUnitName=" + fullClassName , attributes );
+
+        ctx.createSubcontext( "storedProcUnitName=" + fullClassName, attributes );
     }
-    
-    public static Object callStoredProcedure( LdapContext ctx, String procedureName, Object[] arguments ) throws NamingException
+
+
+    public static Object callStoredProcedure( LdapContext ctx, String procedureName, Object[] arguments )
+        throws NamingException
     {
         String language = "Java";
-        
+
         Object responseObject;
         try
         {
@@ -118,7 +121,7 @@ public class JavaStoredProcUtils
              * Create a new stored procedure execution request.
              */
             StoredProcedureRequest req = new StoredProcedureRequest( 0, procedureName, language );
-            
+
             /**
              * For each argument UTF-8-encode the type name
              * and Java-serialize the value
@@ -132,17 +135,17 @@ public class JavaStoredProcUtils
                 value = SerializationUtils.serialize( ( Serializable ) arguments[i] );
                 req.addParameter( type, value );
             }
-            
+
             /**
              * Call the stored procedure via the extended operation
              * and get back its return value.
              */
             StoredProcedureResponse resp = ( StoredProcedureResponse ) ctx.extendedOperation( req );
-            
+
             /**
              * Restore a Java object from the return value.
              */
-            byte[] responseStream = resp.getEncodedValue();
+            byte[] responseStream = resp.getResponseValue();
             responseObject = SerializationUtils.deserialize( responseStream );
         }
         catch ( Exception e )
@@ -151,8 +154,8 @@ public class JavaStoredProcUtils
             ne.setRootCause( e );
             throw ne;
         }
-        
+
         return responseObject;
     }
-    
+
 }

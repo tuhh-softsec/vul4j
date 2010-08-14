@@ -59,8 +59,8 @@ public class ExtendedResponseImplTest
     {
         // Construct the Search response to test with results and referrals
         ExtendedResponseImpl response = new ExtendedResponseImpl( 45 );
-        response.setEncodedValue( "Hello World!".getBytes() );
-        response.setID( "1.1.1.1" );
+        response.setResponseValue( "Hello World!".getBytes() );
+        response.setResponseName( "1.1.1.1" );
         InternalLdapResult result = response.getLdapResult();
 
         try
@@ -124,7 +124,18 @@ public class ExtendedResponseImplTest
             }
 
 
-            public void setID( String a_oid )
+            public String getResponseName()
+            {
+                return "1.1.1.1";
+            }
+
+
+            public void setID( String oid )
+            {
+            }
+
+
+            public void setResponseName( String oid )
             {
             }
 
@@ -135,7 +146,18 @@ public class ExtendedResponseImplTest
             }
 
 
-            public void setEncodedValue( byte[] a_value )
+            public byte[] getResponseValue()
+            {
+                return "Hello World!".getBytes();
+            }
+
+
+            public void setEncodedValue( byte[] value )
+            {
+            }
+
+
+            public void setResponseValue( byte[] value )
             {
             }
 
@@ -243,17 +265,6 @@ public class ExtendedResponseImplTest
             }
 
 
-            public int getExtendedResponseLength()
-            {
-                return 0;
-            }
-
-
-            public void setExtendedResponseLength( int extendedResponseLength )
-            {
-            }
-
-
             public byte[] getIDBytes()
             {
                 return null;
@@ -314,9 +325,9 @@ public class ExtendedResponseImplTest
     public void testNotEqualsDiffNames()
     {
         ExtendedResponseImpl resp0 = createStub();
-        resp0.setID( "1.2.3.4" );
+        resp0.setResponseName( "1.2.3.4" );
         ExtendedResponseImpl resp1 = createStub();
-        resp1.setID( "1.2.3.4.5" );
+        resp1.setResponseName( "1.2.3.4.5" );
 
         assertFalse( resp0.equals( resp1 ) );
         assertFalse( resp1.equals( resp0 ) );
@@ -330,9 +341,9 @@ public class ExtendedResponseImplTest
     public void testNotEqualsDiffResponses()
     {
         ExtendedResponseImpl resp0 = createStub();
-        resp0.setEncodedValue( "abc".getBytes() );
+        resp0.setResponseValue( "abc".getBytes() );
         ExtendedResponseImpl resp1 = createStub();
-        resp1.setEncodedValue( "123".getBytes() );
+        resp1.setResponseValue( "123".getBytes() );
 
         assertFalse( resp0.equals( resp1 ) );
         assertFalse( resp1.equals( resp0 ) );

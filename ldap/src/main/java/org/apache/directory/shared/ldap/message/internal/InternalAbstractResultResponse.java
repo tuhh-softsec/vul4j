@@ -22,6 +22,7 @@ package org.apache.directory.shared.ldap.message.internal;
 
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.message.LdapResultImpl;
+import org.apache.directory.shared.ldap.message.control.Control;
 
 
 /**
@@ -32,7 +33,7 @@ import org.apache.directory.shared.ldap.message.LdapResultImpl;
 public abstract class InternalAbstractResultResponse extends InternalAbstractResponse implements InternalResultResponse
 {
     /** Response result components */
-    private InternalLdapResult result = new LdapResultImpl();
+    protected InternalLdapResult ldapResult = new LdapResultImpl();
 
 
     // ------------------------------------------------------------------------
@@ -62,7 +63,7 @@ public abstract class InternalAbstractResultResponse extends InternalAbstractRes
      */
     public InternalLdapResult getLdapResult()
     {
-        return result;
+        return ldapResult;
     }
 
 
@@ -115,17 +116,17 @@ public abstract class InternalAbstractResultResponse extends InternalAbstractRes
 
         InternalResultResponse resp = ( InternalResultResponse ) obj;
 
-        if ( getLdapResult() != null && resp.getLdapResult() == null )
+        if ( ldapResult != null && resp.getLdapResult() == null )
         {
             return false;
         }
 
-        if ( getLdapResult() == null && resp.getLdapResult() != null )
+        if ( ldapResult == null && resp.getLdapResult() != null )
         {
             return false;
         }
 
-        if ( getLdapResult() != null && resp.getLdapResult() != null && !getLdapResult().equals( resp.getLdapResult() ) )
+        if ( ( ldapResult != null ) && ( resp.getLdapResult() != null ) && !ldapResult.equals( resp.getLdapResult() ) )
         {
             return false;
         }
@@ -141,13 +142,18 @@ public abstract class InternalAbstractResultResponse extends InternalAbstractRes
      */
     public String toString()
     {
-        if ( result != null )
+        StringBuilder sb = new StringBuilder();
+
+        sb.append( ldapResult );
+
+        if ( ( controls != null ) && ( controls.size() != 0 ) )
         {
-            return result.toString();
+            for ( Control control : controls.values() )
+            {
+                sb.append( control );
+            }
         }
-        else
-        {
-            return "No result";
-        }
+
+        return sb.toString();
     }
 }

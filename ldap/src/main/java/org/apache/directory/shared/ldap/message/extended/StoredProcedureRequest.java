@@ -99,8 +99,8 @@ public class StoredProcedureRequest extends ExtendedRequestImpl
         throws NamingException
     {
         StoredProcedureResponse resp = ( StoredProcedureResponse ) getResultResponse();
-        resp.setEncodedValue( berValue );
-        resp.setID( id );
+        resp.setResponseValue( berValue );
+        resp.setResponseName( id );
         return resp;
     }
 
@@ -135,7 +135,7 @@ public class StoredProcedureRequest extends ExtendedRequestImpl
         if ( response == null )
         {
             StoredProcedureResponse spr = new StoredProcedureResponse( getMessageId() );
-            spr.setID( EXTENSION_OID );
+            spr.setResponseName( EXTENSION_OID );
             response = spr;
         }
 

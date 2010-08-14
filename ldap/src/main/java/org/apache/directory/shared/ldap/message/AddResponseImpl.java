@@ -53,23 +53,6 @@ public class AddResponseImpl extends InternalAbstractResultResponse implements I
 
 
     /**
-     * Get a String representation of an AddResponse
-     * 
-     * @return An AddResponse String
-     */
-    public String toString()
-    {
-
-        StringBuffer sb = new StringBuffer();
-
-        sb.append( "    Add Response\n" );
-        sb.append( super.toString() );
-
-        return sb.toString();
-    }
-
-
-    /**
      * {@inheritDoc}
      */
     public void setAddResponseLength( int addResponseLength )
@@ -84,5 +67,22 @@ public class AddResponseImpl extends InternalAbstractResultResponse implements I
     public int getAddResponseLength()
     {
         return addResponseLength;
+    }
+
+
+    /**
+     * Get a String representation of an AddResponse
+     * 
+     * @return An AddResponse String
+     */
+    public String toString()
+    {
+
+        StringBuilder sb = new StringBuilder();
+
+        sb.append( "    Add Response\n" );
+        sb.append( super.toString() );
+
+        return sb.toString();
     }
 }

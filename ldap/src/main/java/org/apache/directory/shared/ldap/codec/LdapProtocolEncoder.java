@@ -512,23 +512,24 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
      * 
      * @return The ExtendedResponse length
      */
-    private int computeExtendedResponseLength( InternalExtendedResponse extendedResponse )
+    private int computeExtendedResponseLength( InternalExtendedResponse internalExtendedResponse )
     {
+        ExtendedResponseImpl extendedResponse = ( ExtendedResponseImpl ) internalExtendedResponse;
         int ldapResultLength = computeLdapResultLength( extendedResponse.getLdapResult() );
 
         int extendedResponseLength = ldapResultLength;
 
-        String id = extendedResponse.getID();
+        String id = extendedResponse.getResponseName();
 
         if ( id != null )
         {
             byte[] idBytes = StringTools.getBytesUtf8( id );
-            extendedResponse.setIDBytes( idBytes );
+            extendedResponse.setResponseNameBytes( idBytes );
             int idLength = idBytes.length;
             extendedResponseLength += 1 + TLV.getNbBytes( idLength ) + idLength;
         }
 
-        byte[] encodedValue = extendedResponse.getEncodedValue();
+        byte[] encodedValue = extendedResponse.getResponseValue();
 
         if ( encodedValue != null )
         {
@@ -994,7 +995,7 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
             encodeLdapResult( buffer, extendedResponse.getLdapResult() );
 
             // The ID, if any
-            byte[] idBytes = extendedResponse.getIDBytes();
+            byte[] idBytes = extendedResponse.getResponseNameBytes();
 
             if ( idBytes != null )
             {
@@ -1008,7 +1009,7 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
             }
 
             // The encodedValue, if any
-            byte[] encodedValue = extendedResponse.getEncodedValue();
+            byte[] encodedValue = extendedResponse.getResponseValue();
 
             if ( encodedValue != null )
             {

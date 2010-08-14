@@ -24,6 +24,7 @@ import java.util.Arrays;
 
 import org.apache.directory.shared.ldap.message.internal.InternalAbstractResultResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalExtendedResponse;
+import org.apache.directory.shared.ldap.util.StringTools;
 
 
 /**
@@ -36,13 +37,13 @@ public class ExtendedResponseImpl extends InternalAbstractResultResponse impleme
     static final long serialVersionUID = -6646752766410531060L;
 
     /** Object identifier for the extended response */
-    protected String oid;
+    protected String responseName;
 
     /** The response name as a byte[] */
-    private byte[] oidBytes;
+    private byte[] responseNameBytes;
 
-    /** Values encoded in the extended response payload */
-    protected byte[] value;
+    /** Value encoded in the extended response payload */
+    protected byte[] responseValue;
 
     /** The encoded extendedResponse length */
     private int extendedResponseLength;
@@ -56,14 +57,20 @@ public class ExtendedResponseImpl extends InternalAbstractResultResponse impleme
      * Creates an ExtendedResponse as a reply to an ExtendedRequest.
      * 
      * @param id the session unique message id
+     * @param responseName the ExtendedResponse's name
      */
-    public ExtendedResponseImpl( final int id, String oid )
+    public ExtendedResponseImpl( final int id, String responseName )
     {
         super( id, TYPE );
-        this.oid = oid;
+        this.responseName = responseName;
     }
 
 
+    /**
+     * Creates an ExtendedResponse as a reply to an ExtendedRequest.
+     * 
+     * @param id the session unique message id
+     */
     public ExtendedResponseImpl( int id )
     {
         super( id, TYPE );
@@ -74,33 +81,32 @@ public class ExtendedResponseImpl extends InternalAbstractResultResponse impleme
     // ExtendedResponse Interface Method Implementations
     // ------------------------------------------------------------------------
     /**
-     * Sets the response OID specific encoded response values.
+     * Sets the response OID specific encoded response value.
      * 
-     * @param value
-     *            the response specific encoded response values.
+     * @param responseValue the response specific encoded response values.
      */
-    public void setEncodedValue( byte[] value )
+    public void setResponseValue( byte[] responseValue )
     {
-        if ( value != null )
+        if ( responseValue != null )
         {
-            this.value = new byte[value.length];
-            System.arraycopy( value, 0, this.value, 0, value.length );
+            this.responseValue = new byte[responseValue.length];
+            System.arraycopy( responseValue, 0, this.responseValue, 0, responseValue.length );
         }
         else
         {
-            this.value = null;
+            this.responseValue = null;
         }
     }
 
 
     /**
-     * Gets the OID bytes.
+     * Gets the responseName bytes.
      * 
-     * @return the OID bytes of the extended response type.
+     * @return the responseName bytes of the extended response type.
      */
-    public byte[] getIDBytes()
+    public byte[] getResponseNameBytes()
     {
-        return oidBytes;
+        return responseNameBytes;
     }
 
 
@@ -108,11 +114,11 @@ public class ExtendedResponseImpl extends InternalAbstractResultResponse impleme
      * Sets the OID uniquely identifying this extended response (a.k.a. its
      * name).
      * 
-     * @param oid the OID of the extended response type.
+     * @param responseName the OID of the extended response type.
      */
-    public void setID( String oid )
+    public void setResponseName( String responseName )
     {
-        this.oid = oid;
+        this.responseName = responseName;
     }
 
 
@@ -121,9 +127,9 @@ public class ExtendedResponseImpl extends InternalAbstractResultResponse impleme
      * 
      * @param oidBytes the OID bytes of the extended response type.
      */
-    public void setIDBytes( byte[] oidBytes )
+    public void setResponseNameBytes( byte[] responseNameBytes )
     {
-        this.oidBytes = oidBytes;
+        this.responseNameBytes = responseNameBytes;
     }
 
 
@@ -134,14 +140,17 @@ public class ExtendedResponseImpl extends InternalAbstractResultResponse impleme
     public int hashCode()
     {
         int hash = 37;
-        if ( oid != null )
+
+        if ( responseName != null )
         {
-            hash = hash * 17 + oid.hashCode();
+            hash = hash * 17 + responseName.hashCode();
         }
-        if ( value != null )
+
+        if ( responseValue != null )
         {
-            hash = hash * 17 + Arrays.hashCode( value );
+            hash = hash * 17 + Arrays.hashCode( responseValue );
         }
+
         hash = hash * 17 + super.hashCode();
 
         return hash;
@@ -174,32 +183,34 @@ public class ExtendedResponseImpl extends InternalAbstractResultResponse impleme
 
         InternalExtendedResponse resp = ( InternalExtendedResponse ) obj;
 
-        if ( ( oid != null ) && ( resp.getID() == null ) )
+        if ( ( responseName != null ) && ( resp.getResponseName() == null ) )
         {
             return false;
         }
 
-        if ( ( oid == null ) && ( resp.getID() != null ) )
+        if ( ( responseName == null ) && ( resp.getResponseName() != null ) )
         {
             return false;
         }
 
-        if ( ( oid != null ) && ( resp.getID() != null ) && !oid.equals( resp.getID() ) )
+        if ( ( responseName != null ) && ( resp.getResponseName() != null )
+            && !responseName.equals( resp.getResponseName() ) )
         {
             return false;
         }
 
-        if ( ( value != null ) && ( resp.getEncodedValue() == null ) )
+        if ( ( responseValue != null ) && ( resp.getResponseValue() == null ) )
         {
             return false;
         }
 
-        if ( ( value == null ) && ( resp.getEncodedValue() != null ) )
+        if ( ( responseValue == null ) && ( resp.getResponseValue() != null ) )
         {
             return false;
         }
 
-        if ( ( value != null ) && ( resp.getEncodedValue() != null ) && !Arrays.equals( value, resp.getEncodedValue() ) )
+        if ( ( responseValue != null ) && ( resp.getResponseValue() != null )
+            && !Arrays.equals( responseValue, resp.getResponseValue() ) )
         {
             return false;
         }
@@ -212,29 +223,49 @@ public class ExtendedResponseImpl extends InternalAbstractResultResponse impleme
      * Gets the OID uniquely identifying this extended response (a.k.a. its
      * name).
      * 
-     * @return the OID of the extended response type.
+     * @return the responseName of the extended response
      */
-    public String getID()
+    public String getResponseName()
     {
-        return oid;
+        return responseName;
     }
 
 
     /**
-     * Gets the reponse OID specific encoded response values.
+     * Gets the response OID specific encoded response values.
      * 
-     * @return the response specific encoded response values.
+     * @return the response specific encoded response value
      */
-    public byte[] getEncodedValue()
+    public byte[] getResponseValue()
     {
-        if ( value == null )
+        if ( responseValue == null )
         {
             return null;
         }
 
-        final byte[] copy = new byte[value.length];
-        System.arraycopy( value, 0, copy, 0, value.length );
+        final byte[] copy = new byte[responseValue.length];
+        System.arraycopy( responseValue, 0, copy, 0, responseValue.length );
         return copy;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     * @deprecated Use the {@link #getResponseValue()} method
+     */
+    public byte[] getEncodedValue()
+    {
+        return getResponseValue();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     * @deprecated Use the {@link #getResponseName()} method
+     */
+    public String getID()
+    {
+        return getResponseName();
     }
 
 
@@ -253,5 +284,32 @@ public class ExtendedResponseImpl extends InternalAbstractResultResponse impleme
     public int getExtendedResponseLength()
     {
         return extendedResponseLength;
+    }
+
+
+    /**
+     * Get a String representation of an ExtendedResponse
+     * 
+     * @return An ExtendedResponse String
+     */
+    public String toString()
+    {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append( "    Extended Response\n" );
+
+        if ( responseName != null )
+        {
+            sb.append( "        ResponseName :'" ).append( responseName ).append( "'\n" );
+        }
+
+        if ( responseValue != null )
+        {
+            sb.append( "        ResponseValue :'" ).append( StringTools.dumpBytes( responseValue ) ).append( "'\n" );
+        }
+
+        sb.append( super.toString() );
+
+        return sb.toString();
     }
 }

@@ -168,27 +168,6 @@ public class BindResponseImpl extends InternalAbstractResultResponse implements 
 
 
     /**
-     * Get a String representation of a BindResponse
-     * 
-     * @return A BindResponse String
-     */
-    public String toString()
-    {
-        StringBuffer sb = new StringBuffer();
-        sb.append( "    BindResponse\n" );
-        sb.append( super.toString() );
-
-        if ( serverSaslCreds != null )
-        {
-            sb.append( "        Server sasl credentials : '" ).append( StringTools.dumpBytes( serverSaslCreds ) )
-                .append( "'\n" );
-        }
-
-        return sb.toString();
-    }
-
-
-    /**
      * {@inheritDoc}
      */
     public void setBindResponseLength( int bindResponseLength )
@@ -203,5 +182,27 @@ public class BindResponseImpl extends InternalAbstractResultResponse implements 
     public int getBindResponseLength()
     {
         return bindResponseLength;
+    }
+
+
+    /**
+     * Get a String representation of a BindResponse
+     * 
+     * @return A BindResponse String
+     */
+    public String toString()
+    {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append( "    BindResponse\n" );
+        sb.append( super.toString() );
+
+        if ( serverSaslCreds != null )
+        {
+            sb.append( "        Server sasl credentials : '" ).append( StringTools.dumpBytes( serverSaslCreds ) )
+                .append( "'\n" );
+        }
+
+        return sb.toString();
     }
 }

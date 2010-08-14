@@ -42,10 +42,9 @@ public class CompareResponseImpl extends InternalAbstractResultResponse implemen
 
 
     /**
-     * Creates a Lockable CompareResponse as a reply to an CompareRequest.
+     * Creates a CompareResponse as a reply to an CompareRequest.
      * 
-     * @param id
-     *            the session unique message id
+     * @param id the session unique message id
      */
     public CompareResponseImpl( final int id )
     {
@@ -77,7 +76,23 @@ public class CompareResponseImpl extends InternalAbstractResultResponse implemen
      */
     public boolean isTrue()
     {
-        return getLdapResult().getResultCode() == ResultCodeEnum.COMPARE_TRUE;
+        return ldapResult.getResultCode() == ResultCodeEnum.COMPARE_TRUE;
     }
 
+
+    /**
+     * Get a String representation of an CompareResponse
+     * 
+     * @return An CompareResponse String
+     */
+    public String toString()
+    {
+
+        StringBuilder sb = new StringBuilder();
+
+        sb.append( "    Compare Response\n" );
+        sb.append( super.toString() );
+
+        return sb.toString();
+    }
 }

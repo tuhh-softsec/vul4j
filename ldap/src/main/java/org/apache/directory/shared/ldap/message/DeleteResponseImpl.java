@@ -44,8 +44,7 @@ public class DeleteResponseImpl extends InternalAbstractResultResponse implement
     /**
      * Creates a DeleteResponse as a reply to an DeleteRequest.
      * 
-     * @param id
-     *            the session unique message id
+     * @param id the session unique message id
      */
     public DeleteResponseImpl( final int id )
     {
@@ -68,5 +67,21 @@ public class DeleteResponseImpl extends InternalAbstractResultResponse implement
     public int getDeleteResponseLength()
     {
         return deleteResponseLength;
+    }
+
+
+    /**
+     * Get a String representation of a DelResponse
+     * 
+     * @return A DelResponse String
+     */
+    public String toString()
+    {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append( "    Compare Response\n" );
+        sb.append( super.toString() );
+
+        return sb.toString();
     }
 }

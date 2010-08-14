@@ -41,7 +41,7 @@ public abstract class InternalAbstractMessage implements InternalMessage
     static final long serialVersionUID = 7601738291101182094L;
 
     /** Map of message controls using OID Strings for keys and Control values */
-    private final Map<String, Control> controls;
+    protected final Map<String, Control> controls;
 
     /** The encoded controls length */
     private int controlsLength;

@@ -41,15 +41,7 @@ public interface InternalExtendedResponse extends InternalResultResponse, javax.
      * 
      * @return the OID of the extended response type.
      */
-    String getID();
-
-
-    /**
-     * Gets the OID bytes.
-     * 
-     * @return the OID bytes of the extended response type.
-     */
-    byte[] getIDBytes();
+    String getResponseName();
 
 
     /**
@@ -58,43 +50,21 @@ public interface InternalExtendedResponse extends InternalResultResponse, javax.
      * 
      * @param oidv the OID of the extended response type.
      */
-    void setID( String oid );
+    void setResponseName( String oid );
 
 
     /**
-     * Sets the OID bytes.
-     * 
-     * @param oidBytes the OID bytes of the extended response type.
-     */
-    void setIDBytes( byte[] oidBytes );
-
-
-    /**
-     * Gets the reponse OID specific encoded response values.
+     * Gets the response OID specific encoded response values.
      * 
      * @return the response specific encoded response values.
      */
-    byte[] getEncodedValue();
+    byte[] getResponseValue();
 
 
     /**
-     * Sets the reponse OID specific encoded response values.
+     * Sets the response OID specific encoded response values.
      * 
-     * @param value
-     *            the response specific encoded response values.
+     * @param responseValue the response specific encoded response values.
      */
-    void setEncodedValue( byte[] value );
-
-
-    /**
-     * Stores the encoded length for the ExtendedResponse
-     * @param extendedResponseLength The encoded length
-     */
-    void setExtendedResponseLength( int extendedResponseLength );
-
-
-    /**
-     * @return The encoded ExtendedResponse's length
-     */
-    int getExtendedResponseLength();
+    void setResponseValue( byte[] responseValue );
 }
