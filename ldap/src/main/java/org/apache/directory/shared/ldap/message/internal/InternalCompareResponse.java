@@ -46,4 +46,11 @@ public interface InternalCompareResponse extends InternalResultResponse
      * @return The encoded CompareResponse's length
      */
     int getCompareResponseLength();
+
+
+    /**
+     * @return True if the compared response is a success
+     * @return
+     */
+    boolean isTrue();
 }

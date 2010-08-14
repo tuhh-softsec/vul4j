@@ -25,7 +25,7 @@ import org.apache.directory.shared.ldap.message.LdapResultImpl;
 
 
 /**
- * Abstract base for a Lockable ResultResponse message.
+ * Abstract base for a ResultResponse message.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
@@ -43,10 +43,8 @@ public abstract class InternalAbstractResultResponse extends InternalAbstractRes
      * Allows subclasses based on the abstract type to create a response to a
      * request.
      * 
-     * @param id
-     *            the response eliciting this Request
-     * @param type
-     *            the message type of the response
+     * @param id the response eliciting this Request
+     * @param type the message type of the response
      */
     protected InternalAbstractResultResponse( final int id, final MessageTypeEnum type )
     {
@@ -57,7 +55,6 @@ public abstract class InternalAbstractResultResponse extends InternalAbstractRes
     // ------------------------------------------------------------------------
     // Response Interface Method Implementations
     // ------------------------------------------------------------------------
-
     /**
      * Gets the LdapResult components of this Response.
      * 
@@ -81,7 +78,7 @@ public abstract class InternalAbstractResultResponse extends InternalAbstractRes
             hash = hash * 17 + getLdapResult().hashCode();
         }
         hash = hash * 17 + super.hashCode();
-        
+
         return hash;
     }
 

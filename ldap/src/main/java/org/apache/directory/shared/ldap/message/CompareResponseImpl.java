@@ -70,4 +70,14 @@ public class CompareResponseImpl extends InternalAbstractResultResponse implemen
     {
         return compareResponseLength;
     }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isTrue()
+    {
+        return getLdapResult().getResultCode() == ResultCodeEnum.COMPARE_TRUE;
+    }
+
 }
