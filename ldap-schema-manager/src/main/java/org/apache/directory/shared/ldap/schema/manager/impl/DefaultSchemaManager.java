@@ -1043,24 +1043,16 @@ public class DefaultSchemaManager implements SchemaManager
             if ( errors.isEmpty() )
             {
                 // We are golden : let's apply the schema in the real registries
-                registries.setRelaxed();
-
-                // Load the schemas
-                for ( Schema schema : schemas )
-                {
-                    loadDepsFirst( registries, schema );
-                }
-
-                // Build the cross references
-                errors = registries.buildReferences();
+                registries = clonedRegistries;
                 registries.setStrict();
-
                 loaded = true;
             }
         }
-
-        // clear the cloned registries
-        clonedRegistries.clear();
+        else
+        {
+            // clear the cloned registries
+            clonedRegistries.clear();
+        }
 
         return loaded;
     }
