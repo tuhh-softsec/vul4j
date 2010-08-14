@@ -21,18 +21,13 @@
 package org.apache.directory.shared.ldap.schema.loader.ldif;
 
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.RandomAccessFile;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.directory.shared.ldap.entry.Entry;
@@ -48,9 +43,7 @@ import org.slf4j.LoggerFactory;
 /**
  * A schema loader based on a single monolithic ldif file containing all the schema partition elements
  * 
- * Warn: this works, but not a super performer. Need to profile to see how much time the regex matching
- *       is taking (this is definitely the hotspot)
- *       NOT DOCUMENTED atm
+ * Performs better than any other existing LDIF schema loaders. NOT DOCUMENTED atm
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
@@ -59,11 +52,11 @@ public class SingleLdifSchemaLoader extends AbstractSchemaLoader
 
     private static final Logger LOG = LoggerFactory.getLogger( SingleLdifSchemaLoader.class );
 
-    private RandomAccessFile schemaFile;
+    private String[] schemaObjectTypeRdns = new String[]
+        { "attributetypes", "comparators", "ditContentRules", "ditStructureRules", "matchingRules", "matchingRuleUse",
+            "nameForms", "normalizers", "objectClasses", "syntaxes", "syntaxCheckers" };
 
-    private Map<String, SchemaMarker> markerMap = new HashMap<String, SchemaMarker>();
-
-    private LdifReader ldifParser = new LdifReader();
+    private Map<String, Map<String, List<Entry>>> scObjEntryMap = new HashMap<String, Map<String, List<Entry>>>();
 
 
     public SingleLdifSchemaLoader()
@@ -74,31 +67,14 @@ public class SingleLdifSchemaLoader extends AbstractSchemaLoader
 
             LOG.debug( "URL of the all schema ldif file {}", resource );
 
-            File tempSchemaFile = File.createTempFile( "all-schema", ".ldif" );
-            LOG.debug( "storing the all schema file at {}", tempSchemaFile.getAbsolutePath() );
-
-            InputStream in = resource.openStream();
-            OutputStream out = new FileOutputStream( tempSchemaFile );
-
-            byte[] buf = new byte[1024 * 1024];
-            while ( true )
+            for ( String s : schemaObjectTypeRdns )
             {
-                int read = in.read( buf );
-                if ( read > 0 )
-                {
-                    out.write( buf, 0, read );
-                    continue;
-                }
-
-                break;
+                scObjEntryMap.put( s, new HashMap<String, List<Entry>>() );
             }
 
-            in.close();
-            out.close();
+            InputStream in = resource.openStream();
 
-            schemaFile = new RandomAccessFile( tempSchemaFile, "r" );
-
-            initializeSchemas();
+            initializeSchemas( in );
         }
         catch ( Exception e )
         {
@@ -107,141 +83,81 @@ public class SingleLdifSchemaLoader extends AbstractSchemaLoader
     }
 
 
-    private void initializeSchemas() throws Exception
+    private void initializeSchemas( InputStream in ) throws Exception
     {
-        Pattern schemaStartPattern = Pattern.compile( "dn:\\s*cn=[a-z0-9-_]*\\s*,\\s*ou\\s*=\\s*schema" );
+        Pattern schemaStartPattern = Pattern.compile( "cn=[a-z0-9-_]*\\s*,\\s*ou\\s*=\\s*schema" );
 
-        String readLine = null;
+        LdifReader ldifReader = new LdifReader( in );
 
-        SchemaMarker prevMarker = null;
+        Schema currentSchema = null;
 
-        while ( true )
+        while ( ldifReader.hasNext() )
         {
-            int startLineOffset = ( int ) schemaFile.getFilePointer();
+            LdifEntry ldifEntry = ldifReader.next();
+            String dn = ldifEntry.getDn().getName();
 
-            readLine = schemaFile.readLine();
-
-            if ( readLine == null )
+            if ( schemaStartPattern.matcher( dn ).matches() )
             {
-                break;
-            }
-
-            Matcher matcher = schemaStartPattern.matcher( readLine );
-            if ( matcher.matches() )
-            {
-                if ( prevMarker != null )
-                {
-                    prevMarker.setEnd( startLineOffset );
-                }
-
-                LdifEntry entry = readLdif( readLine );
-                Schema schema = getSchema( entry.getEntry() );
+                Schema schema = getSchema( ldifEntry.getEntry() );
                 schemaMap.put( schema.getSchemaName(), schema );
-
-                SchemaMarker marker = new SchemaMarker( startLineOffset );
-                markerMap.put( schema.getSchemaName(), marker );
-                prevMarker = marker;
-            }
-        }
-
-        prevMarker.setEnd( ( int ) schemaFile.getFilePointer() );
-    }
-
-
-    private LdifEntry readLdif( String startLine ) throws Exception
-    {
-        StringBuilder sb = new StringBuilder( startLine );
-        sb.append( '\n' );
-
-        while ( true )
-        {
-            startLine = schemaFile.readLine();
-            if ( startLine.length() == 0 )
-            {
-                break;
+                currentSchema = schema;
             }
             else
             {
-                sb.append( startLine );
-                sb.append( '\n' );
+                _loadSchemaObject( currentSchema.getSchemaName(), ldifEntry );
             }
         }
 
-        return ldifParser.parseLdif( sb.toString() ).get( 0 );
+        ldifReader.close();
     }
 
 
-    private List<Entry> getMatchingEntries( Pattern regex, int endOffset ) throws LdapException
+    private void _loadSchemaObject( String schemaName, LdifEntry ldifEntry ) throws Exception
     {
-
-        try
+        for ( String scObjTypeRdn : schemaObjectTypeRdns )
         {
-            List<Entry> entries = new ArrayList<Entry>();
-            String s = null;
+            Pattern regex = Pattern.compile( "m-oid=[0-9\\.]*" + ",ou=" + scObjTypeRdn + ",cn=" + schemaName
+                + ",ou=schema", Pattern.CASE_INSENSITIVE );
 
-            // a perf improvement hack 
-            boolean matchesFound = false;
+            String dn = ldifEntry.getDn().getName();
 
-            while ( ( s = schemaFile.readLine() ) != null )
+            if ( regex.matcher( dn ).matches() )
             {
-                Matcher matcher = regex.matcher( s );
-                if ( matcher.matches() )
+                Map<String, List<Entry>> m = scObjEntryMap.get( scObjTypeRdn );
+                List<Entry> entryList = m.get( schemaName );
+                if ( entryList == null )
                 {
-                    matchesFound = true;
-                    entries.add( readLdif( s ).getEntry() );
+                    entryList = new ArrayList<Entry>();
+                    entryList.add( ldifEntry.getEntry() );
+                    m.put( schemaName, entryList );
                 }
-                else if ( matchesFound )
+                else
                 {
-                    break;
+                    entryList.add( ldifEntry.getEntry() );
                 }
 
-                if ( schemaFile.getFilePointer() >= endOffset )
-                {
-                    break;
-                }
+                break;
             }
-
-            return entries;
         }
-        catch ( Exception e )
-        {
-            throw new LdapException( e.getMessage(), e );
-        }
-
-    }
-
-
-    private Pattern getPattern( Schema schema, String schemaObjectTypeRdn )
-    {
-        Pattern regex = Pattern.compile(
-            "dn:\\s*m-oid=[0-9\\.]*" + ",ou=" + schemaObjectTypeRdn + ",cn=" + schema.getSchemaName() + ",ou=schema",
-            Pattern.CASE_INSENSITIVE );
-
-        return regex;
     }
 
 
     private List<Entry> loadSchemaObjects( String schemaObjectType, Schema... schemas ) throws LdapException,
         IOException
     {
-        List<Entry> scObjTypeList = new ArrayList<Entry>();
+        Map<String, List<Entry>> m = scObjEntryMap.get( schemaObjectType );
+        List<Entry> atList = new ArrayList<Entry>();
 
-        if ( schemas == null )
+        for ( Schema s : schemas )
         {
-            return scObjTypeList;
+            List<Entry> preLoaded = m.get( s.getSchemaName() );
+            if ( preLoaded != null )
+            {
+                atList.addAll( preLoaded );
+            }
         }
 
-        for ( Schema schema : schemas )
-        {
-            SchemaMarker marker = markerMap.get( schema.getSchemaName() );
-            schemaFile.seek( marker.getStart() );
-
-            Pattern scObjEntryRegex = getPattern( schema, schemaObjectType );
-
-            scObjTypeList.addAll( getMatchingEntries( scObjEntryRegex, marker.getEnd() ) );
-        }
-
-        return scObjTypeList;
+        return atList;
     }
 
 
@@ -250,7 +166,6 @@ public class SingleLdifSchemaLoader extends AbstractSchemaLoader
      */
     public List<Entry> loadAttributeTypes( Schema... schemas ) throws LdapException, IOException
     {
-
         return loadSchemaObjects( "attributetypes", schemas );
     }
 
