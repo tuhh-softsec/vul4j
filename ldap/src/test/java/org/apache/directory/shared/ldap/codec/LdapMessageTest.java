@@ -32,8 +32,10 @@ import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.codec.EncoderException;
-import org.apache.directory.shared.ldap.codec.unbind.UnBindRequestCodec;
+import org.apache.directory.shared.ldap.message.LdapProtocolEncoder;
+import org.apache.directory.shared.ldap.message.UnbindRequestImpl;
 import org.apache.directory.shared.ldap.message.internal.InternalMessage;
+import org.apache.directory.shared.ldap.message.internal.InternalUnbindRequest;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -48,6 +50,10 @@ import org.junit.runner.RunWith;
 @Concurrent()
 public class LdapMessageTest
 {
+    /** The encoder instance */
+    LdapProtocolEncoder encoder = new LdapProtocolEncoder();
+
+
     // ~ Methods
     // ------------------------------------------------------------------------------------
 
@@ -310,14 +316,14 @@ public class LdapMessageTest
         assertEquals( 500, message.getMessageId() );
 
         // Check the length
-        UnBindRequestCodec unbindRequestCodec = new UnBindRequestCodec();
-        unbindRequestCodec.setMessageId( message.getMessageId() );
-
-        assertEquals( 8, unbindRequestCodec.computeLength() );
+        InternalUnbindRequest internalUnbindRequest = new UnbindRequestImpl( message.getMessageId() );
 
         try
         {
-            ByteBuffer bb = unbindRequestCodec.encode();
+            ByteBuffer bb = encoder.encodeMessage( internalUnbindRequest );
+
+            // Check the length
+            assertEquals( 0x08, bb.limit() );
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 

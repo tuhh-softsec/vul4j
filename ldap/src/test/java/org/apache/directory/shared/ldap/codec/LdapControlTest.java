@@ -84,7 +84,6 @@ public class LdapControlTest
                 // controlType LDAPOID}
                 0x04, 0x0D, '1', '.', '3', '.', '6', '.', '1', '.', '5', '.', '5', '.', '4' } );
 
-        String decodedPdu = StringTools.dumpBytes( stream.array() );
         stream.flip();
 
         // Allocate a LdapMessageContainer Container
@@ -102,8 +101,7 @@ public class LdapControlTest
         }
 
         // Check that everything is OK
-        InternalAbandonRequest abandonRequest = ( ( LdapMessageContainer ) ldapMessageContainer )
-            .getInternalAbandonRequest();
+        InternalAbandonRequest abandonRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getAbandonRequest();
 
         // Copy the message
         InternalAbandonRequest internalAbandonRequest = new AbandonRequestImpl( abandonRequest.getMessageId() );
@@ -162,7 +160,7 @@ public class LdapControlTest
             }
 
             InternalAbandonRequest abandonRequest2 = ( ( LdapMessageContainer ) ldapMessageContainer )
-                .getInternalAbandonRequest();
+                .getAbandonRequest();
 
             assertEquals( abandonRequest, abandonRequest2 );
         }

@@ -97,8 +97,7 @@ public class SearchResultDoneTest
             fail( de.getMessage() );
         }
 
-        SearchResultDone searchResultDone = ( ( LdapMessageContainer ) ldapMessageContainer )
-            .getInternalSearchResultDone();
+        SearchResultDone searchResultDone = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchResultDone();
 
         assertEquals( 1, searchResultDone.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, searchResultDone.getLdapResult().getResultCode() );
@@ -178,8 +177,7 @@ public class SearchResultDoneTest
             fail( de.getMessage() );
         }
 
-        SearchResultDone searchResultDone = ( ( LdapMessageContainer ) ldapMessageContainer )
-            .getInternalSearchResultDone();
+        SearchResultDone searchResultDone = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchResultDone();
 
         assertEquals( 1, searchResultDone.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, searchResultDone.getLdapResult().getResultCode() );

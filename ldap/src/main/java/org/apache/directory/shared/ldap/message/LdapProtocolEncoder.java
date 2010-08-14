@@ -50,6 +50,7 @@ import org.apache.directory.shared.ldap.message.internal.InternalAbandonRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalIntermediateResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalMessage;
 import org.apache.directory.shared.ldap.message.internal.InternalReferral;
+import org.apache.directory.shared.ldap.message.internal.InternalUnbindRequest;
 import org.apache.directory.shared.ldap.message.internal.LdapResult;
 import org.apache.directory.shared.ldap.message.internal.ModifyDnResponse;
 import org.apache.directory.shared.ldap.message.internal.ModifyResponse;
@@ -122,7 +123,8 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
             || ( message instanceof ExtendedResponse ) || ( message instanceof ModifyResponse )
             || ( message instanceof ModifyDnResponse ) || ( message instanceof InternalIntermediateResponse )
             || ( message instanceof SearchResultDone ) || ( message instanceof SearchResultEntry )
-            || ( message instanceof SearchResultReference ) || ( message instanceof InternalAbandonRequest ) )
+            || ( message instanceof SearchResultReference ) || ( message instanceof InternalAbandonRequest )
+            || ( message instanceof InternalUnbindRequest ) )
         {
             try
             {
@@ -876,6 +878,18 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
 
 
     /**
+     * Compute the UnBindRequest length 
+     * 
+     * UnBindRequest : 
+     * 0x42 00
+     */
+    private int computeUnbindRequestLength( UnbindRequestImpl unbindRequest )
+    {
+        return 2; // Always 2
+    }
+
+
+    /**
      * Encode the Abandon protocolOp part
      */
     private void encodeAbandonRequest( ByteBuffer buffer, AbandonRequestImpl abandonRequest ) throws EncoderException
@@ -1292,6 +1306,27 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
 
 
     /**
+     * Encode the Unbind protocolOp part
+     */
+    private void encodeUnbindRequest( ByteBuffer buffer, UnbindRequestImpl unbindRequest ) throws EncoderException
+    {
+        try
+        {
+            // The tag
+            buffer.put( LdapConstants.UNBIND_REQUEST_TAG );
+
+            // The length is always null.
+            buffer.put( ( byte ) 0 );
+        }
+        catch ( BufferOverflowException boe )
+        {
+            String msg = I18n.err( I18n.ERR_04005 );
+            throw new EncoderException( msg );
+        }
+    }
+
+
+    /**
      * Encode the SearchResultReference message to a PDU.
      * 
      * SearchResultReference :
@@ -1378,6 +1413,9 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
             case SEARCH_RESULT_REFERENCE:
                 return computeSearchResultReferenceLength( ( SearchResultReferenceImpl ) message );
 
+            case UNBIND_REQUEST:
+                return computeUnbindRequestLength( ( UnbindRequestImpl ) message );
+
             default:
                 return 0;
         }
@@ -1438,6 +1476,10 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
 
             case SEARCH_RESULT_REFERENCE:
                 encodeSearchResultReference( bb, ( SearchResultReferenceImpl ) message );
+                break;
+
+            case UNBIND_REQUEST:
+                encodeUnbindRequest( bb, ( UnbindRequestImpl ) message );
                 break;
         }
     }

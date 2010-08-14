@@ -34,6 +34,8 @@ import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
+import org.apache.directory.shared.ldap.message.LdapProtocolEncoder;
+import org.apache.directory.shared.ldap.message.UnbindRequestImpl;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.message.internal.InternalUnbindRequest;
 import org.apache.directory.shared.ldap.util.StringTools;
@@ -48,6 +50,10 @@ import org.junit.runner.RunWith;
 @Concurrent()
 public class UnBindRequestTest
 {
+    /** The encoder instance */
+    LdapProtocolEncoder encoder = new LdapProtocolEncoder();
+
+
     /**
      * Test the decoding of a UnBindRequest with no controls
      */
@@ -80,20 +86,19 @@ public class UnBindRequestTest
             fail( de.getMessage() );
         }
 
-        InternalUnbindRequest unbindRequest = ( ( LdapMessageContainer ) ldapMessageContainer )
-            .getInternalUnbindRequest();
+        InternalUnbindRequest unbindRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getUnbindRequest();
 
         assertEquals( 1, unbindRequest.getMessageId() );
 
-        // Check the length
-        UnBindRequestCodec unbindRequestCodec = new UnBindRequestCodec();
-        unbindRequestCodec.setMessageId( unbindRequest.getMessageId() );
-
-        assertEquals( 7, unbindRequestCodec.computeLength() );
+        // Check the encoding
+        InternalUnbindRequest internalUnbindRequest = new UnbindRequestImpl( unbindRequest.getMessageId() );
 
         try
         {
-            ByteBuffer bb = unbindRequestCodec.encode();
+            ByteBuffer bb = encoder.encodeMessage( internalUnbindRequest );
+
+            // Check the length
+            assertEquals( 0x07, bb.limit() );
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -145,8 +150,7 @@ public class UnBindRequestTest
             fail( de.getMessage() );
         }
 
-        InternalUnbindRequest unbindRequest = ( ( LdapMessageContainer ) ldapMessageContainer )
-            .getInternalUnbindRequest();
+        InternalUnbindRequest unbindRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getUnbindRequest();
 
         assertEquals( 1, unbindRequest.getMessageId() );
 
@@ -159,16 +163,16 @@ public class UnBindRequestTest
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
         assertEquals( "", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
 
-        // Check the length
-        UnBindRequestCodec unbindRequestCodec = new UnBindRequestCodec();
-        unbindRequestCodec.setMessageId( unbindRequest.getMessageId() );
-        unbindRequestCodec.addControl( control );
-
-        assertEquals( 0x24, unbindRequestCodec.computeLength() );
+        // Check the encoding
+        InternalUnbindRequest internalUnbindRequest = new UnbindRequestImpl( unbindRequest.getMessageId() );
+        internalUnbindRequest.add( control );
 
         try
         {
-            ByteBuffer bb = unbindRequestCodec.encode();
+            ByteBuffer bb = encoder.encodeMessage( internalUnbindRequest );
+
+            // Check the length
+            assertEquals( 0x24, bb.limit() );
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 

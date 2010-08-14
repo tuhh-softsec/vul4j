@@ -30,7 +30,6 @@ import org.apache.directory.shared.ldap.codec.extended.ExtendedRequestCodec;
 import org.apache.directory.shared.ldap.codec.modify.ModifyRequestCodec;
 import org.apache.directory.shared.ldap.codec.modifyDn.ModifyDNRequestCodec;
 import org.apache.directory.shared.ldap.codec.search.SearchRequestCodec;
-import org.apache.directory.shared.ldap.codec.unbind.UnBindRequestCodec;
 import org.apache.directory.shared.ldap.message.internal.AddResponse;
 import org.apache.directory.shared.ldap.message.internal.BindResponse;
 import org.apache.directory.shared.ldap.message.internal.CompareResponse;
@@ -148,15 +147,6 @@ public class LdapMessageContainer extends AbstractContainer
      * @return Returns the AbandonRequest stored in the container
      */
     public InternalAbandonRequest getAbandonRequest()
-    {
-        return ( InternalAbandonRequest ) internalMessage;
-    }
-
-
-    /**
-     * @return Returns the AbandonRequest stored in the container
-     */
-    public InternalAbandonRequest getInternalAbandonRequest()
     {
         return ( InternalAbandonRequest ) internalMessage;
     }
@@ -363,7 +353,7 @@ public class LdapMessageContainer extends AbstractContainer
     /**
      * @return Returns the SearchResultDone stored in the container
      */
-    public SearchResultDone getInternalSearchResultDone()
+    public SearchResultDone getSearchResultDone()
     {
         return ( SearchResultDone ) internalMessage;
     }
@@ -372,16 +362,7 @@ public class LdapMessageContainer extends AbstractContainer
     /**
      * @return Returns the UnbindRequest stored in the container
      */
-    public UnBindRequestCodec getUnbindRequest()
-    {
-        return ( UnBindRequestCodec ) ldapMessage;
-    }
-
-
-    /**
-     * @return Returns the UnbindRequest stored in the container
-     */
-    public InternalUnbindRequest getInternalUnbindRequest()
+    public InternalUnbindRequest getUnbindRequest()
     {
         return ( InternalUnbindRequest ) internalMessage;
     }

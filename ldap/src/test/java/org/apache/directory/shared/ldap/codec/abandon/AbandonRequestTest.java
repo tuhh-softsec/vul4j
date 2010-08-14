@@ -107,8 +107,7 @@ public class AbandonRequestTest
         }
 
         // Check that everything is OK
-        InternalAbandonRequest abandonRequest = ( ( LdapMessageContainer ) ldapMessageContainer )
-            .getInternalAbandonRequest();
+        InternalAbandonRequest abandonRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getAbandonRequest();
 
         // Copy the message
         InternalAbandonRequest internalAbandonRequest = new AbandonRequestImpl( abandonRequest.getMessageId() );
@@ -167,7 +166,7 @@ public class AbandonRequestTest
             }
 
             InternalAbandonRequest abandonRequest2 = ( ( LdapMessageContainer ) ldapMessageContainer )
-                .getInternalAbandonRequest();
+                .getAbandonRequest();
 
             assertEquals( abandonRequest, abandonRequest2 );
         }
@@ -214,8 +213,7 @@ public class AbandonRequestTest
         }
 
         // Check that everything is OK
-        InternalAbandonRequest abandonRequest = ( ( LdapMessageContainer ) ldapMessageContainer )
-            .getInternalAbandonRequest();
+        InternalAbandonRequest abandonRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getAbandonRequest();
 
         assertEquals( 32787, abandonRequest.getMessageId() );
         assertEquals( 2, abandonRequest.getAbandoned() );
