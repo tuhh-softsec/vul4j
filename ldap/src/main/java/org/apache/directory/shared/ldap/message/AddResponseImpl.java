@@ -20,8 +20,8 @@
 package org.apache.directory.shared.ldap.message;
 
 
-import org.apache.directory.shared.ldap.message.internal.InternalAbstractResultResponse;
 import org.apache.directory.shared.ldap.message.internal.AddResponse;
+import org.apache.directory.shared.ldap.message.internal.InternalAbstractResultResponse;
 
 
 /**
@@ -78,7 +78,6 @@ public class AddResponseImpl extends InternalAbstractResultResponse implements A
      */
     public String toString()
     {
-
         StringBuilder sb = new StringBuilder();
 
         sb.append( "    Add Response\n" );

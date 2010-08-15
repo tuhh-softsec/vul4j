@@ -20,14 +20,16 @@
 package org.apache.directory.shared.ldap.message;
 
 
+import java.util.List;
+
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.entry.DefaultEntry;
 import org.apache.directory.shared.ldap.entry.DefaultEntryAttribute;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.exception.LdapException;
-import org.apache.directory.shared.ldap.message.internal.InternalAddRequest;
 import org.apache.directory.shared.ldap.message.internal.AddResponse;
+import org.apache.directory.shared.ldap.message.internal.InternalAddRequest;
 import org.apache.directory.shared.ldap.message.internal.ResultResponse;
 import org.apache.directory.shared.ldap.name.DN;
 
@@ -49,6 +51,18 @@ public class AddRequestImpl extends AbstractAbandonableRequest implements Intern
     /** The current attribute being decoded */
     private EntryAttribute currentAttribute;
 
+    /** The add request length */
+    private int addRequestLength;
+
+    /** The Entry length */
+    private int entryLength;
+
+    /** The list of all attributes length */
+    private List<Integer> attributesLength;
+
+    /** The list of all vals length */
+    private List<Integer> valuesLength;
+
 
     // ------------------------------------------------------------------------
     // Constructors
@@ -56,9 +70,18 @@ public class AddRequestImpl extends AbstractAbandonableRequest implements Intern
 
     /**
      * Creates an AddRequest implementation to create a new entry.
+     */
+    public AddRequestImpl()
+    {
+        super( -1, TYPE );
+        entry = new DefaultEntry();
+    }
+
+
+    /**
+     * Creates an AddRequest implementation to create a new entry.
      * 
-     * @param id
-     *            the sequence identifier of the AddRequest message.
+     * @param id the sequence identifier of the AddRequest message.
      */
     public AddRequestImpl( final int id )
     {
@@ -210,6 +233,82 @@ public class AddRequestImpl extends AbstractAbandonableRequest implements Intern
 
 
     /**
+     * Stores the encoded length for the AddRequest
+     * @param addRequestLength The encoded length
+     */
+    /* No qualifier*/void setAddRequestLength( int addRequestLength )
+    {
+        this.addRequestLength = addRequestLength;
+    }
+
+
+    /**
+     * @return The encoded AddRequest's length
+     */
+    /* No qualifier */int getAddRequestLength()
+    {
+        return addRequestLength;
+    }
+
+
+    /**
+     * Stores the encoded length for the Entry
+     * @param entryLength The encoded length
+     */
+    /* No qualifier*/void setEntryLength( int entryLength )
+    {
+        this.entryLength = entryLength;
+    }
+
+
+    /**
+     * @return The encoded Entry's length
+     */
+    /* No qualifier */int getEntryLength()
+    {
+        return entryLength;
+    }
+
+
+    /**
+     * Stores the encoded length for the attributes
+     * @param atributesLength The encoded length
+     */
+    /* No qualifier*/void setAttributesLength( List<Integer> attributesLength )
+    {
+        this.attributesLength = attributesLength;
+    }
+
+
+    /**
+     * @return The encoded values length
+     */
+    /* No qualifier */List<Integer> getAttributesLength()
+    {
+        return attributesLength;
+    }
+
+
+    /**
+     * Stores the encoded length for the values
+     * @param valuesLength The encoded length
+     */
+    /* No qualifier*/void setValuesLength( List<Integer> valuesLength )
+    {
+        this.valuesLength = valuesLength;
+    }
+
+
+    /**
+     * @return The encoded values length
+     */
+    /* No qualifier */List<Integer> getValuesLength()
+    {
+        return valuesLength;
+    }
+
+
+    /**
      * Checks to see if an object is equivalent to this AddRequest. First
      * there's a quick test to see if the obj is the same object as this one -
      * if so true is returned. Next if the super method fails false is returned.
@@ -218,8 +317,7 @@ public class AddRequestImpl extends AbstractAbandonableRequest implements Intern
      * not the same false is returned otherwise the method exists returning
      * true.
      * 
-     * @param obj
-     *            the object to test for equality to this
+     * @param obj the object to test for equality to this
      * @return true if the obj is equal to this AddRequest, false otherwise
      */
     public boolean equals( Object obj )

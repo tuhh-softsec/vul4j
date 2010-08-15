@@ -38,13 +38,13 @@ import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.codec.EncoderException;
-import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.ResponseCarryingException;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.message.AddResponseImpl;
+import org.apache.directory.shared.ldap.message.LdapProtocolEncoder;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.message.internal.InternalAddRequest;
@@ -63,6 +63,10 @@ import org.junit.runner.RunWith;
 @Concurrent()
 public class AddRequestTest
 {
+    /** The encoder instance */
+    LdapProtocolEncoder encoder = new LdapProtocolEncoder();
+
+
     /**
      * Test the decoding of a AddRequest
      */
@@ -110,6 +114,7 @@ public class AddRequestTest
                 0x04, 0x05, 't', 'e', 's', 't', '1', 0x04, 0x05, 't', 'e', 's', 't', '2', 0x04, 0x05, 't', 'e', 's',
                 't', '3', } );
 
+        String decodedPdu = StringTools.dumpBytes( stream.array() );
         stream.flip();
 
         // Allocate a LdapMessage Container
@@ -179,12 +184,34 @@ public class AddRequestTest
             vals.remove( value.get() );
         }
 
-        // Check the length
-        AddRequestCodec addRequestCodec = new AddRequestCodec();
-        addRequestCodec.setEntry( entry );
-        addRequestCodec.setMessageId( addRequest.getMessageId() );
+        // Check the encoding
+        try
+        {
+            ByteBuffer bb = encoder.encodeMessage( addRequest );
 
-        assertEquals( 0x59, addRequestCodec.computeLength() );
+            // Check the length
+            assertEquals( 0x59, bb.limit() );
+
+            // We cannot compare the PDU, as the attributes order is not
+            // kept. Let's decode again and compare the resulting AddRequest
+            try
+            {
+                ldapDecoder.decode( bb, ldapMessageContainer );
+            }
+            catch ( DecoderException de )
+            {
+                de.printStackTrace();
+                fail( de.getMessage() );
+            }
+
+            InternalAddRequest addRequest2 = ( ( LdapMessageContainer ) ldapMessageContainer ).getInternalAddRequest();
+            assertEquals( addRequest, addRequest2 );
+        }
+        catch ( EncoderException ee )
+        {
+            ee.printStackTrace();
+            fail( ee.getMessage() );
+        }
     }
 
 
@@ -662,17 +689,13 @@ public class AddRequestTest
             assertEquals( "", value.getString() );
         }
 
-        // Check the length
-        AddRequestCodec addRequestCodec = new AddRequestCodec();
-        addRequestCodec.setEntry( entry );
-        addRequestCodec.setMessageId( addRequest.getMessageId() );
-
-        assertEquals( 0x34, addRequestCodec.computeLength() );
-
         // Check the encoding
         try
         {
-            ByteBuffer bb = addRequestCodec.encode();
+            ByteBuffer bb = encoder.encodeMessage( addRequest );
+
+            // Check the length
+            assertEquals( 0x34, bb.limit() );
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -769,18 +792,13 @@ public class AddRequestTest
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
         assertEquals( "", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
 
-        // Check the length
-        AddRequestCodec addRequestCodec = new AddRequestCodec();
-        addRequestCodec.setEntry( entry );
-        addRequestCodec.setMessageId( addRequest.getMessageId() );
-        ( ( LdapMessageCodec ) addRequestCodec ).addControl( control );
-
-        assertEquals( 0x51, addRequestCodec.computeLength() );
-
         // Check the encoding
         try
         {
-            ByteBuffer bb = addRequestCodec.encode();
+            ByteBuffer bb = encoder.encodeMessage( addRequest );
+
+            // Check the length
+            assertEquals( 0x51, bb.limit() );
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 

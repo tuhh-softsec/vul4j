@@ -47,6 +47,7 @@ import org.apache.directory.shared.ldap.message.internal.CompareResponse;
 import org.apache.directory.shared.ldap.message.internal.DeleteResponse;
 import org.apache.directory.shared.ldap.message.internal.ExtendedResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalAbandonRequest;
+import org.apache.directory.shared.ldap.message.internal.InternalAddRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalBindRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalDeleteRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalIntermediateResponse;
@@ -127,7 +128,7 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
             || ( message instanceof SearchResultDone ) || ( message instanceof SearchResultEntry )
             || ( message instanceof SearchResultReference ) || ( message instanceof InternalAbandonRequest )
             || ( message instanceof InternalDeleteRequest ) || ( message instanceof InternalUnbindRequest )
-            || ( message instanceof InternalBindRequest ) )
+            || ( message instanceof InternalBindRequest ) || ( message instanceof InternalAddRequest ) )
         {
             try
             {
@@ -406,6 +407,109 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
         int length = 1 + 1 + Value.getNbBytes( abandonRequest.getAbandoned() );
 
         return length;
+    }
+
+
+    /**
+     * Compute the AddRequest length
+     * 
+     * AddRequest :
+     * 
+     * 0x68 L1
+     *  |
+     *  +--> 0x04 L2 entry
+     *  +--> 0x30 L3 (attributes)
+     *        |
+     *        +--> 0x30 L4-1 (attribute)
+     *        |     |
+     *        |     +--> 0x04 L5-1 type
+     *        |     +--> 0x31 L6-1 (values)
+     *        |           |
+     *        |           +--> 0x04 L7-1-1 value
+     *        |           +--> ...
+     *        |           +--> 0x04 L7-1-n value
+     *        |
+     *        +--> 0x30 L4-2 (attribute)
+     *        |     |
+     *        |     +--> 0x04 L5-2 type
+     *        |     +--> 0x31 L6-2 (values)
+     *        |           |
+     *        |           +--> 0x04 L7-2-1 value
+     *        |           +--> ...
+     *        |           +--> 0x04 L7-2-n value
+     *        |
+     *        +--> ...
+     *        |
+     *        +--> 0x30 L4-m (attribute)
+     *              |
+     *              +--> 0x04 L5-m type
+     *              +--> 0x31 L6-m (values)
+     *                    |
+     *                    +--> 0x04 L7-m-1 value
+     *                    +--> ...
+     *                    +--> 0x04 L7-m-n value
+     */
+    private int computeAddRequestLength( AddRequestImpl addRequest )
+    {
+        Entry entry = addRequest.getEntry();
+
+        if ( entry == null )
+        {
+            throw new IllegalArgumentException( I18n.err( I18n.ERR_04481_ENTRY_NULL_VALUE ) );
+        }
+
+        // The entry DN
+        int addRequestLength = 1 + TLV.getNbBytes( DN.getNbBytes( entry.getDn() ) ) + DN.getNbBytes( entry.getDn() );
+
+        // The attributes sequence
+        int entryLength = 0;
+
+        if ( entry.size() != 0 )
+        {
+            List<Integer> attributesLength = new LinkedList<Integer>();
+            List<Integer> valuesLength = new LinkedList<Integer>();
+
+            // Compute the attributes length
+            for ( EntryAttribute attribute : entry )
+            {
+                int localAttributeLength = 0;
+                int localValuesLength = 0;
+
+                // Get the type length
+                int idLength = attribute.getId().getBytes().length;
+                localAttributeLength = 1 + TLV.getNbBytes( idLength ) + idLength;
+
+                // The values
+                if ( attribute.size() != 0 )
+                {
+                    localValuesLength = 0;
+
+                    for ( org.apache.directory.shared.ldap.entry.Value<?> value : attribute )
+                    {
+                        int valueLength = value.getBytes().length;
+                        localValuesLength += 1 + TLV.getNbBytes( valueLength ) + valueLength;
+                    }
+
+                    localAttributeLength += 1 + TLV.getNbBytes( localValuesLength ) + localValuesLength;
+                }
+
+                // add the attribute length to the attributes length
+                entryLength += 1 + TLV.getNbBytes( localAttributeLength ) + localAttributeLength;
+
+                attributesLength.add( localAttributeLength );
+                valuesLength.add( localValuesLength );
+            }
+
+            addRequest.setAttributesLength( attributesLength );
+            addRequest.setValuesLength( valuesLength );
+            addRequest.setEntryLength( entryLength );
+        }
+
+        addRequestLength += 1 + TLV.getNbBytes( entryLength ) + entryLength;
+        addRequest.setAddRequestLength( addRequestLength );
+
+        // Return the result.
+        return 1 + TLV.getNbBytes( addRequestLength ) + addRequestLength;
     }
 
 
@@ -996,6 +1100,95 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
 
 
     /**
+     * Encode the AddRequest message to a PDU. 
+     * 
+     * AddRequest :
+     * 
+     * 0x68 LL
+     *   0x04 LL entry
+     *   0x30 LL attributesList
+     *     0x30 LL attributeList
+     *       0x04 LL attributeDescription
+     *       0x31 LL attributeValues
+     *         0x04 LL attributeValue
+     *         ... 
+     *         0x04 LL attributeValue
+     *     ... 
+     *     0x30 LL attributeList
+     *       0x04 LL attributeDescription
+     *       0x31 LL attributeValue
+     *         0x04 LL attributeValue
+     *         ... 
+     *         0x04 LL attributeValue 
+     * 
+     * @param buffer The buffer where to put the PDU
+     */
+    protected void encodeAddRequest( ByteBuffer buffer, AddRequestImpl addRequest ) throws EncoderException
+    {
+        try
+        {
+            // The AddRequest Tag
+            buffer.put( LdapConstants.ADD_REQUEST_TAG );
+            buffer.put( TLV.getBytes( addRequest.getAddRequestLength() ) );
+
+            // The entry
+            Value.encode( buffer, DN.getBytes( addRequest.getEntryDn() ) );
+
+            // The attributes sequence
+            buffer.put( UniversalTag.SEQUENCE_TAG );
+            buffer.put( TLV.getBytes( addRequest.getEntryLength() ) );
+
+            // The partial attribute list
+            Entry entry = addRequest.getEntry();
+
+            if ( entry.size() != 0 )
+            {
+                int attributeNumber = 0;
+
+                // Compute the attributes length
+                for ( EntryAttribute attribute : entry )
+                {
+                    // The attributes list sequence
+                    buffer.put( UniversalTag.SEQUENCE_TAG );
+                    int localAttributeLength = addRequest.getAttributesLength().get( attributeNumber );
+                    buffer.put( TLV.getBytes( localAttributeLength ) );
+
+                    // The attribute type
+                    Value.encode( buffer, attribute.getId() );
+
+                    // The values
+                    buffer.put( UniversalTag.SET_TAG );
+                    int localValuesLength = addRequest.getValuesLength().get( attributeNumber );
+                    buffer.put( TLV.getBytes( localValuesLength ) );
+
+                    if ( attribute.size() != 0 )
+                    {
+                        for ( org.apache.directory.shared.ldap.entry.Value<?> value : attribute )
+                        {
+                            if ( value.isBinary() )
+                            {
+                                Value.encode( buffer, value.getBytes() );
+                            }
+                            else
+                            {
+                                Value.encode( buffer, value.getString() );
+                            }
+                        }
+                    }
+
+                    // Go to the next attribute number;
+                    attributeNumber++;
+                }
+            }
+        }
+        catch ( BufferOverflowException boe )
+        {
+            throw new EncoderException( "The PDU buffer size is too small !" );
+        }
+    }
+
+
+    /**
      * Encode the AddResponse message to a PDU.
      * 
      * @param buffer The buffer where to put the PDU
@@ -1573,6 +1766,9 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
             case ABANDON_REQUEST:
                 return computeAbandonRequestLength( ( AbandonRequestImpl ) message );
 
+            case ADD_REQUEST:
+                return computeAddRequestLength( ( AddRequestImpl ) message );
+
             case ADD_RESPONSE:
                 return computeAddResponseLength( ( AddResponseImpl ) message );
 
@@ -1627,6 +1823,10 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
         {
             case ABANDON_REQUEST:
                 encodeAbandonRequest( bb, ( AbandonRequestImpl ) message );
+                break;
+
+            case ADD_REQUEST:
+                encodeAddRequest( bb, ( AddRequestImpl ) message );
                 break;
 
             case ADD_RESPONSE:
