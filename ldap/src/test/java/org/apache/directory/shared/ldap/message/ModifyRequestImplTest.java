@@ -368,12 +368,12 @@ public class ModifyRequestImplTest
             }
 
 
-            public void add( Control a_control ) throws MessageException
+            public void addControl( Control a_control ) throws MessageException
             {
             }
 
 
-            public void remove( Control a_control ) throws MessageException
+            public void removeControl( Control a_control ) throws MessageException
             {
             }
 
@@ -418,7 +418,7 @@ public class ModifyRequestImplTest
             }
 
 
-            public void addAll( Control[] controls ) throws MessageException
+            public void addAllControls( Control[] controls ) throws MessageException
             {
             }
 
@@ -453,6 +453,17 @@ public class ModifyRequestImplTest
 
 
             public void setMessageLength( int messageLength )
+            {
+            }
+
+
+            public Control getControl( String oid )
+            {
+                return null;
+            }
+
+
+            public void setMessageId( int messageId )
             {
             }
         };

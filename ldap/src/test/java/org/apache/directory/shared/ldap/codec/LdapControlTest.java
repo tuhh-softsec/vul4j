@@ -119,25 +119,25 @@ public class LdapControlTest
         assertEquals( "1.3.6.1.5.5.1", control.getOid() );
         assertEquals( "0x61 0x62 0x63 0x64 0x65 0x66 ", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
         assertTrue( control.isCritical() );
-        internalAbandonRequest.add( control );
+        internalAbandonRequest.addControl( control );
 
         control = controls.get( "1.3.6.1.5.5.2" );
         assertEquals( "1.3.6.1.5.5.2", control.getOid() );
         assertEquals( "0x67 0x68 0x69 0x6A 0x6B 0x6C ", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
         assertFalse( control.isCritical() );
-        internalAbandonRequest.add( control );
+        internalAbandonRequest.addControl( control );
 
         control = controls.get( "1.3.6.1.5.5.3" );
         assertEquals( "1.3.6.1.5.5.3", control.getOid() );
         assertEquals( "", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
         assertTrue( control.isCritical() );
-        internalAbandonRequest.add( control );
+        internalAbandonRequest.addControl( control );
 
         control = controls.get( "1.3.6.1.5.5.4" );
         assertEquals( "1.3.6.1.5.5.4", control.getOid() );
         assertEquals( "", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
         assertFalse( control.isCritical() );
-        internalAbandonRequest.add( control );
+        internalAbandonRequest.addControl( control );
 
         // Check the encoding
         try

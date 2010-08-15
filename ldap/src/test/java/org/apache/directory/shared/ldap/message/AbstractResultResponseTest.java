@@ -29,8 +29,8 @@ import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.codec.controls.ControlImpl;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.message.internal.InternalAbstractResultResponse;
-import org.apache.directory.shared.ldap.message.internal.LdapResult;
 import org.apache.directory.shared.ldap.message.internal.InternalReferral;
+import org.apache.directory.shared.ldap.message.internal.LdapResult;
 import org.apache.directory.shared.ldap.name.DN;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -188,13 +188,13 @@ public class AbstractResultResponseTest
     {
         InternalAbstractResultResponse msg0;
         InternalAbstractResultResponse msg1;
-        
+
         msg0 = new InternalAbstractResultResponse( 5, MessageTypeEnum.BIND_REQUEST )
         {
             private static final long serialVersionUID = 1L;
         };
-        
-        msg0.add( new ControlImpl( "0.0" )
+
+        msg0.addControl( new ControlImpl( "0.0" )
         {
             private static final long serialVersionUID = 1L;
 
@@ -221,7 +221,7 @@ public class AbstractResultResponseTest
                 return null;
             }
         } );
-        
+
         msg1 = new InternalAbstractResultResponse( 5, MessageTypeEnum.BIND_REQUEST )
         {
             private static final long serialVersionUID = 1L;

@@ -165,7 +165,7 @@ public class UnBindRequestTest
 
         // Check the encoding
         InternalUnbindRequest internalUnbindRequest = new UnbindRequestImpl( unbindRequest.getMessageId() );
-        internalUnbindRequest.add( control );
+        internalUnbindRequest.addControl( control );
 
         try
         {

@@ -149,12 +149,12 @@ public class SearchResponseDoneImplTest
             }
 
 
-            public void add( Control a_control ) throws MessageException
+            public void addControl( Control a_control ) throws MessageException
             {
             }
 
 
-            public void remove( Control a_control ) throws MessageException
+            public void removeControl( Control a_control ) throws MessageException
             {
             }
 
@@ -177,7 +177,7 @@ public class SearchResponseDoneImplTest
             }
 
 
-            public void addAll( Control[] controls ) throws MessageException
+            public void addAllControls( Control[] controls ) throws MessageException
             {
             }
 
@@ -216,17 +216,14 @@ public class SearchResponseDoneImplTest
             }
 
 
-            public int getSearchResultDoneLength()
+            public Control getControl( String oid )
             {
-                // TODO Auto-generated method stub
-                return 0;
+                return null;
             }
 
 
-            public void setSearchResultDoneLength( int searchResultDoneLength )
+            public void setMessageId( int messageId )
             {
-                // TODO Auto-generated method stub
-
             }
         };
 

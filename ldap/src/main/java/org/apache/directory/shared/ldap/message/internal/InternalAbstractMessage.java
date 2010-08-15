@@ -26,7 +26,6 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
-import org.apache.directory.shared.ldap.codec.controls.CodecControl;
 import org.apache.directory.shared.ldap.message.MessageException;
 import org.apache.directory.shared.ldap.message.control.Control;
 
@@ -47,7 +46,7 @@ public abstract class InternalAbstractMessage implements InternalMessage
     private int controlsLength;
 
     /** The session unique message sequence identifier */
-    private final int id;
+    private int id;
 
     /** The message type enumeration */
     private final MessageTypeEnum type;
@@ -65,10 +64,8 @@ public abstract class InternalAbstractMessage implements InternalMessage
     /**
      * Completes the instantiation of a Message.
      * 
-     * @param id
-     *            the seq id of the message
-     * @param type
-     *            the type of the message
+     * @param id the seq id of the message
+     * @param type the type of the message
      */
     protected InternalAbstractMessage( final int id, final MessageTypeEnum type )
     {
@@ -93,15 +90,27 @@ public abstract class InternalAbstractMessage implements InternalMessage
     }
 
 
+    public void setMessageId( int id )
+    {
+        this.id = id;
+    }
+
+
     /**
-     * Gets the controls associated with this message mapped by OID.
-     * 
-     * @return Map of OID strings to Control object instances.
-     * @see CodecControl
+     * {@inheritDoc}
      */
     public Map<String, Control> getControls()
     {
         return Collections.unmodifiableMap( controls );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public Control getControl( String oid )
+    {
+        return controls.get( oid );
     }
 
 
@@ -117,7 +126,7 @@ public abstract class InternalAbstractMessage implements InternalMessage
 
 
     /**
-     * @see org.apache.directory.shared.ldap.message.internal.InternalMessage#hasControl(java.lang.String)
+     * {@inheritDoc}
      */
     public boolean hasControl( String oid )
     {
@@ -126,15 +135,9 @@ public abstract class InternalAbstractMessage implements InternalMessage
 
 
     /**
-     * Adds a control to this Message.
-     * 
-     * @param control
-     *            the control to add.
-     * @throws MessageException
-     *             if controls cannot be added to this Message or the control is
-     *             not known etc.
+     * {@inheritDoc}
      */
-    public void add( Control control ) throws MessageException
+    public void addControl( Control control ) throws MessageException
     {
         controls.put( control.getOid(), control );
         currentControl = control;
@@ -144,13 +147,11 @@ public abstract class InternalAbstractMessage implements InternalMessage
     /**
      * Deletes a control removing it from this Message.
      * 
-     * @param control
-     *            the control to remove.
-     * @throws MessageException
-     *             if controls cannot be added to this Message or the control is
+     * @param control the control to remove.
+     * @throws MessageException if controls cannot be added to this Message or the control is
      *             not known etc.
      */
-    public void remove( Control control ) throws MessageException
+    public void removeControl( Control control ) throws MessageException
     {
         controls.remove( control.getOid() );
     }
@@ -179,8 +180,7 @@ public abstract class InternalAbstractMessage implements InternalMessage
      * without firing LockExceptions even when this Lockable is in the locked
      * state.
      * 
-     * @param key
-     *            the key used to access a message parameter.
+     * @param key the key used to access a message parameter.
      * @return the transient message parameter value.
      */
     public Object get( Object key )
@@ -194,10 +194,8 @@ public abstract class InternalAbstractMessage implements InternalMessage
      * down so modifications can occur without firing LockExceptions even when
      * this Lockable is in the locked state.
      * 
-     * @param key
-     *            the parameter key
-     * @param value
-     *            the parameter value
+     * @param key the parameter key
+     * @param value the parameter value
      * @return the old value or null
      */
     public Object put( Object key, Object value )
@@ -212,8 +210,7 @@ public abstract class InternalAbstractMessage implements InternalMessage
      * operations, nor do they factor in the Lockable properties of the Message.
      * Only the type, controls, and the messageId are evaluated for equality.
      * 
-     * @param obj
-     *            the object to compare this Message to for equality
+     * @param obj the object to compare this Message to for equality
      */
     public boolean equals( Object obj )
     {
@@ -276,7 +273,10 @@ public abstract class InternalAbstractMessage implements InternalMessage
     }
 
 
-    public void addAll( Control[] controls ) throws MessageException
+    /**
+     * {@inheritDoc}
+     */
+    public void addAllControls( Control[] controls ) throws MessageException
     {
         for ( Control c : controls )
         {

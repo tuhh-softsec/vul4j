@@ -130,11 +130,6 @@ public class ExtendedResponseImplTest
             }
 
 
-            public void setID( String oid )
-            {
-            }
-
-
             public void setResponseName( String oid )
             {
             }
@@ -149,11 +144,6 @@ public class ExtendedResponseImplTest
             public byte[] getResponseValue()
             {
                 return "Hello World!".getBytes();
-            }
-
-
-            public void setEncodedValue( byte[] value )
-            {
             }
 
 
@@ -198,12 +188,12 @@ public class ExtendedResponseImplTest
             }
 
 
-            public void add( Control a_control ) throws MessageException
+            public void addControl( Control a_control ) throws MessageException
             {
             }
 
 
-            public void remove( Control a_control ) throws MessageException
+            public void removeControl( Control a_control ) throws MessageException
             {
             }
 
@@ -226,7 +216,7 @@ public class ExtendedResponseImplTest
             }
 
 
-            public void addAll( Control[] controls ) throws MessageException
+            public void addAllControls( Control[] controls ) throws MessageException
             {
             }
 
@@ -265,13 +255,13 @@ public class ExtendedResponseImplTest
             }
 
 
-            public byte[] getIDBytes()
+            public Control getControl( String oid )
             {
                 return null;
             }
 
 
-            public void setIDBytes( byte[] oidBytes )
+            public void setMessageId( int messageId )
             {
             }
         };

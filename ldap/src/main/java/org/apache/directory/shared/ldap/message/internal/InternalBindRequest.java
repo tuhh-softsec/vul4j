@@ -19,6 +19,7 @@
  */
 package org.apache.directory.shared.ldap.message.internal;
 
+
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.message.SingleReplyRequest;
 import org.apache.directory.shared.ldap.name.DN;
@@ -80,8 +81,16 @@ public interface InternalBindRequest extends SingleReplyRequest, InternalAbandon
      * Sets the simple credentials associated with a simple authentication
      * attempt ignored if this request uses SASL authentication mechanisms.
      * 
-     * @param credentials
-     *            the credentials if authentication is simple, null otherwise
+     * @param credentials the credentials if authentication is simple, null otherwise
+     */
+    void setCredentials( String credentials );
+
+
+    /**
+     * Sets the simple credentials associated with a simple authentication
+     * attempt ignored if this request uses SASL authentication mechanisms.
+     * 
+     * @param credentials the credentials if authentication is simple, null otherwise
      */
     void setCredentials( byte[] credentials );
 

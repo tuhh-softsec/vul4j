@@ -128,13 +128,13 @@ public class AbstractMessageTest
     {
         InternalAbstractMessage msg0;
         InternalAbstractMessage msg1;
-        
+
         msg0 = new InternalAbstractMessage( 5, MessageTypeEnum.BIND_REQUEST )
         {
             private static final long serialVersionUID = 1L;
         };
-        
-        msg0.add( new ControlImpl( "0.0" )
+
+        msg0.addControl( new ControlImpl( "0.0" )
         {
             private static final long serialVersionUID = 1L;
 
@@ -161,7 +161,7 @@ public class AbstractMessageTest
                 return null;
             }
         } );
-        
+
         msg1 = new InternalAbstractMessage( 5, MessageTypeEnum.BIND_REQUEST )
         {
             private static final long serialVersionUID = 1L;

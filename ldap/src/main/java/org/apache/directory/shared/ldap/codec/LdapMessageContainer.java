@@ -22,10 +22,8 @@ package org.apache.directory.shared.ldap.codec;
 
 import org.apache.directory.shared.asn1.ber.AbstractContainer;
 import org.apache.directory.shared.ldap.codec.add.AddRequestCodec;
-import org.apache.directory.shared.ldap.codec.bind.BindRequestCodec;
 import org.apache.directory.shared.ldap.codec.compare.CompareRequestCodec;
 import org.apache.directory.shared.ldap.codec.controls.AbstractControl;
-import org.apache.directory.shared.ldap.codec.del.DelRequestCodec;
 import org.apache.directory.shared.ldap.codec.extended.ExtendedRequestCodec;
 import org.apache.directory.shared.ldap.codec.modify.ModifyRequestCodec;
 import org.apache.directory.shared.ldap.codec.modifyDn.ModifyDNRequestCodec;
@@ -182,15 +180,6 @@ public class LdapMessageContainer extends AbstractContainer
     /**
      * @return Returns the BindRequest stored in the container
      */
-    public BindRequestCodec getBindRequest()
-    {
-        return ( BindRequestCodec ) ldapMessage;
-    }
-
-
-    /**
-     * @return Returns the BindRequest stored in the container
-     */
     public InternalBindRequest getInternalBindRequest()
     {
         return ( InternalBindRequest ) internalMessage;
@@ -235,15 +224,6 @@ public class LdapMessageContainer extends AbstractContainer
 
     /**
      * @return Returns the DelRequest stored in the container
-     */
-    public DelRequestCodec getDelRequest()
-    {
-        return ( DelRequestCodec ) ldapMessage;
-    }
-
-
-    /**
-     * @return Returns the InternalDeleleteRequest stored in the container
      */
     public InternalDeleteRequest getInternalDeleteRequest()
     {

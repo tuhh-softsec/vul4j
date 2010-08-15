@@ -55,6 +55,16 @@ public interface InternalMessage
 
 
     /**
+     * Gets the control associated with the given OID.
+     * 
+     * @param oid The Cntrol's OID we are looking for
+     * @return The Control object instance with ths OID.
+     * @see CodecControl
+     */
+    Control getControl( String oid );
+
+
+    /**
      * Get the current Control Object
      * 
      * @return The current Control Object
@@ -100,13 +110,11 @@ public interface InternalMessage
     /**
      * Adds a control to this Message.
      * 
-     * @param control
-     *            the control to add.
-     * @throws MessageException
-     *             if controls cannot be added to this Message or the control is
+     * @param control the control to add.
+     * @throws MessageException if controls cannot be added to this Message or the control is
      *             not known etc.
      */
-    void add( Control control ) throws MessageException;
+    void addControl( Control control ) throws MessageException;
 
 
     /**
@@ -115,19 +123,17 @@ public interface InternalMessage
      * @param controls the controls to add.
      * @throws MessageException if controls cannot be added to this Message or they are not known etc.
      */
-    void addAll( Control[] controls ) throws MessageException;
+    void addAllControls( Control[] controls ) throws MessageException;
 
 
     /**
      * Deletes a control removing it from this Message.
      * 
-     * @param control
-     *            the control to remove.
-     * @throws MessageException
-     *             if controls cannot be added to this Message or the control is
+     * @param control the control to remove.
+     * @throws MessageException if controls cannot be added to this Message or the control is
      *             not known etc.
      */
-    void remove( Control control ) throws MessageException;
+    void removeControl( Control control ) throws MessageException;
 
 
     /**
@@ -151,8 +157,7 @@ public interface InternalMessage
      * without firing LockExceptions even when this Lockable is in the locked
      * state.
      * 
-     * @param key
-     *            the key used to access a message parameter.
+     * @param key the key used to access a message parameter.
      * @return the transient message parameter value.
      */
     Object get( Object key );
@@ -163,11 +168,16 @@ public interface InternalMessage
      * down so modifications can occur without firing LockExceptions even when
      * this Lockable is in the locked state.
      * 
-     * @param key
-     *            the parameter key
-     * @param value
-     *            the parameter value
+     * @param key the parameter key
+     * @param value the parameter value
      * @return the old value or null
      */
     Object put( Object key, Object value );
+
+
+    /**
+     * Sets the Message ID for this request
+     * @param messageId The message Id
+     */
+    void setMessageId( int messageId );
 }

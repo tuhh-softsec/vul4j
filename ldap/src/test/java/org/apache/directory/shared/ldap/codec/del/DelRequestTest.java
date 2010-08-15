@@ -33,10 +33,11 @@ import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.codec.EncoderException;
-import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.ResponseCarryingException;
+import org.apache.directory.shared.ldap.message.DeleteRequestImpl;
 import org.apache.directory.shared.ldap.message.DeleteResponseImpl;
+import org.apache.directory.shared.ldap.message.LdapProtocolEncoder;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.message.internal.InternalDeleteRequest;
@@ -55,6 +56,10 @@ import org.junit.runner.RunWith;
 @Concurrent()
 public class DelRequestTest
 {
+    /** The encoder instance */
+    LdapProtocolEncoder encoder = new LdapProtocolEncoder();
+
+
     /**
      * Test the decoding of a full DelRequest
      */
@@ -100,16 +105,16 @@ public class DelRequestTest
         assertEquals( "cn=testModify,ou=users,ou=system", delRequest.getName().toString() );
 
         // Check the length
-        DelRequestCodec delRequestCodec = new DelRequestCodec();
-        delRequestCodec.setEntry( delRequest.getName() );
-        delRequestCodec.setMessageId( delRequest.getMessageId() );
-
-        assertEquals( 0x27, delRequestCodec.computeLength() );
+        InternalDeleteRequest internalDeleteRequest = new DeleteRequestImpl( delRequest.getMessageId() );
+        internalDeleteRequest.setName( delRequest.getName() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = delRequestCodec.encode();
+            ByteBuffer bb = encoder.encodeMessage( internalDeleteRequest );
+
+            // Check the length
+            assertEquals( 0x27, bb.limit() );
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -261,18 +266,17 @@ public class DelRequestTest
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
         assertEquals( "", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
 
-        // Check the length
-        DelRequestCodec delRequestCodec = new DelRequestCodec();
-        delRequestCodec.setEntry( delRequest.getName() );
-        delRequestCodec.setMessageId( delRequest.getMessageId() );
-        ( ( LdapMessageCodec ) delRequestCodec ).addControl( control );
-
-        assertEquals( 0x44, delRequestCodec.computeLength() );
+        InternalDeleteRequest internalDeleteRequest = new DeleteRequestImpl( delRequest.getMessageId() );
+        internalDeleteRequest.setName( delRequest.getName() );
+        internalDeleteRequest.addControl( control );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = delRequestCodec.encode();
+            ByteBuffer bb = encoder.encodeMessage( internalDeleteRequest );
+
+            // Check the length
+            assertEquals( 0x44, bb.limit() );
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 

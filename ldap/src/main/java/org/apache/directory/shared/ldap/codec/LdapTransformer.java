@@ -25,9 +25,6 @@ import java.util.List;
 
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.codec.bind.BindRequestCodec;
-import org.apache.directory.shared.ldap.codec.bind.SaslCredentials;
-import org.apache.directory.shared.ldap.codec.bind.SimpleAuthentication;
 import org.apache.directory.shared.ldap.codec.extended.ExtendedRequestCodec;
 import org.apache.directory.shared.ldap.codec.modify.ModifyRequestCodec;
 import org.apache.directory.shared.ldap.codec.modifyDn.ModifyDNRequestCodec;
@@ -59,7 +56,6 @@ import org.apache.directory.shared.ldap.filter.PresenceNode;
 import org.apache.directory.shared.ldap.filter.SimpleNode;
 import org.apache.directory.shared.ldap.filter.SubstringNode;
 import org.apache.directory.shared.ldap.message.AliasDerefMode;
-import org.apache.directory.shared.ldap.message.BindRequestImpl;
 import org.apache.directory.shared.ldap.message.ExtendedRequestImpl;
 import org.apache.directory.shared.ldap.message.ModifyDnRequestImpl;
 import org.apache.directory.shared.ldap.message.ModifyRequestImpl;
@@ -603,40 +599,6 @@ public class LdapTransformer
 
 
     /**
-     * Transform a Internal BindRequest to a Codec BindRequest
-     * 
-     * @param internalMessage The incoming Internal BindRequest
-     * @return The BindRequestCodec instance
-     */
-    private static LdapMessageCodec transformBindRequest( InternalMessage internalMessage )
-    {
-        BindRequestImpl internalBindRequest = ( BindRequestImpl ) internalMessage;
-
-        BindRequestCodec bindRequest = new BindRequestCodec();
-
-        if ( internalBindRequest.isSimple() )
-        {
-            SimpleAuthentication simple = new SimpleAuthentication();
-            simple.setSimple( internalBindRequest.getCredentials() );
-            bindRequest.setAuthentication( simple );
-        }
-        else
-        {
-            SaslCredentials sasl = new SaslCredentials();
-            sasl.setCredentials( internalBindRequest.getCredentials() );
-            sasl.setMechanism( internalBindRequest.getSaslMechanism() );
-            bindRequest.setAuthentication( sasl );
-        }
-
-        bindRequest.setMessageId( internalBindRequest.getMessageId() );
-        bindRequest.setName( internalBindRequest.getName() );
-        bindRequest.setVersion( internalBindRequest.isVersion3() ? 3 : 2 );
-
-        return bindRequest;
-    }
-
-
-    /**
      * Transform the internal message to a codec message.
      * 
      * @param msg the message to transform
@@ -651,13 +613,6 @@ public class LdapTransformer
         }
 
         LdapMessageCodec codecMessage = null;
-
-        switch ( msg.getType() )
-        {
-            case BIND_REQUEST:
-                codecMessage = transformBindRequest( msg );
-                break;
-        }
 
         codecMessage.setMessageId( msg.getMessageId() );
 
@@ -691,7 +646,7 @@ public class LdapTransformer
 
         for ( final Control codecControl : codecMessage.getControls() )
         {
-            internalMessage.add( codecControl );
+            internalMessage.addControl( codecControl );
         }
     }
 

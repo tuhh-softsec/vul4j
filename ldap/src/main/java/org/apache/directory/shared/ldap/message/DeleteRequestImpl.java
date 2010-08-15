@@ -21,8 +21,8 @@ package org.apache.directory.shared.ldap.message;
 
 
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
-import org.apache.directory.shared.ldap.message.internal.InternalDeleteRequest;
 import org.apache.directory.shared.ldap.message.internal.DeleteResponse;
+import org.apache.directory.shared.ldap.message.internal.InternalDeleteRequest;
 import org.apache.directory.shared.ldap.message.internal.ResultResponse;
 import org.apache.directory.shared.ldap.name.DN;
 
@@ -39,6 +39,7 @@ public class DeleteRequestImpl extends AbstractAbandonableRequest implements Int
     /** The distinguished name of the entry to delete */
     private DN name;
 
+    /** The deleteResponse associated with this request */
     private DeleteResponse response;
 
 
@@ -47,11 +48,10 @@ public class DeleteRequestImpl extends AbstractAbandonableRequest implements Int
     // ------------------------------------------------------------------------
 
     /**
-     * Creates a Lockable DeleteRequest implementing object used to delete a
+     * Creates a DeleteRequest implementing object used to delete a
      * leaf entry from the DIT.
      * 
-     * @param id
-     *            the sequential message identifier
+     * @param id the sequential message identifier
      */
     public DeleteRequestImpl( final int id )
     {
@@ -79,8 +79,7 @@ public class DeleteRequestImpl extends AbstractAbandonableRequest implements Int
      * Sets the distinguished name of the leaf entry to be deleted by this
      * request.
      * 
-     * @param name
-     *            the DN of the leaf entry to delete.
+     * @param name the DN of the leaf entry to delete.
      */
     public void setName( DN name )
     {
@@ -127,10 +126,12 @@ public class DeleteRequestImpl extends AbstractAbandonableRequest implements Int
     public int hashCode()
     {
         int hash = 37;
+
         if ( name != null )
         {
             hash = hash * 17 + name.hashCode();
         }
+
         hash = hash * 17 + super.hashCode();
 
         return hash;
@@ -144,8 +145,7 @@ public class DeleteRequestImpl extends AbstractAbandonableRequest implements Int
      * Then the name of the entry is compared - if not the same false is
      * returned. Finally the method exists returning true.
      * 
-     * @param obj
-     *            the object to test for equality to this
+     * @param obj the object to test for equality to this
      * @return true if the obj is equal to this DeleteRequest, false otherwise
      */
     public boolean equals( Object obj )
@@ -189,10 +189,11 @@ public class DeleteRequestImpl extends AbstractAbandonableRequest implements Int
     public String toString()
     {
 
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
 
         sb.append( "    Del request\n" );
         sb.append( "        Entry : '" ).append( name.toString() ).append( "'\n" );
+        sb.append( super.toString() );
 
         return sb.toString();
     }

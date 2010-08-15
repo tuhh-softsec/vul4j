@@ -35,10 +35,13 @@ import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.controls.ControlImpl;
+import org.apache.directory.shared.ldap.message.BindRequestImpl;
+import org.apache.directory.shared.ldap.message.LdapProtocolEncoder;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.message.internal.InternalBindRequest;
 import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.util.StringTools;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -50,11 +53,16 @@ import org.junit.runner.RunWith;
 @Concurrent()
 public class BindRequestPerfTest
 {
+    /** The encoder instance */
+    LdapProtocolEncoder encoder = new LdapProtocolEncoder();
+
+
     /**
      * Test the decoding of a BindRequest with Simple authentication and no
      * controls
      */
     @Test
+    @Ignore
     public void testDecodeBindRequestSimpleNoControlsPerf()
     {
         Asn1Decoder ldapDecoder = new Asn1Decoder();
@@ -95,8 +103,8 @@ public class BindRequestPerfTest
         // Decode the BindRequest PDU
         try
         {
-            int nbLoops = 1;
-            //long t0 = System.currentTimeMillis();
+            int nbLoops = 1000000;
+            long t0 = System.currentTimeMillis();
 
             for ( int i = 0; i < nbLoops; i++ )
             {
@@ -105,8 +113,9 @@ public class BindRequestPerfTest
                 stream.flip();
             }
 
-            //long t1 = System.currentTimeMillis();
-            //System.out.println( "testDecodeBindRequestSimpleNoControlsPerf, " + nbLoops + " loops, Delta = " + ( t1 - t0 ) );
+            long t1 = System.currentTimeMillis();
+            System.out.println( "testDecodeBindRequestSimpleNoControlsPerf, " + nbLoops + " loops, Delta = "
+                + ( t1 - t0 ) );
 
             ldapDecoder.decode( stream, ldapMessageContainer );
         }
@@ -134,23 +143,13 @@ public class BindRequestPerfTest
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
         assertEquals( "", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
 
-        // Check the length
-        BindRequestCodec bindRequestCodec = new BindRequestCodec();
-        bindRequestCodec.setMessageId( bindRequest.getMessageId() );
-        bindRequestCodec.setName( bindRequest.getName() );
-        bindRequestCodec.setVersion( bindRequest.getVersion3() ? 3 : 2 );
-        bindRequestCodec.addControl( control );
-
-        SimpleAuthentication simple = new SimpleAuthentication();
-        simple.setSimple( bindRequest.getCredentials() );
-        bindRequestCodec.setAuthentication( simple );
-
-        assertEquals( 0x52, bindRequestCodec.computeLength() );
-
         // Check the encoding
         try
         {
-            ByteBuffer bb = bindRequestCodec.encode();
+            ByteBuffer bb = encoder.encodeMessage( bindRequest );
+
+            // Check the length
+            assertEquals( 0x52, bb.limit() );
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -169,32 +168,29 @@ public class BindRequestPerfTest
      * controls
      */
     @Test
+    @Ignore
     public void testEncodeBindRequestPerf() throws Exception
     {
         DN name = new DN( "uid=akarasulu,dc=example,dc=com" );
-        int nbLoops = 1;
+        int nbLoops = 1000000;
         long t0 = System.currentTimeMillis();
 
         for ( int i = 0; i < nbLoops; i++ )
         {
             // Check the decoded BindRequest
-            BindRequestCodec bindRequest = new BindRequestCodec();
-            bindRequest.setMessageId( 1 );
+            InternalBindRequest bindRequest = new BindRequestImpl( 1 );
 
+            bindRequest.setSimple( true );
             bindRequest.setName( name );
-
+            bindRequest.setCredentials( StringTools.getBytesUtf8( "password" ) );
             Control control = new ControlImpl( "2.16.840.1.113730.3.4.2" );
 
-            LdapAuthentication authentication = new SimpleAuthentication();
-            ( ( SimpleAuthentication ) authentication ).setSimple( StringTools.getBytesUtf8( "password" ) );
-
             bindRequest.addControl( control );
-            bindRequest.setAuthentication( authentication );
 
             // Check the encoding
             try
             {
-                bindRequest.encode();
+                ByteBuffer bb = encoder.encodeMessage( bindRequest );
             }
             catch ( EncoderException ee )
             {
@@ -204,6 +200,6 @@ public class BindRequestPerfTest
         }
 
         long t1 = System.currentTimeMillis();
-        //System.out.println( "BindRequest testEncodeBindRequestPerf, " + nbLoops + " loops, Delta = " + (t1 - t0));
+        System.out.println( "BindRequest testEncodeBindRequestPerf, " + nbLoops + " loops, Delta = " + ( t1 - t0 ) );
     }
 }

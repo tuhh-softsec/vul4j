@@ -180,12 +180,12 @@ public class DeleteRequestImplTest
             }
 
 
-            public void add( Control control ) throws MessageException
+            public void addControl( Control control ) throws MessageException
             {
             }
 
 
-            public void remove( Control control ) throws MessageException
+            public void removeControl( Control control ) throws MessageException
             {
             }
 
@@ -230,7 +230,7 @@ public class DeleteRequestImplTest
             }
 
 
-            public void addAll( Control[] controls ) throws MessageException
+            public void addAllControls( Control[] controls ) throws MessageException
             {
             }
 
@@ -265,6 +265,17 @@ public class DeleteRequestImplTest
 
 
             public void setMessageLength( int messageLength )
+            {
+            }
+
+
+            public Control getControl( String oid )
+            {
+                return null;
+            }
+
+
+            public void setMessageId( int messageId )
             {
             }
         };

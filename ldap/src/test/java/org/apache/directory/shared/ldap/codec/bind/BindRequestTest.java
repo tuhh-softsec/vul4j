@@ -37,6 +37,7 @@ import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.ResponseCarryingException;
 import org.apache.directory.shared.ldap.message.BindResponseImpl;
+import org.apache.directory.shared.ldap.message.LdapProtocolEncoder;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.message.internal.InternalBindRequest;
@@ -53,6 +54,10 @@ import org.junit.runner.RunWith;
 @Concurrent()
 public class BindRequestTest
 {
+    /** The encoder instance */
+    LdapProtocolEncoder encoder = new LdapProtocolEncoder();
+
+
     /**
      * Test the decoding of a BindRequest with Simple authentication and no
      * controls
@@ -206,22 +211,13 @@ public class BindRequestTest
         assertTrue( bindRequest.isSimple() );
         assertEquals( "password", StringTools.utf8ToString( bindRequest.getCredentials() ) );
 
-        // Check the length
-        BindRequestCodec bindRequestCodec = new BindRequestCodec();
-        bindRequestCodec.setMessageId( bindRequest.getMessageId() );
-        bindRequestCodec.setName( bindRequest.getName() );
-        bindRequestCodec.setVersion( bindRequest.getVersion3() ? 3 : 2 );
-
-        SimpleAuthentication simple = new SimpleAuthentication();
-        simple.setSimple( bindRequest.getCredentials() );
-        bindRequestCodec.setAuthentication( simple );
-
-        assertEquals( 0x35, bindRequestCodec.computeLength() );
-
         // Check the encoding
         try
         {
-            ByteBuffer bb = bindRequestCodec.encode();
+            ByteBuffer bb = encoder.encodeMessage( bindRequest );
+
+            // Check the length
+            assertEquals( 0x35, bb.limit() );
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -377,22 +373,13 @@ public class BindRequestTest
         assertTrue( bindRequest.isSimple() );
         assertEquals( "password", StringTools.utf8ToString( bindRequest.getCredentials() ) );
 
-        // Check the length
-        BindRequestCodec bindRequestCodec = new BindRequestCodec();
-        bindRequestCodec.setMessageId( bindRequest.getMessageId() );
-        bindRequestCodec.setName( bindRequest.getName() );
-        bindRequestCodec.setVersion( bindRequest.getVersion3() ? 3 : 2 );
-
-        SimpleAuthentication simple = new SimpleAuthentication();
-        simple.setSimple( bindRequest.getCredentials() );
-        bindRequestCodec.setAuthentication( simple );
-
-        assertEquals( 0x16, bindRequestCodec.computeLength() );
-
         // Check the encoding
         try
         {
-            ByteBuffer bb = bindRequestCodec.encode();
+            ByteBuffer bb = encoder.encodeMessage( bindRequest );
+
+            // Check the length
+            assertEquals( 0x16, bb.limit() );
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -463,23 +450,13 @@ public class BindRequestTest
         assertFalse( bindRequest.isSimple() );
         assertEquals( "KERBEROS_V4", bindRequest.getSaslMechanism() );
 
-        // Check the length
-        BindRequestCodec bindRequestCodec = new BindRequestCodec();
-        bindRequestCodec.setMessageId( bindRequest.getMessageId() );
-        bindRequestCodec.setName( bindRequest.getName() );
-        bindRequestCodec.setVersion( bindRequest.getVersion3() ? 3 : 2 );
-
-        SaslCredentials sasl = new SaslCredentials();
-        sasl.setCredentials( bindRequest.getCredentials() );
-        sasl.setMechanism( bindRequest.getSaslMechanism() );
-        bindRequestCodec.setAuthentication( sasl );
-
-        assertEquals( 0x3A, bindRequestCodec.computeLength() );
-
         // Check the encoding
         try
         {
-            ByteBuffer bb = bindRequestCodec.encode();
+            ByteBuffer bb = encoder.encodeMessage( bindRequest );
+
+            // Check the length
+            assertEquals( 0x3A, bb.limit() );
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -556,23 +533,13 @@ public class BindRequestTest
         assertEquals( "KERBEROS_V4", bindRequest.getSaslMechanism() );
         assertEquals( "abcdef", StringTools.utf8ToString( bindRequest.getCredentials() ) );
 
-        // Check the length
-        BindRequestCodec bindRequestCodec = new BindRequestCodec();
-        bindRequestCodec.setMessageId( bindRequest.getMessageId() );
-        bindRequestCodec.setName( bindRequest.getName() );
-        bindRequestCodec.setVersion( bindRequest.getVersion3() ? 3 : 2 );
-
-        SaslCredentials sasl = new SaslCredentials();
-        sasl.setCredentials( bindRequest.getCredentials() );
-        sasl.setMechanism( bindRequest.getSaslMechanism() );
-        bindRequestCodec.setAuthentication( sasl );
-
-        assertEquals( 0x42, bindRequestCodec.computeLength() );
-
         // Check the encoding
         try
         {
-            ByteBuffer bb = bindRequestCodec.encode();
+            ByteBuffer bb = encoder.encodeMessage( bindRequest );
+
+            // Check the length
+            assertEquals( 0x42, bb.limit() );
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -643,23 +610,13 @@ public class BindRequestTest
         assertEquals( "KERBEROS_V4", bindRequest.getSaslMechanism() );
         assertEquals( "abcdef", StringTools.utf8ToString( bindRequest.getCredentials() ) );
 
-        // Check the length
-        BindRequestCodec bindRequestCodec = new BindRequestCodec();
-        bindRequestCodec.setMessageId( bindRequest.getMessageId() );
-        bindRequestCodec.setName( bindRequest.getName() );
-        bindRequestCodec.setVersion( bindRequest.getVersion3() ? 3 : 2 );
-
-        SaslCredentials sasl = new SaslCredentials();
-        sasl.setCredentials( bindRequest.getCredentials() );
-        sasl.setMechanism( bindRequest.getSaslMechanism() );
-        bindRequestCodec.setAuthentication( sasl );
-
-        assertEquals( 0x23, bindRequestCodec.computeLength() );
-
         // Check the encoding
         try
         {
-            ByteBuffer bb = bindRequestCodec.encode();
+            ByteBuffer bb = encoder.encodeMessage( bindRequest );
+
+            // Check the length
+            assertEquals( 0x23, bb.limit() );
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -966,22 +923,13 @@ public class BindRequestTest
         assertTrue( bindRequest.isSimple() );
         assertEquals( "", StringTools.utf8ToString( bindRequest.getCredentials() ) );
 
-        // Check the length
-        BindRequestCodec bindRequestCodec = new BindRequestCodec();
-        bindRequestCodec.setMessageId( bindRequest.getMessageId() );
-        bindRequestCodec.setName( bindRequest.getName() );
-        bindRequestCodec.setVersion( bindRequest.getVersion3() ? 3 : 2 );
-
-        SimpleAuthentication simple = new SimpleAuthentication();
-        simple.setSimple( bindRequest.getCredentials() );
-        bindRequestCodec.setAuthentication( simple );
-
-        assertEquals( 0x0E, bindRequestCodec.computeLength() );
-
         // Check the encoding
         try
         {
-            ByteBuffer bb = bindRequestCodec.encode();
+            ByteBuffer bb = encoder.encodeMessage( bindRequest );
+
+            // Check the length
+            assertEquals( 0x0E, bb.limit() );
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -1077,23 +1025,13 @@ public class BindRequestTest
         assertFalse( bindRequest.isSimple() );
         assertEquals( "", bindRequest.getSaslMechanism() );
 
-        // Check the length
-        BindRequestCodec bindRequestCodec = new BindRequestCodec();
-        bindRequestCodec.setMessageId( bindRequest.getMessageId() );
-        bindRequestCodec.setName( bindRequest.getName() );
-        bindRequestCodec.setVersion( bindRequest.getVersion3() ? 3 : 2 );
-
-        SaslCredentials sasl = new SaslCredentials();
-        sasl.setCredentials( bindRequest.getCredentials() );
-        sasl.setMechanism( bindRequest.getSaslMechanism() );
-        bindRequestCodec.setAuthentication( sasl );
-
-        assertEquals( 0x10, bindRequestCodec.computeLength() );
-
         // Check the encoding
         try
         {
-            ByteBuffer bb = bindRequestCodec.encode();
+            ByteBuffer bb = encoder.encodeMessage( bindRequest );
+
+            // Check the length
+            assertEquals( 0x10, bb.limit() );
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -1194,23 +1132,13 @@ public class BindRequestTest
         assertEquals( "", bindRequest.getSaslMechanism() );
         assertEquals( "", StringTools.utf8ToString( bindRequest.getCredentials() ) );
 
-        // Check the length
-        BindRequestCodec bindRequestCodec = new BindRequestCodec();
-        bindRequestCodec.setMessageId( bindRequest.getMessageId() );
-        bindRequestCodec.setName( bindRequest.getName() );
-        bindRequestCodec.setVersion( bindRequest.getVersion3() ? 3 : 2 );
-
-        SaslCredentials sasl = new SaslCredentials();
-        sasl.setCredentials( bindRequest.getCredentials() );
-        sasl.setMechanism( bindRequest.getSaslMechanism() );
-        bindRequestCodec.setAuthentication( sasl );
-
-        assertEquals( 0x12, bindRequestCodec.computeLength() );
-
         // Check the encoding
         try
         {
-            ByteBuffer bb = bindRequestCodec.encode();
+            ByteBuffer bb = encoder.encodeMessage( bindRequest );
+
+            // Check the length
+            assertEquals( 0x12, bb.limit() );
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -1284,24 +1212,13 @@ public class BindRequestTest
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
         assertEquals( "", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
 
-        // Check the length
-        BindRequestCodec bindRequestCodec = new BindRequestCodec();
-        bindRequestCodec.setMessageId( bindRequest.getMessageId() );
-        bindRequestCodec.setName( bindRequest.getName() );
-        bindRequestCodec.setVersion( bindRequest.getVersion3() ? 3 : 2 );
-        bindRequestCodec.addControl( control );
-
-        SaslCredentials sasl = new SaslCredentials();
-        sasl.setCredentials( bindRequest.getCredentials() );
-        sasl.setMechanism( bindRequest.getSaslMechanism() );
-        bindRequestCodec.setAuthentication( sasl );
-
-        assertEquals( 0x2F, bindRequestCodec.computeLength() );
-
         // Check the encoding
         try
         {
-            ByteBuffer bb = bindRequestCodec.encode();
+            ByteBuffer bb = encoder.encodeMessage( bindRequest );
+
+            // Check the length
+            assertEquals( 0x2F, bb.limit() );
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -1374,24 +1291,13 @@ public class BindRequestTest
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
         assertEquals( "", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
 
-        // Check the length
-        BindRequestCodec bindRequestCodec = new BindRequestCodec();
-        bindRequestCodec.setMessageId( bindRequest.getMessageId() );
-        bindRequestCodec.setName( bindRequest.getName() );
-        bindRequestCodec.setVersion( bindRequest.getVersion3() ? 3 : 2 );
-        bindRequestCodec.addControl( control );
-
-        SaslCredentials sasl = new SaslCredentials();
-        sasl.setCredentials( bindRequest.getCredentials() );
-        sasl.setMechanism( bindRequest.getSaslMechanism() );
-        bindRequestCodec.setAuthentication( sasl );
-
-        assertEquals( 0x2D, bindRequestCodec.computeLength() );
-
         // Check the encoding
         try
         {
-            ByteBuffer bb = bindRequestCodec.encode();
+            ByteBuffer bb = encoder.encodeMessage( bindRequest );
+
+            // Check the length
+            assertEquals( 0x2D, bb.limit() );
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 

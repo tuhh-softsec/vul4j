@@ -47,6 +47,8 @@ import org.apache.directory.shared.ldap.message.internal.CompareResponse;
 import org.apache.directory.shared.ldap.message.internal.DeleteResponse;
 import org.apache.directory.shared.ldap.message.internal.ExtendedResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalAbandonRequest;
+import org.apache.directory.shared.ldap.message.internal.InternalBindRequest;
+import org.apache.directory.shared.ldap.message.internal.InternalDeleteRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalIntermediateResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalMessage;
 import org.apache.directory.shared.ldap.message.internal.InternalReferral;
@@ -124,7 +126,8 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
             || ( message instanceof ModifyDnResponse ) || ( message instanceof InternalIntermediateResponse )
             || ( message instanceof SearchResultDone ) || ( message instanceof SearchResultEntry )
             || ( message instanceof SearchResultReference ) || ( message instanceof InternalAbandonRequest )
-            || ( message instanceof InternalUnbindRequest ) )
+            || ( message instanceof InternalDeleteRequest ) || ( message instanceof InternalUnbindRequest )
+            || ( message instanceof InternalBindRequest ) )
         {
             try
             {
@@ -429,9 +432,71 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
     }
 
 
+    /**
+     * Compute the BindRequest length 
+     * 
+     * BindRequest : 
+     * <pre>
+     * 0x60 L1 
+     *   | 
+     *   +--> 0x02 0x01 (1..127) version 
+     *   +--> 0x04 L2 name 
+     *   +--> authentication 
+     *   
+     * L2 = Length(name)
+     * L3/4 = Length(authentication) 
+     * Length(BindRequest) = Length(0x60) + Length(L1) + L1 + Length(0x02) + 1 + 1 + 
+     *      Length(0x04) + Length(L2) + L2 + Length(authentication)
+     * </pre>
+     */
     private int computeBindRequestLength( BindRequestImpl bindRequest )
     {
-        return 0;
+        int bindRequestLength = 1 + 1 + 1; // Initialized with version
+
+        // The name
+        bindRequestLength += 1 + TLV.getNbBytes( DN.getNbBytes( bindRequest.getName() ) )
+            + DN.getNbBytes( bindRequest.getName() );
+
+        byte[] credentials = bindRequest.getCredentials();
+
+        // The authentication
+        if ( bindRequest.isSimple() )
+        {
+            // Compute a SimpleBind operation
+            if ( credentials != null )
+            {
+                bindRequestLength += 1 + TLV.getNbBytes( credentials.length ) + credentials.length;
+            }
+            else
+            {
+                bindRequestLength += 1 + 1;
+            }
+        }
+        else
+        {
+            byte[] mechanismBytes = StringTools.getBytesUtf8( bindRequest.getSaslMechanism() );
+            int saslMechanismLength = 1 + TLV.getNbBytes( mechanismBytes.length ) + mechanismBytes.length;
+            int saslCredentialsLength = 0;
+
+            if ( credentials != null )
+            {
+                saslCredentialsLength = 1 + TLV.getNbBytes( credentials.length ) + credentials.length;
+            }
+
+            int saslLength = 1 + TLV.getNbBytes( saslMechanismLength + saslCredentialsLength ) + saslMechanismLength
+                + saslCredentialsLength;
+
+            bindRequestLength += saslLength;
+
+            // Store the mechanism and credentials lengths
+            bindRequest.setSaslMechanismLength( saslMechanismLength );
+            bindRequest.setSaslCredentialsLength( saslCredentialsLength );
+        }
+
+        bindRequest.setBindRequestLength( bindRequestLength );
+
+        // Return the result.
+        return 1 + TLV.getNbBytes( bindRequestLength ) + bindRequestLength;
     }
 
 
@@ -488,6 +553,22 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
         compareResponse.setCompareResponseLength( compareResponseLength );
 
         return 1 + TLV.getNbBytes( compareResponseLength ) + compareResponseLength;
+    }
+
+
+    /**
+     * Compute the DelRequest length 
+     * 
+     * DelRequest : 
+     * 0x4A L1 entry 
+     * 
+     * L1 = Length(entry) 
+     * Length(DelRequest) = Length(0x4A) + Length(L1) + L1
+     */
+    private int computeDeleteRequestLength( DeleteRequestImpl deleteRequest )
+    {
+        // The entry
+        return 1 + TLV.getNbBytes( DN.getNbBytes( deleteRequest.getName() ) ) + DN.getNbBytes( deleteRequest.getName() );
     }
 
 
@@ -937,9 +1018,98 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
     }
 
 
-    private void encodeBindRequest( ByteBuffer bb, BindRequestImpl bindRequest ) throws EncoderException
+    /**
+     * Encode the BindRequest message to a PDU. 
+     * 
+     * BindRequest : 
+     * <pre>
+     * 0x60 LL 
+     *   0x02 LL version         0x80 LL simple 
+     *   0x04 LL name           /   
+     *   authentication.encode() 
+     *                          \ 0x83 LL mechanism [0x04 LL credential]
+     * </pre>
+     * 
+     * @param buffer The buffer where to put the PDU
+     * @return The PDU.
+     */
+    private void encodeBindRequest( ByteBuffer buffer, BindRequestImpl bindRequest ) throws EncoderException
     {
+        try
+        {
+            // The BindRequest Tag
+            buffer.put( LdapConstants.BIND_REQUEST_TAG );
+            buffer.put( TLV.getBytes( bindRequest.getBindRequestLength() ) );
 
+        }
+        catch ( BufferOverflowException boe )
+        {
+            throw new EncoderException( I18n.err( I18n.ERR_04005 ) );
+        }
+
+        // The version (LDAP V3 only)
+        Value.encode( buffer, 3 );
+
+        // The name
+        Value.encode( buffer, DN.getBytes( bindRequest.getName() ) );
+
+        byte[] credentials = bindRequest.getCredentials();
+
+        // The authentication
+        if ( bindRequest.isSimple() )
+        {
+            // Simple authentication
+            try
+            {
+                // The simpleAuthentication Tag
+                buffer.put( ( byte ) LdapConstants.BIND_REQUEST_SIMPLE_TAG );
+
+                if ( credentials != null )
+                {
+                    buffer.put( TLV.getBytes( credentials.length ) );
+
+                    if ( credentials.length != 0 )
+                    {
+                        buffer.put( credentials );
+                    }
+                }
+                else
+                {
+                    buffer.put( ( byte ) 0 );
+                }
+            }
+            catch ( BufferOverflowException boe )
+            {
+                String msg = I18n.err( I18n.ERR_04005 );
+                throw new EncoderException( msg );
+            }
+        }
+        else
+        {
+            // SASL Bind
+            try
+            {
+                // The saslAuthentication Tag
+                buffer.put( ( byte ) LdapConstants.BIND_REQUEST_SASL_TAG );
+
+                byte[] mechanismBytes = StringTools.getBytesUtf8( bindRequest.getSaslMechanism() );
+
+                buffer.put( TLV
+                    .getBytes( bindRequest.getSaslMechanismLength() + bindRequest.getSaslCredentialsLength() ) );
+
+                Value.encode( buffer, mechanismBytes );
+
+                if ( credentials != null )
+                {
+                    Value.encode( buffer, credentials );
+                }
+            }
+            catch ( BufferOverflowException boe )
+            {
+                String msg = I18n.err( I18n.ERR_04005 );
+                throw new EncoderException( msg );
+            }
+        }
     }
 
 
@@ -1004,6 +1174,32 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
 
             // The LdapResult
             encodeLdapResult( buffer, compareResponse.getLdapResult() );
+        }
+        catch ( BufferOverflowException boe )
+        {
+            throw new EncoderException( I18n.err( I18n.ERR_04005 ) );
+        }
+    }
+
+
+    /**
+     * Encode the DelRequest message to a PDU. 
+     * 
+     * DelRequest : 
+     * 0x4A LL entry
+     * 
+     * @param buffer The buffer where to put the PDU
+     */
+    private void encodeDeleteRequest( ByteBuffer buffer, DeleteRequestImpl deleteRequest ) throws EncoderException
+    {
+        try
+        {
+            // The DelRequest Tag
+            buffer.put( LdapConstants.DEL_REQUEST_TAG );
+
+            // The entry
+            buffer.put( TLV.getBytes( DN.getNbBytes( deleteRequest.getName() ) ) );
+            buffer.put( DN.getBytes( deleteRequest.getName() ) );
         }
         catch ( BufferOverflowException boe )
         {
@@ -1389,6 +1585,9 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
             case COMPARE_RESPONSE:
                 return computeCompareResponseLength( ( CompareResponseImpl ) message );
 
+            case DEL_REQUEST:
+                return computeDeleteRequestLength( ( DeleteRequestImpl ) message );
+
             case DEL_RESPONSE:
                 return computeDeleteResponseLength( ( DeleteResponseImpl ) message );
 
@@ -1444,6 +1643,10 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
 
             case COMPARE_RESPONSE:
                 encodeCompareResponse( bb, ( CompareResponseImpl ) message );
+                break;
+
+            case DEL_REQUEST:
+                encodeDeleteRequest( bb, ( DeleteRequestImpl ) message );
                 break;
 
             case DEL_RESPONSE:
