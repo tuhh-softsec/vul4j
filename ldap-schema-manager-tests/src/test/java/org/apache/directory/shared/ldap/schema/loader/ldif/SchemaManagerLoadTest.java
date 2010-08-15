@@ -41,6 +41,7 @@ import org.apache.directory.shared.ldap.schema.registries.DefaultSchema;
 import org.apache.directory.shared.ldap.schema.registries.Schema;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -779,5 +780,22 @@ public class SchemaManagerLoadTest
 
         assertEquals( 0, schemaManager.getRegistries().getLoadedSchemas().size() );
         assertNull( schemaManager.getRegistries().getLoadedSchema( "dummy" ) );
+    }
+    
+
+    @Ignore( "loadDisabled() method need to be fixed" )
+    @Test
+    public void testLoadDisabled() throws Exception
+    {
+        LdifSchemaLoader loader = new LdifSchemaLoader( schemaRepository );
+        SchemaManager schemaManager = new DefaultSchemaManager( loader );
+
+        assertTrue( schemaManager.loadDisabled( "nis" ) );
+
+        assertFalse( schemaManager.getErrors().isEmpty() );
+        
+        AttributeType at = schemaManager.getAttributeType( "uidNumber" );
+        // if nis schema was loaded then the at will not be null
+        assertNotNull( at );
     }
 }
