@@ -40,9 +40,17 @@ public class AbandonRequestImpl extends InternalAbstractRequest implements Inter
 
     /**
      * Creates an AbandonRequest implementation for an outstanding request.
+     */
+    public AbandonRequestImpl()
+    {
+        super( -1, TYPE, false );
+    }
+
+
+    /**
+     * Creates an AbandonRequest implementation for an outstanding request.
      * 
-     * @param id
-     *            the sequence identifier of the AbandonRequest message.
+     * @param id the sequence identifier of the AbandonRequest message.
      */
     public AbandonRequestImpl( final int id )
     {
