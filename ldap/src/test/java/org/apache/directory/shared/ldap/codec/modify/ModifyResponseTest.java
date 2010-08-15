@@ -100,7 +100,7 @@ public class ModifyResponseTest
 
         // Check the decoded ModifyResponse PDU
         ModifyResponse modifyResponse = ( ( LdapMessageContainer ) ldapMessageContainer )
-            .getInternalModifyResponse();
+            .getModifyResponse();
 
         assertEquals( 1, modifyResponse.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, modifyResponse.getLdapResult().getResultCode() );
@@ -181,7 +181,7 @@ public class ModifyResponseTest
 
         // Check the decoded ModifyResponse PDU
         ModifyResponse modifyResponse = ( ( LdapMessageContainer ) ldapMessageContainer )
-            .getInternalModifyResponse();
+            .getModifyResponse();
 
         assertEquals( 1, modifyResponse.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, modifyResponse.getLdapResult().getResultCode() );

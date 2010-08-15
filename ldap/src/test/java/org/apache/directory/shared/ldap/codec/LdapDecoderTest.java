@@ -96,7 +96,7 @@ public class LdapDecoderTest
         }
 
         // Check the decoded PDU
-        InternalBindRequest bindRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getInternalBindRequest();
+        InternalBindRequest bindRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getBindRequest();
 
         assertEquals( 1, bindRequest.getMessageId() );
         assertTrue( bindRequest.isVersion3() );
@@ -144,7 +144,7 @@ public class LdapDecoderTest
         assertEquals( TLVStateEnum.VALUE_STATE_PENDING, ldapMessageContainer.getState() );
 
         // Check the decoded PDU
-        InternalBindRequest bindRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getInternalBindRequest();
+        InternalBindRequest bindRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getBindRequest();
 
         assertEquals( 1, bindRequest.getMessageId() );
         assertTrue( bindRequest.isVersion3() );
@@ -216,7 +216,7 @@ public class LdapDecoderTest
         assertEquals( ldapMessageContainer.getState(), TLVStateEnum.PDU_DECODED );
 
         // Check the decoded PDU
-        InternalBindRequest bindRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getInternalBindRequest();
+        InternalBindRequest bindRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getBindRequest();
 
         assertEquals( 1, bindRequest.getMessageId() );
         assertTrue( bindRequest.isVersion3() );

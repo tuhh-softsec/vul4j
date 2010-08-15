@@ -64,7 +64,7 @@ public class StoreReferenceAction extends GrammarAction
 
         LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
-        SearchResultReference searchResultReference = ldapMessageContainer.getInternalSearchResultReference();
+        SearchResultReference searchResultReference = ldapMessageContainer.getSearchResultReference();
 
         // Get the Value and store it in the BindRequest
         TLV tlv = ldapMessageContainer.getCurrentTLV();

@@ -113,7 +113,7 @@ public class SearchResultEntryTest
         }
 
         SearchResultEntry searchResultEntry = ( ( LdapMessageContainer ) ldapMessageContainer )
-            .getInternalSearchResultEntry();
+            .getSearchResultEntry();
 
         assertEquals( 1, searchResultEntry.getMessageId() );
         assertEquals( "ou=contacts,dc=iktek,dc=com", searchResultEntry.getObjectName().toString() );
@@ -214,7 +214,7 @@ public class SearchResultEntryTest
         }
 
         SearchResultEntry searchResultEntry = ( ( LdapMessageContainer ) ldapMessageContainer )
-            .getInternalSearchResultEntry();
+            .getSearchResultEntry();
 
         assertEquals( 1, searchResultEntry.getMessageId() );
         assertEquals( "ou=contacts,dc=iktek,dc=com", searchResultEntry.getObjectName().toString() );
@@ -325,7 +325,7 @@ public class SearchResultEntryTest
         }
 
         SearchResultEntry searchResultEntry = ( ( LdapMessageContainer ) ldapMessageContainer )
-            .getInternalSearchResultEntry();
+            .getSearchResultEntry();
 
         assertEquals( 2, searchResultEntry.getMessageId() );
         assertEquals( "uid=admin,ou=system", searchResultEntry.getObjectName().toString() );
@@ -544,7 +544,7 @@ public class SearchResultEntryTest
         }
 
         SearchResultEntry searchResultEntry = ( ( LdapMessageContainer ) ldapMessageContainer )
-            .getInternalSearchResultEntry();
+            .getSearchResultEntry();
 
         assertEquals( 1, searchResultEntry.getMessageId() );
         assertEquals( "ou=contacts,dc=iktek,dc=com", searchResultEntry.getObjectName().toString() );
@@ -819,7 +819,7 @@ public class SearchResultEntryTest
         }
 
         SearchResultEntry searchResultEntry = ( ( LdapMessageContainer ) ldapMessageContainer )
-            .getInternalSearchResultEntry();
+            .getSearchResultEntry();
 
         assertEquals( 1, searchResultEntry.getMessageId() );
         assertEquals( "ou=contacts,dc=iktek,dc=com", searchResultEntry.getObjectName().toString() );
@@ -906,7 +906,7 @@ public class SearchResultEntryTest
         }
 
         SearchResultEntry searchResultEntry = ( ( LdapMessageContainer ) ldapMessageContainer )
-            .getInternalSearchResultEntry();
+            .getSearchResultEntry();
 
         assertEquals( 1, searchResultEntry.getMessageId() );
         assertEquals( "ou=contacts,dc=iktek,dc=com", searchResultEntry.getObjectName().toString() );
@@ -996,7 +996,7 @@ public class SearchResultEntryTest
         }
 
         SearchResultEntry searchResultEntry = ( ( LdapMessageContainer ) ldapMessageContainer )
-            .getInternalSearchResultEntry();
+            .getSearchResultEntry();
 
         assertEquals( 1, searchResultEntry.getMessageId() );
         assertEquals( "ou=contacts,dc=iktek,dc=com", searchResultEntry.getObjectName().toString() );
@@ -1093,7 +1093,7 @@ public class SearchResultEntryTest
         }
 
         SearchResultEntry searchResultEntry = ( ( LdapMessageContainer ) ldapMessageContainer )
-            .getInternalSearchResultEntry();
+            .getSearchResultEntry();
 
         assertEquals( 1, searchResultEntry.getMessageId() );
         assertEquals( "ou=contacts,dc=iktek,dc=com", searchResultEntry.getObjectName().toString() );
@@ -1187,7 +1187,7 @@ public class SearchResultEntryTest
         }
 
         SearchResultEntry searchResultEntry = ( ( LdapMessageContainer ) ldapMessageContainer )
-            .getInternalSearchResultEntry();
+            .getSearchResultEntry();
 
         assertEquals( 1, searchResultEntry.getMessageId() );
         assertEquals( "ou=contacts,dc=iktek,dc=com", searchResultEntry.getObjectName().toString() );

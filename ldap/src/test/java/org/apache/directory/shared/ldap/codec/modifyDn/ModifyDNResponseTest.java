@@ -101,7 +101,7 @@ public class ModifyDNResponseTest
 
         // Check the decoded ModifyDNResponse PDU
         ModifyDnResponse modifyDnResponse = ( ( LdapMessageContainer ) ldapMessageContainer )
-            .getInternalModifyDnResponse();
+            .getModifyDnResponse();
 
         assertEquals( 1, modifyDnResponse.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, modifyDnResponse.getLdapResult().getResultCode() );
@@ -184,7 +184,7 @@ public class ModifyDNResponseTest
 
         // Check the decoded ModifyDNResponse PDU
         ModifyDnResponse modifyDnResponse = ( ( LdapMessageContainer ) ldapMessageContainer )
-            .getInternalModifyDnResponse();
+            .getModifyDnResponse();
 
         assertEquals( 1, modifyDnResponse.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, modifyDnResponse.getLdapResult().getResultCode() );

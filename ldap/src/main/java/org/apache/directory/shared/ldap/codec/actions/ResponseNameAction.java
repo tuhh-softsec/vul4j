@@ -61,7 +61,7 @@ public class ResponseNameAction extends GrammarAction
         LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
         // We can allocate the ExtendedResponse Object
-        ExtendedResponse extendedResponse = ldapMessageContainer.getInternalExtendedResponse();
+        ExtendedResponse extendedResponse = ldapMessageContainer.getExtendedResponse();
 
         // Get the Value and store it in the ExtendedResponse
         TLV tlv = ldapMessageContainer.getCurrentTLV();

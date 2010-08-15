@@ -56,7 +56,7 @@ public class SearchResultAttributeValueAction extends GrammarAction
     public void action( IAsn1Container container )
     {
         LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-        SearchResultEntry searchResultEntry = ldapMessageContainer.getInternalSearchResultEntry();
+        SearchResultEntry searchResultEntry = ldapMessageContainer.getSearchResultEntry();
 
         TLV tlv = ldapMessageContainer.getCurrentTLV();
 

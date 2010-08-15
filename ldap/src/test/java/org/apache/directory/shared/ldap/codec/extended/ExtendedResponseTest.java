@@ -103,7 +103,7 @@ public class ExtendedResponseTest
 
         // Check the decoded ExtendedResponse PDU
         ExtendedResponse extendedResponse = ( ( LdapMessageContainer ) ldapMessageContainer )
-            .getInternalExtendedResponse();
+            .getExtendedResponse();
 
         assertEquals( 1, extendedResponse.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, extendedResponse.getLdapResult().getResultCode() );
@@ -195,7 +195,7 @@ public class ExtendedResponseTest
 
         // Check the decoded ExtendedResponse PDU
         ExtendedResponse extendedResponse = ( ( LdapMessageContainer ) ldapMessageContainer )
-            .getInternalExtendedResponse();
+            .getExtendedResponse();
 
         assertEquals( 1, extendedResponse.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, extendedResponse.getLdapResult().getResultCode() );
@@ -278,7 +278,7 @@ public class ExtendedResponseTest
 
         // Check the decoded ExtendedResponse PDU
         ExtendedResponse extendedResponse = ( ( LdapMessageContainer ) ldapMessageContainer )
-            .getInternalExtendedResponse();
+            .getExtendedResponse();
 
         assertEquals( 1, extendedResponse.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, extendedResponse.getLdapResult().getResultCode() );
@@ -361,7 +361,7 @@ public class ExtendedResponseTest
 
         // Check the decoded ExtendedResponse PDU
         ExtendedResponse extendedResponse = ( ( LdapMessageContainer ) ldapMessageContainer )
-            .getInternalExtendedResponse();
+            .getExtendedResponse();
 
         assertEquals( 1, extendedResponse.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, extendedResponse.getLdapResult().getResultCode() );
@@ -565,7 +565,7 @@ public class ExtendedResponseTest
 
         // Check the decoded ExtendedResponse PDU
         ExtendedResponse extendedResponse = ( ( LdapMessageContainer ) ldapMessageContainer )
-            .getInternalExtendedResponse();
+            .getExtendedResponse();
 
         assertEquals( 1, extendedResponse.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, extendedResponse.getLdapResult().getResultCode() );
@@ -652,7 +652,7 @@ public class ExtendedResponseTest
 
         // Check the decoded ExtendedResponse PDU
         ExtendedResponse extendedResponse = ( ( LdapMessageContainer ) ldapMessageContainer )
-            .getInternalExtendedResponse();
+            .getExtendedResponse();
 
         assertEquals( 1, extendedResponse.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, extendedResponse.getLdapResult().getResultCode() );
@@ -744,7 +744,7 @@ public class ExtendedResponseTest
 
         // Check the decoded ExtendedResponse PDU
         ExtendedResponse extendedResponse = ( ( LdapMessageContainer ) ldapMessageContainer )
-            .getInternalExtendedResponse();
+            .getExtendedResponse();
 
         assertEquals( 1, extendedResponse.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, extendedResponse.getLdapResult().getResultCode() );
@@ -832,7 +832,7 @@ public class ExtendedResponseTest
 
         // Check the decoded ExtendedResponse PDU
         ExtendedResponse extendedResponse = ( ( LdapMessageContainer ) ldapMessageContainer )
-            .getInternalExtendedResponse();
+            .getExtendedResponse();
 
         assertEquals( 1, extendedResponse.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, extendedResponse.getLdapResult().getResultCode() );

@@ -127,7 +127,7 @@ public class SearchResultReferenceTest
         }
 
         SearchResultReference searchResultReference = ( ( LdapMessageContainer ) ldapMessageContainer )
-            .getInternalSearchResultReference();
+            .getSearchResultReference();
 
         assertEquals( 1, searchResultReference.getMessageId() );
 
@@ -258,7 +258,7 @@ public class SearchResultReferenceTest
         stream.flip();
 
         SearchResultReference searchResultReference = ( ( LdapMessageContainer ) ldapMessageContainer )
-            .getInternalSearchResultReference();
+            .getSearchResultReference();
 
         assertEquals( 1, searchResultReference.getMessageId() );
 
@@ -399,7 +399,7 @@ public class SearchResultReferenceTest
         }
 
         SearchResultReference searchResultReference = ( ( LdapMessageContainer ) ldapMessageContainer )
-            .getInternalSearchResultReference();
+            .getSearchResultReference();
 
         assertEquals( 1, searchResultReference.getMessageId() );
 

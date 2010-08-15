@@ -99,7 +99,7 @@ public class DelRequestTest
         }
 
         // Check the decoded DelRequest PDU
-        InternalDeleteRequest delRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getInternalDeleteRequest();
+        InternalDeleteRequest delRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getDeleteRequest();
 
         assertEquals( 1, delRequest.getMessageId() );
         assertEquals( "cn=testModify,ou=users,ou=system", delRequest.getName().toString() );
@@ -252,7 +252,7 @@ public class DelRequestTest
         }
 
         // Check the decoded DelRequest PDU
-        InternalDeleteRequest delRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getInternalDeleteRequest();
+        InternalDeleteRequest delRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getDeleteRequest();
 
         assertEquals( 1, delRequest.getMessageId() );
         assertEquals( "cn=testModify,ou=users,ou=system", delRequest.getName().toString() );

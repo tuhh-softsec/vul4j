@@ -94,7 +94,7 @@ public class IntermediateResponseTest
 
         // Check the decoded IntermediateResponse PDU
         InternalIntermediateResponse intermediateResponse = ( ( LdapMessageContainer ) ldapMessageContainer )
-            .getInternalIntermediateResponse();
+            .getIntermediateResponse();
 
         assertEquals( 1, intermediateResponse.getMessageId() );
         assertEquals( "1.3.6.1.5.5.2", intermediateResponse.getResponseName() );
@@ -165,7 +165,7 @@ public class IntermediateResponseTest
 
         // Check the decoded IntermediateResponse PDU
         InternalIntermediateResponse intermediateResponse = ( ( LdapMessageContainer ) ldapMessageContainer )
-            .getInternalIntermediateResponse();
+            .getIntermediateResponse();
 
         assertEquals( 1, intermediateResponse.getMessageId() );
         assertEquals( "1.3.6.1.5.5.2", intermediateResponse.getResponseName() );
@@ -246,7 +246,7 @@ public class IntermediateResponseTest
 
         // Check the decoded IntermediateResponse PDU
         InternalIntermediateResponse intermediateResponse = ( ( LdapMessageContainer ) ldapMessageContainer )
-            .getInternalIntermediateResponse();
+            .getIntermediateResponse();
 
         assertEquals( 1, intermediateResponse.getMessageId() );
         assertEquals( "1.3.6.1.5.5.2", intermediateResponse.getResponseName() );
@@ -424,7 +424,7 @@ public class IntermediateResponseTest
 
         // Check the decoded IntermediateResponse PDU
         InternalIntermediateResponse intermediateResponse = ( ( LdapMessageContainer ) ldapMessageContainer )
-            .getInternalIntermediateResponse();
+            .getIntermediateResponse();
 
         assertEquals( 1, intermediateResponse.getMessageId() );
         assertEquals( "1.3.6.1.5.5.2", intermediateResponse.getResponseName() );
@@ -490,7 +490,7 @@ public class IntermediateResponseTest
 
         // Check the decoded IntermediateResponse PDU
         InternalIntermediateResponse intermediateResponse = ( ( LdapMessageContainer ) ldapMessageContainer )
-            .getInternalIntermediateResponse();
+            .getIntermediateResponse();
 
         assertEquals( 1, intermediateResponse.getMessageId() );
         assertEquals( "1.3.6.1.5.5.2", intermediateResponse.getResponseName() );
@@ -553,7 +553,7 @@ public class IntermediateResponseTest
 
         // Check the decoded IntermediateResponse PDU
         InternalIntermediateResponse intermediateResponse = ( ( LdapMessageContainer ) ldapMessageContainer )
-            .getInternalIntermediateResponse();
+            .getIntermediateResponse();
 
         assertEquals( 1, intermediateResponse.getMessageId() );
         assertEquals( "", intermediateResponse.getResponseName() );
@@ -616,7 +616,7 @@ public class IntermediateResponseTest
 
         // Check the decoded IntermediateResponse PDU
         InternalIntermediateResponse intermediateResponse = ( ( LdapMessageContainer ) ldapMessageContainer )
-            .getInternalIntermediateResponse();
+            .getIntermediateResponse();
 
         assertEquals( 1, intermediateResponse.getMessageId() );
         assertEquals( "1.3.6.1.5.5.2", intermediateResponse.getResponseName() );

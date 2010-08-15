@@ -126,7 +126,7 @@ public class BindRequestPerfTest
         }
 
         // Check the decoded BindRequest
-        InternalBindRequest bindRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getInternalBindRequest();
+        InternalBindRequest bindRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getBindRequest();
 
         assertEquals( 1, bindRequest.getMessageId() );
         assertTrue( bindRequest.isVersion3() );

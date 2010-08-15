@@ -526,7 +526,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                 public void action( IAsn1Container container ) throws DecoderException
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-                    InternalBindRequest bindRequestMessage = ldapMessageContainer.getInternalBindRequest();
+                    InternalBindRequest bindRequestMessage = ldapMessageContainer.getBindRequest();
 
                     // The current TLV should be a integer between 1 and 127
                     // We get it and store it in Version
@@ -572,7 +572,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                 public void action( IAsn1Container container ) throws DecoderException
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-                    InternalBindRequest bindRequestMessage = ldapMessageContainer.getInternalBindRequest();
+                    InternalBindRequest bindRequestMessage = ldapMessageContainer.getBindRequest();
 
                     // Get the Value and store it in the BindRequest
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
@@ -632,7 +632,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
-                    InternalBindRequest bindRequestMessage = ldapMessageContainer.getInternalBindRequest();
+                    InternalBindRequest bindRequestMessage = ldapMessageContainer.getBindRequest();
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
                     // Allocate the Authentication Object
@@ -690,7 +690,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                 public void action( IAsn1Container container ) throws DecoderException
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-                    InternalBindRequest bindRequestMessage = ldapMessageContainer.getInternalBindRequest();
+                    InternalBindRequest bindRequestMessage = ldapMessageContainer.getBindRequest();
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
                     // We will check that the sasl is not null
@@ -729,7 +729,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                 public void action( IAsn1Container container ) throws DecoderException
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-                    InternalBindRequest bindRequestMessage = ldapMessageContainer.getInternalBindRequest();
+                    InternalBindRequest bindRequestMessage = ldapMessageContainer.getBindRequest();
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
                     // We have to handle the special case of a 0 length
@@ -769,7 +769,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
-                    InternalBindRequest bindRequestMessage = ldapMessageContainer.getInternalBindRequest();
+                    InternalBindRequest bindRequestMessage = ldapMessageContainer.getBindRequest();
 
                     // Get the Value and store it in the BindRequest
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
@@ -1130,7 +1130,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                 {
 
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-                    SearchResultEntry searchResultEntry = ldapMessageContainer.getInternalSearchResultEntry();
+                    SearchResultEntry searchResultEntry = ldapMessageContainer.getSearchResultEntry();
 
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
@@ -1236,7 +1236,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                 public void action( IAsn1Container container ) throws DecoderException
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-                    SearchResultEntry searchResultEntry = ldapMessageContainer.getInternalSearchResultEntry();
+                    SearchResultEntry searchResultEntry = ldapMessageContainer.getSearchResultEntry();
 
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
@@ -3221,7 +3221,7 @@ public class LdapMessageGrammar extends AbstractGrammar
 
                     // We can get the IntermediateResponse Object
                     InternalIntermediateResponse intermediateResponse = ldapMessageContainer
-                        .getInternalIntermediateResponse();
+                        .getIntermediateResponse();
 
                     // Get the Value and store it in the IntermediateResponse
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
@@ -3286,7 +3286,7 @@ public class LdapMessageGrammar extends AbstractGrammar
 
                     // We can get the IntermediateResponse Object
                     InternalIntermediateResponse intermediateResponse = ldapMessageContainer
-                        .getInternalIntermediateResponse();
+                        .getIntermediateResponse();
 
                     // Get the Value and store it in the IntermediateResponse
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
@@ -3330,7 +3330,7 @@ public class LdapMessageGrammar extends AbstractGrammar
 
                     // We can allocate the ExtendedRequest Object
                     InternalIntermediateResponse intermediateResponse = ldapMessageContainer
-                        .getInternalIntermediateResponse();
+                        .getIntermediateResponse();
 
                     // Get the Value and store it in the IntermediateResponse
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
