@@ -543,7 +543,10 @@ public class DefaultSchemaManager implements SchemaManager
         // Load the schemas
         for ( Schema schema : schemas )
         {
-            if ( !load( clonedRegistries, schema ) && ( !errors.isEmpty() ) )
+            boolean singleSchemaLoaded = load( clonedRegistries, schema );
+
+            // return false if the schema was not loaded in the first place
+            if ( !singleSchemaLoaded )
             {
                 return false;
             }

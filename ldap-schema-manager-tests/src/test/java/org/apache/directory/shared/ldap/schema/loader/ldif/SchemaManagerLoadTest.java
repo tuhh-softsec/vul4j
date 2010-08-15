@@ -31,9 +31,8 @@ import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.directory.junit.tools.Concurrent;
-import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.exception.LdapUnwillingToPerformException;
+import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.SchemaManager;
 import org.apache.directory.shared.ldap.schema.ldif.extractor.SchemaLdifExtractor;
 import org.apache.directory.shared.ldap.schema.ldif.extractor.impl.DefaultSchemaLdifExtractor;
@@ -43,7 +42,6 @@ import org.apache.directory.shared.ldap.schema.registries.Schema;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 
 /**
@@ -167,8 +165,8 @@ import org.junit.runner.RunWith;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-@RunWith(ConcurrentJunitRunner.class)
-@Concurrent()
+//@RunWith(ConcurrentJunitRunner.class)
+//@Concurrent()
 public class SchemaManagerLoadTest
 {
     // A directory in which the ldif files will be stored
@@ -176,7 +174,7 @@ public class SchemaManagerLoadTest
 
     // The schema repository
     private static File schemaRepository;
-
+    
 
     @BeforeClass
     public static void setup() throws Exception
@@ -524,7 +522,11 @@ public class SchemaManagerLoadTest
         assertTrue( schemaManager.load( "system" ) );
         assertTrue( schemaManager.load( "core" ) );
         assertTrue( schemaManager.load( "cosine" ) );
-        assertTrue( schemaManager.load( "nis" ) );
+        assertFalse( schemaManager.load( "nis" ) );
+        
+        AttributeType at = schemaManager.getAttributeType( "uidNumber" );
+        // if nis schema was loaded then the at will not be null
+        assertNull( at );
 
         assertTrue( schemaManager.getErrors().isEmpty() );
         assertEquals( 133, schemaManager.getAttributeTypeRegistry().size() );
@@ -676,6 +678,7 @@ public class SchemaManagerLoadTest
 
         assertEquals( 1, schemaManager.getRegistries().getLoadedSchemas().size() );
         assertNotNull( schemaManager.getRegistries().getLoadedSchema( "system" ) );
+        assertNull( schemaManager.getRegistries().getLoadedSchema( "nis" ) );
         assertNull( schemaManager.getRegistries().getLoadedSchema( "core" ) );
         assertNull( schemaManager.getRegistries().getLoadedSchema( "cosine" ) );
         assertNull( schemaManager.getRegistries().getLoadedSchema( "InetOrgPerson" ) );
