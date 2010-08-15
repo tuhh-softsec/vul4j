@@ -1615,7 +1615,7 @@ m-may: ads-enabled
 m-may: description
 
 dn: m-oid=1.3.6.1.4.1.18060.0.4.1.3.260,ou=objectClasses,cn=adsconfig,ou=schema
-m-must: ads-serverDS
+m-may: ads-serverDS
 m-oid: 1.3.6.1.4.1.18060.0.4.1.3.260
 m-supobjectclass: ads-server
 m-description: The catalog based server ObjectClass
