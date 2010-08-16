@@ -32,4 +32,13 @@
       <url>http://maven.glassfish.org/content/groups/public/</url>
     </pluginRepository>
   </pluginRepositories>
+  
+  <developers>
+  	<developer>
+  		<email>brunodepaulak@yahoo.com.br</email>
+  		<id>kinow</id>
+  		<name>Bruno P. Kinoshita</name>
+  		<timezone>-3 GMT</timezone>
+  	</developer>
+  </developers>
 </project>
