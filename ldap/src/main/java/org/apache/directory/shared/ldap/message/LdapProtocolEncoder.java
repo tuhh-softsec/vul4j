@@ -52,7 +52,7 @@ import org.apache.directory.shared.ldap.message.internal.InternalAddRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalBindRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalCompareRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalDeleteRequest;
-import org.apache.directory.shared.ldap.message.internal.InternalIntermediateResponse;
+import org.apache.directory.shared.ldap.message.internal.IntermediateResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalMessage;
 import org.apache.directory.shared.ldap.message.internal.InternalReferral;
 import org.apache.directory.shared.ldap.message.internal.InternalUnbindRequest;
@@ -126,7 +126,7 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
         if ( ( message instanceof BindResponse ) || ( message instanceof DeleteResponse )
             || ( message instanceof AddResponse ) || ( message instanceof CompareResponse )
             || ( message instanceof ExtendedResponse ) || ( message instanceof ModifyResponse )
-            || ( message instanceof ModifyDnResponse ) || ( message instanceof InternalIntermediateResponse )
+            || ( message instanceof ModifyDnResponse ) || ( message instanceof IntermediateResponse )
             || ( message instanceof SearchResultDone ) || ( message instanceof SearchResultEntry )
             || ( message instanceof SearchResultReference ) || ( message instanceof InternalAbandonRequest )
             || ( message instanceof InternalDeleteRequest ) || ( message instanceof InternalUnbindRequest )

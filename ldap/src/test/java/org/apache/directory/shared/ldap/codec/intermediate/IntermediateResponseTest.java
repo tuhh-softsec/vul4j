@@ -36,7 +36,7 @@ import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.message.LdapProtocolEncoder;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.message.internal.InternalIntermediateResponse;
+import org.apache.directory.shared.ldap.message.internal.IntermediateResponse;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -93,7 +93,7 @@ public class IntermediateResponseTest
         }
 
         // Check the decoded IntermediateResponse PDU
-        InternalIntermediateResponse intermediateResponse = ( ( LdapMessageContainer ) ldapMessageContainer )
+        IntermediateResponse intermediateResponse = ( ( LdapMessageContainer ) ldapMessageContainer )
             .getIntermediateResponse();
 
         assertEquals( 1, intermediateResponse.getMessageId() );
@@ -164,7 +164,7 @@ public class IntermediateResponseTest
         }
 
         // Check the decoded IntermediateResponse PDU
-        InternalIntermediateResponse intermediateResponse = ( ( LdapMessageContainer ) ldapMessageContainer )
+        IntermediateResponse intermediateResponse = ( ( LdapMessageContainer ) ldapMessageContainer )
             .getIntermediateResponse();
 
         assertEquals( 1, intermediateResponse.getMessageId() );
@@ -245,7 +245,7 @@ public class IntermediateResponseTest
         }
 
         // Check the decoded IntermediateResponse PDU
-        InternalIntermediateResponse intermediateResponse = ( ( LdapMessageContainer ) ldapMessageContainer )
+        IntermediateResponse intermediateResponse = ( ( LdapMessageContainer ) ldapMessageContainer )
             .getIntermediateResponse();
 
         assertEquals( 1, intermediateResponse.getMessageId() );
@@ -423,7 +423,7 @@ public class IntermediateResponseTest
         }
 
         // Check the decoded IntermediateResponse PDU
-        InternalIntermediateResponse intermediateResponse = ( ( LdapMessageContainer ) ldapMessageContainer )
+        IntermediateResponse intermediateResponse = ( ( LdapMessageContainer ) ldapMessageContainer )
             .getIntermediateResponse();
 
         assertEquals( 1, intermediateResponse.getMessageId() );
@@ -489,7 +489,7 @@ public class IntermediateResponseTest
         }
 
         // Check the decoded IntermediateResponse PDU
-        InternalIntermediateResponse intermediateResponse = ( ( LdapMessageContainer ) ldapMessageContainer )
+        IntermediateResponse intermediateResponse = ( ( LdapMessageContainer ) ldapMessageContainer )
             .getIntermediateResponse();
 
         assertEquals( 1, intermediateResponse.getMessageId() );
@@ -552,7 +552,7 @@ public class IntermediateResponseTest
         }
 
         // Check the decoded IntermediateResponse PDU
-        InternalIntermediateResponse intermediateResponse = ( ( LdapMessageContainer ) ldapMessageContainer )
+        IntermediateResponse intermediateResponse = ( ( LdapMessageContainer ) ldapMessageContainer )
             .getIntermediateResponse();
 
         assertEquals( 1, intermediateResponse.getMessageId() );
@@ -615,7 +615,7 @@ public class IntermediateResponseTest
         }
 
         // Check the decoded IntermediateResponse PDU
-        InternalIntermediateResponse intermediateResponse = ( ( LdapMessageContainer ) ldapMessageContainer )
+        IntermediateResponse intermediateResponse = ( ( LdapMessageContainer ) ldapMessageContainer )
             .getIntermediateResponse();
 
         assertEquals( 1, intermediateResponse.getMessageId() );

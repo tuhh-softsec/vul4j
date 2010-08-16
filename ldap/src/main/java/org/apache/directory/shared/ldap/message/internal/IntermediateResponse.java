@@ -30,7 +30,7 @@ import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public interface InternalIntermediateResponse extends Response
+public interface IntermediateResponse extends Response
 {
     /** Intermediate response message type enumeration value */
     MessageTypeEnum TYPE = MessageTypeEnum.INTERMEDIATE_RESPONSE;

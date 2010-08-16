@@ -36,7 +36,7 @@ import org.apache.directory.shared.ldap.message.internal.InternalAddRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalBindRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalCompareRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalDeleteRequest;
-import org.apache.directory.shared.ldap.message.internal.InternalIntermediateResponse;
+import org.apache.directory.shared.ldap.message.internal.IntermediateResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalMessage;
 import org.apache.directory.shared.ldap.message.internal.InternalUnbindRequest;
 import org.apache.directory.shared.ldap.message.internal.ModifyDnResponse;
@@ -241,9 +241,9 @@ public class LdapMessageContainer extends AbstractContainer
     /**
      * @return Returns the IntermediateResponse stored in the container
      */
-    public InternalIntermediateResponse getIntermediateResponse()
+    public IntermediateResponse getIntermediateResponse()
     {
-        return ( InternalIntermediateResponse ) internalMessage;
+        return ( IntermediateResponse ) internalMessage;
     }
 
 
