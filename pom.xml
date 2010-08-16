@@ -8,22 +8,28 @@
   </parent>
 
   <artifactId>ccm</artifactId>
-  <groupId>br.eti.kinoshita</groupId>
-  <packaging>hpi</packaging>
-  <version>1.0-SNAPSHOT</version>
   <name>Hudson CCM Plugin</name>
-  <url>http://wiki.hudson-ci.org/display/HUDSON/CCM+Plugin</url>
-  <developers>
-  	<developer>
-  		<id>kinow</id>
-  		<name>Bruno P. Kinoshita</name>
-  		<email>brunodepaulak@yahoo.com.br</email>
-  	</developer>
-  </developers>
+  <version>1.0</version>
+  <packaging>hpi</packaging>
   
   <properties>
-    <!-- which version of Hudson is this plugin built against? -->
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <hudson.version>1.293</hudson.version>
   </properties>
 
+  <!-- get every artifact through maven.glassfish.org, which proxies all the artifacts that we need -->
+  <url>http://wiki.hudson-ci.org/display/HUDSON/CCM+Plugin</url>
+  <repositories>
+    <repository>
+      <id>m.g.o-public</id>
+      <url>http://maven.glassfish.org/content/groups/public/</url>
+    </repository>
+  </repositories>
+
+  <pluginRepositories>
+    <pluginRepository>
+      <id>m.g.o-public</id>
+      <url>http://maven.glassfish.org/content/groups/public/</url>
+    </pluginRepository>
+  </pluginRepositories>
 </project>

@@ -1,0 +1,18 @@
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler"
+	xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson"
+	xmlns:f="/lib/form" xmlns:i="jelly:fmt">
+	<l:layout norefresh="true">
+		<st:include it="${it.owner}" page="sidepanel.jelly" />
+		<l:main-panel>
+
+			<h1>CCM Results</h1>
+
+	        <!--st:include page="/tabview/main.jelly" /-->
+	        
+	        <p>Average Complexity per Method: <b>${it.report.averageComplexityPerMethod}</b></p>
+	        <p>Number of Methods: <b>${it.report.numberOfMethods}</b></p>
+	        <p>Total Complexity of Project: <b>${it.report.totalComplexity}</b></p>
+
+		</l:main-panel>
+	</l:layout>
+</j:jelly>
