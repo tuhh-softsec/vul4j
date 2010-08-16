@@ -55,6 +55,7 @@ import org.apache.directory.shared.ldap.message.internal.InternalCompareRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalDeleteRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalExtendedRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalMessage;
+import org.apache.directory.shared.ldap.message.internal.InternalModifyDnRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalReferral;
 import org.apache.directory.shared.ldap.message.internal.InternalUnbindRequest;
 import org.apache.directory.shared.ldap.message.internal.LdapResult;
@@ -132,7 +133,8 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
             || ( message instanceof SearchResultReference ) || ( message instanceof InternalAbandonRequest )
             || ( message instanceof InternalDeleteRequest ) || ( message instanceof InternalUnbindRequest )
             || ( message instanceof InternalBindRequest ) || ( message instanceof InternalAddRequest )
-            || ( message instanceof InternalCompareRequest ) || ( message instanceof InternalExtendedRequest ) )
+            || ( message instanceof InternalCompareRequest ) || ( message instanceof InternalExtendedRequest )
+            || ( message instanceof InternalModifyDnRequest ) )
         {
             try
             {
@@ -902,6 +904,48 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
         modifyResponse.setModifyResponseLength( modifyResponseLength );
 
         return 1 + TLV.getNbBytes( modifyResponseLength ) + modifyResponseLength;
+    }
+
+
+    /**
+     * Compute the ModifyDNRequest length
+     * 
+     * ModifyDNRequest :
+     * <pre>
+     * 0x6C L1
+     *  |
+     *  +--> 0x04 L2 entry
+     *  +--> 0x04 L3 newRDN
+     *  +--> 0x01 0x01 (true/false) deleteOldRDN (3 bytes)
+     * [+--> 0x80 L4 newSuperior ] 
+     * 
+     * L2 = Length(0x04) + Length(Length(entry)) + Length(entry) 
+     * L3 = Length(0x04) + Length(Length(newRDN)) + Length(newRDN) 
+     * L4 = Length(0x80) + Length(Length(newSuperior)) + Length(newSuperior)
+     * L1 = L2 + L3 + 3 [+ L4] 
+     * 
+     * Length(ModifyDNRequest) = Length(0x6C) + Length(L1) + L1
+     * </pre>
+     * 
+     * @return The PDU's length of a ModifyDN Request
+     */
+    private int computeModifyDnRequestLength( ModifyDnRequestImpl modifyDnResponse )
+    {
+        int newRdnlength = StringTools.getBytesUtf8( modifyDnResponse.getNewRdn().getName() ).length;
+
+        int modifyDNRequestLength = 1 + TLV.getNbBytes( DN.getNbBytes( modifyDnResponse.getName() ) )
+            + DN.getNbBytes( modifyDnResponse.getName() ) + 1 + TLV.getNbBytes( newRdnlength ) + newRdnlength + 1 + 1
+            + 1; // deleteOldRDN
+
+        if ( modifyDnResponse.getNewSuperior() != null )
+        {
+            modifyDNRequestLength += 1 + TLV.getNbBytes( DN.getNbBytes( modifyDnResponse.getNewSuperior() ) )
+                + DN.getNbBytes( modifyDnResponse.getNewSuperior() );
+        }
+
+        modifyDnResponse.setModifyDnRequestLength( modifyDNRequestLength );
+
+        return 1 + TLV.getNbBytes( modifyDNRequestLength ) + modifyDNRequestLength;
     }
 
 
@@ -1743,6 +1787,63 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
 
 
     /**
+     * Encode the ModifyDNRequest message to a PDU. 
+     * 
+     * ModifyDNRequest :
+     * <pre>
+     * 0x6C LL
+     *   0x04 LL entry
+     *   0x04 LL newRDN
+     *   0x01 0x01 deleteOldRDN
+     *   [0x80 LL newSuperior]
+     * </pre>
+     * @param buffer The buffer where to put the PDU
+     * @return The PDU.
+     */
+    private void encodeModifyDnRequest( ByteBuffer buffer, ModifyDnRequestImpl modifyDnRequest )
+        throws EncoderException
+    {
+        try
+        {
+            // The ModifyDNRequest Tag
+            buffer.put( LdapConstants.MODIFY_DN_REQUEST_TAG );
+            buffer.put( TLV.getBytes( modifyDnRequest.getModifyDnResponseLength() ) );
+
+            // The entry
+
+            Value.encode( buffer, DN.getBytes( modifyDnRequest.getName() ) );
+
+            // The newRDN
+            Value.encode( buffer, modifyDnRequest.getNewRdn().getName() );
+
+            // The flag deleteOldRdn
+            Value.encode( buffer, modifyDnRequest.getDeleteOldRdn() );
+
+            // The new superior, if any
+            if ( modifyDnRequest.getNewSuperior() != null )
+            {
+                // Encode the reference
+                buffer.put( ( byte ) LdapConstants.MODIFY_DN_REQUEST_NEW_SUPERIOR_TAG );
+
+                int newSuperiorLength = DN.getNbBytes( modifyDnRequest.getNewSuperior() );
+
+                buffer.put( TLV.getBytes( newSuperiorLength ) );
+
+                if ( newSuperiorLength != 0 )
+                {
+                    buffer.put( DN.getBytes( modifyDnRequest.getNewSuperior() ) );
+                }
+            }
+        }
+        catch ( BufferOverflowException boe )
+        {
+            throw new EncoderException( I18n.err( I18n.ERR_04005 ) );
+        }
+
+    }
+
+
+    /**
      * Encode the ModifyDnResponse message to a PDU.
      * 
      * @param buffer The buffer where to put the PDU
@@ -1989,6 +2090,9 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
             case MODIFY_RESPONSE:
                 return computeModifyResponseLength( ( ModifyResponseImpl ) message );
 
+            case MODIFYDN_REQUEST:
+                return computeModifyDnRequestLength( ( ModifyDnRequestImpl ) message );
+
             case MODIFYDN_RESPONSE:
                 return computeModifyDnResponseLength( ( ModifyDnResponseImpl ) message );
 
@@ -2064,6 +2168,10 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
 
             case MODIFY_RESPONSE:
                 encodeModifyResponse( bb, ( ModifyResponseImpl ) message );
+                break;
+
+            case MODIFYDN_REQUEST:
+                encodeModifyDnRequest( bb, ( ModifyDnRequestImpl ) message );
                 break;
 
             case MODIFYDN_RESPONSE:

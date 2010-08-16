@@ -26,7 +26,6 @@ import java.util.List;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.modify.ModifyRequestCodec;
-import org.apache.directory.shared.ldap.codec.modifyDn.ModifyDNRequestCodec;
 import org.apache.directory.shared.ldap.codec.search.AndFilter;
 import org.apache.directory.shared.ldap.codec.search.AttributeValueAssertionFilter;
 import org.apache.directory.shared.ldap.codec.search.ConnectorFilter;
@@ -55,7 +54,6 @@ import org.apache.directory.shared.ldap.filter.PresenceNode;
 import org.apache.directory.shared.ldap.filter.SimpleNode;
 import org.apache.directory.shared.ldap.filter.SubstringNode;
 import org.apache.directory.shared.ldap.message.AliasDerefMode;
-import org.apache.directory.shared.ldap.message.ModifyDnRequestImpl;
 import org.apache.directory.shared.ldap.message.ModifyRequestImpl;
 import org.apache.directory.shared.ldap.message.SearchRequestImpl;
 import org.apache.directory.shared.ldap.message.control.Control;
@@ -77,34 +75,6 @@ public class LdapTransformer
 
     /** A speedup for logger */
     private static final boolean IS_DEBUG = LOG.isDebugEnabled();
-
-
-    /**
-     * Transform a ModifyDNRequest message from a CodecMessage to a
-     * InternalMessage
-     * 
-     * @param modifyDNRequest The message to transform
-     * @param messageId The message Id
-     * @return A Internal ModifyDNRequestImpl
-     */
-    private static InternalMessage transformModifyDNRequest( ModifyDNRequestCodec modifyDNRequest, int messageId )
-    {
-        ModifyDnRequestImpl internalMessage = new ModifyDnRequestImpl( messageId );
-
-        // Codec : DN entry -> Internal : DN m_name
-        internalMessage.setName( modifyDNRequest.getEntry() );
-
-        // Codec : RelativeDN newRDN -> Internal : DN m_newRdn
-        internalMessage.setNewRdn( modifyDNRequest.getNewRDN() );
-
-        // Codec : boolean deleteOldRDN -> Internal : boolean m_deleteOldRdn
-        internalMessage.setDeleteOldRdn( modifyDNRequest.isDeleteOldRDN() );
-
-        // Codec : DN newSuperior -> Internal : DN m_newSuperior
-        internalMessage.setNewSuperior( modifyDNRequest.getNewSuperior() );
-
-        return internalMessage;
-    }
 
 
     /**
@@ -533,9 +503,6 @@ public class LdapTransformer
                 break;
 
             case MODIFYDN_REQUEST:
-                internalMessage = transformModifyDNRequest( ( ModifyDNRequestCodec ) codecMessage, messageId );
-                break;
-
             case EXTENDED_REQUEST:
             case SEARCH_RESULT_ENTRY:
             case SEARCH_RESULT_DONE:

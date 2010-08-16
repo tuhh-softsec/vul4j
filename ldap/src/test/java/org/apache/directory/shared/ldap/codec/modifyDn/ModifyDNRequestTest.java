@@ -25,7 +25,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.nio.ByteBuffer;
-import java.util.List;
+import java.util.Map;
 
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
@@ -35,10 +35,12 @@ import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.ResponseCarryingException;
+import org.apache.directory.shared.ldap.message.LdapProtocolEncoder;
 import org.apache.directory.shared.ldap.message.ModifyDnResponseImpl;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.message.internal.InternalMessage;
+import org.apache.directory.shared.ldap.message.internal.InternalModifyDnRequest;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -53,6 +55,10 @@ import org.junit.runner.RunWith;
 @Concurrent()
 public class ModifyDNRequestTest
 {
+    /** The encoder instance */
+    LdapProtocolEncoder encoder = new LdapProtocolEncoder();
+
+
     /**
      * Test the decoding of a full ModifyDNRequest
      */
@@ -65,23 +71,23 @@ public class ModifyDNRequestTest
 
         stream.put( new byte[]
             {
-            0x30, 0x46,                 // LDAPMessage ::= SEQUENCE {
-              0x02, 0x01, 0x01,         // messageID MessageID
-              0x6C, 0x41,               // CHOICE { ..., modifyDNRequest ModifyDNRequest,
-                                        // ...
-                                        // ModifyDNRequest ::= [APPLICATION 12] SEQUENCE {
-                                        // entry LDAPDN,
-                0x04, 0x20, 
-                  'c', 'n', '=', 't', 'e', 's', 't', 'M', 'o', 'd', 'i', 'f', 'y', ',', 'o', 'u', '=', 'u',
-                  's', 'e', 'r', 's', ',', 'o', 'u', '=', 's', 'y', 's', 't', 'e', 'm',
-                                        // newrdn RelativeLDAPDN,
-                0x04, 0x0F, 
-                  'c', 'n', '=', 't', 'e', 's', 't', 'D', 'N', 'M', 'o', 'd', 'i', 'f', 'y', 
-                0x01, 0x01, 0x00, // deleteoldrdn BOOLEAN,
-                                        // newSuperior [0] LDAPDN OPTIONAL }
-                ( byte ) 0x80, 0x09, 
-                  'o', 'u', '=', 's', 'y', 's', 't', 'e', 'm' 
-            } );
+                0x30,
+                0x46, // LDAPMessage ::= SEQUENCE {
+                0x02,
+                0x01,
+                0x01, // messageID MessageID
+                0x6C,
+                0x41, // CHOICE { ..., modifyDNRequest ModifyDNRequest,
+                // ...
+                // ModifyDNRequest ::= [APPLICATION 12] SEQUENCE {
+                // entry LDAPDN,
+                0x04, 0x20, 'c', 'n', '=', 't', 'e', 's', 't', 'M', 'o', 'd', 'i', 'f', 'y', ',', 'o', 'u', '=', 'u',
+                's', 'e', 'r', 's', ',', 'o', 'u', '=', 's', 'y', 's', 't', 'e', 'm',
+                // newrdn RelativeLDAPDN,
+                0x04, 0x0F, 'c', 'n', '=', 't', 'e', 's', 't', 'D', 'N', 'M', 'o', 'd', 'i', 'f', 'y', 0x01, 0x01,
+                0x00, // deleteoldrdn BOOLEAN,
+                // newSuperior [0] LDAPDN OPTIONAL }
+                ( byte ) 0x80, 0x09, 'o', 'u', '=', 's', 'y', 's', 't', 'e', 'm' } );
 
         String decodedPdu = StringTools.dumpBytes( stream.array() );
         stream.flip();
@@ -99,21 +105,22 @@ public class ModifyDNRequestTest
             fail( de.getMessage() );
         }
 
-        ModifyDNRequestCodec modifyDNRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getModifyDnRequest();
+        InternalModifyDnRequest modifyDnRequest = ( ( LdapMessageContainer ) ldapMessageContainer )
+            .getModifyDnRequest();
 
-        assertEquals( 1, modifyDNRequest.getMessageId() );
-        assertEquals( "cn=testModify,ou=users,ou=system", modifyDNRequest.getEntry().toString() );
-        assertEquals( false, modifyDNRequest.isDeleteOldRDN() );
-        assertEquals( "cn=testDNModify", modifyDNRequest.getNewRDN().toString() );
-        assertEquals( "ou=system", modifyDNRequest.getNewSuperior().toString() );
-
-        // Check the length
-        assertEquals( 0x48, modifyDNRequest.computeLength() );
+        assertEquals( 1, modifyDnRequest.getMessageId() );
+        assertEquals( "cn=testModify,ou=users,ou=system", modifyDnRequest.getName().toString() );
+        assertEquals( false, modifyDnRequest.getDeleteOldRdn() );
+        assertEquals( "cn=testDNModify", modifyDnRequest.getNewRdn().toString() );
+        assertEquals( "ou=system", modifyDnRequest.getNewSuperior().toString() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = modifyDNRequest.encode();
+            ByteBuffer bb = encoder.encodeMessage( modifyDnRequest );
+
+            // Check the length
+            assertEquals( 0x48, bb.limit() );
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -125,6 +132,7 @@ public class ModifyDNRequestTest
             fail( ee.getMessage() );
         }
     }
+
 
     /**
      * Test the decoding of a bad DN ModifyDNRequest
@@ -138,23 +146,23 @@ public class ModifyDNRequestTest
 
         stream.put( new byte[]
             {
-            0x30, 0x46,                 // LDAPMessage ::= SEQUENCE {
-              0x02, 0x01, 0x01,         // messageID MessageID
-              0x6C, 0x41,               // CHOICE { ..., modifyDNRequest ModifyDNRequest,
-                                        // ...
-                                        // ModifyDNRequest ::= [APPLICATION 12] SEQUENCE {
-                                        // entry LDAPDN,
-                0x04, 0x20, 
-                  'c', 'n', ':', 't', 'e', 's', 't', 'M', 'o', 'd', 'i', 'f', 'y', ',', 'o', 'u', '=', 'u',
-                  's', 'e', 'r', 's', ',', 'o', 'u', '=', 's', 'y', 's', 't', 'e', 'm',
-                                        // newrdn RelativeLDAPDN,
-                0x04, 0x0F, 
-                  'c', 'n', '=', 't', 'e', 's', 't', 'D', 'N', 'M', 'o', 'd', 'i', 'f', 'y', 
-                0x01, 0x01, 0x00, // deleteoldrdn BOOLEAN,
-                                        // newSuperior [0] LDAPDN OPTIONAL }
-                ( byte ) 0x80, 0x09, 
-                  'o', 'u', '=', 's', 'y', 's', 't', 'e', 'm' 
-            } );
+                0x30,
+                0x46, // LDAPMessage ::= SEQUENCE {
+                0x02,
+                0x01,
+                0x01, // messageID MessageID
+                0x6C,
+                0x41, // CHOICE { ..., modifyDNRequest ModifyDNRequest,
+                // ...
+                // ModifyDNRequest ::= [APPLICATION 12] SEQUENCE {
+                // entry LDAPDN,
+                0x04, 0x20, 'c', 'n', ':', 't', 'e', 's', 't', 'M', 'o', 'd', 'i', 'f', 'y', ',', 'o', 'u', '=', 'u',
+                's', 'e', 'r', 's', ',', 'o', 'u', '=', 's', 'y', 's', 't', 'e', 'm',
+                // newrdn RelativeLDAPDN,
+                0x04, 0x0F, 'c', 'n', '=', 't', 'e', 's', 't', 'D', 'N', 'M', 'o', 'd', 'i', 'f', 'y', 0x01, 0x01,
+                0x00, // deleteoldrdn BOOLEAN,
+                // newSuperior [0] LDAPDN OPTIONAL }
+                ( byte ) 0x80, 0x09, 'o', 'u', '=', 's', 'y', 's', 't', 'e', 'm' } );
 
         stream.flip();
 
@@ -168,14 +176,16 @@ public class ModifyDNRequestTest
         catch ( DecoderException de )
         {
             assertTrue( de instanceof ResponseCarryingException );
-            InternalMessage response = ((ResponseCarryingException)de).getResponse();
+            InternalMessage response = ( ( ResponseCarryingException ) de ).getResponse();
             assertTrue( response instanceof ModifyDnResponseImpl );
-            assertEquals( ResultCodeEnum.INVALID_DN_SYNTAX, ((ModifyDnResponseImpl)response).getLdapResult().getResultCode() );
+            assertEquals( ResultCodeEnum.INVALID_DN_SYNTAX, ( ( ModifyDnResponseImpl ) response ).getLdapResult()
+                .getResultCode() );
             return;
         }
 
         fail( "We should not reach this point" );
     }
+
 
     /**
      * Test the decoding of a bad RDN ModifyDNRequest
@@ -189,23 +199,23 @@ public class ModifyDNRequestTest
 
         stream.put( new byte[]
             {
-            0x30, 0x46,                 // LDAPMessage ::= SEQUENCE {
-              0x02, 0x01, 0x01,         // messageID MessageID
-              0x6C, 0x41,               // CHOICE { ..., modifyDNRequest ModifyDNRequest,
-                                        // ...
-                                        // ModifyDNRequest ::= [APPLICATION 12] SEQUENCE {
-                                        // entry LDAPDN,
-                0x04, 0x20, 
-                  'c', 'n', '=', 't', 'e', 's', 't', 'M', 'o', 'd', 'i', 'f', 'y', ',', 'o', 'u', '=', 'u',
-                  's', 'e', 'r', 's', ',', 'o', 'u', '=', 's', 'y', 's', 't', 'e', 'm',
-                                        // newrdn RelativeLDAPDN,
-                0x04, 0x0F, 
-                  'c', 'n', ':', 't', 'e', 's', 't', 'D', 'N', 'M', 'o', 'd', 'i', 'f', 'y', 
-                0x01, 0x01, 0x00,       // deleteoldrdn BOOLEAN,
-                                        // newSuperior [0] LDAPDN OPTIONAL }
-                ( byte ) 0x80, 0x09, 
-                  'o', 'u', '=', 's', 'y', 's', 't', 'e', 'm' 
-            } );
+                0x30,
+                0x46, // LDAPMessage ::= SEQUENCE {
+                0x02,
+                0x01,
+                0x01, // messageID MessageID
+                0x6C,
+                0x41, // CHOICE { ..., modifyDNRequest ModifyDNRequest,
+                // ...
+                // ModifyDNRequest ::= [APPLICATION 12] SEQUENCE {
+                // entry LDAPDN,
+                0x04, 0x20, 'c', 'n', '=', 't', 'e', 's', 't', 'M', 'o', 'd', 'i', 'f', 'y', ',', 'o', 'u', '=', 'u',
+                's', 'e', 'r', 's', ',', 'o', 'u', '=', 's', 'y', 's', 't', 'e', 'm',
+                // newrdn RelativeLDAPDN,
+                0x04, 0x0F, 'c', 'n', ':', 't', 'e', 's', 't', 'D', 'N', 'M', 'o', 'd', 'i', 'f', 'y', 0x01, 0x01,
+                0x00, // deleteoldrdn BOOLEAN,
+                // newSuperior [0] LDAPDN OPTIONAL }
+                ( byte ) 0x80, 0x09, 'o', 'u', '=', 's', 'y', 's', 't', 'e', 'm' } );
 
         stream.flip();
 
@@ -219,14 +229,16 @@ public class ModifyDNRequestTest
         catch ( DecoderException de )
         {
             assertTrue( de instanceof ResponseCarryingException );
-            InternalMessage response = ((ResponseCarryingException)de).getResponse();
+            InternalMessage response = ( ( ResponseCarryingException ) de ).getResponse();
             assertTrue( response instanceof ModifyDnResponseImpl );
-            assertEquals( ResultCodeEnum.INVALID_DN_SYNTAX, ((ModifyDnResponseImpl)response).getLdapResult().getResultCode() );
+            assertEquals( ResultCodeEnum.INVALID_DN_SYNTAX, ( ( ModifyDnResponseImpl ) response ).getLdapResult()
+                .getResultCode() );
             return;
         }
 
         fail( "We should not reach this point" );
     }
+
 
     /**
      * Test the decoding of a bad RDN ModifyDNRequest
@@ -240,23 +252,23 @@ public class ModifyDNRequestTest
 
         stream.put( new byte[]
             {
-            0x30, 0x46,                 // LDAPMessage ::= SEQUENCE {
-              0x02, 0x01, 0x01,         // messageID MessageID
-              0x6C, 0x41,               // CHOICE { ..., modifyDNRequest ModifyDNRequest,
-                                        // ...
-                                        // ModifyDNRequest ::= [APPLICATION 12] SEQUENCE {
-                                        // entry LDAPDN,
-                0x04, 0x20, 
-                  'c', 'n', '=', 't', 'e', 's', 't', 'M', 'o', 'd', 'i', 'f', 'y', ',', 'o', 'u', '=', 'u',
-                  's', 'e', 'r', 's', ',', 'o', 'u', '=', 's', 'y', 's', 't', 'e', 'm',
-                                        // newrdn RelativeLDAPDN,
-                0x04, 0x0F, 
-                  'c', 'n', '=', 't', 'e', 's', 't', 'D', 'N', 'M', 'o', 'd', 'i', 'f', 'y', 
-                0x01, 0x01, 0x00,       // deleteoldrdn BOOLEAN,
-                                        // newSuperior [0] LDAPDN OPTIONAL }
-                ( byte ) 0x80, 0x09, 
-                  'o', 'u', ':', 's', 'y', 's', 't', 'e', 'm' 
-            } );
+                0x30,
+                0x46, // LDAPMessage ::= SEQUENCE {
+                0x02,
+                0x01,
+                0x01, // messageID MessageID
+                0x6C,
+                0x41, // CHOICE { ..., modifyDNRequest ModifyDNRequest,
+                // ...
+                // ModifyDNRequest ::= [APPLICATION 12] SEQUENCE {
+                // entry LDAPDN,
+                0x04, 0x20, 'c', 'n', '=', 't', 'e', 's', 't', 'M', 'o', 'd', 'i', 'f', 'y', ',', 'o', 'u', '=', 'u',
+                's', 'e', 'r', 's', ',', 'o', 'u', '=', 's', 'y', 's', 't', 'e', 'm',
+                // newrdn RelativeLDAPDN,
+                0x04, 0x0F, 'c', 'n', '=', 't', 'e', 's', 't', 'D', 'N', 'M', 'o', 'd', 'i', 'f', 'y', 0x01, 0x01,
+                0x00, // deleteoldrdn BOOLEAN,
+                // newSuperior [0] LDAPDN OPTIONAL }
+                ( byte ) 0x80, 0x09, 'o', 'u', ':', 's', 'y', 's', 't', 'e', 'm' } );
 
         stream.flip();
 
@@ -270,15 +282,17 @@ public class ModifyDNRequestTest
         catch ( DecoderException de )
         {
             assertTrue( de instanceof ResponseCarryingException );
-            InternalMessage response = ((ResponseCarryingException)de).getResponse();
+            InternalMessage response = ( ( ResponseCarryingException ) de ).getResponse();
             assertTrue( response instanceof ModifyDnResponseImpl );
-            assertEquals( ResultCodeEnum.INVALID_DN_SYNTAX, ((ModifyDnResponseImpl)response).getLdapResult().getResultCode() );
+            assertEquals( ResultCodeEnum.INVALID_DN_SYNTAX, ( ( ModifyDnResponseImpl ) response ).getLdapResult()
+                .getResultCode() );
             return;
         }
 
         fail( "We should not reach this point" );
     }
-    
+
+
     /**
      * Test the decoding of a full ModifyDNRequest with controls
      */
@@ -291,26 +305,28 @@ public class ModifyDNRequestTest
 
         stream.put( new byte[]
             {
-            0x30, 0x63,                 // LDAPMessage ::= SEQUENCE {
-              0x02, 0x01, 0x01,         // messageID MessageID
-              0x6C, 0x41,               // CHOICE { ..., modifyDNRequest ModifyDNRequest,
-                                        // ...
-                                        // ModifyDNRequest ::= [APPLICATION 12] SEQUENCE {
-                                        // entry LDAPDN,
-                0x04, 0x20, 
-                  'c', 'n', '=', 't', 'e', 's', 't', 'M', 'o', 'd', 'i', 'f', 'y', ',', 'o', 'u', '=', 'u',
-                  's', 'e', 'r', 's', ',', 'o', 'u', '=', 's', 'y', 's', 't', 'e', 'm',
-                                        // newrdn RelativeLDAPDN,
-                0x04, 0x0F, 
-                  'c', 'n', '=', 't', 'e', 's', 't', 'D', 'N', 'M', 'o', 'd', 'i', 'f', 'y', 
-                0x01, 0x01, 0x00,       // deleteoldrdn BOOLEAN,
-                                        // newSuperior [0] LDAPDN OPTIONAL }
-                ( byte ) 0x80, 0x09, 
-                  'o', 'u', '=', 's', 'y', 's', 't', 'e', 'm', 
-              ( byte ) 0xA0, 0x1B, // A control
+                0x30,
+                0x63, // LDAPMessage ::= SEQUENCE {
+                0x02,
+                0x01,
+                0x01, // messageID MessageID
+                0x6C,
+                0x41, // CHOICE { ..., modifyDNRequest ModifyDNRequest,
+                // ...
+                // ModifyDNRequest ::= [APPLICATION 12] SEQUENCE {
+                // entry LDAPDN,
+                0x04, 0x20, 'c', 'n', '=', 't', 'e', 's', 't', 'M', 'o', 'd', 'i', 'f', 'y', ',', 'o', 'u', '=', 'u',
+                's', 'e', 'r', 's', ',', 'o', 'u', '=', 's', 'y', 's', 't', 'e',
+                'm',
+                // newrdn RelativeLDAPDN,
+                0x04, 0x0F, 'c', 'n', '=', 't', 'e', 's', 't', 'D', 'N', 'M', 'o', 'd', 'i', 'f', 'y', 0x01,
+                0x01,
+                0x00, // deleteoldrdn BOOLEAN,
+                // newSuperior [0] LDAPDN OPTIONAL }
+                ( byte ) 0x80, 0x09, 'o', 'u', '=', 's', 'y', 's', 't', 'e', 'm', ( byte ) 0xA0,
+                0x1B, // A control
                 0x30, 0x19, 0x04, 0x17, 0x32, 0x2E, 0x31, 0x36, 0x2E, 0x38, 0x34, 0x30, 0x2E, 0x31, 0x2E, 0x31, 0x31,
-                0x33, 0x37, 0x33, 0x30, 0x2E, 0x33, 0x2E, 0x34, 0x2E, 0x32 
-            } );
+                0x33, 0x37, 0x33, 0x30, 0x2E, 0x33, 0x2E, 0x34, 0x2E, 0x32 } );
 
         String decodedPdu = StringTools.dumpBytes( stream.array() );
         stream.flip();
@@ -328,30 +344,31 @@ public class ModifyDNRequestTest
             fail( de.getMessage() );
         }
 
-        ModifyDNRequestCodec modifyDNRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getModifyDnRequest();
+        InternalModifyDnRequest modifyDnRequest = ( ( LdapMessageContainer ) ldapMessageContainer )
+            .getModifyDnRequest();
 
-        assertEquals( 1, modifyDNRequest.getMessageId() );
-        assertEquals( "cn=testModify,ou=users,ou=system", modifyDNRequest.getEntry().toString() );
-        assertEquals( false, modifyDNRequest.isDeleteOldRDN() );
-        assertEquals( "cn=testDNModify", modifyDNRequest.getNewRDN().toString() );
-        assertEquals( "ou=system", modifyDNRequest.getNewSuperior().toString() );
+        assertEquals( 1, modifyDnRequest.getMessageId() );
+        assertEquals( "cn=testModify,ou=users,ou=system", modifyDnRequest.getName().toString() );
+        assertEquals( false, modifyDnRequest.getDeleteOldRdn() );
+        assertEquals( "cn=testDNModify", modifyDnRequest.getNewRdn().toString() );
+        assertEquals( "ou=system", modifyDnRequest.getNewSuperior().toString() );
 
         // Check the Control
-        List<Control> controls = modifyDNRequest.getControls();
+        Map<String, Control> controls = modifyDnRequest.getControls();
 
         assertEquals( 1, controls.size() );
 
-        Control control = modifyDNRequest.getControls( 0 );
+        Control control = modifyDnRequest.getControl( "2.16.840.1.113730.3.4.2" );
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
         assertEquals( "", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
-
-        // Check the length
-        assertEquals( 0x65, modifyDNRequest.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = modifyDNRequest.encode();
+            ByteBuffer bb = encoder.encodeMessage( modifyDnRequest );
+
+            // Check the length
+            assertEquals( 0x65, bb.limit() );
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -376,21 +393,21 @@ public class ModifyDNRequestTest
         ByteBuffer stream = ByteBuffer.allocate( 0x3D );
 
         stream.put( new byte[]
-            {
-            0x30, 0x3B,                 // LDAPMessage ::= SEQUENCE {
-              0x02, 0x01, 0x01,         // messageID MessageID
-              0x6C, 0x36,               // CHOICE { ..., modifyDNRequest ModifyDNRequest,
-                                        // ...
-                                        // ModifyDNRequest ::= [APPLICATION 12] SEQUENCE {
-                                        // entry LDAPDN,
-                0x04, 0x20, 
-                  'c', 'n', '=', 't', 'e', 's', 't', 'M', 'o', 'd', 'i', 'f', 'y', ',', 'o', 'u', '=', 'u',
-                  's', 'e', 'r', 's', ',', 'o', 'u', '=', 's', 'y', 's', 't', 'e', 'm',
-                                        // newrdn RelativeLDAPDN,
-                0x04, 0x0F, 
-                  'c', 'n', '=', 't', 'e', 's', 't', 'D', 'N', 'M', 'o', 'd', 'i', 'f', 'y', 
-                0x01, 0x01, 0x00        // deleteoldrdn BOOLEAN,
-                                        // newSuperior [0] LDAPDN OPTIONAL }
+            { 0x30,
+                0x3B, // LDAPMessage ::= SEQUENCE {
+                0x02,
+                0x01,
+                0x01, // messageID MessageID
+                0x6C,
+                0x36, // CHOICE { ..., modifyDNRequest ModifyDNRequest,
+                // ...
+                // ModifyDNRequest ::= [APPLICATION 12] SEQUENCE {
+                // entry LDAPDN,
+                0x04, 0x20, 'c', 'n', '=', 't', 'e', 's', 't', 'M', 'o', 'd', 'i', 'f', 'y', ',', 'o', 'u', '=', 'u',
+                's', 'e', 'r', 's', ',', 'o', 'u', '=', 's', 'y', 's', 't', 'e', 'm',
+                // newrdn RelativeLDAPDN,
+                0x04, 0x0F, 'c', 'n', '=', 't', 'e', 's', 't', 'D', 'N', 'M', 'o', 'd', 'i', 'f', 'y', 0x01, 0x01, 0x00 // deleteoldrdn BOOLEAN,
+            // newSuperior [0] LDAPDN OPTIONAL }
             } );
 
         String decodedPdu = StringTools.dumpBytes( stream.array() );
@@ -409,20 +426,21 @@ public class ModifyDNRequestTest
             fail( de.getMessage() );
         }
 
-        ModifyDNRequestCodec modifyDNRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getModifyDnRequest();
+        InternalModifyDnRequest modifyDnRequest = ( ( LdapMessageContainer ) ldapMessageContainer )
+            .getModifyDnRequest();
 
-        assertEquals( 1, modifyDNRequest.getMessageId() );
-        assertEquals( "cn=testModify,ou=users,ou=system", modifyDNRequest.getEntry().toString() );
-        assertEquals( false, modifyDNRequest.isDeleteOldRDN() );
-        assertEquals( "cn=testDNModify", modifyDNRequest.getNewRDN().toString() );
-
-        // Check the length
-        assertEquals( 0x3D, modifyDNRequest.computeLength() );
+        assertEquals( 1, modifyDnRequest.getMessageId() );
+        assertEquals( "cn=testModify,ou=users,ou=system", modifyDnRequest.getName().toString() );
+        assertEquals( false, modifyDnRequest.getDeleteOldRdn() );
+        assertEquals( "cn=testDNModify", modifyDnRequest.getNewRdn().toString() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = modifyDNRequest.encode();
+            ByteBuffer bb = encoder.encodeMessage( modifyDnRequest );
+
+            // Check the length
+            assertEquals( 0x3D, bb.limit() );
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -448,24 +466,28 @@ public class ModifyDNRequestTest
 
         stream.put( new byte[]
             {
-            0x30, 0x58,                 // LDAPMessage ::= SEQUENCE {
-              0x02, 0x01, 0x01,         // messageID MessageID
-              0x6C, 0x36,               // CHOICE { ..., modifyDNRequest ModifyDNRequest,
-                                        // ...
-                                        // ModifyDNRequest ::= [APPLICATION 12] SEQUENCE {
-                                        // entry LDAPDN,
-                0x04, 0x20, 
-                  'c', 'n', '=', 't', 'e', 's', 't', 'M', 'o', 'd', 'i', 'f', 'y', ',', 'o', 'u', '=', 'u',
-                  's', 'e', 'r', 's', ',', 'o', 'u', '=', 's', 'y', 's', 't', 'e', 'm',
-                                        // newrdn RelativeLDAPDN,
-                0x04, 0x0F, 
-                  'c', 'n', '=', 't', 'e', 's', 't', 'D', 'N', 'M', 'o', 'd', 'i', 'f', 'y', 
-                0x01, 0x01, 0x00,       // deleteoldrdn BOOLEAN,
-                                        // newSuperior [0] LDAPDN OPTIONAL }
-              ( byte ) 0xA0, 0x1B,      // A control
+                0x30,
+                0x58, // LDAPMessage ::= SEQUENCE {
+                0x02,
+                0x01,
+                0x01, // messageID MessageID
+                0x6C,
+                0x36, // CHOICE { ..., modifyDNRequest ModifyDNRequest,
+                // ...
+                // ModifyDNRequest ::= [APPLICATION 12] SEQUENCE {
+                // entry LDAPDN,
+                0x04, 0x20, 'c', 'n', '=', 't', 'e', 's', 't', 'M', 'o', 'd', 'i', 'f', 'y', ',', 'o', 'u', '=', 'u',
+                's', 'e', 'r', 's', ',', 'o', 'u', '=', 's', 'y', 's', 't', 'e',
+                'm',
+                // newrdn RelativeLDAPDN,
+                0x04, 0x0F, 'c', 'n', '=', 't', 'e', 's', 't', 'D', 'N', 'M', 'o', 'd', 'i', 'f', 'y', 0x01,
+                0x01,
+                0x00, // deleteoldrdn BOOLEAN,
+                // newSuperior [0] LDAPDN OPTIONAL }
+                ( byte ) 0xA0,
+                0x1B, // A control
                 0x30, 0x19, 0x04, 0x17, 0x32, 0x2E, 0x31, 0x36, 0x2E, 0x38, 0x34, 0x30, 0x2E, 0x31, 0x2E, 0x31, 0x31,
-                0x33, 0x37, 0x33, 0x30, 0x2E, 0x33, 0x2E, 0x34, 0x2E, 0x32 
-            } );
+                0x33, 0x37, 0x33, 0x30, 0x2E, 0x33, 0x2E, 0x34, 0x2E, 0x32 } );
 
         String decodedPdu = StringTools.dumpBytes( stream.array() );
         stream.flip();
@@ -483,29 +505,32 @@ public class ModifyDNRequestTest
             fail( de.getMessage() );
         }
 
-        ModifyDNRequestCodec modifyDNRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getModifyDnRequest();
+        InternalModifyDnRequest modifyDnRequest = ( ( LdapMessageContainer ) ldapMessageContainer )
+            .getModifyDnRequest();
 
-        assertEquals( 1, modifyDNRequest.getMessageId() );
-        assertEquals( "cn=testModify,ou=users,ou=system", modifyDNRequest.getEntry().toString() );
-        assertEquals( false, modifyDNRequest.isDeleteOldRDN() );
-        assertEquals( "cn=testDNModify", modifyDNRequest.getNewRDN().toString() );
+        assertEquals( 1, modifyDnRequest.getMessageId() );
+        assertEquals( "cn=testModify,ou=users,ou=system", modifyDnRequest.getName().toString() );
+        assertEquals( false, modifyDnRequest.getDeleteOldRdn() );
+        assertEquals( "cn=testDNModify", modifyDnRequest.getNewRdn().toString() );
 
         // Check the Control
-        List<Control> controls = modifyDNRequest.getControls();
+        Map<String, Control> controls = modifyDnRequest.getControls();
 
         assertEquals( 1, controls.size() );
 
-        Control control = modifyDNRequest.getControls( 0 );
+        assertTrue( modifyDnRequest.hasControl( "2.16.840.1.113730.3.4.2" ) );
+
+        Control control = modifyDnRequest.getControl( "2.16.840.1.113730.3.4.2" );
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
         assertEquals( "", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
-
-        // Check the length
-        assertEquals( 0x5A, modifyDNRequest.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = modifyDNRequest.encode();
+            ByteBuffer bb = encoder.encodeMessage( modifyDnRequest );
+
+            // Check the length
+            assertEquals( 0x5A, bb.limit() );
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -532,11 +557,10 @@ public class ModifyDNRequestTest
         ByteBuffer stream = ByteBuffer.allocate( 0x07 );
 
         stream.put( new byte[]
-            { 
-            0x30, 0x05,                 // LDAPMessage ::= SEQUENCE {
-              0x02, 0x01, 0x01,         // messageID MessageID
-              0x6C, 0x00                // CHOICE { ..., modifyDNRequest ModifyDNRequest,
-                                        // ...
+            { 0x30, 0x05, // LDAPMessage ::= SEQUENCE {
+                0x02, 0x01, 0x01, // messageID MessageID
+                0x6C, 0x00 // CHOICE { ..., modifyDNRequest ModifyDNRequest,
+            // ...
             } );
 
         stream.flip();
@@ -568,11 +592,10 @@ public class ModifyDNRequestTest
         ByteBuffer stream = ByteBuffer.allocate( 0x09 );
 
         stream.put( new byte[]
-            { 
-            0x30, 0x07,                 // LDAPMessage ::= SEQUENCE {
-              0x02, 0x01, 0x01,         // messageID MessageID
-              0x6C, 0x02,               // CHOICE { ..., modifyDNRequest ModifyDNRequest,
-                                        // ...
+            { 0x30, 0x07, // LDAPMessage ::= SEQUENCE {
+                0x02, 0x01, 0x01, // messageID MessageID
+                0x6C, 0x02, // CHOICE { ..., modifyDNRequest ModifyDNRequest,
+                // ...
                 0x04, 0x00 } );
 
         stream.flip();
@@ -604,16 +627,15 @@ public class ModifyDNRequestTest
         ByteBuffer stream = ByteBuffer.allocate( 0x2D );
 
         stream.put( new byte[]
-            { 
-            0x30, 0x2B,                 // LDAPMessage ::= SEQUENCE {
-              0x02, 0x01, 0x01,         // messageID MessageID
-              0x6C, 0x26,               // CHOICE { ..., modifyDNRequest ModifyDNRequest,
-                            // ...
-                0x04, 0x20, 
-                  'c', 'n', '=', 't', 'e', 's', 't', 'M', 'o', 'd', 'i', 'f', 'y', ',', 'o', 'u', '=', 'u',
-                  's', 'e', 'r', 's', ',', 'o', 'u', '=', 's', 'y', 's', 't', 'e', 'm', 
-                0x04, 0x00 
-            } );
+            { 0x30,
+                0x2B, // LDAPMessage ::= SEQUENCE {
+                0x02, 0x01,
+                0x01, // messageID MessageID
+                0x6C,
+                0x26, // CHOICE { ..., modifyDNRequest ModifyDNRequest,
+                // ...
+                0x04, 0x20, 'c', 'n', '=', 't', 'e', 's', 't', 'M', 'o', 'd', 'i', 'f', 'y', ',', 'o', 'u', '=', 'u',
+                's', 'e', 'r', 's', ',', 'o', 'u', '=', 's', 'y', 's', 't', 'e', 'm', 0x04, 0x00 } );
 
         stream.flip();
 
@@ -644,17 +666,18 @@ public class ModifyDNRequestTest
         ByteBuffer stream = ByteBuffer.allocate( 0x3C );
 
         stream.put( new byte[]
-            { 
-            0x30, 0x3A,                 // LDAPMessage ::= SEQUENCE {
-              0x02, 0x01, 0x01,         // messageID MessageID
-              0x6C, 0x35,               // CHOICE { ..., modifyDNRequest ModifyDNRequest,
-                                        // ...
-                0x04, 0x20, 
-                  'c', 'n', '=', 't', 'e', 's', 't', 'M', 'o', 'd', 'i', 'f', 'y', ',', 'o', 'u', '=', 'u',
-                  's', 'e', 'r', 's', ',', 'o', 'u', '=', 's', 'y', 's', 't', 'e', 'm', 
-                0x04, 0x0F, 
-                  'c', 'n', '=', 't', 'e', 's', 't', 'D', 'N', 'M', 'o', 'd', 'i', 'f', 'y', 
-                0x01, 0x00              // deleteoldrdn BOOLEAN
+            {
+                0x30,
+                0x3A, // LDAPMessage ::= SEQUENCE {
+                0x02,
+                0x01,
+                0x01, // messageID MessageID
+                0x6C,
+                0x35, // CHOICE { ..., modifyDNRequest ModifyDNRequest,
+                // ...
+                0x04, 0x20, 'c', 'n', '=', 't', 'e', 's', 't', 'M', 'o', 'd', 'i', 'f', 'y', ',', 'o', 'u', '=', 'u',
+                's', 'e', 'r', 's', ',', 'o', 'u', '=', 's', 'y', 's', 't', 'e', 'm', 0x04, 0x0F, 'c', 'n', '=', 't',
+                'e', 's', 't', 'D', 'N', 'M', 'o', 'd', 'i', 'f', 'y', 0x01, 0x00 // deleteoldrdn BOOLEAN
             } );
 
         stream.flip();

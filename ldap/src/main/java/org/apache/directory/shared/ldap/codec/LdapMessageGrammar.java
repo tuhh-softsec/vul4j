@@ -73,7 +73,6 @@ import org.apache.directory.shared.ldap.codec.actions.ValueAction;
 import org.apache.directory.shared.ldap.codec.controls.ControlEnum;
 import org.apache.directory.shared.ldap.codec.controls.ControlImpl;
 import org.apache.directory.shared.ldap.codec.modify.ModifyRequestCodec;
-import org.apache.directory.shared.ldap.codec.modifyDn.ModifyDNRequestCodec;
 import org.apache.directory.shared.ldap.codec.search.ExtensibleMatchFilter;
 import org.apache.directory.shared.ldap.codec.search.SearchRequestCodec;
 import org.apache.directory.shared.ldap.codec.search.SubstringFilter;
@@ -92,6 +91,7 @@ import org.apache.directory.shared.ldap.message.DeleteResponseImpl;
 import org.apache.directory.shared.ldap.message.ExtendedRequestImpl;
 import org.apache.directory.shared.ldap.message.ExtendedResponseImpl;
 import org.apache.directory.shared.ldap.message.IntermediateResponseImpl;
+import org.apache.directory.shared.ldap.message.ModifyDnRequestImpl;
 import org.apache.directory.shared.ldap.message.ModifyDnResponseImpl;
 import org.apache.directory.shared.ldap.message.ModifyResponseImpl;
 import org.apache.directory.shared.ldap.message.ReferralImpl;
@@ -114,6 +114,7 @@ import org.apache.directory.shared.ldap.message.internal.InternalCompareRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalDeleteRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalExtendedRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalMessage;
+import org.apache.directory.shared.ldap.message.internal.InternalModifyDnRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalReferral;
 import org.apache.directory.shared.ldap.message.internal.InternalUnbindRequest;
 import org.apache.directory.shared.ldap.message.internal.LdapResult;
@@ -2163,9 +2164,9 @@ public class LdapMessageGrammar extends AbstractGrammar
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
                     // Now, we can allocate the ModifyDNRequest Object
-                    ModifyDNRequestCodec modifyDNRequest = new ModifyDNRequestCodec();
-                    modifyDNRequest.setMessageId( ldapMessageContainer.getMessageId() );
-                    ldapMessageContainer.setLdapMessage( modifyDNRequest );
+                    InternalModifyDnRequest modifyDnRequest = new ModifyDnRequestImpl( ldapMessageContainer
+                        .getMessageId() );
+                    ldapMessageContainer.setInternalMessage( modifyDnRequest );
 
                     log.debug( "ModifyDn request" );
                 }
@@ -2187,7 +2188,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
-                    ModifyDNRequestCodec modifyDNRequest = ldapMessageContainer.getModifyDnRequest();
+                    InternalModifyDnRequest modifyDNRequest = ldapMessageContainer.getModifyDnRequest();
 
                     // Get the Value and store it in the modifyDNRequest
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
@@ -2221,7 +2222,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                                 DN.EMPTY_DN, ine );
                         }
 
-                        modifyDNRequest.setEntry( entry );
+                        modifyDNRequest.setName( entry );
                     }
 
                     if ( IS_DEBUG )
@@ -2250,7 +2251,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
-                    ModifyDNRequestCodec modifyDNRequest = ldapMessageContainer.getModifyDnRequest();
+                    InternalModifyDnRequest modifyDnRequest = ldapMessageContainer.getModifyDnRequest();
 
                     // Get the Value and store it in the modifyDNRequest
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
@@ -2264,9 +2265,9 @@ public class LdapMessageGrammar extends AbstractGrammar
                         String msg = I18n.err( I18n.ERR_04090 );
                         log.error( msg );
 
-                        ModifyDnResponseImpl response = new ModifyDnResponseImpl( modifyDNRequest.getMessageId() );
+                        ModifyDnResponseImpl response = new ModifyDnResponseImpl( modifyDnRequest.getMessageId() );
                         throw new ResponseCarryingException( msg, response, ResultCodeEnum.INVALID_DN_SYNTAX,
-                            modifyDNRequest.getEntry(), null );
+                            modifyDnRequest.getName(), null );
                     }
                     else
                     {
@@ -2284,12 +2285,12 @@ public class LdapMessageGrammar extends AbstractGrammar
                                 + ") is invalid";
                             log.error( "{} : {}", msg, ine.getMessage() );
 
-                            ModifyDnResponseImpl response = new ModifyDnResponseImpl( modifyDNRequest.getMessageId() );
+                            ModifyDnResponseImpl response = new ModifyDnResponseImpl( modifyDnRequest.getMessageId() );
                             throw new ResponseCarryingException( msg, response, ResultCodeEnum.INVALID_DN_SYNTAX,
-                                modifyDNRequest.getEntry(), ine );
+                                modifyDnRequest.getName(), ine );
                         }
 
-                        modifyDNRequest.setNewRDN( newRdn );
+                        modifyDnRequest.setNewRdn( newRdn );
                     }
 
                     if ( IS_DEBUG )
@@ -2315,7 +2316,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                 public void action( IAsn1Container container ) throws DecoderException
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-                    ModifyDNRequestCodec modifyDNRequest = ldapMessageContainer.getModifyDnRequest();
+                    InternalModifyDnRequest modifyDnRequest = ldapMessageContainer.getModifyDnRequest();
 
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
@@ -2329,7 +2330,7 @@ public class LdapMessageGrammar extends AbstractGrammar
 
                     try
                     {
-                        modifyDNRequest.setDeleteOldRDN( BooleanDecoder.parse( value ) );
+                        modifyDnRequest.setDeleteOldRdn( BooleanDecoder.parse( value ) );
                     }
                     catch ( BooleanDecoderException bde )
                     {
@@ -2345,7 +2346,7 @@ public class LdapMessageGrammar extends AbstractGrammar
 
                     if ( IS_DEBUG )
                     {
-                        if ( modifyDNRequest.isDeleteOldRDN() )
+                        if ( modifyDnRequest.getDeleteOldRdn() )
                         {
                             log.debug( " Old RDN attributes will be deleted" );
                         }
@@ -2372,7 +2373,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                 public void action( IAsn1Container container ) throws DecoderException
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-                    ModifyDNRequestCodec modifyDNRequest = ldapMessageContainer.getModifyDnRequest();
+                    InternalModifyDnRequest modifyDnRequest = ldapMessageContainer.getModifyDnRequest();
 
                     // Get the Value and store it in the modifyDNRequest
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
@@ -2384,7 +2385,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                     if ( tlv.getLength() == 0 )
                     {
 
-                        if ( modifyDNRequest.isDeleteOldRDN() )
+                        if ( modifyDnRequest.getDeleteOldRdn() )
                         {
                             // This will generate a PROTOCOL_ERROR
                             throw new DecoderException( I18n.err( I18n.ERR_04092 ) );
@@ -2394,7 +2395,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                             log.warn( "The new superior is null, so we will change the entry" );
                         }
 
-                        modifyDNRequest.setNewSuperior( newSuperior );
+                        modifyDnRequest.setNewSuperior( newSuperior );
                     }
                     else
                     {
@@ -2411,12 +2412,12 @@ public class LdapMessageGrammar extends AbstractGrammar
                                 + StringTools.dumpBytes( dnBytes ) + ") is invalid";
                             log.error( "{} : {}", msg, ine.getMessage() );
 
-                            ModifyDnResponseImpl response = new ModifyDnResponseImpl( modifyDNRequest.getMessageId() );
+                            ModifyDnResponseImpl response = new ModifyDnResponseImpl( modifyDnRequest.getMessageId() );
                             throw new ResponseCarryingException( msg, response, ResultCodeEnum.INVALID_DN_SYNTAX,
-                                modifyDNRequest.getEntry(), ine );
+                                modifyDnRequest.getName(), ine );
                         }
 
-                        modifyDNRequest.setNewSuperior( newSuperior );
+                        modifyDnRequest.setNewSuperior( newSuperior );
                     }
 
                     // We can have an END transition

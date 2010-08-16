@@ -29,7 +29,7 @@ import org.apache.directory.shared.ldap.name.RDN;
 
 
 /**
- * Lockable ModifyDNRequest implementation.
+ * ModifyDNRequest implementation.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
@@ -49,19 +49,31 @@ public class ModifyDnRequestImpl extends AbstractAbandonableRequest implements I
     /** PDU's <b>deleteOldRdn</b> flag */
     private boolean deleteOldRdn = false;
 
+    /** The associated response */
     private ModifyDnResponse response;
+
+    /** The modify DN request length */
+    private int modifyDnRequestLength;
 
 
     // -----------------------------------------------------------------------
     // Constructors
     // -----------------------------------------------------------------------
+    /**
+     * Creates a ModifyDnRequest implementing object used to perform a
+     * dn change on an entry potentially resulting in an entry move.
+     */
+    public ModifyDnRequestImpl()
+    {
+        super( -1, TYPE );
+    }
+
 
     /**
      * Creates a Lockable ModifyDnRequest implementing object used to perform a
      * dn change on an entry potentially resulting in an entry move.
      * 
-     * @param id
-     *            the seq id of this message
+     * @param id the sequence id of this message
      */
     public ModifyDnRequestImpl( final int id )
     {
@@ -76,7 +88,7 @@ public class ModifyDnRequestImpl extends AbstractAbandonableRequest implements I
     /**
      * Gets the flag which determines if the old Rdn attribute is to be removed
      * from the entry when the new Rdn is used in its stead. This property
-     * corresponds to the <b>deleteoldrdn
+     * corresponds to the <b>deleteoldrdn</b>
      * </p>
      * PDU field.
      * 
@@ -91,12 +103,11 @@ public class ModifyDnRequestImpl extends AbstractAbandonableRequest implements I
     /**
      * Sets the flag which determines if the old Rdn attribute is to be removed
      * from the entry when the new Rdn is used in its stead. This property
-     * corresponds to the <b>deleteoldrdn
+     * corresponds to the <b>deleteoldrdn</b>
      * </p>
      * PDU field.
      * 
-     * @param deleteOldRdn
-     *            true if the old rdn is to be deleted, false if it is not
+     * @param deleteOldRdn true if the old rdn is to be deleted, false if it is not
      */
     public void setDeleteOldRdn( boolean deleteOldRdn )
     {
@@ -159,8 +170,7 @@ public class ModifyDnRequestImpl extends AbstractAbandonableRequest implements I
      * Sets the new relative distinguished name for the entry which represents
      * the PDU's <b>newrdn</b> field.
      * 
-     * @param newRdn
-     *            the relative dn with one component
+     * @param newRdn the relative dn with one component
      */
     public void setNewRdn( RDN newRdn )
     {
@@ -189,8 +199,7 @@ public class ModifyDnRequestImpl extends AbstractAbandonableRequest implements I
      * rather than a move operation. Setting this property to a non-null value
      * toggles the move flag obtained via the <code>isMove</code> method.
      * 
-     * @param newSuperior
-     *            the dn of the superior entry the candidate entry for DN
+     * @param newSuperior the dn of the superior entry the candidate entry for DN
      *            modification is moved under.
      */
     public void setNewSuperior( DN newSuperior )
@@ -232,6 +241,25 @@ public class ModifyDnRequestImpl extends AbstractAbandonableRequest implements I
 
 
     /**
+     * @return The encoded ModifyDnRequest's length
+     */
+    /* No Qualifier*/void setModifyDnRequestLength( int modifyDnRequestLength )
+    {
+        this.modifyDnRequestLength = modifyDnRequestLength;
+    }
+
+
+    /**
+     * Stores the encoded length for the ModifyDnRequest
+     * @param modifyDnRequestLength The encoded length
+     */
+    /* No Qualifier*/int getModifyDnResponseLength()
+    {
+        return modifyDnRequestLength;
+    }
+
+
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -262,8 +290,7 @@ public class ModifyDnRequestImpl extends AbstractAbandonableRequest implements I
      * Checks to see of an object equals this ModifyDnRequest stub. The equality
      * presumes all ModifyDnRequest specific properties are the same.
      * 
-     * @param obj
-     *            the object to compare with this stub
+     * @param obj the object to compare with this stub
      * @return true if the obj is equal to this stub, false otherwise
      */
     public boolean equals( Object obj )
@@ -356,6 +383,9 @@ public class ModifyDnRequestImpl extends AbstractAbandonableRequest implements I
         {
             sb.append( "        New superior : '" ).append( newSuperior.toString() ).append( "'\n" );
         }
+
+        // The controls
+        sb.append( super.toString() );
 
         return sb.toString();
     }
