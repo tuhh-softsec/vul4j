@@ -38,6 +38,7 @@ import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.LdapTransformer;
 import org.apache.directory.shared.ldap.codec.MessageEncoderException;
 import org.apache.directory.shared.ldap.codec.controls.CodecControl;
+import org.apache.directory.shared.ldap.entry.BinaryValue;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.message.control.Control;
@@ -49,6 +50,7 @@ import org.apache.directory.shared.ldap.message.internal.ExtendedResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalAbandonRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalAddRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalBindRequest;
+import org.apache.directory.shared.ldap.message.internal.InternalCompareRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalDeleteRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalIntermediateResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalMessage;
@@ -128,7 +130,8 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
             || ( message instanceof SearchResultDone ) || ( message instanceof SearchResultEntry )
             || ( message instanceof SearchResultReference ) || ( message instanceof InternalAbandonRequest )
             || ( message instanceof InternalDeleteRequest ) || ( message instanceof InternalUnbindRequest )
-            || ( message instanceof InternalBindRequest ) || ( message instanceof InternalAddRequest ) )
+            || ( message instanceof InternalBindRequest ) || ( message instanceof InternalAddRequest )
+            || ( message instanceof InternalCompareRequest ) )
         {
             try
             {
@@ -634,6 +637,59 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
         bindResponse.setBindResponseLength( bindResponseLength );
 
         return 1 + TLV.getNbBytes( bindResponseLength ) + bindResponseLength;
+    }
+
+
+    /**
+     * Compute the CompareRequest length 
+     * 
+     * CompareRequest : 
+     * 0x6E L1 
+     *   | 
+     *   +--> 0x04 L2 entry 
+     *   +--> 0x30 L3 (ava) 
+     *         | 
+     *         +--> 0x04 L4 attributeDesc 
+     *         +--> 0x04 L5 assertionValue 
+     *         
+     * L3 = Length(0x04) + Length(L4) + L4 + Length(0x04) +
+     *      Length(L5) + L5 
+     * Length(CompareRequest) = Length(0x6E) + Length(L1) + L1 +
+     *      Length(0x04) + Length(L2) + L2 + Length(0x30) + Length(L3) + L3
+     * 
+     * @return The CompareRequest PDU's length
+     */
+    private int computeCompareRequestLength( CompareRequestImpl compareRequest )
+    {
+        // The entry DN
+        DN entry = compareRequest.getName();
+        int compareRequestLength = 1 + TLV.getNbBytes( DN.getNbBytes( entry ) ) + DN.getNbBytes( entry );
+
+        // The attribute value assertion
+        byte[] attributeIdBytes = StringTools.getBytesUtf8( compareRequest.getAttributeId() );
+        int avaLength = 1 + TLV.getNbBytes( attributeIdBytes.length ) + attributeIdBytes.length;
+        compareRequest.setAttrIdBytes( attributeIdBytes );
+
+        if ( compareRequest.getAssertionValue() instanceof BinaryValue )
+        {
+            byte[] value = compareRequest.getAssertionValue().getBytes();
+            avaLength += 1 + TLV.getNbBytes( value.length ) + value.length;
+            compareRequest.setAttrValBytes( value );
+        }
+        else
+        {
+            byte[] value = StringTools.getBytesUtf8( compareRequest.getAssertionValue().getString() );
+            int assertionValueLength = value.length;
+            avaLength += 1 + TLV.getNbBytes( value.length ) + value.length;
+            compareRequest.setAttrValBytes( value );
+        }
+
+        compareRequest.setAvaLength( avaLength );
+        compareRequestLength += 1 + TLV.getNbBytes( avaLength ) + avaLength;
+        compareRequest.setCompareRequestLength( compareRequestLength );
+
+        return 1 + TLV.getNbBytes( compareRequestLength ) + compareRequestLength;
+
     }
 
 
@@ -1352,6 +1408,46 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
 
 
     /**
+     * Encode the CompareRequest message to a PDU. 
+     * 
+     * CompareRequest : 
+     *   0x6E LL 
+     *     0x04 LL entry 
+     *     0x30 LL attributeValueAssertion 
+     *       0x04 LL attributeDesc 
+     *       0x04 LL assertionValue
+     * 
+     * @param buffer The buffer where to put the PDU
+     */
+    private void encodeCompareRequest( ByteBuffer buffer, CompareRequestImpl compareRequest ) throws EncoderException
+    {
+        try
+        {
+            // The CompareRequest Tag
+            buffer.put( LdapConstants.COMPARE_REQUEST_TAG );
+            buffer.put( TLV.getBytes( compareRequest.getCompareRequestLength() ) );
+
+            // The entry
+            Value.encode( buffer, DN.getBytes( compareRequest.getName() ) );
+
+            // The attributeValueAssertion sequence Tag
+            buffer.put( UniversalTag.SEQUENCE_TAG );
+            buffer.put( TLV.getBytes( compareRequest.getAvaLength() ) );
+        }
+        catch ( BufferOverflowException boe )
+        {
+            throw new EncoderException( I18n.err( I18n.ERR_04005 ) );
+        }
+
+        // The attributeDesc
+        Value.encode( buffer, compareRequest.getAttrIdBytes() );
+
+        // The assertionValue
+        Value.encode( buffer, ( byte[] ) compareRequest.getAttrValBytes() );
+    }
+
+
+    /**
      * Encode the CompareResponse message to a PDU.
      * 
      * @param buffer The buffer where to put the PDU
@@ -1778,6 +1874,9 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
             case BIND_RESPONSE:
                 return computeBindResponseLength( ( BindResponseImpl ) message );
 
+            case COMPARE_REQUEST:
+                return computeCompareRequestLength( ( CompareRequestImpl ) message );
+
             case COMPARE_RESPONSE:
                 return computeCompareResponseLength( ( CompareResponseImpl ) message );
 
@@ -1839,6 +1938,10 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
 
             case BIND_RESPONSE:
                 encodeBindResponse( bb, ( BindResponseImpl ) message );
+                break;
+
+            case COMPARE_REQUEST:
+                encodeCompareRequest( bb, ( CompareRequestImpl ) message );
                 break;
 
             case COMPARE_RESPONSE:

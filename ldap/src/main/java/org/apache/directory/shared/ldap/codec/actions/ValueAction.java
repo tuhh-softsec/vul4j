@@ -57,7 +57,7 @@ public class ValueAction extends GrammarAction
     {
 
         LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-        InternalAddRequest addRequest = ldapMessageContainer.getInternalAddRequest();
+        InternalAddRequest addRequest = ldapMessageContainer.getAddRequest();
 
         TLV tlv = ldapMessageContainer.getCurrentTLV();
 

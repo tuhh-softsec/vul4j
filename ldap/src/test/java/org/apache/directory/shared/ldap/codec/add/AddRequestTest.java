@@ -131,7 +131,7 @@ public class AddRequestTest
             fail( de.getMessage() );
         }
 
-        InternalAddRequest addRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getInternalAddRequest();
+        InternalAddRequest addRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getAddRequest();
 
         // Check the decoded message
         assertEquals( 1, addRequest.getMessageId() );
@@ -204,7 +204,7 @@ public class AddRequestTest
                 fail( de.getMessage() );
             }
 
-            InternalAddRequest addRequest2 = ( ( LdapMessageContainer ) ldapMessageContainer ).getInternalAddRequest();
+            InternalAddRequest addRequest2 = ( ( LdapMessageContainer ) ldapMessageContainer ).getAddRequest();
             assertEquals( addRequest, addRequest2 );
         }
         catch ( EncoderException ee )
@@ -670,7 +670,7 @@ public class AddRequestTest
             fail( de.getMessage() );
         }
 
-        InternalAddRequest addRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getInternalAddRequest();
+        InternalAddRequest addRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getAddRequest();
 
         // Check the decoded message
         assertEquals( 1, addRequest.getMessageId() );
@@ -762,7 +762,7 @@ public class AddRequestTest
             fail( de.getMessage() );
         }
 
-        InternalAddRequest addRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getInternalAddRequest();
+        InternalAddRequest addRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getAddRequest();
 
         // Check the decoded message
         assertEquals( 1, addRequest.getMessageId() );

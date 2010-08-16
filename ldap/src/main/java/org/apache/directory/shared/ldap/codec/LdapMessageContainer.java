@@ -21,7 +21,6 @@ package org.apache.directory.shared.ldap.codec;
 
 
 import org.apache.directory.shared.asn1.ber.AbstractContainer;
-import org.apache.directory.shared.ldap.codec.compare.CompareRequestCodec;
 import org.apache.directory.shared.ldap.codec.controls.AbstractControl;
 import org.apache.directory.shared.ldap.codec.extended.ExtendedRequestCodec;
 import org.apache.directory.shared.ldap.codec.modify.ModifyRequestCodec;
@@ -150,9 +149,9 @@ public class LdapMessageContainer extends AbstractContainer
 
 
     /**
-     * @return Returns the InternalAddRequest stored in the container
+     * @return Returns the AddRequest stored in the container
      */
-    public InternalAddRequest getInternalAddRequest()
+    public InternalAddRequest getAddRequest()
     {
         return ( InternalAddRequest ) internalMessage;
     }
@@ -188,16 +187,7 @@ public class LdapMessageContainer extends AbstractContainer
     /**
      * @return Returns the CompareRequest stored in the container
      */
-    public CompareRequestCodec getCompareRequest()
-    {
-        return ( CompareRequestCodec ) ldapMessage;
-    }
-
-
-    /**
-     * @return Returns the CompareRequest stored in the container
-     */
-    public InternalCompareRequest getInternalCompareRequest()
+    public InternalCompareRequest getCompareRequest()
     {
         return ( InternalCompareRequest ) internalMessage;
     }

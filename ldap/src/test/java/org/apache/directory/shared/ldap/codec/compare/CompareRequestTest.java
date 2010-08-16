@@ -36,6 +36,7 @@ import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.ResponseCarryingException;
 import org.apache.directory.shared.ldap.message.CompareResponseImpl;
+import org.apache.directory.shared.ldap.message.LdapProtocolEncoder;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.message.internal.InternalCompareRequest;
@@ -54,6 +55,9 @@ import org.junit.runner.RunWith;
 @Concurrent()
 public class CompareRequestTest
 {
+    /** The encoder instance */
+    LdapProtocolEncoder encoder = new LdapProtocolEncoder();
+
 
     /**
      * Test the decoding of a full CompareRequest
@@ -101,27 +105,20 @@ public class CompareRequestTest
         }
 
         // Ceck the decoded CompareRequest PDU
-        InternalCompareRequest compareRequest = ( ( LdapMessageContainer ) ldapMessageContainer )
-            .getInternalCompareRequest();
+        InternalCompareRequest compareRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getCompareRequest();
 
         assertEquals( 1, compareRequest.getMessageId() );
         assertEquals( "cn=testModify,ou=users,ou=system", compareRequest.getName().toString() );
         assertEquals( "test", compareRequest.getAttributeId() );
         assertEquals( "value", compareRequest.getAssertionValue().toString() );
 
-        // Check the length
-        CompareRequestCodec compareRequestCodec = new CompareRequestCodec();
-        compareRequestCodec.setMessageId( compareRequest.getMessageId() );
-        compareRequestCodec.setEntry( compareRequest.getName() );
-        compareRequestCodec.setAttributeDesc( compareRequest.getAttributeId() );
-        compareRequestCodec.setAssertionValue( compareRequest.getAssertionValue().get() );
-
-        assertEquals( 0x38, compareRequestCodec.computeLength() );
-
         // Check the encoding
         try
         {
-            ByteBuffer bb = compareRequestCodec.encode();
+            ByteBuffer bb = encoder.encodeMessage( compareRequest );
+
+            // Check the length
+            assertEquals( 0x38, bb.limit() );
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -396,27 +393,20 @@ public class CompareRequestTest
         }
 
         // Check the decoded CompareRequest PDU
-        InternalCompareRequest compareRequest = ( ( LdapMessageContainer ) ldapMessageContainer )
-            .getInternalCompareRequest();
+        InternalCompareRequest compareRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getCompareRequest();
 
         assertEquals( 1, compareRequest.getMessageId() );
         assertEquals( "cn=testModify,ou=users,ou=system", compareRequest.getName().toString() );
         assertEquals( "test", compareRequest.getAttributeId() );
         assertEquals( "", compareRequest.getAssertionValue().toString() );
 
-        // Check the length
-        CompareRequestCodec compareRequestCodec = new CompareRequestCodec();
-        compareRequestCodec.setMessageId( compareRequest.getMessageId() );
-        compareRequestCodec.setEntry( compareRequest.getName() );
-        compareRequestCodec.setAttributeDesc( compareRequest.getAttributeId() );
-        compareRequestCodec.setAssertionValue( compareRequest.getAssertionValue().get() );
-
-        assertEquals( 0x33, compareRequestCodec.computeLength() );
-
         // Check the encoding
         try
         {
-            ByteBuffer bb = compareRequestCodec.encode();
+            ByteBuffer bb = encoder.encodeMessage( compareRequest );
+
+            // Check the length
+            assertEquals( 0x33, bb.limit() );
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -482,8 +472,7 @@ public class CompareRequestTest
         }
 
         // Ceck the decoded CompareRequest PDU
-        InternalCompareRequest compareRequest = ( ( LdapMessageContainer ) ldapMessageContainer )
-            .getInternalCompareRequest();
+        InternalCompareRequest compareRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getCompareRequest();
 
         assertEquals( 1, compareRequest.getMessageId() );
         assertEquals( "cn=testModify,ou=users,ou=system", compareRequest.getName().toString() );
@@ -499,20 +488,13 @@ public class CompareRequestTest
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
         assertEquals( "", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
 
-        // Check the length
-        CompareRequestCodec compareRequestCodec = new CompareRequestCodec();
-        compareRequestCodec.setMessageId( compareRequest.getMessageId() );
-        compareRequestCodec.setEntry( compareRequest.getName() );
-        compareRequestCodec.setAttributeDesc( compareRequest.getAttributeId() );
-        compareRequestCodec.setAssertionValue( compareRequest.getAssertionValue().get() );
-        compareRequestCodec.addControl( control );
-
-        assertEquals( 0x55, compareRequestCodec.computeLength() );
-
         // Check the encoding
         try
         {
-            ByteBuffer bb = compareRequestCodec.encode();
+            ByteBuffer bb = encoder.encodeMessage( compareRequest );
+
+            // Check the length
+            assertEquals( 0x55, bb.limit() );
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 

@@ -1880,7 +1880,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                 {
 
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-                    InternalAddRequest addRequest = ldapMessageContainer.getInternalAddRequest();
+                    InternalAddRequest addRequest = ldapMessageContainer.getAddRequest();
 
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
@@ -1965,7 +1965,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                 {
 
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-                    InternalAddRequest addRequest = ldapMessageContainer.getInternalAddRequest();
+                    InternalAddRequest addRequest = ldapMessageContainer.getAddRequest();
 
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
@@ -2534,7 +2534,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                 {
 
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-                    InternalCompareRequest compareRequest = ldapMessageContainer.getInternalCompareRequest();
+                    InternalCompareRequest compareRequest = ldapMessageContainer.getCompareRequest();
 
                     // Get the Value and store it in the CompareRequest
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
@@ -2610,7 +2610,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
                     // Get the CompareRequest Object
-                    InternalCompareRequest compareRequest = ldapMessageContainer.getInternalCompareRequest();
+                    InternalCompareRequest compareRequest = ldapMessageContainer.getCompareRequest();
 
                     // Get the Value and store it in the CompareRequest
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
@@ -2657,7 +2657,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
                     // Get the CompareRequest Object
-                    InternalCompareRequest compareRequest = ldapMessageContainer.getInternalCompareRequest();
+                    InternalCompareRequest compareRequest = ldapMessageContainer.getCompareRequest();
 
                     // Get the Value and store it in the CompareRequest
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
@@ -3220,8 +3220,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
                     // We can get the IntermediateResponse Object
-                    InternalIntermediateResponse intermediateResponse = ldapMessageContainer
-                        .getIntermediateResponse();
+                    InternalIntermediateResponse intermediateResponse = ldapMessageContainer.getIntermediateResponse();
 
                     // Get the Value and store it in the IntermediateResponse
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
@@ -3285,8 +3284,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
                     // We can get the IntermediateResponse Object
-                    InternalIntermediateResponse intermediateResponse = ldapMessageContainer
-                        .getIntermediateResponse();
+                    InternalIntermediateResponse intermediateResponse = ldapMessageContainer.getIntermediateResponse();
 
                     // Get the Value and store it in the IntermediateResponse
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
@@ -3329,8 +3327,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
                     // We can allocate the ExtendedRequest Object
-                    InternalIntermediateResponse intermediateResponse = ldapMessageContainer
-                        .getIntermediateResponse();
+                    InternalIntermediateResponse intermediateResponse = ldapMessageContainer.getIntermediateResponse();
 
                     // Get the Value and store it in the IntermediateResponse
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
