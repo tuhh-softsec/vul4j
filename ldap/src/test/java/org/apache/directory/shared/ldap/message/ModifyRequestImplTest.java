@@ -290,7 +290,7 @@ public class ModifyRequestImplTest
     {
         InternalModifyRequest req0 = new InternalModifyRequest()
         {
-            public Collection<Modification> getModificationItems()
+            public Collection<Modification> getModifications()
             {
                 List<Modification> list = new ArrayList<Modification>();
                 EntryAttribute attr = new DefaultEntryAttribute( "attr0" );
@@ -465,6 +465,73 @@ public class ModifyRequestImplTest
 
             public void setMessageId( int messageId )
             {
+            }
+
+
+            public void addModification( EntryAttribute attr, ModificationOperation modOp )
+            {
+            }
+
+
+            public void replace( String attributeName )
+            {
+            }
+
+
+            public void replace( String attributeName, String... attributeValue )
+            {
+            }
+
+
+            public void replace( String attributeName, byte[]... attributeValue )
+            {
+            }
+
+
+            public void replace( EntryAttribute attr )
+            {
+            }
+
+
+            public void add( String attributeName, String... attributeValue )
+            {
+                // TODO Auto-generated method stub
+
+            }
+
+
+            public void add( String attributeName, byte[]... attributeValue )
+            {
+                // TODO Auto-generated method stub
+
+            }
+
+
+            public void add( EntryAttribute attr )
+            {
+                // TODO Auto-generated method stub
+
+            }
+
+
+            public void remove( String attributeName, String... attributeValue )
+            {
+                // TODO Auto-generated method stub
+
+            }
+
+
+            public void remove( String attributeName, byte[]... attributeValue )
+            {
+                // TODO Auto-generated method stub
+
+            }
+
+
+            public void remove( EntryAttribute attr )
+            {
+                // TODO Auto-generated method stub
+
             }
         };
 

@@ -23,7 +23,9 @@ package org.apache.directory.shared.ldap.message.internal;
 import java.util.Collection;
 
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
+import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Modification;
+import org.apache.directory.shared.ldap.entry.ModificationOperation;
 import org.apache.directory.shared.ldap.message.SingleReplyRequest;
 import org.apache.directory.shared.ldap.name.DN;
 
@@ -130,7 +132,7 @@ public interface InternalModifyRequest extends SingleReplyRequest, InternalAband
      * 
      * @return an immutable Collection of Modification instances.
      */
-    Collection<Modification> getModificationItems();
+    Collection<Modification> getModifications();
 
 
     /**
@@ -149,4 +151,87 @@ public interface InternalModifyRequest extends SingleReplyRequest, InternalAband
      * @param mod a Modification to remove.
      */
     void removeModification( Modification mod );
+
+
+    /**
+     *
+     * marks a given attribute for removal with the given
+     * values from the target entry.
+     *
+     * @param attributeName name of the attribute to be added
+     * @param attributeValue values of the attribute
+     */
+    void remove( String attributeName, String... attributeValue );
+
+
+    /**
+     * @see #remove(String, String...)
+     */
+    void remove( String attributeName, byte[]... attributeValue );
+
+
+    /**
+     *
+     * marks a given attribute for removal from the target entry.
+     *
+     * @param attr the attribute to be added
+     */
+    void remove( EntryAttribute attr );
+
+
+    void addModification( EntryAttribute attr, ModificationOperation modOp );
+
+
+    /**
+     * marks a given attribute for addition in the target entry with the
+     * given values.
+     *
+     * @param attributeName name of the attribute to be added
+     * @param attributeValue values of the attribute
+     */
+    void add( String attributeName, String... attributeValue );
+
+
+    /**
+     * @see #add(String, String...)
+     */
+    void add( String attributeName, byte[]... attributeValue );
+
+
+    /**
+     * marks a given attribute for addition in the target entry.
+     *
+     * @param attr the attribute to be added
+     */
+    void add( EntryAttribute attr );
+
+
+    /**
+     * @see #replace(String, String...)
+     */
+    void replace( String attributeName );
+
+
+    /**
+     * marks a given attribute for replacement with the given
+     * values in the target entry.
+     *
+     * @param attributeName name of the attribute to be added
+     * @param attributeValue values of the attribute
+     */
+    void replace( String attributeName, String... attributeValue );
+
+
+    /**
+     * @see #replace(String, String...)
+     */
+    void replace( String attributeName, byte[]... attributeValue );
+
+
+    /**
+     * marks a given attribute for replacement in the target entry.
+     *
+     * @param attr the attribute to be added
+     */
+    void replace( EntryAttribute attr );
 }

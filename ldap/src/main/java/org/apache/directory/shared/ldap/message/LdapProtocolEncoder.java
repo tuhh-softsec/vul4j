@@ -41,6 +41,7 @@ import org.apache.directory.shared.ldap.codec.controls.CodecControl;
 import org.apache.directory.shared.ldap.entry.BinaryValue;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
+import org.apache.directory.shared.ldap.entry.Modification;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.message.internal.AddResponse;
 import org.apache.directory.shared.ldap.message.internal.BindResponse;
@@ -56,6 +57,7 @@ import org.apache.directory.shared.ldap.message.internal.InternalDeleteRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalExtendedRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalMessage;
 import org.apache.directory.shared.ldap.message.internal.InternalModifyDnRequest;
+import org.apache.directory.shared.ldap.message.internal.InternalModifyRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalReferral;
 import org.apache.directory.shared.ldap.message.internal.InternalUnbindRequest;
 import org.apache.directory.shared.ldap.message.internal.LdapResult;
@@ -134,7 +136,7 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
             || ( message instanceof InternalDeleteRequest ) || ( message instanceof InternalUnbindRequest )
             || ( message instanceof InternalBindRequest ) || ( message instanceof InternalAddRequest )
             || ( message instanceof InternalCompareRequest ) || ( message instanceof InternalExtendedRequest )
-            || ( message instanceof InternalModifyDnRequest ) )
+            || ( message instanceof InternalModifyDnRequest ) || ( message instanceof InternalModifyRequest ) )
         {
             try
             {
@@ -885,6 +887,113 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
 
 
     /**
+     * Compute the ModifyRequest length 
+     * 
+     * ModifyRequest :
+     * 
+     * 0x66 L1
+     *  |
+     *  +--> 0x04 L2 object
+     *  +--> 0x30 L3 modifications
+     *        |
+     *        +--> 0x30 L4-1 modification sequence
+     *        |     |
+     *        |     +--> 0x0A 0x01 (0..2) operation
+     *        |     +--> 0x30 L5-1 modification
+     *        |           |
+     *        |           +--> 0x04 L6-1 type
+     *        |           +--> 0x31 L7-1 vals
+     *        |                 |
+     *        |                 +--> 0x04 L8-1-1 attributeValue
+     *        |                 +--> 0x04 L8-1-2 attributeValue
+     *        |                 +--> ...
+     *        |                 +--> 0x04 L8-1-i attributeValue
+     *        |                 +--> ...
+     *        |                 +--> 0x04 L8-1-n attributeValue
+     *        |
+     *        +--> 0x30 L4-2 modification sequence
+     *        .     |
+     *        .     +--> 0x0A 0x01 (0..2) operation
+     *        .     +--> 0x30 L5-2 modification
+     *                    |
+     *                    +--> 0x04 L6-2 type
+     *                    +--> 0x31 L7-2 vals
+     *                          |
+     *                          +--> 0x04 L8-2-1 attributeValue
+     *                          +--> 0x04 L8-2-2 attributeValue
+     *                          +--> ...
+     *                          +--> 0x04 L8-2-i attributeValue
+     *                          +--> ...
+     *                          +--> 0x04 L8-2-n attributeValue
+     */
+    private int computeModifyRequestLength( ModifyRequestImpl modifyRequest )
+    {
+        // Initialized with name
+        int modifyRequestLength = 1 + TLV.getNbBytes( DN.getNbBytes( modifyRequest.getName() ) )
+            + DN.getNbBytes( modifyRequest.getName() );
+
+        // All the changes length
+        int changesLength = 0;
+
+        Collection<Modification> modifications = modifyRequest.getModifications();
+
+        if ( ( modifications != null ) && ( modifications.size() != 0 ) )
+        {
+            List<Integer> changeLength = new LinkedList<Integer>();
+            List<Integer> modificationLength = new LinkedList<Integer>();
+            List<Integer> valuesLength = new LinkedList<Integer>();
+
+            for ( Modification modification : modifications )
+            {
+                // Modification sequence length initialized with the operation
+                int localModificationSequenceLength = 1 + 1 + 1;
+                int localValuesLength = 0;
+
+                // Modification length initialized with the type
+                int typeLength = modification.getAttribute().getId().length();
+                int localModificationLength = 1 + TLV.getNbBytes( typeLength ) + typeLength;
+
+                // Get all the values
+                if ( modification.getAttribute().size() != 0 )
+                {
+                    for ( org.apache.directory.shared.ldap.entry.Value<?> value : modification.getAttribute() )
+                    {
+                        localValuesLength += 1 + TLV.getNbBytes( value.getBytes().length ) + value.getBytes().length;
+                    }
+                }
+
+                localModificationLength += 1 + TLV.getNbBytes( localValuesLength ) + localValuesLength;
+
+                // Compute the modificationSequenceLength
+                localModificationSequenceLength += 1 + TLV.getNbBytes( localModificationLength )
+                    + localModificationLength;
+
+                // Add the tag and the length
+                changesLength += 1 + TLV.getNbBytes( localModificationSequenceLength )
+                    + localModificationSequenceLength;
+
+                // Store the arrays of values
+                valuesLength.add( localValuesLength );
+                modificationLength.add( localModificationLength );
+                changeLength.add( localModificationSequenceLength );
+            }
+
+            // Add the modifications length to the modificationRequestLength
+            modifyRequestLength += 1 + TLV.getNbBytes( changesLength ) + changesLength;
+            modifyRequest.setChangeLength( changeLength );
+            modifyRequest.setModificationLength( modificationLength );
+            modifyRequest.setValuesLength( valuesLength );
+        }
+
+        modifyRequest.setChangesLength( changesLength );
+        modifyRequest.setModifyRequestLength( modifyRequestLength );
+
+        return 1 + TLV.getNbBytes( modifyRequestLength ) + modifyRequestLength;
+
+    }
+
+
+    /**
      * Compute the ModifyResponse length 
      * 
      * ModifyResponse : 
@@ -1259,7 +1368,7 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
      * 
      * @param buffer The buffer where to put the PDU
      */
-    protected void encodeAddRequest( ByteBuffer buffer, AddRequestImpl addRequest ) throws EncoderException
+    private void encodeAddRequest( ByteBuffer buffer, AddRequestImpl addRequest ) throws EncoderException
     {
         try
         {
@@ -1764,6 +1873,112 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
 
 
     /**
+     * Encode the ModifyRequest message to a PDU. 
+     * 
+     * ModifyRequest : 
+     * <pre>
+     * 0x66 LL
+     *   0x04 LL object
+     *   0x30 LL modifiations
+     *     0x30 LL modification sequence
+     *       0x0A 0x01 operation
+     *       0x30 LL modification
+     *         0x04 LL type
+     *         0x31 LL vals
+     *           0x04 LL attributeValue
+     *           ... 
+     *           0x04 LL attributeValue
+     *     ... 
+     *     0x30 LL modification sequence
+     *       0x0A 0x01 operation
+     *       0x30 LL modification
+     *         0x04 LL type
+     *         0x31 LL vals
+     *           0x04 LL attributeValue
+     *           ... 
+     *           0x04 LL attributeValue
+     * </pre>
+     * 
+     * @param buffer The buffer where to put the PDU
+     * @return The PDU.
+     */
+    private void encodeModifyRequest( ByteBuffer buffer, ModifyRequestImpl modifyRequest ) throws EncoderException
+    {
+        try
+        {
+            // The AddRequest Tag
+            buffer.put( LdapConstants.MODIFY_REQUEST_TAG );
+            buffer.put( TLV.getBytes( modifyRequest.getModifyRequestLength() ) );
+
+            // The entry
+            Value.encode( buffer, DN.getBytes( modifyRequest.getName() ) );
+
+            // The modifications sequence
+            buffer.put( UniversalTag.SEQUENCE_TAG );
+            buffer.put( TLV.getBytes( modifyRequest.getChangesLength() ) );
+
+            // The modifications list
+            Collection<Modification> modifications = modifyRequest.getModifications();
+
+            if ( ( modifications != null ) && ( modifications.size() != 0 ) )
+            {
+                int modificationNumber = 0;
+
+                // Compute the modifications length
+                for ( Modification modification : modifications )
+                {
+                    // The modification sequence
+                    buffer.put( UniversalTag.SEQUENCE_TAG );
+                    int localModificationSequenceLength = modifyRequest.getChangeLength().get( modificationNumber );
+                    buffer.put( TLV.getBytes( localModificationSequenceLength ) );
+
+                    // The operation. The value has to be changed, it's not
+                    // the same value in DirContext and in RFC 2251.
+                    buffer.put( UniversalTag.ENUMERATED_TAG );
+                    buffer.put( ( byte ) 1 );
+                    buffer.put( ( byte ) modification.getOperation().getValue() );
+
+                    // The modification
+                    buffer.put( UniversalTag.SEQUENCE_TAG );
+                    int localModificationLength = modifyRequest.getModificationLength().get( modificationNumber );
+                    buffer.put( TLV.getBytes( localModificationLength ) );
+
+                    // The modification type
+                    Value.encode( buffer, modification.getAttribute().getId() );
+
+                    // The values
+                    buffer.put( UniversalTag.SET_TAG );
+                    int localValuesLength = modifyRequest.getValuesLength().get( modificationNumber );
+                    buffer.put( TLV.getBytes( localValuesLength ) );
+
+                    if ( modification.getAttribute().size() != 0 )
+                    {
+                        for ( org.apache.directory.shared.ldap.entry.Value<?> value : modification.getAttribute() )
+                        {
+                            if ( !value.isBinary() )
+                            {
+                                Value.encode( buffer, value.getString() );
+                            }
+                            else
+                            {
+                                Value.encode( buffer, value.getBytes() );
+                            }
+                        }
+                    }
+
+                    // Go to the next modification number;
+                    modificationNumber++;
+                }
+            }
+        }
+        catch ( BufferOverflowException boe )
+        {
+            throw new EncoderException( I18n.err( I18n.ERR_04005 ) );
+        }
+    }
+
+
+    /**
      * Encode the ModifyResponse message to a PDU.
      * 
      * @param buffer The buffer where to put the PDU
@@ -2087,6 +2302,9 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
             case INTERMEDIATE_RESPONSE:
                 return computeIntermediateResponseLength( ( IntermediateResponseImpl ) message );
 
+            case MODIFY_REQUEST:
+                return computeModifyRequestLength( ( ModifyRequestImpl ) message );
+
             case MODIFY_RESPONSE:
                 return computeModifyResponseLength( ( ModifyResponseImpl ) message );
 
@@ -2164,6 +2382,10 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
 
             case INTERMEDIATE_RESPONSE:
                 encodeIntermediateResponse( bb, ( IntermediateResponseImpl ) message );
+                break;
+
+            case MODIFY_REQUEST:
+                encodeModifyRequest( bb, ( ModifyRequestImpl ) message );
                 break;
 
             case MODIFY_RESPONSE:

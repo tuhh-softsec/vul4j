@@ -24,7 +24,8 @@ import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
-import org.apache.directory.shared.ldap.codec.modify.ModifyRequestCodec;
+import org.apache.directory.shared.ldap.message.ModifyRequestImpl;
+import org.apache.directory.shared.ldap.message.internal.InternalModifyRequest;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,10 +44,12 @@ public class ModifyAttributeValueAction extends GrammarAction
     /** Speedup for logs */
     private static final boolean IS_DEBUG = log.isDebugEnabled();
 
+
     public ModifyAttributeValueAction()
     {
         super( "Stores AttributeValue" );
     }
+
 
     /**
      * The initialization action
@@ -54,7 +57,7 @@ public class ModifyAttributeValueAction extends GrammarAction
     public void action( IAsn1Container container )
     {
         LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-        ModifyRequestCodec modifyRequest = ldapMessageContainer.getModifyRequest();
+        InternalModifyRequest modifyRequest = ldapMessageContainer.getModifyRequest();
 
         TLV tlv = ldapMessageContainer.getCurrentTLV();
 
@@ -63,19 +66,20 @@ public class ModifyAttributeValueAction extends GrammarAction
 
         if ( tlv.getLength() == 0 )
         {
-            modifyRequest.addAttributeValue( "" );
+            ( ( ModifyRequestImpl ) modifyRequest ).addAttributeValue( "" );
         }
         else
         {
             value = tlv.getValue().getData();
 
-            if ( ldapMessageContainer.isBinary( modifyRequest.getCurrentAttributeType() ) )
+            if ( ldapMessageContainer.isBinary( ( ( ModifyRequestImpl ) modifyRequest ).getCurrentAttributeType() ) )
             {
-                modifyRequest.addAttributeValue( value );
+                ( ( ModifyRequestImpl ) modifyRequest ).addAttributeValue( value );
             }
             else
             {
-                modifyRequest.addAttributeValue( StringTools.utf8ToString( ( byte[] ) value ) );
+                ( ( ModifyRequestImpl ) modifyRequest )
+                    .addAttributeValue( StringTools.utf8ToString( ( byte[] ) value ) );
             }
         }
 

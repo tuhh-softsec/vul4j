@@ -25,7 +25,6 @@ import java.util.List;
 
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.codec.modify.ModifyRequestCodec;
 import org.apache.directory.shared.ldap.codec.search.AndFilter;
 import org.apache.directory.shared.ldap.codec.search.AttributeValueAssertionFilter;
 import org.apache.directory.shared.ldap.codec.search.ConnectorFilter;
@@ -37,7 +36,6 @@ import org.apache.directory.shared.ldap.codec.search.PresentFilter;
 import org.apache.directory.shared.ldap.codec.search.SearchRequestCodec;
 import org.apache.directory.shared.ldap.codec.search.SubstringFilter;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
-import org.apache.directory.shared.ldap.entry.Modification;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.filter.AndNode;
 import org.apache.directory.shared.ldap.filter.ApproximateNode;
@@ -54,7 +52,6 @@ import org.apache.directory.shared.ldap.filter.PresenceNode;
 import org.apache.directory.shared.ldap.filter.SimpleNode;
 import org.apache.directory.shared.ldap.filter.SubstringNode;
 import org.apache.directory.shared.ldap.message.AliasDerefMode;
-import org.apache.directory.shared.ldap.message.ModifyRequestImpl;
 import org.apache.directory.shared.ldap.message.SearchRequestImpl;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.message.internal.InternalMessage;
@@ -75,34 +72,6 @@ public class LdapTransformer
 
     /** A speedup for logger */
     private static final boolean IS_DEBUG = LOG.isDebugEnabled();
-
-
-    /**
-     * Transform a ModifyRequest message from a CodecMessage to a InternalMessage
-     * 
-     * @param modifyRequest The message to transform
-     * @param messageId The message Id
-     * @return A Internal ModifyRequestImpl
-     */
-    private static InternalMessage transformModifyRequest( ModifyRequestCodec modifyRequest, int messageId )
-    {
-        ModifyRequestImpl internalMessage = new ModifyRequestImpl( messageId );
-
-        // Codec : DN object -> Internal : String name
-        internalMessage.setName( modifyRequest.getObject() );
-
-        // Codec : ArrayList modifications -> Internal : ArrayList mods
-        if ( modifyRequest.getModifications() != null )
-        {
-            // Loop through the modifications
-            for ( Modification modification : modifyRequest.getModifications() )
-            {
-                internalMessage.addModification( modification );
-            }
-        }
-
-        return internalMessage;
-    }
 
 
     /**
@@ -499,9 +468,6 @@ public class LdapTransformer
                 break;
 
             case MODIFY_REQUEST:
-                internalMessage = transformModifyRequest( ( ModifyRequestCodec ) codecMessage, messageId );
-                break;
-
             case MODIFYDN_REQUEST:
             case EXTENDED_REQUEST:
             case SEARCH_RESULT_ENTRY:

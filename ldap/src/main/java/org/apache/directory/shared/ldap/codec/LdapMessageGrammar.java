@@ -72,7 +72,6 @@ import org.apache.directory.shared.ldap.codec.actions.StoreTypeMatchingRuleActio
 import org.apache.directory.shared.ldap.codec.actions.ValueAction;
 import org.apache.directory.shared.ldap.codec.controls.ControlEnum;
 import org.apache.directory.shared.ldap.codec.controls.ControlImpl;
-import org.apache.directory.shared.ldap.codec.modify.ModifyRequestCodec;
 import org.apache.directory.shared.ldap.codec.search.ExtensibleMatchFilter;
 import org.apache.directory.shared.ldap.codec.search.SearchRequestCodec;
 import org.apache.directory.shared.ldap.codec.search.SubstringFilter;
@@ -93,6 +92,7 @@ import org.apache.directory.shared.ldap.message.ExtendedResponseImpl;
 import org.apache.directory.shared.ldap.message.IntermediateResponseImpl;
 import org.apache.directory.shared.ldap.message.ModifyDnRequestImpl;
 import org.apache.directory.shared.ldap.message.ModifyDnResponseImpl;
+import org.apache.directory.shared.ldap.message.ModifyRequestImpl;
 import org.apache.directory.shared.ldap.message.ModifyResponseImpl;
 import org.apache.directory.shared.ldap.message.ReferralImpl;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
@@ -115,6 +115,7 @@ import org.apache.directory.shared.ldap.message.internal.InternalDeleteRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalExtendedRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalMessage;
 import org.apache.directory.shared.ldap.message.internal.InternalModifyDnRequest;
+import org.apache.directory.shared.ldap.message.internal.InternalModifyRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalReferral;
 import org.apache.directory.shared.ldap.message.internal.InternalUnbindRequest;
 import org.apache.directory.shared.ldap.message.internal.LdapResult;
@@ -1426,9 +1427,8 @@ public class LdapMessageGrammar extends AbstractGrammar
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
                     // Now, we can allocate the ModifyRequest Object
-                    ModifyRequestCodec modifyRequest = new ModifyRequestCodec();
-                    modifyRequest.setMessageId( ldapMessageContainer.getMessageId() );
-                    ldapMessageContainer.setLdapMessage( modifyRequest );
+                    InternalModifyRequest modifyRequest = new ModifyRequestImpl( ldapMessageContainer.getMessageId() );
+                    ldapMessageContainer.setInternalMessage( modifyRequest );
                 }
             } );
 
@@ -1448,7 +1448,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                 {
 
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-                    ModifyRequestCodec modifyRequest = ldapMessageContainer.getModifyRequest();
+                    InternalModifyRequest modifyRequest = ldapMessageContainer.getModifyRequest();
 
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
@@ -1457,7 +1457,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                     // Store the value.
                     if ( tlv.getLength() == 0 )
                     {
-                        modifyRequest.setObject( object );
+                        modifyRequest.setName( object );
                     }
                     else
                     {
@@ -1479,12 +1479,12 @@ public class LdapMessageGrammar extends AbstractGrammar
                                 DN.EMPTY_DN, ine );
                         }
 
-                        modifyRequest.setObject( object );
+                        modifyRequest.setName( object );
                     }
 
                     if ( IS_DEBUG )
                     {
-                        log.debug( "Modification of DN {}", modifyRequest.getObject() );
+                        log.debug( "Modification of DN {}", modifyRequest.getName() );
                     }
                 }
             } );
@@ -1499,18 +1499,7 @@ public class LdapMessageGrammar extends AbstractGrammar
         //
         // Initialize the modifications list
         super.transitions[LdapStatesEnum.OBJECT_STATE][UniversalTag.SEQUENCE_TAG] = new GrammarTransition(
-            LdapStatesEnum.OBJECT_STATE, LdapStatesEnum.MODIFICATIONS_STATE, UniversalTag.SEQUENCE_TAG,
-            new GrammarAction( "Init modifications array list" )
-            {
-                public void action( IAsn1Container container )
-                {
-
-                    LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-                    ModifyRequestCodec modifyRequest = ldapMessageContainer.getModifyRequest();
-
-                    modifyRequest.initModifications();
-                }
-            } );
+            LdapStatesEnum.OBJECT_STATE, LdapStatesEnum.MODIFICATIONS_STATE, UniversalTag.SEQUENCE_TAG, null );
 
         // --------------------------------------------------------------------------------------------
         // Transition from modifications to modification sequence
@@ -1542,7 +1531,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                 {
 
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-                    ModifyRequestCodec modifyRequest = ldapMessageContainer.getModifyRequest();
+                    InternalModifyRequest modifyRequest = ldapMessageContainer.getModifyRequest();
 
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
@@ -1563,7 +1552,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                     }
 
                     // Store the current operation.
-                    modifyRequest.setCurrentOperation( operation );
+                    ( ( ModifyRequestImpl ) modifyRequest ).setCurrentOperation( operation );
 
                     if ( IS_DEBUG )
                     {
@@ -1624,7 +1613,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                 {
 
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-                    ModifyRequestCodec modifyRequest = ldapMessageContainer.getModifyRequest();
+                    InternalModifyRequest modifyRequest = ldapMessageContainer.getModifyRequest();
 
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
@@ -1638,12 +1627,12 @@ public class LdapMessageGrammar extends AbstractGrammar
 
                         ModifyResponseImpl response = new ModifyResponseImpl( modifyRequest.getMessageId() );
                         throw new ResponseCarryingException( msg, response, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX,
-                            modifyRequest.getObject(), null );
+                            modifyRequest.getName(), null );
                     }
                     else
                     {
                         type = StringTools.getType( tlv.getValue().getData() );
-                        modifyRequest.addAttributeTypeAndValues( type );
+                        ( ( ModifyRequestImpl ) modifyRequest ).addAttributeTypeAndValues( type );
                     }
 
                     if ( IS_DEBUG )
