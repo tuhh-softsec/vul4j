@@ -22,7 +22,6 @@ package org.apache.directory.shared.ldap.codec;
 
 import org.apache.directory.shared.asn1.ber.AbstractContainer;
 import org.apache.directory.shared.ldap.codec.controls.AbstractControl;
-import org.apache.directory.shared.ldap.codec.extended.ExtendedRequestCodec;
 import org.apache.directory.shared.ldap.codec.modify.ModifyRequestCodec;
 import org.apache.directory.shared.ldap.codec.modifyDn.ModifyDNRequestCodec;
 import org.apache.directory.shared.ldap.codec.search.SearchRequestCodec;
@@ -31,12 +30,13 @@ import org.apache.directory.shared.ldap.message.internal.BindResponse;
 import org.apache.directory.shared.ldap.message.internal.CompareResponse;
 import org.apache.directory.shared.ldap.message.internal.DeleteResponse;
 import org.apache.directory.shared.ldap.message.internal.ExtendedResponse;
+import org.apache.directory.shared.ldap.message.internal.IntermediateResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalAbandonRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalAddRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalBindRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalCompareRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalDeleteRequest;
-import org.apache.directory.shared.ldap.message.internal.IntermediateResponse;
+import org.apache.directory.shared.ldap.message.internal.InternalExtendedRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalMessage;
 import org.apache.directory.shared.ldap.message.internal.InternalUnbindRequest;
 import org.apache.directory.shared.ldap.message.internal.ModifyDnResponse;
@@ -223,9 +223,9 @@ public class LdapMessageContainer extends AbstractContainer
     /**
      * @return Returns the ExtendedRequest stored in the container
      */
-    public ExtendedRequestCodec getExtendedRequest()
+    public InternalExtendedRequest getExtendedRequest()
     {
-        return ( ExtendedRequestCodec ) ldapMessage;
+        return ( InternalExtendedRequest ) internalMessage;
     }
 
 

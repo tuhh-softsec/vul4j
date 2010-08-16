@@ -66,7 +66,7 @@ public class CertGenerationRequest extends ExtendedRequestImpl
     public CertGenerationRequest( int messageId, String targerDN, String issuerDN, String subjectDN, String keyAlgorithm )
     {
         super( messageId );
-        setID( EXTENSION_OID );
+        setRequestName( EXTENSION_OID );
 
         this.certGenObj = new CertGenerationObject();
         certGenObj.setTargetDN( targerDN );
@@ -76,26 +76,22 @@ public class CertGenerationRequest extends ExtendedRequestImpl
     }
 
 
-    private void encodePayload() throws EncoderException
-    {
-        payload = certGenObj.encode().array();
-    }
-
-
-    public void setPayload( byte[] payload )
+    public void setequestValue( byte[] requestValue )
     {
         CertGenerationDecoder decoder = new CertGenerationDecoder();
+
         try
         {
-            certGenObj = ( CertGenerationObject ) decoder.decode( payload );
-            if ( payload != null )
+            certGenObj = ( CertGenerationObject ) decoder.decode( requestValue );
+
+            if ( requestValue != null )
             {
-                this.payload = new byte[payload.length];
-                System.arraycopy( payload, 0, this.payload, 0, payload.length );
+                this.requestValue = new byte[requestValue.length];
+                System.arraycopy( requestValue, 0, this.requestValue, 0, requestValue.length );
             }
             else
             {
-                this.payload = null;
+                this.requestValue = null;
             }
         }
         catch ( DecoderException e )
@@ -113,19 +109,16 @@ public class CertGenerationRequest extends ExtendedRequestImpl
     }
 
 
-    public byte[] getEncodedValue()
+    /**
+     * {@inheritDoc}
+     */
+    public byte[] getRequestValue()
     {
-        return getPayload();
-    }
-
-
-    public byte[] getPayload()
-    {
-        if ( payload == null )
+        if ( requestValue == null )
         {
             try
             {
-                encodePayload();
+                requestValue = certGenObj.encode().array();
             }
             catch ( EncoderException e )
             {
@@ -134,13 +127,13 @@ public class CertGenerationRequest extends ExtendedRequestImpl
             }
         }
 
-        if ( payload == null )
+        if ( requestValue == null )
         {
             return null;
         }
 
-        final byte[] copy = new byte[payload.length];
-        System.arraycopy( payload, 0, copy, 0, payload.length );
+        final byte[] copy = new byte[requestValue.length];
+        System.arraycopy( requestValue, 0, copy, 0, requestValue.length );
         return copy;
     }
 

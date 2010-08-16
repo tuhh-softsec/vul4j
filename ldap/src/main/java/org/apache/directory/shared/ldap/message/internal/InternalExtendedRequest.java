@@ -56,7 +56,7 @@ import org.apache.directory.shared.ldap.message.SingleReplyRequest;
  *  @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * 
  */
-public interface InternalExtendedRequest extends SingleReplyRequest, javax.naming.ldap.ExtendedRequest
+public interface InternalExtendedRequest extends SingleReplyRequest
 {
     /** Extended request message type enumeration value */
     MessageTypeEnum TYPE = MessageTypeEnum.EXTENDED_REQUEST;
@@ -71,7 +71,7 @@ public interface InternalExtendedRequest extends SingleReplyRequest, javax.namin
      * 
      * @return the dotted-decimal representation as a String of the OID
      */
-    String getID();
+    String getRequestName();
 
 
     /**
@@ -79,7 +79,7 @@ public interface InternalExtendedRequest extends SingleReplyRequest, javax.namin
      * 
      * @param oid the dotted-decimal representation as a String of the OID
      */
-    void setID( String oid );
+    void setRequestName( String oid );
 
 
     /**
@@ -89,13 +89,13 @@ public interface InternalExtendedRequest extends SingleReplyRequest, javax.namin
      * 
      * @return byte array of data
      */
-    byte[] getEncodedValue();
+    byte[] getRequestValue();
 
 
     /**
      * Sets the extended request's <b>requestValue</b> portion of the PDU.
      * 
-     * @param payload byte array of data encapsulating ext. req. parameters
+     * @param requestValue byte array of data encapsulating ext. req. parameters
      */
-    void setEncodedValue( byte[] payload );
+    void setRequestValue( byte[] requestValue );
 }

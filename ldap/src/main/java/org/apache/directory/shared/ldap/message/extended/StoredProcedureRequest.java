@@ -56,7 +56,7 @@ public class StoredProcedureRequest extends ExtendedRequestImpl
     public StoredProcedureRequest( int messageId )
     {
         super( messageId );
-        this.setID( EXTENSION_OID );
+        this.setRequestName( EXTENSION_OID );
         this.procedure = new StoredProcedure();
     }
 
@@ -64,20 +64,14 @@ public class StoredProcedureRequest extends ExtendedRequestImpl
     public StoredProcedureRequest( int messageId, String procedure, String language )
     {
         super( messageId );
-        this.setID( EXTENSION_OID );
+        this.setRequestName( EXTENSION_OID );
         this.procedure = new StoredProcedure();
         this.setLanguage( language );
         this.setProcedure( procedure );
     }
 
 
-    private void encodePayload() throws EncoderException
-    {
-        payload = procedure.encode().array();
-    }
-
-
-    public void setPayload( byte[] payload )
+    public void setRequestValue( byte[] payload )
     {
         StoredProcedureDecoder decoder = new StoredProcedureDecoder();
         StoredProcedureContainer container = new StoredProcedureContainer();
@@ -105,19 +99,16 @@ public class StoredProcedureRequest extends ExtendedRequestImpl
     }
 
 
-    public byte[] getEncodedValue()
+    /**
+     * {@inheritDoc}
+     */
+    public byte[] getRequestValue()
     {
-        return getPayload();
-    }
-
-
-    public byte[] getPayload()
-    {
-        if ( payload == null )
+        if ( requestValue == null )
         {
             try
             {
-                encodePayload();
+                requestValue = procedure.encode().array();
             }
             catch ( EncoderException e )
             {
@@ -126,7 +117,7 @@ public class StoredProcedureRequest extends ExtendedRequestImpl
             }
         }
 
-        return payload;
+        return requestValue;
     }
 
 

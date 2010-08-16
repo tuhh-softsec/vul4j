@@ -25,7 +25,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.nio.ByteBuffer;
-import java.util.List;
+import java.util.Map;
 
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
@@ -34,7 +34,9 @@ import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
+import org.apache.directory.shared.ldap.message.LdapProtocolEncoder;
 import org.apache.directory.shared.ldap.message.control.Control;
+import org.apache.directory.shared.ldap.message.internal.InternalExtendedRequest;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -49,6 +51,10 @@ import org.junit.runner.RunWith;
 @Concurrent()
 public class ExtendedRequestTest
 {
+    /** The encoder instance */
+    LdapProtocolEncoder encoder = new LdapProtocolEncoder();
+
+
     /**
      * Test the decoding of a full ExtendedRequest
      */
@@ -60,16 +66,14 @@ public class ExtendedRequestTest
         ByteBuffer stream = ByteBuffer.allocate( 0x1D );
 
         stream.put( new byte[]
-            { 
-              0x30, 0x1B,               // LDAPMessage ::= SEQUENCE {
-                0x02, 0x01, 0x01,       // messageID MessageID
-                                        // CHOICE { ..., extendedReq ExtendedRequest, ...
-                0x77, 0x16,             // ExtendedRequest ::= [APPLICATION 23] SEQUENCE {
-                                        // requestName [0] LDAPOID,
-                  ( byte ) 0x80, 0x0D, '1', '.', '3', '.', '6', '.', '1', '.', '5', '.', '5', '.', '2',
-                                        // requestValue [1] OCTET STRING OPTIONAL }
-                  ( byte ) 0x81, 0x05, 'v', 'a', 'l', 'u', 'e' 
-            } );
+            { 0x30, 0x1B, // LDAPMessage ::= SEQUENCE {
+                0x02, 0x01, 0x01, // messageID MessageID
+                // CHOICE { ..., extendedReq ExtendedRequest, ...
+                0x77, 0x16, // ExtendedRequest ::= [APPLICATION 23] SEQUENCE {
+                // requestName [0] LDAPOID,
+                ( byte ) 0x80, 0x0D, '1', '.', '3', '.', '6', '.', '1', '.', '5', '.', '5', '.', '2',
+                // requestValue [1] OCTET STRING OPTIONAL }
+                ( byte ) 0x81, 0x05, 'v', 'a', 'l', 'u', 'e' } );
 
         String decodedPdu = StringTools.dumpBytes( stream.array() );
         stream.flip();
@@ -89,19 +93,20 @@ public class ExtendedRequestTest
         }
 
         // Check the decoded ExtendedRequest PDU
-        ExtendedRequestCodec extendedRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getExtendedRequest();
+        InternalExtendedRequest extendedRequest = ( ( LdapMessageContainer ) ldapMessageContainer )
+            .getExtendedRequest();
 
         assertEquals( 1, extendedRequest.getMessageId() );
         assertEquals( "1.3.6.1.5.5.2", extendedRequest.getRequestName() );
         assertEquals( "value", StringTools.utf8ToString( extendedRequest.getRequestValue() ) );
 
-        // Check the length
-        assertEquals( 0x1D, extendedRequest.computeLength() );
-
         // Check the encoding
         try
         {
-            ByteBuffer bb = extendedRequest.encode();
+            ByteBuffer bb = encoder.encodeMessage( extendedRequest );
+
+            // Check the length
+            assertEquals( 0x1D, bb.limit() );
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -126,21 +131,20 @@ public class ExtendedRequestTest
         ByteBuffer stream = ByteBuffer.allocate( 0x3A );
 
         stream.put( new byte[]
-            { 
-            0x30, 0x38,                 // LDAPMessage ::= SEQUENCE {
-              0x02, 0x01, 0x01,         // messageID MessageID
-                                        // CHOICE { ..., extendedReq ExtendedRequest, ...
-              0x77, 0x16,               // ExtendedRequest ::= [APPLICATION 23] SEQUENCE {
-                                        // requestName [0] LDAPOID,
+            { 0x30,
+                0x38, // LDAPMessage ::= SEQUENCE {
+                0x02, 0x01,
+                0x01, // messageID MessageID
+                // CHOICE { ..., extendedReq ExtendedRequest, ...
+                0x77,
+                0x16, // ExtendedRequest ::= [APPLICATION 23] SEQUENCE {
+                // requestName [0] LDAPOID,
                 ( byte ) 0x80, 0x0D, '1', '.', '3', '.', '6', '.', '1', '.', '5', '.', '5', '.', '2',
-                                        // requestValue [1] OCTET STRING OPTIONAL }
-                ( byte ) 0x81, 0x05, 'v', 'a', 'l', 'u', 'e', 
-              ( byte ) 0xA0, 0x1B,      // A control
-                0x30, 0x19, 
-                  0x04, 0x17,
-                    '2', '.', '1', '6', '.', '8', '4', '0', '.', '1', '.', '1', '1', '3', '7', '3', 
-                    '0', '.', '3', '.', '4', '.', '2'
-            } );
+                // requestValue [1] OCTET STRING OPTIONAL }
+                ( byte ) 0x81, 0x05, 'v', 'a', 'l', 'u', 'e', ( byte ) 0xA0,
+                0x1B, // A control
+                0x30, 0x19, 0x04, 0x17, '2', '.', '1', '6', '.', '8', '4', '0', '.', '1', '.', '1', '1', '3', '7', '3',
+                '0', '.', '3', '.', '4', '.', '2' } );
 
         String decodedPdu = StringTools.dumpBytes( stream.array() );
         stream.flip();
@@ -160,28 +164,29 @@ public class ExtendedRequestTest
         }
 
         // Check the decoded ExtendedRequest PDU
-        ExtendedRequestCodec extendedRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getExtendedRequest();
+        InternalExtendedRequest extendedRequest = ( ( LdapMessageContainer ) ldapMessageContainer )
+            .getExtendedRequest();
 
         assertEquals( 1, extendedRequest.getMessageId() );
         assertEquals( "1.3.6.1.5.5.2", extendedRequest.getRequestName() );
         assertEquals( "value", StringTools.utf8ToString( extendedRequest.getRequestValue() ) );
 
         // Check the Control
-        List<Control> controls = extendedRequest.getControls();
+        Map<String, Control> controls = extendedRequest.getControls();
 
         assertEquals( 1, controls.size() );
+        assertTrue( extendedRequest.hasControl( "2.16.840.1.113730.3.4.2" ) );
 
-        Control control = extendedRequest.getControls( 0 );
-        assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
+        Control control = extendedRequest.getControl( "2.16.840.1.113730.3.4.2" );
         assertEquals( "", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
-
-        // Check the length
-        assertEquals( 0x3A, extendedRequest.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = extendedRequest.encode();
+            ByteBuffer bb = encoder.encodeMessage( extendedRequest );
+
+            // Check the length
+            assertEquals( 0x3A, bb.limit() );
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -207,21 +212,20 @@ public class ExtendedRequestTest
         ByteBuffer stream = ByteBuffer.allocate( 0x33 );
 
         stream.put( new byte[]
-            { 
-            0x30, 0x31,                 // LDAPMessage ::= SEQUENCE {
-              0x02, 0x01, 0x01,         // messageID MessageID
-                                        // CHOICE { ..., extendedReq ExtendedRequest, ...
-              0x77, 0x0F,               // ExtendedRequest ::= [APPLICATION 23] SEQUENCE {
-                                        // requestName [0] LDAPOID,
-                ( byte ) 0x80, 0x0D, 
-                  '1', '.', '3', '.', '6', '.', '1', '.', '5', '.', '5', '.', '2',
-                                        // requestValue [1] OCTET STRING OPTIONAL }
-                ( byte ) 0xA0, 0x1B,    // A control
-                  0x30, 0x19, 
-                    0x04, 0x17, 
-                      '2', '.', '1', '6', '.', '8', '4', '0', '.', '1', '.', '1', '1', '3', '7', '3', 
-                      '0', '.', '3', '.', '4', '.', '2'
-            } );
+            { 0x30,
+                0x31, // LDAPMessage ::= SEQUENCE {
+                0x02, 0x01,
+                0x01, // messageID MessageID
+                // CHOICE { ..., extendedReq ExtendedRequest, ...
+                0x77,
+                0x0F, // ExtendedRequest ::= [APPLICATION 23] SEQUENCE {
+                // requestName [0] LDAPOID,
+                ( byte ) 0x80, 0x0D, '1', '.', '3', '.', '6', '.', '1', '.', '5', '.', '5', '.', '2',
+                // requestValue [1] OCTET STRING OPTIONAL }
+                ( byte ) 0xA0,
+                0x1B, // A control
+                0x30, 0x19, 0x04, 0x17, '2', '.', '1', '6', '.', '8', '4', '0', '.', '1', '.', '1', '1', '3', '7', '3',
+                '0', '.', '3', '.', '4', '.', '2' } );
 
         String decodedPdu = StringTools.dumpBytes( stream.array() );
         stream.flip();
@@ -241,28 +245,30 @@ public class ExtendedRequestTest
         }
 
         // Check the decoded ExtendedRequest PDU
-        ExtendedRequestCodec extendedRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getExtendedRequest();
+        InternalExtendedRequest extendedRequest = ( ( LdapMessageContainer ) ldapMessageContainer )
+            .getExtendedRequest();
 
         assertEquals( 1, extendedRequest.getMessageId() );
         assertEquals( "1.3.6.1.5.5.2", extendedRequest.getRequestName() );
         assertEquals( "", StringTools.utf8ToString( extendedRequest.getRequestValue() ) );
 
         // Check the Control
-        List<Control> controls = extendedRequest.getControls();
+        Map<String, Control> controls = extendedRequest.getControls();
 
         assertEquals( 1, controls.size() );
 
-        Control control = extendedRequest.getControls( 0 );
-        assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
-        assertEquals( "", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
+        assertTrue( extendedRequest.hasControl( "2.16.840.1.113730.3.4.2" ) );
 
-        // Check the length
-        assertEquals( 0x33, extendedRequest.computeLength() );
+        Control control = extendedRequest.getControl( "2.16.840.1.113730.3.4.2" );
+        assertEquals( "", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = extendedRequest.encode();
+            ByteBuffer bb = encoder.encodeMessage( extendedRequest );
+
+            // Check the length
+            assertEquals( 0x33, bb.limit() );
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -287,11 +293,10 @@ public class ExtendedRequestTest
         ByteBuffer stream = ByteBuffer.allocate( 0x07 );
 
         stream.put( new byte[]
-            { 
-            0x30, 0x05,                 // LDAPMessage ::= SEQUENCE {
-              0x02, 0x01, 0x01,         // messageID MessageID
-                                        // CHOICE { ..., extendedReq ExtendedRequest, ...
-              0x77, 0x00,               // ExtendedRequest ::= [APPLICATION 23] SEQUENCE {
+            { 0x30, 0x05, // LDAPMessage ::= SEQUENCE {
+                0x02, 0x01, 0x01, // messageID MessageID
+                // CHOICE { ..., extendedReq ExtendedRequest, ...
+                0x77, 0x00, // ExtendedRequest ::= [APPLICATION 23] SEQUENCE {
             } );
 
         stream.flip();
@@ -323,13 +328,11 @@ public class ExtendedRequestTest
         ByteBuffer stream = ByteBuffer.allocate( 0x09 );
 
         stream.put( new byte[]
-            { 
-            0x30, 0x07,                 // LDAPMessage ::= SEQUENCE {
-              0x02, 0x01, 0x01,         // messageID MessageID
-                                        // CHOICE { ..., extendedReq ExtendedRequest, ...
-              0x77, 0x02,               // ExtendedRequest ::= [APPLICATION 23] SEQUENCE {
-                ( byte ) 0x80, 0x00 
-            } );
+            { 0x30, 0x07, // LDAPMessage ::= SEQUENCE {
+                0x02, 0x01, 0x01, // messageID MessageID
+                // CHOICE { ..., extendedReq ExtendedRequest, ...
+                0x77, 0x02, // ExtendedRequest ::= [APPLICATION 23] SEQUENCE {
+                ( byte ) 0x80, 0x00 } );
 
         stream.flip();
 
@@ -348,6 +351,7 @@ public class ExtendedRequestTest
         }
     }
 
+
     /**
      * Test the decoding of a bad name 
      */
@@ -359,15 +363,12 @@ public class ExtendedRequestTest
         ByteBuffer stream = ByteBuffer.allocate( 0x16 );
 
         stream.put( new byte[]
-            { 
-            0x30, 0x14,                 // LDAPMessage ::= SEQUENCE {
-              0x02, 0x01, 0x01,         // messageID MessageID
-                                        // CHOICE { ..., extendedReq ExtendedRequest, ...
-              0x77, 0x0F,               // ExtendedRequest ::= [APPLICATION 23] SEQUENCE {
-                                        // requestName [0] LDAPOID,
-                ( byte ) 0x80, 0x0D, 
-                  '1', '-', '3', '.', '6', '.', '1', '.', '5', '.', '5', '.', '2', 
-            } );
+            { 0x30, 0x14, // LDAPMessage ::= SEQUENCE {
+                0x02, 0x01, 0x01, // messageID MessageID
+                // CHOICE { ..., extendedReq ExtendedRequest, ...
+                0x77, 0x0F, // ExtendedRequest ::= [APPLICATION 23] SEQUENCE {
+                // requestName [0] LDAPOID,
+                ( byte ) 0x80, 0x0D, '1', '-', '3', '.', '6', '.', '1', '.', '5', '.', '5', '.', '2', } );
 
         stream.flip();
 
@@ -384,7 +385,8 @@ public class ExtendedRequestTest
         {
             assertTrue( true );
         }
-    }    
+    }
+
 
     /**
      * Test the decoding of a name only ExtendedRequest
@@ -397,15 +399,12 @@ public class ExtendedRequestTest
         ByteBuffer stream = ByteBuffer.allocate( 0x16 );
 
         stream.put( new byte[]
-            { 
-            0x30, 0x14,                 // LDAPMessage ::= SEQUENCE {
-              0x02, 0x01, 0x01,         // messageID MessageID
-                                        // CHOICE { ..., extendedReq ExtendedRequest, ...
-              0x77, 0x0F,               // ExtendedRequest ::= [APPLICATION 23] SEQUENCE {
-                                        // requestName [0] LDAPOID,
-                ( byte ) 0x80, 0x0D, 
-                  '1', '.', '3', '.', '6', '.', '1', '.', '5', '.', '5', '.', '2', 
-            } );
+            { 0x30, 0x14, // LDAPMessage ::= SEQUENCE {
+                0x02, 0x01, 0x01, // messageID MessageID
+                // CHOICE { ..., extendedReq ExtendedRequest, ...
+                0x77, 0x0F, // ExtendedRequest ::= [APPLICATION 23] SEQUENCE {
+                // requestName [0] LDAPOID,
+                ( byte ) 0x80, 0x0D, '1', '.', '3', '.', '6', '.', '1', '.', '5', '.', '5', '.', '2', } );
 
         String decodedPdu = StringTools.dumpBytes( stream.array() );
         stream.flip();
@@ -425,18 +424,19 @@ public class ExtendedRequestTest
         }
 
         // Check the decoded ExtendedRequest PDU
-        ExtendedRequestCodec extendedRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getExtendedRequest();
+        InternalExtendedRequest extendedRequest = ( ( LdapMessageContainer ) ldapMessageContainer )
+            .getExtendedRequest();
 
         assertEquals( 1, extendedRequest.getMessageId() );
         assertEquals( "1.3.6.1.5.5.2", extendedRequest.getRequestName() );
 
-        // Check the length
-        assertEquals( 0x16, extendedRequest.computeLength() );
-
         // Check the encoding
         try
         {
-            ByteBuffer bb = extendedRequest.encode();
+            ByteBuffer bb = encoder.encodeMessage( extendedRequest );
+
+            // Check the length
+            assertEquals( 0x16, bb.limit() );
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -461,16 +461,16 @@ public class ExtendedRequestTest
         ByteBuffer stream = ByteBuffer.allocate( 0x18 );
 
         stream.put( new byte[]
-            { 
-            0x30, 0x16,                 // LDAPMessage ::= SEQUENCE {
-              0x02, 0x01, 0x01,         // messageID MessageID
-                                        // CHOICE { ..., extendedReq ExtendedRequest, ...
-              0x77, 0x11,               // ExtendedRequest ::= [APPLICATION 23] SEQUENCE {
-                                        // requestName [0] LDAPOID,
-                ( byte ) 0x80, 0x0D, 
-                  '1', '.', '3', '.', '6', '.', '1', '.', '5', '.', '5', '.', '2', 
-                ( byte ) 0x81, 0x00 
-            } );
+            { 0x30,
+                0x16, // LDAPMessage ::= SEQUENCE {
+                0x02, 0x01,
+                0x01, // messageID MessageID
+                // CHOICE { ..., extendedReq ExtendedRequest, ...
+                0x77,
+                0x11, // ExtendedRequest ::= [APPLICATION 23] SEQUENCE {
+                // requestName [0] LDAPOID,
+                ( byte ) 0x80, 0x0D, '1', '.', '3', '.', '6', '.', '1', '.', '5', '.', '5', '.', '2', ( byte ) 0x81,
+                0x00 } );
 
         String decodedPdu = StringTools.dumpBytes( stream.array() );
         stream.flip();
@@ -490,19 +490,20 @@ public class ExtendedRequestTest
         }
 
         // Check the decoded ExtendedRequest PDU
-        ExtendedRequestCodec extendedRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getExtendedRequest();
+        InternalExtendedRequest extendedRequest = ( ( LdapMessageContainer ) ldapMessageContainer )
+            .getExtendedRequest();
 
         assertEquals( 1, extendedRequest.getMessageId() );
         assertEquals( "1.3.6.1.5.5.2", extendedRequest.getRequestName() );
         assertEquals( "", StringTools.utf8ToString( extendedRequest.getRequestValue() ) );
 
-        // Check the length
-        assertEquals( 0x18, extendedRequest.computeLength() );
-
         // Check the encoding
         try
         {
-            ByteBuffer bb = extendedRequest.encode();
+            ByteBuffer bb = encoder.encodeMessage( extendedRequest );
+
+            // Check the length
+            assertEquals( 0x18, bb.limit() );
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 

@@ -36,6 +36,7 @@ import org.apache.commons.lang.SerializationUtils;
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.message.extended.StoredProcedureRequest;
 import org.apache.directory.shared.ldap.message.extended.StoredProcedureResponse;
+import org.apache.directory.shared.ldap.util.AttributeUtils;
 
 
 /**
@@ -140,7 +141,8 @@ public class JavaStoredProcUtils
              * Call the stored procedure via the extended operation
              * and get back its return value.
              */
-            StoredProcedureResponse resp = ( StoredProcedureResponse ) ctx.extendedOperation( req );
+            StoredProcedureResponse resp = ( StoredProcedureResponse ) ctx.extendedOperation( AttributeUtils
+                .toJndiExtendedRequest( req ) );
 
             /**
              * Restore a Java object from the return value.

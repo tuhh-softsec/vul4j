@@ -72,7 +72,6 @@ import org.apache.directory.shared.ldap.codec.actions.StoreTypeMatchingRuleActio
 import org.apache.directory.shared.ldap.codec.actions.ValueAction;
 import org.apache.directory.shared.ldap.codec.controls.ControlEnum;
 import org.apache.directory.shared.ldap.codec.controls.ControlImpl;
-import org.apache.directory.shared.ldap.codec.extended.ExtendedRequestCodec;
 import org.apache.directory.shared.ldap.codec.modify.ModifyRequestCodec;
 import org.apache.directory.shared.ldap.codec.modifyDn.ModifyDNRequestCodec;
 import org.apache.directory.shared.ldap.codec.search.ExtensibleMatchFilter;
@@ -90,6 +89,7 @@ import org.apache.directory.shared.ldap.message.CompareRequestImpl;
 import org.apache.directory.shared.ldap.message.CompareResponseImpl;
 import org.apache.directory.shared.ldap.message.DeleteRequestImpl;
 import org.apache.directory.shared.ldap.message.DeleteResponseImpl;
+import org.apache.directory.shared.ldap.message.ExtendedRequestImpl;
 import org.apache.directory.shared.ldap.message.ExtendedResponseImpl;
 import org.apache.directory.shared.ldap.message.IntermediateResponseImpl;
 import org.apache.directory.shared.ldap.message.ModifyDnResponseImpl;
@@ -106,12 +106,13 @@ import org.apache.directory.shared.ldap.message.internal.BindResponse;
 import org.apache.directory.shared.ldap.message.internal.CompareResponse;
 import org.apache.directory.shared.ldap.message.internal.DeleteResponse;
 import org.apache.directory.shared.ldap.message.internal.ExtendedResponse;
+import org.apache.directory.shared.ldap.message.internal.IntermediateResponse;
 import org.apache.directory.shared.ldap.message.internal.InternalAbandonRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalAddRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalBindRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalCompareRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalDeleteRequest;
-import org.apache.directory.shared.ldap.message.internal.IntermediateResponse;
+import org.apache.directory.shared.ldap.message.internal.InternalExtendedRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalMessage;
 import org.apache.directory.shared.ldap.message.internal.InternalReferral;
 import org.apache.directory.shared.ldap.message.internal.InternalUnbindRequest;
@@ -2831,9 +2832,9 @@ public class LdapMessageGrammar extends AbstractGrammar
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
                     // Now, we can allocate the ExtendedRequest Object
-                    ExtendedRequestCodec extendedRequest = new ExtendedRequestCodec();
-                    extendedRequest.setMessageId( ldapMessageContainer.getMessageId() );
-                    ldapMessageContainer.setLdapMessage( extendedRequest );
+                    InternalExtendedRequest extendedRequest = new ExtendedRequestImpl( ldapMessageContainer
+                        .getMessageId() );
+                    ldapMessageContainer.setInternalMessage( extendedRequest );
 
                     log.debug( "Extended request" );
                 }
@@ -2856,7 +2857,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
                     // We can allocate the ExtendedRequest Object
-                    ExtendedRequestCodec extendedRequest = ldapMessageContainer.getExtendedRequest();
+                    InternalExtendedRequest extendedRequest = ldapMessageContainer.getExtendedRequest();
 
                     // Get the Value and store it in the ExtendedRequest
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
@@ -2876,8 +2877,21 @@ public class LdapMessageGrammar extends AbstractGrammar
 
                         try
                         {
-                            OID oid = new OID( StringTools.utf8ToString( requestNameBytes ) );
-                            extendedRequest.setRequestName( oid );
+                            String requestName = StringTools.utf8ToString( requestNameBytes );
+
+                            if ( !OID.isOID( requestName ) )
+                            {
+
+                                String msg = "The Request name is not a valid OID : "
+                                    + StringTools.utf8ToString( requestNameBytes ) + " ("
+                                    + StringTools.dumpBytes( requestNameBytes ) + ") is invalid";
+                                log.error( msg );
+
+                                // throw an exception, we will get a PROTOCOL_ERROR
+                                throw new DecoderException( msg );
+                            }
+
+                            extendedRequest.setRequestName( requestName );
                         }
                         catch ( DecoderException de )
                         {
@@ -2918,7 +2932,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
                     // We can allocate the ExtendedRequest Object
-                    ExtendedRequestCodec extendedRequest = ldapMessageContainer.getExtendedRequest();
+                    InternalExtendedRequest extendedRequest = ldapMessageContainer.getExtendedRequest();
 
                     // Get the Value and store it in the ExtendedRequest
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
@@ -3194,8 +3208,8 @@ public class LdapMessageGrammar extends AbstractGrammar
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
                     // Now, we can allocate the IntermediateResponse Object
-                    IntermediateResponse intermediateResponse = new IntermediateResponseImpl(
-                        ldapMessageContainer.getMessageId() );
+                    IntermediateResponse intermediateResponse = new IntermediateResponseImpl( ldapMessageContainer
+                        .getMessageId() );
                     ldapMessageContainer.setInternalMessage( intermediateResponse );
 
                     log.debug( "Intermediate Response" );

@@ -25,7 +25,6 @@ import java.util.List;
 
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.codec.extended.ExtendedRequestCodec;
 import org.apache.directory.shared.ldap.codec.modify.ModifyRequestCodec;
 import org.apache.directory.shared.ldap.codec.modifyDn.ModifyDNRequestCodec;
 import org.apache.directory.shared.ldap.codec.search.AndFilter;
@@ -56,12 +55,10 @@ import org.apache.directory.shared.ldap.filter.PresenceNode;
 import org.apache.directory.shared.ldap.filter.SimpleNode;
 import org.apache.directory.shared.ldap.filter.SubstringNode;
 import org.apache.directory.shared.ldap.message.AliasDerefMode;
-import org.apache.directory.shared.ldap.message.ExtendedRequestImpl;
 import org.apache.directory.shared.ldap.message.ModifyDnRequestImpl;
 import org.apache.directory.shared.ldap.message.ModifyRequestImpl;
 import org.apache.directory.shared.ldap.message.SearchRequestImpl;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.message.extended.GracefulShutdownRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalMessage;
 import org.apache.directory.shared.ldap.schema.SchemaManager;
 import org.slf4j.Logger;
@@ -80,37 +77,6 @@ public class LdapTransformer
 
     /** A speedup for logger */
     private static final boolean IS_DEBUG = LOG.isDebugEnabled();
-
-
-    /**
-     * Transform an ExtendedRequest message from a CodecMessage to a
-     * InternalMessage
-     * 
-     * @param extendedRequest The message to transform
-     * @param messageId The message Id
-     * @return A Internal ExtendedRequestImpl
-     */
-    private static InternalMessage transformExtendedRequest( ExtendedRequestCodec extendedRequest, int messageId )
-    {
-        ExtendedRequestImpl internalMessage;
-
-        if ( extendedRequest.getRequestName().equals( GracefulShutdownRequest.EXTENSION_OID ) )
-        {
-            internalMessage = new GracefulShutdownRequest( messageId );
-        }
-        else
-        {
-            internalMessage = new ExtendedRequestImpl( messageId );
-        }
-
-        // Codec : OID requestName -> Internal : String oid
-        internalMessage.setID( extendedRequest.getRequestName() );
-
-        // Codec : OctetString requestValue -> Internal : byte [] payload
-        internalMessage.setEncodedValue( extendedRequest.getRequestValue() );
-
-        return internalMessage;
-    }
 
 
     /**
@@ -571,9 +537,6 @@ public class LdapTransformer
                 break;
 
             case EXTENDED_REQUEST:
-                internalMessage = transformExtendedRequest( ( ExtendedRequestCodec ) codecMessage, messageId );
-                break;
-
             case SEARCH_RESULT_ENTRY:
             case SEARCH_RESULT_DONE:
             case SEARCH_RESULT_REFERENCE:

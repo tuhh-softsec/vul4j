@@ -22,8 +22,8 @@ package org.apache.directory.shared.ldap.message;
 
 import java.util.Arrays;
 
-import org.apache.directory.shared.ldap.message.internal.InternalAbstractResultResponse;
 import org.apache.directory.shared.ldap.message.internal.ExtendedResponse;
+import org.apache.directory.shared.ldap.message.internal.InternalAbstractResultResponse;
 import org.apache.directory.shared.ldap.util.StringTools;
 
 
@@ -100,17 +100,6 @@ public class ExtendedResponseImpl extends InternalAbstractResultResponse impleme
 
 
     /**
-     * Gets the responseName bytes.
-     * 
-     * @return the responseName bytes of the extended response type.
-     */
-    /* No qualifier*/byte[] getResponseNameBytes()
-    {
-        return responseNameBytes;
-    }
-
-
-    /**
      * Sets the OID uniquely identifying this extended response (a.k.a. its
      * name).
      * 
@@ -119,6 +108,17 @@ public class ExtendedResponseImpl extends InternalAbstractResultResponse impleme
     public void setResponseName( String responseName )
     {
         this.responseName = responseName;
+    }
+
+
+    /**
+     * Gets the responseName bytes.
+     * 
+     * @return the responseName bytes of the extended response type.
+     */
+    /* No qualifier*/byte[] getResponseNameBytes()
+    {
+        return responseNameBytes;
     }
 
 

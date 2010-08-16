@@ -1341,13 +1341,13 @@ public class AttributeUtils
 
             public byte[] getEncodedValue()
             {
-                return request.getEncodedValue();
+                return request.getRequestValue();
             }
 
 
             public String getID()
             {
-                return request.getID();
+                return request.getRequestName();
             }
 
         }
@@ -1368,13 +1368,13 @@ public class AttributeUtils
         {
             public byte[] getEncodedValue()
             {
-                return request.getEncodedValue();
+                return request.getRequestValue();
             }
 
 
             public String getID()
             {
-                return request.getID();
+                return request.getRequestName();
             }
         }
 
