@@ -17,7 +17,7 @@
  *   under the License.
  *
  */
-package org.apache.directory.shared.ldap.jndi;
+package org.apache.directory.shared.ldap.util;
 
 
 import java.util.Hashtable;
@@ -215,19 +215,19 @@ public class JndiUtils
      * @return
      */
     public static org.apache.directory.shared.ldap.message.internal.ExtendedResponse fromJndiExtendedResponse(
-        final ExtendedRequest request )
+        final ExtendedResponse response )
     {
         class ServerExtendedResponse implements org.apache.directory.shared.ldap.message.internal.ExtendedResponse
         {
             public String getResponseName()
             {
-                return request.getID();
+                return response.getID();
             }
 
 
             public byte[] getResponseValue()
             {
-                return request.getEncodedValue();
+                return response.getEncodedValue();
             }
 
 
@@ -359,13 +359,6 @@ public class JndiUtils
     {
         class ServerExtendedRequest implements InternalExtendedRequest
         {
-            public org.apache.directory.shared.ldap.message.internal.ExtendedResponse createExtendedResponse(
-                String id, byte[] berValue, int offset, int length ) throws NamingException
-            {
-                return fromJndiExtendedResponse( request );
-            }
-
-
             public String getRequestName()
             {
                 return request.getID();

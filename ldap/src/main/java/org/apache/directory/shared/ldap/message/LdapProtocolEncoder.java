@@ -34,8 +34,6 @@ import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.asn1.util.Asn1StringUtils;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
-import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
-import org.apache.directory.shared.ldap.codec.LdapTransformer;
 import org.apache.directory.shared.ldap.codec.MessageEncoderException;
 import org.apache.directory.shared.ldap.codec.controls.CodecControl;
 import org.apache.directory.shared.ldap.entry.BinaryValue;
@@ -43,29 +41,9 @@ import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Modification;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.message.internal.AddResponse;
-import org.apache.directory.shared.ldap.message.internal.BindResponse;
-import org.apache.directory.shared.ldap.message.internal.CompareResponse;
-import org.apache.directory.shared.ldap.message.internal.DeleteResponse;
-import org.apache.directory.shared.ldap.message.internal.ExtendedResponse;
-import org.apache.directory.shared.ldap.message.internal.IntermediateResponse;
-import org.apache.directory.shared.ldap.message.internal.InternalAbandonRequest;
-import org.apache.directory.shared.ldap.message.internal.InternalAddRequest;
-import org.apache.directory.shared.ldap.message.internal.InternalBindRequest;
-import org.apache.directory.shared.ldap.message.internal.InternalCompareRequest;
-import org.apache.directory.shared.ldap.message.internal.InternalDeleteRequest;
-import org.apache.directory.shared.ldap.message.internal.InternalExtendedRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalMessage;
-import org.apache.directory.shared.ldap.message.internal.InternalModifyDnRequest;
-import org.apache.directory.shared.ldap.message.internal.InternalModifyRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalReferral;
-import org.apache.directory.shared.ldap.message.internal.InternalUnbindRequest;
 import org.apache.directory.shared.ldap.message.internal.LdapResult;
-import org.apache.directory.shared.ldap.message.internal.ModifyDnResponse;
-import org.apache.directory.shared.ldap.message.internal.ModifyResponse;
-import org.apache.directory.shared.ldap.message.internal.SearchResultDone;
-import org.apache.directory.shared.ldap.message.internal.SearchResultEntry;
-import org.apache.directory.shared.ldap.message.internal.SearchResultReference;
 import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.apache.mina.core.buffer.IoBuffer;
@@ -127,66 +105,48 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
         int length = computeMessageLength( message );
         ByteBuffer buffer = ByteBuffer.allocate( length );
 
-        if ( ( message instanceof BindResponse ) || ( message instanceof DeleteResponse )
-            || ( message instanceof AddResponse ) || ( message instanceof CompareResponse )
-            || ( message instanceof ExtendedResponse ) || ( message instanceof ModifyResponse )
-            || ( message instanceof ModifyDnResponse ) || ( message instanceof IntermediateResponse )
-            || ( message instanceof SearchResultDone ) || ( message instanceof SearchResultEntry )
-            || ( message instanceof SearchResultReference ) || ( message instanceof InternalAbandonRequest )
-            || ( message instanceof InternalDeleteRequest ) || ( message instanceof InternalUnbindRequest )
-            || ( message instanceof InternalBindRequest ) || ( message instanceof InternalAddRequest )
-            || ( message instanceof InternalCompareRequest ) || ( message instanceof InternalExtendedRequest )
-            || ( message instanceof InternalModifyDnRequest ) || ( message instanceof InternalModifyRequest ) )
+        try
         {
             try
             {
-                try
-                {
-                    // The LdapMessage Sequence
-                    buffer.put( UniversalTag.SEQUENCE_TAG );
+                // The LdapMessage Sequence
+                buffer.put( UniversalTag.SEQUENCE_TAG );
 
-                    // The length has been calculated by the computeLength method
-                    buffer.put( TLV.getBytes( message.getMessageLength() ) );
-                }
-                catch ( BufferOverflowException boe )
-                {
-                    throw new EncoderException( I18n.err( I18n.ERR_04005 ) );
-                }
-
-                // The message Id
-                Value.encode( buffer, message.getMessageId() );
-
-                // Add the protocolOp part
-                encodeProtocolOp( buffer, message );
-
-                // Do the same thing for Controls, if any.
-                Map<String, Control> controls = message.getControls();
-
-                if ( ( controls != null ) && ( controls.size() > 0 ) )
-                {
-                    // Encode the controls
-                    buffer.put( ( byte ) LdapConstants.CONTROLS_TAG );
-                    buffer.put( TLV.getBytes( message.getControlsLength() ) );
-
-                    // Encode each control
-                    for ( Control control : controls.values() )
-                    {
-                        ( ( CodecControl ) control ).encode( buffer );
-                    }
-                }
+                // The length has been calculated by the computeLength method
+                buffer.put( TLV.getBytes( message.getMessageLength() ) );
             }
-            catch ( EncoderException ee )
+            catch ( BufferOverflowException boe )
             {
-                MessageEncoderException exception = new MessageEncoderException( message.getMessageId(), ee
-                    .getMessage() );
+                throw new EncoderException( I18n.err( I18n.ERR_04005 ) );
+            }
 
-                throw exception;
+            // The message Id
+            Value.encode( buffer, message.getMessageId() );
+
+            // Add the protocolOp part
+            encodeProtocolOp( buffer, message );
+
+            // Do the same thing for Controls, if any.
+            Map<String, Control> controls = message.getControls();
+
+            if ( ( controls != null ) && ( controls.size() > 0 ) )
+            {
+                // Encode the controls
+                buffer.put( ( byte ) LdapConstants.CONTROLS_TAG );
+                buffer.put( TLV.getBytes( message.getControlsLength() ) );
+
+                // Encode each control
+                for ( Control control : controls.values() )
+                {
+                    ( ( CodecControl ) control ).encode( buffer );
+                }
             }
         }
-        else
+        catch ( EncoderException ee )
         {
-            LdapMessageCodec ldapRequest = ( LdapMessageCodec ) LdapTransformer.transform( message );
-            buffer = ldapRequest.encode();
+            MessageEncoderException exception = new MessageEncoderException( message.getMessageId(), ee.getMessage() );
+
+            throw exception;
         }
 
         buffer.flip();
@@ -684,7 +644,6 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
         else
         {
             byte[] value = StringTools.getBytesUtf8( compareRequest.getAssertionValue().getString() );
-            int assertionValueLength = value.length;
             avaLength += 1 + TLV.getNbBytes( value.length ) + value.length;
             compareRequest.setAttrValBytes( value );
         }
@@ -1112,6 +1071,80 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
         {
             return 0;
         }
+    }
+
+
+    /**
+     * Compute the SearchRequest length
+     * 
+     * SearchRequest :
+     * <pre>
+     * 0x63 L1
+     *  |
+     *  +--> 0x04 L2 baseObject
+     *  +--> 0x0A 0x01 scope
+     *  +--> 0x0A 0x01 derefAliases
+     *  +--> 0x02 0x0(1..4) sizeLimit
+     *  +--> 0x02 0x0(1..4) timeLimit
+     *  +--> 0x01 0x01 typesOnly
+     *  +--> filter.computeLength()
+     *  +--> 0x30 L3 (Attribute description list)
+     *        |
+     *        +--> 0x04 L4-1 Attribute description 
+     *        +--> 0x04 L4-2 Attribute description 
+     *        +--> ... 
+     *        +--> 0x04 L4-i Attribute description 
+     *        +--> ... 
+     *        +--> 0x04 L4-n Attribute description 
+     *        </pre>
+     */
+    private int computeSearchRequestLength( SearchRequestImpl searchRequest )
+    {
+        int searchRequestLength = 0;
+
+        // The baseObject
+        searchRequestLength += 1 + TLV.getNbBytes( DN.getNbBytes( searchRequest.getBase() ) )
+            + DN.getNbBytes( searchRequest.getBase() );
+
+        // The scope
+        searchRequestLength += 1 + 1 + 1;
+
+        // The derefAliases
+        searchRequestLength += 1 + 1 + 1;
+
+        // The sizeLimit
+        searchRequestLength += 1 + 1 + Value.getNbBytes( searchRequest.getSizeLimit() );
+
+        // The timeLimit
+        searchRequestLength += 1 + 1 + Value.getNbBytes( searchRequest.getTimeLimit() );
+
+        // The typesOnly
+        searchRequestLength += 1 + 1 + 1;
+
+        // The filter
+        searchRequestLength += searchRequest.getCurrentFilter().computeLength();
+
+        // The attributes description list
+        int attributeDescriptionListLength = 0;
+
+        if ( ( searchRequest.getAttributes() != null ) && ( searchRequest.getAttributes().size() != 0 ) )
+        {
+            // Compute the attributes length
+            for ( String attribute : searchRequest.getAttributes() )
+            {
+                // add the attribute length to the attributes length
+                int idLength = StringTools.getBytesUtf8( attribute ).length;
+                attributeDescriptionListLength += 1 + TLV.getNbBytes( idLength ) + idLength;
+            }
+        }
+
+        searchRequest.setAttributeDescriptionListLength( attributeDescriptionListLength );
+
+        searchRequestLength += 1 + TLV.getNbBytes( attributeDescriptionListLength ) + attributeDescriptionListLength;
+
+        searchRequest.setSearchRequestLength( searchRequestLength );
+        // Return the result.
+        return 1 + TLV.getNbBytes( searchRequestLength ) + searchRequestLength;
     }
 
 
@@ -2083,6 +2116,77 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
 
 
     /**
+     * Encode the SearchRequest message to a PDU.
+     * 
+     * SearchRequest :
+     * <pre>
+     * 0x63 LL
+     *   0x04 LL baseObject
+     *   0x0A 01 scope
+     *   0x0A 01 derefAliases
+     *   0x02 0N sizeLimit
+     *   0x02 0N timeLimit
+     *   0x01 0x01 typesOnly
+     *   filter.encode()
+     *   0x30 LL attributeDescriptionList
+     *     0x04 LL attributeDescription
+     *     ... 
+     *     0x04 LL attributeDescription
+     * </pre>
+     * @param buffer The buffer where to put the PDU
+     * @return The PDU.
+     */
+    private void encodeSearchRequest( ByteBuffer buffer, SearchRequestImpl searchRequest ) throws EncoderException
+    {
+        try
+        {
+            // The SearchRequest Tag
+            buffer.put( LdapConstants.SEARCH_REQUEST_TAG );
+            buffer.put( TLV.getBytes( searchRequest.getSearchRequestLength() ) );
+
+            // The baseObject
+            Value.encode( buffer, DN.getBytes( searchRequest.getBase() ) );
+
+            // The scope
+            Value.encodeEnumerated( buffer, searchRequest.getScope().getScope() );
+
+            // The derefAliases
+            Value.encodeEnumerated( buffer, searchRequest.getDerefAliases().getValue() );
+
+            // The sizeLimit
+            Value.encode( buffer, searchRequest.getSizeLimit() );
+
+            // The timeLimit
+            Value.encode( buffer, searchRequest.getTimeLimit() );
+
+            // The typesOnly
+            Value.encode( buffer, searchRequest.getTypesOnly() );
+
+            // The filter
+            searchRequest.getCurrentFilter().encode( buffer );
+
+            // The attributeDescriptionList
+            buffer.put( UniversalTag.SEQUENCE_TAG );
+            buffer.put( TLV.getBytes( searchRequest.getAttributeDescriptionListLength() ) );
+
+            if ( ( searchRequest.getAttributes() != null ) && ( searchRequest.getAttributes().size() != 0 ) )
+            {
+                // encode each attribute
+                for ( String attribute : searchRequest.getAttributes() )
+                {
+                    Value.encode( buffer, attribute );
+                }
+            }
+        }
+        catch ( BufferOverflowException boe )
+        {
+            throw new EncoderException( I18n.err( I18n.ERR_04005 ) );
+        }
+
+    }
+
+
+    /**
      * Encode the SearchResultDone message to a PDU.
      * 
      * @param buffer The buffer where to put the PDU
@@ -2230,7 +2334,7 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
      * @param buffer The buffer where to put the PDU
      * @return The PDU.
      */
-    protected void encodeSearchResultReference( ByteBuffer buffer, SearchResultReferenceImpl searchResultReference )
+    private void encodeSearchResultReference( ByteBuffer buffer, SearchResultReferenceImpl searchResultReference )
         throws EncoderException
     {
         try
@@ -2313,6 +2417,9 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
 
             case MODIFYDN_RESPONSE:
                 return computeModifyDnResponseLength( ( ModifyDnResponseImpl ) message );
+
+            case SEARCH_REQUEST:
+                return computeSearchRequestLength( ( SearchRequestImpl ) message );
 
             case SEARCH_RESULT_DONE:
                 return computeSearchResultDoneLength( ( SearchResultDoneImpl ) message );
@@ -2398,6 +2505,10 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
 
             case MODIFYDN_RESPONSE:
                 encodeModifyDnResponse( bb, ( ModifyDnResponseImpl ) message );
+                break;
+
+            case SEARCH_REQUEST:
+                encodeSearchRequest( bb, ( SearchRequestImpl ) message );
                 break;
 
             case SEARCH_RESULT_DONE:

@@ -20,24 +20,56 @@
 package org.apache.directory.shared.ldap.message;
 
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.directory.shared.asn1.ber.IAsn1Container;
+import org.apache.directory.shared.asn1.ber.tlv.TLV;
+import org.apache.directory.shared.asn1.codec.DecoderException;
+import org.apache.directory.shared.ldap.codec.AttributeValueAssertion;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
+import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
+import org.apache.directory.shared.ldap.codec.search.AndFilter;
+import org.apache.directory.shared.ldap.codec.search.AttributeValueAssertionFilter;
+import org.apache.directory.shared.ldap.codec.search.ConnectorFilter;
+import org.apache.directory.shared.ldap.codec.search.ExtensibleMatchFilter;
+import org.apache.directory.shared.ldap.codec.search.Filter;
+import org.apache.directory.shared.ldap.codec.search.NotFilter;
+import org.apache.directory.shared.ldap.codec.search.OrFilter;
+import org.apache.directory.shared.ldap.codec.search.PresentFilter;
+import org.apache.directory.shared.ldap.codec.search.SubstringFilter;
+import org.apache.directory.shared.ldap.entry.Value;
+import org.apache.directory.shared.ldap.exception.LdapException;
+import org.apache.directory.shared.ldap.exception.LdapProtocolErrorException;
+import org.apache.directory.shared.ldap.filter.AndNode;
+import org.apache.directory.shared.ldap.filter.ApproximateNode;
+import org.apache.directory.shared.ldap.filter.BranchNode;
 import org.apache.directory.shared.ldap.filter.BranchNormalizedVisitor;
+import org.apache.directory.shared.ldap.filter.EqualityNode;
 import org.apache.directory.shared.ldap.filter.ExprNode;
+import org.apache.directory.shared.ldap.filter.ExtensibleNode;
+import org.apache.directory.shared.ldap.filter.FilterParser;
+import org.apache.directory.shared.ldap.filter.GreaterEqNode;
+import org.apache.directory.shared.ldap.filter.LeafNode;
+import org.apache.directory.shared.ldap.filter.LessEqNode;
+import org.apache.directory.shared.ldap.filter.NotNode;
+import org.apache.directory.shared.ldap.filter.OrNode;
+import org.apache.directory.shared.ldap.filter.PresenceNode;
 import org.apache.directory.shared.ldap.filter.SearchScope;
-import org.apache.directory.shared.ldap.message.internal.ResultResponse;
+import org.apache.directory.shared.ldap.filter.SimpleNode;
+import org.apache.directory.shared.ldap.filter.SubstringNode;
 import org.apache.directory.shared.ldap.message.internal.InternalSearchRequest;
+import org.apache.directory.shared.ldap.message.internal.ResultResponse;
 import org.apache.directory.shared.ldap.message.internal.SearchResultDone;
 import org.apache.directory.shared.ldap.name.DN;
 
 
 /**
- * Lockable SearchRequest implementation.
+ * SearchRequest implementation.
  * 
  * @author <a href="mailto:dev@directory.apache.org"> Apache Directory Project</a>
  */
@@ -48,8 +80,17 @@ public class SearchRequestImpl extends AbstractAbandonableRequest implements Int
     /** Search base distinguished name */
     private DN baseDn;
 
+    /** A temporary storage for a terminal Filter */
+    private Filter terminalFilter;
+
     /** Search filter expression tree's root node */
-    private ExprNode filter;
+    private ExprNode filterNode;
+
+    /** The current filter. This is used while decoding a PDU */
+    private Filter currentFilter;
+
+    /** The SearchRequest TLV id */
+    private int tlvId;
 
     /** Search scope enumeration value */
     private SearchScope scope;
@@ -63,8 +104,8 @@ public class SearchRequestImpl extends AbstractAbandonableRequest implements Int
     /** Max seconds to wait for search to complete */
     private int timeLimit;
 
-    /** Alias dereferencing mode enumeration value */
-    private AliasDerefMode aliasDerefMode;
+    /** Alias dereferencing mode enumeration value (default to DEREF_ALWAYS) */
+    private AliasDerefMode aliasDerefMode = AliasDerefMode.DEREF_ALWAYS;
 
     /** Attributes to return */
     private List<String> attributes = new ArrayList<String>();
@@ -72,21 +113,323 @@ public class SearchRequestImpl extends AbstractAbandonableRequest implements Int
     /** The final result containing SearchResponseDone response */
     private SearchResultDone response;
 
+    /** The searchRequest length */
+    private int searchRequestLength;
+
+    /** The attributeDescriptionList length */
+    private int attributeDescriptionListLength;
+
 
     // ------------------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------------------
+    /**
+     * Creates a SearcRequest implementing object used to search the
+     * DIT.
+     */
+    public SearchRequestImpl()
+    {
+        super( -1, MessageTypeEnum.SEARCH_REQUEST );
+    }
+
 
     /**
      * Creates a Lockable SearcRequest implementing object used to search the
      * DIT.
      * 
-     * @param id
-     *            the sequential message identifier
+     * @param id the sequential message identifier
      */
     public SearchRequestImpl( final int id )
     {
         super( id, MessageTypeEnum.SEARCH_REQUEST );
+    }
+
+
+    /**
+     * Transform the Filter part of a SearchRequest to an ExprNode
+     * 
+     * @param codecFilter The filter to be transformed
+     * @return An ExprNode
+     */
+    private ExprNode transform( Filter filter )
+    {
+        if ( filter != null )
+        {
+            // Transform OR, AND or NOT leaves
+            if ( filter instanceof ConnectorFilter )
+            {
+                BranchNode branch = null;
+
+                if ( filter instanceof AndFilter )
+                {
+                    branch = new AndNode();
+                }
+                else if ( filter instanceof OrFilter )
+                {
+                    branch = new OrNode();
+                }
+                else if ( filter instanceof NotFilter )
+                {
+                    branch = new NotNode();
+                }
+
+                List<Filter> filtersSet = ( ( ConnectorFilter ) filter ).getFilterSet();
+
+                // Loop on all AND/OR children
+                if ( filtersSet != null )
+                {
+                    for ( Filter node : filtersSet )
+                    {
+                        branch.addNode( transform( node ) );
+                    }
+                }
+
+                return branch;
+            }
+            else
+            {
+                // Transform PRESENT or ATTRIBUTE_VALUE_ASSERTION
+                LeafNode branch = null;
+
+                if ( filter instanceof PresentFilter )
+                {
+                    branch = new PresenceNode( ( ( PresentFilter ) filter ).getAttributeDescription() );
+                }
+                else if ( filter instanceof AttributeValueAssertionFilter )
+                {
+                    AttributeValueAssertion ava = ( ( AttributeValueAssertionFilter ) filter ).getAssertion();
+
+                    // Transform =, >=, <=, ~= filters
+                    switch ( ( ( AttributeValueAssertionFilter ) filter ).getFilterType() )
+                    {
+                        case LdapConstants.EQUALITY_MATCH_FILTER:
+                            branch = new EqualityNode( ava.getAttributeDesc(), ava.getAssertionValue() );
+
+                            break;
+
+                        case LdapConstants.GREATER_OR_EQUAL_FILTER:
+                            branch = new GreaterEqNode( ava.getAttributeDesc(), ava.getAssertionValue() );
+
+                            break;
+
+                        case LdapConstants.LESS_OR_EQUAL_FILTER:
+                            branch = new LessEqNode( ava.getAttributeDesc(), ava.getAssertionValue() );
+
+                            break;
+
+                        case LdapConstants.APPROX_MATCH_FILTER:
+                            branch = new ApproximateNode( ava.getAttributeDesc(), ava.getAssertionValue() );
+
+                            break;
+                    }
+
+                }
+                else if ( filter instanceof SubstringFilter )
+                {
+                    // Transform Substring filters
+                    SubstringFilter substrFilter = ( SubstringFilter ) filter;
+                    String initialString = null;
+                    String finalString = null;
+                    List<String> anyString = null;
+
+                    if ( substrFilter.getInitialSubstrings() != null )
+                    {
+                        initialString = substrFilter.getInitialSubstrings();
+                    }
+
+                    if ( substrFilter.getFinalSubstrings() != null )
+                    {
+                        finalString = substrFilter.getFinalSubstrings();
+                    }
+
+                    if ( substrFilter.getAnySubstrings() != null )
+                    {
+                        anyString = new ArrayList<String>();
+
+                        for ( String any : substrFilter.getAnySubstrings() )
+                        {
+                            anyString.add( any );
+                        }
+                    }
+
+                    branch = new SubstringNode( anyString, substrFilter.getType(), initialString, finalString );
+                }
+                else if ( filter instanceof ExtensibleMatchFilter )
+                {
+                    // Transform Extensible Match Filter
+                    ExtensibleMatchFilter extFilter = ( ExtensibleMatchFilter ) filter;
+                    String matchingRule = null;
+
+                    Value<?> value = extFilter.getMatchValue();
+
+                    if ( extFilter.getMatchingRule() != null )
+                    {
+                        matchingRule = extFilter.getMatchingRule();
+                    }
+
+                    branch = new ExtensibleNode( extFilter.getType(), value, matchingRule, extFilter.isDnAttributes() );
+                }
+
+                return branch;
+            }
+        }
+        else
+        {
+            // We have found nothing to transform. Return null then.
+            return null;
+        }
+    }
+
+
+    /**
+     * Transform an ExprNode filter to a Filter
+     * 
+     * @param exprNode The filter to be transformed
+     * @return A filter
+     */
+    private static Filter transform( ExprNode exprNode )
+    {
+        if ( exprNode != null )
+        {
+            Filter filter = null;
+
+            // Transform OR, AND or NOT leaves
+            if ( exprNode instanceof BranchNode )
+            {
+                if ( exprNode instanceof AndNode )
+                {
+                    filter = new AndFilter();
+                }
+                else if ( exprNode instanceof OrNode )
+                {
+                    filter = new OrFilter();
+                }
+                else if ( exprNode instanceof NotNode )
+                {
+                    filter = new NotFilter();
+                }
+
+                List<ExprNode> children = ( ( BranchNode ) exprNode ).getChildren();
+
+                // Loop on all AND/OR children
+                if ( children != null )
+                {
+                    for ( ExprNode child : children )
+                    {
+                        try
+                        {
+                            ( ( ConnectorFilter ) filter ).addFilter( transform( child ) );
+                        }
+                        catch ( DecoderException de )
+                        {
+                            return null;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                if ( exprNode instanceof PresenceNode )
+                {
+                    // Transform Presence Node
+                    filter = new PresentFilter();
+                    ( ( PresentFilter ) filter ).setAttributeDescription( ( ( PresenceNode ) exprNode ).getAttribute() );
+                }
+                else if ( exprNode instanceof SimpleNode<?> )
+                {
+                    if ( exprNode instanceof EqualityNode<?> )
+                    {
+                        filter = new AttributeValueAssertionFilter( LdapConstants.EQUALITY_MATCH_FILTER );
+                        AttributeValueAssertion assertion = new AttributeValueAssertion();
+                        assertion.setAttributeDesc( ( ( EqualityNode<?> ) exprNode ).getAttribute() );
+                        assertion.setAssertionValue( ( ( EqualityNode<?> ) exprNode ).getValue() );
+                        ( ( AttributeValueAssertionFilter ) filter ).setAssertion( assertion );
+                    }
+                    else if ( exprNode instanceof GreaterEqNode<?> )
+                    {
+                        filter = new AttributeValueAssertionFilter( LdapConstants.GREATER_OR_EQUAL_FILTER );
+                        AttributeValueAssertion assertion = new AttributeValueAssertion();
+                        assertion.setAttributeDesc( ( ( GreaterEqNode<?> ) exprNode ).getAttribute() );
+                        assertion.setAssertionValue( ( ( GreaterEqNode<?> ) exprNode ).getValue() );
+                        ( ( AttributeValueAssertionFilter ) filter ).setAssertion( assertion );
+                    }
+                    else if ( exprNode instanceof LessEqNode<?> )
+                    {
+                        filter = new AttributeValueAssertionFilter( LdapConstants.LESS_OR_EQUAL_FILTER );
+                        AttributeValueAssertion assertion = new AttributeValueAssertion();
+                        assertion.setAttributeDesc( ( ( LessEqNode<?> ) exprNode ).getAttribute() );
+                        assertion.setAssertionValue( ( ( LessEqNode<?> ) exprNode ).getValue() );
+                        ( ( AttributeValueAssertionFilter ) filter ).setAssertion( assertion );
+                    }
+                    else if ( exprNode instanceof ApproximateNode<?> )
+                    {
+                        filter = new AttributeValueAssertionFilter( LdapConstants.APPROX_MATCH_FILTER );
+                        AttributeValueAssertion assertion = new AttributeValueAssertion();
+                        assertion.setAttributeDesc( ( ( ApproximateNode<?> ) exprNode ).getAttribute() );
+                        assertion.setAssertionValue( ( ( ApproximateNode<?> ) exprNode ).getValue() );
+                        ( ( AttributeValueAssertionFilter ) filter ).setAssertion( assertion );
+                    }
+                }
+                else if ( exprNode instanceof SubstringNode )
+                {
+                    // Transform Substring Nodes
+                    filter = new SubstringFilter();
+
+                    ( ( SubstringFilter ) filter ).setType( ( ( SubstringNode ) exprNode ).getAttribute() );
+                    String initialString = ( ( SubstringNode ) exprNode ).getInitial();
+                    String finalString = ( ( SubstringNode ) exprNode ).getFinal();
+                    List<String> anyStrings = ( ( SubstringNode ) exprNode ).getAny();
+
+                    if ( initialString != null )
+                    {
+                        ( ( SubstringFilter ) filter ).setInitialSubstrings( initialString );
+                    }
+
+                    if ( finalString != null )
+                    {
+                        ( ( SubstringFilter ) filter ).setFinalSubstrings( finalString );
+                    }
+
+                    if ( anyStrings != null )
+                    {
+                        for ( String any : anyStrings )
+                        {
+                            ( ( SubstringFilter ) filter ).addAnySubstrings( any );
+                        }
+                    }
+                }
+                else if ( exprNode instanceof ExtensibleNode )
+                {
+                    // Transform Extensible Node
+                    filter = new ExtensibleMatchFilter();
+
+                    String attribute = ( ( ExtensibleNode ) exprNode ).getAttribute();
+                    String matchingRule = ( ( ExtensibleNode ) exprNode ).getMatchingRuleId();
+                    boolean dnAttributes = ( ( ExtensibleNode ) exprNode ).hasDnAttributes();
+                    Value<?> value = ( ( ExtensibleNode ) exprNode ).getValue();
+
+                    if ( attribute != null )
+                    {
+                        ( ( ExtensibleMatchFilter ) filter ).setType( attribute );
+                    }
+
+                    if ( matchingRule != null )
+                    {
+                        ( ( ExtensibleMatchFilter ) filter ).setMatchingRule( matchingRule );
+                    }
+
+                    ( ( ExtensibleMatchFilter ) filter ).setMatchValue( value );
+                    ( ( ExtensibleMatchFilter ) filter ).setDnAttributes( dnAttributes );
+                }
+            }
+
+            return filter;
+        }
+        else
+        {
+            // We have found nothing to transform. Return null then.
+            return null;
+        }
     }
 
 
@@ -175,20 +518,184 @@ public class SearchRequestImpl extends AbstractAbandonableRequest implements Int
      */
     public ExprNode getFilter()
     {
-        return filter;
+        if ( filterNode == null )
+        {
+            filterNode = transform( currentFilter );
+        }
+
+        return filterNode;
     }
 
 
     /**
-     * Sets the search filter associated with this search request.
+     * Get the terminal filter
      * 
-     * @param filter
-     *            the expression node for the root of the filter expression
-     *            tree.
+     * @return Returns the terminal filter.
+     */
+    public Filter getTerminalFilter()
+    {
+        return terminalFilter;
+    }
+
+
+    /**
+     * Set the terminal filter
+     * 
+     * @param terminalFilter the teminalFilter.
+     */
+    public void setTerminalFilter( Filter terminalFilter )
+    {
+        this.terminalFilter = terminalFilter;
+    }
+
+
+    /**
+     * {@inheritDoc}
      */
     public void setFilter( ExprNode filter )
     {
-        this.filter = filter;
+        this.filterNode = filter;
+    }
+
+
+    /**
+     * Set the current filter
+     * 
+     * @param filter The filter to set.
+     */
+    public void setCurrentFilter( Filter filter )
+    {
+        currentFilter = filter;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setFilter( String filter ) throws LdapException
+    {
+        try
+        {
+            filterNode = FilterParser.parse( filter );
+            this.currentFilter = transform( filterNode );
+        }
+        catch ( ParseException pe )
+        {
+            String msg = "The filter" + filter + " is invalid.";
+            throw new LdapProtocolErrorException( msg );
+        }
+    }
+
+
+    /**
+     * Get the parent Filter, if any
+     * 
+     * @return The parent filter
+     */
+    public Filter getCurrentFilter()
+    {
+        return currentFilter;
+    }
+
+
+    /**
+     * Add a current filter. We have two cases :
+     * - there is no previous current filter : the filter
+     * is the top level filter
+     * - there is a previous current filter : the filter is added 
+     * to the currentFilter set, and the current filter is changed
+     * 
+     * In any case, the previous current filter will always be a
+     * ConnectorFilter when this method is called.
+     * 
+     * @param localFilter The filter to set.
+     */
+    public void addCurrentFilter( Filter localFilter ) throws DecoderException
+    {
+        if ( currentFilter != null )
+        {
+            // Ok, we have a parent. The new Filter will be added to
+            // this parent, and will become the currentFilter if it's a connector.
+            ( ( ConnectorFilter ) currentFilter ).addFilter( localFilter );
+            localFilter.setParent( currentFilter, currentFilter.getTlvId() );
+
+            if ( localFilter instanceof ConnectorFilter )
+            {
+                currentFilter = localFilter;
+            }
+        }
+        else
+        {
+            // No parent. This Filter will become the root.
+            currentFilter = localFilter;
+            currentFilter.setParent( null, tlvId );
+        }
+    }
+
+
+    /**
+     * This method is used to clear the filter's stack for terminated elements. An element
+     * is considered as terminated either if :
+     *  - it's a final element (ie an element which cannot contains a Filter)
+     *  - its current length equals its expected length.
+     * 
+     * @param container The container being decoded
+     */
+    public void unstackFilters( IAsn1Container container )
+    {
+        LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
+
+        TLV tlv = ldapMessageContainer.getCurrentTLV();
+        TLV localParent = tlv.getParent();
+        Filter localFilter = terminalFilter;
+
+        // The parent has been completed, so fold it
+        while ( ( localParent != null ) && ( localParent.getExpectedLength() == 0 ) )
+        {
+            int parentTlvId = localFilter.getParent() != null ? localFilter.getParent().getTlvId() : localFilter
+                .getParentTlvId();
+
+            if ( localParent.getId() != parentTlvId )
+            {
+                localParent = localParent.getParent();
+
+            }
+            else
+            {
+                Filter filterParent = localFilter.getParent();
+
+                // We have a special case with PresentFilter, which has not been 
+                // pushed on the stack, so we need to get its parent's parent
+                if ( localFilter instanceof PresentFilter )
+                {
+                    if ( filterParent == null )
+                    {
+                        // We don't have parent, get out
+                        break;
+                    }
+
+                    filterParent = filterParent.getParent();
+                }
+                else if ( filterParent instanceof Filter )
+                {
+                    filterParent = filterParent.getParent();
+                }
+
+                if ( filterParent instanceof Filter )
+                {
+                    // The parent is a filter ; it will become the new currentFilter
+                    // and we will loop again. 
+                    currentFilter = ( Filter ) filterParent;
+                    localFilter = currentFilter;
+                    localParent = localParent.getParent();
+                }
+                else
+                {
+                    // We can stop the recursion, we have reached the searchResult Object
+                    break;
+                }
+            }
+        }
     }
 
 
@@ -218,8 +725,7 @@ public class SearchRequestImpl extends AbstractAbandonableRequest implements Int
     /**
      * Sets the search scope parameter enumeration.
      * 
-     * @param scope
-     *            the scope enumeration parameter.
+     * @param scope the scope enumeration parameter.
      */
     public void setScope( SearchScope scope )
     {
@@ -247,8 +753,7 @@ public class SearchRequestImpl extends AbstractAbandonableRequest implements Int
      * that no client-requested sizelimit restrictions are in effect for the
      * search. Servers may enforce a maximum number of entries to return.
      * 
-     * @param entriesMax
-     *            maximum search result entries to return.
+     * @param entriesMax maximum search result entries to return.
      */
     public void setSizeLimit( long entriesMax )
     {
@@ -274,8 +779,7 @@ public class SearchRequestImpl extends AbstractAbandonableRequest implements Int
      * for a search. A value of 0 in this field indicates that no client-
      * requested timelimit restrictions are in effect for the search.
      * 
-     * @param secondsMax
-     *            the search time limit in seconds.
+     * @param secondsMax the search time limit in seconds.
      */
     public void setTimeLimit( int secondsMax )
     {
@@ -303,8 +807,7 @@ public class SearchRequestImpl extends AbstractAbandonableRequest implements Int
      * causes only attribute types (no values) to be returned. Setting this
      * field to FALSE causes both attribute types and values to be returned.
      * 
-     * @param typesOnly
-     *            true for only types, false for types and values.
+     * @param typesOnly true for only types, false for types and values.
      */
     public void setTypesOnly( boolean typesOnly )
     {
@@ -313,22 +816,21 @@ public class SearchRequestImpl extends AbstractAbandonableRequest implements Int
 
 
     /**
-     * Adds an attribute to the set of entry attributes to return.
-     * 
-     * @param attribute
-     *            the attribute description or identifier.
+     * {@inheritDoc}
      */
-    public void addAttribute( String attribute )
+    public void addAttributes( String... attributes )
     {
-        attributes.add( attribute );
+        for ( String attribute : attributes )
+        {
+            this.attributes.add( attribute );
+        }
     }
 
 
     /**
      * Removes an attribute to the set of entry attributes to return.
      * 
-     * @param attribute
-     *            the attribute description or identifier.
+     * @param attribute the attribute description or identifier.
      */
     public void removeAttribute( String attribute )
     {
@@ -353,21 +855,72 @@ public class SearchRequestImpl extends AbstractAbandonableRequest implements Int
 
 
     /**
+     * Stores the encoded length for the SearchRequest
+     * @param searchRequestLength The encoded length
+     */
+    /*No qualifier*/void setSearchRequestLength( int searchRequestLength )
+    {
+        this.searchRequestLength = searchRequestLength;
+    }
+
+
+    /**
+     * @return The encoded SearchRequest's length
+     */
+    /*No qualifier*/int getSearchRequestLength()
+    {
+        return searchRequestLength;
+    }
+
+
+    /**
+     * Stores the encoded length for the list of attributes
+     * @param attributeDescriptionListLength The encoded length of the attributes
+     */
+    /*No qualifier*/void setAttributeDescriptionListLength( int attributeDescriptionListLength )
+    {
+        this.attributeDescriptionListLength = attributeDescriptionListLength;
+    }
+
+
+    /**
+     * @return The encoded SearchRequest's attributes length
+     */
+    /*No qualifier*/int getAttributeDescriptionListLength()
+    {
+        return attributeDescriptionListLength;
+    }
+
+
+    /**
+     * Set the SearchRequest PDU TLV's Id
+     * @param tlvId The TLV id
+     */
+    public void setTlvId( int tlvId )
+    {
+        this.tlvId = tlvId;
+    }
+
+
+    /**
      * {@inheritDoc}
      */
     @Override
     public int hashCode()
     {
         int hash = 37;
+
         if ( baseDn != null )
         {
             hash = hash * 17 + baseDn.hashCode();
         }
+
         hash = hash * 17 + aliasDerefMode.hashCode();
         hash = hash * 17 + scope.hashCode();
         hash = hash * 17 + Long.valueOf( sizeLimit ).hashCode();
         hash = hash * 17 + timeLimit;
         hash = hash * 17 + ( typesOnly ? 0 : 1 );
+
         if ( attributes != null )
         {
             hash = hash * 17 + attributes.size();
@@ -378,9 +931,10 @@ public class SearchRequestImpl extends AbstractAbandonableRequest implements Int
                 hash = hash + attr.hashCode();
             }
         }
+
         BranchNormalizedVisitor visitor = new BranchNormalizedVisitor();
-        filter.accept( visitor );
-        hash = hash * 17 + filter.toString().hashCode();
+        filterNode.accept( visitor );
+        hash = hash * 17 + currentFilter.toString().hashCode();
         hash = hash * 17 + super.hashCode();
 
         return hash;
@@ -395,8 +949,7 @@ public class SearchRequestImpl extends AbstractAbandonableRequest implements Int
      * representation which is comparable. For the time being this is a very
      * costly operation.
      * 
-     * @param obj
-     *            the object to check for equality to this SearchRequest
+     * @param obj the object to check for equality to this SearchRequest
      * @return true if the obj is a SearchRequest and equals this SearchRequest,
      *         false otherwise
      */
@@ -474,9 +1027,9 @@ public class SearchRequestImpl extends AbstractAbandonableRequest implements Int
 
         BranchNormalizedVisitor visitor = new BranchNormalizedVisitor();
         req.getFilter().accept( visitor );
-        filter.accept( visitor );
+        filterNode.accept( visitor );
 
-        String myFilterString = filter.toString();
+        String myFilterString = currentFilter.toString();
         String reqFilterString = req.getFilter().toString();
 
         return myFilterString.equals( reqFilterString );
@@ -493,10 +1046,10 @@ public class SearchRequestImpl extends AbstractAbandonableRequest implements Int
         sb.append( "    SearchRequest\n" );
         sb.append( "        baseDn : '" ).append( baseDn ).append( "'\n" );
 
-        if ( filter != null )
+        if ( currentFilter != null )
         {
             sb.append( "        filter : '" );
-            sb.append( filter.toString() );
+            sb.append( currentFilter.toString() );
             sb.append( "'\n" );
         }
 
@@ -549,21 +1102,21 @@ public class SearchRequestImpl extends AbstractAbandonableRequest implements Int
 
         sb.append( "        Deref Aliases : " );
 
-        switch ( aliasDerefMode.getValue() )
+        switch ( aliasDerefMode )
         {
-            case LdapConstants.NEVER_DEREF_ALIASES:
+            case NEVER_DEREF_ALIASES:
                 sb.append( "never Deref Aliases" );
                 break;
 
-            case LdapConstants.DEREF_IN_SEARCHING:
+            case DEREF_IN_SEARCHING:
                 sb.append( "deref In Searching" );
                 break;
 
-            case LdapConstants.DEREF_FINDING_BASE_OBJ:
+            case DEREF_FINDING_BASE_OBJ:
                 sb.append( "deref Finding Base Obj" );
                 break;
 
-            case LdapConstants.DEREF_ALWAYS:
+            case DEREF_ALWAYS:
                 sb.append( "deref Always" );
                 break;
         }
@@ -594,6 +1147,9 @@ public class SearchRequestImpl extends AbstractAbandonableRequest implements Int
         }
 
         sb.append( '\n' );
+
+        // The controls
+        sb.append( super.toString() );
 
         return sb.toString();
     }

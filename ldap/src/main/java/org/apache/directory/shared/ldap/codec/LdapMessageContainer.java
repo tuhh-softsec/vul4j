@@ -22,7 +22,6 @@ package org.apache.directory.shared.ldap.codec;
 
 import org.apache.directory.shared.asn1.ber.AbstractContainer;
 import org.apache.directory.shared.ldap.codec.controls.AbstractControl;
-import org.apache.directory.shared.ldap.codec.search.SearchRequestCodec;
 import org.apache.directory.shared.ldap.message.internal.AddResponse;
 import org.apache.directory.shared.ldap.message.internal.BindResponse;
 import org.apache.directory.shared.ldap.message.internal.CompareResponse;
@@ -38,6 +37,7 @@ import org.apache.directory.shared.ldap.message.internal.InternalExtendedRequest
 import org.apache.directory.shared.ldap.message.internal.InternalMessage;
 import org.apache.directory.shared.ldap.message.internal.InternalModifyDnRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalModifyRequest;
+import org.apache.directory.shared.ldap.message.internal.InternalSearchRequest;
 import org.apache.directory.shared.ldap.message.internal.InternalUnbindRequest;
 import org.apache.directory.shared.ldap.message.internal.ModifyDnResponse;
 import org.apache.directory.shared.ldap.message.internal.ModifyResponse;
@@ -286,9 +286,9 @@ public class LdapMessageContainer extends AbstractContainer
     /**
      * @return Returns the SearchRequest stored in the container
      */
-    public SearchRequestCodec getSearchRequest()
+    public InternalSearchRequest getSearchRequest()
     {
-        return ( SearchRequestCodec ) ldapMessage;
+        return ( InternalSearchRequest ) internalMessage;
     }
 
 

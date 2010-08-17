@@ -26,8 +26,9 @@ import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
-import org.apache.directory.shared.ldap.codec.search.SearchRequestCodec;
 import org.apache.directory.shared.ldap.codec.search.SubstringFilter;
+import org.apache.directory.shared.ldap.message.SearchRequestImpl;
+import org.apache.directory.shared.ldap.message.internal.InternalSearchRequest;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,10 +47,12 @@ public class StoreFinalAction extends GrammarAction
     /** Speedup for logs */
     private static final boolean IS_DEBUG = log.isDebugEnabled();
 
+
     public StoreFinalAction()
     {
         super( "Store a final value" );
     }
+
 
     /**
      * The initialization action
@@ -57,12 +60,13 @@ public class StoreFinalAction extends GrammarAction
     public void action( IAsn1Container container ) throws DecoderException
     {
         LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-        SearchRequestCodec searchRequest = ldapMessageContainer.getSearchRequest();
+        InternalSearchRequest searchRequest = ldapMessageContainer.getSearchRequest();
 
         TLV tlv = ldapMessageContainer.getCurrentTLV();
 
         // Store the value.
-        SubstringFilter substringFilter = ( SubstringFilter ) searchRequest.getTerminalFilter();
+        SubstringFilter substringFilter = ( SubstringFilter ) ( ( SearchRequestImpl ) searchRequest )
+            .getTerminalFilter();
 
         if ( tlv.getLength() == 0 )
         {
@@ -76,7 +80,7 @@ public class StoreFinalAction extends GrammarAction
 
         // We now have to get back to the nearest filter which is
         // not terminal.
-        searchRequest.unstackFilters( container );
+        ( ( SearchRequestImpl ) searchRequest ).unstackFilters( container );
 
         if ( IS_DEBUG )
         {

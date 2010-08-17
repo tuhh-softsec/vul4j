@@ -28,7 +28,8 @@ import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.search.AndFilter;
 import org.apache.directory.shared.ldap.codec.search.Filter;
-import org.apache.directory.shared.ldap.codec.search.SearchRequestCodec;
+import org.apache.directory.shared.ldap.message.SearchRequestImpl;
+import org.apache.directory.shared.ldap.message.internal.InternalSearchRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,10 +47,12 @@ public class InitAndFilterAction extends GrammarAction
     /** Speedup for logs */
     private static final boolean IS_DEBUG = log.isDebugEnabled();
 
+
     public InitAndFilterAction()
     {
         super( "Initialize AND filter" );
     }
+
 
     /**
      * The initialization action
@@ -57,7 +60,7 @@ public class InitAndFilterAction extends GrammarAction
     public void action( IAsn1Container container ) throws DecoderException
     {
         LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-        
+
         TLV tlv = ldapMessageContainer.getCurrentTLV();
 
         if ( tlv.getLength() == 0 )
@@ -67,14 +70,14 @@ public class InitAndFilterAction extends GrammarAction
             throw new DecoderException( msg );
         }
 
-        SearchRequestCodec searchRequest = ldapMessageContainer.getSearchRequest();
+        InternalSearchRequest searchRequest = ldapMessageContainer.getSearchRequest();
 
         // We can allocate the SearchRequest
         Filter andFilter = new AndFilter( ldapMessageContainer.getTlvId() );
 
         // Set the filter
-        searchRequest.addCurrentFilter( andFilter );
-        
+        ( ( SearchRequestImpl ) searchRequest ).addCurrentFilter( andFilter );
+
         if ( IS_DEBUG )
         {
             log.debug( "Initialize AND filter" );

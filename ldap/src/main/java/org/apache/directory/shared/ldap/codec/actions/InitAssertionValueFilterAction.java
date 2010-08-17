@@ -27,10 +27,11 @@ import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.ldap.codec.AttributeValueAssertion;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.search.AttributeValueAssertionFilter;
-import org.apache.directory.shared.ldap.codec.search.SearchRequestCodec;
 import org.apache.directory.shared.ldap.entry.BinaryValue;
 import org.apache.directory.shared.ldap.entry.StringValue;
 import org.apache.directory.shared.ldap.entry.Value;
+import org.apache.directory.shared.ldap.message.SearchRequestImpl;
+import org.apache.directory.shared.ldap.message.internal.InternalSearchRequest;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,10 +50,12 @@ public class InitAssertionValueFilterAction extends GrammarAction
     /** Speedup for logs */
     private static final boolean IS_DEBUG = log.isDebugEnabled();
 
+
     public InitAssertionValueFilterAction()
     {
         super( "Initialize Assertion Value filter" );
     }
+
 
     /**
      * The initialization action
@@ -60,7 +63,7 @@ public class InitAssertionValueFilterAction extends GrammarAction
     public void action( IAsn1Container container ) throws DecoderException
     {
         LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-        SearchRequestCodec searchRequest = ldapMessageContainer.getSearchRequest();
+        InternalSearchRequest searchRequest = ldapMessageContainer.getSearchRequest();
 
         TLV tlv = ldapMessageContainer.getCurrentTLV();
 
@@ -76,7 +79,7 @@ public class InitAssertionValueFilterAction extends GrammarAction
             assertionValue = new BinaryValue( StringTools.EMPTY_BYTES );
         }
 
-        AttributeValueAssertionFilter terminalFilter = ( AttributeValueAssertionFilter ) searchRequest
+        AttributeValueAssertionFilter terminalFilter = ( AttributeValueAssertionFilter ) ( ( SearchRequestImpl ) searchRequest )
             .getTerminalFilter();
         AttributeValueAssertion assertion = terminalFilter.getAssertion();
 
@@ -90,7 +93,7 @@ public class InitAssertionValueFilterAction extends GrammarAction
             {
                 assertionValue = new BinaryValue( StringTools.EMPTY_BYTES );
             }
-            
+
             assertion.setAssertionValue( assertionValue );
         }
         else
@@ -103,13 +106,13 @@ public class InitAssertionValueFilterAction extends GrammarAction
             {
                 assertionValue = new StringValue( "" );
             }
-            
-            assertion.setAssertionValue(assertionValue );
+
+            assertion.setAssertionValue( assertionValue );
         }
 
         // We now have to get back to the nearest filter which is
         // not terminal.
-        searchRequest.unstackFilters( container );
+        ( ( SearchRequestImpl ) searchRequest ).unstackFilters( container );
 
         if ( IS_DEBUG )
         {

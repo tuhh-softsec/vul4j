@@ -33,9 +33,7 @@ import org.apache.directory.shared.ldap.codec.search.Filter;
 import org.apache.directory.shared.ldap.codec.search.NotFilter;
 import org.apache.directory.shared.ldap.codec.search.OrFilter;
 import org.apache.directory.shared.ldap.codec.search.PresentFilter;
-import org.apache.directory.shared.ldap.codec.search.SearchRequestCodec;
 import org.apache.directory.shared.ldap.codec.search.SubstringFilter;
-import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.filter.AndNode;
 import org.apache.directory.shared.ldap.filter.ApproximateNode;
@@ -51,8 +49,6 @@ import org.apache.directory.shared.ldap.filter.OrNode;
 import org.apache.directory.shared.ldap.filter.PresenceNode;
 import org.apache.directory.shared.ldap.filter.SimpleNode;
 import org.apache.directory.shared.ldap.filter.SubstringNode;
-import org.apache.directory.shared.ldap.message.AliasDerefMode;
-import org.apache.directory.shared.ldap.message.SearchRequestImpl;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.message.internal.InternalMessage;
 import org.apache.directory.shared.ldap.schema.SchemaManager;
@@ -364,78 +360,6 @@ public class LdapTransformer
 
 
     /**
-     * Transform a SearchRequest message from a CodecMessage to a InternalMessage
-     * 
-     * @param searchRequest The message to transform
-     * @param messageId The message Id
-     * @return A Internal SearchRequestImpl
-     */
-    private static InternalMessage transformSearchRequest( SearchRequestCodec searchRequest, int messageId )
-    {
-        SearchRequestImpl internalMessage = new SearchRequestImpl( messageId );
-
-        // Codec : DN baseObject -> Internal : String baseDn
-        internalMessage.setBase( searchRequest.getBaseObject() );
-
-        // Codec : int scope -> Internal : ScopeEnum scope
-        internalMessage.setScope( searchRequest.getScope() );
-
-        // Codec : int derefAliases -> Internal : AliasDerefMode derefAliases
-        switch ( searchRequest.getDerefAliases() )
-        {
-            case LdapConstants.DEREF_ALWAYS:
-                internalMessage.setDerefAliases( AliasDerefMode.DEREF_ALWAYS );
-                break;
-
-            case LdapConstants.DEREF_FINDING_BASE_OBJ:
-                internalMessage.setDerefAliases( AliasDerefMode.DEREF_FINDING_BASE_OBJ );
-                break;
-
-            case LdapConstants.DEREF_IN_SEARCHING:
-                internalMessage.setDerefAliases( AliasDerefMode.DEREF_IN_SEARCHING );
-                break;
-
-            case LdapConstants.NEVER_DEREF_ALIASES:
-                internalMessage.setDerefAliases( AliasDerefMode.NEVER_DEREF_ALIASES );
-                break;
-        }
-
-        // Codec : int sizeLimit -> Internal : int sizeLimit
-        internalMessage.setSizeLimit( searchRequest.getSizeLimit() );
-
-        // Codec : int timeLimit -> Internal : int timeLimit
-        internalMessage.setTimeLimit( searchRequest.getTimeLimit() );
-
-        // Codec : boolean typesOnly -> Internal : boolean typesOnly
-        internalMessage.setTypesOnly( searchRequest.isTypesOnly() );
-
-        // Codec : Filter filter -> Internal : ExprNode filter
-        Filter codecFilter = searchRequest.getFilter();
-
-        internalMessage.setFilter( transformFilter( codecFilter ) );
-
-        // Codec : ArrayList attributes -> Internal : ArrayList attributes
-        if ( searchRequest.getAttributes() != null )
-        {
-            List<EntryAttribute> attributes = searchRequest.getAttributes();
-
-            if ( ( attributes != null ) && ( attributes.size() != 0 ) )
-            {
-                for ( EntryAttribute attribute : attributes )
-                {
-                    if ( attribute != null )
-                    {
-                        internalMessage.addAttribute( attribute.getId() );
-                    }
-                }
-            }
-        }
-
-        return internalMessage;
-    }
-
-
-    /**
      * Transform the Codec message to a internal message.
      * 
      * @param obj the object to transform
@@ -464,9 +388,6 @@ public class LdapTransformer
         switch ( messageType )
         {
             case SEARCH_REQUEST:
-                internalMessage = transformSearchRequest( ( SearchRequestCodec ) codecMessage, messageId );
-                break;
-
             case MODIFY_REQUEST:
             case MODIFYDN_REQUEST:
             case EXTENDED_REQUEST:

@@ -28,7 +28,8 @@ import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.search.Filter;
 import org.apache.directory.shared.ldap.codec.search.OrFilter;
-import org.apache.directory.shared.ldap.codec.search.SearchRequestCodec;
+import org.apache.directory.shared.ldap.message.SearchRequestImpl;
+import org.apache.directory.shared.ldap.message.internal.InternalSearchRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,10 +47,12 @@ public class InitOrFilterAction extends GrammarAction
     /** Speedup for logs */
     private static final boolean IS_DEBUG = log.isDebugEnabled();
 
+
     public InitOrFilterAction()
     {
         super( "Initialize OR filter" );
     }
+
 
     /**
      * The initialization action
@@ -67,14 +70,14 @@ public class InitOrFilterAction extends GrammarAction
             throw new DecoderException( msg );
         }
 
-        SearchRequestCodec searchRequest = ldapMessageContainer.getSearchRequest();
+        InternalSearchRequest searchRequest = ldapMessageContainer.getSearchRequest();
 
         // We can allocate the SearchRequest
         Filter orFilter = new OrFilter( ldapMessageContainer.getTlvId() );
 
         // Set the filter
-        searchRequest.addCurrentFilter( orFilter );
-        
+        ( ( SearchRequestImpl ) searchRequest ).addCurrentFilter( orFilter );
+
         if ( IS_DEBUG )
         {
             log.debug( "Initialize OR filter" );

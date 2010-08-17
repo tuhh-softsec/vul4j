@@ -32,8 +32,6 @@ import javax.naming.directory.Attributes;
 import javax.naming.directory.BasicAttribute;
 import javax.naming.directory.BasicAttributes;
 import javax.naming.directory.InvalidAttributeIdentifierException;
-import javax.naming.ldap.ExtendedRequest;
-import javax.naming.ldap.ExtendedResponse;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.directory.shared.i18n.I18n;
@@ -45,7 +43,6 @@ import org.apache.directory.shared.ldap.entry.Modification;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.exception.LdapInvalidAttributeTypeException;
-import org.apache.directory.shared.ldap.message.internal.InternalExtendedRequest;
 import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.MatchingRule;
@@ -1325,59 +1322,5 @@ public class AttributeUtils
         {
             return null;
         }
-    }
-
-
-    public static ExtendedRequest toJndiExtendedRequest( final InternalExtendedRequest request )
-    {
-        class JndiExtendedRequest implements ExtendedRequest
-        {
-            public ExtendedResponse createExtendedResponse( String id, byte[] berValue, int offset, int length )
-                throws NamingException
-            {
-                return toJndiExtendedResponse( request );
-            }
-
-
-            public byte[] getEncodedValue()
-            {
-                return request.getRequestValue();
-            }
-
-
-            public String getID()
-            {
-                return request.getRequestName();
-            }
-
-        }
-
-        return new JndiExtendedRequest();
-    }
-
-
-    /**
-     * TODO toJndiExtendedResponse. This is NOT correct ATM
-     *
-     * @param request
-     * @return
-     */
-    public static ExtendedResponse toJndiExtendedResponse( final InternalExtendedRequest request )
-    {
-        class JndiExtendedResponse implements ExtendedResponse
-        {
-            public byte[] getEncodedValue()
-            {
-                return request.getRequestValue();
-            }
-
-
-            public String getID()
-            {
-                return request.getRequestName();
-            }
-        }
-
-        return new JndiExtendedResponse();
     }
 }

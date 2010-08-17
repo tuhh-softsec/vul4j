@@ -20,7 +20,9 @@
 package org.apache.directory.shared.ldap.codec.search;
 
 
-import org.apache.directory.shared.asn1.AbstractAsn1Object;
+import java.nio.ByteBuffer;
+
+import org.apache.directory.shared.asn1.codec.EncoderException;
 
 
 /**
@@ -30,14 +32,24 @@ import org.apache.directory.shared.asn1.AbstractAsn1Object;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public abstract class Filter extends AbstractAsn1Object
+public abstract class Filter
 {
+    /** The identifier of the associated TLV */
+    int tlvId;
+
+    /** The parent TLV id */
+    protected int parentTlvId;
+
+    /** The parent Filter */
+    protected Filter parent;
+
+
     /**
      * The constructor.
      */
     public Filter( int tlvId )
     {
-        super( tlvId );
+        this.tlvId = tlvId;
     }
 
 
@@ -46,6 +58,59 @@ public abstract class Filter extends AbstractAsn1Object
      */
     public Filter()
     {
-        super();
     }
+
+
+    /**
+     * Get the parent
+     * 
+     * @return Returns the parent.
+     */
+    public Filter getParent()
+    {
+        return parent;
+    }
+
+
+    /**
+     * Get the parent
+     * 
+     * @return Returns the parent.
+     */
+    public int getParentTlvId()
+    {
+        return parentTlvId;
+    }
+
+
+    /**
+     * Set the parent
+     * 
+     * @param parent The parent to set.
+     */
+    public void setParent( Filter parent, int parentTlvId )
+    {
+        this.parent = parent;
+        this.parentTlvId = parentTlvId;
+    }
+
+
+    public int getTlvId()
+    {
+        return tlvId;
+    }
+
+
+    /**
+     * Compute the Filter length 
+     */
+    public abstract int computeLength();
+
+
+    /**
+     * Encode the Filter message to a PDU. 
+     * @param buffer The buffer where to put the PDU
+     * @return The PDU.
+     */
+    public abstract ByteBuffer encode( ByteBuffer buffer ) throws EncoderException;
 }

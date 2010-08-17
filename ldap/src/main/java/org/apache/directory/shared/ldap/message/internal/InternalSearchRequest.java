@@ -23,6 +23,7 @@ package org.apache.directory.shared.ldap.message.internal;
 import java.util.List;
 
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
+import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.filter.ExprNode;
 import org.apache.directory.shared.ldap.filter.SearchScope;
 import org.apache.directory.shared.ldap.message.AliasDerefMode;
@@ -47,12 +48,7 @@ public interface InternalSearchRequest extends ManyReplyRequest, InternalAbandon
      * @see #getResponseTypes()
      */
     MessageTypeEnum[] RESPONSE_TYPES =
-        { 
-        SearchResultDone.TYPE, 
-        SearchResultEntry.TYPE, 
-        SearchResultReference.TYPE, 
-        ExtendedResponse.TYPE 
-        };
+        { SearchResultDone.TYPE, SearchResultEntry.TYPE, SearchResultReference.TYPE, ExtendedResponse.TYPE };
 
 
     /**
@@ -107,8 +103,7 @@ public interface InternalSearchRequest extends ManyReplyRequest, InternalAbandon
     /**
      * Sets the alias handling parameter.
      * 
-     * @param aliasDerefAliases
-     *            the alias handling parameter enumeration.
+     * @param aliasDerefAliases the alias handling parameter enumeration.
      */
     void setDerefAliases( AliasDerefMode aliasDerefAliases );
 
@@ -130,8 +125,7 @@ public interface InternalSearchRequest extends ManyReplyRequest, InternalAbandon
      * that no client-requested sizelimit restrictions are in effect for the
      * search. Servers may enforce a maximum number of entries to return.
      * 
-     * @param entriesMax
-     *            maximum search result entries to return.
+     * @param entriesMax maximum search result entries to return.
      */
     void setSizeLimit( long entriesMax );
 
@@ -151,8 +145,7 @@ public interface InternalSearchRequest extends ManyReplyRequest, InternalAbandon
      * for a search. A value of 0 in this field indicates that no client-
      * requested timelimit restrictions are in effect for the search.
      * 
-     * @param secondsMax
-     *            the search time limit in seconds.
+     * @param secondsMax the search time limit in seconds.
      */
     void setTimeLimit( int secondsMax );
 
@@ -174,8 +167,7 @@ public interface InternalSearchRequest extends ManyReplyRequest, InternalAbandon
      * causes only attribute types (no values) to be returned. Setting this
      * field to FALSE causes both attribute types and values to be returned.
      * 
-     * @param typesOnly
-     *            true for only types, false for types and values.
+     * @param typesOnly true for only types, false for types and values.
      */
     void setTypesOnly( boolean typesOnly );
 
@@ -191,11 +183,17 @@ public interface InternalSearchRequest extends ManyReplyRequest, InternalAbandon
     /**
      * Sets the search filter associated with this search request.
      * 
-     * @param filter
-     *            the expression node for the root of the filter expression
-     *            tree.
+     * @param filter the expression node for the root of the filter expression tree.
      */
     void setFilter( ExprNode filter );
+
+
+    /**
+     * Sets the search filter associated with this search request.
+     * 
+     * @param filter the expression node for the root of the filter expression tree.
+     */
+    public void setFilter( String filter ) throws LdapException;
 
 
     /**
@@ -224,19 +222,17 @@ public interface InternalSearchRequest extends ManyReplyRequest, InternalAbandon
 
 
     /**
-     * Adds an attribute to the set of entry attributes to return.
+     * Adds some attributes to the set of entry attributes to return.
      * 
-     * @param attribute
-     *            the attribute description or identifier.
+     * @param attributes the attributes description or identifier.
      */
-    void addAttribute( String attribute );
+    void addAttributes( String... attributes );
 
 
     /**
      * Removes an attribute to the set of entry attributes to return.
      * 
-     * @param attribute
-     *            the attribute description or identifier.
+     * @param attribute the attribute description or identifier.
      */
     void removeAttribute( String attribute );
 }

@@ -27,8 +27,9 @@ import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.search.Filter;
-import org.apache.directory.shared.ldap.codec.search.SearchRequestCodec;
 import org.apache.directory.shared.ldap.codec.search.SubstringFilter;
+import org.apache.directory.shared.ldap.message.SearchRequestImpl;
+import org.apache.directory.shared.ldap.message.internal.InternalSearchRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,10 +47,12 @@ public class InitSubstringsFilterAction extends GrammarAction
     /** Speedup for logs */
     private static final boolean IS_DEBUG = log.isDebugEnabled();
 
+
     public InitSubstringsFilterAction()
     {
         super( "Initialize Substrings filter" );
     }
+
 
     /**
      * The initialization action
@@ -57,7 +60,7 @@ public class InitSubstringsFilterAction extends GrammarAction
     public void action( IAsn1Container container ) throws DecoderException
     {
         LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-        SearchRequestCodec searchRequest = ldapMessageContainer.getSearchRequest();
+        InternalSearchRequest searchRequest = ldapMessageContainer.getSearchRequest();
 
         TLV tlv = ldapMessageContainer.getCurrentTLV();
 
@@ -73,15 +76,9 @@ public class InitSubstringsFilterAction extends GrammarAction
         // We can allocate the SearchRequest
         Filter substringFilter = new SubstringFilter( ldapMessageContainer.getTlvId() );
 
-        searchRequest.addCurrentFilter( substringFilter );
-        searchRequest.setTerminalFilter( substringFilter );
+        ( ( SearchRequestImpl ) searchRequest ).addCurrentFilter( substringFilter );
+        ( ( SearchRequestImpl ) searchRequest ).setTerminalFilter( substringFilter );
 
-        // As this is a new Constructed object, we have to init its
-        // length
-
-        substringFilter.setExpectedLength( expectedLength );
-        substringFilter.setCurrentLength( 0 );
-        
         if ( IS_DEBUG )
         {
             log.debug( "Initialize Substrings filter" );
