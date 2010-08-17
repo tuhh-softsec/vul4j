@@ -29,8 +29,6 @@ import org.apache.directory.shared.asn1.util.IntegerDecoder;
 import org.apache.directory.shared.asn1.util.IntegerDecoderException;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
-import org.apache.directory.shared.ldap.codec.LdapResponseCodec;
-import org.apache.directory.shared.ldap.codec.LdapResultCodec;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.message.internal.LdapResult;
 import org.apache.directory.shared.ldap.message.internal.ResultResponse;
@@ -142,18 +140,8 @@ public class ResultCodeAction extends GrammarAction
             log.debug( "The result code is set to " + resultCode );
         }
 
-        if ( ldapMessageContainer.isInternal() )
-        {
-            ResultResponse response = ( ResultResponse ) ldapMessageContainer.getInternalMessage();
-            LdapResult ldapResult = response.getLdapResult();
-            ldapResult.setResultCode( resultCode );
-        }
-        else
-        {
-            LdapResponseCodec response = ldapMessageContainer.getLdapResponse();
-            LdapResultCodec ldapResult = new LdapResultCodec();
-            ldapResult.setResultCode( resultCode );
-            response.setLdapResult( ldapResult );
-        }
+        ResultResponse response = ( ResultResponse ) ldapMessageContainer.getInternalMessage();
+        LdapResult ldapResult = response.getLdapResult();
+        ldapResult.setResultCode( resultCode );
     }
 }

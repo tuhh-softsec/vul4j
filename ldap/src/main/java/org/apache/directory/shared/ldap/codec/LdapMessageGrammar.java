@@ -1032,22 +1032,12 @@ public class LdapMessageGrammar extends AbstractGrammar
                         throw new DecoderException( msg );
                     }
 
-                    if ( ldapMessageContainer.isInternal() )
-                    {
-                        InternalMessage response = ldapMessageContainer.getInternalMessage();
-                        LdapResult ldapResult = ( ( ResultResponse ) response ).getLdapResult();
+                    InternalMessage response = ldapMessageContainer.getInternalMessage();
+                    LdapResult ldapResult = ( ( ResultResponse ) response ).getLdapResult();
 
-                        InternalReferral referral = new ReferralImpl();
+                    InternalReferral referral = new ReferralImpl();
 
-                        ldapResult.setReferral( referral );
-                    }
-                    else
-                    {
-                        LdapResponseCodec response = ldapMessageContainer.getLdapResponse();
-                        LdapResultCodec ldapResult = response.getLdapResult();
-
-                        ldapResult.initReferrals();
-                    }
+                    ldapResult.setReferral( referral );
                 }
             } );
 
@@ -3458,36 +3448,17 @@ public class LdapMessageGrammar extends AbstractGrammar
                         throw new DecoderException( I18n.err( I18n.ERR_04099, oidValue ) );
                     }
 
-                    if ( !ldapMessageContainer.isInternal() )
+                    InternalMessage message = ldapMessageContainer.getInternalMessage();
+
+                    Control control = ControlEnum.getControl( oidValue );
+
+                    if ( control == null )
                     {
-                        LdapMessageCodec message = ldapMessageContainer.getLdapMessage();
-
-                        // get the Control for this OID
-                        Control control = message.getCodecControl( oidValue );
-
-                        if ( control == null )
-                        {
-                            // This control is unknown, we will create a neutral control
-                            control = new ControlImpl( oidValue );
-                        }
-
-                        // The control may be null, if not known
-                        message.addControl( control );
+                        // This control is unknown, we will create a neutral control
+                        control = new ControlImpl( oidValue );
                     }
-                    else
-                    {
-                        InternalMessage message = ldapMessageContainer.getInternalMessage();
 
-                        Control control = ControlEnum.getControl( oidValue );
-
-                        if ( control == null )
-                        {
-                            // This control is unknown, we will create a neutral control
-                            control = new ControlImpl( oidValue );
-                        }
-
-                        message.addControl( control );
-                    }
+                    message.addControl( control );
 
                     // We can have an END transition
                     ldapMessageContainer.grammarEndAllowed( true );
@@ -3521,17 +3492,8 @@ public class LdapMessageGrammar extends AbstractGrammar
                     // Get the current control
                     Control control = null;
 
-                    if ( !ldapMessageContainer.isInternal() )
-                    {
-                        LdapMessageCodec message = ldapMessageContainer.getLdapMessage();
-
-                        control = message.getCurrentControl();
-                    }
-                    else
-                    {
-                        InternalMessage message = ldapMessageContainer.getInternalMessage();
-                        control = message.getCurrentControl();
-                    }
+                    InternalMessage message = ldapMessageContainer.getInternalMessage();
+                    control = message.getCurrentControl();
 
                     // Store the criticality
                     // We get the value. If it's a 0, it's a FALSE. If it's

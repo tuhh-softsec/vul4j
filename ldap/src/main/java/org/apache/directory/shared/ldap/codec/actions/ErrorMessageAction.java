@@ -25,8 +25,6 @@ import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
-import org.apache.directory.shared.ldap.codec.LdapResponseCodec;
-import org.apache.directory.shared.ldap.codec.LdapResultCodec;
 import org.apache.directory.shared.ldap.message.internal.LdapResult;
 import org.apache.directory.shared.ldap.message.internal.ResultResponse;
 import org.apache.directory.shared.ldap.util.StringTools;
@@ -76,18 +74,9 @@ public class ErrorMessageAction extends GrammarAction
             errorMessage = StringTools.utf8ToString( tlv.getValue().getData() );
         }
 
-        if ( ldapMessageContainer.isInternal() )
-        {
-            ResultResponse response = ( ResultResponse ) ldapMessageContainer.getInternalMessage();
-            LdapResult ldapResult = response.getLdapResult();
-            ldapResult.setErrorMessage( errorMessage );
-        }
-        else
-        {
-            LdapResponseCodec response = ldapMessageContainer.getLdapResponse();
-            LdapResultCodec ldapResult = response.getLdapResult();
-            ldapResult.setErrorMessage( errorMessage );
-        }
+        ResultResponse response = ( ResultResponse ) ldapMessageContainer.getInternalMessage();
+        LdapResult ldapResult = response.getLdapResult();
+        ldapResult.setErrorMessage( errorMessage );
 
         // We can have an END transition
         ldapMessageContainer.grammarEndAllowed( true );

@@ -26,8 +26,6 @@ import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
-import org.apache.directory.shared.ldap.codec.LdapResponseCodec;
-import org.apache.directory.shared.ldap.codec.LdapResultCodec;
 import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.message.internal.LdapResult;
@@ -70,18 +68,9 @@ public class MatchedDNAction extends GrammarAction
         DN matchedDN = null;
         ResultCodeEnum resultCode = null;
 
-        if ( ldapMessageContainer.isInternal() )
-        {
-            ResultResponse response = ( ResultResponse ) ldapMessageContainer.getInternalMessage();
-            LdapResult ldapResult = response.getLdapResult();
-            resultCode = ldapResult.getResultCode();
-        }
-        else
-        {
-            LdapResponseCodec response = ldapMessageContainer.getLdapResponse();
-            LdapResultCodec ldapResult = response.getLdapResult();
-            resultCode = ldapResult.getResultCode();
-        }
+        ResultResponse response = ( ResultResponse ) ldapMessageContainer.getInternalMessage();
+        LdapResult ldapResult = response.getLdapResult();
+        resultCode = ldapResult.getResultCode();
 
         // We have to handle the special case of a 0 length matched
         // DN
@@ -134,17 +123,6 @@ public class MatchedDNAction extends GrammarAction
             log.debug( "The matchedDN is " + matchedDN );
         }
 
-        if ( ldapMessageContainer.isInternal() )
-        {
-            ResultResponse response = ( ResultResponse ) ldapMessageContainer.getInternalMessage();
-            LdapResult ldapResult = response.getLdapResult();
-            ldapResult.setMatchedDn( matchedDN );
-        }
-        else
-        {
-            LdapResponseCodec response = ldapMessageContainer.getLdapResponse();
-            LdapResultCodec ldapResult = response.getLdapResult();
-            ldapResult.setMatchedDN( matchedDN );
-        }
+        ldapResult.setMatchedDn( matchedDN );
     }
 }

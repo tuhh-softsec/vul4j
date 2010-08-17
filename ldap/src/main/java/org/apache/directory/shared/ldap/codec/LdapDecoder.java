@@ -140,18 +140,12 @@ public class LdapDecoder implements ProviderDecoder
                 {
                     if ( IS_DEBUG )
                     {
-                        log.debug( "Decoded LdapMessage : " + ldapMessageContainer.getLdapMessage() );
+                        log.debug( "Decoded LdapMessage : " + ldapMessageContainer.getInternalMessage() );
                         buf.mark();
                     }
 
-                    if ( ldapMessageContainer.isInternal() )
-                    {
-                        decoderCallback.decodeOccurred( null, ldapMessageContainer.getInternalMessage() );
-                    }
-                    else
-                    {
-                        decoderCallback.decodeOccurred( null, ldapMessageContainer.getLdapMessage() );
-                    }
+                    decoderCallback.decodeOccurred( null, ldapMessageContainer.getInternalMessage() );
+
                     ldapMessageContainer.clean();
                 }
             }
@@ -220,17 +214,10 @@ public class LdapDecoder implements ProviderDecoder
             {
                 if ( IS_DEBUG )
                 {
-                    log.debug( "Decoded LdapMessage : " + ldapMessageContainer.getLdapMessage() );
+                    log.debug( "Decoded LdapMessage : " + ldapMessageContainer.getInternalMessage() );
                 }
 
-                if ( ldapMessageContainer.isInternal() )
-                {
-                    return ldapMessageContainer.getBindResponse();
-                }
-                else
-                {
-                    return ldapMessageContainer.getLdapMessage();
-                }
+                return ldapMessageContainer.getInternalMessage();
             }
             else
             {
@@ -267,10 +254,10 @@ public class LdapDecoder implements ProviderDecoder
             {
                 if ( IS_DEBUG )
                 {
-                    log.debug( "Decoded LdapMessage : " + ldapMessageContainer.getLdapMessage() );
+                    log.debug( "Decoded LdapMessage : " + ldapMessageContainer.getInternalMessage() );
                 }
 
-                return ldapMessageContainer.getLdapMessage();
+                return ldapMessageContainer.getInternalMessage();
             }
             else
             {

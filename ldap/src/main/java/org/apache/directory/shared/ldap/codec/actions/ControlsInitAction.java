@@ -24,7 +24,6 @@ import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.codec.DecoderException;
-import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,14 +72,6 @@ public class ControlsInitAction extends GrammarAction
         if ( IS_DEBUG )
         {
             log.debug( "A new list of controls has been initialized" );
-        }
-
-        if ( !ldapMessageContainer.isInternal() )
-        {
-            LdapMessageCodec message = ldapMessageContainer.getLdapMessage();
-
-            // We can initialize the controls array
-            message.initControls();
         }
     }
 }

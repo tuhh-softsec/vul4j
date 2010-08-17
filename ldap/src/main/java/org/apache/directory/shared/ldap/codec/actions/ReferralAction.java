@@ -26,13 +26,11 @@ import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
-import org.apache.directory.shared.ldap.codec.LdapResponseCodec;
-import org.apache.directory.shared.ldap.codec.LdapResultCodec;
 import org.apache.directory.shared.ldap.codec.util.LdapURLEncodingException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
-import org.apache.directory.shared.ldap.message.internal.LdapResult;
 import org.apache.directory.shared.ldap.message.internal.InternalMessage;
 import org.apache.directory.shared.ldap.message.internal.InternalReferral;
+import org.apache.directory.shared.ldap.message.internal.LdapResult;
 import org.apache.directory.shared.ldap.message.internal.ResultResponse;
 import org.apache.directory.shared.ldap.util.LdapURL;
 import org.apache.directory.shared.ldap.util.StringTools;
@@ -69,114 +67,56 @@ public class ReferralAction extends GrammarAction
 
         TLV tlv = ldapMessageContainer.getCurrentTLV();
 
-        if ( ldapMessageContainer.isInternal() )
+        InternalMessage response = ldapMessageContainer.getInternalMessage();
+        LdapResult ldapResult = ( ( ResultResponse ) response ).getLdapResult();
+        InternalReferral referral = ldapResult.getReferral();
+
+        if ( tlv.getLength() == 0 )
         {
-            InternalMessage response = ldapMessageContainer.getInternalMessage();
-            LdapResult ldapResult = ( ( ResultResponse ) response ).getLdapResult();
-            InternalReferral referral = ldapResult.getReferral();
-
-            if ( tlv.getLength() == 0 )
-            {
-                referral.addLdapUrl( "" );
-            }
-            else
-            {
-                if ( ldapResult.getResultCode() == ResultCodeEnum.REFERRAL )
-                {
-                    try
-                    {
-                        referral.addLdapUrl( new LdapURL( tlv.getValue().getData() ).toString() );
-                    }
-                    catch ( LdapURLEncodingException luee )
-                    {
-                        String badUrl = StringTools.utf8ToString( tlv.getValue().getData() );
-                        log.error( I18n.err( I18n.ERR_04015, badUrl, luee.getMessage() ) );
-                        throw new DecoderException( I18n.err( I18n.ERR_04016, luee.getMessage() ) );
-                    }
-                }
-                else
-                {
-                    log
-                        .warn( "The Referral error message is not allowed when havind an error code no equals to REFERRAL" );
-                    referral.addLdapUrl( LdapURL.EMPTY_URL.toString() );
-                }
-            }
-
-            if ( IS_DEBUG )
-            {
-                StringBuffer sb = new StringBuffer();
-                boolean isFirst = true;
-
-                for ( String url : ldapResult.getReferral().getLdapUrls() )
-                {
-                    if ( isFirst )
-                    {
-                        isFirst = false;
-                    }
-                    else
-                    {
-                        sb.append( ", " );
-                    }
-
-                    sb.append( url );
-                }
-
-                log.debug( "The referral error message is set to " + sb.toString() );
-            }
+            referral.addLdapUrl( "" );
         }
         else
         {
-            LdapResponseCodec response = ldapMessageContainer.getLdapResponse();
-            LdapResultCodec ldapResult = response.getLdapResult();
-
-            if ( tlv.getLength() == 0 )
+            if ( ldapResult.getResultCode() == ResultCodeEnum.REFERRAL )
             {
-                ldapResult.addReferral( LdapURL.EMPTY_URL );
+                try
+                {
+                    referral.addLdapUrl( new LdapURL( tlv.getValue().getData() ).toString() );
+                }
+                catch ( LdapURLEncodingException luee )
+                {
+                    String badUrl = StringTools.utf8ToString( tlv.getValue().getData() );
+                    log.error( I18n.err( I18n.ERR_04015, badUrl, luee.getMessage() ) );
+                    throw new DecoderException( I18n.err( I18n.ERR_04016, luee.getMessage() ) );
+                }
             }
             else
             {
-                if ( ldapResult.getResultCode() == ResultCodeEnum.REFERRAL )
+                log.warn( "The Referral error message is not allowed when havind an error code no equals to REFERRAL" );
+                referral.addLdapUrl( LdapURL.EMPTY_URL.toString() );
+            }
+        }
+
+        if ( IS_DEBUG )
+        {
+            StringBuffer sb = new StringBuffer();
+            boolean isFirst = true;
+
+            for ( String url : ldapResult.getReferral().getLdapUrls() )
+            {
+                if ( isFirst )
                 {
-                    try
-                    {
-                        ldapResult.addReferral( new LdapURL( tlv.getValue().getData() ) );
-                    }
-                    catch ( LdapURLEncodingException luee )
-                    {
-                        String badUrl = StringTools.utf8ToString( tlv.getValue().getData() );
-                        log.error( I18n.err( I18n.ERR_04015, badUrl, luee.getMessage() ) );
-                        throw new DecoderException( I18n.err( I18n.ERR_04016, luee.getMessage() ) );
-                    }
+                    isFirst = false;
                 }
                 else
                 {
-                    log
-                        .warn( "The Referral error message is not allowed when havind an error code no equals to REFERRAL" );
-                    ldapResult.addReferral( LdapURL.EMPTY_URL );
+                    sb.append( ", " );
                 }
 
-                if ( IS_DEBUG )
-                {
-                    StringBuffer sb = new StringBuffer();
-                    boolean isFirst = true;
-
-                    for ( LdapURL url : ldapResult.getReferrals() )
-                    {
-                        if ( isFirst )
-                        {
-                            isFirst = false;
-                        }
-                        else
-                        {
-                            sb.append( ", " );
-                        }
-
-                        sb.append( url );
-                    }
-
-                    log.debug( "The referral error message is set to " + sb.toString() );
-                }
+                sb.append( url );
             }
+
+            log.debug( "The referral error message is set to " + sb.toString() );
         }
 
         // We can have an END transition

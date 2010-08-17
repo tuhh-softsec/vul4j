@@ -59,9 +59,6 @@ public class LdapMessageContainer extends AbstractContainer
     // ~ Instance fields
     // ----------------------------------------------------------------------------
 
-    /** The ldap message */
-    private LdapMessageCodec ldapMessage;
-
     /** The internal ldap message */
     private InternalMessage internalMessage;
 
@@ -115,27 +112,9 @@ public class LdapMessageContainer extends AbstractContainer
     /**
      * @return Returns the ldapMessage.
      */
-    public LdapMessageCodec getLdapMessage()
-    {
-        return ldapMessage;
-    }
-
-
-    /**
-     * @return Returns the ldapMessage.
-     */
     public InternalMessage getInternalMessage()
     {
         return internalMessage;
-    }
-
-
-    /**
-     * @return Returns the LdapResponse.
-     */
-    public LdapResponseCodec getLdapResponse()
-    {
-        return ( LdapResponseCodec ) ldapMessage;
     }
 
 
@@ -329,18 +308,6 @@ public class LdapMessageContainer extends AbstractContainer
 
 
     /**
-     * Set a ldapMessage Object into the container. It will be completed by the
-     * ldapDecoder .
-     * 
-     * @param ldapMessage The message to set.
-     */
-    public void setLdapMessage( LdapMessageCodec ldapMessage )
-    {
-        this.ldapMessage = ldapMessage;
-    }
-
-
-    /**
      * Set a InternalMessage Object into the container. It will be completed by the
      * ldapDecoder.
      * 
@@ -356,17 +323,10 @@ public class LdapMessageContainer extends AbstractContainer
     {
         super.clean();
 
-        ldapMessage = null;
         internalMessage = null;
         messageId = 0;
         currentControl = null;
         decodeBytes = 0;
-    }
-
-
-    public boolean isInternal()
-    {
-        return internalMessage != null;
     }
 
 

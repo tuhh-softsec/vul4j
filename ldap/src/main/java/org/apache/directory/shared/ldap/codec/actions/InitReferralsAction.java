@@ -26,11 +26,9 @@ import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
-import org.apache.directory.shared.ldap.codec.LdapResponseCodec;
-import org.apache.directory.shared.ldap.codec.LdapResultCodec;
 import org.apache.directory.shared.ldap.message.ReferralImpl;
-import org.apache.directory.shared.ldap.message.internal.LdapResult;
 import org.apache.directory.shared.ldap.message.internal.InternalReferral;
+import org.apache.directory.shared.ldap.message.internal.LdapResult;
 import org.apache.directory.shared.ldap.message.internal.ResultResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,21 +73,11 @@ public class InitReferralsAction extends GrammarAction
             throw new DecoderException( msg );
         }
 
-        if ( ldapMessageContainer.isInternal() )
-        {
-            ResultResponse response = ( ResultResponse ) ldapMessageContainer.getInternalMessage();
-            LdapResult ldapResult = response.getLdapResult();
+        ResultResponse response = ( ResultResponse ) ldapMessageContainer.getInternalMessage();
+        LdapResult ldapResult = response.getLdapResult();
 
-            InternalReferral referral = new ReferralImpl();
-            ldapResult.setReferral( referral );
-        }
-        else
-        {
-            LdapResponseCodec response = ldapMessageContainer.getLdapResponse();
-            LdapResultCodec ldapResult = response.getLdapResult();
-
-            ldapResult.initReferrals();
-        }
+        InternalReferral referral = new ReferralImpl();
+        ldapResult.setReferral( referral );
 
         if ( IS_DEBUG )
         {
