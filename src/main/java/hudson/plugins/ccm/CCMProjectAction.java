@@ -150,7 +150,7 @@ implements ProminentProjectAction, Serializable{
            protected JFreeChart createGraph() {
                return chart;
            }
-       }.doPng(request,response);
+       }.doMap(request,response);
        
    }
 
