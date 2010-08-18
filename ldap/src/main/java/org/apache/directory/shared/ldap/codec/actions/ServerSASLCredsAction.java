@@ -74,7 +74,7 @@ public class ServerSASLCredsAction extends GrammarAction
             serverSaslCreds = tlv.getValue().getData();
         }
 
-        BindResponse response = ( BindResponse ) ldapMessageContainer.getInternalMessage();
+        BindResponse response = ( BindResponse ) ldapMessageContainer.getMessage();
         response.setServerSaslCreds( serverSaslCreds );
 
         // We can have an END transition

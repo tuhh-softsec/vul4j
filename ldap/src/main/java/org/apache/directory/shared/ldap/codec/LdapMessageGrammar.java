@@ -304,7 +304,7 @@ public class LdapMessageGrammar extends AbstractGrammar
 
                     // Create the UnbindRequest LdapMessage instance and store it in the container
                     UnbindRequest unbindRequest = new UnbindRequestImpl( ldapMessageContainer.getMessageId() );
-                    ldapMessageContainer.setInternalMessage( unbindRequest );
+                    ldapMessageContainer.setMessage( unbindRequest );
 
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
                     int expectedLength = tlv.getLength();
@@ -351,7 +351,7 @@ public class LdapMessageGrammar extends AbstractGrammar
 
                     // Create the DeleteRequest LdapMessage instance and store it in the container
                     DeleteRequest delRequest = new DeleteRequestImpl( ldapMessageContainer.getMessageId() );
-                    ldapMessageContainer.setInternalMessage( delRequest );
+                    ldapMessageContainer.setMessage( delRequest );
 
                     // And store the DN into it
                     // Get the Value and store it in the DelRequest
@@ -427,7 +427,7 @@ public class LdapMessageGrammar extends AbstractGrammar
 
                     // Create the AbandonRequest LdapMessage instance and store it in the container
                     AbandonRequest abandonRequest = new AbandonRequestImpl( ldapMessageContainer.getMessageId() );
-                    ldapMessageContainer.setInternalMessage( abandonRequest );
+                    ldapMessageContainer.setMessage( abandonRequest );
 
                     // The current TLV should be a integer
                     // We get it and store it in MessageId
@@ -500,7 +500,7 @@ public class LdapMessageGrammar extends AbstractGrammar
 
                     // Create the BindRequest LdapMessage instance and store it in the container
                     BindRequest bindRequest = new BindRequestImpl( ldapMessageContainer.getMessageId() );
-                    ldapMessageContainer.setInternalMessage( bindRequest );
+                    ldapMessageContainer.setMessage( bindRequest );
 
                     // We will check that the request is not null
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
@@ -839,7 +839,7 @@ public class LdapMessageGrammar extends AbstractGrammar
 
                     // Now, we can allocate the BindResponse Object
                     BindResponse bindResponse = new BindResponseImpl( ldapMessageContainer.getMessageId() );
-                    ldapMessageContainer.setInternalMessage( bindResponse );
+                    ldapMessageContainer.setMessage( bindResponse );
                 }
             } );
 
@@ -1032,7 +1032,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                         throw new DecoderException( msg );
                     }
 
-                    Message response = ldapMessageContainer.getInternalMessage();
+                    Message response = ldapMessageContainer.getMessage();
                     LdapResult ldapResult = ( ( ResultResponse ) response ).getLdapResult();
 
                     Referral referral = new ReferralImpl();
@@ -1105,7 +1105,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                     // Now, we can allocate the SearchResultEntry Object
                     SearchResultEntry searchResultEntry = new SearchResultEntryImpl( ldapMessageContainer
                         .getMessageId() );
-                    ldapMessageContainer.setInternalMessage( searchResultEntry );
+                    ldapMessageContainer.setMessage( searchResultEntry );
                 }
             } );
 
@@ -1382,7 +1382,7 @@ public class LdapMessageGrammar extends AbstractGrammar
 
                     // Now, we can allocate the SearchResultDone Object
                     SearchResultDone searchResultDone = new SearchResultDoneImpl( ldapMessageContainer.getMessageId() );
-                    ldapMessageContainer.setInternalMessage( searchResultDone );
+                    ldapMessageContainer.setMessage( searchResultDone );
 
                     log.debug( "Search Result Done found" );
                 }
@@ -1420,7 +1420,7 @@ public class LdapMessageGrammar extends AbstractGrammar
 
                     // Now, we can allocate the ModifyRequest Object
                     ModifyRequest modifyRequest = new ModifyRequestImpl( ldapMessageContainer.getMessageId() );
-                    ldapMessageContainer.setInternalMessage( modifyRequest );
+                    ldapMessageContainer.setMessage( modifyRequest );
                 }
             } );
 
@@ -1791,7 +1791,7 @@ public class LdapMessageGrammar extends AbstractGrammar
 
                     // Now, we can allocate the ModifyResponse Object
                     ModifyResponse modifyResponse = new ModifyResponseImpl( ldapMessageContainer.getMessageId() );
-                    ldapMessageContainer.setInternalMessage( modifyResponse );
+                    ldapMessageContainer.setMessage( modifyResponse );
 
                     log.debug( "Modify response" );
                 }
@@ -1831,7 +1831,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                     // Now, we can allocate the AddRequest Object
                     int messageId = ldapMessageContainer.getMessageId();
                     AddRequest addRequest = new AddRequestImpl( messageId );
-                    ldapMessageContainer.setInternalMessage( addRequest );
+                    ldapMessageContainer.setMessage( addRequest );
 
                     // We will check that the request is not null
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
@@ -2059,7 +2059,7 @@ public class LdapMessageGrammar extends AbstractGrammar
 
                     // Now, we can allocate the AddResponse Object
                     AddResponse addResponse = new AddResponseImpl( ldapMessageContainer.getMessageId() );
-                    ldapMessageContainer.setInternalMessage( addResponse );
+                    ldapMessageContainer.setMessage( addResponse );
 
                     // We will check that the request is not null
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
@@ -2108,7 +2108,7 @@ public class LdapMessageGrammar extends AbstractGrammar
 
                     // Now, we can allocate the DelResponse Object
                     DeleteResponse delResponse = new DeleteResponseImpl( ldapMessageContainer.getMessageId() );
-                    ldapMessageContainer.setInternalMessage( delResponse );
+                    ldapMessageContainer.setMessage( delResponse );
 
                     log.debug( "Del response " );
                 }
@@ -2147,7 +2147,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                     // Now, we can allocate the ModifyDNRequest Object
                     ModifyDnRequest modifyDnRequest = new ModifyDnRequestImpl( ldapMessageContainer
                         .getMessageId() );
-                    ldapMessageContainer.setInternalMessage( modifyDnRequest );
+                    ldapMessageContainer.setMessage( modifyDnRequest );
 
                     log.debug( "ModifyDn request" );
                 }
@@ -2453,7 +2453,7 @@ public class LdapMessageGrammar extends AbstractGrammar
 
                     // Now, we can allocate the ModifyDnResponse Object
                     ModifyDnResponse modifyDnResponse = new ModifyDnResponseImpl( ldapMessageContainer.getMessageId() );
-                    ldapMessageContainer.setInternalMessage( modifyDnResponse );
+                    ldapMessageContainer.setMessage( modifyDnResponse );
 
                     log.debug( "Modify DN response " );
                 }
@@ -2495,7 +2495,7 @@ public class LdapMessageGrammar extends AbstractGrammar
 
                     // Now, we can allocate the CompareRequest Object
                     CompareRequest compareRequest = new CompareRequestImpl( ldapMessageContainer.getMessageId() );
-                    ldapMessageContainer.setInternalMessage( compareRequest );
+                    ldapMessageContainer.setMessage( compareRequest );
 
                     log.debug( "Compare Request" );
                 }
@@ -2709,7 +2709,7 @@ public class LdapMessageGrammar extends AbstractGrammar
 
                     // Now, we can allocate the CompareResponse Object
                     CompareResponse compareResponse = new CompareResponseImpl( ldapMessageContainer.getMessageId() );
-                    ldapMessageContainer.setInternalMessage( compareResponse );
+                    ldapMessageContainer.setMessage( compareResponse );
 
                     // We will check that the request is not null
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
@@ -2758,7 +2758,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                     // Now, we can allocate the SearchResultReference Object
                     SearchResultReference searchResultReference = new SearchResultReferenceImpl( ldapMessageContainer
                         .getMessageId() );
-                    ldapMessageContainer.setInternalMessage( searchResultReference );
+                    ldapMessageContainer.setMessage( searchResultReference );
 
                     log.debug( "SearchResultReference response " );
                 }
@@ -2816,7 +2816,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                     // Now, we can allocate the ExtendedRequest Object
                     ExtendedRequest extendedRequest = new ExtendedRequestImpl( ldapMessageContainer
                         .getMessageId() );
-                    ldapMessageContainer.setInternalMessage( extendedRequest );
+                    ldapMessageContainer.setMessage( extendedRequest );
 
                     log.debug( "Extended request" );
                 }
@@ -2981,7 +2981,7 @@ public class LdapMessageGrammar extends AbstractGrammar
 
                     // Now, we can allocate the ExtendedResponse Object
                     ExtendedResponse extendedResponse = new ExtendedResponseImpl( ldapMessageContainer.getMessageId() );
-                    ldapMessageContainer.setInternalMessage( extendedResponse );
+                    ldapMessageContainer.setMessage( extendedResponse );
 
                     log.debug( "Extended Response" );
                 }
@@ -3192,7 +3192,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                     // Now, we can allocate the IntermediateResponse Object
                     IntermediateResponse intermediateResponse = new IntermediateResponseImpl( ldapMessageContainer
                         .getMessageId() );
-                    ldapMessageContainer.setInternalMessage( intermediateResponse );
+                    ldapMessageContainer.setMessage( intermediateResponse );
 
                     log.debug( "Intermediate Response" );
                 }
@@ -3448,7 +3448,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                         throw new DecoderException( I18n.err( I18n.ERR_04099, oidValue ) );
                     }
 
-                    Message message = ldapMessageContainer.getInternalMessage();
+                    Message message = ldapMessageContainer.getMessage();
 
                     Control control = ControlEnum.getControl( oidValue );
 
@@ -3492,7 +3492,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                     // Get the current control
                     Control control = null;
 
-                    Message message = ldapMessageContainer.getInternalMessage();
+                    Message message = ldapMessageContainer.getMessage();
                     control = message.getCurrentControl();
 
                     // Store the criticality
@@ -3604,7 +3604,7 @@ public class LdapMessageGrammar extends AbstractGrammar
 
                     SearchRequest searchRequest = new SearchRequestImpl( ldapMessageContainer.getMessageId() );
                     ( ( SearchRequestImpl ) searchRequest ).setTlvId( tlv.getId() );
-                    ldapMessageContainer.setInternalMessage( searchRequest );
+                    ldapMessageContainer.setMessage( searchRequest );
 
                     log.debug( "Search Request" );
                 }

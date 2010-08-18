@@ -68,7 +68,7 @@ public class MatchedDNAction extends GrammarAction
         DN matchedDN = null;
         ResultCodeEnum resultCode = null;
 
-        ResultResponse response = ( ResultResponse ) ldapMessageContainer.getInternalMessage();
+        ResultResponse response = ( ResultResponse ) ldapMessageContainer.getMessage();
         LdapResult ldapResult = response.getLdapResult();
         resultCode = ldapResult.getResultCode();
 

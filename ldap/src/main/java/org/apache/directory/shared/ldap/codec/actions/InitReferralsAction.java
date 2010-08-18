@@ -73,7 +73,7 @@ public class InitReferralsAction extends GrammarAction
             throw new DecoderException( msg );
         }
 
-        ResultResponse response = ( ResultResponse ) ldapMessageContainer.getInternalMessage();
+        ResultResponse response = ( ResultResponse ) ldapMessageContainer.getMessage();
         LdapResult ldapResult = response.getLdapResult();
 
         Referral referral = new ReferralImpl();

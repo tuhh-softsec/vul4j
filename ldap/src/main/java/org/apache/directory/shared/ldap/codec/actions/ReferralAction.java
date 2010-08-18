@@ -67,7 +67,7 @@ public class ReferralAction extends GrammarAction
 
         TLV tlv = ldapMessageContainer.getCurrentTLV();
 
-        Message response = ldapMessageContainer.getInternalMessage();
+        Message response = ldapMessageContainer.getMessage();
         LdapResult ldapResult = ( ( ResultResponse ) response ).getLdapResult();
         Referral referral = ldapResult.getReferral();
 

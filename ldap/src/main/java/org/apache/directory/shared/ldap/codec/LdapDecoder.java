@@ -140,11 +140,11 @@ public class LdapDecoder implements ProviderDecoder
                 {
                     if ( IS_DEBUG )
                     {
-                        log.debug( "Decoded LdapMessage : " + ldapMessageContainer.getInternalMessage() );
+                        log.debug( "Decoded LdapMessage : " + ldapMessageContainer.getMessage() );
                         buf.mark();
                     }
 
-                    decoderCallback.decodeOccurred( null, ldapMessageContainer.getInternalMessage() );
+                    decoderCallback.decodeOccurred( null, ldapMessageContainer.getMessage() );
 
                     ldapMessageContainer.clean();
                 }
@@ -214,10 +214,10 @@ public class LdapDecoder implements ProviderDecoder
             {
                 if ( IS_DEBUG )
                 {
-                    log.debug( "Decoded LdapMessage : " + ldapMessageContainer.getInternalMessage() );
+                    log.debug( "Decoded LdapMessage : " + ldapMessageContainer.getMessage() );
                 }
 
-                return ldapMessageContainer.getInternalMessage();
+                return ldapMessageContainer.getMessage();
             }
             else
             {
@@ -254,10 +254,10 @@ public class LdapDecoder implements ProviderDecoder
             {
                 if ( IS_DEBUG )
                 {
-                    log.debug( "Decoded LdapMessage : " + ldapMessageContainer.getInternalMessage() );
+                    log.debug( "Decoded LdapMessage : " + ldapMessageContainer.getMessage() );
                 }
 
-                return ldapMessageContainer.getInternalMessage();
+                return ldapMessageContainer.getMessage();
             }
             else
             {

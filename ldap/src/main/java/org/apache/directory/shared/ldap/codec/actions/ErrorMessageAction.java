@@ -74,7 +74,7 @@ public class ErrorMessageAction extends GrammarAction
             errorMessage = StringTools.utf8ToString( tlv.getValue().getData() );
         }
 
-        ResultResponse response = ( ResultResponse ) ldapMessageContainer.getInternalMessage();
+        ResultResponse response = ( ResultResponse ) ldapMessageContainer.getMessage();
         LdapResult ldapResult = response.getLdapResult();
         ldapResult.setErrorMessage( errorMessage );
 

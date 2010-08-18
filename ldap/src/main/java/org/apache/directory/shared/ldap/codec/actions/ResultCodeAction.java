@@ -140,7 +140,7 @@ public class ResultCodeAction extends GrammarAction
             log.debug( "The result code is set to " + resultCode );
         }
 
-        ResultResponse response = ( ResultResponse ) ldapMessageContainer.getInternalMessage();
+        ResultResponse response = ( ResultResponse ) ldapMessageContainer.getMessage();
         LdapResult ldapResult = response.getLdapResult();
         ldapResult.setResultCode( resultCode );
     }

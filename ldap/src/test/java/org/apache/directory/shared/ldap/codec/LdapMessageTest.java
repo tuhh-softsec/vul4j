@@ -311,7 +311,7 @@ public class LdapMessageTest
             fail( de.getMessage() );
         }
 
-        Message message = ( ( LdapMessageContainer ) ldapMessageContainer ).getInternalMessage();
+        Message message = ( ( LdapMessageContainer ) ldapMessageContainer ).getMessage();
 
         assertEquals( 500, message.getMessageId() );
 

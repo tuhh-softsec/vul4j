@@ -57,7 +57,7 @@ public class ControlValueAction extends GrammarAction
         TLV tlv = ldapMessageContainer.getCurrentTLV();
         Control control = null;
 
-        Message message = ldapMessageContainer.getInternalMessage();
+        Message message = ldapMessageContainer.getMessage();
         control = message.getCurrentControl();
 
         // Get the current control
