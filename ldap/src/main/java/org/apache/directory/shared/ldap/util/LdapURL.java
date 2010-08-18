@@ -44,6 +44,7 @@ import org.apache.directory.shared.ldap.name.DN;
 /**
  * Decodes a LdapUrl, and checks that it complies with
  * the RFC 2255. The grammar is the following :
+ * <pre>
  * ldapurl    = scheme "://" [hostport] ["/"
  *                   [dn ["?" [attributes] ["?" [scope]
  *                   ["?" [filter] ["?" extensions]]]]]]
@@ -60,7 +61,7 @@ import org.apache.directory.shared.ldap.name.DN;
  * exvalue    = LDAPString
  * token      = oid from section 4.1 of RFC 2252
  * xtoken     = ("X-" / "x-") token
- * 
+ * </pre>
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 public class LdapURL
@@ -362,7 +363,8 @@ public class LdapURL
      *         apply to the byte buffer TODO check that the topLabel is valid
      *         (it must start with an alpha)
      */
-    @SuppressWarnings("PMD.CollapsibleIfStatements") // Used because of comments
+    @SuppressWarnings("PMD.CollapsibleIfStatements")
+    // Used because of comments
     private int parseHost( char[] chars, int pos )
     {
 
@@ -400,7 +402,7 @@ public class LdapURL
                 }
 
                 // Let's check the string we had before the dot.
-                if ( isHostNumber &&  nbDots < 4 )
+                if ( isHostNumber && nbDots < 4 )
                 {
 
                     // We had only digits. It may be an IP adress? Check it
@@ -1723,7 +1725,7 @@ public class LdapURL
      */
     public void setScope( int scope )
     {
-        try 
+        try
         {
             this.scope = SearchScope.getSearchScope( scope );
         }
