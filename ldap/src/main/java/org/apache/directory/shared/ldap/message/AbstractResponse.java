@@ -19,11 +19,12 @@
  */
 package org.apache.directory.shared.ldap.message;
 
+
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 
 
 /**
- * Abstract base for a Lockable Response message.
+ * Abstract base for a Response message.
  * 
  * @author <a href="mailto:dev@directory.apache.org"> Apache Directory Project</a>
  */
@@ -37,12 +38,10 @@ public abstract class AbstractResponse extends AbstractMessage implements Respon
      * Allows subclasses based on the abstract type to create a response to a
      * request.
      * 
-     * @param id
-     *            the response eliciting this Request
-     * @param type
-     *            the message type of the response
+     * @param id the response eliciting this Request
+     * @param type the message type of the response
      */
-    protected AbstractResponse(final int id, final MessageTypeEnum type)
+    protected AbstractResponse( final int id, final MessageTypeEnum type )
     {
         super( id, type );
     }
