@@ -33,7 +33,7 @@ import org.apache.directory.shared.ldap.entry.DefaultModification;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Modification;
 import org.apache.directory.shared.ldap.entry.ModificationOperation;
-import org.apache.directory.shared.ldap.message.internal.InternalModifyRequest;
+import org.apache.directory.shared.ldap.message.internal.ModifyRequest;
 import org.apache.directory.shared.ldap.message.internal.ModifyResponse;
 import org.apache.directory.shared.ldap.message.internal.ResultResponse;
 import org.apache.directory.shared.ldap.name.DN;
@@ -45,7 +45,7 @@ import org.apache.directory.shared.ldap.util.StringTools;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class ModifyRequestImpl extends AbstractAbandonableRequest implements InternalModifyRequest
+public class ModifyRequestImpl extends AbstractAbandonableRequest implements ModifyRequest
 {
     static final long serialVersionUID = -505803669028990304L;
 
@@ -526,7 +526,7 @@ public class ModifyRequestImpl extends AbstractAbandonableRequest implements Int
             return false;
         }
 
-        InternalModifyRequest req = ( InternalModifyRequest ) obj;
+        ModifyRequest req = ( ModifyRequest ) obj;
 
         if ( name != null && req.getName() == null )
         {

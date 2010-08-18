@@ -32,7 +32,7 @@ import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.ber.tlv.TLVStateEnum;
 import org.apache.directory.shared.asn1.codec.DecoderException;
-import org.apache.directory.shared.ldap.message.internal.InternalBindRequest;
+import org.apache.directory.shared.ldap.message.internal.BindRequest;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -96,7 +96,7 @@ public class LdapDecoderTest
         }
 
         // Check the decoded PDU
-        InternalBindRequest bindRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getBindRequest();
+        BindRequest bindRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getBindRequest();
 
         assertEquals( 1, bindRequest.getMessageId() );
         assertTrue( bindRequest.isVersion3() );
@@ -144,7 +144,7 @@ public class LdapDecoderTest
         assertEquals( TLVStateEnum.VALUE_STATE_PENDING, ldapMessageContainer.getState() );
 
         // Check the decoded PDU
-        InternalBindRequest bindRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getBindRequest();
+        BindRequest bindRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getBindRequest();
 
         assertEquals( 1, bindRequest.getMessageId() );
         assertTrue( bindRequest.isVersion3() );
@@ -216,7 +216,7 @@ public class LdapDecoderTest
         assertEquals( ldapMessageContainer.getState(), TLVStateEnum.PDU_DECODED );
 
         // Check the decoded PDU
-        InternalBindRequest bindRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getBindRequest();
+        BindRequest bindRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getBindRequest();
 
         assertEquals( 1, bindRequest.getMessageId() );
         assertTrue( bindRequest.isVersion3() );

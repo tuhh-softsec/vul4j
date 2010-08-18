@@ -62,7 +62,7 @@ import org.apache.directory.shared.ldap.filter.PresenceNode;
 import org.apache.directory.shared.ldap.filter.SearchScope;
 import org.apache.directory.shared.ldap.filter.SimpleNode;
 import org.apache.directory.shared.ldap.filter.SubstringNode;
-import org.apache.directory.shared.ldap.message.internal.InternalSearchRequest;
+import org.apache.directory.shared.ldap.message.internal.SearchRequest;
 import org.apache.directory.shared.ldap.message.internal.ResultResponse;
 import org.apache.directory.shared.ldap.message.internal.SearchResultDone;
 import org.apache.directory.shared.ldap.name.DN;
@@ -73,7 +73,7 @@ import org.apache.directory.shared.ldap.name.DN;
  * 
  * @author <a href="mailto:dev@directory.apache.org"> Apache Directory Project</a>
  */
-public class SearchRequestImpl extends AbstractAbandonableRequest implements InternalSearchRequest
+public class SearchRequestImpl extends AbstractAbandonableRequest implements SearchRequest
 {
     static final long serialVersionUID = -5655881944020886218L;
 
@@ -965,7 +965,7 @@ public class SearchRequestImpl extends AbstractAbandonableRequest implements Int
             return false;
         }
 
-        InternalSearchRequest req = ( InternalSearchRequest ) obj;
+        SearchRequest req = ( SearchRequest ) obj;
 
         if ( !req.getBase().equals( baseDn ) )
         {

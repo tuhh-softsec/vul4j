@@ -33,7 +33,7 @@ import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.message.internal.InternalExtendedRequest;
+import org.apache.directory.shared.ldap.message.internal.ExtendedRequest;
 import org.apache.directory.shared.ldap.message.internal.ResultResponse;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -169,7 +169,7 @@ public class ExtendedRequestImplTest
     @Test
     public void testEqualsDiffImpl()
     {
-        InternalExtendedRequest req0 = new InternalExtendedRequest()
+        ExtendedRequest req0 = new ExtendedRequest()
         {
             private static final long serialVersionUID = 1L;
 

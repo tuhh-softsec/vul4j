@@ -28,7 +28,7 @@ import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class InternalAbstractRequest extends InternalAbstractMessage implements InternalRequest
+public class AbstractRequest extends AbstractMessage implements Request
 {
     static final long serialVersionUID = -4511116249089399040L;
 
@@ -43,7 +43,7 @@ public class InternalAbstractRequest extends InternalAbstractMessage implements 
      * @param type the request type enum
      * @param hasResponse flag indicating if this request generates a response
      */
-    protected InternalAbstractRequest( final int id, final MessageTypeEnum type, boolean hasResponse )
+    protected AbstractRequest( final int id, final MessageTypeEnum type, boolean hasResponse )
     {
         super( id, type );
 
@@ -74,12 +74,12 @@ public class InternalAbstractRequest extends InternalAbstractMessage implements 
             return true;
         }
 
-        if ( ( obj == null ) || !( obj instanceof InternalRequest ) )
+        if ( ( obj == null ) || !( obj instanceof Request ) )
         {
             return false;
         }
 
-        if ( hasResponse != ( ( InternalRequest ) obj ).hasResponse() )
+        if ( hasResponse != ( ( Request ) obj ).hasResponse() )
         {
             return false;
         }

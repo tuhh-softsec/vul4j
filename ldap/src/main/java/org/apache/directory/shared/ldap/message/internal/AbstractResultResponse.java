@@ -30,7 +30,7 @@ import org.apache.directory.shared.ldap.message.control.Control;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public abstract class InternalAbstractResultResponse extends AbstractResponse implements ResultResponse
+public abstract class AbstractResultResponse extends AbstractResponse implements ResultResponse
 {
     /** Response result components */
     protected LdapResult ldapResult = new LdapResultImpl();
@@ -47,7 +47,7 @@ public abstract class InternalAbstractResultResponse extends AbstractResponse im
      * @param id the response eliciting this Request
      * @param type the message type of the response
      */
-    protected InternalAbstractResultResponse( final int id, final MessageTypeEnum type )
+    protected AbstractResultResponse( final int id, final MessageTypeEnum type )
     {
         super( id, type );
     }

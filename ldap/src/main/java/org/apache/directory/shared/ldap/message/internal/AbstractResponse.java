@@ -27,7 +27,7 @@ import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
  * 
  * @author <a href="mailto:dev@directory.apache.org"> Apache Directory Project</a>
  */
-public abstract class AbstractResponse extends InternalAbstractMessage implements Response
+public abstract class AbstractResponse extends AbstractMessage implements Response
 {
     // ------------------------------------------------------------------------
     // Response Interface Method Implementations

@@ -38,7 +38,7 @@ import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.message.AbandonRequestImpl;
 import org.apache.directory.shared.ldap.message.LdapProtocolEncoder;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.message.internal.InternalAbandonRequest;
+import org.apache.directory.shared.ldap.message.internal.AbandonRequest;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -107,10 +107,10 @@ public class AbandonRequestTest
         }
 
         // Check that everything is OK
-        InternalAbandonRequest abandonRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getAbandonRequest();
+        AbandonRequest abandonRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getAbandonRequest();
 
         // Copy the message
-        InternalAbandonRequest internalAbandonRequest = new AbandonRequestImpl( abandonRequest.getMessageId() );
+        AbandonRequest internalAbandonRequest = new AbandonRequestImpl( abandonRequest.getMessageId() );
         internalAbandonRequest.setAbandoned( abandonRequest.getAbandoned() );
 
         assertEquals( 3, abandonRequest.getMessageId() );
@@ -165,7 +165,7 @@ public class AbandonRequestTest
                 fail( de.getMessage() );
             }
 
-            InternalAbandonRequest abandonRequest2 = ( ( LdapMessageContainer ) ldapMessageContainer )
+            AbandonRequest abandonRequest2 = ( ( LdapMessageContainer ) ldapMessageContainer )
                 .getAbandonRequest();
 
             assertEquals( abandonRequest, abandonRequest2 );
@@ -213,13 +213,13 @@ public class AbandonRequestTest
         }
 
         // Check that everything is OK
-        InternalAbandonRequest abandonRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getAbandonRequest();
+        AbandonRequest abandonRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getAbandonRequest();
 
         assertEquals( 32787, abandonRequest.getMessageId() );
         assertEquals( 2, abandonRequest.getAbandoned() );
 
         // Check the length
-        InternalAbandonRequest internalAbandonRequest = new AbandonRequestImpl( abandonRequest.getMessageId() );
+        AbandonRequest internalAbandonRequest = new AbandonRequestImpl( abandonRequest.getMessageId() );
         internalAbandonRequest.setAbandoned( abandonRequest.getAbandoned() );
 
         // Check the encoding

@@ -79,7 +79,6 @@ import org.apache.directory.shared.ldap.exception.LdapTimeLimitExceededException
 import org.apache.directory.shared.ldap.exception.LdapUnwillingToPerformException;
 import org.apache.directory.shared.ldap.message.MessageException;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.message.internal.InternalExtendedRequest;
 import org.apache.directory.shared.ldap.message.internal.LdapResult;
 import org.apache.directory.shared.ldap.message.internal.ResultResponse;
 import org.apache.directory.shared.ldap.name.DN;
@@ -160,7 +159,8 @@ public class JndiUtils
      * @param request
      * @return
      */
-    public static ExtendedResponse toJndiExtendedResponse( final InternalExtendedRequest request )
+    public static ExtendedResponse toJndiExtendedResponse(
+        final org.apache.directory.shared.ldap.message.internal.ExtendedRequest request )
     {
         class JndiExtendedResponse implements ExtendedResponse
         {
@@ -180,7 +180,8 @@ public class JndiUtils
     }
 
 
-    public static ExtendedRequest toJndiExtendedRequest( final InternalExtendedRequest request )
+    public static ExtendedRequest toJndiExtendedRequest(
+        final org.apache.directory.shared.ldap.message.internal.ExtendedRequest request )
     {
         class JndiExtendedRequest implements ExtendedRequest
         {
@@ -355,9 +356,10 @@ public class JndiUtils
     }
 
 
-    public static InternalExtendedRequest fromJndiExtendedRequest( final ExtendedRequest request )
+    public static org.apache.directory.shared.ldap.message.internal.ExtendedRequest fromJndiExtendedRequest(
+        final ExtendedRequest request )
     {
-        class ServerExtendedRequest implements InternalExtendedRequest
+        class ServerExtendedRequest implements org.apache.directory.shared.ldap.message.internal.ExtendedRequest
         {
             public org.apache.directory.shared.ldap.message.internal.ExtendedResponse createExtendedResponse(
                 String id, byte[] berValue, int offset, int length ) throws NamingException

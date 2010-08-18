@@ -40,8 +40,8 @@ import org.apache.directory.shared.ldap.message.DeleteResponseImpl;
 import org.apache.directory.shared.ldap.message.LdapProtocolEncoder;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.message.internal.InternalDeleteRequest;
-import org.apache.directory.shared.ldap.message.internal.InternalMessage;
+import org.apache.directory.shared.ldap.message.internal.DeleteRequest;
+import org.apache.directory.shared.ldap.message.internal.Message;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -99,13 +99,13 @@ public class DelRequestTest
         }
 
         // Check the decoded DelRequest PDU
-        InternalDeleteRequest delRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getDeleteRequest();
+        DeleteRequest delRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getDeleteRequest();
 
         assertEquals( 1, delRequest.getMessageId() );
         assertEquals( "cn=testModify,ou=users,ou=system", delRequest.getName().toString() );
 
         // Check the length
-        InternalDeleteRequest internalDeleteRequest = new DeleteRequestImpl( delRequest.getMessageId() );
+        DeleteRequest internalDeleteRequest = new DeleteRequestImpl( delRequest.getMessageId() );
         internalDeleteRequest.setName( delRequest.getName() );
 
         // Check the encoding
@@ -162,7 +162,7 @@ public class DelRequestTest
         catch ( DecoderException de )
         {
             assertTrue( de instanceof ResponseCarryingException );
-            InternalMessage response = ( ( ResponseCarryingException ) de ).getResponse();
+            Message response = ( ( ResponseCarryingException ) de ).getResponse();
             assertTrue( response instanceof DeleteResponseImpl );
             assertEquals( ResultCodeEnum.INVALID_DN_SYNTAX, ( ( DeleteResponseImpl ) response ).getLdapResult()
                 .getResultCode() );
@@ -252,7 +252,7 @@ public class DelRequestTest
         }
 
         // Check the decoded DelRequest PDU
-        InternalDeleteRequest delRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getDeleteRequest();
+        DeleteRequest delRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getDeleteRequest();
 
         assertEquals( 1, delRequest.getMessageId() );
         assertEquals( "cn=testModify,ou=users,ou=system", delRequest.getName().toString() );
@@ -266,7 +266,7 @@ public class DelRequestTest
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
         assertEquals( "", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
 
-        InternalDeleteRequest internalDeleteRequest = new DeleteRequestImpl( delRequest.getMessageId() );
+        DeleteRequest internalDeleteRequest = new DeleteRequestImpl( delRequest.getMessageId() );
         internalDeleteRequest.setName( delRequest.getName() );
         internalDeleteRequest.addControl( control );
 

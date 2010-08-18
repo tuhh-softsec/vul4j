@@ -39,7 +39,7 @@ import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.message.LdapProtocolEncoder;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.message.internal.InternalReferral;
+import org.apache.directory.shared.ldap.message.internal.Referral;
 import org.apache.directory.shared.ldap.message.internal.SearchResultReference;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
@@ -138,7 +138,7 @@ public class SearchResultReferenceTest
             ldapUrlsSet.add( StringTools.utf8ToString( ldapUrls[i].getBytes() ) );
         }
 
-        InternalReferral referral = searchResultReference.getReferral();
+        Referral referral = searchResultReference.getReferral();
 
         assertNotNull( referral );
 
@@ -269,7 +269,7 @@ public class SearchResultReferenceTest
             ldapUrlsSet.add( StringTools.utf8ToString( ldapUrls[i].getBytes() ) );
         }
 
-        InternalReferral referral = searchResultReference.getReferral();
+        Referral referral = searchResultReference.getReferral();
 
         assertNotNull( referral );
 
@@ -403,7 +403,7 @@ public class SearchResultReferenceTest
 
         assertEquals( 1, searchResultReference.getMessageId() );
 
-        InternalReferral referral = searchResultReference.getReferral();
+        Referral referral = searchResultReference.getReferral();
 
         assertNotNull( referral );
 

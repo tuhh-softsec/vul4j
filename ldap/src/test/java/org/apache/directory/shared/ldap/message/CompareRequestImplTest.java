@@ -32,7 +32,7 @@ import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.message.internal.InternalCompareRequest;
+import org.apache.directory.shared.ldap.message.internal.CompareRequest;
 import org.apache.directory.shared.ldap.message.internal.ResultResponse;
 import org.apache.directory.shared.ldap.name.DN;
 import org.junit.Test;
@@ -180,7 +180,7 @@ public class CompareRequestImplTest
     @Test
     public void testEqualsDiffImpl()
     {
-        InternalCompareRequest req0 = new InternalCompareRequest()
+        CompareRequest req0 = new CompareRequest()
         {
             public Value<?> getAssertionValue()
             {

@@ -35,7 +35,7 @@ import org.apache.directory.shared.ldap.message.control.Control;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public abstract class InternalAbstractMessage implements InternalMessage
+public abstract class AbstractMessage implements Message
 {
     static final long serialVersionUID = 7601738291101182094L;
 
@@ -67,7 +67,7 @@ public abstract class InternalAbstractMessage implements InternalMessage
      * @param id the seq id of the message
      * @param type the type of the message
      */
-    protected InternalAbstractMessage( final int id, final MessageTypeEnum type )
+    protected AbstractMessage( final int id, final MessageTypeEnum type )
     {
         this.id = id;
         this.type = type;
@@ -219,12 +219,12 @@ public abstract class InternalAbstractMessage implements InternalMessage
             return true;
         }
 
-        if ( ( obj == null ) || !( obj instanceof InternalMessage ) )
+        if ( ( obj == null ) || !( obj instanceof Message ) )
         {
             return false;
         }
 
-        InternalMessage msg = ( InternalMessage ) obj;
+        Message msg = ( Message ) obj;
 
         if ( msg.getMessageId() != id )
         {

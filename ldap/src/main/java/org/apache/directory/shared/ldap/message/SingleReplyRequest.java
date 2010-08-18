@@ -20,7 +20,7 @@
 package org.apache.directory.shared.ldap.message;
 
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
-import org.apache.directory.shared.ldap.message.internal.InternalResultResponseRequest;
+import org.apache.directory.shared.ldap.message.internal.ResultResponseRequest;
 
 
 /**
@@ -28,7 +28,7 @@ import org.apache.directory.shared.ldap.message.internal.InternalResultResponseR
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public interface SingleReplyRequest extends InternalResultResponseRequest
+public interface SingleReplyRequest extends ResultResponseRequest
 {
     /**
      * Gets the protocol response message type for this request which produces

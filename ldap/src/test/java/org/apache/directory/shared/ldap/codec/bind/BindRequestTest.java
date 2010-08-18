@@ -40,8 +40,8 @@ import org.apache.directory.shared.ldap.message.BindResponseImpl;
 import org.apache.directory.shared.ldap.message.LdapProtocolEncoder;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.message.internal.InternalBindRequest;
-import org.apache.directory.shared.ldap.message.internal.InternalMessage;
+import org.apache.directory.shared.ldap.message.internal.BindRequest;
+import org.apache.directory.shared.ldap.message.internal.Message;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -203,7 +203,7 @@ public class BindRequestTest
         }
 
         // Check the decoded BindRequest
-        InternalBindRequest bindRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getBindRequest();
+        BindRequest bindRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getBindRequest();
 
         assertEquals( 1, bindRequest.getMessageId() );
         assertTrue( bindRequest.isVersion3() );
@@ -272,7 +272,7 @@ public class BindRequestTest
         catch ( DecoderException de )
         {
             assertTrue( de instanceof ResponseCarryingException );
-            InternalMessage response = ( ( ResponseCarryingException ) de ).getResponse();
+            Message response = ( ( ResponseCarryingException ) de ).getResponse();
             assertTrue( response instanceof BindResponseImpl );
             assertEquals( ResultCodeEnum.INVALID_DN_SYNTAX, ( ( BindResponseImpl ) response ).getLdapResult()
                 .getResultCode() );
@@ -365,7 +365,7 @@ public class BindRequestTest
         }
 
         // Check the decoded BindRequest
-        InternalBindRequest bindRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getBindRequest();
+        BindRequest bindRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getBindRequest();
 
         assertEquals( 1, bindRequest.getMessageId() );
         assertTrue( bindRequest.isVersion3() );
@@ -442,7 +442,7 @@ public class BindRequestTest
         }
 
         // Check the decoded BindRequest
-        InternalBindRequest bindRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getBindRequest();
+        BindRequest bindRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getBindRequest();
 
         assertEquals( 1, bindRequest.getMessageId() );
         assertTrue( bindRequest.isVersion3() );
@@ -524,7 +524,7 @@ public class BindRequestTest
         }
 
         // Check the decoded BindRequest
-        InternalBindRequest bindRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getBindRequest();
+        BindRequest bindRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getBindRequest();
 
         assertEquals( 1, bindRequest.getMessageId() );
         assertTrue( bindRequest.isVersion3() );
@@ -601,7 +601,7 @@ public class BindRequestTest
         }
 
         // Check the decoded BindRequest
-        InternalBindRequest bindRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getBindRequest();
+        BindRequest bindRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getBindRequest();
 
         assertEquals( 1, bindRequest.getMessageId() );
         assertTrue( bindRequest.isVersion3() );
@@ -915,7 +915,7 @@ public class BindRequestTest
         }
 
         // Check the decoded BindRequest
-        InternalBindRequest bindRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getBindRequest();
+        BindRequest bindRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getBindRequest();
 
         assertEquals( 1, bindRequest.getMessageId() );
         assertTrue( bindRequest.isVersion3() );
@@ -972,7 +972,7 @@ public class BindRequestTest
         catch ( DecoderException de )
         {
             assertTrue( de instanceof ResponseCarryingException );
-            InternalMessage response = ( ( ResponseCarryingException ) de ).getResponse();
+            Message response = ( ( ResponseCarryingException ) de ).getResponse();
             assertTrue( response instanceof BindResponseImpl );
             assertEquals( ResultCodeEnum.INVALID_CREDENTIALS, ( ( BindResponseImpl ) response ).getLdapResult()
                 .getResultCode() );
@@ -1017,7 +1017,7 @@ public class BindRequestTest
         }
 
         // Check the decoded BindRequest
-        InternalBindRequest bindRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getBindRequest();
+        BindRequest bindRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getBindRequest();
 
         assertEquals( 1, bindRequest.getMessageId() );
         assertTrue( bindRequest.isVersion3() );
@@ -1123,7 +1123,7 @@ public class BindRequestTest
         }
 
         // Check the decoded BindRequest
-        InternalBindRequest bindRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getBindRequest();
+        BindRequest bindRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getBindRequest();
 
         assertEquals( 1, bindRequest.getMessageId() );
         assertTrue( bindRequest.isVersion3() );
@@ -1194,7 +1194,7 @@ public class BindRequestTest
         }
 
         // Check the decoded BindRequest
-        InternalBindRequest bindRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getBindRequest();
+        BindRequest bindRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getBindRequest();
 
         assertEquals( 1, bindRequest.getMessageId() );
         assertTrue( bindRequest.isVersion3() );
@@ -1273,7 +1273,7 @@ public class BindRequestTest
         }
 
         // Check the decoded BindRequest
-        InternalBindRequest bindRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getBindRequest();
+        BindRequest bindRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getBindRequest();
 
         assertEquals( 1, bindRequest.getMessageId() );
         assertTrue( bindRequest.isVersion3() );

@@ -25,7 +25,7 @@ package org.apache.directory.shared.ldap.message.internal;
  * 
  * @author <a href="mailto:dev@directory.apache.org"> Apache Directory Project</a>
  */
-public interface InternalRequest extends InternalMessage
+public interface Request extends Message
 {
     /**
      * Tests to see if this Request produces one or more response types.

@@ -29,7 +29,7 @@ import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.search.Filter;
 import org.apache.directory.shared.ldap.codec.search.SubstringFilter;
 import org.apache.directory.shared.ldap.message.SearchRequestImpl;
-import org.apache.directory.shared.ldap.message.internal.InternalSearchRequest;
+import org.apache.directory.shared.ldap.message.internal.SearchRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,7 +60,7 @@ public class InitSubstringsFilterAction extends GrammarAction
     public void action( IAsn1Container container ) throws DecoderException
     {
         LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-        InternalSearchRequest searchRequest = ldapMessageContainer.getSearchRequest();
+        SearchRequest searchRequest = ldapMessageContainer.getSearchRequest();
 
         TLV tlv = ldapMessageContainer.getCurrentTLV();
 

@@ -21,8 +21,8 @@ package org.apache.directory.shared.ldap.message;
 
 
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.message.internal.InternalAbstractRequest;
-import org.apache.directory.shared.ldap.message.internal.InternalUnbindRequest;
+import org.apache.directory.shared.ldap.message.internal.AbstractRequest;
+import org.apache.directory.shared.ldap.message.internal.UnbindRequest;
 
 
 /**
@@ -30,7 +30,7 @@ import org.apache.directory.shared.ldap.message.internal.InternalUnbindRequest;
  * 
  * @author <a href="mailto:dev@directory.apache.org"> Apache Directory Project</a>
  */
-public class UnbindRequestImpl extends InternalAbstractRequest implements InternalUnbindRequest
+public class UnbindRequestImpl extends AbstractRequest implements UnbindRequest
 {
     static final long serialVersionUID = -6217184085100410116L;
 

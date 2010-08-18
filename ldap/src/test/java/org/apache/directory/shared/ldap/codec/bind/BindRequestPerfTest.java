@@ -38,7 +38,7 @@ import org.apache.directory.shared.ldap.codec.controls.ControlImpl;
 import org.apache.directory.shared.ldap.message.BindRequestImpl;
 import org.apache.directory.shared.ldap.message.LdapProtocolEncoder;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.message.internal.InternalBindRequest;
+import org.apache.directory.shared.ldap.message.internal.BindRequest;
 import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Ignore;
@@ -126,7 +126,7 @@ public class BindRequestPerfTest
         }
 
         // Check the decoded BindRequest
-        InternalBindRequest bindRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getBindRequest();
+        BindRequest bindRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getBindRequest();
 
         assertEquals( 1, bindRequest.getMessageId() );
         assertTrue( bindRequest.isVersion3() );
@@ -178,7 +178,7 @@ public class BindRequestPerfTest
         for ( int i = 0; i < nbLoops; i++ )
         {
             // Check the decoded BindRequest
-            InternalBindRequest bindRequest = new BindRequestImpl( 1 );
+            BindRequest bindRequest = new BindRequestImpl( 1 );
 
             bindRequest.setSimple( true );
             bindRequest.setName( name );

@@ -121,7 +121,7 @@ public interface LdapResult
      * 
      * @return the referral on REFERRAL errors, null on all others.
      */
-    InternalReferral getReferral();
+    Referral getReferral();
 
 
     /**
@@ -132,5 +132,5 @@ public interface LdapResult
      * 
      * @param referral optional referral on REFERRAL errors.
      */
-    void setReferral( InternalReferral referral );
+    void setReferral( Referral referral );
 }

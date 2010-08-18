@@ -30,7 +30,7 @@ import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.message.internal.InternalReferral;
+import org.apache.directory.shared.ldap.message.internal.Referral;
 import org.apache.directory.shared.ldap.message.internal.SearchResultReference;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -56,7 +56,7 @@ public class SearchResponseReferenceImplTest
      *            the parent lockable
      * @return the newly created referral for testing
      */
-    private InternalReferral getReferral( SearchResultReference resp )
+    private Referral getReferral( SearchResultReference resp )
     {
         ReferralImpl ref = new ReferralImpl();
         resp.setReferral( ref );
@@ -103,13 +103,13 @@ public class SearchResponseReferenceImplTest
     {
         SearchResultReference resp0 = new SearchResultReference()
         {
-            public InternalReferral getReferral()
+            public Referral getReferral()
             {
                 return SearchResponseReferenceImplTest.this.getReferral( this );
             }
 
 
-            public void setReferral( InternalReferral referral )
+            public void setReferral( Referral referral )
             {
             }
 

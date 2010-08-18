@@ -29,7 +29,7 @@ import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.controls.CodecControl;
 import org.apache.directory.shared.ldap.codec.controls.ControlDecoder;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.message.internal.InternalMessage;
+import org.apache.directory.shared.ldap.message.internal.Message;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,7 +57,7 @@ public class ControlValueAction extends GrammarAction
         TLV tlv = ldapMessageContainer.getCurrentTLV();
         Control control = null;
 
-        InternalMessage message = ldapMessageContainer.getInternalMessage();
+        Message message = ldapMessageContainer.getInternalMessage();
         control = message.getCurrentControl();
 
         // Get the current control

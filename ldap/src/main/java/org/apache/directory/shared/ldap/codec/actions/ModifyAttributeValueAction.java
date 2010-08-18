@@ -25,7 +25,7 @@ import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.message.ModifyRequestImpl;
-import org.apache.directory.shared.ldap.message.internal.InternalModifyRequest;
+import org.apache.directory.shared.ldap.message.internal.ModifyRequest;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,7 +57,7 @@ public class ModifyAttributeValueAction extends GrammarAction
     public void action( IAsn1Container container )
     {
         LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-        InternalModifyRequest modifyRequest = ldapMessageContainer.getModifyRequest();
+        ModifyRequest modifyRequest = ldapMessageContainer.getModifyRequest();
 
         TLV tlv = ldapMessageContainer.getCurrentTLV();
 

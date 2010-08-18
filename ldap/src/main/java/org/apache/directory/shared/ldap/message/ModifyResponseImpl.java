@@ -20,7 +20,7 @@
 package org.apache.directory.shared.ldap.message;
 
 
-import org.apache.directory.shared.ldap.message.internal.InternalAbstractResultResponse;
+import org.apache.directory.shared.ldap.message.internal.AbstractResultResponse;
 import org.apache.directory.shared.ldap.message.internal.ModifyResponse;
 
 
@@ -28,7 +28,7 @@ import org.apache.directory.shared.ldap.message.internal.ModifyResponse;
  * ModifyResponse implementation
  * 
  */
-public class ModifyResponseImpl extends InternalAbstractResultResponse implements ModifyResponse
+public class ModifyResponseImpl extends AbstractResultResponse implements ModifyResponse
 {
     /** The encoded modifyResponse length */
     private int modifyResponseLength;

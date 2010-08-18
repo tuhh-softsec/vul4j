@@ -20,7 +20,7 @@
 package org.apache.directory.shared.ldap.message;
 
 
-import org.apache.directory.shared.ldap.message.internal.InternalAbstractResultResponse;
+import org.apache.directory.shared.ldap.message.internal.AbstractResultResponse;
 import org.apache.directory.shared.ldap.message.internal.ModifyDnResponse;
 
 
@@ -29,7 +29,7 @@ import org.apache.directory.shared.ldap.message.internal.ModifyDnResponse;
  * 
  * @author <a href="mailto:dev@directory.apache.org"> Apache Directory Project</a>
  */
-public class ModifyDnResponseImpl extends InternalAbstractResultResponse implements ModifyDnResponse
+public class ModifyDnResponseImpl extends AbstractResultResponse implements ModifyDnResponse
 {
     /** The encoded modifyDnResponse length */
     private int modifyDnResponseLength;

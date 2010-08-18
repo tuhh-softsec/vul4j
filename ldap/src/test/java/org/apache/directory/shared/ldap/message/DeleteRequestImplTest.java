@@ -31,7 +31,7 @@ import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.message.internal.InternalDeleteRequest;
+import org.apache.directory.shared.ldap.message.internal.DeleteRequest;
 import org.apache.directory.shared.ldap.message.internal.ResultResponse;
 import org.apache.directory.shared.ldap.name.DN;
 import org.junit.Test;
@@ -143,7 +143,7 @@ public class DeleteRequestImplTest
     @Test
     public void testEqualsDiffImpl()
     {
-        InternalDeleteRequest req0 = new InternalDeleteRequest()
+        DeleteRequest req0 = new DeleteRequest()
         {
             public DN getName()
             {

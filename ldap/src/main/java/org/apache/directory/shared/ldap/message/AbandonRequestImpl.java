@@ -21,8 +21,8 @@ package org.apache.directory.shared.ldap.message;
 
 
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.message.internal.InternalAbandonRequest;
-import org.apache.directory.shared.ldap.message.internal.InternalAbstractRequest;
+import org.apache.directory.shared.ldap.message.internal.AbandonRequest;
+import org.apache.directory.shared.ldap.message.internal.AbstractRequest;
 
 
 /**
@@ -30,7 +30,7 @@ import org.apache.directory.shared.ldap.message.internal.InternalAbstractRequest
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class AbandonRequestImpl extends InternalAbstractRequest implements InternalAbandonRequest
+public class AbandonRequestImpl extends AbstractRequest implements AbandonRequest
 {
     static final long serialVersionUID = -4688193359792740969L;
 
@@ -97,7 +97,7 @@ public class AbandonRequestImpl extends InternalAbstractRequest implements Inter
             return true;
         }
 
-        if ( ( obj == null ) || !( obj instanceof InternalAbandonRequest ) )
+        if ( ( obj == null ) || !( obj instanceof AbandonRequest ) )
         {
             return false;
         }
@@ -107,7 +107,7 @@ public class AbandonRequestImpl extends InternalAbstractRequest implements Inter
             return false;
         }
 
-        InternalAbandonRequest req = ( InternalAbandonRequest ) obj;
+        AbandonRequest req = ( AbandonRequest ) obj;
 
         if ( req.getAbandoned() != abandonId )
         {

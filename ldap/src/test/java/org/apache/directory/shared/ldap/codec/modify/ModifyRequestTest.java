@@ -43,8 +43,8 @@ import org.apache.directory.shared.ldap.message.LdapProtocolEncoder;
 import org.apache.directory.shared.ldap.message.ModifyResponseImpl;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.message.internal.InternalMessage;
-import org.apache.directory.shared.ldap.message.internal.InternalModifyRequest;
+import org.apache.directory.shared.ldap.message.internal.Message;
+import org.apache.directory.shared.ldap.message.internal.ModifyRequest;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -124,7 +124,7 @@ public class ModifyRequestTest
         }
 
         // Check the decoded PDU
-        InternalModifyRequest modifyRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getModifyRequest();
+        ModifyRequest modifyRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getModifyRequest();
 
         assertEquals( 1, modifyRequest.getMessageId() );
         assertEquals( "cn=testModify,ou=users,ou=system", modifyRequest.getName().toString() );
@@ -225,7 +225,7 @@ public class ModifyRequestTest
         catch ( DecoderException de )
         {
             assertTrue( de instanceof ResponseCarryingException );
-            InternalMessage response = ( ( ResponseCarryingException ) de ).getResponse();
+            Message response = ( ( ResponseCarryingException ) de ).getResponse();
             assertTrue( response instanceof ModifyResponseImpl );
             assertEquals( ResultCodeEnum.INVALID_DN_SYNTAX, ( ( ModifyResponseImpl ) response ).getLdapResult()
                 .getResultCode() );
@@ -293,7 +293,7 @@ public class ModifyRequestTest
         }
 
         // Check the decoded PDU
-        InternalModifyRequest modifyRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getModifyRequest();
+        ModifyRequest modifyRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getModifyRequest();
 
         assertEquals( 21, modifyRequest.getMessageId() );
         assertEquals( "cn=Tori Amos,ou=playground,dc=apache,dc=org", modifyRequest.getName().toString() );
@@ -338,7 +338,7 @@ public class ModifyRequestTest
                 fail( de.getMessage() );
             }
 
-            InternalModifyRequest modifyRequest2 = ( ( LdapMessageContainer ) ldapMessageContainer ).getModifyRequest();
+            ModifyRequest modifyRequest2 = ( ( LdapMessageContainer ) ldapMessageContainer ).getModifyRequest();
 
             bb = encoder.encodeMessage( modifyRequest2 );
             String decodedPdu2 = StringTools.dumpBytes( bb.array() );
@@ -426,7 +426,7 @@ public class ModifyRequestTest
         }
 
         // Check the decoded PDU
-        InternalModifyRequest modifyRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getModifyRequest();
+        ModifyRequest modifyRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getModifyRequest();
 
         assertEquals( 49, modifyRequest.getMessageId() );
         assertEquals( "cn=Tori Amos,ou=playground,dc=apache,dc=org", modifyRequest.getName().toString() );
@@ -480,7 +480,7 @@ public class ModifyRequestTest
                 fail( de.getMessage() );
             }
 
-            InternalModifyRequest modifyRequest2 = ( ( LdapMessageContainer ) ldapMessageContainer ).getModifyRequest();
+            ModifyRequest modifyRequest2 = ( ( LdapMessageContainer ) ldapMessageContainer ).getModifyRequest();
 
             bb = encoder.encodeMessage( modifyRequest2 );
             String decodedPdu2 = StringTools.dumpBytes( bb.array() );
@@ -553,7 +553,7 @@ public class ModifyRequestTest
         }
 
         // Check the decoded PDU
-        InternalModifyRequest modifyRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getModifyRequest();
+        ModifyRequest modifyRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getModifyRequest();
 
         assertEquals( 1, modifyRequest.getMessageId() );
         assertEquals( "cn=testModify,ou=users,ou=system", modifyRequest.getName().toString() );
@@ -989,7 +989,7 @@ public class ModifyRequestTest
         catch ( DecoderException de )
         {
             assertTrue( de instanceof ResponseCarryingException );
-            InternalMessage response = ( ( ResponseCarryingException ) de ).getResponse();
+            Message response = ( ( ResponseCarryingException ) de ).getResponse();
             assertTrue( response instanceof ModifyResponseImpl );
             assertEquals( ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX, ( ( ModifyResponseImpl ) response ).getLdapResult()
                 .getResultCode() );
@@ -1082,7 +1082,7 @@ public class ModifyRequestTest
         }
 
         // Check the decoded PDU
-        InternalModifyRequest modifyRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getModifyRequest();
+        ModifyRequest modifyRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getModifyRequest();
 
         assertEquals( 49, modifyRequest.getMessageId() );
         assertEquals( "cn=testModify,ou=users,ou=system", modifyRequest.getName().toString() );
@@ -1162,7 +1162,7 @@ public class ModifyRequestTest
         }
 
         // Check the decoded PDU
-        InternalModifyRequest modifyRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getModifyRequest();
+        ModifyRequest modifyRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getModifyRequest();
 
         assertEquals( 49, modifyRequest.getMessageId() );
         assertEquals( "cn=testModify,ou=users,ou=system", modifyRequest.getName().toString() );
@@ -1248,7 +1248,7 @@ public class ModifyRequestTest
         }
 
         // Check the decoded PDU
-        InternalModifyRequest modifyRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getModifyRequest();
+        ModifyRequest modifyRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getModifyRequest();
 
         assertEquals( 49, modifyRequest.getMessageId() );
         assertEquals( "cn=testModify,ou=users,ou=system", modifyRequest.getName().toString() );

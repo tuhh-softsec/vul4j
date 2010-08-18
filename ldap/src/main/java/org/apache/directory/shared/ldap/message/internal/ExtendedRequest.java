@@ -56,7 +56,7 @@ import org.apache.directory.shared.ldap.message.SingleReplyRequest;
  *  @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * 
  */
-public interface InternalExtendedRequest extends SingleReplyRequest
+public interface ExtendedRequest extends SingleReplyRequest
 {
     /** Extended request message type enumeration value */
     MessageTypeEnum TYPE = MessageTypeEnum.EXTENDED_REQUEST;

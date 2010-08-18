@@ -34,7 +34,7 @@ import org.apache.directory.shared.ldap.codec.util.LdapURLEncodingException;
 import org.apache.directory.shared.ldap.message.ExtendedResponseImpl;
 import org.apache.directory.shared.ldap.message.ReferralImpl;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
-import org.apache.directory.shared.ldap.message.internal.InternalReferral;
+import org.apache.directory.shared.ldap.message.internal.Referral;
 import org.apache.directory.shared.ldap.util.LdapURL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,7 +64,7 @@ public class GracefulDisconnect extends ExtendedResponseImpl
     private int delay;
 
     /** String based LDAP URL that may be followed for replicated namingContexts */
-    private InternalReferral replicatedContexts = new ReferralImpl();
+    private Referral replicatedContexts = new ReferralImpl();
 
 
     public GracefulDisconnect( byte[] responseValue ) throws DecoderException
@@ -284,7 +284,7 @@ public class GracefulDisconnect extends ExtendedResponseImpl
     }
 
 
-    public InternalReferral getReplicatedContexts()
+    public Referral getReplicatedContexts()
     {
         return replicatedContexts;
     }

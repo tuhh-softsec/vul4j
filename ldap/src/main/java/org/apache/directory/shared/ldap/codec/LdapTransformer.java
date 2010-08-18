@@ -50,7 +50,7 @@ import org.apache.directory.shared.ldap.filter.PresenceNode;
 import org.apache.directory.shared.ldap.filter.SimpleNode;
 import org.apache.directory.shared.ldap.filter.SubstringNode;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.message.internal.InternalMessage;
+import org.apache.directory.shared.ldap.message.internal.Message;
 import org.apache.directory.shared.ldap.schema.SchemaManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -365,11 +365,11 @@ public class LdapTransformer
      * @param obj the object to transform
      * @return the object transformed
      */
-    public static InternalMessage transform( Object obj )
+    public static Message transform( Object obj )
     {
-        if ( obj instanceof InternalMessage )
+        if ( obj instanceof Message )
         {
-            return ( InternalMessage ) obj;
+            return ( Message ) obj;
         }
 
         LdapMessageCodec codecMessage = ( LdapMessageCodec ) obj;
@@ -381,7 +381,7 @@ public class LdapTransformer
                 + "> from Codec to nternal." );
         }
 
-        InternalMessage internalMessage = null;
+        Message internalMessage = null;
 
         MessageTypeEnum messageType = codecMessage.getMessageType();
 
@@ -422,7 +422,7 @@ public class LdapTransformer
      * @return the msg transformed
      */
     @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "NP_NULL_ON_SOME_PATH", justification = "The number of Ldap Message we are dealing with is finite, and we won't ever have to deal with any other unexpected one")
-    public static Object transform( InternalMessage msg )
+    public static Object transform( Message msg )
     {
         if ( IS_DEBUG )
         {
@@ -454,7 +454,7 @@ public class LdapTransformer
      * @param codecMessage the Codec message
      * @param msg the Internal message
      */
-    private static void transformControlsCodecToInternal( LdapMessageCodec codecMessage, InternalMessage internalMessage )
+    private static void transformControlsCodecToInternal( LdapMessageCodec codecMessage, Message internalMessage )
     {
         if ( codecMessage.getControls() == null )
         {
@@ -473,7 +473,7 @@ public class LdapTransformer
      * @param codecMessage The Codec SearchResultReference to produce
      * @param msg The incoming Internal Message
      */
-    private static void transformControlsInternalToCodec( LdapMessageCodec codecMessage, InternalMessage internalMessage )
+    private static void transformControlsInternalToCodec( LdapMessageCodec codecMessage, Message internalMessage )
     {
         if ( internalMessage.getControls() == null )
         {

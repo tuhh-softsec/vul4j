@@ -26,8 +26,8 @@ import javax.naming.NamingException;
 import javax.naming.ldap.ExtendedResponse;
 
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
-import org.apache.directory.shared.ldap.message.internal.InternalAbstractRequest;
-import org.apache.directory.shared.ldap.message.internal.InternalExtendedRequest;
+import org.apache.directory.shared.ldap.message.internal.AbstractRequest;
+import org.apache.directory.shared.ldap.message.internal.ExtendedRequest;
 import org.apache.directory.shared.ldap.message.internal.ResultResponse;
 import org.apache.directory.shared.ldap.util.StringTools;
 
@@ -37,7 +37,7 @@ import org.apache.directory.shared.ldap.util.StringTools;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class ExtendedRequestImpl extends InternalAbstractRequest implements InternalExtendedRequest
+public class ExtendedRequestImpl extends AbstractRequest implements ExtendedRequest
 {
     static final long serialVersionUID = 7916990159044177480L;
 
@@ -208,12 +208,12 @@ public class ExtendedRequestImpl extends InternalAbstractRequest implements Inte
             return false;
         }
 
-        if ( !( obj instanceof InternalExtendedRequest ) )
+        if ( !( obj instanceof ExtendedRequest ) )
         {
             return false;
         }
 
-        InternalExtendedRequest req = ( InternalExtendedRequest ) obj;
+        ExtendedRequest req = ( ExtendedRequest ) obj;
 
         if ( ( oid != null ) && ( req.getRequestName() == null ) )
         {

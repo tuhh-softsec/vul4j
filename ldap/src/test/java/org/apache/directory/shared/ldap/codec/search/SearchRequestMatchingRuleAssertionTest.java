@@ -44,7 +44,7 @@ import org.apache.directory.shared.ldap.filter.SearchScope;
 import org.apache.directory.shared.ldap.message.AliasDerefMode;
 import org.apache.directory.shared.ldap.message.LdapProtocolEncoder;
 import org.apache.directory.shared.ldap.message.SearchRequestImpl;
-import org.apache.directory.shared.ldap.message.internal.InternalSearchRequest;
+import org.apache.directory.shared.ldap.message.internal.SearchRequest;
 import org.apache.directory.shared.ldap.schema.normalizers.DeepTrimToLowerNormalizer;
 import org.apache.directory.shared.ldap.schema.normalizers.OidNormalizer;
 import org.apache.directory.shared.ldap.util.StringTools;
@@ -184,7 +184,7 @@ public class SearchRequestMatchingRuleAssertionTest
             fail( de.getMessage() );
         }
 
-        InternalSearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
 
         assertEquals( 1, searchRequest.getMessageId() );
         assertEquals( "dc=example,dc=com", searchRequest.getBase().toString() );
@@ -396,7 +396,7 @@ public class SearchRequestMatchingRuleAssertionTest
             fail( de.getMessage() );
         }
 
-        InternalSearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
 
         assertEquals( 4, searchRequest.getMessageId() );
         assertEquals( "uid=akarasulu,dc=example,dc=com", searchRequest.getBase().toString() );
@@ -696,7 +696,7 @@ public class SearchRequestMatchingRuleAssertionTest
             fail( de.getMessage() );
         }
 
-        InternalSearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
 
         assertEquals( 4, searchRequest.getMessageId() );
         assertEquals( "uid=akarasulu,dc=example,dc=com", searchRequest.getBase().toString() );

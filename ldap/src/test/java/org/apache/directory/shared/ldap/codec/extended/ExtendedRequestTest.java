@@ -36,7 +36,7 @@ import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.message.LdapProtocolEncoder;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.message.internal.InternalExtendedRequest;
+import org.apache.directory.shared.ldap.message.internal.ExtendedRequest;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -93,7 +93,7 @@ public class ExtendedRequestTest
         }
 
         // Check the decoded ExtendedRequest PDU
-        InternalExtendedRequest extendedRequest = ( ( LdapMessageContainer ) ldapMessageContainer )
+        ExtendedRequest extendedRequest = ( ( LdapMessageContainer ) ldapMessageContainer )
             .getExtendedRequest();
 
         assertEquals( 1, extendedRequest.getMessageId() );
@@ -164,7 +164,7 @@ public class ExtendedRequestTest
         }
 
         // Check the decoded ExtendedRequest PDU
-        InternalExtendedRequest extendedRequest = ( ( LdapMessageContainer ) ldapMessageContainer )
+        ExtendedRequest extendedRequest = ( ( LdapMessageContainer ) ldapMessageContainer )
             .getExtendedRequest();
 
         assertEquals( 1, extendedRequest.getMessageId() );
@@ -245,7 +245,7 @@ public class ExtendedRequestTest
         }
 
         // Check the decoded ExtendedRequest PDU
-        InternalExtendedRequest extendedRequest = ( ( LdapMessageContainer ) ldapMessageContainer )
+        ExtendedRequest extendedRequest = ( ( LdapMessageContainer ) ldapMessageContainer )
             .getExtendedRequest();
 
         assertEquals( 1, extendedRequest.getMessageId() );
@@ -424,7 +424,7 @@ public class ExtendedRequestTest
         }
 
         // Check the decoded ExtendedRequest PDU
-        InternalExtendedRequest extendedRequest = ( ( LdapMessageContainer ) ldapMessageContainer )
+        ExtendedRequest extendedRequest = ( ( LdapMessageContainer ) ldapMessageContainer )
             .getExtendedRequest();
 
         assertEquals( 1, extendedRequest.getMessageId() );
@@ -490,7 +490,7 @@ public class ExtendedRequestTest
         }
 
         // Check the decoded ExtendedRequest PDU
-        InternalExtendedRequest extendedRequest = ( ( LdapMessageContainer ) ldapMessageContainer )
+        ExtendedRequest extendedRequest = ( ( LdapMessageContainer ) ldapMessageContainer )
             .getExtendedRequest();
 
         assertEquals( 1, extendedRequest.getMessageId() );

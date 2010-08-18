@@ -36,7 +36,7 @@ import org.apache.directory.shared.ldap.name.DN;
  * 
  * @author <a href="mailto:dev@directory.apache.org"> Apache Directory Project</a>
  */
-public interface InternalSearchRequest extends ManyReplyRequest, InternalAbandonableRequest
+public interface SearchRequest extends ManyReplyRequest, AbandonableRequest
 {
     /**
      * Different response types that a search request may return. A search

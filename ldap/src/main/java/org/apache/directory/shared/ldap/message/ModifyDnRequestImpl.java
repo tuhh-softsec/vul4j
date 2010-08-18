@@ -21,7 +21,7 @@ package org.apache.directory.shared.ldap.message;
 
 
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
-import org.apache.directory.shared.ldap.message.internal.InternalModifyDnRequest;
+import org.apache.directory.shared.ldap.message.internal.ModifyDnRequest;
 import org.apache.directory.shared.ldap.message.internal.ModifyDnResponse;
 import org.apache.directory.shared.ldap.message.internal.ResultResponse;
 import org.apache.directory.shared.ldap.name.DN;
@@ -33,7 +33,7 @@ import org.apache.directory.shared.ldap.name.RDN;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class ModifyDnRequestImpl extends AbstractAbandonableRequest implements InternalModifyDnRequest
+public class ModifyDnRequestImpl extends AbstractAbandonableRequest implements ModifyDnRequest
 {
     static final long serialVersionUID = 1233507339633051696L;
 
@@ -305,7 +305,7 @@ public class ModifyDnRequestImpl extends AbstractAbandonableRequest implements I
             return false;
         }
 
-        InternalModifyDnRequest req = ( InternalModifyDnRequest ) obj;
+        ModifyDnRequest req = ( ModifyDnRequest ) obj;
 
         if ( name != null && req.getName() == null )
         {

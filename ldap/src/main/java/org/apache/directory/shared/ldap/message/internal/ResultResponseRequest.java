@@ -19,16 +19,20 @@
  */
 package org.apache.directory.shared.ldap.message.internal;
 
-import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
-
 
 /**
- * Unbind protocol request message used to end a client session.
+ * A request who's one or more responses contains an LdapResult.
  * 
- * @author <a href="mailto:dev@directory.apache.org"> Apache Directory Project</a>
+ * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public interface InternalUnbindRequest extends InternalRequest
+public interface ResultResponseRequest extends Request
 {
-    /** Unbind request protocol message type */
-    MessageTypeEnum TYPE = MessageTypeEnum.UNBIND_REQUEST;
+    /**
+     * If called for the first time, this methohd creates a result containing
+     * response object for this request.
+     * 
+     * @return a result containing response with defaults and the messageId set
+     *         in response to this specific request
+     */
+    ResultResponse getResultResponse();
 }

@@ -25,7 +25,7 @@ import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
-import org.apache.directory.shared.ldap.message.internal.InternalSearchRequest;
+import org.apache.directory.shared.ldap.message.internal.SearchRequest;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,7 +58,7 @@ public class AttributeDescAction extends GrammarAction
     {
         LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
-        InternalSearchRequest searchRequest = ldapMessageContainer.getSearchRequest();
+        SearchRequest searchRequest = ldapMessageContainer.getSearchRequest();
 
         TLV tlv = ldapMessageContainer.getCurrentTLV();
         String attributeDescription = null;

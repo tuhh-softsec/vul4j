@@ -25,7 +25,7 @@ import java.util.Arrays;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.message.internal.BindResponse;
-import org.apache.directory.shared.ldap.message.internal.InternalBindRequest;
+import org.apache.directory.shared.ldap.message.internal.BindRequest;
 import org.apache.directory.shared.ldap.message.internal.ResultResponse;
 import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.util.StringTools;
@@ -37,7 +37,7 @@ import org.apache.directory.shared.ldap.util.StringTools;
  * 
  * @author <a href="mailto:dev@directory.apache.org"> Apache Directory Project</a>
  */
-public class BindRequestImpl extends AbstractAbandonableRequest implements InternalBindRequest
+public class BindRequestImpl extends AbstractAbandonableRequest implements BindRequest
 {
     static final long serialVersionUID = 7945504184130380071L;
 
@@ -354,7 +354,7 @@ public class BindRequestImpl extends AbstractAbandonableRequest implements Inter
             return true;
         }
 
-        if ( ( obj == null ) || !( obj instanceof InternalBindRequest ) )
+        if ( ( obj == null ) || !( obj instanceof BindRequest ) )
         {
             return false;
         }
@@ -364,7 +364,7 @@ public class BindRequestImpl extends AbstractAbandonableRequest implements Inter
             return false;
         }
 
-        InternalBindRequest req = ( InternalBindRequest ) obj;
+        BindRequest req = ( BindRequest ) obj;
 
         if ( req.isSimple() != isSimple() )
         {

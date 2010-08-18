@@ -31,7 +31,7 @@ import org.apache.directory.shared.ldap.name.DN;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public interface InternalCompareRequest extends SingleReplyRequest, InternalAbandonableRequest
+public interface CompareRequest extends SingleReplyRequest, AbandonableRequest
 {
     /** Compare request message type enum code */
     MessageTypeEnum TYPE = MessageTypeEnum.COMPARE_REQUEST;

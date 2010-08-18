@@ -47,8 +47,8 @@ import org.apache.directory.shared.ldap.message.AddResponseImpl;
 import org.apache.directory.shared.ldap.message.LdapProtocolEncoder;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.message.internal.InternalAddRequest;
-import org.apache.directory.shared.ldap.message.internal.InternalMessage;
+import org.apache.directory.shared.ldap.message.internal.AddRequest;
+import org.apache.directory.shared.ldap.message.internal.Message;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -131,7 +131,7 @@ public class AddRequestTest
             fail( de.getMessage() );
         }
 
-        InternalAddRequest addRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getAddRequest();
+        AddRequest addRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getAddRequest();
 
         // Check the decoded message
         assertEquals( 1, addRequest.getMessageId() );
@@ -204,7 +204,7 @@ public class AddRequestTest
                 fail( de.getMessage() );
             }
 
-            InternalAddRequest addRequest2 = ( ( LdapMessageContainer ) ldapMessageContainer ).getAddRequest();
+            AddRequest addRequest2 = ( ( LdapMessageContainer ) ldapMessageContainer ).getAddRequest();
             assertEquals( addRequest, addRequest2 );
         }
         catch ( EncoderException ee )
@@ -308,7 +308,7 @@ public class AddRequestTest
         catch ( DecoderException de )
         {
             assertTrue( de instanceof ResponseCarryingException );
-            InternalMessage response = ( ( ResponseCarryingException ) de ).getResponse();
+            Message response = ( ( ResponseCarryingException ) de ).getResponse();
             assertTrue( response instanceof AddResponseImpl );
             assertEquals( ResultCodeEnum.NAMING_VIOLATION, ( ( AddResponseImpl ) response ).getLdapResult()
                 .getResultCode() );
@@ -379,7 +379,7 @@ public class AddRequestTest
         catch ( DecoderException de )
         {
             assertTrue( de instanceof ResponseCarryingException );
-            InternalMessage response = ( ( ResponseCarryingException ) de ).getResponse();
+            Message response = ( ( ResponseCarryingException ) de ).getResponse();
             assertTrue( response instanceof AddResponseImpl );
             assertEquals( ResultCodeEnum.INVALID_DN_SYNTAX, ( ( AddResponseImpl ) response ).getLdapResult()
                 .getResultCode() );
@@ -521,7 +521,7 @@ public class AddRequestTest
         catch ( DecoderException de )
         {
             assertTrue( de instanceof ResponseCarryingException );
-            InternalMessage response = ( ( ResponseCarryingException ) de ).getResponse();
+            Message response = ( ( ResponseCarryingException ) de ).getResponse();
             assertTrue( response instanceof AddResponseImpl );
             assertEquals( ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX, ( ( AddResponseImpl ) response ).getLdapResult()
                 .getResultCode() );
@@ -670,7 +670,7 @@ public class AddRequestTest
             fail( de.getMessage() );
         }
 
-        InternalAddRequest addRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getAddRequest();
+        AddRequest addRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getAddRequest();
 
         // Check the decoded message
         assertEquals( 1, addRequest.getMessageId() );
@@ -762,7 +762,7 @@ public class AddRequestTest
             fail( de.getMessage() );
         }
 
-        InternalAddRequest addRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getAddRequest();
+        AddRequest addRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getAddRequest();
 
         // Check the decoded message
         assertEquals( 1, addRequest.getMessageId() );

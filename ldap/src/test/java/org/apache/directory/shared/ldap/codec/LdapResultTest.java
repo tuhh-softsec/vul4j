@@ -37,7 +37,7 @@ import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.ldap.message.LdapProtocolEncoder;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.message.internal.AddResponse;
-import org.apache.directory.shared.ldap.message.internal.InternalReferral;
+import org.apache.directory.shared.ldap.message.internal.Referral;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -361,7 +361,7 @@ public class LdapResultTest
         assertEquals( "", addResponse.getLdapResult().getMatchedDn().getName() );
         assertEquals( "", addResponse.getLdapResult().getErrorMessage() );
 
-        InternalReferral referral = addResponse.getLdapResult().getReferral();
+        Referral referral = addResponse.getLdapResult().getReferral();
 
         assertNotNull( referral );
         assertEquals( 1, referral.getLdapUrls().size() );
@@ -439,7 +439,7 @@ public class LdapResultTest
         assertEquals( "", addResponse.getLdapResult().getMatchedDn().getName() );
         assertEquals( "", addResponse.getLdapResult().getErrorMessage() );
 
-        InternalReferral referral = addResponse.getLdapResult().getReferral();
+        Referral referral = addResponse.getLdapResult().getReferral();
 
         assertNotNull( referral );
 
@@ -516,7 +516,7 @@ public class LdapResultTest
         assertEquals( "", addResponse.getLdapResult().getMatchedDn().getName() );
         assertEquals( "", addResponse.getLdapResult().getErrorMessage() );
 
-        InternalReferral referral = addResponse.getLdapResult().getReferral();
+        Referral referral = addResponse.getLdapResult().getReferral();
 
         assertNotNull( referral );
 

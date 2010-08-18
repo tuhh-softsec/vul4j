@@ -31,7 +31,7 @@ import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.message.internal.InternalModifyDnRequest;
+import org.apache.directory.shared.ldap.message.internal.ModifyDnRequest;
 import org.apache.directory.shared.ldap.message.internal.ResultResponse;
 import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.name.RDN;
@@ -239,7 +239,7 @@ public class ModifyDnRequestImplTest
     @Test
     public void testEqualsDiffImpl()
     {
-        InternalModifyDnRequest req0 = new InternalModifyDnRequest()
+        ModifyDnRequest req0 = new ModifyDnRequest()
         {
             public DN getName()
             {

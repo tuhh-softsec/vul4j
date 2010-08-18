@@ -31,7 +31,7 @@ import org.apache.directory.shared.ldap.entry.BinaryValue;
 import org.apache.directory.shared.ldap.entry.StringValue;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.message.SearchRequestImpl;
-import org.apache.directory.shared.ldap.message.internal.InternalSearchRequest;
+import org.apache.directory.shared.ldap.message.internal.SearchRequest;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,7 +63,7 @@ public class InitAssertionValueFilterAction extends GrammarAction
     public void action( IAsn1Container container ) throws DecoderException
     {
         LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-        InternalSearchRequest searchRequest = ldapMessageContainer.getSearchRequest();
+        SearchRequest searchRequest = ldapMessageContainer.getSearchRequest();
 
         TLV tlv = ldapMessageContainer.getCurrentTLV();
 

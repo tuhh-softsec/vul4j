@@ -20,7 +20,7 @@
 package org.apache.directory.shared.ldap.message;
 
 
-import org.apache.directory.shared.ldap.message.internal.InternalAbstractResultResponse;
+import org.apache.directory.shared.ldap.message.internal.AbstractResultResponse;
 import org.apache.directory.shared.ldap.message.internal.LdapResult;
 import org.apache.directory.shared.ldap.message.internal.SearchResultDone;
 
@@ -30,7 +30,7 @@ import org.apache.directory.shared.ldap.message.internal.SearchResultDone;
  * 
  * @author <a href="mailto:dev@directory.apache.org"> Apache Directory Project</a>
  */
-public class SearchResultDoneImpl extends InternalAbstractResultResponse implements SearchResultDone
+public class SearchResultDoneImpl extends AbstractResultResponse implements SearchResultDone
 {
     /** The encoded searchResultDone length */
     private int searchResultDoneLength;

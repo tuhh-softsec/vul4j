@@ -39,8 +39,8 @@ import org.apache.directory.shared.ldap.message.LdapProtocolEncoder;
 import org.apache.directory.shared.ldap.message.ModifyDnResponseImpl;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.message.internal.InternalMessage;
-import org.apache.directory.shared.ldap.message.internal.InternalModifyDnRequest;
+import org.apache.directory.shared.ldap.message.internal.Message;
+import org.apache.directory.shared.ldap.message.internal.ModifyDnRequest;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -105,7 +105,7 @@ public class ModifyDNRequestTest
             fail( de.getMessage() );
         }
 
-        InternalModifyDnRequest modifyDnRequest = ( ( LdapMessageContainer ) ldapMessageContainer )
+        ModifyDnRequest modifyDnRequest = ( ( LdapMessageContainer ) ldapMessageContainer )
             .getModifyDnRequest();
 
         assertEquals( 1, modifyDnRequest.getMessageId() );
@@ -176,7 +176,7 @@ public class ModifyDNRequestTest
         catch ( DecoderException de )
         {
             assertTrue( de instanceof ResponseCarryingException );
-            InternalMessage response = ( ( ResponseCarryingException ) de ).getResponse();
+            Message response = ( ( ResponseCarryingException ) de ).getResponse();
             assertTrue( response instanceof ModifyDnResponseImpl );
             assertEquals( ResultCodeEnum.INVALID_DN_SYNTAX, ( ( ModifyDnResponseImpl ) response ).getLdapResult()
                 .getResultCode() );
@@ -229,7 +229,7 @@ public class ModifyDNRequestTest
         catch ( DecoderException de )
         {
             assertTrue( de instanceof ResponseCarryingException );
-            InternalMessage response = ( ( ResponseCarryingException ) de ).getResponse();
+            Message response = ( ( ResponseCarryingException ) de ).getResponse();
             assertTrue( response instanceof ModifyDnResponseImpl );
             assertEquals( ResultCodeEnum.INVALID_DN_SYNTAX, ( ( ModifyDnResponseImpl ) response ).getLdapResult()
                 .getResultCode() );
@@ -282,7 +282,7 @@ public class ModifyDNRequestTest
         catch ( DecoderException de )
         {
             assertTrue( de instanceof ResponseCarryingException );
-            InternalMessage response = ( ( ResponseCarryingException ) de ).getResponse();
+            Message response = ( ( ResponseCarryingException ) de ).getResponse();
             assertTrue( response instanceof ModifyDnResponseImpl );
             assertEquals( ResultCodeEnum.INVALID_DN_SYNTAX, ( ( ModifyDnResponseImpl ) response ).getLdapResult()
                 .getResultCode() );
@@ -344,7 +344,7 @@ public class ModifyDNRequestTest
             fail( de.getMessage() );
         }
 
-        InternalModifyDnRequest modifyDnRequest = ( ( LdapMessageContainer ) ldapMessageContainer )
+        ModifyDnRequest modifyDnRequest = ( ( LdapMessageContainer ) ldapMessageContainer )
             .getModifyDnRequest();
 
         assertEquals( 1, modifyDnRequest.getMessageId() );
@@ -426,7 +426,7 @@ public class ModifyDNRequestTest
             fail( de.getMessage() );
         }
 
-        InternalModifyDnRequest modifyDnRequest = ( ( LdapMessageContainer ) ldapMessageContainer )
+        ModifyDnRequest modifyDnRequest = ( ( LdapMessageContainer ) ldapMessageContainer )
             .getModifyDnRequest();
 
         assertEquals( 1, modifyDnRequest.getMessageId() );
@@ -505,7 +505,7 @@ public class ModifyDNRequestTest
             fail( de.getMessage() );
         }
 
-        InternalModifyDnRequest modifyDnRequest = ( ( LdapMessageContainer ) ldapMessageContainer )
+        ModifyDnRequest modifyDnRequest = ( ( LdapMessageContainer ) ldapMessageContainer )
             .getModifyDnRequest();
 
         assertEquals( 1, modifyDnRequest.getMessageId() );

@@ -31,7 +31,7 @@ import org.apache.directory.shared.ldap.name.DN;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public interface InternalBindRequest extends SingleReplyRequest, InternalAbandonableRequest
+public interface BindRequest extends SingleReplyRequest, AbandonableRequest
 {
     /** Bind request message type enumeration value */
     MessageTypeEnum TYPE = MessageTypeEnum.BIND_REQUEST;

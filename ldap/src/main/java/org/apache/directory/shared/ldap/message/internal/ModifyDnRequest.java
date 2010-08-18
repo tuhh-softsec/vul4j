@@ -66,7 +66,7 @@ import org.apache.directory.shared.ldap.name.RDN;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public interface InternalModifyDnRequest extends SingleReplyRequest, InternalAbandonableRequest
+public interface ModifyDnRequest extends SingleReplyRequest, AbandonableRequest
 {
     /** Modify DN request message type enumeration value */
     MessageTypeEnum TYPE = MessageTypeEnum.MODIFYDN_REQUEST;

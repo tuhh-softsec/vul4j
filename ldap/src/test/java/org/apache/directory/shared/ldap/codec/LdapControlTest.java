@@ -37,7 +37,7 @@ import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.ldap.message.AbandonRequestImpl;
 import org.apache.directory.shared.ldap.message.LdapProtocolEncoder;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.message.internal.InternalAbandonRequest;
+import org.apache.directory.shared.ldap.message.internal.AbandonRequest;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -101,10 +101,10 @@ public class LdapControlTest
         }
 
         // Check that everything is OK
-        InternalAbandonRequest abandonRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getAbandonRequest();
+        AbandonRequest abandonRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getAbandonRequest();
 
         // Copy the message
-        InternalAbandonRequest internalAbandonRequest = new AbandonRequestImpl( abandonRequest.getMessageId() );
+        AbandonRequest internalAbandonRequest = new AbandonRequestImpl( abandonRequest.getMessageId() );
         internalAbandonRequest.setAbandoned( abandonRequest.getAbandoned() );
 
         assertEquals( 3, abandonRequest.getMessageId() );
@@ -159,7 +159,7 @@ public class LdapControlTest
                 fail( de.getMessage() );
             }
 
-            InternalAbandonRequest abandonRequest2 = ( ( LdapMessageContainer ) ldapMessageContainer )
+            AbandonRequest abandonRequest2 = ( ( LdapMessageContainer ) ldapMessageContainer )
                 .getAbandonRequest();
 
             assertEquals( abandonRequest, abandonRequest2 );

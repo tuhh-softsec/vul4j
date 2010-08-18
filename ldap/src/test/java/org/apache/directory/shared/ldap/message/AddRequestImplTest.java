@@ -36,7 +36,7 @@ import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.message.internal.InternalAddRequest;
+import org.apache.directory.shared.ldap.message.internal.AddRequest;
 import org.apache.directory.shared.ldap.message.internal.ResultResponse;
 import org.apache.directory.shared.ldap.name.DN;
 import org.junit.Test;
@@ -198,7 +198,7 @@ public class AddRequestImplTest
     @Test
     public void testEqualsDiffImpl()
     {
-        InternalAddRequest req0 = new InternalAddRequest()
+        AddRequest req0 = new AddRequest()
         {
             public Entry getEntry()
             {

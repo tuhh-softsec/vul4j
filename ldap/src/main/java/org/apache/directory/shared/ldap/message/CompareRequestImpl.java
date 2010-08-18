@@ -25,7 +25,7 @@ import org.apache.directory.shared.ldap.entry.BinaryValue;
 import org.apache.directory.shared.ldap.entry.StringValue;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.message.internal.CompareResponse;
-import org.apache.directory.shared.ldap.message.internal.InternalCompareRequest;
+import org.apache.directory.shared.ldap.message.internal.CompareRequest;
 import org.apache.directory.shared.ldap.message.internal.ResultResponse;
 import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.util.StringTools;
@@ -36,7 +36,7 @@ import org.apache.directory.shared.ldap.util.StringTools;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class CompareRequestImpl extends AbstractAbandonableRequest implements InternalCompareRequest
+public class CompareRequestImpl extends AbstractAbandonableRequest implements CompareRequest
 {
     static final long serialVersionUID = 1699731530016468977L;
 
@@ -344,7 +344,7 @@ public class CompareRequestImpl extends AbstractAbandonableRequest implements In
             return false;
         }
 
-        InternalCompareRequest req = ( InternalCompareRequest ) obj;
+        CompareRequest req = ( CompareRequest ) obj;
         DN reqName = req.getName();
 
         if ( ( name != null ) && ( reqName == null ) )

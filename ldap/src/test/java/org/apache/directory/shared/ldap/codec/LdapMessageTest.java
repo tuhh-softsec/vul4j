@@ -34,8 +34,8 @@ import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.ldap.message.LdapProtocolEncoder;
 import org.apache.directory.shared.ldap.message.UnbindRequestImpl;
-import org.apache.directory.shared.ldap.message.internal.InternalMessage;
-import org.apache.directory.shared.ldap.message.internal.InternalUnbindRequest;
+import org.apache.directory.shared.ldap.message.internal.Message;
+import org.apache.directory.shared.ldap.message.internal.UnbindRequest;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -311,12 +311,12 @@ public class LdapMessageTest
             fail( de.getMessage() );
         }
 
-        InternalMessage message = ( ( LdapMessageContainer ) ldapMessageContainer ).getInternalMessage();
+        Message message = ( ( LdapMessageContainer ) ldapMessageContainer ).getInternalMessage();
 
         assertEquals( 500, message.getMessageId() );
 
         // Check the length
-        InternalUnbindRequest internalUnbindRequest = new UnbindRequestImpl( message.getMessageId() );
+        UnbindRequest internalUnbindRequest = new UnbindRequestImpl( message.getMessageId() );
 
         try
         {

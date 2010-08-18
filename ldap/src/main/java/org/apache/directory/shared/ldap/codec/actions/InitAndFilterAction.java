@@ -29,7 +29,7 @@ import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.search.AndFilter;
 import org.apache.directory.shared.ldap.codec.search.Filter;
 import org.apache.directory.shared.ldap.message.SearchRequestImpl;
-import org.apache.directory.shared.ldap.message.internal.InternalSearchRequest;
+import org.apache.directory.shared.ldap.message.internal.SearchRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,7 +70,7 @@ public class InitAndFilterAction extends GrammarAction
             throw new DecoderException( msg );
         }
 
-        InternalSearchRequest searchRequest = ldapMessageContainer.getSearchRequest();
+        SearchRequest searchRequest = ldapMessageContainer.getSearchRequest();
 
         // We can allocate the SearchRequest
         Filter andFilter = new AndFilter( ldapMessageContainer.getTlvId() );

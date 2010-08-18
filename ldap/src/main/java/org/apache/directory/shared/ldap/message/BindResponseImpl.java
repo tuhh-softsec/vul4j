@@ -22,7 +22,7 @@ package org.apache.directory.shared.ldap.message;
 
 import java.util.Arrays;
 
-import org.apache.directory.shared.ldap.message.internal.InternalAbstractResultResponse;
+import org.apache.directory.shared.ldap.message.internal.AbstractResultResponse;
 import org.apache.directory.shared.ldap.message.internal.BindResponse;
 import org.apache.directory.shared.ldap.util.StringTools;
 
@@ -32,7 +32,7 @@ import org.apache.directory.shared.ldap.util.StringTools;
  * 
  * @author <a href="mailto:dev@directory.apache.org"> Apache Directory Project</a>
  */
-public class BindResponseImpl extends InternalAbstractResultResponse implements BindResponse
+public class BindResponseImpl extends AbstractResultResponse implements BindResponse
 {
     static final long serialVersionUID = -5146809476518669755L;
 

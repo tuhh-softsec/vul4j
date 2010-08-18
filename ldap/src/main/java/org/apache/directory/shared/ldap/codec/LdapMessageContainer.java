@@ -28,17 +28,17 @@ import org.apache.directory.shared.ldap.message.internal.CompareResponse;
 import org.apache.directory.shared.ldap.message.internal.DeleteResponse;
 import org.apache.directory.shared.ldap.message.internal.ExtendedResponse;
 import org.apache.directory.shared.ldap.message.internal.IntermediateResponse;
-import org.apache.directory.shared.ldap.message.internal.InternalAbandonRequest;
-import org.apache.directory.shared.ldap.message.internal.InternalAddRequest;
-import org.apache.directory.shared.ldap.message.internal.InternalBindRequest;
-import org.apache.directory.shared.ldap.message.internal.InternalCompareRequest;
-import org.apache.directory.shared.ldap.message.internal.InternalDeleteRequest;
-import org.apache.directory.shared.ldap.message.internal.InternalExtendedRequest;
-import org.apache.directory.shared.ldap.message.internal.InternalMessage;
-import org.apache.directory.shared.ldap.message.internal.InternalModifyDnRequest;
-import org.apache.directory.shared.ldap.message.internal.InternalModifyRequest;
-import org.apache.directory.shared.ldap.message.internal.InternalSearchRequest;
-import org.apache.directory.shared.ldap.message.internal.InternalUnbindRequest;
+import org.apache.directory.shared.ldap.message.internal.AbandonRequest;
+import org.apache.directory.shared.ldap.message.internal.AddRequest;
+import org.apache.directory.shared.ldap.message.internal.BindRequest;
+import org.apache.directory.shared.ldap.message.internal.CompareRequest;
+import org.apache.directory.shared.ldap.message.internal.DeleteRequest;
+import org.apache.directory.shared.ldap.message.internal.ExtendedRequest;
+import org.apache.directory.shared.ldap.message.internal.Message;
+import org.apache.directory.shared.ldap.message.internal.ModifyDnRequest;
+import org.apache.directory.shared.ldap.message.internal.ModifyRequest;
+import org.apache.directory.shared.ldap.message.internal.SearchRequest;
+import org.apache.directory.shared.ldap.message.internal.UnbindRequest;
 import org.apache.directory.shared.ldap.message.internal.ModifyDnResponse;
 import org.apache.directory.shared.ldap.message.internal.ModifyResponse;
 import org.apache.directory.shared.ldap.message.internal.SearchResultDone;
@@ -60,7 +60,7 @@ public class LdapMessageContainer extends AbstractContainer
     // ----------------------------------------------------------------------------
 
     /** The internal ldap message */
-    private InternalMessage internalMessage;
+    private Message internalMessage;
 
     /** checks if attribute is binary */
     private final BinaryAttributeDetector binaryAttributeDetector;
@@ -112,7 +112,7 @@ public class LdapMessageContainer extends AbstractContainer
     /**
      * @return Returns the ldapMessage.
      */
-    public InternalMessage getInternalMessage()
+    public Message getInternalMessage()
     {
         return internalMessage;
     }
@@ -121,18 +121,18 @@ public class LdapMessageContainer extends AbstractContainer
     /**
      * @return Returns the AbandonRequest stored in the container
      */
-    public InternalAbandonRequest getAbandonRequest()
+    public AbandonRequest getAbandonRequest()
     {
-        return ( InternalAbandonRequest ) internalMessage;
+        return ( AbandonRequest ) internalMessage;
     }
 
 
     /**
      * @return Returns the AddRequest stored in the container
      */
-    public InternalAddRequest getAddRequest()
+    public AddRequest getAddRequest()
     {
-        return ( InternalAddRequest ) internalMessage;
+        return ( AddRequest ) internalMessage;
     }
 
 
@@ -148,9 +148,9 @@ public class LdapMessageContainer extends AbstractContainer
     /**
      * @return Returns the BindRequest stored in the container
      */
-    public InternalBindRequest getBindRequest()
+    public BindRequest getBindRequest()
     {
-        return ( InternalBindRequest ) internalMessage;
+        return ( BindRequest ) internalMessage;
     }
 
 
@@ -166,9 +166,9 @@ public class LdapMessageContainer extends AbstractContainer
     /**
      * @return Returns the CompareRequest stored in the container
      */
-    public InternalCompareRequest getCompareRequest()
+    public CompareRequest getCompareRequest()
     {
-        return ( InternalCompareRequest ) internalMessage;
+        return ( CompareRequest ) internalMessage;
     }
 
 
@@ -184,9 +184,9 @@ public class LdapMessageContainer extends AbstractContainer
     /**
      * @return Returns the DelRequest stored in the container
      */
-    public InternalDeleteRequest getDeleteRequest()
+    public DeleteRequest getDeleteRequest()
     {
-        return ( InternalDeleteRequest ) internalMessage;
+        return ( DeleteRequest ) internalMessage;
     }
 
 
@@ -202,9 +202,9 @@ public class LdapMessageContainer extends AbstractContainer
     /**
      * @return Returns the ExtendedRequest stored in the container
      */
-    public InternalExtendedRequest getExtendedRequest()
+    public ExtendedRequest getExtendedRequest()
     {
-        return ( InternalExtendedRequest ) internalMessage;
+        return ( ExtendedRequest ) internalMessage;
     }
 
 
@@ -229,9 +229,9 @@ public class LdapMessageContainer extends AbstractContainer
     /**
      * @return Returns the ModifyRequest stored in the container
      */
-    public InternalModifyRequest getModifyRequest()
+    public ModifyRequest getModifyRequest()
     {
-        return ( InternalModifyRequest ) internalMessage;
+        return ( ModifyRequest ) internalMessage;
     }
 
 
@@ -247,9 +247,9 @@ public class LdapMessageContainer extends AbstractContainer
     /**
      * @return Returns the ModifyDnRequest stored in the container
      */
-    public InternalModifyDnRequest getModifyDnRequest()
+    public ModifyDnRequest getModifyDnRequest()
     {
-        return ( InternalModifyDnRequest ) internalMessage;
+        return ( ModifyDnRequest ) internalMessage;
     }
 
 
@@ -265,9 +265,9 @@ public class LdapMessageContainer extends AbstractContainer
     /**
      * @return Returns the SearchRequest stored in the container
      */
-    public InternalSearchRequest getSearchRequest()
+    public SearchRequest getSearchRequest()
     {
-        return ( InternalSearchRequest ) internalMessage;
+        return ( SearchRequest ) internalMessage;
     }
 
 
@@ -301,9 +301,9 @@ public class LdapMessageContainer extends AbstractContainer
     /**
      * @return Returns the UnbindRequest stored in the container
      */
-    public InternalUnbindRequest getUnbindRequest()
+    public UnbindRequest getUnbindRequest()
     {
-        return ( InternalUnbindRequest ) internalMessage;
+        return ( UnbindRequest ) internalMessage;
     }
 
 
@@ -313,7 +313,7 @@ public class LdapMessageContainer extends AbstractContainer
      * 
      * @param internalMessage The message to set.
      */
-    public void setInternalMessage( InternalMessage internalMessage )
+    public void setInternalMessage( Message internalMessage )
     {
         this.internalMessage = internalMessage;
     }

@@ -37,7 +37,7 @@ import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.message.LdapProtocolEncoder;
 import org.apache.directory.shared.ldap.message.UnbindRequestImpl;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.message.internal.InternalUnbindRequest;
+import org.apache.directory.shared.ldap.message.internal.UnbindRequest;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -86,12 +86,12 @@ public class UnBindRequestTest
             fail( de.getMessage() );
         }
 
-        InternalUnbindRequest unbindRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getUnbindRequest();
+        UnbindRequest unbindRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getUnbindRequest();
 
         assertEquals( 1, unbindRequest.getMessageId() );
 
         // Check the encoding
-        InternalUnbindRequest internalUnbindRequest = new UnbindRequestImpl( unbindRequest.getMessageId() );
+        UnbindRequest internalUnbindRequest = new UnbindRequestImpl( unbindRequest.getMessageId() );
 
         try
         {
@@ -150,7 +150,7 @@ public class UnBindRequestTest
             fail( de.getMessage() );
         }
 
-        InternalUnbindRequest unbindRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getUnbindRequest();
+        UnbindRequest unbindRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getUnbindRequest();
 
         assertEquals( 1, unbindRequest.getMessageId() );
 
@@ -164,7 +164,7 @@ public class UnBindRequestTest
         assertEquals( "", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
 
         // Check the encoding
-        InternalUnbindRequest internalUnbindRequest = new UnbindRequestImpl( unbindRequest.getMessageId() );
+        UnbindRequest internalUnbindRequest = new UnbindRequestImpl( unbindRequest.getMessageId() );
         internalUnbindRequest.addControl( control );
 
         try

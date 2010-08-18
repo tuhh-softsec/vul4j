@@ -31,7 +31,7 @@ import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.message.internal.InternalBindRequest;
+import org.apache.directory.shared.ldap.message.internal.BindRequest;
 import org.apache.directory.shared.ldap.message.internal.ResultResponse;
 import org.apache.directory.shared.ldap.name.DN;
 import org.junit.Test;
@@ -200,7 +200,7 @@ public class BindRequestImplTest
     @Test
     public void testEqualsDiffImpl()
     {
-        InternalBindRequest req0 = new InternalBindRequest()
+        BindRequest req0 = new BindRequest()
         {
             public boolean isSimple()
             {

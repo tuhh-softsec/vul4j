@@ -29,7 +29,7 @@ import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.message.internal.AddResponse;
-import org.apache.directory.shared.ldap.message.internal.InternalAddRequest;
+import org.apache.directory.shared.ldap.message.internal.AddRequest;
 import org.apache.directory.shared.ldap.message.internal.ResultResponse;
 import org.apache.directory.shared.ldap.name.DN;
 
@@ -39,7 +39,7 @@ import org.apache.directory.shared.ldap.name.DN;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class AddRequestImpl extends AbstractAbandonableRequest implements InternalAddRequest
+public class AddRequestImpl extends AbstractAbandonableRequest implements AddRequest
 {
     static final long serialVersionUID = 7534132448349520346L;
 
@@ -329,7 +329,7 @@ public class AddRequestImpl extends AbstractAbandonableRequest implements Intern
         }
 
         // Check the object class. If null, it will exit.
-        if ( !( obj instanceof InternalAddRequest ) )
+        if ( !( obj instanceof AddRequest ) )
         {
             return false;
         }
@@ -339,7 +339,7 @@ public class AddRequestImpl extends AbstractAbandonableRequest implements Intern
             return false;
         }
 
-        InternalAddRequest req = ( InternalAddRequest ) obj;
+        AddRequest req = ( AddRequest ) obj;
 
         // Check the entry
         if ( entry == null )

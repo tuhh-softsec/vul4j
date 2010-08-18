@@ -22,7 +22,7 @@ package org.apache.directory.shared.ldap.message;
 
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.message.internal.AbstractResponse;
-import org.apache.directory.shared.ldap.message.internal.InternalReferral;
+import org.apache.directory.shared.ldap.message.internal.Referral;
 import org.apache.directory.shared.ldap.message.internal.SearchResultReference;
 
 
@@ -36,7 +36,7 @@ public class SearchResultReferenceImpl extends AbstractResponse implements Searc
     static final long serialVersionUID = 7423807019951309810L;
 
     /** Referral holding the reference urls */
-    private InternalReferral referral;
+    private Referral referral;
 
     /** The length of the referral */
     private int referralLength;
@@ -71,7 +71,7 @@ public class SearchResultReferenceImpl extends AbstractResponse implements Searc
      * 
      * @return the sequence of LdapUrls
      */
-    public InternalReferral getReferral()
+    public Referral getReferral()
     {
         return this.referral;
     }
@@ -82,7 +82,7 @@ public class SearchResultReferenceImpl extends AbstractResponse implements Searc
      * 
      * @param referral the sequence of LdapUrls
      */
-    public void setReferral( InternalReferral referral )
+    public void setReferral( Referral referral )
     {
         this.referral = referral;
     }

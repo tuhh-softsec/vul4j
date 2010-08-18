@@ -22,7 +22,7 @@ package org.apache.directory.shared.ldap.message;
 
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.message.internal.DeleteResponse;
-import org.apache.directory.shared.ldap.message.internal.InternalDeleteRequest;
+import org.apache.directory.shared.ldap.message.internal.DeleteRequest;
 import org.apache.directory.shared.ldap.message.internal.ResultResponse;
 import org.apache.directory.shared.ldap.name.DN;
 
@@ -32,7 +32,7 @@ import org.apache.directory.shared.ldap.name.DN;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class DeleteRequestImpl extends AbstractAbandonableRequest implements InternalDeleteRequest
+public class DeleteRequestImpl extends AbstractAbandonableRequest implements DeleteRequest
 {
     static final long serialVersionUID = 3187847454305567542L;
 
@@ -170,7 +170,7 @@ public class DeleteRequestImpl extends AbstractAbandonableRequest implements Int
             return false;
         }
 
-        InternalDeleteRequest req = ( InternalDeleteRequest ) obj;
+        DeleteRequest req = ( DeleteRequest ) obj;
 
         if ( name != null && req.getName() == null )
         {

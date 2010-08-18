@@ -20,7 +20,7 @@
 package org.apache.directory.shared.ldap.message;
 
 
-import org.apache.directory.shared.ldap.message.internal.InternalAbstractResultResponse;
+import org.apache.directory.shared.ldap.message.internal.AbstractResultResponse;
 import org.apache.directory.shared.ldap.message.internal.DeleteResponse;
 
 
@@ -29,7 +29,7 @@ import org.apache.directory.shared.ldap.message.internal.DeleteResponse;
  * 
  * @author <a href="mailto:dev@directory.apache.org"> Apache Directory Project</a>
  */
-public class DeleteResponseImpl extends InternalAbstractResultResponse implements DeleteResponse
+public class DeleteResponseImpl extends AbstractResultResponse implements DeleteResponse
 {
     /** The encoded deleteResponse length */
     private int deleteResponseLength;

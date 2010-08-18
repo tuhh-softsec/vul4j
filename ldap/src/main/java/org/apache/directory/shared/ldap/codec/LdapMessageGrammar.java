@@ -108,18 +108,18 @@ import org.apache.directory.shared.ldap.message.internal.CompareResponse;
 import org.apache.directory.shared.ldap.message.internal.DeleteResponse;
 import org.apache.directory.shared.ldap.message.internal.ExtendedResponse;
 import org.apache.directory.shared.ldap.message.internal.IntermediateResponse;
-import org.apache.directory.shared.ldap.message.internal.InternalAbandonRequest;
-import org.apache.directory.shared.ldap.message.internal.InternalAddRequest;
-import org.apache.directory.shared.ldap.message.internal.InternalBindRequest;
-import org.apache.directory.shared.ldap.message.internal.InternalCompareRequest;
-import org.apache.directory.shared.ldap.message.internal.InternalDeleteRequest;
-import org.apache.directory.shared.ldap.message.internal.InternalExtendedRequest;
-import org.apache.directory.shared.ldap.message.internal.InternalMessage;
-import org.apache.directory.shared.ldap.message.internal.InternalModifyDnRequest;
-import org.apache.directory.shared.ldap.message.internal.InternalModifyRequest;
-import org.apache.directory.shared.ldap.message.internal.InternalReferral;
-import org.apache.directory.shared.ldap.message.internal.InternalSearchRequest;
-import org.apache.directory.shared.ldap.message.internal.InternalUnbindRequest;
+import org.apache.directory.shared.ldap.message.internal.AbandonRequest;
+import org.apache.directory.shared.ldap.message.internal.AddRequest;
+import org.apache.directory.shared.ldap.message.internal.BindRequest;
+import org.apache.directory.shared.ldap.message.internal.CompareRequest;
+import org.apache.directory.shared.ldap.message.internal.DeleteRequest;
+import org.apache.directory.shared.ldap.message.internal.ExtendedRequest;
+import org.apache.directory.shared.ldap.message.internal.Message;
+import org.apache.directory.shared.ldap.message.internal.ModifyDnRequest;
+import org.apache.directory.shared.ldap.message.internal.ModifyRequest;
+import org.apache.directory.shared.ldap.message.internal.Referral;
+import org.apache.directory.shared.ldap.message.internal.SearchRequest;
+import org.apache.directory.shared.ldap.message.internal.UnbindRequest;
 import org.apache.directory.shared.ldap.message.internal.LdapResult;
 import org.apache.directory.shared.ldap.message.internal.ModifyDnResponse;
 import org.apache.directory.shared.ldap.message.internal.ModifyResponse;
@@ -303,7 +303,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
                     // Create the UnbindRequest LdapMessage instance and store it in the container
-                    InternalUnbindRequest unbindRequest = new UnbindRequestImpl( ldapMessageContainer.getMessageId() );
+                    UnbindRequest unbindRequest = new UnbindRequestImpl( ldapMessageContainer.getMessageId() );
                     ldapMessageContainer.setInternalMessage( unbindRequest );
 
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
@@ -350,7 +350,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
                     // Create the DeleteRequest LdapMessage instance and store it in the container
-                    InternalDeleteRequest delRequest = new DeleteRequestImpl( ldapMessageContainer.getMessageId() );
+                    DeleteRequest delRequest = new DeleteRequestImpl( ldapMessageContainer.getMessageId() );
                     ldapMessageContainer.setInternalMessage( delRequest );
 
                     // And store the DN into it
@@ -426,7 +426,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
                     // Create the AbandonRequest LdapMessage instance and store it in the container
-                    InternalAbandonRequest abandonRequest = new AbandonRequestImpl( ldapMessageContainer.getMessageId() );
+                    AbandonRequest abandonRequest = new AbandonRequestImpl( ldapMessageContainer.getMessageId() );
                     ldapMessageContainer.setInternalMessage( abandonRequest );
 
                     // The current TLV should be a integer
@@ -499,7 +499,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
                     // Create the BindRequest LdapMessage instance and store it in the container
-                    InternalBindRequest bindRequest = new BindRequestImpl( ldapMessageContainer.getMessageId() );
+                    BindRequest bindRequest = new BindRequestImpl( ldapMessageContainer.getMessageId() );
                     ldapMessageContainer.setInternalMessage( bindRequest );
 
                     // We will check that the request is not null
@@ -531,7 +531,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                 public void action( IAsn1Container container ) throws DecoderException
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-                    InternalBindRequest bindRequestMessage = ldapMessageContainer.getBindRequest();
+                    BindRequest bindRequestMessage = ldapMessageContainer.getBindRequest();
 
                     // The current TLV should be a integer between 1 and 127
                     // We get it and store it in Version
@@ -577,7 +577,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                 public void action( IAsn1Container container ) throws DecoderException
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-                    InternalBindRequest bindRequestMessage = ldapMessageContainer.getBindRequest();
+                    BindRequest bindRequestMessage = ldapMessageContainer.getBindRequest();
 
                     // Get the Value and store it in the BindRequest
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
@@ -637,7 +637,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
-                    InternalBindRequest bindRequestMessage = ldapMessageContainer.getBindRequest();
+                    BindRequest bindRequestMessage = ldapMessageContainer.getBindRequest();
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
                     // Allocate the Authentication Object
@@ -695,7 +695,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                 public void action( IAsn1Container container ) throws DecoderException
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-                    InternalBindRequest bindRequestMessage = ldapMessageContainer.getBindRequest();
+                    BindRequest bindRequestMessage = ldapMessageContainer.getBindRequest();
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
                     // We will check that the sasl is not null
@@ -734,7 +734,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                 public void action( IAsn1Container container ) throws DecoderException
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-                    InternalBindRequest bindRequestMessage = ldapMessageContainer.getBindRequest();
+                    BindRequest bindRequestMessage = ldapMessageContainer.getBindRequest();
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
                     // We have to handle the special case of a 0 length
@@ -774,7 +774,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
-                    InternalBindRequest bindRequestMessage = ldapMessageContainer.getBindRequest();
+                    BindRequest bindRequestMessage = ldapMessageContainer.getBindRequest();
 
                     // Get the Value and store it in the BindRequest
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
@@ -1032,10 +1032,10 @@ public class LdapMessageGrammar extends AbstractGrammar
                         throw new DecoderException( msg );
                     }
 
-                    InternalMessage response = ldapMessageContainer.getInternalMessage();
+                    Message response = ldapMessageContainer.getInternalMessage();
                     LdapResult ldapResult = ( ( ResultResponse ) response ).getLdapResult();
 
-                    InternalReferral referral = new ReferralImpl();
+                    Referral referral = new ReferralImpl();
 
                     ldapResult.setReferral( referral );
                 }
@@ -1419,7 +1419,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
                     // Now, we can allocate the ModifyRequest Object
-                    InternalModifyRequest modifyRequest = new ModifyRequestImpl( ldapMessageContainer.getMessageId() );
+                    ModifyRequest modifyRequest = new ModifyRequestImpl( ldapMessageContainer.getMessageId() );
                     ldapMessageContainer.setInternalMessage( modifyRequest );
                 }
             } );
@@ -1440,7 +1440,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                 {
 
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-                    InternalModifyRequest modifyRequest = ldapMessageContainer.getModifyRequest();
+                    ModifyRequest modifyRequest = ldapMessageContainer.getModifyRequest();
 
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
@@ -1523,7 +1523,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                 {
 
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-                    InternalModifyRequest modifyRequest = ldapMessageContainer.getModifyRequest();
+                    ModifyRequest modifyRequest = ldapMessageContainer.getModifyRequest();
 
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
@@ -1605,7 +1605,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                 {
 
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-                    InternalModifyRequest modifyRequest = ldapMessageContainer.getModifyRequest();
+                    ModifyRequest modifyRequest = ldapMessageContainer.getModifyRequest();
 
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
@@ -1830,7 +1830,7 @@ public class LdapMessageGrammar extends AbstractGrammar
 
                     // Now, we can allocate the AddRequest Object
                     int messageId = ldapMessageContainer.getMessageId();
-                    InternalAddRequest addRequest = new AddRequestImpl( messageId );
+                    AddRequest addRequest = new AddRequestImpl( messageId );
                     ldapMessageContainer.setInternalMessage( addRequest );
 
                     // We will check that the request is not null
@@ -1863,7 +1863,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                 {
 
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-                    InternalAddRequest addRequest = ldapMessageContainer.getAddRequest();
+                    AddRequest addRequest = ldapMessageContainer.getAddRequest();
 
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
@@ -1948,7 +1948,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                 {
 
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-                    InternalAddRequest addRequest = ldapMessageContainer.getAddRequest();
+                    AddRequest addRequest = ldapMessageContainer.getAddRequest();
 
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
@@ -2145,7 +2145,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
                     // Now, we can allocate the ModifyDNRequest Object
-                    InternalModifyDnRequest modifyDnRequest = new ModifyDnRequestImpl( ldapMessageContainer
+                    ModifyDnRequest modifyDnRequest = new ModifyDnRequestImpl( ldapMessageContainer
                         .getMessageId() );
                     ldapMessageContainer.setInternalMessage( modifyDnRequest );
 
@@ -2169,7 +2169,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
-                    InternalModifyDnRequest modifyDNRequest = ldapMessageContainer.getModifyDnRequest();
+                    ModifyDnRequest modifyDNRequest = ldapMessageContainer.getModifyDnRequest();
 
                     // Get the Value and store it in the modifyDNRequest
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
@@ -2232,7 +2232,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
-                    InternalModifyDnRequest modifyDnRequest = ldapMessageContainer.getModifyDnRequest();
+                    ModifyDnRequest modifyDnRequest = ldapMessageContainer.getModifyDnRequest();
 
                     // Get the Value and store it in the modifyDNRequest
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
@@ -2297,7 +2297,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                 public void action( IAsn1Container container ) throws DecoderException
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-                    InternalModifyDnRequest modifyDnRequest = ldapMessageContainer.getModifyDnRequest();
+                    ModifyDnRequest modifyDnRequest = ldapMessageContainer.getModifyDnRequest();
 
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
@@ -2354,7 +2354,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                 public void action( IAsn1Container container ) throws DecoderException
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-                    InternalModifyDnRequest modifyDnRequest = ldapMessageContainer.getModifyDnRequest();
+                    ModifyDnRequest modifyDnRequest = ldapMessageContainer.getModifyDnRequest();
 
                     // Get the Value and store it in the modifyDNRequest
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
@@ -2494,7 +2494,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
                     // Now, we can allocate the CompareRequest Object
-                    InternalCompareRequest compareRequest = new CompareRequestImpl( ldapMessageContainer.getMessageId() );
+                    CompareRequest compareRequest = new CompareRequestImpl( ldapMessageContainer.getMessageId() );
                     ldapMessageContainer.setInternalMessage( compareRequest );
 
                     log.debug( "Compare Request" );
@@ -2517,7 +2517,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                 {
 
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-                    InternalCompareRequest compareRequest = ldapMessageContainer.getCompareRequest();
+                    CompareRequest compareRequest = ldapMessageContainer.getCompareRequest();
 
                     // Get the Value and store it in the CompareRequest
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
@@ -2593,7 +2593,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
                     // Get the CompareRequest Object
-                    InternalCompareRequest compareRequest = ldapMessageContainer.getCompareRequest();
+                    CompareRequest compareRequest = ldapMessageContainer.getCompareRequest();
 
                     // Get the Value and store it in the CompareRequest
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
@@ -2640,7 +2640,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
                     // Get the CompareRequest Object
-                    InternalCompareRequest compareRequest = ldapMessageContainer.getCompareRequest();
+                    CompareRequest compareRequest = ldapMessageContainer.getCompareRequest();
 
                     // Get the Value and store it in the CompareRequest
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
@@ -2814,7 +2814,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
                     // Now, we can allocate the ExtendedRequest Object
-                    InternalExtendedRequest extendedRequest = new ExtendedRequestImpl( ldapMessageContainer
+                    ExtendedRequest extendedRequest = new ExtendedRequestImpl( ldapMessageContainer
                         .getMessageId() );
                     ldapMessageContainer.setInternalMessage( extendedRequest );
 
@@ -2839,7 +2839,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
                     // We can allocate the ExtendedRequest Object
-                    InternalExtendedRequest extendedRequest = ldapMessageContainer.getExtendedRequest();
+                    ExtendedRequest extendedRequest = ldapMessageContainer.getExtendedRequest();
 
                     // Get the Value and store it in the ExtendedRequest
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
@@ -2914,7 +2914,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
                     // We can allocate the ExtendedRequest Object
-                    InternalExtendedRequest extendedRequest = ldapMessageContainer.getExtendedRequest();
+                    ExtendedRequest extendedRequest = ldapMessageContainer.getExtendedRequest();
 
                     // Get the Value and store it in the ExtendedRequest
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
@@ -3448,7 +3448,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                         throw new DecoderException( I18n.err( I18n.ERR_04099, oidValue ) );
                     }
 
-                    InternalMessage message = ldapMessageContainer.getInternalMessage();
+                    Message message = ldapMessageContainer.getInternalMessage();
 
                     Control control = ControlEnum.getControl( oidValue );
 
@@ -3492,7 +3492,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                     // Get the current control
                     Control control = null;
 
-                    InternalMessage message = ldapMessageContainer.getInternalMessage();
+                    Message message = ldapMessageContainer.getInternalMessage();
                     control = message.getCurrentControl();
 
                     // Store the criticality
@@ -3602,7 +3602,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                     // Now, we can allocate the SearchRequest Object
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
-                    InternalSearchRequest searchRequest = new SearchRequestImpl( ldapMessageContainer.getMessageId() );
+                    SearchRequest searchRequest = new SearchRequestImpl( ldapMessageContainer.getMessageId() );
                     ( ( SearchRequestImpl ) searchRequest ).setTlvId( tlv.getId() );
                     ldapMessageContainer.setInternalMessage( searchRequest );
 
@@ -3625,7 +3625,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                 public void action( IAsn1Container container ) throws DecoderException
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-                    InternalSearchRequest searchRequest = ldapMessageContainer.getSearchRequest();
+                    SearchRequest searchRequest = ldapMessageContainer.getSearchRequest();
 
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
@@ -3683,7 +3683,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
-                    InternalSearchRequest searchRequest = ldapMessageContainer.getSearchRequest();
+                    SearchRequest searchRequest = ldapMessageContainer.getSearchRequest();
 
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
@@ -3746,7 +3746,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
-                    InternalSearchRequest searchRequest = ldapMessageContainer.getSearchRequest();
+                    SearchRequest searchRequest = ldapMessageContainer.getSearchRequest();
 
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
@@ -3809,7 +3809,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
-                    InternalSearchRequest searchRequest = ldapMessageContainer.getSearchRequest();
+                    SearchRequest searchRequest = ldapMessageContainer.getSearchRequest();
 
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
@@ -3855,7 +3855,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
-                    InternalSearchRequest searchRequest = ldapMessageContainer.getSearchRequest();
+                    SearchRequest searchRequest = ldapMessageContainer.getSearchRequest();
 
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
@@ -3902,7 +3902,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
-                    InternalSearchRequest searchRequest = ldapMessageContainer.getSearchRequest();
+                    SearchRequest searchRequest = ldapMessageContainer.getSearchRequest();
 
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
@@ -5043,7 +5043,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                 public void action( IAsn1Container container ) throws DecoderException
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-                    InternalSearchRequest searchRequest = ldapMessageContainer.getSearchRequest();
+                    SearchRequest searchRequest = ldapMessageContainer.getSearchRequest();
 
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
@@ -5118,7 +5118,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                 public void action( IAsn1Container container ) throws DecoderException
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-                    InternalSearchRequest searchRequest = ldapMessageContainer.getSearchRequest();
+                    SearchRequest searchRequest = ldapMessageContainer.getSearchRequest();
 
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
@@ -6040,7 +6040,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                 public void action( IAsn1Container container ) throws DecoderException
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-                    InternalSearchRequest searchRequest = ldapMessageContainer.getSearchRequest();
+                    SearchRequest searchRequest = ldapMessageContainer.getSearchRequest();
 
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
@@ -6167,7 +6167,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                 public void action( IAsn1Container container ) throws DecoderException
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-                    InternalSearchRequest searchRequest = ldapMessageContainer.getSearchRequest();
+                    SearchRequest searchRequest = ldapMessageContainer.getSearchRequest();
 
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 

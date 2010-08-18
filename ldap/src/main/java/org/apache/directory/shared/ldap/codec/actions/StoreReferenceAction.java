@@ -28,7 +28,7 @@ import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.util.LdapURLEncodingException;
 import org.apache.directory.shared.ldap.message.ReferralImpl;
-import org.apache.directory.shared.ldap.message.internal.InternalReferral;
+import org.apache.directory.shared.ldap.message.internal.Referral;
 import org.apache.directory.shared.ldap.message.internal.SearchResultReference;
 import org.apache.directory.shared.ldap.util.LdapURL;
 import org.apache.directory.shared.ldap.util.StringTools;
@@ -70,7 +70,7 @@ public class StoreReferenceAction extends GrammarAction
         TLV tlv = ldapMessageContainer.getCurrentTLV();
 
         // Get the referral, or create it if not existing
-        InternalReferral referral = searchResultReference.getReferral();
+        Referral referral = searchResultReference.getReferral();
 
         if ( referral == null )
         {

@@ -26,7 +26,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.directory.shared.ldap.message.internal.InternalReferral;
+import org.apache.directory.shared.ldap.message.internal.Referral;
 
 
 /**
@@ -36,7 +36,7 @@ import org.apache.directory.shared.ldap.message.internal.InternalReferral;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class ReferralImpl implements InternalReferral
+public class ReferralImpl implements Referral
 {
     static final long serialVersionUID = 2638820668325359096L;
 
@@ -160,9 +160,9 @@ public class ReferralImpl implements InternalReferral
             return true;
         }
 
-        if ( obj instanceof InternalReferral )
+        if ( obj instanceof Referral )
         {
-            Collection<String> refs = ( ( InternalReferral ) obj ).getLdapUrls();
+            Collection<String> refs = ( ( Referral ) obj ).getLdapUrls();
 
             // if their sizes do not match they are not equal
             if ( refs.size() != urls.size() )

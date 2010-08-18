@@ -98,7 +98,7 @@ import org.apache.directory.shared.ldap.name.DN;
  *  @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * 
  */
-public interface InternalModifyRequest extends SingleReplyRequest, InternalAbandonableRequest
+public interface ModifyRequest extends SingleReplyRequest, AbandonableRequest
 {
     /** Modify request message type enumeration value */
     MessageTypeEnum TYPE = MessageTypeEnum.MODIFY_REQUEST;

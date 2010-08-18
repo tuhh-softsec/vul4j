@@ -29,7 +29,7 @@ import java.nio.channels.WritableByteChannel;
 import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.asn1.codec.stateful.EncoderCallback;
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.message.internal.InternalMessage;
+import org.apache.directory.shared.ldap.message.internal.Message;
 import org.apache.directory.shared.ldap.message.spi.Provider;
 import org.apache.directory.shared.ldap.message.spi.ProviderEncoder;
 import org.apache.directory.shared.ldap.message.spi.ProviderException;
@@ -209,10 +209,10 @@ public class LdapEncoder implements ProviderEncoder
     public void encode( Object request ) throws EncoderException
     {
         //TM long t0 = System.nanoTime();
-        InternalMessage message = ( InternalMessage ) request;
+        Message message = ( Message ) request;
         ByteBuffer encoded = null;
 
-        LdapMessageCodec ldapRequest = ( LdapMessageCodec ) LdapTransformer.transform( ( InternalMessage ) request );
+        LdapMessageCodec ldapRequest = ( LdapMessageCodec ) LdapTransformer.transform( ( Message ) request );
         encoded = ldapRequest.encode();
 
         encoded.flip();

@@ -22,7 +22,7 @@ package org.apache.directory.shared.ldap.message;
 
 
 import org.apache.directory.shared.ldap.message.internal.LdapResult;
-import org.apache.directory.shared.ldap.message.internal.InternalReferral;
+import org.apache.directory.shared.ldap.message.internal.Referral;
 import org.apache.directory.shared.ldap.name.DN;
 
 
@@ -42,7 +42,7 @@ public class LdapResultImpl implements LdapResult
     private byte[] matchedDNBytes;
 
     /** Referral associated with this LdapResult if the errorCode is REFERRAL */
-    private InternalReferral referral;
+    private Referral referral;
 
     /** Decriptive error message - defaults to empty string */
     private String errorMessage;
@@ -185,7 +185,7 @@ public class LdapResultImpl implements LdapResult
      * 
      * @return the referral on REFERRAL errors, null on all others.
      */
-    public InternalReferral getReferral()
+    public Referral getReferral()
     {
         return referral;
     }
@@ -212,7 +212,7 @@ public class LdapResultImpl implements LdapResult
      * @param referral
      *            optional referral on REFERRAL errors.
      */
-    public void setReferral( InternalReferral referral )
+    public void setReferral( Referral referral )
     {
         this.referral = referral;
     }

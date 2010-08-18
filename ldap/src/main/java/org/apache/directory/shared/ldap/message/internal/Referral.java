@@ -85,7 +85,7 @@ import java.util.Collection;
  *       remove LdapUrl objects instead of strings or provide both string and
  *       LdapUrl add/remove methods.
  */
-public interface InternalReferral
+public interface Referral
 {
     /**
      * Gets an unmodifiable set of alternative referral urls.

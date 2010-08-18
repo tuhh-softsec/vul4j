@@ -28,7 +28,7 @@ import java.util.Collections;
 
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
-import org.apache.directory.shared.ldap.message.internal.InternalReferral;
+import org.apache.directory.shared.ldap.message.internal.Referral;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -193,7 +193,7 @@ public class ReferralImplTest
     @Test
     public void testEqualsDifferentImpls()
     {
-        InternalReferral refs0 = new InternalReferral()
+        Referral refs0 = new Referral()
         {
             public Collection<String> getLdapUrls()
             {

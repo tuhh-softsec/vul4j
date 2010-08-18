@@ -39,7 +39,7 @@ import org.apache.directory.shared.ldap.entry.Modification;
 import org.apache.directory.shared.ldap.entry.ModificationOperation;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.message.internal.InternalModifyRequest;
+import org.apache.directory.shared.ldap.message.internal.ModifyRequest;
 import org.apache.directory.shared.ldap.message.internal.ResultResponse;
 import org.apache.directory.shared.ldap.name.DN;
 import org.junit.Test;
@@ -288,7 +288,7 @@ public class ModifyRequestImplTest
     @Test
     public void testEqualsDiffImpl()
     {
-        InternalModifyRequest req0 = new InternalModifyRequest()
+        ModifyRequest req0 = new ModifyRequest()
         {
             public Collection<Modification> getModifications()
             {

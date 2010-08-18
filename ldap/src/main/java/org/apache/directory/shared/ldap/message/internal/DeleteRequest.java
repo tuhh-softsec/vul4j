@@ -19,35 +19,40 @@
  */
 package org.apache.directory.shared.ldap.message.internal;
 
-import org.apache.directory.shared.ldap.message.AbandonListener;
+import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
+import org.apache.directory.shared.ldap.message.SingleReplyRequest;
+import org.apache.directory.shared.ldap.name.DN;
 
 
 /**
- * A request which can be abandoned.
+ * Delete request protocol message used to remove an existing leaf entry from
+ * the directory.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public interface InternalAbandonableRequest extends InternalRequest
+public interface DeleteRequest extends SingleReplyRequest, AbandonableRequest
 {
-    /**
-     * Abandons this request.
-     */
-    void abandon();
+    /** Delete request message type enumeration value */
+    MessageTypeEnum TYPE = MessageTypeEnum.DEL_REQUEST;
+
+    /** Delete response message type enumeration value */
+    MessageTypeEnum RESP_TYPE = DeleteResponse.TYPE;
 
 
     /**
-     * Checks to see if this request has been abandoned.
+     * Gets the distinguished name of the leaf entry to be deleted by this
+     * request.
      * 
-     * @return true if the request has been abandoned.
+     * @return the DN of the leaf entry to delete.
      */
-    boolean isAbandoned();
+    DN getName();
 
 
     /**
-     * Adds listener to be notified if this request gets abandoned.
+     * Sets the distinguished name of the leaf entry to be deleted by this
+     * request.
      * 
-     * @param listener
-     *            to be notified if this request gets abandoned.
+     * @param name the DN of the leaf entry to delete.
      */
-    void addAbandonListener( AbandonListener listener );
+    void setName( DN name );
 }

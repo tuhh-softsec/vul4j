@@ -28,7 +28,7 @@ import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public interface InternalAbandonRequest extends InternalRequest
+public interface AbandonRequest extends Request
 {
     /** Ldap abandon request type code */
     MessageTypeEnum TYPE = MessageTypeEnum.ABANDON_REQUEST;

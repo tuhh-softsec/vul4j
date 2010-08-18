@@ -33,7 +33,7 @@ import org.apache.directory.shared.ldap.message.control.Control;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public interface InternalMessage
+public interface Message
 {
     /**
      * Gets the LDAP message type code associated with this Message. Each

@@ -28,8 +28,8 @@ import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.util.LdapURLEncodingException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
-import org.apache.directory.shared.ldap.message.internal.InternalMessage;
-import org.apache.directory.shared.ldap.message.internal.InternalReferral;
+import org.apache.directory.shared.ldap.message.internal.Message;
+import org.apache.directory.shared.ldap.message.internal.Referral;
 import org.apache.directory.shared.ldap.message.internal.LdapResult;
 import org.apache.directory.shared.ldap.message.internal.ResultResponse;
 import org.apache.directory.shared.ldap.util.LdapURL;
@@ -67,9 +67,9 @@ public class ReferralAction extends GrammarAction
 
         TLV tlv = ldapMessageContainer.getCurrentTLV();
 
-        InternalMessage response = ldapMessageContainer.getInternalMessage();
+        Message response = ldapMessageContainer.getInternalMessage();
         LdapResult ldapResult = ( ( ResultResponse ) response ).getLdapResult();
-        InternalReferral referral = ldapResult.getReferral();
+        Referral referral = ldapResult.getReferral();
 
         if ( tlv.getLength() == 0 )
         {
