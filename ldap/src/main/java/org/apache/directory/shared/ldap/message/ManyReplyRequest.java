@@ -20,7 +20,6 @@
 package org.apache.directory.shared.ldap.message;
 
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
-import org.apache.directory.shared.ldap.message.internal.ResultResponseRequest;
 
 
 /**

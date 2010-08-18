@@ -21,9 +21,6 @@ package org.apache.directory.shared.ldap.message;
 
 
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.message.internal.AbstractResponse;
-import org.apache.directory.shared.ldap.message.internal.Referral;
-import org.apache.directory.shared.ldap.message.internal.SearchResultReference;
 
 
 /**

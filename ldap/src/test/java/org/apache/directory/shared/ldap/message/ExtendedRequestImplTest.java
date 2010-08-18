@@ -33,8 +33,6 @@ import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.message.internal.ExtendedRequest;
-import org.apache.directory.shared.ldap.message.internal.ResultResponse;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 

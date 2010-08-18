@@ -77,10 +77,10 @@ import org.apache.directory.shared.ldap.exception.LdapSchemaViolationException;
 import org.apache.directory.shared.ldap.exception.LdapServiceUnavailableException;
 import org.apache.directory.shared.ldap.exception.LdapTimeLimitExceededException;
 import org.apache.directory.shared.ldap.exception.LdapUnwillingToPerformException;
+import org.apache.directory.shared.ldap.message.LdapResult;
 import org.apache.directory.shared.ldap.message.MessageException;
+import org.apache.directory.shared.ldap.message.ResultResponse;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.message.internal.LdapResult;
-import org.apache.directory.shared.ldap.message.internal.ResultResponse;
 import org.apache.directory.shared.ldap.name.DN;
 
 
@@ -160,7 +160,7 @@ public class JndiUtils
      * @return
      */
     public static ExtendedResponse toJndiExtendedResponse(
-        final org.apache.directory.shared.ldap.message.internal.ExtendedRequest request )
+        final org.apache.directory.shared.ldap.message.ExtendedRequest request )
     {
         class JndiExtendedResponse implements ExtendedResponse
         {
@@ -181,7 +181,7 @@ public class JndiUtils
 
 
     public static ExtendedRequest toJndiExtendedRequest(
-        final org.apache.directory.shared.ldap.message.internal.ExtendedRequest request )
+        final org.apache.directory.shared.ldap.message.ExtendedRequest request )
     {
         class JndiExtendedRequest implements ExtendedRequest
         {
@@ -215,10 +215,10 @@ public class JndiUtils
      * @param request
      * @return
      */
-    public static org.apache.directory.shared.ldap.message.internal.ExtendedResponse fromJndiExtendedResponse(
+    public static org.apache.directory.shared.ldap.message.ExtendedResponse fromJndiExtendedResponse(
         final ExtendedResponse response )
     {
-        class ServerExtendedResponse implements org.apache.directory.shared.ldap.message.internal.ExtendedResponse
+        class ServerExtendedResponse implements org.apache.directory.shared.ldap.message.ExtendedResponse
         {
             public String getResponseName()
             {
@@ -356,10 +356,10 @@ public class JndiUtils
     }
 
 
-    public static org.apache.directory.shared.ldap.message.internal.ExtendedRequest fromJndiExtendedRequest(
+    public static org.apache.directory.shared.ldap.message.ExtendedRequest fromJndiExtendedRequest(
         final ExtendedRequest request )
     {
-        class ServerExtendedRequest implements org.apache.directory.shared.ldap.message.internal.ExtendedRequest
+        class ServerExtendedRequest implements org.apache.directory.shared.ldap.message.ExtendedRequest
         {
             public String getRequestName()
             {

@@ -24,8 +24,6 @@ import java.util.Observable;
 import java.util.Observer;
 
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
-import org.apache.directory.shared.ldap.message.internal.AbandonableRequest;
-import org.apache.directory.shared.ldap.message.internal.AbstractRequest;
 
 
 /**

@@ -21,9 +21,6 @@ package org.apache.directory.shared.ldap.message;
 
 
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
-import org.apache.directory.shared.ldap.message.internal.ModifyDnRequest;
-import org.apache.directory.shared.ldap.message.internal.ModifyDnResponse;
-import org.apache.directory.shared.ldap.message.internal.ResultResponse;
 import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.name.RDN;
 

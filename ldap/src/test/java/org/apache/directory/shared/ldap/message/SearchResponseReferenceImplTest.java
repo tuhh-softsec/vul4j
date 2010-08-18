@@ -30,8 +30,6 @@ import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.message.internal.Referral;
-import org.apache.directory.shared.ldap.message.internal.SearchResultReference;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 

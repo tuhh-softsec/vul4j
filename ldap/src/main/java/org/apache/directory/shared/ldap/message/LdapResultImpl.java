@@ -21,8 +21,6 @@
 package org.apache.directory.shared.ldap.message;
 
 
-import org.apache.directory.shared.ldap.message.internal.LdapResult;
-import org.apache.directory.shared.ldap.message.internal.Referral;
 import org.apache.directory.shared.ldap.name.DN;
 
 

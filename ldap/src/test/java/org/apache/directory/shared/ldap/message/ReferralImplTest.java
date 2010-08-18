@@ -28,7 +28,6 @@ import java.util.Collections;
 
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
-import org.apache.directory.shared.ldap.message.internal.Referral;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
