@@ -68,6 +68,16 @@ public class SearchResultEntryImpl extends AbstractResponse implements SearchRes
     /**
      * Creates a SearchResponseEntry as a reply to an SearchRequest to
      * indicate the end of a search operation.
+     */
+    public SearchResultEntryImpl()
+    {
+        super( -1, TYPE );
+    }
+
+
+    /**
+     * Creates a SearchResponseEntry as a reply to an SearchRequest to
+     * indicate the end of a search operation.
      * 
      * @param id the session unique message id
      */

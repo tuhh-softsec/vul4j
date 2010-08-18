@@ -20,8 +20,6 @@
 package org.apache.directory.shared.ldap.message;
 
 
-
-
 /**
  * AddResponse implementation.
  * 
@@ -40,7 +38,16 @@ public class AddResponseImpl extends AbstractResultResponse implements AddRespon
 
 
     /**
-     * Creates a Lockable AddResponse as a reply to an AddRequest.
+     * Creates an AddResponse as a reply to an AddRequest.
+     */
+    public AddResponseImpl()
+    {
+        super( -1, TYPE );
+    }
+
+
+    /**
+     * Creates an AddResponse as a reply to an AddRequest.
      * 
      * @param id the session unique message id
      */

@@ -20,8 +20,6 @@
 package org.apache.directory.shared.ldap.message;
 
 
-
-
 /**
  * ModifyResponse implementation
  * 
@@ -36,6 +34,15 @@ public class ModifyResponseImpl extends AbstractResultResponse implements Modify
     // ------------------------------------------------------------------------
 
     static final long serialVersionUID = 4132526905748233730L;
+
+
+    /**
+     * Creates a ModifyResponse as a reply to an ModifyRequest.
+     */
+    public ModifyResponseImpl()
+    {
+        super( -1, TYPE );
+    }
 
 
     /**

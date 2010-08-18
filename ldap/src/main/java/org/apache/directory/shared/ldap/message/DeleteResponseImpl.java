@@ -20,8 +20,6 @@
 package org.apache.directory.shared.ldap.message;
 
 
-
-
 /**
  * DeleteResponse implementation
  * 
@@ -37,6 +35,15 @@ public class DeleteResponseImpl extends AbstractResultResponse implements Delete
     // ------------------------------------------------------------------------
 
     static final long serialVersionUID = -6830004960050713586L;
+
+
+    /**
+     * Creates a DeleteResponse as a reply to an DeleteRequest.
+     */
+    public DeleteResponseImpl()
+    {
+        super( -1, TYPE );
+    }
 
 
     /**

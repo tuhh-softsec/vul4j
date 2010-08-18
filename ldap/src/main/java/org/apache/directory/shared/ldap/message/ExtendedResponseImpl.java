@@ -54,6 +54,18 @@ public class ExtendedResponseImpl extends AbstractResultResponse implements Exte
     /**
      * Creates an ExtendedResponse as a reply to an ExtendedRequest.
      * 
+     * @param responseName the ExtendedResponse's name
+     */
+    public ExtendedResponseImpl( String responseName )
+    {
+        super( -1, TYPE );
+        this.responseName = responseName;
+    }
+
+
+    /**
+     * Creates an ExtendedResponse as a reply to an ExtendedRequest.
+     * 
      * @param id the session unique message id
      * @param responseName the ExtendedResponse's name
      */

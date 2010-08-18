@@ -20,8 +20,6 @@
 package org.apache.directory.shared.ldap.message;
 
 
-
-
 /**
  * SearchResponseDone implementation
  * 
@@ -40,11 +38,20 @@ public class SearchResultDoneImpl extends AbstractResultResponse implements Sear
 
 
     /**
-     * Creates a Lockable SearchResponseDone as a reply to an SearchRequest to
+     * Creates a SearchResponseDone as a reply to an SearchRequest to
+     * indicate the end of a search operation.
+     */
+    public SearchResultDoneImpl()
+    {
+        super( -1, TYPE );
+    }
+
+
+    /**
+     * Creates a SearchResponseDone as a reply to an SearchRequest to
      * indicate the end of a search operation.
      * 
-     * @param id
-     *            the session unique message id
+     * @param id the session unique message id
      */
     public SearchResultDoneImpl( final int id )
     {

@@ -20,8 +20,6 @@
 package org.apache.directory.shared.ldap.message;
 
 
-
-
 /**
  * CompareResponse implementation.
  * 
@@ -37,6 +35,15 @@ public class CompareResponseImpl extends AbstractResultResponse implements Compa
     // ------------------------------------------------------------------------
 
     static final long serialVersionUID = 6452521899386487731L;
+
+
+    /**
+     * Creates a CompareResponse as a reply to an CompareRequest.
+     */
+    public CompareResponseImpl()
+    {
+        super( -1, TYPE );
+    }
 
 
     /**

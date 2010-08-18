@@ -45,13 +45,21 @@ public class SearchResultReferenceImpl extends AbstractResponse implements Searc
     // ------------------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------------------
+    /**
+     * Creates a SearchResponseReference as a reply to an SearchRequest
+     * to indicate the end of a search operation.
+     */
+    public SearchResultReferenceImpl()
+    {
+        super( -1, TYPE );
+    }
+
 
     /**
-     * Creates a Lockable SearchResponseReference as a reply to an SearchRequest
+     * Creates a SearchResponseReference as a reply to an SearchRequest
      * to indicate the end of a search operation.
      * 
-     * @param id
-     *            the session unique message id
+     * @param id the session unique message id
      */
     public SearchResultReferenceImpl( final int id )
     {

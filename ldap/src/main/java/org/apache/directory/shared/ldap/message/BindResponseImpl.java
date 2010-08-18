@@ -44,12 +44,19 @@ public class BindResponseImpl extends AbstractResultResponse implements BindResp
     // ------------------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------------------
+    /**
+     * Creates a BindResponse as a reply to an BindRequest.
+     */
+    public BindResponseImpl()
+    {
+        super( -1, TYPE );
+    }
+
 
     /**
-     * Creates a Lockable AddResponse as a reply to an AddRequest.
+     * Creates a BindResponse as a reply to an BindRequest.
      * 
-     * @param id
-     *            the session unique message id
+     * @param id the session unique message id
      */
     public BindResponseImpl( final int id )
     {
