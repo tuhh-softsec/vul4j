@@ -287,7 +287,7 @@ public abstract class AbstractMessage implements Message
     /**
      * {@inheritDoc}
      */
-    public void setControlsLength( int controlsLength )
+    /* No qualifier*/void setControlsLength( int controlsLength )
     {
         this.controlsLength = controlsLength;
     }
@@ -296,7 +296,7 @@ public abstract class AbstractMessage implements Message
     /**
      * {@inheritDoc}
      */
-    public int getControlsLength()
+    /* No qualifier*/int getControlsLength()
     {
         return controlsLength;
     }
@@ -305,7 +305,7 @@ public abstract class AbstractMessage implements Message
     /**
      * {@inheritDoc}
      */
-    public void setMessageLength( int messageLength )
+    /* No qualifier*/void setMessageLength( int messageLength )
     {
         this.messageLength = messageLength;
     }
@@ -314,7 +314,7 @@ public abstract class AbstractMessage implements Message
     /**
      * {@inheritDoc}
      */
-    public int getMessageLength()
+    /* No qualifier*/int getMessageLength()
     {
         return messageLength;
     }

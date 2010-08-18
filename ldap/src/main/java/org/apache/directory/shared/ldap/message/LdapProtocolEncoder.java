@@ -110,7 +110,7 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
                 buffer.put( UniversalTag.SEQUENCE_TAG );
 
                 // The length has been calculated by the computeLength method
-                buffer.put( TLV.getBytes( message.getMessageLength() ) );
+                buffer.put( TLV.getBytes( ( ( AbstractMessage ) message ).getMessageLength() ) );
             }
             catch ( BufferOverflowException boe )
             {
@@ -130,7 +130,7 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
             {
                 // Encode the controls
                 buffer.put( ( byte ) LdapConstants.CONTROLS_TAG );
-                buffer.put( TLV.getBytes( message.getControlsLength() ) );
+                buffer.put( TLV.getBytes( ( ( AbstractMessage ) message ).getControlsLength() ) );
 
                 // Encode each control
                 for ( Control control : controls.values() )
@@ -209,14 +209,14 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
 
             // Computes the controls length
             // 1 + Length.getNbBytes( controlsSequenceLength ) + controlsSequenceLength;
-            message.setControlsLength( controlsSequenceLength );
+            ( ( AbstractMessage ) message ).setControlsLength( controlsSequenceLength );
 
             // Now, add the tag and the length of the controls length
             ldapMessageLength += 1 + TLV.getNbBytes( controlsSequenceLength ) + controlsSequenceLength;
         }
 
         // Store the messageLength
-        message.setMessageLength( ldapMessageLength );
+        ( ( AbstractMessage ) message ).setMessageLength( ldapMessageLength );
 
         // finally, calculate the global message size :
         // length(Tag) + Length(length) + length
