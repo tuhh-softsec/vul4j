@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.jvnet.hudson.plugins</groupId>
     <artifactId>plugin</artifactId>
-    <version>1.370</version><!-- which version of Hudson is this plugin built against? -->
+    <version>1.372</version><!-- which version of Hudson is this plugin built against? -->
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -14,7 +14,7 @@
   
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <hudson.version>1.293</hudson.version>
+    <hudson.version>1.372</hudson.version>
   </properties>
 
   <!-- get every artifact through maven.glassfish.org, which proxies all the artifacts that we need -->
