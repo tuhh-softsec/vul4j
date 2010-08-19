@@ -1059,6 +1059,10 @@ public class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGrammar
             {
                 extendedResponse = new ExtendedResponseImpl( ParserUtils.parseAndVerifyRequestID( attributeValue, xpp ) );
             }
+            else
+            {
+                extendedResponse = new ExtendedResponseImpl( -1 );
+            }
 
             container.getBatchResponse().addResponse( extendedResponse );
 
@@ -1427,7 +1431,7 @@ public class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGrammar
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            ResultResponse ldapResponse = ( ResultResponse ) container.getBatchResponse().getCurrentResponse();
+            Response ldapResponse = container.getBatchResponse().getCurrentResponse();
 
             LdapResult ldapResult = null;
 
@@ -1440,7 +1444,7 @@ public class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGrammar
             }
             else
             {
-                ldapResult = ldapResponse.getLdapResult();
+                ldapResult = ( ( ResultResponse ) ldapResponse ).getLdapResult();
             }
 
             XmlPullParser xpp = container.getParser();

@@ -35,16 +35,16 @@ import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.dsmlv2.AbstractTest;
 import org.apache.directory.shared.dsmlv2.Dsmlv2Parser;
-import org.apache.directory.shared.ldap.codec.search.ExtensibleMatchFilter;
-import org.apache.directory.shared.ldap.codec.search.PresentFilter;
 import org.apache.directory.shared.ldap.filter.AndNode;
 import org.apache.directory.shared.ldap.filter.ApproximateNode;
 import org.apache.directory.shared.ldap.filter.EqualityNode;
 import org.apache.directory.shared.ldap.filter.ExprNode;
+import org.apache.directory.shared.ldap.filter.ExtensibleNode;
 import org.apache.directory.shared.ldap.filter.GreaterEqNode;
 import org.apache.directory.shared.ldap.filter.LessEqNode;
 import org.apache.directory.shared.ldap.filter.NotNode;
 import org.apache.directory.shared.ldap.filter.OrNode;
+import org.apache.directory.shared.ldap.filter.PresenceNode;
 import org.apache.directory.shared.ldap.filter.SearchScope;
 import org.apache.directory.shared.ldap.filter.SubstringNode;
 import org.apache.directory.shared.ldap.message.AliasDerefMode;
@@ -1528,11 +1528,11 @@ public class SearchRequestTest extends AbstractTest
 
         ExprNode filter = searchRequest.getFilter();
 
-        assertTrue( filter instanceof PresentFilter );
+        assertTrue( filter instanceof PresenceNode );
 
-        PresentFilter presentFilter = ( PresentFilter ) filter;
+        PresenceNode presentFilter = ( PresenceNode ) filter;
 
-        assertEquals( "givenName", presentFilter.getAttributeDescription().toString() );
+        assertEquals( "givenName", presentFilter.getAttribute() );
     }
 
 
@@ -1571,13 +1571,13 @@ public class SearchRequestTest extends AbstractTest
 
         ExprNode filter = searchRequest.getFilter();
 
-        assertTrue( filter instanceof ExtensibleMatchFilter );
+        assertTrue( filter instanceof ExtensibleNode );
 
-        ExtensibleMatchFilter extensibleMatchFilter = ( ExtensibleMatchFilter ) filter;
+        ExtensibleNode extensibleMatchFilter = ( ExtensibleNode ) filter;
 
-        assertEquals( "A Value", extensibleMatchFilter.getMatchValue().getString() );
+        assertEquals( "A Value", extensibleMatchFilter.getValue().getString() );
 
-        assertEquals( false, extensibleMatchFilter.isDnAttributes() );
+        assertEquals( false, extensibleMatchFilter.hasDnAttributes() );
     }
 
 
@@ -1606,13 +1606,13 @@ public class SearchRequestTest extends AbstractTest
 
         ExprNode filter = searchRequest.getFilter();
 
-        assertTrue( filter instanceof ExtensibleMatchFilter );
+        assertTrue( filter instanceof ExtensibleNode );
 
-        ExtensibleMatchFilter extensibleMatchFilter = ( ExtensibleMatchFilter ) filter;
+        ExtensibleNode extensibleMatchFilter = ( ExtensibleNode ) filter;
 
-        assertEquals( "DSMLv2.0 rocks!!", extensibleMatchFilter.getMatchValue().getString() );
+        assertEquals( "DSMLv2.0 rocks!!", extensibleMatchFilter.getValue().getString() );
 
-        assertEquals( false, extensibleMatchFilter.isDnAttributes() );
+        assertEquals( false, extensibleMatchFilter.hasDnAttributes() );
     }
 
 
@@ -1641,13 +1641,13 @@ public class SearchRequestTest extends AbstractTest
 
         ExprNode filter = searchRequest.getFilter();
 
-        assertTrue( filter instanceof ExtensibleMatchFilter );
+        assertTrue( filter instanceof ExtensibleNode );
 
-        ExtensibleMatchFilter extensibleMatchFilter = ( ExtensibleMatchFilter ) filter;
+        ExtensibleNode extensibleMatchFilter = ( ExtensibleNode ) filter;
 
-        assertNull( extensibleMatchFilter.getMatchValue() );
+        assertNull( extensibleMatchFilter.getValue() );
 
-        assertEquals( false, extensibleMatchFilter.isDnAttributes() );
+        assertEquals( false, extensibleMatchFilter.hasDnAttributes() );
     }
 
 
@@ -1696,11 +1696,11 @@ public class SearchRequestTest extends AbstractTest
 
         ExprNode filter = searchRequest.getFilter();
 
-        assertTrue( filter instanceof ExtensibleMatchFilter );
+        assertTrue( filter instanceof ExtensibleNode );
 
-        ExtensibleMatchFilter extensibleMatchFilter = ( ExtensibleMatchFilter ) filter;
+        ExtensibleNode extensibleMatchFilter = ( ExtensibleNode ) filter;
 
-        assertTrue( extensibleMatchFilter.isDnAttributes() );
+        assertTrue( extensibleMatchFilter.hasDnAttributes() );
     }
 
 
@@ -1729,11 +1729,11 @@ public class SearchRequestTest extends AbstractTest
 
         ExprNode filter = searchRequest.getFilter();
 
-        assertTrue( filter instanceof ExtensibleMatchFilter );
+        assertTrue( filter instanceof ExtensibleNode );
 
-        ExtensibleMatchFilter extensibleMatchFilter = ( ExtensibleMatchFilter ) filter;
+        ExtensibleNode extensibleMatchFilter = ( ExtensibleNode ) filter;
 
-        assertTrue( extensibleMatchFilter.isDnAttributes() );
+        assertTrue( extensibleMatchFilter.hasDnAttributes() );
     }
 
 
@@ -1762,11 +1762,11 @@ public class SearchRequestTest extends AbstractTest
 
         ExprNode filter = searchRequest.getFilter();
 
-        assertTrue( filter instanceof ExtensibleMatchFilter );
+        assertTrue( filter instanceof ExtensibleNode );
 
-        ExtensibleMatchFilter extensibleMatchFilter = ( ExtensibleMatchFilter ) filter;
+        ExtensibleNode extensibleMatchFilter = ( ExtensibleNode ) filter;
 
-        assertFalse( extensibleMatchFilter.isDnAttributes() );
+        assertFalse( extensibleMatchFilter.hasDnAttributes() );
     }
 
 
@@ -1795,11 +1795,11 @@ public class SearchRequestTest extends AbstractTest
 
         ExprNode filter = searchRequest.getFilter();
 
-        assertTrue( filter instanceof ExtensibleMatchFilter );
+        assertTrue( filter instanceof ExtensibleNode );
 
-        ExtensibleMatchFilter extensibleMatchFilter = ( ExtensibleMatchFilter ) filter;
+        ExtensibleNode extensibleMatchFilter = ( ExtensibleNode ) filter;
 
-        assertFalse( extensibleMatchFilter.isDnAttributes() );
+        assertFalse( extensibleMatchFilter.hasDnAttributes() );
     }
 
 
@@ -1838,11 +1838,11 @@ public class SearchRequestTest extends AbstractTest
 
         ExprNode filter = searchRequest.getFilter();
 
-        assertTrue( filter instanceof ExtensibleMatchFilter );
+        assertTrue( filter instanceof ExtensibleNode );
 
-        ExtensibleMatchFilter extensibleMatchFilter = ( ExtensibleMatchFilter ) filter;
+        ExtensibleNode extensibleMatchFilter = ( ExtensibleNode ) filter;
 
-        assertEquals( "AMatchingRuleName", extensibleMatchFilter.getMatchingRule().toString() );
+        assertEquals( "AMatchingRuleName", extensibleMatchFilter.getMatchingRuleId() );
     }
 
 
@@ -1871,11 +1871,11 @@ public class SearchRequestTest extends AbstractTest
 
         ExprNode filter = searchRequest.getFilter();
 
-        assertTrue( filter instanceof ExtensibleMatchFilter );
+        assertTrue( filter instanceof ExtensibleNode );
 
-        ExtensibleMatchFilter extensibleMatchFilter = ( ExtensibleMatchFilter ) filter;
+        ExtensibleNode extensibleMatchFilter = ( ExtensibleNode ) filter;
 
-        assertEquals( "givenName", extensibleMatchFilter.getType().toString() );
+        assertEquals( "givenName", extensibleMatchFilter.getAttribute() );
     }
 
 

@@ -2281,6 +2281,7 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
             }
             else
             {
+                searchRequest.setFilter( searchRequest.getFilter() );
                 searchRequest.setCurrentFilter( null );
             }
         }

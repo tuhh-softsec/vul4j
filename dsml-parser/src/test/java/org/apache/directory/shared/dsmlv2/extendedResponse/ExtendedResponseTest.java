@@ -522,7 +522,7 @@ public class ExtendedResponseTest extends AbstractResponseTest
 
         LdapResult ldapResult = extendedResponse.getLdapResult();
 
-        assertEquals( "cn=Bob Rush,ou=Dev,dc=Example,dc=COM", ldapResult.getMatchedDn().getName() );
+        assertEquals( "cn=Bob Rush,ou=Dev,dc=Example,dc=COM", ldapResult.getMatchedDn().getNormName() );
     }
 
 

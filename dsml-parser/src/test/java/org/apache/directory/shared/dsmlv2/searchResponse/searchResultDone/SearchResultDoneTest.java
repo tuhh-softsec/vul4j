@@ -28,7 +28,6 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.Collection;
-import java.util.List;
 
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
@@ -493,15 +492,13 @@ public class SearchResultDoneTest extends AbstractResponseTest
 
         LdapResult ldapResult = searchResultDone.getLdapResult();
 
-        List<String> referrals = ( List<String> ) ldapResult.getReferral().getLdapUrls();
+        Collection<String> referrals = ldapResult.getReferral().getLdapUrls();
 
         assertEquals( 1, referrals.size() );
 
-        Object referral = referrals.get( 0 );
-
         try
         {
-            assertEquals( new LdapURL( "ldap://www.apache.org/" ).toString(), referral.toString() );
+            assertTrue( referrals.contains( new LdapURL( "ldap://www.apache.org/" ).toString() ) );
         }
         catch ( LdapURLEncodingException e )
         {
