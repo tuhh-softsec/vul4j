@@ -23,7 +23,7 @@
 		</section>
 		<section name="Generate project with archetype">
 			<p>
-				The simplest way is generate your project with the archetype :
+				The simplest way is to generate your project with the archetype :
 				<source><![CDATA[
 mvn archetype:generate 
     -DarchetypeRepository=http://webassembletool.sourceforge.net/maven/repository 
@@ -129,5 +129,22 @@ Resources files (pages, modules) can be filtered before plugin execution :
 		
 
 </section>
+<section name="Escaping taglib">
+<p>
+Suppose you need to generate html with esigate directives (includetemplate, beginparam, ...) 
+</p>
+<source><![CDATA[
+ <!--$beginparam$title$--><title>Title to be replaced</title><!--$endparam$title$--> 
+]]></source>
+
+<p>
+You must "escape" thoses directives in html sources (pages or modules) :
+</p>
+<source><![CDATA[
+ <!--#$beginparam$title$--><title>Title to be replaced</title><!--#$endparam$title$-->  
+]]></source>
+</section>
+
+  
 	</body>
 </document>
