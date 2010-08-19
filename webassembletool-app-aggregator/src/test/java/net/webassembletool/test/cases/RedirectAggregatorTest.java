@@ -14,7 +14,6 @@ import com.meterware.httpunit.WebResponse;
  */
 public class RedirectAggregatorTest extends TestCase {
 	private final static String APPLICATION_PATH = "http://localhost:8080/webassembletool-app-aggregator/";
-	private static String PAGE_REQUEST = "encoding/utf-8éèà/redirect.jsp";
 	private static String PAGE_REQUEST_ENCODED = "encoding/utf-8%C3%A9%C3%A8%C3%A0/redirect.jsp";
 
 	/**
