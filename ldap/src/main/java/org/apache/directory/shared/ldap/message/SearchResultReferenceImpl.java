@@ -33,7 +33,7 @@ public class SearchResultReferenceImpl extends AbstractResponse implements Searc
     static final long serialVersionUID = 7423807019951309810L;
 
     /** Referral holding the reference urls */
-    private Referral referral;
+    private Referral referral = new ReferralImpl();
 
     /** The length of the referral */
     private int referralLength;

@@ -778,7 +778,7 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
 
         String id = extendedResponse.getResponseName();
 
-        if ( id != null )
+        if ( !StringTools.isEmpty( id ) )
         {
             byte[] idBytes = StringTools.getBytesUtf8( id );
             extendedResponse.setResponseNameBytes( idBytes );
