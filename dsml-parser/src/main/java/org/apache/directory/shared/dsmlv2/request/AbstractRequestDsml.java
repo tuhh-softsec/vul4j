@@ -17,12 +17,12 @@
  *  under the License. 
  *  
  */
- package org.apache.directory.shared.dsmlv2.request;
+package org.apache.directory.shared.dsmlv2.request;
 
 
 import org.apache.directory.shared.dsmlv2.DsmlDecorator;
 import org.apache.directory.shared.dsmlv2.ParserUtils;
-import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
+import org.apache.directory.shared.ldap.message.Message;
 import org.dom4j.Element;
 
 
@@ -34,7 +34,7 @@ public abstract class AbstractRequestDsml extends LdapRequestDecorator implement
      * @param ldapMessage
      *      the message to decorate
      */
-    public AbstractRequestDsml( LdapMessageCodec ldapMessage )
+    public AbstractRequestDsml( Message ldapMessage )
     {
         super( ldapMessage );
     }
@@ -51,7 +51,7 @@ public abstract class AbstractRequestDsml extends LdapRequestDecorator implement
     public Element toDsml( Element root )
     {
         Element element = root.addElement( getRequestName() );
-        
+
         // Request ID
         int requestID = instance.getMessageId();
         if ( requestID != 0 )
@@ -60,11 +60,12 @@ public abstract class AbstractRequestDsml extends LdapRequestDecorator implement
         }
 
         // Controls
-        ParserUtils.addControls( element, instance.getControls() );
-        
+        ParserUtils.addControls( element, instance.getControls().values() );
+
         return element;
     }
-    
+
+
     /**
      * Gets the name of the request according to the type of the decorated element.
      *
@@ -73,35 +74,35 @@ public abstract class AbstractRequestDsml extends LdapRequestDecorator implement
      */
     private String getRequestName()
     {
-        switch ( instance.getMessageType() )
+        switch ( instance.getType() )
         {
             case ABANDON_REQUEST:
                 return "abandonRequest";
-                
+
             case ADD_REQUEST:
                 return "addRequest";
-                
+
             case BIND_REQUEST:
                 return "authRequest";
-                
+
             case COMPARE_REQUEST:
                 return "compareRequest";
-                
+
             case DEL_REQUEST:
                 return "delRequest";
-                
+
             case EXTENDED_REQUEST:
                 return "extendedRequest";
-                
+
             case MODIFYDN_REQUEST:
                 return "modDNRequest";
-                
+
             case MODIFY_REQUEST:
                 return "modifyRequest";
-                
+
             case SEARCH_REQUEST:
                 return "searchRequest";
-                
+
             default:
                 return "error";
         }

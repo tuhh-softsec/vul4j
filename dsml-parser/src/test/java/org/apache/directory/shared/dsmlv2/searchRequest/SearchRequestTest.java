@@ -35,23 +35,25 @@ import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.dsmlv2.AbstractTest;
 import org.apache.directory.shared.dsmlv2.Dsmlv2Parser;
-import org.apache.directory.shared.ldap.codec.AttributeValueAssertion;
-import org.apache.directory.shared.ldap.codec.LdapConstants;
-import org.apache.directory.shared.ldap.codec.search.AndFilter;
-import org.apache.directory.shared.ldap.codec.search.AttributeValueAssertionFilter;
 import org.apache.directory.shared.ldap.codec.search.ExtensibleMatchFilter;
-import org.apache.directory.shared.ldap.codec.search.Filter;
-import org.apache.directory.shared.ldap.codec.search.NotFilter;
-import org.apache.directory.shared.ldap.codec.search.OrFilter;
 import org.apache.directory.shared.ldap.codec.search.PresentFilter;
-import org.apache.directory.shared.ldap.codec.search.SearchRequestCodec;
-import org.apache.directory.shared.ldap.codec.search.SubstringFilter;
-import org.apache.directory.shared.ldap.entry.EntryAttribute;
+import org.apache.directory.shared.ldap.filter.AndNode;
+import org.apache.directory.shared.ldap.filter.ApproximateNode;
+import org.apache.directory.shared.ldap.filter.EqualityNode;
+import org.apache.directory.shared.ldap.filter.ExprNode;
+import org.apache.directory.shared.ldap.filter.GreaterEqNode;
+import org.apache.directory.shared.ldap.filter.LessEqNode;
+import org.apache.directory.shared.ldap.filter.NotNode;
+import org.apache.directory.shared.ldap.filter.OrNode;
 import org.apache.directory.shared.ldap.filter.SearchScope;
+import org.apache.directory.shared.ldap.filter.SubstringNode;
+import org.apache.directory.shared.ldap.message.AliasDerefMode;
+import org.apache.directory.shared.ldap.message.SearchRequest;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
 
 /**
  * Tests for the Del Request parsing
@@ -93,9 +95,9 @@ public class SearchRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        SearchRequestCodec searchRequest = ( SearchRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        SearchRequest searchRequest = ( SearchRequest ) parser.getBatchRequest().getCurrentRequest();
 
-        assertEquals( "ou=marketing,dc=microsoft,dc=com", searchRequest.getBaseObject().toString() );
+        assertEquals( "ou=marketing,dc=microsoft,dc=com", searchRequest.getBase().getName() );
     }
 
 
@@ -120,7 +122,7 @@ public class SearchRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        SearchRequestCodec searchRequest = ( SearchRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        SearchRequest searchRequest = ( SearchRequest ) parser.getBatchRequest().getCurrentRequest();
 
         assertEquals( 456, searchRequest.getMessageId() );
     }
@@ -156,7 +158,7 @@ public class SearchRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        SearchRequestCodec searchRequest = ( SearchRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        SearchRequest searchRequest = ( SearchRequest ) parser.getBatchRequest().getCurrentRequest();
         Control control = searchRequest.getCurrentControl();
 
         assertEquals( 1, searchRequest.getControls().size() );
@@ -187,7 +189,7 @@ public class SearchRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        SearchRequestCodec searchRequest = ( SearchRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        SearchRequest searchRequest = ( SearchRequest ) parser.getBatchRequest().getCurrentRequest();
         Control control = searchRequest.getCurrentControl();
 
         assertEquals( 1, searchRequest.getControls().size() );
@@ -218,7 +220,7 @@ public class SearchRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        SearchRequestCodec searchRequest = ( SearchRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        SearchRequest searchRequest = ( SearchRequest ) parser.getBatchRequest().getCurrentRequest();
         Control control = searchRequest.getCurrentControl();
 
         assertEquals( 1, searchRequest.getControls().size() );
@@ -249,7 +251,7 @@ public class SearchRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        SearchRequestCodec searchRequest = ( SearchRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        SearchRequest searchRequest = ( SearchRequest ) parser.getBatchRequest().getCurrentRequest();
         Control control = searchRequest.getCurrentControl();
 
         assertEquals( 2, searchRequest.getControls().size() );
@@ -280,7 +282,7 @@ public class SearchRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        SearchRequestCodec searchRequest = ( SearchRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        SearchRequest searchRequest = ( SearchRequest ) parser.getBatchRequest().getCurrentRequest();
         Control control = searchRequest.getCurrentControl();
 
         assertEquals( 3, searchRequest.getControls().size() );
@@ -332,7 +334,7 @@ public class SearchRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        SearchRequestCodec searchRequest = ( SearchRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        SearchRequest searchRequest = ( SearchRequest ) parser.getBatchRequest().getCurrentRequest();
 
         assertEquals( SearchScope.OBJECT, searchRequest.getScope() );
     }
@@ -360,7 +362,7 @@ public class SearchRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        SearchRequestCodec searchRequest = ( SearchRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        SearchRequest searchRequest = ( SearchRequest ) parser.getBatchRequest().getCurrentRequest();
 
         assertEquals( SearchScope.ONELEVEL, searchRequest.getScope() );
     }
@@ -388,7 +390,7 @@ public class SearchRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        SearchRequestCodec searchRequest = ( SearchRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        SearchRequest searchRequest = ( SearchRequest ) parser.getBatchRequest().getCurrentRequest();
 
         assertEquals( SearchScope.SUBTREE, searchRequest.getScope() );
     }
@@ -436,9 +438,9 @@ public class SearchRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        SearchRequestCodec searchRequest = ( SearchRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        SearchRequest searchRequest = ( SearchRequest ) parser.getBatchRequest().getCurrentRequest();
 
-        assertEquals( LdapConstants.DEREF_ALWAYS, searchRequest.getDerefAliases() );
+        assertEquals( AliasDerefMode.DEREF_ALWAYS, searchRequest.getDerefAliases() );
     }
 
 
@@ -464,9 +466,9 @@ public class SearchRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        SearchRequestCodec searchRequest = ( SearchRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        SearchRequest searchRequest = ( SearchRequest ) parser.getBatchRequest().getCurrentRequest();
 
-        assertEquals( LdapConstants.DEREF_FINDING_BASE_OBJ, searchRequest.getDerefAliases() );
+        assertEquals( AliasDerefMode.DEREF_FINDING_BASE_OBJ, searchRequest.getDerefAliases() );
     }
 
 
@@ -492,9 +494,9 @@ public class SearchRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        SearchRequestCodec searchRequest = ( SearchRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        SearchRequest searchRequest = ( SearchRequest ) parser.getBatchRequest().getCurrentRequest();
 
-        assertEquals( LdapConstants.DEREF_IN_SEARCHING, searchRequest.getDerefAliases() );
+        assertEquals( AliasDerefMode.DEREF_IN_SEARCHING, searchRequest.getDerefAliases() );
     }
 
 
@@ -520,9 +522,9 @@ public class SearchRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        SearchRequestCodec searchRequest = ( SearchRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        SearchRequest searchRequest = ( SearchRequest ) parser.getBatchRequest().getCurrentRequest();
 
-        assertEquals( LdapConstants.NEVER_DEREF_ALIASES, searchRequest.getDerefAliases() );
+        assertEquals( AliasDerefMode.NEVER_DEREF_ALIASES, searchRequest.getDerefAliases() );
     }
 
 
@@ -559,7 +561,7 @@ public class SearchRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        SearchRequestCodec searchRequest = ( SearchRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        SearchRequest searchRequest = ( SearchRequest ) parser.getBatchRequest().getCurrentRequest();
 
         assertEquals( 1000, searchRequest.getSizeLimit() );
     }
@@ -598,7 +600,7 @@ public class SearchRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        SearchRequestCodec searchRequest = ( SearchRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        SearchRequest searchRequest = ( SearchRequest ) parser.getBatchRequest().getCurrentRequest();
 
         assertEquals( 60, searchRequest.getTimeLimit() );
     }
@@ -636,9 +638,9 @@ public class SearchRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        SearchRequestCodec searchRequest = ( SearchRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        SearchRequest searchRequest = ( SearchRequest ) parser.getBatchRequest().getCurrentRequest();
 
-        assertTrue( searchRequest.isTypesOnly() );
+        assertTrue( searchRequest.getTypesOnly() );
     }
 
 
@@ -663,9 +665,9 @@ public class SearchRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        SearchRequestCodec searchRequest = ( SearchRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        SearchRequest searchRequest = ( SearchRequest ) parser.getBatchRequest().getCurrentRequest();
 
-        assertTrue( searchRequest.isTypesOnly() );
+        assertTrue( searchRequest.getTypesOnly() );
     }
 
 
@@ -690,9 +692,9 @@ public class SearchRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        SearchRequestCodec searchRequest = ( SearchRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        SearchRequest searchRequest = ( SearchRequest ) parser.getBatchRequest().getCurrentRequest();
 
-        assertFalse( searchRequest.isTypesOnly() );
+        assertFalse( searchRequest.getTypesOnly() );
     }
 
 
@@ -717,9 +719,9 @@ public class SearchRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        SearchRequestCodec searchRequest = ( SearchRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        SearchRequest searchRequest = ( SearchRequest ) parser.getBatchRequest().getCurrentRequest();
 
-        assertFalse( searchRequest.isTypesOnly() );
+        assertFalse( searchRequest.getTypesOnly() );
     }
 
 
@@ -800,13 +802,13 @@ public class SearchRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        SearchRequestCodec searchRequest = ( SearchRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        SearchRequest searchRequest = ( SearchRequest ) parser.getBatchRequest().getCurrentRequest();
 
-        List<EntryAttribute> attributes = searchRequest.getAttributes();
+        List<String> attributes = searchRequest.getAttributes();
         assertEquals( 1, attributes.size() );
 
-        EntryAttribute attribute = attributes.get( 0 );
-        assertEquals( "sn", attribute.getUpId() );
+        String attribute = attributes.get( 0 );
+        assertEquals( "sn", attribute );
     }
 
 
@@ -832,16 +834,16 @@ public class SearchRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        SearchRequestCodec searchRequest = ( SearchRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        SearchRequest searchRequest = ( SearchRequest ) parser.getBatchRequest().getCurrentRequest();
 
-        List<EntryAttribute> attributes = searchRequest.getAttributes();
+        List<String> attributes = searchRequest.getAttributes();
         assertEquals( 2, attributes.size() );
 
-        EntryAttribute attribute1 = attributes.get( 0 );
-        assertEquals( "sn", attribute1.getUpId() );
+        String attribute1 = attributes.get( 0 );
+        assertEquals( "sn", attribute1 );
 
-        EntryAttribute attribute2 = attributes.get( 1 );
-        assertEquals( "givenName", attribute2.getUpId() );
+        String attribute2 = attributes.get( 1 );
+        assertEquals( "givenName", attribute2 );
     }
 
 
@@ -886,11 +888,11 @@ public class SearchRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        SearchRequestCodec searchRequest = ( SearchRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        SearchRequest searchRequest = ( SearchRequest ) parser.getBatchRequest().getCurrentRequest();
 
-        Filter filter = searchRequest.getFilter();
+        ExprNode filter = searchRequest.getFilter();
 
-        assertTrue( filter instanceof AndFilter );
+        assertTrue( filter instanceof AndNode );
     }
 
 
@@ -915,11 +917,11 @@ public class SearchRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        SearchRequestCodec searchRequest = ( SearchRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        SearchRequest searchRequest = ( SearchRequest ) parser.getBatchRequest().getCurrentRequest();
 
-        Filter filter = searchRequest.getFilter();
+        ExprNode filter = searchRequest.getFilter();
 
-        assertTrue( filter instanceof OrFilter );
+        assertTrue( filter instanceof OrNode );
     }
 
 
@@ -944,11 +946,11 @@ public class SearchRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        SearchRequestCodec searchRequest = ( SearchRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        SearchRequest searchRequest = ( SearchRequest ) parser.getBatchRequest().getCurrentRequest();
 
-        Filter filter = searchRequest.getFilter();
+        ExprNode filter = searchRequest.getFilter();
 
-        assertTrue( filter instanceof NotFilter );
+        assertTrue( filter instanceof NotNode );
     }
 
 
@@ -983,21 +985,17 @@ public class SearchRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        SearchRequestCodec searchRequest = ( SearchRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        SearchRequest searchRequest = ( SearchRequest ) parser.getBatchRequest().getCurrentRequest();
 
-        Filter filter = searchRequest.getFilter();
+        ExprNode filter = searchRequest.getFilter();
 
-        assertTrue( filter instanceof AttributeValueAssertionFilter );
+        assertTrue( filter instanceof ApproximateNode );
 
-        AttributeValueAssertionFilter approxMatchFilter = ( AttributeValueAssertionFilter ) filter;
+        ApproximateNode approxMatchFilter = ( ApproximateNode ) filter;
 
-        assertEquals( LdapConstants.APPROX_MATCH_FILTER, approxMatchFilter.getFilterType() );
+        assertEquals( "sn", approxMatchFilter.getAttribute() );
 
-        AttributeValueAssertion assertion = approxMatchFilter.getAssertion();
-
-        assertEquals( "sn", assertion.getAttributeDesc() );
-
-        assertEquals( "foobar", assertion.getAssertionValue().getString() );
+        assertEquals( "foobar", approxMatchFilter.getValue().getString() );
     }
 
 
@@ -1022,21 +1020,17 @@ public class SearchRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        SearchRequestCodec searchRequest = ( SearchRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        SearchRequest searchRequest = ( SearchRequest ) parser.getBatchRequest().getCurrentRequest();
 
-        Filter filter = searchRequest.getFilter();
+        ExprNode filter = searchRequest.getFilter();
 
-        assertTrue( filter instanceof AttributeValueAssertionFilter );
+        assertTrue( filter instanceof ApproximateNode );
 
-        AttributeValueAssertionFilter approxMatchFilter = ( AttributeValueAssertionFilter ) filter;
+        ApproximateNode approxMatchFilter = ( ApproximateNode ) filter;
 
-        assertEquals( LdapConstants.APPROX_MATCH_FILTER, approxMatchFilter.getFilterType() );
+        assertEquals( "sn", approxMatchFilter.getAttribute() );
 
-        AttributeValueAssertion assertion = approxMatchFilter.getAssertion();
-
-        assertEquals( "sn", assertion.getAttributeDesc() );
-
-        assertEquals( "DSMLv2.0 rocks!!", assertion.getAssertionValue().getString() );
+        assertEquals( "DSMLv2.0 rocks!!", approxMatchFilter.getValue().getString() );
     }
 
 
@@ -1061,21 +1055,17 @@ public class SearchRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        SearchRequestCodec searchRequest = ( SearchRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        SearchRequest searchRequest = ( SearchRequest ) parser.getBatchRequest().getCurrentRequest();
 
-        Filter filter = searchRequest.getFilter();
+        ExprNode filter = searchRequest.getFilter();
 
-        assertTrue( filter instanceof AttributeValueAssertionFilter );
+        assertTrue( filter instanceof ApproximateNode );
 
-        AttributeValueAssertionFilter approxMatchFilter = ( AttributeValueAssertionFilter ) filter;
+        ApproximateNode approxMatchFilter = ( ApproximateNode ) filter;
 
-        assertEquals( LdapConstants.APPROX_MATCH_FILTER, approxMatchFilter.getFilterType() );
+        assertEquals( "sn", approxMatchFilter.getAttribute() );
 
-        AttributeValueAssertion assertion = approxMatchFilter.getAssertion();
-
-        assertEquals( "sn", assertion.getAttributeDesc() );
-
-        assertNull( assertion.getAssertionValue() );
+        assertNull( approxMatchFilter.getValue() );
     }
 
 
@@ -1130,21 +1120,17 @@ public class SearchRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        SearchRequestCodec searchRequest = ( SearchRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        SearchRequest searchRequest = ( SearchRequest ) parser.getBatchRequest().getCurrentRequest();
 
-        Filter filter = searchRequest.getFilter();
+        ExprNode filter = searchRequest.getFilter();
 
-        assertTrue( filter instanceof AttributeValueAssertionFilter );
+        assertTrue( filter instanceof GreaterEqNode );
 
-        AttributeValueAssertionFilter approxMatchFilter = ( AttributeValueAssertionFilter ) filter;
+        GreaterEqNode greaterEqFilter = ( GreaterEqNode ) filter;
 
-        assertEquals( LdapConstants.GREATER_OR_EQUAL_FILTER, approxMatchFilter.getFilterType() );
+        assertEquals( "sn", greaterEqFilter.getAttribute() );
 
-        AttributeValueAssertion assertion = approxMatchFilter.getAssertion();
-
-        assertEquals( "sn", assertion.getAttributeDesc() );
-
-        assertEquals( "foobar", assertion.getAssertionValue().getString() );
+        assertEquals( "foobar", greaterEqFilter.getValue().getString() );
     }
 
 
@@ -1169,21 +1155,17 @@ public class SearchRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        SearchRequestCodec searchRequest = ( SearchRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        SearchRequest searchRequest = ( SearchRequest ) parser.getBatchRequest().getCurrentRequest();
 
-        Filter filter = searchRequest.getFilter();
+        ExprNode filter = searchRequest.getFilter();
 
-        assertTrue( filter instanceof AttributeValueAssertionFilter );
+        assertTrue( filter instanceof GreaterEqNode );
 
-        AttributeValueAssertionFilter approxMatchFilter = ( AttributeValueAssertionFilter ) filter;
+        GreaterEqNode greaterEqFilter = ( GreaterEqNode ) filter;
 
-        assertEquals( LdapConstants.GREATER_OR_EQUAL_FILTER, approxMatchFilter.getFilterType() );
+        assertEquals( "sn", greaterEqFilter.getAttribute() );
 
-        AttributeValueAssertion assertion = approxMatchFilter.getAssertion();
-
-        assertEquals( "sn", assertion.getAttributeDesc() );
-
-        assertEquals( "DSMLv2.0 rocks!!", assertion.getAssertionValue().getString() );
+        assertEquals( "DSMLv2.0 rocks!!", greaterEqFilter.getValue().getString() );
     }
 
 
@@ -1208,21 +1190,17 @@ public class SearchRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        SearchRequestCodec searchRequest = ( SearchRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        SearchRequest searchRequest = ( SearchRequest ) parser.getBatchRequest().getCurrentRequest();
 
-        Filter filter = searchRequest.getFilter();
+        ExprNode filter = searchRequest.getFilter();
 
-        assertTrue( filter instanceof AttributeValueAssertionFilter );
+        assertTrue( filter instanceof GreaterEqNode );
 
-        AttributeValueAssertionFilter approxMatchFilter = ( AttributeValueAssertionFilter ) filter;
+        GreaterEqNode greaterEqFilter = ( GreaterEqNode ) filter;
 
-        assertEquals( LdapConstants.GREATER_OR_EQUAL_FILTER, approxMatchFilter.getFilterType() );
+        assertEquals( "sn", greaterEqFilter.getAttribute() );
 
-        AttributeValueAssertion assertion = approxMatchFilter.getAssertion();
-
-        assertEquals( "sn", assertion.getAttributeDesc() );
-
-        assertNull( assertion.getAssertionValue() );
+        assertNull( greaterEqFilter.getValue() );
     }
 
 
@@ -1277,21 +1255,17 @@ public class SearchRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        SearchRequestCodec searchRequest = ( SearchRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        SearchRequest searchRequest = ( SearchRequest ) parser.getBatchRequest().getCurrentRequest();
 
-        Filter filter = searchRequest.getFilter();
+        ExprNode filter = searchRequest.getFilter();
 
-        assertTrue( filter instanceof AttributeValueAssertionFilter );
+        assertTrue( filter instanceof LessEqNode );
 
-        AttributeValueAssertionFilter approxMatchFilter = ( AttributeValueAssertionFilter ) filter;
+        LessEqNode lessOrEqFilter = ( LessEqNode ) filter;
 
-        assertEquals( LdapConstants.LESS_OR_EQUAL_FILTER, approxMatchFilter.getFilterType() );
+        assertEquals( "sn", lessOrEqFilter.getAttribute() );
 
-        AttributeValueAssertion assertion = approxMatchFilter.getAssertion();
-
-        assertEquals( "sn", assertion.getAttributeDesc() );
-
-        assertEquals( "foobar", assertion.getAssertionValue().getString() );
+        assertEquals( "foobar", lessOrEqFilter.getValue().getString() );
     }
 
 
@@ -1316,21 +1290,17 @@ public class SearchRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        SearchRequestCodec searchRequest = ( SearchRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        SearchRequest searchRequest = ( SearchRequest ) parser.getBatchRequest().getCurrentRequest();
 
-        Filter filter = searchRequest.getFilter();
+        ExprNode filter = searchRequest.getFilter();
 
-        assertTrue( filter instanceof AttributeValueAssertionFilter );
+        assertTrue( filter instanceof LessEqNode );
 
-        AttributeValueAssertionFilter approxMatchFilter = ( AttributeValueAssertionFilter ) filter;
+        LessEqNode lessOrEqFilter = ( LessEqNode ) filter;
 
-        assertEquals( LdapConstants.LESS_OR_EQUAL_FILTER, approxMatchFilter.getFilterType() );
+        assertEquals( "sn", lessOrEqFilter.getAttribute() );
 
-        AttributeValueAssertion assertion = approxMatchFilter.getAssertion();
-
-        assertEquals( "sn", assertion.getAttributeDesc() );
-
-        assertEquals( "DSMLv2.0 rocks!!", assertion.getAssertionValue().getString() );
+        assertEquals( "DSMLv2.0 rocks!!", lessOrEqFilter.getValue().getString() );
     }
 
 
@@ -1355,21 +1325,17 @@ public class SearchRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        SearchRequestCodec searchRequest = ( SearchRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        SearchRequest searchRequest = ( SearchRequest ) parser.getBatchRequest().getCurrentRequest();
 
-        Filter filter = searchRequest.getFilter();
+        ExprNode filter = searchRequest.getFilter();
 
-        assertTrue( filter instanceof AttributeValueAssertionFilter );
+        assertTrue( filter instanceof LessEqNode );
 
-        AttributeValueAssertionFilter approxMatchFilter = ( AttributeValueAssertionFilter ) filter;
+        LessEqNode lessOrEqFilter = ( LessEqNode ) filter;
 
-        assertEquals( LdapConstants.LESS_OR_EQUAL_FILTER, approxMatchFilter.getFilterType() );
+        assertEquals( "sn", lessOrEqFilter.getAttribute() );
 
-        AttributeValueAssertion assertion = approxMatchFilter.getAssertion();
-
-        assertEquals( "sn", assertion.getAttributeDesc() );
-
-        assertNull( assertion.getAssertionValue() );
+        assertNull( lessOrEqFilter.getValue() );
     }
 
 
@@ -1424,21 +1390,16 @@ public class SearchRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        SearchRequestCodec searchRequest = ( SearchRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        SearchRequest searchRequest = ( SearchRequest ) parser.getBatchRequest().getCurrentRequest();
 
-        Filter filter = searchRequest.getFilter();
+        ExprNode filter = searchRequest.getFilter();
 
-        assertTrue( filter instanceof AttributeValueAssertionFilter );
+        assertTrue( filter instanceof EqualityNode );
 
-        AttributeValueAssertionFilter approxMatchFilter = ( AttributeValueAssertionFilter ) filter;
+        EqualityNode equalityFilter = ( EqualityNode ) filter;
 
-        assertEquals( LdapConstants.EQUALITY_MATCH_FILTER, approxMatchFilter.getFilterType() );
-
-        AttributeValueAssertion assertion = approxMatchFilter.getAssertion();
-
-        assertEquals( "sn", assertion.getAttributeDesc() );
-
-        assertEquals( "foobar", assertion.getAssertionValue().getString() );
+        assertEquals( "sn", equalityFilter.getAttribute() );
+        assertEquals( "foobar", equalityFilter.getValue().getString() );
     }
 
 
@@ -1463,21 +1424,17 @@ public class SearchRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        SearchRequestCodec searchRequest = ( SearchRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        SearchRequest searchRequest = ( SearchRequest ) parser.getBatchRequest().getCurrentRequest();
 
-        Filter filter = searchRequest.getFilter();
+        ExprNode filter = searchRequest.getFilter();
 
-        assertTrue( filter instanceof AttributeValueAssertionFilter );
+        assertTrue( filter instanceof EqualityNode );
 
-        AttributeValueAssertionFilter approxMatchFilter = ( AttributeValueAssertionFilter ) filter;
+        EqualityNode equalityFilter = ( EqualityNode ) filter;
 
-        assertEquals( LdapConstants.EQUALITY_MATCH_FILTER, approxMatchFilter.getFilterType() );
+        assertEquals( "sn", equalityFilter.getAttribute() );
 
-        AttributeValueAssertion assertion = approxMatchFilter.getAssertion();
-
-        assertEquals( "sn", assertion.getAttributeDesc() );
-
-        assertEquals( "DSMLv2.0 rocks!!", assertion.getAssertionValue().getString() );
+        assertEquals( "DSMLv2.0 rocks!!", equalityFilter.getValue().getString() );
     }
 
 
@@ -1502,21 +1459,17 @@ public class SearchRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        SearchRequestCodec searchRequest = ( SearchRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        SearchRequest searchRequest = ( SearchRequest ) parser.getBatchRequest().getCurrentRequest();
 
-        Filter filter = searchRequest.getFilter();
+        ExprNode filter = searchRequest.getFilter();
 
-        assertTrue( filter instanceof AttributeValueAssertionFilter );
+        assertTrue( filter instanceof EqualityNode );
 
-        AttributeValueAssertionFilter approxMatchFilter = ( AttributeValueAssertionFilter ) filter;
+        EqualityNode equalityFilter = ( EqualityNode ) filter;
 
-        assertEquals( LdapConstants.EQUALITY_MATCH_FILTER, approxMatchFilter.getFilterType() );
+        assertEquals( "sn", equalityFilter.getAttribute() );
 
-        AttributeValueAssertion assertion = approxMatchFilter.getAssertion();
-
-        assertEquals( "sn", assertion.getAttributeDesc() );
-
-        assertNull( assertion.getAssertionValue() );
+        assertNull( equalityFilter.getValue() );
     }
 
 
@@ -1571,9 +1524,9 @@ public class SearchRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        SearchRequestCodec searchRequest = ( SearchRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        SearchRequest searchRequest = ( SearchRequest ) parser.getBatchRequest().getCurrentRequest();
 
-        Filter filter = searchRequest.getFilter();
+        ExprNode filter = searchRequest.getFilter();
 
         assertTrue( filter instanceof PresentFilter );
 
@@ -1614,9 +1567,9 @@ public class SearchRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        SearchRequestCodec searchRequest = ( SearchRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        SearchRequest searchRequest = ( SearchRequest ) parser.getBatchRequest().getCurrentRequest();
 
-        Filter filter = searchRequest.getFilter();
+        ExprNode filter = searchRequest.getFilter();
 
         assertTrue( filter instanceof ExtensibleMatchFilter );
 
@@ -1649,9 +1602,9 @@ public class SearchRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        SearchRequestCodec searchRequest = ( SearchRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        SearchRequest searchRequest = ( SearchRequest ) parser.getBatchRequest().getCurrentRequest();
 
-        Filter filter = searchRequest.getFilter();
+        ExprNode filter = searchRequest.getFilter();
 
         assertTrue( filter instanceof ExtensibleMatchFilter );
 
@@ -1684,9 +1637,9 @@ public class SearchRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        SearchRequestCodec searchRequest = ( SearchRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        SearchRequest searchRequest = ( SearchRequest ) parser.getBatchRequest().getCurrentRequest();
 
-        Filter filter = searchRequest.getFilter();
+        ExprNode filter = searchRequest.getFilter();
 
         assertTrue( filter instanceof ExtensibleMatchFilter );
 
@@ -1739,9 +1692,9 @@ public class SearchRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        SearchRequestCodec searchRequest = ( SearchRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        SearchRequest searchRequest = ( SearchRequest ) parser.getBatchRequest().getCurrentRequest();
 
-        Filter filter = searchRequest.getFilter();
+        ExprNode filter = searchRequest.getFilter();
 
         assertTrue( filter instanceof ExtensibleMatchFilter );
 
@@ -1772,9 +1725,9 @@ public class SearchRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        SearchRequestCodec searchRequest = ( SearchRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        SearchRequest searchRequest = ( SearchRequest ) parser.getBatchRequest().getCurrentRequest();
 
-        Filter filter = searchRequest.getFilter();
+        ExprNode filter = searchRequest.getFilter();
 
         assertTrue( filter instanceof ExtensibleMatchFilter );
 
@@ -1805,9 +1758,9 @@ public class SearchRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        SearchRequestCodec searchRequest = ( SearchRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        SearchRequest searchRequest = ( SearchRequest ) parser.getBatchRequest().getCurrentRequest();
 
-        Filter filter = searchRequest.getFilter();
+        ExprNode filter = searchRequest.getFilter();
 
         assertTrue( filter instanceof ExtensibleMatchFilter );
 
@@ -1838,9 +1791,9 @@ public class SearchRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        SearchRequestCodec searchRequest = ( SearchRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        SearchRequest searchRequest = ( SearchRequest ) parser.getBatchRequest().getCurrentRequest();
 
-        Filter filter = searchRequest.getFilter();
+        ExprNode filter = searchRequest.getFilter();
 
         assertTrue( filter instanceof ExtensibleMatchFilter );
 
@@ -1881,9 +1834,9 @@ public class SearchRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        SearchRequestCodec searchRequest = ( SearchRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        SearchRequest searchRequest = ( SearchRequest ) parser.getBatchRequest().getCurrentRequest();
 
-        Filter filter = searchRequest.getFilter();
+        ExprNode filter = searchRequest.getFilter();
 
         assertTrue( filter instanceof ExtensibleMatchFilter );
 
@@ -1914,9 +1867,9 @@ public class SearchRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        SearchRequestCodec searchRequest = ( SearchRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        SearchRequest searchRequest = ( SearchRequest ) parser.getBatchRequest().getCurrentRequest();
 
-        Filter filter = searchRequest.getFilter();
+        ExprNode filter = searchRequest.getFilter();
 
         assertTrue( filter instanceof ExtensibleMatchFilter );
 
@@ -1947,15 +1900,15 @@ public class SearchRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        SearchRequestCodec searchRequest = ( SearchRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        SearchRequest searchRequest = ( SearchRequest ) parser.getBatchRequest().getCurrentRequest();
 
-        Filter filter = searchRequest.getFilter();
+        ExprNode filter = searchRequest.getFilter();
 
-        assertTrue( filter instanceof SubstringFilter );
+        assertTrue( filter instanceof SubstringNode );
 
-        SubstringFilter substringFilter = ( SubstringFilter ) filter;
+        SubstringNode substringFilter = ( SubstringNode ) filter;
 
-        assertEquals( "sn", substringFilter.getType().toString() );
+        assertEquals( "sn", substringFilter.getAttribute() );
     }
 
 
@@ -1990,15 +1943,15 @@ public class SearchRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        SearchRequestCodec searchRequest = ( SearchRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        SearchRequest searchRequest = ( SearchRequest ) parser.getBatchRequest().getCurrentRequest();
 
-        Filter filter = searchRequest.getFilter();
+        ExprNode filter = searchRequest.getFilter();
 
-        assertTrue( filter instanceof SubstringFilter );
+        assertTrue( filter instanceof SubstringNode );
 
-        SubstringFilter substringFilter = ( SubstringFilter ) filter;
+        SubstringNode substringFilter = ( SubstringNode ) filter;
 
-        assertEquals( "jack", substringFilter.getInitialSubstrings().toString() );
+        assertEquals( "jack", substringFilter.getInitial().toString() );
     }
 
 
@@ -2023,15 +1976,15 @@ public class SearchRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        SearchRequestCodec searchRequest = ( SearchRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        SearchRequest searchRequest = ( SearchRequest ) parser.getBatchRequest().getCurrentRequest();
 
-        Filter filter = searchRequest.getFilter();
+        ExprNode filter = searchRequest.getFilter();
 
-        assertTrue( filter instanceof SubstringFilter );
+        assertTrue( filter instanceof SubstringNode );
 
-        SubstringFilter substringFilter = ( SubstringFilter ) filter;
+        SubstringNode substringFilter = ( SubstringNode ) filter;
 
-        assertEquals( "DSMLv2.0 rocks!!", substringFilter.getInitialSubstrings().toString() );
+        assertEquals( "DSMLv2.0 rocks!!", substringFilter.getInitial().toString() );
     }
 
 
@@ -2056,15 +2009,15 @@ public class SearchRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        SearchRequestCodec searchRequest = ( SearchRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        SearchRequest searchRequest = ( SearchRequest ) parser.getBatchRequest().getCurrentRequest();
 
-        Filter filter = searchRequest.getFilter();
+        ExprNode filter = searchRequest.getFilter();
 
-        assertTrue( filter instanceof SubstringFilter );
+        assertTrue( filter instanceof SubstringNode );
 
-        SubstringFilter substringFilter = ( SubstringFilter ) filter;
+        SubstringNode substringFilter = ( SubstringNode ) filter;
 
-        assertNull( substringFilter.getInitialSubstrings() );
+        assertNull( substringFilter.getInitial() );
     }
 
 
@@ -2089,17 +2042,17 @@ public class SearchRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        SearchRequestCodec searchRequest = ( SearchRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        SearchRequest searchRequest = ( SearchRequest ) parser.getBatchRequest().getCurrentRequest();
 
-        Filter filter = searchRequest.getFilter();
+        ExprNode filter = searchRequest.getFilter();
 
-        assertTrue( filter instanceof SubstringFilter );
+        assertTrue( filter instanceof SubstringNode );
 
-        SubstringFilter substringFilter = ( SubstringFilter ) filter;
+        SubstringNode substringFilter = ( SubstringNode ) filter;
 
-        assertEquals( "jack", substringFilter.getInitialSubstrings() );
+        assertEquals( "jack", substringFilter.getInitial() );
 
-        List<String> initials = substringFilter.getAnySubstrings();
+        List<String> initials = substringFilter.getAny();
 
         assertEquals( 1, initials.size() );
 
@@ -2128,17 +2081,17 @@ public class SearchRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        SearchRequestCodec searchRequest = ( SearchRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        SearchRequest searchRequest = ( SearchRequest ) parser.getBatchRequest().getCurrentRequest();
 
-        Filter filter = searchRequest.getFilter();
+        ExprNode filter = searchRequest.getFilter();
 
-        assertTrue( filter instanceof SubstringFilter );
+        assertTrue( filter instanceof SubstringNode );
 
-        SubstringFilter substringFilter = ( SubstringFilter ) filter;
+        SubstringNode substringFilter = ( SubstringNode ) filter;
 
-        assertEquals( "jack", substringFilter.getInitialSubstrings() );
+        assertEquals( "jack", substringFilter.getInitial() );
 
-        assertEquals( "john", substringFilter.getFinalSubstrings() );
+        assertEquals( "john", substringFilter.getFinal() );
     }
 
 
@@ -2163,15 +2116,15 @@ public class SearchRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        SearchRequestCodec searchRequest = ( SearchRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        SearchRequest searchRequest = ( SearchRequest ) parser.getBatchRequest().getCurrentRequest();
 
-        Filter filter = searchRequest.getFilter();
+        ExprNode filter = searchRequest.getFilter();
 
-        assertTrue( filter instanceof SubstringFilter );
+        assertTrue( filter instanceof SubstringNode );
 
-        SubstringFilter substringFilter = ( SubstringFilter ) filter;
+        SubstringNode substringFilter = ( SubstringNode ) filter;
 
-        List<String> initials = substringFilter.getAnySubstrings();
+        List<String> initials = substringFilter.getAny();
 
         assertEquals( 1, initials.size() );
         assertEquals( "kate", initials.get( 0 ) );
@@ -2199,15 +2152,15 @@ public class SearchRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        SearchRequestCodec searchRequest = ( SearchRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        SearchRequest searchRequest = ( SearchRequest ) parser.getBatchRequest().getCurrentRequest();
 
-        Filter filter = searchRequest.getFilter();
+        ExprNode filter = searchRequest.getFilter();
 
-        assertTrue( filter instanceof SubstringFilter );
+        assertTrue( filter instanceof SubstringNode );
 
-        SubstringFilter substringFilter = ( SubstringFilter ) filter;
+        SubstringNode substringFilter = ( SubstringNode ) filter;
 
-        List<String> initials = substringFilter.getAnySubstrings();
+        List<String> initials = substringFilter.getAny();
 
         assertEquals( 1, initials.size() );
         assertEquals( "DSMLv2.0 rocks!!", initials.get( 0 ) );
@@ -2235,15 +2188,15 @@ public class SearchRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        SearchRequestCodec searchRequest = ( SearchRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        SearchRequest searchRequest = ( SearchRequest ) parser.getBatchRequest().getCurrentRequest();
 
-        Filter filter = searchRequest.getFilter();
+        ExprNode filter = searchRequest.getFilter();
 
-        assertTrue( filter instanceof SubstringFilter );
+        assertTrue( filter instanceof SubstringNode );
 
-        SubstringFilter substringFilter = ( SubstringFilter ) filter;
+        SubstringNode substringFilter = ( SubstringNode ) filter;
 
-        List<String> initials = substringFilter.getAnySubstrings();
+        List<String> initials = substringFilter.getAny();
 
         assertEquals( 0, initials.size() );
     }
@@ -2270,15 +2223,15 @@ public class SearchRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        SearchRequestCodec searchRequest = ( SearchRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        SearchRequest searchRequest = ( SearchRequest ) parser.getBatchRequest().getCurrentRequest();
 
-        Filter filter = searchRequest.getFilter();
+        ExprNode filter = searchRequest.getFilter();
 
-        assertTrue( filter instanceof SubstringFilter );
+        assertTrue( filter instanceof SubstringNode );
 
-        SubstringFilter substringFilter = ( SubstringFilter ) filter;
+        SubstringNode substringFilter = ( SubstringNode ) filter;
 
-        List<String> initials = substringFilter.getAnySubstrings();
+        List<String> initials = substringFilter.getAny();
 
         assertEquals( 2, initials.size() );
 
@@ -2309,21 +2262,21 @@ public class SearchRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        SearchRequestCodec searchRequest = ( SearchRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        SearchRequest searchRequest = ( SearchRequest ) parser.getBatchRequest().getCurrentRequest();
 
-        Filter filter = searchRequest.getFilter();
+        ExprNode filter = searchRequest.getFilter();
 
-        assertTrue( filter instanceof SubstringFilter );
+        assertTrue( filter instanceof SubstringNode );
 
-        SubstringFilter substringFilter = ( SubstringFilter ) filter;
+        SubstringNode substringFilter = ( SubstringNode ) filter;
 
-        List<String> initials = substringFilter.getAnySubstrings();
+        List<String> initials = substringFilter.getAny();
 
         assertEquals( 1, initials.size() );
 
         assertEquals( "kate", initials.get( 0 ) );
 
-        assertEquals( "john", substringFilter.getFinalSubstrings() );
+        assertEquals( "john", substringFilter.getFinal() );
     }
 
 
@@ -2348,15 +2301,15 @@ public class SearchRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        SearchRequestCodec searchRequest = ( SearchRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        SearchRequest searchRequest = ( SearchRequest ) parser.getBatchRequest().getCurrentRequest();
 
-        Filter filter = searchRequest.getFilter();
+        ExprNode filter = searchRequest.getFilter();
 
-        assertTrue( filter instanceof SubstringFilter );
+        assertTrue( filter instanceof SubstringNode );
 
-        SubstringFilter substringFilter = ( SubstringFilter ) filter;
+        SubstringNode substringFilter = ( SubstringNode ) filter;
 
-        assertEquals( "john", substringFilter.getFinalSubstrings().toString() );
+        assertEquals( "john", substringFilter.getFinal().toString() );
     }
 
 
@@ -2381,15 +2334,15 @@ public class SearchRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        SearchRequestCodec searchRequest = ( SearchRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        SearchRequest searchRequest = ( SearchRequest ) parser.getBatchRequest().getCurrentRequest();
 
-        Filter filter = searchRequest.getFilter();
+        ExprNode filter = searchRequest.getFilter();
 
-        assertTrue( filter instanceof SubstringFilter );
+        assertTrue( filter instanceof SubstringNode );
 
-        SubstringFilter substringFilter = ( SubstringFilter ) filter;
+        SubstringNode substringFilter = ( SubstringNode ) filter;
 
-        assertEquals( "DSMLv2.0 rocks!!", substringFilter.getFinalSubstrings().toString() );
+        assertEquals( "DSMLv2.0 rocks!!", substringFilter.getFinal().toString() );
     }
 
 
@@ -2414,15 +2367,15 @@ public class SearchRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        SearchRequestCodec searchRequest = ( SearchRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        SearchRequest searchRequest = ( SearchRequest ) parser.getBatchRequest().getCurrentRequest();
 
-        Filter filter = searchRequest.getFilter();
+        ExprNode filter = searchRequest.getFilter();
 
-        assertTrue( filter instanceof SubstringFilter );
+        assertTrue( filter instanceof SubstringNode );
 
-        SubstringFilter substringFilter = ( SubstringFilter ) filter;
+        SubstringNode substringFilter = ( SubstringNode ) filter;
 
-        assertNull( substringFilter.getFinalSubstrings() );
+        assertNull( substringFilter.getFinal() );
     }
 
 

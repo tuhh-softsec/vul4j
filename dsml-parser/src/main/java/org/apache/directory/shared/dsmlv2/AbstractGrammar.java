@@ -122,6 +122,7 @@ public abstract class AbstractGrammar implements IGrammar
         XmlPullParser xpp = container.getParser();
 
         int eventType = xpp.getEventType();
+
         do
         {
             if ( eventType == XmlPullParser.START_DOCUMENT )
@@ -140,6 +141,7 @@ public abstract class AbstractGrammar implements IGrammar
             {
                 processTag( container, Tag.END );
             }
+
             eventType = xpp.next();
         }
         while ( eventType != XmlPullParser.END_DOCUMENT );
@@ -170,7 +172,8 @@ public abstract class AbstractGrammar implements IGrammar
 
             if ( transition.hasAction() )
             {
-                transition.getAction().action( container );
+                GrammarAction action = transition.getAction();
+                action.action( container );
             }
         }
         else

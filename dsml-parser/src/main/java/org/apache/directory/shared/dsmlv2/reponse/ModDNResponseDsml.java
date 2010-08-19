@@ -21,9 +21,9 @@
 package org.apache.directory.shared.dsmlv2.reponse;
 
 
-import org.apache.directory.shared.dsmlv2.DsmlDecorator;
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
-import org.apache.directory.shared.ldap.codec.modifyDn.ModifyDNResponseCodec;
+import org.apache.directory.shared.ldap.message.ModifyDnResponse;
+import org.apache.directory.shared.ldap.message.ModifyDnResponseImpl;
 import org.dom4j.Element;
 
 
@@ -32,14 +32,14 @@ import org.dom4j.Element;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class ModDNResponseDsml extends LdapResponseDecorator implements DsmlDecorator
+public class ModDNResponseDsml extends AbstractResponseDsml
 {
     /**
      * Creates a new instance of ModDNResponseDsml.
      */
     public ModDNResponseDsml()
     {
-        super( new ModifyDNResponseCodec() );
+        super( new ModifyDnResponseImpl() );
     }
 
 
@@ -49,18 +49,18 @@ public class ModDNResponseDsml extends LdapResponseDecorator implements DsmlDeco
      * @param ldapMessage
      *      the message to decorate
      */
-    public ModDNResponseDsml( ModifyDNResponseCodec ldapMessage )
+    public ModDNResponseDsml( ModifyDnResponse ldapMessage )
     {
         super( ldapMessage );
     }
 
 
     /* (non-Javadoc)
-     * @see org.apache.directory.shared.dsmlv2.reponse.LdapMessageDecorator#getMessageType()
+     * @see org.apache.directory.shared.dsmlv2.reponse.LdapMessageDecorator#getType()
      */
-    public MessageTypeEnum getMessageType()
+    public MessageTypeEnum getType()
     {
-        return instance.getMessageType();
+        return instance.getType();
     }
 
 
@@ -71,7 +71,7 @@ public class ModDNResponseDsml extends LdapResponseDecorator implements DsmlDeco
     {
         Element element = root.addElement( "modDNResponse" );
 
-        LdapResultDsml ldapResultDsml = new LdapResultDsml( ( ( ModifyDNResponseCodec ) instance ).getLdapResult(), instance );
+        LdapResultDsml ldapResultDsml = new LdapResultDsml( ( ( ModifyDnResponse ) instance ).getLdapResult(), instance );
         ldapResultDsml.toDsml( element );
         return element;
     }

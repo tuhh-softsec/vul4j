@@ -23,10 +23,10 @@ package org.apache.directory.shared.dsmlv2.reponse;
 
 import java.util.List;
 
-import org.apache.directory.shared.dsmlv2.DsmlDecorator;
-import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
-import org.apache.directory.shared.ldap.codec.search.SearchResultReferenceCodec;
+import org.apache.directory.shared.ldap.message.Message;
+import org.apache.directory.shared.ldap.message.SearchResultReference;
+import org.apache.directory.shared.ldap.message.SearchResultReferenceImpl;
 import org.apache.directory.shared.ldap.util.LdapURL;
 import org.dom4j.Element;
 
@@ -36,14 +36,14 @@ import org.dom4j.Element;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class SearchResultReferenceDsml extends LdapResponseDecorator implements DsmlDecorator
+public class SearchResultReferenceDsml extends AbstractResponseDsml
 {
     /**
      * Creates a new instance of SearchResultReferenceDsml.
      */
     public SearchResultReferenceDsml()
     {
-        super( new SearchResultReferenceCodec() );
+        super( new SearchResultReferenceImpl() );
     }
 
 
@@ -53,18 +53,18 @@ public class SearchResultReferenceDsml extends LdapResponseDecorator implements 
      * @param ldapMessage
      *      the message to decorate
      */
-    public SearchResultReferenceDsml( LdapMessageCodec ldapMessage )
+    public SearchResultReferenceDsml( Message ldapMessage )
     {
         super( ldapMessage );
     }
 
 
     /* (non-Javadoc)
-     * @see org.apache.directory.shared.dsmlv2.reponse.LdapMessageDecorator#getMessageType()
+     * @see org.apache.directory.shared.dsmlv2.reponse.LdapMessageDecorator#getType()
      */
-    public MessageTypeEnum getMessageType()
+    public MessageTypeEnum getType()
     {
-        return instance.getMessageType();
+        return instance.getType();
     }
 
 
@@ -74,10 +74,11 @@ public class SearchResultReferenceDsml extends LdapResponseDecorator implements 
     public Element toDsml( Element root )
     {
         Element element = root.addElement( "searchResultReference" );
-        SearchResultReferenceCodec searchResultReference = ( SearchResultReferenceCodec ) instance;
+        SearchResultReference searchResultReference = ( SearchResultReference ) instance;
 
         // Adding References
-        List<LdapURL> refsList = searchResultReference.getSearchResultReferences();
+        List<String> refsList = ( List<String> ) searchResultReference.getReferral().getLdapUrls();
+
         for ( int i = 0; i < refsList.size(); i++ )
         {
             element.addElement( "ref" ).addText( refsList.get( i ).toString() );
@@ -94,7 +95,7 @@ public class SearchResultReferenceDsml extends LdapResponseDecorator implements 
      */
     public void addSearchResultReference( LdapURL searchResultReference )
     {
-        ( ( SearchResultReferenceCodec ) instance ).addSearchResultReference( searchResultReference );
+        ( ( SearchResultReference ) instance ).getReferral().addLdapUrl( searchResultReference.toString() );
     }
 
 
@@ -103,8 +104,8 @@ public class SearchResultReferenceDsml extends LdapResponseDecorator implements 
      * 
      * @return An ArrayList of SearchResultReferences
      */
-    public List<LdapURL> getSearchResultReferences()
+    public List<String> getSearchResultReferences()
     {
-        return ( ( SearchResultReferenceCodec ) instance ).getSearchResultReferences();
+        return ( List<String> ) ( ( SearchResultReference ) instance ).getReferral().getLdapUrls();
     }
 }

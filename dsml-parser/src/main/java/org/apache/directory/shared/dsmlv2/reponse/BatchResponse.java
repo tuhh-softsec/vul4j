@@ -24,7 +24,7 @@ package org.apache.directory.shared.dsmlv2.reponse;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.directory.shared.ldap.codec.LdapResponseCodec;
+import org.apache.directory.shared.ldap.message.Response;
 
 
 /**
@@ -38,7 +38,7 @@ public class BatchResponse
     /**
      * The responses contained in the Batch Response
      */
-    private List<LdapResponseCodec> responses;
+    private List<Response> responses;
 
     /**
      * The ID of the response
@@ -51,7 +51,7 @@ public class BatchResponse
      */
     public BatchResponse()
     {
-        responses = new ArrayList<LdapResponseCodec>();
+        responses = new ArrayList<Response>();
     }
 
 
@@ -63,7 +63,7 @@ public class BatchResponse
      * @return
      *      true (as per the general contract of the Collection.add method)
      */
-    public boolean addResponse( LdapResponseCodec response )
+    public boolean addResponse( Response response )
     {
         return responses.add( response );
     }
@@ -75,7 +75,7 @@ public class BatchResponse
      * @return
      *      the current response
      */
-    public LdapResponseCodec getCurrentResponse()
+    public Response getCurrentResponse()
     {
         return responses.get( responses.size() - 1 );
     }

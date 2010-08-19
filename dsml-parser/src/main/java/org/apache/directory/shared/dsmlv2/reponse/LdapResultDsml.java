@@ -25,11 +25,11 @@ import java.util.List;
 
 import org.apache.directory.shared.dsmlv2.DsmlDecorator;
 import org.apache.directory.shared.dsmlv2.ParserUtils;
-import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
-import org.apache.directory.shared.ldap.codec.LdapResultCodec;
-import org.apache.directory.shared.ldap.util.LdapURL;
+import org.apache.directory.shared.ldap.message.LdapResult;
+import org.apache.directory.shared.ldap.message.Message;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.name.DN;
+import org.apache.directory.shared.ldap.util.LdapURL;
 import org.dom4j.Element;
 
 
@@ -41,10 +41,10 @@ import org.dom4j.Element;
 public class LdapResultDsml implements DsmlDecorator
 {
     /** The LDAP Result to decorate */
-    private LdapResultCodec result;
+    private LdapResult result;
 
     /** The associated LDAP Message */
-    private LdapMessageCodec message;
+    private Message message;
 
 
     /**
@@ -55,7 +55,7 @@ public class LdapResultDsml implements DsmlDecorator
      * @param message
      *      the associated message
      */
-    public LdapResultDsml( LdapResultCodec result, LdapMessageCodec message )
+    public LdapResultDsml( LdapResult result, Message message )
     {
         this.result = result;
         this.message = message;
@@ -76,14 +76,15 @@ public class LdapResultDsml implements DsmlDecorator
         }
 
         // Matched DN
-        String matchedDN = result.getMatchedDN();
+        String matchedDN = result.getMatchedDn().getName();
+
         if ( !matchedDN.equals( "" ) )
         {
             root.addAttribute( "matchedDN", matchedDN );
         }
 
         // Controls
-        ParserUtils.addControls( root, message.getControls() );
+        ParserUtils.addControls( root, message.getControls().values() );
 
         // ResultCode
         Element resultCodeElement = root.addElement( "resultCode" );
@@ -99,26 +100,18 @@ public class LdapResultDsml implements DsmlDecorator
         }
 
         // Referals
-        List<LdapURL> referals = result.getReferrals();
+        List<String> referals = ( List<String> ) result.getReferral().getLdapUrls();
+
         if ( referals != null )
         {
-            for ( int i = 0; i < referals.size(); i++ )
+            for ( String url : referals )
             {
                 Element referalElement = root.addElement( "referal" );
-                referalElement.addText( referals.get( i ).toString() );
+                referalElement.addText( url );
             }
         }
 
         return root;
-    }
-
-
-    /**
-     * Initialize the referrals list
-     */
-    public void initReferrals()
-    {
-        result.initReferrals();
     }
 
 
@@ -149,9 +142,9 @@ public class LdapResultDsml implements DsmlDecorator
      * 
      * @return Returns the matchedDN.
      */
-    public String getMatchedDN()
+    public String getMatchedDn()
     {
-        return result.getMatchedDN();
+        return result.getMatchedDn().getName();
     }
 
 
@@ -160,9 +153,9 @@ public class LdapResultDsml implements DsmlDecorator
      * 
      * @param matchedDN The matchedDN to set.
      */
-    public void setMatchedDN( DN matchedDN )
+    public void setMatchedDn( DN matchedDN )
     {
-        result.setMatchedDN( matchedDN );
+        result.setMatchedDn( matchedDN );
     }
 
 
@@ -171,9 +164,9 @@ public class LdapResultDsml implements DsmlDecorator
      * 
      * @return Returns the referrals.
      */
-    public List<LdapURL> getReferrals()
+    public List<String> getReferrals()
     {
-        return result.getReferrals();
+        return ( List<String> ) result.getReferral().getLdapUrls();
     }
 
 
@@ -184,7 +177,7 @@ public class LdapResultDsml implements DsmlDecorator
      */
     public void addReferral( LdapURL referral )
     {
-        result.addReferral( referral );
+        result.getReferral().addLdapUrl( referral.toString() );
     }
 
 

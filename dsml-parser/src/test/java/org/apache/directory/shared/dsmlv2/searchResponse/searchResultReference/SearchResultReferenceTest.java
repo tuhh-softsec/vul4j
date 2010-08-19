@@ -26,20 +26,21 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.util.List;
+import java.util.Collection;
 
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.dsmlv2.AbstractResponseTest;
 import org.apache.directory.shared.dsmlv2.Dsmlv2ResponseParser;
 import org.apache.directory.shared.dsmlv2.reponse.SearchResponse;
-import org.apache.directory.shared.ldap.codec.search.SearchResultReferenceCodec;
 import org.apache.directory.shared.ldap.codec.util.LdapURLEncodingException;
+import org.apache.directory.shared.ldap.message.SearchResultReference;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.util.LdapURL;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
 
 /**
  * Tests for the Search Result Reference Response parsing
@@ -71,7 +72,7 @@ public class SearchResultReferenceTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        SearchResultReferenceCodec searchResultReference = ( ( SearchResponse ) parser.getBatchResponse()
+        SearchResultReference searchResultReference = ( ( SearchResponse ) parser.getBatchResponse()
             .getCurrentResponse() ).getCurrentSearchResultReference();
 
         assertEquals( 1, searchResultReference.getControls().size() );
@@ -107,7 +108,7 @@ public class SearchResultReferenceTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        SearchResultReferenceCodec searchResultReference = ( ( SearchResponse ) parser.getBatchResponse()
+        SearchResultReference searchResultReference = ( ( SearchResponse ) parser.getBatchResponse()
             .getCurrentResponse() ).getCurrentSearchResultReference();
 
         assertEquals( 1, searchResultReference.getControls().size() );
@@ -143,7 +144,7 @@ public class SearchResultReferenceTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        SearchResultReferenceCodec searchResultReference = ( ( SearchResponse ) parser.getBatchResponse()
+        SearchResultReference searchResultReference = ( ( SearchResponse ) parser.getBatchResponse()
             .getCurrentResponse() ).getCurrentSearchResultReference();
 
         assertEquals( 2, searchResultReference.getControls().size() );
@@ -179,7 +180,7 @@ public class SearchResultReferenceTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        SearchResultReferenceCodec searchResultReference = ( ( SearchResponse ) parser.getBatchResponse()
+        SearchResultReference searchResultReference = ( ( SearchResponse ) parser.getBatchResponse()
             .getCurrentResponse() ).getCurrentSearchResultReference();
 
         assertEquals( 3, searchResultReference.getControls().size() );
@@ -215,7 +216,7 @@ public class SearchResultReferenceTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        SearchResultReferenceCodec searchResultReference = ( ( SearchResponse ) parser.getBatchResponse()
+        SearchResultReference searchResultReference = ( ( SearchResponse ) parser.getBatchResponse()
             .getCurrentResponse() ).getCurrentSearchResultReference();
 
         assertEquals( 456, searchResultReference.getMessageId() );
@@ -263,16 +264,16 @@ public class SearchResultReferenceTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        SearchResultReferenceCodec searchResultReference = ( ( SearchResponse ) parser.getBatchResponse()
+        SearchResultReference searchResultReference = ( ( SearchResponse ) parser.getBatchResponse()
             .getCurrentResponse() ).getCurrentSearchResultReference();
 
-        List<org.apache.directory.shared.ldap.util.LdapURL> references = searchResultReference.getSearchResultReferences();
+        Collection<String> references = searchResultReference.getReferral().getLdapUrls();
 
         assertEquals( 1, references.size() );
 
         try
         {
-            assertEquals( new LdapURL( "ldap://localhost" ).toString(), references.get( 0 ).toString() );
+            assertTrue( references.contains( new LdapURL( "ldap://localhost" ).toString() ) );
         }
         catch ( LdapURLEncodingException e )
         {
@@ -302,10 +303,10 @@ public class SearchResultReferenceTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        SearchResultReferenceCodec searchResultReference = ( ( SearchResponse ) parser.getBatchResponse()
+        SearchResultReference searchResultReference = ( ( SearchResponse ) parser.getBatchResponse()
             .getCurrentResponse() ).getCurrentSearchResultReference();
 
-        List<org.apache.directory.shared.ldap.util.LdapURL> references = searchResultReference.getSearchResultReferences();
+        Collection<String> references = searchResultReference.getReferral().getLdapUrls();
 
         assertEquals( 0, references.size() );
     }
@@ -332,16 +333,16 @@ public class SearchResultReferenceTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        SearchResultReferenceCodec searchResultReference = ( ( SearchResponse ) parser.getBatchResponse()
+        SearchResultReference searchResultReference = ( ( SearchResponse ) parser.getBatchResponse()
             .getCurrentResponse() ).getCurrentSearchResultReference();
 
-        List<org.apache.directory.shared.ldap.util.LdapURL> references = searchResultReference.getSearchResultReferences();
+        Collection<String> references = searchResultReference.getReferral().getLdapUrls();
 
         assertEquals( 2, references.size() );
 
         try
         {
-            assertEquals( new LdapURL( "ldap://localhost" ).toString(), references.get( 0 ).toString() );
+            assertTrue( references.contains( new LdapURL( "ldap://localhost" ).toString() ) );
         }
         catch ( LdapURLEncodingException e )
         {
@@ -350,7 +351,7 @@ public class SearchResultReferenceTest extends AbstractResponseTest
 
         try
         {
-            assertEquals( new LdapURL( "ldap://www.apache.org" ).toString(), references.get( 1 ).toString() );
+            assertTrue( references.contains( new LdapURL( "ldap://www.apache.org" ).toString() ) );
         }
         catch ( LdapURLEncodingException e )
         {

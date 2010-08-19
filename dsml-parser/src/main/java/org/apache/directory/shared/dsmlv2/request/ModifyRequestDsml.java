@@ -20,15 +20,16 @@
 package org.apache.directory.shared.dsmlv2.request;
 
 
+import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 
 import org.apache.directory.shared.dsmlv2.ParserUtils;
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
-import org.apache.directory.shared.ldap.codec.modify.ModifyRequestCodec;
 import org.apache.directory.shared.ldap.entry.Modification;
 import org.apache.directory.shared.ldap.entry.ModificationOperation;
 import org.apache.directory.shared.ldap.entry.Value;
+import org.apache.directory.shared.ldap.message.ModifyRequest;
+import org.apache.directory.shared.ldap.message.ModifyRequestImpl;
 import org.dom4j.Element;
 import org.dom4j.Namespace;
 import org.dom4j.QName;
@@ -46,7 +47,7 @@ public class ModifyRequestDsml extends AbstractRequestDsml
      */
     public ModifyRequestDsml()
     {
-        super( new ModifyRequestCodec() );
+        super( new ModifyRequestImpl() );
     }
 
 
@@ -56,7 +57,7 @@ public class ModifyRequestDsml extends AbstractRequestDsml
      * @param ldapMessage
      *      the message to decorate
      */
-    public ModifyRequestDsml( ModifyRequestCodec ldapMessage )
+    public ModifyRequestDsml( ModifyRequest ldapMessage )
     {
         super( ldapMessage );
     }
@@ -65,9 +66,9 @@ public class ModifyRequestDsml extends AbstractRequestDsml
     /**
      * {@inheritDoc}
      */
-    public MessageTypeEnum getMessageType()
+    public MessageTypeEnum getType()
     {
-        return instance.getMessageType();
+        return instance.getType();
     }
 
 
@@ -78,27 +79,27 @@ public class ModifyRequestDsml extends AbstractRequestDsml
     {
         Element element = super.toDsml( root );
 
-        ModifyRequestCodec request = ( ModifyRequestCodec ) instance;
+        ModifyRequest request = ( ModifyRequest ) instance;
 
         // DN
-        if ( request.getObject() != null )
+        if ( request.getName() != null )
         {
-            element.addAttribute( "dn", request.getObject().getName() );
+            element.addAttribute( "dn", request.getName().getName() );
         }
 
         // Modifications
-        List<Modification> modifications = request.getModifications();
+        Collection<Modification> modifications = request.getModifications();
 
-        for ( int i = 0; i < modifications.size(); i++ )
+        for ( Modification modification : modifications )
         {
-            Modification modificationItem = modifications.get( i );
-
             Element modElement = element.addElement( "modification" );
-            if ( modificationItem.getAttribute() != null )
-            {
-                modElement.addAttribute( "name", modificationItem.getAttribute().getId() );
 
-                Iterator<Value<?>> iterator = modificationItem.getAttribute().getAll();
+            if ( modification.getAttribute() != null )
+            {
+                modElement.addAttribute( "name", modification.getAttribute().getId() );
+
+                Iterator<Value<?>> iterator = modification.getAttribute().getAll();
+
                 while ( iterator.hasNext() )
                 {
                     Value<?> value = iterator.next();
@@ -125,7 +126,8 @@ public class ModifyRequestDsml extends AbstractRequestDsml
                 }
             }
 
-            ModificationOperation operation = modificationItem.getOperation();
+            ModificationOperation operation = modification.getOperation();
+
             if ( operation == ModificationOperation.ADD_ATTRIBUTE )
             {
                 modElement.addAttribute( "operation", "add" );

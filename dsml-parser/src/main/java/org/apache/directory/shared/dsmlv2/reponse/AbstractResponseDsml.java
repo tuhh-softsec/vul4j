@@ -17,63 +17,51 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.dsmlv2.request;
+package org.apache.directory.shared.dsmlv2.reponse;
 
 
-import org.apache.directory.shared.dsmlv2.LdapMessageDecorator;
+import org.apache.directory.shared.dsmlv2.DsmlDecorator;
 import org.apache.directory.shared.ldap.message.Message;
 import org.apache.directory.shared.ldap.message.MessageException;
 import org.apache.directory.shared.ldap.message.control.Control;
+import org.dom4j.Element;
 
 
 /**
- * Decorator abstract class for LdapRequest
- *
+ * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class LdapRequestDecorator extends LdapMessageDecorator
+public abstract class AbstractResponseDsml extends LdapResponseDecorator implements DsmlDecorator
 {
-    /**
-     * Creates a new instance of LdapRequestDecorator.
-     *
-     * @param ldapMessage the message to decorate
-     */
-    public LdapRequestDecorator( Message ldapMessage )
+
+    public AbstractResponseDsml( Message ldapMessage )
     {
         super( ldapMessage );
+        // TODO Auto-generated constructor stub
     }
+
+
+    public abstract Element toDsml( Element root );
 
 
     public void addAllControls( Control[] controls ) throws MessageException
     {
-        instance.addAllControls( controls );
+        // TODO Auto-generated method stub
+
     }
 
 
     public Object get( Object key )
-    {
-        return instance.get( key );
-    }
-
-
-    /*
-    public int getControlsLength()
-    {
-        return 0;
-    }
-    */
-
-    public Control getCurrentControl()
     {
         // TODO Auto-generated method stub
         return null;
     }
 
 
-    public int getMessageLength()
+    public Control getCurrentControl()
     {
         // TODO Auto-generated method stub
-        return 0;
+        return null;
     }
 
 
@@ -97,17 +85,4 @@ public class LdapRequestDecorator extends LdapMessageDecorator
 
     }
 
-
-    public void setControlsLength( int controlsLength )
-    {
-        // TODO Auto-generated method stub
-
-    }
-
-
-    public void setMessageLength( int messageLength )
-    {
-        // TODO Auto-generated method stub
-
-    }
 }

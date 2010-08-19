@@ -31,11 +31,12 @@ import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.dsmlv2.AbstractTest;
 import org.apache.directory.shared.dsmlv2.Dsmlv2Parser;
-import org.apache.directory.shared.ldap.codec.extended.ExtendedRequestCodec;
+import org.apache.directory.shared.ldap.message.ExtendedRequest;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
 
 /**
  * Tests for the Extended Request parsing
@@ -67,7 +68,7 @@ public class ExtendedRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        ExtendedRequestCodec extendedRequest = ( ExtendedRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        ExtendedRequest extendedRequest = ( ExtendedRequest ) parser.getBatchRequest().getCurrentRequest();
 
         assertEquals( 456, extendedRequest.getMessageId() );
     }
@@ -104,7 +105,7 @@ public class ExtendedRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        ExtendedRequestCodec extendedRequest = ( ExtendedRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        ExtendedRequest extendedRequest = ( ExtendedRequest ) parser.getBatchRequest().getCurrentRequest();
         Control control = extendedRequest.getCurrentControl();
 
         assertEquals( 1, extendedRequest.getControls().size() );
@@ -135,7 +136,7 @@ public class ExtendedRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        ExtendedRequestCodec extendedRequest = ( ExtendedRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        ExtendedRequest extendedRequest = ( ExtendedRequest ) parser.getBatchRequest().getCurrentRequest();
         Control control = extendedRequest.getCurrentControl();
 
         assertEquals( 1, extendedRequest.getControls().size() );
@@ -166,7 +167,7 @@ public class ExtendedRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        ExtendedRequestCodec extendedRequest = ( ExtendedRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        ExtendedRequest extendedRequest = ( ExtendedRequest ) parser.getBatchRequest().getCurrentRequest();
         Control control = extendedRequest.getCurrentControl();
 
         assertEquals( 1, extendedRequest.getControls().size() );
@@ -197,7 +198,7 @@ public class ExtendedRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        ExtendedRequestCodec extendedRequest = ( ExtendedRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        ExtendedRequest extendedRequest = ( ExtendedRequest ) parser.getBatchRequest().getCurrentRequest();
         Control control = extendedRequest.getCurrentControl();
 
         assertEquals( 2, extendedRequest.getControls().size() );
@@ -228,7 +229,7 @@ public class ExtendedRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        ExtendedRequestCodec extendedRequest = ( ExtendedRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        ExtendedRequest extendedRequest = ( ExtendedRequest ) parser.getBatchRequest().getCurrentRequest();
         Control control = extendedRequest.getCurrentControl();
 
         assertEquals( 3, extendedRequest.getControls().size() );
@@ -259,7 +260,7 @@ public class ExtendedRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        ExtendedRequestCodec extendedRequest = ( ExtendedRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        ExtendedRequest extendedRequest = ( ExtendedRequest ) parser.getBatchRequest().getCurrentRequest();
 
         assertEquals( "foobar", new String( extendedRequest.getRequestValue() ) );
     }
@@ -286,7 +287,7 @@ public class ExtendedRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        ExtendedRequestCodec extendedRequest = ( ExtendedRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        ExtendedRequest extendedRequest = ( ExtendedRequest ) parser.getBatchRequest().getCurrentRequest();
 
         assertEquals( "DSMLv2.0 rocks!!", new String( extendedRequest.getRequestValue() ) );
     }
@@ -343,7 +344,8 @@ public class ExtendedRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        ExtendedRequestCodec extendedRequest = ( ExtendedRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        org.apache.directory.shared.ldap.message.ExtendedRequest extendedRequest = ( ExtendedRequest ) parser
+            .getBatchRequest().getCurrentRequest();
         assertNull( extendedRequest.getRequestValue() );
     }
 

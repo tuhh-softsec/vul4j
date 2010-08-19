@@ -21,16 +21,14 @@
 package org.apache.directory.shared.dsmlv2.reponse;
 
 
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.directory.shared.asn1.codec.EncoderException;
-import org.apache.directory.shared.ldap.codec.LdapResponseCodec;
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
-import org.apache.directory.shared.ldap.codec.search.SearchResultDoneCodec;
-import org.apache.directory.shared.ldap.codec.search.SearchResultEntryCodec;
-import org.apache.directory.shared.ldap.codec.search.SearchResultReferenceCodec;
+import org.apache.directory.shared.ldap.message.AbstractResponse;
+import org.apache.directory.shared.ldap.message.SearchResultDone;
+import org.apache.directory.shared.ldap.message.SearchResultEntry;
+import org.apache.directory.shared.ldap.message.SearchResultReference;
 
 
 /**
@@ -38,25 +36,24 @@ import org.apache.directory.shared.ldap.codec.search.SearchResultReferenceCodec;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class SearchResponse extends LdapResponseCodec
+public class SearchResponse extends AbstractResponse
 {
     /** The List of contained Search Result Entries */
-    private List<SearchResultEntryCodec> searchResultEntryList;
+    private List<SearchResultEntry> searchResultEntryList = new ArrayList<SearchResultEntry>();
 
     /** The List of contained Search Result References */
-    private List<SearchResultReferenceCodec> searchResultReferenceList;
+    private List<SearchResultReference> searchResultReferenceList = new ArrayList<SearchResultReference>();
 
     /** The Search Result Done object */
-    private SearchResultDoneCodec searchResultDone;
+    private SearchResultDone searchResultDone;
 
 
     /**
      * Creates a new instance of SearchResponse.
      */
-    public SearchResponse()
+    public SearchResponse( int messageId, MessageTypeEnum type )
     {
-        searchResultEntryList = new ArrayList<SearchResultEntryCodec>();
-        searchResultReferenceList = new ArrayList<SearchResultReferenceCodec>();
+        super( -1, type );
     }
 
 
@@ -68,7 +65,7 @@ public class SearchResponse extends LdapResponseCodec
      * @return
      *      true (as per the general contract of the Collection.add method)
      */
-    public boolean addSearchResultEntry( SearchResultEntryCodec searchResultEntry )
+    public boolean addSearchResultEntry( SearchResultEntry searchResultEntry )
     {
         return searchResultEntryList.add( searchResultEntry );
     }
@@ -80,7 +77,7 @@ public class SearchResponse extends LdapResponseCodec
      * @return
      *      the current Searche Result Entry
      */
-    public SearchResultEntryCodec getCurrentSearchResultEntry()
+    public SearchResultEntry getCurrentSearchResultEntry()
     {
         if ( searchResultEntryList.size() > 0 )
         {
@@ -99,7 +96,7 @@ public class SearchResponse extends LdapResponseCodec
      * @return
      *      the Search Result Entry List
      */
-    public List<SearchResultEntryCodec> getSearchResultEntryList()
+    public List<SearchResultEntry> getSearchResultEntryList()
     {
         return searchResultEntryList;
     }
@@ -113,7 +110,7 @@ public class SearchResponse extends LdapResponseCodec
      * @return
      *      true (as per the general contract of the Collection.add method)
      */
-    public boolean addSearchResultReference( SearchResultReferenceCodec searchResultReference )
+    public boolean addSearchResultReference( SearchResultReference searchResultReference )
     {
         return searchResultReferenceList.add( searchResultReference );
     }
@@ -125,7 +122,7 @@ public class SearchResponse extends LdapResponseCodec
      * @return
      *      the current Search Result Reference
      */
-    public SearchResultReferenceCodec getCurrentSearchResultReference()
+    public SearchResultReference getCurrentSearchResultReference()
     {
         if ( searchResultReferenceList.size() > 0 )
         {
@@ -144,7 +141,7 @@ public class SearchResponse extends LdapResponseCodec
      * @return
      *      the Search Result Reference List
      */
-    public List<SearchResultReferenceCodec> getSearchResultReferenceList()
+    public List<SearchResultReference> getSearchResultReferenceList()
     {
         return searchResultReferenceList;
     }
@@ -156,7 +153,7 @@ public class SearchResponse extends LdapResponseCodec
      * @return
      *      the Search Result Entry
      */
-    public SearchResultDoneCodec getSearchResultDone()
+    public SearchResultDone getSearchResultDone()
     {
         return searchResultDone;
     }
@@ -168,34 +165,14 @@ public class SearchResponse extends LdapResponseCodec
      * @param searchResultDone
      *      the Search Result Entry to set
      */
-    public void setSearchResultDone( SearchResultDoneCodec searchResultDone )
+    public void setSearchResultDone( SearchResultDone searchResultDone )
     {
         this.searchResultDone = searchResultDone;
     }
 
 
     @Override
-    protected int computeLengthProtocolOp()
-    {
-        return 0;
-    }
-
-
-    @Override
-    protected void encodeProtocolOp( ByteBuffer buffer ) throws EncoderException
-    {
-    }
-
-
-    @Override
-    public MessageTypeEnum getMessageType()
-    {
-        return null;
-    }
-
-
-    @Override
-    public String getMessageTypeName()
+    public MessageTypeEnum getType()
     {
         return null;
     }

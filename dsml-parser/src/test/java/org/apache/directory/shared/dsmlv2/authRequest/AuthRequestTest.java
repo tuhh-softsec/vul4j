@@ -30,11 +30,12 @@ import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.dsmlv2.AbstractTest;
 import org.apache.directory.shared.dsmlv2.Dsmlv2Parser;
-import org.apache.directory.shared.ldap.codec.bind.BindRequestCodec;
+import org.apache.directory.shared.ldap.message.BindRequest;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
 
 /**
  * Tests for the Auth Request parsing
@@ -76,7 +77,7 @@ public class AuthRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        BindRequestCodec bindRequest = ( BindRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        BindRequest bindRequest = ( BindRequest ) parser.getBatchRequest().getCurrentRequest();
 
         assertEquals( "cn=Bob Rush,ou=Dev,dc=Example,dc=COM", bindRequest.getName().getNormName() );
     }
@@ -103,7 +104,7 @@ public class AuthRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        BindRequestCodec abandonRequest = ( BindRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        BindRequest abandonRequest = ( BindRequest ) parser.getBatchRequest().getCurrentRequest();
 
         assertEquals( 456, abandonRequest.getMessageId() );
     }
@@ -139,7 +140,7 @@ public class AuthRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        BindRequestCodec abandonRequest = ( BindRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        BindRequest abandonRequest = ( BindRequest ) parser.getBatchRequest().getCurrentRequest();
         Control control = abandonRequest.getCurrentControl();
 
         assertEquals( 1, abandonRequest.getControls().size() );
@@ -170,7 +171,7 @@ public class AuthRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        BindRequestCodec abandonRequest = ( BindRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        BindRequest abandonRequest = ( BindRequest ) parser.getBatchRequest().getCurrentRequest();
         Control control = abandonRequest.getCurrentControl();
 
         assertEquals( 1, abandonRequest.getControls().size() );
@@ -201,7 +202,7 @@ public class AuthRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        BindRequestCodec abandonRequest = ( BindRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        BindRequest abandonRequest = ( BindRequest ) parser.getBatchRequest().getCurrentRequest();
         Control control = abandonRequest.getCurrentControl();
 
         assertEquals( 1, abandonRequest.getControls().size() );
@@ -231,7 +232,7 @@ public class AuthRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        BindRequestCodec abandonRequest = ( BindRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        BindRequest abandonRequest = ( BindRequest ) parser.getBatchRequest().getCurrentRequest();
         Control control = abandonRequest.getCurrentControl();
 
         assertEquals( 2, abandonRequest.getControls().size() );
@@ -262,7 +263,7 @@ public class AuthRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        BindRequestCodec abandonRequest = ( BindRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        BindRequest abandonRequest = ( BindRequest ) parser.getBatchRequest().getCurrentRequest();
         Control control = abandonRequest.getCurrentControl();
 
         assertEquals( 3, abandonRequest.getControls().size() );

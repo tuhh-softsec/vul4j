@@ -21,13 +21,14 @@ package org.apache.directory.shared.dsmlv2.request;
 
 
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
-import org.apache.directory.shared.ldap.codec.del.DelRequestCodec;
+import org.apache.directory.shared.ldap.message.DeleteRequest;
+import org.apache.directory.shared.ldap.message.DeleteRequestImpl;
 import org.apache.directory.shared.ldap.name.DN;
 import org.dom4j.Element;
 
 
 /**
- * DSML Decorator for DelRequest
+ * DSML Decorator for DeleteRequest
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
@@ -38,7 +39,7 @@ public class DelRequestDsml extends AbstractRequestDsml
      */
     public DelRequestDsml()
     {
-        super( new DelRequestCodec() );
+        super( new DeleteRequestImpl() );
     }
 
 
@@ -48,7 +49,7 @@ public class DelRequestDsml extends AbstractRequestDsml
      * @param ldapMessage
      *      the message to decorate
      */
-    public DelRequestDsml( DelRequestCodec ldapMessage )
+    public DelRequestDsml( DeleteRequest ldapMessage )
     {
         super( ldapMessage );
     }
@@ -57,9 +58,9 @@ public class DelRequestDsml extends AbstractRequestDsml
     /**
      * {@inheritDoc}
      */
-    public MessageTypeEnum getMessageType()
+    public MessageTypeEnum getType()
     {
-        return instance.getMessageType();
+        return instance.getType();
     }
 
 
@@ -70,12 +71,12 @@ public class DelRequestDsml extends AbstractRequestDsml
     {
         Element element = super.toDsml( root );
 
-        DelRequestCodec request = ( DelRequestCodec ) instance;
+        DeleteRequest request = ( DeleteRequest ) instance;
 
         // DN
-        if ( request.getEntry() != null )
+        if ( request.getName() != null )
         {
-            element.addAttribute( "dn", request.getEntry().getName() );
+            element.addAttribute( "dn", request.getName().getName() );
         }
 
         return element;
@@ -89,7 +90,7 @@ public class DelRequestDsml extends AbstractRequestDsml
      */
     public DN getEntry()
     {
-        return ( ( DelRequestCodec ) instance ).getEntry();
+        return ( ( DeleteRequest ) instance ).getName();
     }
 
 
@@ -100,6 +101,6 @@ public class DelRequestDsml extends AbstractRequestDsml
      */
     public void setEntry( DN entry )
     {
-        ( ( DelRequestCodec ) instance ).setEntry( entry );
+        ( ( DeleteRequest ) instance ).setName( entry );
     }
 }

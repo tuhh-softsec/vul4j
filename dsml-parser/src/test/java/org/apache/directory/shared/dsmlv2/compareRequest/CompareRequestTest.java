@@ -31,11 +31,12 @@ import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.dsmlv2.AbstractTest;
 import org.apache.directory.shared.dsmlv2.Dsmlv2Parser;
-import org.apache.directory.shared.ldap.codec.compare.CompareRequestCodec;
+import org.apache.directory.shared.ldap.message.CompareRequest;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
 
 /**
  * Tests for the Compare Request parsing
@@ -77,9 +78,9 @@ public class CompareRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        CompareRequestCodec compareRequest = ( CompareRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        CompareRequest compareRequest = ( CompareRequest ) parser.getBatchRequest().getCurrentRequest();
 
-        assertEquals( "cn=Bob Rush,ou=Dev,dc=Example,dc=COM", compareRequest.getEntry().getNormName() );
+        assertEquals( "cn=Bob Rush,ou=Dev,dc=Example,dc=COM", compareRequest.getName().getNormName() );
     }
 
 
@@ -104,7 +105,7 @@ public class CompareRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        CompareRequestCodec compareRequest = ( CompareRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        CompareRequest compareRequest = ( CompareRequest ) parser.getBatchRequest().getCurrentRequest();
 
         assertEquals( 456, compareRequest.getMessageId() );
     }
@@ -141,7 +142,7 @@ public class CompareRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        CompareRequestCodec compareRequest = ( CompareRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        CompareRequest compareRequest = ( CompareRequest ) parser.getBatchRequest().getCurrentRequest();
 
         assertEquals( 1, compareRequest.getControls().size() );
 
@@ -176,7 +177,7 @@ public class CompareRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        CompareRequestCodec compareRequest = ( CompareRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        CompareRequest compareRequest = ( CompareRequest ) parser.getBatchRequest().getCurrentRequest();
 
         assertEquals( 1, compareRequest.getControls().size() );
 
@@ -211,7 +212,7 @@ public class CompareRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        CompareRequestCodec compareRequest = ( CompareRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        CompareRequest compareRequest = ( CompareRequest ) parser.getBatchRequest().getCurrentRequest();
 
         assertEquals( 1, compareRequest.getControls().size() );
 
@@ -246,7 +247,7 @@ public class CompareRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        CompareRequestCodec compareRequest = ( CompareRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        CompareRequest compareRequest = ( CompareRequest ) parser.getBatchRequest().getCurrentRequest();
 
         assertEquals( 2, compareRequest.getControls().size() );
 
@@ -281,7 +282,7 @@ public class CompareRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        CompareRequestCodec compareRequest = ( CompareRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        CompareRequest compareRequest = ( CompareRequest ) parser.getBatchRequest().getCurrentRequest();
 
         assertEquals( 3, compareRequest.getControls().size() );
 
@@ -316,13 +317,13 @@ public class CompareRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        CompareRequestCodec compareRequest = ( CompareRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        CompareRequest compareRequest = ( CompareRequest ) parser.getBatchRequest().getCurrentRequest();
 
-        assertEquals( "cn=Bob Rush,ou=Dev,dc=Example,dc=COM", compareRequest.getEntry().getNormName() );
+        assertEquals( "cn=Bob Rush,ou=Dev,dc=Example,dc=COM", compareRequest.getName().getNormName() );
 
-        assertEquals( "sn", ( String ) compareRequest.getAttributeDesc() );
+        assertEquals( "sn", compareRequest.getAttributeId() );
 
-        assertEquals( "Johnson", ( String ) compareRequest.getAssertionValue() );
+        assertEquals( "Johnson", compareRequest.getAssertionValue().get() );
     }
 
 
@@ -347,13 +348,13 @@ public class CompareRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        CompareRequestCodec compareRequest = ( CompareRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        CompareRequest compareRequest = ( CompareRequest ) parser.getBatchRequest().getCurrentRequest();
 
-        assertEquals( "cn=Bob Rush,ou=Dev,dc=Example,dc=COM", compareRequest.getEntry().getNormName() );
+        assertEquals( "cn=Bob Rush,ou=Dev,dc=Example,dc=COM", compareRequest.getName().getNormName() );
 
-        assertEquals( "sn", ( String ) compareRequest.getAttributeDesc() );
+        assertEquals( "sn", ( String ) compareRequest.getAttributeId() );
 
-        assertEquals( "DSMLv2.0 rocks!!", new String( ( byte[] ) compareRequest.getAssertionValue() ) );
+        assertEquals( "DSMLv2.0 rocks!!", new String( compareRequest.getAssertionValue().getBytes() ) );
     }
 
 
@@ -378,11 +379,11 @@ public class CompareRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        CompareRequestCodec compareRequest = ( CompareRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        CompareRequest compareRequest = ( CompareRequest ) parser.getBatchRequest().getCurrentRequest();
 
-        assertEquals( "cn=Bob Rush,ou=Dev,dc=Example,dc=COM", compareRequest.getEntry().getNormName() );
+        assertEquals( "cn=Bob Rush,ou=Dev,dc=Example,dc=COM", compareRequest.getName().getNormName() );
 
-        assertEquals( "sn", ( String ) compareRequest.getAttributeDesc() );
+        assertEquals( "sn", compareRequest.getAttributeId() );
 
         assertNull( compareRequest.getAssertionValue() );
     }

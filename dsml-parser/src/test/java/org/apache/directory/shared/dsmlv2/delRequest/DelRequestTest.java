@@ -30,7 +30,7 @@ import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.dsmlv2.AbstractTest;
 import org.apache.directory.shared.dsmlv2.Dsmlv2Parser;
-import org.apache.directory.shared.ldap.codec.del.DelRequestCodec;
+import org.apache.directory.shared.ldap.message.DeleteRequest;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
@@ -76,9 +76,9 @@ public class DelRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        DelRequestCodec delRequest = ( DelRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        DeleteRequest delRequest = ( DeleteRequest ) parser.getBatchRequest().getCurrentRequest();
 
-        assertEquals( "cn=Bob Rush,ou=Dev,dc=Example,dc=COM", delRequest.getEntry().getNormName() );
+        assertEquals( "cn=Bob Rush,ou=Dev,dc=Example,dc=COM", delRequest.getName().getNormName() );
     }
 
 
@@ -103,7 +103,7 @@ public class DelRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        DelRequestCodec delRequest = ( DelRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        DeleteRequest delRequest = ( DeleteRequest ) parser.getBatchRequest().getCurrentRequest();
 
         assertEquals( 456, delRequest.getMessageId() );
     }
@@ -139,7 +139,7 @@ public class DelRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        DelRequestCodec delRequest = ( DelRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        DeleteRequest delRequest = ( DeleteRequest ) parser.getBatchRequest().getCurrentRequest();
         Control control = delRequest.getCurrentControl();
 
         assertEquals( 1, delRequest.getControls().size() );
@@ -170,7 +170,7 @@ public class DelRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        DelRequestCodec delRequest = ( DelRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        DeleteRequest delRequest = ( DeleteRequest ) parser.getBatchRequest().getCurrentRequest();
         Control control = delRequest.getCurrentControl();
 
         assertEquals( 1, delRequest.getControls().size() );
@@ -201,7 +201,7 @@ public class DelRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        DelRequestCodec delRequest = ( DelRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        DeleteRequest delRequest = ( DeleteRequest ) parser.getBatchRequest().getCurrentRequest();
         Control control = delRequest.getCurrentControl();
 
         assertEquals( 1, delRequest.getControls().size() );
@@ -231,7 +231,7 @@ public class DelRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        DelRequestCodec delRequest = ( DelRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        DeleteRequest delRequest = ( DeleteRequest ) parser.getBatchRequest().getCurrentRequest();
         Control control = delRequest.getCurrentControl();
 
         assertEquals( 2, delRequest.getControls().size() );
@@ -262,7 +262,7 @@ public class DelRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        DelRequestCodec delRequest = ( DelRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        DeleteRequest delRequest = ( DeleteRequest ) parser.getBatchRequest().getCurrentRequest();
         Control control = delRequest.getCurrentControl();
 
         assertEquals( 3, delRequest.getControls().size() );

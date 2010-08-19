@@ -21,6 +21,10 @@
 package org.apache.directory.shared.dsmlv2.batchResponse;
 
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.dsmlv2.AbstractResponseTest;
@@ -28,20 +32,17 @@ import org.apache.directory.shared.dsmlv2.Dsmlv2ResponseParser;
 import org.apache.directory.shared.dsmlv2.reponse.BatchResponse;
 import org.apache.directory.shared.dsmlv2.reponse.ErrorResponse;
 import org.apache.directory.shared.dsmlv2.reponse.SearchResponse;
-import org.apache.directory.shared.ldap.codec.LdapResponseCodec;
-import org.apache.directory.shared.ldap.codec.add.AddResponseCodec;
-import org.apache.directory.shared.ldap.codec.bind.BindResponseCodec;
-import org.apache.directory.shared.ldap.codec.compare.CompareResponseCodec;
-import org.apache.directory.shared.ldap.codec.del.DelResponseCodec;
-import org.apache.directory.shared.ldap.codec.extended.ExtendedResponseCodec;
-import org.apache.directory.shared.ldap.codec.modify.ModifyResponseCodec;
-import org.apache.directory.shared.ldap.codec.modifyDn.ModifyDNResponseCodec;
+import org.apache.directory.shared.ldap.message.AddResponse;
+import org.apache.directory.shared.ldap.message.BindResponse;
+import org.apache.directory.shared.ldap.message.CompareResponse;
+import org.apache.directory.shared.ldap.message.DeleteResponse;
+import org.apache.directory.shared.ldap.message.ExtendedResponse;
+import org.apache.directory.shared.ldap.message.ModifyDnResponse;
+import org.apache.directory.shared.ldap.message.ModifyResponse;
+import org.apache.directory.shared.ldap.message.Response;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 /**
  * Tests for the Compare Response parsing
@@ -141,9 +142,9 @@ public class BatchResponseTest extends AbstractResponseTest
 
         assertEquals( 1, batchResponse.getResponses().size() );
 
-        LdapResponseCodec response = batchResponse.getCurrentResponse();
+        Response response = batchResponse.getCurrentResponse();
 
-        if ( response instanceof AddResponseCodec )
+        if ( response instanceof AddResponse )
         {
             assertTrue( true );
         }
@@ -179,9 +180,9 @@ public class BatchResponseTest extends AbstractResponseTest
 
         assertEquals( 1, batchResponse.getResponses().size() );
 
-        LdapResponseCodec response = batchResponse.getCurrentResponse();
+        Response response = batchResponse.getCurrentResponse();
 
-        if ( response instanceof BindResponseCodec )
+        if ( response instanceof BindResponse )
         {
             assertTrue( true );
         }
@@ -217,9 +218,9 @@ public class BatchResponseTest extends AbstractResponseTest
 
         assertEquals( 1, batchResponse.getResponses().size() );
 
-        LdapResponseCodec response = batchResponse.getCurrentResponse();
+        Response response = batchResponse.getCurrentResponse();
 
-        if ( response instanceof CompareResponseCodec )
+        if ( response instanceof CompareResponse )
         {
             assertTrue( true );
         }
@@ -255,9 +256,9 @@ public class BatchResponseTest extends AbstractResponseTest
 
         assertEquals( 1, batchResponse.getResponses().size() );
 
-        LdapResponseCodec response = batchResponse.getCurrentResponse();
+        Response response = batchResponse.getCurrentResponse();
 
-        if ( response instanceof DelResponseCodec )
+        if ( response instanceof DeleteResponse )
         {
             assertTrue( true );
         }
@@ -293,7 +294,7 @@ public class BatchResponseTest extends AbstractResponseTest
 
         assertEquals( 1, batchResponse.getResponses().size() );
 
-        LdapResponseCodec response = batchResponse.getCurrentResponse();
+        Response response = batchResponse.getCurrentResponse();
 
         if ( response instanceof ErrorResponse )
         {
@@ -331,9 +332,9 @@ public class BatchResponseTest extends AbstractResponseTest
 
         assertEquals( 1, batchResponse.getResponses().size() );
 
-        LdapResponseCodec response = batchResponse.getCurrentResponse();
+        Response response = batchResponse.getCurrentResponse();
 
-        if ( response instanceof ExtendedResponseCodec )
+        if ( response instanceof ExtendedResponse )
         {
             assertTrue( true );
         }
@@ -369,9 +370,9 @@ public class BatchResponseTest extends AbstractResponseTest
 
         assertEquals( 1, batchResponse.getResponses().size() );
 
-        LdapResponseCodec response = batchResponse.getCurrentResponse();
+        Response response = batchResponse.getCurrentResponse();
 
-        if ( response instanceof ModifyDNResponseCodec )
+        if ( response instanceof ModifyDnResponse )
         {
             assertTrue( true );
         }
@@ -407,9 +408,9 @@ public class BatchResponseTest extends AbstractResponseTest
 
         assertEquals( 1, batchResponse.getResponses().size() );
 
-        LdapResponseCodec response = batchResponse.getCurrentResponse();
+        Response response = batchResponse.getCurrentResponse();
 
-        if ( response instanceof ModifyResponseCodec )
+        if ( response instanceof ModifyResponse )
         {
             assertTrue( true );
         }
@@ -445,7 +446,7 @@ public class BatchResponseTest extends AbstractResponseTest
 
         assertEquals( 1, batchResponse.getResponses().size() );
 
-        LdapResponseCodec response = batchResponse.getCurrentResponse();
+        Response response = batchResponse.getCurrentResponse();
 
         if ( response instanceof SearchResponse )
         {
@@ -483,9 +484,9 @@ public class BatchResponseTest extends AbstractResponseTest
 
         assertEquals( 2, batchResponse.getResponses().size() );
 
-        LdapResponseCodec response = batchResponse.getCurrentResponse();
+        Response response = batchResponse.getCurrentResponse();
 
-        if ( response instanceof AddResponseCodec )
+        if ( response instanceof AddResponse )
         {
             assertTrue( true );
         }
@@ -521,9 +522,9 @@ public class BatchResponseTest extends AbstractResponseTest
 
         assertEquals( 2, batchResponse.getResponses().size() );
 
-        LdapResponseCodec response = batchResponse.getCurrentResponse();
+        Response response = batchResponse.getCurrentResponse();
 
-        if ( response instanceof BindResponseCodec )
+        if ( response instanceof BindResponse )
         {
             assertTrue( true );
         }
@@ -559,9 +560,9 @@ public class BatchResponseTest extends AbstractResponseTest
 
         assertEquals( 2, batchResponse.getResponses().size() );
 
-        LdapResponseCodec response = batchResponse.getCurrentResponse();
+        Response response = batchResponse.getCurrentResponse();
 
-        if ( response instanceof CompareResponseCodec )
+        if ( response instanceof CompareResponse )
         {
             assertTrue( true );
         }
@@ -597,9 +598,9 @@ public class BatchResponseTest extends AbstractResponseTest
 
         assertEquals( 2, batchResponse.getResponses().size() );
 
-        LdapResponseCodec response = batchResponse.getCurrentResponse();
+        Response response = batchResponse.getCurrentResponse();
 
-        if ( response instanceof DelResponseCodec )
+        if ( response instanceof DeleteResponse )
         {
             assertTrue( true );
         }
@@ -635,7 +636,7 @@ public class BatchResponseTest extends AbstractResponseTest
 
         assertEquals( 2, batchResponse.getResponses().size() );
 
-        LdapResponseCodec response = batchResponse.getCurrentResponse();
+        Response response = batchResponse.getCurrentResponse();
 
         if ( response instanceof ErrorResponse )
         {
@@ -673,9 +674,9 @@ public class BatchResponseTest extends AbstractResponseTest
 
         assertEquals( 2, batchResponse.getResponses().size() );
 
-        LdapResponseCodec response = batchResponse.getCurrentResponse();
+        Response response = batchResponse.getCurrentResponse();
 
-        if ( response instanceof ExtendedResponseCodec )
+        if ( response instanceof ExtendedResponse )
         {
             assertTrue( true );
         }
@@ -711,9 +712,9 @@ public class BatchResponseTest extends AbstractResponseTest
 
         assertEquals( 2, batchResponse.getResponses().size() );
 
-        LdapResponseCodec response = batchResponse.getCurrentResponse();
+        Response response = batchResponse.getCurrentResponse();
 
-        if ( response instanceof ModifyDNResponseCodec )
+        if ( response instanceof ModifyDnResponse )
         {
             assertTrue( true );
         }
@@ -749,9 +750,9 @@ public class BatchResponseTest extends AbstractResponseTest
 
         assertEquals( 2, batchResponse.getResponses().size() );
 
-        LdapResponseCodec response = batchResponse.getCurrentResponse();
+        Response response = batchResponse.getCurrentResponse();
 
-        if ( response instanceof ModifyResponseCodec )
+        if ( response instanceof ModifyResponse )
         {
             assertTrue( true );
         }
@@ -787,7 +788,7 @@ public class BatchResponseTest extends AbstractResponseTest
 
         assertEquals( 2, batchResponse.getResponses().size() );
 
-        LdapResponseCodec response = batchResponse.getCurrentResponse();
+        Response response = batchResponse.getCurrentResponse();
 
         if ( response instanceof SearchResponse )
         {

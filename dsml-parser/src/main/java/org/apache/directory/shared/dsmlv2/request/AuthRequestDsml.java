@@ -21,7 +21,8 @@ package org.apache.directory.shared.dsmlv2.request;
 
 
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
-import org.apache.directory.shared.ldap.codec.bind.BindRequestCodec;
+import org.apache.directory.shared.ldap.message.BindRequest;
+import org.apache.directory.shared.ldap.message.BindRequestImpl;
 import org.dom4j.Element;
 
 
@@ -37,7 +38,7 @@ public class AuthRequestDsml extends AbstractRequestDsml
      */
     public AuthRequestDsml()
     {
-        super( new BindRequestCodec() );
+        super( new BindRequestImpl() );
     }
 
 
@@ -47,7 +48,7 @@ public class AuthRequestDsml extends AbstractRequestDsml
      * @param ldapMessage
      *      the message to decorate
      */
-    public AuthRequestDsml( BindRequestCodec ldapMessage )
+    public AuthRequestDsml( BindRequest ldapMessage )
     {
         super( ldapMessage );
     }
@@ -56,9 +57,9 @@ public class AuthRequestDsml extends AbstractRequestDsml
     /**
      * {@inheritDoc}
      */
-    public MessageTypeEnum getMessageType()
+    public MessageTypeEnum getType()
     {
-        return instance.getMessageType();
+        return instance.getType();
     }
 
 
@@ -69,7 +70,7 @@ public class AuthRequestDsml extends AbstractRequestDsml
     {
         Element element = super.toDsml( root );
 
-        BindRequestCodec request = ( BindRequestCodec ) instance;
+        BindRequest request = ( BindRequest ) instance;
 
         // AbandonID
         String name = request.getName().getName();

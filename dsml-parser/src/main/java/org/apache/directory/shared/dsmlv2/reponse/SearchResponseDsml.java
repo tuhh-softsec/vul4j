@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.directory.shared.dsmlv2.DsmlDecorator;
-import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
+import org.apache.directory.shared.ldap.message.Message;
 import org.dom4j.Element;
 
 
@@ -35,7 +35,7 @@ import org.dom4j.Element;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class SearchResponseDsml extends LdapResponseDecorator implements DsmlDecorator
+public class SearchResponseDsml extends AbstractResponseDsml
 {
     /** The responses */
     private List<DsmlDecorator> responses = new ArrayList<DsmlDecorator>();
@@ -44,7 +44,7 @@ public class SearchResponseDsml extends LdapResponseDecorator implements DsmlDec
     /**
      * Creates a new instance of SearchResponseDsml.
      */
-    public SearchResponseDsml( LdapMessageCodec response )
+    public SearchResponseDsml( Message response )
     {
         super( response );
     }

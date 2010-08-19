@@ -22,11 +22,12 @@ package org.apache.directory.shared.dsmlv2.request;
 
 import org.apache.directory.shared.dsmlv2.ParserUtils;
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
-import org.apache.directory.shared.ldap.codec.add.AddRequestCodec;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.exception.LdapException;
+import org.apache.directory.shared.ldap.message.AddRequest;
+import org.apache.directory.shared.ldap.message.AddRequestImpl;
 import org.apache.directory.shared.ldap.name.DN;
 import org.dom4j.Element;
 import org.dom4j.Namespace;
@@ -45,7 +46,7 @@ public class AddRequestDsml extends AbstractRequestDsml
      */
     public AddRequestDsml()
     {
-        super( new AddRequestCodec() );
+        super( new AddRequestImpl() );
     }
 
 
@@ -55,7 +56,7 @@ public class AddRequestDsml extends AbstractRequestDsml
     * @param ldapMessage
     *      the message to decorate
     */
-    public AddRequestDsml( AddRequestCodec ldapMessage )
+    public AddRequestDsml( AddRequest ldapMessage )
     {
         super( ldapMessage );
     }
@@ -64,9 +65,9 @@ public class AddRequestDsml extends AbstractRequestDsml
     /**
      * {@inheritDoc}
      */
-    public MessageTypeEnum getMessageType()
+    public MessageTypeEnum getType()
     {
-        return instance.getMessageType();
+        return instance.getType();
     }
 
 
@@ -77,7 +78,7 @@ public class AddRequestDsml extends AbstractRequestDsml
     {
         Element element = super.toDsml( root );
 
-        AddRequestCodec request = ( AddRequestCodec ) instance;
+        AddRequest request = ( AddRequest ) instance;
 
         // DN
         if ( request.getEntry() != null )
@@ -125,7 +126,7 @@ public class AddRequestDsml extends AbstractRequestDsml
      */
     public void initEntry()
     {
-        ( ( AddRequestCodec ) instance ).initEntry();
+        //( ( AddRequest ) instance ).initEntry();
     }
 
 
@@ -136,7 +137,7 @@ public class AddRequestDsml extends AbstractRequestDsml
      */
     public Entry getEntry()
     {
-        return ( ( AddRequestCodec ) instance ).getEntry();
+        return ( ( AddRequest ) instance ).getEntry();
     }
 
 
@@ -148,7 +149,7 @@ public class AddRequestDsml extends AbstractRequestDsml
      */
     public void addAttributeType( String type ) throws LdapException
     {
-        ( ( AddRequestCodec ) instance ).addAttributeType( type );
+        ( ( AddRequest ) instance ).addAttributeType( type );
     }
 
 
@@ -161,15 +162,15 @@ public class AddRequestDsml extends AbstractRequestDsml
     {
         if ( value instanceof Value<?> )
         {
-            ( ( AddRequestCodec ) instance ).addAttributeValue( ( Value<?> ) value );
+            ( ( AddRequest ) instance ).addAttributeValue( ( Value<?> ) value );
         }
         else if ( value instanceof String )
         {
-            ( ( AddRequestCodec ) instance ).addAttributeValue( ( String ) value );
+            ( ( AddRequest ) instance ).addAttributeValue( ( String ) value );
         }
         else if ( value instanceof byte[] )
         {
-            ( ( AddRequestCodec ) instance ).addAttributeValue( ( byte[] ) value );
+            ( ( AddRequest ) instance ).addAttributeValue( ( byte[] ) value );
         }
     }
 
@@ -181,7 +182,7 @@ public class AddRequestDsml extends AbstractRequestDsml
      */
     public DN getEntryDn()
     {
-        return ( ( AddRequestCodec ) instance ).getEntryDn();
+        return ( ( AddRequest ) instance ).getEntryDn();
     }
 
 
@@ -192,7 +193,7 @@ public class AddRequestDsml extends AbstractRequestDsml
      */
     public void setEntryDn( DN entryDn )
     {
-        ( ( AddRequestCodec ) instance ).setEntryDn( entryDn );
+        ( ( AddRequest ) instance ).setEntryDn( entryDn );
     }
 
 
@@ -204,7 +205,7 @@ public class AddRequestDsml extends AbstractRequestDsml
      */
     public void setEntry( Entry entry )
     {
-        ( ( AddRequestCodec ) instance ).setEntry( entry );
+        ( ( AddRequest ) instance ).setEntry( entry );
     }
 
 
@@ -213,6 +214,6 @@ public class AddRequestDsml extends AbstractRequestDsml
      */
     public String getCurrentAttributeType()
     {
-        return ( ( AddRequestCodec ) instance ).getCurrentAttributeType();
+        return ( ( AddRequest ) instance ).getCurrentAttributeType();
     }
 }

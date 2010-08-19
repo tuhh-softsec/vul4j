@@ -21,7 +21,8 @@ package org.apache.directory.shared.dsmlv2.request;
 
 
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
-import org.apache.directory.shared.ldap.codec.modifyDn.ModifyDNRequestCodec;
+import org.apache.directory.shared.ldap.message.ModifyDnRequest;
+import org.apache.directory.shared.ldap.message.ModifyDnRequestImpl;
 import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.name.RDN;
 import org.dom4j.Element;
@@ -39,7 +40,7 @@ public class ModifyDNRequestDsml extends AbstractRequestDsml
      */
     public ModifyDNRequestDsml()
     {
-        super( new ModifyDNRequestCodec() );
+        super( new ModifyDnRequestImpl() );
     }
 
 
@@ -49,7 +50,7 @@ public class ModifyDNRequestDsml extends AbstractRequestDsml
      * @param ldapMessage
      *      the message to decorate
      */
-    public ModifyDNRequestDsml( ModifyDNRequestCodec ldapMessage )
+    public ModifyDNRequestDsml( ModifyDnRequest ldapMessage )
     {
         super( ldapMessage );
     }
@@ -58,9 +59,9 @@ public class ModifyDNRequestDsml extends AbstractRequestDsml
     /**
      * {@inheritDoc}
      */
-    public MessageTypeEnum getMessageType()
+    public MessageTypeEnum getType()
     {
-        return instance.getMessageType();
+        return instance.getType();
     }
 
 
@@ -71,25 +72,25 @@ public class ModifyDNRequestDsml extends AbstractRequestDsml
     {
         Element element = super.toDsml( root );
 
-        ModifyDNRequestCodec request = ( ModifyDNRequestCodec ) instance;
+        ModifyDnRequest request = ( ModifyDnRequest ) instance;
 
         // DN
-        if ( request.getEntry() != null )
+        if ( request.getName() != null )
         {
-            element.addAttribute( "dn", request.getEntry().getName() );
+            element.addAttribute( "dn", request.getName().getName() );
         }
 
         // NewRDN
-        if ( request.getNewRDN() != null )
+        if ( request.getNewRdn() != null )
         {
-            element.addAttribute( "newrdn", request.getNewRDN().getName() );
+            element.addAttribute( "newrdn", request.getNewRdn().getName() );
         }
 
         // DeleteOldRDN
-        element.addAttribute( "deleteoldrdn", ( request.isDeleteOldRDN() ? "true" : "false" ) );
+        element.addAttribute( "deleteoldrdn", ( request.getDeleteOldRdn() ? "true" : "false" ) );
 
         // NewSuperior
-        if ( request.getNewRDN() != null )
+        if ( request.getNewRdn() != null )
         {
             element.addAttribute( "newSuperior", request.getNewSuperior().getName() );
         }
@@ -101,22 +102,22 @@ public class ModifyDNRequestDsml extends AbstractRequestDsml
     /**
      * Get the modification's DN
      * 
-     * @return Returns the entry.
+     * @return Returns the name.
      */
-    public DN getEntry()
+    public DN getName()
     {
-        return ( ( ModifyDNRequestCodec ) instance ).getEntry();
+        return ( ( ModifyDnRequest ) instance ).getName();
     }
 
 
     /**
      * Set the modification DN.
      * 
-     * @param entry The entry to set.
+     * @param name The name to set.
      */
-    public void setEntry( DN entry )
+    public void setEntry( DN name )
     {
-        ( ( ModifyDNRequestCodec ) instance ).setEntry( entry );
+        ( ( ModifyDnRequest ) instance ).setName( name );
     }
 
 
@@ -127,7 +128,7 @@ public class ModifyDNRequestDsml extends AbstractRequestDsml
      */
     public boolean isDeleteOldRDN()
     {
-        return ( ( ModifyDNRequestCodec ) instance ).isDeleteOldRDN();
+        return ( ( ModifyDnRequest ) instance ).getDeleteOldRdn();
     }
 
 
@@ -138,7 +139,7 @@ public class ModifyDNRequestDsml extends AbstractRequestDsml
      */
     public void setDeleteOldRDN( boolean deleteOldRDN )
     {
-        ( ( ModifyDNRequestCodec ) instance ).setDeleteOldRDN( deleteOldRDN );
+        ( ( ModifyDnRequest ) instance ).setDeleteOldRdn( deleteOldRDN );
     }
 
 
@@ -149,7 +150,7 @@ public class ModifyDNRequestDsml extends AbstractRequestDsml
      */
     public RDN getNewRDN()
     {
-        return ( ( ModifyDNRequestCodec ) instance ).getNewRDN();
+        return ( ( ModifyDnRequest ) instance ).getNewRdn();
     }
 
 
@@ -160,7 +161,7 @@ public class ModifyDNRequestDsml extends AbstractRequestDsml
      */
     public void setNewRDN( RDN newRDN )
     {
-        ( ( ModifyDNRequestCodec ) instance ).setNewRDN( newRDN );
+        ( ( ModifyDnRequest ) instance ).setNewRdn( newRDN );
     }
 
 
@@ -171,7 +172,7 @@ public class ModifyDNRequestDsml extends AbstractRequestDsml
      */
     public DN getNewSuperior()
     {
-        return ( ( ModifyDNRequestCodec ) instance ).getNewSuperior();
+        return ( ( ModifyDnRequest ) instance ).getNewSuperior();
     }
 
 
@@ -182,6 +183,6 @@ public class ModifyDNRequestDsml extends AbstractRequestDsml
      */
     public void setNewSuperior( DN newSuperior )
     {
-        ( ( ModifyDNRequestCodec ) instance ).setNewSuperior( newSuperior );
+        ( ( ModifyDnRequest ) instance ).setNewSuperior( newSuperior );
     }
 }

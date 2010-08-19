@@ -21,13 +21,14 @@
 package org.apache.directory.shared.dsmlv2.reponse;
 
 
-import org.apache.directory.shared.dsmlv2.DsmlDecorator;
 import org.apache.directory.shared.dsmlv2.ParserUtils;
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
-import org.apache.directory.shared.ldap.codec.search.SearchResultEntryCodec;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Value;
+import org.apache.directory.shared.ldap.exception.LdapException;
+import org.apache.directory.shared.ldap.message.SearchResultEntry;
+import org.apache.directory.shared.ldap.message.SearchResultEntryImpl;
 import org.apache.directory.shared.ldap.name.DN;
 import org.dom4j.Element;
 import org.dom4j.Namespace;
@@ -39,14 +40,14 @@ import org.dom4j.QName;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class SearchResultEntryDsml extends LdapResponseDecorator implements DsmlDecorator
+public class SearchResultEntryDsml extends AbstractResponseDsml
 {
     /**
      * Creates a new instance of SearchResultEntryDsml.
      */
     public SearchResultEntryDsml()
     {
-        super( new SearchResultEntryCodec() );
+        super( new SearchResultEntryImpl() );
     }
 
 
@@ -56,18 +57,18 @@ public class SearchResultEntryDsml extends LdapResponseDecorator implements Dsml
      * @param ldapMessage
      *      the message to decorate
      */
-    public SearchResultEntryDsml( SearchResultEntryCodec ldapMessage )
+    public SearchResultEntryDsml( SearchResultEntry ldapMessage )
     {
         super( ldapMessage );
     }
 
 
     /* (non-Javadoc)
-     * @see org.apache.directory.shared.dsmlv2.reponse.LdapMessageDecorator#getMessageType()
+     * @see org.apache.directory.shared.dsmlv2.reponse.LdapMessageDecorator#getType()
      */
-    public MessageTypeEnum getMessageType()
+    public MessageTypeEnum getType()
     {
-        return instance.getMessageType();
+        return instance.getType();
     }
 
 
@@ -77,7 +78,7 @@ public class SearchResultEntryDsml extends LdapResponseDecorator implements Dsml
     public Element toDsml( Element root )
     {
         Element element = root.addElement( "searchResultEntry" );
-        SearchResultEntryCodec searchResultEntry = ( SearchResultEntryCodec ) instance;
+        SearchResultEntry searchResultEntry = ( SearchResultEntry ) instance;
         element.addAttribute( "dn", searchResultEntry.getObjectName().getName() );
 
         Entry entry = searchResultEntry.getEntry();
@@ -119,7 +120,7 @@ public class SearchResultEntryDsml extends LdapResponseDecorator implements Dsml
      */
     public DN getObjectName()
     {
-        return ( ( SearchResultEntryCodec ) instance ).getObjectName();
+        return ( ( SearchResultEntry ) instance ).getObjectName();
     }
 
 
@@ -130,7 +131,7 @@ public class SearchResultEntryDsml extends LdapResponseDecorator implements Dsml
      */
     public void setObjectName( DN objectName )
     {
-        ( ( SearchResultEntryCodec ) instance ).setObjectName( objectName );
+        ( ( SearchResultEntry ) instance ).setObjectName( objectName );
     }
 
 
@@ -141,7 +142,7 @@ public class SearchResultEntryDsml extends LdapResponseDecorator implements Dsml
      */
     public Entry getEntry()
     {
-        return ( ( SearchResultEntryCodec ) instance ).getEntry();
+        return ( ( SearchResultEntry ) instance ).getEntry();
     }
 
 
@@ -152,7 +153,7 @@ public class SearchResultEntryDsml extends LdapResponseDecorator implements Dsml
      */
     public void setEntry( Entry entry )
     {
-        ( ( SearchResultEntryCodec ) instance ).setEntry( entry );
+        ( ( SearchResultEntry ) instance ).setEntry( entry );
     }
 
 
@@ -161,9 +162,9 @@ public class SearchResultEntryDsml extends LdapResponseDecorator implements Dsml
      * 
      * @param type The attribute's name
      */
-    public void addAttributeValues( String type )
+    public void addAttributeType( String type ) throws LdapException
     {
-        ( ( SearchResultEntryCodec ) instance ).addAttributeValues( type );
+        ( ( SearchResultEntry ) instance ).addAttribute( type );
     }
 
 
@@ -174,15 +175,6 @@ public class SearchResultEntryDsml extends LdapResponseDecorator implements Dsml
      */
     public void addAttributeValue( Object value )
     {
-        ( ( SearchResultEntryCodec ) instance ).addAttributeValue( value );
-    }
-
-
-    /**
-     * @return Returns the currentAttributeValue.
-     */
-    public String getCurrentAttributeValueType()
-    {
-        return ( ( SearchResultEntryCodec ) instance ).getCurrentAttributeValueType();
+        ( ( SearchResultEntry ) instance ).addAttributeValue( value );
     }
 }

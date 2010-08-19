@@ -32,14 +32,15 @@ import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.dsmlv2.AbstractTest;
 import org.apache.directory.shared.dsmlv2.Dsmlv2Parser;
-import org.apache.directory.shared.ldap.codec.add.AddRequestCodec;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Value;
+import org.apache.directory.shared.ldap.message.AddRequest;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
 
 /**
  * Tests for the Add Request parsing
@@ -80,7 +81,7 @@ public class AddRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        AddRequestCodec addRequest = ( AddRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        AddRequest addRequest = ( AddRequest ) parser.getBatchRequest().getCurrentRequest();
 
         assertEquals( "cn=Bob Rush,ou=Dev,dc=Example,dc=COM", addRequest.getEntryDn().getNormName() );
     }
@@ -107,7 +108,7 @@ public class AddRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        AddRequestCodec addRequest = ( AddRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        AddRequest addRequest = ( AddRequest ) parser.getBatchRequest().getCurrentRequest();
 
         assertEquals( 456, addRequest.getMessageId() );
     }
@@ -143,7 +144,7 @@ public class AddRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        AddRequestCodec addRequest = ( AddRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        AddRequest addRequest = ( AddRequest ) parser.getBatchRequest().getCurrentRequest();
 
         assertEquals( 1, addRequest.getControls().size() );
 
@@ -178,7 +179,7 @@ public class AddRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        AddRequestCodec addRequest = ( AddRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        AddRequest addRequest = ( AddRequest ) parser.getBatchRequest().getCurrentRequest();
         Control control = addRequest.getCurrentControl();
 
         assertEquals( 1, addRequest.getControls().size() );
@@ -209,7 +210,7 @@ public class AddRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        AddRequestCodec addRequest = ( AddRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        AddRequest addRequest = ( AddRequest ) parser.getBatchRequest().getCurrentRequest();
         Control control = addRequest.getCurrentControl();
 
         assertEquals( 1, addRequest.getControls().size() );
@@ -239,7 +240,7 @@ public class AddRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        AddRequestCodec addRequest = ( AddRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        AddRequest addRequest = ( AddRequest ) parser.getBatchRequest().getCurrentRequest();
         Control control = addRequest.getCurrentControl();
 
         assertEquals( 2, addRequest.getControls().size() );
@@ -270,7 +271,7 @@ public class AddRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        AddRequestCodec addRequest = ( AddRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        AddRequest addRequest = ( AddRequest ) parser.getBatchRequest().getCurrentRequest();
         Control control = addRequest.getCurrentControl();
 
         assertEquals( 3, addRequest.getControls().size() );
@@ -301,7 +302,7 @@ public class AddRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        AddRequestCodec addRequest = ( AddRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        AddRequest addRequest = ( AddRequest ) parser.getBatchRequest().getCurrentRequest();
 
         Entry entry = addRequest.getEntry();
         assertEquals( 1, entry.size() );
@@ -338,7 +339,7 @@ public class AddRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        AddRequestCodec addRequest = ( AddRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        AddRequest addRequest = ( AddRequest ) parser.getBatchRequest().getCurrentRequest();
 
         Entry entry = addRequest.getEntry();
         assertEquals( 1, entry.size() );
@@ -375,7 +376,7 @@ public class AddRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        AddRequestCodec addRequest = ( AddRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        AddRequest addRequest = ( AddRequest ) parser.getBatchRequest().getCurrentRequest();
 
         Entry entry = addRequest.getEntry();
         assertEquals( 1, entry.size() );
@@ -414,7 +415,7 @@ public class AddRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        AddRequestCodec addRequest = ( AddRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        AddRequest addRequest = ( AddRequest ) parser.getBatchRequest().getCurrentRequest();
 
         Entry entry = addRequest.getEntry();
         assertEquals( 1, entry.size() );
@@ -454,7 +455,7 @@ public class AddRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        AddRequestCodec addRequest = ( AddRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        AddRequest addRequest = ( AddRequest ) parser.getBatchRequest().getCurrentRequest();
 
         Entry entry = addRequest.getEntry();
         assertEquals( 1, entry.size() );
@@ -507,7 +508,7 @@ public class AddRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        AddRequestCodec addRequest = ( AddRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        AddRequest addRequest = ( AddRequest ) parser.getBatchRequest().getCurrentRequest();
 
         Entry entry = addRequest.getEntry();
         assertEquals( 1, entry.size() );
