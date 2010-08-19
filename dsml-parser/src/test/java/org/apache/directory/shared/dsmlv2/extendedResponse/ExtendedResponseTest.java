@@ -630,7 +630,7 @@ public class ExtendedResponseTest extends AbstractResponseTest
 
         ExtendedResponse extendedResponse = ( ExtendedResponse ) parser.getBatchResponse().getCurrentResponse();
 
-        assertEquals( "This is a response", extendedResponse.getResponseValue() );
+        assertEquals( "This is a response", StringTools.utf8ToString( extendedResponse.getResponseValue() ) );
     }
 
 
@@ -684,7 +684,7 @@ public class ExtendedResponseTest extends AbstractResponseTest
 
         ExtendedResponse extendedResponse = ( ExtendedResponse ) parser.getBatchResponse().getCurrentResponse();
 
-        assertEquals( "", extendedResponse.getResponseValue() );
+        assertEquals( "", StringTools.utf8ToString( extendedResponse.getResponseValue() ) );
     }
 
 
@@ -712,7 +712,7 @@ public class ExtendedResponseTest extends AbstractResponseTest
         org.apache.directory.shared.ldap.message.ExtendedResponse extendedResponse = ( ExtendedResponse ) parser
             .getBatchResponse().getCurrentResponse();
 
-        assertEquals( "This is a response", extendedResponse.getResponseValue() );
+        assertEquals( "This is a response", StringTools.utf8ToString( extendedResponse.getResponseValue() ) );
 
         try
         {

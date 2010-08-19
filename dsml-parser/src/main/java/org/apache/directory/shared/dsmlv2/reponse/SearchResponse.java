@@ -53,7 +53,7 @@ public class SearchResponse extends AbstractResponse
      */
     public SearchResponse( int messageId, MessageTypeEnum type )
     {
-        super( -1, type );
+        super( messageId, type );
     }
 
 
