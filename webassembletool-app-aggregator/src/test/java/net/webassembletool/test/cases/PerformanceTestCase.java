@@ -155,10 +155,10 @@ public class PerformanceTestCase extends TestCase {
 				+ "ms");
 
 		/*
-		 * Expected time is 2% of total time to retrive resource without
+		 * Expected time is 4% of total time to retrive resource without
 		 * aggregator
 		 */
-		long expectedExecTime = Math.round((execTimeDirectAccess) * 1.02);
+		long expectedExecTime = Math.round((execTimeDirectAccess) * 1.04);
 		LOG.debug("Maximum expected :" + expectedExecTime + "ms");
 		if (execTimeAggregator > expectedExecTime) {
 			fail("Performance issue :" + execTimeAggregator
