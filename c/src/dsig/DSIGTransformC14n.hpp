@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2005 The Apache Software Foundation.
+ * Copyright 2002-2010 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -187,7 +187,7 @@ public:
 	 * @param ns The (space separated) list of prefixes to set.
 	 */
 
-	void setInclusiveNamespaces(XMLCh * ns);
+	void setInclusiveNamespaces(const XMLCh * ns);
 	
 	/**
 	 * \brief Get the string containing the inclusive namespaces.
