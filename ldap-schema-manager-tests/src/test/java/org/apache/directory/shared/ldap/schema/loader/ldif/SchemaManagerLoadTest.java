@@ -31,9 +31,8 @@ import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.directory.junit.tools.Concurrent;
-import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.exception.LdapUnwillingToPerformException;
+import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.SchemaManager;
 import org.apache.directory.shared.ldap.schema.ldif.extractor.SchemaLdifExtractor;
 import org.apache.directory.shared.ldap.schema.ldif.extractor.impl.DefaultSchemaLdifExtractor;
@@ -42,8 +41,8 @@ import org.apache.directory.shared.ldap.schema.registries.DefaultSchema;
 import org.apache.directory.shared.ldap.schema.registries.Schema;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 
 /**
@@ -167,8 +166,8 @@ import org.junit.runner.RunWith;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-@RunWith(ConcurrentJunitRunner.class)
-@Concurrent()
+//@RunWith(ConcurrentJunitRunner.class)
+//@Concurrent()
 public class SchemaManagerLoadTest
 {
     // A directory in which the ldif files will be stored
@@ -176,7 +175,7 @@ public class SchemaManagerLoadTest
 
     // The schema repository
     private static File schemaRepository;
-
+    
 
     @BeforeClass
     public static void setup() throws Exception
@@ -189,6 +188,9 @@ public class SchemaManagerLoadTest
             int targetPos = path.indexOf( "target" );
             workingDirectory = path.substring( 0, targetPos + 6 );
         }
+
+        // Make sure every test class has its own schema directory
+        workingDirectory = new File( workingDirectory, "SchemaManagerLoadTest" ).getAbsolutePath();
 
         schemaRepository = new File( workingDirectory, "schema" );
 
@@ -204,7 +206,7 @@ public class SchemaManagerLoadTest
     public static void cleanup() throws IOException
     {
         // Cleanup the target directory
-        FileUtils.deleteDirectory( schemaRepository );
+        FileUtils.deleteDirectory( schemaRepository.getParentFile() );
     }
 
 
@@ -524,7 +526,11 @@ public class SchemaManagerLoadTest
         assertTrue( schemaManager.load( "system" ) );
         assertTrue( schemaManager.load( "core" ) );
         assertTrue( schemaManager.load( "cosine" ) );
-        assertTrue( schemaManager.load( "nis" ) );
+        assertFalse( schemaManager.load( "nis" ) );
+        
+        AttributeType at = schemaManager.getAttributeType( "uidNumber" );
+        // if nis schema was loaded then the at will not be null
+        assertNull( at );
 
         assertTrue( schemaManager.getErrors().isEmpty() );
         assertEquals( 133, schemaManager.getAttributeTypeRegistry().size() );
@@ -676,6 +682,7 @@ public class SchemaManagerLoadTest
 
         assertEquals( 1, schemaManager.getRegistries().getLoadedSchemas().size() );
         assertNotNull( schemaManager.getRegistries().getLoadedSchema( "system" ) );
+        assertNull( schemaManager.getRegistries().getLoadedSchema( "nis" ) );
         assertNull( schemaManager.getRegistries().getLoadedSchema( "core" ) );
         assertNull( schemaManager.getRegistries().getLoadedSchema( "cosine" ) );
         assertNull( schemaManager.getRegistries().getLoadedSchema( "InetOrgPerson" ) );
@@ -776,5 +783,22 @@ public class SchemaManagerLoadTest
 
         assertEquals( 0, schemaManager.getRegistries().getLoadedSchemas().size() );
         assertNull( schemaManager.getRegistries().getLoadedSchema( "dummy" ) );
+    }
+    
+
+    @Ignore( "loadDisabled() method need to be fixed" )
+    @Test
+    public void testLoadDisabled() throws Exception
+    {
+        LdifSchemaLoader loader = new LdifSchemaLoader( schemaRepository );
+        SchemaManager schemaManager = new DefaultSchemaManager( loader );
+
+        assertTrue( schemaManager.loadDisabled( "nis" ) );
+
+        assertFalse( schemaManager.getErrors().isEmpty() );
+        
+        AttributeType at = schemaManager.getAttributeType( "uidNumber" );
+        // if nis schema was loaded then the at will not be null
+        assertNotNull( at );
     }
 }

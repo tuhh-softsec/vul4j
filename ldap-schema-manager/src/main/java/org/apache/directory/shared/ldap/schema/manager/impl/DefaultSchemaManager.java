@@ -543,7 +543,10 @@ public class DefaultSchemaManager implements SchemaManager
         // Load the schemas
         for ( Schema schema : schemas )
         {
-            if ( !load( clonedRegistries, schema ) && ( !errors.isEmpty() ) )
+            boolean singleSchemaLoaded = load( clonedRegistries, schema );
+
+            // return false if the schema was not loaded in the first place
+            if ( !singleSchemaLoaded )
             {
                 return false;
             }
@@ -1043,24 +1046,16 @@ public class DefaultSchemaManager implements SchemaManager
             if ( errors.isEmpty() )
             {
                 // We are golden : let's apply the schema in the real registries
-                registries.setRelaxed();
-
-                // Load the schemas
-                for ( Schema schema : schemas )
-                {
-                    loadDepsFirst( registries, schema );
-                }
-
-                // Build the cross references
-                errors = registries.buildReferences();
+                registries = clonedRegistries;
                 registries.setStrict();
-
                 loaded = true;
             }
         }
-
-        // clear the cloned registries
-        clonedRegistries.clear();
+        else
+        {
+            // clear the cloned registries
+            clonedRegistries.clear();
+        }
 
         return loaded;
     }

@@ -81,6 +81,9 @@ public class SchemaManagerLoadWithDepsTest
             workingDirectory = path.substring( 0, targetPos + 6 );
         }
 
+        // Make sure every test class has its own schema directory
+        workingDirectory = new File( workingDirectory, "SchemaManagerLoadWithDepsTest" ).getAbsolutePath();
+
         schemaRepository = new File( workingDirectory, "schema" );
 
         // Cleanup the target directory
@@ -95,7 +98,7 @@ public class SchemaManagerLoadWithDepsTest
     public static void cleanup() throws IOException
     {
         // Cleanup the target directory
-        FileUtils.deleteDirectory( schemaRepository );
+        FileUtils.deleteDirectory( schemaRepository.getParentFile() );
     }
 
 
