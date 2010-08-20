@@ -30,10 +30,8 @@ public interface DecoderCallback
     /**
      * Callback to deliver a fully decoded object.
      * 
-     * @param decoder
-     *            the stateful decoder driving the callback
-     * @param decoded
-     *            the object that was decoded
+     * @param decoder the stateful decoder driving the callback
+     * @param decoded the object that was decoded
      */
     void decodeOccurred( StatefulDecoder decoder, Object decoded );
 }

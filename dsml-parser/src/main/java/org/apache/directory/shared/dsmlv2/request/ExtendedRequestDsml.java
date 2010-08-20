@@ -23,7 +23,8 @@ package org.apache.directory.shared.dsmlv2.request;
 import org.apache.directory.shared.asn1.primitives.OID;
 import org.apache.directory.shared.dsmlv2.ParserUtils;
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
-import org.apache.directory.shared.ldap.codec.extended.ExtendedRequestCodec;
+import org.apache.directory.shared.ldap.message.ExtendedRequest;
+import org.apache.directory.shared.ldap.message.ExtendedRequestImpl;
 import org.dom4j.Element;
 import org.dom4j.Namespace;
 import org.dom4j.QName;
@@ -41,7 +42,7 @@ public class ExtendedRequestDsml extends AbstractRequestDsml
      */
     public ExtendedRequestDsml()
     {
-        super( new ExtendedRequestCodec() );
+        super( new ExtendedRequestImpl() );
     }
 
 
@@ -51,7 +52,7 @@ public class ExtendedRequestDsml extends AbstractRequestDsml
      * @param ldapMessage
      *      the message to decorate
      */
-    public ExtendedRequestDsml( ExtendedRequestCodec ldapMessage )
+    public ExtendedRequestDsml( ExtendedRequest ldapMessage )
     {
         super( ldapMessage );
     }
@@ -60,9 +61,9 @@ public class ExtendedRequestDsml extends AbstractRequestDsml
     /**
      * {@inheritDoc}
      */
-    public MessageTypeEnum getMessageType()
+    public MessageTypeEnum getType()
     {
-        return instance.getMessageType();
+        return instance.getType();
     }
 
 
@@ -73,7 +74,7 @@ public class ExtendedRequestDsml extends AbstractRequestDsml
     {
         Element element = super.toDsml( root );
 
-        ExtendedRequestCodec request = ( ExtendedRequestCodec ) instance;
+        ExtendedRequest request = ( ExtendedRequest ) instance;
 
         // Request Name
         if ( request.getRequestName() != null )
@@ -102,7 +103,7 @@ public class ExtendedRequestDsml extends AbstractRequestDsml
      */
     public String getRequestName()
     {
-        return ( ( ExtendedRequestCodec ) instance ).getRequestName();
+        return ( ( ExtendedRequest ) instance ).getRequestName();
     }
 
 
@@ -113,7 +114,7 @@ public class ExtendedRequestDsml extends AbstractRequestDsml
      */
     public void setRequestName( OID requestName )
     {
-        ( ( ExtendedRequestCodec ) instance ).setRequestName( requestName );
+        ( ( ExtendedRequest ) instance ).setRequestName( requestName.toString() );
     }
 
 
@@ -124,7 +125,7 @@ public class ExtendedRequestDsml extends AbstractRequestDsml
      */
     public byte[] getRequestValue()
     {
-        return ( ( ExtendedRequestCodec ) instance ).getRequestValue();
+        return ( ( ExtendedRequest ) instance ).getRequestValue();
     }
 
 
@@ -135,6 +136,6 @@ public class ExtendedRequestDsml extends AbstractRequestDsml
      */
     public void setRequestValue( byte[] requestValue )
     {
-        ( ( ExtendedRequestCodec ) instance ).getRequestValue();
+        ( ( ExtendedRequest ) instance ).getRequestValue();
     }
 }

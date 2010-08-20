@@ -22,10 +22,10 @@ package org.apache.directory.shared.dsmlv2.reponse;
 
 
 import org.apache.directory.shared.asn1.primitives.OID;
-import org.apache.directory.shared.dsmlv2.DsmlDecorator;
 import org.apache.directory.shared.dsmlv2.ParserUtils;
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
-import org.apache.directory.shared.ldap.codec.extended.ExtendedResponseCodec;
+import org.apache.directory.shared.ldap.message.ExtendedResponse;
+import org.apache.directory.shared.ldap.message.ExtendedResponseImpl;
 import org.dom4j.Element;
 import org.dom4j.Namespace;
 import org.dom4j.QName;
@@ -36,14 +36,14 @@ import org.dom4j.QName;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class ExtendedResponseDsml extends LdapResponseDecorator implements DsmlDecorator
+public class ExtendedResponseDsml extends AbstractResponseDsml
 {
     /**
      * Creates a new instance of ExtendedResponseDsml.
      */
     public ExtendedResponseDsml()
     {
-        super( new ExtendedResponseCodec() );
+        super( new ExtendedResponseImpl( "" ) );
     }
 
 
@@ -53,18 +53,18 @@ public class ExtendedResponseDsml extends LdapResponseDecorator implements DsmlD
      * @param ldapMessage
      *      the message to decorate
      */
-    public ExtendedResponseDsml( ExtendedResponseCodec ldapMessage )
+    public ExtendedResponseDsml( ExtendedResponse ldapMessage )
     {
         super( ldapMessage );
     }
 
 
     /* (non-Javadoc)
-     * @see org.apache.directory.shared.dsmlv2.reponse.LdapMessageDecorator#getMessageType()
+     * @see org.apache.directory.shared.dsmlv2.reponse.LdapMessageDecorator#getType()
      */
-    public MessageTypeEnum getMessageType()
+    public MessageTypeEnum getType()
     {
-        return instance.getMessageType();
+        return instance.getType();
     }
 
 
@@ -74,7 +74,7 @@ public class ExtendedResponseDsml extends LdapResponseDecorator implements DsmlD
     public Element toDsml( Element root )
     {
         Element element = root.addElement( "extendedResponse" );
-        ExtendedResponseCodec extendedResponse = ( ExtendedResponseCodec ) instance;
+        ExtendedResponse extendedResponse = ( ExtendedResponse ) instance;
 
         // LDAP Result
         LdapResultDsml ldapResultDsml = new LdapResultDsml( extendedResponse.getLdapResult(), instance );
@@ -88,7 +88,8 @@ public class ExtendedResponseDsml extends LdapResponseDecorator implements DsmlD
         }
 
         // Response
-        Object response = extendedResponse.getResponse();
+        Object response = extendedResponse.getResponseValue();
+
         if ( response != null )
         {
             if ( ParserUtils.needsBase64Encoding( response ) )
@@ -120,7 +121,7 @@ public class ExtendedResponseDsml extends LdapResponseDecorator implements DsmlD
      */
     public String getResponseName()
     {
-        return ( ( ExtendedResponseCodec ) instance ).getResponseName();
+        return ( ( ExtendedResponse ) instance ).getResponseName();
     }
 
 
@@ -131,7 +132,7 @@ public class ExtendedResponseDsml extends LdapResponseDecorator implements DsmlD
      */
     public void setResponseName( OID responseName )
     {
-        ( ( ExtendedResponseCodec ) instance ).setResponseName( responseName );
+        ( ( ExtendedResponse ) instance ).setResponseName( responseName.toString() );
     }
 
 
@@ -140,9 +141,9 @@ public class ExtendedResponseDsml extends LdapResponseDecorator implements DsmlD
      * 
      * @return Returns the response.
      */
-    public Object getResponse()
+    public Object getResponseValue()
     {
-        return ( ( ExtendedResponseCodec ) instance ).getResponse();
+        return ( ( ExtendedResponse ) instance ).getResponseValue();
     }
 
 
@@ -151,8 +152,8 @@ public class ExtendedResponseDsml extends LdapResponseDecorator implements DsmlD
      * 
      * @param response The response to set.
      */
-    public void setResponse( Object response )
+    public void setResponseValue( byte[] response )
     {
-        ( ( ExtendedResponseCodec ) instance ).setResponse( response );
+        ( ( ExtendedResponse ) instance ).setResponseValue( response );
     }
 }

@@ -21,9 +21,9 @@
 package org.apache.directory.shared.dsmlv2.reponse;
 
 
-import org.apache.directory.shared.dsmlv2.DsmlDecorator;
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
-import org.apache.directory.shared.ldap.codec.compare.CompareResponseCodec;
+import org.apache.directory.shared.ldap.message.CompareResponse;
+import org.apache.directory.shared.ldap.message.CompareResponseImpl;
 import org.dom4j.Element;
 
 
@@ -32,14 +32,14 @@ import org.dom4j.Element;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class CompareResponseDsml extends LdapResponseDecorator implements DsmlDecorator
+public class CompareResponseDsml extends AbstractResponseDsml
 {
     /**
      * Creates a new instance of CompareResponseDsml.
      */
     public CompareResponseDsml()
     {
-        super( new CompareResponseCodec() );
+        super( new CompareResponseImpl() );
     }
 
 
@@ -49,18 +49,18 @@ public class CompareResponseDsml extends LdapResponseDecorator implements DsmlDe
      * @param ldapMessage
      *      the message to decorate
      */
-    public CompareResponseDsml( CompareResponseCodec ldapMessage )
+    public CompareResponseDsml( CompareResponse ldapMessage )
     {
         super( ldapMessage );
     }
 
 
     /* (non-Javadoc)
-     * @see org.apache.directory.shared.dsmlv2.reponse.LdapMessageDecorator#getMessageType()
+     * @see org.apache.directory.shared.dsmlv2.reponse.LdapMessageDecorator#getType()
      */
-    public MessageTypeEnum getMessageType()
+    public MessageTypeEnum getType()
     {
-        return instance.getMessageType();
+        return instance.getType();
     }
 
 
@@ -71,7 +71,7 @@ public class CompareResponseDsml extends LdapResponseDecorator implements DsmlDe
     {
         Element element = root.addElement( "compareResponse" );
 
-        LdapResultDsml ldapResultDsml = new LdapResultDsml( ( ( CompareResponseCodec ) instance ).getLdapResult(), instance );
+        LdapResultDsml ldapResultDsml = new LdapResultDsml( ( ( CompareResponse ) instance ).getLdapResult(), instance );
         ldapResultDsml.toDsml( element );
         return element;
     }

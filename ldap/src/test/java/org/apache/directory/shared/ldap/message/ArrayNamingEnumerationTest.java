@@ -25,7 +25,6 @@ import java.util.NoSuchElementException;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
-import org.apache.directory.shared.ldap.message.ArrayNamingEnumeration;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 

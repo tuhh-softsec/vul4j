@@ -29,7 +29,7 @@ import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.extended.operations.cancel.Cancel;
 import org.apache.directory.shared.ldap.codec.extended.operations.cancel.CancelDecoder;
 import org.apache.directory.shared.ldap.message.ExtendedRequestImpl;
-import org.apache.directory.shared.ldap.message.internal.InternalResultResponse;
+import org.apache.directory.shared.ldap.message.ResultResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,47 +71,9 @@ public class CancelRequest extends ExtendedRequestImpl
     public CancelRequest( int messageId, int cancelId )
     {
         super( messageId );
-        setOid( EXTENSION_OID );
+        setRequestName( EXTENSION_OID );
 
         this.cancelId = cancelId;
-    }
-
-
-    /**
-     * Encode the request
-     */
-    private void encodePayload() throws EncoderException
-    {
-        Cancel cancel = new Cancel();
-        cancel.setCancelId( this.cancelId );
-
-        payload = cancel.encode().array();
-    }
-
-
-    /**
-     * Gets the extended request's <b>requestValue</b> portion of the PDU. The
-     * form of the data is request specific and is determined by the extended
-     * request OID.
-     * 
-     * @return byte array of data
-     */
-    public byte[] getPayload()
-    {
-        if ( payload == null )
-        {
-            try
-            {
-                encodePayload();
-            }
-            catch ( EncoderException e )
-            {
-                LOG.error( I18n.err( I18n.ERR_04164 ), e );
-                throw new RuntimeException( e );
-            }
-        }
-
-        return super.getPayload();
     }
 
 
@@ -120,23 +82,24 @@ public class CancelRequest extends ExtendedRequestImpl
      * 
      * @param payload byte array of data encapsulating ext. req. parameters
      */
-    public void setPayload( byte[] payload )
+    public void setRequestValue( byte[] requestValue )
     {
         CancelDecoder decoder = new CancelDecoder();
 
         try
         {
-            Cancel cancel = ( Cancel ) decoder.decode( payload );
+            Cancel cancel = ( Cancel ) decoder.decode( requestValue );
 
-            if ( payload != null )
+            if ( requestValue != null )
             {
-                this.payload = new byte[payload.length];
-                System.arraycopy( payload, 0, this.payload, 0, payload.length );
+                this.requestValue = new byte[requestValue.length];
+                System.arraycopy( requestValue, 0, this.requestValue, 0, requestValue.length );
             }
             else
             {
-                this.payload = null;
+                this.requestValue = null;
             }
+
             this.cancelId = cancel.getCancelId();
         }
         catch ( DecoderException e )
@@ -154,13 +117,32 @@ public class CancelRequest extends ExtendedRequestImpl
     }
 
 
-    public byte[] getEncodedValue()
+    /**
+     * {@inheritDoc}
+     */
+    public byte[] getRequestValue()
     {
-        return getPayload();
+        if ( requestValue == null )
+        {
+            try
+            {
+                Cancel cancel = new Cancel();
+                cancel.setCancelId( this.cancelId );
+
+                requestValue = cancel.encode().array();
+            }
+            catch ( EncoderException e )
+            {
+                LOG.error( I18n.err( I18n.ERR_04164 ), e );
+                throw new RuntimeException( e );
+            }
+        }
+
+        return requestValue;
     }
 
 
-    public InternalResultResponse getResultResponse()
+    public ResultResponse getResultResponse()
     {
         if ( response == null )
         {

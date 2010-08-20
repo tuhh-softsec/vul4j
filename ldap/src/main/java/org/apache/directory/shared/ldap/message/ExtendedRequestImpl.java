@@ -26,9 +26,6 @@ import javax.naming.NamingException;
 import javax.naming.ldap.ExtendedResponse;
 
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
-import org.apache.directory.shared.ldap.message.internal.InternalAbstractRequest;
-import org.apache.directory.shared.ldap.message.internal.InternalExtendedRequest;
-import org.apache.directory.shared.ldap.message.internal.InternalResultResponse;
 import org.apache.directory.shared.ldap.util.StringTools;
 
 
@@ -37,17 +34,24 @@ import org.apache.directory.shared.ldap.util.StringTools;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class ExtendedRequestImpl extends InternalAbstractRequest implements InternalExtendedRequest
+public class ExtendedRequestImpl extends AbstractRequest implements ExtendedRequest
 {
     static final long serialVersionUID = 7916990159044177480L;
 
     /** Extended request's Object Identifier or <b>requestName</b> */
     private String oid;
 
-    /** Extended request's payload or <b>requestValue</b> */
-    protected byte[] payload;
+    /** Extended request's value */
+    protected byte[] requestValue;
 
-    protected InternalResultResponse response;
+    /** The associated response */
+    protected ResultResponse response;
+
+    /** The extended request length */
+    private int extendedRequestLength;
+
+    /** The OID length */
+    private byte[] requestNameBytes;
 
 
     // -----------------------------------------------------------------------
@@ -55,11 +59,20 @@ public class ExtendedRequestImpl extends InternalAbstractRequest implements Inte
     // -----------------------------------------------------------------------
 
     /**
-     * Creates a Lockable ExtendedRequest implementing object used to perform
+     * Creates an ExtendedRequest implementing object used to perform
+     * extended protocol operation on the server.
+     */
+    public ExtendedRequestImpl()
+    {
+        super( -1, TYPE, true );
+    }
+
+
+    /**
+     * Creates an ExtendedRequest implementing object used to perform
      * extended protocol operation on the server.
      * 
-     * @param id
-     *            the sequential message identifier
+     * @param id the sequential message identifier
      */
     public ExtendedRequestImpl( final int id )
     {
@@ -72,24 +85,11 @@ public class ExtendedRequestImpl extends InternalAbstractRequest implements Inte
     // -----------------------------------------------------------------------
 
     /**
-     * Gets the Object Idendifier corresponding to the extended request type.
-     * This is the <b>requestName</b> portion of the ext. req. PDU.
+     * Sets the Object Identifier corresponding to the extended request type.
      * 
-     * @return the dotted-decimal representation as a String of the OID
+     * @param oid the dotted-decimal representation as a String of the OID
      */
-    public String getOid()
-    {
-        return oid;
-    }
-
-
-    /**
-     * Sets the Object Idendifier corresponding to the extended request type.
-     * 
-     * @param oid
-     *            the dotted-decimal representation as a String of the OID
-     */
-    public void setOid( String oid )
+    public void setRequestName( String oid )
     {
         this.oid = oid;
     }
@@ -102,15 +102,15 @@ public class ExtendedRequestImpl extends InternalAbstractRequest implements Inte
      * 
      * @return byte array of data
      */
-    public byte[] getPayload()
+    public byte[] getRequestValue()
     {
-        if ( payload == null )
+        if ( requestValue == null )
         {
             return null;
         }
 
-        final byte[] copy = new byte[payload.length];
-        System.arraycopy( payload, 0, copy, 0, payload.length );
+        final byte[] copy = new byte[requestValue.length];
+        System.arraycopy( requestValue, 0, copy, 0, requestValue.length );
         return copy;
     }
 
@@ -118,19 +118,18 @@ public class ExtendedRequestImpl extends InternalAbstractRequest implements Inte
     /**
      * Sets the extended request's <b>requestValue</b> portion of the PDU.
      * 
-     * @param payload
-     *            byte array of data encapsulating ext. req. parameters
+     * @param payload byte array of data encapsulating ext. req. parameters
      */
-    public void setPayload( byte[] payload )
+    public void setRequestValue( byte[] payload )
     {
         if ( payload != null )
         {
-            this.payload = new byte[payload.length];
-            System.arraycopy( payload, 0, this.payload, 0, payload.length );
+            this.requestValue = new byte[payload.length];
+            System.arraycopy( payload, 0, this.requestValue, 0, payload.length );
         }
         else
         {
-            this.payload = null;
+            this.requestValue = null;
         }
     }
 
@@ -156,7 +155,7 @@ public class ExtendedRequestImpl extends InternalAbstractRequest implements Inte
      * 
      * @return the result containing response for this request
      */
-    public InternalResultResponse getResultResponse()
+    public ResultResponse getResultResponse()
     {
         if ( response == null )
         {
@@ -178,9 +177,9 @@ public class ExtendedRequestImpl extends InternalAbstractRequest implements Inte
         {
             hash = hash * 17 + oid.hashCode();
         }
-        if ( payload != null )
+        if ( requestValue != null )
         {
-            hash = hash * 17 + Arrays.hashCode( payload );
+            hash = hash * 17 + Arrays.hashCode( requestValue );
         }
         hash = hash * 17 + super.hashCode();
 
@@ -191,8 +190,7 @@ public class ExtendedRequestImpl extends InternalAbstractRequest implements Inte
     /**
      * Checks to see if an object equals this ExtendedRequest.
      * 
-     * @param obj
-     *            the object to be checked for equality
+     * @param obj the object to be checked for equality
      * @return true if the obj equals this ExtendedRequest, false otherwise
      */
     public boolean equals( Object obj )
@@ -207,44 +205,106 @@ public class ExtendedRequestImpl extends InternalAbstractRequest implements Inte
             return false;
         }
 
-        if ( !( obj instanceof InternalExtendedRequest ) )
+        if ( !( obj instanceof ExtendedRequest ) )
         {
             return false;
         }
 
-        InternalExtendedRequest req = ( InternalExtendedRequest ) obj;
+        ExtendedRequest req = ( ExtendedRequest ) obj;
 
-        if ( ( oid != null ) && ( req.getOid() == null ) )
+        if ( ( oid != null ) && ( req.getRequestName() == null ) )
         {
             return false;
         }
 
-        if ( ( oid == null ) && ( req.getOid() != null ) )
+        if ( ( oid == null ) && ( req.getRequestName() != null ) )
         {
             return false;
         }
 
-        if ( ( oid != null ) && ( req.getOid() != null ) && !oid.equals( req.getOid() ) )
+        if ( ( oid != null ) && ( req.getRequestName() != null ) && !oid.equals( req.getRequestName() ) )
         {
             return false;
         }
 
-        if ( ( payload != null ) && ( req.getPayload() == null ) )
+        if ( ( requestValue != null ) && ( req.getRequestValue() == null ) )
         {
             return false;
         }
 
-        if ( ( payload == null ) && ( req.getPayload() != null ) )
+        if ( ( requestValue == null ) && ( req.getRequestValue() != null ) )
         {
             return false;
         }
 
-        if ( ( payload != null ) && ( req.getPayload() != null ) && !Arrays.equals( payload, req.getPayload() ) )
+        if ( ( requestValue != null ) && ( req.getRequestValue() != null )
+            && !Arrays.equals( requestValue, req.getRequestValue() ) )
         {
             return false;
         }
 
         return true;
+    }
+
+
+    /**
+     * Gets the Object Idendifier corresponding to the extended request type.
+     * This is the <b>requestName</b> portion of the ext. req. PDU.
+     * 
+     * @return the dotted-decimal representation as a String of the OID
+     */
+    public String getRequestName()
+    {
+        return oid;
+    }
+
+
+    public ExtendedResponse createExtendedResponse( String id, byte[] berValue, int offset, int length )
+        throws NamingException
+    {
+        return null;
+    }
+
+
+    /**
+     * Stores the encoded length for the ExtendedRequest
+     * 
+     * @param extendedRequestLength The encoded length
+     */
+    /* No qualifier*/void setExtendedRequestLength( int extendedRequestLength )
+    {
+        this.extendedRequestLength = extendedRequestLength;
+    }
+
+
+    /**
+     * @return The encoded ExtendedRequest's length
+     */
+    /* No qualifier*/int getExtendedRequestLength()
+    {
+        return extendedRequestLength;
+    }
+
+
+    /**
+     * Gets the requestName bytes.
+     * 
+     * @return the requestName bytes of the extended request type.
+     */
+    /* No qualifier*/byte[] getRequestNameBytes()
+    {
+        return requestNameBytes;
+    }
+
+
+    /**
+     * Sets the requestName bytes.
+     * 
+     * @param requestNameBytes the OID bytes of the extended request type.
+     */
+    /* No qualifier*/void setRequestNameBytes( byte[] requestNameBytes )
+    {
+        this.requestNameBytes = requestNameBytes;
     }
 
 
@@ -262,29 +322,13 @@ public class ExtendedRequestImpl extends InternalAbstractRequest implements Inte
 
         if ( oid != null )
         {
-            sb.append( "        Request value : '" ).append( StringTools.utf8ToString( payload ) ).append( '/' )
-                .append( StringTools.dumpBytes( payload ) ).append( "'\n" );
+            sb.append( "        Request value : '" ).append( StringTools.utf8ToString( requestValue ) ).append( '/' )
+                .append( StringTools.dumpBytes( requestValue ) ).append( "'\n" );
         }
 
+        // The controls
+        sb.append( super.toString() );
+
         return sb.toString();
-    }
-
-
-    public String getID()
-    {
-        return getOid();
-    }
-
-
-    public byte[] getEncodedValue()
-    {
-        return getPayload();
-    }
-
-
-    public ExtendedResponse createExtendedResponse( String id, byte[] berValue, int offset, int length )
-        throws NamingException
-    {
-        return null;
     }
 }

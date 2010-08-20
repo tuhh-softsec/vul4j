@@ -31,8 +31,6 @@ import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.message.internal.InternalLdapResult;
-import org.apache.directory.shared.ldap.message.internal.InternalSearchResponseDone;
 import org.apache.directory.shared.ldap.name.DN;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -50,17 +48,18 @@ public class SearchResponseDoneImplTest
 {
     private static final Map<String, Control> EMPTY_CONTROL_MAP = new HashMap<String, Control>();
 
+
     /**
      * Creates and populates a SearchResponseDoneImpl stub for testing purposes.
      * 
      * @return a populated SearchResponseDoneImpl stub
      */
-    private SearchResponseDoneImpl createStub()
+    private SearchResultDoneImpl createStub()
     {
         // Construct the Search response to test with results and referrals
-        SearchResponseDoneImpl response = new SearchResponseDoneImpl( 45 );
-        InternalLdapResult result = response.getLdapResult();
-        
+        SearchResultDoneImpl response = new SearchResultDoneImpl( 45 );
+        LdapResult result = response.getLdapResult();
+
         try
         {
             result.setMatchedDn( new DN( "dc=example,dc=com" ) );
@@ -69,7 +68,7 @@ public class SearchResponseDoneImplTest
         {
             // do nothing
         }
-        
+
         result.setResultCode( ResultCodeEnum.SUCCESS );
         ReferralImpl refs = new ReferralImpl();
         refs.addLdapUrl( "ldap://someserver.com" );
@@ -86,7 +85,7 @@ public class SearchResponseDoneImplTest
     @Test
     public void testEqualsSameObj()
     {
-        SearchResponseDoneImpl resp = createStub();
+        SearchResultDoneImpl resp = createStub();
         assertTrue( resp.equals( resp ) );
     }
 
@@ -97,8 +96,8 @@ public class SearchResponseDoneImplTest
     @Test
     public void testEqualsExactCopy()
     {
-        SearchResponseDoneImpl resp0 = createStub();
-        SearchResponseDoneImpl resp1 = createStub();
+        SearchResultDoneImpl resp0 = createStub();
+        SearchResultDoneImpl resp1 = createStub();
         assertTrue( resp0.equals( resp1 ) );
         assertTrue( resp1.equals( resp0 ) );
     }
@@ -110,18 +109,18 @@ public class SearchResponseDoneImplTest
     @Test
     public void testEqualsDiffImpl()
     {
-        SearchResponseDoneImpl resp0 = createStub();
-        InternalSearchResponseDone resp1 = new InternalSearchResponseDone()
+        SearchResultDoneImpl resp0 = createStub();
+        SearchResultDone resp1 = new SearchResultDone()
         {
-            public InternalLdapResult getLdapResult()
+            public LdapResult getLdapResult()
             {
                 LdapResultImpl result = new LdapResultImpl();
-                
+
                 try
                 {
                     result.setMatchedDn( new DN( "dc=example,dc=com" ) );
                 }
-                catch ( Exception e ) 
+                catch ( Exception e )
                 {
                     // Do nothing
                 }
@@ -148,12 +147,12 @@ public class SearchResponseDoneImplTest
             }
 
 
-            public void add( Control a_control ) throws MessageException
+            public void addControl( Control a_control ) throws MessageException
             {
             }
 
 
-            public void remove( Control a_control ) throws MessageException
+            public void removeControl( Control a_control ) throws MessageException
             {
             }
 
@@ -176,7 +175,7 @@ public class SearchResponseDoneImplTest
             }
 
 
-            public void addAll( Control[] controls ) throws MessageException
+            public void addAllControls( Control[] controls ) throws MessageException
             {
             }
 
@@ -184,6 +183,45 @@ public class SearchResponseDoneImplTest
             public boolean hasControl( String oid )
             {
                 return false;
+            }
+
+
+            public Control getCurrentControl()
+            {
+                return null;
+            }
+
+
+            public int getControlsLength()
+            {
+                return 0;
+            }
+
+
+            public void setControlsLength( int controlsLength )
+            {
+            }
+
+
+            public int getMessageLength()
+            {
+                return 0;
+            }
+
+
+            public void setMessageLength( int messageLength )
+            {
+            }
+
+
+            public Control getControl( String oid )
+            {
+                return null;
+            }
+
+
+            public void setMessageId( int messageId )
+            {
             }
         };
 
@@ -198,7 +236,7 @@ public class SearchResponseDoneImplTest
     @Test
     public void testHashCodeSameObj()
     {
-        SearchResponseDoneImpl resp = createStub();
+        SearchResultDoneImpl resp = createStub();
         assertTrue( resp.hashCode() == resp.hashCode() );
     }
 
@@ -209,8 +247,8 @@ public class SearchResponseDoneImplTest
     @Test
     public void testHashCodeExactCopy()
     {
-        SearchResponseDoneImpl resp0 = createStub();
-        SearchResponseDoneImpl resp1 = createStub();
+        SearchResultDoneImpl resp0 = createStub();
+        SearchResultDoneImpl resp1 = createStub();
         assertTrue( resp0.hashCode() == resp1.hashCode() );
     }
 
@@ -221,8 +259,8 @@ public class SearchResponseDoneImplTest
     @Test
     public void testNotEqualsDiffIds()
     {
-        SearchResponseDoneImpl resp0 = new SearchResponseDoneImpl( 3 );
-        SearchResponseDoneImpl resp1 = new SearchResponseDoneImpl( 4 );
+        SearchResultDoneImpl resp0 = new SearchResultDoneImpl( 3 );
+        SearchResultDoneImpl resp1 = new SearchResultDoneImpl( 4 );
 
         assertFalse( resp0.equals( resp1 ) );
         assertFalse( resp1.equals( resp0 ) );

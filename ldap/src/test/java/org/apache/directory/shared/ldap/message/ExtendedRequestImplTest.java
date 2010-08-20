@@ -33,8 +33,6 @@ import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.message.internal.InternalExtendedRequest;
-import org.apache.directory.shared.ldap.message.internal.InternalResultResponse;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -49,6 +47,7 @@ import org.junit.runner.RunWith;
 public class ExtendedRequestImplTest
 {
     private static final Map<String, Control> EMPTY_CONTROL_MAP = new HashMap<String, Control>();
+
 
     /**
      * Tests the same object reference for equality.
@@ -68,12 +67,12 @@ public class ExtendedRequestImplTest
     public void testEqualsExactCopy()
     {
         ExtendedRequestImpl req0 = new ExtendedRequestImpl( 5 );
-        req0.setOid( "1.1.1.1" );
-        req0.setPayload( "Hello World!".getBytes() );
+        req0.setRequestName( "1.1.1.1" );
+        req0.setRequestValue( "Hello World!".getBytes() );
 
         ExtendedRequestImpl req1 = new ExtendedRequestImpl( 5 );
-        req1.setOid( "1.1.1.1" );
-        req1.setPayload( "Hello World!".getBytes() );
+        req1.setRequestName( "1.1.1.1" );
+        req1.setRequestValue( "Hello World!".getBytes() );
 
         assertTrue( req0.equals( req1 ) );
         assertTrue( req1.equals( req0 ) );
@@ -98,12 +97,12 @@ public class ExtendedRequestImplTest
     public void testHashCodeExactCopy()
     {
         ExtendedRequestImpl req0 = new ExtendedRequestImpl( 5 );
-        req0.setOid( "1.1.1.1" );
-        req0.setPayload( "Hello World!".getBytes() );
+        req0.setRequestName( "1.1.1.1" );
+        req0.setRequestValue( "Hello World!".getBytes() );
 
         ExtendedRequestImpl req1 = new ExtendedRequestImpl( 5 );
-        req1.setOid( "1.1.1.1" );
-        req1.setPayload( "Hello World!".getBytes() );
+        req1.setRequestName( "1.1.1.1" );
+        req1.setRequestValue( "Hello World!".getBytes() );
 
         assertTrue( req0.hashCode() == req1.hashCode() );
     }
@@ -130,12 +129,12 @@ public class ExtendedRequestImplTest
     public void testNotEqualDiffOID()
     {
         ExtendedRequestImpl req0 = new ExtendedRequestImpl( 5 );
-        req0.setOid( "1.1.1.1" );
-        req0.setPayload( "Hello World!".getBytes() );
+        req0.setRequestName( "1.1.1.1" );
+        req0.setRequestValue( "Hello World!".getBytes() );
 
         ExtendedRequestImpl req1 = new ExtendedRequestImpl( 5 );
-        req0.setOid( "1.2.2.1" );
-        req0.setPayload( "Hello World!".getBytes() );
+        req0.setRequestName( "1.2.2.1" );
+        req0.setRequestValue( "Hello World!".getBytes() );
 
         assertFalse( req0.equals( req1 ) );
         assertFalse( req1.equals( req0 ) );
@@ -149,12 +148,12 @@ public class ExtendedRequestImplTest
     public void testNotEqualDiffValue()
     {
         ExtendedRequestImpl req0 = new ExtendedRequestImpl( 5 );
-        req0.setOid( "1.1.1.1" );
-        req0.setPayload( "Hello ".getBytes() );
+        req0.setRequestName( "1.1.1.1" );
+        req0.setRequestValue( "Hello ".getBytes() );
 
         ExtendedRequestImpl req1 = new ExtendedRequestImpl( 5 );
-        req0.setOid( "1.1.1.1" );
-        req0.setPayload( "World!".getBytes() );
+        req0.setRequestName( "1.1.1.1" );
+        req0.setRequestValue( "World!".getBytes() );
 
         assertFalse( req0.equals( req1 ) );
         assertFalse( req1.equals( req0 ) );
@@ -168,29 +167,23 @@ public class ExtendedRequestImplTest
     @Test
     public void testEqualsDiffImpl()
     {
-        InternalExtendedRequest req0 = new InternalExtendedRequest()
+        ExtendedRequest req0 = new ExtendedRequest()
         {
             private static final long serialVersionUID = 1L;
 
 
-            public String getOid()
+            public void setRequestName( String oid )
+            {
+            }
+
+
+            public byte[] getRequestValue()
             {
                 return null;
             }
 
 
-            public void setOid( String oid )
-            {
-            }
-
-
-            public byte[] getPayload()
-            {
-                return null;
-            }
-
-
-            public void setPayload( byte[] payload )
+            public void setRequestValue( byte[] payload )
             {
             }
 
@@ -213,18 +206,18 @@ public class ExtendedRequestImplTest
             }
 
 
-            public Map<String,Control> getControls()
+            public Map<String, Control> getControls()
             {
                 return EMPTY_CONTROL_MAP;
             }
 
 
-            public void add( Control control ) throws MessageException
+            public void addControl( Control control ) throws MessageException
             {
             }
 
 
-            public void remove( Control control ) throws MessageException
+            public void removeControl( Control control ) throws MessageException
             {
             }
 
@@ -247,19 +240,13 @@ public class ExtendedRequestImplTest
             }
 
 
-            public InternalResultResponse getResultResponse()
+            public ResultResponse getResultResponse()
             {
                 return null;
             }
 
 
-            public String getID()
-            {
-                return null;
-            }
-
-
-            public byte[] getEncodedValue()
+            public String getRequestName()
             {
                 return null;
             }
@@ -272,7 +259,7 @@ public class ExtendedRequestImplTest
             }
 
 
-            public void addAll( Control[] controls ) throws MessageException
+            public void addAllControls( Control[] controls ) throws MessageException
             {
             }
 
@@ -280,6 +267,45 @@ public class ExtendedRequestImplTest
             public boolean hasControl( String oid )
             {
                 return false;
+            }
+
+
+            public Control getCurrentControl()
+            {
+                return null;
+            }
+
+
+            public int getControlsLength()
+            {
+                return 0;
+            }
+
+
+            public void setControlsLength( int controlsLength )
+            {
+            }
+
+
+            public int getMessageLength()
+            {
+                return 0;
+            }
+
+
+            public void setMessageLength( int messageLength )
+            {
+            }
+
+
+            public Control getControl( String oid )
+            {
+                return null;
+            }
+
+
+            public void setMessageId( int messageId )
+            {
             }
         };
 

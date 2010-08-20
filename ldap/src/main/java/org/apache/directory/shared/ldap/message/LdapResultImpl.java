@@ -21,8 +21,6 @@
 package org.apache.directory.shared.ldap.message;
 
 
-import org.apache.directory.shared.ldap.message.internal.InternalLdapResult;
-import org.apache.directory.shared.ldap.message.internal.InternalReferral;
 import org.apache.directory.shared.ldap.name.DN;
 
 
@@ -31,18 +29,24 @@ import org.apache.directory.shared.ldap.name.DN;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class LdapResultImpl implements InternalLdapResult
+public class LdapResultImpl implements LdapResult
 {
     static final long serialVersionUID = -1446626887394613213L;
 
     /** Lowest matched entry Dn - defaults to empty string */
     private DN matchedDn;
 
+    /** Temporary storage of the byte[] representing the matchedDN */
+    private byte[] matchedDNBytes;
+
     /** Referral associated with this LdapResult if the errorCode is REFERRAL */
-    private InternalReferral referral;
+    private Referral referral;
 
     /** Decriptive error message - defaults to empty string */
     private String errorMessage;
+
+    /** Temporary storage for message bytes */
+    private byte[] errorMessageBytes;
 
     /** Resultant operation error code - defaults to SUCCESS */
     private ResultCodeEnum resultCode = ResultCodeEnum.SUCCESS;
@@ -51,7 +55,6 @@ public class LdapResultImpl implements InternalLdapResult
     // ------------------------------------------------------------------------
     // LdapResult Interface Method Implementations
     // ------------------------------------------------------------------------
-
     /**
      * Gets the descriptive error message associated with the error code. May be
      * null for SUCCESS, COMPARETRUE, COMPAREFALSE and REFERRAL operations.
@@ -65,6 +68,15 @@ public class LdapResultImpl implements InternalLdapResult
 
 
     /**
+     * @return The encoded Error message
+     */
+    /*No qualifier*/byte[] getErrorMessageBytes()
+    {
+        return errorMessageBytes;
+    }
+
+
+    /**
      * Sets the descriptive error message associated with the error code. May be
      * null for SUCCESS, COMPARETRUE, and COMPAREFALSE operations.
      * 
@@ -74,6 +86,16 @@ public class LdapResultImpl implements InternalLdapResult
     public void setErrorMessage( String errorMessage )
     {
         this.errorMessage = errorMessage;
+    }
+
+
+    /**
+     * Set the encoded message's bytes
+     * @param errorMessageBytes The encoded bytes
+     */
+    /*No qualifier*/void setErrorMessageBytes( byte[] errorMessageBytes )
+    {
+        this.errorMessageBytes = errorMessageBytes;
     }
 
 
@@ -97,15 +119,34 @@ public class LdapResultImpl implements InternalLdapResult
 
 
     /**
+     * @return the encoded MatchedDN
+     */
+    /*No qualifier*/byte[] getMatchedDnBytes()
+    {
+        return matchedDNBytes;
+    }
+
+
+    /**
      * Sets the lowest entry in the directory that was matched.
      * 
      * @see #getMatchedDn()
-     * @param matchedDn
-     *            the Dn of the lowest matched entry.
+     * @param matchedDn the Dn of the lowest matched entry.
      */
     public void setMatchedDn( DN matchedDn )
     {
         this.matchedDn = matchedDn;
+    }
+
+
+    /**
+     * Sets the encoded value for MatchedDn
+     * 
+     * @param matchedDNBytes The encoded MatchedDN
+     */
+    /*No qualifier*/void setMatchedDnBytes( byte[] matchedDNBytes )
+    {
+        this.matchedDNBytes = matchedDNBytes;
     }
 
 
@@ -142,7 +183,7 @@ public class LdapResultImpl implements InternalLdapResult
      * 
      * @return the referral on REFERRAL errors, null on all others.
      */
-    public InternalReferral getReferral()
+    public Referral getReferral()
     {
         return referral;
     }
@@ -169,7 +210,7 @@ public class LdapResultImpl implements InternalLdapResult
      * @param referral
      *            optional referral on REFERRAL errors.
      */
-    public void setReferral( InternalReferral referral )
+    public void setReferral( Referral referral )
     {
         this.referral = referral;
     }
@@ -213,13 +254,13 @@ public class LdapResultImpl implements InternalLdapResult
         }
 
         // return false if object does not implement interface
-        if ( !( obj instanceof InternalLdapResult ) )
+        if ( !( obj instanceof LdapResult ) )
         {
             return false;
         }
 
         // compare all the like elements of the two LdapResult objects
-        InternalLdapResult result = ( InternalLdapResult ) obj;
+        LdapResult result = ( LdapResult ) obj;
 
         if ( referral == null && result.getReferral() != null )
         {
@@ -283,8 +324,7 @@ public class LdapResultImpl implements InternalLdapResult
      */
     public String toString()
     {
-
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
 
         sb.append( "        Ldap Result\n" );
         sb.append( "            Result code : (" ).append( resultCode ).append( ')' );

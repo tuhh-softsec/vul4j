@@ -26,7 +26,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.directory.shared.ldap.message.internal.InternalReferral;
 
 
 /**
@@ -36,17 +35,40 @@ import org.apache.directory.shared.ldap.message.internal.InternalReferral;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class ReferralImpl implements InternalReferral
+public class ReferralImpl implements Referral
 {
     static final long serialVersionUID = 2638820668325359096L;
 
     /** Sequence of LDAPUrls composing this Referral */
     private final List<String> urls = new ArrayList<String>();
 
+    /** The encoded LdapURL */
+    private final List<byte[]> urlsBytes = new ArrayList<byte[]>();
+
+    /** The length of the referral */
+    private int referralLength;
+
 
     // ------------------------------------------------------------------------
     // LdapResult Interface Method Implementations
     // ------------------------------------------------------------------------
+    /**
+     * {@inheritDoc}
+     */
+    public int getReferralLength()
+    {
+        return referralLength;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setReferralLength( int referralLength )
+    {
+        this.referralLength = referralLength;
+    }
+
 
     /**
      * Gets an unmodifiable set of alternative referral urls.
@@ -60,14 +82,31 @@ public class ReferralImpl implements InternalReferral
 
 
     /**
+     * {@inheritDoc}
+     */
+    public Collection<byte[]> getLdapUrlsBytes()
+    {
+        return urlsBytes;
+    }
+
+
+    /**
      * Adds an LDAPv3 URL to this Referral.
      * 
-     * @param url
-     *            the LDAPv3 URL to add
+     * @param url the LDAPv3 URL to add
      */
     public void addLdapUrl( String url )
     {
         urls.add( url );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void addLdapUrlBytes( byte[] urlBytes )
+    {
+        urlsBytes.add( urlBytes );
     }
 
 
@@ -120,9 +159,9 @@ public class ReferralImpl implements InternalReferral
             return true;
         }
 
-        if ( obj instanceof InternalReferral )
+        if ( obj instanceof Referral )
         {
-            Collection<String> refs = ( ( InternalReferral ) obj ).getLdapUrls();
+            Collection<String> refs = ( ( Referral ) obj ).getLdapUrls();
 
             // if their sizes do not match they are not equal
             if ( refs.size() != urls.size() )

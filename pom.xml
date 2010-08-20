@@ -84,7 +84,7 @@
     <module>asn1-codec</module>
     <module>ldap-convert</module>
     <module>cursor</module>
-    <module>dsml-parser</module>
+    <!-- module>dsml-parser</module -->
   </modules>
 
   <build>

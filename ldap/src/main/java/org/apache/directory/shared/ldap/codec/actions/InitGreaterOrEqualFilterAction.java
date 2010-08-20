@@ -27,7 +27,8 @@ import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.search.AttributeValueAssertionFilter;
 import org.apache.directory.shared.ldap.codec.search.Filter;
-import org.apache.directory.shared.ldap.codec.search.SearchRequestCodec;
+import org.apache.directory.shared.ldap.message.SearchRequest;
+import org.apache.directory.shared.ldap.message.SearchRequestImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,10 +46,12 @@ public class InitGreaterOrEqualFilterAction extends GrammarAction
     /** Speedup for logs */
     private static final boolean IS_DEBUG = log.isDebugEnabled();
 
+
     public InitGreaterOrEqualFilterAction()
     {
         super( "Initialize Greater Or Equal filter" );
     }
+
 
     /**
      * The initialization action
@@ -56,19 +59,18 @@ public class InitGreaterOrEqualFilterAction extends GrammarAction
     public void action( IAsn1Container container ) throws DecoderException
     {
         LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-        SearchRequestCodec searchRequest = ldapMessageContainer.getSearchRequest();
+        SearchRequest searchRequest = ldapMessageContainer.getSearchRequest();
 
         // We can allocate the Attribute Value Assertion
-        Filter filter = new AttributeValueAssertionFilter( 
-            ldapMessageContainer.getTlvId(),
+        Filter filter = new AttributeValueAssertionFilter( ldapMessageContainer.getTlvId(),
             LdapConstants.GREATER_OR_EQUAL_FILTER );
 
-        searchRequest.addCurrentFilter( filter );
-        
+        ( ( SearchRequestImpl ) searchRequest ).addCurrentFilter( filter );
+
         // Store the filter structure that still has to be
         // fullfiled
-        searchRequest.setTerminalFilter( filter );
-        
+        ( ( SearchRequestImpl ) searchRequest ).setTerminalFilter( filter );
+
         if ( IS_DEBUG )
         {
             log.debug( "Initialize Greater Or Equal filter" );

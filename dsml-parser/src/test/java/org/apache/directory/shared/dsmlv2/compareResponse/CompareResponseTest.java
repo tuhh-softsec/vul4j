@@ -27,15 +27,15 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.util.List;
+import java.util.Collection;
 
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.dsmlv2.AbstractResponseTest;
 import org.apache.directory.shared.dsmlv2.Dsmlv2ResponseParser;
-import org.apache.directory.shared.ldap.codec.LdapResultCodec;
-import org.apache.directory.shared.ldap.codec.compare.CompareResponseCodec;
 import org.apache.directory.shared.ldap.codec.util.LdapURLEncodingException;
+import org.apache.directory.shared.ldap.message.CompareResponse;
+import org.apache.directory.shared.ldap.message.LdapResult;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.util.LdapURL;
@@ -75,7 +75,7 @@ public class CompareResponseTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        CompareResponseCodec compareResponse = ( CompareResponseCodec ) parser.getBatchResponse().getCurrentResponse();
+        CompareResponse compareResponse = ( CompareResponse ) parser.getBatchResponse().getCurrentResponse();
 
         assertEquals( 456, compareResponse.getMessageId() );
     }
@@ -112,7 +112,7 @@ public class CompareResponseTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        CompareResponseCodec compareResponse = ( CompareResponseCodec ) parser.getBatchResponse().getCurrentResponse();
+        CompareResponse compareResponse = ( CompareResponse ) parser.getBatchResponse().getCurrentResponse();
 
         assertEquals( 1, compareResponse.getControls().size() );
 
@@ -147,7 +147,7 @@ public class CompareResponseTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        CompareResponseCodec compareResponse = ( CompareResponseCodec ) parser.getBatchResponse().getCurrentResponse();
+        CompareResponse compareResponse = ( CompareResponse ) parser.getBatchResponse().getCurrentResponse();
         Control control = compareResponse.getCurrentControl();
 
         assertEquals( 1, compareResponse.getControls().size() );
@@ -178,7 +178,7 @@ public class CompareResponseTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        CompareResponseCodec compareResponse = ( CompareResponseCodec ) parser.getBatchResponse().getCurrentResponse();
+        CompareResponse compareResponse = ( CompareResponse ) parser.getBatchResponse().getCurrentResponse();
 
         assertEquals( 2, compareResponse.getControls().size() );
 
@@ -213,7 +213,7 @@ public class CompareResponseTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        CompareResponseCodec compareResponse = ( CompareResponseCodec ) parser.getBatchResponse().getCurrentResponse();
+        CompareResponse compareResponse = ( CompareResponse ) parser.getBatchResponse().getCurrentResponse();
 
         assertEquals( 3, compareResponse.getControls().size() );
 
@@ -268,9 +268,9 @@ public class CompareResponseTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        CompareResponseCodec compareResponse = ( CompareResponseCodec ) parser.getBatchResponse().getCurrentResponse();
+        CompareResponse compareResponse = ( CompareResponse ) parser.getBatchResponse().getCurrentResponse();
 
-        LdapResultCodec ldapResult = compareResponse.getLdapResult();
+        LdapResult ldapResult = compareResponse.getLdapResult();
 
         assertEquals( ResultCodeEnum.PROTOCOL_ERROR, ldapResult.getResultCode() );
     }
@@ -297,9 +297,9 @@ public class CompareResponseTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        CompareResponseCodec compareResponse = ( CompareResponseCodec ) parser.getBatchResponse().getCurrentResponse();
+        CompareResponse compareResponse = ( CompareResponse ) parser.getBatchResponse().getCurrentResponse();
 
-        LdapResultCodec ldapResult = compareResponse.getLdapResult();
+        LdapResult ldapResult = compareResponse.getLdapResult();
 
         assertEquals( "Unrecognized extended operation EXTENSION_OID: 1.2.6.1.4.1.18060.1.1.1.100.2", ldapResult
             .getErrorMessage() );
@@ -327,9 +327,9 @@ public class CompareResponseTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        CompareResponseCodec compareResponse = ( CompareResponseCodec ) parser.getBatchResponse().getCurrentResponse();
+        CompareResponse compareResponse = ( CompareResponse ) parser.getBatchResponse().getCurrentResponse();
 
-        LdapResultCodec ldapResult = compareResponse.getLdapResult();
+        LdapResult ldapResult = compareResponse.getLdapResult();
 
         assertNull( ldapResult.getErrorMessage() );
     }
@@ -356,19 +356,17 @@ public class CompareResponseTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        CompareResponseCodec compareResponse = ( CompareResponseCodec ) parser.getBatchResponse().getCurrentResponse();
+        CompareResponse compareResponse = ( CompareResponse ) parser.getBatchResponse().getCurrentResponse();
 
-        LdapResultCodec ldapResult = compareResponse.getLdapResult();
+        LdapResult ldapResult = compareResponse.getLdapResult();
 
-        List<org.apache.directory.shared.ldap.util.LdapURL> referrals = ldapResult.getReferrals();
+        Collection<String> referrals = ldapResult.getReferral().getLdapUrls();
 
         assertEquals( 1, referrals.size() );
 
-        Object referral = referrals.get( 0 );
-
         try
         {
-            assertEquals( new LdapURL( "ldap://www.apache.org/" ).toString(), referral.toString() );
+            assertTrue( referrals.contains( new LdapURL( "ldap://www.apache.org/" ).toString() ) );
         }
         catch ( LdapURLEncodingException e )
         {
@@ -398,11 +396,11 @@ public class CompareResponseTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        CompareResponseCodec compareResponse = ( CompareResponseCodec ) parser.getBatchResponse().getCurrentResponse();
+        CompareResponse compareResponse = ( CompareResponse ) parser.getBatchResponse().getCurrentResponse();
 
-        LdapResultCodec ldapResult = compareResponse.getLdapResult();
+        LdapResult ldapResult = compareResponse.getLdapResult();
 
-        List<org.apache.directory.shared.ldap.util.LdapURL> referrals = ldapResult.getReferrals();
+        Collection<String> referrals = ldapResult.getReferral().getLdapUrls();
 
         assertEquals( 0, referrals.size() );
     }
@@ -429,30 +427,26 @@ public class CompareResponseTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        CompareResponseCodec compareResponse = ( CompareResponseCodec ) parser.getBatchResponse().getCurrentResponse();
+        CompareResponse compareResponse = ( CompareResponse ) parser.getBatchResponse().getCurrentResponse();
 
-        LdapResultCodec ldapResult = compareResponse.getLdapResult();
+        LdapResult ldapResult = compareResponse.getLdapResult();
 
-        List<org.apache.directory.shared.ldap.util.LdapURL> referrals = ldapResult.getReferrals();
+        Collection<String> referrals = ldapResult.getReferral().getLdapUrls();
 
         assertEquals( 2, referrals.size() );
 
-        Object referral = referrals.get( 0 );
-
         try
         {
-            assertEquals( new LdapURL( "ldap://www.apache.org/" ).toString(), referral.toString() );
+            assertTrue( referrals.contains( new LdapURL( "ldap://www.apache.org/" ).toString() ) );
         }
         catch ( LdapURLEncodingException e )
         {
             fail();
         }
 
-        Object referral2 = referrals.get( 1 );
-
         try
         {
-            assertEquals( new LdapURL( "ldap://www.apple.com/" ).toString(), referral2.toString() );
+            assertTrue( referrals.contains( new LdapURL( "ldap://www.apple.com/" ).toString() ) );
         }
         catch ( LdapURLEncodingException e )
         {
@@ -482,19 +476,17 @@ public class CompareResponseTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        CompareResponseCodec compareResponse = ( CompareResponseCodec ) parser.getBatchResponse().getCurrentResponse();
+        CompareResponse compareResponse = ( CompareResponse ) parser.getBatchResponse().getCurrentResponse();
 
-        LdapResultCodec ldapResult = compareResponse.getLdapResult();
+        LdapResult ldapResult = compareResponse.getLdapResult();
 
-        List<org.apache.directory.shared.ldap.util.LdapURL> referrals = ldapResult.getReferrals();
+        Collection<String> referrals = ldapResult.getReferral().getLdapUrls();
 
         assertEquals( 1, referrals.size() );
 
-        Object referral = referrals.get( 0 );
-
         try
         {
-            assertEquals( new LdapURL( "ldap://www.apache.org/" ).toString(), referral.toString() );
+            assertTrue( referrals.contains( new LdapURL( "ldap://www.apache.org/" ).toString() ) );
         }
         catch ( LdapURLEncodingException e )
         {
@@ -524,11 +516,11 @@ public class CompareResponseTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        CompareResponseCodec compareResponse = ( CompareResponseCodec ) parser.getBatchResponse().getCurrentResponse();
+        CompareResponse compareResponse = ( CompareResponse ) parser.getBatchResponse().getCurrentResponse();
 
-        LdapResultCodec ldapResult = compareResponse.getLdapResult();
+        LdapResult ldapResult = compareResponse.getLdapResult();
 
-        assertEquals( "cn=Bob Rush,ou=Dev,dc=Example,dc=COM", ldapResult.getMatchedDN() );
+        assertEquals( "cn=Bob Rush,ou=Dev,dc=Example,dc=COM", ldapResult.getMatchedDn().getNormName() );
     }
 
 

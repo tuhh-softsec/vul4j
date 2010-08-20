@@ -19,17 +19,16 @@
  */
 package org.apache.directory.shared.ldap.message;
 
-import org.apache.directory.shared.ldap.message.internal.InternalAbstractResultResponse;
-import org.apache.directory.shared.ldap.message.internal.InternalCompareResponse;
-
 
 /**
  * CompareResponse implementation.
  * 
  * @author <a href="mailto:dev@directory.apache.org"> Apache Directory Project</a>
  */
-public class CompareResponseImpl extends InternalAbstractResultResponse implements InternalCompareResponse
+public class CompareResponseImpl extends AbstractResultResponse implements CompareResponse
 {
+    /** The encoded compareResponse length */
+    private int compareResponseLength;
 
     // ------------------------------------------------------------------------
     // Constructors
@@ -39,13 +38,66 @@ public class CompareResponseImpl extends InternalAbstractResultResponse implemen
 
 
     /**
-     * Creates a Lockable CompareResponse as a reply to an CompareRequest.
-     * 
-     * @param id
-     *            the session unique message id
+     * Creates a CompareResponse as a reply to an CompareRequest.
      */
-    public CompareResponseImpl(final int id)
+    public CompareResponseImpl()
+    {
+        super( -1, TYPE );
+    }
+
+
+    /**
+     * Creates a CompareResponse as a reply to an CompareRequest.
+     * 
+     * @param id the session unique message id
+     */
+    public CompareResponseImpl( final int id )
     {
         super( id, TYPE );
+    }
+
+
+    /**
+     * Stores the encoded length for the CompareResponse
+     * @param compareResponseLength The encoded length
+     */
+    /* No qualifier*/void setCompareResponseLength( int compareResponseLength )
+    {
+        this.compareResponseLength = compareResponseLength;
+    }
+
+
+    /**
+     * @return The encoded CompareResponse's length
+     */
+    /* No qualifier*/int getCompareResponseLength()
+    {
+        return compareResponseLength;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isTrue()
+    {
+        return ldapResult.getResultCode() == ResultCodeEnum.COMPARE_TRUE;
+    }
+
+
+    /**
+     * Get a String representation of an CompareResponse
+     * 
+     * @return An CompareResponse String
+     */
+    public String toString()
+    {
+
+        StringBuilder sb = new StringBuilder();
+
+        sb.append( "    Compare Response\n" );
+        sb.append( super.toString() );
+
+        return sb.toString();
     }
 }

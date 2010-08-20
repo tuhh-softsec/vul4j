@@ -22,9 +22,9 @@ package org.apache.directory.shared.dsmlv2.reponse;
 
 
 import org.apache.directory.shared.dsmlv2.LdapMessageDecorator;
-import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
-import org.apache.directory.shared.ldap.codec.LdapResponseCodec;
-import org.apache.directory.shared.ldap.codec.LdapResultCodec;
+import org.apache.directory.shared.ldap.message.LdapResult;
+import org.apache.directory.shared.ldap.message.Message;
+import org.apache.directory.shared.ldap.message.ResultResponse;
 
 
 /**
@@ -40,35 +40,17 @@ public abstract class LdapResponseDecorator extends LdapMessageDecorator
      * @param ldapMessage
      *      the message to decorate
      */
-    public LdapResponseDecorator( LdapMessageCodec ldapMessage )
+    public LdapResponseDecorator( Message ldapMessage )
     {
         super( ldapMessage );
     }
 
 
     /* (non-Javadoc)
-     * @see org.apache.directory.shared.ldap.codec.LdapResponse#getLdapResponseLength()
-     */
-    public int getLdapResponseLength()
-    {
-        return ( ( LdapResponseCodec ) instance ).getLdapResponseLength();
-    }
-
-
-    /* (non-Javadoc)
      * @see org.apache.directory.shared.ldap.codec.LdapResponse#getLdapResult()
      */
-    public LdapResultCodec getLdapResult()
+    public LdapResult getLdapResult()
     {
-        return ( ( LdapResponseCodec ) instance ).getLdapResult();
-    }
-
-
-    /* (non-Javadoc)
-     * @see org.apache.directory.shared.ldap.codec.LdapResponse#setLdapResult(org.apache.directory.shared.ldap.codec.LdapResult)
-     */
-    public void setLdapResult( LdapResultCodec ldapResult )
-    {
-        ( ( LdapResponseCodec ) instance ).setLdapResult( ldapResult );
+        return ( ( ResultResponse ) instance ).getLdapResult();
     }
 }

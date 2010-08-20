@@ -31,7 +31,7 @@ import java.io.StringReader;
 import org.apache.directory.shared.dsmlv2.request.BatchRequest;
 import org.apache.directory.shared.dsmlv2.request.Dsmlv2Grammar;
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
+import org.apache.directory.shared.ldap.message.Message;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -166,8 +166,7 @@ public class Dsmlv2Parser
             }
             catch ( IOException e )
             {
-                throw new XmlPullParserException( I18n.err( I18n.ERR_03037, e.getLocalizedMessage() ), xpp,
-                    null );
+                throw new XmlPullParserException( I18n.err( I18n.ERR_03037, e.getLocalizedMessage() ), xpp, null );
             }
         }
         while ( container.getState() != Dsmlv2StatesEnum.BATCHREQUEST_START_TAG );
@@ -227,7 +226,7 @@ public class Dsmlv2Parser
      * @throws XmlPullParserException      
      *      when an error occurs during the parsing
      */
-    public LdapMessageCodec getNextRequest() throws XmlPullParserException
+    public Message getNextRequest() throws XmlPullParserException
     {
         if ( container.getBatchRequest() == null )
         {
@@ -247,8 +246,7 @@ public class Dsmlv2Parser
                 }
                 catch ( IOException e )
                 {
-                    throw new XmlPullParserException( I18n.err( I18n.ERR_03037, e.getLocalizedMessage() ), xpp,
-                        null );
+                    throw new XmlPullParserException( I18n.err( I18n.ERR_03037, e.getLocalizedMessage() ), xpp, null );
                 }
                 eventType = xpp.getEventType();
             }
@@ -276,8 +274,7 @@ public class Dsmlv2Parser
             }
             catch ( IOException e )
             {
-                throw new XmlPullParserException( I18n.err( I18n.ERR_03037, e.getLocalizedMessage() ), xpp,
-                    null );
+                throw new XmlPullParserException( I18n.err( I18n.ERR_03037, e.getLocalizedMessage() ), xpp, null );
             }
         }
         while ( container.getState() != Dsmlv2StatesEnum.BATCHREQUEST_LOOP );

@@ -45,8 +45,8 @@ public class LaunchDiagnosticUiRequest extends ExtendedRequestImpl
     public LaunchDiagnosticUiRequest( int messageId )
     {
         super( messageId );
-        setOid( EXTENSION_OID );
-        setPayload( EMPTY_PAYLOAD );
+        setRequestName( EXTENSION_OID );
+        setRequestValue( EMPTY_PAYLOAD );
     }
 
 

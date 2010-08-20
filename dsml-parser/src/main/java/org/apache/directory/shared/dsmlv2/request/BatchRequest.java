@@ -24,7 +24,7 @@ package org.apache.directory.shared.dsmlv2.request;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
+import org.apache.directory.shared.ldap.message.Message;
 
 
 /**
@@ -37,7 +37,7 @@ public class BatchRequest
     /**
      * The requests contained in the Batch Request
      */
-    private List<LdapMessageCodec> requests;
+    private List<Message> requests;
 
     /**
      * The ID of the request
@@ -95,7 +95,7 @@ public class BatchRequest
      */
     public BatchRequest()
     {
-        requests = new ArrayList<LdapMessageCodec>();
+        requests = new ArrayList<Message>();
         responseOrder = ResponseOrder.SEQUENTIAL;
         processing = Processing.SEQUENTIAL;
         onError = OnError.EXIT;
@@ -110,7 +110,7 @@ public class BatchRequest
      * @return
      *      true (as per the general contract of the Collection.add method)
      */
-    public boolean addRequest( LdapMessageCodec request )
+    public boolean addRequest( Message request )
     {
         return requests.add( request );
     }
@@ -122,7 +122,7 @@ public class BatchRequest
      * @return
      *      the current request
      */
-    public LdapMessageCodec getCurrentRequest()
+    public Message getCurrentRequest()
     {
         return requests.get( requests.size() - 1 );
     }
@@ -227,17 +227,16 @@ public class BatchRequest
     /**
      * Gets the List of all the requests in the Batch Request
      *
-     * @return
-     *      the List of all the requests in the Batch Request
+     * @return the List of all the requests in the Batch Request
      */
-    public List getRequests()
+    public List<Message> getRequests()
     {
         return requests;
     }
 
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#toString()
+    /**
+     * {@inheritDoc}
      */
     @Override
     public String toString()

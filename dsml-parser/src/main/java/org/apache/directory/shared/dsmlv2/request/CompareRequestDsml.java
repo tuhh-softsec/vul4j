@@ -21,7 +21,8 @@ package org.apache.directory.shared.dsmlv2.request;
 
 
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
-import org.apache.directory.shared.ldap.codec.compare.CompareRequestCodec;
+import org.apache.directory.shared.ldap.message.CompareRequest;
+import org.apache.directory.shared.ldap.message.CompareRequestImpl;
 import org.apache.directory.shared.ldap.name.DN;
 import org.dom4j.Element;
 
@@ -38,7 +39,7 @@ public class CompareRequestDsml extends AbstractRequestDsml
      */
     public CompareRequestDsml()
     {
-        super( new CompareRequestCodec() );
+        super( new CompareRequestImpl() );
     }
 
 
@@ -48,7 +49,7 @@ public class CompareRequestDsml extends AbstractRequestDsml
      * @param ldapMessage
      *      the message to decorate
      */
-    public CompareRequestDsml( CompareRequestCodec ldapMessage )
+    public CompareRequestDsml( CompareRequest ldapMessage )
     {
         super( ldapMessage );
     }
@@ -57,9 +58,9 @@ public class CompareRequestDsml extends AbstractRequestDsml
     /**
      * {@inheritDoc}
      */
-    public MessageTypeEnum getMessageType()
+    public MessageTypeEnum getType()
     {
-        return instance.getMessageType();
+        return instance.getType();
     }
 
 
@@ -70,23 +71,23 @@ public class CompareRequestDsml extends AbstractRequestDsml
     {
         Element element = super.toDsml( root );
 
-        CompareRequestCodec request = ( CompareRequestCodec ) instance;
+        CompareRequest request = ( CompareRequest ) instance;
 
         // DN
-        if ( request.getEntry() != null )
+        if ( request.getName() != null )
         {
-            element.addAttribute( "dn", request.getEntry().getName() );
+            element.addAttribute( "dn", request.getName().getName() );
         }
 
         // Assertion
         Element assertionElement = element.addElement( "assertion" );
-        if ( request.getAttributeDesc() != null )
+        if ( request.getAttributeId() != null )
         {
-            assertionElement.addAttribute( "name", request.getAttributeDesc() );
+            assertionElement.addAttribute( "name", request.getAttributeId() );
         }
         if ( request.getAssertionValue() != null )
         {
-            assertionElement.addElement( "value" ).setText( ( String ) request.getAssertionValue() );
+            assertionElement.addElement( "value" ).setText( request.getAssertionValue().getString() );
         }
 
         return element;
@@ -98,9 +99,9 @@ public class CompareRequestDsml extends AbstractRequestDsml
      * 
      * @return Returns the entry.
      */
-    public DN getEntry()
+    public DN getName()
     {
-        return ( ( CompareRequestCodec ) instance ).getEntry();
+        return ( ( CompareRequest ) instance ).getName();
     }
 
 
@@ -109,9 +110,9 @@ public class CompareRequestDsml extends AbstractRequestDsml
      * 
      * @param entry The entry to set.
      */
-    public void setEntry( DN entry )
+    public void setName( DN entry )
     {
-        ( ( CompareRequestCodec ) instance ).setEntry( entry );
+        ( ( CompareRequest ) instance ).setName( entry );
     }
 
 
@@ -122,7 +123,7 @@ public class CompareRequestDsml extends AbstractRequestDsml
      */
     public Object getAssertionValue()
     {
-        return ( ( CompareRequestCodec ) instance ).getAssertionValue();
+        return ( ( CompareRequest ) instance ).getAssertionValue();
     }
 
 
@@ -133,7 +134,14 @@ public class CompareRequestDsml extends AbstractRequestDsml
      */
     public void setAssertionValue( Object assertionValue )
     {
-        ( ( CompareRequestCodec ) instance ).setAssertionValue( assertionValue );
+        if ( assertionValue instanceof String )
+        {
+            ( ( CompareRequest ) instance ).setAssertionValue( ( String ) assertionValue );
+        }
+        else
+        {
+            ( ( CompareRequest ) instance ).setAssertionValue( ( byte[] ) assertionValue );
+        }
     }
 
 
@@ -144,7 +152,7 @@ public class CompareRequestDsml extends AbstractRequestDsml
      */
     public String getAttributeDesc()
     {
-        return ( ( CompareRequestCodec ) instance ).getAttributeDesc();
+        return ( ( CompareRequest ) instance ).getAttributeId();
     }
 
 
@@ -155,6 +163,6 @@ public class CompareRequestDsml extends AbstractRequestDsml
      */
     public void setAttributeDesc( String attributeDesc )
     {
-        ( ( CompareRequestCodec ) instance ).setAttributeDesc( attributeDesc );
+        ( ( CompareRequest ) instance ).setAttributeId( attributeDesc );
     }
 }

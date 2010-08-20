@@ -19,8 +19,12 @@
  */
 package org.apache.directory.shared.dsmlv2.request;
 
+
 import org.apache.directory.shared.dsmlv2.LdapMessageDecorator;
-import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
+import org.apache.directory.shared.ldap.message.Message;
+import org.apache.directory.shared.ldap.message.MessageException;
+import org.apache.directory.shared.ldap.message.control.Control;
+
 
 /**
  * Decorator abstract class for LdapRequest
@@ -32,11 +36,78 @@ public class LdapRequestDecorator extends LdapMessageDecorator
     /**
      * Creates a new instance of LdapRequestDecorator.
      *
-     * @param ldapMessage
-     *      the message to decorate
+     * @param ldapMessage the message to decorate
      */
-    public LdapRequestDecorator( LdapMessageCodec ldapMessage )
+    public LdapRequestDecorator( Message ldapMessage )
     {
         super( ldapMessage );
+    }
+
+
+    public void addAllControls( Control[] controls ) throws MessageException
+    {
+        instance.addAllControls( controls );
+    }
+
+
+    public Object get( Object key )
+    {
+        return instance.get( key );
+    }
+
+
+    /*
+    public int getControlsLength()
+    {
+        return 0;
+    }
+    */
+
+    public Control getCurrentControl()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+
+    public int getMessageLength()
+    {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+
+    public boolean hasControl( String oid )
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+
+    public Object put( Object key, Object value )
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+
+    public void removeControl( Control control ) throws MessageException
+    {
+        // TODO Auto-generated method stub
+
+    }
+
+
+    public void setControlsLength( int controlsLength )
+    {
+        // TODO Auto-generated method stub
+
+    }
+
+
+    public void setMessageLength( int messageLength )
+    {
+        // TODO Auto-generated method stub
+
     }
 }

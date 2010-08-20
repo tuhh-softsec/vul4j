@@ -25,7 +25,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.nio.ByteBuffer;
-import java.util.List;
+import java.util.Map;
 
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
@@ -35,10 +35,12 @@ import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.ResponseCarryingException;
+import org.apache.directory.shared.ldap.message.CompareRequest;
 import org.apache.directory.shared.ldap.message.CompareResponseImpl;
+import org.apache.directory.shared.ldap.message.LdapProtocolEncoder;
+import org.apache.directory.shared.ldap.message.Message;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.message.internal.InternalMessage;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -53,6 +55,9 @@ import org.junit.runner.RunWith;
 @Concurrent()
 public class CompareRequestTest
 {
+    /** The encoder instance */
+    LdapProtocolEncoder encoder = new LdapProtocolEncoder();
+
 
     /**
      * Test the decoding of a full CompareRequest
@@ -65,22 +70,22 @@ public class CompareRequestTest
         ByteBuffer stream = ByteBuffer.allocate( 0x38 );
 
         stream.put( new byte[]
-            { 
-            0x30, 0x36,                 // LDAPMessage ::= SEQUENCE {
-              0x02, 0x01, 0x01,         // messageID MessageID
-                                        // CHOICE { ..., compareRequest CompareRequest, ...
-              0x6E, 0x31,               // CompareRequest ::= [APPLICATION 14] SEQUENCE {
-                                        // entry LDAPDN,
-                0x04, 0x20, 
-                  'c', 'n', '=', 't', 'e', 's', 't', 'M', 'o', 'd', 'i', 'f', 'y', ',', 'o', 'u', '=', 'u',
-                  's', 'e', 'r', 's', ',', 'o', 'u', '=', 's', 'y', 's', 't', 'e', 'm',
-                                        // ava AttributeValueAssertion }
+            { 0x30,
+                0x36, // LDAPMessage ::= SEQUENCE {
+                0x02, 0x01,
+                0x01, // messageID MessageID
+                // CHOICE { ..., compareRequest CompareRequest, ...
+                0x6E,
+                0x31, // CompareRequest ::= [APPLICATION 14] SEQUENCE {
+                // entry LDAPDN,
+                0x04, 0x20, 'c', 'n', '=', 't', 'e', 's', 't', 'M', 'o', 'd', 'i', 'f', 'y', ',', 'o', 'u', '=', 'u',
+                's', 'e', 'r', 's', ',', 'o', 'u', '=', 's', 'y', 's', 't', 'e', 'm',
+                // ava AttributeValueAssertion }
                 0x30, 0x0D, // AttributeValueAssertion ::= SEQUENCE {
-                                        // attributeDesc AttributeDescription,
-                  0x04, 0x04, 't', 'e', 's', 't',
-                                        // assertionValue AssertionValue }
-                  0x04, 0x05, 'v', 'a', 'l', 'u', 'e' 
-            } );
+                // attributeDesc AttributeDescription,
+                0x04, 0x04, 't', 'e', 's', 't',
+                // assertionValue AssertionValue }
+                0x04, 0x05, 'v', 'a', 'l', 'u', 'e' } );
 
         String decodedPdu = StringTools.dumpBytes( stream.array() );
         stream.flip();
@@ -100,20 +105,20 @@ public class CompareRequestTest
         }
 
         // Ceck the decoded CompareRequest PDU
-        CompareRequestCodec compareRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getCompareRequest();
+        CompareRequest compareRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getCompareRequest();
 
         assertEquals( 1, compareRequest.getMessageId() );
-        assertEquals( "cn=testModify,ou=users,ou=system", compareRequest.getEntry().toString() );
-        assertEquals( "test", compareRequest.getAttributeDesc() );
+        assertEquals( "cn=testModify,ou=users,ou=system", compareRequest.getName().toString() );
+        assertEquals( "test", compareRequest.getAttributeId() );
         assertEquals( "value", compareRequest.getAssertionValue().toString() );
-
-        // Check the length
-        assertEquals( 0x38, compareRequest.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = compareRequest.encode();
+            ByteBuffer bb = encoder.encodeMessage( compareRequest );
+
+            // Check the length
+            assertEquals( 0x38, bb.limit() );
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -138,11 +143,10 @@ public class CompareRequestTest
         ByteBuffer stream = ByteBuffer.allocate( 0x07 );
 
         stream.put( new byte[]
-            { 
-            0x30, 0x05,                 // LDAPMessage ::= SEQUENCE {
-              0x02, 0x01, 0x01,         // messageID MessageID
-                                        // CHOICE { ..., compareRequest CompareRequest, ...
-              0x6E, 0x00                // CompareRequest ::= [APPLICATION 14] SEQUENCE {
+            { 0x30, 0x05, // LDAPMessage ::= SEQUENCE {
+                0x02, 0x01, 0x01, // messageID MessageID
+                // CHOICE { ..., compareRequest CompareRequest, ...
+                0x6E, 0x00 // CompareRequest ::= [APPLICATION 14] SEQUENCE {
             } );
 
         stream.flip();
@@ -174,19 +178,17 @@ public class CompareRequestTest
         ByteBuffer stream = ByteBuffer.allocate( 0x18 );
 
         stream.put( new byte[]
-            { 
-            0x30, 0x16,                 // LDAPMessage ::= SEQUENCE {
-              0x02, 0x01, 0x01,         // messageID MessageID
-                                        // CHOICE { ..., compareRequest CompareRequest, ...
-              0x6E, 0x11,               // CompareRequest ::= [APPLICATION 14] SEQUENCE {
-                0x04, 0x00,             // entry LDAPDN,
-                                        // ava AttributeValueAssertion }
-                0x30, 0x0D,             // AttributeValueAssertion ::= SEQUENCE {
-                                        // attributeDesc AttributeDescription,
-                  0x04, 0x04, 't', 'e', 's', 't',
-                                        // assertionValue AssertionValue }
-                  0x04, 0x05, 'v', 'a', 'l', 'u', 'e' 
-            } );
+            { 0x30, 0x16, // LDAPMessage ::= SEQUENCE {
+                0x02, 0x01, 0x01, // messageID MessageID
+                // CHOICE { ..., compareRequest CompareRequest, ...
+                0x6E, 0x11, // CompareRequest ::= [APPLICATION 14] SEQUENCE {
+                0x04, 0x00, // entry LDAPDN,
+                // ava AttributeValueAssertion }
+                0x30, 0x0D, // AttributeValueAssertion ::= SEQUENCE {
+                // attributeDesc AttributeDescription,
+                0x04, 0x04, 't', 'e', 's', 't',
+                // assertionValue AssertionValue }
+                0x04, 0x05, 'v', 'a', 'l', 'u', 'e' } );
 
         stream.flip();
 
@@ -217,17 +219,18 @@ public class CompareRequestTest
         ByteBuffer stream = ByteBuffer.allocate( 0x2B );
 
         stream.put( new byte[]
-            { 
-            0x30, 0x29,                 // LDAPMessage ::= SEQUENCE {
-              0x02, 0x01, 0x01,         // messageID MessageID
-                                        // CHOICE { ..., compareRequest CompareRequest, ...
-              0x6E, 0x24,               // CompareRequest ::= [APPLICATION 14] SEQUENCE {
-                                        // entry LDAPDN,
-                0x04, 0x20, 
-                  'c', 'n', '=', 't', 'e', 's', 't', 'M', 'o', 'd', 'i', 'f', 'y', ',', 'o', 'u', '=', 'u',
-                  's', 'e', 'r', 's', ',', 'o', 'u', '=', 's', 'y', 's', 't', 'e', 'm',
-                                        // ava AttributeValueAssertion }
-                0x30, 0x00              // AttributeValueAssertion ::= SEQUENCE {
+            { 0x30,
+                0x29, // LDAPMessage ::= SEQUENCE {
+                0x02, 0x01,
+                0x01, // messageID MessageID
+                // CHOICE { ..., compareRequest CompareRequest, ...
+                0x6E,
+                0x24, // CompareRequest ::= [APPLICATION 14] SEQUENCE {
+                // entry LDAPDN,
+                0x04, 0x20, 'c', 'n', '=', 't', 'e', 's', 't', 'M', 'o', 'd', 'i', 'f', 'y', ',', 'o', 'u', '=', 'u',
+                's', 'e', 'r', 's', ',', 'o', 'u', '=', 's', 'y', 's', 't', 'e', 'm',
+                // ava AttributeValueAssertion }
+                0x30, 0x00 // AttributeValueAssertion ::= SEQUENCE {
             } );
 
         stream.flip();
@@ -247,6 +250,7 @@ public class CompareRequestTest
         }
     }
 
+
     /**
      * Test the decoding of an empty ava
      */
@@ -258,17 +262,18 @@ public class CompareRequestTest
         ByteBuffer stream = ByteBuffer.allocate( 0x2B );
 
         stream.put( new byte[]
-            { 
-            0x30, 0x29,                 // LDAPMessage ::= SEQUENCE {
-              0x02, 0x01, 0x01,         // messageID MessageID
-                                        // CHOICE { ..., compareRequest CompareRequest, ...
-              0x6E, 0x24,               // CompareRequest ::= [APPLICATION 14] SEQUENCE {
-                                        // entry LDAPDN,
-                0x04, 0x20, 
-                  'c', 'n', ':', 't', 'e', 's', 't', 'M', 'o', 'd', 'i', 'f', 'y', ',', 'o', 'u', '=', 'u',
-                  's', 'e', 'r', 's', ',', 'o', 'u', '=', 's', 'y', 's', 't', 'e', 'm',
-                                        // ava AttributeValueAssertion }
-                0x30, 0x00              // AttributeValueAssertion ::= SEQUENCE {
+            { 0x30,
+                0x29, // LDAPMessage ::= SEQUENCE {
+                0x02, 0x01,
+                0x01, // messageID MessageID
+                // CHOICE { ..., compareRequest CompareRequest, ...
+                0x6E,
+                0x24, // CompareRequest ::= [APPLICATION 14] SEQUENCE {
+                // entry LDAPDN,
+                0x04, 0x20, 'c', 'n', ':', 't', 'e', 's', 't', 'M', 'o', 'd', 'i', 'f', 'y', ',', 'o', 'u', '=', 'u',
+                's', 'e', 'r', 's', ',', 'o', 'u', '=', 's', 'y', 's', 't', 'e', 'm',
+                // ava AttributeValueAssertion }
+                0x30, 0x00 // AttributeValueAssertion ::= SEQUENCE {
             } );
 
         stream.flip();
@@ -285,9 +290,10 @@ public class CompareRequestTest
         catch ( DecoderException de )
         {
             assertTrue( de instanceof ResponseCarryingException );
-            InternalMessage response = ((ResponseCarryingException)de).getResponse();
+            Message response = ( ( ResponseCarryingException ) de ).getResponse();
             assertTrue( response instanceof CompareResponseImpl );
-            assertEquals( ResultCodeEnum.INVALID_DN_SYNTAX, ((CompareResponseImpl)response).getLdapResult().getResultCode() );
+            assertEquals( ResultCodeEnum.INVALID_DN_SYNTAX, ( ( CompareResponseImpl ) response ).getLdapResult()
+                .getResultCode() );
             return;
         }
     }
@@ -304,19 +310,19 @@ public class CompareRequestTest
         ByteBuffer stream = ByteBuffer.allocate( 0x2D );
 
         stream.put( new byte[]
-            { 
-            0x30, 0x2B,                 // LDAPMessage ::= SEQUENCE {
-              0x02, 0x01, 0x01,         // messageID MessageID
-                                        // CHOICE { ..., compareRequest CompareRequest, ...
-              0x6E, 0x26,               // CompareRequest ::= [APPLICATION 14] SEQUENCE {
-                                        // entry LDAPDN,
-              0x04, 0x20, 
-                'c', 'n', '=', 't', 'e', 's', 't', 'M', 'o', 'd', 'i', 'f', 'y', ',', 'o', 'u', '=', 'u',
+            { 0x30,
+                0x2B, // LDAPMessage ::= SEQUENCE {
+                0x02, 0x01,
+                0x01, // messageID MessageID
+                // CHOICE { ..., compareRequest CompareRequest, ...
+                0x6E,
+                0x26, // CompareRequest ::= [APPLICATION 14] SEQUENCE {
+                // entry LDAPDN,
+                0x04, 0x20, 'c', 'n', '=', 't', 'e', 's', 't', 'M', 'o', 'd', 'i', 'f', 'y', ',', 'o', 'u', '=', 'u',
                 's', 'e', 'r', 's', ',', 'o', 'u', '=', 's', 'y', 's', 't', 'e', 'm',
-                                        // ava AttributeValueAssertion }
-              0x30, 0x02,               // AttributeValueAssertion ::= SEQUENCE {
-                0x04, 0x00 
-            } );
+                // ava AttributeValueAssertion }
+                0x30, 0x02, // AttributeValueAssertion ::= SEQUENCE {
+                0x04, 0x00 } );
 
         stream.flip();
 
@@ -332,9 +338,10 @@ public class CompareRequestTest
         catch ( DecoderException de )
         {
             assertTrue( de instanceof ResponseCarryingException );
-            InternalMessage response = ((ResponseCarryingException)de).getResponse();
+            Message response = ( ( ResponseCarryingException ) de ).getResponse();
             assertTrue( response instanceof CompareResponseImpl );
-            assertEquals( ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX, ((CompareResponseImpl)response).getLdapResult().getResultCode() );
+            assertEquals( ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX, ( ( CompareResponseImpl ) response ).getLdapResult()
+                .getResultCode() );
             return;
         }
     }
@@ -351,22 +358,22 @@ public class CompareRequestTest
         ByteBuffer stream = ByteBuffer.allocate( 0x33 );
 
         stream.put( new byte[]
-            { 
-            0x30, 0x31,                 // LDAPMessage ::= SEQUENCE {
-              0x02, 0x01, 0x01,         // messageID MessageID
-                                        // CHOICE { ..., compareRequest CompareRequest, ...
-              0x6E, 0x2C,               // CompareRequest ::= [APPLICATION 14] SEQUENCE {
-                                        // entry LDAPDN,
-                0x04, 0x20, 
-                  'c', 'n', '=', 't', 'e', 's', 't', 'M', 'o', 'd', 'i', 'f', 'y', ',', 'o', 'u', '=', 'u',
-                  's', 'e', 'r', 's', ',', 'o', 'u', '=', 's', 'y', 's', 't', 'e', 'm',
-                                        // ava AttributeValueAssertion }
-                0x30, 0x08,             // AttributeValueAssertion ::= SEQUENCE {
-                                        // attributeDesc AttributeDescription,
-                  0x04, 0x04, 't', 'e', 's', 't',
-                                        // assertionValue AssertionValue }
-                  0x04, 0x00 
-            } );
+            { 0x30,
+                0x31, // LDAPMessage ::= SEQUENCE {
+                0x02, 0x01,
+                0x01, // messageID MessageID
+                // CHOICE { ..., compareRequest CompareRequest, ...
+                0x6E,
+                0x2C, // CompareRequest ::= [APPLICATION 14] SEQUENCE {
+                // entry LDAPDN,
+                0x04, 0x20, 'c', 'n', '=', 't', 'e', 's', 't', 'M', 'o', 'd', 'i', 'f', 'y', ',', 'o', 'u', '=', 'u',
+                's', 'e', 'r', 's', ',', 'o', 'u', '=', 's', 'y', 's', 't', 'e', 'm',
+                // ava AttributeValueAssertion }
+                0x30, 0x08, // AttributeValueAssertion ::= SEQUENCE {
+                // attributeDesc AttributeDescription,
+                0x04, 0x04, 't', 'e', 's', 't',
+                // assertionValue AssertionValue }
+                0x04, 0x00 } );
 
         String decodedPdu = StringTools.dumpBytes( stream.array() );
         stream.flip();
@@ -386,20 +393,20 @@ public class CompareRequestTest
         }
 
         // Check the decoded CompareRequest PDU
-        CompareRequestCodec compareRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getCompareRequest();
+        CompareRequest compareRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getCompareRequest();
 
         assertEquals( 1, compareRequest.getMessageId() );
-        assertEquals( "cn=testModify,ou=users,ou=system", compareRequest.getEntry().toString() );
-        assertEquals( "test", compareRequest.getAttributeDesc() );
+        assertEquals( "cn=testModify,ou=users,ou=system", compareRequest.getName().toString() );
+        assertEquals( "test", compareRequest.getAttributeId() );
         assertEquals( "", compareRequest.getAssertionValue().toString() );
-
-        // Check the length
-        assertEquals( 0x33, compareRequest.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = compareRequest.encode();
+            ByteBuffer bb = encoder.encodeMessage( compareRequest );
+
+            // Check the length
+            assertEquals( 0x33, bb.limit() );
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -424,25 +431,28 @@ public class CompareRequestTest
         ByteBuffer stream = ByteBuffer.allocate( 0x55 );
 
         stream.put( new byte[]
-            { 
-            0x30, 0x53,                 // LDAPMessage ::= SEQUENCE {
-              0x02, 0x01, 0x01,         // messageID MessageID
-                                        // CHOICE { ..., compareRequest CompareRequest, ...
-              0x6E, 0x31,               // CompareRequest ::= [APPLICATION 14] SEQUENCE {
-                                        // entry LDAPDN,
-                0x04, 0x20, 
-                  'c', 'n', '=', 't', 'e', 's', 't', 'M', 'o', 'd', 'i', 'f', 'y', ',', 'o', 'u', '=', 'u',
-                  's', 'e', 'r', 's', ',', 'o', 'u', '=', 's', 'y', 's', 't', 'e', 'm',
-                                        // ava AttributeValueAssertion }
-                0x30, 0x0D,             // AttributeValueAssertion ::= SEQUENCE {
-                                        // attributeDesc AttributeDescription,
-                  0x04, 0x04, 't', 'e', 's', 't',
-                                        // assertionValue AssertionValue }
-                  0x04, 0x05, 'v', 'a', 'l', 'u', 'e', 
-              ( byte ) 0xA0, 0x1B,      // A control
+            {
+                0x30,
+                0x53, // LDAPMessage ::= SEQUENCE {
+                0x02,
+                0x01,
+                0x01, // messageID MessageID
+                // CHOICE { ..., compareRequest CompareRequest, ...
+                0x6E,
+                0x31, // CompareRequest ::= [APPLICATION 14] SEQUENCE {
+                // entry LDAPDN,
+                0x04, 0x20, 'c', 'n', '=', 't', 'e', 's', 't', 'M', 'o', 'd', 'i', 'f', 'y', ',', 'o', 'u', '=', 'u',
+                's', 'e', 'r', 's', ',', 'o', 'u', '=', 's', 'y', 's', 't', 'e', 'm',
+                // ava AttributeValueAssertion }
+                0x30,
+                0x0D, // AttributeValueAssertion ::= SEQUENCE {
+                // attributeDesc AttributeDescription,
+                0x04, 0x04, 't', 'e', 's', 't',
+                // assertionValue AssertionValue }
+                0x04, 0x05, 'v', 'a', 'l', 'u', 'e', ( byte ) 0xA0,
+                0x1B, // A control
                 0x30, 0x19, 0x04, 0x17, 0x32, 0x2E, 0x31, 0x36, 0x2E, 0x38, 0x34, 0x30, 0x2E, 0x31, 0x2E, 0x31, 0x31,
-                0x33, 0x37, 0x33, 0x30, 0x2E, 0x33, 0x2E, 0x34, 0x2E, 0x32 
-            } );
+                0x33, 0x37, 0x33, 0x30, 0x2E, 0x33, 0x2E, 0x34, 0x2E, 0x32 } );
 
         String decodedPdu = StringTools.dumpBytes( stream.array() );
         stream.flip();
@@ -462,29 +472,29 @@ public class CompareRequestTest
         }
 
         // Ceck the decoded CompareRequest PDU
-        CompareRequestCodec compareRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getCompareRequest();
+        CompareRequest compareRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getCompareRequest();
 
         assertEquals( 1, compareRequest.getMessageId() );
-        assertEquals( "cn=testModify,ou=users,ou=system", compareRequest.getEntry().toString() );
-        assertEquals( "test", compareRequest.getAttributeDesc() );
+        assertEquals( "cn=testModify,ou=users,ou=system", compareRequest.getName().toString() );
+        assertEquals( "test", compareRequest.getAttributeId() );
         assertEquals( "value", compareRequest.getAssertionValue().toString() );
 
         // Check the Control
-        List<Control> controls = compareRequest.getControls();
+        Map<String, Control> controls = compareRequest.getControls();
 
         assertEquals( 1, controls.size() );
 
-        Control control = compareRequest.getControls( 0 );
+        Control control = controls.get( "2.16.840.1.113730.3.4.2" );
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
         assertEquals( "", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
-
-        // Check the length
-        assertEquals( 0x55, compareRequest.computeLength() );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = compareRequest.encode();
+            ByteBuffer bb = encoder.encodeMessage( compareRequest );
+
+            // Check the length
+            assertEquals( 0x55, bb.limit() );
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 

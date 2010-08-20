@@ -37,9 +37,9 @@ public class Asn1CodecDecoder extends ProtocolDecoderAdapter
 {
     /** The stateful decoder */
     private final StatefulDecoder decoder;
-    
-    /** The associated callback */
-    private final DecoderCallbackImpl callback = new DecoderCallbackImpl();
+
+    /** The Output queue */
+    private ProtocolDecoderOutput decOut;
 
 
     /**
@@ -50,7 +50,13 @@ public class Asn1CodecDecoder extends ProtocolDecoderAdapter
     public Asn1CodecDecoder( StatefulDecoder decoder )
     {
         this.decoder = decoder;
-        this.decoder.setCallback( callback );
+        this.decoder.setCallback( new DecoderCallback()
+        {
+            public void decodeOccurred( StatefulDecoder decoder, Object decoded )
+            {
+                decOut.write( decoded );
+            }
+        } );
     }
 
 
@@ -59,18 +65,7 @@ public class Asn1CodecDecoder extends ProtocolDecoderAdapter
      */
     public void decode( IoSession session, IoBuffer in, ProtocolDecoderOutput out ) throws DecoderException
     {
-        callback.decOut = out;
+        decOut = out;
         decoder.decode( in.buf() );
-    }
-
-
-    private class DecoderCallbackImpl implements DecoderCallback
-    {
-        private ProtocolDecoderOutput decOut;
-
-        public void decodeOccurred( StatefulDecoder decoder, Object decoded )
-        {
-            decOut.write( decoded );
-        }
     }
 }

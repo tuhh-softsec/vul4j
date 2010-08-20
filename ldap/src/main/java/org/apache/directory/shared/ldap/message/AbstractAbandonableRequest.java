@@ -24,8 +24,6 @@ import java.util.Observable;
 import java.util.Observer;
 
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
-import org.apache.directory.shared.ldap.message.internal.InternalAbandonableRequest;
-import org.apache.directory.shared.ldap.message.internal.InternalAbstractRequest;
 
 
 /**
@@ -34,7 +32,7 @@ import org.apache.directory.shared.ldap.message.internal.InternalAbstractRequest
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class AbstractAbandonableRequest extends InternalAbstractRequest implements InternalAbandonableRequest
+public class AbstractAbandonableRequest extends AbstractRequest implements AbandonableRequest
 {
     static final long serialVersionUID = -4511116249089399040L;
 

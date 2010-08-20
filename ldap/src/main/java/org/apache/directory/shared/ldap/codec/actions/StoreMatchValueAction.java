@@ -26,8 +26,9 @@ import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.search.ExtensibleMatchFilter;
-import org.apache.directory.shared.ldap.codec.search.SearchRequestCodec;
 import org.apache.directory.shared.ldap.entry.BinaryValue;
+import org.apache.directory.shared.ldap.message.SearchRequest;
+import org.apache.directory.shared.ldap.message.SearchRequestImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,10 +46,12 @@ public class StoreMatchValueAction extends GrammarAction
     /** Speedup for logs */
     private static final boolean IS_DEBUG = log.isDebugEnabled();
 
+
     public StoreMatchValueAction()
     {
         super( "Store match Value" );
     }
+
 
     /**
      * The initialization action
@@ -56,19 +59,19 @@ public class StoreMatchValueAction extends GrammarAction
     public void action( IAsn1Container container ) throws DecoderException
     {
         LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-        SearchRequestCodec searchRequest = ldapMessageContainer.getSearchRequest();
+        SearchRequest searchRequest = ldapMessageContainer.getSearchRequest();
 
         TLV tlv = ldapMessageContainer.getCurrentTLV();
 
         // Store the value.
-        ExtensibleMatchFilter extensibleMatchFilter = ( ExtensibleMatchFilter ) searchRequest
+        ExtensibleMatchFilter extensibleMatchFilter = ( ExtensibleMatchFilter ) ( ( SearchRequestImpl ) searchRequest )
             .getTerminalFilter();
-        
+
         byte[] value = tlv.getValue().getData();
         extensibleMatchFilter.setMatchValue( new BinaryValue( value ) );
 
         // unstack the filters if needed
-        searchRequest.unstackFilters( container );
+        ( ( SearchRequestImpl ) searchRequest ).unstackFilters( container );
 
         if ( IS_DEBUG )
         {

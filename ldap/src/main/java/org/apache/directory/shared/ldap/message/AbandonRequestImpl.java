@@ -19,9 +19,8 @@
  */
 package org.apache.directory.shared.ldap.message;
 
+
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.message.internal.InternalAbandonRequest;
-import org.apache.directory.shared.ldap.message.internal.InternalAbstractRequest;
 
 
 /**
@@ -29,7 +28,7 @@ import org.apache.directory.shared.ldap.message.internal.InternalAbstractRequest
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class AbandonRequestImpl extends InternalAbstractRequest implements InternalAbandonRequest
+public class AbandonRequestImpl extends AbstractRequest implements AbandonRequest
 {
     static final long serialVersionUID = -4688193359792740969L;
 
@@ -39,11 +38,19 @@ public class AbandonRequestImpl extends InternalAbstractRequest implements Inter
 
     /**
      * Creates an AbandonRequest implementation for an outstanding request.
-     * 
-     * @param id
-     *            the sequence identifier of the AbandonRequest message.
      */
-    public AbandonRequestImpl(final int id)
+    public AbandonRequestImpl()
+    {
+        super( -1, TYPE, false );
+    }
+
+
+    /**
+     * Creates an AbandonRequest implementation for an outstanding request.
+     * 
+     * @param id the sequence identifier of the AbandonRequest message.
+     */
+    public AbandonRequestImpl( final int id )
     {
         super( id, TYPE, false );
     }
@@ -88,18 +95,18 @@ public class AbandonRequestImpl extends InternalAbstractRequest implements Inter
             return true;
         }
 
-        if ( ( obj == null ) || !( obj instanceof InternalAbandonRequest ) )
+        if ( ( obj == null ) || !( obj instanceof AbandonRequest ) )
         {
             return false;
         }
-        
+
         if ( !super.equals( obj ) )
         {
             return false;
         }
 
-        InternalAbandonRequest req = ( InternalAbandonRequest ) obj;
-        
+        AbandonRequest req = ( AbandonRequest ) obj;
+
         if ( req.getAbandoned() != abandonId )
         {
             return false;
@@ -108,7 +115,7 @@ public class AbandonRequestImpl extends InternalAbstractRequest implements Inter
         return true;
     }
 
-    
+
     /**
      * @see Object#hashCode()
      * @return the instance's hash code 
@@ -116,13 +123,13 @@ public class AbandonRequestImpl extends InternalAbstractRequest implements Inter
     public int hashCode()
     {
         int hash = 37;
-        hash = hash*17 + abandonId;
-        hash = hash*17 + super.hashCode();
-        
+        hash = hash * 17 + abandonId;
+        hash = hash * 17 + super.hashCode();
+
         return hash;
     }
 
-    
+
     /**
      * RFC 2251 [Section 4.11]: Abandon, Bind, Unbind, and StartTLS operations
      * cannot be abandoned.
@@ -130,5 +137,24 @@ public class AbandonRequestImpl extends InternalAbstractRequest implements Inter
     public void abandon()
     {
         throw new UnsupportedOperationException( I18n.err( I18n.ERR_04185 ) );
+    }
+
+
+    /**
+     * Return a String representing an AbandonRequest
+     * 
+     * @return A String representing the AbandonRequest
+     */
+    public String toString()
+    {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append( "    Abandon Request :\n" );
+        sb.append( "        Message Id : " ).append( abandonId );
+
+        // The controls
+        sb.append( super.toString() );
+
+        return sb.toString();
     }
 }

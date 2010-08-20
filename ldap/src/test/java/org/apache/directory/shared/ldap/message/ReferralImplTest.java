@@ -20,18 +20,16 @@
 package org.apache.directory.shared.ldap.message;
 
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Collection;
 import java.util.Collections;
 
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
-import org.apache.directory.shared.ldap.message.ReferralImpl;
-import org.apache.directory.shared.ldap.message.internal.InternalReferral;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 
 /**
@@ -194,7 +192,7 @@ public class ReferralImplTest
     @Test
     public void testEqualsDifferentImpls()
     {
-        InternalReferral refs0 = new InternalReferral()
+        Referral refs0 = new Referral()
         {
             public Collection<String> getLdapUrls()
             {
@@ -208,6 +206,28 @@ public class ReferralImplTest
 
 
             public void removeLdapUrl( String url )
+            {
+            }
+
+
+            public void addLdapUrlBytes( byte[] urlBytes )
+            {
+            }
+
+
+            public Collection<byte[]> getLdapUrlsBytes()
+            {
+                return null;
+            }
+
+
+            public int getReferralLength()
+            {
+                return 0;
+            }
+
+
+            public void setReferralLength( int referralLength )
             {
             }
         };

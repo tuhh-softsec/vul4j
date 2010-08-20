@@ -26,10 +26,12 @@ import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
-import org.apache.directory.shared.ldap.codec.LdapResponseCodec;
-import org.apache.directory.shared.ldap.codec.LdapResultCodec;
 import org.apache.directory.shared.ldap.codec.util.LdapURLEncodingException;
+import org.apache.directory.shared.ldap.message.LdapResult;
+import org.apache.directory.shared.ldap.message.Message;
+import org.apache.directory.shared.ldap.message.Referral;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
+import org.apache.directory.shared.ldap.message.ResultResponse;
 import org.apache.directory.shared.ldap.util.LdapURL;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
@@ -49,10 +51,12 @@ public class ReferralAction extends GrammarAction
     /** Speedup for logs */
     private static final boolean IS_DEBUG = log.isDebugEnabled();
 
+
     public ReferralAction()
     {
         super( "Add a referral" );
     }
+
 
     /**
      * The initialization action
@@ -60,14 +64,16 @@ public class ReferralAction extends GrammarAction
     public void action( IAsn1Container container ) throws DecoderException
     {
         LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-        LdapResponseCodec response = ldapMessageContainer.getLdapResponse();
-        LdapResultCodec ldapResult = response.getLdapResult();
 
         TLV tlv = ldapMessageContainer.getCurrentTLV();
 
+        Message response = ldapMessageContainer.getMessage();
+        LdapResult ldapResult = ( ( ResultResponse ) response ).getLdapResult();
+        Referral referral = ldapResult.getReferral();
+
         if ( tlv.getLength() == 0 )
         {
-            ldapResult.addReferral( LdapURL.EMPTY_URL );
+            referral.addLdapUrl( "" );
         }
         else
         {
@@ -75,7 +81,7 @@ public class ReferralAction extends GrammarAction
             {
                 try
                 {
-                    ldapResult.addReferral( new LdapURL( tlv.getValue().getData() ) );
+                    referral.addLdapUrl( new LdapURL( tlv.getValue().getData() ).toString() );
                 }
                 catch ( LdapURLEncodingException luee )
                 {
@@ -87,19 +93,16 @@ public class ReferralAction extends GrammarAction
             else
             {
                 log.warn( "The Referral error message is not allowed when havind an error code no equals to REFERRAL" );
-                ldapResult.addReferral( LdapURL.EMPTY_URL );
+                referral.addLdapUrl( LdapURL.EMPTY_URL.toString() );
             }
         }
-
-        // We can have an END transition
-        ldapMessageContainer.grammarEndAllowed( true );
 
         if ( IS_DEBUG )
         {
             StringBuffer sb = new StringBuffer();
             boolean isFirst = true;
 
-            for ( LdapURL url:ldapResult.getReferrals() )
+            for ( String url : ldapResult.getReferral().getLdapUrls() )
             {
                 if ( isFirst )
                 {
@@ -115,5 +118,8 @@ public class ReferralAction extends GrammarAction
 
             log.debug( "The referral error message is set to " + sb.toString() );
         }
+
+        // We can have an END transition
+        ldapMessageContainer.grammarEndAllowed( true );
     }
 }

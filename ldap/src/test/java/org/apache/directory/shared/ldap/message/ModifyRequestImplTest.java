@@ -32,15 +32,13 @@ import java.util.Map;
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
-import org.apache.directory.shared.ldap.entry.DefaultModification;
 import org.apache.directory.shared.ldap.entry.DefaultEntryAttribute;
+import org.apache.directory.shared.ldap.entry.DefaultModification;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Modification;
 import org.apache.directory.shared.ldap.entry.ModificationOperation;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.message.internal.InternalModifyRequest;
-import org.apache.directory.shared.ldap.message.internal.InternalResultResponse;
 import org.apache.directory.shared.ldap.name.DN;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -57,6 +55,7 @@ public class ModifyRequestImplTest
 {
     private static final Map<String, Control> EMPTY_CONTROL_MAP = new HashMap<String, Control>();
 
+
     /**
      * Builds a ModifyRequest for testing purposes.
      * 
@@ -66,8 +65,8 @@ public class ModifyRequestImplTest
     {
         // Construct the Modify request to test
         ModifyRequestImpl req = new ModifyRequestImpl( 45 );
-        
-        try 
+
+        try
         {
             req.setName( new DN( "cn=admin,dc=apache,dc=org" ) );
         }
@@ -287,9 +286,9 @@ public class ModifyRequestImplTest
     @Test
     public void testEqualsDiffImpl()
     {
-        InternalModifyRequest req0 = new InternalModifyRequest()
+        ModifyRequest req0 = new ModifyRequest()
         {
-            public Collection<Modification> getModificationItems()
+            public Collection<Modification> getModifications()
             {
                 List<Modification> list = new ArrayList<Modification>();
                 EntryAttribute attr = new DefaultEntryAttribute( "attr0" );
@@ -367,12 +366,12 @@ public class ModifyRequestImplTest
             }
 
 
-            public void add( Control a_control ) throws MessageException
+            public void addControl( Control a_control ) throws MessageException
             {
             }
 
 
-            public void remove( Control a_control ) throws MessageException
+            public void removeControl( Control a_control ) throws MessageException
             {
             }
 
@@ -411,13 +410,13 @@ public class ModifyRequestImplTest
             }
 
 
-            public InternalResultResponse getResultResponse()
+            public ResultResponse getResultResponse()
             {
                 return null;
             }
 
 
-            public void addAll( Control[] controls ) throws MessageException
+            public void addAllControls( Control[] controls ) throws MessageException
             {
             }
 
@@ -425,6 +424,112 @@ public class ModifyRequestImplTest
             public boolean hasControl( String oid )
             {
                 return false;
+            }
+
+
+            public Control getCurrentControl()
+            {
+                return null;
+            }
+
+
+            public int getControlsLength()
+            {
+                return 0;
+            }
+
+
+            public void setControlsLength( int controlsLength )
+            {
+            }
+
+
+            public int getMessageLength()
+            {
+                return 0;
+            }
+
+
+            public void setMessageLength( int messageLength )
+            {
+            }
+
+
+            public Control getControl( String oid )
+            {
+                return null;
+            }
+
+
+            public void setMessageId( int messageId )
+            {
+            }
+
+
+            public void addModification( EntryAttribute attr, ModificationOperation modOp )
+            {
+            }
+
+
+            public void replace( String attributeName )
+            {
+            }
+
+
+            public void replace( String attributeName, String... attributeValue )
+            {
+            }
+
+
+            public void replace( String attributeName, byte[]... attributeValue )
+            {
+            }
+
+
+            public void replace( EntryAttribute attr )
+            {
+            }
+
+
+            public void add( String attributeName, String... attributeValue )
+            {
+                // TODO Auto-generated method stub
+
+            }
+
+
+            public void add( String attributeName, byte[]... attributeValue )
+            {
+                // TODO Auto-generated method stub
+
+            }
+
+
+            public void add( EntryAttribute attr )
+            {
+                // TODO Auto-generated method stub
+
+            }
+
+
+            public void remove( String attributeName, String... attributeValue )
+            {
+                // TODO Auto-generated method stub
+
+            }
+
+
+            public void remove( String attributeName, byte[]... attributeValue )
+            {
+                // TODO Auto-generated method stub
+
+            }
+
+
+            public void remove( EntryAttribute attr )
+            {
+                // TODO Auto-generated method stub
+
             }
         };
 

@@ -34,14 +34,15 @@ import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.dsmlv2.AbstractResponseTest;
 import org.apache.directory.shared.dsmlv2.Dsmlv2ResponseParser;
 import org.apache.directory.shared.dsmlv2.reponse.SearchResponse;
-import org.apache.directory.shared.ldap.codec.search.SearchResultEntryCodec;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Value;
+import org.apache.directory.shared.ldap.message.SearchResultEntry;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
 
 /**
  * Tests for the Search Result Entry Response parsing
@@ -73,7 +74,7 @@ public class SearchResultEntryTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        SearchResultEntryCodec searchResultEntry = ( ( SearchResponse ) parser.getBatchResponse().getCurrentResponse() )
+        SearchResultEntry searchResultEntry = ( ( SearchResponse ) parser.getBatchResponse().getCurrentResponse() )
             .getCurrentSearchResultEntry();
 
         assertEquals( 1, searchResultEntry.getControls().size() );
@@ -109,7 +110,7 @@ public class SearchResultEntryTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        SearchResultEntryCodec searchResultEntry = ( ( SearchResponse ) parser.getBatchResponse().getCurrentResponse() )
+        SearchResultEntry searchResultEntry = ( ( SearchResponse ) parser.getBatchResponse().getCurrentResponse() )
             .getCurrentSearchResultEntry();
         Control control = searchResultEntry.getCurrentControl();
 
@@ -141,7 +142,7 @@ public class SearchResultEntryTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        SearchResultEntryCodec searchResultEntry = ( ( SearchResponse ) parser.getBatchResponse().getCurrentResponse() )
+        SearchResultEntry searchResultEntry = ( ( SearchResponse ) parser.getBatchResponse().getCurrentResponse() )
             .getCurrentSearchResultEntry();
 
         assertEquals( 2, searchResultEntry.getControls().size() );
@@ -177,7 +178,7 @@ public class SearchResultEntryTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        SearchResultEntryCodec searchResultEntry = ( ( SearchResponse ) parser.getBatchResponse().getCurrentResponse() )
+        SearchResultEntry searchResultEntry = ( ( SearchResponse ) parser.getBatchResponse().getCurrentResponse() )
             .getCurrentSearchResultEntry();
 
         assertEquals( 3, searchResultEntry.getControls().size() );
@@ -233,7 +234,7 @@ public class SearchResultEntryTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        SearchResultEntryCodec searchResultEntry = ( ( SearchResponse ) parser.getBatchResponse().getCurrentResponse() )
+        SearchResultEntry searchResultEntry = ( ( SearchResponse ) parser.getBatchResponse().getCurrentResponse() )
             .getCurrentSearchResultEntry();
 
         assertEquals( "dc=example,dc=com", searchResultEntry.getObjectName().toString() );
@@ -261,7 +262,7 @@ public class SearchResultEntryTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        SearchResultEntryCodec searchResultEntry = ( ( SearchResponse ) parser.getBatchResponse().getCurrentResponse() )
+        SearchResultEntry searchResultEntry = ( ( SearchResponse ) parser.getBatchResponse().getCurrentResponse() )
             .getCurrentSearchResultEntry();
 
         assertEquals( 456, searchResultEntry.getMessageId() );
@@ -324,7 +325,7 @@ public class SearchResultEntryTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        SearchResultEntryCodec searchResultEntry = ( ( SearchResponse ) parser.getBatchResponse().getCurrentResponse() )
+        SearchResultEntry searchResultEntry = ( ( SearchResponse ) parser.getBatchResponse().getCurrentResponse() )
             .getCurrentSearchResultEntry();
 
         Entry entry = searchResultEntry.getEntry();
@@ -357,7 +358,7 @@ public class SearchResultEntryTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        SearchResultEntryCodec searchResultEntry = ( ( SearchResponse ) parser.getBatchResponse().getCurrentResponse() )
+        SearchResultEntry searchResultEntry = ( ( SearchResponse ) parser.getBatchResponse().getCurrentResponse() )
             .getCurrentSearchResultEntry();
 
         Entry entry = searchResultEntry.getEntry();
@@ -396,7 +397,7 @@ public class SearchResultEntryTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        SearchResultEntryCodec searchResultEntry = ( ( SearchResponse ) parser.getBatchResponse().getCurrentResponse() )
+        SearchResultEntry searchResultEntry = ( ( SearchResponse ) parser.getBatchResponse().getCurrentResponse() )
             .getCurrentSearchResultEntry();
 
         Entry entry = searchResultEntry.getEntry();
@@ -439,7 +440,7 @@ public class SearchResultEntryTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        SearchResultEntryCodec searchResultEntry = ( ( SearchResponse ) parser.getBatchResponse().getCurrentResponse() )
+        SearchResultEntry searchResultEntry = ( ( SearchResponse ) parser.getBatchResponse().getCurrentResponse() )
             .getCurrentSearchResultEntry();
 
         Entry entry = searchResultEntry.getEntry();
@@ -478,7 +479,7 @@ public class SearchResultEntryTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        SearchResultEntryCodec searchResultEntry = ( ( SearchResponse ) parser.getBatchResponse().getCurrentResponse() )
+        SearchResultEntry searchResultEntry = ( ( SearchResponse ) parser.getBatchResponse().getCurrentResponse() )
             .getCurrentSearchResultEntry();
 
         Entry entry = searchResultEntry.getEntry();
@@ -521,7 +522,7 @@ public class SearchResultEntryTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        SearchResultEntryCodec searchResultEntry = ( ( SearchResponse ) parser.getBatchResponse().getCurrentResponse() )
+        SearchResultEntry searchResultEntry = ( ( SearchResponse ) parser.getBatchResponse().getCurrentResponse() )
             .getCurrentSearchResultEntry();
 
         Entry entry = searchResultEntry.getEntry();

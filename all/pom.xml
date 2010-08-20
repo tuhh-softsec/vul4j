@@ -44,10 +44,10 @@
       <artifactId>shared-cursor</artifactId>
     </dependency>
 
-    <dependency>
+    <!-- dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>shared-dsml-parser</artifactId>
-    </dependency>
+    </dependency -->
 
     <dependency>
       <groupId>${project.groupId}</groupId>

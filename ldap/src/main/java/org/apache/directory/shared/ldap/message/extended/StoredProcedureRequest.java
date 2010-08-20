@@ -33,7 +33,7 @@ import org.apache.directory.shared.ldap.codec.extended.operations.storedProcedur
 import org.apache.directory.shared.ldap.codec.extended.operations.storedProcedure.StoredProcedureDecoder;
 import org.apache.directory.shared.ldap.codec.extended.operations.storedProcedure.StoredProcedure.StoredProcedureParameter;
 import org.apache.directory.shared.ldap.message.ExtendedRequestImpl;
-import org.apache.directory.shared.ldap.message.internal.InternalResultResponse;
+import org.apache.directory.shared.ldap.message.ResultResponse;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,7 +56,7 @@ public class StoredProcedureRequest extends ExtendedRequestImpl
     public StoredProcedureRequest( int messageId )
     {
         super( messageId );
-        this.setOid( EXTENSION_OID );
+        this.setRequestName( EXTENSION_OID );
         this.procedure = new StoredProcedure();
     }
 
@@ -64,20 +64,14 @@ public class StoredProcedureRequest extends ExtendedRequestImpl
     public StoredProcedureRequest( int messageId, String procedure, String language )
     {
         super( messageId );
-        this.setOid( EXTENSION_OID );
+        this.setRequestName( EXTENSION_OID );
         this.procedure = new StoredProcedure();
         this.setLanguage( language );
         this.setProcedure( procedure );
     }
 
 
-    private void encodePayload() throws EncoderException
-    {
-        payload = procedure.encode().array();
-    }
-
-
-    public void setPayload( byte[] payload )
+    public void setRequestValue( byte[] payload )
     {
         StoredProcedureDecoder decoder = new StoredProcedureDecoder();
         StoredProcedureContainer container = new StoredProcedureContainer();
@@ -99,25 +93,22 @@ public class StoredProcedureRequest extends ExtendedRequestImpl
         throws NamingException
     {
         StoredProcedureResponse resp = ( StoredProcedureResponse ) getResultResponse();
-        resp.setResponse( berValue );
-        resp.setOid( id );
+        resp.setResponseValue( berValue );
+        resp.setResponseName( id );
         return resp;
     }
 
 
-    public byte[] getEncodedValue()
+    /**
+     * {@inheritDoc}
+     */
+    public byte[] getRequestValue()
     {
-        return getPayload();
-    }
-
-
-    public byte[] getPayload()
-    {
-        if ( payload == null )
+        if ( requestValue == null )
         {
             try
             {
-                encodePayload();
+                requestValue = procedure.encode().array();
             }
             catch ( EncoderException e )
             {
@@ -126,16 +117,16 @@ public class StoredProcedureRequest extends ExtendedRequestImpl
             }
         }
 
-        return payload;
+        return requestValue;
     }
 
 
-    public InternalResultResponse getResultResponse()
+    public ResultResponse getResultResponse()
     {
         if ( response == null )
         {
             StoredProcedureResponse spr = new StoredProcedureResponse( getMessageId() );
-            spr.setOid( EXTENSION_OID );
+            spr.setResponseName( EXTENSION_OID );
             response = spr;
         }
 

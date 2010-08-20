@@ -31,8 +31,7 @@ import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.BasicAttribute;
 import javax.naming.directory.BasicAttributes;
-import javax.naming.ldap.ExtendedRequest;
-import javax.naming.ldap.ExtendedResponse;
+import javax.naming.directory.InvalidAttributeIdentifierException;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.directory.shared.i18n.I18n;
@@ -44,7 +43,6 @@ import org.apache.directory.shared.ldap.entry.Modification;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.exception.LdapInvalidAttributeTypeException;
-import org.apache.directory.shared.ldap.message.internal.InternalExtendedRequest;
 import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.MatchingRule;
@@ -275,7 +273,7 @@ public class AttributeUtils
             try
             {
                 String comparedStr = normalizer.normalize( compared.getString() );
-                
+
                 for ( NamingEnumeration<?> values = attr.getAll(); values.hasMoreElements(); /**/)
                 {
                     String value = ( String ) values.nextElement();
@@ -285,7 +283,7 @@ public class AttributeUtils
                     }
                 }
             }
-            catch( NamingException e )
+            catch ( NamingException e )
             {
                 throw new LdapException( e.getMessage() );
             }
@@ -358,7 +356,7 @@ public class AttributeUtils
                 for ( NamingEnumeration<?> values = attr.getAll(); values.hasMoreElements(); /**/)
                 {
                     Object value = values.nextElement();
-    
+
                     if ( value instanceof byte[] && ArrayUtils.isEquals( comparedBytes, value ) )
                     {
                         return true;
@@ -404,7 +402,7 @@ public class AttributeUtils
                 {
                     Object attrVal = attrVals.nextElement();
 
-                    if ( attrVal instanceof String &&  strVal.equalsIgnoreCase( ( String ) attrVal ) )
+                    if ( attrVal instanceof String && strVal.equalsIgnoreCase( ( String ) attrVal ) )
                     {
                         return true;
                     }
@@ -420,7 +418,7 @@ public class AttributeUtils
                 {
                     Object attrVal = attrVals.nextElement();
 
-                    if ( attrVal instanceof byte[]  &&  Arrays.equals( ( byte[] ) attrVal, valueBytes ) )
+                    if ( attrVal instanceof byte[] && Arrays.equals( ( byte[] ) attrVal, valueBytes ) )
                     {
                         return true;
                     }
@@ -487,7 +485,6 @@ public class AttributeUtils
         return false;
     }
     */
-
 
     /**
      * Creates a new attribute which contains the values representing the
@@ -877,7 +874,7 @@ public class AttributeUtils
 
             if ( !parseNumber( str, pos ) )
             {
-                throw new ParseException(I18n.err( I18n.ERR_04345 ), pos.start );
+                throw new ParseException( I18n.err( I18n.ERR_04345 ), pos.start );
             }
         }
     }
@@ -1182,7 +1179,6 @@ public class AttributeUtils
     }
     */
 
-
     /**
      * Convert a BasicAttributes or a AttributesImpl to a ServerEntry
      *
@@ -1326,56 +1322,5 @@ public class AttributeUtils
         {
             return null;
         }
-    }
-    
-    
-    public static ExtendedRequest toJndiExtendedRequest( final InternalExtendedRequest request )
-    {
-        class JndiExtendedRequest implements ExtendedRequest
-        {
-            public ExtendedResponse createExtendedResponse( String id, byte[] berValue, int offset, int length )
-                throws NamingException
-            {
-                return toJndiExtendedResponse( request );
-            }
-
-            public byte[] getEncodedValue()
-            {
-                return request.getPayload();
-            }
-
-            public String getID()
-            {
-                return request.getOid();
-            }
-            
-        } 
-        
-        return new JndiExtendedRequest();
-    }
-    
-    
-    /**
-     * TODO toJndiExtendedResponse. This is NOT correct ATM
-     *
-     * @param request
-     * @return
-     */
-    public static ExtendedResponse toJndiExtendedResponse( final InternalExtendedRequest request )
-    {
-        class JndiExtendedResponse implements ExtendedResponse
-        {
-            public byte[] getEncodedValue()
-            {
-                return request.getEncodedValue();
-            }
-
-            public String getID()
-            {
-                return request.getID();
-            }
-        } 
-        
-        return new JndiExtendedResponse();
     }
 }

@@ -36,11 +36,13 @@ import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.codec.EncoderException;
-import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
-import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.filter.SearchScope;
+import org.apache.directory.shared.ldap.message.AliasDerefMode;
+import org.apache.directory.shared.ldap.message.LdapProtocolEncoder;
+import org.apache.directory.shared.ldap.message.SearchRequest;
+import org.apache.directory.shared.ldap.message.SearchRequestImpl;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.schema.normalizers.DeepTrimToLowerNormalizer;
 import org.apache.directory.shared.ldap.schema.normalizers.OidNormalizer;
@@ -59,32 +61,35 @@ import org.junit.runner.RunWith;
 @Concurrent()
 public class SearchRequestSubstringTest
 {
+    /** The encoder instance */
+    LdapProtocolEncoder encoder = new LdapProtocolEncoder();
+
     static Map<String, OidNormalizer> oids = new HashMap<String, OidNormalizer>();
+
 
     @BeforeClass
     public static void setUp() throws Exception
     {
         // DC normalizer
-        OidNormalizer dcOidNormalizer = new OidNormalizer( "dc",
-            new DeepTrimToLowerNormalizer( SchemaConstants.DOMAIN_COMPONENT_AT_OID ) );
-        
+        OidNormalizer dcOidNormalizer = new OidNormalizer( "dc", new DeepTrimToLowerNormalizer(
+            SchemaConstants.DOMAIN_COMPONENT_AT_OID ) );
+
         oids.put( "dc", dcOidNormalizer );
         oids.put( "domaincomponent", dcOidNormalizer );
         oids.put( "0.9.2342.19200300.100.1.25", dcOidNormalizer );
-        
-        
+
         // OU normalizer
-        OidNormalizer ouOidNormalizer = new OidNormalizer( "ou",
-            new DeepTrimToLowerNormalizer( SchemaConstants.OU_AT_OID ) );
-        
+        OidNormalizer ouOidNormalizer = new OidNormalizer( "ou", new DeepTrimToLowerNormalizer(
+            SchemaConstants.OU_AT_OID ) );
+
         oids.put( "ou", ouOidNormalizer );
         oids.put( "organizationalUnitName", ouOidNormalizer );
         oids.put( "2.5.4.11", ouOidNormalizer );
 
         // ObjectClass normalizer
-        OidNormalizer objectClassOidNormalizer = new OidNormalizer( "objectClass",
-            new DeepTrimToLowerNormalizer( SchemaConstants.OBJECT_CLASS_AT_OID ) );
-        
+        OidNormalizer objectClassOidNormalizer = new OidNormalizer( "objectClass", new DeepTrimToLowerNormalizer(
+            SchemaConstants.OBJECT_CLASS_AT_OID ) );
+
         oids.put( "objectclass", objectClassOidNormalizer );
         oids.put( "2.5.4.0", objectClassOidNormalizer );
     }
@@ -101,46 +106,46 @@ public class SearchRequestSubstringTest
 
         ByteBuffer stream = ByteBuffer.allocate( 0x64 );
         stream.put( new byte[]
-            { 
-            0x30, 0x62,                     // LDAPMessage ::=SEQUENCE {
-              0x02, 0x01, 0x01,             //      messageID MessageID
-              0x63, 0x5D,                   //      CHOICE { ..., 
-                                            //          searchRequest SearchRequest, ...
-                                            // SearchRequest ::= APPLICATION[3] SEQUENCE {
-                0x04, 0x1F,                 //      baseObject LDAPDN,
-                  'u', 'i', 'd', '=', 'a', 'k', 'a', 'r', 'a', 's', 'u', 'l', 'u', ',', 'd', 'c', '=', 'e', 'x', 'a',
-                  'm', 'p', 'l', 'e', ',', 'd', 'c', '=', 'c', 'o', 'm', 
-                0x0A, 0x01, 0x01,           //      scope ENUMERATED {
-                                            //          baseObject      (0),
-                                            //          singleLevel     (1),
-                                            //          wholeSubtree    (2) },
-                0x0A, 0x01, 0x03,           //      derefAliases ENUMERATED {
-                                            //          neverDerefAliases   (0),
-                                            //          derefInSearching    (1),
-                                            //          derefFindingBaseObj (2),
-                                            //          derefAlways         (3) },
-                0x02, 0x02, 0x03, ( byte ) 0xE8,    //      sizeLimit INTEGER (0 .. maxInt), (1000)
-                0x02, 0x02, 0x03, ( byte ) 0xE8,    // timeLimit INTEGER (0 .. maxInt), (1000) 
+            { 0x30,
+                0x62, // LDAPMessage ::=SEQUENCE {
+                0x02, 0x01,
+                0x01, //      messageID MessageID
+                0x63,
+                0x5D, //      CHOICE { ..., 
+                //          searchRequest SearchRequest, ...
+                // SearchRequest ::= APPLICATION[3] SEQUENCE {
+                0x04,
+                0x1F, //      baseObject LDAPDN,
+                'u', 'i', 'd', '=', 'a', 'k', 'a', 'r', 'a', 's', 'u', 'l', 'u', ',', 'd', 'c', '=', 'e', 'x', 'a',
+                'm', 'p', 'l', 'e', ',', 'd', 'c', '=', 'c', 'o', 'm', 0x0A, 0x01, 0x01, //      scope ENUMERATED {
+                //          baseObject      (0),
+                //          singleLevel     (1),
+                //          wholeSubtree    (2) },
+                0x0A, 0x01, 0x03, //      derefAliases ENUMERATED {
+                //          neverDerefAliases   (0),
+                //          derefInSearching    (1),
+                //          derefFindingBaseObj (2),
+                //          derefAlways         (3) },
+                0x02, 0x02, 0x03, ( byte ) 0xE8, //      sizeLimit INTEGER (0 .. maxInt), (1000)
+                0x02, 0x02, 0x03, ( byte ) 0xE8, // timeLimit INTEGER (0 .. maxInt), (1000) 
                 0x01, 0x01, ( byte ) 0xFF, // typesOnly
-                                                                            // BOOLEAN,
-                                                                            // (TRUE)
+                // BOOLEAN,
+                // (TRUE)
                 // filter Filter,
                 ( byte ) 0xA4, 0x12, // Filter ::= CHOICE {
                 // substrings [4] SubstringFilter
                 // }
                 // SubstringFilter ::= SEQUENCE {
-                  0x04, 0x0B, // type AttributeDescription,
-                    'o', 'b', 'j', 'e', 'c', 't', 'c', 'l', 'a', 's', 's', 
-                  0x30, 0x03, 
-                    ( byte ) 0x80, 0x01, 't', //
+                0x04, 0x0B, // type AttributeDescription,
+                'o', 'b', 'j', 'e', 'c', 't', 'c', 'l', 'a', 's', 's', 0x30, 0x03, ( byte ) 0x80, 0x01, 't', //
                 0x30, 0x15, // AttributeDescriptionList ::= SEQUENCE OF
-                            // AttributeDescription
-                  0x04, 0x05, 'a', 't', 't', 'r', '0', // AttributeDescription
-                                                        // ::= LDAPString
-                  0x04, 0x05, 'a', 't', 't', 'r', '1', // AttributeDescription
-                                                        // ::= LDAPString
-                  0x04, 0x05, 'a', 't', 't', 'r', '2' // AttributeDescription ::=
-                                                    // LDAPString
+                // AttributeDescription
+                0x04, 0x05, 'a', 't', 't', 'r', '0', // AttributeDescription
+                // ::= LDAPString
+                0x04, 0x05, 'a', 't', 't', 'r', '1', // AttributeDescription
+                // ::= LDAPString
+                0x04, 0x05, 'a', 't', 't', 'r', '2' // AttributeDescription ::=
+            // LDAPString
             } );
 
         String decodedPdu = StringTools.dumpBytes( stream.array() );
@@ -159,40 +164,41 @@ public class SearchRequestSubstringTest
             fail( de.getMessage() );
         }
 
-        SearchRequestCodec searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
 
         assertEquals( 1, searchRequest.getMessageId() );
-        assertEquals( "uid=akarasulu,dc=example,dc=com", searchRequest.getBaseObject().toString() );
+        assertEquals( "uid=akarasulu,dc=example,dc=com", searchRequest.getBase().toString() );
         assertEquals( SearchScope.ONELEVEL, searchRequest.getScope() );
-        assertEquals( LdapConstants.DEREF_ALWAYS, searchRequest.getDerefAliases() );
+        assertEquals( AliasDerefMode.DEREF_ALWAYS, searchRequest.getDerefAliases() );
         assertEquals( 1000, searchRequest.getSizeLimit() );
         assertEquals( 1000, searchRequest.getTimeLimit() );
-        assertEquals( true, searchRequest.isTypesOnly() );
+        assertEquals( true, searchRequest.getTypesOnly() );
 
         // (objectclass=t*)
-        SubstringFilter substringFilter = ( SubstringFilter ) searchRequest.getFilter();
+        Filter filter = ( ( SearchRequestImpl ) searchRequest ).getCurrentFilter();
+        SubstringFilter substringFilter = ( SubstringFilter ) filter;
         assertNotNull( substringFilter );
 
         assertEquals( "objectclass", substringFilter.getType() );
         assertEquals( "t", substringFilter.getInitialSubstrings() );
 
         // The attributes
-        List<EntryAttribute> attributes = searchRequest.getAttributes();
+        List<String> attributes = searchRequest.getAttributes();
 
-        for ( EntryAttribute attribute:attributes )
+        for ( String attribute : attributes )
         {
             assertNotNull( attribute );
         }
-
-        // Check the length
-        assertEquals( 0x64, searchRequest.computeLength() );
 
         // Check the encoding
         // We won't check the whole PDU, as it may differs because
         // attributes may have been reordered
         try
         {
-            ByteBuffer bb = searchRequest.encode();
+            ByteBuffer bb = encoder.encodeMessage( searchRequest );
+
+            // Check the length
+            assertEquals( 0x64, bb.limit() );
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -217,19 +223,35 @@ public class SearchRequestSubstringTest
 
         ByteBuffer stream = ByteBuffer.allocate( 0x0081 );
         stream.put( new byte[]
-            { 0x30, 0x7F, // LDAPMessage ::=SEQUENCE {
-                0x02, 0x01, 0x01, // messageID MessageID
-                0x63, 0x5D, // CHOICE { ..., searchRequest SearchRequest, ...
+            {
+                0x30,
+                0x7F, // LDAPMessage ::=SEQUENCE {
+                0x02,
+                0x01,
+                0x01, // messageID MessageID
+                0x63,
+                0x5D, // CHOICE { ..., searchRequest SearchRequest, ...
                 // SearchRequest ::= APPLICATION[3] SEQUENCE {
-                0x04, 0x1F, // baseObject LDAPDN,
+                0x04,
+                0x1F, // baseObject LDAPDN,
                 'u', 'i', 'd', '=', 'a', 'k', 'a', 'r', 'a', 's', 'u', 'l', 'u', ',', 'd', 'c', '=', 'e', 'x', 'a',
-                'm', 'p', 'l', 'e', ',', 'd', 'c', '=', 'c', 'o', 'm', 0x0A, 0x01, 0x01, // scope
-                                                                                            // ENUMERATED
-                                                                                            // {
+                'm', 'p', 'l', 'e', ',', 'd',
+                'c',
+                '=',
+                'c',
+                'o',
+                'm',
+                0x0A,
+                0x01,
+                0x01, // scope
+                // ENUMERATED
+                // {
                 // baseObject (0),
                 // singleLevel (1),
                 // wholeSubtree (2) },
-                0x0A, 0x01, 0x03, // derefAliases ENUMERATED {
+                0x0A,
+                0x01,
+                0x03, // derefAliases ENUMERATED {
                 // neverDerefAliases (0),
                 // derefInSearching (1),
                 // derefFindingBaseObj (2),
@@ -237,30 +259,40 @@ public class SearchRequestSubstringTest
                 // sizeLimit INTEGER (0 .. maxInt), (1000)
                 0x02, 0x02, 0x03, ( byte ) 0xE8,
                 // timeLimit INTEGER (0 .. maxInt), (1000)
-                0x02, 0x02, 0x03, ( byte ) 0xE8, 0x01, 0x01, ( byte ) 0xFF, // typesOnly
-                                                                            // BOOLEAN,
-                                                                            // (TRUE)
+                0x02, 0x02,
+                0x03,
+                ( byte ) 0xE8,
+                0x01,
+                0x01,
+                ( byte ) 0xFF, // typesOnly
+                // BOOLEAN,
+                // (TRUE)
                 // filter Filter,
-                ( byte ) 0xA4, 0x12, // Filter ::= CHOICE {
+                ( byte ) 0xA4,
+                0x12, // Filter ::= CHOICE {
                 // substrings [4] SubstringFilter
                 // }
                 // SubstringFilter ::= SEQUENCE {
-                0x04, 0x0B, // type AttributeDescription,
-                'o', 'b', 'j', 'e', 'c', 't', 'c', 'l', 'a', 's', 's', 0x30, 0x03, ( byte ) 0x80, 0x01, 't', //
-                0x30, 0x15, // AttributeDescriptionList ::= SEQUENCE OF
-                            // AttributeDescription
-                0x04, 0x05, 'a', 't', 't', 'r', '0', // AttributeDescription
-                                                        // ::= LDAPString
-                0x04, 0x05, 'a', 't', 't', 'r', '1', // AttributeDescription
-                                                        // ::= LDAPString
-                0x04, 0x05, 'a', 't', 't', 'r', '2', // AttributeDescription
-                                                        // ::= LDAPString
-                ( byte ) 0xA0, 0x1B, // A control
-                  0x30, 0x19, 
-                    0x04, 0x17, 
-                      0x32, 0x2E, 0x31, 0x36, 0x2E, 0x38, 0x34, 0x30, 
-                      0x2E, 0x31, 0x2E, 0x31, 0x31, 0x33, 0x37, 0x33, 
-                      0x30, 0x2E, 0x33, 0x2E, 0x34, 0x2E, 0x32 } );
+                0x04,
+                0x0B, // type AttributeDescription,
+                'o', 'b', 'j', 'e', 'c', 't', 'c', 'l', 'a', 's', 's', 0x30, 0x03, ( byte ) 0x80, 0x01,
+                't', //
+                0x30,
+                0x15, // AttributeDescriptionList ::= SEQUENCE OF
+                // AttributeDescription
+                0x04, 0x05, 'a', 't', 't', 'r',
+                '0', // AttributeDescription
+                // ::= LDAPString
+                0x04, 0x05, 'a', 't', 't', 'r',
+                '1', // AttributeDescription
+                // ::= LDAPString
+                0x04, 0x05, 'a', 't', 't', 'r',
+                '2', // AttributeDescription
+                // ::= LDAPString
+                ( byte ) 0xA0,
+                0x1B, // A control
+                0x30, 0x19, 0x04, 0x17, 0x32, 0x2E, 0x31, 0x36, 0x2E, 0x38, 0x34, 0x30, 0x2E, 0x31, 0x2E, 0x31, 0x31,
+                0x33, 0x37, 0x33, 0x30, 0x2E, 0x33, 0x2E, 0x34, 0x2E, 0x32 } );
 
         String decodedPdu = StringTools.dumpBytes( stream.array() );
         stream.flip();
@@ -278,49 +310,50 @@ public class SearchRequestSubstringTest
             fail( de.getMessage() );
         }
 
-        SearchRequestCodec searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
 
         assertEquals( 1, searchRequest.getMessageId() );
-        assertEquals( "uid=akarasulu,dc=example,dc=com", searchRequest.getBaseObject().toString() );
+        assertEquals( "uid=akarasulu,dc=example,dc=com", searchRequest.getBase().toString() );
         assertEquals( SearchScope.ONELEVEL, searchRequest.getScope() );
-        assertEquals( LdapConstants.DEREF_ALWAYS, searchRequest.getDerefAliases() );
+        assertEquals( AliasDerefMode.DEREF_ALWAYS, searchRequest.getDerefAliases() );
         assertEquals( 1000, searchRequest.getSizeLimit() );
         assertEquals( 1000, searchRequest.getTimeLimit() );
-        assertEquals( true, searchRequest.isTypesOnly() );
+        assertEquals( true, searchRequest.getTypesOnly() );
 
         // (objectclass=t*)
-        SubstringFilter substringFilter = ( SubstringFilter ) searchRequest.getFilter();
+        Filter filter = ( ( SearchRequestImpl ) searchRequest ).getCurrentFilter();
+        SubstringFilter substringFilter = ( SubstringFilter ) filter;
         assertNotNull( substringFilter );
 
         assertEquals( "objectclass", substringFilter.getType() );
         assertEquals( "t", substringFilter.getInitialSubstrings() );
 
         // The attributes
-        List<EntryAttribute> attributes = searchRequest.getAttributes();
+        List<String> attributes = searchRequest.getAttributes();
 
-        for ( EntryAttribute attribute:attributes )
+        for ( String attribute : attributes )
         {
             assertNotNull( attribute );
         }
 
         // Check the Control
-        List<Control> controls = searchRequest.getControls();
+        Map<String, Control> controls = searchRequest.getControls();
 
         assertEquals( 1, controls.size() );
 
-        Control control = searchRequest.getControls( 0 );
+        Control control = searchRequest.getControl( "2.16.840.1.113730.3.4.2" );
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
         assertEquals( "", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
-
-        // Check the length
-        assertEquals( 0x0081, searchRequest.computeLength() );
 
         // Check the encoding
         // We won't check the whole PDU, as it may differs because
         // attributes may have been reordered
         try
         {
-            ByteBuffer bb = searchRequest.encode();
+            ByteBuffer bb = encoder.encodeMessage( searchRequest );
+
+            // Check the length
+            assertEquals( 0x0081, bb.limit() );
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -345,51 +378,48 @@ public class SearchRequestSubstringTest
 
         ByteBuffer stream = ByteBuffer.allocate( 0x64 );
         stream.put( new byte[]
-            { 0x30, 0x62, // LDAPMessage ::=SEQUENCE {
-                0x02, 0x01, 0x01, // messageID MessageID
-                0x63, 0x5D, // CHOICE { ..., searchRequest SearchRequest, ...
+            { 0x30,
+                0x62, // LDAPMessage ::=SEQUENCE {
+                0x02, 0x01,
+                0x01, // messageID MessageID
+                0x63,
+                0x5D, // CHOICE { ..., searchRequest SearchRequest, ...
                 // SearchRequest ::= APPLICATION[3] SEQUENCE {
-                  0x04, 0x1F, // baseObject LDAPDN,
-                    'u', 'i', 'd', '=', 'a', 'k', 'a', 'r', 'a', 's', 'u', 'l', 'u', ',', 'd', 'c', '=', 'e', 'x', 'a',
-                    'm', 'p', 'l', 'e', ',', 'd', 'c', '=', 'c', 'o', 'm', 
-                  0x0A, 0x01, 0x01, // scope
-                                                                                            // ENUMERATED
-                                                                                            // {
+                0x04,
+                0x1F, // baseObject LDAPDN,
+                'u', 'i', 'd', '=', 'a', 'k', 'a', 'r', 'a', 's', 'u', 'l', 'u', ',', 'd', 'c', '=', 'e', 'x', 'a',
+                'm', 'p', 'l', 'e', ',', 'd', 'c', '=', 'c', 'o', 'm', 0x0A, 0x01, 0x01, // scope
+                // ENUMERATED
+                // {
                 // baseObject (0),
                 // singleLevel (1),
                 // wholeSubtree (2) },
-                  0x0A, 0x01, 0x03, // derefAliases ENUMERATED {
+                0x0A, 0x01, 0x03, // derefAliases ENUMERATED {
                 // neverDerefAliases (0),
                 // derefInSearching (1),
                 // derefFindingBaseObj (2),
                 // derefAlways (3) },
                 // sizeLimit INTEGER (0 .. maxInt), (1000)
-                  0x02, 0x02, 0x03, ( byte ) 0xE8,
+                0x02, 0x02, 0x03, ( byte ) 0xE8,
                 // timeLimit INTEGER (0 .. maxInt), (1000)
-                  0x02, 0x02, 0x03, ( byte ) 0xE8, 
-                  0x01, 0x01, ( byte ) 0xFF, // typesOnly
-                                                                            // BOOLEAN,
-                                                                            // (TRUE)
+                0x02, 0x02, 0x03, ( byte ) 0xE8, 0x01, 0x01, ( byte ) 0xFF, // typesOnly
+                // BOOLEAN,
+                // (TRUE)
                 // filter Filter,
-                  ( byte ) 0xA4, 0x12, // Filter ::= CHOICE {
+                ( byte ) 0xA4, 0x12, // Filter ::= CHOICE {
                 // substrings [4] SubstringFilter
                 // }
                 // SubstringFilter ::= SEQUENCE {
-                    0x04, 0x0B, // type AttributeDescription,
-                      'o', 'b', 'j', 'e', 'c', 't', 'c', 'l', 'a', 's', 's', 
-                    0x30, 0x03, 
-                      ( byte ) 0x81, 0x01, 't', //
-                      0x30, 0x15, // AttributeDescriptionList ::= SEQUENCE OF
-                            // AttributeDescription
-                        0x04, 0x05, 
-                          'a', 't', 't', 'r', '0', // AttributeDescription
-                                                        // ::= LDAPString
-                        0x04, 0x05, 
-                          'a', 't', 't', 'r', '1', // AttributeDescription
-                                                        // ::= LDAPString
-                        0x04, 0x05, 
-                          'a', 't', 't', 'r', '2' // AttributeDescription ::=
-                                                    // LDAPString
+                0x04, 0x0B, // type AttributeDescription,
+                'o', 'b', 'j', 'e', 'c', 't', 'c', 'l', 'a', 's', 's', 0x30, 0x03, ( byte ) 0x81, 0x01, 't', //
+                0x30, 0x15, // AttributeDescriptionList ::= SEQUENCE OF
+                // AttributeDescription
+                0x04, 0x05, 'a', 't', 't', 'r', '0', // AttributeDescription
+                // ::= LDAPString
+                0x04, 0x05, 'a', 't', 't', 'r', '1', // AttributeDescription
+                // ::= LDAPString
+                0x04, 0x05, 'a', 't', 't', 'r', '2' // AttributeDescription ::=
+            // LDAPString
             } );
 
         String decodedPdu = StringTools.dumpBytes( stream.array() );
@@ -408,18 +438,19 @@ public class SearchRequestSubstringTest
             fail( de.getMessage() );
         }
 
-        SearchRequestCodec searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
 
         assertEquals( 1, searchRequest.getMessageId() );
-        assertEquals( "uid=akarasulu,dc=example,dc=com", searchRequest.getBaseObject().toString() );
+        assertEquals( "uid=akarasulu,dc=example,dc=com", searchRequest.getBase().toString() );
         assertEquals( SearchScope.ONELEVEL, searchRequest.getScope() );
-        assertEquals( LdapConstants.DEREF_ALWAYS, searchRequest.getDerefAliases() );
+        assertEquals( AliasDerefMode.DEREF_ALWAYS, searchRequest.getDerefAliases() );
         assertEquals( 1000, searchRequest.getSizeLimit() );
         assertEquals( 1000, searchRequest.getTimeLimit() );
-        assertEquals( true, searchRequest.isTypesOnly() );
+        assertEquals( true, searchRequest.getTypesOnly() );
 
         // (objectclass=t*)
-        SubstringFilter substringFilter = ( SubstringFilter ) searchRequest.getFilter();
+        Filter filter = ( ( SearchRequestImpl ) searchRequest ).getCurrentFilter();
+        SubstringFilter substringFilter = ( SubstringFilter ) filter;
         assertNotNull( substringFilter );
 
         assertEquals( "objectclass", substringFilter.getType() );
@@ -428,22 +459,22 @@ public class SearchRequestSubstringTest
         assertEquals( null, substringFilter.getFinalSubstrings() );
 
         // The attributes
-        List<EntryAttribute> attributes = searchRequest.getAttributes();
+        List<String> attributes = searchRequest.getAttributes();
 
-        for ( EntryAttribute attribute:attributes )
+        for ( String attribute : attributes )
         {
             assertNotNull( attribute );
         }
-
-        // Check the length
-        assertEquals( 0x64, searchRequest.computeLength() );
 
         // Check the encoding
         // We won't check the whole PDU, as it may differs because
         // attributes may have been reordered
         try
         {
-            ByteBuffer bb = searchRequest.encode();
+            ByteBuffer bb = encoder.encodeMessage( searchRequest );
+
+            // Check the length
+            assertEquals( 0x64, bb.limit() );
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -468,15 +499,19 @@ public class SearchRequestSubstringTest
 
         ByteBuffer stream = ByteBuffer.allocate( 0x67 );
         stream.put( new byte[]
-            { 0x30, 0x65, // LDAPMessage ::=SEQUENCE {
-                0x02, 0x01, 0x01, // messageID MessageID
-                0x63, 0x60, // CHOICE { ..., searchRequest SearchRequest, ...
+            { 0x30,
+                0x65, // LDAPMessage ::=SEQUENCE {
+                0x02, 0x01,
+                0x01, // messageID MessageID
+                0x63,
+                0x60, // CHOICE { ..., searchRequest SearchRequest, ...
                 // SearchRequest ::= APPLICATION[3] SEQUENCE {
-                0x04, 0x1F, // baseObject LDAPDN,
+                0x04,
+                0x1F, // baseObject LDAPDN,
                 'u', 'i', 'd', '=', 'a', 'k', 'a', 'r', 'a', 's', 'u', 'l', 'u', ',', 'd', 'c', '=', 'e', 'x', 'a',
                 'm', 'p', 'l', 'e', ',', 'd', 'c', '=', 'c', 'o', 'm', 0x0A, 0x01, 0x01, // scope
-                                                                                            // ENUMERATED
-                                                                                            // {
+                // ENUMERATED
+                // {
                 // baseObject (0),
                 // singleLevel (1),
                 // wholeSubtree (2) },
@@ -489,8 +524,8 @@ public class SearchRequestSubstringTest
                 0x02, 0x02, 0x03, ( byte ) 0xE8,
                 // timeLimit INTEGER (0 .. maxInt), (1000)
                 0x02, 0x02, 0x03, ( byte ) 0xE8, 0x01, 0x01, ( byte ) 0xFF, // typesOnly
-                                                                            // BOOLEAN,
-                                                                            // (TRUE)
+                // BOOLEAN,
+                // (TRUE)
                 // filter Filter,
                 ( byte ) 0xA4, 0x15, // Filter ::= CHOICE {
                 // substrings [4] SubstringFilter
@@ -500,13 +535,13 @@ public class SearchRequestSubstringTest
                 'o', 'b', 'j', 'e', 'c', 't', 'c', 'l', 'a', 's', 's', 0x30, 0x06, ( byte ) 0x81, 0x01, 't', //
                 ( byte ) 0x82, 0x01, 't', //
                 0x30, 0x15, // AttributeDescriptionList ::= SEQUENCE OF
-                            // AttributeDescription
+                // AttributeDescription
                 0x04, 0x05, 'a', 't', 't', 'r', '0', // AttributeDescription
-                                                        // ::= LDAPString
+                // ::= LDAPString
                 0x04, 0x05, 'a', 't', 't', 'r', '1', // AttributeDescription
-                                                        // ::= LDAPString
+                // ::= LDAPString
                 0x04, 0x05, 'a', 't', 't', 'r', '2' // AttributeDescription ::=
-                                                    // LDAPString
+            // LDAPString
             } );
 
         String decodedPdu = StringTools.dumpBytes( stream.array() );
@@ -525,18 +560,19 @@ public class SearchRequestSubstringTest
             fail( de.getMessage() );
         }
 
-        SearchRequestCodec searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
 
         assertEquals( 1, searchRequest.getMessageId() );
-        assertEquals( "uid=akarasulu,dc=example,dc=com", searchRequest.getBaseObject().toString() );
+        assertEquals( "uid=akarasulu,dc=example,dc=com", searchRequest.getBase().toString() );
         assertEquals( SearchScope.ONELEVEL, searchRequest.getScope() );
-        assertEquals( LdapConstants.DEREF_ALWAYS, searchRequest.getDerefAliases() );
+        assertEquals( AliasDerefMode.DEREF_ALWAYS, searchRequest.getDerefAliases() );
         assertEquals( 1000, searchRequest.getSizeLimit() );
         assertEquals( 1000, searchRequest.getTimeLimit() );
-        assertEquals( true, searchRequest.isTypesOnly() );
+        assertEquals( true, searchRequest.getTypesOnly() );
 
         // (objectclass=t*)
-        SubstringFilter substringFilter = ( SubstringFilter ) searchRequest.getFilter();
+        Filter filter = ( ( SearchRequestImpl ) searchRequest ).getCurrentFilter();
+        SubstringFilter substringFilter = ( SubstringFilter ) filter;
         assertNotNull( substringFilter );
 
         assertEquals( "objectclass", substringFilter.getType() );
@@ -545,22 +581,22 @@ public class SearchRequestSubstringTest
         assertEquals( "t", substringFilter.getFinalSubstrings() );
 
         // The attributes
-        List<EntryAttribute> attributes = searchRequest.getAttributes();
+        List<String> attributes = searchRequest.getAttributes();
 
-        for ( EntryAttribute attribute:attributes )
+        for ( String attribute : attributes )
         {
             assertNotNull( attribute );
         }
-
-        // Check the length
-        assertEquals( 0x67, searchRequest.computeLength() );
 
         // Check the encoding
         // We won't check the whole PDU, as it may differs because
         // attributes may have been reordered
         try
         {
-            ByteBuffer bb = searchRequest.encode();
+            ByteBuffer bb = encoder.encodeMessage( searchRequest );
+
+            // Check the length
+            assertEquals( 0x67, bb.limit() );
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -585,15 +621,19 @@ public class SearchRequestSubstringTest
 
         ByteBuffer stream = ByteBuffer.allocate( 0x6A );
         stream.put( new byte[]
-            { 0x30, 0x68, // LDAPMessage ::=SEQUENCE {
-                0x02, 0x01, 0x01, // messageID MessageID
-                0x63, 0x63, // CHOICE { ..., searchRequest SearchRequest, ...
+            { 0x30,
+                0x68, // LDAPMessage ::=SEQUENCE {
+                0x02, 0x01,
+                0x01, // messageID MessageID
+                0x63,
+                0x63, // CHOICE { ..., searchRequest SearchRequest, ...
                 // SearchRequest ::= APPLICATION[3] SEQUENCE {
-                0x04, 0x1F, // baseObject LDAPDN,
+                0x04,
+                0x1F, // baseObject LDAPDN,
                 'u', 'i', 'd', '=', 'a', 'k', 'a', 'r', 'a', 's', 'u', 'l', 'u', ',', 'd', 'c', '=', 'e', 'x', 'a',
                 'm', 'p', 'l', 'e', ',', 'd', 'c', '=', 'c', 'o', 'm', 0x0A, 0x01, 0x01, // scope
-                                                                                            // ENUMERATED
-                                                                                            // {
+                // ENUMERATED
+                // {
                 // baseObject (0),
                 // singleLevel (1),
                 // wholeSubtree (2) },
@@ -606,8 +646,8 @@ public class SearchRequestSubstringTest
                 0x02, 0x02, 0x03, ( byte ) 0xE8,
                 // timeLimit INTEGER (0 .. maxInt), (1000)
                 0x02, 0x02, 0x03, ( byte ) 0xE8, 0x01, 0x01, ( byte ) 0xFF, // typesOnly
-                                                                            // BOOLEAN,
-                                                                            // (TRUE)
+                // BOOLEAN,
+                // (TRUE)
                 // filter Filter,
                 ( byte ) 0xA4, 0x18, // Filter ::= CHOICE {
                 // substrings [4] SubstringFilter
@@ -618,13 +658,13 @@ public class SearchRequestSubstringTest
                 ( byte ) 0x81, 0x01, 't', //
                 ( byte ) 0x82, 0x01, 't', //
                 0x30, 0x15, // AttributeDescriptionList ::= SEQUENCE OF
-                            // AttributeDescription
+                // AttributeDescription
                 0x04, 0x05, 'a', 't', 't', 'r', '0', // AttributeDescription
-                                                        // ::= LDAPString
+                // ::= LDAPString
                 0x04, 0x05, 'a', 't', 't', 'r', '1', // AttributeDescription
-                                                        // ::= LDAPString
+                // ::= LDAPString
                 0x04, 0x05, 'a', 't', 't', 'r', '2' // AttributeDescription ::=
-                                                    // LDAPString
+            // LDAPString
             } );
 
         String decodedPdu = StringTools.dumpBytes( stream.array() );
@@ -643,18 +683,19 @@ public class SearchRequestSubstringTest
             fail( de.getMessage() );
         }
 
-        SearchRequestCodec searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
 
         assertEquals( 1, searchRequest.getMessageId() );
-        assertEquals( "uid=akarasulu,dc=example,dc=com", searchRequest.getBaseObject().toString() );
+        assertEquals( "uid=akarasulu,dc=example,dc=com", searchRequest.getBase().toString() );
         assertEquals( SearchScope.ONELEVEL, searchRequest.getScope() );
-        assertEquals( LdapConstants.DEREF_ALWAYS, searchRequest.getDerefAliases() );
+        assertEquals( AliasDerefMode.DEREF_ALWAYS, searchRequest.getDerefAliases() );
         assertEquals( 1000, searchRequest.getSizeLimit() );
         assertEquals( 1000, searchRequest.getTimeLimit() );
-        assertEquals( true, searchRequest.isTypesOnly() );
+        assertEquals( true, searchRequest.getTypesOnly() );
 
         // (objectclass=t*)
-        SubstringFilter substringFilter = ( SubstringFilter ) searchRequest.getFilter();
+        Filter filter = ( ( SearchRequestImpl ) searchRequest ).getCurrentFilter();
+        SubstringFilter substringFilter = ( SubstringFilter ) filter;
         assertNotNull( substringFilter );
 
         assertEquals( "objectclass", substringFilter.getType() );
@@ -663,22 +704,22 @@ public class SearchRequestSubstringTest
         assertEquals( "t", substringFilter.getFinalSubstrings() );
 
         // The attributes
-        List<EntryAttribute> attributes = searchRequest.getAttributes();
+        List<String> attributes = searchRequest.getAttributes();
 
-        for ( EntryAttribute attribute:attributes )
+        for ( String attribute : attributes )
         {
             assertNotNull( attribute );
         }
-
-        // Check the length
-        assertEquals( 0x6A, searchRequest.computeLength() );
 
         // Check the encoding
         // We won't check the whole PDU, as it may differs because
         // attributes may have been reordered
         try
         {
-            ByteBuffer bb = searchRequest.encode();
+            ByteBuffer bb = encoder.encodeMessage( searchRequest );
+
+            // Check the length
+            assertEquals( 0x6A, bb.limit() );
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -703,15 +744,19 @@ public class SearchRequestSubstringTest
 
         ByteBuffer stream = ByteBuffer.allocate( 0x67 );
         stream.put( new byte[]
-            { 0x30, 0x65, // LDAPMessage ::=SEQUENCE {
-                0x02, 0x01, 0x01, // messageID MessageID
-                0x63, 0x60, // CHOICE { ..., searchRequest SearchRequest, ...
+            { 0x30,
+                0x65, // LDAPMessage ::=SEQUENCE {
+                0x02, 0x01,
+                0x01, // messageID MessageID
+                0x63,
+                0x60, // CHOICE { ..., searchRequest SearchRequest, ...
                 // SearchRequest ::= APPLICATION[3] SEQUENCE {
-                0x04, 0x1F, // baseObject LDAPDN,
+                0x04,
+                0x1F, // baseObject LDAPDN,
                 'u', 'i', 'd', '=', 'a', 'k', 'a', 'r', 'a', 's', 'u', 'l', 'u', ',', 'd', 'c', '=', 'e', 'x', 'a',
                 'm', 'p', 'l', 'e', ',', 'd', 'c', '=', 'c', 'o', 'm', 0x0A, 0x01, 0x01, // scope
-                                                                                            // ENUMERATED
-                                                                                            // {
+                // ENUMERATED
+                // {
                 // baseObject (0),
                 // singleLevel (1),
                 // wholeSubtree (2) },
@@ -724,8 +769,8 @@ public class SearchRequestSubstringTest
                 0x02, 0x02, 0x03, ( byte ) 0xE8,
                 // timeLimit INTEGER (0 .. maxInt), (1000)
                 0x02, 0x02, 0x03, ( byte ) 0xE8, 0x01, 0x01, ( byte ) 0xFF, // typesOnly
-                                                                            // BOOLEAN,
-                                                                            // (TRUE)
+                // BOOLEAN,
+                // (TRUE)
                 // filter Filter,
                 ( byte ) 0xA4, 0x15, // Filter ::= CHOICE {
                 // substrings [4] SubstringFilter
@@ -735,13 +780,13 @@ public class SearchRequestSubstringTest
                 'o', 'b', 'j', 'e', 'c', 't', 'c', 'l', 'a', 's', 's', 0x30, 0x06, ( byte ) 0x80, 0x01, 't', //
                 ( byte ) 0x81, 0x01, 't', //
                 0x30, 0x15, // AttributeDescriptionList ::= SEQUENCE OF
-                            // AttributeDescription
+                // AttributeDescription
                 0x04, 0x05, 'a', 't', 't', 'r', '0', // AttributeDescription
-                                                        // ::= LDAPString
+                // ::= LDAPString
                 0x04, 0x05, 'a', 't', 't', 'r', '1', // AttributeDescription
-                                                        // ::= LDAPString
+                // ::= LDAPString
                 0x04, 0x05, 'a', 't', 't', 'r', '2' // AttributeDescription ::=
-                                                    // LDAPString
+            // LDAPString
             } );
 
         String decodedPdu = StringTools.dumpBytes( stream.array() );
@@ -760,18 +805,19 @@ public class SearchRequestSubstringTest
             fail( de.getMessage() );
         }
 
-        SearchRequestCodec searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
 
         assertEquals( 1, searchRequest.getMessageId() );
-        assertEquals( "uid=akarasulu,dc=example,dc=com", searchRequest.getBaseObject().toString() );
+        assertEquals( "uid=akarasulu,dc=example,dc=com", searchRequest.getBase().toString() );
         assertEquals( SearchScope.ONELEVEL, searchRequest.getScope() );
-        assertEquals( LdapConstants.DEREF_ALWAYS, searchRequest.getDerefAliases() );
+        assertEquals( AliasDerefMode.DEREF_ALWAYS, searchRequest.getDerefAliases() );
         assertEquals( 1000, searchRequest.getSizeLimit() );
         assertEquals( 1000, searchRequest.getTimeLimit() );
-        assertEquals( true, searchRequest.isTypesOnly() );
+        assertEquals( true, searchRequest.getTypesOnly() );
 
         // (objectclass=t*)
-        SubstringFilter substringFilter = ( SubstringFilter ) searchRequest.getFilter();
+        Filter filter = ( ( SearchRequestImpl ) searchRequest ).getCurrentFilter();
+        SubstringFilter substringFilter = ( SubstringFilter ) filter;
         assertNotNull( substringFilter );
 
         assertEquals( "objectclass", substringFilter.getType() );
@@ -779,22 +825,22 @@ public class SearchRequestSubstringTest
         assertEquals( "t", substringFilter.getAnySubstrings().get( 0 ) );
 
         // The attributes
-        List<EntryAttribute> attributes = searchRequest.getAttributes();
+        List<String> attributes = searchRequest.getAttributes();
 
-        for ( EntryAttribute attribute:attributes )
+        for ( String attribute : attributes )
         {
             assertNotNull( attribute );
         }
-
-        // Check the length
-        assertEquals( 0x67, searchRequest.computeLength() );
 
         // Check the encoding
         // We won't check the whole PDU, as it may differs because
         // attributes may have been reordered
         try
         {
-            ByteBuffer bb = searchRequest.encode();
+            ByteBuffer bb = encoder.encodeMessage( searchRequest );
+
+            // Check the length
+            assertEquals( 0x67, bb.limit() );
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -819,40 +865,53 @@ public class SearchRequestSubstringTest
 
         ByteBuffer stream = ByteBuffer.allocate( 0x6A );
         stream.put( new byte[]
-            { 
-            0x30, 0x68,                     // LDAPMessage ::=SEQUENCE {
-              0x02, 0x01, 0x01,             // messageID MessageID
-              0x63, 0x63,                   // CHOICE { ..., searchRequest SearchRequest, ...
-                                            // SearchRequest ::= APPLICATION[3] SEQUENCE {
-                0x04, 0x1F,                 // baseObject LDAPDN,
-                  'u', 'i', 'd', '=', 'a', 'k', 'a', 'r', 'a', 's', 'u', 'l', 'u', ',', 'd', 'c', '=', 'e', 'x', 'a',
-                  'm', 'p', 'l', 'e', ',', 'd', 'c', '=', 'c', 'o', 'm', 
-                0x0A, 0x01, 0x01,           // scope ENUMERATED {
-                                            // baseObject (0),
-                                            // singleLevel (1),
-                                            // wholeSubtree (2) },
-                0x0A, 0x01, 0x03,           // derefAliases ENUMERATED {
-                                            // neverDerefAliases (0),
-                                            // derefInSearching (1),
-                                            // derefFindingBaseObj (2),
-                                            // derefAlways (3) },
-                0x02, 0x02, 0x03, ( byte ) 0xE8, // sizeLimit INTEGER (0 .. maxInt), (1000)
-                0x02, 0x02, 0x03, ( byte ) 0xE8, // timeLimit INTEGER (0 .. maxInt), (1000)
-                0x01, 0x01, ( byte ) 0xFF,  // typesOnly BOOLEAN, (TRUE)
-                                            // filter Filter,
-                ( byte ) 0xA4, 0x18,        // Filter ::= CHOICE {
-                                            // substrings [4] SubstringFilter }
-                                            // SubstringFilter ::= SEQUENCE {
-                  0x04, 0x0B,               // type AttributeDescription,
-                    'o', 'b', 'j', 'e', 'c', 't', 'c', 'l', 'a', 's', 's', 
-                  0x30, 0x09, 
-                    ( byte ) 0x81, 0x01, 't',
-                    ( byte ) 0x81, 0x01, 't',
-                    ( byte ) 0x82, 0x01, 't',
-                0x30, 0x15,                 // AttributeDescriptionList ::= SEQUENCE OF AttributeDescription
-                  0x04, 0x05, 'a', 't', 't', 'r', '0', // AttributeDescription ::= LDAPString
-                  0x04, 0x05, 'a', 't', 't', 'r', '1', // AttributeDescription ::= LDAPString
-                  0x04, 0x05, 'a', 't', 't', 'r', '2' // AttributeDescription ::= LDAPString
+            {
+                0x30,
+                0x68, // LDAPMessage ::=SEQUENCE {
+                0x02,
+                0x01,
+                0x01, // messageID MessageID
+                0x63,
+                0x63, // CHOICE { ..., searchRequest SearchRequest, ...
+                // SearchRequest ::= APPLICATION[3] SEQUENCE {
+                0x04,
+                0x1F, // baseObject LDAPDN,
+                'u', 'i', 'd', '=', 'a', 'k', 'a', 'r', 'a', 's', 'u', 'l', 'u', ',', 'd', 'c', '=', 'e', 'x', 'a',
+                'm', 'p', 'l', 'e', ',', 'd', 'c', '=', 'c',
+                'o',
+                'm',
+                0x0A,
+                0x01,
+                0x01, // scope ENUMERATED {
+                // baseObject (0),
+                // singleLevel (1),
+                // wholeSubtree (2) },
+                0x0A,
+                0x01,
+                0x03, // derefAliases ENUMERATED {
+                // neverDerefAliases (0),
+                // derefInSearching (1),
+                // derefFindingBaseObj (2),
+                // derefAlways (3) },
+                0x02, 0x02, 0x03,
+                ( byte ) 0xE8, // sizeLimit INTEGER (0 .. maxInt), (1000)
+                0x02, 0x02, 0x03,
+                ( byte ) 0xE8, // timeLimit INTEGER (0 .. maxInt), (1000)
+                0x01,
+                0x01,
+                ( byte ) 0xFF, // typesOnly BOOLEAN, (TRUE)
+                // filter Filter,
+                ( byte ) 0xA4,
+                0x18, // Filter ::= CHOICE {
+                // substrings [4] SubstringFilter }
+                // SubstringFilter ::= SEQUENCE {
+                0x04,
+                0x0B, // type AttributeDescription,
+                'o', 'b', 'j', 'e', 'c', 't', 'c', 'l', 'a', 's', 's', 0x30, 0x09, ( byte ) 0x81, 0x01, 't',
+                ( byte ) 0x81, 0x01, 't', ( byte ) 0x82, 0x01, 't', 0x30, 0x15, // AttributeDescriptionList ::= SEQUENCE OF AttributeDescription
+                0x04, 0x05, 'a', 't', 't', 'r', '0', // AttributeDescription ::= LDAPString
+                0x04, 0x05, 'a', 't', 't', 'r', '1', // AttributeDescription ::= LDAPString
+                0x04, 0x05, 'a', 't', 't', 'r', '2' // AttributeDescription ::= LDAPString
             } );
 
         String decodedPdu = StringTools.dumpBytes( stream.array() );
@@ -871,18 +930,19 @@ public class SearchRequestSubstringTest
             fail( de.getMessage() );
         }
 
-        SearchRequestCodec searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
 
         assertEquals( 1, searchRequest.getMessageId() );
-        assertEquals( "uid=akarasulu,dc=example,dc=com", searchRequest.getBaseObject().toString() );
+        assertEquals( "uid=akarasulu,dc=example,dc=com", searchRequest.getBase().toString() );
         assertEquals( SearchScope.ONELEVEL, searchRequest.getScope() );
-        assertEquals( LdapConstants.DEREF_ALWAYS, searchRequest.getDerefAliases() );
+        assertEquals( AliasDerefMode.DEREF_ALWAYS, searchRequest.getDerefAliases() );
         assertEquals( 1000, searchRequest.getSizeLimit() );
         assertEquals( 1000, searchRequest.getTimeLimit() );
-        assertEquals( true, searchRequest.isTypesOnly() );
+        assertEquals( true, searchRequest.getTypesOnly() );
 
         // (objectclass=t*)
-        SubstringFilter substringFilter = ( SubstringFilter ) searchRequest.getFilter();
+        Filter filter = ( ( SearchRequestImpl ) searchRequest ).getCurrentFilter();
+        SubstringFilter substringFilter = ( SubstringFilter ) filter;
         assertNotNull( substringFilter );
 
         assertEquals( "objectclass", substringFilter.getType() );
@@ -892,22 +952,22 @@ public class SearchRequestSubstringTest
         assertEquals( "t", substringFilter.getFinalSubstrings() );
 
         // The attributes
-        List<EntryAttribute> attributes = searchRequest.getAttributes();
+        List<String> attributes = searchRequest.getAttributes();
 
-        for ( EntryAttribute attribute:attributes )
+        for ( String attribute : attributes )
         {
             assertNotNull( attribute );
         }
-
-        // Check the length
-        assertEquals( 0x6A, searchRequest.computeLength() );
 
         // Check the encoding
         // We won't check the whole PDU, as it may differs because
         // attributes may have been reordered
         try
         {
-            ByteBuffer bb = searchRequest.encode();
+            ByteBuffer bb = encoder.encodeMessage( searchRequest );
+
+            // Check the length
+            assertEquals( 0x6A, bb.limit() );
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -932,15 +992,19 @@ public class SearchRequestSubstringTest
 
         ByteBuffer stream = ByteBuffer.allocate( 0x67 );
         stream.put( new byte[]
-            { 0x30, 0x65, // LDAPMessage ::=SEQUENCE {
-                0x02, 0x01, 0x01, // messageID MessageID
-                0x63, 0x60, // CHOICE { ..., searchRequest SearchRequest, ...
+            { 0x30,
+                0x65, // LDAPMessage ::=SEQUENCE {
+                0x02, 0x01,
+                0x01, // messageID MessageID
+                0x63,
+                0x60, // CHOICE { ..., searchRequest SearchRequest, ...
                 // SearchRequest ::= APPLICATION[3] SEQUENCE {
-                0x04, 0x1F, // baseObject LDAPDN,
+                0x04,
+                0x1F, // baseObject LDAPDN,
                 'u', 'i', 'd', '=', 'a', 'k', 'a', 'r', 'a', 's', 'u', 'l', 'u', ',', 'd', 'c', '=', 'e', 'x', 'a',
                 'm', 'p', 'l', 'e', ',', 'd', 'c', '=', 'c', 'o', 'm', 0x0A, 0x01, 0x01, // scope
-                                                                                            // ENUMERATED
-                                                                                            // {
+                // ENUMERATED
+                // {
                 // baseObject (0),
                 // singleLevel (1),
                 // wholeSubtree (2) },
@@ -953,8 +1017,8 @@ public class SearchRequestSubstringTest
                 0x02, 0x02, 0x03, ( byte ) 0xE8,
                 // timeLimit INTEGER (0 .. maxInt), (1000)
                 0x02, 0x02, 0x03, ( byte ) 0xE8, 0x01, 0x01, ( byte ) 0xFF, // typesOnly
-                                                                            // BOOLEAN,
-                                                                            // (TRUE)
+                // BOOLEAN,
+                // (TRUE)
                 // filter Filter,
                 ( byte ) 0xA4, 0x15, // Filter ::= CHOICE {
                 // substrings [4] SubstringFilter
@@ -964,13 +1028,13 @@ public class SearchRequestSubstringTest
                 'o', 'b', 'j', 'e', 'c', 't', 'c', 'l', 'a', 's', 's', 0x30, 0x06, ( byte ) 0x80, 0x01, 't', //
                 ( byte ) 0x81, 0x01, '*', //
                 0x30, 0x15, // AttributeDescriptionList ::= SEQUENCE OF
-                            // AttributeDescription
+                // AttributeDescription
                 0x04, 0x05, 'a', 't', 't', 'r', '0', // AttributeDescription
-                                                        // ::= LDAPString
+                // ::= LDAPString
                 0x04, 0x05, 'a', 't', 't', 'r', '1', // AttributeDescription
-                                                        // ::= LDAPString
+                // ::= LDAPString
                 0x04, 0x05, 'a', 't', 't', 'r', '2' // AttributeDescription ::=
-                                                    // LDAPString
+            // LDAPString
             } );
 
         String decodedPdu = StringTools.dumpBytes( stream.array() );
@@ -989,18 +1053,19 @@ public class SearchRequestSubstringTest
             fail( de.getMessage() );
         }
 
-        SearchRequestCodec searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
 
         assertEquals( 1, searchRequest.getMessageId() );
-        assertEquals( "uid=akarasulu,dc=example,dc=com", searchRequest.getBaseObject().toString() );
+        assertEquals( "uid=akarasulu,dc=example,dc=com", searchRequest.getBase().toString() );
         assertEquals( SearchScope.ONELEVEL, searchRequest.getScope() );
-        assertEquals( LdapConstants.DEREF_ALWAYS, searchRequest.getDerefAliases() );
+        assertEquals( AliasDerefMode.DEREF_ALWAYS, searchRequest.getDerefAliases() );
         assertEquals( 1000, searchRequest.getSizeLimit() );
         assertEquals( 1000, searchRequest.getTimeLimit() );
-        assertEquals( true, searchRequest.isTypesOnly() );
+        assertEquals( true, searchRequest.getTypesOnly() );
 
         // (objectclass=t*)
-        SubstringFilter substringFilter = ( SubstringFilter ) searchRequest.getFilter();
+        Filter filter = ( ( SearchRequestImpl ) searchRequest ).getCurrentFilter();
+        SubstringFilter substringFilter = ( SubstringFilter ) filter;
         assertNotNull( substringFilter );
 
         assertEquals( "objectclass", substringFilter.getType() );
@@ -1008,22 +1073,22 @@ public class SearchRequestSubstringTest
         assertEquals( "*", substringFilter.getAnySubstrings().get( 0 ) );
 
         // The attributes
-        List<EntryAttribute> attributes = searchRequest.getAttributes();
+        List<String> attributes = searchRequest.getAttributes();
 
-        for ( EntryAttribute attribute:attributes )
+        for ( String attribute : attributes )
         {
             assertNotNull( attribute );
         }
-
-        // Check the length
-        assertEquals( 0x67, searchRequest.computeLength() );
 
         // Check the encoding
         // We won't check the whole PDU, as it may differs because
         // attributes may have been reordered
         try
         {
-            ByteBuffer bb = searchRequest.encode();
+            ByteBuffer bb = encoder.encodeMessage( searchRequest );
+
+            // Check the length
+            assertEquals( 0x67, bb.limit() );
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -1048,15 +1113,19 @@ public class SearchRequestSubstringTest
 
         ByteBuffer stream = ByteBuffer.allocate( 0x6A );
         stream.put( new byte[]
-            { 0x30, 0x68, // LDAPMessage ::=SEQUENCE {
-                0x02, 0x01, 0x01, // messageID MessageID
-                0x63, 0x63, // CHOICE { ..., searchRequest SearchRequest, ...
+            { 0x30,
+                0x68, // LDAPMessage ::=SEQUENCE {
+                0x02, 0x01,
+                0x01, // messageID MessageID
+                0x63,
+                0x63, // CHOICE { ..., searchRequest SearchRequest, ...
                 // SearchRequest ::= APPLICATION[3] SEQUENCE {
-                0x04, 0x1F, // baseObject LDAPDN,
+                0x04,
+                0x1F, // baseObject LDAPDN,
                 'u', 'i', 'd', '=', 'a', 'k', 'a', 'r', 'a', 's', 'u', 'l', 'u', ',', 'd', 'c', '=', 'e', 'x', 'a',
                 'm', 'p', 'l', 'e', ',', 'd', 'c', '=', 'c', 'o', 'm', 0x0A, 0x01, 0x01, // scope
-                                                                                            // ENUMERATED
-                                                                                            // {
+                // ENUMERATED
+                // {
                 // baseObject (0),
                 // singleLevel (1),
                 // wholeSubtree (2) },
@@ -1069,8 +1138,8 @@ public class SearchRequestSubstringTest
                 0x02, 0x02, 0x03, ( byte ) 0xE8,
                 // timeLimit INTEGER (0 .. maxInt), (1000)
                 0x02, 0x02, 0x03, ( byte ) 0xE8, 0x01, 0x01, ( byte ) 0xFF, // typesOnly
-                                                                            // BOOLEAN,
-                                                                            // (TRUE)
+                // BOOLEAN,
+                // (TRUE)
                 // filter Filter,
                 ( byte ) 0xA4, 0x18, // Filter ::= CHOICE {
                 // substrings [4] SubstringFilter
@@ -1081,13 +1150,13 @@ public class SearchRequestSubstringTest
                 ( byte ) 0x81, 0x01, 't', //
                 ( byte ) 0x81, 0x01, 't', //
                 0x30, 0x15, // AttributeDescriptionList ::= SEQUENCE OF
-                            // AttributeDescription
+                // AttributeDescription
                 0x04, 0x05, 'a', 't', 't', 'r', '0', // AttributeDescription
-                                                        // ::= LDAPString
+                // ::= LDAPString
                 0x04, 0x05, 'a', 't', 't', 'r', '1', // AttributeDescription
-                                                        // ::= LDAPString
+                // ::= LDAPString
                 0x04, 0x05, 'a', 't', 't', 'r', '2' // AttributeDescription ::=
-                                                    // LDAPString
+            // LDAPString
             } );
 
         String decodedPdu = StringTools.dumpBytes( stream.array() );
@@ -1106,18 +1175,19 @@ public class SearchRequestSubstringTest
             fail( de.getMessage() );
         }
 
-        SearchRequestCodec searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
 
         assertEquals( 1, searchRequest.getMessageId() );
-        assertEquals( "uid=akarasulu,dc=example,dc=com", searchRequest.getBaseObject().toString() );
+        assertEquals( "uid=akarasulu,dc=example,dc=com", searchRequest.getBase().toString() );
         assertEquals( SearchScope.ONELEVEL, searchRequest.getScope() );
-        assertEquals( LdapConstants.DEREF_ALWAYS, searchRequest.getDerefAliases() );
+        assertEquals( AliasDerefMode.DEREF_ALWAYS, searchRequest.getDerefAliases() );
         assertEquals( 1000, searchRequest.getSizeLimit() );
         assertEquals( 1000, searchRequest.getTimeLimit() );
-        assertEquals( true, searchRequest.isTypesOnly() );
+        assertEquals( true, searchRequest.getTypesOnly() );
 
         // (objectclass=t*)
-        SubstringFilter substringFilter = ( SubstringFilter ) searchRequest.getFilter();
+        Filter filter = ( ( SearchRequestImpl ) searchRequest ).getCurrentFilter();
+        SubstringFilter substringFilter = ( SubstringFilter ) filter;
         assertNotNull( substringFilter );
 
         assertEquals( "objectclass", substringFilter.getType() );
@@ -1128,22 +1198,22 @@ public class SearchRequestSubstringTest
         assertEquals( null, substringFilter.getFinalSubstrings() );
 
         // The attributes
-        List<EntryAttribute> attributes = searchRequest.getAttributes();
+        List<String> attributes = searchRequest.getAttributes();
 
-        for ( EntryAttribute attribute:attributes )
+        for ( String attribute : attributes )
         {
             assertNotNull( attribute );
         }
-
-        // Check the length
-        assertEquals( 0x6A, searchRequest.computeLength() );
 
         // Check the encoding
         // We won't check the whole PDU, as it may differs because
         // attributes may have been reordered
         try
         {
-            ByteBuffer bb = searchRequest.encode();
+            ByteBuffer bb = encoder.encodeMessage( searchRequest );
+
+            // Check the length
+            assertEquals( 0x6A, bb.limit() );
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -1168,19 +1238,35 @@ public class SearchRequestSubstringTest
 
         ByteBuffer stream = ByteBuffer.allocate( 0x67 );
         stream.put( new byte[]
-            { 0x30, 0x65, // LDAPMessage ::=SEQUENCE {
-                0x02, 0x01, 0x01, // messageID MessageID
-                0x63, 0x60, // CHOICE { ..., searchRequest SearchRequest, ...
+            {
+                0x30,
+                0x65, // LDAPMessage ::=SEQUENCE {
+                0x02,
+                0x01,
+                0x01, // messageID MessageID
+                0x63,
+                0x60, // CHOICE { ..., searchRequest SearchRequest, ...
                 // SearchRequest ::= APPLICATION[3] SEQUENCE {
-                0x04, 0x1F, // baseObject LDAPDN,
+                0x04,
+                0x1F, // baseObject LDAPDN,
                 'u', 'i', 'd', '=', 'a', 'k', 'a', 'r', 'a', 's', 'u', 'l', 'u', ',', 'd', 'c', '=', 'e', 'x', 'a',
-                'm', 'p', 'l', 'e', ',', 'd', 'c', '=', 'c', 'o', 'm', 0x0A, 0x01, 0x01, // scope
-                                                                                            // ENUMERATED
-                                                                                            // {
+                'm', 'p', 'l', 'e', ',', 'd',
+                'c',
+                '=',
+                'c',
+                'o',
+                'm',
+                0x0A,
+                0x01,
+                0x01, // scope
+                // ENUMERATED
+                // {
                 // baseObject (0),
                 // singleLevel (1),
                 // wholeSubtree (2) },
-                0x0A, 0x01, 0x03, // derefAliases ENUMERATED {
+                0x0A,
+                0x01,
+                0x03, // derefAliases ENUMERATED {
                 // neverDerefAliases (0),
                 // derefInSearching (1),
                 // derefFindingBaseObj (2),
@@ -1188,25 +1274,32 @@ public class SearchRequestSubstringTest
                 // sizeLimit INTEGER (0 .. maxInt), (1000)
                 0x02, 0x02, 0x03, ( byte ) 0xE8,
                 // timeLimit INTEGER (0 .. maxInt), (1000)
-                0x02, 0x02, 0x03, ( byte ) 0xE8, 0x01, 0x01, ( byte ) 0xFF, // typesOnly
-                                                                            // BOOLEAN,
-                                                                            // (TRUE)
+                0x02, 0x02,
+                0x03,
+                ( byte ) 0xE8,
+                0x01,
+                0x01,
+                ( byte ) 0xFF, // typesOnly
+                // BOOLEAN,
+                // (TRUE)
                 // filter Filter,
-                ( byte ) 0xA4, 0x15, // Filter ::= CHOICE {
+                ( byte ) 0xA4,
+                0x15, // Filter ::= CHOICE {
                 // substrings [4] SubstringFilter
                 // }
                 // SubstringFilter ::= SEQUENCE {
-                0x04, 0x0B, // type AttributeDescription,
+                0x04,
+                0x0B, // type AttributeDescription,
                 'o', 'b', 'j', 'e', 'c', 't', 'c', 'l', 'a', 's', 's', 0x30, 0x06, ( byte ) 0x82, 0x04, 'A', 'm', 'o',
                 's', //
                 0x30, 0x15, // AttributeDescriptionList ::= SEQUENCE OF
-                            // AttributeDescription
+                // AttributeDescription
                 0x04, 0x05, 'a', 't', 't', 'r', '0', // AttributeDescription
-                                                        // ::= LDAPString
+                // ::= LDAPString
                 0x04, 0x05, 'a', 't', 't', 'r', '1', // AttributeDescription
-                                                        // ::= LDAPString
+                // ::= LDAPString
                 0x04, 0x05, 'a', 't', 't', 'r', '2' // AttributeDescription ::=
-                                                    // LDAPString
+            // LDAPString
             } );
 
         String decodedPdu = StringTools.dumpBytes( stream.array() );
@@ -1225,18 +1318,19 @@ public class SearchRequestSubstringTest
             fail( de.getMessage() );
         }
 
-        SearchRequestCodec searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
 
         assertEquals( 1, searchRequest.getMessageId() );
-        assertEquals( "uid=akarasulu,dc=example,dc=com", searchRequest.getBaseObject().toString() );
+        assertEquals( "uid=akarasulu,dc=example,dc=com", searchRequest.getBase().toString() );
         assertEquals( SearchScope.ONELEVEL, searchRequest.getScope() );
-        assertEquals( LdapConstants.DEREF_ALWAYS, searchRequest.getDerefAliases() );
+        assertEquals( AliasDerefMode.DEREF_ALWAYS, searchRequest.getDerefAliases() );
         assertEquals( 1000, searchRequest.getSizeLimit() );
         assertEquals( 1000, searchRequest.getTimeLimit() );
-        assertEquals( true, searchRequest.isTypesOnly() );
+        assertEquals( true, searchRequest.getTypesOnly() );
 
         // (objectclass=t*)
-        SubstringFilter substringFilter = ( SubstringFilter ) searchRequest.getFilter();
+        Filter filter = ( ( SearchRequestImpl ) searchRequest ).getCurrentFilter();
+        SubstringFilter substringFilter = ( SubstringFilter ) filter;
         assertNotNull( substringFilter );
 
         assertEquals( "objectclass", substringFilter.getType() );
@@ -1245,22 +1339,22 @@ public class SearchRequestSubstringTest
         assertEquals( "Amos", substringFilter.getFinalSubstrings() );
 
         // The attributes
-        List<EntryAttribute> attributes = searchRequest.getAttributes();
+        List<String> attributes = searchRequest.getAttributes();
 
-        for ( EntryAttribute attribute:attributes )
+        for ( String attribute : attributes )
         {
             assertNotNull( attribute );
         }
-
-        // Check the length
-        assertEquals( 0x67, searchRequest.computeLength() );
 
         // Check the encoding
         // We won't check the whole PDU, as it may differs because
         // attributes may have been reordered
         try
         {
-            ByteBuffer bb = searchRequest.encode();
+            ByteBuffer bb = encoder.encodeMessage( searchRequest );
+
+            // Check the length
+            assertEquals( 0x67, bb.limit() );
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -1281,22 +1375,16 @@ public class SearchRequestSubstringTest
     public void testDecodeSearchRequestEmptySubstringFilter()
     {
         byte[] asn1BER = new byte[]
-            { 
-            0x30, 0x3B, 
-              0x02, 0x01, 0x04,                 // messageID
-              0x63, 0x36, 
-                0x04, 0x1F,                     // baseObject LDAPDN,
-                  'u', 'i', 'd', '=', 'a', 'k', 'a', 'r', 'a', 's', 'u', 'l', 'u', ',', 'd', 'c', '=', 'e', 'x', 'a',
-                  'm', 'p', 'l', 'e', ',', 'd', 'c', '=', 'c', 'o', 'm', 
-                0x0A, 0x01, 0x01, 
-                0x0A, 0x01, 0x03, 
-                0x02, 0x01, 0x00, 
-                0x02, 0x01, 0x00, 
-                0x01, 0x01, ( byte ) 0xFF, 
-                ( byte ) 0xA4, 0x00, 
-                0x30, 0x02,                     // AttributeDescriptionList ::= SEQUENCE OF AttributeDescription
-                  0x04, 0x00 
-            };
+            { 0x30, 0x3B, 0x02,
+                0x01,
+                0x04, // messageID
+                0x63, 0x36,
+                0x04,
+                0x1F, // baseObject LDAPDN,
+                'u', 'i', 'd', '=', 'a', 'k', 'a', 'r', 'a', 's', 'u', 'l', 'u', ',', 'd', 'c', '=', 'e', 'x', 'a',
+                'm', 'p', 'l', 'e', ',', 'd', 'c', '=', 'c', 'o', 'm', 0x0A, 0x01, 0x01, 0x0A, 0x01, 0x03, 0x02, 0x01,
+                0x00, 0x02, 0x01, 0x00, 0x01, 0x01, ( byte ) 0xFF, ( byte ) 0xA4, 0x00, 0x30, 0x02, // AttributeDescriptionList ::= SEQUENCE OF AttributeDescription
+                0x04, 0x00 };
 
         Asn1Decoder ldapDecoder = new Asn1Decoder();
 
@@ -1330,23 +1418,16 @@ public class SearchRequestSubstringTest
     public void testDecodeSearchRequestSubstringFilterEmptyType()
     {
         byte[] asn1BER = new byte[]
-            { 
-            0x30, 0x3D, 
-              0x02, 0x01, 0x04, // messageID
-              0x63, 0x38, 
-                0x04, 0x1F, // baseObject LDAPDN,
-                  'u', 'i', 'd', '=', 'a', 'k', 'a', 'r', 'a', 's', 'u', 'l', 'u', ',', 'd', 'c', '=', 'e', 'x', 'a',
-                  'm', 'p', 'l', 'e', ',', 'd', 'c', '=', 'c', 'o', 'm', 
-                0x0A, 0x01, 0x01, 
-                0x0A, 0x01, 0x03, 
-                0x02, 0x01, 0x00, 
-                0x02, 0x01, 0x00, 
-                0x01, 0x01, ( byte ) 0xFF, 
-                ( byte ) 0xA4, 0x02, 
-                  0x04, 0x00, 
-                0x30, 0x02, // AttributeDescriptionList ::= SEQUENCE OF AttributeDescription
-                  0x04, 0x00 
-            };
+            { 0x30, 0x3D, 0x02,
+                0x01,
+                0x04, // messageID
+                0x63, 0x38,
+                0x04,
+                0x1F, // baseObject LDAPDN,
+                'u', 'i', 'd', '=', 'a', 'k', 'a', 'r', 'a', 's', 'u', 'l', 'u', ',', 'd', 'c', '=', 'e', 'x', 'a',
+                'm', 'p', 'l', 'e', ',', 'd', 'c', '=', 'c', 'o', 'm', 0x0A, 0x01, 0x01, 0x0A, 0x01, 0x03, 0x02, 0x01,
+                0x00, 0x02, 0x01, 0x00, 0x01, 0x01, ( byte ) 0xFF, ( byte ) 0xA4, 0x02, 0x04, 0x00, 0x30, 0x02, // AttributeDescriptionList ::= SEQUENCE OF AttributeDescription
+                0x04, 0x00 };
 
         Asn1Decoder ldapDecoder = new Asn1Decoder();
 
@@ -1380,23 +1461,19 @@ public class SearchRequestSubstringTest
     public void testDecodeSearchRequestSubstringFilterNoSubstrings()
     {
         byte[] asn1BER = new byte[]
-            { 
-            0x30, 0x41, 
-              0x02, 0x01, 0x04,                 // messageID
-              0x63, 0x3D, 
-                0x04, 0x1F,                     // baseObject LDAPDN,
-                  'u', 'i', 'd', '=', 'a', 'k', 'a', 'r', 'a', 's', 'u', 'l', 'u', ',', 'd', 'c', '=', 'e', 'x', 'a',
-                  'm', 'p', 'l', 'e', ',', 'd', 'c', '=', 'c', 'o', 'm', 
-                  0x0A, 0x01, 0x01, 
-                  0x0A, 0x01, 0x03, 
-                  0x02, 0x01, 0x00, 
-                  0x02, 0x01, 0x00, 
-                  0x01, 0x01, ( byte ) 0xFF, 
-                  ( byte ) 0xA4, 0x06, 0x04, 
-                    0x04, 't', 'e', 's', 't',
-                0x30, 0x02,                     // AttributeDescriptionList ::= SEQUENCE OF AttributeDescription
-                  0x04, 0x00 
-            };
+            { 0x30, 0x41,
+                0x02,
+                0x01,
+                0x04, // messageID
+                0x63,
+                0x3D,
+                0x04,
+                0x1F, // baseObject LDAPDN,
+                'u', 'i', 'd', '=', 'a', 'k', 'a', 'r', 'a', 's', 'u', 'l', 'u', ',', 'd', 'c', '=', 'e', 'x', 'a',
+                'm', 'p', 'l', 'e', ',', 'd', 'c', '=', 'c', 'o', 'm', 0x0A, 0x01, 0x01, 0x0A, 0x01, 0x03, 0x02, 0x01,
+                0x00, 0x02, 0x01, 0x00, 0x01, 0x01, ( byte ) 0xFF, ( byte ) 0xA4, 0x06, 0x04, 0x04, 't', 'e', 's', 't',
+                0x30, 0x02, // AttributeDescriptionList ::= SEQUENCE OF AttributeDescription
+                0x04, 0x00 };
 
         Asn1Decoder ldapDecoder = new Asn1Decoder();
 
@@ -1430,24 +1507,19 @@ public class SearchRequestSubstringTest
     public void testDecodeSearchRequestSubstringFilterEmptySubstrings()
     {
         byte[] asn1BER = new byte[]
-            { 
-            0x30, 0x43, 
-              0x02, 0x01, 0x04,                 // messageID
-              0x63, 0x3E, 
-                0x04, 0x1F,                     // baseObject LDAPDN,
-                  'u', 'i', 'd', '=', 'a', 'k', 'a', 'r', 'a', 's', 'u', 'l', 'u', ',', 'd', 'c', '=', 'e', 'x', 'a',
-                  'm', 'p', 'l', 'e', ',', 'd', 'c', '=', 'c', 'o', 'm', 
-                0x0A, 0x01, 0x01, 
-                0x0A, 0x01, 0x03, 
-                0x02, 0x01, 0x00, 
-                0x02, 0x01, 0x00, 
-                0x01, 0x01, ( byte ) 0xFF, 
-                ( byte ) 0xA4, 0x08, 
-                  0x04, 0x04, 't', 'e', 's', 't',
-                  0x30, 0x00, 
-                0x30, 0x02,                     // AttributeDescriptionList ::= SEQUENCE OF AttributeDescription
-                  0x04, 0x00 
-            };
+            { 0x30, 0x43,
+                0x02,
+                0x01,
+                0x04, // messageID
+                0x63,
+                0x3E,
+                0x04,
+                0x1F, // baseObject LDAPDN,
+                'u', 'i', 'd', '=', 'a', 'k', 'a', 'r', 'a', 's', 'u', 'l', 'u', ',', 'd', 'c', '=', 'e', 'x', 'a',
+                'm', 'p', 'l', 'e', ',', 'd', 'c', '=', 'c', 'o', 'm', 0x0A, 0x01, 0x01, 0x0A, 0x01, 0x03, 0x02, 0x01,
+                0x00, 0x02, 0x01, 0x00, 0x01, 0x01, ( byte ) 0xFF, ( byte ) 0xA4, 0x08, 0x04, 0x04, 't', 'e', 's', 't',
+                0x30, 0x00, 0x30, 0x02, // AttributeDescriptionList ::= SEQUENCE OF AttributeDescription
+                0x04, 0x00 };
 
         Asn1Decoder ldapDecoder = new Asn1Decoder();
 
@@ -1481,25 +1553,19 @@ public class SearchRequestSubstringTest
     public void testDecodeSearchRequestSubstringFilterEmptyInitial()
     {
         byte[] asn1BER = new byte[]
-            { 
-            0x30, 0x45, 
-              0x02, 0x01, 0x04,                 // messageID
-              0x63, 0x40, 
-                0x04, 0x1F,                     // baseObject LDAPDN,
-                  'u', 'i', 'd', '=', 'a', 'k', 'a', 'r', 'a', 's', 'u', 'l', 'u', ',', 'd', 'c', '=', 'e', 'x', 'a',
-                  'm', 'p', 'l', 'e', ',', 'd', 'c', '=', 'c', 'o', 'm', 
-                0x0A, 0x01, 0x01, 
-                0x0A, 0x01, 0x03, 
-                0x02, 0x01, 0x00, 
-                0x02, 0x01, 0x00, 
-                0x01, 0x01, ( byte ) 0xFF, 
-                ( byte ) 0xA4, 0x0A, 
-                  0x04, 0x04, 't', 'e', 's', 't',
-                  0x30, 0x02, 
-                    ( byte ) 0x80, 0x00, 
-                0x30, 0x02,                     // AttributeDescriptionList ::= SEQUENCE OF AttributeDescription
-                  0x04, 0x00 
-            };
+            { 0x30, 0x45,
+                0x02,
+                0x01,
+                0x04, // messageID
+                0x63,
+                0x40,
+                0x04,
+                0x1F, // baseObject LDAPDN,
+                'u', 'i', 'd', '=', 'a', 'k', 'a', 'r', 'a', 's', 'u', 'l', 'u', ',', 'd', 'c', '=', 'e', 'x', 'a',
+                'm', 'p', 'l', 'e', ',', 'd', 'c', '=', 'c', 'o', 'm', 0x0A, 0x01, 0x01, 0x0A, 0x01, 0x03, 0x02, 0x01,
+                0x00, 0x02, 0x01, 0x00, 0x01, 0x01, ( byte ) 0xFF, ( byte ) 0xA4, 0x0A, 0x04, 0x04, 't', 'e', 's', 't',
+                0x30, 0x02, ( byte ) 0x80, 0x00, 0x30, 0x02, // AttributeDescriptionList ::= SEQUENCE OF AttributeDescription
+                0x04, 0x00 };
 
         Asn1Decoder ldapDecoder = new Asn1Decoder();
 
@@ -1533,25 +1599,19 @@ public class SearchRequestSubstringTest
     public void testDecodeSearchRequestSubstringFilterEmptyAny()
     {
         byte[] asn1BER = new byte[]
-            { 
-            0x30, 0x45, 
-              0x02, 0x01, 0x04,                 // messageID
-              0x63, 0x40, 
-                0x04, 0x1F,                     // baseObject LDAPDN,
-                  'u', 'i', 'd', '=', 'a', 'k', 'a', 'r', 'a', 's', 'u', 'l', 'u', ',', 'd', 'c', '=', 'e', 'x', 'a',
-                  'm', 'p', 'l', 'e', ',', 'd', 'c', '=', 'c', 'o', 'm', 
-                0x0A, 0x01, 0x01, 
-                0x0A, 0x01, 0x03, 
-                0x02, 0x01, 0x00, 
-                0x02, 0x01, 0x00, 
-                0x01, 0x01, ( byte ) 0xFF, 
-                ( byte ) 0xA4, 0x0A, 
-                  0x04, 0x04, 't', 'e', 's', 't',
-                  0x30, 0x02, 
-                    ( byte ) 0x81, 0x00, 
-                0x30, 0x02,                     // AttributeDescriptionList ::= SEQUENCE OF AttributeDescription
-                  0x04, 0x00 
-            };
+            { 0x30, 0x45,
+                0x02,
+                0x01,
+                0x04, // messageID
+                0x63,
+                0x40,
+                0x04,
+                0x1F, // baseObject LDAPDN,
+                'u', 'i', 'd', '=', 'a', 'k', 'a', 'r', 'a', 's', 'u', 'l', 'u', ',', 'd', 'c', '=', 'e', 'x', 'a',
+                'm', 'p', 'l', 'e', ',', 'd', 'c', '=', 'c', 'o', 'm', 0x0A, 0x01, 0x01, 0x0A, 0x01, 0x03, 0x02, 0x01,
+                0x00, 0x02, 0x01, 0x00, 0x01, 0x01, ( byte ) 0xFF, ( byte ) 0xA4, 0x0A, 0x04, 0x04, 't', 'e', 's', 't',
+                0x30, 0x02, ( byte ) 0x81, 0x00, 0x30, 0x02, // AttributeDescriptionList ::= SEQUENCE OF AttributeDescription
+                0x04, 0x00 };
 
         Asn1Decoder ldapDecoder = new Asn1Decoder();
 
@@ -1585,25 +1645,19 @@ public class SearchRequestSubstringTest
     public void testDecodeSearchRequestSubstringFilterEmptyFinal()
     {
         byte[] asn1BER = new byte[]
-            { 
-            0x30, 0x45, 
-              0x02, 0x01, 0x04,                 // messageID
-              0x63, 0x40, 
-                0x04, 0x1F,                     // baseObject LDAPDN,
-                  'u', 'i', 'd', '=', 'a', 'k', 'a', 'r', 'a', 's', 'u', 'l', 'u', ',', 'd', 'c', '=', 'e', 'x', 'a',
-                  'm', 'p', 'l', 'e', ',', 'd', 'c', '=', 'c', 'o', 'm', 
-                0x0A, 0x01, 0x01, 
-                0x0A, 0x01, 0x03, 
-                0x02, 0x01, 0x00, 
-                0x02, 0x01, 0x00, 
-                0x01, 0x01, ( byte ) 0xFF, 
-                ( byte ) 0xA4, 0x0A, 
-                  0x04, 0x04, 't', 'e', 's', 't',
-                  0x30, 0x02, 
-                    ( byte ) 0x82, 0x00, 
-                0x30, 0x02,                     // AttributeDescriptionList ::= SEQUENCE OF AttributeDescription
-                  0x04, 0x00 
-            };
+            { 0x30, 0x45,
+                0x02,
+                0x01,
+                0x04, // messageID
+                0x63,
+                0x40,
+                0x04,
+                0x1F, // baseObject LDAPDN,
+                'u', 'i', 'd', '=', 'a', 'k', 'a', 'r', 'a', 's', 'u', 'l', 'u', ',', 'd', 'c', '=', 'e', 'x', 'a',
+                'm', 'p', 'l', 'e', ',', 'd', 'c', '=', 'c', 'o', 'm', 0x0A, 0x01, 0x01, 0x0A, 0x01, 0x03, 0x02, 0x01,
+                0x00, 0x02, 0x01, 0x00, 0x01, 0x01, ( byte ) 0xFF, ( byte ) 0xA4, 0x0A, 0x04, 0x04, 't', 'e', 's', 't',
+                0x30, 0x02, ( byte ) 0x82, 0x00, 0x30, 0x02, // AttributeDescriptionList ::= SEQUENCE OF AttributeDescription
+                0x04, 0x00 };
 
         Asn1Decoder ldapDecoder = new Asn1Decoder();
 
@@ -1637,16 +1691,22 @@ public class SearchRequestSubstringTest
     public void testDecodeSearchRequestSubstringFilterAnyInitial()
     {
         byte[] asn1BER = new byte[]
-            { 0x30, 0x49, 0x02, 0x01, 0x04, // messageID
-                0x63, 0x44, 0x04, 0x1F, // baseObject LDAPDN,
+            { 0x30, 0x49,
+                0x02,
+                0x01,
+                0x04, // messageID
+                0x63,
+                0x44,
+                0x04,
+                0x1F, // baseObject LDAPDN,
                 'u', 'i', 'd', '=', 'a', 'k', 'a', 'r', 'a', 's', 'u', 'l', 'u', ',', 'd', 'c', '=', 'e', 'x', 'a',
                 'm', 'p', 'l', 'e', ',', 'd', 'c', '=', 'c', 'o', 'm', 0x0A, 0x01, 0x01, 0x0A, 0x01, 0x03, 0x02, 0x01,
                 0x00, 0x02, 0x01, 0x00, 0x01, 0x01, ( byte ) 0xFF, ( byte ) 0xA4, 0x0E, 0x04, 0x04, 't', 'e', 's', 't',
                 0x30, 0x06, ( byte ) 0x81, 0x01, 'a', ( byte ) 0x80, 0x01, 'b', 0x30, 0x02, // AttributeDescriptionList
-                                                                                            // ::=
-                                                                                            // SEQUENCE
-                                                                                            // OF
-                                                                                            // AttributeDescription
+                // ::=
+                // SEQUENCE
+                // OF
+                // AttributeDescription
                 0x04, 0x00 };
 
         Asn1Decoder ldapDecoder = new Asn1Decoder();
@@ -1681,16 +1741,22 @@ public class SearchRequestSubstringTest
     public void testDecodeSearchRequestSubstringFilterFinalInitial()
     {
         byte[] asn1BER = new byte[]
-            { 0x30, 0x49, 0x02, 0x01, 0x04, // messageID
-                0x63, 0x44, 0x04, 0x1F, // baseObject LDAPDN,
+            { 0x30, 0x49,
+                0x02,
+                0x01,
+                0x04, // messageID
+                0x63,
+                0x44,
+                0x04,
+                0x1F, // baseObject LDAPDN,
                 'u', 'i', 'd', '=', 'a', 'k', 'a', 'r', 'a', 's', 'u', 'l', 'u', ',', 'd', 'c', '=', 'e', 'x', 'a',
                 'm', 'p', 'l', 'e', ',', 'd', 'c', '=', 'c', 'o', 'm', 0x0A, 0x01, 0x01, 0x0A, 0x01, 0x03, 0x02, 0x01,
                 0x00, 0x02, 0x01, 0x00, 0x01, 0x01, ( byte ) 0xFF, ( byte ) 0xA4, 0x0E, 0x04, 0x04, 't', 'e', 's', 't',
                 0x30, 0x06, ( byte ) 0x82, 0x01, 'a', ( byte ) 0x80, 0x01, 'b', 0x30, 0x02, // AttributeDescriptionList
-                                                                                            // ::=
-                                                                                            // SEQUENCE
-                                                                                            // OF
-                                                                                            // AttributeDescription
+                // ::=
+                // SEQUENCE
+                // OF
+                // AttributeDescription
                 0x04, 0x00 };
 
         Asn1Decoder ldapDecoder = new Asn1Decoder();
@@ -1725,16 +1791,22 @@ public class SearchRequestSubstringTest
     public void testDecodeSearchRequestSubstringFilterFinalAny()
     {
         byte[] asn1BER = new byte[]
-            { 0x30, 0x49, 0x02, 0x01, 0x04, // messageID
-                0x63, 0x44, 0x04, 0x1F, // baseObject LDAPDN,
+            { 0x30, 0x49,
+                0x02,
+                0x01,
+                0x04, // messageID
+                0x63,
+                0x44,
+                0x04,
+                0x1F, // baseObject LDAPDN,
                 'u', 'i', 'd', '=', 'a', 'k', 'a', 'r', 'a', 's', 'u', 'l', 'u', ',', 'd', 'c', '=', 'e', 'x', 'a',
                 'm', 'p', 'l', 'e', ',', 'd', 'c', '=', 'c', 'o', 'm', 0x0A, 0x01, 0x01, 0x0A, 0x01, 0x03, 0x02, 0x01,
                 0x00, 0x02, 0x01, 0x00, 0x01, 0x01, ( byte ) 0xFF, ( byte ) 0xA4, 0x0E, 0x04, 0x04, 't', 'e', 's', 't',
                 0x30, 0x06, ( byte ) 0x82, 0x01, 'a', ( byte ) 0x81, 0x01, 'b', 0x30, 0x02, // AttributeDescriptionList
-                                                                                            // ::=
-                                                                                            // SEQUENCE
-                                                                                            // OF
-                                                                                            // AttributeDescription
+                // ::=
+                // SEQUENCE
+                // OF
+                // AttributeDescription
                 0x04, 0x00 };
 
         Asn1Decoder ldapDecoder = new Asn1Decoder();
@@ -1768,16 +1840,22 @@ public class SearchRequestSubstringTest
     public void testDecodeSearchRequestSubstringFilterTwoInitials()
     {
         byte[] asn1BER = new byte[]
-            { 0x30, 0x49, 0x02, 0x01, 0x04, // messageID
-                0x63, 0x44, 0x04, 0x1F, // baseObject LDAPDN,
+            { 0x30, 0x49,
+                0x02,
+                0x01,
+                0x04, // messageID
+                0x63,
+                0x44,
+                0x04,
+                0x1F, // baseObject LDAPDN,
                 'u', 'i', 'd', '=', 'a', 'k', 'a', 'r', 'a', 's', 'u', 'l', 'u', ',', 'd', 'c', '=', 'e', 'x', 'a',
                 'm', 'p', 'l', 'e', ',', 'd', 'c', '=', 'c', 'o', 'm', 0x0A, 0x01, 0x01, 0x0A, 0x01, 0x03, 0x02, 0x01,
                 0x00, 0x02, 0x01, 0x00, 0x01, 0x01, ( byte ) 0xFF, ( byte ) 0xA4, 0x0E, 0x04, 0x04, 't', 'e', 's', 't',
                 0x30, 0x06, ( byte ) 0x80, 0x01, 'a', ( byte ) 0x80, 0x01, 'b', 0x30, 0x02, // AttributeDescriptionList
-                                                                                            // ::=
-                                                                                            // SEQUENCE
-                                                                                            // OF
-                                                                                            // AttributeDescription
+                // ::=
+                // SEQUENCE
+                // OF
+                // AttributeDescription
                 0x04, 0x00 };
 
         Asn1Decoder ldapDecoder = new Asn1Decoder();
@@ -1811,16 +1889,22 @@ public class SearchRequestSubstringTest
     public void testDecodeSearchRequestSubstringFilterTwoFinals()
     {
         byte[] asn1BER = new byte[]
-            { 0x30, 0x49, 0x02, 0x01, 0x04, // messageID
-                0x63, 0x44, 0x04, 0x1F, // baseObject LDAPDN,
+            { 0x30, 0x49,
+                0x02,
+                0x01,
+                0x04, // messageID
+                0x63,
+                0x44,
+                0x04,
+                0x1F, // baseObject LDAPDN,
                 'u', 'i', 'd', '=', 'a', 'k', 'a', 'r', 'a', 's', 'u', 'l', 'u', ',', 'd', 'c', '=', 'e', 'x', 'a',
                 'm', 'p', 'l', 'e', ',', 'd', 'c', '=', 'c', 'o', 'm', 0x0A, 0x01, 0x01, 0x0A, 0x01, 0x03, 0x02, 0x01,
                 0x00, 0x02, 0x01, 0x00, 0x01, 0x01, ( byte ) 0xFF, ( byte ) 0xA4, 0x0E, 0x04, 0x04, 't', 'e', 's', 't',
                 0x30, 0x06, ( byte ) 0x82, 0x01, 'a', ( byte ) 0x82, 0x01, 'b', 0x30, 0x02, // AttributeDescriptionList
-                                                                                            // ::=
-                                                                                            // SEQUENCE
-                                                                                            // OF
-                                                                                            // AttributeDescription
+                // ::=
+                // SEQUENCE
+                // OF
+                // AttributeDescription
                 0x04, 0x00 };
 
         Asn1Decoder ldapDecoder = new Asn1Decoder();

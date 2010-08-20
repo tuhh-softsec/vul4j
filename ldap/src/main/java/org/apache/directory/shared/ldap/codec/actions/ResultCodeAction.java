@@ -29,9 +29,9 @@ import org.apache.directory.shared.asn1.util.IntegerDecoder;
 import org.apache.directory.shared.asn1.util.IntegerDecoderException;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
-import org.apache.directory.shared.ldap.codec.LdapResponseCodec;
-import org.apache.directory.shared.ldap.codec.LdapResultCodec;
+import org.apache.directory.shared.ldap.message.LdapResult;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
+import org.apache.directory.shared.ldap.message.ResultResponse;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,10 +50,12 @@ public class ResultCodeAction extends GrammarAction
     /** Speedup for logs */
     private static final boolean IS_DEBUG = log.isDebugEnabled();
 
+
     public ResultCodeAction()
     {
         super( "Store resultCode" );
     }
+
 
     /**
      * The initialization action
@@ -61,11 +63,6 @@ public class ResultCodeAction extends GrammarAction
     public void action( IAsn1Container container ) throws DecoderException
     {
         LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-        LdapResponseCodec response = ldapMessageContainer.getLdapResponse();
-        LdapResultCodec ldapResult = new LdapResultCodec();
-        response.setLdapResult( ldapResult );
-
-        // We don't have to allocate a LdapResult first.
 
         // The current TLV should be a integer
         // We get it and store it in MessageId
@@ -76,7 +73,8 @@ public class ResultCodeAction extends GrammarAction
 
         try
         {
-            resultCode = ResultCodeEnum.getResultCode( IntegerDecoder.parse( value, 0, ResultCodeEnum.UNKNOWN.getResultCode() ) );
+            resultCode = ResultCodeEnum.getResultCode( IntegerDecoder.parse( value, 0, ResultCodeEnum.UNKNOWN
+                .getResultCode() ) );
         }
         catch ( IntegerDecoderException ide )
         {
@@ -129,12 +127,11 @@ public class ResultCodeAction extends GrammarAction
             case CANNOT_CANCEL:
             case TOO_LATE:
             case NO_SUCH_OPERATION:
-                ldapResult.setResultCode( resultCode );
                 break;
 
             default:
                 log.warn( "The resultCode " + resultCode + " is unknown." );
-                ldapResult.setResultCode( ResultCodeEnum.OTHER );
+                resultCode = ResultCodeEnum.OTHER;
                 break;
         }
 
@@ -142,5 +139,9 @@ public class ResultCodeAction extends GrammarAction
         {
             log.debug( "The result code is set to " + resultCode );
         }
+
+        ResultResponse response = ( ResultResponse ) ldapMessageContainer.getMessage();
+        LdapResult ldapResult = response.getLdapResult();
+        ldapResult.setResultCode( resultCode );
     }
 }

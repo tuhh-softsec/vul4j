@@ -20,21 +20,14 @@
 package org.apache.directory.shared.ldap.codec;
 
 
-import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
-import java.nio.channels.Channels;
-import java.nio.channels.WritableByteChannel;
 
 import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.asn1.codec.stateful.EncoderCallback;
-import org.apache.directory.shared.asn1.codec.stateful.EncoderMonitor;
-import org.apache.directory.shared.asn1.codec.stateful.StatefulEncoder;
-import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.message.spi.Provider;
 import org.apache.directory.shared.ldap.message.spi.ProviderEncoder;
 import org.apache.directory.shared.ldap.message.spi.ProviderException;
-import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,21 +39,14 @@ import org.slf4j.LoggerFactory;
  */
 public class LdapEncoder implements ProviderEncoder
 {
-    //TM private static long cumul = 0L;
-    //TM private static long count = 0L;
-    //TM private Object lock = new Object();
-
     /** The logger */
     private static Logger log = LoggerFactory.getLogger( LdapEncoder.class );
 
     /** A speedup for logger */
     private static final boolean IS_DEBUG = log.isDebugEnabled();
-    
+
     /** The associated Provider */
     final Provider provider;
-
-    /** The callback to call when the encoding is done */
-    private EncoderCallback encodeCallback;
 
 
     /**
@@ -71,7 +57,6 @@ public class LdapEncoder implements ProviderEncoder
     public LdapEncoder( Provider provider )
     {
         this.provider = provider;
-        encodeCallback = new OutputCallback();
     }
 
 
@@ -85,23 +70,6 @@ public class LdapEncoder implements ProviderEncoder
      */
     public void encodeBlocking( Object lock, OutputStream out, Object obj ) throws ProviderException
     {
-        try
-        {
-            if ( IS_DEBUG )
-            {
-                log.debug( "Encoding this LdapMessage : " + obj );
-            }
-
-            ( ( OutputCallback ) encodeCallback ).attach( out );
-            encodeCallback.encodeOccurred( null, ( ( LdapMessageCodec ) obj ).encode() );
-        }
-        catch ( EncoderException e )
-        {
-            String msg = I18n.err( I18n.ERR_04065, obj, e.getLocalizedMessage() );
-            log.error( msg );
-            ProviderException pe = new ProviderException( provider, msg );
-            throw pe;
-        }
     }
 
 
@@ -115,66 +83,7 @@ public class LdapEncoder implements ProviderEncoder
      */
     public ByteBuffer encodeBlocking( Object obj ) throws ProviderException
     {
-        try
-        {
-            if ( IS_DEBUG )
-            {
-                log.debug( "Encoding this LdapMessage : " + obj );
-            }
-
-            ByteBuffer pdu = ( ( LdapMessageCodec ) obj ).encode();
-
-            if ( IS_DEBUG )
-            {
-                log.debug( "Encoded PDU : " + StringTools.dumpBytes( pdu.array() ) );
-            }
-
-            pdu.flip();
-            return pdu;
-        }
-        catch ( EncoderException e )
-        {
-            String msg = I18n.err( I18n.ERR_04065, obj, e.getLocalizedMessage() );
-            log.error( msg );
-            ProviderException pe = new ProviderException( provider, msg );
-            throw pe;
-        }
-    }
-
-
-    /**
-     * Encodes a LdapMessage, and return a byte array containing the resulting
-     * PDU
-     * 
-     * @param obj The LdapMessage to encode
-     * @return The byte[] containing the PDU
-     * @throws ProviderException If anything went wrong
-     */
-    public byte[] encodeToArray( Object obj ) throws ProviderException
-    {
-        try
-        {
-            if ( IS_DEBUG )
-            {
-                log.debug( "Encoding this LdapMessage : " + obj );
-            }
-
-            byte[] pdu = ( ( LdapMessageCodec ) obj ).encode().array();
-
-            if ( IS_DEBUG )
-            {
-                log.debug( "Encoded PDU : " + StringTools.dumpBytes( pdu ) );
-            }
-
-            return pdu;
-        }
-        catch ( EncoderException e )
-        {
-            String msg = I18n.err( I18n.ERR_04065,  obj, e.getLocalizedMessage() );
-            log.error( msg );
-            ProviderException pe = new ProviderException( provider, msg );
-            throw pe;
-        }
+        return null;
     }
 
 
@@ -195,25 +104,8 @@ public class LdapEncoder implements ProviderEncoder
      * @param obj The LdapMessage to encode
      * @throws EncoderException If anything went wrong
      */
-    public void encode( Object obj ) throws EncoderException
+    public void encode( Object request ) throws EncoderException
     {
-        //TM long t0 = System.nanoTime();
-        ByteBuffer encoded = encodeBlocking( obj );
-        encodeCallback.encodeOccurred( null, encoded );
-        //TM long t1 = System.nanoTime();
-        
-        //TM synchronized (lock)
-        //TM {
-        //TM     cumul += (t1 - t0);
-        //TM     count++;
-        //TM    
-        //TM
-        //TM     if ( count % 1000L == 0)
-        //TM     {
-        //TM         System.out.println( "Encode cost : " + (cumul/count) );
-        //TM         cumul = 0L;
-        //TM     }
-        //TM }
     }
 
 
@@ -224,68 +116,5 @@ public class LdapEncoder implements ProviderEncoder
      */
     public void setCallback( EncoderCallback cb )
     {
-        encodeCallback = cb;
-    }
-
-
-    /**
-     * Not used ...
-     * 
-     * @deprecated
-     */
-    public void setEncoderMonitor( EncoderMonitor monitor )
-    {
-    }
-
-    /**
-     * The inner class used to write the PDU to a channel.
-     */
-    class OutputCallback implements EncoderCallback
-    {
-        /** The channel in which the PDU will be written */
-        private WritableByteChannel channel = null;
-
-
-        /**
-         * Callback to deliver a fully encoded object.
-         * 
-         * @param encoder the stateful encoder driving the callback
-         * @param encoded the object that was encoded
-         */
-        public void encodeOccurred( StatefulEncoder encoder, Object encoded )
-        {
-            try
-            {
-                ( ( ByteBuffer ) encoded ).flip();
-                channel.write( ( ByteBuffer ) encoded );
-            }
-            catch ( IOException e )
-            {
-                ProviderException pe = new ProviderException( provider, I18n.err( I18n.ERR_04065, "", e.getLocalizedMessage() ) );
-                throw pe;
-            }
-        }
-
-
-        /**
-         * Associate a channel to the callback
-         * 
-         * @param channel The channel to use to write a PDU
-         */
-        void attach( WritableByteChannel channel )
-        {
-            this.channel = channel;
-        }
-
-
-        /**
-         * Associate a OutputStream to the callback. A channel will be created.
-         * 
-         * @param out The OutputStream to use
-         */
-        void attach( OutputStream out )
-        {
-            this.channel = Channels.newChannel( out );
-        }
     }
 }

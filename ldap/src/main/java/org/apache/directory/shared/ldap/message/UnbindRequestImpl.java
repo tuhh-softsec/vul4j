@@ -19,9 +19,8 @@
  */
 package org.apache.directory.shared.ldap.message;
 
+
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.message.internal.InternalAbstractRequest;
-import org.apache.directory.shared.ldap.message.internal.InternalUnbindRequest;
 
 
 /**
@@ -29,7 +28,7 @@ import org.apache.directory.shared.ldap.message.internal.InternalUnbindRequest;
  * 
  * @author <a href="mailto:dev@directory.apache.org"> Apache Directory Project</a>
  */
-public class UnbindRequestImpl extends InternalAbstractRequest implements InternalUnbindRequest
+public class UnbindRequestImpl extends AbstractRequest implements UnbindRequest
 {
     static final long serialVersionUID = -6217184085100410116L;
 
@@ -39,10 +38,9 @@ public class UnbindRequestImpl extends InternalAbstractRequest implements Intern
      * outer envelope to disconnect and end a client session on the server
      * without producing any response.
      * 
-     * @param id
-     *            the sequential message identifier.
+     * @param id the sequential message identifier.
      */
-    public UnbindRequestImpl(final int id)
+    public UnbindRequestImpl( final int id )
     {
         super( id, TYPE, false );
     }
@@ -55,5 +53,23 @@ public class UnbindRequestImpl extends InternalAbstractRequest implements Intern
     public void abandon()
     {
         throw new UnsupportedOperationException( I18n.err( I18n.ERR_04185 ) );
+    }
+
+
+    /**
+     * Get a String representation of a UnBindRequest
+     * 
+     * @return A UnBindRequest String
+     */
+    public String toString()
+    {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append( "    UnBind Request" );
+
+        // The controls
+        sb.append( super.toString() );
+
+        return sb.toString();
     }
 }

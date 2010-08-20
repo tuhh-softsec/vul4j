@@ -19,16 +19,15 @@
  */
 package org.apache.directory.shared.ldap.message;
 
-import org.apache.directory.shared.ldap.message.internal.InternalAbstractResultResponse;
-import org.apache.directory.shared.ldap.message.internal.InternalModifyResponse;
-
 
 /**
- * Lockable ModifyResponse implementation
+ * ModifyResponse implementation
  * 
  */
-public class ModifyResponseImpl extends InternalAbstractResultResponse implements InternalModifyResponse
+public class ModifyResponseImpl extends AbstractResultResponse implements ModifyResponse
 {
+    /** The encoded modifyResponse length */
+    private int modifyResponseLength;
 
     // ------------------------------------------------------------------------
     // Constructors
@@ -38,13 +37,57 @@ public class ModifyResponseImpl extends InternalAbstractResultResponse implement
 
 
     /**
-     * Creates a Lockable ModifyResponse as a reply to an ModifyRequest.
-     * 
-     * @param id
-     *            the sequence id for this response
+     * Creates a ModifyResponse as a reply to an ModifyRequest.
      */
-    public ModifyResponseImpl(final int id)
+    public ModifyResponseImpl()
+    {
+        super( -1, TYPE );
+    }
+
+
+    /**
+     * Creates a ModifyResponse as a reply to an ModifyRequest.
+     * 
+     * @param id the sequence id for this response
+     */
+    public ModifyResponseImpl( final int id )
     {
         super( id, TYPE );
+    }
+
+
+    /**
+     * Stores the encoded length for the ModifyResponse
+     * @param modifyResponseLength The encoded length
+     */
+    /*No qualifier*/void setModifyResponseLength( int modifyResponseLength )
+    {
+        this.modifyResponseLength = modifyResponseLength;
+    }
+
+
+    /**
+     * @return The encoded ModifyResponse's length
+     */
+    /*No qualifier*/int getModifyResponseLength()
+    {
+        return modifyResponseLength;
+    }
+
+
+    /**
+     * Get a String representation of a ModifyResponse
+     * 
+     * @return A ModifyResponse String
+     */
+    public String toString()
+    {
+
+        StringBuilder sb = new StringBuilder();
+
+        sb.append( "    Modify Response\n" );
+        sb.append( super.toString() );
+
+        return sb.toString();
     }
 }

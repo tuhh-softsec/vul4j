@@ -22,8 +22,6 @@ package org.apache.directory.shared.ldap.message;
 
 import java.util.Arrays;
 
-import org.apache.directory.shared.ldap.message.internal.InternalAbstractResultResponse;
-import org.apache.directory.shared.ldap.message.internal.InternalBindResponse;
 import org.apache.directory.shared.ldap.util.StringTools;
 
 
@@ -32,23 +30,33 @@ import org.apache.directory.shared.ldap.util.StringTools;
  * 
  * @author <a href="mailto:dev@directory.apache.org"> Apache Directory Project</a>
  */
-public class BindResponseImpl extends InternalAbstractResultResponse implements InternalBindResponse
+public class BindResponseImpl extends AbstractResultResponse implements BindResponse
 {
     static final long serialVersionUID = -5146809476518669755L;
 
     /** optional property holding SASL authentication response parameters */
     private byte[] serverSaslCreds;
 
+    /** The encoded bindResponse length */
+    private int bindResponseLength;
+
 
     // ------------------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------------------
+    /**
+     * Creates a BindResponse as a reply to an BindRequest.
+     */
+    public BindResponseImpl()
+    {
+        super( -1, TYPE );
+    }
+
 
     /**
-     * Creates a Lockable AddResponse as a reply to an AddRequest.
+     * Creates a BindResponse as a reply to an BindRequest.
      * 
-     * @param id
-     *            the session unique message id
+     * @param id the session unique message id
      */
     public BindResponseImpl( final int id )
     {
@@ -135,7 +143,7 @@ public class BindResponseImpl extends InternalAbstractResultResponse implements 
             return true;
         }
 
-        if ( ( obj == null ) || !( obj instanceof InternalBindResponse ) )
+        if ( ( obj == null ) || !( obj instanceof BindResponse ) )
         {
             return false;
         }
@@ -145,7 +153,7 @@ public class BindResponseImpl extends InternalAbstractResultResponse implements 
             return false;
         }
 
-        InternalBindResponse response = ( InternalBindResponse ) obj;
+        BindResponse response = ( BindResponse ) obj;
         byte[] creds = response.getServerSaslCreds();
 
         if ( serverSaslCreds == null )
@@ -165,13 +173,33 @@ public class BindResponseImpl extends InternalAbstractResultResponse implements 
 
 
     /**
+     * Stores the encoded length for the BindResponse
+     * @param bindResponseLength The encoded length
+     */
+    /* No qualifier*/void setBindResponseLength( int bindResponseLength )
+    {
+        this.bindResponseLength = bindResponseLength;
+    }
+
+
+    /**
+     * @return The encoded BindResponse's length
+     */
+    /* No qualifier */int getBindResponseLength()
+    {
+        return bindResponseLength;
+    }
+
+
+    /**
      * Get a String representation of a BindResponse
      * 
      * @return A BindResponse String
      */
     public String toString()
     {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
+
         sb.append( "    BindResponse\n" );
         sb.append( super.toString() );
 
@@ -183,5 +211,4 @@ public class BindResponseImpl extends InternalAbstractResultResponse implements 
 
         return sb.toString();
     }
-
 }

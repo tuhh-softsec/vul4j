@@ -25,7 +25,6 @@ import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.HashMap;
 
-import org.apache.directory.shared.asn1.Asn1Object;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.primitives.OID;
 import org.apache.directory.shared.dsmlv2.AbstractGrammar;
@@ -42,16 +41,7 @@ import org.apache.directory.shared.dsmlv2.request.BatchRequest.ResponseOrder;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.AttributeValueAssertion;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
-import org.apache.directory.shared.ldap.codec.abandon.AbandonRequestCodec;
-import org.apache.directory.shared.ldap.codec.add.AddRequestCodec;
-import org.apache.directory.shared.ldap.codec.bind.BindRequestCodec;
-import org.apache.directory.shared.ldap.codec.bind.SimpleAuthentication;
-import org.apache.directory.shared.ldap.codec.compare.CompareRequestCodec;
 import org.apache.directory.shared.ldap.codec.controls.ControlImpl;
-import org.apache.directory.shared.ldap.codec.del.DelRequestCodec;
-import org.apache.directory.shared.ldap.codec.extended.ExtendedRequestCodec;
-import org.apache.directory.shared.ldap.codec.modify.ModifyRequestCodec;
-import org.apache.directory.shared.ldap.codec.modifyDn.ModifyDNRequestCodec;
 import org.apache.directory.shared.ldap.codec.search.AndFilter;
 import org.apache.directory.shared.ldap.codec.search.AttributeValueAssertionFilter;
 import org.apache.directory.shared.ldap.codec.search.ExtensibleMatchFilter;
@@ -59,7 +49,6 @@ import org.apache.directory.shared.ldap.codec.search.Filter;
 import org.apache.directory.shared.ldap.codec.search.NotFilter;
 import org.apache.directory.shared.ldap.codec.search.OrFilter;
 import org.apache.directory.shared.ldap.codec.search.PresentFilter;
-import org.apache.directory.shared.ldap.codec.search.SearchRequestCodec;
 import org.apache.directory.shared.ldap.codec.search.SubstringFilter;
 import org.apache.directory.shared.ldap.entry.BinaryValue;
 import org.apache.directory.shared.ldap.entry.StringValue;
@@ -67,11 +56,29 @@ import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.filter.SearchScope;
+import org.apache.directory.shared.ldap.message.AbandonRequest;
+import org.apache.directory.shared.ldap.message.AbandonRequestImpl;
+import org.apache.directory.shared.ldap.message.AddRequest;
+import org.apache.directory.shared.ldap.message.AddRequestImpl;
+import org.apache.directory.shared.ldap.message.AliasDerefMode;
+import org.apache.directory.shared.ldap.message.BindRequest;
+import org.apache.directory.shared.ldap.message.BindRequestImpl;
+import org.apache.directory.shared.ldap.message.CompareRequest;
+import org.apache.directory.shared.ldap.message.CompareRequestImpl;
+import org.apache.directory.shared.ldap.message.DeleteRequest;
+import org.apache.directory.shared.ldap.message.DeleteRequestImpl;
+import org.apache.directory.shared.ldap.message.ExtendedRequest;
+import org.apache.directory.shared.ldap.message.ExtendedRequestImpl;
+import org.apache.directory.shared.ldap.message.ModifyDnRequest;
+import org.apache.directory.shared.ldap.message.ModifyDnRequestImpl;
+import org.apache.directory.shared.ldap.message.ModifyRequest;
+import org.apache.directory.shared.ldap.message.ModifyRequestImpl;
+import org.apache.directory.shared.ldap.message.SearchRequest;
+import org.apache.directory.shared.ldap.message.SearchRequestImpl;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.name.RDN;
 import org.apache.directory.shared.ldap.util.Base64;
-import org.apache.directory.shared.ldap.util.StringTools;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -1131,7 +1138,7 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            AbandonRequestCodec abandonRequest = new AbandonRequestCodec();
+            AbandonRequest abandonRequest = new AbandonRequestImpl();
             container.getBatchRequest().addRequest( abandonRequest );
 
             XmlPullParser xpp = container.getParser();
@@ -1148,7 +1155,7 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
             {
                 if ( ParserUtils.isRequestIdNeeded( container ) )
                 {
-                    throw new XmlPullParserException( I18n.err(I18n.ERR_03016 ), xpp, null );
+                    throw new XmlPullParserException( I18n.err( I18n.ERR_03016 ), xpp, null );
                 }
             }
             // abandonID
@@ -1157,16 +1164,16 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
             {
                 try
                 {
-                    abandonRequest.setAbandonedMessageId( Integer.parseInt( attributeValue ) );
+                    abandonRequest.setAbandoned( Integer.parseInt( attributeValue ) );
                 }
                 catch ( NumberFormatException e )
                 {
-                    throw new XmlPullParserException( I18n.err(I18n.ERR_03017 ), xpp, null );
+                    throw new XmlPullParserException( I18n.err( I18n.ERR_03017 ), xpp, null );
                 }
             }
             else
             {
-                throw new XmlPullParserException( I18n.err(I18n.ERR_03018 ), xpp, null );
+                throw new XmlPullParserException( I18n.err( I18n.ERR_03018 ), xpp, null );
             }
         }
     };
@@ -1178,9 +1185,8 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            AddRequestCodec addRequest = new AddRequestCodec();
+            AddRequest addRequest = new AddRequestImpl();
             container.getBatchRequest().addRequest( addRequest );
-            addRequest.initEntry(); // TODO maybe delay that to the first attribute discovery
 
             XmlPullParser xpp = container.getParser();
 
@@ -1196,7 +1202,7 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
             {
                 if ( ParserUtils.isRequestIdNeeded( container ) )
                 {
-                    throw new XmlPullParserException( I18n.err(I18n.ERR_03016 ), xpp, null );
+                    throw new XmlPullParserException( I18n.err( I18n.ERR_03016 ), xpp, null );
                 }
             }
             // dn
@@ -1214,7 +1220,7 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
             }
             else
             {
-                throw new XmlPullParserException( I18n.err(I18n.ERR_03019 ), xpp, null );
+                throw new XmlPullParserException( I18n.err( I18n.ERR_03019 ), xpp, null );
             }
         }
     };
@@ -1226,7 +1232,7 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            AddRequestCodec addRequest = ( AddRequestCodec ) container.getBatchRequest().getCurrentRequest();
+            AddRequest addRequest = ( AddRequest ) container.getBatchRequest().getCurrentRequest();
 
             XmlPullParser xpp = container.getParser();
 
@@ -1242,12 +1248,12 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
                 }
                 catch ( LdapException e )
                 {
-                    throw new XmlPullParserException( I18n.err(I18n.ERR_03020 ), xpp, e );
+                    throw new XmlPullParserException( I18n.err( I18n.ERR_03020 ), xpp, e );
                 }
             }
             else
             {
-                throw new XmlPullParserException( I18n.err(I18n.ERR_03012 ), xpp, null );
+                throw new XmlPullParserException( I18n.err( I18n.ERR_03012 ), xpp, null );
             }
         }
     };
@@ -1259,7 +1265,7 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            AddRequestCodec addRequest = ( AddRequestCodec ) container.getBatchRequest().getCurrentRequest();
+            AddRequest addRequest = ( AddRequest ) container.getBatchRequest().getCurrentRequest();
 
             XmlPullParser xpp = container.getParser();
             try
@@ -1283,7 +1289,7 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
             }
             catch ( IOException e )
             {
-                throw new XmlPullParserException( I18n.err(I18n.ERR_03008, e.getMessage() ), xpp, null );
+                throw new XmlPullParserException( I18n.err( I18n.ERR_03008, e.getMessage() ), xpp, null );
             }
         }
     };
@@ -1295,13 +1301,11 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            BindRequestCodec authRequest = new BindRequestCodec();
+            BindRequest authRequest = new BindRequestImpl();
             container.getBatchRequest().addRequest( authRequest );
 
-            SimpleAuthentication simpleAuthentication = new SimpleAuthentication();
-            simpleAuthentication.setSimple( StringTools.EMPTY_BYTES );
-            authRequest.setAuthentication( simpleAuthentication );
-            authRequest.setVersion( 3 );
+            authRequest.setSimple( true );
+            authRequest.setVersion3( true );
 
             XmlPullParser xpp = container.getParser();
 
@@ -1309,6 +1313,7 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
             String attributeValue;
             // requestID
             attributeValue = xpp.getAttributeValue( "", "requestID" );
+
             if ( attributeValue != null )
             {
                 authRequest.setMessageId( ParserUtils.parseAndVerifyRequestID( attributeValue, xpp ) );
@@ -1317,11 +1322,12 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
             {
                 if ( ParserUtils.isRequestIdNeeded( container ) )
                 {
-                    throw new XmlPullParserException( I18n.err(I18n.ERR_03016 ), xpp, null );
+                    throw new XmlPullParserException( I18n.err( I18n.ERR_03016 ), xpp, null );
                 }
             }
             // principal
             attributeValue = xpp.getAttributeValue( "", "principal" );
+
             if ( attributeValue != null )
             {
                 try
@@ -1347,7 +1353,7 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            CompareRequestCodec compareRequest = new CompareRequestCodec();
+            CompareRequest compareRequest = new CompareRequestImpl();
             container.getBatchRequest().addRequest( compareRequest );
 
             XmlPullParser xpp = container.getParser();
@@ -1356,6 +1362,7 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
             String attributeValue;
             // requestID
             attributeValue = xpp.getAttributeValue( "", "requestID" );
+
             if ( attributeValue != null )
             {
                 compareRequest.setMessageId( ParserUtils.parseAndVerifyRequestID( attributeValue, xpp ) );
@@ -1367,13 +1374,15 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
                     throw new XmlPullParserException( I18n.err( I18n.ERR_03016 ), xpp, null );
                 }
             }
+
             // dn
             attributeValue = xpp.getAttributeValue( "", "dn" );
+
             if ( attributeValue != null )
             {
                 try
                 {
-                    compareRequest.setEntry( new DN( attributeValue ) );
+                    compareRequest.setName( new DN( attributeValue ) );
                 }
                 catch ( LdapInvalidDnException e )
                 {
@@ -1394,18 +1403,19 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            CompareRequestCodec compareRequest = ( CompareRequestCodec ) container.getBatchRequest().getCurrentRequest();
+            CompareRequest compareRequest = ( CompareRequest ) container.getBatchRequest().getCurrentRequest();
 
             XmlPullParser xpp = container.getParser();
 
             // Checking and adding the request's attributes
-            String attributeValue;
-            // name
-            attributeValue = xpp.getAttributeValue( "", "name" );
-            if ( attributeValue != null )
-            {
-                compareRequest.setAttributeDesc( attributeValue );
+            String attributeId;
 
+            // name
+            attributeId = xpp.getAttributeValue( "", "name" );
+
+            if ( attributeId != null )
+            {
+                compareRequest.setAttributeId( attributeId );
             }
             else
             {
@@ -1421,9 +1431,10 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            CompareRequestCodec compareRequest = ( CompareRequestCodec ) container.getBatchRequest().getCurrentRequest();
+            CompareRequest compareRequest = ( CompareRequest ) container.getBatchRequest().getCurrentRequest();
 
             XmlPullParser xpp = container.getParser();
+
             try
             {
                 // We have to catch the type Attribute Value before going to the next Text node
@@ -1431,6 +1442,7 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
 
                 // Getting the value
                 String nextText = xpp.nextText();
+
                 if ( !nextText.equals( "" ) )
                 {
                     if ( ParserUtils.isBase64BinaryValue( xpp, typeValue ) )
@@ -1439,7 +1451,6 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
                     }
                     else
                     {
-
                         compareRequest.setAssertionValue( nextText.trim() );
                     }
                 }
@@ -1458,7 +1469,7 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            DelRequestCodec delRequest = new DelRequestCodec();
+            DeleteRequest delRequest = new DeleteRequestImpl();
             container.getBatchRequest().addRequest( delRequest );
 
             XmlPullParser xpp = container.getParser();
@@ -1467,6 +1478,7 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
             String attributeValue;
             // requestID
             attributeValue = xpp.getAttributeValue( "", "requestID" );
+
             if ( attributeValue != null )
             {
                 delRequest.setMessageId( ParserUtils.parseAndVerifyRequestID( attributeValue, xpp ) );
@@ -1478,13 +1490,15 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
                     throw new XmlPullParserException( I18n.err( I18n.ERR_03016 ), xpp, null );
                 }
             }
+
             // dn
             attributeValue = xpp.getAttributeValue( "", "dn" );
+
             if ( attributeValue != null )
             {
                 try
                 {
-                    delRequest.setEntry( new DN( attributeValue ) );
+                    delRequest.setName( new DN( attributeValue ) );
                 }
                 catch ( LdapInvalidDnException e )
                 {
@@ -1505,7 +1519,7 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            ExtendedRequestCodec extendedRequest = new ExtendedRequestCodec();
+            ExtendedRequest extendedRequest = new ExtendedRequestImpl();
             container.getBatchRequest().addRequest( extendedRequest );
 
             XmlPullParser xpp = container.getParser();
@@ -1514,6 +1528,7 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
             String attributeValue;
             // requestID
             attributeValue = xpp.getAttributeValue( "", "requestID" );
+
             if ( attributeValue != null )
             {
                 extendedRequest.setMessageId( ParserUtils.parseAndVerifyRequestID( attributeValue, xpp ) );
@@ -1535,28 +1550,35 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            ExtendedRequestCodec extendedRequest = ( ExtendedRequestCodec ) container.getBatchRequest().getCurrentRequest();
+            ExtendedRequest extendedRequest = ( ExtendedRequest ) container.getBatchRequest().getCurrentRequest();
 
             XmlPullParser xpp = container.getParser();
+
             try
             {
                 String nextText = xpp.nextText();
+
                 if ( nextText.equals( "" ) )
                 {
                     throw new XmlPullParserException( I18n.err( I18n.ERR_03022 ), xpp, null );
                 }
                 else
                 {
-                    extendedRequest.setRequestName( new OID( nextText.trim() ) );
+                    String oid = nextText.trim();
+
+                    if ( OID.isOID( oid ) )
+                    {
+                        extendedRequest.setRequestName( nextText.trim() );
+                    }
+                    else
+                    {
+                        throw new XmlPullParserException( "Bad oid : " + oid, xpp, null );
+                    }
                 }
             }
             catch ( IOException e )
             {
                 throw new XmlPullParserException( I18n.err( I18n.ERR_03008, e.getMessage() ), xpp, null );
-            }
-            catch ( DecoderException e )
-            {
-                throw new XmlPullParserException( e.getMessage(), xpp, null );
             }
         }
     };
@@ -1568,9 +1590,10 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            ExtendedRequestCodec extendedRequest = ( ExtendedRequestCodec ) container.getBatchRequest().getCurrentRequest();
+            ExtendedRequest extendedRequest = ( ExtendedRequest ) container.getBatchRequest().getCurrentRequest();
 
             XmlPullParser xpp = container.getParser();
+
             try
             {
                 // We have to catch the type Attribute Value before going to the next Text node
@@ -1578,6 +1601,7 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
 
                 // Getting the value
                 String nextText = xpp.nextText();
+
                 if ( !nextText.equals( "" ) )
                 {
                     if ( ParserUtils.isBase64BinaryValue( xpp, typeValue ) )
@@ -1604,7 +1628,7 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            ModifyDNRequestCodec modifyDNRequest = new ModifyDNRequestCodec();
+            ModifyDnRequest modifyDNRequest = new ModifyDnRequestImpl();
             container.getBatchRequest().addRequest( modifyDNRequest );
 
             XmlPullParser xpp = container.getParser();
@@ -1613,6 +1637,7 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
             String attributeValue;
             // requestID
             attributeValue = xpp.getAttributeValue( "", "requestID" );
+
             if ( attributeValue != null )
             {
                 modifyDNRequest.setMessageId( ParserUtils.parseAndVerifyRequestID( attributeValue, xpp ) );
@@ -1624,13 +1649,15 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
                     throw new XmlPullParserException( I18n.err( I18n.ERR_03016 ), xpp, null );
                 }
             }
+
             // dn
             attributeValue = xpp.getAttributeValue( "", "dn" );
+
             if ( attributeValue != null )
             {
                 try
                 {
-                    modifyDNRequest.setEntry( new DN( attributeValue ) );
+                    modifyDNRequest.setName( new DN( attributeValue ) );
                 }
                 catch ( LdapInvalidDnException e )
                 {
@@ -1641,13 +1668,15 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
             {
                 throw new XmlPullParserException( I18n.err( I18n.ERR_03019 ), xpp, null );
             }
+
             // newrdn
             attributeValue = xpp.getAttributeValue( "", "newrdn" );
+
             if ( attributeValue != null )
             {
                 try
                 {
-                    modifyDNRequest.setNewRDN( new RDN( attributeValue ) );
+                    modifyDNRequest.setNewRdn( new RDN( attributeValue ) );
                 }
                 catch ( LdapInvalidDnException e )
                 {
@@ -1658,29 +1687,33 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
             {
                 throw new XmlPullParserException( I18n.err( I18n.ERR_03023 ), xpp, null );
             }
+
             // deleteoldrdn
             attributeValue = xpp.getAttributeValue( "", "deleteoldrdn" );
+
             if ( attributeValue != null )
             {
-                if ( ( attributeValue.equals( "true" ) ) || ( attributeValue.equals( "1" ) ) )
+                if ( ( attributeValue.equalsIgnoreCase( "true" ) ) || ( attributeValue.equals( "1" ) ) )
                 {
-                    modifyDNRequest.setDeleteOldRDN( true );
+                    modifyDNRequest.setDeleteOldRdn( true );
                 }
-                else if ( ( attributeValue.equals( "false" ) ) || ( attributeValue.equals( "0" ) ) )
+                else if ( ( attributeValue.equalsIgnoreCase( "false" ) ) || ( attributeValue.equals( "0" ) ) )
                 {
-                    modifyDNRequest.setDeleteOldRDN( false );
+                    modifyDNRequest.setDeleteOldRdn( false );
                 }
                 else
                 {
-                    throw new XmlPullParserException(I18n.err( I18n.ERR_03024 ), xpp, null );
+                    throw new XmlPullParserException( I18n.err( I18n.ERR_03024 ), xpp, null );
                 }
             }
             else
             {
-                modifyDNRequest.setDeleteOldRDN( true );
+                modifyDNRequest.setDeleteOldRdn( true );
             }
+
             // newsuperior
             attributeValue = xpp.getAttributeValue( "", "newSuperior" );
+
             if ( attributeValue != null )
             {
                 try
@@ -1702,10 +1735,8 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            ModifyRequestCodec modifyRequest = new ModifyRequestCodec();
+            ModifyRequest modifyRequest = new ModifyRequestImpl();
             container.getBatchRequest().addRequest( modifyRequest );
-
-            modifyRequest.initModifications();
 
             XmlPullParser xpp = container.getParser();
 
@@ -1713,6 +1744,7 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
             String attributeValue;
             // requestID
             attributeValue = xpp.getAttributeValue( "", "requestID" );
+
             if ( attributeValue != null )
             {
                 modifyRequest.setMessageId( ParserUtils.parseAndVerifyRequestID( attributeValue, xpp ) );
@@ -1724,13 +1756,15 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
                     throw new XmlPullParserException( I18n.err( I18n.ERR_03016 ), xpp, null );
                 }
             }
+
             // dn
             attributeValue = xpp.getAttributeValue( "", "dn" );
+
             if ( attributeValue != null )
             {
                 try
                 {
-                    modifyRequest.setObject( new DN( attributeValue ) );
+                    modifyRequest.setName( new DN( attributeValue ) );
                 }
                 catch ( LdapInvalidDnException e )
                 {
@@ -1751,7 +1785,7 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            ModifyRequestCodec modifyRequest = ( ModifyRequestCodec ) container.getBatchRequest().getCurrentRequest();
+            ModifyRequestImpl modifyRequest = ( ModifyRequestImpl ) container.getBatchRequest().getCurrentRequest();
 
             XmlPullParser xpp = container.getParser();
 
@@ -1759,6 +1793,7 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
             String attributeValue;
             // operation
             attributeValue = xpp.getAttributeValue( "", "operation" );
+
             if ( attributeValue != null )
             {
                 if ( "add".equals( attributeValue ) )
@@ -1783,8 +1818,10 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
             {
                 throw new XmlPullParserException( I18n.err( I18n.ERR_03025 ), xpp, null );
             }
+
             // name
             attributeValue = xpp.getAttributeValue( "", "name" );
+
             if ( attributeValue != null )
             {
                 modifyRequest.addAttributeTypeAndValues( attributeValue );
@@ -1804,9 +1841,10 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            ModifyRequestCodec modifyRequest = ( ModifyRequestCodec ) container.getBatchRequest().getCurrentRequest();
+            ModifyRequestImpl modifyRequest = ( ModifyRequestImpl ) container.getBatchRequest().getCurrentRequest();
 
             XmlPullParser xpp = container.getParser();
+
             try
             {
                 // We have to catch the type Attribute Value before going to the next Text node
@@ -1839,7 +1877,7 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            SearchRequestCodec searchRequest = new SearchRequestCodec();
+            SearchRequest searchRequest = new SearchRequestImpl();
             container.getBatchRequest().addRequest( searchRequest );
 
             XmlPullParser xpp = container.getParser();
@@ -1848,6 +1886,7 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
             String attributeValue;
             // requestID
             attributeValue = xpp.getAttributeValue( "", "requestID" );
+
             if ( attributeValue != null )
             {
                 searchRequest.setMessageId( ParserUtils.parseAndVerifyRequestID( attributeValue, xpp ) );
@@ -1859,13 +1898,15 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
                     throw new XmlPullParserException( I18n.err( I18n.ERR_03016 ), xpp, null );
                 }
             }
+
             // dn
             attributeValue = xpp.getAttributeValue( "", "dn" );
+
             if ( attributeValue != null )
             {
                 try
                 {
-                    searchRequest.setBaseObject( new DN( attributeValue ) );
+                    searchRequest.setBase( new DN( attributeValue ) );
                 }
                 catch ( LdapInvalidDnException e )
                 {
@@ -1876,8 +1917,10 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
             {
                 throw new XmlPullParserException( I18n.err( I18n.ERR_03019 ), xpp, null );
             }
+
             // scope
             attributeValue = xpp.getAttributeValue( "", "scope" );
+
             if ( attributeValue != null )
             {
                 if ( "baseObject".equals( attributeValue ) )
@@ -1901,25 +1944,27 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
             {
                 throw new XmlPullParserException( I18n.err( I18n.ERR_03027 ), xpp, null );
             }
+
             // derefAliases
             attributeValue = xpp.getAttributeValue( "", "derefAliases" );
+
             if ( attributeValue != null )
             {
                 if ( "neverDerefAliases".equals( attributeValue ) )
                 {
-                    searchRequest.setDerefAliases( LdapConstants.NEVER_DEREF_ALIASES );
+                    searchRequest.setDerefAliases( AliasDerefMode.NEVER_DEREF_ALIASES );
                 }
                 else if ( "derefInSearching".equals( attributeValue ) )
                 {
-                    searchRequest.setDerefAliases( LdapConstants.DEREF_IN_SEARCHING );
+                    searchRequest.setDerefAliases( AliasDerefMode.DEREF_IN_SEARCHING );
                 }
                 else if ( "derefFindingBaseObj".equals( attributeValue ) )
                 {
-                    searchRequest.setDerefAliases( LdapConstants.DEREF_FINDING_BASE_OBJ );
+                    searchRequest.setDerefAliases( AliasDerefMode.DEREF_FINDING_BASE_OBJ );
                 }
                 else if ( "derefAlways".equals( attributeValue ) )
                 {
-                    searchRequest.setDerefAliases( LdapConstants.DEREF_ALWAYS );
+                    searchRequest.setDerefAliases( AliasDerefMode.DEREF_ALWAYS );
                 }
                 else
                 {
@@ -1930,8 +1975,10 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
             {
                 throw new XmlPullParserException( I18n.err( I18n.ERR_03029 ), xpp, null );
             }
+
             // sizeLimit
             attributeValue = xpp.getAttributeValue( "", "sizeLimit" );
+
             if ( attributeValue != null )
             {
                 try
@@ -1947,8 +1994,10 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
             {
                 searchRequest.setSizeLimit( 0L );
             }
+
             // timeLimit
             attributeValue = xpp.getAttributeValue( "", "timeLimit" );
+
             if ( attributeValue != null )
             {
                 try
@@ -1964,8 +2013,10 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
             {
                 searchRequest.setTimeLimit( 0 );
             }
+
             // typesOnly
             attributeValue = xpp.getAttributeValue( "", "typesOnly" );
+
             if ( attributeValue != null )
             {
                 if ( ( attributeValue.equals( "true" ) ) || ( attributeValue.equals( "1" ) ) )
@@ -1996,17 +2047,16 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            SearchRequestCodec searchRequest = ( SearchRequestCodec ) container.getBatchRequest().getCurrentRequest();
+            SearchRequest searchRequest = ( SearchRequest ) container.getBatchRequest().getCurrentRequest();
 
             XmlPullParser xpp = container.getParser();
 
-            // Checking and adding the request's attributes
-            String attributeValue;
-            // name
-            attributeValue = xpp.getAttributeValue( "", "name" );
-            if ( attributeValue != null )
+            // Checking and adding the request's attribute name
+            String attributeName = xpp.getAttributeValue( "", "name" );
+
+            if ( attributeName != null )
             {
-                searchRequest.addAttribute( attributeValue );
+                searchRequest.addAttributes( attributeName );
             }
             else
             {
@@ -2022,7 +2072,7 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            SearchRequestCodec searchRequest = ( SearchRequestCodec ) container.getBatchRequest().getCurrentRequest();
+            SearchRequestImpl searchRequest = ( SearchRequestImpl ) container.getBatchRequest().getCurrentRequest();
 
             XmlPullParser xpp = container.getParser();
 
@@ -2043,6 +2093,7 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
             String attributeValue;
             // name
             attributeValue = xpp.getAttributeValue( "", "name" );
+
             if ( attributeValue != null )
             {
                 filter.setType( attributeValue );
@@ -2061,10 +2112,11 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            SearchRequestCodec searchRequest = ( SearchRequestCodec ) container.getBatchRequest().getCurrentRequest();
+            SearchRequestImpl searchRequest = ( SearchRequestImpl ) container.getBatchRequest().getCurrentRequest();
             SubstringFilter substringFilter = ( SubstringFilter ) searchRequest.getTerminalFilter();
 
             XmlPullParser xpp = container.getParser();
+
             try
             {
                 // We have to catch the type Attribute Value before going to the next Text node
@@ -2072,6 +2124,7 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
 
                 // Getting the value
                 String nextText = xpp.nextText();
+
                 if ( !nextText.equals( "" ) )
                 {
                     if ( ParserUtils.isBase64BinaryValue( xpp, typeValue ) )
@@ -2099,10 +2152,11 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            SearchRequestCodec searchRequest = ( SearchRequestCodec ) container.getBatchRequest().getCurrentRequest();
+            SearchRequestImpl searchRequest = ( SearchRequestImpl ) container.getBatchRequest().getCurrentRequest();
             SubstringFilter substringFilter = ( SubstringFilter ) searchRequest.getTerminalFilter();
 
             XmlPullParser xpp = container.getParser();
+
             try
             {
                 // We have to catch the type Attribute Value before going to the next Text node
@@ -2110,6 +2164,7 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
 
                 // Getting the value
                 String nextText = xpp.nextText();
+
                 if ( !nextText.equals( "" ) )
                 {
                     if ( ParserUtils.isBase64BinaryValue( xpp, typeValue ) )
@@ -2136,10 +2191,11 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            SearchRequestCodec searchRequest = ( SearchRequestCodec ) container.getBatchRequest().getCurrentRequest();
+            SearchRequestImpl searchRequest = ( SearchRequestImpl ) container.getBatchRequest().getCurrentRequest();
             SubstringFilter substringFilter = ( SubstringFilter ) searchRequest.getTerminalFilter();
 
             XmlPullParser xpp = container.getParser();
+
             try
             {
                 // We have to catch the type Attribute Value before going to the next Text node
@@ -2147,6 +2203,7 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
 
                 // Getting the value
                 String nextText = xpp.nextText();
+
                 if ( !nextText.equals( "" ) )
                 {
                     if ( ParserUtils.isBase64BinaryValue( xpp, typeValue ) )
@@ -2174,7 +2231,7 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            SearchRequestCodec searchRequest = ( SearchRequestCodec ) container.getBatchRequest().getCurrentRequest();
+            SearchRequestImpl searchRequest = ( SearchRequestImpl ) container.getBatchRequest().getCurrentRequest();
 
             searchRequest.setTerminalFilter( null );
         }
@@ -2187,7 +2244,7 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            SearchRequestCodec searchRequest = ( SearchRequestCodec ) container.getBatchRequest().getCurrentRequest();
+            SearchRequestImpl searchRequest = ( SearchRequestImpl ) container.getBatchRequest().getCurrentRequest();
 
             XmlPullParser xpp = container.getParser();
 
@@ -2212,9 +2269,9 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            SearchRequestCodec searchRequest = ( SearchRequestCodec ) container.getBatchRequest().getCurrentRequest();
+            SearchRequestImpl searchRequest = ( SearchRequestImpl ) container.getBatchRequest().getCurrentRequest();
 
-            Asn1Object parent = searchRequest.getCurrentFilter().getParent();
+            Filter parent = searchRequest.getCurrentFilter().getParent();
 
             if ( parent instanceof Filter )
             {
@@ -2224,9 +2281,9 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
             }
             else
             {
+                searchRequest.setFilter( searchRequest.getFilter() );
                 searchRequest.setCurrentFilter( null );
             }
-
         }
     };
 
@@ -2237,7 +2294,7 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            SearchRequestCodec searchRequest = ( SearchRequestCodec ) container.getBatchRequest().getCurrentRequest();
+            SearchRequestImpl searchRequest = ( SearchRequestImpl ) container.getBatchRequest().getCurrentRequest();
 
             XmlPullParser xpp = container.getParser();
 
@@ -2262,7 +2319,7 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            SearchRequestCodec searchRequest = ( SearchRequestCodec ) container.getBatchRequest().getCurrentRequest();
+            SearchRequestImpl searchRequest = ( SearchRequestImpl ) container.getBatchRequest().getCurrentRequest();
 
             XmlPullParser xpp = container.getParser();
 
@@ -2287,19 +2344,18 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            SearchRequestCodec searchRequest = ( SearchRequestCodec ) container.getBatchRequest().getCurrentRequest();
+            SearchRequestImpl searchRequest = ( SearchRequestImpl ) container.getBatchRequest().getCurrentRequest();
 
             XmlPullParser xpp = container.getParser();
 
             AttributeValueAssertion assertion = new AttributeValueAssertion();
 
             // Checking and adding the filter's attributes
-            String attributeValue;
-            // name
-            attributeValue = xpp.getAttributeValue( "", "name" );
-            if ( attributeValue != null )
+            String attributeName = xpp.getAttributeValue( "", "name" );
+
+            if ( attributeName != null )
             {
-                assertion.setAttributeDesc( new String( attributeValue.getBytes() ) );
+                assertion.setAttributeDesc( attributeName );
             }
             else
             {
@@ -2320,6 +2376,7 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
             {
                 throw new XmlPullParserException( e.getMessage(), xpp, null );
             }
+
             searchRequest.setTerminalFilter( filter );
         }
     };
@@ -2331,19 +2388,18 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            SearchRequestCodec searchRequest = ( SearchRequestCodec ) container.getBatchRequest().getCurrentRequest();
+            SearchRequestImpl searchRequest = ( SearchRequestImpl ) container.getBatchRequest().getCurrentRequest();
 
             XmlPullParser xpp = container.getParser();
 
             AttributeValueAssertion assertion = new AttributeValueAssertion();
 
             // Checking and adding the filter's attributes
-            String attributeValue;
-            // name
-            attributeValue = xpp.getAttributeValue( "", "name" );
-            if ( attributeValue != null )
+            String attributeName = xpp.getAttributeValue( "", "name" );
+
+            if ( attributeName != null )
             {
-                assertion.setAttributeDesc( new String( attributeValue.getBytes() ) );
+                assertion.setAttributeDesc( attributeName );
             }
             else
             {
@@ -2364,6 +2420,7 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
             {
                 throw new XmlPullParserException( e.getMessage(), xpp, null );
             }
+
             searchRequest.setTerminalFilter( filter );
         }
     };
@@ -2375,7 +2432,7 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            SearchRequestCodec searchRequest = ( SearchRequestCodec ) container.getBatchRequest().getCurrentRequest();
+            SearchRequestImpl searchRequest = ( SearchRequestImpl ) container.getBatchRequest().getCurrentRequest();
 
             XmlPullParser xpp = container.getParser();
 
@@ -2385,6 +2442,7 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
             String attributeValue;
             // name
             attributeValue = xpp.getAttributeValue( "", "name" );
+
             if ( attributeValue != null )
             {
                 assertion.setAttributeDesc( new String( attributeValue.getBytes() ) );
@@ -2408,6 +2466,7 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
             {
                 throw new XmlPullParserException( e.getMessage(), xpp, null );
             }
+
             searchRequest.setTerminalFilter( filter );
         }
     };
@@ -2419,19 +2478,18 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            SearchRequestCodec searchRequest = ( SearchRequestCodec ) container.getBatchRequest().getCurrentRequest();
+            SearchRequestImpl searchRequest = ( SearchRequestImpl ) container.getBatchRequest().getCurrentRequest();
 
             XmlPullParser xpp = container.getParser();
 
             AttributeValueAssertion assertion = new AttributeValueAssertion();
 
             // Checking and adding the filter's attributes
-            String attributeValue;
-            // name
-            attributeValue = xpp.getAttributeValue( "", "name" );
-            if ( attributeValue != null )
+            String attributeName = xpp.getAttributeValue( "", "name" );
+
+            if ( attributeName != null )
             {
-                assertion.setAttributeDesc( new String( attributeValue.getBytes() ) );
+                assertion.setAttributeDesc( attributeName );
             }
             else
             {
@@ -2463,11 +2521,12 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            SearchRequestCodec searchRequest = ( SearchRequestCodec ) container.getBatchRequest().getCurrentRequest();
+            SearchRequestImpl searchRequest = ( SearchRequestImpl ) container.getBatchRequest().getCurrentRequest();
             AttributeValueAssertionFilter filter = ( AttributeValueAssertionFilter ) searchRequest.getTerminalFilter();
             AttributeValueAssertion assertion = filter.getAssertion();
 
             XmlPullParser xpp = container.getParser();
+
             try
             {
                 // We have to catch the type Attribute Value before going to the next Text node
@@ -2475,6 +2534,7 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
 
                 // Getting the value
                 String nextText = xpp.nextText();
+
                 if ( !nextText.equals( "" ) )
                 {
                     if ( ParserUtils.isBase64BinaryValue( xpp, typeValue ) )
@@ -2508,7 +2568,8 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
             XmlPullParser xpp = container.getParser();
 
             // Adding the filter to the Search Filter
-            SearchRequestCodec searchRequest = ( SearchRequestCodec ) container.getBatchRequest().getCurrentRequest();
+            SearchRequestImpl searchRequest = ( SearchRequestImpl ) container.getBatchRequest().getCurrentRequest();
+
             try
             {
                 searchRequest.addCurrentFilter( presentFilter );
@@ -2522,6 +2583,7 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
             String attributeValue;
             // name
             attributeValue = xpp.getAttributeValue( "", "name" );
+
             if ( attributeValue != null )
             {
                 presentFilter.setAttributeDescription( new String( attributeValue.getBytes() ) );
@@ -2545,7 +2607,8 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
             XmlPullParser xpp = container.getParser();
 
             // Adding the filter to the Search Filter
-            SearchRequestCodec searchRequest = ( SearchRequestCodec ) container.getBatchRequest().getCurrentRequest();
+            SearchRequestImpl searchRequest = ( SearchRequestImpl ) container.getBatchRequest().getCurrentRequest();
+
             try
             {
                 searchRequest.addCurrentFilter( extensibleMatchFilter );
@@ -2554,12 +2617,14 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
             {
                 throw new XmlPullParserException( I18n.err( I18n.ERR_03012 ), xpp, null );
             }
+
             searchRequest.setTerminalFilter( extensibleMatchFilter );
 
             // Checking and adding the filter's attributes
             String attributeValue;
             // dnAttributes
             attributeValue = xpp.getAttributeValue( "", "dnAttributes" );
+
             if ( attributeValue != null )
             {
                 if ( ( attributeValue.equals( "true" ) ) || ( attributeValue.equals( "1" ) ) )
@@ -2579,14 +2644,18 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
             {
                 extensibleMatchFilter.setDnAttributes( false );
             }
+
             // matchingRule
             attributeValue = xpp.getAttributeValue( "", "matchingRule" );
+
             if ( attributeValue != null )
             {
                 extensibleMatchFilter.setMatchingRule( attributeValue );
             }
+
             // name
             attributeValue = xpp.getAttributeValue( "", "name" );
+
             if ( attributeValue != null )
             {
                 extensibleMatchFilter.setType( attributeValue );
@@ -2601,10 +2670,11 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            SearchRequestCodec searchRequest = ( SearchRequestCodec ) container.getBatchRequest().getCurrentRequest();
+            SearchRequestImpl searchRequest = ( SearchRequestImpl ) container.getBatchRequest().getCurrentRequest();
             ExtensibleMatchFilter filter = ( ExtensibleMatchFilter ) searchRequest.getTerminalFilter();
 
             XmlPullParser xpp = container.getParser();
+
             try
             {
                 // We have to catch the type Attribute Value before going to the next Text node
@@ -2616,14 +2686,11 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
                 {
                     if ( ParserUtils.isBase64BinaryValue( xpp, typeValue ) )
                     {
-                        filter.setMatchValue( 
-                            new BinaryValue( 
-                                Base64.decode( nextText.trim().toCharArray() ) ) );
+                        filter.setMatchValue( new BinaryValue( Base64.decode( nextText.trim().toCharArray() ) ) );
                     }
                     else
                     {
-                        filter.setMatchValue( 
-                            new StringValue( nextText.trim() ) );
+                        filter.setMatchValue( new StringValue( nextText.trim() ) );
                     }
                 }
             }
@@ -2649,14 +2716,14 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
             String attributeValue;
             // TYPE
             attributeValue = xpp.getAttributeValue( "", "type" );
-            
+
             if ( attributeValue != null )
             {
                 if ( !OID.isOID( attributeValue ) )
                 {
                     throw new XmlPullParserException( I18n.err( I18n.ERR_03034 ), xpp, null );
                 }
-                
+
                 control = new ControlImpl( attributeValue );
                 container.getBatchRequest().getCurrentRequest().addControl( control );
             }
@@ -2664,10 +2731,10 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
             {
                 throw new XmlPullParserException( I18n.err( I18n.ERR_03035 ), xpp, null );
             }
-            
+
             // CRITICALITY
             attributeValue = xpp.getAttributeValue( "", "criticality" );
-            
+
             if ( attributeValue != null )
             {
                 if ( attributeValue.equals( "true" ) )
@@ -2696,6 +2763,7 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
             Control control = container.getBatchRequest().getCurrentRequest().getCurrentControl();
 
             XmlPullParser xpp = container.getParser();
+
             try
             {
                 // We have to catch the type Attribute Value before going to the next Text node
@@ -2703,7 +2771,7 @@ public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
 
                 // Getting the value
                 String nextText = xpp.nextText();
-                
+
                 if ( !nextText.equals( "" ) )
                 {
                     if ( ParserUtils.isBase64BinaryValue( xpp, typeValue ) )

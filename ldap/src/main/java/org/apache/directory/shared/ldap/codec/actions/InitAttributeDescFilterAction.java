@@ -28,7 +28,8 @@ import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.AttributeValueAssertion;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.search.AttributeValueAssertionFilter;
-import org.apache.directory.shared.ldap.codec.search.SearchRequestCodec;
+import org.apache.directory.shared.ldap.message.SearchRequest;
+import org.apache.directory.shared.ldap.message.SearchRequestImpl;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,10 +48,12 @@ public class InitAttributeDescFilterAction extends GrammarAction
     /** Speedup for logs */
     private static final boolean IS_DEBUG = log.isDebugEnabled();
 
+
     public InitAttributeDescFilterAction()
     {
         super( "Initialize AttributeDesc filter" );
     }
+
 
     /**
      * The initialization action
@@ -58,7 +61,7 @@ public class InitAttributeDescFilterAction extends GrammarAction
     public void action( IAsn1Container container ) throws DecoderException
     {
         LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-        SearchRequestCodec searchRequest = ldapMessageContainer.getSearchRequest();
+        SearchRequest searchRequest = ldapMessageContainer.getSearchRequest();
 
         TLV tlv = ldapMessageContainer.getCurrentTLV();
 
@@ -75,11 +78,11 @@ public class InitAttributeDescFilterAction extends GrammarAction
             String type = StringTools.utf8ToString( tlv.getValue().getData() );
             assertion.setAttributeDesc( type );
 
-            AttributeValueAssertionFilter terminalFilter = ( AttributeValueAssertionFilter ) searchRequest
+            AttributeValueAssertionFilter terminalFilter = ( AttributeValueAssertionFilter ) ( ( SearchRequestImpl ) searchRequest )
                 .getTerminalFilter();
             terminalFilter.setAssertion( assertion );
         }
-        
+
         if ( IS_DEBUG )
         {
             log.debug( "Initialize AttributeDesc filter" );

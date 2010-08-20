@@ -19,17 +19,16 @@
  */
 package org.apache.directory.shared.ldap.message;
 
-import org.apache.directory.shared.ldap.message.internal.InternalAbstractResultResponse;
-import org.apache.directory.shared.ldap.message.internal.InternalDeleteResponse;
-
 
 /**
  * DeleteResponse implementation
  * 
  * @author <a href="mailto:dev@directory.apache.org"> Apache Directory Project</a>
  */
-public class DeleteResponseImpl extends InternalAbstractResultResponse implements InternalDeleteResponse
+public class DeleteResponseImpl extends AbstractResultResponse implements DeleteResponse
 {
+    /** The encoded deleteResponse length */
+    private int deleteResponseLength;
 
     // ------------------------------------------------------------------------
     // Constructors
@@ -40,12 +39,55 @@ public class DeleteResponseImpl extends InternalAbstractResultResponse implement
 
     /**
      * Creates a DeleteResponse as a reply to an DeleteRequest.
-     * 
-     * @param id
-     *            the session unique message id
      */
-    public DeleteResponseImpl(final int id)
+    public DeleteResponseImpl()
+    {
+        super( -1, TYPE );
+    }
+
+
+    /**
+     * Creates a DeleteResponse as a reply to an DeleteRequest.
+     * 
+     * @param id the session unique message id
+     */
+    public DeleteResponseImpl( final int id )
     {
         super( id, TYPE );
+    }
+
+
+    /**
+     * Stores the encoded length for the DeleteResponse
+     * @param deleteResponseLength The encoded length
+     */
+    /* No qualifier*/void setDeleteResponseLength( int deleteResponseLength )
+    {
+        this.deleteResponseLength = deleteResponseLength;
+    }
+
+
+    /**
+     * @return The encoded DeleteResponse's length
+     */
+    /* No qualifier*/int getDeleteResponseLength()
+    {
+        return deleteResponseLength;
+    }
+
+
+    /**
+     * Get a String representation of a DelResponse
+     * 
+     * @return A DelResponse String
+     */
+    public String toString()
+    {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append( "    Compare Response\n" );
+        sb.append( super.toString() );
+
+        return sb.toString();
     }
 }

@@ -21,9 +21,9 @@
 package org.apache.directory.shared.dsmlv2.reponse;
 
 
-import org.apache.directory.shared.dsmlv2.DsmlDecorator;
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
-import org.apache.directory.shared.ldap.codec.bind.BindResponseCodec;
+import org.apache.directory.shared.ldap.message.BindResponse;
+import org.apache.directory.shared.ldap.message.BindResponseImpl;
 import org.dom4j.Element;
 
 
@@ -32,14 +32,14 @@ import org.dom4j.Element;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class AuthResponseDsml extends LdapResponseDecorator implements DsmlDecorator
+public class AuthResponseDsml extends AbstractResponseDsml
 {
     /**
      * Creates a new instance of AuthResponseDsml.
      */
     public AuthResponseDsml()
     {
-        super( new BindResponseCodec() );
+        super( new BindResponseImpl() );
     }
 
 
@@ -49,18 +49,18 @@ public class AuthResponseDsml extends LdapResponseDecorator implements DsmlDecor
      * @param ldapMessage
      *      the message to decorate
      */
-    public AuthResponseDsml( BindResponseCodec ldapMessage )
+    public AuthResponseDsml( BindResponse ldapMessage )
     {
         super( ldapMessage );
     }
 
 
     /* (non-Javadoc)
-     * @see org.apache.directory.shared.dsmlv2.reponse.LdapMessageDecorator#getMessageType()
+     * @see org.apache.directory.shared.dsmlv2.reponse.LdapMessageDecorator#getType()
      */
-    public MessageTypeEnum getMessageType()
+    public MessageTypeEnum getType()
     {
-        return instance.getMessageType();
+        return instance.getType();
     }
 
 
@@ -71,7 +71,7 @@ public class AuthResponseDsml extends LdapResponseDecorator implements DsmlDecor
     {
         Element element = root.addElement( "authResponse" );
 
-        LdapResultDsml ldapResultDsml = new LdapResultDsml( ( ( BindResponseCodec ) instance ).getLdapResult(), instance );
+        LdapResultDsml ldapResultDsml = new LdapResultDsml( ( ( BindResponse ) instance ).getLdapResult(), instance );
         ldapResultDsml.toDsml( element );
         return element;
     }

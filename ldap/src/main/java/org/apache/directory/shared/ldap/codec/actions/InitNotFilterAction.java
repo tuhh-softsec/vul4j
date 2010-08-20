@@ -28,7 +28,8 @@ import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.search.Filter;
 import org.apache.directory.shared.ldap.codec.search.NotFilter;
-import org.apache.directory.shared.ldap.codec.search.SearchRequestCodec;
+import org.apache.directory.shared.ldap.message.SearchRequest;
+import org.apache.directory.shared.ldap.message.SearchRequestImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,10 +47,12 @@ public class InitNotFilterAction extends GrammarAction
     /** Speedup for logs */
     private static final boolean IS_DEBUG = log.isDebugEnabled();
 
+
     public InitNotFilterAction()
     {
         super( "Initialize NOT filter" );
     }
+
 
     /**
      * The initialization action
@@ -67,14 +70,14 @@ public class InitNotFilterAction extends GrammarAction
             throw new DecoderException( msg );
         }
 
-        SearchRequestCodec searchRequest = ldapMessageContainer.getSearchRequest();
+        SearchRequest searchRequest = ldapMessageContainer.getSearchRequest();
 
         // We can allocate the SearchRequest
         Filter notFilter = new NotFilter( ldapMessageContainer.getTlvId() );
 
         // Set the filter
-        searchRequest.addCurrentFilter( notFilter );
-        
+        ( ( SearchRequestImpl ) searchRequest ).addCurrentFilter( notFilter );
+
         if ( IS_DEBUG )
         {
             log.debug( "Initialize NOT filter" );

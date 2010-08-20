@@ -26,7 +26,8 @@ import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.search.PresentFilter;
-import org.apache.directory.shared.ldap.codec.search.SearchRequestCodec;
+import org.apache.directory.shared.ldap.message.SearchRequest;
+import org.apache.directory.shared.ldap.message.SearchRequestImpl;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,15 +46,17 @@ public class InitPresentFilterAction extends GrammarAction
     /** Speedup for logs */
     private static final boolean IS_DEBUG = log.isDebugEnabled();
 
+
     public InitPresentFilterAction()
     {
         super( "Init present filter Value" );
     }
 
+
     public void action( IAsn1Container container ) throws DecoderException
     {
         LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-        SearchRequestCodec searchRequest = ldapMessageContainer.getSearchRequest();
+        SearchRequest searchRequest = ldapMessageContainer.getSearchRequest();
 
         TLV tlv = ldapMessageContainer.getCurrentTLV();
 
@@ -61,8 +64,8 @@ public class InitPresentFilterAction extends GrammarAction
         PresentFilter presentFilter = new PresentFilter( ldapMessageContainer.getTlvId() );
 
         // add the filter to the request filter
-        searchRequest.addCurrentFilter( presentFilter );
-        searchRequest.setTerminalFilter( presentFilter );
+        ( ( SearchRequestImpl ) searchRequest ).addCurrentFilter( presentFilter );
+        ( ( SearchRequestImpl ) searchRequest ).setTerminalFilter( presentFilter );
 
         String value = StringTools.utf8ToString( tlv.getValue().getData() );
 
@@ -79,8 +82,8 @@ public class InitPresentFilterAction extends GrammarAction
 
         // We now have to get back to the nearest filter which is
         // not terminal.
-        searchRequest.unstackFilters( container );
-        
+        ( ( SearchRequestImpl ) searchRequest ).unstackFilters( container );
+
         if ( IS_DEBUG )
         {
             log.debug( "Initialize Present filter" );

@@ -31,8 +31,6 @@ import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.message.internal.InternalDeleteRequest;
-import org.apache.directory.shared.ldap.message.internal.InternalResultResponse;
 import org.apache.directory.shared.ldap.name.DN;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -48,6 +46,7 @@ import org.junit.runner.RunWith;
 public class DeleteRequestImplTest
 {
     private static final Map<String, Control> EMPTY_CONTROL_MAP = new HashMap<String, Control>();
+
 
     /**
      * Tests the same object reference for equality.
@@ -142,7 +141,7 @@ public class DeleteRequestImplTest
     @Test
     public void testEqualsDiffImpl()
     {
-        InternalDeleteRequest req0 = new InternalDeleteRequest()
+        DeleteRequest req0 = new DeleteRequest()
         {
             public DN getName()
             {
@@ -179,12 +178,12 @@ public class DeleteRequestImplTest
             }
 
 
-            public void add( Control control ) throws MessageException
+            public void addControl( Control control ) throws MessageException
             {
             }
 
 
-            public void remove( Control control ) throws MessageException
+            public void removeControl( Control control ) throws MessageException
             {
             }
 
@@ -223,13 +222,13 @@ public class DeleteRequestImplTest
             }
 
 
-            public InternalResultResponse getResultResponse()
+            public ResultResponse getResultResponse()
             {
                 return null;
             }
 
 
-            public void addAll( Control[] controls ) throws MessageException
+            public void addAllControls( Control[] controls ) throws MessageException
             {
             }
 
@@ -237,6 +236,45 @@ public class DeleteRequestImplTest
             public boolean hasControl( String oid )
             {
                 return false;
+            }
+
+
+            public Control getCurrentControl()
+            {
+                return null;
+            }
+
+
+            public int getControlsLength()
+            {
+                return 0;
+            }
+
+
+            public void setControlsLength( int controlsLength )
+            {
+            }
+
+
+            public int getMessageLength()
+            {
+                return 0;
+            }
+
+
+            public void setMessageLength( int messageLength )
+            {
+            }
+
+
+            public Control getControl( String oid )
+            {
+                return null;
+            }
+
+
+            public void setMessageId( int messageId )
+            {
             }
         };
 

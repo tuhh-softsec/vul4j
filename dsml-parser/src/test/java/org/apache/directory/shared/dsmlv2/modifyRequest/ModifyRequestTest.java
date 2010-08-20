@@ -27,7 +27,8 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.UnsupportedEncodingException;
-import java.util.List;
+import java.util.Collection;
+import java.util.Iterator;
 
 import javax.naming.NamingException;
 
@@ -35,14 +36,15 @@ import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.dsmlv2.AbstractTest;
 import org.apache.directory.shared.dsmlv2.Dsmlv2Parser;
-import org.apache.directory.shared.ldap.codec.LdapConstants;
-import org.apache.directory.shared.ldap.codec.modify.ModifyRequestCodec;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Modification;
+import org.apache.directory.shared.ldap.entry.ModificationOperation;
+import org.apache.directory.shared.ldap.message.ModifyRequest;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
 
 /**
  * Tests for the Modify Request parsing
@@ -74,7 +76,7 @@ public class ModifyRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        ModifyRequestCodec modifyRequest = ( ModifyRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        ModifyRequest modifyRequest = ( ModifyRequest ) parser.getBatchRequest().getCurrentRequest();
 
         assertEquals( 456, modifyRequest.getMessageId() );
     }
@@ -110,7 +112,7 @@ public class ModifyRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        ModifyRequestCodec modifyRequest = ( ModifyRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        ModifyRequest modifyRequest = ( ModifyRequest ) parser.getBatchRequest().getCurrentRequest();
         Control control = modifyRequest.getCurrentControl();
 
         assertEquals( 1, modifyRequest.getControls().size() );
@@ -141,7 +143,7 @@ public class ModifyRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        ModifyRequestCodec modifyRequest = ( ModifyRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        ModifyRequest modifyRequest = ( ModifyRequest ) parser.getBatchRequest().getCurrentRequest();
         Control control = modifyRequest.getCurrentControl();
 
         assertEquals( 1, modifyRequest.getControls().size() );
@@ -172,7 +174,7 @@ public class ModifyRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        ModifyRequestCodec modifyRequest = ( ModifyRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        ModifyRequest modifyRequest = ( ModifyRequest ) parser.getBatchRequest().getCurrentRequest();
         Control control = modifyRequest.getCurrentControl();
 
         assertEquals( 1, modifyRequest.getControls().size() );
@@ -203,7 +205,7 @@ public class ModifyRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        ModifyRequestCodec modifyRequest = ( ModifyRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        ModifyRequest modifyRequest = ( ModifyRequest ) parser.getBatchRequest().getCurrentRequest();
         Control control = modifyRequest.getCurrentControl();
 
         assertEquals( 2, modifyRequest.getControls().size() );
@@ -234,7 +236,7 @@ public class ModifyRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        ModifyRequestCodec modifyRequest = ( ModifyRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        ModifyRequest modifyRequest = ( ModifyRequest ) parser.getBatchRequest().getCurrentRequest();
         Control control = modifyRequest.getCurrentControl();
 
         assertEquals( 3, modifyRequest.getControls().size() );
@@ -276,20 +278,17 @@ public class ModifyRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        ModifyRequestCodec modifyRequest = ( ModifyRequestCodec ) parser.getBatchRequest().getCurrentRequest();
-
-        assertEquals( LdapConstants.OPERATION_ADD, modifyRequest.getCurrentOperation() );
-
-        assertEquals( "directreport", modifyRequest.getCurrentAttributeType() );
-
-        List<Modification> modifications = modifyRequest.getModifications();
-
+        ModifyRequest modifyRequest = ( ModifyRequest ) parser.getBatchRequest().getCurrentRequest();
+        Collection<Modification> modifications = modifyRequest.getModifications();
         assertEquals( 1, modifications.size() );
 
-        Modification modification = ( Modification ) modifications.get( 0 );
+        Modification modification = modifications.iterator().next();
+
+        assertEquals( ModificationOperation.ADD_ATTRIBUTE, modification.getOperation() );
 
         EntryAttribute attribute = modification.getAttribute();
 
+        assertEquals( "directreport", attribute.getId() );
         assertEquals( "CN=John Smith, DC=microsoft, DC=com", attribute.get( 0 ).getString() );
     }
 
@@ -317,19 +316,17 @@ public class ModifyRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        ModifyRequestCodec modifyRequest = ( ModifyRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        ModifyRequest modifyRequest = ( ModifyRequest ) parser.getBatchRequest().getCurrentRequest();
 
-        assertEquals( LdapConstants.OPERATION_ADD, modifyRequest.getCurrentOperation() );
-
-        assertEquals( "directreport", modifyRequest.getCurrentAttributeType() );
-
-        List<Modification> modifications = modifyRequest.getModifications();
-
+        Collection<Modification> modifications = modifyRequest.getModifications();
         assertEquals( 1, modifications.size() );
 
-        Modification modification = ( Modification ) modifications.get( 0 );
-
+        Modification modification = modifications.iterator().next();
         EntryAttribute attribute = modification.getAttribute();
+
+        assertEquals( ModificationOperation.ADD_ATTRIBUTE, modification.getOperation() );
+
+        assertEquals( "directreport", attribute.getId() );
 
         String expected = new String( new byte[]
             { 'c', 'n', '=', 'E', 'm', 'm', 'a', 'n', 'u', 'e', 'l', ' ', 'L', ( byte ) 0xc3, ( byte ) 0xa9, 'c', 'h',
@@ -362,19 +359,27 @@ public class ModifyRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        ModifyRequestCodec modifyRequest = ( ModifyRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        ModifyRequest modifyRequest = ( ModifyRequest ) parser.getBatchRequest().getCurrentRequest();
 
-        assertEquals( LdapConstants.OPERATION_REPLACE, modifyRequest.getCurrentOperation() );
-
-        assertEquals( "sn", modifyRequest.getCurrentAttributeType() );
-
-        List<Modification> modifications = modifyRequest.getModifications();
-
+        Collection<Modification> modifications = modifyRequest.getModifications();
         assertEquals( 2, modifications.size() );
 
-        Modification modification = ( Modification ) modifications.get( 1 );
+        Iterator<Modification> iter = modifications.iterator();
 
+        Modification modification = iter.next();
+
+        assertEquals( ModificationOperation.ADD_ATTRIBUTE, modification.getOperation() );
         EntryAttribute attribute = modification.getAttribute();
+        assertEquals( "directreport", attribute.getId() );
+
+        assertEquals( "CN=John Smith, DC=microsoft, DC=com", attribute.get( 0 ).getString() );
+
+        modification = iter.next();
+
+        attribute = modification.getAttribute();
+
+        assertEquals( "sn", attribute.getId() );
+        assertEquals( ModificationOperation.REPLACE_ATTRIBUTE, modification.getOperation() );
 
         assertEquals( "CN=Steve Jobs, DC=apple, DC=com", attribute.get( 0 ).getString() );
     }
@@ -422,9 +427,14 @@ public class ModifyRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        ModifyRequestCodec modifyRequest = ( ModifyRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        ModifyRequest modifyRequest = ( ModifyRequest ) parser.getBatchRequest().getCurrentRequest();
 
-        assertEquals( LdapConstants.OPERATION_ADD, modifyRequest.getCurrentOperation() );
+        Collection<Modification> modifications = modifyRequest.getModifications();
+        assertEquals( 1, modifications.size() );
+
+        Modification modification = modifications.iterator().next();
+
+        assertEquals( ModificationOperation.ADD_ATTRIBUTE, modification.getOperation() );
     }
 
 
@@ -450,9 +460,14 @@ public class ModifyRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        ModifyRequestCodec modifyRequest = ( ModifyRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        ModifyRequest modifyRequest = ( ModifyRequest ) parser.getBatchRequest().getCurrentRequest();
 
-        assertEquals( LdapConstants.OPERATION_DELETE, modifyRequest.getCurrentOperation() );
+        Collection<Modification> modifications = modifyRequest.getModifications();
+        assertEquals( 1, modifications.size() );
+
+        Modification modification = modifications.iterator().next();
+
+        assertEquals( ModificationOperation.REMOVE_ATTRIBUTE, modification.getOperation() );
     }
 
 
@@ -478,9 +493,14 @@ public class ModifyRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        ModifyRequestCodec modifyRequest = ( ModifyRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        ModifyRequest modifyRequest = ( ModifyRequest ) parser.getBatchRequest().getCurrentRequest();
 
-        assertEquals( LdapConstants.OPERATION_REPLACE, modifyRequest.getCurrentOperation() );
+        Collection<Modification> modifications = modifyRequest.getModifications();
+        assertEquals( 1, modifications.size() );
+
+        Modification modification = modifications.iterator().next();
+
+        assertEquals( ModificationOperation.REPLACE_ATTRIBUTE, modification.getOperation() );
     }
 
 
@@ -516,18 +536,17 @@ public class ModifyRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        ModifyRequestCodec modifyRequest = ( ModifyRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        ModifyRequest modifyRequest = ( ModifyRequest ) parser.getBatchRequest().getCurrentRequest();
 
-        assertEquals( LdapConstants.OPERATION_ADD, modifyRequest.getCurrentOperation() );
+        Collection<Modification> modifications = modifyRequest.getModifications();
+        assertEquals( 1, modifications.size() );
 
-        assertEquals( "directreport", modifyRequest.getCurrentAttributeType() );
+        Modification modification = modifications.iterator().next();
 
-        List<Modification> modifications = modifyRequest.getModifications();
-
-        Modification modification = ( Modification ) modifications.get( 0 );
-
+        assertEquals( ModificationOperation.ADD_ATTRIBUTE, modification.getOperation() );
         EntryAttribute attribute = modification.getAttribute();
 
+        assertEquals( "directreport", attribute.getId() );
         assertEquals( 0, attribute.size() );
     }
 
@@ -554,19 +573,17 @@ public class ModifyRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        ModifyRequestCodec modifyRequest = ( ModifyRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        ModifyRequest modifyRequest = ( ModifyRequest ) parser.getBatchRequest().getCurrentRequest();
 
-        assertEquals( LdapConstants.OPERATION_ADD, modifyRequest.getCurrentOperation() );
-
-        assertEquals( "directreport", modifyRequest.getCurrentAttributeType() );
-
-        List<Modification> modifications = modifyRequest.getModifications();
-
+        Collection<Modification> modifications = modifyRequest.getModifications();
         assertEquals( 1, modifications.size() );
 
-        Modification modification = ( Modification ) modifications.get( 0 );
+        Modification modification = modifications.iterator().next();
 
+        assertEquals( ModificationOperation.ADD_ATTRIBUTE, modification.getOperation() );
         EntryAttribute attribute = modification.getAttribute();
+
+        assertEquals( "directreport", attribute.getId() );
 
         assertEquals( 2, attribute.size() );
         assertEquals( "CN=John Smith, DC=microsoft, DC=com", attribute.get( 0 ).getString() );
@@ -596,19 +613,17 @@ public class ModifyRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        ModifyRequestCodec modifyRequest = ( ModifyRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        ModifyRequest modifyRequest = ( ModifyRequest ) parser.getBatchRequest().getCurrentRequest();
 
-        assertEquals( LdapConstants.OPERATION_ADD, modifyRequest.getCurrentOperation() );
-
-        assertEquals( "directreport", modifyRequest.getCurrentAttributeType() );
-
-        List<Modification> modifications = modifyRequest.getModifications();
-
+        Collection<Modification> modifications = modifyRequest.getModifications();
         assertEquals( 1, modifications.size() );
 
-        Modification modification = ( Modification ) modifications.get( 0 );
+        Modification modification = modifications.iterator().next();
 
+        assertEquals( ModificationOperation.ADD_ATTRIBUTE, modification.getOperation() );
         EntryAttribute attribute = modification.getAttribute();
+
+        assertEquals( "directreport", attribute.getId() );
 
         assertEquals( 1, attribute.size() );
         assertEquals( "", attribute.get( 0 ).getString() );

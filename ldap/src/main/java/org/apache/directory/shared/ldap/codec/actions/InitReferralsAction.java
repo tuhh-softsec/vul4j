@@ -26,8 +26,10 @@ import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
-import org.apache.directory.shared.ldap.codec.LdapResponseCodec;
-import org.apache.directory.shared.ldap.codec.LdapResultCodec;
+import org.apache.directory.shared.ldap.message.LdapResult;
+import org.apache.directory.shared.ldap.message.Referral;
+import org.apache.directory.shared.ldap.message.ReferralImpl;
+import org.apache.directory.shared.ldap.message.ResultResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,10 +47,12 @@ public class InitReferralsAction extends GrammarAction
     /** Speedup for logs */
     private static final boolean IS_DEBUG = log.isDebugEnabled();
 
+
     public InitReferralsAction()
     {
         super( "Init the referrals list" );
     }
+
 
     /**
      * The initialization action
@@ -56,27 +60,28 @@ public class InitReferralsAction extends GrammarAction
     public void action( IAsn1Container container ) throws DecoderException
     {
         LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-        LdapResponseCodec response = ldapMessageContainer.getLdapResponse();
-        LdapResultCodec ldapResult = response.getLdapResult();
-        
+
         TLV tlv = ldapMessageContainer.getCurrentTLV();
 
         // If we hae a Referrals sequence, then it should not be empty
-        // sasl credentials
         if ( tlv.getLength() == 0 )
         {
             String msg = I18n.err( I18n.ERR_04011 );
             log.error( msg );
-         
+
             // This will generate a PROTOCOL_ERROR
             throw new DecoderException( msg );
         }
 
-        if ( IS_DEBUG)
+        ResultResponse response = ( ResultResponse ) ldapMessageContainer.getMessage();
+        LdapResult ldapResult = response.getLdapResult();
+
+        Referral referral = new ReferralImpl();
+        ldapResult.setReferral( referral );
+
+        if ( IS_DEBUG )
         {
             log.debug( "Initialising a referrals list" );
         }
-        
-        ldapResult.initReferrals();
     }
 }

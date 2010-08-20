@@ -31,8 +31,6 @@ import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.message.internal.InternalExtendedResponse;
-import org.apache.directory.shared.ldap.message.internal.InternalLdapResult;
 import org.apache.directory.shared.ldap.name.DN;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -49,6 +47,7 @@ public class ExtendedResponseImplTest
 {
     private static final Map<String, Control> EMPTY_CONTROL_MAP = new HashMap<String, Control>();
 
+
     /**
      * Creates and populates a ExtendedResponseImpl stub for testing purposes.
      * 
@@ -58,10 +57,10 @@ public class ExtendedResponseImplTest
     {
         // Construct the Search response to test with results and referrals
         ExtendedResponseImpl response = new ExtendedResponseImpl( 45 );
-        response.setResponse( "Hello World!".getBytes() );
+        response.setResponseValue( "Hello World!".getBytes() );
         response.setResponseName( "1.1.1.1" );
-        InternalLdapResult result = response.getLdapResult();
-        
+        LdapResult result = response.getLdapResult();
+
         try
         {
             result.setMatchedDn( new DN( "dc=example,dc=com" ) );
@@ -70,7 +69,7 @@ public class ExtendedResponseImplTest
         {
             // Do nothing
         }
-        
+
         result.setResultCode( ResultCodeEnum.SUCCESS );
         ReferralImpl refs = new ReferralImpl();
         refs.addLdapUrl( "ldap://someserver.com" );
@@ -112,9 +111,15 @@ public class ExtendedResponseImplTest
     public void testEqualsDiffImpl()
     {
         ExtendedResponseImpl resp0 = createStub();
-        InternalExtendedResponse resp1 = new InternalExtendedResponse()
+        ExtendedResponse resp1 = new ExtendedResponse()
         {
             private static final long serialVersionUID = 5297000474419901408L;
+
+
+            public String getID()
+            {
+                return "1.1.1.1";
+            }
 
 
             public String getResponseName()
@@ -123,35 +128,41 @@ public class ExtendedResponseImplTest
             }
 
 
-            public void setResponseName( String a_oid )
+            public void setResponseName( String oid )
             {
             }
 
 
-            public byte[] getResponse()
+            public byte[] getEncodedValue()
             {
                 return "Hello World!".getBytes();
             }
 
 
-            public void setResponse( byte[] a_value )
+            public byte[] getResponseValue()
+            {
+                return "Hello World!".getBytes();
+            }
+
+
+            public void setResponseValue( byte[] value )
             {
             }
 
 
-            public InternalLdapResult getLdapResult()
+            public LdapResult getLdapResult()
             {
                 LdapResultImpl result = new LdapResultImpl();
-                
-                try 
+
+                try
                 {
                     result.setMatchedDn( new DN( "dc=example,dc=com" ) );
                 }
-                catch ( LdapException ine ) 
+                catch ( LdapException ine )
                 {
                     // do nothing
                 }
-                
+
                 result.setResultCode( ResultCodeEnum.SUCCESS );
                 ReferralImpl refs = new ReferralImpl();
                 refs.addLdapUrl( "ldap://someserver.com" );
@@ -175,12 +186,12 @@ public class ExtendedResponseImplTest
             }
 
 
-            public void add( Control a_control ) throws MessageException
+            public void addControl( Control a_control ) throws MessageException
             {
             }
 
 
-            public void remove( Control a_control ) throws MessageException
+            public void removeControl( Control a_control ) throws MessageException
             {
             }
 
@@ -203,19 +214,7 @@ public class ExtendedResponseImplTest
             }
 
 
-            public String getID()
-            {
-                return "1.1.1.1";
-            }
-
-
-            public byte[] getEncodedValue()
-            {
-                return getResponse();
-            }
-
-
-            public void addAll( Control[] controls ) throws MessageException
+            public void addAllControls( Control[] controls ) throws MessageException
             {
             }
 
@@ -223,6 +222,45 @@ public class ExtendedResponseImplTest
             public boolean hasControl( String oid )
             {
                 return false;
+            }
+
+
+            public Control getCurrentControl()
+            {
+                return null;
+            }
+
+
+            public int getControlsLength()
+            {
+                return 0;
+            }
+
+
+            public void setControlsLength( int controlsLength )
+            {
+            }
+
+
+            public int getMessageLength()
+            {
+                return 0;
+            }
+
+
+            public void setMessageLength( int messageLength )
+            {
+            }
+
+
+            public Control getControl( String oid )
+            {
+                return null;
+            }
+
+
+            public void setMessageId( int messageId )
+            {
             }
         };
 
@@ -291,9 +329,9 @@ public class ExtendedResponseImplTest
     public void testNotEqualsDiffResponses()
     {
         ExtendedResponseImpl resp0 = createStub();
-        resp0.setResponse( "abc".getBytes() );
+        resp0.setResponseValue( "abc".getBytes() );
         ExtendedResponseImpl resp1 = createStub();
-        resp1.setResponse( "123".getBytes() );
+        resp1.setResponseValue( "123".getBytes() );
 
         assertFalse( resp0.equals( resp1 ) );
         assertFalse( resp1.equals( resp0 ) );

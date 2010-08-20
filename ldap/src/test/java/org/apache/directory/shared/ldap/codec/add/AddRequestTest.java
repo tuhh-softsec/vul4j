@@ -27,7 +27,6 @@ import static org.junit.Assert.fail;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -44,10 +43,12 @@ import org.apache.directory.shared.ldap.codec.ResponseCarryingException;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Value;
+import org.apache.directory.shared.ldap.message.AddRequest;
 import org.apache.directory.shared.ldap.message.AddResponseImpl;
+import org.apache.directory.shared.ldap.message.LdapProtocolEncoder;
+import org.apache.directory.shared.ldap.message.Message;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.message.internal.InternalMessage;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -62,6 +63,10 @@ import org.junit.runner.RunWith;
 @Concurrent()
 public class AddRequestTest
 {
+    /** The encoder instance */
+    LdapProtocolEncoder encoder = new LdapProtocolEncoder();
+
+
     /**
      * Test the decoding of a AddRequest
      */
@@ -73,34 +78,43 @@ public class AddRequestTest
         ByteBuffer stream = ByteBuffer.allocate( 0x59 );
 
         stream.put( new byte[]
-            { 
-            0x30, 0x57,                 // LDAPMessage ::= SEQUENCE {
-              0x02, 0x01, 0x01,         // messageID MessageID
-              0x68, 0x52,               // CHOICE { ..., addRequest AddRequest, ...
-                                        // AddRequest ::= [APPLICATION 8] SEQUENCE {
-                                        // entry LDAPDN,
-                0x04, 0x20, 
-                'c', 'n', '=', 't', 'e', 's', 't', 'M', 'o', 'd', 'i', 'f', 'y', ',', 'o', 'u', '=', 'u',
+            {
+                0x30,
+                0x57, // LDAPMessage ::= SEQUENCE {
+                0x02,
+                0x01,
+                0x01, // messageID MessageID
+                0x68,
+                0x52, // CHOICE { ..., addRequest AddRequest, ...
+                // AddRequest ::= [APPLICATION 8] SEQUENCE {
+                // entry LDAPDN,
+                0x04, 0x20, 'c', 'n', '=', 't', 'e', 's', 't', 'M', 'o', 'd', 'i', 'f', 'y', ',', 'o', 'u', '=', 'u',
                 's', 'e', 'r', 's', ',', 'o', 'u', '=', 's', 'y', 's', 't', 'e', 'm',
-                                        // attributes AttributeList }
-                0x30, 0x2E,             // AttributeList ::= SEQUENCE OF SEQUENCE {
-                  0x30, 0x0c,           // attribute 1
-                    0x04, 0x01, 'l',    // type AttributeDescription,
-                    0x31, 0x07,         // vals SET OF AttributeValue }
-                      0x04, 0x05, 'P', 'a', 'r', 'i', 's',
+                // attributes AttributeList }
+                0x30,
+                0x2E, // AttributeList ::= SEQUENCE OF SEQUENCE {
+                0x30,
+                0x0c, // attribute 1
+                0x04, 0x01,
+                'l', // type AttributeDescription,
+                0x31,
+                0x07, // vals SET OF AttributeValue }
+                0x04, 0x05, 'P', 'a', 'r', 'i', 's',
 
-                  0x30, 0x1E,           // attribute 2
-                                        // type AttributeDescription,
-                    0x04, 0x05, 'a', 't', 't', 'r', 's', 
-                    0x31, 0x15,         // vals SET
-                                        // OF
-                                        // AttributeValue
-                                        // }
-                      0x04, 0x05, 't', 'e', 's', 't', '1', 
-                      0x04, 0x05, 't', 'e', 's', 't', '2', 
-                      0x04, 0x05, 't', 'e', 's', 't', '3', 
-            } );
+                0x30,
+                0x1E, // attribute 2
+                // type AttributeDescription,
+                0x04, 0x05, 'a', 't', 't', 'r',
+                's',
+                0x31,
+                0x15, // vals SET
+                // OF
+                // AttributeValue
+                // }
+                0x04, 0x05, 't', 'e', 's', 't', '1', 0x04, 0x05, 't', 'e', 's', 't', '2', 0x04, 0x05, 't', 'e', 's',
+                't', '3', } );
 
+        String decodedPdu = StringTools.dumpBytes( stream.array() );
         stream.flip();
 
         // Allocate a LdapMessage Container
@@ -117,7 +131,7 @@ public class AddRequestTest
             fail( de.getMessage() );
         }
 
-        AddRequestCodec addRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getAddRequest();
+        AddRequest addRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getAddRequest();
 
         // Check the decoded message
         assertEquals( 1, addRequest.getMessageId() );
@@ -150,7 +164,7 @@ public class AddRequestTest
 
         Set<String> vals = ( Set<String> ) typesVals.get( attribute.getId().toLowerCase() );
 
-        for ( Value<?> value:attribute )
+        for ( Value<?> value : attribute )
         {
             assertTrue( vals.contains( value.get() ) );
 
@@ -163,15 +177,41 @@ public class AddRequestTest
 
         vals = ( Set<String> ) typesVals.get( attribute.getId().toLowerCase() );
 
-        for ( Value<?> value:attribute )
+        for ( Value<?> value : attribute )
         {
             assertTrue( vals.contains( value.get() ) );
 
             vals.remove( value.get() );
         }
 
-        // Check the length
-        assertEquals( 0x59, addRequest.computeLength() );
+        // Check the encoding
+        try
+        {
+            ByteBuffer bb = encoder.encodeMessage( addRequest );
+
+            // Check the length
+            assertEquals( 0x59, bb.limit() );
+
+            // We cannot compare the PDU, as the attributes order is not
+            // kept. Let's decode again and compare the resulting AddRequest
+            try
+            {
+                ldapDecoder.decode( bb, ldapMessageContainer );
+            }
+            catch ( DecoderException de )
+            {
+                de.printStackTrace();
+                fail( de.getMessage() );
+            }
+
+            AddRequest addRequest2 = ( ( LdapMessageContainer ) ldapMessageContainer ).getAddRequest();
+            assertEquals( addRequest, addRequest2 );
+        }
+        catch ( EncoderException ee )
+        {
+            ee.printStackTrace();
+            fail( ee.getMessage() );
+        }
     }
 
 
@@ -186,10 +226,9 @@ public class AddRequestTest
         ByteBuffer stream = ByteBuffer.allocate( 0x07 );
 
         stream.put( new byte[]
-            { 
-            0x30, 0x05, // LDAPMessage ::= SEQUENCE {
-              0x02, 0x01, 0x01, // messageID MessageID
-              0x68, 0x00 // CHOICE { ..., addRequest AddRequest, ...
+            { 0x30, 0x05, // LDAPMessage ::= SEQUENCE {
+                0x02, 0x01, 0x01, // messageID MessageID
+                0x68, 0x00 // CHOICE { ..., addRequest AddRequest, ...
             } );
 
         stream.flip();
@@ -223,31 +262,38 @@ public class AddRequestTest
         ByteBuffer stream = ByteBuffer.allocate( 0x39 );
 
         stream.put( new byte[]
-            { 
-            0x30, 0x37,                 // LDAPMessage ::= SEQUENCE {
-              0x02, 0x01, 0x01,         // messageID MessageID
-              0x68, 0x26,               // CHOICE { ..., addRequest AddRequest, ...
-                                        // AddRequest ::= [APPLICATION 8] SEQUENCE {
-                                        // entry LDAPDN,
+            { 0x30,
+                0x37, // LDAPMessage ::= SEQUENCE {
+                0x02, 0x01,
+                0x01, // messageID MessageID
+                0x68,
+                0x26, // CHOICE { ..., addRequest AddRequest, ...
+                // AddRequest ::= [APPLICATION 8] SEQUENCE {
+                // entry LDAPDN,
                 0x04, 0x00,
-                                        // attributes AttributeList }
-                0x30, 0x2E,             // AttributeList ::= SEQUENCE OF SEQUENCE {
-                  0x30, 0x0c,           // attribute 1
-                    0x04, 0x01, 'l',    // type AttributeDescription,
-                    0x31, 0x07,         // vals SET OF AttributeValue }
-                      0x04, 0x05, 'P', 'a', 'r', 'i', 's',
+                // attributes AttributeList }
+                0x30,
+                0x2E, // AttributeList ::= SEQUENCE OF SEQUENCE {
+                0x30,
+                0x0c, // attribute 1
+                0x04, 0x01,
+                'l', // type AttributeDescription,
+                0x31,
+                0x07, // vals SET OF AttributeValue }
+                0x04, 0x05, 'P', 'a', 'r', 'i', 's',
 
-                  0x30, 0x1E,           // attribute 2
-                                        // type AttributeDescription,
-                    0x04, 0x05, 'a', 't', 't', 'r', 's', 
-                    0x31, 0x15,         // vals SET
-                                        // OF
-                                        // AttributeValue
-                                        // }
-                      0x04, 0x05, 't', 'e', 's', 't', '1', 
-                      0x04, 0x05, 't', 'e', 's', 't', '2', 
-                      0x04, 0x05, 't', 'e', 's', 't', '3', 
-            } );
+                0x30,
+                0x1E, // attribute 2
+                // type AttributeDescription,
+                0x04, 0x05, 'a', 't', 't', 'r',
+                's',
+                0x31,
+                0x15, // vals SET
+                // OF
+                // AttributeValue
+                // }
+                0x04, 0x05, 't', 'e', 's', 't', '1', 0x04, 0x05, 't', 'e', 's', 't', '2', 0x04, 0x05, 't', 'e', 's',
+                't', '3', } );
 
         stream.flip();
 
@@ -262,14 +308,16 @@ public class AddRequestTest
         catch ( DecoderException de )
         {
             assertTrue( de instanceof ResponseCarryingException );
-            InternalMessage response = ((ResponseCarryingException)de).getResponse();
+            Message response = ( ( ResponseCarryingException ) de ).getResponse();
             assertTrue( response instanceof AddResponseImpl );
-            assertEquals( ResultCodeEnum.NAMING_VIOLATION, ((AddResponseImpl)response).getLdapResult().getResultCode() );
+            assertEquals( ResultCodeEnum.NAMING_VIOLATION, ( ( AddResponseImpl ) response ).getLdapResult()
+                .getResultCode() );
             return;
         }
 
         fail( "We should not reach this point" );
     }
+
 
     /**
      * Test the decoding of a AddRequest
@@ -282,33 +330,41 @@ public class AddRequestTest
         ByteBuffer stream = ByteBuffer.allocate( 0x59 );
 
         stream.put( new byte[]
-            { 
-            0x30, 0x57,                 // LDAPMessage ::= SEQUENCE {
-              0x02, 0x01, 0x01,         // messageID MessageID
-              0x68, 0x52,               // CHOICE { ..., addRequest AddRequest, ...
-                                        // AddRequest ::= [APPLICATION 8] SEQUENCE {
-                                        // entry LDAPDN,
-                0x04, 0x20, 
-                'c', 'n', ':', 't', 'e', 's', 't', 'M', 'o', 'd', 'i', 'f', 'y', ',', 'o', 'u', '=', 'u',
+            {
+                0x30,
+                0x57, // LDAPMessage ::= SEQUENCE {
+                0x02,
+                0x01,
+                0x01, // messageID MessageID
+                0x68,
+                0x52, // CHOICE { ..., addRequest AddRequest, ...
+                // AddRequest ::= [APPLICATION 8] SEQUENCE {
+                // entry LDAPDN,
+                0x04, 0x20, 'c', 'n', ':', 't', 'e', 's', 't', 'M', 'o', 'd', 'i', 'f', 'y', ',', 'o', 'u', '=', 'u',
                 's', 'e', 'r', 's', ',', 'o', 'u', '=', 's', 'y', 's', 't', 'e', 'm',
-                                        // attributes AttributeList }
-                0x30, 0x2E,             // AttributeList ::= SEQUENCE OF SEQUENCE {
-                  0x30, 0x0c,           // attribute 1
-                    0x04, 0x01, 'l',    // type AttributeDescription,
-                    0x31, 0x07,         // vals SET OF AttributeValue }
-                      0x04, 0x05, 'P', 'a', 'r', 'i', 's',
+                // attributes AttributeList }
+                0x30,
+                0x2E, // AttributeList ::= SEQUENCE OF SEQUENCE {
+                0x30,
+                0x0c, // attribute 1
+                0x04, 0x01,
+                'l', // type AttributeDescription,
+                0x31,
+                0x07, // vals SET OF AttributeValue }
+                0x04, 0x05, 'P', 'a', 'r', 'i', 's',
 
-                  0x30, 0x1E,           // attribute 2
-                                        // type AttributeDescription,
-                    0x04, 0x05, 'a', 't', 't', 'r', 's', 
-                    0x31, 0x15,         // vals SET
-                                        // OF
-                                        // AttributeValue
-                                        // }
-                      0x04, 0x05, 't', 'e', 's', 't', '1', 
-                      0x04, 0x05, 't', 'e', 's', 't', '2', 
-                      0x04, 0x05, 't', 'e', 's', 't', '3', 
-            } );
+                0x30,
+                0x1E, // attribute 2
+                // type AttributeDescription,
+                0x04, 0x05, 'a', 't', 't', 'r',
+                's',
+                0x31,
+                0x15, // vals SET
+                // OF
+                // AttributeValue
+                // }
+                0x04, 0x05, 't', 'e', 's', 't', '1', 0x04, 0x05, 't', 'e', 's', 't', '2', 0x04, 0x05, 't', 'e', 's',
+                't', '3', } );
 
         stream.flip();
 
@@ -323,14 +379,16 @@ public class AddRequestTest
         catch ( DecoderException de )
         {
             assertTrue( de instanceof ResponseCarryingException );
-            InternalMessage response = ((ResponseCarryingException)de).getResponse();
+            Message response = ( ( ResponseCarryingException ) de ).getResponse();
             assertTrue( response instanceof AddResponseImpl );
-            assertEquals( ResultCodeEnum.INVALID_DN_SYNTAX, ((AddResponseImpl)response).getLdapResult().getResultCode() );
+            assertEquals( ResultCodeEnum.INVALID_DN_SYNTAX, ( ( AddResponseImpl ) response ).getLdapResult()
+                .getResultCode() );
             return;
         }
 
         fail( "We should not reach this point" );
     }
+
 
     /**
      * Test the decoding of a AddRequest with a null attributeList
@@ -343,17 +401,18 @@ public class AddRequestTest
         ByteBuffer stream = ByteBuffer.allocate( 0x2B );
 
         stream.put( new byte[]
-            { 
-            0x30, 0x29,                 // LDAPMessage ::= SEQUENCE {
-              0x02, 0x01, 0x01,         // messageID MessageID
-              0x68, 0x24,               // CHOICE { ..., addRequest AddRequest, ...
-                                        // AddRequest ::= [APPLICATION 8] SEQUENCE {
-                                        // entry LDAPDN,
-                0x04, 0x20, 
-                  'c', 'n', '=', 't', 'e', 's', 't', 'M', 'o', 'd', 'i', 'f', 'y', ',', 'o', 'u', '=', 'u',
-                  's', 'e', 'r', 's', ',', 'o', 'u', '=', 's', 'y', 's', 't', 'e', 'm',
-                                        // attributes AttributeList }
-                0x30, 0x00,             // AttributeList ::= SEQUENCE OF SEQUENCE {
+            { 0x30,
+                0x29, // LDAPMessage ::= SEQUENCE {
+                0x02, 0x01,
+                0x01, // messageID MessageID
+                0x68,
+                0x24, // CHOICE { ..., addRequest AddRequest, ...
+                // AddRequest ::= [APPLICATION 8] SEQUENCE {
+                // entry LDAPDN,
+                0x04, 0x20, 'c', 'n', '=', 't', 'e', 's', 't', 'M', 'o', 'd', 'i', 'f', 'y', ',', 'o', 'u', '=', 'u',
+                's', 'e', 'r', 's', ',', 'o', 'u', '=', 's', 'y', 's', 't', 'e', 'm',
+                // attributes AttributeList }
+                0x30, 0x00, // AttributeList ::= SEQUENCE OF SEQUENCE {
             } );
 
         stream.flip();
@@ -387,18 +446,19 @@ public class AddRequestTest
         ByteBuffer stream = ByteBuffer.allocate( 0x2D );
 
         stream.put( new byte[]
-            { 
-            0x30, 0x2B,                 // LDAPMessage ::= SEQUENCE {
-              0x02, 0x01, 0x01,         // messageID MessageID
-              0x68, 0x26,               // CHOICE { ..., addRequest AddRequest, ...
-                                        // AddRequest ::= [APPLICATION 8] SEQUENCE {
-                                        // entry LDAPDN,
-                0x04, 0x20, 
-                  'c', 'n', '=', 't', 'e', 's', 't', 'M', 'o', 'd', 'i', 'f', 'y', ',', 'o', 'u', '=', 'u',
-                  's', 'e', 'r', 's', ',', 'o', 'u', '=', 's', 'y', 's', 't', 'e', 'm',
-                                        // attributes AttributeList }
-                0x30, 0x02,             // AttributeList ::= SEQUENCE OF SEQUENCE {
-                  0x30, 0x00,           // AttributeList ::= SEQUENCE OF SEQUENCE {
+            { 0x30,
+                0x2B, // LDAPMessage ::= SEQUENCE {
+                0x02, 0x01,
+                0x01, // messageID MessageID
+                0x68,
+                0x26, // CHOICE { ..., addRequest AddRequest, ...
+                // AddRequest ::= [APPLICATION 8] SEQUENCE {
+                // entry LDAPDN,
+                0x04, 0x20, 'c', 'n', '=', 't', 'e', 's', 't', 'M', 'o', 'd', 'i', 'f', 'y', ',', 'o', 'u', '=', 'u',
+                's', 'e', 'r', 's', ',', 'o', 'u', '=', 's', 'y', 's', 't', 'e', 'm',
+                // attributes AttributeList }
+                0x30, 0x02, // AttributeList ::= SEQUENCE OF SEQUENCE {
+                0x30, 0x00, // AttributeList ::= SEQUENCE OF SEQUENCE {
             } );
 
         stream.flip();
@@ -432,19 +492,20 @@ public class AddRequestTest
         ByteBuffer stream = ByteBuffer.allocate( 0x2F );
 
         stream.put( new byte[]
-            { 
-            0x30, 0x2D,                 // LDAPMessage ::= SEQUENCE {
-              0x02, 0x01, 0x01,         // messageID MessageID
-              0x68, 0x28,               // CHOICE { ..., addRequest AddRequest, ...
-                                        // AddRequest ::= [APPLICATION 8] SEQUENCE {
-                                        // entry LDAPDN,
-                0x04, 0x20, 
-                  'c', 'n', '=', 't', 'e', 's', 't', 'M', 'o', 'd', 'i', 'f', 'y', ',', 'o', 'u', '=', 'u',
-                  's', 'e', 'r', 's', ',', 'o', 'u', '=', 's', 'y', 's', 't', 'e', 'm',
-                                        // attributes AttributeList }
-                0x30, 0x04,             // AttributeList ::= SEQUENCE OF SEQUENCE {
-                  0x30, 0x02,           // attribute 1
-                    0x04, 0x00,         // type AttributeDescription,
+            { 0x30,
+                0x2D, // LDAPMessage ::= SEQUENCE {
+                0x02, 0x01,
+                0x01, // messageID MessageID
+                0x68,
+                0x28, // CHOICE { ..., addRequest AddRequest, ...
+                // AddRequest ::= [APPLICATION 8] SEQUENCE {
+                // entry LDAPDN,
+                0x04, 0x20, 'c', 'n', '=', 't', 'e', 's', 't', 'M', 'o', 'd', 'i', 'f', 'y', ',', 'o', 'u', '=', 'u',
+                's', 'e', 'r', 's', ',', 'o', 'u', '=', 's', 'y', 's', 't', 'e', 'm',
+                // attributes AttributeList }
+                0x30, 0x04, // AttributeList ::= SEQUENCE OF SEQUENCE {
+                0x30, 0x02, // attribute 1
+                0x04, 0x00, // type AttributeDescription,
             } );
 
         stream.flip();
@@ -460,9 +521,10 @@ public class AddRequestTest
         catch ( DecoderException de )
         {
             assertTrue( de instanceof ResponseCarryingException );
-            InternalMessage response = ((ResponseCarryingException)de).getResponse();
+            Message response = ( ( ResponseCarryingException ) de ).getResponse();
             assertTrue( response instanceof AddResponseImpl );
-            assertEquals( ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX, ((AddResponseImpl)response).getLdapResult().getResultCode() );
+            assertEquals( ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX, ( ( AddResponseImpl ) response ).getLdapResult()
+                .getResultCode() );
             return;
         }
 
@@ -481,19 +543,20 @@ public class AddRequestTest
         ByteBuffer stream = ByteBuffer.allocate( 0x30 );
 
         stream.put( new byte[]
-            { 
-            0x30, 0x2E,                 // LDAPMessage ::= SEQUENCE {
-              0x02, 0x01, 0x01,         // messageID MessageID
-              0x68, 0x29,               // CHOICE { ..., addRequest AddRequest, ...
-                                        // AddRequest ::= [APPLICATION 8] SEQUENCE {
-                                        // entry LDAPDN,
-                0x04, 0x20, 
-                  'c', 'n', '=', 't', 'e', 's', 't', 'M', 'o', 'd', 'i', 'f', 'y', ',', 'o', 'u', '=', 'u',
-                  's', 'e', 'r', 's', ',', 'o', 'u', '=', 's', 'y', 's', 't', 'e', 'm',
-                                        // attributes AttributeList }
-                0x30, 0x05,             // AttributeList ::= SEQUENCE OF SEQUENCE {
-                  0x30, 0x03,           // attribute 1
-                    0x04, 0x01, 'A',    // type AttributeDescription,
+            { 0x30,
+                0x2E, // LDAPMessage ::= SEQUENCE {
+                0x02, 0x01,
+                0x01, // messageID MessageID
+                0x68,
+                0x29, // CHOICE { ..., addRequest AddRequest, ...
+                // AddRequest ::= [APPLICATION 8] SEQUENCE {
+                // entry LDAPDN,
+                0x04, 0x20, 'c', 'n', '=', 't', 'e', 's', 't', 'M', 'o', 'd', 'i', 'f', 'y', ',', 'o', 'u', '=', 'u',
+                's', 'e', 'r', 's', ',', 'o', 'u', '=', 's', 'y', 's', 't', 'e', 'm',
+                // attributes AttributeList }
+                0x30, 0x05, // AttributeList ::= SEQUENCE OF SEQUENCE {
+                0x30, 0x03, // attribute 1
+                0x04, 0x01, 'A', // type AttributeDescription,
             } );
 
         stream.flip();
@@ -527,21 +590,21 @@ public class AddRequestTest
         ByteBuffer stream = ByteBuffer.allocate( 0x32 );
 
         stream.put( new byte[]
-            { 
-            0x30, 0x30,                 // LDAPMessage ::= SEQUENCE {
-              0x02, 0x01, 0x01,         // messageID MessageID
-              0x68, 0x2B,               // CHOICE { ..., addRequest AddRequest, ...
-                                        // AddRequest ::= [APPLICATION 8] SEQUENCE {
-                                        // entry LDAPDN,
-                0x04, 0x20, 
-                  'c', 'n', '=', 't', 'e', 's', 't', 'M', 'o', 'd', 'i', 'f', 'y', ',', 'o', 'u', '=', 'u',
-                  's', 'e', 'r', 's', ',', 'o', 'u', '=', 's', 'y', 's', 't', 'e', 'm',
-                                        // attributes AttributeList }
-                0x30, 0x07,             // AttributeList ::= SEQUENCE OF SEQUENCE {
-                  0x30, 0x05,           // attribute 1
-                    0x04, 0x01, 'A',    // type AttributeDescription,
-                    0x31, 0x00 
-            } );
+            { 0x30,
+                0x30, // LDAPMessage ::= SEQUENCE {
+                0x02, 0x01,
+                0x01, // messageID MessageID
+                0x68,
+                0x2B, // CHOICE { ..., addRequest AddRequest, ...
+                // AddRequest ::= [APPLICATION 8] SEQUENCE {
+                // entry LDAPDN,
+                0x04, 0x20, 'c', 'n', '=', 't', 'e', 's', 't', 'M', 'o', 'd', 'i', 'f', 'y', ',', 'o', 'u', '=', 'u',
+                's', 'e', 'r', 's', ',', 'o', 'u', '=', 's', 'y', 's', 't', 'e', 'm',
+                // attributes AttributeList }
+                0x30, 0x07, // AttributeList ::= SEQUENCE OF SEQUENCE {
+                0x30, 0x05, // attribute 1
+                0x04, 0x01, 'A', // type AttributeDescription,
+                0x31, 0x00 } );
 
         stream.flip();
 
@@ -574,22 +637,21 @@ public class AddRequestTest
         ByteBuffer stream = ByteBuffer.allocate( 0x34 );
 
         stream.put( new byte[]
-            { 
-            0x30, 0x32,                 // LDAPMessage ::= SEQUENCE {
-              0x02, 0x01, 0x01,         // messageID MessageID
-              0x68, 0x2D,               // CHOICE { ..., addRequest AddRequest, ...
-                                        // AddRequest ::= [APPLICATION 8] SEQUENCE {
-                                        // entry LDAPDN,
-                0x04, 0x20, 
-                  'c', 'n', '=', 't', 'e', 's', 't', 'M', 'o', 'd', 'i', 'f', 'y', ',', 'o', 'u', '=', 'u',
-                  's', 'e', 'r', 's', ',', 'o', 'u', '=', 's', 'y', 's', 't', 'e', 'm',
-                                        // attributes AttributeList }
-                0x30, 0x09,             // AttributeList ::= SEQUENCE OF SEQUENCE {
-                  0x30, 0x07,           // attribute 1
-                    0x04, 0x01, 'l',    // type AttributeDescription,
-                  0x31, 0x02, 
-                    0x04, 0x00 
-            } );
+            { 0x30,
+                0x32, // LDAPMessage ::= SEQUENCE {
+                0x02, 0x01,
+                0x01, // messageID MessageID
+                0x68,
+                0x2D, // CHOICE { ..., addRequest AddRequest, ...
+                // AddRequest ::= [APPLICATION 8] SEQUENCE {
+                // entry LDAPDN,
+                0x04, 0x20, 'c', 'n', '=', 't', 'e', 's', 't', 'M', 'o', 'd', 'i', 'f', 'y', ',', 'o', 'u', '=', 'u',
+                's', 'e', 'r', 's', ',', 'o', 'u', '=', 's', 'y', 's', 't', 'e', 'm',
+                // attributes AttributeList }
+                0x30, 0x09, // AttributeList ::= SEQUENCE OF SEQUENCE {
+                0x30, 0x07, // attribute 1
+                0x04, 0x01, 'l', // type AttributeDescription,
+                0x31, 0x02, 0x04, 0x00 } );
 
         String decodedPdu = StringTools.dumpBytes( stream.array() );
         stream.flip();
@@ -608,7 +670,7 @@ public class AddRequestTest
             fail( de.getMessage() );
         }
 
-        AddRequestCodec addRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getAddRequest();
+        AddRequest addRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getAddRequest();
 
         // Check the decoded message
         assertEquals( 1, addRequest.getMessageId() );
@@ -622,18 +684,18 @@ public class AddRequestTest
 
         assertEquals( "l", attribute.getId().toLowerCase() );
 
-        for ( Value<?> value:attribute )
+        for ( Value<?> value : attribute )
         {
             assertEquals( "", value.getString() );
         }
 
-        // Check the length
-        assertEquals( 0x34, addRequest.computeLength() );
-
         // Check the encoding
         try
         {
-            ByteBuffer bb = addRequest.encode();
+            ByteBuffer bb = encoder.encodeMessage( addRequest );
+
+            // Check the length
+            assertEquals( 0x34, bb.limit() );
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 
@@ -659,25 +721,29 @@ public class AddRequestTest
         ByteBuffer stream = ByteBuffer.allocate( 0x51 );
 
         stream.put( new byte[]
-            { 
-            0x30, 0x4F,                 // LDAPMessage ::= SEQUENCE {
-              0x02, 0x01, 0x01,         // messageID MessageID
-              0x68, 0x2D,               // CHOICE { ..., addRequest AddRequest, ...
-                                        // AddRequest ::= [APPLICATION 8] SEQUENCE {
-                                        // entry LDAPDN,
-                0x04, 0x20, 
-                  'c', 'n', '=', 't', 'e', 's', 't', 'M', 'o', 'd', 'i', 'f', 'y', ',', 'o', 'u', '=', 'u',
-                  's', 'e', 'r', 's', ',', 'o', 'u', '=', 's', 'y', 's', 't', 'e', 'm',
-                                        // attributes AttributeList }
-                0x30, 0x09,             // AttributeList ::= SEQUENCE OF SEQUENCE {
-                  0x30, 0x07,           // attribute 1
-                    0x04, 0x01, 'l',    // type AttributeDescription,
-                  0x31, 0x02, 
-                    0x04, 0x00, 
-              ( byte ) 0xA0, 0x1B,      // A control
+            {
+                0x30,
+                0x4F, // LDAPMessage ::= SEQUENCE {
+                0x02,
+                0x01,
+                0x01, // messageID MessageID
+                0x68,
+                0x2D, // CHOICE { ..., addRequest AddRequest, ...
+                // AddRequest ::= [APPLICATION 8] SEQUENCE {
+                // entry LDAPDN,
+                0x04, 0x20, 'c', 'n', '=', 't', 'e', 's', 't', 'M', 'o', 'd', 'i', 'f', 'y', ',', 'o', 'u', '=', 'u',
+                's', 'e', 'r', 's', ',', 'o', 'u', '=', 's', 'y', 's', 't', 'e', 'm',
+                // attributes AttributeList }
+                0x30,
+                0x09, // AttributeList ::= SEQUENCE OF SEQUENCE {
+                0x30,
+                0x07, // attribute 1
+                0x04, 0x01,
+                'l', // type AttributeDescription,
+                0x31, 0x02, 0x04, 0x00, ( byte ) 0xA0,
+                0x1B, // A control
                 0x30, 0x19, 0x04, 0x17, 0x32, 0x2E, 0x31, 0x36, 0x2E, 0x38, 0x34, 0x30, 0x2E, 0x31, 0x2E, 0x31, 0x31,
-                0x33, 0x37, 0x33, 0x30, 0x2E, 0x33, 0x2E, 0x34, 0x2E, 0x32 
-            } );
+                0x33, 0x37, 0x33, 0x30, 0x2E, 0x33, 0x2E, 0x34, 0x2E, 0x32 } );
 
         String decodedPdu = StringTools.dumpBytes( stream.array() );
         stream.flip();
@@ -696,7 +762,7 @@ public class AddRequestTest
             fail( de.getMessage() );
         }
 
-        AddRequestCodec addRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getAddRequest();
+        AddRequest addRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getAddRequest();
 
         // Check the decoded message
         assertEquals( 1, addRequest.getMessageId() );
@@ -709,28 +775,30 @@ public class AddRequestTest
         EntryAttribute attribute = entry.get( "l" );
 
         assertEquals( "l", attribute.getId().toLowerCase() );
- 
-        for ( Value<?> value:attribute )
+
+        for ( Value<?> value : attribute )
         {
             assertEquals( "", value.getString() );
         }
 
-        // Check the length
-        assertEquals( 0x51, addRequest.computeLength() );
-
         // Check the Control
-        List<Control> controls = addRequest.getControls();
+        Map<String, Control> controls = addRequest.getControls();
 
         assertEquals( 1, controls.size() );
 
-        Control control = addRequest.getControls( 0 );
+        assertTrue( addRequest.hasControl( "2.16.840.1.113730.3.4.2" ) );
+
+        Control control = controls.get( "2.16.840.1.113730.3.4.2" );
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
         assertEquals( "", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
 
         // Check the encoding
         try
         {
-            ByteBuffer bb = addRequest.encode();
+            ByteBuffer bb = encoder.encodeMessage( addRequest );
+
+            // Check the length
+            assertEquals( 0x51, bb.limit() );
 
             String encodedPdu = StringTools.dumpBytes( bb.array() );
 

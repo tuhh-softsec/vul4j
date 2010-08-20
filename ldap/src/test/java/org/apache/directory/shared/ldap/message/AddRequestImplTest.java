@@ -33,10 +33,9 @@ import org.apache.directory.shared.ldap.entry.DefaultEntry;
 import org.apache.directory.shared.ldap.entry.DefaultEntryAttribute;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
+import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.message.internal.InternalAddRequest;
-import org.apache.directory.shared.ldap.message.internal.InternalResultResponse;
 import org.apache.directory.shared.ldap.name.DN;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -52,7 +51,8 @@ import org.junit.runner.RunWith;
 public class AddRequestImplTest
 {
     private static final Map<String, Control> EMPTY_CONTROL_MAP = new HashMap<String, Control>();
-    
+
+
     /**
      * Creates and populates a AttributeImpl with a specific id.
      * 
@@ -78,7 +78,7 @@ public class AddRequestImplTest
     private Entry getEntry()
     {
         Entry entry = new DefaultEntry();
-        
+
         try
         {
             entry.put( getAttribute( "attr0" ) );
@@ -89,7 +89,7 @@ public class AddRequestImplTest
         {
             // Do nothing
         }
-        
+
         return entry;
     }
 
@@ -196,7 +196,7 @@ public class AddRequestImplTest
     @Test
     public void testEqualsDiffImpl()
     {
-        InternalAddRequest req0 = new InternalAddRequest()
+        AddRequest req0 = new AddRequest()
         {
             public Entry getEntry()
             {
@@ -244,12 +244,12 @@ public class AddRequestImplTest
             }
 
 
-            public void add( Control control ) throws MessageException
+            public void addControl( Control control ) throws MessageException
             {
             }
 
 
-            public void remove( Control control ) throws MessageException
+            public void removeControl( Control control ) throws MessageException
             {
             }
 
@@ -288,13 +288,13 @@ public class AddRequestImplTest
             }
 
 
-            public InternalResultResponse getResultResponse()
+            public ResultResponse getResultResponse()
             {
                 return null;
             }
 
 
-            public void addAll( Control[] controls ) throws MessageException
+            public void addAllControls( Control[] controls ) throws MessageException
             {
             }
 
@@ -302,6 +302,71 @@ public class AddRequestImplTest
             public boolean hasControl( String oid )
             {
                 return false;
+            }
+
+
+            public void addAttributeType( String type ) throws LdapException
+            {
+            }
+
+
+            public void addAttributeValue( String value )
+            {
+            }
+
+
+            public void addAttributeValue( Value<?> value )
+            {
+            }
+
+
+            public void addAttributeValue( byte[] value )
+            {
+            }
+
+
+            public String getCurrentAttributeType()
+            {
+                return null;
+            }
+
+
+            public Control getCurrentControl()
+            {
+                return null;
+            }
+
+
+            public int getControlsLength()
+            {
+                return 0;
+            }
+
+
+            public void setControlsLength( int controlsLength )
+            {
+            }
+
+
+            public int getMessageLength()
+            {
+                return 0;
+            }
+
+
+            public void setMessageLength( int messageLength )
+            {
+            }
+
+
+            public Control getControl( String oid )
+            {
+                return null;
+            }
+
+
+            public void setMessageId( int messageId )
+            {
             }
         };
 

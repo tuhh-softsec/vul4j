@@ -25,7 +25,7 @@ import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
-import org.apache.directory.shared.ldap.codec.bind.BindResponseCodec;
+import org.apache.directory.shared.ldap.message.BindResponse;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,10 +44,12 @@ public class ServerSASLCredsAction extends GrammarAction
     /** Speedup for logs */
     private static final boolean IS_DEBUG = log.isDebugEnabled();
 
+
     public ServerSASLCredsAction()
     {
         super( "Store server sasl credentials value" );
     }
+
 
     /**
      * The initialization action
@@ -56,28 +58,31 @@ public class ServerSASLCredsAction extends GrammarAction
     {
         LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
-        BindResponseCodec bindResponseMessage = ldapMessageContainer.getBindResponse();
-
         // Get the Value and store it in the BindRequest
         TLV tlv = ldapMessageContainer.getCurrentTLV();
 
         // We have to handle the special case of a 0 length server
         // sasl credentials
+        byte[] serverSaslCreds = null;
+
         if ( tlv.getLength() == 0 )
         {
-            bindResponseMessage.setServerSaslCreds( StringTools.EMPTY_BYTES );
+            serverSaslCreds = StringTools.EMPTY_BYTES;
         }
         else
         {
-            bindResponseMessage.setServerSaslCreds( tlv.getValue().getData() );
+            serverSaslCreds = tlv.getValue().getData();
         }
+
+        BindResponse response = ( BindResponse ) ldapMessageContainer.getMessage();
+        response.setServerSaslCreds( serverSaslCreds );
 
         // We can have an END transition
         ldapMessageContainer.grammarEndAllowed( true );
 
         if ( IS_DEBUG )
         {
-            log.debug( "The SASL credentials value is : {}", StringTools.dumpBytes( bindResponseMessage.getServerSaslCreds() ) );
+            log.debug( "The SASL credentials value is : {}", StringTools.dumpBytes( serverSaslCreds ) );
         }
     }
 }

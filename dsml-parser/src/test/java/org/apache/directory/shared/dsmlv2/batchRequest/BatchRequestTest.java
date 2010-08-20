@@ -21,6 +21,10 @@
 package org.apache.directory.shared.dsmlv2.batchRequest;
 
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.List;
 
 import org.apache.directory.junit.tools.Concurrent;
@@ -28,22 +32,19 @@ import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.dsmlv2.AbstractTest;
 import org.apache.directory.shared.dsmlv2.Dsmlv2Parser;
 import org.apache.directory.shared.dsmlv2.request.BatchRequest;
-import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
-import org.apache.directory.shared.ldap.codec.abandon.AbandonRequestCodec;
-import org.apache.directory.shared.ldap.codec.add.AddRequestCodec;
-import org.apache.directory.shared.ldap.codec.bind.BindRequestCodec;
-import org.apache.directory.shared.ldap.codec.compare.CompareRequestCodec;
-import org.apache.directory.shared.ldap.codec.del.DelRequestCodec;
-import org.apache.directory.shared.ldap.codec.extended.ExtendedRequestCodec;
-import org.apache.directory.shared.ldap.codec.modify.ModifyRequestCodec;
-import org.apache.directory.shared.ldap.codec.modifyDn.ModifyDNRequestCodec;
-import org.apache.directory.shared.ldap.codec.search.SearchRequestCodec;
+import org.apache.directory.shared.ldap.message.AbandonRequest;
+import org.apache.directory.shared.ldap.message.AddRequest;
+import org.apache.directory.shared.ldap.message.BindRequest;
+import org.apache.directory.shared.ldap.message.CompareRequest;
+import org.apache.directory.shared.ldap.message.DeleteRequest;
+import org.apache.directory.shared.ldap.message.ExtendedRequest;
+import org.apache.directory.shared.ldap.message.Message;
+import org.apache.directory.shared.ldap.message.ModifyDnRequest;
+import org.apache.directory.shared.ldap.message.ModifyRequest;
+import org.apache.directory.shared.ldap.message.SearchRequest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 /**
  * Tests for the Compare Response parsing
@@ -143,9 +144,9 @@ public class BatchRequestTest extends AbstractTest
 
         assertEquals( 1, batchRequest.getRequests().size() );
 
-        LdapMessageCodec request = batchRequest.getCurrentRequest();
+        Message request = batchRequest.getCurrentRequest();
 
-        if ( request instanceof BindRequestCodec )
+        if ( request instanceof BindRequest )
         {
             assertTrue( true );
         }
@@ -181,9 +182,9 @@ public class BatchRequestTest extends AbstractTest
 
         assertEquals( 1, batchRequest.getRequests().size() );
 
-        LdapMessageCodec request = batchRequest.getCurrentRequest();
+        Message request = batchRequest.getCurrentRequest();
 
-        if ( request instanceof AddRequestCodec )
+        if ( request instanceof AddRequest )
         {
             assertTrue( true );
         }
@@ -219,9 +220,9 @@ public class BatchRequestTest extends AbstractTest
 
         assertEquals( 1, batchRequest.getRequests().size() );
 
-        LdapMessageCodec request = batchRequest.getCurrentRequest();
+        Message request = batchRequest.getCurrentRequest();
 
-        if ( request instanceof CompareRequestCodec )
+        if ( request instanceof CompareRequest )
         {
             assertTrue( true );
         }
@@ -257,9 +258,9 @@ public class BatchRequestTest extends AbstractTest
 
         assertEquals( 1, batchRequest.getRequests().size() );
 
-        LdapMessageCodec request = batchRequest.getCurrentRequest();
+        Message request = batchRequest.getCurrentRequest();
 
-        if ( request instanceof AbandonRequestCodec )
+        if ( request instanceof AbandonRequest )
         {
             assertTrue( true );
         }
@@ -295,9 +296,9 @@ public class BatchRequestTest extends AbstractTest
 
         assertEquals( 1, batchRequest.getRequests().size() );
 
-        LdapMessageCodec request = batchRequest.getCurrentRequest();
+        Message request = batchRequest.getCurrentRequest();
 
-        if ( request instanceof DelRequestCodec )
+        if ( request instanceof DeleteRequest )
         {
             assertTrue( true );
         }
@@ -333,9 +334,9 @@ public class BatchRequestTest extends AbstractTest
 
         assertEquals( 1, batchRequest.getRequests().size() );
 
-        LdapMessageCodec request = batchRequest.getCurrentRequest();
+        Message request = batchRequest.getCurrentRequest();
 
-        if ( request instanceof ExtendedRequestCodec )
+        if ( request instanceof ExtendedRequest )
         {
             assertTrue( true );
         }
@@ -371,9 +372,9 @@ public class BatchRequestTest extends AbstractTest
 
         assertEquals( 1, batchRequest.getRequests().size() );
 
-        LdapMessageCodec request = batchRequest.getCurrentRequest();
+        Message request = batchRequest.getCurrentRequest();
 
-        if ( request instanceof ModifyDNRequestCodec )
+        if ( request instanceof ModifyDnRequest )
         {
             assertTrue( true );
         }
@@ -409,9 +410,9 @@ public class BatchRequestTest extends AbstractTest
 
         assertEquals( 1, batchRequest.getRequests().size() );
 
-        LdapMessageCodec request = batchRequest.getCurrentRequest();
+        Message request = batchRequest.getCurrentRequest();
 
-        if ( request instanceof ModifyRequestCodec )
+        if ( request instanceof ModifyRequest )
         {
             assertTrue( true );
         }
@@ -447,9 +448,9 @@ public class BatchRequestTest extends AbstractTest
 
         assertEquals( 1, batchRequest.getRequests().size() );
 
-        LdapMessageCodec request = batchRequest.getCurrentRequest();
+        Message request = batchRequest.getCurrentRequest();
 
-        if ( request instanceof SearchRequestCodec )
+        if ( request instanceof SearchRequest )
         {
             assertTrue( true );
         }
@@ -485,9 +486,9 @@ public class BatchRequestTest extends AbstractTest
 
         assertEquals( 2, batchRequest.getRequests().size() );
 
-        LdapMessageCodec request = batchRequest.getCurrentRequest();
+        Message request = batchRequest.getCurrentRequest();
 
-        if ( request instanceof AddRequestCodec )
+        if ( request instanceof AddRequest )
         {
             assertTrue( true );
         }
@@ -523,9 +524,9 @@ public class BatchRequestTest extends AbstractTest
 
         assertEquals( 2, batchRequest.getRequests().size() );
 
-        LdapMessageCodec request = batchRequest.getCurrentRequest();
+        Message request = batchRequest.getCurrentRequest();
 
-        if ( request instanceof CompareRequestCodec )
+        if ( request instanceof CompareRequest )
         {
             assertTrue( true );
         }
@@ -561,9 +562,9 @@ public class BatchRequestTest extends AbstractTest
 
         assertEquals( 2, batchRequest.getRequests().size() );
 
-        LdapMessageCodec request = batchRequest.getCurrentRequest();
+        Message request = batchRequest.getCurrentRequest();
 
-        if ( request instanceof AbandonRequestCodec )
+        if ( request instanceof AbandonRequest )
         {
             assertTrue( true );
         }
@@ -599,9 +600,9 @@ public class BatchRequestTest extends AbstractTest
 
         assertEquals( 2, batchRequest.getRequests().size() );
 
-        LdapMessageCodec request = batchRequest.getCurrentRequest();
+        Message request = batchRequest.getCurrentRequest();
 
-        if ( request instanceof DelRequestCodec )
+        if ( request instanceof DeleteRequest )
         {
             assertTrue( true );
         }
@@ -637,9 +638,9 @@ public class BatchRequestTest extends AbstractTest
 
         assertEquals( 2, batchRequest.getRequests().size() );
 
-        LdapMessageCodec request = batchRequest.getCurrentRequest();
+        Message request = batchRequest.getCurrentRequest();
 
-        if ( request instanceof ExtendedRequestCodec )
+        if ( request instanceof ExtendedRequest )
         {
             assertTrue( true );
         }
@@ -675,9 +676,9 @@ public class BatchRequestTest extends AbstractTest
 
         assertEquals( 2, batchRequest.getRequests().size() );
 
-        LdapMessageCodec request = batchRequest.getCurrentRequest();
+        Message request = batchRequest.getCurrentRequest();
 
-        if ( request instanceof ModifyDNRequestCodec )
+        if ( request instanceof ModifyDnRequest )
         {
             assertTrue( true );
         }
@@ -713,9 +714,9 @@ public class BatchRequestTest extends AbstractTest
 
         assertEquals( 2, batchRequest.getRequests().size() );
 
-        LdapMessageCodec request = batchRequest.getCurrentRequest();
+        Message request = batchRequest.getCurrentRequest();
 
-        if ( request instanceof ModifyRequestCodec )
+        if ( request instanceof ModifyRequest )
         {
             assertTrue( true );
         }
@@ -751,9 +752,9 @@ public class BatchRequestTest extends AbstractTest
 
         assertEquals( 2, batchRequest.getRequests().size() );
 
-        LdapMessageCodec request = batchRequest.getCurrentRequest();
+        Message request = batchRequest.getCurrentRequest();
 
-        if ( request instanceof SearchRequestCodec )
+        if ( request instanceof SearchRequest )
         {
             assertTrue( true );
         }
@@ -791,9 +792,9 @@ public class BatchRequestTest extends AbstractTest
 
         assertEquals( 2, requests.size() );
 
-        LdapMessageCodec request = ( LdapMessageCodec ) requests.get( 0 );
+        Message request = ( Message ) requests.get( 0 );
 
-        if ( request instanceof BindRequestCodec )
+        if ( request instanceof BindRequest )
         {
             assertTrue( true );
         }
@@ -802,9 +803,9 @@ public class BatchRequestTest extends AbstractTest
             fail();
         }
 
-        request = ( LdapMessageCodec ) requests.get( 1 );
+        request = ( Message ) requests.get( 1 );
 
-        if ( request instanceof AddRequestCodec )
+        if ( request instanceof AddRequest )
         {
             assertTrue( true );
         }

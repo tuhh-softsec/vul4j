@@ -151,7 +151,8 @@ public abstract class AbstractGrammar implements IGrammar
 
         if ( transition.hasAction() )
         {
-            transition.getAction().action( container );
+            IAction action = transition.getAction();
+            action.action( container );
         }
 
         container.setTransition( transition.getCurrentState() );

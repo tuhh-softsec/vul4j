@@ -21,12 +21,10 @@
 package org.apache.directory.shared.dsmlv2.reponse;
 
 
-import java.nio.ByteBuffer;
-
-import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.dsmlv2.DsmlDecorator;
-import org.apache.directory.shared.ldap.codec.LdapResponseCodec;
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
+import org.apache.directory.shared.ldap.message.AbstractResponse;
+import org.apache.directory.shared.ldap.message.Response;
 import org.dom4j.Element;
 
 
@@ -47,7 +45,7 @@ import org.dom4j.Element;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class ErrorResponse extends LdapResponseCodec implements DsmlDecorator
+public class ErrorResponse extends AbstractResponse implements Response, DsmlDecorator
 {
     /**
      * This enum represents the different types of error response
@@ -60,7 +58,7 @@ public class ErrorResponse extends LdapResponseCodec implements DsmlDecorator
     };
 
     /** The type of error response */
-    private ErrorResponseType type;
+    private ErrorResponseType errorType;
 
     /** The associated message */
     private String message;
@@ -72,8 +70,9 @@ public class ErrorResponse extends LdapResponseCodec implements DsmlDecorator
     /**
      * Creates a new instance of ErrorResponse.
      */
-    public ErrorResponse()
+    public ErrorResponse( int id, MessageTypeEnum type )
     {
+        super( id, type );
     }
 
 
@@ -89,8 +88,9 @@ public class ErrorResponse extends LdapResponseCodec implements DsmlDecorator
      */
     public ErrorResponse( int requestID, ErrorResponseType type, String message )
     {
+        super( requestID, null );
         this.requestID = requestID;
-        this.type = type;
+        this.errorType = type;
         this.message = message;
     }
 
@@ -109,7 +109,7 @@ public class ErrorResponse extends LdapResponseCodec implements DsmlDecorator
         }
 
         // Type
-        element.addAttribute( "type", getTypeDescr( type ) );
+        element.addAttribute( "type", getTypeDescr( errorType ) );
 
         // TODO Add Detail
 
@@ -223,50 +223,21 @@ public class ErrorResponse extends LdapResponseCodec implements DsmlDecorator
     /**
      * Gets the type of error response
      *
-     * @return
-     *      the type of error response
+     * @returnvthe type of error response
      */
-    public ErrorResponseType getType()
+    public ErrorResponseType getErrorType()
     {
-        return type;
+        return errorType;
     }
 
 
     /**
      * Sets the type of error response
      *
-     * @param type
-     *      the type of error response to set
+     * @param errorType the type of error response to set
      */
-    public void setType( ErrorResponseType type )
+    public void setErrorType( ErrorResponseType errorType )
     {
-        this.type = type;
-    }
-
-
-    @Override
-    protected int computeLengthProtocolOp()
-    {
-        return 0;
-    }
-
-
-    @Override
-    protected void encodeProtocolOp( ByteBuffer buffer ) throws EncoderException
-    {
-    }
-
-
-    @Override
-    public MessageTypeEnum getMessageType()
-    {
-        return null;
-    }
-
-
-    @Override
-    public String getMessageTypeName()
-    {
-        return null;
+        this.errorType = errorType;
     }
 }

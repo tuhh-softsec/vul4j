@@ -19,7 +19,6 @@
  */
 package org.apache.directory.shared.ldap.message;
 
-import org.apache.directory.shared.ldap.message.internal.InternalAbandonableRequest;
 
 
 /**
@@ -35,5 +34,5 @@ public interface AbandonListener
      * @param req
      *            the request which is abandoned.
      */
-    void requestAbandoned( InternalAbandonableRequest req );
+    void requestAbandoned( AbandonableRequest req );
 }

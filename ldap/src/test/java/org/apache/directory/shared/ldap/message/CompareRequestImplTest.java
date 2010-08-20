@@ -32,8 +32,6 @@ import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.message.internal.InternalCompareRequest;
-import org.apache.directory.shared.ldap.message.internal.InternalResultResponse;
 import org.apache.directory.shared.ldap.name.DN;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -49,6 +47,7 @@ import org.junit.runner.RunWith;
 public class CompareRequestImplTest
 {
     private static final Map<String, Control> EMPTY_CONTROL_MAP = new HashMap<String, Control>();
+
 
     /**
      * Tests the same object reference for equality.
@@ -179,7 +178,7 @@ public class CompareRequestImplTest
     @Test
     public void testEqualsDiffImpl()
     {
-        InternalCompareRequest req0 = new InternalCompareRequest()
+        CompareRequest req0 = new CompareRequest()
         {
             public Value<?> getAssertionValue()
             {
@@ -246,12 +245,12 @@ public class CompareRequestImplTest
             }
 
 
-            public void add( Control a_control ) throws MessageException
+            public void addControl( Control a_control ) throws MessageException
             {
             }
 
 
-            public void remove( Control a_control ) throws MessageException
+            public void removeControl( Control a_control ) throws MessageException
             {
             }
 
@@ -290,13 +289,13 @@ public class CompareRequestImplTest
             }
 
 
-            public InternalResultResponse getResultResponse()
+            public ResultResponse getResultResponse()
             {
                 return null;
             }
 
 
-            public void addAll( Control[] controls ) throws MessageException
+            public void addAllControls( Control[] controls ) throws MessageException
             {
             }
 
@@ -304,6 +303,45 @@ public class CompareRequestImplTest
             public boolean hasControl( String oid )
             {
                 return false;
+            }
+
+
+            public Control getCurrentControl()
+            {
+                return null;
+            }
+
+
+            public int getControlsLength()
+            {
+                return 0;
+            }
+
+
+            public void setControlsLength( int controlsLength )
+            {
+            }
+
+
+            public int getMessageLength()
+            {
+                return 0;
+            }
+
+
+            public void setMessageLength( int messageLength )
+            {
+            }
+
+
+            public Control getControl( String oid )
+            {
+                return null;
+            }
+
+
+            public void setMessageId( int messageId )
+            {
             }
         };
 

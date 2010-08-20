@@ -42,9 +42,9 @@ public class PresentFilter extends Filter
 
     /** The attribute description. */
     private String attributeDescription;
-    
+
     /** Temporary storage for attribute description bytes */
-    private byte[] attributeDescriptionBytes; 
+    private byte[] attributeDescriptionBytes;
 
 
     // ~ Constructors
@@ -57,8 +57,8 @@ public class PresentFilter extends Filter
     {
         super( tlvId );
     }
-    
-    
+
+
     /**
      * The constructor.
      */
@@ -133,8 +133,6 @@ public class PresentFilter extends Filter
         {
             throw new EncoderException( I18n.err( I18n.ERR_04005 ) );
         }
-
-        super.encode( buffer );
 
         return buffer;
     }

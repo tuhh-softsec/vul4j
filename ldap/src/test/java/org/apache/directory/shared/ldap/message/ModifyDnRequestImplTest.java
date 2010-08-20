@@ -31,8 +31,6 @@ import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.message.internal.InternalModifyDnRequest;
-import org.apache.directory.shared.ldap.message.internal.InternalResultResponse;
 import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.name.RDN;
 import org.junit.Test;
@@ -50,6 +48,7 @@ public class ModifyDnRequestImplTest
 {
     private static final Map<String, Control> EMPTY_CONTROL_MAP = new HashMap<String, Control>();
 
+
     /**
      * Constructs a ModifyDnrequest to test.
      * 
@@ -60,7 +59,7 @@ public class ModifyDnRequestImplTest
         // Construct the ModifyDn request to test
         ModifyDnRequestImpl request = new ModifyDnRequestImpl( 45 );
         request.setDeleteOldRdn( true );
-        
+
         try
         {
             request.setName( new DN( "dc=admins,dc=apache,dc=org" ) );
@@ -71,7 +70,7 @@ public class ModifyDnRequestImplTest
         {
             // do nothing
         }
-        
+
         return request;
     }
 
@@ -118,40 +117,40 @@ public class ModifyDnRequestImplTest
     /**
     * Tests the same object reference for equal hashCode
     */
-   @Test
-   public void testHashCodeSameObj()
-   {
-       ModifyDnRequestImpl req = new ModifyDnRequestImpl( 5 );
-       assertTrue( req.hashCode() == req.hashCode() );
-   }
+    @Test
+    public void testHashCodeSameObj()
+    {
+        ModifyDnRequestImpl req = new ModifyDnRequestImpl( 5 );
+        assertTrue( req.hashCode() == req.hashCode() );
+    }
 
 
-   /**
-    * Tests for equal hashCode using exact copies.
-    */
-   @Test
-   public void testHashCodeExactCopy0()
-   {
-       ModifyDnRequestImpl req0 = getRequest();
-       ModifyDnRequestImpl req1 = getRequest();
+    /**
+     * Tests for equal hashCode using exact copies.
+     */
+    @Test
+    public void testHashCodeExactCopy0()
+    {
+        ModifyDnRequestImpl req0 = getRequest();
+        ModifyDnRequestImpl req1 = getRequest();
 
-       assertTrue( req0.hashCode() == req1.hashCode() );
-   }
+        assertTrue( req0.hashCode() == req1.hashCode() );
+    }
 
 
-   /**
-    * Tests for equal hashCode using exact copies.
-    */
-   @Test
-   public void testHashCodeExactCopy1()
-   {
-       ModifyDnRequestImpl req0 = getRequest();
-       req0.setNewSuperior( null );
-       ModifyDnRequestImpl req1 = getRequest();
-       req1.setNewSuperior( null );
+    /**
+     * Tests for equal hashCode using exact copies.
+     */
+    @Test
+    public void testHashCodeExactCopy1()
+    {
+        ModifyDnRequestImpl req0 = getRequest();
+        req0.setNewSuperior( null );
+        ModifyDnRequestImpl req1 = getRequest();
+        req1.setNewSuperior( null );
 
-       assertTrue( req0.hashCode() == req1.hashCode() );
-   }
+        assertTrue( req0.hashCode() == req1.hashCode() );
+    }
 
 
     /**
@@ -238,7 +237,7 @@ public class ModifyDnRequestImplTest
     @Test
     public void testEqualsDiffImpl()
     {
-        InternalModifyDnRequest req0 = new InternalModifyDnRequest()
+        ModifyDnRequest req0 = new ModifyDnRequest()
         {
             public DN getName()
             {
@@ -338,12 +337,12 @@ public class ModifyDnRequestImplTest
             }
 
 
-            public void add( Control a_control ) throws MessageException
+            public void addControl( Control a_control ) throws MessageException
             {
             }
 
 
-            public void remove( Control a_control ) throws MessageException
+            public void removeControl( Control a_control ) throws MessageException
             {
             }
 
@@ -382,13 +381,13 @@ public class ModifyDnRequestImplTest
             }
 
 
-            public InternalResultResponse getResultResponse()
+            public ResultResponse getResultResponse()
             {
                 return null;
             }
 
 
-            public void addAll( Control[] controls ) throws MessageException
+            public void addAllControls( Control[] controls ) throws MessageException
             {
             }
 
@@ -396,6 +395,45 @@ public class ModifyDnRequestImplTest
             public boolean hasControl( String oid )
             {
                 return false;
+            }
+
+
+            public Control getCurrentControl()
+            {
+                return null;
+            }
+
+
+            public int getControlsLength()
+            {
+                return 0;
+            }
+
+
+            public void setControlsLength( int controlsLength )
+            {
+            }
+
+
+            public int getMessageLength()
+            {
+                return 0;
+            }
+
+
+            public void setMessageLength( int messageLength )
+            {
+            }
+
+
+            public Control getControl( String oid )
+            {
+                return null;
+            }
+
+
+            public void setMessageId( int messageId )
+            {
             }
         };
 

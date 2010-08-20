@@ -21,6 +21,10 @@
 package org.apache.directory.shared.dsmlv2.errorResponse;
 
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
+
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.dsmlv2.AbstractResponseTest;
@@ -30,9 +34,6 @@ import org.apache.directory.shared.dsmlv2.reponse.ErrorResponse.ErrorResponseTyp
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-import static org.junit.Assert.assertNull;
 
 /**
  * Tests for the Error Response parsing
@@ -114,7 +115,7 @@ public class ErrorResponseTest extends AbstractResponseTest
 
         ErrorResponse errorResponse = ( ErrorResponse ) parser.getBatchResponse().getCurrentResponse();
 
-        assertEquals( ErrorResponseType.NOT_ATTEMPTED, errorResponse.getType() );
+        assertEquals( ErrorResponseType.NOT_ATTEMPTED, errorResponse.getErrorType() );
     }
 
 
@@ -141,7 +142,7 @@ public class ErrorResponseTest extends AbstractResponseTest
 
         ErrorResponse errorResponse = ( ErrorResponse ) parser.getBatchResponse().getCurrentResponse();
 
-        assertEquals( ErrorResponseType.COULD_NOT_CONNECT, errorResponse.getType() );
+        assertEquals( ErrorResponseType.COULD_NOT_CONNECT, errorResponse.getErrorType() );
     }
 
 
@@ -168,7 +169,7 @@ public class ErrorResponseTest extends AbstractResponseTest
 
         ErrorResponse errorResponse = ( ErrorResponse ) parser.getBatchResponse().getCurrentResponse();
 
-        assertEquals( ErrorResponseType.CONNECTION_CLOSED, errorResponse.getType() );
+        assertEquals( ErrorResponseType.CONNECTION_CLOSED, errorResponse.getErrorType() );
     }
 
 
@@ -195,7 +196,7 @@ public class ErrorResponseTest extends AbstractResponseTest
 
         ErrorResponse errorResponse = ( ErrorResponse ) parser.getBatchResponse().getCurrentResponse();
 
-        assertEquals( ErrorResponseType.MALFORMED_REQUEST, errorResponse.getType() );
+        assertEquals( ErrorResponseType.MALFORMED_REQUEST, errorResponse.getErrorType() );
     }
 
 
@@ -222,7 +223,7 @@ public class ErrorResponseTest extends AbstractResponseTest
 
         ErrorResponse errorResponse = ( ErrorResponse ) parser.getBatchResponse().getCurrentResponse();
 
-        assertEquals( ErrorResponseType.GATEWAY_INTERNAL_ERROR, errorResponse.getType() );
+        assertEquals( ErrorResponseType.GATEWAY_INTERNAL_ERROR, errorResponse.getErrorType() );
     }
 
 
@@ -249,7 +250,7 @@ public class ErrorResponseTest extends AbstractResponseTest
 
         ErrorResponse errorResponse = ( ErrorResponse ) parser.getBatchResponse().getCurrentResponse();
 
-        assertEquals( ErrorResponseType.AUTHENTICATION_FAILED, errorResponse.getType() );
+        assertEquals( ErrorResponseType.AUTHENTICATION_FAILED, errorResponse.getErrorType() );
     }
 
 
@@ -276,7 +277,7 @@ public class ErrorResponseTest extends AbstractResponseTest
 
         ErrorResponse errorResponse = ( ErrorResponse ) parser.getBatchResponse().getCurrentResponse();
 
-        assertEquals( ErrorResponseType.UNRESOLVABLE_URI, errorResponse.getType() );
+        assertEquals( ErrorResponseType.UNRESOLVABLE_URI, errorResponse.getErrorType() );
     }
 
 
@@ -303,7 +304,7 @@ public class ErrorResponseTest extends AbstractResponseTest
 
         ErrorResponse errorResponse = ( ErrorResponse ) parser.getBatchResponse().getCurrentResponse();
 
-        assertEquals( ErrorResponseType.OTHER, errorResponse.getType() );
+        assertEquals( ErrorResponseType.OTHER, errorResponse.getErrorType() );
     }
 
 

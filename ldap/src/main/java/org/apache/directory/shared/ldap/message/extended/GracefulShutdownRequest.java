@@ -29,7 +29,7 @@ import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.extended.operations.gracefulShutdown.GracefulShutdown;
 import org.apache.directory.shared.ldap.codec.extended.operations.gracefulShutdown.GracefulShutdownDecoder;
 import org.apache.directory.shared.ldap.message.ExtendedRequestImpl;
-import org.apache.directory.shared.ldap.message.internal.InternalResultResponse;
+import org.apache.directory.shared.ldap.message.ResultResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -73,36 +73,30 @@ public class GracefulShutdownRequest extends ExtendedRequestImpl
     public GracefulShutdownRequest( int messageId, int timeOffline, int delay )
     {
         super( messageId );
-        setOid( EXTENSION_OID );
+        setRequestName( EXTENSION_OID );
         this.timeOffline = timeOffline;
         this.delay = delay;
     }
 
 
-    private void encodePayload() throws EncoderException
-    {
-        GracefulShutdown gs = new GracefulShutdown();
-        gs.setDelay( this.delay );
-        gs.setTimeOffline( this.timeOffline );
-        payload = gs.encode().array();
-    }
-
-
-    public void setPayload( byte[] payload )
+    public void setRequestValue( byte[] requestValue )
     {
         GracefulShutdownDecoder decoder = new GracefulShutdownDecoder();
+
         try
         {
-            GracefulShutdown gs = ( GracefulShutdown ) decoder.decode( payload );
-            if ( payload != null )
+            GracefulShutdown gs = ( GracefulShutdown ) decoder.decode( requestValue );
+
+            if ( requestValue != null )
             {
-                this.payload = new byte[payload.length];
-                System.arraycopy( payload, 0, this.payload, 0, payload.length );
+                this.requestValue = new byte[requestValue.length];
+                System.arraycopy( requestValue, 0, this.requestValue, 0, requestValue.length );
             }
             else
             {
-                this.payload = null;
+                this.requestValue = null;
             }
+
             this.timeOffline = gs.getTimeOffline();
             this.delay = gs.getDelay();
         }
@@ -121,19 +115,19 @@ public class GracefulShutdownRequest extends ExtendedRequestImpl
     }
 
 
-    public byte[] getEncodedValue()
+    /**
+     * {@inheritDoc}
+     */
+    public byte[] getRequestValue()
     {
-        return getPayload();
-    }
-
-
-    public byte[] getPayload()
-    {
-        if ( payload == null )
+        if ( requestValue == null )
         {
             try
             {
-                encodePayload();
+                GracefulShutdown gs = new GracefulShutdown();
+                gs.setDelay( this.delay );
+                gs.setTimeOffline( this.timeOffline );
+                requestValue = gs.encode().array();
             }
             catch ( EncoderException e )
             {
@@ -142,11 +136,11 @@ public class GracefulShutdownRequest extends ExtendedRequestImpl
             }
         }
 
-        return super.getPayload();
+        return requestValue;
     }
 
 
-    public InternalResultResponse getResultResponse()
+    public ResultResponse getResultResponse()
     {
         if ( response == null )
         {

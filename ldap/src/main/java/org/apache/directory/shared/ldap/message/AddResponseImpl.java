@@ -19,17 +19,17 @@
  */
 package org.apache.directory.shared.ldap.message;
 
-import org.apache.directory.shared.ldap.message.internal.InternalAbstractResultResponse;
-import org.apache.directory.shared.ldap.message.internal.InternalAddResponse;
-
 
 /**
  * AddResponse implementation.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class AddResponseImpl extends InternalAbstractResultResponse implements InternalAddResponse
+public class AddResponseImpl extends AbstractResultResponse implements AddResponse
 {
+    /** The encoded addResponse length */
+    private int addResponseLength;
+
     // ------------------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------------------
@@ -38,14 +38,41 @@ public class AddResponseImpl extends InternalAbstractResultResponse implements I
 
 
     /**
-     * Creates a Lockable AddResponse as a reply to an AddRequest.
-     * 
-     * @param id
-     *            the session unique message id
+     * Creates an AddResponse as a reply to an AddRequest.
      */
-    public AddResponseImpl(final int id)
+    public AddResponseImpl()
+    {
+        super( -1, TYPE );
+    }
+
+
+    /**
+     * Creates an AddResponse as a reply to an AddRequest.
+     * 
+     * @param id the session unique message id
+     */
+    public AddResponseImpl( final int id )
     {
         super( id, TYPE );
+    }
+
+
+    /**
+     * Stores the encoded length for the AddResponse
+     * @param addResponseLength The encoded length
+     */
+    /* No qualifier*/void setAddResponseLength( int addResponseLength )
+    {
+        this.addResponseLength = addResponseLength;
+    }
+
+
+    /**
+     * @return The encoded AddResponse's length
+     */
+    /* No qualifier */int getAddResponseLength()
+    {
+        return addResponseLength;
     }
 
 
@@ -56,8 +83,7 @@ public class AddResponseImpl extends InternalAbstractResultResponse implements I
      */
     public String toString()
     {
-
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
 
         sb.append( "    Add Response\n" );
         sb.append( super.toString() );

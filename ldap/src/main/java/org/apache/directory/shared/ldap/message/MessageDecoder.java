@@ -20,19 +20,18 @@
 package org.apache.directory.shared.ldap.message;
 
 
+import java.io.InputStream;
+import java.util.Hashtable;
+
 import org.apache.directory.shared.asn1.Asn1Object;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.codec.stateful.DecoderCallback;
-import org.apache.directory.shared.asn1.codec.stateful.DecoderMonitor;
 import org.apache.directory.shared.asn1.codec.stateful.StatefulDecoder;
-import org.apache.directory.shared.ldap.codec.ResponseCarryingException;
 import org.apache.directory.shared.ldap.codec.LdapTransformer;
+import org.apache.directory.shared.ldap.codec.ResponseCarryingException;
 import org.apache.directory.shared.ldap.message.spi.BinaryAttributeDetector;
 import org.apache.directory.shared.ldap.message.spi.Provider;
 import org.apache.directory.shared.ldap.message.spi.ProviderDecoder;
-
-import java.io.InputStream;
-import java.util.Hashtable;
 
 
 /**
@@ -64,8 +63,8 @@ public final class MessageDecoder implements ProviderDecoder
     {
         this( binaryAttributeDetector, Integer.MAX_VALUE );
     }
-    
-    
+
+
     /**
      * Creates a MessageDecoder using default properties for enabling a BER
      * library provider.
@@ -78,7 +77,7 @@ public final class MessageDecoder implements ProviderDecoder
     {
         // We need to get the encoder class name
         Hashtable<Object, Object> providerEnv = Provider.getEnvironment();
-        
+
         this.provider = Provider.getProvider( providerEnv );
         this.decoder = this.provider.getDecoder( binaryAttributeDetector, maxPDUSize );
         this.decoder.setCallback( new DecoderCallback()
@@ -102,13 +101,10 @@ public final class MessageDecoder implements ProviderDecoder
      * Reads and decodes a BER encoded LDAPv3 ASN.1 message envelope structure
      * from an input stream to build a fully populated Message object instance.
      * 
-     * @param lock
-     *            lock object used to exclusively read from the input stream
-     * @param in
-     *            the input stream to read PDU data from.
+     * @param lock lock object used to exclusively read from the input stream
+     * @param in the input stream to read PDU data from.
      * @return the populated Message representing the PDU envelope.
-     * @throws MessageException
-     *             if there is a problem decoding.
+     * @throws MessageException if there is a problem decoding.
      */
     public Object decode( final Object lock, final InputStream in ) throws MessageException
     {
@@ -119,7 +115,7 @@ public final class MessageDecoder implements ProviderDecoder
             if ( lock == null )
             {
                 // Complain here somehow first then do the following w/o synch!
-    
+
                 // Call provider decoder to demarshall PDU into berlib specific form
                 providerEnvelope = decoder.decode( lock, in );
             }
@@ -147,10 +143,8 @@ public final class MessageDecoder implements ProviderDecoder
      * Decodes a chunk of stream data returning any resultant decoded PDU via a
      * callback.
      * 
-     * @param chunk
-     *            the chunk to decode
-     * @throws MessageException
-     *             if there are failures while decoding the chunk
+     * @param chunk the chunk to decode
+     * @throws MessageException if there are failures while decoding the chunk
      */
     public void decode( Object chunk ) throws MessageException
     {
@@ -161,11 +155,11 @@ public final class MessageDecoder implements ProviderDecoder
         catch ( DecoderException e )
         {
             // transform the DecoderException message to a MessageException
-            if ( e instanceof ResponseCarryingException ) 
+            if ( e instanceof ResponseCarryingException )
             {
                 ResponseCarryingMessageException rcme = new ResponseCarryingMessageException( e.getMessage() );
-                rcme.setResponse( ((ResponseCarryingException)e).getResponse() );
-                
+                rcme.setResponse( ( ( ResponseCarryingException ) e ).getResponse() );
+
                 throw rcme;
             }
             else
@@ -180,8 +174,7 @@ public final class MessageDecoder implements ProviderDecoder
     /**
      * Sets the callback used to deliver completly decoded PDU's.
      * 
-     * @param cb
-     *            the callback to use for decoded PDU delivery
+     * @param cb the callback to use for decoded PDU delivery
      */
     public void setCallback( DecoderCallback cb )
     {
@@ -190,18 +183,17 @@ public final class MessageDecoder implements ProviderDecoder
 
 
     /**
-     * Sets the monitor for this MessageDecoder which receives callbacks for
-     * noteworthy events during decoding.
-     * 
-     * @param monitor
-     *            the monitor to receive notifications via callback events
+     * {@inheritDoc}
      */
-    public void setDecoderMonitor( DecoderMonitor monitor )
+    public DecoderCallback getCallback()
     {
-        decoder.setDecoderMonitor( monitor );
+        return cb;
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public Provider getProvider()
     {
         return this.provider;

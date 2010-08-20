@@ -19,17 +19,16 @@
  */
 package org.apache.directory.shared.ldap.message;
 
-import org.apache.directory.shared.ldap.message.internal.InternalAbstractResultResponse;
-import org.apache.directory.shared.ldap.message.internal.InternalModifyDnResponse;
-
 
 /**
- * Lockable ModifyDnResponse implementation
+ * ModifyDnResponse implementation
  * 
  * @author <a href="mailto:dev@directory.apache.org"> Apache Directory Project</a>
  */
-public class ModifyDnResponseImpl extends InternalAbstractResultResponse implements InternalModifyDnResponse
+public class ModifyDnResponseImpl extends AbstractResultResponse implements ModifyDnResponse
 {
+    /** The encoded modifyDnResponse length */
+    private int modifyDnResponseLength;
 
     // ------------------------------------------------------------------------
     // Constructors
@@ -39,13 +38,57 @@ public class ModifyDnResponseImpl extends InternalAbstractResultResponse impleme
 
 
     /**
-     * Creates a Lockable ModifyDnResponse as a reply to an ModifyDnRequest.
-     * 
-     * @param id
-     *            the sequence if of this response
+     * Creates a ModifyDnResponse as a reply to an ModifyDnRequest.
      */
-    public ModifyDnResponseImpl(final int id)
+    public ModifyDnResponseImpl()
+    {
+        super( -1, TYPE );
+    }
+
+
+    /**
+     * Creates a ModifyDnResponse as a reply to an ModifyDnRequest.
+     * 
+     * @param id the sequence if of this response
+     */
+    public ModifyDnResponseImpl( final int id )
     {
         super( id, TYPE );
+    }
+
+
+    /**
+     * @return The encoded ModifyDnResponse's length
+     */
+    /* No Qualifier*/void setModifyDnResponseLength( int modifyDnResponseLength )
+    {
+        this.modifyDnResponseLength = modifyDnResponseLength;
+    }
+
+
+    /**
+     * Stores the encoded length for the ModifyDnResponse
+     * @param modifyDnResponseLength The encoded length
+     */
+    /* No Qualifier*/int getModifyDnResponseLength()
+    {
+        return modifyDnResponseLength;
+    }
+
+
+    /**
+     * Get a String representation of a ModifyDNResponse
+     * 
+     * @return A ModifyDNResponse String
+     */
+    public String toString()
+    {
+
+        StringBuilder sb = new StringBuilder();
+
+        sb.append( "    Modify DN Response\n" );
+        sb.append( super.toString() );
+
+        return sb.toString();
     }
 }

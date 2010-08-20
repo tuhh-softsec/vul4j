@@ -22,7 +22,7 @@ package org.apache.directory.shared.dsmlv2;
 
 
 import java.util.Arrays;
-import java.util.List;
+import java.util.Collection;
 
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
@@ -193,19 +193,15 @@ public class ParserUtils
     /**
      * Adds Controls to the given Element.
      *
-     * @param element
-     *      the element to add the Controls to
-     * @param controls
-     *      a List of Controls
+     * @param element the element to add the Controls to
+     * @param controls a List of Controls
      */
-    public static void addControls( Element element, List<Control> controls )
+    public static void addControls( Element element, Collection<Control> controls )
     {
         if ( controls != null )
         {
-            for ( int i = 0; i < controls.size(); i++ )
+            for ( Control control : controls )
             {
-                Control control = controls.get( i );
-
                 Element controlElement = element.addElement( "control" );
 
                 if ( control.getOid() != null )
@@ -219,7 +215,7 @@ public class ParserUtils
                 }
 
                 byte[] value = control.getValue();
-                
+
                 if ( value != null )
                 {
                     if ( ParserUtils.needsBase64Encoding( value ) )
@@ -236,7 +232,7 @@ public class ParserUtils
                     }
                     else
                     {
-                        controlElement.addElement( "controlValue" ).setText( Arrays.toString( value ));
+                        controlElement.addElement( "controlValue" ).setText( Arrays.toString( value ) );
                     }
                 }
             }
@@ -301,7 +297,6 @@ public class ParserUtils
         }
         catch ( TransformerException e )
         {
-            e.printStackTrace();
             // return original document
             return document;
         }

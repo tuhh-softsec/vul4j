@@ -25,7 +25,7 @@ import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
-import org.apache.directory.shared.ldap.codec.search.SearchRequestCodec;
+import org.apache.directory.shared.ldap.message.SearchRequest;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,10 +44,12 @@ public class AttributeDescAction extends GrammarAction
     /** Speedup for logs */
     private static final boolean IS_DEBUG = log.isDebugEnabled();
 
+
     public AttributeDescAction()
     {
         super( "Store attribute description" );
     }
+
 
     /**
      * The initialization action
@@ -56,7 +58,7 @@ public class AttributeDescAction extends GrammarAction
     {
         LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
-        SearchRequestCodec searchRequest = ldapMessageContainer.getSearchRequest();
+        SearchRequest searchRequest = ldapMessageContainer.getSearchRequest();
 
         TLV tlv = ldapMessageContainer.getCurrentTLV();
         String attributeDescription = null;
@@ -64,11 +66,11 @@ public class AttributeDescAction extends GrammarAction
         if ( tlv.getLength() != 0 )
         {
             attributeDescription = StringTools.utf8ToString( tlv.getValue().getData() );
-            
+
             // If the attributeDescription is empty, we won't add it
-            if ( !StringTools.isEmpty( attributeDescription.trim() ) ) 
+            if ( !StringTools.isEmpty( attributeDescription.trim() ) )
             {
-                searchRequest.addAttribute( attributeDescription );
+                searchRequest.addAttributes( attributeDescription );
             }
         }
 

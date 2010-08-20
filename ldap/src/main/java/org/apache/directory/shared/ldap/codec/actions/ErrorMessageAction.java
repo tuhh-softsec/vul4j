@@ -25,8 +25,8 @@ import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
-import org.apache.directory.shared.ldap.codec.LdapResponseCodec;
-import org.apache.directory.shared.ldap.codec.LdapResultCodec;
+import org.apache.directory.shared.ldap.message.LdapResult;
+import org.apache.directory.shared.ldap.message.ResultResponse;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,10 +45,12 @@ public class ErrorMessageAction extends GrammarAction
     /** Speedup for logs */
     private static final boolean IS_DEBUG = log.isDebugEnabled();
 
+
     public ErrorMessageAction()
     {
         super( "Store error message" );
     }
+
 
     /**
      * The initialization action
@@ -56,29 +58,32 @@ public class ErrorMessageAction extends GrammarAction
     public void action( IAsn1Container container ) throws DecoderException
     {
         LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-        LdapResponseCodec response = ldapMessageContainer.getLdapResponse();
-        LdapResultCodec ldapResult = response.getLdapResult();
 
         // Get the Value and store it in the BindResponse
         TLV tlv = ldapMessageContainer.getCurrentTLV();
+        String errorMessage = null;
 
         // We have to handle the special case of a 0 length error
         // message
         if ( tlv.getLength() == 0 )
         {
-            ldapResult.setErrorMessage( "" );
+            errorMessage = "";
         }
         else
         {
-            ldapResult.setErrorMessage( StringTools.utf8ToString( tlv.getValue().getData() ) );
+            errorMessage = StringTools.utf8ToString( tlv.getValue().getData() );
         }
+
+        ResultResponse response = ( ResultResponse ) ldapMessageContainer.getMessage();
+        LdapResult ldapResult = response.getLdapResult();
+        ldapResult.setErrorMessage( errorMessage );
 
         // We can have an END transition
         ldapMessageContainer.grammarEndAllowed( true );
 
         if ( IS_DEBUG )
         {
-            log.debug( "The error message is : " + ldapResult.getErrorMessage() );
+            log.debug( "The error message is : " + errorMessage );
         }
     }
 }

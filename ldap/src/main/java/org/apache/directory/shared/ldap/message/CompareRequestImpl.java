@@ -24,9 +24,6 @@ import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.entry.BinaryValue;
 import org.apache.directory.shared.ldap.entry.StringValue;
 import org.apache.directory.shared.ldap.entry.Value;
-import org.apache.directory.shared.ldap.message.internal.InternalCompareRequest;
-import org.apache.directory.shared.ldap.message.internal.InternalCompareResponse;
-import org.apache.directory.shared.ldap.message.internal.InternalResultResponse;
 import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.util.StringTools;
 
@@ -36,7 +33,7 @@ import org.apache.directory.shared.ldap.util.StringTools;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class CompareRequestImpl extends AbstractAbandonableRequest implements InternalCompareRequest
+public class CompareRequestImpl extends AbstractAbandonableRequest implements CompareRequest
 {
     static final long serialVersionUID = 1699731530016468977L;
 
@@ -46,22 +43,45 @@ public class CompareRequestImpl extends AbstractAbandonableRequest implements In
     /** The id of the attribute used in the comparison */
     private String attrId;
 
+    /** The bytes of the attribute id used in the comparison */
+    private byte[] attrIdBytes;
+
     /** The value of the attribute used in the comparison */
     private Value<?> attrVal;
 
-    private InternalCompareResponse response;
+    /** The bytes of the attribute value used in the comparison */
+    private byte[] attrValBytes;
+
+    /** The associated response */
+    private CompareResponse response;
+
+    /** The compare request length */
+    private int compareRequestLength;
+
+    /** The attribute value assertion length */
+    private int avaLength;
 
 
     // ------------------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------------------
+    /**
+     * Creates an CompareRequest implementation to compare a named entry with an
+     * attribute value assertion pair.
+     * 
+     * @param id the sequence identifier of the CompareRequest message.
+     */
+    public CompareRequestImpl()
+    {
+        super( -1, TYPE );
+    }
+
 
     /**
      * Creates an CompareRequest implementation to compare a named entry with an
      * attribute value assertion pair.
      * 
-     * @param id
-     *            the sequence identifier of the CompareRequest message.
+     * @param id the sequence identifier of the CompareRequest message.
      */
     public CompareRequestImpl( final int id )
     {
@@ -89,8 +109,7 @@ public class CompareRequestImpl extends AbstractAbandonableRequest implements In
      * Sets the distinguished name of the entry to be compared using the
      * attribute value assertion.
      * 
-     * @param name
-     *            the DN of the compared entry.
+     * @param name the DN of the compared entry.
      */
     public void setName( DN name )
     {
@@ -112,8 +131,7 @@ public class CompareRequestImpl extends AbstractAbandonableRequest implements In
     /**
      * Sets the attribute value to use in the comparison.
      * 
-     * @param attrVal
-     *            the attribute value used in comparison.
+     * @param attrVal the attribute value used in comparison.
      */
     public void setAssertionValue( String attrVal )
     {
@@ -124,8 +142,7 @@ public class CompareRequestImpl extends AbstractAbandonableRequest implements In
     /**
      * Sets the attribute value to use in the comparison.
      * 
-     * @param attrVal
-     *            the attribute value used in comparison.
+     * @param attrVal the attribute value used in comparison.
      */
     public void setAssertionValue( byte[] attrVal )
     {
@@ -154,12 +171,55 @@ public class CompareRequestImpl extends AbstractAbandonableRequest implements In
     /**
      * Sets the attribute id used in the comparison.
      * 
-     * @param attrId
-     *            the attribute id used in comparison.
+     * @param attrId the attribute id used in comparison.
      */
     public void setAttributeId( String attrId )
     {
         this.attrId = attrId;
+    }
+
+
+    /**
+     * Gets the attribute id bytes use in making the comparison.
+     * 
+     * @return the attribute id bytes used in comparison.
+     */
+    /*No qualifier*/byte[] getAttrIdBytes()
+    {
+        return attrIdBytes;
+    }
+
+
+    /**
+     * Sets the attribute id bytes used in the comparison.
+     * 
+     * @param attrIdBytes the attribute id bytes used in comparison.
+     */
+    /*No qualifier*/void setAttrIdBytes( byte[] attrIdBytes )
+    {
+        this.attrIdBytes = attrIdBytes;
+    }
+
+
+    /**
+     * Gets the attribute value bytes use in making the comparison.
+     * 
+     * @return the attribute value bytes used in comparison.
+     */
+    /*No qualifier*/byte[] getAttrValBytes()
+    {
+        return attrValBytes;
+    }
+
+
+    /**
+     * Sets the attribute value bytes used in the comparison.
+     * 
+     * @param attrValBytes the attribute value bytes used in comparison.
+     */
+    /*No qualifier*/void setAttrValBytes( byte[] attrValBytes )
+    {
+        this.attrValBytes = attrValBytes;
     }
 
 
@@ -184,7 +244,7 @@ public class CompareRequestImpl extends AbstractAbandonableRequest implements In
      * 
      * @return the result containing response for this request
      */
-    public InternalResultResponse getResultResponse()
+    public ResultResponse getResultResponse()
     {
         if ( response == null )
         {
@@ -192,6 +252,44 @@ public class CompareRequestImpl extends AbstractAbandonableRequest implements In
         }
 
         return response;
+    }
+
+
+    /**
+     * Stores the encoded length for the CompareRequest
+     * @param compareRequestLength The encoded length
+     */
+    /* No qualifier*/void setCompareRequestLength( int compareRequestLength )
+    {
+        this.compareRequestLength = compareRequestLength;
+    }
+
+
+    /**
+     * @return The encoded CompareRequest length
+     */
+    /* No qualifier */int getCompareRequestLength()
+    {
+        return compareRequestLength;
+    }
+
+
+    /**
+     * Stores the encoded length for the ava
+     * @param avaLength The encoded length
+     */
+    /* No qualifier*/void setAvaLength( int avaLength )
+    {
+        this.avaLength = avaLength;
+    }
+
+
+    /**
+     * @return The encoded ava length
+     */
+    /* No qualifier */int getAvaLength()
+    {
+        return avaLength;
     }
 
 
@@ -243,7 +341,7 @@ public class CompareRequestImpl extends AbstractAbandonableRequest implements In
             return false;
         }
 
-        InternalCompareRequest req = ( InternalCompareRequest ) obj;
+        CompareRequest req = ( CompareRequest ) obj;
         DN reqName = req.getName();
 
         if ( ( name != null ) && ( reqName == null ) )
@@ -322,6 +420,9 @@ public class CompareRequestImpl extends AbstractAbandonableRequest implements In
             sb.append( StringTools.utf8ToString( binVal ) ).append( '/' ).append( StringTools.dumpBytes( binVal ) )
                 .append( "'\n" );
         }
+
+        // The controls
+        sb.append( super.toString() );
 
         return sb.toString();
     }

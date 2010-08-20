@@ -26,18 +26,19 @@ import org.apache.directory.shared.dsmlv2.ParserUtils;
 import org.apache.directory.shared.ldap.codec.AttributeValueAssertion;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
-import org.apache.directory.shared.ldap.codec.search.AndFilter;
 import org.apache.directory.shared.ldap.codec.search.AttributeValueAssertionFilter;
 import org.apache.directory.shared.ldap.codec.search.ExtensibleMatchFilter;
-import org.apache.directory.shared.ldap.codec.search.Filter;
-import org.apache.directory.shared.ldap.codec.search.NotFilter;
-import org.apache.directory.shared.ldap.codec.search.OrFilter;
 import org.apache.directory.shared.ldap.codec.search.PresentFilter;
-import org.apache.directory.shared.ldap.codec.search.SearchRequestCodec;
-import org.apache.directory.shared.ldap.codec.search.SubstringFilter;
-import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Value;
+import org.apache.directory.shared.ldap.filter.AndNode;
+import org.apache.directory.shared.ldap.filter.ExprNode;
+import org.apache.directory.shared.ldap.filter.NotNode;
+import org.apache.directory.shared.ldap.filter.OrNode;
 import org.apache.directory.shared.ldap.filter.SearchScope;
+import org.apache.directory.shared.ldap.filter.SubstringNode;
+import org.apache.directory.shared.ldap.message.AliasDerefMode;
+import org.apache.directory.shared.ldap.message.SearchRequest;
+import org.apache.directory.shared.ldap.message.SearchRequestImpl;
 import org.dom4j.Element;
 import org.dom4j.Namespace;
 import org.dom4j.QName;
@@ -55,7 +56,7 @@ public class SearchRequestDsml extends AbstractRequestDsml
      */
     public SearchRequestDsml()
     {
-        super( new SearchRequestCodec() );
+        super( new SearchRequestImpl() );
     }
 
 
@@ -65,7 +66,7 @@ public class SearchRequestDsml extends AbstractRequestDsml
      * @param ldapMessage
      *      the message to decorate
      */
-    public SearchRequestDsml( SearchRequestCodec ldapMessage )
+    public SearchRequestDsml( SearchRequest ldapMessage )
     {
         super( ldapMessage );
     }
@@ -74,9 +75,9 @@ public class SearchRequestDsml extends AbstractRequestDsml
     /**
      * {@inheritDoc}
      */
-    public MessageTypeEnum getMessageType()
+    public MessageTypeEnum getType()
     {
-        return instance.getMessageType();
+        return instance.getType();
     }
 
 
@@ -87,12 +88,12 @@ public class SearchRequestDsml extends AbstractRequestDsml
     {
         Element element = super.toDsml( root );
 
-        SearchRequestCodec request = ( SearchRequestCodec ) instance;
+        SearchRequest request = ( SearchRequest ) instance;
 
         // DN
-        if ( request.getBaseObject() != null )
+        if ( request.getBase() != null )
         {
-            element.addAttribute( "dn", request.getBaseObject().getName() );
+            element.addAttribute( "dn", request.getBase().getName() );
         }
 
         // Scope
@@ -114,22 +115,26 @@ public class SearchRequestDsml extends AbstractRequestDsml
         }
 
         // DerefAliases
-        int derefAliases = request.getDerefAliases();
-        if ( derefAliases == LdapConstants.NEVER_DEREF_ALIASES )
+        AliasDerefMode derefAliases = request.getDerefAliases();
+
+        switch ( derefAliases )
         {
-            element.addAttribute( "derefAliases", "neverDerefAliases" );
-        }
-        else if ( derefAliases == LdapConstants.DEREF_IN_SEARCHING )
-        {
-            element.addAttribute( "derefAliases", "derefInSearching" );
-        }
-        else if ( derefAliases == LdapConstants.DEREF_FINDING_BASE_OBJ )
-        {
-            element.addAttribute( "derefAliases", "derefFindingBaseObj" );
-        }
-        else if ( derefAliases == LdapConstants.DEREF_ALWAYS )
-        {
-            element.addAttribute( "derefAliases", "derefAlways" );
+            case NEVER_DEREF_ALIASES:
+                element.addAttribute( "derefAliases", "neverDerefAliases" );
+                break;
+
+            case DEREF_ALWAYS:
+                element.addAttribute( "derefAliases", "derefAlways" );
+                break;
+
+            case DEREF_FINDING_BASE_OBJ:
+                element.addAttribute( "derefAliases", "derefFindingBaseObj" );
+                break;
+
+            case DEREF_IN_SEARCHING:
+                element.addAttribute( "derefAliases", "derefInSearching" );
+                break;
+
         }
 
         // SizeLimit
@@ -145,7 +150,7 @@ public class SearchRequestDsml extends AbstractRequestDsml
         }
 
         // TypesOnly
-        if ( request.isTypesOnly() )
+        if ( request.getTypesOnly() )
         {
             element.addAttribute( "typesOnly", "true" );
         }
@@ -155,14 +160,15 @@ public class SearchRequestDsml extends AbstractRequestDsml
         toDsml( filterElement, request.getFilter() );
 
         // Attributes
-        List<EntryAttribute> attributes = request.getAttributes();
+        List<String> attributes = request.getAttributes();
+
         if ( attributes.size() > 0 )
         {
             Element attributesElement = element.addElement( "attributes" );
 
-            for ( EntryAttribute entryAttribute : attributes )
+            for ( String entryAttribute : attributes )
             {
-                attributesElement.addElement( "attribute" ).addAttribute( "name", entryAttribute.getId() );
+                attributesElement.addElement( "attribute" ).addAttribute( "name", entryAttribute );
             }
         }
 
@@ -179,14 +185,15 @@ public class SearchRequestDsml extends AbstractRequestDsml
      * @param filter
      *      the filter to convert
      */
-    private void toDsml( Element element, Filter filter )
+    private void toDsml( Element element, ExprNode filter )
     {
         // AND FILTER
-        if ( filter instanceof AndFilter )
+        if ( filter instanceof AndNode )
         {
             Element newElement = element.addElement( "and" );
 
-            List<Filter> filterList = ( ( AndFilter ) filter ).getAndFilter();
+            List<ExprNode> filterList = ( ( AndNode ) filter ).getChildren();
+
             for ( int i = 0; i < filterList.size(); i++ )
             {
                 toDsml( newElement, filterList.get( i ) );
@@ -194,11 +201,12 @@ public class SearchRequestDsml extends AbstractRequestDsml
         }
 
         // OR FILTER
-        else if ( filter instanceof OrFilter )
+        else if ( filter instanceof OrNode )
         {
             Element newElement = element.addElement( "or" );
 
-            List<Filter> filterList = ( ( OrFilter ) filter ).getOrFilter();
+            List<ExprNode> filterList = ( ( OrNode ) filter ).getChildren();
+
             for ( int i = 0; i < filterList.size(); i++ )
             {
                 toDsml( newElement, filterList.get( i ) );
@@ -206,35 +214,38 @@ public class SearchRequestDsml extends AbstractRequestDsml
         }
 
         // NOT FILTER
-        else if ( filter instanceof NotFilter )
+        else if ( filter instanceof NotNode )
         {
             Element newElement = element.addElement( "not" );
 
-            toDsml( newElement, ( ( NotFilter ) filter ).getNotFilter() );
+            toDsml( newElement, ( ( NotNode ) filter ).getFirstChild() );
         }
 
         // SUBSTRING FILTER
-        else if ( filter instanceof SubstringFilter )
+        else if ( filter instanceof SubstringNode )
         {
             Element newElement = element.addElement( "substrings" );
 
-            SubstringFilter substringFilter = ( SubstringFilter ) filter;
+            SubstringNode substringFilter = ( SubstringNode ) filter;
 
-            newElement.addAttribute( "name", substringFilter.getType() );
+            newElement.addAttribute( "name", substringFilter.getAttribute() );
 
-            String initial = substringFilter.getInitialSubstrings();
+            String initial = substringFilter.getInitial();
+
             if ( ( initial != null ) && ( !"".equals( initial ) ) )
             {
                 newElement.addElement( "initial" ).setText( initial );
             }
 
-            List<String> anyList = substringFilter.getAnySubstrings();
+            List<String> anyList = substringFilter.getAny();
+
             for ( int i = 0; i < anyList.size(); i++ )
             {
                 newElement.addElement( "any" ).setText( anyList.get( i ) );
             }
 
-            String finalString = substringFilter.getFinalSubstrings();
+            String finalString = substringFilter.getFinal();
+
             if ( ( finalString != null ) && ( !"".equals( finalString ) ) )
             {
                 newElement.addElement( "final" ).setText( finalString );

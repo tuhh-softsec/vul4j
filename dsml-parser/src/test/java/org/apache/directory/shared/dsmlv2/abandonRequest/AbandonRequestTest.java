@@ -30,11 +30,12 @@ import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.dsmlv2.AbstractTest;
 import org.apache.directory.shared.dsmlv2.Dsmlv2Parser;
-import org.apache.directory.shared.ldap.codec.abandon.AbandonRequestCodec;
+import org.apache.directory.shared.ldap.message.AbandonRequest;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
 
 /**
  * Tests for the Abandon Request parsing
@@ -76,9 +77,9 @@ public class AbandonRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        AbandonRequestCodec abandonRequest = ( AbandonRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        AbandonRequest abandonRequest = ( AbandonRequest ) parser.getBatchRequest().getCurrentRequest();
 
-        assertEquals( 123, abandonRequest.getAbandonedMessageId() );
+        assertEquals( 123, abandonRequest.getAbandoned() );
     }
 
 
@@ -113,7 +114,7 @@ public class AbandonRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        AbandonRequestCodec abandonRequest = ( AbandonRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        AbandonRequest abandonRequest = ( AbandonRequest ) parser.getBatchRequest().getCurrentRequest();
 
         assertEquals( 456, abandonRequest.getMessageId() );
     }
@@ -141,7 +142,7 @@ public class AbandonRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        AbandonRequestCodec abandonRequest = ( AbandonRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        AbandonRequest abandonRequest = ( AbandonRequest ) parser.getBatchRequest().getCurrentRequest();
         Control control = abandonRequest.getCurrentControl();
 
         assertEquals( 1, abandonRequest.getControls().size() );
@@ -173,7 +174,7 @@ public class AbandonRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        AbandonRequestCodec abandonRequest = ( AbandonRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        AbandonRequest abandonRequest = ( AbandonRequest ) parser.getBatchRequest().getCurrentRequest();
         Control control = abandonRequest.getCurrentControl();
 
         assertEquals( 1, abandonRequest.getControls().size() );
@@ -205,7 +206,7 @@ public class AbandonRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        AbandonRequestCodec abandonRequest = ( AbandonRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        AbandonRequest abandonRequest = ( AbandonRequest ) parser.getBatchRequest().getCurrentRequest();
         Control control = abandonRequest.getCurrentControl();
 
         assertEquals( 1, abandonRequest.getControls().size() );
@@ -237,7 +238,7 @@ public class AbandonRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        AbandonRequestCodec abandonRequest = ( AbandonRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        AbandonRequest abandonRequest = ( AbandonRequest ) parser.getBatchRequest().getCurrentRequest();
         Control control = abandonRequest.getCurrentControl();
 
         assertEquals( 2, abandonRequest.getControls().size() );
@@ -269,7 +270,7 @@ public class AbandonRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        AbandonRequestCodec abandonRequest = ( AbandonRequestCodec ) parser.getBatchRequest().getCurrentRequest();
+        AbandonRequest abandonRequest = ( AbandonRequest ) parser.getBatchRequest().getCurrentRequest();
         Control control = abandonRequest.getCurrentControl();
 
         assertEquals( 3, abandonRequest.getControls().size() );

@@ -31,8 +31,6 @@ import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.message.internal.InternalBindRequest;
-import org.apache.directory.shared.ldap.message.internal.InternalResultResponse;
 import org.apache.directory.shared.ldap.name.DN;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -49,6 +47,7 @@ import org.junit.runner.RunWith;
 public class BindRequestImplTest
 {
     private static final Map<String, Control> EMPTY_CONTROL_MAP = new HashMap<String, Control>();
+
 
     /**
      * Tests the same object referrence for equality.
@@ -199,7 +198,7 @@ public class BindRequestImplTest
     @Test
     public void testEqualsDiffImpl()
     {
-        InternalBindRequest req0 = new InternalBindRequest()
+        BindRequest req0 = new BindRequest()
         {
             public boolean isSimple()
             {
@@ -224,7 +223,12 @@ public class BindRequestImplTest
             }
 
 
-            public void setCredentials( byte[] a_credentials )
+            public void setCredentials( String credentials )
+            {
+            }
+
+
+            public void setCredentials( byte[] credentials )
             {
             }
 
@@ -281,12 +285,12 @@ public class BindRequestImplTest
             }
 
 
-            public void add( Control control ) throws MessageException
+            public void addControl( Control control ) throws MessageException
             {
             }
 
 
-            public void remove( Control control ) throws MessageException
+            public void removeControl( Control control ) throws MessageException
             {
             }
 
@@ -320,13 +324,13 @@ public class BindRequestImplTest
             }
 
 
-            public InternalResultResponse getResultResponse()
+            public ResultResponse getResultResponse()
             {
                 return null;
             }
 
 
-            public void addAll( Control[] controls ) throws MessageException
+            public void addAllControls( Control[] controls ) throws MessageException
             {
             }
 
@@ -350,6 +354,45 @@ public class BindRequestImplTest
             public boolean isAbandoned()
             {
                 return false;
+            }
+
+
+            public Control getCurrentControl()
+            {
+                return null;
+            }
+
+
+            public int getControlsLength()
+            {
+                return 0;
+            }
+
+
+            public void setControlsLength( int controlsLength )
+            {
+            }
+
+
+            public int getMessageLength()
+            {
+                return 0;
+            }
+
+
+            public void setMessageLength( int messageLength )
+            {
+            }
+
+
+            public Control getControl( String oid )
+            {
+                return null;
+            }
+
+
+            public void setMessageId( int messageId )
+            {
             }
         };
 
