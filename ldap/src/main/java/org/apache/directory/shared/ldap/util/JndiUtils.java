@@ -77,6 +77,7 @@ import org.apache.directory.shared.ldap.exception.LdapSchemaViolationException;
 import org.apache.directory.shared.ldap.exception.LdapServiceUnavailableException;
 import org.apache.directory.shared.ldap.exception.LdapTimeLimitExceededException;
 import org.apache.directory.shared.ldap.exception.LdapUnwillingToPerformException;
+import org.apache.directory.shared.ldap.message.ExtendedResponseImpl;
 import org.apache.directory.shared.ldap.message.LdapResult;
 import org.apache.directory.shared.ldap.message.MessageException;
 import org.apache.directory.shared.ldap.message.ResultResponse;
@@ -160,19 +161,19 @@ public class JndiUtils
      * @return
      */
     public static ExtendedResponse toJndiExtendedResponse(
-        final org.apache.directory.shared.ldap.message.ExtendedRequest request )
+        final org.apache.directory.shared.ldap.message.ExtendedResponse response )
     {
         class JndiExtendedResponse implements ExtendedResponse
         {
             public byte[] getEncodedValue()
             {
-                return request.getRequestValue();
+                return response.getEncodedValue();
             }
 
 
             public String getID()
             {
-                return request.getRequestName();
+                return response.getResponseName();
             }
         }
 
@@ -185,10 +186,20 @@ public class JndiUtils
     {
         class JndiExtendedRequest implements ExtendedRequest
         {
+            private ExtendedResponse response;
+
+
             public ExtendedResponse createExtendedResponse( String id, byte[] berValue, int offset, int length )
                 throws NamingException
             {
-                return toJndiExtendedResponse( request );
+                org.apache.directory.shared.ldap.message.ExtendedResponse response = new ExtendedResponseImpl( request
+                    .getMessageId(), request.getRequestName() );
+                response.setResponseName( id );
+                response.setResponseValue( berValue );
+
+                this.response = JndiUtils.toJndiExtendedResponse( response );
+
+                return this.response;
             }
 
 

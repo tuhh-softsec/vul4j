@@ -30,12 +30,12 @@ import java.net.URL;
 import javax.naming.NamingException;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.BasicAttributes;
+import javax.naming.ldap.ExtendedResponse;
 import javax.naming.ldap.LdapContext;
 
 import org.apache.commons.lang.SerializationUtils;
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.message.extended.StoredProcedureRequest;
-import org.apache.directory.shared.ldap.message.extended.StoredProcedureResponse;
 import org.apache.directory.shared.ldap.util.JndiUtils;
 
 
@@ -141,13 +141,12 @@ public class JavaStoredProcUtils
              * Call the stored procedure via the extended operation
              * and get back its return value.
              */
-            StoredProcedureResponse resp = ( StoredProcedureResponse ) JndiUtils.fromJndiExtendedResponse( ctx
-                .extendedOperation( JndiUtils.toJndiExtendedRequest( req ) ) );
+            ExtendedResponse resp = ctx.extendedOperation( JndiUtils.toJndiExtendedRequest( req ) );
 
             /**
              * Restore a Java object from the return value.
              */
-            byte[] responseStream = resp.getResponseValue();
+            byte[] responseStream = resp.getEncodedValue();
             responseObject = SerializationUtils.deserialize( responseStream );
         }
         catch ( Exception e )
