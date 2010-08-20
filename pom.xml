@@ -13,7 +13,7 @@
   <packaging>hpi</packaging>
   
   <properties>
-    <hudson.version>1.372</hudson.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
   <!-- get every artifact through maven.glassfish.org, which proxies all the artifacts that we need -->
@@ -40,4 +40,6 @@
   		<timezone>-3 GMT</timezone>
   	</developer>
   </developers>
+  
+  
 </project>
