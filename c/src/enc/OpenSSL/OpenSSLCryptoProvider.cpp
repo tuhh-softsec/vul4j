@@ -60,7 +60,7 @@ OpenSSLCryptoProvider::OpenSSLCryptoProvider() {
 	ERR_load_crypto_strings();
 
 	//SSLeay_add_all_algorithms();
-
+#ifdef XSEC_OPENSSL_HAVE_EC
     // Populate curve names.
     m_namedCurveMap["urn:oid:1.3.132.0.6"] = NID_secp112r1;
     m_namedCurveMap["urn:oid:1.3.132.0.7"] = NID_secp112r2;
@@ -135,6 +135,7 @@ OpenSSLCryptoProvider::OpenSSLCryptoProvider() {
     m_namedCurveMap["urn:oid:2.23.43.1.4.10"] = NID_wap_wsg_idm_ecid_wtls10;
     m_namedCurveMap["urn:oid:2.23.43.1.4.11"] = NID_wap_wsg_idm_ecid_wtls11;
     m_namedCurveMap["urn:oid:2.23.43.1.4.12"] = NID_wap_wsg_idm_ecid_wtls12;
+#endif
 }
 
 
@@ -151,6 +152,7 @@ OpenSSLCryptoProvider::~OpenSSLCryptoProvider() {
 	ERR_remove_state(0);
 }
 
+#ifdef XSEC_OPENSSL_HAVE_EC
 int OpenSSLCryptoProvider::curveNameToNID(const char* curveName) const {
 
     std::map<std::string,int>::const_iterator i = m_namedCurveMap.find(curveName);
@@ -160,6 +162,7 @@ int OpenSSLCryptoProvider::curveNameToNID(const char* curveName) const {
     return i->second;
 
 }
+#endif
 
 const XMLCh * OpenSSLCryptoProvider::getProviderName() const {
 
@@ -278,12 +281,16 @@ XSECCryptoKeyDSA * OpenSSLCryptoProvider::keyDSA() const {
 
 XSECCryptoKeyEC * OpenSSLCryptoProvider::keyEC() const {
 	
+#ifdef XSEC_OPENSSL_HAVE_EC
 	OpenSSLCryptoKeyEC * ret;
 
 	XSECnew(ret, OpenSSLCryptoKeyEC());
 
 	return ret;
-
+#else
+    throw XSECCryptoException(XSECCryptoException::UnsupportedError,
+        "OpenSSLCryptoProvider::keyEC - EC support not available");
+#endif
 }
 
 XSECCryptoKeyRSA * OpenSSLCryptoProvider::keyRSA() const {
