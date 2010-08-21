@@ -44,7 +44,7 @@ XERCES_CPP_NAMESPACE_USE
 
 class XSECDomToSafeBuffer {
 public:
-    XSECDomToSafeBuffer::XSECDomToSafeBuffer(DOMNode *node);
+    XSECDomToSafeBuffer(DOMNode *node);
     virtual ~XSECDomToSafeBuffer() {}
 
     operator const safeBuffer&() const {
