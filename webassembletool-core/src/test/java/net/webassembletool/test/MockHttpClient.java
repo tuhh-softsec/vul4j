@@ -56,7 +56,6 @@ public class MockHttpClient implements HttpClient {
 	public <T> T execute(HttpUriRequest request,
 			ResponseHandler<? extends T> responseHandler) throws IOException,
 			ClientProtocolException {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -68,31 +67,26 @@ public class MockHttpClient implements HttpClient {
 	public <T> T execute(HttpUriRequest request,
 			ResponseHandler<? extends T> responseHandler, HttpContext context)
 			throws IOException, ClientProtocolException {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	public <T> T execute(HttpHost target, HttpRequest request,
 			ResponseHandler<? extends T> responseHandler) throws IOException,
 			ClientProtocolException {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	public <T> T execute(HttpHost target, HttpRequest request,
 			ResponseHandler<? extends T> responseHandler, HttpContext context)
 			throws IOException, ClientProtocolException {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	public ClientConnectionManager getConnectionManager() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	public HttpParams getParams() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

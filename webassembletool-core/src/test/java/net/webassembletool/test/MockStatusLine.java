@@ -20,17 +20,14 @@ import org.apache.http.StatusLine;
 public class MockStatusLine implements StatusLine {
 
 	public ProtocolVersion getProtocolVersion() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	public String getReasonPhrase() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	public int getStatusCode() {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
