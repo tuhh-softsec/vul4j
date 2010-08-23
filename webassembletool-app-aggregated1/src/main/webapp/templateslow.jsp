@@ -1,6 +1,6 @@
 <% 
 	try {
-		Thread.sleep(100);
+		Thread.sleep(500);
 	} catch (InterruptedException e) {
 		// Nothing to do
 	}

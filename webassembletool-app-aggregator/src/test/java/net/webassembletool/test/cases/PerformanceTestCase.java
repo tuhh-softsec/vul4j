@@ -83,7 +83,7 @@ public class PerformanceTestCase extends TestCase {
 	private long executePool(GetRunnable run) throws Exception {
 		BlockingQueue<Runnable> queue = new LinkedBlockingQueue<Runnable>();
 
-		ThreadPoolExecutor threadPool = new ThreadPoolExecutor(30, 800, 5000,
+		ThreadPoolExecutor threadPool = new ThreadPoolExecutor(20, 800, 5000,
 				TimeUnit.MILLISECONDS, queue);
 
 		long start = System.currentTimeMillis();
@@ -139,26 +139,23 @@ public class PerformanceTestCase extends TestCase {
 		long execTimeAggregated1 = executePool(runAggregated1);
 		LOG.debug("execTimeAggregated1 :" + execTimeAggregated1 + "ms");
 
-		Thread.sleep(1000);
-
 		long execTimeAggregated2 = executePool(runAggregated2);
 		long execTimeDirectAccess = execTimeAggregated1 + execTimeAggregated2;
 		LOG.debug("execTimeAggregated2 :" + execTimeAggregated2 + "ms");
 		LOG.debug("execTimeDirectAccess :" + execTimeDirectAccess + "ms");
-		Thread.sleep(1000);
 
 		long execTimeAggregator = executePool(runAggregator);
 		LOG.debug("execTimeAggregator :" + execTimeAggregator + "ms");
-		Thread.sleep(1000);
+
 		long execTimeAggregatorNoCache = executePool(runAggregatorNoCache);
 		LOG.debug("execTimeAggregatorNoCache :" + execTimeAggregatorNoCache
 				+ "ms");
 
 		/*
-		 * Expected time is 4% of total time to retrive resource without
+		 * Expected time : 10% of total time to retrieve resources without
 		 * aggregator
 		 */
-		long expectedExecTime = Math.round((execTimeDirectAccess) * 1.04);
+		long expectedExecTime = Math.round((execTimeDirectAccess) * 1.10);
 		LOG.debug("Maximum expected :" + expectedExecTime + "ms");
 		if (execTimeAggregator > expectedExecTime) {
 			fail("Performance issue :" + execTimeAggregator
