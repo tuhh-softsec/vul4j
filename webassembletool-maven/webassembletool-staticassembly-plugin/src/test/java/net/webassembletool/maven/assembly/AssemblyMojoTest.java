@@ -33,6 +33,7 @@ import org.apache.maven.plugin.testing.AbstractMojoTestCase;
  * 
  */
 public class AssemblyMojoTest extends AbstractMojoTestCase {
+	private static String DEFAULT_CHARSET = "UTF-8";
 
 	protected AssemblyMojo newAssemblyMojo(String pDir, String pOutputDir,
 			String charset) throws Exception {
@@ -64,26 +65,36 @@ public class AssemblyMojoTest extends AbstractMojoTestCase {
 
 	private void assertNotSameContent(String resourceDir, String outputDir,
 			String page) throws IOException {
+		assertNotSameContent(resourceDir, outputDir, page, DEFAULT_CHARSET);
+	}
+	
+	private void assertNotSameContent(String resourceDir, String outputDir,
+			String page, String encoding) throws IOException {
 		File fPage = new File(outputDir + "/" + page);
 		File fExpectedPage = new File(resourceDir, "/expected/" + page);
 		assertTrue("page " + page + " has not been generated", fPage.exists());
-		String content = FileUtils.readFileToString(fPage).replaceAll("\r", "");
-		String contentExpected = FileUtils.readFileToString(fExpectedPage)
+		String content = FileUtils.readFileToString(fPage, encoding).replaceAll("\r", "");
+		String contentExpected = FileUtils.readFileToString(fExpectedPage, encoding)
 				.replaceAll("\r", "");
 		assertFalse(contentExpected.equals(content));
 	}
 
 	private void assertSameContent(String resourceDir, String outputDir,
 			String page) throws IOException {
+		assertSameContent(resourceDir, outputDir, page,DEFAULT_CHARSET);
+	}
+	
+	private void assertSameContent(String resourceDir, String outputDir,
+			String page, String encoding) throws IOException {
 
 		File fPage = new File(outputDir + "/" + page);
 		File fExpectedPage = new File(resourceDir, "/expected/" + page);
 
 		assertTrue("page " + page + " has not been generated", fPage.exists());
-		String content = FileUtils.readFileToString(fPage).replaceAll("\r", "")
+		String content = FileUtils.readFileToString(fPage, encoding).replaceAll("\r", "")
 				.replace("\n", "");
 		;
-		String contentExpected = FileUtils.readFileToString(fExpectedPage)
+		String contentExpected = FileUtils.readFileToString(fExpectedPage, encoding)
 				.replaceAll("\r", "").replace("\n", "");
 		assertEquals(contentExpected, content);
 
@@ -97,7 +108,7 @@ public class AssemblyMojoTest extends AbstractMojoTestCase {
 		FileUtils.deleteDirectory(fileOutputDir);
 
 		AssemblyMojo mojo = (AssemblyMojo) newAssemblyMojo(dir, outputDir,
-				"UTF-8");
+				DEFAULT_CHARSET);
 		mojo.execute();
 		assertSameContent(dir, outputDir, "page1.html");
 		assertSameContent(dir, outputDir, "page2.html");
@@ -123,7 +134,7 @@ public class AssemblyMojoTest extends AbstractMojoTestCase {
 
 		mojo = (AssemblyMojo) newAssemblyMojo(dir, outputDir, "ISO-8859-1");
 		mojo.execute();
-		assertSameContent(dir, outputDir, "page1.html");
+		assertSameContent(dir, outputDir, "page1.html", "ISO-8859-1");
 
 	}
 
@@ -135,7 +146,7 @@ public class AssemblyMojoTest extends AbstractMojoTestCase {
 		FileUtils.deleteDirectory(fileOutputDir);
 
 		AssemblyMojo mojo = (AssemblyMojo) newAssemblyMojo(dir, outputDir,
-				"UTF-8");
+				DEFAULT_CHARSET);
 		try {
 			mojo.execute();
 			fail("Should throw an exception when a template is not found");
@@ -153,7 +164,7 @@ public class AssemblyMojoTest extends AbstractMojoTestCase {
 		FileUtils.deleteDirectory(fileOutputDir);
 
 		AssemblyMojo mojo = (AssemblyMojo) newAssemblyMojo(dir, outputDir,
-				"UTF-8");
+				DEFAULT_CHARSET);
 		try {
 			mojo.execute();
 			fail("Should throw an exception when pages directory is not found");
@@ -172,7 +183,7 @@ public class AssemblyMojoTest extends AbstractMojoTestCase {
 		FileUtils.deleteDirectory(fileOutputDir);
 
 		AssemblyMojo mojo = (AssemblyMojo) newAssemblyMojo(dir, outputDir,
-				"UTF-8");
+				DEFAULT_CHARSET);
 
 		try {
 			mojo.execute();
@@ -192,7 +203,7 @@ public class AssemblyMojoTest extends AbstractMojoTestCase {
 		FileUtils.deleteDirectory(fileOutputDir);
 
 		AssemblyMojo mojo = (AssemblyMojo) newAssemblyMojo(dir, outputDir,
-				"UTF-8");
+				DEFAULT_CHARSET);
 
 		mojo.execute();
 

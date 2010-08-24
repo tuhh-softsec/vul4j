@@ -152,10 +152,9 @@ public class AssemblyMojo extends AbstractMojo {
 		for (Object file : files) {
 			File source = (File) file;
 			String fileName = getRelativePath(modulesDirectory, source);
-			// String filename = (String) ofilename;
-			String content = FileUtils.readFileToString(source);
+			String content = FileUtils.readFileToString(source, charset);
 			driver.addResource(fileName, content, charset);
-			getLog().info("Add resource " + fileName);
+			getLog().info("Add resource " + fileName + " charset=" + charset);
 
 		}
 	}
@@ -197,7 +196,7 @@ public class AssemblyMojo extends AbstractMojo {
 			File filePage = (File) ofilename;
 
 			String page = getRelativePath(pagesDirectory, filePage);
-			String content = FileUtils.readFileToString(filePage);
+			String content = FileUtils.readFileToString(filePage, charset);
 			ResourceContext resourceContext = new ResourceContext(driver, page,
 					null, null, null);
 
@@ -207,7 +206,7 @@ public class AssemblyMojo extends AbstractMojo {
 					"<!--\\$");
 
 			File file = new File(this.outputDirectory + "/" + page);
-			FileUtils.writeStringToFile(file, result);
+			FileUtils.writeStringToFile(file, result, charset);
 
 		}
 
