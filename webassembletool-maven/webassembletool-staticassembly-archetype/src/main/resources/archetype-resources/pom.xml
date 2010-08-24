@@ -33,10 +33,7 @@
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-resources-plugin</artifactId>
-				<configuration>
-					<encoding>UTF-8</encoding>
-				</configuration>
+				<artifactId>maven-resources-plugin</artifactId>				
 			</plugin>
 			<plugin>
 				<groupId>net.sourceforge.webassembletool.maven</groupId>
@@ -56,8 +53,7 @@
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<version>2.2-beta-5</version>
+				<artifactId>maven-assembly-plugin</artifactId>				
 				<configuration>
 					<descriptors>
 						<descriptor>src/main/assembly/assembly.xml</descriptor>

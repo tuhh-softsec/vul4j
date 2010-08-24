@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.sourceforge.webassembletool</groupId>
 	<artifactId>webassembletool</artifactId>
@@ -22,7 +23,7 @@
 				<configuration>
 					<address>fxbonnet@users.sourceforge.net</address>
 				</configuration>
-			</notifier>			
+			</notifier>
 		</notifiers>
 	</ciManagement>
 	<inceptionYear>2008</inceptionYear>
@@ -87,11 +88,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<source>1.5</source>
-					<target>1.5</target>
-					<encoding>UTF-8</encoding>
-				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -142,6 +138,11 @@
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
 					<version>2.3.1</version>
+					<configuration>
+						<source>1.5</source>
+						<target>1.5</target>
+						<encoding>UTF-8</encoding>
+					</configuration>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
@@ -157,6 +158,9 @@
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-resources-plugin</artifactId>
 					<version>2.4.3</version>
+					<configuration>
+						<encoding>UTF-8</encoding>
+					</configuration>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
