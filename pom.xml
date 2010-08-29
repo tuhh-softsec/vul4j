@@ -100,6 +100,11 @@
       <id>rahul</id>
       <email>rahul AT apache DOT org</email>
     </developer>
+    <developer>
+      <name>Simone Tripodi</name>
+      <id>simonetripodi</id>
+      <email>simonetripodi AT apache DOT org</email>
+    </developer>
   </developers>
 
   <contributors>
