@@ -6,7 +6,7 @@
   <parent>
     <artifactId>plexus-components</artifactId>
     <groupId>org.codehaus.plexus</groupId>
-    <version>1.1.17</version>
+    <version>1.1.18</version>
   </parent>
 
   <artifactId>plexus-archiver</artifactId>
