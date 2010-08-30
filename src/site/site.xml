@@ -32,6 +32,11 @@
       <item name="Javadoc (SVN latest)" href="apidocs/index.html"/>
     </menu>
 
+    <menu name="Developers Guide">
+      <item name="Core APIs"            href="/core.html"/>
+      <item name="FAQ"                  href="/faq.html"/>
+    </menu>
+
     <!--
       - Note that the links in these menu options require manual installation of the
       - appropriate dirs on the website; maven won't set this up.
