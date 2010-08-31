@@ -35,6 +35,7 @@
     <menu name="Developers Guide">
       <item name="Core APIs"            href="/core.html"/>
       <item name="Plugins"              href="/plugins.html"/>
+      <item name="Substitution"         href="/substitution.html"/>
       <item name="FAQ"                  href="/faq.html"/>
     </menu>
 
