@@ -18,9 +18,11 @@
 
 package org.apache.commons.digester;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
 /**
  * Test case for RegexRules
@@ -29,14 +31,10 @@ import junit.framework.TestCase;
  * @version $Revision$ $Date$
  */
 
-public class RegexRulesTestCase extends TestCase {
-    
-    /** Base constructor */
-    public RegexRulesTestCase(String name) {
-        super(name);
-    }
+public class RegexRulesTestCase {
     
     /** Test regex that matches everything */
+    @Test
     public void testMatchAll() {
         // set up which should match every rule
         RegexRules rules = new RegexRules(
@@ -67,6 +65,7 @@ public class RegexRulesTestCase extends TestCase {
     }
     
     /** Test regex matcher that matches nothing */
+    @Test
     public void testMatchNothing() {
         // set up which should match every rule
         RegexRules rules = new RegexRules(
@@ -91,6 +90,7 @@ public class RegexRulesTestCase extends TestCase {
     }
 
     /** Test a mixed regex - in other words, one that sometimes returns true and sometimes false */
+    @Test
     public void testMatchMixed() {
         // set up which should match every rule
         RegexRules rules = new RegexRules(
@@ -116,6 +116,7 @@ public class RegexRulesTestCase extends TestCase {
     }
         
     /** Test rules and clear methods */
+    @Test
     public void testClear() {
         // set up which should match every rule
         RegexRules rules = new RegexRules(
@@ -150,7 +151,8 @@ public class RegexRulesTestCase extends TestCase {
         matches = rules.match("", "/eggs");
         assertEquals("Wrong number of rules returned (4)", 0, matches.size());
     }
-    
+
+    @Test
     public void testSimpleRegexMatch() {
         
         SimpleRegexMatcher matcher = new SimpleRegexMatcher();

@@ -20,13 +20,15 @@
 package org.apache.commons.digester;
 
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import java.io.StringReader;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import junit.framework.TestCase;
-
+import org.junit.Test;
 import org.xml.sax.Locator;
 
 
@@ -35,7 +37,7 @@ import org.xml.sax.Locator;
  * of objects created from input xml stream.
  */
 
-public class LocationTrackerTestCase extends TestCase {
+public class LocationTrackerTestCase {
 
     private static class LocationTracker implements StackAction {
         public Map<Object, String> locations = new HashMap<Object, String>();
@@ -60,6 +62,7 @@ public class LocationTrackerTestCase extends TestCase {
         }
     }
 
+    @Test
     public void testAll() throws Exception {
         final String TEST_XML =
             "<?xml version='1.0'?>\n"

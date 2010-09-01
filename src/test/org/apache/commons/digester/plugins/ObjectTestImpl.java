@@ -1,5 +1,4 @@
-/* $Id$
- *
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,27 +14,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */ 
-package org.apache.commons.digester;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+package org.apache.commons.digester.plugins;
 
 /**
- * This class is a place that new test cases
- * can easily added without having to chance the build.xml.
- * 
- * @author Robert Burrell Donkin
+ * Test harness object for holding results of digestion.
  */
-public class TestOthers extends TestCase {
-    
-    public TestOthers(String testName) {
-        super(testName);
+
+public class ObjectTestImpl {
+
+    private String value;
+
+    public ObjectTestImpl() {
     }
 
-    public static Test suite() {
-        TestSuite suite = new TestSuite();
-        suite.addTest(SetNestedPropertiesRuleTestCase.suite());
-        return suite;
+    public void setValue(String val) {
+        value = val;
+    }
+
+    public String getValue() {
+        return value;
     }
 }

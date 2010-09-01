@@ -18,19 +18,20 @@
 
 package org.apache.commons.digester.xmlrules;
 
-import java.util.ArrayList;
-import java.io.StringReader;
-import org.xml.sax.InputSource;
+import static org.junit.Assert.assertEquals;
 
-import junit.framework.TestCase;
+import java.io.StringReader;
+import java.util.ArrayList;
 
 import org.apache.commons.digester.Digester;
 import org.apache.commons.digester.Rule;
+import org.junit.Test;
+import org.xml.sax.InputSource;
 
 /**
  * Test for the include class functionality
  */
-public class IncludeTest extends TestCase {
+public class IncludeTest {
 
     public static class TestDigesterRuleSource implements DigesterRulesSource {
         public void getRules(Digester digester) {
@@ -44,10 +45,7 @@ public class IncludeTest extends TestCase {
         }
     }
 
-    public IncludeTest(String testName) {
-        super(testName);
-    }
-    
+    @Test
     public void testBasicInclude() throws Exception {
         String rulesXml = "<?xml version='1.0'?>"
                 + "<digester-rules>"

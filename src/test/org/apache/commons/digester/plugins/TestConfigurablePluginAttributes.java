@@ -19,43 +19,23 @@
 
 package org.apache.commons.digester.plugins;
 
-import java.util.List;
-import java.util.LinkedList;
+import static org.junit.Assert.*;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.apache.commons.digester.Digester;
+import org.junit.Test;
 
 /**
  * Test cases for functionality which sets what xml attributes specify
  * the plugin class or plugin declaration id.
  */
 
-public class TestConfigurablePluginAttributes extends TestCase {
-    /** Standard constructor */
-    public TestConfigurablePluginAttributes(String name) { 
-        super(name);
-    }
+public class TestConfigurablePluginAttributes {
 
-    /** Set up instance variables required by this test case. */
-    @Override
-    public void setUp() {}
-
-    /** Return the tests included in this test suite. */
-    public static Test suite() {
-
-        return (new TestSuite(TestConfigurablePluginAttributes.class));
-
-    }
-
-    /** Tear down instance variables required by this test case.*/
-    @Override
-    public void tearDown() {}
-        
     // --------------------------------------------------------------- Test cases
-    
+    @Test
     public void testDefaultBehaviour() throws Exception {
         // tests that by default the attributes used are 
         // named "plugin-class" and "plugin-id"
@@ -81,7 +61,7 @@ public class TestConfigurablePluginAttributes extends TestCase {
         
         try {
             digester.parse(
-                TestAll.getInputStream(this, "test7.xml"));
+                Utils.getInputStream(this, "test7.xml"));
 
         } catch(Exception e) {
             throw e;
@@ -105,7 +85,8 @@ public class TestConfigurablePluginAttributes extends TestCase {
         assertEquals(TextLabel.class, gadgets.get(2).getClass());
         assertEquals(TextLabel.class, gadgets.get(3).getClass());
     }
-    
+
+    @Test
     public void testGlobalOverride() throws Exception {
         // Tests that using setDefaultPluginXXXX overrides behaviour for all
         // PluginCreateRule instances. Also tests specifying attributes
@@ -138,7 +119,7 @@ public class TestConfigurablePluginAttributes extends TestCase {
         
         try {
             digester.parse(
-                TestAll.getInputStream(this, "test7.xml"));
+                Utils.getInputStream(this, "test7.xml"));
                 
         } catch(Exception e) {
             throw e;
@@ -162,7 +143,8 @@ public class TestConfigurablePluginAttributes extends TestCase {
         assertEquals(Slider.class, gadgets.get(2).getClass());
         assertEquals(Slider.class, gadgets.get(3).getClass());
     }
-    
+
+    @Test
     public void testInstanceOverride() throws Exception {
         // Tests that using setPluginXXXX overrides behaviour for only
         // that particular PluginCreateRule instance. Also tests that
@@ -197,7 +179,7 @@ public class TestConfigurablePluginAttributes extends TestCase {
         
         try {
             digester.parse(
-                TestAll.getInputStream(this, "test7.xml"));
+                Utils.getInputStream(this, "test7.xml"));
         } catch(Exception e) {
             throw e;
         }

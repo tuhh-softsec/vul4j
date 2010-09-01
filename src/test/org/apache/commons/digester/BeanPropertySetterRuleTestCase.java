@@ -20,6 +20,8 @@
 package org.apache.commons.digester;
 
 
+import static org.junit.Assert.*;
+
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
@@ -27,10 +29,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.xml.sax.SAXException;
 
 
@@ -39,7 +40,7 @@ import org.xml.sax.SAXException;
  * This contains tests for the main applications of the rule
  * and two more general tests of digester functionality used by this rule.
  */
-public class BeanPropertySetterRuleTestCase extends TestCase {
+public class BeanPropertySetterRuleTestCase {
 
 
     // ----------------------------------------------------- Instance Variables
@@ -63,28 +64,13 @@ public class BeanPropertySetterRuleTestCase extends TestCase {
     protected Digester digester = null;
 
 
-    // ----------------------------------------------------------- Constructors
-
-
-    /**
-     * Construct a new instance of this test case.
-     *
-     * @param name Name of the test case
-     */
-    public BeanPropertySetterRuleTestCase(String name) {
-
-        super(name);
-
-    }
-
-
     // --------------------------------------------------- Overall Test Methods
 
 
     /**
      * Set up instance variables required by this test case.
      */
-    @Override
+    @Before
     public void setUp() {
 
         digester = new Digester();
@@ -93,19 +79,9 @@ public class BeanPropertySetterRuleTestCase extends TestCase {
 
 
     /**
-     * Return the tests included in this test suite.
-     */
-    public static Test suite() {
-
-        return (new TestSuite(BeanPropertySetterRuleTestCase.class));
-
-    }
-
-
-    /**
      * Tear down instance variables required by this test case.
      */
-    @Override
+    @After
     public void tearDown() {
 
         digester = null;
@@ -121,6 +97,7 @@ public class BeanPropertySetterRuleTestCase extends TestCase {
      * This is a general digester test but it fits into here pretty well.
      * This tests that the rule calling order is properly enforced.
      */
+    @Test
     public void testDigesterRuleCallOrder() throws SAXException, IOException {
 
         List<Rule> callOrder = new ArrayList<Rule>();
@@ -209,6 +186,7 @@ public class BeanPropertySetterRuleTestCase extends TestCase {
      * This is a general digester test but it fits into here pretty well.
      * This tests that the body text stack is functioning correctly.
      */
+    @Test
     public void testDigesterBodyTextStack() throws SAXException, IOException {
 
         // use the standard rules
@@ -258,6 +236,7 @@ public class BeanPropertySetterRuleTestCase extends TestCase {
     /**
      * Test that you can successfully set a given property
      */
+    @Test
     public void testSetGivenProperty() throws SAXException, IOException {
 
         // use the standard rules
@@ -306,6 +285,7 @@ public class BeanPropertySetterRuleTestCase extends TestCase {
     /**
      * Test that trying to set an unknown property throws an exception.
      */
+    @Test
     public void testSetUnknownProperty() {
 
         // going to be setting properties on a SimpleTestBean
@@ -340,6 +320,7 @@ public class BeanPropertySetterRuleTestCase extends TestCase {
     /**
      * Test that you can successfully automatically set properties.
      */
+    @Test
     public void testAutomaticallySetProperties()
         throws SAXException, IOException {
 

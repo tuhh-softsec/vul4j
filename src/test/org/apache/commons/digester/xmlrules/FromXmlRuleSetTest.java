@@ -19,40 +19,25 @@
 package org.apache.commons.digester.xmlrules;
 
 
+import static org.junit.Assert.*;
+
 import java.io.StringReader;
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
 import org.apache.commons.digester.Digester;
-
+import org.junit.Test;
 import org.xml.sax.InputSource;
 
 /**
  * Tests loading Digester rules from an XML file.
  */
 
-public class FromXmlRuleSetTest extends TestCase {
-
-    public FromXmlRuleSetTest(java.lang.String testName) {
-        super(testName);
-    }
-
-    public static void main(java.lang.String[] args) {
-        junit.textui.TestRunner.run(suite());
-    }
-
-    public static junit.framework.Test suite() {
-        TestSuite suite = new TestSuite(FromXmlRuleSetTest.class);
-
-        return suite;
-    }
+public class FromXmlRuleSetTest {
 
     /** 
      * Test the FromXmlRules.addRuleInstances(digester, path) method, ie
      * test loading rules at a base position other than the root.
      */
-     
+    @Test
     public void testBasePath() throws Exception {
         String xmlRules = 
             "<?xml version='1.0'?>" +
@@ -73,7 +58,7 @@ public class FromXmlRuleSetTest extends TestCase {
         // First try with no base path. The rule shouldn't match, because
         // foo is not the root element.
         {
-        TestObject testObject = new TestObject();
+        ObjectTestImpl testObject = new ObjectTestImpl();
         FromXmlRuleSet ruleset = 
             new FromXmlRuleSet(
                 new InputSource(new StringReader(xmlRules)));
@@ -88,7 +73,7 @@ public class FromXmlRuleSetTest extends TestCase {
         
         // Now try with a base path. The rule should now match.
         {
-        TestObject testObject = new TestObject();
+        ObjectTestImpl testObject = new ObjectTestImpl();
         FromXmlRuleSet ruleset = 
             new FromXmlRuleSet(
                 new InputSource(new StringReader(xmlRules)));

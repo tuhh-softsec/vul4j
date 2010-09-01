@@ -30,7 +30,7 @@ import java.util.HashMap;
  * @author Scott Sanders   - Added ASL, removed external dependencies
  * @author Tim O'Brien - Added bean property to test bean property setter rule
  */
-public class TestObject {
+public class ObjectTestImpl {
 
     private ArrayList<Object> children = new ArrayList<Object>();
     private String value = "";
@@ -42,7 +42,7 @@ public class TestObject {
 
     private boolean pushed = false;
     
-    public TestObject() {
+    public ObjectTestImpl() {
     }
 
     @Override

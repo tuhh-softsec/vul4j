@@ -16,11 +16,13 @@
  */
 package org.apache.commons.digester.annotations;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.InputStream;
 
-import junit.framework.TestCase;
-
 import org.apache.commons.digester.Digester;
+import org.junit.After;
+import org.junit.Before;
 
 /**
  * Abstract implementation of Class-&gt;Digester Rules-&gt;parse & confronting.
@@ -28,23 +30,17 @@ import org.apache.commons.digester.Digester;
  * @version $Id$
  * @since 2.1
  */
-public abstract class AbstractAnnotatedPojoTestCase extends TestCase {
+public abstract class AbstractAnnotatedPojoTestCase {
 
     private DigesterLoader digesterLoader;
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         this.digesterLoader = DigesterLoaderBuilder.byDefaultFactories();
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected void tearDown() throws Exception {
+    @After
+    public void tearDown() throws Exception {
         this.digesterLoader = null;
     }
 

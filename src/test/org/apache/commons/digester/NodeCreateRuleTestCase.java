@@ -20,6 +20,8 @@
 package org.apache.commons.digester;
 
 
+import static org.junit.Assert.*;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
@@ -30,10 +32,9 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.Element;
@@ -48,7 +49,7 @@ import org.xml.sax.SAXException;
  * @version $Revision$ $Date$
  */
 
-public class NodeCreateRuleTestCase extends TestCase {
+public class NodeCreateRuleTestCase {
 
 
     // ----------------------------------------------------- Instance Variables
@@ -67,28 +68,13 @@ public class NodeCreateRuleTestCase extends TestCase {
     protected Digester digester = null;
 
 
-    // ----------------------------------------------------------- Constructors
-
-
-    /**
-     * Construct a new instance of this test case.
-     *
-     * @param name Name of the test case
-     */
-    public NodeCreateRuleTestCase(String name) {
-
-        super(name);
-
-    }
-
-
     // --------------------------------------------------- Overall Test Methods
 
 
     /**
      * Set up instance variables required by this test case.
      */
-    @Override
+    @Before
     public void setUp() {
 
         digester = new Digester();
@@ -97,19 +83,9 @@ public class NodeCreateRuleTestCase extends TestCase {
 
 
     /**
-     * Return the tests included in this test suite.
-     */
-    public static Test suite() {
-
-        return (new TestSuite(NodeCreateRuleTestCase.class));
-
-    }
-
-
-    /**
      * Tear down instance variables required by this test case.
      */
-    @Override
+    @After
     public void tearDown() {
 
         digester = null;
@@ -125,6 +101,7 @@ public class NodeCreateRuleTestCase extends TestCase {
      * Tests simple element construction, using the {@link #TEST_XML}
      * XML input data.
      */
+    @Test
     public void testInvalidNodeTypes() throws Exception {
 
         try {
@@ -208,6 +185,7 @@ public class NodeCreateRuleTestCase extends TestCase {
      * Tests simple element construction, using the {@link #TEST_XML}
      * XML input data.
      */
+    @Test
     public void testElement()
         throws SAXException, ParserConfigurationException, IOException {
 
@@ -230,6 +208,7 @@ public class NodeCreateRuleTestCase extends TestCase {
      * Tests simple fragment construction, using the {@link #TEST_XML}
      * XML input data.
      */
+    @Test
     public void testDocumentFragment()
         throws SAXException, ParserConfigurationException, IOException {
 
@@ -277,6 +256,7 @@ public class NodeCreateRuleTestCase extends TestCase {
      * Tests whether control is returned to digester after fragment
      * construction.
      */
+    @Test
     public void testNested()
         throws SAXException, ParserConfigurationException, IOException {
 
@@ -312,6 +292,7 @@ public class NodeCreateRuleTestCase extends TestCase {
      * Tests whether attributes are correctly imported into the fragment, using
      * the example in the Test1 XML file.
      */
+    @Test
     public void testAttributes()
         throws SAXException, ParserConfigurationException, IOException {
 
@@ -351,6 +332,7 @@ public class NodeCreateRuleTestCase extends TestCase {
      * Tests whether namespaces are handled correctly, using the example from 
      * the file Test3 XML file.
      */
+    @Test
     public void testNamespaces()
         throws SAXException, ParserConfigurationException, IOException {
 
@@ -397,6 +379,7 @@ public class NodeCreateRuleTestCase extends TestCase {
      * Tests whether namespaced attributes are handled correctly, using the example from 
      * the file Test10 XML file.
      */
+    @Test
     public void testNamespacedAttribute()
         throws SAXException, ParserConfigurationException, IOException {
         
@@ -422,6 +405,7 @@ public class NodeCreateRuleTestCase extends TestCase {
      * Tests whether non-namespaced attributes are handled correctly, using the example from 
      * the file Test11 XML file.
      */
+    @Test
     public void testNonNamespacedAttribute()
         throws SAXException, ParserConfigurationException, IOException {
         
@@ -447,6 +431,7 @@ public class NodeCreateRuleTestCase extends TestCase {
      * Tests whether the created fragment can be imported into an existing 
      * document.
      */
+    @Test
     public void testImport()
         throws SAXException, ParserConfigurationException, IOException {
 
@@ -470,6 +455,7 @@ public class NodeCreateRuleTestCase extends TestCase {
      * parser to make multiple invocations of the characters(..) sax
      * callback, rather than just one.
      */
+    @Test
     public void testEntityText() throws Exception {
         String TEST_XML2 =
             "<?xml version='1.0'?><root><alpha>&#65; &#65;</alpha></root>";

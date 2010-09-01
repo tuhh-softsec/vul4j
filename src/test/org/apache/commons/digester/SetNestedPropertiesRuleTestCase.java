@@ -20,14 +20,17 @@
 package org.apache.commons.digester;
 
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
+
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.xml.sax.SAXException;
 
 
@@ -36,7 +39,7 @@ import org.xml.sax.SAXException;
  * This contains tests for the main applications of the rule
  * and two more general tests of digester functionality used by this rule.
  */
-public class SetNestedPropertiesRuleTestCase extends TestCase {
+public class SetNestedPropertiesRuleTestCase {
 
 
     // ----------------------------------------------------- Instance Variables
@@ -60,28 +63,13 @@ public class SetNestedPropertiesRuleTestCase extends TestCase {
     protected Digester digester = null;
 
 
-    // ----------------------------------------------------------- Constructors
-
-
-    /**
-     * Construct a new instance of this test case.
-     *
-     * @param name Name of the test case
-     */
-    public SetNestedPropertiesRuleTestCase(String name) {
-
-        super(name);
-
-    }
-
-
     // --------------------------------------------------- Overall Test Methods
 
 
     /**
      * Set up instance variables required by this test case.
      */
-    @Override
+    @Before
     public void setUp() {
 
         digester = new Digester();
@@ -90,19 +78,9 @@ public class SetNestedPropertiesRuleTestCase extends TestCase {
 
 
     /**
-     * Return the tests included in this test suite.
-     */
-    public static Test suite() {
-
-        return (new TestSuite(SetNestedPropertiesRuleTestCase.class));
-
-    }
-
-
-    /**
      * Tear down instance variables required by this test case.
      */
-    @Override
+    @After
     public void tearDown() {
 
         digester = null;
@@ -117,6 +95,7 @@ public class SetNestedPropertiesRuleTestCase extends TestCase {
     /**
      * Test that you can successfully automatically set properties.
      */
+    @Test
     public void testAutomaticallySetProperties()
         throws SAXException, IOException {
 
@@ -155,6 +134,7 @@ public class SetNestedPropertiesRuleTestCase extends TestCase {
      * Test that it is an error when a child element exists but no corresponding
      * java property exists.
      */
+    @Test
     public void testMandatoryProperties()
         throws SAXException, IOException {
 
@@ -193,6 +173,7 @@ public class SetNestedPropertiesRuleTestCase extends TestCase {
      * Test that you can customise the property mappings using the
      * constructor which takes arrays-of-strings.
      */
+    @Test
     public void testCustomisedProperties1()
         throws SAXException, IOException {
 
@@ -254,6 +235,7 @@ public class SetNestedPropertiesRuleTestCase extends TestCase {
      * Test that you can ignore a single input xml element using the
      * constructor which takes a single remapping.
      */
+    @Test
     public void testCustomisedProperties2a()
         throws SAXException, IOException {
 
@@ -308,6 +290,7 @@ public class SetNestedPropertiesRuleTestCase extends TestCase {
      * Test that you can customise the property mappings using the
      * constructor which takes a single remapping.
      */
+    @Test
     public void testCustomisedProperties2b()
         throws SAXException, IOException {
 
@@ -368,6 +351,7 @@ public class SetNestedPropertiesRuleTestCase extends TestCase {
      * <li> the Rules object is reset nicely. </li>
      * </ul>
      */
+    @Test
     public void testMultiRuleMatch()
         throws SAXException, IOException {
 
@@ -427,6 +411,7 @@ public class SetNestedPropertiesRuleTestCase extends TestCase {
     /**
      * Test that unknown child elements trigger an exception.
      */
+    @Test
     public void testUnknownChildrenCausesException()
         throws SAXException, IOException {
 
@@ -465,6 +450,7 @@ public class SetNestedPropertiesRuleTestCase extends TestCase {
      * Test that unknown child elements are allowed if the appropriate
      * flag is set.
      */
+    @Test
     public void testUnknownChildrenExceptionOverride()
         throws SAXException, IOException {
 
@@ -497,6 +483,7 @@ public class SetNestedPropertiesRuleTestCase extends TestCase {
      * <p>
      * See bugzilla entry 31393.
      */
+    @Test
     public void testRecursiveNestedProperties()
         throws SAXException, IOException {
 

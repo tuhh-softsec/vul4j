@@ -18,6 +18,7 @@ package org.apache.commons.digester.annotations.employee;
 
 import org.apache.commons.digester.Digester;
 import org.apache.commons.digester.annotations.AbstractAnnotatedPojoTestCase;
+import org.junit.Test;
 
 /**
  * 
@@ -26,6 +27,7 @@ import org.apache.commons.digester.annotations.AbstractAnnotatedPojoTestCase;
  */
 public final class EmployeeTestCase extends AbstractAnnotatedPojoTestCase {
 
+    @Test
     public void testEmployee() throws Exception {
         Employee employee = new Employee();
         employee.setFirstName("First Name");

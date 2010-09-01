@@ -20,14 +20,17 @@
 package org.apache.commons.digester;
 
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.xml.sax.SAXException;
 
 
@@ -36,7 +39,7 @@ import org.xml.sax.SAXException;
  *
  * @author Mark Huisman
  */
-public class ObjectParamRuleTestCase extends TestCase {
+public class ObjectParamRuleTestCase {
 
 
     // ----------------------------------------------------- Instance Variables
@@ -48,36 +51,13 @@ public class ObjectParamRuleTestCase extends TestCase {
     protected Digester digester = null;
 
 
-    // ----------------------------------------------------------- Constructors
-
-
-    /**
-     * Construct a new instance of this test case.
-     *
-     * @param name Name of the test case
-     */
-    public ObjectParamRuleTestCase(String name) {
-
-        super(name);
-
-    }
-
-
-    public static void main(String[] args){
-
-        // so we can run standalone
-        junit.textui.TestRunner.run(suite());
-
-    }
-
-
     // --------------------------------------------------- Overall Test Methods
 
 
     /**
      * Set up instance variables required by this test case.
      */
-    @Override
+    @Before
     public void setUp() {
 
         digester = new Digester();
@@ -86,19 +66,9 @@ public class ObjectParamRuleTestCase extends TestCase {
 
 
     /**
-     * Return the tests included in this test suite.
-     */
-    public static Test suite() {
-
-        return (new TestSuite(ObjectParamRuleTestCase.class));
-
-    }
-
-
-    /**
      * Tear down instance variables required by this test case.
      */
-    @Override
+    @After
     public void tearDown() {
 
         digester = null;
@@ -118,6 +88,7 @@ public class ObjectParamRuleTestCase extends TestCase {
      * pass any subclass of Object as a parameter, provided that either the element
      * or the element + attribute has been matched.
      */
+    @Test
     public void testBasic() throws SAXException, IOException {
 
         // Configure the digester as required

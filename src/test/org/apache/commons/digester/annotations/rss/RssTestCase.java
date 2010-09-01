@@ -17,6 +17,7 @@
 package org.apache.commons.digester.annotations.rss;
 
 import org.apache.commons.digester.annotations.AbstractAnnotatedPojoTestCase;
+import org.junit.Test;
 
 /**
  * 
@@ -26,6 +27,7 @@ import org.apache.commons.digester.annotations.AbstractAnnotatedPojoTestCase;
  */
 public final class RssTestCase extends AbstractAnnotatedPojoTestCase {
 
+    @Test
     public void testRss() throws Exception {
         Channel channel = new Channel();
         channel.setTitle("Apache");

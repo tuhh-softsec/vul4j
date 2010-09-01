@@ -20,19 +20,21 @@
 package org.apache.commons.digester.xmlrules;
 
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.InputStream;
 import java.io.StringReader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
 import org.apache.commons.digester.Address;
 import org.apache.commons.digester.Digester;
-import org.apache.commons.digester.TestObjectCreationFactory;
-
+import org.apache.commons.digester.ObjectCreationFactoryTestImpl;
+import org.junit.Test;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 
@@ -43,27 +45,14 @@ import org.xml.sax.InputSource;
  * @author Scott Sanders   - Added ASL, removed external dependencies
  */
 
-public class DigesterLoaderTest extends TestCase {
-
-    public DigesterLoaderTest(java.lang.String testName) {
-        super(testName);
-    }
-
-    public static void main(java.lang.String[] args) {
-        junit.textui.TestRunner.run(suite());
-    }
-
-    public static junit.framework.Test suite() {
-        TestSuite suite = new TestSuite(DigesterLoaderTest.class);
-
-        return suite;
-    }
+public class DigesterLoaderTest {
 
     /**
      * Tests the DigesterLoader.createDigester(), with multiple
      * included rule sources: testrules.xml includes another rules xml
      * file, and also includes programmatically created rules.
      */
+    @Test
     public void testCreateDigester() throws Exception {
         URL rules = getClass().getClassLoader().getResource("org/apache/commons/digester/xmlrules/testrules.xml");
         URL input = getClass().getClassLoader().getResource("org/apache/commons/digester/xmlrules/test.xml");
@@ -80,6 +69,7 @@ public class DigesterLoaderTest extends TestCase {
      * sources: testrules.xml includes another rules xml file, and
      * also includes programmatically created rules.
      */
+    @Test
     public void testLoad1() throws Exception {
         ClassLoader classLoader = getClass().getClassLoader();
         URL rules = classLoader.getResource("org/apache/commons/digester/xmlrules/testrules.xml");
@@ -95,10 +85,10 @@ public class DigesterLoaderTest extends TestCase {
         @SuppressWarnings("unchecked") // root is an ArrayList
         ArrayList<Object> al = (ArrayList<Object>)root;
         Object obj = al.get(0);
-        if (! (obj instanceof TestObject)) {
+        if (! (obj instanceof ObjectTestImpl)) {
             fail("Unexpected object returned from DigesterLoader. Expected TestObject; got " + obj.getClass().getName());
         }
-        TestObject to = (TestObject)obj;
+        ObjectTestImpl to = (ObjectTestImpl)obj;
         assertEquals(new Long(555),to.getLongValue());
         assertEquals( "foo", to.getMapValue( "test1" ) );
         assertEquals( "bar", to.getMapValue( "test2" ) );
@@ -108,6 +98,7 @@ public class DigesterLoaderTest extends TestCase {
      * The same as testLoad1, exception the input file is passed to
      * DigesterLoader as an InputStream instead of a URL.
      */
+    @Test
     public void testLoad2() throws Exception {
         URL rules = getClass().getClassLoader().getResource("org/apache/commons/digester/xmlrules/testrules.xml");
         InputStream input = getClass().getClassLoader().getResource("org/apache/commons/digester/xmlrules/test.xml").openStream();
@@ -119,15 +110,16 @@ public class DigesterLoaderTest extends TestCase {
         ArrayList<Object> list = (ArrayList<Object>) root;
         assertEquals(root.toString(), "[foo1 baz1 foo2, foo3 foo4]");
         assertEquals("Wrong number of classes created", 2 , list.size());
-        assertEquals("Pushed first", true , ((TestObject)list.get(0)).isPushed());
-        assertEquals("Didn't push second", false , ((TestObject)list.get(1)).isPushed());
-        assertTrue("Property was set properly", ((TestObject)list.get(0)).getProperty().equals("I am a property!") ); 
+        assertEquals("Pushed first", true , ((ObjectTestImpl)list.get(0)).isPushed());
+        assertEquals("Didn't push second", false , ((ObjectTestImpl)list.get(1)).isPushed());
+        assertTrue("Property was set properly", ((ObjectTestImpl)list.get(0)).getProperty().equals("I am a property!") ); 
     }
 
 
     /**
      * Validates that circular includes are detected and result in an exception
      */
+    @Test
     public void testCircularInclude1() {
         URL rules = ClassLoader.getSystemResource("org/apache/commons/digester/xmlrules/testCircularRules.xml");
         try {
@@ -142,6 +134,7 @@ public class DigesterLoaderTest extends TestCase {
 
     /**
      */
+    @Test
     public void testSetCustomProperties() throws Exception {
         URL rules = getClass().getClassLoader().getResource
             ("org/apache/commons/digester/xmlrules/testPropertyAliasRules.xml");
@@ -192,7 +185,8 @@ public class DigesterLoaderTest extends TestCase {
         assertEquals("(4) State attribute", "Ohio", addressFour.getState());
         
     }
-    
+
+    @Test
    public void testFactoryCreateRule() throws Exception {
         URL rules = getClass().getClassLoader().getResource
             ("org/apache/commons/digester/xmlrules/testfactory.xml");
@@ -202,7 +196,7 @@ public class DigesterLoaderTest extends TestCase {
                                         rules, 
                                         getClass().getClassLoader(), 
                                         new StringReader(xml), 
-                                        new ArrayList<TestObjectCreationFactory>());
+                                        new ArrayList<ObjectCreationFactoryTestImpl>());
                                         
         if (!(obj instanceof ArrayList<?>)) {
             fail(
@@ -211,10 +205,10 @@ public class DigesterLoaderTest extends TestCase {
         }
         
         @SuppressWarnings("unchecked") // root is an ArrayList of TestObjectCreationFactory
-        ArrayList<TestObjectCreationFactory> list = (ArrayList<TestObjectCreationFactory>) obj;                
+        ArrayList<ObjectCreationFactoryTestImpl> list = (ArrayList<ObjectCreationFactoryTestImpl>) obj;                
          
         assertEquals("List should contain only the factory object", list.size() , 1);
-        TestObjectCreationFactory factory = list.get(0);
+        ObjectCreationFactoryTestImpl factory = list.get(0);
         assertEquals("Object create not called(1)", factory.called , true);
         assertEquals(
                     "Attribute not passed (1)", 
@@ -259,6 +253,7 @@ public class DigesterLoaderTest extends TestCase {
         }        
     }
 
+   @Test
     public void testCallParamRule() throws Exception {
     
         URL rules = getClass().getClassLoader().getResource
@@ -279,7 +274,8 @@ public class DigesterLoaderTest extends TestCase {
         assertEquals("Incorrect middle value", "short", testObject.getMiddle());
         assertEquals("Incorrect right value", "", testObject.getRight());
     }
-    
+
+    @Test
     public void testInputSourceLoader() throws Exception {
         String rulesXml = "<?xml version='1.0'?>"
                 + "<digester-rules>"
@@ -315,6 +311,7 @@ public class DigesterLoaderTest extends TestCase {
         assertEquals("Incorrect right value", "", testObject.getRight());
     }
 
+    @Test
     public void testNodeCreateRule() throws Exception {
         
         URL rules = getClass().getClassLoader().getResource("org/apache/commons/digester/xmlrules/test-node-create-rules.xml");

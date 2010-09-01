@@ -26,7 +26,7 @@ package org.apache.commons.digester;
  * @author Robert Burrell Donkin
  */
 
-public class OtherTestObjectCreationFactory extends TestObjectCreationFactory {}
+public class OtherTestObjectCreationFactory extends ObjectCreationFactoryTestImpl {}
 
 
 

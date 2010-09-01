@@ -20,34 +20,26 @@
 package org.apache.commons.digester.xmlrules;
 
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import org.apache.commons.digester.Digester;
 
 
 /**
- * Tests loading Digester rules from an XML file.
+ * A test class, for validating FromXmlRuleSet's ability to 'include'
+ * programmatically-created rules from within an XML rules file.
  *
- * @author Scott Sanders
+ * @author David H. Martin - Initial Contribution
+ * @author Scott Sanders   - Added ASL, removed external dependencies
  */
+public class DigesterRulesSourceTestImpl implements DigesterRulesSource {
 
-public class DigesterLoaderTestSuite extends TestCase {
-
-    public DigesterLoaderTestSuite(java.lang.String testName) {
-        super(testName);
+    /**
+     * Creates and adds Digester Rules to a given Rules object
+     * @param digester the Digester to add the new Rule objects to
+     */
+    public void getRules(Digester digester) {
+        digester.addObjectCreate("/baz", ObjectTestImpl.class.getName());
+        digester.addSetNext("/baz", "add", "java.lang.Object");
+        digester.addSetProperties("/baz");
     }
 
-    public static void main(java.lang.String[] args) {
-        junit.textui.TestRunner.run(suite());
-    }
-
-    public static junit.framework.Test suite() {
-        TestSuite suite = new TestSuite();
-        suite.addTestSuite(FromXmlRuleSetTest.class);
-        suite.addTestSuite(DigesterLoaderTest.class);
-        suite.addTestSuite(DigesterPatternStackTest.class);
-        suite.addTestSuite(DigesterLoaderRulesTest.class);
-        suite.addTestSuite(IncludeTest.class);
-
-        return suite;
-    }
 }

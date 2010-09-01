@@ -20,13 +20,15 @@
 package org.apache.commons.digester;
 
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
-import junit.framework.TestCase;
-
+import org.junit.Test;
 import org.xml.sax.Attributes;
 
 
@@ -34,7 +36,7 @@ import org.xml.sax.Attributes;
  * Tests namespace snapshotting.
  */
 
-public class NamespaceSnapshotTestCase extends TestCase {
+public class NamespaceSnapshotTestCase {
 
     /**
      * A test case specific helper rule.
@@ -55,6 +57,7 @@ public class NamespaceSnapshotTestCase extends TestCase {
     /**
      * Namespace snapshot test case.
      */
+    @Test
     public void testNamespaceSnapshots() throws Exception {
 
         Digester digester = new Digester();

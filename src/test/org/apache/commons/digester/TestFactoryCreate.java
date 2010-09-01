@@ -19,14 +19,14 @@
 
 package org.apache.commons.digester;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
+import org.junit.Test;
 import org.xml.sax.Attributes;
 
 /**
@@ -35,31 +35,12 @@ import org.xml.sax.Attributes;
  * @author Robert Burrell Donkin
  */
 
-public class TestFactoryCreate extends TestCase {
-    /** Standard constructor */
-    public TestFactoryCreate(String name) { 
-        super(name);
-    }
-
-    /** Set up instance variables required by this test case. */
-    @Override
-    public void setUp() {}
-
-    /** Return the tests included in this test suite. */
-    public static Test suite() {
-
-        return (new TestSuite(TestFactoryCreate.class));
-
-    }
-
-    /** Tear down instance variables required by this test case.*/
-    @Override
-    public void tearDown() {}
+public class TestFactoryCreate {
         
     // --------------------------------------------------------------- Test cases
     
        
-    
+    @Test
     public void testPropagateException() throws Exception {
     
         // only used with this method
@@ -110,7 +91,8 @@ public class TestFactoryCreate extends TestCase {
             fail("Exception should not be propagated");
         }
     }
-    
+
+    @Test
     public void testFactoryCreateRule() throws Exception {
         tryVariations(true);
         tryVariations(false);
@@ -121,7 +103,7 @@ public class TestFactoryCreate extends TestCase {
         
         // test passing object create
         Digester digester = new Digester();
-        TestObjectCreationFactory factory = new TestObjectCreationFactory();
+        ObjectCreationFactoryTestImpl factory = new ObjectCreationFactoryTestImpl();
         digester.addFactoryCreate("root", factory, propagateExceptions);
         String xml = new String (
             "<?xml version='1.0' ?><root one='good' two='bad' three='ugly'><element/></root>");
@@ -144,12 +126,12 @@ public class TestFactoryCreate extends TestCase {
         digester = new Digester();
         digester.addFactoryCreate(
                                 "root", 
-                                "org.apache.commons.digester.TestObjectCreationFactory",
+                                "org.apache.commons.digester.ObjectCreationFactoryTestImpl",
                                 propagateExceptions);
         digester.addSetNext("root", "add");
         xml = new String (
             "<?xml version='1.0' ?><root one='good' two='bad' three='ugly'><element/></root>");        
-        List<TestObjectCreationFactory> list = new ArrayList<TestObjectCreationFactory>();
+        List<ObjectCreationFactoryTestImpl> list = new ArrayList<ObjectCreationFactoryTestImpl>();
         digester.push(list);
         digester.parse(new StringReader(xml));
         
@@ -173,13 +155,13 @@ public class TestFactoryCreate extends TestCase {
         digester = new Digester();
         digester.addFactoryCreate(
                                 "root", 
-                                "org.apache.commons.digester.TestObjectCreationFactory",
+                                "org.apache.commons.digester.ObjectCreationFactoryTestImpl",
                                 "override",
                                 propagateExceptions);
         digester.addSetNext("root", "add");
         xml = new String (
             "<?xml version='1.0' ?><root one='good' two='bad' three='ugly'><element/></root>");        
-        list = new ArrayList<TestObjectCreationFactory>();
+        list = new ArrayList<ObjectCreationFactoryTestImpl>();
         digester.push(list);
         digester.parse(new StringReader(xml));
         
@@ -202,7 +184,7 @@ public class TestFactoryCreate extends TestCase {
         digester = new Digester();
         digester.addFactoryCreate(
                                 "root", 
-                                "org.apache.commons.digester.TestObjectCreationFactory",
+                                "org.apache.commons.digester.ObjectCreationFactoryTestImpl",
                                 "override",
                                 propagateExceptions);
         digester.addSetNext("root", "add");
@@ -210,7 +192,7 @@ public class TestFactoryCreate extends TestCase {
             "<?xml version='1.0' ?><root one='good' two='bad' three='ugly' "
             + " override='org.apache.commons.digester.OtherTestObjectCreationFactory' >"
             + "<element/></root>");        
-        list = new ArrayList<TestObjectCreationFactory>();
+        list = new ArrayList<ObjectCreationFactoryTestImpl>();
         digester.push(list);
         digester.parse(new StringReader(xml));
         
@@ -237,13 +219,13 @@ public class TestFactoryCreate extends TestCase {
         digester = new Digester();
         digester.addFactoryCreate(
                                 "root", 
-                                TestObjectCreationFactory.class,
+                                ObjectCreationFactoryTestImpl.class,
                                 "override",
                                 propagateExceptions);
         digester.addSetNext("root", "add");
         xml = new String (
             "<?xml version='1.0' ?><root one='good' two='bad' three='ugly'><element/></root>");        
-        list = new ArrayList<TestObjectCreationFactory>();
+        list = new ArrayList<ObjectCreationFactoryTestImpl>();
         digester.push(list);
         digester.parse(new StringReader(xml));
         
@@ -266,7 +248,7 @@ public class TestFactoryCreate extends TestCase {
         digester = new Digester();
         digester.addFactoryCreate(
                                 "root", 
-                                TestObjectCreationFactory.class,
+                                ObjectCreationFactoryTestImpl.class,
                                 "override",
                                 propagateExceptions);
         digester.addSetNext("root", "add");
@@ -274,7 +256,7 @@ public class TestFactoryCreate extends TestCase {
             "<?xml version='1.0' ?><root one='good' two='bad' three='ugly' "
             + " override='org.apache.commons.digester.OtherTestObjectCreationFactory' >"
             + "<element/></root>");        
-        list = new ArrayList<TestObjectCreationFactory>();
+        list = new ArrayList<ObjectCreationFactoryTestImpl>();
         digester.push(list);
         digester.parse(new StringReader(xml));
         

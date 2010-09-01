@@ -23,7 +23,7 @@
      
 <digester-rules>
   <pattern value="root/foo">
-    <object-create-rule classname="org.apache.commons.digester.xmlrules.TestObject"/>
+    <object-create-rule classname="org.apache.commons.digester.xmlrules.ObjectTestImpl"/>
     <set-next-rule methodname="add" paramtype="java.lang.Object"/>
     <set-properties-rule/>
     <include path="org/apache/commons/digester/xmlrules/testCircularRules.xml"/>

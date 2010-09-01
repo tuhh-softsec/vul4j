@@ -17,13 +17,13 @@
  */ 
 package org.apache.commons.digester.xmlrules;
 
+import static org.junit.Assert.*;
+
 import java.io.StringReader;
 
-import junit.framework.TestCase;
-
-import org.xml.sax.InputSource;
-
 import org.apache.commons.digester.Digester;
+import org.junit.Test;
+import org.xml.sax.InputSource;
 
 /**
  * Tests for digester loader rule implementations,
@@ -31,12 +31,9 @@ import org.apache.commons.digester.Digester;
  * @author Robert Burrell Donkin
  */
 
-public class DigesterLoaderRulesTest extends TestCase {
+public class DigesterLoaderRulesTest {
 
-    public DigesterLoaderRulesTest(java.lang.String testName) {
-        super(testName);
-    }
-    
+    @Test
     /** Basic test for object param rule */
     public void testObjectParamRule() throws Exception {
         String xmlRules = 
@@ -76,6 +73,7 @@ public class DigesterLoaderRulesTest extends TestCase {
     }
     
     /** Test for call method rule with target offset */
+    @Test
     public void testCallMethodRuleTargetOffset() throws Exception {
         String xmlRules = 
             "<?xml version='1.0'?>" +

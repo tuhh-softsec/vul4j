@@ -17,6 +17,7 @@
 package org.apache.commons.digester.annotations.person;
 
 import org.apache.commons.digester.annotations.AbstractAnnotatedPojoTestCase;
+import org.junit.Test;
 
 /**
  * 
@@ -25,6 +26,7 @@ import org.apache.commons.digester.annotations.AbstractAnnotatedPojoTestCase;
  */
 public final class PersonTestCase extends AbstractAnnotatedPojoTestCase {
 
+    @Test
     public void testPerson() throws Exception {
         Person person = new Person();
         person.setId(1);

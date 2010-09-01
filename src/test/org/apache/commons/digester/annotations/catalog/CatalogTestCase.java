@@ -18,6 +18,7 @@ package org.apache.commons.digester.annotations.catalog;
 
 import org.apache.commons.digester.Digester;
 import org.apache.commons.digester.annotations.AbstractAnnotatedPojoTestCase;
+import org.junit.Test;
 
 /**
  * 
@@ -27,6 +28,7 @@ import org.apache.commons.digester.annotations.AbstractAnnotatedPojoTestCase;
  */
 public final class CatalogTestCase extends AbstractAnnotatedPojoTestCase {
 
+    @Test
     public void testCatalog() throws Exception {
         Catalog catalog = new Catalog();
 

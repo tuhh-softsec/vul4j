@@ -19,42 +19,22 @@
 
 package org.apache.commons.digester.plugins;
 
+import static org.junit.Assert.*;
+
 import java.util.List;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
 import org.apache.commons.digester.Digester;
+import org.junit.Test;
 
 /**
  * Test cases for the declaration of custom rules for a plugin using
  * a separate class to define the rules.
  */
 
-public class TestRuleInfo extends TestCase {
-    /** Standard constructor */
-    public TestRuleInfo(String name) { 
-        super(name);
-    }
+public class TestRuleInfo {
 
-    /** Set up instance variables required by this test case. */
-    @Override
-    public void setUp() {}
-
-    /** Return the tests included in this test suite. */
-    public static Test suite() {
-
-        return (new TestSuite(TestRuleInfo.class));
-
-    }
-
-    /** Tear down instance variables required by this test case.*/
-    @Override
-    public void tearDown() {}
-        
     // --------------------------------------------------------------- Test cases
-
+    @Test
     public void testRuleInfoExplicitClass() throws Exception {
         // * tests that custom rules can be declared on a 
         //   separate class by explicitly declaring the rule class.
@@ -75,7 +55,7 @@ public class TestRuleInfo extends TestCase {
         
         try {
             digester.parse(
-                TestAll.getInputStream(this, "test5a.xml"));
+                Utils.getInputStream(this, "test5a.xml"));
         }
         catch(Exception e) {
             throw e;
@@ -95,7 +75,8 @@ public class TestRuleInfo extends TestCase {
         assertEquals("anonymous", label.getId());
         assertEquals("std label", label.getLabel());
     }
-    
+
+    @Test
     public void testRuleInfoExplicitMethod() throws Exception {
         // * tests that custom rules can be declared on a 
         //   separate class by explicitly declaring the rule class.
@@ -117,7 +98,7 @@ public class TestRuleInfo extends TestCase {
         
         try {
             digester.parse(
-                TestAll.getInputStream(this, "test5b.xml"));
+                Utils.getInputStream(this, "test5b.xml"));
         }
         catch(Exception e) {
             throw e;
@@ -137,7 +118,8 @@ public class TestRuleInfo extends TestCase {
         assertEquals("anonymous", label.getId());
         assertEquals("alt label", label.getLabel());
     }
-    
+
+    @Test
     public void testRuleInfoAutoDetect() throws Exception {
         // * tests that custom rules can be declared on a 
         //   separate class with name {plugin-class}RuleInfo,
@@ -159,7 +141,7 @@ public class TestRuleInfo extends TestCase {
         
         try {
             digester.parse(
-                TestAll.getInputStream(this, "test5c.xml"));
+                Utils.getInputStream(this, "test5c.xml"));
         }
         catch(Exception e) {
             throw e;

@@ -19,31 +19,19 @@
 
 package org.apache.commons.digester;
 
+import static org.junit.Assert.*;
+
 import java.net.URL;
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * <p>Unit tests that exercise the new (in 1.8) methods for passing in
  * <code>URL</code> arguments instead of strings.</p>
  */
-public class URLTestCase extends TestCase {
-    
-
-    // ------------------------------------------------------------ Constructors
-
-
-    /**
-     * Construct a new instance of this test case.
-     *
-     * @param name Name of the test case
-     */
-    public URLTestCase(String name) {
-
-        super(name);
-
-    }
+public class URLTestCase {
 
 
     // ----------------------------------------------------- Overall Test Methods
@@ -52,7 +40,7 @@ public class URLTestCase extends TestCase {
     /**
      * Set up instance variables required by this test case.
      */
-    @Override
+    @Before
     public void setUp() {
 
         digester = new Digester();
@@ -61,19 +49,9 @@ public class URLTestCase extends TestCase {
 
 
     /**
-     * Return the tests included in this test suite.
-     */
-    public static Test suite() {
-
-        return (new TestSuite(URLTestCase.class));
-
-    }
-
-
-    /**
      * Tear down instance variables required by this test case.
      */
-    @Override
+    @After
     public void tearDown() {
 
         digester = null;
@@ -119,6 +97,7 @@ public class URLTestCase extends TestCase {
 
 
     // Test a pristine instance
+    @Test
     public void testPristine() {
 
         assertNotNull(digester);
@@ -127,6 +106,7 @@ public class URLTestCase extends TestCase {
 
 
     // Test parsing a resource, using a registered DTD, both passed with URLs
+    @Test
     public void testResource() throws Exception {
 
         // Register the Digester Rules DTD

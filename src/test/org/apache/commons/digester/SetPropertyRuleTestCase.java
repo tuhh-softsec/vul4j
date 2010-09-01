@@ -20,21 +20,25 @@
 package org.apache.commons.digester;
 
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
+
 import java.io.Reader;
 import java.io.StringReader;
 import java.lang.reflect.InvocationTargetException;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.xml.sax.SAXException;
 
 
 /**
  * <p> Test case for <code>SetPropertyRule</code>.</p>
  */
-public class SetPropertyRuleTestCase extends TestCase {
+public class SetPropertyRuleTestCase {
 
 
     // ----------------------------------------------------- Instance Variables
@@ -64,28 +68,13 @@ public class SetPropertyRuleTestCase extends TestCase {
     protected Digester digester = null;
 
 
-    // ----------------------------------------------------------- Constructors
-
-
-    /**
-     * Construct a new instance of this test case.
-     *
-     * @param name Name of the test case
-     */
-    public SetPropertyRuleTestCase(String name) {
-
-        super(name);
-
-    }
-
-
     // --------------------------------------------------- Overall Test Methods
 
 
     /**
      * Set up instance variables required by this test case.
      */
-    @Override
+    @Before
     public void setUp() {
 
         digester = new Digester();
@@ -94,19 +83,9 @@ public class SetPropertyRuleTestCase extends TestCase {
 
 
     /**
-     * Return the tests included in this test suite.
-     */
-    public static Test suite() {
-
-        return (new TestSuite(SetPropertyRuleTestCase.class));
-
-    }
-
-
-    /**
      * Tear down instance variables required by this test case.
      */
-    @Override
+    @After
     public void tearDown() {
 
         digester = null;
@@ -121,6 +100,7 @@ public class SetPropertyRuleTestCase extends TestCase {
     /**
      * Positive test for SetPropertyRule.
      */
+    @Test
     public void testPositive() throws Exception {
 
         // Set up the rules we need
@@ -151,6 +131,7 @@ public class SetPropertyRuleTestCase extends TestCase {
     /**
      * Negative test for SetPropertyRule.
      */
+    @Test
     public void testNegative() {
 
         // Set up the rules we need
@@ -206,6 +187,7 @@ public class SetPropertyRuleTestCase extends TestCase {
      * Test SetPropertyRule when matched XML element has no attributes.
      * See: DIGESTER-114
      */
+    @Test
     public void testElementWithNoAttributes() throws Exception {
         String TEST_XML_3 = "<?xml version='1.0'?><root><set/></root>";
 

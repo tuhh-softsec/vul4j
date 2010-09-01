@@ -20,20 +20,24 @@
 package org.apache.commons.digester;
 
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
+
 import java.io.Reader;
 import java.io.StringReader;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.xml.sax.SAXException;
 
 
 /**
  * <p> Test case for <code>SetPropertiesRule</code>.</p>
  */
-public class SetPropertiesRuleTestCase extends TestCase {
+public class SetPropertiesRuleTestCase {
 
 
     // ----------------------------------------------------- Instance Variables
@@ -62,28 +66,13 @@ public class SetPropertiesRuleTestCase extends TestCase {
     protected Digester digester = null;
 
 
-    // ----------------------------------------------------------- Constructors
-
-
-    /**
-     * Construct a new instance of this test case.
-     *
-     * @param name Name of the test case
-     */
-    public SetPropertiesRuleTestCase(String name) {
-
-        super(name);
-
-    }
-
-
     // --------------------------------------------------- Overall Test Methods
 
 
     /**
      * Set up instance variables required by this test case.
      */
-    @Override
+    @Before
     public void setUp() {
 
         digester = new Digester();
@@ -92,19 +81,9 @@ public class SetPropertiesRuleTestCase extends TestCase {
 
 
     /**
-     * Return the tests included in this test suite.
-     */
-    public static Test suite() {
-
-        return (new TestSuite(SetPropertiesRuleTestCase.class));
-
-    }
-
-
-    /**
      * Tear down instance variables required by this test case.
      */
-    @Override
+    @After
     public void tearDown() {
 
         digester = null;
@@ -119,6 +98,7 @@ public class SetPropertiesRuleTestCase extends TestCase {
     /**
      * Positive test for SetPropertiesRule.
      */
+    @Test
     public void testPositive() throws Exception {
 
         // Set up the rules we need
@@ -148,6 +128,7 @@ public class SetPropertiesRuleTestCase extends TestCase {
     /**
      * Positive test for SetPropertyRule ignoring missing properties.
      */
+    @Test
     public void testIgnoreMissing() throws Exception {
 
         // Set up the rules we need
@@ -176,6 +157,7 @@ public class SetPropertiesRuleTestCase extends TestCase {
     /**
      * Negative test for SetPropertyRule ignoring missing properties.
      */
+    @Test
     public void testNegativeNotIgnoreMissing() throws Exception {
 
         // Set up the rules we need
@@ -215,6 +197,7 @@ public class SetPropertiesRuleTestCase extends TestCase {
     /**
      * Negative test for SetPropertyRule ignoring missing properties.
      */
+    @Test
     public void testPositiveNotIgnoreMissingWithIgnoreAttributes() throws Exception {
 
         // Set up the rules we need

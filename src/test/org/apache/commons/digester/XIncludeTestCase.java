@@ -20,13 +20,15 @@
 package org.apache.commons.digester;
 
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import java.io.IOException;
 import java.io.InputStream;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.xml.sax.SAXException;
 
 
@@ -34,7 +36,7 @@ import org.xml.sax.SAXException;
  * <p>Tests for XInclude aware parsing.</p>
  *
  */
-public class XIncludeTestCase extends TestCase {
+public class XIncludeTestCase {
 
 
     // ----------------------------------------------------- Instance Variables
@@ -46,28 +48,13 @@ public class XIncludeTestCase extends TestCase {
     protected Digester digester = null;
 
 
-    // ----------------------------------------------------------- Constructors
-
-
-    /**
-     * Construct a new instance of this test case.
-     *
-     * @param name Name of the test case
-     */
-    public XIncludeTestCase(String name) {
-
-        super(name);
-
-    }
-
-
     // --------------------------------------------------- Overall Test Methods
 
 
     /**
      * Set up instance variables required by this test case.
      */
-    @Override
+    @Before
     public void setUp() {
 
         digester = new Digester();
@@ -76,19 +63,9 @@ public class XIncludeTestCase extends TestCase {
 
 
     /**
-     * Return the tests included in this test suite.
-     */
-    public static Test suite() {
-
-        return (new TestSuite(XIncludeTestCase.class));
-
-    }
-
-
-    /**
      * Tear down instance variables required by this test case.
      */
-    @Override
+    @After
     public void tearDown() {
 
         digester = null;
@@ -103,6 +80,7 @@ public class XIncludeTestCase extends TestCase {
     /**
      * Test XInclude.
      */
+    @Test
     public void testXInclude() throws SAXException, IOException {
 
         // Turn on XInclude processing

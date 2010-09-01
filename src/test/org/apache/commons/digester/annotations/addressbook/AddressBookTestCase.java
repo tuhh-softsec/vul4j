@@ -17,6 +17,7 @@
 package org.apache.commons.digester.annotations.addressbook;
 
 import org.apache.commons.digester.annotations.AbstractAnnotatedPojoTestCase;
+import org.junit.Test;
 
 /**
  * 
@@ -26,6 +27,7 @@ import org.apache.commons.digester.annotations.AbstractAnnotatedPojoTestCase;
  */
 public final class AddressBookTestCase extends AbstractAnnotatedPojoTestCase {
 
+    @Test
     public void testAddressBook() throws Exception {
         AddressBook addressBook = new AddressBook();
 

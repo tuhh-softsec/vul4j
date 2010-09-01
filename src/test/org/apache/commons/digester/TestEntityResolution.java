@@ -24,17 +24,17 @@ import java.io.File;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.junit.Test;
 import org.xml.sax.helpers.DefaultHandler;
-
-import junit.framework.TestCase;
 
 /**
  * Tests for entity resolution.
  * @author <a href='http://commons.apache.org/'>Apache Commons Team</a>
  * @version $Revision$
  */
-public class TestEntityResolution extends TestCase {
-    
+public class TestEntityResolution {
+
+    @Test
     public void testParserResolveRelative() throws Exception {
         SAXParserFactory factory = SAXParserFactory.newInstance();
         factory.setValidating(true);
@@ -45,7 +45,8 @@ public class TestEntityResolution extends TestCase {
                     new File("src/test/org/apache/commons/digester/document-with-relative-dtd.xml"), 
                     new DefaultHandler());
     }
-    
+
+    @Test
     public void testDigesterResolveRelative() throws Exception {
         Digester digester = new Digester();
         digester.setValidating(true);

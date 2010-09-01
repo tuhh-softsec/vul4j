@@ -18,42 +18,22 @@
 
 package org.apache.commons.digester.plugins;
 
+import static org.junit.Assert.*;
+
 import java.io.StringReader;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
 import org.apache.commons.digester.Digester;
+import org.junit.Test;
 
 /**
  * Test cases for the declaration of custom rules for a plugin using
  * xmlrules format files.
  */
 
-public class TestXmlRuleInfo extends TestCase {
-    /** Standard constructor */
-    public TestXmlRuleInfo(String name) { 
-        super(name);
-    }
+public class TestXmlRuleInfo {
 
-    /** Set up instance variables required by this test case. */
-    @Override
-    public void setUp() {}
-
-    /** Return the tests included in this test suite. */
-    public static Test suite() {
-
-        return (new TestSuite(TestXmlRuleInfo.class));
-
-    }
-
-    /** Tear down instance variables required by this test case.*/
-    @Override
-    public void tearDown() {}
-        
     // --------------------------------------------------------------- Test cases
-
+    @Test
     public void testXmlRuleInfoExplicitFile() throws Exception {
         // * tests that custom rules can be declared on a 
         //   separate class by explicitly declaring a file containing
@@ -63,7 +43,7 @@ public class TestXmlRuleInfo extends TestCase {
         input.append("<root>");
         input.append(" <plugin");
         input.append("  id='testobject'"); 
-        input.append("  class='org.apache.commons.digester.plugins.TestObject'");
+        input.append("  class='org.apache.commons.digester.plugins.ObjectTestImpl'");
         input.append("  file='src/test/org/apache/commons/digester/plugins/xmlrules1.xml'");
         input.append("  />");
         input.append("  <object plugin-id='testobject'/>");
@@ -76,7 +56,7 @@ public class TestXmlRuleInfo extends TestCase {
         PluginDeclarationRule pdr = new PluginDeclarationRule();
         digester.addRule("root/plugin", pdr);
         
-        PluginCreateRule pcr = new PluginCreateRule(TestObject.class);
+        PluginCreateRule pcr = new PluginCreateRule(ObjectTestImpl.class);
         digester.addRule("root/object", pcr);
         
         try {
@@ -87,11 +67,12 @@ public class TestXmlRuleInfo extends TestCase {
         }
 
         Object root = digester.getRoot();
-        assertEquals(TestObject.class, root.getClass());
-        TestObject testObject = (TestObject) root;
+        assertEquals(ObjectTestImpl.class, root.getClass());
+        ObjectTestImpl testObject = (ObjectTestImpl) root;
         assertEquals("xmlrules1", testObject.getValue());
     }
 
+    @Test
     public void testXmlRuleInfoExplicitResource() throws Exception {
         // * tests that custom rules can be declared on a 
         //   separate class by explicitly declaring the rule class.
@@ -102,7 +83,7 @@ public class TestXmlRuleInfo extends TestCase {
         input.append("<root>");
         input.append(" <plugin");
         input.append("  id='testobject'"); 
-        input.append("  class='org.apache.commons.digester.plugins.TestObject'");
+        input.append("  class='org.apache.commons.digester.plugins.ObjectTestImpl'");
         input.append("  resource='org/apache/commons/digester/plugins/xmlrules2.xml'");
         input.append("  />");
         input.append("  <object plugin-id='testobject'/>");
@@ -115,7 +96,7 @@ public class TestXmlRuleInfo extends TestCase {
         PluginDeclarationRule pdr = new PluginDeclarationRule();
         digester.addRule("root/plugin", pdr);
         
-        PluginCreateRule pcr = new PluginCreateRule(TestObject.class);
+        PluginCreateRule pcr = new PluginCreateRule(ObjectTestImpl.class);
         digester.addRule("root/object", pcr);
 
         try {
@@ -126,11 +107,12 @@ public class TestXmlRuleInfo extends TestCase {
         }
 
         Object root = digester.getRoot();
-        assertEquals(TestObject.class, root.getClass());
-        TestObject testObject = (TestObject) root;
+        assertEquals(ObjectTestImpl.class, root.getClass());
+        ObjectTestImpl testObject = (ObjectTestImpl) root;
         assertEquals("xmlrules2", testObject.getValue());
     }
-    
+
+    @Test
     public void testXmlRuleImplicitResource() throws Exception {
         // * tests that custom rules can be declared on a 
         //   separate class by explicitly declaring the rule class.
@@ -141,7 +123,7 @@ public class TestXmlRuleInfo extends TestCase {
         input.append("<root>");
         input.append(" <plugin");
         input.append("  id='testobject'"); 
-        input.append("  class='org.apache.commons.digester.plugins.TestObject'");
+        input.append("  class='org.apache.commons.digester.plugins.ObjectTestImpl'");
         input.append("  />");
         input.append("  <object plugin-id='testobject'/>");
         input.append("</root>");
@@ -153,7 +135,7 @@ public class TestXmlRuleInfo extends TestCase {
         PluginDeclarationRule pdr = new PluginDeclarationRule();
         digester.addRule("root/plugin", pdr);
         
-        PluginCreateRule pcr = new PluginCreateRule(TestObject.class);
+        PluginCreateRule pcr = new PluginCreateRule(ObjectTestImpl.class);
         digester.addRule("root/object", pcr);
 
         try {
@@ -164,8 +146,8 @@ public class TestXmlRuleInfo extends TestCase {
         }
 
         Object root = digester.getRoot();
-        assertEquals(TestObject.class, root.getClass());
-        TestObject testObject = (TestObject) root;
+        assertEquals(ObjectTestImpl.class, root.getClass());
+        ObjectTestImpl testObject = (ObjectTestImpl) root;
         assertEquals("xmlrules-ruleinfo", testObject.getValue());
     }
 }

@@ -20,6 +20,11 @@
 package org.apache.commons.digester;
 
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -27,10 +32,9 @@ import javax.xml.XMLConstants;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -40,7 +44,7 @@ import org.xml.sax.SAXParseException;
  * <p>Tests for XInclude aware parsing.</p>
  *
  */
-public class XMLSchemaTestCase extends TestCase {
+public class XMLSchemaTestCase {
 
 
     // ----------------------------------------------------- Instance Variables
@@ -52,28 +56,13 @@ public class XMLSchemaTestCase extends TestCase {
     protected Digester digester = null;
 
 
-    // ----------------------------------------------------------- Constructors
-
-
-    /**
-     * Construct a new instance of this test case.
-     *
-     * @param name Name of the test case
-     */
-    public XMLSchemaTestCase(String name) {
-
-        super(name);
-
-    }
-
-
     // --------------------------------------------------- Overall Test Methods
 
 
     /**
      * Set up instance variables required by this test case.
      */
-    @Override
+    @Before
     public void setUp() throws SAXException {
 
         digester = new Digester();
@@ -101,19 +90,9 @@ public class XMLSchemaTestCase extends TestCase {
 
 
     /**
-     * Return the tests included in this test suite.
-     */
-    public static Test suite() {
-
-        return (new TestSuite(XMLSchemaTestCase.class));
-
-    }
-
-
-    /**
      * Tear down instance variables required by this test case.
      */
-    @Override
+    @After
     public void tearDown() {
 
         digester = null;
@@ -128,6 +107,7 @@ public class XMLSchemaTestCase extends TestCase {
     /**
      * Test XML Schema validation.
      */
+    @Test
     public void testGoodDocument() throws SAXException, IOException {
 
         // Listen to validation errors
@@ -147,6 +127,7 @@ public class XMLSchemaTestCase extends TestCase {
 
     }
 
+    @Test
     public void testBadDocument() throws SAXException, IOException {
 
         // Listen to validation errors

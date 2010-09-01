@@ -19,41 +19,21 @@
 
 package org.apache.commons.digester.plugins;
 
+import static org.junit.Assert.*;
+
 import java.util.List;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
 import org.apache.commons.digester.Digester;
+import org.junit.Test;
 
 /**
  * Test cases for defining custom rules on the plugin class itself.
  */
 
-public class TestLocalRules extends TestCase {
-    /** Standard constructor */
-    public TestLocalRules(String name) { 
-        super(name);
-    }
+public class TestLocalRules {
 
-    /** Set up instance variables required by this test case. */
-    @Override
-    public void setUp() {}
-
-    /** Return the tests included in this test suite. */
-    public static Test suite() {
-
-        return (new TestSuite(TestLocalRules.class));
-
-    }
-
-    /** Tear down instance variables required by this test case.*/
-    @Override
-    public void tearDown() {}
-        
     // --------------------------------------------------------------- Test cases
-    
+    @Test
     public void testLocalRules() throws Exception {
         // * tests that the plugin class can define an addRules method,
         //   which gets detected and executed.
@@ -73,7 +53,7 @@ public class TestLocalRules extends TestCase {
         
         try {
             digester.parse(
-                TestAll.getInputStream(this, "test4a.xml"));
+                Utils.getInputStream(this, "test4a.xml"));
         }
         catch(Exception e) {
             throw e;
@@ -110,7 +90,8 @@ public class TestLocalRules extends TestCase {
         assertEquals(TextLabel.class, child.getClass());
         assertEquals("text1", ((TextLabel)child).getLabel());
     }
-    
+
+    @Test
     public void testNonStandardLocalRules() throws Exception {
         // * tests that using PluginDeclarationRule to declare an alternate
         //   rule method name invokes that alternate method instead (the
@@ -136,7 +117,7 @@ public class TestLocalRules extends TestCase {
         
         try {
             digester.parse(
-                TestAll.getInputStream(this, "test4b.xml"));
+                Utils.getInputStream(this, "test4b.xml"));
         }
         catch(Exception e) {
             throw e;

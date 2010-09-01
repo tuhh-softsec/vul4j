@@ -15,31 +15,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */ 
+package org.apache.commons.digester.plugins;
 
-
-package org.apache.commons.digester.xmlrules;
-
-
-import org.apache.commons.digester.Digester;
-
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
- * A test class, for validating FromXmlRuleSet's ability to 'include'
- * programmatically-created rules from within an XML rules file.
- *
- * @author David H. Martin - Initial Contribution
- * @author Scott Sanders   - Added ASL, removed external dependencies
+ * Entry point for all plugins package tests.
+ * 
+ * @author Simon Kitching
  */
-public class TestDigesterRulesSource implements DigesterRulesSource {
+public class Utils {
 
     /**
-     * Creates and adds Digester Rules to a given Rules object
-     * @param digester the Digester to add the new Rule objects to
+     * Return an appropriate InputStream for the specified test file (which
+     * must be inside our current package.
+     *
+     * @param caller is always "this" for the calling object.
+     * @param name is the test file we want
+     *
+     * @exception IOException if an input/output error occurs
      */
-    public void getRules(Digester digester) {
-        digester.addObjectCreate("/baz", TestObject.class.getName());
-        digester.addSetNext("/baz", "add", "java.lang.Object");
-        digester.addSetProperties("/baz");
+    public static InputStream getInputStream(Object caller, String name) 
+    throws IOException {
+        return (caller.getClass().getResourceAsStream
+                ("/org/apache/commons/digester/plugins/" + name));
     }
-
 }

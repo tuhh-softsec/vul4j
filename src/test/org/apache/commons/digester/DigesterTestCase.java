@@ -19,6 +19,14 @@
 
 package org.apache.commons.digester;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.File;
 import java.io.InputStream;
 import java.io.Reader;
@@ -29,10 +37,9 @@ import java.util.ArrayList;
 import java.util.EmptyStackException;
 import java.util.Map;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.helpers.AttributesImpl;
@@ -47,7 +54,7 @@ import org.xml.sax.helpers.AttributesImpl;
  * @version $Revision$ $Date$
  */
 
-public class DigesterTestCase extends TestCase {
+public class DigesterTestCase {
 
 
     // ----------------------------------------------------- Instance Variables
@@ -72,28 +79,13 @@ public class DigesterTestCase extends TestCase {
     };
 
 
-    // ----------------------------------------------------------- Constructors
-
-
-    /**
-     * Construct a new instance of this test case.
-     *
-     * @param name Name of the test case
-     */
-    public DigesterTestCase(String name) {
-
-        super(name);
-
-    }
-
-
     // -------------------------------------------------- Overall Test Methods
 
 
     /**
      * Set up instance variables required by this test case.
      */
-    @Override
+    @Before
     public void setUp() {
 
         digester = new Digester();
@@ -103,19 +95,9 @@ public class DigesterTestCase extends TestCase {
 
 
     /**
-     * Return the tests included in this test suite.
-     */
-    public static Test suite() {
-
-        return (new TestSuite(DigesterTestCase.class));
-
-    }
-
-
-    /**
      * Tear down instance variables required by this test case.
      */
-    @Override
+    @After
     public void tearDown() {
 
         digester = null;
@@ -131,6 +113,7 @@ public class DigesterTestCase extends TestCase {
      * Test <code>null</code> parsing.
      * (should lead to <code>IllegalArgumentException</code>s)
      */
+    @Test
     public void testNullFileParse() throws Exception {
 
         try {
@@ -142,6 +125,7 @@ public class DigesterTestCase extends TestCase {
 
     }
 
+    @Test
     public void testNullInputSourceParse() throws Exception {
 
         try {
@@ -153,6 +137,7 @@ public class DigesterTestCase extends TestCase {
 
     }
 
+    @Test
     public void testNullInputStreamParse() throws Exception {
 
         try {
@@ -164,6 +149,7 @@ public class DigesterTestCase extends TestCase {
 
     }
 
+    @Test
     public void testNullReaderParse() throws Exception {
 
         try {
@@ -175,6 +161,7 @@ public class DigesterTestCase extends TestCase {
 
     }
 
+    @Test
     public void testNullStringParse() throws Exception {
 
         try {
@@ -186,6 +173,7 @@ public class DigesterTestCase extends TestCase {
 
     }
 
+    @Test
     public void testNullURLParse() throws Exception {
 
         try {
@@ -201,6 +189,7 @@ public class DigesterTestCase extends TestCase {
     /**
      * Test the basic property getters and setters.
      */
+    @Test
     public void testProperties() {
 
         assertNull("Initial error handler is null",
@@ -236,6 +225,7 @@ public class DigesterTestCase extends TestCase {
     /**
      * Test registration of URLs for specified public identifiers.
      */
+    @Test
     public void testRegistrations() {
 
         Map<String, URL> map = digester.getRegistrations();
@@ -272,6 +262,7 @@ public class DigesterTestCase extends TestCase {
     /**
      * Basic test for rule creation and matching.
      */
+    @Test
     public void testRules() {
 
         assertEquals("Initial rules list is empty",
@@ -302,6 +293,7 @@ public class DigesterTestCase extends TestCase {
      * <li>longest pattern rule</li>
      * </ul>
      */
+    @Test
     public void testRulesBase() {
 
         assertEquals("Initial rules list is empty",
@@ -339,6 +331,7 @@ public class DigesterTestCase extends TestCase {
     /**
      * Test the basic stack mechanisms.
      */
+    @Test
     public void testStackMethods() {
 
         Object value = null;
@@ -383,6 +376,7 @@ public class DigesterTestCase extends TestCase {
 
     }
 
+    @Test
     public void testOnceAndOnceOnly() throws Exception {
         
         class TestConfigureDigester extends Digester {
@@ -402,7 +396,8 @@ public class DigesterTestCase extends TestCase {
         
         assertEquals("Initialize should be called once and only once", 1, digester.called);
     }
-    
+
+    @Test
     public void testBasicSubstitution() throws Exception {
         class TestSubRule extends Rule {
             public String body;
@@ -459,6 +454,7 @@ public class DigesterTestCase extends TestCase {
     }
     
     /** Tests the push-peek-pop cycle for a named stack */
+    @Test
     public void testNamedStackPushPeekPop() throws Exception
     {
         BigDecimal archimedesAveragePi = new BigDecimal("3.1418");
@@ -497,6 +493,7 @@ public class DigesterTestCase extends TestCase {
     }
     
     /** Tests that values are stored independently */
+    @Test
     public void testNamedIndependence()
     {
         String testStackOneName = "org.apache.commons.digester.tests.testNamedIndependenceOne";
@@ -509,6 +506,7 @@ public class DigesterTestCase extends TestCase {
     }
     
     /** Tests popping named stack not yet pushed */
+    @Test
     public void testPopNamedStackNotPushed() 
     {
         String testStackName = "org.apache.commons.digester.tests.testPopNamedStackNotPushed";
@@ -533,6 +531,7 @@ public class DigesterTestCase extends TestCase {
     }
     
     /** Tests for isEmpty */
+    @Test
     public void testNamedStackIsEmpty()
     {
         String testStackName = "org.apache.commons.digester.tests.testNamedStackIsEmpty";
@@ -560,6 +559,7 @@ public class DigesterTestCase extends TestCase {
     /**
      * Test the Digester.getRoot method.
      */
+    @Test
     public void testGetRoot() throws Exception {
         Digester digester = new Digester();
         digester.addRule("root", new ObjectCreateRule(TestBean.class));
@@ -603,6 +603,7 @@ public class DigesterTestCase extends TestCase {
     /**
      * Test custom StackAction subclasses.
      */
+    @Test
     public void testStackAction() {
         TrackingStackAction action = new TrackingStackAction();
         

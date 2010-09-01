@@ -20,14 +20,19 @@
 package org.apache.commons.digester;
 
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.xml.sax.SAXException;
 
 /**
@@ -39,7 +44,7 @@ import org.xml.sax.SAXException;
  * @version $Revision$ $Date$
  */
 
-public class RuleTestCase extends TestCase {
+public class RuleTestCase {
 
 
     // ----------------------------------------------------- Instance Variables
@@ -51,28 +56,13 @@ public class RuleTestCase extends TestCase {
     protected Digester digester = null;
 
 
-    // ----------------------------------------------------------- Constructors
-
-
-    /**
-     * Construct a new instance of this test case.
-     *
-     * @param name Name of the test case
-     */
-    public RuleTestCase(String name) {
-
-        super(name);
-
-    }
-
-
     // --------------------------------------------------- Overall Test Methods
 
 
     /**
      * Set up instance variables required by this test case.
      */
-    @Override
+    @Before
     public void setUp() {
 
         digester = new Digester();
@@ -81,19 +71,9 @@ public class RuleTestCase extends TestCase {
 
 
     /**
-     * Return the tests included in this test suite.
-     */
-    public static Test suite() {
-
-        return (new TestSuite(RuleTestCase.class));
-
-    }
-
-
-    /**
      * Tear down instance variables required by this test case.
      */
-    @Override
+    @After
     public void tearDown() {
 
         digester = null;
@@ -110,6 +90,7 @@ public class RuleTestCase extends TestCase {
      * the stack, which should cause an appropriate Employee object to be
      * returned.
      */
+    @Test
     public void testObjectCreate1() throws SAXException, IOException {
 
         // Configure the digester as required
@@ -142,6 +123,7 @@ public class RuleTestCase extends TestCase {
      * returned.  The processing rules will process the nested Address elements
      * as well, but will not attempt to add them to the Employee.
      */
+    @Test
     public void testObjectCreate2() throws SAXException, IOException {
 
         // Configure the digester as required
@@ -176,6 +158,7 @@ public class RuleTestCase extends TestCase {
      * returned.  The processing rules will process the nested Address elements
      * as well, and will add them to the owning Employee.
      */
+    @Test
     public void testObjectCreate3() throws SAXException, IOException {
 
         // Configure the digester as required
@@ -208,6 +191,7 @@ public class RuleTestCase extends TestCase {
      * Same as testObjectCreate1(), except use individual call method rules
      * to set the properties of the Employee.
      */
+    @Test
     public void testObjectCreate4() throws SAXException, IOException {
 
         // Configure the digester as required
@@ -245,6 +229,7 @@ public class RuleTestCase extends TestCase {
      * a paramCount=0 (ie the body of the element is the argument of the 
      * method).
      */
+    @Test
     public void testObjectCreate5() throws SAXException, IOException {
 
         // Configure the digester as required
@@ -275,6 +260,7 @@ public class RuleTestCase extends TestCase {
      * It should be possible to parse the same input twice, and get trees
      * of objects that are isomorphic but not be identical object instances.
      */
+    @Test
     public void testRepeatedParse() throws SAXException, IOException {
 
         // Configure the digester as required
@@ -311,6 +297,7 @@ public class RuleTestCase extends TestCase {
      * returned.  The processing rules will process the nested Address elements
      * as well, but will not attempt to add them to the Employee.
      */
+    @Test
     public void testRuleSet1() throws SAXException, IOException {
 
         // Configure the digester as required
@@ -342,6 +329,7 @@ public class RuleTestCase extends TestCase {
     /**
      * Same as <code>testRuleSet1</code> except using a single namespace.
      */
+    @Test
     public void testRuleSet2() throws SAXException, IOException {
 
         // Configure the digester as required
@@ -377,6 +365,7 @@ public class RuleTestCase extends TestCase {
      * for employee that we should recognize, and a namespace for
      * address that we should skip.
      */
+    @Test
     public void testRuleSet3() throws SAXException, IOException {
 
         // Configure the digester as required
@@ -417,6 +406,7 @@ public class RuleTestCase extends TestCase {
      * with the top-1 (parent) object as an argument.  The three argument
      * form is tested in <code>testSetTopRule2</code>.
      */
+    @Test
     public void testSetTopRule1() throws SAXException, IOException {
 
         // Configure the digester as required
@@ -440,6 +430,7 @@ public class RuleTestCase extends TestCase {
      * Same as <code>testSetTopRule1</code> except using the three argument
      * form of the SetTopRule rule.
      */
+    @Test
     public void testSetTopRule2() throws SAXException, IOException {
 
         // Configure the digester as required
@@ -464,6 +455,7 @@ public class RuleTestCase extends TestCase {
      * Test rule addition - this boils down to making sure that 
      * digester is set properly on rule addition.
      */
+    @Test
     public void testAddRule() {
         Digester digester = new Digester();
         TestRule rule =  new TestRule("Test");
@@ -474,7 +466,7 @@ public class RuleTestCase extends TestCase {
 
     }
     
-
+    @Test
     public void testSetNext() throws SAXException, IOException {
         Digester digester = new Digester();
         digester.setRules(new ExtendedBaseRules());
@@ -507,7 +499,7 @@ public class RuleTestCase extends TestCase {
         
     }
     
-    
+    @Test
     public void testSetTop() throws SAXException, IOException {
         Digester digester = new Digester();
         digester.setRules(new ExtendedBaseRules());
@@ -555,6 +547,7 @@ public class RuleTestCase extends TestCase {
 
     /**
      */
+    @Test
     public void testSetCustomProperties() throws SAXException, IOException {
         
         Digester digester = new Digester();

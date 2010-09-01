@@ -19,8 +19,10 @@
 package org.apache.commons.digester.xmlrules;
 
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import static org.junit.Assert.*;
+
+import org.junit.Before;
+import org.junit.Test;
 
 
 /**
@@ -31,33 +33,21 @@ import junit.framework.TestSuite;
  * DigesterRuleParser.PatternStack.toString() returns the properly
  * formatted string.
  */
-public class DigesterPatternStackTest extends TestCase {
-
-    public DigesterPatternStackTest(String testName) {
-        super(testName);
-    }
-
-    public static void main(java.lang.String[] args) {
-        junit.textui.TestRunner.run(suite());
-    }
-
-    public static junit.framework.Test suite() {
-        TestSuite suite = new TestSuite(DigesterPatternStackTest.class);
-
-        return suite;
-    }
+public class DigesterPatternStackTest {
 
     private DigesterRuleParser parser;
 
-    @Override
+    @Before
     public void setUp() {
         parser = new DigesterRuleParser();
     }
 
+    @Test
     public void test1() throws Exception {
         assertEquals("", parser.patternStack.toString());
     }
 
+    @Test
     public void test2() throws Exception {
         parser.patternStack.push("A");
         assertEquals("A", parser.patternStack.toString());
@@ -65,6 +55,7 @@ public class DigesterPatternStackTest extends TestCase {
         assertEquals("", parser.patternStack.toString());
     }
 
+    @Test
     public void test3() throws Exception {
         parser.patternStack.push("A");
         parser.patternStack.push("B");
@@ -74,6 +65,7 @@ public class DigesterPatternStackTest extends TestCase {
         assertEquals("A", parser.patternStack.toString());
     }
 
+    @Test
     public void test4() throws Exception {
         parser.patternStack.push("");
         assertEquals("", parser.patternStack.toString());
@@ -82,6 +74,7 @@ public class DigesterPatternStackTest extends TestCase {
         assertEquals("", parser.patternStack.toString());
     }
 
+    @Test
     public void test5() throws Exception {
         parser.patternStack.push("A");
         assertEquals("A", parser.patternStack.toString());
@@ -92,6 +85,7 @@ public class DigesterPatternStackTest extends TestCase {
 
     }
 
+    @Test
     public void test6() throws Exception {
         parser.patternStack.push("A");
         parser.patternStack.push("B");
@@ -99,6 +93,7 @@ public class DigesterPatternStackTest extends TestCase {
         assertEquals("", parser.patternStack.toString());
     }
 
+    @Test
     public void test7() throws Exception {
         parser.patternStack.push("///");
         assertEquals("///", parser.patternStack.toString());

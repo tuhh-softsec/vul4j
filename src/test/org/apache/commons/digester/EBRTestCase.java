@@ -20,11 +20,12 @@
 package org.apache.commons.digester;
 
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.Iterator;
 import java.util.List;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.Test;
 
 
 /**
@@ -36,19 +37,6 @@ import junit.framework.TestSuite;
 
 
 public class EBRTestCase extends RulesBaseTestCase {
-
-
-    // ----------------------------------------------------------- Constructors
-
-    /**
-     * Construct a new instance of this test case.
-     *
-     * @param name Name of the test case
-     */
-    public EBRTestCase(String name) {
-
-        super(name);
-    }
 
 
     // -------------------------------------------------- Overall Test Methods
@@ -66,21 +54,12 @@ public class EBRTestCase extends RulesBaseTestCase {
 
 
     /**
-     * Return the tests included in this test suite.
-     */
-    public static Test suite() {
-
-        return (new TestSuite(EBRTestCase.class));
-
-    }
-
-
-    /**
      * Basic test of parent matching rules.
      * A parent match matches any child of a particular kind of parent.
      * A wild parent has a wildcard prefix.
      * This method tests non-universal wildcards.
      */
+    @Test
     public void testBasicParentMatch() {
 
         // clear any existing rules
@@ -151,6 +130,7 @@ public class EBRTestCase extends RulesBaseTestCase {
      * Basic test of universal matching rules.
      * Universal rules act independent.
      */
+    @Test
     public void testBasicUniversal() {
 
         // clear any existing rules
@@ -235,6 +215,7 @@ public class EBRTestCase extends RulesBaseTestCase {
      * A non-universal will match matches anything not matched by something else.
      * This method tests non-universal and universal wild matches.
      */
+    @Test
     public void testWildMatch() {
 
         // clear any existing rules
@@ -299,6 +280,7 @@ public class EBRTestCase extends RulesBaseTestCase {
      * A non-universal will match matches anything not matched by something else.
      * This method tests non-universal and universal wild matches.
      */
+    @Test
     public void testRootTailMatch() {
 
         // clear any existing rules
@@ -341,7 +323,8 @@ public class EBRTestCase extends RulesBaseTestCase {
         digester.getRules().clear();
 
     }
-    
+
+    @Test
     public void testAncesterMatch() throws Exception {
         // test fixed root ancester
         digester.getRules().clear();
@@ -401,7 +384,8 @@ public class EBRTestCase extends RulesBaseTestCase {
         assertEquals("Wild ancester match (2)", 1, list.size());
         assertEquals("Match missed (5)", "star-b-c-star" , ((TestRule) list.get(0)).getIdentifier());    
     }
-    
+
+    @Test
     public void testLongMatch() {
         
         digester.getRules().clear();
@@ -423,7 +407,8 @@ public class EBRTestCase extends RulesBaseTestCase {
         list = digester.getRules().match(null, "a/b/c/d");
         assertEquals("Long match (4)", 0, list.size());
     }
-    
+
+    @Test
     public void testInstructors() {
         digester.getRules().clear();
         
@@ -435,7 +420,8 @@ public class EBRTestCase extends RulesBaseTestCase {
         assertEquals("Instructors expected", "instructors" , ((TestRule) list.get(0)).getIdentifier()); 
 
     }
-    
+
+    @Test
     public void testMiddleInstructors() {
         digester.getRules().clear();
         

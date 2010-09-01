@@ -19,42 +19,22 @@
 
 package org.apache.commons.digester.plugins;
 
+import static org.junit.Assert.*;
+
 import java.util.List;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
 import org.apache.commons.digester.Digester;
+import org.junit.Test;
 
 /**
  * Test cases for declaration of plugin classes "inline" (ie by specifying
  * plugin-class).
  */
 
-public class TestInline extends TestCase {
-    /** Standard constructor */
-    public TestInline(String name) { 
-        super(name);
-    }
+public class TestInline {
 
-    /** Set up instance variables required by this test case. */
-    @Override
-    public void setUp() {}
-
-    /** Return the tests included in this test suite. */
-    public static Test suite() {
-
-        return (new TestSuite(TestInline.class));
-
-    }
-
-    /** Tear down instance variables required by this test case.*/
-    @Override
-    public void tearDown() {}
-        
     // --------------------------------------------------------------- Test cases
-    
+    @Test
     public void testInlineDeclaration() throws Exception {
         // * tests that plugins can be specified by class, and that the
         //   correct class gets loaded.
@@ -74,7 +54,7 @@ public class TestInline extends TestCase {
         
         try {
             digester.parse(
-                TestAll.getInputStream(this, "test1.xml"));
+                Utils.getInputStream(this, "test1.xml"));
         }
         catch(Exception e) {
             throw e;
@@ -99,7 +79,8 @@ public class TestInline extends TestCase {
         assertEquals("L1", label2.getId());
         assertEquals("2", label2.getLabel());
     }
-    
+
+    @Test
     public void testLeadingSlash() throws Exception {
         // Tests that PluginRules handles patterns with a leading slash.
         // 
@@ -120,7 +101,7 @@ public class TestInline extends TestCase {
         
         try {
             digester.parse(
-                TestAll.getInputStream(this, "test1.xml"));
+                Utils.getInputStream(this, "test1.xml"));
         }
         catch(Exception e) {
             throw e;

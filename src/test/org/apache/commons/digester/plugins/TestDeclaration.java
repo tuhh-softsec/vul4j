@@ -19,41 +19,21 @@
 
 package org.apache.commons.digester.plugins;
 
+import static org.junit.Assert.*;
+
 import java.util.List;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
 import org.apache.commons.digester.Digester;
+import org.junit.Test;
 
 /**
  * Test cases for basic PluginDeclarationRule behaviour.
  */
 
-public class TestDeclaration extends TestCase {
-    /** Standard constructor */
-    public TestDeclaration(String name) { 
-        super(name);
-    }
+public class TestDeclaration {
 
-    /** Set up instance variables required by this test case. */
-    @Override
-    public void setUp() {}
-
-    /** Return the tests included in this test suite. */
-    public static Test suite() {
-
-        return (new TestSuite(TestDeclaration.class));
-
-    }
-
-    /** Tear down instance variables required by this test case.*/
-    @Override
-    public void tearDown() {}
-        
     // --------------------------------------------------------------- Test cases
-    
+    @Test
     public void testPredeclaration() throws Exception {
         // * tests that rules can be declared via a PluginDeclarationRule
 
@@ -73,7 +53,7 @@ public class TestDeclaration extends TestCase {
         
         try {
             digester.parse(
-                TestAll.getInputStream(this, "test3.xml"));
+                Utils.getInputStream(this, "test3.xml"));
         }
         catch(Exception e) {
             throw e;

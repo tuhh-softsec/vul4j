@@ -18,9 +18,12 @@
 
 package org.apache.commons.digester;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
 /**
  * Test case for WithDefaultsRulesWrapper
@@ -29,13 +32,9 @@ import junit.framework.TestCase;
  * @version $Revision$ $Date$
  */
 
-public class WDRulesWrapperTestCase extends TestCase {
-    
-    /** Base constructor */
-    public WDRulesWrapperTestCase(String name) {
-        super(name);
-    }
-    
+public class WDRulesWrapperTestCase {
+
+    @Test
     public void testClear() {
         // test clear wrapped
         WithDefaultsRulesWrapper rules = new WithDefaultsRulesWrapper(new RulesBase());
@@ -62,7 +61,8 @@ public class WDRulesWrapperTestCase extends TestCase {
         rules.clear();
         assertEquals("Clear Failed (3)", 0 , rules.rules().size());
     }
-    
+
+    @Test
     public void testRules() {
         // test rules
         WithDefaultsRulesWrapper rules = new WithDefaultsRulesWrapper(new RulesBase());
@@ -77,7 +77,8 @@ public class WDRulesWrapperTestCase extends TestCase {
         assertEquals("Wrong order (3)", "Roger" , ((TestRule) rules.rules().get(2)).getIdentifier());
         assertEquals("Wrong order (4)", "Harry" , ((TestRule) rules.rules().get(3)).getIdentifier());
     }
-    
+
+    @Test
     public void testMatch() {
         // test no defaults
         WithDefaultsRulesWrapper rules = new WithDefaultsRulesWrapper(new RulesBase());

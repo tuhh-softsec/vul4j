@@ -19,19 +19,17 @@
 
 package org.apache.commons.digester.substitution;
 
-import org.apache.commons.digester.CallMethodRule;
-import org.apache.commons.digester.Digester;
-import org.apache.commons.digester.SimpleTestBean;
+import static org.junit.Assert.*;
 
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.HashMap;
 import java.util.LinkedList;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
+import org.apache.commons.digester.CallMethodRule;
+import org.apache.commons.digester.Digester;
+import org.apache.commons.digester.SimpleTestBean;
+import org.junit.Test;
 import org.xml.sax.SAXException;
 
 /**
@@ -41,45 +39,9 @@ import org.xml.sax.SAXException;
  * @version $Revision$ $Date$
  */
 
-public class VariableExpansionTestCase extends TestCase {
-
-    // ----------------------------------------------------------- Constructors
-
-    /**
-     * Construct a new instance of this test case.
-     *
-     * @param name Name of the test case
-     */
-    public VariableExpansionTestCase(String name) {
-
-        super(name);
-
-    }
+public class VariableExpansionTestCase {
 
     // --------------------------------------------------- Overall Test Methods
-
-    /**
-     * Set up instance variables required by this test case.
-     */
-    @Override
-    public void setUp() {
-    }
-
-
-    /**
-     * Return the tests included in this test suite.
-     */
-    public static Test suite() {
-        return (new TestSuite(VariableExpansionTestCase.class));
-    }
-
-
-    /**
-     * Tear down instance variables required by this test case.
-     */
-    @Override
-    public void tearDown() {
-    }
 
     // method used in tests4
     private LinkedList<SimpleTestBean> simpleTestBeans = new LinkedList<SimpleTestBean>();
@@ -131,6 +93,7 @@ public class VariableExpansionTestCase extends TestCase {
     /**
      * Test that by default no expansion occurs.
      */
+    @Test
     public void testNoExpansion() throws SAXException, IOException {
 
         String xml = "<root alpha='${attr1}' beta='var{attr2}'/>";
@@ -154,6 +117,7 @@ public class VariableExpansionTestCase extends TestCase {
     /**
      * Test that a MultiVariableExpander with no sources does no expansion.
      */
+    @Test
     public void testExpansionWithNoSource() throws SAXException, IOException {
 
         String xml = "<root alpha='${attr1}' beta='var{attr2}'/>";
@@ -181,6 +145,7 @@ public class VariableExpansionTestCase extends TestCase {
      * It also tests that expansion works ok where multiple elements
      * exist.
      */
+    @Test
     public void testExpansionWithMultipleSources() throws SAXException, IOException {
 
         String xml = 
@@ -234,6 +199,7 @@ public class VariableExpansionTestCase extends TestCase {
     /**
      * Test expansion of text in element bodies.
      */
+    @Test
     public void testBodyExpansion() throws SAXException, IOException {
 
         String xml = 
@@ -278,6 +244,7 @@ public class VariableExpansionTestCase extends TestCase {
     /**
      * Test that an unknown variable causes a RuntimeException.
      */
+    @Test
     public void testExpansionException() throws IOException {
 
         String xml = "<root alpha='${attr1}'/>";
@@ -317,6 +284,7 @@ public class VariableExpansionTestCase extends TestCase {
      * @throws IOException
      * @throws SAXException
      */
+    @Test
     public void testExpansionWithMutableSource() throws SAXException, IOException {
         String xml =
             "<root>" +
@@ -349,6 +317,7 @@ public class VariableExpansionTestCase extends TestCase {
      * @throws IOException
      * @throws SAXException
      */
+    @Test
     public void testExpansionOfPropertyInProperty() throws SAXException, IOException {
         String xml =
             "<root>" +

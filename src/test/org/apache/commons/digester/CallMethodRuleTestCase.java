@@ -20,6 +20,11 @@
 package org.apache.commons.digester;
 
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
@@ -27,10 +32,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.xml.sax.SAXException;
 
 //import org.apache.commons.logging.impl.SimpleLog;
@@ -41,7 +45,7 @@ import org.xml.sax.SAXException;
  *
  * @author Christopher Lenz 
  */
-public class CallMethodRuleTestCase extends TestCase {
+public class CallMethodRuleTestCase {
 
 
     // ----------------------------------------------------- Instance Variables
@@ -53,28 +57,13 @@ public class CallMethodRuleTestCase extends TestCase {
     protected Digester digester = null;
 
 
-    // ----------------------------------------------------------- Constructors
-
-
-    /**
-     * Construct a new instance of this test case.
-     *
-     * @param name Name of the test case
-     */
-    public CallMethodRuleTestCase(String name) {
-
-        super(name);
-
-    }
-
-
     // --------------------------------------------------- Overall Test Methods
 
 
     /**
      * Set up instance variables required by this test case.
      */
-    @Override
+    @Before
     public void setUp() {
 
         digester = new Digester();
@@ -83,19 +72,9 @@ public class CallMethodRuleTestCase extends TestCase {
 
 
     /**
-     * Return the tests included in this test suite.
-     */
-    public static Test suite() {
-
-        return (new TestSuite(CallMethodRuleTestCase.class));
-
-    }
-
-
-    /**
      * Tear down instance variables required by this test case.
      */
-    @Override
+    @After
     public void tearDown() {
 
         digester = null;
@@ -111,6 +90,7 @@ public class CallMethodRuleTestCase extends TestCase {
      * Test method calls with the CallMethodRule rule. It should be possible
      * to call a method with no arguments using several rule syntaxes.
      */
+    @Test
     public void testBasic() throws SAXException, IOException {
         
         // Configure the digester as required
@@ -133,6 +113,7 @@ public class CallMethodRuleTestCase extends TestCase {
      * Test method calls with the CallMethodRule reading from the element
      * body, with no CallParamMethod rules added.
      */
+    @Test
     public void testCallMethodOnly() throws Exception {
 
         // Configure the digester as required
@@ -156,6 +137,7 @@ public class CallMethodRuleTestCase extends TestCase {
      * parameters to target methods. String, int, boolean, float should all 
      * be acceptable as parameter types.
      */
+    @Test
     public void testSettingProperties() throws SAXException, IOException {
             
         // Configure the digester as required
@@ -228,6 +210,7 @@ public class CallMethodRuleTestCase extends TestCase {
      * This tests the call methods params enhancement that provides 
      * for more complex stack-based calls.
      */
+    @Test
     public void testParamsFromStack() throws SAXException, IOException {
 
         StringBuffer xml = new StringBuffer().
@@ -265,6 +248,7 @@ public class CallMethodRuleTestCase extends TestCase {
      * The current implementation of CallMethodRule ensures this works by
      * firing only at the end of the tag that CallMethodRule triggered on.
      */
+    @Test
     public void testOrderNestedPartA() throws Exception {
 
         // Configure the digester as required
@@ -310,6 +294,7 @@ public class CallMethodRuleTestCase extends TestCase {
      * behaved, and it is expected that apps out there rely on this call order 
      * so this test is present to ensure that no-one changes this behaviour.
      */
+    @Test
     public void testOrderNestedPartB() throws Exception {
         
         // Configure the digester as required
@@ -332,6 +317,7 @@ public class CallMethodRuleTestCase extends TestCase {
         assertEquals("Wrong method call order", "CBA", word.toString());
     }
 
+    @Test
     public void testPrimitiveReading() throws Exception {
         StringReader reader = new StringReader(
             "<?xml version='1.0' ?><root><bean good='true'/><bean good='false'/><bean/>"
@@ -381,7 +367,8 @@ public class CallMethodRuleTestCase extends TestCase {
         assertTrue("Bean 5 property not called", bean.getSetBooleanCalled());
         assertEquals("Bean 5 property incorrect", false, bean.getBoolean());       
     }
-    
+
+    @Test
     public void testFromStack() throws Exception {
     
         StringReader reader = new StringReader(
@@ -440,7 +427,8 @@ public class CallMethodRuleTestCase extends TestCase {
         bean = list.get(4);
         assertEquals("Out of stack not set to null", null , bean.getName());
     }
-    
+
+    @Test
     public void testTwoCalls() throws Exception {
         
     
@@ -482,6 +470,7 @@ public class CallMethodRuleTestCase extends TestCase {
         assertEquals("That wrong (3)", "90", bean.getThat());
     }
 
+    @Test
     public void testNestedBody() throws Exception {
         
         StringReader reader = new StringReader(
@@ -534,7 +523,8 @@ public class CallMethodRuleTestCase extends TestCase {
         bean = list.get(1);
         assertEquals("Wrong name (5)", "Deepest", bean.getName());
     }
-    
+
+    @Test
     public void testProcessingHook() throws Exception {
         
         class TestCallMethodRule extends CallMethodRule {
@@ -575,6 +565,7 @@ public class CallMethodRuleTestCase extends TestCase {
     }
 
     /** Test for the PathCallParamRule */
+    @Test
     public void testPathCallParam() throws Exception {
         String xml = "<?xml version='1.0'?><main>"
             + "<alpha><beta>Ignore this</beta></alpha>"
@@ -603,6 +594,7 @@ public class CallMethodRuleTestCase extends TestCase {
     /** 
      * Test invoking an object which does not exist on the stack.
      */
+    @Test
     public void testCallInvalidTarget() throws Exception {
     
         Digester digester = new Digester();
@@ -627,6 +619,7 @@ public class CallMethodRuleTestCase extends TestCase {
      * Test invoking an object which is at top-1 on the stack, like
      * SetNextRule does...
      */
+    @Test
     public void testCallNext() throws Exception {
     
         Digester digester = new Digester();
@@ -656,6 +649,7 @@ public class CallMethodRuleTestCase extends TestCase {
      * Test invoking an object which is at the root of the stack, like
      * SetRoot does...
      */
+    @Test
     public void testCallRoot() throws Exception {
     
         Digester digester = new Digester();

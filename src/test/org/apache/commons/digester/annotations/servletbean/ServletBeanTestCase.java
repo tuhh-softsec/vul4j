@@ -17,6 +17,7 @@
 package org.apache.commons.digester.annotations.servletbean;
 
 import org.apache.commons.digester.annotations.AbstractAnnotatedPojoTestCase;
+import org.junit.Test;
 
 /**
  * 
@@ -25,6 +26,7 @@ import org.apache.commons.digester.annotations.AbstractAnnotatedPojoTestCase;
  */
 public final class ServletBeanTestCase extends AbstractAnnotatedPojoTestCase {
 
+    @Test
     public void testServletBean() throws Exception {
         ServletBean servletBean = new ServletBean();
         servletBean.setServletName("action");

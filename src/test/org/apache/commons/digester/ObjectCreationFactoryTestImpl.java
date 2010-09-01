@@ -15,26 +15,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */ 
-package org.apache.commons.digester.substitution;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+
+package org.apache.commons.digester;
+
+import org.xml.sax.Attributes;
+import org.xml.sax.helpers.AttributesImpl;
 
 /**
- * Entry point for all substitution package tests.
- * 
+ * Object creation factory used for testing.
+ *
  * @author Robert Burrell Donkin
  */
-public class TestAll extends TestCase {
-    public TestAll(String testName) {
-        super(testName);
-    }
 
-    public static Test suite() {
-        TestSuite suite = new TestSuite();
-        suite.addTest(VariableExpansionTestCase.suite());
-        return suite;
+public class ObjectCreationFactoryTestImpl extends AbstractObjectCreationFactory {
+    public boolean called = false;
+    public Attributes attributes;
+    
+    @Override
+    public Object createObject(Attributes attributes) {
+        this.attributes = new AttributesImpl(attributes);
+        called = true;
+        return this;
     }
- 
 }
+
+
+

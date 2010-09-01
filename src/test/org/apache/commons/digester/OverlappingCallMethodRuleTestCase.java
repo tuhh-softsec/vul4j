@@ -19,63 +19,22 @@
 package org.apache.commons.digester;
 
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.IOException;
 import java.io.StringReader;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
+import org.junit.Test;
 import org.xml.sax.SAXException;
 
 /**
  * <p>Tests for situations where CallMethodRule instances and their
  * parameters overlap each other.</p>
  */
-public class OverlappingCallMethodRuleTestCase extends TestCase {
-
-    // ----------------------------------------------------------- Constructors
-
-
-    /**
-     * Construct a new instance of this test case.
-     *
-     * @param name Name of the test case
-     */
-    public OverlappingCallMethodRuleTestCase(String name) {
-
-        super(name);
-
-    }
+public class OverlappingCallMethodRuleTestCase {
 
 
     // --------------------------------------------------- Overall Test Methods
-
-
-    /**
-     * Set up instance variables required by this test case.
-     */
-    @Override
-    public void setUp() {
-    }
-
-
-    /**
-     * Return the tests included in this test suite.
-     */
-    public static Test suite() {
-        return (new TestSuite(OverlappingCallMethodRuleTestCase.class));
-    }
-
-
-    /**
-     * Tear down instance variables required by this test case.
-     */
-    @Override
-    public void tearDown() {
-    }
-
-
 
     String itemId;
     String itemName;
@@ -85,7 +44,7 @@ public class OverlappingCallMethodRuleTestCase extends TestCase {
     
     // ------------------------------------------------ Individual Test Methods
 
-
+    @Test
     public void testItem1() throws SAXException, IOException {
         StringBuffer input = new StringBuffer();
         input.append("<root>");
@@ -108,6 +67,7 @@ public class OverlappingCallMethodRuleTestCase extends TestCase {
         assertEquals("anitem", this.itemName);
     }
 
+    @Test
     public void testItem2() throws SAXException, IOException {
         StringBuffer input = new StringBuffer();
         input.append("<root>");
@@ -130,6 +90,7 @@ public class OverlappingCallMethodRuleTestCase extends TestCase {
         assertEquals("anitem", this.itemName);
     }
 
+    @Test
     public void testItem3() throws SAXException, IOException {
         StringBuffer input = new StringBuffer();
         input.append("<root>");
@@ -173,7 +134,7 @@ public class OverlappingCallMethodRuleTestCase extends TestCase {
      * patterns which cause a rule to fire in a "recursive" manner. However
      * implementing this is not possible with the current digester design.
      */
-    
+    @Test
     public void testItem4() throws SAXException, IOException {
         StringBuffer input = new StringBuffer();
         input.append("<root>");
@@ -210,6 +171,7 @@ public class OverlappingCallMethodRuleTestCase extends TestCase {
      * ie a rule instances' methods gets called in the order
      * begin[1]/begin[2]/body[2]/end[2]/body[1]/end[1]
      */
+    @Test
     public void testWildcard1() throws SAXException, IOException {
         StringBuffer input = new StringBuffer();
         input.append("<box id='A1'>");
@@ -242,6 +204,7 @@ public class OverlappingCallMethodRuleTestCase extends TestCase {
      * ie a rule instances' methods gets called in the order
      * begin[1]/begin[2]/body[2]/end[2]/body[1]/end[1]
      */
+    @Test
     public void testWildcard2() throws SAXException, IOException {
         StringBuffer input = new StringBuffer();
         input.append("<box>A1");

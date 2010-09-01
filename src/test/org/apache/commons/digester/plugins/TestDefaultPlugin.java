@@ -19,46 +19,20 @@
 
 package org.apache.commons.digester.plugins;
 
+import static org.junit.Assert.*;
+
 import java.util.List;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
 import org.apache.commons.digester.Digester;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.impl.NoOpLog;
-
-/**
- * Test cases for the use of default plugin classes.
- */
-
+import org.junit.Test;
 import org.xml.sax.SAXParseException;
 
-public class TestDefaultPlugin extends TestCase {
-    /** Standard constructor */
-    public TestDefaultPlugin(String name) { 
-        super(name);
-    }
+public class TestDefaultPlugin {
 
-    /** Set up instance variables required by this test case. */
-    @Override
-    public void setUp() {}
-
-    /** Return the tests included in this test suite. */
-    public static Test suite() {
-
-        return (new TestSuite(TestDefaultPlugin.class));
-
-    }
-
-    /** Tear down instance variables required by this test case.*/
-    @Override
-    public void tearDown() {}
-        
     // --------------------------------------------------------------- Test cases
-    
+    @Test
     public void testDefaultPlugins1() throws Exception {
         // * tests that when a PluginCreateRule is defined with a default
         //   class, that the default class is instantiated when no class
@@ -76,7 +50,7 @@ public class TestDefaultPlugin extends TestCase {
         
         try {
             digester.parse(
-                TestAll.getInputStream(this, "test2.xml"));
+                Utils.getInputStream(this, "test2.xml"));
         }
         catch(Exception e) {
             throw e;
@@ -125,7 +99,7 @@ public class TestDefaultPlugin extends TestCase {
         try {
             digester.setLogger(new NoOpLog());
             digester.parse(
-                TestAll.getInputStream(this, "test2.xml"));
+                Utils.getInputStream(this, "test2.xml"));
         }
         catch(Exception e) {
             exception = e;
@@ -160,7 +134,7 @@ public class TestDefaultPlugin extends TestCase {
         try {
             digester.setLogger(new NoOpLog());
             digester.parse(
-                TestAll.getInputStream(this, "test2.xml"));
+                Utils.getInputStream(this, "test2.xml"));
         }
         catch(Exception e) {
             exception = e;

@@ -20,12 +20,14 @@
 package org.apache.commons.digester;
 
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.Iterator;
 import java.util.List;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
 /**
@@ -39,7 +41,7 @@ import junit.framework.TestSuite;
  * @version $Revision$ $Date$
  */
 
-public class RulesBaseTestCase extends TestCase {
+public class RulesBaseTestCase {
 
 
     // ----------------------------------------------------- Instance Variables
@@ -50,20 +52,6 @@ public class RulesBaseTestCase extends TestCase {
      */
     protected Digester digester = null;
 
-    // ----------------------------------------------------------- Constructors
-
-
-    /**
-     * Construct a new instance of this test case.
-     *
-     * @param name Name of the test case
-     */
-    public RulesBaseTestCase(String name) {
-
-        super(name);
-
-    }
-
 
     // -------------------------------------------------- Overall Test Methods
 
@@ -71,7 +59,7 @@ public class RulesBaseTestCase extends TestCase {
     /**
      * Set up instance variables required by this test case.
      */
-    @Override
+    @Before
     public void setUp() {
 
         digester = new Digester();
@@ -88,20 +76,11 @@ public class RulesBaseTestCase extends TestCase {
         return new RulesBase();
     }
 
-    /**
-     * Return the tests included in this test suite.
-     */
-    public static Test suite() {
-
-        return (new TestSuite(RulesBaseTestCase.class));
-
-    }
-
 
     /**
      * Tear down instance variables required by this test case.
      */
-    @Override
+    @After
     public void tearDown() {
 
         digester = null;
@@ -115,6 +94,7 @@ public class RulesBaseTestCase extends TestCase {
     /**
      * Basic test for rule creation and matching.
      */
+    @Test
     public void testRules() {
 
         // clear any existing rules
@@ -152,6 +132,7 @@ public class RulesBaseTestCase extends TestCase {
      * <li>longest pattern rule</li>
      * </ul>
      */
+    @Test
     public void testRulesBase() {
 
         // clear any existing rules
@@ -204,6 +185,7 @@ public class RulesBaseTestCase extends TestCase {
     /**
      * Test basic matchings involving namespaces.
      */
+    @Test
     public void testBasicNamespaceMatching() {
 
         List<Rule> list = null;
@@ -260,6 +242,7 @@ public class RulesBaseTestCase extends TestCase {
     /**
      * Rules must always be returned in the correct order.
      */
+    @Test
     public void testOrdering() {
 
         // clear any existing rules
@@ -289,6 +272,7 @@ public class RulesBaseTestCase extends TestCase {
     }
     
     /** Tests the behaviour when a rule is added with a trailing slash*/
+    @Test
     public void testTrailingSlash() {
         // clear any existing rules
         digester.getRules().clear();

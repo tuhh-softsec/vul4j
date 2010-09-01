@@ -20,7 +20,7 @@
 <digester-rules>
     <pattern value="root">
         <factory-create-rule 
-            classname="org.apache.commons.digester.TestObjectCreationFactory" 
+            classname="org.apache.commons.digester.ObjectCreationFactoryTestImpl"
             ignore-exceptions='true'/>
         <set-next-rule methodname="add"/>
     </pattern>

@@ -19,42 +19,22 @@
 
 package org.apache.commons.digester.plugins;
 
+import static org.junit.Assert.*;
+
 import java.util.List;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
 import org.apache.commons.digester.Digester;
+import org.junit.Test;
 
 /**
  * Test cases for plugins with custom rules which include PluginCreateRule
  * instances, allowing recursive datastructures to be processed.
  */
 
-public class TestRecursion extends TestCase {
-    /** Standard constructor */
-    public TestRecursion(String name) { 
-        super(name);
-    }
+public class TestRecursion {
 
-    /** Set up instance variables required by this test case. */
-    @Override
-    public void setUp() {}
-
-    /** Return the tests included in this test suite. */
-    public static Test suite() {
-
-        return (new TestSuite(TestRecursion.class));
-
-    }
-
-    /** Tear down instance variables required by this test case.*/
-    @Override
-    public void tearDown() {}
-        
     // --------------------------------------------------------------- Test cases
-    
+    @Test
     public void testRecursiveRules() throws Exception {
         // * tests that a rule can declare custom PluginCreateRules
         //   that allow it to plug in instances of itself below
@@ -76,7 +56,7 @@ public class TestRecursion extends TestCase {
         
         try {
             digester.parse(
-                TestAll.getInputStream(this, "test6.xml"));
+                Utils.getInputStream(this, "test6.xml"));
         }
         catch(Exception e) {
             throw e;

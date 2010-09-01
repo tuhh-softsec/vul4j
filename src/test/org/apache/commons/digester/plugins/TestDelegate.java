@@ -19,37 +19,16 @@
 
 package org.apache.commons.digester.plugins;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
 import org.apache.commons.digester.Digester;
+import org.junit.Test;
 
 /**
  * Test cases for Delegate behaviour.
  */
 
-public class TestDelegate extends TestCase {
-    /** Standard constructor */
-    public TestDelegate(String name) { 
-        super(name);
-    }
-
-    /** Set up instance variables required by this test case. */
-    @Override
-    public void setUp() {}
-
-    /** Return the tests included in this test suite. */
-    public static Test suite() {
-        return (new TestSuite(TestDelegate.class));
-    }
-
-    /** Tear down instance variables required by this test case.*/
-    @Override
-    public void tearDown() {}
-        
+public class TestDelegate {
     // --------------------------------------------------------------- Test cases
-    
+    @Test
     public void testDummy() {
         // it is an error if a TestSuite doesn't have at least one test,
         // so here is one...
@@ -69,7 +48,7 @@ public class TestDelegate extends TestCase {
         
         try {
             digester.parse(
-                TestAll.getInputStream(this, "test1.xml"));
+                Utils.getInputStream(this, "test1.xml"));
         }
         catch(Exception e) {
             throw e;
