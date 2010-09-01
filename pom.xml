@@ -175,7 +175,6 @@
   </properties> 
 
   <build>
-    <sourceDirectory>src/java</sourceDirectory>
     <testSourceDirectory>src/test</testSourceDirectory>
 
     <resources>
@@ -188,7 +187,7 @@
         </includes>
       </resource>
       <resource>
-        <directory>src/java</directory>
+        <directory>src/main/resources</directory>
         <filtering>false</filtering>
         <includes>
           <include>**/*.dtd</include>
