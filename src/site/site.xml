@@ -32,7 +32,7 @@
       <item name="Javadoc (SVN latest)" href="apidocs/index.html"/>
     </menu>
 
-    <menu name="Developers Guide">
+    <menu name="Developers Guide (SVN latest)">
       <item name="Core APIs"            href="/core.html"/>
       <item name="Plugins"              href="/plugins.html"/>
       <item name="Substitution"         href="/substitution.html"/>
