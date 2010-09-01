@@ -78,6 +78,34 @@ public:
 
 	//@}
 
+	/**
+	 * \brief Algorithm types understood by the library
+	 *
+	 * This type defines the list of algorithm classes that the library
+	 * understands.
+	 */
+
+	enum AlgorithmClassType {
+
+		ALG_NONE,
+        ALG_DIGEST,
+        ALG_DSIG,
+        ALG_HMAC,
+        ALG_ENC,
+        ALG_KEYWRAP,
+        ALG_KEYTRAN,
+        ALG_KEYAGREE,
+        ALG_KEYDERIV
+	};
+
+	/**
+	 * \brief Returns the general class of an algorithm.
+     *
+     * @param alg   algorithm URI
+	 */
+
+	virtual AlgorithmClassType getAlgorithmClass(const XMLCh* alg) const {return ALG_NONE;}
+
 	/** @name Encryption Methods */
 	//@{
 

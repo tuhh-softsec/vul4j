@@ -45,6 +45,7 @@ public:
 	
 	virtual ~XENCAlgorithmHandlerDefault() {};
 
+    virtual AlgorithmClassType getAlgorithmClass(const XMLCh* alg) const;
 
 	virtual unsigned int decryptToSafeBuffer(
 		TXFMChain * cipherText,
