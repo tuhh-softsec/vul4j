@@ -222,17 +222,11 @@
             <exclude>**/TestRuleSet.java</exclude>
             <exclude>**/Test*$*.java</exclude>
           </excludes>
-          <systemProperties>
+          <systemPropertyVariables>
             <!-- Suppress most logging output -->
-            <property>
-              <name>org.apache.commons.logging.Log</name>
-              <value>org.apache.commons.logging.impl.SimpleLog</value>
-            </property>
-            <property>
-              <name>org.apache.commons.logging.simplelog.defaultlog</name>
-              <value>fatal</value>
-            </property>
-          </systemProperties>
+            <org.apache.commons.logging.Log>org.apache.commons.logging.impl.SimpleLog</org.apache.commons.logging.Log>
+            <org.apache.commons.logging.simplelog.defaultlog>fatal</org.apache.commons.logging.simplelog.defaultlog>
+          </systemPropertyVariables>
         </configuration>
       </plugin>
 
