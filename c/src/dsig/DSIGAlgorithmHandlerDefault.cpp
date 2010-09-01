@@ -185,21 +185,6 @@ void convertRawToBase64String(safeBuffer &b64SB,
 
 }
 
-XSECAlgorithmHandler::AlgorithmClassType DSIGAlgorithmHandlerDefault::getAlgorithmClass(const XMLCh* alg) const {
-
-	signatureMethod sm;
-	hashMethod hm;
-
-	if (XSECmapURIToHashMethod(alg, hm))
-        return ALG_DIGEST;
-
-	if (XSECmapURIToSignatureMethods(alg, sm, hm)) {
-        return (sm == SIGNATURE_HMAC) ? ALG_HMAC : ALG_DSIG;
-    }
-
-    return ALG_NONE;
-}
-
 // --------------------------------------------------------------------------------
 //			Clone
 // --------------------------------------------------------------------------------

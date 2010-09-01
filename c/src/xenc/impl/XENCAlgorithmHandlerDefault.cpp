@@ -71,27 +71,6 @@ unsigned char s_AES_IV [] = {
 
 };
 
-XSECAlgorithmHandler::AlgorithmClassType XENCAlgorithmHandlerDefault::getAlgorithmClass(const XMLCh* alg) const {
-
-    if (strEquals(alg, DSIGConstants::s_unicodeStrURIRSA_1_5) ||
-        strEquals(alg, DSIGConstants::s_unicodeStrURIRSA_OAEP_MGFP1))
-        return ALG_KEYTRAN;
-
-	if (strEquals(alg, DSIGConstants::s_unicodeStrURI3DES_CBC) ||
-        strEquals(alg, DSIGConstants::s_unicodeStrURIAES128_CBC) ||
-        strEquals(alg, DSIGConstants::s_unicodeStrURIAES192_CBC) ||
-        strEquals(alg, DSIGConstants::s_unicodeStrURIAES256_CBC))
-        return ALG_ENC;
-
-	if (strEquals(alg, DSIGConstants::s_unicodeStrURIKW_3DES) ||
-        strEquals(alg, DSIGConstants::s_unicodeStrURIKW_AES128) ||
-        strEquals(alg, DSIGConstants::s_unicodeStrURIKW_AES192) ||
-        strEquals(alg, DSIGConstants::s_unicodeStrURIKW_AES256))
-        return ALG_KEYWRAP;
-
-    return ALG_NONE;
-}
-
 // --------------------------------------------------------------------------------
 //			Compare URI to key type
 // --------------------------------------------------------------------------------

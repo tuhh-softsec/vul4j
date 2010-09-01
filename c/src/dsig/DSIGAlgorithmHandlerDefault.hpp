@@ -45,8 +45,6 @@ public:
 	
 	virtual ~DSIGAlgorithmHandlerDefault() {};
 
-    virtual AlgorithmClassType getAlgorithmClass(const XMLCh* alg) const;
-
 	virtual XSECAlgorithmHandler * clone(void) const;
 
 	// Signature ops

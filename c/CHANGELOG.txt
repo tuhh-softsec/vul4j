@@ -16,7 +16,6 @@ Changes since 1.5.1
 * Add selected XML Signature 1.1 KeyInfo extensions (SC)
 * Add elliptic curve signatures via ECDSA (SC)
 * Support debugging of Reference/SignedInfo data (SC)
-* Support distinguishing types of algorithms using AlgorithmHandler (SC)
 
 Changes between 1.5 and 1.5.1
 =====================================
