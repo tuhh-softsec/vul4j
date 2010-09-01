@@ -245,8 +245,8 @@ created.</p>
 
     <section name="Plugin strategies">
       <p>
-This package contains "rule-finding" strategy classes, and their associated
-"helper" loader classes.</p>
+The <code>plugins.strategies</code> package contains "rule-finding" strategy
+classes, and their associated "helper" loader classes.</p>
 <p>
 Note that you do not need to understand or deal with any of the classes in
 this package in order to use the plugins functionality. If you wish to use
