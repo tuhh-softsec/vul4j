@@ -119,12 +119,12 @@ public class Driver {
 			HttpParams httpParams = new BasicHttpParams();
 			httpParams.setIntParameter(ConnManagerPNames.MAX_TOTAL_CONNECTIONS,
 					config.getMaxConnectionsPerHost());
-			httpParams.setLongParameter(ConnManagerPNames.TIMEOUT,
-					config.getTimeout());
+			httpParams.setLongParameter(ConnManagerPNames.TIMEOUT, config
+					.getTimeout());
 			httpParams.setIntParameter(CoreConnectionPNames.CONNECTION_TIMEOUT,
 					config.getTimeout());
-			httpParams.setIntParameter(CoreConnectionPNames.SO_TIMEOUT,
-					config.getTimeout());
+			httpParams.setIntParameter(CoreConnectionPNames.SO_TIMEOUT, config
+					.getTimeout());
 			httpParams.setParameter(
 					ConnManagerPNames.MAX_CONNECTIONS_PER_ROUTE,
 					new ConnPerRouteBean(config.getMaxConnectionsPerHost()));
@@ -138,8 +138,8 @@ public class Driver {
 		}
 		// Proxy settings
 		if (config.getProxyHost() != null) {
-			HttpHost proxy = new HttpHost(config.getProxyHost(),
-					config.getProxyPort(), "http");
+			HttpHost proxy = new HttpHost(config.getProxyHost(), config
+					.getProxyPort(), "http");
 			httpClient.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY,
 					proxy);
 		}
@@ -396,9 +396,9 @@ public class Driver {
 
 		// Fix resources
 		if (config.isFixResources()) {
-			ResourceFixupRenderer fixup = new ResourceFixupRenderer(
-					config.getBaseURL(), config.getVisibleBaseURL(), page,
-					config.getFixMode());
+			ResourceFixupRenderer fixup = new ResourceFixupRenderer(config
+					.getBaseURL(), config.getVisibleBaseURL(), page, config
+					.getFixMode());
 			StringWriter stringWriter = new StringWriter();
 			fixup.render(resourceContext, currentValue, stringWriter);
 			currentValue = stringWriter.toString();
@@ -465,9 +465,9 @@ public class Driver {
 
 			// Fix resources
 			if (config.isFixResources()) {
-				ResourceFixupRenderer fixup = new ResourceFixupRenderer(
-						config.getBaseURL(), config.getVisibleBaseURL(),
-						relUrl, config.getFixMode());
+				ResourceFixupRenderer fixup = new ResourceFixupRenderer(config
+						.getBaseURL(), config.getVisibleBaseURL(), relUrl,
+						config.getFixMode());
 				StringWriter stringWriter = new StringWriter();
 				fixup.render(resourceContext, currentValue, stringWriter);
 				currentValue = stringWriter.toString();
@@ -562,8 +562,8 @@ public class Driver {
 				// Prepare a FileOutput to store the result on the file system
 				if (config.isPutInCache()
 						&& Rfc2616.isCacheable(resourceContext)) {
-					fileOutput = new FileOutput(ResourceUtils.getFileUrl(
-							config.getLocalBase(), resourceContext));
+					fileOutput = new FileOutput(ResourceUtils.getFileUrl(config
+							.getLocalBase(), resourceContext));
 					multipleOutput.addOutput(fileOutput);
 				}
 				if (cache != null) {
@@ -596,6 +596,12 @@ public class Driver {
 				fileResource = new FileResource(config.getLocalBase(),
 						resourceContext);
 				if (!fileResource.isError()) {
+					// on réinitialise l'output pour ne pas écraser le fichier
+					// stocké sur le disque
+					multipleOutput = new MultipleOutput();
+					multipleOutput.addOutput(output);
+					memoryOutput = new CacheOutput(config.getCacheMaxFileSize());
+					multipleOutput.addOutput(memoryOutput);
 					Rfc2616.renderResource(fileResource, multipleOutput);
 					return;
 				}
@@ -672,8 +678,8 @@ public class Driver {
 			}
 		}
 		if (result.getStatusCode() != HttpServletResponse.SC_OK) {
-			throw new HttpErrorPage(result.getStatusCode(),
-					result.getStatusMessage(), result.toString());
+			throw new HttpErrorPage(result.getStatusCode(), result
+					.getStatusMessage(), result.toString());
 		}
 		return result;
 	}

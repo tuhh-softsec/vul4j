@@ -8,8 +8,8 @@ import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.Map.Entry;
 
 import net.webassembletool.ResourceContext;
 import net.webassembletool.output.Output;
@@ -17,6 +17,7 @@ import net.webassembletool.resource.Resource;
 import net.webassembletool.resource.ResourceUtils;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * Resource implementation pointing to a file on the local FileSystem.
@@ -41,18 +42,19 @@ public class FileResource extends Resource {
 			Properties headers = new Properties();
 			headers.load(headersInputStream);
 			headersInputStream.close();
+
 			Iterator<Entry<Object, Object>> iterator = headers.entrySet()
 					.iterator();
-			if (!iterator.hasNext()) {
-				throw new InvalidHeaderFileException("Invalid headers file");
-			}
-			Entry<Object, Object> header = iterator.next();
-			statusCode = Integer.parseInt(header.getKey().toString());
-			statusMessage = header.getValue().toString();
+
 			while (iterator.hasNext()) {
-				header = iterator.next();
-				headersMap.put(header.getKey().toString().toLowerCase(), header
-						.getValue().toString());
+				Entry<Object, Object> header = iterator.next();
+				if (StringUtils.isNumeric(header.getKey().toString())) {
+					statusCode = Integer.parseInt(header.getKey().toString());
+					statusMessage = header.getValue().toString();
+				} else {
+					headersMap.put(header.getKey().toString().toLowerCase(),
+							header.getValue().toString());
+				}
 			}
 		} else {
 			statusCode = 404;

@@ -203,6 +203,11 @@ public class AggregatorTest extends TestCase {
 		doSimpleTest("template.html");
 	}
 
+	// Test la récupération depuis le cache disque
+	public void testTemplateFromDisk() throws Exception {
+		doSimpleTest("templateFromDisk.html", "template.html");
+	}
+
 	public void testTemplateWithParams() throws Exception {
 		/*
 		 * Ensure aggregator "template" params are not forwarded to the backend
