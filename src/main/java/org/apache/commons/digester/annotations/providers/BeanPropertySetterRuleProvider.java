@@ -28,7 +28,8 @@ import org.apache.commons.digester.annotations.rules.BeanPropertySetter;
  *
  * @since 2.1
  */
-public final class BeanPropertySetterRuleProvider implements AnnotationRuleProvider<BeanPropertySetter, Field, BeanPropertySetterRule> {
+public final class BeanPropertySetterRuleProvider
+        implements AnnotationRuleProvider<BeanPropertySetter, Field, BeanPropertySetterRule> {
 
     private String name;
 
