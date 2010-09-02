@@ -14,27 +14,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.commons.digester.annotations;
+package org.apache.commons.digester.annotations.internal;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 
-import org.apache.commons.digester.Rule;
-import org.apache.commons.digester.annotations.spi.AnnotationRuleProviderFactory;
+import org.apache.commons.digester.annotations.DigesterLoaderHandler;
+import org.apache.commons.digester.annotations.DigesterLoadingException;
+import org.apache.commons.digester.annotations.spi.DigesterLoaderHandlerFactory;
 
 /**
- * Default {@link AnnotationRuleProviderFactory} inplementation.
+ * Default {@link DigesterLoaderHandlerFactory} implementation.
  *
  * @version $Id$
  * @since 2.1
  */
-final class DefaultAnnotationRuleProviderFactory implements AnnotationRuleProviderFactory {
+public final class DefaultDigesterLoaderHandlerFactory implements DigesterLoaderHandlerFactory {
 
     /**
      * {@inheritDoc}
      */
-    public <T extends AnnotationRuleProvider<? extends Annotation, ? extends AnnotatedElement, ? extends Rule>>
-            T newInstance(Class<T> type) throws DigesterLoadingException {
+    public <L extends DigesterLoaderHandler<? extends Annotation, ? extends AnnotatedElement>> L newInstance(
+            Class<L> type) throws DigesterLoadingException {
         try {
             return type.newInstance();
         } catch (Exception e) {

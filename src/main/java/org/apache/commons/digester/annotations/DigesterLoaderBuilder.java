@@ -16,6 +16,7 @@
  */
 package org.apache.commons.digester.annotations;
 
+import org.apache.commons.digester.annotations.internal.DefaultAnnotationRuleProviderFactory;
 import org.apache.commons.digester.annotations.spi.AnnotationRuleProviderFactory;
 
 /**

@@ -36,20 +36,6 @@ public final class RuleSetCache implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * The static instance reference.
-     */
-    private final static RuleSetCache INSTANCE = new RuleSetCache();
-
-    /**
-     * Returns the static instance reference.
-     *
-     * @return the static instance reference.
-     */
-    public static RuleSetCache getInstance() {
-        return INSTANCE;
-    }
-
-    /**
      * The fixed cache size.
      */
     private final int cacheSize = 255;
@@ -81,13 +67,6 @@ public final class RuleSetCache implements Serializable {
             return size() > cacheSize;
         }
     };
-
-    /**
-     * This class can't be instantiated.
-     */
-    private RuleSetCache() {
-        // do nothing
-    }
 
     /**
      * Returns true if this cache contains a mapping for the specified key.

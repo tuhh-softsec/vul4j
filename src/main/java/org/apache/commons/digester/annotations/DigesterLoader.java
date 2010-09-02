@@ -44,7 +44,7 @@ public final class DigesterLoader {
      * In-memory LRU cache that stores already analyzed classes and relative
      * {@link RuleSet}.
      */
-    private final RuleSetCache cachedRuleSet = RuleSetCache.getInstance();
+    private final RuleSetCache cachedRuleSet = new RuleSetCache();
 
     private final AnnotationRuleProviderFactory annotationRuleProviderFactory;
 
