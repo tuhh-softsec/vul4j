@@ -175,8 +175,6 @@
   </properties> 
 
   <build>
-    <testSourceDirectory>src/test</testSourceDirectory>
-
     <resources>
       <resource>
         <directory>.</directory>
@@ -197,7 +195,7 @@
 
     <testResources>
       <testResource>
-        <directory>src/test</directory>
+        <directory>src/test/resources</directory>
         <filtering>false</filtering>
         <includes>
           <include>**/*.xml</include>

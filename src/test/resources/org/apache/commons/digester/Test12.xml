@@ -17,7 +17,7 @@
  limitations under the License.
 -->
 
-<employee xml:base="src/test/org/apache/commons/digester/"
+<employee xml:base="src/test/resources/org/apache/commons/digester/"
           xmlns:xi="http://www.w3.org/2001/XInclude">
   <firstName>First Name</firstName>
   <lastName>Last Name</lastName>

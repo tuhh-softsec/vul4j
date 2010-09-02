@@ -42,7 +42,7 @@ public class TestEntityResolution {
         SAXParser parser = factory.newSAXParser();
         
         parser.parse(
-                    new File("src/test/org/apache/commons/digester/document-with-relative-dtd.xml"), 
+                    new File("src/test/resources/org/apache/commons/digester/document-with-relative-dtd.xml"), 
                     new DefaultHandler());
     }
 
@@ -51,6 +51,6 @@ public class TestEntityResolution {
         Digester digester = new Digester();
         digester.setValidating(true);
         digester.parse(
-                    new File("src/test/org/apache/commons/digester/document-with-relative-dtd.xml"));
+                    new File("src/test/resources/org/apache/commons/digester/document-with-relative-dtd.xml"));
     }
 }

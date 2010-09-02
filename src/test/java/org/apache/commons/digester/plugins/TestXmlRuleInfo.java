@@ -44,7 +44,7 @@ public class TestXmlRuleInfo {
         input.append(" <plugin");
         input.append("  id='testobject'"); 
         input.append("  class='org.apache.commons.digester.plugins.ObjectTestImpl'");
-        input.append("  file='src/test/org/apache/commons/digester/plugins/xmlrules1.xml'");
+        input.append("  file='src/test/resources/org/apache/commons/digester/plugins/xmlrules1.xml'");
         input.append("  />");
         input.append("  <object plugin-id='testobject'/>");
         input.append("</root>");
