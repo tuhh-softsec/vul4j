@@ -40,7 +40,6 @@ import org.apache.commons.logging.Log;
 public class LoaderFromStream extends RuleLoader {
 
     private byte[] input;
-    private FromXmlRuleSet ruleSet;
     
     /** See {@link #load}. */
     public LoaderFromStream(InputStream s) throws Exception {
