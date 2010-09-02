@@ -81,6 +81,11 @@
 			<name>Aurélien Loth</name>
 			<email>aurelien.loth@gmail.com</email>
 		</developer>
+		<developer>
+			<id>waddle</id>
+			<name>Philippe De Oliveira</name>
+			<url>http://www.philippedeoliveira.fr</url>
+		</developer>
 	</developers>
 	<scm>
 		<connection>scm:svn:https://webassembletool.svn.sourceforge.net/svnroot/webassembletool/trunk</connection>
