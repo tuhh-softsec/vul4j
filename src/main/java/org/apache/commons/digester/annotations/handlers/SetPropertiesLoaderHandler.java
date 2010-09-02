@@ -35,7 +35,8 @@ public final class SetPropertiesLoaderHandler implements DigesterLoaderHandler<S
      * {@inheritDoc}
      */
     public void handle(SetProperty annotation, Field element, FromAnnotationsRuleSet ruleSet) {
-        SetPropertiesRuleProvider ruleProvider = ruleSet.getProvider(annotation.pattern(), SetPropertiesRuleProvider.class);
+        SetPropertiesRuleProvider ruleProvider =
+            ruleSet.getProvider(annotation.pattern(), SetPropertiesRuleProvider.class);
 
         if (ruleProvider == null) {
             ruleProvider = new SetPropertiesRuleProvider();
