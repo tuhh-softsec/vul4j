@@ -182,7 +182,9 @@ public final class DigesterLoader {
      * @param element the current visited element.
      */
     @SuppressWarnings("unchecked")
-    private <A extends Annotation, E extends AnnotatedElement, R extends Rule> void handle(A annotation, E element, FromAnnotationsRuleSet ruleSet) {
+    private <A extends Annotation, E extends AnnotatedElement, R extends Rule> void handle(A annotation,
+            E element,
+            FromAnnotationsRuleSet ruleSet) {
         Class<?> annotationType = annotation.annotationType();
 
         // check if it is one of the @*.List annotation
@@ -198,7 +200,8 @@ public final class DigesterLoader {
             DigesterRule digesterRule = annotationType.getAnnotation(DigesterRule.class);
 
             if (DefaultLoaderHandler.class == digesterRule.handledBy()) {
-                Class<? extends AnnotationRuleProvider<A, E, R>> providerType = (Class<? extends AnnotationRuleProvider<A, E, R>>) digesterRule.providedBy();
+                Class<? extends AnnotationRuleProvider<A, E, R>> providerType =
+                    (Class<? extends AnnotationRuleProvider<A, E, R>>) digesterRule.providedBy();
                 ruleSet.addRuleProvider(AnnotationUtils.getAnnotationPattern(annotation),
                         providerType,
                         annotation,
