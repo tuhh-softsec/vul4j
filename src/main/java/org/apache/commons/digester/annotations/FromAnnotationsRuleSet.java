@@ -73,7 +73,8 @@ public final class FromAnnotationsRuleSet implements RuleSet {
     public void addRuleInstances(Digester digester) {
         String pattern;
         Rule rule;
-        for (Entry<String, List<AnnotationRuleProvider<Annotation, AnnotatedElement, Rule>>> entry : this.rules.entrySet()) {
+        for (Entry<String, List<AnnotationRuleProvider<Annotation, AnnotatedElement, Rule>>> entry :
+                this.rules.entrySet()) {
             pattern = entry.getKey();
             for (AnnotationRuleProvider<Annotation, AnnotatedElement, Rule> provider : entry.getValue()) {
                 rule = provider.get();
@@ -105,10 +106,12 @@ public final class FromAnnotationsRuleSet implements RuleSet {
      * @param annotation the current visited annotation.
      * @param element the current visited element.
      */
-    public <A extends Annotation, E extends AnnotatedElement, R extends Rule, T extends AnnotationRuleProvider<A, E, R>> void addRuleProvider(String pattern,
+    public <A extends Annotation, E extends AnnotatedElement, R extends Rule, T extends AnnotationRuleProvider<A, E, R>>
+        void addRuleProvider(String pattern,
             Class<T> klass,
             A annotation,
             E element) {
+
         T annotationRuleProvider =
             this.digesterLoader.getAnnotationRuleProviderFactory().newInstance(klass);
         annotationRuleProvider.init(annotation, element);
@@ -122,7 +125,8 @@ public final class FromAnnotationsRuleSet implements RuleSet {
      * @param ruleProvider the provider that builds the digester rule.
      */
     @SuppressWarnings("unchecked")
-    public void addRuleProvider(String pattern, AnnotationRuleProvider<? extends Annotation, ? extends AnnotatedElement, ? extends Rule> ruleProvider) {
+    public void addRuleProvider(String pattern,
+            AnnotationRuleProvider<? extends Annotation, ? extends AnnotatedElement, ? extends Rule> ruleProvider) {
         List<AnnotationRuleProvider<Annotation, AnnotatedElement, Rule>> rules;
 
         if (this.rules.containsKey(pattern)) {
@@ -145,7 +149,9 @@ public final class FromAnnotationsRuleSet implements RuleSet {
      * @return an {@link AnnotationRuleProvider} for the input pattern if found,
      *         null otherwise.
      */
-    public <T extends AnnotationRuleProvider<? extends Annotation, ? extends AnnotatedElement, ? extends Rule>> T getProvider(String pattern, Class<T> providerClass) {
+    public <T extends AnnotationRuleProvider<? extends Annotation, ? extends AnnotatedElement, ? extends Rule>>
+            T getProvider(String pattern, Class<T> providerClass) {
+
         if (!this.rules.containsKey(pattern)) {
             return null;
         }
