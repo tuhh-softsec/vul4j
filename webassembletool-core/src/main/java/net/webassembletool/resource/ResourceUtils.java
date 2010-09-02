@@ -109,16 +109,30 @@ public class ResourceUtils {
 		return url.toString();
 	}
 
+	private static boolean endsWith(String str, String suffix) {
+		if (str == null || suffix == null) {
+			return (str == null && suffix == null);
+		}
+		if (suffix.length() > str.length()) {
+			return false;
+		}
+		int strOffset = str.length() - suffix.length();
+		return str.regionMatches(false, strOffset, suffix, 0, suffix.length());
+	}
+
 	private final static String concatUrlForFile(String baseUrl, String relUrl) {
 		StringBuilder url = new StringBuilder();
 		if (baseUrl != null) {
-			if (StringUtils.endsWith(baseUrl, File.separator)) {
+			if (endsWith(baseUrl, File.separator)) {
 				url.append(baseUrl);
 			} else {
 				url.append(baseUrl).append(File.separator);
 			}
 		}
 		if (relUrl != null) {
+			if (relUrl.endsWith("/")) {
+				relUrl = relUrl.subSequence(0, relUrl.length() - 1) + "_";
+			}
 			String tmpRelUrl = StringUtils.replace(relUrl, "/", File.separator);
 			String[] relUrlTokens = StringUtils
 					.split(tmpRelUrl, File.separator);
@@ -141,11 +155,40 @@ public class ResourceUtils {
 
 	private static String cleanDirectoryFile(String urlToken) {
 		if (urlToken != null) {
-			String answer = urlToken.replaceAll("[^A-Za-z0-9\\-\\.]", "");
-			answer = StringUtils.abbreviate(answer, 20);
+			String answer = urlToken.replaceAll("[^A-Za-z0-9\\-\\._]", "");
+			answer = abbreviate(answer, 20);
 			return answer + "_" + urlToken.hashCode();
 		}
 		return "";
+	}
+
+	private static String abbreviate(String str, int maxWidth) {
+		int offset = 0;
+		if (str == null) {
+			return null;
+		}
+		if (maxWidth < 4) {
+			throw new IllegalArgumentException(
+					"Minimum abbreviation width is 4");
+		}
+		if (str.length() <= maxWidth) {
+			return str;
+		}
+
+		if ((str.length()) < (maxWidth - 3)) {
+			offset = str.length() - (maxWidth - 3);
+		}
+		if (offset <= 4) {
+			return str.substring(0, maxWidth - 3) + "...";
+		}
+		if (maxWidth < 7) {
+			throw new IllegalArgumentException(
+					"Minimum abbreviation width with offset is 7");
+		}
+		if ((offset + (maxWidth - 3)) < str.length()) {
+			return "..." + abbreviate(str.substring(offset), maxWidth - 3);
+		}
+		return "..." + str.substring(str.length() - (maxWidth - 3));
 	}
 
 	public final static String getHttpUrlWithQueryString(ResourceContext target) {
