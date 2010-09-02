@@ -516,8 +516,7 @@ public class BindRequestImpl extends AbstractAbandonableRequest implements BindR
                 }
                 else
                 {
-                    sb.append( "            Credentials : '" ).append( StringTools.utf8ToString( credentials ) )
-                        .append( '/' ).append( StringTools.dumpBytes( credentials ) ).append( "'\n" );
+                    sb.append( "            Credentials : (omitted-for-safety)" );
                 }
             }
         }
