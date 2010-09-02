@@ -26,7 +26,8 @@ import org.apache.commons.digester.annotations.rules.ObjectCreate;
  *
  * @since 2.1
  */
-public final class ObjectCreateRuleProvider implements AnnotationRuleProvider<ObjectCreate, Class<?>, ObjectCreateRule> {
+public final class ObjectCreateRuleProvider
+        implements AnnotationRuleProvider<ObjectCreate, Class<?>, ObjectCreateRule> {
 
     private Class<?> clazz;
 
