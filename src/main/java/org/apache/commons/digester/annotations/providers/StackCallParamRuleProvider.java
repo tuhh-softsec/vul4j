@@ -28,7 +28,8 @@ import org.apache.commons.digester.annotations.rules.StackCallParam;
  * @see {@link CallParamRule#CallParamRule(int, int)}
  * @since 2.1
  */
-public final class StackCallParamRuleProvider implements AnnotationRuleProvider<StackCallParam, MethodArgument, CallParamRule> {
+public final class StackCallParamRuleProvider
+        implements AnnotationRuleProvider<StackCallParam, MethodArgument, CallParamRule> {
 
     private int paramIndex;
 
