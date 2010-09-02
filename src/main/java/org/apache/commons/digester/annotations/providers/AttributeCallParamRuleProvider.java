@@ -28,7 +28,8 @@ import org.apache.commons.digester.annotations.rules.AttributeCallParam;
  * @see {@link CallParamRule#CallParamRule(int, java.lang.String)}
  * @since 2.1
  */
-public final class AttributeCallParamRuleProvider implements AnnotationRuleProvider<AttributeCallParam, MethodArgument, CallParamRule> {
+public final class AttributeCallParamRuleProvider
+        implements AnnotationRuleProvider<AttributeCallParam, MethodArgument, CallParamRule> {
 
     private String attribute;
 
