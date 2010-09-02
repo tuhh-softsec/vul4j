@@ -53,7 +53,9 @@ public final class RuleSetCache implements Serializable {
     /**
      * The map that implements the LRU cache.
      */
-    private final Map<Class<?>, FromAnnotationsRuleSet> data = new LinkedHashMap<Class<?>, FromAnnotationsRuleSet>(capacity, loadFactor) {
+    private final Map<Class<?>, FromAnnotationsRuleSet> data =
+        new LinkedHashMap<Class<?>, FromAnnotationsRuleSet>(capacity, loadFactor) {
+
         /**
          * This class serialVersionUID.
          */
