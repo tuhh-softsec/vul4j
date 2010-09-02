@@ -106,13 +106,18 @@ public final class MethodHandler implements DigesterLoaderHandler<Annotation, Me
     }
 
     @SuppressWarnings("unchecked")
-    private <A extends Annotation, R extends Rule> void doHandle(A methodAnnotation, Annotation annotation, Method method, Class<?> type, FromAnnotationsRuleSet ruleSet) {
+    private <A extends Annotation, R extends Rule> void doHandle(A methodAnnotation,
+            Annotation annotation,
+            Method method,
+            Class<?> type,
+            FromAnnotationsRuleSet ruleSet) {
         if (annotation.annotationType().isAnnotationPresent(DigesterRule.class)
                 && annotation.annotationType().isAnnotationPresent(CreationRule.class)) {
             ruleSet.addRules(type);
 
             DigesterRule digesterRule = methodAnnotation.annotationType().getAnnotation(DigesterRule.class);
-            Class<? extends AnnotationRuleProvider<A, Method, R>> providerType = (Class<? extends AnnotationRuleProvider<A, Method, R>>) digesterRule.providedBy();
+            Class<? extends AnnotationRuleProvider<A, Method, R>> providerType =
+                (Class<? extends AnnotationRuleProvider<A, Method, R>>) digesterRule.providedBy();
             ruleSet.addRuleProvider(AnnotationUtils.getAnnotationPattern(annotation),
                     providerType,
                     methodAnnotation,
