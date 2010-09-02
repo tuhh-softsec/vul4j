@@ -51,7 +51,8 @@ public @interface DigesterRule {
      *
      * @return
      */
-    Class<? extends DigesterLoaderHandler<? extends Annotation, ? extends AnnotatedElement>> handledBy() default DefaultLoaderHandler.class;
+    Class<? extends DigesterLoaderHandler<? extends Annotation, ? extends AnnotatedElement>>
+        handledBy() default DefaultLoaderHandler.class;
 
     /**
      * Define the {@link AnnotationRuleProvider} that builds the {@link Rule}
@@ -59,6 +60,7 @@ public @interface DigesterRule {
      *
      * @return the {@link AnnotationRuleProvider}.
      */
-    Class<? extends AnnotationRuleProvider<? extends Annotation, ? extends AnnotatedElement, ? extends Rule>> providedBy();
+    Class<? extends AnnotationRuleProvider<? extends Annotation, ? extends AnnotatedElement, ? extends Rule>>
+        providedBy();
 
 }
