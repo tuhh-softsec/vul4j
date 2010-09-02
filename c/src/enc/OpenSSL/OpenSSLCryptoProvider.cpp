@@ -426,19 +426,22 @@ bool OpenSSLCryptoProvider::algorithmSupported(XSECCryptoHash::HashType alg) con
 
 	case (XSECCryptoHash::HASH_SHA1) :
 	case (XSECCryptoHash::HASH_MD5) :
-
 		return true;
 
 	case (XSECCryptoHash::HASH_SHA224) :
 	case (XSECCryptoHash::HASH_SHA256) :
+#if defined(XSEC_OPENSSL_HAVE_SHA2) && !defined(OPENSSL_NO_SHA256)
+	    return true;
+#else
+        return false;
+#endif
+
 	case (XSECCryptoHash::HASH_SHA384) :
 	case (XSECCryptoHash::HASH_SHA512) :
-
-		return 
-#if defined (SHA512_DIGEST_LENGTH) && !defined (OPENSSL_NO_SHA512)
-			true;
+#if defined(XSEC_OPENSSL_HAVE_SHA2) && !defined(OPENSSL_NO_SHA512)
+		return true;
 #else
-			false;
+		return false;
 #endif
 
 	default:

@@ -200,6 +200,7 @@
 #	endif
 #	if (OPENSSL_VERSION_NUMBER >= 0x00908000)
 #		define XSEC_OPENSSL_D2IX509_CONST_BUFFER
+#       define XSEC_OPENSSL_HAVE_SHA2
 #	endif
 
 #endif
