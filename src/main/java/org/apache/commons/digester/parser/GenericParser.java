@@ -24,9 +24,7 @@ import java.util.Properties;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-import javax.xml.validation.Schema;
 
-import org.apache.commons.digester.Digester;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xml.sax.SAXException;
@@ -38,8 +36,8 @@ import org.xml.sax.SAXNotRecognizedException;
  * @since 1.6
  * @deprecated Create an XMLParser instance yourself, configure validation
  *             appropriately, and pass it as a parameter to the
- *             {@link Digester} constructor, or use
- *             {@link Digester#setXMLSchema(Schema)} for validation.
+ *             {@link org.apache.commons.digester.Digester} constructor, or use
+ *             {@link org.apache.commons.digester.Digester#setXMLSchema(javax.xml.validation.Schema)} for validation.
  */
 
 @Deprecated
