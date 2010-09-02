@@ -27,7 +27,8 @@ import org.apache.commons.digester.annotations.rules.PathCallParam;
  *
  * @since 2.1
  */
-public final class PathCallParamRuleProvider implements AnnotationRuleProvider<PathCallParam, MethodArgument, PathCallParamRule> {
+public final class PathCallParamRuleProvider
+        implements AnnotationRuleProvider<PathCallParam, MethodArgument, PathCallParamRule> {
 
     private int index;
 
