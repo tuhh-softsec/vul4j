@@ -78,14 +78,10 @@ public class FinderFromDfltClass extends RuleFinder {
         try {
             rulesClass = digester.getClassLoader().loadClass(rulesClassName);
         } catch(ClassNotFoundException cnfe) {
-            // ok, ignore
-        }
-
-        if (rulesClass == null) {
             // nope, no rule-info class in the classpath
             return null;
         }
-        
+
         if (methodName == null) {
             methodName = DFLT_METHOD_NAME;
         }
