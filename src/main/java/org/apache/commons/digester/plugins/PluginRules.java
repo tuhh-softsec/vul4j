@@ -283,25 +283,24 @@ public class PluginRules implements Rules {
             pattern = pattern.substring(1);
         }
 
-        if (mountPoint != null) {
-            if (!pattern.equals(mountPoint)
-              && !pattern.startsWith(mountPoint + "/")) {
-                // This can only occur if a plugin attempts to add a
-                // rule with a pattern that doesn't start with the
-                // prefix passed to the addRules method. Plugins mustn't
-                // add rules outside the scope of the tag they were specified
-                // on, so refuse this.
-                
-                // alas, can't throw exception
-                log.warn(
-                    "An attempt was made to add a rule with a pattern that"
-                    + "is not at or below the mountpoint of the current"
-                    + " PluginRules object."
-                    + " Rule pattern: " + pattern
-                    + ", mountpoint: " + mountPoint
-                    + ", rule type: " + rule.getClass().getName());
-                return;
-            }
+        if (mountPoint != null
+                && !pattern.equals(mountPoint)
+                && !pattern.startsWith(mountPoint + "/")) {
+            // This can only occur if a plugin attempts to add a
+            // rule with a pattern that doesn't start with the
+            // prefix passed to the addRules method. Plugins mustn't
+            // add rules outside the scope of the tag they were specified
+            // on, so refuse this.
+            
+            // alas, can't throw exception
+            log.warn(
+                "An attempt was made to add a rule with a pattern that"
+                + "is not at or below the mountpoint of the current"
+                + " PluginRules object."
+                + " Rule pattern: " + pattern
+                + ", mountpoint: " + mountPoint
+                + ", rule type: " + rule.getClass().getName());
+            return;
         }
         
         decoratedRules.add(pattern, rule);
