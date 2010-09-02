@@ -59,7 +59,8 @@ public final class DigesterLoaderBuilder {
      *        {@link AnnotationRuleProviderFactory} implementation.
      * @return the next chained builder.
      */
-    public FromAnnotationRuleProviderFactory useAnnotationRuleProviderFactory(AnnotationRuleProviderFactory annotationRuleProviderFactory) {
+    public FromAnnotationRuleProviderFactory
+            useAnnotationRuleProviderFactory(AnnotationRuleProviderFactory annotationRuleProviderFactory) {
         if (annotationRuleProviderFactory == null) {
             throw new IllegalArgumentException("Parameter 'annotationRuleProviderFactory' must be not null");
         }
