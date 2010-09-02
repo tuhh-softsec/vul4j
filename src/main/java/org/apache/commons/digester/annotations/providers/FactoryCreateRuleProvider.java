@@ -26,7 +26,8 @@ import org.apache.commons.digester.annotations.rules.FactoryCreate;
  *
  * @since 2.1
  */
-public final class FactoryCreateRuleProvider implements AnnotationRuleProvider<FactoryCreate, Class<?>, FactoryCreateRule> {
+public final class FactoryCreateRuleProvider
+        implements AnnotationRuleProvider<FactoryCreate, Class<?>, FactoryCreateRule> {
 
     private Class<?> factoryClass;
 
