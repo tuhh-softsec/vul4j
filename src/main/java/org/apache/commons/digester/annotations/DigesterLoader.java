@@ -1,4 +1,5 @@
-/*
+/* $Id$
+ *
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -35,7 +36,6 @@ import org.apache.commons.digester.annotations.utils.AnnotationUtils;
  * This class manages the creation of Digester instances analyzing target classes
  * annotated with digester annotations.
  *
- * @version $Id$
  * @since 2.1
  */
 public final class DigesterLoader {

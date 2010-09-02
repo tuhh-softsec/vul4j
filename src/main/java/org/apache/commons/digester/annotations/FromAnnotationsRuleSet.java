@@ -1,4 +1,5 @@
-/*
+/* $Id$
+ *
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -34,7 +35,6 @@ import org.apache.commons.digester.RuleSet;
  * A {@link RuleSet} implementation that's able to inject {@link Rule}s created
  * with the annotations analysis.
  *
- * @version $Id$
  * @since 2.1
  */
 public final class FromAnnotationsRuleSet implements RuleSet {

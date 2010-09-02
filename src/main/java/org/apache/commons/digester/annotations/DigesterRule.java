@@ -1,4 +1,5 @@
-/*
+/* $Id$
+ *
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -30,7 +31,6 @@ import org.apache.commons.digester.annotations.handlers.DefaultLoaderHandler;
 /**
  * Meta-annotation that marks an annotation as part of commons-digester.
  *
- * @version $Id$
  * @since 2.1
  */
 @Documented

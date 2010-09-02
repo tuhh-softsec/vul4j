@@ -1,4 +1,5 @@
-/*
+/* $Id$
+ *
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -25,7 +26,6 @@ import java.lang.reflect.AnnotatedElement;
  * {@link DigesterLoaderHandler#handle(Annotation, AnnotatedElement, FromAnnotationsRuleSet)}
  * method.
  *
- * @version $Id$
  * @since 2.1
  */
 public interface DigesterLoaderHandler<A extends Annotation, E extends AnnotatedElement> {

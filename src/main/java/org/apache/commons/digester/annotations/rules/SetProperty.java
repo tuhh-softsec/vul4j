@@ -1,4 +1,5 @@
-/*
+/* $Id$
+ *
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -32,7 +33,6 @@ import org.apache.commons.digester.annotations.providers.SetPropertiesRuleProvid
  * Fields annotated with {@code SetProperty} will be bound
  * with {@code SetPropertiesRule} digester rule.
  *
- * @version $Id$
  * @see {@link org.apache.commons.digester.Digester#addSetProperties(String, String[], String[])}
  * @since 2.1
  */

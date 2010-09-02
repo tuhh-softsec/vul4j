@@ -1,4 +1,5 @@
-/*
+/* $Id$
+ *
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -31,7 +32,6 @@ import org.apache.commons.digester.annotations.providers.PathCallParamRuleProvid
  * Methods arguments annotated with {@code PathCallParam} will be bound
  * with {@code PathCallParamRule} digester rule.
  *
- * @version $Id$
  * @see {@link org.apache.commons.digester.Digester#addCallParamPath(String, int)}
  * @since 2.1
  */

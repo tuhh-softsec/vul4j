@@ -1,4 +1,5 @@
-/*
+/* $Id$
+ *
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -28,7 +29,6 @@ import org.apache.commons.digester.annotations.rules.SetProperty;
 /**
  * Provides instances of {@code SetPropertiesRule}.
  *
- * @version $Id$
  * @since 2.1
  */
 public final class SetPropertiesRuleProvider implements AnnotationRuleProvider<SetProperty, Field, SetPropertiesRule> {
