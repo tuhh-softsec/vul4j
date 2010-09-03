@@ -133,6 +133,9 @@ public class ResourceUtils {
 			if (relUrl.endsWith("/")) {
 				relUrl = relUrl.subSequence(0, relUrl.length() - 1) + "_";
 			}
+			if ("".equals(relUrl)) {
+				relUrl = "__";
+			}
 			String tmpRelUrl = StringUtils.replace(relUrl, "/", File.separator);
 			String[] relUrlTokens = StringUtils
 					.split(tmpRelUrl, File.separator);
@@ -141,6 +144,9 @@ public class ResourceUtils {
 			}
 			for (int i = 0; i < relUrlTokens.length; i++) {
 				String relUrlToken = relUrlTokens[i];
+				if (i < relUrlTokens.length - 1) {
+					url.append("dir_");
+				}
 				url.append(cleanDirectoryFile(relUrlToken));
 				if (i < relUrlTokens.length - 1) {
 					url.append(File.separator);

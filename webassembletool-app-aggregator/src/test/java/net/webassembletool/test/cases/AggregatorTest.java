@@ -208,6 +208,18 @@ public class AggregatorTest extends TestCase {
 		doSimpleTest("templateFromDisk.html", "template.html");
 	}
 
+	public void testTemplateFromDiskMixedEncoding() throws Exception {
+		doSimpleTest("testTemplateFromDiskMixedEncoding",
+				"testTemplateFromDiskMixedEncoding.html");
+	}
+
+	// Test la récupération depuis le cache disque
+	public void testTemplateFromDiskWithDirectoryAndFile() throws Exception {
+		doSimpleTest("testDirAndFile", "template.html");
+		doSimpleTest("testDirAndFile/", "template.html");
+		doSimpleTest("testDirAndFile/file", "template.html");
+	}
+
 	public void testTemplateWithParams() throws Exception {
 		/*
 		 * Ensure aggregator "template" params are not forwarded to the backend

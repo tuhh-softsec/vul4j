@@ -78,10 +78,10 @@ public class FileResource extends Resource {
 				output.addHeader(header.getKey(), header.getValue());
 			}
 		}
-		String charset = output.getHeader("content-encoding");
-		if (charset != null) {
-			output.setCharsetName(charset);
-		}
+		// String charset = output.getHeader("content-encoding");
+		// if (charset != null) {
+		// output.setCharsetName(charset);
+		// }
 		if (file != null) {
 			InputStream inputStream = new FileInputStream(file);
 			try {

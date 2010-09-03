@@ -16,62 +16,63 @@ import net.webassembletool.output.OutputException;
  * 
  */
 public class FileOutput extends Output {
-    private final File file;
-    private final File headerFile;
-    private FileOutputStream fileOutputStream;
+	private final File file;
+	private final File headerFile;
+	private FileOutputStream fileOutputStream;
 
-    public FileOutput(String url) {
-	file = new File(url);
-	headerFile = new File(url + ".headers");
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void open() {
-	try {
-	    if (!file.exists()) {
-		file.getParentFile().mkdirs();
-		file.createNewFile();
-	    }
-	    fileOutputStream = new FileOutputStream(file);
-	} catch (IOException e) {
-	    throw new OutputException("Could not create file: " + file.toURI(),
-		    e);
+	public FileOutput(String url) {
+		file = new File(url);
+		headerFile = new File(url + ".headers");
 	}
-    }
 
-    /** {@inheritDoc} */
-    @Override
-    public OutputStream getOutputStream() {
-	return fileOutputStream;
-    }
+	/** {@inheritDoc} */
+	@Override
+	public void open() {
+		try {
+			if (!file.exists()) {
+				file.getParentFile().mkdirs();
+				file.createNewFile();
+			}
+			fileOutputStream = new FileOutputStream(file);
+		} catch (IOException e) {
+			throw new OutputException("Could not create file: " + file.toURI(),
+					e);
+		}
+	}
 
-    /** {@inheritDoc} */
-    @Override
-    public void close() {
-	try {
-	    // In case the file could not be written, fileOutputStream might be
-	    // null
-	    if (fileOutputStream != null)
-		fileOutputStream.close();
-	    fileOutputStream = null;
-	} catch (IOException e) {
-	    throw new OutputException("Could not close file: " + file.toURI(),
-		    e);
+	/** {@inheritDoc} */
+	@Override
+	public OutputStream getOutputStream() {
+		return fileOutputStream;
 	}
-	try {
-	    FileOutputStream headers = new FileOutputStream(headerFile);
-	    addHeader(Integer.toString(getStatusCode()), getStatusMessage());
-	    getHeaders().store(headers, "Headers");
-	    headers.close();
-	} catch (IOException e) {
-	    throw new OutputException("Could write to file: "
-		    + headerFile.toURI(), e);
+
+	/** {@inheritDoc} */
+	@Override
+	public void close() {
+		try {
+			// In case the file could not be written, fileOutputStream might be
+			// null
+			if (fileOutputStream != null) {
+				fileOutputStream.close();
+			}
+			fileOutputStream = null;
+		} catch (IOException e) {
+			throw new OutputException("Could not close file: " + file.toURI(),
+					e);
+		}
+		try {
+			FileOutputStream headers = new FileOutputStream(headerFile);
+			addHeader(Integer.toString(getStatusCode()), getStatusMessage());
+			getHeaders().store(headers, "Headers");
+			headers.close();
+		} catch (IOException e) {
+			throw new OutputException("Could not write to file: "
+					+ headerFile.toURI(), e);
+		}
 	}
-    }
-    
-    public void delete() {
-    	file.delete();
-    	headerFile.delete();
-    }
+
+	public void delete() {
+		file.delete();
+		headerFile.delete();
+	}
 }

@@ -639,7 +639,7 @@ public class Driver {
 			if (cachedResource != null) {
 				cachedResource.release();
 			}
-			if (memoryOutput != null) {
+			if (memoryOutput != null && cache != null) {
 				cache.put(resourceContext, memoryOutput.toResource());
 			}
 			if (httpResource != null) {
