@@ -18,118 +18,72 @@ $Id$
 
 
                           Commons Digester Package
-                                Version 2.0
+                                Version 2.1
                                Release Notes
 
 
 INTRODUCTION
 ============
 
-This is a major release. New projects are encouraged to use this release
-of digester. There are breaking changes from Digester 1.8, see release notes
-in detail before choosing to upgrade. There is no urgency for existing
-projects to upgrade; Digester 1.8 has proven to be a stable release.
+This is a minor release with new features. New projects are encouraged to use this release
+of digester. There is no urgency for existing
+projects to upgrade; Digester 2.0 has proven to be a stable release.
 
 IMPORTANT NOTES
 ================
 
 BREAKING CHANGES:
 
- * The minimum JDK requirement is now JDK 1.5. The provided binaries will not
-   work on lower JDKs. The source has been updated to leverage Generics and
-   other JDK 1.5 features where possible, and requires JDK 1.5 to compile.
+ * This release eliminates the Apache Ant build support. Apache Maven 2 is
+   required to build this release of Digester;
 
- * This release eliminates all dependencies on Commons Collections classes.
-   Previously, ArrayStack was used in the Digester implementation and was
-   exposed via protected fields or inner classes of the following classes:
-     org.apache.commons.digester.Digester,
-     org.apache.commons.digester.CallParamRule, and
-     org.apache.commons.digester.xmlrules.DigesterRuleParser
-   These classes now use java.util.Stack instead. Any subclasses of the above
-   using protected ArrayStack members will require appropriate migration to
-   use java.util.Stack instead before they can be used with version 2.0.
+ * The project structure has been moved to the default Apache Maven
+   archetype structure;
+
+ * Tests have been migrated from JUnit 3.X to JUnit 4.X.
 
 OTHER IMPORTANT CHANGES:
 
- * The legacy schema support has been deprecated in favor of
-   javax.xml.validation.Schema support.
+ * The project documentation is no more present in the Javadoc but rather
+   in the generated Digester site, under the menu 'Users Guide'.
 
 DEPENDENCIES
 =============
 
-Digester 2.0 users should upgrade to the recommended dependency set below
+Digester 2.1 users should upgrade to the recommended dependency set below
 where possible.
 
-The Recommended Dependency Set for Digester 2.0 is:
-   Digester 2.0 + Logging 1.1.1 + BeanUtils 1.8.0
+The Recommended Dependency Set for Digester 2.1 is:
+   Digester 2.0 + Logging 1.1.1 + BeanUtils 1.8.3
 
 It is also possible to use Logging 1.0.x or BeanUtils 1.7.0 instead.
 
 NEW FEATURES
 =============
 
- * XML SCHEMA SUPPORT
-       Support for XML Schema validation using javax.xml.validation.Schema
-       has been added to Digester. See Digester class Javadoc, and
-       Digester#setSchema(javax.xml.validation.Schema) method.
-       This allows usage of W3C XML Schema, Relax NG and Schematron for
-       validation of XML documents.
-       The legacy schema support has been deprecated (details below).
-
- * XINCLUDE AWARENESS
-       The underlying SAXParser factory can now be easily configured to be
-       XInclude aware. This allows for general purpose inclusion of XML or
-       text documents, for example, and facilitates document modularity. For
-       more details on XInclude, see: http://www.w3.org/TR/xinclude/
+ * JAVA5 ANNOTATIONS SUPPORT
+       Added a new package 'annotations' that provides for Java5 Annotations
+       meta data-based definition of rules for Digester.
+       This improves maintainability of both Java code and XML documents, as
+       rules are now defined in POJOs and generating Digester
+       parsers at run-time, avoiding manual updates.
 
 BUGS FROM PREVIOUS RELEASE
 ===========================
 
- * [DIGESTER-122] Potential NullPointerException if debug is enabled in
-                  Digester#resolveEntity()
-
- * [DIGESTER-126] Potential NullPointerException if debug is enabled in
-                  FactoryCreateRule#begin()
+ * none.
 
 IMPROVEMENTS OVER PREVIOUS RELEASE
 ===================================
 
- * [DIGESTER-111] Null arguments to all Digester#parse() methods now an
-                  IllegalArgumentException.
-
- * 'serialVersionUID' fields have been added to Serializable classes.
+ * none.
 
 DEPRECATIONS
 ============
 
- * org.apache.commons.digester.Digester#schemaLanguage and
-   org.apache.commons.digester.Digester#schemaLocation
-
-    Use org.apache.commons.digester.Digester#schema instead.
-
- * org.apache.commons.digester.Digester#getSchemaLanguage(),
-   org.apache.commons.digester.Digester#setSchemaLanguage(String),
-   org.apache.commons.digester.Digester#getSchemaLocation(), and
-   org.apache.commons.digester.Digester#setSchemaLocation(String)
-
-    Use org.apache.commons.digester.Digester#getSchema() and
-    org.apache.commons.digester.Digester#setSchema(javax.xml.validation.Schema)
-    instead.
-
- * org.apache.commons.digester.ParserFeatureSetterFactory
-
-    Switch to javax.xml.validation.Schema validation via Digester class
-    instead.
-
- * org.apache.commons.digester.parsers package; classes
-   org.apache.commons.digester.parsers.GenericParser and
-   org.apache.commons.digester.parsers.XercesParser
-
-    Switch to javax.xml.validation.Schema validation via Digester class
-    instead.
+ * none.
 
 OTHER NOTES
 ============
 
- * This is the first Digester release using Maven 2.
-
+ * This is the first Digester release oriented to be built by Apache Maven only.
