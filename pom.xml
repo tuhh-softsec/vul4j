@@ -282,9 +282,9 @@
         <artifactId>maven-checkstyle-plugin</artifactId>
         <version>2.1</version>
         <configuration>
-          <configLocation>${basedir}/checkstyle.xml</configLocation>
+          <configLocation>${basedir}/src/main/config/checkstyle.xml</configLocation>
           <enableRulesSummary>false</enableRulesSummary>
-          <headerFile>${basedir}/file-header.txt</headerFile>
+          <headerFile>${basedir}/src/main/config/file-header.txt</headerFile>
         </configuration>
       </plugin>
       <plugin>
