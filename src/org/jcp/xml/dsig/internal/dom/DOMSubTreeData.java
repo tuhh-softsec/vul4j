@@ -41,17 +41,15 @@ import org.w3c.dom.Node;
 public class DOMSubTreeData implements NodeSetData {
 
     private boolean excludeComments;
-    private Iterator ni;
     private Node root;
 
     public DOMSubTreeData(Node root, boolean excludeComments) {
 	this.root = root;
-	this.ni = new DelayedNodeIterator(root, excludeComments);
 	this.excludeComments = excludeComments;
     }
 
     public Iterator iterator() {
-	return ni;
+	return new DelayedNodeIterator(root, excludeComments);
     }
 
     public Node getRoot() {
