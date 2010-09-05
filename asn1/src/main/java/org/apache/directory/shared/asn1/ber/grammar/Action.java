@@ -20,7 +20,7 @@
 package org.apache.directory.shared.asn1.ber.grammar;
 
 
-import org.apache.directory.shared.asn1.ber.IAsn1Container;
+import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 
 
@@ -38,5 +38,5 @@ public interface Action
      * @param container The container which stores the current data
      * @throws DecoderException Thrown if something went wrong.
      */
-    void action( IAsn1Container container ) throws DecoderException;
+    void action( Asn1Container container ) throws DecoderException;
 }

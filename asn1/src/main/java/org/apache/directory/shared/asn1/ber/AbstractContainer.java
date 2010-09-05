@@ -33,7 +33,7 @@ import org.apache.directory.shared.asn1.ber.tlv.TLVStateEnum;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public abstract class AbstractContainer implements IAsn1Container
+public abstract class AbstractContainer implements Asn1Container
 {
     /** All the possible grammars */
     protected Grammar grammar;
@@ -67,8 +67,8 @@ public abstract class AbstractContainer implements IAsn1Container
 
     /** The incremental id used to tag TLVs */
     private int id = 0;
-    
-    
+
+
     /**
      * Creates a new instance of AbstractContainer with a starting state.
      *
@@ -78,7 +78,7 @@ public abstract class AbstractContainer implements IAsn1Container
         state = TLVStateEnum.TAG_STATE_START;
     }
 
-    
+
     /**
      * Get the current grammar
      * 
@@ -222,8 +222,8 @@ public abstract class AbstractContainer implements IAsn1Container
         transition = 0;
         state = TLVStateEnum.TAG_STATE_START;
     }
-    
-    
+
+
     /**
      * Return a new ID and increment the counter
      * @return A new TLV id. 
@@ -233,7 +233,7 @@ public abstract class AbstractContainer implements IAsn1Container
         return id++;
     }
 
-    
+
     /**
      * @return The TLV Id
      */
@@ -262,8 +262,8 @@ public abstract class AbstractContainer implements IAsn1Container
     {
         decodeBytes += nb;
     }
-    
-    
+
+
     /**
      * @return The maximum PDU size.
      */
@@ -271,8 +271,8 @@ public abstract class AbstractContainer implements IAsn1Container
     {
         return maxPDUSize;
     }
-    
-    
+
+
     /**
      * Set the maximum PDU size.
      * @param maxPDUSize The maximum PDU size (if negative or null, will be

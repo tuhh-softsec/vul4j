@@ -20,7 +20,7 @@
 package org.apache.directory.shared.ldap.codec.extended.operations.certGeneration;
 
 
-import org.apache.directory.shared.asn1.ber.IAsn1Container;
+import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.AbstractGrammar;
 import org.apache.directory.shared.asn1.ber.grammar.Grammar;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
@@ -87,7 +87,7 @@ public class CertGenerationGrammar extends AbstractGrammar
             States.INIT_GRAMMAR_STATE, CertGenerationStatesEnum.CERT_GENERATION_REQUEST_SEQUENCE_STATE,
             UniversalTag.SEQUENCE.getValue(), new GrammarAction( "Init CertGenerationObject" )
             {
-                public void action( IAsn1Container container )
+                public void action( Asn1Container container )
                 {
                     CertGenerationContainer certGenContainer = ( CertGenerationContainer ) container;
                     CertGenerationObject certGenerationObject = new CertGenerationObject();
@@ -108,7 +108,7 @@ public class CertGenerationGrammar extends AbstractGrammar
             CertGenerationStatesEnum.CERT_GENERATION_REQUEST_SEQUENCE_STATE, CertGenerationStatesEnum.TARGETDN_STATE,
             UniversalTag.OCTET_STRING.getValue(), new GrammarAction( "Set Cert Generation target DN value" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     CertGenerationContainer CertGenContainer = ( CertGenerationContainer ) container;
                     Value value = CertGenContainer.getCurrentTLV().getValue();
@@ -154,7 +154,7 @@ public class CertGenerationGrammar extends AbstractGrammar
             CertGenerationStatesEnum.TARGETDN_STATE, CertGenerationStatesEnum.ISSUER_STATE, UniversalTag.OCTET_STRING.getValue(),
             new GrammarAction( "Set Cert Generation issuer DN value" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     CertGenerationContainer CertGenContainer = ( CertGenerationContainer ) container;
                     Value value = CertGenContainer.getCurrentTLV().getValue();
@@ -194,7 +194,7 @@ public class CertGenerationGrammar extends AbstractGrammar
             CertGenerationStatesEnum.ISSUER_STATE, CertGenerationStatesEnum.SUBJECT_STATE, UniversalTag.OCTET_STRING.getValue(),
             new GrammarAction( "Set Cert Generation subject DN value" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     CertGenerationContainer CertGenContainer = ( CertGenerationContainer ) container;
                     Value value = CertGenContainer.getCurrentTLV().getValue();
@@ -239,7 +239,7 @@ public class CertGenerationGrammar extends AbstractGrammar
             CertGenerationStatesEnum.SUBJECT_STATE, CertGenerationStatesEnum.KEY_ALGORITHM_STATE,
             UniversalTag.OCTET_STRING.getValue(), new GrammarAction( "Set Cert Generation key algorithm value" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     CertGenerationContainer CertGenContainer = ( CertGenerationContainer ) container;
                     Value value = CertGenContainer.getCurrentTLV().getValue();

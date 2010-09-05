@@ -63,7 +63,7 @@ public class Value implements Serializable
 
     /** Integer limits for encoding : 0x7F */
     private static final int ONE_BYTE_MAX = ( 1 << 7 ) - 1;
-    
+
     /** Integer limits for encoding : -0x7F */
     private static final int ONE_BYTE_MIN = -( 1 << 7 );
 
@@ -83,25 +83,26 @@ public class Value implements Serializable
     private static final long FOUR_BYTE_MAX = ( 1L << 31 ) - 1L;
 
     /** Integer limits for encoding : -0x7FFFFFFF */
-    private static final long FOUR_BYTE_MIN = -( 1L << 31 ); 
+    private static final long FOUR_BYTE_MIN = -( 1L << 31 );
 
     /** Integer limits for encoding : 0x7FFFFFFFFF */
     private static final long FIVE_BYTE_MAX = ( 1L << 39 ) - 1L;
 
     /** Integer limits for encoding : -0x7FFFFFFFFF */
-    private static final long FIVE_BYTE_MIN = -( 1L << 39 ); 
+    private static final long FIVE_BYTE_MIN = -( 1L << 39 );
 
     /** Integer limits for encoding : 0x7FFFFFFFFFFF */
     private static final long SIX_BYTE_MAX = ( 1L << 47 ) - 1L;
 
     /** Integer limits for encoding : -0x7FFFFFFFFFFF */
-    private static final long SIX_BYTE_MIN = -( 1L << 47 ); 
+    private static final long SIX_BYTE_MIN = -( 1L << 47 );
 
     /** Integer limits for encoding : 0x7FFFFFFFFFFF */
     private static final long SEVEN_BYTE_MAX = ( 1L << 55 ) - 1L;
 
     /** Integer limits for encoding : -0x7FFFFFFFFFFF */
-    private static final long SEVEN_BYTE_MIN = -( 1L << 55 ); 
+    private static final long SEVEN_BYTE_MIN = -( 1L << 55 );
+
 
     /**
      * Creates a new Value from a byte[]
@@ -353,11 +354,11 @@ public class Value implements Serializable
                 bytes[1] = ( byte ) ( value >> 16 );
                 bytes[0] = ( byte ) ( value >> 24 );
             }
-            else 
+            else
             {
                 // We have to compute the complement, and add 1
                 //value = ( ~value ) + 1;
-                
+
                 if ( value >= 0xFFFFFF80 )
                 {
                     bytes = new byte[1];
@@ -372,7 +373,7 @@ public class Value implements Serializable
                 else if ( value >= 0xFF800000 )
                 {
                     bytes = new byte[3];
-                    bytes[2] = ( byte ) value ;
+                    bytes[2] = ( byte ) value;
                     bytes[1] = ( byte ) ( value >> 8 );
                     bytes[0] = ( byte ) ( value >> 16 );
                 }
@@ -545,11 +546,11 @@ public class Value implements Serializable
                 bytes[1] = ( byte ) 0x00;
                 bytes[0] = ( byte ) 0x80;
             }
-            else 
+            else
             {
                 // We have to compute the complement, and add 1
                 // value = ( ~value ) + 1;
-                
+
                 if ( value >= 0xFFFFFFFFFFFFFF80L )
                 {
                     bytes = new byte[1];
@@ -564,7 +565,7 @@ public class Value implements Serializable
                 else if ( value >= 0xFFFFFFFFFF800000L )
                 {
                     bytes = new byte[3];
-                    bytes[2] = ( byte ) value ;
+                    bytes[2] = ( byte ) value;
                     bytes[1] = ( byte ) ( value >> 8 );
                     bytes[0] = ( byte ) ( value >> 16 );
                 }
@@ -659,7 +660,7 @@ public class Value implements Serializable
         }
     }
 
-    
+
     /**
      * Encode a BIT STRING value
      * 
@@ -678,11 +679,11 @@ public class Value implements Serializable
         try
         {
             buffer.put( UniversalTag.BIT_STRING.getValue() );
-            
+
             // The BitString length. We add one byte for the unused number 
             // of bits
             int length = bitString.size() + 1;
-            
+
             buffer.put( TLV.getBytes( length ) );
             buffer.put( bitString.getUnusedBits() );
             buffer.put( bitString.getData() );

@@ -20,7 +20,7 @@
 package org.apache.directory.shared.ldap.codec.search.controls.persistentSearch;
 
 
-import org.apache.directory.shared.asn1.ber.IAsn1Container;
+import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.AbstractGrammar;
 import org.apache.directory.shared.asn1.ber.grammar.Grammar;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
@@ -108,7 +108,7 @@ public class PersistentSearchControlGrammar extends AbstractGrammar
                 UniversalTag.INTEGER.getValue(),
                 new GrammarAction( "Set PSearchControl changeTypes" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     PersistentSearchControlContainer psearchContainer = ( PersistentSearchControlContainer ) container;
                     Value value = psearchContainer.getCurrentTLV().getValue();
@@ -150,7 +150,7 @@ public class PersistentSearchControlGrammar extends AbstractGrammar
                                     PersistentSearchControlStatesEnum.CHANGES_ONLY_STATE, UniversalTag.BOOLEAN.getValue(),
                 new GrammarAction( "Set PSearchControl changesOnly" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     PersistentSearchControlContainer psearchContainer = ( PersistentSearchControlContainer ) container;
                     Value value = psearchContainer.getCurrentTLV().getValue();
@@ -189,7 +189,7 @@ public class PersistentSearchControlGrammar extends AbstractGrammar
                                     PersistentSearchControlStatesEnum.RETURN_ECS_STATE, UniversalTag.BOOLEAN.getValue(),
                 new GrammarAction( "Set PSearchControl returnECs" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     PersistentSearchControlContainer psearchContainer = ( PersistentSearchControlContainer ) container;
                     Value value = psearchContainer.getCurrentTLV().getValue();

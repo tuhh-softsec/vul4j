@@ -65,18 +65,13 @@ public class OID implements Serializable
     /** Internal Serial UUID version */
     private static final long serialVersionUID = 1L;
 
-    // ~ Instance fields
-    // ----------------------------------------------------------------------------
-
     /** The OID as a array of int */
     private long[] oidValues;
 
-    /** Th hashcode, computed only once */
+    /** The hashcode, computed only once */
     private int hash;
 
 
-    // ~ Constructors
-    // -------------------------------------------------------------------------------
     /**
      * Creates a new OID object.
      */
@@ -234,7 +229,7 @@ public class OID implements Serializable
         boolean dotSeen = false;
 
         // Count the number of int to allocate.
-        for ( char c:chars )
+        for ( char c : chars )
         {
             if ( c == '.' )
             {
@@ -271,9 +266,9 @@ public class OID implements Serializable
         // The first value
         switch ( chars[pos] )
         {
-            case '0' : // itu-t
-            case '1' : // iso
-            case '2' : // joint-iso-itu-t
+            case '0': // itu-t
+            case '1': // iso
+            case '2': // joint-iso-itu-t
                 ituOrIso = true;
                 oidValues[intPos++] = chars[pos++] - '0';
                 break;
@@ -507,12 +502,12 @@ public class OID implements Serializable
     {
         int h = 37;
 
-        for ( long val:oidValues )
+        for ( long val : oidValues )
         {
-            int low = (int)(val & 0x0000FFFFL);
-            int high = (int)(val >> 32);
-            h = h*17 + high;
-            h = h*17 + low;
+            int low = ( int ) ( val & 0x0000FFFFL );
+            int high = ( int ) ( val >> 32 );
+            h = h * 17 + high;
+            h = h * 17 + low;
         }
 
         return h;
@@ -536,7 +531,7 @@ public class OID implements Serializable
         boolean dotSeen = false;
 
         // Count the number of int to allocate.
-        for ( byte b:bytes )
+        for ( byte b : bytes )
         {
             if ( b == '.' )
             {
@@ -570,13 +565,13 @@ public class OID implements Serializable
         // The first value
         switch ( bytes[pos++] )
         {
-            case '0' : // itu-t
-            case '1' : // iso
-            case '2' : // joint-iso-itu-t
+            case '0': // itu-t
+            case '1': // iso
+            case '2': // joint-iso-itu-t
                 ituOrIso = true;
                 break;
 
-            default : // error, this value is not allowed
+            default: // error, this value is not allowed
                 return false;
         }
 
@@ -682,7 +677,7 @@ public class OID implements Serializable
             return false;
         }
 
-        OID instance = (OID)oid;
+        OID instance = ( OID ) oid;
 
         if ( instance.hash != hash )
         {

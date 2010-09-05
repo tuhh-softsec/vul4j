@@ -170,111 +170,111 @@ package org.apache.directory.shared.asn1.ber.tlv;
 public enum UniversalTag
 {
     /** value for the tag */
-    RESERVED_0( (byte)0 ),
+    RESERVED_0(( byte ) 0),
 
     /** value for the tag */
-    BOOLEAN( (byte)1 ),
+    BOOLEAN(( byte ) 1),
 
     /** value for the tag */
-    INTEGER( (byte)2 ),
+    INTEGER(( byte ) 2),
 
     /** value for the tag */
-    BIT_STRING( (byte)3 ),
+    BIT_STRING(( byte ) 3),
 
     /** value for the tag */
-    OCTET_STRING( (byte)4 ),
+    OCTET_STRING(( byte ) 4),
 
     /** value for the tag */
-    NULL((byte)5 ),
+    NULL(( byte ) 5),
 
     /** value for the tag */
-    OBJECT_IDENTIFIER( (byte)6 ),
+    OBJECT_IDENTIFIER(( byte ) 6),
 
     /** value for the tag */
-    OBJECT_DESCRIPTOR( (byte)7 ),
+    OBJECT_DESCRIPTOR(( byte ) 7),
 
     /** value for the tag */
-    EXTERNAL_INSTANCE_OF( (byte)8 ),
+    EXTERNAL_INSTANCE_OF(( byte ) 8),
 
     /** value for the tag */
-    REAL( (byte)9 ),
+    REAL(( byte ) 9),
 
     /** value for the tag */
-    ENUMERATED( (byte)0x0A ),
+    ENUMERATED(( byte ) 0x0A),
 
     /** value for the tag */
-    EMBEDDED_PDV( (byte)0x0B ),
+    EMBEDDED_PDV(( byte ) 0x0B),
 
     /** value for the tag */
-    UTF8_STRING( (byte)0x0C ),
+    UTF8_STRING(( byte ) 0x0C),
 
     /** value for the tag */
-    RELATIVE_OID( (byte)0x0D ),
+    RELATIVE_OID(( byte ) 0x0D),
 
     /** value for the tag */
-    RESERVED_14( (byte)0x0E ),
+    RESERVED_14(( byte ) 0x0E),
 
     /** value for the tag */
-    RESERVED_15( (byte)0x0F ),
+    RESERVED_15(( byte ) 0x0F),
 
     /** value for the tag */
-    SEQUENCE_SEQUENCE_OF( (byte)0x10 ),
+    SEQUENCE_SEQUENCE_OF(( byte ) 0x10),
 
     /** value for the tag */
-    SET_SET_OF( (byte)0x11 ),
+    SET_SET_OF(( byte ) 0x11),
 
     /** value for the tag */
-    NUMERIC_STRING( (byte)0x12 ),
+    NUMERIC_STRING(( byte ) 0x12),
 
     /** value for the tag */
-    PRINTABLE_STRING( (byte)0x13 ),
+    PRINTABLE_STRING(( byte ) 0x13),
 
     /** value for the tag */
-    TELETEX_STRING( (byte)0x14 ),
+    TELETEX_STRING(( byte ) 0x14),
 
     /** value for the tag */
-    VIDEOTEX_STRING( (byte)0x15 ),
+    VIDEOTEX_STRING(( byte ) 0x15),
 
     /** value for the tag */
-    IA5_STRING( (byte)0x16 ),
+    IA5_STRING(( byte ) 0x16),
 
     /** value for the tag */
-    UTC_TIME( (byte)0x17 ),
+    UTC_TIME(( byte ) 0x17),
 
     /** value for the tag */
-    GENERALIZED_TIME( (byte)0x18 ),
+    GENERALIZED_TIME(( byte ) 0x18),
 
     /** value for the tag */
-    GRAPHIC_STRING( (byte)0x19 ),
+    GRAPHIC_STRING(( byte ) 0x19),
 
     /** value for the tag */
-    VISIBLE_STRING( (byte)0x1A ),
+    VISIBLE_STRING(( byte ) 0x1A),
 
     /** value for the tag */
-    GENERAL_STRING( (byte)0x1B ),
+    GENERAL_STRING(( byte ) 0x1B),
 
     /** value for the tag */
-    UNIVERSAL_STRING( (byte)0x1C ),
+    UNIVERSAL_STRING(( byte ) 0x1C),
 
     /** value for the tag */
-    CHARACTER_STRING( (byte)0x1D ),
+    CHARACTER_STRING(( byte ) 0x1D),
 
     /** value for the tag */
-    BMP_STRING( (byte)0x1E ),
+    BMP_STRING(( byte ) 0x1E),
 
     /** value for the tag */
-    RESERVED_31( (byte)0x1F ),
-
+    RESERVED_31(( byte ) 0x1F),
 
     /** SEQUENCE TAG */
-    SEQUENCE( (byte)0x30 ),
+    SEQUENCE(( byte ) 0x30),
 
     /** SET TAG */
-    SET( (byte)0x31 );
+    SET(( byte ) 0x31);
 
     /** The internal value */
     private byte value;
-    
+
+
     /**
      * Creates a new instance of UniversalTag.
      *
@@ -284,6 +284,7 @@ public enum UniversalTag
     {
         this.value = value;
     }
+
 
     /**
      * @return The UniversalTag value

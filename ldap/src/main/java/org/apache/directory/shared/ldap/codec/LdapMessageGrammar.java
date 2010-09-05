@@ -20,7 +20,7 @@
 package org.apache.directory.shared.ldap.codec;
 
 
-import org.apache.directory.shared.asn1.ber.IAsn1Container;
+import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.AbstractGrammar;
 import org.apache.directory.shared.asn1.ber.grammar.Action;
 import org.apache.directory.shared.asn1.ber.grammar.Grammar;
@@ -186,7 +186,7 @@ public class LdapMessageGrammar extends AbstractGrammar
             LdapStatesEnum.START_STATE, LdapStatesEnum.LDAP_MESSAGE_STATE, UniversalTag.SEQUENCE.getValue(),
             new GrammarAction( "LdapMessage initialization" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
 
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
@@ -221,7 +221,7 @@ public class LdapMessageGrammar extends AbstractGrammar
             LdapStatesEnum.LDAP_MESSAGE_STATE, LdapStatesEnum.MESSAGE_ID_STATE, UniversalTag.INTEGER.getValue(),
             new GrammarAction( "Store MessageId" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
@@ -298,7 +298,7 @@ public class LdapMessageGrammar extends AbstractGrammar
             LdapStatesEnum.MESSAGE_ID_STATE, LdapStatesEnum.UNBIND_REQUEST_STATE, LdapConstants.UNBIND_REQUEST_TAG,
             new GrammarAction( "Unbind Request initialization" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
@@ -345,7 +345,7 @@ public class LdapMessageGrammar extends AbstractGrammar
             LdapStatesEnum.MESSAGE_ID_STATE, LdapStatesEnum.DEL_REQUEST_STATE, LdapConstants.DEL_REQUEST_TAG,
             new GrammarAction( "Init del Request" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
@@ -421,7 +421,7 @@ public class LdapMessageGrammar extends AbstractGrammar
             LdapStatesEnum.MESSAGE_ID_STATE, LdapStatesEnum.ABANDON_REQUEST_STATE, LdapConstants.ABANDON_REQUEST_TAG,
             new GrammarAction( "Init Abandon Request" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
@@ -494,7 +494,7 @@ public class LdapMessageGrammar extends AbstractGrammar
             LdapStatesEnum.MESSAGE_ID_STATE, LdapStatesEnum.BIND_REQUEST_STATE, LdapConstants.BIND_REQUEST_TAG,
             new GrammarAction( "Init BindRequest" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
@@ -528,7 +528,7 @@ public class LdapMessageGrammar extends AbstractGrammar
             LdapStatesEnum.BIND_REQUEST_STATE, LdapStatesEnum.VERSION_STATE, UniversalTag.INTEGER.getValue(),
             new GrammarAction( "Store version" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
                     BindRequest bindRequestMessage = ldapMessageContainer.getBindRequest();
@@ -574,7 +574,7 @@ public class LdapMessageGrammar extends AbstractGrammar
             LdapStatesEnum.VERSION_STATE, LdapStatesEnum.NAME_STATE, UniversalTag.OCTET_STRING.getValue(), new GrammarAction(
                 "Store Bind Name value" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
                     BindRequest bindRequestMessage = ldapMessageContainer.getBindRequest();
@@ -633,7 +633,7 @@ public class LdapMessageGrammar extends AbstractGrammar
             LdapStatesEnum.NAME_STATE, LdapStatesEnum.SIMPLE_STATE, LdapConstants.BIND_REQUEST_SIMPLE_TAG,
             new GrammarAction( "Store Bind Simple Authentication value" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
@@ -692,7 +692,7 @@ public class LdapMessageGrammar extends AbstractGrammar
             LdapStatesEnum.NAME_STATE, LdapStatesEnum.SASL_STATE, LdapConstants.BIND_REQUEST_SASL_TAG,
             new GrammarAction( "Initialize Bind SASL Authentication" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
                     BindRequest bindRequestMessage = ldapMessageContainer.getBindRequest();
@@ -731,7 +731,7 @@ public class LdapMessageGrammar extends AbstractGrammar
             LdapStatesEnum.SASL_STATE, LdapStatesEnum.MECHANISM_STATE, UniversalTag.OCTET_STRING.getValue(),
             new GrammarAction( "Store SASL mechanism" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
                     BindRequest bindRequestMessage = ldapMessageContainer.getBindRequest();
@@ -770,7 +770,7 @@ public class LdapMessageGrammar extends AbstractGrammar
             LdapStatesEnum.MECHANISM_STATE, LdapStatesEnum.CREDENTIALS_STATE, UniversalTag.OCTET_STRING.getValue(),
             new GrammarAction( "Store SASL credentials" )
             {
-                public void action( IAsn1Container container )
+                public void action( Asn1Container container )
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
@@ -833,7 +833,7 @@ public class LdapMessageGrammar extends AbstractGrammar
             LdapStatesEnum.MESSAGE_ID_STATE, LdapStatesEnum.BIND_RESPONSE_STATE, LdapConstants.BIND_RESPONSE_TAG,
             new GrammarAction( "Init BindReponse" )
             {
-                public void action( IAsn1Container container )
+                public void action( Asn1Container container )
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
@@ -1015,7 +1015,7 @@ public class LdapMessageGrammar extends AbstractGrammar
             LdapStatesEnum.ERROR_MESSAGE_STATE, LdapStatesEnum.REFERRALS_STATE,
             LdapConstants.LDAP_RESULT_REFERRAL_SEQUENCE_TAG, new GrammarAction( "Init referrals list" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
@@ -1098,7 +1098,7 @@ public class LdapMessageGrammar extends AbstractGrammar
             LdapStatesEnum.MESSAGE_ID_STATE, LdapStatesEnum.SEARCH_RESULT_ENTRY_STATE,
             LdapConstants.SEARCH_RESULT_ENTRY_TAG, new GrammarAction( "Init SearchResultEntry" )
             {
-                public void action( IAsn1Container container )
+                public void action( Asn1Container container )
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
@@ -1121,7 +1121,7 @@ public class LdapMessageGrammar extends AbstractGrammar
             LdapStatesEnum.SEARCH_RESULT_ENTRY_STATE, LdapStatesEnum.OBJECT_NAME_STATE, UniversalTag.OCTET_STRING.getValue(),
             new GrammarAction( "Store search result entry object name Value" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
 
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
@@ -1179,7 +1179,7 @@ public class LdapMessageGrammar extends AbstractGrammar
             LdapStatesEnum.OBJECT_NAME_STATE, LdapStatesEnum.ATTRIBUTES_SR_STATE, UniversalTag.SEQUENCE.getValue(),
             new GrammarAction( "Pop and end allowed" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     container.grammarEndAllowed( true );
                 }
@@ -1228,7 +1228,7 @@ public class LdapMessageGrammar extends AbstractGrammar
             LdapStatesEnum.PARTIAL_ATTRIBUTES_LIST_STATE, LdapStatesEnum.TYPE_SR_STATE, UniversalTag.OCTET_STRING.getValue(),
             new GrammarAction( "Store search result entry object name Value" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
                     SearchResultEntry searchResultEntry = ldapMessageContainer.getSearchResultEntry();
@@ -1285,7 +1285,7 @@ public class LdapMessageGrammar extends AbstractGrammar
             LdapStatesEnum.TYPE_SR_STATE, LdapStatesEnum.VALS_SR_STATE, UniversalTag.SET.getValue(), new GrammarAction(
                 "Grammar end allowed" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     container.grammarEndAllowed( true );
                 }
@@ -1376,7 +1376,7 @@ public class LdapMessageGrammar extends AbstractGrammar
             LdapStatesEnum.MESSAGE_ID_STATE, LdapStatesEnum.SEARCH_RESULT_DONE_STATE,
             LdapConstants.SEARCH_RESULT_DONE_TAG, new GrammarAction( "Init search Result Done" )
             {
-                public void action( IAsn1Container container )
+                public void action( Asn1Container container )
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
@@ -1414,7 +1414,7 @@ public class LdapMessageGrammar extends AbstractGrammar
             LdapStatesEnum.MESSAGE_ID_STATE, LdapStatesEnum.MODIFY_REQUEST_STATE, LdapConstants.MODIFY_REQUEST_TAG,
             new GrammarAction( "Init ModifyRequest" )
             {
-                public void action( IAsn1Container container )
+                public void action( Asn1Container container )
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
@@ -1436,7 +1436,7 @@ public class LdapMessageGrammar extends AbstractGrammar
             LdapStatesEnum.MODIFY_REQUEST_STATE, LdapStatesEnum.OBJECT_STATE, UniversalTag.OCTET_STRING.getValue(),
             new GrammarAction( "Store Modify request object Value" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
 
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
@@ -1519,7 +1519,7 @@ public class LdapMessageGrammar extends AbstractGrammar
             LdapStatesEnum.MODIFICATIONS_SEQ_STATE, LdapStatesEnum.OPERATION_STATE, UniversalTag.ENUMERATED.getValue(),
             new GrammarAction( "Store operation type" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
 
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
@@ -1601,7 +1601,7 @@ public class LdapMessageGrammar extends AbstractGrammar
             LdapStatesEnum.MODIFICATION_STATE, LdapStatesEnum.TYPE_MOD_STATE, UniversalTag.OCTET_STRING.getValue(),
             new GrammarAction( "Store type" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
 
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
@@ -1652,7 +1652,7 @@ public class LdapMessageGrammar extends AbstractGrammar
             LdapStatesEnum.TYPE_MOD_STATE, LdapStatesEnum.VALS_STATE, UniversalTag.SET.getValue(), new GrammarAction(
                 "Init Attribute vals" )
             {
-                public void action( IAsn1Container container )
+                public void action( Asn1Container container )
                 {
 
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
@@ -1785,7 +1785,7 @@ public class LdapMessageGrammar extends AbstractGrammar
             LdapStatesEnum.MESSAGE_ID_STATE, LdapStatesEnum.MODIFY_RESPONSE_STATE, LdapConstants.MODIFY_RESPONSE_TAG,
             new GrammarAction( "Init ModifyResponse" )
             {
-                public void action( IAsn1Container container )
+                public void action( Asn1Container container )
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
@@ -1823,7 +1823,7 @@ public class LdapMessageGrammar extends AbstractGrammar
             LdapStatesEnum.MESSAGE_ID_STATE, LdapStatesEnum.ADD_REQUEST_STATE, LdapConstants.ADD_REQUEST_TAG,
             new GrammarAction( "Init addRequest" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
 
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
@@ -1859,7 +1859,7 @@ public class LdapMessageGrammar extends AbstractGrammar
             LdapStatesEnum.ADD_REQUEST_STATE, LdapStatesEnum.ENTRY_STATE, UniversalTag.OCTET_STRING.getValue(),
             new GrammarAction( "Store add request object Value" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
 
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
@@ -1944,7 +1944,7 @@ public class LdapMessageGrammar extends AbstractGrammar
             LdapStatesEnum.ATTRIBUTE_STATE, LdapStatesEnum.TYPE_STATE, UniversalTag.OCTET_STRING.getValue(),
             new GrammarAction( "Store attribute type" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
 
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
@@ -2053,7 +2053,7 @@ public class LdapMessageGrammar extends AbstractGrammar
             LdapStatesEnum.MESSAGE_ID_STATE, LdapStatesEnum.ADD_RESPONSE_STATE, LdapConstants.ADD_RESPONSE_TAG,
             new GrammarAction( "Init AddResponse" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
@@ -2102,7 +2102,7 @@ public class LdapMessageGrammar extends AbstractGrammar
             LdapStatesEnum.MESSAGE_ID_STATE, LdapStatesEnum.DEL_RESPONSE_STATE, LdapConstants.DEL_RESPONSE_TAG,
             new GrammarAction( "Init DelResponse" )
             {
-                public void action( IAsn1Container container )
+                public void action( Asn1Container container )
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
@@ -2140,7 +2140,7 @@ public class LdapMessageGrammar extends AbstractGrammar
             LdapStatesEnum.MESSAGE_ID_STATE, LdapStatesEnum.MODIFY_DN_REQUEST_STATE,
             LdapConstants.MODIFY_DN_REQUEST_TAG, new GrammarAction( "Init Modify DN Request" )
             {
-                public void action( IAsn1Container container )
+                public void action( Asn1Container container )
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
@@ -2165,7 +2165,7 @@ public class LdapMessageGrammar extends AbstractGrammar
             LdapStatesEnum.MODIFY_DN_REQUEST_STATE, LdapStatesEnum.ENTRY_MOD_DN_STATE, UniversalTag.OCTET_STRING.getValue(),
             new GrammarAction( "Store entry" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
@@ -2228,7 +2228,7 @@ public class LdapMessageGrammar extends AbstractGrammar
             LdapStatesEnum.ENTRY_MOD_DN_STATE, LdapStatesEnum.NEW_RDN_STATE, UniversalTag.OCTET_STRING.getValue(),
             new GrammarAction( "Store new RDN" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
@@ -2294,7 +2294,7 @@ public class LdapMessageGrammar extends AbstractGrammar
             LdapStatesEnum.NEW_RDN_STATE, LdapStatesEnum.DELETE_OLD_RDN_STATE, UniversalTag.BOOLEAN.getValue(),
             new GrammarAction( "Store matching dnAttributes Value" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
                     ModifyDnRequest modifyDnRequest = ldapMessageContainer.getModifyDnRequest();
@@ -2351,7 +2351,7 @@ public class LdapMessageGrammar extends AbstractGrammar
             LdapStatesEnum.DELETE_OLD_RDN_STATE, LdapStatesEnum.NEW_SUPERIOR_STATE,
             LdapConstants.MODIFY_DN_REQUEST_NEW_SUPERIOR_TAG, new GrammarAction( "Store new superior" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
                     ModifyDnRequest modifyDnRequest = ldapMessageContainer.getModifyDnRequest();
@@ -2446,7 +2446,7 @@ public class LdapMessageGrammar extends AbstractGrammar
             LdapStatesEnum.MESSAGE_ID_STATE, LdapStatesEnum.MODIFY_DN_RESPONSE_STATE,
             LdapConstants.MODIFY_DN_RESPONSE_TAG, new GrammarAction( "Init ModifyDNResponse" )
             {
-                public void action( IAsn1Container container )
+                public void action( Asn1Container container )
                 {
 
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
@@ -2489,7 +2489,7 @@ public class LdapMessageGrammar extends AbstractGrammar
             LdapStatesEnum.MESSAGE_ID_STATE, LdapStatesEnum.COMPARE_REQUEST_STATE, LdapConstants.COMPARE_REQUEST_TAG,
             new GrammarAction( "Init Compare Request" )
             {
-                public void action( IAsn1Container container )
+                public void action( Asn1Container container )
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
@@ -2513,7 +2513,7 @@ public class LdapMessageGrammar extends AbstractGrammar
             LdapStatesEnum.COMPARE_REQUEST_STATE, LdapStatesEnum.ENTRY_COMP_STATE, UniversalTag.OCTET_STRING.getValue(),
             new GrammarAction( "Store entry" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
 
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
@@ -2587,7 +2587,7 @@ public class LdapMessageGrammar extends AbstractGrammar
             LdapStatesEnum.AVA_STATE, LdapStatesEnum.ATTRIBUTE_DESC_STATE, UniversalTag.OCTET_STRING.getValue(),
             new GrammarAction( "Store attribute desc" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
 
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
@@ -2634,7 +2634,7 @@ public class LdapMessageGrammar extends AbstractGrammar
             LdapStatesEnum.ATTRIBUTE_DESC_STATE, LdapStatesEnum.ASSERTION_VALUE_STATE, UniversalTag.OCTET_STRING.getValue(),
             new GrammarAction( "Store assertion value" )
             {
-                public void action( IAsn1Container container )
+                public void action( Asn1Container container )
                 {
 
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
@@ -2702,7 +2702,7 @@ public class LdapMessageGrammar extends AbstractGrammar
             LdapStatesEnum.MESSAGE_ID_STATE, LdapStatesEnum.COMPARE_RESPONSE_STATE, LdapConstants.COMPARE_RESPONSE_TAG,
             new GrammarAction( "Init CompareResponse" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
 
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
@@ -2751,7 +2751,7 @@ public class LdapMessageGrammar extends AbstractGrammar
             LdapStatesEnum.MESSAGE_ID_STATE, LdapStatesEnum.SEARCH_RESULT_REFERENCE_STATE,
             LdapConstants.SEARCH_RESULT_REFERENCE_TAG, new GrammarAction( "Init SearchResultReference" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
@@ -2809,7 +2809,7 @@ public class LdapMessageGrammar extends AbstractGrammar
             LdapStatesEnum.MESSAGE_ID_STATE, LdapStatesEnum.EXTENDED_REQUEST_STATE, LdapConstants.EXTENDED_REQUEST_TAG,
             new GrammarAction( "Init Extended Request" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
@@ -2834,7 +2834,7 @@ public class LdapMessageGrammar extends AbstractGrammar
             LdapStatesEnum.EXTENDED_REQUEST_STATE, LdapStatesEnum.REQUEST_NAME_STATE,
             LdapConstants.EXTENDED_REQUEST_NAME_TAG, new GrammarAction( "Store name" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
@@ -2909,7 +2909,7 @@ public class LdapMessageGrammar extends AbstractGrammar
             LdapStatesEnum.REQUEST_NAME_STATE, LdapStatesEnum.REQUEST_VALUE_STATE,
             LdapConstants.EXTENDED_REQUEST_VALUE_TAG, new GrammarAction( "Store value" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
@@ -2975,7 +2975,7 @@ public class LdapMessageGrammar extends AbstractGrammar
             LdapStatesEnum.MESSAGE_ID_STATE, LdapStatesEnum.EXTENDED_RESPONSE_STATE,
             LdapConstants.EXTENDED_RESPONSE_TAG, new GrammarAction( "Init Extended Reponse" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
@@ -3185,7 +3185,7 @@ public class LdapMessageGrammar extends AbstractGrammar
             LdapStatesEnum.MESSAGE_ID_STATE, LdapStatesEnum.INTERMEDIATE_RESPONSE_STATE,
             LdapConstants.INTERMEDIATE_RESPONSE_TAG, new GrammarAction( "Init Intermediate Response" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
@@ -3210,7 +3210,7 @@ public class LdapMessageGrammar extends AbstractGrammar
             LdapStatesEnum.INTERMEDIATE_RESPONSE_STATE, LdapStatesEnum.INTERMEDIATE_RESPONSE_NAME_STATE,
             LdapConstants.INTERMEDIATE_RESPONSE_NAME_TAG, new GrammarAction( "Store response name" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
 
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
@@ -3275,7 +3275,7 @@ public class LdapMessageGrammar extends AbstractGrammar
             LdapStatesEnum.INTERMEDIATE_RESPONSE_STATE, LdapStatesEnum.INTERMEDIATE_RESPONSE_VALUE_STATE,
             LdapConstants.INTERMEDIATE_RESPONSE_VALUE_TAG, new GrammarAction( "Store response value" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
@@ -3318,7 +3318,7 @@ public class LdapMessageGrammar extends AbstractGrammar
             LdapStatesEnum.INTERMEDIATE_RESPONSE_NAME_STATE, LdapStatesEnum.INTERMEDIATE_RESPONSE_VALUE_STATE,
             LdapConstants.INTERMEDIATE_RESPONSE_VALUE_TAG, new GrammarAction( "Store value" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
@@ -3378,7 +3378,7 @@ public class LdapMessageGrammar extends AbstractGrammar
         // --------------------------------------------------------------------------------------------
         Action addControl = new GrammarAction( "Add Control" )
         {
-            public void action( IAsn1Container container ) throws DecoderException
+            public void action( Asn1Container container ) throws DecoderException
             {
                 LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
@@ -3419,7 +3419,7 @@ public class LdapMessageGrammar extends AbstractGrammar
             LdapStatesEnum.CONTROL_STATE, LdapStatesEnum.CONTROL_TYPE_STATE, UniversalTag.OCTET_STRING.getValue(),
             new GrammarAction( "Set Control Type" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
@@ -3483,7 +3483,7 @@ public class LdapMessageGrammar extends AbstractGrammar
             LdapStatesEnum.CONTROL_TYPE_STATE, LdapStatesEnum.CRITICALITY_STATE, UniversalTag.OCTET_STRING.getValue(),
             new GrammarAction( "Set Criticality" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
@@ -3595,7 +3595,7 @@ public class LdapMessageGrammar extends AbstractGrammar
             LdapStatesEnum.MESSAGE_ID_STATE, LdapStatesEnum.SEARCH_REQUEST_STATE, LdapConstants.SEARCH_REQUEST_TAG,
             new GrammarAction( "Init SearchRequest" )
             {
-                public void action( IAsn1Container container )
+                public void action( Asn1Container container )
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
@@ -3622,7 +3622,7 @@ public class LdapMessageGrammar extends AbstractGrammar
             LdapStatesEnum.SEARCH_REQUEST_STATE, LdapStatesEnum.BASE_OBJECT_STATE, UniversalTag.OCTET_STRING.getValue(),
             new GrammarAction( "store base object value" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
                     SearchRequest searchRequest = ldapMessageContainer.getSearchRequest();
@@ -3679,7 +3679,7 @@ public class LdapMessageGrammar extends AbstractGrammar
             LdapStatesEnum.BASE_OBJECT_STATE, LdapStatesEnum.SCOPE_STATE, UniversalTag.ENUMERATED.getValue(),
             new GrammarAction( "store scope value" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
@@ -3742,7 +3742,7 @@ public class LdapMessageGrammar extends AbstractGrammar
             LdapStatesEnum.SCOPE_STATE, LdapStatesEnum.DEREF_ALIAS_STATE, UniversalTag.ENUMERATED.getValue(),
             new GrammarAction( "store derefAliases value" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
@@ -3805,7 +3805,7 @@ public class LdapMessageGrammar extends AbstractGrammar
             LdapStatesEnum.DEREF_ALIAS_STATE, LdapStatesEnum.SIZE_LIMIT_STATE, UniversalTag.INTEGER.getValue(),
             new GrammarAction( "store sizeLimit value" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
@@ -3851,7 +3851,7 @@ public class LdapMessageGrammar extends AbstractGrammar
             LdapStatesEnum.SIZE_LIMIT_STATE, LdapStatesEnum.TIME_LIMIT_STATE, UniversalTag.INTEGER.getValue(),
             new GrammarAction( "store timeLimit value" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
@@ -3898,7 +3898,7 @@ public class LdapMessageGrammar extends AbstractGrammar
             LdapStatesEnum.TIME_LIMIT_STATE, LdapStatesEnum.TYPES_ONLY_STATE, UniversalTag.BOOLEAN.getValue(),
             new GrammarAction( "store typesOnly value" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
@@ -5040,7 +5040,7 @@ public class LdapMessageGrammar extends AbstractGrammar
             LdapStatesEnum.SUBSTRING_FILTER_STATE, LdapStatesEnum.TYPE_SUBSTRING_STATE, UniversalTag.OCTET_STRING.getValue(),
             new GrammarAction( "Store substring filter type" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
                     SearchRequest searchRequest = ldapMessageContainer.getSearchRequest();
@@ -5087,7 +5087,7 @@ public class LdapMessageGrammar extends AbstractGrammar
             LdapStatesEnum.TYPE_SUBSTRING_STATE, LdapStatesEnum.SUBSTRINGS_STATE, UniversalTag.SEQUENCE.getValue(),
             new GrammarAction( "Substring Filter substringsSequence " )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
@@ -5115,7 +5115,7 @@ public class LdapMessageGrammar extends AbstractGrammar
             LdapStatesEnum.SUBSTRINGS_STATE, LdapStatesEnum.INITIAL_STATE, LdapConstants.SUBSTRINGS_FILTER_INITIAL_TAG,
             new GrammarAction( "Store substring filter initial Value" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
                     SearchRequest searchRequest = ldapMessageContainer.getSearchRequest();
@@ -6037,7 +6037,7 @@ public class LdapMessageGrammar extends AbstractGrammar
             LdapStatesEnum.EXTENSIBLE_MATCH_STATE, LdapStatesEnum.MATCHING_RULE_STATE,
             LdapConstants.MATCHING_RULE_ID_TAG, new GrammarAction( "Store matching rule Value" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
                     SearchRequest searchRequest = ldapMessageContainer.getSearchRequest();
@@ -6164,7 +6164,7 @@ public class LdapMessageGrammar extends AbstractGrammar
             LdapStatesEnum.MATCH_VALUE_STATE, LdapStatesEnum.DN_ATTRIBUTES_STATE,
             LdapConstants.DN_ATTRIBUTES_FILTER_TAG, new GrammarAction( "Store matching dnAttributes Value" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
                     SearchRequest searchRequest = ldapMessageContainer.getSearchRequest();

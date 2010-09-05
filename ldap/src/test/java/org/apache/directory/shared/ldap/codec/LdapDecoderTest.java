@@ -29,7 +29,7 @@ import java.nio.ByteBuffer;
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
-import org.apache.directory.shared.asn1.ber.IAsn1Container;
+import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.ber.tlv.TLVStateEnum;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.ldap.message.BindRequest;
@@ -82,7 +82,7 @@ public class LdapDecoderTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        IAsn1Container ldapMessageContainer = new LdapMessageContainer();
+        Asn1Container ldapMessageContainer = new LdapMessageContainer();
 
         // Decode a BindRequest PDU
         try
@@ -128,7 +128,7 @@ public class LdapDecoderTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        IAsn1Container ldapMessageContainer = new LdapMessageContainer();
+        Asn1Container ldapMessageContainer = new LdapMessageContainer();
 
         // Decode a BindRequest PDU
         try
@@ -175,7 +175,7 @@ public class LdapDecoderTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        IAsn1Container ldapMessageContainer = new LdapMessageContainer();
+        Asn1Container ldapMessageContainer = new LdapMessageContainer();
 
         // Decode a BindRequest PDU first block of data
         try
@@ -261,7 +261,7 @@ public class LdapDecoderTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        IAsn1Container ldapMessageContainer = new LdapMessageContainer();
+        Asn1Container ldapMessageContainer = new LdapMessageContainer();
 
         // Decode a BindRequest PDU
         try
@@ -311,7 +311,7 @@ public class LdapDecoderTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        IAsn1Container ldapMessageContainer = new LdapMessageContainer();
+        Asn1Container ldapMessageContainer = new LdapMessageContainer();
 
         // Decode a BindRequest PDU
         try
@@ -362,7 +362,7 @@ public class LdapDecoderTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        IAsn1Container ldapMessageContainer = new LdapMessageContainer();
+        Asn1Container ldapMessageContainer = new LdapMessageContainer();
 
         // Decode a BindRequest PDU
         try
@@ -399,7 +399,7 @@ public class LdapDecoderTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        IAsn1Container ldapMessageContainer = new LdapMessageContainer();
+        Asn1Container ldapMessageContainer = new LdapMessageContainer();
 
         // Decode a BindRequest PDU first block of data
         try

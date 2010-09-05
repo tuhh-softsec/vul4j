@@ -20,7 +20,7 @@
 package org.apache.directory.shared.ldap.codec.controls.replication.syncDoneValue;
 
 
-import org.apache.directory.shared.asn1.ber.IAsn1Container;
+import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.AbstractGrammar;
 import org.apache.directory.shared.asn1.ber.grammar.Grammar;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
@@ -88,7 +88,7 @@ public class SyncDoneValueControlGrammar extends AbstractGrammar
             States.INIT_GRAMMAR_STATE, SyncDoneValueControlStatesEnum.SYNC_DONE_VALUE_SEQUENCE_STATE, UniversalTag.SEQUENCE.getValue(),
             new GrammarAction( "Initiaization" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     SyncDoneValueControlContainer syncDoneValueContainer = ( SyncDoneValueControlContainer ) container;
 
@@ -108,7 +108,7 @@ public class SyncDoneValueControlGrammar extends AbstractGrammar
             SyncDoneValueControlStatesEnum.SYNC_DONE_VALUE_SEQUENCE_STATE, SyncDoneValueControlStatesEnum.COOKIE_STATE,
             UniversalTag.OCTET_STRING.getValue(), new GrammarAction( "Set SyncDoneValueControl cookie" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     SyncDoneValueControlContainer syncDoneValueContainer = ( SyncDoneValueControlContainer ) container;
                     Value value = syncDoneValueContainer.getCurrentTLV().getValue();
@@ -128,7 +128,7 @@ public class SyncDoneValueControlGrammar extends AbstractGrammar
 
         GrammarAction refreshDeletesTagAction = new GrammarAction( "set SyncDoneValueControl refreshDeletes flag" )
         {
-            public void action( IAsn1Container container ) throws DecoderException
+            public void action( Asn1Container container ) throws DecoderException
             {
                 SyncDoneValueControlContainer syncDoneValueContainer = ( SyncDoneValueControlContainer ) container;
                 Value value = syncDoneValueContainer.getCurrentTLV().getValue();

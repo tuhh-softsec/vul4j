@@ -21,7 +21,7 @@
 package org.apache.directory.shared.ldap.codec.controls.ppolicy;
 
 
-import org.apache.directory.shared.asn1.ber.IAsn1Container;
+import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.AbstractGrammar;
 import org.apache.directory.shared.asn1.ber.grammar.Grammar;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
@@ -65,7 +65,7 @@ public class PasswordPolicyResponseControlGrammar extends AbstractGrammar
             States.INIT_GRAMMAR_STATE, PasswordPolicyResponseControlStates.START_STATE, UniversalTag.SEQUENCE.getValue(),
             new GrammarAction( "Initialization" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     PasswordPolicyResponseControlContainer ppolicyRespContainer = ( PasswordPolicyResponseControlContainer ) container;
 
@@ -80,7 +80,7 @@ public class PasswordPolicyResponseControlGrammar extends AbstractGrammar
             PasswordPolicyResponseControlTags.TIME_BEFORE_EXPIRATION_TAG.getValue(), new GrammarAction(
                 "set time before expiration value" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     PasswordPolicyResponseControlContainer ppolicyRespContainer = ( PasswordPolicyResponseControlContainer ) container;
                     Value value = ppolicyRespContainer.getCurrentTLV().getValue();
@@ -110,7 +110,7 @@ public class PasswordPolicyResponseControlGrammar extends AbstractGrammar
             PasswordPolicyResponseControlStates.PPOLICY_ERROR_STATE, PasswordPolicyResponseControlStates.END_STATE,
             UniversalTag.ENUMERATED.getValue(), new GrammarAction( "set ppolicy error value" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     PasswordPolicyResponseControlContainer ppolicyRespContainer = ( PasswordPolicyResponseControlContainer ) container;
 
@@ -126,7 +126,7 @@ public class PasswordPolicyResponseControlGrammar extends AbstractGrammar
             PasswordPolicyResponseControlTags.GRACE_AUTHNS_REMAINING_TAG.getValue(), new GrammarAction(
                 "set number of grace authentications remaining" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     PasswordPolicyResponseControlContainer ppolicyRespContainer = ( PasswordPolicyResponseControlContainer ) container;
                     Value value = ppolicyRespContainer.getCurrentTLV().getValue();
@@ -156,7 +156,7 @@ public class PasswordPolicyResponseControlGrammar extends AbstractGrammar
             PasswordPolicyResponseControlStates.START_STATE, PasswordPolicyResponseControlStates.PPOLICY_ERROR_STATE,
             UniversalTag.ENUMERATED.getValue(), new GrammarAction( "set ppolicy error value" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     PasswordPolicyResponseControlContainer ppolicyRespContainer = ( PasswordPolicyResponseControlContainer ) container;
                     

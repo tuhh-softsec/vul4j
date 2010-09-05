@@ -31,6 +31,7 @@ public abstract class GrammarAction implements Action
     /** The action's name */
     protected String name;
 
+
     /** A default constructor */
     public GrammarAction()
     {

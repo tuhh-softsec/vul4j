@@ -20,7 +20,7 @@
 package org.apache.directory.shared.ldap.codec.controls.replication.syncStateValue;
 
 
-import org.apache.directory.shared.asn1.ber.IAsn1Container;
+import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.AbstractGrammar;
 import org.apache.directory.shared.asn1.ber.grammar.Grammar;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
@@ -109,7 +109,7 @@ public class SyncStateValueControlGrammar extends AbstractGrammar
             SyncStateValueControlStatesEnum.SYNC_TYPE_STATE, UniversalTag.ENUMERATED.getValue(), new GrammarAction(
                 "Set SyncStateValueControl state type" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     SyncStateValueControlContainer syncStateValueContainer = ( SyncStateValueControlContainer ) container;
                     Value value = syncStateValueContainer.getCurrentTLV().getValue();
@@ -154,7 +154,7 @@ public class SyncStateValueControlGrammar extends AbstractGrammar
             SyncStateValueControlStatesEnum.SYNC_TYPE_STATE, SyncStateValueControlStatesEnum.SYNC_UUID_STATE,
             UniversalTag.OCTET_STRING.getValue(), new GrammarAction( "Set SyncStateValueControl entryUUID" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     SyncStateValueControlContainer syncStateValueContainer = ( SyncStateValueControlContainer ) container;
                     Value value = syncStateValueContainer.getCurrentTLV().getValue();
@@ -186,7 +186,7 @@ public class SyncStateValueControlGrammar extends AbstractGrammar
             SyncStateValueControlStatesEnum.SYNC_UUID_STATE, SyncStateValueControlStatesEnum.COOKIE_STATE,
             UniversalTag.OCTET_STRING.getValue(), new GrammarAction( "Set SyncStateValueControl cookie value" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     SyncStateValueControlContainer syncStateValueContainer = ( SyncStateValueControlContainer ) container;
                     Value value = syncStateValueContainer.getCurrentTLV().getValue();

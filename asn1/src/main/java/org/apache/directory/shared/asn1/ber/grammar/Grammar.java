@@ -20,7 +20,7 @@
 package org.apache.directory.shared.asn1.ber.grammar;
 
 
-import org.apache.directory.shared.asn1.ber.IAsn1Container;
+import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 
 
@@ -38,7 +38,7 @@ public interface Grammar
      * @param asn1Container Store the data being processed.
      * @throws DecoderException Thrown when an unrecoverable error occurs.
      */
-    void executeAction( IAsn1Container asn1Container ) throws DecoderException;
+    void executeAction( Asn1Container asn1Container ) throws DecoderException;
 
 
     /**

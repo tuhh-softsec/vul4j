@@ -21,7 +21,7 @@
 package org.apache.directory.shared.ldap.codec.extended.operations.storedProcedure;
 
 
-import org.apache.directory.shared.asn1.ber.IAsn1Container;
+import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.AbstractGrammar;
 import org.apache.directory.shared.asn1.ber.grammar.Grammar;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
@@ -88,7 +88,7 @@ public class StoredProcedureGrammar extends AbstractGrammar
                                     UniversalTag.OCTET_STRING.getValue(),
                 new GrammarAction( "Stores the language" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
 
                     StoredProcedureContainer storedProcedureContainer = ( StoredProcedureContainer ) container;
@@ -132,7 +132,7 @@ public class StoredProcedureGrammar extends AbstractGrammar
                 new GrammarAction(
                 "Stores the procedure" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
 
                     StoredProcedureContainer storedProcedureContainer = ( StoredProcedureContainer ) container;
@@ -174,7 +174,7 @@ public class StoredProcedureGrammar extends AbstractGrammar
             new GrammarAction(
                 "Stores the parameters" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     StoredProcedureContainer storedProcedureContainer = ( StoredProcedureContainer ) container;
                     storedProcedureContainer.grammarEndAllowed( true );
@@ -201,7 +201,7 @@ public class StoredProcedureGrammar extends AbstractGrammar
                                     UniversalTag.OCTET_STRING.getValue(),
                 new GrammarAction( "Store parameter type" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     StoredProcedureContainer storedProcedureContainer = ( StoredProcedureContainer ) container;
 
@@ -247,7 +247,7 @@ public class StoredProcedureGrammar extends AbstractGrammar
                                     UniversalTag.OCTET_STRING.getValue(),
                 new GrammarAction( "Store parameter value" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     StoredProcedureContainer storedProcedureContainer = ( StoredProcedureContainer ) container;
 

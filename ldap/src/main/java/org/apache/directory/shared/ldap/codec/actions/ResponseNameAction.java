@@ -20,7 +20,7 @@
 package org.apache.directory.shared.ldap.codec.actions;
 
 
-import org.apache.directory.shared.asn1.ber.IAsn1Container;
+import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.codec.DecoderException;
@@ -56,7 +56,7 @@ public class ResponseNameAction extends GrammarAction
     /**
      * The initialization action
      */
-    public void action( IAsn1Container container ) throws DecoderException
+    public void action( Asn1Container container ) throws DecoderException
     {
         LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 

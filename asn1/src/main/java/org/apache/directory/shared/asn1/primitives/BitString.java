@@ -33,6 +33,7 @@ import org.apache.directory.shared.i18n.I18n;
  */
 public class BitString implements Serializable
 {
+    /** The serialVersion UID constant */
     private static final long serialVersionUID = 1L;
 
     // ~ Static fields/initializers
@@ -45,14 +46,10 @@ public class BitString implements Serializable
      * A flag to mark the OctetString as Streamed (for OctetString larger than
      * 1024 chars)
      */
-    // TODO implement the streaming...
     public static final boolean STREAMED = true;
 
     /** The default length of a BitString */
     private static final int DEFAULT_LENGTH = 1024;
-
-    // ~ Instance fields
-    // ----------------------------------------------------------------------------
 
     /** The number of unused ints */
     private int nbUnusedBits;
@@ -70,22 +67,20 @@ public class BitString implements Serializable
     private int nbBits;
 
 
-    // ~ Constructors
-    // -------------------------------------------------------------------------------*
     /**
      * Creates a BitString with a specific length (length is the number of
      * bits).
      * 
      * @param length The BitString length (it's a number of bits)
      */
-    public BitString( int length ) 
+    public BitString( int length )
     {
         if ( length <= 0 )
         {
             // This is not allowed
             throw new IndexOutOfBoundsException( I18n.err( I18n.ERR_00029 ) );
         }
-        
+
         nbBits = length;
 
         // As we store values in bytes, we must divide the length by 8
@@ -124,7 +119,7 @@ public class BitString implements Serializable
             // This is not allowed
             throw new IndexOutOfBoundsException( I18n.err( I18n.ERR_00029 ) );
         }
-        
+
         nbBits = length;
         this.isStreamed = isStreamed;
         nbBytes = ( length / 8 ) + ( ( ( length % 8 ) != 0 ) ? 1 : 0 );
@@ -248,6 +243,7 @@ public class BitString implements Serializable
         return ( byte ) nbUnusedBits;
     }
 
+
     /**
      * Set a bit at a specified position. 
      * The bits are stored from left to right.
@@ -261,13 +257,14 @@ public class BitString implements Serializable
         {
             throw new IndexOutOfBoundsException( I18n.err( I18n.ERR_00030 ) );
         }
-        
+
         int posInt = nbBytes - 1 - ( ( pos + nbUnusedBits ) >> 3 );
         int bitNumber = ( pos + nbUnusedBits ) % 8;
 
         bytes[posInt] |= ( 1 << bitNumber );
     }
-    
+
+
     /**
      * Clear a bit at a specified position. 
      * The bits are stored from left to right.
@@ -282,13 +279,14 @@ public class BitString implements Serializable
         {
             throw new IndexOutOfBoundsException( I18n.err( I18n.ERR_00030 ) );
         }
-        
+
         int posInt = nbBytes - 1 - ( ( pos + nbUnusedBits ) >> 3 );
         int bitNumber = ( pos + nbUnusedBits ) % 8;
 
         bytes[posInt] &= ~( 1 << bitNumber );
     }
-    
+
+
     /**
      * Get the bit stored into the BitString at a specific position. 
      * The bits are stored from left to right, the LSB on the right and the
@@ -323,7 +321,8 @@ public class BitString implements Serializable
         int res = bytes[posInt] & ( 1 << bitNumber );
         return res != 0;
     }
-    
+
+
     /**
      * @return The number of bytes used to encode this BitString
      */

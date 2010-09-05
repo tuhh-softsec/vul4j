@@ -31,7 +31,7 @@ import org.apache.directory.shared.asn1.ber.tlv.TLVStateEnum;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public interface IAsn1Container
+public interface Asn1Container
 {
     /**
      * Get the current grammar state
@@ -88,7 +88,7 @@ public interface IAsn1Container
      */
     void setTransition( int transition );
 
-    
+
     /**
      * @return Returns the states.
      */
@@ -124,22 +124,22 @@ public interface IAsn1Container
      * being an end or not.
      */
     void grammarEndAllowed( boolean grammarEndAllowed );
-    
-    
+
+
     /**
      * Get a new TLV id
      * @return a unique value representing the current TLV id
      */
     int getNewTlvId();
 
-    
+
     /**
      * Get the current TLV id
      * @return a unique value representing the current TLV id
      */
     int getTlvId();
-    
-    
+
+
     /**
      * @return The number of decoded bytes for this message. This is used
      * to control the PDU size and avoid PDU exceeding the maximum allowed
@@ -147,7 +147,7 @@ public interface IAsn1Container
      */
     int getDecodeBytes();
 
-    
+
     /**
      * Increment the decodedBytes by the latest received buffer's size.
      * @param nb The buffer size.
@@ -159,8 +159,8 @@ public interface IAsn1Container
      * @return The maximum PDU size.
      */
     int getMaxPDUSize();
-    
-    
+
+
     /**
      * Set the maximum PDU size.
      * @param maxPDUSize The maximum PDU size (if negative or null, will be

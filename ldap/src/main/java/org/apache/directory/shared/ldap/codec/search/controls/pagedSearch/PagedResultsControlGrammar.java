@@ -20,7 +20,7 @@
 package org.apache.directory.shared.ldap.codec.search.controls.pagedSearch;
 
 
-import org.apache.directory.shared.asn1.ber.IAsn1Container;
+import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.AbstractGrammar;
 import org.apache.directory.shared.asn1.ber.grammar.Grammar;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
@@ -101,7 +101,7 @@ public class PagedResultsControlGrammar extends AbstractGrammar
                 UniversalTag.INTEGER.getValue(),
                 new GrammarAction( "Set PagedSearchControl size" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     PagedResultsControlContainer pagedSearchContainer = ( PagedResultsControlContainer ) container;
                     Value value = pagedSearchContainer.getCurrentTLV().getValue();
@@ -148,7 +148,7 @@ public class PagedResultsControlGrammar extends AbstractGrammar
                                     PagedResultsControlStatesEnum.COOKIE_STATE, UniversalTag.OCTET_STRING.getValue(),
                 new GrammarAction( "Set PagedSearchControl cookie" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     PagedResultsControlContainer pagedSearchContainer = ( PagedResultsControlContainer ) container;
                     Value value = pagedSearchContainer.getCurrentTLV().getValue();

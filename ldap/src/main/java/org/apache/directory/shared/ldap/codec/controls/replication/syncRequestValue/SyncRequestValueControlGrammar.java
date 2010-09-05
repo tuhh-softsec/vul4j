@@ -20,7 +20,7 @@
 package org.apache.directory.shared.ldap.codec.controls.replication.syncRequestValue;
 
 
-import org.apache.directory.shared.asn1.ber.IAsn1Container;
+import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.AbstractGrammar;
 import org.apache.directory.shared.asn1.ber.grammar.Grammar;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
@@ -115,7 +115,7 @@ public class SyncRequestValueControlGrammar extends AbstractGrammar
                 UniversalTag.ENUMERATED.getValue(),
                 new GrammarAction( "Set SyncRequestValueControl mode" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     SyncRequestValueControlContainer SyncRequestValueContainer = ( SyncRequestValueControlContainer ) container;
                     Value value = SyncRequestValueContainer.getCurrentTLV().getValue();
@@ -163,7 +163,7 @@ public class SyncRequestValueControlGrammar extends AbstractGrammar
                                     SyncRequestValueControlStatesEnum.COOKIE_STATE, UniversalTag.OCTET_STRING.getValue(),
                 new GrammarAction( "Set SyncRequestValueControl cookie" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     SyncRequestValueControlContainer SyncRequestValueContainer = ( SyncRequestValueControlContainer ) container;
                     Value value = SyncRequestValueContainer.getCurrentTLV().getValue();
@@ -197,7 +197,7 @@ public class SyncRequestValueControlGrammar extends AbstractGrammar
                                     SyncRequestValueControlStatesEnum.RELOAD_HINT_STATE, UniversalTag.BOOLEAN.getValue(),
                 new GrammarAction( "Set SyncRequestValueControl reloadHint flag" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     SyncRequestValueControlContainer SyncRequestValueContainer = ( SyncRequestValueControlContainer ) container;
                     Value value = SyncRequestValueContainer.getCurrentTLV().getValue();
@@ -240,7 +240,7 @@ public class SyncRequestValueControlGrammar extends AbstractGrammar
                                     SyncRequestValueControlStatesEnum.RELOAD_HINT_STATE, UniversalTag.BOOLEAN.getValue(),
                 new GrammarAction( "Set SyncRequestValueControl reloadHint flag" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     SyncRequestValueControlContainer SyncRequestValueContainer = ( SyncRequestValueControlContainer ) container;
                     Value value = SyncRequestValueContainer.getCurrentTLV().getValue();

@@ -20,7 +20,7 @@
 package org.apache.directory.shared.ldap.codec.controls.replication.syncmodifydn;
 
 
-import org.apache.directory.shared.asn1.ber.IAsn1Container;
+import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.AbstractGrammar;
 import org.apache.directory.shared.asn1.ber.grammar.Grammar;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
@@ -112,7 +112,7 @@ public class SyncModifyDnControlGrammar extends AbstractGrammar
             SyncModifyDnControlStatesEnum.ENTRY_DN_STATE, UniversalTag.OCTET_STRING.getValue(), new GrammarAction(
                 "Set SyncModifyDnControl entryDn value" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     SyncModifyDnControlContainer syncModifyDnControlContainer = ( SyncModifyDnControlContainer ) container;
                     Value value = syncModifyDnControlContainer.getCurrentTLV().getValue();
@@ -145,7 +145,7 @@ public class SyncModifyDnControlGrammar extends AbstractGrammar
             SyncModifyDnControlStatesEnum.ENTRY_DN_STATE, SyncModifyDnControlStatesEnum.MOVE_STATE,
             SyncModifyDnControlTags.MOVE_TAG.getValue(), new GrammarAction( "Set SyncModifyDnControl newSuperiorDn" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     SyncModifyDnControlContainer syncModifyDnControlContainer = ( SyncModifyDnControlContainer ) container;
                     syncModifyDnControlContainer.getSyncModifyDnControl().setModDnType( SyncModifyDnType.MOVE );
@@ -177,7 +177,7 @@ public class SyncModifyDnControlGrammar extends AbstractGrammar
             SyncModifyDnControlStatesEnum.ENTRY_DN_STATE, SyncModifyDnControlStatesEnum.RENAME_STATE,
             SyncModifyDnControlTags.RENAME_TAG.getValue(), new GrammarAction( "enter SyncModifyDnControl rename choice" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     SyncModifyDnControlContainer syncModifyDnControlContainer = ( SyncModifyDnControlContainer ) container;
                     syncModifyDnControlContainer.getSyncModifyDnControl().setModDnType( SyncModifyDnType.RENAME );
@@ -199,7 +199,7 @@ public class SyncModifyDnControlGrammar extends AbstractGrammar
             SyncModifyDnControlStatesEnum.RENAME_STATE, SyncModifyDnControlStatesEnum.RENAME_NEW_RDN_STATE,
             UniversalTag.OCTET_STRING.getValue(), new GrammarAction( "Set SyncModifyDnControl newRdn value" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     SyncModifyDnControlContainer syncModifyDnControlContainer = ( SyncModifyDnControlContainer ) container;
                     Value value = syncModifyDnControlContainer.getCurrentTLV().getValue();
@@ -233,7 +233,7 @@ public class SyncModifyDnControlGrammar extends AbstractGrammar
             SyncModifyDnControlStatesEnum.RENAME_NEW_RDN_STATE, SyncModifyDnControlStatesEnum.RENAME_DEL_OLD_RDN_STATE,
             UniversalTag.BOOLEAN.getValue(), new GrammarAction( "Set SyncModifyDnControl deleteOldRdn value" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     SyncModifyDnControlContainer syncModifyDnControlContainer = ( SyncModifyDnControlContainer ) container;
                     Value value = syncModifyDnControlContainer.getCurrentTLV().getValue();
@@ -266,7 +266,7 @@ public class SyncModifyDnControlGrammar extends AbstractGrammar
             SyncModifyDnControlStatesEnum.ENTRY_DN_STATE, SyncModifyDnControlStatesEnum.MOVE_AND_RENAME_STATE,
             SyncModifyDnControlTags.MOVEANDRENAME_TAG.getValue(), new GrammarAction( "enter SyncModifyDnControl moveAndRename choice" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     SyncModifyDnControlContainer syncModifyDnControlContainer = ( SyncModifyDnControlContainer ) container;
                     syncModifyDnControlContainer.getSyncModifyDnControl().setModDnType( SyncModifyDnType.MOVEANDRENAME );
@@ -288,7 +288,7 @@ public class SyncModifyDnControlGrammar extends AbstractGrammar
             SyncModifyDnControlStatesEnum.MOVE_AND_RENAME_STATE, SyncModifyDnControlStatesEnum.MOVE_AND_RENAME_NEW_SUPERIOR_DN_STATE,
             UniversalTag.OCTET_STRING.getValue(), new GrammarAction( "Set SyncModifyDnControl moveAndRename state's newSuperirorDN value" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     SyncModifyDnControlContainer syncModifyDnControlContainer = ( SyncModifyDnControlContainer ) container;
                     Value value = syncModifyDnControlContainer.getCurrentTLV().getValue();
@@ -320,7 +320,7 @@ public class SyncModifyDnControlGrammar extends AbstractGrammar
             SyncModifyDnControlStatesEnum.MOVE_AND_RENAME_NEW_SUPERIOR_DN_STATE, SyncModifyDnControlStatesEnum.MOVE_AND_RENAME_NEW_RDN_STATE,
             UniversalTag.OCTET_STRING.getValue(), new GrammarAction( "Set SyncModifyDnControl moveAndRename state's newRdn value" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     SyncModifyDnControlContainer syncModifyDnControlContainer = ( SyncModifyDnControlContainer ) container;
                     Value value = syncModifyDnControlContainer.getCurrentTLV().getValue();
@@ -352,7 +352,7 @@ public class SyncModifyDnControlGrammar extends AbstractGrammar
             SyncModifyDnControlStatesEnum.MOVE_AND_RENAME_NEW_RDN_STATE, SyncModifyDnControlStatesEnum.MOVE_AND_RENAME_DEL_OLD_RDN_STATE,
             UniversalTag.BOOLEAN.getValue(), new GrammarAction( "Set SyncModifyDnControl deleteOldRdn value" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     SyncModifyDnControlContainer syncModifyDnControlContainer = ( SyncModifyDnControlContainer ) container;
                     Value value = syncModifyDnControlContainer.getCurrentTLV().getValue();

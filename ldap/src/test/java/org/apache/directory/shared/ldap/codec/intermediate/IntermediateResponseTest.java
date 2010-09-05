@@ -30,7 +30,7 @@ import java.util.Map;
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
-import org.apache.directory.shared.asn1.ber.IAsn1Container;
+import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
@@ -79,7 +79,7 @@ public class IntermediateResponseTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        IAsn1Container ldapMessageContainer = new LdapMessageContainer();
+        Asn1Container ldapMessageContainer = new LdapMessageContainer();
 
         // Decode the IntermediateResponse PDU
         try
@@ -150,7 +150,7 @@ public class IntermediateResponseTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        IAsn1Container ldapMessageContainer = new LdapMessageContainer();
+        Asn1Container ldapMessageContainer = new LdapMessageContainer();
 
         // Decode the IntermediateResponse PDU
         try
@@ -231,7 +231,7 @@ public class IntermediateResponseTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        IAsn1Container ldapMessageContainer = new LdapMessageContainer();
+        Asn1Container ldapMessageContainer = new LdapMessageContainer();
 
         // Decode the IntermediateResponse PDU
         try
@@ -301,7 +301,7 @@ public class IntermediateResponseTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        IAsn1Container ldapMessageContainer = new LdapMessageContainer();
+        Asn1Container ldapMessageContainer = new LdapMessageContainer();
 
         // Decode a IntermediateResponse PDU
         try
@@ -336,7 +336,7 @@ public class IntermediateResponseTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        IAsn1Container ldapMessageContainer = new LdapMessageContainer();
+        Asn1Container ldapMessageContainer = new LdapMessageContainer();
 
         // Decode a IntermediateResponse PDU
         try
@@ -372,7 +372,7 @@ public class IntermediateResponseTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        IAsn1Container ldapMessageContainer = new LdapMessageContainer();
+        Asn1Container ldapMessageContainer = new LdapMessageContainer();
 
         // Decode a IntermediateResponse PDU
         try
@@ -409,7 +409,7 @@ public class IntermediateResponseTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        IAsn1Container ldapMessageContainer = new LdapMessageContainer();
+        Asn1Container ldapMessageContainer = new LdapMessageContainer();
 
         // Decode the IntermediateResponse PDU
         try
@@ -475,7 +475,7 @@ public class IntermediateResponseTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        IAsn1Container ldapMessageContainer = new LdapMessageContainer();
+        Asn1Container ldapMessageContainer = new LdapMessageContainer();
 
         // Decode the IntermediateResponse PDU
         try
@@ -538,7 +538,7 @@ public class IntermediateResponseTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        IAsn1Container ldapMessageContainer = new LdapMessageContainer();
+        Asn1Container ldapMessageContainer = new LdapMessageContainer();
 
         // Decode the IntermediateResponse PDU
         try
@@ -601,7 +601,7 @@ public class IntermediateResponseTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        IAsn1Container ldapMessageContainer = new LdapMessageContainer();
+        Asn1Container ldapMessageContainer = new LdapMessageContainer();
 
         // Decode the IntermediateResponse PDU
         try

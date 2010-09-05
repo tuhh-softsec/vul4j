@@ -20,7 +20,7 @@
 package org.apache.directory.shared.ldap.codec.actions;
 
 
-import org.apache.directory.shared.asn1.ber.IAsn1Container;
+import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
@@ -53,7 +53,7 @@ public class SearchResultAttributeValueAction extends GrammarAction
     /**
      * The initialization action
      */
-    public void action( IAsn1Container container )
+    public void action( Asn1Container container )
     {
         LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
         SearchResultEntry searchResultEntry = ldapMessageContainer.getSearchResultEntry();

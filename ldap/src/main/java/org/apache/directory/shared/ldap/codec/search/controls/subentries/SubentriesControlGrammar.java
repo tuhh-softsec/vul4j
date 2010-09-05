@@ -20,7 +20,7 @@
 package org.apache.directory.shared.ldap.codec.search.controls.subentries;
 
 
-import org.apache.directory.shared.asn1.ber.IAsn1Container;
+import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.AbstractGrammar;
 import org.apache.directory.shared.asn1.ber.grammar.Grammar;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
@@ -68,7 +68,7 @@ public class SubentriesControlGrammar extends AbstractGrammar
                                     SubentriesControlStatesEnum.SUB_ENTRY_VISIBILITY_STATE, UniversalTag.BOOLEAN.getValue(), 
                 new GrammarAction( "SubEntryControl visibility" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     SubentriesControlContainer subEntryContainer = ( SubentriesControlContainer ) container;
                     SubentriesControl control = subEntryContainer.getSubEntryControl();

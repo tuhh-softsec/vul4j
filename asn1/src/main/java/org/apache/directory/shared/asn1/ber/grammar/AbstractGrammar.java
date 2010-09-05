@@ -20,7 +20,7 @@
 package org.apache.directory.shared.asn1.ber.grammar;
 
 
-import org.apache.directory.shared.asn1.ber.IAsn1Container;
+import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.util.Asn1StringUtils;
 import org.apache.directory.shared.i18n.I18n;
@@ -104,7 +104,7 @@ public abstract class AbstractGrammar implements Grammar
      * @param container The Asn1Container
      * @throws DecoderException Thrown if anything went wrong
      */
-    public void executeAction( IAsn1Container container ) throws DecoderException
+    public void executeAction( Asn1Container container ) throws DecoderException
     {
 
         int currentState = container.getTransition();
@@ -124,8 +124,8 @@ public abstract class AbstractGrammar implements Grammar
 
         if ( transition == null )
         {
-            String errorMessage = I18n.err( I18n.ERR_BAD_TRANSITION_FROM_STATE_00001, currentGrammar.getStatesEnum().getState( currentState ),
-                Asn1StringUtils.dumpByte( tagByte ) );
+            String errorMessage = I18n.err( I18n.ERR_BAD_TRANSITION_FROM_STATE_00001, currentGrammar.getStatesEnum()
+                .getState( currentState ), Asn1StringUtils.dumpByte( tagByte ) );
 
             LOG.error( errorMessage );
 

@@ -20,7 +20,7 @@
 package org.apache.directory.shared.ldap.codec.extended.operations.gracefulShutdown;
 
 
-import org.apache.directory.shared.asn1.ber.IAsn1Container;
+import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.AbstractGrammar;
 import org.apache.directory.shared.asn1.ber.grammar.Grammar;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
@@ -89,7 +89,7 @@ public class GracefulShutdownGrammar extends AbstractGrammar
                 UniversalTag.SEQUENCE.getValue(),
                 new GrammarAction( "Init GracefulShutdown" )
             {
-                public void action( IAsn1Container container )
+                public void action( Asn1Container container )
                 {
                     GracefulShutdownContainer gracefulShutdownContainer = ( GracefulShutdownContainer ) container;
                     GracefulShutdown gracefulShutdown = new GracefulShutdown();
@@ -114,7 +114,7 @@ public class GracefulShutdownGrammar extends AbstractGrammar
                                     UniversalTag.INTEGER.getValue(), 
                 new GrammarAction( "Set Graceful Shutdown time offline" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     GracefulShutdownContainer gracefulShutdownContainer = ( GracefulShutdownContainer ) container;
                     Value value = gracefulShutdownContainer.getCurrentTLV().getValue();
@@ -157,7 +157,7 @@ public class GracefulShutdownGrammar extends AbstractGrammar
 
                 new GrammarAction( "Set Graceful Shutdown Delay" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     GracefulShutdownContainer gracefulShutdownContainer = ( GracefulShutdownContainer ) container;
                     Value value = gracefulShutdownContainer.getCurrentTLV().getValue();
@@ -201,7 +201,7 @@ public class GracefulShutdownGrammar extends AbstractGrammar
 
                 new GrammarAction( "Set Graceful Shutdown Delay" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     GracefulShutdownContainer gracefulShutdownContainer = ( GracefulShutdownContainer ) container;
                     Value value = gracefulShutdownContainer.getCurrentTLV().getValue();

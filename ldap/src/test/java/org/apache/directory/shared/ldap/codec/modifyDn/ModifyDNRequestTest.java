@@ -30,7 +30,7 @@ import java.util.Map;
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
-import org.apache.directory.shared.asn1.ber.IAsn1Container;
+import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
@@ -93,7 +93,7 @@ public class ModifyDNRequestTest
         stream.flip();
 
         // Allocate a ModifyRequest Container
-        IAsn1Container ldapMessageContainer = new LdapMessageContainer();
+        Asn1Container ldapMessageContainer = new LdapMessageContainer();
 
         try
         {
@@ -167,7 +167,7 @@ public class ModifyDNRequestTest
         stream.flip();
 
         // Allocate a ModifyRequest Container
-        IAsn1Container ldapMessageContainer = new LdapMessageContainer();
+        Asn1Container ldapMessageContainer = new LdapMessageContainer();
 
         try
         {
@@ -220,7 +220,7 @@ public class ModifyDNRequestTest
         stream.flip();
 
         // Allocate a ModifyRequest Container
-        IAsn1Container ldapMessageContainer = new LdapMessageContainer();
+        Asn1Container ldapMessageContainer = new LdapMessageContainer();
 
         try
         {
@@ -273,7 +273,7 @@ public class ModifyDNRequestTest
         stream.flip();
 
         // Allocate a ModifyRequest Container
-        IAsn1Container ldapMessageContainer = new LdapMessageContainer();
+        Asn1Container ldapMessageContainer = new LdapMessageContainer();
 
         try
         {
@@ -332,7 +332,7 @@ public class ModifyDNRequestTest
         stream.flip();
 
         // Allocate a ModifyRequest Container
-        IAsn1Container ldapMessageContainer = new LdapMessageContainer();
+        Asn1Container ldapMessageContainer = new LdapMessageContainer();
 
         try
         {
@@ -414,7 +414,7 @@ public class ModifyDNRequestTest
         stream.flip();
 
         // Allocate a ModifyRequest Container
-        IAsn1Container ldapMessageContainer = new LdapMessageContainer();
+        Asn1Container ldapMessageContainer = new LdapMessageContainer();
 
         try
         {
@@ -493,7 +493,7 @@ public class ModifyDNRequestTest
         stream.flip();
 
         // Allocate a ModifyRequest Container
-        IAsn1Container ldapMessageContainer = new LdapMessageContainer();
+        Asn1Container ldapMessageContainer = new LdapMessageContainer();
 
         try
         {
@@ -566,7 +566,7 @@ public class ModifyDNRequestTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        IAsn1Container ldapMessageContainer = new LdapMessageContainer();
+        Asn1Container ldapMessageContainer = new LdapMessageContainer();
 
         // Decode a ModifyDNRequest PDU
         try
@@ -601,7 +601,7 @@ public class ModifyDNRequestTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        IAsn1Container ldapMessageContainer = new LdapMessageContainer();
+        Asn1Container ldapMessageContainer = new LdapMessageContainer();
 
         // Decode a ModifyDNRequest PDU
         try
@@ -640,7 +640,7 @@ public class ModifyDNRequestTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        IAsn1Container ldapMessageContainer = new LdapMessageContainer();
+        Asn1Container ldapMessageContainer = new LdapMessageContainer();
 
         // Decode a ModifyDNRequest PDU
         try
@@ -683,7 +683,7 @@ public class ModifyDNRequestTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        IAsn1Container ldapMessageContainer = new LdapMessageContainer();
+        Asn1Container ldapMessageContainer = new LdapMessageContainer();
 
         // Decode a ModifyDNRequest PDU
         try

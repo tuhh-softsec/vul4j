@@ -36,12 +36,13 @@ public class GrammarTransition
 
     /** The previous state */
     private int previousState;
-    
+
     /** The current state */
     private int currentState;
 
     /** The current tag */
     private int currentTag;
+
 
     /**
      * Creates a new GrammarTransition object.
@@ -59,7 +60,7 @@ public class GrammarTransition
         this.currentTag = currentTag;
     }
 
-    
+
     /**
      * Tells if the transition has an associated action.
      * 
@@ -70,7 +71,7 @@ public class GrammarTransition
         return action != null;
     }
 
-    
+
     /**
      * @return Returns the action associated with the transition
      */
@@ -79,7 +80,7 @@ public class GrammarTransition
         return action;
     }
 
-    
+
     /**
      * @return The current state
      */
@@ -88,7 +89,7 @@ public class GrammarTransition
         return currentState;
     }
 
-    
+
     /**
      * @return The previous state
      */
@@ -97,7 +98,7 @@ public class GrammarTransition
         return previousState;
     }
 
-    
+
     /**
      * @param statesEnum Starting state.
      * @return A representation of the transition as a string.
@@ -108,9 +109,9 @@ public class GrammarTransition
 
         sb.append( "Transition from state <" ).append( statesEnum.getState( previousState ) ).append( "> " );
         sb.append( "to state <" ).append( statesEnum.getState( currentState ) ).append( ">, " );
-        sb.append( "tag <" ).append( Asn1StringUtils.dumpByte( (byte)currentTag ) ).append( ">, " );
+        sb.append( "tag <" ).append( Asn1StringUtils.dumpByte( ( byte ) currentTag ) ).append( ">, " );
         sb.append( "action : " );
-        
+
         if ( action == null )
         {
             sb.append( "no action" );
@@ -119,7 +120,7 @@ public class GrammarTransition
         {
             sb.append( action );
         }
-        
+
         return sb.toString();
     }
 }

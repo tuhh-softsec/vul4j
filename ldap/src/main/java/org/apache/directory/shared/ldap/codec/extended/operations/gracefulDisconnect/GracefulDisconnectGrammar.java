@@ -20,7 +20,7 @@
 package org.apache.directory.shared.ldap.codec.extended.operations.gracefulDisconnect;
 
 
-import org.apache.directory.shared.asn1.ber.IAsn1Container;
+import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.AbstractGrammar;
 import org.apache.directory.shared.asn1.ber.grammar.Grammar;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
@@ -78,7 +78,7 @@ public class GracefulDisconnectGrammar extends AbstractGrammar
      */
     GrammarAction storeDelay = new GrammarAction( "Set Graceful Disconnect Delay" )
     {
-        public void action( IAsn1Container container ) throws DecoderException
+        public void action( Asn1Container container ) throws DecoderException
         {
             GracefulDisconnectContainer gracefulDisconnectContainer = ( GracefulDisconnectContainer ) container;
             Value value = gracefulDisconnectContainer.getCurrentTLV().getValue();
@@ -109,7 +109,7 @@ public class GracefulDisconnectGrammar extends AbstractGrammar
      */
     GrammarAction storeReferral = new GrammarAction( "Stores a referral" )
     {
-        public void action( IAsn1Container container ) throws DecoderException
+        public void action( Asn1Container container ) throws DecoderException
         {
             GracefulDisconnectContainer gracefulDisconnectContainer = ( GracefulDisconnectContainer ) container;
             Value value = gracefulDisconnectContainer.getCurrentTLV().getValue();
@@ -139,7 +139,7 @@ public class GracefulDisconnectGrammar extends AbstractGrammar
      */
     GrammarAction storeTimeOffline = new GrammarAction( "Set Graceful Disconnect time offline" )
     {
-        public void action( IAsn1Container container ) throws DecoderException
+        public void action( Asn1Container container ) throws DecoderException
         {
             GracefulDisconnectContainer gracefulDisconnectContainer = ( GracefulDisconnectContainer ) container;
             Value value = gracefulDisconnectContainer.getCurrentTLV().getValue();
@@ -190,7 +190,7 @@ public class GracefulDisconnectGrammar extends AbstractGrammar
                 new GrammarAction(
                 "Init Graceful Disconnect" )
             {
-                public void action( IAsn1Container container )
+                public void action( Asn1Container container )
                 {
                     GracefulDisconnectContainer gracefulDisconnectContainer = ( GracefulDisconnectContainer ) container;
                     GracefulDisconnect gracefulDisconnect = new GracefulDisconnect();

@@ -66,7 +66,7 @@ public enum TLVStateEnum
 
     /** The decoding of a PDU is done */
     PDU_DECODED,
-    
+
     /** The ending state */
     GRAMMAR_END;
 }

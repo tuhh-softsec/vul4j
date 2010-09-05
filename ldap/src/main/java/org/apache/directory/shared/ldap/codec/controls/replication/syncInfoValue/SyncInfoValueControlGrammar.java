@@ -20,7 +20,7 @@
 package org.apache.directory.shared.ldap.codec.controls.replication.syncInfoValue;
 
 
-import org.apache.directory.shared.asn1.ber.IAsn1Container;
+import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.AbstractGrammar;
 import org.apache.directory.shared.asn1.ber.grammar.Grammar;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
@@ -100,7 +100,7 @@ public class SyncInfoValueControlGrammar extends AbstractGrammar
                                     SyncInfoValueTags.NEW_COOKIE_TAG.getValue(), 
                 new GrammarAction( "NewCookie choice for SyncInfoValueControl" )
             {
-                public void action( IAsn1Container container )
+                public void action( Asn1Container container )
                 {
                     SyncInfoValueControlContainer syncInfoValueContainer = 
                         ( SyncInfoValueControlContainer ) container;
@@ -141,7 +141,7 @@ public class SyncInfoValueControlGrammar extends AbstractGrammar
                                     SyncInfoValueTags.REFRESH_DELETE_TAG.getValue(), 
                 new GrammarAction( "RefreshDelete choice for SyncInfoValueControl" )
             {
-                public void action( IAsn1Container container )
+                public void action( Asn1Container container )
                 {
                     SyncInfoValueControlContainer syncInfoValueContainer = 
                         ( SyncInfoValueControlContainer ) container;
@@ -170,7 +170,7 @@ public class SyncInfoValueControlGrammar extends AbstractGrammar
                                     UniversalTag.OCTET_STRING.getValue(), 
                 new GrammarAction( "RefreshDelete cookie" )
             {
-                public void action( IAsn1Container container )
+                public void action( Asn1Container container )
                 {
                     SyncInfoValueControlContainer syncInfoValueContainer = 
                         ( SyncInfoValueControlContainer ) container;
@@ -209,7 +209,7 @@ public class SyncInfoValueControlGrammar extends AbstractGrammar
                                     UniversalTag.BOOLEAN.getValue(), 
                 new GrammarAction( "RefreshDelete refreshDone flag" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     SyncInfoValueControlContainer syncInfoValueContainer = 
                         ( SyncInfoValueControlContainer ) container;
@@ -262,7 +262,7 @@ public class SyncInfoValueControlGrammar extends AbstractGrammar
                                     UniversalTag.BOOLEAN.getValue(), 
                 new GrammarAction( "RefreshDelete refreshDone flag" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     SyncInfoValueControlContainer syncInfoValueContainer = 
                         ( SyncInfoValueControlContainer ) container;
@@ -315,7 +315,7 @@ public class SyncInfoValueControlGrammar extends AbstractGrammar
                                     SyncInfoValueTags.REFRESH_PRESENT_TAG.getValue(), 
                 new GrammarAction( "RefreshDelete choice for SyncInfoValueControl" )
             {
-                public void action( IAsn1Container container )
+                public void action( Asn1Container container )
                 {
                     SyncInfoValueControlContainer syncInfoValueContainer = 
                         ( SyncInfoValueControlContainer ) container;
@@ -344,7 +344,7 @@ public class SyncInfoValueControlGrammar extends AbstractGrammar
                                     UniversalTag.OCTET_STRING.getValue(), 
                 new GrammarAction( "RefreshPresent cookie" )
             {
-                public void action( IAsn1Container container )
+                public void action( Asn1Container container )
                 {
                     SyncInfoValueControlContainer syncInfoValueContainer = 
                         ( SyncInfoValueControlContainer ) container;
@@ -385,7 +385,7 @@ public class SyncInfoValueControlGrammar extends AbstractGrammar
                                     UniversalTag.BOOLEAN.getValue(), 
                 new GrammarAction( "RefreshPresent refreshDone flag" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     SyncInfoValueControlContainer syncInfoValueContainer = 
                         ( SyncInfoValueControlContainer ) container;
@@ -438,7 +438,7 @@ public class SyncInfoValueControlGrammar extends AbstractGrammar
                                     UniversalTag.BOOLEAN.getValue(), 
                 new GrammarAction( "RefreshPresent refreshDone flag" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     SyncInfoValueControlContainer syncInfoValueContainer = 
                         ( SyncInfoValueControlContainer ) container;
@@ -490,7 +490,7 @@ public class SyncInfoValueControlGrammar extends AbstractGrammar
                                     SyncInfoValueTags.SYNC_ID_SET_TAG.getValue(), 
                 new GrammarAction( "SyncIdSet choice for SyncInfoValueControl" )
             {
-                public void action( IAsn1Container container )
+                public void action( Asn1Container container )
                 {
                     SyncInfoValueControlContainer syncInfoValueContainer = 
                         ( SyncInfoValueControlContainer ) container;
@@ -516,7 +516,7 @@ public class SyncInfoValueControlGrammar extends AbstractGrammar
                                     UniversalTag.OCTET_STRING.getValue(), 
                 new GrammarAction( "SyncIdSet cookie" )
             {
-                public void action( IAsn1Container container )
+                public void action( Asn1Container container )
                 {
                     SyncInfoValueControlContainer syncInfoValueContainer = 
                         ( SyncInfoValueControlContainer ) container;
@@ -552,7 +552,7 @@ public class SyncInfoValueControlGrammar extends AbstractGrammar
                                     UniversalTag.BOOLEAN.getValue(), 
                 new GrammarAction( "SyncIdSet refreshDeletes" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     SyncInfoValueControlContainer syncInfoValueContainer = 
                         ( SyncInfoValueControlContainer ) container;
@@ -598,7 +598,7 @@ public class SyncInfoValueControlGrammar extends AbstractGrammar
                                     UniversalTag.BOOLEAN.getValue(), 
                 new GrammarAction( "SyncIdSet refreshDeletes" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     SyncInfoValueControlContainer syncInfoValueContainer = 
                         ( SyncInfoValueControlContainer ) container;
@@ -644,7 +644,7 @@ public class SyncInfoValueControlGrammar extends AbstractGrammar
                                     UniversalTag.SET.getValue(), 
                 new GrammarAction( "SyncIdSet syncUUIDs" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     SyncInfoValueControlContainer syncInfoValueContainer = 
                         ( SyncInfoValueControlContainer ) container;
@@ -670,7 +670,7 @@ public class SyncInfoValueControlGrammar extends AbstractGrammar
                                     UniversalTag.SET.getValue(),
                 new GrammarAction( "SyncIdSet syncUUIDs" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     SyncInfoValueControlContainer syncInfoValueContainer = 
                         ( SyncInfoValueControlContainer ) container;
@@ -696,7 +696,7 @@ public class SyncInfoValueControlGrammar extends AbstractGrammar
                                     UniversalTag.SET.getValue(), 
                 new GrammarAction( "SyncIdSet syncUUIDs" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     SyncInfoValueControlContainer syncInfoValueContainer = 
                         ( SyncInfoValueControlContainer ) container;
@@ -722,7 +722,7 @@ public class SyncInfoValueControlGrammar extends AbstractGrammar
                                     UniversalTag.OCTET_STRING.getValue(), 
                 new GrammarAction( "SyncIdSet first UUID" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     SyncInfoValueControlContainer syncInfoValueContainer = 
                         ( SyncInfoValueControlContainer ) container;
@@ -769,7 +769,7 @@ public class SyncInfoValueControlGrammar extends AbstractGrammar
                                     UniversalTag.OCTET_STRING.getValue(), 
                 new GrammarAction( "SyncIdSet UUID" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     SyncInfoValueControlContainer syncInfoValueContainer = 
                         ( SyncInfoValueControlContainer ) container;

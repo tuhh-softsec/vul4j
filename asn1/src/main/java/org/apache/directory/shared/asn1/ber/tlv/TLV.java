@@ -38,7 +38,7 @@ public class TLV
 
     /** The number of byte to store the Length being processed */
     private int lengthNbBytes;
-    
+
     /** The number of length's bytes currently read */
     private int lengthBytesRead;
 
@@ -47,7 +47,7 @@ public class TLV
 
     /** An identity for the TLV. It store the TLV hashCode */
     private int id;
-    
+
     /**
      * Reference the TLV which contains the current TLV, if any. As the
      * enclosing TLV of a PDU does not have parent, it can be null in this case.
@@ -65,8 +65,8 @@ public class TLV
     public static final byte CONSTRUCTED_FLAG = 0x20;
 
     /** mask to get the type class value */
-    public static final byte TYPE_CLASS_MASK = (byte)0xC0;
-    
+    public static final byte TYPE_CLASS_MASK = ( byte ) 0xC0;
+
     /** value for the universal type class */
     public static final byte TYPE_CLASS_UNIVERSAL = 0x00;
 
@@ -81,19 +81,19 @@ public class TLV
 
     /** A mask to get the long form value */
     public static final int LENGTH_SHORT_MASK = 0x007F;
-    
+
     /** A speedup for single bytes length */
     private static final byte[][] ONE_BYTE = new byte[256][];
-    
+
     static
     {
         for ( int i = 0; i < 256; i++ )
         {
             ONE_BYTE[i] = new byte[1];
-            ONE_BYTE[i][0] = (byte)i;
+            ONE_BYTE[i][0] = ( byte ) i;
         }
     }
-    
+
 
     /**
      * Creates a new TLV object.
@@ -107,7 +107,7 @@ public class TLV
         lengthNbBytes = 0;
         value = new Value();
         this.id = id;
-        
+
         expectedLength = 0;
     }
 
@@ -123,7 +123,7 @@ public class TLV
         return ( tag & CONSTRUCTED_FLAG ) != 0;
     }
 
-    
+
     /**
      * Checks to see if the current tlv's tag is constructed.
      * 
@@ -147,7 +147,7 @@ public class TLV
         return ( tag & CONSTRUCTED_FLAG ) == 0;
     }
 
-    
+
     /**
      * Tells if the tag is Universal or not
      * 
@@ -156,10 +156,10 @@ public class TLV
      */
     public static boolean isUniversal( byte tag )
     {
-        return ( tag & TYPE_CLASS_MASK ) == TYPE_CLASS_UNIVERSAL; 
+        return ( tag & TYPE_CLASS_MASK ) == TYPE_CLASS_UNIVERSAL;
     }
 
-    
+
     /**
      * Reset the TLV, so it can be reused for the next PDU decoding.
      */
@@ -173,7 +173,7 @@ public class TLV
         expectedLength = 0;
     }
 
-    
+
     /**
      * @return Returns the tag.
      */
@@ -182,7 +182,7 @@ public class TLV
         return tag;
     }
 
-    
+
     /**
      * Set a tag value for this TLV.
      * 
@@ -193,7 +193,7 @@ public class TLV
         this.tag = tag;
     }
 
-    
+
     /**
      * @return Returns the value.
      */
@@ -214,7 +214,7 @@ public class TLV
         return 1 + lengthNbBytes + length;
     }
 
-    
+
     /**
      * Utility function that return the number of bytes necessary to store the
      * length
@@ -253,7 +253,7 @@ public class TLV
         }
     }
 
-    
+
     /**
      * Utility function that return a byte array representing the length
      * 
@@ -268,10 +268,10 @@ public class TLV
             {
                 return ONE_BYTE[length];
             }
-            else 
+            else
             {
                 byte[] bytes = new byte[getNbBytes( length )];
-                
+
                 if ( length < 256 )
                 {
                     bytes[0] = ( byte ) 0x81;
@@ -298,7 +298,7 @@ public class TLV
                     bytes[3] = ( byte ) ( ( length >> 8 ) & 0x00FF );
                     bytes[4] = ( byte ) ( length & 0x00FF );
                 }
-                
+
                 return bytes;
             }
         }
@@ -315,7 +315,7 @@ public class TLV
             return bytes;
         }
     }
-    
+
 
     /**
      * @return Returns the parent.
@@ -414,8 +414,8 @@ public class TLV
     {
         this.lengthBytesRead = lengthBytesRead;
     }
-    
-    
+
+
     /**
      * Increment the number of bytes read for this TLV
      *
@@ -425,7 +425,7 @@ public class TLV
         lengthBytesRead++;
     }
 
-    
+
     /**
      * @return the TLV's ID 
      */
@@ -434,7 +434,7 @@ public class TLV
         return id;
     }
 
-    
+
     /**
      * Get a String representation of the TLV
      * 
@@ -454,4 +454,3 @@ public class TLV
         return sb.toString();
     }
 }
- 

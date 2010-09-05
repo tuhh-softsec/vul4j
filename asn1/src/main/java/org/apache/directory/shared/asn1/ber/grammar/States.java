@@ -38,6 +38,7 @@ public interface States
     /** The END_STATE */
     int END_STATE = -1;
 
+
     /** 
      * Get the current state's name 
      * 
@@ -46,7 +47,7 @@ public interface States
      */
     String getState( int state );
 
-    
+
     /** 
      * Return the grammar name of a grammar
      * 
@@ -55,7 +56,7 @@ public interface States
      */
     String getGrammarName( Grammar grammar );
 
-    
+
     /** 
      * Return the grammar name from a grammar number 
      * 

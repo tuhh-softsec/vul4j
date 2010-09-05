@@ -20,7 +20,7 @@
 package org.apache.directory.shared.ldap.codec.extended.operations.cancel;
 
 
-import org.apache.directory.shared.asn1.ber.IAsn1Container;
+import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.AbstractGrammar;
 import org.apache.directory.shared.asn1.ber.grammar.Grammar;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
@@ -88,7 +88,7 @@ public class CancelGrammar extends AbstractGrammar
                 new GrammarAction(
                 "Init Cancel" )
             {
-                public void action( IAsn1Container container )
+                public void action( Asn1Container container )
                 {
                     CancelContainer cancelContainer = ( CancelContainer ) container;
                     Cancel cancel = new Cancel();
@@ -111,7 +111,7 @@ public class CancelGrammar extends AbstractGrammar
                                     UniversalTag.INTEGER.getValue(), 
                 new GrammarAction( "Stores CancelId" )
             {
-                public void action( IAsn1Container container ) throws DecoderException
+                public void action( Asn1Container container ) throws DecoderException
                 {
                     CancelContainer cancelContainer = ( CancelContainer ) container;
                     Value value = cancelContainer.getCurrentTLV().getValue();

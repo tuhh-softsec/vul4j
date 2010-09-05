@@ -20,7 +20,7 @@
 package org.apache.directory.shared.ldap.codec.search.controls.entryChange;
 
 
-import org.apache.directory.shared.asn1.ber.IAsn1Container;
+import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.AbstractGrammar;
 import org.apache.directory.shared.asn1.ber.grammar.Grammar;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
@@ -96,7 +96,7 @@ public class EntryChangeControlGrammar extends AbstractGrammar
                                     UniversalTag.ENUMERATED.getValue(),
             new GrammarAction( "Set EntryChangeControl changeType" )
         {
-            public void action( IAsn1Container container ) throws DecoderException
+            public void action( Asn1Container container ) throws DecoderException
             {
                 EntryChangeControlContainer entryChangeContainer = ( EntryChangeControlContainer ) container;
                 Value value = entryChangeContainer.getCurrentTLV().getValue();
@@ -155,7 +155,7 @@ public class EntryChangeControlGrammar extends AbstractGrammar
                                     UniversalTag.OCTET_STRING.getValue(),
             new GrammarAction( "Set EntryChangeControl previousDN" )
         {
-            public void action( IAsn1Container container ) throws DecoderException
+            public void action( Asn1Container container ) throws DecoderException
             {
                 EntryChangeControlContainer entryChangeContainer = ( EntryChangeControlContainer ) container;
 
@@ -197,7 +197,7 @@ public class EntryChangeControlGrammar extends AbstractGrammar
         // Change Number action
         GrammarAction setChangeNumberAction = new GrammarAction( "Set EntryChangeControl changeNumber" )
         {
-            public void action( IAsn1Container container ) throws DecoderException
+            public void action( Asn1Container container ) throws DecoderException
             {
                 EntryChangeControlContainer entryChangeContainer = ( EntryChangeControlContainer ) container;
                 Value value = entryChangeContainer.getCurrentTLV().getValue();
