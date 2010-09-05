@@ -32,11 +32,9 @@ import org.apache.commons.digester.annotations.DigesterLoadingException;
 public interface AnnotationRuleProviderFactory {
 
     /**
-     * Return an instance of the specified type.
+     * Return an {@link AnnotationRuleProvider} instance of the specified type.
      *
-     * @param <A>
-     * @param <E>
-     * @param <R>
+     * @param <T> the {@link AnnotationRuleProvider} type.
      * @param type the class of the object to be returned.
      * @return an instance of the specified class.
      * @throws DigesterLoadingException if any error occurs while creating the
