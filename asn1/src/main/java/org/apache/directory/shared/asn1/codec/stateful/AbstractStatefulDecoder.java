@@ -21,7 +21,7 @@ package org.apache.directory.shared.asn1.codec.stateful;
 
 
 /**
- * Convenience class to not have to reimplement the two setter methods everytime
+ * Convenience class to not have to re-implement the two setter methods every time
  * one starts a new decoder.
  * 
  * @author <a href="mailto:dev@directory.apache.org"> Apache Directory Project</a>
@@ -31,13 +31,6 @@ public abstract class AbstractStatefulDecoder implements StatefulDecoder
     /** this decoder's callback */
     private DecoderCallback cb = null;
 
-    /** this decoder's monitor */
-    private DecoderMonitor monitor = null;
-
-
-    // ------------------------------------------------------------------------
-    // constructors
-    // ------------------------------------------------------------------------
 
     /**
      * Creates a stateful decoder where the callback and monitor must be set.
@@ -59,44 +52,11 @@ public abstract class AbstractStatefulDecoder implements StatefulDecoder
 
 
     /**
-     * Creates a stateful decoder with a monitor but no callback.
-     * 
-     * @param monitor the monitor to use for this decoder
-     */
-    public AbstractStatefulDecoder( DecoderMonitor monitor )
-    {
-        this.monitor = monitor;
-    }
-
-
-    /**
-     * Creates a stateful decoder.
-     * 
-     * @param cb the callback to use for this decoder
-     * @param monitor the monitor to use for this decoder
-     */
-    public AbstractStatefulDecoder( DecoderCallback cb, DecoderMonitor monitor )
-    {
-        this.monitor = monitor;
-        setCallback( cb );
-    }
-
-
-    // ------------------------------------------------------------------------
-    // StatefulDecoder methods
-    // ------------------------------------------------------------------------
-    /**
      * {@inheritDoc}
      */
     public void setCallback( DecoderCallback cb )
     {
-        DecoderCallback old = this.cb;
         this.cb = cb;
-
-        if ( this.monitor != null )
-        {
-            this.monitor.callbackSet( this, old, cb );
-        }
     }
 
 
@@ -110,24 +70,10 @@ public abstract class AbstractStatefulDecoder implements StatefulDecoder
 
 
     /**
-     * {@inheritDoc}
-     */
-    public void setDecoderMonitor( DecoderMonitor monitor )
-    {
-        this.monitor = monitor;
-    }
-
-
-    // ------------------------------------------------------------------------
-    // protected methods
-    // ------------------------------------------------------------------------
-
-    /**
      * Notifies via the callback if one has been set that this decoder has
      * decoded a unit of encoded data.
      * 
-     * @param decoded
-     *            the decoded byproduct.
+     * @param decoded the decoded byproduct.
      */
     protected void decodeOccurred( Object decoded )
     {
@@ -135,16 +81,5 @@ public abstract class AbstractStatefulDecoder implements StatefulDecoder
         {
             cb.decodeOccurred( this, decoded );
         }
-    }
-
-
-    /**
-     * Gets the decoder's monitor.
-     * 
-     * @return the monitor for this StatefulDecoder
-     */
-    protected DecoderMonitor getDecoderMonitor()
-    {
-        return monitor;
     }
 }
