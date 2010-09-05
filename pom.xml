@@ -43,6 +43,11 @@
     <url>http://issues.apache.org/jira/browse/DIGESTER</url>
   </issueManagement>
 
+  <ciManagement>
+    <system>Apache Gump</system>
+    <url>http://vmgump.apache.org/gump/public/apache-commons/commons-digester/index.html</url>
+  </ciManagement>
+
   <scm>
     <connection>scm:svn:http://svn.apache.org/repos/asf/commons/proper/digester/trunk</connection>
     <developerConnection>scm:svn:https://svn.apache.org/repos/asf/commons/proper/digester/trunk</developerConnection>
