@@ -24,8 +24,8 @@ import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.AbstractGrammar;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarTransition;
-import org.apache.directory.shared.asn1.ber.grammar.IGrammar;
-import org.apache.directory.shared.asn1.ber.grammar.IStates;
+import org.apache.directory.shared.asn1.ber.grammar.Grammar;
+import org.apache.directory.shared.asn1.ber.grammar.States;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.asn1.codec.DecoderException;
@@ -61,7 +61,7 @@ public class GracefulShutdownGrammar extends AbstractGrammar
     static final boolean IS_DEBUG = log.isDebugEnabled();
 
     /** The instance of grammar. GracefulShutdownGrammar is a singleton */
-    private static IGrammar instance = new GracefulShutdownGrammar();
+    private static Grammar instance = new GracefulShutdownGrammar();
 
 
     /**
@@ -69,8 +69,8 @@ public class GracefulShutdownGrammar extends AbstractGrammar
      */
     private GracefulShutdownGrammar()
     {
-        name = GracefulShutdownGrammar.class.getName();
-        statesEnum = GracefulShutdownStatesEnum.getInstance();
+        setName( GracefulShutdownGrammar.class.getName() );
+        setStatesEnum( GracefulShutdownStatesEnum.getInstance() );
 
         // Create the transitions table
         super.transitions = new GrammarTransition[GracefulShutdownStatesEnum.LAST_GRACEFUL_SHUTDOWN_STATE][256];
@@ -83,8 +83,8 @@ public class GracefulShutdownGrammar extends AbstractGrammar
          *     
          * Creates the GracefulShutdown object
          */
-        super.transitions[IStates.INIT_GRAMMAR_STATE][UniversalTag.SEQUENCE_TAG] = 
-            new GrammarTransition( IStates.INIT_GRAMMAR_STATE, 
+        super.transitions[States.INIT_GRAMMAR_STATE][UniversalTag.SEQUENCE_TAG] = 
+            new GrammarTransition( States.INIT_GRAMMAR_STATE, 
                 GracefulShutdownStatesEnum.GRACEFUL_SHUTDOWN_SEQUENCE_STATE, 
                 UniversalTag.SEQUENCE_TAG,
                 new GrammarAction( "Init GracefulShutdown" )
@@ -234,7 +234,7 @@ public class GracefulShutdownGrammar extends AbstractGrammar
      * 
      * @return An instance on this grammar
      */
-    public static IGrammar getInstance()
+    public static Grammar getInstance()
     {
         return instance;
     }

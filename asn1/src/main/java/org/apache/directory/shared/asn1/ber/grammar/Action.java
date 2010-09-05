@@ -25,23 +25,18 @@ import org.apache.directory.shared.asn1.codec.DecoderException;
 
 
 /**
- * IAction interface just contains the method 'action' which must be implemented
+ * Action interface just contains the method 'action' which must be implemented
  * in all the implementong classes.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public interface IAction
+public interface Action
 {
-    // ~ Methods
-    // ------------------------------------------------------------------------------------
-
     /**
      * The action to be executed.
      * 
-     * @param container
-     *            The container which stores the current data
-     * @throws DecoderException
-     *             Thrown if something went wrong.
+     * @param container The container which stores the current data
+     * @throws DecoderException Thrown if something went wrong.
      */
     void action( IAsn1Container container ) throws DecoderException;
 }

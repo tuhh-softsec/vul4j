@@ -24,8 +24,8 @@ import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.AbstractGrammar;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarTransition;
-import org.apache.directory.shared.asn1.ber.grammar.IAction;
-import org.apache.directory.shared.asn1.ber.grammar.IGrammar;
+import org.apache.directory.shared.asn1.ber.grammar.Action;
+import org.apache.directory.shared.asn1.ber.grammar.Grammar;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
@@ -153,7 +153,7 @@ public class LdapMessageGrammar extends AbstractGrammar
     static final boolean IS_DEBUG = log.isDebugEnabled();
 
     /** The instance of grammar. LdapMessageGrammar is a singleton */
-    private static IGrammar instance = new LdapMessageGrammar();
+    private static Grammar instance = new LdapMessageGrammar();
 
 
     // ~ Constructors
@@ -165,8 +165,8 @@ public class LdapMessageGrammar extends AbstractGrammar
     private LdapMessageGrammar()
     {
 
-        name = LdapMessageGrammar.class.getName();
-        statesEnum = LdapStatesEnum.getInstance();
+        setName( LdapMessageGrammar.class.getName() );
+        setStatesEnum( LdapStatesEnum.getInstance() );
 
         // Create the transitions table
         super.transitions = new GrammarTransition[LdapStatesEnum.LAST_LDAP_STATE][256];
@@ -3376,7 +3376,7 @@ public class LdapMessageGrammar extends AbstractGrammar
         // --------------------------------------------------------------------------------------------
         // Controls
         // --------------------------------------------------------------------------------------------
-        IAction addControl = new GrammarAction( "Add Control" )
+        Action addControl = new GrammarAction( "Add Control" )
         {
             public void action( IAsn1Container container ) throws DecoderException
             {
@@ -6605,7 +6605,7 @@ public class LdapMessageGrammar extends AbstractGrammar
      * 
      * @return An instance on the LdapMessage Grammar
      */
-    public static IGrammar getInstance()
+    public static Grammar getInstance()
     {
         return instance;
     }

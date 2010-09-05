@@ -24,8 +24,8 @@ import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.AbstractGrammar;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarTransition;
-import org.apache.directory.shared.asn1.ber.grammar.IGrammar;
-import org.apache.directory.shared.asn1.ber.grammar.IStates;
+import org.apache.directory.shared.asn1.ber.grammar.Grammar;
+import org.apache.directory.shared.asn1.ber.grammar.States;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.asn1.codec.DecoderException;
@@ -59,7 +59,7 @@ public class PagedResultsControlGrammar extends AbstractGrammar
     static final boolean IS_DEBUG = log.isDebugEnabled();
 
     /** The instance of grammar. PagedSearchControlGrammar is a singleton */
-    private static IGrammar instance = new PagedResultsControlGrammar();
+    private static Grammar instance = new PagedResultsControlGrammar();
 
 
     /**
@@ -67,8 +67,8 @@ public class PagedResultsControlGrammar extends AbstractGrammar
      */
     private PagedResultsControlGrammar()
     {
-        name = PagedResultsControlGrammar.class.getName();
-        statesEnum = PagedResultsControlStatesEnum.getInstance();
+        setName( PagedResultsControlGrammar.class.getName() );
+        setStatesEnum( PagedResultsControlStatesEnum.getInstance() );
 
         // Create the transitions table
         super.transitions = new GrammarTransition[PagedResultsControlStatesEnum.LAST_PAGED_SEARCH_STATE][256];
@@ -80,8 +80,8 @@ public class PagedResultsControlGrammar extends AbstractGrammar
          *     
          * Nothing to do
          */
-        super.transitions[IStates.INIT_GRAMMAR_STATE][UniversalTag.SEQUENCE_TAG] = 
-            new GrammarTransition( IStates.INIT_GRAMMAR_STATE, 
+        super.transitions[States.INIT_GRAMMAR_STATE][UniversalTag.SEQUENCE_TAG] = 
+            new GrammarTransition( States.INIT_GRAMMAR_STATE, 
                                     PagedResultsControlStatesEnum.PAGED_SEARCH_SEQUENCE_STATE, 
                                     UniversalTag.SEQUENCE_TAG, null );
 
@@ -174,7 +174,7 @@ public class PagedResultsControlGrammar extends AbstractGrammar
      * 
      * @return An instance on this grammar
      */
-    public static IGrammar getInstance()
+    public static Grammar getInstance()
     {
         return instance;
     }

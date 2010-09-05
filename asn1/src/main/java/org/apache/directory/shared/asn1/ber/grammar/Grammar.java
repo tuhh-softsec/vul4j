@@ -29,19 +29,14 @@ import org.apache.directory.shared.asn1.codec.DecoderException;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public interface IGrammar
+public interface Grammar
 {
-    // ~ Methods
-    // ------------------------------------------------------------------------------------
-
     /**
      * This method, when called, execute an action on the current data stored in
      * the container.
      * 
-     * @param asn1Container
-     *            Store the data being processed.
-     * @throws DecoderException
-     *             Thrown when an unrecoverable error occurs.
+     * @param asn1Container Store the data being processed.
+     * @throws DecoderException Thrown when an unrecoverable error occurs.
      */
     void executeAction( IAsn1Container asn1Container ) throws DecoderException;
 
@@ -59,14 +54,13 @@ public interface IGrammar
      * 
      * @return The specific States Enum for the current grammar
      */
-    IStates getStatesEnum();
+    States getStatesEnum();
 
 
     /**
      * Set the grammar's name
      * 
-     * @param name
-     *            The grammar name
+     * @param name The grammar name
      */
     void setName( String name );
 }

@@ -24,8 +24,8 @@ import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.AbstractGrammar;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarTransition;
-import org.apache.directory.shared.asn1.ber.grammar.IGrammar;
-import org.apache.directory.shared.asn1.ber.grammar.IStates;
+import org.apache.directory.shared.asn1.ber.grammar.Grammar;
+import org.apache.directory.shared.asn1.ber.grammar.States;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.asn1.codec.DecoderException;
@@ -66,7 +66,7 @@ public class SyncStateValueControlGrammar extends AbstractGrammar
     static final boolean IS_DEBUG = LOG.isDebugEnabled();
 
     /** The instance of grammar. SyncStateValueControlGrammar is a singleton */
-    private static IGrammar instance = new SyncStateValueControlGrammar();
+    private static Grammar instance = new SyncStateValueControlGrammar();
 
 
     /**
@@ -74,8 +74,8 @@ public class SyncStateValueControlGrammar extends AbstractGrammar
      */
     private SyncStateValueControlGrammar()
     {
-        name = SyncStateValueControlGrammar.class.getName();
-        statesEnum = SyncStateValueControlStatesEnum.getInstance();
+        setName( SyncStateValueControlGrammar.class.getName() );
+        setStatesEnum( SyncStateValueControlStatesEnum.getInstance() );
 
         // Create the transitions table
         super.transitions = new GrammarTransition[SyncStateValueControlStatesEnum.LAST_SYNC_STATE_VALUE_STATE][256];
@@ -87,8 +87,8 @@ public class SyncStateValueControlGrammar extends AbstractGrammar
          *     
          * Initialize the syncStateValue object
          */
-        super.transitions[IStates.INIT_GRAMMAR_STATE][UniversalTag.SEQUENCE_TAG] = new GrammarTransition(
-            IStates.INIT_GRAMMAR_STATE, SyncStateValueControlStatesEnum.SYNC_STATE_VALUE_SEQUENCE_STATE,
+        super.transitions[States.INIT_GRAMMAR_STATE][UniversalTag.SEQUENCE_TAG] = new GrammarTransition(
+            States.INIT_GRAMMAR_STATE, SyncStateValueControlStatesEnum.SYNC_STATE_VALUE_SEQUENCE_STATE,
             UniversalTag.SEQUENCE_TAG, null );
 
         /** 
@@ -212,7 +212,7 @@ public class SyncStateValueControlGrammar extends AbstractGrammar
      * 
      * @return An instance on this grammar
      */
-    public static IGrammar getInstance()
+    public static Grammar getInstance()
     {
         return instance;
     }

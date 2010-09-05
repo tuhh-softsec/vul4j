@@ -24,8 +24,8 @@ import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.AbstractGrammar;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarTransition;
-import org.apache.directory.shared.asn1.ber.grammar.IGrammar;
-import org.apache.directory.shared.asn1.ber.grammar.IStates;
+import org.apache.directory.shared.asn1.ber.grammar.Grammar;
+import org.apache.directory.shared.asn1.ber.grammar.States;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.asn1.codec.DecoderException;
@@ -72,8 +72,8 @@ public class SyncDoneValueControlGrammar extends AbstractGrammar
      */
     private SyncDoneValueControlGrammar()
     {
-        name = SyncDoneValueControlGrammar.class.getName();
-        statesEnum = SyncDoneValueControlStatesEnum.getInstance();
+        setName( SyncDoneValueControlGrammar.class.getName() );
+        setStatesEnum( SyncDoneValueControlStatesEnum.getInstance() );
 
         super.transitions = new GrammarTransition[SyncDoneValueControlStatesEnum.LAST_SYNC_DONE_VALUE_STATE][256];
 
@@ -84,8 +84,8 @@ public class SyncDoneValueControlGrammar extends AbstractGrammar
          *     
          * Initialize the syncDoneValue object
          */
-        super.transitions[IStates.INIT_GRAMMAR_STATE][UniversalTag.SEQUENCE_TAG] = new GrammarTransition(
-            IStates.INIT_GRAMMAR_STATE, SyncDoneValueControlStatesEnum.SYNC_DONE_VALUE_SEQUENCE_STATE, UniversalTag.SEQUENCE_TAG,
+        super.transitions[States.INIT_GRAMMAR_STATE][UniversalTag.SEQUENCE_TAG] = new GrammarTransition(
+            States.INIT_GRAMMAR_STATE, SyncDoneValueControlStatesEnum.SYNC_DONE_VALUE_SEQUENCE_STATE, UniversalTag.SEQUENCE_TAG,
             new GrammarAction( "Initiaization" )
             {
                 public void action( IAsn1Container container ) throws DecoderException
@@ -184,7 +184,7 @@ public class SyncDoneValueControlGrammar extends AbstractGrammar
     /**
      * @return the singleton instance of the SyncDoneValueControlGrammar
      */
-    public static IGrammar getInstance()
+    public static Grammar getInstance()
     {
         return INSTANCE;
     }

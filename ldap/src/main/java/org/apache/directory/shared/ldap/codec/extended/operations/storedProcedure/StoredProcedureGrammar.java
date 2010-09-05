@@ -25,7 +25,7 @@ import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.AbstractGrammar;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarTransition;
-import org.apache.directory.shared.asn1.ber.grammar.IGrammar;
+import org.apache.directory.shared.asn1.ber.grammar.Grammar;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.codec.DecoderException;
@@ -50,7 +50,7 @@ public class StoredProcedureGrammar extends AbstractGrammar
     static final Logger log = LoggerFactory.getLogger( StoredProcedureGrammar.class );
 
     /** The instance of grammar. StoredProcedureGrammar is a singleton. */
-    private static IGrammar instance = new StoredProcedureGrammar();
+    private static Grammar instance = new StoredProcedureGrammar();
 
 
     //~ Constructors -------------------------------------------------------------------------------
@@ -60,8 +60,8 @@ public class StoredProcedureGrammar extends AbstractGrammar
      */
     private StoredProcedureGrammar()
     {
-        name = StoredProcedureGrammar.class.getName();
-        statesEnum = StoredProcedureStatesEnum.getInstance();
+        setName( StoredProcedureGrammar.class.getName() );
+        setStatesEnum( StoredProcedureStatesEnum.getInstance() );
 
         // Create the transitions table
         super.transitions = new GrammarTransition[StoredProcedureStatesEnum.LAST_STORED_PROCEDURE_STATE][256];
@@ -310,7 +310,7 @@ public class StoredProcedureGrammar extends AbstractGrammar
      *
      * @return An instance on the StoredProcedure Grammar
      */
-    public static IGrammar getInstance()
+    public static Grammar getInstance()
     {
         return instance;
     }

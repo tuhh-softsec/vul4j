@@ -25,8 +25,8 @@ import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.AbstractGrammar;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarTransition;
-import org.apache.directory.shared.asn1.ber.grammar.IGrammar;
-import org.apache.directory.shared.asn1.ber.grammar.IStates;
+import org.apache.directory.shared.asn1.ber.grammar.Grammar;
+import org.apache.directory.shared.asn1.ber.grammar.States;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.asn1.codec.DecoderException;
@@ -56,13 +56,13 @@ public class PasswordPolicyResponseControlGrammar extends AbstractGrammar
 
     private PasswordPolicyResponseControlGrammar()
     {
-        name = PasswordPolicyResponseControlGrammar.class.getName();
-        statesEnum = PasswordPolicyResponseControlStates.getInstance();
+        setName( PasswordPolicyResponseControlGrammar.class.getName() );
+        setStatesEnum( PasswordPolicyResponseControlStates.getInstance() );
 
         super.transitions = new GrammarTransition[PasswordPolicyResponseControlStates.END_STATE][256];
 
-        super.transitions[IStates.INIT_GRAMMAR_STATE][UniversalTag.SEQUENCE_TAG] = new GrammarTransition(
-            IStates.INIT_GRAMMAR_STATE, PasswordPolicyResponseControlStates.START_STATE, UniversalTag.SEQUENCE_TAG,
+        super.transitions[States.INIT_GRAMMAR_STATE][UniversalTag.SEQUENCE_TAG] = new GrammarTransition(
+            States.INIT_GRAMMAR_STATE, PasswordPolicyResponseControlStates.START_STATE, UniversalTag.SEQUENCE_TAG,
             new GrammarAction( "Initialization" )
             {
                 public void action( IAsn1Container container ) throws DecoderException
@@ -201,7 +201,7 @@ public class PasswordPolicyResponseControlGrammar extends AbstractGrammar
 
     }
 
-    public static IGrammar getInstance()
+    public static Grammar getInstance()
     {
         return INSTANCE;
     }

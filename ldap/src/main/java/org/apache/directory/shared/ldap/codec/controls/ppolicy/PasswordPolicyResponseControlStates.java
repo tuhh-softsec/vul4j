@@ -21,8 +21,8 @@
 package org.apache.directory.shared.ldap.codec.controls.ppolicy;
 
 
-import org.apache.directory.shared.asn1.ber.grammar.IGrammar;
-import org.apache.directory.shared.asn1.ber.grammar.IStates;
+import org.apache.directory.shared.asn1.ber.grammar.Grammar;
+import org.apache.directory.shared.asn1.ber.grammar.States;
 
 
 /**
@@ -30,7 +30,7 @@ import org.apache.directory.shared.asn1.ber.grammar.IStates;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class PasswordPolicyResponseControlStates implements IStates
+public class PasswordPolicyResponseControlStates implements States
 {
 
     public static final int START_STATE = 0;
@@ -64,7 +64,7 @@ public class PasswordPolicyResponseControlStates implements IStates
      * 
      * @return An instance on this class
      */
-    public static IStates getInstance()
+    public static States getInstance()
     {
         return instance;
     }
@@ -73,7 +73,7 @@ public class PasswordPolicyResponseControlStates implements IStates
     /**
      * {@inheritDoc}
      */
-    public String getGrammarName( IGrammar grammar )
+    public String getGrammarName( Grammar grammar )
     {
         if( grammar instanceof PasswordPolicyResponseControlGrammar )
         {

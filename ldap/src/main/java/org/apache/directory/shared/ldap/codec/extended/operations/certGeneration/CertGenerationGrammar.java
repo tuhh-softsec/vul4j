@@ -24,8 +24,8 @@ import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.AbstractGrammar;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarTransition;
-import org.apache.directory.shared.asn1.ber.grammar.IGrammar;
-import org.apache.directory.shared.asn1.ber.grammar.IStates;
+import org.apache.directory.shared.asn1.ber.grammar.Grammar;
+import org.apache.directory.shared.asn1.ber.grammar.States;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.asn1.codec.DecoderException;
@@ -64,13 +64,13 @@ public class CertGenerationGrammar extends AbstractGrammar
     static final boolean IS_DEBUG = LOG.isDebugEnabled();
 
     /** The instance of grammar. CertGenerationObjectGrammar is a singleton */
-    private static IGrammar instance = new CertGenerationGrammar();
+    private static Grammar instance = new CertGenerationGrammar();
 
 
     public CertGenerationGrammar()
     {
-        name = CertGenerationGrammar.class.getName();
-        statesEnum = CertGenerationStatesEnum.getInstance();
+        setName( CertGenerationGrammar.class.getName() );
+        setStatesEnum( CertGenerationStatesEnum.getInstance() );
 
         // Create the transitions table
         super.transitions = new GrammarTransition[CertGenerationStatesEnum.LAST_CERT_GENERATION_STATE][256];
@@ -83,8 +83,8 @@ public class CertGenerationGrammar extends AbstractGrammar
          *     
          * Creates the CertGenerationObject object
          */
-        super.transitions[IStates.INIT_GRAMMAR_STATE][UniversalTag.SEQUENCE_TAG] = new GrammarTransition(
-            IStates.INIT_GRAMMAR_STATE, CertGenerationStatesEnum.CERT_GENERATION_REQUEST_SEQUENCE_STATE,
+        super.transitions[States.INIT_GRAMMAR_STATE][UniversalTag.SEQUENCE_TAG] = new GrammarTransition(
+            States.INIT_GRAMMAR_STATE, CertGenerationStatesEnum.CERT_GENERATION_REQUEST_SEQUENCE_STATE,
             UniversalTag.SEQUENCE_TAG, new GrammarAction( "Init CertGenerationObject" )
             {
                 public void action( IAsn1Container container )
@@ -268,7 +268,7 @@ public class CertGenerationGrammar extends AbstractGrammar
      * 
      * @return An instance on this grammar
      */
-    public static IGrammar getInstance()
+    public static Grammar getInstance()
     {
         return instance;
     }

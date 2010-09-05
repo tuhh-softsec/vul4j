@@ -24,7 +24,7 @@ import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.AbstractGrammar;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarTransition;
-import org.apache.directory.shared.asn1.ber.grammar.IGrammar;
+import org.apache.directory.shared.asn1.ber.grammar.Grammar;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
@@ -49,7 +49,7 @@ public class SubentriesControlGrammar extends AbstractGrammar
     static final Logger log = LoggerFactory.getLogger( SubentriesControlGrammar.class );
 
     /** The instance of grammar. SubEntryControlGrammar is a singleton */
-    private static IGrammar instance = new SubentriesControlGrammar();
+    private static Grammar instance = new SubentriesControlGrammar();
 
 
     /**
@@ -57,8 +57,8 @@ public class SubentriesControlGrammar extends AbstractGrammar
      */
     private SubentriesControlGrammar()
     {
-        name = SubentriesControlGrammar.class.getName();
-        statesEnum = SubentriesControlStatesEnum.getInstance();
+        setName( SubentriesControlGrammar.class.getName() );
+        setStatesEnum( SubentriesControlStatesEnum.getInstance() );
 
         // Create the transitions table
         super.transitions = new GrammarTransition[SubentriesControlStatesEnum.LAST_SUB_ENTRY_STATE][256];
@@ -107,7 +107,7 @@ public class SubentriesControlGrammar extends AbstractGrammar
      * 
      * @return An instance on this grammar
      */
-    public static IGrammar getInstance()
+    public static Grammar getInstance()
     {
         return instance;
     }

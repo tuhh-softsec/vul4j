@@ -26,11 +26,8 @@ package org.apache.directory.shared.asn1.ber.grammar;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public abstract class GrammarAction implements IAction
+public abstract class GrammarAction implements Action
 {
-    // ~ Instance fields
-    // ----------------------------------------------------------------------------
-
     /** The action's name */
     protected String name;
 
@@ -50,9 +47,6 @@ public abstract class GrammarAction implements IAction
         this.name = name;
     }
 
-
-    // ~ Methods
-    // ------------------------------------------------------------------------------------
 
     /**
      * Print the action's name

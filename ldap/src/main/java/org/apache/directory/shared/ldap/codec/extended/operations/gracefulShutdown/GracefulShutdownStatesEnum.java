@@ -20,8 +20,8 @@
 package org.apache.directory.shared.ldap.codec.extended.operations.gracefulShutdown;
 
 
-import org.apache.directory.shared.asn1.ber.grammar.IGrammar;
-import org.apache.directory.shared.asn1.ber.grammar.IStates;
+import org.apache.directory.shared.asn1.ber.grammar.Grammar;
+import org.apache.directory.shared.asn1.ber.grammar.States;
 
 
 /**
@@ -30,7 +30,7 @@ import org.apache.directory.shared.asn1.ber.grammar.IStates;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class GracefulShutdownStatesEnum implements IStates
+public class GracefulShutdownStatesEnum implements States
 {
     // ~ Static fields/initializers
     // -----------------------------------------------------------------
@@ -89,7 +89,7 @@ public class GracefulShutdownStatesEnum implements IStates
      * 
      * @return An instance on this class
      */
-    public static IStates getInstance()
+    public static States getInstance()
     {
         return instance;
     }
@@ -113,7 +113,7 @@ public class GracefulShutdownStatesEnum implements IStates
      * @param grammar The grammar class
      * @return The grammar name
      */
-    public String getGrammarName( IGrammar grammar )
+    public String getGrammarName( Grammar grammar )
     {
         if ( grammar instanceof GracefulShutdownGrammar )
         {

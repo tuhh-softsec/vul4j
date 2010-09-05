@@ -24,8 +24,8 @@ import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.AbstractGrammar;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarTransition;
-import org.apache.directory.shared.asn1.ber.grammar.IGrammar;
-import org.apache.directory.shared.asn1.ber.grammar.IStates;
+import org.apache.directory.shared.asn1.ber.grammar.Grammar;
+import org.apache.directory.shared.asn1.ber.grammar.States;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.asn1.codec.DecoderException;
@@ -74,7 +74,7 @@ public class SyncModifyDnControlGrammar extends AbstractGrammar
     static final boolean IS_DEBUG = LOG.isDebugEnabled();
 
     /** The instance of grammar. SyncStateValueControlGrammar is a singleton */
-    private static IGrammar instance = new SyncModifyDnControlGrammar();
+    private static Grammar instance = new SyncModifyDnControlGrammar();
 
 
     /**
@@ -82,8 +82,8 @@ public class SyncModifyDnControlGrammar extends AbstractGrammar
      */
     private SyncModifyDnControlGrammar()
     {
-        name = SyncModifyDnControlGrammar.class.getName();
-        statesEnum = SyncModifyDnControlStatesEnum.getInstance();
+        setName( SyncModifyDnControlGrammar.class.getName() );
+        setStatesEnum( SyncModifyDnControlStatesEnum.getInstance() );
 
         // Create the transitions table
         super.transitions = new GrammarTransition[SyncModifyDnControlStatesEnum.LAST_SYNC_MODDN_VALUE_STATE][256];
@@ -95,8 +95,8 @@ public class SyncModifyDnControlGrammar extends AbstractGrammar
          *     
          * Initialize the SyncModifyDnControl object
          */
-        super.transitions[IStates.INIT_GRAMMAR_STATE][UniversalTag.SEQUENCE_TAG] = new GrammarTransition(
-            IStates.INIT_GRAMMAR_STATE, SyncModifyDnControlStatesEnum.SYNC_MODDN_VALUE_SEQUENCE_STATE,
+        super.transitions[States.INIT_GRAMMAR_STATE][UniversalTag.SEQUENCE_TAG] = new GrammarTransition(
+            States.INIT_GRAMMAR_STATE, SyncModifyDnControlStatesEnum.SYNC_MODDN_VALUE_SEQUENCE_STATE,
             UniversalTag.SEQUENCE_TAG, null );
 
         /** 
@@ -382,7 +382,7 @@ public class SyncModifyDnControlGrammar extends AbstractGrammar
      * 
      * @return An instance on this grammar
      */
-    public static IGrammar getInstance()
+    public static Grammar getInstance()
     {
         return instance;
     }

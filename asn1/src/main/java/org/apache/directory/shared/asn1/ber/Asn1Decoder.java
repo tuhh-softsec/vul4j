@@ -22,7 +22,7 @@ package org.apache.directory.shared.asn1.ber;
 
 import java.nio.ByteBuffer;
 
-import org.apache.directory.shared.asn1.ber.grammar.IStates;
+import org.apache.directory.shared.asn1.ber.grammar.States;
 import org.apache.directory.shared.asn1.ber.tlv.ITLVBerDecoderMBean;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.TLVStateEnum;
@@ -604,7 +604,7 @@ public class Asn1Decoder implements ITLVBerDecoderMBean
         // Check if the PDU has been fully decoded.
         if ( isTLVDecoded( container ) )
         {
-            if ( container.getState() == IStates.GRAMMAR_END )
+            if ( container.getState() == States.GRAMMAR_END )
             {
                 // Change the state to DECODED
                 container.setState( TLVStateEnum.PDU_DECODED );

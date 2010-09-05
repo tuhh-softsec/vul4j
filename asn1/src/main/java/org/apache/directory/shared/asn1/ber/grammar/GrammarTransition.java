@@ -25,14 +25,14 @@ import org.apache.directory.shared.asn1.util.Asn1StringUtils;
 
 /**
  * Define a transition between two states of a grammar. It stores the next
- * state, and the action to execute while transiting.
+ * state, and the action to execute while executing the transition.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 public class GrammarTransition
 {
     /** The action associated to the transition */
-    private IAction action;
+    private Action action;
 
     /** The previous state */
     private int previousState;
@@ -43,9 +43,6 @@ public class GrammarTransition
     /** The current tag */
     private int currentTag;
 
-    // ~ Constructors
-    // -------------------------------------------------------------------------------
-
     /**
      * Creates a new GrammarTransition object.
      * 
@@ -54,7 +51,7 @@ public class GrammarTransition
      * @param currentTag the current TLV's tag
      * @param action The action to execute. It could be null.
      */
-    public GrammarTransition( int previousState, int currentState, int currentTag, IAction action )
+    public GrammarTransition( int previousState, int currentState, int currentTag, Action action )
     {
         this.previousState = previousState;
         this.currentState = currentState;
@@ -62,42 +59,27 @@ public class GrammarTransition
         this.currentTag = currentTag;
     }
 
+    
     /**
      * Tells if the transition has an associated action.
      * 
-     * @return <code>true</code> if an action has been asociated to the
-     *         transition
+     * @return <code>true</code> if an action has been associated to the transition
      */
     public boolean hasAction()
     {
         return action != null;
     }
 
+    
     /**
      * @return Returns the action associated with the transition
      */
-    public IAction getAction()
+    public Action getAction()
     {
         return action;
     }
 
-    /**
-     * @param statesEnum Starting state.
-     * @return A representation of the transition as a string.
-     */
-    public String toString( IStates statesEnum )
-    {
-
-        StringBuffer sb = new StringBuffer();
-
-        sb.append( "Transition from state <" ).append( statesEnum.getState( previousState ) ).append( "> " );
-        sb.append( "to state <" ).append( statesEnum.getState( currentState ) ).append( ">, " );
-        sb.append( "tag <" ).append(  Asn1StringUtils.dumpByte( (byte)currentTag ) ).append( ">, " );
-        sb.append( "action : " ).append( ( ( action == null ) ? "no action" : action.toString() ) ).append( ">" );
-
-        return sb.toString();
-    }
-
+    
     /**
      * @return The current state
      */
@@ -106,11 +88,38 @@ public class GrammarTransition
         return currentState;
     }
 
+    
     /**
      * @return The previous state
      */
     public int getPreviousState()
     {
         return previousState;
+    }
+
+    
+    /**
+     * @param statesEnum Starting state.
+     * @return A representation of the transition as a string.
+     */
+    public String toString( States statesEnum )
+    {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append( "Transition from state <" ).append( statesEnum.getState( previousState ) ).append( "> " );
+        sb.append( "to state <" ).append( statesEnum.getState( currentState ) ).append( ">, " );
+        sb.append( "tag <" ).append( Asn1StringUtils.dumpByte( (byte)currentTag ) ).append( ">, " );
+        sb.append( "action : " );
+        
+        if ( action == null )
+        {
+            sb.append( "no action" );
+        }
+        else
+        {
+            sb.append( action );
+        }
+        
+        return sb.toString();
     }
 }

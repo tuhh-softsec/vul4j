@@ -29,24 +29,18 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * The abstract IGrammar which is the Mother of all the grammars. It contains
+ * The abstract Grammar which is the Mother of all the grammars. It contains
  * the transitions table.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public abstract class AbstractGrammar implements IGrammar
+public abstract class AbstractGrammar implements Grammar
 {
-    // ~ Static fields/initializers
-    // -----------------------------------------------------------------
-
     /** The logger */
-    private static final Logger log = LoggerFactory.getLogger( AbstractGrammar.class );
+    private static final Logger LOG = LoggerFactory.getLogger( AbstractGrammar.class );
 
     /** Speedup for logs */
-    private static final boolean IS_DEBUG = log.isDebugEnabled();
-
-    // ~ Instance fields
-    // ----------------------------------------------------------------------------
+    private static final boolean IS_DEBUG = LOG.isDebugEnabled();
 
     /**
      * Table of transitions. It's a two dimension array, the first dimension
@@ -56,10 +50,10 @@ public abstract class AbstractGrammar implements IGrammar
     protected GrammarTransition[][] transitions;
 
     /** The grammar name */
-    protected String name;
+    private String name;
 
     /** The grammar's states */
-    protected IStates statesEnum;
+    private States statesEnum;
 
 
     /** Default constructor */
@@ -67,9 +61,6 @@ public abstract class AbstractGrammar implements IGrammar
     {
     }
 
-
-    // ~ Methods
-    // ------------------------------------------------------------------------------------
 
     /**
      * Return the grammar's name
@@ -117,10 +108,10 @@ public abstract class AbstractGrammar implements IGrammar
     {
 
         int currentState = container.getTransition();
-        IGrammar currentGrammar = container.getGrammar();
+        Grammar currentGrammar = container.getGrammar();
 
         // We have to deal with the special case of a GRAMMAR_END state
-        if ( currentState == IStates.END_STATE )
+        if ( currentState == States.END_STATE )
         {
             return;
         }
@@ -133,25 +124,24 @@ public abstract class AbstractGrammar implements IGrammar
 
         if ( transition == null )
         {
-
-            String errorMessage = I18n.err( I18n.ERR_00001, currentGrammar.getStatesEnum().getState( currentState ),
+            String errorMessage = I18n.err( I18n.ERR_BAD_TRANSITION_FROM_STATE_00001, currentGrammar.getStatesEnum().getState( currentState ),
                 Asn1StringUtils.dumpByte( tagByte ) );
 
-            log.error( errorMessage );
+            LOG.error( errorMessage );
 
             // If we have no more grammar on the stack, then this is an
             // error
-            throw new DecoderException( I18n.err( I18n.ERR_00002 ) );
+            throw new DecoderException( I18n.err( I18n.ERR_BAD_TRANSITION_00002 ) );
         }
 
         if ( IS_DEBUG )
         {
-            log.debug( transition.toString( currentGrammar.getStatesEnum() ) );
+            LOG.debug( transition.toString( currentGrammar.getStatesEnum() ) );
         }
 
         if ( transition.hasAction() )
         {
-            IAction action = transition.getAction();
+            Action action = transition.getAction();
             action.action( container );
         }
 
@@ -164,7 +154,7 @@ public abstract class AbstractGrammar implements IGrammar
      * 
      * @return Returns the statesEnum.
      */
-    public IStates getStatesEnum()
+    public States getStatesEnum()
     {
         return statesEnum;
     }
@@ -175,7 +165,7 @@ public abstract class AbstractGrammar implements IGrammar
      * 
      * @param statesEnum The statesEnum to set.
      */
-    public void setStatesEnum( IStates statesEnum )
+    public void setStatesEnum( States statesEnum )
     {
         this.statesEnum = statesEnum;
     }

@@ -21,8 +21,8 @@
 package org.apache.directory.shared.ldap.codec.extended.operations.storedProcedure;
 
 
-import org.apache.directory.shared.asn1.ber.grammar.IGrammar;
-import org.apache.directory.shared.asn1.ber.grammar.IStates;
+import org.apache.directory.shared.asn1.ber.grammar.Grammar;
+import org.apache.directory.shared.asn1.ber.grammar.States;
 
 
 /**
@@ -30,7 +30,7 @@ import org.apache.directory.shared.asn1.ber.grammar.IStates;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class StoredProcedureStatesEnum implements IStates
+public class StoredProcedureStatesEnum implements States
 {
     //~ Static fields/initializers -----------------------------------------------------------------
 
@@ -105,7 +105,7 @@ public class StoredProcedureStatesEnum implements IStates
      * Get an instance of this class
      * @return An instance on this class
      */
-    public static IStates getInstance()
+    public static States getInstance()
     {
         return instance;
     }
@@ -127,7 +127,7 @@ public class StoredProcedureStatesEnum implements IStates
      * @param grammar The grammar class
      * @return The grammar name
      */
-    public String getGrammarName( IGrammar grammar )
+    public String getGrammarName( Grammar grammar )
     {
         if ( grammar instanceof StoredProcedureGrammar )
         {

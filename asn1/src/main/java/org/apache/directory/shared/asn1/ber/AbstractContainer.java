@@ -20,8 +20,8 @@
 package org.apache.directory.shared.asn1.ber;
 
 
-import org.apache.directory.shared.asn1.ber.grammar.IGrammar;
-import org.apache.directory.shared.asn1.ber.grammar.IStates;
+import org.apache.directory.shared.asn1.ber.grammar.Grammar;
+import org.apache.directory.shared.asn1.ber.grammar.States;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.TLVStateEnum;
 
@@ -36,7 +36,7 @@ import org.apache.directory.shared.asn1.ber.tlv.TLVStateEnum;
 public abstract class AbstractContainer implements IAsn1Container
 {
     /** All the possible grammars */
-    protected IGrammar grammar;
+    protected Grammar grammar;
 
     /** Store a stack of the current states used when switching grammars */
     protected int[] stateStack;
@@ -51,7 +51,7 @@ public abstract class AbstractContainer implements IAsn1Container
     private TLV tlv;
 
     /** Store the different states for debug purpose */
-    protected IStates states;
+    protected States states;
 
     /** The parent TLV */
     private TLV parentTLV;
@@ -73,7 +73,7 @@ public abstract class AbstractContainer implements IAsn1Container
      * 
      * @return Returns the grammar used to decode a LdapMessage.
      */
-    public IGrammar getGrammar()
+    public Grammar getGrammar()
     {
         return grammar;
     }
@@ -173,7 +173,7 @@ public abstract class AbstractContainer implements IAsn1Container
      * 
      * @return Returns the states.
      */
-    public IStates getStates()
+    public States getStates()
     {
         return states;
     }

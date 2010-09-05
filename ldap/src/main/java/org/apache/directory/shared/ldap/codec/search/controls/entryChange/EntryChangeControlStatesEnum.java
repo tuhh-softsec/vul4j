@@ -20,8 +20,8 @@
 package org.apache.directory.shared.ldap.codec.search.controls.entryChange;
 
 
-import org.apache.directory.shared.asn1.ber.grammar.IGrammar;
-import org.apache.directory.shared.asn1.ber.grammar.IStates;
+import org.apache.directory.shared.asn1.ber.grammar.Grammar;
+import org.apache.directory.shared.asn1.ber.grammar.States;
 
 
 /**
@@ -30,7 +30,7 @@ import org.apache.directory.shared.asn1.ber.grammar.IStates;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class EntryChangeControlStatesEnum implements IStates
+public class EntryChangeControlStatesEnum implements States
 {
     // ~ Static fields/initializers
     // -----------------------------------------------------------------
@@ -93,7 +93,7 @@ public class EntryChangeControlStatesEnum implements IStates
      * 
      * @return An instance on this class
      */
-    public static IStates getInstance()
+    public static States getInstance()
     {
         return instance;
     }
@@ -117,7 +117,7 @@ public class EntryChangeControlStatesEnum implements IStates
      * @param grammar The grammar class
      * @return The grammar name
      */
-    public String getGrammarName( IGrammar grammar )
+    public String getGrammarName( Grammar grammar )
     {
         if ( grammar instanceof EntryChangeControlGrammar )
         {

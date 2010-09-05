@@ -20,8 +20,8 @@
 package org.apache.directory.shared.asn1.ber;
 
 
-import org.apache.directory.shared.asn1.ber.grammar.IGrammar;
-import org.apache.directory.shared.asn1.ber.grammar.IStates;
+import org.apache.directory.shared.asn1.ber.grammar.Grammar;
+import org.apache.directory.shared.asn1.ber.grammar.States;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 
 
@@ -32,10 +32,6 @@ import org.apache.directory.shared.asn1.ber.tlv.TLV;
  */
 public interface IAsn1Container
 {
-    // ~ Methods
-    // ------------------------------------------------------------------------------------
-
-    // State accessors
     /**
      * Get the current grammar state
      * 
@@ -53,14 +49,6 @@ public interface IAsn1Container
 
 
     /**
-     * Set the current TLV
-     * 
-     * @param tlv The current TLV
-     */
-    void setCurrentTLV( TLV tlv );
-
-
-    /**
      * Get the currentTLV
      * 
      * @return Returns the current TLV being decoded
@@ -69,11 +57,19 @@ public interface IAsn1Container
 
 
     /**
+     * Set the current TLV
+     * 
+     * @param tlv The current TLV
+     */
+    void setCurrentTLV( TLV tlv );
+
+
+    /**
      * Get the grammar
      * 
      * @return Returns the grammar used to decode a LdapMessage.
      */
-    IGrammar getGrammar();
+    Grammar getGrammar();
 
 
     /**
@@ -91,10 +87,11 @@ public interface IAsn1Container
      */
     void setTransition( int transition );
 
+    
     /**
      * @return Returns the states.
      */
-    IStates getStates();
+    States getStates();
 
 
     /**
@@ -127,12 +124,14 @@ public interface IAsn1Container
      */
     void grammarEndAllowed( boolean grammarEndAllowed );
     
+    
     /**
      * Get a new TLV id
      * @return a unique value representing the current TLV id
      */
     int getNewTlvId();
 
+    
     /**
      * Get the current TLV id
      * @return a unique value representing the current TLV id

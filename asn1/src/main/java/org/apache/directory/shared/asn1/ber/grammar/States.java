@@ -27,7 +27,7 @@ package org.apache.directory.shared.asn1.ber.grammar;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public interface IStates
+public interface States
 {
     /** The initial state of every grammar */
     int INIT_GRAMMAR_STATE = 0;
@@ -46,14 +46,16 @@ public interface IStates
      */
     String getState( int state );
 
+    
     /** 
      * Return the grammar name of a grammar
      * 
      * @param grammar the grammar from which we want the name
      * @return the grammar's name
      */
-    String getGrammarName( IGrammar grammar );
+    String getGrammarName( Grammar grammar );
 
+    
     /** 
      * Return the grammar name from a grammar number 
      * 

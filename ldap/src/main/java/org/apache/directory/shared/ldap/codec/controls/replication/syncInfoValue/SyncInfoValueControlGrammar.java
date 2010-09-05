@@ -24,8 +24,8 @@ import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.AbstractGrammar;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarTransition;
-import org.apache.directory.shared.asn1.ber.grammar.IGrammar;
-import org.apache.directory.shared.asn1.ber.grammar.IStates;
+import org.apache.directory.shared.asn1.ber.grammar.Grammar;
+import org.apache.directory.shared.asn1.ber.grammar.States;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.asn1.codec.DecoderException;
@@ -72,7 +72,7 @@ public class SyncInfoValueControlGrammar extends AbstractGrammar
     static final boolean IS_DEBUG = LOG.isDebugEnabled();
 
     /** The instance of grammar. SyncInfoValueControlGrammar is a singleton */
-    private static IGrammar instance = new SyncInfoValueControlGrammar();
+    private static Grammar instance = new SyncInfoValueControlGrammar();
 
 
     /**
@@ -80,8 +80,8 @@ public class SyncInfoValueControlGrammar extends AbstractGrammar
      */
     private SyncInfoValueControlGrammar()
     {
-        name = SyncInfoValueControlGrammar.class.getName();
-        statesEnum = SyncInfoValueControlStatesEnum.getInstance();
+        setName( SyncInfoValueControlGrammar.class.getName() );
+        setStatesEnum( SyncInfoValueControlStatesEnum.getInstance() );
 
         // Create the transitions table
         super.transitions = new GrammarTransition[SyncInfoValueControlStatesEnum.LAST_SYNC_INFO_VALUE_STATE][256];
@@ -94,8 +94,8 @@ public class SyncInfoValueControlGrammar extends AbstractGrammar
          *     
          * Initialize the syncInfoValue object
          */
-        super.transitions[IStates.INIT_GRAMMAR_STATE][SyncInfoValueTags.NEW_COOKIE_TAG.getValue()] = 
-            new GrammarTransition( IStates.INIT_GRAMMAR_STATE, 
+        super.transitions[States.INIT_GRAMMAR_STATE][SyncInfoValueTags.NEW_COOKIE_TAG.getValue()] = 
+            new GrammarTransition( States.INIT_GRAMMAR_STATE, 
                                     SyncInfoValueControlStatesEnum.NEW_COOKIE_STATE, 
                                     SyncInfoValueTags.NEW_COOKIE_TAG.getValue(), 
                 new GrammarAction( "NewCookie choice for SyncInfoValueControl" )
@@ -135,8 +135,8 @@ public class SyncInfoValueControlGrammar extends AbstractGrammar
          *     
          * Initialize the syncInfoValue object
          */
-        super.transitions[IStates.INIT_GRAMMAR_STATE][SyncInfoValueTags.REFRESH_DELETE_TAG.getValue()] = 
-            new GrammarTransition( IStates.INIT_GRAMMAR_STATE, 
+        super.transitions[States.INIT_GRAMMAR_STATE][SyncInfoValueTags.REFRESH_DELETE_TAG.getValue()] = 
+            new GrammarTransition( States.INIT_GRAMMAR_STATE, 
                                     SyncInfoValueControlStatesEnum.REFRESH_DELETE_STATE, 
                                     SyncInfoValueTags.REFRESH_DELETE_TAG.getValue(), 
                 new GrammarAction( "RefreshDelete choice for SyncInfoValueControl" )
@@ -309,8 +309,8 @@ public class SyncInfoValueControlGrammar extends AbstractGrammar
          *     
          * Initialize the syncInfoValue object
          */
-        super.transitions[IStates.INIT_GRAMMAR_STATE][SyncInfoValueTags.REFRESH_PRESENT_TAG.getValue()] = 
-            new GrammarTransition( IStates.INIT_GRAMMAR_STATE, 
+        super.transitions[States.INIT_GRAMMAR_STATE][SyncInfoValueTags.REFRESH_PRESENT_TAG.getValue()] = 
+            new GrammarTransition( States.INIT_GRAMMAR_STATE, 
                                     SyncInfoValueControlStatesEnum.REFRESH_PRESENT_STATE, 
                                     SyncInfoValueTags.REFRESH_PRESENT_TAG.getValue(), 
                 new GrammarAction( "RefreshDelete choice for SyncInfoValueControl" )
@@ -484,8 +484,8 @@ public class SyncInfoValueControlGrammar extends AbstractGrammar
          *     
          * Initialize the syncInfoValue object
          */
-        super.transitions[IStates.INIT_GRAMMAR_STATE][SyncInfoValueTags.SYNC_ID_SET_TAG.getValue()] = 
-            new GrammarTransition( IStates.INIT_GRAMMAR_STATE, 
+        super.transitions[States.INIT_GRAMMAR_STATE][SyncInfoValueTags.SYNC_ID_SET_TAG.getValue()] = 
+            new GrammarTransition( States.INIT_GRAMMAR_STATE, 
                                     SyncInfoValueControlStatesEnum.SYNC_ID_SET_STATE, 
                                     SyncInfoValueTags.SYNC_ID_SET_TAG.getValue(), 
                 new GrammarAction( "SyncIdSet choice for SyncInfoValueControl" )
@@ -807,7 +807,7 @@ public class SyncInfoValueControlGrammar extends AbstractGrammar
      * 
      * @return An instance on this grammar
      */
-    public static IGrammar getInstance()
+    public static Grammar getInstance()
     {
         return instance;
     }

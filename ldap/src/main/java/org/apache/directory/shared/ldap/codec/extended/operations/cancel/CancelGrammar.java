@@ -24,8 +24,8 @@ import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.AbstractGrammar;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarTransition;
-import org.apache.directory.shared.asn1.ber.grammar.IGrammar;
-import org.apache.directory.shared.asn1.ber.grammar.IStates;
+import org.apache.directory.shared.asn1.ber.grammar.Grammar;
+import org.apache.directory.shared.asn1.ber.grammar.States;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.asn1.codec.DecoderException;
@@ -60,7 +60,7 @@ public class CancelGrammar extends AbstractGrammar
     static final boolean IS_DEBUG = LOG.isDebugEnabled();
 
     /** The instance of grammar. CancelGrammar is a singleton */
-    private static IGrammar instance = new CancelGrammar();
+    private static Grammar instance = new CancelGrammar();
 
 
     /**
@@ -68,8 +68,8 @@ public class CancelGrammar extends AbstractGrammar
      */
     private CancelGrammar()
     {
-        name = CancelGrammar.class.getName();
-        statesEnum = CancelStatesEnum.getInstance();
+        setName( CancelGrammar.class.getName() );
+        setStatesEnum( CancelStatesEnum.getInstance() );
 
         // Create the transitions table
         super.transitions = new GrammarTransition[CancelStatesEnum.LAST_CANCEL_STATE][256];
@@ -81,8 +81,8 @@ public class CancelGrammar extends AbstractGrammar
          * 
          * Creates the Cancel object
          */
-        super.transitions[IStates.INIT_GRAMMAR_STATE][UniversalTag.SEQUENCE_TAG] = 
-            new GrammarTransition( IStates.INIT_GRAMMAR_STATE,
+        super.transitions[States.INIT_GRAMMAR_STATE][UniversalTag.SEQUENCE_TAG] = 
+            new GrammarTransition( States.INIT_GRAMMAR_STATE,
                                     CancelStatesEnum.CANCEL_SEQUENCE_STATE, 
                                     UniversalTag.SEQUENCE_TAG,
                 new GrammarAction(
@@ -144,7 +144,7 @@ public class CancelGrammar extends AbstractGrammar
      * 
      * @return An instance on this grammar
      */
-    public static IGrammar getInstance()
+    public static Grammar getInstance()
     {
         return instance;
     }

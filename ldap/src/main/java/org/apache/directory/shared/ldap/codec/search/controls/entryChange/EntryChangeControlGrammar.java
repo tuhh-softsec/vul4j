@@ -24,7 +24,7 @@ import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.AbstractGrammar;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarTransition;
-import org.apache.directory.shared.asn1.ber.grammar.IGrammar;
+import org.apache.directory.shared.asn1.ber.grammar.Grammar;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.asn1.codec.DecoderException;
@@ -56,7 +56,7 @@ public class EntryChangeControlGrammar extends AbstractGrammar
     static final boolean IS_DEBUG = log.isDebugEnabled();
 
     /** The instance of grammar. EntryChangeControlGrammar is a singleton */
-    private static IGrammar instance = new EntryChangeControlGrammar();
+    private static Grammar instance = new EntryChangeControlGrammar();
 
 
     /**
@@ -64,8 +64,8 @@ public class EntryChangeControlGrammar extends AbstractGrammar
      */
     private EntryChangeControlGrammar()
     {
-        name = EntryChangeControlGrammar.class.getName();
-        statesEnum = EntryChangeControlStatesEnum.getInstance();
+        setName( EntryChangeControlGrammar.class.getName() );
+        setStatesEnum( EntryChangeControlStatesEnum.getInstance() );
 
         // Create the transitions table
         super.transitions = new GrammarTransition[EntryChangeControlStatesEnum.LAST_EC_STATE][256];
@@ -262,7 +262,7 @@ public class EntryChangeControlGrammar extends AbstractGrammar
      * 
      * @return An instance on this grammar
      */
-    public static IGrammar getInstance()
+    public static Grammar getInstance()
     {
         return instance;
     }
