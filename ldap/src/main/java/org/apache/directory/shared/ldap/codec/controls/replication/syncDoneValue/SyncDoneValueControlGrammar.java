@@ -22,9 +22,9 @@ package org.apache.directory.shared.ldap.codec.controls.replication.syncDoneValu
 
 import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.AbstractGrammar;
+import org.apache.directory.shared.asn1.ber.grammar.Grammar;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarTransition;
-import org.apache.directory.shared.asn1.ber.grammar.Grammar;
 import org.apache.directory.shared.asn1.ber.grammar.States;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
@@ -84,8 +84,8 @@ public class SyncDoneValueControlGrammar extends AbstractGrammar
          *     
          * Initialize the syncDoneValue object
          */
-        super.transitions[States.INIT_GRAMMAR_STATE][UniversalTag.SEQUENCE_TAG] = new GrammarTransition(
-            States.INIT_GRAMMAR_STATE, SyncDoneValueControlStatesEnum.SYNC_DONE_VALUE_SEQUENCE_STATE, UniversalTag.SEQUENCE_TAG,
+        super.transitions[States.INIT_GRAMMAR_STATE][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
+            States.INIT_GRAMMAR_STATE, SyncDoneValueControlStatesEnum.SYNC_DONE_VALUE_SEQUENCE_STATE, UniversalTag.SEQUENCE.getValue(),
             new GrammarAction( "Initiaization" )
             {
                 public void action( IAsn1Container container ) throws DecoderException
@@ -104,9 +104,9 @@ public class SyncDoneValueControlGrammar extends AbstractGrammar
          *    ....
          * }
          */
-        super.transitions[SyncDoneValueControlStatesEnum.SYNC_DONE_VALUE_SEQUENCE_STATE][UniversalTag.OCTET_STRING_TAG] = new GrammarTransition(
+        super.transitions[SyncDoneValueControlStatesEnum.SYNC_DONE_VALUE_SEQUENCE_STATE][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
             SyncDoneValueControlStatesEnum.SYNC_DONE_VALUE_SEQUENCE_STATE, SyncDoneValueControlStatesEnum.COOKIE_STATE,
-            UniversalTag.OCTET_STRING_TAG, new GrammarAction( "Set SyncDoneValueControl cookie" )
+            UniversalTag.OCTET_STRING.getValue(), new GrammarAction( "Set SyncDoneValueControl cookie" )
             {
                 public void action( IAsn1Container container ) throws DecoderException
                 {
@@ -163,9 +163,9 @@ public class SyncDoneValueControlGrammar extends AbstractGrammar
          *    refreshDeletes BOOLEAN DEFAULT FALSE
          * }
          */
-        super.transitions[SyncDoneValueControlStatesEnum.COOKIE_STATE][UniversalTag.BOOLEAN_TAG] = new GrammarTransition(
+        super.transitions[SyncDoneValueControlStatesEnum.COOKIE_STATE][UniversalTag.BOOLEAN.getValue()] = new GrammarTransition(
             SyncDoneValueControlStatesEnum.COOKIE_STATE, SyncDoneValueControlStatesEnum.REFRESH_DELETES_STATE,
-            UniversalTag.BOOLEAN_TAG, refreshDeletesTagAction );
+            UniversalTag.BOOLEAN.getValue(), refreshDeletesTagAction );
         
         /**
          * transition from SEQUENCE to refreshDeletes
@@ -174,9 +174,9 @@ public class SyncDoneValueControlGrammar extends AbstractGrammar
          *    refreshDeletes BOOLEAN DEFAULT FALSE
          * }
          */
-        super.transitions[SyncDoneValueControlStatesEnum.SYNC_DONE_VALUE_SEQUENCE_STATE][UniversalTag.BOOLEAN_TAG] = new GrammarTransition(
+        super.transitions[SyncDoneValueControlStatesEnum.SYNC_DONE_VALUE_SEQUENCE_STATE][UniversalTag.BOOLEAN.getValue()] = new GrammarTransition(
             SyncDoneValueControlStatesEnum.SYNC_DONE_VALUE_SEQUENCE_STATE, SyncDoneValueControlStatesEnum.REFRESH_DELETES_STATE,
-            UniversalTag.BOOLEAN_TAG, refreshDeletesTagAction );
+            UniversalTag.BOOLEAN.getValue(), refreshDeletesTagAction );
 
     }
 

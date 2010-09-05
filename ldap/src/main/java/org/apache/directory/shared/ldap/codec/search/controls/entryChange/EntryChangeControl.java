@@ -167,13 +167,13 @@ public class EntryChangeControl extends AbstractControl
         super.encode( buffer );
 
         // Encode the OCTET_STRING tag
-        buffer.put( UniversalTag.OCTET_STRING_TAG );
+        buffer.put( UniversalTag.OCTET_STRING.getValue() );
         buffer.put( TLV.getBytes( valueLength ) );
 
-        buffer.put( UniversalTag.SEQUENCE_TAG );
+        buffer.put( UniversalTag.SEQUENCE.getValue() );
         buffer.put( TLV.getBytes( eccSeqLength ) );
 
-        buffer.put( UniversalTag.ENUMERATED_TAG );
+        buffer.put( UniversalTag.ENUMERATED.getValue() );
         buffer.put( ( byte ) 1 );
         buffer.put( Value.getBytes( changeType.getValue() ) );
 
@@ -203,10 +203,10 @@ public class EntryChangeControl extends AbstractControl
                 computeLength();
                 ByteBuffer buffer = ByteBuffer.allocate( valueLength );
 
-                buffer.put( UniversalTag.SEQUENCE_TAG );
+                buffer.put( UniversalTag.SEQUENCE.getValue() );
                 buffer.put( TLV.getBytes( eccSeqLength ) );
 
-                buffer.put( UniversalTag.ENUMERATED_TAG );
+                buffer.put( UniversalTag.ENUMERATED.getValue() );
                 buffer.put( ( byte ) 1 );
                 buffer.put( Value.getBytes( changeType.getValue() ) );
 

@@ -22,9 +22,9 @@ package org.apache.directory.shared.ldap.codec.controls.replication.syncInfoValu
 
 import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.AbstractGrammar;
+import org.apache.directory.shared.asn1.ber.grammar.Grammar;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarTransition;
-import org.apache.directory.shared.asn1.ber.grammar.Grammar;
 import org.apache.directory.shared.asn1.ber.grammar.States;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
@@ -164,10 +164,10 @@ public class SyncInfoValueControlGrammar extends AbstractGrammar
          *     
          * Load the cookie object
          */
-        super.transitions[SyncInfoValueControlStatesEnum.REFRESH_DELETE_STATE][UniversalTag.OCTET_STRING_TAG] = 
+        super.transitions[SyncInfoValueControlStatesEnum.REFRESH_DELETE_STATE][UniversalTag.OCTET_STRING.getValue()] = 
             new GrammarTransition( SyncInfoValueControlStatesEnum.REFRESH_DELETE_STATE, 
                                     SyncInfoValueControlStatesEnum.REFRESH_DELETE_COOKIE_STATE, 
-                                    UniversalTag.OCTET_STRING_TAG, 
+                                    UniversalTag.OCTET_STRING.getValue(), 
                 new GrammarAction( "RefreshDelete cookie" )
             {
                 public void action( IAsn1Container container )
@@ -203,10 +203,10 @@ public class SyncInfoValueControlGrammar extends AbstractGrammar
          *     
          * Load the refreshDone flag
          */
-        super.transitions[SyncInfoValueControlStatesEnum.REFRESH_DELETE_COOKIE_STATE][UniversalTag.BOOLEAN_TAG] = 
+        super.transitions[SyncInfoValueControlStatesEnum.REFRESH_DELETE_COOKIE_STATE][UniversalTag.BOOLEAN.getValue()] = 
             new GrammarTransition( SyncInfoValueControlStatesEnum.REFRESH_DELETE_COOKIE_STATE, 
                                     SyncInfoValueControlStatesEnum.LAST_SYNC_INFO_VALUE_STATE, 
-                                    UniversalTag.BOOLEAN_TAG, 
+                                    UniversalTag.BOOLEAN.getValue(), 
                 new GrammarAction( "RefreshDelete refreshDone flag" )
             {
                 public void action( IAsn1Container container ) throws DecoderException
@@ -256,10 +256,10 @@ public class SyncInfoValueControlGrammar extends AbstractGrammar
          *     
          * Load the refreshDone flag
          */
-        super.transitions[SyncInfoValueControlStatesEnum.REFRESH_DELETE_STATE][UniversalTag.BOOLEAN_TAG] = 
+        super.transitions[SyncInfoValueControlStatesEnum.REFRESH_DELETE_STATE][UniversalTag.BOOLEAN.getValue()] = 
             new GrammarTransition( SyncInfoValueControlStatesEnum.REFRESH_DELETE_STATE, 
                                     SyncInfoValueControlStatesEnum.LAST_SYNC_INFO_VALUE_STATE, 
-                                    UniversalTag.BOOLEAN_TAG, 
+                                    UniversalTag.BOOLEAN.getValue(), 
                 new GrammarAction( "RefreshDelete refreshDone flag" )
             {
                 public void action( IAsn1Container container ) throws DecoderException
@@ -338,10 +338,10 @@ public class SyncInfoValueControlGrammar extends AbstractGrammar
          *     
          * Load the cookie object
          */
-        super.transitions[SyncInfoValueControlStatesEnum.REFRESH_PRESENT_STATE][UniversalTag.OCTET_STRING_TAG] = 
+        super.transitions[SyncInfoValueControlStatesEnum.REFRESH_PRESENT_STATE][UniversalTag.OCTET_STRING.getValue()] = 
             new GrammarTransition( SyncInfoValueControlStatesEnum.REFRESH_PRESENT_STATE, 
                                     SyncInfoValueControlStatesEnum.REFRESH_PRESENT_COOKIE_STATE, 
-                                    UniversalTag.OCTET_STRING_TAG, 
+                                    UniversalTag.OCTET_STRING.getValue(), 
                 new GrammarAction( "RefreshPresent cookie" )
             {
                 public void action( IAsn1Container container )
@@ -379,10 +379,10 @@ public class SyncInfoValueControlGrammar extends AbstractGrammar
          *     
          * Load the refreshDone flag
          */
-        super.transitions[SyncInfoValueControlStatesEnum.REFRESH_PRESENT_COOKIE_STATE][UniversalTag.BOOLEAN_TAG] = 
+        super.transitions[SyncInfoValueControlStatesEnum.REFRESH_PRESENT_COOKIE_STATE][UniversalTag.BOOLEAN.getValue()] = 
             new GrammarTransition( SyncInfoValueControlStatesEnum.REFRESH_PRESENT_COOKIE_STATE, 
                                     SyncInfoValueControlStatesEnum.LAST_SYNC_INFO_VALUE_STATE, 
-                                    UniversalTag.BOOLEAN_TAG, 
+                                    UniversalTag.BOOLEAN.getValue(), 
                 new GrammarAction( "RefreshPresent refreshDone flag" )
             {
                 public void action( IAsn1Container container ) throws DecoderException
@@ -432,10 +432,10 @@ public class SyncInfoValueControlGrammar extends AbstractGrammar
          *     
          * Load the refreshDone flag
          */
-        super.transitions[SyncInfoValueControlStatesEnum.REFRESH_PRESENT_STATE][UniversalTag.BOOLEAN_TAG] = 
+        super.transitions[SyncInfoValueControlStatesEnum.REFRESH_PRESENT_STATE][UniversalTag.BOOLEAN.getValue()] = 
             new GrammarTransition( SyncInfoValueControlStatesEnum.REFRESH_PRESENT_STATE, 
                                     SyncInfoValueControlStatesEnum.LAST_SYNC_INFO_VALUE_STATE, 
-                                    UniversalTag.BOOLEAN_TAG, 
+                                    UniversalTag.BOOLEAN.getValue(), 
                 new GrammarAction( "RefreshPresent refreshDone flag" )
             {
                 public void action( IAsn1Container container ) throws DecoderException
@@ -510,10 +510,10 @@ public class SyncInfoValueControlGrammar extends AbstractGrammar
          *     
          * Load the cookie object
          */
-        super.transitions[SyncInfoValueControlStatesEnum.SYNC_ID_SET_STATE][UniversalTag.OCTET_STRING_TAG] = 
+        super.transitions[SyncInfoValueControlStatesEnum.SYNC_ID_SET_STATE][UniversalTag.OCTET_STRING.getValue()] = 
             new GrammarTransition( SyncInfoValueControlStatesEnum.SYNC_ID_SET_STATE, 
                                     SyncInfoValueControlStatesEnum.SYNC_ID_SET_COOKIE_STATE, 
-                                    UniversalTag.OCTET_STRING_TAG, 
+                                    UniversalTag.OCTET_STRING.getValue(), 
                 new GrammarAction( "SyncIdSet cookie" )
             {
                 public void action( IAsn1Container container )
@@ -546,10 +546,10 @@ public class SyncInfoValueControlGrammar extends AbstractGrammar
          *     
          * Load the refreshDeletes flag
          */
-        super.transitions[SyncInfoValueControlStatesEnum.SYNC_ID_SET_STATE][UniversalTag.BOOLEAN_TAG] = 
+        super.transitions[SyncInfoValueControlStatesEnum.SYNC_ID_SET_STATE][UniversalTag.BOOLEAN.getValue()] = 
             new GrammarTransition( SyncInfoValueControlStatesEnum.SYNC_ID_SET_STATE, 
                                     SyncInfoValueControlStatesEnum.SYNC_ID_SET_REFRESH_DELETES_STATE, 
-                                    UniversalTag.BOOLEAN_TAG, 
+                                    UniversalTag.BOOLEAN.getValue(), 
                 new GrammarAction( "SyncIdSet refreshDeletes" )
             {
                 public void action( IAsn1Container container ) throws DecoderException
@@ -592,10 +592,10 @@ public class SyncInfoValueControlGrammar extends AbstractGrammar
          *     
          * Load the refreshDeletes flag
          */
-        super.transitions[SyncInfoValueControlStatesEnum.SYNC_ID_SET_COOKIE_STATE][UniversalTag.BOOLEAN_TAG] = 
+        super.transitions[SyncInfoValueControlStatesEnum.SYNC_ID_SET_COOKIE_STATE][UniversalTag.BOOLEAN.getValue()] = 
             new GrammarTransition( SyncInfoValueControlStatesEnum.SYNC_ID_SET_COOKIE_STATE, 
                                     SyncInfoValueControlStatesEnum.SYNC_ID_SET_REFRESH_DELETES_STATE, 
-                                    UniversalTag.BOOLEAN_TAG, 
+                                    UniversalTag.BOOLEAN.getValue(), 
                 new GrammarAction( "SyncIdSet refreshDeletes" )
             {
                 public void action( IAsn1Container container ) throws DecoderException
@@ -638,10 +638,10 @@ public class SyncInfoValueControlGrammar extends AbstractGrammar
          *     
          * Initialize the UUID set : no action associated, except allowing a grammar end
          */
-        super.transitions[SyncInfoValueControlStatesEnum.SYNC_ID_SET_STATE][UniversalTag.SET_TAG] = 
+        super.transitions[SyncInfoValueControlStatesEnum.SYNC_ID_SET_STATE][UniversalTag.SET.getValue()] = 
             new GrammarTransition( SyncInfoValueControlStatesEnum.SYNC_ID_SET_STATE, 
                                     SyncInfoValueControlStatesEnum.SYNC_ID_SET_SET_OF_UUIDS_STATE, 
-                                    UniversalTag.SET_TAG, 
+                                    UniversalTag.SET.getValue(), 
                 new GrammarAction( "SyncIdSet syncUUIDs" )
             {
                 public void action( IAsn1Container container ) throws DecoderException
@@ -664,10 +664,10 @@ public class SyncInfoValueControlGrammar extends AbstractGrammar
          *     
          * Initialize the UUID set : no action associated
          */
-        super.transitions[SyncInfoValueControlStatesEnum.SYNC_ID_SET_COOKIE_STATE][UniversalTag.SET_TAG] = 
+        super.transitions[SyncInfoValueControlStatesEnum.SYNC_ID_SET_COOKIE_STATE][UniversalTag.SET.getValue()] = 
             new GrammarTransition( SyncInfoValueControlStatesEnum.SYNC_ID_SET_COOKIE_STATE, 
                                     SyncInfoValueControlStatesEnum.SYNC_ID_SET_SET_OF_UUIDS_STATE, 
-                                    UniversalTag.SET_TAG,
+                                    UniversalTag.SET.getValue(),
                 new GrammarAction( "SyncIdSet syncUUIDs" )
             {
                 public void action( IAsn1Container container ) throws DecoderException
@@ -690,10 +690,10 @@ public class SyncInfoValueControlGrammar extends AbstractGrammar
          *     
          * Initialize the UUID set : no action associated
          */
-        super.transitions[SyncInfoValueControlStatesEnum.SYNC_ID_SET_REFRESH_DELETES_STATE][UniversalTag.SET_TAG] = 
+        super.transitions[SyncInfoValueControlStatesEnum.SYNC_ID_SET_REFRESH_DELETES_STATE][UniversalTag.SET.getValue()] = 
             new GrammarTransition( SyncInfoValueControlStatesEnum.SYNC_ID_SET_REFRESH_DELETES_STATE, 
                                     SyncInfoValueControlStatesEnum.SYNC_ID_SET_SET_OF_UUIDS_STATE, 
-                                    UniversalTag.SET_TAG, 
+                                    UniversalTag.SET.getValue(), 
                 new GrammarAction( "SyncIdSet syncUUIDs" )
             {
                 public void action( IAsn1Container container ) throws DecoderException
@@ -716,10 +716,10 @@ public class SyncInfoValueControlGrammar extends AbstractGrammar
          *     
          * Add the first UUID in the UUIDs list
          */
-        super.transitions[SyncInfoValueControlStatesEnum.SYNC_ID_SET_SET_OF_UUIDS_STATE][UniversalTag.OCTET_STRING] = 
+        super.transitions[SyncInfoValueControlStatesEnum.SYNC_ID_SET_SET_OF_UUIDS_STATE][UniversalTag.OCTET_STRING.getValue()] = 
             new GrammarTransition( SyncInfoValueControlStatesEnum.SYNC_ID_SET_SET_OF_UUIDS_STATE, 
                                     SyncInfoValueControlStatesEnum.SYNC_ID_SET_UUID_STATE, 
-                                    UniversalTag.OCTET_STRING, 
+                                    UniversalTag.OCTET_STRING.getValue(), 
                 new GrammarAction( "SyncIdSet first UUID" )
             {
                 public void action( IAsn1Container container ) throws DecoderException
@@ -763,10 +763,10 @@ public class SyncInfoValueControlGrammar extends AbstractGrammar
          *     
          * Add a new UUID in the UUIDs list
          */
-        super.transitions[SyncInfoValueControlStatesEnum.SYNC_ID_SET_UUID_STATE][UniversalTag.OCTET_STRING] = 
+        super.transitions[SyncInfoValueControlStatesEnum.SYNC_ID_SET_UUID_STATE][UniversalTag.OCTET_STRING.getValue()] = 
             new GrammarTransition( SyncInfoValueControlStatesEnum.SYNC_ID_SET_UUID_STATE, 
                                     SyncInfoValueControlStatesEnum.SYNC_ID_SET_UUID_STATE, 
-                                    UniversalTag.OCTET_STRING, 
+                                    UniversalTag.OCTET_STRING.getValue(), 
                 new GrammarAction( "SyncIdSet UUID" )
             {
                 public void action( IAsn1Container container ) throws DecoderException

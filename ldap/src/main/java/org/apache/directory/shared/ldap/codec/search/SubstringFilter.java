@@ -305,7 +305,7 @@ public class SubstringFilter extends Filter
             Value.encode( buffer, type.getBytes() );
 
             // The SubstringSequenceFilter Tag
-            buffer.put( UniversalTag.SEQUENCE_TAG );
+            buffer.put( UniversalTag.SEQUENCE.getValue() );
             buffer.put( TLV.getBytes( substringsFilterSequenceLength ) );
 
             if ( ( initialSubstrings == null ) && ( ( anySubstrings == null ) || ( anySubstrings.size() == 0 ) )

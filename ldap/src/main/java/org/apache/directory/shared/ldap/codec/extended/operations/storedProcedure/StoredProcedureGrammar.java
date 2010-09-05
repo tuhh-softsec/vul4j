@@ -23,9 +23,9 @@ package org.apache.directory.shared.ldap.codec.extended.operations.storedProcedu
 
 import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.AbstractGrammar;
+import org.apache.directory.shared.asn1.ber.grammar.Grammar;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarTransition;
-import org.apache.directory.shared.asn1.ber.grammar.Grammar;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.codec.DecoderException;
@@ -72,20 +72,20 @@ public class StoredProcedureGrammar extends AbstractGrammar
         // StoredProcedure ::= SEQUENCE {
         //   ...
         // Nothing to do.
-        super.transitions[StoredProcedureStatesEnum.START_STATE][UniversalTag.SEQUENCE_TAG] = 
+        super.transitions[StoredProcedureStatesEnum.START_STATE][UniversalTag.SEQUENCE.getValue()] = 
             new GrammarTransition( StoredProcedureStatesEnum.START_STATE, 
                                     StoredProcedureStatesEnum.STORED_PROCEDURE_STATE, 
-                                    UniversalTag.SEQUENCE_TAG, 
+                                    UniversalTag.SEQUENCE.getValue(), 
                                     null );
 
         //    language OCTETSTRING, (Tag)
         //    ...
         //
         // Creates the storeProcedure and stores the language
-        super.transitions[StoredProcedureStatesEnum.STORED_PROCEDURE_STATE][UniversalTag.OCTET_STRING_TAG] = 
+        super.transitions[StoredProcedureStatesEnum.STORED_PROCEDURE_STATE][UniversalTag.OCTET_STRING.getValue()] = 
             new GrammarTransition( StoredProcedureStatesEnum.STORED_PROCEDURE_STATE, 
                                     StoredProcedureStatesEnum.LANGUAGE_STATE, 
-                                    UniversalTag.OCTET_STRING_TAG,
+                                    UniversalTag.OCTET_STRING.getValue(),
                 new GrammarAction( "Stores the language" )
             {
                 public void action( IAsn1Container container ) throws DecoderException
@@ -125,10 +125,10 @@ public class StoredProcedureGrammar extends AbstractGrammar
         //    procedure OCTETSTRING, (Value)
         //    ...
         // Stores the procedure.
-        super.transitions[StoredProcedureStatesEnum.LANGUAGE_STATE][UniversalTag.OCTET_STRING_TAG] = 
+        super.transitions[StoredProcedureStatesEnum.LANGUAGE_STATE][UniversalTag.OCTET_STRING.getValue()] = 
             new GrammarTransition( StoredProcedureStatesEnum.LANGUAGE_STATE, 
                                     StoredProcedureStatesEnum.PROCEDURE_STATE, 
-                                    UniversalTag.OCTET_STRING_TAG,
+                                    UniversalTag.OCTET_STRING.getValue(),
                 new GrammarAction(
                 "Stores the procedure" )
             {
@@ -167,10 +167,10 @@ public class StoredProcedureGrammar extends AbstractGrammar
         //    ...
         // The list of parameters will be created with the first parameter.
         // We can have an empty list of parameters, so the PDU can be empty
-        super.transitions[StoredProcedureStatesEnum.PROCEDURE_STATE][UniversalTag.SEQUENCE_TAG] = 
+        super.transitions[StoredProcedureStatesEnum.PROCEDURE_STATE][UniversalTag.SEQUENCE.getValue()] = 
             new GrammarTransition( StoredProcedureStatesEnum.PROCEDURE_STATE, 
                                     StoredProcedureStatesEnum.PARAMETERS_STATE, 
-                                    UniversalTag.SEQUENCE_TAG, 
+                                    UniversalTag.SEQUENCE.getValue(), 
             new GrammarAction(
                 "Stores the parameters" )
             {
@@ -184,10 +184,10 @@ public class StoredProcedureGrammar extends AbstractGrammar
         // parameter SEQUENCE OF { (Value)
         //    ...
         // Nothing to do. 
-        super.transitions[StoredProcedureStatesEnum.PARAMETERS_STATE][UniversalTag.SEQUENCE_TAG] = 
+        super.transitions[StoredProcedureStatesEnum.PARAMETERS_STATE][UniversalTag.SEQUENCE.getValue()] = 
             new GrammarTransition( StoredProcedureStatesEnum.PARAMETERS_STATE, 
                                     StoredProcedureStatesEnum.PARAMETER_STATE, 
-                                    UniversalTag.SEQUENCE_TAG, 
+                                    UniversalTag.SEQUENCE.getValue(), 
                                     null );
 
         // Parameter ::= {
@@ -195,10 +195,10 @@ public class StoredProcedureGrammar extends AbstractGrammar
         //    ...
         //
         // We can create a parameter, and store its type
-        super.transitions[StoredProcedureStatesEnum.PARAMETER_STATE][UniversalTag.OCTET_STRING_TAG] = 
+        super.transitions[StoredProcedureStatesEnum.PARAMETER_STATE][UniversalTag.OCTET_STRING.getValue()] = 
             new GrammarTransition( StoredProcedureStatesEnum.PARAMETER_STATE, 
                                     StoredProcedureStatesEnum.PARAMETER_TYPE_STATE, 
-                                    UniversalTag.OCTET_STRING_TAG,
+                                    UniversalTag.OCTET_STRING.getValue(),
                 new GrammarAction( "Store parameter type" )
             {
                 public void action( IAsn1Container container ) throws DecoderException
@@ -241,10 +241,10 @@ public class StoredProcedureGrammar extends AbstractGrammar
         //    value OCTETSTRING (Tag)
         // }
         // Store the parameter value
-        super.transitions[StoredProcedureStatesEnum.PARAMETER_TYPE_STATE][UniversalTag.OCTET_STRING_TAG] = 
+        super.transitions[StoredProcedureStatesEnum.PARAMETER_TYPE_STATE][UniversalTag.OCTET_STRING.getValue()] = 
             new GrammarTransition( StoredProcedureStatesEnum.PARAMETER_TYPE_STATE, 
                                     StoredProcedureStatesEnum.PARAMETER_VALUE_STATE, 
-                                    UniversalTag.OCTET_STRING_TAG,
+                                    UniversalTag.OCTET_STRING.getValue(),
                 new GrammarAction( "Store parameter value" )
             {
                 public void action( IAsn1Container container ) throws DecoderException
@@ -295,10 +295,10 @@ public class StoredProcedureGrammar extends AbstractGrammar
         // Parameters ::= SEQUENCE OF Parameter
         // 
         // Loop on next parameter
-        super.transitions[StoredProcedureStatesEnum.PARAMETER_VALUE_STATE][UniversalTag.SEQUENCE_TAG] = 
+        super.transitions[StoredProcedureStatesEnum.PARAMETER_VALUE_STATE][UniversalTag.SEQUENCE.getValue()] = 
             new GrammarTransition( StoredProcedureStatesEnum.PARAMETER_VALUE_STATE, 
                                     StoredProcedureStatesEnum.PARAMETER_STATE, 
-                                    UniversalTag.SEQUENCE_TAG,
+                                    UniversalTag.SEQUENCE.getValue(),
                                     null );
     }
 

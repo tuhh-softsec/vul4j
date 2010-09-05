@@ -23,9 +23,9 @@ package org.apache.directory.shared.ldap.codec.controls.ppolicy;
 
 import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.AbstractGrammar;
+import org.apache.directory.shared.asn1.ber.grammar.Grammar;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarTransition;
-import org.apache.directory.shared.asn1.ber.grammar.Grammar;
 import org.apache.directory.shared.asn1.ber.grammar.States;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
@@ -61,8 +61,8 @@ public class PasswordPolicyResponseControlGrammar extends AbstractGrammar
 
         super.transitions = new GrammarTransition[PasswordPolicyResponseControlStates.END_STATE][256];
 
-        super.transitions[States.INIT_GRAMMAR_STATE][UniversalTag.SEQUENCE_TAG] = new GrammarTransition(
-            States.INIT_GRAMMAR_STATE, PasswordPolicyResponseControlStates.START_STATE, UniversalTag.SEQUENCE_TAG,
+        super.transitions[States.INIT_GRAMMAR_STATE][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
+            States.INIT_GRAMMAR_STATE, PasswordPolicyResponseControlStates.START_STATE, UniversalTag.SEQUENCE.getValue(),
             new GrammarAction( "Initialization" )
             {
                 public void action( IAsn1Container container ) throws DecoderException
@@ -106,9 +106,9 @@ public class PasswordPolicyResponseControlGrammar extends AbstractGrammar
                 }
             } );
 
-        super.transitions[PasswordPolicyResponseControlStates.PPOLICY_ERROR_STATE][UniversalTag.ENUMERATED_TAG] = new GrammarTransition(
+        super.transitions[PasswordPolicyResponseControlStates.PPOLICY_ERROR_STATE][UniversalTag.ENUMERATED.getValue()] = new GrammarTransition(
             PasswordPolicyResponseControlStates.PPOLICY_ERROR_STATE, PasswordPolicyResponseControlStates.END_STATE,
-            UniversalTag.ENUMERATED_TAG, new GrammarAction( "set ppolicy error value" )
+            UniversalTag.ENUMERATED.getValue(), new GrammarAction( "set ppolicy error value" )
             {
                 public void action( IAsn1Container container ) throws DecoderException
                 {
@@ -152,9 +152,9 @@ public class PasswordPolicyResponseControlGrammar extends AbstractGrammar
                 }
             } );
 
-        super.transitions[PasswordPolicyResponseControlStates.START_STATE][UniversalTag.ENUMERATED_TAG] = new GrammarTransition(
+        super.transitions[PasswordPolicyResponseControlStates.START_STATE][UniversalTag.ENUMERATED.getValue()] = new GrammarTransition(
             PasswordPolicyResponseControlStates.START_STATE, PasswordPolicyResponseControlStates.PPOLICY_ERROR_STATE,
-            UniversalTag.ENUMERATED_TAG, new GrammarAction( "set ppolicy error value" )
+            UniversalTag.ENUMERATED.getValue(), new GrammarAction( "set ppolicy error value" )
             {
                 public void action( IAsn1Container container ) throws DecoderException
                 {

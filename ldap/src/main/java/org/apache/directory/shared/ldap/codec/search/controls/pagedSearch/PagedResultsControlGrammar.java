@@ -22,9 +22,9 @@ package org.apache.directory.shared.ldap.codec.search.controls.pagedSearch;
 
 import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.AbstractGrammar;
+import org.apache.directory.shared.asn1.ber.grammar.Grammar;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarTransition;
-import org.apache.directory.shared.asn1.ber.grammar.Grammar;
 import org.apache.directory.shared.asn1.ber.grammar.States;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
@@ -80,10 +80,10 @@ public class PagedResultsControlGrammar extends AbstractGrammar
          *     
          * Nothing to do
          */
-        super.transitions[States.INIT_GRAMMAR_STATE][UniversalTag.SEQUENCE_TAG] = 
+        super.transitions[States.INIT_GRAMMAR_STATE][UniversalTag.SEQUENCE.getValue()] = 
             new GrammarTransition( States.INIT_GRAMMAR_STATE, 
                                     PagedResultsControlStatesEnum.PAGED_SEARCH_SEQUENCE_STATE, 
-                                    UniversalTag.SEQUENCE_TAG, null );
+                                    UniversalTag.SEQUENCE.getValue(), null );
 
 
         /** 
@@ -95,10 +95,10 @@ public class PagedResultsControlGrammar extends AbstractGrammar
          *     
          * Stores the size value
          */
-        super.transitions[PagedResultsControlStatesEnum.PAGED_SEARCH_SEQUENCE_STATE][UniversalTag.INTEGER_TAG] = 
+        super.transitions[PagedResultsControlStatesEnum.PAGED_SEARCH_SEQUENCE_STATE][UniversalTag.INTEGER.getValue()] = 
             new GrammarTransition( PagedResultsControlStatesEnum.PAGED_SEARCH_SEQUENCE_STATE, 
                 PagedResultsControlStatesEnum.SIZE_STATE, 
-                UniversalTag.INTEGER_TAG,
+                UniversalTag.INTEGER.getValue(),
                 new GrammarAction( "Set PagedSearchControl size" )
             {
                 public void action( IAsn1Container container ) throws DecoderException
@@ -143,9 +143,9 @@ public class PagedResultsControlGrammar extends AbstractGrammar
          *     
          * Stores the cookie flag
          */
-        super.transitions[PagedResultsControlStatesEnum.SIZE_STATE][UniversalTag.OCTET_STRING_TAG] = 
+        super.transitions[PagedResultsControlStatesEnum.SIZE_STATE][UniversalTag.OCTET_STRING.getValue()] = 
             new GrammarTransition( PagedResultsControlStatesEnum.SIZE_STATE,
-                                    PagedResultsControlStatesEnum.COOKIE_STATE, UniversalTag.OCTET_STRING_TAG,
+                                    PagedResultsControlStatesEnum.COOKIE_STATE, UniversalTag.OCTET_STRING.getValue(),
                 new GrammarAction( "Set PagedSearchControl cookie" )
             {
                 public void action( IAsn1Container container ) throws DecoderException

@@ -25,48 +25,48 @@ package org.apache.directory.shared.asn1.ber.tlv;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class TLVStateEnum
+public enum TLVStateEnum
 {
-    // ~ Static fields/initializers
-    // -----------------------------------------------------------------
-
     /** Start means that the deconding hasn't read the first byte */
-    public static final int TAG_STATE_START = 0x00;
+    TAG_STATE_START,
 
     /** Pending means that the Type Tag is contained in more that one byte */
-    public static final int TAG_STATE_PENDING = 0x01;
+    TAG_STATE_PENDING,
 
     /** End means that the Type is totally read */
-    public static final int TAG_STATE_END = 0x02;
+    TAG_STATE_END,
 
     /**
      * Overflow could have two meaning : either there are more than 5 bytes to
      * encode the value (5 bytes = 5bits + 4*7 bits = 33 bits) or the value that
      * is represented by those bytes is over MAX_INTEGER
      */
-    public static final int TAG_STATE_OVERFLOW = 0x04;
+    TAG_STATE_OVERFLOW,
 
     /** Start means that the decoding hasn't read the first byte */
-    public static final int LENGTH_STATE_START = 0x08;
+    LENGTH_STATE_START,
 
     /** Pending means that the Type length is contained in more that one byte */
-    public static final int LENGTH_STATE_PENDING = 0x10;
+    LENGTH_STATE_PENDING,
 
     /** End means that the Length is totally read */
-    public static final int LENGTH_STATE_END = 0x20;
+    LENGTH_STATE_END,
 
     /** Start means that the decoding hasn't read the first byte */
-    public static final int VALUE_STATE_START = 0x40;
+    VALUE_STATE_START,
 
     /** Pending means that the Type Value is contained in more that one byte */
-    public static final int VALUE_STATE_PENDING = 0x80;
+    VALUE_STATE_PENDING,
 
     /** End means that the Value is totally read */
-    public static final int VALUE_STATE_END = 0x100;
+    VALUE_STATE_END,
 
     /** The decoding of a TLV is done */
-    public static final int TLV_STATE_DONE = 0x200;
+    TLV_STATE_DONE,
 
     /** The decoding of a PDU is done */
-    public static final int PDU_DECODED = 0x400;
+    PDU_DECODED,
+    
+    /** The ending state */
+    GRAMMAR_END;
 }

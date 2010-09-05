@@ -22,9 +22,9 @@ package org.apache.directory.shared.ldap.codec.extended.operations.certGeneratio
 
 import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.AbstractGrammar;
+import org.apache.directory.shared.asn1.ber.grammar.Grammar;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarTransition;
-import org.apache.directory.shared.asn1.ber.grammar.Grammar;
 import org.apache.directory.shared.asn1.ber.grammar.States;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
@@ -83,9 +83,9 @@ public class CertGenerationGrammar extends AbstractGrammar
          *     
          * Creates the CertGenerationObject object
          */
-        super.transitions[States.INIT_GRAMMAR_STATE][UniversalTag.SEQUENCE_TAG] = new GrammarTransition(
+        super.transitions[States.INIT_GRAMMAR_STATE][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
             States.INIT_GRAMMAR_STATE, CertGenerationStatesEnum.CERT_GENERATION_REQUEST_SEQUENCE_STATE,
-            UniversalTag.SEQUENCE_TAG, new GrammarAction( "Init CertGenerationObject" )
+            UniversalTag.SEQUENCE.getValue(), new GrammarAction( "Init CertGenerationObject" )
             {
                 public void action( IAsn1Container container )
                 {
@@ -104,9 +104,9 @@ public class CertGenerationGrammar extends AbstractGrammar
          *     
          * Set the targetDN value into the CertGenerationObject instance.
          */
-        super.transitions[CertGenerationStatesEnum.CERT_GENERATION_REQUEST_SEQUENCE_STATE][UniversalTag.OCTET_STRING] = new GrammarTransition(
+        super.transitions[CertGenerationStatesEnum.CERT_GENERATION_REQUEST_SEQUENCE_STATE][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
             CertGenerationStatesEnum.CERT_GENERATION_REQUEST_SEQUENCE_STATE, CertGenerationStatesEnum.TARGETDN_STATE,
-            UniversalTag.OCTET_STRING, new GrammarAction( "Set Cert Generation target DN value" )
+            UniversalTag.OCTET_STRING.getValue(), new GrammarAction( "Set Cert Generation target DN value" )
             {
                 public void action( IAsn1Container container ) throws DecoderException
                 {
@@ -150,8 +150,8 @@ public class CertGenerationGrammar extends AbstractGrammar
          *     
          * Set the issuerDN value into the CertGenerationObject instance.
          */
-        super.transitions[CertGenerationStatesEnum.TARGETDN_STATE][UniversalTag.OCTET_STRING] = new GrammarTransition(
-            CertGenerationStatesEnum.TARGETDN_STATE, CertGenerationStatesEnum.ISSUER_STATE, UniversalTag.OCTET_STRING,
+        super.transitions[CertGenerationStatesEnum.TARGETDN_STATE][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
+            CertGenerationStatesEnum.TARGETDN_STATE, CertGenerationStatesEnum.ISSUER_STATE, UniversalTag.OCTET_STRING.getValue(),
             new GrammarAction( "Set Cert Generation issuer DN value" )
             {
                 public void action( IAsn1Container container ) throws DecoderException
@@ -190,8 +190,8 @@ public class CertGenerationGrammar extends AbstractGrammar
          *     
          * Set the subjectDN value into the CertGenerationObject instance.
          */
-        super.transitions[CertGenerationStatesEnum.ISSUER_STATE][UniversalTag.OCTET_STRING] = new GrammarTransition(
-            CertGenerationStatesEnum.ISSUER_STATE, CertGenerationStatesEnum.SUBJECT_STATE, UniversalTag.OCTET_STRING,
+        super.transitions[CertGenerationStatesEnum.ISSUER_STATE][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
+            CertGenerationStatesEnum.ISSUER_STATE, CertGenerationStatesEnum.SUBJECT_STATE, UniversalTag.OCTET_STRING.getValue(),
             new GrammarAction( "Set Cert Generation subject DN value" )
             {
                 public void action( IAsn1Container container ) throws DecoderException
@@ -235,9 +235,9 @@ public class CertGenerationGrammar extends AbstractGrammar
          *     
          * Set the key algorithm value into the CertGenerationObject instance.
          */
-        super.transitions[CertGenerationStatesEnum.SUBJECT_STATE][UniversalTag.OCTET_STRING] = new GrammarTransition(
+        super.transitions[CertGenerationStatesEnum.SUBJECT_STATE][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
             CertGenerationStatesEnum.SUBJECT_STATE, CertGenerationStatesEnum.KEY_ALGORITHM_STATE,
-            UniversalTag.OCTET_STRING, new GrammarAction( "Set Cert Generation key algorithm value" )
+            UniversalTag.OCTET_STRING.getValue(), new GrammarAction( "Set Cert Generation key algorithm value" )
             {
                 public void action( IAsn1Container container ) throws DecoderException
                 {

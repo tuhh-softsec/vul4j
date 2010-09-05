@@ -22,9 +22,9 @@ package org.apache.directory.shared.ldap.codec.search.controls.persistentSearch;
 
 import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.AbstractGrammar;
+import org.apache.directory.shared.asn1.ber.grammar.Grammar;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarTransition;
-import org.apache.directory.shared.asn1.ber.grammar.Grammar;
 import org.apache.directory.shared.asn1.ber.grammar.States;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
@@ -88,10 +88,10 @@ public class PersistentSearchControlGrammar extends AbstractGrammar
          *     
          * Initialize the persistence search object
          */
-        super.transitions[States.INIT_GRAMMAR_STATE][UniversalTag.SEQUENCE_TAG] = 
+        super.transitions[States.INIT_GRAMMAR_STATE][UniversalTag.SEQUENCE.getValue()] = 
             new GrammarTransition( States.INIT_GRAMMAR_STATE, 
                                     PersistentSearchControlStatesEnum.PSEARCH_SEQUENCE_STATE, 
-                                    UniversalTag.SEQUENCE_TAG, null );
+                                    UniversalTag.SEQUENCE.getValue(), null );
 
 
         /** 
@@ -102,10 +102,10 @@ public class PersistentSearchControlGrammar extends AbstractGrammar
          *     
          * Stores the change types value
          */
-        super.transitions[PersistentSearchControlStatesEnum.PSEARCH_SEQUENCE_STATE][UniversalTag.INTEGER_TAG] = 
+        super.transitions[PersistentSearchControlStatesEnum.PSEARCH_SEQUENCE_STATE][UniversalTag.INTEGER.getValue()] = 
             new GrammarTransition( PersistentSearchControlStatesEnum.PSEARCH_SEQUENCE_STATE, 
                 PersistentSearchControlStatesEnum.CHANGE_TYPES_STATE, 
-                UniversalTag.INTEGER_TAG,
+                UniversalTag.INTEGER.getValue(),
                 new GrammarAction( "Set PSearchControl changeTypes" )
             {
                 public void action( IAsn1Container container ) throws DecoderException
@@ -145,9 +145,9 @@ public class PersistentSearchControlGrammar extends AbstractGrammar
          *     
          * Stores the change only flag
          */
-        super.transitions[PersistentSearchControlStatesEnum.CHANGE_TYPES_STATE][UniversalTag.BOOLEAN_TAG] = 
+        super.transitions[PersistentSearchControlStatesEnum.CHANGE_TYPES_STATE][UniversalTag.BOOLEAN.getValue()] = 
             new GrammarTransition( PersistentSearchControlStatesEnum.CHANGE_TYPES_STATE,
-                                    PersistentSearchControlStatesEnum.CHANGES_ONLY_STATE, UniversalTag.BOOLEAN_TAG,
+                                    PersistentSearchControlStatesEnum.CHANGES_ONLY_STATE, UniversalTag.BOOLEAN.getValue(),
                 new GrammarAction( "Set PSearchControl changesOnly" )
             {
                 public void action( IAsn1Container container ) throws DecoderException
@@ -184,9 +184,9 @@ public class PersistentSearchControlGrammar extends AbstractGrammar
          *     
          * Stores the return ECs flag 
          */
-        super.transitions[PersistentSearchControlStatesEnum.CHANGES_ONLY_STATE][UniversalTag.BOOLEAN_TAG] = 
+        super.transitions[PersistentSearchControlStatesEnum.CHANGES_ONLY_STATE][UniversalTag.BOOLEAN.getValue()] = 
             new GrammarTransition( PersistentSearchControlStatesEnum.CHANGES_ONLY_STATE, 
-                                    PersistentSearchControlStatesEnum.RETURN_ECS_STATE, UniversalTag.BOOLEAN_TAG,
+                                    PersistentSearchControlStatesEnum.RETURN_ECS_STATE, UniversalTag.BOOLEAN.getValue(),
                 new GrammarAction( "Set PSearchControl returnECs" )
             {
                 public void action( IAsn1Container container ) throws DecoderException

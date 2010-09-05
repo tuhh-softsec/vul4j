@@ -38,14 +38,10 @@ import org.apache.directory.shared.i18n.I18n;
  */
 public class Value implements Serializable
 {
+    /** The serialVersion UID */
     private static final long serialVersionUID = 1L;
 
-    // ~ Instance fields
-    // ----------------------------------------------------------------------------
-
-    /**
-     * The data buffer. TODO Create a streamed data to store large data
-     */
+    /** The data buffer. */
     private byte[] data;
 
     /** The current position of the last byte in the data buffer */
@@ -57,47 +53,58 @@ public class Value implements Serializable
     /** The encoded byte for a FALSE value */
     public static final byte FALSE_VALUE = ( byte ) 0x00;
 
-    /** Pre-encoded PDUs for a TRUE and FALSE TLV */
+    /** Pre-encoded PDUs for a TRUE TLV */
     private static final byte[] ENCODED_TRUE = new byte[]
         { 0x01, 0x01, TRUE_VALUE };
 
+    /** Pre-encoded PDUs for a FALSE TLV */
     private static final byte[] ENCODED_FALSE = new byte[]
         { 0x01, 0x01, FALSE_VALUE };
 
-    /** Integer limits for encoding */
-    private static final int ONE_BYTE_MAX = ( 1 << 7 ) - 1; // 0x7F
-
+    /** Integer limits for encoding : 0x7F */
+    private static final int ONE_BYTE_MAX = ( 1 << 7 ) - 1;
+    
+    /** Integer limits for encoding : -0x7F */
     private static final int ONE_BYTE_MIN = -( 1 << 7 );
 
-    private static final int TWO_BYTE_MAX = ( 1 << 15 ) - 1; // 0x7FFF
+    /** Integer limits for encoding : 0x7FFF */
+    private static final int TWO_BYTE_MAX = ( 1 << 15 ) - 1;
 
+    /** Integer limits for encoding : -0x7FFF */
     private static final int TWO_BYTE_MIN = -( 1 << 15 );
 
-    private static final int THREE_BYTE_MAX = ( 1 << 23 ) - 1; // 0x7FFFFF
+    /** Integer limits for encoding : 0x7FFFFF */
+    private static final int THREE_BYTE_MAX = ( 1 << 23 ) - 1;
 
+    /** Integer limits for encoding : -0x7FFFFF */
     private static final int THREE_BYTE_MIN = -( 1 << 23 );
 
-    private static final long FOUR_BYTE_MAX = ( 1L << 31 ) - 1L; // 0x7FFFFFFF
+    /** Integer limits for encoding : 0x7FFFFFFF */
+    private static final long FOUR_BYTE_MAX = ( 1L << 31 ) - 1L;
 
+    /** Integer limits for encoding : -0x7FFFFFFF */
     private static final long FOUR_BYTE_MIN = -( 1L << 31 ); 
 
-    private static final long FIVE_BYTE_MAX = ( 1L << 39 ) - 1L; // 0x7FFFFFFFFF
+    /** Integer limits for encoding : 0x7FFFFFFFFF */
+    private static final long FIVE_BYTE_MAX = ( 1L << 39 ) - 1L;
 
+    /** Integer limits for encoding : -0x7FFFFFFFFF */
     private static final long FIVE_BYTE_MIN = -( 1L << 39 ); 
 
-    private static final long SIX_BYTE_MAX = ( 1L << 47 ) - 1L; // 0x7FFFFFFFFFFF
+    /** Integer limits for encoding : 0x7FFFFFFFFFFF */
+    private static final long SIX_BYTE_MAX = ( 1L << 47 ) - 1L;
 
+    /** Integer limits for encoding : -0x7FFFFFFFFFFF */
     private static final long SIX_BYTE_MIN = -( 1L << 47 ); 
 
-    private static final long SEVEN_BYTE_MAX = ( 1L << 55 ) - 1L; // 0x7FFFFFFFFFFFFF
+    /** Integer limits for encoding : 0x7FFFFFFFFFFF */
+    private static final long SEVEN_BYTE_MAX = ( 1L << 55 ) - 1L;
 
+    /** Integer limits for encoding : -0x7FFFFFFFFFFF */
     private static final long SEVEN_BYTE_MIN = -( 1L << 55 ); 
 
-    // ~ Methods
-    // ------------------------------------------------------------------------------------
-
     /**
-     * The constructor.
+     * Creates a new Value from a byte[]
      * 
      * @param value the associated value
      */
@@ -111,7 +118,7 @@ public class Value implements Serializable
 
 
     /**
-     * The constructor.
+     * The default constructor.
      */
     public Value()
     {
@@ -445,7 +452,6 @@ public class Value implements Serializable
      *   -9223372036854775807    -> [80 00 00 00 00 00 00 01]<br>
      *   -9223372036854775808    -> [80 00 00 00 00 00 00 00]<br>
      * 
-     * 
      * @param value The value to store in a byte array
      * @return The byte array representing the value.
      */
@@ -631,12 +637,12 @@ public class Value implements Serializable
     {
         if ( buffer == null )
         {
-            throw new EncoderException( I18n.err( I18n.ERR_00003 ) );
+            throw new EncoderException( I18n.err( I18n.ERR_CANNOT_PUT_PDU_IN_NULL_BUFFER_00003 ) );
         }
 
         try
         {
-            buffer.put( UniversalTag.OCTET_STRING_TAG );
+            buffer.put( UniversalTag.OCTET_STRING.getValue() );
 
             byte[] value = Asn1StringUtils.getBytesUtf8( string );
 
@@ -649,10 +655,11 @@ public class Value implements Serializable
         }
         catch ( BufferOverflowException boe )
         {
-            throw new EncoderException( I18n.err( I18n.ERR_00004 ) );
+            throw new EncoderException( I18n.err( I18n.ERR_PDU_BUFFER_SIZE_TOO_SMALL_00004 ) );
         }
     }
 
+    
     /**
      * Encode a BIT STRING value
      * 
@@ -665,12 +672,12 @@ public class Value implements Serializable
     {
         if ( buffer == null )
         {
-            throw new EncoderException( I18n.err( I18n.ERR_00003 ) );
+            throw new EncoderException( I18n.err( I18n.ERR_CANNOT_PUT_PDU_IN_NULL_BUFFER_00003 ) );
         }
 
         try
         {
-            buffer.put( UniversalTag.BIT_STRING_TAG );
+            buffer.put( UniversalTag.BIT_STRING.getValue() );
             
             // The BitString length. We add one byte for the unused number 
             // of bits
@@ -682,7 +689,7 @@ public class Value implements Serializable
         }
         catch ( BufferOverflowException boe )
         {
-            throw new EncoderException( I18n.err( I18n.ERR_00004 ) );
+            throw new EncoderException( I18n.err( I18n.ERR_PDU_BUFFER_SIZE_TOO_SMALL_00004 ) );
         }
     }
 
@@ -699,12 +706,12 @@ public class Value implements Serializable
     {
         if ( buffer == null )
         {
-            throw new EncoderException( I18n.err( I18n.ERR_00003 ) );
+            throw new EncoderException( I18n.err( I18n.ERR_CANNOT_PUT_PDU_IN_NULL_BUFFER_00003 ) );
         }
 
         try
         {
-            buffer.put( UniversalTag.OCTET_STRING_TAG );
+            buffer.put( UniversalTag.OCTET_STRING.getValue() );
 
             if ( ( bytes == null ) || ( bytes.length == 0 ) )
             {
@@ -718,7 +725,7 @@ public class Value implements Serializable
         }
         catch ( BufferOverflowException boe )
         {
-            throw new EncoderException( I18n.err( I18n.ERR_00004 ) );
+            throw new EncoderException( I18n.err( I18n.ERR_PDU_BUFFER_SIZE_TOO_SMALL_00004 ) );
         }
     }
 
@@ -735,12 +742,12 @@ public class Value implements Serializable
     {
         if ( buffer == null )
         {
-            throw new EncoderException( I18n.err( I18n.ERR_00003 ) );
+            throw new EncoderException( I18n.err( I18n.ERR_CANNOT_PUT_PDU_IN_NULL_BUFFER_00003 ) );
         }
 
         try
         {
-            buffer.put( UniversalTag.OCTET_STRING_TAG );
+            buffer.put( UniversalTag.OCTET_STRING.getValue() );
             buffer.put( TLV.getBytes( oid.getOIDLength() ) );
 
             if ( oid.getOIDLength() != 0 )
@@ -750,7 +757,7 @@ public class Value implements Serializable
         }
         catch ( BufferOverflowException boe )
         {
-            throw new EncoderException( I18n.err( I18n.ERR_00004 ) );
+            throw new EncoderException( I18n.err( I18n.ERR_PDU_BUFFER_SIZE_TOO_SMALL_00004 ) );
         }
     }
 
@@ -767,18 +774,18 @@ public class Value implements Serializable
     {
         if ( buffer == null )
         {
-            throw new EncoderException( I18n.err( I18n.ERR_00003 ) );
+            throw new EncoderException( I18n.err( I18n.ERR_CANNOT_PUT_PDU_IN_NULL_BUFFER_00003 ) );
         }
 
         try
         {
-            buffer.put( UniversalTag.INTEGER_TAG );
+            buffer.put( UniversalTag.INTEGER.getValue() );
             buffer.put( ( byte ) getNbBytes( value ) );
             buffer.put( getBytes( value ) );
         }
         catch ( BufferOverflowException boe )
         {
-            throw new EncoderException( I18n.err( I18n.ERR_00004 ) );
+            throw new EncoderException( I18n.err( I18n.ERR_PDU_BUFFER_SIZE_TOO_SMALL_00004 ) );
         }
     }
 
@@ -795,18 +802,18 @@ public class Value implements Serializable
     {
         if ( buffer == null )
         {
-            throw new EncoderException( I18n.err( I18n.ERR_00003 ) );
+            throw new EncoderException( I18n.err( I18n.ERR_CANNOT_PUT_PDU_IN_NULL_BUFFER_00003 ) );
         }
 
         try
         {
-            buffer.put( UniversalTag.INTEGER_TAG );
+            buffer.put( UniversalTag.INTEGER.getValue() );
             buffer.put( ( byte ) getNbBytes( value ) );
             buffer.put( getBytes( value ) );
         }
         catch ( BufferOverflowException boe )
         {
-            throw new EncoderException( I18n.err( I18n.ERR_00004 ) );
+            throw new EncoderException( I18n.err( I18n.ERR_PDU_BUFFER_SIZE_TOO_SMALL_00004 ) );
         }
     }
 
@@ -824,7 +831,7 @@ public class Value implements Serializable
     {
         if ( buffer == null )
         {
-            throw new EncoderException( I18n.err( I18n.ERR_00003 ) );
+            throw new EncoderException( I18n.err( I18n.ERR_CANNOT_PUT_PDU_IN_NULL_BUFFER_00003 ) );
         }
 
         try
@@ -835,7 +842,7 @@ public class Value implements Serializable
         }
         catch ( BufferOverflowException boe )
         {
-            throw new EncoderException( I18n.err( I18n.ERR_00004 ) );
+            throw new EncoderException( I18n.err( I18n.ERR_PDU_BUFFER_SIZE_TOO_SMALL_00004 ) );
         }
     }
 
@@ -852,18 +859,18 @@ public class Value implements Serializable
     {
         if ( buffer == null )
         {
-            throw new EncoderException( I18n.err( I18n.ERR_00003 ) );
+            throw new EncoderException( I18n.err( I18n.ERR_CANNOT_PUT_PDU_IN_NULL_BUFFER_00003 ) );
         }
 
         try
         {
-            buffer.put( UniversalTag.ENUMERATED_TAG );
+            buffer.put( UniversalTag.ENUMERATED.getValue() );
             buffer.put( TLV.getBytes( getNbBytes( value ) ) );
             buffer.put( getBytes( value ) );
         }
         catch ( BufferOverflowException boe )
         {
-            throw new EncoderException( I18n.err( I18n.ERR_00004 ) );
+            throw new EncoderException( I18n.err( I18n.ERR_PDU_BUFFER_SIZE_TOO_SMALL_00004 ) );
         }
     }
 
@@ -880,16 +887,23 @@ public class Value implements Serializable
     {
         if ( buffer == null )
         {
-            throw new EncoderException( I18n.err( I18n.ERR_00003 ) );
+            throw new EncoderException( I18n.err( I18n.ERR_CANNOT_PUT_PDU_IN_NULL_BUFFER_00003 ) );
         }
 
         try
         {
-            buffer.put( bool ? ENCODED_TRUE : ENCODED_FALSE );
+            if ( bool )
+            {
+                buffer.put( ENCODED_TRUE );
+            }
+            else
+            {
+                buffer.put( ENCODED_FALSE );
+            }
         }
         catch ( BufferOverflowException boe )
         {
-            throw new EncoderException( I18n.err( I18n.ERR_00004 ) );
+            throw new EncoderException( I18n.err( I18n.ERR_PDU_BUFFER_SIZE_TOO_SMALL_00004 ) );
         }
     }
 
@@ -901,8 +915,7 @@ public class Value implements Serializable
      */
     public String toString()
     {
-
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         sb.append( "DATA" );
 
         if ( data != null )
@@ -913,7 +926,6 @@ public class Value implements Serializable
         }
         else
         {
-
             return "[]";
         }
 

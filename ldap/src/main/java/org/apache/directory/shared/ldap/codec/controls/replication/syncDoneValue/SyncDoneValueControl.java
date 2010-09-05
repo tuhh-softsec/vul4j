@@ -110,11 +110,11 @@ public class SyncDoneValueControl extends AbstractControl
         super.encode( buffer );
 
         // Encode the OCTET_STRING tag
-        buffer.put( UniversalTag.OCTET_STRING_TAG );
+        buffer.put( UniversalTag.OCTET_STRING.getValue() );
         buffer.put( TLV.getBytes( valueLength ) );
 
         // Encode the SEQ 
-        buffer.put( UniversalTag.SEQUENCE_TAG );
+        buffer.put( UniversalTag.SEQUENCE.getValue() );
         buffer.put( TLV.getBytes( syncDoneValueLength ) );
 
         if ( cookie != null )
@@ -144,7 +144,7 @@ public class SyncDoneValueControl extends AbstractControl
                 ByteBuffer buffer = ByteBuffer.allocate( valueLength );
                 
                 // Encode the SEQ 
-                buffer.put( UniversalTag.SEQUENCE_TAG );
+                buffer.put( UniversalTag.SEQUENCE.getValue() );
                 buffer.put( TLV.getBytes( syncDoneValueLength ) );
 
                 if ( cookie != null )

@@ -106,7 +106,7 @@ public class SubentriesControl extends AbstractControl
         super.encode( buffer );
         
         // Encode the OCTET_STRING tag
-        buffer.put( UniversalTag.OCTET_STRING_TAG );
+        buffer.put( UniversalTag.OCTET_STRING.getValue() );
         buffer.put( TLV.getBytes( valueLength ) );
 
         // Now encode the Subentries specific part

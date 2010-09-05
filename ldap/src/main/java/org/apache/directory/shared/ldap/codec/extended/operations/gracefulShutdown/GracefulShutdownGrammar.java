@@ -22,9 +22,9 @@ package org.apache.directory.shared.ldap.codec.extended.operations.gracefulShutd
 
 import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.AbstractGrammar;
+import org.apache.directory.shared.asn1.ber.grammar.Grammar;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarTransition;
-import org.apache.directory.shared.asn1.ber.grammar.Grammar;
 import org.apache.directory.shared.asn1.ber.grammar.States;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
@@ -83,10 +83,10 @@ public class GracefulShutdownGrammar extends AbstractGrammar
          *     
          * Creates the GracefulShutdown object
          */
-        super.transitions[States.INIT_GRAMMAR_STATE][UniversalTag.SEQUENCE_TAG] = 
+        super.transitions[States.INIT_GRAMMAR_STATE][UniversalTag.SEQUENCE.getValue()] = 
             new GrammarTransition( States.INIT_GRAMMAR_STATE, 
                 GracefulShutdownStatesEnum.GRACEFUL_SHUTDOWN_SEQUENCE_STATE, 
-                UniversalTag.SEQUENCE_TAG,
+                UniversalTag.SEQUENCE.getValue(),
                 new GrammarAction( "Init GracefulShutdown" )
             {
                 public void action( IAsn1Container container )
@@ -108,10 +108,10 @@ public class GracefulShutdownGrammar extends AbstractGrammar
          * Set the time offline value into the GracefulShutdown
          * object.
          */
-        super.transitions[GracefulShutdownStatesEnum.GRACEFUL_SHUTDOWN_SEQUENCE_STATE][UniversalTag.INTEGER_TAG] = 
+        super.transitions[GracefulShutdownStatesEnum.GRACEFUL_SHUTDOWN_SEQUENCE_STATE][UniversalTag.INTEGER.getValue()] = 
             new GrammarTransition( GracefulShutdownStatesEnum.GRACEFUL_SHUTDOWN_SEQUENCE_STATE, 
                                     GracefulShutdownStatesEnum.TIME_OFFLINE_STATE, 
-                                    UniversalTag.INTEGER_TAG, 
+                                    UniversalTag.INTEGER.getValue(), 
                 new GrammarAction( "Set Graceful Shutdown time offline" )
             {
                 public void action( IAsn1Container container ) throws DecoderException

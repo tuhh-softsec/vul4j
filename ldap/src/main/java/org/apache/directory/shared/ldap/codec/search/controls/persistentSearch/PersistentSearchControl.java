@@ -171,11 +171,11 @@ public class PersistentSearchControl extends AbstractControl
         super.encode( buffer );
         
         // Encode the OCTET_STRING tag
-        buffer.put( UniversalTag.OCTET_STRING_TAG );
+        buffer.put( UniversalTag.OCTET_STRING.getValue() );
         buffer.put( TLV.getBytes( valueLength ) );
 
         // Now encode the PagedSearch specific part
-        buffer.put( UniversalTag.SEQUENCE_TAG );
+        buffer.put( UniversalTag.SEQUENCE.getValue() );
         buffer.put( TLV.getBytes( psearchSeqLength ) );
 
         Value.encode( buffer, changeTypes );
@@ -199,7 +199,7 @@ public class PersistentSearchControl extends AbstractControl
                 ByteBuffer buffer = ByteBuffer.allocate( valueLength );
                 
                 // Now encode the PagedSearch specific part
-                buffer.put( UniversalTag.SEQUENCE_TAG );
+                buffer.put( UniversalTag.SEQUENCE.getValue() );
                 buffer.put( TLV.getBytes( psearchSeqLength ) );
 
                 Value.encode( buffer, changeTypes );

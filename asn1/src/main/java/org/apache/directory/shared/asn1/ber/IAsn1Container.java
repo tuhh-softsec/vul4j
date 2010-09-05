@@ -23,6 +23,7 @@ package org.apache.directory.shared.asn1.ber;
 import org.apache.directory.shared.asn1.ber.grammar.Grammar;
 import org.apache.directory.shared.asn1.ber.grammar.States;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
+import org.apache.directory.shared.asn1.ber.tlv.TLVStateEnum;
 
 
 /**
@@ -37,7 +38,7 @@ public interface IAsn1Container
      * 
      * @return Returns the current grammar state
      */
-    int getState();
+    TLVStateEnum getState();
 
 
     /**
@@ -45,7 +46,7 @@ public interface IAsn1Container
      * 
      * @param state The new state
      */
-    void setState( int state );
+    void setState( TLVStateEnum state );
 
 
     /**

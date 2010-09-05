@@ -270,7 +270,7 @@ public class StoredProcedure extends AbstractAsn1Object
         try
         {
             // The StoredProcedure Tag
-            bb.put( UniversalTag.SEQUENCE_TAG );
+            bb.put( UniversalTag.SEQUENCE.getValue() );
             bb.put( TLV.getBytes( storedProcedureLength ) );
 
             // The language
@@ -280,7 +280,7 @@ public class StoredProcedure extends AbstractAsn1Object
             Value.encode( bb, procedure );
             
             // The parameters sequence
-            bb.put( UniversalTag.SEQUENCE_TAG );
+            bb.put( UniversalTag.SEQUENCE.getValue() );
             bb.put( TLV.getBytes( parametersLength ) );
 
             // The parameters list
@@ -291,7 +291,7 @@ public class StoredProcedure extends AbstractAsn1Object
                 for ( StoredProcedureParameter spParam:parameters )
                 {
                     // The parameter sequence
-                    bb.put( UniversalTag.SEQUENCE_TAG );
+                    bb.put( UniversalTag.SEQUENCE.getValue() );
                     int localParameterLength = parameterLength.get( parameterNumber );
                     bb.put( TLV.getBytes( localParameterLength ) );
 

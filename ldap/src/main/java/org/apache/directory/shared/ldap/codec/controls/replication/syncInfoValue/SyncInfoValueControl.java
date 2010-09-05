@@ -311,7 +311,7 @@ public class SyncInfoValueControl extends AbstractControl
         super.encode( buffer );
         
         // Encode the OCTET_STRING tag
-        buffer.put( UniversalTag.OCTET_STRING_TAG );
+        buffer.put( UniversalTag.OCTET_STRING.getValue() );
         buffer.put( TLV.getBytes( valueLength ) );
 
         switch ( type )
@@ -390,7 +390,7 @@ public class SyncInfoValueControl extends AbstractControl
                 }
                 
                 // The syncUUIDs
-                buffer.put( UniversalTag.SET_TAG );
+                buffer.put( UniversalTag.SET.getValue() );
                 buffer.put( TLV.getBytes( syncUUIDsLength ) );
                 
                 // Loop on the UUIDs if any
@@ -495,7 +495,7 @@ public class SyncInfoValueControl extends AbstractControl
                         }
                         
                         // The syncUUIDs
-                        buffer.put( UniversalTag.SET_TAG );
+                        buffer.put( UniversalTag.SET.getValue() );
                         buffer.put( TLV.getBytes( syncUUIDsLength ) );
                         
                         // Loop on the UUIDs if any

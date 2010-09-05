@@ -19,25 +19,26 @@
  */
 package org.apache.directory.shared.asn1.ber.tlv;
 
-
 import org.apache.directory.shared.asn1.codec.DecoderException;
 
 
+
+
 /**
+ * A MBean used to get stats on the decoding process.
+ * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public interface ITLVBerDecoderMBean
+public interface TLVBerDecoderMBean
 {
-    // ~ Methods
-    // ------------------------------------------------------------------------------------
-
     /**
      * Set the number of bytes that can be used to encode the Value length,
      * including the first byte. Max is 127 if the Length use a definite form,
      * default is 1
      * 
      * @param length the number of byte to use
-     * @throws DecoderException 
+     * @throws DecoderException Thrown if the indefinite length is 
+     * allowed or if the length's Length is above 126 bytes
      */
     void setMaxLengthLength( int length ) throws DecoderException;
 
@@ -46,8 +47,7 @@ public interface ITLVBerDecoderMBean
      * Set the maximum number of bytes that should be used to encode a Tag
      * label, including the first byte. Default is 1, no maximum
      * 
-     * @param length
-     *            The length to use
+     * @param length The length to use
      */
     void setMaxTagLength( int length );
 

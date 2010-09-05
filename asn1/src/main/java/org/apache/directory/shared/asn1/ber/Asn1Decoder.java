@@ -22,8 +22,7 @@ package org.apache.directory.shared.asn1.ber;
 
 import java.nio.ByteBuffer;
 
-import org.apache.directory.shared.asn1.ber.grammar.States;
-import org.apache.directory.shared.asn1.ber.tlv.ITLVBerDecoderMBean;
+import org.apache.directory.shared.asn1.ber.tlv.TLVBerDecoderMBean;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.TLVStateEnum;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
@@ -41,7 +40,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
 */
-public class Asn1Decoder implements ITLVBerDecoderMBean
+public class Asn1Decoder implements TLVBerDecoderMBean
 {
     // ~ Static fields/initializers
     // -----------------------------------------------------------------
@@ -604,7 +603,7 @@ public class Asn1Decoder implements ITLVBerDecoderMBean
         // Check if the PDU has been fully decoded.
         if ( isTLVDecoded( container ) )
         {
-            if ( container.getState() == States.GRAMMAR_END )
+            if ( container.getState() == TLVStateEnum.GRAMMAR_END )
             {
                 // Change the state to DECODED
                 container.setState( TLVStateEnum.PDU_DECODED );
@@ -630,50 +629,6 @@ public class Asn1Decoder implements ITLVBerDecoderMBean
         }
 
         return stream.hasRemaining();
-    }
-
-
-    /**
-     * An helper function that return a string representing the current state
-     * for debuging purpose.
-     * 
-     * @param state The state
-     * @return A string representation of the state
-     */
-    private String stateToString( int state )
-    {
-        switch ( state )
-        {
-            case TLVStateEnum.TAG_STATE_START:
-                return "TAG_STATE_START";
-
-            case TLVStateEnum.TAG_STATE_END:
-                return "TAG_STATE_END";
-
-            case TLVStateEnum.TAG_STATE_OVERFLOW:
-                return "TAG_STATE_OVERFLOW";
-
-            case TLVStateEnum.LENGTH_STATE_START:
-                return "LENGTH_STATE_START";
-
-            case TLVStateEnum.LENGTH_STATE_PENDING:
-                return "LENGTH_STATE_PENDING";
-
-            case TLVStateEnum.LENGTH_STATE_END:
-                return "LENGTH_STATE_END";
-
-            case TLVStateEnum.VALUE_STATE_START:
-                return "VALUE_STATE_START";
-
-            case TLVStateEnum.VALUE_STATE_PENDING:
-                return "VALUE_STATE_PENDING";
-
-            case TLVStateEnum.TLV_STATE_DONE:
-                return "TLV_STATE_DONE";
-
-            default:
-                return "UNKNOWN_STATE";
-        }
     }
 
 
@@ -723,7 +678,7 @@ public class Asn1Decoder implements ITLVBerDecoderMBean
         {
             if ( IS_DEBUG )
             {
-                LOG.debug( "--- State = {} ---", stateToString( container.getState() ) );
+                LOG.debug( "--- State = {} ---", container.getState() );
 
                 if ( stream.hasRemaining() )
                 {
@@ -739,50 +694,50 @@ public class Asn1Decoder implements ITLVBerDecoderMBean
 
             switch ( container.getState() )
             {
-                case TLVStateEnum.TAG_STATE_START:
+                case TAG_STATE_START:
                     // Reset the GrammarEnd flag first
                     container.grammarEndAllowed( false );
                     hasRemaining = treatTagStartState( stream, container );
 
                     break;
 
-                case TLVStateEnum.LENGTH_STATE_START:
+                case LENGTH_STATE_START:
                     hasRemaining = treatLengthStartState( stream, container );
 
                     break;
 
-                case TLVStateEnum.LENGTH_STATE_PENDING:
+                case LENGTH_STATE_PENDING:
                     hasRemaining = treatLengthPendingState( stream, container );
 
                     break;
 
-                case TLVStateEnum.LENGTH_STATE_END:
+                case LENGTH_STATE_END:
                     treatLengthEndState( container );
 
                     break;
 
-                case TLVStateEnum.VALUE_STATE_START:
+                case VALUE_STATE_START:
                     hasRemaining = treatValueStartState( stream, container );
 
                     break;
 
-                case TLVStateEnum.VALUE_STATE_PENDING:
+                case VALUE_STATE_PENDING:
                     hasRemaining = treatValuePendingState( stream, container );
 
                     break;
 
-                case TLVStateEnum.VALUE_STATE_END:
+                case VALUE_STATE_END:
                     hasRemaining = stream.hasRemaining();
 
                     // Nothing to do. We will never reach this state
                     break;
 
-                case TLVStateEnum.TLV_STATE_DONE:
+                case TLV_STATE_DONE:
                     hasRemaining = treatTLVDoneState( stream, container );
 
                     break;
 
-                case TLVStateEnum.PDU_DECODED:
+                case PDU_DECODED:
                     // We have to deal with the case where there are
                     // more bytes in the buffer, but the PDU has been decoded.
                     LOG.warn( I18n.err( I18n.ERR_REMAINING_BYTES_FOR_DECODED_PDU_00043 ) );
@@ -882,11 +837,7 @@ public class Asn1Decoder implements ITLVBerDecoderMBean
 
 
     /**
-     * Set the maximal length for a Length
-     * 
-     * @param maxLengthLength The lengthLength to set.
-     * @throws DecoderException Thrown if the indefinite length is 
-     * allowed or if the length's Length is above 126 bytes
+     * {@inheritDoc}
      */
     public void setMaxLengthLength( int maxLengthLength ) throws DecoderException
     {

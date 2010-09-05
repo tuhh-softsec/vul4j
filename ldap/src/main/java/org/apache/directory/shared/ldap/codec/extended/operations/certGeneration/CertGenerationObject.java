@@ -86,7 +86,7 @@ public class CertGenerationObject extends AbstractAsn1Object
     {
         ByteBuffer bb = ByteBuffer.allocate( computeLength() );
 
-        bb.put( UniversalTag.SEQUENCE_TAG );
+        bb.put( UniversalTag.SEQUENCE.getValue() );
         bb.put( Value.getBytes( requestLength ) );
 
         Value.encode( bb, targetDN );

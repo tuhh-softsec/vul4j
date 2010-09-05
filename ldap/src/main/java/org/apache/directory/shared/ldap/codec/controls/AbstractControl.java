@@ -181,7 +181,7 @@ public abstract class AbstractControl extends AbstractAsn1Object implements Cont
         try
         {
             // The LdapMessage Sequence
-            buffer.put( UniversalTag.SEQUENCE_TAG );
+            buffer.put( UniversalTag.SEQUENCE.getValue() );
 
             // The length has been calculated by the computeLength method
             buffer.put( TLV.getBytes( controlLength ) );

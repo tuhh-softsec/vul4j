@@ -30,12 +30,6 @@ import org.apache.directory.shared.asn1.util.Asn1StringUtils;
  */
 public class TLV
 {
-    // ~ Static fields/initializers
-    // -----------------------------------------------------------------
-
-    // ~ Instance fields
-    // ----------------------------------------------------------------------------
-
     /** The current Tag being processed */
     private byte tag;
 
@@ -89,7 +83,7 @@ public class TLV
     public static final int LENGTH_SHORT_MASK = 0x007F;
     
     /** A speedup for single bytes length */
-    static byte[][] ONE_BYTE = new byte[256][];
+    private static final byte[][] ONE_BYTE = new byte[256][];
     
     static
     {
@@ -118,9 +112,6 @@ public class TLV
     }
 
 
-    // ~ Methods
-    // ------------------------------------------------------------------------------------
-
     /**
      * Checks to see if the tag is constructed.
      * 
@@ -132,6 +123,7 @@ public class TLV
         return ( tag & CONSTRUCTED_FLAG ) != 0;
     }
 
+    
     /**
      * Checks to see if the current tlv's tag is constructed.
      * 
@@ -155,6 +147,7 @@ public class TLV
         return ( tag & CONSTRUCTED_FLAG ) == 0;
     }
 
+    
     /**
      * Tells if the tag is Universal or not
      * 
@@ -166,6 +159,7 @@ public class TLV
         return ( tag & TYPE_CLASS_MASK ) == TYPE_CLASS_UNIVERSAL; 
     }
 
+    
     /**
      * Reset the TLV, so it can be reused for the next PDU decoding.
      */
@@ -179,6 +173,7 @@ public class TLV
         expectedLength = 0;
     }
 
+    
     /**
      * @return Returns the tag.
      */
@@ -187,6 +182,7 @@ public class TLV
         return tag;
     }
 
+    
     /**
      * Set a tag value for this TLV.
      * 
@@ -197,31 +193,13 @@ public class TLV
         this.tag = tag;
     }
 
+    
     /**
      * @return Returns the value.
      */
     public Value getValue()
     {
         return value;
-    }
-
-    /**
-     * Get a String representation of the TLV
-     * 
-     * @return A String
-     */
-    public String toString()
-    {
-
-        StringBuffer sb = new StringBuffer();
-
-        sb.append( "TLV[ " );
-        sb.append( Asn1StringUtils.dumpByte( tag ) ).append( ", " );
-        sb.append( length ).append( ", " );
-        sb.append( value.toString() );
-        sb.append( "]" );
-
-        return sb.toString();
     }
 
 
@@ -236,6 +214,7 @@ public class TLV
         return 1 + lengthNbBytes + length;
     }
 
+    
     /**
      * Utility function that return the number of bytes necessary to store the
      * length
@@ -245,10 +224,8 @@ public class TLV
      */
     public static int getNbBytes( int length )
     {
-
         if ( length >= 0 )
         {
-
             if ( length < 128 )
             {
                 return 1;
@@ -276,6 +253,7 @@ public class TLV
         }
     }
 
+    
     /**
      * Utility function that return a byte array representing the length
      * 
@@ -454,6 +432,26 @@ public class TLV
     public int getId()
     {
         return id;
+    }
+
+    
+    /**
+     * Get a String representation of the TLV
+     * 
+     * @return A String
+     */
+    public String toString()
+    {
+
+        StringBuilder sb = new StringBuilder();
+
+        sb.append( "TLV[ " );
+        sb.append( Asn1StringUtils.dumpByte( tag ) ).append( ", " );
+        sb.append( length ).append( ", " );
+        sb.append( value.toString() );
+        sb.append( "]" );
+
+        return sb.toString();
     }
 }
  

@@ -99,7 +99,7 @@ public class GracefulShutdown extends GracefulAction
         // Allocate the bytes buffer.
         ByteBuffer bb = ByteBuffer.allocate( computeLength() );
 
-        bb.put( UniversalTag.SEQUENCE_TAG );
+        bb.put( UniversalTag.SEQUENCE.getValue() );
         bb.put( TLV.getBytes( gracefulSequenceLength ) );
 
         if ( timeOffline != 0 )

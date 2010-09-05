@@ -167,191 +167,129 @@ package org.apache.directory.shared.asn1.ber.tlv;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class UniversalTag
+public enum UniversalTag
 {
-    // ~ Static fields/initializers
-    // -----------------------------------------------------------------
+    /** value for the tag */
+    RESERVED_0( (byte)0 ),
 
     /** value for the tag */
-    public static final int RESERVED_0 = 0;
+    BOOLEAN( (byte)1 ),
 
     /** value for the tag */
-    public static final int BOOLEAN = 1;
+    INTEGER( (byte)2 ),
 
     /** value for the tag */
-    public static final int INTEGER = 2;
+    BIT_STRING( (byte)3 ),
 
     /** value for the tag */
-    public static final int BIT_STRING = 3;
+    OCTET_STRING( (byte)4 ),
 
     /** value for the tag */
-    public static final int OCTET_STRING = 4;
+    NULL((byte)5 ),
 
     /** value for the tag */
-    public static final int NULL = 5;
+    OBJECT_IDENTIFIER( (byte)6 ),
 
     /** value for the tag */
-    public static final int OBJECT_IDENTIFIER = 6;
+    OBJECT_DESCRIPTOR( (byte)7 ),
 
     /** value for the tag */
-    public static final int OBJECT_DESCRIPTOR = 7;
+    EXTERNAL_INSTANCE_OF( (byte)8 ),
 
     /** value for the tag */
-    public static final int EXTERNAL_INSTANCE_OF = 8;
+    REAL( (byte)9 ),
 
     /** value for the tag */
-    public static final int REAL = 9;
+    ENUMERATED( (byte)0x0A ),
 
     /** value for the tag */
-    public static final int ENUMERATED = 10;
+    EMBEDDED_PDV( (byte)0x0B ),
 
     /** value for the tag */
-    public static final int EMBEDDED_PDV = 11;
+    UTF8_STRING( (byte)0x0C ),
 
     /** value for the tag */
-    public static final int UTF8_STRING = 12;
+    RELATIVE_OID( (byte)0x0D ),
 
     /** value for the tag */
-    public static final int RELATIVE_OID = 13;
+    RESERVED_14( (byte)0x0E ),
 
     /** value for the tag */
-    public static final int RESERVED_14 = 14;
+    RESERVED_15( (byte)0x0F ),
 
     /** value for the tag */
-    public static final int RESERVED_15 = 15;
+    SEQUENCE_SEQUENCE_OF( (byte)0x10 ),
 
     /** value for the tag */
-    public static final int SEQUENCE_SEQUENCE_OF = 16;
+    SET_SET_OF( (byte)0x11 ),
 
     /** value for the tag */
-    public static final int SET_SET_OF = 17;
+    NUMERIC_STRING( (byte)0x12 ),
 
     /** value for the tag */
-    public static final int NUMERIC_STRING = 18;
+    PRINTABLE_STRING( (byte)0x13 ),
 
     /** value for the tag */
-    public static final int PRINTABLE_STRING = 19;
+    TELETEX_STRING( (byte)0x14 ),
 
     /** value for the tag */
-    public static final int TELETEX_STRING = 20;
+    VIDEOTEX_STRING( (byte)0x15 ),
 
     /** value for the tag */
-    public static final int VIDEOTEX_STRING = 21;
+    IA5_STRING( (byte)0x16 ),
 
     /** value for the tag */
-    public static final int IA5_STRING = 22;
+    UTC_TIME( (byte)0x17 ),
 
     /** value for the tag */
-    public static final int UTC_TIME = 23;
+    GENERALIZED_TIME( (byte)0x18 ),
 
     /** value for the tag */
-    public static final int GENERALIZED_TIME = 24;
+    GRAPHIC_STRING( (byte)0x19 ),
 
     /** value for the tag */
-    public static final int GRAPHIC_STRING = 25;
+    VISIBLE_STRING( (byte)0x1A ),
 
     /** value for the tag */
-    public static final int VISIBLE_STRING = 26;
+    GENERAL_STRING( (byte)0x1B ),
 
     /** value for the tag */
-    public static final int GENERAL_STRING = 27;
+    UNIVERSAL_STRING( (byte)0x1C ),
 
     /** value for the tag */
-    public static final int UNIVERSAL_STRING = 28;
+    CHARACTER_STRING( (byte)0x1D ),
 
     /** value for the tag */
-    public static final int CHARACTER_STRING = 29;
+    BMP_STRING( (byte)0x1E ),
 
     /** value for the tag */
-    public static final int BMP_STRING = 30;
+    RESERVED_31( (byte)0x1F ),
 
-    /** value for the tag */
-    public static final int RESERVED_31 = 31;
-
-    /** String representation of the tags */
-    private static final String[] UNIVERSAL_TAG_STRING =
-        { 
-            "RESERVED_0", 
-            "BOOLEAN", 
-            "INTEGER", 
-            "BIT_STRING", 
-            "OCTET_STRING", 
-            "NULL", 
-            "OBJECT_IDENTIFIER",
-            "OBJECT_DESCRIPTOR", 
-            "EXTERNAL_INSTANCE_OF", 
-            "REAL", 
-            "ENUMERATED", 
-            "EMBEDDED_PDV", 
-            "UTF8_STRING",
-            "RELATIVE_OID", 
-            "RESERVED_14", 
-            "RESERVED_15", 
-            "SEQUENCE_SEQUENCE_OF", 
-            "SET_SET_OF", 
-            "NUMERIC_STRING",
-            "PRINTABLE_STRING", 
-            "TELETEX_STRING", 
-            "VIDEOTEX_STRING", 
-            "IA5_STRING", 
-            "UTC_TIME", 
-            "GENERALIZED_TIME",
-            "GRAPHIC_STRING", 
-            "VISIBLE_STRING", 
-            "GENERAL_STRING", 
-            "UNIVERSAL_STRING", 
-            "CHARACTER_STRING", 
-            "BMP_STRING",
-            "RESERVED_31" 
-        };
-
-    /** ASN.1 primitive tag values */
-    /** Boolean TAG */
-    public static final byte BOOLEAN_TAG = 0x01;
-
-    /** Integer TAG */
-    public static final byte INTEGER_TAG = 0x02;
-
-    /** BIT_STRING TAG */
-    public static final byte BIT_STRING_TAG = 0x03;
-
-    /** OCTET_STRING TAG */
-    public static final byte OCTET_STRING_TAG = 0x04;
-
-    /** ENUMERATED TAG */
-    public static final byte ENUMERATED_TAG = 0x0A;
-    
-    /** UTF8_STRING TAG */
-    public static final byte UTF8_STRING_TAG = 0x0C;
-
-    /** GENERALIZED_TIME TAG */
-    public static final byte GENERALIZED_TIME_TAG = 0x18;
-
-    /** GENERALIZED_STRING TAG */
-    public static final byte GENERALIZED_STRING_TAG = 0x1B;
 
     /** SEQUENCE TAG */
-    public static final byte SEQUENCE_TAG = 0x30;
+    SEQUENCE( (byte)0x30 ),
 
     /** SET TAG */
-    public static final byte SET_TAG = 0x31;
+    SET( (byte)0x31 );
 
-
-    // ~ Methods
-    // ------------------------------------------------------------------------------------
-
-    // -----------------------------------------------------------------------
-    // Members
-    // -----------------------------------------------------------------------
+    /** The internal value */
+    private byte value;
+    
     /**
-     * Gets the ASN.1 UNIVERSAL type tag's enum using a tag value.
-     * 
-     * @param tag
-     *            the first octet of the TLV
-     * @return the valued enum for the ASN.1 UNIVERSAL type tag
+     * Creates a new instance of UniversalTag.
+     *
+     * @param value The tag value
      */
-    public static String toString( int tag )
+    private UniversalTag( byte value )
     {
-        return UNIVERSAL_TAG_STRING[tag & 0x1F];
+        this.value = value;
     }
-} // end class UniversalTag
+
+    /**
+     * @return The UniversalTag value
+     */
+    public byte getValue()
+    {
+        return value;
+    }
+}

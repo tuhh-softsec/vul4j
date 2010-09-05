@@ -92,7 +92,7 @@ public class PasswordPolicyResponseControl extends AbstractControl
         if( controlLen > 0 )
         {
             // Encode the OCTET_STRING tag
-            buffer.put( UniversalTag.OCTET_STRING_TAG );
+            buffer.put( UniversalTag.OCTET_STRING.getValue() );
             buffer.put( TLV.getBytes( valueLength ) );
         }
 
@@ -111,7 +111,7 @@ public class PasswordPolicyResponseControl extends AbstractControl
 
         if ( ppolicyError != null )
         {
-            buffer.put( UniversalTag.ENUMERATED_TAG );
+            buffer.put( UniversalTag.ENUMERATED.getValue() );
             buffer.put( TLV.getBytes( TLV.getNbBytes( ppolicyError.getValue() ) ) );
             buffer.put( Value.getBytes( ppolicyError.getValue() ) );
         }

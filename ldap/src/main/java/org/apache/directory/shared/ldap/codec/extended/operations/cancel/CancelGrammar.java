@@ -22,9 +22,9 @@ package org.apache.directory.shared.ldap.codec.extended.operations.cancel;
 
 import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.AbstractGrammar;
+import org.apache.directory.shared.asn1.ber.grammar.Grammar;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarTransition;
-import org.apache.directory.shared.asn1.ber.grammar.Grammar;
 import org.apache.directory.shared.asn1.ber.grammar.States;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
@@ -81,10 +81,10 @@ public class CancelGrammar extends AbstractGrammar
          * 
          * Creates the Cancel object
          */
-        super.transitions[States.INIT_GRAMMAR_STATE][UniversalTag.SEQUENCE_TAG] = 
+        super.transitions[States.INIT_GRAMMAR_STATE][UniversalTag.SEQUENCE.getValue()] = 
             new GrammarTransition( States.INIT_GRAMMAR_STATE,
                                     CancelStatesEnum.CANCEL_SEQUENCE_STATE, 
-                                    UniversalTag.SEQUENCE_TAG,
+                                    UniversalTag.SEQUENCE.getValue(),
                 new GrammarAction(
                 "Init Cancel" )
             {
@@ -105,10 +105,10 @@ public class CancelGrammar extends AbstractGrammar
          *     
          * Set the cancelId value into the Cancel object.    
          */
-        super.transitions[CancelStatesEnum.CANCEL_SEQUENCE_STATE][UniversalTag.INTEGER_TAG] = 
+        super.transitions[CancelStatesEnum.CANCEL_SEQUENCE_STATE][UniversalTag.INTEGER.getValue()] = 
             new GrammarTransition( CancelStatesEnum.CANCEL_SEQUENCE_STATE,
                                     CancelStatesEnum.CANCEL_ID_STATE, 
-                                    UniversalTag.INTEGER_TAG, 
+                                    UniversalTag.INTEGER.getValue(), 
                 new GrammarAction( "Stores CancelId" )
             {
                 public void action( IAsn1Container container ) throws DecoderException

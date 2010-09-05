@@ -22,9 +22,9 @@ package org.apache.directory.shared.ldap.codec.controls.replication.syncStateVal
 
 import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.AbstractGrammar;
+import org.apache.directory.shared.asn1.ber.grammar.Grammar;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarTransition;
-import org.apache.directory.shared.asn1.ber.grammar.Grammar;
 import org.apache.directory.shared.asn1.ber.grammar.States;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
@@ -87,9 +87,9 @@ public class SyncStateValueControlGrammar extends AbstractGrammar
          *     
          * Initialize the syncStateValue object
          */
-        super.transitions[States.INIT_GRAMMAR_STATE][UniversalTag.SEQUENCE_TAG] = new GrammarTransition(
+        super.transitions[States.INIT_GRAMMAR_STATE][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
             States.INIT_GRAMMAR_STATE, SyncStateValueControlStatesEnum.SYNC_STATE_VALUE_SEQUENCE_STATE,
-            UniversalTag.SEQUENCE_TAG, null );
+            UniversalTag.SEQUENCE.getValue(), null );
 
         /** 
          * Transition from SyncStateValue sequence to state type enum
@@ -104,9 +104,9 @@ public class SyncStateValueControlGrammar extends AbstractGrammar
          *     
          * Stores the sync state type value
          */
-        super.transitions[SyncStateValueControlStatesEnum.SYNC_STATE_VALUE_SEQUENCE_STATE][UniversalTag.ENUMERATED_TAG] = new GrammarTransition(
+        super.transitions[SyncStateValueControlStatesEnum.SYNC_STATE_VALUE_SEQUENCE_STATE][UniversalTag.ENUMERATED.getValue()] = new GrammarTransition(
             SyncStateValueControlStatesEnum.SYNC_STATE_VALUE_SEQUENCE_STATE,
-            SyncStateValueControlStatesEnum.SYNC_TYPE_STATE, UniversalTag.ENUMERATED_TAG, new GrammarAction(
+            SyncStateValueControlStatesEnum.SYNC_TYPE_STATE, UniversalTag.ENUMERATED.getValue(), new GrammarAction(
                 "Set SyncStateValueControl state type" )
             {
                 public void action( IAsn1Container container ) throws DecoderException
@@ -150,9 +150,9 @@ public class SyncStateValueControlGrammar extends AbstractGrammar
          *     
          * Stores the entryUUID
          */
-        super.transitions[SyncStateValueControlStatesEnum.SYNC_TYPE_STATE][UniversalTag.OCTET_STRING_TAG] = new GrammarTransition(
+        super.transitions[SyncStateValueControlStatesEnum.SYNC_TYPE_STATE][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
             SyncStateValueControlStatesEnum.SYNC_TYPE_STATE, SyncStateValueControlStatesEnum.SYNC_UUID_STATE,
-            UniversalTag.OCTET_STRING_TAG, new GrammarAction( "Set SyncStateValueControl entryUUID" )
+            UniversalTag.OCTET_STRING.getValue(), new GrammarAction( "Set SyncStateValueControl entryUUID" )
             {
                 public void action( IAsn1Container container ) throws DecoderException
                 {
@@ -182,9 +182,9 @@ public class SyncStateValueControlGrammar extends AbstractGrammar
          *     
          * Stores the reloadHint flag
          */
-        super.transitions[SyncStateValueControlStatesEnum.SYNC_UUID_STATE][UniversalTag.OCTET_STRING_TAG] = new GrammarTransition(
+        super.transitions[SyncStateValueControlStatesEnum.SYNC_UUID_STATE][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
             SyncStateValueControlStatesEnum.SYNC_UUID_STATE, SyncStateValueControlStatesEnum.COOKIE_STATE,
-            UniversalTag.OCTET_STRING_TAG, new GrammarAction( "Set SyncStateValueControl cookie value" )
+            UniversalTag.OCTET_STRING.getValue(), new GrammarAction( "Set SyncStateValueControl cookie value" )
             {
                 public void action( IAsn1Container container ) throws DecoderException
                 {

@@ -158,7 +158,7 @@ public class GracefulDisconnect extends GracefulAction
         // Allocate the bytes buffer.
         ByteBuffer bb = ByteBuffer.allocate( computeLength() );
 
-        bb.put( UniversalTag.SEQUENCE_TAG );
+        bb.put( UniversalTag.SEQUENCE.getValue() );
         bb.put( TLV.getBytes( gracefulDisconnectSequenceLength ) );
 
         if ( timeOffline != 0 )
@@ -175,7 +175,7 @@ public class GracefulDisconnect extends GracefulAction
 
         if ( replicatedContexts.size() != 0 )
         {
-            bb.put( UniversalTag.SEQUENCE_TAG );
+            bb.put( UniversalTag.SEQUENCE.getValue() );
             bb.put( TLV.getBytes( replicatedContextsLength ) );
 
             // We may have more than one reference.

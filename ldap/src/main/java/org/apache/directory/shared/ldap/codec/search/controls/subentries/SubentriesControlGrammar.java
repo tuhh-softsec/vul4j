@@ -22,9 +22,9 @@ package org.apache.directory.shared.ldap.codec.search.controls.subentries;
 
 import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.AbstractGrammar;
+import org.apache.directory.shared.asn1.ber.grammar.Grammar;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarTransition;
-import org.apache.directory.shared.asn1.ber.grammar.Grammar;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
@@ -63,9 +63,9 @@ public class SubentriesControlGrammar extends AbstractGrammar
         // Create the transitions table
         super.transitions = new GrammarTransition[SubentriesControlStatesEnum.LAST_SUB_ENTRY_STATE][256];
 
-        super.transitions[SubentriesControlStatesEnum.START_STATE][UniversalTag.BOOLEAN_TAG] = 
+        super.transitions[SubentriesControlStatesEnum.START_STATE][UniversalTag.BOOLEAN.getValue()] = 
             new GrammarTransition( SubentriesControlStatesEnum.START_STATE, 
-                                    SubentriesControlStatesEnum.SUB_ENTRY_VISIBILITY_STATE, UniversalTag.BOOLEAN_TAG, 
+                                    SubentriesControlStatesEnum.SUB_ENTRY_VISIBILITY_STATE, UniversalTag.BOOLEAN.getValue(), 
                 new GrammarAction( "SubEntryControl visibility" )
             {
                 public void action( IAsn1Container container ) throws DecoderException

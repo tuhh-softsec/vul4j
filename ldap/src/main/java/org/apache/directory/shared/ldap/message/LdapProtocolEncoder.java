@@ -107,7 +107,7 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
             try
             {
                 // The LdapMessage Sequence
-                buffer.put( UniversalTag.SEQUENCE_TAG );
+                buffer.put( UniversalTag.SEQUENCE.getValue() );
 
                 // The length has been calculated by the computeLength method
                 buffer.put( TLV.getBytes( ( ( AbstractMessage ) message ).getMessageLength() ) );
@@ -305,7 +305,7 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
         try
         {
             // The result code
-            buffer.put( UniversalTag.ENUMERATED_TAG );
+            buffer.put( UniversalTag.ENUMERATED.getValue() );
             buffer.put( ( byte ) 1 );
             buffer.put( ( byte ) ldapResult.getResultCode().getValue() );
         }
@@ -1410,7 +1410,7 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
             Value.encode( buffer, DN.getBytes( addRequest.getEntryDn() ) );
 
             // The attributes sequence
-            buffer.put( UniversalTag.SEQUENCE_TAG );
+            buffer.put( UniversalTag.SEQUENCE.getValue() );
             buffer.put( TLV.getBytes( addRequest.getEntryLength() ) );
 
             // The partial attribute list
@@ -1424,7 +1424,7 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
                 for ( EntryAttribute attribute : entry )
                 {
                     // The attributes list sequence
-                    buffer.put( UniversalTag.SEQUENCE_TAG );
+                    buffer.put( UniversalTag.SEQUENCE.getValue() );
                     int localAttributeLength = addRequest.getAttributesLength().get( attributeNumber );
                     buffer.put( TLV.getBytes( localAttributeLength ) );
 
@@ -1432,7 +1432,7 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
                     Value.encode( buffer, attribute.getId() );
 
                     // The values
-                    buffer.put( UniversalTag.SET_TAG );
+                    buffer.put( UniversalTag.SET.getValue() );
                     int localValuesLength = addRequest.getValuesLength().get( attributeNumber );
                     buffer.put( TLV.getBytes( localValuesLength ) );
 
@@ -1650,7 +1650,7 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
             Value.encode( buffer, DN.getBytes( compareRequest.getName() ) );
 
             // The attributeValueAssertion sequence Tag
-            buffer.put( UniversalTag.SEQUENCE_TAG );
+            buffer.put( UniversalTag.SEQUENCE.getValue() );
             buffer.put( TLV.getBytes( compareRequest.getAvaLength() ) );
         }
         catch ( BufferOverflowException boe )
@@ -1944,7 +1944,7 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
             Value.encode( buffer, DN.getBytes( modifyRequest.getName() ) );
 
             // The modifications sequence
-            buffer.put( UniversalTag.SEQUENCE_TAG );
+            buffer.put( UniversalTag.SEQUENCE.getValue() );
             buffer.put( TLV.getBytes( modifyRequest.getChangesLength() ) );
 
             // The modifications list
@@ -1958,18 +1958,18 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
                 for ( Modification modification : modifications )
                 {
                     // The modification sequence
-                    buffer.put( UniversalTag.SEQUENCE_TAG );
+                    buffer.put( UniversalTag.SEQUENCE.getValue() );
                     int localModificationSequenceLength = modifyRequest.getChangeLength().get( modificationNumber );
                     buffer.put( TLV.getBytes( localModificationSequenceLength ) );
 
                     // The operation. The value has to be changed, it's not
                     // the same value in DirContext and in RFC 2251.
-                    buffer.put( UniversalTag.ENUMERATED_TAG );
+                    buffer.put( UniversalTag.ENUMERATED.getValue() );
                     buffer.put( ( byte ) 1 );
                     buffer.put( ( byte ) modification.getOperation().getValue() );
 
                     // The modification
-                    buffer.put( UniversalTag.SEQUENCE_TAG );
+                    buffer.put( UniversalTag.SEQUENCE.getValue() );
                     int localModificationLength = modifyRequest.getModificationLength().get( modificationNumber );
                     buffer.put( TLV.getBytes( localModificationLength ) );
 
@@ -1977,7 +1977,7 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
                     Value.encode( buffer, modification.getAttribute().getId() );
 
                     // The values
-                    buffer.put( UniversalTag.SET_TAG );
+                    buffer.put( UniversalTag.SET.getValue() );
                     int localValuesLength = modifyRequest.getValuesLength().get( modificationNumber );
                     buffer.put( TLV.getBytes( localValuesLength ) );
 
@@ -2163,7 +2163,7 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
             searchRequest.getCurrentFilter().encode( buffer );
 
             // The attributeDescriptionList
-            buffer.put( UniversalTag.SEQUENCE_TAG );
+            buffer.put( UniversalTag.SEQUENCE.getValue() );
             buffer.put( TLV.getBytes( searchRequest.getAttributeDescriptionListLength() ) );
 
             if ( ( searchRequest.getAttributes() != null ) && ( searchRequest.getAttributes().size() != 0 ) )
@@ -2245,7 +2245,7 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
             Value.encode( buffer, searchResultEntry.getObjectNameBytes() );
 
             // The attributes sequence
-            buffer.put( UniversalTag.SEQUENCE_TAG );
+            buffer.put( UniversalTag.SEQUENCE.getValue() );
             buffer.put( TLV.getBytes( searchResultEntry.getAttributesLength() ) );
 
             // The partial attribute list
@@ -2259,7 +2259,7 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
                 for ( EntryAttribute attribute : entry )
                 {
                     // The partial attribute list sequence
-                    buffer.put( UniversalTag.SEQUENCE_TAG );
+                    buffer.put( UniversalTag.SEQUENCE.getValue() );
                     int localAttributeLength = searchResultEntry.getAttributeLength().get( attributeNumber );
                     buffer.put( TLV.getBytes( localAttributeLength ) );
 
@@ -2267,7 +2267,7 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
                     Value.encode( buffer, Asn1StringUtils.asciiStringToByte( attribute.getUpId() ) );
 
                     // The values
-                    buffer.put( UniversalTag.SET_TAG );
+                    buffer.put( UniversalTag.SET.getValue() );
                     int localValuesLength = searchResultEntry.getValsLength().get( attributeNumber );
                     buffer.put( TLV.getBytes( localValuesLength ) );
 

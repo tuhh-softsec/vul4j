@@ -121,7 +121,7 @@ public class Cancel extends AbstractAsn1Object
         ByteBuffer bb = ByteBuffer.allocate( computeLength() );
 
         // The sequence
-        bb.put( UniversalTag.SEQUENCE_TAG );
+        bb.put( UniversalTag.SEQUENCE.getValue() );
         bb.put( TLV.getBytes( cancelSequenceLength ) );
 
         // The messageId

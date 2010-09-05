@@ -22,9 +22,9 @@ package org.apache.directory.shared.ldap.codec.controls.replication.syncmodifydn
 
 import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.AbstractGrammar;
+import org.apache.directory.shared.asn1.ber.grammar.Grammar;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarTransition;
-import org.apache.directory.shared.asn1.ber.grammar.Grammar;
 import org.apache.directory.shared.asn1.ber.grammar.States;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
@@ -95,9 +95,9 @@ public class SyncModifyDnControlGrammar extends AbstractGrammar
          *     
          * Initialize the SyncModifyDnControl object
          */
-        super.transitions[States.INIT_GRAMMAR_STATE][UniversalTag.SEQUENCE_TAG] = new GrammarTransition(
+        super.transitions[States.INIT_GRAMMAR_STATE][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
             States.INIT_GRAMMAR_STATE, SyncModifyDnControlStatesEnum.SYNC_MODDN_VALUE_SEQUENCE_STATE,
-            UniversalTag.SEQUENCE_TAG, null );
+            UniversalTag.SEQUENCE.getValue(), null );
 
         /** 
          * Transition from SyncModifyDnControl sequence to entryDn
@@ -107,9 +107,9 @@ public class SyncModifyDnControlGrammar extends AbstractGrammar
          *     
          * Stores the entryDn value
          */
-        super.transitions[SyncModifyDnControlStatesEnum.SYNC_MODDN_VALUE_SEQUENCE_STATE][UniversalTag.OCTET_STRING_TAG] = new GrammarTransition(
+        super.transitions[SyncModifyDnControlStatesEnum.SYNC_MODDN_VALUE_SEQUENCE_STATE][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
             SyncModifyDnControlStatesEnum.SYNC_MODDN_VALUE_SEQUENCE_STATE,
-            SyncModifyDnControlStatesEnum.ENTRY_DN_STATE, UniversalTag.OCTET_STRING_TAG, new GrammarAction(
+            SyncModifyDnControlStatesEnum.ENTRY_DN_STATE, UniversalTag.OCTET_STRING.getValue(), new GrammarAction(
                 "Set SyncModifyDnControl entryDn value" )
             {
                 public void action( IAsn1Container container ) throws DecoderException
@@ -195,9 +195,9 @@ public class SyncModifyDnControlGrammar extends AbstractGrammar
          *            
          * Stores the newRdn value
          */
-        super.transitions[SyncModifyDnControlStatesEnum.RENAME_STATE][UniversalTag.OCTET_STRING_TAG] = new GrammarTransition(
+        super.transitions[SyncModifyDnControlStatesEnum.RENAME_STATE][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
             SyncModifyDnControlStatesEnum.RENAME_STATE, SyncModifyDnControlStatesEnum.RENAME_NEW_RDN_STATE,
-            UniversalTag.OCTET_STRING_TAG, new GrammarAction( "Set SyncModifyDnControl newRdn value" )
+            UniversalTag.OCTET_STRING.getValue(), new GrammarAction( "Set SyncModifyDnControl newRdn value" )
             {
                 public void action( IAsn1Container container ) throws DecoderException
                 {
@@ -229,9 +229,9 @@ public class SyncModifyDnControlGrammar extends AbstractGrammar
          *            
          * Stores the deleteOldRdn value
          */
-        super.transitions[SyncModifyDnControlStatesEnum.RENAME_NEW_RDN_STATE][UniversalTag.BOOLEAN_TAG] = new GrammarTransition(
+        super.transitions[SyncModifyDnControlStatesEnum.RENAME_NEW_RDN_STATE][UniversalTag.BOOLEAN.getValue()] = new GrammarTransition(
             SyncModifyDnControlStatesEnum.RENAME_NEW_RDN_STATE, SyncModifyDnControlStatesEnum.RENAME_DEL_OLD_RDN_STATE,
-            UniversalTag.BOOLEAN_TAG, new GrammarAction( "Set SyncModifyDnControl deleteOldRdn value" )
+            UniversalTag.BOOLEAN.getValue(), new GrammarAction( "Set SyncModifyDnControl deleteOldRdn value" )
             {
                 public void action( IAsn1Container container ) throws DecoderException
                 {
@@ -284,9 +284,9 @@ public class SyncModifyDnControlGrammar extends AbstractGrammar
          *            
          * Stores the newRdn value
          */
-        super.transitions[SyncModifyDnControlStatesEnum.MOVE_AND_RENAME_STATE][UniversalTag.OCTET_STRING_TAG] = new GrammarTransition(
+        super.transitions[SyncModifyDnControlStatesEnum.MOVE_AND_RENAME_STATE][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
             SyncModifyDnControlStatesEnum.MOVE_AND_RENAME_STATE, SyncModifyDnControlStatesEnum.MOVE_AND_RENAME_NEW_SUPERIOR_DN_STATE,
-            UniversalTag.OCTET_STRING_TAG, new GrammarAction( "Set SyncModifyDnControl moveAndRename state's newSuperirorDN value" )
+            UniversalTag.OCTET_STRING.getValue(), new GrammarAction( "Set SyncModifyDnControl moveAndRename state's newSuperirorDN value" )
             {
                 public void action( IAsn1Container container ) throws DecoderException
                 {
@@ -316,9 +316,9 @@ public class SyncModifyDnControlGrammar extends AbstractGrammar
          *            
          * Stores the newRdn value
          */
-        super.transitions[SyncModifyDnControlStatesEnum.MOVE_AND_RENAME_NEW_SUPERIOR_DN_STATE][UniversalTag.OCTET_STRING_TAG] = new GrammarTransition(
+        super.transitions[SyncModifyDnControlStatesEnum.MOVE_AND_RENAME_NEW_SUPERIOR_DN_STATE][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
             SyncModifyDnControlStatesEnum.MOVE_AND_RENAME_NEW_SUPERIOR_DN_STATE, SyncModifyDnControlStatesEnum.MOVE_AND_RENAME_NEW_RDN_STATE,
-            UniversalTag.OCTET_STRING_TAG, new GrammarAction( "Set SyncModifyDnControl moveAndRename state's newRdn value" )
+            UniversalTag.OCTET_STRING.getValue(), new GrammarAction( "Set SyncModifyDnControl moveAndRename state's newRdn value" )
             {
                 public void action( IAsn1Container container ) throws DecoderException
                 {
@@ -348,9 +348,9 @@ public class SyncModifyDnControlGrammar extends AbstractGrammar
          *     
          * Stores the deleteOldRdn flag
          */
-        super.transitions[SyncModifyDnControlStatesEnum.MOVE_AND_RENAME_NEW_RDN_STATE][UniversalTag.BOOLEAN_TAG] = new GrammarTransition(
+        super.transitions[SyncModifyDnControlStatesEnum.MOVE_AND_RENAME_NEW_RDN_STATE][UniversalTag.BOOLEAN.getValue()] = new GrammarTransition(
             SyncModifyDnControlStatesEnum.MOVE_AND_RENAME_NEW_RDN_STATE, SyncModifyDnControlStatesEnum.MOVE_AND_RENAME_DEL_OLD_RDN_STATE,
-            UniversalTag.BOOLEAN_TAG, new GrammarAction( "Set SyncModifyDnControl deleteOldRdn value" )
+            UniversalTag.BOOLEAN.getValue(), new GrammarAction( "Set SyncModifyDnControl deleteOldRdn value" )
             {
                 public void action( IAsn1Container container ) throws DecoderException
                 {

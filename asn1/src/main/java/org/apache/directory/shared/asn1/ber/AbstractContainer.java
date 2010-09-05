@@ -42,7 +42,7 @@ public abstract class AbstractContainer implements IAsn1Container
     protected int[] stateStack;
 
     /** The current state of the decoding */
-    private int state;
+    private TLVStateEnum state;
 
     /** The current transition */
     private int transition;
@@ -68,6 +68,17 @@ public abstract class AbstractContainer implements IAsn1Container
     /** The incremental id used to tag TLVs */
     private int id = 0;
     
+    
+    /**
+     * Creates a new instance of AbstractContainer with a starting state.
+     *
+     */
+    protected AbstractContainer()
+    {
+        state = TLVStateEnum.TAG_STATE_START;
+    }
+
+    
     /**
      * Get the current grammar
      * 
@@ -84,7 +95,7 @@ public abstract class AbstractContainer implements IAsn1Container
      * 
      * @return Returns the current grammar state
      */
-    public int getState()
+    public TLVStateEnum getState()
     {
         return state;
     }
@@ -95,7 +106,7 @@ public abstract class AbstractContainer implements IAsn1Container
      * 
      * @param state The new state
      */
-    public void setState( int state )
+    public void setState( TLVStateEnum state )
     {
         this.state = state;
     }
@@ -212,6 +223,7 @@ public abstract class AbstractContainer implements IAsn1Container
         state = TLVStateEnum.TAG_STATE_START;
     }
     
+    
     /**
      * Return a new ID and increment the counter
      * @return A new TLV id. 
@@ -221,6 +233,7 @@ public abstract class AbstractContainer implements IAsn1Container
         return id++;
     }
 
+    
     /**
      * @return The TLV Id
      */
