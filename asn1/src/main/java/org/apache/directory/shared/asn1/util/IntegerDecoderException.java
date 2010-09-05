@@ -29,26 +29,17 @@ package org.apache.directory.shared.asn1.util;
  */
 public class IntegerDecoderException extends Exception
 {
-
-    /**
-     * Declares the Serial Version Uid.
-     * 
-     * @see <a
-     *      href="http://c2.com/cgi/wiki?AlwaysDeclareSerialVersionUid">Always
-     *      Declare Serial Version Uid</a>
-     */
+    /** Declares the Serial Version Uid */
     private static final long serialVersionUID = 1L;
 
 
     /**
      * Creates a IntegerDecoderException
      * 
-     * @param pMessage
-     *            A message with meaning to a human
+     * @param message A message with meaning to a human
      */
-    public IntegerDecoderException(String pMessage)
+    public IntegerDecoderException( String message )
     {
-        super( pMessage );
+        super( message );
     }
-
 }

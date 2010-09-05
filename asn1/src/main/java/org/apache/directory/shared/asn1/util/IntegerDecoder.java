@@ -31,26 +31,29 @@ import org.apache.directory.shared.i18n.I18n;
  */
 public class IntegerDecoder
 {
+    /** A mask used to get only the necessary bytes */
     private static final int[] MASK = new int[]
         { 0x000000FF, 0x0000FFFF, 0x00FFFFFF, 0xFFFFFFFF };
 
 
-    // ~ Methods
-    // ------------------------------------------------------------------------------------
+    /**
+     * This is a helper class, there is no reason to define a public constructor for it.
+     */
+    private IntegerDecoder()
+    {
+        // Do nothing
+    }
+
 
     /**
-     * Parse a byte buffer and send back an integer, controling that this number
+     * Parse a byte buffer and send back an integer, controlling that this number
      * is in a specified interval.
      * 
-     * @param value
-     *            The byte buffer to parse
-     * @param min
-     *            Lowest value allowed, included
-     * @param max
-     *            Highest value allowed, included
+     * @param value The byte buffer to parse
+     * @param min Lowest value allowed, included
+     * @param max Highest value allowed, included
      * @return An integer
-     * @throws IntegerDecoderException
-     *             Thrown if the byte stream does not contains an integer
+     * @throws IntegerDecoderException Thrown if the byte stream does not contains an integer
      */
     public static int parse( Value value, int min, int max ) throws IntegerDecoderException
     {
@@ -61,12 +64,12 @@ public class IntegerDecoder
 
         if ( ( bytes == null ) || ( bytes.length == 0 ) )
         {
-            throw new IntegerDecoderException( I18n.err( I18n.ERR_00036 ) );
+            throw new IntegerDecoderException( I18n.err( I18n.ERR_0_BYTES_LONG_INTEGER_00036 ) );
         }
 
         if ( bytes.length > 4 )
         {
-            throw new IntegerDecoderException( I18n.err( I18n.ERR_00037 ) );
+            throw new IntegerDecoderException( I18n.err( I18n.ERR_ABOVE_4_BYTES_INTEGER_00037 ) );
         }
 
         for ( int i = 0; ( i < bytes.length ) && ( i < 5 ); i++ )
@@ -85,7 +88,7 @@ public class IntegerDecoder
         }
         else
         {
-            throw new IntegerDecoderException( I18n.err( I18n.ERR_00038, min, max ) );
+            throw new IntegerDecoderException( I18n.err( I18n.ERR_VALUE_NOT_IN_RANGE_00038, min, max ) );
         }
     }
 
@@ -93,11 +96,9 @@ public class IntegerDecoder
     /**
      * Parse a byte buffer and send back an integer
      * 
-     * @param value
-     *            The byte buffer to parse
+     * @param value The byte buffer to parse
      * @return An integer
-     * @throws IntegerDecoderException
-     *             Thrown if the byte stream does not contains an integer
+     * @throws IntegerDecoderException Thrown if the byte stream does not contains an integer
      */
     public static int parse( Value value ) throws IntegerDecoderException
     {

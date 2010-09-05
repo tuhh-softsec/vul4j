@@ -34,20 +34,24 @@ import org.slf4j.LoggerFactory;
 public class BooleanDecoder
 {
     /** The logger */
-    private static final Logger log = LoggerFactory.getLogger( BooleanDecoder.class );
+    private static final Logger LOG = LoggerFactory.getLogger( BooleanDecoder.class );
 
 
-    // ~ Methods
-    // ------------------------------------------------------------------------------------
+    /**
+     * This is a helper class, there is no reason to define a public constructor for it.
+     */
+    private BooleanDecoder()
+    {
+        // Do nothing
+    }
+
 
     /**
      * Parse a byte buffer and send back a booelan.
      * 
-     * @param value
-     *            The byte buffer to parse
+     * @param value The byte buffer to parse
      * @return A boolean.
-     * @throws BooleanDecoderException
-     *             Thrown if the byte stream does not contains a boolean
+     * @throws BooleanDecoderException Thrown if the byte stream does not contains a boolean
      */
     public static boolean parse( Value value ) throws BooleanDecoderException
     {
@@ -55,17 +59,17 @@ public class BooleanDecoder
 
         if ( ( bytes == null ) || ( bytes.length == 0 ) )
         {
-            throw new BooleanDecoderException( I18n.err( I18n.ERR_00034 ) );
+            throw new BooleanDecoderException( I18n.err( I18n.ERR_0_BYTES_LONG_BOOLEAN_00034 ) );
         }
 
         if ( bytes.length != 1 )
         {
-            throw new BooleanDecoderException( I18n.err( I18n.ERR_00035 ) );
+            throw new BooleanDecoderException( I18n.err( I18n.ERR_N_BYTES_LONG_BOOLEAN_00035 ) );
         }
 
         if ( ( bytes[0] != 0 ) && ( bytes[0] != ( byte ) 0xFF ) )
         {
-            log.warn( "A boolean must be encoded with a 0x00 or a 0xFF value" );
+            LOG.warn( "A boolean must be encoded with a 0x00 or a 0xFF value" );
         }
 
         return bytes[0] != 0;

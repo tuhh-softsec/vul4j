@@ -30,9 +30,6 @@ import java.io.UnsupportedEncodingException;
  */
 public class Asn1StringUtils
 {
-    // ~ Static fields/initializers
-    // -----------------------------------------------------------------
-
     /** Hex chars */
     private static final byte[] HEX_CHAR = new byte[]
         { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
@@ -43,14 +40,20 @@ public class Asn1StringUtils
     public static final byte[] EMPTY_BYTES = new byte[]
         {};
 
-    // ~ Methods
-    // ------------------------------------------------------------------------------------
+
+    /**
+     * This is a helper class, there is no reason to define a public constructor for it.
+     */
+    private Asn1StringUtils()
+    {
+        // Do nothing
+    }
+
 
     /**
      * Helper function that dump a byte in hex form
      * 
-     * @param octet
-     *            The byte to dump
+     * @param octet The byte to dump
      * @return A string representation of the byte
      */
     public static String dumpByte( byte octet )
@@ -63,8 +66,7 @@ public class Asn1StringUtils
     /**
      * Helper function that dump an array of bytes in hex form
      * 
-     * @param buffer
-     *            The bytes array to dump
+     * @param buffer The bytes array to dump
      * @return A string representation of the array of bytes
      */
     public static String dumpBytes( byte[] buffer )
@@ -76,7 +78,7 @@ public class Asn1StringUtils
 
         StringBuffer sb = new StringBuffer();
 
-        for ( byte b:buffer )
+        for ( byte b : buffer )
         {
             sb.append( "0x" ).append( ( char ) ( HEX_CHAR[( b & 0x00F0 ) >> 4] ) ).append(
                 ( char ) ( HEX_CHAR[b & 0x000F] ) ).append( " " );
@@ -89,8 +91,7 @@ public class Asn1StringUtils
     /**
      * Return UTF-8 encoded byte[] representation of a String
      * 
-     * @param string
-     *            The string to be transformed to a byte array
+     * @param string The string to be transformed to a byte array
      * @return The transformed byte array
      */
     public static byte[] getBytesUtf8( String string )
@@ -111,8 +112,9 @@ public class Asn1StringUtils
         }
     }
 
+
     /**
-     * Thansform a string to an array of ASCII bytes, where the byte array will contain
+     * Transform a string to an array of ASCII bytes, where the byte array will contain
      * only values in [0, 127].
      * 
      * @param string The byte array to transform
@@ -124,14 +126,14 @@ public class Asn1StringUtils
         {
             return EMPTY_BYTES;
         }
-        
+
         byte[] result = new byte[string.length()];
-        
+
         for ( int i = 0; i < result.length; i++ )
         {
-            result[i] = (byte)string.charAt( i );
+            result[i] = ( byte ) string.charAt( i );
         }
-        
+
         return result;
     }
 }

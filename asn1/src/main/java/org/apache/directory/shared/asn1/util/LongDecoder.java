@@ -31,21 +31,20 @@ import org.apache.directory.shared.i18n.I18n;
  */
 public class LongDecoder
 {
+    /** A mask used to get only the necessary bytes */
     private static final long[] MASK = new long[]
-        { 
-            0x00000000000000FFL, 
-            0x000000000000FFFFL, 
-            0x0000000000FFFFFFL, 
-            0x00000000FFFFFFFFL,
-            0x000000FFFFFFFFFFL, 
-            0x0000FFFFFFFFFFFFL, 
-            0x00FFFFFFFFFFFFFFL, 
-            0xFFFFFFFFFFFFFFFFL 
-        };
+        { 0x00000000000000FFL, 0x000000000000FFFFL, 0x0000000000FFFFFFL, 0x00000000FFFFFFFFL, 0x000000FFFFFFFFFFL,
+            0x0000FFFFFFFFFFFFL, 0x00FFFFFFFFFFFFFFL, 0xFFFFFFFFFFFFFFFFL };
 
 
-    // ~ Methods
-    // ------------------------------------------------------------------------------------
+    /**
+     * This is a helper class, there is no reason to define a public constructor for it.
+     */
+    private LongDecoder()
+    {
+        // Do nothing
+    }
+
 
     /**
      * Parse a byte buffer and send back an long, controlling that this number
@@ -55,24 +54,22 @@ public class LongDecoder
      * @param min Lowest value allowed, included
      * @param max Highest value allowed, included
      * @return An integer
-     * @throws LongDecoderException
-     *             Thrown if the byte stream does not contains an integer
+     * @throws LongDecoderException Thrown if the byte stream does not contains an integer
      */
     public static long parse( Value value, long min, long max ) throws LongDecoderException
     {
-
         long result = 0;
 
         byte[] bytes = value.getData();
 
         if ( ( bytes == null ) || ( bytes.length == 0 ) )
         {
-            throw new LongDecoderException( I18n.err( I18n.ERR_00039 ) );
+            throw new LongDecoderException( I18n.err( I18n.ERR_0_BYTES_LONG_LONG_00039 ) );
         }
 
         if ( bytes.length > 8 )
         {
-            throw new LongDecoderException( I18n.err( I18n.ERR_00039 ) );
+            throw new LongDecoderException( I18n.err( I18n.ERR_0_BYTES_LONG_LONG_00039 ) );
         }
 
         for ( int i = 0; ( i < bytes.length ) && ( i < 9 ); i++ )
@@ -91,7 +88,7 @@ public class LongDecoder
         }
         else
         {
-            throw new LongDecoderException( I18n.err( I18n.ERR_00038, min, max ) );
+            throw new LongDecoderException( I18n.err( I18n.ERR_VALUE_NOT_IN_RANGE_00038, min, max ) );
         }
     }
 
@@ -101,8 +98,7 @@ public class LongDecoder
      * 
      * @param value The byte buffer to parse
      * @return An integer
-     * @throws IntegerDecoderException
-     *             Thrown if the byte stream does not contains an integer
+     * @throws LongDecoderException Thrown if the byte stream does not contains an integer
      */
     public static long parse( Value value ) throws LongDecoderException
     {
