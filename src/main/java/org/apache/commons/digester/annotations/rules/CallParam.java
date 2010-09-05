@@ -32,7 +32,7 @@ import org.apache.commons.digester.annotations.providers.CallParamRuleProvider;
  * Methods arguments annotated with {@code CallParam} will be bound with
  * {@code CallParamRule} digester rule.
  *
- * @see {@link org.apache.commons.digester.Digester#addCallParam(String, int)}
+ * @see org.apache.commons.digester.Digester#addCallParam(String,int)
  * @since 2.1
  */
 @Documented

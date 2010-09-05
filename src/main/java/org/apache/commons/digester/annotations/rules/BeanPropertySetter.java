@@ -32,7 +32,7 @@ import org.apache.commons.digester.annotations.providers.BeanPropertySetterRuleP
  * Fields annotated with {@code BeanPropertySetter} will be bound with
  * {@code BeanPropertySetterRule} digester rule.
  *
- * @see {@link org.apache.commons.digester.Digester#addBeanPropertySetter(String, String)}
+ * @see org.apache.commons.digester.Digester#addBeanPropertySetter(String,String)
  * @since 2.1
  */
 @Documented

@@ -32,7 +32,7 @@ import org.apache.commons.digester.annotations.providers.PathCallParamRuleProvid
  * Methods arguments annotated with {@code PathCallParam} will be bound
  * with {@code PathCallParamRule} digester rule.
  *
- * @see {@link org.apache.commons.digester.Digester#addCallParamPath(String, int)}
+ * @see org.apache.commons.digester.Digester#addCallParamPath(String,int)
  * @since 2.1
  */
 @Documented

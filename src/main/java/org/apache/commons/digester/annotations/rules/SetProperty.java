@@ -33,7 +33,7 @@ import org.apache.commons.digester.annotations.providers.SetPropertiesRuleProvid
  * Fields annotated with {@code SetProperty} will be bound
  * with {@code SetPropertiesRule} digester rule.
  *
- * @see {@link org.apache.commons.digester.Digester#addSetProperties(String, String[], String[])}
+ * @see org.apache.commons.digester.Digester#addSetProperties(String,String[],String[])
  * @since 2.1
  */
 @Documented

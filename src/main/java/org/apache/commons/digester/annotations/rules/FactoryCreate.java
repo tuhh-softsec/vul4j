@@ -34,7 +34,7 @@ import org.apache.commons.digester.annotations.providers.FactoryCreateRuleProvid
  * Classes annotated with {@code FactoryCreate} will be bound with
  * {@code FactoryCreateRule} digester rule.
  *
- * @see {@link org.apache.commons.digester.Digester#addFactoryCreate(String, org.apache.commons.digester.ObjectCreationFactory, boolean)}
+ * @see org.apache.commons.digester.Digester#addFactoryCreate(String,org.apache.commons.digester.ObjectCreationFactory,boolean)
  * @since 2.1
  */
 @Documented

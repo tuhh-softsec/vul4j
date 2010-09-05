@@ -33,7 +33,7 @@ import org.apache.commons.digester.annotations.providers.ObjectCreateRuleProvide
  * Classes annotated with {@code ObjectCreate} will be bound with
  * {@code ObjectCreateRule} digester rule.
  *
- * @see {@link org.apache.commons.digester.Digester#addObjectCreate(String, Class)}
+ * @see org.apache.commons.digester.Digester#addObjectCreate(String,Class)
  * @since 2.1
  */
 @Documented

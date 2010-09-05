@@ -32,7 +32,7 @@ import org.apache.commons.digester.annotations.providers.StackCallParamRuleProvi
  * Methods arguments annotated with {@code StackCallParam} will be bound
  * with {@code CallParamRule} digester rule.
  *
- * @see {@link org.apache.commons.digester.Digester#addCallParam(String, int, int)}
+ * @see org.apache.commons.digester.Digester#addCallParam(String,int,int)
  * @since 2.1
  */
 @Documented
@@ -60,7 +60,7 @@ public @interface StackCallParam {
     int stackIndex() default 0;
 
     /**
-     * Defines several @StackCallParam annotations on the same element.
+     * Defines several {@code StackCallParam} annotations on the same element.
      *
      * @see {@link StackCallParam}
      */

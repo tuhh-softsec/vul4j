@@ -32,7 +32,7 @@ import org.apache.commons.digester.annotations.providers.CallMethodRuleProvider;
  * Methods annotated with {@code CallMethod} will be bound with
  * {@code CallMethodRule} digester rule.
  *
- * @see {@link org.apache.commons.digester.Digester#addCallMethod(String, String, int, Class[])}
+ * @see org.apache.commons.digester.Digester#addCallMethod(String,String,int,Class[])
  * @since 2.1
  */
 @Documented

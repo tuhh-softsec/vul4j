@@ -32,7 +32,7 @@ import org.apache.commons.digester.annotations.providers.SetNextRuleProvider;
  * Methods annotated with {@code SetNext} will be bound
  * with {@code SetNextRule} digester rule.
  *
- * @see {@link org.apache.commons.digester.Digester#addSetNext(String, String, String)}
+ * @see org.apache.commons.digester.Digester#addSetNext(String,String,String)
  * @since 2.1
  */
 @Documented
