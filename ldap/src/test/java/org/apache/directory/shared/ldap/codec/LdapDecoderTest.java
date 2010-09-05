@@ -270,7 +270,7 @@ public class LdapDecoderTest
         }
         catch ( DecoderException de )
         {
-            assertEquals( "ERR_00008 The current Value length 48 is above the expected length 47", de.getMessage() );
+            assertEquals( "ERR_VALUE_LENGTH_ABOVE_EXPECTED_LENGTH_00008 The current Value length 48 is above the expected length 47", de.getMessage() );
             return;
         }
 
