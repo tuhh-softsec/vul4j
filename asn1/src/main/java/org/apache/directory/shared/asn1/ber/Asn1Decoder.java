@@ -214,7 +214,7 @@ public class Asn1Decoder implements TLVBerDecoderMBean
 
                 if ( expectedLength > 4 )
                 {
-                    String msg = I18n.err( I18n.ERR_LENGTH_OVERFLOW_00005 );
+                    String msg = I18n.err( I18n.ERR_00005_LENGTH_OVERFLOW );
                     LOG.error( msg );
                     throw new DecoderException( msg );
                 }
@@ -226,7 +226,7 @@ public class Asn1Decoder implements TLVBerDecoderMBean
             }
             else
             {
-                String msg = I18n.err( I18n.ERR_LENGTH_EXTENSION_RESERVED_00006 );
+                String msg = I18n.err( I18n.ERR_00006_LENGTH_EXTENSION_RESERVED );
                 LOG.error( msg );
                 throw new DecoderException( msg );
             }
@@ -343,7 +343,7 @@ public class Asn1Decoder implements TLVBerDecoderMBean
 
         if ( tlv == null )
         {
-            String msg = I18n.err( I18n.ERR_TLV_NULL_00007 );
+            String msg = I18n.err( I18n.ERR_00007_TLV_NULL );
             LOG.error( msg );
             throw new DecoderException( msg );
         }
@@ -384,7 +384,7 @@ public class Asn1Decoder implements TLVBerDecoderMBean
                 // The expected length is lower than the Value length of the
                 // current TLV. This is an error...
                 LOG.debug( "tlv[{}, {}]", Integer.valueOf( expectedLength ), Integer.valueOf( currentLength ) );
-                throw new DecoderException( I18n.err( I18n.ERR_VALUE_LENGTH_ABOVE_EXPECTED_LENGTH_00008, Integer
+                throw new DecoderException( I18n.err( I18n.ERR_00008_VALUE_LENGTH_ABOVE_EXPECTED_LENGTH, Integer
                     .valueOf( currentLength ), Integer.valueOf( expectedLength ) ) );
             }
 
@@ -615,8 +615,8 @@ public class Asn1Decoder implements TLVBerDecoderMBean
                 }
                 else
                 {
-                    LOG.error( I18n.err( I18n.ERR_MORE_TLV_EXPECTED_00009 ) );
-                    throw new DecoderException( I18n.err( I18n.ERR_TRUNCATED_PDU_00010 ) );
+                    LOG.error( I18n.err( I18n.ERR_00009_MORE_TLV_EXPECTED ) );
+                    throw new DecoderException( I18n.err( I18n.ERR_00010_TRUNCATED_PDU ) );
                 }
             }
         }
@@ -660,7 +660,7 @@ public class Asn1Decoder implements TLVBerDecoderMBean
 
         if ( container.getDecodeBytes() > container.getMaxPDUSize() )
         {
-            String message = I18n.err( I18n.ERR_PDU_SIZE_TOO_LONG_00042, container.getDecodeBytes(), container
+            String message = I18n.err( I18n.ERR_00042_PDU_SIZE_TOO_LONG, container.getDecodeBytes(), container
                 .getMaxPDUSize() );
             LOG.error( message );
             throw new DecoderException( message );
@@ -739,7 +739,7 @@ public class Asn1Decoder implements TLVBerDecoderMBean
                 case PDU_DECODED:
                     // We have to deal with the case where there are
                     // more bytes in the buffer, but the PDU has been decoded.
-                    LOG.warn( I18n.err( I18n.ERR_REMAINING_BYTES_FOR_DECODED_PDU_00043 ) );
+                    LOG.warn( I18n.err( I18n.ERR_00043_REMAINING_BYTES_FOR_DECODED_PDU ) );
 
                     hasRemaining = false;
 
@@ -842,7 +842,7 @@ public class Asn1Decoder implements TLVBerDecoderMBean
     {
         if ( ( this.indefiniteLengthAllowed ) && ( maxLengthLength > 126 ) )
         {
-            throw new DecoderException( I18n.err( I18n.ERR_LENGTH_TOO_LONG_FOR_DEFINITE_FORM_00011 ) );
+            throw new DecoderException( I18n.err( I18n.ERR_00011_LENGTH_TOO_LONG_FOR_DEFINITE_FORM ) );
         }
 
         this.maxLengthLength = maxLengthLength;

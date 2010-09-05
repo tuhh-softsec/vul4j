@@ -28,16 +28,25 @@ package org.apache.directory.shared.ldap.cursor;
  */
 public class InconsistentCursorStateException extends Exception
 {
+    /** The serialVersion UID */
     private static final long serialVersionUID = 6222645005251534704L;
 
 
+    /**
+     * Creates a new instance of InconsistentCursorStateException.
+     */
     public InconsistentCursorStateException()
     {
     }
 
 
-    public InconsistentCursorStateException( String s )
+    /**
+     * Creates a new instance of CursorClosedException.
+     *
+     * @param message The associated message
+     */
+    public InconsistentCursorStateException( String message )
     {
-        super( s );
+        super( message );
     }
 }

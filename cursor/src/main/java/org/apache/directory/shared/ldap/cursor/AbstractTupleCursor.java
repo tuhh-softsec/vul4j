@@ -29,47 +29,71 @@ import org.apache.directory.shared.i18n.I18n;
  * An abstract TupleCursor.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
+ * @param K The key type for the Tuple
+ * @param V The associated Value type
  */
 public abstract class AbstractTupleCursor<K, V> implements TupleCursor<K, V>
 {
+    /** The default associated monitor */
     private ClosureMonitor monitor = new DefaultClosureMonitor();
 
 
+    /**
+     * {@inheritDoc}
+     */
     public final void setClosureMonitor( ClosureMonitor monitor )
     {
         if ( monitor == null )
         {
             throw new IllegalArgumentException( "monitor" );
         }
-        
+
         this.monitor = monitor;
     }
 
 
+    /**
+     * Check if the cursor is closed for the given operation
+     *
+     * @param operation The operation that will be applied if the cursor is not closed
+     * @throws Exception If there is an issue
+     */
     protected final void checkNotClosed( String operation ) throws Exception
     {
         monitor.checkNotClosed();
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public final boolean isClosed()
     {
         return monitor.isClosed();
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public void close() throws Exception
     {
         monitor.close();
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public void close( Exception cause ) throws Exception
     {
         monitor.close( cause );
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public Iterator<Tuple<K, V>> iterator()
     {
         return new CursorIterator<Tuple<K, V>>( this );

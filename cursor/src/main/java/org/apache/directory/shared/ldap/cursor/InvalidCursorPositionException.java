@@ -27,16 +27,25 @@ package org.apache.directory.shared.ldap.cursor;
  */
 public class InvalidCursorPositionException extends Exception
 {
+    /** The serialVersion UID */
     private static final long serialVersionUID = 5730037129071653272L;
 
 
-    public InvalidCursorPositionException ()
+    /**
+     * Creates a new instance of InvalidCursorPositionException.
+     */
+    public InvalidCursorPositionException()
     {
     }
 
 
-    public InvalidCursorPositionException ( String s )
+    /**
+     * Creates a new instance of InvalidCursorPositionException.
+     *
+     * @param message The associated message
+     */
+    public InvalidCursorPositionException( String message )
     {
-        super( s );
+        super( message );
     }
 }

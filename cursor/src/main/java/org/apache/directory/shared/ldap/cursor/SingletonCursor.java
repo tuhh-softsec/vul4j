@@ -28,6 +28,7 @@ import org.apache.directory.shared.i18n.I18n;
  * A Cursor over a single element.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
+ * @param E The type of element on which this cursor will iterate
  */
 public class SingletonCursor<E> extends AbstractCursor<E>
 {
@@ -35,10 +36,10 @@ public class SingletonCursor<E> extends AbstractCursor<E>
     private boolean beforeFirst = true;
     private boolean afterLast;
     private boolean onSingleton;
-    
+
     /** The comparator used for this cursor. */
     private final Comparator<E> comparator;
-    
+
     /** The unique element stored in the cursor */
     private final E singleton;
 
@@ -75,7 +76,7 @@ public class SingletonCursor<E> extends AbstractCursor<E>
     {
         return onSingleton;
     }
-    
+
 
     /**
      * {@inheritDoc}
@@ -86,7 +87,7 @@ public class SingletonCursor<E> extends AbstractCursor<E>
 
         if ( comparator == null )
         {
-            throw new UnsupportedOperationException( I18n.err( I18n.ERR_02010 ) );
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_02010_NO_COMPARATOR_CANT_MOVE_BEFORE ) );
         }
 
         int comparison = comparator.compare( singleton, element );
@@ -111,7 +112,7 @@ public class SingletonCursor<E> extends AbstractCursor<E>
 
         if ( comparator == null )
         {
-            throw new UnsupportedOperationException( I18n.err( I18n.ERR_02011 ) );
+            throw new UnsupportedOperationException( I18n.err( I18n.ERR_02011_NO_COMPARATOR_CANT_MOVE_AFTER ) );
         }
 
         int comparison = comparator.compare( singleton, element );
@@ -227,7 +228,7 @@ public class SingletonCursor<E> extends AbstractCursor<E>
     public boolean previous() throws Exception
     {
         checkNotClosed( "()" );
-        
+
         if ( beforeFirst )
         {
             return false;
@@ -255,7 +256,7 @@ public class SingletonCursor<E> extends AbstractCursor<E>
     public boolean next() throws Exception
     {
         checkNotClosed( "()" );
-        
+
         if ( beforeFirst )
         {
             beforeFirst = false;
@@ -283,7 +284,7 @@ public class SingletonCursor<E> extends AbstractCursor<E>
     public E get() throws Exception
     {
         checkNotClosed( "()" );
-        
+
         if ( onSingleton )
         {
             return singleton;
@@ -291,11 +292,11 @@ public class SingletonCursor<E> extends AbstractCursor<E>
 
         if ( beforeFirst )
         {
-            throw new InvalidCursorPositionException( I18n.err( I18n.ERR_02012 ) );
+            throw new InvalidCursorPositionException( I18n.err( I18n.ERR_02012_CANNOT_ACCESS_IF_BEFORE_FIRST ) );
         }
         else
         {
-            throw new InvalidCursorPositionException( I18n.err( I18n.ERR_02013 ) );
+            throw new InvalidCursorPositionException( I18n.err( I18n.ERR_02013_CANNOT_ACCESS_IF_AFTER_LAST ) );
         }
     }
 

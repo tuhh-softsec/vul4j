@@ -122,12 +122,12 @@ public class OID implements Serializable
     {
         if ( oid == null )
         {
-            throw new DecoderException( I18n.err( I18n.ERR_NULL_OID_00032 ) );
+            throw new DecoderException( I18n.err( I18n.ERR_00032_NULL_OID ) );
         }
 
         if ( oid.length < 1 )
         {
-            throw new DecoderException( I18n.err( I18n.ERR_INVALID_OID_00033, Asn1StringUtils.dumpBytes( oid ) ) );
+            throw new DecoderException( I18n.err( I18n.ERR_00033_INVALID_OID, Asn1StringUtils.dumpBytes( oid ) ) );
         }
 
         // First, we have to calculate the number of int to allocate
@@ -219,7 +219,7 @@ public class OID implements Serializable
     {
         if ( ( oid == null ) || ( oid.length() == 0 ) )
         {
-            throw new DecoderException( I18n.err( I18n.ERR_NULL_OID_00032 ) );
+            throw new DecoderException( I18n.err( I18n.ERR_00032_NULL_OID ) );
         }
 
         int nbValues = 1;
@@ -234,7 +234,7 @@ public class OID implements Serializable
                 if ( dotSeen )
                 {
                     // Two dots, that's an error !
-                    throw new DecoderException( I18n.err( I18n.ERR_INVALID_OID_00033, oid ) );
+                    throw new DecoderException( I18n.err( I18n.ERR_00033_INVALID_OID, oid ) );
                 }
 
                 nbValues++;
@@ -249,7 +249,7 @@ public class OID implements Serializable
         // We must have at least 2 ints
         if ( nbValues < 2 )
         {
-            throw new DecoderException( I18n.err( I18n.ERR_INVALID_OID_00033, oid ) );
+            throw new DecoderException( I18n.err( I18n.ERR_00033_INVALID_OID, oid ) );
         }
 
         oidValues = new long[nbValues];
@@ -272,13 +272,13 @@ public class OID implements Serializable
                 break;
 
             default: // error, this value is not allowed
-                throw new DecoderException( I18n.err( I18n.ERR_INVALID_OID_00033, oid ) );
+                throw new DecoderException( I18n.err( I18n.ERR_00033_INVALID_OID, oid ) );
         }
 
         // We must have a dot
         if ( chars[pos++] != '.' )
         {
-            throw new DecoderException( I18n.err( I18n.ERR_INVALID_OID_00033, oid ) );
+            throw new DecoderException( I18n.err( I18n.ERR_00033_INVALID_OID, oid ) );
         }
 
         dotSeen = true;
@@ -292,12 +292,12 @@ public class OID implements Serializable
                 if ( dotSeen )
                 {
                     // Two dots, that's an error !
-                    throw new DecoderException( I18n.err( I18n.ERR_INVALID_OID_00033, oid ) );
+                    throw new DecoderException( I18n.err( I18n.ERR_00033_INVALID_OID, oid ) );
                 }
 
                 if ( ituOrIso && value > 39 )
                 {
-                    throw new DecoderException( I18n.err( I18n.ERR_INVALID_OID_00033, oid ) );
+                    throw new DecoderException( I18n.err( I18n.ERR_00033_INVALID_OID, oid ) );
                 }
                 else
                 {
@@ -317,7 +317,7 @@ public class OID implements Serializable
             else
             {
                 // We don't have a number, this is an error
-                throw new DecoderException( I18n.err( I18n.ERR_INVALID_OID_00033, oid ) );
+                throw new DecoderException( I18n.err( I18n.ERR_00033_INVALID_OID, oid ) );
             }
         }
 

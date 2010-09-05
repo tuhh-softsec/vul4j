@@ -638,7 +638,7 @@ public class Value implements Serializable
     {
         if ( buffer == null )
         {
-            throw new EncoderException( I18n.err( I18n.ERR_CANNOT_PUT_PDU_IN_NULL_BUFFER_00003 ) );
+            throw new EncoderException( I18n.err( I18n.ERR_00003_CANNOT_PUT_PDU_IN_NULL_BUFFER ) );
         }
 
         try
@@ -656,7 +656,7 @@ public class Value implements Serializable
         }
         catch ( BufferOverflowException boe )
         {
-            throw new EncoderException( I18n.err( I18n.ERR_PDU_BUFFER_SIZE_TOO_SMALL_00004 ) );
+            throw new EncoderException( I18n.err( I18n.ERR_00004_PDU_BUFFER_SIZE_TOO_SMALL ) );
         }
     }
 
@@ -673,7 +673,7 @@ public class Value implements Serializable
     {
         if ( buffer == null )
         {
-            throw new EncoderException( I18n.err( I18n.ERR_CANNOT_PUT_PDU_IN_NULL_BUFFER_00003 ) );
+            throw new EncoderException( I18n.err( I18n.ERR_00003_CANNOT_PUT_PDU_IN_NULL_BUFFER ) );
         }
 
         try
@@ -690,7 +690,7 @@ public class Value implements Serializable
         }
         catch ( BufferOverflowException boe )
         {
-            throw new EncoderException( I18n.err( I18n.ERR_PDU_BUFFER_SIZE_TOO_SMALL_00004 ) );
+            throw new EncoderException( I18n.err( I18n.ERR_00004_PDU_BUFFER_SIZE_TOO_SMALL ) );
         }
     }
 
@@ -707,7 +707,7 @@ public class Value implements Serializable
     {
         if ( buffer == null )
         {
-            throw new EncoderException( I18n.err( I18n.ERR_CANNOT_PUT_PDU_IN_NULL_BUFFER_00003 ) );
+            throw new EncoderException( I18n.err( I18n.ERR_00003_CANNOT_PUT_PDU_IN_NULL_BUFFER ) );
         }
 
         try
@@ -726,7 +726,7 @@ public class Value implements Serializable
         }
         catch ( BufferOverflowException boe )
         {
-            throw new EncoderException( I18n.err( I18n.ERR_PDU_BUFFER_SIZE_TOO_SMALL_00004 ) );
+            throw new EncoderException( I18n.err( I18n.ERR_00004_PDU_BUFFER_SIZE_TOO_SMALL ) );
         }
     }
 
@@ -743,7 +743,7 @@ public class Value implements Serializable
     {
         if ( buffer == null )
         {
-            throw new EncoderException( I18n.err( I18n.ERR_CANNOT_PUT_PDU_IN_NULL_BUFFER_00003 ) );
+            throw new EncoderException( I18n.err( I18n.ERR_00003_CANNOT_PUT_PDU_IN_NULL_BUFFER ) );
         }
 
         try
@@ -758,7 +758,7 @@ public class Value implements Serializable
         }
         catch ( BufferOverflowException boe )
         {
-            throw new EncoderException( I18n.err( I18n.ERR_PDU_BUFFER_SIZE_TOO_SMALL_00004 ) );
+            throw new EncoderException( I18n.err( I18n.ERR_00004_PDU_BUFFER_SIZE_TOO_SMALL ) );
         }
     }
 
@@ -775,7 +775,7 @@ public class Value implements Serializable
     {
         if ( buffer == null )
         {
-            throw new EncoderException( I18n.err( I18n.ERR_CANNOT_PUT_PDU_IN_NULL_BUFFER_00003 ) );
+            throw new EncoderException( I18n.err( I18n.ERR_00003_CANNOT_PUT_PDU_IN_NULL_BUFFER ) );
         }
 
         try
@@ -786,7 +786,7 @@ public class Value implements Serializable
         }
         catch ( BufferOverflowException boe )
         {
-            throw new EncoderException( I18n.err( I18n.ERR_PDU_BUFFER_SIZE_TOO_SMALL_00004 ) );
+            throw new EncoderException( I18n.err( I18n.ERR_00004_PDU_BUFFER_SIZE_TOO_SMALL ) );
         }
     }
 
@@ -803,7 +803,7 @@ public class Value implements Serializable
     {
         if ( buffer == null )
         {
-            throw new EncoderException( I18n.err( I18n.ERR_CANNOT_PUT_PDU_IN_NULL_BUFFER_00003 ) );
+            throw new EncoderException( I18n.err( I18n.ERR_00003_CANNOT_PUT_PDU_IN_NULL_BUFFER ) );
         }
 
         try
@@ -814,7 +814,7 @@ public class Value implements Serializable
         }
         catch ( BufferOverflowException boe )
         {
-            throw new EncoderException( I18n.err( I18n.ERR_PDU_BUFFER_SIZE_TOO_SMALL_00004 ) );
+            throw new EncoderException( I18n.err( I18n.ERR_00004_PDU_BUFFER_SIZE_TOO_SMALL ) );
         }
     }
 
@@ -832,7 +832,7 @@ public class Value implements Serializable
     {
         if ( buffer == null )
         {
-            throw new EncoderException( I18n.err( I18n.ERR_CANNOT_PUT_PDU_IN_NULL_BUFFER_00003 ) );
+            throw new EncoderException( I18n.err( I18n.ERR_00003_CANNOT_PUT_PDU_IN_NULL_BUFFER ) );
         }
 
         try
@@ -843,7 +843,7 @@ public class Value implements Serializable
         }
         catch ( BufferOverflowException boe )
         {
-            throw new EncoderException( I18n.err( I18n.ERR_PDU_BUFFER_SIZE_TOO_SMALL_00004 ) );
+            throw new EncoderException( I18n.err( I18n.ERR_00004_PDU_BUFFER_SIZE_TOO_SMALL ) );
         }
     }
 
@@ -860,7 +860,7 @@ public class Value implements Serializable
     {
         if ( buffer == null )
         {
-            throw new EncoderException( I18n.err( I18n.ERR_CANNOT_PUT_PDU_IN_NULL_BUFFER_00003 ) );
+            throw new EncoderException( I18n.err( I18n.ERR_00003_CANNOT_PUT_PDU_IN_NULL_BUFFER ) );
         }
 
         try
@@ -871,7 +871,7 @@ public class Value implements Serializable
         }
         catch ( BufferOverflowException boe )
         {
-            throw new EncoderException( I18n.err( I18n.ERR_PDU_BUFFER_SIZE_TOO_SMALL_00004 ) );
+            throw new EncoderException( I18n.err( I18n.ERR_00004_PDU_BUFFER_SIZE_TOO_SMALL ) );
         }
     }
 
@@ -888,7 +888,7 @@ public class Value implements Serializable
     {
         if ( buffer == null )
         {
-            throw new EncoderException( I18n.err( I18n.ERR_CANNOT_PUT_PDU_IN_NULL_BUFFER_00003 ) );
+            throw new EncoderException( I18n.err( I18n.ERR_00003_CANNOT_PUT_PDU_IN_NULL_BUFFER ) );
         }
 
         try
@@ -904,7 +904,7 @@ public class Value implements Serializable
         }
         catch ( BufferOverflowException boe )
         {
-            throw new EncoderException( I18n.err( I18n.ERR_PDU_BUFFER_SIZE_TOO_SMALL_00004 ) );
+            throw new EncoderException( I18n.err( I18n.ERR_00004_PDU_BUFFER_SIZE_TOO_SMALL ) );
         }
     }
 

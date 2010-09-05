@@ -64,12 +64,12 @@ public class IntegerDecoder
 
         if ( ( bytes == null ) || ( bytes.length == 0 ) )
         {
-            throw new IntegerDecoderException( I18n.err( I18n.ERR_0_BYTES_LONG_INTEGER_00036 ) );
+            throw new IntegerDecoderException( I18n.err( I18n.ERR_00036_0_BYTES_LONG_INTEGER ) );
         }
 
         if ( bytes.length > 4 )
         {
-            throw new IntegerDecoderException( I18n.err( I18n.ERR_ABOVE_4_BYTES_INTEGER_00037 ) );
+            throw new IntegerDecoderException( I18n.err( I18n.ERR_00037_ABOVE_4_BYTES_INTEGER ) );
         }
 
         for ( int i = 0; ( i < bytes.length ) && ( i < 5 ); i++ )
@@ -88,7 +88,7 @@ public class IntegerDecoder
         }
         else
         {
-            throw new IntegerDecoderException( I18n.err( I18n.ERR_VALUE_NOT_IN_RANGE_00038, min, max ) );
+            throw new IntegerDecoderException( I18n.err( I18n.ERR_00038_VALUE_NOT_IN_RANGE, min, max ) );
         }
     }
 

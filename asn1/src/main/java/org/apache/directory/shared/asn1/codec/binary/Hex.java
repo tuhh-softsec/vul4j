@@ -58,7 +58,7 @@ public class Hex implements BinaryEncoder, BinaryDecoder
 
         if ( ( len & 0x01 ) != 0 )
         {
-            throw new DecoderException( I18n.err( I18n.ERR_ODD_NUM_OF_CHARS_00013 ) );
+            throw new DecoderException( I18n.err( I18n.ERR_00013_ODD_NUM_OF_CHARS ) );
         }
 
         byte[] out = new byte[len >> 1];
@@ -91,7 +91,7 @@ public class Hex implements BinaryEncoder, BinaryDecoder
 
         if ( digit == -1 )
         {
-            throw new DecoderException( I18n.err( I18n.ERR_ILLEGAL_HEX_CHAR_00014, ch, index ) );
+            throw new DecoderException( I18n.err( I18n.ERR_00014_ILLEGAL_HEX_CHAR, ch, index ) );
         }
 
         return digit;

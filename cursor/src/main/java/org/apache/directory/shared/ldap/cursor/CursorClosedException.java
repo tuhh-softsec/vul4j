@@ -27,19 +27,28 @@ package org.apache.directory.shared.ldap.cursor;
  */
 public class CursorClosedException extends Exception
 {
+    /** The serialVersion UID */
     private static final long serialVersionUID = -5723233489761854394L;
 
     /** A static exception to be used by the monitor */
     public static final CursorClosedException INSTANCE = new CursorClosedException();
 
 
+    /**
+     * Creates a new instance of CursorClosedException.
+     */
     public CursorClosedException()
     {
     }
 
 
-    public CursorClosedException( String s )
+    /**
+     * Creates a new instance of CursorClosedException.
+     *
+     * @param message The associated message
+     */
+    public CursorClosedException( String message )
     {
-        super( s );
+        super( message );
     }
 }

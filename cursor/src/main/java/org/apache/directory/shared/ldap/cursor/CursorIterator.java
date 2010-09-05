@@ -35,13 +35,12 @@ public class CursorIterator<E> implements Iterator<E>
 {
     /** The inner cursor we will iterate */
     private final Cursor<E> cursor;
-    
+
     /** A flag used to store the cursor state */
     private boolean available;
 
 
     /**
-     * 
      * Creates a new instance of CursorIterator.
      *
      * @param cursor The inner cursor
@@ -75,7 +74,7 @@ public class CursorIterator<E> implements Iterator<E>
         }
         catch ( Exception e )
         {
-            throw new RuntimeException( I18n.err( I18n.ERR_02002 ), e );
+            throw new RuntimeException( I18n.err( I18n.ERR_02002_FAILURE_ON_UNDERLYING_CURSOR ), e );
         }
     }
 
@@ -85,6 +84,6 @@ public class CursorIterator<E> implements Iterator<E>
      */
     public void remove()
     {
-        throw new UnsupportedOperationException( I18n.err( I18n.ERR_02003 ) );
+        throw new UnsupportedOperationException( I18n.err( I18n.ERR_02003_REMOVAL_NOT_SUPPORTED ) );
     }
 }

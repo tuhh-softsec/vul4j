@@ -28,11 +28,13 @@ import org.apache.directory.shared.i18n.I18n;
  * Simple class that contains often used Cursor code.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
+ * @param E The type of element on which this cursor will iterate
  */
 public abstract class AbstractCursor<E> implements Cursor<E>
 {
     /** The default associated monitor */
     private ClosureMonitor monitor = new DefaultClosureMonitor();
+
 
     /**
      * {@inheritDoc}
@@ -41,18 +43,18 @@ public abstract class AbstractCursor<E> implements Cursor<E>
     {
         if ( monitor == null )
         {
-            throw new IllegalArgumentException( I18n.err( I18n.ERR_02001 ) );
+            throw new IllegalArgumentException( I18n.err( I18n.ERR_02001_MONITOR ) );
         }
-        
+
         this.monitor = monitor;
     }
-    
+
 
     /**
-     * Check that the cursor is not closed.
+     * Check that the cursor is not closed before executing an operation.
      * 
-     * @param operation
-     * @throws Exception
+     * @param operation The operation we try to execute
+     * @throws Exception If there is a problem during the check
      */
     protected final void checkNotClosed( String operation ) throws Exception
     {

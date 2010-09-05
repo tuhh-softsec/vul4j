@@ -32,6 +32,7 @@ import org.apache.directory.shared.i18n.I18n;
  * Cursor may be limited to a specific range within the list.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
+ * @param E The element on which this cursor will iterate
  */
 public class ListCursor<E> extends AbstractCursor<E>
 {
@@ -72,19 +73,19 @@ public class ListCursor<E> extends AbstractCursor<E>
         }
         if ( ( start < 0 ) || ( start > list.size() ) )
         {
-            throw new IllegalArgumentException( I18n.err( I18n.ERR_02005, start ) );
+            throw new IllegalArgumentException( I18n.err( I18n.ERR_02005_START_INDEX_OUT_OF_RANGE, start ) );
         }
 
         if ( ( end < 0 ) || ( end > list.size() ) )
         {
-            throw new IllegalArgumentException( I18n.err( I18n.ERR_02006, end ) );
+            throw new IllegalArgumentException( I18n.err( I18n.ERR_02006_END_INDEX_OUT_OF_RANGE, end ) );
         }
 
         // check list is not empty list since the empty list is the only situation
         // where we allow for start to equal the end: in other cases it makes no sense
         if ( ( list.size() > 0 ) && ( start >= end ) )
         {
-            throw new IllegalArgumentException( I18n.err( I18n.ERR_02007, start, end ) );
+            throw new IllegalArgumentException( I18n.err( I18n.ERR_02007_START_INDEX_ABOVE_END_INDEX, start, end ) );
         }
 
         this.comparator = comparator;
@@ -476,7 +477,7 @@ public class ListCursor<E> extends AbstractCursor<E>
 
         if ( index < start || index >= end )
         {
-            throw new IOException( I18n.err( I18n.ERR_02009 ) );
+            throw new IOException( I18n.err( I18n.ERR_02009_CURSOR_NOT_POSITIONED ) );
         }
 
         return list.get( index );

@@ -96,11 +96,13 @@ public class ACIItemChecker
         }
         catch ( TokenStreamException e )
         {
-            throw new ParseException( I18n.err( I18n.ERR_PDU_BUFFER_SIZE_TOO_SMALL_00004, spec, e.getLocalizedMessage() ), 0 );
+            throw new ParseException( I18n
+                .err( I18n.ERR_00004_PDU_BUFFER_SIZE_TOO_SMALL, spec, e.getLocalizedMessage() ), 0 );
         }
         catch ( RecognitionException e )
         {
-            throw new ParseException( I18n.err( I18n.ERR_PDU_BUFFER_SIZE_TOO_SMALL_00004, spec, e.getLocalizedMessage() ), e.getColumn() );
+            throw new ParseException( I18n
+                .err( I18n.ERR_00004_PDU_BUFFER_SIZE_TOO_SMALL, spec, e.getLocalizedMessage() ), e.getColumn() );
         }
     }
 

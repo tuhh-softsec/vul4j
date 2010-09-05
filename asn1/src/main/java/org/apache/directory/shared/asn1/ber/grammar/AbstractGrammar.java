@@ -124,14 +124,14 @@ public abstract class AbstractGrammar implements Grammar
 
         if ( transition == null )
         {
-            String errorMessage = I18n.err( I18n.ERR_BAD_TRANSITION_FROM_STATE_00001, currentGrammar.getStatesEnum()
+            String errorMessage = I18n.err( I18n.ERR_00001_BAD_TRANSITION_FROM_STATE, currentGrammar.getStatesEnum()
                 .getState( currentState ), Asn1StringUtils.dumpByte( tagByte ) );
 
             LOG.error( errorMessage );
 
             // If we have no more grammar on the stack, then this is an
             // error
-            throw new DecoderException( I18n.err( I18n.ERR_BAD_TRANSITION_00002 ) );
+            throw new DecoderException( I18n.err( I18n.ERR_00002_BAD_TRANSITION ) );
         }
 
         if ( IS_DEBUG )

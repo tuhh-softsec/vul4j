@@ -59,12 +59,12 @@ public class BooleanDecoder
 
         if ( ( bytes == null ) || ( bytes.length == 0 ) )
         {
-            throw new BooleanDecoderException( I18n.err( I18n.ERR_0_BYTES_LONG_BOOLEAN_00034 ) );
+            throw new BooleanDecoderException( I18n.err( I18n.ERR_00034_0_BYTES_LONG_BOOLEAN ) );
         }
 
         if ( bytes.length != 1 )
         {
-            throw new BooleanDecoderException( I18n.err( I18n.ERR_N_BYTES_LONG_BOOLEAN_00035 ) );
+            throw new BooleanDecoderException( I18n.err( I18n.ERR_00035_N_BYTES_LONG_BOOLEAN ) );
         }
 
         if ( ( bytes[0] != 0 ) && ( bytes[0] != ( byte ) 0xFF ) )

@@ -75,7 +75,7 @@ public class BitString implements Serializable
         if ( length <= 0 )
         {
             // This is not allowed
-            throw new IndexOutOfBoundsException( I18n.err( I18n.ERR_NULL_OR_NEG_LENGTH_NOT_ALLOWED_00029 ) );
+            throw new IndexOutOfBoundsException( I18n.err( I18n.ERR_00029_NULL_OR_NEG_LENGTH_NOT_ALLOWED ) );
         }
 
         nbBits = length;
@@ -115,7 +115,7 @@ public class BitString implements Serializable
         if ( length <= 0 )
         {
             // This is not allowed
-            throw new IndexOutOfBoundsException( I18n.err( I18n.ERR_NULL_OR_NEG_LENGTH_NOT_ALLOWED_00029 ) );
+            throw new IndexOutOfBoundsException( I18n.err( I18n.ERR_00029_NULL_OR_NEG_LENGTH_NOT_ALLOWED ) );
         }
 
         nbBits = length;
@@ -256,7 +256,7 @@ public class BitString implements Serializable
     {
         if ( ( pos < 0 ) || ( pos > nbBits ) )
         {
-            throw new IndexOutOfBoundsException( I18n.err( I18n.ERR_BIT_NUMBER_OUT_OF_BOUND_00030 ) );
+            throw new IndexOutOfBoundsException( I18n.err( I18n.ERR_00030_BIT_NUMBER_OUT_OF_BOUND ) );
         }
 
         int posInt = nbBytes - 1 - ( ( pos + nbUnusedBits ) >> 3 );
@@ -278,7 +278,7 @@ public class BitString implements Serializable
     {
         if ( ( pos < 0 ) || ( pos > nbBits ) )
         {
-            throw new IndexOutOfBoundsException( I18n.err( I18n.ERR_BIT_NUMBER_OUT_OF_BOUND_00030 ) );
+            throw new IndexOutOfBoundsException( I18n.err( I18n.ERR_00030_BIT_NUMBER_OUT_OF_BOUND ) );
         }
 
         int posInt = nbBytes - 1 - ( ( pos + nbUnusedBits ) >> 3 );
@@ -312,7 +312,7 @@ public class BitString implements Serializable
     {
         if ( pos > nbBits )
         {
-            throw new IndexOutOfBoundsException( I18n.err( I18n.ERR_CANNOT_FIND_BIT_00031, pos, nbBits ) );
+            throw new IndexOutOfBoundsException( I18n.err( I18n.ERR_00031_CANNOT_FIND_BIT, pos, nbBits ) );
         }
 
         int posInt = nbBytes - 1 - ( ( pos + nbUnusedBits ) >> 3 );

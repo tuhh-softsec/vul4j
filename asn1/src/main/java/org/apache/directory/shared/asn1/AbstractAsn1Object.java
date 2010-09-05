@@ -126,7 +126,7 @@ public abstract class AbstractAsn1Object implements Asn1Object
 
         if ( currentLength > expectedLength )
         {
-            throw new DecoderException( I18n.err( I18n.ERR_CURRENT_LENGTH_EXCEED_EXPECTED_LENGTH_00041 ) );
+            throw new DecoderException( I18n.err( I18n.ERR_00041_CURRENT_LENGTH_EXCEED_EXPECTED_LENGTH ) );
         }
     }
 

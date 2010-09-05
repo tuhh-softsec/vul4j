@@ -64,12 +64,12 @@ public class LongDecoder
 
         if ( ( bytes == null ) || ( bytes.length == 0 ) )
         {
-            throw new LongDecoderException( I18n.err( I18n.ERR_0_BYTES_LONG_LONG_00039 ) );
+            throw new LongDecoderException( I18n.err( I18n.ERR_00039_0_BYTES_LONG_LONG ) );
         }
 
         if ( bytes.length > 8 )
         {
-            throw new LongDecoderException( I18n.err( I18n.ERR_0_BYTES_LONG_LONG_00039 ) );
+            throw new LongDecoderException( I18n.err( I18n.ERR_00039_0_BYTES_LONG_LONG ) );
         }
 
         for ( int i = 0; ( i < bytes.length ) && ( i < 9 ); i++ )
@@ -88,7 +88,7 @@ public class LongDecoder
         }
         else
         {
-            throw new LongDecoderException( I18n.err( I18n.ERR_VALUE_NOT_IN_RANGE_00038, min, max ) );
+            throw new LongDecoderException( I18n.err( I18n.ERR_00038_VALUE_NOT_IN_RANGE, min, max ) );
         }
     }
 

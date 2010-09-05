@@ -109,7 +109,7 @@ public class ASN1OutputStream extends FilterOutputStream
         }
         else
         {
-            throw new IOException( I18n.err( I18n.ERR_OBJECT_NOT_DER_ENCODABLE_00024 ) );
+            throw new IOException( I18n.err( I18n.ERR_00024_OBJECT_NOT_DER_ENCODABLE ) );
         }
     }
 

@@ -101,7 +101,7 @@ public class BERTaggedObject extends DERTaggedObject
                 }
                 else
                 {
-                    throw new RuntimeException( I18n.err( I18n.ERR_NOT_IMPLEMENTED_00027, obj.getClass().getName() ) );
+                    throw new RuntimeException( I18n.err( I18n.ERR_00027_NOT_IMPLEMENTED, obj.getClass().getName() ) );
                 }
             }
             else

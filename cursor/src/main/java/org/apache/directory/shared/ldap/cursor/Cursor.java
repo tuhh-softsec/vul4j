@@ -19,7 +19,6 @@
 package org.apache.directory.shared.ldap.cursor;
 
 
-
 /**
  * A Cursor for bidirectional traversal over elements in a dataSet. Cursors
  * unlike Iterators or Enumerations may advance to an element by calling
@@ -36,6 +35,7 @@ package org.apache.directory.shared.ldap.cursor;
  * UnsupportedOperationExceptions.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
+ * @param E The type of element on which this cursor will iterate
  */
 public interface Cursor<E> extends Iterable<E>
 {
@@ -45,6 +45,7 @@ public interface Cursor<E> extends Iterable<E>
      * @return true if a call to the get() method will succeed, false otherwise
      */
     boolean available();
+
 
     /**
      * Prepares this Cursor, so a subsequent call to Cursor#next() with a
@@ -60,7 +61,6 @@ public interface Cursor<E> extends Iterable<E>
      *
      * @param element the element to be positioned before
      * @throws Exception with problems accessing the underlying btree
-     * @throws UnsupportedOperationException if this method is not supported
      */
     void before( E element ) throws Exception;
 
@@ -79,7 +79,6 @@ public interface Cursor<E> extends Iterable<E>
      * @param element the element to be positioned after
      * @throws Exception if there are problems positioning this cursor or if
      * this Cursor is closed
-     * @throws UnsupportedOperationException if this method is not supported
      */
     void after( E element ) throws Exception;
 
@@ -89,7 +88,6 @@ public interface Cursor<E> extends Iterable<E>
      *
      * @throws Exception if there are problems positioning this cursor or if
      * this Cursor is closed
-     * @throws UnsupportedOperationException if this method is not supported
      */
     void beforeFirst() throws Exception;
 
@@ -99,7 +97,6 @@ public interface Cursor<E> extends Iterable<E>
      *
      * @throws Exception if there are problems positioning this Cursor or if
      * this Cursor is closed
-     * @throws UnsupportedOperationException if this method is not supported
      */
     void afterLast() throws Exception;
 
@@ -111,7 +108,6 @@ public interface Cursor<E> extends Iterable<E>
      * element, false otherwise
      * @throws Exception if there are problems positioning this Cursor or if
      * this Cursor is closed
-     * @throws UnsupportedOperationException if this method is not supported
      */
     boolean first() throws Exception;
 
@@ -123,11 +119,10 @@ public interface Cursor<E> extends Iterable<E>
      * false otherwise
      * @throws Exception if there are problems querying the position of this Cursor
      * or if this Cursor is closed
-     * @throws UnsupportedOperationException if this method is not supported
      */
     boolean isFirst() throws Exception;
 
-    
+
     /**
      * Is this Cursor positioned before the first element.
      *
@@ -135,11 +130,10 @@ public interface Cursor<E> extends Iterable<E>
      * false otherwise
      * @throws Exception if there are problems querying the position of this Cursor
      * or if this Cursor is closed
-     * @throws UnsupportedOperationException if this method is not supported
      */
     boolean isBeforeFirst() throws Exception;
 
-    
+
     /**
      * Positions this Cursor at the last element.
      *
@@ -147,7 +141,6 @@ public interface Cursor<E> extends Iterable<E>
      * element, false otherwise
      * @throws Exception if there are problems positioning this Cursor or if
      * this Cursor is closed
-     * @throws UnsupportedOperationException if this method is not supported
      */
     boolean last() throws Exception;
 
@@ -159,11 +152,10 @@ public interface Cursor<E> extends Iterable<E>
      * false otherwise
      * @throws Exception if there are problems querying the position of this Cursor
      * or if this Cursor is closed
-     * @throws UnsupportedOperationException if this method is not supported
      */
     boolean isLast() throws Exception;
 
-    
+
     /**
      * Is this Cursor positioned after the last element.
      *
@@ -171,18 +163,16 @@ public interface Cursor<E> extends Iterable<E>
      * false otherwise
      * @throws Exception if there are problems querying the position of this Cursor
      * or if this Cursor is closed
-     * @throws UnsupportedOperationException if this method is not supported
      */
     boolean isAfterLast() throws Exception;
 
-    
+
     /**
      * Checks if this Cursor is closed.  Calls to this operation should not
      * fail with exceptions if and only if the cursor is in the closed state.
      *
      * @return true if this Cursor is closed, false otherwise
      * @throws Exception if there are problems determining the cursor's closed state
-     * @throws UnsupportedOperationException if this method is not supported
      */
     boolean isClosed() throws Exception;
 
@@ -195,7 +185,6 @@ public interface Cursor<E> extends Iterable<E>
      *
      * @return true if the advance succeeded, false otherwise
      * @throws Exception if there are problems advancing to the next position
-     * @throws UnsupportedOperationException if this method is not supported
      */
     boolean previous() throws Exception;
 
@@ -209,7 +198,6 @@ public interface Cursor<E> extends Iterable<E>
      * @return true if the advance succeeded, false otherwise
      * @throws Exception if there are problems advancing to this Cursor to
      * the next position, or if this Cursor is closed
-     * @throws UnsupportedOperationException if this method is not supported
      */
     boolean next() throws Exception;
 
@@ -262,8 +250,8 @@ public interface Cursor<E> extends Iterable<E>
      * @throws Exception if for some reason this Cursor could not be closed
      */
     void close( Exception reason ) throws Exception;
-    
-    
+
+
     /**
      * Sets a non-null closure monitor to associate with this Cursor.
      *

@@ -20,13 +20,13 @@
 package org.apache.directory.shared.ldap.cursor;
 
 
-
-
 /**
  * A Cursor introducing new advance methods designed to reduce some
  * inefficiencies encountered when scanning over Tuples.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
+ * @param K The Tupe key type
+ * @param V The Value type stored in the Tuple
  */
 public interface TupleCursor<K, V> extends Cursor<Tuple<K, V>>
 {
@@ -37,7 +37,7 @@ public interface TupleCursor<K, V> extends Cursor<Tuple<K, V>>
      * before the first value of the key.
      *
      * @param key the key to advance just before
-     * @throws Exception if there are faults peforming this operation
+     * @throws Exception if there are faults performing this operation
      */
     void beforeKey( K key ) throws Exception;
 
@@ -49,7 +49,7 @@ public interface TupleCursor<K, V> extends Cursor<Tuple<K, V>>
      * after the last value of the key.
      *
      * @param key the key to advance just after the last value
-     * @throws Exception if there are faults peforming this operation
+     * @throws Exception if there are faults performing this operation
      */
     void afterKey( K key ) throws Exception;
 
@@ -65,8 +65,7 @@ public interface TupleCursor<K, V> extends Cursor<Tuple<K, V>>
      *
      * @param key the key of the value to advance just before
      * @param value the value to advance just before
-     * @throws UnsupportedOperationException if duplicate keys not supporrted
-     * @throws Exception if there are faults peforming this operation
+     * @throws Exception if there are faults performing this operation
      */
     void beforeValue( K key, V value ) throws Exception;
 
@@ -81,8 +80,7 @@ public interface TupleCursor<K, V> extends Cursor<Tuple<K, V>>
      *
      * @param key the key of the value to advance just after
      * @param value the value to advance just after
-     * @throws UnsupportedOperationException if duplicate keys not supporrted
-     * @throws Exception if there are faults peforming this operation
+     * @throws Exception if there are faults performing this operation
      */
     void afterValue( K key, V value ) throws Exception;
 }

@@ -24,11 +24,14 @@ package org.apache.directory.shared.ldap.cursor;
  * A key/value tuple for simple two column persistent Tables with sorted keys.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
+ * @param K The key type for the Tuple
+ * @param V The associated Value type
  */
 public class Tuple<K, V>
 {
     /** the key for this Tuple */
     private K key;
+
     /** the value for this Tuple */
     private V value;
 
@@ -75,6 +78,7 @@ public class Tuple<K, V>
     public Tuple<K, V> setKey( K key )
     {
         this.key = key;
+
         return this;
     }
 
@@ -99,6 +103,7 @@ public class Tuple<K, V>
     public Tuple<K, V> setValue( V value )
     {
         this.value = value;
+
         return this;
     }
 
@@ -116,6 +121,7 @@ public class Tuple<K, V>
     {
         this.key = key;
         this.value = value;
+
         return this;
     }
 
@@ -132,21 +138,45 @@ public class Tuple<K, V>
     {
         this.key = tupleToCopy.key;
         this.value = tupleToCopy.value;
+
         return this;
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int hashCode()
     {
-        final int prime = 31;
+        int prime = 31;
         int result = 1;
-        result = prime * result + ( ( key == null ) ? 0 : key.hashCode() );
-        result = prime * result + ( ( value == null ) ? 0 : value.hashCode() );
+
+        if ( key == null )
+        {
+            result = prime * result;
+        }
+        else
+        {
+            result = prime * result + key.hashCode();
+        }
+
+        if ( value == null )
+        {
+            result = prime * result;
+        }
+        else
+        {
+            result = prime * result + value.hashCode();
+        }
+
         return result;
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean equals( Object obj )
     {
@@ -154,15 +184,19 @@ public class Tuple<K, V>
         {
             return true;
         }
+
         if ( obj == null )
         {
             return false;
         }
+
         if ( getClass() != obj.getClass() )
         {
             return false;
         }
-        Tuple<?, ?> other = (org.apache.directory.shared.ldap.cursor.Tuple<?, ?> ) obj;
+
+        Tuple<?, ?> other = ( org.apache.directory.shared.ldap.cursor.Tuple<?, ?> ) obj;
+
         if ( key == null )
         {
             if ( other.key != null )
@@ -174,6 +208,7 @@ public class Tuple<K, V>
         {
             return false;
         }
+
         if ( value == null )
         {
             if ( other.value != null )
@@ -185,18 +220,24 @@ public class Tuple<K, V>
         {
             return false;
         }
+
         return true;
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public String toString()
     {
         StringBuilder buf = new StringBuilder();
+
         buf.append( "Tuple( '" );
         buf.append( key );
         buf.append( "', '" );
         buf.append( value );
         buf.append( "' )" );
+
         return buf.toString();
     }
 }

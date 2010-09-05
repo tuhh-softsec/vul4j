@@ -35,7 +35,7 @@ public interface ClosureMonitor
      */
     void close();
 
-    
+
     /**
      * Sets monitor state to closed, and sets the cause to a 
      * CursorClosedException with a specific error message string.
@@ -43,8 +43,8 @@ public interface ClosureMonitor
      * @param cause error message string
      */
     void close( String cause );
-    
-    
+
+
     /**
      * Sets monitor state to closed, and sets the cause to a specific 
      * Exception.
@@ -52,16 +52,16 @@ public interface ClosureMonitor
      * @param cause the exception to associate with the closure
      */
     void close( Exception cause );
-    
-    
+
+
     /**
      * Gets whether the state of this ClosureMonitor is set to closed.
      *
      * @return true if state is closed, false if open
      */
     boolean isClosed();
-    
-    
+
+
     /**
      * Checks if state of this ClosureMonitor is set to closed and if so, 
      * throws the causing Exception.
@@ -69,8 +69,8 @@ public interface ClosureMonitor
      * @throws Exception the cause of the closure
      */
     void checkNotClosed() throws Exception;
-    
-    
+
+
     /**
      * Gets the cause of the closure.
      *
