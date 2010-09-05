@@ -59,9 +59,9 @@ public final class FromAnnotationsRuleSet implements RuleSet {
     private volatile String namespaceURI;
 
     /**
-     * 
+     * Created a new {@code FromAnnotationsRuleSet} instance.
      *
-     * @param annotationRuleProviderFactory
+     * @param digesterLoader the parent DigesterLoader.
      */
     protected FromAnnotationsRuleSet(DigesterLoader digesterLoader) {
         this.digesterLoader = digesterLoader;

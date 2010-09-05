@@ -25,7 +25,7 @@ import org.apache.commons.digester.annotations.rules.AttributeCallParam;
 /**
  * Provides instances of {@link CallParamRule}.
  *
- * @see {@link CallParamRule#CallParamRule(int, java.lang.String)}
+ * @see CallParamRule#CallParamRule(int,String)
  * @since 2.1
  */
 public final class AttributeCallParamRuleProvider

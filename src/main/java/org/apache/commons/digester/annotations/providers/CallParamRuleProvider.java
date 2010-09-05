@@ -25,7 +25,7 @@ import org.apache.commons.digester.annotations.rules.CallParam;
 /**
  * Provides instances of {@link CallParamRule}.
  *
- * @see {@link CallParamRule#CallParamRule(int)}
+ * @see CallParamRule#CallParamRule(int)
  * @since 2.1
  */
 public final class CallParamRuleProvider implements AnnotationRuleProvider<CallParam, MethodArgument, CallParamRule> {
