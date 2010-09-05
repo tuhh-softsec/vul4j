@@ -54,7 +54,7 @@ Digester 2.1 users should upgrade to the recommended dependency set below
 where possible.
 
 The Recommended Dependency Set for Digester 2.1 is:
-   Digester 2.0 + Logging 1.1.1 + BeanUtils 1.8.3
+   Digester 2.1 + Logging 1.1.1 + BeanUtils 1.8.3
 
 It is also possible to use Logging 1.0.x or BeanUtils 1.7.0 instead.
 
