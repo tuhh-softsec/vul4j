@@ -40,13 +40,13 @@ public class BERConstructedOctetString extends DEROctetString
      * @param string
      *            the octets making up the octet string.
      */
-    public BERConstructedOctetString(byte[] string)
+    public BERConstructedOctetString( byte[] string )
     {
         super( string );
     }
 
 
-    public BERConstructedOctetString(Vector<DEREncodable> octets)
+    public BERConstructedOctetString( Vector<DEREncodable> octets )
     {
         super( toBytes( octets ) );
 
@@ -71,11 +71,12 @@ public class BERConstructedOctetString extends DEROctetString
             }
             catch ( ClassCastException e )
             {
-                throw new IllegalArgumentException( I18n.err( I18n.ERR_00025, octs.elementAt( i ).getClass().getName() ) );
+                throw new IllegalArgumentException( I18n.err( I18n.ERR_DER_OCTET_STRING_EXPECTED_00025, octs.elementAt(
+                    i ).getClass().getName() ) );
             }
             catch ( IOException e )
             {
-                throw new IllegalArgumentException( I18n.err( I18n.ERR_00026, e.toString() ) );
+                throw new IllegalArgumentException( I18n.err( I18n.ERR_CANNOT_CONVERT_OCTETS_00026, e.toString() ) );
             }
         }
 

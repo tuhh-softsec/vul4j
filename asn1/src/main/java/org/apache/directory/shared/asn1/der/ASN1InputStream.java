@@ -46,7 +46,7 @@ public class ASN1InputStream extends FilterInputStream
     {
         public void encode( ASN1OutputStream out ) throws IOException
         {
-            throw new IOException( I18n.err( I18n.ERR_00016 ) );
+            throw new IOException( I18n.err( I18n.ERR_END_OF_STREAM_00016 ) );
         }
 
 
@@ -67,13 +67,13 @@ public class ASN1InputStream extends FilterInputStream
     };
 
 
-    public ASN1InputStream(ByteBuffer in)
+    public ASN1InputStream( ByteBuffer in )
     {
         super( newInputStream( in ) );
     }
 
 
-    public ASN1InputStream(byte[] input)
+    public ASN1InputStream( byte[] input )
     {
         super( new ByteArrayInputStream( input ) );
     }
@@ -112,7 +112,7 @@ public class ASN1InputStream extends FilterInputStream
         int length = read();
         if ( length < 0 )
         {
-            throw new IOException( I18n.err( I18n.ERR_00017 ) );
+            throw new IOException( I18n.err( I18n.ERR_EOF_FOUND_LENGTH_EXPECTED_00017 ) );
         }
 
         // Indefinite-length encoding.
@@ -127,7 +127,7 @@ public class ASN1InputStream extends FilterInputStream
 
             if ( size > 4 )
             {
-                throw new IOException( I18n.err( I18n.ERR_00018 ) );
+                throw new IOException( I18n.err( I18n.ERR_DER_LENGTH_ABOVE_4_BYTES_00018 ) );
             }
 
             length = 0;
@@ -137,7 +137,7 @@ public class ASN1InputStream extends FilterInputStream
 
                 if ( next < 0 )
                 {
-                    throw new IOException( I18n.err( I18n.ERR_00019 ) );
+                    throw new IOException( I18n.err( I18n.ERR_EOF_FOUND_IN_LENGTH_00019 ) );
                 }
 
                 length = ( length << 8 ) + next;
@@ -145,7 +145,7 @@ public class ASN1InputStream extends FilterInputStream
 
             if ( length < 0 )
             {
-                throw new IOException( I18n.err( I18n.ERR_00020 ) );
+                throw new IOException( I18n.err( I18n.ERR_CORRUPTED_STREAM_00020 ) );
             }
         }
 
@@ -173,7 +173,7 @@ public class ASN1InputStream extends FilterInputStream
 
         if ( left != 0 )
         {
-            throw new EOFException( I18n.err( I18n.ERR_00021 ) );
+            throw new EOFException( I18n.err( I18n.ERR_EOF_FOUND_IN_OBJECT_00021 ) );
         }
     }
 
@@ -200,7 +200,7 @@ public class ASN1InputStream extends FilterInputStream
                 try
                 {
                     obj = ais.readObject();
-    
+
                     while ( obj != null )
                     {
                         sequence.add( obj );
@@ -220,7 +220,7 @@ public class ASN1InputStream extends FilterInputStream
                 try
                 {
                     obj = ais.readObject();
-    
+
                     while ( obj != null )
                     {
                         set.add( obj );
@@ -315,17 +315,17 @@ public class ASN1InputStream extends FilterInputStream
                     try
                     {
                         DEREncodable encodable = ais.readObject();
-    
+
                         // Explicitly tagged - if it isn't we'd have to tell from
                         // the context.
                         if ( ais.available() == 0 )
                         {
                             return new DERTaggedObject( true, tagNo, encodable, bytes );
                         }
-    
+
                         // Another implicit object, create a sequence.
                         DERSequence derSequence = new DERSequence();
-    
+
                         while ( encodable != null )
                         {
                             derSequence.add( encodable );
@@ -397,7 +397,7 @@ public class ASN1InputStream extends FilterInputStream
         {
             if ( EOF_FOUND )
             {
-                throw new EOFException( I18n.err( I18n.ERR_00022 ) );
+                throw new EOFException( I18n.err( I18n.ERR_READ_PAST_END_OF_FILE_00022 ) );
             }
 
             EOF_FOUND = true;
@@ -508,7 +508,7 @@ public class ASN1InputStream extends FilterInputStream
                         return new BERTaggedObject( false, tagNo, berSequence );
                     }
 
-                    throw new IOException( I18n.err( I18n.ERR_00023 ) );
+                    throw new IOException( I18n.err( I18n.ERR_UNKNOWN_BER_OBJECT_00023 ) );
             }
         }
 

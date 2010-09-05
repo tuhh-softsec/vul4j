@@ -33,13 +33,13 @@ import org.apache.directory.shared.i18n.I18n;
 
 public class ASN1OutputStream extends FilterOutputStream
 {
-    public ASN1OutputStream(OutputStream os)
+    public ASN1OutputStream( OutputStream os )
     {
         super( os );
     }
 
 
-    public ASN1OutputStream(ByteBuffer out)
+    public ASN1OutputStream( ByteBuffer out )
     {
         super( newOutputStream( out ) );
     }
@@ -109,7 +109,7 @@ public class ASN1OutputStream extends FilterOutputStream
         }
         else
         {
-            throw new IOException( I18n.err( I18n.ERR_00024 ) );
+            throw new IOException( I18n.err( I18n.ERR_OBJECT_NOT_DER_ENCODABLE_00024 ) );
         }
     }
 

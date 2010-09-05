@@ -40,7 +40,7 @@ public class BERTaggedObject extends DERTaggedObject
      * @param obj
      *            the tagged object.
      */
-    public BERTaggedObject(int tag, DEREncodable obj)
+    public BERTaggedObject( int tag, DEREncodable obj )
     {
         super( tag, obj );
     }
@@ -54,7 +54,7 @@ public class BERTaggedObject extends DERTaggedObject
      * @param obj
      *            the tagged object.
      */
-    public BERTaggedObject(boolean explicit, int tag, DEREncodable obj)
+    public BERTaggedObject( boolean explicit, int tag, DEREncodable obj )
     {
         super( explicit, tag, obj );
     }
@@ -101,7 +101,7 @@ public class BERTaggedObject extends DERTaggedObject
                 }
                 else
                 {
-                    throw new RuntimeException( I18n.err( I18n.ERR_00027, obj.getClass().getName() ) );
+                    throw new RuntimeException( I18n.err( I18n.ERR_NOT_IMPLEMENTED_00027, obj.getClass().getName() ) );
                 }
             }
             else

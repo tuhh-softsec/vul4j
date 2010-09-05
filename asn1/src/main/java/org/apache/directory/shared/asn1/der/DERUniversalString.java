@@ -41,7 +41,7 @@ public class DERUniversalString extends DERString
     /**
      * Basic DERObject constructor.
      */
-    public DERUniversalString(byte[] value)
+    public DERUniversalString( byte[] value )
     {
         super( UNIVERSAL_STRING, value );
     }
@@ -60,7 +60,7 @@ public class DERUniversalString extends DERString
         }
         catch ( IOException e )
         {
-            throw new RuntimeException( I18n.err( I18n.ERR_00028 ) );
+            throw new RuntimeException( I18n.err( I18n.ERR_INTERNAL_ERROR_ENCODING_BITSTRING_00028 ) );
         }
 
         byte[] string = baos.toByteArray();
