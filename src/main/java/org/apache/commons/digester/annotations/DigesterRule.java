@@ -49,7 +49,7 @@ public @interface DigesterRule {
      * The handler that takes care on converting this annotation in the related
      * {@link AnnotationRuleProvider} and adds it o the {@link FromAnnotationsRuleSet}
      *
-     * @return
+     * @return the {@link DigesterLoaderHandler}
      */
     Class<? extends DigesterLoaderHandler<? extends Annotation, ? extends AnnotatedElement>>
         handledBy() default DefaultLoaderHandler.class;
