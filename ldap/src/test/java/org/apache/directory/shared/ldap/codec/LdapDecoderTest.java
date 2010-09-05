@@ -320,7 +320,7 @@ public class LdapDecoderTest
         }
         catch ( DecoderException de )
         {
-            assertEquals( "ERR_00002 Bad transition !", de.getMessage() );
+            assertEquals( "ERR_BAD_TRANSITION_00002 Bad transition !", de.getMessage() );
             return;
         }
 
@@ -371,7 +371,7 @@ public class LdapDecoderTest
         }
         catch ( DecoderException de )
         {
-            assertEquals( "ERR_00002 Bad transition !", de.getMessage() );
+            assertEquals( "ERR_BAD_TRANSITION_00002 Bad transition !", de.getMessage() );
             return;
         }
 
