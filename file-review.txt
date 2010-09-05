@@ -9,6 +9,11 @@ This file is a list of all the Java file needing a review. We have to check the 
 (t) - text messages must be moved to i18n
 (C) - Checkstyle has been cleared 
 
+X : done
+* : Not Applicable (not an ASF file)
+- : Not finished
+. : to be done
+
 AHMFfWTtC 
 XXXXXXXXX /asn1/src/main/java/org/apache/directory/shared/asn1/AbstractAsn1Object.java
 XXXXXXXXX /asn1/src/main/java/org/apache/directory/shared/asn1/Asn1Object.java
@@ -49,42 +54,42 @@ XXXXXXXXX /asn1/src/main/java/org/apache/directory/shared/asn1/ber/tlv/Value.jav
 ......... /asn1/src/main/java/org/apache/directory/shared/asn1/codec/stateful/examples/HexEncoder.java
 ......... /asn1/src/main/java/org/apache/directory/shared/asn1/codec/stateful/StatefulDecoder.java
 ......... /asn1/src/main/java/org/apache/directory/shared/asn1/codec/stateful/StatefulEncoder.java
-......... /asn1/src/main/java/org/apache/directory/shared/asn1/der/ASN1InputStream.java
-......... /asn1/src/main/java/org/apache/directory/shared/asn1/der/ASN1OutputStream.java
-......... /asn1/src/main/java/org/apache/directory/shared/asn1/der/BERConstructedOctetString.java
-......... /asn1/src/main/java/org/apache/directory/shared/asn1/der/BERNull.java
-......... /asn1/src/main/java/org/apache/directory/shared/asn1/der/BERSequence.java
-......... /asn1/src/main/java/org/apache/directory/shared/asn1/der/BERSet.java
-......... /asn1/src/main/java/org/apache/directory/shared/asn1/der/BERTaggedObject.java
-......... /asn1/src/main/java/org/apache/directory/shared/asn1/der/DERApplicationSpecific.java
-......... /asn1/src/main/java/org/apache/directory/shared/asn1/der/DERBitString.java
-......... /asn1/src/main/java/org/apache/directory/shared/asn1/der/DERBMPString.java
-......... /asn1/src/main/java/org/apache/directory/shared/asn1/der/DERBoolean.java
-......... /asn1/src/main/java/org/apache/directory/shared/asn1/der/DEREncodable.java
-......... /asn1/src/main/java/org/apache/directory/shared/asn1/der/DEREnumerated.java
-......... /asn1/src/main/java/org/apache/directory/shared/asn1/der/DERGeneralizedTime.java
-......... /asn1/src/main/java/org/apache/directory/shared/asn1/der/DERGeneralString.java
-......... /asn1/src/main/java/org/apache/directory/shared/asn1/der/DERIA5String.java
-......... /asn1/src/main/java/org/apache/directory/shared/asn1/der/DERInteger.java
-......... /asn1/src/main/java/org/apache/directory/shared/asn1/der/DERNull.java
-......... /asn1/src/main/java/org/apache/directory/shared/asn1/der/DERNumericString.java
-......... /asn1/src/main/java/org/apache/directory/shared/asn1/der/DERObject.java
-......... /asn1/src/main/java/org/apache/directory/shared/asn1/der/DERObjectIdentifier.java
-......... /asn1/src/main/java/org/apache/directory/shared/asn1/der/DEROctetString.java
-......... /asn1/src/main/java/org/apache/directory/shared/asn1/der/DERPrintableString.java
-......... /asn1/src/main/java/org/apache/directory/shared/asn1/der/DERSequence.java
-......... /asn1/src/main/java/org/apache/directory/shared/asn1/der/DERSet.java
-......... /asn1/src/main/java/org/apache/directory/shared/asn1/der/DERString.java
-......... /asn1/src/main/java/org/apache/directory/shared/asn1/der/DERTaggedObject.java
-......... /asn1/src/main/java/org/apache/directory/shared/asn1/der/DERTeletexString.java
-......... /asn1/src/main/java/org/apache/directory/shared/asn1/der/DERUniversalString.java
-......... /asn1/src/main/java/org/apache/directory/shared/asn1/der/DERUnknownTag.java
-......... /asn1/src/main/java/org/apache/directory/shared/asn1/der/DERUTCTime.java
-......... /asn1/src/main/java/org/apache/directory/shared/asn1/der/DERUTF8String.java
-......... /asn1/src/main/java/org/apache/directory/shared/asn1/der/DERVisibleString.java
-......... /asn1/src/main/java/org/apache/directory/shared/asn1/der/OIDTokenizer.java
-......... /asn1/src/main/java/org/apache/directory/shared/asn1/primitives/BitString.java
-......... /asn1/src/main/java/org/apache/directory/shared/asn1/primitives/OID.java
+********* /asn1/src/main/java/org/apache/directory/shared/asn1/der/ASN1InputStream.java
+********* /asn1/src/main/java/org/apache/directory/shared/asn1/der/ASN1OutputStream.java
+********* /asn1/src/main/java/org/apache/directory/shared/asn1/der/BERConstructedOctetString.java
+********* /asn1/src/main/java/org/apache/directory/shared/asn1/der/BERNull.java
+********* /asn1/src/main/java/org/apache/directory/shared/asn1/der/BERSequence.java
+********* /asn1/src/main/java/org/apache/directory/shared/asn1/der/BERSet.java
+********* /asn1/src/main/java/org/apache/directory/shared/asn1/der/BERTaggedObject.java
+********* /asn1/src/main/java/org/apache/directory/shared/asn1/der/DERApplicationSpecific.java
+********* /asn1/src/main/java/org/apache/directory/shared/asn1/der/DERBitString.java
+********* /asn1/src/main/java/org/apache/directory/shared/asn1/der/DERBMPString.java
+********* /asn1/src/main/java/org/apache/directory/shared/asn1/der/DERBoolean.java
+********* /asn1/src/main/java/org/apache/directory/shared/asn1/der/DEREncodable.java
+********* /asn1/src/main/java/org/apache/directory/shared/asn1/der/DEREnumerated.java
+********* /asn1/src/main/java/org/apache/directory/shared/asn1/der/DERGeneralizedTime.java
+********* /asn1/src/main/java/org/apache/directory/shared/asn1/der/DERGeneralString.java
+********* /asn1/src/main/java/org/apache/directory/shared/asn1/der/DERIA5String.java
+********* /asn1/src/main/java/org/apache/directory/shared/asn1/der/DERInteger.java
+********* /asn1/src/main/java/org/apache/directory/shared/asn1/der/DERNull.java
+********* /asn1/src/main/java/org/apache/directory/shared/asn1/der/DERNumericString.java
+********* /asn1/src/main/java/org/apache/directory/shared/asn1/der/DERObject.java
+********* /asn1/src/main/java/org/apache/directory/shared/asn1/der/DERObjectIdentifier.java
+********* /asn1/src/main/java/org/apache/directory/shared/asn1/der/DEROctetString.java
+********* /asn1/src/main/java/org/apache/directory/shared/asn1/der/DERPrintableString.java
+********* /asn1/src/main/java/org/apache/directory/shared/asn1/der/DERSequence.java
+********* /asn1/src/main/java/org/apache/directory/shared/asn1/der/DERSet.java
+********* /asn1/src/main/java/org/apache/directory/shared/asn1/der/DERString.java
+********* /asn1/src/main/java/org/apache/directory/shared/asn1/der/DERTaggedObject.java
+********* /asn1/src/main/java/org/apache/directory/shared/asn1/der/DERTeletexString.java
+********* /asn1/src/main/java/org/apache/directory/shared/asn1/der/DERUniversalString.java
+********* /asn1/src/main/java/org/apache/directory/shared/asn1/der/DERUnknownTag.java
+********* /asn1/src/main/java/org/apache/directory/shared/asn1/der/DERUTCTime.java
+********* /asn1/src/main/java/org/apache/directory/shared/asn1/der/DERUTF8String.java
+********* /asn1/src/main/java/org/apache/directory/shared/asn1/der/DERVisibleString.java
+********* /asn1/src/main/java/org/apache/directory/shared/asn1/der/OIDTokenizer.java
+XXXXXXXXX /asn1/src/main/java/org/apache/directory/shared/asn1/primitives/BitString.java
+XXXXXXXXX /asn1/src/main/java/org/apache/directory/shared/asn1/primitives/OID.java
 ......... /asn1/src/main/java/org/apache/directory/shared/asn1/util/Asn1StringUtils.java
 ......... /asn1/src/main/java/org/apache/directory/shared/asn1/util/BooleanDecoder.java
 ......... /asn1/src/main/java/org/apache/directory/shared/asn1/util/BooleanDecoderException.java
