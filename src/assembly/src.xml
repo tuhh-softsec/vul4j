@@ -28,8 +28,6 @@
         <include>LICENSE*</include>
         <include>NOTICE*</include>
         <include>pom.xml</include>
-        <include>build.xml</include>
-        <include>build.properties.sample</include>
         <include>checkstyle.xml</include>
         <include>file-header.txt</include>
         <include>RELEASE-NOTES*</include>
@@ -40,4 +38,3 @@
     </fileSet>
   </fileSets>
 </assembly>
-
