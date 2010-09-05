@@ -52,9 +52,9 @@ public @interface PathCallParam {
     String pattern();
 
     /**
-     * Defines several @PathCallParam annotations on the same element.
+     * Defines several {@code @PathCallParam} annotations on the same element.
      *
-     * @see {@link PathCallParam}
+     * @see PathCallParam
      */
     @Documented
     @Retention(RetentionPolicy.RUNTIME)

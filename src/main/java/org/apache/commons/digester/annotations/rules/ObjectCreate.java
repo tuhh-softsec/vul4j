@@ -54,9 +54,9 @@ public @interface ObjectCreate {
     String pattern();
 
     /**
-     * Defines several @ObjectCreate annotations on the same element.
+     * Defines several {@code @ObjectCreate} annotations on the same element.
      *
-     * @see {@link ObjectCreate}
+     * @see ObjectCreate
      */
     @Documented
     @Retention(RetentionPolicy.RUNTIME)

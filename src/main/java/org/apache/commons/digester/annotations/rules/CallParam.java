@@ -52,9 +52,9 @@ public @interface CallParam {
     String pattern();
 
     /**
-     * Defines several @CallParam annotations on the same element.
+     * Defines several {@code @CallParam} annotations on the same element.
      *
-     * @see {@link CallParam}
+     * @see CallParam
      */
     @Documented
     @Retention(RetentionPolicy.RUNTIME)

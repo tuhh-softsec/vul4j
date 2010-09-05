@@ -70,9 +70,9 @@ public @interface FactoryCreate {
     boolean ignoreCreateExceptions() default false;
 
     /**
-     * Defines several @FactoryCreate annotations on the same element.
+     * Defines several {@code @FactoryCreate} annotations on the same element.
      *
-     * @see {@link FactoryCreate}
+     * @see FactoryCreate
      */
     @Documented
     @Retention(RetentionPolicy.RUNTIME)

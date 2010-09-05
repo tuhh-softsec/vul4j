@@ -52,9 +52,9 @@ public @interface CallMethod {
     String pattern();
 
     /**
-     * Defines several @CallMethod annotations on the same element.
+     * Defines several {@code @CallMethod} annotations on the same element.
      *
-     * @see {@link CallMethod}
+     * @see CallMethod
      */
     @Documented
     @Retention(RetentionPolicy.RUNTIME)

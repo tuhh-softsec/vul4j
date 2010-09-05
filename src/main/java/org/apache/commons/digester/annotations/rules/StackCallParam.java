@@ -62,7 +62,7 @@ public @interface StackCallParam {
     /**
      * Defines several {@code StackCallParam} annotations on the same element.
      *
-     * @see {@link StackCallParam}
+     * @see StackCallParam
      */
     @Documented
     @Retention(RetentionPolicy.RUNTIME)

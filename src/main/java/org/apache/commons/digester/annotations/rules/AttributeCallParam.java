@@ -59,9 +59,9 @@ public @interface AttributeCallParam {
     String pattern();
 
     /**
-     * Defines several @AttributeCallParam annotations on the same element.
+     * Defines several {@code @AttributeCallParam} annotations on the same element.
      *
-     * @see {@link AttributeCallParam}
+     * @see AttributeCallParam
      */
     @Documented
     @Retention(RetentionPolicy.RUNTIME)

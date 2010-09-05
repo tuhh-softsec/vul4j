@@ -52,9 +52,9 @@ public @interface SetTop {
     String pattern();
 
     /**
-     * Defines several @SetTop annotations on the same element 
+     * Defines several {@code @SetTop} annotations on the same element 
      *
-     * @see {@link SetTop}
+     * @see SetTop
      */
     @Documented
     @Retention(RetentionPolicy.RUNTIME)

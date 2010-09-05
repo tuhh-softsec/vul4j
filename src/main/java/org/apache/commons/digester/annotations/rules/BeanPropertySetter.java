@@ -52,9 +52,9 @@ public @interface BeanPropertySetter {
     String pattern();
 
     /**
-     * Defines several @BeanPropertySetter annotations on the same element.
+     * Defines several {@code @BeanPropertySetter} annotations on the same element.
      *
-     * @see {@link BeanPropertySetter}
+     * @see BeanPropertySetter
      */
     @Documented
     @Retention(RetentionPolicy.RUNTIME)

@@ -61,9 +61,9 @@ public @interface SetProperty {
     String attributeName() default "";
 
     /**
-     * Defines several @SetProperty annotations on the same element.
+     * Defines several {@code @SetProperty} annotations on the same element.
      *
-     * @see {@link SetProperty}
+     * @see SetProperty
      */
     @Documented
     @Retention(RetentionPolicy.RUNTIME)
