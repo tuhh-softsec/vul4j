@@ -71,10 +71,8 @@ public interface Asn1Object
     /**
      * Add a length to the object
      * 
-     * @param length
-     *            The length to add.
-     * @throws DecoderException
-     *             Thrown if the current length exceed the expected length
+     * @param length The length to add.
+     * @throws DecoderException Thrown if the current length exceed the expected length
      */
     void addLength( int length ) throws DecoderException;
 
@@ -82,8 +80,7 @@ public interface Asn1Object
     /**
      * Set the expected length
      * 
-     * @param expectedLength
-     *            The expectedLength to set.
+     * @param expectedLength The expectedLength to set.
      */
     void setExpectedLength( int expectedLength );
 
@@ -91,8 +88,7 @@ public interface Asn1Object
     /**
      * Set the current length
      * 
-     * @param currentLength
-     *            The currentLength to set.
+     * @param currentLength The currentLength to set.
      */
     void setCurrentLength( int currentLength );
 

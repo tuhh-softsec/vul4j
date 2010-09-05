@@ -28,16 +28,13 @@ import org.apache.directory.shared.asn1.ber.tlv.TLVStateEnum;
 
 /**
  * This class is the abstract container used to store the current state of a PDU
- * being decoded. It also stores the grammars used to decode the PDU, and zll
+ * being decoded. It also stores the grammars used to decode the PDU, and all
  * the informations needed to decode a PDU.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class AbstractContainer implements IAsn1Container
+public abstract class AbstractContainer implements IAsn1Container
 {
-    // ~ Instance fields
-    // ----------------------------------------------------------------------------
-
     /** All the possible grammars */
     protected IGrammar grammar;
 
@@ -45,35 +42,32 @@ public class AbstractContainer implements IAsn1Container
     protected int[] stateStack;
 
     /** The current state of the decoding */
-    protected int state;
+    private int state;
 
     /** The current transition */
-    protected int transition;
+    private int transition;
 
     /** The current TLV */
-    protected TLV tlv;
+    private TLV tlv;
 
     /** Store the different states for debug purpose */
     protected IStates states;
 
     /** The parent TLV */
-    protected TLV parentTLV;
+    private TLV parentTLV;
 
     /** The grammar end transition flag */
-    protected boolean grammarEndAllowed;
+    private boolean grammarEndAllowed;
 
     /** A counter for the decoded bytes */
     protected int decodeBytes;
 
     /** The maximum allowed size for a PDU. Default to MAX int value */
-    protected int maxPDUSize = Integer.MAX_VALUE;
+    private int maxPDUSize = Integer.MAX_VALUE;
 
     /** The incremental id used to tag TLVs */
     private int id = 0;
     
-    // ~ Methods
-    // ------------------------------------------------------------------------------------
-
     /**
      * Get the current grammar
      * 

@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * A BER TLV Tag component decoder. This decoder instanciate a Tag. The tag
+ * A BER TLV Tag component decoder. This decoder instantiate a Tag. The tag
  * won't be implementations should not copy the handle to the Tag object
  * delivered but should copy the data if they need it over the long term.
  * 
@@ -58,9 +58,6 @@ public class Asn1Decoder implements ITLVBerDecoderMBean
     /** This flag is used to indicate that there are no more bytes in the stream */
     private static final boolean END = false;
 
-    // ~ Instance fields
-    // ----------------------------------------------------------------------------
-
     /** Flag that is used to allow/disallow the indefinite form of Length */
     private boolean indefiniteLengthAllowed;
 
@@ -70,9 +67,6 @@ public class Asn1Decoder implements ITLVBerDecoderMBean
     /** The maximum number of bytes that could be used to encode the Tag */
     private int maxTagLength;
 
-
-    // ~ Constructors
-    // -------------------------------------------------------------------------------
 
     /**
      * A public constructor of an Asn1 Decoder.
@@ -85,9 +79,6 @@ public class Asn1Decoder implements ITLVBerDecoderMBean
     }
 
 
-    // ~ Methods
-    // ------------------------------------------------------------------------------------
-
     /**
      * Treat the start of a TLV. It reads the tag and get its value.
      * 
@@ -99,10 +90,8 @@ public class Asn1Decoder implements ITLVBerDecoderMBean
      */
     private boolean treatTagStartState( ByteBuffer stream, IAsn1Container container )
     {
-
         if ( stream.hasRemaining() )
         {
-
             byte octet = stream.get();
 
             TLV tlv = new TLV( container.getNewTlvId() );
@@ -127,12 +116,12 @@ public class Asn1Decoder implements ITLVBerDecoderMBean
         }
         else
         {
-
             // The stream has been exhausted
             return END;
         }
     }
 
+    
     /**
      * Dump the current TLV tree
      * 
@@ -171,7 +160,6 @@ public class Asn1Decoder implements ITLVBerDecoderMBean
     private boolean isTLVDecoded( IAsn1Container container )
     {
         TLV current = container.getCurrentTLV();
-
         TLV parent = current.getParent();
 
         while ( parent != null )
@@ -196,6 +184,7 @@ public class Asn1Decoder implements ITLVBerDecoderMBean
         }
     }
 
+    
     /**
      * Treat the Length start. The tag has been decoded, so we have to deal with
      * the LENGTH, which can be multi-bytes.
@@ -209,7 +198,6 @@ public class Asn1Decoder implements ITLVBerDecoderMBean
      */
     private boolean treatLengthStartState( ByteBuffer stream, IAsn1Container container ) throws DecoderException
     {
-
         if ( stream.hasRemaining() )
         {
             byte octet = stream.get();
@@ -217,7 +205,6 @@ public class Asn1Decoder implements ITLVBerDecoderMBean
 
             if ( ( octet & TLV.LENGTH_LONG_FORM ) == 0 )
             {
-
                 // We don't have a long form. The Length of the Value part is
                 // given by this byte.
                 tlv.setLength( octet );
@@ -227,12 +214,11 @@ public class Asn1Decoder implements ITLVBerDecoderMBean
             }
             else if ( ( octet & TLV.LENGTH_EXTENSION_RESERVED ) != TLV.LENGTH_EXTENSION_RESERVED )
             {
-
                 int expectedLength = octet & TLV.LENGTH_SHORT_MASK;
 
                 if ( expectedLength > 4 )
                 {
-                    String msg = I18n.err( I18n.ERR_00005 );
+                    String msg = I18n.err( I18n.ERR_LENGTH_OVERFLOW_00005 );
                     LOG.error( msg );
                     throw new DecoderException( msg );
                 }
@@ -244,7 +230,7 @@ public class Asn1Decoder implements ITLVBerDecoderMBean
             }
             else
             {
-                String msg = I18n.err( I18n.ERR_00006 );
+                String msg = I18n.err( I18n.ERR_LENGTH_EXTENSION_RESERVED_00006 );
                 LOG.error( msg );
                 throw new DecoderException( msg );
             }
@@ -270,16 +256,13 @@ public class Asn1Decoder implements ITLVBerDecoderMBean
      */
     private boolean treatLengthPendingState( ByteBuffer stream, IAsn1Container container )
     {
-
         if ( stream.hasRemaining() )
         {
-
             TLV tlv = container.getCurrentTLV();
             int length = tlv.getLength();
 
             while ( tlv.getLengthBytesRead() < tlv.getLengthNbBytes() )
             {
-
                 byte octet = stream.get();
 
                 if ( IS_DEBUG )
@@ -364,7 +347,7 @@ public class Asn1Decoder implements ITLVBerDecoderMBean
         
         if ( tlv == null )
         {
-            String msg = I18n.err( I18n.ERR_00007 );
+            String msg = I18n.err( I18n.ERR_TLV_NULL_00007 );
             LOG.error( msg );
             throw new DecoderException( msg );
         }
@@ -404,8 +387,8 @@ public class Asn1Decoder implements ITLVBerDecoderMBean
             {
                 // The expected length is lower than the Value length of the
                 // current TLV. This is an error...
-                LOG.error( "tlv[{}, {}]", Integer.valueOf( expectedLength ), Integer.valueOf( currentLength ) );
-                throw new DecoderException( I18n.err( I18n.ERR_00008, Integer.valueOf( currentLength ), Integer.valueOf( expectedLength ) ) );
+                LOG.debug( "tlv[{}, {}]", Integer.valueOf( expectedLength ), Integer.valueOf( currentLength ) );
+                throw new DecoderException( I18n.err( I18n.ERR_VALUE_LENGTH_ABOVE_EXPECTED_LENGTH_00008, Integer.valueOf( currentLength ), Integer.valueOf( expectedLength ) ) );
             }
 
             // deal with the particular case where expected length equal
@@ -526,7 +509,6 @@ public class Asn1Decoder implements ITLVBerDecoderMBean
      */
     private boolean treatValueStartState( ByteBuffer stream, IAsn1Container container )
     {
-
         TLV currentTlv = container.getCurrentTLV();
 
         if ( TLV.isConstructed( currentTlv.getTag() ) )
@@ -537,7 +519,6 @@ public class Asn1Decoder implements ITLVBerDecoderMBean
         }
         else
         {
-
             int length = currentTlv.getLength();
             int nbBytes = stream.remaining();
 
@@ -573,7 +554,6 @@ public class Asn1Decoder implements ITLVBerDecoderMBean
      */
     private boolean treatValuePendingState( ByteBuffer stream, IAsn1Container container )
     {
-
         TLV currentTlv = container.getCurrentTLV();
 
         int length = currentTlv.getLength();
@@ -589,7 +569,6 @@ public class Asn1Decoder implements ITLVBerDecoderMBean
         }
         else
         {
-
             int remaining = length - currentLength;
             byte[] data = new byte[remaining];
             stream.get( data, 0, remaining );
@@ -639,11 +618,10 @@ public class Asn1Decoder implements ITLVBerDecoderMBean
                 }
                 else
                 {
-                    LOG.error( I18n.err( I18n.ERR_00009 ) );
-                    throw new DecoderException( I18n.err( I18n.ERR_00010 ) );
+                    LOG.error( I18n.err( I18n.ERR_MORE_TLV_EXPECTED_00009 ) );
+                    throw new DecoderException( I18n.err( I18n.ERR_TRUNCATED_PDU_00010 ) );
                 }
             }
-
         }
         else
         {
@@ -664,10 +642,8 @@ public class Asn1Decoder implements ITLVBerDecoderMBean
      */
     private String stateToString( int state )
     {
-
         switch ( state )
         {
-
             case TLVStateEnum.TAG_STATE_START:
                 return "TAG_STATE_START";
 
@@ -714,18 +690,16 @@ public class Asn1Decoder implements ITLVBerDecoderMBean
      */
     public void decode( ByteBuffer stream, IAsn1Container container ) throws DecoderException
     {
-
         /*
          * We have to deal with the current state. This is an infinite loop,
          * which will stop for any of these reasons : 
          * - STATE_END has been reached (hopefully, the most frequent case) 
          * - buffer is empty (it could happen) 
          * - STATE_OVERFLOW : bad situation ! The PDU may be a
-         * malevolous hand crafted ones, that try to "kill" our decoder. Whe
+         * malevolous hand crafted ones, that try to "kill" our decoder. We
          * must log it with all information to track back this case, and punish
          * the guilty !
          */
-
         boolean hasRemaining = stream.hasRemaining();
         
         // Increment the PDU size counter.
@@ -733,8 +707,7 @@ public class Asn1Decoder implements ITLVBerDecoderMBean
         
         if ( container.getDecodeBytes() > container.getMaxPDUSize() )
         {
-            String message = "The PDU current size (" + container.getDecodeBytes() +
-            ") exceeds the maximum allowed PDU size (" + container.getMaxPDUSize() +")";
+            String message = I18n.err( I18n.ERR_PDU_SIZE_TOO_LONG_00042, container.getDecodeBytes(), container.getMaxPDUSize() );
             LOG.error( message );
             throw new DecoderException( message );
         }
@@ -748,7 +721,6 @@ public class Asn1Decoder implements ITLVBerDecoderMBean
 
         while ( hasRemaining )
         {
-
             if ( IS_DEBUG )
             {
                 LOG.debug( "--- State = {} ---", stateToString( container.getState() ) );
@@ -767,7 +739,6 @@ public class Asn1Decoder implements ITLVBerDecoderMBean
 
             switch ( container.getState() )
             {
-
                 case TLVStateEnum.TAG_STATE_START:
                     // Reset the GrammarEnd flag first
                     container.grammarEndAllowed( false );
@@ -814,7 +785,7 @@ public class Asn1Decoder implements ITLVBerDecoderMBean
                 case TLVStateEnum.PDU_DECODED:
                     // We have to deal with the case where there are
                     // more bytes in the buffer, but the PDU has been decoded.
-                    LOG.warn( "The PDU has been fully decoded but there are still bytes in the buffer." );
+                    LOG.warn( I18n.err( I18n.ERR_REMAINING_BYTES_FOR_DECODED_PDU_00043 ) );
 
                     hasRemaining = false;
 
@@ -901,7 +872,7 @@ public class Asn1Decoder implements ITLVBerDecoderMBean
      * Tells if indefinite length form could be used for Length
      * 
      * @return Returns <code>true</code> if the current decoder support
-     *         indefinite length
+     * indefinite length
      */
     public boolean isIndefiniteLengthAllowed()
     {
@@ -911,7 +882,7 @@ public class Asn1Decoder implements ITLVBerDecoderMBean
 
 
     /**
-     * Set the maximul length for a Length
+     * Set the maximal length for a Length
      * 
      * @param maxLengthLength The lengthLength to set.
      * @throws DecoderException Thrown if the indefinite length is 
@@ -919,10 +890,9 @@ public class Asn1Decoder implements ITLVBerDecoderMBean
      */
     public void setMaxLengthLength( int maxLengthLength ) throws DecoderException
     {
-
         if ( ( this.indefiniteLengthAllowed ) && ( maxLengthLength > 126 ) )
         {
-            throw new DecoderException( I18n.err( I18n.ERR_00011 ) );
+            throw new DecoderException( I18n.err( I18n.ERR_LENGTH_TOO_LONG_FOR_DEFINITE_FORM_00011 ) );
         }
 
         this.maxLengthLength = maxLengthLength;

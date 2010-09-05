@@ -34,9 +34,6 @@ import org.apache.directory.shared.i18n.I18n;
  */
 public abstract class AbstractAsn1Object implements Asn1Object
 {
-    // ~ Instance fields
-    // ----------------------------------------------------------------------------
-
     /** The object's current length. It is used while decoding PDUs */
     private int currentLength;
 
@@ -44,17 +41,13 @@ public abstract class AbstractAsn1Object implements Asn1Object
     private int expectedLength;
 
     /** The encapsulating Object */
-    protected AbstractAsn1Object parent;
-
+    private AbstractAsn1Object parent;
     
     /** The identifier of the associated TLV */
     private int tlvId;
 
-    // ~ Methods
-    // ------------------------------------------------------------------------------------
-
     /**
-     * Constructor associated with a TLV indentifier. Used when 
+     * Constructor associated with a TLV identifier. Used when 
      * decoded a TLV, we create an association between the decode
      * Asn1Object and the TLV which is the encoded form.
      * 
@@ -122,10 +115,8 @@ public abstract class AbstractAsn1Object implements Asn1Object
     /**
      * Add a length to the object
      * 
-     * @param length
-     *            The length to add.
-     * @throws DecoderException
-     *             Thrown if the current length exceed the expected length
+     * @param length The length to add.
+     * @throws DecoderException Thrown if the current length exceed the expected length
      */
     public void addLength( int length ) throws DecoderException
     {
@@ -141,8 +132,7 @@ public abstract class AbstractAsn1Object implements Asn1Object
     /**
      * Set the expected length
      * 
-     * @param expectedLength
-     *            The expectedLength to set.
+     * @param expectedLength The expectedLength to set.
      */
     public void setExpectedLength( int expectedLength )
     {
@@ -153,8 +143,7 @@ public abstract class AbstractAsn1Object implements Asn1Object
     /**
      * Set the current length
      * 
-     * @param currentLength
-     *            The currentLength to set.
+     * @param currentLength The currentLength to set.
      */
     public void setCurrentLength( int currentLength )
     {
@@ -176,8 +165,7 @@ public abstract class AbstractAsn1Object implements Asn1Object
     /**
      * Set the parent
      * 
-     * @param parent
-     *            The parent to set.
+     * @param parent The parent to set.
      */
     public void setParent( AbstractAsn1Object parent )
     {
