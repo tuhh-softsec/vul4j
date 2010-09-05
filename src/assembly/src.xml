@@ -28,8 +28,6 @@
         <include>LICENSE*</include>
         <include>NOTICE*</include>
         <include>pom.xml</include>
-        <include>checkstyle.xml</include>
-        <include>file-header.txt</include>
         <include>RELEASE-NOTES*</include>
       </includes>
     </fileSet>
