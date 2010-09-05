@@ -32,24 +32,17 @@ package org.apache.directory.shared.asn1.codec;
 public class EncoderException extends Exception
 {
 
-    /**
-     * Declares the Serial Version Uid.
-     * 
-     * @see <a
-     *      href="http://c2.com/cgi/wiki?AlwaysDeclareSerialVersionUid">Always
-     *      Declare Serial Version Uid</a>
-     */
+    /** Declares the Serial Version Uid */
     private static final long serialVersionUID = 1L;
 
 
     /**
      * Creates a new instance of this exception with an useful message.
      * 
-     * @param pMessage
-     *            a useful message relating to the encoder specific error.
+     * @param message a useful message relating to the encoder specific error.
      */
-    public EncoderException(String pMessage)
+    public EncoderException( String message )
     {
-        super( pMessage );
+        super( message );
     }
 }

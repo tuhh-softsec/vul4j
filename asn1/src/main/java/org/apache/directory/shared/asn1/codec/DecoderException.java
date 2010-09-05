@@ -28,24 +28,16 @@ package org.apache.directory.shared.asn1.codec;
  */
 public class DecoderException extends Exception
 {
-
-    /**
-     * Declares the Serial Version Uid.
-     * 
-     * @see <a
-     *      href="http://c2.com/cgi/wiki?AlwaysDeclareSerialVersionUid">Always
-     *      Declare Serial Version Uid</a>
-     */
+    /** Declares the Serial Version Uid */
     private static final long serialVersionUID = 1L;
 
 
     /**
      * Creates a DecoderException
      * 
-     * @param message
-     *            A message with meaning to a human
+     * @param message A message with meaning to a human
      */
-    public DecoderException(String message)
+    public DecoderException( String message )
     {
         super( message );
     }
@@ -54,14 +46,11 @@ public class DecoderException extends Exception
     /**
      * Creates a DecoderException
      * 
-     * @param message
-     *            A message with meaning to a human
-     * @param cause
-     *            The Exception which caused the error
+     * @param message A message with meaning to a human
+     * @param cause The Exception which caused the error
      */
-    public DecoderException(String message, Throwable cause)
+    public DecoderException( String message, Throwable cause )
     {
         super( message, cause );
     }
-
 }

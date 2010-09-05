@@ -40,12 +40,10 @@ public interface Encoder
      * Objects here may just be <code>byte[]</code> or <code>String</code>s
      * depending on the implementation used.
      * 
-     * @param pObject
-     *            An object ot encode
+     * @param object An object ot encode
      * @return An "encoded" Object
-     * @throws EncoderException
-     *             an encoder exception is thrown if the encoder experiences a
-     *             failure condition during the encoding process.
+     * @throws EncoderException an encoder exception is thrown if the encoder experiences a
+     * failure condition during the encoding process.
      */
-    Object encode( Object pObject ) throws EncoderException;
+    Object encode( Object object ) throws EncoderException;
 }
