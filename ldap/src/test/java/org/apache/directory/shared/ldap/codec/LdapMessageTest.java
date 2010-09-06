@@ -28,8 +28,8 @@ import java.nio.ByteBuffer;
 
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
-import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.ber.Asn1Container;
+import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.ldap.message.LdapProtocolEncoder;
@@ -257,8 +257,9 @@ public class LdapMessageTest
                     default:
                         String res = de.getMessage();
 
-                        if ( res.equals( "ERR_BAD_TRANSITION_00002 Bad transition !" ) || res.startsWith( "Universal tag " )
-                            || res.startsWith( "ERR_TRUNCATED_PDU_00010 Truncated PDU" ) )
+                        if ( res.equals( "ERR_00002_BAD_TRANSITION Bad transition !" )
+                            || res.startsWith( "Universal tag " )
+                            || res.startsWith( "ERR_00010_TRUNCATED_PDU Truncated PDU" ) )
                         {
                             assertTrue( true );
                         }

@@ -30,8 +30,8 @@ import java.util.Map;
 
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
-import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.ber.Asn1Container;
+import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
@@ -316,7 +316,7 @@ public class BindRequestTest
         }
         catch ( DecoderException de )
         {
-            assertEquals( "ERR_BAD_TRANSITION_00002 Bad transition !", de.getMessage() );
+            assertEquals( "ERR_00002_BAD_TRANSITION Bad transition !", de.getMessage() );
             return;
         }
 

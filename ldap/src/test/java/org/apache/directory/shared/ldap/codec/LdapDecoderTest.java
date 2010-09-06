@@ -28,8 +28,8 @@ import java.nio.ByteBuffer;
 
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
-import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.ber.Asn1Container;
+import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.ber.tlv.TLVStateEnum;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.ldap.message.BindRequest;
@@ -270,7 +270,9 @@ public class LdapDecoderTest
         }
         catch ( DecoderException de )
         {
-            assertEquals( "ERR_VALUE_LENGTH_ABOVE_EXPECTED_LENGTH_00008 The current Value length 48 is above the expected length 47", de.getMessage() );
+            assertEquals(
+                "ERR_00008_VALUE_LENGTH_ABOVE_EXPECTED_LENGTH The current Value length 48 is above the expected length 47",
+                de.getMessage() );
             return;
         }
 
@@ -320,7 +322,7 @@ public class LdapDecoderTest
         }
         catch ( DecoderException de )
         {
-            assertEquals( "ERR_BAD_TRANSITION_00002 Bad transition !", de.getMessage() );
+            assertEquals( "ERR_00002_BAD_TRANSITION Bad transition !", de.getMessage() );
             return;
         }
 
@@ -371,7 +373,7 @@ public class LdapDecoderTest
         }
         catch ( DecoderException de )
         {
-            assertEquals( "ERR_BAD_TRANSITION_00002 Bad transition !", de.getMessage() );
+            assertEquals( "ERR_00002_BAD_TRANSITION Bad transition !", de.getMessage() );
             return;
         }
 
