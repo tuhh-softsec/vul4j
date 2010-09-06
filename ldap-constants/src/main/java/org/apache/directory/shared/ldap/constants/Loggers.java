@@ -19,6 +19,7 @@
  */
 package org.apache.directory.shared.ldap.constants;
 
+
 /**
  * An enum defining a list of dedicated loggers, used for debugging
  * purpose :
@@ -26,30 +27,31 @@ package org.apache.directory.shared.ldap.constants;
  * - (more to come)
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
 public enum Loggers
 {
-    ACI_LOG( "aci-logger" );
+    /** The dedicated logger for ACIs */
+    ACI_LOG("aci-logger");
 
+    /** The associated name */
     private String name;
-    
+
+
     /**
      * Creates a new instance of LdapSecurityConstants.
+     * @param name the associated name
      */
     private Loggers( String name )
     {
         this.name = name;
     }
-    
-    
+
+
     /**
-     * Return the name associated with the constant.
+     * eturn the name associated with the constant.
      */
     public String getName()
     {
         return name;
     }
-    
-    
 }

@@ -623,7 +623,7 @@ public enum I18n
     ERR_04486_VALUE_ALREADY_EXISTS( "ERR_04486_VALUE_ALREADY_EXISTS" ),
     
     // ldap-constants
-    ERR_05001( "ERR_05001" ),
+    ERR_05001_UNKNOWN_AUTHENT_LEVEL( "ERR_05001_UNKNOWN_AUTHENT_LEVEL" ),
 
     // ldap-converter
     ERR_06001( "ERR_06001" ),

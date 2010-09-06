@@ -19,6 +19,7 @@
  */
 package org.apache.directory.shared.ldap.constants;
 
+
 /**
  * Contains constants used for populating the supportedSASLMechanisms 
  * in the RootDSE.
@@ -27,13 +28,21 @@ package org.apache.directory.shared.ldap.constants;
  */
 public interface SupportedSaslMechanisms
 {
+    /** CRAM-MD5 mechanism */
     String CRAM_MD5 = "CRAM-MD5";
+
+    /** DIGEST_MD5-MD5 mechanism */
     String DIGEST_MD5 = "DIGEST-MD5";
+
+    /** GSSAPI mechanism */
     String GSSAPI = "GSSAPI";
+
+    /** PLAIN mechanism */
     String PLAIN = "PLAIN";
 
     /** Not a SASL JDK supported mechanism */
     String NTLM = "NTLM";
+
     /** Not a SASL JDK supported mechanism */
     String GSS_SPNEGO = "GSS-SPNEGO";
 }

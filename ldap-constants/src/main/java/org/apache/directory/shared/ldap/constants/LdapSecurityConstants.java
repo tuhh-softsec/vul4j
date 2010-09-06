@@ -19,6 +19,7 @@
  */
 package org.apache.directory.shared.ldap.constants;
 
+
 /**
  * An enum to store all the security constants used in the server
  *
@@ -26,37 +27,48 @@ package org.apache.directory.shared.ldap.constants;
  */
 public enum LdapSecurityConstants
 {
-    HASH_METHOD_SHA( "sha" ),
+    /** The SHA encryption method */
+    HASH_METHOD_SHA("sha"),
 
-    HASH_METHOD_SSHA( "ssha" ),
+    /** The Salted SHA encryption method */
+    HASH_METHOD_SSHA("ssha"),
 
-    HASH_METHOD_MD5( "md5" ),
+    /** The MD5 encryption method */
+    HASH_METHOD_MD5("md5"),
 
-    HASH_METHOD_SMD5( "smd5" ),
+    /** The Salter MD5 encryption method */
+    HASH_METHOD_SMD5("smd5"),
 
-    HASH_METHOD_CRYPT( "crypt" ),
+    /** The crypt encryption method */
+    HASH_METHOD_CRYPT("crypt"),
 
-    HASH_METHOD_SHA256( "sha-256" );
-    
+    /** The SHA-256 encryption method */
+    HASH_METHOD_SHA256("sha-256");
+
+    /** The associated name */
     private String name;
-    
+
+
     /**
      * Creates a new instance of LdapSecurityConstants.
+     * 
+     * @param name the associated name
      */
     private LdapSecurityConstants( String name )
     {
         this.name = name;
     }
 
+
     /**
-     * Return the name associated with the constant.
+     * @return the name associated with the constant.
      */
     public String getName()
     {
         return name;
     }
-    
-    
+
+
     /**
      * Get the associated constant from a string
      *
@@ -65,8 +77,13 @@ public enum LdapSecurityConstants
      */
     public static LdapSecurityConstants getAlgorithm( String name )
     {
-        String algorithm = ( name == null ? "" : name.toLowerCase() );
-        
+        String algorithm = "";
+
+        if ( name != null )
+        {
+            algorithm = name.toLowerCase();
+        }
+
         if ( HASH_METHOD_SHA.getName().equalsIgnoreCase( algorithm ) )
         {
             return HASH_METHOD_SHA;
@@ -86,17 +103,17 @@ public enum LdapSecurityConstants
         {
             return HASH_METHOD_SMD5;
         }
-        
+
         if ( HASH_METHOD_CRYPT.getName().equalsIgnoreCase( algorithm ) )
         {
             return HASH_METHOD_CRYPT;
         }
-        
+
         if ( HASH_METHOD_SHA256.getName().equalsIgnoreCase( algorithm ) )
         {
             return HASH_METHOD_SHA256;
         }
-        
+
         return null;
     }
 }

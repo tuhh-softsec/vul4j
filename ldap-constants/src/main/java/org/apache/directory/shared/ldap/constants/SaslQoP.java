@@ -19,6 +19,7 @@
  */
 package org.apache.directory.shared.ldap.constants;
 
+
 /**
  * Contains constants used for populating the SASL QoP 
  * in the RootDSE.
@@ -27,9 +28,15 @@ package org.apache.directory.shared.ldap.constants;
  */
 public interface SaslQoP
 {
+    /** The supported QOP attribute */
     String ATTRIBUTE = "supportedQoP";
 
+    /** Authentication only */
     String QOP_AUTH      = "auth" ;
+
+    /** Authentication with integrity protection */
     String QOP_AUTH_INT  = "auth-int" ;
+
+    /** Authentication with integrity and privacy protection */
     String QOP_AUTH_CONF = "auth-conf" ;
 }

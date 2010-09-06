@@ -20,51 +20,117 @@
 
 package org.apache.directory.shared.ldap.constants;
 
+
 /**
  * This class contains all the Ldap specific properties described in the JNDI API.
  * See http://java.sun.com/j2se/1.5.0/docs/guide/jndi/jndi-ldap-gl.html
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class JndiPropertyConstants
+public interface JndiPropertyConstants
 {
     // Pure JNDI properties
-    public static final String JNDI_BATCHSIZE = "java.naming.batchsize";
-    public static final String JNDI_FACTORY_CONTROL = "java.naming.factory.control";
-    public static final String JNDI_FACTORY_INITIAL = "java.naming.factory.initial";
-    public static final String JNDI_FACTORY_OBJECT = "java.naming.factory.object";
-    public static final String JNDI_FACTORY_STATE = "java.naming.factory.state";
-    public static final String JNDI_LANGUAGE = "java.naming.language";
-    public static final String JNDI_PROVIDER_URL = "java.naming.provider.url";
-    public static final String JNDI_REFERRAL = "java.naming.referral";
-    public static final String JNDI_SECURITY_AUTHENTICATION = "java.naming.security.authentication";
-    public static final String JNDI_SECURITY_CREDENTIALS = "java.naming.security.credentials";
-    public static final String JNDI_SECURITY_PRINCIPAL = "java.naming.security.principal";
-    public static final String JNDI_SECURITY_PROTOCOL = "java.naming.security.protocol";
-    
+    /** Batch size of search results returned */
+    String JNDI_BATCHSIZE = "java.naming.batchsize";
+
+    /** List of FQCNs of the control factory classes */
+    String JNDI_FACTORY_CONTROL = "java.naming.factory.control";
+
+    /** FQCN of the factory creating the InitialContext */
+    String JNDI_FACTORY_INITIAL = "java.naming.factory.initial";
+
+    /** List of FQCNs of the Object factory */
+    String JNDI_FACTORY_OBJECT = "java.naming.factory.object";
+
+    /** List of FQCNs of the state factory */
+    String JNDI_FACTORY_STATE = "java.naming.factory.state";
+
+    /** The Language to use */
+    String JNDI_LANGUAGE = "java.naming.language";
+
+    /** The list of URL pointing to a LDAP server */
+    String JNDI_PROVIDER_URL = "java.naming.provider.url";
+
+    /** Tells how the referral should be handled */
+    String JNDI_REFERRAL = "java.naming.referral";
+
+    /** The Authentication mechanism */
+    String JNDI_SECURITY_AUTHENTICATION = "java.naming.security.authentication";
+
+    /** The credentials */
+    String JNDI_SECURITY_CREDENTIALS = "java.naming.security.credentials";
+
+    /** The Principal */
+    String JNDI_SECURITY_PRINCIPAL = "java.naming.security.principal";
+
+    /** The security protocol to use */
+    String JNDI_SECURITY_PROTOCOL = "java.naming.security.protocol";
+
     // Ldap specific properties
-    public static final String JNDI_LDAP_ATTRIBUTES_BINARY = "java.naming.ldap.attributes.binary";
-    public static final String JNDI_LDAP_CONTROL_CONNECT = "java.naming.ldap.control.connect";
-    public static final String JNDI_LDAP_DELETE_RDN = "java.naming.ldap.deleteRDN";
-    public static final String JNDI_LDAP_DAP_DEREF_ALIASES = "java.naming.ldap.derefAliases";
-    public static final String JNDI_FACTORY_SOCKET = "java.naming.ldap.factory.socket";
-    public static final String JNDI_LDAP_REF_SEPARATOR = "java.naming.ldap.ref.separator";
-    public static final String JNDI_LDAP_REFERRAL_LIMIT = "java.naming.ldap.referral.limit";
-    public static final String JNDI_LDAP_TYPES_ONLY = "java.naming.ldap.typesOnly";
-    public static final String JNDI_LDAP_VERSION = "java.naming.ldap.version";
-    
+    /** The list of binary attributes */
+    String JNDI_LDAP_ATTRIBUTES_BINARY = "java.naming.ldap.attributes.binary";
+
+    /** The controls to send when connectiong */
+    String JNDI_LDAP_CONTROL_CONNECT = "java.naming.ldap.control.connect";
+
+    /** Tells if the old RDN must be deleted when doing a MODDN */
+    String JNDI_LDAP_DELETE_RDN = "java.naming.ldap.deleteRDN";
+
+    /** Tells if and how we dereference aliases */
+    String JNDI_LDAP_DAP_DEREF_ALIASES = "java.naming.ldap.derefAliases";
+
+    /** The FQCN of the socket factory to use to connect to the server */
+    String JNDI_FACTORY_SOCKET = "java.naming.ldap.factory.socket";
+
+    /** The separator to use when dealing with RefAddr */
+    String JNDI_LDAP_REF_SEPARATOR = "java.naming.ldap.ref.separator";
+
+    /** The maximum number of referral to follow in a chain of referrals */
+    String JNDI_LDAP_REFERRAL_LIMIT = "java.naming.ldap.referral.limit";
+
+    /** tells that we want the attributeTypes only to be returned */
+    String JNDI_LDAP_TYPES_ONLY = "java.naming.ldap.typesOnly";
+
+    /** Specifies the LDAP version to use */
+    String JNDI_LDAP_VERSION = "java.naming.ldap.version";
+
     // SASL properties
-    public static final String JNDI_SASL_AUTHORIZATION_ID = "java.naming.security.sasl.authorizationId";
-    public static final String JNDI_SASL_REALM = "java.naming.security.sasl.realm";
-    public static final String JNDI_SASL_CALLBACK = "java.naming.security.sasl.callback";
-    public static final String JNDI_SASL_QOP = "javax.security.sasl.qop";
-    public static final String JNDI_SASL_STRENGTH = "javax.security.sasl.strength";
-    public static final String JNDI_SASL_MAX_BUFFER = "javax.security.sasl.maxbuffer";
-    public static final String JNDI_SASL_AUTHENTICATION = "javax.security.sasl.server.authentication";
-    public static final String JNDI_SASL_POLICY_FORWARD = "javax.security.sasl.policy.forward";
-    public static final String JNDI_SASL_POLICY_CREDENTIALS = "javax.security.sasl.policy.credentials";
-    public static final String JNDI_SASL_POLICY_NO_PLAIN_TEXT = "javax.security.sasl.policy.noplaintext";
-    public static final String JNDI_SASL_POLICY_NO_ACTIVE = "javax.security.sasl.policy.noactive";
-    public static final String JNDI_SASL_POLICY_NO_DICTIONARY = "javax.security.sasl.policy.nodictionary";
-    public static final String JNDI_SASL_POLICY_NO_ANONYMOUS = "javax.security.sasl.policy.noanonymous";
+    /** The SASL authorization ID */
+    String JNDI_SASL_AUTHORIZATION_ID = "java.naming.security.sasl.authorizationId";
+
+    /** The SASL Realm */
+    String JNDI_SASL_REALM = "java.naming.security.sasl.realm";
+
+    /** An instance of CallbackHandler to use when required */
+    String JNDI_SASL_CALLBACK = "java.naming.security.sasl.callback";
+
+    /** The SASL Quality Of Protection value */
+    String JNDI_SASL_QOP = "javax.security.sasl.qop";
+
+    /** The cipher strength */
+    String JNDI_SASL_STRENGTH = "javax.security.sasl.strength";
+
+    /** The maximum size of the receive buffer */
+    String JNDI_SASL_MAX_BUFFER = "javax.security.sasl.maxbuffer";
+
+    /** Tells if the the server must authenticate the client */
+    String JNDI_SASL_AUTHENTICATION = "javax.security.sasl.server.authentication";
+
+    /** Tells if the server must support forward secrecy */
+    String JNDI_SASL_POLICY_FORWARD = "javax.security.sasl.policy.forward";
+
+    /** Tells if the server must require some credentials */
+    String JNDI_SASL_POLICY_CREDENTIALS = "javax.security.sasl.policy.credentials";
+
+    /** Tells if the server allow Plain text mechanism */
+    String JNDI_SASL_POLICY_NO_PLAIN_TEXT = "javax.security.sasl.policy.noplaintext";
+
+    /** Tells if the SASL mechanism is protected against active attacks */
+    String JNDI_SASL_POLICY_NO_ACTIVE = "javax.security.sasl.policy.noactive";
+
+    /** Tells if the SASL mechanism is protected against dictionary attacks */
+    String JNDI_SASL_POLICY_NO_DICTIONARY = "javax.security.sasl.policy.nodictionary";
+
+    /** Tells if the SASL mechanism accept or not anonymous connections */
+    String JNDI_SASL_POLICY_NO_ANONYMOUS = "javax.security.sasl.policy.noanonymous";
 }

@@ -19,6 +19,7 @@
  */
 package org.apache.directory.shared.ldap.constants;
 
+
 import org.apache.directory.shared.i18n.I18n;
 
 
@@ -30,6 +31,7 @@ import org.apache.directory.shared.i18n.I18n;
  * <li>SIMPLE : Simple authentication</li>
  * <li>STRONG : SASL or external authentication</li>
  * <li>UNAUTHENT>A special case when just doing some auditing</li>
+ * </ul>
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
@@ -38,37 +40,45 @@ public enum AuthenticationLevel
     /**
      * No authentication (anonymous access)
      */
-    NONE( 0, "none" ),
+    NONE(0, "none"),
 
     /**
      * Simple authentication (bound with plain-text credentials)
      */
-    SIMPLE( 1, "simple" ),
+    SIMPLE(1, "simple"),
 
     /**
      * Strong authentication (bound with encrypted credentials)
      */
-    STRONG( 2, "strong" ),
-    
+    STRONG(2, "strong"),
+
     /**
      * Unauthentication, if the BIND contains a DN but no credentials
      */
-    UNAUTHENT( 3, "unauthent" );
-    
+    UNAUTHENT(3, "unauthent");
+
     /** The internal numeric value */
     private int level;
-    
+
     /** The level name */
     private final String name;
 
+
+    /**
+     * Creates a new instance of AuthenticationLevel.
+     *
+     * @param level The level
+     * @param name The associated name
+     */
     private AuthenticationLevel( int level, String name )
     {
         this.level = level;
         this.name = name;
     }
 
+
     /**
-     * Returns the integer value of this level (greater value, stronger level).
+     * @return the integer value of this level (greater value, stronger level).
      */
     public int getLevel()
     {
@@ -77,7 +87,7 @@ public enum AuthenticationLevel
 
 
     /**
-     * Returns the name of this level.
+     * @return the name of this level.
      */
     public String getName()
     {
@@ -103,18 +113,22 @@ public enum AuthenticationLevel
      */
     public static AuthenticationLevel getLevel( int val )
     {
-        switch( val )
+        switch ( val )
         {
-            case 0: return NONE;
-            
-            case 1: return SIMPLE;
-            
-            case 2: return STRONG;
-            
-            case 3: return UNAUTHENT;
-            
+            case 0:
+                return NONE;
+
+            case 1:
+                return SIMPLE;
+
+            case 2:
+                return STRONG;
+
+            case 3:
+                return UNAUTHENT;
+
             default:
-                throw new IllegalArgumentException( I18n.err(I18n.ERR_05001, val ) );
+                throw new IllegalArgumentException( I18n.err( I18n.ERR_05001_UNKNOWN_AUTHENT_LEVEL, val ) );
         }
     }
 }
