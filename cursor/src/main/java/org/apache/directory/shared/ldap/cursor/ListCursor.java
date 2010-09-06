@@ -71,6 +71,7 @@ public class ListCursor<E> extends AbstractCursor<E>
         {
             list = Collections.emptyList();
         }
+
         if ( ( start < 0 ) || ( start > list.size() ) )
         {
             throw new IllegalArgumentException( I18n.err( I18n.ERR_02005_START_INDEX_OUT_OF_RANGE, start ) );
@@ -229,8 +230,7 @@ public class ListCursor<E> extends AbstractCursor<E>
 
 
     /**
-     * @throws IllegalStateException if the underlying list is not sorted
-     * and/or a comparator is not provided.
+     * {@inheritDoc}
      */
     public void before( E element ) throws Exception
     {
@@ -258,8 +258,7 @@ public class ListCursor<E> extends AbstractCursor<E>
             }
         }
 
-        // TODO might want to add some code here to utilize the comparator
-        throw new UnsupportedOperationException( I18n.err( I18n.ERR_02008 ) );
+        throw new UnsupportedOperationException( I18n.err( I18n.ERR_02008_LIST_MAY_BE_SORTED ) );
     }
 
 
@@ -292,8 +291,7 @@ public class ListCursor<E> extends AbstractCursor<E>
             }
         }
 
-        // TODO might want to add some code here to utilize the comparator
-        throw new UnsupportedOperationException( I18n.err( I18n.ERR_02008 ) );
+        throw new UnsupportedOperationException( I18n.err( I18n.ERR_02008_LIST_MAY_BE_SORTED ) );
     }
 
 
@@ -327,6 +325,7 @@ public class ListCursor<E> extends AbstractCursor<E>
         if ( list.size() > 0 )
         {
             index = start;
+
             return true;
         }
 
@@ -344,6 +343,7 @@ public class ListCursor<E> extends AbstractCursor<E>
         if ( list.size() > 0 )
         {
             index = end - 1;
+
             return true;
         }
 
@@ -358,6 +358,7 @@ public class ListCursor<E> extends AbstractCursor<E>
     public boolean isFirst() throws Exception
     {
         checkNotClosed( "isFirst()" );
+
         return list.size() > 0 && index == start;
     }
 
@@ -369,6 +370,7 @@ public class ListCursor<E> extends AbstractCursor<E>
     public boolean isLast() throws Exception
     {
         checkNotClosed( "isLast()" );
+
         return list.size() > 0 && index == end - 1;
     }
 
@@ -412,6 +414,7 @@ public class ListCursor<E> extends AbstractCursor<E>
         if ( index - 1 >= start )
         {
             index--;
+
             return true;
         }
 
@@ -419,6 +422,7 @@ public class ListCursor<E> extends AbstractCursor<E>
         if ( index <= start )
         {
             index = -1;
+
             return false;
         }
 
@@ -439,23 +443,26 @@ public class ListCursor<E> extends AbstractCursor<E>
         checkNotClosed( "next()" );
 
         // if parked at -1 we advance to the start index and return true
-        if ( list.size() > 0 && index == -1 )
+        if ( ( list.size() > 0 ) && ( index == -1 ) )
         {
             index = start;
+
             return true;
         }
 
         // if the index plus one is less than the end then increment and return true
-        if ( list.size() > 0 && index + 1 < end )
+        if ( ( list.size() > 0 ) && ( index + 1 < end ) )
         {
             index++;
+
             return true;
         }
 
         // if the index plus one is equal to the end then increment and return false
-        if ( list.size() > 0 && index + 1 == end )
+        if ( ( list.size() > 0 ) && ( index + 1 == end ) )
         {
             index++;
+
             return false;
         }
 
@@ -475,7 +482,7 @@ public class ListCursor<E> extends AbstractCursor<E>
     {
         checkNotClosed( "get()" );
 
-        if ( index < start || index >= end )
+        if ( ( index < start ) || ( index >= end ) )
         {
             throw new IOException( I18n.err( I18n.ERR_02009_CURSOR_NOT_POSITIONED ) );
         }

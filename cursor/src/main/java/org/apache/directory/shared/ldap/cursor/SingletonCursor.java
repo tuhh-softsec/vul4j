@@ -32,9 +32,13 @@ import org.apache.directory.shared.i18n.I18n;
  */
 public class SingletonCursor<E> extends AbstractCursor<E>
 {
-    /** A flag set to true to a*/
+    /** A flag to tell if the cursor is set before the first element */
     private boolean beforeFirst = true;
+
+    /** A flag to tell if the cursor is set after the last element */
     private boolean afterLast;
+
+    /** A flag to tell if the cursor is on the element */
     private boolean onSingleton;
 
     /** The comparator used for this cursor. */
@@ -57,7 +61,7 @@ public class SingletonCursor<E> extends AbstractCursor<E>
 
     /**
      * Creates a new instance of SingletonCursor, with its associated
-     * conmparator
+     * comparator
      *
      * @param singleton The unique element to store into this cursor
      * @param comparator The associated comparator
@@ -133,7 +137,7 @@ public class SingletonCursor<E> extends AbstractCursor<E>
      */
     public void beforeFirst() throws Exception
     {
-        checkNotClosed( "()" );
+        checkNotClosed( "beforeFirst" );
         beforeFirst = true;
         afterLast = false;
         onSingleton = false;
@@ -145,7 +149,7 @@ public class SingletonCursor<E> extends AbstractCursor<E>
      */
     public void afterLast() throws Exception
     {
-        checkNotClosed( "()" );
+        checkNotClosed( "afterLast" );
         beforeFirst = false;
         afterLast = true;
         onSingleton = false;
@@ -157,10 +161,11 @@ public class SingletonCursor<E> extends AbstractCursor<E>
      */
     public boolean first() throws Exception
     {
-        checkNotClosed( "()" );
+        checkNotClosed( "first" );
         beforeFirst = false;
         onSingleton = true;
         afterLast = false;
+
         return true;
     }
 
@@ -170,10 +175,11 @@ public class SingletonCursor<E> extends AbstractCursor<E>
      */
     public boolean last() throws Exception
     {
-        checkNotClosed( "()" );
+        checkNotClosed( "last" );
         beforeFirst = false;
         onSingleton = true;
         afterLast = false;
+
         return true;
     }
 
@@ -184,7 +190,8 @@ public class SingletonCursor<E> extends AbstractCursor<E>
     @Override
     public boolean isFirst() throws Exception
     {
-        checkNotClosed( "()" );
+        checkNotClosed( "isFirst" );
+
         return onSingleton;
     }
 
@@ -195,7 +202,8 @@ public class SingletonCursor<E> extends AbstractCursor<E>
     @Override
     public boolean isLast() throws Exception
     {
-        checkNotClosed( "()" );
+        checkNotClosed( "isLast" );
+
         return onSingleton;
     }
 
@@ -206,7 +214,8 @@ public class SingletonCursor<E> extends AbstractCursor<E>
     @Override
     public boolean isAfterLast() throws Exception
     {
-        checkNotClosed( "()" );
+        checkNotClosed( "isAfterLast" );
+
         return afterLast;
     }
 
@@ -217,7 +226,8 @@ public class SingletonCursor<E> extends AbstractCursor<E>
     @Override
     public boolean isBeforeFirst() throws Exception
     {
-        checkNotClosed( "()" );
+        checkNotClosed( "isBeforeFirst" );
+
         return beforeFirst;
     }
 
@@ -227,7 +237,7 @@ public class SingletonCursor<E> extends AbstractCursor<E>
      */
     public boolean previous() throws Exception
     {
-        checkNotClosed( "()" );
+        checkNotClosed( "previous" );
 
         if ( beforeFirst )
         {
@@ -239,6 +249,7 @@ public class SingletonCursor<E> extends AbstractCursor<E>
             beforeFirst = false;
             onSingleton = true;
             afterLast = false;
+
             return true;
         }
 
@@ -246,6 +257,7 @@ public class SingletonCursor<E> extends AbstractCursor<E>
         beforeFirst = true;
         onSingleton = false;
         afterLast = false;
+
         return false;
     }
 
@@ -255,13 +267,14 @@ public class SingletonCursor<E> extends AbstractCursor<E>
      */
     public boolean next() throws Exception
     {
-        checkNotClosed( "()" );
+        checkNotClosed( "next" );
 
         if ( beforeFirst )
         {
             beforeFirst = false;
             onSingleton = true;
             afterLast = false;
+
             return true;
         }
 
@@ -274,6 +287,7 @@ public class SingletonCursor<E> extends AbstractCursor<E>
         beforeFirst = false;
         onSingleton = false;
         afterLast = true;
+
         return false;
     }
 
@@ -283,7 +297,7 @@ public class SingletonCursor<E> extends AbstractCursor<E>
      */
     public E get() throws Exception
     {
-        checkNotClosed( "()" );
+        checkNotClosed( "get" );
 
         if ( onSingleton )
         {
