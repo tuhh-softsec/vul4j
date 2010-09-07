@@ -45,7 +45,7 @@ mvn archetype:generate
     [...]
     <plugins>
        <plugin>
-          <groupId>net.webassembletool</groupId>
+          <groupId>net.sourceforge.webassembletool.maven</groupId>
           <artifactId>webassembletool-staticassembly-plugin</artifactId>
        </plugin>
        [...]
@@ -53,16 +53,16 @@ mvn archetype:generate
 ]]></source>
 
 			<p>
-				And add ESIGate repository
+				And add ESIGate repository as plugin repository
 				</p>
 			<source><![CDATA[
-<repositories>
-    <repository>
-       <id>webassembletool-repository</id>
-       <name>Website Assembling Toolkit repository</name>
-       <url>http://webassembletool.sourceforge.net/maven/repository</url>
-    </repository>
-</repositories>
+<pluginRepositories>
+    <pluginRepository>
+        <id>esigate-repository</id>
+        <name>ESIGate repository</name>
+        <url>http://www.esigate.org/maven/repository</url>
+    </pluginRepository>
+</pluginRepositories>
 ]]></source>
 
 			<p>
