@@ -56,6 +56,8 @@ public class ObjectClassHolder extends SchemaElementImpl
 
     /**
      * Create an instance of ObjectClass element
+     * 
+     * @param OID the OjectClass OID
      */
     public ObjectClassHolder( String oid )
     {
@@ -145,6 +147,7 @@ public class ObjectClassHolder extends SchemaElementImpl
      * 
      * @param schemaName The name of the schema file containing this objectClass
      * @return A ldif formatted string
+     * @throws LdapException If something went wrong
      */
     public String toLdif( String schemaName ) throws LdapException
     {
@@ -196,7 +199,7 @@ public class ObjectClassHolder extends SchemaElementImpl
 
 
     /**
-     * Return a String representing this ObjectClass.
+     * @return a String representing this ObjectClass.
      */
     public String toString()
     {
@@ -204,14 +207,18 @@ public class ObjectClassHolder extends SchemaElementImpl
     }
 
 
-    /* (non-Javadoc)
-     * @see org.apache.directory.shared.converter.schema.SchemaElementImpl#dnToLdif(java.lang.String)
+    /**
+     * Transform a schema name to a DN pointing to the correct position in the DIT
+     * 
+     * @param schemaName The schema name
+     * @return the DN associated with this schema in the DIT
      */
     public String dnToLdif( String schemaName ) throws LdapException
     {
         StringBuilder sb = new StringBuilder();
 
-        String dn = "m-oid=" + oid + ", " + SchemaConstants.OBJECT_CLASSES_PATH + ", cn=" + RDN.escapeValue( schemaName ) + ", ou=schema";
+        String dn = "m-oid=" + oid + ", " + SchemaConstants.OBJECT_CLASSES_PATH + ", cn="
+            + RDN.escapeValue( schemaName ) + ", ou=schema";
 
         // First dump the DN only
         Entry entry = new DefaultEntry( new DN( dn ) );

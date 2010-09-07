@@ -19,14 +19,17 @@
  */
 package org.apache.directory.shared.converter.schema;
 
+
 /**
  * An exception thrown if we have an error while parsing a schema file.
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 public class ParserException extends Exception
 {
+    /** The serial Version UID */
     private static final long serialVersionUID = 1L;
-    
+
+
     /**
      * A strandard constuctor
      */
@@ -34,6 +37,7 @@ public class ParserException extends Exception
     {
         super();
     }
+
 
     /**
      * A constructor with a message

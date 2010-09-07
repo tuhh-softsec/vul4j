@@ -69,25 +69,16 @@ public class AttributeTypeHolder extends SchemaElementImpl
     private UsageEnum usage = UsageEnum.USER_APPLICATIONS;
 
 
-    // ------------------------------------------------------------------------
-    // C O N S T R U C T O R S
-    // ------------------------------------------------------------------------
-
     /**
      * Create an instance of an attributeType
      * 
-     * @param oid
-     *            The attributeType's OID
+     * @param oid The attributeType's OID
      */
     public AttributeTypeHolder( String oid )
     {
         this.oid = oid;
     }
 
-
-    // ------------------------------------------------------------------------
-    // Accessors and mutators
-    // ------------------------------------------------------------------------
 
     /**
      * Tells if the attribute is single-valued
@@ -103,8 +94,7 @@ public class AttributeTypeHolder extends SchemaElementImpl
     /**
      * Set the attributeType singleValue flag
      * 
-     * @param singleValue
-     *            The value for this flag
+     * @param singleValue The value for this flag
      */
     public void setSingleValue( boolean singleValue )
     {
@@ -126,8 +116,7 @@ public class AttributeTypeHolder extends SchemaElementImpl
     /**
      * Set the attributeType collective flag
      * 
-     * @param collective
-     *            The value for this flag
+     * @param collective The value for this flag
      */
     public void setCollective( boolean collective )
     {
@@ -136,7 +125,7 @@ public class AttributeTypeHolder extends SchemaElementImpl
 
 
     /**
-     * Tellse if the attributeType is mutable or not
+     * Tells if the attributeType is mutable or not
      * 
      * @return True if the attributeType is immutable, false otherwise
      */
@@ -149,8 +138,7 @@ public class AttributeTypeHolder extends SchemaElementImpl
     /**
      * Set the attributeType noUserModification flag
      * 
-     * @param noUserModification
-     *            The value for this flag
+     * @param noUserModification The value for this flag
      */
     public void setNoUserModification( boolean noUserModification )
     {
@@ -172,8 +160,7 @@ public class AttributeTypeHolder extends SchemaElementImpl
     /**
      * Set the attributeType's superior
      * 
-     * @param superior
-     *            The attributeType's superior
+     * @param superior The attributeType's superior
      */
     public void setSuperior( String superior )
     {
@@ -195,8 +182,7 @@ public class AttributeTypeHolder extends SchemaElementImpl
     /**
      * Set the equality Matching Rule
      * 
-     * @param equality
-     *            The equality Matching Rule
+     * @param equality The equality Matching Rule
      */
     public void setEquality( String equality )
     {
@@ -218,8 +204,7 @@ public class AttributeTypeHolder extends SchemaElementImpl
     /**
      * Set the ordering Matching Rule
      * 
-     * @param ordering
-     *            The ordering Matching Rule
+     * @param ordering The ordering Matching Rule
      */
     public void setOrdering( String ordering )
     {
@@ -241,8 +226,7 @@ public class AttributeTypeHolder extends SchemaElementImpl
     /**
      * Set the substring Matching Rule
      * 
-     * @param substr
-     *            The substring Matching Rule
+     * @param substr The substring Matching Rule
      */
     public void setSubstr( String substr )
     {
@@ -264,8 +248,7 @@ public class AttributeTypeHolder extends SchemaElementImpl
     /**
      * Set the attributeType's syntax
      * 
-     * @param syntax
-     *            The attributeType's syntax
+     * @param syntax The attributeType's syntax
      */
     public void setSyntax( String syntax )
     {
@@ -287,8 +270,7 @@ public class AttributeTypeHolder extends SchemaElementImpl
     /**
      * Set the attributeType's usage
      * 
-     * @param usage
-     *            The attributeType's usage
+     * @param usage The attributeType's usage
      */
     public void setUsage( UsageEnum usage )
     {
@@ -310,8 +292,7 @@ public class AttributeTypeHolder extends SchemaElementImpl
     /**
      * Set the attributeType's syntax length
      * 
-     * @param oidLen
-     *            The attributeType's syntax length
+     * @param oidLen The attributeType's syntax length
      */
     public void setOidLen( int oidLen )
     {
@@ -322,9 +303,9 @@ public class AttributeTypeHolder extends SchemaElementImpl
     /**
      * Convert this attributeType to a Ldif string
      * 
-     * @param schemaName
-     *            The name of the schema file containing this attributeType
+     * @param schemaName The name of the schema file containing this attributeType
      * @return A ldif formatted string
+     * @throws LdapException If something went wrong
      */
     public String toLdif( String schemaName ) throws LdapException
     {
@@ -359,7 +340,7 @@ public class AttributeTypeHolder extends SchemaElementImpl
         // The value syntax
         if ( syntax != null )
         {
-            sb.append( "m-syntax: " ).append( syntax ).append(  '\n'  );
+            sb.append( "m-syntax: " ).append( syntax ).append( '\n' );
 
             if ( oidLen != -1 )
             {
@@ -403,7 +384,7 @@ public class AttributeTypeHolder extends SchemaElementImpl
 
 
     /**
-     * Return a String representing this AttributeType.
+     * @return a String representing this AttributeType.
      */
     public String toString()
     {
@@ -411,14 +392,18 @@ public class AttributeTypeHolder extends SchemaElementImpl
     }
 
 
-    /* (non-Javadoc)
-     * @see org.apache.directory.shared.converter.schema.SchemaElementImpl#dnToLdif(java.lang.String)
+    /**
+     * Transform a schema name to a DN pointing to the correct position in the DIT
+     * 
+     * @param schemaName The schema name
+     * @return the DN associated with this schema in the DIT
      */
     public String dnToLdif( String schemaName ) throws LdapException
     {
         StringBuilder sb = new StringBuilder();
 
-        String dn = "m-oid=" + oid + ", " + SchemaConstants.ATTRIBUTES_TYPE_PATH + ", cn=" + RDN.escapeValue( schemaName ) + ", ou=schema";
+        String dn = "m-oid=" + oid + ", " + SchemaConstants.ATTRIBUTES_TYPE_PATH + ", cn="
+            + RDN.escapeValue( schemaName ) + ", ou=schema";
 
         // First dump the DN only
         Entry entry = new DefaultEntry( new DN( dn ) );

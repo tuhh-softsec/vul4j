@@ -19,6 +19,7 @@
  */
 package org.apache.directory.shared.converter.schema;
 
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +30,7 @@ import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.ldif.LdifUtils;
 import org.apache.directory.shared.ldap.util.StringTools;
+
 
 /**
  * An abstract SchemaElement implementation. It contains shared
@@ -41,59 +43,65 @@ public abstract class SchemaElementImpl implements SchemaElement
 {
     /** The schema element oid */
     protected String oid;
-    
+
     /** The schema element description */
     protected String description;
-    
+
     /** The list of names for this schemaElements */
     protected List<String> names = new ArrayList<String>();
 
     /** The obsolete flag */
     protected boolean obsolete = false;
-    
+
     /** The optional list of extensions */
     protected List<String> extensions = new ArrayList<String>();
-    
+
+
     /**
-     * @see SchemaElement#isObsolete()
+     * {@inheritDoc}
      */
     public boolean isObsolete()
     {
         return obsolete;
     }
 
+
     /**
-     * @see SchemaElement#setObsolete(boolean)
+     * {@inheritDoc}
      */
     public void setObsolete( boolean obsolete )
     {
         this.obsolete = obsolete;
     }
 
+
     /**
-     * @see SchemaElement#getOid()
+     * {@inheritDoc}
      */
     public String getOid()
     {
         return oid;
     }
-    
+
+
     /**
-     * @see SchemaElement#getDescription()
+     * {@inheritDoc}
      */
     public String getDescription()
     {
         return description;
     }
-    
+
+
     /**
-     * @see SchemaElement#setDescription(String)
+     * {@inheritDoc}
      */
     public void setDescription( String description )
     {
         this.description = description;
     }
-    
+
+
     /**
      * @see SchemaElement#getNames()
      */
@@ -101,31 +109,35 @@ public abstract class SchemaElementImpl implements SchemaElement
     {
         return names;
     }
-    
+
+
     /**
-     * @see SchemaElement#setNames(List)
+     * {@inheritDoc}
      */
     public void setNames( List<String> names )
     {
         this.names = names;
     }
 
+
     /**
-     * @see SchemaElement#getExtensions()
+     * {@inheritDoc}
      */
     public List<String> getExtensions()
     {
         return extensions;
     }
 
+
     /**
-     * @see SchemaElement#setExtensions(List)
+     * {@inheritDoc}
      */
     public void setExtensions( List<String> extensions )
     {
         this.extensions = extensions;
     }
-    
+
+
     /**
      * @return The OID as a Ldif line 
      */
@@ -133,9 +145,11 @@ public abstract class SchemaElementImpl implements SchemaElement
     {
         return "m-oid: " + oid + '\n';
     }
-    
+
+
     /**
      * @return the Names as Ldif lines
+     * @throws LdapException If the conversion goes wrong
      */
     private String nameToLdif() throws LdapException
     {
@@ -147,20 +161,22 @@ public abstract class SchemaElementImpl implements SchemaElement
         {
             Entry entry = new DefaultEntry();
             EntryAttribute attribute = new DefaultEntryAttribute( "m-name" );
-            
-            for ( String name:names )
+
+            for ( String name : names )
             {
                 attribute.add( name );
             }
-            
+
             entry.put( attribute );
-            
+
             return LdifUtils.convertAttributesToLdif( entry );
         }
     }
-    
+
+
     /**
      * @return The description as a ldif line
+     * @throws LdapException If the conversion goes wrong
      */
     private String descToLdif() throws LdapException
     {
@@ -174,45 +190,60 @@ public abstract class SchemaElementImpl implements SchemaElement
             EntryAttribute attribute = new DefaultEntryAttribute( "m-description", description );
 
             entry.put( attribute );
-            
+
             return LdifUtils.convertAttributesToLdif( entry );
         }
     }
-    
+
+
     /**
-     * @return The dn as a ldif line
+     * Transform a Schema Element to a LDIF String
+     * 
+     * @param schemaName The schema element to transform
+     * @return The Schema Element as a ldif String
+     * @throws LdapException If the conversion goes wrong
      */
     public abstract String dnToLdif( String schemaName ) throws LdapException;
-    
+
+
     /**
      * Return the extensions formated as Ldif lines
-     * @param ID The attributeId : can be m-objectClassExtension or
-     * m-attributeTypeExtension
      * 
+     * @param id The attributeId : can be m-objectClassExtension or
+     * m-attributeTypeExtension
      * @return The extensions formated as ldif lines
      * @throws LdapException If the conversion goes wrong
      */
-    protected String extensionsToLdif( String ID ) throws LdapException
+    protected String extensionsToLdif( String id ) throws LdapException
     {
         StringBuilder sb = new StringBuilder();
-        
-        Entry entry = new DefaultEntry();
-        EntryAttribute attribute = new DefaultEntryAttribute( ID ); 
 
-        for ( String extension:extensions )
+        Entry entry = new DefaultEntry();
+        EntryAttribute attribute = new DefaultEntryAttribute( id );
+
+        for ( String extension : extensions )
         {
             attribute.add( extension );
         }
 
         sb.append( LdifUtils.convertAttributesToLdif( entry ) );
-        
+
         return sb.toString();
     }
 
+
+    /**
+     * Transform a Schema to a LDIF formated String
+     *
+     * @param schemaName The schema to transform
+     * @param type The ObjectClass type
+     * @return A LDIF String representing the schema
+     * @throws LdapException If the transformation can't be done
+     */
     protected String schemaToLdif( String schemaName, String type ) throws LdapException
     {
         StringBuilder sb = new StringBuilder();
-        
+
         // The DN
         sb.append( dnToLdif( schemaName ) );
 
@@ -226,16 +257,16 @@ public abstract class SchemaElementImpl implements SchemaElement
 
         // The name
         sb.append( nameToLdif() );
-        
+
         // The desc
         sb.append( descToLdif() );
-        
+
         // The obsolete flag, only if "true"
         if ( obsolete )
         {
             sb.append( "m-obsolete: TRUE\n" );
         }
-        
+
         return sb.toString();
     }
 }

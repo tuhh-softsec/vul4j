@@ -19,6 +19,7 @@
  */
 package org.apache.directory.shared.converter.schema;
 
+
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -26,7 +27,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
-import java.io.Writer;
 import java.text.ParseException;
 import java.util.List;
 
@@ -46,18 +46,19 @@ public class SchemaParser
 {
     /** The antlr generated parser */
     private antlrSchemaParser parser = null;
-    
+
     /** A pipe into the parser */
     private PipedOutputStream parserIn = null;
 
     /** A temporary buffer storing the read schema bytes */
-    byte[] buf = new byte[128];
+    private byte[] buf = new byte[128];
 
     /** The inputStream mapped over the schema file to parse */
     private InputStream schemaIn;
-    
+
     /** The thread used to read the schema */
     private Thread producerThread;
+
 
     /**
      * Creates a reusable instance of an SchemaParser.
@@ -69,12 +70,13 @@ public class SchemaParser
         init();
     }
 
+
     /**
      * Initializes a parser and its plumbing.
      *
      * @throws IOException if a pipe cannot be formed.
      */
-    public void init() throws IOException
+    public synchronized void init() throws IOException
     {
         parserIn = new PipedOutputStream();
         PipedInputStream in = new PipedInputStream();
@@ -82,6 +84,7 @@ public class SchemaParser
         antlrSchemaLexer lexer = new antlrSchemaLexer( in );
         parser = new antlrSchemaParser( lexer );
     }
+
 
     /**
      * Clear the parser.
@@ -91,16 +94,20 @@ public class SchemaParser
         parser.clear();
     }
 
+
     /**
      * Thread safe method parses an OpenLDAP schemaObject element/object.
      *
      * @param schemaObject the String image of a complete schema object
+     * @return The list of parsed schema elements
+     * @throws IOException If the schema file can't be processed
+     * @throws ParseException If we weren't able to parse the schema
      */
     public synchronized List<SchemaElement> parse( String schemaObject ) throws IOException, ParseException
     {
         if ( ( schemaObject == null ) || ( schemaObject.trim().equals( "" ) ) )
         {
-            throw new ParseException( I18n.err( I18n.ERR_06001 ), 0 );
+            throw new ParseException( I18n.err( I18n.ERR_06001_EMPTY_OR_NULL_SCHEMA_OBJECT ), 0 );
         }
 
         schemaIn = new ByteArrayInputStream( schemaObject.getBytes() );
@@ -114,42 +121,47 @@ public class SchemaParser
         return invokeParser( schemaObject );
     }
 
+
     /**
      * Invoke the parser
      * @param schemaName The schema to be parsed
      * @return A list of schema elements 
      * 
-     * @throws IOException If the inputStream can't be read
-     * @throws ParseException If the parser encounter an error
+     * @throws IOException If the schema file can't be processed
+     * @throws ParseException If we weren't able to parse the schema
      */
     private List<SchemaElement> invokeParser( String schemaName ) throws IOException, ParseException
     {
         try
         {
             parser.parseSchema();
-            
+
             return parser.getSchemaElements();
         }
         catch ( RecognitionException re )
         {
-            String msg = I18n.err( I18n.ERR_06002, schemaName, ExceptionUtils.getFullStackTrace( re ) );
+            String msg = I18n.err( I18n.ERR_06002_PARSER_FAILURE, schemaName, ExceptionUtils.getFullStackTrace( re ) );
             init();
             throw new ParseException( msg, re.getColumn() );
         }
         catch ( TokenStreamException tse )
         {
-            String msg = I18n.err( I18n.ERR_06002, schemaName, ExceptionUtils.getFullStackTrace( tse ) );
+            String msg = I18n.err( I18n.ERR_06002_PARSER_FAILURE, schemaName, ExceptionUtils.getFullStackTrace( tse ) );
             init();
             throw new ParseException( msg, 0 );
         }
     }
 
+
     /**
      * Thread safe method parses a stream of OpenLDAP schemaObject elements/objects.
      *
      * @param schemaIn a stream of schema objects
+     * @return A list of schema elements
+     * @throws IOException If the schema file can't be processed
+     * @throws ParseException If we weren't able to parse the schema
      */
-    public synchronized List<SchemaElement> parse( InputStream schemaIn, Writer out ) throws IOException, ParseException
+    public synchronized List<SchemaElement> parse( InputStream schemaIn ) throws IOException, ParseException
     {
         this.schemaIn = schemaIn;
 
@@ -168,6 +180,8 @@ public class SchemaParser
      * Thread safe method parses a file of OpenLDAP schemaObject elements/objects.
      *
      * @param schemaFile a file of schema objects
+     * @throws IOException If the schema file can't be processed
+     * @throws ParseException If we weren't able to parse the schema
      */
     public synchronized void parse( File schemaFile ) throws IOException, ParseException
     {
@@ -184,9 +198,9 @@ public class SchemaParser
 
     /**
      * The thread which read the schema files and fill the
-     * temporaru buffer used by the lexical analyzer.
+     * temporary buffer used by the lexical analyzer.
      */
-    class DataProducer implements Runnable
+    private class DataProducer implements Runnable
     {
         public void run()
         {

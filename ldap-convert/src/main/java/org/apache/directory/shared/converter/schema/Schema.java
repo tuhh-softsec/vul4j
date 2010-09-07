@@ -19,6 +19,7 @@
  */
 package org.apache.directory.shared.converter.schema;
 
+
 import java.io.InputStream;
 import java.io.Writer;
 
@@ -34,25 +35,27 @@ public class Schema
 {
     /** The schema name */
     private String name;
-    
+
     /** The inputStream mapped on the file to read */
-    private InputStream in; 
-    
+    private InputStream in;
+
     /** The writer where we dump the ldif lines */
     private Writer out;
 
+
     /**
      * Set the schema name to parse. This name is the prefix of the
-     * schema file, which postifx is '.schema'.
+     * schema file, which postfix is '.schema'.
      * 
      * For instance, 'test.schema' being the file to parse, its name 
      * will be 'test'
-     * @param name
+     * @param name The schema name
      */
     public void setName( String name )
     {
         this.name = name;
     }
+
 
     /**
      * @return The schema name.
@@ -61,7 +64,8 @@ public class Schema
     {
         return name;
     }
-    
+
+
     /**
      * Set the inputStream mapped on the schema file
      * @param in The InputStream mapped on the schema file
@@ -70,7 +74,8 @@ public class Schema
     {
         this.in = in;
     }
-    
+
+
     /**
      * @return The InputStream mapped on the schema file
      */
@@ -79,6 +84,7 @@ public class Schema
         return in;
     }
 
+
     /**
      * @return The writer in which the ldif lines will be dumped
      */
@@ -86,6 +92,7 @@ public class Schema
     {
         return out;
     }
+
 
     /**
      * Set a writer to dump the ldif files

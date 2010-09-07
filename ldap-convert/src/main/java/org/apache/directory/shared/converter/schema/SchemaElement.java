@@ -19,9 +19,11 @@
  */
 package org.apache.directory.shared.converter.schema;
 
+
 import java.util.List;
 
 import org.apache.directory.shared.ldap.exception.LdapException;
+
 
 /**
  * An interface defining the methods to be implemented by the SchemaElement 
@@ -37,7 +39,8 @@ public interface SchemaElement
      * @return true if the schema element is obsolete, folse otherwise
      */
     boolean isObsolete();
-    
+
+
     /**
      * Set the obsolete flag
      * 
@@ -45,43 +48,51 @@ public interface SchemaElement
      */
     void setObsolete( boolean isObsolete );
 
+
     /**
      * Returns the schema element's OID
      */
     String getOid();
-    
+
+
     /**
      * @return Return the schema element description
      */
     String getDescription();
-    
+
+
     /**
      * Set the schema element's description
      * @param description The schema element's description
      */
     void setDescription( String description );
-    
+
+
     /**
      * @return The list of names for the schemaElement
      */
     List<String> getNames();
-    
+
+
     /**
      * Set a list of names for a schemaElement
      * @param names The list of names of this schemaElement
      */
     void setNames( List<String> names );
-    
+
+
     /**
      * @return The list of extensions for the schemaElement
      */
     List<String> getExtensions();
-    
+
+
     /**
      * Set a list of extensions for a schemaElement
      * @param extensions The list of extensions of this schemaElement
      */
     void setExtensions( List<String> extensions );
+
 
     /**
      * Generate a String representation of this schemaElement, formated
