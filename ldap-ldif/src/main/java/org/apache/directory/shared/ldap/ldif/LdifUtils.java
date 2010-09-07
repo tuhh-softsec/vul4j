@@ -257,7 +257,7 @@ public final class LdifUtils
      *
      * @param ldif The LDIF string containing an attribute value
      * @return An Attributes instance
-     * @exception LdapException If the LDIF String cannot be converted to an Attributes
+     * @exception LdapLdifException If the LDIF String cannot be converted to an Attributes
      */
     public static Attributes convertAttributesFromLdif( String ldif ) throws LdapLdifException
     {
@@ -474,10 +474,6 @@ public final class LdifUtils
                         case REPLACE_ATTRIBUTE:
                             sb.append( "replace: " );
                             break;
-
-                        default:
-                            break; // Do nothing
-
                     }
 
                     sb.append( modification.getAttribute().getId() );
@@ -486,11 +482,8 @@ public final class LdifUtils
                     sb.append( convertToLdif( modification.getAttribute() ) );
                     sb.append( "-\n" );
                 }
+
                 break;
-
-            default:
-                break; // Do nothing
-
         }
 
         sb.append( '\n' );

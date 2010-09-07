@@ -124,7 +124,7 @@ public class LdifEntry implements Cloneable, Externalizable
      * Set the Distinguished Name
      * 
      * @param dn The Distinguished Name
-     * throws LdapInvalidDnException If the DN is invalid
+     * @throws LdapInvalidDnException If the DN is invalid
      */
     public void setDn( String dn ) throws LdapInvalidDnException
     {
@@ -712,7 +712,16 @@ public class LdifEntry implements Cloneable, Externalizable
 
                 case ModDn:
                 case ModRdn:
-                    result = result * 17 + ( deleteOldRdn ? 1 : -1 );
+                    result = result * 17;
+
+                    if ( deleteOldRdn )
+                    {
+                        result++;
+                    }
+                    else
+                    {
+                        result--;
+                    }
 
                     if ( newRdn != null )
                     {

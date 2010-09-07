@@ -278,7 +278,7 @@ public class LdifAttributesReader extends LdifReader
                 }
                 catch ( LdapException le )
                 {
-                    // 
+                    throw new LdapLdifException( I18n.err( I18n.ERR_12057_BAD_ATTRIBUTE ) );
                 }
             }
         }
@@ -487,7 +487,7 @@ public class LdifAttributesReader extends LdifReader
             }
             catch ( IOException ioe )
             {
-                // Do nothing
+                throw new LdapLdifException( I18n.err( I18n.ERR_12024_CANNOT_CLOSE_FILE ) );
             }
         }
     }
@@ -551,7 +551,7 @@ public class LdifAttributesReader extends LdifReader
             }
             catch ( IOException ioe )
             {
-                // Do nothing
+                throw new LdapLdifException( I18n.err( I18n.ERR_12024_CANNOT_CLOSE_FILE ) );
             }
         }
     }
@@ -616,7 +616,7 @@ public class LdifAttributesReader extends LdifReader
             }
             catch ( IOException ioe )
             {
-                // Do nothing
+                throw new LdapLdifException( I18n.err( I18n.ERR_12024_CANNOT_CLOSE_FILE ) );
             }
         }
     }
