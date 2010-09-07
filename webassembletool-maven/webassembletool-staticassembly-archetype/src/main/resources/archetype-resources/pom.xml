@@ -6,6 +6,9 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>\${artifactId}</name>
+	<properties>
+		<maven.build.timestamp.format>yyyyMMdd_HHmm__</maven.build.timestamp.format>
+	</properties>
 	<build>
 		<finalName>\${artifactId}</finalName>
 		<filters>
@@ -51,13 +54,22 @@
 				</configuration>
 			</plugin>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-assembly-plugin</artifactId>				
-				<configuration>
-					<descriptors>
-						<descriptor>src/main/assembly/assembly.xml</descriptor>
-					</descriptors>
-				</configuration>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>assembly</id>
+						<phase>package</phase>
+						<goals>
+							<goal>assembly</goal>
+						</goals>
+						<configuration>
+							<descriptors>
+								<descriptor>src/main/assembly/exportMaquette.xml</descriptor>
+							</descriptors>
+							<finalName>${maven.build.timestamp}${project.name}</finalName>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
