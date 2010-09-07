@@ -587,7 +587,8 @@ public class LdifAttributesReaderTest
         }
         catch ( LdapLdifException ne )
         {
-            assertTrue( I18n.err( I18n.ERR_12009 ), ne.getMessage().startsWith( I18n.ERR_12009.getErrorCode() ) );
+            assertTrue( I18n.err( I18n.ERR_12009_ERROR_PARSING_LDIF_BUFFER ), ne.getMessage().startsWith(
+                I18n.ERR_12009_ERROR_PARSING_LDIF_BUFFER.getErrorCode() ) );
         }
     }
 

@@ -19,6 +19,7 @@
  */
 package org.apache.directory.shared.ldap.ldif;
 
+
 import org.apache.directory.shared.i18n.I18n;
 
 
@@ -29,13 +30,24 @@ import org.apache.directory.shared.i18n.I18n;
  */
 public enum ChangeType
 {
-    Add( 0 ),
-    Modify( 1 ),
-    ModDn( 2 ),
-    ModRdn( 3 ),
-    Delete( 4 ),
+    /** The Add changeType */
+    Add(0),
+
+    /** The Modify changeType */
+    Modify(1),
+
+    /** The ModDn changeType */
+    ModDn(2),
+
+    /** The ModRdn changeType */
+    ModRdn(3),
+
+    /** The Delete changeType */
+    Delete(4),
+
+    /** A placeholder when we have no changeType */
     None(-1);
-    
+
     /** Add ordinal value */
     public static final int ADD_ORDINAL = 0;
 
@@ -54,14 +66,14 @@ public enum ChangeType
     /** None ordinal value */
     public static final int NONE_ORDINAL = -1;
 
-    /* the ordinal value for a change type */
+    /** the ordinal value for a change type */
     private final int changeType;
-    
-    
+
+
     /**
      * Creates a new instance of ChangeType.
      *
-     * @param changeType
+     * @param changeType The associated value 
      */
     private ChangeType( int changeType )
     {
@@ -78,25 +90,38 @@ public enum ChangeType
     {
         return changeType;
     }
-    
+
+
+    /**
+     * Get the ChangeType instance from an integer value 
+     *
+     * @param val The value for the ChangeType we are looking for
+     * @return The associated ChangeType instance
+     */
     public static ChangeType getChangeType( int val )
     {
-        switch( val )
+        switch ( val )
         {
-            case -1: return None;
-            
-            case 0: return Add;
-            
-            case 1: return Modify;
-            
-            case 2: return ModDn;
-            
-            case 3: return ModRdn;
-            
-            case 4: return Delete;
-            
+            case -1:
+                return None;
+
+            case 0:
+                return Add;
+
+            case 1:
+                return Modify;
+
+            case 2:
+                return ModDn;
+
+            case 3:
+                return ModRdn;
+
+            case 4:
+                return Delete;
+
             default:
-                throw new IllegalArgumentException( I18n.err( I18n.ERR_12001, val ) );
+                throw new IllegalArgumentException( I18n.err( I18n.ERR_12001_UNKNOWN_CHANGE_TYPE, val ) );
         }
     }
 }

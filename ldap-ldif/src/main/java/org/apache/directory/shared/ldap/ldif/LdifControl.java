@@ -20,8 +20,10 @@
 
 package org.apache.directory.shared.ldap.ldif;
 
+
 import org.apache.directory.shared.ldap.codec.controls.AbstractControl;
 import org.apache.directory.shared.ldap.util.StringTools;
+
 
 /**
  * The LdifControl class stores a control defined for an entry found in a ldif
@@ -31,7 +33,9 @@ import org.apache.directory.shared.ldap.util.StringTools;
  */
 public class LdifControl extends AbstractControl
 {
+    /** The serial version UID */
     private static final long serialVersionUID = 1L;
+
 
     /**
      * Create a new Control
@@ -43,6 +47,10 @@ public class LdifControl extends AbstractControl
         super( oid );
     }
 
+
+    /**
+     * {@inheritDoc}
+     */
     public String toString()
     {
         return "LdifControl : {" + getOid() + ", " + isCritical() + ", " + StringTools.dumpBytes( getValue() ) + "}";

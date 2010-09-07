@@ -19,12 +19,12 @@
  */
 package org.apache.directory.shared.ldap.ldif;
 
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
 
-import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.BasicAttributes;
@@ -39,6 +39,7 @@ import org.apache.directory.shared.ldap.schema.SchemaManager;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 
 /**
  * <pre>
@@ -151,13 +152,14 @@ public class LdifAttributesReader extends LdifReader
     /** A logger */
     private static final Logger LOG = LoggerFactory.getLogger( LdifAttributesReader.class );
 
+
     /**
      * Constructors
      */
     public LdifAttributesReader()
     {
         lines = new ArrayList<String>();
-        position = new Position();
+        position = 0;
         version = DEFAULT_VERSION;
     }
 
@@ -168,7 +170,7 @@ public class LdifAttributesReader extends LdifReader
      * @param attributes The entry where to store the value
      * @param line The line to parse
      * @param lowerLine The same line, lowercased
-     * @throws NamingException If anything goes wrong
+     * @throws LdapLdifException If anything goes wrong
      */
     private void parseAttribute( Attributes attributes, String line, String lowerLine ) throws LdapLdifException
     {
@@ -179,8 +181,8 @@ public class LdifAttributesReader extends LdifReader
         // We should *not* have a DN twice
         if ( attributeType.equals( "dn" ) )
         {
-            LOG.error( I18n.err( I18n.ERR_12002 ) );
-            throw new LdapLdifException( I18n.err( I18n.ERR_12003 ) );
+            LOG.error( I18n.err( I18n.ERR_12002_ENTRY_WITH_TWO_DNS ) );
+            throw new LdapLdifException( I18n.err( I18n.ERR_12003_LDIF_ENTRY_WITH_TWO_DNS ) );
         }
 
         Object attributeValue = parseValue( line, colonIndex );
@@ -199,17 +201,17 @@ public class LdifAttributesReader extends LdifReader
     }
 
 
-
-
     /**
      * Parse an AttributeType/AttributeValue
      *
-     * @param attributes The entry where to store the value
+     * @param schemaManager The SchemaManager
+     * @param entry The entry where to store the value
      * @param line The line to parse
      * @param lowerLine The same line, lowercased
-     * @throws NamingException If anything goes wrong
+     * @throws LdapLdifException If anything goes wrong
      */
-    private void parseEntryAttribute( SchemaManager schemaManager, Entry entry, String line, String lowerLine ) throws LdapLdifException
+    private void parseEntryAttribute( SchemaManager schemaManager, Entry entry, String line, String lowerLine )
+        throws LdapLdifException
     {
         int colonIndex = line.indexOf( ':' );
 
@@ -219,13 +221,15 @@ public class LdifAttributesReader extends LdifReader
         // We should *not* have a DN twice
         if ( attributeName.equals( "dn" ) )
         {
-            LOG.error( I18n.err( I18n.ERR_12002 ) );
-            throw new LdapLdifException( I18n.err( I18n.ERR_12003 ) );
+            LOG.error( I18n.err( I18n.ERR_12002_ENTRY_WITH_TWO_DNS ) );
+            throw new LdapLdifException( I18n.err( I18n.ERR_12003_LDIF_ENTRY_WITH_TWO_DNS ) );
         }
 
         if ( schemaManager != null )
         {
-            if ( ( attributeType = schemaManager.getAttributeType( attributeName ) ) == null )
+            attributeType = schemaManager.getAttributeType( attributeName );
+
+            if ( attributeType == null )
             {
                 LOG.error( "" );
                 throw new LdapLdifException( "" );
@@ -252,11 +256,11 @@ public class LdifAttributesReader extends LdifReader
             {
                 if ( attributeValue instanceof String )
                 {
-                    entry.put( attributeName, (String)attributeValue );
+                    entry.put( attributeName, ( String ) attributeValue );
                 }
                 else
                 {
-                    entry.put( attributeName, (byte[])attributeValue );
+                    entry.put( attributeName, ( byte[] ) attributeValue );
                 }
             }
             else
@@ -265,15 +269,16 @@ public class LdifAttributesReader extends LdifReader
                 {
                     if ( attributeValue instanceof String )
                     {
-                        entry.put( attributeName, attributeType, (String)attributeValue );
+                        entry.put( attributeName, attributeType, ( String ) attributeValue );
                     }
                     else
                     {
-                        entry.put( attributeName, attributeType, (byte[])attributeValue );
+                        entry.put( attributeName, attributeType, ( byte[] ) attributeValue );
                     }
                 }
                 catch ( LdapException le )
                 {
+                    // 
                 }
             }
         }
@@ -281,11 +286,11 @@ public class LdifAttributesReader extends LdifReader
         {
             if ( attributeValue instanceof String )
             {
-                attribute.add( (String)attributeValue );
+                attribute.add( ( String ) attributeValue );
             }
             else
             {
-                attribute.add( (byte[])attributeValue );
+                attribute.add( ( byte[] ) attributeValue );
             }
         }
     }
@@ -301,6 +306,7 @@ public class LdifAttributesReader extends LdifReader
      * &lt;distinguishedName&gt; | "dn::" &lt;fill&gt; &lt;base64-distinguishedName&gt;
      * &lt;changerecord&gt; ::= "changetype:" &lt;fill&gt; &lt;change-op&gt;
      *
+     * @param schemaManager The SchemaManager
      * @return The read entry
      * @throws LdapLdifException If the entry can't be read or is invalid
      */
@@ -324,7 +330,7 @@ public class LdifAttributesReader extends LdifReader
         }
 
         // Now, let's iterate through the other lines
-        for ( String line:lines )
+        for ( String line : lines )
         {
             // Each line could start either with an OID, an attribute type, with
             // "control:" or with "changetype:"
@@ -336,13 +342,13 @@ public class LdifAttributesReader extends LdifReader
             // 3) The first line after the DN is anything else
             if ( lowerLine.startsWith( "control:" ) )
             {
-                LOG.error( I18n.err( I18n.ERR_12004 ) );
-                throw new LdapLdifException( I18n.err( I18n.ERR_12005 ) );
+                LOG.error( I18n.err( I18n.ERR_12004_CHANGE_NOT_ALLOWED ) );
+                throw new LdapLdifException( I18n.err( I18n.ERR_12005_NO_CHANGE ) );
             }
             else if ( lowerLine.startsWith( "changetype:" ) )
             {
-                LOG.error( I18n.err( I18n.ERR_12004 ) );
-                throw new LdapLdifException( I18n.err( I18n.ERR_12005 ) );
+                LOG.error( I18n.err( I18n.ERR_12004_CHANGE_NOT_ALLOWED ) );
+                throw new LdapLdifException( I18n.err( I18n.ERR_12005_NO_CHANGE ) );
             }
             else if ( line.indexOf( ':' ) > 0 )
             {
@@ -351,8 +357,8 @@ public class LdifAttributesReader extends LdifReader
             else
             {
                 // Invalid attribute Value
-                LOG.error( I18n.err( I18n.ERR_12006 ) );
-                throw new LdapLdifException( I18n.err( I18n.ERR_12007 ) );
+                LOG.error( I18n.err( I18n.ERR_12006_EXPECTING_ATTRIBUTE_TYPE ) );
+                throw new LdapLdifException( I18n.err( I18n.ERR_12007_BAD_ATTRIBUTE ) );
             }
         }
 
@@ -373,7 +379,7 @@ public class LdifAttributesReader extends LdifReader
      * &lt;changerecord&gt; ::= "changetype:" &lt;fill&gt; &lt;change-op&gt;
      *
      * @return The read entry
-     * @throws NamingException If the entry can't be read or is invalid
+     * @throws LdapLdifException If the entry can't be read or is invalid
      */
     private Attributes parseAttributes() throws LdapLdifException
     {
@@ -386,7 +392,7 @@ public class LdifAttributesReader extends LdifReader
         Attributes attributes = new BasicAttributes( true );
 
         // Now, let's iterate through the other lines
-        for ( String line:lines )
+        for ( String line : lines )
         {
             // Each line could start either with an OID, an attribute type, with
             // "control:" or with "changetype:"
@@ -398,13 +404,13 @@ public class LdifAttributesReader extends LdifReader
             // 3) The first line after the DN is anything else
             if ( lowerLine.startsWith( "control:" ) )
             {
-                LOG.error( I18n.err( I18n.ERR_12004 ) );
-                throw new LdapLdifException( I18n.err( I18n.ERR_12005 ) );
+                LOG.error( I18n.err( I18n.ERR_12004_CHANGE_NOT_ALLOWED ) );
+                throw new LdapLdifException( I18n.err( I18n.ERR_12005_NO_CHANGE ) );
             }
             else if ( lowerLine.startsWith( "changetype:" ) )
             {
-                LOG.error( I18n.err( I18n.ERR_12004 ) );
-                throw new LdapLdifException( I18n.err( I18n.ERR_12005 ) );
+                LOG.error( I18n.err( I18n.ERR_12004_CHANGE_NOT_ALLOWED ) );
+                throw new LdapLdifException( I18n.err( I18n.ERR_12005_NO_CHANGE ) );
             }
             else if ( line.indexOf( ':' ) > 0 )
             {
@@ -413,8 +419,8 @@ public class LdifAttributesReader extends LdifReader
             else
             {
                 // Invalid attribute Value
-                LOG.error( I18n.err( I18n.ERR_12006 ) );
-                throw new LdapLdifException( I18n.err( I18n.ERR_12007 ) );
+                LOG.error( I18n.err( I18n.ERR_12006_EXPECTING_ATTRIBUTE_TYPE ) );
+                throw new LdapLdifException( I18n.err( I18n.ERR_12007_BAD_ATTRIBUTE ) );
             }
         }
 
@@ -436,7 +442,7 @@ public class LdifAttributesReader extends LdifReader
     public Attributes parseAttributes( String ldif ) throws LdapLdifException
     {
         lines = new ArrayList<String>();
-        position = new Position();
+        position = 0;
 
         LOG.debug( "Starts parsing ldif buffer" );
 
@@ -456,15 +462,22 @@ public class LdifAttributesReader extends LdifReader
 
             if ( LOG.isDebugEnabled() )
             {
-                LOG.debug( "Parsed {} entries.", ( attributes == null ? 0 : 1 ) );
+                if ( attributes == null )
+                {
+                    LOG.debug( "Parsed no entry." );
+                }
+                else
+                {
+                    LOG.debug( "Parsed one entry." );
+                }
             }
 
             return attributes;
         }
-        catch (LdapLdifException ne)
+        catch ( LdapLdifException ne )
         {
-            LOG.error( I18n.err( I18n.ERR_12008, ne.getLocalizedMessage() ) );
-            throw new LdapLdifException( I18n.err( I18n.ERR_12009 ) );
+            LOG.error( I18n.err( I18n.ERR_12008_CANNOT_PARSE_LDIF_BUFFER, ne.getLocalizedMessage() ) );
+            throw new LdapLdifException( I18n.err( I18n.ERR_12009_ERROR_PARSING_LDIF_BUFFER ) );
         }
         finally
         {
@@ -492,7 +505,7 @@ public class LdifAttributesReader extends LdifReader
     public Entry parseEntry( String ldif ) throws LdapLdifException
     {
         lines = new ArrayList<String>();
-        position = new Position();
+        position = 0;
 
         LOG.debug( "Starts parsing ldif buffer" );
 
@@ -508,19 +521,27 @@ public class LdifAttributesReader extends LdifReader
         {
             readLines();
 
-            Entry entry = parseEntry( (SchemaManager)null );
+            Entry entry = parseEntry( ( SchemaManager ) null );
 
             if ( LOG.isDebugEnabled() )
             {
-                LOG.debug( "Parsed {} entries.", ( entry == null ? 0 : 1 ) );
+                if ( entry == null )
+                {
+                    LOG.debug( "Parsed no entry." );
+                }
+                else
+                {
+                    LOG.debug( "Parsed one entry." );
+                }
+
             }
 
             return entry;
         }
-        catch (LdapLdifException ne)
+        catch ( LdapLdifException ne )
         {
-            LOG.error( I18n.err( I18n.ERR_12008, ne.getLocalizedMessage() ) );
-            throw new LdapLdifException( I18n.err( I18n.ERR_12009 ) );
+            LOG.error( I18n.err( I18n.ERR_12008_CANNOT_PARSE_LDIF_BUFFER, ne.getLocalizedMessage() ) );
+            throw new LdapLdifException( I18n.err( I18n.ERR_12009_ERROR_PARSING_LDIF_BUFFER ) );
         }
         finally
         {
@@ -539,6 +560,7 @@ public class LdifAttributesReader extends LdifReader
     /**
      * A method which parses a ldif string and returns an Entry.
      *
+     * @param schemaManager The SchemaManager
      * @param ldif The ldif string
      * @return An entry
      * @throws LdapLdifException If something went wrong
@@ -548,7 +570,7 @@ public class LdifAttributesReader extends LdifReader
     public Entry parseEntry( SchemaManager schemaManager, String ldif ) throws LdapLdifException
     {
         lines = new ArrayList<String>();
-        position = new Position();
+        position = 0;
 
         LOG.debug( "Starts parsing ldif buffer" );
 
@@ -568,15 +590,23 @@ public class LdifAttributesReader extends LdifReader
 
             if ( LOG.isDebugEnabled() )
             {
-                LOG.debug( "Parsed {} entries.", ( entry == null ? 0 : 1 ) );
+                if ( entry == null )
+                {
+                    LOG.debug( "Parsed no entry." );
+                }
+                else
+                {
+                    LOG.debug( "Parsed one entry." );
+                }
+
             }
 
             return entry;
         }
-        catch (LdapLdifException ne)
+        catch ( LdapLdifException ne )
         {
-            LOG.error( I18n.err( I18n.ERR_12008, ne.getLocalizedMessage() ) );
-            throw new LdapLdifException( I18n.err( I18n.ERR_12009 ) );
+            LOG.error( I18n.err( I18n.ERR_12008_CANNOT_PARSE_LDIF_BUFFER, ne.getLocalizedMessage() ) );
+            throw new LdapLdifException( I18n.err( I18n.ERR_12009_ERROR_PARSING_LDIF_BUFFER ) );
         }
         finally
         {

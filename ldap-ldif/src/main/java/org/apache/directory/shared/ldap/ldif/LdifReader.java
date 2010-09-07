@@ -43,6 +43,7 @@ import java.util.NoSuchElementException;
 
 import org.apache.directory.shared.asn1.primitives.OID;
 import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.NotImplementedException;
 import org.apache.directory.shared.ldap.entry.DefaultEntryAttribute;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.ModificationOperation;
@@ -169,51 +170,11 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
     /** A logger */
     private static final Logger LOG = LoggerFactory.getLogger( LdifReader.class );
 
-    /** 
-     * A private class to track the current position in a line 
-     * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
-     */
-    public class Position
-    {
-        /** The current position */
-        private int pos;
-
-
-        /**
-         * Creates a new instance of Position.
-         */
-        public Position()
-        {
-            pos = 0;
-        }
-
-
-        /**
-         * Increment the current position by one
-         *
-         */
-        public void inc()
-        {
-            pos++;
-        }
-
-
-        /**
-         * Increment the current position by the given value
-         *
-         * @param val The value to add to the current position
-         */
-        public void inc( int val )
-        {
-            pos += val;
-        }
-    }
-
     /** A list of read lines */
     protected List<String> lines;
 
     /** The current position */
-    protected Position position;
+    protected static int position;
 
     /** The ldif file version default value */
     protected static final int DEFAULT_VERSION = 1;
@@ -221,11 +182,13 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
     /** The ldif version */
     protected int version;
 
-    /** Type of element read */
+    /** Type of element read : ENTRY */
     protected static final int LDIF_ENTRY = 0;
 
+    /** Type of element read : CHANGE */
     protected static final int CHANGE = 1;
 
+    /** Type of element read : UNKNOWN */
     protected static final int UNKNOWN = 2;
 
     /** Size limit for file contained values */
@@ -234,11 +197,13 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
     /** The default size limit : 1Mo */
     protected static final long SIZE_LIMIT_DEFAULT = 1024000;
 
-    /** State values for the modify operation */
+    /** State values for the modify operation : MOD_SPEC */
     protected static final int MOD_SPEC = 0;
 
+    /** State values for the modify operation : ATTRVAL_SPEC */
     protected static final int ATTRVAL_SPEC = 1;
 
+    /** State values for the modify operation : ATTRVAL_SPEC_OR_SEP */
     protected static final int ATTRVAL_SPEC_OR_SEP = 2;
 
     /** Iterator prefetched entry */
@@ -266,16 +231,16 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
     public LdifReader()
     {
         lines = new ArrayList<String>();
-        position = new Position();
+        position = 0;
         version = DEFAULT_VERSION;
     }
 
 
-    private void init( BufferedReader reader ) throws LdapLdifException, LdapException
+    private void init( BufferedReader reader ) throws LdapException
     {
         this.reader = reader;
         lines = new ArrayList<String>();
-        position = new Position();
+        position = 0;
         version = DEFAULT_VERSION;
         containsChanges = false;
         containsEntries = false;
@@ -290,8 +255,7 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
      * A constructor which takes a file name
      * 
      * @param ldifFileName A file name containing ldif formated input
-     * @throws LdapLdifException
-     *             If the file cannot be processed or if the format is incorrect
+     * @throws LdapLdifException If the file cannot be processed or if the format is incorrect
      */
     public LdifReader( String ldifFileName ) throws LdapLdifException
     {
@@ -299,14 +263,14 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
 
         if ( !file.exists() )
         {
-            String msg = I18n.err( I18n.ERR_12010, file.getAbsoluteFile() );
+            String msg = I18n.err( I18n.ERR_12010_CANNOT_FIND_FILE, file.getAbsoluteFile() );
             LOG.error( msg );
             throw new LdapLdifException( msg );
         }
 
         if ( !file.canRead() )
         {
-            String msg = I18n.err( I18n.ERR_12011, file.getName() );
+            String msg = I18n.err( I18n.ERR_12011_CANNOT_READ_FILE, file.getName() );
             LOG.error( msg );
             throw new LdapLdifException( msg );
         }
@@ -317,7 +281,7 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
         }
         catch ( FileNotFoundException fnfe )
         {
-            String msg = I18n.err( I18n.ERR_12010, file.getAbsoluteFile() );
+            String msg = I18n.err( I18n.ERR_12010_CANNOT_FIND_FILE, file.getAbsoluteFile() );
             LOG.error( msg );
             throw new LdapLdifException( msg );
         }
@@ -335,13 +299,10 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
     /**
      * A constructor which takes a Reader
      * 
-     * @param in
-     *            A Reader containing ldif formated input
-     * @throws LdapLdifException
-     *             If the file cannot be processed or if the format is incorrect
-     * @throws LdapException 
+     * @param in A Reader containing ldif formated input
+     * @throws LdapException If the file cannot be processed or if the format is incorrect
      */
-    public LdifReader( Reader in ) throws LdapLdifException, LdapException
+    public LdifReader( Reader in ) throws LdapException
     {
         init( new BufferedReader( in ) );
     }
@@ -350,13 +311,10 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
     /**
      * A constructor which takes an InputStream
      * 
-     * @param in
-     *            An InputStream containing ldif formated input
-     * @throws LdapLdifException
-     *             If the file cannot be processed or if the format is incorrect
-     * @throws LdapException 
+     * @param in An InputStream containing ldif formated input
+     * @throws LdapException If the file cannot be processed or if the format is incorrect
      */
-    public LdifReader( InputStream in ) throws LdapLdifException, LdapException
+    public LdifReader( InputStream in ) throws LdapException
     {
         init( new BufferedReader( new InputStreamReader( in ) ) );
     }
@@ -365,23 +323,21 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
     /**
      * A constructor which takes a File
      * 
-     * @param file
-     *            A File containing ldif formated input
-     * @throws LdapLdifException
-     *             If the file cannot be processed or if the format is incorrect
+     * @param file A File containing ldif formated input
+     * @throws LdapLdifException If the file cannot be processed or if the format is incorrect
      */
     public LdifReader( File file ) throws LdapLdifException
     {
         if ( !file.exists() )
         {
-            String msg = I18n.err( I18n.ERR_12010, file.getAbsoluteFile() );
+            String msg = I18n.err( I18n.ERR_12010_CANNOT_FIND_FILE, file.getAbsoluteFile() );
             LOG.error( msg );
             throw new LdapLdifException( msg );
         }
 
         if ( !file.canRead() )
         {
-            String msg = I18n.err( I18n.ERR_12011, file.getName() );
+            String msg = I18n.err( I18n.ERR_12011_CANNOT_READ_FILE, file.getName() );
             LOG.error( msg );
             throw new LdapLdifException( msg );
         }
@@ -392,7 +348,7 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
         }
         catch ( FileNotFoundException fnfe )
         {
-            String msg = I18n.err( I18n.ERR_12010, file.getAbsoluteFile() );
+            String msg = I18n.err( I18n.ERR_12010_CANNOT_FIND_FILE, file.getAbsoluteFile() );
             LOG.error( msg );
             throw new LdapLdifException( msg );
         }
@@ -428,8 +384,7 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
     /**
      * Set the maximum file size that can be accepted for an attribute value
      * 
-     * @param sizeLimit
-     *            The size in bytes
+     * @param sizeLimit The size in bytes
      */
     public void setSizeLimit( long sizeLimit )
     {
@@ -437,13 +392,12 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
     }
 
 
-    // <fill> ::= ' ' <fill> | ���������
-    private static void parseFill( char[] document, Position position )
+    // <fill> ::= ' ' <fill> | e
+    private static void parseFill( char[] document )
     {
-
-        while ( StringTools.isCharASCII( document, position.pos, ' ' ) )
+        while ( StringTools.isCharASCII( document, position, ' ' ) )
         {
-            position.inc();
+            position++;
         }
     }
 
@@ -457,18 +411,17 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
      * Check that the number is in the interval
      * 
      * @param document The document containing the number to parse
-     * @param position The current position in the document
      * @return a String representing the parsed number
      */
-    private static String parseNumber( char[] document, Position position )
+    private static String parseNumber( char[] document )
     {
-        int initPos = position.pos;
+        int initPos = position;
 
         while ( true )
         {
-            if ( StringTools.isDigit( document, position.pos ) )
+            if ( StringTools.isDigit( document, position ) )
             {
-                position.inc();
+                position++;
             }
             else
             {
@@ -476,13 +429,13 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
             }
         }
 
-        if ( position.pos == initPos )
+        if ( position == initPos )
         {
             return null;
         }
         else
         {
-            return new String( document, initPos, position.pos - initPos );
+            return new String( document, initPos, position - initPos );
         }
     }
 
@@ -490,8 +443,7 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
     /**
      * Parse the changeType
      * 
-     * @param line
-     *            The line which contains the changeType
+     * @param line The line which contains the changeType
      * @return The operation.
      */
     private ChangeType parseChangeType( String line )
@@ -528,11 +480,9 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
     /**
      * Parse the DN of an entry
      * 
-     * @param line
-     *            The line to parse
+     * @param line The line to parse
      * @return A DN
-     * @throws LdapLdifException
-     *             If the DN is invalid
+     * @throws LdapLdifException If the DN is invalid
      */
     private String parseDn( String line ) throws LdapLdifException
     {
@@ -548,8 +498,8 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
             if ( length == 3 )
             {
                 // The DN is empty : error
-                LOG.error( I18n.err( I18n.ERR_12012 ) );
-                throw new LdapLdifException( I18n.err( I18n.ERR_12013 ) );
+                LOG.error( I18n.err( I18n.ERR_12012_EMPTY_DN_NOT_ALLOWED ) );
+                throw new LdapLdifException( I18n.err( I18n.ERR_12013_NO_DN ) );
             }
             else if ( line.charAt( 3 ) == ':' )
             {
@@ -565,15 +515,15 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
                     catch ( UnsupportedEncodingException uee )
                     {
                         // The DN is not base 64 encoded
-                        LOG.error( I18n.err( I18n.ERR_12014 ) );
-                        throw new LdapLdifException( I18n.err( I18n.ERR_12015 ) );
+                        LOG.error( I18n.err( I18n.ERR_12014_BASE64_DN_EXPECTED ) );
+                        throw new LdapLdifException( I18n.err( I18n.ERR_12015_INVALID_BASE64_DN ) );
                     }
                 }
                 else
                 {
                     // The DN is empty : error
-                    LOG.error( I18n.err( I18n.ERR_12012 ) );
-                    throw new LdapLdifException( I18n.err( I18n.ERR_12013 ) );
+                    LOG.error( I18n.err( I18n.ERR_12012_EMPTY_DN_NOT_ALLOWED ) );
+                    throw new LdapLdifException( I18n.err( I18n.ERR_12013_NO_DN ) );
                 }
             }
             else
@@ -583,8 +533,8 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
         }
         else
         {
-            LOG.error( I18n.err( I18n.ERR_12016 ) );
-            throw new LdapLdifException( I18n.err( I18n.ERR_12013 ) );
+            LOG.error( I18n.err( I18n.ERR_12016_DN_EXPECTED ) );
+            throw new LdapLdifException( I18n.err( I18n.ERR_12013_NO_DN ) );
         }
 
         // Check that the DN is valid. If not, an exception will be thrown
@@ -594,7 +544,7 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
         }
         catch ( LdapInvalidDnException ine )
         {
-            LOG.error( I18n.err( I18n.ERR_12017, dn ) );
+            LOG.error( I18n.err( I18n.ERR_12017_INVALID_DN, dn ) );
             throw new LdapLdifException( ine.getMessage() );
         }
 
@@ -605,10 +555,8 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
     /**
      * Parse the value part.
      * 
-     * @param line
-     *            The line which contains the value
-     * @param pos
-     *            The starting position in the line
+     * @param line The line which contains the value
+     * @param pos The starting position in the line
      * @return A String or a byte[], depending of the kind of value we get
      */
     protected static Object parseSimpleValue( String line, int pos )
@@ -641,8 +589,7 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
      * @param line The line which contains the value
      * @param pos The starting position in the line
      * @return A String or a byte[], depending of the kind of value we get
-     * @throws LdapLdifException
-     *             If something went wrong
+     * @throws LdapLdifException If something went wrong
      */
     protected Object parseValue( String line, int pos ) throws LdapLdifException
     {
@@ -749,15 +696,21 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
 
 
     /**
-     * Parse a control. The grammar is : &lt;control&gt; ::= "control:" &lt;fill&gt;
-     * &lt;ldap-oid&gt; &lt;critical-e&gt; &lt;value-spec-e&gt; &lt;sep&gt; &lt;critical-e&gt; ::= &lt;spaces&gt;
-     * &lt;boolean&gt; | e &lt;boolean&gt; ::= "true" | "false" &lt;value-spec-e&gt; ::=
-     * &lt;value-spec&gt; | e &lt;value-spec&gt; ::= ":" &lt;fill&gt; &lt;SAFE-STRING-e&gt; | "::"
-     * &lt;fill&gt; &lt;BASE64-STRING&gt; | ":<" &lt;fill&gt; &lt;url&gt;
+     * Parse a control. The grammar is : 
+     * <pre>
+     * &lt;control&gt; ::= "control:" &lt;fill&gt; &lt;ldap-oid&gt; &lt;critical-e&gt; &lt;value-spec-e&gt; &lt;sep&gt; 
+     * &lt;critical-e&gt; ::= &lt;spaces&gt; &lt;boolean&gt; | e 
+     * &lt;boolean&gt; ::= "true" | "false" 
+     * &lt;value-spec-e&gt; ::= &lt;value-spec&gt; | e 
+     * &lt;value-spec&gt; ::= ":" &lt;fill&gt; &lt;SAFE-STRING-e&gt; | "::" &lt;fill&gt; &lt;BASE64-STRING&gt; | ":<" &lt;fill&gt; &lt;url&gt;
+     * </pre>
      * 
-     * It can be read as : "control:" &lt;fill&gt; &lt;ldap-oid&gt; [ " "+ ( "true" |
+     * It can be read as :
+     * <pre> 
+     * "control:" &lt;fill&gt; &lt;ldap-oid&gt; [ " "+ ( "true" |
      * "false") ] [ ":" &lt;fill&gt; &lt;SAFE-STRING-e&gt; | "::" &lt;fill&gt; &lt;BASE64-STRING&gt; | ":<"
      * &lt;fill&gt; &lt;url&gt; ]
+     * </pre>
      * 
      * @param line The line containing the control
      * @return A control
@@ -854,7 +807,7 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
             else if ( StringTools.isCharASCII( controlValue, criticalPos + 1, '<' ) )
             {
                 // File contained value
-                // TODO : Add the missing code
+                throw new NotImplementedException( "See DIRSERVER-1547" );
             }
             else
             {
@@ -892,11 +845,11 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
             // Create an attribute
             if ( attributeValue instanceof String )
             {
-                return new DefaultEntryAttribute( attributeType, (String)attributeValue );
+                return new DefaultEntryAttribute( attributeType, ( String ) attributeValue );
             }
             else
             {
-                return new DefaultEntryAttribute( attributeType, (byte[])attributeValue );
+                return new DefaultEntryAttribute( attributeType, ( byte[] ) attributeValue );
             }
         }
         else
@@ -914,7 +867,8 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
      * @param lowerLine The same line, lowercased
      * @throws LdapLdifException If anything goes wrong
      */
-    public void parseAttributeValue( LdifEntry entry, String line, String lowerLine ) throws LdapLdifException, LdapException
+    public void parseAttributeValue( LdifEntry entry, String line, String lowerLine ) throws LdapLdifException,
+        LdapException
     {
         int colonIndex = line.indexOf( ':' );
 
@@ -923,8 +877,8 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
         // We should *not* have a DN twice
         if ( attributeType.equals( "dn" ) )
         {
-            LOG.error( I18n.err( I18n.ERR_12002 ) );
-            throw new LdapLdifException( I18n.err( I18n.ERR_12003 ) );
+            LOG.error( I18n.err( I18n.ERR_12002_ENTRY_WITH_TWO_DNS ) );
+            throw new LdapLdifException( I18n.err( I18n.ERR_12003_LDIF_ENTRY_WITH_TWO_DNS ) );
         }
 
         Object attributeValue = parseValue( line, colonIndex );
@@ -937,12 +891,9 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
     /**
      * Parse a ModRDN operation
      * 
-     * @param entry
-     *            The entry to update
-     * @param iter
-     *            The lines iterator
-     * @throws LdapLdifException
-     *             If anything goes wrong
+     * @param entry The entry to update
+     * @param iter The lines iterator
+     * @throws LdapLdifException If anything goes wrong
      */
     private void parseModRdn( LdifEntry entry, Iterator<String> iter ) throws LdapLdifException
     {
@@ -957,8 +908,15 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
             {
                 int colonIndex = line.indexOf( ':' );
                 Object attributeValue = parseValue( line, colonIndex );
-                entry.setNewRdn( attributeValue instanceof String ? ( String ) attributeValue : StringTools
-                    .utf8ToString( ( byte[] ) attributeValue ) );
+
+                if ( attributeValue instanceof String )
+                {
+                    entry.setNewRdn( ( String ) attributeValue );
+                }
+                else
+                {
+                    entry.setNewRdn( StringTools.utf8ToString( ( byte[] ) attributeValue ) );
+                }
             }
             else
             {
@@ -1001,13 +959,16 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
     /**
      * Parse a modify change type.
      * 
-     * The grammar is : &lt;changerecord&gt; ::= "changetype:" FILL "modify" SEP
-     * &lt;mod-spec&gt; &lt;mod-specs-e&gt; &lt;mod-spec&gt; ::= "add:" &lt;mod-val&gt; | "delete:"
-     * &lt;mod-val-del&gt; | "replace:" &lt;mod-val&gt; &lt;mod-specs-e&gt; ::= &lt;mod-spec&gt;
-     * &lt;mod-specs-e&gt; | e &lt;mod-val&gt; ::= FILL ATTRIBUTE-DESCRIPTION SEP
-     * ATTRVAL-SPEC &lt;attrval-specs-e&gt; "-" SEP &lt;mod-val-del&gt; ::= FILL
-     * ATTRIBUTE-DESCRIPTION SEP &lt;attrval-specs-e&gt; "-" SEP &lt;attrval-specs-e&gt; ::=
-     * ATTRVAL-SPEC &lt;attrval-specs&gt; | e *
+     * The grammar is :
+     * <pre> 
+     * &lt;changerecord&gt; ::= "changetype:" FILL "modify" SEP &lt;mod-spec&gt; &lt;mod-specs-e&gt; 
+     * &lt;mod-spec&gt; ::= "add:" &lt;mod-val&gt; | "delete:" &lt;mod-val-del&gt; | "replace:" &lt;mod-val&gt; 
+     * &lt;mod-specs-e&gt; ::= &lt;mod-spec&gt;
+     * &lt;mod-specs-e&gt; | e 
+     * &lt;mod-val&gt; ::= FILL ATTRIBUTE-DESCRIPTION SEP ATTRVAL-SPEC &lt;attrval-specs-e&gt; "-" SEP 
+     * &lt;mod-val-del&gt; ::= FILL ATTRIBUTE-DESCRIPTION SEP &lt;attrval-specs-e&gt; "-" SEP 
+     * &lt;attrval-specs-e&gt; ::= ATTRVAL-SPEC &lt;attrval-specs&gt; | e
+     * </pre>
      * 
      * @param entry The entry to feed
      * @param iter The lines
@@ -1117,8 +1078,8 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
                 // We should *not* have a DN twice
                 if ( attributeType.equalsIgnoreCase( "dn" ) )
                 {
-                    LOG.error( I18n.err( I18n.ERR_12002 ) );
-                    throw new LdapLdifException( I18n.err( I18n.ERR_12003 ) );
+                    LOG.error( I18n.err( I18n.ERR_12002_ENTRY_WITH_TWO_DNS ) );
+                    throw new LdapLdifException( I18n.err( I18n.ERR_12003_LDIF_ENTRY_WITH_TWO_DNS ) );
                 }
 
                 Object attributeValue = parseValue( line, colonIndex );
@@ -1142,31 +1103,38 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
 
     /**
      * Parse a change operation. We have to handle different cases depending on
-     * the operation. 1) Delete : there should *not* be any line after the
-     * "changetype: delete" 2) Add : we must have a list of AttributeType :
-     * AttributeValue elements 3) ModDN : we must have two following lines: a
-     * "newrdn:" and a "deleteoldrdn:" 4) ModRDN : the very same, but a
-     * "newsuperior:" line is expected 5) Modify :
+     * the operation.
+     * <ul> 
+     * <li>1) Delete : there should *not* be any line after the "changetype: delete" </li> 
+     * <li>2) Add : we must have a list of AttributeType : AttributeValue elements </li>
+     * <li>3) ModDN : we must have two following lines: a "newrdn:" and a "deleteoldrdn:" </li>
+     * <li>4) ModRDN : the very same, but a "newsuperior:" line is expected </li>
+     * <li>5) Modify</li>
+     * </ul>
      * 
-     * The grammar is : &lt;changerecord&gt; ::= "changetype:" FILL "add" SEP
-     * &lt;attrval-spec&gt; &lt;attrval-specs-e&gt; | "changetype:" FILL "delete" |
-     * "changetype:" FILL "modrdn" SEP &lt;newrdn&gt; SEP &lt;deleteoldrdn&gt; SEP | // To
-     * be checked "changetype:" FILL "moddn" SEP &lt;newrdn&gt; SEP &lt;deleteoldrdn&gt; SEP
-     * &lt;newsuperior&gt; SEP | "changetype:" FILL "modify" SEP &lt;mod-spec&gt;
-     * &lt;mod-specs-e&gt; &lt;newrdn&gt; ::= "newrdn:" FILL RDN | "newrdn::" FILL
-     * BASE64-RDN &lt;deleteoldrdn&gt; ::= "deleteoldrdn:" FILL "0" | "deleteoldrdn:"
-     * FILL "1" &lt;newsuperior&gt; ::= "newsuperior:" FILL DN | "newsuperior::" FILL
-     * BASE64-DN &lt;mod-specs-e&gt; ::= &lt;mod-spec&gt; &lt;mod-specs-e&gt; | e &lt;mod-spec&gt; ::=
-     * "add:" &lt;mod-val&gt; | "delete:" &lt;mod-val&gt; | "replace:" &lt;mod-val&gt; &lt;mod-val&gt;
-     * ::= FILL ATTRIBUTE-DESCRIPTION SEP ATTRVAL-SPEC &lt;attrval-specs-e&gt; "-" SEP
+     * The grammar is : 
+     * <pre>
+     * &lt;changerecord&gt; ::= "changetype:" FILL "add" SEP &lt;attrval-spec&gt; &lt;attrval-specs-e&gt; | 
+     *     "changetype:" FILL "delete" |
+     *     "changetype:" FILL "modrdn" SEP &lt;newrdn&gt; SEP &lt;deleteoldrdn&gt; SEP | 
+     *     // To be checked 
+     *     "changetype:" FILL "moddn" SEP &lt;newrdn&gt; SEP &lt;deleteoldrdn&gt; SEP &lt;newsuperior&gt; SEP | 
+     *     "changetype:" FILL "modify" SEP &lt;mod-spec&gt; &lt;mod-specs-e&gt; 
+     * &lt;newrdn&gt; ::= "newrdn:" FILL RDN | "newrdn::" FILL BASE64-RDN 
+     * &lt;deleteoldrdn&gt; ::= "deleteoldrdn:" FILL "0" | "deleteoldrdn:" FILL "1" 
+     * &lt;newsuperior&gt; ::= "newsuperior:" FILL DN | "newsuperior::" FILL BASE64-DN 
+     * &lt;mod-specs-e&gt; ::= &lt;mod-spec&gt; &lt;mod-specs-e&gt; | e 
+     * &lt;mod-spec&gt; ::= "add:" &lt;mod-val&gt; | "delete:" &lt;mod-val&gt; | "replace:" &lt;mod-val&gt; 
+     * &lt;mod-val&gt; ::= FILL ATTRIBUTE-DESCRIPTION SEP ATTRVAL-SPEC &lt;attrval-specs-e&gt; "-" SEP
      * &lt;attrval-specs-e&gt; ::= ATTRVAL-SPEC &lt;attrval-specs&gt; | e
+     * </pre>
      * 
      * @param entry The entry to feed
      * @param iter The lines iterator
      * @param operation The change operation (add, modify, delete, moddn or modrdn)
-     * @exception LdapLdifException If the change operation is invalid
+     * @exception LdapException If the change operation is invalid
      */
-    private void parseChange( LdifEntry entry, Iterator<String> iter, ChangeType operation ) throws LdapLdifException, LdapException
+    private void parseChange( LdifEntry entry, Iterator<String> iter, ChangeType operation ) throws LdapException
     {
         // The changetype and operation has already been parsed.
         entry.setChangeType( operation );
@@ -1208,8 +1176,15 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
                     {
                         int colonIndex = line.indexOf( ':' );
                         Object attributeValue = parseValue( line, colonIndex );
-                        entry.setNewSuperior( attributeValue instanceof String ? ( String ) attributeValue
-                            : StringTools.utf8ToString( ( byte[] ) attributeValue ) );
+
+                        if ( attributeValue instanceof String )
+                        {
+                            entry.setNewSuperior( ( String ) attributeValue );
+                        }
+                        else
+                        {
+                            entry.setNewSuperior( StringTools.utf8ToString( ( byte[] ) attributeValue ) );
+                        }
                     }
                     else
                     {
@@ -1241,19 +1216,19 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
 
     /**
      * Parse a ldif file. The following rules are processed :
-     * 
+     * <pre>
      * &lt;ldif-file&gt; ::= &lt;ldif-attrval-record&gt; &lt;ldif-attrval-records&gt; |
-     * &lt;ldif-change-record&gt; &lt;ldif-change-records&gt; &lt;ldif-attrval-record&gt; ::=
-     * &lt;dn-spec&gt; &lt;sep&gt; &lt;attrval-spec&gt; &lt;attrval-specs&gt; &lt;ldif-change-record&gt; ::=
-     * &lt;dn-spec&gt; &lt;sep&gt; &lt;controls-e&gt; &lt;changerecord&gt; &lt;dn-spec&gt; ::= "dn:" &lt;fill&gt;
-     * &lt;distinguishedName&gt; | "dn::" &lt;fill&gt; &lt;base64-distinguishedName&gt;
+     *     &lt;ldif-change-record&gt; &lt;ldif-change-records&gt; 
+     * &lt;ldif-attrval-record&gt; ::= &lt;dn-spec&gt; &lt;sep&gt; &lt;attrval-spec&gt; &lt;attrval-specs&gt; 
+     * &lt;ldif-change-record&gt; ::= &lt;dn-spec&gt; &lt;sep&gt; &lt;controls-e&gt; &lt;changerecord&gt; 
+     * &lt;dn-spec&gt; ::= "dn:" &lt;fill&gt; &lt;distinguishedName&gt; | "dn::" &lt;fill&gt; &lt;base64-distinguishedName&gt;
      * &lt;changerecord&gt; ::= "changetype:" &lt;fill&gt; &lt;change-op&gt;
+     * </pre>
      * 
      * @return the parsed ldifEntry
-     * @exception LdapLdifException If the ldif file does not contain a valid entry 
-     * @throws LdapException 
+     * @exception LdapException If the ldif file does not contain a valid entry 
      */
-    private LdifEntry parseEntry() throws LdapLdifException, LdapException
+    private LdifEntry parseEntry() throws LdapException
     {
         if ( ( lines == null ) || ( lines.size() == 0 ) )
         {
@@ -1308,8 +1283,8 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
             {
                 if ( containsEntries )
                 {
-                    LOG.error( I18n.err( I18n.ERR_12004 ) );
-                    throw new LdapLdifException( I18n.err( I18n.ERR_12005 ) );
+                    LOG.error( I18n.err( I18n.ERR_12004_CHANGE_NOT_ALLOWED ) );
+                    throw new LdapLdifException( I18n.err( I18n.ERR_12005_NO_CHANGE ) );
                 }
 
                 containsChanges = true;
@@ -1328,8 +1303,8 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
             {
                 if ( containsEntries )
                 {
-                    LOG.error( I18n.err( I18n.ERR_12004 ) );
-                    throw new LdapLdifException( I18n.err( I18n.ERR_12005 ) );
+                    LOG.error( I18n.err( I18n.ERR_12004_CHANGE_NOT_ALLOWED ) );
+                    throw new LdapLdifException( I18n.err( I18n.ERR_12005_NO_CHANGE ) );
                 }
 
                 containsChanges = true;
@@ -1354,8 +1329,8 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
             {
                 if ( containsChanges )
                 {
-                    LOG.error( I18n.err( I18n.ERR_12004 ) );
-                    throw new LdapLdifException( I18n.err( I18n.ERR_12005 ) );
+                    LOG.error( I18n.err( I18n.ERR_12004_CHANGE_NOT_ALLOWED ) );
+                    throw new LdapLdifException( I18n.err( I18n.ERR_12005_NO_CHANGE ) );
                 }
 
                 containsEntries = true;
@@ -1400,10 +1375,7 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
      * Parse the version from the ldif input.
      * 
      * @return A number representing the version (default to 1)
-     * @throws LdapLdifException
-     *             If the version is incorrect
-     * @throws LdapLdifException
-     *             If the input is incorrect
+     * @throws LdapLdifException If the version is incorrect or if the input is incorrect
      */
     private int parseVersion() throws LdapLdifException
     {
@@ -1427,14 +1399,14 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
 
         if ( line.startsWith( "version:" ) )
         {
-            position.inc( "version:".length() );
-            parseFill( document, position );
+            position += "version:".length();
+            parseFill( document );
 
             // Version number. Must be '1' in this version
-            versionNumber = parseNumber( document, position );
+            versionNumber = parseNumber( document );
 
             // We should not have any other chars after the number
-            if ( position.pos != document.length )
+            if ( position != document.length )
             {
                 LOG.error( I18n.err( I18n.ERR_12060 ) );
                 throw new LdapLdifException( I18n.err( I18n.ERR_12061 ) );
@@ -1564,11 +1536,9 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
     /**
      * Parse a ldif file (using the default encoding).
      * 
-     * @param fileName
-     *            The ldif file
+     * @param fileName The ldif file
      * @return A list of entries
-     * @throws LdapLdifException
-     *             If the parsing fails
+     * @throws LdapLdifException If the parsing fails
      */
     public List<LdifEntry> parseLdifFile( String fileName ) throws LdapLdifException
     {
@@ -1579,13 +1549,10 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
     /**
      * Parse a ldif file, decoding it using the given charset encoding
      * 
-     * @param fileName
-     *            The ldif file
-     * @param encoding
-     *            The charset encoding to use
+     * @param fileName The ldif file
+     * @param encoding The charset encoding to use
      * @return A list of entries
-     * @throws LdapLdifException
-     *             If the parsing fails
+     * @throws LdapLdifException If the parsing fails
      */
     // This will suppress PMD.EmptyCatchBlock warnings in this method
     @SuppressWarnings("PMD.EmptyCatchBlock")
@@ -1611,8 +1578,7 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
         try
         {
             reader = new BufferedReader(
-                new InputStreamReader( 
-                    new FileInputStream( file ), Charset.forName( encoding ) ) );
+                new InputStreamReader( new FileInputStream( file ), Charset.forName( encoding ) ) );
 
             return parseLdif( reader );
         }
@@ -1647,11 +1613,9 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
     /**
      * A method which parses a ldif string and returns a list of entries.
      * 
-     * @param ldif
-     *            The ldif string
+     * @param ldif The ldif string
      * @return A list of entries, or an empty List
-     * @throws LdapLdifException
-     *             If something went wrong
+     * @throws LdapLdifException If something went wrong
      */
     // This will suppress PMD.EmptyCatchBlock warnings in this method
     @SuppressWarnings("PMD.EmptyCatchBlock")
@@ -1664,8 +1628,7 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
             return new ArrayList<LdifEntry>();
         }
 
-        BufferedReader reader = new BufferedReader( 
-            new StringReader( ldif ) );
+        BufferedReader reader = new BufferedReader( new StringReader( ldif ) );
 
         try
         {
@@ -1710,12 +1673,10 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
     // ------------------------------------------------------------------------
     // Iterator Methods
     // ------------------------------------------------------------------------
-
     /**
      * Gets the next LDIF on the channel.
      * 
      * @return the next LDIF as a String.
-     * @exception NoSuchElementException If we can't read the next entry
      */
     private LdifEntry nextInternal()
     {
@@ -1757,7 +1718,6 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
      * Gets the next LDIF on the channel.
      * 
      * @return the next LDIF as a String.
-     * @exception NoSuchElementException If we can't read the next entry
      */
     public LdifEntry next()
     {
@@ -1783,7 +1743,14 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
      */
     public boolean hasNext()
     {
-        LOG.debug( "hasNext(): -- returning {}", ( prefetched != null ) ? Boolean.TRUE : Boolean.FALSE );
+        if ( prefetched != null )
+        {
+            LOG.debug( "hasNext(): -- returning true" );
+        }
+        else
+        {
+            LOG.debug( "hasNext(): -- returning false" );
+        }
 
         return hasNextInternal();
     }
@@ -1860,14 +1827,11 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
      * The main entry point of the LdifParser. It reads a buffer and returns a
      * List of entries.
      * 
-     * @param reader
-     *            The buffer being processed
+     * @param reader The buffer being processed
      * @return A list of entries
-     * @throws LdapLdifException
-     *             If something went wrong
-     * @throws LdapException 
+     * @throws LdapException If something went wrong
      */
-    public List<LdifEntry> parseLdif( BufferedReader reader ) throws LdapLdifException, LdapException
+    public List<LdifEntry> parseLdif( BufferedReader reader ) throws LdapException
     {
         // Create a list that will contain the read entries
         List<LdifEntry> entries = new ArrayList<LdifEntry>();
@@ -1899,8 +1863,7 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
 
 
     /**
-     * @return True if the ldif file contains entries, fals if it contains
-     *         changes
+     * @return True if the ldif file contains entries, fals if it contains changes
      */
     public boolean containsEntries()
     {
@@ -1915,12 +1878,10 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
     {
         if ( reader != null )
         {
-            position = new Position();
+            position = 0;
             reader.close();
             containsEntries = false;
             containsChanges = false;
         }
     }
 }
-
-

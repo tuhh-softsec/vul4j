@@ -19,6 +19,7 @@
  */
 package org.apache.directory.shared.ldap.ldif;
 
+
 import java.io.UnsupportedEncodingException;
 
 import javax.naming.directory.Attributes;
@@ -40,13 +41,12 @@ import org.apache.directory.shared.ldap.util.Base64;
 import org.apache.directory.shared.ldap.util.StringTools;
 
 
-
 /**
  * Some LDIF useful methods
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class LdifUtils
+public final class LdifUtils
 {
     /** The array that will be used to match the first char.*/
     private static boolean[] LDIF_SAFE_STARTING_CHAR_ALPHABET = new boolean[128];
@@ -57,12 +57,13 @@ public class LdifUtils
     /** The default length for a line in a ldif file */
     private static final int DEFAULT_LINE_LENGTH = 80;
 
+    /** The file separator */
     private static final String LINE_SEPARATOR = System.getProperty( "line.separator" );
 
     static
     {
         // Initialization of the array that will be used to match the first char.
-        for (int i = 0; i < 128; i++)
+        for ( int i = 0; i < 128; i++ )
         {
             LDIF_SAFE_STARTING_CHAR_ALPHABET[i] = true;
         }
@@ -75,7 +76,7 @@ public class LdifUtils
         LDIF_SAFE_STARTING_CHAR_ALPHABET[60] = false; // 60 (>)
 
         // Initialization of the array that will be used to match the other chars.
-        for (int i = 0; i < 128; i++)
+        for ( int i = 0; i < 128; i++ )
         {
             LDIF_SAFE_OTHER_CHARS_ALPHABET[i] = true;
         }
@@ -93,19 +94,23 @@ public class LdifUtils
      * The data does not need to be encoded if all the following are true:
      *
      * The data cannot start with the following char values:
-     *         00 (NUL)
-     *         10 (LF)
-     *         13 (CR)
-     *         32 (SPACE)
-     *         58 (:)
-     *         60 (<)
-     *         Any character with value greater than 127
+     * <ul>
+     * <li>00 (NUL)</li>
+     * <li>10 (LF)</li>
+     * <li>13 (CR)</li>
+     * <li>32 (SPACE)</li>
+     * <li>58 (:)</li>
+     * <li>60 (<)</li>
+     * <li>Any character with value greater than 127</li>
+     * </ul>
      *
      * The data cannot contain any of the following char values:
-     *         00 (NUL)
-     *         10 (LF)
-     *         13 (CR)
-     *         Any character with value greater than 127
+     * <ul>
+     * <li>00 (NUL)</li>
+     * <li>10 (LF)</li>
+     * <li>13 (CR)</li>
+     * <li>Any character with value greater than 127</li>
+     * </ul>
      *
      * The data cannot end with a space.
      *
@@ -121,7 +126,7 @@ public class LdifUtils
         }
 
         // Checking the first char
-        char currentChar = str.charAt(0);
+        char currentChar = str.charAt( 0 );
 
         if ( ( currentChar > 127 ) || !LDIF_SAFE_STARTING_CHAR_ALPHABET[currentChar] )
         {
@@ -129,9 +134,9 @@ public class LdifUtils
         }
 
         // Checking the other chars
-        for (int i = 1; i < str.length(); i++)
+        for ( int i = 1; i < str.length(); i++ )
         {
-            currentChar = str.charAt(i);
+            currentChar = str.charAt( i );
 
             if ( ( currentChar > 127 ) || !LDIF_SAFE_OTHER_CHARS_ALPHABET[currentChar] )
             {
@@ -146,6 +151,7 @@ public class LdifUtils
 
     /**
      * Convert an Attributes as LDIF
+     * 
      * @param attrs the Attributes to convert
      * @return the corresponding LDIF code as a String
      * @throws LdapException If a naming exception is encountered.
@@ -158,7 +164,9 @@ public class LdifUtils
 
     /**
      * Convert an Attributes as LDIF
+     * 
      * @param attrs the Attributes to convert
+     * @param length The ldif line length
      * @return the corresponding LDIF code as a String
      * @throws LdapException If a naming exception is encountered.
      */
@@ -170,7 +178,10 @@ public class LdifUtils
 
     /**
      * Convert an Attributes as LDIF. The DN is written.
+     * 
      * @param attrs the Attributes to convert
+     * @param dn The DN for this entry
+     * @param length The ldif line length
      * @return the corresponding LDIF code as a String
      * @throws LdapException If a naming exception is encountered.
      */
@@ -182,7 +193,9 @@ public class LdifUtils
 
     /**
      * Convert an Attributes as LDIF. The DN is written.
+     * 
      * @param attrs the Attributes to convert
+     * @param dn The DN for this entry
      * @return the corresponding LDIF code as a String
      * @throws LdapException If a naming exception is encountered.
      */
@@ -194,6 +207,7 @@ public class LdifUtils
 
     /**
      * Convert an Entry to LDIF
+     * 
      * @param entry the Entry to convert
      * @return the corresponding LDIF code as a String
      * @throws LdapException If a naming exception is encountered.
@@ -206,6 +220,7 @@ public class LdifUtils
 
     /**
      * Convert an Entry to LDIF including a version number at the top
+     * 
      * @param entry the Entry to convert
      * @param includeVersionInfo flag to tell whether to include version number or not
      * @return the corresponding LDIF code as a String
@@ -215,7 +230,7 @@ public class LdifUtils
     {
         String ldif = convertEntryToLdif( entry, DEFAULT_LINE_LENGTH );
 
-        if( includeVersionInfo )
+        if ( includeVersionInfo )
         {
             ldif = "version: 1" + LINE_SEPARATOR + ldif;
         }
@@ -226,6 +241,7 @@ public class LdifUtils
 
     /**
      * Convert all the Entry's attributes to LDIF. The DN is not written
+     * 
      * @param entry the Entry to convert
      * @return the corresponding LDIF code as a String
      * @throws LdapException If a naming exception is encountered.
@@ -245,7 +261,7 @@ public class LdifUtils
      */
     public static Attributes convertAttributesFromLdif( String ldif ) throws LdapLdifException
     {
-        LdifAttributesReader reader = new  LdifAttributesReader();
+        LdifAttributesReader reader = new LdifAttributesReader();
 
         return AttributeUtils.toAttributes( reader.parseEntry( ldif ) );
     }
@@ -253,6 +269,7 @@ public class LdifUtils
 
     /**
      * Convert an Entry as LDIF
+     * 
      * @param entry the Entry to convert
      * @param length the expected line length
      * @return the corresponding LDIF code as a String
@@ -278,7 +295,7 @@ public class LdifUtils
         }
 
         // Then all the attributes
-        for ( EntryAttribute attribute:entry )
+        for ( EntryAttribute attribute : entry )
         {
             sb.append( convertToLdif( attribute, length ) );
         }
@@ -289,6 +306,7 @@ public class LdifUtils
 
     /**
      * Convert the Entry's attributes to LDIF. The DN is not written.
+     * 
      * @param entry the Entry to convert
      * @param length the expected line length
      * @return the corresponding LDIF code as a String
@@ -299,7 +317,7 @@ public class LdifUtils
         StringBuilder sb = new StringBuilder();
 
         // Then all the attributes
-        for ( EntryAttribute attribute:entry )
+        for ( EntryAttribute attribute : entry )
         {
             sb.append( convertToLdif( attribute, length ) );
         }
@@ -310,6 +328,7 @@ public class LdifUtils
 
     /**
      * Convert an LdifEntry to LDIF
+     * 
      * @param entry the LdifEntry to convert
      * @return the corresponding LDIF as a String
      * @throws LdapException If a naming exception is encountered.
@@ -322,6 +341,7 @@ public class LdifUtils
 
     /**
      * Convert an LdifEntry to LDIF
+     * 
      * @param entry the LdifEntry to convert
      * @param length The maximum line's length
      * @return the corresponding LDIF as a String
@@ -374,7 +394,7 @@ public class LdifUtils
 
         switch ( entry.getChangeType() )
         {
-            case None :
+            case None:
                 if ( entry.hasControls() )
                 {
                     sb.append( stripLineToNChars( "changetype: " + ChangeType.Add, length ) );
@@ -382,21 +402,21 @@ public class LdifUtils
 
                 // Fallthrough
 
-            case Add :
+            case Add:
                 if ( ( entry.getEntry() == null ) )
                 {
                     throw new LdapException( I18n.err( I18n.ERR_12082 ) );
                 }
 
                 // Now, iterate through all the attributes
-                for ( EntryAttribute attribute:entry.getEntry() )
+                for ( EntryAttribute attribute : entry.getEntry() )
                 {
                     sb.append( convertToLdif( attribute, length ) );
                 }
 
                 break;
 
-            case Delete :
+            case Delete:
                 if ( entry.getEntry() != null )
                 {
                     throw new LdapException( I18n.err( I18n.ERR_12081 ) );
@@ -404,13 +424,12 @@ public class LdifUtils
 
                 break;
 
-            case ModDn :
-            case ModRdn :
+            case ModDn:
+            case ModRdn:
                 if ( entry.getEntry() != null )
                 {
                     throw new LdapException( I18n.err( I18n.ERR_12083 ) );
                 }
-
 
                 // Stores the new RDN
                 EntryAttribute newRdn = new DefaultEntryAttribute( "newrdn", entry.getNewRdn() );
@@ -431,7 +450,7 @@ public class LdifUtils
                 sb.append( '\n' );
 
                 // Stores the optional newSuperior
-                if ( ! StringTools.isEmpty( entry.getNewSuperior() ) )
+                if ( !StringTools.isEmpty( entry.getNewSuperior() ) )
                 {
                     EntryAttribute newSuperior = new DefaultEntryAttribute( "newsuperior", entry.getNewSuperior() );
                     sb.append( convertToLdif( newSuperior, length ) );
@@ -439,24 +458,24 @@ public class LdifUtils
 
                 break;
 
-            case Modify :
-                for ( Modification modification:entry.getModificationItems() )
+            case Modify:
+                for ( Modification modification : entry.getModificationItems() )
                 {
                     switch ( modification.getOperation() )
                     {
-                        case ADD_ATTRIBUTE :
+                        case ADD_ATTRIBUTE:
                             sb.append( "add: " );
                             break;
 
-                        case REMOVE_ATTRIBUTE :
+                        case REMOVE_ATTRIBUTE:
                             sb.append( "delete: " );
                             break;
 
-                        case REPLACE_ATTRIBUTE :
+                        case REPLACE_ATTRIBUTE:
                             sb.append( "replace: " );
                             break;
 
-                        default :
+                        default:
                             break; // Do nothing
 
                     }
@@ -469,7 +488,7 @@ public class LdifUtils
                 }
                 break;
 
-            default :
+            default:
                 break; // Do nothing
 
         }
@@ -479,14 +498,16 @@ public class LdifUtils
         return sb.toString();
     }
 
+
     /**
      * Base64 encode a String
+     * 
      * @param str The string to encode
      * @return the base 64 encoded string
      */
     private static String encodeBase64( String str )
     {
-        char[] encoded =null;
+        char[] encoded = null;
 
         try
         {
@@ -504,6 +525,7 @@ public class LdifUtils
 
     /**
      * Converts an EntryAttribute to LDIF
+     * 
      * @param attr the >EntryAttribute to convert
      * @return the corresponding LDIF code as a String
      * @throws LdapException If a naming exception is encountered.
@@ -516,6 +538,7 @@ public class LdifUtils
 
     /**
      * Converts an EntryAttribute as LDIF
+     * 
      * @param attr the EntryAttribute to convert
      * @param length the expected line length
      * @return the corresponding LDIF code as a String
@@ -525,7 +548,7 @@ public class LdifUtils
     {
         StringBuilder sb = new StringBuilder();
 
-        for ( Value<?> value:attr )
+        for ( Value<?> value : attr )
         {
             StringBuilder lineBuffer = new StringBuilder();
 
@@ -556,7 +579,7 @@ public class LdifUtils
                 {
                     lineBuffer.append( ":" );
 
-                    if ( str != null)
+                    if ( str != null )
                     {
                         lineBuffer.append( " " ).append( str );
                     }
@@ -573,11 +596,12 @@ public class LdifUtils
 
     /**
      * Strips the String every n specified characters
+     * 
      * @param str the string to strip
      * @param nbChars the number of characters
      * @return the stripped String
      */
-    public static String stripLineToNChars( String str, int nbChars)
+    public static String stripLineToNChars( String str, int nbChars )
     {
         int strLength = str.length();
 
@@ -597,12 +621,11 @@ public class LdifUtils
 
         int remaining = ( strLength - nbChars ) % charsPerLine;
 
-        int nbLines = 1 + ( ( strLength - nbChars ) / charsPerLine ) +
-                        ( remaining == 0 ? 0 : 1 );
+        int nbLines = 1 + ( ( strLength - nbChars ) / charsPerLine ) + ( remaining == 0 ? 0 : 1 );
 
         int nbCharsTotal = strLength + nbLines + nbLines - 2;
 
-        char[] buffer = new char[ nbCharsTotal ];
+        char[] buffer = new char[nbCharsTotal];
         char[] orig = str.toCharArray();
 
         int posSrc = 0;
@@ -612,7 +635,7 @@ public class LdifUtils
         posSrc += nbChars;
         posDst += nbChars;
 
-        for ( int i = 0; i < nbLines - 2; i ++ )
+        for ( int i = 0; i < nbLines - 2; i++ )
         {
             buffer[posDst++] = '\n';
             buffer[posDst++] = ' ';
@@ -646,24 +669,24 @@ public class LdifUtils
      * Attribute ID/Value
      * @return An Attributes instance
      * @throws LdapException If the data are invalid
-     * @throws LdapLdifException
      */
-    public static Attributes createAttributes( Object... avas ) throws LdapException, LdapLdifException
+    public static Attributes createAttributes( Object... avas ) throws LdapException
     {
         StringBuilder sb = new StringBuilder();
         int pos = 0;
         boolean valueExpected = false;
 
-        for ( Object ava : avas)
+        for ( Object ava : avas )
         {
             if ( !valueExpected )
             {
-                if ( !(ava instanceof String) )
+                if ( !( ava instanceof String ) )
                 {
-                    throw new LdapInvalidAttributeValueException( ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX, I18n.err( I18n.ERR_12085, (pos+1) ) );
+                    throw new LdapInvalidAttributeValueException( ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX, I18n.err(
+                        I18n.ERR_12085, ( pos + 1 ) ) );
                 }
 
-                String attribute = (String)ava;
+                String attribute = ( String ) ava;
                 sb.append( attribute );
 
                 if ( attribute.indexOf( ':' ) != -1 )
@@ -679,17 +702,18 @@ public class LdifUtils
             {
                 if ( ava instanceof String )
                 {
-                    sb.append( ": " ).append( (String)ava ).append( '\n' );
+                    sb.append( ": " ).append( ( String ) ava ).append( '\n' );
                 }
                 else if ( ava instanceof byte[] )
                 {
                     sb.append( ":: " );
-                    sb.append( new String( Base64.encode( (byte[] )ava ) ) );
+                    sb.append( new String( Base64.encode( ( byte[] ) ava ) ) );
                     sb.append( '\n' );
                 }
                 else
                 {
-                    throw new LdapInvalidAttributeValueException( ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX, I18n.err( I18n.ERR_12086, (pos+1) ) );
+                    throw new LdapInvalidAttributeValueException( ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX, I18n.err(
+                        I18n.ERR_12086, ( pos + 1 ) ) );
                 }
 
                 valueExpected = false;
@@ -698,7 +722,8 @@ public class LdifUtils
 
         if ( valueExpected )
         {
-            throw new LdapInvalidAttributeValueException( ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX, I18n.err( I18n.ERR_12087 ) );
+            throw new LdapInvalidAttributeValueException( ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX, I18n
+                .err( I18n.ERR_12087 ) );
         }
 
         LdifAttributesReader reader = new LdifAttributesReader();
@@ -726,9 +751,8 @@ public class LdifUtils
      * Attribute ID/Value
      * @return An Entry instance
      * @throws LdapException If the data are invalid
-     * @throws LdapLdifException
      */
-    public static Entry createEntry( DN dn, Object... avas ) throws LdapException, LdapLdifException
+    public static Entry createEntry( DN dn, Object... avas ) throws LdapException
     {
         return createEntry( null, dn, avas );
     }
@@ -752,9 +776,8 @@ public class LdifUtils
      * Attribute ID/Value
      * @return An Entry instance
      * @throws LdapException If the data are invalid
-     * @throws LdapLdifException
      */
-    public static Entry createEntry( String dn, Object... avas ) throws LdapException, LdapLdifException
+    public static Entry createEntry( String dn, Object... avas ) throws LdapException
     {
         return createEntry( null, new DN( dn ), avas );
     }
@@ -773,14 +796,14 @@ public class LdifUtils
      *     "jpegPhoto", new byte[]{0x01, 0x02} );
      * </pre>
      *
+     * @param schemaManager The SchemaManager instance
      * @param dn The entry's DN
      * @param avas The AttributeType and Values, using a ldif format, or a couple of
      * Attribute ID/Value
      * @return An Entry instance
      * @throws LdapException If the data are invalid
-     * @throws LdapLdifException
      */
-    public static Entry createEntry( SchemaManager schemaManager, String dn, Object... avas ) throws LdapException, LdapLdifException
+    public static Entry createEntry( SchemaManager schemaManager, String dn, Object... avas ) throws LdapException
     {
         return createEntry( schemaManager, new DN( dn ), avas );
     }
@@ -799,29 +822,30 @@ public class LdifUtils
      *     "jpegPhoto", new byte[]{0x01, 0x02} );
      * </pre>
      *
+     * @param schemaManager The SchemaManager instance
      * @param dn The entry's DN
      * @param avas The AttributeType and Values, using a ldif format, or a couple of
      * Attribute ID/Value
      * @return An Entry instance
      * @throws LdapException If the data are invalid
-     * @throws LdapLdifException
      */
-    public static Entry createEntry( SchemaManager schemaManager, DN dn, Object... avas ) throws LdapException, LdapLdifException
+    public static Entry createEntry( SchemaManager schemaManager, DN dn, Object... avas ) throws LdapException
     {
         StringBuilder sb = new StringBuilder();
         int pos = 0;
         boolean valueExpected = false;
 
-        for ( Object ava : avas)
+        for ( Object ava : avas )
         {
             if ( !valueExpected )
             {
-                if ( !(ava instanceof String) )
+                if ( !( ava instanceof String ) )
                 {
-                    throw new LdapInvalidAttributeValueException( ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX, I18n.err( I18n.ERR_12085, (pos+1) ) );
+                    throw new LdapInvalidAttributeValueException( ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX, I18n.err(
+                        I18n.ERR_12085, ( pos + 1 ) ) );
                 }
 
-                String attribute = (String)ava;
+                String attribute = ( String ) ava;
                 sb.append( attribute );
 
                 if ( attribute.indexOf( ':' ) != -1 )
@@ -837,17 +861,18 @@ public class LdifUtils
             {
                 if ( ava instanceof String )
                 {
-                    sb.append( ": " ).append( (String)ava ).append( '\n' );
+                    sb.append( ": " ).append( ( String ) ava ).append( '\n' );
                 }
                 else if ( ava instanceof byte[] )
                 {
                     sb.append( ":: " );
-                    sb.append( new String( Base64.encode( (byte[] )ava ) ) );
+                    sb.append( new String( Base64.encode( ( byte[] ) ava ) ) );
                     sb.append( '\n' );
                 }
                 else
                 {
-                    throw new LdapInvalidAttributeValueException( ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX, I18n.err( I18n.ERR_12086, (pos+1) ) );
+                    throw new LdapInvalidAttributeValueException( ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX, I18n.err(
+                        I18n.ERR_12086, ( pos + 1 ) ) );
                 }
 
                 valueExpected = false;
@@ -856,7 +881,8 @@ public class LdifUtils
 
         if ( valueExpected )
         {
-            throw new LdapInvalidAttributeValueException( ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX, I18n.err( I18n.ERR_12087 ) );
+            throw new LdapInvalidAttributeValueException( ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX, I18n
+                .err( I18n.ERR_12087 ) );
         }
 
         LdifAttributesReader reader = new LdifAttributesReader();

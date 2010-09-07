@@ -19,6 +19,7 @@
  */
 package org.apache.directory.shared.ldap.ldif;
 
+
 import org.apache.directory.shared.ldap.exception.LdapException;
 
 
@@ -29,9 +30,10 @@ import org.apache.directory.shared.ldap.exception.LdapException;
  */
 public class LdapLdifException extends LdapException
 {
-    /** The serial version UUID */
+    /** The serial version UID */
     private static final long serialVersionUID = 1L;
-    
+
+
     /**
      * Creates a new instance of LdapLdifException.
      *

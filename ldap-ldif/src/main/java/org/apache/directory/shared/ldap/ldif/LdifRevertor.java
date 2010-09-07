@@ -45,12 +45,15 @@ import org.apache.directory.shared.ldap.util.AttributeUtils;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class LdifRevertor
+public final class LdifRevertor
 {
-    /** Two constants for the deleteOldRdn flag */
+    /** Flag used when we want to delete the old RDN */
     public static final boolean DELETE_OLD_RDN = true;
+
+    /** Flag used when we want to keep the old RDN */
     public static final boolean KEEP_OLD_RDN = false;
-    
+
+
     /**
      * Compute a reverse LDIF of an AddRequest. It's simply a delete request
      * of the added entry
@@ -74,6 +77,7 @@ public class LdifRevertor
      * @param dn The deleted entry DN
      * @param deletedEntry The entry which has been deleted
      * @return A reverse LDIF
+     * @throws LdapException If something went wrong
      */
     public static LdifEntry reverseDel( DN dn, Entry deletedEntry ) throws LdapException
     {
@@ -92,23 +96,25 @@ public class LdifRevertor
 
 
     /**
-    *
-    * Compute the reversed LDIF for a modify request. We will deal with the
-    * three kind of modifications :
-    * - add
-    * - remove
-    * - replace
-    *
-    * As the modifications should be issued in a reversed order ( ie, for
-    * the initials modifications {A, B, C}, the reversed modifications will
-    * be ordered like {C, B, A}), we will change the modifications order.
-    *
-    * @param dn the dn of the modified entry
-    * @param forwardModifications the modification items for the forward change
-    * @param modifiedEntry The modified entry. Necessary for the destructive modifications
-    * @return A reversed LDIF
-    * @throws NamingException If something went wrong
-    */
+     *
+     * Compute the reversed LDIF for a modify request. We will deal with the
+     * three kind of modifications :
+     * <ul>
+     * <li>add</li>
+     * <li>remove</li>
+     * <li>replace</li>
+     * </ul>
+     * 
+     * As the modifications should be issued in a reversed order ( ie, for
+     * the initials modifications {A, B, C}, the reversed modifications will
+     * be ordered like {C, B, A}), we will change the modifications order.
+     *
+     * @param dn the dn of the modified entry
+     * @param forwardModifications the modification items for the forward change
+     * @param modifiedEntry The modified entry. Necessary for the destructive modifications
+     * @return A reversed LDIF
+     * @throws LdapException If something went wrong
+     */
     public static LdifEntry reverseModify( DN dn, List<Modification> forwardModifications, Entry modifiedEntry )
         throws LdapException
     {
@@ -192,7 +198,8 @@ public class LdifRevertor
 
                     if ( mod.get() == null )
                     {
-                        reverseModification = new DefaultModification( ModificationOperation.REPLACE_ATTRIBUTE, previous );
+                        reverseModification = new DefaultModification( ModificationOperation.REPLACE_ATTRIBUTE,
+                            previous );
                         reverseModifications.add( 0, reverseModification );
                         continue;
                     }
@@ -244,7 +251,7 @@ public class LdifRevertor
      * @param newSuperiorDn the new parent dn to be (must not be null)
      * @param modifiedDn the dn of the entry being moved (must not be null)
      * @return a reverse LDIF
-     * @throws NamingException if something went wrong
+     * @throws LdapException if something went wrong
      */
     public static LdifEntry reverseMove( DN newSuperiorDn, DN modifiedDn ) throws LdapException
     {
@@ -283,29 +290,29 @@ public class LdifRevertor
         return entry;
     }
 
-    
+
     /**
      * A small helper class to compute the simple revert.
      */
-    private static LdifEntry revertEntry( Entry entry, DN newDn, 
-        DN newSuperior, RDN oldRdn, RDN newRdn ) throws LdapInvalidDnException
+    private static LdifEntry revertEntry( Entry entry, DN newDn, DN newSuperior, RDN oldRdn, RDN newRdn )
+        throws LdapInvalidDnException
     {
         LdifEntry reverted = new LdifEntry();
-        
+
         // We have a composite old RDN, something like A=a+B=b
         // It does not matter if the RDNs overlap
         reverted.setChangeType( ChangeType.ModRdn );
-        
+
         if ( newSuperior != null )
         {
-            DN restoredDn = newSuperior.add( newRdn ); 
+            DN restoredDn = newSuperior.add( newRdn );
             reverted.setDn( restoredDn );
         }
         else
         {
             reverted.setDn( newDn );
         }
-        
+
         reverted.setNewRdn( oldRdn.getName() );
 
         // Is the newRdn's value present in the entry ?
@@ -314,7 +321,7 @@ public class LdifRevertor
         boolean keepOldRdn = entry.contains( newRdn.getNormType(), newRdn.getNormValue() );
 
         reverted.setDeleteOldRdn( !keepOldRdn );
-        
+
         if ( newSuperior != null )
         {
             DN oldSuperior = entry.getDn();
@@ -325,8 +332,8 @@ public class LdifRevertor
 
         return reverted;
     }
-    
-    
+
+
     /**
      * A helper method to generate the modified attribute after a rename.
      */
@@ -334,53 +341,52 @@ public class LdifRevertor
     {
         LdifEntry restored = new LdifEntry();
         restored.setChangeType( ChangeType.Modify );
-        
+
         // We have to use the parent DN, the entry has already
         // been renamed
         restored.setDn( parentDn );
 
-        for ( AVA ava:newRdn )
+        for ( AVA ava : newRdn )
         {
             // No need to add something which has already been added
             // in the previous modification
-            if ( !entry.contains( ava.getNormType(), ava.getNormValue().getString() ) &&
-                 !(ava.getNormType().equals( oldRdn.getNormType() ) &&
-                   ava.getNormValue().getString().equals( oldRdn.getNormValue().getString() ) ) )
+            if ( !entry.contains( ava.getNormType(), ava.getNormValue().getString() )
+                && !( ava.getNormType().equals( oldRdn.getNormType() ) && ava.getNormValue().getString().equals(
+                    oldRdn.getNormValue().getString() ) ) )
             {
                 // Create the modification, which is an Remove
-                Modification modification = new DefaultModification( 
-                    ModificationOperation.REMOVE_ATTRIBUTE, 
+                Modification modification = new DefaultModification( ModificationOperation.REMOVE_ATTRIBUTE,
                     new DefaultEntryAttribute( ava.getUpType(), ava.getUpValue().getString() ) );
-                
+
                 restored.addModificationItem( modification );
             }
         }
-        
+
         return restored;
     }
-    
-    
+
+
     /**
      * A helper method which generates a reverted entry
      */
-    private static LdifEntry generateReverted( DN newSuperior, RDN newRdn, DN newDn, 
-        RDN oldRdn, boolean deleteOldRdn ) throws LdapInvalidDnException
+    private static LdifEntry generateReverted( DN newSuperior, RDN newRdn, DN newDn, RDN oldRdn, boolean deleteOldRdn )
+        throws LdapInvalidDnException
     {
         LdifEntry reverted = new LdifEntry();
         reverted.setChangeType( ChangeType.ModRdn );
 
         if ( newSuperior != null )
         {
-            DN restoredDn = newSuperior.add( newRdn ); 
+            DN restoredDn = newSuperior.add( newRdn );
             reverted.setDn( restoredDn );
         }
         else
         {
             reverted.setDn( newDn );
         }
-        
+
         reverted.setNewRdn( oldRdn.getName() );
-        
+
         if ( newSuperior != null )
         {
             DN oldSuperior = newDn;
@@ -388,14 +394,14 @@ public class LdifRevertor
             oldSuperior = oldSuperior.remove( oldSuperior.size() - 1 );
             reverted.setNewSuperior( oldSuperior.getName() );
         }
-        
+
         // Delete the newRDN values
         reverted.setDeleteOldRdn( deleteOldRdn );
-        
+
         return reverted;
     }
-    
-    
+
+
     /**
      * Revert a DN to it's previous version by removing the first RDN and adding the given RDN.
      * It's a rename operation. The biggest issue is that we have many corner cases, depending 
@@ -405,14 +411,15 @@ public class LdifRevertor
      * @param newRdn The new RDN
      * @param deleteOldRdn A flag which tells to delete the old RDN AVAs
      * @return A list of LDIF reverted entries 
-     * @throws NamingException If the name reverting failed
+     * @throws LdapInvalidDnException If the name reverting failed
      */
-    public static List<LdifEntry> reverseRename( Entry entry, RDN newRdn, boolean deleteOldRdn ) throws LdapInvalidDnException
+    public static List<LdifEntry> reverseRename( Entry entry, RDN newRdn, boolean deleteOldRdn )
+        throws LdapInvalidDnException
     {
         return reverseMoveAndRename( entry, null, newRdn, deleteOldRdn );
     }
-    
-    
+
+
     /**
      * Revert a DN to it's previous version by removing the first RDN and adding the given RDN.
      * It's a rename operation. The biggest issue is that we have many corner cases, depending 
@@ -423,9 +430,10 @@ public class LdifRevertor
      * @param newRdn The new RDN
      * @param deleteOldRdn A flag which tells to delete the old RDN AVAs
      * @return A list of LDIF reverted entries 
-     * @throws NamingException If the name reverting failed
+     * @throws LdapInvalidDnException If the name reverting failed
      */
-    public static List<LdifEntry> reverseMoveAndRename( Entry entry, DN newSuperior, RDN newRdn, boolean deleteOldRdn ) throws LdapInvalidDnException
+    public static List<LdifEntry> reverseMoveAndRename( Entry entry, DN newSuperior, RDN newRdn, boolean deleteOldRdn )
+        throws LdapInvalidDnException
     {
         DN parentDn = entry.getDn();
         DN newDn = null;
@@ -464,7 +472,7 @@ public class LdifRevertor
                 // We have a simple old RDN, something like A=a
                 // If the values overlap, we can't rename the entry, just get out
                 // with an error
-                throw new LdapInvalidDnException( I18n.err( I18n.ERR_12080 ) ); 
+                throw new LdapInvalidDnException( I18n.err( I18n.ERR_12080 ) );
             }
 
             reverted = revertEntry( entry, newDn, newSuperior, oldRdn, newRdn );
@@ -479,10 +487,10 @@ public class LdifRevertor
                 // The old RDN is simple
                 boolean overlapping = false;
                 boolean existInEntry = false;
-                
+
                 // Does it overlap ?
                 // Is the new RDN AVAs contained into the entry?
-                for ( AVA atav:newRdn )
+                for ( AVA atav : newRdn )
                 {
                     if ( atav.equals( oldRdn.getAtav() ) )
                     {
@@ -497,7 +505,7 @@ public class LdifRevertor
                         }
                     }
                 }
-                
+
                 if ( overlapping )
                 {
                     // The new RDN includes the old one
@@ -507,12 +515,12 @@ public class LdifRevertor
                         // We have to restore them, but we also have to remove
                         // the new values
                         reverted = generateReverted( newSuperior, newRdn, newDn, oldRdn, KEEP_OLD_RDN );
-                        
+
                         entries.add( reverted );
-                        
+
                         // Now, restore the initial values
                         LdifEntry restored = generateModify( parentDn, entry, oldRdn, newRdn );
-                        
+
                         entries.add( restored );
                     }
                     else
@@ -520,7 +528,7 @@ public class LdifRevertor
                         // This is the simplest case, we don't have to restore
                         // some existing values (case 8.1 and 9.1)
                         reverted = generateReverted( newSuperior, newRdn, newDn, oldRdn, DELETE_OLD_RDN );
-                        
+
                         entries.add( reverted );
                     }
                 }
@@ -532,11 +540,11 @@ public class LdifRevertor
                         // We have to restore them, but we also have to remove
                         // the new values
                         reverted = generateReverted( newSuperior, newRdn, newDn, oldRdn, KEEP_OLD_RDN );
-                        
+
                         entries.add( reverted );
-                        
+
                         LdifEntry restored = generateModify( parentDn, entry, oldRdn, newRdn );
-                        
+
                         entries.add( restored );
                     }
                     else
@@ -554,18 +562,18 @@ public class LdifRevertor
                 // Does the RDN overlap ?
                 boolean overlapping = false;
                 boolean existInEntry = false;
-                
+
                 Set<AVA> oldAtavs = new HashSet<AVA>();
 
                 // We first build a set with all the oldRDN ATAVs 
-                for ( AVA atav:oldRdn )
+                for ( AVA atav : oldRdn )
                 {
                     oldAtavs.add( atav );
                 }
-                
+
                 // Now we loop on the newRDN ATAVs to evaluate if the Rdns are overlaping
                 // and if the newRdn ATAVs are present in the entry
-                for ( AVA atav:newRdn )
+                for ( AVA atav : newRdn )
                 {
                     if ( oldAtavs.contains( atav ) )
                     {
@@ -576,8 +584,8 @@ public class LdifRevertor
                         existInEntry = true;
                     }
                 }
-                
-                if ( overlapping ) 
+
+                if ( overlapping )
                 {
                     // They overlap
                     if ( existInEntry )
@@ -585,7 +593,7 @@ public class LdifRevertor
                         // In this case, we have to reestablish the removed ATAVs
                         // (Cases 12.2 and 13.2)
                         reverted = generateReverted( newSuperior, newRdn, newDn, oldRdn, KEEP_OLD_RDN );
-    
+
                         entries.add( reverted );
                     }
                     else
@@ -594,7 +602,7 @@ public class LdifRevertor
                         // overlapping values will be re-created.
                         // (Cases 12.1 and 13.1)
                         reverted = generateReverted( newSuperior, newRdn, newDn, oldRdn, DELETE_OLD_RDN );
-    
+
                         entries.add( reverted );
                     }
                 }
@@ -606,11 +614,11 @@ public class LdifRevertor
                         // In this case, we have to reestablish the removed ATAVs
                         // (Cases 10.2 and 11.2)
                         reverted = generateReverted( newSuperior, newRdn, newDn, oldRdn, KEEP_OLD_RDN );
-    
+
                         entries.add( reverted );
-                        
+
                         LdifEntry restored = generateModify( parentDn, entry, oldRdn, newRdn );
-                        
+
                         entries.add( restored );
                     }
                     else
@@ -618,7 +626,7 @@ public class LdifRevertor
                         // We are safe ! We can delete all the new Rdn ATAVs
                         // (Cases 10.1 and 11.1)
                         reverted = generateReverted( newSuperior, newRdn, newDn, oldRdn, DELETE_OLD_RDN );
-    
+
                         entries.add( reverted );
                     }
                 }
