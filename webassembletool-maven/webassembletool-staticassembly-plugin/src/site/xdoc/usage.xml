@@ -12,7 +12,7 @@
 			</p>
 			<p>
 				<ul>
-					<li>Pages in folder src/main/resources/pages can use <a href="/taglib.html">Esigate taglib</a>
+					<li>Pages in folder src/main/resources/pages can use <a href="/aggregator.html">aggregator syntax</a>
 						in order to include template or block</li>
 					<li>Modules in folder src/main/resources/modules are the template
 						and block to reuse </li>
