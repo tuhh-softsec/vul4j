@@ -64,9 +64,9 @@
 	</build>
 	<repositories>
 		<repository>
-			<id>webassembletool-repository</id>
-			<name>Website Assembling Toolkit repository</name>
-			<url>http://webassembletool.sourceforge.net/maven/repository</url>
+			<id>esigate-repository</id>
+			<name>Esigate repository</name>
+			<url>http://www.esigate.org/maven/repository</url>
 		</repository>
 	</repositories>
 </project>

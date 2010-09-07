@@ -276,17 +276,17 @@
 			<url>http://developer.jasig.org/repo/content/repositories/m2</url>
 		</repository>
 		<repository>
-			<id>webassembletool-repository</id>
+			<id>esigate-repository</id>
 			<name>ESIGate repository</name>
-			<url>http://webassembletool.sourceforge.net/maven/repository</url>
+			<url>http://www.esigate.org/maven/repository</url>
 			<snapshots>
 				<enabled>false</enabled>
 			</snapshots>
 		</repository>
 		<repository>
-			<id>webassembletool-snapshots</id>
+			<id>esigate-snapshots</id>
 			<name>ESIGate snapshots repository</name>
-			<url>http://webassembletool.sourceforge.net/maven/snapshots</url>
+			<url>http://www.esigate.org/maven/snapshots</url>
 			<releases>
 				<enabled>false</enabled>
 			</releases>
