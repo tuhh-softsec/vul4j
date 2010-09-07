@@ -55,13 +55,10 @@ include:</p>
 
 <section name="Documentation">
 
-<p>User documentation is available as package descriptions within the 
-<a href="http://commons.apache.org/digester/commons-digester-2.0/docs/api/">JavaDoc
-API documents</a>.  In particular, you should read the package description for 
-the <code>org.apache.commons.digester</code> package for detailed information 
-on using the package.</p>
+<p>User documentation is available in the website, you can start reading the
+<a href="http://commons.apache.org/digester/commons-digester-2.1/core.html">Core APIs</a>.</p>
 
-<p>The <a href="http://commons.apache.org/digester/commons-digester-2.0/RELEASE-NOTES.txt">
+<p>The <a href="http://commons.apache.org/digester/commons-digester-2.1/RELEASE-NOTES.txt">
 Release Notes</a> document the new features and bug fixes that have been
 included in this release.</p>
 
@@ -81,6 +78,34 @@ download the files.
 </section>
 
 <section name="Releases">
+    <subsection name="Digester 2.1 Release September 2010)">
+        <p>
+Digester 2.1 is a minor release with new features. New projects are encouraged to use this release
+of digester. There are breaking changes from Digester 2.0, see release notes
+in detail before choosing to upgrade. There is no urgency for existing
+projects to upgrade; Digester 2.0 has proven to be a stable release.
+        </p>
+        <p>
+Digester 2.1 <b>requires a minimum of JDK 1.5</b>.
+        </p>
+        <p>
+The recommended dependency set for Digester 2.1 is:
+        </p>
+<table>
+<tr>
+<th colspan='3'>Recommended Dependency Set</th>
+</tr>
+<tr>
+<td>Digester</td>
+<td>+Logging 1.1.1</td>
+<td>+BeanUtils 1.8.3</td>
+</tr>
+</table>
+        <p>
+It is also possible to use Logging 1.0.x or BeanUtils 1.8.0 instead.
+        </p>
+    </subsection>
+
     <subsection name='Digester 2.0 Release (January 2009)'>
         <p>
 Digester 2.0 is a major release. New projects are encouraged to use this release
