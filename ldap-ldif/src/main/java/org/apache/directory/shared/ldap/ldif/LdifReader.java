@@ -174,7 +174,7 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
     protected List<String> lines;
 
     /** The current position */
-    protected static int position;
+    protected int position;
 
     /** The ldif file version default value */
     protected static final int DEFAULT_VERSION = 1;
@@ -393,7 +393,7 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
 
 
     // <fill> ::= ' ' <fill> | e
-    private static void parseFill( char[] document )
+    private void parseFill( char[] document )
     {
         while ( StringTools.isCharASCII( document, position, ' ' ) )
         {
@@ -413,7 +413,7 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
      * @param document The document containing the number to parse
      * @return a String representing the parsed number
      */
-    private static String parseNumber( char[] document )
+    private String parseNumber( char[] document )
     {
         int initPos = position;
 
