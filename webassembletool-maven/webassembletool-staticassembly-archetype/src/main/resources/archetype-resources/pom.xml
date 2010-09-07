@@ -6,7 +6,6 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>\${artifactId}</name>
-	<url>http://maven.lvl.intranet/monclient/monprojet</url>
 	<build>
 		<finalName>\${artifactId}</finalName>
 		<filters>
@@ -62,11 +61,11 @@
 			</plugin>
 		</plugins>
 	</build>
-	<repositories>
-		<repository>
+	<pluginRepositories>
+		<pluginRepository>
 			<id>esigate-repository</id>
 			<name>Esigate repository</name>
 			<url>http://www.esigate.org/maven/repository</url>
-		</repository>
-	</repositories>
+		</pluginRepository>
+	</pluginRepositories>
 </project>
