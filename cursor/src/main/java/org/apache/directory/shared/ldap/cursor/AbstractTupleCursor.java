@@ -29,8 +29,8 @@ import org.apache.directory.shared.i18n.I18n;
  * An abstract TupleCursor.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @param K The key type for the Tuple
- * @param V The associated Value type
+ * @param <K> The key type for the Tuple
+ * @param <V> The associated Value type
  */
 public abstract class AbstractTupleCursor<K, V> implements TupleCursor<K, V>
 {

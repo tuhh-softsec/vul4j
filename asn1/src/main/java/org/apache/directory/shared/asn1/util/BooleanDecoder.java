@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class BooleanDecoder
+public final class BooleanDecoder
 {
     /** The logger */
     private static final Logger LOG = LoggerFactory.getLogger( BooleanDecoder.class );

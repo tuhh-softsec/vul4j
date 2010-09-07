@@ -35,7 +35,7 @@ package org.apache.directory.shared.ldap.cursor;
  * UnsupportedOperationExceptions.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @param E The type of element on which this cursor will iterate
+ * @param <E> The type of element on which this cursor will iterate
  */
 public interface Cursor<E> extends Iterable<E>
 {

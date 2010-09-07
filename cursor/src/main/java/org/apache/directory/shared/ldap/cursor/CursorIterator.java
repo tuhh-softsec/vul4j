@@ -30,6 +30,7 @@ import org.apache.directory.shared.i18n.I18n;
  * constructs.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
+ * @param <E> The type of element on which this cursor will iterate
  */
 public class CursorIterator<E> implements Iterator<E>
 {

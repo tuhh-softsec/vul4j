@@ -29,7 +29,7 @@ import org.apache.directory.shared.i18n.I18n;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class LongDecoder
+public final class LongDecoder
 {
     /** A mask used to get only the necessary bytes */
     private static final long[] MASK = new long[]

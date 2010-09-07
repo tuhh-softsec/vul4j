@@ -786,6 +786,8 @@ public enum I18n
 
     /**
      * Creates a new instance of I18n.
+     * 
+     * @param errorCode the error code
      */
     private I18n( String errorCode )
     {
@@ -803,10 +805,12 @@ public enum I18n
         return errorCode;
     }
 
-    private final static ResourceBundle errBundle = ResourceBundle
+    /** The file containing the errors */
+    private final static ResourceBundle ERR_BUNDLE = ResourceBundle
     .getBundle( "org/apache/directory/shared/i18n/errors" );
 
-    private final static ResourceBundle msgBundle = ResourceBundle
+    /** The file containing the messages */
+    private final static ResourceBundle MSG_BUNDLE = ResourceBundle
     .getBundle( "org/apache/directory/shared/i18n/messages" );
 
     /**
@@ -821,12 +825,13 @@ public enum I18n
     {
         try
         {
-            return err + " " + MessageFormat.format( errBundle.getString( err.getErrorCode() ), args );
+            return err + " " + MessageFormat.format( ERR_BUNDLE.getString( err.getErrorCode() ), args );
         }
         catch ( Exception e )
         {
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             boolean comma = false;
+            
             for ( Object obj : args )
             {
                 if ( comma )
@@ -837,6 +842,7 @@ public enum I18n
                 {
                     comma = true;
                 }
+                
                 sb.append( obj );
             }
             return err + " (" + sb.toString() + ")";
@@ -856,7 +862,7 @@ public enum I18n
     {
         try
         {
-            return MessageFormat.format( msgBundle.getString( msg ), args );
+            return MessageFormat.format( MSG_BUNDLE.getString( msg ), args );
         }
         catch ( MissingResourceException mre )
         {
@@ -866,8 +872,9 @@ public enum I18n
             }
             catch ( Exception e )
             {
-                StringBuffer sb = new StringBuffer();
+                StringBuilder sb = new StringBuilder();
                 boolean comma = false;
+                
                 for ( Object obj : args )
                 {
                     if ( comma )
@@ -878,11 +885,12 @@ public enum I18n
                     {
                         comma = true;
                     }
+                    
                     sb.append( obj );
                 }
+                
                 return msg + " (" + sb.toString() + ")";
             }
         }
     }
-
 }

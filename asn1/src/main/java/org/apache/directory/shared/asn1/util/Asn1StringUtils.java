@@ -28,7 +28,7 @@ import java.io.UnsupportedEncodingException;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class Asn1StringUtils
+public final class Asn1StringUtils
 {
     /** Hex chars */
     private static final byte[] HEX_CHAR = new byte[]

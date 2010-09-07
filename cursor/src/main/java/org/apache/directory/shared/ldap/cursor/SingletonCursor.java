@@ -28,7 +28,7 @@ import org.apache.directory.shared.i18n.I18n;
  * A Cursor over a single element.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @param E The type of element on which this cursor will iterate
+ * @param <E> The type of element on which this cursor will iterate
  */
 public class SingletonCursor<E> extends AbstractCursor<E>
 {

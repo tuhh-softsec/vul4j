@@ -48,7 +48,7 @@ public enum Loggers
 
 
     /**
-     * eturn the name associated with the constant.
+     * @return the name associated with the constant.
      */
     public String getName()
     {
