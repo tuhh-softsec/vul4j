@@ -19,6 +19,7 @@
  */
 package org.apache.directory.shared.ldap.jndi;
 
+
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -179,6 +180,12 @@ public class JndiUtils
     }
 
 
+    /**
+     * Transform a JNDI extended request to an internal ExtendedRequest
+     *
+     * @param request The JNDI extendedRequest
+     * @return An internal ExtendedRequest
+     */
     public static ExtendedRequest toJndiExtendedRequest(
         final org.apache.directory.shared.ldap.message.ExtendedRequest request )
     {
@@ -209,144 +216,180 @@ public class JndiUtils
 
 
     /**
-     * TODO toJndiExtendedResponse. This is NOT correct ATM
+     * Transform a JNDI extended response to an internal ExtendedResponse
      *
-     * @param request
-     * @return
+     * @param request The JNDI extendedRequest
+     * @return An internal ExtendedResponse
      */
     public static org.apache.directory.shared.ldap.message.ExtendedResponse fromJndiExtendedResponse(
         final ExtendedRequest request )
     {
         class ServerExtendedResponse implements org.apache.directory.shared.ldap.message.ExtendedResponse
         {
+            public static final long serialVersionUID = 1L;
+
+
+            /**
+             * {@inheritDoc}
+             */
             public String getResponseName()
             {
                 return request.getID();
             }
 
 
+            /**
+             * {@inheritDoc}
+             */
             public byte[] getResponseValue()
             {
                 return request.getEncodedValue();
             }
 
 
+            /**
+             * {@inheritDoc}
+             */
             public void setResponseName( String oid )
             {
             }
 
 
+            /**
+             * {@inheritDoc}
+             */
             public void setResponseValue( byte[] responseValue )
             {
             }
 
 
+            /**
+             * {@inheritDoc}
+             */
             public LdapResult getLdapResult()
             {
                 return null;
             }
 
 
+            /**
+             * {@inheritDoc}
+             */
             public void addAllControls( Control[] controls ) throws MessageException
             {
             }
 
 
+            /**
+             * {@inheritDoc}
+             */
             public void addControl( Control control ) throws MessageException
             {
             }
 
 
+            /**
+             * {@inheritDoc}
+             */
             public Object get( Object key )
             {
                 return null;
             }
 
 
+            /**
+             * {@inheritDoc}
+             */
             public Control getControl( String oid )
             {
                 return null;
             }
 
 
+            /**
+             * {@inheritDoc}
+             */
             public Map<String, Control> getControls()
             {
                 return null;
             }
 
 
-            public int getControlsLength()
-            {
-                return 0;
-            }
-
-
+            /**
+             * {@inheritDoc}
+             */
             public Control getCurrentControl()
             {
                 return null;
             }
 
 
+            /**
+             * {@inheritDoc}
+             */
             public int getMessageId()
             {
                 return 0;
             }
 
 
-            public int getMessageLength()
-            {
-                return 0;
-            }
-
-
+            /**
+             * {@inheritDoc}
+             */
             public MessageTypeEnum getType()
             {
                 return null;
             }
 
 
+            /**
+             * {@inheritDoc}
+             */
             public boolean hasControl( String oid )
             {
                 return false;
             }
 
 
+            /**
+             * {@inheritDoc}
+             */
             public Object put( Object key, Object value )
             {
                 return null;
             }
 
 
+            /**
+             * {@inheritDoc}
+             */
             public void removeControl( Control control ) throws MessageException
             {
             }
 
 
-            public void setControlsLength( int controlsLength )
-            {
-            }
-
-
+            /**
+             * {@inheritDoc}
+             */
             public void setMessageId( int messageId )
             {
             }
 
 
-            public void setMessageLength( int messageLength )
-            {
-            }
-
-
+            /**
+             * {@inheritDoc}
+             */
             public byte[] getEncodedValue()
             {
-                // TODO Auto-generated method stub
                 return null;
             }
 
 
+            /**
+             * {@inheritDoc}
+             */
             public String getID()
             {
-                // TODO Auto-generated method stub
                 return null;
             }
         }
@@ -355,153 +398,192 @@ public class JndiUtils
     }
 
 
+    /**
+     * Transform a JNDI extended request to an internal ExtendedRequest
+     *
+     * @param request The JNDI extendedRequest
+     * @return An internal ExtendedRequest
+     */
     public static org.apache.directory.shared.ldap.message.ExtendedRequest fromJndiExtendedRequest(
         final ExtendedRequest request )
     {
         class ServerExtendedRequest implements org.apache.directory.shared.ldap.message.ExtendedRequest
         {
-            public org.apache.directory.shared.ldap.message.ExtendedResponse createExtendedResponse(
-                String id, byte[] berValue, int offset, int length ) throws NamingException
-            {
-                return fromJndiExtendedResponse( request );
-            }
-
-
+            /**
+             * {@inheritDoc}
+             */
             public String getRequestName()
             {
                 return request.getID();
             }
 
 
+            /**
+             * {@inheritDoc}
+             */
             public byte[] getRequestValue()
             {
                 return request.getEncodedValue();
             }
 
 
+            /**
+             * {@inheritDoc}
+             */
             public void setRequestName( String oid )
             {
             }
 
 
+            /**
+             * {@inheritDoc}
+             */
             public void setRequestValue( byte[] requestValue )
             {
             }
 
 
+            /**
+             * {@inheritDoc}
+             */
             public MessageTypeEnum getResponseType()
             {
                 return null;
             }
 
 
+            /**
+             * {@inheritDoc}
+             */
             public ResultResponse getResultResponse()
             {
                 return null;
             }
 
 
+            /**
+             * {@inheritDoc}
+             */
             public boolean hasResponse()
             {
                 return false;
             }
 
 
+            /**
+             * {@inheritDoc}
+             */
             public void addAllControls( Control[] controls ) throws MessageException
             {
             }
 
 
+            /**
+             * {@inheritDoc}
+             */
             public void addControl( Control control ) throws MessageException
             {
             }
 
 
+            /**
+             * {@inheritDoc}
+             */
             public Object get( Object key )
             {
                 return null;
             }
 
 
+            /**
+             * {@inheritDoc}
+             */
             public Control getControl( String oid )
             {
                 return null;
             }
 
 
+            /**
+             * {@inheritDoc}
+             */
             public Map<String, Control> getControls()
             {
                 return null;
             }
 
 
-            public int getControlsLength()
-            {
-                return 0;
-            }
-
-
+            /**
+             * {@inheritDoc}
+             */
             public Control getCurrentControl()
             {
                 return null;
             }
 
 
+            /**
+             * {@inheritDoc}
+             */
             public int getMessageId()
             {
                 return 0;
             }
 
 
-            public int getMessageLength()
-            {
-                return 0;
-            }
-
-
+            /**
+             * {@inheritDoc}
+             */
             public MessageTypeEnum getType()
             {
                 return null;
             }
 
 
+            /**
+             * {@inheritDoc}
+             */
             public boolean hasControl( String oid )
             {
                 return false;
             }
 
 
+            /**
+             * {@inheritDoc}
+             */
             public Object put( Object key, Object value )
             {
                 return null;
             }
 
 
+            /**
+             * {@inheritDoc}
+             */
             public void removeControl( Control control ) throws MessageException
             {
             }
 
 
-            public void setControlsLength( int controlsLength )
-            {
-            }
-
-
+            /**
+             * {@inheritDoc}
+             */
             public void setMessageId( int messageId )
             {
             }
-
-
-            public void setMessageLength( int messageLength )
-            {
-            }
-
         }
 
         return new ServerExtendedRequest();
     }
 
 
+    /**
+     * Wrap an internal LdapException to a JNDI Exception
+     *
+     * @param t The internal exception
+     * @throws NamingException The equivalent NamingException
+     */
     public static void wrap( Throwable t ) throws NamingException
     {
         if ( t instanceof NamingException )
@@ -623,9 +705,9 @@ public class JndiUtils
 
 
     /**
-     * Convert a DN to a {@link javax.naming.Name}
+     * Convert a {@link DN} to a {@link javax.naming.Name}
      *
-     * @param name The DN to convert
+     * @param dn The DN to convert
      * @return A Name
      */
     public static Name toName( DN dn )
@@ -638,7 +720,6 @@ public class JndiUtils
         }
         catch ( InvalidNameException ine )
         {
-            // TODO : check if we must throw an exception.
             // Logically, the DN must be valid.
             return null;
         }
@@ -661,7 +742,6 @@ public class JndiUtils
         }
         catch ( LdapInvalidDnException lide )
         {
-            // TODO : check if we must throw an exception.
             // Logically, the Name must be valid.
             return null;
         }
@@ -675,12 +755,13 @@ class WrappedReferralException extends ReferralException
 
     private LdapReferralException lre;
 
+
     public WrappedReferralException( LdapReferralException lre )
     {
         this.lre = lre;
     }
 
-    
+
     @Override
     public boolean skipReferral()
     {
@@ -715,7 +796,7 @@ class WrappedReferralException extends ReferralException
         return lre.getReferralContext();
     }
 
-    
+
     @Override
     public Name getRemainingName()
     {
@@ -737,7 +818,6 @@ class WrappedReferralException extends ReferralException
     }
 }
 
-
 // a PartialResultException around the LdapPartialResultException to be used in tests
 class WrappedPartialResultException extends PartialResultException
 {
@@ -745,12 +825,13 @@ class WrappedPartialResultException extends PartialResultException
 
     private LdapPartialResultException lpre;
 
+
     public WrappedPartialResultException( LdapPartialResultException lpre )
     {
         this.lpre = lpre;
     }
 
-    
+
     @Override
     public Name getRemainingName()
     {
