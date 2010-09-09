@@ -84,7 +84,8 @@
     <module>asn1-codec</module>
     <module>ldap-convert</module>
     <module>cursor</module>
-    <!-- module>dsml-parser</module -->
+    <module>ldap-client-api</module>
+    <module>dsml-parser</module>
   </modules>
 
   <build>
@@ -157,6 +158,12 @@
       <dependency>
         <groupId>${project.groupId}</groupId>
         <artifactId>shared-ldap-jndi</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>ldap-client-api</artifactId>
         <version>${project.version}</version>
       </dependency>
 
