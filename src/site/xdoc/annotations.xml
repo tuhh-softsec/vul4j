@@ -25,7 +25,7 @@ limitations under the License.
   <body>
     <section name="Annotations">
       <p>The <code>annotations</code> package provides for Java5 Annotations
-        meta data-based definition of rules for <code>Digester</code>.
+        meta-data based definition of rules for <code>Digester</code>.
         This improves maintainability of both Java code and XML documents, as
         rules are now defined in POJOs and generating <code>Digester</code>
         parsers at run-time, avoiding manual updates.</p>
