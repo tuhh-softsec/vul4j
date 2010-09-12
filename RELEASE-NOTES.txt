@@ -25,9 +25,9 @@ $Id$
 INTRODUCTION
 ============
 
-This is a minor release with new features. New projects are encouraged to use this release
-of digester. There is no urgency for existing
-projects to upgrade; Digester 2.0 has proven to be a stable release.
+This is a minor release with new features. New projects are encouraged to
+use this release of digester. There is no urgency for existing projects to
+upgrade; Digester 2.0 has proven to be a stable release.
 
 IMPORTANT NOTES
 ================
@@ -63,10 +63,10 @@ NEW FEATURES
 
  * JAVA5 ANNOTATIONS SUPPORT
        Added a new package 'annotations' that provides for Java5 Annotations
-       meta data-based definition of rules for Digester.
+       meta-data based definition of rules for Digester.
        This improves maintainability of both Java code and XML documents, as
-       rules are now defined in POJOs and generating Digester
-       parsers at run-time, avoiding manual updates.
+       rules are now defined in POJOs and generating Digester parsers at
+       runtime, avoiding manual updates.
 
 BUGS FROM PREVIOUS RELEASE
 ===========================
@@ -86,4 +86,5 @@ DEPRECATIONS
 OTHER NOTES
 ============
 
- * This is the first Digester release oriented to be built by Apache Maven only.
+ * This is the first Digester release that provides an Apache Maven 2 build only.
+   The Apache Maven 1 and Apache Ant builds have been removed.
