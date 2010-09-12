@@ -49,6 +49,10 @@ include:</p>
     the same type of processing.</li>
 </ul>
 
+<p>Starting from release 2.1, the Digester supports Java5 Annotations definition
+of rules improving maintainability of both Java code and XML documents, since
+rules are now defined in POJOs and <code>Digester</code> parser instances can be
+generated at run-time, avoiding manual updates.</p>
 
 </section>
 
@@ -80,10 +84,16 @@ download the files.
 <section name="Releases">
     <subsection name="Digester 2.1 Release (September 2010)">
         <p>
-Digester 2.1 is a minor release with new features. New projects are encouraged to use this release
-of digester. There are breaking changes from Digester 2.0, see release notes
-in detail before choosing to upgrade. There is no urgency for existing
-projects to upgrade; Digester 2.0 has proven to be a stable release.
+Digester 2.1 is a minor release with new features, a new <code>annotations</code> package
+adds facilities to configure the Digester using the Java5 language meta-data annotations,
+allowing Digester instances creation introspecting the target POJOs, using a provided set
+of annotations. New projects are encouraged to use this release of digester.
+<br/>
+There are breaking changes from Digester 2.0, see release notes in detail before choosing
+to upgrade.
+<br/>
+There is no urgency for existing projects to upgrade; Digester 2.0 has proven to be a
+stable release.
         </p>
         <p>
 Digester 2.1 <b>requires a minimum of JDK 1.5</b>.
