@@ -1466,12 +1466,6 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
 
                 AddFuture addFuture = ( AddFuture ) responseFuture;
 
-                if ( addFuture == null )
-                {
-                    LOG.error( "AddFuture is null" );
-                    throw new LdapException( "AddFuture is null" );
-                }
-
                 // remove the listener from the listener map
                 if ( LOG.isDebugEnabled() )
                 {
@@ -1501,12 +1495,6 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
 
                 BindFuture bindFuture = ( BindFuture ) responseFuture;
 
-                if ( bindFuture == null )
-                {
-                    LOG.error( "BindFuture is null" );
-                    throw new LdapException( "BindFuture is null" );
-                }
-
                 // remove the listener from the listener map
                 if ( bindResponse.getLdapResult().getResultCode() == ResultCodeEnum.SUCCESS )
                 {
@@ -1534,12 +1522,6 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
                 CompareResponse compareResponse = ( CompareResponse ) response;
 
                 CompareFuture compareFuture = ( CompareFuture ) responseFuture;
-
-                if ( compareFuture == null )
-                {
-                    LOG.error( "CompareFuture is null" );
-                    throw new LdapException( "CompareFuture is null" );
-                }
 
                 // remove the listener from the listener map
                 if ( LOG.isDebugEnabled() )
@@ -1570,12 +1552,6 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
 
                 DeleteFuture deleteFuture = ( DeleteFuture ) responseFuture;
 
-                if ( deleteFuture == null )
-                {
-                    LOG.error( "DeleteFuture is null" );
-                    throw new LdapException( "DeleteFuture is null" );
-                }
-
                 if ( LOG.isDebugEnabled() )
                 {
                     if ( deleteResponse.getLdapResult().getResultCode() == ResultCodeEnum.SUCCESS )
@@ -1603,12 +1579,6 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
                 ExtendedResponse extendedResponse = ( ExtendedResponse ) response;
 
                 ExtendedFuture extendedFuture = ( ExtendedFuture ) responseFuture;
-
-                if ( extendedFuture == null )
-                {
-                    LOG.error( "ExtendedFuture is null" );
-                    throw new LdapException( "extendedFuture is null" );
-                }
 
                 // remove the listener from the listener map
                 if ( LOG.isDebugEnabled() )
@@ -1666,12 +1636,6 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
 
                 ModifyFuture modifyFuture = ( ModifyFuture ) responseFuture;
 
-                if ( modifyFuture == null )
-                {
-                    LOG.error( "ModifyFuture is null" );
-                    throw new LdapException( "ModifyFuture is null" );
-                }
-
                 if ( LOG.isDebugEnabled() )
                 {
                     if ( modifyResponse.getLdapResult().getResultCode() == ResultCodeEnum.SUCCESS )
@@ -1700,12 +1664,6 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
 
                 ModifyDnFuture modifyDnFuture = ( ModifyDnFuture ) responseFuture;
 
-                if ( modifyDnFuture == null )
-                {
-                    LOG.error( "ModifyDNFuture is null" );
-                    throw new LdapException( "ModifyDNFuture is null" );
-                }
-
                 if ( LOG.isDebugEnabled() )
                 {
                     if ( modifyDnResponse.getLdapResult().getResultCode() == ResultCodeEnum.SUCCESS )
@@ -1733,12 +1691,6 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
                 SearchResultDone searchResultDone = ( SearchResultDone ) response;
 
                 SearchFuture searchFuture = ( SearchFuture ) responseFuture;
-
-                if ( searchFuture == null )
-                {
-                    LOG.error( "SearchFuture is null" );
-                    throw new LdapException( "SearchFuture is null" );
-                }
 
                 if ( LOG.isDebugEnabled() )
                 {
@@ -1773,12 +1725,6 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
 
                 searchFuture = ( SearchFuture ) responseFuture;
 
-                if ( searchFuture == null )
-                {
-                    LOG.error( "SearchFuture is null" );
-                    throw new LdapException( "SearchFuture is null" );
-                }
-
                 if ( LOG.isDebugEnabled() )
                 {
                     LOG.debug( "Search entry found : {}", searchResultEntry );
@@ -1794,12 +1740,6 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
                 SearchResultReference searchResultReference = ( SearchResultReference ) response;
 
                 searchFuture = ( SearchFuture ) responseFuture;
-
-                if ( searchFuture == null )
-                {
-                    LOG.error( "SearchFuture is null" );
-                    throw new LdapException( "SearchFuture is null" );
-                }
 
                 if ( LOG.isDebugEnabled() )
                 {
