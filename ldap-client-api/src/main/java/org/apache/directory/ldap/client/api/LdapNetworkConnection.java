@@ -37,7 +37,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.net.ssl.SSLContext;
+import javax.security.sasl.Sasl;
+import javax.security.sasl.SaslClient;
 
+import org.apache.directory.ldap.client.api.callback.SaslCallbackHandler;
 import org.apache.directory.ldap.client.api.exception.InvalidConnectionException;
 import org.apache.directory.ldap.client.api.future.AddFuture;
 import org.apache.directory.ldap.client.api.future.BindFuture;
@@ -57,6 +60,7 @@ import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.MessageEncoderException;
 import org.apache.directory.shared.ldap.codec.controls.ControlImpl;
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
+import org.apache.directory.shared.ldap.constants.SupportedSaslMechanisms;
 import org.apache.directory.shared.ldap.cursor.Cursor;
 import org.apache.directory.shared.ldap.entry.DefaultEntry;
 import org.apache.directory.shared.ldap.entry.Entry;
@@ -67,6 +71,7 @@ import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.exception.LdapNoPermissionException;
+import org.apache.directory.shared.ldap.exception.LdapOperationException;
 import org.apache.directory.shared.ldap.filter.SearchScope;
 import org.apache.directory.shared.ldap.message.AbandonRequest;
 import org.apache.directory.shared.ldap.message.AbandonRequestImpl;
@@ -77,6 +82,7 @@ import org.apache.directory.shared.ldap.message.AliasDerefMode;
 import org.apache.directory.shared.ldap.message.BindRequest;
 import org.apache.directory.shared.ldap.message.BindRequestImpl;
 import org.apache.directory.shared.ldap.message.BindResponse;
+import org.apache.directory.shared.ldap.message.BindResponseImpl;
 import org.apache.directory.shared.ldap.message.CompareRequest;
 import org.apache.directory.shared.ldap.message.CompareRequestImpl;
 import org.apache.directory.shared.ldap.message.CompareResponse;
@@ -88,6 +94,7 @@ import org.apache.directory.shared.ldap.message.ExtendedRequestImpl;
 import org.apache.directory.shared.ldap.message.ExtendedResponse;
 import org.apache.directory.shared.ldap.message.IntermediateResponse;
 import org.apache.directory.shared.ldap.message.IntermediateResponseImpl;
+import org.apache.directory.shared.ldap.message.LdapResult;
 import org.apache.directory.shared.ldap.message.Message;
 import org.apache.directory.shared.ldap.message.ModifyDnRequest;
 import org.apache.directory.shared.ldap.message.ModifyDnRequestImpl;
@@ -193,6 +200,12 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
 
     /** the schema manager */
     private SchemaManager schemaManager;
+
+    /** the SslFilter key */
+    private static final String SSL_FILTER_KEY = "sslFilter";
+
+    /** the StartTLS extended operation's OID */
+    private static final String START_TLS_REQ_OID = "1.3.6.1.4.1.1466.20037";
 
     // ~~~~~~~~~~~~~~~~~ common error messages ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -462,21 +475,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
             // If we use SSL, we have to add the SslFilter to the chain
             if ( config.isUseSsl() )
             {
-                try
-                {
-                    SSLContext sslContext = SSLContext.getInstance( config.getSslProtocol() );
-                    sslContext.init( config.getKeyManagers(), config.getTrustManagers(), config.getSecureRandom() );
-
-                    SslFilter sslFilter = new SslFilter( sslContext );
-                    sslFilter.setUseClientMode( true );
-                    connector.getFilterChain().addFirst( "sslFilter", sslFilter );
-                }
-                catch ( Exception e )
-                {
-                    String msg = "Failed to initialize the SSL context";
-                    LOG.error( msg, e );
-                    throw new LdapException( msg, e );
-                }
+                addSslFilter();
             }
 
             // Add an executor so that this connection can be used
@@ -1096,32 +1095,118 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
         // If the session has not been establish, or is closed, we get out immediately
         checkSession();
 
-        // Update the messageId
-        int newId = messageId.incrementAndGet();
-        bindRequest.setMessageId( newId );
-
-        LOG.debug( "-----------------------------------------------------------------" );
-        LOG.debug( "Sending request \n{}", bindRequest );
-
-        // Create a future for this Bind operation
-        BindFuture bindFuture = new BindFuture( this, newId );
-
-        addToFutureMap( newId, bindFuture );
-
-        // Send the request to the server
-        WriteFuture writeFuture = ldapSession.write( bindRequest );
-
-        // Wait for the message to be sent to the server
-        if ( !writeFuture.awaitUninterruptibly( getTimeout( 0 ) ) )
+        if ( bindRequest.isSimple() )
         {
-            // We didn't received anything : this is an error
-            LOG.error( "Bind failed : timeout occured" );
+            // Update the messageId
+            int newId = messageId.incrementAndGet();
+            bindRequest.setMessageId( newId );
 
-            throw new LdapException( TIME_OUT_ERROR );
+            LOG.debug( "-----------------------------------------------------------------" );
+            LOG.debug( "Sending request \n{}", bindRequest );
+
+            // Create a future for this Bind operation
+            BindFuture bindFuture = new BindFuture( this, newId );
+
+            addToFutureMap( newId, bindFuture );
+
+            writeBindRequest( bindRequest );
+
+            // Ok, done return the future
+            return bindFuture;
         }
+        else
+        {
+            return bindSasl( new SaslRequest( bindRequest ) );
+        }
+    }
 
-        // Ok, done return the future
-        return bindFuture;
+
+    /**
+     * @see #bindCramMd5(String, byte[], String)
+     */
+    public BindResponse bindCramMd5( String name, String credentials, String authzId )
+        throws LdapException,
+        IOException
+    {
+        return bindCramMd5( name, StringTools.getBytesUtf8( credentials ), authzId );
+    }
+
+
+    /**
+     * 
+     * bind using CRAM-MD5 SASL mechanism.
+     *
+     * @param name the DN of the user
+     * @param credentials password of the user
+     * @param authzId the authorization ID (can be null)
+     * @return response of the bind operation
+     * @throws LdapException
+     * @throws IOException
+     */
+    public BindResponse bindCramMd5( String name, byte[] credentials, String authzId )
+        throws LdapException,
+        IOException
+    {
+        BindFuture bindFuture = bindSasl( name, credentials, SupportedSaslMechanisms.DIGEST_MD5, authzId, null );
+
+        try
+        {
+            return bindFuture.get();
+        }
+        catch ( Exception ie )
+        {
+            // Catch all other exceptions
+            LOG.error( NO_RESPONSE_ERROR, ie );
+            LdapException ldapException = new LdapException( NO_RESPONSE_ERROR );
+            ldapException.initCause( ie );
+
+            throw ldapException;
+        }
+    }
+
+
+    /**
+     * @see #bindCramMd5(String, byte[], String)
+     */
+    public BindResponse bindDigestMd5( String name, String credentials, String authzId, String realmName )
+        throws LdapException,
+        IOException
+    {
+        return bindDigestMd5( name, StringTools.getBytesUtf8( credentials ), authzId, realmName );
+    }
+
+
+    /**
+     * 
+     * bind using DIGEST-MD5 SASL mechanism.
+     *
+     * @param name the DN of the user
+     * @param credentials password of the user
+     * @param authzId the authorization ID (can be null)
+     * @param realmName the SASL realm name to be used
+     * @return response of the bind operation
+     * @throws LdapException
+     * @throws IOException
+     */
+    public BindResponse bindDigestMd5( String name, byte[] credentials, String authzId, String realmName )
+        throws LdapException,
+        IOException
+    {
+        BindFuture bindFuture = bindSasl( name, credentials, SupportedSaslMechanisms.DIGEST_MD5, authzId, realmName );
+
+        try
+        {
+            return bindFuture.get();
+        }
+        catch ( Exception ie )
+        {
+            // Catch all other exceptions
+            LOG.error( NO_RESPONSE_ERROR, ie );
+            LdapException ldapException = new LdapException( NO_RESPONSE_ERROR );
+            ldapException.initCause( ie );
+
+            throw ldapException;
+        }
     }
 
 
@@ -3236,4 +3321,224 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
         }
     }
 
+
+    /**
+     * sends the StartTLS extended request to server and adds a security layer
+     * upon receiving a response with successful result
+     *
+     * @throws LdapException
+     */
+    public void startTls() throws LdapException
+    {
+        try
+        {
+            connect();
+
+            checkSession();
+
+            ExtendedResponse resp = extended( START_TLS_REQ_OID );
+            LdapResult result = resp.getLdapResult();
+
+            if ( result.getResultCode() == ResultCodeEnum.SUCCESS )
+            {
+                System.out.println( "received successful result code " + result );
+                addSslFilter();
+            }
+            else
+            {
+                throw new LdapOperationException( result.getResultCode(), result.getErrorMessage() );
+            }
+        }
+        catch ( LdapException e )
+        {
+            throw e;
+        }
+        catch ( Exception e )
+        {
+            throw new LdapException( e );
+        }
+    }
+
+
+    /**
+     * adds {@link SslFilter} to the IOConnector or IOSession's filter chain 
+     */
+    private void addSslFilter() throws LdapException
+    {
+        try
+        {
+            SSLContext sslContext = SSLContext.getInstance( config.getSslProtocol() );
+            sslContext.init( config.getKeyManagers(), config.getTrustManagers(), config.getSecureRandom() );
+
+            SslFilter sslFilter = new SslFilter( sslContext );
+            sslFilter.setUseClientMode( true );
+
+            // for LDAPS
+            if ( ldapSession == null )
+            {
+                connector.getFilterChain().addFirst( SSL_FILTER_KEY, sslFilter );
+            }
+            else
+            // for StartTLS
+            {
+                ldapSession.getFilterChain().addFirst( SSL_FILTER_KEY, sslFilter );
+            }
+        }
+        catch ( Exception e )
+        {
+            String msg = "Failed to initialize the SSL context";
+            LOG.error( msg, e );
+            throw new LdapException( msg, e );
+        }
+    }
+
+
+    /**
+     * perform SASL based bind operation @see {@link #bindSasl(SaslRequest)} 
+     */
+    private BindFuture bindSasl( String name, byte[] credentials, String saslMech, String authzId, String realmName )
+        throws LdapException, IOException
+    {
+        BindRequest bindReq = createBindRequest( name, credentials );
+        bindReq.setSaslMechanism( saslMech );
+        bindReq.setSimple( false );
+
+        SaslRequest saslReq = new SaslRequest( bindReq );
+        saslReq.setRealmName( realmName );
+        saslReq.setAuthorizationId( authzId );
+
+        return bindSasl( saslReq );
+    }
+
+
+    private BindFuture bindSasl( SaslRequest saslReq ) throws LdapException, IOException
+    {
+        // First switch to anonymous state
+        authenticated.set( false );
+
+        // try to connect, if we aren't already connected.
+        connect();
+
+        // If the session has not been establish, or is closed, we get out immediately
+        checkSession();
+
+        BindRequest bindRequest = saslReq.getBindReq();
+
+        // Update the messageId
+        int newId = messageId.incrementAndGet();
+        bindRequest.setMessageId( newId );
+
+        LOG.debug( "-----------------------------------------------------------------" );
+        LOG.debug( "Sending request \n{}", bindRequest );
+
+        // Create a future for this Bind operation
+        BindFuture bindFuture = new BindFuture( this, newId );
+
+        addToFutureMap( newId, bindFuture );
+
+        try
+        {
+            BindResponse bindResponse = null;
+            byte[] response = null;
+            ResultCodeEnum result = null;
+
+            SaslClient sc = Sasl.createSaslClient( new String[]
+            { bindRequest.getSaslMechanism() }, saslReq.getAuthorizationId(), "ldap", config.getLdapHost(),
+                saslReq.getSaslMechProps(), new SaslCallbackHandler( saslReq ) );
+
+            // handcode bindresponse and return
+            if ( sc == null )
+            {
+                removeFromFutureMaps( newId );
+                bindResponse = new BindResponseImpl( newId );
+                bindResponse.getLdapResult().setResultCode( ResultCodeEnum.AUTH_METHOD_NOT_SUPPORTED );
+                bindFuture.set( bindResponse );
+
+                return bindFuture;
+            }
+
+            if ( sc.hasInitialResponse() )
+            {
+                response = sc.evaluateChallenge( new byte[0] );
+
+                bindRequest.setCredentials( response );
+                writeBindRequest( bindRequest );
+
+                bindResponse = bindFuture.get( timeout, TimeUnit.MILLISECONDS );
+                result = bindResponse.getLdapResult().getResultCode();
+            }
+            else
+            {
+                // clone the bindRequest without setting the credentials
+                BindRequest clonedReq = new BindRequestImpl( newId );
+                clonedReq.setName( bindRequest.getName() );
+                clonedReq.setSaslMechanism( bindRequest.getSaslMechanism() );
+                clonedReq.setSimple( bindRequest.isSimple() );
+                clonedReq.setVersion3( bindRequest.getVersion3() );
+                clonedReq.addAllControls( bindRequest.getControls().values().toArray( new Control[0] ) );
+
+                writeBindRequest( clonedReq );
+
+                bindResponse = bindFuture.get( timeout, TimeUnit.MILLISECONDS );
+                result = bindResponse.getLdapResult().getResultCode();
+            }
+
+            while ( !sc.isComplete()
+                && ( result == ResultCodeEnum.SASL_BIND_IN_PROGRESS || result == ResultCodeEnum.SUCCESS ) )
+            {
+                response = sc.evaluateChallenge( bindResponse.getServerSaslCreds() );
+
+                if ( result == ResultCodeEnum.SUCCESS )
+                {
+                    if ( response != null )
+                    {
+                        throw new LdapException( "protocol error" );
+                    }
+                }
+                else
+                {
+                    bindRequest.setCredentials( response );
+
+                    addToFutureMap( newId, bindFuture );
+
+                    writeBindRequest( bindRequest );
+
+                    bindResponse = bindFuture.get( timeout, TimeUnit.MILLISECONDS );
+                    result = bindResponse.getLdapResult().getResultCode();
+                }
+
+            }
+
+            bindFuture.set( bindResponse );
+            return bindFuture;
+        }
+        catch ( LdapException e )
+        {
+            throw e;
+        }
+        catch ( Exception e )
+        {
+            e.printStackTrace();
+            throw new LdapException( e );
+        }
+    }
+
+
+    /**
+     * a reusable code block to be used in various bind methods
+     */
+    private void writeBindRequest( BindRequest bindRequest ) throws LdapException
+    {
+        // Send the request to the server
+        WriteFuture writeFuture = ldapSession.write( bindRequest );
+
+        // Wait for the message to be sent to the server
+        if ( !writeFuture.awaitUninterruptibly( getTimeout( 0 ) ) )
+        {
+            // We didn't received anything : this is an error
+            LOG.error( "Bind failed : timeout occured" );
+
+            throw new LdapException( TIME_OUT_ERROR );
+        }
+    }
 }
