@@ -176,7 +176,7 @@ public class LdapConnectionConfig
     }
 
 
-    public void setTrustManagers( TrustManager[] trustManagers )
+    public void setTrustManagers( TrustManager... trustManagers )
     {
         this.trustManagers = trustManagers;
     }
