@@ -1335,7 +1335,7 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
     /**
      * {@inheritDoc}
      */
-    protected Object clone()
+    public DN clone()
     {
         try
         {
