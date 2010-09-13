@@ -88,8 +88,8 @@ public class GeneralizedTimeSyntaxChecker extends SyntaxChecker
                 "([.,]\\d+)?" +                             // fraction       
                 "(Z|[+-]([01]\\d|2[0-3])([0-5]\\d)?)$";     // time-zone
     
-    // The regexp pattern matcher
-    private Pattern datePattern = Pattern.compile( GENERALIZED_TIME_PATTERN ); 
+    // The regexp pattern is immutable, only one instance needed.
+    private static final Pattern DATE_PATTERN = Pattern.compile( GENERALIZED_TIME_PATTERN ); 
 
     /**
      * Creates a new instance of GeneralizedTimeSyntaxChecker.
@@ -134,7 +134,7 @@ public class GeneralizedTimeSyntaxChecker extends SyntaxChecker
         }
         
         // Start the date parsing
-        boolean result = datePattern.matcher( strValue ).find();
+        boolean result = DATE_PATTERN.matcher( strValue ).find();
         
         if ( result )
         {
