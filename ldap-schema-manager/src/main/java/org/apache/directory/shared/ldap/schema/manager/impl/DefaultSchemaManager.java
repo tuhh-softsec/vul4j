@@ -647,7 +647,7 @@ public class DefaultSchemaManager implements SchemaManager
         {
             if ( registries.isDisabledAccepted() )
             {
-                LOG.info( "Loading {} disbaled schema: \n{}", schema.getSchemaName(), schema );
+                LOG.info( "Loading {} disabled schema: \n{}", schema.getSchemaName(), schema );
 
                 registries.schemaLoaded( schema );
                 addSchemaObjects( schema, registries );
