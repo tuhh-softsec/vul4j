@@ -60,6 +60,9 @@ public class DefaultSchemaLdifExtractor implements SchemaLdifExtractor
 
     private static final Logger LOG = LoggerFactory.getLogger( DefaultSchemaLdifExtractor.class );
 
+    // java.util.regex.Pattern is immutable so only one instance is needed for all uses.
+    private static final Pattern EXTRACT_PATTERN = Pattern.compile( ".*schema" + "[/\\Q\\\\E]" + "ou=schema.*\\.ldif" );
+
     private boolean extracted;
 
     private File outputDirectory;
@@ -145,8 +148,7 @@ public class DefaultSchemaLdifExtractor implements SchemaLdifExtractor
             throw new IOException( I18n.err( I18n.ERR_08001, schemaDirectory.getAbsolutePath() ) );
         }
 
-        Pattern pattern = Pattern.compile( ".*schema/ou=schema.*\\.ldif" );
-        Map<String, Boolean> list = ResourceMap.getResources( pattern );
+        Map<String, Boolean> list = ResourceMap.getResources( EXTRACT_PATTERN );
 
         for ( Entry<String, Boolean> entry : list.entrySet() )
         {

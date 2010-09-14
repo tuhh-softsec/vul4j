@@ -49,6 +49,9 @@ import org.slf4j.LoggerFactory;
  */
 public class SingleLdifSchemaLoader extends AbstractSchemaLoader
 {
+    // java.util.regex.Pattern is immutable so only one instance is needed for all uses.
+    private static final Pattern SCHEMA_START_PATTERN = Pattern
+        .compile( "cn\\s*=\\s*[a-z0-9-_]*\\s*,\\s*ou\\s*=\\s*schema" );
 
     private static final Logger LOG = LoggerFactory.getLogger( SingleLdifSchemaLoader.class );
 
@@ -85,8 +88,6 @@ public class SingleLdifSchemaLoader extends AbstractSchemaLoader
 
     private void initializeSchemas( InputStream in ) throws Exception
     {
-        Pattern schemaStartPattern = Pattern.compile( "cn\\s*=\\s*[a-z0-9-_]*\\s*,\\s*ou\\s*=\\s*schema" );
-
         LdifReader ldifReader = new LdifReader( in );
 
         Schema currentSchema = null;
@@ -96,7 +97,7 @@ public class SingleLdifSchemaLoader extends AbstractSchemaLoader
             LdifEntry ldifEntry = ldifReader.next();
             String dn = ldifEntry.getDn().getName();
 
-            if ( schemaStartPattern.matcher( dn ).matches() )
+            if ( SCHEMA_START_PATTERN.matcher( dn ).matches() )
             {
                 Schema schema = getSchema( ldifEntry.getEntry() );
                 schemaMap.put( schema.getSchemaName(), schema );
@@ -116,7 +117,8 @@ public class SingleLdifSchemaLoader extends AbstractSchemaLoader
     {
         for ( String scObjTypeRdn : schemaObjectTypeRdns )
         {
-            Pattern regex = Pattern.compile( "m-oid\\s*=\\s*[0-9\\.]*\\s*" + ",\\s*ou\\s*=\\s*" + scObjTypeRdn + "\\s*,\\s*cn\\s*=\\s*" + schemaName
+            Pattern regex = Pattern.compile( "m-oid\\s*=\\s*[0-9\\.]*\\s*" + ",\\s*ou\\s*=\\s*" + scObjTypeRdn
+                + "\\s*,\\s*cn\\s*=\\s*" + schemaName
                 + "\\s*,\\s*ou=schema\\s*", Pattern.CASE_INSENSITIVE );
 
             String dn = ldifEntry.getDn().getName();
