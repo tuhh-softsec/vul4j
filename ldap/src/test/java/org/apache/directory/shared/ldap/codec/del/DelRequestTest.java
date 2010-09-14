@@ -38,7 +38,7 @@ import org.apache.directory.shared.ldap.codec.ResponseCarryingException;
 import org.apache.directory.shared.ldap.message.DeleteRequest;
 import org.apache.directory.shared.ldap.message.DeleteRequestImpl;
 import org.apache.directory.shared.ldap.message.DeleteResponseImpl;
-import org.apache.directory.shared.ldap.message.LdapProtocolEncoder;
+import org.apache.directory.shared.ldap.message.LdapEncoder;
 import org.apache.directory.shared.ldap.message.Message;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.message.control.Control;
@@ -57,7 +57,7 @@ import org.junit.runner.RunWith;
 public class DelRequestTest
 {
     /** The encoder instance */
-    LdapProtocolEncoder encoder = new LdapProtocolEncoder();
+    LdapEncoder encoder = new LdapEncoder();
 
 
     /**

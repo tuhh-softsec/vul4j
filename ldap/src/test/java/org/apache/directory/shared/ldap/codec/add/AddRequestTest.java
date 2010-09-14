@@ -45,7 +45,7 @@ import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.message.AddRequest;
 import org.apache.directory.shared.ldap.message.AddResponseImpl;
-import org.apache.directory.shared.ldap.message.LdapProtocolEncoder;
+import org.apache.directory.shared.ldap.message.LdapEncoder;
 import org.apache.directory.shared.ldap.message.Message;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.message.control.Control;
@@ -64,7 +64,7 @@ import org.junit.runner.RunWith;
 public class AddRequestTest
 {
     /** The encoder instance */
-    LdapProtocolEncoder encoder = new LdapProtocolEncoder();
+    LdapEncoder encoder = new LdapEncoder();
 
 
     /**

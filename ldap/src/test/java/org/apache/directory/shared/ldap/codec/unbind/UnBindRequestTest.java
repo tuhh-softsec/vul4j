@@ -34,7 +34,7 @@ import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
-import org.apache.directory.shared.ldap.message.LdapProtocolEncoder;
+import org.apache.directory.shared.ldap.message.LdapEncoder;
 import org.apache.directory.shared.ldap.message.UnbindRequest;
 import org.apache.directory.shared.ldap.message.UnbindRequestImpl;
 import org.apache.directory.shared.ldap.message.control.Control;
@@ -51,7 +51,7 @@ import org.junit.runner.RunWith;
 public class UnBindRequestTest
 {
     /** The encoder instance */
-    LdapProtocolEncoder encoder = new LdapProtocolEncoder();
+    LdapEncoder encoder = new LdapEncoder();
 
 
     /**

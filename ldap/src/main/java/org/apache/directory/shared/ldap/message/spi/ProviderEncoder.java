@@ -39,19 +39,14 @@ public interface ProviderEncoder extends ProviderObject, StatefulEncoder
      * Encodes a compiler stub specific ASN.1 message envelope containment tree
      * onto an output stream.
      * 
-     * @param lock
-     *            lock object used to exclusively write to the output stream
-     * @param out
-     *            the OutputStream to encode the message envelope onto.
-     * @param obj
-     *            the top-level message envelope stub instance, i.e. for the
-     *            Snacc4J service provider this would be an instance of the
-     *            LDAPMessage compiler generated stub class.
-     * @throws ProviderException
-     *             to indicate an error while attempting to encode the message
-     *             envelope onto the output stream. Provider specific exceptions
-     *             encountered while encoding can be held within this subclass
-     *             of MultiException.
+     * @param lock lock object used to exclusively write to the output stream
+     * @param out the OutputStream to encode the message envelope onto.
+     * @param obj the top-level message envelope stub instance, i.e. for the
+     * Snacc4J service provider this would be an instance of the
+     * LDAPMessage compiler generated stub class.
+     * @throws ProviderException to indicate an error while attempting to encode the message
+     * envelope onto the output stream. Provider specific exceptions
+     * encountered while encoding can be held within this subclass of MultiException.
      */
     void encodeBlocking( Object lock, OutputStream out, Object obj ) throws ProviderException;
 
@@ -60,16 +55,13 @@ public interface ProviderEncoder extends ProviderObject, StatefulEncoder
      * Encodes a compiler stub specific ASN.1 message envelope containment tree
      * into byte array.
      * 
-     * @param obj
-     *            the top-level message envelope stub instance, i.e. for the
-     *            Snacc4J service provider this would be an instance of the
-     *            LDAPMessage compiler generated stub class.
+     * @param obj the top-level message envelope stub instance, i.e. for the
+     * Snacc4J service provider this would be an instance of the
+     * LDAPMessage compiler generated stub class.
      * @return the encoded object in a byte buffer
-     * @throws ProviderException
-     *             to indicate an error while attempting to encode the message
-     *             envelope into a byte buffer. Provider specific exceptions
-     *             encountered while encoding can be held within this subclass
-     *             of MultiException.
+     * @throws ProviderException to indicate an error while attempting to encode the message
+     * envelope into a byte buffer. Provider specific exceptions
+     * encountered while encoding can be held within this subclass of MultiException.
      */
     ByteBuffer encodeBlocking( Object obj ) throws ProviderException;
 }

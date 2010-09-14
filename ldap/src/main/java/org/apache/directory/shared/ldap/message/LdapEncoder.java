@@ -43,10 +43,6 @@ import org.apache.directory.shared.ldap.entry.Modification;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.util.StringTools;
-import org.apache.mina.core.buffer.IoBuffer;
-import org.apache.mina.core.session.IoSession;
-import org.apache.mina.filter.codec.ProtocolEncoderAdapter;
-import org.apache.mina.filter.codec.ProtocolEncoderOutput;
 
 
 /**
@@ -54,7 +50,7 @@ import org.apache.mina.filter.codec.ProtocolEncoderOutput;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class LdapProtocolEncoder extends ProtocolEncoderAdapter
+public class LdapEncoder
 {
     /**
      * Encode a Ldap request and write it to the remote server.
@@ -63,13 +59,11 @@ public class LdapProtocolEncoder extends ProtocolEncoderAdapter
      * @param message The LDAP message we have to encode to a Byte stream
      * @param out The callback we have to invoke when the message has been encoded 
      */
-    public void encode( IoSession session, Object message, ProtocolEncoderOutput out ) throws Exception
+    public ByteBuffer encode( Message message ) throws Exception
     {
         ByteBuffer buffer = encodeMessage( ( Message ) message );
 
-        IoBuffer ioBuffer = IoBuffer.wrap( buffer );
-
-        out.write( ioBuffer );
+        return buffer;
     }
 
 

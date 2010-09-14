@@ -42,7 +42,7 @@ import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.filter.SearchScope;
 import org.apache.directory.shared.ldap.message.AliasDerefMode;
-import org.apache.directory.shared.ldap.message.LdapProtocolEncoder;
+import org.apache.directory.shared.ldap.message.LdapEncoder;
 import org.apache.directory.shared.ldap.message.SearchRequest;
 import org.apache.directory.shared.ldap.message.SearchRequestImpl;
 import org.apache.directory.shared.ldap.schema.normalizers.DeepTrimToLowerNormalizer;
@@ -63,7 +63,7 @@ import org.junit.runner.RunWith;
 public class SearchRequestMatchingRuleAssertionTest
 {
     /** The encoder instance */
-    LdapProtocolEncoder encoder = new LdapProtocolEncoder();
+    LdapEncoder encoder = new LdapEncoder();
 
     static Map<String, OidNormalizer> oids = new HashMap<String, OidNormalizer>();
 

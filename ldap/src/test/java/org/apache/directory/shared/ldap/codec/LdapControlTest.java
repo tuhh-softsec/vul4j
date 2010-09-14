@@ -36,7 +36,7 @@ import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.ldap.message.AbandonRequest;
 import org.apache.directory.shared.ldap.message.AbandonRequestImpl;
-import org.apache.directory.shared.ldap.message.LdapProtocolEncoder;
+import org.apache.directory.shared.ldap.message.LdapEncoder;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
@@ -48,7 +48,7 @@ import org.junit.runner.RunWith;
 public class LdapControlTest
 {
     /** The encoder instance */
-    LdapProtocolEncoder encoder = new LdapProtocolEncoder();
+    LdapEncoder encoder = new LdapEncoder();
 
 
     /**

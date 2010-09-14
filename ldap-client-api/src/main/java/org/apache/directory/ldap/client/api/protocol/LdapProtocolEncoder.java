@@ -20,52 +20,48 @@
 package org.apache.directory.ldap.client.api.protocol;
 
 
+import java.nio.ByteBuffer;
+
+import org.apache.directory.shared.ldap.message.LdapEncoder;
+import org.apache.directory.shared.ldap.message.Message;
+import org.apache.mina.core.buffer.IoBuffer;
 import org.apache.mina.core.session.IoSession;
-import org.apache.mina.filter.codec.ProtocolCodecFactory;
-import org.apache.mina.filter.codec.ProtocolDecoder;
 import org.apache.mina.filter.codec.ProtocolEncoder;
+import org.apache.mina.filter.codec.ProtocolEncoderOutput;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
  * 
- * The factory used to create the LDAP encoder and decoder.
+ * A LDAP message decoder. It is based on shared-ldap decoder.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class LdapProtocolCodecFactory implements ProtocolCodecFactory
+public class LdapProtocolEncoder implements ProtocolEncoder
 {
-    /** The LdapDecoder key */
-    public static final String LDAP_DECODER = "LDAP_DECODER";
+    /** The logger */
+    private static final Logger LOG = LoggerFactory.getLogger( LdapProtocolEncoder.class );
 
-    /** The LdapEncoder key */
-    public static final String LDAP_ENCODER = "LDAP_ENCODER";
+    /** A speedup for logger */
+    private static final boolean IS_DEBUG = LOG.isDebugEnabled();
+
+    /** The stateful encoder */
+    private static final LdapEncoder encoder = new LdapEncoder();
 
 
-    /**
-     * 
-     * Creates a new instance of LdapProtocolCodecFactory. It
-     * creates the encoded an decoder instances.
-     *
-     */
-    public LdapProtocolCodecFactory()
+    public void encode( IoSession session, Object message, ProtocolEncoderOutput out ) throws Exception
     {
+        ByteBuffer buffer = encoder.encodeMessage( ( Message ) message );
+
+        IoBuffer ioBuffer = IoBuffer.wrap( buffer );
+
+        out.write( ioBuffer );
     }
 
 
-    /**
-     * Get the Ldap decoder. 
-     */
-    public ProtocolDecoder getDecoder( IoSession session ) throws Exception
+    public void dispose( IoSession session ) throws Exception
     {
-        return new LdapProtocolDecoder();
-    }
-
-
-    /**
-     * Get the Ldap encoder.
-     */
-    public ProtocolEncoder getEncoder( IoSession session ) throws Exception
-    {
-        return new LdapProtocolEncoder();
+        // Nothing to do
     }
 }
