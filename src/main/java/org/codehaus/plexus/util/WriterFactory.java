@@ -118,7 +118,7 @@ public class WriterFactory
     }
 
     /**
-     * Create a new Writer with default plaform encoding.
+     * Create a new Writer with default platform encoding.
      *
      * @param out not null output stream.
      * @return a writer instance for the output stream using the default platform charset.
@@ -131,7 +131,7 @@ public class WriterFactory
     }
 
     /**
-     * Create a new Writer with default plaform encoding.
+     * Create a new Writer with default platform encoding.
      *
      * @param file not null file.
      * @return a writer instance for the output file using the default platform charset.
