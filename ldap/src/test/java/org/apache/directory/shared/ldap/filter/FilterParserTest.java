@@ -28,6 +28,7 @@ import static org.junit.Assert.fail;
 
 import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
+import java.util.List;
 
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
@@ -1065,5 +1066,77 @@ public class FilterParserTest
         String str2 = node.toString();
         assertTrue( str.startsWith( str2 ) );
         assertEquals( "(&(ou~=people)(age>=30))", str2 );
+    }
+
+
+    @Test
+    public void testFilterOrder() throws ParseException
+    {
+        String filterStr1 = "(&(&(jagplayUserGroup=Active)(!(jagplayUserGroup=Banned))(jagplayUserNickname=admin)))";
+        String filterStr2 = "(&(jagplayUserNickname=admin)(&(jagplayUserGroup=Active)(!(jagplayUserGroup=Banned)))) ";
+
+        BranchNode node1 = ( BranchNode ) FilterParser.parse( filterStr1 );
+        BranchNode node2 = ( BranchNode ) FilterParser.parse( filterStr2 );
+
+        // Check Node 1
+        assertEquals( 1, node1.getChildren().size() );
+
+        assertTrue( node1 instanceof AndNode );
+        ExprNode andNode1 = node1.getChildren().get( 0 );
+        assertTrue( andNode1 instanceof AndNode );
+        List<ExprNode> children1 = ( ( AndNode ) andNode1 ).getChildren();
+        assertEquals( 3, children1.size() );
+
+        // First child : (jagplayUserGroup=Active)
+        ExprNode child1 = children1.get( 0 );
+        assertTrue( child1 instanceof EqualityNode );
+        assertEquals( "jagplayUserGroup", ( ( EqualityNode ) child1 ).getAttribute() );
+        assertEquals( "Active", ( ( EqualityNode ) child1 ).getValue().getString() );
+
+        // Second child : (!(jagplayUserGroup=Banned))
+        ExprNode child2 = children1.get( 1 );
+        assertTrue( child2 instanceof NotNode );
+        NotNode notNode1 = ( NotNode ) child2;
+
+        ExprNode notNodeChild1 = notNode1.getFirstChild();
+        assertTrue( notNodeChild1 instanceof EqualityNode );
+        assertEquals( "jagplayUserGroup", ( ( EqualityNode ) notNodeChild1 ).getAttribute() );
+        assertEquals( "Banned", ( ( EqualityNode ) notNodeChild1 ).getValue().getString() );
+
+        // Third child : (jagplayUserNickname=admin)
+        ExprNode child3 = children1.get( 2 );
+        assertTrue( child3 instanceof EqualityNode );
+        assertEquals( "jagplayUserNickname", ( ( EqualityNode ) child3 ).getAttribute() );
+        assertEquals( "admin", ( ( EqualityNode ) child3 ).getValue().getString() );
+
+        // Check Node 2 : (&(jagplayUserNickname=admin)(&(jagplayUserGroup=Active)(!(jagplayUserGroup=Banned))))
+        assertEquals( 2, node2.getChildren().size() );
+        assertTrue( node2 instanceof AndNode );
+
+        child1 = node2.getChildren().get( 0 );
+        assertTrue( child1 instanceof EqualityNode );
+        assertEquals( "jagplayUserNickname", ( ( EqualityNode ) child1 ).getAttribute() );
+        assertEquals( "admin", ( ( EqualityNode ) child1 ).getValue().getString() );
+
+        child2 = node2.getChildren().get( 1 );
+        assertTrue( child2 instanceof AndNode );
+        AndNode andNode2 = ( ( AndNode ) child2 );
+        assertEquals( 2, andNode2.getChildren().size() );
+
+        // First child : (jagplayUserGroup=Active)
+        child1 = andNode2.getChildren().get( 0 );
+        assertTrue( child1 instanceof EqualityNode );
+        assertEquals( "jagplayUserGroup", ( ( EqualityNode ) child1 ).getAttribute() );
+        assertEquals( "Active", ( ( EqualityNode ) child1 ).getValue().getString() );
+
+        // second child : (!(jagplayUserGroup=Banned))
+        child2 = andNode2.getChildren().get( 1 );
+        assertTrue( child2 instanceof NotNode );
+        notNode1 = ( NotNode ) child2;
+
+        notNodeChild1 = notNode1.getFirstChild();
+        assertTrue( notNodeChild1 instanceof EqualityNode );
+        assertEquals( "jagplayUserGroup", ( ( EqualityNode ) notNodeChild1 ).getAttribute() );
+        assertEquals( "Banned", ( ( EqualityNode ) notNodeChild1 ).getValue().getString() );
     }
 }
