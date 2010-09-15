@@ -64,6 +64,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
@@ -464,22 +465,56 @@ public class FileUtils
     public static void fileWrite( String fileName, String encoding, String data )
         throws IOException
     {
-        FileOutputStream out = null;
+        File file = ( fileName == null ) ? null : new File( fileName );
+        fileWrite( file, encoding, data );
+    }
+
+    /**
+     * Writes data to a file. The file will be created if it does not exist.
+     * Note: the data is written with platform encoding
+     *
+     * @param fileName The path of the file to write.
+     * @param data The content to write to the file.
+     * @throws IOException if any
+     * 
+     * @since 2.0.6
+     */
+    public static void fileWrite( File file, String data )
+        throws IOException
+    {
+        fileWrite( file, null, data );
+    }
+
+    /**
+     * Writes data to a file. The file will be created if it does not exist.
+     *
+     * @param fileName The path of the file to write.
+     * @param encoding The encoding of the file.
+     * @param data The content to write to the file.
+     * @throws IOException if any
+     * 
+     * @since 2.0.6
+     */
+    public static void fileWrite( File file, String encoding, String data )
+        throws IOException
+    {
+        Writer writer = null;
         try
         {
-            out = new FileOutputStream( fileName );
+            OutputStream out = new FileOutputStream( file );
             if ( encoding != null )
             {
-                out.write( data.getBytes( encoding ) );
+                writer = new OutputStreamWriter( out, encoding );
             }
             else
             {
-                out.write( data.getBytes() );
+                writer = new OutputStreamWriter( out );
             }
+            writer.write( data );
         }
         finally
         {
-            IOUtil.close( out );
+            IOUtil.close( writer );
         }
     }
 
