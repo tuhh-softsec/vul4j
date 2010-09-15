@@ -1139,15 +1139,16 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
      * @param name the DN of the user
      * @param credentials password of the user
      * @param authzId the authorization ID (can be null)
+     * @param ctrls controls to be sent with the bind request
      * @return response of the bind operation
      * @throws LdapException
      * @throws IOException
      */
-    public BindResponse bindCramMd5( String name, byte[] credentials, String authzId )
+    public BindResponse bindCramMd5( String name, byte[] credentials, String authzId, Control... ctrls )
         throws LdapException,
         IOException
     {
-        BindFuture bindFuture = bindSasl( name, credentials, SupportedSaslMechanisms.CRAM_MD5, authzId, null );
+        BindFuture bindFuture = bindSasl( name, credentials, SupportedSaslMechanisms.CRAM_MD5, authzId, null, ctrls );
 
         try
         {
@@ -1162,6 +1163,17 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
 
             throw ldapException;
         }
+    }
+
+
+    /**
+     * @see #bindCramMd5(String, byte[], String, Control...)
+     */
+    public BindResponse bindCramMd5( String name, byte[] credentials, String authzId )
+        throws LdapException,
+        IOException
+    {
+        return bindCramMd5( name, credentials, authzId, new Control[0] );
     }
 
 
@@ -1188,11 +1200,12 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
      * @throws LdapException
      * @throws IOException
      */
-    public BindResponse bindDigestMd5( String name, byte[] credentials, String authzId, String realmName )
+    public BindResponse bindDigestMd5( String name, byte[] credentials, String authzId, String realmName,
+        Control... ctrls )
         throws LdapException,
         IOException
     {
-        BindFuture bindFuture = bindSasl( name, credentials, SupportedSaslMechanisms.DIGEST_MD5, authzId, realmName );
+        BindFuture bindFuture = bindSasl( name, credentials, SupportedSaslMechanisms.DIGEST_MD5, authzId, realmName, ctrls );
 
         try
         {
@@ -1207,6 +1220,17 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
 
             throw ldapException;
         }
+    }
+
+
+    /**
+     * @see #bindDigestMd5(String, byte[], String, String, Control...)
+     */
+    public BindResponse bindDigestMd5( String name, byte[] credentials, String authzId, String realmName )
+        throws LdapException,
+        IOException
+    {
+        return bindDigestMd5( name, credentials, authzId, realmName, new Control[0] );
     }
 
 
@@ -3336,12 +3360,14 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
     /**
      * perform SASL based bind operation @see {@link #bindSasl(SaslRequest)} 
      */
-    private BindFuture bindSasl( String name, byte[] credentials, String saslMech, String authzId, String realmName )
+    private BindFuture bindSasl( String name, byte[] credentials, String saslMech, String authzId, String realmName,
+        Control... ctrls )
         throws LdapException, IOException
     {
         BindRequest bindReq = createBindRequest( name, credentials );
         bindReq.setSaslMechanism( saslMech );
         bindReq.setSimple( false );
+        bindReq.addAllControls( ctrls );
 
         SaslRequest saslReq = new SaslRequest( bindReq );
         saslReq.setRealmName( realmName );
