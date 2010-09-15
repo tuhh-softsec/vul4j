@@ -38,28 +38,29 @@ import org.apache.commons.functor.UnaryFunction;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-public final class RightBoundFunction<L, R, T> implements UnaryFunction<L, T>, Serializable {
+public final class RightBoundFunction<A, T> implements UnaryFunction<A, T>, Serializable {
     /** The {@link BinaryFunction BinaryFunction} I'm wrapping. */
-    private BinaryFunction<? super L, ? super R, ? extends T> function;
+    private BinaryFunction<? super A, Object, ? extends T> function;
     /** The parameter to pass to that function. */
-    private R param;
+    private Object param;
 
     /**
      * @param function the function to adapt
      * @param arg the constant argument to use
      */
-    public RightBoundFunction(BinaryFunction<? super L, ? super R, ? extends T> function, R arg) {
+    @SuppressWarnings("unchecked")
+    public <R> RightBoundFunction(BinaryFunction<? super A, ? super R, ? extends T> function, R arg) {
         if (function == null) {
             throw new IllegalArgumentException("left-hand BinaryFunction argument was null");
         }
-        this.function = function;
+        this.function = (BinaryFunction<? super A, Object, ? extends T>) function;
         this.param = arg;
     }
 
     /**
      * {@inheritDoc}
      */
-    public T evaluate(L obj) {
+    public T evaluate(A obj) {
         return function.evaluate(obj, param);
     }
 
@@ -67,7 +68,7 @@ public final class RightBoundFunction<L, R, T> implements UnaryFunction<L, T>, S
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        return that == this || (that instanceof RightBoundFunction<?, ?, ?> && equals((RightBoundFunction<?, ?, ?>) that));
+        return that == this || (that instanceof RightBoundFunction<?, ?> && equals((RightBoundFunction<?, ?>) that));
     }
 
     /**
@@ -75,7 +76,7 @@ public final class RightBoundFunction<L, R, T> implements UnaryFunction<L, T>, S
      * @param that RightBoundFunction to test
      * @return boolean
      */
-    public boolean equals(RightBoundFunction<?, ?, ?> that) {
+    public boolean equals(RightBoundFunction<?, ?> that) {
         return null != that
                 && (null == function ? null == that.function : function.equals(that.function))
                 && (null == param ? null == that.param : param.equals(that.param));
@@ -110,8 +111,8 @@ public final class RightBoundFunction<L, R, T> implements UnaryFunction<L, T>, S
      * @param arg Object that will always be used for the right side of the BinaryFunction delegate.
      * @return RightBoundFunction
      */
-    public static <L, R, T> RightBoundFunction<L, R, T> bind(BinaryFunction<? super L, ? super R, ? extends T> function, R arg) {
-        return null == function ? null : new RightBoundFunction<L, R, T>(function, arg);
+    public static <L, R, T> RightBoundFunction<L, T> bind(BinaryFunction<? super L, ? super R, ? extends T> function, R arg) {
+        return null == function ? null : new RightBoundFunction<L, T>(function, arg);
     }
 
 }

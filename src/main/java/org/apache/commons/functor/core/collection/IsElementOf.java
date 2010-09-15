@@ -135,9 +135,9 @@ public final class IsElementOf<L, R> implements BinaryPredicate<L, R>, Serializa
         if (null == obj) {
             throw new NullPointerException("Argument must not be null");
         } else if (obj instanceof Collection<?>) {
-            return new RightBoundPredicate<A, Object>(new IsElementOf<A, Object>(), obj);
+            return new RightBoundPredicate<A>(new IsElementOf<A, Object>(), obj);
         } else if (obj.getClass().isArray()) {
-            return new RightBoundPredicate<A, Object>(new IsElementOf<A, Object>(), obj);
+            return new RightBoundPredicate<A>(new IsElementOf<A, Object>(), obj);
         } else {
             throw new IllegalArgumentException("Expected Collection or Array, found " + obj.getClass());
         }

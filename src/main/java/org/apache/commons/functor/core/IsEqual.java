@@ -59,7 +59,7 @@ public final class IsEqual<L, R> implements BinaryPredicate<L, R>, Serializable 
      * {@inheritDoc}
      */
     public boolean test(L left, R right) {
-        return left == right || left != null && left.equals(right); 
+        return left == right || left != null && left.equals(right);
     }
 
     /**
@@ -101,6 +101,6 @@ public final class IsEqual<L, R> implements BinaryPredicate<L, R>, Serializable 
      * @return UnaryPredicate<L>
      */
     public static <L, R> UnaryPredicate<L> to(R object) {
-        return new RightBoundPredicate<L, R>(new IsEqual<L, R>(), object);
+        return new RightBoundPredicate<L>(new IsEqual<L, R>(), object);
     }
 }

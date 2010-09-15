@@ -38,29 +38,30 @@ import org.apache.commons.functor.UnaryProcedure;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-public final class RightBoundProcedure<L, R> implements UnaryProcedure<L>, Serializable {
+public final class RightBoundProcedure<A> implements UnaryProcedure<A>, Serializable {
     /** The {@link BinaryProcedure BinaryProcedure} I'm wrapping. */
-    private BinaryProcedure<? super L, ? super R> procedure;
+    private BinaryProcedure<? super A, Object> procedure;
     /** The parameter to pass to that procedure. */
-    private R param;
+    private Object param;
 
     /**
      * Create a new RightBoundProcedure.
      * @param procedure the procedure to adapt
      * @param arg the constant argument to use
      */
-    public RightBoundProcedure(BinaryProcedure<? super L, ? super R> procedure, R arg) {
+    @SuppressWarnings("unchecked")
+    public <R> RightBoundProcedure(BinaryProcedure<? super A, ? super R> procedure, R arg) {
         if (procedure == null) {
             throw new IllegalArgumentException("BinaryProcedure argument was null");
         }
-        this.procedure = procedure;
+        this.procedure = (BinaryProcedure<? super A, Object>) procedure;
         this.param = arg;
     }
 
     /**
      * {@inheritDoc}
      */
-    public void run(L obj) {
+    public void run(A obj) {
         procedure.run(obj, param);
     }
 
@@ -68,7 +69,7 @@ public final class RightBoundProcedure<L, R> implements UnaryProcedure<L>, Seria
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        return that == this || (that instanceof RightBoundProcedure<?, ?> && equals((RightBoundProcedure<?, ?>) that));
+        return that == this || (that instanceof RightBoundProcedure<?> && equals((RightBoundProcedure<?>) that));
     }
 
     /**
@@ -76,7 +77,7 @@ public final class RightBoundProcedure<L, R> implements UnaryProcedure<L>, Seria
      * @param that RightBoundProcedure to test
      * @return boolean
      */
-    public boolean equals(RightBoundProcedure<?, ?> that) {
+    public boolean equals(RightBoundProcedure<?> that) {
         return null != that
                 && (null == procedure ? null == that.procedure : procedure.equals(that.procedure))
                 && (null == param ? null == that.param : param.equals(that.param));
@@ -111,8 +112,8 @@ public final class RightBoundProcedure<L, R> implements UnaryProcedure<L>, Seria
      * @param arg right side argument
      * @return RightBoundProcedure
      */
-    public static <L, R> RightBoundProcedure<L, R> bind(BinaryProcedure<? super L, ? super R> procedure, R arg) {
-        return null == procedure ? null : new RightBoundProcedure<L, R>(procedure, arg);
+    public static <L, R> RightBoundProcedure<L> bind(BinaryProcedure<? super L, ? super R> procedure, R arg) {
+        return null == procedure ? null : new RightBoundProcedure<L>(procedure, arg);
     }
 
 }

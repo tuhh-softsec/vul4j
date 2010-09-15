@@ -38,29 +38,30 @@ import org.apache.commons.functor.UnaryPredicate;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-public final class RightBoundPredicate<L, R> implements UnaryPredicate<L>, Serializable {
+public final class RightBoundPredicate<A> implements UnaryPredicate<A>, Serializable {
     /** The {@link BinaryPredicate BinaryPredicate} I'm wrapping. */
-    private BinaryPredicate<? super L, ? super R> predicate;
+    private BinaryPredicate<? super A, Object> predicate;
     /** The parameter to pass to that predicate. */
-    private R param;
+    private Object param;
 
     /**
      * Create a new RightBoundPredicate.
      * @param predicate the predicate to adapt
      * @param arg the constant argument to use
      */
-    public RightBoundPredicate(BinaryPredicate<? super L, ? super R> predicate, R arg) {
+    @SuppressWarnings("unchecked")
+    public <R> RightBoundPredicate(BinaryPredicate<? super A, ? super R> predicate, R arg) {
         if (predicate == null) {
             throw new IllegalArgumentException("BinaryPredicate argument was null");
         }
-        this.predicate = predicate;
+        this.predicate = (BinaryPredicate<? super A, Object>) predicate;
         this.param = arg;
     }
 
     /**
      * {@inheritDoc}
      */
-    public boolean test(L obj) {
+    public boolean test(A obj) {
         return predicate.test(obj, param);
     }
 
@@ -68,7 +69,7 @@ public final class RightBoundPredicate<L, R> implements UnaryPredicate<L>, Seria
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        return that == this || (that instanceof RightBoundPredicate<?, ?> && equals((RightBoundPredicate<?, ?>) that));
+        return that == this || (that instanceof RightBoundPredicate<?> && equals((RightBoundPredicate<?>) that));
     }
 
     /**
@@ -76,7 +77,7 @@ public final class RightBoundPredicate<L, R> implements UnaryPredicate<L>, Seria
      * @param that RightBoundPredicate to test
      * @return boolean
      */
-    public boolean equals(RightBoundPredicate<?, ?> that) {
+    public boolean equals(RightBoundPredicate<?> that) {
         return null != that
                 && (null == predicate ? null == that.predicate : predicate.equals(that.predicate))
                 && (null == param ? null == that.param : param.equals(that.param));
@@ -111,8 +112,8 @@ public final class RightBoundPredicate<L, R> implements UnaryPredicate<L>, Seria
      * @param arg right side
      * @return RightBoundPredicate
      */
-    public static <L, R> RightBoundPredicate<L, R> bind(BinaryPredicate<? super L, ? super R> predicate, R arg) {
-        return null == predicate ? null : new RightBoundPredicate<L, R>(predicate, arg);
+    public static <L, R> RightBoundPredicate<L> bind(BinaryPredicate<? super L, ? super R> predicate, R arg) {
+        return null == predicate ? null : new RightBoundPredicate<L>(predicate, arg);
     }
 
 }

@@ -82,7 +82,7 @@ public final class IsNotEqual<L, R> implements BinaryPredicate<L, R>, Serializab
 
     // static methods
   // ------------------------------------------------------------------------
-    
+
     /**
      * Get an IsNotEqual instance.
      * @param <L>
@@ -101,6 +101,6 @@ public final class IsNotEqual<L, R> implements BinaryPredicate<L, R>, Serializab
      * @return UnaryPredicate<L>
      */
     public static <L, R> UnaryPredicate<L> to(R object) {
-        return new RightBoundPredicate<L, R>(new IsNotEqual<L, R>(), object);
+        return new RightBoundPredicate<L>(new IsNotEqual<L, R>(), object);
     }
 }

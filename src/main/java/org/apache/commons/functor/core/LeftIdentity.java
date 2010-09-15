@@ -70,6 +70,7 @@ public final class LeftIdentity {
      * @return BinaryPredicate<Boolean, R>
      */
     public static <R> BinaryPredicate<Boolean, R> predicate() {
-        return BinaryFunctionBinaryPredicate.adapt(IgnoreRightFunction.<Boolean, R, Boolean>adapt(new Identity<Boolean>()));
+        return BinaryFunctionBinaryPredicate.adapt(IgnoreRightFunction
+                .<Boolean, R, Boolean> adapt(new Identity<Boolean>()));
     }
 }

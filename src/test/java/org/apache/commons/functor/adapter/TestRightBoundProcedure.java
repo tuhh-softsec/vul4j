@@ -45,7 +45,7 @@ public class TestRightBoundProcedure extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new RightBoundProcedure<Object, Object>(NoOp.INSTANCE,"xyzzy");
+        return new RightBoundProcedure<Object>(NoOp.INSTANCE,"xyzzy");
     }
 
     // Lifecycle
@@ -63,20 +63,20 @@ public class TestRightBoundProcedure extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     public void testRun() throws Exception {
-        UnaryProcedure<Object> p = new RightBoundProcedure<Object, Object>(
+        UnaryProcedure<Object> p = new RightBoundProcedure<Object>(
                 new BinaryFunctionBinaryProcedure<Object, Object>(LeftIdentity.FUNCTION), "foo");
         p.run(Boolean.TRUE);
         p.run(Boolean.FALSE);
     }
 
     public void testEquals() throws Exception {
-        UnaryProcedure<Object> f = new RightBoundProcedure<Object, Object>(NoOp.INSTANCE,"xyzzy");
+        UnaryProcedure<Object> f = new RightBoundProcedure<Object>(NoOp.INSTANCE,"xyzzy");
         assertEquals(f,f);
-        assertObjectsAreEqual(f,new RightBoundProcedure<Object, Object>(NoOp.INSTANCE,"xyzzy"));
+        assertObjectsAreEqual(f,new RightBoundProcedure<Object>(NoOp.INSTANCE,"xyzzy"));
         assertObjectsAreNotEqual(f,NoOp.INSTANCE);
-        assertObjectsAreNotEqual(f,new RightBoundProcedure<Object, Object>(new BinaryFunctionBinaryProcedure<Object, Object>(LeftIdentity.FUNCTION),"xyzzy"));
-        assertObjectsAreNotEqual(f,new RightBoundProcedure<Object, Object>(NoOp.INSTANCE,"foo"));
-        assertObjectsAreNotEqual(f,new RightBoundProcedure<Object, Object>(NoOp.INSTANCE,null));
+        assertObjectsAreNotEqual(f,new RightBoundProcedure<Object>(new BinaryFunctionBinaryProcedure<Object, Object>(LeftIdentity.FUNCTION),"xyzzy"));
+        assertObjectsAreNotEqual(f,new RightBoundProcedure<Object>(NoOp.INSTANCE,"foo"));
+        assertObjectsAreNotEqual(f,new RightBoundProcedure<Object>(NoOp.INSTANCE,null));
     }
 
     public void testAdaptNull() throws Exception {

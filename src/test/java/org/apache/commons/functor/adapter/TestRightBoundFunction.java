@@ -46,7 +46,7 @@ public class TestRightBoundFunction extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new RightBoundFunction<Object, Object, Object>(LeftIdentity.FUNCTION,"xyzzy");
+        return new RightBoundFunction<Object, Object>(LeftIdentity.FUNCTION,"xyzzy");
     }
 
     // Lifecycle
@@ -71,10 +71,10 @@ public class TestRightBoundFunction extends BaseFunctorTest {
     public void testEquals() throws Exception {
         UnaryFunction<Object, Object> f = RightBoundFunction.bind(LeftIdentity.FUNCTION,"xyzzy");
         assertEquals(f,f);
-        assertObjectsAreEqual(f,new RightBoundFunction<Object, Object, Object>(LeftIdentity.FUNCTION,"xyzzy"));
+        assertObjectsAreEqual(f,new RightBoundFunction<Object, Object>(LeftIdentity.FUNCTION,"xyzzy"));
         assertObjectsAreNotEqual(f,Constant.of("xyzzy"));
-        assertObjectsAreNotEqual(f,new RightBoundFunction<Object, Object, Object>(RightIdentity.FUNCTION,"xyzzy"));
-        assertObjectsAreNotEqual(f,new RightBoundFunction<Object, Object, Object>(LeftIdentity.FUNCTION,"bar"));
+        assertObjectsAreNotEqual(f,new RightBoundFunction<Object, Object>(RightIdentity.FUNCTION,"xyzzy"));
+        assertObjectsAreNotEqual(f,new RightBoundFunction<Object, Object>(LeftIdentity.FUNCTION,"bar"));
     }
 
     public void testAdaptNull() throws Exception {
