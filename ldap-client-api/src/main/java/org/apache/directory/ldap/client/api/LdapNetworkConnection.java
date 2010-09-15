@@ -1147,7 +1147,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
         throws LdapException,
         IOException
     {
-        BindFuture bindFuture = bindSasl( name, credentials, SupportedSaslMechanisms.DIGEST_MD5, authzId, null );
+        BindFuture bindFuture = bindSasl( name, credentials, SupportedSaslMechanisms.CRAM_MD5, authzId, null );
 
         try
         {
