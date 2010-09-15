@@ -91,7 +91,7 @@ public final class IsNotSame<L, R> implements BinaryPredicate<L, R>, Serializabl
      * @param object bound comparison object
      * @return UnaryPredicate<L>
      */
-    public static <L, R> UnaryPredicate<L> to(R object) {
-        return new RightBoundPredicate<L, R>(new IsNotSame<L, R>(), object);
+    public static <L, R> UnaryPredicate<L> as(R object) {
+        return new RightBoundPredicate<L>(new IsNotSame<L, R>(), object);
     }
 }
