@@ -21,9 +21,11 @@ package org.apache.directory.ldap.client.api;
 
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
+import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -37,6 +39,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.net.ssl.SSLContext;
+import javax.security.auth.Subject;
+import javax.security.auth.login.Configuration;
+import javax.security.auth.login.LoginContext;
 import javax.security.sasl.Sasl;
 import javax.security.sasl.SaslClient;
 
@@ -1205,7 +1210,8 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
         throws LdapException,
         IOException
     {
-        BindFuture bindFuture = bindSasl( name, credentials, SupportedSaslMechanisms.DIGEST_MD5, authzId, realmName, ctrls );
+        BindFuture bindFuture = bindSasl( name, credentials, SupportedSaslMechanisms.DIGEST_MD5, authzId, realmName,
+            ctrls );
 
         try
         {
@@ -1231,6 +1237,64 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
         IOException
     {
         return bindDigestMd5( name, credentials, authzId, realmName, new Control[0] );
+    }
+
+
+    /**
+     * @see #bindGssApi(String, byte[], String, String, int, Control...)
+     */
+    public BindResponse bindGssApi( String name, String credentials, String realmName, String kdcHost, int kdcPort, Control... ctrls )
+    throws LdapException, IOException
+    {
+        return bindGssApi( name, StringTools.getBytesUtf8( credentials ), realmName, kdcHost, kdcPort, ctrls );
+    }
+    
+    
+    /**
+     * bind to the ldap server using GSSAPI sasl mechanism
+     *
+     * @param name the DN of the user entry
+     * @param credentials the credentials of the user
+     * @param realmName name of the kerberos realm in which the given user entry is present
+     * @param kdcHost the host name of the KDC server
+     * @param kdcPort the port of the KDC server
+     * @param ctrls controls to be passed along with the bind request
+     * @return response of this bind operation
+     * @throws LdapException
+     * @throws IOException
+     */
+    public BindResponse bindGssApi( String name, byte[] credentials, String realmName, String kdcHost, int kdcPort, Control... ctrls )
+        throws LdapException, IOException
+    {
+        BindRequest bindReq = createBindRequest( name, credentials, SupportedSaslMechanisms.GSSAPI, ctrls );
+        
+        String krbConfPath = createKrbConfFile( realmName, kdcHost, kdcPort );
+        System.setProperty( "java.security.krb5.conf", krbConfPath );
+
+        Configuration.setConfiguration( new Krb5LoginConfiguration() );
+        System.setProperty( "javax.security.auth.useSubjectCredsOnly", "true" );
+
+        final SaslRequest saslReq = new SaslRequest( bindReq );
+
+        try
+        {
+            LoginContext lc = new LoginContext( "ldapnetworkconnection", new SaslCallbackHandler( saslReq ) );
+            lc.login();
+
+            BindFuture future = ( BindFuture ) Subject.doAs( lc.getSubject(), new PrivilegedExceptionAction<Object>()
+            {
+                public Object run() throws Exception
+                {
+                    return bindSasl( saslReq );
+                }
+            } );
+
+            return future.get();
+        }
+        catch ( Exception e )
+        {
+            throw new LdapException( e );
+        }
     }
 
 
@@ -3364,10 +3428,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
         Control... ctrls )
         throws LdapException, IOException
     {
-        BindRequest bindReq = createBindRequest( name, credentials );
-        bindReq.setSaslMechanism( saslMech );
-        bindReq.setSimple( false );
-        bindReq.addAllControls( ctrls );
+        BindRequest bindReq = createBindRequest( name, credentials, saslMech, ctrls );
 
         SaslRequest saslReq = new SaslRequest( bindReq );
         saslReq.setRealmName( realmName );
@@ -3506,5 +3567,60 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
 
             throw new LdapException( TIME_OUT_ERROR );
         }
+    }
+
+    
+    /**
+     * method to write the kerberos config in the standard MIT kerberos format
+     * 
+     * This is required cause the JGSS api is not able to recognize the port value set 
+     * in the system property java.security.krb5.kdc this issue makes it impossible
+     * to set a kdc running non standard port(other than 88)
+     *  
+     * e.g localhost:6088
+     * 
+     * [libdefaults]
+     *     default_realm = EXAMPLE.COM
+     *
+     * [realms]
+     *     EXAMPLE.COM = {
+     *         kdc = localhost:6088
+     *     }
+     *     
+     * @return the full path of the config file
+     */
+    private String createKrbConfFile( String realmName, String kdcHost, int kdcPort ) throws IOException
+    {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append( "[libdefaults]" )
+            .append( "\n\t" );
+        sb.append( "default_realm = " )
+            .append( realmName )
+            .append( "\n" );
+
+        sb.append( "[realms]" )
+            .append( "\n\t" );
+
+        sb.append( realmName )
+            .append( " = {" )
+            .append( "\n\t\t" );
+        sb.append( "kdc = " )
+            .append( kdcHost )
+            .append( ":" )
+            .append( kdcPort )
+            .append( "\n\t}\n" );;
+
+        File krb5Conf = File.createTempFile( "client-api-krb5", ".conf" );
+        krb5Conf.deleteOnExit();
+        FileWriter fw = new FileWriter( krb5Conf );
+        fw.write( sb.toString() );
+        fw.close();
+
+        String krbConfPath = krb5Conf.getAbsolutePath();
+
+        LOG.debug( "krb config file created at {}", krbConfPath );
+
+        return krbConfPath;
     }
 }
