@@ -86,6 +86,9 @@ public class SearchRequestImpl extends AbstractAbandonableRequest implements Sea
     /** The current filter. This is used while decoding a PDU */
     private Filter currentFilter;
 
+    /** The global filter. This is used while decoding a PDU */
+    private Filter topFilter;
+
     /** The SearchRequest TLV id */
     private int tlvId;
 
@@ -517,7 +520,7 @@ public class SearchRequestImpl extends AbstractAbandonableRequest implements Sea
     {
         if ( filterNode == null )
         {
-            filterNode = transform( currentFilter );
+            filterNode = transform( topFilter );
         }
 
         return filterNode;
@@ -626,6 +629,7 @@ public class SearchRequestImpl extends AbstractAbandonableRequest implements Sea
             // No parent. This Filter will become the root.
             currentFilter = localFilter;
             currentFilter.setParent( null, tlvId );
+            topFilter = localFilter;
         }
     }
 
