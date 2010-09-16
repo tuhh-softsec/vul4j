@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.server.kerberos.shared.jaas;
+package org.apache.directory.ldap.client.api;
 
 
 import java.util.HashMap;
