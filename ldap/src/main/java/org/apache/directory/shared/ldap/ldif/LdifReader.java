@@ -236,9 +236,14 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
     }
 
 
-    private void init( BufferedReader reader ) throws LdapException
+    private void initReader( BufferedReader reader ) throws LdapException
     {
         this.reader = reader;
+        init();
+    }
+
+    protected void init() throws LdapException
+    {
         lines = new ArrayList<String>();
         position = 0;
         version = DEFAULT_VERSION;
@@ -249,7 +254,6 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
         version = parseVersion();
         prefetched = parseEntry();
     }
-
 
     /**
      * A constructor which takes a file name
@@ -277,7 +281,7 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
 
         try
         {
-            init( new BufferedReader( new FileReader( file ) ) );
+            initReader( new BufferedReader( new FileReader( file ) ) );
         }
         catch ( FileNotFoundException fnfe )
         {
@@ -304,7 +308,7 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
      */
     public LdifReader( Reader in ) throws LdapException
     {
-        init( new BufferedReader( in ) );
+        initReader( new BufferedReader( in ) );
     }
 
 
@@ -316,7 +320,7 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
      */
     public LdifReader( InputStream in ) throws LdapException
     {
-        init( new BufferedReader( new InputStreamReader( in ) ) );
+        initReader( new BufferedReader( new InputStreamReader( in ) ) );
     }
 
 
@@ -344,7 +348,7 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
 
         try
         {
-            init( new BufferedReader( new FileReader( file ) ) );
+            initReader( new BufferedReader( new FileReader( file ) ) );
         }
         catch ( FileNotFoundException fnfe )
         {
@@ -1445,6 +1449,18 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
 
 
     /**
+     * gets a line from the underlying data store
+     * 
+     * @return a line of characters or null if EOF reached
+     * @throws IOException
+     */
+    protected String getLine() throws IOException
+    {
+        return ( ( BufferedReader ) reader ).readLine();
+    }
+    
+    
+    /**
      * Reads an entry in a ldif buffer, and returns the resulting lines, without
      * comments, and unfolded.
      * 
@@ -1463,7 +1479,7 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
 
         try
         {
-            while ( ( line = ( ( BufferedReader ) reader ).readLine() ) != null )
+            while ( ( line = getLine() ) != null )
             {
                 if ( line.length() == 0 )
                 {
