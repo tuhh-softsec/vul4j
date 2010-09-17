@@ -48,11 +48,6 @@
     </dependency> 
 
     <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>shared-ldap-constants</artifactId>
-    </dependency>
-    
-    <dependency>
       <groupId>antlr</groupId>
       <artifactId>antlr</artifactId>
     </dependency>
