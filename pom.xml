@@ -78,9 +78,6 @@
     <module>ldap-ldif</module>
     <module>ldap-constants</module>
     <module>ldap-schema</module>
-    <module>ldap-schema-loader</module>
-    <module>ldap-schema-manager</module>
-    <module>ldap-schema-manager-tests</module>
     <module>asn1-codec</module>
     <module>ldap-convert</module>
     <module>cursor</module>
@@ -170,18 +167,6 @@
       <dependency>
         <groupId>${project.groupId}</groupId>
         <artifactId>shared-ldap-schema</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>shared-ldap-schema-loader</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>shared-ldap-schema-manager</artifactId>
         <version>${project.version}</version>
       </dependency>
 
