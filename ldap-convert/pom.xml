@@ -48,11 +48,6 @@
     </dependency>
 
     <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>shared-ldif</artifactId>
-    </dependency>
-    
-    <dependency>
       <groupId>antlr</groupId>
       <artifactId>antlr</artifactId>
       <version>${antlr.version}</version>

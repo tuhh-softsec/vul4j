@@ -44,11 +44,6 @@
       <artifactId>shared-cursor</artifactId>
     </dependency>
 
-    <!-- dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>shared-dsml-parser</artifactId>
-    </dependency -->
-
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>shared-i18n</artifactId>
@@ -72,11 +67,6 @@
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>shared-ldap-schema</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>shared-ldif</artifactId>
     </dependency>
   </dependencies>
 
