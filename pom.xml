@@ -76,7 +76,6 @@
     <module>ldap</module>
     <module>ldap-jndi</module>
     <module>ldap-schema</module>
-    <module>asn1-codec</module>
     <module>ldap-client-api</module>
     <module>dsml-parser</module>
   </modules>
@@ -103,12 +102,6 @@
       <dependency>
         <groupId>${project.groupId}</groupId>
         <artifactId>shared-asn1</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>shared-asn1-codec</artifactId>
         <version>${project.version}</version>
       </dependency>
 
@@ -157,7 +150,7 @@
       </dependency>
 
       <!-- Commons dependencies -->
-      
+
       <dependency>
         <groupId>commons-collections</groupId>
         <artifactId>commons-collections</artifactId>
