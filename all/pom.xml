@@ -41,11 +41,6 @@
 
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>shared-cursor</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>${project.groupId}</groupId>
       <artifactId>shared-i18n</artifactId>
     </dependency>
 

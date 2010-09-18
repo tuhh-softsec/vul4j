@@ -56,11 +56,6 @@
     </dependency>
     
     <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>shared-cursor</artifactId>
-    </dependency>
-    
-    <dependency>
       <groupId>dom4j</groupId>
       <artifactId>dom4j</artifactId>
     </dependency>
