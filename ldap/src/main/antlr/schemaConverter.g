@@ -45,7 +45,7 @@ import org.apache.directory.shared.ldap.schema.ObjectClassTypeEnum;
 }
 
 
-class antlrSchemaLexer extends Lexer ;
+class antlrSchemaConverterLexer extends Lexer ;
 
 options    {
     k = 7 ;
@@ -109,7 +109,7 @@ SYNTAX
         "syntax" WS NUMERICOID ( OPEN_BRACKET ( DIGIT )+ CLOSE_BRACKET )?
     ;
 
-class antlrSchemaParser extends Parser ;
+class antlrSchemaConverterParser extends Parser ;
 
 options    {
     k = 5 ;

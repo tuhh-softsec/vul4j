@@ -77,7 +77,6 @@
     <module>ldap-jndi</module>
     <module>ldap-schema</module>
     <module>asn1-codec</module>
-    <module>ldap-convert</module>
     <module>cursor</module>
     <module>ldap-client-api</module>
     <module>dsml-parser</module>
@@ -135,12 +134,6 @@
       <dependency>
         <groupId>${project.groupId}</groupId>
         <artifactId>shared-ldap</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>shared-ldap-converter</artifactId>
         <version>${project.version}</version>
       </dependency>
 
