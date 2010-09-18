@@ -54,11 +54,6 @@
 
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>shared-asn1</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>${project.groupId}</groupId>
       <artifactId>shared-ldap-schema</artifactId>
     </dependency>
 

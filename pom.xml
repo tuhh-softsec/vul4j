@@ -72,7 +72,6 @@
   <modules>
     <module>i18n</module>
     <module>all</module>
-    <module>asn1</module>
     <module>ldap</module>
     <module>ldap-jndi</module>
     <module>ldap-schema</module>
@@ -99,12 +98,6 @@
   <dependencyManagement>
     <dependencies>
       <!-- Project sub-modules dependencies -->
-      <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>shared-asn1</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
       <dependency>
         <groupId>${project.groupId}</groupId>
         <artifactId>shared-dsml-parser</artifactId>
@@ -432,7 +425,7 @@
             <!-- Generated ldif files -->
             <exclude>ldap-schema/src/main/resources/schema/**</exclude>
             <!-- Files having a Bouncy Castle license -->
-            <exclude>asn1/src/main/java/org/apache/directory/shared/asn1/der/*.java</exclude>
+            <exclude>ldap/src/main/java/org/apache/directory/shared/asn1/der/*.java</exclude>
           </excludes>
         </configuration>
       </plugin>
