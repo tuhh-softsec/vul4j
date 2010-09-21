@@ -194,7 +194,7 @@ implements Serializable
 	throws InterruptedException, IOException 
 	{
 		// List of arguments
-		final ArgumentListBuilder args = new ArgumentListBuilder();
+		ArgumentListBuilder args = new ArgumentListBuilder();
     	
 		// CCM installation
     	final CCMBuilderInstallation installation = getCCM();
@@ -216,6 +216,7 @@ implements Serializable
     	// Path to CCM.exe
     	final String pathToCCM = installation.getExecutable(launcher);
     	listener.getLogger().println("Path To CCM.exe: " + pathToCCM);
+    	args.add("\"");
     	args.add(pathToCCM);		
     	
     	final FilePath workspace = build.getWorkspace();
@@ -229,15 +230,18 @@ implements Serializable
         String ccmConfigFile = workspace.act( ccmConfigGenerator );
     	args.add(ccmConfigFile);
     	
+    	args.addKeyValuePairs("-P:",build.getBuildVariables());
+    	args.add( ">", CCM_RESULT_FILE );
+    	
     	//According to the Ant builder source code, in order to launch a program 
         //from the command line in windows, we must wrap it into cmd.exe.  This 
         //way the return code can be used to determine whether or not the build failed.
         if( ! launcher.isUnix() ) // maybe user is using Wine? 
         {
-            args.prepend( "cmd.exe", "/C" );
-            args.add( ">", CCM_RESULT_FILE );
+            args.prepend("cmd.exe","/C");
             args.add( "&&", "exit", "%%ERRORLEVEL%%" );
         } 
+        args.add("\"");
 
 		// ------------------------- 
     	// Executing CCM    
