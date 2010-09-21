@@ -35,7 +35,7 @@
     <distMgmtSiteUrl>scpexe://people.apache.org/www/directory.apache.org/shared/gen-docs/${version}/</distMgmtSiteUrl>
     
     <!-- Set versions for depending projects -->
-    <skin.version>1.0.1</skin.version>
+    <skin.version>1.0.2-SNAPSHOT</skin.version>
     <org.apache.directory.junit.junit-addons.version>0.1-SNAPSHOT</org.apache.directory.junit.junit-addons.version>
     <org.apache.directory.shared.version>0.9.20-SNAPSHOT</org.apache.directory.shared.version>
     <org.apache.directory.buildtools.directory-checkstyle.version>0.1-SNAPSHOT</org.apache.directory.buildtools.directory-checkstyle.version>
@@ -366,6 +366,8 @@
         <configuration>
           <xrefLocation>${project.reporting.outputDirectory}/../xref</xrefLocation>
           <xrefTestLocation>${project.reporting.outputDirectory}/../xref-test</xrefTestLocation>
+          <xmlOutput>true</xmlOutput>
+          <effort>Max</effort>
         </configuration>
       </plugin>
 
@@ -429,6 +431,35 @@
             <exclude>ldap/src/main/java/org/apache/directory/shared/asn1/der/*.java</exclude>
           </excludes>
         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>javancss-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>jdepend-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-changes-plugin</artifactId>
+        <configuration>
+          <onlyCurrentVersion>true</onlyCurrentVersion>
+          <resolutionIds>Fixed</resolutionIds>
+          <statusIds>Resolved,Closed</statusIds>
+          <columnNames>Type,Key,Summary,Status,Resolution,Fix Version</columnNames>
+        </configuration>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>jira-report</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>dashboard-maven-plugin</artifactId>
       </plugin>
     </plugins>
   </reporting>
