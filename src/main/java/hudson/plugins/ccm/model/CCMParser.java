@@ -121,46 +121,16 @@ implements FilePath.FileCallable<CCMReport>
             List<Metric> metrics = ccm.getMetrics();    		
     		report.setMetrics(metrics);
     		report.updateNumbers();
-    		
-            /*CCM ccm = (CCM)xstream.fromXML(in);
-    		List<Metric> metrics = ccm.getMetrics();
-    		
-    		report.addMetrics(metrics);*/
             
-        } catch (ParserConfigurationException e) {
-            throw new IOException2("Cannot parse coverage results", e);
-        } catch (SAXException e) {
-            throw new IOException2("Cannot parse coverage results", e);
+        } 
+        catch (ParserConfigurationException e) 
+        {
+            throw new IOException2("Cannot parse ccm results", e);
+        }
+        catch (SAXException e) 
+        {
+            throw new IOException2("Cannot parse ccm results", e);
         }	
 
 	}
-	
-	
-	/*
-	 * private void parse(InputStreamReader reader, CCMReport report) 
-	throws IOException 
-	{
-		
-		BufferedReader in = new BufferedReader(reader);
-		
-		if ( LOG_ENABLED && logger != null )
-		{
-			logger.println("Parsing ccm.result.xml file...");
-		}
-		
-		XStream xstream = new XStream(new DomDriver());
-		xstream.alias("ccm", CCM.class);
-		xstream.alias("metric", Metric.class);
-		
-		xstream.addImplicitCollection(CCM.class, "metrics");
-		
-		CCM ccm = (CCM)xstream.fromXML(in);
-		List<Metric> metrics = ccm.getMetrics();
-		
-		report.addMetrics(metrics);
-
-	}
-	 */
-	
-	
 }
