@@ -22,7 +22,15 @@
  */
 package hudson.plugins.ccm;
 
+import hudson.Launcher;
+import hudson.Launcher.LocalLauncher;
+import hudson.model.TaskListener;
+import hudson.remoting.Callable;
+import hudson.remoting.VirtualChannel;
+
 import java.io.File;
+import java.io.IOException;
+import java.io.Serializable;
 
 import org.kohsuke.stapler.DataBoundConstructor;
 
@@ -36,6 +44,7 @@ import org.kohsuke.stapler.DataBoundConstructor;
  * @since 7 april, 2010
  */
 public class CCMBuilderInstallation 
+implements Serializable
 {
 
 	private String name;
@@ -59,17 +68,74 @@ public class CCMBuilderInstallation
 		return pathToCCM;
 	}
 	
-	public File getExecutable()
+	/**
+	 * Gets the path to the CCM executable.
+	 * 
+	 * @param launcher Hudson launcher
+	 * @return Path to the CCM executable
+	 * @throws InterruptedException
+	 * @throws IOException If the executable does not exist
+	 */
+	public String getExecutable(Launcher launcher) 
+	throws InterruptedException, IOException
 	{
-		return new File(this.pathToCCM);
+		VirtualChannel channel = launcher.getChannel();
+		String executable = channel.call(
+			new Callable<String, IOException>()
+			{
+				/* (non-Javadoc)
+				 * @see hudson.remoting.Callable#call()
+				 */
+				public String call() 
+				throws IOException
+				{
+					File exe = getExecutableFile();
+					if ( exe.exists() )
+					{
+						return exe.getPath();
+					}
+					
+					throw new IOException(exe.getPath() + " doesn't exist");
+				}
+			}
+		);
+		
+		return executable;
+	}
+	
+	/**
+	 * Gets the executable file of CCM.
+	 * 
+	 * @return CCM executable file
+	 */
+	public File getExecutableFile()
+	{
+		return new File(pathToCCM);
 	}
 	
 	/**
      * Returns true if the executable exists.
      */
-	public boolean getExists()
+	public boolean getExists() 
+	throws InterruptedException, IOException
 	{
-		return getExecutable().exists();
+		LocalLauncher launcher = new LocalLauncher(TaskListener.NULL);
+		VirtualChannel channel = launcher.getChannel();
+		
+		Boolean result = channel.call(
+			new Callable<Boolean, IOException>()
+			{
+				
+				public Boolean call() 
+				throws IOException 
+				{
+					return getExecutableFile().exists();
+				};
+				
+			}
+		);
+		
+		return result;
 	}
 	
 }
