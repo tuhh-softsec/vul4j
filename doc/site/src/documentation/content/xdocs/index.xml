@@ -17,7 +17,7 @@ limitations under the License.
 -->
 <document> 
   <header> 
-    <title>Welcome to XML Security</title> 
+    <title>Welcome to Apache Santuario</title> 
   </header> 
   <body> 
     <section>
@@ -25,11 +25,11 @@ limitations under the License.
       <section>      
         <title>July 2009</title>
         <p>
-         The Apache XML Security team are pleased to announce the release
-         of version 1.4.3 of the Java xml-security library. This release
-         provides many bug fixes and a fix for the recently announced
-         HMAC vulnerability in the XML Signature specification. You should
-         upgrade to this release as soon as possible.
+         The Apache Santuario team are pleased to announce the release
+         of version 1.4.3 of the Java library. This release provides many
+         bug fixes and a fix for the recently announced HMAC vulnerability
+         in the XML Signature specification. You should upgrade to this
+         release as soon as possible.
         </p>
         <p>
          Please see the <link href="site:changes">changelog</link> for more 
@@ -216,8 +216,8 @@ limitations under the License.
     <section>
       <title>The Project</title>
       <p>
-        The XML Security project is aimed at providing implementation of
-        security standards for XML.  Currently the focus is on the W3C
+        The Apache Santuario project is aimed at providing implementation of
+        security standards for XML. Currently the focus is on the W3C
         standards :
       </p>
       <ul>
@@ -239,7 +239,7 @@ limitations under the License.
         <li>A Java library, which includes a mature Digital Signature 
           and Encryption implementation. It also includes the standard JSR
 	  105 (Java XML Digital Signature) API. Applications can use the 
-	  standard JSR 105 API or the Apache XML Security API to create
+	  standard JSR 105 API or the Apache Santuario API to create
 	  and validate XML Signatures.</li>
         <li>A C++ library is also now available.  Functionality is currently
 		  more basic than that provided by the Java library.</li>

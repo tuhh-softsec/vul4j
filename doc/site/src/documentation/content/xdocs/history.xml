@@ -22,11 +22,11 @@ limitations under the License.
 
 <document> 
   <header> 
-    <title>XML Security History</title> 
+    <title>Apache Santuario History</title> 
   </header> 
   <body> 
     <section>
-      <title>The &lt;WebSig&gt; project</title>
+      <title>The Apache Santuario project</title>
       <p>
 	In mid-1999, the <jump
 	  href="http://www.nue.et-inf.uni-siegen.de/">Institute for Data
@@ -69,6 +69,10 @@ limitations under the License.
         project.  It started out on <jump href="http://www.sourceforge.net">
           Sourceforge</jump> and was migrated into XML Security in early 2003.
       </p>
+    </section>
+    <section>
+      <title>The Apache Santuario TLP</title>
+      <p>In 2006, the XML-Security was voted as an Apache TLP and was rebranded as Apache Santuario.</p>
     </section>
   </body>
 </document>

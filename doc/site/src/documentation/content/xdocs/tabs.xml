@@ -16,8 +16,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 
-<tabs software="XML Security"
-    title="Apache XML Security"
+<tabs software="Apache Santuario"
+    title="Apache Santuario"
     copyright="@year@ The Apache Foundation"
     xmlns:xlink="http://www.w3.org/1999/xlink">
 

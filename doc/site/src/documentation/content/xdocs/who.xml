@@ -21,8 +21,8 @@ limitations under the License.
   </header>
   <body>
     <section>
-      <title>The Apache XML-Security Community</title>
-      <p> The XML-Security Project operates on a meritocracy: the more you do, the
+      <title>The Apache Santuario Community</title>
+      <p> The Apache Santuario Project operates on a meritocracy: the more you do, the
         more responsibility you will obtain. This page lists all of the people who have
         gone the extra mile and are Committers. If you would like to get involved, the
         first step is to join the mailing lists. </p>
@@ -38,7 +38,7 @@ limitations under the License.
     <section>
       <title>Committers</title>
       <p>
-        The following people are currently active in the XML Security project :
+        The following people are currently active in the Apache Santuario project:
       </p>
       <ul>
         <li> [BL] Berin Lautenbach (berinATozemail.com.au) </li>

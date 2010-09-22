@@ -26,20 +26,20 @@ be used to configure the chosen Forrest skin.
 
 <skinconfig>
   <!-- Do we want to disable the Google search box? -->
-  <search name="Apache XML Security" domain="xml.apache.org/security" provider="google" />
+  <search name="Apache Santuario" domain="santuario.apache.org" provider="google" />
   <disable-compliance-links>false</disable-compliance-links>
 
   <!-- mandatory project logo
        skin: forrest-site renders it at the top -->
-  <project-name>Apache XML Security</project-name>
-  <project-url>http://xml.apache.org/security</project-url>
+  <project-name>Apache Santuario</project-name>
+  <project-url>http://santuario.apache.org</project-url>
   <project-logo>images/project-logo.gif</project-logo>
 
   <!-- optional group logo
        skin: forrest-site renders it at the top-left corner -->
-  <group-name>Apache XML</group-name>
-  <group-url>http:///xml.apache.org</group-url>
-  <group-logo>images/group-logo.gif</group-logo>
+  <group-name>Apache Software Foundation</group-name>
+  <group-url>http:///www.apache.org</group-url>
+  <group-logo>images/feather-small.gif</group-logo>
 
   <!-- optional host logo (e.g. sourceforge logo)
        skin: forrest-site renders it at the bottom-left corner -->
@@ -47,7 +47,7 @@ be used to configure the chosen Forrest skin.
   <host-logo></host-logo>
 
   <!-- The following are used to construct a copyright statement -->
-  <year>2002-2006</year>
+  <year>2002-2010</year>
   <vendor>The Apache Software Foundation.</vendor>
 
   <!-- Some skins use this to form a 'breadcrumb trail' of links. If you don't
@@ -55,7 +55,7 @@ be used to configure the chosen Forrest skin.
   -->
   <trail>
     <link1 name="apache" href="http://www.apache.org/"/>
-    <link2 name="xml.apache" href="http://xml.apache.org/"/>
+    <link2 name="santuario" href="http://santuario.apache.org/"/>
     <link3 name="" href=""/>
   </trail>
 

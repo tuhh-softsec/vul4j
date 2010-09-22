@@ -23,10 +23,10 @@
     <groupId>org.apache.santuario</groupId>
     <artifactId>xmlsec</artifactId>
     <packaging>bundle</packaging>
-    <name>XML Security</name>
+    <name>Apache Santuario</name>
     <version>1.4.4-SNAPSHOT</version>
     <description>
-        Apache XML Security supports XML-Signature Syntax and Processing,
+        Apache Santuario supports XML-Signature Syntax and Processing,
         W3C Recommendation 12 February 2002, and XML Encryption Syntax and
         Processing, W3C Recommendation 10 December 2002. As of version 1.4,
         the Java library supports the standard Java API JSR-105: XML Digital
@@ -39,7 +39,7 @@
     </issueManagement>
     <mailingLists>
         <mailingList>
-            <name>XML Security Developer List</name>
+            <name>Apache Santuario Developer List</name>
             <subscribe>dev-subscribe@santuario.apache.org</subscribe>
             <unsubscribe>
                 dev-unsubscribe@santuario.apache.org

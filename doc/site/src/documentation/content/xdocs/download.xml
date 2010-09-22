@@ -28,11 +28,15 @@ limitations under the License.
 	<section>
 	  <title>Obtaining the Libraries</title>
 	  <p>
-		Source and binary distributions for both the Java and C++ libraries
-		are available from from the 
+        The current source and binary distribution for both the Java and C++
+        libraries are available from the
+        <jump href="http://www.apache.org/dist/santuario/"> ASF distribution
+        directory</jump>. Archived distributions are available from the
+        <jump href="http://archive.apache.org/dist/santuario/"> ASF archive
+        distribution directory</jump>. In addition, all distributions are
+        available from the
 		<jump href="http://santuario.apache.org/dist/">
-		  project site</jump> only.  Current
-		distributions are <em>not</em> available from the mirrors.
+		  project site</jump>.
 	  </p>
 	</section>
     <section> 
@@ -73,10 +77,10 @@ limitations under the License.
 		out through anonymous SVN with the following instruction 
 		set.
       </p>
-      <source>svn co https://svn.apache.org/repos/asf/xml/security/trunk xml-security</source>
+      <source>svn co https://svn.apache.org/repos/asf/santuario/trunk santuario</source>
       <p>
                This will check out the code into a subdirectory named
-               "xml-security".  The checkout will contain both the Java and
+               "santuario".  The checkout will contain both the Java and
                the C++ source.
       </p>
 	</section>

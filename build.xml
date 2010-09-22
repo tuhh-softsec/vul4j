@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<project name="Apache XML Security" default="help" basedir=".">
+<project name="Apache Santuario" default="help" basedir=".">
     <!-- P R O P E R T Y    F I L E S -->
     <property file="build.properties" />
     <property file="provider.properties" />
@@ -65,7 +65,7 @@
     <property name="lib.junit"		value="${dir.libs}/junit-3.8.2.jar" />
     <property name="lib.clover"		value="${dir.libs}/clover.jar" />
 
-    <!-- XML Security libraries (for bin distribution) -->
+    <!-- Apache Santuario libraries (for bin distribution) -->
     <property name="lib.xmlsec"         value="${dir.libs}/xmlsec-${product.version}.jar" />
     <property name="lib.xmlsec.samples" value="${dir.libs}/xmlsecSamples-${product.version}.jar"/>
     <property name="lib.xmlsec.tests"   value="${dir.libs}/xmlsecTests-${product.version}.jar" />
