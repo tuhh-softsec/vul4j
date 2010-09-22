@@ -62,7 +62,7 @@ public class SaslCallbackHandler implements CallbackHandler
             {
                 NameCallback ncb = ( NameCallback ) cb;
                 
-                String name = saslReq.getBindReq().getName().getRdn().getUpValue().getString();
+                String name = saslReq.getBindRequest().getName().getRdn().getUpValue().getString();
                 LOG.debug( "sending name {} in the NameCallback", name );
                 
                 ncb.setName( name );
@@ -72,7 +72,7 @@ public class SaslCallbackHandler implements CallbackHandler
             {
                 PasswordCallback pcb = ( PasswordCallback ) cb;
                 LOG.debug( "sending credentials in the PasswordCallback" );
-                pcb.setPassword( StringTools.utf8ToString( saslReq.getBindReq().getCredentials() ).toCharArray() );
+                pcb.setPassword( StringTools.utf8ToString( saslReq.getCredentials() ).toCharArray() );
             }
             
             else if( cb instanceof RealmCallback )
@@ -82,7 +82,7 @@ public class SaslCallbackHandler implements CallbackHandler
                 if( saslReq.getRealmName() != null )
                 {
                     LOG.debug( "sending the user specified realm value {} in the RealmCallback", saslReq.getRealmName() );
-                    rcb.setText( saslReq.getRealmName() );                    
+                    rcb.setText( saslReq.getRealmName() );
                 }
                 else
                 {

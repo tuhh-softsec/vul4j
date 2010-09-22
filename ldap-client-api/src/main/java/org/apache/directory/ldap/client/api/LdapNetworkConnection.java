@@ -87,7 +87,6 @@ import org.apache.directory.shared.ldap.message.AliasDerefMode;
 import org.apache.directory.shared.ldap.message.BindRequest;
 import org.apache.directory.shared.ldap.message.BindRequestImpl;
 import org.apache.directory.shared.ldap.message.BindResponse;
-import org.apache.directory.shared.ldap.message.BindResponseImpl;
 import org.apache.directory.shared.ldap.message.CompareRequest;
 import org.apache.directory.shared.ldap.message.CompareRequestImpl;
 import org.apache.directory.shared.ldap.message.CompareResponse;
@@ -1022,6 +1021,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
         try
         {
             DN dn = new DN( name );
+
             return createBindRequest( dn, credentials, saslMechanism, controls );
         }
         catch ( LdapInvalidDnException ine )
@@ -1042,9 +1042,6 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
     private BindRequest createBindRequest( DN name, byte[] credentials, String saslMechanism, Control... controls )
         throws LdapException
     {
-        // clear the mappings if any (in case of a second call to bind() without calling unBind())
-        //clearMaps();
-
         // Set the new messageId
         BindRequest bindRequest = new BindRequestImpl();
 
@@ -1266,7 +1263,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
     public BindResponse bindGssApi( String name, byte[] credentials, String realmName, String kdcHost, int kdcPort, Control... ctrls )
         throws LdapException, IOException
     {
-        BindRequest bindReq = createBindRequest( name, credentials, SupportedSaslMechanisms.GSSAPI, ctrls );
+        BindRequest bindRequest = createBindRequest( name, credentials, SupportedSaslMechanisms.GSSAPI, ctrls );
         
         String krbConfPath = createKrbConfFile( realmName, kdcHost, kdcPort );
         System.setProperty( "java.security.krb5.conf", krbConfPath );
@@ -1274,18 +1271,21 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
         Configuration.setConfiguration( new Krb5LoginConfiguration() );
         System.setProperty( "javax.security.auth.useSubjectCredsOnly", "true" );
 
-        final SaslRequest saslReq = new SaslRequest( bindReq );
+        final SaslRequest saslRequest = new SaslRequest( bindRequest );
 
         try
         {
-            LoginContext lc = new LoginContext( "ldapnetworkconnection", new SaslCallbackHandler( saslReq ) );
-            lc.login();
+            LoginContext loginContext = new LoginContext( "ldapnetworkconnection",
+                new SaslCallbackHandler( saslRequest ) );
+            loginContext.login();
 
-            BindFuture future = ( BindFuture ) Subject.doAs( lc.getSubject(), new PrivilegedExceptionAction<Object>()
+            // Now, bind by calling the internal bindSasl method
+            BindFuture future = ( BindFuture ) Subject.doAs( loginContext.getSubject(),
+                new PrivilegedExceptionAction<Object>()
             {
                 public Object run() throws Exception
                 {
-                    return bindSasl( saslReq );
+                    return bindSasl( saslRequest );
                 }
             } );
 
@@ -3438,7 +3438,12 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
     }
 
 
-    private BindFuture bindSasl( SaslRequest saslReq ) throws LdapException, IOException
+    /**
+     * Process the SASL Bind. It's a dialog with the server, we will send a first BindRequest, receive
+     * a response and the, if this response is a challenge, continue by sending a new BindRequest with
+     * the requested informations.
+     */
+    private BindFuture bindSasl( SaslRequest saslRequest ) throws LdapException, IOException
     {
         // First switch to anonymous state
         authenticated.set( false );
@@ -3449,7 +3454,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
         // If the session has not been establish, or is closed, we get out immediately
         checkSession();
 
-        BindRequest bindRequest = saslReq.getBindReq();
+        BindRequest bindRequest = saslRequest.getBindRequest();
 
         // Update the messageId
         int newId = messageId.incrementAndGet();
@@ -3461,6 +3466,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
         // Create a future for this Bind operation
         BindFuture bindFuture = new BindFuture( this, newId );
 
+        // Store it in the future Map
         addToFutureMap( newId, bindFuture );
 
         try
@@ -3469,49 +3475,72 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
             byte[] response = null;
             ResultCodeEnum result = null;
 
-            SaslClient sc = Sasl.createSaslClient( new String[]
-            { bindRequest.getSaslMechanism() }, saslReq.getAuthorizationId(), "ldap", config.getLdapHost(),
-                saslReq.getSaslMechProps(), new SaslCallbackHandler( saslReq ) );
+            SaslClient sc = Sasl.createSaslClient(
+                new String[]
+                    { bindRequest.getSaslMechanism() },
+                saslRequest.getAuthorizationId(),
+                "ldap",
+                config.getLdapHost(),
+                saslRequest.getSaslMechProps(),
+                new SaslCallbackHandler( saslRequest ) );
 
-            // handcode bindresponse and return
+            // If the SaslClient wasn't created, that means we can't create the SASL client
+            // for the requested mechanism. We then produce an Exception
             if ( sc == null )
             {
-                removeFromFutureMaps( newId );
-                bindResponse = new BindResponseImpl( newId );
-                bindResponse.getLdapResult().setResultCode( ResultCodeEnum.AUTH_METHOD_NOT_SUPPORTED );
-                bindFuture.set( bindResponse );
-
-                return bindFuture;
+                String message = "Cannot find a SASL factory for the " + bindRequest.getSaslMechanism() + " mechanism";
+                LOG.error( message );
+                throw new LdapException( message );
             }
 
+            // Corner case : the SASL mech might send an initial challenge, and we have to 
+            // deal with it immediately.
             if ( sc.hasInitialResponse() )
             {
-                response = sc.evaluateChallenge( new byte[0] );
+                byte[] challengeResponse = sc.evaluateChallenge( new byte[0] );
 
-                bindRequest.setCredentials( response );
+                // Stores the challenge's response, and send it to the server 
+                bindRequest.setCredentials( challengeResponse );
                 writeBindRequest( bindRequest );
 
+                // Get the server's response, blocking
                 bindResponse = bindFuture.get( timeout, TimeUnit.MILLISECONDS );
+
+                if ( bindResponse == null )
+                {
+                    // We didn't received anything : this is an error
+                    LOG.error( "bind failed : timeout occured" );
+                    throw new LdapException( TIME_OUT_ERROR );
+                }
+
                 result = bindResponse.getLdapResult().getResultCode();
             }
             else
             {
-                // clone the bindRequest without setting the credentials
-                BindRequest clonedReq = new BindRequestImpl( newId );
-                clonedReq.setName( bindRequest.getName() );
-                clonedReq.setSaslMechanism( bindRequest.getSaslMechanism() );
-                clonedReq.setSimple( bindRequest.isSimple() );
-                clonedReq.setVersion3( bindRequest.getVersion3() );
-                clonedReq.addAllControls( bindRequest.getControls().values().toArray( new Control[0] ) );
+                // Copy the bindRequest without setting the credentials
+                BindRequest bindRequestCopy = new BindRequestImpl( newId );
+                bindRequestCopy.setName( bindRequest.getName() );
+                bindRequestCopy.setSaslMechanism( bindRequest.getSaslMechanism() );
+                bindRequestCopy.setSimple( bindRequest.isSimple() );
+                bindRequestCopy.setVersion3( bindRequest.getVersion3() );
+                bindRequestCopy.addAllControls( bindRequest.getControls().values().toArray( new Control[0] ) );
 
-                writeBindRequest( clonedReq );
+                writeBindRequest( bindRequestCopy );
 
                 bindResponse = bindFuture.get( timeout, TimeUnit.MILLISECONDS );
+
+                if ( bindResponse == null )
+                {
+                    // We didn't received anything : this is an error
+                    LOG.error( "bind failed : timeout occured" );
+                    throw new LdapException( TIME_OUT_ERROR );
+                }
+
                 result = bindResponse.getLdapResult().getResultCode();
             }
 
             while ( !sc.isComplete()
-                && ( result == ResultCodeEnum.SASL_BIND_IN_PROGRESS || result == ResultCodeEnum.SUCCESS ) )
+                && ( ( result == ResultCodeEnum.SASL_BIND_IN_PROGRESS ) || ( result == ResultCodeEnum.SUCCESS ) ) )
             {
                 response = sc.evaluateChallenge( bindResponse.getServerSaslCreds() );
 
@@ -3524,6 +3553,8 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
                 }
                 else
                 {
+                    newId = messageId.incrementAndGet();
+                    bindRequest.setMessageId( newId );
                     bindRequest.setCredentials( response );
 
                     addToFutureMap( newId, bindFuture );
@@ -3531,12 +3562,20 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
                     writeBindRequest( bindRequest );
 
                     bindResponse = bindFuture.get( timeout, TimeUnit.MILLISECONDS );
+
+                    if ( bindResponse == null )
+                    {
+                        // We didn't received anything : this is an error
+                        LOG.error( "bind failed : timeout occured" );
+                        throw new LdapException( TIME_OUT_ERROR );
+                    }
+
                     result = bindResponse.getLdapResult().getResultCode();
                 }
-
             }
 
             bindFuture.set( bindResponse );
+
             return bindFuture;
         }
         catch ( LdapException e )
@@ -3569,16 +3608,17 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
         }
     }
 
-    
+
     /**
      * method to write the kerberos config in the standard MIT kerberos format
      * 
      * This is required cause the JGSS api is not able to recognize the port value set 
      * in the system property java.security.krb5.kdc this issue makes it impossible
-     * to set a kdc running non standard port(other than 88)
+     * to set a kdc running non standard ports (other than 88)
      *  
      * e.g localhost:6088
      * 
+     * <pre>
      * [libdefaults]
      *     default_realm = EXAMPLE.COM
      *
@@ -3586,7 +3626,8 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
      *     EXAMPLE.COM = {
      *         kdc = localhost:6088
      *     }
-     *     
+     * </pre>
+     * 
      * @return the full path of the config file
      */
     private String createKrbConfFile( String realmName, String kdcHost, int kdcPort ) throws IOException
