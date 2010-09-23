@@ -137,7 +137,9 @@ limitations under the License.
 	Most issues will be discovered, resolved, and then patched quickly
         via the <code>developer</code> mailing list. Larger issues, and ones that are
         not yet fully understood or are hard to solve, are destined for
-	Bugzilla. 
+	Bugzilla.
+    Santuario uses Bugzilla for issue tracking. To report a issue, or to submit a patch, go
+    <link href="http://issues.apache.org/bugzilla/">here</link>.
       </p>
       <p> 
 	Experienced developers use Bugzilla directly, as they are very sure

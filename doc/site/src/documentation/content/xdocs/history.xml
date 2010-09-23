@@ -72,7 +72,10 @@ limitations under the License.
     </section>
     <section>
       <title>The Apache Santuario TLP</title>
-      <p>In 2006, the XML-Security was voted as an Apache TLP and was rebranded as Apache Santuario.</p>
+      <p>In 2006, the XML-Security project was voted as an Apache TLP and was rebranded as Apache 
+      Santuario. The Santuario project at present includes the Java and C++ XML-Security library 
+      projects.
+      </p>
     </section>
   </body>
 </document>

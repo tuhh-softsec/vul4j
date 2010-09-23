@@ -37,6 +37,7 @@ limitations under the License.
   <getting-involved label="Getting Involved">
     <contrib label="Contributing" href="contrib.html"/>
     <SVN label="SVN" href="http://svn.apache.org/viewvc/santuario/trunk/"/>
+    <bugzilla label="Issue Tracking" href="http://issues.apache.org/bugzilla/"/>
     <mail-lists label="Mail lists" href="mail-lists.html"/>
   </getting-involved>
 
@@ -49,7 +50,7 @@ limitations under the License.
     <api label="API Docs" href="api.html" />
     <interop label="Interoperability" href="interop.html"/>
     <gump label="Gump results"
-		  href="http://lsd.student.utwente.nl/gump/xml-security/xml-security.html" />
+		  href="http://vmgump.apache.org/gump/public/santuario/santuario/index.html" />
     <resolvers label="Resolvermania" href="resolver.html"/>
   </java>
 
@@ -58,7 +59,6 @@ limitations under the License.
 	<install label="Installation" href="installation.html"/>
     <cfaq label="FAQs" href="faq.html"/>
 	<external label="API Docs" href="apiDocs/index.html"/>
-	<external label="Nightly API build" href="http://nagoya.apache.org/~blautenb/xml-security-c/apiDocs/"/>
     <tools label="Tools" href="tools.html"/>
     <releases label="Release Information" href="releases.html"/>
     <credits label="Credits" href="credits.html"/>
