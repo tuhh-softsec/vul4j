@@ -43,7 +43,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class DnNode<N>
+public class DnNode<N> implements Cloneable
 {
     /** The logger for this class */
     private static final Logger LOG = LoggerFactory.getLogger( DnNode.class );
@@ -636,6 +636,27 @@ public class DnNode<N>
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
+    public DnNode<N> clone()
+    {
+        DnNode<N> clonedDnNode = new DnNode<N>();
+
+        clonedDnNode.element = element;
+        clonedDnNode.depth = depth;
+        clonedDnNode.parent = parent;
+        clonedDnNode.rdn = rdn;
+
+        for ( DnNode<N> node : children.values() )
+        {
+            clonedDnNode.children.put( rdn, node.clone() );
+        }
+
+        return clonedDnNode;
+    }
+
+
     private String toString( String tabs )
     {
         if ( rdn == null )
@@ -650,11 +671,11 @@ public class DnNode<N>
 
         if ( isLeaf() )
         {
-            sb.append( "Leaf[" ).append( rdn ).append( "]: " ).append( "'" ).append( element ).append( "'" );
+            sb.append( "Leaf[" ).append( dn ).append( "]: " ).append( "'" ).append( element ).append( "'" );
             return sb.toString();
         }
 
-        sb.append( "Branch[" ).append( rdn ).append( "]: " );
+        sb.append( "Branch[" ).append( dn ).append( "]: " );
 
         if ( element != null )
         {
@@ -695,5 +716,14 @@ public class DnNode<N>
     public String toString()
     {
         return toString( "" );
+    }
+
+
+    /**
+     * @return the dn
+     */
+    public DN getDn()
+    {
+        return dn;
     }
 }
