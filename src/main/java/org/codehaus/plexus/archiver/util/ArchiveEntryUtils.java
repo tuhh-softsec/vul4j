@@ -90,7 +90,7 @@ public final class ArchiveEntryUtils
     {
         try
         {
-            return File.class.getMethod( "setReadable", new Class[] { Boolean.class } ) != null;
+            return File.class.getMethod( "setReadable", new Class[] { Boolean.TYPE } ) != null;
         }
         catch ( Exception e )
         {
@@ -106,20 +106,20 @@ public final class ArchiveEntryUtils
         Method method;
         try
         {
-            method = File.class.getMethod( "setReadable", new Class[] { Boolean.class, Boolean.class } );
+            method = File.class.getMethod( "setReadable", new Class[] { Boolean.TYPE, Boolean.TYPE } );
 
             method.invoke( file,
                            new Object[] {
                                Boolean.valueOf( filePermission.isReadable() ),
                                Boolean.valueOf( filePermission.isOwnerOnlyReadable() ) } );
 
-            method = File.class.getMethod( "setExecutable", new Class[] { Boolean.class, Boolean.class } );
+            method = File.class.getMethod( "setExecutable", new Class[] { Boolean.TYPE, Boolean.TYPE } );
             method.invoke( file,
                            new Object[] {
                                Boolean.valueOf( filePermission.isExecutable() ),
                                Boolean.valueOf( filePermission.isOwnerOnlyExecutable() ) } );
 
-            method = File.class.getMethod( "setWritable", new Class[] { Boolean.class, Boolean.class } );
+            method = File.class.getMethod( "setWritable", new Class[] { Boolean.TYPE, Boolean.TYPE } );
             method.invoke( file,
                            new Object[] {
                                Boolean.valueOf( filePermission.isWritable() ),

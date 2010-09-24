@@ -19,6 +19,9 @@ package org.codehaus.plexus.archiver.util;
  * under the License.
  */
 
+import java.io.File;
+import java.lang.reflect.Method;
+
 import junit.framework.TestCase;
 
 import org.codehaus.plexus.logging.Logger;
@@ -37,7 +40,7 @@ public class FilePermissionUtilsTest
         
     }
     
-    public void testOnlyWritableOnlyUser()
+    public void testOnlyWritableOnlyUser() throws Exception
     {
         FilePermission fp = FilePermissionUtils.getFilePermissionFromMode( "200", getLogger() );
         assertTrue( fp.isWritable() );
