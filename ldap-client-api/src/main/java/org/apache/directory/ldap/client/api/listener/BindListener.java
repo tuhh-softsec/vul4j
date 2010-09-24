@@ -39,7 +39,7 @@ public interface BindListener extends OperationResponseListener
      * A callback method called when the bind operation completed.
      *
      * @param connection
-     * @param BindResponseCodec The bind response
+     * @param bindResponse The bind response
      */
     void bindCompleted( LdapAsyncConnection connection, BindResponse bindResponse ) throws LdapException;
 }

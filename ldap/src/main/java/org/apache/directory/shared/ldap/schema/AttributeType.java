@@ -855,12 +855,14 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
 
 
     /**
-     * Sets the AttributeType usage, one of :<br>
-     * <li>USER_APPLICATIONS
-     * <li>DIRECTORY_OPERATION
-     * <li>DISTRIBUTED_OPERATION
-     * <li>DSA_OPERATION
-     * <br>
+     * Sets the AttributeType usage, one of :
+     * <ul>
+     *   <li>USER_APPLICATIONS</li>
+     *   <li>DIRECTORY_OPERATION</li>
+     *   <li>DISTRIBUTED_OPERATION</li>
+     *   <li>DSA_OPERATION</li>
+     * </ul>
+     * 
      * @see UsageEnum
      * @param usage The AttributeType usage
      */
@@ -879,12 +881,14 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
 
 
     /**
-     * Updates the AttributeType usage, one of :<br>
-     * <li>USER_APPLICATIONS
-     * <li>DIRECTORY_OPERATION
-     * <li>DISTRIBUTED_OPERATION
-     * <li>DSA_OPERATION
-     * <br>
+     * Updates the AttributeType usage, one of :
+     * <ul>
+     *   <li>USER_APPLICATIONS</li>
+     *   <li>DIRECTORY_OPERATION</li>
+     *   <li>DISTRIBUTED_OPERATION</li>
+     *   <li>DSA_OPERATION</li>
+     * </ul>
+     * 
      * @see UsageEnum
      * @param usage The AttributeType usage
      */

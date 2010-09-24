@@ -52,7 +52,7 @@ public class LdapConnectionPool extends GenericObjectPool
 
 
     /**
-     * {@inheritDoc}
+     * @see org.apache.commons.pool.impl.GenericObjectPool#setFactory(PoolableObjectFactory factory)
      */
     public void setFactory( PoolableLdapConnectionFactory factory )
     {

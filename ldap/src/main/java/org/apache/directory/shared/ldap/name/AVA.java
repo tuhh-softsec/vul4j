@@ -686,27 +686,57 @@ public class AVA implements Cloneable, Comparable, Externalizable
 
     
     /**
-     * @see Externalizable#readExternal(ObjectInput)<p>
      * 
      * An AVA is composed of  a type and a value.
      * The data are stored following the structure :
-     * 
-     * <li>upName</li> The User provided ATAV
-     * <li>start</li> The position of this ATAV in the DN
-     * <li>length</li> The ATAV length
-     * <li>upType</li> The user Provided Type
-     * <li>normType</li> The normalized AttributeType
-     * <li>isHR<li> Tells if the value is a String or not
-     * <p>
+     * <ul>
+     *   <li>
+     *     <b>upName</b> The User provided ATAV
+     *   </li>
+     *   <li>
+     *     <b/>start</b> The position of this ATAV in the DN
+     *   </li>
+     *   <li>
+     *     <b>length</b> The ATAV length
+     *   </li>
+     *   <li>
+     *     <b>upType</b> The user Provided Type
+     *   </li>
+     *   <li>
+     *     <b>normType</b> The normalized AttributeType
+     *   </li>
+     *   <li>
+     *     <b>isHR</b> Tells if the value is a String or not
+     *   </li>
+     * </ul>
+     * <br/>
      * if the value is a String :
-     * <li>upValue</li> The User Provided value.
-     * <li>value</li> The normalized value.
-     * <p>
+     * <ul>
+     *   <li>
+     *     <b>upValue</b> The User Provided value
+     *   </li>
+     *   <li>
+     *     <b>value</b> The normalized value
+     *   </li>
+     * </ul>
+     * <br/>
      * if the value is binary :
-     * <li>upValueLength</li>
-     * <li>upValue</li> The User Provided value.
-     * <li>valueLength</li>
-     * <li>value</li> The normalized value.
+     * <ul>
+     *   <li>
+     *     <b>upValueLength</b>
+     *   </li>
+     *   <li>
+     *     <b>upValue</b> The User Provided value
+     *   </li>
+     *   <li>
+     *     <b>valueLength</b>
+     *   </li>
+     *   <li>
+     *     <b>value</b> The normalized value
+     *   </li>
+     * </ul>
+     * 
+     * @see Externalizable#readExternal(ObjectInput)
      */
     public void writeExternal( ObjectOutput out ) throws IOException
     {
@@ -779,11 +809,11 @@ public class AVA implements Cloneable, Comparable, Externalizable
     
     
     /**
-     * @see Externalizable#readExternal(ObjectInput)
-     * 
      * We read back the data to create a new ATAV. The structure 
      * read is exposed in the {@link AVA#writeExternal(ObjectOutput)} 
-     * method<p>
+     * method
+     * 
+     * @see Externalizable#readExternal(ObjectInput)
      */
     public void readExternal( ObjectInput in ) throws IOException, ClassNotFoundException
     {

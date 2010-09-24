@@ -2390,18 +2390,14 @@ public class DefaultEntryAttribute implements EntryAttribute
     }
 
 
-    
-    
     /**
-     * @see Externalizable#writeExternal(ObjectOutput)
-     * <p>
-     * 
      * This is the place where we serialize attributes, and all theirs
      * elements. 
      * 
      * The inner structure is the same as the client attribute, but we can't call
      * it as we won't be able to serialize the serverValues
      * 
+     * @see Externalizable#writeExternal(ObjectOutput)
      */
     public void serialize( ObjectOutput out ) throws IOException
     {
@@ -2496,14 +2492,12 @@ public class DefaultEntryAttribute implements EntryAttribute
     
     
     /**
-     * @see Externalizable#writeExternal(ObjectOutput)
-     * <p>
-     * 
      * This is the place where we serialize attributes, and all theirs
      * elements. 
      * 
      * The inner structure is :
      * 
+     * @see Externalizable#writeExternal(ObjectOutput)
      */
     public void writeExternal( ObjectOutput out ) throws IOException
     {

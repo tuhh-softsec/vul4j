@@ -35,7 +35,7 @@ public interface IntermediateResponseListener
      * A callback method for each entry returned by a intermediateResponse response.
      *
      * @param connection The current connection
-     * @param IntermediateResponse The intermediate response
+     * @param intermediateResponse The intermediate response
      */
     void responseReceived( LdapAsyncConnection connection, IntermediateResponse intermediateResponse );
 }

@@ -174,9 +174,7 @@ public class AndNode extends BranchNode
     }
 
 
-    /*
-     * (non-Javadoc)
-     * 
+    /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
     public boolean equals( Object other )

@@ -23,6 +23,7 @@ package org.apache.directory.shared.dsmlv2;
 
 /**
  * This class represents a XML tag.
+ * <br/>
  * A XML tag is defined with :
  * <ul>
  *      <li>a name</li>

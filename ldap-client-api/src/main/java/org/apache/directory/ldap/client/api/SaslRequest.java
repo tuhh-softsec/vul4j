@@ -51,7 +51,7 @@ public class SaslRequest
     /**
      * Creates a new instance of SaslRequest.
      *
-     * @param bindReq The included BindRequest
+     * @param bindRequest The included BindRequest
      */
     protected SaslRequest( BindRequest bindRequest )
     {

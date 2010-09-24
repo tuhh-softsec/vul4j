@@ -52,7 +52,7 @@ public interface LdapAsyncConnection extends LdapConnection
      * the user has to get for the response from the returned Future.
      * 
      * @param entry The entry to add
-     * @result the add operation's Future 
+     * @return the add operation's Future 
      */
     AddFuture addAsync( Entry entry ) throws LdapException;
 
@@ -119,8 +119,9 @@ public interface LdapAsyncConnection extends LdapConnection
      * 
      * @param baseDn The base for the search. It must be a valid
      * DN, and can't be emtpy
-     * @param filterString The filter to use for this search. It can't be empty
-     * @param scope The sarch scope : OBJECT, ONELEVEL or SUBTREE 
+     * @param filter The filter to use for this search. It can't be empty
+     * @param scope The search scope : OBJECT, ONELEVEL or SUBTREE 
+     * @param attributes The attributes for this search 
      * @return A cursor on the result. 
      */
     SearchFuture searchAsync( String baseDn, String filter, SearchScope scope, String... attributes )
@@ -140,8 +141,9 @@ public interface LdapAsyncConnection extends LdapConnection
      * 
      * @param baseDn The base for the search. It must be a valid
      * DN, and can't be emtpy
-     * @param filterString The filter to use for this search. It can't be empty
-     * @param scope The sarch scope : OBJECT, ONELEVEL or SUBTREE 
+     * @param filter The filter to use for this search. It can't be empty
+     * @param scope The search scope : OBJECT, ONELEVEL or SUBTREE
+     * @param attributes The attributes for this search 
      * @return A cursor on the result. 
      */
     SearchFuture searchAsync( DN baseDn, String filter, SearchScope scope, String... attributes )
@@ -181,7 +183,6 @@ public interface LdapAsyncConnection extends LdapConnection
      * performs the modifyDn operation based on the given ModifyDnRequest.
      *
      * @param modDnRequest the request
-     * @param listener callback listener which will be called after the operation is completed
      * @return modifyDn operations response, null if non-null listener is provided
      * @throws LdapException
      */
@@ -221,7 +222,7 @@ public interface LdapAsyncConnection extends LdapConnection
     /**
      * configuration of LdapNetworkConnection
      * 
-     * @return
+     * @return the configuration of the ldap connection
      */
     LdapConnectionConfig getConfig();
 }

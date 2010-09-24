@@ -103,7 +103,7 @@ public interface LdapConnection
      * to wait for the response until the AddResponse is returned.
      *
      * @param entry The entry to add
-     * @result the add operation's response
+     * @return the add operation's response
      * @throws LdapException if some error occurred
      */
     public abstract AddResponse add( Entry entry ) throws LdapException;
@@ -201,8 +201,9 @@ public interface LdapConnection
      *
      * @param baseDn The base for the search. It must be a valid
      * DN, and can't be emtpy
-     * @param filterString The filter to use for this search. It can't be empty
-     * @param scope The sarch scope : OBJECT, ONELEVEL or SUBTREE
+     * @param filter The filter to use for this search. It can't be empty
+     * @param scope The search scope : OBJECT, ONELEVEL or SUBTREE
+     * @param attributes The attributes to use for this search
      * @return A cursor on the result.
      * @throws LdapException if some error occurred
      */
@@ -223,8 +224,9 @@ public interface LdapConnection
      *
      * @param baseDn The base for the search. It must be a valid
      * DN, and can't be emtpy
-     * @param filterString The filter to use for this search. It can't be empty
+     * @param filter The filter to use for this search. It can't be empty
      * @param scope The search scope : OBJECT, ONELEVEL or SUBTREE
+     * @param attributes The attributes to use for this search
      * @return A cursor on the result.
      * @throws LdapException if some error occurred
      */
@@ -265,7 +267,7 @@ public interface LdapConnection
      *
      * Applies all the modifications to the entry specified by its DN
      *
-     * @param DN The entry's DN
+     * @param dn The entry's DN
      * @param modifications The list of modifications to be applied
      * @return the modify operation's response
      * @throws LdapException in case of modify operation failure or timeout happens
@@ -277,7 +279,7 @@ public interface LdapConnection
     *
     * Applies all the modifications to the entry specified by its DN
     *
-    * @param DN The entry's DN
+    * @param dn The entry's DN
     * @param modifications The list of modifications to be applied
     * @return the modify operation's response
     * @throws LdapException in case of modify operation failure or timeout happens

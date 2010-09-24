@@ -27,9 +27,7 @@ package org.apache.directory.shared.ldap.filter;
  */
 public class FilterParserMonitorAdapter implements FilterParserMonitor
 {
-    /*
-     * (non-Javadoc)
-     * 
+    /**
      * @see org.apache.ldap.common.filter.FilterParserMonitor#
      *      matchedProduction(java.lang.String)
      */

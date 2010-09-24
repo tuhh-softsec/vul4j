@@ -350,9 +350,9 @@ public class StringValue extends AbstractValue<String>
 
 
     /**
-     * @see Object#equals(Object)
-     * 
      * Two StringValue are equals if their normalized values are equal
+     * 
+     * @see Object#equals(Object)
      */
     public boolean equals( Object obj )
     {

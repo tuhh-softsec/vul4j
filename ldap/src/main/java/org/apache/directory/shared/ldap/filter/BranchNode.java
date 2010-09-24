@@ -230,8 +230,6 @@ public class BranchNode extends AbstractExprNode
     
     
     /**
-     * (non-Javadoc)
-     * 
      * @see Object#hashCode()
      * @return the instance's hash code 
      */
@@ -252,9 +250,7 @@ public class BranchNode extends AbstractExprNode
         return h;
     }
     
-    /*
-     * (non-Javadoc)
-     * 
+    /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
     public boolean equals( Object other )

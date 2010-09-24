@@ -29,8 +29,8 @@ import org.dom4j.Element;
 
 
 /**
- * Class representing Error Response. <br>
- * <br>
+ * Class representing Error Response.
+ * <br/>
  * An Error Response has a requestID, a message, and a type which can be :
  * <ul> 
  *     <li>NOT_ATTEMPTED,</li>
@@ -223,7 +223,7 @@ public class ErrorResponse extends AbstractResponse implements Response, DsmlDec
     /**
      * Gets the type of error response
      *
-     * @returnvthe type of error response
+     * @return the type of error response
      */
     public ErrorResponseType getErrorType()
     {

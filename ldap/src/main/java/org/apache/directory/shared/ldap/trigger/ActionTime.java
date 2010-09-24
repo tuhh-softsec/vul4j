@@ -54,7 +54,7 @@ public class ActionTime
     }
 
 
-    /* (non-Javadoc)
+    /**
      * @see java.lang.Object#toString()
      */
     public String toString()
@@ -76,7 +76,7 @@ public class ActionTime
     }
 
 
-    /* (non-Javadoc)
+    /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
     public boolean equals( Object obj )

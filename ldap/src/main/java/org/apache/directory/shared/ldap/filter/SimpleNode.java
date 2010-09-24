@@ -187,9 +187,7 @@ public abstract class SimpleNode<T> extends LeafNode
     }
 
 
-    /*
-     * (non-Javadoc)
-     * 
+    /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
     public boolean equals( Object other )

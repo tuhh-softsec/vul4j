@@ -1473,24 +1473,42 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
 
 
     /**
-     * @see Externalizable#readExternal(ObjectInput)<p>
-     *
      * A RDN is composed of on to many ATAVs (AttributeType And Value).
      * We should write all those ATAVs sequencially, following the
      * structure :
-     *
-     * <li>parentId</li> The parent entry's Id
-     * <li>nbAtavs</li> The number of ATAVs to write. Can't be 0.
-     * <li>upName</li> The User provided RDN
-     * <li>normName</li> The normalized RDN. It can be empty if the normalized
+     * <ul>
+     *   <li>
+     *     <b>parentId</b> The parent entry's Id
+     *   </li>
+     *   <li>
+     *     <b>nbAtavs</b> The number of ATAVs to write. Can't be 0.
+     *   </li>
+     *   <li>
+     *     <b>upName</b> The User provided RDN
+     *   </li>
+     *   <li>
+     *     <b>normName</b> The normalized RDN. It can be empty if the normalized
      * name equals the upName.
-     * <li>atavs</li>
-     * <p>
-     * For each ATAV :<p>
-     * <li>start</li> The position of this ATAV in the upName string
-     * <li>length</li> The ATAV user provided length
-     * <li>Call the ATAV write method</li> The ATAV itself
+     *   </li>
+     *   <li>
+     *     <b>atavs</b>
+     *   </li>
+     * </ul>
+     * <br/>
+     * For each ATAV :
+     * <ul>
+     *   <li>
+     *     <b>start</b> The position of this ATAV in the upName string
+     *   </li>
+     *   <li>
+     *     <b>length</b> The ATAV user provided length
+     *   </li>
+     *   <li>
+     *     <b>Call the ATAV write method</b> The ATAV itself
+     *   </li>
+     * </ul>
      *
+     * @see Externalizable#readExternal(ObjectInput)
      * @param out The stream into which the serialized RDN will be put
      * @throws IOException If the stream can't be written
      */
@@ -1532,12 +1550,11 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
 
 
     /**
-     * @see Externalizable#readExternal(ObjectInput)
-     *
      * We read back the data to create a new RDB. The structure
      * read is exposed in the {@link RDN#writeExternal(ObjectOutput)}
-     * method<p>
+     * method
      *
+     * @see Externalizable#readExternal(ObjectInput)
      * @param in The input stream from which the RDN will be read
      * @throws IOException If we can't read from the input stream
      * @throws ClassNotFoundException If we can't create a new RDN

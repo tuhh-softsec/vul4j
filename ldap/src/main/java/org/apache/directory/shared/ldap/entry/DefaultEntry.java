@@ -2521,21 +2521,23 @@ public class DefaultEntry implements Entry
 
 
     /**
-     * @see Externalizable#writeExternal(ObjectOutput)<p>
-     *
      * This is the place where we serialize entries, and all theirs
      * elements.
-     * <p>
+     * <br/>
      * The structure used to store the entry is the following :
-     * <li>
-     * <b>[DN]</b> : If it's null, stores an empty DN
-     * </li>
-     * <li>
-     * <b>[attributes number]</b> : the number of attributes.
-     * </li>
-     * <li>
-     * <b>[attribute]*</b> : each attribute, if we have some
-     * </li>
+     * <ul>
+     *   <li>
+     *     <b>[DN]</b> : If it's null, stores an empty DN
+     *   </li>
+     *   <li>
+     *     <b>[attributes number]</b> : the number of attributes.
+     *   </li>
+     *   <li>
+     *     <b>[attribute]*</b> : each attribute, if we have some
+     *   </li>
+     * </ul>
+     * 
+     * @see Externalizable#writeExternal(ObjectOutput)
      */
     public void writeExternal( ObjectOutput out ) throws IOException
     {

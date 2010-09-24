@@ -784,7 +784,7 @@ public enum I18n
     }
 
     /**
-     * <p>Getter for the field <code>errorCode</code>.</p>
+     * Getter for the field <code>errorCode</code>.
      *
      * @return the errorCode
      * @since 0.9.20
