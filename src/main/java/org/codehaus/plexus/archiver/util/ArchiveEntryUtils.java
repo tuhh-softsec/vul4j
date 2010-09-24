@@ -1,5 +1,8 @@
 package org.codehaus.plexus.archiver.util;
 
+import java.io.File;
+import java.lang.reflect.Method;
+
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.util.Os;
@@ -7,13 +10,12 @@ import org.codehaus.plexus.util.cli.CommandLineException;
 import org.codehaus.plexus.util.cli.CommandLineUtils;
 import org.codehaus.plexus.util.cli.Commandline;
 
-import java.io.File;
-
 public final class ArchiveEntryUtils
 {
 
     private ArchiveEntryUtils()
     {
+        // no op
     }
 
     public static void chmod( File file, int mode, Logger logger )
@@ -26,12 +28,21 @@ public final class ArchiveEntryUtils
 
         String m = Integer.toOctalString( mode & 0xfff );
 
+        
+        if ( isJvmFilePermAvailable() )
+        {
+            applyPermissionsWithJvm( file, m, logger );
+            return;
+        }
+        
         try
         {
             Commandline commandline = new Commandline();
 
             commandline.setWorkingDirectory( file.getParentFile().getAbsolutePath() );
 
+            logger.info( "mode " + mode + ", chmod " + m );
+            
             commandline.setExecutable( "chmod" );
 
             commandline.createArg().setValue( m );
@@ -68,6 +79,55 @@ public final class ArchiveEntryUtils
         catch ( CommandLineException e )
         {
             throw new ArchiverException( "Error while executing chmod.", e );
+        }
+    }
+    
+    /**
+     * 
+     * @return true if file permissions for JVM are available ie is 1.6
+     */
+    private static boolean isJvmFilePermAvailable()
+    {
+        try
+        {
+            return File.class.getMethod( "setReadable", new Class[] { Boolean.class } ) != null;
+        }
+        catch ( Exception e )
+        {
+            return false;
+        }
+    }
+    
+    private static void applyPermissionsWithJvm( File file, String mode, Logger logger )
+    {
+        FilePermission filePermission = FilePermissionUtils.getFilePermissionFromMode( mode, logger );
+
+        Method method;
+        try
+        {
+            method = File.class.getMethod( "setReadable", new Class[] { Boolean.class, Boolean.class } );
+
+            method.invoke( file,
+                           new Object[] {
+                               Boolean.valueOf( filePermission.isReadable() ),
+                               Boolean.valueOf( filePermission.isOwnerOnlyReadable() ) } );
+
+            method = File.class.getMethod( "setExecutable", new Class[] { Boolean.class, Boolean.class } );
+            method.invoke( file,
+                           new Object[] {
+                               Boolean.valueOf( filePermission.isExecutable() ),
+                               Boolean.valueOf( filePermission.isOwnerOnlyExecutable() ) } );
+
+            method = File.class.getMethod( "setWritable", new Class[] { Boolean.class, Boolean.class } );
+            method.invoke( file,
+                           new Object[] {
+                               Boolean.valueOf( filePermission.isWritable() ),
+                               Boolean.valueOf( filePermission.isOwnerOnlyWritable() ) } );
+        }
+        catch ( Exception e )
+        {
+            logger.error( "error calling dynamically file permissons with jvm " + e.getMessage(), e );
+            throw new RuntimeException( "error calling dynamically file permissons with jvm " + e.getMessage(), e );
         }
     }
 
