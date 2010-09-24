@@ -29,7 +29,7 @@ public final class ArchiveEntryUtils
         String m = Integer.toOctalString( mode & 0xfff );
 
         
-        if ( isJvmFilePermAvailable() )
+        if ( isJvmFilePermAvailable( logger ) )
         {
             applyPermissionsWithJvm( file, m, logger );
             return;
@@ -86,7 +86,7 @@ public final class ArchiveEntryUtils
      * 
      * @return true if file permissions for JVM are available ie is 1.6
      */
-    private static boolean isJvmFilePermAvailable()
+    private static boolean isJvmFilePermAvailable( Logger logger )
     {
         try
         {
@@ -94,6 +94,7 @@ public final class ArchiveEntryUtils
         }
         catch ( Exception e )
         {
+            logger.debug( "exception during isJvmFilePermAvailable " + e.getMessage(), e );
             return false;
         }
     }
