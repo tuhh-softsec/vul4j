@@ -357,9 +357,11 @@
         <configuration>
           <xrefLocation>${project.reporting.outputDirectory}/../xref</xrefLocation>
           <xrefTestLocation>${project.reporting.outputDirectory}/../xref-test</xrefTestLocation>
-          <!-- required by dashboard plugin -->
+          <!-- required by dashboard plugin and hudson -->
           <xmlOutput>true</xmlOutput>
           <effort>Max</effort>
+          <findbugsXmlOutput>true</findbugsXmlOutput>
+          <findbugsXmlWithMessages>true</findbugsXmlWithMessages>
         </configuration>
       </plugin>
 
