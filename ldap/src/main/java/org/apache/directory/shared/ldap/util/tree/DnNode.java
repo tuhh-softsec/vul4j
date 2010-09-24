@@ -38,8 +38,10 @@ import org.slf4j.LoggerFactory;
  * An class for nodes in a tree designed to quickly lookup hierarchical DN.
  * Branch nodes in this tree refers to child nodes. Leaf nodes in the tree
  * don't have any children. <br/>
- * A node may cotain a reference to an object whose suffix is the path through the
- * nodes of the tree from the root.
+ * A node may contain a reference to an object whose suffix is the path through the
+ * nodes of the tree from the root. <br/>
+ * A node may also have no attached element.<br/>
+ * Each node is referenced by a RDN, and holds the full DN corresponding to its position<br/>
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
@@ -408,7 +410,8 @@ public class DnNode<N> implements Cloneable
 
 
     /**
-     * Add a new node in the tree. We can't add a node if its DN is empty.
+     * Add a new node in the tree. We can't add a node if its DN is empty. The
+     * added element is attached to the node, which is named by the DN's RDN.<br/>
      *
      * @param dn The node's DN
      * @param element The element to associate with this Node. Can be null.
