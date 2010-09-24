@@ -128,6 +128,27 @@ public interface LdapAsyncConnection extends LdapConnection
 
 
     /**
+     * Do an asynchronous search, on the base object, using the given filter. The
+     * SearchRequest parameters default to :
+     * Scope : ONE
+     * DerefAlias : ALWAYS
+     * SizeLimit : none
+     * TimeLimit : none
+     * TypesOnly : false
+     * Attributes : all the user's attributes.
+     * This method is blocking.
+     * 
+     * @param baseDn The base for the search. It must be a valid
+     * DN, and can't be emtpy
+     * @param filterString The filter to use for this search. It can't be empty
+     * @param scope The sarch scope : OBJECT, ONELEVEL or SUBTREE 
+     * @return A cursor on the result. 
+     */
+    SearchFuture searchAsync( DN baseDn, String filter, SearchScope scope, String... attributes )
+        throws LdapException;
+
+
+    /**
      * Do a search, on the base object, using the given filter. The
      * SearchRequest parameters default to :
      * Scope : ONE
