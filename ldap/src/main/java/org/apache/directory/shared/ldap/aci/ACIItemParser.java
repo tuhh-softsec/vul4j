@@ -118,12 +118,12 @@ public class ACIItemParser
         catch ( TokenStreamException e )
         {
             throw new ParseException( I18n
-                .err( I18n.ERR_00004_PDU_BUFFER_SIZE_TOO_SMALL, spec, e.getLocalizedMessage() ), 0 );
+                .err( I18n.ERR_04004_PARSER_FAILURE_ACI_ITEM, spec, e.getLocalizedMessage() ), 0 );
         }
         catch ( RecognitionException e )
         {
             throw new ParseException( I18n
-                .err( I18n.ERR_00004_PDU_BUFFER_SIZE_TOO_SMALL, spec, e.getLocalizedMessage() ), e.getColumn() );
+                .err( I18n.ERR_04004_PARSER_FAILURE_ACI_ITEM, spec, e.getLocalizedMessage() ), e.getColumn() );
         }
 
         return aCIItem;
