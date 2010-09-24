@@ -90,7 +90,10 @@ public class FilePermissionUtils
                     readable = true;
                     executable = true;
                     break;                    
-
+                case 6:
+                    readable = true;
+                    writable = true;
+                    break;
                 case 7:
                     writable = true;
                     readable = true;
@@ -138,7 +141,12 @@ public class FilePermissionUtils
                     ownerOnlyReadable = false;
                     ownerOnlyExecutable = false;
                     break;                    
-
+                case 6:
+                    readable = true;
+                    ownerOnlyReadable = false;
+                    writable = true;
+                    ownerOnlyWritable = false;                    
+                    break;
                 case 7:
                     writable = true;
                     readable = true;
