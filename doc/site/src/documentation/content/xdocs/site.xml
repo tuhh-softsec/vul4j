@@ -25,7 +25,8 @@ limitations under the License.
     <index label="Index" href="index.html"/>
     <!--    <download label="Download" href="http://xml.apache.org/security/dist/"/> -->
     <!-- <download label="Download" href="http://www.apache.org/dyn/closer.cgi/xml/security/"/> -->
-	<download label="Download" href="download.html"/>
+	<download label="Download" href="http://santuario.apache.org/mirrors.cgi"/>
+	<download_html label="" href="mirrors.html"/>
     <faq label="FAQs" href="faq.html"/>
     <who label="Who we are" href="who.html"/>
     <todo label="Todo" href="todo.html"/>
@@ -37,7 +38,7 @@ limitations under the License.
   <getting-involved label="Getting Involved">
     <contrib label="Contributing" href="contrib.html"/>
     <SVN label="SVN" href="http://svn.apache.org/viewvc/santuario/trunk/"/>
-    <bugzilla label="Issue Tracking" href="http://issues.apache.org/bugzilla/"/>
+    <bugzilla label="Issue Tracking" href="https://issues.apache.org/bugzilla/buglist.cgi?product=Security"/>
     <mail-lists label="Mail lists" href="mail-lists.html"/>
   </getting-involved>
 

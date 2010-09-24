@@ -139,7 +139,7 @@ limitations under the License.
         not yet fully understood or are hard to solve, are destined for
 	Bugzilla.
     Santuario uses Bugzilla for issue tracking. To report a issue, or to submit a patch, go
-    <link href="http://issues.apache.org/bugzilla/">here</link>.
+    <link href="https://issues.apache.org/bugzilla/buglist.cgi?product=Security">here</link>.
       </p>
       <p> 
 	Experienced developers use Bugzilla directly, as they are very sure

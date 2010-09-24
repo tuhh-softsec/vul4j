@@ -8,34 +8,34 @@
 <!--
   =======================================================================
 
-   Copyright (c) 2006 The Apache Software Foundation.  
+   Copyright (c) 2006-2010 The Apache Software Foundation.  
    All rights reserved.
 
   =======================================================================
 -->
-  <Project rdf:about="http://xml.apache.org/security">
+  <Project rdf:about="http://santuario.apache.org">
     <created>2006-03-20</created>
     <license rdf:resource="http://usefulinc.com/doap/licenses/asl20" />
-    <name>Apache XML Security Java</name>
-    <homepage rdf:resource="http://xml.apache.org/security" />
-    <asfext:pmc rdf:resource="http://xml.apache.org" />
+    <name>Apache Santuario</name>
+    <homepage rdf:resource="http://santuario.apache.org" />
+    <asfext:pmc rdf:resource="http://santuario.apache.org" />
     <shortdesc>Library implementing XML Digital Signature Specification &amp; XML Encryption Specification</shortdesc>
     <bug-database rdf:resource="http://issues.apache.org/bugzilla/buglist.cgi?product=Security" />
-    <mailing-list rdf:resource="http://xml.apache.org/mail.html#security-dev" />
-    <download-page rdf:resource="http://xml.apache.org/security/dist" />
+    <mailing-list rdf:resource="http://santuario.apache.org/mail/dev/" />
+    <download-page rdf:resource="http://santuario.apache.org/dist" />
     <programming-language>Java</programming-language>
     <category rdf:resource="http://projects.apache.org/category/xml" />
     <release>
       <Version>
-        <name>1.3</name>
-        <created>2005-10-23</created>
-        <revision>1.3</revision>
+        <name>XML Security (Java) 1.4.3</name>
+        <created>2009-07</created>
+        <revision>1.4.3</revision>
       </Version>
     </release>
     <repository>
       <SVNRepository>
-        <location rdf:resource="https://svn.apache.org/repos/asf/xml/security/"/>
-        <browse rdf:resource="http://svn.apache.org/viewcvs.cgi/xml/security/"/>
+        <location rdf:resource="https://svn.apache.org/repos/asf/santuario"/>
+        <browse rdf:resource="http://svn.apache.org/viewcvs.cgi/santuario"/>
       </SVNRepository>
     </repository>
     <asfext:implements>
