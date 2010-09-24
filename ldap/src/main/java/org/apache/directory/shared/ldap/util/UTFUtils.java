@@ -25,20 +25,34 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
 
+/**
+ * The UTFUtils class provides the 2 methods to readUTF and writeUTF a string. See also
+ * {@link java.io.DataOutput#writeUTF(String)} and {@link java.io.DataInput#readUTF()}. This util class
+ * enhances following given restriction of the interface:<br/>
+ * <ul>
+ * <li>Write and read a null value throws exception (must be possible)</li>
+ * <li>Writing strings large then 65535 encoded bytes throws exception (must be possible)</li>
+ * </ul>
+ * 
+ * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
+ */
 public class UTFUtils
 {
 
     /**
-     * In UTF every char may have 1-3 bytes size
-     * Max writeUTF bytes / max char symbol size
-     */
-    public static final int SPLIT_SIZE = 65535 / 3;
-
-
-    /**
      * 
-     * Do writeUTF a string regardless of it's length. null value will be written with length=0 and value 'null' to
-     * recognize when reading if it's an empty string or a null string
+     * Writes four bytes of length information to the output stream, followed by the modified UTF-8 representation
+     * of every character in the string str. If str is null, the string value 'null' is written with a length of 0
+     * instead of throwing an NullPointerException. Each character in the string s  is converted to a group of one,
+     * two, or three bytes, depending on the value of the character.
+     * 
+     * Due to given restrictions (total number of written bytes in a row can't exceed 65535) the total length is
+     * written in the length information (four bytes (writeInt)) and the string is split into smaller parts
+     * if necessary and written. As each character may be converted to a group of maximum 3 bytes and 65535 bytes
+     * can be written at maximum we're on the save side when writing a chunk of only 21845 (65535/3) characters at
+     * once.
+     * 
+     * See also {@link java.io.DataOutput#writeUTF(String)}.
      *
      * @param objectOutput The objectOutput to write to
      * @param str The value to write
@@ -46,7 +60,7 @@ public class UTFUtils
      */
     public static void writeUTF( ObjectOutput objectOutput, String str ) throws IOException
     {
-
+        // Write a 'null' string
         if ( str == null )
         {
             objectOutput.writeInt( 0 );
@@ -54,37 +68,23 @@ public class UTFUtils
         }
         else
         {
-            int strLength = str.length();
-            int iterations = strLength / SPLIT_SIZE;
+            // Write length of string
+            objectOutput.writeInt( str.length() );
 
-            // Length of string
-            objectOutput.writeInt( strLength );
+            StringBuffer strBuf = new StringBuffer( str );
 
-            if ( iterations == 0 )
+            // Write the string in portions not larger than 21845 characters
+            while ( strBuf != null )
             {
-                // String too short, no iterations needed, just write it
-                objectOutput.writeUTF( str );
-            }
-            else
-            {
-                if ( strLength % SPLIT_SIZE > 0 )
+                if ( strBuf.length() < 21845 )
                 {
-                    ++iterations;
+                    objectOutput.writeUTF( strBuf.substring( 0, strBuf.length() ) );
+                    strBuf = null;
                 }
-
-                for ( int i = 0; i < iterations; ++i )
+                else
                 {
-                    int beginIndex = i * SPLIT_SIZE;
-                    int lastIndex = beginIndex + SPLIT_SIZE;
-
-                    if ( lastIndex > strLength )
-                    {
-                        objectOutput.writeUTF( str.substring( beginIndex, strLength ) );
-                    }
-                    else
-                    {
-                        objectOutput.writeUTF( str.substring( beginIndex, lastIndex ) );
-                    }
+                    objectOutput.writeUTF( strBuf.substring( 0, 21845 ) );
+                    strBuf.delete( 0, 21845 );
                 }
             }
         }
@@ -93,42 +93,45 @@ public class UTFUtils
 
     /**
      * 
-     * Do readUTF a string regardless of it's length. null value is written with length=0 and value 'null' to
-     * recognize when reading if it's an empty string or a null string
+     * Reads in a string that has been encoded using a modified UTF-8  format. The general contract of readUTF  is 
+     * that it reads a representation of a Unicode character string encoded in modified UTF-8 format; this string of
+     * characters is then returned as a String.
+     * 
+     * First, four bytes are read (readInt) and used to construct an unsigned 16-bit integer in exactly the manner
+     * of the readUnsignedShort  method . This integer value is called the UTF length and specifies the number of
+     * additional bytes to be read. These bytes are then converted to characters by considering them in groups. The
+     * length of each group is computed from the value of the first byte of the group. The byte following a group, if
+     * any, is the first byte of the next group.
+     *
+     *See also {@link java.io.DataInput#readUTF()}.
      *
      * @param objectInput The objectInput to read from
-     * @return The value
-     * @throws IOException If the vale can't be read
+     * @return The read string
+     * @throws IOException If the value can't be read
      */
     public static String readUTF( ObjectInput objectInput ) throws IOException
     {
-        StringBuffer stringBuffer = null;
+        StringBuffer strBuf = null;
+
+        // Read length of the string
         int strLength = objectInput.readInt();
 
-        if ( strLength == 0 )
+        // Start reading the string
+        strBuf = new StringBuffer( objectInput.readUTF() );
+
+        if ( strLength == 0 && strBuf.toString().equals( "null" ) )
         {
-            stringBuffer = new StringBuffer( objectInput.readUTF() );
-            if ( stringBuffer.toString().equals( "null" ) )
-            {
-                return null;
-            }
+            // The special case of a 'null' string
+            return null;
         }
         else
         {
-            int iterations = strLength / SPLIT_SIZE;
-
-            if ( strLength % SPLIT_SIZE > 0 )
+            while ( strLength > strBuf.length() )
             {
-                ++iterations;
+                strBuf.append( objectInput.readUTF() );
             }
-
-            stringBuffer = new StringBuffer( strLength );
-            for ( int i = 0; i < iterations; ++i )
-            {
-                stringBuffer.append( objectInput.readUTF() );
-            }
+            return strBuf.toString();
         }
-        return stringBuffer.toString();
     }
 
 }
