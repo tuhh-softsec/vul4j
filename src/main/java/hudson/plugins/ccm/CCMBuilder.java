@@ -35,6 +35,7 @@ import hudson.plugins.ccm.model.CCM;
 import hudson.tasks.Builder;
 import hudson.util.ArgumentListBuilder;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Map;
@@ -231,7 +232,11 @@ implements Serializable
     	args.add(ccmConfigFile);
     	
     	args.addKeyValuePairs("-P:",build.getBuildVariables());
-    	args.add( ">", CCM_RESULT_FILE );
+    	args.add( ">" );
+    	File ccmConfig = new File( ccmConfigFile );
+    	File ccmConfigParent = ccmConfig.getParentFile();
+    	File ccmResult = new File( ccmConfigParent, CCM_RESULT_FILE );
+    	args.add( ccmResult );
     	
     	//According to the Ant builder source code, in order to launch a program 
         //from the command line in windows, we must wrap it into cmd.exe.  This 
