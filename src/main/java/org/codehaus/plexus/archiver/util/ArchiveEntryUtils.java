@@ -29,7 +29,7 @@ public final class ArchiveEntryUtils
         String m = Integer.toOctalString( mode & 0xfff );
 
         
-        if ( isJvmFilePermAvailable( logger ) )
+        if ( Boolean.getBoolean( "useJvmChmod" ) && isJvmFilePermAvailable( logger ) )
         {
             applyPermissionsWithJvm( file, m, logger );
             return;
