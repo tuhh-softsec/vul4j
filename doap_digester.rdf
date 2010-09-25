@@ -40,6 +40,21 @@
     <release>
       <Version>
         <name>common-digester</name>
+        <created>2010-09-25</created>
+        <revision>2.1</revision>
+      </Version>
+      <Version>
+        <name>common-digester</name>
+        <created>2009-01-04</created>
+        <revision>2.0</revision>
+      </Version>
+      <Version>
+        <name>common-digester</name>
+        <created>2009-01-04</created>
+        <revision>1.8.1</revision>
+      </Version>
+      <Version>
+        <name>common-digester</name>
         <created>2006-12-04</created>
         <revision>1.8</revision>
       </Version>
