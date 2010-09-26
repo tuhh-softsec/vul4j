@@ -120,8 +120,10 @@ public class DefaultSchemaManager implements SchemaManager
     /** A flag indicating that the SchemaManager is relaxed or not */
     private boolean isRelaxed = STRICT;
 
-    /** Two flags for RELAXED and STRICT */
+    /** Two flags for RELAXED and STRICT, this is STRICT */
     public static final boolean STRICT = false;
+    
+    /** Two flags for RELAXED and STRICT, this is RELAXED */
     public static final boolean RELAXED = true;
 
 
@@ -130,7 +132,7 @@ public class DefaultSchemaManager implements SchemaManager
      *
      * @param loader The schema loader to use
      */
-    public DefaultSchemaManager( SchemaLoader loader ) throws Exception
+    public DefaultSchemaManager( SchemaLoader loader )
     {
         // Default to the the root (one schemaManager for all the entries
         namingContext = DN.EMPTY_DN;
@@ -149,7 +151,7 @@ public class DefaultSchemaManager implements SchemaManager
      * @param loader The schema loader to use
      * @param namingContext The associated NamingContext
      */
-    public DefaultSchemaManager( SchemaLoader loader, DN namingContext ) throws Exception
+    public DefaultSchemaManager( SchemaLoader loader, DN namingContext )
     {
         this.namingContext = namingContext;
         this.schemaLoader = loader;

@@ -53,7 +53,10 @@ import org.slf4j.LoggerFactory;
  */
 public class JarLdifSchemaLoader extends AbstractSchemaLoader
 {
-    // java.util.regex.Pattern is immutable so only one instance is needed for all uses.
+    /**
+     * Filesystem path separator pattern, either forward slash or backslash.
+     * java.util.regex.Pattern is immutable so only one instance is needed for all uses.
+     */
     private static final String SEPARATOR_PATTERN = "[/\\Q\\\\E]";
 
     /** ldif file extension used */

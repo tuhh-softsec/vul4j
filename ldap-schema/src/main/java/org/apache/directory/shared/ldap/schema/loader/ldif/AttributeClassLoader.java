@@ -35,32 +35,47 @@ import org.apache.directory.shared.ldap.message.ResultCodeEnum;
  */
 public class AttributeClassLoader extends ClassLoader
 {
-    private EntryAttribute attribute;
-    
 
+    /** The attribute. */
+    private EntryAttribute attribute;
+
+
+    /**
+     * Instantiates a new attribute class loader.
+     */
     public AttributeClassLoader()
     {
         super( AttributeClassLoader.class.getClassLoader() );
     }
-    
-    
+
+
+    /**
+     * Sets the attribute.
+     *
+     * @param attribute the new attribute
+     * @throws LdapException if the attribute is not binary.
+     */
     public void setAttribute( EntryAttribute attribute ) throws LdapException
     {
         if ( attribute.isHR() )
         {
-            throw new LdapInvalidAttributeValueException( ResultCodeEnum.CONSTRAINT_VIOLATION, I18n.err( I18n.ERR_10001 ) );
+            throw new LdapInvalidAttributeValueException( ResultCodeEnum.CONSTRAINT_VIOLATION,
+                I18n.err( I18n.ERR_10001 ) );
         }
-        
+
         this.attribute = attribute;
     }
 
-    
+
+    /**
+     * {@inheritDoc}
+     */
     public Class<?> findClass( String name ) throws ClassNotFoundException
     {
         byte[] classBytes = null;
-        
+
         Value<?> value = attribute.get();
-        
+
         if ( value.isBinary() )
         {
             classBytes = value.getBytes();

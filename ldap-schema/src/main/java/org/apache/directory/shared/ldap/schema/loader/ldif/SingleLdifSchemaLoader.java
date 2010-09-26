@@ -49,19 +49,28 @@ import org.slf4j.LoggerFactory;
  */
 public class SingleLdifSchemaLoader extends AbstractSchemaLoader
 {
-    // java.util.regex.Pattern is immutable so only one instance is needed for all uses.
+    /** 
+     * Pattern for start of schema DN. 
+     * java.util.regex.Pattern is immutable so only one instance is needed for all uses.
+     */
     private static final Pattern SCHEMA_START_PATTERN = Pattern
         .compile( "cn\\s*=\\s*[a-z0-9-_]*\\s*,\\s*ou\\s*=\\s*schema" );
 
+    /** The logger. */
     private static final Logger LOG = LoggerFactory.getLogger( SingleLdifSchemaLoader.class );
 
+    /** The schema object RDN attribute types. */
     private String[] schemaObjectTypeRdns = new String[]
         { "attributetypes", "comparators", "ditContentRules", "ditStructureRules", "matchingRules", "matchingRuleUse",
             "nameForms", "normalizers", "objectClasses", "syntaxes", "syntaxCheckers" };
 
+    /** The map containing ... */
     private Map<String, Map<String, List<Entry>>> scObjEntryMap = new HashMap<String, Map<String, List<Entry>>>();
 
 
+    /**
+     * Instantiates a new single LDIF schema loader.
+     */
     public SingleLdifSchemaLoader()
     {
         try
@@ -261,25 +270,14 @@ public class SingleLdifSchemaLoader extends AbstractSchemaLoader
         return loadSchemaObjects( "syntaxCheckers", schemas );
     }
 
-
-    // a simple manual test method
-    public static void main( String[] args ) throws Exception
-    {
-        SingleLdifSchemaLoader loader = new SingleLdifSchemaLoader();
-
-        Schema schema = loader.getSchema( "inetorgperson" );
-
-        System.out.println( schema );
-
-        List<Entry> attrList = loader.loadAttributeTypes( schema );
-        assert ( 9 == attrList.size() );
-    }
-
 }
 
 class SchemaMarker
 {
+    /** The start marker. */
     private int start;
+    
+    /** The end marker. */
     private int end;
 
 

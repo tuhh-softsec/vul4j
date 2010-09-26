@@ -73,7 +73,10 @@ public class SchemaEntityFactory implements EntityFactory
     /** Slf4j logger */
     private static final Logger LOG = LoggerFactory.getLogger( SchemaEntityFactory.class );
 
+    /** The empty string list. */
     private static final List<String> EMPTY_LIST = new ArrayList<String>();
+    
+    /** The empty string array. */
     private static final String[] EMPTY_ARRAY = new String[]
         {};
 
@@ -81,7 +84,10 @@ public class SchemaEntityFactory implements EntityFactory
     private final AttributeClassLoader classLoader;
 
 
-    public SchemaEntityFactory() throws Exception
+    /**
+     * Instantiates a new schema entity factory.
+     */
+    public SchemaEntityFactory()
     {
         this.classLoader = new AttributeClassLoader();
     }

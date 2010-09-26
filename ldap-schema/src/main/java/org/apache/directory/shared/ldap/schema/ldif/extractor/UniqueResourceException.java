@@ -34,19 +34,39 @@ import java.util.List;
  */
 public class UniqueResourceException extends RuntimeException
 {
+
+    /** The serialVersionUID. */
     private static final long serialVersionUID = 1L;
 
+    /** The resource name. */
     private final String resourceName;
+
+    /** The urls. */
     private final List<URL> urls;
+
+    /** The resource description. */
     private final String resourceDescription;
 
-    
+
+    /**
+     * Instantiates a new unique resource exception.
+     *
+     * @param resourceName the resource name
+     * @param resourceDescription the resource description
+     */
     public UniqueResourceException( String resourceName, String resourceDescription )
     {
         this( resourceName, null, resourceDescription );
     }
 
-    
+
+    /**
+     * Instantiates a new unique resource exception.
+     *
+     * @param resourceName the resource name
+     * @param urls the URLs
+     * @param resourceDescription the resource description
+     */
     public UniqueResourceException( String resourceName, List<URL> urls, String resourceDescription )
     {
         this.resourceName = resourceName;
@@ -54,32 +74,44 @@ public class UniqueResourceException extends RuntimeException
         this.resourceDescription = resourceDescription;
     }
 
-    
+
+    /**
+     * Instantiates a new unique resource exception.
+     *
+     * @param resourceName the resource name
+     * @param first the first
+     * @param urlEnum the enum with URLs
+     * @param resourceDescription the resource description
+     */
     public UniqueResourceException( String resourceName, URL first, Enumeration<URL> urlEnum, String resourceDescription )
     {
         this( resourceName, toList( first, urlEnum ), resourceDescription );
     }
 
-    
+
     private static List<URL> toList( URL first, Enumeration<URL> urlEnum )
     {
         ArrayList<URL> urls = new ArrayList<URL>();
         urls.add( first );
-        while( urlEnum.hasMoreElements() )
+        while ( urlEnum.hasMoreElements() )
         {
             urls.add( urlEnum.nextElement() );
         }
         return urls;
     }
 
-    
+
+    /**
+     * {@inheritDoc}
+     */
     public String getMessage()
     {
         StringBuffer buf = new StringBuffer( "Problem locating " ).append( resourceDescription ).append( "\n" );
         if ( urls == null )
         {
             buf.append( "No resources named '" ).append( resourceName ).append( "' located on classpath" );
-        } else
+        }
+        else
         {
             buf.append( "Multiple copies of resource named '" ).append( resourceName ).append(
                     "' located on classpath at urls" );
@@ -92,12 +124,22 @@ public class UniqueResourceException extends RuntimeException
     }
 
 
+    /**
+     * Gets the resource name.
+     *
+     * @return the resource name
+     */
     public String getResourceName()
     {
         return resourceName;
     }
 
-    
+
+    /**
+     * Gets the URLs.
+     *
+     * @return the URLs
+     */
     public List<URL> getUrls()
     {
         return Collections.unmodifiableList( urls );

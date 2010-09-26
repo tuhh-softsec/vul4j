@@ -54,19 +54,29 @@ import org.slf4j.LoggerFactory;
  */
 public class DefaultSchemaLdifExtractor implements SchemaLdifExtractor
 {
+
+    /** The base path. */
     private static final String BASE_PATH = "";
 
+    /** The schema sub-directory. */
     private static final String SCHEMA_SUBDIR = "schema";
 
+    /** The logger. */
     private static final Logger LOG = LoggerFactory.getLogger( DefaultSchemaLdifExtractor.class );
 
-    // java.util.regex.Pattern is immutable so only one instance is needed for all uses.
+    /**
+     * The pattern to extract the schema from LDIF files.
+     * java.util.regex.Pattern is immutable so only one instance is needed for all uses.
+     */
     private static final Pattern EXTRACT_PATTERN = Pattern.compile( ".*schema" + "[/\\Q\\\\E]" + "ou=schema.*\\.ldif" );
 
+    /** The extracted flag. */
     private boolean extracted;
 
+    /** The output directory. */
     private File outputDirectory;
 
+    /** The schema directory. */
     private File schemaDirectory;
 
 
