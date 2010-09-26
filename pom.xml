@@ -385,6 +385,8 @@
         <version>2.6</version>
         <configuration>
           <configLocation>directory-checks.xml</configLocation>
+          <suppressionsLocation>${basedir}/src/checkstyle/suppressions.xml</suppressionsLocation>
+          <suppressionsFileExpression>checkstyle.suppressions.file</suppressionsFileExpression>
           <xrefLocation>${project.reporting.outputDirectory}/../xref</xrefLocation>
         </configuration>
       </plugin>
