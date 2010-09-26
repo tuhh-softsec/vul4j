@@ -53,7 +53,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class AVA implements Cloneable, Comparable, Externalizable
+public class AVA implements Cloneable, Comparable<Object>, Externalizable
 {
     /**
      * Declares the Serial Version Uid.
@@ -290,7 +290,7 @@ public class AVA implements Cloneable, Comparable, Externalizable
      */
     public Value<?> getNormValue()
     {
-        return normValue;
+        return normValue.clone();
     }
 
     /**
@@ -300,7 +300,7 @@ public class AVA implements Cloneable, Comparable, Externalizable
      */
     public Value<?> getUpValue()
     {
-        return upValue;
+        return upValue.clone();
     }
 
     /**

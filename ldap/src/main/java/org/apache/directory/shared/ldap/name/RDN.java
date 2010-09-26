@@ -106,6 +106,8 @@ import org.slf4j.LoggerFactory;
  * The Rdn is composed of one or more AttributeTypeAndValue (atav) Those atavs
  * are ordered in the alphabetical natural order : a < b < c ... < z As the type
  * are not case sensitive, we can say that a = A
+ * <br>
+ * This class is immutable.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
@@ -664,8 +666,7 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
      * Get the Value of the AttributeTypeAndValue which type is given as an
      * argument.
      *
-     * @param type
-     *            The type of the NameArgument
+     * @param type The type of the NameArgument
      * @return The Value to be returned, or null if none found.
      * @throws LdapInvalidDnException
      */
@@ -825,7 +826,7 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
      *
      * @return A clone of the current RDN
      */
-    public Object clone()
+    public RDN clone()
     {
         try
         {

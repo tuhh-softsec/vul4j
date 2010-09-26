@@ -42,16 +42,18 @@ import org.slf4j.LoggerFactory;
 
 /**
  * The DN class contains a DN (Distinguished Name). This class is immutable.
- *
+ * <br/>
  * Its specification can be found in RFC 2253,
  * "UTF-8 String Representation of Distinguished Names".
- *
+ * <br/>
  * We will store two representation of a DN :
- * - a user Provider representation, which is the parsed String given by a user
- * - an internal representation.
+ * <ul>
+ * <li>a user Provider representation, which is the parsed String given by a user</li>
+ * <li>an internal representation.</li>
+ * </ul>
  *
- * A DN is formed of RDNs, in a specific order :
- *  RDN[n], RDN[n-1], ... RDN[1], RDN[0]
+ * A DN is formed of RDNs, in a specific order :<br/>
+ *  RDN[n], RDN[n-1], ... RDN[1], RDN[0]<br/>
  *
  * It represents a tree, in which the root is the last RDN (RDN[0]) and the leaf
  * is the first RDN (RDN[n]).
@@ -194,16 +196,9 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
 
         if ( ( dn != null ) && ( dn.size() != 0 ) )
         {
-            for ( int ii = 0; ii < dn.size(); ii++ )
+            for ( RDN rdn : dn )
             {
-                String nameComponent = dn.get( ii );
-
-                if ( nameComponent.length() > 0 )
-                {
-                    RDN newRdn = new RDN( nameComponent, schemaManager );
-
-                    rdns.add( 0, newRdn );
-                }
+                rdns.add( 0, rdn.clone() );
             }
         }
 
@@ -404,9 +399,9 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
      */
     public DN( RDN rdn )
     {
-        rdns.add( rdn );
+        rdns.add( rdn.clone() );
 
-        if( rdn.isNormalized() )
+        if ( rdn.isNormalized() )
         {
             this.normName = rdn.getNormName();
             this.upName = rdn.getName();
@@ -866,7 +861,6 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
      */
     public boolean hasSuffix( DN dn )
     {
-
         if ( dn == null )
         {
             return true;
@@ -969,7 +963,7 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
         {
             RDN rdn = rdns.get( rdns.size() - posn - 1 );
 
-            return rdn;
+            return rdn.clone();
         }
     }
 
@@ -987,7 +981,7 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
         }
         else
         {
-            return rdns.get( 0 );
+            return rdns.get( 0 ).clone();
         }
     }
 
@@ -1020,18 +1014,18 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
             throw new ArrayIndexOutOfBoundsException( message );
         }
 
-        DN newDN = new DN();
+        DN newDn = new DN();
 
         for ( int i = rdns.size() - posn; i < rdns.size(); i++ )
         {
             // Don't forget to clone the rdns !
-            newDN.rdns.add( ( RDN ) rdns.get( i ).clone() );
+            newDn.rdns.add( ( RDN ) rdns.get( i ).clone() );
         }
 
-        newDN.normName = newDN.toNormName();
-        newDN.upName = getUpNamePrefix( posn );
+        newDn.normName = newDn.toNormName();
+        newDn.upName = getUpNamePrefix( posn );
 
-        return newDN;
+        return newDn;
     }
 
 
@@ -1052,18 +1046,18 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
             throw new ArrayIndexOutOfBoundsException( message );
         }
 
-        DN newDN = new DN();
+        DN newDn = new DN();
 
         for ( int i = 0; i < size() - posn; i++ )
         {
             // Don't forget to clone the rdns !
-            newDN.rdns.add( ( RDN ) rdns.get( i ).clone() );
+            newDn.rdns.add( ( RDN ) rdns.get( i ).clone() );
         }
 
-        newDN.normName = newDN.toNormName();
-        newDN.upName = getUpNameSuffix( posn );
+        newDn.normName = newDn.toNormName();
+        newDn.upName = getUpNameSuffix( posn );
 
-        return newDN;
+        return newDn;
     }
 
 
@@ -1090,7 +1084,7 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
             return this;
         }
 
-        DN clonedDn = ( DN ) clone();
+        DN clonedDn = clone();
 
         // Concatenate the rdns
         clonedDn.rdns.addAll( clonedDn.size() - posn, dn.rdns );
@@ -1130,7 +1124,7 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
             return this;
         }
 
-        DN clonedDn = ( DN ) clone();
+        DN clonedDn = clone();
 
         // Concatenate the rdns
         clonedDn.rdns.addAll( clonedDn.size() - posn, dn.rdns );
@@ -1174,7 +1168,8 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
             return this;
         }
 
-        DN clonedDn = ( DN ) clone();
+        DN clonedDn = clone();
+
         // We have to parse the nameComponent which is given as an argument
         RDN newRdn = new RDN( comp, schemaManager );
 
@@ -1204,15 +1199,15 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
      */
     public DN add( RDN newRdn )
     {
-        DN clonedDn = ( DN ) clone();
+        DN clonedDn = clone();
 
-        clonedDn.rdns.add( 0, newRdn );
+        clonedDn.rdns.add( 0, newRdn.clone() );
 
         // FIXME this try-catch block shouldn't be here
         // instead this method should throw the LdapInvalidDnException
         try
         {
-            if( clonedDn.isNormalized() && newRdn.isNormalized() )
+            if ( clonedDn.isNormalized() && newRdn.isNormalized() )
             {
                 clonedDn.normalizeInternal();
             }
@@ -1255,7 +1250,7 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
         // We have to parse the nameComponent which is given as an argument
         RDN newRdn = new RDN( comp );
 
-        DN clonedDn = ( DN ) clone();
+        DN clonedDn = clone();
 
         int realPos = clonedDn.size() - posn;
         clonedDn.rdns.add( realPos, newRdn );
@@ -1293,7 +1288,7 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
             throw new ArrayIndexOutOfBoundsException( message );
         }
 
-        DN clonedDn = ( DN ) clone();
+        DN clonedDn = clone();
         clonedDn._removeChild( posn );
 
         return clonedDn;
