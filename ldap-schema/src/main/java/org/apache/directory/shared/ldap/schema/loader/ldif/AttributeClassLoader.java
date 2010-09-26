@@ -35,7 +35,7 @@ import org.apache.directory.shared.ldap.message.ResultCodeEnum;
  */
 public class AttributeClassLoader extends ClassLoader
 {
-    public EntryAttribute attribute;
+    private EntryAttribute attribute;
     
 
     public AttributeClassLoader()

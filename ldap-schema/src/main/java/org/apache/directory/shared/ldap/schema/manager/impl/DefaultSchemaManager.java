@@ -109,7 +109,7 @@ public class DefaultSchemaManager implements SchemaManager
     private SchemaLoader schemaLoader;
 
     /** the factory that generates respective SchemaObjects from LDIF entries */
-    protected final EntityFactory factory;
+    private final EntityFactory factory;
 
     /** the normalized name for the schema modification attributes */
     private DN schemaModificationAttributesDN;
@@ -884,7 +884,7 @@ public class DefaultSchemaManager implements SchemaManager
      * @param schemaObject The SchemaObject containing the SchemaObject description
      * @param schema The associated schema
      * @return the created schemaObject instance
-     * @throws Exception If the registering failed
+     * @throws LdapException If the registering failed
      */
     private SchemaObject addSchemaObject( Registries registries, SchemaObject schemaObject, Schema schema )
         throws LdapException
@@ -1080,7 +1080,7 @@ public class DefaultSchemaManager implements SchemaManager
      * @throws Exception if there is a cycle detected and/or another
      * failure results while loading, producing and or registering schema objects
      */
-    private final void loadDepsFirst( Registries registries, Schema schema ) throws Exception
+    private void loadDepsFirst( Registries registries, Schema schema ) throws Exception
     {
         if ( schema == null )
         {

@@ -71,7 +71,7 @@ import org.slf4j.LoggerFactory;
 public class SchemaEntityFactory implements EntityFactory
 {
     /** Slf4j logger */
-    private final static Logger LOG = LoggerFactory.getLogger( SchemaEntityFactory.class );
+    private static final Logger LOG = LoggerFactory.getLogger( SchemaEntityFactory.class );
 
     private static final List<String> EMPTY_LIST = new ArrayList<String>();
     private static final String[] EMPTY_ARRAY = new String[]

@@ -84,7 +84,7 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
     }
 
 
-    private final URL getResource( String resource, String msg ) throws IOException
+    private URL getResource( String resource, String msg ) throws IOException
     {
         if ( RESOURCE_MAP.get( resource ) )
         {
@@ -153,7 +153,7 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
      * @param schema the schema to get the path for
      * @return the regex.Pattern fragment for the path for the specified schema directory
      */
-    private final String getSchemaDirectory( Schema schema )
+    private String getSchemaDirectory( Schema schema )
     {
         return "schema" + SEPARATOR_PATTERN + "ou=schema" + SEPARATOR_PATTERN
                         + "cn=" + schema.getSchemaName() + SEPARATOR_PATTERN;

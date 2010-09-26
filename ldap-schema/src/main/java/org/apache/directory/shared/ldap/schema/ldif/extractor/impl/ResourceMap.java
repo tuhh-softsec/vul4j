@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class ResourceMap
+public final class ResourceMap
 {
     /** the system property which can be used to load schema from a user specified
      *  resource like a absolute path to a directory or jar file.
@@ -51,7 +51,15 @@ public class ResourceMap
      *  */
     private static final String SCHEMA_RESOURCE_LOCATION = "schema.resource.location";
     
+    /** The logger. */
     private static final Logger LOG = LoggerFactory.getLogger( ResourceMap.class );
+    
+    /**
+     * Private contstructor.
+     */
+    private ResourceMap()
+    {
+    }
     
    /**
     * For all elements of java.class.path OR from the resource name set in the 

@@ -240,7 +240,7 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
      * @param schema the schema to get the file for
      * @return the file for the specific schema directory
      */
-    private final File getSchemaDirectory( Schema schema )
+    private File getSchemaDirectory( Schema schema )
     {
         return new File( new File( baseDirectory, SchemaConstants.OU_SCHEMA ), "cn=" + schema.getSchemaName() );
     }

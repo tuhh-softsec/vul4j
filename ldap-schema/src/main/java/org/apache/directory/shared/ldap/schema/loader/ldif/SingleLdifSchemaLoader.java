@@ -105,7 +105,7 @@ public class SingleLdifSchemaLoader extends AbstractSchemaLoader
             }
             else
             {
-                _loadSchemaObject( currentSchema.getSchemaName(), ldifEntry );
+                loadSchemaObject( currentSchema.getSchemaName(), ldifEntry );
             }
         }
 
@@ -113,7 +113,7 @@ public class SingleLdifSchemaLoader extends AbstractSchemaLoader
     }
 
 
-    private void _loadSchemaObject( String schemaName, LdifEntry ldifEntry ) throws Exception
+    private void loadSchemaObject( String schemaName, LdifEntry ldifEntry ) throws Exception
     {
         for ( String scObjTypeRdn : schemaObjectTypeRdns )
         {
