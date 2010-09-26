@@ -795,11 +795,11 @@ public enum I18n
     }
 
     /** The file containing the errors */
-    private final static ResourceBundle ERR_BUNDLE = ResourceBundle
+    private static final ResourceBundle ERR_BUNDLE = ResourceBundle
     .getBundle( "org/apache/directory/shared/i18n/errors" );
 
     /** The file containing the messages */
-    private final static ResourceBundle MSG_BUNDLE = ResourceBundle
+    private static final ResourceBundle MSG_BUNDLE = ResourceBundle
     .getBundle( "org/apache/directory/shared/i18n/messages" );
 
     /**
