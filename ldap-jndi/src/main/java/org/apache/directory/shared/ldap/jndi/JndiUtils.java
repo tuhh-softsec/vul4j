@@ -78,7 +78,6 @@ import org.apache.directory.shared.ldap.exception.LdapServiceUnavailableExceptio
 import org.apache.directory.shared.ldap.exception.LdapTimeLimitExceededException;
 import org.apache.directory.shared.ldap.exception.LdapUnwillingToPerformException;
 import org.apache.directory.shared.ldap.message.LdapResult;
-import org.apache.directory.shared.ldap.message.MessageException;
 import org.apache.directory.shared.ldap.message.ResultResponse;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.name.DN;
@@ -89,9 +88,22 @@ import org.apache.directory.shared.ldap.name.DN;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class JndiUtils
-
+public final class JndiUtils
 {
+    /**
+     * Private constructor for utility class.
+     */
+    private JndiUtils()
+    {
+    }
+
+
+    /**
+     * Converts Apache Directory control the to an JNDI control.
+     *
+     * @param control the Apache Directory control
+     * @return the JNDI control
+     */
     public static javax.naming.ldap.Control toJndiControl( Control control )
     {
         byte[] value = control.getValue();
@@ -101,6 +113,12 @@ public class JndiUtils
     }
 
 
+    /**
+     * Converts the Apache Directory controls to JNDI controls.
+     *
+     * @param controls the Apache Directory controls
+     * @return the JNDI controls
+     */
     public static javax.naming.ldap.Control[] toJndiControls( Control... controls )
     {
         if ( controls != null )
@@ -122,6 +140,12 @@ public class JndiUtils
     }
 
 
+    /**
+     * Converts the JNDI control to an Apache Directory control.
+     *
+     * @param jndiControl the JNDI control
+     * @return the Apache Directory control
+     */
     public static Control fromJndiControl( javax.naming.ldap.Control jndiControl )
     {
         Control control = new ControlImpl( jndiControl.getID() );
@@ -132,6 +156,12 @@ public class JndiUtils
     }
 
 
+    /**
+     * Converts the JNDI controls to Apache Directory controls.
+     *
+     * @param jndiControls the JNDI controls
+     * @return the Apache Directory controls
+     */
     public static Control[] fromJndiControls( javax.naming.ldap.Control... jndiControls )
     {
         if ( jndiControls != null )
@@ -154,22 +184,32 @@ public class JndiUtils
 
 
     /**
-     * TODO toJndiExtendedResponse. This is NOT correct ATM
+     * Converts an Apache Directory extended request to an JNDI extended request.
+     * TODO: This is NOT correct ATM
      *
-     * @param request
-     * @return
+     * @param request the Apache Directory extended request
+     * @return the JDNI extended response
      */
     public static ExtendedResponse toJndiExtendedResponse(
         final org.apache.directory.shared.ldap.message.ExtendedRequest request )
     {
         class JndiExtendedResponse implements ExtendedResponse
         {
+            private static final long serialVersionUID = 2535213952391003045L;
+
+
+            /**
+             * {@inheritDoc}
+             */
             public byte[] getEncodedValue()
             {
                 return request.getRequestValue();
             }
 
 
+            /**
+             * {@inheritDoc}
+             */
             public String getID()
             {
                 return request.getRequestName();
@@ -181,16 +221,22 @@ public class JndiUtils
 
 
     /**
-     * Transform a JNDI extended request to an internal ExtendedRequest
+     * Transform a JNDI extended request to an Apache Directory extended request
      *
-     * @param request The JNDI extendedRequest
-     * @return An internal ExtendedRequest
+     * @param request The JNDI extended request
+     * @return An Apache Directory extended request
      */
     public static ExtendedRequest toJndiExtendedRequest(
         final org.apache.directory.shared.ldap.message.ExtendedRequest request )
     {
         class JndiExtendedRequest implements ExtendedRequest
         {
+            private static final long serialVersionUID = 2887613172871934108L;
+
+
+            /**
+             * {@inheritDoc}
+             */
             public ExtendedResponse createExtendedResponse( String id, byte[] berValue, int offset, int length )
                 throws NamingException
             {
@@ -198,12 +244,18 @@ public class JndiUtils
             }
 
 
+            /**
+             * {@inheritDoc}
+             */
             public byte[] getEncodedValue()
             {
                 return request.getRequestValue();
             }
 
 
+            /**
+             * {@inheritDoc}
+             */
             public String getID()
             {
                 return request.getRequestName();
@@ -275,7 +327,7 @@ public class JndiUtils
             /**
              * {@inheritDoc}
              */
-            public void addAllControls( Control[] controls ) throws MessageException
+            public void addAllControls( Control[] controls )
             {
             }
 
@@ -283,7 +335,7 @@ public class JndiUtils
             /**
              * {@inheritDoc}
              */
-            public void addControl( Control control ) throws MessageException
+            public void addControl( Control control )
             {
             }
 
@@ -363,7 +415,7 @@ public class JndiUtils
             /**
              * {@inheritDoc}
              */
-            public void removeControl( Control control ) throws MessageException
+            public void removeControl( Control control )
             {
             }
 
@@ -473,7 +525,7 @@ public class JndiUtils
             /**
              * {@inheritDoc}
              */
-            public void addAllControls( Control[] controls ) throws MessageException
+            public void addAllControls( Control[] controls )
             {
             }
 
@@ -481,7 +533,7 @@ public class JndiUtils
             /**
              * {@inheritDoc}
              */
-            public void addControl( Control control ) throws MessageException
+            public void addControl( Control control )
             {
             }
 
@@ -561,7 +613,7 @@ public class JndiUtils
             /**
              * {@inheritDoc}
              */
-            public void removeControl( Control control ) throws MessageException
+            public void removeControl( Control control )
             {
             }
 
@@ -751,11 +803,19 @@ public class JndiUtils
 // a ReferralException around the LdapReferralException to be used in tests
 class WrappedReferralException extends ReferralException
 {
+
+    /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
 
+    /** The wrapped referral exception. */
     private LdapReferralException lre;
 
 
+    /**
+     * Creates a new instance of WrappedReferralException.
+     *
+     * @param lre the wrapped referral exception
+     */
     public WrappedReferralException( LdapReferralException lre )
     {
         this.lre = lre;
@@ -821,11 +881,19 @@ class WrappedReferralException extends ReferralException
 // a PartialResultException around the LdapPartialResultException to be used in tests
 class WrappedPartialResultException extends PartialResultException
 {
+
+    /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
 
+    /** The wrapped partial result exception. */
     private LdapPartialResultException lpre;
 
 
+    /**
+     * Instantiates a new wrapped partial result exception.
+     *
+     * @param lpre the wrapped partial result exception
+     */
     public WrappedPartialResultException( LdapPartialResultException lpre )
     {
         this.lpre = lpre;
