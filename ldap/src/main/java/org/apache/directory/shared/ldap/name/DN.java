@@ -1202,6 +1202,7 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
         DN clonedDn = clone();
 
         clonedDn.rdns.add( 0, newRdn.clone() );
+        clonedDn.normalized.getAndSet( false );
 
         // FIXME this try-catch block shouldn't be here
         // instead this method should throw the LdapInvalidDnException
@@ -1559,13 +1560,12 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
      */
     public DN normalize( Map<String, OidNormalizer> oidsMap ) throws LdapInvalidDnException
     {
-
         if ( ( oidsMap == null ) || ( oidsMap.isEmpty() ) )
         {
             return this;
         }
 
-        if( normalized.get() )
+        if ( normalized.get() )
         {
            return this;
         }
