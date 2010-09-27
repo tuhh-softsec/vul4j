@@ -25,17 +25,17 @@ package hudson.plugins.ccm;
 import hudson.Extension;
 import hudson.FilePath;
 import hudson.Launcher;
-import hudson.model.AbstractBuild;
 import hudson.model.Build;
 import hudson.model.BuildListener;
 import hudson.model.Descriptor;
 import hudson.model.Result;
+import hudson.model.AbstractBuild;
 import hudson.plugins.ccm.config.CCMConfigCallable;
+import hudson.plugins.ccm.config.CCMResultCallable;
 import hudson.plugins.ccm.model.CCM;
 import hudson.tasks.Builder;
 import hudson.util.ArgumentListBuilder;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Map;
@@ -195,7 +195,7 @@ implements Serializable
 	throws InterruptedException, IOException 
 	{
 		// List of arguments
-		ArgumentListBuilder args = new ArgumentListBuilder();
+		final ArgumentListBuilder args = new ArgumentListBuilder();
     	
 		// CCM installation
     	final CCMBuilderInstallation installation = getCCM();
@@ -225,18 +225,19 @@ implements Serializable
     	// Creating CCM config file   
     	// ------------------------- 
         
-    	// create project ccm config file
+    	// create project ccm config file and result file
         
+    	args.addKeyValuePairs("-P:",build.getBuildVariables());
+    	
         CCMConfigCallable ccmConfigGenerator = new CCMConfigCallable( srcFolder, recursive, numMetrics, listener );
         String ccmConfigFile = workspace.act( ccmConfigGenerator );
-    	args.add(ccmConfigFile);
+    	args.add( ccmConfigFile );
     	
-    	args.addKeyValuePairs("-P:",build.getBuildVariables());
     	args.add( ">" );
-    	File ccmConfig = new File( ccmConfigFile );
-    	File ccmConfigParent = ccmConfig.getParentFile();
-    	File ccmResult = new File( ccmConfigParent, CCM_RESULT_FILE );
-    	args.add( ccmResult );
+    	
+    	CCMResultCallable ccmResultCallable = new CCMResultCallable();
+    	String ccmResultFile = workspace.act( ccmResultCallable );
+    	args.add( ccmResultFile );
     	
     	//According to the Ant builder source code, in order to launch a program 
         //from the command line in windows, we must wrap it into cmd.exe.  This 
