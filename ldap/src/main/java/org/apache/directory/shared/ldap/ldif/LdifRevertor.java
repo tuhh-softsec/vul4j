@@ -492,7 +492,7 @@ public final class LdifRevertor
                 // Is the new RDN AVAs contained into the entry?
                 for ( AVA atav : newRdn )
                 {
-                    if ( atav.equals( oldRdn.getAtav() ) )
+                    if ( atav.equals( oldRdn.getAVA() ) )
                     {
                         // They overlap
                         overlapping = true;

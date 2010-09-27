@@ -293,7 +293,7 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
     {
         this.schemaManager = schemaManager;
 
-        addAttributeTypeAndValue( upType, normType, new StringValue( upValue ), new StringValue( normValue ) );
+        addAVA( upType, normType, new StringValue( upValue ), new StringValue( normValue ) );
 
         upName = upType + '=' + upValue;
         start = 0;
@@ -336,7 +336,7 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
      */
     public RDN( String upType, String upValue, SchemaManager schemaManager ) throws LdapInvalidDnException
     {
-        addAttributeTypeAndValue( upType, upType, new StringValue( upValue ), new StringValue( upValue ) );
+        addAVA( upType, upType, new StringValue( upValue ), new StringValue( upValue ) );
 
         upName = upType + '=' + upValue;
         start = 0;
@@ -390,8 +390,7 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
      * Constructs an Rdn from the given rdn. The contents of the rdn are simply
      * copied into the newly created
      *
-     * @param rdn
-     *            The non-null Rdn to be copied.
+     * @param rdn The non-null Rdn to be copied.
      */
     public RDN( RDN rdn )
     {
@@ -536,7 +535,7 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
     // WARNING : The protection level is left unspecified intentionally.
     // We need this method to be visible from the DnParser class, but not
     // from outside this package.
-    /* Unspecified protection */void addAttributeTypeAndValue( String upType, String type, Value<?> upValue,
+    /* Unspecified protection */void addAVA( String upType, String type, Value<?> upValue,
         Value<?> value ) throws LdapInvalidDnException
     {
         // First, let's normalize the type
@@ -600,10 +599,10 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
      *
      * @param value The added AttributeTypeAndValue
      */
-    // WARNING : The protection level is left unspecified intentionnaly.
+    // WARNING : The protection level is left unspecified intentionally.
     // We need this method to be visible from the DnParser class, but not
     // from outside this package.
-    /* Unspecified protection */void addAttributeTypeAndValue( AVA value )
+    /* Unspecified protection */void addAVA( AVA value )
     {
         String normalizedType = value.getNormType();
 
@@ -647,7 +646,10 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
     /**
      * Clear the RDN, removing all the AttributeTypeAndValues.
      */
-    public void clear()
+    // WARNING : The protection level is left unspecified intentionally.
+    // We need this method to be visible from the DnParser class, but not
+    // from outside this package.
+    /* No protection */void clear()
     {
         atav = null;
         atavs = null;
@@ -983,7 +985,7 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
      *
      * @return The first AttributeTypeAndValue of this RDN
      */
-    public AVA getAtav()
+    public AVA getAVA()
     {
         switch ( nbAtavs )
         {
@@ -994,7 +996,7 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
                 return atav;
 
             default:
-                return ( ( TreeSet<AVA> ) atavs ).first();
+                return ( ( TreeSet<AVA> ) atavs ).first().clone();
         }
     }
 

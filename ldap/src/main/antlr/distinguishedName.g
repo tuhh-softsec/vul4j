@@ -319,7 +319,7 @@ attributeTypeAndValue [RDN rdn] returns [String upName = ""]
                     );
                 }
            
-                rdn.addAttributeTypeAndValue( ava );
+                rdn.addAVA( ava );
             }
             catch ( LdapInvalidDnException e )
             {

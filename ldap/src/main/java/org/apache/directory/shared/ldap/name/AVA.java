@@ -352,11 +352,15 @@ public class AVA implements Cloneable, Comparable<Object>, Externalizable
      *
      * @return a clone of this object
      */
-    public Object clone()
+    public AVA clone()
     {
         try
         {
-            return super.clone();
+            AVA clone = ( AVA ) super.clone();
+            clone.upValue = upValue.clone();
+            clone.normValue = normValue.clone();
+            
+            return clone;
         }
         catch ( CloneNotSupportedException cnse )
         {

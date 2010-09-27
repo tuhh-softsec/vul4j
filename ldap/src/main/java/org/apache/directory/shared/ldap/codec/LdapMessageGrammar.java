@@ -3630,7 +3630,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
                     // We have to check that this is a correct DN
-                    DN baseObject = DN.EMPTY_DN;
+                    DN baseObject = null;
 
                     // We have to handle the special case of a 0 length base
                     // object,
@@ -3655,6 +3655,10 @@ public class LdapMessageGrammar extends AbstractGrammar
                             throw new ResponseCarryingException( msg, response, ResultCodeEnum.INVALID_DN_SYNTAX,
                                 DN.EMPTY_DN, ine );
                         }
+                    }
+                    else
+                    {
+                        baseObject = DN.EMPTY_DN;
                     }
 
                     searchRequest.setBase( baseObject );

@@ -74,7 +74,7 @@ public class RdnSerializer
                 break;
 
             case 1 :
-                AVASerializer.serialize( rdn.getAtav(), out );
+                AVASerializer.serialize( rdn.getAVA(), out );
                 break;
                 
             default :
@@ -131,7 +131,7 @@ public class RdnSerializer
             case 1 :
                 AVA atav = AVASerializer.deserialize( in );
                 
-                rdn.addAttributeTypeAndValue( atav );
+                rdn.addAVA( atav );
 
                 return rdn;
                 
@@ -139,7 +139,7 @@ public class RdnSerializer
                 for ( int i = 0; i < nbAtavs; i++  )
                 {
                     atav = AVASerializer.deserialize( in );
-                    rdn.addAttributeTypeAndValue( atav );
+                    rdn.addAVA( atav );
                 }
             
                 return rdn;

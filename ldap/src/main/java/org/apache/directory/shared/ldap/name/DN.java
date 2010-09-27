@@ -1489,15 +1489,15 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
             for ( AVA val:rdnCopy )
             {
                 AVA newAtav = atavOidToName( val, oidsMap );
-                rdn.addAttributeTypeAndValue( newAtav );
+                rdn.addAVA( newAtav );
             }
         }
         else
         {
-            AVA val = rdn.getAtav();
+            AVA val = rdn.getAVA();
             rdn.clear();
             AVA newAtav = atavOidToName( val, oidsMap );
-            rdn.addAttributeTypeAndValue( newAtav );
+            rdn.addAVA( newAtav );
         }
     }
 

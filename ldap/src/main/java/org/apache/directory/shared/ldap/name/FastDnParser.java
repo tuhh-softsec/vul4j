@@ -179,7 +179,7 @@ public enum FastDnParser
 
         AVA ava = new AVA( type, type, new StringValue( upValue ),
             new StringValue( value ), upName );
-        rdn.addAttributeTypeAndValue( ava );
+        rdn.addAVA( ava );
 
         rdn.setUpName( upName );
         rdn.normalize();
