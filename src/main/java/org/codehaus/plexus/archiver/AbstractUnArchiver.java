@@ -51,9 +51,15 @@ public abstract class AbstractUnArchiver
     private List finalizers;
 
     private FileSelector[] fileSelectors;
+    
+    /**
+     * @since 1.1
+     */
+    private boolean useJvmChmod = false;
 
     public AbstractUnArchiver()
     {
+        // no op
     }
 
     public AbstractUnArchiver( File sourceFile )
@@ -242,5 +248,15 @@ public abstract class AbstractUnArchiver
 
     protected abstract void execute( String path, File outputDirectory )
         throws ArchiverException;
+
+    public boolean isUseJvmChmod()
+    {
+        return useJvmChmod;
+    }
+
+    public void setUseJvmChmod( boolean useJvmChmod )
+    {
+        this.useJvmChmod = useJvmChmod;
+    }
 
 }

@@ -254,7 +254,7 @@ public abstract class AbstractZipUnArchiver
 
             if ( mode != null )
             {
-                ArchiveEntryUtils.chmod( f, mode.intValue(), getLogger() );
+                ArchiveEntryUtils.chmod( f, mode.intValue(), getLogger(), isUseJvmChmod() );
             }
         }
         catch ( FileNotFoundException ex )

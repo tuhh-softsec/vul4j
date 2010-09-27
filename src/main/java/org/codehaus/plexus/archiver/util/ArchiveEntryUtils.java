@@ -12,13 +12,35 @@ import org.codehaus.plexus.util.cli.Commandline;
 
 public final class ArchiveEntryUtils
 {
+    
+    public static boolean jvmFilePermAvailable = false;
+    
+    static
+    {
+        try
+        {
+            jvmFilePermAvailable = File.class.getMethod( "setReadable", new Class[] { Boolean.TYPE } ) != null;
+        }
+        catch ( Exception e )
+        {
+            // ignore exception log this ?
+        }
+    }
 
     private ArchiveEntryUtils()
     {
         // no op
     }
-
-    public static void chmod( File file, int mode, Logger logger )
+    
+    /**
+     * @since 1.0.1
+     * @param file
+     * @param mode
+     * @param logger
+     * @param useJvmChmod will use jvm file permissions <b>not available for group level</b>
+     * @throws ArchiverException
+     */
+    public static void chmod( File file, int mode, Logger logger, boolean useJvmChmod )
         throws ArchiverException
     {
         if ( !Os.isFamily( Os.FAMILY_UNIX ) )
@@ -28,9 +50,15 @@ public final class ArchiveEntryUtils
 
         String m = Integer.toOctalString( mode & 0xfff );
 
-        
-        if ( Boolean.getBoolean( "useJvmChmod" ) && isJvmFilePermAvailable( logger ) )
+        if ( useJvmChmod && !jvmFilePermAvailable )
         {
+            logger.info( "you want to use jvmChmod but it's not possible where your current jvm" );
+            useJvmChmod = false;
+        }
+        
+        if ( useJvmChmod && jvmFilePermAvailable )
+        {
+            logger.info( "useJvmChmod" );
             applyPermissionsWithJvm( file, m, logger );
             return;
         }
@@ -80,25 +108,23 @@ public final class ArchiveEntryUtils
         {
             throw new ArchiverException( "Error while executing chmod.", e );
         }
+
     }
-    
+
     /**
-     * 
-     * @return true if file permissions for JVM are available ie is 1.6
+     * <b>jvm chmod will be used only if System property <code>useJvmChmod</code> set to true</b>
+     * @param file
+     * @param mode
+     * @param logger
+     * @throws ArchiverException
      */
-    private static boolean isJvmFilePermAvailable( Logger logger )
+    private static void chmod( File file, int mode, Logger logger )
+        throws ArchiverException
     {
-        try
-        {
-            return File.class.getMethod( "setReadable", new Class[] { Boolean.TYPE } ) != null;
-        }
-        catch ( Exception e )
-        {
-            logger.debug( "exception during isJvmFilePermAvailable " + e.getMessage(), e );
-            return false;
-        }
+        chmod( file, mode, logger, Boolean.getBoolean( "useJvmChmod" ) && jvmFilePermAvailable );
     }
     
+       
     private static void applyPermissionsWithJvm( File file, String mode, Logger logger )
     {
         FilePermission filePermission = FilePermissionUtils.getFilePermissionFromMode( mode, logger );

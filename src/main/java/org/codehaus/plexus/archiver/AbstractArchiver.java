@@ -98,6 +98,11 @@ public abstract class AbstractArchiver
     private File dotFileDirectory;
 
     private String duplicateBehavior = Archiver.DUPLICATES_SKIP;
+    
+    /**
+     * @since 1.1
+     */
+    private boolean useJvmChmod = false;
 
     // contextualized.
     private ArchiverManager archiverManager;
@@ -915,5 +920,21 @@ public abstract class AbstractArchiver
 
     protected abstract void execute()
         throws ArchiverException, IOException;
+
+    /**
+     * @since 1.1
+     */
+    public boolean isUseJvmChmod()
+    {
+        return useJvmChmod;
+    }
+
+    /**
+     * @since 1.1
+     */
+    public void setUseJvmChmod( boolean useJvmChmod )
+    {
+        this.useJvmChmod = useJvmChmod;
+    }
 
 }

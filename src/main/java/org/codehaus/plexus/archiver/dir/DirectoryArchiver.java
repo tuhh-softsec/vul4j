@@ -133,7 +133,7 @@ public class DirectoryArchiver
                 }
             }
             ResourceUtils.copyFile( in, outFile );
-            ArchiveEntryUtils.chmod( outFile, entry.getMode(), getLogger() );
+            ArchiveEntryUtils.chmod( outFile, entry.getMode(), getLogger(), isUseJvmChmod() );
         }
         else
         { //file is a directory

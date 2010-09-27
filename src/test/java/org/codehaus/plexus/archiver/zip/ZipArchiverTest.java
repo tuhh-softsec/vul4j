@@ -242,7 +242,7 @@ public class ZipArchiverTest
             IOUtil.close( writer );
         }
         
-        ArchiveEntryUtils.chmod( file, mode, logger );
+        ArchiveEntryUtils.chmod( file, mode, logger, false );
     }
 
     public void testCreateArchive()

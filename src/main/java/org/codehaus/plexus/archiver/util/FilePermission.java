@@ -21,7 +21,7 @@ package org.codehaus.plexus.archiver.util;
 
 /**
  * @author Olivier Lamy
- * @since 1.0.1
+ * @since 1.1
  *
  */
 public class FilePermission

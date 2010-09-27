@@ -252,7 +252,7 @@ public class TarArchiverTest
             IOUtil.close( writer );
         }
 
-        ArchiveEntryUtils.chmod( file, mode, logger );
+        ArchiveEntryUtils.chmod( file, mode, logger, false );
     }
 
     public void testCreateArchive()

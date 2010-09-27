@@ -259,4 +259,18 @@ public interface Archiver
      * {@link Archiver#DUPLICATES_FAIL}.
      */
     void setDuplicateBehavior( String duplicate );
+    
+    /**
+     * to use or not the jvm method for file permissions : user all
+     * <b>not active for group permissions</b>
+     * @since 1.1
+     * @param useJvmChmod
+     */
+    void setUseJvmChmod( boolean useJvmChmod );
+    
+    /**
+     * @since 1.1
+     * @return
+     */
+    boolean isUseJvmChmod();
 }

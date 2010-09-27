@@ -81,4 +81,18 @@ public interface UnArchiver
      * by all file selectors.
      */
     FileSelector[] getFileSelectors( );
+    
+    /**
+     * to use or not the jvm method for file permissions : user all
+     * <b>not active for group permissions</b>
+     * @since 1.1
+     * @param useJvmChmod
+     */
+    void setUseJvmChmod( boolean useJvmChmod );
+    
+    /**
+     * @since 1.1
+     * @return
+     */
+    boolean isUseJvmChmod();    
 }
