@@ -33,7 +33,7 @@ public final class ArchiveEntryUtils
     }
     
     /**
-     * @since 1.0.1
+     * @since 1.1
      * @param file
      * @param mode
      * @param logger
