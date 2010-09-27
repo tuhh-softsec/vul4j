@@ -44,6 +44,11 @@ import org.apache.directory.shared.ldap.message.SearchRequest;
 import org.apache.directory.shared.ldap.name.DN;
 
 
+/**
+ * Root interface for all asynchronous LDAP connections.
+ *
+ * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
+ */
 public interface LdapAsyncConnection extends LdapConnection
 {
 
@@ -52,7 +57,8 @@ public interface LdapAsyncConnection extends LdapConnection
      * the user has to get for the response from the returned Future.
      * 
      * @param entry The entry to add
-     * @return the add operation's Future 
+     * @return the add operation's future
+     * @throws LdapException if some error occurred
      */
     AddFuture addAsync( Entry entry ) throws LdapException;
 
@@ -61,8 +67,8 @@ public interface LdapAsyncConnection extends LdapConnection
      * Add an entry present in the AddRequest to the server.
      * 
      * @param addRequest the request object containing an entry and controls(if any)
-     * @return the add operation's response
-     * @throws LdapException
+     * @return the add operation's future
+     * @throws LdapException if some error occurred
      */
     AddFuture addAsync( AddRequest addRequest ) throws LdapException;
 
@@ -70,7 +76,9 @@ public interface LdapAsyncConnection extends LdapConnection
     /**
      * Anonymous asynchronous Bind on a server. 
      *
-     * @return The BindFuture
+     * @return the bind operation's future
+     * @throws LdapException if some error occurred
+     * @throws IOException if some IO error occurred
      */
     BindFuture bindAsync() throws LdapException, IOException;
 
@@ -78,10 +86,11 @@ public interface LdapAsyncConnection extends LdapConnection
     /**
      * Simple asynchronous Bind on a server.
      *
-     * @param name The name we use to authenticate the user. It must be a 
-     * valid DN
-     * @param credentials The password. It can't be null 
-     * @return The BindResponse LdapResponse 
+     * @param name The name we use to authenticate the user, it must be a valid DN
+     * @param credentials The password, it can't be null 
+     * @return the bind operation's future
+     * @throws LdapException if some error occurred
+     * @throws IOException if some IO error occurred
      */
     BindFuture bindAsync( String name, String credentials ) throws LdapException, IOException;
 
@@ -89,10 +98,11 @@ public interface LdapAsyncConnection extends LdapConnection
     /**
      * Simple asynchronous Bind on a server.
      *
-     * @param name The name we use to authenticate the user. It must be a 
-     * valid DN
-     * @param credentials The password. It can't be null 
-     * @return The BindResponse LdapResponse 
+     * @param name The name we use to authenticate the user, it must be a valid DN
+     * @param credentials The password, it can't be null
+     * @return the bind operation's future
+     * @throws LdapException if some error occurred
+     * @throws IOException if some IO error occurred
      */
     BindFuture bindAsync( DN name, String credentials ) throws LdapException, IOException;
 
@@ -101,7 +111,9 @@ public interface LdapAsyncConnection extends LdapConnection
      * Do an asynchronous bind, based on a BindRequest.
      *
      * @param bindRequest The BindRequest to send
-     * @return BindFuture A future
+     * @return the bind operation's future
+     * @throws LdapException if some error occurred
+     * @throws IOException if some IO error occurred
      */
     BindFuture bindAsync( BindRequest bindRequest ) throws LdapException, IOException;
 
@@ -109,6 +121,7 @@ public interface LdapAsyncConnection extends LdapConnection
     /**
      * Do an asynchronous search, on the base object, using the given filter. The
      * SearchRequest parameters default to :
+     * <pre>
      * Scope : ONE
      * DerefAlias : ALWAYS
      * SizeLimit : none
@@ -116,13 +129,14 @@ public interface LdapAsyncConnection extends LdapConnection
      * TypesOnly : false
      * Attributes : all the user's attributes.
      * This method is blocking.
+     * </pre>
      * 
-     * @param baseDn The base for the search. It must be a valid
-     * DN, and can't be emtpy
-     * @param filter The filter to use for this search. It can't be empty
+     * @param baseDn The base for the search, it must be a valid DN, and can't be emtpy
+     * @param filter The filter to use for this search, it can't be empty
      * @param scope The search scope : OBJECT, ONELEVEL or SUBTREE 
      * @param attributes The attributes for this search 
-     * @return A cursor on the result. 
+     * @return the search operation's future
+     * @throws LdapException if some error occurred
      */
     SearchFuture searchAsync( String baseDn, String filter, SearchScope scope, String... attributes )
         throws LdapException;
@@ -131,6 +145,7 @@ public interface LdapAsyncConnection extends LdapConnection
     /**
      * Do an asynchronous search, on the base object, using the given filter. The
      * SearchRequest parameters default to :
+     * <pre>
      * Scope : ONE
      * DerefAlias : ALWAYS
      * SizeLimit : none
@@ -138,13 +153,14 @@ public interface LdapAsyncConnection extends LdapConnection
      * TypesOnly : false
      * Attributes : all the user's attributes.
      * This method is blocking.
+     * </pre>
      * 
-     * @param baseDn The base for the search. It must be a valid
-     * DN, and can't be emtpy
-     * @param filter The filter to use for this search. It can't be empty
+     * @param baseDn The base for the search, it must be a valid DN, and can't be empty
+     * @param filter The filter to use for this search, it can't be empty
      * @param scope The search scope : OBJECT, ONELEVEL or SUBTREE
      * @param attributes The attributes for this search 
-     * @return A cursor on the result. 
+     * @return the search operation's future
+     * @throws LdapException if some error occurred
      */
     SearchFuture searchAsync( DN baseDn, String filter, SearchScope scope, String... attributes )
         throws LdapException;
@@ -153,6 +169,7 @@ public interface LdapAsyncConnection extends LdapConnection
     /**
      * Do a search, on the base object, using the given filter. The
      * SearchRequest parameters default to :
+     * <pre>
      * Scope : ONE
      * DerefAlias : ALWAYS
      * SizeLimit : none
@@ -160,9 +177,11 @@ public interface LdapAsyncConnection extends LdapConnection
      * TypesOnly : false
      * Attributes : all the user's attributes.
      * This method is blocking.
+     * </pre>
      * 
      * @param searchRequest The search request to send to the server
-     * @return A Future 
+     * @return the search operation's future
+     * @throws LdapException if some error occurred
      */
     SearchFuture searchAsync( SearchRequest searchRequest ) throws LdapException;
 
@@ -179,12 +198,11 @@ public interface LdapAsyncConnection extends LdapConnection
 
 
     /**
-     * 
-     * performs the modifyDn operation based on the given ModifyDnRequest.
+     * Performs the modifyDn operation based on the given ModifyDnRequest.
      *
      * @param modDnRequest the request
-     * @return modifyDn operations response, null if non-null listener is provided
-     * @throws LdapException
+     * @return modifyDn operation's future
+     * @throws LdapException if some error occurred
      */
     ModifyDnFuture modifyDnAsync( ModifyDnRequest modDnRequest ) throws LdapException;
 
@@ -193,7 +211,7 @@ public interface LdapAsyncConnection extends LdapConnection
      * Performs an asynchronous delete operation based on the delete request object.
      *  
      * @param delRequest the delete operation's request
-     * @return delete operation's response, null if a non-null listener value is provided
+     * @return delete operation's future
      * @throws LdapException If the DN is not valid or if the deletion failed
      */
     DeleteFuture deleteAsync( DeleteRequest delRequest ) throws LdapException;
@@ -204,7 +222,7 @@ public interface LdapAsyncConnection extends LdapConnection
      *   
      * @param compareRequest the CompareRequest which contains the target DN, attribute name and value
      * @return compare operation's future
-     * @throws LdapException
+     * @throws LdapException if some error occurred
      */
     CompareFuture compareAsync( CompareRequest compareRequest ) throws LdapException;
 
@@ -214,15 +232,15 @@ public interface LdapAsyncConnection extends LdapConnection
      *
      * @param extendedRequest the object containing the details of the extended operation to be performed
      * @return extended operation's Future
-     * @throws LdapException
+     * @throws LdapException if some error occurred
      */
     ExtendedFuture extendedAsync( ExtendedRequest extendedRequest ) throws LdapException;
 
 
     /**
-     * configuration of LdapNetworkConnection
+     * Configuration of LdapNetworkConnection
      * 
-     * @return the configuration of the ldap connection
+     * @return the configuration of the LDAP connection
      */
     LdapConnectionConfig getConfig();
 }

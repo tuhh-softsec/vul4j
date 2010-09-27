@@ -40,6 +40,6 @@ public interface ExtendedListener extends OperationResponseListener
      * @param response the extended operation's response
      * @throws LdapException
      */
-    public void extendedOperationCompleted( LdapAsyncConnection connection, ExtendedResponse response )
+    void extendedOperationCompleted( LdapAsyncConnection connection, ExtendedResponse response )
         throws LdapException;
 }

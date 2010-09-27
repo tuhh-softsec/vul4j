@@ -20,6 +20,7 @@
 
 package org.apache.directory.ldap.client.api;
 
+
 import java.security.SecureRandom;
 
 import javax.net.ssl.KeyManager;
@@ -34,25 +35,26 @@ import javax.net.ssl.TrustManager;
 public class LdapConnectionConfig
 {
 
-    /** Define the default ports for LDAP and LDAPS */
+    /** Default ports for LDAP */
     public static final int DEFAULT_LDAP_PORT = 389;
 
+    /** Default port for LDAPS */
     public static final int DEFAULT_LDAPS_PORT = 636;
 
     /** The default host : localhost */
     public static final String DEFAULT_LDAP_HOST = "127.0.0.1";
 
     /** The LDAP version */
-    public static int LDAP_V3 = 3;
+    public static final int LDAP_V3 = 3;
 
     /** The default timeout for operation : 30 seconds */
     public static final long DEFAULT_TIMEOUT = 30000L;
 
     /** the default protocol used for creating SSL context */
     public static final String DEFAULT_SSL_PROTOCOL = "TLS";
-    
+
     // --- private members ----
-    
+
     /** A flag indicating if we are using SSL or not, default value is false */
     private boolean useSsl = false;
 
@@ -70,151 +72,267 @@ public class LdapConnectionConfig
 
     /** an array of key managers, if set, will be used while initializing the SSL context */
     private KeyManager[] keyManagers;
-    
+
     /** an instance of SecureRandom, if set, will be used while initializing the SSL context */
     private SecureRandom secureRandom;
-    
+
     /** an array of certificate trust managers, if set, will be used while initializing the SSL context */
     private TrustManager[] trustManagers;
 
     /** name of the protocol used for creating SSL context, default value is "TLS" */
     private String sslProtocol = DEFAULT_SSL_PROTOCOL;
-    
+
+
+    /**
+     * Checks if SSL (ldaps://) is used.
+     *
+     * @return true, if SSL is used
+     */
     public boolean isUseSsl()
     {
         return useSsl;
     }
 
 
+    /**
+     * Sets whether SSL should be used.
+     *
+     * @param useSsl true to use SSL
+     */
     public void setUseSsl( boolean useSsl )
     {
         this.useSsl = useSsl;
     }
 
 
+    /**
+     * Gets the LDAP port.
+     *
+     * @return the LDAP port
+     */
     public int getLdapPort()
     {
         return ldapPort;
     }
 
 
+    /**
+     * Sets the LDAP port.
+     *
+     * @param ldapPort the new LDAP port
+     */
     public void setLdapPort( int ldapPort )
     {
         this.ldapPort = ldapPort;
     }
 
 
+    /**
+     * Gets the LDAP host.
+     *
+     * @return the LDAP host
+     */
     public String getLdapHost()
     {
         return ldapHost;
     }
 
 
+    /**
+     * Sets the LDAP host.
+     *
+     * @param ldapHost the new LDAP host
+     */
     public void setLdapHost( String ldapHost )
     {
         this.ldapHost = ldapHost;
     }
 
 
+    /**
+     * Gets the name that is used to authenticate the user.
+     *
+     * @return the name
+     */
     public String getName()
     {
         return name;
     }
 
 
+    /**
+     * Sets the name which is used to authenticate the user.
+     *
+     * @param name the new name
+     */
     public void setName( String name )
     {
         this.name = name;
     }
 
 
+    /**
+     * Gets the credentials.
+     *
+     * @return the credentials
+     */
     public String getCredentials()
     {
         return credentials;
     }
 
 
+    /**
+     * Sets the credentials.
+     *
+     * @param credentials the new credentials
+     */
     public void setCredentials( String credentials )
     {
         this.credentials = credentials;
     }
 
 
+    /**
+     * Gets the default LDAP port.
+     *
+     * @return the default LDAP port
+     */
     public int getDefaultLdapPort()
     {
         return DEFAULT_LDAP_PORT;
     }
 
 
+    /**
+     * Gets the default LDAPS port.
+     *
+     * @return the default LDAPS port
+     */
     public int getDefaultLdapsPort()
     {
         return DEFAULT_LDAPS_PORT;
     }
 
 
+    /**
+     * Gets the default LDAP host.
+     *
+     * @return the default LDAP host
+     */
     public String getDefaultLdapHost()
     {
         return DEFAULT_LDAP_HOST;
     }
 
 
+    /**
+     * Gets the default timeout.
+     *
+     * @return the default timeout
+     */
     public long getDefaultTimeout()
     {
         return DEFAULT_TIMEOUT;
     }
 
 
+    /**
+     * Gets the supported LDAP version.
+     *
+     * @return the supported LDAP version
+     */
     public int getSupportedLdapVersion()
     {
         return LDAP_V3;
     }
 
 
+    /**
+     * Gets the trust managers.
+     *
+     * @return the trust managers
+     */
     public TrustManager[] getTrustManagers()
     {
         return trustManagers;
     }
 
 
+    /**
+     * Sets the trust managers.
+     *
+     * @param trustManagers the new trust managers
+     */
     public void setTrustManagers( TrustManager... trustManagers )
     {
         this.trustManagers = trustManagers;
     }
 
 
+    /**
+     * Gets the SSL protocol.
+     *
+     * @return the SSL protocol
+     */
     public String getSslProtocol()
     {
         return sslProtocol;
     }
 
 
+    /**
+     * Sets the SSL protocol.
+     *
+     * @param sslProtocol the new SSL protocol
+     */
     public void setSslProtocol( String sslProtocol )
     {
         this.sslProtocol = sslProtocol;
     }
 
 
+    /**
+     * Gets the key managers.
+     *
+     * @return the key managers
+     */
     public KeyManager[] getKeyManagers()
     {
         return keyManagers;
     }
 
 
+    /**
+     * Sets the key managers.
+     *
+     * @param keyManagers the new key managers
+     */
     public void setKeyManagers( KeyManager[] keyManagers )
     {
         this.keyManagers = keyManagers;
     }
 
 
+    /**
+     * Gets the secure random.
+     *
+     * @return the secure random
+     */
     public SecureRandom getSecureRandom()
     {
         return secureRandom;
     }
 
 
+    /**
+     * Sets the secure random.
+     *
+     * @param secureRandom the new secure random
+     */
     public void setSecureRandom( SecureRandom secureRandom )
     {
         this.secureRandom = secureRandom;
     }
-    
+
 }

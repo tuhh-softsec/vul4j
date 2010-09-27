@@ -37,6 +37,7 @@ public class PoolableLdapConnectionFactory implements PoolableObjectFactory
     /** configuration object for the connection */
     private LdapConnectionConfig config;
 
+    /** the logger */
     private static final Logger LOG = LoggerFactory.getLogger( PoolableLdapConnectionFactory.class );
 
 

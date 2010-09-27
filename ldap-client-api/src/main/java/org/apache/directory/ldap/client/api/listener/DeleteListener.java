@@ -40,5 +40,5 @@ public interface DeleteListener extends OperationResponseListener
      * @param response the delete operation's response
      * @throws LdapException
      */
-    public void entryDeleted( LdapAsyncConnection connection, DeleteResponse response ) throws LdapException;
+    void entryDeleted( LdapAsyncConnection connection, DeleteResponse response ) throws LdapException;
 }

@@ -1124,31 +1124,36 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
 
 
     /**
-     * @see #bindCramMd5(String, byte[], String)
+     * Bind using CRAM-MD5 SASL mechanism.
+     *
+     * @param name the DN of the user
+     * @param credentials password of the user
+     * @param authzId the authorization ID (can be null)
+     * @return response of the bind operation
+     * @throws LdapException if an LDAP error occurred during bind
+     * @throws IOException if an IO exception occurred
+     * @see #bindCramMd5(String, byte[], String, Control...)
      */
     public BindResponse bindCramMd5( String name, String credentials, String authzId )
-        throws LdapException,
-        IOException
+        throws LdapException, IOException
     {
         return bindCramMd5( name, StringTools.getBytesUtf8( credentials ), authzId );
     }
 
 
     /**
-     * 
-     * bind using CRAM-MD5 SASL mechanism.
+     * Bind using CRAM-MD5 SASL mechanism.
      *
      * @param name the DN of the user
      * @param credentials password of the user
      * @param authzId the authorization ID (can be null)
      * @param ctrls controls to be sent with the bind request
      * @return response of the bind operation
-     * @throws LdapException
-     * @throws IOException
+     * @throws LdapException if an LDAP error occurred during bind
+     * @throws IOException if an IO exception occurred
      */
     public BindResponse bindCramMd5( String name, byte[] credentials, String authzId, Control... ctrls )
-        throws LdapException,
-        IOException
+        throws LdapException, IOException
     {
         BindFuture bindFuture = bindSasl( name, credentials, SupportedSaslMechanisms.CRAM_MD5, authzId, null, ctrls );
 
@@ -1169,43 +1174,55 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
 
 
     /**
+     * Bind using CRAM-MD5 SASL mechanism.
+     *
+     * @param name the DN of the user
+     * @param credentials password of the user
+     * @param authzId the authorization ID (can be null)
+     * @return response of the bind operation
+     * @throws LdapException if an LDAP error occurred during bind
+     * @throws IOException if an IO exception occurred
      * @see #bindCramMd5(String, byte[], String, Control...)
      */
     public BindResponse bindCramMd5( String name, byte[] credentials, String authzId )
-        throws LdapException,
-        IOException
+        throws LdapException, IOException
     {
         return bindCramMd5( name, credentials, authzId, new Control[0] );
     }
 
 
     /**
-     * @see #bindCramMd5(String, byte[], String)
-     */
-    public BindResponse bindDigestMd5( String name, String credentials, String authzId, String realmName )
-        throws LdapException,
-        IOException
-    {
-        return bindDigestMd5( name, StringTools.getBytesUtf8( credentials ), authzId, realmName );
-    }
-
-
-    /**
-     * 
-     * bind using DIGEST-MD5 SASL mechanism.
+     * Bind using DIGEST-MD5 SASL mechanism.
      *
      * @param name the DN of the user
      * @param credentials password of the user
      * @param authzId the authorization ID (can be null)
      * @param realmName the SASL realm name to be used
      * @return response of the bind operation
-     * @throws LdapException
-     * @throws IOException
+     * @throws LdapException if an LDAP error occurred during bind
+     * @throws IOException if an IO exception occurred
+     */
+    public BindResponse bindDigestMd5( String name, String credentials, String authzId, String realmName )
+        throws LdapException, IOException
+    {
+        return bindDigestMd5( name, StringTools.getBytesUtf8( credentials ), authzId, realmName );
+    }
+
+
+    /**
+     * Bind using DIGEST-MD5 SASL mechanism.
+     *
+     * @param name the DN of the user
+     * @param credentials password of the user
+     * @param authzId the authorization ID (can be null)
+     * @param realmName the SASL realm name to be used
+     * @param ctrls the LDAP controls to be used
+     * @return response of the bind operation
+     * @throws LdapException if an LDAP error occurred during bind
+     * @throws IOException if an IO exception occurred
      */
     public BindResponse bindDigestMd5( String name, byte[] credentials, String authzId, String realmName,
-        Control... ctrls )
-        throws LdapException,
-        IOException
+        Control... ctrls ) throws LdapException, IOException
     {
         BindFuture bindFuture = bindSasl( name, credentials, SupportedSaslMechanisms.DIGEST_MD5, authzId, realmName,
             ctrls );
@@ -1227,17 +1244,36 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
 
 
     /**
+     * Bind using DIGEST-MD5 SASL mechanism.
+     *
+     * @param name the DN of the user
+     * @param credentials password of the user
+     * @param authzId the authorization ID (can be null)
+     * @param realmName the SASL realm name to be used
+     * @return response of the bind operation
+     * @throws LdapException if an LDAP error occurred during bind
+     * @throws IOException if an IO exception occurred
      * @see #bindDigestMd5(String, byte[], String, String, Control...)
      */
     public BindResponse bindDigestMd5( String name, byte[] credentials, String authzId, String realmName )
-        throws LdapException,
-        IOException
+        throws LdapException, IOException
     {
         return bindDigestMd5( name, credentials, authzId, realmName, new Control[0] );
     }
 
 
     /**
+     * Bind to the LDAP server using GSSAPI SASL mechanism.
+     *
+     * @param name the DN of the user entry
+     * @param credentials the credentials of the user
+     * @param realmName name of the kerberos realm in which the given user entry is present
+     * @param kdcHost the host name of the KDC server
+     * @param kdcPort the port of the KDC server
+     * @param ctrls controls to be passed along with the bind request
+     * @return response of this bind operation
+     * @throws LdapException if an LDAP error occurred during bind
+     * @throws IOException if an IO exception occurred
      * @see #bindGssApi(String, byte[], String, String, int, Control...)
      */
     public BindResponse bindGssApi( String name, String credentials, String realmName, String kdcHost, int kdcPort, Control... ctrls )
@@ -1248,7 +1284,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
     
     
     /**
-     * bind to the ldap server using GSSAPI sasl mechanism
+     * Bind to the LDAP server using GSSAPI SASL mechanism.
      *
      * @param name the DN of the user entry
      * @param credentials the credentials of the user
@@ -1257,8 +1293,8 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
      * @param kdcPort the port of the KDC server
      * @param ctrls controls to be passed along with the bind request
      * @return response of this bind operation
-     * @throws LdapException
-     * @throws IOException
+     * @throws LdapException if an LDAP error occurred during bind
+     * @throws IOException if an IO exception occurred
      */
     public BindResponse bindGssApi( String name, byte[] credentials, String realmName, String kdcHost, int kdcPort, Control... ctrls )
         throws LdapException, IOException
@@ -1839,6 +1875,8 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
 
                 break;
 
+            default:
+                throw new IllegalStateException( "Unexpected response type " + response.getType() );
         }
     }
 
@@ -2153,9 +2191,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
 
 
     /**
-     * Moves and renames the given entryDn.The old RDN will be deleted
-     *
-     * @see #moveAndRename(DN, DN, boolean)
+     * {@inheritDoc}
      */
     public ModifyDnResponse moveAndRename( DN entryDn, DN newDn ) throws LdapException
     {
@@ -2164,9 +2200,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
 
 
     /**
-     * Moves and renames the given entryDn.The old RDN will be deleted
-     *
-     * @see #moveAndRename(DN, DN, boolean)
+     * {@inheritDoc}
      */
     public ModifyDnResponse moveAndRename( String entryDn, String newDn ) throws LdapException
     {
@@ -2175,11 +2209,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
 
 
     /**
-     * Moves and renames the given entryDn.The old RDN will be deleted if requested
-     *
-     * @param entryDn The original entry DN
-     * @param newDn The new Entry DN
-     * @param deleteOldRdn Tells if the old RDN must be removed
+     * {@inheritDoc}
      */
     public ModifyDnResponse moveAndRename( DN entryDn, DN newDn, boolean deleteOldRdn ) throws LdapException
     {
@@ -2216,11 +2246,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
 
 
     /**
-     * Moves and renames the given entryDn.The old RDN will be deleted if requested
-     *
-     * @param entryDn The original entry DN
-     * @param newDn The new Entry DN
-     * @param deleteOldRdn Tells if the old RDN must be removed
+     * {@inheritDoc}
      */
     public ModifyDnResponse moveAndRename( String entryDn, String newDn, boolean deleteOldRdn ) throws LdapException
     {
@@ -3145,7 +3171,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
      * and adds all the SchemaObjects present in it to the SchemaManager
      *
      * @param schemaFile the schema file in OpenLDAP schema format
-     * @throws LdapException incase of any errors while parsing
+     * @throws LdapException in case of any errors while parsing
      */
     public void addSchema( File schemaFile ) throws LdapException
     {
@@ -3306,17 +3332,25 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
     }
 
 
-    public void addConnectionClosedEventListener( ConnectionClosedEventListener ccListenr )
+    /**
+     * Adds the connection closed event listener.
+     *
+     * @param ccListener the connection closed listener
+     */
+    public void addConnectionClosedEventListener( ConnectionClosedEventListener ccListener )
     {
         if ( conCloseListeners == null )
         {
             conCloseListeners = new ArrayList<ConnectionClosedEventListener>();
         }
 
-        conCloseListeners.add( ccListenr );
+        conCloseListeners.add( ccListener );
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void sessionClosed( IoSession session ) throws Exception
     {
@@ -3351,7 +3385,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
 
 
     /**
-     * sends the StartTLS extended request to server and adds a security layer
+     * Sends the StartTLS extended request to server and adds a security layer
      * upon receiving a response with successful result
      *
      * @throws LdapException
@@ -3650,7 +3684,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
             .append( kdcHost )
             .append( ":" )
             .append( kdcPort )
-            .append( "\n\t}\n" );;
+            .append( "\n\t}\n" );
 
         File krb5Conf = File.createTempFile( "client-api-krb5", ".conf" );
         krb5Conf.deleteOnExit();

@@ -44,16 +44,27 @@ import org.slf4j.LoggerFactory;
 public class SaslCallbackHandler implements CallbackHandler
 {
 
+    /** The sasl request. */
     private SaslRequest saslReq;
 
+    /** The logger. */
     private static final Logger LOG = LoggerFactory.getLogger( SaslCallbackHandler.class );
-    
+
+
+    /**
+     * Instantiates a new SASL callback handler.
+     *
+     * @param saslReq the SASL request
+     */
     public SaslCallbackHandler( SaslRequest saslReq )
     {
         this.saslReq = saslReq;
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public void handle( Callback[] callbacks ) throws IOException, UnsupportedCallbackException
     {
         for ( Callback cb : callbacks )
@@ -61,10 +72,10 @@ public class SaslCallbackHandler implements CallbackHandler
             if ( cb instanceof NameCallback )
             {
                 NameCallback ncb = ( NameCallback ) cb;
-                
+
                 String name = saslReq.getBindRequest().getName().getRdn().getUpValue().getString();
                 LOG.debug( "sending name {} in the NameCallback", name );
-                
+
                 ncb.setName( name );
             }
 
@@ -74,19 +85,21 @@ public class SaslCallbackHandler implements CallbackHandler
                 LOG.debug( "sending credentials in the PasswordCallback" );
                 pcb.setPassword( StringTools.utf8ToString( saslReq.getCredentials() ).toCharArray() );
             }
-            
-            else if( cb instanceof RealmCallback )
+
+            else if ( cb instanceof RealmCallback )
             {
                 RealmCallback rcb = ( RealmCallback ) cb;
-                
-                if( saslReq.getRealmName() != null )
+
+                if ( saslReq.getRealmName() != null )
                 {
                     LOG.debug( "sending the user specified realm value {} in the RealmCallback", saslReq.getRealmName() );
                     rcb.setText( saslReq.getRealmName() );
                 }
                 else
                 {
-                    LOG.debug( "No user specified relam value, sending the default realm value {} in the RealmCallback", rcb.getDefaultText() );
+                    LOG.debug(
+                        "No user specified relam value, sending the default realm value {} in the RealmCallback",
+                        rcb.getDefaultText() );
                     rcb.setText( rcb.getDefaultText() );
                 }
             }

@@ -40,5 +40,5 @@ public interface AddListener extends OperationResponseListener
      * @param response the add operation's response
      * @throws LdapException
      */
-    public void entryAdded( LdapAsyncConnection connection, AddResponse response ) throws LdapException;
+    void entryAdded( LdapAsyncConnection connection, AddResponse response ) throws LdapException;
 }

@@ -38,7 +38,7 @@ import org.apache.directory.shared.ldap.message.SearchResultDone;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class SearchCursor extends AbstractCursor
+public class SearchCursor extends AbstractCursor<Response>
 {
 
     /** the search future */
@@ -53,12 +53,20 @@ public class SearchCursor extends AbstractCursor
     /** a reference to hold the retrieved SearchResponse object from SearchFuture */
     private Response response;
 
+    /** the done flag */
     private boolean done;
 
     /** a reference to hold the SearchResultDone response */
     private SearchResultDone searchDoneResp;
 
 
+    /**
+     * Instantiates a new search cursor.
+     *
+     * @param future the future
+     * @param timeout the timeout
+     * @param timeUnit the time unit
+     */
     public SearchCursor( SearchFuture future, long timeout, TimeUnit timeUnit )
     {
         this.future = future;
@@ -67,6 +75,9 @@ public class SearchCursor extends AbstractCursor
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean next() throws Exception
     {
         if ( done )
@@ -121,6 +132,9 @@ public class SearchCursor extends AbstractCursor
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public Response get() throws Exception
     {
         if ( !available() )
@@ -143,18 +157,27 @@ public class SearchCursor extends AbstractCursor
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean isElementReused()
     {
         return true;
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean available()
     {
         return response != null;
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void close() throws Exception
     {
@@ -162,6 +185,9 @@ public class SearchCursor extends AbstractCursor
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void close( Exception cause ) throws Exception
     {
@@ -188,42 +214,71 @@ public class SearchCursor extends AbstractCursor
 
 
     // rest of all operations will throw UnsupportedOperationException
-    public void after( Object element ) throws Exception
+
+    /**
+     * This operation is not supported in SearchCursor.
+     * {@inheritDoc}
+     */
+    public void after( Response element ) throws Exception
     {
         throw new UnsupportedOperationException();
     }
 
 
+    /**
+     * This operation is not supported in SearchCursor.
+     * {@inheritDoc}
+     */
     public void afterLast() throws Exception
     {
         throw new UnsupportedOperationException();
     }
 
 
-    public void before( Object element ) throws Exception
+    /**
+     * This operation is not supported in SearchCursor.
+     * {@inheritDoc}
+     */
+    public void before( Response element ) throws Exception
     {
         throw new UnsupportedOperationException();
     }
 
 
+    /**
+     * This operation is not supported in SearchCursor.
+     * {@inheritDoc}
+     */
     public void beforeFirst() throws Exception
     {
         throw new UnsupportedOperationException();
     }
 
 
+    /**
+     * This operation is not supported in SearchCursor.
+     * {@inheritDoc}
+     */
     public boolean first() throws Exception
     {
         throw new UnsupportedOperationException();
     }
 
 
+    /**
+     * This operation is not supported in SearchCursor.
+     * {@inheritDoc}
+     */
     public boolean last() throws Exception
     {
         throw new UnsupportedOperationException();
     }
 
 
+    /**
+     * This operation is not supported in SearchCursor.
+     * {@inheritDoc}
+     */
     public boolean previous() throws Exception
     {
         throw new UnsupportedOperationException();

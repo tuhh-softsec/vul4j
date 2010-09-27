@@ -19,6 +19,7 @@
  */
 package org.apache.directory.ldap.client.api.exception;
 
+
 import org.apache.directory.shared.ldap.exception.LdapException;
 
 
@@ -29,16 +30,25 @@ import org.apache.directory.shared.ldap.exception.LdapException;
  */
 public class InvalidConnectionException extends LdapException
 {
+    /** The serialVersionUID. */
     static final long serialVersionUID = 1L;
 
 
+    /**
+     * Instantiates a new invalid connection exception.
+     */
     public InvalidConnectionException()
     {
         super();
     }
 
 
-    public InvalidConnectionException(String explanation)
+    /**
+     * Instantiates a new invalid connection exception.
+     *
+     * @param explanation the explanation
+     */
+    public InvalidConnectionException( String explanation )
     {
         super( explanation );
     }

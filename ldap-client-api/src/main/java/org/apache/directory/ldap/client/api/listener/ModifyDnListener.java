@@ -41,6 +41,6 @@ public interface ModifyDnListener extends OperationResponseListener
      * @param response the modifyDn operation's response
      * @throws LdapException
      */
-    public void modifyDnCompleted( LdapAsyncConnection connection, ModifyDnResponse response )
+    void modifyDnCompleted( LdapAsyncConnection connection, ModifyDnResponse response )
         throws LdapException;
 }

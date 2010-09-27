@@ -20,14 +20,27 @@
 
 package org.apache.directory.ldap.client.api;
 
+
 /**
- * A LdapConnection factory
+ * A LdapConnection factory.
  *  
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class LdapConnectionFactory
+public final class LdapConnectionFactory
 {
+
     /**
+     * Private constructor.
+     *
+     */
+    private LdapConnectionFactory()
+    {
+    }
+
+
+    /**
+     * Gets the core session connection.
+     *
      * @return a connection based on the the CoreSession
      */
     public static LdapConnection getCoreSessionConnection()
@@ -37,14 +50,18 @@ public class LdapConnectionFactory
             Class<?> cl = Class.forName( "org.apache.directory.server.core.LdapCoreSessionConnection" );
             return ( LdapConnection ) cl.newInstance();
         }
-        catch( Exception e )
+        catch ( Exception e )
         {
             throw new RuntimeException( e );
         }
     }
-    
-    
+
+
     /**
+     * Gets the network connection.
+     *
+     * @param host the host
+     * @param port the port
      * @return the LdapNetworkConnection
      */
     public static LdapAsyncConnection getNetworkConnection( String host, int port )
@@ -52,14 +69,14 @@ public class LdapConnectionFactory
         try
         {
             Class<?> cl = Class.forName( "org.apache.directory.ldap.client.api.LdapNetworkConnection" );
-            
+
             LdapAsyncConnection networkConnection = ( LdapAsyncConnection ) cl.newInstance();
             networkConnection.getConfig().setLdapHost( host );
             networkConnection.getConfig().setLdapPort( port );
-            
+
             return networkConnection;
         }
-        catch( Exception e )
+        catch ( Exception e )
         {
             throw new RuntimeException( e );
         }

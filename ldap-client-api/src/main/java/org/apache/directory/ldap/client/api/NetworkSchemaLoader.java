@@ -48,18 +48,20 @@ public class NetworkSchemaLoader extends AbstractSchemaLoader
     /** the connection to the ldap server */
     private LdapConnection connection;
 
+    /** the schema base DN */
     private static final String SCHEMA_BASE = "ou=schema";
 
+    /** the search filter */
     private static final String FILTER = "(objectClass=*)";
 
+    /** the logger */
     private static final Logger LOG = LoggerFactory.getLogger( NetworkSchemaLoader.class );
 
 
     /**
-     * 
      * Creates a new instance of NetworkSchemaLoader.
      *
-     * @param connection
+     * @param connection the LDAP connection
      * @throws Exception if the connection is not authenticated or if there are any problems
      *                   while loading the schema entries
      */

@@ -33,7 +33,6 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * 
  * A LDAP message decoder. It is based on shared-ldap decoder.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
@@ -47,12 +46,15 @@ public class LdapProtocolEncoder implements ProtocolEncoder
     private static final boolean IS_DEBUG = LOG.isDebugEnabled();
 
     /** The stateful encoder */
-    private static final LdapEncoder encoder = new LdapEncoder();
+    private static final LdapEncoder ENCODER = new LdapEncoder();
 
 
+    /**
+     * {@inheritDoc}
+     */
     public void encode( IoSession session, Object message, ProtocolEncoderOutput out ) throws Exception
     {
-        ByteBuffer buffer = encoder.encodeMessage( ( Message ) message );
+        ByteBuffer buffer = ENCODER.encodeMessage( ( Message ) message );
 
         IoBuffer ioBuffer = IoBuffer.wrap( buffer );
 
@@ -60,6 +62,9 @@ public class LdapProtocolEncoder implements ProtocolEncoder
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public void dispose( IoSession session ) throws Exception
     {
         // Nothing to do

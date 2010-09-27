@@ -34,6 +34,7 @@ import org.apache.directory.ldap.client.api.LdapConnection;
 /**
  * A Future implementation used in LdapConnection operations.
  *
+ * @param <R> The result type returned by this Future's <tt>get</tt> method
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 public class ResponseFuture<R> implements Future<R>
@@ -141,7 +142,9 @@ public class ResponseFuture<R> implements Future<R>
 
 
     /**
-     * This operation is not supported in this implementation of Future
+     * This operation is not supported in this implementation of Future.
+     * 
+     * {@inheritDoc}
      */
     public boolean isDone()
     {
@@ -167,6 +170,7 @@ public class ResponseFuture<R> implements Future<R>
     }
 
 
+    @Override
     public String toString()
     {
         StringBuilder sb = new StringBuilder();

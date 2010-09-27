@@ -27,7 +27,6 @@ import org.apache.mina.filter.codec.ProtocolEncoder;
 
 
 /**
- * 
  * The factory used to create the LDAP encoder and decoder.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
@@ -42,10 +41,8 @@ public class LdapProtocolCodecFactory implements ProtocolCodecFactory
 
 
     /**
-     * 
      * Creates a new instance of LdapProtocolCodecFactory. It
      * creates the encoded an decoder instances.
-     *
      */
     public LdapProtocolCodecFactory()
     {
@@ -53,18 +50,24 @@ public class LdapProtocolCodecFactory implements ProtocolCodecFactory
 
 
     /**
-     * Get the Ldap decoder. 
+     * Get the LDAP decoder.
+     *
+     * @param session the IO session
+     * @return the decoder
      */
-    public ProtocolDecoder getDecoder( IoSession session ) throws Exception
+    public ProtocolDecoder getDecoder( IoSession session )
     {
         return new LdapProtocolDecoder();
     }
 
 
     /**
-     * Get the Ldap encoder.
+     * Get the LDAP encoder.
+     *
+     * @param session the IO session
+     * @return the encoder
      */
-    public ProtocolEncoder getEncoder( IoSession session ) throws Exception
+    public ProtocolEncoder getEncoder( IoSession session )
     {
         return new LdapProtocolEncoder();
     }

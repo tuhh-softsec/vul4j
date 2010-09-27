@@ -40,6 +40,6 @@ public interface CompareListener extends OperationResponseListener
      * @param response the compare operation's response
      * @throws LdapException
      */
-    public void attributeCompared( LdapAsyncConnection connection, CompareResponse response )
+    void attributeCompared( LdapAsyncConnection connection, CompareResponse response )
         throws LdapException;
 }

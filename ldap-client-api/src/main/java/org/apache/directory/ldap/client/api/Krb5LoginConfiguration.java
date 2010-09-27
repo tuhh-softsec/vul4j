@@ -23,8 +23,8 @@ package org.apache.directory.ldap.client.api;
 import java.util.HashMap;
 
 import javax.security.auth.login.AppConfigurationEntry;
-import javax.security.auth.login.Configuration;
 import javax.security.auth.login.AppConfigurationEntry.LoginModuleControlFlag;
+import javax.security.auth.login.Configuration;
 
 
 /**
@@ -32,6 +32,8 @@ import javax.security.auth.login.AppConfigurationEntry.LoginModuleControlFlag;
  */
 public class Krb5LoginConfiguration extends Configuration
 {
+
+    /** The list with configuration entries. */
     private static AppConfigurationEntry[] configList = new AppConfigurationEntry[1];
 
 
@@ -48,6 +50,9 @@ public class Krb5LoginConfiguration extends Configuration
 
     /**
      * Interface method requiring us to return all the LoginModules we know about.
+     *
+     * @param applicationName the application name
+     * @return the configuration entry
      */
     public AppConfigurationEntry[] getAppConfigurationEntry( String applicationName )
     {

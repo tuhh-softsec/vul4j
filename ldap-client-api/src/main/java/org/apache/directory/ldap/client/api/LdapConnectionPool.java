@@ -28,44 +28,49 @@ import org.apache.commons.pool.impl.GenericObjectPool;
  * A pool implementation for LdapConnection objects.
  * 
  * This class is just a wrapper around the commons GenericObjectPool, and has 
- * a more meaningful name to represent the pool type
+ * a more meaningful name to represent the pool type.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 public class LdapConnectionPool extends GenericObjectPool
 {
-    /** the LdapConnection factory*/
-    private PoolableLdapConnectionFactory factory;
 
-
+    /**
+     * Instantiates a new LDAP connection pool.
+     */
     public LdapConnectionPool()
     {
         super();
     }
 
 
+    /**
+     * Instantiates a new LDAP connection pool.
+     *
+     * @param factory the LDAP connection factory
+     */
     public LdapConnectionPool( PoolableLdapConnectionFactory factory )
     {
         super( factory );
-        this.factory = factory;
     }
 
 
     /**
-     * @see org.apache.commons.pool.impl.GenericObjectPool#setFactory(PoolableObjectFactory factory)
+     * Sets the LDAP connection factory.
+     *
+     * @param factory the new LDAP connection factory
      */
     public void setFactory( PoolableLdapConnectionFactory factory )
     {
-        this.factory = factory;
         super.setFactory( factory );
     }
 
 
     /**
-     * gives a LdapConnection fetched from the pool 
+     * Gives a LdapConnection fetched from the pool.
      *
      * @return an LdapConnection object from pool 
-     * @throws Exception
+     * @throws Exception if an error occurs while obtaining a connection from the factory
      */
     public LdapNetworkConnection getConnection() throws Exception
     {
@@ -74,14 +79,14 @@ public class LdapConnectionPool extends GenericObjectPool
 
 
     /**
-     * places the given LdapConnection back in the pool
+     * Places the given LdapConnection back in the pool.
      *  
      * @param connection the LdapConnection to be released
-     * @throws Exception
+     * @throws Exception if an error occurs while releasing the connection
      */
     public void releaseConnection( LdapNetworkConnection connection ) throws Exception
     {
         super.returnObject( connection );
     }
-    
+
 }

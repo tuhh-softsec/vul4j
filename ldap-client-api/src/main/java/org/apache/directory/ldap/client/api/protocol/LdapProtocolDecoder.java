@@ -58,7 +58,8 @@ public class LdapProtocolDecoder implements ProtocolDecoder
      * @param session The session containing the LdapMessageContainer
      * @param buffer The ByteBuffer containing the incoming bytes to decode
      * to a LDAP message
-     * @param out The callback we have to invoke when the message has been decoded 
+     * @param out The callback we have to invoke when the message has been decoded
+     * @throws Exception if the read data violated protocol specification
      */
     public void decode( IoSession session, IoBuffer buffer, ProtocolDecoderOutput out ) throws Exception
     {

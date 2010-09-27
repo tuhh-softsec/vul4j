@@ -38,21 +38,31 @@ import org.slf4j.LoggerFactory;
 public class NoVerificationTrustManager implements X509TrustManager
 {
 
+    /** The logger. */
     private static final Logger LOG = LoggerFactory.getLogger( NoVerificationTrustManager.class );
 
 
+    /**
+     * {@inheritDoc}
+     */
     public void checkClientTrusted( X509Certificate[] x509Certificates, String s ) throws CertificateException
     {
         LOG.debug( "checkClientTrusted {}", x509Certificates[0] );
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public void checkServerTrusted( X509Certificate[] x509Certificates, String s ) throws CertificateException
     {
         LOG.debug( "checkServerTrusted {}", x509Certificates[0] );
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public X509Certificate[] getAcceptedIssuers()
     {
         return new X509Certificate[0];
