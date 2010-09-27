@@ -58,7 +58,6 @@ public final class ArchiveEntryUtils
         
         if ( useJvmChmod && jvmFilePermAvailable )
         {
-            logger.info( "useJvmChmod" );
             applyPermissionsWithJvm( file, m, logger );
             return;
         }
