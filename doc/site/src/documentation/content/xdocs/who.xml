@@ -36,28 +36,35 @@ limitations under the License.
         together.</p>
     </section>
     <section>
+      <title>PMC</title>
+      <p>
+        The following people are members of the Project Management Committee (PMC) for this project:
+      </p>
+      <ul>
+        <li> [AXL] Axl Mattheus </li>
+        <li> [BL] Berin Lautenbach </li>
+        <li> [CO] Colm O hEigeartaigh (chair) </li>
+        <li> [SM] Sean Mullan </li>
+        <li> [RB] Raul Benito Garcia </li>
+        <li> [SC] Scott Cantor </li>
+        <li> [WD] Werner Dittman </li>
+      </ul>
+    </section>
+    <section>
       <title>Committers</title>
       <p>
-        The following people are currently active in the Apache Santuario project:
+        In addition to the PMC members, the following people have commit rights to the Apache 
+        Santuario project:
       </p>
       <ul>
-        <li> [BL] Berin Lautenbach (berinATozemail.com.au) </li>
-        <li> [AXL] Axl Mattheus (amattheuATapache.org) </li>
-        <li> [EK] Erwin van der Koogh (erwinATkoogh.com) </li>
-        <li> [RB] Raul Benito Garcia (raul-infoATr-bg.com) </li>
-        <li> [VM] Vishal Mahajan (vmahajanATamberpoint.com) </li>
-        <li> [MT] Milan Tomic (milan.setcce.org) </li>
-        <li> [SM] Sean Mullan (sean.mullanATsun.com) </li>
-        <li> [SC] Scott Cantor (cantor.2ATosu.edu) </li>
-        <li> [CO] Colm O hEigeartaigh (coheigeaATapache.org) </li>
-      </ul>
-      <p>
-        The following people are currently not active in the project :
-      </p>
-      <ul>
-        <li> [CGP] Christian Geuer-Pollmann (christian.geuer-pollmannATweb.de) <br/>
-             Christian funded the XML Security project in 2002 but must not be 
-             actively contributing while working for Microsoft. </li>
+        <li> [DS] Davanum Srinivas </li>
+        <li> [CGP] Christian Geuer-Pollmann </li>
+        <li> [CL] Chad La Joie </li>
+        <li> [MT] Milan Tomic </li>
+        <li> [TL] Ted Leung </li>
+        <li> [EK] Erwin van der Koogh </li>
+        <li> [VM] Vishal Mahajan </li>
+        <li> [DWG] Dirk-Willem van Gulik </li>
       </ul>
     </section>
   </body>
