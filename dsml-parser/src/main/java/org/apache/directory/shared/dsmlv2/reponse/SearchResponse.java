@@ -50,6 +50,9 @@ public class SearchResponse extends AbstractResponse
 
     /**
      * Creates a new instance of SearchResponse.
+     *
+     * @param messageId the response eliciting this Request
+     * @param type the message type of the response
      */
     public SearchResponse( int messageId, MessageTypeEnum type )
     {

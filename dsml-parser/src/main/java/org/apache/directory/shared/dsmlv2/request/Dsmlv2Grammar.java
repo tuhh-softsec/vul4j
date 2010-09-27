@@ -88,7 +88,7 @@ import org.xmlpull.v1.XmlPullParserException;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
+public final class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
 {
     /** The instance of grammar. Dsmlv2Grammar is a singleton */
     private static Dsmlv2Grammar instance = new Dsmlv2Grammar();

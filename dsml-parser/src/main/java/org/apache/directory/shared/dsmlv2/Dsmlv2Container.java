@@ -217,15 +217,15 @@ public class Dsmlv2Container implements Container
     /**
      * Get the transition associated with the state and tag
      * 
-     * @param state
+     * @param currentState
      *      the current state
-     * @param tag
+     * @param currentTag
      *      the current tag
      * @return
      *      a valid transition if any, or null.
      */
-    public GrammarTransition getTransition( int state, Tag tag )
+    public GrammarTransition getTransition( int currentState, Tag currentTag )
     {
-        return grammar.getTransition( state, tag );
+        return grammar.getTransition( currentState, currentTag );
     }
 }

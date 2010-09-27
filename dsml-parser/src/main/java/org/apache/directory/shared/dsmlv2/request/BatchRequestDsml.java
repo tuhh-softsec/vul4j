@@ -193,7 +193,9 @@ public class BatchRequestDsml
 
 
     /**
-     * Converts the Batch Request to its XML representation in the DSMLv2 format.
+     * Converts this Batch Request to its XML representation in the DSMLv2 format.
+     * 
+     * @return the XML representation in DSMLv2 format
      */
     public String toDsml()
     {

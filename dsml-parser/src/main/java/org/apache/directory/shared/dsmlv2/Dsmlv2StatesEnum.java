@@ -23,11 +23,13 @@ package org.apache.directory.shared.dsmlv2;
 
 /**
  * This class store the Dsml grammar's constants. It is also used for debugging
- * purpose
+ * purpose.
+ * 
+ * TODO: Should this class be an enum?
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class Dsmlv2StatesEnum implements IStates
+public final class Dsmlv2StatesEnum implements IStates
 {
     //====================================================
     //  <batchRequest> ... </batchRequest>
@@ -508,7 +510,12 @@ public class Dsmlv2StatesEnum implements IStates
     }
 
 
-    /** Get the current state for a specified grammar */
+    /**
+     * Get the current state for a specified grammar.
+     *
+     * @param state the state
+     * @return the state
+     */
     public String getState( int state )
     {
         switch ( state )

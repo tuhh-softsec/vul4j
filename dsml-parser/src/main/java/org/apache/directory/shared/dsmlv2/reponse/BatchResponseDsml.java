@@ -105,7 +105,9 @@ public class BatchResponseDsml
 
 
     /**
-     * Converts the Batch Response to its XML representation in the DSMLv2 format.
+     * Converts this Batch Response to its XML representation in the DSMLv2 format.
+     * 
+     * @return the XML representation in DSMLv2 format
      */
     public String toDsml()
     {

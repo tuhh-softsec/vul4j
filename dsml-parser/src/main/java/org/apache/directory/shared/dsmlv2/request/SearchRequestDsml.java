@@ -135,6 +135,8 @@ public class SearchRequestDsml extends AbstractRequestDsml
                 element.addAttribute( "derefAliases", "derefInSearching" );
                 break;
 
+            default:
+                throw new IllegalStateException( "Unexpected deref alias mode " + derefAliases );
         }
 
         // SizeLimit

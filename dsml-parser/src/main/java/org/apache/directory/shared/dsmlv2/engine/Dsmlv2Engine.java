@@ -36,13 +36,13 @@ import org.apache.directory.shared.dsmlv2.reponse.BatchResponseDsml;
 import org.apache.directory.shared.dsmlv2.reponse.CompareResponseDsml;
 import org.apache.directory.shared.dsmlv2.reponse.DelResponseDsml;
 import org.apache.directory.shared.dsmlv2.reponse.ErrorResponse;
+import org.apache.directory.shared.dsmlv2.reponse.ErrorResponse.ErrorResponseType;
 import org.apache.directory.shared.dsmlv2.reponse.ExtendedResponseDsml;
 import org.apache.directory.shared.dsmlv2.reponse.ModDNResponseDsml;
 import org.apache.directory.shared.dsmlv2.reponse.ModifyResponseDsml;
 import org.apache.directory.shared.dsmlv2.reponse.SearchResponseDsml;
 import org.apache.directory.shared.dsmlv2.reponse.SearchResultEntryDsml;
 import org.apache.directory.shared.dsmlv2.reponse.SearchResultReferenceDsml;
-import org.apache.directory.shared.dsmlv2.reponse.ErrorResponse.ErrorResponseType;
 import org.apache.directory.shared.dsmlv2.request.BatchRequest;
 import org.apache.directory.shared.dsmlv2.request.BatchRequest.OnError;
 import org.apache.directory.shared.dsmlv2.request.BatchRequest.Processing;
@@ -51,7 +51,6 @@ import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.cursor.Cursor;
 import org.apache.directory.shared.ldap.exception.LdapException;
-import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.message.AbandonRequest;
 import org.apache.directory.shared.ldap.message.AddRequest;
 import org.apache.directory.shared.ldap.message.AddResponse;
@@ -88,26 +87,34 @@ import org.xmlpull.v1.XmlPullParserException;
  */
 public class Dsmlv2Engine
 {
-    /** Socket used to connect to the server */
-
-    // server configuration
+    /** The port. */
     private int port;
+
+    /** The host. */
     private String host;
+
+    /** The user. */
     private String user;
+
+    /** The password. */
     private String password;
 
     /** The LDAP connection */
     private LdapConnection connection;
 
+    /** The DSVMv2 parser. */
     private Dsmlv2Parser parser;
 
+    /** The continue on error flag. */
     private boolean continueOnError;
+
+    /** The exit flag. */
     private boolean exit = false;
 
-    private int bbLimit;
-
-    private int bbposition;
+    /** The batch request. */
     private BatchRequest batchRequest;
+
+    /** The batch response. */
     private BatchResponseDsml batchResponse;
 
 
@@ -119,7 +126,7 @@ public class Dsmlv2Engine
      * @param user the server admin DN
      * @param password the server admin's password
      */
-    public Dsmlv2Engine( String host, int port, String user, String password ) throws IOException
+    public Dsmlv2Engine( String host, int port, String user, String password )
     {
         this.host = host;
         this.port = port;
@@ -307,12 +314,8 @@ public class Dsmlv2Engine
      * Processes a single request
      * 
      * @param request the request to process
-     * @throws EncoderException 
-     * @throws IOException 
-     * @throws DecoderException 
      */
-    private void processRequest( Message request ) throws EncoderException, IOException, DecoderException,
-        LdapException, Exception
+    private void processRequest( Message request ) throws Exception
     {
         ResultCodeEnum resultCode = null;
 
@@ -419,6 +422,9 @@ public class Dsmlv2Engine
             case UNBIND_REQUEST:
                 connection.unBind();
                 break;
+
+            default:
+                throw new IllegalStateException( "Unexpected request tpye " + request.getType() );
         }
 
         if ( ( !continueOnError ) && ( resultCode != ResultCodeEnum.SUCCESS )
@@ -485,8 +491,7 @@ public class Dsmlv2Engine
      * @throws IOException
      * @throws LdapInvalidDnException
      */
-    private void bind( int messageId ) throws LdapException, EncoderException, DecoderException, IOException,
-        LdapInvalidDnException
+    private void bind( int messageId ) throws LdapException, EncoderException, DecoderException, IOException
     {
         BindRequest bindRequest = new BindRequestImpl();
         bindRequest.setSimple( true );

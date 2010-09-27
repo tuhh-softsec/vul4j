@@ -77,7 +77,7 @@ public class Dsmlv2ResponseParser
      * @throws XmlPullParserException
      *      if an error occurs in the parser
      */
-    public void setInput( String str ) throws FileNotFoundException, XmlPullParserException
+    public void setInput( String str ) throws XmlPullParserException
     {
         container.getParser().setInput( new StringReader( str ) );
     }
@@ -122,6 +122,7 @@ public class Dsmlv2ResponseParser
      * @throws XmlPullParserException 
      *      when an unrecoverable error occurs
      * @throws IOException
+     *      when an IO exception occurs
      */
     public void parse() throws XmlPullParserException, IOException
     {
@@ -183,7 +184,7 @@ public class Dsmlv2ResponseParser
      * @throws XmlPullParserException 
      *      when an error occurs during the parsing
      */
-    private void processTag( Dsmlv2Container container, int tagType ) throws XmlPullParserException
+    private static void processTag( Dsmlv2Container container, int tagType ) throws XmlPullParserException
     {
         XmlPullParser xpp = container.getParser();
 

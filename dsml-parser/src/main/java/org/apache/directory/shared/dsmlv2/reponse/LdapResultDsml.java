@@ -62,8 +62,8 @@ public class LdapResultDsml implements DsmlDecorator
     }
 
 
-    /* (non-Javadoc)
-     * @see org.apache.directory.shared.dsmlv2.reponse.DsmlDecorator#toDsml(org.dom4j.Element)
+    /**
+     * {@inheritDoc}
      */
     public Element toDsml( Element root )
     {

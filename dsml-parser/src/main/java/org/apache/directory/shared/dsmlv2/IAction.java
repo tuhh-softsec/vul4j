@@ -43,5 +43,5 @@ public interface IAction
      * @throws XmlPullParserException
      *      thrown if something went wrong.
      */
-    public void action( Dsmlv2Container container ) throws XmlPullParserException;
+    void action( Dsmlv2Container container ) throws XmlPullParserException;
 }

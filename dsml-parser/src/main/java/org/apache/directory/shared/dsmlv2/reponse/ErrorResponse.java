@@ -54,7 +54,22 @@ public class ErrorResponse extends AbstractResponse implements Response, DsmlDec
      */
     public enum ErrorResponseType
     {
-        NOT_ATTEMPTED, COULD_NOT_CONNECT, CONNECTION_CLOSED, MALFORMED_REQUEST, GATEWAY_INTERNAL_ERROR, AUTHENTICATION_FAILED, UNRESOLVABLE_URI, OTHER
+        /** Not attempted error response type. */
+        NOT_ATTEMPTED,
+        /** Could not connect error response type. */
+        COULD_NOT_CONNECT,
+        /**  error response type. */
+        CONNECTION_CLOSED,
+        /** Malformed request error response type. */
+        MALFORMED_REQUEST,
+        /** Gateway internal error error response type. */
+        GATEWAY_INTERNAL_ERROR,
+        /** Authentication failed error response type. */
+        AUTHENTICATION_FAILED,
+        /** Unresolveable URI error response type. */
+        UNRESOLVABLE_URI,
+        /** Other error response type. */
+        OTHER
     };
 
     /** The type of error response */
@@ -69,6 +84,9 @@ public class ErrorResponse extends AbstractResponse implements Response, DsmlDec
 
     /**
      * Creates a new instance of ErrorResponse.
+     *
+     * @param id the response eliciting this Request
+     * @param type the message type of the response
      */
     public ErrorResponse( int id, MessageTypeEnum type )
     {
@@ -95,8 +113,8 @@ public class ErrorResponse extends AbstractResponse implements Response, DsmlDec
     }
 
 
-    /* (non-Javadoc)
-     * @see org.apache.directory.shared.dsmlv2.reponse.DsmlDecorator#toDsml(org.dom4j.Element)
+    /**
+     * {@inheritDoc}
      */
     public Element toDsml( Element root )
     {

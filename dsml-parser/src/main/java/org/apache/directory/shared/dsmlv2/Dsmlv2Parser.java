@@ -122,6 +122,7 @@ public class Dsmlv2Parser
      * @throws XmlPullParserException 
      *      when an unrecoverable error occurs
      * @throws IOException
+     *      when an IO execption occurs
      */
     public void parse() throws XmlPullParserException, IOException
     {
@@ -183,7 +184,7 @@ public class Dsmlv2Parser
      * @throws XmlPullParserException 
      *      when an error occurs during the parsing
      */
-    private void processTag( Dsmlv2Container container, int tagType ) throws XmlPullParserException
+    private static void processTag( Dsmlv2Container container, int tagType ) throws XmlPullParserException
     {
         XmlPullParser xpp = container.getParser();
 

@@ -22,7 +22,6 @@ package org.apache.directory.shared.dsmlv2.request;
 
 import org.apache.directory.shared.dsmlv2.LdapMessageDecorator;
 import org.apache.directory.shared.ldap.message.Message;
-import org.apache.directory.shared.ldap.message.MessageException;
 import org.apache.directory.shared.ldap.message.control.Control;
 
 
@@ -44,25 +43,27 @@ public class LdapRequestDecorator extends LdapMessageDecorator
     }
 
 
-    public void addAllControls( Control[] controls ) throws MessageException
+    /**
+     * {@inheritDoc}
+     */
+    public void addAllControls( Control[] controls )
     {
         instance.addAllControls( controls );
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public Object get( Object key )
     {
         return instance.get( key );
     }
 
 
-    /*
-    public int getControlsLength()
-    {
-        return 0;
-    }
-    */
-
+    /**
+     * {@inheritDoc}
+     */
     public Control getCurrentControl()
     {
         // TODO Auto-generated method stub
@@ -70,13 +71,9 @@ public class LdapRequestDecorator extends LdapMessageDecorator
     }
 
 
-    public int getMessageLength()
-    {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-
+    /**
+     * {@inheritDoc}
+     */
     public boolean hasControl( String oid )
     {
         // TODO Auto-generated method stub
@@ -84,6 +81,9 @@ public class LdapRequestDecorator extends LdapMessageDecorator
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public Object put( Object key, Object value )
     {
         // TODO Auto-generated method stub
@@ -91,23 +91,13 @@ public class LdapRequestDecorator extends LdapMessageDecorator
     }
 
 
-    public void removeControl( Control control ) throws MessageException
+    /**
+     * {@inheritDoc}
+     */
+    public void removeControl( Control control )
     {
         // TODO Auto-generated method stub
 
     }
 
-
-    public void setControlsLength( int controlsLength )
-    {
-        // TODO Auto-generated method stub
-
-    }
-
-
-    public void setMessageLength( int messageLength )
-    {
-        // TODO Auto-generated method stub
-
-    }
 }

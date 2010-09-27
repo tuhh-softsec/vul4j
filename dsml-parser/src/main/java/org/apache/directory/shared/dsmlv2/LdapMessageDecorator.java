@@ -72,8 +72,8 @@ public abstract class LdapMessageDecorator implements Message
     }
 
 
-    /* (non-Javadoc)
-     * @see org.apache.directory.shared.ldap.codec.LdapMessageCodec#addControl(org.apache.directory.shared.ldap.codec.Control)
+    /**
+     * {@inheritDoc}
      */
     public void addControl( Control control )
     {
@@ -81,8 +81,8 @@ public abstract class LdapMessageDecorator implements Message
     }
 
 
-    /* (non-Javadoc)
-     * @see org.apache.directory.shared.ldap.codec.LdapMessageCodec#getAbandonRequest()
+    /**
+     * {@inheritDoc}
      */
     public AbandonRequest getAbandonRequest()
     {
@@ -90,8 +90,8 @@ public abstract class LdapMessageDecorator implements Message
     }
 
 
-    /* (non-Javadoc)
-     * @see org.apache.directory.shared.ldap.codec.LdapMessageCodec#getAddRequest()
+    /**
+     * {@inheritDoc}
      */
     public AddRequest getAddRequest()
     {
@@ -99,8 +99,8 @@ public abstract class LdapMessageDecorator implements Message
     }
 
 
-    /* (non-Javadoc)
-     * @see org.apache.directory.shared.ldap.codec.LdapMessageCodec#getAddResponse()
+    /**
+     * {@inheritDoc}
      */
     public AddResponse getAddResponse()
     {
@@ -108,8 +108,8 @@ public abstract class LdapMessageDecorator implements Message
     }
 
 
-    /* (non-Javadoc)
-     * @see org.apache.directory.shared.ldap.codec.LdapMessageCodec#getBindRequest()
+    /**
+     * {@inheritDoc}
      */
     public BindRequest getBindRequest()
     {
@@ -117,8 +117,8 @@ public abstract class LdapMessageDecorator implements Message
     }
 
 
-    /* (non-Javadoc)
-     * @see org.apache.directory.shared.ldap.codec.LdapMessageCodec#getBindResponse()
+    /**
+     * {@inheritDoc}
      */
     public BindResponse getBindResponse()
     {
@@ -126,8 +126,8 @@ public abstract class LdapMessageDecorator implements Message
     }
 
 
-    /* (non-Javadoc)
-     * @see org.apache.directory.shared.ldap.codec.LdapMessageCodec#getCompareRequest()
+    /**
+     * {@inheritDoc}
      */
     public CompareRequest getCompareRequest()
     {
@@ -135,8 +135,8 @@ public abstract class LdapMessageDecorator implements Message
     }
 
 
-    /* (non-Javadoc)
-     * @see org.apache.directory.shared.ldap.codec.LdapMessageCodec#getCompareResponse()
+    /**
+     * {@inheritDoc}
      */
     public CompareResponse getCompareResponse()
     {
@@ -144,8 +144,8 @@ public abstract class LdapMessageDecorator implements Message
     }
 
 
-    /* (non-Javadoc)
-     * @see org.apache.directory.shared.ldap.codec.LdapMessageCodec#getControls()
+    /**
+     * {@inheritDoc}
      */
     public Map<String, Control> getControls()
     {
@@ -153,8 +153,8 @@ public abstract class LdapMessageDecorator implements Message
     }
 
 
-    /* (non-Javadoc)
-     * @see org.apache.directory.shared.ldap.codec.LdapMessageCodec#getControls(int)
+    /**
+     * {@inheritDoc}
      */
     public Control getControl( String oid )
     {
@@ -162,8 +162,8 @@ public abstract class LdapMessageDecorator implements Message
     }
 
 
-    /* (non-Javadoc)
-     * @see org.apache.directory.shared.ldap.codec.LdapMessageCodec#getDelRequest()
+    /**
+     * {@inheritDoc}
      */
     public DeleteRequest getDelRequest()
     {
@@ -171,8 +171,8 @@ public abstract class LdapMessageDecorator implements Message
     }
 
 
-    /* (non-Javadoc)
-     * @see org.apache.directory.shared.ldap.codec.LdapMessageCodec#getDelResponse()
+    /**
+     * {@inheritDoc}
      */
     public DeleteResponse getDelResponse()
     {
@@ -180,8 +180,8 @@ public abstract class LdapMessageDecorator implements Message
     }
 
 
-    /* (non-Javadoc)
-     * @see org.apache.directory.shared.ldap.codec.LdapMessageCodec#getExtendedRequest()
+    /**
+     * {@inheritDoc}
      */
     public ExtendedRequest getExtendedRequest()
     {
@@ -189,8 +189,8 @@ public abstract class LdapMessageDecorator implements Message
     }
 
 
-    /* (non-Javadoc)
-     * @see org.apache.directory.shared.ldap.codec.LdapMessageCodec#getExtendedResponse()
+    /**
+     * {@inheritDoc}
      */
     public ExtendedResponse getExtendedResponse()
     {
@@ -198,8 +198,8 @@ public abstract class LdapMessageDecorator implements Message
     }
 
 
-    /* (non-Javadoc)
-     * @see org.apache.directory.shared.ldap.codec.LdapMessageCodec#getLdapResponse()
+    /**
+     * {@inheritDoc}
      */
     public Response getLdapResponse()
     {
@@ -207,8 +207,8 @@ public abstract class LdapMessageDecorator implements Message
     }
 
 
-    /* (non-Javadoc)
-     * @see org.apache.directory.shared.ldap.codec.LdapMessageCodec#getMessageId()
+    /**
+     * {@inheritDoc}
      */
     public int getMessageId()
     {
@@ -216,8 +216,8 @@ public abstract class LdapMessageDecorator implements Message
     }
 
 
-    /* (non-Javadoc)
-     * @see org.apache.directory.shared.ldap.codec.LdapMessageCodec#getType()
+    /**
+     * {@inheritDoc}
      */
     public MessageTypeEnum getType()
     {
@@ -225,8 +225,8 @@ public abstract class LdapMessageDecorator implements Message
     }
 
 
-    /* (non-Javadoc)
-     * @see org.apache.directory.shared.ldap.codec.LdapMessageCodec#getModifyDNRequest()
+    /**
+     * {@inheritDoc}
      */
     public ModifyDnRequest getModifyDNRequest()
     {
@@ -234,8 +234,8 @@ public abstract class LdapMessageDecorator implements Message
     }
 
 
-    /* (non-Javadoc)
-     * @see org.apache.directory.shared.ldap.codec.LdapMessageCodec#getModifyDNResponse()
+    /**
+     * {@inheritDoc}
      */
     public ModifyDnResponse getModifyDNResponse()
     {
@@ -243,8 +243,8 @@ public abstract class LdapMessageDecorator implements Message
     }
 
 
-    /* (non-Javadoc)
-     * @see org.apache.directory.shared.ldap.codec.LdapMessageCodec#getModifyRequest()
+    /**
+     * {@inheritDoc}
      */
     public ModifyRequest getModifyRequest()
     {
@@ -252,8 +252,8 @@ public abstract class LdapMessageDecorator implements Message
     }
 
 
-    /* (non-Javadoc)
-     * @see org.apache.directory.shared.ldap.codec.LdapMessageCodec#getModifyResponse()
+    /**
+     * {@inheritDoc}
      */
     public ModifyResponse getModifyResponse()
     {
@@ -261,8 +261,8 @@ public abstract class LdapMessageDecorator implements Message
     }
 
 
-    /* (non-Javadoc)
-     * @see org.apache.directory.shared.ldap.codec.LdapMessageCodec#getSearchRequest()
+    /**
+     * {@inheritDoc}
      */
     public SearchRequest getSearchRequest()
     {
@@ -270,8 +270,8 @@ public abstract class LdapMessageDecorator implements Message
     }
 
 
-    /* (non-Javadoc)
-     * @see org.apache.directory.shared.ldap.codec.LdapMessageCodec#getSearchResultDone()
+    /**
+     * {@inheritDoc}
      */
     public SearchResultDone getSearchResultDone()
     {
@@ -279,8 +279,8 @@ public abstract class LdapMessageDecorator implements Message
     }
 
 
-    /* (non-Javadoc)
-     * @see org.apache.directory.shared.ldap.codec.LdapMessageCodec#getSearchResultEntry()
+    /**
+     * {@inheritDoc}
      */
     public SearchResultEntry getSearchResultEntry()
     {
@@ -288,8 +288,8 @@ public abstract class LdapMessageDecorator implements Message
     }
 
 
-    /* (non-Javadoc)
-     * @see org.apache.directory.shared.ldap.codec.LdapMessageCodec#getSearchResultReference()
+    /**
+     * {@inheritDoc}
      */
     public SearchResultReference getSearchResultReference()
     {
@@ -297,8 +297,8 @@ public abstract class LdapMessageDecorator implements Message
     }
 
 
-    /* (non-Javadoc)
-     * @see org.apache.directory.shared.ldap.codec.LdapMessageCodec#getUnBindRequest()
+    /**
+     * {@inheritDoc}
      */
     public UnbindRequest getUnBindRequest()
     {
@@ -306,8 +306,8 @@ public abstract class LdapMessageDecorator implements Message
     }
 
 
-    /* (non-Javadoc)
-     * @see org.apache.directory.shared.ldap.codec.LdapMessageCodec#setMessageId(int)
+    /**
+     * {@inheritDoc}
      */
     public void setMessageId( int messageId )
     {
@@ -315,8 +315,8 @@ public abstract class LdapMessageDecorator implements Message
     }
 
 
-    /* (non-Javadoc)
-     * @see org.apache.directory.shared.ldap.codec.LdapMessageCodec#toString()
+    /**
+     * {@inheritDoc}
      */
     @Override
     public String toString()

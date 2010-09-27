@@ -43,6 +43,8 @@ public class SearchResponseDsml extends AbstractResponseDsml
 
     /**
      * Creates a new instance of SearchResponseDsml.
+     *
+     * @param response the LDAP response message to decorate
      */
     public SearchResponseDsml( Message response )
     {
@@ -78,8 +80,8 @@ public class SearchResponseDsml extends AbstractResponseDsml
     }
 
 
-    /* (non-Javadoc)
-     * @see org.apache.directory.shared.dsmlv2.DsmlDecorator#toDsml(org.dom4j.Element)
+    /**
+     * {@inheritDoc}
      */
     public Element toDsml( Element root )
     {

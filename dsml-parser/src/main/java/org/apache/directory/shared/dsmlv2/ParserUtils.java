@@ -54,13 +54,30 @@ import org.xmlpull.v1.XmlPullParserException;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class ParserUtils
+public final class ParserUtils
 {
+    /** W3C XML Schema URI. */
     public static final String XML_SCHEMA_URI = "http://www.w3c.org/2001/XMLSchema";
+
+    /** W3C XML Schema Instance URI. */
     public static final String XML_SCHEMA_INSTANCE_URI = "http://www.w3c.org/2001/XMLSchema-instance";
+
+    /** Base-64 identifier. */
     public static final String BASE64BINARY = "base64Binary";
+
+    /** XSI namespace prefix. */
     public static final String XSI = "xsi";
+
+    /** XSD namespace prefix. */
     public static final String XSD = "xsd";
+
+
+    /**
+     * Private contstructor.
+     */
+    private ParserUtils()
+    {
+    }
 
 
     /**

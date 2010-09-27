@@ -51,7 +51,10 @@ public class BatchRequest
      */
     public enum Processing
     {
-        SEQUENTIAL, PARALLEL
+        /** Sequential processing. */
+        SEQUENTIAL, 
+        /** Parallel processing. */
+        PARALLEL
     };
 
     /**
@@ -66,7 +69,10 @@ public class BatchRequest
          */
     public enum OnError
     {
-        RESUME, EXIT
+        /** Resume on error. */
+        RESUME, 
+        /** Exit on error. */
+        EXIT
     };
 
     /**
@@ -81,7 +87,10 @@ public class BatchRequest
          */
     public enum ResponseOrder
     {
-        SEQUENTIAL, UNORDERED
+        /** Sequential response order. */
+        SEQUENTIAL,
+        /** Unordered response order. */
+        UNORDERED
     };
 
     /**

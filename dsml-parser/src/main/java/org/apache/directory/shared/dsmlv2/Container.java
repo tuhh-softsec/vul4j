@@ -50,7 +50,7 @@ public interface Container
      * 
      * @return Returns the transition from the previous state to the new state
      */
-    public int getTransition();
+    int getTransition();
 
 
     /**
@@ -59,12 +59,12 @@ public interface Container
      * @param transition
      *            The transition to set
      */
-    public void setTransition( int transition );
+    void setTransition( int transition );
 
 
     /**
      * @return Returns the states.
      */
-    public IStates getStates();
+    IStates getStates();
 
 }

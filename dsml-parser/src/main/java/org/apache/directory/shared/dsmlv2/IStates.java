@@ -29,13 +29,13 @@ package org.apache.directory.shared.dsmlv2;
 public interface IStates
 {
     /** The initial state of every grammar */
-    static int INIT_GRAMMAR_STATE = 0;
+    int INIT_GRAMMAR_STATE = 0;
 
     /** The ending state for every grammars */
-    static int GRAMMAR_END = -1;
+    int GRAMMAR_END = -1;
 
     /** The END_STATE */
-    static int END_STATE = -1;
+    int END_STATE = -1;
 
 
     /** 

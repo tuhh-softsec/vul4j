@@ -27,7 +27,7 @@ import org.xmlpull.v1.XmlPullParserException;
 
 
 /**
- * The interface which expose common behavior of a Gramar implementer.
+ * The interface which expose common behavior of a Grammar implementer.
  */
 public interface IGrammar
 {
@@ -35,14 +35,13 @@ public interface IGrammar
     // ------------------------------------------------------------------------------------
 
     /**
-     * This method, when called, execute an action on the current data stored in
+     * This method, when called, executes an action on the current data stored in
      * the container.
      * 
      * @param container
      *            the DSML container
-     * @throws XmlPullParserException
-     *      Thrown when an unrecoverable error occurs.
-     * @throws IOException
+     * @throws XmlPullParserException when an unrecoverable error occurs
+     * @throws IOException when an IO error occurs
      */
     void executeAction( Dsmlv2Container container ) throws XmlPullParserException, IOException;
 

@@ -30,7 +30,7 @@ package org.apache.directory.shared.dsmlv2;
 public abstract class GrammarAction implements IAction
 {
     /** The action's name */
-    protected String name;
+    private String name;
 
 
     /**

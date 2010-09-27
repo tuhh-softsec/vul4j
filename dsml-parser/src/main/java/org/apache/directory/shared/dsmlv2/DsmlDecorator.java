@@ -39,5 +39,5 @@ public interface DsmlDecorator
      * @return 
      *      the dom4j Element corresponding to the entry.
      */
-    public Element toDsml( Element root );
+    Element toDsml( Element root );
 }

@@ -20,6 +20,7 @@
 
 package org.apache.directory.shared.dsmlv2.reponse;
 
+
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 
 
@@ -28,8 +29,16 @@ import org.apache.directory.shared.ldap.message.ResultCodeEnum;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class LdapResultEnum
+public final class LdapResultEnum
 {
+    /**
+     * Private constructor.
+     */
+    private LdapResultEnum()
+    {
+    }
+
+
     /**
      * Gets the String description of a given result code 
      * 
@@ -124,7 +133,7 @@ public class LdapResultEnum
                 return "other";
             case UNKNOWN:
                 return "unknown";
-                
+
             default:
                 return "unknoxn";
         }

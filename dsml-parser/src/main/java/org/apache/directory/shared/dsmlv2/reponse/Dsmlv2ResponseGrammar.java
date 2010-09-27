@@ -83,13 +83,13 @@ import org.xmlpull.v1.XmlPullParserException;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGrammar
+public final class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGrammar
 {
     /** The instance of grammar. Dsmlv2ResponseGrammar is a singleton */
     private static Dsmlv2ResponseGrammar instance = new Dsmlv2ResponseGrammar();
 
-    // Initializing DESCR_TAGS
-    private static Set<String> DSMLV2_DESCR_TAGS = null;
+    /** The DSMLv2 description tags */
+    private static final Set<String> DSMLV2_DESCR_TAGS;
     static
     {
         DSMLV2_DESCR_TAGS = new HashSet<String>();
@@ -1417,7 +1417,7 @@ public class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGrammar
             // descr
             attributeValue = xpp.getAttributeValue( "", "descr" );
 
-            if ( ( attributeValue != null ) && ( DSMLV2_DESCR_TAGS.contains( attributeValue ) == false ) )
+            if ( ( attributeValue != null ) && !DSMLV2_DESCR_TAGS.contains( attributeValue ) )
             {
                 throw new XmlPullParserException( I18n.err( I18n.ERR_03011, attributeValue ), xpp, null );
             }

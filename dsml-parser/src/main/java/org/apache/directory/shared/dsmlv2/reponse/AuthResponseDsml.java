@@ -55,8 +55,8 @@ public class AuthResponseDsml extends AbstractResponseDsml
     }
 
 
-    /* (non-Javadoc)
-     * @see org.apache.directory.shared.dsmlv2.reponse.LdapMessageDecorator#getType()
+    /**
+     * {@inheritDoc}
      */
     public MessageTypeEnum getType()
     {
@@ -64,8 +64,8 @@ public class AuthResponseDsml extends AbstractResponseDsml
     }
 
 
-    /* (non-Javadoc)
-     * @see org.apache.directory.shared.dsmlv2.reponse.DsmlDecorator#toDsml(org.dom4j.Element)
+    /**
+     * {@inheritDoc}
      */
     public Element toDsml( Element root )
     {

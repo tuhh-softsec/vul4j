@@ -46,8 +46,8 @@ public abstract class LdapResponseDecorator extends LdapMessageDecorator
     }
 
 
-    /* (non-Javadoc)
-     * @see org.apache.directory.shared.ldap.codec.LdapResponse#getLdapResult()
+    /**
+     * {@inheritDoc}
      */
     public LdapResult getLdapResult()
     {

@@ -114,8 +114,8 @@ public abstract class AbstractGrammar implements IGrammar
     }
 
 
-    /* (non-Javadoc)
-     * @see org.apache.directory.shared.dsmlv2.IGrammar#executeAction(org.apache.directory.shared.dsmlv2.Dsmlv2Container)
+    /**
+     * {@inheritDoc}
      */
     public void executeAction( Dsmlv2Container container ) throws XmlPullParserException, IOException
     {

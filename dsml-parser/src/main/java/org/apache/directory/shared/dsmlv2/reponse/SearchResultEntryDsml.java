@@ -63,8 +63,8 @@ public class SearchResultEntryDsml extends AbstractResponseDsml
     }
 
 
-    /* (non-Javadoc)
-     * @see org.apache.directory.shared.dsmlv2.reponse.LdapMessageDecorator#getType()
+    /**
+     * {@inheritDoc}
      */
     public MessageTypeEnum getType()
     {
@@ -72,8 +72,8 @@ public class SearchResultEntryDsml extends AbstractResponseDsml
     }
 
 
-    /* (non-Javadoc)
-     * @see org.apache.directory.shared.dsmlv2.reponse.DsmlDecorator#toDsml(org.dom4j.Element)
+    /**
+     * {@inheritDoc}
      */
     public Element toDsml( Element root )
     {
@@ -158,9 +158,10 @@ public class SearchResultEntryDsml extends AbstractResponseDsml
 
 
     /**
-     * Create a new attributeValue
+     * Create a new attribute.
      * 
      * @param type The attribute's name
+     * @throws LdapException if the type doesn't exist
      */
     public void addAttributeType( String type ) throws LdapException
     {
@@ -169,9 +170,9 @@ public class SearchResultEntryDsml extends AbstractResponseDsml
 
 
     /**
-     * Add a new value to the current attribute
+     * Add a new value to the current attribute.
      * 
-     * @param value
+     * @param value the added value
      */
     public void addAttributeValue( Object value )
     {

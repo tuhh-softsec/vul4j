@@ -26,6 +26,11 @@ import org.apache.directory.shared.ldap.message.Message;
 import org.dom4j.Element;
 
 
+/**
+ * Abstract class for DSML requests.
+ *
+ * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
+ */
 public abstract class AbstractRequestDsml extends LdapRequestDecorator implements DsmlDecorator
 {
     /**
