@@ -30,9 +30,9 @@
  * They are used to create version strings - see the details at the end of this file
  */
 
-#undef XSEC_VERSION_MAJOR
-#undef XSEC_VERSION_MEDIUM
-#undef XSEC_VERSION_MINOR
+#define XSEC_VERSION_MAJOR   1
+#define XSEC_VERSION_MEDIUM  6
+#define XSEC_VERSION_MINOR   0
 
 /*
  * The following defines whether Xalan integration is required.
@@ -135,21 +135,6 @@
 #undef XSEC_OPENSSL_HAVE_CRYPTO_CLEANUP_ALL_EX_DATA
 
 /*
- * Some string functions (mainly to get past microsoft warning
- * messages
- */
-
-/* Do we have _strdup(const char *) - probably not, but... */
-
-#undef XSEC_HAVE__STRDUP
-#undef XSEC_HAVE__STRICMP
-
-/* How do we handle stricmp style requirements? */
-
-#undef XSEC_HAVE_STRICMP
-#undef XSEC_HAVE_STRCASECMP
-
-/*
  * Macros used to determine what header files exist on this
  * system
  */
@@ -187,6 +172,4 @@
 
 /* The following is used for backwards compatibility with previous version handling */
 
-#undef XSEC_VERSION
-
-
+#define XSEC_VERSION         "XSEC_FULLVERSIONDOT"
