@@ -16,9 +16,6 @@ package org.codehaus.plexus.archiver.dir;
  * limitations under the License.
  */
 
-import java.io.File;
-import java.io.IOException;
-
 import org.codehaus.plexus.archiver.AbstractArchiver;
 import org.codehaus.plexus.archiver.ArchiveEntry;
 import org.codehaus.plexus.archiver.ArchiverException;
@@ -27,10 +24,11 @@ import org.codehaus.plexus.archiver.util.ArchiveEntryUtils;
 import org.codehaus.plexus.archiver.util.ResourceUtils;
 import org.codehaus.plexus.components.io.resources.PlexusIoResource;
 
+import java.io.File;
+import java.io.IOException;
 
 /**
- * A plexus archiver implementation that stores the files to archive in a
- * directory.
+ * A plexus archiver implementation that stores the files to archive in a directory.
  */
 public class DirectoryArchiver
     extends AbstractArchiver
@@ -43,15 +41,15 @@ public class DirectoryArchiver
     public void execute()
         throws ArchiverException, IOException
     {
-        //Most of this method was copied from org.codehaus.plexus.archiver.tar.TarArchiver
-        //and modified to store files in a directory, not a tar archive.
-        ResourceIterator iter = getResources();
+        // Most of this method was copied from org.codehaus.plexus.archiver.tar.TarArchiver
+        // and modified to store files in a directory, not a tar archive.
+        final ResourceIterator iter = getResources();
         if ( !iter.hasNext() )
         {
             throw new ArchiverException( "You must set at least one file." );
         }
 
-        File destDirectory = getDestFile();
+        final File destDirectory = getDestFile();
         if ( destDirectory == null )
         {
             throw new ArchiverException( "You must set the destination directory." );
@@ -69,37 +67,40 @@ public class DirectoryArchiver
 
         try
         {
-            while( iter.hasNext() )
+            while ( iter.hasNext() )
             {
-                ArchiveEntry f = iter.next();
+                final ArchiveEntry f = iter.next();
                 // Check if we don't add directory file in itself
                 if ( ResourceUtils.isSame( f.getResource(), destDirectory ) )
                 {
                     throw new ArchiverException( "The destination directory cannot include itself." );
                 }
                 String fileName = f.getName();
-                String destDir = destDirectory.getCanonicalPath();
+                final String destDir = destDirectory.getCanonicalPath();
                 fileName = destDir + File.separator + fileName;
                 copyFile( f, fileName );
             }
         }
-        catch ( IOException ioe )
+        catch ( final IOException ioe )
         {
-            String message = "Problem copying files : " + ioe.getMessage();
+            final String message = "Problem copying files : " + ioe.getMessage();
             throw new ArchiverException( message, ioe );
         }
     }
 
     /**
-     * Copies the specified file to the specified path, creating any ancestor directory
-     * structure as necessary.
-     *
-     * @param file  The file to copy (IOException will be thrown if this does not exist)
-     * @param vPath The fully qualified path to copy the file to.
-     * @throws ArchiverException If there is a problem creating the directory structure
-     * @throws IOException       If there is a problem copying the file
+     * Copies the specified file to the specified path, creating any ancestor directory structure as necessary.
+     * 
+     * @param file
+     *            The file to copy (IOException will be thrown if this does not exist)
+     * @param vPath
+     *            The fully qualified path to copy the file to.
+     * @throws ArchiverException
+     *             If there is a problem creating the directory structure
+     * @throws IOException
+     *             If there is a problem copying the file
      */
-    protected void copyFile( ArchiveEntry entry, String vPath )
+    protected void copyFile( final ArchiveEntry entry, final String vPath )
         throws ArchiverException, IOException
     {
         // don't add "" to the archive
@@ -108,48 +109,54 @@ public class DirectoryArchiver
             return;
         }
 
-        PlexusIoResource in = entry.getResource();
-        File outFile = new File( vPath );
-        
+        final PlexusIoResource in = entry.getResource();
+        final File outFile = new File( vPath );
+
         final long inLastModified = in.getLastModified();
-        long outLastModified = outFile.lastModified();
+        final long outLastModified = outFile.lastModified();
         if ( ResourceUtils.isUptodate( inLastModified, outLastModified ) )
         {
             return;
         }
-        
-        outFile.setLastModified( inLastModified == PlexusIoResource.UNKNOWN_MODIFICATION_DATE
-                                 ? System.currentTimeMillis() : inLastModified );
 
-        if ( ! in.isDirectory() )
+        outFile.setLastModified( inLastModified == PlexusIoResource.UNKNOWN_MODIFICATION_DATE ? System.currentTimeMillis()
+                        : inLastModified );
+
+        if ( !in.isDirectory() )
         {
-            if ( ! outFile.getParentFile().exists() )
+            if ( !outFile.getParentFile()
+                         .exists() )
             {
-                //create the parent directory...
-                if ( ! outFile.getParentFile().mkdirs() )
+                // create the parent directory...
+                if ( !outFile.getParentFile()
+                             .mkdirs() )
                 {
-                    //Failure, unable to create specified directory for some unknown reason.
+                    // Failure, unable to create specified directory for some unknown reason.
                     throw new ArchiverException( "Unable to create directory or parent directory of " + outFile );
                 }
             }
             ResourceUtils.copyFile( in, outFile );
-            ArchiveEntryUtils.chmod( outFile, entry.getMode(), getLogger(), isUseJvmChmod() );
+
+            if ( !isIgnorePermissions() )
+            {
+                ArchiveEntryUtils.chmod( outFile, entry.getMode(), getLogger(), isUseJvmChmod() );
+            }
         }
         else
-        { //file is a directory
+        { // file is a directory
             if ( outFile.exists() )
             {
-                if ( ! outFile.isDirectory() )
+                if ( !outFile.isDirectory() )
                 {
-                    //should we just delete the file and replace it with a directory?
-                    //throw an exception, let the user delete the file manually.
-                    throw new ArchiverException(
-                        "Expected directory and found file at copy destination of " + in.getName() + " to " + outFile );
+                    // should we just delete the file and replace it with a directory?
+                    // throw an exception, let the user delete the file manually.
+                    throw new ArchiverException( "Expected directory and found file at copy destination of "
+                                    + in.getName() + " to " + outFile );
                 }
             }
-            else if ( ! outFile.mkdirs() )
+            else if ( !outFile.mkdirs() )
             {
-                //Failure, unable to create specified directory for some unknown reason.
+                // Failure, unable to create specified directory for some unknown reason.
                 throw new ArchiverException( "Unable to create directory or parent directory of " + outFile );
             }
         }

@@ -17,14 +17,14 @@ package org.codehaus.plexus.archiver;
  *  limitations under the License.
  */
 
+import org.codehaus.plexus.components.io.resources.PlexusIoResource;
+import org.codehaus.plexus.components.io.resources.PlexusIoResourceCollection;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
-import org.codehaus.plexus.components.io.resources.PlexusIoResource;
-import org.codehaus.plexus.components.io.resources.PlexusIoResourceCollection;
 
 /**
  * @version $Revision$ $Date$
@@ -40,7 +40,7 @@ public interface Archiver
      * Default value for the filemode attribute.
      */
     int DEFAULT_FILE_MODE = UnixStat.FILE_FLAG | UnixStat.DEFAULT_FILE_PERM;
-    
+
     String ROLE = Archiver.class.getName();
 
     public static final String DUPLICATES_ADD = "add";
@@ -50,7 +50,7 @@ public interface Archiver
     public static final String DUPLICATES_SKIP = "skip";
 
     public static final String DUPLICATES_FAIL = "fail";
-    
+
     public static final Set DUPLICATES_VALID_BEHAVIORS = new HashSet()
     {
         private static final long serialVersionUID = 1L;
@@ -62,7 +62,7 @@ public interface Archiver
             add( DUPLICATES_FAIL );
         }
     };
-    
+
     void createArchive()
         throws ArchiverException, IOException;
 
@@ -91,15 +91,17 @@ public interface Archiver
         throws ArchiverException;
 
     /**
-     * Adds the given file set to the archive.
-     * This method is basically obsoleting {@link #addDirectory(File)},
-     * {@link #addDirectory(File, String)}, {@link #addDirectory(File, String[], String[])},
-     * and {@link #addDirectory(File, String, String[], String[])}. However, as these
-     * methods are in widespread use, they cannot easily be made deprecated.
-     * @throws ArchiverException Adding the file set failed.
+     * Adds the given file set to the archive. This method is basically obsoleting {@link #addDirectory(File)},
+     * {@link #addDirectory(File, String)}, {@link #addDirectory(File, String[], String[])}, and
+     * {@link #addDirectory(File, String, String[], String[])}. However, as these methods are in widespread use, they
+     * cannot easily be made deprecated.
+     * 
+     * @throws ArchiverException
+     *             Adding the file set failed.
      * @since 1.0-alpha-9
      */
-    void addFileSet( FileSet fileSet ) throws ArchiverException;
+    void addFileSet( FileSet fileSet )
+        throws ArchiverException;
 
     void addFile( File inputFile, String destFileName )
         throws ArchiverException;
@@ -120,12 +122,11 @@ public interface Archiver
         throws ArchiverException;
 
     /**
-     * Adds the given archive file set to the archive.
-     * This method is basically obsoleting {@link #addArchivedFileSet(File)},
-     * {@link #addArchivedFileSet(File, String[], String[])}, and
-     * {@link #addArchivedFileSet(File, String, String[], String[])}.
-     * However, as these methods are in widespread use, they cannot easily
-     * be made deprecated.
+     * Adds the given archive file set to the archive. This method is basically obsoleting
+     * {@link #addArchivedFileSet(File)}, {@link #addArchivedFileSet(File, String[], String[])}, and
+     * {@link #addArchivedFileSet(File, String, String[], String[])}. However, as these methods are in widespread use,
+     * they cannot easily be made deprecated.
+     * 
      * @since 1.0-alpha-9
      */
     void addArchivedFileSet( ArchivedFileSet fileSet )
@@ -133,6 +134,7 @@ public interface Archiver
 
     /**
      * Adds the given resource collection to the archive.
+     * 
      * @since 1.0-alpha-10
      */
     void addResource( PlexusIoResource resource, String destFileName, int permissions )
@@ -140,6 +142,7 @@ public interface Archiver
 
     /**
      * Adds the given resource collection to the archive.
+     * 
      * @since 1.0-alpha-10
      */
     void addResources( PlexusIoResourceCollection resources )
@@ -148,21 +151,21 @@ public interface Archiver
     File getDestFile();
 
     void setDestFile( File destFile );
-    
+
     void setFileMode( int mode );
-    
+
     int getFileMode();
-    
+
     int getOverrideFileMode();
 
     void setDefaultFileMode( int mode );
 
     int getDefaultFileMode();
-    
+
     void setDirectoryMode( int mode );
-    
+
     int getDirectoryMode();
-    
+
     int getOverrideDirectoryMode();
 
     void setDefaultDirectoryMode( int mode );
@@ -176,67 +179,67 @@ public interface Archiver
     void setDotFileDirectory( File dotFileDirectory );
 
     /**
-     * Returns an iterator over instances of {@link ArchiveEntry},
-     * which have previously been added by calls to
-     * {@link #addResources(PlexusIoResourceCollection)},
-     *  {@link #addResource(PlexusIoResource, String, int)},
-     *  {@link #addFileSet(FileSet)}, etc.
+     * Returns an iterator over instances of {@link ArchiveEntry}, which have previously been added by calls to
+     * {@link #addResources(PlexusIoResourceCollection)}, {@link #addResource(PlexusIoResource, String, int)},
+     * {@link #addFileSet(FileSet)}, etc.
+     * 
      * @since 1.0-alpha-10
      */
-    ResourceIterator getResources() throws ArchiverException;
-    
+    ResourceIterator getResources()
+        throws ArchiverException;
+
     /**
      * @deprecated Use {@link #getResources()}
      */
     Map getFiles();
 
     /**
-     * <p>Returns, whether recreating the archive is forced (default). Setting
-     * this option to false means, that the archiver should compare the
-     * timestamps of included files with the timestamp of the target archive
-     * and rebuild the archive only, if the latter timestamp precedes the
-     * former timestamps. Checking for timestamps will typically offer a
-     * performance gain (in particular, if the following steps in a build
-     * can be suppressed, if an archive isn't recrated) on the cost that
-     * you get inaccurate results from time to time. In particular, removal
-     * of source files won't be detected.</p>
-     * <p>An archiver doesn't necessarily support checks for uptodate. If
-     * so, setting this option to true will simply be ignored. The method
-     * {@link #isSupportingForced()} may be called to check whether an
-     * archiver does support uptodate checks.</p>
-     * @return True, if the target archive should always be created; false
-     *   otherwise
+     * <p>
+     * Returns, whether recreating the archive is forced (default). Setting this option to false means, that the
+     * archiver should compare the timestamps of included files with the timestamp of the target archive and rebuild the
+     * archive only, if the latter timestamp precedes the former timestamps. Checking for timestamps will typically
+     * offer a performance gain (in particular, if the following steps in a build can be suppressed, if an archive isn't
+     * recrated) on the cost that you get inaccurate results from time to time. In particular, removal of source files
+     * won't be detected.
+     * </p>
+     * <p>
+     * An archiver doesn't necessarily support checks for uptodate. If so, setting this option to true will simply be
+     * ignored. The method {@link #isSupportingForced()} may be called to check whether an archiver does support
+     * uptodate checks.
+     * </p>
+     * 
+     * @return True, if the target archive should always be created; false otherwise
      * @see #setForced(boolean)
      * @see #isSupportingForced()
      */
     boolean isForced();
 
     /**
-     * <p>Sets, whether recreating the archive is forced (default). Setting
-     * this option to false means, that the archiver should compare the
-     * timestamps of included files with the timestamp of the target archive
-     * and rebuild the archive only, if the latter timestamp precedes the
-     * former timestamps. Checking for timestamps will typically offer a
-     * performance gain (in particular, if the following steps in a build
-     * can be suppressed, if an archive isn't recrated) on the cost that
-     * you get inaccurate results from time to time. In particular, removal
-     * of source files won't be detected.</p>
-     * <p>An archiver doesn't necessarily support checks for uptodate. If
-     * so, setting this option to true will simply be ignored. The method
-     * {@link #isSupportingForced()} may be called to check whether an
-     * archiver does support uptodate checks.</p>
-     * @param forced True, if the target archive should always be created; false
-     *   otherwise
+     * <p>
+     * Sets, whether recreating the archive is forced (default). Setting this option to false means, that the archiver
+     * should compare the timestamps of included files with the timestamp of the target archive and rebuild the archive
+     * only, if the latter timestamp precedes the former timestamps. Checking for timestamps will typically offer a
+     * performance gain (in particular, if the following steps in a build can be suppressed, if an archive isn't
+     * recrated) on the cost that you get inaccurate results from time to time. In particular, removal of source files
+     * won't be detected.
+     * </p>
+     * <p>
+     * An archiver doesn't necessarily support checks for uptodate. If so, setting this option to true will simply be
+     * ignored. The method {@link #isSupportingForced()} may be called to check whether an archiver does support
+     * uptodate checks.
+     * </p>
+     * 
+     * @param forced
+     *            True, if the target archive should always be created; false otherwise
      * @see #isForced()
      * @see #isSupportingForced()
      */
     void setForced( boolean forced );
 
     /**
-     * Returns, whether the archive supports uptodate checks. If so, you
-     * may set {@link #setForced(boolean)} to true.
-     * @return True, if the archiver does support uptodate checks, false
-     *   otherwise
+     * Returns, whether the archive supports uptodate checks. If so, you may set {@link #setForced(boolean)} to true.
+     * 
+     * @return True, if the archiver does support uptodate checks, false otherwise
      * @see #setForced(boolean)
      * @see #isForced()
      */
@@ -259,18 +262,28 @@ public interface Archiver
      * {@link Archiver#DUPLICATES_FAIL}.
      */
     void setDuplicateBehavior( String duplicate );
-    
+
     /**
-     * to use or not the jvm method for file permissions : user all
-     * <b>not active for group permissions</b>
+     * to use or not the jvm method for file permissions : user all <b>not active for group permissions</b>
+     * 
      * @since 1.1
      * @param useJvmChmod
      */
     void setUseJvmChmod( boolean useJvmChmod );
-    
+
     /**
      * @since 1.1
      * @return
      */
     boolean isUseJvmChmod();
+
+    /**
+     * @since 1.1
+     */
+    boolean isIgnorePermissions();
+
+    /**
+     * @since 1.1
+     */
+    void setIgnorePermissions( final boolean ignorePermissions );
 }

@@ -17,17 +17,17 @@ package org.codehaus.plexus.archiver;
  *  limitations under the License.
  */
 
+import org.codehaus.plexus.archiver.util.FilterSupport;
+import org.codehaus.plexus.components.io.fileselectors.FileSelector;
+import org.codehaus.plexus.components.io.resources.PlexusIoResource;
+import org.codehaus.plexus.logging.AbstractLogEnabled;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import org.codehaus.plexus.archiver.util.FilterSupport;
-import org.codehaus.plexus.components.io.fileselectors.FileSelector;
-import org.codehaus.plexus.components.io.resources.PlexusIoResource;
-import org.codehaus.plexus.logging.AbstractLogEnabled;
 
 /**
  * @author <a href="mailto:evenisse@codehaus.org">Emmanuel Venisse</a>
@@ -51,18 +51,23 @@ public abstract class AbstractUnArchiver
     private List finalizers;
 
     private FileSelector[] fileSelectors;
-    
+
     /**
      * @since 1.1
      */
     private boolean useJvmChmod = false;
+
+    /**
+     * @since 1.1
+     */
+    private boolean ignorePermissions = false;
 
     public AbstractUnArchiver()
     {
         // no op
     }
 
-    public AbstractUnArchiver( File sourceFile )
+    public AbstractUnArchiver( final File sourceFile )
     {
         this.sourceFile = sourceFile;
     }
@@ -72,7 +77,7 @@ public abstract class AbstractUnArchiver
         return destDirectory;
     }
 
-    public void setDestDirectory( File destDirectory )
+    public void setDestDirectory( final File destDirectory )
     {
         this.destDirectory = destDirectory;
     }
@@ -82,7 +87,7 @@ public abstract class AbstractUnArchiver
         return destFile;
     }
 
-    public void setDestFile( File destFile )
+    public void setDestFile( final File destFile )
     {
         this.destFile = destFile;
     }
@@ -92,7 +97,7 @@ public abstract class AbstractUnArchiver
         return sourceFile;
     }
 
-    public void setSourceFile( File sourceFile )
+    public void setSourceFile( final File sourceFile )
     {
         this.sourceFile = sourceFile;
     }
@@ -102,7 +107,7 @@ public abstract class AbstractUnArchiver
         return overwrite;
     }
 
-    public void setOverwrite( boolean b )
+    public void setOverwrite( final boolean b )
     {
         overwrite = b;
     }
@@ -115,7 +120,7 @@ public abstract class AbstractUnArchiver
         runArchiveFinalizers();
     }
 
-    public final void extract( String path, File outputDirectory )
+    public final void extract( final String path, final File outputDirectory )
         throws ArchiverException
     {
         validate( path, outputDirectory );
@@ -123,12 +128,12 @@ public abstract class AbstractUnArchiver
         runArchiveFinalizers();
     }
 
-    public void setArchiveFilters( List filters )
+    public void setArchiveFilters( final List filters )
     {
         filterSupport = new FilterSupport( filters, getLogger() );
     }
 
-    public void addArchiveFinalizer( ArchiveFinalizer finalizer )
+    public void addArchiveFinalizer( final ArchiveFinalizer finalizer )
     {
         if ( finalizers == null )
         {
@@ -136,11 +141,11 @@ public abstract class AbstractUnArchiver
         }
 
         finalizers.add( finalizer );
-    }    
+    }
 
-    public void setArchiveFinalizers( List archiveFinalizers )
+    public void setArchiveFinalizers( final List archiveFinalizers )
     {
-        this.finalizers = archiveFinalizers;
+        finalizers = archiveFinalizers;
     }
 
     private final void runArchiveFinalizers()
@@ -148,22 +153,22 @@ public abstract class AbstractUnArchiver
     {
         if ( finalizers != null )
         {
-            for ( Iterator it = finalizers.iterator(); it.hasNext(); )
+            for ( final Iterator it = finalizers.iterator(); it.hasNext(); )
             {
-                ArchiveFinalizer finalizer = (ArchiveFinalizer) it.next();
+                final ArchiveFinalizer finalizer = (ArchiveFinalizer) it.next();
 
                 finalizer.finalizeArchiveExtraction( this );
             }
         }
     }
 
-    protected boolean include( InputStream inputStream, String name )
+    protected boolean include( final InputStream inputStream, final String name )
         throws ArchiveFilterException
     {
         return filterSupport == null || filterSupport.include( inputStream, name );
     }
 
-    protected void validate( String path, File outputDirectory )
+    protected void validate( final String path, final File outputDirectory )
     {
     }
 
@@ -208,35 +213,34 @@ public abstract class AbstractUnArchiver
         }
     }
 
-    public void setFileSelectors( FileSelector[] fileSelectors )
+    public void setFileSelectors( final FileSelector[] fileSelectors )
     {
         this.fileSelectors = fileSelectors;
     }
 
-    public FileSelector[] getFileSelectors( )
+    public FileSelector[] getFileSelectors()
     {
         return fileSelectors;
     }
 
-    protected boolean isSelected( String fileName, PlexusIoResource fileInfo )
-            throws ArchiverException
+    protected boolean isSelected( final String fileName, final PlexusIoResource fileInfo )
+        throws ArchiverException
     {
         if ( fileSelectors != null )
         {
-            for ( int i = 0;  i < fileSelectors.length;  i++ )
+            for ( int i = 0; i < fileSelectors.length; i++ )
             {
-                try {
+                try
+                {
                     if ( !fileSelectors[i].isSelected( fileInfo ) )
                     {
                         return false;
                     }
                 }
-                catch ( IOException e )
+                catch ( final IOException e )
                 {
-                    throw new ArchiverException( "Failed to check, whether "
-                                                 + fileInfo.getName()
-                                                 + " is selected: "
-                                                 + e.getMessage(), e );
+                    throw new ArchiverException( "Failed to check, whether " + fileInfo.getName() + " is selected: "
+                                    + e.getMessage(), e );
                 }
             }
         }
@@ -249,14 +253,36 @@ public abstract class AbstractUnArchiver
     protected abstract void execute( String path, File outputDirectory )
         throws ArchiverException;
 
+    /**
+     * @since 1.1
+     */
     public boolean isUseJvmChmod()
     {
         return useJvmChmod;
     }
 
-    public void setUseJvmChmod( boolean useJvmChmod )
+    /**
+     * @since 1.1
+     */
+    public void setUseJvmChmod( final boolean useJvmChmod )
     {
         this.useJvmChmod = useJvmChmod;
+    }
+
+    /**
+     * @since 1.1
+     */
+    public boolean isIgnorePermissions()
+    {
+        return ignorePermissions;
+    }
+
+    /**
+     * @since 1.1
+     */
+    public void setIgnorePermissions( final boolean ignorePermissions )
+    {
+        this.ignorePermissions = ignorePermissions;
     }
 
 }

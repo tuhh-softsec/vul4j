@@ -17,9 +17,9 @@ package org.codehaus.plexus.archiver;
  *  limitations under the License.
  */
 
-import java.io.File;
-
 import org.codehaus.plexus.components.io.fileselectors.FileSelector;
+
+import java.io.File;
 
 /**
  * @version $Revision$ $Date$
@@ -30,7 +30,7 @@ public interface UnArchiver
 
     /**
      * Extract the archive.
-     *
+     * 
      * @throws ArchiverException
      */
     void extract()
@@ -38,9 +38,11 @@ public interface UnArchiver
 
     /**
      * Take a patch into the archive and extract it to the specified directory.
-     *
-     * @param path Path inside the archive to be extracted.
-     * @param outputDirectory Directory to extract to.
+     * 
+     * @param path
+     *            Path inside the archive to be extracted.
+     * @param outputDirectory
+     *            Directory to extract to.
      * @throws ArchiverException
      */
     void extract( String path, File outputDirectory )
@@ -50,7 +52,7 @@ public interface UnArchiver
 
     void setDestDirectory( File destDirectory );
 
-    //todo What is this? If you're extracting isn't it always to a directory. I think it would be cool to extract an
+    // todo What is this? If you're extracting isn't it always to a directory. I think it would be cool to extract an
     // archive to another archive but I don't think we support this right now.
     File getDestFile();
 
@@ -61,38 +63,43 @@ public interface UnArchiver
     void setSourceFile( File sourceFile );
 
     /**
-     * Should we overwrite files in dest, even if they are newer than
-     * the corresponding entries in the archive?
+     * Should we overwrite files in dest, even if they are newer than the corresponding entries in the archive?
      */
     void setOverwrite( boolean b );
 
     /**
-     * Sets a set of {@link FileSelector} instances, which may be used to
-     * select the files to extract from the archive. If file selectors
-     * are present, then a file is only extracted, if it is confirmed
-     * by all file selectors.
+     * Sets a set of {@link FileSelector} instances, which may be used to select the files to extract from the archive.
+     * If file selectors are present, then a file is only extracted, if it is confirmed by all file selectors.
      */
     void setFileSelectors( FileSelector[] selectors );
 
     /**
-     * Returns a set of {@link FileSelector} instances, which may be used to
-     * select the files to extract from the archive. If file selectors
-     * are present, then a file is only extracted, if it is confirmed
-     * by all file selectors.
+     * Returns a set of {@link FileSelector} instances, which may be used to select the files to extract from the
+     * archive. If file selectors are present, then a file is only extracted, if it is confirmed by all file selectors.
      */
-    FileSelector[] getFileSelectors( );
-    
+    FileSelector[] getFileSelectors();
+
     /**
-     * to use or not the jvm method for file permissions : user all
-     * <b>not active for group permissions</b>
+     * to use or not the jvm method for file permissions : user all <b>not active for group permissions</b>
+     * 
      * @since 1.1
      * @param useJvmChmod
      */
     void setUseJvmChmod( boolean useJvmChmod );
-    
+
     /**
      * @since 1.1
      * @return
      */
-    boolean isUseJvmChmod();    
+    boolean isUseJvmChmod();
+
+    /**
+     * @since 1.1
+     */
+    boolean isIgnorePermissions();
+
+    /**
+     * @since 1.1
+     */
+    void setIgnorePermissions( final boolean ignorePermissions );
 }
