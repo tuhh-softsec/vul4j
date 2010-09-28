@@ -56,7 +56,6 @@ import org.apache.directory.ldap.client.api.future.ModifyDnFuture;
 import org.apache.directory.ldap.client.api.future.ModifyFuture;
 import org.apache.directory.ldap.client.api.future.ResponseFuture;
 import org.apache.directory.ldap.client.api.future.SearchFuture;
-import org.apache.directory.ldap.client.api.listener.DeleteListener;
 import org.apache.directory.ldap.client.api.protocol.LdapProtocolCodecFactory;
 import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.codec.DecoderException;
@@ -2476,10 +2475,9 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
      *
      * @param dn the DN which will be removed after removing its children
      * @param map a map to hold the Cursor related to a DN
-     * @param listener  the delete operation response listener
      * @throws LdapException If the DN is not valid or if the deletion failed
      */
-    private DeleteResponse deleteRecursive( DN dn, Map<DN, Cursor<Response>> cursorMap, DeleteListener listener )
+    private DeleteResponse deleteRecursive( DN dn, Map<DN, Cursor<Response>> cursorMap )
         throws LdapException
     {
         LOG.debug( "searching for {}", dn.getName() );
@@ -2520,7 +2518,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
                     if ( searchResp instanceof SearchResultEntry )
                     {
                         SearchResultEntry searchResult = ( SearchResultEntry ) searchResp;
-                        deleteRecursive( searchResult.getEntry().getDn(), cursorMap, listener );
+                        deleteRecursive( searchResult.getEntry().getDn(), cursorMap );
                     }
                 }
                 while ( cursor.next() );
