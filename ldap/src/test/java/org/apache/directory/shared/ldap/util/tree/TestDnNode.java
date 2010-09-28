@@ -25,6 +25,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.List;
 import java.util.Map;
 
 import org.apache.directory.junit.tools.Concurrent;
@@ -748,5 +749,57 @@ public class TestDnNode
         assertEquals( 1, dnLookupTree.size() );
         assertFalse( dnLookupTree.hasParent( new DN( "dc=nothing,dc=empty" ) ) );
         assertFalse( dnLookupTree.hasParent( new DN(  "dc=directory,dc=apache,dc=root" ) ) );
+    }
+    
+    
+    //---------------------------------------------------------------------------
+    // Test the hasParentElement(DN) method
+    //---------------------------------------------------------------------------
+    @Test
+    public void testHasParentElement() throws Exception
+    {
+        DnNode<DN> dnLookupTree = new DnNode<DN>();
+        DN dn1 = new DN( "dc=directory,dc=apache,dc=org" );
+        DN dn2 = new DN( "dc=mina,dc=apache,dc=org" );
+        DN dn3 = new DN( "dc=test,dc=com" );
+        DN dn4 = new DN( "dc=acme,dc=com" );
+        DN dn5 = new DN( "dc=acme,c=us,dc=com" );
+        DN dn6 = new DN( "dc=empty" );
+        
+        DN org = new DN( "dc=org" );
+    
+        dnLookupTree.add( dn1, dn1 );
+        dnLookupTree.add( dn2, dn2 );
+        dnLookupTree.add( dn3, dn3 );
+        dnLookupTree.add( dn4, dn4 );
+        dnLookupTree.add( dn5 );
+        dnLookupTree.add( dn6, dn6 );
+        
+        // Inject some intermediary nodes
+        dnLookupTree.add( org, org );
+        
+        assertTrue( dnLookupTree.hasParentElement( new DN( "dc=apache,dc=org" ) ) );
+        
+        // Check that org has at least one descendant containing an element
+        assertTrue( dnLookupTree.hasDescendantElement( org ) );
+        
+        // check that for one node which has no children with any element, we get false
+        assertFalse( dnLookupTree.hasDescendantElement( new DN( "c=us,dc=com" ) ) );
+        
+        // Check that we correctly get back all the children
+        DN dn7 = new DN( "dc=elem,dc=mina,dc=apache,dc=org" );
+        dnLookupTree.add( dn7, dn7 );
+        
+        // With dc=org, we should get back dn1 and dn3
+        List<DN> dns = dnLookupTree.getDescendantElements( org );
+        
+        assertNotNull( dns );
+        assertEquals( 2, dns.size() );
+        assertTrue( dns.contains( dn1 ) );
+        assertTrue( dns.contains( dn2 ) );
+        
+        // Same, with a node not having any descendants
+        dns = dnLookupTree.getDescendantElements( dn6 );
+        assertEquals( 0, dns.size() );
     }
 }

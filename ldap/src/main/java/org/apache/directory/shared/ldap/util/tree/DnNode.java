@@ -19,6 +19,7 @@
  */
 package org.apache.directory.shared.ldap.util.tree;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -35,7 +36,7 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * An class for nodes in a tree designed to quickly lookup hierarchical DN.
+ * An class storing nodes in a tree designed to map DNs.<br/>
  * Branch nodes in this tree refers to child nodes. Leaf nodes in the tree
  * don't have any children. <br/>
  * A node may contain a reference to an object whose suffix is the path through the
@@ -128,7 +129,19 @@ public class DnNode<N> implements Cloneable
         return rootNode;
     }
 
-
+    
+    /**
+     * Store the given element into the node
+     */
+    private void setElement( N element )
+    {
+        this.element = element;
+    }
+    
+    
+    //-------------------------------------------------------------------------
+    // Constructors
+    //-------------------------------------------------------------------------
     /**
      * Creates a new instance of DnNode.
      */
@@ -268,7 +281,7 @@ public class DnNode<N> implements Cloneable
         return node.element;
     }
 
-
+    
     /**
      * @return True if the Node stores an element. BranchNode may not hold any
      * element.
@@ -294,6 +307,130 @@ public class DnNode<N> implements Cloneable
         }
 
         return node.element != null;
+    }
+
+    
+    /**
+     * recursively check if the node has a descendant having an element
+     */
+    private boolean hasDescendantElement( DnNode<N> node )
+    {
+        if ( node == null )
+        {
+            return false;
+        }
+        
+        if ( node.hasElement() )
+        {
+            return true;
+        }
+        
+        for ( DnNode<N> child : node.getChildren().values() )
+        {
+            if ( hasDescendantElement( child ) )
+            {
+                return true;
+            }
+        }
+
+        // Nothing found ...
+        return false;
+    }
+
+    
+    /**
+     * @return True if one of the node below the current node has one element, 
+     * False otherwise
+     * @param dn The DN we want to get the element for
+     */
+    public boolean hasDescendantElement( DN dn )
+    {
+        DnNode<N> node = getNode( dn );
+
+        if ( node == null )
+        {
+            return false;
+        }
+        
+        // We must be at the right place in the tree
+        if ( node.getDn().size() != dn.size() )
+        {
+            return false;
+        }
+
+        if ( node.hasChildren() )
+        {
+            for ( DnNode<N> child : node.getChildren().values() )
+            {
+                if ( hasDescendantElement( child ) )
+                {
+                    return true;
+                }
+            }
+        }
+        
+        return false;
+    }
+
+    
+    /**
+     * recursively get all the elements from nodes havig an element
+     */
+    private void getDescendantElements( DnNode<N> node, List<N> descendants )
+    {
+        if ( node == null )
+        {
+            return;
+        }
+        
+        if ( node.hasElement() )
+        {
+            descendants.add( node.getElement() );
+            
+            // Stop here
+            return;
+        }
+        
+        for ( DnNode<N> child : node.getChildren().values() )
+        {
+            getDescendantElements( child, descendants );
+        }
+
+        return;
+    }
+
+    
+    /**
+     * @return True if one of the node below the current node has one element, 
+     * False otherwise
+     * @param dn The DN we want to get the element for
+     */
+    public List<N> getDescendantElements( DN dn )
+    {
+        List<N> descendants = new ArrayList<N>();
+        
+        DnNode<N> node = getNode( dn );
+
+        if ( node == null )
+        {
+            return descendants;
+        }
+        
+        // We must be at the right place in the tree
+        if ( node.getDn().size() != dn.size() )
+        {
+            return descendants;
+        }
+
+        if ( node.hasChildren() )
+        {
+            for ( DnNode<N> child : node.getChildren().values() )
+            {
+                getDescendantElements( child, descendants );
+            }
+        }
+        
+        return descendants;
     }
 
 
@@ -438,17 +575,34 @@ public class DnNode<N> implements Cloneable
 
             if ( nbRdns == 0 )
             {
-                // That means the added DN is already present.
-                String message = "Cannot add a node with a DN already existing in the tree";
-                LOG.error( message );
-                throw new LdapUnwillingToPerformException( ResultCodeEnum.UNWILLING_TO_PERFORM, message );
+                // That means the added DN is already present. Check if it already has an element
+                if ( parent.hasElement() )
+                {
+                    String message = "Cannot add a node to a node already having an element";
+                    LOG.error( message );
+                    throw new LdapUnwillingToPerformException( ResultCodeEnum.UNWILLING_TO_PERFORM, message );
+                }
+                // We may try to add twice the same DN, without any element
+                else if ( element == null )
+                {
+                    String message = "Cannot add a node with no element if it already exists";
+                    LOG.error( message );
+                    throw new LdapUnwillingToPerformException( ResultCodeEnum.UNWILLING_TO_PERFORM, message );
+                }
+                // All is fine : we are just injecting some data into an existing node
+                else
+                {
+                    parent.setElement( element );
+                }
             }
-
-            DnNode<N> rootNode = createNode( dn, element, nbRdns );
-
-            // done. now, add the newly created tree to the parent node
-            rootNode.parent = parent;
-            parent.children.put( rootNode.rdn, rootNode );
+            else
+            {
+                DnNode<N> rootNode = createNode( dn, element, nbRdns );
+    
+                // done. now, add the newly created tree to the parent node
+                rootNode.parent = parent;
+                parent.children.put( rootNode.rdn, rootNode );
+            }
         }
     }
 
@@ -536,56 +690,6 @@ public class DnNode<N> implements Cloneable
 
 
     /**
-     * Get the parent element of a given DN, if present in the tree. This parent should be a
-     * subset of the given dn.<br>
-     * For instance, if we have stored dc=acme, dc=org into the tree,
-     * the DN: ou=example, dc=acme, dc=org will have a parent, and
-     * dc=acme, dc=org will be returned.
-     * <br>For the DN ou=apache, dc=org, there is no parent, so null will be returned.
-     *
-     * @param dn the normalized distinguished name to resolve to a parent
-     * @return the parent associated with the normalized dn
-     *
-    public N getParentElement( DN dn )
-    {
-        List<RDN> rdns = dn.getRdns();
-
-        DnNode<N> currentNode = this;
-        DnNode<N> parent = null;
-
-        // Iterate through all the RDN until we find the associated partition
-        for ( int i = rdns.size() - 1; i >= 0; i-- )
-        {
-            if ( currentNode == null )
-            {
-                // We can stop here : there is no more node in the tree
-                break;
-            }
-
-            RDN rdn = rdns.get( i );
-
-            if ( currentNode.rdn.equals( rdn ) )
-            {
-                parent = currentNode;
-                currentNode = children.get( rdn );
-                continue;
-            }
-
-            break;
-        }
-
-        if ( parent != null )
-        {
-            return parent.getElement();
-        }
-        else
-        {
-            return null;
-        }
-    }
-
-
-    /**
      * Get the Node for a given DN, if present in the tree.<br>
      * For instance, if we have stored dc=acme, dc=org into the tree,
      * the DN: ou=example, dc=acme, dc=org will have a parent, and
@@ -601,23 +705,25 @@ public class DnNode<N> implements Cloneable
 
         DnNode<N> currentNode = this;
         DnNode<N> parent = null;
+        boolean hasAP = false;
 
         // Iterate through all the RDN until we find the associated partition
         for ( int i = rdns.size() - 1; i >= 0; i-- )
         {
             RDN rdn = rdns.get( i );
 
-            if ( rdn.equals( currentNode.rdn ) )
-            {
-                parent = currentNode;
-            }
-            else if ( currentNode.hasChildren() )
+            if ( currentNode.hasChildren() )
             {
                 currentNode = currentNode.children.get( rdn );
 
                 if ( currentNode == null )
                 {
                     break;
+                }
+
+                if ( currentNode.hasElement() )
+                {
+                    hasAP = true;
                 }
 
                 parent = currentNode;
@@ -628,17 +734,58 @@ public class DnNode<N> implements Cloneable
             }
         }
 
-        if ( parent != null )
-        {
-            return parent;
-        }
-        else
-        {
-            return null;
-        }
+        return parent;
     }
 
 
+    /**
+     * Get the closest Node for a given DN which has an element, if present in the tree.<br>
+     * For instance, if we have stored dc=acme, dc=org into the tree,
+     * the DN: ou=example, dc=acme, dc=org will have a parent, and
+     * dc=acme, dc=org will be returned if it has an associated element.
+     * <br>For the DN ou=apache, dc=org, there is no parent, so null will be returned.
+     *
+     * @param dn the normalized distinguished name to resolve to a parent
+     * @return the Node associated with the normalized dn
+     */
+    public boolean hasParentElement( DN dn )
+    {
+        List<RDN> rdns = dn.getRdns();
+
+        DnNode<N> currentNode = this;
+        boolean hasElement = false;
+
+        // Iterate through all the RDN until we find the associated partition
+        for ( int i = rdns.size() - 1; i >= 0; i-- )
+        {
+            RDN rdn = rdns.get( i );
+
+            if ( currentNode.hasChildren() )
+            {
+                currentNode = currentNode.children.get( rdn );
+
+                if ( currentNode == null )
+                {
+                    break;
+                }
+
+                if ( currentNode.hasElement() )
+                {
+                    hasElement = true;
+                }
+
+                parent = currentNode;
+            }
+            else
+            {
+                break;
+            }
+        }
+
+        return hasElement;
+    }
+
+    
     /**
      * {@inheritDoc}
      */
