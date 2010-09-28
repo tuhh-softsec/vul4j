@@ -67,8 +67,6 @@ public final class ArchiveEntryUtils
             Commandline commandline = new Commandline();
 
             commandline.setWorkingDirectory( file.getParentFile().getAbsolutePath() );
-
-            logger.info( "mode " + mode + ", chmod " + m );
             
             commandline.setExecutable( "chmod" );
 
@@ -117,7 +115,7 @@ public final class ArchiveEntryUtils
      * @param logger
      * @throws ArchiverException
      */
-    private static void chmod( File file, int mode, Logger logger )
+    public static void chmod( File file, int mode, Logger logger )
         throws ArchiverException
     {
         chmod( file, mode, logger, Boolean.getBoolean( "useJvmChmod" ) && jvmFilePermAvailable );
