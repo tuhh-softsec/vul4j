@@ -36,10 +36,9 @@ import org.apache.directory.shared.ldap.message.ModifyDnResponse;
 public class ModifyDnFuture extends ResponseFuture<ModifyDnResponse>
 {
     /**
-     * 
      * Creates a new instance of ModifyDnFuture.
      *
-     * @param connection The LdapConnection
+     * @param connection the LDAP connection
      * @param messageId The associated messageId
      */
     public ModifyDnFuture( LdapConnection connection, int messageId )
@@ -51,7 +50,9 @@ public class ModifyDnFuture extends ResponseFuture<ModifyDnResponse>
     /**
      * Get the ModifyDnResponse, blocking until one is received.
      * 
-     * @return The ModifyDnResponse
+     * @return the modify DN response
+     * @throws InterruptedException {@inheritDoc}
+     * @throws ExecutionException {@inheritDoc}
      */
     public ModifyDnResponse get() throws InterruptedException, ExecutionException
     {
@@ -63,9 +64,12 @@ public class ModifyDnFuture extends ResponseFuture<ModifyDnResponse>
      * Get the ModifyDnResponse, blocking until one is received, or until the
      * given timeout is reached.
      * 
-     * @param timeout Number of TimeUnit to wait
-     * @param unit The TimeUnit
-     * @return The ModifyDnResponse The ModifyDnResponse found
+     * @param timeout {@inheritDoc}
+     * @param unit {@inheritDoc}
+     * @return the modify DN response
+     * @throws InterruptedException {@inheritDoc}
+     * @throws ExecutionException {@inheritDoc}
+     * @throws TimeoutException {@inheritDoc}
      */
     public ModifyDnResponse get( long timeout, TimeUnit unit ) throws InterruptedException, ExecutionException,
         TimeoutException

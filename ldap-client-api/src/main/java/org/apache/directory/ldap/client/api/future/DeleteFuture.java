@@ -29,17 +29,16 @@ import org.apache.directory.shared.ldap.message.DeleteResponse;
 
 
 /**
- * A Future to manage DelRequests
+ * A Future to manage DeleteRequests.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 public class DeleteFuture extends ResponseFuture<DeleteResponse>
 {
     /**
-     * 
-     * Creates a new instance of AddFuture.
+     * Creates a new instance of DeleteFuture.
      *
-     * @param connection The LdapConnection
+     * @param connection the LDAP connection
      * @param messageId The associated messageId
      */
     public DeleteFuture( LdapConnection connection, int messageId )
@@ -51,7 +50,9 @@ public class DeleteFuture extends ResponseFuture<DeleteResponse>
     /**
      * Get the DeleteResponse, blocking until one is received.
      * 
-     * @return The DeleteResponse
+     * @return the delete response
+     * @throws InterruptedException {@inheritDoc}
+     * @throws ExecutionException {@inheritDoc}
      */
     public DeleteResponse get() throws InterruptedException, ExecutionException
     {
@@ -63,9 +64,12 @@ public class DeleteFuture extends ResponseFuture<DeleteResponse>
      * Get the DeleteResponse, blocking until one is received, or until the
      * given timeout is reached.
      * 
-     * @param timeout Number of TimeUnit to wait
-     * @param unit The TimeUnit
-     * @return The DeleteResponse The DeleteResponse found
+     * @param timeout {@inheritDoc}
+     * @param unit {@inheritDoc}
+     * @return the delete response
+     * @throws InterruptedException {@inheritDoc}
+     * @throws ExecutionException {@inheritDoc}
+     * @throws TimeoutException {@inheritDoc}
      */
     public DeleteResponse get( long timeout, TimeUnit unit ) throws InterruptedException, ExecutionException,
         TimeoutException

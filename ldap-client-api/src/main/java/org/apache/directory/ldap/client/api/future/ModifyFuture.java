@@ -29,17 +29,16 @@ import org.apache.directory.shared.ldap.message.ModifyResponse;
 
 
 /**
- * A Future to manage ModifyRequest
+ * A Future to manage ModifyRequest.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 public class ModifyFuture extends ResponseFuture<ModifyResponse>
 {
     /**
-     * 
      * Creates a new instance of ModifyFuture.
      *
-     * @param connection The LdapConnection
+     * @param connection the LDAP connection
      * @param messageId The associated messageId
      */
     public ModifyFuture( LdapConnection connection, int messageId )
@@ -50,8 +49,10 @@ public class ModifyFuture extends ResponseFuture<ModifyResponse>
 
     /**
      * Get the ModifyResponse, blocking until one is received.
-     * 
-     * @return The ModifyResponse
+     *
+     * @return the modify response
+     * @throws InterruptedException {@inheritDoc}
+     * @throws ExecutionException {@inheritDoc}
      */
     public ModifyResponse get() throws InterruptedException, ExecutionException
     {
@@ -62,10 +63,13 @@ public class ModifyFuture extends ResponseFuture<ModifyResponse>
     /**
      * Get the ModifyResponse, blocking until one is received, or until the
      * given timeout is reached.
-     * 
-     * @param timeout Number of TimeUnit to wait
-     * @param unit The TimeUnit
-     * @return The ModifyResponse The ModifyResponse found
+     *
+     * @param timeout {@inheritDoc}
+     * @param unit {@inheritDoc}
+     * @return the modify response
+     * @throws InterruptedException {@inheritDoc}
+     * @throws ExecutionException {@inheritDoc}
+     * @throws TimeoutException {@inheritDoc}
      */
     public ModifyResponse get( long timeout, TimeUnit unit ) throws InterruptedException, ExecutionException,
         TimeoutException

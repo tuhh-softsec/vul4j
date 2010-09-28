@@ -29,16 +29,17 @@ import org.apache.directory.shared.ldap.message.Response;
 
 
 /**
- * A Future to manage ExtendedRequests
+ * A Future to manage ExtendedRequests.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 public class ExtendedFuture extends ResponseFuture<Response>
 {
     /**
-     *
      * Creates a new instance of ExtendedFuture.
      *
+     * @param connection the LDAP connection
+     * @param messageId The associated messageId
      */
     public ExtendedFuture( LdapConnection connection, int messageId )
     {
@@ -49,7 +50,9 @@ public class ExtendedFuture extends ResponseFuture<Response>
     /**
      * Get the ExtendedResponse, blocking until one is received.
      *
-     * @return The ExtendedResponse
+     * @return the extended response
+     * @throws InterruptedException {@inheritDoc}
+     * @throws ExecutionException {@inheritDoc}
      */
     public Response get() throws InterruptedException, ExecutionException
     {
@@ -61,9 +64,12 @@ public class ExtendedFuture extends ResponseFuture<Response>
      * Get the ExtendedResponse, blocking until one is received, or until the
      * given timeout is reached.
      *
-     * @param timeout Number of TimeUnit to wait
-     * @param unit The TimeUnit
-     * @return The ExtendedResponse The ExtendedResponse found
+     * @param timeout {@inheritDoc}
+     * @param unit {@inheritDoc}
+     * @return the extended response
+     * @throws InterruptedException {@inheritDoc}
+     * @throws ExecutionException {@inheritDoc}
+     * @throws TimeoutException {@inheritDoc}
      */
     public Response get( long timeout, TimeUnit unit ) throws InterruptedException, ExecutionException,
         TimeoutException

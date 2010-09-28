@@ -29,18 +29,17 @@ import org.apache.directory.shared.ldap.message.CompareResponse;
 
 
 /**
- * A Future to manage CompareRequest
+ * A Future to manage CompareRequest.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 public class CompareFuture extends ResponseFuture<CompareResponse>
 {
     /**
-     * 
      * Creates a new instance of CompareFuture.
      *
-     * @param connection The LdapConnection
-     * @param messageId The associated messageId
+     * @param connection the LDAP connection
+     * @param messageId the associated messageId
      */
     public CompareFuture( LdapConnection connection, int messageId )
     {
@@ -51,7 +50,9 @@ public class CompareFuture extends ResponseFuture<CompareResponse>
     /**
      * Get the CompareResponse, blocking until one is received.
      * 
-     * @return The CompareResponse
+     * @return the compare response
+     * @throws InterruptedException {@inheritDoc}
+     * @throws ExecutionException {@inheritDoc}
      */
     public CompareResponse get() throws InterruptedException, ExecutionException
     {
@@ -63,9 +64,12 @@ public class CompareFuture extends ResponseFuture<CompareResponse>
      * Get the CompareResponse, blocking until one is received, or until the
      * given timeout is reached.
      * 
-     * @param timeout Number of TimeUnit to wait
-     * @param unit The TimeUnit
-     * @return The CompareResponse The CompareResponse found
+     * @param timeout {@inheritDoc}
+     * @param unit {@inheritDoc}
+     * @return the compare response
+     * @throws InterruptedException {@inheritDoc}
+     * @throws ExecutionException {@inheritDoc}
+     * @throws TimeoutException {@inheritDoc}
      */
     public CompareResponse get( long timeout, TimeUnit unit ) throws InterruptedException, ExecutionException,
         TimeoutException

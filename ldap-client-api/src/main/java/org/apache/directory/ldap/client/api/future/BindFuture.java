@@ -29,18 +29,17 @@ import org.apache.directory.shared.ldap.message.BindResponse;
 
 
 /**
- * A Future to manage BindRequests
+ * A Future to manage BindRequests.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 public class BindFuture extends ResponseFuture<BindResponse>
 {
     /**
-     * 
      * Creates a new instance of BindFuture.
      *
-     * @param connection The LdapConnection
-     * @param messageId The associated messageId
+     * @param connection the LDAP connection
+     * @param messageId the associated messageId
      */
     public BindFuture( LdapConnection connection, int messageId )
     {
@@ -51,7 +50,9 @@ public class BindFuture extends ResponseFuture<BindResponse>
     /**
      * Get the BindResponse, blocking until one is received.
      * 
-     * @return The BindResponse
+     * @return the bind response
+     * @throws InterruptedException {@inheritDoc}
+     * @throws ExecutionException {@inheritDoc}
      */
     public BindResponse get() throws InterruptedException, ExecutionException
     {
@@ -63,9 +64,12 @@ public class BindFuture extends ResponseFuture<BindResponse>
      * Get the BindResponse, blocking until one is received, or until the
      * given timeout is reached.
      * 
-     * @param timeout Number of TimeUnit to wait
-     * @param unit The TimeUnit
-     * @return The BindResponse The BindResponse found
+     * @param timeout {@inheritDoc}
+     * @param unit {@inheritDoc}
+     * @return the bind response
+     * @throws InterruptedException {@inheritDoc}
+     * @throws ExecutionException {@inheritDoc}
+     * @throws TimeoutException {@inheritDoc}
      */
     public BindResponse get( long timeout, TimeUnit unit ) throws InterruptedException, ExecutionException,
         TimeoutException

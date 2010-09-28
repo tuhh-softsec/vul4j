@@ -29,17 +29,16 @@ import org.apache.directory.shared.ldap.message.AddResponse;
 
 
 /**
- * A Future to manage AddRequests
+ * A Future to manage AddRequests.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 public class AddFuture extends ResponseFuture<AddResponse>
 {
     /**
-     * 
      * Creates a new instance of AddFuture.
      * 
-     * @param connection The LdapConnection
+     * @param connection the LDAP connection
      * @param messageId The associated messageId
      */
     public AddFuture( LdapConnection connection, int messageId )
@@ -51,7 +50,9 @@ public class AddFuture extends ResponseFuture<AddResponse>
     /**
      * Get the AddResponse, blocking until one is received.
      * 
-     * @return The AddResponse
+     * @return the add response
+     * @throws InterruptedException {@inheritDoc}
+     * @throws ExecutionException {@inheritDoc}
      */
     public AddResponse get() throws InterruptedException, ExecutionException
     {
@@ -63,9 +64,12 @@ public class AddFuture extends ResponseFuture<AddResponse>
      * Get the AddResponse, blocking until one is received, or until the
      * given timeout is reached.
      * 
-     * @param timeout Number of TimeUnit to wait
-     * @param unit The TimeUnit
-     * @return The AddResponse The AddResponse found
+     * @param timeout {@inheritDoc}
+     * @param unit {@inheritDoc}
+     * @return the add response
+     * @throws InterruptedException {@inheritDoc}
+     * @throws ExecutionException {@inheritDoc}
+     * @throws TimeoutException {@inheritDoc}
      */
     public AddResponse get( long timeout, TimeUnit unit ) throws InterruptedException, ExecutionException,
         TimeoutException

@@ -29,17 +29,16 @@ import org.apache.directory.shared.ldap.message.Response;
 
 
 /**
- * A Future to manage SerachRequest
+ * A Future to manage SerachRequest.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 public class SearchFuture extends ResponseFuture<Response>
 {
     /**
-     * 
      * Creates a new instance of SearchFuture.
      *
-     * @param connection The LdapConnection
+     * @param connection the LDAP connection
      * @param messageId The associated messageId
      */
     public SearchFuture( LdapConnection connection, int messageId )
@@ -51,9 +50,11 @@ public class SearchFuture extends ResponseFuture<Response>
     /**
      * Get the SearchResponse, blocking until one is received.
      * It can be either a SearchResultEntry, a SearchResultReference
-     * or a SearchResultDone, the last of all the SearchResponse.
+     * or a SearchResultDone, the last of all the search responses.
      * 
-     * @return The SearchResponse
+     * @return the response, either a SearchResultEntry, a SearchResultReference, or a SearchResultDone
+     * @throws InterruptedException {@inheritDoc}
+     * @throws ExecutionException {@inheritDoc}
      */
     public Response get() throws InterruptedException, ExecutionException
     {
@@ -63,11 +64,19 @@ public class SearchFuture extends ResponseFuture<Response>
 
     /**
      * Get the SearchResponse, blocking until one is received, or until the
-     * given timeout is reached.
+     * given timeout is reached. It can be either a SearchResultEntry, 
+     * a SearchResultReference or a SearchResultDone, the last of all 
+     * the search responses.
      * 
-     * @param timeout Number of TimeUnit to wait
-     * @param unit The TimeUnit
-     * @return The SearchResponse The SearchResponse found
+     * Get the ModifyResponse, blocking until one is received, or until the
+     * given timeout is reached.
+     *
+     * @param timeout {@inheritDoc}
+     * @param unit {@inheritDoc}
+     * @return the response, either a SearchResultEntry, a SearchResultReference, or a SearchResultDone
+     * @throws InterruptedException {@inheritDoc}
+     * @throws ExecutionException {@inheritDoc}
+     * @throws TimeoutException {@inheritDoc}
      */
     public Response get( long timeout, TimeUnit unit ) throws InterruptedException, ExecutionException,
         TimeoutException
