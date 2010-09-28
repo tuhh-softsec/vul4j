@@ -23,6 +23,8 @@ package org.apache.directory.shared.ldap.codec.util;
 /**
  * This typesafe-enum represent the different resultCode of a LdapResult.
  * 
+ * TODO: This class is not used!!!
+ * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 public class LdapResultEnum

@@ -37,10 +37,18 @@ import org.apache.directory.shared.ldap.NotImplementedException;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class PropertiesUtils
+public final class PropertiesUtils
 {
     /** default properties file extension */
     private static final String DOTPROPERTIES = ".properties";
+
+
+    /**
+     * Private constructor
+     */
+    private PropertiesUtils()
+    {
+    }
 
 
     // ------------------------------------------------------------------------

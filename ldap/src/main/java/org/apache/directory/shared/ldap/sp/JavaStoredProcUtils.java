@@ -44,8 +44,16 @@ import org.apache.directory.shared.ldap.util.JndiUtils;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class JavaStoredProcUtils
+public final class JavaStoredProcUtils
 {
+
+    /**
+     * Private constructor.
+     */
+    private JavaStoredProcUtils()
+    {
+    }
+
 
     /**
      * Returns the stream data of a Java class.

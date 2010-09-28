@@ -38,12 +38,20 @@ import org.apache.directory.shared.ldap.util.AttributeUtils;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class TriggerUtils
+public final class TriggerUtils
 {
     public static final String TRIGGER_EXECUTION_SPECIFIC_AREA_VALUE = SchemaConstants.TRIGGER_EXECUTION_SPECIFIC_AREA;
     public static final String TRIGGER_EXECUTION_SUBENTRY_OC = "triggerExecutionSubentry";
     public static final String ENTRY_TRIGGER_SPECIFICATION_ATTR = "entryTriggerSpecification";
     public static final String PRESCRIPTIVE_TRIGGER_SPECIFICATION_ATTR = "prescriptiveTriggerSpecification";
+
+
+    /**
+     * Private constructor.
+     */
+    private TriggerUtils()
+    {
+    }
 
 
     public static void defineTriggerExecutionSpecificPoint( LdapContext apCtx ) throws NamingException

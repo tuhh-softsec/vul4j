@@ -24,6 +24,8 @@ package org.apache.directory.shared.ldap.codec.util;
 /**
  * Signals that an error has occurred.
  * 
+ * TODO: This class is only used in LdapURL, should be removed.
+ * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  *          2005) $
  * @since 3.0

@@ -41,8 +41,16 @@ import org.apache.directory.shared.ldap.util.StringTools;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class SchemaUtils
+public final class SchemaUtils
 {
+    /**
+     * Private constructor.
+     */
+    private SchemaUtils()
+    {
+    }
+
+
     /**
      * Gets the target entry as it would look after a modification operation 
      * were performed on it.

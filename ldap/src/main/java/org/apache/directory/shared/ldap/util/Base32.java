@@ -26,14 +26,22 @@ package org.apache.directory.shared.ldap.util;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class Base32
+public final class Base32
 {
     private static byte[] CHARS = new byte[]{ 
         'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 
         'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 
         'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 
         'Y', 'Z', '2', '3', '4', '5', '6', '7' };
-    
+
+
+    /**
+     * Private constructor.
+     */
+    private Base32()
+    {
+    }
+
 
     public static String encode( String str )
     {

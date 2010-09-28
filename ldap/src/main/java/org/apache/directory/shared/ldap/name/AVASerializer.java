@@ -37,10 +37,19 @@ import org.slf4j.LoggerFactory;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class AVASerializer
+public final class AVASerializer
 {
     /** The LoggerFactory used by this class */
     protected static final Logger LOG = LoggerFactory.getLogger( AVASerializer.class );
+
+
+    /**
+     * Private constructor.
+     */
+    private AVASerializer()
+    {
+    }
+
 
     /**
      * Serialize an AttributeTypeAndValue object.

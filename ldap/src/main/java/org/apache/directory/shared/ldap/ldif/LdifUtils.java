@@ -49,10 +49,10 @@ import org.apache.directory.shared.ldap.util.StringTools;
 public final class LdifUtils
 {
     /** The array that will be used to match the first char.*/
-    private static boolean[] LDIF_SAFE_STARTING_CHAR_ALPHABET = new boolean[128];
+    private static final boolean[] LDIF_SAFE_STARTING_CHAR_ALPHABET = new boolean[128];
 
     /** The array that will be used to match the other chars.*/
-    private static boolean[] LDIF_SAFE_OTHER_CHARS_ALPHABET = new boolean[128];
+    private static final boolean[] LDIF_SAFE_OTHER_CHARS_ALPHABET = new boolean[128];
 
     /** The default length for a line in a ldif file */
     private static final int DEFAULT_LINE_LENGTH = 80;
@@ -84,6 +84,14 @@ public final class LdifUtils
         LDIF_SAFE_OTHER_CHARS_ALPHABET[0] = false; // 0 (NUL)
         LDIF_SAFE_OTHER_CHARS_ALPHABET[10] = false; // 10 (LF)
         LDIF_SAFE_OTHER_CHARS_ALPHABET[13] = false; // 13 (CR)
+    }
+
+
+    /**
+     * Private constructor.
+     */
+    private LdifUtils()
+    {
     }
 
 

@@ -25,7 +25,7 @@ package org.apache.directory.shared.ldap.util;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class DNUtils
+public final class DNUtils
 {
     // ~ Static fields/initializers
     // -----------------------------------------------------------------
@@ -50,7 +50,7 @@ public class DNUtils
     /** A constant representing two bytes length */
     public static final int TWO_BYTES = 2;
 
-    /**
+   /**
      * &lt;safe-init-char&gt; ::= [0x01-0x09] | 0x0B | 0x0C | [0x0E-0x1F] |
      * [0x21-0x39] | 0x3B | [0x3D-0x7F]
      */
@@ -247,6 +247,15 @@ public class DNUtils
 
     /** "OID." static */
     public static final String OID_UPPER = "OID.";
+
+
+    /**
+     * Private constructor.
+     */
+    private DNUtils()
+    {
+    }
+
 
     // ~ Methods
     // ------------------------------------------------------------------------------------

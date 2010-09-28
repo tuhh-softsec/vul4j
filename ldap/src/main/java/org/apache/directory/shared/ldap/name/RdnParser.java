@@ -81,8 +81,16 @@ import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class RdnParser
+public final class RdnParser
 {
+    /**
+     * Private constructor.
+     */
+    private RdnParser()
+    {
+    }
+
+
     /**
      * Parse a NameComponent : <br>
      * <p>

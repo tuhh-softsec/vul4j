@@ -662,6 +662,7 @@ public class LdapURL
         }
         catch ( UnsupportedEncodingException e )
         {
+            // TODO: Why do we throw a HttpClientError here?
             throw new HttpClientError( I18n.err( I18n.ERR_04413 ) );
         }
     }

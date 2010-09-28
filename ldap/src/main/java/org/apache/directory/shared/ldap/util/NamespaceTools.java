@@ -33,11 +33,19 @@ import org.apache.directory.shared.ldap.name.DN;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class NamespaceTools
+public final class NamespaceTools
 {
     private static final String[] EMPTY_STRING_ARRAY = new String[0];
 
-    
+
+    /**
+     * Private constructor
+     */
+    private NamespaceTools()
+    {
+    }
+
+
     /**
      * Gets the attribute of a single attribute rdn or name component.
      * 

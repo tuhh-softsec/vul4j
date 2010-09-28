@@ -29,10 +29,20 @@ import java.util.Arrays;
 /**
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class DirectoryClassUtils
+public final class DirectoryClassUtils
 {
+    /** The logger. */
     private static final Logger LOG = LoggerFactory.getLogger( DirectoryClassUtils.class );
-    
+
+
+    /**
+     * Private constructor.
+     */
+    private DirectoryClassUtils()
+    {
+    }
+
+
     /**
      * A replacement for {@link java.lang.Class#getMethod} with extended capability.
      * 

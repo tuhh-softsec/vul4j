@@ -31,7 +31,7 @@ import java.util.TimeZone;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class DateUtils
+public final class DateUtils
 {
     private static final TimeZone UTC_TIME_ZONE = TimeZone.getTimeZone( "GMT" );
 
@@ -41,9 +41,17 @@ public class DateUtils
     {
         dateFormat.setTimeZone( UTC_TIME_ZONE );
     }
-    
-    
-    public static Date getDate( String zuluTime )
+
+
+    /**
+     * Private constructor.
+     */
+    private DateUtils()
+    {
+    }
+
+
+   public static Date getDate( String zuluTime )
     {
         Calendar cal = Calendar.getInstance( UTC_TIME_ZONE );
         cal.set( Calendar.YEAR, getYear( zuluTime ) ); 

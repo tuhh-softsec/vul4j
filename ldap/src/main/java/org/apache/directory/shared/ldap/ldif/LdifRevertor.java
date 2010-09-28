@@ -55,6 +55,14 @@ public final class LdifRevertor
 
 
     /**
+     * Private constructor.
+     */
+    private LdifRevertor()
+    {
+    }
+
+
+    /**
      * Compute a reverse LDIF of an AddRequest. It's simply a delete request
      * of the added entry
      *

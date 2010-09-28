@@ -36,8 +36,15 @@ import java.io.ObjectOutput;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class UTFUtils
+public final class UTFUtils
 {
+    /**
+     * Private constructor.
+     */
+    private UTFUtils()
+    {
+    }
+
 
     /**
      * 

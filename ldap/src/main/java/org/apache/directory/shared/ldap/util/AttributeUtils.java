@@ -55,8 +55,17 @@ import org.apache.directory.shared.ldap.schema.normalizers.NoOpNormalizer;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class AttributeUtils
+public final class AttributeUtils
 {
+
+    /**
+     * Private constructor.
+     */
+    private AttributeUtils()
+    {
+    }
+
+
     /**
      * Correctly removes an attribute from an entry using it's attributeType information.
      * 

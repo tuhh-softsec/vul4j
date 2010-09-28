@@ -37,8 +37,16 @@ import org.apache.directory.shared.ldap.schema.SchemaObject;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class ParserDescriptionUtils
+public final class ParserDescriptionUtils
 {
+    /**
+     * Private constructor.
+     */
+    private ParserDescriptionUtils()
+    {
+    }
+
+
     /**
      * Checks two schema objectClasses for an exact match.
      *

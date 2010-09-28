@@ -25,8 +25,16 @@ package org.apache.directory.shared.ldap.codec.extended.operations;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class GracefulActionConstants
+public final class GracefulActionConstants
 {
     /** This is the TAG used for the delay. It's a contextual primitive Tag */
     public static final int GRACEFUL_ACTION_DELAY_TAG = 0x80;
+
+
+    /**
+     * Private constructor.
+     */
+    private GracefulActionConstants()
+    {
+    }
 }

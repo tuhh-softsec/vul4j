@@ -23,8 +23,15 @@ package org.apache.directory.shared.ldap.codec;
 /**
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class LdapConstants
+public final class LdapConstants
 {
+    /**
+     * Private constructor.
+     */
+    private LdapConstants()
+    {
+    }
+
     /** The scope constants */
     public static final int SCOPE_BASE_OBJECT = 0;
 

@@ -51,8 +51,15 @@ import org.apache.directory.shared.ldap.schema.syntaxCheckers.UuidSyntaxChecker;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class StringTools
+public final class StringTools
 {
+    /**
+     * Private constructor
+     */
+    private StringTools()
+    {
+    }
+
     /** The default charset, because it's not provided by JDK 1.5 */
     static String defaultCharset = null;
     

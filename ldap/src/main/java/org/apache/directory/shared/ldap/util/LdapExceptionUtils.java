@@ -31,17 +31,31 @@ import java.util.List;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class LdapExceptionUtils
+public final class LdapExceptionUtils
 {
+    /**
+     * Private constructor
+     */
+    private LdapExceptionUtils()
+    {
+    }
+
+
+    /**
+     * Appends the messages of each Throwable to a string, separated by a new line.
+     *
+     * @param errors the errors
+     * @return the string with all error message
+     */
     public static String printErrors( List<Throwable> errors )
     {
         StringBuilder sb = new StringBuilder();
-        
-        for ( Throwable error:errors )
+
+        for ( Throwable error : errors )
         {
             sb.append( "Error : " ).append( error.getMessage() ).append( "\n" );
         }
-        
+
         return sb.toString();
     }
 }

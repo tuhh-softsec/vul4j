@@ -26,10 +26,20 @@ import org.apache.directory.shared.ldap.message.Message;
 /**
  * A Codec to Internal Message transformer.
  * 
+ * TODO: is this class useful?
+ * 
  * @author <a href="mailto:dev@directory.apache.org"> Apache Directory Project</a>
  */
-public class LdapTransformer
+public final class LdapTransformer
 {
+    /**
+     * Private constructor.
+     */
+    private LdapTransformer()
+    {
+    }
+
+
     /**
      * Transform the Codec message to a internal message.
      * 

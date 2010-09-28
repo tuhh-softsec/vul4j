@@ -87,12 +87,21 @@ import org.apache.directory.shared.ldap.name.DN;
 
 /**
  * An utility class to convert back and forth JNDI classes to ADS classes.
- *
+ * 
+ * TODO: We have a similar class in shared-ldap-jndi!!!
+ * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class JndiUtils
-
+public final class JndiUtils
 {
+    /**
+     * Private constructor.
+     */
+    private JndiUtils()
+    {
+    }
+
+
     public static javax.naming.ldap.Control toJndiControl( Control control )
     {
         byte[] value = control.getValue();

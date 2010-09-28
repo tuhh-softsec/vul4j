@@ -28,8 +28,16 @@ import org.apache.directory.shared.i18n.I18n;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class Base64
+public final class Base64
 {
+
+    /**
+     * Private constructor.
+     */
+    private Base64()
+    {
+    }
+
 
     /**
      * passed data array.

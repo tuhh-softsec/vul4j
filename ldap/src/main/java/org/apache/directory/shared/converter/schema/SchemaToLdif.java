@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class SchemaToLdif
+public final class SchemaToLdif
 {
     /** The ASF Header */
     private static final String HEADER = "#\n" + "#  Licensed to the Apache Software Foundation (ASF) under one\n"
@@ -54,7 +54,15 @@ public class SchemaToLdif
         + "version: 1\n" + "\n";
 
     /** The logger */
-    private static Logger LOG = LoggerFactory.getLogger( SchemaToLdif.class );
+    private static final Logger LOG = LoggerFactory.getLogger( SchemaToLdif.class );
+
+
+    /**
+     * Private constructor.
+     */
+    private SchemaToLdif()
+    {
+    }
 
 
     /**

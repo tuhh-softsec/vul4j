@@ -45,8 +45,16 @@ import java.util.Map;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class DescriptionUtils
+public final class DescriptionUtils
 {
+    /**
+     * Private constructor.
+     */
+    private DescriptionUtils()
+    {
+    }
+
+
     /**
      * Generates the description using the AttributeTypeDescription as defined
      * by the syntax: 1.3.6.1.4.1.1466.115.121.1.3. Only the right hand side of
