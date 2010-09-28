@@ -463,5 +463,4 @@ EXTRA_DIST = \
 #
 
 INCLUDES = -I$(top_srcdir)/include
-libxml_security_c_la_LDFLAGS = \
-  -version-info ${package_libtool_version}
+libxml_security_c_la_LDFLAGS = -version-info 16:0:0
