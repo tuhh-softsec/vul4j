@@ -31,7 +31,7 @@
 
 #include <xercesc/util/Janitor.hpp>
 
-#if defined (HAVE_NSS)
+#if defined (XSEC_HAVE_NSS)
 
 XSEC_USING_XERCES(ArrayJanitor);
 
@@ -621,4 +621,4 @@ unsigned int NSSCryptoKeyDSA::getYBase64BigNums(char * b64, unsigned int len) {
 
 }
 
-#endif /* HAVE_NSS */
+#endif /* XSEC_HAVE_NSS */

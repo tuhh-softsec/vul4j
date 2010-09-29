@@ -161,14 +161,14 @@
  * Define presence of cryptographic providers
  */
 
-#define HAVE_OPENSSL 1
+#define XSEC_HAVE_OPENSSL 1
 
-#define HAVE_WINCAPI 1
+#define XSEC_HAVE_WINCAPI 1
 
 // NSS Code is currently alpha.  It should work, but you will also
 // need to include the NSS libraries during the link.
 
-/* #define HAVE_NSS 1 */
+/* #define XSEC_HAVE_NSS 1 */
 
 
 /*
@@ -176,7 +176,7 @@
  *
  */
 
-#if defined (HAVE_OPENSSL)
+#if defined (XSEC_HAVE_OPENSSL)
 
 #	include <openssl/opensslv.h>
 #	if (OPENSSL_VERSION_NUMBER >= 0x00907000)

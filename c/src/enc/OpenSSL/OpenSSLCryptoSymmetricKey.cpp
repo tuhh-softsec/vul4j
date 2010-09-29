@@ -35,7 +35,7 @@
 #include <xercesc/util/Janitor.hpp>
 XERCES_CPP_NAMESPACE_USE;
 
-#if defined (HAVE_OPENSSL)
+#if defined (XSEC_HAVE_OPENSSL)
 
 #include <string.h>
 
@@ -764,4 +764,4 @@ unsigned int OpenSSLCryptoSymmetricKey::encryptFinish(unsigned char * cipherBuf,
 
 }
 
-#endif /* HAVE_OPENSSL */
+#endif /* XSEC_HAVE_OPENSSL */

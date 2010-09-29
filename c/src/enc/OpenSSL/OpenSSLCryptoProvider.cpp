@@ -26,7 +26,7 @@
  */
 
 #include <xsec/framework/XSECDefs.hpp>
-#if defined (HAVE_OPENSSL)
+#if defined (XSEC_HAVE_OPENSSL)
 
 #include <xsec/framework/XSECError.hpp>
 
@@ -485,4 +485,4 @@ unsigned int OpenSSLCryptoProvider::getRandom(unsigned char * buffer, unsigned i
 }
 
 
-#endif /* HAVE_OPENSSL */
+#endif /* XSEC_HAVE_OPENSSL */

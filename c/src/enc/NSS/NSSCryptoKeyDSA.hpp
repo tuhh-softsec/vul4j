@@ -28,11 +28,11 @@
 
 #include <xsec/enc/XSECCryptoKeyDSA.hpp>
 
-#if defined (HAVE_NSS)
+#if defined (XSEC_HAVE_NSS)
 
-#include "nss/pk11func.h"
-#include "nss/keyhi.h"
-#include "nss/nss.h"
+#include <nss3/pk11func.h>
+#include <nss3/keyhi.h>
+#include <nss3/nss.h>
 
 class NSSCryptoProvider;
 
@@ -254,5 +254,5 @@ private:
 
 };
 
-#endif /* HAVE_NSS */
+#endif /* XSEC_HAVE_NSS */
 #endif /* NSSCRYPTOKEYDSA_INCLUDE */

@@ -43,15 +43,15 @@ XERCES_CPP_NAMESPACE_USE
 #include <xsec/utils/winutils/XSECBinHTTPURIInputStream.hpp>
 #endif
 
-#if defined (HAVE_OPENSSL)
+#if defined (XSEC_HAVE_OPENSSL)
 #	include <xsec/enc/OpenSSL/OpenSSLCryptoProvider.hpp>
 #endif
 
-#if defined (HAVE_WINCAPI)
+#if defined (XSEC_HAVE_WINCAPI)
 #	include <xsec/enc/WinCAPI/WinCAPICryptoProvider.hpp>
 #endif
 
-#if defined (HAVE_NSS)
+#if defined (XSEC_HAVE_NSS)
 #	include <xsec/enc/NSS/NSSCryptoProvider.hpp>
 #endif
 
@@ -68,13 +68,13 @@ XSECPlatformUtils::TransformFactory* XSECPlatformUtils::g_loggingSink = NULL;
 
 // Determine default crypto provider
 
-#if defined (HAVE_OPENSSL)
+#if defined (XSEC_HAVE_OPENSSL)
 #	define XSEC_DEFAULT_PROVIDER	OpenSSLCryptoProvider()
 #else
-#	if defined (HAVE_WINCAPI)
+#	if defined (XSEC_HAVE_WINCAPI)
 #		define XSEC_DEFAULT_PROVIDER	WinCAPICryptoProvider()
 #	else 
-#		if defined (HAVE_NSS)
+#		if defined (XSEC_HAVE_NSS)
 #			define XSEC_DEFAULT_PROVIDER	NSSCryptoProvider()
 #		endif
 #	endif

@@ -123,7 +123,7 @@ XALAN_USING_XALAN(XalanTransformer)
 
 #endif
 
-#if defined (HAVE_OPENSSL)
+#if defined (XSEC_HAVE_OPENSSL)
 // OpenSSL
 
 #	include <openssl/err.h>
@@ -279,7 +279,7 @@ XSECCryptoX509 * loadX509(const char * infile) {
 
 }
 
-#if defined (HAVE_OPENSSL)
+#if defined (XSEC_HAVE_OPENSSL)
 
 XMLCh * BN2b64(BIGNUM * bn) {
 
@@ -556,7 +556,7 @@ XKMSMessageAbstractType * createLocateRequest(XSECProvider &prov, DOMDocument **
 			lr->appendResponseMechanismItem(MAKE_UNICODE_STRING(argv[paramCount]));
 			paramCount++;
 		}
-#if defined (HAVE_OPENSSL)
+#if defined (XSEC_HAVE_OPENSSL)
 		else if (_stricmp(argv[paramCount], "--sign-dsa") == 0 || _stricmp(argv[paramCount], "-sd") == 0 ||
 				_stricmp(argv[paramCount], "--sign-rsa") == 0 || _stricmp(argv[paramCount], "-sr") == 0) {
 			if (paramCount >= argc + 2) {
@@ -828,7 +828,7 @@ XKMSMessageAbstractType * createValidateRequest(XSECProvider &prov, DOMDocument 
 			qkb->appendUseKeyWithItem(MAKE_UNICODE_STRING(argv[paramCount]), MAKE_UNICODE_STRING(argv[paramCount + 1]));
 			paramCount += 2;
 		}
-#if defined (HAVE_OPENSSL)
+#if defined (XSEC_HAVE_OPENSSL)
 		else if (_stricmp(argv[paramCount], "--sign-dsa") == 0 || _stricmp(argv[paramCount], "-sd") == 0 ||
 				_stricmp(argv[paramCount], "--sign-rsa") == 0 || _stricmp(argv[paramCount], "-sr") == 0) {
 			if (paramCount >= argc + 2) {
@@ -993,7 +993,7 @@ void printRegisterRequestUsage(void) {
 	cerr << "           : Add the RSA key as a keyvalue\n";
 	cerr << "   --revocation/-v <phrase> : Set <phrase> as revocation code\n";
 	cerr << "   --kek/-k <phrase>        : Key phrase to use for PrivateKey decryption\n";
-#if defined (HAVE_OPENSSL)
+#if defined (XSEC_HAVE_OPENSSL)
 	cerr << "   --output-private-key/-p <file> <pass phrase>\n";
 	cerr << "                            : Write PEM encoded private key to file\n";
 #endif
@@ -1110,7 +1110,7 @@ XKMSMessageAbstractType * createRegisterRequest(XSECProvider &prov, DOMDocument 
 			pkb->appendUseKeyWithItem(MAKE_UNICODE_STRING(argv[paramCount]), MAKE_UNICODE_STRING(argv[paramCount + 1]));
 			paramCount += 2;
 		}
-#if defined (HAVE_OPENSSL)
+#if defined (XSEC_HAVE_OPENSSL)
 		else if (_stricmp(argv[paramCount], "--output-private-key") == 0 || _stricmp(argv[paramCount], "-p") == 0) {
 			if (paramCount >= argc + 2) {
 				printRegisterRequestUsage();
@@ -1179,7 +1179,7 @@ XKMSMessageAbstractType * createRegisterRequest(XSECProvider &prov, DOMDocument 
 			paramCount++;
 
 		}
-#if defined (HAVE_OPENSSL)
+#if defined (XSEC_HAVE_OPENSSL)
 		else if (_stricmp(argv[paramCount], "--sign-dsa") == 0 || _stricmp(argv[paramCount], "-sd") == 0 ||
 				_stricmp(argv[paramCount], "--sign-rsa") == 0 || _stricmp(argv[paramCount], "-sr") == 0) {
 			if (paramCount >= argc + 2) {
@@ -1572,7 +1572,7 @@ XKMSMessageAbstractType * createRevokeRequest(XSECProvider &prov, DOMDocument **
 			paramCount++;
 
 		}
-#if defined (HAVE_OPENSSL)
+#if defined (XSEC_HAVE_OPENSSL)
 		else if (_stricmp(argv[paramCount], "--sign-dsa") == 0 || _stricmp(argv[paramCount], "-sd") == 0 ||
 				_stricmp(argv[paramCount], "--sign-rsa") == 0 || _stricmp(argv[paramCount], "-sr") == 0) {
 			if (paramCount >= argc + 2) {
@@ -1927,7 +1927,7 @@ XKMSMessageAbstractType * createReissueRequest(XSECProvider &prov, DOMDocument *
 			paramCount++;
 
 		}
-#if defined (HAVE_OPENSSL)
+#if defined (XSEC_HAVE_OPENSSL)
 		else if (_stricmp(argv[paramCount], "--sign-dsa") == 0 || _stricmp(argv[paramCount], "-sd") == 0 ||
 				_stricmp(argv[paramCount], "--sign-rsa") == 0 || _stricmp(argv[paramCount], "-sr") == 0) {
 			if (paramCount >= argc + 2) {
@@ -2165,7 +2165,7 @@ void printRecoverRequestUsage(void) {
 	cerr << "   --add-value-rsa/-vr <filename> <passphrase>\n";
 	cerr << "           : Add the RSA key as a keyvalue\n";
 	cerr << "   --kek/-k <phrase>        : Key phrase to use for PrivateKey decryption\n";
-#if defined (HAVE_OPENSSL)
+#if defined (XSEC_HAVE_OPENSSL)
 	cerr << "   --output-private-key/-p <file> <pass phrase>\n";
 	cerr << "                            : Write PEM encoded private key to file\n";
 #endif	
@@ -2279,7 +2279,7 @@ XKMSMessageAbstractType * createRecoverRequest(XSECProvider &prov, DOMDocument *
 			}
 			g_authPassPhrase = argv[paramCount++];
 		}
-#if defined (HAVE_OPENSSL)
+#if defined (XSEC_HAVE_OPENSSL)
 		else if (_stricmp(argv[paramCount], "--output-private-key") == 0 || _stricmp(argv[paramCount], "-p") == 0) {
 			if (paramCount >= argc + 2) {
 				printRecoverRequestUsage();
@@ -2321,7 +2321,7 @@ XKMSMessageAbstractType * createRecoverRequest(XSECProvider &prov, DOMDocument *
 			paramCount++;
 
 		}
-#if defined (HAVE_OPENSSL)
+#if defined (XSEC_HAVE_OPENSSL)
 		else if (_stricmp(argv[paramCount], "--sign-dsa") == 0 || _stricmp(argv[paramCount], "-sd") == 0 ||
 				_stricmp(argv[paramCount], "--sign-rsa") == 0 || _stricmp(argv[paramCount], "-sr") == 0) {
 			if (paramCount >= argc + 2) {
@@ -3240,7 +3240,7 @@ int doRegisterResultDump(XKMSRegisterResult *msg) {
 			char * sInverseQ = XMLString::transcode(kp->getInverseQ());
 			char * sD = XMLString::transcode(kp->getD());
 
-#if defined (HAVE_OPENSSL)
+#if defined (XSEC_HAVE_OPENSSL)
 
 			if (g_privateKeyFile != NULL) {
 				levelSet(level);
@@ -3356,7 +3356,7 @@ int doRecoverResultDump(XKMSRecoverResult *msg) {
 			char * sInverseQ = XMLString::transcode(kp->getInverseQ());
 			char * sD = XMLString::transcode(kp->getD());
 
-#if defined (HAVE_OPENSSL)
+#if defined (XSEC_HAVE_OPENSSL)
 
 			if (g_privateKeyFile != NULL) {
 				levelSet(level);
@@ -3840,7 +3840,7 @@ int doParsedMsgDump(DOMDocument * doc) {
 		<< e.getMsg() << endl;
 		errorsOccured = true;
 
-#if defined (HAVE_OPENSSL)
+#if defined (XSEC_HAVE_OPENSSL)
 		ERR_load_crypto_strings();
 		BIO * bio_err;
 		if ((bio_err=BIO_new(BIO_s_file())) != NULL)
@@ -4350,7 +4350,7 @@ void printMsgDumpUsage(void) {
 	cerr << "   --validate/-v  : validate the input messages\n";
 	cerr << "   --auth-phrase/-a <phrase>\n";
 	cerr << "                  : use <phrase> for authentication/private key in X-KRSS messages\n";
-#if defined (HAVE_OPENSSL)
+#if defined (XSEC_HAVE_OPENSSL)
 	cerr << "   --output-private-key/-p <filename> <passphrase>\n";
 	cerr << "                  : Write private keys from Register or Recover requests to the file\n\n";
 #endif
@@ -4385,7 +4385,7 @@ int doMsgDump(int argc, char ** argv, int paramCount) {
 			g_authPassPhrase = argv[paramCount];
 			paramCount++;
 		}
-#if defined (HAVE_OPENSSL)
+#if defined (XSEC_HAVE_OPENSSL)
 		else if (_stricmp(argv[paramCount], "--output-private-key") == 0 || _stricmp(argv[paramCount], "-p") == 0) {
 			if (paramCount >= argc + 2) {
 				printMsgDumpUsage();

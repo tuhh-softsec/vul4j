@@ -30,7 +30,7 @@
 
 #include <xsec/enc/XSECCryptoKeyHMAC.hpp>
 
-#if defined (HAVE_WINCAPI)
+#if defined (XSEC_HAVE_WINCAPI)
 
 #if !defined(_WIN32_WINNT)
 #	define _WIN32_WINNT 0x0400
@@ -184,5 +184,5 @@ private:
 	HCRYPTPROV			m_p;
 };
 
-#endif /* HAVE_WINCAPI */
+#endif /* XSEC_HAVE_WINCAPI */
 #endif /* WINCAPICRYPTOKEYHMAC_INCLUDE */

@@ -30,7 +30,7 @@
 
 #include <xsec/enc/XSECCryptoKeyHMAC.hpp>
 
-#if defined (HAVE_OPENSSL)
+#if defined (XSEC_HAVE_OPENSSL)
 
 /**
  * \ingroup opensslcrypto
@@ -125,6 +125,6 @@ private:
 	unsigned int		m_keyLen;
 };
 
-#endif /* HAVE_OPENSSL */
+#endif /* XSEC_HAVE_OPENSSL */
 
 #endif /* OPENSSLCRYPTOKEYHMAC_INCLUDE */

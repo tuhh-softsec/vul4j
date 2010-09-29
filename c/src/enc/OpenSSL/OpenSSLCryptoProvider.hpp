@@ -34,7 +34,7 @@
 #include <map>
 #include <string>
 
-#if defined (HAVE_OPENSSL)
+#if defined (XSEC_HAVE_OPENSSL)
 
 /**
  * @defgroup opensslcrypto OpenSSL Interface
@@ -317,5 +317,5 @@ public :
 
 };
 
-#endif /* HAVE_OPENSSL */
+#endif /* XSEC_HAVE_OPENSSL */
 #endif /* OPENSSLCRYPTOPROVIDER_INCLUDE */

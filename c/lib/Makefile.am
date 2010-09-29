@@ -60,6 +60,10 @@ if XSEC_AM_HAVE_OPENSSL
   lib_sources += ${openssl_sources}
 endif
 
+if XSEC_AM_HAVE_NSS
+  lib_sources += ${nss_sources}
+endif
+
 # Sources are build up using a find command:
 #
 # find src/transformers/ -name '*.cpp' -exec echo {} \\ ";" | sed "s/src\//  ..\/src\//g"
@@ -419,13 +423,8 @@ openssl_sources = \
   ../src/enc/OpenSSL/OpenSSLCryptoSymmetricKey.hpp \
   ../src/enc/OpenSSL/OpenSSLCryptoSymmetricKey.cpp \
   ../src/enc/OpenSSL/OpenSSLCryptoKeyHMAC.cpp
-
-EXTRA_DIST = \
-  ../src/utils/winutils/XSECURIResolverGenericWin32.cpp \
-  ../src/utils/winutils/XSECSOAPRequestorSimpleWin32.cpp \
-  ../src/utils/winutils/XSECBinHTTPURIInputStream.cpp \
-  ../src/utils/winutils/XSECURIResolverGenericWin32.hpp \
-  ../src/utils/winutils/XSECBinHTTPURIInputStream.hpp \
+  
+nss_sources = \
   ../src/enc/NSS/NSSCryptoHash.hpp \
   ../src/enc/NSS/NSSCryptoX509.cpp \
   ../src/enc/NSS/NSSCryptoKeyDSA.hpp \
@@ -441,7 +440,14 @@ EXTRA_DIST = \
   ../src/enc/NSS/NSSCryptoSymmetricKey.cpp \
   ../src/enc/NSS/NSSCryptoProvider.hpp \
   ../src/enc/NSS/NSSCryptoKeyRSA.cpp \
-  ../src/enc/NSS/NSSCryptoKeyHMAC.cpp \
+  ../src/enc/NSS/NSSCryptoKeyHMAC.cpp
+
+EXTRA_DIST = \
+  ../src/utils/winutils/XSECURIResolverGenericWin32.cpp \
+  ../src/utils/winutils/XSECSOAPRequestorSimpleWin32.cpp \
+  ../src/utils/winutils/XSECBinHTTPURIInputStream.cpp \
+  ../src/utils/winutils/XSECURIResolverGenericWin32.hpp \
+  ../src/utils/winutils/XSECBinHTTPURIInputStream.hpp \
   ../src/enc/WinCAPI/WinCAPICryptoProvider.cpp \
   ../src/enc/WinCAPI/WinCAPICryptoKeyHMAC.hpp \
   ../src/enc/WinCAPI/WinCAPICryptoHash.cpp \

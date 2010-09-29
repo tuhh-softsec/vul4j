@@ -30,10 +30,10 @@
 #include <xsec/framework/XSECDefs.hpp>
 #include <xsec/enc/XSECCryptoSymmetricKey.hpp>
 
-#if defined (HAVE_NSS)
+#if defined (XSEC_HAVE_NSS)
 
-#include "nss/pk11func.h"
-#include "nss/nss.h"
+#include <nss3/pk11func.h>
+#include <nss3/nss.h>
 
 #define NSS_MAX_BLOCK_SIZE		32
 
@@ -290,5 +290,5 @@ private:
 
 };
 
-#endif /* HAVE_NSS */
+#endif /* XSEC_HAVE_NSS */
 #endif /* NSSCRYPTOSYMMETRICKEY_INCLUDE */

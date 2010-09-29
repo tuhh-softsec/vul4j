@@ -26,7 +26,7 @@
  */
 
 #include <xsec/framework/XSECDefs.hpp>
-#if defined (HAVE_OPENSSL)
+#if defined (XSEC_HAVE_OPENSSL)
 
 #include <xsec/enc/OpenSSL/OpenSSLCryptoHash.hpp>
 #include <xsec/enc/XSECCryptoException.hpp>
@@ -156,4 +156,4 @@ XSECCryptoHash::HashType OpenSSLCryptoHash::getHashType(void) const {
 
 }
 
-#endif /* HAVE_OPENSSL */
+#endif /* XSEC_HAVE_OPENSSL */

@@ -32,7 +32,7 @@
 #include <xsec/enc/XSECCryptoBase64.hpp>
 
 // OpenSSL
-#if defined (HAVE_OPENSSL)
+#if defined (XSEC_HAVE_OPENSSL)
 #	include <openssl/evp.h>
 
 /**
@@ -205,5 +205,5 @@ private :
 
 /*\@}*/
 
-#endif /* HAVE_OPENSSL */
+#endif /* XSEC_HAVE_OPENSSL */
 #endif /* OPENSSLCRYPTOBASE64_INCLUDE */

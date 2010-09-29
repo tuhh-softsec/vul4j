@@ -93,7 +93,7 @@ XALAN_USING_XALAN(XalanTransformer)
 
 #endif
 
-#if defined (HAVE_OPENSSL)
+#if defined (XSEC_HAVE_OPENSSL)
 // OpenSSL
 
 #	include <xsec/enc/OpenSSL/OpenSSLCryptoKeyHMAC.hpp>
@@ -101,14 +101,14 @@ XALAN_USING_XALAN(XalanTransformer)
 
 #endif
 
-#if defined (HAVE_WINCAPI)
+#if defined (XSEC_HAVE_WINCAPI)
 
 #	include <xsec/enc/WinCAPI/WinCAPICryptoProvider.hpp>
 #	include <xsec/enc/WinCAPI/WinCAPICryptoKeyHMAC.hpp>
 
 #endif
 
-#if defined (HAVE_NSS)
+#if defined (XSEC_HAVE_NSS)
 
 #	include <xsec/enc/NSS/NSSCryptoProvider.hpp>
 #	include <xsec/enc/NSS/NSSCryptoKeyHMAC.hpp>
@@ -146,12 +146,12 @@ void printUsage(void) {
 	cerr << "         Use the xml-security test XMLDSig URI resolver\n\n";
 	cerr << "     --idns/-d <ns uri> <name>\n";
 	cerr << "         Define an attribute Id by namespace URI and name\n\n";
-#if defined (HAVE_OPENSSL)
+#if defined (XSEC_HAVE_OPENSSL)
 	cerr << "     --interop/-i\n";
 	cerr << "         Use the interop resolver for Baltimore interop examples\n\n";
 #endif
-#if defined(HAVE_WINCAPI)
-#	if defined (HAVE_OPENSSL)
+#if defined(XSEC_HAVE_WINCAPI)
+#	if defined (XSEC_HAVE_OPENSSL)
 	cerr << "     --wincapi/-w\n";
 	cerr << "         Use the Windows CAPI crypto Provider\n\n";
 #	endif
@@ -176,7 +176,7 @@ int evaluate(int argc, char ** argv) {
 	bool					useXSECURIResolver = false;
 	bool                    useAnonymousResolver = false;
 	bool					useInteropResolver = false;
-#if defined (HAVE_WINCAPI)
+#if defined (XSEC_HAVE_WINCAPI)
 	HCRYPTPROV				win32CSP = 0;
 #endif
 
@@ -214,7 +214,7 @@ int evaluate(int argc, char ** argv) {
 			useIdAttributeNS = argv[paramCount++];
 			useIdAttributeName = argv[paramCount++];
 		}
-#if defined (HAVE_OPENSSL)
+#if defined (XSEC_HAVE_OPENSSL)
 		else if (_stricmp(argv[paramCount], "--interop") == 0 || _stricmp(argv[paramCount], "-i") == 0) {
 			// Use the interop key resolver
 			useInteropResolver = true;
@@ -225,7 +225,7 @@ int evaluate(int argc, char ** argv) {
 			useAnonymousResolver = true;
 			paramCount++;
 		}
-#if defined (HAVE_WINCAPI)
+#if defined (XSEC_HAVE_WINCAPI)
 		else if (_stricmp(argv[paramCount], "--wincapi") == 0 || _stricmp(argv[paramCount], "-w") == 0 ||
 			_stricmp(argv[paramCount], "--winhmackey") == 0 || _stricmp(argv[paramCount], "-wh") == 0) {
 
@@ -307,7 +307,7 @@ int evaluate(int argc, char ** argv) {
 		}
 	}
 
-#if defined (HAVE_WINCAPI) && !defined(HAVE_OPENSSL)
+#if defined (XSEC_HAVE_WINCAPI) && !defined(XSEC_HAVE_OPENSSL)
 
 	// Use default DSS provider
 	WinCAPICryptoProvider * cp = new WinCAPICryptoProvider();
@@ -464,7 +464,7 @@ int evaluate(int argc, char ** argv) {
 			sig->setURIResolver(&theResolver);
 		}
 
-#if defined (HAVE_OPENSSL)
+#if defined (XSEC_HAVE_OPENSSL)
 		if (useInteropResolver == true) {
 
 			InteropResolver ires(&(baseURIXMLCh[8]));
@@ -516,7 +516,7 @@ int evaluate(int argc, char ** argv) {
 		<< e.getMsg() << endl;
 		errorsOccured = true;
 
-#if defined (HAVE_OPENSSL)
+#if defined (XSEC_HAVE_OPENSSL)
 		ERR_load_crypto_strings();
 		BIO * bio_err;
 		if ((bio_err=BIO_new(BIO_s_file())) != NULL)
@@ -551,7 +551,7 @@ int evaluate(int argc, char ** argv) {
 		retResult = 1;
 	}
 
-#if defined (HAVE_WINCAPI)
+#if defined (XSEC_HAVE_WINCAPI)
 	// Clean up the handle to the CSP
 	if (win32CSP != 0)
 		CryptReleaseContext(win32CSP, 0);

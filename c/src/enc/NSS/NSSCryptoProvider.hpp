@@ -29,10 +29,7 @@
 #include <xsec/framework/XSECDefs.hpp>
 #include <xsec/enc/XSECCryptoProvider.hpp>
 
-#if defined (HAVE_NSS)
-
-#include "nss/pk11func.h"
-#include "nss/nss.h"
+#if defined (XSEC_HAVE_NSS)
 
 /**
  * @defgroup nsscrypto NSS Interface
@@ -320,6 +317,6 @@ private:
 
 /*\@}*/
 
-#endif /* HAVE_NSS */
+#endif /* XSEC_HAVE_NSS */
 #endif /* NSSCRYPTOPROVIDER_INCLUDE */
 

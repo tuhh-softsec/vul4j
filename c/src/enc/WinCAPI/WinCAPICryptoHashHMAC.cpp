@@ -31,7 +31,7 @@
 #include <xsec/enc/WinCAPI/WinCAPICryptoKeyHMAC.hpp>
 #include <xsec/utils/XSECDOMUtils.hpp>
 
-#if defined (HAVE_WINCAPI)
+#if defined (XSEC_HAVE_WINCAPI)
 
 #include <memory.h>
 
@@ -413,4 +413,4 @@ XSECCryptoHash::HashType WinCAPICryptoHashHMAC::getHashType(void) const {
 
 }
 
-#endif /* HAVE_WINCAPI */
+#endif /* XSEC_HAVE_WINCAPI */

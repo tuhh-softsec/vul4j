@@ -32,9 +32,7 @@
 #include <xsec/enc/XSECCryptoException.hpp>
 #include <xsec/enc/XSCrypt/XSCryptCryptoBase64.hpp>
 
-#if defined (HAVE_NSS)
-
-#include <nss/cert.h>
+#if defined (XSEC_HAVE_NSS)
 
 extern "C" {
 
@@ -253,4 +251,4 @@ XSECCryptoKey * NSSCryptoX509::clonePublicKey() const {
 
 }
 
-#endif /* HAVE_NSS */
+#endif /* XSEC_HAVE_NSS */

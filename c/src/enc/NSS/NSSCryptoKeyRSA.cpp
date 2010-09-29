@@ -31,7 +31,7 @@
 
 #include <xercesc/util/Janitor.hpp>
 
-#if defined (HAVE_NSS)
+#if defined (XSEC_HAVE_NSS)
 
 #include <secder.h>
 #include <secdig.h>
@@ -749,4 +749,4 @@ unsigned int NSSCryptoKeyRSA::getModulusBase64BigNums(char * b64, unsigned int l
 	return bLen;
 }
 
-#endif /* HAVE_NSS */
+#endif /* XSEC_HAVE_NSS */

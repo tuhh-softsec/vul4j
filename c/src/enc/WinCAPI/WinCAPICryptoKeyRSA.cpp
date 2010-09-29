@@ -31,7 +31,7 @@
 #include <xsec/enc/XSECCryptoException.hpp>
 #include <xsec/framework/XSECError.hpp>
 
-#if defined (HAVE_WINCAPI)
+#if defined (XSEC_HAVE_WINCAPI)
 
 #include <xercesc/util/Janitor.hpp>
 

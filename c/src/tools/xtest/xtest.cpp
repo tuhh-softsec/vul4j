@@ -89,19 +89,19 @@ XALAN_USING_XALAN(XalanTransformer)
 
 #include <xsec/enc/XSECCryptoSymmetricKey.hpp>
 
-#if defined (HAVE_OPENSSL)
+#if defined (XSEC_HAVE_OPENSSL)
 #	include <xsec/enc/OpenSSL/OpenSSLCryptoKeyHMAC.hpp>
 #	include <xsec/enc/OpenSSL/OpenSSLCryptoKeyRSA.hpp>
 #	include <openssl/rand.h>
 #	include <openssl/evp.h>
 #	include <openssl/pem.h>
 #endif
-#if defined (HAVE_WINCAPI)
+#if defined (XSEC_HAVE_WINCAPI)
 #	include <xsec/enc/WinCAPI/WinCAPICryptoKeyHMAC.hpp>
 #	include <xsec/enc/WinCAPI/WinCAPICryptoKeyRSA.hpp>
 #	include <xsec/enc/WinCAPI/WinCAPICryptoProvider.hpp>
 #endif
-#if defined (HAVE_NSS)
+#if defined (XSEC_HAVE_NSS)
 #	include <xsec/enc/NSS/NSSCryptoKeyHMAC.hpp>
 #	include <xsec/enc/NSS/NSSCryptoKeyRSA.hpp>
 #	include <xsec/enc/NSS/NSSCryptoProvider.hpp>
@@ -344,20 +344,20 @@ XSECCryptoKeyHMAC * createHMACKey(const unsigned char * str) {
 	// Create the HMAC key
 	XSECCryptoKeyHMAC * hmacKey = NULL;
 
-#if defined(HAVE_WINCAPI)
+#if defined(XSEC_HAVE_WINCAPI)
 
 	if (g_useWinCAPI == true) {
 		hmacKey = new WinCAPICryptoKeyHMAC(0);
 	}
 #endif
 
-# if defined (HAVE_NSS)
+# if defined (XSEC_HAVE_NSS)
 	if (g_useNSS == true) {
 		hmacKey = new NSSCryptoKeyHMAC();
 	}
 #endif
 
-#if defined (HAVE_OPENSSL)
+#if defined (XSEC_HAVE_OPENSSL)
 	if (hmacKey == NULL)
 		hmacKey = new OpenSSLCryptoKeyHMAC();
 #endif
@@ -1031,7 +1031,7 @@ void unitTestRSASig(DOMImplementation * impl, XSECCryptoKeyRSA * k, const XMLCh 
 		cerr << "OK";
 
 #if 0
-#if defined HAVE_OPENSSL
+#if defined XSEC_HAVE_OPENSSL
 
 		if (g_useWinCAPI || g_useNSS) {
 
@@ -1090,7 +1090,7 @@ void unitTestRSA(DOMImplementation * impl) {
 
 	XSECCryptoKeyRSA * rsaKey;
 
-#if defined (HAVE_OPENSSL)
+#if defined (XSEC_HAVE_OPENSSL)
 	if (!g_useWinCAPI && !g_useNSS) {
 		// Load the key
 		BIO * bioMem = BIO_new(BIO_s_mem());
@@ -1104,7 +1104,7 @@ void unitTestRSA(DOMImplementation * impl) {
 	}
 #endif
 
-#if defined (HAVE_WINCAPI)
+#if defined (XSEC_HAVE_WINCAPI)
 	if (g_useWinCAPI) {
 
 		// Use the internal key
@@ -1116,7 +1116,7 @@ void unitTestRSA(DOMImplementation * impl) {
 
 #endif
 
-#if defined (HAVE_NSS)
+#if defined (XSEC_HAVE_NSS)
 	if (g_useNSS) {
 		// Use the internal key
 		NSSCryptoProvider *cp = (NSSCryptoProvider *) (XSECPlatformUtils::g_cryptoProvider);
@@ -2024,7 +2024,7 @@ void unitTestEncrypt(DOMImplementation *impl) {
 		// Key wraps
 		cerr << "RSA key wrap... ";
 
-#if defined (HAVE_OPENSSL)
+#if defined (XSEC_HAVE_OPENSSL)
 		if (!g_useWinCAPI && !g_useNSS) {
 			// Load the key
 			BIO * bioMem = BIO_new(BIO_s_mem());
@@ -2050,7 +2050,7 @@ void unitTestEncrypt(DOMImplementation *impl) {
 		}
 #endif
 
-#if defined (HAVE_WINCAPI)
+#if defined (XSEC_HAVE_WINCAPI)
 		if (g_useWinCAPI) {
 
 			// Use the internal key
@@ -2067,7 +2067,7 @@ void unitTestEncrypt(DOMImplementation *impl) {
 
 #endif
 
-#if defined (HAVE_NSS)
+#if defined (XSEC_HAVE_NSS)
 		if (g_useNSS) {
 			// Use the internal key
 			NSSCryptoProvider *cp = (NSSCryptoProvider *) (XSECPlatformUtils::g_cryptoProvider);
@@ -2507,11 +2507,11 @@ void printUsage(void) {
 	cerr << "     Where options are :\n\n";
 	cerr << "     --help/-h\n";
 	cerr << "         This help message\n\n";
-#if defined (HAVE_WINCAPI)  && defined (HAVE_OPENSSL)
+#if defined (XSEC_HAVE_WINCAPI)  && defined (XSEC_HAVE_OPENSSL)
 	cerr << "     --wincapi/-w\n";
 	cerr << "         Use Windows Crypto API for crypto functionality\n\n";
 #endif
-#if defined (HAVE_NSS)
+#if defined (XSEC_HAVE_NSS)
 	cerr << "     --nss/-n\n";
 	cerr << "         Use NSS Crypto API for crypto functionality\n\n";
 #endif
@@ -2562,13 +2562,13 @@ int main(int argc, char **argv) {
 			g_printDocs = true;
 			paramCount++;
 		}
-#if defined(HAVE_WINCAPI) && defined(HAVE_OPENSSL)
+#if defined(XSEC_HAVE_WINCAPI) && defined(XSEC_HAVE_OPENSSL)
 		else if (_stricmp(argv[paramCount], "--wincapi") == 0 || _stricmp(argv[paramCount], "-w") == 0) {
 			g_useWinCAPI = true;
 			paramCount++;
 		}
 #endif
-#if defined(HAVE_NSS)
+#if defined(XSEC_HAVE_NSS)
 		else if (stricmp(argv[paramCount], "--nss") == 0 || stricmp(argv[paramCount], "-n") == 0) {
 			g_useNSS = true;
 			paramCount++;
@@ -2641,7 +2641,7 @@ int main(int argc, char **argv) {
 #endif
 		XSECPlatformUtils::Initialise();
 
-#if defined (HAVE_OPENSSL) && defined (HAVE_WINCAPI)
+#if defined (XSEC_HAVE_OPENSSL) && defined (XSEC_HAVE_WINCAPI)
 		if (g_useWinCAPI) {
 			// Setup for Windows Crypt API
 			WinCAPICryptoProvider * cp;
@@ -2650,7 +2650,7 @@ int main(int argc, char **argv) {
 			XSECPlatformUtils::SetCryptoProvider(cp);
 		}
 #endif
-#if defined (HAVE_NSS)
+#if defined (XSEC_HAVE_NSS)
 		if (g_useNSS) {
 			// Setup for NSS Crypt API
 			NSSCryptoProvider * cp;

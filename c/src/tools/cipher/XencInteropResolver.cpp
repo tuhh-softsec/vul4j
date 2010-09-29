@@ -43,11 +43,11 @@ XERCES_CPP_NAMESPACE_USE
 
 #include <iostream>
 
-#if !defined (HAVE_OPENSSL) && !defined (HAVE_WINCAPI) && !defined (HAVE_NSS)
+#if !defined (XSEC_HAVE_OPENSSL) && !defined (XSEC_HAVE_WINCAPI) && !defined (XSEC_HAVE_NSS)
 #	error Require OpenSSL or Windows Crypto API for the Merlin Resolver
 #endif
 
-#if defined (HAVE_OPENSSL)
+#if defined (XSEC_HAVE_OPENSSL)
 #	include <openssl/x509.h>
 #	include <openssl/pem.h>
 #	include <xsec/enc/OpenSSL/OpenSSLCryptoX509.hpp>
@@ -55,12 +55,12 @@ XERCES_CPP_NAMESPACE_USE
 #   include <xsec/enc/OpenSSL/OpenSSLCryptoSymmetricKey.hpp>
 #endif
 
-#if defined (HAVE_WINCAPI)
+#if defined (XSEC_HAVE_WINCAPI)
 #   include <xsec/enc/WinCAPI/WinCAPICryptoProvider.hpp>
 #   include <xsec/enc/WinCAPI/WinCAPICryptoSymmetricKey.hpp>
 #endif
 
-#if defined (HAVE_NSS)
+#if defined (XSEC_HAVE_NSS)
 #   include <xsec/enc/NSS/NSSCryptoProvider.hpp>
 #   include <xsec/enc/NSS/NSSCryptoSymmetricKey.hpp>
 #endif
@@ -289,7 +289,7 @@ XSECCryptoSymmetricKey * XencInteropResolver::makeSymmetricKey(XSECCryptoSymmetr
 		return k;
 }
 
-#if defined (HAVE_OPENSSL)
+#if defined (XSEC_HAVE_OPENSSL)
 
 BIO * createFileBIO(const XMLCh * baseURI, const char * name) {
 
@@ -429,7 +429,7 @@ XSECCryptoKey * XencInteropResolver::resolveKey(DSIGKeyInfoList * lst) {
 				}
 				return k;
 			}
-#if defined (HAVE_OPENSSL)
+#if defined (XSEC_HAVE_OPENSSL)
 			if (strEquals(s_phaosRSAName, name)) {
 
 				// This is the Phaos RSA key
@@ -509,7 +509,7 @@ XSECCryptoKey * XencInteropResolver::resolveKey(DSIGKeyInfoList * lst) {
 			XSECCryptoX509 * XCX509 = kix->getCertificateCryptoItem(0);
 
 			if (XCX509 != 0) {
-#if defined (HAVE_OPENSSL)
+#if defined (XSEC_HAVE_OPENSSL)
 
 
 				if (strEquals(XCX509->getProviderName(),DSIGConstants::s_unicodeStrPROVOpenSSL)) {
@@ -535,17 +535,17 @@ XSECCryptoKey * XencInteropResolver::resolveKey(DSIGKeyInfoList * lst) {
 					return k;
 
 				}
-#if defined (HAVE_WINCAPI)
+#if defined (XSEC_HAVE_WINCAPI)
 				else {
-#endif /* HAVE_WINCAPI */
-#endif /* HAVE_OPENSSL */
+#endif /* XSEC_HAVE_WINCAPI */
+#endif /* XSEC_HAVE_OPENSSL */
 
-#if defined (HAVE_WINCAPI)
+#if defined (XSEC_HAVE_WINCAPI)
 					std::cerr << "WARNING - Unable to load PKCS8 private key file into Windows CAPI" << std::endl;
-#if defined (HAVE_OPENSSL)
+#if defined (XSEC_HAVE_OPENSSL)
 				}
-#endif /* HAVE_WINCAPI */
-#endif /* HAVE_OPENSSL */
+#endif /* XSEC_HAVE_WINCAPI */
+#endif /* XSEC_HAVE_OPENSSL */
 			}
 		}
 	}

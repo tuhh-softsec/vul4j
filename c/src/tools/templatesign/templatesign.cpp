@@ -43,7 +43,7 @@
 #	include <xsec/utils/unixutils/XSECURIResolverGenericUnix.hpp>
 #endif
 
-#if defined (HAVE_OPENSSL)
+#if defined (XSEC_HAVE_OPENSSL)
 #	include <xsec/enc/OpenSSL/OpenSSLCryptoKeyDSA.hpp>
 #	include <xsec/enc/OpenSSL/OpenSSLCryptoKeyEC.hpp>
 #	include <xsec/enc/OpenSSL/OpenSSLCryptoKeyRSA.hpp>
@@ -57,7 +57,7 @@
 #	include <openssl/pem.h>
 #endif
 
-#if defined(HAVE_WINCAPI)
+#if defined(XSEC_HAVE_WINCAPI)
 #	include <xsec/enc/WinCAPI/WinCAPICryptoProvider.hpp>
 #	include <xsec/enc/WinCAPI/WinCAPICryptoKeyDSA.hpp>
 #	include <xsec/enc/WinCAPI/WinCAPICryptoKeyRSA.hpp>
@@ -536,14 +536,14 @@ unsigned char *charBuffer;
 void printUsage(void) {
 
 	cerr << "\nUsage: templatesign <key options> <file to sign>\n\n";
-#if defined (HAVE_OPENSSL)
+#if defined (XSEC_HAVE_OPENSSL)
 	cerr << "    Where <key options> are one of :\n\n";
 	cerr << "        --x509subjectname/-s <distinguished name>\n";
 	cerr << "                     <distinguished name> will be set as SubjectName in x509\n";
 	cerr << "        --dsakey/-d  <dsa private key file> <password>\n";
 	cerr << "                     <dsa private key file> contains a PEM encoded private key\n";
 	cerr << "                     <password> is the password used to decrypt the key file\n";
-#	if defined (HAVE_WINCAPI)
+#	if defined (XSEC_HAVE_WINCAPI)
 	cerr << "                     NOTE: Not usable if --wincapi previously set\n";
 #	endif
 #   if defined(XSEC_OPENSSL_HAVE_EC)
@@ -551,7 +551,7 @@ void printUsage(void) {
 	cerr << "                     <ec private key file> contains a PEM encoded private key\n";
 	cerr << "                     <password> is the password used to decrypt the key file\n";
 #   endif
-#	if defined (HAVE_WINCAPI)
+#	if defined (XSEC_HAVE_WINCAPI)
 	cerr << "                     NOTE: Not usable if --wincapi previously set\n";
 #	endif
 	cerr << "        --rsakey/-r <rsa private key file> <password>\n";
@@ -564,7 +564,7 @@ void printUsage(void) {
 	cerr << "                     <string> is the hmac key to set\n";
 	cerr << "        --clearkeys/-c\n";
 	cerr << "                      Clears out any current KeyInfo elements in the file\n";
-#if defined(HAVE_WINCAPI)
+#if defined(XSEC_HAVE_WINCAPI)
 	cerr << "        --windss/-wd\n";
 	cerr << "                      Use the default user AT_SIGNATURE key from default\n";
 	cerr << "                      Windows DSS CSP\n";
@@ -592,13 +592,13 @@ int main(int argc, char **argv) {
 	XSECCryptoKey				* key = NULL;
 	DSIGKeyInfoX509				* keyInfoX509 = NULL;
 	const char					* x509SubjectName = NULL;
-#if defined (HAVE_OPENSSL)
+#if defined (XSEC_HAVE_OPENSSL)
 	OpenSSLCryptoX509			* certs[128];
 #endif
 	int							certCount = 0;
 	int							paramCount;
 	bool						clearKeyInfo = false;
-#if defined(HAVE_WINCAPI)
+#if defined(XSEC_HAVE_WINCAPI)
 	HCRYPTPROV					win32DSSCSP = 0;		// Crypto Provider
 	HCRYPTPROV					win32RSACSP = 0;		// Crypto Provider
 	bool						winDssKeyInfo = false;
@@ -628,7 +628,7 @@ int main(int argc, char **argv) {
 
 	}
 
-#if defined (HAVE_OPENSSL)
+#if defined (XSEC_HAVE_OPENSSL)
 	
 	// Initialise OpenSSL
 	ERR_load_crypto_strings();
@@ -665,7 +665,7 @@ int main(int argc, char **argv) {
 			paramCount += 2;
 		}
 
-#if defined (HAVE_OPENSSL)
+#if defined (XSEC_HAVE_OPENSSL)
 
 		else if (_stricmp(argv[paramCount], "--dsakey") == 0 || _stricmp(argv[paramCount], "-d") == 0
 			|| _stricmp(argv[paramCount], "--rsakey") == 0 || _stricmp(argv[paramCount], "-r") == 0
@@ -818,10 +818,10 @@ int main(int argc, char **argv) {
 #endif
 		if (_stricmp(argv[paramCount], "--hmackey") == 0 || _stricmp(argv[paramCount], "-h") == 0) {
 
-#if defined (HAVE_OPENSSL)
+#if defined (XSEC_HAVE_OPENSSL)
 			OpenSSLCryptoKeyHMAC * hmacKey = new OpenSSLCryptoKeyHMAC();
 #else
-#	if defined (HAVE_WINCAPI)
+#	if defined (XSEC_HAVE_WINCAPI)
 			WinCAPICryptoKeyHMAC * hmacKey = new WinCAPICryptoKeyHMAC(0);
 #	endif
 #endif
@@ -838,7 +838,7 @@ int main(int argc, char **argv) {
 
 		}
 
-#if defined (HAVE_WINCAPI)
+#if defined (XSEC_HAVE_WINCAPI)
 		else if (_stricmp(argv[paramCount], "--windss") == 0 || _stricmp(argv[paramCount], "-wd") == 0) {
 
 			WinCAPICryptoProvider * cp;
@@ -1078,7 +1078,7 @@ int main(int argc, char **argv) {
 
 #endif /* CRYPT_ACQUIRE_CACHE_FLAG */
 
-#endif /* HAVE_WINCAPI */
+#endif /* XSEC_HAVE_WINCAPI */
 
 		else {
 
@@ -1210,7 +1210,7 @@ int main(int argc, char **argv) {
 
 		// Add any KeyInfo elements
 
-#if defined(HAVE_WINCAPI)
+#if defined(XSEC_HAVE_WINCAPI)
 
 		if (winDssKeyInfo == true && winKeyDSA != NULL) {
 			char pBuf[1024];
@@ -1253,7 +1253,7 @@ int main(int argc, char **argv) {
 		}
 
 #endif
-#if defined (HAVE_OPENSSL)
+#if defined (XSEC_HAVE_OPENSSL)
 		if (certCount > 0) {
 
 			int i;
@@ -1375,7 +1375,7 @@ int main(int argc, char **argv) {
 	delete gFormatter;
 	delete formatTarget;
 
-#if defined (_WIN32) && defined (HAVE_WINCAPI)
+#if defined (_WIN32) && defined (XSEC_HAVE_WINCAPI)
 	if (win32DSSCSP != 0)
 		CryptReleaseContext(win32DSSCSP,0);
 	if (win32RSACSP != 0)

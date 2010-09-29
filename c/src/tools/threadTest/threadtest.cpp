@@ -31,10 +31,10 @@
 #include <xsec/framework/XSECProvider.hpp>
 #include <xsec/dsig/DSIGSignature.hpp>
 #include <xsec/dsig/DSIGReference.hpp>
-#if defined (HAVE_OPENSSL)
+#if defined (XSEC_HAVE_OPENSSL)
 #	include <xsec/enc/OpenSSL/OpenSSLCryptoKeyHMAC.hpp>
 #else
-#	if defined (HAVE_WINCAPI)
+#	if defined (XSEC_HAVE_WINCAPI)
 #		include <xsec/enc/WinCAPI/WinCAPICryptoKeyHMAC.hpp>
 #	else
 #		error No crypto provider available
@@ -276,7 +276,7 @@ DWORD WINAPI doSignThread (LPVOID Param) {
 
 		sig->appendKeyName(MAKE_UNICODE_STRING("The secret key is \"secret\""));
 
-#if defined (HAVE_OPENSSL)
+#if defined (XSEC_HAVE_OPENSSL)
 		OpenSSLCryptoKeyHMAC * hmacKey = new OpenSSLCryptoKeyHMAC();
 #else
 		WinCAPICryptoKeyHMAC * hmacKey = new WinCAPICryptoKeyHMAC(0);
@@ -390,7 +390,7 @@ DWORD WINAPI doVerifyThread (LPVOID Param) {
 
 		DSIGSignature * sig = g_provider->newSignatureFromDOM(myDoc);
 
-#if defined (HAVE_OPENSSL)
+#if defined (XSEC_HAVE_OPENSSL)
 		OpenSSLCryptoKeyHMAC *hmacKey = new OpenSSLCryptoKeyHMAC();
 #else
 		WinCAPICryptoKeyHMAC *hmacKey = new WinCAPICryptoKeyHMAC(0);

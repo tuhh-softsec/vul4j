@@ -44,7 +44,7 @@ XERCES_CPP_NAMESPACE_USE
 
 #include <iostream>
 
-#if defined (HAVE_OPENSSL) 
+#if defined (XSEC_HAVE_OPENSSL) 
 
 InteropResolver::InteropResolver(const XMLCh * baseURI) {
 
@@ -656,4 +656,4 @@ XSECKeyInfoResolver * InteropResolver::clone(void) const {
 
 
 
-#endif /* HAVE_OPENSSL */
+#endif /* XSEC_HAVE_OPENSSL */

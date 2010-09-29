@@ -39,7 +39,7 @@
 #include <xsec/enc/XSCrypt/XSCryptCryptoBase64.hpp>
 #include <xsec/enc/XSECCryptoException.hpp>
 
-#if defined (HAVE_WINCAPI)
+#if defined (XSEC_HAVE_WINCAPI)
 
 #include <xercesc/util/Janitor.hpp>
 
@@ -423,5 +423,5 @@ unsigned char * WinCAPICryptoProvider::WinBN2b64(BYTE * n, DWORD nLen, unsigned 
 
 }
 
-#endif /* HAVE_WINCAPI */
+#endif /* XSEC_HAVE_WINCAPI */
 

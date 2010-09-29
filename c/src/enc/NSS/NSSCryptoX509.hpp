@@ -29,7 +29,9 @@
 #include <xsec/framework/XSECDefs.hpp>
 #include <xsec/enc/XSECCryptoX509.hpp>
 
-#if defined (HAVE_NSS)
+#include <nss3/cert.h>
+
+#if defined (XSEC_HAVE_NSS)
 
 class NSSCryptoProvider;
 
@@ -141,6 +143,6 @@ private:
 
 };
 
-#endif /* HAVE_NSS */
+#endif /* XSEC_HAVE_NSS */
 #endif /* NSSCRYPTOX509_INCLUDE */
 

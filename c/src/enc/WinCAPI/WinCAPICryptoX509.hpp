@@ -31,7 +31,7 @@
 #include <xsec/framework/XSECDefs.hpp>
 #include <xsec/enc/XSECCryptoX509.hpp>
 
-#if defined (HAVE_WINCAPI)
+#if defined (XSEC_HAVE_WINCAPI)
 
 #define _WIN32_WINNT 0x0400
 #include <wincrypt.h>
@@ -156,6 +156,6 @@ private:
 
 };
 
-#endif /* HAVE_WINCAPI */
+#endif /* XSEC_HAVE_WINCAPI */
 #endif /* WINCAPICRYPTOX509_INCLUDE */
 

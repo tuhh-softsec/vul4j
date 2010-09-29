@@ -28,7 +28,7 @@
 #include <xsec/enc/NSS/NSSCryptoKeyHMAC.hpp>
 #include <xsec/utils/XSECDOMUtils.hpp>
 
-#if defined (HAVE_NSS)
+#if defined (XSEC_HAVE_NSS)
 
 #include <memory.h>
 
@@ -265,4 +265,4 @@ XSECCryptoHash::HashType NSSCryptoHashHMAC::getHashType(void) const {
 
 }
 
-#endif /* HAVE_NSS */
+#endif /* XSEC_HAVE_NSS */

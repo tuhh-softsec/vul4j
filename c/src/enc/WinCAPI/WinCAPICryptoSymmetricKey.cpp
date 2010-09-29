@@ -36,7 +36,7 @@
 
 XERCES_CPP_NAMESPACE_USE
 
-#if defined (HAVE_WINCAPI)
+#if defined (XSEC_HAVE_WINCAPI)
 
 // --------------------------------------------------------------------------------
 //           Constructors and Destructors
@@ -717,4 +717,4 @@ HCRYPTKEY WinCAPICryptoSymmetricKey::createWindowsKey(
 }
 
 
-#endif /* HAVE_WINCAPI */
+#endif /* XSEC_HAVE_WINCAPI */

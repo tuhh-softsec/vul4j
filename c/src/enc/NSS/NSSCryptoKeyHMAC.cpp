@@ -27,7 +27,7 @@
 #include <xsec/framework/XSECError.hpp>
 #include <xsec/enc/XSECCryptoException.hpp>
 
-#if defined (HAVE_NSS)
+#if defined (XSEC_HAVE_NSS)
 
 // --------------------------------------------------------------------------------
 //           Constructor
@@ -79,4 +79,4 @@ XSECCryptoKey * NSSCryptoKeyHMAC::clone() const {
 
 }
 
-#endif /* HAVE_NSS */
+#endif /* XSEC_HAVE_NSS */

@@ -30,7 +30,7 @@
 
 #include <xsec/enc/XSECCryptoKeyEC.hpp>
 
-#if defined (HAVE_OPENSSL) && defined(XSEC_OPENSSL_HAVE_EC)
+#if defined (XSEC_HAVE_OPENSSL) && defined(XSEC_OPENSSL_HAVE_EC)
 #include <openssl/ec.h>
 #include <openssl/evp.h>
 
@@ -182,5 +182,5 @@ private:
 	
 };
 
-#endif /* HAVE_OPENSSL */
+#endif /* XSEC_HAVE_OPENSSL */
 #endif /* XSECCRYPTOKEYEC_INCLUDE */

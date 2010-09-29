@@ -32,7 +32,7 @@
 #include <xsec/enc/XSECCryptoUtils.hpp>
 #include <xsec/framework/XSECError.hpp>
 
-#if defined (HAVE_WINCAPI)
+#if defined (XSEC_HAVE_WINCAPI)
 
 #include <xercesc/util/Janitor.hpp>
 
@@ -766,5 +766,5 @@ unsigned int WinCAPICryptoKeyDSA::getYBase64BigNums(char * b64, unsigned int len
 
 }
 
-#endif /* HAVE_WINCAPI */
+#endif /* XSEC_HAVE_WINCAPI */
 

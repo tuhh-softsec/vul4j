@@ -26,7 +26,7 @@
 #include <xsec/enc/NSS/NSSCryptoHash.hpp>
 #include <xsec/enc/XSECCryptoException.hpp>
 
-#if defined (HAVE_NSS)
+#if defined (XSEC_HAVE_NSS)
 
 // --------------------------------------------------------------------------------
 //           Constructor
@@ -165,4 +165,4 @@ XSECCryptoHash::HashType NSSCryptoHash::getHashType(void) const {
 
 }
 
-#endif /* HAVE_NSS */
+#endif /* XSEC_HAVE_NSS */

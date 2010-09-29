@@ -102,11 +102,11 @@ XALAN_USING_XALAN(XalanTransformer)
 
 #endif
 
-#if !defined (HAVE_OPENSSL) && !defined(HAVE_WINCAPI) && !defined(HAVE_NSS)
+#if !defined (XSEC_HAVE_OPENSSL) && !defined(XSEC_HAVE_WINCAPI) && !defined(XSEC_HAVE_NSS)
 #	error No available cryptoAPI
 #endif
 
-#if defined (HAVE_OPENSSL)
+#if defined (XSEC_HAVE_OPENSSL)
 // OpenSSL
 
 #	include <xsec/enc/OpenSSL/OpenSSLCryptoKeyHMAC.hpp>
@@ -118,7 +118,7 @@ XALAN_USING_XALAN(XalanTransformer)
 
 #endif
 
-#if defined (HAVE_WINCAPI)
+#if defined (XSEC_HAVE_WINCAPI)
 
 #	include <xsec/enc/WinCAPI/WinCAPICryptoProvider.hpp>
 #	include <xsec/enc/WinCAPI/WinCAPICryptoSymmetricKey.hpp>
@@ -126,7 +126,7 @@ XALAN_USING_XALAN(XalanTransformer)
 
 #endif
 
-#if defined (HAVE_NSS)
+#if defined (XSEC_HAVE_NSS)
 
 #	include <xsec/enc/NSS/NSSCryptoProvider.hpp>
 #	include <xsec/enc/NSS/NSSCryptoSymmetricKey.hpp>
@@ -188,11 +188,11 @@ void printUsage(void) {
 	cerr << "         Use the interop resolver for Baltimore interop examples\n";
 	cerr << "     --out-file/-o\n";
 	cerr << "         Output the result to the indicated file (rather than stdout)\n";
-#if defined (HAVE_WINCAPI)
+#if defined (XSEC_HAVE_WINCAPI)
 	cerr << "     --wincapi/-w\n";
 	cerr << "         Force use of Windows Crypto API\n";
 #endif
-#if defined (HAVE_NSS)
+#if defined (XSEC_HAVE_NSS)
 	cerr << "     --nss/-n\n";
 	cerr << "         Force use of NSS Crypto API\n";
 #endif
@@ -226,7 +226,7 @@ int evaluate(int argc, char ** argv) {
 	unsigned char			keyBuf[24];
 	XMLFormatTarget			*formatTarget ;
 
-#if defined(_WIN32) && defined (HAVE_WINCAPI)
+#if defined(_WIN32) && defined (XSEC_HAVE_WINCAPI)
 	HCRYPTPROV				win32DSSCSP = 0;		// Crypto Providers
 	HCRYPTPROV				win32RSACSP = 0;
 
@@ -288,7 +288,7 @@ int evaluate(int argc, char ** argv) {
 			isXKMSKey = true;
 		}
 
-#if defined (HAVE_WINCAPI)
+#if defined (XSEC_HAVE_WINCAPI)
 		else if (_stricmp(argv[paramCount], "--wincapi") == 0 || _stricmp(argv[paramCount], "-w") == 0) {
 			// Use the interop key resolver
 			WinCAPICryptoProvider * cp = new WinCAPICryptoProvider();
@@ -296,7 +296,7 @@ int evaluate(int argc, char ** argv) {
 			paramCount++;
 		}
 #endif
-#if defined (HAVE_NSS)
+#if defined (XSEC_HAVE_NSS)
 		else if (_stricmp(argv[paramCount], "--nss") == 0 || _stricmp(argv[paramCount], "-n") == 0) {
 			// NSS Crypto Provider
 			NSSCryptoProvider * cp = new NSSCryptoProvider();
@@ -396,7 +396,7 @@ int evaluate(int argc, char ** argv) {
 			}
 
 
-#if defined (HAVE_OPENSSL)
+#if defined (XSEC_HAVE_OPENSSL)
 
 			else if (_stricmp(argv[paramCount], "RSA") == 0) {
 				// RSA private key file
@@ -519,7 +519,7 @@ int evaluate(int argc, char ** argv) {
 				paramCount += 2;
 				
 			} /* argv[1] = "--x509cert" */
-#endif /* HAVE_OPENSSL */
+#endif /* XSEC_HAVE_OPENSSL */
 			else {
 				printUsage();
 				return 2;
@@ -797,7 +797,7 @@ int evaluate(int argc, char ** argv) {
 			delete formatTarget;
 		doc->release();
 
-#if defined (HAVE_OPENSSL)
+#if defined (XSEC_HAVE_OPENSSL)
 		ERR_load_crypto_strings();
 		BIO * bio_err;
 		if ((bio_err=BIO_new(BIO_s_file())) != NULL)

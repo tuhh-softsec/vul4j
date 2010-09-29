@@ -25,7 +25,7 @@
  *
  */
 #include <xsec/framework/XSECDefs.hpp>
-#if defined (HAVE_OPENSSL) && defined (XSEC_OPENSSL_HAVE_EC)
+#if defined (XSEC_HAVE_OPENSSL) && defined (XSEC_OPENSSL_HAVE_EC)
 
 #include <xsec/enc/OpenSSL/OpenSSLCryptoKeyEC.hpp>
 #include <xsec/enc/OpenSSL/OpenSSLCryptoBase64.hpp>
@@ -301,4 +301,4 @@ XSECCryptoKey * OpenSSLCryptoKeyEC::clone() const {
 
 }
 
-#endif /* HAVE_OPENSSL */
+#endif /* XSEC_HAVE_OPENSSL */

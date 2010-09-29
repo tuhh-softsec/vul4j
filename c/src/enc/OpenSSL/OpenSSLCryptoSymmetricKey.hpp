@@ -34,7 +34,7 @@
 #include <xsec/framework/XSECDefs.hpp>
 #include <xsec/enc/XSECCryptoSymmetricKey.hpp>
 
-#if defined (HAVE_OPENSSL)
+#if defined (XSEC_HAVE_OPENSSL)
 
 // OpenSSL Includes
 
@@ -310,5 +310,5 @@ private:
 	bool							m_doPad;		// Do we pad last block?
 };
 
-#endif /* HAVE_OPENSSL */
+#endif /* XSEC_HAVE_OPENSSL */
 #endif /* OPENSSLCRYPTOSYMMETRICKEY_INCLUDE */

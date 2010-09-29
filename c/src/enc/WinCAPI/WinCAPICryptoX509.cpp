@@ -34,7 +34,7 @@
 #include <xsec/enc/XSECCryptoException.hpp>
 #include <xsec/enc/XSCrypt/XSCryptCryptoBase64.hpp>
 
-#if defined (HAVE_WINCAPI)
+#if defined (XSEC_HAVE_WINCAPI)
 
 #include <xercesc/util/Janitor.hpp>
 
@@ -203,6 +203,6 @@ XSECCryptoKey * WinCAPICryptoX509::clonePublicKey() const {
 
 }
 
-#endif /* HAVE_WINCAPI */
+#endif /* XSEC_HAVE_WINCAPI */
 
 

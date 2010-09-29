@@ -33,7 +33,7 @@
 
 #include <xercesc/util/Janitor.hpp>
 
-#if defined (HAVE_NSS)
+#if defined (XSEC_HAVE_NSS)
 
 #include "prerror.h"
 
@@ -585,4 +585,4 @@ unsigned int NSSCryptoSymmetricKey::encryptFinish(unsigned char * cipherBuf,
 
 }
 
-#endif /* HAVE_NSS */
+#endif /* XSEC_HAVE_NSS */

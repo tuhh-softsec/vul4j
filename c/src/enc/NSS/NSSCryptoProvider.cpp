@@ -35,10 +35,10 @@
 #include <xsec/enc/XSCrypt/XSCryptCryptoBase64.hpp>
 #include <xsec/enc/XSECCryptoException.hpp>
 
-#if defined (HAVE_NSS)
+#if defined (XSEC_HAVE_NSS)
 
-#include "nss/pk11func.h"
-#include "nss/nss.h"
+#include <nss3/pk11func.h>
+#include <nss3/nss.h>
 
 #include <xercesc/util/Janitor.hpp>
 
@@ -459,4 +459,4 @@ unsigned int NSSCryptoProvider::getRandom(unsigned char * buffer, unsigned int n
 
 }
 
-#endif /* HAVE_NSS */
+#endif /* XSEC_HAVE_NSS */

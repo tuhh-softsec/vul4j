@@ -30,7 +30,7 @@
 
 #include <xsec/enc/XSECCryptoKeyRSA.hpp>
 
-#if defined (HAVE_WINCAPI)
+#if defined (XSEC_HAVE_WINCAPI)
 
 #if !defined(_WIN32_WINNT)
 #	define _WIN32_WINNT 0x0400
@@ -360,5 +360,5 @@ private:
 
 };
 
-#endif /* HAVE_WINCAPI */
+#endif /* XSEC_HAVE_WINCAPI */
 #endif /* WINCAPICRYPTOKEYRSA_INCLUDE */

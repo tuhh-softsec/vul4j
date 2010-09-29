@@ -37,7 +37,7 @@
 #    include <glob.h>
 #endif
 
-#if defined (HAVE_OPENSSL)
+#if defined (XSEC_HAVE_OPENSSL)
 #	include <openssl/x509.h>
 
 class InteropResolver : public XSECKeyInfoResolver {
@@ -73,4 +73,4 @@ private:
 
 };
 
-#endif /* HAVE_OPENSSL */
+#endif /* XSEC_HAVE_OPENSSL */

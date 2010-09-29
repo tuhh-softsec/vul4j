@@ -26,7 +26,7 @@
  */
 
 #include <xsec/framework/XSECDefs.hpp>
-#if defined (HAVE_OPENSSL)
+#if defined (XSEC_HAVE_OPENSSL)
 
 #include <xsec/enc/OpenSSL/OpenSSLCryptoKeyHMAC.hpp>
 #include <xsec/framework/XSECError.hpp>
@@ -66,4 +66,4 @@ XSECCryptoKey * OpenSSLCryptoKeyHMAC::clone() const {
 
 }
 
-#endif /* HAVE_OPENSSL */
+#endif /* XSEC_HAVE_OPENSSL */
