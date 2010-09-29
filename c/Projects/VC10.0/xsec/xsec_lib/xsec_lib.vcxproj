@@ -667,6 +667,7 @@ xcopy /I /s /f ..\..\..\..\src\*.hpp ..\..\..\..\include\xsec
     <ClInclude Include="..\..\..\..\src\enc\NSS\NSSCryptoProvider.hpp" />
     <ClInclude Include="..\..\..\..\src\enc\NSS\NSSCryptoSymmetricKey.hpp" />
     <ClInclude Include="..\..\..\..\src\enc\NSS\NSSCryptoX509.hpp" />
+    <ClInclude Include="..\..\..\..\src\framework\XSECVersion.hpp" />
     <ClInclude Include="..\..\..\..\src\utils\XSECAutoPtr.hpp" />
     <ClInclude Include="..\..\..\..\src\utils\XSECBinTXFMInputStream.hpp" />
     <ClInclude Include="..\..\..\..\src\utils\XSECDOMUtils.hpp" />

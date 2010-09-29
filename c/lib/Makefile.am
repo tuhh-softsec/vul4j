@@ -167,6 +167,7 @@ framework_sources = \
   ../src/framework/XSECEnv.cpp \
   ../src/framework/XSECURIResolverXerces.hpp \
   ../src/framework/XSECW32Config.hpp \
+  ../src/framework/XSECVersion.hpp \
   ../src/framework/XSECProvider.hpp \
   ../src/framework/XSECAlgorithmHandler.hpp \
   ../src/framework/XSECConfig.hpp \

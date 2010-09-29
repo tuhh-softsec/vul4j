@@ -30,17 +30,6 @@
 #include <xercesc/util/XercesVersion.hpp>
 
 /*
- * These are the high level numerics that need to be changed to bump the
- * version number.
- *
- * They are used to create version strings - see the details at the end of this file
- */
-
-#define XSEC_VERSION_MAJOR   1
-#define XSEC_VERSION_MEDIUM  6
-#define XSEC_VERSION_MINOR   0
-
-/*
  * Because we don't have a configure script, we need to rely on version
  * numbers to understand library idiosycracies
  */
@@ -216,33 +205,4 @@
 /* Windows direct.h */
 #define HAVE_DIRECT_H 1
 
-// --------------------------------------------------------------------------------
-//           Version Handling
-// --------------------------------------------------------------------------------
-
-/*
- * The following code makes use of the Xerces version handling macros to define
- * some constants that can be used during conditional compilation.
- */
-
-/* This can be used for conditional compilation and for testing during
- * autoconfigures.
- *
- * It will create a string of the form 10000 * MAJOR + 100 * MEDIUM + MINOR
- * E.g. 10301 for version 1.3.1
- */
-
-#define _XSEC_VERSION_FULL CALC_EXPANDED_FORM (XSEC_VERSION_MAJOR,XSEC_VERSION_MEDIUM,XSEC_VERSION_MINOR)
-
-/* Some useful strings for versioning - based on the same strings from Xerces */
-
-#define XSEC_FULLVERSIONSTR INVK_CAT3_SEP_UNDERSCORE(XSEC_VERSION_MAJOR,XSEC_VERSION_MEDIUM,XSEC_VERSION_MINOR)
-#define XSEC_FULLVERSIONDOT INVK_CAT3_SEP_PERIOD(XSEC_VERSION_MAJOR,XSEC_VERSION_MEDIUM,XSEC_VERSION_MINOR)
-#define XSEC_FULLVERSIONNUM INVK_CAT3_SEP_NIL(XSEC_VERSION_MAJOR,XSEC_VERSION_MEDIUM,XSEC_VERSION_MINOR)
-#define XSEC_VERSIONSTR     INVK_CAT2_SEP_UNDERSCORE(XSEC_VERSION_MAJOR,XSEC_VERSION_MEDIUM)
-
-/* The following is used for backwards compatibility with previous version handling */
-
-#define XSEC_VERSION	     "XSEC_FULLVERSIONDOT"
-
-
+#include <xsec/framework/XSECVersion.hpp>

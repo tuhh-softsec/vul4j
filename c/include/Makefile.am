@@ -119,7 +119,8 @@ lib_includes += \
   xsec/framework/XSECConfig.hpp \
   xsec/framework/XSECURIResolverXerces.hpp \
   xsec/framework/XSECAlgorithmMapper.hpp \
-  xsec/framework/XSECW32Config.hpp
+  xsec/framework/XSECW32Config.hpp \
+  xsec/framework/XSECVersion.hpp
 
 # transformers
 
