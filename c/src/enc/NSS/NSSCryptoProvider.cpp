@@ -330,11 +330,11 @@ XSECCryptoBase64 * NSSCryptoProvider::base64() const {
 
 SECItem * NSSCryptoProvider::b642SI(const char * b64, unsigned int b64Len) {
 
-  SECItem * rv;
+    SECItem * rv;
 
-  BYTE * os;
-	XSECnew(os, BYTE[b64Len]);
-	ArrayJanitor<BYTE> j_os(os);
+    unsigned char * os;
+	XSECnew(os, unsigned char[b64Len]);
+	ArrayJanitor<unsigned char> j_os(os);
 
 	// Decode
 	XSCryptCryptoBase64 b;
@@ -343,10 +343,9 @@ SECItem * NSSCryptoProvider::b642SI(const char * b64, unsigned int b64Len) {
 	unsigned int retLen = b.decode((unsigned char *) b64, b64Len, os, b64Len);
 	retLen += b.decodeFinish(&os[retLen], b64Len - retLen);
 
-  rv = SECITEM_AllocItem(NULL, NULL, retLen);
-  rv->len = retLen;
-
-  memcpy(rv->data, os, retLen);
+	rv = SECITEM_AllocItem(NULL, NULL, retLen);
+	rv->len = retLen;
+	memcpy(rv->data, os, retLen);
 
 	return rv;
 
