@@ -46,8 +46,9 @@ XERCES_CPP_NAMESPACE_USE
 NSSCryptoSymmetricKey::NSSCryptoSymmetricKey(XSECCryptoSymmetricKey::SymmetricKeyType type) :
 m_keyType(type),
 m_keyMode(MODE_CBC),
-mp_k(NULL),
-m_initialised(false) {
+m_initialised(false),
+mp_k(NULL)
+{
 
 	
 
