@@ -98,8 +98,8 @@ public class OtherMailboxSyntaxChecker extends SyntaxChecker
         
         String mailboxType = strValue.substring( 0, dollar );
         
-        String mailbox = ( ( dollar < strValue.length() - 1 ) ? 
-            strValue.substring( dollar + 1 ) : "" ); 
+        String mailbox = ( ( dollar < strValue.length() - 1 )
+            ? strValue.substring( dollar + 1 ) : "" );
         
         // The mailbox should not contains a '$'
         if ( mailbox.indexOf( '$' ) != -1 )

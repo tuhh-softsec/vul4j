@@ -158,9 +158,9 @@ public abstract class SimpleNode<T> extends LeafNode
         }
         else
         {
-            if ( ( attribute == null ) || 
-                !( SchemaConstants.OBJECT_CLASS_AT.equalsIgnoreCase( attribute ) ||
-                  SchemaConstants.OBJECT_CLASS_AT_OID.equalsIgnoreCase( attribute ) ) )
+            if ( ( attribute == null )
+                || !( SchemaConstants.OBJECT_CLASS_AT.equalsIgnoreCase( attribute )
+                    || SchemaConstants.OBJECT_CLASS_AT_OID.equalsIgnoreCase( attribute ) ) )
             {
                 throw new UnsupportedOperationException( I18n.err( I18n.ERR_04162, attribute ) );
             }

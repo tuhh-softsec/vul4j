@@ -109,8 +109,8 @@ public class NameAndOptionalUIDSyntaxChecker extends SyntaxChecker
             // followed by a BitString, except if the '#' is
             // on the last position
             // We shoould not find a
-            if ( BitStringSyntaxChecker.isValid( strValue.substring( sharpPos + 1 ) ) && 
-                 ( sharpPos < strValue.length() ) )
+            if ( BitStringSyntaxChecker.isValid( strValue.substring( sharpPos + 1 ) )
+                && ( sharpPos < strValue.length() ) )
             {
                 // Ok, we have a BitString, now check the DN,
                 // except if the '#' is in first position

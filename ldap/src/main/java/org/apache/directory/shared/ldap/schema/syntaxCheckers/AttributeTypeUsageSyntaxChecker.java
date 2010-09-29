@@ -82,8 +82,8 @@ public class AttributeTypeUsageSyntaxChecker extends SyntaxChecker
             strValue = value.toString();
         }
 
-        if ( ( strValue.length() < "userApplications".length() ) || 
-             ( strValue.length() > "userApplications".length() ) )
+        if ( ( strValue.length() < "userApplications".length() )
+            || ( strValue.length() > "userApplications".length() ) )
         {
             LOG.debug( "Syntax invalid for '{}'", value );
             return false;
@@ -94,10 +94,10 @@ public class AttributeTypeUsageSyntaxChecker extends SyntaxChecker
         switch ( ch )
         {
             case( 'd' ):
-                if ( "dSAOperation".equals( strValue ) ||
-                     "directoryOperation".equals( strValue ) ||
-                     "distributedOperation".equals( strValue ) )
-                {
+                if ( "dSAOperation".equals( strValue )
+                    || "directoryOperation".equals( strValue )
+                    || "distributedOperation".equals( strValue ) )
+               {
                     LOG.debug( "Syntax valid for '{}'", value );
                     return true;
                 }

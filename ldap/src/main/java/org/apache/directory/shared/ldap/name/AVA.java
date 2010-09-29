@@ -476,9 +476,9 @@ public class AVA implements Cloneable, Comparable<Object>, Externalizable
         {
             if ( !val2.isBinary() )
             {
-                int val = ( sensitivity == CASE_SENSITIVE ) ? 
-                    ( val1.getString() ).compareTo( val2.getString() )
-                    : ( val1.getString() ).compareToIgnoreCase( val2.getString() );
+                int val = ( sensitivity == CASE_SENSITIVE )
+                    ? ( val1.getString() ).compareTo( val2.getString() )
+                        : ( val1.getString() ).compareToIgnoreCase( val2.getString() );
 
                 return ( val < 0 ? -1 : ( val > 0 ? 1 : val ) );
             }
@@ -744,13 +744,13 @@ public class AVA implements Cloneable, Comparable<Object>, Externalizable
      */
     public void writeExternal( ObjectOutput out ) throws IOException
     {
-        if ( StringTools.isEmpty( upName ) || 
-             StringTools.isEmpty( upType ) ||
-             StringTools.isEmpty( normType ) ||
-             ( start < 0 ) ||
-             ( length < 2 ) ||             // At least a type and '='
-             ( upValue.isNull() ) ||
-             ( normValue.isNull() ) )
+        if ( StringTools.isEmpty( upName )
+            || StringTools.isEmpty( upType )
+            || StringTools.isEmpty( normType )
+            || ( start < 0 )
+            || ( length < 2 ) // At least a type and '='
+            || ( upValue.isNull() )
+            || ( normValue.isNull() ) )
         {
             String message = "Cannot serialize an wrong ATAV, ";
             

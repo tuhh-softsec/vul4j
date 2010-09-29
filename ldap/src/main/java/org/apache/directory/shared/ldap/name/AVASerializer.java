@@ -80,13 +80,13 @@ public final class AVASerializer
      */
     public static void serialize( AVA atav, ObjectOutput out ) throws IOException
     {
-        if ( StringTools.isEmpty( atav.getUpName() ) || 
-             StringTools.isEmpty( atav.getUpType() ) ||
-             StringTools.isEmpty( atav.getNormType() ) ||
-             ( atav.getStart() < 0 ) ||
-             ( atav.getLength() < 2 ) ||             // At least a type and '='
-             ( atav.getUpValue().isNull() ) ||
-             ( atav.getNormValue().isNull() ) )
+        if ( StringTools.isEmpty( atav.getUpName() )
+            || StringTools.isEmpty( atav.getUpType() )
+            || StringTools.isEmpty( atav.getNormType() )
+            || ( atav.getStart() < 0 )
+            || ( atav.getLength() < 2 ) // At least a type and '='
+            || ( atav.getUpValue().isNull() )
+            || ( atav.getNormValue().isNull() ) )
         {
             String message = "Cannot serialize an wrong ATAV, ";
             

@@ -150,9 +150,9 @@ public class ItemFirstACIItem extends ACIItem
         {
             Set<GrantAndDenial> grants = itemPermission.getGrants();
             Set<GrantAndDenial> denials = itemPermission.getDenials();
-            int precedence = itemPermission.getPrecedence() != null ? 
-                itemPermission.getPrecedence() :
-                this.getPrecedence();
+            int precedence = itemPermission.getPrecedence() != null
+                ? itemPermission.getPrecedence()
+                    : this.getPrecedence();
 
             if ( grants.size() > 0 )
             {

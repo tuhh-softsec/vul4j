@@ -605,11 +605,8 @@ public class Csn implements Serializable, Comparable<Csn>
 
         Csn that = ( Csn ) o;
 
-        return 
-            ( timestamp == that.timestamp ) &&
-            ( changeCount == that.changeCount ) &&
-            ( replicaId == that.replicaId ) &&
-            ( operationNumber == that.operationNumber );
+        return ( timestamp == that.timestamp ) && ( changeCount == that.changeCount )
+            && ( replicaId == that.replicaId ) && ( operationNumber == that.operationNumber );
     }
 
 
@@ -650,11 +647,7 @@ public class Csn implements Serializable, Comparable<Csn>
         }
 
         // Then the replicaId
-        int replicaIdCompareResult= 
-            ( this.replicaId < csn.replicaId ? 
-              -1 : 
-               ( this.replicaId > csn.replicaId ?
-                   1 : 0 ) );
+        int replicaIdCompareResult = getReplicaIdCompareResult( csn );
 
         if ( replicaIdCompareResult != 0 )
         {
@@ -674,5 +667,19 @@ public class Csn implements Serializable, Comparable<Csn>
         {
             return 0;
         }
+    }
+
+
+    private int getReplicaIdCompareResult( Csn csn )
+    {
+        if ( this.replicaId < csn.replicaId )
+        {
+            return -1;
+        }
+        if ( this.replicaId > csn.replicaId )
+        {
+            return 1;
+        }
+        return 0;
     }
 }

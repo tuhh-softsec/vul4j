@@ -84,15 +84,15 @@ public class JpegSyntaxChecker extends SyntaxChecker
             return false;
         }
 
-        if ( ( bytes[0] == (byte)0x00FF ) && // SOI
-             ( bytes[1] == (byte)0x00D8 ) &&
-             ( bytes[2] == (byte)0x00FF ) && // APP0
-             ( bytes[3] == (byte)0x00E0 ) &&
-             ( bytes[6] == 'J' ) && // JFIF
-             ( bytes[7] == 'F' ) && // JFIF
-             ( bytes[8] == 'I' ) && // JFIF
-             ( bytes[9] == 'F' ) &&
-             ( bytes[10] == 0x00 ) ) // \0
+        if ( ( bytes[0] == ( byte ) 0x00FF ) // SOI
+            && ( bytes[1] == ( byte ) 0x00D8 )
+            && ( bytes[2] == ( byte ) 0x00FF ) // APP0
+            && ( bytes[3] == ( byte ) 0x00E0 )
+            && ( bytes[6] == 'J' ) // JFIF
+            && ( bytes[7] == 'F' ) // JFIF
+            && ( bytes[8] == 'I' ) // JFIF
+            && ( bytes[9] == 'F' )
+            && ( bytes[10] == 0x00 ) ) // \0
         {
             // Note : this is not because the header is correct
             // that the file is a jpeg file. There are much more

@@ -118,8 +118,8 @@ public class DSETypeSyntaxChecker extends SyntaxChecker
         }
 
         // Check the opening and closing parenthesis
-        if ( ( strValue.charAt( 0 ) != '(' ) || 
-             ( strValue.charAt( strValue.length() - 1 ) != ')' ) )
+        if ( ( strValue.charAt( 0 ) != '(' )
+            || ( strValue.charAt( strValue.length() - 1 ) != ')' ) )
         {
             LOG.debug( "Syntax invalid for '{}'", value );
             return false;

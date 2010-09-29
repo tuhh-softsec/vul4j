@@ -86,8 +86,8 @@ public class StringValue extends AbstractValue<String>
 
         if ( ! attributeType.getSyntax().isHumanReadable() )
         {
-            LOG.warn( "Treating a value of a binary attribute {} as a String: " +
-                    "\nthis could cause data corruption!", attributeType.getName() );
+            LOG.warn( "Treating a value of a binary attribute {} as a String: "
+                + "\nthis could cause data corruption!", attributeType.getName() );
         }
 
         this.attributeType = attributeType;

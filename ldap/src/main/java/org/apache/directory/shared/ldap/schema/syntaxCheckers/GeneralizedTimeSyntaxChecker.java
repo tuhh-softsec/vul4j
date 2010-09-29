@@ -76,20 +76,21 @@ public class GeneralizedTimeSyntaxChecker extends SyntaxChecker
     private static final long serialVersionUID = 1L;
 
     /** The GeneralizedDate pattern matching */
-    private static final String GENERALIZED_TIME_PATTERN = 
-                "^\\d{4}" +                                 // century + year : 0000 to 9999
-                "(0[1-9]|1[0-2])" +                         // month : 01 to 12
-                "(0[1-9]|[12]\\d|3[01])" +                  // day : 01 to 31
-                "([01]\\d|2[0-3])" +                        // hour : 00 to 23
-                "(" +
-                    "([0-5]\\d)" +                          // optionnal minute : 00 to 59
-                    "([0-5]\\d|60)?" +                      // optionnal second | leap second
-                ")?" +
-                "([.,]\\d+)?" +                             // fraction       
-                "(Z|[+-]([01]\\d|2[0-3])([0-5]\\d)?)$";     // time-zone
-    
-    // The regexp pattern is immutable, only one instance needed.
-    private static final Pattern DATE_PATTERN = Pattern.compile( GENERALIZED_TIME_PATTERN ); 
+    private static final String GENERALIZED_TIME_PATTERN =
+                "^\\d{4}" // century + year : 0000 to 9999
+                    + "(0[1-9]|1[0-2])" // month : 01 to 12
+                    + "(0[1-9]|[12]\\d|3[01])" // day : 01 to 31
+                    + "([01]\\d|2[0-3])" // hour : 00 to 23
+                    + "("
+                    + "([0-5]\\d)" // optional minute : 00 to 59
+                    + "([0-5]\\d|60)?" // optional second | leap second
+                    + ")?"
+                    + "([.,]\\d+)?" // fraction       
+                    + "(Z|[+-]([01]\\d|2[0-3])([0-5]\\d)?)$"; // time-zone
+
+    /** The date pattern. The regexp pattern is immutable, only one instance needed. */
+    private static final Pattern DATE_PATTERN = Pattern.compile( GENERALIZED_TIME_PATTERN );
+
 
     /**
      * Creates a new instance of GeneralizedTimeSyntaxChecker.
@@ -98,7 +99,7 @@ public class GeneralizedTimeSyntaxChecker extends SyntaxChecker
     {
         super( SchemaConstants.GENERALIZED_TIME_SYNTAX );
     }
-    
+
 
     /**
      * {@inheritDoc}
@@ -112,14 +113,14 @@ public class GeneralizedTimeSyntaxChecker extends SyntaxChecker
             LOG.debug( "Syntax invalid for 'null'" );
             return false;
         }
-        
+
         if ( value instanceof String )
         {
             strValue = ( String ) value;
         }
         else if ( value instanceof byte[] )
         {
-            strValue = StringTools.utf8ToString( ( byte[] ) value ); 
+            strValue = StringTools.utf8ToString( ( byte[] ) value );
         }
         else
         {
@@ -132,10 +133,10 @@ public class GeneralizedTimeSyntaxChecker extends SyntaxChecker
             LOG.debug( "Syntax invalid for '{}'", value );
             return false;
         }
-        
+
         // Start the date parsing
         boolean result = DATE_PATTERN.matcher( strValue ).find();
-        
+
         if ( result )
         {
             LOG.debug( "Syntax valid for '{}'", value );
@@ -144,7 +145,7 @@ public class GeneralizedTimeSyntaxChecker extends SyntaxChecker
         {
             LOG.debug( "Syntax invalid for '{}'", value );
         }
-        
+
         return result;
     }
 }

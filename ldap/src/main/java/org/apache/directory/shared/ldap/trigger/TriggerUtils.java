@@ -58,8 +58,8 @@ public final class TriggerUtils
     {
         Attributes ap = apCtx.getAttributes( "", new String[] { SchemaConstants.ADMINISTRATIVE_ROLE_AT } );
         Attribute administrativeRole = ap.get( SchemaConstants.ADMINISTRATIVE_ROLE_AT );
-        if ( administrativeRole == null ||
-            !AttributeUtils.containsValueCaseIgnore( administrativeRole, TRIGGER_EXECUTION_SPECIFIC_AREA_VALUE ) )
+        if ( administrativeRole == null
+            || !AttributeUtils.containsValueCaseIgnore( administrativeRole, TRIGGER_EXECUTION_SPECIFIC_AREA_VALUE ) )
         {
             Attributes changes = new BasicAttributes( SchemaConstants.ADMINISTRATIVE_ROLE_AT, TRIGGER_EXECUTION_SPECIFIC_AREA_VALUE, true );
             apCtx.modifyAttributes( "", DirContext.ADD_ATTRIBUTE, changes );

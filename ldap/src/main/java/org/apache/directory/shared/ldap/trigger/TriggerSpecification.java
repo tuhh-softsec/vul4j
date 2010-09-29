@@ -43,9 +43,9 @@ public class TriggerSpecification
     public TriggerSpecification( LdapOperation ldapOperation, ActionTime actionTime, List<SPSpec> spSpecs )
     {
         super();
-        if ( ldapOperation == null || 
-            actionTime == null || 
-            spSpecs == null )
+        if ( ldapOperation == null
+            || actionTime == null
+            || spSpecs == null )
         {
             throw new NullArgumentException( I18n.err( I18n.ERR_04331 ) );
         }

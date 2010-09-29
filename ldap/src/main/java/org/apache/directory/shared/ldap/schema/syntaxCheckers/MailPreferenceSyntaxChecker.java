@@ -98,9 +98,9 @@ public class MailPreferenceSyntaxChecker extends SyntaxChecker
             return false;
         }
         
-        boolean result = ( ( "NO-LISTS".equals( strValue ) ) || ( "ANY-LIST".equals( strValue ) ) || 
-            ( "PROFESSIONAL-LISTS".equals( strValue ) ) );
-        
+        boolean result = ( ( "NO-LISTS".equals( strValue ) ) || ( "ANY-LIST".equals( strValue ) )
+            || ( "PROFESSIONAL-LISTS".equals( strValue ) ) );
+
         if ( result )
         {
             LOG.debug( "Syntax valid for '{}'", value );

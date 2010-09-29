@@ -138,11 +138,11 @@ public class TeletexTerminalIdentifierSyntaxChecker extends SyntaxChecker
             
             String key = ttxParam.substring( 0, colon );
             
-            if ( key.startsWith( "graphic" ) ||
-                 key.startsWith( "control" ) ||
-                 key.startsWith( "misc" ) ||
-                 key.startsWith( "page" ) ||
-                 key.startsWith( "private" ) )
+            if ( key.startsWith( "graphic" )
+                || key.startsWith( "control" )
+                || key.startsWith( "misc" )
+                || key.startsWith( "page" )
+                || key.startsWith( "private" ) )
             {
                 if ( colon + 1 == ttxParam.length() )
                 {

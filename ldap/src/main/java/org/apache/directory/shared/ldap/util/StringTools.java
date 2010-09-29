@@ -1248,13 +1248,13 @@ public final class StringTools
                 // Three bytes char
                 return ( char ) (
                 // 1110-tttt 10xx-xxyy 10zz-zzzz -> tttt-0000-0000-0000
-                ( ( bytes[pos] & 0x0F ) << 12 ) +
-                // 1110-tttt 10xx-xxyy 10zz-zzzz -> 0000-xxxx-0000-0000
-                    ( ( bytes[pos + 1] & 0x3C ) << 6 ) +
+                ( ( bytes[pos] & 0x0F ) << 12 )
+                    // 1110-tttt 10xx-xxyy 10zz-zzzz -> 0000-xxxx-0000-0000
+                    + ( ( bytes[pos + 1] & 0x3C ) << 6 )
                     // 1110-tttt 10xx-xxyy 10zz-zzzz -> 0000-0000-yy00-0000
-                    ( ( bytes[pos + 1] & 0x03 ) << 6 ) +
+                    + ( ( bytes[pos + 1] & 0x03 ) << 6 )
                 // 1110-tttt 10xx-xxyy 10zz-zzzz -> 0000-0000-00zz-zzzz
-                ( bytes[pos + 2] & 0x3F )
+                + ( bytes[pos + 2] & 0x3F )
                 // -> tttt-xxxx yyzz-zzzz (FF FF)
                 );
             }
@@ -1264,22 +1264,22 @@ public final class StringTools
                 return ( char ) (
                 // 1111-0ttt 10uu-vvvv 10xx-xxyy 10zz-zzzz -> 000t-tt00
                 // 0000-0000 0000-0000
-                ( ( bytes[pos] & 0x07 ) << 18 ) +
-                // 1111-0ttt 10uu-vvvv 10xx-xxyy 10zz-zzzz -> 0000-00uu
-                // 0000-0000 0000-0000
-                    ( ( bytes[pos + 1] & 0x30 ) << 16 ) +
+                ( ( bytes[pos] & 0x07 ) << 18 )
+                    // 1111-0ttt 10uu-vvvv 10xx-xxyy 10zz-zzzz -> 0000-00uu
+                    // 0000-0000 0000-0000
+                    + ( ( bytes[pos + 1] & 0x30 ) << 16 )
                     // 1111-0ttt 10uu-vvvv 10xx-xxyy 10zz-zzzz -> 0000-0000
                     // vvvv-0000 0000-0000
-                    ( ( bytes[pos + 1] & 0x0F ) << 12 ) +
+                    + ( ( bytes[pos + 1] & 0x0F ) << 12 )
                     // 1111-0ttt 10uu-vvvv 10xx-xxyy 10zz-zzzz -> 0000-0000
                     // 0000-xxxx 0000-0000
-                    ( ( bytes[pos + 2] & 0x3C ) << 6 ) +
+                    + ( ( bytes[pos + 2] & 0x3C ) << 6 )
                     // 1111-0ttt 10uu-vvvv 10xx-xxyy 10zz-zzzz -> 0000-0000
                     // 0000-0000 yy00-0000
-                    ( ( bytes[pos + 2] & 0x03 ) << 6 ) +
+                    + ( ( bytes[pos + 2] & 0x03 ) << 6 )
                 // 1111-0ttt 10uu-vvvv 10xx-xxyy 10zz-zzzz -> 0000-0000
                 // 0000-0000 00zz-zzzz
-                ( bytes[pos + 3] & 0x3F )
+                + ( bytes[pos + 3] & 0x3F )
                 // -> 000t-ttuu vvvv-xxxx yyzz-zzzz (1FFFFF)
                 );
             }
@@ -1289,25 +1289,25 @@ public final class StringTools
                 return ( char ) (
                 // 1111-10tt 10uu-uuuu 10vv-wwww 10xx-xxyy 10zz-zzzz ->
                 // 0000-00tt 0000-0000 0000-0000 0000-0000
-                ( ( bytes[pos] & 0x03 ) << 24 ) +
-                // 1111-10tt 10uu-uuuu 10vv-wwww 10xx-xxyy 10zz-zzzz ->
-                // 0000-0000 uuuu-uu00 0000-0000 0000-0000
-                    ( ( bytes[pos + 1] & 0x3F ) << 18 ) +
+                ( ( bytes[pos] & 0x03 ) << 24 )
+                    // 1111-10tt 10uu-uuuu 10vv-wwww 10xx-xxyy 10zz-zzzz ->
+                    // 0000-0000 uuuu-uu00 0000-0000 0000-0000
+                    + ( ( bytes[pos + 1] & 0x3F ) << 18 )
                     // 1111-10tt 10uu-uuuu 10vv-wwww 10xx-xxyy 10zz-zzzz ->
                     // 0000-0000 0000-00vv 0000-0000 0000-0000
-                    ( ( bytes[pos + 2] & 0x30 ) << 12 ) +
+                    + ( ( bytes[pos + 2] & 0x30 ) << 12 )
                     // 1111-10tt 10uu-uuuu 10vv-wwww 10xx-xxyy 10zz-zzzz ->
                     // 0000-0000 0000-0000 wwww-0000 0000-0000
-                    ( ( bytes[pos + 2] & 0x0F ) << 12 ) +
+                    + ( ( bytes[pos + 2] & 0x0F ) << 12 )
                     // 1111-10tt 10uu-uuuu 10vv-wwww 10xx-xxyy 10zz-zzzz ->
                     // 0000-0000 0000-0000 0000-xxxx 0000-0000
-                    ( ( bytes[pos + 3] & 0x3C ) << 6 ) +
+                    + ( ( bytes[pos + 3] & 0x3C ) << 6 )
                     // 1111-10tt 10uu-uuuu 10vv-wwww 10xx-xxyy 10zz-zzzz ->
                     // 0000-0000 0000-0000 0000-0000 yy00-0000
-                    ( ( bytes[pos + 3] & 0x03 ) << 6 ) +
+                    + ( ( bytes[pos + 3] & 0x03 ) << 6 )
                 // 1111-10tt 10uu-uuuu 10vv-wwww 10xx-xxyy 10zz-zzzz ->
                 // 0000-0000 0000-0000 0000-0000 00zz-zzzz
-                ( bytes[pos + 4] & 0x3F )
+                + ( bytes[pos + 4] & 0x3F )
                 // -> 0000-00tt uuuu-uuvv wwww-xxxx yyzz-zzzz (03 FF FF FF)
                 );
             }
@@ -1318,35 +1318,35 @@ public final class StringTools
                 // 1111-110s 10tt-tttt 10uu-uuuu 10vv-wwww 10xx-xxyy 10zz-zzzz
                 // ->
                 // 0s00-0000 0000-0000 0000-0000 0000-0000
-                ( ( bytes[pos] & 0x01 ) << 30 ) +
-                // 1111-110s 10tt-tttt 10uu-uuuu 10vv-wwww 10xx-xxyy 10zz-zzzz
-                // ->
+                ( ( bytes[pos] & 0x01 ) << 30 )
+                    // 1111-110s 10tt-tttt 10uu-uuuu 10vv-wwww 10xx-xxyy 10zz-zzzz
+                    // ->
                     // 00tt-tttt 0000-0000 0000-0000 0000-0000
-                    ( ( bytes[pos + 1] & 0x3F ) << 24 ) +
+                    + ( ( bytes[pos + 1] & 0x3F ) << 24 )
                     // 1111-110s 10tt-tttt 10uu-uuuu 10vv-wwww 10xx-xxyy
                     // 10zz-zzzz ->
                     // 0000-0000 uuuu-uu00 0000-0000 0000-0000
-                    ( ( bytes[pos + 2] & 0x3F ) << 18 ) +
+                    + ( ( bytes[pos + 2] & 0x3F ) << 18 )
                     // 1111-110s 10tt-tttt 10uu-uuuu 10vv-wwww 10xx-xxyy
                     // 10zz-zzzz ->
                     // 0000-0000 0000-00vv 0000-0000 0000-0000
-                    ( ( bytes[pos + 3] & 0x30 ) << 12 ) +
+                    + ( ( bytes[pos + 3] & 0x30 ) << 12 )
                     // 1111-110s 10tt-tttt 10uu-uuuu 10vv-wwww 10xx-xxyy
                     // 10zz-zzzz ->
                     // 0000-0000 0000-0000 wwww-0000 0000-0000
-                    ( ( bytes[pos + 3] & 0x0F ) << 12 ) +
+                    + ( ( bytes[pos + 3] & 0x0F ) << 12 )
                     // 1111-110s 10tt-tttt 10uu-uuuu 10vv-wwww 10xx-xxyy
                     // 10zz-zzzz ->
                     // 0000-0000 0000-0000 0000-xxxx 0000-0000
-                    ( ( bytes[pos + 4] & 0x3C ) << 6 ) +
+                    + ( ( bytes[pos + 4] & 0x3C ) << 6 )
                     // 1111-110s 10tt-tttt 10uu-uuuu 10vv-wwww 10xx-xxyy
                     // 10zz-zzzz ->
                     // 0000-0000 0000-0000 0000-0000 yy00-0000
-                    ( ( bytes[pos + 4] & 0x03 ) << 6 ) +
+                    + ( ( bytes[pos + 4] & 0x03 ) << 6 )
                 // 1111-110s 10tt-tttt 10uu-uuuu 10vv-wwww 10xx-xxyy 10zz-zzzz
                 // ->
                 // 0000-0000 0000-0000 0000-0000 00zz-zzzz
-                ( bytes[pos + 5] & 0x3F )
+                + ( bytes[pos + 5] & 0x3F )
                 // -> 0stt-tttt uuuu-uuvv wwww-xxxx yyzz-zzzz (7F FF FF FF)
                 );
             }
@@ -3402,8 +3402,8 @@ public final class StringTools
 
         for ( int ii = 1, jj = 0 ; ii < chars.length; ii+=2, jj++ )
         {
-            int ch = ( StringTools.HEX_VALUE[chars[ii]] << 4 ) + 
-                StringTools.HEX_VALUE[chars[ii+1]];
+            int ch = ( StringTools.HEX_VALUE[chars[ii]] << 4 )
+                 + StringTools.HEX_VALUE[chars[ii + 1]];
             decoded[jj] = ( byte ) ch;
         }
         
@@ -3445,8 +3445,8 @@ public final class StringTools
                 // we have the start of a hex escape sequence
                 if ( isHex( str, i+1 ) && isHex ( str, i+2 ) )
                 {
-                    byte value = ( byte ) ( (StringTools.HEX_VALUE[str.charAt( i+1 )] << 4 ) + 
-                        StringTools.HEX_VALUE[str.charAt( i+2 )] );
+                    byte value = ( byte ) ( ( StringTools.HEX_VALUE[str.charAt( i + 1 )] << 4 )
+                        + StringTools.HEX_VALUE[str.charAt( i + 2 )] );
                     
                     i+=2;
                     buf[pos++] = value;

@@ -2963,8 +2963,8 @@ public class DefaultEntry implements Entry
                 }
                 else
                 {
-                    if ( !id.equalsIgnoreCase( SchemaConstants.OBJECT_CLASS_AT ) &&
-                         !id.equals( SchemaConstants.OBJECT_CLASS_AT_OID ) )
+                    if ( !id.equalsIgnoreCase( SchemaConstants.OBJECT_CLASS_AT )
+                        && !id.equals( SchemaConstants.OBJECT_CLASS_AT_OID ) )
                     {
                         sb.append( attribute );
                         continue;
