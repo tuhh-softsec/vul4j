@@ -285,9 +285,9 @@ bool NSSCryptoKeyDSA::verifyBase64Signature(unsigned char * hashBuf,
 
 	// Decode the signature
 	unsigned char * rawSig;
-	DWORD rawSigLen;
-	XSECnew(rawSig, BYTE [sigLen]);
-	ArrayJanitor<BYTE> j_rawSig(rawSig);
+	unsigned int rawSigLen;
+	XSECnew(rawSig, unsigned char[sigLen]);
+	ArrayJanitor<unsigned char> j_rawSig(rawSig);
 
 	// Decode the signature
 	XSCryptCryptoBase64 b64;
@@ -334,8 +334,8 @@ unsigned int NSSCryptoKeyDSA::signBase64Signature(unsigned char * hashBuf,
   unsigned int signatureLen = PK11_SignatureLen(mp_privkey);
 
   unsigned char * rawSig;
-	XSECnew(rawSig, BYTE [signatureLen]);
-	ArrayJanitor<BYTE> j_rawSig(rawSig);
+	XSECnew(rawSig, unsigned char[signatureLen]);
+	ArrayJanitor<unsigned char> j_rawSig(rawSig);
 
   SECItem signature;
   signature.type = siBuffer;

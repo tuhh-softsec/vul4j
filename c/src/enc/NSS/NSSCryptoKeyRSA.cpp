@@ -255,9 +255,9 @@ bool NSSCryptoKeyRSA::verifySHA1PKCS1Base64Signature(const unsigned char * hashB
 
 	// Decode the signature
 	unsigned char * rawSig;
-	DWORD rawSigLen;
-	XSECnew(rawSig, BYTE [sigLen]);
-	ArrayJanitor<BYTE> j_rawSig(rawSig);
+	unsigned int rawSigLen;
+	XSECnew(rawSig, unsigned char[sigLen]);
+	ArrayJanitor<unsigned char> j_rawSig(rawSig);
 
 	// Decode the signature
 	XSCryptCryptoBase64 b64;
@@ -303,8 +303,8 @@ unsigned int NSSCryptoKeyRSA::signSHA1PKCS1Base64Signature(unsigned char * hashB
 	}
 	
 	unsigned char * rawSig;
-	XSECnew(rawSig, BYTE [base64SignatureBufLen]);
-	ArrayJanitor<BYTE> j_rawSig(rawSig);
+	XSECnew(rawSig, unsigned char[base64SignatureBufLen]);
+	ArrayJanitor<unsigned char> j_rawSig(rawSig);
 	
 	SECItem signature;
 	signature.type = siBuffer;
@@ -480,7 +480,7 @@ unsigned int NSSCryptoKeyRSA::privateDecrypt(const unsigned char * inBuf,
 	DWORD decryptSize = inLength;
 
   SECStatus s;
-  BYTE *ptr = NULL;
+  unsigned char *ptr = NULL;
 
 	switch (padding) {
 
@@ -501,7 +501,7 @@ unsigned int NSSCryptoKeyRSA::privateDecrypt(const unsigned char * inBuf,
 		}
 
     //do the padding (http://www.w3.org/TR/xmlenc-core/#rsa-1_5)
-    ptr = (BYTE*) memchr(plainBuf, 0x02, decryptSize);
+    ptr = (unsigned char*) memchr(plainBuf, 0x02, decryptSize);
 		if( ptr )
 		{
 			unsigned int bytesToRemove = ((ptr-plainBuf)+1);
@@ -509,7 +509,7 @@ unsigned int NSSCryptoKeyRSA::privateDecrypt(const unsigned char * inBuf,
 			decryptSize -= bytesToRemove;
 		}
 
-		ptr = (BYTE*) memchr(plainBuf, 0x00, decryptSize);
+		ptr = (unsigned char*) memchr(plainBuf, 0x00, decryptSize);
 		if( ptr )
 		{
 			unsigned int bytesToRemove = ((ptr-plainBuf)+1);
@@ -568,9 +568,9 @@ unsigned int NSSCryptoKeyRSA::publicEncrypt(const unsigned char * inBuf,
 
   SECStatus s;
 
-  BYTE * buf;
-  XSECnew(buf, BYTE[encryptSize]);
-  ArrayJanitor<BYTE> j_buf(buf);
+  unsigned char * buf;
+  XSECnew(buf, unsigned char[encryptSize]);
+  ArrayJanitor<unsigned char> j_buf(buf);
 
 	switch (padding) {
 
