@@ -355,7 +355,7 @@ unsigned int NSSCryptoKeyRSA::signSHA1PKCS1Base64Signature(unsigned char * hashB
 			"NSS:RSA - Error creating digest info");
 	}
 
-	res = SEC_ASN1EncodeItem(arena, &data, di, NSS_Get_sgn_DigestInfoTemplate(NULL, FALSE));
+	res = SEC_ASN1EncodeItem(arena, &data, di, NSS_Get_sgn_DigestInfoTemplate(NULL, 0));
 
 	if (!res) {
 		SGN_DestroyDigestInfo(di);
@@ -477,7 +477,7 @@ unsigned int NSSCryptoKeyRSA::privateDecrypt(const unsigned char * inBuf,
 
   }
 
-	DWORD decryptSize = inLength;
+	unsigned int decryptSize = inLength;
 
   SECStatus s;
   unsigned char *ptr = NULL;
@@ -500,8 +500,8 @@ unsigned int NSSCryptoKeyRSA::privateDecrypt(const unsigned char * inBuf,
 
 		}
 
-    //do the padding (http://www.w3.org/TR/xmlenc-core/#rsa-1_5)
-    ptr = (unsigned char*) memchr(plainBuf, 0x02, decryptSize);
+        //do the padding (http://www.w3.org/TR/xmlenc-core/#rsa-1_5)
+        ptr = (unsigned char*) memchr(plainBuf, 0x02, decryptSize);
 		if( ptr )
 		{
 			unsigned int bytesToRemove = ((ptr-plainBuf)+1);
