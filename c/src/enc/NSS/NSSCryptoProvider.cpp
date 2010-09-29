@@ -37,9 +37,6 @@
 
 #if defined (XSEC_HAVE_NSS)
 
-#include <nss3/pk11func.h>
-#include <nss3/nss.h>
-
 #include <xercesc/util/Janitor.hpp>
 
 XSEC_USING_XERCES(ArrayJanitor);

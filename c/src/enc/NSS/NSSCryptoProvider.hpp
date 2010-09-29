@@ -31,6 +31,9 @@
 
 #if defined (XSEC_HAVE_NSS)
 
+#include <nss3/pk11func.h>
+#include <nss3/nss.h>
+
 /**
  * @defgroup nsscrypto NSS Interface
  * @ingroup nsscrypto
