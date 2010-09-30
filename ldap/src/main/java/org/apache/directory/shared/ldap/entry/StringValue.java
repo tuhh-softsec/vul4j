@@ -19,7 +19,6 @@
 package org.apache.directory.shared.ldap.entry;
 
 
-import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
@@ -481,7 +480,7 @@ public class StringValue extends AbstractValue<String>
     
     
     /**
-     * @see Externalizable#readExternal(ObjectInput)
+     * {@inheritDoc}
      */
     public void readExternal( ObjectInput in ) throws IOException, ClassNotFoundException
     {
@@ -505,7 +504,7 @@ public class StringValue extends AbstractValue<String>
 
     
     /**
-     * @see Externalizable#writeExternal(ObjectOutput)
+     * {@inheritDoc}
      */
     public void writeExternal( ObjectOutput out ) throws IOException
     {

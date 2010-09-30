@@ -19,7 +19,6 @@
 package org.apache.directory.shared.ldap.entry;
 
 
-import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
@@ -2396,8 +2395,6 @@ public class DefaultEntryAttribute implements EntryAttribute
      * 
      * The inner structure is the same as the client attribute, but we can't call
      * it as we won't be able to serialize the serverValues
-     * 
-     * @see Externalizable#writeExternal(ObjectOutput)
      */
     public void serialize( ObjectOutput out ) throws IOException
     {
@@ -2438,7 +2435,7 @@ public class DefaultEntryAttribute implements EntryAttribute
 
     
     /**
-     * @see Externalizable#readExternal(ObjectInput)
+     * 
      */
     // This will suppress PMD.EmptyCatchBlock warnings in this method
     @SuppressWarnings("PMD.EmptyCatchBlock")
@@ -2497,7 +2494,7 @@ public class DefaultEntryAttribute implements EntryAttribute
      * 
      * The inner structure is :
      * 
-     * @see Externalizable#writeExternal(ObjectOutput)
+     * {@inheritDoc}
      */
     public void writeExternal( ObjectOutput out ) throws IOException
     {
@@ -2533,7 +2530,7 @@ public class DefaultEntryAttribute implements EntryAttribute
 
     
     /**
-     * @see Externalizable#readExternal(ObjectInput)
+     * {@inheritDoc}
      */
     public void readExternal( ObjectInput in ) throws IOException, ClassNotFoundException
     {

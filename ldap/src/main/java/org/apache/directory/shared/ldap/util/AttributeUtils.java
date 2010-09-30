@@ -31,7 +31,6 @@ import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.BasicAttribute;
 import javax.naming.directory.BasicAttributes;
-import javax.naming.directory.InvalidAttributeIdentifierException;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.directory.shared.i18n.I18n;
@@ -1195,7 +1194,7 @@ public final class AttributeUtils
      * @param dn The DN which is needed by the ServerEntry 
      * @return An instance of a ServerEntry object
      * 
-     * @throws InvalidAttributeIdentifierException If we get an invalid attribute
+     * @throws LdapException If we get an invalid attribute
      */
     public static Entry toClientEntry( Attributes attributes, DN dn ) throws LdapException
     {
@@ -1293,8 +1292,6 @@ public final class AttributeUtils
      *
      * @param attribute the BasicAttributes or AttributesImpl instance to convert
      * @return An instance of a ClientEntry object
-     * 
-     * @throws InvalidAttributeIdentifierException If we had an incorrect attribute
      */
     public static EntryAttribute toClientAttribute( Attribute attribute )
     {

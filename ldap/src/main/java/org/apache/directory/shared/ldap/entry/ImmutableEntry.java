@@ -19,7 +19,6 @@
 package org.apache.directory.shared.ldap.entry;
 
 
-import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
@@ -674,7 +673,7 @@ public class ImmutableEntry implements Entry
      *   </li>
      * </ul>
      * 
-     * @see Externalizable#writeExternal(ObjectOutput) 
+     * {@inheritDoc} 
      */
     public void writeExternal( ObjectOutput out ) throws IOException
     {
@@ -683,7 +682,7 @@ public class ImmutableEntry implements Entry
 
 
     /**
-     * @see Externalizable#readExternal(ObjectInput)
+     * {@inheritDoc}
      */
     public void readExternal( ObjectInput in ) throws IOException, ClassNotFoundException
     {

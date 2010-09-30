@@ -20,8 +20,6 @@
 package org.apache.directory.shared.ldap.schema.comparators;
 
 
-import java.util.Comparator;
-
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.schema.LdapComparator;
 import org.slf4j.Logger;
@@ -32,6 +30,7 @@ import org.slf4j.LoggerFactory;
  * Compares two objects taking into account that one might be a Comparable.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
+ * @param <T> the type, must extend {@link Comparable}
  */
 public class ComparableComparator<T> extends LdapComparator<Comparable<T>>
 {
@@ -41,14 +40,17 @@ public class ComparableComparator<T> extends LdapComparator<Comparable<T>>
     /** The serialVersionUID */
     private static final long serialVersionUID = 1L;
 
+
     /**
-     * The BooleanComparator constructor. Its OID is the BooleanMatch matching
-     * rule OID.
+     * The ComparableComparator constructor.
+     *
+     * @param oid the comparator OID
      */
     public ComparableComparator( String oid )
     {
         super( oid );
     }
+
 
     /**
      * Compares two objects taking into account that one may be a Comparable. If
@@ -57,18 +59,20 @@ public class ComparableComparator<T> extends LdapComparator<Comparable<T>>
      * then its compareTo method is called and the result is returned after
      * being negated. If none are comparables the hashCode of o1 minus the
      * hashCode of o2 is returned.
-     * 
-     * @see Comparator#compare(Object, Object)
+     *
+     * @param o1 the first comparable
+     * @param o2 the second comparable
+     * @return {@inheritDoc}
      */
     public int compare( Comparable<T> o1, Comparable<T> o2 )
     {
         LOG.debug( "comparing objects '{}' with '{}'", o1, o2 );
-        
+
         if ( ( o1 == null ) && ( o2 == null ) )
         {
             return 0;
         }
-        
+
         if ( o1 instanceof Comparable<?> )
         {
             if ( o2 == null )
@@ -77,6 +81,7 @@ public class ComparableComparator<T> extends LdapComparator<Comparable<T>>
             }
             else
             {
+                // TODO: check type parameter
                 return o1.compareTo( ( T ) o2 );
             }
         }
@@ -93,13 +98,14 @@ public class ComparableComparator<T> extends LdapComparator<Comparable<T>>
             }
             else
             {
-                return - o2.compareTo( ( T ) o1 );
+                // TODO: check type parameter
+                return -o2.compareTo( ( T ) o1 );
             }
         }
 
         // before https://issues.apache.org/jira/browse/DIRSERVER-928 it was
         // return o1.hashCode() - o2.hashCode();
-        
+
         // now we will blow a stack trace if none of the objects are Comparable
         throw new IllegalArgumentException( I18n.err( I18n.ERR_04217, o1, o2 ) );
     }

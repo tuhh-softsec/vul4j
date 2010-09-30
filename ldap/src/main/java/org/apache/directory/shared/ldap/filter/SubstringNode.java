@@ -26,7 +26,6 @@ import java.util.regex.Pattern;
 
 import org.apache.directory.shared.ldap.entry.StringValue;
 import org.apache.directory.shared.ldap.exception.LdapException;
-import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.Normalizer;
 import org.apache.directory.shared.ldap.util.StringTools;
@@ -251,7 +250,7 @@ public class SubstringNode extends LeafNode
      * 
      * @param normalizer the normalizer to use for pattern component normalization
      * @return the equivalent compiled regular expression
-     * @throws LdapInvalidDnException if there are problems while normalizing
+     * @throws LdapException if there are problems while normalizing
      */
     public final Pattern getRegex( Normalizer normalizer ) throws LdapException
     {

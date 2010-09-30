@@ -31,11 +31,12 @@ import org.apache.directory.shared.ldap.message.ResultCodeEnum;
  */
 public class LdapConfigurationException extends LdapOperationException
 {
-    /** The serial version UUID */
+    /** The serial version UID */
     static final long serialVersionUID = 1L;
-    
+
     /** The exception cause */
     private Throwable cause;
+
 
     /**
      * Creates a new instance of LdapAuthenticationException.
@@ -44,7 +45,7 @@ public class LdapConfigurationException extends LdapOperationException
      */
     public LdapConfigurationException( String message )
     {
-        super( message );
+        super( ResultCodeEnum.OTHER, message );
     }
 
 
@@ -53,32 +54,36 @@ public class LdapConfigurationException extends LdapOperationException
      */
     public LdapConfigurationException()
     {
-        super( null );
+        super( ResultCodeEnum.OTHER, null );
     }
-    
-    
+
+
     /**
+     * Creates a new instance of LdapAuthenticationException.
+     *
+     * @param message the exception message
+     * @param cause the cause
      */
     public LdapConfigurationException( String message, Throwable cause )
     {
-        super( message );
+        super( ResultCodeEnum.OTHER, message );
         this.cause = cause;
     }
-    
-    
+
+
     /**
-     * @return Returns the Exception's cause
+     * @return the exception's cause
      */
     public Throwable getCause()
     {
         return cause;
     }
-    
-    
+
+
     /**
-     * Set the root cause
+     * Set the root cause.
      *
-     * @param cause The cause
+     * @param cause the cause
      */
     public void setCause( Throwable cause )
     {

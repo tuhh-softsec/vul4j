@@ -19,14 +19,14 @@
  */
 package org.apache.directory.shared.ldap.aci.protectedItem;
 
+
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Set;
 
-import javax.naming.directory.Attribute;
-
 import org.apache.directory.shared.ldap.aci.ProtectedItem;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
+
 
 /**
  * A specific value of specific attributes.
@@ -40,7 +40,7 @@ public class AttributeValueItem extends ProtectedItem
     /**
      * Creates a new instance.
      * 
-     * @param attributes the collection of {@link Attribute}s.
+     * @param attributes the collection of {@link EntryAttribute}s.
      */
     public AttributeValueItem( Set<EntryAttribute> attributes )
     {
@@ -49,7 +49,9 @@ public class AttributeValueItem extends ProtectedItem
 
 
     /**
-     * Returns an iterator of all {@link Attribute}s.
+     * Returns an iterator of all {@link EntryAttribute}s.
+     *
+     * @return the iterator
      */
     public Iterator<EntryAttribute> iterator()
     {
@@ -88,7 +90,7 @@ public class AttributeValueItem extends ProtectedItem
         if ( o instanceof AttributeValueItem )
         {
             AttributeValueItem that = ( AttributeValueItem ) o;
-            
+
             return this.attributes.equals( that.attributes );
         }
 
@@ -97,14 +99,14 @@ public class AttributeValueItem extends ProtectedItem
 
 
     /**
-     * @see Object#toString()
+     * {@inheritDoc}
      */
     public String toString()
     {
         StringBuilder buf = new StringBuilder();
 
         buf.append( "attributeValue {" );
-        
+
         boolean isFirst = true;
 
         for ( EntryAttribute attribute : attributes )
@@ -117,7 +119,7 @@ public class AttributeValueItem extends ProtectedItem
             {
                 buf.append( ", " );
             }
-            
+
             buf.append( attribute.getId() );
             buf.append( '=' );
             buf.append( attribute.get( 0 ) );

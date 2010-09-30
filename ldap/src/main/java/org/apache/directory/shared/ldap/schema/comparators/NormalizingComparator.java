@@ -20,8 +20,6 @@
 package org.apache.directory.shared.ldap.schema.comparators;
 
 
-import java.util.Comparator;
-
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.schema.LdapComparator;
 import org.apache.directory.shared.ldap.schema.Normalizer;
@@ -67,8 +65,6 @@ import org.slf4j.LoggerFactory;
     /**
      * If any normalization attempt fails we compare using the unnormalized
      * object.
-     * 
-     * @see Comparator#compare(Object, Object)
      */
     public int compare( String o1, String o2 )
     {
@@ -100,10 +96,10 @@ import org.slf4j.LoggerFactory;
 
 
     /**
-     * Makes sure we update the oid property of the contained normalizer and 
-     * comparator.
+     * {@inheritDoc}
      * 
-     * @param oid the object identifier
+     * This implementation makes sure we update the oid property of the contained normalizer and 
+     * comparator.
      */
     @Override
     public void setOid( String oid )

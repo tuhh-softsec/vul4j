@@ -24,8 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.naming.NamingException;
-
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.exception.LdapUnwillingToPerformException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
@@ -538,7 +536,7 @@ public class DnNode<N> implements Cloneable
      * Add a new node in the tree. The added node won't have any element.
      *
      * @param dn The node's DN
-     * @throws NamingException
+     * @throws LdapException
      */
     public void add( DN dn ) throws LdapException
     {
@@ -552,7 +550,7 @@ public class DnNode<N> implements Cloneable
      *
      * @param dn The node's DN
      * @param element The element to associate with this Node. Can be null.
-     * @throws NamingException
+     * @throws LdapException
      */
     public void add( DN dn, N element ) throws LdapException
     {
