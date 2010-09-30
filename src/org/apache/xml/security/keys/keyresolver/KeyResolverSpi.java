@@ -1,5 +1,5 @@
 /*
- * Copyright  1999-2004 The Apache Software Foundation.
+ * Copyright  1999-2010 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
  */
 package org.apache.xml.security.keys.keyresolver;
 
+import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.cert.X509Certificate;
 import java.util.HashMap;
@@ -40,8 +41,7 @@ import org.w3c.dom.Element;
  */
 public abstract class KeyResolverSpi {
    /**
-    * This method helps the {@link org.apache.xml.security.utils.resolver.ResourceResolver} to decide whether a
-    * {@link org.apache.xml.security.utils.resolver.ResourceResolverSpi} is able to perform the requested action.
+    * This method returns whether the KeyResolverSpi is able to perform the requested action.
     *
     * @param element
     * @param BaseURI
@@ -70,7 +70,7 @@ public abstract class KeyResolverSpi {
     };
        
    /**
-    * Method engineResolvePublicKey
+    * Method engineLookupAndResolvePublicKey
     *
     * @param element
     * @param BaseURI
@@ -119,7 +119,7 @@ public abstract class KeyResolverSpi {
     };
     
    /**
-    * Method engineResolveCertificate
+    * Method engineLookupResolveX509Certificate
     *
     * @param element
     * @param BaseURI
@@ -154,7 +154,7 @@ public abstract class KeyResolverSpi {
     }; 
     
    /**
-    * Method engineResolveSecretKey
+    * Method engineLookupAndResolveSecretKey
     *
     * @param element
     * @param BaseURI
@@ -170,6 +170,27 @@ public abstract class KeyResolverSpi {
 	   if (!tmp.engineCanResolve(element, BaseURI, storage))
 		   return null;
    		return tmp.engineResolveSecretKey(element, BaseURI, storage);   		
+   }
+   
+   /**
+    * Method engineLookupAndResolvePrivateKey
+    *
+    * @param element
+    * @param BaseURI
+    * @param storage
+    * @return resolved PrivateKey key from the registered from the elements
+    *
+    * @throws KeyResolverException
+    */
+   public PrivateKey engineLookupAndResolvePrivateKey(
+      Element element, String BaseURI, StorageResolver storage)
+         throws KeyResolverException {
+       // This method was added later, it has no equivalent
+       // engineResolvePrivateKey() in the old API.
+       // We cannot throw UnsupportedOperationException because
+       // KeyResolverSpi implementations who don't know about
+       // this method would stop the search too early.
+       return null;
    }
 
    /** Field _properties */

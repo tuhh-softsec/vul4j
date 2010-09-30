@@ -1,5 +1,5 @@
 /*
- * Copyright 2003-2009 The Apache Software Foundation.
+ * Copyright 2003-2010 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -1264,7 +1264,14 @@ public class XMLCipher {
 			KeyInfo ki = encryptedKey.getKeyInfo();
 			if (ki != null) {
 				try {
-					_key = ki.getSecretKey();
+					String keyWrapAlg = encryptedKey.getEncryptionMethod().getAlgorithm();
+					String keyType = JCEMapper.getJCEKeyAlgorithmFromURI(keyWrapAlg);
+					if ("RSA".equals(keyType)) {
+						_key = ki.getPrivateKey();
+					}
+					else {
+						_key = ki.getSecretKey();
+					}
 				}
 				catch (Exception e) {
 				}

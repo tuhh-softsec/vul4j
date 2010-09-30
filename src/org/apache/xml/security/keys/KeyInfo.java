@@ -1,5 +1,5 @@
 /*
- * Copyright  1999-2004 The Apache Software Foundation.
+ * Copyright  1999-2010 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package org.apache.xml.security.keys;
 
 
 
+import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
@@ -93,8 +94,13 @@ public class KeyInfo extends SignatureElementProxy {
    /** {@link org.apache.commons.logging} logging facility */
     static org.apache.commons.logging.Log log = 
         org.apache.commons.logging.LogFactory.getLog(KeyInfo.class.getName());
+    
     List x509Datas=null;
     List encryptedKeys=null;
+    
+    // We need at least one StorageResolver otherwise
+    // the KeyResolvers would not be called.
+    // The default StorageResolver is null.
     
     static final List nullList;
     static {
@@ -716,9 +722,9 @@ public class KeyInfo extends SignatureElementProxy {
    }
 
    /**
-    * Searches the library wide keyresolvers for public keys
+    * Searches the library wide KeyResolvers for public keys
     *
-    * @return The publick contained in this Node.
+    * @return The public key contained in this Node.
     * @throws KeyResolverException
     */
    PublicKey getPublicKeyFromStaticResolvers() throws KeyResolverException {
@@ -753,9 +759,9 @@ public class KeyInfo extends SignatureElementProxy {
    }
 
    /**
-    * Searches the per-KeyInfo keyresolvers for public keys
+    * Searches the per-KeyInfo KeyResolvers for public keys
     *
-    * @return The publick contained in this Node.
+    * @return The public key contained in this Node.
     * @throws KeyResolverException
     */
    PublicKey getPublicKeyFromInternalResolvers() throws KeyResolverException {
@@ -791,7 +797,7 @@ public class KeyInfo extends SignatureElementProxy {
    /**
     * Method getX509Certificate
     *
-    * @return The certificate contined in this KeyInfo
+    * @return The certificate contained in this KeyInfo
     * @throws KeyResolverException
     */
    public X509Certificate getX509Certificate() throws KeyResolverException {
@@ -931,16 +937,16 @@ public class KeyInfo extends SignatureElementProxy {
    }
 
    /**
-    * Searches the library wide keyresolvers for Secret keys
+    * Searches the library wide KeyResolvers for Secret keys
     *
     * @return the secret key contained in this KeyInfo
     * @throws KeyResolverException
     */
 
    SecretKey getSecretKeyFromStaticResolvers() throws KeyResolverException {
-	  final int length=KeyResolver.length();
-	  int storageLength=this._storageResolvers.size();
-	  Iterator it = KeyResolver.iterator();
+      final int length=KeyResolver.length();
+      int storageLength=this._storageResolvers.size();
+      Iterator it = KeyResolver.iterator();
       for (int i = 0; i < length; i++) {
          KeyResolverSpi keyResolver = (KeyResolverSpi) it.next();
 
@@ -969,18 +975,18 @@ public class KeyInfo extends SignatureElementProxy {
    }
 
    /**
-    * Searches the per-KeyInfo keyresolvers for secret keys
+    * Searches the per-KeyInfo KeyResolvers for secret keys
     *
     * @return the secret key contained in this KeyInfo
     * @throws KeyResolverException
     */
 
    SecretKey getSecretKeyFromInternalResolvers() throws KeyResolverException {
-	   int storageLength=this._storageResolvers.size();
+       int storageLength=this._storageResolvers.size();
       for (int i = 0; i < this.lengthInternalKeyResolver(); i++) {
          KeyResolverSpi keyResolver = this.itemInternalKeyResolver(i);
          if (log.isDebugEnabled())
-         	log.debug("Try " + keyResolver.getClass().getName());
+            log.debug("Try " + keyResolver.getClass().getName());
 
          Node currentChild=this._constructionElement.getFirstChild();
          String uri=this.getBaseURI();
@@ -997,6 +1003,98 @@ public class KeyInfo extends SignatureElementProxy {
                         return sk;
                      }                    
                 }
+             }            
+            currentChild=currentChild.getNextSibling();
+         }
+      }
+
+      return null;
+   }
+
+   /**
+    * This method returns a private key. This is for Key Transport in XML Encryption.
+    * @return the private key contained in this KeyInfo
+    * @throws KeyResolverException
+    */
+   public PrivateKey getPrivateKey() throws KeyResolverException {
+      PrivateKey pk = this.getPrivateKeyFromInternalResolvers();
+
+      if (pk != null) {
+         log.debug("I could find a private key using the per-KeyInfo key resolvers");
+         return pk;
+      } 
+      log.debug("I couldn't find a secret key using the per-KeyInfo key resolvers");
+
+      pk = this.getPrivateKeyFromStaticResolvers();
+      if (pk != null) {
+         log.debug("I could find a private key using the system-wide key resolvers");
+         return pk;
+      } 
+      log.debug("I couldn't find a private key using the system-wide key resolvers");
+      
+      return null;
+   }
+
+   /**
+    * Searches the library wide KeyResolvers for Private keys
+    *
+    * @return the private key contained in this KeyInfo
+    * @throws KeyResolverException
+    */
+   PrivateKey getPrivateKeyFromStaticResolvers() throws KeyResolverException {
+      final int length=KeyResolver.length();
+      Iterator it = KeyResolver.iterator();
+      for (int i = 0; i < length; i++) {
+         KeyResolverSpi keyResolver = (KeyResolverSpi) it.next();
+
+         Node currentChild=this._constructionElement.getFirstChild();
+         String uri=this.getBaseURI();
+         while (currentChild!=null)      {    
+            if (currentChild.getNodeType() == Node.ELEMENT_NODE) {
+                // not using StorageResolvers at the moment
+                // since they cannot return private keys
+                StorageResolver storage = null;
+                PrivateKey pk = keyResolver.engineLookupAndResolvePrivateKey(
+                        (Element) currentChild,
+                        uri,
+                        storage);
+
+                if (pk != null) {
+                    return pk;
+                }                     
+            }
+            currentChild=currentChild.getNextSibling();
+         }
+      }
+      return null;
+   }
+
+   /**
+    * Searches the per-KeyInfo KeyResolvers for private keys
+    *
+    * @return the private key contained in this KeyInfo
+    * @throws KeyResolverException
+    */
+
+   PrivateKey getPrivateKeyFromInternalResolvers() throws KeyResolverException {
+      for (int i = 0; i < this.lengthInternalKeyResolver(); i++) {
+         KeyResolverSpi keyResolver = this.itemInternalKeyResolver(i);
+         if (log.isDebugEnabled())
+            log.debug("Try " + keyResolver.getClass().getName());
+
+         Node currentChild=this._constructionElement.getFirstChild();
+         String uri=this.getBaseURI();
+         while (currentChild!=null)      {    
+            if (currentChild.getNodeType() == Node.ELEMENT_NODE) {
+                // not using StorageResolvers at the moment
+                // since they cannot return private keys
+                StorageResolver storage = null;
+                PrivateKey pk = keyResolver
+                       .engineLookupAndResolvePrivateKey((Element) currentChild, uri, storage);
+
+                if (pk != null) {
+                   return pk;
+                }                    
              }            
             currentChild=currentChild.getNextSibling();
          }
@@ -1052,11 +1150,11 @@ public class KeyInfo extends SignatureElementProxy {
     * @param storageResolver
     */
    public void addStorageResolver(StorageResolver storageResolver) {
-	   if  (_storageResolvers == nullList  ){
-		   _storageResolvers=new ArrayList();
+	   if  (_storageResolvers == nullList) {
+	       // Replace the default null StorageResolver
+		   _storageResolvers = new ArrayList();
 	   }      
-         this._storageResolvers.add(storageResolver);
-      
+       this._storageResolvers.add(storageResolver);
    }
 
    //J-

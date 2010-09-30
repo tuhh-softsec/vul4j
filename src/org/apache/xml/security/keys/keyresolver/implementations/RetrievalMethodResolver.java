@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2009 The Apache Software Foundation.
+ * Copyright 1999-2010 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -193,7 +193,7 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
     } 
    
     /**
-     * Retrieves a x509Certificate from the given information
+     * Retrieves a PublicKey from the given information
      * @param e
      * @param BaseURI
      * @param storage

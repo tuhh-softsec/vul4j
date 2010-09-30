@@ -57,6 +57,7 @@ public class ModuleTest extends TestCase {
       suite.addTest(org.apache.xml.security.test.transforms.implementations.AllTests.suite());
       suite.addTest(org.apache.xml.security.test.transforms.RegisterTest.suite());
       suite.addTest(org.apache.xml.security.test.algorithms.AllTests.suite());
+      suite.addTest(org.apache.xml.security.test.keys.keyresolver.KeyResolverTest.suite());
       suite.addTest(org.apache.xml.security.test.keys.content.x509.XMLX509SKITest.suite());
       suite.addTest(org.apache.xml.security.test.keys.content.x509.XMLX509IssuerSerialTest.suite());
       suite.addTest(org.apache.xml.security.test.keys.content.x509.XMLX509CertificateTest.suite());
