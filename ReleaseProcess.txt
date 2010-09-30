@@ -185,4 +185,3 @@ Announce release at freshmeat.net
 ** Do we have an entry? **
 
 You can now reacquaint yourself with your family and friends.
-
