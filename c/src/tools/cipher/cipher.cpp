@@ -626,7 +626,7 @@ int evaluate(int argc, char ** argv) {
 				// Map out base path of the file
 				char path[_MAX_PATH];
 				char baseURI[(_MAX_PATH * 2) + 10];
-				_getcwd(path, _MAX_PATH);
+				getcwd(path, _MAX_PATH);
 
 				strcpy(baseURI, "file:///");		
 

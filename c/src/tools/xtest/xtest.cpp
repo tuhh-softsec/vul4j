@@ -1118,9 +1118,6 @@ void unitTestRSA(DOMImplementation * impl) {
 
 #if defined (XSEC_HAVE_NSS)
 	if (g_useNSS) {
-		// Use the internal key
-		NSSCryptoProvider *cp = (NSSCryptoProvider *) (XSECPlatformUtils::g_cryptoProvider);
-		
 		// Heavily based on Mozilla example code
 		SECKEYPrivateKey *prvKey = 0;
 		SECKEYPublicKey *pubKey = 0;
@@ -2069,9 +2066,6 @@ void unitTestEncrypt(DOMImplementation *impl) {
 
 #if defined (XSEC_HAVE_NSS)
 		if (g_useNSS) {
-			// Use the internal key
-			NSSCryptoProvider *cp = (NSSCryptoProvider *) (XSECPlatformUtils::g_cryptoProvider);
-
 			// Heavily based on Mozilla example code
 			SECKEYPrivateKey *prvKey = 0;
 			SECKEYPublicKey *pubKey = 0;

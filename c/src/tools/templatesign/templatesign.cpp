@@ -1168,7 +1168,7 @@ int main(int argc, char **argv) {
 	char * filename=argv[argc-1];
 	char path[_MAX_PATH];
 	char baseURI[(_MAX_PATH * 2) + 10];
-	_getcwd(path, _MAX_PATH);
+	getcwd(path, _MAX_PATH);
 
 	strcpy(baseURI, "file:///");		
 

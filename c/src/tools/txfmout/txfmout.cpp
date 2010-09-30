@@ -171,7 +171,7 @@ outputter::~outputter() {
 
 void outputter::setFilename(const char * name) {
 
-	m_name = _strdup(name);
+	m_name = strdup(name);
 	m_cout = false;
 
 }
@@ -501,7 +501,7 @@ int main(int argc, char **argv) {
 	// Map out base path of the file
 	char path[_MAX_PATH];
 	char baseURI[(_MAX_PATH * 2) + 10];
-	_getcwd(path, _MAX_PATH);
+	getcwd(path, _MAX_PATH);
 
 	strcpy(baseURI, "file:///");
 	strcat(baseURI, path);

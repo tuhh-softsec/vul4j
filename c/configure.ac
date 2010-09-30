@@ -72,6 +72,8 @@ AC_CHECK_LIB(socket, getservent)
 # Check for required includes
 AC_CHECK_HEADERS(unistd.h direct.h)
 
+AC_CHECK_DECL(strcasecmp,[AC_DEFINE([XSEC_HAVE_STRCASECMP],[1],[Define to 1 if strcasecmp present.])],,[#include <string.h>]) 
+
 AC_LANG(C++)
 
 # Xerces is required

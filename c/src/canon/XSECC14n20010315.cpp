@@ -272,7 +272,7 @@ void XSECC14n20010315::setExclusive(char * xmlnsList) {
 		else {
 
 			// Add this to the list
-			m_exclNSList.push_back(_strdup(nsBuf));
+			m_exclNSList.push_back(strdup(nsBuf));
 
 		}
 
