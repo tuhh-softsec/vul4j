@@ -58,13 +58,13 @@ import org.slf4j.LoggerFactory;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class PersistentSearchControlGrammar extends AbstractGrammar
+public final class PersistentSearchControlGrammar extends AbstractGrammar
 {
     /** The logger */
-    static final Logger log = LoggerFactory.getLogger( PersistentSearchControlGrammar.class );
+    static final Logger LOG = LoggerFactory.getLogger( PersistentSearchControlGrammar.class );
 
     /** Speedup for logs */
-    static final boolean IS_DEBUG = log.isDebugEnabled();
+    static final boolean IS_DEBUG = LOG.isDebugEnabled();
 
     /** The instance of grammar. PSearchControlGrammar is a singleton */
     private static Grammar instance = new PersistentSearchControlGrammar();
@@ -122,7 +122,7 @@ public class PersistentSearchControlGrammar extends AbstractGrammar
                         
                         if ( IS_DEBUG )
                         {
-                            log.debug( "changeTypes = " + changeTypes );
+                            LOG.debug( "changeTypes = " + changeTypes );
                         }
 
                         psearchContainer.getPSearchControl().setChangeTypes( changeTypes );
@@ -130,7 +130,7 @@ public class PersistentSearchControlGrammar extends AbstractGrammar
                     catch ( IntegerDecoderException e )
                     {
                         String msg = I18n.err( I18n.ERR_04051 );
-                        log.error( msg, e );
+                        LOG.error( msg, e );
                         throw new DecoderException( msg );
                     }
                 }
@@ -161,7 +161,7 @@ public class PersistentSearchControlGrammar extends AbstractGrammar
 
                         if ( IS_DEBUG )
                         {
-                            log.debug( "changesOnly = " + changesOnly );
+                            LOG.debug( "changesOnly = " + changesOnly );
                         }
 
                         psearchContainer.getPSearchControl().setChangesOnly( changesOnly );
@@ -169,7 +169,7 @@ public class PersistentSearchControlGrammar extends AbstractGrammar
                     catch ( BooleanDecoderException e )
                     {
                         String msg = I18n.err( I18n.ERR_04052 );
-                        log.error( msg, e );
+                        LOG.error( msg, e );
                         throw new DecoderException( msg );
                     }
                 }
@@ -200,7 +200,7 @@ public class PersistentSearchControlGrammar extends AbstractGrammar
 
                         if ( IS_DEBUG )
                         {
-                            log.debug( "returnECs = " + returnECs );
+                            LOG.debug( "returnECs = " + returnECs );
                         }
 
                         psearchContainer.getPSearchControl().setReturnECs( returnECs );
@@ -211,7 +211,7 @@ public class PersistentSearchControlGrammar extends AbstractGrammar
                     catch ( BooleanDecoderException e )
                     {
                         String msg = I18n.err( I18n.ERR_04053 );
-                        log.error( msg, e );
+                        LOG.error( msg, e );
                         throw new DecoderException( msg );
                     }
                 }

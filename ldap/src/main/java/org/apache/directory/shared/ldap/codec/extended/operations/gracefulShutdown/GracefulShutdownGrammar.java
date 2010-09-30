@@ -52,13 +52,13 @@ import org.slf4j.LoggerFactory;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class GracefulShutdownGrammar extends AbstractGrammar
+public final class GracefulShutdownGrammar extends AbstractGrammar
 {
     /** The logger */
-    static final Logger log = LoggerFactory.getLogger( GracefulShutdownGrammar.class );
+    static final Logger LOG = LoggerFactory.getLogger( GracefulShutdownGrammar.class );
 
     /** Speedup for logs */
-    static final boolean IS_DEBUG = log.isDebugEnabled();
+    static final boolean IS_DEBUG = LOG.isDebugEnabled();
 
     /** The instance of grammar. GracefulShutdownGrammar is a singleton */
     private static Grammar instance = new GracefulShutdownGrammar();
@@ -125,7 +125,7 @@ public class GracefulShutdownGrammar extends AbstractGrammar
 
                         if ( IS_DEBUG )
                         {
-                            log.debug( "Time Offline = " + timeOffline );
+                            LOG.debug( "Time Offline = " + timeOffline );
                         }
 
                         gracefulShutdownContainer.getGracefulShutdown().setTimeOffline( timeOffline );
@@ -134,7 +134,7 @@ public class GracefulShutdownGrammar extends AbstractGrammar
                     catch ( IntegerDecoderException e )
                     {
                         String msg = I18n.err( I18n.ERR_04037, StringTools.dumpBytes( value.getData() ) );
-                        log.error( msg );
+                        LOG.error( msg );
                         throw new DecoderException( msg );
                     }
                 }
@@ -168,7 +168,7 @@ public class GracefulShutdownGrammar extends AbstractGrammar
 
                         if ( IS_DEBUG )
                         {
-                            log.debug( "Delay = " + delay );
+                            LOG.debug( "Delay = " + delay );
                         }
 
                         gracefulShutdownContainer.getGracefulShutdown().setDelay( delay );
@@ -177,7 +177,7 @@ public class GracefulShutdownGrammar extends AbstractGrammar
                     catch ( IntegerDecoderException e )
                     {
                         String msg = I18n.err( I18n.ERR_04036, StringTools.dumpBytes( value.getData() ) );
-                        log.error( msg );
+                        LOG.error( msg );
                         throw new DecoderException( msg );
                     }
                 }
@@ -212,7 +212,7 @@ public class GracefulShutdownGrammar extends AbstractGrammar
 
                         if ( IS_DEBUG )
                         {
-                            log.debug( "Delay = " + delay );
+                            LOG.debug( "Delay = " + delay );
                         }
 
                         gracefulShutdownContainer.getGracefulShutdown().setDelay( delay );
@@ -221,7 +221,7 @@ public class GracefulShutdownGrammar extends AbstractGrammar
                     catch ( IntegerDecoderException e )
                     {
                         String msg = I18n.err( I18n.ERR_04036, StringTools.dumpBytes( value.getData() ) );
-                        log.error( msg );
+                        LOG.error( msg );
                         throw new DecoderException( msg );
                     }
                 }

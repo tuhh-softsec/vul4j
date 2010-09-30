@@ -28,9 +28,11 @@ import org.apache.directory.shared.asn1.ber.grammar.States;
  * This class store the Cancel's grammar constants. It is also used
  * for debugging purposes.
  * 
+ * TODO: should this be an enum?
+ * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class CancelStatesEnum implements States
+public final class CancelStatesEnum implements States
 {
     // ~ Static fields/initializers
     // -----------------------------------------------------------------
@@ -54,7 +56,7 @@ public class CancelStatesEnum implements States
     // States debug strings
     // =========================================================================
     /** A string representation of all the states */
-    private static String[] CancelString = new String[]
+    private static final String[] CANCEL_STRING = new String[]
         { 
         "START_STATE", 
         "CANCEL_SEQUENCE_STATE",
@@ -127,6 +129,6 @@ public class CancelStatesEnum implements States
      */
     public String getState( int state )
     {
-        return ( ( state == GRAMMAR_END ) ? "CANCEL_END_STATE" : CancelString[state] );
+        return ( ( state == GRAMMAR_END ) ? "CANCEL_END_STATE" : CANCEL_STRING[state] );
     }
 }

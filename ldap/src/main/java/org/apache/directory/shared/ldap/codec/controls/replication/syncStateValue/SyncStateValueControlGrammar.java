@@ -57,7 +57,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class SyncStateValueControlGrammar extends AbstractGrammar
+public final class SyncStateValueControlGrammar extends AbstractGrammar
 {
     /** The logger */
     static final Logger LOG = LoggerFactory.getLogger( SyncStateValueControlGrammar.class );

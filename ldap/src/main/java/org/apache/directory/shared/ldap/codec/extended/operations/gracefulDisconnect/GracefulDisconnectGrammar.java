@@ -61,13 +61,13 @@ import org.slf4j.LoggerFactory;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class GracefulDisconnectGrammar extends AbstractGrammar
+public final class GracefulDisconnectGrammar extends AbstractGrammar
 {
     /** The logger */
-    static final Logger log = LoggerFactory.getLogger( GracefulDisconnectGrammar.class );
+    static final Logger LOG = LoggerFactory.getLogger( GracefulDisconnectGrammar.class );
 
     /** Speedup for logs */
-    static final boolean IS_DEBUG = log.isDebugEnabled();
+    static final boolean IS_DEBUG = LOG.isDebugEnabled();
 
     /** The instance of grammar. GracefulDisconnectnGrammar is a singleton */
     private static Grammar instance = new GracefulDisconnectGrammar();
@@ -76,7 +76,7 @@ public class GracefulDisconnectGrammar extends AbstractGrammar
     /**
      * The action used to store a Time Offline.
      */
-    GrammarAction storeDelay = new GrammarAction( "Set Graceful Disconnect Delay" )
+    private GrammarAction storeDelay = new GrammarAction( "Set Graceful Disconnect Delay" )
     {
         public void action( Asn1Container container ) throws DecoderException
         {
@@ -89,7 +89,7 @@ public class GracefulDisconnectGrammar extends AbstractGrammar
     
                 if ( IS_DEBUG )
                 {
-                    log.debug( "Delay = " + delay );
+                    LOG.debug( "Delay = " + delay );
                 }
     
                 gracefulDisconnectContainer.getGracefulDisconnect().setDelay( delay );
@@ -98,7 +98,7 @@ public class GracefulDisconnectGrammar extends AbstractGrammar
             catch ( IntegerDecoderException e )
             {
                 String msg = I18n.err( I18n.ERR_04036, StringTools.dumpBytes( value.getData() ) );
-                log.error( msg );
+                LOG.error( msg );
                 throw new DecoderException( msg );
             }
         }
@@ -107,7 +107,7 @@ public class GracefulDisconnectGrammar extends AbstractGrammar
     /**
      * The action used to store a referral.
      */
-    GrammarAction storeReferral = new GrammarAction( "Stores a referral" )
+    private GrammarAction storeReferral = new GrammarAction( "Stores a referral" )
     {
         public void action( Asn1Container container ) throws DecoderException
         {
@@ -122,13 +122,13 @@ public class GracefulDisconnectGrammar extends AbstractGrammar
                 
                 if ( IS_DEBUG )
                 {
-                    log.debug( "Stores a referral : {}", url );
+                    LOG.debug( "Stores a referral : {}", url );
                 }
             }
             catch ( LdapURLEncodingException e )
             {
                 String msg = "failed to decode the URL '" + StringTools.dumpBytes( value.getData() ) + "'";
-                log.error( msg );
+                LOG.error( msg );
                 throw new DecoderException( msg );
             }
         }
@@ -137,7 +137,7 @@ public class GracefulDisconnectGrammar extends AbstractGrammar
     /**
      * The action used to store a Time Offline.
      */
-    GrammarAction storeTimeOffline = new GrammarAction( "Set Graceful Disconnect time offline" )
+    private GrammarAction storeTimeOffline = new GrammarAction( "Set Graceful Disconnect time offline" )
     {
         public void action( Asn1Container container ) throws DecoderException
         {
@@ -150,7 +150,7 @@ public class GracefulDisconnectGrammar extends AbstractGrammar
 
                 if ( IS_DEBUG )
                 {
-                    log.debug( "Time Offline = " + timeOffline );
+                    LOG.debug( "Time Offline = " + timeOffline );
                 }
 
                 gracefulDisconnectContainer.getGracefulDisconnect().setTimeOffline( timeOffline );
@@ -159,7 +159,7 @@ public class GracefulDisconnectGrammar extends AbstractGrammar
             catch ( IntegerDecoderException e )
             {
                 String msg = I18n.err( I18n.ERR_04037, StringTools.dumpBytes( value.getData() ) );
-                log.error( msg );
+                LOG.error( msg );
                 throw new DecoderException( msg );
             }
         }

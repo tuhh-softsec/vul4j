@@ -65,7 +65,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class SyncModifyDnControlGrammar extends AbstractGrammar
+public final class SyncModifyDnControlGrammar extends AbstractGrammar
 {
     /** The logger */
     static final Logger LOG = LoggerFactory.getLogger( SyncModifyDnControlGrammar.class );

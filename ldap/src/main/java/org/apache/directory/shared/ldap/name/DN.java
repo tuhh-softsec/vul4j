@@ -115,7 +115,7 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
     /**
      * An iterator over RDNs
      */
-    private class RdnIterator implements Iterator<RDN>
+    private final class RdnIterator implements Iterator<RDN>
     {
         // The current index
         int index;

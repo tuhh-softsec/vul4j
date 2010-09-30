@@ -37,9 +37,11 @@ import org.apache.directory.shared.i18n.I18n;
  *   }
  * </pre>
  * 
+ * TODO: should this be an enum?
+ * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class ChangeType
+public final class ChangeType
 {
     public static final int ADD_VALUE = 1;
 

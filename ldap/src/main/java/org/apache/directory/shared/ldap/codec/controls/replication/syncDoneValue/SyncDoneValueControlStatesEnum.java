@@ -19,46 +19,53 @@
  */
 package org.apache.directory.shared.ldap.codec.controls.replication.syncDoneValue;
 
+
 import org.apache.directory.shared.asn1.ber.grammar.Grammar;
 import org.apache.directory.shared.asn1.ber.grammar.States;
 
+
 /**
- * 
  * ASN.1 grammer constants of SyncDoneValueControl.
+ * 
+ * TODO: should this be an enum?
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class SyncDoneValueControlStatesEnum implements States
+public final class SyncDoneValueControlStatesEnum implements States
 {
     /***/
     public static final int START_STATE = 0;
-    
+
     /** sequence start state */
     public static final int SYNC_DONE_VALUE_SEQUENCE_STATE = 1;
-    
+
     /** cookie value state */
     public static final int COOKIE_STATE = 2;
-    
+
     /** refreshDeletes value state */
     public static final int REFRESH_DELETES_STATE = 3;
-    
+
     /** terminal state */
     public static final int LAST_SYNC_DONE_VALUE_STATE = 4;
-    
-    public static final String[] syncDoneValueString = new String[]
+
+    /** A string representation of all the states */
+    public static final String[] SYNC_DONE_VALUE_STRING = new String[]
        {
-       "START_STATE",
-       "SYNC_DONE_VALUE_SEQUENCE_STATE",
-       "COOKIE_STATE",
-       "REFRESH_DELETES_STATE",
+           "START_STATE",
+           "SYNC_DONE_VALUE_SEQUENCE_STATE",
+           "COOKIE_STATE",
+           "REFRESH_DELETES_STATE",
        };
-    
+
+    /** The instance */
     private static SyncDoneValueControlStatesEnum instance = new SyncDoneValueControlStatesEnum();
-    
+
+
     private SyncDoneValueControlStatesEnum()
     {
     }
-    
+
+
     /**
      * Get an instance of this class
      * 
@@ -107,7 +114,7 @@ public class SyncDoneValueControlStatesEnum implements States
      */
     public String getState( int state )
     {
-        return ( ( state == GRAMMAR_END ) ? "SYNC_DONE_VALUE_GRAMMAR" : syncDoneValueString[state] );
+        return ( ( state == GRAMMAR_END ) ? "SYNC_DONE_VALUE_GRAMMAR" : SYNC_DONE_VALUE_STRING[state] );
     }
-    
+
 }

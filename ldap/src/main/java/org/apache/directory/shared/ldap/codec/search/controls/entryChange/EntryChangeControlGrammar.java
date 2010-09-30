@@ -47,13 +47,13 @@ import org.slf4j.LoggerFactory;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class EntryChangeControlGrammar extends AbstractGrammar
+public final class EntryChangeControlGrammar extends AbstractGrammar
 {
     /** The logger */
-    static final Logger log = LoggerFactory.getLogger( EntryChangeControlGrammar.class );
+    static final Logger LOG = LoggerFactory.getLogger( EntryChangeControlGrammar.class );
 
     /** Speedup for logs */
-    static final boolean IS_DEBUG = log.isDebugEnabled();
+    static final boolean IS_DEBUG = LOG.isDebugEnabled();
 
     /** The instance of grammar. EntryChangeControlGrammar is a singleton */
     private static Grammar instance = new EntryChangeControlGrammar();
@@ -115,7 +115,7 @@ public class EntryChangeControlGrammar extends AbstractGrammar
 
                             if ( IS_DEBUG )
                             {
-                                log.debug( "changeType = " + changeType );
+                                LOG.debug( "changeType = " + changeType );
                             }
 
                             entryChangeContainer.getEntryChangeControl().setChangeType( changeType );
@@ -123,7 +123,7 @@ public class EntryChangeControlGrammar extends AbstractGrammar
 
                         default:
                             String msg = I18n.err( I18n.ERR_04044 );
-                            log.error( msg );
+                            LOG.error( msg );
                             throw new DecoderException( msg );
                     }
 
@@ -133,7 +133,7 @@ public class EntryChangeControlGrammar extends AbstractGrammar
                 catch ( IntegerDecoderException e )
                 {
                     String msg = I18n.err( I18n.ERR_04044 );
-                    log.error( msg, e );
+                    LOG.error( msg, e );
                     throw new DecoderException( msg );
                 }
             }
@@ -163,7 +163,7 @@ public class EntryChangeControlGrammar extends AbstractGrammar
 
                 if ( changeType != ChangeType.MODDN )
                 {
-                    log.error( I18n.err( I18n.ERR_04045 ) );
+                    LOG.error( I18n.err( I18n.ERR_04045 ) );
                     throw new DecoderException( I18n.err( I18n.ERR_04046 ));
                 }
                 else
@@ -177,13 +177,13 @@ public class EntryChangeControlGrammar extends AbstractGrammar
                     }
                     catch ( LdapInvalidDnException ine )
                     {
-                        log.error( I18n.err( I18n.ERR_04047, StringTools.dumpBytes( value.getData() ) ) );
+                        LOG.error( I18n.err( I18n.ERR_04047, StringTools.dumpBytes( value.getData() ) ) );
                         throw new DecoderException( I18n.err( I18n.ERR_04048 ) );
                     }
 
                     if ( IS_DEBUG )
                     {
-                        log.debug( "previousDN = " + previousDn );
+                        LOG.debug( "previousDN = " + previousDn );
                     }
 
                     entryChangeContainer.getEntryChangeControl().setPreviousDn( previousDn );
@@ -208,7 +208,7 @@ public class EntryChangeControlGrammar extends AbstractGrammar
 
                     if ( IS_DEBUG )
                     {
-                        log.debug( "changeNumber = " + changeNumber );
+                        LOG.debug( "changeNumber = " + changeNumber );
                     }
 
                     entryChangeContainer.getEntryChangeControl().setChangeNumber( changeNumber );
@@ -219,7 +219,7 @@ public class EntryChangeControlGrammar extends AbstractGrammar
                 catch ( LongDecoderException e )
                 {
                     String msg = I18n.err( I18n.ERR_04049 );
-                    log.error( msg, e );
+                    LOG.error( msg, e );
                     throw new DecoderException( msg );
                 }
             }

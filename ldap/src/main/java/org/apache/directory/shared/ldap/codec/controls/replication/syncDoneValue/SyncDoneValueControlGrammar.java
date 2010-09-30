@@ -52,7 +52,7 @@ import org.slf4j.LoggerFactory;
  *  
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class SyncDoneValueControlGrammar extends AbstractGrammar
+public final class SyncDoneValueControlGrammar extends AbstractGrammar
 {
 
     /** the logger */

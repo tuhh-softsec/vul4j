@@ -28,9 +28,11 @@ import org.apache.directory.shared.asn1.ber.grammar.States;
  * This class store the PSearchControl's grammar constants. It is also used for
  * debugging purposes.
  * 
+ * TODO: should this be an enum?
+ * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class PersistentSearchControlStatesEnum implements States
+public final class PersistentSearchControlStatesEnum implements States
 {
     // ~ Static fields/initializers
     // -----------------------------------------------------------------
@@ -60,7 +62,7 @@ public class PersistentSearchControlStatesEnum implements States
     // States debug strings
     // =========================================================================
     /** A string representation of all the states */
-    private static String[] PSearchString = new String[]
+    private static final String[] PSEARCH_STRING = new String[]
         { 
         "START_STATE", 
         "PSEARCH_SEQUENCE_VALUE", 
@@ -135,6 +137,6 @@ public class PersistentSearchControlStatesEnum implements States
      */
     public String getState( int state )
     {
-        return ( ( state == GRAMMAR_END ) ? "PSEARCH_END_STATE" : PSearchString[state] );
+        return ( ( state == GRAMMAR_END ) ? "PSEARCH_END_STATE" : PSEARCH_STRING[state] );
     }
 }

@@ -28,9 +28,11 @@ import org.apache.directory.shared.asn1.ber.grammar.States;
  * This class store the PagedSearchControl's grammar constants. It is also used for
  * debugging purposes.
  * 
+ * TODO: should this be an enum?
+ * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class PagedResultsControlStatesEnum implements States
+public final class PagedResultsControlStatesEnum implements States
 {
     // ~ Static fields/initializers
     // -----------------------------------------------------------------
@@ -57,8 +59,8 @@ public class PagedResultsControlStatesEnum implements States
     // States debug strings
     // =========================================================================
     /** A string representation of all the states */
-    private static String[] PagedSearchString = new String[]
-        { 
+    private static final String[] PAGED_SEARCH_STRING = new String[]
+        {
         "START_STATE", 
         "PAGED_SEARCH_SEQUENCE_VALUE", 
         "SIZE_STATE",
@@ -131,6 +133,6 @@ public class PagedResultsControlStatesEnum implements States
      */
     public String getState( int state )
     {
-        return ( ( state == GRAMMAR_END ) ? "PAGED_SEARCH_END_STATE" : PagedSearchString[state] );
+        return ( ( state == GRAMMAR_END ) ? "PAGED_SEARCH_END_STATE" : PAGED_SEARCH_STRING[state] );
     }
 }

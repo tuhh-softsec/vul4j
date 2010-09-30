@@ -19,18 +19,19 @@
  */
 package org.apache.directory.shared.ldap.filter;
 
+
 /**
  * An empty class used for Undefined Nodes.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public class UndefinedNode extends  AbstractExprNode
+public final class UndefinedNode extends AbstractExprNode
 {
     /** A static instance of this node */
     public static final ExprNode UNDEFINED_NODE = new UndefinedNode();
-    
-    
+
+
     /**
      * Creates a new instance of UndefinedNode.
      */
@@ -40,21 +41,32 @@ public class UndefinedNode extends  AbstractExprNode
     }
 
 
+    /**
+     * {@inheritDoc}
+     * 
+     * This implementation always returns false.
+     */
     public boolean isLeaf()
     {
         return false;
     }
 
 
+    /**
+     * {@inheritDoc}
+     * 
+     * This implementation always returns null.
+     */
     public Object accept( FilterVisitor visitor )
     {
         return null;
     }
-    
-    
+
+
     /**
-     * @see Object#toString()
+     * {@inheritDoc}
      */
+    @Override
     public String toString()
     {
         return "Undefined";

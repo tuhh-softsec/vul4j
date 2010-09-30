@@ -31,7 +31,7 @@ import org.apache.directory.shared.ldap.name.DN;
  */
 public abstract class StoredProcedureParameter
 {
-    public static class Generic_LDAP_CONTEXT extends StoredProcedureParameter
+    public static final class Generic_LDAP_CONTEXT extends StoredProcedureParameter
     {
         private DN ctxName;
         
@@ -58,7 +58,7 @@ public abstract class StoredProcedureParameter
     }
 
     
-    public static class Generic_OPERATION_PRINCIPAL extends StoredProcedureParameter
+    public static final class Generic_OPERATION_PRINCIPAL extends StoredProcedureParameter
     {
         private static Generic_OPERATION_PRINCIPAL instance = new Generic_OPERATION_PRINCIPAL( "$operationPrincipal" );
         
@@ -118,24 +118,34 @@ public abstract class StoredProcedureParameter
     public boolean equals( Object obj )
     {
         if ( this == obj )
+        {
             return true;
+        }
         if ( obj == null )
+        {
             return false;
+        }
         if ( getClass() != obj.getClass() )
+        {
             return false;
+        }
         final StoredProcedureParameter other = ( StoredProcedureParameter ) obj;
         if ( name == null )
         {
             if ( other.name != null )
+            {
                 return false;
+            }
         }
         else if ( !name.equals( other.name ) )
+        {
             return false;
+        }
         return true;
     }
 
     
-    public static class Modify_OBJECT extends StoredProcedureParameter
+    public static final class Modify_OBJECT extends StoredProcedureParameter
     {
         private static Modify_OBJECT instance = new Modify_OBJECT( "$object" );
         
@@ -151,7 +161,7 @@ public abstract class StoredProcedureParameter
     }
     
     
-    public static class Modify_MODIFICATION extends StoredProcedureParameter
+    public static final class Modify_MODIFICATION extends StoredProcedureParameter
     {
         private static Modify_MODIFICATION instance = new Modify_MODIFICATION( "$modification" );
         
@@ -167,7 +177,7 @@ public abstract class StoredProcedureParameter
     }
     
     
-    public static class Modify_OLD_ENTRY extends StoredProcedureParameter
+    public static final class Modify_OLD_ENTRY extends StoredProcedureParameter
     {
         private static Modify_OLD_ENTRY instance = new Modify_OLD_ENTRY( "$oldEntry" );
         
@@ -183,7 +193,7 @@ public abstract class StoredProcedureParameter
     }
     
     
-    public static class Modify_NEW_ENTRY extends StoredProcedureParameter
+    public static final class Modify_NEW_ENTRY extends StoredProcedureParameter
     {
         private static Modify_NEW_ENTRY instance = new Modify_NEW_ENTRY( "$newEntry" );
         
@@ -199,7 +209,7 @@ public abstract class StoredProcedureParameter
     }
 
     
-    public static class Add_ENTRY extends StoredProcedureParameter
+    public static final class Add_ENTRY extends StoredProcedureParameter
     {
         private static Add_ENTRY instance = new Add_ENTRY( "$entry" );
         
@@ -215,7 +225,7 @@ public abstract class StoredProcedureParameter
     }
     
     
-    public static class Add_ATTRIBUTES extends StoredProcedureParameter
+    public static final class Add_ATTRIBUTES extends StoredProcedureParameter
     {
         private static Add_ATTRIBUTES instance = new Add_ATTRIBUTES( "$attributes" );
         
@@ -231,7 +241,7 @@ public abstract class StoredProcedureParameter
     }
 
     
-    public static class Delete_NAME extends StoredProcedureParameter
+    public static final class Delete_NAME extends StoredProcedureParameter
     {
         private static Delete_NAME instance = new Delete_NAME( "$name" );
         
@@ -247,7 +257,7 @@ public abstract class StoredProcedureParameter
     }
     
     
-    public static class Delete_DELETED_ENTRY extends StoredProcedureParameter
+    public static final class Delete_DELETED_ENTRY extends StoredProcedureParameter
     {
         private static Delete_DELETED_ENTRY instance = new Delete_DELETED_ENTRY( "$deletedEntry" );
         
@@ -263,7 +273,7 @@ public abstract class StoredProcedureParameter
     }
 
     
-    public static class ModifyDN_ENTRY extends StoredProcedureParameter
+    public static final class ModifyDN_ENTRY extends StoredProcedureParameter
     {
         private static ModifyDN_ENTRY instance = new ModifyDN_ENTRY( "$entry" );
         
@@ -279,7 +289,7 @@ public abstract class StoredProcedureParameter
     }
     
     
-    public static class ModifyDN_NEW_RDN extends StoredProcedureParameter
+    public static final class ModifyDN_NEW_RDN extends StoredProcedureParameter
     {
         private static ModifyDN_NEW_RDN instance = new ModifyDN_NEW_RDN( "$newrdn" );
         
@@ -295,7 +305,7 @@ public abstract class StoredProcedureParameter
     }
     
     
-    public static class ModifyDN_DELETE_OLD_RDN extends StoredProcedureParameter
+    public static final class ModifyDN_DELETE_OLD_RDN extends StoredProcedureParameter
     {
         private static ModifyDN_DELETE_OLD_RDN instance = new ModifyDN_DELETE_OLD_RDN( "$deleteoldrdn" );
         
@@ -311,7 +321,7 @@ public abstract class StoredProcedureParameter
     }
     
     
-    public static class ModifyDN_NEW_SUPERIOR extends StoredProcedureParameter
+    public static final class ModifyDN_NEW_SUPERIOR extends StoredProcedureParameter
     {
         private static ModifyDN_NEW_SUPERIOR instance = new ModifyDN_NEW_SUPERIOR( "$newSuperior" );
         
@@ -327,7 +337,7 @@ public abstract class StoredProcedureParameter
     }
     
     
-    public static class ModifyDN_OLD_RDN extends StoredProcedureParameter
+    public static final class ModifyDN_OLD_RDN extends StoredProcedureParameter
     {
         private static ModifyDN_OLD_RDN instance = new ModifyDN_OLD_RDN( "$oldRDN" );
         
@@ -343,7 +353,7 @@ public abstract class StoredProcedureParameter
     }
     
     
-    public static class ModifyDN_OLD_SUPERIOR_DN extends StoredProcedureParameter
+    public static final class ModifyDN_OLD_SUPERIOR_DN extends StoredProcedureParameter
     {
         private static ModifyDN_OLD_SUPERIOR_DN instance = new ModifyDN_OLD_SUPERIOR_DN( "$oldRDN" );
         
@@ -359,7 +369,7 @@ public abstract class StoredProcedureParameter
     }
     
     
-    public static class ModifyDN_NEW_DN extends StoredProcedureParameter
+    public static final class ModifyDN_NEW_DN extends StoredProcedureParameter
     {
         private static ModifyDN_NEW_DN instance = new ModifyDN_NEW_DN( "$oldRDN" );
         

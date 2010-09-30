@@ -28,9 +28,11 @@ import org.apache.directory.shared.asn1.ber.grammar.States;
  * This class store the SyncInfoValueControl's grammar constants. It is also used for
  * debugging purposes.
  * 
+ * TODO: should this be an enum?
+ * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class SyncInfoValueControlStatesEnum implements States
+public final class SyncInfoValueControlStatesEnum implements States
 {
     // ~ Static fields/initializers
     // -----------------------------------------------------------------
@@ -84,7 +86,7 @@ public class SyncInfoValueControlStatesEnum implements States
     // States debug strings
     // =========================================================================
     /** A string representation of all the states */
-    private static String[] syncInfoValueString = new String[]
+    private static final String[] SYNC_INFO_VALUE_STRING = new String[]
         { 
             "START_STATE",
             "NEW_COOKIE_STATE",
@@ -167,6 +169,6 @@ public class SyncInfoValueControlStatesEnum implements States
      */
     public String getState( int state )
     {
-        return ( ( state == GRAMMAR_END ) ? "SYNC_INFO_VALUE_END_STATE" : syncInfoValueString[state] );
+        return ( ( state == GRAMMAR_END ) ? "SYNC_INFO_VALUE_END_STATE" : SYNC_INFO_VALUE_STRING[state] );
     }
 }

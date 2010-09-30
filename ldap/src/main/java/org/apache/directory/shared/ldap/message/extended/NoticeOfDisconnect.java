@@ -101,18 +101,25 @@ import org.apache.directory.shared.ldap.message.ResultCodeEnum;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class NoticeOfDisconnect extends ExtendedResponseImpl
+public final class NoticeOfDisconnect extends ExtendedResponseImpl
 {
+    
+    /** The serialVersionUID. */
     private static final long serialVersionUID = -4682291068700593492L;
 
+    /** The OID of the NotiveOfDisconnect extended operation. */
     public static final String EXTENSION_OID = "1.3.6.1.4.1.1466.20036";
 
+    /** The empty response */
     private static final byte[] EMPTY_RESPONSE = new byte[0];
 
+    /** The single instance with unavailable result code. */
     public static final NoticeOfDisconnect UNAVAILABLE = new NoticeOfDisconnect( ResultCodeEnum.UNAVAILABLE );
 
+    /** The single instance with protocolError result code. */
     public static final NoticeOfDisconnect PROTOCOLERROR = new NoticeOfDisconnect( ResultCodeEnum.PROTOCOL_ERROR );
 
+    /** The single instance with strongAuthRequired result code. */
     public static final NoticeOfDisconnect STRONGAUTHREQUIRED = new NoticeOfDisconnect(
         ResultCodeEnum.STRONG_AUTH_REQUIRED );
 

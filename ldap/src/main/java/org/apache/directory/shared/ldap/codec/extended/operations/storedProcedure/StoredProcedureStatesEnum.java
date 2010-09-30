@@ -26,11 +26,13 @@ import org.apache.directory.shared.asn1.ber.grammar.States;
 
 
 /**
- * Constants for StoredProcedureGrammar
+ * Constants for StoredProcedureGrammar.
+ * 
+ * TODO: should this be an enum?
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class StoredProcedureStatesEnum implements States
+public final class StoredProcedureStatesEnum implements States
 {
     //~ Static fields/initializers -----------------------------------------------------------------
 
@@ -67,13 +69,14 @@ public class StoredProcedureStatesEnum implements States
     /** Parameter value */
     public static final int PARAMETER_VALUE_STATE = 7;
 
+    /** Last Stored Procedure */
     public static final int LAST_STORED_PROCEDURE_STATE = 8;
 
     //=========================================================================
     // States debug strings 
     //=========================================================================
     /** A string representation of all the states */
-    private static String[] StoredProcedureString = new String[]
+    private static final String[] STORED_PROCEDURE_STRING = new String[]
         { 
         "START_STATE", 
         "STORED_PROCEDURE_STATE", 
@@ -148,6 +151,6 @@ public class StoredProcedureStatesEnum implements States
      */
     public String getState( int state )
     {
-        return ( ( state == GRAMMAR_END ) ? "STORED_PROCEDURE_END_STATE" : StoredProcedureString[state] );
+        return ( ( state == GRAMMAR_END ) ? "STORED_PROCEDURE_END_STATE" : STORED_PROCEDURE_STRING[state] );
     }
 }

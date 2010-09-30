@@ -28,9 +28,11 @@ import org.apache.directory.shared.asn1.ber.grammar.States;
  * This class store the GracefulShutdown's grammar constants. It is also used
  * for debugging purposes.
  * 
+ * TODO: should this be an enum?
+ * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class GracefulShutdownStatesEnum implements States
+public final class GracefulShutdownStatesEnum implements States
 {
     // ~ Static fields/initializers
     // -----------------------------------------------------------------
@@ -58,7 +60,7 @@ public class GracefulShutdownStatesEnum implements States
     // States debug strings
     // =========================================================================
     /** A string representation of all the states */
-    private static String[] GracefulShutdownString = new String[]
+    private static final String[] GRACEFUL_SHUTDOWN_STRING = new String[]
         { 
         "START_STATE",
         "GRACEFUL_SHUTDOWN_SEQUENCE_STATE", 
@@ -132,6 +134,6 @@ public class GracefulShutdownStatesEnum implements States
      */
     public String getState( int state )
     {
-        return ( ( state == GRAMMAR_END ) ? "GRACEFUL_SHUTDOWN_END_STATE" : GracefulShutdownString[state] );
+        return ( ( state == GRAMMAR_END ) ? "GRACEFUL_SHUTDOWN_END_STATE" : GRACEFUL_SHUTDOWN_STRING[state] );
     }
 }

@@ -28,9 +28,11 @@ import org.apache.directory.shared.asn1.ber.grammar.States;
  * This class store the SyncModifyDnControl's grammar constants. It is also used for
  * debugging purposes.
  * 
+ * TODO: should this be an enum?
+ * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class SyncModifyDnControlStatesEnum implements States
+public final class SyncModifyDnControlStatesEnum implements States
 {
     // ~ Static fields/initializers
     // -----------------------------------------------------------------
@@ -78,7 +80,7 @@ public class SyncModifyDnControlStatesEnum implements States
     // States debug strings
     // =========================================================================
     /** A string representation of all the states */
-    private static String[] syncModifyDnString = new String[]
+    private static final String[] SYNC_MODIFY_DN_STRING = new String[]
         { 
         "START_SYNC_MODDN", 
         "SYNC_MODDN_VALUE_SEQUENCE_STATE", 
@@ -159,6 +161,6 @@ public class SyncModifyDnControlStatesEnum implements States
      */
     public String getState( int state )
     {
-        return ( ( state == GRAMMAR_END ) ? "SYNC_MODDN_VALUE_END_STATE" : syncModifyDnString[state] );
+        return ( ( state == GRAMMAR_END ) ? "SYNC_MODDN_VALUE_END_STATE" : SYNC_MODIFY_DN_STRING[state] );
     }
 }

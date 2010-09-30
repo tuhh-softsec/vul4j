@@ -28,9 +28,11 @@ import org.apache.directory.shared.asn1.ber.grammar.States;
  * This class store the EntryChangeControl's grammar constants. It is also used
  * for debugging purposes.
  * 
+ * TODO: should this be an enum?
+ * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class EntryChangeControlStatesEnum implements States
+public final class EntryChangeControlStatesEnum implements States
 {
     // ~ Static fields/initializers
     // -----------------------------------------------------------------
@@ -61,7 +63,7 @@ public class EntryChangeControlStatesEnum implements States
     // States debug strings
     // =========================================================================
     /** A string representation of all the states */
-    private static String[] EcString = new String[]
+    private static final String[] E_C_STRING = new String[]
         { 
         "START_STATE",
         "EC_SEQUENCE_STATE", 
@@ -136,6 +138,6 @@ public class EntryChangeControlStatesEnum implements States
      */
     public String getState( int state )
     {
-        return ( ( state == GRAMMAR_END ) ? "EC_END_STATE" : EcString[state] );
+        return ( ( state == GRAMMAR_END ) ? "EC_END_STATE" : E_C_STRING[state] );
     }
 }

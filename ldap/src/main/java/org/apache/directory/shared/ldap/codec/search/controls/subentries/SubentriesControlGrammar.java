@@ -43,10 +43,10 @@ import org.slf4j.LoggerFactory;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class SubentriesControlGrammar extends AbstractGrammar
+public final class SubentriesControlGrammar extends AbstractGrammar
 {
     /** The logger */
-    static final Logger log = LoggerFactory.getLogger( SubentriesControlGrammar.class );
+    static final Logger LOG = LoggerFactory.getLogger( SubentriesControlGrammar.class );
 
     /** The instance of grammar. SubEntryControlGrammar is a singleton */
     private static Grammar instance = new SubentriesControlGrammar();
@@ -92,7 +92,7 @@ public class SubentriesControlGrammar extends AbstractGrammar
                     }
                     catch ( BooleanDecoderException bde )
                     {
-                        log.error( I18n.err( I18n.ERR_04054, StringTools.dumpBytes( value.getData() ), bde.getMessage() ) );
+                        LOG.error( I18n.err( I18n.ERR_04054, StringTools.dumpBytes( value.getData() ), bde.getMessage() ) );
 
                         // This will generate a PROTOCOL_ERROR
                         throw new DecoderException( bde.getMessage() );

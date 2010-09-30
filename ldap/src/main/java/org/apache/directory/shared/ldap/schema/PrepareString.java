@@ -31,7 +31,7 @@ import org.apache.directory.shared.ldap.util.unicode.InvalidCharacterException;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class PrepareString
+public final class PrepareString
 {
     /** A flag used to lowercase chars during the map process */
     private static final boolean CASE_SENSITIVE = true;

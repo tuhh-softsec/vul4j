@@ -28,9 +28,11 @@ import org.apache.directory.shared.asn1.ber.grammar.States;
  * This class store the GracefulDisconnect's grammar constants. It is also used
  * for debugging purposes.
  * 
+ * TODO: should this be an enum?
+ * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class GracefulDisconnectStatesEnum implements States
+public final class GracefulDisconnectStatesEnum implements States
 {
     // ~ Static fields/initializers
     // -----------------------------------------------------------------
@@ -63,7 +65,7 @@ public class GracefulDisconnectStatesEnum implements States
     // States debug strings
     // =========================================================================
     /** A string representation of all the states */
-    private static String[] GracefulDisconnectString = new String[]
+    private static final String[] GRACEFUL_DISCONNECT_STRING = new String[]
         { 
         "START_STATE", 
         "GRACEFUL_DISCONNECT_SEQUENCE_STATE",
@@ -139,6 +141,6 @@ public class GracefulDisconnectStatesEnum implements States
      */
     public String getState( int state )
     {
-        return ( ( state == GRAMMAR_END ) ? "GRACEFUL_DISCONNECT_END_STATE" : GracefulDisconnectString[state] );
+        return ( ( state == GRAMMAR_END ) ? "GRACEFUL_DISCONNECT_END_STATE" : GRACEFUL_DISCONNECT_STRING[state] );
     }
 }

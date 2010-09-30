@@ -50,13 +50,13 @@ import org.slf4j.LoggerFactory;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class PagedResultsControlGrammar extends AbstractGrammar
+public final class PagedResultsControlGrammar extends AbstractGrammar
 {
     /** The logger */
-    static final Logger log = LoggerFactory.getLogger( PagedResultsControlGrammar.class );
+    static final Logger LOG = LoggerFactory.getLogger( PagedResultsControlGrammar.class );
 
     /** Speedup for logs */
-    static final boolean IS_DEBUG = log.isDebugEnabled();
+    static final boolean IS_DEBUG = LOG.isDebugEnabled();
 
     /** The instance of grammar. PagedSearchControlGrammar is a singleton */
     private static Grammar instance = new PagedResultsControlGrammar();
@@ -120,7 +120,7 @@ public class PagedResultsControlGrammar extends AbstractGrammar
                         
                         if ( IS_DEBUG )
                         {
-                            log.debug( "size = " + size );
+                            LOG.debug( "size = " + size );
                         }
 
                         pagedSearchContainer.getPagedSearchControl().setSize( size );
@@ -128,7 +128,7 @@ public class PagedResultsControlGrammar extends AbstractGrammar
                     catch ( IntegerDecoderException e )
                     {
                         String msg = I18n.err( I18n.ERR_04050 );
-                        log.error( msg, e );
+                        LOG.error( msg, e );
                         throw new DecoderException( msg );
                     }
                 }

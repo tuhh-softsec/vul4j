@@ -63,7 +63,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class SyncInfoValueControlGrammar extends AbstractGrammar
+public final class SyncInfoValueControlGrammar extends AbstractGrammar
 {
     /** The logger */
     static final Logger LOG = LoggerFactory.getLogger( SyncInfoValueControlGrammar.class );

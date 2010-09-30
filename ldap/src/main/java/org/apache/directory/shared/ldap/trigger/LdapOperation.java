@@ -24,9 +24,11 @@ package org.apache.directory.shared.ldap.trigger;
 /**
  * An enumeration that represents change inducing LDAP operations.
  * 
+ * TODO: should this be an enum?
+ * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class LdapOperation
+public final class LdapOperation
 {
     public static final LdapOperation MODIFY = new LdapOperation( "Modify" );
 

@@ -25,7 +25,7 @@ package org.apache.directory.shared.ldap.aci;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class GrantAndDenial
+public final class GrantAndDenial
 {
     // Permissions that may be used in conjunction with any component of
     // <tt>ProtectedItem</tt>s.

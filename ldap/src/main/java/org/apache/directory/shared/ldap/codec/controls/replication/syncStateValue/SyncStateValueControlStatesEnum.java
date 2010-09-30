@@ -28,9 +28,11 @@ import org.apache.directory.shared.asn1.ber.grammar.States;
  * This class store the SyncStateValueControl's grammar constants. It is also used for
  * debugging purposes.
  * 
+ * TODO: should this be an enum?
+ * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class SyncStateValueControlStatesEnum implements States
+public final class SyncStateValueControlStatesEnum implements States
 {
     // ~ Static fields/initializers
     // -----------------------------------------------------------------
@@ -60,7 +62,7 @@ public class SyncStateValueControlStatesEnum implements States
     // States debug strings
     // =========================================================================
     /** A string representation of all the states */
-    private static String[] syncStatetValueString = new String[]
+    private static final String[] SYNC_STATE_VALUE_STRING = new String[]
         { 
         "START_STATE", 
         "SYNC_STATE_VALUE_SEQUENCE_STATE", 
@@ -135,6 +137,6 @@ public class SyncStateValueControlStatesEnum implements States
      */
     public String getState( int state )
     {
-        return ( ( state == GRAMMAR_END ) ? "SYNC_STATE_VALUE_END_STATE" : syncStatetValueString[state] );
+        return ( ( state == GRAMMAR_END ) ? "SYNC_STATE_VALUE_END_STATE" : SYNC_STATE_VALUE_STRING[state] );
     }
 }

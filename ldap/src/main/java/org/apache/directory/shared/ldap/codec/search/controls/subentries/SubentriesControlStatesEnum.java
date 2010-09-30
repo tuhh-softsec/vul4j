@@ -30,7 +30,7 @@ import org.apache.directory.shared.asn1.ber.grammar.States;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class SubentriesControlStatesEnum implements States
+public final class SubentriesControlStatesEnum implements States
 {
     // ~ Static fields/initializers
     // -----------------------------------------------------------------
@@ -52,10 +52,10 @@ public class SubentriesControlStatesEnum implements States
     // States debug strings
     // =========================================================================
     /** A string representation of all the states */
-    private static String[] SubEntryString = new String[]
-        { 
-        "START_STATE", 
-        "SUB_ENTRY_VISIBILITY_STATE" 
+    private static final String[] SUB_ENTRY_STRING = new String[]
+        {
+            "START_STATE",
+            "SUB_ENTRY_VISIBILITY_STATE"
         };
 
     /** The instance */
@@ -124,6 +124,6 @@ public class SubentriesControlStatesEnum implements States
      */
     public String getState( int state )
     {
-        return ( ( state == GRAMMAR_END ) ? "SUB_ENTRY_END_STATE" : SubEntryString[state] );
+        return ( ( state == GRAMMAR_END ) ? "SUB_ENTRY_END_STATE" : SUB_ENTRY_STRING[state] );
     }
 }

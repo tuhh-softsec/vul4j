@@ -68,7 +68,7 @@ public abstract class UserClass implements Serializable
      * Every directory user (with possible requirements for
      * authenticationLevel).
      */
-    public static class AllUsers extends UserClass
+    public static final class AllUsers extends UserClass
     {
         private static final long serialVersionUID = 8967984720792510292L;
 
@@ -78,6 +78,10 @@ public abstract class UserClass implements Serializable
         }
 
 
+        /**
+         * {@inheritDoc}
+         */
+        @Override
         public String toString()
         {
             return "allUsers";
@@ -89,7 +93,7 @@ public abstract class UserClass implements Serializable
      * if the entry is a member of a family, then additionally the user with the
      * distinguished name of the ancestor.
      */
-    public static class ThisEntry extends UserClass
+    public static final class ThisEntry extends UserClass
     {
         private static final long serialVersionUID = -8189325270233754470L;
 
@@ -108,7 +112,7 @@ public abstract class UserClass implements Serializable
     /**
      * The user as parent (ancestor) of accessed entry.
      */
-    public static class ParentOfEntry extends UserClass
+    public static final class ParentOfEntry extends UserClass
     {
         private static final long serialVersionUID = 5247207736068086476L;
 
@@ -118,6 +122,10 @@ public abstract class UserClass implements Serializable
         }
 
 
+        /**
+         * {@inheritDoc}
+         */
+        @Override
         public String toString()
         {
             return "parentOfEntry";
@@ -128,7 +136,7 @@ public abstract class UserClass implements Serializable
     /**
      * A base class for all user classes which has a set of DNs.
      */
-    private static abstract class NamedUserClass extends UserClass
+    private abstract static class NamedUserClass extends UserClass
     {
         private static final long serialVersionUID = 8571875984468893621L;
         protected final Set<DN> names;
@@ -253,6 +261,10 @@ public abstract class UserClass implements Serializable
         }
 
 
+        /**
+         * {@inheritDoc}
+         */
+        @Override
         public String toString()
         {
             return "name " + super.toString();
@@ -282,6 +294,10 @@ public abstract class UserClass implements Serializable
         }
 
 
+        /**
+         * {@inheritDoc}
+         */
+        @Override
         public String toString()
         {
             return "userGroup " + super.toString();
@@ -313,6 +329,8 @@ public abstract class UserClass implements Serializable
 
         /**
          * Returns the collection of unrefined {@link SubtreeSpecification}s.
+         *
+         * @return the subtree specifications
          */
         public Set<SubtreeSpecification> getSubtreeSpecifications()
         {
@@ -354,6 +372,10 @@ public abstract class UserClass implements Serializable
         }
 
 
+        /**
+         * {@inheritDoc}
+         */
+        @Override
         public String toString()
         {
             StringBuilder buffer = new StringBuilder();

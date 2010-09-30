@@ -27,15 +27,17 @@ package org.apache.directory.shared.ldap.trigger;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class ActionTime
+public final class ActionTime
 {
     //public static final ActionTime BEFORE = new ActionTime( "BEFORE" );
 
+    /** The AFTER instance. */
     public static final ActionTime AFTER = new ActionTime( "AFTER" );
 
     //public static final ActionTime INSTEADOF = new ActionTime( "INSTEADOF" );
 
     
+    /** The name. */
     private final String name;
 
 
@@ -47,6 +49,8 @@ public class ActionTime
 
     /**
      * Returns the name of this action time.
+     *
+     * @return the name of this action time.
      */
     public String getName()
     {
@@ -55,8 +59,9 @@ public class ActionTime
 
 
     /**
-     * @see java.lang.Object#toString()
+     * {@inheritDoc}
      */
+    @Override
     public String toString()
     {
         return name;
@@ -64,9 +69,9 @@ public class ActionTime
 
 
     /**
-     * @see java.lang.Object#hashCode()
-     * @return the instance's hash code 
+     * {@inheritDoc}
      */
+    @Override
     public int hashCode()
     {
         int h = 37;
@@ -77,24 +82,35 @@ public class ActionTime
 
 
     /**
-     * @see java.lang.Object#equals(java.lang.Object)
+     * {@inheritDoc}
      */
+    @Override
     public boolean equals( Object obj )
     {
         if ( this == obj )
+        {
             return true;
+        }
         if ( obj == null )
+        {
             return false;
+        }
         if ( getClass() != obj.getClass() )
+        {
             return false;
+        }
         final ActionTime other = ( ActionTime ) obj;
         if ( name == null )
         {
             if ( other.name != null )
+            {
                 return false;
+            }
         }
         else if ( !name.equals( other.name ) )
+        {
             return false;
+        }
         return true;
     }
 }
