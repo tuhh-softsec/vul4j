@@ -12,10 +12,19 @@
   </f:entry>
   
   <f:entry title="Project source folder" help="${rootURL}/../plugin/ccm/help-SrcFolder.html">
-	  <f:textbox name="CCMBuilder.srcFolder" value="${instance.srcFolder}" />
+	  <f:textarea name="CCMBuilder.srcFolders" value="${instance.srcFolders}"></f:textarea>
   </f:entry>
   
   <f:advanced>
+  	  <f:entry title="Exclude files" help="">
+  	  	<f:textarea name="CCMBuilder.excludeFiles" value="${instance.excludeFiles}"></f:textarea>
+  	  </f:entry>
+  	  <f:entry title="Exclude folders" help="">
+  	  	<f:textarea name="CCMBuilder.excludeFolders" value="${instance.excludeFolders}"></f:textarea>
+  	  </f:entry>
+  	  <f:entry title="Exclude functions" help="">
+  	  	<f:textarea name="CCMBuilder.excludeFunctions" value="${instance.excludeFunctions}"></f:textarea>
+  	  </f:entry>
 	  <f:entry title="Recursive?" help="${rootURL}/../plugin/ccm/help-Recursive.html">
 		  <f:checkbox name="CCMBuilder.recursive" value="${instance.recursive}" checked="${instance.recursive}" />
 	  </f:entry> 
