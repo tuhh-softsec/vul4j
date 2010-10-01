@@ -483,6 +483,7 @@ xenc_sources = \
 
 # XML Key Management
 xkms_sources = \
+  xkms/XKMSConstants.cpp \
   xkms/impl/XKMSCompoundRequestImpl.cpp \
   xkms/impl/XKMSRevokeKeyBindingImpl.hpp \
   xkms/impl/XKMSRecoverRequestImpl.cpp \
