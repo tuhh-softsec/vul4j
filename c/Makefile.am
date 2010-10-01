@@ -19,10 +19,14 @@ ACLOCAL_AMFLAGS = -I m4
 
 SUBDIRS = include lib bin
 
-EXTRA_DIST = m4/acx_pthread.m4 Projects xml-security-c.spec \
-    src/framework/resource.h \
-    src/framework/version.rc \
-    src/tools/threadTest/threadtest.cpp
+EXTRA_DIST = \
+	CHANGELOG.txt \
+	Projects \
+	xml-security-c.spec \
+	m4/acx_pthread.m4 \
+	src/framework/resource.h \
+	src/framework/version.rc \
+	src/tools/threadTest/threadtest.cpp
 
 dist-hook:
 	rm -rf `find $(distdir)/Projects -name .svn`

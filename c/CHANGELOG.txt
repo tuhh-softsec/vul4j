@@ -17,6 +17,7 @@ Changes since 1.5.1
 * Add elliptic curve keys and signatures via ECDSA (SC)
 * Support debugging of Reference/SignedInfo data (SC)
 * Clean up tests for SHA2 algorithms in OpenSSL (SC)
+* Updated autoconf script, added NSS support, removed pre-automake material (SC)
 
 Changes between 1.5 and 1.5.1
 =====================================
