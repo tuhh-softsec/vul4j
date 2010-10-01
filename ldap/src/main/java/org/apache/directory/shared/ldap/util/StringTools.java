@@ -662,7 +662,7 @@ public final class StringTools
     public static final byte[] toByteArray( String hexString )
     {
         int arrLength = hexString.length() >> 1;
-        byte buf[] = new byte[arrLength];
+        byte [] buf = new byte[arrLength];
         
         for ( int ii = 0; ii < arrLength; ii++ )
         {

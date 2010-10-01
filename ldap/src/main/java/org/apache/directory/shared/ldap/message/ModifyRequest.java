@@ -83,7 +83,7 @@ import org.apache.directory.shared.ldap.name.DN;
  *             did not already exist.  A replace with no value will delete
  *             the entire attribute if it exists, and is ignored if the
  *             attribute does not exist.
- *  &lt;pre&gt;
+ *  </pre>
  * 
  *  Notice that we tried to leverage as much as we already can from the JNDI.
  *  Both the Names and ModificationItems are used here to make the API as easy

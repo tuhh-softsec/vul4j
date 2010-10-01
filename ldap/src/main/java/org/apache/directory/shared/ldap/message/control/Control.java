@@ -37,7 +37,7 @@ public interface Control
     /**
      * Tells if the control is critical or not.
      *
-     * @return <code>true/code> if the control is critical, <code>false</code> otherwise 
+     * @return <code>true</code> if the control is critical, <code>false</code> otherwise 
      */
     boolean isCritical();
     

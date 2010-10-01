@@ -252,7 +252,7 @@ public final class AttributeUtils
      * @param attr The attribute we are searching in
      * @param compared The object we are looking for
      * @param type The attribute type
-     * @return <code>true</code> if the value exists in the attribute</code>
+     * @return <code>true</code> if the value exists in the attribute
      * @throws LdapException If something went wrong while accessing the data
      */
     public static boolean containsValue( Attribute attr, Value<?> compared, AttributeType type ) throws LdapException

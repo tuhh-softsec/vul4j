@@ -698,7 +698,7 @@ public class AVA implements Cloneable, Comparable<Object>, Externalizable
      *     <b>upName</b> The User provided ATAV
      *   </li>
      *   <li>
-     *     <b/>start</b> The position of this ATAV in the DN
+     *     <b>start</b> The position of this ATAV in the DN
      *   </li>
      *   <li>
      *     <b>length</b> The ATAV length

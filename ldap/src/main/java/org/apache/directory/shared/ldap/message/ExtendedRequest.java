@@ -49,7 +49,7 @@ import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
  *   IDENTIFIER corresponding to the request. The requestValue is
  *   information in a form defined by that request, encapsulated inside an
  *   OCTET STRING.
- *  &lt;pre&gt;
+ * </pre>
  * <br>
  *  
  *  @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>

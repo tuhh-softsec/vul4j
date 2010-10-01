@@ -115,9 +115,7 @@ public interface ModifyDnRequest extends SingleReplyRequest, AbandonableRequest
     /**
      * Gets the flag which determines if the old Rdn attribute is to be removed
      * from the entry when the new Rdn is used in its stead. This property
-     * corresponds to the <b>deleteoldrdn
-     * </p>
-     * PDU field.
+     * corresponds to the <b>deleteoldrdn</b>.
      * 
      * @return true if the old rdn is to be deleted, false if it is not
      */
@@ -127,9 +125,7 @@ public interface ModifyDnRequest extends SingleReplyRequest, AbandonableRequest
     /**
      * Sets the flag which determines if the old Rdn attribute is to be removed
      * from the entry when the new Rdn is used in its stead. This property
-     * corresponds to the <b>deleteoldrdn
-     * </p>
-     * PDU field.
+     * corresponds to the <b>deleteoldrdn</b>.
      * 
      * @param deleteOldRdn
      *            true if the old rdn is to be deleted, false if it is not

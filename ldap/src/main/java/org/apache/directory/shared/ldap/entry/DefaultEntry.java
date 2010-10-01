@@ -2611,7 +2611,7 @@ public class DefaultEntry implements Entry
      * Serialize an Entry.
      *
      * The structure is the following :
-     * <b>[a byte] : if the DN is empty 0 will be written else 1
+     * <b>[a byte]</b> : if the DN is empty 0 will be written else 1
      * <b>[RDN]</b> : The entry's RDN.
      * <b>[numberAttr]</b> : the bumber of attributes. Can be 0
      * <b>[attribute's oid]*</b> : The attribute's OID to get back

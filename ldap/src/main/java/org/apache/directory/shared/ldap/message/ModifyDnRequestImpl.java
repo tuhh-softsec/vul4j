@@ -86,8 +86,6 @@ public class ModifyDnRequestImpl extends AbstractAbandonableRequest implements M
      * Gets the flag which determines if the old Rdn attribute is to be removed
      * from the entry when the new Rdn is used in its stead. This property
      * corresponds to the <b>deleteoldrdn</b>
-     * </p>
-     * PDU field.
      * 
      * @return true if the old rdn is to be deleted, false if it is not
      */
@@ -101,8 +99,6 @@ public class ModifyDnRequestImpl extends AbstractAbandonableRequest implements M
      * Sets the flag which determines if the old Rdn attribute is to be removed
      * from the entry when the new Rdn is used in its stead. This property
      * corresponds to the <b>deleteoldrdn</b>
-     * </p>
-     * PDU field.
      * 
      * @param deleteOldRdn true if the old rdn is to be deleted, false if it is not
      */

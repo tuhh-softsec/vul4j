@@ -54,15 +54,15 @@ public interface ExprNode extends Cloneable
      */
     boolean isLeaf();
 
-    
+
     /**
      * Tells if this Node is Schema aware.
      * 
      * @return true if the Node is SchemaAware
      */
     boolean isSchemaAware();
-    
-    
+
+
     /**
      * Gets the assertion type of this node. Make it possible to use switch
      * statements on the node type.
@@ -70,6 +70,7 @@ public interface ExprNode extends Cloneable
      * @return the assertion type
      */
     AssertionType getAssertionType();
+
 
     /**
      * Recursively appends the refinement string representation of this node and its
@@ -80,11 +81,10 @@ public interface ExprNode extends Cloneable
      * @param buf the buffer to append to.
      * @return The buffer in which the refinement has been appended
      * @throws UnsupportedOperationException if this node isn't a part of a refinement.
-     * @return the refinement buffer
      */
-    StringBuilder printRefinementToBuffer( StringBuilder buf );
-    
-    
+    StringBuilder printRefinementToBuffer( StringBuilder buf ) throws UnsupportedOperationException;
+
+
     /**
      * Element/node accept method for visitor pattern.
      * 
@@ -93,11 +93,12 @@ public interface ExprNode extends Cloneable
      * @return the modified element
      */
     Object accept( FilterVisitor visitor );
-    
-    
+
+
     /**
-     * Clone the object
-     * @return
+     * Clone this expression node.
+     * 
+     * @return the cloned expression node
      */
     ExprNode clone();
 }

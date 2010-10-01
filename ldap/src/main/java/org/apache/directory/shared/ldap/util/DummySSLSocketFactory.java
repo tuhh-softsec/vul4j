@@ -143,7 +143,7 @@ public class DummySSLSocketFactory extends SSLSocketFactory
     /**
      * @see javax.net.SocketFactory#createSocket(java.lang.String, int)
      */
-    public Socket createSocket( String arg0, int arg1 ) throws IOException, UnknownHostException
+    public Socket createSocket( String arg0, int arg1 ) throws IOException
     {
         try
         {
@@ -177,8 +177,7 @@ public class DummySSLSocketFactory extends SSLSocketFactory
     /**
      * @see javax.net.SocketFactory#createSocket(java.lang.String, int, java.net.InetAddress, int)
      */
-    public Socket createSocket( String arg0, int arg1, InetAddress arg2, int arg3 ) throws IOException,
-        UnknownHostException
+    public Socket createSocket( String arg0, int arg1, InetAddress arg2, int arg3 ) throws IOException
     {
         try
         {

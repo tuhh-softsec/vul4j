@@ -40,7 +40,7 @@ import org.apache.directory.shared.ldap.util.GeneralizedTime.TimeZoneFormat;
 
 /**
  * Normalizer which normalize a time following those rules :
- * </ul>
+ * <ul>
  * <li>if minutes are ommited, then they are replaced by 00</li>
  * <li>if seconds are ommited, then they are replaced by 00</li>
  * <li>if fraction is 0 or omitted, it is replaced by 000</li>

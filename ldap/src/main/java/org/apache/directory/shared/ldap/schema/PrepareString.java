@@ -102,7 +102,7 @@ public final class PrepareString
      * Tells if a char is a combining mark.
      *
      * @param c The char to check
-     * @return <code>true> if the char is a combining mark, false otherwise
+     * @return true if the char is a combining mark, false otherwise
      */
     private static boolean isCombiningMark( char c )
     {
