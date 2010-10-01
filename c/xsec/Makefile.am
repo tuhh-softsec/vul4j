@@ -111,6 +111,7 @@ xklient_SOURCES = \
 lib_LTLIBRARIES = libxml-security-c.la
 
 xsecincludedir = $(includedir)/xsec
+canonincludedir = $(includedir)/xsec/canon
 encincludedir = $(includedir)/xsec/enc
 xscryptincludedir = $(includedir)/xsec/enc/XSCrypt
 opensslincludedir = $(includedir)/xsec/enc/OpenSSL
@@ -133,7 +134,7 @@ xkmsincludedir = $(includedir)/xsec/xkms
 
 # Canon
 
-xsecinclude_HEADERS = \
+canoninclude_HEADERS = \
   canon/XSECXMLNSStack.hpp \
   canon/XSECCanon.hpp \
   canon/XSECC14n20010315.hpp
