@@ -163,7 +163,7 @@ utilsinclude_HEADERS = \
 
 unixutilsinclude_HEADERS = \
   xsec/utils/unixutils/XSECURIResolverGenericUnix.hpp \
-  xsec/utils/unixutils/XSECBinHTTPURIInputStream.hpp \
+  xsec/utils/unixutils/XSECBinHTTPURIInputStream.hpp
 
 xencinclude_HEADERS = \
   xsec/xenc/XENCEncryptionMethod.hpp \
