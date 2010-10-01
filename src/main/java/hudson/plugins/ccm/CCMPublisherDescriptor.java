@@ -41,11 +41,11 @@ public class CCMPublisherDescriptor
 extends BuildStepDescriptor<Publisher> 
 {
 	
-	/**
+	/*
 	 * <p>Name that is shown in the build configuration screen. It appears 
 	 * in the section "Post build actions".</p> 
 	 */
-	private static final String DISPLAY_NAME = "Publish CCM Report";
+	//private static final String DISPLAY_NAME = "Publish CCM Report";
 	
 	public CCMPublisherDescriptor()
 	{
@@ -57,7 +57,7 @@ extends BuildStepDescriptor<Publisher>
 	 */
 	@Override
 	public String getDisplayName() {
-		return DISPLAY_NAME;
+		return "Publish CCM Report";
 	}
 	
 	@SuppressWarnings("unchecked")

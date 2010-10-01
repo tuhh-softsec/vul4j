@@ -70,9 +70,21 @@ implements Serializable
 	 */
     private final String ccmName;
     /**
-     * The source folder CCM must scan.
+     * The list of source folders CCM must scan.
      */
-    private final String srcFolder;
+    private final String srcFolders;
+    /**
+     * List of files that CCM must not scan.
+     */
+    private final String excludeFiles;
+    /**
+     * List of folders that CCM must not scan.
+     */
+    private final String excludeFolders;
+    /**
+     * List of functions that CCM must not scan.
+     */
+    private final String excludeFunctions;
     /**
      * Whether CCM should traverse the directories recursivelly or not.
      */
@@ -87,7 +99,7 @@ implements Serializable
     private final String numMetrics;
 	
     @Extension
-    public static final CCMBuilderDescription DESCRIPTOR = new CCMBuilderDescription();
+    public static final CCMBuilderDescriptor DESCRIPTOR = new CCMBuilderDescriptor();
     
     /**
      * Name of generated config file for CCM.
@@ -107,14 +119,20 @@ implements Serializable
     @DataBoundConstructor
     public CCMBuilder(
     		String ccmName, 
-    		String srcFolder,
+    		String srcFolders,
+    		String excludeFiles, 
+    		String excludeFolders, 
+    		String excludeFunctions, 
     		Boolean recursive, 
     		Boolean outputXml, 
     		String numMetrics) 
     {
 		super();
 		this.ccmName = ccmName;
-		this.srcFolder = srcFolder;
+		this.srcFolders = srcFolders;
+		this.excludeFiles = excludeFiles;
+		this.excludeFolders = excludeFolders;
+		this.excludeFunctions = excludeFunctions;
 		this.recursive = recursive;
 		this.outputXml = outputXml;
 		this.numMetrics = ((numMetrics == null || numMetrics.length()<=0) ? DEFAULT_NUMBER_OF_METRICS.toString() : numMetrics);
@@ -125,9 +143,24 @@ implements Serializable
 		return ccmName;
 	}
 
-	public String getSrcFolder() 
+	public String getSrcFolders() 
 	{
-		return srcFolder;
+		return srcFolders;
+	}
+	
+	public String getExcludeFiles()
+	{
+		return excludeFiles;
+	}
+	
+	public String getExcludeFolders()
+	{
+		return excludeFolders;
+	}
+	
+	public String getExcludeFunctions()
+	{
+		return excludeFunctions;
 	}
 
 	public Boolean isRecursive() 
@@ -229,7 +262,7 @@ implements Serializable
         
     	args.addKeyValuePairs("-P:",build.getBuildVariables());
     	
-        CCMConfigCallable ccmConfigGenerator = new CCMConfigCallable( srcFolder, recursive, numMetrics, listener );
+        CCMConfigCallable ccmConfigGenerator = new CCMConfigCallable( srcFolders, excludeFiles, excludeFolders, excludeFunctions, recursive, numMetrics, listener );
         String ccmConfigFile = workspace.act( ccmConfigGenerator );
     	args.add( ccmConfigFile );
     	
@@ -270,5 +303,7 @@ implements Serializable
         }
 		
 	}
+	
+	
     
 }

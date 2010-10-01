@@ -2,34 +2,34 @@
 	<!--
 		This script defines the view on the project builders section for CCM Builder.
 	-->
-  <f:entry title="CCM Version">
+  <f:entry title="${%CCMVersion}">
   	<select class="setting-input" name="CCMBuilder.ccmName">
-      <option>(Default)</option>
+      <option>(${%Default})</option>
       <j:forEach var="inst" items="${descriptor.installations}">
         <f:option selected="${inst.name==instance.ccmName}">${inst.name}</f:option>
       </j:forEach>
     </select>
   </f:entry>
   
-  <f:entry title="Project source folder" help="${rootURL}/../plugin/ccm/help-SrcFolder.html">
+  <f:entry title="${%SrcFolders}" help="${rootURL}/../plugin/ccm/help-SrcFolders.html">
 	  <f:textarea name="CCMBuilder.srcFolders" value="${instance.srcFolders}"></f:textarea>
   </f:entry>
   
   <f:advanced>
-  	  <f:entry title="Exclude files" help="">
+  	  <f:entry title="${%ExcludeFiles}" help="${rootURL}/../plugin/ccm/help-ExcludeFiles.html">
   	  	<f:textarea name="CCMBuilder.excludeFiles" value="${instance.excludeFiles}"></f:textarea>
   	  </f:entry>
-  	  <f:entry title="Exclude folders" help="">
+  	  <f:entry title="${%ExcludeFolders}" help="${rootURL}/../plugin/ccm/help-ExcludeFolders.html">
   	  	<f:textarea name="CCMBuilder.excludeFolders" value="${instance.excludeFolders}"></f:textarea>
   	  </f:entry>
-  	  <f:entry title="Exclude functions" help="">
+  	  <f:entry title="${%ExcludeFunctions}" help="${rootURL}/../plugin/ccm/help-ExcludeFunctions.html">
   	  	<f:textarea name="CCMBuilder.excludeFunctions" value="${instance.excludeFunctions}"></f:textarea>
   	  </f:entry>
-	  <f:entry title="Recursive?" help="${rootURL}/../plugin/ccm/help-Recursive.html">
+	  <f:entry title="${%Recursive}" help="${rootURL}/../plugin/ccm/help-Recursive.html">
 		  <f:checkbox name="CCMBuilder.recursive" value="${instance.recursive}" checked="${instance.recursive}" />
 	  </f:entry> 
 	  
-	  <f:entry title="Number of metrics" help="${rootURL}/../plugin/ccm/help-NumMetrics.html">
+	  <f:entry title="${%NumberOfMetrics}" help="${rootURL}/../plugin/ccm/help-NumMetrics.html">
 		  <f:textbox name="CCMBuilder.numMetrics" value="${instance.numMetrics}" />
 	  </f:entry>
   </f:advanced>

@@ -30,6 +30,9 @@ import hudson.remoting.VirtualChannel;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.StringTokenizer;
+
+import org.apache.commons.lang.StringUtils;
 
 /**
  * @author Bruno P. Kinoshita - http://www.kinoshita.eti.br
@@ -39,20 +42,29 @@ public class CCMConfigCallable
 implements FileCallable<String>
 {
 	
-	private final String srcFolder;
+	private final String srcFolders;
+	private final String excludeFiles;
+	private final String excludeFolders;
+	private final String excludeFunctions;
 	private final Boolean isRecursive;
 	private final String numMetrics;
 	
 	private final BuildListener listener;
 
 	public CCMConfigCallable(
-		String srcFolder, 
+		String srcFolders, 
+		String excludeFiles, 
+		String excludeFolders, 
+		String excludeFunctions, 
 		Boolean isRecursive, 
 		String numMetrics, 
 		BuildListener listener
 	)
 	{
-		this.srcFolder = srcFolder;
+		this.srcFolders = srcFolders;
+		this.excludeFiles = excludeFiles;
+		this.excludeFolders = excludeFolders;
+		this.excludeFunctions = excludeFunctions;
 		this.isRecursive = isRecursive;
 		this.numMetrics = numMetrics;
 		this.listener = listener;
@@ -78,9 +90,23 @@ implements FileCallable<String>
 		
 		// TBD: eck! correct this. later...
 		buffer.append("<ccm>\n");
-		buffer.append("<exclude></exclude>\n");
+		buffer.append("<exclude>\n");
+		
+		this.addExclusion( buffer, excludeFiles, "file" );
+		
+		this.addExclusion( buffer, excludeFolders, "folder" );
+		
+		this.addExclusion( buffer, excludeFunctions, "function" );
+		
+		buffer.append("</exclude>\n");
 		buffer.append("<analyze>\n");
-		buffer.append("<folder>"+ new File(workspace, srcFolder).getAbsolutePath() +"</folder>\n");
+		String normalizedSourceFolders = srcFolders.replaceAll("[\t\r\n]+", " ");
+		StringTokenizer st = new StringTokenizer(normalizedSourceFolders, " ");
+		while ( st.hasMoreTokens() )
+		{
+			//buffer.append("<folder>"+new File(workspace, st.nextToken()).getAbsolutePath()+"</folder>\n");
+			buffer.append("<folder>"+st.nextToken()+"</folder>\n");
+		}
 		buffer.append("</analyze>\n");
 		buffer.append("<recursive>"+ (isRecursive == true ? "yes" : "no") +"</recursive>\n");
 		buffer.append("<outputXML>yes</outputXML>\n");
@@ -98,6 +124,33 @@ implements FileCallable<String>
 		return ccmConfigFile.getAbsolutePath();
 	}
 	
+	/**
+	 * Adds exclusion tag to CCM config File. 
+	 * 
+	 * @param buffer Buffer to append the string
+	 * @param excludeString String with tokens separated by spaces
+	 * @param xmlTag xml tag of exclusion, like folder, function, tag...
+	 */
+	private void addExclusion( 
+			StringBuffer buffer, 
+			String excludeString,
+			String xmlTag )
+	{
+		if ( StringUtils.isEmpty( excludeString ) )
+		{
+			return;
+		}
+		String normalizedExcludeString = excludeString.replaceAll("[\t\r\n]+", " ");
+		
+		StringTokenizer st = new StringTokenizer( normalizedExcludeString, " " );
+		while ( st.hasMoreTokens() )
+		{
+			buffer.append( "<"+xmlTag+">" );
+			buffer.append( st.nextToken() );
+			buffer.append( "</"+xmlTag+">\n" );
+		}
+	}
+
 	/* (non-Javadoc)
 	 * @see hudson.FilePath.FileCallable#invoke(java.io.File, hudson.remoting.VirtualChannel)
 	 */

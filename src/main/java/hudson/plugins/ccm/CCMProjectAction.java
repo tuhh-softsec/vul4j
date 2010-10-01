@@ -47,7 +47,7 @@ extends Actionable
 implements ProminentProjectAction, Serializable{
 
 	
-	public static final String DISPLAY_NAME = "CCM Results";
+	//public static final String DISPLAY_NAME = "CCM Results";
 	public static final String ICON_FILE_NAME = "/plugin/ccm/icons/ccm-24.png";
 	public static final String URL_NAME = "ccmResult";
 	
@@ -65,7 +65,7 @@ implements ProminentProjectAction, Serializable{
 	 * @see hudson.model.Action#getDisplayName()
 	 */
 	public String getDisplayName() {
-		return DISPLAY_NAME;
+		return "CCM Results";
 	}
 
 	/* (non-Javadoc)

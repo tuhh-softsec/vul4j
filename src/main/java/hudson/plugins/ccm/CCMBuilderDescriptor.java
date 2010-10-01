@@ -36,15 +36,15 @@ import org.kohsuke.stapler.StaplerRequest;
  * @author Bruno P. Kinoshita - http://www.kinoshita.eti.br
  * @since 7 april, 2010
  */
-public class CCMBuilderDescription 
+public class CCMBuilderDescriptor 
 extends Descriptor<Builder>{
 
-	private static final String DISPLAY_NAME = "Invoke CCM";
+	//private static final String DISPLAY_NAME = "Invoke CCM";
 	
 	@CopyOnWrite
 	private volatile CCMBuilderInstallation[] installations = new CCMBuilderInstallation[0];
 	
-	public CCMBuilderDescription()
+	public CCMBuilderDescriptor()
 	{
 		super(CCMBuilder.class);
 		load();
@@ -55,7 +55,7 @@ extends Descriptor<Builder>{
      */
 	@Override
 	public String getDisplayName() {
-		return DISPLAY_NAME;
+		return "Invoke CCM";
 	}
 	
 	public CCMBuilderInstallation[] getInstallations()
