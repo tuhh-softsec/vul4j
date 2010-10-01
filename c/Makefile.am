@@ -17,7 +17,7 @@
 AUTOMAKE_OPTIONS = foreign
 ACLOCAL_AMFLAGS = -I m4
 
-SUBDIRS = lib bin
+SUBDIRS = xsec
 
 EXTRA_DIST = \
 	CHANGELOG.txt \
