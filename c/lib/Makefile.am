@@ -16,7 +16,19 @@
 
 lib_LTLIBRARIES = libxml-security-c.la
 
-xmlsec_HEADERS = 
+xsecincludedir = $(includedir)/xsec
+encincludedir = $(includedir)/xsec/enc
+xscryptincludedir = $(includedir)/xsec/enc/XSCrypt
+opensslincludedir = $(includedir)/xsec/enc/OpenSSL
+nssincludedir = $(includedir)/xsec/enc/NSS
+dsigincludedir = $(includedir)/xsec/dsig
+frameworkincludedir = $(includedir)/xsec/framework
+transformersincludedir = $(includedir)/xsec/transformers
+utilsincludedir = $(includedir)/xsec/utils
+unixutilsincludedir = $(includedir)/xsec/utils/unixutils
+xencincludedir = $(includedir)/xsec/xenc
+xkmsincludedir = $(includedir)/xsec/xkms
+
 
 # The required include files
 
@@ -27,14 +39,14 @@ xmlsec_HEADERS =
 
 # Canon
 
-xmlsec_HEADERS += \
+xsecinclude_HEADERS = \
   xsec/canon/XSECXMLNSStack.hpp \
   xsec/canon/XSECCanon.hpp \
   xsec/canon/XSECC14n20010315.hpp
 
 # enc
 
-xmlsec_HEADERS += \
+encinclude_HEADERS = \
   xsec/enc/XSECCryptoKeyHMAC.hpp \
   xsec/enc/XSECCryptoX509.hpp \
   xsec/enc/XSECCryptoKeyDSA.hpp \
@@ -50,10 +62,10 @@ xmlsec_HEADERS += \
   xsec/enc/XSECCryptoException.hpp \
   xsec/enc/XSECCryptoUtils.hpp
 
-xmlsec_HEADERS += \
+xscryptinclude_HEADERS = \
   xsec/enc/XSCrypt/XSCryptCryptoBase64.hpp
 
-xmlsec_HEADERS += \
+opensslinclude_HEADERS = \
   xsec/enc/OpenSSL/OpenSSLCryptoBase64.hpp \
   xsec/enc/OpenSSL/OpenSSLCryptoSymmetricKey.hpp \
   xsec/enc/OpenSSL/OpenSSLCryptoProvider.hpp \
@@ -65,7 +77,7 @@ xmlsec_HEADERS += \
   xsec/enc/OpenSSL/OpenSSLCryptoKeyHMAC.hpp \
   xsec/enc/OpenSSL/OpenSSLCryptoHash.hpp 
 
-xmlsec_HEADERS += \
+nssinclude_HEADERS = \
   xsec/enc/NSS/NSSCryptoX509.hpp \
   xsec/enc/NSS/NSSCryptoHashHMAC.hpp \
   xsec/enc/NSS/NSSCryptoKeyDSA.hpp \
@@ -75,9 +87,7 @@ xmlsec_HEADERS += \
   xsec/enc/NSS/NSSCryptoProvider.hpp \
   xsec/enc/NSS/NSSCryptoKeyRSA.hpp 
 
-# dsig
-
-xmlsec_HEADERS += \
+dsiginclude_HEADERS = \
   xsec/dsig/DSIGKeyInfoSPKIData.hpp \
   xsec/dsig/DSIGXPathHere.hpp \
   xsec/dsig/DSIGAlgorithmHandlerDefault.hpp \
@@ -106,9 +116,7 @@ xmlsec_HEADERS += \
   xsec/dsig/DSIGTransformEnvelope.hpp \
   xsec/dsig/DSIGConstants.hpp
 
-# framework
-
-xmlsec_HEADERS += \
+frameworkinclude_HEADERS = \
   xsec/framework/XSECAlgorithmHandler.hpp \
   xsec/framework/XSECURIResolver.hpp \
   xsec/framework/XSECDefs.hpp \
@@ -122,9 +130,7 @@ xmlsec_HEADERS += \
   xsec/framework/XSECW32Config.hpp \
   xsec/framework/XSECVersion.hpp
 
-# transformers
-
-xmlsec_HEADERS += \
+transformersinclude_HEADERS = \
   xsec/transformers/TXFMXPathFilter.hpp \
   xsec/transformers/TXFMSHA1.hpp \
   xsec/transformers/TXFMParser.hpp \
@@ -143,11 +149,7 @@ xmlsec_HEADERS += \
   xsec/transformers/TXFMXPath.hpp \
   xsec/transformers/TXFMBase64.hpp
 
-# utils
-
-xmlsec_HEADERS += \
-  xsec/utils/unixutils/XSECURIResolverGenericUnix.hpp \
-  xsec/utils/unixutils/XSECBinHTTPURIInputStream.hpp \
+utilsinclude_HEADERS = \
   xsec/utils/XSECSafeBuffer.hpp \
   xsec/utils/XSECSOAPRequestor.hpp \
   xsec/utils/XSECTXFMInputSource.hpp \
@@ -159,9 +161,11 @@ xmlsec_HEADERS += \
   xsec/utils/XSECBinTXFMInputStream.hpp \
   xsec/utils/XSECPlatformUtils.hpp 
 
-# XML Encryption
+unixutilsinclude_HEADERS = \
+  xsec/utils/unixutils/XSECURIResolverGenericUnix.hpp \
+  xsec/utils/unixutils/XSECBinHTTPURIInputStream.hpp \
 
-xmlsec_HEADERS += \
+xencinclude_HEADERS = \
   xsec/xenc/XENCEncryptionMethod.hpp \
   xsec/xenc/XENCEncryptedType.hpp \
   xsec/xenc/XENCCipherData.hpp \
@@ -171,9 +175,7 @@ xmlsec_HEADERS += \
   xsec/xenc/XENCCipherReference.hpp \
   xsec/xenc/XENCCipher.hpp
 
-# XML Key Management
-
-xmlsec_HEADERS += \
+xkmsinclude_HEADERS = \
   xsec/xkms/XKMSNotBoundAuthentication.hpp \
   xsec/xkms/XKMSValidateResult.hpp \
   xsec/xkms/XKMSValidityInterval.hpp \
