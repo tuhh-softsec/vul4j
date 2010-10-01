@@ -17,16 +17,16 @@
 AUTOMAKE_OPTIONS = foreign
 ACLOCAL_AMFLAGS = -I m4
 
-SUBDIRS = include lib bin
+SUBDIRS = lib bin
 
 EXTRA_DIST = \
 	CHANGELOG.txt \
 	Projects \
 	xml-security-c.spec \
 	m4/acx_pthread.m4 \
-	src/framework/resource.h \
-	src/framework/version.rc \
-	src/tools/threadTest/threadtest.cpp
+	xsec/framework/resource.h \
+	xsec/framework/version.rc \
+	xsec/tools/threadTest/threadtest.cpp
 
 dist-hook:
 	rm -rf `find $(distdir)/Projects -name .svn`

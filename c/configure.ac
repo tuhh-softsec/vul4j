@@ -20,7 +20,7 @@
 # Process this file with autoreconf
 AC_PREREQ(2.60)
 AC_INIT([[XML-Security-C]],[1.6.0],[santuario-dev@apache.org],[xml-security-c])
-AC_CONFIG_SRCDIR(src)
+AC_CONFIG_SRCDIR(xsec)
 AC_CONFIG_AUX_DIR(build-aux)
 AC_CONFIG_MACRO_DIR(m4)
 AM_INIT_AUTOMAKE
@@ -41,8 +41,8 @@ fi
 
 # Define the files we wish to generate
 
-AC_CONFIG_FILES([Makefile lib/Makefile include/Makefile bin/Makefile])
-AC_CONFIG_HEADERS([src/framework/XSECConfig.hpp])
+AC_CONFIG_FILES([Makefile lib/Makefile bin/Makefile])
+AC_CONFIG_HEADERS([xsec/framework/XSECConfig.hpp])
 AH_BOTTOM([#include <xsec/framework/XSECVersion.hpp>])
 
 # Check for basic programs
