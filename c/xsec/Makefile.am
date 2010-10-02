@@ -245,6 +245,7 @@ transformersinclude_HEADERS = \
   transformers/TXFMBase64.hpp
 
 utilsinclude_HEADERS = \
+  utils/XSECAutoPtr.hpp \
   utils/XSECSafeBuffer.hpp \
   utils/XSECSOAPRequestor.hpp \
   utils/XSECTXFMInputSource.hpp \
