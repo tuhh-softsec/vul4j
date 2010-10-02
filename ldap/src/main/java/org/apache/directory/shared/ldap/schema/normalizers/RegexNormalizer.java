@@ -39,10 +39,10 @@ public class RegexNormalizer extends Normalizer
     public static final long serialVersionUID = 1L;
 
     /** the perl 5 regex engine */
-    private final Pattern[] regexes;
+    private final transient Pattern[] regexes;
 
     /** the set of regular expressions used to transform values */
-    private final Matcher[] matchers;
+    private final transient Matcher[] matchers;
 
 
     /**
