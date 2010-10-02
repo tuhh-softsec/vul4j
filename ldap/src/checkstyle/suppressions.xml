@@ -26,4 +26,10 @@
 <suppressions>
     <!-- UnixCrypt is from external, no formatting is applied -->
     <suppress files="UnixCrypt.java" checks="[A-Za-z0-9]" />
+    
+    <suppress files="SyntaxChecker.java" checks="EqualsHashCode" />
+    <suppress files="Normalizer.java" checks="EqualsHashCode" />
+    <suppress files="LoadableSchemaObject.java" checks="EqualsHashCode" />
+    <suppress files="LdapComparator.java" checks="EqualsHashCode" />
+    <suppress files="DITStructureRule.java" checks="EqualsHashCode" />
 </suppressions>

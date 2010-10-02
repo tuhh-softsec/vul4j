@@ -19,7 +19,9 @@
  */
 package org.apache.directory.shared.ldap.schema;
 
+
 import java.util.Comparator;
+
 
 /**
  * An class used for Comparator. It inherits from the general AbstractAdsSchemaObject class. It
@@ -32,7 +34,7 @@ public abstract class LdapComparator<T> extends LoadableSchemaObject implements 
     /** The serialversionUID */
     private static final long serialVersionUID = 1L;
 
-    
+
     /**
      * Create a new instance of a Comparator
      * @param oid The associated OID
@@ -42,7 +44,7 @@ public abstract class LdapComparator<T> extends LoadableSchemaObject implements 
         super( SchemaObjectType.COMPARATOR, oid );
     }
 
-    
+
     /**
      * Store the SchemaManager in this instance. It may be necessary for some
      * comparator which needs to have access to the oidNormalizer Map.
@@ -53,11 +55,12 @@ public abstract class LdapComparator<T> extends LoadableSchemaObject implements 
     {
         // Do nothing (general case).
     }
-    
-    
+
+
     /**
-     * @see Object#equals()
+     * {@inheritDoc}
      */
+    @Override
     public boolean equals( Object o )
     {
         if ( !super.equals( o ) )
@@ -68,10 +71,11 @@ public abstract class LdapComparator<T> extends LoadableSchemaObject implements 
         return o instanceof LdapComparator<?>;
     }
 
-    
+
     /**
-     * @see Object#toString()
+     * {@inheritDoc}
      */
+    @Override
     public String toString()
     {
         return objectType + " " + DescriptionUtils.getDescription( this );

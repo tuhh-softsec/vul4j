@@ -22,7 +22,6 @@ package org.apache.directory.shared.ldap.schema;
 
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.exception.LdapException;
-
 import org.apache.directory.shared.ldap.schema.registries.Registries;
 import org.apache.directory.shared.ldap.util.StringTools;
 
@@ -41,10 +40,10 @@ public abstract class LoadableSchemaObject extends AbstractSchemaObject
     private static final long serialVersionUID = 1L;
 
     /** The Full Qualified Class Name */
-    private String            fqcn;
+    private String fqcn;
 
     /** The base64 encoded bytecode for this schema */
-    private String            bytecode;
+    private String bytecode;
 
 
     /**
@@ -97,7 +96,7 @@ public abstract class LoadableSchemaObject extends AbstractSchemaObject
         {
             throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
         }
-        
+
         if ( !isReadOnly )
         {
             this.bytecode = bytecode;
@@ -125,7 +124,7 @@ public abstract class LoadableSchemaObject extends AbstractSchemaObject
         {
             throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
         }
-        
+
         if ( !isReadOnly )
         {
             this.fqcn = fqcn;
@@ -152,7 +151,7 @@ public abstract class LoadableSchemaObject extends AbstractSchemaObject
 
 
     /**
-     * @see Object#equals()
+     * {@inheritDoc}
      */
     @Override
     public boolean equals( Object o )

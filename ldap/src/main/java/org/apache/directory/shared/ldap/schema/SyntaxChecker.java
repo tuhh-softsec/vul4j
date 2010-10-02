@@ -39,6 +39,7 @@ public abstract class SyntaxChecker extends LoadableSchemaObject
     /** The serialversionUID */
     private static final long serialVersionUID = 1L;
 
+
     /**
      * The SyntaxChecker base constructor
      * @param oid The associated OID
@@ -94,10 +95,10 @@ public abstract class SyntaxChecker extends LoadableSchemaObject
     {
         // Do nothing (general case).
     }
-    
-    
+
+
     /**
-     * @see Object#equals()
+     * {@inheritDoc}
      */
     @Override
     public boolean equals( Object o )
@@ -110,10 +111,11 @@ public abstract class SyntaxChecker extends LoadableSchemaObject
         return o instanceof SyntaxChecker;
     }
 
-    
+
     /**
-     * @see Object#toString()
+     * {@inheritDoc}
      */
+    @Override
     public String toString()
     {
         return objectType + " " + DescriptionUtils.getDescription( this );

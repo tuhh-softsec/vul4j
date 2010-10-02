@@ -92,7 +92,7 @@ public abstract class Normalizer extends LoadableSchemaObject
 
 
     /**
-     * @see Object#equals()
+     * {@inheritDoc}
      */
     @Override
     public boolean equals( Object o )
@@ -107,8 +107,9 @@ public abstract class Normalizer extends LoadableSchemaObject
 
 
     /**
-     * @see Object#toString()
+     * {@inheritDoc}
      */
+    @Override
     public String toString()
     {
         return objectType + " " + DescriptionUtils.getDescription( this );

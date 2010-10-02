@@ -129,7 +129,7 @@ public class DITStructureRule extends AbstractSchemaObject
         {
             throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
         }
-        
+
         if ( !isReadOnly )
         {
             this.form = form;
@@ -157,7 +157,7 @@ public class DITStructureRule extends AbstractSchemaObject
         {
             throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
         }
-        
+
         if ( !isReadOnly )
         {
             this.ruleId = ruleId;
@@ -185,7 +185,7 @@ public class DITStructureRule extends AbstractSchemaObject
         {
             throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
         }
-        
+
         if ( !isReadOnly )
         {
             this.superRules = superRules;
@@ -204,14 +204,17 @@ public class DITStructureRule extends AbstractSchemaObject
         {
             throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
         }
-        
+
         superRules.add( superRule );
     }
 
 
     /**
-     * The DSR does not have an OID, so throw an exception
+     * The DIT structure rule does not have an OID, so this implementations always throws an exception.
+     * 
+     * {@inheritDoc}
      */
+    @Override
     public String getOid()
     {
         throw new NotImplementedException();
@@ -219,8 +222,9 @@ public class DITStructureRule extends AbstractSchemaObject
 
 
     /**
-     * @see Object#toString()
+     * {@inheritDoc}
      */
+    @Override
     public String toString()
     {
         return objectType + " " + DescriptionUtils.getDescription( this );
@@ -228,7 +232,7 @@ public class DITStructureRule extends AbstractSchemaObject
 
 
     /**
-     * Copy a DITStructureRule
+     * {@inheritDoc}
      */
     public DITStructureRule copy()
     {
@@ -243,9 +247,9 @@ public class DITStructureRule extends AbstractSchemaObject
         // Copy the form
         copy.form = form;
 
-        for ( int ruleId : superRules )
+        for ( int superRule : superRules )
         {
-            copy.superRules.add( ruleId );
+            copy.superRules.add( superRule );
         }
 
         return copy;
@@ -253,10 +257,11 @@ public class DITStructureRule extends AbstractSchemaObject
 
 
     /**
-     * @see Object#equals(Object)
+     * {@inheritDoc}
      */
     @Override
-    @SuppressWarnings("PMD.UnusedLocalVariable") // Remove me when the TODO is fixed 
+    @SuppressWarnings("PMD.UnusedLocalVariable")
+    // Remove me when the TODO is fixed 
     public boolean equals( Object o )
     {
         if ( !super.equals( o ) )
