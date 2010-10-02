@@ -28,14 +28,30 @@ import java.util.List;
 import org.apache.directory.shared.i18n.I18n;
 
 
+/**
+ * A monitor that tracks both, mandatory and optional components.
+ *
+ * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
+ */
 public class MandatoryAndOptionalComponentsMonitor implements ComponentsMonitor
 {
+
+    /** The mandatory components monitor. */
     private ComponentsMonitor mandatoryComponentsMonitor;
 
+    /** The optional components monitor. */
     private ComponentsMonitor optionalComponentsMonitor;
 
 
-    public MandatoryAndOptionalComponentsMonitor(String[] mandatoryComponents, String[] optionalComponents)
+    /**
+     * Instantiates a new mandatory and optional components monitor. The mandatory and optional
+     * components must be disjunct.
+     *
+     * @param mandatoryComponents the mandatory components
+     * @param optionalComponents the optional components
+     * @throws IllegalArgumentException if the same component is defined as mandatory and optional
+     */
+    public MandatoryAndOptionalComponentsMonitor( String[] mandatoryComponents, String[] optionalComponents )
         throws IllegalArgumentException
     {
         // check for common elements
@@ -55,6 +71,9 @@ public class MandatoryAndOptionalComponentsMonitor implements ComponentsMonitor
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public ComponentsMonitor useComponent( String component )
     {
         try
@@ -77,21 +96,30 @@ public class MandatoryAndOptionalComponentsMonitor implements ComponentsMonitor
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean allComponentsUsed()
     {
         return ( mandatoryComponentsMonitor.allComponentsUsed() && optionalComponentsMonitor.allComponentsUsed() );
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean finalStateValid()
     {
         return ( mandatoryComponentsMonitor.finalStateValid() && optionalComponentsMonitor.finalStateValid() );
     }
 
 
-    public List getRemainingComponents()
+    /**
+     * {@inheritDoc}
+     */
+    public List<String> getRemainingComponents()
     {
-        List remainingComponents = new LinkedList();
+        List<String> remainingComponents = new LinkedList<String>();
 
         remainingComponents.addAll( mandatoryComponentsMonitor.getRemainingComponents() );
         remainingComponents.addAll( optionalComponentsMonitor.getRemainingComponents() );

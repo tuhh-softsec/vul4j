@@ -21,14 +21,31 @@
 package org.apache.directory.shared.ldap.util;
 
 
+/**
+ * A components monitor for optional components.
+ *
+ * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
+ */
 public class OptionalComponentsMonitor extends AbstractSimpleComponentsMonitor
 {
-    public OptionalComponentsMonitor(String[] components)
+
+    /**
+     * Instantiates a new optional components monitor.
+     *
+     * @param components the components
+     */
+    public OptionalComponentsMonitor( String[] components )
     {
         super( components );
     }
 
 
+    /**
+     * Checks if the final state is valid. As all components are optional this
+     * implementation always returns true.
+     * 
+     * @return always true
+     */
     public boolean finalStateValid()
     {
         return true;

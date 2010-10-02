@@ -29,18 +29,33 @@ import java.util.List;
 import org.apache.directory.shared.i18n.I18n;
 
 
+/**
+ * Abstract implementation of a components monitor.
+ *
+ * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
+ */
 public abstract class AbstractSimpleComponentsMonitor implements ComponentsMonitor
 {
+
+    /** The components. */
     private List<String> components;
 
 
-    public AbstractSimpleComponentsMonitor(String[] components)
+    /**
+     * Instantiates a new abstract simple components monitor.
+     *
+     * @param components the components
+     */
+    public AbstractSimpleComponentsMonitor( String[] components )
     {
         // register components
         this.components = new LinkedList<String>( Arrays.asList( components ) );
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public ComponentsMonitor useComponent( String component ) throws IllegalArgumentException
     {
         if ( !components.remove( component ) )
@@ -52,17 +67,21 @@ public abstract class AbstractSimpleComponentsMonitor implements ComponentsMonit
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean allComponentsUsed()
     {
         return components.isEmpty();
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public List<String> getRemainingComponents()
     {
         return Collections.unmodifiableList( components );
     }
 
-
-    public abstract boolean finalStateValid();
 }

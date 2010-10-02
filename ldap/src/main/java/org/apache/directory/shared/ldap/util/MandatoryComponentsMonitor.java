@@ -21,14 +21,31 @@
 package org.apache.directory.shared.ldap.util;
 
 
+/**
+ * A components monitor for manadatory components.
+ *
+ * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
+ */
 public class MandatoryComponentsMonitor extends AbstractSimpleComponentsMonitor
 {
-    public MandatoryComponentsMonitor(String[] components)
+
+    /**
+     * Instantiates a new mandatory components monitor.
+     *
+     * @param components the components
+     */
+    public MandatoryComponentsMonitor( String[] components )
     {
         super( components );
     }
 
 
+    /**
+     * Checks if the final state is valid. As all components are mandatory it checks 
+     * whether all components are used.
+     * 
+     * @return true if all components are used
+     */
     public boolean finalStateValid()
     {
         return allComponentsUsed();

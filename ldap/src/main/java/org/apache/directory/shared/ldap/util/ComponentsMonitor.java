@@ -23,17 +23,46 @@ package org.apache.directory.shared.ldap.util;
 import java.util.List;
 
 
+/**
+ * Monitor used to track existence or duplication of components.
+ *
+ * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
+ */
 public interface ComponentsMonitor
 {
-    public ComponentsMonitor useComponent( String component ) throws IllegalArgumentException;
+
+    /**
+     * Use a component.
+     *
+     * @param component the component
+     * @return this components monitor
+     * @throws IllegalArgumentException if the component is already used
+     */
+    ComponentsMonitor useComponent( String component ) throws IllegalArgumentException;
 
 
-    public boolean allComponentsUsed();
+    /**
+     * Check if all components are used.
+     *
+     * @return true if all components are used
+     */
+    boolean allComponentsUsed();
 
 
-    public boolean finalStateValid();
+    /**
+     * Checks if the final state is valid. That depends whether the components are mandatory
+     * or optional.
+     *
+     * @return true if the final state is valid
+     */
+    boolean finalStateValid();
 
 
-    public List getRemainingComponents();
+    /**
+     * Gets the remaining components.
+     *
+     * @return the remaining components
+     */
+    List<String> getRemainingComponents();
 
 }
