@@ -45,7 +45,7 @@ public class ACIItemSyntaxChecker extends SyntaxChecker
     private static final long serialVersionUID = 1L;
 
     /** An instance of ACI Item Checker */
-    private static ACIItemChecker ACI_ITEM_CHECKER;
+    private ACIItemChecker ACI_ITEM_CHECKER;
 
     /**
      * Creates a new instance of ACIItemSyntaxChecker

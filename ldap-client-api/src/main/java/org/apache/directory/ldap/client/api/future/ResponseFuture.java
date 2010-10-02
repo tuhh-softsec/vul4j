@@ -115,7 +115,7 @@ public class ResponseFuture<R extends Response> implements Future<Response>
      * {@inheritDoc}
      * @throws InterruptedException if the operation has been cancelled by client
      */
-    public synchronized void set( R response ) throws InterruptedException, ExecutionException
+    public void set( R response ) throws InterruptedException, ExecutionException
     {
         queue.add( response );
     }

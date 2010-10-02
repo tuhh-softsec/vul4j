@@ -46,7 +46,7 @@ public class SubtreeSpecificationSyntaxChecker extends SyntaxChecker
     private static final long serialVersionUID = 1L;
 
     /** The associated checker */ 
-    private static SubtreeSpecificationChecker SUBTREE_SPECIFICATION_CHECKER;
+    private SubtreeSpecificationChecker SUBTREE_SPECIFICATION_CHECKER;
 
     /**
      * Creates an instance of SubtreeSpecificationSyntaxChecker

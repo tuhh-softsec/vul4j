@@ -2271,19 +2271,9 @@ public final class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
         {
             SearchRequestImpl searchRequest = ( SearchRequestImpl ) container.getBatchRequest().getCurrentRequest();
 
-            Filter parent = searchRequest.getCurrentFilter().getParent();
+            Filter filter = searchRequest.getCurrentFilter().getParent();
 
-            if ( parent instanceof Filter )
-            {
-                Filter filter = ( Filter ) parent;
-
-                searchRequest.setCurrentFilter( filter );
-            }
-            else
-            {
-                searchRequest.setFilter( searchRequest.getFilter() );
-                searchRequest.setCurrentFilter( null );
-            }
+            searchRequest.setCurrentFilter( filter );
         }
     };
 

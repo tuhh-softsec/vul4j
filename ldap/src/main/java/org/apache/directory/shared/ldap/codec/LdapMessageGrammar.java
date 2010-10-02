@@ -3234,21 +3234,22 @@ public class LdapMessageGrammar extends AbstractGrammar
                     {
                         byte[] responseNameBytes = tlv.getValue().getData();
 
-                        try
+                        String oidStr = StringTools.utf8ToString( responseNameBytes );
+
+                        if ( OID.isOID( oidStr ) )
                         {
-                            String oidStr = StringTools.utf8ToString( responseNameBytes );
-                            OID oid = new OID( oidStr );
+                            OID.isOID( oidStr );
                             intermediateResponse.setResponseName( oidStr );
                         }
-                        catch ( DecoderException de )
+                        else
                         {
                             String msg = "The Intermediate Response name is not a valid OID : "
                                 + StringTools.utf8ToString( responseNameBytes ) + " ("
                                 + StringTools.dumpBytes( responseNameBytes ) + ") is invalid";
-                            log.error( "{} : {}", msg, de.getMessage() );
+                            log.error( "{} : {}", msg, oidStr );
 
                             // Rethrow the exception, we will get a PROTOCOL_ERROR
-                            throw de;
+                            throw new DecoderException( msg );
                         }
                     }
 

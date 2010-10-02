@@ -49,7 +49,7 @@ public final class SyncDoneValueControlStatesEnum implements States
     public static final int LAST_SYNC_DONE_VALUE_STATE = 4;
 
     /** A string representation of all the states */
-    public static final String[] SYNC_DONE_VALUE_STRING = new String[]
+    private static final String[] SYNC_DONE_VALUE_STRING = new String[]
        {
            "START_STATE",
            "SYNC_DONE_VALUE_SEQUENCE_STATE",

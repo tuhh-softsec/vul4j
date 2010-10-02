@@ -45,7 +45,7 @@ public class PasswordPolicyResponseControlStates implements States
 
     private static PasswordPolicyResponseControlStates instance = new PasswordPolicyResponseControlStates();
 
-    public static final String[] ppolicyStateString = new String[]
+    private static final String[] PPOLICY_STATE_STRING = new String[]
         { 
           "START_STATE",
           "PPOLICY_TIME_BEFORE_EXPIRATION_STATE",
@@ -98,7 +98,6 @@ public class PasswordPolicyResponseControlStates implements States
      */
     public String getState( int state )
     {
-        return ( ( state == GRAMMAR_END ) ? "PASSWORD_POLICY_RESPONSE_CONTROL_GRAMMAR" : ppolicyStateString[state] );
+        return ( ( state == GRAMMAR_END ) ? "PASSWORD_POLICY_RESPONSE_CONTROL_GRAMMAR" : PPOLICY_STATE_STRING[state] );
     }
-
 }

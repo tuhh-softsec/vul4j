@@ -1362,7 +1362,7 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
     {
         if ( obj instanceof String )
         {
-            return normName.equals( obj );
+            return normName.equals( (String)obj );
         }
         else if ( obj instanceof DN )
         {
