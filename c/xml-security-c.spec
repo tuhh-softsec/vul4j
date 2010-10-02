@@ -4,7 +4,7 @@ Release:        1
 Summary:        Apache XML security C++ library
 Group:          System Environment/Libraries
 License:        Apache Software License
-URL:            http://santuario.apache.org/c/
+URL:            http://santuario.apache.org/dist/c-library/
 Source:         %{name}-%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 
