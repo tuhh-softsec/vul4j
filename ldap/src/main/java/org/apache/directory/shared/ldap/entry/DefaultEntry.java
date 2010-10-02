@@ -112,7 +112,7 @@ public class DefaultEntry implements Entry
         dn = DN.EMPTY_DN;
 
         // Initialize the ObjectClass object
-        initObjectClassAT( schemaManager );
+        initObjectClassAT();
     }
 
 
@@ -141,6 +141,8 @@ public class DefaultEntry implements Entry
      */
     public DefaultEntry( SchemaManager schemaManager, DN dn )
     {
+        this.schemaManager = schemaManager;
+
         if ( dn == null )
         {
             this.dn = DN.EMPTY_DN;
@@ -148,14 +150,11 @@ public class DefaultEntry implements Entry
         else
         {
             this.dn = dn;
+            normalizeDN( this.dn );
         }
 
-        this.schemaManager = schemaManager;
-
-        normalizeDN( dn );
-
         // Initialize the ObjectClass object
-        initObjectClassAT( schemaManager );
+        initObjectClassAT();
     }
 
 
@@ -195,19 +194,18 @@ public class DefaultEntry implements Entry
         this.schemaManager = schemaManager;
 
         // Initialize the ObjectClass object
-        initObjectClassAT( schemaManager );
+        initObjectClassAT();
 
         // We will clone the existing entry, because it may be normalized
         if ( entry.getDn() != null )
         {
             dn = entry.getDn();
+            normalizeDN( dn );
         }
         else
         {
             dn = DN.EMPTY_DN;
         }
-
-        normalizeDN( dn );
 
         // Init the attributes map
         attributes = new HashMap<String, EntryAttribute>( entry.size() );
@@ -255,6 +253,8 @@ public class DefaultEntry implements Entry
      */
     public DefaultEntry( SchemaManager schemaManager, DN dn, String... upIds )
     {
+        this.schemaManager = schemaManager;
+
         if ( dn == null )
         {
             this.dn = DN.EMPTY_DN;
@@ -262,13 +262,10 @@ public class DefaultEntry implements Entry
         else
         {
             this.dn = dn;
+            normalizeDN( this.dn );
         }
 
-        this.schemaManager = schemaManager;
-
-        normalizeDN( dn );
-
-        initObjectClassAT( schemaManager );
+        initObjectClassAT();
 
         set( upIds );
     }
@@ -315,6 +312,8 @@ public class DefaultEntry implements Entry
      */
     public DefaultEntry( SchemaManager schemaManager, DN dn, EntryAttribute... attributes )
     {
+        this.schemaManager = schemaManager;
+
         if ( dn == null )
         {
             this.dn = DN.EMPTY_DN;
@@ -322,13 +321,10 @@ public class DefaultEntry implements Entry
         else
         {
             this.dn = dn;
+            normalizeDN( this.dn );
         }
 
-        this.schemaManager = schemaManager;
-
-        normalizeDN( dn );
-
-        initObjectClassAT( schemaManager );
+        initObjectClassAT();
 
         for ( EntryAttribute attribute : attributes )
         {
@@ -364,6 +360,8 @@ public class DefaultEntry implements Entry
      */
     public DefaultEntry( SchemaManager schemaManager, DN dn, AttributeType... attributeTypes )
     {
+        this.schemaManager = schemaManager;
+
         if ( dn == null )
         {
             this.dn = DN.EMPTY_DN;
@@ -371,14 +369,11 @@ public class DefaultEntry implements Entry
         else
         {
             this.dn = dn;
+            normalizeDN( this.dn );
         }
 
-        this.schemaManager = schemaManager;
-
-        normalizeDN( dn );
-
         // Initialize the ObjectClass object
-        initObjectClassAT( schemaManager );
+        initObjectClassAT();
 
         // Add the attributeTypes
         set( attributeTypes );
@@ -408,6 +403,8 @@ public class DefaultEntry implements Entry
      */
     public DefaultEntry( SchemaManager schemaManager, DN dn, AttributeType attributeType, String upId )
     {
+        this.schemaManager = schemaManager;
+
         if ( dn == null )
         {
             this.dn = DN.EMPTY_DN;
@@ -415,14 +412,11 @@ public class DefaultEntry implements Entry
         else
         {
             this.dn = dn;
+            normalizeDN( dn );
         }
 
-        this.schemaManager = schemaManager;
-
-        normalizeDN( dn );
-
         // Initialize the ObjectClass object
-        initObjectClassAT( schemaManager );
+        initObjectClassAT();
 
         try
         {
@@ -452,7 +446,7 @@ public class DefaultEntry implements Entry
      */
     // This will suppress PMD.EmptyCatchBlock warnings in this method
     @SuppressWarnings("PMD.EmptyCatchBlock")
-    private void initObjectClassAT( SchemaManager schemaManager )
+    private void initObjectClassAT()
     {
         try
         {
@@ -471,7 +465,7 @@ public class DefaultEntry implements Entry
     }
 
 
-    private String getId( String upId ) throws IllegalArgumentException
+    private String getId( String upId )
     {
         String id = StringTools.trim( StringTools.toLowerCase( upId ) );
 
@@ -489,8 +483,10 @@ public class DefaultEntry implements Entry
 
     /**
      * Get the UpId if it was null.
+     * 
+     * @param upId The ID
      */
-    public static String getUpId( String upId, AttributeType attributeType )
+    private static String getUpId( String upId, AttributeType attributeType )
     {
         String normUpId = StringTools.trim( upId );
 
