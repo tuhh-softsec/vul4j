@@ -31,7 +31,7 @@ import org.w3c.dom.Node;
  * Purpose of this class is to enable the XML Parser to keep track of ID
  * attributes. This is done by 'registering' attributes of type ID at the
  * IdResolver. This is necessary if we create a document from scratch and we
- * sign some resources with a URI using a fragent identifier...
+ * sign some resources with a URI using a fragment identifier...
  * <BR />
  * The problem is that if you do not validate a document, you cannot use the
  * <CODE>getElementByID</CODE> functionality. So this modules uses some implicit
@@ -75,6 +75,18 @@ public class IdResolver {
             }
         }
         elementMap.put(idValue, new WeakReference(element));
+    }
+    
+    /**
+     * Force a removal of a registered document. Any element id associated
+     * with this document will be removed from the weak reference map.
+     * 
+     * @param doc the DOM document that is to be removed from the map.
+     */
+    public static void unregisterDocument(Document doc) {
+        synchronized (docMap) {
+            docMap.remove(doc);
+        }
     }
 
     /**

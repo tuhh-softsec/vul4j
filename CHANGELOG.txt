@@ -1,6 +1,7 @@
 Changelog for "Apache xml-security" <http://santuario.apache.org/>
 New in v1.4.4-SNAPSHOT
-    Fixed Bug 49493 - Cannot resolve PrivateKeys used in Key Transport algorithms. Thanks to Clement Pellerin.
+    Fixed Bug 50036: IdResolver Java API extension. Thanks to Stefan Vladov.
+    Fixed Bug 49493: Cannot resolve PrivateKeys used in Key Transport algorithms. Thanks to Clement Pellerin.
     Fixed Bug 49577: DOMSubTreeData allows for only one iteration over referenced data.
     Fixed Bug 49692: Xmlsec 1.4.3 not compatible with xmlbeans 2.4.0.
     Fixed Bug 49629: Some changes to the build system.

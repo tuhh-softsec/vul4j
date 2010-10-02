@@ -18,12 +18,15 @@ package org.apache.xml.security.test.keys.keyresolver;
 
 import java.math.BigInteger;
 import java.security.KeyFactory;
+import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.RSAPrivateKeySpec;
 import java.security.spec.RSAPublicKeySpec;
 
+import javax.crypto.Cipher;
+import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -32,6 +35,7 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
+import org.apache.xml.security.algorithms.JCEMapper;
 import org.apache.xml.security.encryption.EncryptedData;
 import org.apache.xml.security.encryption.EncryptedKey;
 import org.apache.xml.security.encryption.XMLCipher;
@@ -70,6 +74,26 @@ public class KeyResolverTest extends TestCase {
      * This test verifies if a KeyResolver can return a PrivateKey.
      */
     public void testResolvePrivateKey() throws Exception {
+        // See if AES-128 is available...
+        String algorithmId = 
+            JCEMapper.translateURItoJCEID(
+                    org.apache.xml.security.utils.EncryptionConstants.ALGO_ID_BLOCKCIPHER_AES128
+                );
+        boolean haveAES = false;
+        if (algorithmId != null) {
+            try {
+                if (Cipher.getInstance(algorithmId) != null) {
+                    haveAES = true;
+                }
+            } catch (NoSuchAlgorithmException nsae) {
+            } catch (NoSuchPaddingException nspe) {
+            }
+        }
+        
+        if (!haveAES) {
+            return;
+        }
+        
         // Create a sample XML document
         DocumentBuilderFactory fac = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = fac.newDocumentBuilder();
