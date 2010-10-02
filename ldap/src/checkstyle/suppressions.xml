@@ -32,4 +32,6 @@
     <suppress files="LoadableSchemaObject.java" checks="EqualsHashCode" />
     <suppress files="LdapComparator.java" checks="EqualsHashCode" />
     <suppress files="DITStructureRule.java" checks="EqualsHashCode" />
+    
+    <suppress files="SchemaConstants.java" checks="JavaDocVariable" />
 </suppressions>
