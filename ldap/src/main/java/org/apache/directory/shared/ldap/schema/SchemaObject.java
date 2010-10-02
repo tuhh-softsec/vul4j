@@ -149,7 +149,7 @@ public interface SchemaObject extends Serializable
      * 
      * @return a short description about this SchemaObject
      */
-    public String getDescription();
+    String getDescription();
 
 
     /**
@@ -157,7 +157,7 @@ public interface SchemaObject extends Serializable
      * 
      * @param description The SchemaObject's description
      */
-    public void setDescription( String description );
+    void setDescription( String description );
 
 
     /**
@@ -165,7 +165,7 @@ public interface SchemaObject extends Serializable
      * 
      * @return the SchemaObject specification
      */
-    public String getSpecification();
+    String getSpecification();
 
 
     /**

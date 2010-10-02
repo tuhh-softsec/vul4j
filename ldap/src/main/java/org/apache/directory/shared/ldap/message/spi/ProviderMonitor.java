@@ -32,7 +32,7 @@ import java.util.Properties;
 public interface ProviderMonitor
 {
     /** A do nothing monitor to use if none is provided */
-    public static ProviderMonitor NOOP_MONITOR = new ProviderMonitor()
+    ProviderMonitor NOOP_MONITOR = new ProviderMonitor()
     {
         public final void propsFound( final String msg, final Properties props )
         {

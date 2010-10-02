@@ -763,6 +763,7 @@ public interface Entry extends Cloneable, Iterable<EntryAttribute>, Externalizab
      * @param values the attributes to be removed
      * @return <code>true</code> if at least a value is removed, <code>false</code>
      * if not all the values have been removed or if the attribute does not exist. 
+     * @throws LdapException if the attribute does not exists
      */
     boolean remove( String upId, Value<?>... values ) throws LdapException;
 
@@ -789,12 +790,13 @@ public interface Entry extends Cloneable, Iterable<EntryAttribute>, Externalizab
     // Container (contains/get/put/remove) Methods
     // -----------------------------------------------------------------------
     /**
-     * Checks that the current Entry contain an AttributeType given its ID
+     * Checks that the current entry contain an a attribute type given its ID.
      * 
-     * @param upId the AttributeType ID
-     * @throws LdapException If the attribute does not exists
+     * @param upId the attribute we are looking for
+     * @return true if this entry contains the attribute type
+     * @throws LdapException if the attribute does not exists
      */
-    public boolean contains( String upId ) throws LdapException;
+    boolean contains( String upId ) throws LdapException;
     
     
     /**
@@ -804,7 +806,6 @@ public interface Entry extends Cloneable, Iterable<EntryAttribute>, Externalizab
      * @param values The searched values.
      * @return <code>true</code> if all the values are found within the attribute,
      * <code>false</code> otherwise, or if the attributes does not exist.
-     * @throws LdapException If the attribute does not exists
      */
     boolean contains( AttributeType attributeType, byte[]... values );
 
@@ -816,7 +817,6 @@ public interface Entry extends Cloneable, Iterable<EntryAttribute>, Externalizab
      * @param values The searched values.
      * @return <code>true</code> if all the values are found within the attribute,
      * <code>false</code> otherwise, or if the attributes does not exist.
-     * @throws LdapException If the attribute does not exists
      */
     boolean contains( AttributeType attributeType, String... values );
 
@@ -828,7 +828,6 @@ public interface Entry extends Cloneable, Iterable<EntryAttribute>, Externalizab
      * @param values The searched values.
      * @return <code>true</code> if all the values are found within the attribute,
      * <code>false</code> otherwise, or if the attributes does not exist.
-     * @throws LdapException If the attribute does not exists
      */
     boolean contains( AttributeType attributeType, Value<?>... values );
 

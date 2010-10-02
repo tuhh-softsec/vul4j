@@ -146,7 +146,7 @@ public class ByteBuffer
     }
     
     
-    private final void growBuffer()
+    private void growBuffer()
     {
         byte[] copy = new byte[buf.length+initialSize];
         System.arraycopy( buf, 0, copy, 0, pos );

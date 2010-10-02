@@ -241,6 +241,11 @@ public interface EntryAttribute extends Iterable<Value<?>>, Cloneable, Externali
 
     
     /**
+     * Deserialize an object input.
+     * 
+     * @param in the stream to read data from in order to restore the object
+     * @exception IOException if I/O errors occur
+     * @exception ClassNotFoundException if the class for an object being restored cannot be found.
      * @see Externalizable#readExternal(ObjectInput)
      */
     void deserialize( ObjectInput in ) throws IOException, ClassNotFoundException;
@@ -337,12 +342,12 @@ public interface EntryAttribute extends Iterable<Value<?>>, Cloneable, Externali
     
     /**
      * <p>
-     * Tells if the attribute is Human Readable. 
+     * Tells if the attribute is human readable. 
      * </p>
      * <p>This flag is set by the caller, or implicitly when adding String 
      * values into an attribute which is not yet declared as Binary.
      * </p> 
-     * @return
+     * @return true if the attribute is human readable
      */
     boolean isHR();
 
@@ -497,7 +502,7 @@ public interface EntryAttribute extends Iterable<Value<?>>, Cloneable, Externali
      * @throws IllegalArgumentException If the ID is empty or null or
      * resolve to an empty value after being trimmed
      */
-    public void setId( String id );
+    void setId( String id ) throws IllegalArgumentException;
 
     
     /**
@@ -508,7 +513,7 @@ public interface EntryAttribute extends Iterable<Value<?>>, Cloneable, Externali
      * @throws IllegalArgumentException If the ID is empty or null or
      * resolve to an empty value after being trimmed
      */
-    public void setUpId( String upId );
+    void setUpId( String upId ) throws IllegalArgumentException;
 
 
     /**

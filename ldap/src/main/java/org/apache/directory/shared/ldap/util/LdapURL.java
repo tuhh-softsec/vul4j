@@ -677,7 +677,7 @@ public class LdapURL
      * @return array of original bytes
      * @throws UrlDecoderException Thrown if URL decoding is unsuccessful
      */
-    private static final byte[] decodeUrl( byte[] bytes ) throws UrlDecoderException
+    private static byte[] decodeUrl( byte[] bytes ) throws UrlDecoderException
     {
         if ( bytes == null )
         {

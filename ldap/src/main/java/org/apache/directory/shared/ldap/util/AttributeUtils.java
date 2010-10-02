@@ -107,7 +107,7 @@ public final class AttributeUtils
      * @param value2 The second value
      * @return true if both value are null or if they are equal.
      */
-    public static final boolean equals( Object value1, Object value2 )
+    public static boolean equals( Object value1, Object value2 )
     {
         if ( value1 == value2 )
         {
@@ -171,7 +171,7 @@ public final class AttributeUtils
      * @param attribute The attribute to transform
      * @return A instance of AttributeImpl
      */
-    public static final Attribute toBasicAttribute( Attribute attribute )
+    public static Attribute toBasicAttribute( Attribute attribute )
     {
         if ( attribute instanceof BasicAttribute )
         {
@@ -210,7 +210,7 @@ public final class AttributeUtils
      * @param type the attribute type specification
      * @return an Attribute with matching the attributeType spec or null
      */
-    public static final Attribute getAttribute( Attributes attrs, AttributeType type )
+    public static Attribute getAttribute( Attributes attrs, AttributeType type )
     {
         // check if the attribute's OID is used
         Attribute attr = attrs.get( type.getOid() );
@@ -350,6 +350,8 @@ public final class AttributeUtils
                             pos++;
 
                             state = 1;
+                            break;
+                        default:
                             break;
                     }
                 }
@@ -1058,6 +1060,8 @@ public final class AttributeUtils
                     entry.put( modAttr );
                 }
 
+                break;
+            default:
                 break;
         }
     }

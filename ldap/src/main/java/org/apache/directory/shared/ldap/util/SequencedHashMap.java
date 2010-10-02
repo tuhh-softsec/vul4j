@@ -162,7 +162,7 @@ public class SequencedHashMap implements Map, Cloneable, Externalizable
      * tail (sentinel.prev) of the list. The sentinel has a <code>null</code>
      * key and value.
      */
-    private static final Entry createSentinel()
+    private static Entry createSentinel()
     {
         Entry s = new Entry( null, null );
         s.prev = s;
