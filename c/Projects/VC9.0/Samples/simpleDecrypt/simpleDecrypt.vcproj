@@ -346,11 +346,11 @@
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm"
 			>
 			<File
-				RelativePath="..\..\..\..\src\samples\IOStreamOutputter.cpp"
+				RelativePath="..\..\..\..\xsec\samples\IOStreamOutputter.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\samples\simpleDecrypt.cpp"
+				RelativePath="..\..\..\..\xsec\samples\simpleDecrypt.cpp"
 				>
 			</File>
 		</Filter>
@@ -359,7 +359,7 @@
 			Filter="h;hpp;hxx;hm;inl;inc"
 			>
 			<File
-				RelativePath="..\..\..\..\src\samples\IOStreamOutputter.hpp"
+				RelativePath="..\..\..\..\xsec\samples\IOStreamOutputter.hpp"
 				>
 			</File>
 		</Filter>

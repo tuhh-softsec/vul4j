@@ -44,7 +44,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /MD /W3 /GX /O2 /I "../../../../include" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
+# ADD CPP /nologo /MD /W3 /GX /O2 /I "../../../.." /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
 # ADD BASE RSC /l 0xc09 /d "NDEBUG"
 # ADD RSC /l 0xc09 /d "NDEBUG"
 BSC32=bscmake.exe
@@ -68,7 +68,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /Gm /GX /ZI /Od /I "../../../../include" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /Gm /GX /ZI /Od /I "../../../.." /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
 # ADD BASE RSC /l 0xc09 /d "_DEBUG"
 # ADD RSC /l 0xc09 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -93,7 +93,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MD /W3 /Gm /GX /ZI /Od /I "%LIBWWW%\Library\External" /I "%LIBWWW%\Library\Src" /I "../../../../src" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /Gm /GX /ZI /Od /I "../../../../include" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /Yc /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /Gm /GX /ZI /Od /I "../../../.." /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /Yc /FD /GZ /c
 # ADD BASE RSC /l 0xc09 /d "_DEBUG"
 # ADD RSC /l 0xc09 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -118,7 +118,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MD /W3 /Gm /GX /ZI /Od /I "%LIBWWW%\Library\External" /I "%LIBWWW%\Library\Src" /I "../../../../src" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /MD /W3 /GX /Od /Ob1 /I "%LIBWWW%\Library\External" /I "%LIBWWW%\Library\Src" /I "../../../../include" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
+# ADD CPP /nologo /MD /W3 /GX /Od /Ob1 /I "%LIBWWW%\Library\External" /I "%LIBWWW%\Library\Src" /I "../../../.." /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
 # ADD BASE RSC /l 0xc09 /d "_DEBUG"
 # ADD RSC /l 0xc09 /d "NDEBUG"
 BSC32=bscmake.exe
@@ -142,7 +142,7 @@ LINK32=link.exe
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=..\..\..\..\src\tools\checksig\AnonymousResolver.cpp
+SOURCE=..\..\..\..\xsec\tools\checksig\AnonymousResolver.cpp
 
 !IF  "$(CFG)" == "checksig - Win32 Release"
 
@@ -159,7 +159,7 @@ SOURCE=..\..\..\..\src\tools\checksig\AnonymousResolver.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\tools\checksig\checksig.cpp
+SOURCE=..\..\..\..\xsec\tools\checksig\checksig.cpp
 
 !IF  "$(CFG)" == "checksig - Win32 Release"
 
@@ -176,7 +176,7 @@ SOURCE=..\..\..\..\src\tools\checksig\checksig.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\tools\checksig\InteropResolver.cpp
+SOURCE=..\..\..\..\xsec\tools\checksig\InteropResolver.cpp
 
 !IF  "$(CFG)" == "checksig - Win32 Release"
 
@@ -197,11 +197,11 @@ SOURCE=..\..\..\..\src\tools\checksig\InteropResolver.cpp
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
 # Begin Source File
 
-SOURCE=..\..\..\..\src\tools\checksig\AnonymousResolver.hpp
+SOURCE=..\..\..\..\xsec\tools\checksig\AnonymousResolver.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\tools\checksig\InteropResolver.hpp
+SOURCE=..\..\..\..\xsec\tools\checksig\InteropResolver.hpp
 # End Source File
 # End Group
 # Begin Group "Resource Files"

@@ -353,11 +353,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\src\samples\IOStreamOutputter.cpp" />
-    <ClCompile Include="..\..\..\..\src\samples\simpleHMAC.cpp" />
+    <ClCompile Include="..\..\..\..\xsec\samples\IOStreamOutputter.cpp" />
+    <ClCompile Include="..\..\..\..\xsec\samples\simpleHMAC.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\src\samples\IOStreamOutputter.hpp" />
+    <ClInclude Include="..\..\..\..\xsec\samples\IOStreamOutputter.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

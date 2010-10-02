@@ -20,7 +20,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="../../../../include"
+				AdditionalIncludeDirectories="../../../.."
 				PreprocessorDefinitions="_XSEC_DO_MEMDEBUG;WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
@@ -67,7 +67,7 @@
 				Optimization="2"
 				InlineFunctionExpansion="1"
 				OmitFramePointers="TRUE"
-				AdditionalIncludeDirectories="../../../../include"
+				AdditionalIncludeDirectories="../../../.."
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				StringPooling="TRUE"
 				RuntimeLibrary="2"
@@ -114,7 +114,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="../../../../include"
+				AdditionalIncludeDirectories="../../../.."
 				PreprocessorDefinitions="_XSEC_DO_MEMDEBUG;WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
@@ -161,7 +161,7 @@
 				Optimization="2"
 				InlineFunctionExpansion="1"
 				OmitFramePointers="TRUE"
-				AdditionalIncludeDirectories="../../../../include"
+				AdditionalIncludeDirectories="../../../.."
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				StringPooling="TRUE"
 				RuntimeLibrary="2"
@@ -204,23 +204,23 @@
 			Name="Source Files"
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm">
 			<File
-				RelativePath="..\..\..\..\src\tools\checksig\AnonymousResolver.cpp">
+				RelativePath="..\..\..\..\xsec\tools\checksig\AnonymousResolver.cpp">
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\tools\checksig\InteropResolver.cpp">
+				RelativePath="..\..\..\..\xsec\tools\checksig\InteropResolver.cpp">
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\tools\checksig\checksig.cpp">
+				RelativePath="..\..\..\..\xsec\tools\checksig\checksig.cpp">
 			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl;inc">
 			<File
-				RelativePath="..\..\..\..\src\tools\checksig\AnonymousResolver.hpp">
+				RelativePath="..\..\..\..\xsec\tools\checksig\AnonymousResolver.hpp">
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\tools\checksig\InteropResolver.hpp">
+				RelativePath="..\..\..\..\xsec\tools\checksig\InteropResolver.hpp">
 			</File>
 		</Filter>
 		<Filter

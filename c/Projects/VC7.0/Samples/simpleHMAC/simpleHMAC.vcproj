@@ -204,17 +204,17 @@
 			Name="Source Files"
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm">
 			<File
-				RelativePath="..\..\..\..\src\samples\IOStreamOutputter.cpp">
+				RelativePath="..\..\..\..\xsec\samples\IOStreamOutputter.cpp">
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\samples\simpleHMAC.cpp">
+				RelativePath="..\..\..\..\xsec\samples\simpleHMAC.cpp">
 			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl;inc">
 			<File
-				RelativePath="..\..\..\..\src\samples\IOStreamOutputter.hpp">
+				RelativePath="..\..\..\..\xsec\samples\IOStreamOutputter.hpp">
 			</File>
 		</Filter>
 		<Filter

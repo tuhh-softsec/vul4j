@@ -45,7 +45,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "XSEC_LIB_EXPORTS" /YX /FD /c
-# ADD CPP /nologo /MD /W3 /GX /O2 /I "../../../../include" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "XSEC_LIB_EXPORTS" /D "PROJ_CANON" /D "PROJ_DSIG" /YX /FD /c
+# ADD CPP /nologo /MD /W3 /GX /O2 /I "../../../.." /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "XSEC_LIB_EXPORTS" /D "PROJ_CANON" /D "PROJ_DSIG" /YX /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0xc09 /d "NDEBUG"
@@ -72,7 +72,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "XSEC_LIB_EXPORTS" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /Gm /GX /ZI /Od /I "../../../../include" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "XSEC_LIB_EXPORTS" /D "PROJ_CANON" /D "PROJ_DSIG" /FR /YX /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /Gm /GX /ZI /Od /I "../../../.." /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "XSEC_LIB_EXPORTS" /D "PROJ_CANON" /D "PROJ_DSIG" /FR /YX /FD /GZ /c
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0xc09 /d "_DEBUG"
@@ -100,7 +100,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MD /W3 /Gm /GX /ZI /Od /I "%LIBWWW%\Library\External" /I "%LIBWWW%\Library\Src" /I "../../../../src" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "XSEC_LIB_EXPORTS" /D "PROJ_CANON" /D "PROJ_DSIG" /FR /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /Gm /GX /ZI /Od /I "%LIBWWW%\Library\External" /I "%LIBWWW%\Library\Src" /I "../../../../include" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "XSEC_LIB_EXPORTS" /D "PROJ_CANON" /D "PROJ_DSIG" /FR /YX /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /Gm /GX /ZI /Od /I "%LIBWWW%\Library\External" /I "%LIBWWW%\Library\Src" /I "../../../.." /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "XSEC_LIB_EXPORTS" /D "PROJ_CANON" /D "PROJ_DSIG" /FR /YX /FD /GZ /c
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0xc09 /d "_DEBUG"
@@ -128,7 +128,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MD /W3 /GX /O2 /I "../../../../src" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "XSEC_LIB_EXPORTS" /D "PROJ_CANON" /D "PROJ_DSIG" /YX /FD /c
-# ADD CPP /nologo /MD /W3 /GX /O2 /I "../../../../include" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "XSEC_LIB_EXPORTS" /D "PROJ_CANON" /D "PROJ_DSIG" /YX /FD /c
+# ADD CPP /nologo /MD /W3 /GX /O2 /I "../../../.." /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "XSEC_LIB_EXPORTS" /D "PROJ_CANON" /D "PROJ_DSIG" /YX /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0xc09 /d "NDEBUG"
@@ -154,27 +154,27 @@ LINK32=link.exe
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\..\..\..\src\canon\XSECC14n20010315.cpp
+SOURCE=..\..\..\..\xsec\canon\XSECC14n20010315.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\canon\XSECC14n20010315.hpp
+SOURCE=..\..\..\..\xsec\canon\XSECC14n20010315.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\canon\XSECCanon.cpp
+SOURCE=..\..\..\..\xsec\canon\XSECCanon.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\canon\XSECCanon.hpp
+SOURCE=..\..\..\..\xsec\canon\XSECCanon.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\canon\XSECXMLNSStack.cpp
+SOURCE=..\..\..\..\xsec\canon\XSECXMLNSStack.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\canon\XSECXMLNSStack.hpp
+SOURCE=..\..\..\..\xsec\canon\XSECXMLNSStack.hpp
 # End Source File
 # End Group
 # Begin Group "dsig"
@@ -182,207 +182,207 @@ SOURCE=..\..\..\..\src\canon\XSECXMLNSStack.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\..\..\..\src\dsig\DSIGAlgorithmHandlerDefault.cpp
+SOURCE=..\..\..\..\xsec\dsig\DSIGAlgorithmHandlerDefault.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\dsig\DSIGAlgorithmHandlerDefault.hpp
+SOURCE=..\..\..\..\xsec\dsig\DSIGAlgorithmHandlerDefault.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\dsig\DSIGConstants.cpp
+SOURCE=..\..\..\..\xsec\dsig\DSIGConstants.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\dsig\DSIGConstants.hpp
+SOURCE=..\..\..\..\xsec\dsig\DSIGConstants.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\dsig\DSIGKeyInfo.hpp
+SOURCE=..\..\..\..\xsec\dsig\DSIGKeyInfo.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\dsig\DSIGKeyInfoList.cpp
+SOURCE=..\..\..\..\xsec\dsig\DSIGKeyInfoList.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\dsig\DSIGKeyInfoList.hpp
+SOURCE=..\..\..\..\xsec\dsig\DSIGKeyInfoList.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\dsig\DSIGKeyInfoMgmtData.cpp
+SOURCE=..\..\..\..\xsec\dsig\DSIGKeyInfoMgmtData.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\dsig\DSIGKeyInfoMgmtData.hpp
+SOURCE=..\..\..\..\xsec\dsig\DSIGKeyInfoMgmtData.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\dsig\DSIGKeyInfoName.cpp
+SOURCE=..\..\..\..\xsec\dsig\DSIGKeyInfoName.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\dsig\DSIGKeyInfoName.hpp
+SOURCE=..\..\..\..\xsec\dsig\DSIGKeyInfoName.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\dsig\DSIGKeyInfoPGPData.cpp
+SOURCE=..\..\..\..\xsec\dsig\DSIGKeyInfoPGPData.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\dsig\DSIGKeyInfoPGPData.hpp
+SOURCE=..\..\..\..\xsec\dsig\DSIGKeyInfoPGPData.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\dsig\DSIGKeyInfoSPKIData.cpp
+SOURCE=..\..\..\..\xsec\dsig\DSIGKeyInfoSPKIData.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\dsig\DSIGKeyInfoSPKIData.hpp
+SOURCE=..\..\..\..\xsec\dsig\DSIGKeyInfoSPKIData.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\dsig\DSIGKeyInfoValue.cpp
+SOURCE=..\..\..\..\xsec\dsig\DSIGKeyInfoValue.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\dsig\DSIGKeyInfoValue.hpp
+SOURCE=..\..\..\..\xsec\dsig\DSIGKeyInfoValue.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\dsig\DSIGKeyInfoX509.cpp
+SOURCE=..\..\..\..\xsec\dsig\DSIGKeyInfoX509.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\dsig\DSIGKeyInfoX509.hpp
+SOURCE=..\..\..\..\xsec\dsig\DSIGKeyInfoX509.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\dsig\DSIGKeyInfoExt.cpp
+SOURCE=..\..\..\..\xsec\dsig\DSIGKeyInfoExt.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\dsig\DSIGKeyInfoExt.hpp
+SOURCE=..\..\..\..\xsec\dsig\DSIGKeyInfoExt.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\dsig\DSIGObject.cpp
+SOURCE=..\..\..\..\xsec\dsig\DSIGObject.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\dsig\DSIGObject.hpp
+SOURCE=..\..\..\..\xsec\dsig\DSIGObject.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\dsig\DSIGReference.cpp
+SOURCE=..\..\..\..\xsec\dsig\DSIGReference.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\dsig\DSIGReference.hpp
+SOURCE=..\..\..\..\xsec\dsig\DSIGReference.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\dsig\DSIGReferenceList.cpp
+SOURCE=..\..\..\..\xsec\dsig\DSIGReferenceList.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\dsig\DSIGReferenceList.hpp
+SOURCE=..\..\..\..\xsec\dsig\DSIGReferenceList.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\dsig\DSIGSignature.cpp
+SOURCE=..\..\..\..\xsec\dsig\DSIGSignature.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\dsig\DSIGSignature.hpp
+SOURCE=..\..\..\..\xsec\dsig\DSIGSignature.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\dsig\DSIGSignedInfo.cpp
+SOURCE=..\..\..\..\xsec\dsig\DSIGSignedInfo.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\dsig\DSIGSignedInfo.hpp
+SOURCE=..\..\..\..\xsec\dsig\DSIGSignedInfo.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\dsig\DSIGTransform.cpp
+SOURCE=..\..\..\..\xsec\dsig\DSIGTransform.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\dsig\DSIGTransform.hpp
+SOURCE=..\..\..\..\xsec\dsig\DSIGTransform.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\dsig\DSIGTransformBase64.cpp
+SOURCE=..\..\..\..\xsec\dsig\DSIGTransformBase64.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\dsig\DSIGTransformBase64.hpp
+SOURCE=..\..\..\..\xsec\dsig\DSIGTransformBase64.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\dsig\DSIGTransformC14n.cpp
+SOURCE=..\..\..\..\xsec\dsig\DSIGTransformC14n.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\dsig\DSIGTransformC14n.hpp
+SOURCE=..\..\..\..\xsec\dsig\DSIGTransformC14n.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\dsig\DSIGTransformEnvelope.cpp
+SOURCE=..\..\..\..\xsec\dsig\DSIGTransformEnvelope.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\dsig\DSIGTransformEnvelope.hpp
+SOURCE=..\..\..\..\xsec\dsig\DSIGTransformEnvelope.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\dsig\DSIGTransformList.cpp
+SOURCE=..\..\..\..\xsec\dsig\DSIGTransformList.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\dsig\DSIGTransformList.hpp
+SOURCE=..\..\..\..\xsec\dsig\DSIGTransformList.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\dsig\DSIGTransformXPath.cpp
+SOURCE=..\..\..\..\xsec\dsig\DSIGTransformXPath.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\dsig\DSIGTransformXPath.hpp
+SOURCE=..\..\..\..\xsec\dsig\DSIGTransformXPath.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\dsig\DSIGTransformXPathFilter.cpp
+SOURCE=..\..\..\..\xsec\dsig\DSIGTransformXPathFilter.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\dsig\DSIGTransformXPathFilter.hpp
+SOURCE=..\..\..\..\xsec\dsig\DSIGTransformXPathFilter.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\dsig\DSIGTransformXSL.cpp
+SOURCE=..\..\..\..\xsec\dsig\DSIGTransformXSL.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\dsig\DSIGTransformXSL.hpp
+SOURCE=..\..\..\..\xsec\dsig\DSIGTransformXSL.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\dsig\DSIGXPathFilterExpr.cpp
+SOURCE=..\..\..\..\xsec\dsig\DSIGXPathFilterExpr.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\dsig\DSIGXPathFilterExpr.hpp
+SOURCE=..\..\..\..\xsec\dsig\DSIGXPathFilterExpr.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\dsig\DSIGXPathHere.cpp
+SOURCE=..\..\..\..\xsec\dsig\DSIGXPathHere.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\dsig\DSIGXPathHere.hpp
+SOURCE=..\..\..\..\xsec\dsig\DSIGXPathHere.hpp
 # End Source File
 # End Group
 # Begin Group "enc"
@@ -393,75 +393,75 @@ SOURCE=..\..\..\..\src\dsig\DSIGXPathHere.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\..\..\..\src\enc\openssl\OpenSSLCryptoBase64.cpp
+SOURCE=..\..\..\..\xsec\enc\openssl\OpenSSLCryptoBase64.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\enc\openssl\OpenSSLCryptoBase64.hpp
+SOURCE=..\..\..\..\xsec\enc\openssl\OpenSSLCryptoBase64.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\enc\openssl\OpenSSLCryptoHash.cpp
+SOURCE=..\..\..\..\xsec\enc\openssl\OpenSSLCryptoHash.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\enc\openssl\OpenSSLCryptoHash.hpp
+SOURCE=..\..\..\..\xsec\enc\openssl\OpenSSLCryptoHash.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\enc\OpenSSL\OpenSSLCryptoHashHMAC.cpp
+SOURCE=..\..\..\..\xsec\enc\OpenSSL\OpenSSLCryptoHashHMAC.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\enc\OpenSSL\OpenSSLCryptoHashHMAC.hpp
+SOURCE=..\..\..\..\xsec\enc\OpenSSL\OpenSSLCryptoHashHMAC.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\enc\OpenSSL\OpenSSLCryptoKeyDSA.cpp
+SOURCE=..\..\..\..\xsec\enc\OpenSSL\OpenSSLCryptoKeyDSA.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\enc\OpenSSL\OpenSSLCryptoKeyDSA.hpp
+SOURCE=..\..\..\..\xsec\enc\OpenSSL\OpenSSLCryptoKeyDSA.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\enc\OpenSSL\OpenSSLCryptoKeyHMAC.cpp
+SOURCE=..\..\..\..\xsec\enc\OpenSSL\OpenSSLCryptoKeyHMAC.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\enc\OpenSSL\OpenSSLCryptoKeyHMAC.hpp
+SOURCE=..\..\..\..\xsec\enc\OpenSSL\OpenSSLCryptoKeyHMAC.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\enc\OpenSSL\OpenSSLCryptoKeyRSA.cpp
+SOURCE=..\..\..\..\xsec\enc\OpenSSL\OpenSSLCryptoKeyRSA.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\enc\OpenSSL\OpenSSLCryptoKeyRSA.hpp
+SOURCE=..\..\..\..\xsec\enc\OpenSSL\OpenSSLCryptoKeyRSA.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\enc\openssl\OpenSSLCryptoProvider.cpp
+SOURCE=..\..\..\..\xsec\enc\openssl\OpenSSLCryptoProvider.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\enc\openssl\OpenSSLCryptoProvider.hpp
+SOURCE=..\..\..\..\xsec\enc\openssl\OpenSSLCryptoProvider.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\enc\OpenSSL\OpenSSLCryptoSymmetricKey.cpp
+SOURCE=..\..\..\..\xsec\enc\OpenSSL\OpenSSLCryptoSymmetricKey.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\enc\OpenSSL\OpenSSLCryptoSymmetricKey.hpp
+SOURCE=..\..\..\..\xsec\enc\OpenSSL\OpenSSLCryptoSymmetricKey.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\enc\OpenSSL\OpenSSLCryptoX509.cpp
+SOURCE=..\..\..\..\xsec\enc\OpenSSL\OpenSSLCryptoX509.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\enc\OpenSSL\OpenSSLCryptoX509.hpp
+SOURCE=..\..\..\..\xsec\enc\OpenSSL\OpenSSLCryptoX509.hpp
 # End Source File
 # End Group
 # Begin Group "XSCrypt"
@@ -469,11 +469,11 @@ SOURCE=..\..\..\..\src\enc\OpenSSL\OpenSSLCryptoX509.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\..\..\..\src\enc\XSCrypt\XSCryptCryptoBase64.cpp
+SOURCE=..\..\..\..\xsec\enc\XSCrypt\XSCryptCryptoBase64.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\enc\XSCrypt\XSCryptCryptoBase64.hpp
+SOURCE=..\..\..\..\xsec\enc\XSCrypt\XSCryptCryptoBase64.hpp
 # End Source File
 # End Group
 # Begin Group "WinCAPI"
@@ -481,67 +481,67 @@ SOURCE=..\..\..\..\src\enc\XSCrypt\XSCryptCryptoBase64.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\..\..\..\src\enc\WinCAPI\WinCAPICryptoHash.cpp
+SOURCE=..\..\..\..\xsec\enc\WinCAPI\WinCAPICryptoHash.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\enc\WinCAPI\WinCAPICryptoHash.hpp
+SOURCE=..\..\..\..\xsec\enc\WinCAPI\WinCAPICryptoHash.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\enc\WinCAPI\WinCAPICryptoHashHMAC.cpp
+SOURCE=..\..\..\..\xsec\enc\WinCAPI\WinCAPICryptoHashHMAC.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\enc\WinCAPI\WinCAPICryptoHashHMAC.hpp
+SOURCE=..\..\..\..\xsec\enc\WinCAPI\WinCAPICryptoHashHMAC.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\enc\WinCAPI\WinCAPICryptoKeyDSA.cpp
+SOURCE=..\..\..\..\xsec\enc\WinCAPI\WinCAPICryptoKeyDSA.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\enc\WinCAPI\WinCAPICryptoKeyDSA.hpp
+SOURCE=..\..\..\..\xsec\enc\WinCAPI\WinCAPICryptoKeyDSA.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\enc\WinCAPI\WinCAPICryptoKeyHMAC.cpp
+SOURCE=..\..\..\..\xsec\enc\WinCAPI\WinCAPICryptoKeyHMAC.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\enc\WinCAPI\WinCAPICryptoKeyHMAC.hpp
+SOURCE=..\..\..\..\xsec\enc\WinCAPI\WinCAPICryptoKeyHMAC.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\enc\WinCAPI\WinCAPICryptoKeyRSA.cpp
+SOURCE=..\..\..\..\xsec\enc\WinCAPI\WinCAPICryptoKeyRSA.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\enc\WinCAPI\WinCAPICryptoKeyRSA.hpp
+SOURCE=..\..\..\..\xsec\enc\WinCAPI\WinCAPICryptoKeyRSA.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\enc\WinCAPI\WinCAPICryptoProvider.cpp
+SOURCE=..\..\..\..\xsec\enc\WinCAPI\WinCAPICryptoProvider.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\enc\WinCAPI\WinCAPICryptoProvider.hpp
+SOURCE=..\..\..\..\xsec\enc\WinCAPI\WinCAPICryptoProvider.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\enc\WinCAPI\WinCAPICryptoSymmetricKey.cpp
+SOURCE=..\..\..\..\xsec\enc\WinCAPI\WinCAPICryptoSymmetricKey.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\enc\WinCAPI\WinCAPICryptoSymmetricKey.hpp
+SOURCE=..\..\..\..\xsec\enc\WinCAPI\WinCAPICryptoSymmetricKey.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\enc\WinCAPI\WinCAPICryptoX509.cpp
+SOURCE=..\..\..\..\xsec\enc\WinCAPI\WinCAPICryptoX509.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\enc\WinCAPI\WinCAPICryptoX509.hpp
+SOURCE=..\..\..\..\xsec\enc\WinCAPI\WinCAPICryptoX509.hpp
 # End Source File
 # End Group
 # Begin Group "NSS"
@@ -549,140 +549,140 @@ SOURCE=..\..\..\..\src\enc\WinCAPI\WinCAPICryptoX509.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\..\..\..\src\enc\NSS\NSSCryptoHash.cpp
+SOURCE=..\..\..\..\xsec\enc\NSS\NSSCryptoHash.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\enc\NSS\NSSCryptoHash.hpp
+SOURCE=..\..\..\..\xsec\enc\NSS\NSSCryptoHash.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\enc\NSS\NSSCryptoHashHMAC.cpp
+SOURCE=..\..\..\..\xsec\enc\NSS\NSSCryptoHashHMAC.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\enc\NSS\NSSCryptoHashHMAC.hpp
+SOURCE=..\..\..\..\xsec\enc\NSS\NSSCryptoHashHMAC.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\enc\NSS\NSSCryptoKeyDSA.cpp
+SOURCE=..\..\..\..\xsec\enc\NSS\NSSCryptoKeyDSA.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\enc\NSS\NSSCryptoKeyDSA.hpp
+SOURCE=..\..\..\..\xsec\enc\NSS\NSSCryptoKeyDSA.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\enc\NSS\NSSCryptoKeyHMAC.cpp
+SOURCE=..\..\..\..\xsec\enc\NSS\NSSCryptoKeyHMAC.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\enc\NSS\NSSCryptoKeyHMAC.hpp
+SOURCE=..\..\..\..\xsec\enc\NSS\NSSCryptoKeyHMAC.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\enc\NSS\NSSCryptoKeyRSA.cpp
+SOURCE=..\..\..\..\xsec\enc\NSS\NSSCryptoKeyRSA.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\enc\NSS\NSSCryptoKeyRSA.hpp
+SOURCE=..\..\..\..\xsec\enc\NSS\NSSCryptoKeyRSA.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\enc\NSS\NSSCryptoProvider.cpp
+SOURCE=..\..\..\..\xsec\enc\NSS\NSSCryptoProvider.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\enc\NSS\NSSCryptoProvider.hpp
+SOURCE=..\..\..\..\xsec\enc\NSS\NSSCryptoProvider.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\enc\NSS\NSSCryptoSymmetricKey.cpp
+SOURCE=..\..\..\..\xsec\enc\NSS\NSSCryptoSymmetricKey.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\enc\NSS\NSSCryptoSymmetricKey.hpp
+SOURCE=..\..\..\..\xsec\enc\NSS\NSSCryptoSymmetricKey.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\enc\NSS\NSSCryptoX509.cpp
+SOURCE=..\..\..\..\xsec\enc\NSS\NSSCryptoX509.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\enc\NSS\NSSCryptoX509.hpp
+SOURCE=..\..\..\..\xsec\enc\NSS\NSSCryptoX509.hpp
 # End Source File
 # End Group
 # Begin Source File
 
-SOURCE=..\..\..\..\src\enc\XSECCryptoBase64.cpp
+SOURCE=..\..\..\..\xsec\enc\XSECCryptoBase64.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\enc\XSECCryptoBase64.hpp
+SOURCE=..\..\..\..\xsec\enc\XSECCryptoBase64.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\enc\XSECCryptoException.cpp
+SOURCE=..\..\..\..\xsec\enc\XSECCryptoException.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\enc\XSECCryptoException.hpp
+SOURCE=..\..\..\..\xsec\enc\XSECCryptoException.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\enc\XSECCryptoHash.hpp
+SOURCE=..\..\..\..\xsec\enc\XSECCryptoHash.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\enc\XSECCryptoKey.hpp
+SOURCE=..\..\..\..\xsec\enc\XSECCryptoKey.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\enc\XSECCryptoKeyDSA.hpp
+SOURCE=..\..\..\..\xsec\enc\XSECCryptoKeyDSA.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\enc\XSECCryptoKeyHMAC.hpp
+SOURCE=..\..\..\..\xsec\enc\XSECCryptoKeyHMAC.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\enc\XSECCryptoKeyRSA.hpp
+SOURCE=..\..\..\..\xsec\enc\XSECCryptoKeyRSA.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\enc\XSECCryptoProvider.hpp
+SOURCE=..\..\..\..\xsec\enc\XSECCryptoProvider.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\enc\XSECCryptoSymmetricKey.hpp
+SOURCE=..\..\..\..\xsec\enc\XSECCryptoSymmetricKey.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\enc\XSECCryptoUtils.cpp
+SOURCE=..\..\..\..\xsec\enc\XSECCryptoUtils.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\enc\XSECCryptoUtils.hpp
+SOURCE=..\..\..\..\xsec\enc\XSECCryptoUtils.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\enc\XSECCryptoX509.cpp
+SOURCE=..\..\..\..\xsec\enc\XSECCryptoX509.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\enc\XSECCryptoX509.hpp
+SOURCE=..\..\..\..\xsec\enc\XSECCryptoX509.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\enc\XSECKeyInfoResolver.hpp
+SOURCE=..\..\..\..\xsec\enc\XSECKeyInfoResolver.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\enc\XSECKeyInfoResolverDefault.cpp
+SOURCE=..\..\..\..\xsec\enc\XSECKeyInfoResolverDefault.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\enc\XSECKeyInfoResolverDefault.hpp
+SOURCE=..\..\..\..\xsec\enc\XSECKeyInfoResolverDefault.hpp
 # End Source File
 # End Group
 # Begin Group "utils"
@@ -693,100 +693,100 @@ SOURCE=..\..\..\..\src\enc\XSECKeyInfoResolverDefault.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\..\..\..\src\utils\winutils\XSECBinHTTPURIInputStream.cpp
+SOURCE=..\..\..\..\xsec\utils\winutils\XSECBinHTTPURIInputStream.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\utils\winutils\XSECBinHTTPURIInputStream.hpp
+SOURCE=..\..\..\..\xsec\utils\winutils\XSECBinHTTPURIInputStream.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\utils\winutils\XSECSOAPRequestorSimpleWin32.cpp
+SOURCE=..\..\..\..\xsec\utils\winutils\XSECSOAPRequestorSimpleWin32.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\utils\winutils\XSECURIResolverGenericWin32.cpp
+SOURCE=..\..\..\..\xsec\utils\winutils\XSECURIResolverGenericWin32.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\utils\winutils\XSECURIResolverGenericWin32.hpp
+SOURCE=..\..\..\..\xsec\utils\winutils\XSECURIResolverGenericWin32.hpp
 # End Source File
 # End Group
 # Begin Source File
 
-SOURCE=..\..\..\..\src\utils\XSECBinTXFMInputStream.cpp
+SOURCE=..\..\..\..\xsec\utils\XSECBinTXFMInputStream.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\utils\XSECBinTXFMInputStream.hpp
+SOURCE=..\..\..\..\xsec\utils\XSECBinTXFMInputStream.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\utils\XSECDOMUtils.cpp
+SOURCE=..\..\..\..\xsec\utils\XSECDOMUtils.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\utils\XSECDOMUtils.hpp
+SOURCE=..\..\..\..\xsec\utils\XSECDOMUtils.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\utils\XSECNameSpaceExpander.cpp
+SOURCE=..\..\..\..\xsec\utils\XSECNameSpaceExpander.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\utils\XSECNameSpaceExpander.hpp
+SOURCE=..\..\..\..\xsec\utils\XSECNameSpaceExpander.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\utils\XSECPlatformUtils.cpp
+SOURCE=..\..\..\..\xsec\utils\XSECPlatformUtils.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\utils\XSECPlatformUtils.hpp
+SOURCE=..\..\..\..\xsec\utils\XSECPlatformUtils.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\utils\XSECSafeBuffer.cpp
+SOURCE=..\..\..\..\xsec\utils\XSECSafeBuffer.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\utils\XSECSafeBuffer.hpp
+SOURCE=..\..\..\..\xsec\utils\XSECSafeBuffer.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\utils\XSECSafeBufferFormatter.cpp
+SOURCE=..\..\..\..\xsec\utils\XSECSafeBufferFormatter.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\utils\XSECSafeBufferFormatter.hpp
+SOURCE=..\..\..\..\xsec\utils\XSECSafeBufferFormatter.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\utils\XSECSOAPRequestor.hpp
+SOURCE=..\..\..\..\xsec\utils\XSECSOAPRequestor.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\utils\XSECSOAPRequestorSimple.cpp
+SOURCE=..\..\..\..\xsec\utils\XSECSOAPRequestorSimple.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\utils\XSECSOAPRequestorSimple.hpp
+SOURCE=..\..\..\..\xsec\utils\XSECSOAPRequestorSimple.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\utils\XSECTXFMInputSource.cpp
+SOURCE=..\..\..\..\xsec\utils\XSECTXFMInputSource.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\utils\XSECTXFMInputSource.hpp
+SOURCE=..\..\..\..\xsec\utils\XSECTXFMInputSource.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\utils\XSECXPathNodeList.cpp
+SOURCE=..\..\..\..\xsec\utils\XSECXPathNodeList.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\utils\XSECXPathNodeList.hpp
+SOURCE=..\..\..\..\xsec\utils\XSECXPathNodeList.hpp
 # End Source File
 # End Group
 # Begin Group "framework"
@@ -794,69 +794,69 @@ SOURCE=..\..\..\..\src\utils\XSECXPathNodeList.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\..\..\..\src\framework\XSECAlgorithmHandler.hpp
+SOURCE=..\..\..\..\xsec\framework\XSECAlgorithmHandler.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\framework\XSECAlgorithmMapper.cpp
+SOURCE=..\..\..\..\xsec\framework\XSECAlgorithmMapper.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\framework\XSECAlgorithmMapper.hpp
+SOURCE=..\..\..\..\xsec\framework\XSECAlgorithmMapper.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\framework\XSECDefs.hpp
+SOURCE=..\..\..\..\xsec\framework\XSECDefs.hpp
 
 !IF  "$(CFG)" == "xsec_lib - Win32 Release"
 
 # Begin Custom Build - Copying include files from src directory
-InputPath=..\..\..\..\src\framework\XSECDefs.hpp
+InputPath=..\..\..\..\xsec\framework\XSECDefs.hpp
 
 "..\..\..\..\include\xsec\framework\dummy.hpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	mkdir ..\..\..\..\include 
 	mkdir ..\..\..\..\include\xsec 
 	del /q /s ..\..\..\..\include\xsec\*.* 
-	xcopy /I /s /f  ..\..\..\..\src\*.hpp ..\..\..\..\include\xsec 
+	xcopy /I /s /f  ..\..\..\..\xsec\*.hpp ..\..\..\..\include\xsec 
 	
 # End Custom Build
 
 !ELSEIF  "$(CFG)" == "xsec_lib - Win32 Debug"
 
 # Begin Custom Build - Copying include files from src directory
-InputPath=..\..\..\..\src\framework\XSECDefs.hpp
+InputPath=..\..\..\..\xsec\framework\XSECDefs.hpp
 
 "..\..\..\..\include\xsec\framework\dummy.hpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	mkdir ..\..\..\..\include 
 	mkdir ..\..\..\..\include\xsec 
 	del /q /s ..\..\..\..\include\xsec\*.* 
-	xcopy /I /s /f  ..\..\..\..\src\*.hpp ..\..\..\..\include\xsec 
+	xcopy /I /s /f  ..\..\..\..\xsec\*.hpp ..\..\..\..\include\xsec 
 	
 # End Custom Build
 
 !ELSEIF  "$(CFG)" == "xsec_lib - Win32 Debug No Xalan"
 
 # Begin Custom Build - Copying include files from src directory
-InputPath=..\..\..\..\src\framework\XSECDefs.hpp
+InputPath=..\..\..\..\xsec\framework\XSECDefs.hpp
 
 "..\..\..\..\include\xsec\framework\dummy.hpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	mkdir ..\..\..\..\include 
 	mkdir ..\..\..\..\include\xsec 
 	del /q /s ..\..\..\..\include\xsec\*.* 
-	xcopy /I /s /f  ..\..\..\..\src\*.hpp ..\..\..\..\include\xsec 
+	xcopy /I /s /f  ..\..\..\..\xsec\*.hpp ..\..\..\..\include\xsec 
 	
 # End Custom Build
 
 !ELSEIF  "$(CFG)" == "xsec_lib - Win32 Release No Xalan"
 
 # Begin Custom Build - Copying include files from src directory
-InputPath=..\..\..\..\src\framework\XSECDefs.hpp
+InputPath=..\..\..\..\xsec\framework\XSECDefs.hpp
 
 "..\..\..\..\include\xsec\framework\dummy.hpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	mkdir ..\..\..\..\include 
 	mkdir ..\..\..\..\include\xsec 
 	del /q /s ..\..\..\..\include\xsec\*.* 
-	xcopy /I /s /f  ..\..\..\..\src\*.hpp ..\..\..\..\include\xsec 
+	xcopy /I /s /f  ..\..\..\..\xsec\*.hpp ..\..\..\..\include\xsec 
 	
 # End Custom Build
 
@@ -865,51 +865,51 @@ InputPath=..\..\..\..\src\framework\XSECDefs.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\framework\XSECEnv.cpp
+SOURCE=..\..\..\..\xsec\framework\XSECEnv.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\framework\XSECEnv.hpp
+SOURCE=..\..\..\..\xsec\framework\XSECEnv.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\framework\XSECError.cpp
+SOURCE=..\..\..\..\xsec\framework\XSECError.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\framework\XSECError.hpp
+SOURCE=..\..\..\..\xsec\framework\XSECError.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\framework\XSECException.cpp
+SOURCE=..\..\..\..\xsec\framework\XSECException.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\framework\XSECException.hpp
+SOURCE=..\..\..\..\xsec\framework\XSECException.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\framework\XSECProvider.cpp
+SOURCE=..\..\..\..\xsec\framework\XSECProvider.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\framework\XSECProvider.hpp
+SOURCE=..\..\..\..\xsec\framework\XSECProvider.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\framework\XSECURIResolver.hpp
+SOURCE=..\..\..\..\xsec\framework\XSECURIResolver.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\framework\XSECURIResolverXerces.cpp
+SOURCE=..\..\..\..\xsec\framework\XSECURIResolverXerces.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\framework\XSECURIResolverXerces.hpp
+SOURCE=..\..\..\..\xsec\framework\XSECURIResolverXerces.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\framework\XSECW32Config.hpp
+SOURCE=..\..\..\..\xsec\framework\XSECW32Config.hpp
 # End Source File
 # End Group
 # Begin Group "transformers"
@@ -917,139 +917,139 @@ SOURCE=..\..\..\..\src\framework\XSECW32Config.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\..\..\..\src\transformers\TXFMBase.cpp
+SOURCE=..\..\..\..\xsec\transformers\TXFMBase.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\transformers\TXFMBase.hpp
+SOURCE=..\..\..\..\xsec\transformers\TXFMBase.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\transformers\TXFMBase64.cpp
+SOURCE=..\..\..\..\xsec\transformers\TXFMBase64.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\transformers\TXFMBase64.hpp
+SOURCE=..\..\..\..\xsec\transformers\TXFMBase64.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\transformers\TXFMC14n.cpp
+SOURCE=..\..\..\..\xsec\transformers\TXFMC14n.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\transformers\TXFMC14n.hpp
+SOURCE=..\..\..\..\xsec\transformers\TXFMC14n.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\transformers\TXFMChain.cpp
+SOURCE=..\..\..\..\xsec\transformers\TXFMChain.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\transformers\TXFMChain.hpp
+SOURCE=..\..\..\..\xsec\transformers\TXFMChain.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\transformers\TXFMCipher.cpp
+SOURCE=..\..\..\..\xsec\transformers\TXFMCipher.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\transformers\TXFMCipher.hpp
+SOURCE=..\..\..\..\xsec\transformers\TXFMCipher.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\transformers\TXFMConcatChains.cpp
+SOURCE=..\..\..\..\xsec\transformers\TXFMConcatChains.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\transformers\TXFMConcatChains.hpp
+SOURCE=..\..\..\..\xsec\transformers\TXFMConcatChains.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\transformers\TXFMDocObject.cpp
+SOURCE=..\..\..\..\xsec\transformers\TXFMDocObject.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\transformers\TXFMDocObject.hpp
+SOURCE=..\..\..\..\xsec\transformers\TXFMDocObject.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\transformers\TXFMEnvelope.cpp
+SOURCE=..\..\..\..\xsec\transformers\TXFMEnvelope.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\transformers\TXFMEnvelope.hpp
+SOURCE=..\..\..\..\xsec\transformers\TXFMEnvelope.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\transformers\TXFMMD5.cpp
+SOURCE=..\..\..\..\xsec\transformers\TXFMMD5.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\transformers\TXFMMD5.hpp
+SOURCE=..\..\..\..\xsec\transformers\TXFMMD5.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\transformers\TXFMOutputFile.cpp
+SOURCE=..\..\..\..\xsec\transformers\TXFMOutputFile.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\transformers\TXFMOutputFile.hpp
+SOURCE=..\..\..\..\xsec\transformers\TXFMOutputFile.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\transformers\TXFMParser.cpp
+SOURCE=..\..\..\..\xsec\transformers\TXFMParser.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\transformers\TXFMParser.hpp
+SOURCE=..\..\..\..\xsec\transformers\TXFMParser.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\transformers\TXFMSB.cpp
+SOURCE=..\..\..\..\xsec\transformers\TXFMSB.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\transformers\TXFMSB.hpp
+SOURCE=..\..\..\..\xsec\transformers\TXFMSB.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\transformers\TXFMSHA1.cpp
+SOURCE=..\..\..\..\xsec\transformers\TXFMSHA1.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\transformers\TXFMSHA1.hpp
+SOURCE=..\..\..\..\xsec\transformers\TXFMSHA1.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\transformers\TXFMURL.cpp
+SOURCE=..\..\..\..\xsec\transformers\TXFMURL.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\transformers\TXFMURL.hpp
+SOURCE=..\..\..\..\xsec\transformers\TXFMURL.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\transformers\TXFMXPath.cpp
+SOURCE=..\..\..\..\xsec\transformers\TXFMXPath.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\transformers\TXFMXPath.hpp
+SOURCE=..\..\..\..\xsec\transformers\TXFMXPath.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\transformers\TXFMXPathFilter.cpp
+SOURCE=..\..\..\..\xsec\transformers\TXFMXPathFilter.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\transformers\TXFMXPathFilter.hpp
+SOURCE=..\..\..\..\xsec\transformers\TXFMXPathFilter.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\transformers\TXFMXSL.cpp
+SOURCE=..\..\..\..\xsec\transformers\TXFMXSL.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\transformers\TXFMXSL.hpp
+SOURCE=..\..\..\..\xsec\transformers\TXFMXSL.hpp
 # End Source File
 # End Group
 # Begin Group "resources"
@@ -1057,7 +1057,7 @@ SOURCE=..\..\..\..\src\transformers\TXFMXSL.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\..\..\..\src\framework\version.rc
+SOURCE=..\..\..\..\xsec\framework\version.rc
 # End Source File
 # End Group
 # Begin Group "xenc"
@@ -1068,108 +1068,108 @@ SOURCE=..\..\..\..\src\framework\version.rc
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xenc\impl\XENCAlgorithmHandlerDefault.cpp
+SOURCE=..\..\..\..\xsec\xenc\impl\XENCAlgorithmHandlerDefault.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xenc\impl\XENCAlgorithmHandlerDefault.hpp
+SOURCE=..\..\..\..\xsec\xenc\impl\XENCAlgorithmHandlerDefault.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xenc\impl\XENCCipherDataImpl.cpp
+SOURCE=..\..\..\..\xsec\xenc\impl\XENCCipherDataImpl.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xenc\impl\XENCCipherDataImpl.hpp
+SOURCE=..\..\..\..\xsec\xenc\impl\XENCCipherDataImpl.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xenc\impl\XENCCipherImpl.cpp
+SOURCE=..\..\..\..\xsec\xenc\impl\XENCCipherImpl.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xenc\impl\XENCCipherImpl.hpp
+SOURCE=..\..\..\..\xsec\xenc\impl\XENCCipherImpl.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xenc\impl\XENCCipherReferenceImpl.cpp
+SOURCE=..\..\..\..\xsec\xenc\impl\XENCCipherReferenceImpl.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xenc\impl\XENCCipherReferenceImpl.hpp
+SOURCE=..\..\..\..\xsec\xenc\impl\XENCCipherReferenceImpl.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xenc\impl\XENCCipherValueImpl.cpp
+SOURCE=..\..\..\..\xsec\xenc\impl\XENCCipherValueImpl.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xenc\impl\XENCCipherValueImpl.hpp
+SOURCE=..\..\..\..\xsec\xenc\impl\XENCCipherValueImpl.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xenc\impl\XENCEncryptedDataImpl.cpp
+SOURCE=..\..\..\..\xsec\xenc\impl\XENCEncryptedDataImpl.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xenc\impl\XENCEncryptedDataImpl.hpp
+SOURCE=..\..\..\..\xsec\xenc\impl\XENCEncryptedDataImpl.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xenc\impl\XENCEncryptedKeyImpl.cpp
+SOURCE=..\..\..\..\xsec\xenc\impl\XENCEncryptedKeyImpl.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xenc\impl\XENCEncryptedKeyImpl.hpp
+SOURCE=..\..\..\..\xsec\xenc\impl\XENCEncryptedKeyImpl.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xenc\impl\XENCEncryptedTypeImpl.cpp
+SOURCE=..\..\..\..\xsec\xenc\impl\XENCEncryptedTypeImpl.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xenc\impl\XENCEncryptedTypeImpl.hpp
+SOURCE=..\..\..\..\xsec\xenc\impl\XENCEncryptedTypeImpl.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xenc\impl\XENCEncryptionMethodImpl.cpp
+SOURCE=..\..\..\..\xsec\xenc\impl\XENCEncryptionMethodImpl.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xenc\impl\XENCEncryptionMethodImpl.hpp
+SOURCE=..\..\..\..\xsec\xenc\impl\XENCEncryptionMethodImpl.hpp
 # End Source File
 # End Group
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xenc\XENCCipher.hpp
+SOURCE=..\..\..\..\xsec\xenc\XENCCipher.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xenc\XENCCipherData.hpp
+SOURCE=..\..\..\..\xsec\xenc\XENCCipherData.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xenc\XENCCipherReference.hpp
+SOURCE=..\..\..\..\xsec\xenc\XENCCipherReference.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xenc\XENCCipherValue.hpp
+SOURCE=..\..\..\..\xsec\xenc\XENCCipherValue.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xenc\XENCEncryptedData.hpp
+SOURCE=..\..\..\..\xsec\xenc\XENCEncryptedData.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xenc\XENCEncryptedKey.hpp
+SOURCE=..\..\..\..\xsec\xenc\XENCEncryptedKey.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xenc\XENCEncryptedType.hpp
+SOURCE=..\..\..\..\xsec\xenc\XENCEncryptedType.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xenc\XENCEncryptionMethod.hpp
+SOURCE=..\..\..\..\xsec\xenc\XENCEncryptionMethod.hpp
 # End Source File
 # End Group
 # Begin Group "xkms"
@@ -1180,468 +1180,468 @@ SOURCE=..\..\..\..\src\xenc\XENCEncryptionMethod.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\impl\XKMSAuthenticationImpl.cpp
+SOURCE=..\..\..\..\xsec\xkms\impl\XKMSAuthenticationImpl.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\impl\XKMSAuthenticationImpl.hpp
+SOURCE=..\..\..\..\xsec\xkms\impl\XKMSAuthenticationImpl.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\impl\XKMSCompoundRequestImpl.cpp
+SOURCE=..\..\..\..\xsec\xkms\impl\XKMSCompoundRequestImpl.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\impl\XKMSCompoundRequestImpl.hpp
+SOURCE=..\..\..\..\xsec\xkms\impl\XKMSCompoundRequestImpl.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\impl\XKMSCompoundResultImpl.cpp
+SOURCE=..\..\..\..\xsec\xkms\impl\XKMSCompoundResultImpl.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\impl\XKMSCompoundResultImpl.hpp
+SOURCE=..\..\..\..\xsec\xkms\impl\XKMSCompoundResultImpl.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\impl\XKMSKeyBindingAbstractTypeImpl.cpp
+SOURCE=..\..\..\..\xsec\xkms\impl\XKMSKeyBindingAbstractTypeImpl.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\impl\XKMSKeyBindingAbstractTypeImpl.hpp
+SOURCE=..\..\..\..\xsec\xkms\impl\XKMSKeyBindingAbstractTypeImpl.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\impl\XKMSKeyBindingImpl.cpp
+SOURCE=..\..\..\..\xsec\xkms\impl\XKMSKeyBindingImpl.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\impl\XKMSKeyBindingImpl.hpp
+SOURCE=..\..\..\..\xsec\xkms\impl\XKMSKeyBindingImpl.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\impl\XKMSLocateRequestImpl.cpp
+SOURCE=..\..\..\..\xsec\xkms\impl\XKMSLocateRequestImpl.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\impl\XKMSLocateRequestImpl.hpp
+SOURCE=..\..\..\..\xsec\xkms\impl\XKMSLocateRequestImpl.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\impl\XKMSLocateResultImpl.cpp
+SOURCE=..\..\..\..\xsec\xkms\impl\XKMSLocateResultImpl.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\impl\XKMSLocateResultImpl.hpp
+SOURCE=..\..\..\..\xsec\xkms\impl\XKMSLocateResultImpl.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\impl\XKMSMessageAbstractTypeImpl.cpp
+SOURCE=..\..\..\..\xsec\xkms\impl\XKMSMessageAbstractTypeImpl.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\impl\XKMSMessageAbstractTypeImpl.hpp
+SOURCE=..\..\..\..\xsec\xkms\impl\XKMSMessageAbstractTypeImpl.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\impl\XKMSMessageFactoryImpl.cpp
+SOURCE=..\..\..\..\xsec\xkms\impl\XKMSMessageFactoryImpl.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\impl\XKMSMessageFactoryImpl.hpp
+SOURCE=..\..\..\..\xsec\xkms\impl\XKMSMessageFactoryImpl.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\impl\XKMSNotBoundAuthentication.cpp
+SOURCE=..\..\..\..\xsec\xkms\impl\XKMSNotBoundAuthentication.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\impl\XKMSNotBoundAuthenticationImpl.hpp
+SOURCE=..\..\..\..\xsec\xkms\impl\XKMSNotBoundAuthenticationImpl.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\impl\XKMSPendingRequestImpl.cpp
+SOURCE=..\..\..\..\xsec\xkms\impl\XKMSPendingRequestImpl.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\impl\XKMSPendingRequestImpl.hpp
+SOURCE=..\..\..\..\xsec\xkms\impl\XKMSPendingRequestImpl.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\impl\XKMSPrototypeKeyBindingImpl.cpp
+SOURCE=..\..\..\..\xsec\xkms\impl\XKMSPrototypeKeyBindingImpl.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\impl\XKMSPrototypeKeyBindingImpl.hpp
+SOURCE=..\..\..\..\xsec\xkms\impl\XKMSPrototypeKeyBindingImpl.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\impl\XKMSQueryKeyBindingImpl.cpp
+SOURCE=..\..\..\..\xsec\xkms\impl\XKMSQueryKeyBindingImpl.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\impl\XKMSQueryKeyBindingImpl.hpp
+SOURCE=..\..\..\..\xsec\xkms\impl\XKMSQueryKeyBindingImpl.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\impl\XKMSRecoverKeyBindingImpl.cpp
+SOURCE=..\..\..\..\xsec\xkms\impl\XKMSRecoverKeyBindingImpl.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\impl\XKMSRecoverKeyBindingImpl.hpp
+SOURCE=..\..\..\..\xsec\xkms\impl\XKMSRecoverKeyBindingImpl.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\impl\XKMSRecoverRequestImpl.cpp
+SOURCE=..\..\..\..\xsec\xkms\impl\XKMSRecoverRequestImpl.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\impl\XKMSRecoverRequestImpl.hpp
+SOURCE=..\..\..\..\xsec\xkms\impl\XKMSRecoverRequestImpl.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\impl\XKMSRecoverResultImpl.cpp
+SOURCE=..\..\..\..\xsec\xkms\impl\XKMSRecoverResultImpl.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\impl\XKMSRecoverResultImpl.hpp
+SOURCE=..\..\..\..\xsec\xkms\impl\XKMSRecoverResultImpl.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\impl\XKMSRegisterRequestImpl.cpp
+SOURCE=..\..\..\..\xsec\xkms\impl\XKMSRegisterRequestImpl.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\impl\XKMSRegisterRequestImpl.hpp
+SOURCE=..\..\..\..\xsec\xkms\impl\XKMSRegisterRequestImpl.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\impl\XKMSRegisterResultImpl.cpp
+SOURCE=..\..\..\..\xsec\xkms\impl\XKMSRegisterResultImpl.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\impl\XKMSRegisterResultImpl.hpp
+SOURCE=..\..\..\..\xsec\xkms\impl\XKMSRegisterResultImpl.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\impl\XKMSReissueKeyBindingImpl.cpp
+SOURCE=..\..\..\..\xsec\xkms\impl\XKMSReissueKeyBindingImpl.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\impl\XKMSReissueKeyBindingImpl.hpp
+SOURCE=..\..\..\..\xsec\xkms\impl\XKMSReissueKeyBindingImpl.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\impl\XKMSReissueRequestImpl.cpp
+SOURCE=..\..\..\..\xsec\xkms\impl\XKMSReissueRequestImpl.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\impl\XKMSReissueRequestImpl.hpp
+SOURCE=..\..\..\..\xsec\xkms\impl\XKMSReissueRequestImpl.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\impl\XKMSReissueResultImpl.cpp
+SOURCE=..\..\..\..\xsec\xkms\impl\XKMSReissueResultImpl.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\impl\XKMSReissueResultImpl.hpp
+SOURCE=..\..\..\..\xsec\xkms\impl\XKMSReissueResultImpl.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\impl\XKMSRequestAbstractTypeImpl.cpp
+SOURCE=..\..\..\..\xsec\xkms\impl\XKMSRequestAbstractTypeImpl.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\impl\XKMSRequestAbstractTypeImpl.hpp
+SOURCE=..\..\..\..\xsec\xkms\impl\XKMSRequestAbstractTypeImpl.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\impl\XKMSRespondWithImpl.cpp
+SOURCE=..\..\..\..\xsec\xkms\impl\XKMSRespondWithImpl.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\impl\XKMSRespondWithImpl.hpp
+SOURCE=..\..\..\..\xsec\xkms\impl\XKMSRespondWithImpl.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\impl\XKMSResponseMechanismImpl.cpp
+SOURCE=..\..\..\..\xsec\xkms\impl\XKMSResponseMechanismImpl.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\impl\XKMSResponseMechanismImpl.hpp
+SOURCE=..\..\..\..\xsec\xkms\impl\XKMSResponseMechanismImpl.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\impl\XKMSResultImpl.cpp
+SOURCE=..\..\..\..\xsec\xkms\impl\XKMSResultImpl.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\impl\XKMSResultImpl.hpp
+SOURCE=..\..\..\..\xsec\xkms\impl\XKMSResultImpl.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\impl\XKMSResultTypeImpl.cpp
+SOURCE=..\..\..\..\xsec\xkms\impl\XKMSResultTypeImpl.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\impl\XKMSResultTypeImpl.hpp
+SOURCE=..\..\..\..\xsec\xkms\impl\XKMSResultTypeImpl.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\impl\XKMSRevokeKeyBindingImpl.cpp
+SOURCE=..\..\..\..\xsec\xkms\impl\XKMSRevokeKeyBindingImpl.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\impl\XKMSRevokeKeyBindingImpl.hpp
+SOURCE=..\..\..\..\xsec\xkms\impl\XKMSRevokeKeyBindingImpl.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\impl\XKMSRevokeRequestImpl.cpp
+SOURCE=..\..\..\..\xsec\xkms\impl\XKMSRevokeRequestImpl.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\impl\XKMSRevokeRequestImpl.hpp
+SOURCE=..\..\..\..\xsec\xkms\impl\XKMSRevokeRequestImpl.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\impl\XKMSRevokeResultImpl.cpp
+SOURCE=..\..\..\..\xsec\xkms\impl\XKMSRevokeResultImpl.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\impl\XKMSRevokeResultImpl.hpp
+SOURCE=..\..\..\..\xsec\xkms\impl\XKMSRevokeResultImpl.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\impl\XKMSRSAKeyPairImpl.cpp
+SOURCE=..\..\..\..\xsec\xkms\impl\XKMSRSAKeyPairImpl.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\impl\XKMSRSAKeyPairImpl.hpp
+SOURCE=..\..\..\..\xsec\xkms\impl\XKMSRSAKeyPairImpl.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\impl\XKMSStatusImpl.cpp
+SOURCE=..\..\..\..\xsec\xkms\impl\XKMSStatusImpl.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\impl\XKMSStatusImpl.hpp
+SOURCE=..\..\..\..\xsec\xkms\impl\XKMSStatusImpl.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\impl\XKMSStatusRequestImpl.cpp
+SOURCE=..\..\..\..\xsec\xkms\impl\XKMSStatusRequestImpl.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\impl\XKMSStatusRequestImpl.hpp
+SOURCE=..\..\..\..\xsec\xkms\impl\XKMSStatusRequestImpl.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\impl\XKMSStatusResultImpl.cpp
+SOURCE=..\..\..\..\xsec\xkms\impl\XKMSStatusResultImpl.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\impl\XKMSStatusResultImpl.hpp
+SOURCE=..\..\..\..\xsec\xkms\impl\XKMSStatusResultImpl.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\impl\XKMSUnverifiedKeyBindingImpl.cpp
+SOURCE=..\..\..\..\xsec\xkms\impl\XKMSUnverifiedKeyBindingImpl.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\impl\XKMSUnverifiedKeyBindingImpl.hpp
+SOURCE=..\..\..\..\xsec\xkms\impl\XKMSUnverifiedKeyBindingImpl.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\impl\XKMSUseKeyWithImpl.cpp
+SOURCE=..\..\..\..\xsec\xkms\impl\XKMSUseKeyWithImpl.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\impl\XKMSUseKeyWithImpl.hpp
+SOURCE=..\..\..\..\xsec\xkms\impl\XKMSUseKeyWithImpl.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\impl\XKMSValidateRequestImpl.cpp
+SOURCE=..\..\..\..\xsec\xkms\impl\XKMSValidateRequestImpl.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\impl\XKMSValidateRequestImpl.hpp
+SOURCE=..\..\..\..\xsec\xkms\impl\XKMSValidateRequestImpl.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\impl\XKMSValidateResultImpl.cpp
+SOURCE=..\..\..\..\xsec\xkms\impl\XKMSValidateResultImpl.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\impl\XKMSValidateResultImpl.hpp
+SOURCE=..\..\..\..\xsec\xkms\impl\XKMSValidateResultImpl.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\impl\XKMSValidityIntervalImpl.cpp
+SOURCE=..\..\..\..\xsec\xkms\impl\XKMSValidityIntervalImpl.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\impl\XKMSValidityIntervalImpl.hpp
+SOURCE=..\..\..\..\xsec\xkms\impl\XKMSValidityIntervalImpl.hpp
 # End Source File
 # End Group
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\XKMSAuthentication.hpp
+SOURCE=..\..\..\..\xsec\xkms\XKMSAuthentication.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\XKMSCompoundRequest.hpp
+SOURCE=..\..\..\..\xsec\xkms\XKMSCompoundRequest.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\XKMSCompoundResult.hpp
+SOURCE=..\..\..\..\xsec\xkms\XKMSCompoundResult.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\XKMSConstants.cpp
+SOURCE=..\..\..\..\xsec\xkms\XKMSConstants.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\XKMSConstants.hpp
+SOURCE=..\..\..\..\xsec\xkms\XKMSConstants.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\XKMSKeyBinding.hpp
+SOURCE=..\..\..\..\xsec\xkms\XKMSKeyBinding.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\XKMSKeyBindingAbstractType.hpp
+SOURCE=..\..\..\..\xsec\xkms\XKMSKeyBindingAbstractType.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\XKMSLocateRequest.hpp
+SOURCE=..\..\..\..\xsec\xkms\XKMSLocateRequest.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\XKMSLocateResult.hpp
+SOURCE=..\..\..\..\xsec\xkms\XKMSLocateResult.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\XKMSMessageAbstractType.hpp
+SOURCE=..\..\..\..\xsec\xkms\XKMSMessageAbstractType.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\XKMSMessageFactory.hpp
+SOURCE=..\..\..\..\xsec\xkms\XKMSMessageFactory.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\XKMSNotBoundAuthentication.hpp
+SOURCE=..\..\..\..\xsec\xkms\XKMSNotBoundAuthentication.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\XKMSPendingRequest.hpp
+SOURCE=..\..\..\..\xsec\xkms\XKMSPendingRequest.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\XKMSPrototypeKeyBinding.hpp
+SOURCE=..\..\..\..\xsec\xkms\XKMSPrototypeKeyBinding.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\XKMSQueryKeyBinding.hpp
+SOURCE=..\..\..\..\xsec\xkms\XKMSQueryKeyBinding.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\XKMSRecoverKeyBinding.hpp
+SOURCE=..\..\..\..\xsec\xkms\XKMSRecoverKeyBinding.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\XKMSRecoverRequest.hpp
+SOURCE=..\..\..\..\xsec\xkms\XKMSRecoverRequest.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\XKMSRecoverResult.hpp
+SOURCE=..\..\..\..\xsec\xkms\XKMSRecoverResult.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\XKMSRegisterRequest.hpp
+SOURCE=..\..\..\..\xsec\xkms\XKMSRegisterRequest.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\XKMSRegisterResult.hpp
+SOURCE=..\..\..\..\xsec\xkms\XKMSRegisterResult.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\XKMSReissueKeyBinding.hpp
+SOURCE=..\..\..\..\xsec\xkms\XKMSReissueKeyBinding.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\XKMSReissueRequest.hpp
+SOURCE=..\..\..\..\xsec\xkms\XKMSReissueRequest.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\XKMSReissueResult.hpp
+SOURCE=..\..\..\..\xsec\xkms\XKMSReissueResult.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\XKMSRequestAbstractType.hpp
+SOURCE=..\..\..\..\xsec\xkms\XKMSRequestAbstractType.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\XKMSRespondWith.hpp
+SOURCE=..\..\..\..\xsec\xkms\XKMSRespondWith.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\XKMSResponseMechanism.hpp
+SOURCE=..\..\..\..\xsec\xkms\XKMSResponseMechanism.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\XKMSResult.hpp
+SOURCE=..\..\..\..\xsec\xkms\XKMSResult.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\XKMSResultType.hpp
+SOURCE=..\..\..\..\xsec\xkms\XKMSResultType.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\XKMSRevokeKeyBinding.hpp
+SOURCE=..\..\..\..\xsec\xkms\XKMSRevokeKeyBinding.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\XKMSRevokeRequest.hpp
+SOURCE=..\..\..\..\xsec\xkms\XKMSRevokeRequest.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\XKMSRevokeResult.hpp
+SOURCE=..\..\..\..\xsec\xkms\XKMSRevokeResult.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\XKMSRSAKeyPair.hpp
+SOURCE=..\..\..\..\xsec\xkms\XKMSRSAKeyPair.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\XKMSStatus.hpp
+SOURCE=..\..\..\..\xsec\xkms\XKMSStatus.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\XKMSStatusRequest.hpp
+SOURCE=..\..\..\..\xsec\xkms\XKMSStatusRequest.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\XKMSStatusResult.hpp
+SOURCE=..\..\..\..\xsec\xkms\XKMSStatusResult.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\XKMSUnverifiedKeyBinding.hpp
+SOURCE=..\..\..\..\xsec\xkms\XKMSUnverifiedKeyBinding.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\XKMSUseKeyWith.hpp
+SOURCE=..\..\..\..\xsec\xkms\XKMSUseKeyWith.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\XKMSValidateRequest.hpp
+SOURCE=..\..\..\..\xsec\xkms\XKMSValidateRequest.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\XKMSValidateResult.hpp
+SOURCE=..\..\..\..\xsec\xkms\XKMSValidateResult.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\XKMSValidityInterval.hpp
+SOURCE=..\..\..\..\xsec\xkms\XKMSValidityInterval.hpp
 # End Source File
 # End Group
 # End Target

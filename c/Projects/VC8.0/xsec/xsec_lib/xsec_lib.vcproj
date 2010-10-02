@@ -29,8 +29,6 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
-				Description="Create Header files"
-				CommandLine="mkdir ..\..\..\..\include&#x0D;&#x0A;mkdir ..\..\..\..\include\xsec&#x0D;&#x0A;del /q /s ..\..\..\..\include\xsec\*.*&#x0D;&#x0A;xcopy /I /s /f ..\..\..\..\src\*.hpp ..\..\..\..\include\xsec&#x0D;&#x0A;"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -47,7 +45,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="../../../../include"
+				AdditionalIncludeDirectories="../../../.."
 				PreprocessorDefinitions="_XSEC_DO_MEMDEBUG;WIN32;_DEBUG;_WINDOWS;_USRDLL;XSEC_LIB_EXPORTS;PROJ_CANON;PROJ_DSIG"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -114,10 +112,8 @@
 			CharacterSet="2"
 			>
 			<Tool
-				Name="VCPreBuildEventTool"
-				Description="Create Header files"
-				CommandLine="mkdir ..\..\..\..\include&#x0D;&#x0A;mkdir ..\..\..\..\include\xsec&#x0D;&#x0A;del /q /s ..\..\..\..\include\xsec\*.*&#x0D;&#x0A;xcopy /I /s /f ..\..\..\..\src\*.hpp ..\..\..\..\include\xsec&#x0D;&#x0A;"
-			/>
+                Name="VCPreBuildEventTool"
+            />
 			<Tool
 				Name="VCCustomBuildTool"
 			/>
@@ -134,7 +130,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="../../../../include"
+				AdditionalIncludeDirectories="../../../.."
 				PreprocessorDefinitions="_XSEC_DO_MEMDEBUG;WIN32;_DEBUG;_WINDOWS;_USRDLL;XSEC_LIB_EXPORTS;PROJ_CANON;PROJ_DSIG"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -201,8 +197,6 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
-				Description="Create Header files"
-				CommandLine="mkdir ..\..\..\..\include&#x0D;&#x0A;mkdir ..\..\..\..\include\xsec&#x0D;&#x0A;del /q /s ..\..\..\..\include\xsec\*.*&#x0D;&#x0A;xcopy /I /s /f ..\..\..\..\src\*.hpp ..\..\..\..\include\xsec&#x0D;&#x0A;"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -221,7 +215,7 @@
 				Optimization="2"
 				InlineFunctionExpansion="1"
 				OmitFramePointers="true"
-				AdditionalIncludeDirectories="../../../../include"
+				AdditionalIncludeDirectories="../../../.."
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;XSEC_LIB_EXPORTS;PROJ_CANON;PROJ_DSIG"
 				StringPooling="true"
 				RuntimeLibrary="2"
@@ -289,8 +283,6 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
-				Description="Create Header files"
-				CommandLine="mkdir ..\..\..\..\include&#x0D;&#x0A;mkdir ..\..\..\..\include\xsec&#x0D;&#x0A;del /q /s ..\..\..\..\include\xsec\*.*&#x0D;&#x0A;xcopy /I /s /f ..\..\..\..\src\*.hpp ..\..\..\..\include\xsec&#x0D;&#x0A;"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -310,7 +302,7 @@
 				Optimization="2"
 				InlineFunctionExpansion="1"
 				OmitFramePointers="true"
-				AdditionalIncludeDirectories="../../../../include"
+				AdditionalIncludeDirectories="../../../.."
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;XSEC_LIB_EXPORTS;PROJ_CANON;PROJ_DSIG"
 				StringPooling="true"
 				RuntimeLibrary="2"
@@ -379,8 +371,6 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
-				Description="Create Header files"
-				CommandLine="mkdir ..\..\..\..\include&#x0D;&#x0A;mkdir ..\..\..\..\include\xsec&#x0D;&#x0A;del /q /s ..\..\..\..\include\xsec\*.*&#x0D;&#x0A;xcopy /I /s /f ..\..\..\..\src\*.hpp ..\..\..\..\include\xsec&#x0D;&#x0A;"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -397,7 +387,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="../../../../include"
+				AdditionalIncludeDirectories="../../../.."
 				PreprocessorDefinitions="_CRT_SECURE_NO_DEPRECATE;_XSEC_DO_MEMDEBUG;WIN32;_DEBUG;_WINDOWS;_USRDLL;XSEC_LIB_EXPORTS;PROJ_CANON;PROJ_DSIG"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -465,8 +455,6 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
-				Description="Create Header files"
-				CommandLine="mkdir ..\..\..\..\include&#x0D;&#x0A;mkdir ..\..\..\..\include\xsec&#x0D;&#x0A;del /q /s ..\..\..\..\include\xsec\*.*&#x0D;&#x0A;xcopy /I /s /f ..\..\..\..\src\*.hpp ..\..\..\..\include\xsec&#x0D;&#x0A;"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -484,7 +472,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="../../../../include"
+				AdditionalIncludeDirectories="../../../.."
 				PreprocessorDefinitions="_CRT_SECURE_NO_DEPRECATE;_XSEC_DO_MEMDEBUG;WIN32;_DEBUG;_WINDOWS;_USRDLL;XSEC_LIB_EXPORTS;PROJ_CANON;PROJ_DSIG"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -552,7 +540,7 @@
 			<Tool
 				Name="VCPreBuildEventTool"
 				Description="Create Header files"
-				CommandLine="mkdir ..\..\..\..\include&#x0D;&#x0A;mkdir ..\..\..\..\include\xsec&#x0D;&#x0A;del /q /s ..\..\..\..\include\xsec\*.*&#x0D;&#x0A;xcopy /I /s /f ..\..\..\..\src\*.hpp ..\..\..\..\include\xsec&#x0D;&#x0A;"
+				CommandLine="mkdir ..\..\..\..\include&#x0D;&#x0A;mkdir ..\..\..\..\include\xsec&#x0D;&#x0A;del /q /s ..\..\..\..\include\xsec\*.*&#x0D;&#x0A;xcopy /I /s /f ..\..\..\..\xsec\*.hpp ..\..\..\..\include\xsec&#x0D;&#x0A;"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -571,7 +559,7 @@
 				Optimization="2"
 				InlineFunctionExpansion="1"
 				OmitFramePointers="true"
-				AdditionalIncludeDirectories="../../../../include"
+				AdditionalIncludeDirectories="../../../.."
 				PreprocessorDefinitions="_CRT_SECURE_NO_DEPRECATE;WIN32;NDEBUG;_WINDOWS;_USRDLL;XSEC_LIB_EXPORTS;PROJ_CANON;PROJ_DSIG"
 				StringPooling="true"
 				RuntimeLibrary="2"
@@ -639,8 +627,6 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
-				Description="Create Header files"
-				CommandLine="mkdir ..\..\..\..\include&#x0D;&#x0A;mkdir ..\..\..\..\include\xsec&#x0D;&#x0A;del /q /s ..\..\..\..\include\xsec\*.*&#x0D;&#x0A;xcopy /I /s /f ..\..\..\..\src\*.hpp ..\..\..\..\include\xsec&#x0D;&#x0A;"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -660,7 +646,7 @@
 				Optimization="2"
 				InlineFunctionExpansion="1"
 				OmitFramePointers="true"
-				AdditionalIncludeDirectories="../../../../include"
+				AdditionalIncludeDirectories="../../../.."
 				PreprocessorDefinitions="_CRT_SECURE_NO_DEPRECATE;WIN32;NDEBUG;_WINDOWS;_USRDLL;XSEC_LIB_EXPORTS;PROJ_CANON;PROJ_DSIG"
 				StringPooling="true"
 				RuntimeLibrary="2"
@@ -726,27 +712,27 @@
 			Name="canon"
 			>
 			<File
-				RelativePath="..\..\..\..\src\canon\XSECC14n20010315.cpp"
+				RelativePath="..\..\..\..\xsec\canon\XSECC14n20010315.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\canon\XSECC14n20010315.hpp"
+				RelativePath="..\..\..\..\xsec\canon\XSECC14n20010315.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\canon\XSECCanon.cpp"
+				RelativePath="..\..\..\..\xsec\canon\XSECCanon.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\canon\XSECCanon.hpp"
+				RelativePath="..\..\..\..\xsec\canon\XSECCanon.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\canon\XSECXMLNSStack.cpp"
+				RelativePath="..\..\..\..\xsec\canon\XSECXMLNSStack.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\canon\XSECXMLNSStack.hpp"
+				RelativePath="..\..\..\..\xsec\canon\XSECXMLNSStack.hpp"
 				>
 			</File>
 		</Filter>
@@ -754,207 +740,207 @@
 			Name="dsig"
 			>
 			<File
-				RelativePath="..\..\..\..\src\dsig\DSIGAlgorithmHandlerDefault.cpp"
+				RelativePath="..\..\..\..\xsec\dsig\DSIGAlgorithmHandlerDefault.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\dsig\DSIGAlgorithmHandlerDefault.hpp"
+				RelativePath="..\..\..\..\xsec\dsig\DSIGAlgorithmHandlerDefault.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\dsig\DSIGConstants.cpp"
+				RelativePath="..\..\..\..\xsec\dsig\DSIGConstants.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\dsig\DSIGConstants.hpp"
+				RelativePath="..\..\..\..\xsec\dsig\DSIGConstants.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\dsig\DSIGKeyInfo.hpp"
+				RelativePath="..\..\..\..\xsec\dsig\DSIGKeyInfo.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\dsig\DSIGKeyInfoList.cpp"
+				RelativePath="..\..\..\..\xsec\dsig\DSIGKeyInfoList.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\dsig\DSIGKeyInfoList.hpp"
+				RelativePath="..\..\..\..\xsec\dsig\DSIGKeyInfoList.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\dsig\DSIGKeyInfoMgmtData.cpp"
+				RelativePath="..\..\..\..\xsec\dsig\DSIGKeyInfoMgmtData.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\dsig\DSIGKeyInfoMgmtData.hpp"
+				RelativePath="..\..\..\..\xsec\dsig\DSIGKeyInfoMgmtData.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\dsig\DSIGKeyInfoName.cpp"
+				RelativePath="..\..\..\..\xsec\dsig\DSIGKeyInfoName.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\dsig\DSIGKeyInfoName.hpp"
+				RelativePath="..\..\..\..\xsec\dsig\DSIGKeyInfoName.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\dsig\DSIGKeyInfoPGPData.cpp"
+				RelativePath="..\..\..\..\xsec\dsig\DSIGKeyInfoPGPData.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\dsig\DSIGKeyInfoPGPData.hpp"
+				RelativePath="..\..\..\..\xsec\dsig\DSIGKeyInfoPGPData.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\dsig\DSIGKeyInfoSPKIData.cpp"
+				RelativePath="..\..\..\..\xsec\dsig\DSIGKeyInfoSPKIData.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\dsig\DSIGKeyInfoSPKIData.hpp"
+				RelativePath="..\..\..\..\xsec\dsig\DSIGKeyInfoSPKIData.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\dsig\DSIGKeyInfoValue.cpp"
+				RelativePath="..\..\..\..\xsec\dsig\DSIGKeyInfoValue.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\dsig\DSIGKeyInfoValue.hpp"
+				RelativePath="..\..\..\..\xsec\dsig\DSIGKeyInfoValue.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\dsig\DSIGKeyInfoX509.cpp"
+				RelativePath="..\..\..\..\xsec\dsig\DSIGKeyInfoX509.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\dsig\DSIGKeyInfoX509.hpp"
+				RelativePath="..\..\..\..\xsec\dsig\DSIGKeyInfoX509.hpp"
 				>
 			</File>
             <File
-                RelativePath="..\..\..\..\src\dsig\DSIGKeyInfoExt.cpp"
+                RelativePath="..\..\..\..\xsec\dsig\DSIGKeyInfoExt.cpp"
                 >
             </File>
             <File
-                RelativePath="..\..\..\..\src\dsig\DSIGKeyInfoExt.hpp"
+                RelativePath="..\..\..\..\xsec\dsig\DSIGKeyInfoExt.hpp"
                 >
             </File>
 			<File
-				RelativePath="..\..\..\..\src\dsig\DSIGObject.cpp"
+				RelativePath="..\..\..\..\xsec\dsig\DSIGObject.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\dsig\DSIGObject.hpp"
+				RelativePath="..\..\..\..\xsec\dsig\DSIGObject.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\dsig\DSIGReference.cpp"
+				RelativePath="..\..\..\..\xsec\dsig\DSIGReference.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\dsig\DSIGReference.hpp"
+				RelativePath="..\..\..\..\xsec\dsig\DSIGReference.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\dsig\DSIGReferenceList.cpp"
+				RelativePath="..\..\..\..\xsec\dsig\DSIGReferenceList.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\dsig\DSIGReferenceList.hpp"
+				RelativePath="..\..\..\..\xsec\dsig\DSIGReferenceList.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\dsig\DSIGSignature.cpp"
+				RelativePath="..\..\..\..\xsec\dsig\DSIGSignature.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\dsig\DSIGSignature.hpp"
+				RelativePath="..\..\..\..\xsec\dsig\DSIGSignature.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\dsig\DSIGSignedInfo.cpp"
+				RelativePath="..\..\..\..\xsec\dsig\DSIGSignedInfo.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\dsig\DSIGSignedInfo.hpp"
+				RelativePath="..\..\..\..\xsec\dsig\DSIGSignedInfo.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\dsig\DSIGTransform.cpp"
+				RelativePath="..\..\..\..\xsec\dsig\DSIGTransform.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\dsig\DSIGTransform.hpp"
+				RelativePath="..\..\..\..\xsec\dsig\DSIGTransform.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\dsig\DSIGTransformBase64.cpp"
+				RelativePath="..\..\..\..\xsec\dsig\DSIGTransformBase64.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\dsig\DSIGTransformBase64.hpp"
+				RelativePath="..\..\..\..\xsec\dsig\DSIGTransformBase64.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\dsig\DSIGTransformC14n.cpp"
+				RelativePath="..\..\..\..\xsec\dsig\DSIGTransformC14n.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\dsig\DSIGTransformC14n.hpp"
+				RelativePath="..\..\..\..\xsec\dsig\DSIGTransformC14n.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\dsig\DSIGTransformEnvelope.cpp"
+				RelativePath="..\..\..\..\xsec\dsig\DSIGTransformEnvelope.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\dsig\DSIGTransformEnvelope.hpp"
+				RelativePath="..\..\..\..\xsec\dsig\DSIGTransformEnvelope.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\dsig\DSIGTransformList.cpp"
+				RelativePath="..\..\..\..\xsec\dsig\DSIGTransformList.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\dsig\DSIGTransformList.hpp"
+				RelativePath="..\..\..\..\xsec\dsig\DSIGTransformList.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\dsig\DSIGTransformXPath.cpp"
+				RelativePath="..\..\..\..\xsec\dsig\DSIGTransformXPath.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\dsig\DSIGTransformXPath.hpp"
+				RelativePath="..\..\..\..\xsec\dsig\DSIGTransformXPath.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\dsig\DSIGTransformXPathFilter.cpp"
+				RelativePath="..\..\..\..\xsec\dsig\DSIGTransformXPathFilter.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\dsig\DSIGTransformXPathFilter.hpp"
+				RelativePath="..\..\..\..\xsec\dsig\DSIGTransformXPathFilter.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\dsig\DSIGTransformXSL.cpp"
+				RelativePath="..\..\..\..\xsec\dsig\DSIGTransformXSL.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\dsig\DSIGTransformXSL.hpp"
+				RelativePath="..\..\..\..\xsec\dsig\DSIGTransformXSL.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\dsig\DSIGXPathFilterExpr.cpp"
+				RelativePath="..\..\..\..\xsec\dsig\DSIGXPathFilterExpr.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\dsig\DSIGXPathFilterExpr.hpp"
+				RelativePath="..\..\..\..\xsec\dsig\DSIGXPathFilterExpr.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\dsig\DSIGXPathHere.cpp"
+				RelativePath="..\..\..\..\xsec\dsig\DSIGXPathHere.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\dsig\DSIGXPathHere.hpp"
+				RelativePath="..\..\..\..\xsec\dsig\DSIGXPathHere.hpp"
 				>
 			</File>
 		</Filter>
@@ -963,11 +949,11 @@
 			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
 			>
 			<File
-				RelativePath="..\..\..\..\src\framework\resource.h"
+				RelativePath="..\..\..\..\xsec\framework\resource.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\framework\version.rc"
+				RelativePath="..\..\..\..\xsec\framework\version.rc"
 				>
 			</File>
 		</Filter>
@@ -975,150 +961,150 @@
 			Name="enc"
 			>
 			<File
-				RelativePath="..\..\..\..\src\enc\XSECCryptoBase64.cpp"
+				RelativePath="..\..\..\..\xsec\enc\XSECCryptoBase64.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\enc\XSECCryptoBase64.hpp"
+				RelativePath="..\..\..\..\xsec\enc\XSECCryptoBase64.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\enc\XSECCryptoException.cpp"
+				RelativePath="..\..\..\..\xsec\enc\XSECCryptoException.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\enc\XSECCryptoException.hpp"
+				RelativePath="..\..\..\..\xsec\enc\XSECCryptoException.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\enc\XSECCryptoHash.hpp"
+				RelativePath="..\..\..\..\xsec\enc\XSECCryptoHash.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\enc\XSECCryptoKey.hpp"
+				RelativePath="..\..\..\..\xsec\enc\XSECCryptoKey.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\enc\XSECCryptoKeyDSA.hpp"
+				RelativePath="..\..\..\..\xsec\enc\XSECCryptoKeyDSA.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\enc\XSECCryptoKeyHMAC.hpp"
+				RelativePath="..\..\..\..\xsec\enc\XSECCryptoKeyHMAC.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\enc\XSECCryptoKeyRSA.hpp"
+				RelativePath="..\..\..\..\xsec\enc\XSECCryptoKeyRSA.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\enc\XSECCryptoProvider.hpp"
+				RelativePath="..\..\..\..\xsec\enc\XSECCryptoProvider.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\enc\XSECCryptoSymmetricKey.hpp"
+				RelativePath="..\..\..\..\xsec\enc\XSECCryptoSymmetricKey.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\enc\XSECCryptoUtils.cpp"
+				RelativePath="..\..\..\..\xsec\enc\XSECCryptoUtils.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\enc\XSECCryptoUtils.hpp"
+				RelativePath="..\..\..\..\xsec\enc\XSECCryptoUtils.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\enc\XSECCryptoX509.cpp"
+				RelativePath="..\..\..\..\xsec\enc\XSECCryptoX509.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\enc\XSECCryptoX509.hpp"
+				RelativePath="..\..\..\..\xsec\enc\XSECCryptoX509.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\enc\XSECKeyInfoResolver.hpp"
+				RelativePath="..\..\..\..\xsec\enc\XSECKeyInfoResolver.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\enc\XSECKeyInfoResolverDefault.cpp"
+				RelativePath="..\..\..\..\xsec\enc\XSECKeyInfoResolverDefault.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\enc\XSECKeyInfoResolverDefault.hpp"
+				RelativePath="..\..\..\..\xsec\enc\XSECKeyInfoResolverDefault.hpp"
 				>
 			</File>
 			<Filter
 				Name="OpenSSL"
 				>
 				<File
-					RelativePath="..\..\..\..\src\enc\OpenSSL\OpenSSLCryptoBase64.cpp"
+					RelativePath="..\..\..\..\xsec\enc\OpenSSL\OpenSSLCryptoBase64.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\enc\OpenSSL\OpenSSLCryptoBase64.hpp"
+					RelativePath="..\..\..\..\xsec\enc\OpenSSL\OpenSSLCryptoBase64.hpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\enc\OpenSSL\OpenSSLCryptoHash.cpp"
+					RelativePath="..\..\..\..\xsec\enc\OpenSSL\OpenSSLCryptoHash.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\enc\OpenSSL\OpenSSLCryptoHash.hpp"
+					RelativePath="..\..\..\..\xsec\enc\OpenSSL\OpenSSLCryptoHash.hpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\enc\OpenSSL\OpenSSLCryptoHashHMAC.cpp"
+					RelativePath="..\..\..\..\xsec\enc\OpenSSL\OpenSSLCryptoHashHMAC.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\enc\OpenSSL\OpenSSLCryptoHashHMAC.hpp"
+					RelativePath="..\..\..\..\xsec\enc\OpenSSL\OpenSSLCryptoHashHMAC.hpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\enc\OpenSSL\OpenSSLCryptoKeyDSA.cpp"
+					RelativePath="..\..\..\..\xsec\enc\OpenSSL\OpenSSLCryptoKeyDSA.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\enc\OpenSSL\OpenSSLCryptoKeyDSA.hpp"
+					RelativePath="..\..\..\..\xsec\enc\OpenSSL\OpenSSLCryptoKeyDSA.hpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\enc\OpenSSL\OpenSSLCryptoKeyHMAC.cpp"
+					RelativePath="..\..\..\..\xsec\enc\OpenSSL\OpenSSLCryptoKeyHMAC.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\enc\OpenSSL\OpenSSLCryptoKeyHMAC.hpp"
+					RelativePath="..\..\..\..\xsec\enc\OpenSSL\OpenSSLCryptoKeyHMAC.hpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\enc\OpenSSL\OpenSSLCryptoKeyRSA.cpp"
+					RelativePath="..\..\..\..\xsec\enc\OpenSSL\OpenSSLCryptoKeyRSA.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\enc\OpenSSL\OpenSSLCryptoKeyRSA.hpp"
+					RelativePath="..\..\..\..\xsec\enc\OpenSSL\OpenSSLCryptoKeyRSA.hpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\enc\OpenSSL\OpenSSLCryptoProvider.cpp"
+					RelativePath="..\..\..\..\xsec\enc\OpenSSL\OpenSSLCryptoProvider.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\enc\OpenSSL\OpenSSLCryptoProvider.hpp"
+					RelativePath="..\..\..\..\xsec\enc\OpenSSL\OpenSSLCryptoProvider.hpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\enc\OpenSSL\OpenSSLCryptoSymmetricKey.cpp"
+					RelativePath="..\..\..\..\xsec\enc\OpenSSL\OpenSSLCryptoSymmetricKey.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\enc\OpenSSL\OpenSSLCryptoSymmetricKey.hpp"
+					RelativePath="..\..\..\..\xsec\enc\OpenSSL\OpenSSLCryptoSymmetricKey.hpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\enc\OpenSSL\OpenSSLCryptoX509.cpp"
+					RelativePath="..\..\..\..\xsec\enc\OpenSSL\OpenSSLCryptoX509.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\enc\OpenSSL\OpenSSLCryptoX509.hpp"
+					RelativePath="..\..\..\..\xsec\enc\OpenSSL\OpenSSLCryptoX509.hpp"
 					>
 				</File>
 			</Filter>
@@ -1126,67 +1112,67 @@
 				Name="WinCAPI"
 				>
 				<File
-					RelativePath="..\..\..\..\src\enc\WinCAPI\WinCAPICryptoHash.cpp"
+					RelativePath="..\..\..\..\xsec\enc\WinCAPI\WinCAPICryptoHash.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\enc\WinCAPI\WinCAPICryptoHash.hpp"
+					RelativePath="..\..\..\..\xsec\enc\WinCAPI\WinCAPICryptoHash.hpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\enc\WinCAPI\WinCAPICryptoHashHMAC.cpp"
+					RelativePath="..\..\..\..\xsec\enc\WinCAPI\WinCAPICryptoHashHMAC.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\enc\WinCAPI\WinCAPICryptoHashHMAC.hpp"
+					RelativePath="..\..\..\..\xsec\enc\WinCAPI\WinCAPICryptoHashHMAC.hpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\enc\WinCAPI\WinCAPICryptoKeyDSA.cpp"
+					RelativePath="..\..\..\..\xsec\enc\WinCAPI\WinCAPICryptoKeyDSA.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\enc\WinCAPI\WinCAPICryptoKeyDSA.hpp"
+					RelativePath="..\..\..\..\xsec\enc\WinCAPI\WinCAPICryptoKeyDSA.hpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\enc\WinCAPI\WinCAPICryptoKeyHMAC.cpp"
+					RelativePath="..\..\..\..\xsec\enc\WinCAPI\WinCAPICryptoKeyHMAC.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\enc\WinCAPI\WinCAPICryptoKeyHMAC.hpp"
+					RelativePath="..\..\..\..\xsec\enc\WinCAPI\WinCAPICryptoKeyHMAC.hpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\enc\WinCAPI\WinCAPICryptoKeyRSA.cpp"
+					RelativePath="..\..\..\..\xsec\enc\WinCAPI\WinCAPICryptoKeyRSA.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\enc\WinCAPI\WinCAPICryptoKeyRSA.hpp"
+					RelativePath="..\..\..\..\xsec\enc\WinCAPI\WinCAPICryptoKeyRSA.hpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\enc\WinCAPI\WinCAPICryptoProvider.cpp"
+					RelativePath="..\..\..\..\xsec\enc\WinCAPI\WinCAPICryptoProvider.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\enc\WinCAPI\WinCAPICryptoProvider.hpp"
+					RelativePath="..\..\..\..\xsec\enc\WinCAPI\WinCAPICryptoProvider.hpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\enc\WinCAPI\WinCAPICryptoSymmetricKey.cpp"
+					RelativePath="..\..\..\..\xsec\enc\WinCAPI\WinCAPICryptoSymmetricKey.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\enc\WinCAPI\WinCAPICryptoSymmetricKey.hpp"
+					RelativePath="..\..\..\..\xsec\enc\WinCAPI\WinCAPICryptoSymmetricKey.hpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\enc\WinCAPI\WinCAPICryptoX509.cpp"
+					RelativePath="..\..\..\..\xsec\enc\WinCAPI\WinCAPICryptoX509.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\enc\WinCAPI\WinCAPICryptoX509.hpp"
+					RelativePath="..\..\..\..\xsec\enc\WinCAPI\WinCAPICryptoX509.hpp"
 					>
 				</File>
 			</Filter>
@@ -1194,11 +1180,11 @@
 				Name="XSCrypt"
 				>
 				<File
-					RelativePath="..\..\..\..\src\enc\XSCrypt\XSCryptCryptoBase64.cpp"
+					RelativePath="..\..\..\..\xsec\enc\XSCrypt\XSCryptCryptoBase64.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\enc\XSCrypt\XSCryptCryptoBase64.hpp"
+					RelativePath="..\..\..\..\xsec\enc\XSCrypt\XSCryptCryptoBase64.hpp"
 					>
 				</File>
 			</Filter>
@@ -1206,67 +1192,67 @@
 				Name="NSS"
 				>
 				<File
-					RelativePath="..\..\..\..\src\enc\NSS\NSSCryptoHash.cpp"
+					RelativePath="..\..\..\..\xsec\enc\NSS\NSSCryptoHash.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\enc\NSS\NSSCryptoHash.hpp"
+					RelativePath="..\..\..\..\xsec\enc\NSS\NSSCryptoHash.hpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\enc\NSS\NSSCryptoHashHMAC.cpp"
+					RelativePath="..\..\..\..\xsec\enc\NSS\NSSCryptoHashHMAC.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\enc\NSS\NSSCryptoHashHMAC.hpp"
+					RelativePath="..\..\..\..\xsec\enc\NSS\NSSCryptoHashHMAC.hpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\enc\NSS\NSSCryptoKeyDSA.cpp"
+					RelativePath="..\..\..\..\xsec\enc\NSS\NSSCryptoKeyDSA.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\enc\NSS\NSSCryptoKeyDSA.hpp"
+					RelativePath="..\..\..\..\xsec\enc\NSS\NSSCryptoKeyDSA.hpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\enc\NSS\NSSCryptoKeyHMAC.cpp"
+					RelativePath="..\..\..\..\xsec\enc\NSS\NSSCryptoKeyHMAC.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\enc\NSS\NSSCryptoKeyHMAC.hpp"
+					RelativePath="..\..\..\..\xsec\enc\NSS\NSSCryptoKeyHMAC.hpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\enc\NSS\NSSCryptoKeyRSA.cpp"
+					RelativePath="..\..\..\..\xsec\enc\NSS\NSSCryptoKeyRSA.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\enc\NSS\NSSCryptoKeyRSA.hpp"
+					RelativePath="..\..\..\..\xsec\enc\NSS\NSSCryptoKeyRSA.hpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\enc\NSS\NSSCryptoProvider.cpp"
+					RelativePath="..\..\..\..\xsec\enc\NSS\NSSCryptoProvider.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\enc\NSS\NSSCryptoProvider.hpp"
+					RelativePath="..\..\..\..\xsec\enc\NSS\NSSCryptoProvider.hpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\enc\NSS\NSSCryptoSymmetricKey.cpp"
+					RelativePath="..\..\..\..\xsec\enc\NSS\NSSCryptoSymmetricKey.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\enc\NSS\NSSCryptoSymmetricKey.hpp"
+					RelativePath="..\..\..\..\xsec\enc\NSS\NSSCryptoSymmetricKey.hpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\enc\NSS\NSSCryptoX509.cpp"
+					RelativePath="..\..\..\..\xsec\enc\NSS\NSSCryptoX509.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\enc\NSS\NSSCryptoX509.hpp"
+					RelativePath="..\..\..\..\xsec\enc\NSS\NSSCryptoX509.hpp"
 					>
 				</File>
 			</Filter>
@@ -1275,102 +1261,102 @@
 			Name="utils"
 			>
 			<File
-				RelativePath="..\..\..\..\src\utils\XSECBinTXFMInputStream.cpp"
+				RelativePath="..\..\..\..\xsec\utils\XSECBinTXFMInputStream.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\utils\XSECBinTXFMInputStream.hpp"
+				RelativePath="..\..\..\..\xsec\utils\XSECBinTXFMInputStream.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\utils\XSECDOMUtils.cpp"
+				RelativePath="..\..\..\..\xsec\utils\XSECDOMUtils.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\utils\XSECDOMUtils.hpp"
+				RelativePath="..\..\..\..\xsec\utils\XSECDOMUtils.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\utils\XSECNameSpaceExpander.cpp"
+				RelativePath="..\..\..\..\xsec\utils\XSECNameSpaceExpander.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\utils\XSECNameSpaceExpander.hpp"
+				RelativePath="..\..\..\..\xsec\utils\XSECNameSpaceExpander.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\utils\XSECPlatformUtils.cpp"
+				RelativePath="..\..\..\..\xsec\utils\XSECPlatformUtils.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\utils\XSECPlatformUtils.hpp"
+				RelativePath="..\..\..\..\xsec\utils\XSECPlatformUtils.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\utils\XSECSafeBuffer.cpp"
+				RelativePath="..\..\..\..\xsec\utils\XSECSafeBuffer.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\utils\XSECSafeBuffer.hpp"
+				RelativePath="..\..\..\..\xsec\utils\XSECSafeBuffer.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\utils\XSECSafeBufferFormatter.cpp"
+				RelativePath="..\..\..\..\xsec\utils\XSECSafeBufferFormatter.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\utils\XSECSafeBufferFormatter.hpp"
+				RelativePath="..\..\..\..\xsec\utils\XSECSafeBufferFormatter.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\utils\XSECSOAPRequestor.hpp"
+				RelativePath="..\..\..\..\xsec\utils\XSECSOAPRequestor.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\utils\XSECSOAPRequestorSimple.cpp"
+				RelativePath="..\..\..\..\xsec\utils\XSECSOAPRequestorSimple.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\utils\XSECSOAPRequestorSimple.hpp"
+				RelativePath="..\..\..\..\xsec\utils\XSECSOAPRequestorSimple.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\utils\XSECTXFMInputSource.cpp"
+				RelativePath="..\..\..\..\xsec\utils\XSECTXFMInputSource.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\utils\XSECTXFMInputSource.hpp"
+				RelativePath="..\..\..\..\xsec\utils\XSECTXFMInputSource.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\utils\XSECXPathNodeList.cpp"
+				RelativePath="..\..\..\..\xsec\utils\XSECXPathNodeList.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\utils\XSECXPathNodeList.hpp"
+				RelativePath="..\..\..\..\xsec\utils\XSECXPathNodeList.hpp"
 				>
 			</File>
 			<Filter
 				Name="winutils"
 				>
 				<File
-					RelativePath="..\..\..\..\src\utils\winutils\XSECBinHTTPURIInputStream.cpp"
+					RelativePath="..\..\..\..\xsec\utils\winutils\XSECBinHTTPURIInputStream.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\utils\winutils\XSECBinHTTPURIInputStream.hpp"
+					RelativePath="..\..\..\..\xsec\utils\winutils\XSECBinHTTPURIInputStream.hpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\utils\winutils\XSECSOAPRequestorSimpleWin32.cpp"
+					RelativePath="..\..\..\..\xsec\utils\winutils\XSECSOAPRequestorSimpleWin32.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\utils\winutils\XSECURIResolverGenericWin32.cpp"
+					RelativePath="..\..\..\..\xsec\utils\winutils\XSECURIResolverGenericWin32.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\utils\winutils\XSECURIResolverGenericWin32.hpp"
+					RelativePath="..\..\..\..\xsec\utils\winutils\XSECURIResolverGenericWin32.hpp"
 					>
 				</File>
 			</Filter>
@@ -1379,67 +1365,67 @@
 			Name="framework"
 			>
 			<File
-				RelativePath="..\..\..\..\src\framework\XSECAlgorithmHandler.hpp"
+				RelativePath="..\..\..\..\xsec\framework\XSECAlgorithmHandler.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\framework\XSECAlgorithmMapper.cpp"
+				RelativePath="..\..\..\..\xsec\framework\XSECAlgorithmMapper.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\framework\XSECAlgorithmMapper.hpp"
+				RelativePath="..\..\..\..\xsec\framework\XSECAlgorithmMapper.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\framework\XSECDefs.hpp"
+				RelativePath="..\..\..\..\xsec\framework\XSECDefs.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\framework\XSECEnv.cpp"
+				RelativePath="..\..\..\..\xsec\framework\XSECEnv.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\framework\XSECEnv.hpp"
+				RelativePath="..\..\..\..\xsec\framework\XSECEnv.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\framework\XSECError.cpp"
+				RelativePath="..\..\..\..\xsec\framework\XSECError.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\framework\XSECError.hpp"
+				RelativePath="..\..\..\..\xsec\framework\XSECError.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\framework\XSECException.cpp"
+				RelativePath="..\..\..\..\xsec\framework\XSECException.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\framework\XSECException.hpp"
+				RelativePath="..\..\..\..\xsec\framework\XSECException.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\framework\XSECProvider.cpp"
+				RelativePath="..\..\..\..\xsec\framework\XSECProvider.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\framework\XSECProvider.hpp"
+				RelativePath="..\..\..\..\xsec\framework\XSECProvider.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\framework\XSECURIResolver.hpp"
+				RelativePath="..\..\..\..\xsec\framework\XSECURIResolver.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\framework\XSECURIResolverXerces.cpp"
+				RelativePath="..\..\..\..\xsec\framework\XSECURIResolverXerces.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\framework\XSECURIResolverXerces.hpp"
+				RelativePath="..\..\..\..\xsec\framework\XSECURIResolverXerces.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\framework\XSECW32Config.hpp"
+				RelativePath="..\..\..\..\xsec\framework\XSECW32Config.hpp"
 				>
 			</File>
 		</Filter>
@@ -1447,139 +1433,139 @@
 			Name="transformers"
 			>
 			<File
-				RelativePath="..\..\..\..\src\transformers\TXFMBase.cpp"
+				RelativePath="..\..\..\..\xsec\transformers\TXFMBase.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\transformers\TXFMBase.hpp"
+				RelativePath="..\..\..\..\xsec\transformers\TXFMBase.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\transformers\TXFMBase64.cpp"
+				RelativePath="..\..\..\..\xsec\transformers\TXFMBase64.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\transformers\TXFMBase64.hpp"
+				RelativePath="..\..\..\..\xsec\transformers\TXFMBase64.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\transformers\TXFMC14n.cpp"
+				RelativePath="..\..\..\..\xsec\transformers\TXFMC14n.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\transformers\TXFMC14n.hpp"
+				RelativePath="..\..\..\..\xsec\transformers\TXFMC14n.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\transformers\TXFMChain.cpp"
+				RelativePath="..\..\..\..\xsec\transformers\TXFMChain.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\transformers\TXFMChain.hpp"
+				RelativePath="..\..\..\..\xsec\transformers\TXFMChain.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\transformers\TXFMCipher.cpp"
+				RelativePath="..\..\..\..\xsec\transformers\TXFMCipher.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\transformers\TXFMCipher.hpp"
+				RelativePath="..\..\..\..\xsec\transformers\TXFMCipher.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\transformers\TXFMConcatChains.cpp"
+				RelativePath="..\..\..\..\xsec\transformers\TXFMConcatChains.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\transformers\TXFMConcatChains.hpp"
+				RelativePath="..\..\..\..\xsec\transformers\TXFMConcatChains.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\transformers\TXFMDocObject.cpp"
+				RelativePath="..\..\..\..\xsec\transformers\TXFMDocObject.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\transformers\TXFMDocObject.hpp"
+				RelativePath="..\..\..\..\xsec\transformers\TXFMDocObject.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\transformers\TXFMEnvelope.cpp"
+				RelativePath="..\..\..\..\xsec\transformers\TXFMEnvelope.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\transformers\TXFMEnvelope.hpp"
+				RelativePath="..\..\..\..\xsec\transformers\TXFMEnvelope.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\transformers\TXFMMD5.cpp"
+				RelativePath="..\..\..\..\xsec\transformers\TXFMMD5.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\transformers\TXFMMD5.hpp"
+				RelativePath="..\..\..\..\xsec\transformers\TXFMMD5.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\transformers\TXFMOutputFile.cpp"
+				RelativePath="..\..\..\..\xsec\transformers\TXFMOutputFile.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\transformers\TXFMOutputFile.hpp"
+				RelativePath="..\..\..\..\xsec\transformers\TXFMOutputFile.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\transformers\TXFMParser.cpp"
+				RelativePath="..\..\..\..\xsec\transformers\TXFMParser.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\transformers\TXFMParser.hpp"
+				RelativePath="..\..\..\..\xsec\transformers\TXFMParser.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\transformers\TXFMSB.cpp"
+				RelativePath="..\..\..\..\xsec\transformers\TXFMSB.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\transformers\TXFMSB.hpp"
+				RelativePath="..\..\..\..\xsec\transformers\TXFMSB.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\transformers\TXFMSHA1.cpp"
+				RelativePath="..\..\..\..\xsec\transformers\TXFMSHA1.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\transformers\TXFMSHA1.hpp"
+				RelativePath="..\..\..\..\xsec\transformers\TXFMSHA1.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\transformers\TXFMURL.cpp"
+				RelativePath="..\..\..\..\xsec\transformers\TXFMURL.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\transformers\TXFMURL.hpp"
+				RelativePath="..\..\..\..\xsec\transformers\TXFMURL.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\transformers\TXFMXPath.cpp"
+				RelativePath="..\..\..\..\xsec\transformers\TXFMXPath.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\transformers\TXFMXPath.hpp"
+				RelativePath="..\..\..\..\xsec\transformers\TXFMXPath.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\transformers\TXFMXPathFilter.cpp"
+				RelativePath="..\..\..\..\xsec\transformers\TXFMXPathFilter.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\transformers\TXFMXPathFilter.hpp"
+				RelativePath="..\..\..\..\xsec\transformers\TXFMXPathFilter.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\transformers\TXFMXSL.cpp"
+				RelativePath="..\..\..\..\xsec\transformers\TXFMXSL.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\transformers\TXFMXSL.hpp"
+				RelativePath="..\..\..\..\xsec\transformers\TXFMXSL.hpp"
 				>
 			</File>
 		</Filter>
@@ -1587,110 +1573,110 @@
 			Name="xenc"
 			>
 			<File
-				RelativePath="..\..\..\..\src\xenc\XENCCipher.hpp"
+				RelativePath="..\..\..\..\xsec\xenc\XENCCipher.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\xenc\XENCCipherData.hpp"
+				RelativePath="..\..\..\..\xsec\xenc\XENCCipherData.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\xenc\XENCCipherReference.hpp"
+				RelativePath="..\..\..\..\xsec\xenc\XENCCipherReference.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\xenc\XENCCipherValue.hpp"
+				RelativePath="..\..\..\..\xsec\xenc\XENCCipherValue.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\xenc\XENCEncryptedData.hpp"
+				RelativePath="..\..\..\..\xsec\xenc\XENCEncryptedData.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\xenc\XENCEncryptedKey.hpp"
+				RelativePath="..\..\..\..\xsec\xenc\XENCEncryptedKey.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\xenc\XENCEncryptedType.hpp"
+				RelativePath="..\..\..\..\xsec\xenc\XENCEncryptedType.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\xenc\XENCEncryptionMethod.hpp"
+				RelativePath="..\..\..\..\xsec\xenc\XENCEncryptionMethod.hpp"
 				>
 			</File>
 			<Filter
 				Name="impl"
 				>
 				<File
-					RelativePath="..\..\..\..\src\xenc\impl\XENCAlgorithmHandlerDefault.cpp"
+					RelativePath="..\..\..\..\xsec\xenc\impl\XENCAlgorithmHandlerDefault.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xenc\impl\XENCAlgorithmHandlerDefault.hpp"
+					RelativePath="..\..\..\..\xsec\xenc\impl\XENCAlgorithmHandlerDefault.hpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xenc\impl\XENCCipherDataImpl.cpp"
+					RelativePath="..\..\..\..\xsec\xenc\impl\XENCCipherDataImpl.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xenc\impl\XENCCipherDataImpl.hpp"
+					RelativePath="..\..\..\..\xsec\xenc\impl\XENCCipherDataImpl.hpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xenc\impl\XENCCipherImpl.cpp"
+					RelativePath="..\..\..\..\xsec\xenc\impl\XENCCipherImpl.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xenc\impl\XENCCipherImpl.hpp"
+					RelativePath="..\..\..\..\xsec\xenc\impl\XENCCipherImpl.hpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xenc\impl\XENCCipherReferenceImpl.cpp"
+					RelativePath="..\..\..\..\xsec\xenc\impl\XENCCipherReferenceImpl.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xenc\impl\XENCCipherReferenceImpl.hpp"
+					RelativePath="..\..\..\..\xsec\xenc\impl\XENCCipherReferenceImpl.hpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xenc\impl\XENCCipherValueImpl.cpp"
+					RelativePath="..\..\..\..\xsec\xenc\impl\XENCCipherValueImpl.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xenc\impl\XENCCipherValueImpl.hpp"
+					RelativePath="..\..\..\..\xsec\xenc\impl\XENCCipherValueImpl.hpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xenc\impl\XENCEncryptedDataImpl.cpp"
+					RelativePath="..\..\..\..\xsec\xenc\impl\XENCEncryptedDataImpl.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xenc\impl\XENCEncryptedDataImpl.hpp"
+					RelativePath="..\..\..\..\xsec\xenc\impl\XENCEncryptedDataImpl.hpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xenc\impl\XENCEncryptedKeyImpl.cpp"
+					RelativePath="..\..\..\..\xsec\xenc\impl\XENCEncryptedKeyImpl.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xenc\impl\XENCEncryptedKeyImpl.hpp"
+					RelativePath="..\..\..\..\xsec\xenc\impl\XENCEncryptedKeyImpl.hpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xenc\impl\XENCEncryptedTypeImpl.cpp"
+					RelativePath="..\..\..\..\xsec\xenc\impl\XENCEncryptedTypeImpl.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xenc\impl\XENCEncryptedTypeImpl.hpp"
+					RelativePath="..\..\..\..\xsec\xenc\impl\XENCEncryptedTypeImpl.hpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xenc\impl\XENCEncryptionMethodImpl.cpp"
+					RelativePath="..\..\..\..\xsec\xenc\impl\XENCEncryptionMethodImpl.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xenc\impl\XENCEncryptionMethodImpl.hpp"
+					RelativePath="..\..\..\..\xsec\xenc\impl\XENCEncryptionMethodImpl.hpp"
 					>
 				</File>
 			</Filter>
@@ -1699,470 +1685,470 @@
 			Name="xkms"
 			>
 			<File
-				RelativePath="..\..\..\..\src\xkms\XKMSAuthentication.hpp"
+				RelativePath="..\..\..\..\xsec\xkms\XKMSAuthentication.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\xkms\XKMSCompoundRequest.hpp"
+				RelativePath="..\..\..\..\xsec\xkms\XKMSCompoundRequest.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\xkms\XKMSCompoundResult.hpp"
+				RelativePath="..\..\..\..\xsec\xkms\XKMSCompoundResult.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\xkms\XKMSConstants.cpp"
+				RelativePath="..\..\..\..\xsec\xkms\XKMSConstants.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\xkms\XKMSConstants.hpp"
+				RelativePath="..\..\..\..\xsec\xkms\XKMSConstants.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\xkms\XKMSKeyBinding.hpp"
+				RelativePath="..\..\..\..\xsec\xkms\XKMSKeyBinding.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\xkms\XKMSKeyBindingAbstractType.hpp"
+				RelativePath="..\..\..\..\xsec\xkms\XKMSKeyBindingAbstractType.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\xkms\XKMSLocateRequest.hpp"
+				RelativePath="..\..\..\..\xsec\xkms\XKMSLocateRequest.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\xkms\XKMSLocateResult.hpp"
+				RelativePath="..\..\..\..\xsec\xkms\XKMSLocateResult.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\xkms\XKMSMessageAbstractType.hpp"
+				RelativePath="..\..\..\..\xsec\xkms\XKMSMessageAbstractType.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\xkms\XKMSMessageFactory.hpp"
+				RelativePath="..\..\..\..\xsec\xkms\XKMSMessageFactory.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\xkms\XKMSNotBoundAuthentication.hpp"
+				RelativePath="..\..\..\..\xsec\xkms\XKMSNotBoundAuthentication.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\xkms\XKMSPendingRequest.hpp"
+				RelativePath="..\..\..\..\xsec\xkms\XKMSPendingRequest.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\xkms\XKMSPrototypeKeyBinding.hpp"
+				RelativePath="..\..\..\..\xsec\xkms\XKMSPrototypeKeyBinding.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\xkms\XKMSQueryKeyBinding.hpp"
+				RelativePath="..\..\..\..\xsec\xkms\XKMSQueryKeyBinding.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\xkms\XKMSRecoverKeyBinding.hpp"
+				RelativePath="..\..\..\..\xsec\xkms\XKMSRecoverKeyBinding.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\xkms\XKMSRecoverRequest.hpp"
+				RelativePath="..\..\..\..\xsec\xkms\XKMSRecoverRequest.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\xkms\XKMSRecoverResult.hpp"
+				RelativePath="..\..\..\..\xsec\xkms\XKMSRecoverResult.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\xkms\XKMSRegisterRequest.hpp"
+				RelativePath="..\..\..\..\xsec\xkms\XKMSRegisterRequest.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\xkms\XKMSRegisterResult.hpp"
+				RelativePath="..\..\..\..\xsec\xkms\XKMSRegisterResult.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\xkms\XKMSReissueKeyBinding.hpp"
+				RelativePath="..\..\..\..\xsec\xkms\XKMSReissueKeyBinding.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\xkms\XKMSReissueRequest.hpp"
+				RelativePath="..\..\..\..\xsec\xkms\XKMSReissueRequest.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\xkms\XKMSReissueResult.hpp"
+				RelativePath="..\..\..\..\xsec\xkms\XKMSReissueResult.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\xkms\XKMSRequestAbstractType.hpp"
+				RelativePath="..\..\..\..\xsec\xkms\XKMSRequestAbstractType.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\xkms\XKMSRespondWith.hpp"
+				RelativePath="..\..\..\..\xsec\xkms\XKMSRespondWith.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\xkms\XKMSResponseMechanism.hpp"
+				RelativePath="..\..\..\..\xsec\xkms\XKMSResponseMechanism.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\xkms\XKMSResult.hpp"
+				RelativePath="..\..\..\..\xsec\xkms\XKMSResult.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\xkms\XKMSResultType.hpp"
+				RelativePath="..\..\..\..\xsec\xkms\XKMSResultType.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\xkms\XKMSRevokeKeyBinding.hpp"
+				RelativePath="..\..\..\..\xsec\xkms\XKMSRevokeKeyBinding.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\xkms\XKMSRevokeRequest.hpp"
+				RelativePath="..\..\..\..\xsec\xkms\XKMSRevokeRequest.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\xkms\XKMSRevokeResult.hpp"
+				RelativePath="..\..\..\..\xsec\xkms\XKMSRevokeResult.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\xkms\XKMSRSAKeyPair.hpp"
+				RelativePath="..\..\..\..\xsec\xkms\XKMSRSAKeyPair.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\xkms\XKMSStatus.hpp"
+				RelativePath="..\..\..\..\xsec\xkms\XKMSStatus.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\xkms\XKMSStatusRequest.hpp"
+				RelativePath="..\..\..\..\xsec\xkms\XKMSStatusRequest.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\xkms\XKMSStatusResult.hpp"
+				RelativePath="..\..\..\..\xsec\xkms\XKMSStatusResult.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\xkms\XKMSUnverifiedKeyBinding.hpp"
+				RelativePath="..\..\..\..\xsec\xkms\XKMSUnverifiedKeyBinding.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\xkms\XKMSUseKeyWith.hpp"
+				RelativePath="..\..\..\..\xsec\xkms\XKMSUseKeyWith.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\xkms\XKMSValidateRequest.hpp"
+				RelativePath="..\..\..\..\xsec\xkms\XKMSValidateRequest.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\xkms\XKMSValidateResult.hpp"
+				RelativePath="..\..\..\..\xsec\xkms\XKMSValidateResult.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\xkms\XKMSValidityInterval.hpp"
+				RelativePath="..\..\..\..\xsec\xkms\XKMSValidityInterval.hpp"
 				>
 			</File>
 			<Filter
 				Name="impl"
 				>
 				<File
-					RelativePath="..\..\..\..\src\xkms\impl\XKMSAuthenticationImpl.cpp"
+					RelativePath="..\..\..\..\xsec\xkms\impl\XKMSAuthenticationImpl.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xkms\impl\XKMSAuthenticationImpl.hpp"
+					RelativePath="..\..\..\..\xsec\xkms\impl\XKMSAuthenticationImpl.hpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xkms\impl\XKMSCompoundRequestImpl.cpp"
+					RelativePath="..\..\..\..\xsec\xkms\impl\XKMSCompoundRequestImpl.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xkms\impl\XKMSCompoundRequestImpl.hpp"
+					RelativePath="..\..\..\..\xsec\xkms\impl\XKMSCompoundRequestImpl.hpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xkms\impl\XKMSCompoundResultImpl.cpp"
+					RelativePath="..\..\..\..\xsec\xkms\impl\XKMSCompoundResultImpl.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xkms\impl\XKMSCompoundResultImpl.hpp"
+					RelativePath="..\..\..\..\xsec\xkms\impl\XKMSCompoundResultImpl.hpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xkms\impl\XKMSKeyBindingAbstractTypeImpl.cpp"
+					RelativePath="..\..\..\..\xsec\xkms\impl\XKMSKeyBindingAbstractTypeImpl.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xkms\impl\XKMSKeyBindingAbstractTypeImpl.hpp"
+					RelativePath="..\..\..\..\xsec\xkms\impl\XKMSKeyBindingAbstractTypeImpl.hpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xkms\impl\XKMSKeyBindingImpl.cpp"
+					RelativePath="..\..\..\..\xsec\xkms\impl\XKMSKeyBindingImpl.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xkms\impl\XKMSKeyBindingImpl.hpp"
+					RelativePath="..\..\..\..\xsec\xkms\impl\XKMSKeyBindingImpl.hpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xkms\impl\XKMSLocateRequestImpl.cpp"
+					RelativePath="..\..\..\..\xsec\xkms\impl\XKMSLocateRequestImpl.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xkms\impl\XKMSLocateRequestImpl.hpp"
+					RelativePath="..\..\..\..\xsec\xkms\impl\XKMSLocateRequestImpl.hpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xkms\impl\XKMSLocateResultImpl.cpp"
+					RelativePath="..\..\..\..\xsec\xkms\impl\XKMSLocateResultImpl.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xkms\impl\XKMSLocateResultImpl.hpp"
+					RelativePath="..\..\..\..\xsec\xkms\impl\XKMSLocateResultImpl.hpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xkms\impl\XKMSMessageAbstractTypeImpl.cpp"
+					RelativePath="..\..\..\..\xsec\xkms\impl\XKMSMessageAbstractTypeImpl.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xkms\impl\XKMSMessageAbstractTypeImpl.hpp"
+					RelativePath="..\..\..\..\xsec\xkms\impl\XKMSMessageAbstractTypeImpl.hpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xkms\impl\XKMSMessageFactoryImpl.cpp"
+					RelativePath="..\..\..\..\xsec\xkms\impl\XKMSMessageFactoryImpl.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xkms\impl\XKMSMessageFactoryImpl.hpp"
+					RelativePath="..\..\..\..\xsec\xkms\impl\XKMSMessageFactoryImpl.hpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xkms\impl\XKMSNotBoundAuthentication.cpp"
+					RelativePath="..\..\..\..\xsec\xkms\impl\XKMSNotBoundAuthentication.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xkms\impl\XKMSNotBoundAuthenticationImpl.hpp"
+					RelativePath="..\..\..\..\xsec\xkms\impl\XKMSNotBoundAuthenticationImpl.hpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xkms\impl\XKMSPendingRequestImpl.cpp"
+					RelativePath="..\..\..\..\xsec\xkms\impl\XKMSPendingRequestImpl.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xkms\impl\XKMSPendingRequestImpl.hpp"
+					RelativePath="..\..\..\..\xsec\xkms\impl\XKMSPendingRequestImpl.hpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xkms\impl\XKMSPrototypeKeyBindingImpl.cpp"
+					RelativePath="..\..\..\..\xsec\xkms\impl\XKMSPrototypeKeyBindingImpl.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xkms\impl\XKMSPrototypeKeyBindingImpl.hpp"
+					RelativePath="..\..\..\..\xsec\xkms\impl\XKMSPrototypeKeyBindingImpl.hpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xkms\impl\XKMSQueryKeyBindingImpl.cpp"
+					RelativePath="..\..\..\..\xsec\xkms\impl\XKMSQueryKeyBindingImpl.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xkms\impl\XKMSQueryKeyBindingImpl.hpp"
+					RelativePath="..\..\..\..\xsec\xkms\impl\XKMSQueryKeyBindingImpl.hpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xkms\impl\XKMSRecoverKeyBindingImpl.cpp"
+					RelativePath="..\..\..\..\xsec\xkms\impl\XKMSRecoverKeyBindingImpl.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xkms\impl\XKMSRecoverKeyBindingImpl.hpp"
+					RelativePath="..\..\..\..\xsec\xkms\impl\XKMSRecoverKeyBindingImpl.hpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xkms\impl\XKMSRecoverRequestImpl.cpp"
+					RelativePath="..\..\..\..\xsec\xkms\impl\XKMSRecoverRequestImpl.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xkms\impl\XKMSRecoverRequestImpl.hpp"
+					RelativePath="..\..\..\..\xsec\xkms\impl\XKMSRecoverRequestImpl.hpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xkms\impl\XKMSRecoverResultImpl.cpp"
+					RelativePath="..\..\..\..\xsec\xkms\impl\XKMSRecoverResultImpl.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xkms\impl\XKMSRecoverResultImpl.hpp"
+					RelativePath="..\..\..\..\xsec\xkms\impl\XKMSRecoverResultImpl.hpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xkms\impl\XKMSRegisterRequestImpl.cpp"
+					RelativePath="..\..\..\..\xsec\xkms\impl\XKMSRegisterRequestImpl.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xkms\impl\XKMSRegisterRequestImpl.hpp"
+					RelativePath="..\..\..\..\xsec\xkms\impl\XKMSRegisterRequestImpl.hpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xkms\impl\XKMSRegisterResultImpl.cpp"
+					RelativePath="..\..\..\..\xsec\xkms\impl\XKMSRegisterResultImpl.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xkms\impl\XKMSRegisterResultImpl.hpp"
+					RelativePath="..\..\..\..\xsec\xkms\impl\XKMSRegisterResultImpl.hpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xkms\impl\XKMSReissueKeyBindingImpl.cpp"
+					RelativePath="..\..\..\..\xsec\xkms\impl\XKMSReissueKeyBindingImpl.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xkms\impl\XKMSReissueKeyBindingImpl.hpp"
+					RelativePath="..\..\..\..\xsec\xkms\impl\XKMSReissueKeyBindingImpl.hpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xkms\impl\XKMSReissueRequestImpl.cpp"
+					RelativePath="..\..\..\..\xsec\xkms\impl\XKMSReissueRequestImpl.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xkms\impl\XKMSReissueRequestImpl.hpp"
+					RelativePath="..\..\..\..\xsec\xkms\impl\XKMSReissueRequestImpl.hpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xkms\impl\XKMSReissueResultImpl.cpp"
+					RelativePath="..\..\..\..\xsec\xkms\impl\XKMSReissueResultImpl.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xkms\impl\XKMSReissueResultImpl.hpp"
+					RelativePath="..\..\..\..\xsec\xkms\impl\XKMSReissueResultImpl.hpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xkms\impl\XKMSRequestAbstractTypeImpl.cpp"
+					RelativePath="..\..\..\..\xsec\xkms\impl\XKMSRequestAbstractTypeImpl.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xkms\impl\XKMSRequestAbstractTypeImpl.hpp"
+					RelativePath="..\..\..\..\xsec\xkms\impl\XKMSRequestAbstractTypeImpl.hpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xkms\impl\XKMSRespondWithImpl.cpp"
+					RelativePath="..\..\..\..\xsec\xkms\impl\XKMSRespondWithImpl.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xkms\impl\XKMSRespondWithImpl.hpp"
+					RelativePath="..\..\..\..\xsec\xkms\impl\XKMSRespondWithImpl.hpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xkms\impl\XKMSResponseMechanismImpl.cpp"
+					RelativePath="..\..\..\..\xsec\xkms\impl\XKMSResponseMechanismImpl.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xkms\impl\XKMSResponseMechanismImpl.hpp"
+					RelativePath="..\..\..\..\xsec\xkms\impl\XKMSResponseMechanismImpl.hpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xkms\impl\XKMSResultImpl.cpp"
+					RelativePath="..\..\..\..\xsec\xkms\impl\XKMSResultImpl.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xkms\impl\XKMSResultImpl.hpp"
+					RelativePath="..\..\..\..\xsec\xkms\impl\XKMSResultImpl.hpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xkms\impl\XKMSResultTypeImpl.cpp"
+					RelativePath="..\..\..\..\xsec\xkms\impl\XKMSResultTypeImpl.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xkms\impl\XKMSResultTypeImpl.hpp"
+					RelativePath="..\..\..\..\xsec\xkms\impl\XKMSResultTypeImpl.hpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xkms\impl\XKMSRevokeKeyBindingImpl.cpp"
+					RelativePath="..\..\..\..\xsec\xkms\impl\XKMSRevokeKeyBindingImpl.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xkms\impl\XKMSRevokeKeyBindingImpl.hpp"
+					RelativePath="..\..\..\..\xsec\xkms\impl\XKMSRevokeKeyBindingImpl.hpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xkms\impl\XKMSRevokeRequestImpl.cpp"
+					RelativePath="..\..\..\..\xsec\xkms\impl\XKMSRevokeRequestImpl.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xkms\impl\XKMSRevokeRequestImpl.hpp"
+					RelativePath="..\..\..\..\xsec\xkms\impl\XKMSRevokeRequestImpl.hpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xkms\impl\XKMSRevokeResultImpl.cpp"
+					RelativePath="..\..\..\..\xsec\xkms\impl\XKMSRevokeResultImpl.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xkms\impl\XKMSRevokeResultImpl.hpp"
+					RelativePath="..\..\..\..\xsec\xkms\impl\XKMSRevokeResultImpl.hpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xkms\impl\XKMSRSAKeyPairImpl.cpp"
+					RelativePath="..\..\..\..\xsec\xkms\impl\XKMSRSAKeyPairImpl.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xkms\impl\XKMSRSAKeyPairImpl.hpp"
+					RelativePath="..\..\..\..\xsec\xkms\impl\XKMSRSAKeyPairImpl.hpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xkms\impl\XKMSStatusImpl.cpp"
+					RelativePath="..\..\..\..\xsec\xkms\impl\XKMSStatusImpl.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xkms\impl\XKMSStatusImpl.hpp"
+					RelativePath="..\..\..\..\xsec\xkms\impl\XKMSStatusImpl.hpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xkms\impl\XKMSStatusRequestImpl.cpp"
+					RelativePath="..\..\..\..\xsec\xkms\impl\XKMSStatusRequestImpl.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xkms\impl\XKMSStatusRequestImpl.hpp"
+					RelativePath="..\..\..\..\xsec\xkms\impl\XKMSStatusRequestImpl.hpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xkms\impl\XKMSStatusResultImpl.cpp"
+					RelativePath="..\..\..\..\xsec\xkms\impl\XKMSStatusResultImpl.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xkms\impl\XKMSStatusResultImpl.hpp"
+					RelativePath="..\..\..\..\xsec\xkms\impl\XKMSStatusResultImpl.hpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xkms\impl\XKMSUnverifiedKeyBindingImpl.cpp"
+					RelativePath="..\..\..\..\xsec\xkms\impl\XKMSUnverifiedKeyBindingImpl.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xkms\impl\XKMSUnverifiedKeyBindingImpl.hpp"
+					RelativePath="..\..\..\..\xsec\xkms\impl\XKMSUnverifiedKeyBindingImpl.hpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xkms\impl\XKMSUseKeyWithImpl.cpp"
+					RelativePath="..\..\..\..\xsec\xkms\impl\XKMSUseKeyWithImpl.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xkms\impl\XKMSUseKeyWithImpl.hpp"
+					RelativePath="..\..\..\..\xsec\xkms\impl\XKMSUseKeyWithImpl.hpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xkms\impl\XKMSValidateRequestImpl.cpp"
+					RelativePath="..\..\..\..\xsec\xkms\impl\XKMSValidateRequestImpl.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xkms\impl\XKMSValidateRequestImpl.hpp"
+					RelativePath="..\..\..\..\xsec\xkms\impl\XKMSValidateRequestImpl.hpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xkms\impl\XKMSValidateResultImpl.cpp"
+					RelativePath="..\..\..\..\xsec\xkms\impl\XKMSValidateResultImpl.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xkms\impl\XKMSValidateResultImpl.hpp"
+					RelativePath="..\..\..\..\xsec\xkms\impl\XKMSValidateResultImpl.hpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xkms\impl\XKMSValidityIntervalImpl.cpp"
+					RelativePath="..\..\..\..\xsec\xkms\impl\XKMSValidityIntervalImpl.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\xkms\impl\XKMSValidityIntervalImpl.hpp"
+					RelativePath="..\..\..\..\xsec\xkms\impl\XKMSValidityIntervalImpl.hpp"
 					>
 				</File>
 			</Filter>
