@@ -41,12 +41,15 @@ import org.slf4j.LoggerFactory;
 public class StoreMatchValueAction extends GrammarAction
 {
     /** The logger */
-    private static final Logger log = LoggerFactory.getLogger( StoreMatchValueAction.class );
+    private static final Logger LOG = LoggerFactory.getLogger( StoreMatchValueAction.class );
 
     /** Speedup for logs */
-    private static final boolean IS_DEBUG = log.isDebugEnabled();
+    private static final boolean IS_DEBUG = LOG.isDebugEnabled();
 
 
+    /**
+     * Instantiates a new store match value action.
+     */
     public StoreMatchValueAction()
     {
         super( "Store match Value" );
@@ -54,7 +57,7 @@ public class StoreMatchValueAction extends GrammarAction
 
 
     /**
-     * The initialization action
+     * {@inheritDoc}
      */
     public void action( Asn1Container container ) throws DecoderException
     {
@@ -75,7 +78,7 @@ public class StoreMatchValueAction extends GrammarAction
 
         if ( IS_DEBUG )
         {
-            log.debug( "Stored a match value : {}", value );
+            LOG.debug( "Stored a match value : {}", value );
         }
     }
 }

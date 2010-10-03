@@ -24,11 +24,14 @@ package org.apache.directory.shared.ldap.util;
 /**
  * decoding of base32 characters to raw bytes.
  * 
+ * TODO: This class isn't used, remove it?
+ * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 public final class Base32
 {
-    private static byte[] CHARS = new byte[]{ 
+    /** The available characters */
+    private static final byte[] CHARS = new byte[]{ 
         'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 
         'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 
         'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 
@@ -43,6 +46,12 @@ public final class Base32
     }
 
 
+    /**
+     * Encodes a string to a Base64 encoded String.
+     *
+     * @param str the string
+     * @return the Base64 encoded string
+     */
     public static String encode( String str )
     {
         if ( StringTools.isEmpty( str ) )

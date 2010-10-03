@@ -41,18 +41,24 @@ import org.slf4j.LoggerFactory;
 public class InitApproxMatchFilterAction extends GrammarAction
 {
     /** The logger */
-    private static final Logger log = LoggerFactory.getLogger( InitApproxMatchFilterAction.class );
+    private static final Logger LOG = LoggerFactory.getLogger( InitApproxMatchFilterAction.class );
 
     /** Speedup for logs */
-    private static final boolean IS_DEBUG = log.isDebugEnabled();
+    private static final boolean IS_DEBUG = LOG.isDebugEnabled();
 
 
+    /**
+     * Instantiates a new init approx match filter action.
+     */
     public InitApproxMatchFilterAction()
     {
         super( "Init Approx Match filter Value" );
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public void action( Asn1Container container ) throws DecoderException
     {
         LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
@@ -70,7 +76,7 @@ public class InitApproxMatchFilterAction extends GrammarAction
 
         if ( IS_DEBUG )
         {
-            log.debug( "Initialize Approx Match filter" );
+            LOG.debug( "Initialize Approx Match filter" );
         }
     }
 }

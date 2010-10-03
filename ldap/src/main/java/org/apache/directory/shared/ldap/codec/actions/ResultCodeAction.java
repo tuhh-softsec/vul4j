@@ -45,12 +45,15 @@ import org.slf4j.LoggerFactory;
 public class ResultCodeAction extends GrammarAction
 {
     /** The logger */
-    private static final Logger log = LoggerFactory.getLogger( ResultCodeAction.class );
+    private static final Logger LOG = LoggerFactory.getLogger( ResultCodeAction.class );
 
     /** Speedup for logs */
-    private static final boolean IS_DEBUG = log.isDebugEnabled();
+    private static final boolean IS_DEBUG = LOG.isDebugEnabled();
 
 
+    /**
+     * Instantiates a new result code action.
+     */
     public ResultCodeAction()
     {
         super( "Store resultCode" );
@@ -58,7 +61,7 @@ public class ResultCodeAction extends GrammarAction
 
 
     /**
-     * The initialization action
+     * {@inheritDoc}
      */
     public void action( Asn1Container container ) throws DecoderException
     {
@@ -78,7 +81,7 @@ public class ResultCodeAction extends GrammarAction
         }
         catch ( IntegerDecoderException ide )
         {
-            log.error( I18n.err( I18n.ERR_04018, StringTools.dumpBytes( value.getData() ), ide.getMessage() ) );
+            LOG.error( I18n.err( I18n.ERR_04018, StringTools.dumpBytes( value.getData() ), ide.getMessage() ) );
 
             throw new DecoderException( ide.getMessage() );
         }
@@ -130,14 +133,14 @@ public class ResultCodeAction extends GrammarAction
                 break;
 
             default:
-                log.warn( "The resultCode " + resultCode + " is unknown." );
+                LOG.warn( "The resultCode " + resultCode + " is unknown." );
                 resultCode = ResultCodeEnum.OTHER;
                 break;
         }
 
         if ( IS_DEBUG )
         {
-            log.debug( "The result code is set to " + resultCode );
+            LOG.debug( "The result code is set to " + resultCode );
         }
 
         ResultResponse response = ( ResultResponse ) ldapMessageContainer.getMessage();

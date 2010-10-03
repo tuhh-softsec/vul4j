@@ -37,12 +37,15 @@ import org.slf4j.LoggerFactory;
 public class ControlsInitAction extends GrammarAction
 {
     /** The logger */
-    private static final Logger log = LoggerFactory.getLogger( ControlsInitAction.class );
+    private static final Logger LOG = LoggerFactory.getLogger( ControlsInitAction.class );
 
     /** Speedup for logs */
-    private static final boolean IS_DEBUG = log.isDebugEnabled();
+    private static final boolean IS_DEBUG = LOG.isDebugEnabled();
 
 
+    /**
+     * Instantiates a new controls init action.
+     */
     public ControlsInitAction()
     {
         super( "Initialize a control" );
@@ -50,7 +53,7 @@ public class ControlsInitAction extends GrammarAction
 
 
     /**
-     * The initialization action
+     * {@inheritDoc}
      */
     public void action( Asn1Container container ) throws DecoderException
     {
@@ -63,7 +66,7 @@ public class ControlsInitAction extends GrammarAction
         // The Length should be null
         if ( expectedLength == 0 )
         {
-            log.error( "The length of controls must not be null" );
+            LOG.error( "The length of controls must not be null" );
 
             // This will generate a PROTOCOL_ERROR
             throw new DecoderException( "The length of controls must not be null" );
@@ -71,7 +74,7 @@ public class ControlsInitAction extends GrammarAction
 
         if ( IS_DEBUG )
         {
-            log.debug( "A new list of controls has been initialized" );
+            LOG.debug( "A new list of controls has been initialized" );
         }
     }
 }

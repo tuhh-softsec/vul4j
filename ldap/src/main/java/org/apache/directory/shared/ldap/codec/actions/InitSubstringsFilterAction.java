@@ -42,12 +42,15 @@ import org.slf4j.LoggerFactory;
 public class InitSubstringsFilterAction extends GrammarAction
 {
     /** The logger */
-    private static final Logger log = LoggerFactory.getLogger( InitSubstringsFilterAction.class );
+    private static final Logger LOG = LoggerFactory.getLogger( InitSubstringsFilterAction.class );
 
     /** Speedup for logs */
-    private static final boolean IS_DEBUG = log.isDebugEnabled();
+    private static final boolean IS_DEBUG = LOG.isDebugEnabled();
 
 
+    /**
+     * Instantiates a new init substrings filter action.
+     */
     public InitSubstringsFilterAction()
     {
         super( "Initialize Substrings filter" );
@@ -55,7 +58,7 @@ public class InitSubstringsFilterAction extends GrammarAction
 
 
     /**
-     * The initialization action
+     * {@inheritDoc}
      */
     public void action( Asn1Container container ) throws DecoderException
     {
@@ -69,7 +72,7 @@ public class InitSubstringsFilterAction extends GrammarAction
         if ( expectedLength == 0 )
         {
             String msg = I18n.err( I18n.ERR_04012 );
-            log.error( msg );
+            LOG.error( msg );
             throw new DecoderException( msg );
         }
 
@@ -81,7 +84,7 @@ public class InitSubstringsFilterAction extends GrammarAction
 
         if ( IS_DEBUG )
         {
-            log.debug( "Initialize Substrings filter" );
+            LOG.debug( "Initialize Substrings filter" );
         }
     }
 }

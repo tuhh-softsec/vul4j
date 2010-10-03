@@ -63,22 +63,22 @@ public class DefaultEntry implements Entry
     private static final Logger LOG = LoggerFactory.getLogger( DefaultEntry.class );
 
     /** The DN for this entry */
-    protected DN dn;
+    private DN dn;
 
     /** A map containing all the attributes for this entry */
-    protected Map<String, EntryAttribute> attributes = new HashMap<String, EntryAttribute>();
+    private Map<String, EntryAttribute> attributes = new HashMap<String, EntryAttribute>();
 
     /** A speedup to get the ObjectClass attribute */
-    protected static transient AttributeType OBJECT_CLASS_AT;
+    private static transient AttributeType objectClassAttributeType;
 
     /** The SchemaManager */
-    protected SchemaManager schemaManager;
+    private SchemaManager schemaManager;
 
     /** The computed hashcode. We don't want to compute it each time the hashcode() method is called */
     private volatile int h;
 
     /** A mutex to manage synchronization*/
-    private static transient Object MUTEX = new Object();
+    private static final transient Object MUTEX = new Object();
 
 
     //-------------------------------------------------------------------------
@@ -450,11 +450,11 @@ public class DefaultEntry implements Entry
     {
         try
         {
-            if ( OBJECT_CLASS_AT == null )
+            if ( objectClassAttributeType == null )
             {
                 synchronized ( MUTEX )
                 {
-                    OBJECT_CLASS_AT = schemaManager.lookupAttributeTypeRegistry( SchemaConstants.OBJECT_CLASS_AT );
+                    objectClassAttributeType = schemaManager.lookupAttributeTypeRegistry( SchemaConstants.OBJECT_CLASS_AT );
                 }
             }
         }
@@ -594,7 +594,7 @@ public class DefaultEntry implements Entry
         }
 
         // ObjectClass with binary values are not allowed
-        if ( attributeType.equals( OBJECT_CLASS_AT ) )
+        if ( attributeType.equals( objectClassAttributeType ) )
         {
             String message = I18n.err( I18n.ERR_04461 );
             LOG.error( message );
@@ -685,7 +685,7 @@ public class DefaultEntry implements Entry
     public void add( String upId, AttributeType attributeType, byte[]... values ) throws LdapException
     {
         // ObjectClass with binary values are not allowed
-        if ( attributeType.equals( OBJECT_CLASS_AT ) )
+        if ( attributeType.equals( objectClassAttributeType ) )
         {
             String message = I18n.err( I18n.ERR_04461 );
             LOG.error( message );
@@ -1747,7 +1747,7 @@ public class DefaultEntry implements Entry
             }
         }
 
-        if ( attributeType.equals( OBJECT_CLASS_AT ) )
+        if ( attributeType.equals( objectClassAttributeType ) )
         {
             String message = I18n.err( I18n.ERR_04461 );
             LOG.error( message );
@@ -2795,7 +2795,7 @@ public class DefaultEntry implements Entry
     {
         if ( schemaManager != null )
         {
-            return contains( OBJECT_CLASS_AT, objectClass );
+            return contains( objectClassAttributeType, objectClass );
 
         }
         else
@@ -2816,12 +2816,12 @@ public class DefaultEntry implements Entry
         }
 
         // We have to check that we are checking the ObjectClass attributeType
-        if ( !objectClass.getAttributeType().equals( OBJECT_CLASS_AT ) )
+        if ( !objectClass.getAttributeType().equals( objectClassAttributeType ) )
         {
             return false;
         }
 
-        EntryAttribute attribute = attributes.get( OBJECT_CLASS_AT.getOid() );
+        EntryAttribute attribute = attributes.get( objectClassAttributeType.getOid() );
 
         if ( attribute == null )
         {
@@ -2923,9 +2923,9 @@ public class DefaultEntry implements Entry
         if ( schemaManager != null )
         {
             // First dump the ObjectClass attribute
-            if ( containsAttribute( OBJECT_CLASS_AT.getOid() ) )
+            if ( containsAttribute( objectClassAttributeType.getOid() ) )
             {
-                EntryAttribute objectClass = get( OBJECT_CLASS_AT );
+                EntryAttribute objectClass = get( objectClassAttributeType );
 
                 sb.append( objectClass );
             }
@@ -2950,7 +2950,7 @@ public class DefaultEntry implements Entry
                 {
                     AttributeType attributeType = schemaManager.getAttributeType( id );
 
-                    if ( attributeType != OBJECT_CLASS_AT )
+                    if ( attributeType != objectClassAttributeType )
                     {
                         sb.append( attribute );
                         continue;

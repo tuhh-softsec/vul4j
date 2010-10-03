@@ -31,10 +31,12 @@ import org.apache.directory.shared.ldap.message.MessageException;
  */
 public class ProviderException extends MessageException
 {
+
+    /** The serialVersionUID */
     static final long serialVersionUID = 8915445282948982052L;
 
     /** The provider this exception resulted on */
-    private final Provider m_provider;
+    private final Provider provider;
 
 
     /**
@@ -44,34 +46,34 @@ public class ProviderException extends MessageException
      */
     public Provider getProvider()
     {
-        return m_provider;
+        return provider;
     }
 
 
     /**
      * Constructs an Exception without a message.
      * 
-     * @param a_provider
+     * @param provider
      *            The offending Provider that caused the exception.
      */
-    public ProviderException(final Provider a_provider)
+    public ProviderException( final Provider provider )
     {
         super();
-        m_provider = a_provider;
+        this.provider = provider;
     }
 
 
     /**
      * Constructs an Exception with a detailed message.
      * 
-     * @param a_provider
+     * @param provider
      *            The offending Provider that caused the exception.
-     * @param a_message
+     * @param message
      *            The message associated with the exception.
      */
-    public ProviderException(final Provider a_provider, String a_message)
+    public ProviderException( final Provider provider, String message )
     {
-        super( a_message );
-        m_provider = a_provider;
+        super( message );
+        this.provider = provider;
     }
 }

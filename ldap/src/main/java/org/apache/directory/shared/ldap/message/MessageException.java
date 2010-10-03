@@ -31,6 +31,8 @@ import org.apache.directory.shared.ldap.RuntimeMultiException;
  */
 public class MessageException extends RuntimeMultiException
 {
+
+    /** The serialVersionUID. */
     static final long serialVersionUID = -155089078576745029L;
 
 
@@ -46,11 +48,11 @@ public class MessageException extends RuntimeMultiException
     /**
      * Constructs an Exception with a detailed message.
      * 
-     * @param a_message
+     * @param message
      *            The message associated with the exception.
      */
-    public MessageException(String a_message)
+    public MessageException( String message )
     {
-        super( a_message );
+        super( message );
     }
 }

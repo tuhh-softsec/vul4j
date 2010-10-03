@@ -35,11 +35,11 @@ public final class DateUtils
 {
     private static final TimeZone UTC_TIME_ZONE = TimeZone.getTimeZone( "GMT" );
 
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat( "yyyyMMddHHmmss'Z'" );
+    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat( "yyyyMMddHHmmss'Z'" );
 
     static
     {
-        dateFormat.setTimeZone( UTC_TIME_ZONE );
+        DATE_FORMAT.setTimeZone( UTC_TIME_ZONE );
     }
 
 
@@ -171,9 +171,9 @@ public final class DateUtils
     {
         Date date = new Date();
 
-        synchronized ( dateFormat )
+        synchronized ( DATE_FORMAT )
         {
-            return dateFormat.format( date );
+            return DATE_FORMAT.format( date );
         }
     }
 
@@ -187,9 +187,9 @@ public final class DateUtils
      */
     public static String getGeneralizedTime( Date date )
     {
-        synchronized ( dateFormat )
+        synchronized ( DATE_FORMAT )
         {
-            return dateFormat.format( date );
+            return DATE_FORMAT.format( date );
         }
     }
 

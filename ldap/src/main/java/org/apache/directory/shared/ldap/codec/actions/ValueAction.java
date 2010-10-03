@@ -38,12 +38,15 @@ import org.slf4j.LoggerFactory;
 public class ValueAction extends GrammarAction
 {
     /** The logger */
-    private static final Logger log = LoggerFactory.getLogger( ValueAction.class );
+    private static final Logger LOG = LoggerFactory.getLogger( ValueAction.class );
 
     /** Speedup for logs */
-    private static final boolean IS_DEBUG = log.isDebugEnabled();
+    private static final boolean IS_DEBUG = LOG.isDebugEnabled();
 
 
+    /**
+     * Instantiates a new value action.
+     */
     public ValueAction()
     {
         super( "Store a value" );
@@ -51,7 +54,7 @@ public class ValueAction extends GrammarAction
 
 
     /**
-     * The initialization action
+     * {@inheritDoc}
      */
     public void action( Asn1Container container )
     {
@@ -76,7 +79,7 @@ public class ValueAction extends GrammarAction
 
                 if ( IS_DEBUG )
                 {
-                    log.debug( "Adding value {}", StringTools.dumpBytes( ( byte[] ) value ) );
+                    LOG.debug( "Adding value {}", StringTools.dumpBytes( ( byte[] ) value ) );
                 }
 
                 addRequest.addAttributeValue( ( byte[] ) value );
@@ -87,7 +90,7 @@ public class ValueAction extends GrammarAction
 
                 if ( IS_DEBUG )
                 {
-                    log.debug( "Adding value {}" + value );
+                    LOG.debug( "Adding value {}" + value );
                 }
 
                 addRequest.addAttributeValue( ( String ) value );

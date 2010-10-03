@@ -20,11 +20,12 @@
 
 package org.apache.directory.shared.ldap.util;
 
+
 import org.apache.directory.shared.i18n.I18n;
 
 
 /**
- * decoding of base64 characters to raw bytes.
+ * Encoding and decoding of Base64 characters to and from raw bytes.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
@@ -40,49 +41,49 @@ public final class Base64
 
 
     /**
-     * passed data array.
+     * Encodes binary data to a Base64 encoded characters.
      * 
-     * @param a_data
+     * @param data
      *            the array of bytes to encode
      * @return base64-coded character array.
      */
-    public static char[] encode( byte[] a_data )
+    public static char[] encode( byte[] data )
     {
-        char[] l_out = new char[( ( a_data.length + 2 ) / 3 ) * 4];
+        char[] out = new char[( ( data.length + 2 ) / 3 ) * 4];
 
         //
         // 3 bytes encode to 4 chars. Output is always an even
         // multiple of 4 characters.
         //
-        for ( int ii = 0, l_index = 0; ii < a_data.length; ii += 3, l_index += 4 )
+        for ( int ii = 0, index = 0; ii < data.length; ii += 3, index += 4 )
         {
-            boolean l_quad = false;
-            boolean l_trip = false;
+            boolean isQuadrupel = false;
+            boolean isTripel = false;
 
-            int l_val = ( 0xFF & a_data[ii] );
-            l_val <<= 8;
-            if ( ( ii + 1 ) < a_data.length )
+            int val = ( 0xFF & data[ii] );
+            val <<= 8;
+            if ( ( ii + 1 ) < data.length )
             {
-                l_val |= ( 0xFF & a_data[ii + 1] );
-                l_trip = true;
+                val |= ( 0xFF & data[ii + 1] );
+                isTripel = true;
             }
 
-            l_val <<= 8;
-            if ( ( ii + 2 ) < a_data.length )
+            val <<= 8;
+            if ( ( ii + 2 ) < data.length )
             {
-                l_val |= ( 0xFF & a_data[ii + 2] );
-                l_quad = true;
+                val |= ( 0xFF & data[ii + 2] );
+                isQuadrupel = true;
             }
 
-            l_out[l_index + 3] = s_alphabet[( l_quad ? ( l_val & 0x3F ) : 64 )];
-            l_val >>= 6;
-            l_out[l_index + 2] = s_alphabet[( l_trip ? ( l_val & 0x3F ) : 64 )];
-            l_val >>= 6;
-            l_out[l_index + 1] = s_alphabet[l_val & 0x3F];
-            l_val >>= 6;
-            l_out[l_index + 0] = s_alphabet[l_val & 0x3F];
+            out[index + 3] = ALPHABET[( isQuadrupel ? ( val & 0x3F ) : 64 )];
+            val >>= 6;
+            out[index + 2] = ALPHABET[( isTripel ? ( val & 0x3F ) : 64 )];
+            val >>= 6;
+            out[index + 1] = ALPHABET[val & 0x3F];
+            val >>= 6;
+            out[index + 0] = ALPHABET[val & 0x3F];
         }
-        return l_out;
+        return out;
     }
 
 
@@ -108,10 +109,10 @@ public final class Base64
         // just because of extraneous throw-away junk
 
         int tempLen = data.length;
-        
-        for ( char c:data)
+
+        for ( char c : data )
         {
-            if ( ( c > 255 ) || s_codes[c] < 0 )
+            if ( ( c > 255 ) || CODES[c] < 0 )
             {
                 --tempLen; // ignore non-valid chars and padding
             }
@@ -121,39 +122,39 @@ public final class Base64
         // -- plus 2 bytes if there are 3 extra base64 chars,
         // or plus 1 byte if there are 2 extra.
 
-        int l_len = ( tempLen / 4 ) * 3;
+        int len = ( tempLen / 4 ) * 3;
 
         if ( ( tempLen % 4 ) == 3 )
         {
-            l_len += 2;
+            len += 2;
         }
 
         if ( ( tempLen % 4 ) == 2 )
         {
-            l_len += 1;
+            len += 1;
         }
 
-        byte[] l_out = new byte[l_len];
+        byte[] out = new byte[len];
 
-        int l_shift = 0; // # of excess bits stored in accum
-        int l_accum = 0; // excess bits
-        int l_index = 0;
+        int shift = 0; // # of excess bits stored in accum
+        int accum = 0; // excess bits
+        int index = 0;
 
         // we now go through the entire array (NOT using the 'tempLen' value)
-        for ( char c:data )
+        for ( char c : data )
         {
-            int l_value = ( c > 255 ) ? -1 : s_codes[c];
+            int value = ( c > 255 ) ? -1 : CODES[c];
 
-            if ( l_value >= 0 ) // skip over non-code
+            if ( value >= 0 ) // skip over non-code
             {
-                l_accum <<= 6; // bits shift up by 6 each time thru
-                l_shift += 6; // loop, with new bits being put in
-                l_accum |= l_value; // at the bottom. whenever there
-                if ( l_shift >= 8 ) // are 8 or more shifted in, write them
+                accum <<= 6; // bits shift up by 6 each time thru
+                shift += 6; // loop, with new bits being put in
+                accum |= value; // at the bottom. whenever there
+                if ( shift >= 8 ) // are 8 or more shifted in, write them
                 {
-                    l_shift -= 8; // out (from the top, leaving any excess
-                    l_out[l_index++] = // at the bottom for next iteration.
-                    ( byte ) ( ( l_accum >> l_shift ) & 0xff );
+                    shift -= 8; // out (from the top, leaving any excess
+                    out[index++] = // at the bottom for next iteration.
+                    ( byte ) ( ( accum >> shift ) & 0xff );
                 }
             }
             // we will also have skipped processing a padding null byte ('=')
@@ -169,44 +170,44 @@ public final class Base64
         }
 
         // if there is STILL something wrong we just have to throw up now!
-        if ( l_index != l_out.length )
+        if ( index != out.length )
         {
-            throw new Error( I18n.err( I18n.ERR_04348, l_index, l_out.length ) );
+            throw new Error( I18n.err( I18n.ERR_04348, index, out.length ) );
         }
 
-        return l_out;
+        return out;
     }
 
     /** code characters for values 0..63 */
-    private static char[] s_alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/="
+    private static final char[] ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/="
         .toCharArray();
 
     /** lookup table for converting base64 characters to value in range 0..63 */
-    private static byte[] s_codes = new byte[256];
+    private static final byte[] CODES = new byte[256];
 
     static
     {
         for ( int ii = 0; ii < 256; ii++ )
         {
-            s_codes[ii] = -1;
+            CODES[ii] = -1;
         }
 
         for ( int ii = 'A'; ii <= 'Z'; ii++ )
         {
-            s_codes[ii] = ( byte ) ( ii - 'A' );
+            CODES[ii] = ( byte ) ( ii - 'A' );
         }
 
         for ( int ii = 'a'; ii <= 'z'; ii++ )
         {
-            s_codes[ii] = ( byte ) ( 26 + ii - 'a' );
+            CODES[ii] = ( byte ) ( 26 + ii - 'a' );
         }
 
         for ( int ii = '0'; ii <= '9'; ii++ )
         {
-            s_codes[ii] = ( byte ) ( 52 + ii - '0' );
+            CODES[ii] = ( byte ) ( 52 + ii - '0' );
         }
 
-        s_codes['+'] = 62;
-        s_codes['/'] = 63;
+        CODES['+'] = 62;
+        CODES['/'] = 63;
     }
 }

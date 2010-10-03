@@ -40,18 +40,24 @@ import org.slf4j.LoggerFactory;
 public class InitExtensibleMatchFilterAction extends GrammarAction
 {
     /** The logger */
-    private static final Logger log = LoggerFactory.getLogger( InitExtensibleMatchFilterAction.class );
+    private static final Logger LOG = LoggerFactory.getLogger( InitExtensibleMatchFilterAction.class );
 
     /** Speedup for logs */
-    private static final boolean IS_DEBUG = log.isDebugEnabled();
+    private static final boolean IS_DEBUG = LOG.isDebugEnabled();
 
 
+    /**
+     * Instantiates a new init extensible match filter action.
+     */
     public InitExtensibleMatchFilterAction()
     {
         super( "Init Extensible Match filter Value" );
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public void action( Asn1Container container ) throws DecoderException
     {
         LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
@@ -65,7 +71,7 @@ public class InitExtensibleMatchFilterAction extends GrammarAction
 
         if ( IS_DEBUG )
         {
-            log.debug( "Initialize Extensible Match filter" );
+            LOG.debug( "Initialize Extensible Match filter" );
         }
     }
 }

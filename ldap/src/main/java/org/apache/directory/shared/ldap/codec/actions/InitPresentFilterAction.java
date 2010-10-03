@@ -41,18 +41,24 @@ import org.slf4j.LoggerFactory;
 public class InitPresentFilterAction extends GrammarAction
 {
     /** The logger */
-    private static final Logger log = LoggerFactory.getLogger( InitPresentFilterAction.class );
+    private static final Logger LOG = LoggerFactory.getLogger( InitPresentFilterAction.class );
 
     /** Speedup for logs */
-    private static final boolean IS_DEBUG = log.isDebugEnabled();
+    private static final boolean IS_DEBUG = LOG.isDebugEnabled();
 
 
+    /**
+     * Instantiates a new init present filter action.
+     */
     public InitPresentFilterAction()
     {
         super( "Init present filter Value" );
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public void action( Asn1Container container ) throws DecoderException
     {
         LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
@@ -86,7 +92,7 @@ public class InitPresentFilterAction extends GrammarAction
 
         if ( IS_DEBUG )
         {
-            log.debug( "Initialize Present filter" );
+            LOG.debug( "Initialize Present filter" );
         }
     }
 }

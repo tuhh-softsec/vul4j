@@ -43,12 +43,15 @@ import org.slf4j.LoggerFactory;
 public class InitAttributeDescFilterAction extends GrammarAction
 {
     /** The logger */
-    private static final Logger log = LoggerFactory.getLogger( InitAttributeDescFilterAction.class );
+    private static final Logger LOG = LoggerFactory.getLogger( InitAttributeDescFilterAction.class );
 
     /** Speedup for logs */
-    private static final boolean IS_DEBUG = log.isDebugEnabled();
+    private static final boolean IS_DEBUG = LOG.isDebugEnabled();
 
 
+    /**
+     * Instantiates a new init attribute desc filter action.
+     */
     public InitAttributeDescFilterAction()
     {
         super( "Initialize AttributeDesc filter" );
@@ -56,7 +59,7 @@ public class InitAttributeDescFilterAction extends GrammarAction
 
 
     /**
-     * The initialization action
+     * {@inheritDoc}
      */
     public void action( Asn1Container container ) throws DecoderException
     {
@@ -70,7 +73,7 @@ public class InitAttributeDescFilterAction extends GrammarAction
         if ( tlv.getLength() == 0 )
         {
             String msg = I18n.err( I18n.ERR_04007 );
-            log.error( msg );
+            LOG.error( msg );
             throw new DecoderException( msg );
         }
         else
@@ -85,7 +88,7 @@ public class InitAttributeDescFilterAction extends GrammarAction
 
         if ( IS_DEBUG )
         {
-            log.debug( "Initialize AttributeDesc filter" );
+            LOG.debug( "Initialize AttributeDesc filter" );
         }
     }
 }

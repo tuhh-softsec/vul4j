@@ -37,18 +37,21 @@ import org.slf4j.LoggerFactory;
 public class InitAttributeDescListAction extends GrammarAction
 {
     /** The logger */
-    private static final Logger log = LoggerFactory.getLogger( InitAttributeDescListAction.class );
+    private static final Logger LOG = LoggerFactory.getLogger( InitAttributeDescListAction.class );
 
     /** Speedup for logs */
-    private static final boolean IS_DEBUG = log.isDebugEnabled();
+    private static final boolean IS_DEBUG = LOG.isDebugEnabled();
 
+    /**
+     * Instantiates a new init attribute desc list action.
+     */
     public InitAttributeDescListAction()
     {
         super( "Initialize AttributeDesc list" );
     }
 
     /**
-     * The initialization action
+     * {@inheritDoc}
      */
     public void action( Asn1Container container ) throws DecoderException
     {
@@ -59,7 +62,7 @@ public class InitAttributeDescListAction extends GrammarAction
 
         if ( IS_DEBUG )
         {
-            log.debug( "Initialize AttributeDesc list" );
+            LOG.debug( "Initialize AttributeDesc list" );
         }
     }
 }

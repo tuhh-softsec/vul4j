@@ -42,12 +42,15 @@ import org.slf4j.LoggerFactory;
 public class InitAndFilterAction extends GrammarAction
 {
     /** The logger */
-    private static final Logger log = LoggerFactory.getLogger( InitAndFilterAction.class );
+    private static final Logger LOG = LoggerFactory.getLogger( InitAndFilterAction.class );
 
     /** Speedup for logs */
-    private static final boolean IS_DEBUG = log.isDebugEnabled();
+    private static final boolean IS_DEBUG = LOG.isDebugEnabled();
 
 
+    /**
+     * Instantiates a new init AND filter action.
+     */
     public InitAndFilterAction()
     {
         super( "Initialize AND filter" );
@@ -55,7 +58,7 @@ public class InitAndFilterAction extends GrammarAction
 
 
     /**
-     * The initialization action
+     * {@inheritDoc}
      */
     public void action( Asn1Container container ) throws DecoderException
     {
@@ -66,7 +69,7 @@ public class InitAndFilterAction extends GrammarAction
         if ( tlv.getLength() == 0 )
         {
             String msg = I18n.err( I18n.ERR_04006 );
-            log.error( msg );
+            LOG.error( msg );
             throw new DecoderException( msg );
         }
 
@@ -80,7 +83,7 @@ public class InitAndFilterAction extends GrammarAction
 
         if ( IS_DEBUG )
         {
-            log.debug( "Initialize AND filter" );
+            LOG.debug( "Initialize AND filter" );
         }
     }
 }

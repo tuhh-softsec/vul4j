@@ -31,6 +31,7 @@ package org.apache.directory.shared.ldap;
  */
 public class NotImplementedException extends RuntimeException
 {
+    /** The serialVersionUID. */
     static final long serialVersionUID = -5899307402675964298L;
 
 
@@ -46,11 +47,11 @@ public class NotImplementedException extends RuntimeException
     /**
      * Constructs an Exception with a detailed message.
      * 
-     * @param a_msg
+     * @param msg
      *            The message associated with the exception.
      */
-    public NotImplementedException(String a_msg)
+    public NotImplementedException( String msg )
     {
-        super( "N O T   I M P L E M E N T E D   Y E T !\n" + a_msg );
+        super( "N O T   I M P L E M E N T E D   Y E T !\n" + msg );
     }
 }

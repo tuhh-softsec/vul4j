@@ -45,12 +45,15 @@ import org.slf4j.LoggerFactory;
 public class ControlValueAction extends GrammarAction
 {
     /** The logger */
-    private static final Logger log = LoggerFactory.getLogger( ControlValueAction.class );
+    private static final Logger LOG = LoggerFactory.getLogger( ControlValueAction.class );
 
     /** Speedup for logs */
-    private static final boolean IS_DEBUG = log.isDebugEnabled();
+    private static final boolean IS_DEBUG = LOG.isDebugEnabled();
 
 
+    /**
+     * {@inheritDoc}
+     */
     public void action( Asn1Container container ) throws DecoderException
     {
         LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
@@ -85,7 +88,7 @@ public class ControlValueAction extends GrammarAction
 
         if ( IS_DEBUG )
         {
-            log.debug( "Control value : " + StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
+            LOG.debug( "Control value : " + StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
         }
     }
 }

@@ -41,12 +41,15 @@ import org.slf4j.LoggerFactory;
 public class InitLessOrEqualFilterAction extends GrammarAction
 {
     /** The logger */
-    private static final Logger log = LoggerFactory.getLogger( InitLessOrEqualFilterAction.class );
+    private static final Logger LOG = LoggerFactory.getLogger( InitLessOrEqualFilterAction.class );
 
     /** Speedup for logs */
-    private static final boolean IS_DEBUG = log.isDebugEnabled();
+    private static final boolean IS_DEBUG = LOG.isDebugEnabled();
 
 
+    /**
+     * Instantiates a new init less or equal filter action.
+     */
     public InitLessOrEqualFilterAction()
     {
         super( "Initialize Less Or Equal filter" );
@@ -54,7 +57,7 @@ public class InitLessOrEqualFilterAction extends GrammarAction
 
 
     /**
-     * The initialization action
+     * {@inheritDoc}
      */
     public void action( Asn1Container container ) throws DecoderException
     {
@@ -73,7 +76,7 @@ public class InitLessOrEqualFilterAction extends GrammarAction
 
         if ( IS_DEBUG )
         {
-            log.debug( "Initialize Less Or Equal filter" );
+            LOG.debug( "Initialize Less Or Equal filter" );
         }
     }
 }

@@ -87,10 +87,12 @@ public class Csn implements Serializable, Comparable<Csn>
     private transient byte[] bytes;
 
     /** The Timestamp syntax. The last 'z' is _not_ the Time Zone */
-    private static final SimpleDateFormat sdf = new SimpleDateFormat( "yyyyMMddHHmmss" );
+    private static final SimpleDateFormat SDF = new SimpleDateFormat( "yyyyMMddHHmmss" );
     
     /** Padding used to format number with a fixed size */
     private static final String[] PADDING_6 = new String[] { "00000", "0000", "000", "00", "0", "" };
+
+    /** Padding used to format number with a fixed size */
     private static final String[] PADDING_3 = new String[] { "00", "0", "" };
 
 
@@ -119,6 +121,7 @@ public class Csn implements Serializable, Comparable<Csn>
      * &lt;timestamp> # &lt;changeCount> # &lt;replica ID> # &lt;operation number>
      *
      * @param value The String containing the CSN
+     * @throws InvalidCSNException if the value doesn't contain a valid CSN
      */
     public Csn( String value ) throws InvalidCSNException
     {
@@ -160,11 +163,11 @@ public class Csn implements Serializable, Comparable<Csn>
         
         long tempTimestamp = 0L;
         
-        synchronized ( sdf )
+        synchronized ( SDF )
         {
             try
             {
-                tempTimestamp = sdf.parse( realTimestamp ).getTime();
+                tempTimestamp = SDF.parse( realTimestamp ).getTime();
             }
             catch ( ParseException pe )
             {
@@ -306,11 +309,11 @@ public class Csn implements Serializable, Comparable<Csn>
         // Let's transform the Timestamp by removing the mulliseconds and microseconds
         String realTimestamp = timestampStr.substring( 0, 14 );
         
-        synchronized ( sdf )
+        synchronized ( SDF )
         {
             try
             {
-                sdf.parse( realTimestamp ).getTime();
+                SDF.parse( realTimestamp ).getTime();
             }
             catch ( ParseException pe )
             {
@@ -534,9 +537,9 @@ public class Csn implements Serializable, Comparable<Csn>
         {
             StringBuilder buf = new StringBuilder( 40 );
             
-            synchronized( sdf )
+            synchronized( SDF )
             {
-                buf.append( sdf.format( new Date( timestamp ) ) );
+                buf.append( SDF.format( new Date( timestamp ) ) );
             }
             
             // Add the milliseconds part

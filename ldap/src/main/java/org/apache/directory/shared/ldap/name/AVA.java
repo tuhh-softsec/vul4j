@@ -65,7 +65,7 @@ public class AVA implements Cloneable, Comparable<Object>, Externalizable
     private static final long serialVersionUID = 1L;
 
     /** The LoggerFactory used by this class */
-    private static Logger LOG = LoggerFactory.getLogger( AVA.class );
+    private static final Logger LOG = LoggerFactory.getLogger( AVA.class );
 
     /** The normalized Name type */
     private String normType;
@@ -89,9 +89,10 @@ public class AVA implements Cloneable, Comparable<Object>, Externalizable
     /** The length of this atav upName */
     private int length;
 
-    /** Two values used for comparizon */
+    /** Two values used for comparison, case sensitive */
     private static final boolean CASE_SENSITIVE = true;
 
+    /** Two values used for comparison, case insensitive */
     private static final boolean CASE_INSENSITIVE = false;
 
 

@@ -44,12 +44,15 @@ import org.slf4j.LoggerFactory;
 public class StoreReferenceAction extends GrammarAction
 {
     /** The logger */
-    private static final Logger log = LoggerFactory.getLogger( StoreReferenceAction.class );
+    private static final Logger LOG = LoggerFactory.getLogger( StoreReferenceAction.class );
 
     /** Speedup for logs */
-    private static final boolean IS_DEBUG = log.isDebugEnabled();
+    private static final boolean IS_DEBUG = LOG.isDebugEnabled();
 
 
+    /**
+     * Instantiates a new store reference action.
+     */
     public StoreReferenceAction()
     {
         super( "Store a reference" );
@@ -57,7 +60,7 @@ public class StoreReferenceAction extends GrammarAction
 
 
     /**
-     * The initialization action
+     * {@inheritDoc}
      */
     public void action( Asn1Container container ) throws DecoderException
     {
@@ -96,14 +99,14 @@ public class StoreReferenceAction extends GrammarAction
             }
             catch ( LdapURLEncodingException luee )
             {
-                log.error( I18n.err( I18n.ERR_04021, urlStr, luee.getMessage() ) );
+                LOG.error( I18n.err( I18n.ERR_04021, urlStr, luee.getMessage() ) );
                 throw new DecoderException( I18n.err( I18n.ERR_04016, luee.getMessage() ) );
             }
         }
 
         if ( IS_DEBUG )
         {
-            log.debug( "Search reference URL found : {}", url );
+            LOG.debug( "Search reference URL found : {}", url );
         }
 
         // We can have an END transition

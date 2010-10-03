@@ -34,13 +34,22 @@ import org.apache.directory.shared.ldap.message.ResultCodeEnum;
  */
 public class GracefulShutdownResponse extends ExtendedResponseImpl
 {
+    /** The Constant serialVersionUID. */
     private static final long serialVersionUID = -3824715470944544189L;
 
+    /** The OID for the graceful shutdown extended operation response. */
     public static final String EXTENSION_OID = "1.3.6.1.4.1.18060.0.1.4";
 
+    /** The empty response. */
     private static final byte[] EMPTY_RESPONSE = new byte[0];
 
 
+    /**
+     * Instantiates a new graceful shutdown response.
+     *
+     * @param messageId the message id
+     * @param rcode the result code
+     */
     public GracefulShutdownResponse( int messageId, ResultCodeEnum rcode )
     {
         super( messageId, EXTENSION_OID );
@@ -66,6 +75,11 @@ public class GracefulShutdownResponse extends ExtendedResponseImpl
     }
 
 
+    /**
+     * Instantiates a new graceful shutdown response.
+     *
+     * @param messageId the message id
+     */
     public GracefulShutdownResponse( int messageId )
     {
         super( messageId, EXTENSION_OID );

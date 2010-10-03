@@ -39,12 +39,15 @@ import org.slf4j.LoggerFactory;
 public class ModifyAttributeValueAction extends GrammarAction
 {
     /** The logger */
-    private static final Logger log = LoggerFactory.getLogger( ModifyAttributeValueAction.class );
+    private static final Logger LOG = LoggerFactory.getLogger( ModifyAttributeValueAction.class );
 
     /** Speedup for logs */
-    private static final boolean IS_DEBUG = log.isDebugEnabled();
+    private static final boolean IS_DEBUG = LOG.isDebugEnabled();
 
 
+    /**
+     * Instantiates a new modify attribute value action.
+     */
     public ModifyAttributeValueAction()
     {
         super( "Stores AttributeValue" );
@@ -52,7 +55,7 @@ public class ModifyAttributeValueAction extends GrammarAction
 
 
     /**
-     * The initialization action
+     * {@inheritDoc}
      */
     public void action( Asn1Container container )
     {
@@ -88,7 +91,7 @@ public class ModifyAttributeValueAction extends GrammarAction
 
         if ( IS_DEBUG )
         {
-            log.debug( "Value modified : {}", value );
+            LOG.debug( "Value modified : {}", value );
         }
     }
 }

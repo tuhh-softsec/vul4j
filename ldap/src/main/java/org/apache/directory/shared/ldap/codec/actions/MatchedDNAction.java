@@ -44,12 +44,15 @@ import org.slf4j.LoggerFactory;
 public class MatchedDNAction extends GrammarAction
 {
     /** The logger */
-    private static final Logger log = LoggerFactory.getLogger( MatchedDNAction.class );
+    private static final Logger LOG = LoggerFactory.getLogger( MatchedDNAction.class );
 
     /** Speedup for logs */
-    private static final boolean IS_DEBUG = log.isDebugEnabled();
+    private static final boolean IS_DEBUG = LOG.isDebugEnabled();
 
 
+    /**
+     * Instantiates a new matched dn action.
+     */
     public MatchedDNAction()
     {
         super( "Store matched DN" );
@@ -57,7 +60,7 @@ public class MatchedDNAction extends GrammarAction
 
 
     /**
-     * The initialization action
+     * {@inheritDoc}
      */
     public void action( Asn1Container container ) throws DecoderException
     {
@@ -102,7 +105,7 @@ public class MatchedDNAction extends GrammarAction
                         // This is for the client side. We will never decode LdapResult on the server
                         String msg = I18n.err( I18n.ERR_04013, dnStr, StringTools.dumpBytes( dnBytes ), ine
                             .getLocalizedMessage() );
-                        log.error( msg );
+                        LOG.error( msg );
 
                         throw new DecoderException( I18n.err( I18n.ERR_04014, ine.getLocalizedMessage() ) );
                     }
@@ -110,7 +113,7 @@ public class MatchedDNAction extends GrammarAction
                     break;
 
                 default:
-                    log.warn( "The matched DN should not be set when the result code is one of NoSuchObject,"
+                    LOG.warn( "The matched DN should not be set when the result code is one of NoSuchObject,"
                         + " AliasProblem, InvalidDNSyntax or AliasDreferencingProblem" );
 
                     matchedDN = DN.EMPTY_DN;
@@ -120,7 +123,7 @@ public class MatchedDNAction extends GrammarAction
 
         if ( IS_DEBUG )
         {
-            log.debug( "The matchedDN is " + matchedDN );
+            LOG.debug( "The matchedDN is " + matchedDN );
         }
 
         ldapResult.setMatchedDn( matchedDN );

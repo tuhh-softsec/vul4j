@@ -40,12 +40,15 @@ import org.slf4j.LoggerFactory;
 public class ErrorMessageAction extends GrammarAction
 {
     /** The logger */
-    private static final Logger log = LoggerFactory.getLogger( ErrorMessageAction.class );
+    private static final Logger LOG = LoggerFactory.getLogger( ErrorMessageAction.class );
 
     /** Speedup for logs */
-    private static final boolean IS_DEBUG = log.isDebugEnabled();
+    private static final boolean IS_DEBUG = LOG.isDebugEnabled();
 
 
+    /**
+     * Instantiates a new error message action.
+     */
     public ErrorMessageAction()
     {
         super( "Store error message" );
@@ -53,7 +56,7 @@ public class ErrorMessageAction extends GrammarAction
 
 
     /**
-     * The initialization action
+     * {@inheritDoc}
      */
     public void action( Asn1Container container ) throws DecoderException
     {
@@ -83,7 +86,7 @@ public class ErrorMessageAction extends GrammarAction
 
         if ( IS_DEBUG )
         {
-            log.debug( "The error message is : " + errorMessage );
+            LOG.debug( "The error message is : " + errorMessage );
         }
     }
 }

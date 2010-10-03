@@ -38,38 +38,53 @@ import org.slf4j.LoggerFactory;
  * An extended operation requesting the server to shutdown it's LDAP service
  * port while allowing established clients to complete or abandon operations
  * already in progress. More information about this extended request is
- * available here: <a href="ahttp://docs.safehaus.org:8080/x/GR">LDAP Extensions
+ * available here: <a href="http://docs.safehaus.org:8080/x/GR">LDAP Extensions
  * for Graceful Shutdown</a>.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 public class GracefulShutdownRequest extends ExtendedRequestImpl
 {
-    private static final Logger log = LoggerFactory.getLogger( GracefulShutdownRequest.class );
+    /** The logger. */
+    private static final Logger LOG = LoggerFactory.getLogger( GracefulShutdownRequest.class );
 
+    /** The serialVersionUID. */
     private static final long serialVersionUID = -4682291068700593492L;
 
+    /** The OID for the graceful shutdown extended operation request. */
     public static final String EXTENSION_OID = "1.3.6.1.4.1.18060.0.1.3";
 
-    /** Undetermined value used for timeOffline */
+    /** Undetermined value used for offline time */
     public static final int UNDETERMINED = 0;
 
     /** The shutdown is immediate */
     public static final int NOW = 0;
 
-    /** offline Time after disconnection */
+    /** Offline time after disconnection */
     private int timeOffline;
 
     /** Delay before disconnection */
     private int delay;
 
 
+    /**
+     * Instantiates a new graceful shutdown request.
+     *
+     * @param messageId the message id
+     */
     public GracefulShutdownRequest( int messageId )
     {
         this( messageId, UNDETERMINED, NOW );
     }
 
 
+    /**
+     * Instantiates a new graceful shutdown request.
+     *
+     * @param messageId the message id
+     * @param timeOffline the offline time after disconnection, in minutes
+     * @param delay the delay before disconnection, in seconds
+     */
     public GracefulShutdownRequest( int messageId, int timeOffline, int delay )
     {
         super( messageId );
@@ -79,6 +94,9 @@ public class GracefulShutdownRequest extends ExtendedRequestImpl
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public void setRequestValue( byte[] requestValue )
     {
         GracefulShutdownDecoder decoder = new GracefulShutdownDecoder();
@@ -102,12 +120,15 @@ public class GracefulShutdownRequest extends ExtendedRequestImpl
         }
         catch ( DecoderException e )
         {
-            log.error( I18n.err( I18n.ERR_04165 ), e );
+            LOG.error( I18n.err( I18n.ERR_04165 ), e );
             throw new RuntimeException( e );
         }
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public ExtendedResponse createExtendedResponse( String id, byte[] berValue, int offset, int length )
         throws NamingException
     {
@@ -131,7 +152,7 @@ public class GracefulShutdownRequest extends ExtendedRequestImpl
             }
             catch ( EncoderException e )
             {
-                log.error( I18n.err( I18n.ERR_04164 ), e );
+                LOG.error( I18n.err( I18n.ERR_04164 ), e );
                 throw new RuntimeException( e );
             }
         }
@@ -140,6 +161,9 @@ public class GracefulShutdownRequest extends ExtendedRequestImpl
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public ResultResponse getResultResponse()
     {
         if ( response == null )
@@ -156,24 +180,44 @@ public class GracefulShutdownRequest extends ExtendedRequestImpl
     // Parameters of the Extended Request Payload
     // -----------------------------------------------------------------------
 
+    /**
+     * Gets the delay before disconnection, in seconds.
+     *
+     * @return the delay before disconnection
+     */
     public int getDelay()
     {
         return delay;
     }
 
 
+    /**
+     * Sets the delay befor disconnection, in seconds.
+     *
+     * @param delay the new delay before disconnection
+     */
     public void setDelay( int delay )
     {
         this.delay = delay;
     }
 
 
+    /**
+     * Gets the offline time after disconnection, in minutes.
+     *
+     * @return the offline time after disconnection
+     */
     public int getTimeOffline()
     {
         return timeOffline;
     }
 
 
+    /**
+     * Sets the time offline after disconnection, in minutes.
+     *
+     * @param timeOffline the new time offline after disconnection
+     */
     public void setTimeOffline( int timeOffline )
     {
         this.timeOffline = timeOffline;

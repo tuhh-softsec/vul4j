@@ -45,7 +45,7 @@ public class ACIItemSyntaxChecker extends SyntaxChecker
     private static final long serialVersionUID = 1L;
 
     /** An instance of ACI Item Checker */
-    private ACIItemChecker ACI_ITEM_CHECKER;
+    private ACIItemChecker aciItemChecker;
 
     /**
      * Creates a new instance of ACIItemSyntaxChecker
@@ -90,9 +90,9 @@ public class ACIItemSyntaxChecker extends SyntaxChecker
 
         try
         {
-            synchronized( ACI_ITEM_CHECKER )
+            synchronized( aciItemChecker )
             {
-                ACI_ITEM_CHECKER.parse( strValue );
+                aciItemChecker.parse( strValue );
             }
             
             LOG.debug( "Syntax valid for '{}'", value );
@@ -111,6 +111,6 @@ public class ACIItemSyntaxChecker extends SyntaxChecker
      */
     public void setSchemaManager( SchemaManager schemaManager )
     {
-        ACI_ITEM_CHECKER = new ACIItemChecker( schemaManager );
+        aciItemChecker = new ACIItemChecker( schemaManager );
     }
 }

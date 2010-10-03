@@ -19,6 +19,7 @@
  */
 package org.apache.directory.shared.ldap.message;
 
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -35,6 +36,7 @@ import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+
 /**
  * A container for Search parameters. It replaces the SearchControls.
  *
@@ -43,34 +45,32 @@ import org.slf4j.LoggerFactory;
 public class SearchParams
 {
     /** The LoggerFactory used by this class */
-    private static Logger LOG = LoggerFactory.getLogger( SearchParams.class );
- 
+    private static final Logger LOG = LoggerFactory.getLogger( SearchParams.class );
+
     /** The search scope. Default to OBJECT */
     private SearchScope scope = SearchScope.OBJECT;
-    
+
     /** The time limit. Default to 0 (infinite) */
     private int timeLimit = 0;
-    
+
     /** The size limit. Default to 0 (infinite) */
     private long sizeLimit = 0;
-    
+
     /** If we should return only types. Default to false */
     private boolean typesOnly = false;
-    
+
     /** The aliasDerefMode. Default to DEREF_ALWAYS */
     private AliasDerefMode aliasDerefMode = AliasDerefMode.DEREF_ALWAYS;
-    
+
     /** The list of attributes to return, as Strings. Default to an empty set */
     private Set<String> returningAttributesStr;
-    
+
     /** The list of attributes to return, once it has been normalized. Default to an empty set */
     private Set<AttributeTypeOptions> returningAttributes;
-    
+
     /** The set of controls for this search. Default to an empty set */
     private Set<Control> controls;
-    
-    /** TODO : Remove me ! */
-    private SearchControls searchControls;
+
 
     /**
      * Creates a new instance of SearchContext, with all the values set to 
@@ -83,7 +83,7 @@ public class SearchParams
         controls = new HashSet<Control>();
     }
 
-    
+
     /**
      * @return the scope
      */
@@ -91,7 +91,7 @@ public class SearchParams
     {
         return scope;
     }
-    
+
 
     /**
      * @param scope the scope to set
@@ -100,7 +100,7 @@ public class SearchParams
     {
         this.scope = scope;
     }
-    
+
 
     /**
      * @return the timeLimit
@@ -109,7 +109,7 @@ public class SearchParams
     {
         return timeLimit;
     }
-    
+
 
     /**
      * @param timeLimit the timeLimit to set
@@ -118,7 +118,7 @@ public class SearchParams
     {
         this.timeLimit = timeLimit;
     }
-    
+
 
     /**
      * @return the sizeLimit
@@ -127,7 +127,7 @@ public class SearchParams
     {
         return sizeLimit;
     }
-    
+
 
     /**
      * @param sizeLimit the sizeLimit to set
@@ -136,7 +136,7 @@ public class SearchParams
     {
         this.sizeLimit = sizeLimit;
     }
-    
+
 
     /**
      * @return the typesOnly
@@ -145,7 +145,7 @@ public class SearchParams
     {
         return typesOnly;
     }
-    
+
 
     /**
      * @param typesOnly the typesOnly to set
@@ -154,7 +154,7 @@ public class SearchParams
     {
         this.typesOnly = typesOnly;
     }
-    
+
 
     /**
      * @return the aliasDerefMode
@@ -163,7 +163,7 @@ public class SearchParams
     {
         return aliasDerefMode;
     }
-    
+
 
     /**
      * @param aliasDerefMode the aliasDerefMode to set
@@ -172,7 +172,7 @@ public class SearchParams
     {
         this.aliasDerefMode = aliasDerefMode;
     }
-    
+
 
     /**
      * @return the returningAttributes
@@ -182,7 +182,7 @@ public class SearchParams
         return returningAttributes;
     }
 
-    
+
     /**
      * @return the returningAttributes
      */
@@ -191,7 +191,7 @@ public class SearchParams
         return returningAttributesStr;
     }
 
-    
+
     /**
      * Normalize the ReturningAttributes. It reads all the String from the returningAttributesString,
      * and grab the associated AttributeType from the schema to store it into the returningAttributes
@@ -207,10 +207,10 @@ public class SearchParams
             {
                 String id = SchemaUtils.stripOptions( returnAttribute );
                 Set<String> options = SchemaUtils.getOptions( returnAttribute );
-                
+
                 AttributeType attributeType = schemaManager.lookupAttributeTypeRegistry( id );
                 AttributeTypeOptions attrOptions = new AttributeTypeOptions( attributeType, options );
-               
+
                 returningAttributes.add( attrOptions );
             }
             catch ( LdapException ne )
@@ -221,7 +221,7 @@ public class SearchParams
         }
     }
 
-    
+
     /**
      * @param returningAttributes the returningAttributes to set
      */
@@ -271,24 +271,25 @@ public class SearchParams
     {
         this.controls.add( control );
     }
-    
-    
-    public SearchControls getSearchControls()
-    {
-        return searchControls;
-    }
 
 
+    /**
+     * Creates a {@link SearchParams} from JNDI search controls.
+     *
+     * @param searchControls the search controls
+     * @param aliasDerefMode the alias deref mode
+     * @return the search params
+     */
     public static SearchParams toSearchParams( SearchControls searchControls, AliasDerefMode aliasDerefMode )
     {
         SearchParams searchParams = new SearchParams();
-        
+
         searchParams.setAliasDerefMode( aliasDerefMode );
         searchParams.setTimeLimit( searchControls.getTimeLimit() );
         searchParams.setSizeLimit( searchControls.getCountLimit() );
         searchParams.setScope( SearchScope.getSearchScope( searchControls.getSearchScope() ) );
         searchParams.setTypesOnly( searchControls.getReturningObjFlag() );
-        
+
         if ( searchControls.getReturningAttributes() != null )
         {
             for ( String returningAttribute : searchControls.getReturningAttributes() )
@@ -296,14 +297,11 @@ public class SearchParams
                 searchParams.addReturningAttributes( returningAttribute );
             }
         }
-        
-        searchParams.searchControls = searchControls;
-        
+
         return searchParams;
     }
-    
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
@@ -315,12 +313,13 @@ public class SearchParams
         sb.append( "    scope : " ).append( scope ).append( "\n" );
         sb.append( "    Alias dereferencing : " ).append( aliasDerefMode ).append( "\n" );
         sb.append( "    types only : " ).append( typesOnly ).append( "\n" );
-        
+
         if ( returningAttributesStr.size() != 0 )
         {
-            sb.append( "    returning attributes : " ).append( StringTools.setToString( returningAttributesStr ) ).append( "\n" );
+            sb.append( "    returning attributes : " ).append( StringTools.setToString( returningAttributesStr ) )
+                .append( "\n" );
         }
-        
+
         if ( timeLimit > 0 )
         {
             sb.append( "    timeLimit : " ).append( timeLimit ).append( "\n" );
@@ -348,7 +347,7 @@ public class SearchParams
                     append( control.getClass().getName() ).append( "\n" );
             }
         }
-        
+
         return sb.toString();
     }
 }

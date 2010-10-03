@@ -46,7 +46,7 @@ public class SubtreeSpecificationSyntaxChecker extends SyntaxChecker
     private static final long serialVersionUID = 1L;
 
     /** The associated checker */ 
-    private SubtreeSpecificationChecker SUBTREE_SPECIFICATION_CHECKER;
+    private SubtreeSpecificationChecker subtreeSpecificationChecker;
 
     /**
      * Creates an instance of SubtreeSpecificationSyntaxChecker
@@ -91,9 +91,9 @@ public class SubtreeSpecificationSyntaxChecker extends SyntaxChecker
 
         try
         {
-            synchronized( SUBTREE_SPECIFICATION_CHECKER )
+            synchronized( subtreeSpecificationChecker )
             {
-                SUBTREE_SPECIFICATION_CHECKER.parse( strValue );
+                subtreeSpecificationChecker.parse( strValue );
             }
             
             LOG.debug( "Syntax valid for '{}'", value );
@@ -112,6 +112,6 @@ public class SubtreeSpecificationSyntaxChecker extends SyntaxChecker
      */
     public void setSchemaManager( SchemaManager schemaManager )
     {
-        SUBTREE_SPECIFICATION_CHECKER = new SubtreeSpecificationChecker( schemaManager );
+        subtreeSpecificationChecker = new SubtreeSpecificationChecker( schemaManager );
     }
 }

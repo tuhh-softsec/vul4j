@@ -41,12 +41,15 @@ import org.slf4j.LoggerFactory;
 public class ResponseNameAction extends GrammarAction
 {
     /** The logger */
-    private static final Logger log = LoggerFactory.getLogger( ResponseNameAction.class );
+    private static final Logger LOG = LoggerFactory.getLogger( ResponseNameAction.class );
 
     /** Speedup for logs */
-    private static final boolean IS_DEBUG = log.isDebugEnabled();
+    private static final boolean IS_DEBUG = LOG.isDebugEnabled();
 
 
+    /**
+     * Instantiates a new response name action.
+     */
     public ResponseNameAction()
     {
         super( "Store response name" );
@@ -54,7 +57,7 @@ public class ResponseNameAction extends GrammarAction
 
 
     /**
-     * The initialization action
+     * {@inheritDoc}
      */
     public void action( Asn1Container container ) throws DecoderException
     {
@@ -71,7 +74,7 @@ public class ResponseNameAction extends GrammarAction
         if ( tlv.getLength() == 0 )
         {
             String msg = I18n.err( I18n.ERR_04017 );
-            log.error( msg );
+            LOG.error( msg );
             throw new DecoderException( msg );
         }
         else
@@ -85,7 +88,7 @@ public class ResponseNameAction extends GrammarAction
 
         if ( IS_DEBUG )
         {
-            log.debug( "OID read : {}", extendedResponse.getResponseName() );
+            LOG.debug( "OID read : {}", extendedResponse.getResponseName() );
         }
     }
 }

@@ -21,7 +21,6 @@ package org.apache.directory.shared.ldap.message.extended;
 
 
 import java.nio.ByteBuffer;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
@@ -51,13 +50,16 @@ import org.slf4j.LoggerFactory;
  */
 public class GracefulDisconnect extends ExtendedResponseImpl
 {
+    /** The serialVersionUID. */
     private static final long serialVersionUID = -4682291068700593492L;
 
+    /** The OID for the graceful disconnect extended operation response. */
     public static final String EXTENSION_OID = "1.3.6.1.4.1.18060.0.1.5";
 
-    private static final Logger log = LoggerFactory.getLogger( GracefulDisconnect.class );
+    /** The logger. */
+    private static final Logger LOG = LoggerFactory.getLogger( GracefulDisconnect.class );
 
-    /** offline Time after disconnection */
+    /** Offline time after disconnection */
     private int timeOffline;
 
     /** Delay before disconnection */
@@ -67,6 +69,12 @@ public class GracefulDisconnect extends ExtendedResponseImpl
     private Referral replicatedContexts = new ReferralImpl();
 
 
+    /**
+     * Instantiates a new graceful disconnect.
+     *
+     * @param responseValue the response value
+     * @throws DecoderException if the response value can't be decoded
+     */
     public GracefulDisconnect( byte[] responseValue ) throws DecoderException
     {
         super( 0, EXTENSION_OID );
@@ -85,6 +93,12 @@ public class GracefulDisconnect extends ExtendedResponseImpl
     }
 
 
+    /**
+     * Instantiates a new graceful disconnect.
+     *
+     * @param timeOffline the offline time after disconnect, in minutes
+     * @param delay the delay before disconnect, in seconds
+     */
     public GracefulDisconnect( int timeOffline, int delay )
     {
         super( 0, EXTENSION_OID );
@@ -125,7 +139,7 @@ public class GracefulDisconnect extends ExtendedResponseImpl
         }
         catch ( DecoderException e )
         {
-            log.error( I18n.err( I18n.ERR_04169 ), e );
+            LOG.error( I18n.err( I18n.ERR_04169 ), e );
             throw e;
         }
     }
@@ -136,7 +150,6 @@ public class GracefulDisconnect extends ExtendedResponseImpl
         org.apache.directory.shared.ldap.codec.extended.operations.gracefulDisconnect.GracefulDisconnect codec = new org.apache.directory.shared.ldap.codec.extended.operations.gracefulDisconnect.GracefulDisconnect();
         codec.setTimeOffline( this.timeOffline );
         codec.setDelay( this.delay );
-        Iterator<String> contexts = this.replicatedContexts.getLdapUrls().iterator();
 
         for ( String ldapUrlStr : replicatedContexts.getLdapUrls() )
         {
@@ -148,7 +161,7 @@ public class GracefulDisconnect extends ExtendedResponseImpl
             }
             catch ( LdapURLEncodingException e )
             {
-                log.error( I18n.err( I18n.ERR_04170, ldapUrlStr ), e );
+                LOG.error( I18n.err( I18n.ERR_04170, ldapUrlStr ), e );
                 continue;
             }
 
@@ -161,7 +174,7 @@ public class GracefulDisconnect extends ExtendedResponseImpl
         }
         catch ( EncoderException e )
         {
-            log.error( I18n.err( I18n.ERR_04171 ), e );
+            LOG.error( I18n.err( I18n.ERR_04171 ), e );
             throw new RuntimeException( e );
         }
     }
@@ -192,7 +205,7 @@ public class GracefulDisconnect extends ExtendedResponseImpl
     /**
      * Sets the reponse OID specific encoded response values.
      * 
-     * @param value the response specific encoded response values.
+     * @param responseValue the response specific encoded response values.
      */
     public void setResponseValue( byte[] responseValue )
     {
@@ -206,14 +219,13 @@ public class GracefulDisconnect extends ExtendedResponseImpl
         }
         catch ( DecoderException e )
         {
-            log.error( I18n.err( I18n.ERR_04172 ), e );
+            LOG.error( I18n.err( I18n.ERR_04172 ), e );
         }
 
         org.apache.directory.shared.ldap.codec.extended.operations.gracefulDisconnect.GracefulDisconnect codec = container
             .getGracefulDisconnect();
         this.delay = codec.getDelay();
         this.timeOffline = codec.getTimeOffline();
-        List<LdapURL> contexts = codec.getReplicatedContexts();
 
         for ( LdapURL ldapUrl : codec.getReplicatedContexts() )
         {
@@ -260,30 +272,55 @@ public class GracefulDisconnect extends ExtendedResponseImpl
     // Parameters of the Extended Response Value
     // -----------------------------------------------------------------------
 
-    public void setDelay( int delay )
-    {
-        this.delay = delay;
-    }
-
-
-    public void setTimeOffline( int timeOffline )
-    {
-        this.timeOffline = timeOffline;
-    }
-
-
+    /**
+     * Gets the delay before disconnection, in seconds.
+     *
+     * @return the delay before disconnection
+     */
     public int getDelay()
     {
         return delay;
     }
 
 
+    /**
+     * Sets the delay befor disconnection, in seconds.
+     *
+     * @param delay the new delay before disconnection
+     */
+    public void setDelay( int delay )
+    {
+        this.delay = delay;
+    }
+
+
+    /**
+     * Gets the offline time after disconnection, in minutes.
+     *
+     * @return the offline time after disconnection
+     */
     public int getTimeOffline()
     {
         return timeOffline;
     }
 
 
+    /**
+     * Sets the time offline after disconnection, in minutes.
+     *
+     * @param timeOffline the new time offline after disconnection
+     */
+    public void setTimeOffline( int timeOffline )
+    {
+        this.timeOffline = timeOffline;
+    }
+
+
+    /**
+     * Gets the replicated contexts.
+     *
+     * @return the replicated contexts
+     */
     public Referral getReplicatedContexts()
     {
         return replicatedContexts;

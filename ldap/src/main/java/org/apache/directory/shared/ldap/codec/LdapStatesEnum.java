@@ -157,7 +157,7 @@ public class LdapStatesEnum implements States
     // States debug strings
     // =========================================================================
     /** A string representation of all the states */
-    private static String[] LdapMessageString = new String[]
+    private static final String[] LDAP_MESSAGE_STRING = new String[]
         { 
         "START_STATE",
         "LDAP_MESSAGE_STATE",
@@ -348,6 +348,6 @@ public class LdapStatesEnum implements States
      */
     public String getState( int state )
     {
-        return ( ( state == GRAMMAR_END ) ? "LDAP_MESSAGE_END_STATE" : LdapMessageString[state] );
+        return ( ( state == GRAMMAR_END ) ? "LDAP_MESSAGE_END_STATE" : LDAP_MESSAGE_STRING[state] );
     }
 }

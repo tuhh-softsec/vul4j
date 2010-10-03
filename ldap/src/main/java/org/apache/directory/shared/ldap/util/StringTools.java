@@ -668,8 +668,8 @@ public final class StringTools
         {
             int index = ii << 1;
             
-            String l_digit = hexString.substring( index, index + 2 );
-            buf[ii] = ( byte ) Integer.parseInt( l_digit, 16 );
+            String digit = hexString.substring( index, index + 2 );
+            buf[ii] = ( byte ) Integer.parseInt( digit, 16 );
         }
         
         return buf;

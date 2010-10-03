@@ -38,12 +38,15 @@ import org.slf4j.LoggerFactory;
 public class SearchResultAttributeValueAction extends GrammarAction
 {
     /** The logger */
-    private static final Logger log = LoggerFactory.getLogger( SearchResultAttributeValueAction.class );
+    private static final Logger LOG = LoggerFactory.getLogger( SearchResultAttributeValueAction.class );
 
     /** Speedup for logs */
-    private static final boolean IS_DEBUG = log.isDebugEnabled();
+    private static final boolean IS_DEBUG = LOG.isDebugEnabled();
 
 
+    /**
+     * Instantiates a new search result attribute value action.
+     */
     public SearchResultAttributeValueAction()
     {
         super( "Stores AttributeValue" );
@@ -51,7 +54,7 @@ public class SearchResultAttributeValueAction extends GrammarAction
 
 
     /**
-     * The initialization action
+     * {@inheritDoc}
      */
     public void action( Asn1Container container )
     {
@@ -67,7 +70,7 @@ public class SearchResultAttributeValueAction extends GrammarAction
         {
             searchResultEntry.addAttributeValue( "" );
 
-            log.debug( "The attribute value is null" );
+            LOG.debug( "The attribute value is null" );
         }
         else
         {
@@ -77,14 +80,14 @@ public class SearchResultAttributeValueAction extends GrammarAction
 
                 if ( IS_DEBUG )
                 {
-                    log.debug( "Attribute value {}", StringTools.dumpBytes( ( byte[] ) value ) );
+                    LOG.debug( "Attribute value {}", StringTools.dumpBytes( ( byte[] ) value ) );
                 }
             }
             else
             {
                 value = StringTools.utf8ToString( tlv.getValue().getData() );
 
-                log.debug( "Attribute value {}", value );
+                LOG.debug( "Attribute value {}", value );
             }
 
             searchResultEntry.addAttributeValue( value );

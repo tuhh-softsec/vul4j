@@ -45,7 +45,7 @@ import org.slf4j.LoggerFactory;
 public class ConcreteNameComponentNormalizer implements NameComponentNormalizer
 {
     /** The LoggerFactory used by this Interceptor */
-    private static Logger LOG = LoggerFactory.getLogger( ConcreteNameComponentNormalizer.class );
+    private static final Logger LOG = LoggerFactory.getLogger( ConcreteNameComponentNormalizer.class );
 
     /** the schemaManager used to dynamically resolve Normalizers */
     private final SchemaManager schemaManager;
@@ -105,7 +105,7 @@ public class ConcreteNameComponentNormalizer implements NameComponentNormalizer
     }
 
     /**
-     * @see NameComponentNormalizer#normalizeByName(String, String)
+     * {@inheritDoc}
      */
     public Object normalizeByName( String name, String value ) throws LdapException
     {
@@ -136,7 +136,7 @@ public class ConcreteNameComponentNormalizer implements NameComponentNormalizer
 
 
     /**
-     * @see NameComponentNormalizer#normalizeByName(String, String)
+     * {@inheritDoc}
      */
     public Object normalizeByName( String name, byte[] value ) throws LdapException
     {
@@ -164,7 +164,7 @@ public class ConcreteNameComponentNormalizer implements NameComponentNormalizer
 
 
     /**
-     * @see NameComponentNormalizer#normalizeByOid(String, String)
+     * {@inheritDoc}
      */
     public Object normalizeByOid( String oid, String value ) throws LdapException
     {
@@ -173,7 +173,7 @@ public class ConcreteNameComponentNormalizer implements NameComponentNormalizer
 
 
     /**
-     * @see NameComponentNormalizer#normalizeByOid(String, String)
+     * {@inheritDoc}
      */
     public Object normalizeByOid( String oid, byte[] value ) throws LdapException
     {

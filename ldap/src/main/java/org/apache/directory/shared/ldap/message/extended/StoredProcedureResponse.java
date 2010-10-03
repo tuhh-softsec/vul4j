@@ -23,13 +23,28 @@ package org.apache.directory.shared.ldap.message.extended;
 import org.apache.directory.shared.ldap.message.ExtendedResponseImpl;
 
 
+/**
+ * The response sent back from the server when a {@link StoredProcedureRequest}
+ * is sent.
+ * 
+ * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
+ */
 public class StoredProcedureResponse extends ExtendedResponseImpl
 {
+    /** The Constant serialVersionUID. */
+    private static final long serialVersionUID = 7689434378578829994L;
+
+    /** The OID for the stored procedure extended operation response. */
+    public static final String EXTENSION_OID = "1.3.6.1.4.1.18060.0.1.7";
+
+
+    /**
+     * Instantiates a new stored procedure response.
+     *
+     * @param messageId the message id
+     */
     public StoredProcedureResponse( int messageId )
     {
         super( messageId, EXTENSION_OID );
     }
-
-    private static final long serialVersionUID = 1L;
-    public static final String EXTENSION_OID = "1.3.6.1.4.1.18060.0.1.7";
 }

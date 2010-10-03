@@ -42,12 +42,15 @@ import org.slf4j.LoggerFactory;
 public class StoreAnyAction extends GrammarAction
 {
     /** The logger */
-    private static final Logger log = LoggerFactory.getLogger( StoreAnyAction.class );
+    private static final Logger LOG = LoggerFactory.getLogger( StoreAnyAction.class );
 
     /** Speedup for logs */
-    private static final boolean IS_DEBUG = log.isDebugEnabled();
+    private static final boolean IS_DEBUG = LOG.isDebugEnabled();
 
 
+    /**
+     * Instantiates a new store any action.
+     */
     public StoreAnyAction()
     {
         super( "Store a any value" );
@@ -55,7 +58,7 @@ public class StoreAnyAction extends GrammarAction
 
 
     /**
-     * The initialization action
+     * {@inheritDoc}
      */
     public void action( Asn1Container container ) throws DecoderException
     {
@@ -71,7 +74,7 @@ public class StoreAnyAction extends GrammarAction
         if ( tlv.getLength() == 0 )
         {
             String msg = I18n.err( I18n.ERR_04019 );
-            log.error( msg );
+            LOG.error( msg );
             throw new DecoderException( msg );
         }
 
@@ -84,7 +87,7 @@ public class StoreAnyAction extends GrammarAction
 
         if ( IS_DEBUG )
         {
-            log.debug( "Stored a any substring : {}", any );
+            LOG.debug( "Stored a any substring : {}", any );
         }
     }
 }

@@ -39,12 +39,15 @@ import org.slf4j.LoggerFactory;
 public class ServerSASLCredsAction extends GrammarAction
 {
     /** The logger */
-    private static final Logger log = LoggerFactory.getLogger( ServerSASLCredsAction.class );
+    private static final Logger LOG = LoggerFactory.getLogger( ServerSASLCredsAction.class );
 
     /** Speedup for logs */
-    private static final boolean IS_DEBUG = log.isDebugEnabled();
+    private static final boolean IS_DEBUG = LOG.isDebugEnabled();
 
 
+    /**
+     * Instantiates a new server sasl creds action.
+     */
     public ServerSASLCredsAction()
     {
         super( "Store server sasl credentials value" );
@@ -52,7 +55,7 @@ public class ServerSASLCredsAction extends GrammarAction
 
 
     /**
-     * The initialization action
+     * {@inheritDoc}
      */
     public void action( Asn1Container container ) throws DecoderException
     {
@@ -82,7 +85,7 @@ public class ServerSASLCredsAction extends GrammarAction
 
         if ( IS_DEBUG )
         {
-            log.debug( "The SASL credentials value is : {}", StringTools.dumpBytes( serverSaslCreds ) );
+            LOG.debug( "The SASL credentials value is : {}", StringTools.dumpBytes( serverSaslCreds ) );
         }
     }
 }

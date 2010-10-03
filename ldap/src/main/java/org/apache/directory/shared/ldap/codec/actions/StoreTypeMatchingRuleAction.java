@@ -41,13 +41,17 @@ import org.slf4j.LoggerFactory;
  */
 public class StoreTypeMatchingRuleAction extends GrammarAction
 {
-    /** The logger */
-    private static final Logger log = LoggerFactory.getLogger( StoreTypeMatchingRuleAction.class );
+
+    /** The logger. */
+    private static final Logger LOG = LoggerFactory.getLogger( StoreTypeMatchingRuleAction.class );
 
     /** Speedup for logs */
-    private static final boolean IS_DEBUG = log.isDebugEnabled();
+    private static final boolean IS_DEBUG = LOG.isDebugEnabled();
 
 
+    /**
+     * Instantiates a new store type matching rule action.
+     */
     public StoreTypeMatchingRuleAction()
     {
         super( "Store matching type Value" );
@@ -55,7 +59,7 @@ public class StoreTypeMatchingRuleAction extends GrammarAction
 
 
     /**
-     * The initialization action
+     * {@inheritDoc}
      */
     public void action( Asn1Container container ) throws DecoderException
     {
@@ -67,7 +71,7 @@ public class StoreTypeMatchingRuleAction extends GrammarAction
         if ( tlv.getLength() == 0 )
         {
             String msg = I18n.err( I18n.ERR_04022 );
-            log.error( msg );
+            LOG.error( msg );
             throw new DecoderException( msg );
         }
         else
@@ -81,7 +85,7 @@ public class StoreTypeMatchingRuleAction extends GrammarAction
 
             if ( IS_DEBUG )
             {
-                log.debug( "Stored a type matching rule : {}", type );
+                LOG.debug( "Stored a type matching rule : {}", type );
             }
         }
     }

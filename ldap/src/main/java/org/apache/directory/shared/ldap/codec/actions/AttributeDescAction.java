@@ -39,12 +39,15 @@ import org.slf4j.LoggerFactory;
 public class AttributeDescAction extends GrammarAction
 {
     /** The logger */
-    private static final Logger log = LoggerFactory.getLogger( AttributeDescAction.class );
+    private static final Logger LOG = LoggerFactory.getLogger( AttributeDescAction.class );
 
     /** Speedup for logs */
-    private static final boolean IS_DEBUG = log.isDebugEnabled();
+    private static final boolean IS_DEBUG = LOG.isDebugEnabled();
 
 
+    /**
+     * Instantiates a new attribute desc action.
+     */
     public AttributeDescAction()
     {
         super( "Store attribute description" );
@@ -52,7 +55,7 @@ public class AttributeDescAction extends GrammarAction
 
 
     /**
-     * The initialization action
+     * {@inheritDoc}
      */
     public void action( Asn1Container container ) throws DecoderException
     {
@@ -79,7 +82,7 @@ public class AttributeDescAction extends GrammarAction
 
         if ( IS_DEBUG )
         {
-            log.debug( "Decoded Attribute Description : {}", attributeDescription );
+            LOG.debug( "Decoded Attribute Description : {}", attributeDescription );
         }
     }
 }

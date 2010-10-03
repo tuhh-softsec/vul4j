@@ -46,12 +46,15 @@ import org.slf4j.LoggerFactory;
 public class ReferralAction extends GrammarAction
 {
     /** The logger */
-    private static final Logger log = LoggerFactory.getLogger( ReferralAction.class );
+    private static final Logger LOG = LoggerFactory.getLogger( ReferralAction.class );
 
     /** Speedup for logs */
-    private static final boolean IS_DEBUG = log.isDebugEnabled();
+    private static final boolean IS_DEBUG = LOG.isDebugEnabled();
 
 
+    /**
+     * Instantiates a new referral action.
+     */
     public ReferralAction()
     {
         super( "Add a referral" );
@@ -59,7 +62,7 @@ public class ReferralAction extends GrammarAction
 
 
     /**
-     * The initialization action
+     * {@inheritDoc}
      */
     public void action( Asn1Container container ) throws DecoderException
     {
@@ -86,13 +89,13 @@ public class ReferralAction extends GrammarAction
                 catch ( LdapURLEncodingException luee )
                 {
                     String badUrl = StringTools.utf8ToString( tlv.getValue().getData() );
-                    log.error( I18n.err( I18n.ERR_04015, badUrl, luee.getMessage() ) );
+                    LOG.error( I18n.err( I18n.ERR_04015, badUrl, luee.getMessage() ) );
                     throw new DecoderException( I18n.err( I18n.ERR_04016, luee.getMessage() ) );
                 }
             }
             else
             {
-                log.warn( "The Referral error message is not allowed when havind an error code no equals to REFERRAL" );
+                LOG.warn( "The Referral error message is not allowed when havind an error code no equals to REFERRAL" );
                 referral.addLdapUrl( LdapURL.EMPTY_URL.toString() );
             }
         }
@@ -116,7 +119,7 @@ public class ReferralAction extends GrammarAction
                 sb.append( url );
             }
 
-            log.debug( "The referral error message is set to " + sb.toString() );
+            LOG.debug( "The referral error message is set to " + sb.toString() );
         }
 
         // We can have an END transition

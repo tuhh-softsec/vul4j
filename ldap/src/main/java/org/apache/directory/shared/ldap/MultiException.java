@@ -35,6 +35,7 @@ import java.util.Iterator;
  */
 public class MultiException extends Exception
 {
+    /** The serialVersionUID. */
     static final long serialVersionUID = 2889747406899775761L;
 
     /** Collection of nested exceptions. */

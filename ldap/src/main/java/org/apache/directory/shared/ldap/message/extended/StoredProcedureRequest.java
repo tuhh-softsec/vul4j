@@ -46,13 +46,25 @@ import org.slf4j.LoggerFactory;
  */
 public class StoredProcedureRequest extends ExtendedRequestImpl
 {
-    private static final Logger log = LoggerFactory.getLogger( StoredProcedureRequest.class );
+    
+    /** The logger. */
+    private static final Logger LOG = LoggerFactory.getLogger( StoredProcedureRequest.class );
+    
+    /** The serialVersionUID. */
     private static final long serialVersionUID = -4682291068700593492L;
+    
+    /** The OID for the stored procedure extended operation request. */
     public static final String EXTENSION_OID = "1.3.6.1.4.1.18060.0.1.6";
 
+    /** The procedure. */
     private StoredProcedure procedure;
 
 
+    /**
+     * Instantiates a new stored procedure request.
+     *
+     * @param messageId the message id
+     */
     public StoredProcedureRequest( int messageId )
     {
         super( messageId );
@@ -61,6 +73,13 @@ public class StoredProcedureRequest extends ExtendedRequestImpl
     }
 
 
+    /**
+     * Instantiates a new stored procedure request.
+     *
+     * @param messageId the message id
+     * @param procedure the procedure
+     * @param language the language
+     */
     public StoredProcedureRequest( int messageId, String procedure, String language )
     {
         super( messageId );
@@ -71,6 +90,9 @@ public class StoredProcedureRequest extends ExtendedRequestImpl
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public void setRequestValue( byte[] payload )
     {
         StoredProcedureDecoder decoder = new StoredProcedureDecoder();
@@ -83,12 +105,15 @@ public class StoredProcedureRequest extends ExtendedRequestImpl
         }
         catch ( Exception e )
         {
-            log.error( I18n.err( I18n.ERR_04165 ), e );
+            LOG.error( I18n.err( I18n.ERR_04165 ), e );
             throw new RuntimeException( e );
         }
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public ExtendedResponse createExtendedResponse( String id, byte[] berValue, int offset, int length )
         throws NamingException
     {
@@ -112,7 +137,7 @@ public class StoredProcedureRequest extends ExtendedRequestImpl
             }
             catch ( EncoderException e )
             {
-                log.error( I18n.err( I18n.ERR_04174 ), e );
+                LOG.error( I18n.err( I18n.ERR_04174 ), e );
                 throw new RuntimeException( e );
             }
         }
@@ -121,6 +146,9 @@ public class StoredProcedureRequest extends ExtendedRequestImpl
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public ResultResponse getResultResponse()
     {
         if ( response == null )
@@ -138,36 +166,67 @@ public class StoredProcedureRequest extends ExtendedRequestImpl
     // Parameters of the Extended Request Payload
     // -----------------------------------------------------------------------
 
+    /**
+     * Gets the language.
+     *
+     * @return the language
+     */
     public String getLanguage()
     {
         return procedure.getLanguage();
     }
 
 
+    /**
+     * Sets the language.
+     *
+     * @param language the new language
+     */
     public void setLanguage( String language )
     {
         this.procedure.setLanguage( language );
     }
 
 
+    /**
+     * Sets the procedure.
+     *
+     * @param procedure the new procedure
+     */
     public void setProcedure( String procedure )
     {
         this.procedure.setProcedure( StringTools.getBytesUtf8( procedure ) );
     }
 
 
+    /**
+     * Gets the procedure specification.
+     *
+     * @return the procedure specification
+     */
     public String getProcedureSpecification()
     {
         return StringTools.utf8ToString( procedure.getProcedure() );
     }
 
 
+    /**
+     * Size.
+     *
+     * @return the int
+     */
     public int size()
     {
         return this.procedure.getParameters().size();
     }
 
 
+    /**
+     * Gets the parameter type.
+     *
+     * @param index the index
+     * @return the parameter type
+     */
     public Object getParameterType( int index )
     {
         if ( !this.procedure.getLanguage().equals( "java" ) )
@@ -179,12 +238,24 @@ public class StoredProcedureRequest extends ExtendedRequestImpl
     }
 
 
+    /**
+     * Gets the java parameter type.
+     *
+     * @param index the index
+     * @return the java parameter type
+     */
     public Class<?> getJavaParameterType( int index )
     {
         throw new NotImplementedException( I18n.err( I18n.ERR_04175 ) );
     }
 
 
+    /**
+     * Gets the parameter value.
+     *
+     * @param index the index
+     * @return the parameter value
+     */
     public Object getParameterValue( int index )
     {
         if ( !this.procedure.getLanguage().equals( "java" ) )
@@ -196,12 +267,24 @@ public class StoredProcedureRequest extends ExtendedRequestImpl
     }
 
 
+    /**
+     * Gets the java parameter value.
+     *
+     * @param index the index
+     * @return the java parameter value
+     */
     public Object getJavaParameterValue( int index )
     {
         throw new NotImplementedException( I18n.err( I18n.ERR_04176 ) );
     }
 
 
+    /**
+     * Adds the parameter.
+     *
+     * @param type the type
+     * @param value the value
+     */
     public void addParameter( Object type, Object value )
     {
         /**

@@ -110,8 +110,8 @@ public class CertGenerationGrammar extends AbstractGrammar
             {
                 public void action( Asn1Container container ) throws DecoderException
                 {
-                    CertGenerationContainer CertGenContainer = ( CertGenerationContainer ) container;
-                    Value value = CertGenContainer.getCurrentTLV().getValue();
+                    CertGenerationContainer certGenContainer = ( CertGenerationContainer ) container;
+                    Value value = certGenContainer.getCurrentTLV().getValue();
 
                     String targetDN = StringTools.utf8ToString( value.getData() );
 
@@ -129,7 +129,7 @@ public class CertGenerationGrammar extends AbstractGrammar
                             throw new DecoderException( msg );
                         }
                         
-                        CertGenContainer.getCertGenerationObject().setTargetDN( targetDN );
+                        certGenContainer.getCertGenerationObject().setTargetDN( targetDN );
                     }
                     else
                     {
@@ -156,8 +156,8 @@ public class CertGenerationGrammar extends AbstractGrammar
             {
                 public void action( Asn1Container container ) throws DecoderException
                 {
-                    CertGenerationContainer CertGenContainer = ( CertGenerationContainer ) container;
-                    Value value = CertGenContainer.getCurrentTLV().getValue();
+                    CertGenerationContainer certGenContainer = ( CertGenerationContainer ) container;
+                    Value value = certGenContainer.getCurrentTLV().getValue();
 
                     String issuerDN = StringTools.utf8ToString( value.getData() );
 
@@ -175,7 +175,7 @@ public class CertGenerationGrammar extends AbstractGrammar
                             throw new DecoderException( msg );
                         }
                         
-                        CertGenContainer.getCertGenerationObject().setIssuerDN( issuerDN );
+                        certGenContainer.getCertGenerationObject().setIssuerDN( issuerDN );
                     }
                 }
             } );
@@ -196,8 +196,8 @@ public class CertGenerationGrammar extends AbstractGrammar
             {
                 public void action( Asn1Container container ) throws DecoderException
                 {
-                    CertGenerationContainer CertGenContainer = ( CertGenerationContainer ) container;
-                    Value value = CertGenContainer.getCurrentTLV().getValue();
+                    CertGenerationContainer certGenContainer = ( CertGenerationContainer ) container;
+                    Value value = certGenContainer.getCurrentTLV().getValue();
 
                     String subjectDN = StringTools.utf8ToString( value.getData() );
 
@@ -215,7 +215,7 @@ public class CertGenerationGrammar extends AbstractGrammar
                             throw new DecoderException( msg );
                         }
 
-                        CertGenContainer.getCertGenerationObject().setSubjectDN( subjectDN );
+                        certGenContainer.getCertGenerationObject().setSubjectDN( subjectDN );
                     }
                     else
                     {
@@ -241,8 +241,8 @@ public class CertGenerationGrammar extends AbstractGrammar
             {
                 public void action( Asn1Container container ) throws DecoderException
                 {
-                    CertGenerationContainer CertGenContainer = ( CertGenerationContainer ) container;
-                    Value value = CertGenContainer.getCurrentTLV().getValue();
+                    CertGenerationContainer certGenContainer = ( CertGenerationContainer ) container;
+                    Value value = certGenContainer.getCurrentTLV().getValue();
 
                     String keyAlgorithm = StringTools.utf8ToString( value.getData() );
 
@@ -253,10 +253,10 @@ public class CertGenerationGrammar extends AbstractGrammar
 
                     if ( keyAlgorithm != null && ( keyAlgorithm.trim().length() > 0 ) )
                     {
-                        CertGenContainer.getCertGenerationObject().setKeyAlgorithm( keyAlgorithm );
+                        certGenContainer.getCertGenerationObject().setKeyAlgorithm( keyAlgorithm );
                     }
 
-                    CertGenContainer.grammarEndAllowed( true );
+                    certGenContainer.grammarEndAllowed( true );
                 }
             } );
 

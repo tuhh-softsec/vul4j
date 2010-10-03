@@ -117,8 +117,8 @@ public final class SyncRequestValueControlGrammar extends AbstractGrammar
             {
                 public void action( Asn1Container container ) throws DecoderException
                 {
-                    SyncRequestValueControlContainer SyncRequestValueContainer = ( SyncRequestValueControlContainer ) container;
-                    Value value = SyncRequestValueContainer.getCurrentTLV().getValue();
+                    SyncRequestValueControlContainer syncRequestValueContainer = ( SyncRequestValueControlContainer ) container;
+                    Value value = syncRequestValueContainer.getCurrentTLV().getValue();
 
                     try
                     {
@@ -134,10 +134,10 @@ public final class SyncRequestValueControlGrammar extends AbstractGrammar
                             LOG.debug( "Mode = " + modeEnum );
                         }
 
-                        SyncRequestValueContainer.getSyncRequestValueControl().setMode( modeEnum );
+                        syncRequestValueContainer.getSyncRequestValueControl().setMode( modeEnum );
 
                         // We can have an END transition
-                        SyncRequestValueContainer.grammarEndAllowed( true );
+                        syncRequestValueContainer.grammarEndAllowed( true );
                     }
                     catch ( IntegerDecoderException e )
                     {
@@ -165,8 +165,8 @@ public final class SyncRequestValueControlGrammar extends AbstractGrammar
             {
                 public void action( Asn1Container container ) throws DecoderException
                 {
-                    SyncRequestValueControlContainer SyncRequestValueContainer = ( SyncRequestValueControlContainer ) container;
-                    Value value = SyncRequestValueContainer.getCurrentTLV().getValue();
+                    SyncRequestValueControlContainer syncRequestValueContainer = ( SyncRequestValueControlContainer ) container;
+                    Value value = syncRequestValueContainer.getCurrentTLV().getValue();
 
                     byte[] cookie = value.getData();
 
@@ -175,10 +175,10 @@ public final class SyncRequestValueControlGrammar extends AbstractGrammar
                         LOG.debug( "cookie = " + StringTools.dumpBytes( cookie ) );
                     }
 
-                    SyncRequestValueContainer.getSyncRequestValueControl().setCookie( cookie );
+                    syncRequestValueContainer.getSyncRequestValueControl().setCookie( cookie );
 
                     // We can have an END transition
-                    SyncRequestValueContainer.grammarEndAllowed( true );
+                    syncRequestValueContainer.grammarEndAllowed( true );
                 }
             } );
 
@@ -199,8 +199,8 @@ public final class SyncRequestValueControlGrammar extends AbstractGrammar
             {
                 public void action( Asn1Container container ) throws DecoderException
                 {
-                    SyncRequestValueControlContainer SyncRequestValueContainer = ( SyncRequestValueControlContainer ) container;
-                    Value value = SyncRequestValueContainer.getCurrentTLV().getValue();
+                    SyncRequestValueControlContainer syncRequestValueContainer = ( SyncRequestValueControlContainer ) container;
+                    Value value = syncRequestValueContainer.getCurrentTLV().getValue();
 
                     try
                     {
@@ -211,10 +211,10 @@ public final class SyncRequestValueControlGrammar extends AbstractGrammar
                             LOG.debug( "reloadHint = " + reloadHint );
                         }
 
-                        SyncRequestValueContainer.getSyncRequestValueControl().setReloadHint( reloadHint );
+                        syncRequestValueContainer.getSyncRequestValueControl().setReloadHint( reloadHint );
 
                         // We can have an END transition
-                        SyncRequestValueContainer.grammarEndAllowed( true );
+                        syncRequestValueContainer.grammarEndAllowed( true );
                     }
                     catch ( BooleanDecoderException e )
                     {
@@ -242,8 +242,8 @@ public final class SyncRequestValueControlGrammar extends AbstractGrammar
             {
                 public void action( Asn1Container container ) throws DecoderException
                 {
-                    SyncRequestValueControlContainer SyncRequestValueContainer = ( SyncRequestValueControlContainer ) container;
-                    Value value = SyncRequestValueContainer.getCurrentTLV().getValue();
+                    SyncRequestValueControlContainer syncRequestValueContainer = ( SyncRequestValueControlContainer ) container;
+                    Value value = syncRequestValueContainer.getCurrentTLV().getValue();
 
                     try
                     {
@@ -254,10 +254,10 @@ public final class SyncRequestValueControlGrammar extends AbstractGrammar
                             LOG.debug( "reloadHint = " + reloadHint );
                         }
 
-                        SyncRequestValueContainer.getSyncRequestValueControl().setReloadHint( reloadHint );
+                        syncRequestValueContainer.getSyncRequestValueControl().setReloadHint( reloadHint );
 
                         // We can have an END transition
-                        SyncRequestValueContainer.grammarEndAllowed( true );
+                        syncRequestValueContainer.grammarEndAllowed( true );
                     }
                     catch ( BooleanDecoderException e )
                     {
