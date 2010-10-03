@@ -29,7 +29,7 @@ import org.apache.commons.functor.generator.Generator;
  *
  * @version $Revision$ $Date$
  */
-public final class FindWithinGenerator<E> implements BinaryFunction<Generator<E>, UnaryPredicate<E>, E>, Serializable {
+public final class FindWithinGenerator<E> implements BinaryFunction<Generator<? extends E>, UnaryPredicate<? super E>, E>, Serializable {
     /**
      * Basic instance.
      */
@@ -41,13 +41,13 @@ public final class FindWithinGenerator<E> implements BinaryFunction<Generator<E>
     private static class FindProcedure<T> implements UnaryProcedure<T> {
         private T found;
         private boolean wasFound;
-        private UnaryPredicate<T> pred;
+        private UnaryPredicate<? super T> pred;
 
         /**
          * Create a new FindProcedure.
          * @pred test
          */
-        public FindProcedure(UnaryPredicate<T> pred) {
+        public FindProcedure(UnaryPredicate<? super T> pred) {
             this.pred = pred;
         }
 
@@ -87,7 +87,7 @@ public final class FindWithinGenerator<E> implements BinaryFunction<Generator<E>
      * @param left Generator
      * @param right UnaryPredicate
      */
-    public E evaluate(Generator<E> left, UnaryPredicate<E> right) {
+    public E evaluate(Generator<? extends E> left, UnaryPredicate<? super E> right) {
         FindProcedure<E> findProcedure = new FindProcedure<E>(right);
         left.run(findProcedure);
         if (!findProcedure.wasFound) {
