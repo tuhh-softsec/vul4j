@@ -25,13 +25,17 @@
 
 <suppressions>
     <!-- UnixCrypt is from external, no formatting is applied -->
-    <suppress files="UnixCrypt.java" checks="[A-Za-z0-9]" />
+    <suppress files="org.apache.directory.shared.ldap.util.UnixCrypt" checks="[A-Za-z0-9]" />
     
-    <suppress files="SyntaxChecker.java" checks="EqualsHashCode" />
-    <suppress files="Normalizer.java" checks="EqualsHashCode" />
-    <suppress files="LoadableSchemaObject.java" checks="EqualsHashCode" />
-    <suppress files="LdapComparator.java" checks="EqualsHashCode" />
-    <suppress files="DITStructureRule.java" checks="EqualsHashCode" />
+    <!-- hashcode() is final in super class -->
+    <suppress files="org.apache.directory.shared.ldap.schema.SyntaxChecker" checks="EqualsHashCode" />
+    <suppress files="org.apache.directory.shared.ldap.schema.Normalizer" checks="EqualsHashCode" />
+    <suppress files="org.apache.directory.shared.ldap.schema.LoadableSchemaObject" checks="EqualsHashCode" />
+    <suppress files="org.apache.directory.shared.ldap.schema.LdapComparator" checks="EqualsHashCode" />
+    <suppress files="org.apache.directory.shared.ldap.schema.DITStructureRule" checks="EqualsHashCode" />
     
-    <suppress files="SchemaConstants.java" checks="JavaDocVariable" />
+    <!-- No Javadoc for schema constants required -->
+    <suppress files="org.apache.directory.shared.ldap.constants.SchemaConstants" checks="JavadocVariable" />
+    <suppress files="org.apache.directory.shared.ldap.constants.MetaSchemaConstants" checks="JavadocVariable" />
+    <suppress files="org.apache.directory.shared.ldap.constants.PasswordPolicySchemaConstants" checks="JavadocVariable" />
 </suppressions>
