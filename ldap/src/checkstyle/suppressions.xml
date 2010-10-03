@@ -38,4 +38,7 @@
     <suppress files="org.apache.directory.shared.ldap.constants.SchemaConstants" checks="JavadocVariable" />
     <suppress files="org.apache.directory.shared.ldap.constants.MetaSchemaConstants" checks="JavadocVariable" />
     <suppress files="org.apache.directory.shared.ldap.constants.PasswordPolicySchemaConstants" checks="JavadocVariable" />
+
+    <!-- Classes in org.apache.directory.shared.asn1.der are forked from Bouncy Castle -->
+    <suppress files="org.apache.directory.shared.asn1.der" checks="[A-Za-z0-9]" />
 </suppressions>
