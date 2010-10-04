@@ -792,10 +792,11 @@ public class DnNode<N> implements Cloneable
         clonedDnNode.depth = depth;
         clonedDnNode.parent = parent;
         clonedDnNode.nodeRdn = nodeRdn;
+        clonedDnNode.nodeDn = nodeDn;
 
         for ( DnNode<N> node : children.values() )
         {
-            clonedDnNode.children.put( nodeRdn, node.clone() );
+            clonedDnNode.children.put( node.getRdn(), node.clone() );
         }
 
         return clonedDnNode;
