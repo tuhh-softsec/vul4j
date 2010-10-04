@@ -19,9 +19,11 @@
  */
 package org.apache.directory.shared.ldap.aci.protectedItem;
 
+
 import java.util.Set;
 
 import org.apache.directory.shared.ldap.schema.AttributeType;
+
 
 /**
  * All attribute value information pertaining to specific attributes.
@@ -40,11 +42,11 @@ public class AllAttributeValuesItem extends AbstractAttributeTypeProtectedItem
 
 
     /**
-     * @see Object#toString()
+     * {@inheritDoc}
      */
+    @Override
     public String toString()
     {
         return "allAttributeValues " + super.toString();
     }
 }
-

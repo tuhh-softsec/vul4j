@@ -46,18 +46,17 @@ public class ACIItemChecker
     /** the antlr generated lexer being wrapped */
     private ReusableAntlrACIItemLexer lexer;
 
-    private final boolean isNormalizing;
-
 
     /**
      * Creates a ACIItem parser.
+     *
+     * @param schemaManager the schema manager
      */
     public ACIItemChecker( SchemaManager schemaManager )
     {
         this.lexer = new ReusableAntlrACIItemLexer( new StringReader( "" ) );
         this.checker = new ReusableAntlrACIItemParser( lexer );
         this.checker.init( schemaManager );
-        this.isNormalizing = false;
     }
 
 
@@ -106,14 +105,4 @@ public class ACIItemChecker
         }
     }
 
-
-    /**
-     * Tests to see if this parser is normalizing.
-     * 
-     * @return true if it normalizes false otherwise
-     */
-    public boolean isNormizing()
-    {
-        return this.isNormalizing;
-    }
 }

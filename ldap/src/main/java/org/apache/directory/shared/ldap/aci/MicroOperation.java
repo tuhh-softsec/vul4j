@@ -28,49 +28,62 @@ package org.apache.directory.shared.ldap.aci;
  */
 public enum MicroOperation
 {
-    // Permissions that may be used in conjunction with any component of
-    // <tt>ProtectedItem</tt>s.
-    ADD( "Add" ),
+    // Permissions that may be used in conjunction with any component of <tt>ProtectedItem</tt>s.
+    /** The Add permission, may be used in conjunction with any component of {@link ProtectedItem}s. */
+    ADD("Add"),
 
-    DISCLOSE_ON_ERROR( "DiscloseOnError" ),
+    /** The DiscloseOnError permission, may be used in conjunction with any component of {@link ProtectedItem}s. */
+    DISCLOSE_ON_ERROR("DiscloseOnError"),
 
-    READ( "Read" ),
+    /** The Read permission, may be used in conjunction with any component of {@link ProtectedItem}s. */
+    READ("Read"),
 
-    REMOVE( "Remove" ),
+    /** The Remove permission, may be used in conjunction with any component of {@link ProtectedItem}s. */
+    REMOVE("Remove"),
 
-    // Permissions that may be used only in conjunction with the entry
-    // component.
-    BROWSE( "Browse" ),
+    // Permissions that may be used only in conjunction with the entry component.
+    /** The Browse permission, may be used only in conjunction with the entry component. */
+    BROWSE("Browse"),
 
-    EXPORT( "Export" ),
+    /** The Export permission, may be used only in conjunction with the entry component. */
+    EXPORT("Export"),
 
-    IMPORT( "Import" ),
+    /** The Import permission, may be used only in conjunction with the entry component. */
+    IMPORT("Import"),
 
-    MODIFY( "Modify" ),
+    /** The Modify permission, may be used only in conjunction with the entry component. */
+    MODIFY("Modify"),
 
-    RENAME ( "Rename" ),
+    /** The Rename permission, may be used only in conjunction with the entry component. */
+    RENAME("Rename"),
 
-    RETURN_DN( "ReturnDN" ),
+    /** The ReturnDN permission, may be used only in conjunction with the entry component. */
+    RETURN_DN("ReturnDN"),
 
-    // Permissions that may be used in conjunction with any component,
-    // except entry, of <tt>ProtectedItem</tt>s.
-    COMPARE( "Compare" ),
+    // Permissions that may be used in conjunction with any component, except entry, of <tt>ProtectedItem</tt>s.
+    /** The Compare permission, may be used in conjunction with any component, except entry. */
+    COMPARE("Compare"),
 
-    FILTER_MATCH( "FilterMatch" ),
+    /** The FilterMatch permission, may be used in conjunction with any component, except entry. */
+    FILTER_MATCH("FilterMatch"),
 
-    INVOKE( "Invoke" );
+    /** The Invoke permission, may be used in conjunction with any component, except entry. */
+    INVOKE("Invoke");
 
+    /** The name. */
     private final String name;
 
 
-    private MicroOperation(String name)
+    private MicroOperation( String name )
     {
         this.name = name;
     }
 
 
     /**
-     * Returns the name of this micro-operation.
+     * Gets the name of this micro-operation.
+     *
+     * @return the name
      */
     public String getName()
     {
@@ -78,6 +91,10 @@ public enum MicroOperation
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public String toString()
     {
         return name;

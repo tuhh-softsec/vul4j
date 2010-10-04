@@ -36,6 +36,7 @@ import org.apache.directory.shared.ldap.subtree.SubtreeSpecification;
  */
 public abstract class UserClass implements Serializable
 {
+    /** The serialVersionUID. */
     private static final long serialVersionUID = -123919984184219893L;
 
     /**
@@ -70,6 +71,7 @@ public abstract class UserClass implements Serializable
      */
     public static final class AllUsers extends UserClass
     {
+        /** The serialVersionUID. */
         private static final long serialVersionUID = 8967984720792510292L;
 
 
@@ -95,6 +97,7 @@ public abstract class UserClass implements Serializable
      */
     public static final class ThisEntry extends UserClass
     {
+        /** The serialVersionUID. */
         private static final long serialVersionUID = -8189325270233754470L;
 
 
@@ -103,6 +106,10 @@ public abstract class UserClass implements Serializable
         }
 
 
+        /**
+         * {@inheritDoc}
+         */
+        @Override
         public String toString()
         {
             return "thisEntry";
@@ -114,6 +121,7 @@ public abstract class UserClass implements Serializable
      */
     public static final class ParentOfEntry extends UserClass
     {
+        /** The serialVersionUID. */
         private static final long serialVersionUID = 5247207736068086476L;
 
 
@@ -138,7 +146,10 @@ public abstract class UserClass implements Serializable
      */
     private abstract static class NamedUserClass extends UserClass
     {
+        /** The serialVersionUID. */
         private static final long serialVersionUID = 8571875984468893621L;
+
+        /** The names. */
         protected final Set<DN> names;
 
 
@@ -246,6 +257,7 @@ public abstract class UserClass implements Serializable
      */
     public static class Name extends NamedUserClass
     {
+        /** The serialVersionUID. */
         private static final long serialVersionUID = -4168412030168359882L;
 
 
@@ -279,6 +291,7 @@ public abstract class UserClass implements Serializable
      */
     public static class UserGroup extends NamedUserClass
     {
+        /** The serialVersionUID. */
         private static final long serialVersionUID = 8887107815072965807L;
 
 
@@ -310,8 +323,10 @@ public abstract class UserClass implements Serializable
      */
     public static class Subtree extends UserClass
     {
+        /** The serialVersionUID. */
         private static final long serialVersionUID = 3949337699049701332L;
 
+        /** The subtree specifications. */
         protected final Set<SubtreeSpecification> subtreeSpecifications;
 
 

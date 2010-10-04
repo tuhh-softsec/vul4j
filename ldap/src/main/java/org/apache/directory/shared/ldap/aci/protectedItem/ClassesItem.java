@@ -19,8 +19,10 @@
  */
 package org.apache.directory.shared.ldap.aci.protectedItem;
 
+
 import org.apache.directory.shared.ldap.aci.ProtectedItem;
 import org.apache.directory.shared.ldap.filter.ExprNode;
+
 
 /**
  * The contents of entries (possibly a family member) which are restricted
@@ -32,6 +34,7 @@ import org.apache.directory.shared.ldap.filter.ExprNode;
  */
 public class ClassesItem extends ProtectedItem
 {
+    /** The classes refinement. */
     private final ExprNode classes;
 
 
@@ -46,6 +49,11 @@ public class ClassesItem extends ProtectedItem
     }
 
 
+    /**
+     * Gets the classes refinement.
+     *
+     * @return the classes refinement
+     */
     public ExprNode getClasses()
     {
         return classes;
@@ -86,8 +94,9 @@ public class ClassesItem extends ProtectedItem
 
 
     /**
-     * @see Object#toString()
+     * {@inheritDoc}
      */
+    @Override
     public String toString()
     {
         StringBuilder buf = new StringBuilder();
@@ -98,4 +107,3 @@ public class ClassesItem extends ProtectedItem
         return buf.toString();
     }
 }
-

@@ -19,11 +19,13 @@
  */
 package org.apache.directory.shared.ldap.aci.protectedItem;
 
+
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Set;
 
 import org.apache.directory.shared.ldap.aci.ProtectedItem;
+
 
 /**
  * Restricts values added to the attribute type to being values that are
@@ -53,7 +55,9 @@ public class RestrictedByItem extends ProtectedItem
 
 
     /**
-     * Returns an iterator of all {@link RestrictedByElem}s.
+     * Gets an iterator of all {@link RestrictedByElem}s.
+     *
+     * @return the iterator of all {@link RestrictedByElem}s
      */
     public Iterator<RestrictedByElem> iterator()
     {
@@ -100,8 +104,9 @@ public class RestrictedByItem extends ProtectedItem
 
 
     /**
-     * @see Object#toString()
+     * {@inheritDoc}
      */
+    @Override
     public String toString()
     {
         StringBuilder buf = new StringBuilder();

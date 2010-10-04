@@ -33,6 +33,11 @@ import java.util.Collections;
  */
 public class ItemPermission extends Permission
 {
+
+    /** The serialVersionUID. */
+    private static final long serialVersionUID = 5530483336917026261L;
+
+    /** The user classes. */
     private final Collection<UserClass> userClasses;
 
 
@@ -43,11 +48,12 @@ public class ItemPermission extends Permission
      *            the precedence of this permission (<tt>-1</tt> to use the
      *            default)
      * @param grantsAndDenials
-     *            the set of {@link GrantAndDenial}s
+     *            the collection of {@link GrantAndDenial}s
      * @param userClasses
      *            the collection of {@link UserClass}es
      */
-    public ItemPermission( Integer precedence, Collection<GrantAndDenial> grantsAndDenials, Collection<UserClass> userClasses )
+    public ItemPermission( Integer precedence, Collection<GrantAndDenial> grantsAndDenials,
+        Collection<UserClass> userClasses )
     {
         super( precedence, grantsAndDenials );
 
@@ -56,7 +62,9 @@ public class ItemPermission extends Permission
 
 
     /**
-     * Returns the collection of {@link UserClass}es.
+     * Gets the collection of {@link UserClass}es.
+     *
+     * @return the collection of {@link UserClass}es
      */
     public Collection<UserClass> getUserClasses()
     {
@@ -64,10 +72,14 @@ public class ItemPermission extends Permission
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public String toString()
     {
         StringBuilder buffer = new StringBuilder();
-        
+
         buffer.append( "{ " );
 
         if ( getPrecedence() != null )
@@ -76,14 +88,14 @@ public class ItemPermission extends Permission
             buffer.append( getPrecedence() );
             buffer.append( ", " );
         }
-        
+
         buffer.append( "userClasses { " );
-        
+
         boolean isFirst = true;
-        
-        for ( UserClass userClass:userClasses )
+
+        for ( UserClass userClass : userClasses )
         {
-            if ( isFirst ) 
+            if ( isFirst )
             {
                 isFirst = false;
             }
@@ -94,12 +106,12 @@ public class ItemPermission extends Permission
 
             buffer.append( userClass.toString() );
         }
-        
+
         buffer.append( " }, grantsAndDenials { " );
-        
+
         isFirst = true;
-        
-        for ( GrantAndDenial grantAndDenial:getGrantsAndDenials() )
+
+        for ( GrantAndDenial grantAndDenial : getGrantsAndDenials() )
         {
             if ( isFirst )
             {
@@ -112,9 +124,9 @@ public class ItemPermission extends Permission
 
             buffer.append( grantAndDenial.toString() );
         }
-        
+
         buffer.append( " } }" );
-        
+
         return buffer.toString();
     }
 }

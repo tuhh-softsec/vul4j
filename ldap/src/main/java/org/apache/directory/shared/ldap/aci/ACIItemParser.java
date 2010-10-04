@@ -47,25 +47,33 @@ public class ACIItemParser
     /** the antlr generated lexer being wrapped */
     private ReusableAntlrACIItemLexer lexer;
 
+    /** The is normalizing flag. */
     private final boolean isNormalizing;
 
 
     /**
      * Creates a ACIItem parser.
+     *
+     * @param schemaManager the schema manager
      */
     public ACIItemParser( SchemaManager schemaManager )
     {
         this.lexer = new ReusableAntlrACIItemLexer( new StringReader( "" ) );
         this.parser = new ReusableAntlrACIItemParser( lexer );
 
-        this.parser.init( schemaManager ); // this method MUST be called while we cannot do
+        // this method MUST be called while we cannot do
         // constructor overloading for antlr generated parser
+        this.parser.init( schemaManager );
+        
         this.isNormalizing = false;
     }
 
 
     /**
      * Creates a normalizing ACIItem parser.
+     *
+     * @param normalizer the normalizer
+     * @param schemaManager the schema manager
      */
     public ACIItemParser( NameComponentNormalizer normalizer, SchemaManager schemaManager )
     {
@@ -73,9 +81,11 @@ public class ACIItemParser
         this.parser = new ReusableAntlrACIItemParser( lexer );
 
         this.parser.setNormalizer( normalizer );
-        this.parser.init( schemaManager ); // this method MUST be called while we cannot do
-        // constructor overloading for antlr generated parser
         this.isNormalizing = true;
+
+        // this method MUST be called while we cannot do
+        // constructor overloading for antlr generated parser
+        this.parser.init( schemaManager ); 
     }
 
 

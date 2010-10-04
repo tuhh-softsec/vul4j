@@ -51,7 +51,9 @@ public class MaxImmSubItem extends ProtectedItem
 
 
     /**
-     * Returns the maximum number of immediate subordinates.
+     * Gets the maximum number of immediate subordinates.
+     *
+     * @return the maximum number of immediate subordinates
      */
     public int getValue()
     {
@@ -93,8 +95,9 @@ public class MaxImmSubItem extends ProtectedItem
 
 
     /**
-     * @see Object#toString()
+     * {@inheritDoc}
      */
+    @Override
     public String toString()
     {
         return "maxImmSub " + value;

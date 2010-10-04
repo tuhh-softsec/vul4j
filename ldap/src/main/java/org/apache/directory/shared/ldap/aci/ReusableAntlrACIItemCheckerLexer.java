@@ -41,8 +41,11 @@ import antlr.LexerSharedInputState;
  */
 class ReusableAntlrACIItemCheckerLexer extends AntlrACIItemCheckerLexer
 {
+
+    /** The saved case sensitive flag. */
     private boolean savedCaseSensitive;
 
+    /** The saved case sensitive literals flag. */
     private boolean savedCaseSensitiveLiterals;
 
 
@@ -52,7 +55,7 @@ class ReusableAntlrACIItemCheckerLexer extends AntlrACIItemCheckerLexer
      * @param in
      *            the input to the lexer
      */
-    public ReusableAntlrACIItemCheckerLexer(Reader in)
+    public ReusableAntlrACIItemCheckerLexer( Reader in )
     {
         super( in );
         savedCaseSensitive = getCaseSensitive();

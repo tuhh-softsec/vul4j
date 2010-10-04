@@ -63,7 +63,9 @@ public class ItemFirstACIItem extends ACIItem
 
 
     /**
-     * Returns the collection of {@link ProtectedItem}s.
+     * Gets the collection of {@link ProtectedItem}s.
+     *
+     * @return the collection of {@link ProtectedItem}s
      */
     public Collection<ProtectedItem> getProtectedItems()
     {
@@ -72,7 +74,9 @@ public class ItemFirstACIItem extends ACIItem
 
 
     /**
-     * Returns the collection of {@link ItemPermission}s.
+     * Gets the collection of {@link ItemPermission}s.
+     *
+     * @return the collection of {@link ItemPermission}s
      */
     public Collection<ItemPermission> getItemPermissions()
     {
@@ -81,24 +85,25 @@ public class ItemFirstACIItem extends ACIItem
 
 
     /**
-     * @see Object#toString()
+     * {@inheritDoc}
      */
+    @Override
     public String toString()
     {
         StringBuilder buf = new StringBuilder();
-        
+
         buf.append( "{" );
         buf.append( super.toString() );
-        
+
         // itemOrUserFirst
         buf.append( ", itemOrUserFirst itemFirst: { " );
-        
+
         // protectedItems
         buf.append( "protectedItems { " );
-        
+
         boolean isFirst = true;
 
-        for ( ProtectedItem item:protectedItems )
+        for ( ProtectedItem item : protectedItems )
         {
             if ( isFirst )
             {
@@ -116,8 +121,8 @@ public class ItemFirstACIItem extends ACIItem
         buf.append( " }, itemPermissions { " );
 
         isFirst = true;
-        
-        for ( ItemPermission permission:itemPermissions )
+
+        for ( ItemPermission permission : itemPermissions )
         {
             if ( isFirst )
             {
@@ -132,7 +137,7 @@ public class ItemFirstACIItem extends ACIItem
         }
 
         buf.append( " } } }" );
-        
+
         return buf.toString();
     }
 
@@ -145,8 +150,8 @@ public class ItemFirstACIItem extends ACIItem
     public Collection<ACITuple> toTuples()
     {
         Collection<ACITuple> tuples = new ArrayList<ACITuple>();
-        
-        for ( ItemPermission itemPermission:itemPermissions )
+
+        for ( ItemPermission itemPermission : itemPermissions )
         {
             Set<GrantAndDenial> grants = itemPermission.getGrants();
             Set<GrantAndDenial> denials = itemPermission.getDenials();
@@ -159,14 +164,14 @@ public class ItemFirstACIItem extends ACIItem
                 tuples.add( new ACITuple( itemPermission.getUserClasses(), getAuthenticationLevel(), protectedItems,
                     toMicroOperations( grants ), true, precedence ) );
             }
-            
+
             if ( denials.size() > 0 )
             {
                 tuples.add( new ACITuple( itemPermission.getUserClasses(), getAuthenticationLevel(), protectedItems,
                     toMicroOperations( denials ), false, precedence ) );
             }
         }
-        
+
         return tuples;
     }
 }

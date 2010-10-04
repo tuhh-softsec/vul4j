@@ -19,7 +19,9 @@
  */
 package org.apache.directory.shared.ldap.aci.protectedItem;
 
+
 import org.apache.directory.shared.ldap.aci.ProtectedItem;
+
 
 /**
  * The entry contents as a whole. In case of a family member, it also means
@@ -40,8 +42,9 @@ public class EntryItem extends ProtectedItem
 
 
     /**
-     * @see Object#toString()
+     * {@inheritDoc}
      */
+    @Override
     public String toString()
     {
         return "entry";

@@ -19,8 +19,10 @@
  */
 package org.apache.directory.shared.ldap.aci.protectedItem;
 
+
 import org.apache.directory.shared.ldap.aci.ProtectedItem;
 import org.apache.directory.shared.ldap.filter.ExprNode;
+
 
 /**
  * Any attribute value which matches the specified filter, i.e. for which
@@ -28,7 +30,9 @@ import org.apache.directory.shared.ldap.filter.ExprNode;
  */
 public class RangeOfValuesItem extends ProtectedItem
 {
-    private final ExprNode refinement;
+
+    /** The filter. */
+    private final ExprNode filter;
 
 
     /**
@@ -36,23 +40,27 @@ public class RangeOfValuesItem extends ProtectedItem
      * 
      * @param filter the expression
      */
-    public RangeOfValuesItem( ExprNode refinement )
+    public RangeOfValuesItem( ExprNode filter )
     {
-        if ( refinement == null )
+        if ( filter == null )
         {
-            throw new IllegalArgumentException( "refinement" );
+            throw new IllegalArgumentException( "filter" );
         }
 
-        this.refinement = refinement;
+        this.filter = filter;
     }
 
 
     /**
-     * Returns the expression.
+     * Gets the filter.
+     * 
+     * TODO: rename to getFilter()
+     *
+     * @return the filter
      */
     public ExprNode getRefinement()
     {
-        return refinement;
+        return filter;
     }
 
 
@@ -63,7 +71,7 @@ public class RangeOfValuesItem extends ProtectedItem
     public int hashCode()
     {
         int hash = 37;
-        hash = hash * 17 + refinement.hashCode();
+        hash = hash * 17 + filter.hashCode();
         return hash;
     }
 
@@ -82,7 +90,7 @@ public class RangeOfValuesItem extends ProtectedItem
         if ( o instanceof RangeOfValuesItem )
         {
             RangeOfValuesItem that = ( RangeOfValuesItem ) o;
-            return this.refinement.equals( that.refinement );
+            return this.filter.equals( that.filter );
         }
 
         return false;
@@ -97,7 +105,7 @@ public class RangeOfValuesItem extends ProtectedItem
         StringBuilder buf = new StringBuilder();
 
         buf.append( "rangeOfValues " );
-        buf.append( refinement.toString() );
+        buf.append( filter.toString() );
 
         return buf.toString();
     }

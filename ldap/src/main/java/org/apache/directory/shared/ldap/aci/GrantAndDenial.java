@@ -113,16 +113,20 @@ public final class GrantAndDenial
     /** Denial for {@link MicroOperation#INVOKE} */
     public static final GrantAndDenial DENY_INVOKE = new GrantAndDenial( MicroOperation.INVOKE, 25, false );
 
+    /** The micro operation. */
     private final MicroOperation microOperation;
 
+    /** The code number. */
     private final int code;
 
+    /** The name. */
     private final String name;
 
+    /** The grant flag. */
     private final boolean grant;
 
 
-    private GrantAndDenial(MicroOperation microOperation, int code, boolean grant)
+    private GrantAndDenial( MicroOperation microOperation, int code, boolean grant )
     {
         this.microOperation = microOperation;
         this.code = code;
@@ -132,7 +136,9 @@ public final class GrantAndDenial
 
 
     /**
-     * Returns the {@link MicroOperation} related with this grant or denial.
+     * Gets the {@link MicroOperation} related with this grant or denial.
+     *
+     * @return the micro operation
      */
     public MicroOperation getMicroOperation()
     {
@@ -141,7 +147,9 @@ public final class GrantAndDenial
 
 
     /**
-     * Return the code number of this grant or denial.
+     * Gets the code number of this grant or denial.
+     *
+     * @return the code number
      */
     public int getCode()
     {
@@ -150,7 +158,9 @@ public final class GrantAndDenial
 
 
     /**
-     * Returns the name of this grant or denial.
+     * Gets the name of this grant or denial.
+     *
+     * @return the name
      */
     public String getName()
     {
@@ -160,6 +170,8 @@ public final class GrantAndDenial
 
     /**
      * Returns <tt>true</tt> if and only if this is grant.
+     *
+     * @return <tt>true</tt> if and only if this is grant
      */
     public boolean isGrant()
     {
@@ -167,6 +179,10 @@ public final class GrantAndDenial
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public String toString()
     {
         return name;

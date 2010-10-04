@@ -19,9 +19,11 @@
  */
 package org.apache.directory.shared.ldap.aci.protectedItem;
 
+
 import java.util.Set;
 
 import org.apache.directory.shared.ldap.schema.AttributeType;
+
 
 /**
  * The attribute value assertion corresponding to the current requestor. The
@@ -45,11 +47,11 @@ public class SelfValueItem extends AbstractAttributeTypeProtectedItem
 
 
     /**
-     * @see Object#toString()
+     * {@inheritDoc}
      */
+    @Override
     public String toString()
     {
         return "selfValue " + super.toString();
     }
 }
-

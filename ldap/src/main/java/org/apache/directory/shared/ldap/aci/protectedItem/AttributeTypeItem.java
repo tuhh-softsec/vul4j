@@ -19,9 +19,11 @@
  */
 package org.apache.directory.shared.ldap.aci.protectedItem;
 
+
 import java.util.Set;
 
 import org.apache.directory.shared.ldap.schema.AttributeType;
+
 
 /**
  * Attribute type information pertaining to specific attributes but not
@@ -41,8 +43,9 @@ public class AttributeTypeItem extends AbstractAttributeTypeProtectedItem
 
 
     /**
-     * @see Object#toString()
+     * {@inheritDoc}
      */
+    @Override
     public String toString()
     {
         return "attributeType " + super.toString();

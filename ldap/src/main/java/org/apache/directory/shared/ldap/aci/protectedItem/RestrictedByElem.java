@@ -19,6 +19,7 @@
  */
 package org.apache.directory.shared.ldap.aci.protectedItem;
 
+
 import org.apache.directory.shared.ldap.schema.AttributeType;
 
 
@@ -27,7 +28,7 @@ import org.apache.directory.shared.ldap.schema.AttributeType;
  */
 public class RestrictedByElem
 {
-    // The AttributeType on which the restriction is applied */
+    /** The AttributeType on which the restriction is applied */
     private AttributeType attributeType;
 
     /** The list of allowed AttributeType values */
@@ -48,7 +49,9 @@ public class RestrictedByElem
 
 
     /**
-     * Returns the attribute type to restrict.
+     * Gets the attribute type to restrict.
+     *
+     * @return the attribute type
      */
     public AttributeType getAttributeType()
     {
@@ -57,8 +60,10 @@ public class RestrictedByElem
 
 
     /**
-     * Returns the attribute type only whose values are allowed in
+     * Gets the attribute type only whose values are allowed in
      * <tt>attributeType</tt>.
+     *
+     * @return the list of allowed AttributeType values
      */
     public AttributeType getValuesIn()
     {
@@ -67,8 +72,9 @@ public class RestrictedByElem
 
 
     /**
-     * @see Object#toString()
+     * {@inheritDoc}
      */
+    @Override
     public String toString()
     {
         return "{ type " + attributeType.getName() + ", valuesIn " + valuesIn.getName() + " }";

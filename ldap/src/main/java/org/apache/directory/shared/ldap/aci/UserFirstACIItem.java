@@ -36,10 +36,13 @@ import org.apache.directory.shared.ldap.constants.AuthenticationLevel;
  */
 public class UserFirstACIItem extends ACIItem
 {
+    /** The serialVersionUID. */
     private static final long serialVersionUID = 5587483838404246148L;
 
+    /** The user classes. */
     private final Collection<UserClass> userClasses;
 
+    /** The user permissions. */
     private final Collection<UserPermission> userPermissions;
 
 
@@ -58,8 +61,8 @@ public class UserFirstACIItem extends ACIItem
      *            the collection of {@link UserPermission}s each
      *            <tt>protectedItems</tt> will have
      */
-    public UserFirstACIItem(String identificationTag, int precedence, AuthenticationLevel authenticationLevel,
-        Collection<UserClass> userClasses, Collection<UserPermission> userPermissions)
+    public UserFirstACIItem( String identificationTag, int precedence, AuthenticationLevel authenticationLevel,
+        Collection<UserClass> userClasses, Collection<UserPermission> userPermissions )
     {
         super( identificationTag, precedence, authenticationLevel );
 
@@ -69,7 +72,9 @@ public class UserFirstACIItem extends ACIItem
 
 
     /**
-     * Returns the set of {@link UserClass}es.
+     * Gets the collection of {@link UserClass}es.
+     *
+     * @return the collection of {@link UserClass}es
      */
     public Collection<UserClass> getUserClasses()
     {
@@ -78,7 +83,9 @@ public class UserFirstACIItem extends ACIItem
 
 
     /**
-     * Returns the set of {@link UserPermission}s.
+     * Gets the collection of {@link UserPermission}s.
+     *
+     * @return the collection of {@link UserPermission}s
      */
     public Collection<UserPermission> getUserPermission()
     {
@@ -86,34 +93,38 @@ public class UserFirstACIItem extends ACIItem
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public String toString()
     {
         StringBuilder buf = new StringBuilder();
-        
+
         // identificationTag
         buf.append( "{ identificationTag \"" );
         buf.append( getIdentificationTag() );
         buf.append( "\", " );
-        
+
         // precedence
         buf.append( "precedence " );
         buf.append( getPrecedence() );
         buf.append( ", " );
-        
+
         // authenticationLevel
         buf.append( "authenticationLevel " );
         buf.append( getAuthenticationLevel().getName() );
         buf.append( ", " );
-        
+
         // itemOrUserFirst
         buf.append( "itemOrUserFirst userFirst: { " );
-        
+
         // protectedItems
         buf.append( "userClasses { " );
 
         boolean isFirst = true;
-        
-        for ( UserClass userClass:userClasses )
+
+        for ( UserClass userClass : userClasses )
         {
             if ( isFirst )
             {
@@ -123,18 +134,18 @@ public class UserFirstACIItem extends ACIItem
             {
                 buf.append( ", " );
             }
-            
+
             buf.append( userClass.toString() );
         }
 
         buf.append( " }, " );
-        
+
         // itemPermissions
         buf.append( "userPermissions { " );
 
         isFirst = true;
-        
-        for ( UserPermission permission:userPermissions )
+
+        for ( UserPermission permission : userPermissions )
         {
             if ( isFirst )
             {
@@ -144,27 +155,30 @@ public class UserFirstACIItem extends ACIItem
             {
                 buf.append( ", " );
             }
-            
+
             buf.append( permission.toString() );
         }
-        
+
         buf.append( " } } }" );
 
         return buf.toString();
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public Collection<ACITuple> toTuples()
     {
         Collection<ACITuple> tuples = new ArrayList<ACITuple>();
 
-        for ( UserPermission userPermission:userPermissions )
+        for ( UserPermission userPermission : userPermissions )
         {
             Set<GrantAndDenial> grants = userPermission.getGrants();
             Set<GrantAndDenial> denials = userPermission.getDenials();
-            int precedence = userPermission.getPrecedence() != null ? 
-                userPermission.getPrecedence() :
-                this.getPrecedence();
+            int precedence = userPermission.getPrecedence() != null
+                ? userPermission.getPrecedence()
+                    : this.getPrecedence();
 
             if ( grants.size() > 0 )
             {

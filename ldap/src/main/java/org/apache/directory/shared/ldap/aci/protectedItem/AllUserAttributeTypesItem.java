@@ -19,7 +19,9 @@
  */
 package org.apache.directory.shared.ldap.aci.protectedItem;
 
+
 import org.apache.directory.shared.ldap.aci.ProtectedItem;
+
 
 /**
  * All user attribute type information associated with the entry, but not
@@ -36,8 +38,9 @@ public class AllUserAttributeTypesItem extends ProtectedItem
 
 
     /**
-     * @see Object#toString()
+     * {@inheritDoc}
      */
+    @Override
     public String toString()
     {
         return "allUserAttributeTypes";

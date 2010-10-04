@@ -19,6 +19,7 @@
  */
 package org.apache.directory.shared.ldap.aci.protectedItem;
 
+
 import org.apache.directory.shared.ldap.schema.AttributeType;
 
 
@@ -49,7 +50,9 @@ public class MaxValueCountElem
 
 
     /**
-     * Returns the attribute to limit the maximum count.
+     * Gets the attribute to limit the maximum count.
+     *
+     * @return the attribute type
      */
     public AttributeType getAttributeType()
     {
@@ -58,7 +61,9 @@ public class MaxValueCountElem
 
 
     /**
-     * Returns the maximum count of the attribute allowed.
+     * Gets the maximum count of the attribute allowed.
+     *
+     * @return the maximum count of the attribute allowed
      */
     public int getMaxCount()
     {
@@ -67,8 +72,9 @@ public class MaxValueCountElem
 
 
     /**
-     * @see Object#toString()
+     * {@inheritDoc}
      */
+    @Override
     public String toString()
     {
         return "{ type " + attributeType.getName() + ", maxCount " + maxCount + " }";

@@ -60,12 +60,12 @@ public abstract class ACIItem
         {
             throw new IllegalArgumentException( I18n.err( I18n.ERR_04001_NULL_IDENTIFICATION_TAG ) );
         }
-        
+
         if ( ( precedence < 0 ) || ( precedence > 255 ) )
         {
             throw new IllegalArgumentException( I18n.err( I18n.ERR_04002_BAD_PRECENDENCE, precedence ) );
         }
-        
+
         if ( authenticationLevel == null )
         {
             throw new IllegalArgumentException( I18n.err( I18n.ERR_04003_NULL_AUTHENTICATION_LEVEL ) );
@@ -78,7 +78,9 @@ public abstract class ACIItem
 
 
     /**
-     * Returns the id string of this item.
+     * Gets the id string of this item.
+     *
+     * @return the identification tag
      */
     public String getIdentificationTag()
     {
@@ -87,7 +89,9 @@ public abstract class ACIItem
 
 
     /**
-     * Returns the precedence of this item.
+     * Gets the precedence of this item.
+     *
+     * @return the precedence
      */
     public int getPrecedence()
     {
@@ -96,7 +100,9 @@ public abstract class ACIItem
 
 
     /**
-     * Returns the level of authentication required to this item.
+     * Gets the level of authentication required to this item.
+     *
+     * @return the authentication level
      */
     public AuthenticationLevel getAuthenticationLevel()
     {
@@ -105,36 +111,40 @@ public abstract class ACIItem
 
 
     /**
-     * Converts this item into a collection of {@link ACITuple}s and returns
-     * it.
+     * Converts this item into a collection of {@link ACITuple}s.
+     *
+     * @return the converted collection of {@link ACITuple}
      */
     public abstract Collection<ACITuple> toTuples();
 
 
     /**
-     * Converts a set of {@link GrantAndDenial}s into a set of
-     * {@link MicroOperation}s and returns it.
+     * Converts a collection of {@link GrantAndDenial}s into a collection of {@link MicroOperation}s.
+     *
+     * @param grantsAndDenials the grants and denials
+     * @return the collection of {@link MicroOperation}s
      */
-    protected static Set<MicroOperation> toMicroOperations( Set<GrantAndDenial> grantsAndDenials )
+    protected static Collection<MicroOperation> toMicroOperations( Collection<GrantAndDenial> grantsAndDenials )
     {
         Set<MicroOperation> microOps = new HashSet<MicroOperation>();
-        
-        for ( GrantAndDenial grantAndDenial:grantsAndDenials )
+
+        for ( GrantAndDenial grantAndDenial : grantsAndDenials )
         {
             microOps.add( grantAndDenial.getMicroOperation() );
         }
-        
+
         return microOps;
     }
 
 
     /**
-     * @see Object#toString()
+     * {@inheritDoc}
      */
+    @Override
     public String toString()
     {
         StringBuilder buf = new StringBuilder();
-        
+
         // identificationTag
         buf.append( "identificationTag \"" );
         buf.append( getIdentificationTag() );
@@ -142,11 +152,11 @@ public abstract class ACIItem
         // precedence
         buf.append( "\", precedence " );
         buf.append( getPrecedence() );
-        
+
         // authenticationLevel
         buf.append( ", authenticationLevel " );
         buf.append( getAuthenticationLevel().getName() );
-        
+
         return buf.toString();
     }
 }

@@ -32,8 +32,10 @@ import java.util.Collections;
  */
 public class UserPermission extends Permission
 {
+    /** The serialVersionUID. */
     private static final long serialVersionUID = 3940100745409337694L;
 
+    /** The protected items. */
     private final Collection<ProtectedItem> protectedItems;
 
 
@@ -48,7 +50,8 @@ public class UserPermission extends Permission
      * @param protectedItems
      *            the collection of {@link ProtectedItem}s
      */
-    public UserPermission( Integer precedence, Collection<GrantAndDenial> grantsAndDenials, Collection<ProtectedItem> protectedItems )
+    public UserPermission( Integer precedence, Collection<GrantAndDenial> grantsAndDenials,
+        Collection<ProtectedItem> protectedItems )
     {
         super( precedence, grantsAndDenials );
 
@@ -57,7 +60,9 @@ public class UserPermission extends Permission
 
 
     /**
-     * Returns the collection of {@link ProtectedItem}s.
+     * Gets the collection of {@link ProtectedItem}s.
+     *
+     * @return the collection of {@link ProtectedItem}s
      */
     public Collection<ProtectedItem> getProtectedItems()
     {
@@ -65,10 +70,14 @@ public class UserPermission extends Permission
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public String toString()
     {
         StringBuilder buf = new StringBuilder();
-        
+
         buf.append( "{ " );
 
         if ( getPrecedence() != null )
@@ -77,12 +86,12 @@ public class UserPermission extends Permission
             buf.append( getPrecedence() );
             buf.append( ", " );
         }
-        
+
         buf.append( "protectedItems { " );
-        
+
         boolean isFirst = true;
-        
-        for ( ProtectedItem item:protectedItems )
+
+        for ( ProtectedItem item : protectedItems )
         {
             if ( isFirst )
             {
@@ -92,15 +101,15 @@ public class UserPermission extends Permission
             {
                 buf.append( ", " );
             }
-            
+
             buf.append( item.toString() );
         }
-        
+
         buf.append( " }, grantsAndDenials { " );
 
         isFirst = true;
-        
-        for ( GrantAndDenial grantAndDenial:getGrantsAndDenials() )
+
+        for ( GrantAndDenial grantAndDenial : getGrantsAndDenials() )
         {
             if ( isFirst )
             {
@@ -113,9 +122,9 @@ public class UserPermission extends Permission
 
             buf.append( grantAndDenial.toString() );
         }
-        
+
         buf.append( " } }" );
-        
+
         return buf.toString();
     }
 }

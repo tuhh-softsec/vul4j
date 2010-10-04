@@ -63,16 +63,16 @@ public class ACITuple
      * @param userClasses the collection of {@link UserClass}es this tuple relates to
      * @param authenticationLevel the level of authentication required
      * @param protectedItems the collection of {@link ProtectedItem}s this tuple relates
-     * @param microOperations the set of {@link MicroOperation}s this tuple relates
+     * @param microOperations the collection of {@link MicroOperation}s this tuple relates
      * @param grant <tt>true</tt> if and only if this tuple grants an access
      * @param precedence the precedence of this tuple (<tt>0</tt>-<tt>255</tt>)
      */
-    public ACITuple( 
-            Collection<UserClass> userClasses, 
-            AuthenticationLevel authenticationLevel, 
+    public ACITuple(
+            Collection<UserClass> userClasses,
+            AuthenticationLevel authenticationLevel,
             Collection<ProtectedItem> protectedItems,
-            Set<MicroOperation> microOperations, 
-            boolean grant, 
+            Collection<MicroOperation> microOperations,
+            boolean grant,
             Integer precedence )
     {
         if ( authenticationLevel == null )
@@ -95,7 +95,9 @@ public class ACITuple
 
 
     /**
-     * Returns the collection of {@link UserClass}es this tuple relates to.
+     * Gets the collection of {@link UserClass}es this tuple relates to.
+     *
+     * @return the collection of {@link UserClass}es
      */
     public Collection<UserClass> getUserClasses()
     {
@@ -104,7 +106,9 @@ public class ACITuple
 
 
     /**
-     * Returns the level of authentication required.
+     * Gets the level of authentication required.
+     *
+     * @return the authentication level
      */
     public AuthenticationLevel getAuthenticationLevel()
     {
@@ -113,7 +117,9 @@ public class ACITuple
 
 
     /**
-     * Returns the collection of {@link ProtectedItem}s this tuple relates.
+     * Gets the collection of {@link ProtectedItem}s this tuple relates.
+     *
+     * @return the collection of {@link ProtectedItem}s
      */
     public Collection<ProtectedItem> getProtectedItems()
     {
@@ -122,16 +128,20 @@ public class ACITuple
 
 
     /**
-     * Returns the set of {@link MicroOperation}s this tuple relates.
+     * Gets the collection of {@link MicroOperation}s this tuple relates.
+     *
+     * @return the collection of {@link MicroOperation}s
      */
-    public Set<MicroOperation> getMicroOperations()
+    public Collection<MicroOperation> getMicroOperations()
     {
         return microOperations;
     }
 
 
     /**
-     * Returns <tt>true</tt> if and only if this tuple grants an access.
+     * Gets <tt>true</tt> if and only if this tuple grants an access.
+     *
+     * @return <tt>true</tt> if and only if this tuple grants an access
      */
     public boolean isGrant()
     {
@@ -140,7 +150,9 @@ public class ACITuple
 
 
     /**
-     * Returns the precedence of this tuple (<tt>0</tt>-<tt>255</tt>).
+     * Gets the precedence of this tuple (<tt>0</tt>-<tt>255</tt>).
+     *
+     * @return the precedence
      */
     public Integer getPrecedence()
     {
@@ -148,6 +160,10 @@ public class ACITuple
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public String toString()
     {
         return "ACITuple: userClasses=" + userClasses + ", " + "authenticationLevel=" + authenticationLevel + ", "

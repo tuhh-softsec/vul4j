@@ -34,12 +34,19 @@ import java.util.Set;
  */
 public abstract class Permission implements Serializable
 {
+    /** The serialVersionUID. */
+    private static final long serialVersionUID = 8923801399021825709L;
+
+    /** The precedence. */
     private final Integer precedence;
 
+    /** The grants and denials. */
     private final Set<GrantAndDenial> grantsAndDenials;
 
+    /** The grants. */
     private final Set<GrantAndDenial> grants;
 
+    /** The denials. */
     private final Set<GrantAndDenial> denials;
 
 
@@ -52,15 +59,15 @@ public abstract class Permission implements Serializable
      * @param grantsAndDenials
      *            the set of {@link GrantAndDenial}s
      */
-    protected Permission( Integer precedence, Collection<GrantAndDenial> grantsAndDenials)
+    protected Permission( Integer precedence, Collection<GrantAndDenial> grantsAndDenials )
     {
         this.precedence = precedence;
 
         Set<GrantAndDenial> tmpGrantsAndDenials = new HashSet<GrantAndDenial>();
         Set<GrantAndDenial> tmpGrants = new HashSet<GrantAndDenial>();
         Set<GrantAndDenial> tmpDenials = new HashSet<GrantAndDenial>();
-        
-        for ( GrantAndDenial gad:grantsAndDenials )
+
+        for ( GrantAndDenial gad : grantsAndDenials )
         {
             if ( gad.isGrant() )
             {
@@ -81,7 +88,9 @@ public abstract class Permission implements Serializable
 
 
     /**
-     * Returns the precedence of this permission.
+     * Gets the precedence of this permission.
+     *
+     * @return the precedence
      */
     public Integer getPrecedence()
     {
@@ -90,7 +99,9 @@ public abstract class Permission implements Serializable
 
 
     /**
-     * Returns the set of {@link GrantAndDenial}s.
+     * Gets the set of {@link GrantAndDenial}s.
+     *
+     * @return the grants and denials
      */
     public Set<GrantAndDenial> getGrantsAndDenials()
     {
@@ -99,7 +110,9 @@ public abstract class Permission implements Serializable
 
 
     /**
-     * Returns the set of grants only.
+     * Gets the set of grants only.
+     *
+     * @return the grants
      */
     public Set<GrantAndDenial> getGrants()
     {
@@ -108,7 +121,9 @@ public abstract class Permission implements Serializable
 
 
     /**
-     * Returns the set of denials only.
+     * Gets the set of denials only.
+     *
+     * @return the denials
      */
     public Set<GrantAndDenial> getDenials()
     {

@@ -19,6 +19,7 @@
  */
 package org.apache.directory.shared.ldap.aci.protectedItem;
 
+
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Set;
@@ -26,18 +27,20 @@ import java.util.Set;
 import org.apache.directory.shared.ldap.aci.ProtectedItem;
 import org.apache.directory.shared.ldap.schema.AttributeType;
 
+
 /**
  * A base class for all items which protects attribute types (or its values)
  */
 public abstract class AbstractAttributeTypeProtectedItem extends ProtectedItem
 {
+    /** The attribute types. */
     protected final Set<AttributeType> attributeTypes;
 
 
     /**
      * Creates a new instance.
      * 
-     * @param attributeTypes the collection of attirbute IDs
+     * @param attributeTypes the collection of attribute IDs
      */
     protected AbstractAttributeTypeProtectedItem( Set<AttributeType> attributeTypes )
     {
@@ -46,7 +49,9 @@ public abstract class AbstractAttributeTypeProtectedItem extends ProtectedItem
 
 
     /**
-     * Returns an iterator of all attribute IDs.
+     * Gets an iterator of all attribute types.
+     *
+     * @return the iterator of all attribute types
      */
     public Iterator<AttributeType> iterator()
     {
@@ -93,8 +98,9 @@ public abstract class AbstractAttributeTypeProtectedItem extends ProtectedItem
 
 
     /**
-     * @see Object#toString()
+     * {@inheritDoc}
      */
+    @Override
     public String toString()
     {
         StringBuilder buf = new StringBuilder();

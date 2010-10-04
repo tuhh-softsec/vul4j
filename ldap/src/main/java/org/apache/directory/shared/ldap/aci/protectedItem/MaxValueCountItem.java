@@ -54,7 +54,9 @@ public class MaxValueCountItem extends ProtectedItem
 
 
     /**
-     * Returns an iterator of all {@link MaxValueCountElem}s.
+     * Gets an iterator of all {@link MaxValueCountElem}s.
+     *
+     * @return an iterator of all {@link MaxValueCountElem}s
      */
     public Iterator<MaxValueCountElem> iterator()
     {
@@ -101,8 +103,9 @@ public class MaxValueCountItem extends ProtectedItem
 
 
     /**
-     * @see Object#toString()
+     * {@inheritDoc}
      */
+    @Override
     public String toString()
     {
         StringBuilder buf = new StringBuilder();
