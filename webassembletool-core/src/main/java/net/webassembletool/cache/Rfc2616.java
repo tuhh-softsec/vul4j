@@ -206,8 +206,15 @@ public class Rfc2616 {
 		return (nowOnOriginServer.after(expiration));
 	}
 
+	/**
+	 * Get ETag from a resource.
+	 * 
+	 * @param resource
+	 *            Resource (not null)
+	 * @return etag or null
+	 */
 	public final static String getEtag(Resource resource) {
-		return resource.getHeader("E-tag");
+		return resource.getHeader("Etag");
 	}
 
 	public final static boolean etagMatches(ResourceContext resourceContext,

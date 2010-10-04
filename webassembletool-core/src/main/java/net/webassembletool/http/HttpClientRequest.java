@@ -82,8 +82,8 @@ public class HttpClientRequest {
 		buildHttpMethod();
 		HttpClientResponse result;
 		URL url = new URL(uri);
-		HttpHost httpHost = new HttpHost(url.getHost(), url.getPort(), url
-				.getProtocol());
+		HttpHost httpHost = new HttpHost(url.getHost(), url.getPort(),
+				url.getProtocol());
 		// Preserve host if required
 		if (preserveHost) {
 			// original port is -1 for default ports(80, 443),
@@ -96,8 +96,8 @@ public class HttpClientRequest {
 			HttpHost virtualHost = new HttpHost(
 					originalRequest.getServerName(), originalport,
 					originalRequest.getScheme());
-			ClientParamBean clientParamBean = new ClientParamBean(httpRequest
-					.getParams());
+			ClientParamBean clientParamBean = new ClientParamBean(
+					httpRequest.getParams());
 			clientParamBean.setVirtualHost(virtualHost);
 		}
 
@@ -124,17 +124,17 @@ public class HttpClientRequest {
 			HttpEntityEnclosingRequest httpEntityEnclosingRequest)
 			throws IOException {
 		long contentLengthLong = -1;
-		String contentLength = req.getHeader("Content-length");
+		String contentLength = req.getHeader(HttpHeaders.CONTENT_LENGTH);
 		if (contentLength != null) {
 			contentLengthLong = Long.parseLong(contentLength);
 		}
-		InputStreamEntity inputStreamEntity = new InputStreamEntity(req
-				.getInputStream(), contentLengthLong);
+		InputStreamEntity inputStreamEntity = new InputStreamEntity(
+				req.getInputStream(), contentLengthLong);
 		String contentType = req.getContentType();
 		if (contentType != null) {
 			inputStreamEntity.setContentType(contentType);
 		}
-		String contentEncoding = req.getHeader("Content-Encoding");
+		String contentEncoding = req.getHeader(HttpHeaders.CONTENT_ENCODING);
 		if (contentEncoding != null) {
 			inputStreamEntity.setContentEncoding(contentEncoding);
 		}
@@ -183,17 +183,17 @@ public class HttpClientRequest {
 		// We use the same user-agent and accept headers that the one sent by
 		// the browser as some web sites generate different pages and scripts
 		// depending on the browser
-		String userAgent = originalRequest.getHeader("User-Agent");
+		String userAgent = originalRequest.getHeader(HttpHeaders.USER_AGENT);
 		if (userAgent != null) {
 			httpRequest.getParams().setParameter(CoreProtocolPNames.USER_AGENT,
 					userAgent);
 		}
-		copyRequestHeader("Accept");
-		copyRequestHeader("Accept-Encoding");
-		copyRequestHeader("Accept-Language");
-		copyRequestHeader("Accept-Charset");
-		copyRequestHeader("Cache-control");
-		copyRequestHeader("Pragma");
+		copyRequestHeader(HttpHeaders.ACCEPT);
+		copyRequestHeader(HttpHeaders.ACCEPT_ENCODING);
+		copyRequestHeader(HttpHeaders.ACCEPT_LANGUAGE);
+		copyRequestHeader(HttpHeaders.ACCEPT_CHARSET);
+		copyRequestHeader(HttpHeaders.CACHE_CONTROL);
+		copyRequestHeader(HttpHeaders.PRAGMA);
 		if (headers != null) {
 			for (Entry<String, String> entry : headers.entrySet()) {
 				httpRequest.addHeader(entry.getKey(), entry.getValue());

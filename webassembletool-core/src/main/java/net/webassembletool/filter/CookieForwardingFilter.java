@@ -25,6 +25,7 @@ import net.webassembletool.ResourceContext;
 import net.webassembletool.extension.ExtensionFactory;
 import net.webassembletool.http.HttpClientRequest;
 import net.webassembletool.http.HttpClientResponse;
+import net.webassembletool.http.HttpHeaders;
 import net.webassembletool.output.Output;
 
 import org.apache.commons.logging.Log;
@@ -37,8 +38,6 @@ import org.apache.commons.logging.LogFactory;
  * 
  */
 public class CookieForwardingFilter implements Filter {
-	private static final String HEADER_COOKIE = "Cookie";
-	private static final String HEADER_SET_COOKIE = "Set-cookie";
 	private static Log logger = LogFactory.getLog(ExtensionFactory.class);
 	public static final String PROP_ATTRIBUTE = "forwardCookies";
 	private final ArrayList<String> forwardCookies = new ArrayList<String>();
@@ -88,14 +87,15 @@ public class CookieForwardingFilter implements Filter {
 			return;
 		}
 
-		String[] cookies = httpClientResponse.getHeaders(HEADER_SET_COOKIE);
+		String[] cookies = httpClientResponse
+				.getHeaders(HttpHeaders.SET_COOKIE);
 		if (cookies != null) {
 			for (String v : cookies) {
 				for (String forwardCookie : forwardCookies) {
 					if (v.startsWith(forwardCookie + "=")) {
 
 						resourceContext.getOriginalResponse().addHeader(
-								HEADER_SET_COOKIE, v);
+								HttpHeaders.SET_COOKIE, v);
 					}
 				}
 			}
@@ -149,7 +149,8 @@ public class CookieForwardingFilter implements Filter {
 				headerValue.append(c.getValue());
 			}
 
-			httpClientRequest.addHeader(HEADER_COOKIE, headerValue.toString());
+			httpClientRequest.addHeader(HttpHeaders.COOKIE,
+					headerValue.toString());
 		}
 
 	}

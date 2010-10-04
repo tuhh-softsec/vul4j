@@ -147,14 +147,14 @@ public class HttpResource extends Resource {
 		if (filter != null) {
 			filter.postRequest(httpClientResponse, output, target);
 		}
-		String location = httpClientResponse.getHeader("Location");
+		String location = httpClientResponse.getHeader(HttpHeaders.LOCATION);
 		if (location != null) {
 			// In case of a redirect, we need to rewrite the location header to
 			// match
 			// provider application and remove any jsessionid in the URL
 			location = rewriteLocation(location);
 			location = removeSessionId(location);
-			output.addHeader("Location", location);
+			output.addHeader(HttpHeaders.LOCATION, location);
 		}
 		String charset = httpClientResponse.getContentCharset();
 		if (charset != null) {
@@ -167,7 +167,7 @@ public class HttpResource extends Resource {
 			} else {
 				InputStream inputStream = httpClientResponse.openStream();
 				// Unzip the stream if necessary
-				String contentEncoding = getHeader("Content-encoding");
+				String contentEncoding = getHeader(HttpHeaders.CONTENT_ENCODING);
 				if (contentEncoding != null) {
 					if (!"gzip".equalsIgnoreCase(contentEncoding)
 							&& !"x-gzip".equalsIgnoreCase(contentEncoding)) {
@@ -215,7 +215,8 @@ public class HttpResource extends Resource {
 			throws IOException {
 		String jsessionid = RewriteUtils.getSessionId(target);
 		boolean textContentType = ResourceUtils
-				.isTextContentType(httpClientResponse.getHeader("Content-Type"));
+				.isTextContentType(httpClientResponse
+						.getHeader(HttpHeaders.CONTENT_TYPE));
 		if (jsessionid == null || !textContentType) {
 			IOUtils.copy(inputStream, output.getOutputStream());
 		} else {
@@ -225,8 +226,8 @@ public class HttpResource extends Resource {
 			}
 			String content = IOUtils.toString(inputStream, charset);
 			content = removeSessionId(jsessionid, content);
-			if (output.getHeader("Content-length") != null) {
-				output.setHeader("Content-length",
+			if (output.getHeader(HttpHeaders.CONTENT_LENGTH) != null) {
+				output.setHeader(HttpHeaders.CONTENT_LENGTH,
 						Integer.toString(content.length()));
 			}
 			OutputStream outputStream = output.getOutputStream();

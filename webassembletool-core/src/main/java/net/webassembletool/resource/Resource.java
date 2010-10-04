@@ -50,10 +50,11 @@ public abstract class Resource {
 	}
 
 	/**
-	 * Get ressource header.
+	 * Get resource header.
 	 * 
 	 * @param name
-	 * @return
+	 *            Header name (not null)
+	 * @return Header value or null
 	 */
 	public abstract String getHeader(String name);
 

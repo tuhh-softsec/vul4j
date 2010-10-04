@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.webassembletool.HttpErrorPage;
 import net.webassembletool.ResourceContext;
+import net.webassembletool.http.HttpHeaders;
 import net.webassembletool.resource.Resource;
 
 import org.apache.commons.logging.Log;
@@ -165,12 +166,12 @@ class CacheEntry {
 		HashMap<String, String> result = new HashMap<String, String>();
 		String ifNoneMatch = getIfNoneMatch(resourceContext);
 		if (ifNoneMatch != null) {
-			result.put("If-None-Match", ifNoneMatch);
+			result.put(HttpHeaders.IF_NONE_MATCH, ifNoneMatch);
 		}
 		String ifModifiedSince = getIfModifiedSince(resourceContext,
 				cachedResponse);
 		if (ifModifiedSince != null) {
-			result.put("If-Modified-Since", ifModifiedSince);
+			result.put(HttpHeaders.IF_MODIFIED_SINCE, ifModifiedSince);
 		}
 		return result;
 	}
@@ -180,7 +181,7 @@ class CacheEntry {
 		if (resourceContext.isProxy()
 				&& !resourceContext.isNeededForTransformation()) {
 			String ifNoneMatch = resourceContext.getOriginalRequest()
-					.getHeader("If-None-Match");
+					.getHeader(HttpHeaders.IF_NONE_MATCH);
 			if (ifNoneMatch != null) {
 				Matcher matcher = ETAG_PATTERN.matcher(ifNoneMatch);
 				while (!matcher.hitEnd()) {
@@ -194,7 +195,7 @@ class CacheEntry {
 			CachedResponse cachedResponse = getCacheResponseAndClean(key);
 
 			if (cachedResponse != null) {
-				String etag = cachedResponse.getHeader("Etag");
+				String etag = cachedResponse.getHeader(HttpHeaders.ETAG);
 				if (etag != null && cachedResponse.hasResponseBody()) {
 					etags.add(etag);
 				}
@@ -214,15 +215,16 @@ class CacheEntry {
 	private String getIfModifiedSince(ResourceContext resourceContext,
 			CachedResponse cachedResponse) {
 		String requestedIfModifiedSinceString = resourceContext
-				.getOriginalRequest().getHeader("If-Modified-Since");
+				.getOriginalRequest().getHeader(HttpHeaders.IF_MODIFIED_SINCE);
 		Date requestedIfModifiedSinceDate = Rfc2616.getDateHeader(
-				resourceContext, "If-Modified-Since");
+				resourceContext, HttpHeaders.IF_MODIFIED_SINCE);
 		String cacheLastModifiedString = null;
 		Date cacheLastModifiedDate = null;
 		if (cachedResponse != null && cachedResponse.hasResponseBody()) {
-			cacheLastModifiedString = cachedResponse.getHeader("Last-modified");
+			cacheLastModifiedString = cachedResponse
+					.getHeader(HttpHeaders.LAST_MODIFIED);
 			cacheLastModifiedDate = Rfc2616.getDateHeader(cachedResponse,
-					"Last-modified");
+					HttpHeaders.LAST_MODIFIED);
 		}
 		if (resourceContext.isNeededForTransformation()
 				|| requestedIfModifiedSinceDate == null
@@ -268,7 +270,7 @@ class CacheEntry {
 					if (!resourceContext.isNeededForTransformation()
 							&& sentIfModifiedSince.equals(resourceContext
 									.getOriginalRequest().getHeader(
-											"If-Modified-Since"))) {
+											HttpHeaders.IF_MODIFIED_SINCE))) {
 						result = newResource;
 					} else {
 						result = cachedResponse;
@@ -339,14 +341,14 @@ class CacheEntry {
 
 	private void updateHeaders(CachedResponse cachedResponse,
 			Resource newResource) {
-		copyHeader(newResource, cachedResponse, "Date");
-		copyHeader(newResource, cachedResponse, "Content-Type");
-		copyHeader(newResource, cachedResponse, "Content-Length");
-		copyHeader(newResource, cachedResponse, "Last-Modified");
-		copyHeader(newResource, cachedResponse, "ETag");
-		copyHeader(newResource, cachedResponse, "Expires");
-		copyHeader(newResource, cachedResponse, "Cache-control");
-		copyHeader(newResource, cachedResponse, "Content-encoding");
+		copyHeader(newResource, cachedResponse, HttpHeaders.DATE);
+		copyHeader(newResource, cachedResponse, HttpHeaders.CONTENT_TYPE);
+		copyHeader(newResource, cachedResponse, HttpHeaders.CONTENT_LENGTH);
+		copyHeader(newResource, cachedResponse, HttpHeaders.LAST_MODIFIED);
+		copyHeader(newResource, cachedResponse, HttpHeaders.ETAG);
+		copyHeader(newResource, cachedResponse, HttpHeaders.EXPIRES);
+		copyHeader(newResource, cachedResponse, HttpHeaders.CACHE_CONTROL);
+		copyHeader(newResource, cachedResponse, HttpHeaders.CONTENT_ENCODING);
 	}
 
 	/**

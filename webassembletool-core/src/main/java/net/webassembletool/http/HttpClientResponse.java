@@ -60,8 +60,8 @@ public class HttpClientResponse {
 			httpEntity = httpResponse.getEntity();
 			if (statusCode == HttpServletResponse.SC_MOVED_PERMANENTLY
 					|| statusCode == HttpServletResponse.SC_MOVED_TEMPORARILY) {
-				currentLocation = httpResponse.getFirstHeader("location")
-						.getValue();
+				currentLocation = httpResponse.getFirstHeader(
+						HttpHeaders.LOCATION).getValue();
 			} else {
 				// Calculating the URL we may have been redirected to, as
 				// automatic redirect following is activated
