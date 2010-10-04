@@ -43,7 +43,7 @@ import org.slf4j.LoggerFactory;
  * Each node is referenced by a RDN, and holds the full DN corresponding to its position<br/>
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @param N The type of node we store
+ * @param <N> The type of node we store
  */
 public class DnNode<N> implements Cloneable
 {
@@ -51,7 +51,7 @@ public class DnNode<N> implements Cloneable
     private static final Logger LOG = LoggerFactory.getLogger( DnNode.class );
 
     /** The stored element */
-    private N element;
+    private N nodeElement;
 
     /** The node's key */
     private RDN nodeRdn;
@@ -134,7 +134,7 @@ public class DnNode<N> implements Cloneable
      */
     private void setElement( N element )
     {
-        this.element = element;
+        this.nodeElement = element;
     }
     
     
@@ -159,7 +159,7 @@ public class DnNode<N> implements Cloneable
      */
     public DnNode( N element )
     {
-        this.element = element;
+        this.nodeElement = element;
         children = new ConcurrentHashMap<RDN, DnNode<N>>();
     }
 
@@ -167,6 +167,7 @@ public class DnNode<N> implements Cloneable
     /**
      * Creates a new instance of DnNode.
      *
+     * @param dn the node's DN
      * @param element the element to store
      */
     public DnNode( DN dn, N element )
@@ -187,7 +188,7 @@ public class DnNode<N> implements Cloneable
             this.children = rootNode.children;
             this.depth = rootNode.depth;
             this.nodeDn = rootNode.nodeDn;
-            this.element = rootNode.element;
+            this.nodeElement = rootNode.nodeElement;
             this.nodeRdn = rootNode.nodeRdn;
             this.parent = null;
         }
@@ -260,7 +261,7 @@ public class DnNode<N> implements Cloneable
      */
     public N getElement()
     {
-        return element;
+        return nodeElement;
     }
 
 
@@ -277,7 +278,7 @@ public class DnNode<N> implements Cloneable
             return null;
         }
 
-        return node.element;
+        return node.nodeElement;
     }
 
     
@@ -287,7 +288,7 @@ public class DnNode<N> implements Cloneable
      */
     public boolean hasElement()
     {
-        return element != null;
+        return nodeElement != null;
     }
 
 
@@ -305,7 +306,7 @@ public class DnNode<N> implements Cloneable
             return false;
         }
 
-        return node.element != null;
+        return node.nodeElement != null;
     }
 
     
@@ -443,9 +444,11 @@ public class DnNode<N> implements Cloneable
 
 
     /**
-     * Tells if a node has some children or not
+     * Tells if a node has some children or not.
      *
+     * @param dn the node's DN
      * @return <code>true</code> if the node has some children
+     * @throws LdapException if the DN is null or empty
      */
     public boolean hasChildren( DN dn ) throws LdapException
     {
@@ -535,7 +538,7 @@ public class DnNode<N> implements Cloneable
      * Add a new node in the tree. The added node won't have any element.
      *
      * @param dn The node's DN
-     * @throws LdapException
+     * @throws LdapException if the DN is null or empty
      */
     public void add( DN dn ) throws LdapException
     {
@@ -549,7 +552,7 @@ public class DnNode<N> implements Cloneable
      *
      * @param dn The node's DN
      * @param element The element to associate with this Node. Can be null.
-     * @throws LdapException
+     * @throws LdapException if the DN is null or empty
      */
     public void add( DN dn, N element ) throws LdapException
     {
@@ -605,9 +608,10 @@ public class DnNode<N> implements Cloneable
 
 
     /**
-     * Removes an element from the tree.
+     * Removes a node from the tree.
      *
-     * @param element The element to remove
+     * @param dn the node's DN
+     * @throws LdapException if the DN is null or empty
      */
     public void remove( DN dn ) throws LdapException
     {
@@ -784,7 +788,7 @@ public class DnNode<N> implements Cloneable
     {
         DnNode<N> clonedDnNode = new DnNode<N>();
 
-        clonedDnNode.element = element;
+        clonedDnNode.nodeElement = nodeElement;
         clonedDnNode.depth = depth;
         clonedDnNode.parent = parent;
         clonedDnNode.nodeRdn = nodeRdn;
@@ -812,15 +816,15 @@ public class DnNode<N> implements Cloneable
 
         if ( isLeaf() )
         {
-            sb.append( "Leaf[" ).append( nodeDn ).append( "]: " ).append( "'" ).append( element ).append( "'" );
+            sb.append( "Leaf[" ).append( nodeDn ).append( "]: " ).append( "'" ).append( nodeElement ).append( "'" );
             return sb.toString();
         }
 
         sb.append( "Branch[" ).append( nodeDn ).append( "]: " );
 
-        if ( element != null )
+        if ( nodeElement != null )
         {
-            sb.append( "'" ).append( element ).append( "'" );
+            sb.append( "'" ).append( nodeElement ).append( "'" );
         }
 
         tabs += "    ";
