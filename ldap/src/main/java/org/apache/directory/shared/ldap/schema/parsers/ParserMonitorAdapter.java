@@ -21,22 +21,31 @@ package org.apache.directory.shared.ldap.schema.parsers;
 
 
 /**
- * Document me.
+ * Default implementation of {@link ParserMonitor} with empty method implementations.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 public class ParserMonitorAdapter implements ParserMonitor
 {
+    /**
+     * {@inheritDoc}
+     */
     public void matchedProduction( String prod )
     {
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public void startedParse( String s )
     {
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public void finishedParse( String s )
     {
     }

@@ -27,11 +27,27 @@ package org.apache.directory.shared.ldap.schema.parsers;
  */
 public interface ParserMonitor
 {
+
+    /**
+     * Called when a production matched.
+     *
+     * @param prod the production
+     */
     void matchedProduction( String prod );
 
 
-    void startedParse( String s );
+    /**
+     * Called when parsing is started.
+     *
+     * @param subject the subject
+     */
+    void startedParse( String subject );
 
 
-    void finishedParse( String s );
+    /**
+     * Called when parsing is finished.
+     *
+     * @param subject the subject
+     */
+    void finishedParse( String subject );
 }
