@@ -129,10 +129,11 @@ public class AttributeTypeDescriptionSchemaParser extends AbstractSchemaParser
 
 
     /**
-     * Parses a AttributeType description
+     * Parses a AttributeType description.
      * 
      * @param schemaDescription The AttributeType description to parse
      * @return An instance of AttributeType
+     * @throws ParseException {@inheritDoc}
      */
     public AttributeType parse( String schemaDescription ) throws ParseException
     {

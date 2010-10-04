@@ -114,6 +114,13 @@ public class ObjectClassDescriptionSchemaParser extends AbstractSchemaParser
     }
 
 
+    /**
+     * Parses a ObjectClass description.
+     * 
+     * @param schemaDescription The ObjectClass description to parse
+     * @return An instance of ObjectClass
+     * @throws ParseException {@inheritDoc}
+     */
     public ObjectClass parse( String schemaDescription ) throws ParseException
     {
         return parseObjectClassDescription( schemaDescription );

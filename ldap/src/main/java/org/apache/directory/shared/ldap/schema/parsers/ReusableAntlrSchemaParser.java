@@ -19,9 +19,11 @@
  */
 package org.apache.directory.shared.ldap.schema.parsers;
 
+
 import org.apache.directory.shared.ldap.schema.syntax.AntlrSchemaParser;
 
 import antlr.TokenStream;
+
 
 /**
  * A reusable parser class extended from antlr generated parser for an LDAP
@@ -35,8 +37,11 @@ import antlr.TokenStream;
  */
 public class ReusableAntlrSchemaParser extends AntlrSchemaParser
 {
+
     /**
      * Creates a ReusableAntlrSchemaParser instance.
+     *
+     * @param lexer the lexer
      */
     public ReusableAntlrSchemaParser( TokenStream lexer )
     {

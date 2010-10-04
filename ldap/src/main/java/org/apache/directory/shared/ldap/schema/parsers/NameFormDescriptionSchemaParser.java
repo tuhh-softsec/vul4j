@@ -41,6 +41,7 @@ public class NameFormDescriptionSchemaParser extends AbstractSchemaParser
     /** The LoggerFactory used by this class */
     protected static final Logger LOG = LoggerFactory.getLogger( NameFormDescriptionSchemaParser.class );
 
+
     /**
      * Creates a schema parser instance.
      */
@@ -68,7 +69,7 @@ public class NameFormDescriptionSchemaParser extends AbstractSchemaParser
      * @return the parsed NameForm bean
      * @throws ParseException if there are any recognition errors (bad syntax)
      */
-    public synchronized NameForm parseNameFormDescription( String nameFormDescription)
+    public synchronized NameForm parseNameFormDescription( String nameFormDescription )
         throws ParseException
     {
         LOG.debug( "Parsing a NameForm : {}", nameFormDescription );
@@ -84,7 +85,7 @@ public class NameFormDescriptionSchemaParser extends AbstractSchemaParser
         try
         {
             NameForm nameForm = parser.nameFormDescription();
-            
+
             // Update the schemaName
             updateSchemaName( nameForm );
 
@@ -106,10 +107,11 @@ public class NameFormDescriptionSchemaParser extends AbstractSchemaParser
 
 
     /**
-     * Parses a NameForm description
+     * Parses a NameForm description.
      * 
      * @param schemaDescription The NameForm description to parse
      * @return An instance of NameForm
+     * @throws ParseException {@inheritDoc}
      */
     public NameForm parse( String schemaDescription ) throws ParseException
     {

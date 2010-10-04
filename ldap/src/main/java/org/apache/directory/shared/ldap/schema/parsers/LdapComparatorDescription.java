@@ -20,6 +20,7 @@
 
 package org.apache.directory.shared.ldap.schema.parsers;
 
+
 import org.apache.directory.shared.ldap.schema.LoadableSchemaObject;
 import org.apache.directory.shared.ldap.schema.SchemaObjectType;
 
@@ -34,8 +35,9 @@ public class LdapComparatorDescription extends LoadableSchemaObject
     /** The serialVersionUID */
     private static final long serialVersionUID = 1L;
 
+
     /**
-     * A constructor for a LdapComparatorDescription
+     * A constructor for a LdapComparatorDescription.
      * @param oid The associated OID
      */
     public LdapComparatorDescription( String oid )
@@ -43,9 +45,9 @@ public class LdapComparatorDescription extends LoadableSchemaObject
         super( SchemaObjectType.COMPARATOR, oid );
     }
 
-    
+
     /**
-     * @see Object#toString()
+     * {@inheritDoc}
      */
     public String toString()
     {

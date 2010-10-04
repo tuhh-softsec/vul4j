@@ -47,7 +47,7 @@ public class SyntaxCheckerDescription extends LoadableSchemaObject
 
 
     /**
-     * @see Object#toString()
+     * {@inheritDoc}
      */
     public String toString()
     {

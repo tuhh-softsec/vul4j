@@ -41,6 +41,7 @@ public class DITContentRuleDescriptionSchemaParser extends AbstractSchemaParser
     /** The LoggerFactory used by this class */
     protected static final Logger LOG = LoggerFactory.getLogger( DITContentRuleDescriptionSchemaParser.class );
 
+
     /**
      * Creates a schema parser instance.
      */
@@ -85,7 +86,7 @@ public class DITContentRuleDescriptionSchemaParser extends AbstractSchemaParser
         try
         {
             DITContentRule ditContentRule = parser.ditContentRuleDescription();
-            
+
             // Update the schemaName
             updateSchemaName( ditContentRule );
 
@@ -108,10 +109,11 @@ public class DITContentRuleDescriptionSchemaParser extends AbstractSchemaParser
 
 
     /**
-     * Parses a DITContentRule description
+     * Parses a DITContentRule description.
      * 
      * @param schemaDescription The DITContentRule description to parse
      * @return An instance of DITContentRule
+     * @throws ParseException {@inheritDoc}
      */
     public DITContentRule parse( String schemaDescription ) throws ParseException
     {

@@ -113,10 +113,11 @@ public class NormalizerDescriptionSchemaParser extends AbstractSchemaParser
 
 
     /**
-     * Parses a Normalizer description
+     * Parses a Normalizer description.
      * 
      * @param schemaDescription The Normalizer description to parse
      * @return An instance of NormalizerDescription
+     * @throws ParseException {@inheritDoc}
      */
     public NormalizerDescription parse( String schemaDescription ) throws ParseException
     {

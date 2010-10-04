@@ -41,6 +41,7 @@ public class MatchingRuleDescriptionSchemaParser extends AbstractSchemaParser
     /** The LoggerFactory used by this class */
     protected static final Logger LOG = LoggerFactory.getLogger( MatchingRuleDescriptionSchemaParser.class );
 
+
     /**
      * Creates a schema parser instance.
      */
@@ -85,7 +86,7 @@ public class MatchingRuleDescriptionSchemaParser extends AbstractSchemaParser
         try
         {
             MatchingRule matchingRule = parser.matchingRuleDescription();
-            
+
             // Update the schemaName
             updateSchemaName( matchingRule );
 
@@ -107,10 +108,11 @@ public class MatchingRuleDescriptionSchemaParser extends AbstractSchemaParser
 
 
     /**
-     * Parses a MatchingRule description
+     * Parses a MatchingRule description.
      * 
      * @param schemaDescription The MatchingRule description to parse
      * @return An instance of MatchingRule
+     * @throws ParseException {@inheritDoc}
      */
     public MatchingRule parse( String schemaDescription ) throws ParseException
     {

@@ -41,6 +41,7 @@ public class LdapSyntaxDescriptionSchemaParser extends AbstractSchemaParser
     /** The LoggerFactory used by this class */
     protected static final Logger LOG = LoggerFactory.getLogger( LdapSyntaxDescriptionSchemaParser.class );
 
+
     /**
      * Creates a schema parser instance.
      */
@@ -83,7 +84,7 @@ public class LdapSyntaxDescriptionSchemaParser extends AbstractSchemaParser
 
             // Update the schemaName
             updateSchemaName( ldapSyntax );
-                
+
             return ldapSyntax;
         }
         catch ( RecognitionException re )
@@ -95,17 +96,18 @@ public class LdapSyntaxDescriptionSchemaParser extends AbstractSchemaParser
         catch ( TokenStreamException tse )
         {
             String msg = I18n.err( I18n.ERR_04241, ldapSyntaxDescription, tse.getMessage() );
-            LOG.error(  msg  );
+            LOG.error( msg );
             throw new ParseException( msg, 0 );
         }
     }
 
 
     /**
-     * Parses a LdapSyntax description
+     * Parses a LdapSyntax description.
      * 
      * @param schemaDescription The LdapSyntax description to parse
      * @return An instance of LdapSyntax
+     * @throws ParseException {@inheritDoc}
      */
     public LdapSyntax parse( String schemaDescription ) throws ParseException
     {

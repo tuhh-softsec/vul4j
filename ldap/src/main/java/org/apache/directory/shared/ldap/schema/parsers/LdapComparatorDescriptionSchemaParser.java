@@ -40,6 +40,7 @@ public class LdapComparatorDescriptionSchemaParser extends AbstractSchemaParser
     /** The LoggerFactory used by this class */
     protected static final Logger LOG = LoggerFactory.getLogger( LdapComparatorDescriptionSchemaParser.class );
 
+
     /**
      * Creates a schema parser instance.
      */
@@ -77,7 +78,7 @@ public class LdapComparatorDescriptionSchemaParser extends AbstractSchemaParser
         throws ParseException
     {
         LOG.debug( "Parsing a Comparator : {}", comparatorDescription );
-        
+
         if ( comparatorDescription == null )
         {
             LOG.error( I18n.err( I18n.ERR_04236 ) );
@@ -87,12 +88,11 @@ public class LdapComparatorDescriptionSchemaParser extends AbstractSchemaParser
         synchronized ( parser )
         {
             reset( comparatorDescription ); // reset and initialize the parser / lexer pair
-    
+
             try
             {
                 LdapComparatorDescription ldapComparatorDescription = parser.ldapComparator();
                 LOG.debug( "Parsed a LdapComparator : {}", ldapComparatorDescription );
-                
 
                 // Update the schemaName
                 updateSchemaName( ldapComparatorDescription );
@@ -116,10 +116,11 @@ public class LdapComparatorDescriptionSchemaParser extends AbstractSchemaParser
 
 
     /**
-     * Parses a LdapComparator description
+     * Parses a LdapComparator description.
      * 
      * @param schemaDescription The LdapComparator description to parse
      * @return An instance of LdapComparatorDescription
+     * @throws ParseException {@inheritDoc}
      */
     public LdapComparatorDescription parse( String schemaDescription ) throws ParseException
     {

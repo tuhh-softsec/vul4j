@@ -112,10 +112,11 @@ public class DITStructureRuleDescriptionSchemaParser extends AbstractSchemaParse
 
 
     /**
-     * Parses a DITStructureRule description
+     * Parses a DITStructureRule description.
      * 
      * @param schemaDescription The DITStructureRule description to parse
      * @return An instance of DITStructureRule
+     * @throws ParseException {@inheritDoc}
      */
     public DITStructureRule parse( String schemaDescription ) throws ParseException
     {

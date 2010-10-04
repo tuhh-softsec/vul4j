@@ -86,7 +86,7 @@ public class MatchingRuleUseDescriptionSchemaParser extends AbstractSchemaParser
         try
         {
             MatchingRuleUse matchingRuleUse = parser.matchingRuleUseDescription();
-            
+
             // Update the schemaName
             updateSchemaName( matchingRuleUse );
 
@@ -109,10 +109,11 @@ public class MatchingRuleUseDescriptionSchemaParser extends AbstractSchemaParser
 
 
     /**
-     * Parses a MatchingRuleUse description
+     * Parses a MatchingRuleUse description.
      * 
      * @param schemaDescription The MatchingRuleUse description to parse
      * @return An instance of MatchingRuleUse
+     * @throws ParseException {@inheritDoc}
      */
     public MatchingRuleUse parse( String schemaDescription ) throws ParseException
     {
