@@ -22,8 +22,6 @@ package org.apache.directory.shared.ldap.schema.parsers;
 
 import java.util.List;
 
-import javax.naming.NamingException;
-
 import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.LdapSyntax;
 import org.apache.directory.shared.ldap.schema.MatchingRule;
@@ -54,7 +52,7 @@ public final class ParserDescriptionUtils
      * @param oc1 the second objectClass to compare
      * @return true if both objectClasses match exactly, false otherwise
      */
-    public static boolean objectClassesMatch( ObjectClass oc0, ObjectClass oc1 ) throws NamingException
+    public static boolean objectClassesMatch( ObjectClass oc0, ObjectClass oc1 )
     {
         // compare all common description parameters
         if ( ! descriptionsMatch( oc0, oc1 ) )
