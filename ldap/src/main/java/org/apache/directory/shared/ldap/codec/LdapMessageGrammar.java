@@ -319,7 +319,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                     }
 
                     // We can quit now
-                    ldapMessageContainer.grammarEndAllowed( true );
+                    ldapMessageContainer.setGrammarEndAllowed( true );
                 }
             } );
 
@@ -390,7 +390,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                     }
 
                     // We can have an END transition
-                    ldapMessageContainer.grammarEndAllowed( true );
+                    ldapMessageContainer.setGrammarEndAllowed( true );
 
                     if ( IS_DEBUG )
                     {
@@ -457,7 +457,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                                     .valueOf( abandonnedMessageId ) );
                         }
 
-                        ldapMessageContainer.grammarEndAllowed( true );
+                        ldapMessageContainer.setGrammarEndAllowed( true );
 
                         return;
                     }
@@ -654,7 +654,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                     }
 
                     // We can have an END transition
-                    ldapMessageContainer.grammarEndAllowed( true );
+                    ldapMessageContainer.setGrammarEndAllowed( true );
 
                     if ( IS_DEBUG )
                     {
@@ -749,7 +749,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                     }
 
                     // We can have an END transition
-                    ldapMessageContainer.grammarEndAllowed( true );
+                    ldapMessageContainer.setGrammarEndAllowed( true );
 
                     if ( IS_DEBUG )
                     {
@@ -791,7 +791,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                     }
 
                     // We can have an END transition
-                    ldapMessageContainer.grammarEndAllowed( true );
+                    ldapMessageContainer.setGrammarEndAllowed( true );
 
                     if ( IS_DEBUG )
                     {
@@ -1181,7 +1181,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
             {
                 public void action( Asn1Container container ) throws DecoderException
                 {
-                    container.grammarEndAllowed( true );
+                    container.setGrammarEndAllowed( true );
                 }
             } );
 
@@ -1287,7 +1287,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
             {
                 public void action( Asn1Container container ) throws DecoderException
                 {
-                    container.grammarEndAllowed( true );
+                    container.setGrammarEndAllowed( true );
                 }
             } );
 
@@ -1666,7 +1666,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                     }
 
                     // We can have an END transition
-                    ldapMessageContainer.grammarEndAllowed( true );
+                    ldapMessageContainer.setGrammarEndAllowed( true );
 
                     LOG.debug( "Some vals are to be decoded" );
                 }
@@ -2323,7 +2323,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                     }
 
                     // We can have an END transition
-                    ldapMessageContainer.grammarEndAllowed( true );
+                    ldapMessageContainer.setGrammarEndAllowed( true );
 
                     if ( IS_DEBUG )
                     {
@@ -2402,7 +2402,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                     }
 
                     // We can have an END transition
-                    ldapMessageContainer.grammarEndAllowed( true );
+                    ldapMessageContainer.setGrammarEndAllowed( true );
 
                     if ( IS_DEBUG )
                     {
@@ -2674,7 +2674,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                     }
 
                     // We can have an END transition
-                    ldapMessageContainer.grammarEndAllowed( true );
+                    ldapMessageContainer.setGrammarEndAllowed( true );
                 }
             } );
 
@@ -2888,7 +2888,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                     }
 
                     // We can have an END transition
-                    ldapMessageContainer.grammarEndAllowed( true );
+                    ldapMessageContainer.setGrammarEndAllowed( true );
 
                     if ( IS_DEBUG )
                     {
@@ -2931,7 +2931,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                     }
 
                     // We can have an END transition
-                    ldapMessageContainer.grammarEndAllowed( true );
+                    ldapMessageContainer.setGrammarEndAllowed( true );
 
                     if ( IS_DEBUG )
                     {
@@ -3254,7 +3254,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                     }
 
                     // We can have an END transition
-                    ldapMessageContainer.grammarEndAllowed( true );
+                    ldapMessageContainer.setGrammarEndAllowed( true );
 
                     if ( IS_DEBUG )
                     {
@@ -3298,7 +3298,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                     }
 
                     // We can have an END transition
-                    ldapMessageContainer.grammarEndAllowed( true );
+                    ldapMessageContainer.setGrammarEndAllowed( true );
 
                     if ( IS_DEBUG )
                     {
@@ -3341,7 +3341,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                     }
 
                     // We can have an END transition
-                    ldapMessageContainer.grammarEndAllowed( true );
+                    ldapMessageContainer.setGrammarEndAllowed( true );
 
                     if ( IS_DEBUG )
                     {
@@ -3462,7 +3462,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                     message.addControl( control );
 
                     // We can have an END transition
-                    ldapMessageContainer.grammarEndAllowed( true );
+                    ldapMessageContainer.setGrammarEndAllowed( true );
 
                     if ( IS_DEBUG )
                     {
@@ -3519,7 +3519,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                     }
 
                     // We can have an END transition
-                    ldapMessageContainer.grammarEndAllowed( true );
+                    ldapMessageContainer.setGrammarEndAllowed( true );
 
                     if ( IS_DEBUG )
                     {

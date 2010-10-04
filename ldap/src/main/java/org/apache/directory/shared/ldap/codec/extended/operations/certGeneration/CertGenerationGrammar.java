@@ -256,7 +256,7 @@ public class CertGenerationGrammar extends AbstractGrammar
                         certGenContainer.getCertGenerationObject().setKeyAlgorithm( keyAlgorithm );
                     }
 
-                    certGenContainer.grammarEndAllowed( true );
+                    certGenContainer.setGrammarEndAllowed( true );
                 }
             } );
 

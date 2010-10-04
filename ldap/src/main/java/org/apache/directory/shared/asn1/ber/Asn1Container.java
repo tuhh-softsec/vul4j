@@ -123,7 +123,7 @@ public interface Asn1Container
      * @param grammarEndAllowed true or false, depending on the next transition
      * being an end or not.
      */
-    void grammarEndAllowed( boolean grammarEndAllowed );
+    void setGrammarEndAllowed( boolean grammarEndAllowed );
 
 
     /**

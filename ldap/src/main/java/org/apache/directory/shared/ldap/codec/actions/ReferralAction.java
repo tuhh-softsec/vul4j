@@ -123,6 +123,6 @@ public class ReferralAction extends GrammarAction
         }
 
         // We can have an END transition
-        ldapMessageContainer.grammarEndAllowed( true );
+        ldapMessageContainer.setGrammarEndAllowed( true );
     }
 }

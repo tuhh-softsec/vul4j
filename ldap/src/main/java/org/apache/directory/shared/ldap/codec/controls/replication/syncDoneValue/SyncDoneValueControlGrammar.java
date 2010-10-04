@@ -93,7 +93,7 @@ public final class SyncDoneValueControlGrammar extends AbstractGrammar
                     SyncDoneValueControlContainer syncDoneValueContainer = ( SyncDoneValueControlContainer ) container;
 
                     // As all the values are optional or defaulted, we can end here
-                    syncDoneValueContainer.grammarEndAllowed( true );
+                    syncDoneValueContainer.setGrammarEndAllowed( true );
                 }
             }  );
 
@@ -122,7 +122,7 @@ public final class SyncDoneValueControlGrammar extends AbstractGrammar
 
                     syncDoneValueContainer.getSyncDoneValueControl().setCookie( cookie );
 
-                    syncDoneValueContainer.grammarEndAllowed( true );
+                    syncDoneValueContainer.setGrammarEndAllowed( true );
                 }
             } );
 
@@ -145,7 +145,7 @@ public final class SyncDoneValueControlGrammar extends AbstractGrammar
                     syncDoneValueContainer.getSyncDoneValueControl().setRefreshDeletes( refreshDeletes );
 
                     // the END transition for grammar
-                    syncDoneValueContainer.grammarEndAllowed( true );
+                    syncDoneValueContainer.setGrammarEndAllowed( true );
                 }
                 catch ( BooleanDecoderException be )
                 {

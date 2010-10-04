@@ -93,7 +93,7 @@ public final class GracefulDisconnectGrammar extends AbstractGrammar
                 }
     
                 gracefulDisconnectContainer.getGracefulDisconnect().setDelay( delay );
-                gracefulDisconnectContainer.grammarEndAllowed( true );
+                gracefulDisconnectContainer.setGrammarEndAllowed( true );
             }
             catch ( IntegerDecoderException e )
             {
@@ -118,7 +118,7 @@ public final class GracefulDisconnectGrammar extends AbstractGrammar
             {
                 LdapURL url = new LdapURL( value.getData() );
                 gracefulDisconnectContainer.getGracefulDisconnect().addReplicatedContexts( url );
-                gracefulDisconnectContainer.grammarEndAllowed( true );
+                gracefulDisconnectContainer.setGrammarEndAllowed( true );
                 
                 if ( IS_DEBUG )
                 {
@@ -154,7 +154,7 @@ public final class GracefulDisconnectGrammar extends AbstractGrammar
                 }
 
                 gracefulDisconnectContainer.getGracefulDisconnect().setTimeOffline( timeOffline );
-                gracefulDisconnectContainer.grammarEndAllowed( true );
+                gracefulDisconnectContainer.setGrammarEndAllowed( true );
             }
             catch ( IntegerDecoderException e )
             {
@@ -195,7 +195,7 @@ public final class GracefulDisconnectGrammar extends AbstractGrammar
                     GracefulDisconnectContainer gracefulDisconnectContainer = ( GracefulDisconnectContainer ) container;
                     GracefulDisconnect gracefulDisconnect = new GracefulDisconnect();
                     gracefulDisconnectContainer.setGracefulDisconnect( gracefulDisconnect );
-                    gracefulDisconnectContainer.grammarEndAllowed( true );
+                    gracefulDisconnectContainer.setGrammarEndAllowed( true );
                 }
             } );
 

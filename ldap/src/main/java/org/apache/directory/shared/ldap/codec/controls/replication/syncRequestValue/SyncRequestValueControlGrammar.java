@@ -137,7 +137,7 @@ public final class SyncRequestValueControlGrammar extends AbstractGrammar
                         syncRequestValueContainer.getSyncRequestValueControl().setMode( modeEnum );
 
                         // We can have an END transition
-                        syncRequestValueContainer.grammarEndAllowed( true );
+                        syncRequestValueContainer.setGrammarEndAllowed( true );
                     }
                     catch ( IntegerDecoderException e )
                     {
@@ -178,7 +178,7 @@ public final class SyncRequestValueControlGrammar extends AbstractGrammar
                     syncRequestValueContainer.getSyncRequestValueControl().setCookie( cookie );
 
                     // We can have an END transition
-                    syncRequestValueContainer.grammarEndAllowed( true );
+                    syncRequestValueContainer.setGrammarEndAllowed( true );
                 }
             } );
 
@@ -214,7 +214,7 @@ public final class SyncRequestValueControlGrammar extends AbstractGrammar
                         syncRequestValueContainer.getSyncRequestValueControl().setReloadHint( reloadHint );
 
                         // We can have an END transition
-                        syncRequestValueContainer.grammarEndAllowed( true );
+                        syncRequestValueContainer.setGrammarEndAllowed( true );
                     }
                     catch ( BooleanDecoderException e )
                     {
@@ -257,7 +257,7 @@ public final class SyncRequestValueControlGrammar extends AbstractGrammar
                         syncRequestValueContainer.getSyncRequestValueControl().setReloadHint( reloadHint );
 
                         // We can have an END transition
-                        syncRequestValueContainer.grammarEndAllowed( true );
+                        syncRequestValueContainer.setGrammarEndAllowed( true );
                     }
                     catch ( BooleanDecoderException e )
                     {

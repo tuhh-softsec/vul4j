@@ -58,7 +58,7 @@ public class InitAttributeDescListAction extends GrammarAction
         LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
         
         // We can have an END transition
-        ldapMessageContainer.grammarEndAllowed( true );
+        ldapMessageContainer.setGrammarEndAllowed( true );
 
         if ( IS_DEBUG )
         {

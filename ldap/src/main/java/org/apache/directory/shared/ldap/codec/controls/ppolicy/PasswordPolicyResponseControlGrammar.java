@@ -70,7 +70,7 @@ public class PasswordPolicyResponseControlGrammar extends AbstractGrammar
                     PasswordPolicyResponseControlContainer ppolicyRespContainer = ( PasswordPolicyResponseControlContainer ) container;
 
                     // As all the values are optional or defaulted, we can end here
-                    ppolicyRespContainer.grammarEndAllowed( true );
+                    ppolicyRespContainer.setGrammarEndAllowed( true );
                 }
             } );
 
@@ -102,7 +102,7 @@ public class PasswordPolicyResponseControlGrammar extends AbstractGrammar
                         throw new DecoderException( msg );
                     }
 
-                    ppolicyRespContainer.grammarEndAllowed( true );
+                    ppolicyRespContainer.setGrammarEndAllowed( true );
                 }
             } );
 
@@ -116,7 +116,7 @@ public class PasswordPolicyResponseControlGrammar extends AbstractGrammar
 
                     setPasswordPolicyError( ppolicyRespContainer );
                     
-                    ppolicyRespContainer.grammarEndAllowed( true );
+                    ppolicyRespContainer.setGrammarEndAllowed( true );
                 }
             } );
 
@@ -148,7 +148,7 @@ public class PasswordPolicyResponseControlGrammar extends AbstractGrammar
                         throw new DecoderException( msg );
                     }
 
-                    ppolicyRespContainer.grammarEndAllowed( true );
+                    ppolicyRespContainer.setGrammarEndAllowed( true );
                 }
             } );
 
@@ -162,7 +162,7 @@ public class PasswordPolicyResponseControlGrammar extends AbstractGrammar
                     
                     setPasswordPolicyError( ppolicyRespContainer );
 
-                    ppolicyRespContainer.grammarEndAllowed( true );
+                    ppolicyRespContainer.setGrammarEndAllowed( true );
                 }
             } );
 

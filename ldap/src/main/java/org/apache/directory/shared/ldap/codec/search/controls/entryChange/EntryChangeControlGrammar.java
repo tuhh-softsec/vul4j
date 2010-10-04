@@ -128,7 +128,7 @@ public final class EntryChangeControlGrammar extends AbstractGrammar
                     }
 
                     // We can have an END transition
-                    entryChangeContainer.grammarEndAllowed( true );
+                    entryChangeContainer.setGrammarEndAllowed( true );
                 }
                 catch ( IntegerDecoderException e )
                 {
@@ -189,7 +189,7 @@ public final class EntryChangeControlGrammar extends AbstractGrammar
                     entryChangeContainer.getEntryChangeControl().setPreviousDn( previousDn );
 
                     // We can have an END transition
-                    entryChangeContainer.grammarEndAllowed( true );
+                    entryChangeContainer.setGrammarEndAllowed( true );
                 }
             }
         } );
@@ -214,7 +214,7 @@ public final class EntryChangeControlGrammar extends AbstractGrammar
                     entryChangeContainer.getEntryChangeControl().setChangeNumber( changeNumber );
 
                     // We can have an END transition
-                    entryChangeContainer.grammarEndAllowed( true );
+                    entryChangeContainer.setGrammarEndAllowed( true );
                 }
                 catch ( LongDecoderException e )
                 {

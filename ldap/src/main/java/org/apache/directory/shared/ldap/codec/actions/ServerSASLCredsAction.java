@@ -81,7 +81,7 @@ public class ServerSASLCredsAction extends GrammarAction
         response.setServerSaslCreds( serverSaslCreds );
 
         // We can have an END transition
-        ldapMessageContainer.grammarEndAllowed( true );
+        ldapMessageContainer.setGrammarEndAllowed( true );
 
         if ( IS_DEBUG )
         {

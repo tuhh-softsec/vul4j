@@ -54,9 +54,9 @@ public abstract class AbstractStatefulDecoder implements StatefulDecoder
     /**
      * {@inheritDoc}
      */
-    public void setCallback( DecoderCallback cb )
+    public void setCallback( DecoderCallback callback )
     {
-        this.cb = cb;
+        this.cb = callback;
     }
 
 

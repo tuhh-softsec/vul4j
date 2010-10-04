@@ -163,7 +163,7 @@ public final class PagedResultsControlGrammar extends AbstractGrammar
                     }
 
                     // We can have an END transition
-                    pagedSearchContainer.grammarEndAllowed( true );
+                    pagedSearchContainer.setGrammarEndAllowed( true );
                 }
             } );
     }

@@ -119,7 +119,7 @@ public final class SyncInfoValueControlGrammar extends AbstractGrammar
                     control.setCookie( newCookie );
 
                     // We can have an END transition
-                    syncInfoValueContainer.grammarEndAllowed( true );
+                    syncInfoValueContainer.setGrammarEndAllowed( true );
                     
                     syncInfoValueContainer.setSyncInfoValueControl( control );
                 }
@@ -151,7 +151,7 @@ public final class SyncInfoValueControlGrammar extends AbstractGrammar
                     syncInfoValueContainer.setSyncInfoValueControl( control );
 
                     // We can have an END transition
-                    syncInfoValueContainer.grammarEndAllowed( true );
+                    syncInfoValueContainer.setGrammarEndAllowed( true );
                 }
             } );
 
@@ -189,7 +189,7 @@ public final class SyncInfoValueControlGrammar extends AbstractGrammar
                     syncInfoValueContainer.setSyncInfoValueControl( control );
 
                     // We can have an END transition
-                    syncInfoValueContainer.grammarEndAllowed( true );
+                    syncInfoValueContainer.setGrammarEndAllowed( true );
                 }
             } );
 
@@ -231,7 +231,7 @@ public final class SyncInfoValueControlGrammar extends AbstractGrammar
                         syncInfoValueContainer.setSyncInfoValueControl( control );
 
                         // the END transition for grammar
-                        syncInfoValueContainer.grammarEndAllowed( true );
+                        syncInfoValueContainer.setGrammarEndAllowed( true );
                     }
                     catch ( BooleanDecoderException be )
                     {
@@ -242,7 +242,7 @@ public final class SyncInfoValueControlGrammar extends AbstractGrammar
 
 
                     // We can have an END transition
-                    syncInfoValueContainer.grammarEndAllowed( true );
+                    syncInfoValueContainer.setGrammarEndAllowed( true );
                 }
             } );
 
@@ -284,7 +284,7 @@ public final class SyncInfoValueControlGrammar extends AbstractGrammar
                         syncInfoValueContainer.setSyncInfoValueControl( control );
 
                         // the END transition for grammar
-                        syncInfoValueContainer.grammarEndAllowed( true );
+                        syncInfoValueContainer.setGrammarEndAllowed( true );
                     }
                     catch ( BooleanDecoderException be )
                     {
@@ -295,7 +295,7 @@ public final class SyncInfoValueControlGrammar extends AbstractGrammar
 
 
                     // We can have an END transition
-                    syncInfoValueContainer.grammarEndAllowed( true );
+                    syncInfoValueContainer.setGrammarEndAllowed( true );
                 }
             } );
         
@@ -325,7 +325,7 @@ public final class SyncInfoValueControlGrammar extends AbstractGrammar
                     syncInfoValueContainer.setSyncInfoValueControl( control );
 
                     // We can have an END transition
-                    syncInfoValueContainer.grammarEndAllowed( true );
+                    syncInfoValueContainer.setGrammarEndAllowed( true );
                 }
             } );
 
@@ -363,7 +363,7 @@ public final class SyncInfoValueControlGrammar extends AbstractGrammar
                     syncInfoValueContainer.setSyncInfoValueControl( control );
 
                     // We can have an END transition
-                    syncInfoValueContainer.grammarEndAllowed( true );
+                    syncInfoValueContainer.setGrammarEndAllowed( true );
                 }
             } );
         
@@ -407,7 +407,7 @@ public final class SyncInfoValueControlGrammar extends AbstractGrammar
                         syncInfoValueContainer.setSyncInfoValueControl( control );
 
                         // the END transition for grammar
-                        syncInfoValueContainer.grammarEndAllowed( true );
+                        syncInfoValueContainer.setGrammarEndAllowed( true );
                     }
                     catch ( BooleanDecoderException be )
                     {
@@ -418,7 +418,7 @@ public final class SyncInfoValueControlGrammar extends AbstractGrammar
 
 
                     // We can have an END transition
-                    syncInfoValueContainer.grammarEndAllowed( true );
+                    syncInfoValueContainer.setGrammarEndAllowed( true );
                 }
             } );
 
@@ -460,7 +460,7 @@ public final class SyncInfoValueControlGrammar extends AbstractGrammar
                         syncInfoValueContainer.setSyncInfoValueControl( control );
 
                         // the END transition for grammar
-                        syncInfoValueContainer.grammarEndAllowed( true );
+                        syncInfoValueContainer.setGrammarEndAllowed( true );
                     }
                     catch ( BooleanDecoderException be )
                     {
@@ -470,7 +470,7 @@ public final class SyncInfoValueControlGrammar extends AbstractGrammar
                     }
 
                     // We can have an END transition
-                    syncInfoValueContainer.grammarEndAllowed( true );
+                    syncInfoValueContainer.setGrammarEndAllowed( true );
                 }
             } );
         
@@ -650,7 +650,7 @@ public final class SyncInfoValueControlGrammar extends AbstractGrammar
                         ( SyncInfoValueControlContainer ) container;
 
                     // We can have an END transition
-                    syncInfoValueContainer.grammarEndAllowed( true );
+                    syncInfoValueContainer.setGrammarEndAllowed( true );
                 }
             } );
         
@@ -676,7 +676,7 @@ public final class SyncInfoValueControlGrammar extends AbstractGrammar
                         ( SyncInfoValueControlContainer ) container;
 
                     // We can have an END transition
-                    syncInfoValueContainer.grammarEndAllowed( true );
+                    syncInfoValueContainer.setGrammarEndAllowed( true );
                 }
             } );
           
@@ -702,7 +702,7 @@ public final class SyncInfoValueControlGrammar extends AbstractGrammar
                         ( SyncInfoValueControlContainer ) container;
 
                     // We can have an END transition
-                    syncInfoValueContainer.grammarEndAllowed( true );
+                    syncInfoValueContainer.setGrammarEndAllowed( true );
                 }
             } );
         
@@ -749,7 +749,7 @@ public final class SyncInfoValueControlGrammar extends AbstractGrammar
                     control.getSyncUUIDs().add( uuid );
                     
                     // We can have an END transition
-                    syncInfoValueContainer.grammarEndAllowed( true );
+                    syncInfoValueContainer.setGrammarEndAllowed( true );
                 }
             } );
         
@@ -796,7 +796,7 @@ public final class SyncInfoValueControlGrammar extends AbstractGrammar
                     control.getSyncUUIDs().add( uuid );
                     
                     // We can have an END transition
-                    syncInfoValueContainer.grammarEndAllowed( true );
+                    syncInfoValueContainer.setGrammarEndAllowed( true );
                 }
             } );
     }

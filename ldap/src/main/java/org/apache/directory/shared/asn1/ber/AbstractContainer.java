@@ -129,7 +129,7 @@ public abstract class AbstractContainer implements Asn1Container
      * @param grammarEndAllowed true or false, depending on the next transition
      * being an end or not.
      */
-    public void grammarEndAllowed( boolean grammarEndAllowed )
+    public void setGrammarEndAllowed( boolean grammarEndAllowed )
     {
         this.grammarEndAllowed = grammarEndAllowed;
     }
@@ -160,11 +160,11 @@ public abstract class AbstractContainer implements Asn1Container
     /**
      * Set the current TLV
      * 
-     * @param tlv The current TLV
+     * @param currentTLV The current TLV
      */
-    public void setCurrentTLV( TLV tlv )
+    public void setCurrentTLV( TLV currentTLV )
     {
-        this.tlv = tlv;
+        this.tlv = currentTLV;
     }
 
 

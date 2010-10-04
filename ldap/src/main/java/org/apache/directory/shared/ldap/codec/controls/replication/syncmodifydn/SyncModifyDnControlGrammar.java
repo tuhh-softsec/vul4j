@@ -128,7 +128,7 @@ public final class SyncModifyDnControlGrammar extends AbstractGrammar
                     syncModifyDnControlContainer.getSyncModifyDnControl().setEntryDn( entryDn );
                     
                     // move on to the next transistion
-                    syncModifyDnControlContainer.grammarEndAllowed( false );
+                    syncModifyDnControlContainer.setGrammarEndAllowed( false );
                 }
             } );
 
@@ -164,7 +164,7 @@ public final class SyncModifyDnControlGrammar extends AbstractGrammar
                     syncModifyDnControlContainer.getSyncModifyDnControl().setNewSuperiorDn( newSuperiorDn );
                     
                     // move on to the next transistion
-                    syncModifyDnControlContainer.grammarEndAllowed( true );
+                    syncModifyDnControlContainer.setGrammarEndAllowed( true );
                 }
             } );
 
@@ -182,7 +182,7 @@ public final class SyncModifyDnControlGrammar extends AbstractGrammar
                     SyncModifyDnControlContainer syncModifyDnControlContainer = ( SyncModifyDnControlContainer ) container;
                     syncModifyDnControlContainer.getSyncModifyDnControl().setModDnType( SyncModifyDnType.RENAME );
 
-                    syncModifyDnControlContainer.grammarEndAllowed( false );
+                    syncModifyDnControlContainer.setGrammarEndAllowed( false );
                 }
             } );
 
@@ -214,7 +214,7 @@ public final class SyncModifyDnControlGrammar extends AbstractGrammar
                     syncModifyDnControlContainer.getSyncModifyDnControl().setNewRdn( newRdn );
 
                     // terminal state
-                    syncModifyDnControlContainer.grammarEndAllowed( false );
+                    syncModifyDnControlContainer.setGrammarEndAllowed( false );
                 }
             } );
        
@@ -251,7 +251,7 @@ public final class SyncModifyDnControlGrammar extends AbstractGrammar
                     }
 
                     // terminal state
-                    syncModifyDnControlContainer.grammarEndAllowed( true );
+                    syncModifyDnControlContainer.setGrammarEndAllowed( true );
                 }
             } );
         
@@ -271,7 +271,7 @@ public final class SyncModifyDnControlGrammar extends AbstractGrammar
                     SyncModifyDnControlContainer syncModifyDnControlContainer = ( SyncModifyDnControlContainer ) container;
                     syncModifyDnControlContainer.getSyncModifyDnControl().setModDnType( SyncModifyDnType.MOVEANDRENAME );
 
-                    syncModifyDnControlContainer.grammarEndAllowed( false );
+                    syncModifyDnControlContainer.setGrammarEndAllowed( false );
                 }
             } );
 
@@ -303,7 +303,7 @@ public final class SyncModifyDnControlGrammar extends AbstractGrammar
                     syncModifyDnControlContainer.getSyncModifyDnControl().setNewSuperiorDn( newSuperirorDn );
 
                     // terminal state
-                    syncModifyDnControlContainer.grammarEndAllowed( false );
+                    syncModifyDnControlContainer.setGrammarEndAllowed( false );
                 }
             } );
 
@@ -335,7 +335,7 @@ public final class SyncModifyDnControlGrammar extends AbstractGrammar
                     syncModifyDnControlContainer.getSyncModifyDnControl().setNewRdn( newRdn );
 
                     // terminal state
-                    syncModifyDnControlContainer.grammarEndAllowed( false );
+                    syncModifyDnControlContainer.setGrammarEndAllowed( false );
                 }
             } );
         
@@ -370,7 +370,7 @@ public final class SyncModifyDnControlGrammar extends AbstractGrammar
                     }
 
                     // terminal state
-                    syncModifyDnControlContainer.grammarEndAllowed( true );
+                    syncModifyDnControlContainer.setGrammarEndAllowed( true );
                 }
             } );
 

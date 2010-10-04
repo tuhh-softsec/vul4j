@@ -99,6 +99,6 @@ public class ValueAction extends GrammarAction
         }
 
         // We can have an END transition
-        ldapMessageContainer.grammarEndAllowed( true );
+        ldapMessageContainer.setGrammarEndAllowed( true );
     }
 }

@@ -695,7 +695,7 @@ public class Asn1Decoder implements TLVBerDecoderMBean
             {
                 case TAG_STATE_START:
                     // Reset the GrammarEnd flag first
-                    container.grammarEndAllowed( false );
+                    container.setGrammarEndAllowed( false );
                     hasRemaining = treatTagStartState( stream, container );
 
                     break;

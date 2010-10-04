@@ -88,7 +88,7 @@ public final class SubentriesControlGrammar extends AbstractGrammar
                         control.setVisibility( BooleanDecoder.parse( value ) );
 
                         // We can have an END transition
-                        container.grammarEndAllowed( true );
+                        container.setGrammarEndAllowed( true );
                     }
                     catch ( BooleanDecoderException bde )
                     {

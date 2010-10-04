@@ -130,7 +130,7 @@ public final class SyncStateValueControlGrammar extends AbstractGrammar
                         syncStateValueContainer.getSyncStateValueControl().setSyncStateType( syncStateTypeEnum );
 
                         // move on to the entryUUID transistion
-                        syncStateValueContainer.grammarEndAllowed( false );
+                        syncStateValueContainer.setGrammarEndAllowed( false );
                     }
                     catch ( IntegerDecoderException e )
                     {
@@ -169,7 +169,7 @@ public final class SyncStateValueControlGrammar extends AbstractGrammar
                     syncStateValueContainer.getSyncStateValueControl().setEntryUUID( entryUUID );
 
                     // We can have an END transition
-                    syncStateValueContainer.grammarEndAllowed( true );
+                    syncStateValueContainer.setGrammarEndAllowed( true );
                 }
             } );
 
@@ -201,7 +201,7 @@ public final class SyncStateValueControlGrammar extends AbstractGrammar
                     syncStateValueContainer.getSyncStateValueControl().setCookie( cookie );
 
                     // terminal state
-                    syncStateValueContainer.grammarEndAllowed( true );
+                    syncStateValueContainer.setGrammarEndAllowed( true );
                 }
             } );
     }

@@ -87,7 +87,7 @@ public class ModifyAttributeValueAction extends GrammarAction
         }
 
         // We can have an END transition
-        ldapMessageContainer.grammarEndAllowed( true );
+        ldapMessageContainer.setGrammarEndAllowed( true );
 
         if ( IS_DEBUG )
         {

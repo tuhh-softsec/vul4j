@@ -126,7 +126,7 @@ public final class CancelGrammar extends AbstractGrammar
                         }
         
                         cancelContainer.getCancel().setCancelId( cancelId );
-                        cancelContainer.grammarEndAllowed( true );
+                        cancelContainer.setGrammarEndAllowed( true );
                     }
                     catch ( IntegerDecoderException e )
                     {

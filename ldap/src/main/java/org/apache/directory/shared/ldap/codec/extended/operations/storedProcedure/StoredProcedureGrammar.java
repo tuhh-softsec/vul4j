@@ -177,7 +177,7 @@ public final class StoredProcedureGrammar extends AbstractGrammar
                 public void action( Asn1Container container ) throws DecoderException
                 {
                     StoredProcedureContainer storedProcedureContainer = ( StoredProcedureContainer ) container;
-                    storedProcedureContainer.grammarEndAllowed( true );
+                    storedProcedureContainer.setGrammarEndAllowed( true );
                 }
             } );
         
@@ -288,7 +288,7 @@ public final class StoredProcedureGrammar extends AbstractGrammar
                     }
 
                     // The only possible END state for the grammar is here
-                    container.grammarEndAllowed( true );
+                    container.setGrammarEndAllowed( true );
                 }
             } );
         

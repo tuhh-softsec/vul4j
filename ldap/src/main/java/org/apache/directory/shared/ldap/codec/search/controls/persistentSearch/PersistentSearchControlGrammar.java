@@ -206,7 +206,7 @@ public final class PersistentSearchControlGrammar extends AbstractGrammar
                         psearchContainer.getPSearchControl().setReturnECs( returnECs );
 
                         // We can have an END transition
-                        psearchContainer.grammarEndAllowed( true );
+                        psearchContainer.setGrammarEndAllowed( true );
                     }
                     catch ( BooleanDecoderException e )
                     {

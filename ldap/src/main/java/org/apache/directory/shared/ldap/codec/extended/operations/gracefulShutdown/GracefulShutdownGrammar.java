@@ -94,7 +94,7 @@ public final class GracefulShutdownGrammar extends AbstractGrammar
                     GracefulShutdownContainer gracefulShutdownContainer = ( GracefulShutdownContainer ) container;
                     GracefulShutdown gracefulShutdown = new GracefulShutdown();
                     gracefulShutdownContainer.setGracefulShutdown( gracefulShutdown );
-                    gracefulShutdownContainer.grammarEndAllowed( true );
+                    gracefulShutdownContainer.setGrammarEndAllowed( true );
                 }
             } );
 
@@ -129,7 +129,7 @@ public final class GracefulShutdownGrammar extends AbstractGrammar
                         }
 
                         gracefulShutdownContainer.getGracefulShutdown().setTimeOffline( timeOffline );
-                        gracefulShutdownContainer.grammarEndAllowed( true );
+                        gracefulShutdownContainer.setGrammarEndAllowed( true );
                     }
                     catch ( IntegerDecoderException e )
                     {
@@ -172,7 +172,7 @@ public final class GracefulShutdownGrammar extends AbstractGrammar
                         }
 
                         gracefulShutdownContainer.getGracefulShutdown().setDelay( delay );
-                        gracefulShutdownContainer.grammarEndAllowed( true );
+                        gracefulShutdownContainer.setGrammarEndAllowed( true );
                     }
                     catch ( IntegerDecoderException e )
                     {
@@ -216,7 +216,7 @@ public final class GracefulShutdownGrammar extends AbstractGrammar
                         }
 
                         gracefulShutdownContainer.getGracefulShutdown().setDelay( delay );
-                        gracefulShutdownContainer.grammarEndAllowed( true );
+                        gracefulShutdownContainer.setGrammarEndAllowed( true );
                     }
                     catch ( IntegerDecoderException e )
                     {
