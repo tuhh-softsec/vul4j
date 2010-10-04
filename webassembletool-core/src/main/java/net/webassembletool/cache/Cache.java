@@ -4,6 +4,7 @@ import java.util.Map;
 
 import net.webassembletool.HttpErrorPage;
 import net.webassembletool.ResourceContext;
+import net.webassembletool.http.HttpHeaders;
 import net.webassembletool.resource.Resource;
 import net.webassembletool.resource.ResourceUtils;
 
@@ -26,11 +27,23 @@ public class Cache {
 	}
 
 	private CacheEntry getCacheEntry(ResourceContext resourceContext) {
-		String url = ResourceUtils.getHttpUrlWithQueryString(resourceContext);
-		CacheEntry cacheEntry = (CacheEntry) storage.get(url);
+		String key = ResourceUtils.getHttpUrlWithQueryString(resourceContext);
+		String host = resourceContext.getOriginalRequest().getHeader(
+				HttpHeaders.HOST);
+
+		if (resourceContext.getDriver().getConfiguration().isPreserveHost()) {
+			// Prefix with host in order to ensure content will not be mixed
+			// when using preserveHost = true and name virtual host on the
+			// provider.
+			if (host != null) {
+				key = host + "=>" + key;
+			}
+		}
+
+		CacheEntry cacheEntry = (CacheEntry) storage.get(key);
 		if (cacheEntry == null) {
-			cacheEntry = new CacheEntry(url, storage);
-			storage.put(url, cacheEntry);
+			cacheEntry = new CacheEntry(key, storage);
+			storage.put(key, cacheEntry);
 		} else {
 			// Storage is not persisted into cache. It need to be set each time
 			// the cache entry is read from cache.
