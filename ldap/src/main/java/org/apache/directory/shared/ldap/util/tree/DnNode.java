@@ -43,6 +43,7 @@ import org.slf4j.LoggerFactory;
  * Each node is referenced by a RDN, and holds the full DN corresponding to its position<br/>
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
+ * @param N The type of node we store
  */
 public class DnNode<N> implements Cloneable
 {
@@ -53,10 +54,10 @@ public class DnNode<N> implements Cloneable
     private N element;
 
     /** The node's key */
-    private RDN rdn;
+    private RDN nodeRdn;
 
     /** The node's DN */
-    private DN dn;
+    private DN nodeDn;
 
     /** The node's depth in the tree */
     private int depth;
@@ -104,8 +105,8 @@ public class DnNode<N> implements Cloneable
             {
                 // Create the new top node
                 DnNode<N> node = new DnNode<N>( element );
-                node.rdn = rdn;
-                node.dn = dn;
+                node.nodeRdn = rdn;
+                node.nodeDn = dn;
                 node.depth = dn.size() + depth;
 
                 rootNode = node;
@@ -113,11 +114,11 @@ public class DnNode<N> implements Cloneable
             else
             {
                 DnNode<N> node = new DnNode<N>();
-                node.rdn = rdn;
-                node.dn = rootNode.dn.getParent();
-                node.depth = node.dn.size() + depth;
+                node.nodeRdn = rdn;
+                node.nodeDn = rootNode.nodeDn.getParent();
+                node.depth = node.nodeDn.size() + depth;
                 rootNode.parent = node;
-                node.children.put( rootNode.rdn, rootNode );
+                node.children.put( rootNode.nodeRdn, rootNode );
                 rootNode = node;
             }
 
@@ -146,8 +147,8 @@ public class DnNode<N> implements Cloneable
     public DnNode()
     {
         children = new ConcurrentHashMap<RDN, DnNode<N>>();
-        dn = DN.EMPTY_DN;
-        rdn = RDN.EMPTY_RDN;
+        nodeDn = DN.EMPTY_DN;
+        nodeRdn = RDN.EMPTY_RDN;
     }
 
 
@@ -173,7 +174,7 @@ public class DnNode<N> implements Cloneable
         if ( ( dn == null ) || ( dn.isEmpty() ) )
         {
             children = new ConcurrentHashMap<RDN, DnNode<N>>();
-            this.dn = DN.EMPTY_DN;
+            this.nodeDn = DN.EMPTY_DN;
 
             return;
         }
@@ -185,9 +186,9 @@ public class DnNode<N> implements Cloneable
             // Now copy back the created node into this
             this.children = rootNode.children;
             this.depth = rootNode.depth;
-            this.dn = rootNode.dn;
+            this.nodeDn = rootNode.nodeDn;
             this.element = rootNode.element;
-            this.rdn = rootNode.rdn;
+            this.nodeRdn = rootNode.nodeRdn;
             this.parent = null;
         }
         catch ( LdapException le )
@@ -393,8 +394,6 @@ public class DnNode<N> implements Cloneable
         {
             getDescendantElements( child, descendants );
         }
-
-        return;
     }
 
     
@@ -500,16 +499,16 @@ public class DnNode<N> implements Cloneable
         List<RDN> rdns = dn.getRdns();
 
         DnNode<N> currentNode = this;
-        DnNode<N> parent = null;
+        DnNode<N> parentNode = null;
 
         // Iterate through all the RDN until we find the associated partition
         for ( int i = rdns.size() - 1; i >= 0; i-- )
         {
             RDN rdn = rdns.get( i );
 
-            if ( rdn.equals( currentNode.rdn ) )
+            if ( rdn.equals( currentNode.nodeRdn ) )
             {
-                parent = currentNode;
+                parentNode = currentNode;
             }
             else if ( currentNode.hasChildren() )
             {
@@ -520,7 +519,7 @@ public class DnNode<N> implements Cloneable
                     break;
                 }
 
-                parent = currentNode;
+                parentNode = currentNode;
             }
             else
             {
@@ -528,7 +527,7 @@ public class DnNode<N> implements Cloneable
             }
         }
 
-        return( parent != null );
+        return( parentNode != null );
     }
 
 
@@ -557,24 +556,24 @@ public class DnNode<N> implements Cloneable
         checkDn( dn );
 
         // We first have to find the Node which will be the parent
-        DnNode<N> parent = getNode( dn );
+        DnNode<N> parentNode = getNode( dn );
 
-        if ( parent == null )
+        if ( parentNode == null )
         {
             // No parent : add a new node to the root
             DnNode<N> childNode = createNode( dn, element, dn.size() );
             childNode.parent = this;
-            children.put( childNode.rdn, childNode );
+            children.put( childNode.nodeRdn, childNode );
         }
         else
         {
             // We have a parent. Add the new node to the found parent
-            int nbRdns = dn.size() - parent.depth;
+            int nbRdns = dn.size() - parentNode.depth;
 
             if ( nbRdns == 0 )
             {
                 // That means the added DN is already present. Check if it already has an element
-                if ( parent.hasElement() )
+                if ( parentNode.hasElement() )
                 {
                     String message = "Cannot add a node to a node already having an element";
                     LOG.error( message );
@@ -590,7 +589,7 @@ public class DnNode<N> implements Cloneable
                 // All is fine : we are just injecting some data into an existing node
                 else
                 {
-                    parent.setElement( element );
+                    parentNode.setElement( element );
                 }
             }
             else
@@ -598,8 +597,8 @@ public class DnNode<N> implements Cloneable
                 DnNode<N> rootNode = createNode( dn, element, nbRdns );
     
                 // done. now, add the newly created tree to the parent node
-                rootNode.parent = parent;
-                parent.children.put( rootNode.rdn, rootNode );
+                rootNode.parent = parentNode;
+                parentNode.children.put( rootNode.nodeRdn, rootNode );
             }
         }
     }
@@ -616,34 +615,34 @@ public class DnNode<N> implements Cloneable
 
         // Find the parent first : we won't be able to remove
         // a node if it's not present in the tree !
-        DnNode<N> parent = getNode( dn );
+        DnNode<N> parentNode = getNode( dn );
 
-        if ( parent == null )
+        if ( parentNode == null )
         {
             return;
         }
 
         // Now, check that this parent has the same DN than the one
         // we gave and that there is no children
-        if ( ( dn.size() != parent.depth ) || parent.hasChildren() )
+        if ( ( dn.size() != parentNode.depth ) || parentNode.hasChildren() )
         {
             return;
         }
 
         // Ok, no children, same DN, let's remove what we can.
-        parent = parent.getParent();
+        parentNode = parentNode.getParent();
 
         for ( RDN rdn : dn.getRdns() )
         {
-            parent.children.remove( rdn );
+            parentNode.children.remove( rdn );
 
-            if ( parent.children.size() > 0 )
+            if ( parentNode.children.size() > 0 )
             {
                 // We have to stop here, because the parent's node is shared with other Node.
                 break;
             }
 
-            parent = parent.getParent();
+            parentNode = parentNode.getParent();
         }
     }
 
@@ -683,7 +682,7 @@ public class DnNode<N> implements Cloneable
      */
     public RDN getRdn()
     {
-        return rdn;
+        return nodeRdn;
     }
 
 
@@ -702,8 +701,7 @@ public class DnNode<N> implements Cloneable
         List<RDN> rdns = dn.getRdns();
 
         DnNode<N> currentNode = this;
-        DnNode<N> parent = null;
-        boolean hasAP = false;
+        DnNode<N> parentNode = null;
 
         // Iterate through all the RDN until we find the associated partition
         for ( int i = rdns.size() - 1; i >= 0; i-- )
@@ -719,12 +717,7 @@ public class DnNode<N> implements Cloneable
                     break;
                 }
 
-                if ( currentNode.hasElement() )
-                {
-                    hasAP = true;
-                }
-
-                parent = currentNode;
+                parentNode = currentNode;
             }
             else
             {
@@ -732,7 +725,7 @@ public class DnNode<N> implements Cloneable
             }
         }
 
-        return parent;
+        return parentNode;
     }
 
 
@@ -794,11 +787,11 @@ public class DnNode<N> implements Cloneable
         clonedDnNode.element = element;
         clonedDnNode.depth = depth;
         clonedDnNode.parent = parent;
-        clonedDnNode.rdn = rdn;
+        clonedDnNode.nodeRdn = nodeRdn;
 
         for ( DnNode<N> node : children.values() )
         {
-            clonedDnNode.children.put( rdn, node.clone() );
+            clonedDnNode.children.put( nodeRdn, node.clone() );
         }
 
         return clonedDnNode;
@@ -807,7 +800,7 @@ public class DnNode<N> implements Cloneable
 
     private String toString( String tabs )
     {
-        if ( rdn == null )
+        if ( nodeRdn == null )
         {
             return tabs;
         }
@@ -819,11 +812,11 @@ public class DnNode<N> implements Cloneable
 
         if ( isLeaf() )
         {
-            sb.append( "Leaf[" ).append( dn ).append( "]: " ).append( "'" ).append( element ).append( "'" );
+            sb.append( "Leaf[" ).append( nodeDn ).append( "]: " ).append( "'" ).append( element ).append( "'" );
             return sb.toString();
         }
 
-        sb.append( "Branch[" ).append( dn ).append( "]: " );
+        sb.append( "Branch[" ).append( nodeDn ).append( "]: " );
 
         if ( element != null )
         {
@@ -859,7 +852,7 @@ public class DnNode<N> implements Cloneable
     }
 
     /**
-     * @see Object#toString()
+     * {@inheritDoc}
      */
     public String toString()
     {
@@ -872,6 +865,6 @@ public class DnNode<N> implements Cloneable
      */
     public DN getDn()
     {
-        return dn;
+        return nodeDn;
     }
 }
