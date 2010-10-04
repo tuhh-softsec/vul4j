@@ -39,11 +39,11 @@ public class AttributeTypeOptions
 {
     /** The attributeType */
     private AttributeType attributeType;
-    
+
     /** The options, if any */
     private Set<String> options;
-    
-    
+
+
     /**
      * Creates a new instance of AttributeTypeOptions, containing an attributeType, 
      * but no options.
@@ -68,8 +68,8 @@ public class AttributeTypeOptions
         this.attributeType = attributeType;
         this.options = options;
     }
-    
-    
+
+
     /**
      * @return the inner attributeType
      */
@@ -78,7 +78,7 @@ public class AttributeTypeOptions
         return attributeType;
     }
 
-    
+
     /**
      * @return the associated options
      */
@@ -86,8 +86,8 @@ public class AttributeTypeOptions
     {
         return options;
     }
-    
-    
+
+
     /**
      * @return <code>true</code> if the attributeType has at least one option
      */
@@ -95,8 +95,8 @@ public class AttributeTypeOptions
     {
         return ( options != null ) && ( options.size() != 0 );
     }
-    
-    
+
+
     /**
      * @param option the option to check
      * @return <code>true</code> if the attributeType has the given option
@@ -107,13 +107,13 @@ public class AttributeTypeOptions
         {
             return options.contains( StringTools.toLowerCase( StringTools.trim( option ) ) );
         }
-        else 
+        else
         {
             return false;
         }
     }
-    
-    
+
+
     /**
      * Add a new option to the option set for this attributeType.
      *
@@ -125,7 +125,7 @@ public class AttributeTypeOptions
         {
             options = new HashSet<String>();
         }
-        
+
         options.add( StringTools.toLowerCase( StringTools.trim( option ) ) );
     }
 
@@ -133,30 +133,33 @@ public class AttributeTypeOptions
     /**
      * Add a set of optionS to the option set for this attributeType.
      *
-     * @param options the options to add
+     * @param optionsToAdd the options to add
      */
-    public void addOptions( Set<String> options )
+    public void addOptions( Set<String> optionsToAdd )
     {
         if ( this.options == null )
         {
-            this.options = options;
+            this.options = optionsToAdd;
         }
         else
         {
-            this.options.addAll( options );
+            this.options.addAll( optionsToAdd );
         }
     }
-    
-    
+
+
+    /**
+     * {@inheritDoc}
+     */
     public String toString()
     {
         StringBuilder sb = new StringBuilder();
-        
+
         sb.append( "<" ).append( attributeType.getName() );
-        
+
         if ( hasOption() )
         {
-            for ( String option:options )
+            for ( String option : options )
             {
                 sb.append( ";" ).append( option );
             }

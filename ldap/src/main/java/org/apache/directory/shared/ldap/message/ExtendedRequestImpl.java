@@ -87,11 +87,11 @@ public class ExtendedRequestImpl extends AbstractRequest implements ExtendedRequ
     /**
      * Sets the Object Identifier corresponding to the extended request type.
      * 
-     * @param oid the dotted-decimal representation as a String of the OID
+     * @param newOid the dotted-decimal representation as a String of the OID
      */
-    public void setRequestName( String oid )
+    public void setRequestName( String newOid )
     {
-        this.oid = oid;
+        this.oid = newOid;
     }
 
 
@@ -259,6 +259,18 @@ public class ExtendedRequestImpl extends AbstractRequest implements ExtendedRequ
     }
 
 
+    /**
+     * Creates the extended response.
+     * 
+     * This implement always returns null.
+     *
+     * @param id the OID
+     * @param berValue the value
+     * @param offset the offset
+     * @param length the length
+     * @return the extended response
+     * @throws NamingException the naming exception
+     */
     public ExtendedResponse createExtendedResponse( String id, byte[] berValue, int offset, int length )
         throws NamingException
     {

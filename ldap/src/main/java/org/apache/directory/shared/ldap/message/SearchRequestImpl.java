@@ -819,9 +819,9 @@ public class SearchRequestImpl extends AbstractAbandonableRequest implements Sea
     /**
      * {@inheritDoc}
      */
-    public void addAttributes( String... attributes )
+    public void addAttributes( String... attributesToAdd )
     {
-        for ( String attribute : attributes )
+        for ( String attribute : attributesToAdd )
         {
             this.attributes.add( attribute );
         }
@@ -1039,6 +1039,7 @@ public class SearchRequestImpl extends AbstractAbandonableRequest implements Sea
 
     /**
      * Return a string the represent a SearchRequest
+     * {@inheritDoc}
      */
     public String toString()
     {

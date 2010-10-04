@@ -130,12 +130,12 @@ public class BindRequestImpl extends AbstractAbandonableRequest implements BindR
      * Sets the authentication mechanism to simple or to SASL based
      * authentication.
      * 
-     * @param isSimple
+     * @param simple
      *            true if authentication is simple, false otherwise.
      */
-    public void setSimple( boolean isSimple )
+    public void setSimple( boolean simple )
     {
-        this.isSimple = isSimple;
+        this.isSimple = simple;
     }
 
 
@@ -206,12 +206,12 @@ public class BindRequestImpl extends AbstractAbandonableRequest implements BindR
     /**
      * Sets the mechanism associated with a SASL authentication
      * 
-     * @param mechanism
-     *            the mechanism otherwise
+     * @param saslMechanism
+     *            the SASL mechanism
      */
-    public void setSaslMechanism( String mechanism )
+    public void setSaslMechanism( String saslMechanism )
     {
-        this.mechanism = mechanism;
+        this.mechanism = saslMechanism;
     }
 
 
@@ -290,13 +290,13 @@ public class BindRequestImpl extends AbstractAbandonableRequest implements BindR
      * an type-safe enumeration type for a binary value. If an LDAPv4 comes out
      * then we shall convert the return type to a type safe enumeration.
      * 
-     * @param isVersion3
+     * @param version3
      *            if true the client will be exhibiting version 3 bind behavoir,
      *            if false is used version 2 behavoir will be exhibited.
      */
-    public void setVersion3( boolean isVersion3 )
+    public void setVersion3( boolean version3 )
     {
-        this.isVersion3 = isVersion3;
+        this.isVersion3 = version3;
     }
 
 
@@ -342,8 +342,9 @@ public class BindRequestImpl extends AbstractAbandonableRequest implements BindR
 
 
     /**
-     * @see Object#equals(Object)
+     * {@inheritDoc}
      */
+    @Override
     public boolean equals( Object obj )
     {
         if ( obj == this )
@@ -406,9 +407,9 @@ public class BindRequestImpl extends AbstractAbandonableRequest implements BindR
 
 
     /**
-     * @see Object#hashCode()
-     * @return the instance's hash code 
+     * {@inheritDoc}
      */
+    @Override
     public int hashCode()
     {
         int hash = 37;

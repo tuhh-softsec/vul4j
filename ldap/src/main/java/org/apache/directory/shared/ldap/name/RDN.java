@@ -224,9 +224,9 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
     /**
      * A constructor that parse a String representing a RDN.
      *
-     * @param rdn The String containing the RDN to parse
+     * @param rdn the String containing the RDN to parse
      * @param schemaManager the schema manager
-     * @throws LdapInvalidDnException If the RDN is invalid
+     * @throws LdapInvalidDnException if the RDN is invalid
      */
     public RDN( String rdn, SchemaManager schemaManager ) throws LdapInvalidDnException
     {
@@ -267,8 +267,8 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
     /**
      * A constructor that parse a String representing a RDN.
      *
-     * @param rdn The String containing the RDN to parse
-     * @throws LdapInvalidDnException
+     * @param rdn the String containing the RDN to parse
+     * @throws LdapInvalidDnException if the RDN is invalid
      */
     public RDN( String rdn ) throws LdapInvalidDnException
     {
@@ -278,16 +278,16 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
 
     /**
      * A constructor that constructs a RDN from a type and a value. Constructs
-     * an Rdn from the given attribute type and value. The string attribute
-     * values are not interpreted as RFC 2253 formatted RDN strings. That is,
+     * an RDN from the given attribute type and value. The string attribute
+     * values are not interpreted as RFC 4514 formatted RDN strings. That is,
      * the values are used literally (not parsed) and assumed to be un-escaped.
      *
-     * @param upType The user provided type of the RDN
-     * @param upValue The user provided value of the RDN
-     * @param normType The normalized provided type of the RDN
-     * @param normValue The normalized provided value of the RDN
+     * @param upType the user provided type of the RDN
+     * @param upValue the user provided value of the RDN
+     * @param normType the normalized provided type of the RDN
+     * @param normValue the normalized provided value of the RDN
      * @param schemaManager the schema manager
-     * @throws LdapInvalidDnException If the RDN is invalid
+     * @throws LdapInvalidDnException if the RDN is invalid
      */
     public RDN( String upType, String normType, String upValue, String normValue, SchemaManager schemaManager ) throws LdapInvalidDnException
     {
@@ -315,6 +315,13 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
 
 
     /**
+     * A constructor that constructs a RDN from a type and a value.
+     *
+     * @param upType the user provided type of the RDN
+     * @param upValue the user provided value of the RDN
+     * @param normType the normalized provided type of the RDN
+     * @param normValue the normalized provided value of the RDN
+     * @throws LdapInvalidDnException if the RDN is invalid
      * @see #RDN(String, String, String, String, SchemaManager)
      */
     public RDN( String upType, String normType, String upValue, String normValue ) throws LdapInvalidDnException
@@ -325,14 +332,14 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
 
     /**
      * A constructor that constructs a RDN from a type and a value. Constructs
-     * an Rdn from the given attribute type and value. The string attribute
-     * values are not interpreted as RFC 2253 formatted RDN strings. That is,
+     * an RDN from the given attribute type and value. The string attribute
+     * values are not interpreted as RFC 414 formatted RDN strings. That is,
      * the values are used literally (not parsed) and assumed to be un-escaped.
      *
-     * @param upType The user provided type of the RDN
-     * @param upValue The user provided value of the RDN
+     * @param upType the user provided type of the RDN
+     * @param upValue the user provided value of the RDN
      * @param schemaManager the schema manager
-     * @throws LdapInvalidDnException If the RDN is invalid
+     * @throws LdapInvalidDnException if the RDN is invalid
      */
     public RDN( String upType, String upValue, SchemaManager schemaManager ) throws LdapInvalidDnException
     {
@@ -360,6 +367,11 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
 
 
     /**
+     * A constructor that constructs a RDN from a type and a value. 
+     *
+     * @param upType the user provided type of the RDN
+     * @param upValue the user provided value of the RDN
+     * @throws LdapInvalidDnException if the RDN is invalid
      * @see #RDN(String, String, SchemaManager)
      */
     public RDN( String upType, String upValue ) throws LdapInvalidDnException
@@ -371,9 +383,9 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
     /**
      * A constructor that constructs a RDN from a type, a position and a length.
      *
-     * @param start The starting point for this RDN in the user provided DN
-     * @param length The RDN's length
-     * @param upName The user provided name
+     * @param start the starting point for this RDN in the user provided DN
+     * @param length the RDN's length
+     * @param upName the user provided name
      * @param normName the normalized name
      */
     RDN( int start, int length, String upName, String normName )
@@ -488,15 +500,16 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
      * Transform a RDN by changing the value to its OID counterpart and
      * normalizing the value accordingly to its type.
      *
-     * @param schemaManager The SchemaManager
-     * @throws LdapException If the RDN is invalid.
+     * @param sm the SchemaManager
+     * @return this RDN, normalized
+     * @throws LdapInvalidDnException if the RDN is invalid
      */
-    public RDN normalize( SchemaManager schemaManager ) throws LdapInvalidDnException
+    public RDN normalize( SchemaManager sm ) throws LdapInvalidDnException
     {
-        String upName = getName();
-        DN.rdnOidToName( this, schemaManager.getNormalizerMapping() );
+        String savedUpName = getName();
+        DN.rdnOidToName( this, sm.getNormalizerMapping() );
         normalize();
-        this.upName = upName;
+        this.upName = savedUpName;
         normalized = true;
 
         return this;
@@ -507,15 +520,16 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
      * Transform a RDN by changing the value to its OID counterpart and
      * normalizing the value accordingly to its type.
      *
-     * @param oidsMap The mapping between names and oids.
-     * @throws LdapException If the RDN is invalid.
+     * @param oidsMap the mapping between names and OIDs
+     * @return this RDN, normalized
+     * @throws LdapInvalidDnException if the RDN is invalid
      */
     public RDN normalize( Map<String, OidNormalizer> oidsMap ) throws LdapInvalidDnException
     {
-        String upName = getName();
+        String savedUpName = getName();
         DN.rdnOidToName( this, oidsMap );
         normalize();
-        this.upName = upName;
+        this.upName = savedUpName;
         normalized = true;
 
         return this;
@@ -668,9 +682,9 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
      * Get the Value of the AttributeTypeAndValue which type is given as an
      * argument.
      *
-     * @param type The type of the NameArgument
-     * @return The Value to be returned, or null if none found.
-     * @throws LdapInvalidDnException
+     * @param type the type of the NameArgument
+     * @return the Value to be returned, or null if none found.
+     * @throws LdapInvalidDnException if the RDN is invalid
      */
     public Object getValue( String type ) throws LdapInvalidDnException
     {
@@ -731,9 +745,9 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
 
 
     /**
-     * Get the Rdn length
+     * Get the RDN length
      *
-     * @return The Rdn length
+     * @return the RDN length
      */
     public int getLength()
     {
@@ -878,9 +892,9 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
      * <li>Order of ATAV is not important If the RDNs are not equals, a positive number is
      * returned if the first RDN is greater, negative otherwise
      *
-     * @param rdn
-     * @return 0 if both rdn are equals. -1 if the current RDN is inferior, 1 if
-     *         the current Rdn is superior, UNDEFINED otherwise.
+     * @param rdn the RDN to be compared
+     * @return 0 if both RDNs are equals. -1 if the current RDN is inferior, 1 if
+     *         the current RDN is superior, UNDEFINED otherwise.
      */
     public int compareTo( RDN rdn )
     {
@@ -1136,10 +1150,10 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
      *            The value to be unescaped
      * @return Returns a string value as a String, and a binary value as a byte
      *         array.
-     * @throws IllegalArgumentException -
+     * @throws IllegalArgumentException
      *             When an Illegal value is provided.
      */
-    public static Object unescapeValue( String value )
+    public static Object unescapeValue( String value ) throws IllegalArgumentException
     {
         if ( StringTools.isEmpty( value ) )
         {

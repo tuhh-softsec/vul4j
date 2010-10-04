@@ -82,15 +82,15 @@ public final class MessageDecoder implements ProviderDecoder
         this.decoder = this.provider.getDecoder( binaryAttributeDetector, maxPDUSize );
         this.decoder.setCallback( new DecoderCallback()
         {
-            public void decodeOccurred( StatefulDecoder decoder, Object decoded )
+            public void decodeOccurred( StatefulDecoder statefulDecoder, Object decoded )
             {
                 if ( decoded instanceof Asn1Object )
                 {
-                    cb.decodeOccurred( decoder, LdapTransformer.transform( decoded ) );
+                    cb.decodeOccurred( statefulDecoder, LdapTransformer.transform( decoded ) );
                 }
                 else
                 {
-                    cb.decodeOccurred( decoder, decoded );
+                    cb.decodeOccurred( statefulDecoder, decoded );
                 }
             }
         } );
@@ -174,11 +174,11 @@ public final class MessageDecoder implements ProviderDecoder
     /**
      * Sets the callback used to deliver completly decoded PDU's.
      * 
-     * @param cb the callback to use for decoded PDU delivery
+     * @param callback the callback to use for decoded PDU delivery
      */
-    public void setCallback( DecoderCallback cb )
+    public void setCallback( DecoderCallback callback )
     {
-        this.cb = cb;
+        this.cb = callback;
     }
 
 

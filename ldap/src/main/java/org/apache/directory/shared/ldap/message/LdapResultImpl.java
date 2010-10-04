@@ -37,7 +37,7 @@ public class LdapResultImpl implements LdapResult
     private DN matchedDn;
 
     /** Temporary storage of the byte[] representing the matchedDN */
-    private byte[] matchedDNBytes;
+    private byte[] matchedDnBytes;
 
     /** Referral associated with this LdapResult if the errorCode is REFERRAL */
     private Referral referral;
@@ -123,7 +123,7 @@ public class LdapResultImpl implements LdapResult
      */
     /*No qualifier*/byte[] getMatchedDnBytes()
     {
-        return matchedDNBytes;
+        return matchedDnBytes;
     }
 
 
@@ -142,11 +142,11 @@ public class LdapResultImpl implements LdapResult
     /**
      * Sets the encoded value for MatchedDn
      * 
-     * @param matchedDNBytes The encoded MatchedDN
+     * @param matchedDnBytes The encoded MatchedDN
      */
-    /*No qualifier*/void setMatchedDnBytes( byte[] matchedDNBytes )
+    /*No qualifier*/void setMatchedDnBytes( byte[] matchedDnBytes )
     {
-        this.matchedDNBytes = matchedDNBytes;
+        this.matchedDnBytes = matchedDnBytes;
     }
 
 

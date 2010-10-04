@@ -68,8 +68,6 @@ public class CompareRequestImpl extends AbstractAbandonableRequest implements Co
     /**
      * Creates an CompareRequest implementation to compare a named entry with an
      * attribute value assertion pair.
-     * 
-     * @param id the sequence identifier of the CompareRequest message.
      */
     public CompareRequestImpl()
     {
@@ -131,24 +129,24 @@ public class CompareRequestImpl extends AbstractAbandonableRequest implements Co
     /**
      * Sets the attribute value to use in the comparison.
      * 
-     * @param attrVal the attribute value used in comparison.
+     * @param value the attribute value used in comparison.
      */
-    public void setAssertionValue( String attrVal )
+    public void setAssertionValue( String value )
     {
-        this.attrVal = new StringValue( attrVal );
+        this.attrVal = new StringValue( value );
     }
 
 
     /**
      * Sets the attribute value to use in the comparison.
      * 
-     * @param attrVal the attribute value used in comparison.
+     * @param value the attribute value used in comparison.
      */
-    public void setAssertionValue( byte[] attrVal )
+    public void setAssertionValue( byte[] value )
     {
-        if ( attrVal != null )
+        if ( value != null )
         {
-            this.attrVal = new BinaryValue( attrVal );
+            this.attrVal = new BinaryValue( value );
         }
         else
         {
@@ -171,11 +169,11 @@ public class CompareRequestImpl extends AbstractAbandonableRequest implements Co
     /**
      * Sets the attribute id used in the comparison.
      * 
-     * @param attrId the attribute id used in comparison.
+     * @param attributeId the attribute id used in comparison.
      */
-    public void setAttributeId( String attrId )
+    public void setAttributeId( String attributeId )
     {
-        this.attrId = attrId;
+        this.attrId = attributeId;
     }
 
 
