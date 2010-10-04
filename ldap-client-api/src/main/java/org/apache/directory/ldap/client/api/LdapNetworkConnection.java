@@ -1541,6 +1541,10 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
 
     /**
      * Handle the exception we got.
+     * 
+     * @param session The session we got the exception on
+     * @param cause The exception cause
+     * @throws Exception The t
      */
     public void exceptionCaught( IoSession session, Throwable cause ) throws Exception
     {
@@ -1563,6 +1567,10 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
     /**
      * Handle the incoming LDAP messages. This is where we feed the cursor for search
      * requests, or call the listener.
+     * 
+     * @param session The session that received a message
+     * @param message The received message
+     * @throws Exception If there is some error while processing the message
      */
     public void messageReceived( IoSession session, Object message ) throws Exception
     {
