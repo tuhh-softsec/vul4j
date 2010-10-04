@@ -20,89 +20,137 @@
 
 package org.apache.directory.shared.ldap.trigger;
 
+
 import org.apache.directory.shared.ldap.filter.SearchScope;
 import org.apache.directory.shared.ldap.name.DN;
 
 
 /**
+ * The search context option of the triggered stored procedure.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 public class StoredProcedureSearchContextOption implements StoredProcedureOption
 {
-    
+
     private final DN baseObject;
     private SearchScope searchScope;
 
-    
+
+    /**
+     * Instantiates a new stored procedure search context option.
+     *
+     * @param baseObject the base object
+     */
     public StoredProcedureSearchContextOption( DN baseObject )
     {
         // the default search scope is "base"
         this( baseObject, SearchScope.OBJECT );
     }
-    
+
+
+    /**
+     * Instantiates a new stored procedure search context option.
+     *
+     * @param baseObject the base object
+     * @param searchScope the search scope
+     */
     public StoredProcedureSearchContextOption( DN baseObject, SearchScope searchScope )
     {
         this.baseObject = baseObject;
         this.searchScope = searchScope;
     }
 
+
+    /**
+     * Gets the base object.
+     *
+     * @return the base object
+     */
     public DN getBaseObject()
     {
         return baseObject;
     }
-    
+
+
+    /**
+     * Gets the search scope.
+     *
+     * @return the search scope
+     */
     public SearchScope getSearchScope()
     {
         return searchScope;
     }
 
-    public String toString()
-    {
-        return "searchContext { scope " + searchScope + " } \"" + baseObject + "\""; 
-    }
 
     /**
-     * @see java.lang.Object#hashCode()
-     * @return the instance's hash code 
+     * {@inheritDoc}
      */
+    @Override
+    public String toString()
+    {
+        return "searchContext { scope " + searchScope + " } \"" + baseObject + "\"";
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public int hashCode()
     {
         int h = 37;
-        
-        h = h*17 + ( ( baseObject == null ) ? 0 : baseObject.hashCode() );
-        h = h*17 + ( ( searchScope == null ) ? 0 : searchScope.hashCode() );
-        
+
+        h = h * 17 + ( ( baseObject == null ) ? 0 : baseObject.hashCode() );
+        h = h * 17 + ( ( searchScope == null ) ? 0 : searchScope.hashCode() );
+
         return h;
     }
 
+
     /**
-     * @see java.lang.Object#equals(java.lang.Object)
+     * {@inheritDoc}
      */
+    @Override
     public boolean equals( Object obj )
     {
         if ( this == obj )
+        {
             return true;
+        }
         if ( obj == null )
+        {
             return false;
+        }
         if ( getClass() != obj.getClass() )
+        {
             return false;
+        }
         final StoredProcedureSearchContextOption other = ( StoredProcedureSearchContextOption ) obj;
         if ( baseObject == null )
         {
             if ( other.baseObject != null )
+            {
                 return false;
+            }
         }
         else if ( !baseObject.equals( other.baseObject ) )
+        {
             return false;
+        }
         if ( searchScope == null )
         {
             if ( other.searchScope != null )
+            {
                 return false;
+            }
         }
         else if ( !searchScope.equals( other.searchScope ) )
+        {
             return false;
+        }
         return true;
     }
-    
+
 }

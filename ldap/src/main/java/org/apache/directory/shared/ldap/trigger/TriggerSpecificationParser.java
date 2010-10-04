@@ -65,6 +65,8 @@ public class TriggerSpecificationParser
 
     /**
      * Creates a normalizing TriggerSpecification parser.
+     *
+     * @param resolver the resolver
      */
     public TriggerSpecificationParser( NormalizerMappingResolver resolver )
     {

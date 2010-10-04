@@ -20,10 +20,12 @@
 
 package org.apache.directory.shared.ldap.trigger;
 
+
 import java.util.List;
 
 import org.apache.commons.lang.NullArgumentException;
 import org.apache.directory.shared.i18n.I18n;
+
 
 /**
  * The Trigger Specification Bean.
@@ -32,14 +34,21 @@ import org.apache.directory.shared.i18n.I18n;
  */
 public class TriggerSpecification
 {
-    
+
     private LdapOperation ldapOperation;
-    
+
     private ActionTime actionTime;
-    
-    private List<SPSpec> spSpecs; 
-    
-    
+
+    private List<SPSpec> spSpecs;
+
+
+    /**
+     * Instantiates a new trigger specification.
+     *
+     * @param ldapOperation the LDAP operation
+     * @param actionTime the action time
+     * @param spSpecs the stored procedure specs
+     */
     public TriggerSpecification( LdapOperation ldapOperation, ActionTime actionTime, List<SPSpec> spSpecs )
     {
         super();
@@ -58,88 +67,170 @@ public class TriggerSpecification
         this.spSpecs = spSpecs;
     }
 
+
+    /**
+     * Gets the action time.
+     *
+     * @return the action time
+     */
     public ActionTime getActionTime()
     {
         return actionTime;
     }
 
+
+    /**
+     * Gets the LDAP operation.
+     *
+     * @return the LDAP operation
+     */
     public LdapOperation getLdapOperation()
     {
         return ldapOperation;
     }
 
-    public List<SPSpec> getSPSpecs() {
+
+    /**
+     * Gets the stored procedure specs.
+     *
+     * @return the stored procedure specs
+     */
+    public List<SPSpec> getSPSpecs()
+    {
         return spSpecs;
     }
-    
+
+    /**
+     * The stored procedure spec bean.
+     */
     public static class SPSpec
     {
         private String name;
-        
+
         private List<StoredProcedureOption> options;
-        
+
         private List<StoredProcedureParameter> parameters;
 
-        public SPSpec(String name, List<StoredProcedureOption> options, List<StoredProcedureParameter> parameters) {
+
+        /**
+         * Instantiates a new stored procedure spec.
+         *
+         * @param name the name
+         * @param options the options
+         * @param parameters the parameters
+         */
+        public SPSpec( String name, List<StoredProcedureOption> options, List<StoredProcedureParameter> parameters )
+        {
             super();
             this.name = name;
             this.options = options;
             this.parameters = parameters;
         }
-        
-        public String getName() {
+
+
+        /**
+         * Gets the name.
+         *
+         * @return the name
+         */
+        public String getName()
+        {
             return name;
         }
 
-        public List<StoredProcedureOption> getOptions() {
+
+        /**
+         * Gets the options.
+         *
+         * @return the options
+         */
+        public List<StoredProcedureOption> getOptions()
+        {
             return options;
         }
 
-        public List<StoredProcedureParameter> getParameters() {
+
+        /**
+         * Gets the parameters.
+         *
+         * @return the parameters
+         */
+        public List<StoredProcedureParameter> getParameters()
+        {
             return parameters;
         }
 
-        @Override
+
         /**
-         * Compute the instance's hash code
-         * @return the instance's hash code 
+         * {@inheritDoc}
          */
-        public int hashCode() {
+        @Override
+        public int hashCode()
+        {
             int h = 37;
-            
-            h = h*17 + ((name == null) ? 0 : name.hashCode());
-            h = h*17 + ((options == null) ? 0 : options.hashCode());
-            h = h*17 + ((parameters == null) ? 0 : parameters.hashCode());
+
+            h = h * 17 + ( ( name == null ) ? 0 : name.hashCode() );
+            h = h * 17 + ( ( options == null ) ? 0 : options.hashCode() );
+            h = h * 17 + ( ( parameters == null ) ? 0 : parameters.hashCode() );
             return h;
         }
 
+
+        /**
+         * {@inheritDoc}
+         */
         @Override
-        public boolean equals(Object obj) {
-            if (this == obj)
+        public boolean equals( Object obj )
+        {
+            if ( this == obj )
+            {
                 return true;
-            if (obj == null)
+            }
+            if ( obj == null )
+            {
                 return false;
-            if (getClass() != obj.getClass())
+            }
+            if ( getClass() != obj.getClass() )
+            {
                 return false;
-            final SPSpec other = (SPSpec) obj;
-            if (name == null) {
-                if (other.name != null)
+            }
+            final SPSpec other = ( SPSpec ) obj;
+            if ( name == null )
+            {
+                if ( other.name != null )
+                {
                     return false;
-            } else if (!name.equals(other.name))
+                }
+            }
+            else if ( !name.equals( other.name ) )
+            {
                 return false;
-            if (options == null) {
-                if (other.options != null)
+            }
+            if ( options == null )
+            {
+                if ( other.options != null )
+                {
                     return false;
-            } else if (!options.equals(other.options))
+                }
+            }
+            else if ( !options.equals( other.options ) )
+            {
                 return false;
-            if (parameters == null) {
-                if (other.parameters != null)
+            }
+            if ( parameters == null )
+            {
+                if ( other.parameters != null )
+                {
                     return false;
-            } else if (!parameters.equals(other.parameters))
+                }
+            }
+            else if ( !parameters.equals( other.parameters ) )
+            {
                 return false;
+            }
             return true;
         }
 
     }
-    
+
 }
