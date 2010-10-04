@@ -91,7 +91,7 @@ public class SyntaxCheckerDescriptionSchemaParser extends AbstractSchemaParser
             SyntaxCheckerDescription syntaxChecker = parser.syntaxCheckerDescription();
 
             // Update the schemaName
-            setSchemaName( syntaxChecker );
+            updateSchemaName( syntaxChecker );
 
             return syntaxChecker;
         }

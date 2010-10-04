@@ -110,18 +110,20 @@ public interface SchemaObject extends Serializable
      * Inject this SchemaObject into the given registries, updating the references to
      * other SchemaObject
      *
-     * @param errors The errors we got
-     * @param registries The Registries
+     * @param errors the errors we got
+     * @param registries the registries
+     * @throws LdapException if one of the referenced schema objects does not exist
      */
     void addToRegistries( List<Throwable> errors, Registries registries ) throws LdapException;
 
 
     /**
      * Remove this SchemaObject from the given registries, updating the references to
-     * other SchemaObject
+     * other SchemaObject.
      *
-     * @param errors The errors we got
-     * @param registries The Registries
+     * @param errors the errors we got
+     * @param registries The registries
+     * @throws LdapException if one of the referenced schema objects does not exist
      */
     void removeFromRegistries( List<Throwable> errors, Registries registries ) throws LdapException;
 
@@ -294,13 +296,13 @@ public interface SchemaObject extends Serializable
 
 
     /**
-     * @see Object#hashCode()
+     * {@inheritDoc}
      */
     int hashCode();
 
 
     /**
-     * @see Object#equals(Object)
+     * {@inheritDoc}
      */
     boolean equals( Object o1 );
 
@@ -324,9 +326,10 @@ public interface SchemaObject extends Serializable
 
 
     /**
-     * Copy a SchemaObject.
-     * 
-     * @return A copy of the current SchemaObject
+     * Copies the given schema object into this schema object.
+     *
+     * @param original the original SchemaObject
+     * @return this
      */
     SchemaObject copy( SchemaObject original );
 

@@ -95,7 +95,7 @@ public class LdapComparatorDescriptionSchemaParser extends AbstractSchemaParser
                 
 
                 // Update the schemaName
-                setSchemaName( ldapComparatorDescription );
+                updateSchemaName( ldapComparatorDescription );
 
                 return ldapComparatorDescription;
             }

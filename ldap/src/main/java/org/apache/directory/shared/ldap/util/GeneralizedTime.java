@@ -111,23 +111,49 @@ import org.apache.directory.shared.i18n.I18n;
 public class GeneralizedTime implements Comparable<GeneralizedTime>
 {
 
+    /**
+     * The format of the generalized time.
+     */
     public enum Format
     {
-        YEAR_MONTH_DAY_HOUR_MIN_SEC, YEAR_MONTH_DAY_HOUR_MIN_SEC_FRACTION,
+        /** Time format with minutes and seconds, excluding fraction. */
+        YEAR_MONTH_DAY_HOUR_MIN_SEC,
+        /** Time format with minutes and seconds, including fraction. */
+        YEAR_MONTH_DAY_HOUR_MIN_SEC_FRACTION,
 
-        YEAR_MONTH_DAY_HOUR_MIN, YEAR_MONTH_DAY_HOUR_MIN_FRACTION,
+        /** Time format with minutes, seconds are omitted, excluding fraction. */
+        YEAR_MONTH_DAY_HOUR_MIN,
+        /** Time format with minutes seconds are omitted, including fraction. */
+        YEAR_MONTH_DAY_HOUR_MIN_FRACTION,
 
-        YEAR_MONTH_DAY_HOUR, YEAR_MONTH_DAY_HOUR_FRACTION, ;
+        /** Time format, minutes and seconds are omitted, excluding fraction. */
+        YEAR_MONTH_DAY_HOUR,
+        /** Time format, minutes and seconds are omitted, including fraction. */
+        YEAR_MONTH_DAY_HOUR_FRACTION, ;
     }
 
+    /**
+     * The fraction delimiter of the generalized time.
+     */
     public enum FractionDelimiter
     {
-        DOT, COMMA
+        /** Use a dot as fraction delimiter. */
+        DOT,
+        /** Use a comma as fraction delimiter. */
+        COMMA
     }
 
+    /**
+     * The time zone format of the generalized time.
+     */
     public enum TimeZoneFormat
     {
-        Z, DIFF_HOUR, DIFF_HOUR_MINUTE;
+        /** g-time-zone (Zulu) format. */
+        Z,
+        /** g-differential format, using hour only. */
+        DIFF_HOUR,
+        /** g-differential format, using hour and minute. */
+        DIFF_HOUR_MINUTE;
     }
 
     private static final TimeZone GMT = TimeZone.getTimeZone( "GMT" );
@@ -591,10 +617,10 @@ public class GeneralizedTime implements Comparable<GeneralizedTime>
     public String toGeneralizedTime( Format format, FractionDelimiter fractionDelimiter, int fractionLength,
         TimeZoneFormat timeZoneFormat )
     {
-        Calendar calendar = ( Calendar ) this.calendar.clone();
+        Calendar clonedCalendar = ( Calendar ) this.calendar.clone();
         if ( timeZoneFormat == TimeZoneFormat.Z )
         {
-            calendar.setTimeZone( GMT );
+            clonedCalendar.setTimeZone( GMT );
         }
 
         NumberFormat twoDigits = new DecimalFormat( "00" );
@@ -606,36 +632,36 @@ public class GeneralizedTime implements Comparable<GeneralizedTime>
         }
 
         StringBuilder sb = new StringBuilder();
-        sb.append( fourDigits.format( calendar.get( Calendar.YEAR ) ) );
-        sb.append( twoDigits.format( calendar.get( Calendar.MONTH ) + 1 ) );
-        sb.append( twoDigits.format( calendar.get( Calendar.DAY_OF_MONTH ) ) );
-        sb.append( twoDigits.format( calendar.get( Calendar.HOUR_OF_DAY ) ) );
+        sb.append( fourDigits.format( clonedCalendar.get( Calendar.YEAR ) ) );
+        sb.append( twoDigits.format( clonedCalendar.get( Calendar.MONTH ) + 1 ) );
+        sb.append( twoDigits.format( clonedCalendar.get( Calendar.DAY_OF_MONTH ) ) );
+        sb.append( twoDigits.format( clonedCalendar.get( Calendar.HOUR_OF_DAY ) ) );
 
         switch ( format )
         {
             case YEAR_MONTH_DAY_HOUR_MIN_SEC:
-                sb.append( twoDigits.format( calendar.get( Calendar.MINUTE ) ) );
-                sb.append( twoDigits.format( calendar.get( Calendar.SECOND ) ) );
+                sb.append( twoDigits.format( clonedCalendar.get( Calendar.MINUTE ) ) );
+                sb.append( twoDigits.format( clonedCalendar.get( Calendar.SECOND ) ) );
                 break;
 
             case YEAR_MONTH_DAY_HOUR_MIN_SEC_FRACTION:
-                sb.append( twoDigits.format( calendar.get( Calendar.MINUTE ) ) );
-                sb.append( twoDigits.format( calendar.get( Calendar.SECOND ) ) );
+                sb.append( twoDigits.format( clonedCalendar.get( Calendar.MINUTE ) ) );
+                sb.append( twoDigits.format( clonedCalendar.get( Calendar.SECOND ) ) );
 
                 NumberFormat fractionDigits = new DecimalFormat( fractionFormat.toString() );
                 sb.append( fractionDelimiter == FractionDelimiter.COMMA ? ',' : '.' );
-                sb.append( fractionDigits.format( calendar.get( Calendar.MILLISECOND ) ) );
+                sb.append( fractionDigits.format( clonedCalendar.get( Calendar.MILLISECOND ) ) );
                 break;
 
             case YEAR_MONTH_DAY_HOUR_MIN:
-                sb.append( twoDigits.format( calendar.get( Calendar.MINUTE ) ) );
+                sb.append( twoDigits.format( clonedCalendar.get( Calendar.MINUTE ) ) );
                 break;
 
             case YEAR_MONTH_DAY_HOUR_MIN_FRACTION:
-                sb.append( twoDigits.format( calendar.get( Calendar.MINUTE ) ) );
+                sb.append( twoDigits.format( clonedCalendar.get( Calendar.MINUTE ) ) );
 
                 // sec + millis => fraction of minute
-                double millisec = 1000 * calendar.get( Calendar.SECOND ) + calendar.get( Calendar.MILLISECOND );
+                double millisec = 1000 * clonedCalendar.get( Calendar.SECOND ) + clonedCalendar.get( Calendar.MILLISECOND );
                 double fraction = millisec / ( 1000 * 60 );
                 fractionDigits = new DecimalFormat( "0." + fractionFormat );
                 sb.append( fractionDelimiter == FractionDelimiter.COMMA ? ',' : '.' );
@@ -644,8 +670,8 @@ public class GeneralizedTime implements Comparable<GeneralizedTime>
 
             case YEAR_MONTH_DAY_HOUR_FRACTION:
                 // min + sec + millis => fraction of minute
-                millisec = 1000 * 60 * calendar.get( Calendar.MINUTE ) + 1000 * calendar.get( Calendar.SECOND )
-                    + calendar.get( Calendar.MILLISECOND );
+                millisec = 1000 * 60 * clonedCalendar.get( Calendar.MINUTE ) + 1000 * clonedCalendar.get( Calendar.SECOND )
+                    + clonedCalendar.get( Calendar.MILLISECOND );
                 fraction = millisec / ( 1000 * 60 * 60 );
                 fractionDigits = new DecimalFormat( "0." + fractionFormat );
                 sb.append( fractionDelimiter == FractionDelimiter.COMMA ? ',' : '.' );
@@ -654,13 +680,13 @@ public class GeneralizedTime implements Comparable<GeneralizedTime>
                 break;
         }
 
-        if ( timeZoneFormat == TimeZoneFormat.Z && calendar.getTimeZone().hasSameRules( GMT ) )
+        if ( timeZoneFormat == TimeZoneFormat.Z && clonedCalendar.getTimeZone().hasSameRules( GMT ) )
         {
             sb.append( 'Z' );
         }
         else
         {
-            TimeZone timeZone = calendar.getTimeZone();
+            TimeZone timeZone = clonedCalendar.getTimeZone();
             int rawOffset = timeZone.getRawOffset();
             sb.append( rawOffset < 0 ? '-' : '+' );
 

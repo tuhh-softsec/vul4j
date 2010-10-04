@@ -113,10 +113,11 @@ public abstract class AbstractSchemaObject implements SchemaObject
 
 
     /**
-     * A constructor for a SchemaObject instance. It must be 
+     * A constructor for a SchemaObject instance. It must be
      * invoked by the inherited class.
-     * 
+     *
      * @param objectType The SchemaObjectType to create
+     * @param oid the SchemaObject numeric OID
      */
     protected AbstractSchemaObject( SchemaObjectType objectType, String oid )
     {
@@ -213,11 +214,7 @@ public abstract class AbstractSchemaObject implements SchemaObject
 
 
     /**
-     * Inject this SchemaObject to the given registries, updating the references to
-     * other SchemaObject
-     *
-     * @param errors The errors we got
-     * @param registries The Registries
+     * {@inheritDoc}
      */
     public void addToRegistries( List<Throwable> errors, Registries registries ) throws LdapException
     {
@@ -226,11 +223,7 @@ public abstract class AbstractSchemaObject implements SchemaObject
 
 
     /**
-     * Remove this SchemaObject from the given registries, updating the references to
-     * other SchemaObject
-     *
-     * @param errors The errors we got
-     * @param registries The Registries
+     * {@inheritDoc}
      */
     public void removeFromRegistries( List<Throwable> errors, Registries registries ) throws LdapException
     {
@@ -253,9 +246,9 @@ public abstract class AbstractSchemaObject implements SchemaObject
      * Add a new name to the list of names for this SchemaObject. The name
      * is lowercased and trimmed.
      *  
-     * @param names The names to add
+     * @param namesToAdd The names to add
      */
-    public void addName( String... names )
+    public void addName( String... namesToAdd )
     {
         if ( locked )
         {
@@ -273,7 +266,7 @@ public abstract class AbstractSchemaObject implements SchemaObject
                 lowerNames.add( StringTools.toLowerCase( name ) );
             }
 
-            for ( String name : names )
+            for ( String name : namesToAdd )
             {
                 if ( name != null )
                 {
@@ -465,16 +458,16 @@ public abstract class AbstractSchemaObject implements SchemaObject
     /**
      * Sets the SchemaObject readOnly flag
      * 
-     * @param isReadOnly The current SchemaObject ReadOnly status
+     * @param readOnly The current SchemaObject ReadOnly status
      */
-    public void setReadOnly( boolean isReadOnly )
+    public void setReadOnly( boolean readOnly )
     {
         if ( locked )
         {
             throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
         }
         
-        this.isReadOnly = isReadOnly;
+        this.isReadOnly = readOnly;
     }
 
 
@@ -631,8 +624,9 @@ public abstract class AbstractSchemaObject implements SchemaObject
      * The hashcode is currently computed in the lock() method, which is a hack
      * that should be fixed.
      * 
-     * @see Object#hashCode()
+     * @return {@inheritDoc}
      */
+    @Override
     public final int hashCode()
     {
         return h;
@@ -640,8 +634,9 @@ public abstract class AbstractSchemaObject implements SchemaObject
 
 
     /**
-     * @see Object#equals(Object)
+     * @{@inheritDoc}
      */
+    @Override
     public boolean equals( Object o1 )
     {
         if ( this == o1 )
@@ -812,8 +807,11 @@ public abstract class AbstractSchemaObject implements SchemaObject
 
 
     /**
-     * Compare two oids, and return true if they are both null or
-     * equals
+     * Compare two oids, and return true if they are both null or equal.
+     *
+     * @param oid1 the first OID
+     * @param oid2 the second OID
+     * @return <code>true</code> if both OIDs are null or equal
      */
     protected boolean compareOid( String oid1, String oid2 )
     {
@@ -829,9 +827,7 @@ public abstract class AbstractSchemaObject implements SchemaObject
 
 
     /**
-     * Copy a SchemaObject.
-     * 
-     * @return A copy of the current SchemaObject
+     * {@inheritDoc}
      */
     public SchemaObject copy( SchemaObject original )
     {

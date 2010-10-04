@@ -102,7 +102,7 @@ public class AttributeTypeDescriptionSchemaParser extends AbstractSchemaParser
             AttributeType attributeType = parser.attributeTypeDescription();
             
             // Update the schemaName
-            setSchemaName( attributeType );
+            updateSchemaName( attributeType );
 
             return attributeType;
         }

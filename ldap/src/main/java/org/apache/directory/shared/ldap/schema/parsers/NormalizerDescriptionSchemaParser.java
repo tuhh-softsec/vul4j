@@ -92,7 +92,7 @@ public class NormalizerDescriptionSchemaParser extends AbstractSchemaParser
             NormalizerDescription normalizer = parser.normalizerDescription();
 
             // Update the schemaName
-            setSchemaName( normalizer );
+            updateSchemaName( normalizer );
 
             return normalizer;
         }

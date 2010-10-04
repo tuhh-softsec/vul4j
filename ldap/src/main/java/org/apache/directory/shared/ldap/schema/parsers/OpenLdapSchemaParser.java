@@ -166,14 +166,14 @@ public class OpenLdapSchemaParser extends AbstractSchemaParser
             {
                 objectClass.setOid( getResolveOid( objectClass.getOid() ) );
             }
-            
+
             // apply object identifier macros to attribute types
             for ( AttributeType attributeType : attributeTypes )
             {
                 attributeType.setOid( getResolveOid( attributeType.getOid() ) );
                 attributeType.setSyntaxOid( getResolveOid( attributeType.getSyntaxOid() ) );
             }
-            
+
         }
     }
 
@@ -194,8 +194,6 @@ public class OpenLdapSchemaParser extends AbstractSchemaParser
     }
 
 
-    // False positive
-    @SuppressWarnings("PMD.EmptyIfStmt")
     private void resolveObjectIdentifierMacro( OpenLdapObjectIdentifierMacro macro ) throws ParseException
     {
         String rawOidOrNameSuffix = macro.getRawOidOrNameSuffix();
@@ -203,6 +201,7 @@ public class OpenLdapSchemaParser extends AbstractSchemaParser
         if ( macro.isResolved() )
         {
             // finished
+            return;
         }
         else if ( rawOidOrNameSuffix.indexOf( ':' ) != -1 )
         {
@@ -241,7 +240,7 @@ public class OpenLdapSchemaParser extends AbstractSchemaParser
      * Parses an OpenLDAP schemaObject element/object.
      *
      * @param schemaObject the String image of a complete schema object
-     * @throws IOException If the schemaObject can't be transformed to a byteArrayInputStream
+     * @return the schema object
      * @throws ParseException If the schemaObject can't be parsed
      */
     public SchemaObject parse( String schemaObject ) throws ParseException
@@ -340,11 +339,11 @@ public class OpenLdapSchemaParser extends AbstractSchemaParser
     /**
      * Sets if object identifier macros should be resolved.
      * 
-     * @param isResolveObjectIdentifierMacros true if object identifier macros should be resolved
+     * @param resolveObjectIdentifierMacros true if object identifier macros should be resolved
      */
-    public void setResolveObjectIdentifierMacros( boolean isResolveObjectIdentifierMacros )
+    public void setResolveObjectIdentifierMacros( boolean resolveObjectIdentifierMacros )
     {
-        this.isResolveObjectIdentifierMacros = isResolveObjectIdentifierMacros;
+        this.isResolveObjectIdentifierMacros = resolveObjectIdentifierMacros;
     }
 
 }

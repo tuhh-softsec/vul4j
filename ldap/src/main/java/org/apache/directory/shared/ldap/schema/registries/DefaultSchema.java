@@ -147,12 +147,12 @@ public class DefaultSchema implements Schema
     /**
      * {@inheritDoc}
      */
-    public void addDependencies( String... dependencies )
+    public void addDependencies( String... dependenciesToAdd )
     {
-        if ( dependencies != null )
+        if ( dependenciesToAdd != null )
         {
-            this.dependencies = new String[dependencies.length];
-            System.arraycopy( this.dependencies, 0, dependencies, 0, dependencies.length );
+            this.dependencies = new String[dependenciesToAdd.length];
+            System.arraycopy( this.dependencies, 0, dependenciesToAdd, 0, dependenciesToAdd.length );
         }
     }
 
@@ -221,8 +221,9 @@ public class DefaultSchema implements Schema
     
 
     /**
-     * @see Object#toString()
+     * {@inheritDoc}
      */
+    @Override
     public String toString()
     {
         StringBuilder sb = new StringBuilder( "\tSchema Name: " );

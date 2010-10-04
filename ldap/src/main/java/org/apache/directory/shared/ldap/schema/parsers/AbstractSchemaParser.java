@@ -49,6 +49,9 @@ public abstract class AbstractSchemaParser
     protected ReusableAntlrSchemaLexer lexer;
 
 
+    /**
+     * Instantiates a new abstract schema parser.
+     */
     protected AbstractSchemaParser()
     {
         lexer = new ReusableAntlrSchemaLexer( new StringReader( "" ) );
@@ -59,6 +62,8 @@ public abstract class AbstractSchemaParser
     /**
      * Initializes the plumbing by creating a pipe and coupling the parser/lexer
      * pair with it. param spec the specification to be parsed
+     *
+     * @param spec the spec
      */
     protected void reset( String spec )
     {
@@ -71,12 +76,12 @@ public abstract class AbstractSchemaParser
     /**
      * Sets the parser monitor.
      * 
-     * @param monitor the new parser monitor
+     * @param parserMonitor the new parser monitor
      */
-    public void setParserMonitor( ParserMonitor monitor )
+    public void setParserMonitor( ParserMonitor parserMonitor )
     {
-        this.monitor = monitor;
-        parser.setParserMonitor( monitor );
+        this.monitor = parserMonitor;
+        parser.setParserMonitor( parserMonitor );
     }
 
 
@@ -116,12 +121,13 @@ public abstract class AbstractSchemaParser
     
     
     /**
-     * Update the schemaName for this SchemaObject, accordingly to the X-SCHEMA parameter. If
+     * Update the schemaName for the given SchemaObject, accordingly to the X-SCHEMA parameter. If
      * not present, default to 'other'
+     *
+     * @param schemaObject the schema object where the name should be updated
      */
-    protected void setSchemaName( SchemaObject schemaObject )
+    protected static void updateSchemaName( SchemaObject schemaObject )
     {
-        
         // Update the Schema if we have the X-SCHEMA extension
         List<String> schemaExtension = schemaObject.getExtensions().get( MetaSchemaConstants.X_SCHEMA );
         

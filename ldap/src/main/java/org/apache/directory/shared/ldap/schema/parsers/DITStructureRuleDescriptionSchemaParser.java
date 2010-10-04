@@ -91,7 +91,7 @@ public class DITStructureRuleDescriptionSchemaParser extends AbstractSchemaParse
             DITStructureRule ditStructureRule = parser.ditStructureRuleDescription();
 
             // Update the schemaName
-            setSchemaName( ditStructureRule );
+            updateSchemaName( ditStructureRule );
 
             return ditStructureRule;
         }

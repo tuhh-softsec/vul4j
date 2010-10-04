@@ -41,10 +41,10 @@ public class SubtreeSpecificationModifier
     private DN base = new DN();
 
     /** the set of subordinates entries and their subordinates to exclude */
-    private Set<DN> chopBefore = Collections.EMPTY_SET;
+    private Set<DN> chopBefore = Collections.emptySet();
 
     /** the set of subordinates entries whose subordinates are to be excluded */
-    private Set<DN> chopAfter = Collections.EMPTY_SET;
+    private Set<DN> chopAfter = Collections.emptySet();
 
     /** the minimum distance below base to start including entries */
     private int minBaseDistance = 0;
@@ -96,13 +96,13 @@ public class SubtreeSpecificationModifier
     /**
      * Sets the set of subordinates entries and their subordinates to exclude.
      * 
-     * @param chopBefore
+     * @param chopBeforeExclusions
      *            the set of subordinates entries and their subordinates to
      *            exclude
      */
-    public void setChopBeforeExclusions( Set<DN> chopBefore )
+    public void setChopBeforeExclusions( Set<DN> chopBeforeExclusions )
     {
-        this.chopBefore = chopBefore;
+        this.chopBefore = chopBeforeExclusions;
     }
 
 
@@ -110,13 +110,13 @@ public class SubtreeSpecificationModifier
      * Sets the set of subordinates entries whose subordinates are to be
      * excluded.
      * 
-     * @param chopAfter
+     * @param chopAfterExclusions
      *            the set of subordinates entries whose subordinates are to be
      *            excluded
      */
-    public void setChopAfterExclusions( Set<DN> chopAfter )
+    public void setChopAfterExclusions( Set<DN> chopAfterExclusions )
     {
-        this.chopAfter = chopAfter;
+        this.chopAfter = chopAfterExclusions;
     }
 
 
@@ -160,12 +160,14 @@ public class SubtreeSpecificationModifier
      * Sets a filter using only assertions on objectClass attributes for subtree
      * refinement.
      * 
-     * @param filter a filter using only assertions on objectClass attributes for
+     * TODO: there is a setFilter() method, remove this method?
+     * 
+     * @param refinement a filter using only assertions on objectClass attributes for
      *            subtree refinement
      */
-    public void setRefinement( ExprNode filter )
+    public void setRefinement( ExprNode refinement )
     {
-        this.filter = filter;
+        this.filter = refinement;
     }
 
 

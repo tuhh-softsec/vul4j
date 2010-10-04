@@ -44,6 +44,8 @@ import org.apache.directory.shared.ldap.util.StringTools;
  */
 public abstract class AbstractSchemaLoader implements SchemaLoader
 {
+    
+    /** The listener. */
     protected SchemaLoaderListener listener;
 
     /** 
@@ -54,12 +56,21 @@ public abstract class AbstractSchemaLoader implements SchemaLoader
     protected final Map<String, Schema> schemaMap = new HashMap<String, Schema>();
 
 
+    /**
+     * {@inheritDoc}
+     */
     public void setListener( SchemaLoaderListener listener )
     {
         this.listener = listener;
     }
 
 
+    /**
+     * Notify listener or registries.
+     *
+     * @param schema the schema
+     * @param registries the registries
+     */
     protected final void notifyListenerOrRegistries( Schema schema, Registries registries )
     {
         if ( listener != null )
@@ -69,8 +80,7 @@ public abstract class AbstractSchemaLoader implements SchemaLoader
 
         if ( registries != listener )
         {
-            SchemaLoaderListener listener = registries;
-            listener.schemaLoaded( schema );
+            registries.schemaLoaded( schema );
         }
     }
 
@@ -130,6 +140,13 @@ public abstract class AbstractSchemaLoader implements SchemaLoader
     }
 
 
+    /**
+     * Gets the schema.
+     *
+     * @param entry the entry
+     * @return the schema
+     * @throws Exception the exception
+     */
     protected Schema getSchema( Entry entry ) throws Exception
     {
         if ( entry == null )
@@ -199,6 +216,7 @@ public abstract class AbstractSchemaLoader implements SchemaLoader
         };
     }
 
+    // TODO: clean commented code
 
     /*
      * {@inheritDoc}
@@ -609,6 +627,7 @@ public abstract class AbstractSchemaLoader implements SchemaLoader
     }
     */
 
+    // TODO: is this used?
     public Object getDao()
     {
         return null;

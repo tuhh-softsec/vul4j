@@ -86,7 +86,7 @@ public class NameFormDescriptionSchemaParser extends AbstractSchemaParser
             NameForm nameForm = parser.nameFormDescription();
             
             // Update the schemaName
-            setSchemaName( nameForm );
+            updateSchemaName( nameForm );
 
             return nameForm;
         }

@@ -87,7 +87,7 @@ public class DITContentRuleDescriptionSchemaParser extends AbstractSchemaParser
             DITContentRule ditContentRule = parser.ditContentRuleDescription();
             
             // Update the schemaName
-            setSchemaName( ditContentRule );
+            updateSchemaName( ditContentRule );
 
             return ditContentRule;
         }

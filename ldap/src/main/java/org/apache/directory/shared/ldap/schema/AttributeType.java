@@ -210,7 +210,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
      */
     private boolean buildSuperior( List<Throwable> errors, Registries registries )
     {
-        AttributeType superior = null;
+        AttributeType currentSuperior = null;
         AttributeTypeRegistry attributeTypeRegistry = registries.getAttributeTypeRegistry();
 
         if ( superiorOid != null )
@@ -218,7 +218,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
             // This AT has a superior
             try
             {
-                superior = attributeTypeRegistry.lookup( superiorOid );
+                currentSuperior = attributeTypeRegistry.lookup( superiorOid );
             }
             catch ( Exception e )
             {
@@ -233,12 +233,12 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
                 return false;
             }
 
-            if ( superior != null )
+            if ( currentSuperior != null )
             {
                 // a special case : if the superior is collective, this is an error
-                if ( superior.isCollective )
+                if ( currentSuperior.isCollective )
                 {
-                    String msg = I18n.err( I18n.ERR_04482_CANNOT_SUBTYPE_COLLECTIVE, superior, getName() );
+                    String msg = I18n.err( I18n.ERR_04482_CANNOT_SUBTYPE_COLLECTIVE, currentSuperior, getName() );
 
                     Throwable error = new LdapProtocolErrorException( msg );
                     errors.add( error );
@@ -246,20 +246,20 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
                     return false;
                 }
 
-                this.superior = superior;
+                this.superior = currentSuperior;
 
                 // Recursively update the superior if not already done. We don't recurse
                 // if the superior's superior is not null, as it means it has already been
                 // handled.
-                if ( superior.getSuperior() == null )
+                if ( currentSuperior.getSuperior() == null )
                 {
-                    registries.buildReference( errors, superior );
+                    registries.buildReference( errors, currentSuperior );
                 }
 
                 // Update the descendant MAP
                 try
                 {
-                    attributeTypeRegistry.registerDescendants( this, superior );
+                    attributeTypeRegistry.registerDescendants( this, currentSuperior );
                 }
                 catch ( LdapException ne )
                 {
@@ -271,7 +271,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
                 // Check for cycles now
                 Set<String> superiors = new HashSet<String>();
                 superiors.add( oid );
-                AttributeType tmp = superior;
+                AttributeType tmp = currentSuperior;
                 boolean isOk = true;
 
                 while ( tmp != null )
@@ -328,11 +328,11 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
     {
         if ( syntaxOid != null )
         {
-            LdapSyntax syntax = null;
+            LdapSyntax currentSyntax = null;
 
             try
             {
-                syntax = registries.getLdapSyntaxRegistry().lookup( syntaxOid );
+                currentSyntax = registries.getLdapSyntaxRegistry().lookup( syntaxOid );
             }
             catch ( LdapException ne )
             {
@@ -345,10 +345,10 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
                 return;
             }
 
-            if ( syntax != null )
+            if ( currentSyntax != null )
             {
                 // Update the Syntax reference
-                this.syntax = syntax;
+                this.syntax = currentSyntax;
             }
             else
             {
@@ -391,11 +391,11 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
         // The equality MR. It can be null
         if ( equalityOid != null )
         {
-            MatchingRule equality = null;
+            MatchingRule currentEquality = null;
 
             try
             {
-                equality = registries.getMatchingRuleRegistry().lookup( equalityOid );
+                currentEquality = registries.getMatchingRuleRegistry().lookup( equalityOid );
             }
             catch ( LdapException ne )
             {
@@ -408,9 +408,9 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
                 return;
             }
 
-            if ( equality != null )
+            if ( currentEquality != null )
             {
-                this.equality = equality;
+                this.equality = currentEquality;
             }
             else
             {
@@ -441,11 +441,11 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
     {
         if ( orderingOid != null )
         {
-            MatchingRule ordering = null;
+            MatchingRule currentOrdering = null;
 
             try
             {
-                ordering = registries.getMatchingRuleRegistry().lookup( orderingOid );
+                currentOrdering = registries.getMatchingRuleRegistry().lookup( orderingOid );
             }
             catch ( LdapException ne )
             {
@@ -458,9 +458,9 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
                 return;
             }
 
-            if ( ordering != null )
+            if ( currentOrdering != null )
             {
-                this.ordering = ordering;
+                this.ordering = currentOrdering;
             }
             else
             {
@@ -492,11 +492,11 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
         // The Substring MR. It can be null
         if ( substringOid != null )
         {
-            MatchingRule substring = null;
+            MatchingRule currentSubstring = null;
 
             try
             {
-                substring = registries.getMatchingRuleRegistry().lookup( substringOid );
+                currentSubstring = registries.getMatchingRuleRegistry().lookup( substringOid );
             }
             catch ( LdapException ne )
             {
@@ -509,9 +509,9 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
                 return;
             }
 
-            if ( substring != null )
+            if ( currentSubstring != null )
             {
-                this.substring = substring;
+                this.substring = currentSubstring;
             }
             else
             {
@@ -600,14 +600,10 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
 
 
     /**
-     * Inject the attributeType into the registries, updating the references to
-     * other SchemaObject.
+     * {@inheritDoc}
      *
      * If one of the referenced SchemaObject does not exist (SUP, EQUALITY, ORDERING, SUBSTR, SYNTAX),
      * an exception is thrown.
-     *
-     * @param registries The Registries
-     * @exception If the AttributeType is not valid
      */
     public void addToRegistries( List<Throwable> errors, Registries registries ) throws LdapException
     {
@@ -681,14 +677,10 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
 
 
     /**
-     * Remove the attributeType from the registries, updating the references to
-     * other SchemaObject.
+     * {@inheritDoc}
      *
      * If one of the referenced SchemaObject does not exist (SUP, EQUALITY, ORDERING, SUBSTR, SYNTAX),
      * an exception is thrown.
-     *
-     * @param registries The Registries
-     * @exception If the AttributeType is not valid
      */
     public void removeFromRegistries( List<Throwable> errors, Registries registries ) throws LdapException
     {
@@ -781,9 +773,9 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
     /**
      * Tells if this AttributeType can be modified by a user or not
      *
-     * @param canUserModify The flag to set
+     * @param userModifiable The flag to set
      */
-    public void setUserModifiable( boolean canUserModify )
+    public void setUserModifiable( boolean userModifiable )
     {
         if ( locked )
         {
@@ -792,7 +784,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
 
         if ( !isReadOnly )
         {
-            this.canUserModify = canUserModify;
+            this.canUserModify = userModifiable;
         }
     }
 
@@ -890,16 +882,16 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
      * </ul>
      * 
      * @see UsageEnum
-     * @param usage The AttributeType usage
+     * @param newUsage The AttributeType usage
      */
-    public void updateUsage( UsageEnum usage )
+    public void updateUsage( UsageEnum newUsage )
     {
         if ( locked )
         {
             throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
         }
 
-        this.usage = usage;
+        this.usage = newUsage;
     }
 
 
@@ -1016,9 +1008,9 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
     /**
      * Sets the superior oid for this AttributeType
      *
-     * @param superiorOid The superior oid for this AttributeType
+     * @param newSuperiorOid The superior oid for this AttributeType
      */
-    public void setSuperior( String superiorOid )
+    public void setSuperior( String newSuperiorOid )
     {
         if ( locked )
         {
@@ -1027,7 +1019,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
 
         if ( !isReadOnly )
         {
-            this.superiorOid = superiorOid;
+            this.superiorOid = newSuperiorOid;
         }
     }
 
@@ -1035,17 +1027,17 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
     /**
      * Update the associated Superior AttributeType, even if the SchemaObject is readOnly
      *
-     * @param superior The superior for this AttributeType
+     * @param newSuperior The superior for this AttributeType
      */
-    public void updateSuperior( AttributeType superior )
+    public void updateSuperior( AttributeType newSuperior )
     {
         if ( locked )
         {
             throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
         }
 
-        this.superior = superior;
-        this.superiorOid = superior.getOid();
+        this.superior = newSuperior;
+        this.superiorOid = newSuperior.getOid();
     }
 
 
@@ -1131,17 +1123,17 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
     /**
      * Update the associated Syntax, even if the SchemaObject is readOnly
      *
-     * @param syntax The Syntax for this AttributeType
+     * @param newSyntax The Syntax for this AttributeType
      */
-    public void updateSyntax( LdapSyntax syntax )
+    public void updateSyntax( LdapSyntax newSyntax )
     {
         if ( locked )
         {
             throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
         }
 
-        this.syntax = syntax;
-        this.syntaxOid = syntax.getOid();
+        this.syntax = newSyntax;
+        this.syntaxOid = newSyntax.getOid();
     }
 
 
@@ -1227,17 +1219,17 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
     /**
      * Update the associated Equality MatchingRule, even if the SchemaObject is readOnly
      *
-     * @param equality The Equality MR for this AttributeType
+     * @param newEquality The Equality MR for this AttributeType
      */
-    public void updateEquality( MatchingRule equality )
+    public void updateEquality( MatchingRule newEquality )
     {
         if ( locked )
         {
             throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
         }
 
-        this.equality = equality;
-        this.equalityOid = equality.getOid();
+        this.equality = newEquality;
+        this.equalityOid = newEquality.getOid();
     }
 
 
@@ -1323,17 +1315,17 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
     /**
      * Update the associated Ordering MatchingRule, even if the SchemaObject is readOnly
      *
-     * @param ordering The Ordering MR for this AttributeType
+     * @param newOrdering The Ordering MR for this AttributeType
      */
-    public void updateOrdering( MatchingRule ordering )
+    public void updateOrdering( MatchingRule newOrdering )
     {
         if ( locked )
         {
             throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
         }
 
-        this.ordering = ordering;
-        this.orderingOid = ordering.getOid();
+        this.ordering = newOrdering;
+        this.orderingOid = newOrdering.getOid();
     }
 
 
@@ -1419,17 +1411,17 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
     /**
      * Update the associated Substring MatchingRule, even if the SchemaObject is readOnly
      *
-     * @param substring The Substr MR for this AttributeType
+     * @param newSubstring The Substr MR for this AttributeType
      */
-    public void updateSubstring( MatchingRule substring )
+    public void updateSubstring( MatchingRule newSubstring )
     {
         if ( locked )
         {
             throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
         }
 
-        this.substring = substring;
-        this.substringOid = substring.getOid();
+        this.substring = newSubstring;
+        this.substringOid = newSubstring.getOid();
     }
 
 
@@ -1495,7 +1487,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
 
 
     /**
-     * @see Object#toString()
+     * {@inheritDoc}
      */
     public String toString()
     {
@@ -1504,7 +1496,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
 
 
     /**
-     * Copy an AttributeType
+     * {@inheritDoc}
      */
     public AttributeType copy()
     {
@@ -1570,7 +1562,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
 
 
     /**
-     * @see Object#equals(Object)
+     * {@inheritDoc}
      */
     public boolean equals( Object o )
     {

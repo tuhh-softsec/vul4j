@@ -82,7 +82,7 @@ public class LdapSyntaxDescriptionSchemaParser extends AbstractSchemaParser
             ldapSyntax.setSpecification( ldapSyntaxDescription );
 
             // Update the schemaName
-            setSchemaName( ldapSyntax );
+            updateSchemaName( ldapSyntax );
                 
             return ldapSyntax;
         }

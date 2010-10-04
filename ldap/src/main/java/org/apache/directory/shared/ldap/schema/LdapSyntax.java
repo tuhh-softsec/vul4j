@@ -97,8 +97,9 @@ public class LdapSyntax extends AbstractSchemaObject
 
     /**
      * Creates a Syntax object using a unique OID.
-     * 
-     * @param oid the OID for this Syntax
+     *
+     * @param oid the OID for this syntax
+     * @param description the description for this syntax
      */
     public LdapSyntax( String oid, String description )
     {
@@ -109,8 +110,10 @@ public class LdapSyntax extends AbstractSchemaObject
 
     /**
      * Creates a Syntax object using a unique OID.
-     * 
-     * @param oid the OID for this Syntax
+     *
+     * @param oid the OID for this syntax
+     * @param description the description for this syntax
+     * @param isHumanReadable true if this syntax is human readable
      */
     public LdapSyntax( String oid, String description, boolean isHumanReadable )
     {
@@ -134,9 +137,9 @@ public class LdapSyntax extends AbstractSchemaObject
     /**
      * Sets the human readable flag value.
      * 
-     * @param isHumanReadable the human readable flag value to set
+     * @param humanReadable the human readable flag value to set
      */
-    public void setHumanReadable( boolean isHumanReadable )
+    public void setHumanReadable( boolean humanReadable )
     {
         if ( locked )
         {
@@ -145,7 +148,7 @@ public class LdapSyntax extends AbstractSchemaObject
         
         if ( !isReadOnly )
         {
-            this.isHumanReadable = isHumanReadable;
+            this.isHumanReadable = humanReadable;
         }
     }
 
@@ -184,22 +187,23 @@ public class LdapSyntax extends AbstractSchemaObject
     /**
      * Update the associated SyntaxChecker, even if the SchemaObject is readOnly
      *
-     * @param syntaxChecker The associated SyntaxChecker
+     * @param newSyntaxChecker The associated SyntaxChecker
      */
-    public void updateSyntaxChecker( SyntaxChecker syntaxChecker )
+    public void updateSyntaxChecker( SyntaxChecker newSyntaxChecker )
     {
         if ( locked )
         {
             throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
         }
         
-        this.syntaxChecker = syntaxChecker;
+        this.syntaxChecker = newSyntaxChecker;
     }
 
 
     /**
-     * @see Object#toString()
+     * {@inheritDoc}
      */
+    @Override
     public String toString()
     {
         return objectType + " " + DescriptionUtils.getDescription( this );
@@ -207,11 +211,7 @@ public class LdapSyntax extends AbstractSchemaObject
 
 
     /**
-     * Inject the Syntax into the registries, updating the references to
-     * other SchemaObject
-     *
-     * @param registries The Registries
-     * @exception If the addition failed
+     * {@inheritDoc}
      */
     public void addToRegistries( List<Throwable> errors, Registries registries ) throws LdapException
     {
@@ -239,14 +239,7 @@ public class LdapSyntax extends AbstractSchemaObject
     
     
     /**
-     * Remove the SDyntax from the registries, updating the references to
-     * other SchemaObject.
-     * 
-     * If one of the referenced SchemaObject does not exist (), 
-     * an exception is thrown.
-     *
-     * @param registries The Registries
-     * @exception If the Syntx is not valid 
+     * {@inheritDoc}
      */
     @SuppressWarnings("PMD.CollapsibleIfStatements") // Used because of comments
     public void removeFromRegistries( List<Throwable> errors, Registries registries ) throws LdapException
@@ -266,7 +259,7 @@ public class LdapSyntax extends AbstractSchemaObject
 
 
     /**
-     * Copy a LdapSyntax
+     * {@inheritDoc}
      */
     public LdapSyntax copy()
     {
@@ -286,7 +279,7 @@ public class LdapSyntax extends AbstractSchemaObject
 
 
     /**
-     * @see Object#equals()
+     * {@inheritDoc}
      */
     @Override
     public boolean equals( Object o )

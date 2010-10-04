@@ -1611,15 +1611,19 @@ public class LdapURL
 
 
     /**
-     * Compute the instance's hash code
-     * @return the instance's hash code 
+     * {@inheritDoc}
      */
+    @Override
     public int hashCode()
     {
         return this.toString().hashCode();
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public boolean equals( Object obj )
     {
         if ( this == obj )
@@ -1833,13 +1837,13 @@ public class LdapURL
 
 
         /**
-         * Sets the critical.
+         * Sets the critical flag.
          * 
-         * @param isCritical the new critical
+         * @param critical the new critical flag
          */
-        public void setCritical( boolean isCritical )
+        public void setCritical( boolean critical )
         {
-            this.isCritical = isCritical;
+            this.isCritical = critical;
         }
 
 

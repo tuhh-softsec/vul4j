@@ -94,7 +94,7 @@ public class ObjectClassDescriptionSchemaParser extends AbstractSchemaParser
             ObjectClass objectClass = parser.objectClassDescription();
 
             // Update the schemaName
-            setSchemaName( objectClass );
+            updateSchemaName( objectClass );
 
             return objectClass;
         }

@@ -87,7 +87,7 @@ public class MatchingRuleDescriptionSchemaParser extends AbstractSchemaParser
             MatchingRule matchingRule = parser.matchingRuleDescription();
             
             // Update the schemaName
-            setSchemaName( matchingRule );
+            updateSchemaName( matchingRule );
 
             return matchingRule;
         }
