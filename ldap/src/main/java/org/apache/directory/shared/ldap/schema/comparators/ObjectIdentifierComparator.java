@@ -21,7 +21,6 @@ package org.apache.directory.shared.ldap.schema.comparators;
 
 
 import org.apache.directory.shared.ldap.schema.LdapComparator;
-import org.apache.directory.shared.ldap.schema.SchemaManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,9 +35,6 @@ public class ObjectIdentifierComparator extends LdapComparator<Object>
     /** A logger for this class */
     private static final Logger LOG = LoggerFactory.getLogger( ObjectIdentifierComparator.class );
 
-    /** A reference to the schema manager */
-    private transient SchemaManager schemaManager;
-
     /** The serialVersionUID */
     private static final long serialVersionUID = 1L;
 
@@ -50,15 +46,6 @@ public class ObjectIdentifierComparator extends LdapComparator<Object>
     public ObjectIdentifierComparator( String oid )
     {
         super( oid );
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public void setSchemaManager( SchemaManager schemaManager )
-    {
-        this.schemaManager = schemaManager;
     }
 
 

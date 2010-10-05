@@ -562,12 +562,9 @@ public class BinaryValue extends AbstractValue<byte[]>
         {
             wrappedValue = new byte[wrappedLength];
 
-            if ( wrappedLength > 0 )
+            if ( wrappedLength > 0 &&  in.read( wrappedValue ) == -1 )
             {
-                if ( in.read( wrappedValue ) == -1 )
-                {
-                    throw new IOException( I18n.err( I18n.ERR_04480_END_OF_STREAM ) );
-                }
+                throw new IOException( I18n.err( I18n.ERR_04480_END_OF_STREAM ) );
             }
         }
 

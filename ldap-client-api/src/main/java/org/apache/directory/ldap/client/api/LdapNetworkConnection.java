@@ -28,7 +28,6 @@ import java.net.SocketAddress;
 import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -212,13 +211,9 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
 
     // ~~~~~~~~~~~~~~~~~ common error messages ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    private static final String OPERATION_CANCELLED = "Operation would have been cancelled";
-
     static final String TIME_OUT_ERROR = "TimeOut occured";
 
     static final String NO_RESPONSE_ERROR = "The response queue has been emptied, no response was found.";
-
-    private static final String COMPARE_FAILED = "Failed to perform compare operation";
 
 
     //--------------------------- Helper methods ---------------------------//
@@ -458,6 +453,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
     /**
      * {@inheritDoc}
      */
+    @SuppressWarnings("PMD.EmptyCatchBlock")
     public boolean connect() throws LdapException, IOException
     {
         if ( ( ldapSession != null ) && connected.get() )
@@ -975,42 +971,6 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
 
 
     /**
-     * Create a Simple BindRequest with controls ready to be sent.
-     */
-    private BindRequest createBindRequest( String name, byte[] credentials, Control[] controls ) throws LdapException
-    {
-        return createBindRequest( name, credentials, null, controls );
-    }
-
-
-    /**
-     * Create a Simple BindRequest with controls ready to be sent.
-     */
-    private BindRequest createBindRequest( DN name, byte[] credentials, Control[] controls ) throws LdapException
-    {
-        return createBindRequest( name, credentials, null, controls );
-    }
-
-
-    /**
-     * Create a SASL BindRequest ready to be sent.
-     */
-    private BindRequest createBindRequest( String name, byte[] credentials, String mechanism ) throws LdapException
-    {
-        return createBindRequest( name, credentials, mechanism, ( Control[] ) null );
-    }
-
-
-    /**
-     * Create a SASL BindRequest ready to be sent.
-     */
-    private BindRequest createBindRequest( DN name, byte[] credentials, String mechanism ) throws LdapException
-    {
-        return createBindRequest( name, credentials, mechanism, ( Control ) null );
-    }
-
-
-    /**
      * Create a complete BindRequest ready to be sent.
      */
     private BindRequest createBindRequest( String name, byte[] credentials, String saslMechanism, Control... controls )
@@ -1489,7 +1449,8 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
         LOG.debug( "Sending Unbind request \n{}", unbindRequest );
 
         // Send the request to the server
-        WriteFuture unbindFuture = ldapSession.write( unbindRequest );
+       // Use this for logging instead: WriteFuture unbindFuture = ldapSession.write( unbindRequest );
+        ldapSession.write( unbindRequest );
 
         //LOG.debug( "waiting for unbindFuture" );
         //unbindFuture.awaitUninterruptibly();
@@ -2452,101 +2413,6 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
             LOG.error( e.getMessage(), e );
             throw new LdapException( e.getMessage(), e );
         }
-    }
-
-
-    /**
-     * removes all child entries present under the given DN and finally the DN itself
-     *
-     * Working:
-     *          This is a recursive function which maintains a Map<DN,Cursor>.
-     *          The way the cascade delete works is by checking for children for a
-     *          given DN(i.e opening a search cursor) and if the cursor is empty
-     *          then delete the DN else for each entry's DN present in cursor call
-     *          deleteChildren() with the DN and the reference to the map.
-     *
-     *          The reason for opening a search cursor is based on an assumption
-     *          that an entry *might* contain children, consider the below DIT fragment
-     *
-     *          parent
-     *          /     \
-     *        child1   child2
-     *                 /     \
-     *               grand21  grand22
-     *
-     *           The below method works better in the case where the tree depth is >1
-     *
-     *   In the case of passing a non-null DeleteListener, the return value will always be null, cause the
-     *   operation is treated as asynchronous and response result will be sent using the listener callback
-     *
-     *  //FIXME provide another method for optimizing delete operation for a tree with depth <=1
-     *
-     * @param dn the DN which will be removed after removing its children
-     * @param map a map to hold the Cursor related to a DN
-     * @throws LdapException If the DN is not valid or if the deletion failed
-     */
-    private DeleteResponse deleteRecursive( DN dn, Map<DN, Cursor<Response>> cursorMap )
-        throws LdapException
-    {
-        LOG.debug( "searching for {}", dn.getName() );
-        DeleteResponse delResponse = null;
-        Cursor<Response> cursor = null;
-
-        try
-        {
-            if ( cursorMap == null )
-            {
-                cursorMap = new HashMap<DN, Cursor<Response>>();
-            }
-
-            cursor = cursorMap.get( dn );
-
-            if ( cursor == null )
-            {
-                cursor = search( dn.getName(), "(objectClass=*)", SearchScope.ONELEVEL, ( String[] ) null );
-                LOG.debug( "putting cursor for {}", dn.getName() );
-                cursorMap.put( dn, cursor );
-            }
-
-            if ( !cursor.next() ) // if this is a leaf entry's DN
-            {
-                LOG.debug( "deleting {}", dn.getName() );
-                cursorMap.remove( dn );
-                cursor.close();
-                DeleteRequest deleteRequest = new DeleteRequestImpl();
-                deleteRequest.setName( dn );
-                delResponse = delete( deleteRequest );
-            }
-            else
-            {
-                do
-                {
-                    Response searchResp = cursor.get();
-
-                    if ( searchResp instanceof SearchResultEntry )
-                    {
-                        SearchResultEntry searchResult = ( SearchResultEntry ) searchResp;
-                        deleteRecursive( searchResult.getEntry().getDn(), cursorMap );
-                    }
-                }
-                while ( cursor.next() );
-
-                cursorMap.remove( dn );
-                cursor.close();
-                LOG.debug( "deleting {}", dn.getName() );
-                DeleteRequest deleteRequest = new DeleteRequestImpl();
-                deleteRequest.setName( dn );
-                delResponse = delete( deleteRequest );
-            }
-        }
-        catch ( Exception e )
-        {
-            String msg = "Failed to delete child entries under the DN " + dn.getName();
-            LOG.error( msg, e );
-            throw new LdapException( msg, e );
-        }
-
-        return delResponse;
     }
 
 

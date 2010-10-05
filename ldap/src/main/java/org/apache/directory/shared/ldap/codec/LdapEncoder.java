@@ -28,8 +28,6 @@ import org.apache.directory.shared.asn1.codec.stateful.EncoderCallback;
 import org.apache.directory.shared.ldap.message.spi.Provider;
 import org.apache.directory.shared.ldap.message.spi.ProviderEncoder;
 import org.apache.directory.shared.ldap.message.spi.ProviderException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 /**
@@ -39,12 +37,6 @@ import org.slf4j.LoggerFactory;
  */
 public class LdapEncoder implements ProviderEncoder
 {
-    /** The logger */
-    private static Logger log = LoggerFactory.getLogger( LdapEncoder.class );
-
-    /** A speedup for logger */
-    private static final boolean IS_DEBUG = log.isDebugEnabled();
-
     /** The associated Provider */
     final Provider provider;
 

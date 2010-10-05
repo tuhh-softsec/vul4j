@@ -37,32 +37,12 @@ public class LdapConnectionPool extends GenericObjectPool
 
     /**
      * Instantiates a new LDAP connection pool.
-     */
-    public LdapConnectionPool()
-    {
-        super();
-    }
-
-
-    /**
-     * Instantiates a new LDAP connection pool.
      *
      * @param factory the LDAP connection factory
      */
     public LdapConnectionPool( PoolableLdapConnectionFactory factory )
     {
         super( factory );
-    }
-
-
-    /**
-     * Sets the LDAP connection factory.
-     *
-     * @param factory the new LDAP connection factory
-     */
-    public void setFactory( PoolableLdapConnectionFactory factory )
-    {
-        super.setFactory( factory );
     }
 
 

@@ -727,16 +727,6 @@ public class ImmutableEntry implements Entry
 
 
     /**
-     * A helper method to recompute the hash code
-     */
-    private void rehash()
-    {
-        new Exception().printStackTrace();
-        throw new NotImplementedException( "Cannot rehash the entry " + entry.getDn() + " is immutable." );
-    }
-
-
-    /**
      * Get the hash code of this ClientEntry. The Attributes will be sorted
      * before the comparison can be done.
      *

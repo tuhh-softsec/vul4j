@@ -73,7 +73,6 @@ import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.message.SearchRequest;
 import org.apache.directory.shared.ldap.message.SearchResultEntry;
 import org.apache.directory.shared.ldap.message.SearchResultReference;
-import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.xmlpull.v1.XmlPullParserException;
@@ -87,12 +86,6 @@ import org.xmlpull.v1.XmlPullParserException;
  */
 public class Dsmlv2Engine
 {
-    /** The port. */
-    private int port;
-
-    /** The host. */
-    private String host;
-
     /** The user. */
     private String user;
 
@@ -128,8 +121,6 @@ public class Dsmlv2Engine
      */
     public Dsmlv2Engine( String host, int port, String user, String password )
     {
-        this.host = host;
-        this.port = port;
         this.user = user;
         this.password = password;
 
@@ -433,17 +424,6 @@ public class Dsmlv2Engine
         {
             // Turning on Exit flag
             exit = true;
-        }
-    }
-
-
-    private void copyMessageIdAndControls( Message from, Message to )
-    {
-        to.setMessageId( from.getMessageId() );
-
-        for ( Control control : from.getControls().values() )
-        {
-            to.addControl( control );
         }
     }
 

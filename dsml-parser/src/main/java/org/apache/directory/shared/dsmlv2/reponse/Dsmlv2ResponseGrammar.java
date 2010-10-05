@@ -1632,7 +1632,7 @@ public final class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGra
         {
             SearchResultDone searchResultDone = new SearchResultDoneImpl();
 
-            LdapResult ldapResult = searchResultDone.getLdapResult();
+            searchResultDone.getLdapResult();
 
             SearchResponse searchResponse = ( SearchResponse ) container.getBatchResponse().getCurrentResponse();
 

@@ -28,8 +28,6 @@ import org.apache.mina.core.buffer.IoBuffer;
 import org.apache.mina.core.session.IoSession;
 import org.apache.mina.filter.codec.ProtocolEncoder;
 import org.apache.mina.filter.codec.ProtocolEncoderOutput;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 /**
@@ -39,12 +37,6 @@ import org.slf4j.LoggerFactory;
  */
 public class LdapProtocolEncoder implements ProtocolEncoder
 {
-    /** The logger */
-    private static final Logger LOG = LoggerFactory.getLogger( LdapProtocolEncoder.class );
-
-    /** A speedup for logger */
-    private static final boolean IS_DEBUG = LOG.isDebugEnabled();
-
     /** The stateful encoder */
     private static final LdapEncoder ENCODER = new LdapEncoder();
 

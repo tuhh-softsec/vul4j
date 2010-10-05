@@ -374,7 +374,7 @@ public class DnNode<N> implements Cloneable
 
     
     /**
-     * recursively get all the elements from nodes havig an element
+     * recursively get all the elements from nodes having an element
      */
     private void getDescendantElements( DnNode<N> node, List<N> descendants )
     {

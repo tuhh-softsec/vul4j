@@ -1520,6 +1520,8 @@ public class Registries implements SchemaLoaderListener, Cloneable
     /**
      * Register the given SchemaObject into the associated Registry
      */
+    // Remove SuppressWarnings when TODO is fixed
+    @SuppressWarnings("PMD.EmptyIfStmt")
     private void register( List<Throwable> errors, SchemaObject schemaObject ) throws LdapException
     {
         LOG.debug( "Registering {}:{}", schemaObject.getObjectType(), schemaObject.getOid() );
@@ -1738,7 +1740,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
      * @throws LdapException If the removal failed
      */
     // Remove me when TODO is implemented
-    @SuppressWarnings("PMD.UnusedFormalParameter")
+    @SuppressWarnings({"PMD.UnusedFormalParameter","PMD.EmptyIfStmt"})
     private SchemaObject unregister( List<Throwable> errors, SchemaObject schemaObject ) throws LdapException
     {
         LOG.debug( "Unregistering {}:{}", schemaObject.getObjectType(), schemaObject.getOid() );

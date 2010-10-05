@@ -1337,7 +1337,7 @@ public class LdapEncoder
      * UnBindRequest : 
      * 0x42 00
      */
-    private int computeUnbindRequestLength( UnbindRequestImpl unbindRequest )
+    private int computeUnbindRequestLength( )
     {
         return 2; // Always 2
     }
@@ -2295,7 +2295,7 @@ public class LdapEncoder
     /**
      * Encode the Unbind protocolOp part
      */
-    private void encodeUnbindRequest( ByteBuffer buffer, UnbindRequestImpl unbindRequest ) throws EncoderException
+    private void encodeUnbindRequest( ByteBuffer buffer ) throws EncoderException
     {
         try
         {
@@ -2422,7 +2422,7 @@ public class LdapEncoder
                 return computeSearchResultReferenceLength( ( SearchResultReferenceImpl ) message );
 
             case UNBIND_REQUEST:
-                return computeUnbindRequestLength( ( UnbindRequestImpl ) message );
+                return computeUnbindRequestLength( );
 
             default:
                 return 0;
@@ -2515,7 +2515,7 @@ public class LdapEncoder
                 break;
 
             case UNBIND_REQUEST:
-                encodeUnbindRequest( bb, ( UnbindRequestImpl ) message );
+                encodeUnbindRequest( bb );
                 break;
         }
     }

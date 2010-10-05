@@ -511,7 +511,6 @@ public class FilterParser
     private static ExprNode parseItem( SchemaManager schemaManager, String filter, Position pos, char c ) 
         throws ParseException, LdapException
     {
-        LeafNode node = null;
         String attribute = null;
 
         if ( c == '\0' )
