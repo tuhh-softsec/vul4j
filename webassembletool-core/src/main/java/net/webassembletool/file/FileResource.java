@@ -8,8 +8,8 @@ import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Map.Entry;
+import java.util.Properties;
 
 import net.webassembletool.ResourceContext;
 import net.webassembletool.output.Output;
@@ -78,10 +78,7 @@ public class FileResource extends Resource {
 				output.addHeader(header.getKey(), header.getValue());
 			}
 		}
-		// String charset = output.getHeader("content-encoding");
-		// if (charset != null) {
-		// output.setCharsetName(charset);
-		// }
+
 		if (file != null) {
 			InputStream inputStream = new FileInputStream(file);
 			try {
