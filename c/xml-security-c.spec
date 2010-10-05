@@ -110,7 +110,6 @@ This package includes files needed for development with xml-security-c.
 %{_includedir}/*
 %{_libdir}/*.so
 %{_libdir}/*.a
-%exclude %{_libdir}/*.la
 
 %changelog
 * Wed Feb 3 2010 Scott Cantor <cantor.2@osu.edu> 1.6.0-1
