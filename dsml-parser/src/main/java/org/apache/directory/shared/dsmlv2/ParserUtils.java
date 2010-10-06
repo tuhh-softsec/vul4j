@@ -295,7 +295,7 @@ public final class ParserUtils
         Transformer transformer = null;
         try
         {
-            transformer = factory.newTransformer( new StreamSource( Dsmlv2Engine.class
+            transformer = factory.newTransformer( new StreamSource( ParserUtils.class
                 .getResourceAsStream( "DSMLv2.xslt" ) ) );
         }
         catch ( TransformerConfigurationException e1 )
