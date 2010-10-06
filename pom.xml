@@ -77,6 +77,7 @@
     <module>ldap-schema</module>
     <module>ldap-client-api</module>
     <module>dsml-parser</module>
+    <module>dsml-engine</module>
   </modules>
 
   <build>
@@ -98,6 +99,12 @@
   <dependencyManagement>
     <dependencies>
       <!-- Project sub-modules dependencies -->
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>shared-dsml-engine</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      
       <dependency>
         <groupId>${project.groupId}</groupId>
         <artifactId>shared-dsml-parser</artifactId>
