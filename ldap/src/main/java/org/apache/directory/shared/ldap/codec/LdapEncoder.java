@@ -22,12 +22,10 @@ package org.apache.directory.shared.ldap.codec;
 
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
+import java.security.ProviderException;
 
 import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.asn1.codec.stateful.EncoderCallback;
-import org.apache.directory.shared.ldap.message.spi.Provider;
-import org.apache.directory.shared.ldap.message.spi.ProviderEncoder;
-import org.apache.directory.shared.ldap.message.spi.ProviderException;
 
 
 /**
@@ -35,20 +33,15 @@ import org.apache.directory.shared.ldap.message.spi.ProviderException;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class LdapEncoder implements ProviderEncoder
+public class LdapEncoder
 {
-    /** The associated Provider */
-    final Provider provider;
-
-
     /**
      * Creates an instance of a Ldap Encoder implementation.
      * 
      * @param provider The associated Provider
      */
-    public LdapEncoder( Provider provider )
+    public LdapEncoder()
     {
-        this.provider = provider;
     }
 
 
@@ -60,7 +53,7 @@ public class LdapEncoder implements ProviderEncoder
      * @param obj The LdapMessage to encode
      * @throws ProviderException If anything went wrong
      */
-    public void encodeBlocking( Object lock, OutputStream out, Object obj ) throws ProviderException
+    public void encodeBlocking( Object lock, OutputStream out, Object obj ) throws EncoderException
     {
     }
 
@@ -76,17 +69,6 @@ public class LdapEncoder implements ProviderEncoder
     public ByteBuffer encodeBlocking( Object obj ) throws ProviderException
     {
         return null;
-    }
-
-
-    /**
-     * Gets the Provider associated with this SPI implementation object.
-     * 
-     * @return Provider The provider
-     */
-    public Provider getProvider()
-    {
-        return provider;
     }
 
 

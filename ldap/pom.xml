@@ -43,6 +43,11 @@
     </dependency> 
 
     <dependency>
+      <groupId>org.apache.mina</groupId>
+      <artifactId>mina-core</artifactId>
+    </dependency>
+    
+    <dependency>
       <groupId>antlr</groupId>
       <artifactId>antlr</artifactId>
     </dependency>
