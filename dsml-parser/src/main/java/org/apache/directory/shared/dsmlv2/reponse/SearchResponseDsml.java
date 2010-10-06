@@ -43,6 +43,15 @@ public class SearchResponseDsml extends AbstractResponseDsml
 
     /**
      * Creates a new instance of SearchResponseDsml.
+     */
+    public SearchResponseDsml()
+    {
+        super( null );
+    }
+
+
+    /**
+     * Creates a new instance of SearchResponseDsml.
      *
      * @param response the LDAP response message to decorate
      */
@@ -88,10 +97,13 @@ public class SearchResponseDsml extends AbstractResponseDsml
         Element element = root.addElement( "searchResponse" );
 
         // RequestID
-        int requestID = instance.getMessageId();
-        if ( requestID != 0 )
+        if ( instance != null )
         {
-            element.addAttribute( "requestID", "" + requestID );
+            int requestID = instance.getMessageId();
+            if ( requestID != 0 )
+            {
+                element.addAttribute( "requestID", "" + requestID );
+            }
         }
 
         for ( DsmlDecorator response : responses )
