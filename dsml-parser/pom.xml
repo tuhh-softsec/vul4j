@@ -28,7 +28,7 @@
   <artifactId>shared-dsml-parser</artifactId>
   <name>Apache Directory Shared DSML Parser</name>
 
-  <dependencies>    
+  <dependencies>
     <dependency>
       <groupId>org.apache.directory.junit</groupId>
       <artifactId>junit-addons</artifactId>
@@ -43,11 +43,6 @@
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>shared-ldap</artifactId>
-    </dependency>
-    
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>ldap-client-api</artifactId>
     </dependency>
     
     <dependency>
