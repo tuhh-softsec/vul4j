@@ -17,43 +17,48 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.message.extended;
+package org.apache.directory.shared.ldap.message.extended.nod;
 
 
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.message.ModifyResponseImpl;
+import org.apache.directory.shared.ldap.message.ExtendedResponseImpl;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
+import org.apache.directory.shared.ldap.message.extended.NoticeOfDisconnect;
 
 
 /**
  * An extended operation intended for notifying clients of upcoming
- * disconnection. * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
+ * disconnection for the Extended response. 
+ * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class ModifyNoDResponse extends ModifyResponseImpl
+public class ExtendedNoDResponse extends ExtendedResponseImpl
 {
+    /** The serial version UID */
+    static final long serialVersionUID = 2L;
+
     /** The OID of the NotiveOfDisconnect extended operation. */
-    public static final String EXTENSION_OID = "1.3.6.1.4.1.1466.20036";
+    public static final String EXTENSION_OID = NoticeOfDisconnect.EXTENSION_OID;
 
     /** The empty response */
     private static final byte[] EMPTY_RESPONSE = new byte[0];
 
     /** The single instance with unavailable result code. */
-    public static final ModifyNoDResponse UNAVAILABLE = new ModifyNoDResponse( ResultCodeEnum.UNAVAILABLE );
+    public static final ExtendedNoDResponse UNAVAILABLE = new ExtendedNoDResponse( ResultCodeEnum.UNAVAILABLE );
 
     /** The single instance with protocolError result code. */
-    public static final ModifyNoDResponse PROTOCOLERROR = new ModifyNoDResponse( ResultCodeEnum.PROTOCOL_ERROR );
+    public static final ExtendedNoDResponse PROTOCOLERROR = new ExtendedNoDResponse( ResultCodeEnum.PROTOCOL_ERROR );
 
     /** The single instance with strongAuthRequired result code. */
-    public static final ModifyNoDResponse STRONGAUTHREQUIRED = new ModifyNoDResponse(
+    public static final ExtendedNoDResponse STRONGAUTHREQUIRED = new ExtendedNoDResponse(
         ResultCodeEnum.STRONG_AUTH_REQUIRED );
 
 
     /**
      * Creates a new instance of NoticeOfDisconnect.
      */
-    private ModifyNoDResponse( ResultCodeEnum rcode )
+    private ExtendedNoDResponse( ResultCodeEnum rcode )
     {
-        super();
+        super( EXTENSION_OID );
 
         switch ( rcode )
         {
@@ -100,39 +105,5 @@ public class ModifyNoDResponse extends ModifyResponseImpl
     public String getResponseName()
     {
         return EXTENSION_OID;
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int hashCode()
-    {
-        int hash = 37;
-        // Seems simple but look at the equals() method ...
-        hash = hash * 17 + getClass().getName().hashCode();
-
-        return hash;
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean equals( Object obj )
-    {
-        if ( obj == this )
-        {
-            return true;
-        }
-
-        if ( obj instanceof ModifyNoDResponse )
-        {
-            return true;
-        }
-
-        return false;
     }
 }

@@ -114,8 +114,15 @@ import org.apache.directory.shared.ldap.message.SearchResultReference;
 import org.apache.directory.shared.ldap.message.UnbindRequest;
 import org.apache.directory.shared.ldap.message.UnbindRequestImpl;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.message.extended.ModifyNoDResponse;
 import org.apache.directory.shared.ldap.message.extended.NoticeOfDisconnect;
+import org.apache.directory.shared.ldap.message.extended.nod.AddNoDResponse;
+import org.apache.directory.shared.ldap.message.extended.nod.BindNoDResponse;
+import org.apache.directory.shared.ldap.message.extended.nod.CompareNoDResponse;
+import org.apache.directory.shared.ldap.message.extended.nod.DeleteNoDResponse;
+import org.apache.directory.shared.ldap.message.extended.nod.ExtendedNoDResponse;
+import org.apache.directory.shared.ldap.message.extended.nod.ModifyDnNoDResponse;
+import org.apache.directory.shared.ldap.message.extended.nod.ModifyNoDResponse;
+import org.apache.directory.shared.ldap.message.extended.nod.SearchNoDResponse;
 import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.name.RDN;
 import org.apache.directory.shared.ldap.schema.AttributeType;
@@ -523,25 +530,54 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
         {
             public void operationComplete( IoFuture future )
             {
-                // Nothing to do here
-                //System.out.println( "received a NoD, closing everything" );
+                // Process all the waiting operations and cancel them
+                LOG.debug( "received a NoD, closing everything" );
 
                 for ( int messageId : futureMap.keySet() )
                 {
                     ResponseFuture<?> responseFuture = futureMap.get( messageId );
-                    //System.out.println( "closing " + responseFuture );
+                    LOG.debug( "closing {}", responseFuture );
+
+                    responseFuture.cancel();
 
                     try
                     {
-                        if ( responseFuture instanceof ModifyFuture )
+                        if ( responseFuture instanceof AddFuture )
                         {
-                            responseFuture.cancel();
+                            ( ( AddFuture ) responseFuture ).set( AddNoDResponse.PROTOCOLERROR );
+                        }
+                        else if ( responseFuture instanceof BindFuture )
+                        {
+                            ( ( BindFuture ) responseFuture ).set( BindNoDResponse.PROTOCOLERROR );
+                        }
+                        else if ( responseFuture instanceof CompareFuture )
+                        {
+                            ( ( CompareFuture ) responseFuture ).set( CompareNoDResponse.PROTOCOLERROR );
+                        }
+                        else if ( responseFuture instanceof DeleteFuture )
+                        {
+                            ( ( DeleteFuture ) responseFuture ).set( DeleteNoDResponse.PROTOCOLERROR );
+                        }
+                        else if ( responseFuture instanceof ExtendedFuture )
+                        {
+                            ( ( ExtendedFuture ) responseFuture ).set( ExtendedNoDResponse.PROTOCOLERROR );
+                        }
+                        else if ( responseFuture instanceof ModifyFuture )
+                        {
                             ( ( ModifyFuture ) responseFuture ).set( ModifyNoDResponse.PROTOCOLERROR );
+                        }
+                        else if ( responseFuture instanceof ModifyDnFuture )
+                        {
+                            ( ( ModifyDnFuture ) responseFuture ).set( ModifyDnNoDResponse.PROTOCOLERROR );
+                        }
+                        else if ( responseFuture instanceof SearchFuture )
+                        {
+                            ( ( SearchFuture ) responseFuture ).set( SearchNoDResponse.PROTOCOLERROR );
                         }
                     }
                     catch ( Exception e )
                     {
-
+                        LOG.error( "Error while processing the NoD for {}", responseFuture );
                     }
 
                     futureMap.remove( messageId );

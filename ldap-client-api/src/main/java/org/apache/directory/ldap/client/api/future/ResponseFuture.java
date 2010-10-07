@@ -163,6 +163,7 @@ public class ResponseFuture<R extends Response> implements Future<Response>
 
 
     /**
+     * Associate a cause to the ResponseFuture
      * @param cause the cause to set
      */
     public void setCause( Throwable cause )
@@ -171,6 +172,10 @@ public class ResponseFuture<R extends Response> implements Future<Response>
     }
 
 
+    /**
+     * Cancel the Future
+     *
+     */
     public void cancel()
     {
         // set the cancel flag first
@@ -178,7 +183,9 @@ public class ResponseFuture<R extends Response> implements Future<Response>
     }
 
 
-    @Override
+    /**
+     * {@inheritDoc}
+     */
     public String toString()
     {
         StringBuilder sb = new StringBuilder();
