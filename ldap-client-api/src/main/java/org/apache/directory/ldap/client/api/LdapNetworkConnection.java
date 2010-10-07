@@ -114,6 +114,8 @@ import org.apache.directory.shared.ldap.message.SearchResultReference;
 import org.apache.directory.shared.ldap.message.UnbindRequest;
 import org.apache.directory.shared.ldap.message.UnbindRequestImpl;
 import org.apache.directory.shared.ldap.message.control.Control;
+import org.apache.directory.shared.ldap.message.extended.ModifyNoDResponse;
+import org.apache.directory.shared.ldap.message.extended.NoticeOfDisconnect;
 import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.name.RDN;
 import org.apache.directory.shared.ldap.schema.AttributeType;
@@ -129,6 +131,8 @@ import org.apache.directory.shared.ldap.util.StringTools;
 import org.apache.mina.core.filterchain.IoFilter;
 import org.apache.mina.core.future.CloseFuture;
 import org.apache.mina.core.future.ConnectFuture;
+import org.apache.mina.core.future.IoFuture;
+import org.apache.mina.core.future.IoFutureListener;
 import org.apache.mina.core.future.WriteFuture;
 import org.apache.mina.core.service.IoConnector;
 import org.apache.mina.core.service.IoHandlerAdapter;
@@ -511,6 +515,42 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
             return false;
         }
 
+        // Get the close future for this session
+        CloseFuture closeFuture = connectionFuture.getSession().getCloseFuture();
+
+        // Add a listener to close the session in the session.
+        closeFuture.addListener( ( IoFutureListener<?> ) new IoFutureListener<IoFuture>()
+        {
+            public void operationComplete( IoFuture future )
+            {
+                // Nothing to do here
+                //System.out.println( "received a NoD, closing everything" );
+
+                for ( int messageId : futureMap.keySet() )
+                {
+                    ResponseFuture<?> responseFuture = futureMap.get( messageId );
+                    //System.out.println( "closing " + responseFuture );
+
+                    try
+                    {
+                        if ( responseFuture instanceof ModifyFuture )
+                        {
+                            responseFuture.cancel();
+                            ( ( ModifyFuture ) responseFuture ).set( ModifyNoDResponse.PROTOCOLERROR );
+                        }
+                    }
+                    catch ( Exception e )
+                    {
+
+                    }
+
+                    futureMap.remove( messageId );
+                }
+
+                futureMap.clear();
+            }
+        } );
+
         // Get back the session
         ldapSession = connectionFuture.getSession();
         connected.set( true );
@@ -788,7 +828,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
             // this shouldn't happen
             LOG
                 .error(
-                    "There is no future asscoiated with operation message ID {}, perhaps the operation would have been completed",
+                    "There is no future associated with operation message ID {}, perhaps the operation would have been completed",
                     abandonId );
         }
     }
@@ -1496,7 +1536,14 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
      */
     public void setTimeOut( long timeout )
     {
-        this.timeout = timeout;
+        if ( timeout <= 0 )
+        {
+            this.timeout = Long.MAX_VALUE;
+        }
+        else
+        {
+            this.timeout = timeout;
+        }
     }
 
 
@@ -1526,6 +1573,25 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
 
 
     /**
+     * Check if the message is a NoticeOfDisconnect message
+     */
+    private boolean isNoticeOfDisconnect( Message message )
+    {
+        if ( message instanceof ExtendedResponse )
+        {
+            ExtendedResponse response = ( ExtendedResponse ) message;
+
+            if ( response.getResponseName().equals( NoticeOfDisconnect.EXTENSION_OID ) )
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+
+    /**
      * Handle the incoming LDAP messages. This is where we feed the cursor for search
      * requests, or call the listener.
      * 
@@ -1544,9 +1610,19 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
         // result(s) to corresponding queue
         ResponseFuture<? extends Response> responseFuture = peekFromFutureMap( messageId );
 
-        if ( responseFuture == null )
+        boolean isNoD = isNoticeOfDisconnect( response );
+
+        if ( ( responseFuture == null ) && !isNoD )
         {
             LOG.info( "There is no future associated with the messageId {}, ignoring the message", messageId );
+            return;
+        }
+
+        if ( isNoD )
+        {
+            // close the session
+            session.close( true );
+
             return;
         }
 
@@ -1947,6 +2023,12 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
             }
             else
             {
+                if ( modifyResponse instanceof ModifyNoDResponse )
+                {
+                    // A NoticeOfDisconnect : deserves a special treatment
+                    throw new LdapException( modifyResponse.getLdapResult().getErrorMessage() );
+                }
+
                 // We have had an error
                 LOG.debug( "Modify failed : {}", modifyResponse );
             }
@@ -1969,7 +2051,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
         {
             // Catch all other exceptions
             LOG.error( NO_RESPONSE_ERROR, ie );
-            LdapException ldapException = new LdapException( NO_RESPONSE_ERROR );
+            LdapException ldapException = new LdapException( ie.getMessage() );
             ldapException.initCause( ie );
 
             // Send an abandon request
@@ -3275,7 +3357,6 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
 
             if ( result.getResultCode() == ResultCodeEnum.SUCCESS )
             {
-                System.out.println( "received successful result code " + result );
                 addSslFilter();
             }
             else

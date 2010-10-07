@@ -103,7 +103,6 @@ import org.apache.directory.shared.ldap.message.ResultCodeEnum;
  */
 public final class NoticeOfDisconnect extends ExtendedResponseImpl
 {
-    
     /** The serialVersionUID. */
     private static final long serialVersionUID = -4682291068700593492L;
 
@@ -124,6 +123,9 @@ public final class NoticeOfDisconnect extends ExtendedResponseImpl
         ResultCodeEnum.STRONG_AUTH_REQUIRED );
 
 
+    /**
+     * Creates a new instance of NoticeOfDisconnect.
+     */
     private NoticeOfDisconnect( ResultCodeEnum rcode )
     {
         super( 0, EXTENSION_OID );
@@ -166,10 +168,9 @@ public final class NoticeOfDisconnect extends ExtendedResponseImpl
 
 
     /**
-     * Sets the reponse OID specific encoded response values.
+     * Sets the response OID specific encoded response values.
      * 
-     * @param value
-     *            the response specific encoded response values.
+     * @param value the response specific encoded response values.
      */
     public void setResponse( byte[] value )
     {

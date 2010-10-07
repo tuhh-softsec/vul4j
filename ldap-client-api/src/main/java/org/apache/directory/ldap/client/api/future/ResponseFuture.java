@@ -171,6 +171,13 @@ public class ResponseFuture<R extends Response> implements Future<Response>
     }
 
 
+    public void cancel()
+    {
+        // set the cancel flag first
+        cancelled = true;
+    }
+
+
     @Override
     public String toString()
     {
