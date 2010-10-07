@@ -14,4 +14,7 @@ m-must: ads-replLastSentCsn
 m-must: ads-replSearchScope
 m-must: ads-replSearchFilter
 m-may: ads-replRefreshNPersist
+m-may: ads-replUseTls
+m-may: ads-replStrictCertValidation
+m-may: ads-replPeerCertificate
 m-may: description
