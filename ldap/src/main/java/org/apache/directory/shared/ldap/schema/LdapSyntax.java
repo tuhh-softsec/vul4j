@@ -145,7 +145,7 @@ public class LdapSyntax extends AbstractSchemaObject
         {
             throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
         }
-        
+
         if ( !isReadOnly )
         {
             this.isHumanReadable = humanReadable;
@@ -176,7 +176,7 @@ public class LdapSyntax extends AbstractSchemaObject
         {
             throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
         }
-        
+
         if ( !isReadOnly )
         {
             this.syntaxChecker = syntaxChecker;
@@ -195,7 +195,7 @@ public class LdapSyntax extends AbstractSchemaObject
         {
             throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
         }
-        
+
         this.syntaxChecker = newSyntaxChecker;
     }
 
@@ -236,12 +236,13 @@ public class LdapSyntax extends AbstractSchemaObject
             }
         }
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
-    @SuppressWarnings("PMD.CollapsibleIfStatements") // Used because of comments
+    @SuppressWarnings("PMD.CollapsibleIfStatements")
+    // Used because of comments
     public void removeFromRegistries( List<Throwable> errors, Registries registries ) throws LdapException
     {
         if ( registries != null )
@@ -303,7 +304,19 @@ public class LdapSyntax extends AbstractSchemaObject
         }
 
         // Check the SyntaxChecker (not a equals)
-        return syntaxChecker.getOid().equals( that.syntaxChecker.getOid() );
+        if ( syntaxChecker != null )
+        {
+            if ( that.syntaxChecker == null )
+            {
+                return false;
+            }
+
+            return syntaxChecker.getOid().equals( that.syntaxChecker.getOid() );
+        }
+        else
+        {
+            return that.syntaxChecker == null;
+        }
     }
 
 

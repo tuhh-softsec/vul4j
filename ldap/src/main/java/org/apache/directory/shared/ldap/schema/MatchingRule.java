@@ -252,7 +252,7 @@ public class MatchingRule extends AbstractSchemaObject
         {
             throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
         }
-        
+
         if ( !isReadOnly )
         {
             this.ldapSyntaxOid = oid;
@@ -271,7 +271,7 @@ public class MatchingRule extends AbstractSchemaObject
         {
             throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
         }
-        
+
         if ( !isReadOnly )
         {
             this.ldapSyntax = ldapSyntax;
@@ -291,7 +291,7 @@ public class MatchingRule extends AbstractSchemaObject
         {
             throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
         }
-        
+
         this.ldapSyntax = ldapSyntax;
         this.ldapSyntaxOid = ldapSyntax.getOid();
     }
@@ -321,7 +321,7 @@ public class MatchingRule extends AbstractSchemaObject
         {
             throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
         }
-        
+
         if ( !isReadOnly )
         {
             this.ldapComparator = ( LdapComparator<? super Object> ) ldapComparator;
@@ -340,7 +340,7 @@ public class MatchingRule extends AbstractSchemaObject
         {
             throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
         }
-        
+
         this.ldapComparator = ( LdapComparator<? super Object> ) ldapComparator;
     }
 
@@ -369,7 +369,7 @@ public class MatchingRule extends AbstractSchemaObject
         {
             throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
         }
-        
+
         if ( !isReadOnly )
         {
             this.normalizer = normalizer;
@@ -388,7 +388,7 @@ public class MatchingRule extends AbstractSchemaObject
         {
             throw new UnsupportedOperationException( I18n.err( I18n.ERR_04441, getName() ) );
         }
-        
+
         this.normalizer = normalizer;
     }
 
@@ -474,13 +474,29 @@ public class MatchingRule extends AbstractSchemaObject
             }
         }
 
-        // Check the Syntax
+        // Check the Syntax OID
         if ( !compareOid( ldapSyntaxOid, that.ldapSyntaxOid ) )
         {
             return false;
         }
 
-        return ldapSyntax.equals( that.ldapSyntax );
+        // Check the Syntax
+        if ( ldapSyntax != null )
+        {
+            if ( !ldapSyntax.equals( that.ldapSyntax ) )
+            {
+                return false;
+            }
+        }
+        else
+        {
+            if ( that.ldapSyntax != null )
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
 
