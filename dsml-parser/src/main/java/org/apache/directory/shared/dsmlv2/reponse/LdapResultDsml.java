@@ -72,7 +72,7 @@ public class LdapResultDsml implements DsmlDecorator
 
         // RequestID
         int requestID = message.getMessageId();
-        if ( requestID != 0 )
+        if ( requestID > 0 )
         {
             root.addAttribute( "requestID", "" + requestID );
         }

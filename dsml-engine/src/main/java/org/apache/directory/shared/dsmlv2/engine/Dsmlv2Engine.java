@@ -254,7 +254,7 @@ public class Dsmlv2Engine
             // Checking the request has a requestID attribute if Processing = Parallel and ResponseOrder = Unordered
             if ( ( batchRequest.getProcessing().equals( Processing.PARALLEL ) )
                 && ( batchRequest.getResponseOrder().equals( ResponseOrder.UNORDERED ) )
-                && ( request.getMessageId() == 0 ) )
+                && ( request.getMessageId() <= 0 ) )
             {
                 // Then we have to send an errorResponse
                 ErrorResponse errorResponse = new ErrorResponse( 0, ErrorResponseType.MALFORMED_REQUEST, I18n
@@ -382,7 +382,7 @@ public class Dsmlv2Engine
                         SearchResultEntryDsml searchResultEntryDsml = new SearchResultEntryDsml( searchResultEntry );
                         searchResponseDsml = new SearchResponseDsml( searchResultEntryDsml );
 
-                        if ( requestID != 0 )
+                        if ( requestID > 0 )
                         {
                             searchResponseDsml.setMessageId( requestID );
                         }
@@ -397,7 +397,7 @@ public class Dsmlv2Engine
                             searchResultReference );
                         searchResponseDsml = new SearchResponseDsml( searchResultReferenceDsml );
 
-                        if ( requestID != 0 )
+                        if ( requestID > 0 )
                         {
                             searchResponseDsml.setMessageId( requestID );
                         }

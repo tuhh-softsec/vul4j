@@ -59,7 +59,7 @@ public abstract class AbstractRequestDsml extends LdapRequestDecorator implement
 
         // Request ID
         int requestID = instance.getMessageId();
-        if ( requestID != 0 )
+        if ( requestID > 0 )
         {
             element.addAttribute( "requestID", "" + requestID );
         }

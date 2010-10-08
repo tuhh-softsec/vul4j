@@ -100,7 +100,7 @@ public class SearchResponseDsml extends AbstractResponseDsml
         if ( instance != null )
         {
             int requestID = instance.getMessageId();
-            if ( requestID != 0 )
+            if ( requestID > 0 )
             {
                 element.addAttribute( "requestID", "" + requestID );
             }
