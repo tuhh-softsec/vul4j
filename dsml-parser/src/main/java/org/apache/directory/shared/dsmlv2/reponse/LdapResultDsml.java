@@ -80,7 +80,7 @@ public class LdapResultDsml implements DsmlDecorator
         // Matched DN
         DN matchedDN = result.getMatchedDn();
 
-        if ( ( matchedDN != null ) && ( !DN.EMPTY_DN.equals( matchedDN ) ) )
+        if ( !DN.isNullOrEmpty( matchedDN ) )
         {
             root.addAttribute( "matchedDN", matchedDN.getName() );
         }

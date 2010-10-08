@@ -120,10 +120,12 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
         // The current index
         int index;
 
+
         private RdnIterator()
         {
             index = rdns != null ? rdns.size() - 1 : -1;
         }
+
 
         /**
          * {@inheritDoc}
@@ -133,6 +135,7 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
             return index >= 0;
         }
 
+
         /**
          * {@inheritDoc}
          */
@@ -140,6 +143,7 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
         {
             return index >= 0 ? rdns.get( index-- ) : null;
         }
+
 
         /**
          * {@inheritDoc}
@@ -149,6 +153,7 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
             // Not implemented
         }
     }
+
 
     // ~ Methods
     // ------------------------------------------------------------------------------------
@@ -179,7 +184,7 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
      */
     public DN( DN dn ) throws LdapInvalidDnException
     {
-       this( dn, null);
+        this( dn, null );
     }
 
 
@@ -206,7 +211,7 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
 
         normalized = new AtomicBoolean();
 
-        if( schemaManager != null )
+        if ( schemaManager != null )
         {
             normalize( schemaManager.getNormalizerMapping() );
         }
@@ -225,7 +230,6 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
     {
         this( upName, null );
     }
-
 
 
     /**
@@ -250,7 +254,7 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
 
         normalized = new AtomicBoolean();
 
-        if( schemaManager != null )
+        if ( schemaManager != null )
         {
             this.schemaManager = schemaManager;
             normalize( schemaManager.getNormalizerMapping() );
@@ -344,7 +348,7 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
         upName = sb.toString();
         DnParser.parseInternal( upName, rdns );
 
-        if( schemaManager != null )
+        if ( schemaManager != null )
         {
             this.schemaManager = schemaManager;
             normalize( schemaManager.getNormalizerMapping() );
@@ -429,7 +433,8 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
      * @throws LdapInvalidNameException If the DN is invalid.
      * @throws LdapInvalidDnException If something went wrong.
      */
-    /* No qualifier */ static DN normalize( String name, Map<String, OidNormalizer> oidsMap ) throws LdapInvalidDnException
+    /* No qualifier */static DN normalize( String name, Map<String, OidNormalizer> oidsMap )
+        throws LdapInvalidDnException
     {
         if ( ( name == null ) || ( name.length() == 0 ) || ( oidsMap == null ) || ( oidsMap.isEmpty() ) )
         {
@@ -762,7 +767,7 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
         {
             return isParentOf( new DN( dn ) );
         }
-        catch( LdapInvalidDnException lide )
+        catch ( LdapInvalidDnException lide )
         {
             return false;
         }
@@ -802,7 +807,7 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
         {
             return isChildOf( new DN( dn ) );
         }
-        catch( LdapInvalidDnException lide )
+        catch ( LdapInvalidDnException lide )
         {
             return false;
         }
@@ -1105,6 +1110,7 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
         return clonedDn;
     }
 
+
     /**
      * {@inheritDoc}
      */
@@ -1141,7 +1147,7 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
         }
         else
         {
-            if( schemaManager != null )
+            if ( schemaManager != null )
             {
                 clonedDn.normalize( schemaManager );
             }
@@ -1175,7 +1181,7 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
 
         clonedDn.rdns.add( 0, newRdn );
 
-        if( schemaManager != null )
+        if ( schemaManager != null )
         {
             clonedDn.normalize( schemaManager );
         }
@@ -1214,7 +1220,7 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
             }
             else
             {
-                if( schemaManager != null )
+                if ( schemaManager != null )
                 {
                     clonedDn.normalize( schemaManager );
                 }
@@ -1225,7 +1231,7 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
                 }
             }
         }
-        catch( LdapInvalidDnException e )
+        catch ( LdapInvalidDnException e )
         {
             LOG.error( e.getMessage(), e );
         }
@@ -1256,7 +1262,7 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
         int realPos = clonedDn.size() - posn;
         clonedDn.rdns.add( realPos, newRdn );
 
-        if( schemaManager != null )
+        if ( schemaManager != null )
         {
             clonedDn.normalize( schemaManager );
         }
@@ -1362,7 +1368,7 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
     {
         if ( obj instanceof String )
         {
-            return normName.equals( (String)obj );
+            return normName.equals( ( String ) obj );
         }
         else if ( obj instanceof DN )
         {
@@ -1478,7 +1484,8 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
      * @param oidsMap The map of all existing oids and normalizer.
      * @throws LdapInvalidDnException If the RDN is invalid.
      */
-    /** No qualifier */ static void rdnOidToName( RDN rdn, Map<String, OidNormalizer> oidsMap ) throws LdapInvalidDnException
+    /** No qualifier */
+    static void rdnOidToName( RDN rdn, Map<String, OidNormalizer> oidsMap ) throws LdapInvalidDnException
     {
         if ( rdn.getNbAtavs() > 1 )
         {
@@ -1487,7 +1494,7 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
             RDN rdnCopy = ( RDN ) rdn.clone();
             rdn.clear();
 
-            for ( AVA val:rdnCopy )
+            for ( AVA val : rdnCopy )
             {
                 AVA newAtav = atavOidToName( val, oidsMap );
                 rdn.addAVA( newAtav );
@@ -1567,7 +1574,7 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
 
         if ( normalized.get() )
         {
-           return this;
+            return this;
         }
 
         synchronized ( this )
@@ -1603,12 +1610,12 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
      */
     public DN normalize( SchemaManager schemaManager ) throws LdapInvalidDnException
     {
-        if( this.schemaManager == null )
+        if ( this.schemaManager == null )
         {
             this.schemaManager = schemaManager;
         }
 
-        if( this.schemaManager != null )
+        if ( this.schemaManager != null )
         {
             return normalize( schemaManager.getNormalizerMapping() );
         }
@@ -1649,5 +1656,23 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
     public Iterator<RDN> iterator()
     {
         return new RdnIterator();
+    }
+
+
+    /**
+     * Check if a DistinguishedName is null or empty.
+     *
+     * @param dn The DN to validate
+     * @return <code>true></code> if the DN is null or empty, <code>false</code>
+     * otherwise
+     */
+    public static boolean isNullOrEmpty( DN dn )
+    {
+        if ( dn != null )
+        {
+            return dn.isEmpty();
+        }
+
+        return true;
     }
 }
