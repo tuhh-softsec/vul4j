@@ -21,12 +21,14 @@
 package org.apache.directory.shared.dsmlv2.reponse;
 
 
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.directory.shared.dsmlv2.DsmlDecorator;
 import org.apache.directory.shared.dsmlv2.ParserUtils;
 import org.apache.directory.shared.ldap.message.LdapResult;
 import org.apache.directory.shared.ldap.message.Message;
+import org.apache.directory.shared.ldap.message.Referral;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.util.LdapURL;
@@ -76,11 +78,11 @@ public class LdapResultDsml implements DsmlDecorator
         }
 
         // Matched DN
-        String matchedDN = result.getMatchedDn().getName();
+        DN matchedDN = result.getMatchedDn();
 
-        if ( !matchedDN.equals( "" ) )
+        if ( ( matchedDN != null ) && ( !matchedDN.getName().equals( "" ) ) )
         {
-            root.addAttribute( "matchedDN", matchedDN );
+            root.addAttribute( "matchedDN", matchedDN.getName() );
         }
 
         // Controls
@@ -99,15 +101,18 @@ public class LdapResultDsml implements DsmlDecorator
             errorMessageElement.addText( errorMessage );
         }
 
-        // Referals
-        List<String> referals = ( List<String> ) result.getReferral().getLdapUrls();
-
-        if ( referals != null )
+        // Referrals
+        Referral referral = result.getReferral();
+        if ( referral != null )
         {
-            for ( String url : referals )
+            Collection<String> ldapUrls = referral.getLdapUrls();
+            if ( ldapUrls != null )
             {
-                Element referalElement = root.addElement( "referal" );
-                referalElement.addText( url );
+                for ( String ldapUrl : ldapUrls )
+                {
+                    Element referalElement = root.addElement( "referal" );
+                    referalElement.addText( ldapUrl );
+                }
             }
         }
 
