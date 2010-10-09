@@ -154,7 +154,7 @@ public class WarArchiver
     /**
      * Overridden from ZipArchiver class to deal with web.xml
      */
-    protected void zipFile( ArchiveEntry entry, ZipOutputStream zOut, String vPath, int mode )
+    protected void zipFile( ArchiveEntry entry, ZipOutputStream zOut, String vPath )
         throws IOException, ArchiverException
     {
         // If the file being added is WEB-INF/web.xml, we warn if it's
