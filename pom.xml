@@ -32,7 +32,7 @@
 
   <properties>
     <projectName>ApacheDS-Shared</projectName>
-    <distMgmtSiteUrl>scpexe://people.apache.org/www/directory.apache.org/shared/gen-docs/${version}/</distMgmtSiteUrl>
+    <distMgmtSiteUrl>scpexe://people.apache.org/www/directory.apache.org/shared/gen-docs/${project.version}/</distMgmtSiteUrl>
     
     <!-- Set versions for depending projects -->
     <skin.version>1.0.2-SNAPSHOT</skin.version>
