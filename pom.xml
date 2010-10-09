@@ -15,9 +15,9 @@
   <name>Plexus Archiver Component</name>
 
   <scm>
-    <connection>scm:svn:http://svn.codehaus.org/plexus/plexus-components/tags/plexus-archiver-1.1</connection>
-    <developerConnection>scm:svn:https://svn.codehaus.org/plexus/plexus-components/tags/plexus-archiver-1.1</developerConnection>
-    <url>http://fisheye.codehaus.org/browse/plexus/plexus-components/tags/plexus-archiver-1.1</url>
+    <connection>scm:svn:http://svn.codehaus.org/plexus/plexus-components/trunk/plexus-archiver</connection>
+    <developerConnection>scm:svn:https://svn.codehaus.org/plexus/plexus-components/trunk/plexus-archiver</developerConnection>
+    <url>http://fisheye.codehaus.org/browse/plexus/plexus-components/trunk/plexus-archiver</url>
   </scm>
 
   <properties>
