@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2009 The Apache Software Foundation.
+ * Copyright 2006-2010 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import java.io.File;
 import java.security.Security;
 import javax.xml.crypto.KeySelector;
 import javax.xml.crypto.dsig.XMLSignatureException;
+import javax.xml.crypto.dsig.dom.DOMValidateContext;
 
 import junit.framework.*;
 
@@ -63,8 +64,11 @@ public class PhaosXMLDSig3Test extends TestCase {
     public void test_signature_dsa_detached() throws Exception {
 	String file = "signature-dsa-detached.xml";
 
-	boolean coreValidity = 
-	    validator.validate(file, new KeySelectors.RawX509KeySelector());
+        DOMValidateContext vc = validator.getValidateContext
+            (file, new KeySelectors.RawX509KeySelector());
+        vc.setProperty("javax.xml.crypto.dsig.cacheReference", Boolean.TRUE);
+
+	boolean coreValidity = validator.validate(vc);
 	assertTrue("Signature failed core validation", coreValidity);
     }
     public void test_signature_dsa_enveloped() throws Exception {
@@ -176,8 +180,10 @@ public class PhaosXMLDSig3Test extends TestCase {
     public void test_signature_rsa_detached() throws Exception {
 	String file = "signature-rsa-detached.xml";
 
-	boolean coreValidity = 
-	    validator.validate(file, new KeySelectors.RawX509KeySelector());
+        DOMValidateContext vc = validator.getValidateContext
+	    (file, new KeySelectors.RawX509KeySelector());
+        vc.setProperty("javax.xml.crypto.dsig.cacheReference", Boolean.TRUE);
+	boolean coreValidity = validator.validate(vc);
 	assertTrue("Signature failed core validation", coreValidity);
     }
     public void test_signature_rsa_enveloped_bad_digest_val() throws Exception {
