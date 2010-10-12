@@ -1095,4 +1095,29 @@ public class AttributeTypeDescriptionSchemaParserTest
         assertEquals( UsageEnum.USER_APPLICATIONS, attributeType.getUsage() );
         assertEquals( 0, attributeType.getExtensions().size() );
     }
+
+
+    /**
+     * Tests with spaces in DESC
+     * 
+     * @throws ParseException
+     */
+    @Test
+    public void testATWithSpacesInDesc() throws ParseException
+    {
+        String value = "( 1.3.18.0.2.4.216 NAME 'SAFDfpDataClass' DESC '  ' " +
+            "EQUALITY 2.5.13.2 SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 SINGLE-VALUE )";
+        AttributeType attributeType = parser.parseAttributeTypeDescription( value );
+
+        assertEquals( "1.3.18.0.2.4.216", attributeType.getOid() );
+        assertEquals( 1, attributeType.getNames().size() );
+        assertEquals( "SAFDfpDataClass", attributeType.getNames().get( 0 ) );
+        assertEquals( "  ", attributeType.getDescription() );
+        assertNull( attributeType.getSuperiorOid() );
+        assertEquals( "2.5.13.2", attributeType.getEqualityOid() );
+        assertEquals( "1.3.6.1.4.1.1466.115.121.1.15", attributeType.getSyntaxOid() );
+        assertEquals( UsageEnum.USER_APPLICATIONS, attributeType.getUsage() );
+        assertTrue( attributeType.isSingleValued() );
+        assertEquals( 0, attributeType.getExtensions().size() );
+    }
 }
