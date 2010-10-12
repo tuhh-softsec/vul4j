@@ -17,7 +17,8 @@ m-may: ads-dsChangeLog
 m-may: ads-dsDenormalizeOpAttrsEnabled
 m-may: ads-dsJournal
 m-may: ads-dsMaxPDUSize
-m-may: ads-dsPasswordHiddenm-may: ads-dsReplication
+m-may: ads-dsPasswordHidden
+m-may: ads-dsReplication
 m-may: ads-dsSyncPeriodMillis
 m-may: ads-dsTestEntries
 m-may: ads-enabled
