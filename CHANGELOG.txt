@@ -1,5 +1,6 @@
 Changelog for "Apache xml-security" <http://santuario.apache.org/>
 New in v1.4.4-SNAPSHOT
+    Fixed Bug 50050: UnsyncByteArrayOutputStream throws ArrayIndexOutOfBoundsException if array length > internal buffer expansion size.
     Fixed Bug 50036: IdResolver Java API extension. Thanks to Stefan Vladov.
     Fixed Bug 49493: Cannot resolve PrivateKeys used in Key Transport algorithms. Thanks to Clement Pellerin.
     Fixed Bug 49577: DOMSubTreeData allows for only one iteration over referenced data.
