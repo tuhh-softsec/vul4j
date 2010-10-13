@@ -134,6 +134,7 @@ import org.apache.directory.shared.ldap.schema.parsers.OpenLdapSchemaParser;
 import org.apache.directory.shared.ldap.schema.registries.AttributeTypeRegistry;
 import org.apache.directory.shared.ldap.schema.registries.ObjectClassRegistry;
 import org.apache.directory.shared.ldap.schema.registries.Schema;
+import org.apache.directory.shared.ldap.schema.registries.SchemaLoader;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.apache.mina.core.filterchain.IoFilter;
 import org.apache.mina.core.future.CloseFuture;
@@ -3125,8 +3126,31 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
         try
         {
             JarLdifSchemaLoader jarSchemaLoader = new JarLdifSchemaLoader();
-
-            schemaManager = new DefaultSchemaManager( jarSchemaLoader );
+            loadSchema( jarSchemaLoader );
+        }
+        catch( LdapException e )
+        {
+            throw e;
+        }
+        catch( Exception e )
+        {
+            LOG.error( "failed to load the schema using JarLdifSchemaLoader", e );
+            throw new LdapException( e );
+        }
+    }
+    
+    
+    /**
+     * loads schema using the specified schema loader
+     * 
+     * @param loader the {@link SchemaLoader} to be used to load schema
+     * @throws LdapException 
+     */
+    public void loadSchema( SchemaLoader loader ) throws LdapException
+    {
+        try
+        {
+            schemaManager = new DefaultSchemaManager( loader );
 
             // we enable all the schemas so that need not check with server for enabled schemas
             Collection<Schema> schemas = schemaManager.getLoader().getAllSchemas();
