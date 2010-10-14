@@ -3150,23 +3150,25 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
     {
         try
         {
-            schemaManager = new DefaultSchemaManager( loader );
+            SchemaManager tmp = new DefaultSchemaManager( loader );
 
             // we enable all the schemas so that need not check with server for enabled schemas
-            Collection<Schema> schemas = schemaManager.getLoader().getAllSchemas();
+            Collection<Schema> schemas = tmp.getLoader().getAllSchemas();
             for ( Schema s : schemas )
             {
-                s.enable();
+                //s.enable();
             }
 
-            schemaManager.loadAllEnabled();
+            tmp.loadAllEnabled();
 
-            if ( !schemaManager.getErrors().isEmpty() )
+            if ( !tmp.getErrors().isEmpty() )
             {
                 String msg = "there are errors while loading the schema";
                 LOG.error( msg + " {}", schemaManager.getErrors() );
                 throw new LdapException( msg );
             }
+            
+            schemaManager = tmp;
         }
         catch ( LdapException le )
         {
