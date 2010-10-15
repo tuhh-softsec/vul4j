@@ -935,8 +935,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
         LOG.debug( "Bind request : {}", name );
 
         // Create the BindRequest
-        BindRequest bindRequest = createBindRequest( name, StringTools.getBytesUtf8( credentials ), null,
-            new Control[0] );
+        BindRequest bindRequest = createBindRequest( name, StringTools.getBytesUtf8( credentials ), null );
 
         return bind( bindRequest );
     }
