@@ -154,7 +154,7 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerBase {
 	for (int i = 0; i < attrsLength; i++) {
 	    Attr N = (Attr) attrs.item(i);
 
-	    if (XMLNS_URI != N.getNamespaceURI()) {
+	    if (!XMLNS_URI.equals(N.getNamespaceURI())) {
 		// Not a namespace definition.
 		// The Element is output element, add the prefix (if used) to 
                 // visibyUtilized
@@ -251,7 +251,7 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerBase {
 	for (int i = 0; i < attrsLength; i++) {
 	    Attr N = (Attr) attrs.item(i);
 
-	    if (XMLNS_URI != N.getNamespaceURI()) {
+	    if (!XMLNS_URI.equals(N.getNamespaceURI())) {
 		if (!isVisible(N)) {
 		    // The node is not in the nodeset(if there is a nodeset)
 		    continue;
@@ -271,7 +271,7 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerBase {
 		continue;
 	    }
 	    String NName = N.getLocalName();
-	    if (isOutputElement && !isVisible(N) && NName != XMLNS) {
+	    if (isOutputElement && !isVisible(N) && !XMLNS.equals(NName)) {
 		ns.removeMappingIfNotRender(NName);
     		continue;
     	    }

@@ -245,8 +245,6 @@ public abstract class ElementProxy {
       return this._baseURI;
    }
    
-   static ElementChecker checker = new ElementCheckerImpl.InternedNsChecker();
-
    /**
     * Method guaranteeThatElementInCorrectSpace
     *
@@ -255,7 +253,17 @@ public abstract class ElementProxy {
    void guaranteeThatElementInCorrectSpace()
            throws XMLSecurityException {
 	  
-	  checker.guaranteeThatElementInCorrectSpace(this,this._constructionElement);
+	   String expectedLocalName = this.getBaseLocalName();
+	      String expectedNamespaceUri = this.getBaseNamespace();
+	      
+	      String actualLocalName = this._constructionElement.getLocalName();
+	      String actualNamespaceUri = this._constructionElement.getNamespaceURI();
+	      
+	      if(!expectedNamespaceUri.equals(actualNamespaceUri) && !expectedLocalName.equals(actualLocalName)) {      
+	         Object exArgs[] = { actualNamespaceUri +":"+ actualLocalName, 
+	           expectedNamespaceUri +":"+ expectedLocalName};
+	         throw new XMLSecurityException("xml.WrongElement", exArgs);
+	      }
       
    }
 
@@ -432,7 +440,7 @@ public abstract class ElementProxy {
    	    while (sibling!=null) {        
    	    	if (localname.equals(sibling.getLocalName())
    	    			&&  
-					namespace==sibling.getNamespaceURI() ) {            
+					namespace.equals(sibling.getNamespaceURI())) {
    	    		number++;
    	    	}
    	    	sibling=sibling.getNextSibling();

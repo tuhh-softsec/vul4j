@@ -296,7 +296,11 @@ public class XMLUtils {
     */
    public static boolean elementIsInSignatureSpace(Element element,
            String localName) {
-      return ElementProxy.checker.isNamespaceElement(element, localName, Constants.SignatureSpecNS);
+	   if(element == null){
+		   return false;
+	   }
+	   
+	   return Constants.SignatureSpecNS.equals(element.getNamespaceURI()) && element.getLocalName().equals(localName);
    }
 
    /**
@@ -309,7 +313,10 @@ public class XMLUtils {
     */
    public static boolean elementIsInEncryptionSpace(Element element,
            String localName) {
-	   return ElementProxy.checker.isNamespaceElement(element, localName, EncryptionConstants.EncryptionSpecNS);
+	   if(element == null){
+		   return false;
+	   }
+	   return EncryptionConstants.EncryptionSpecNS.equals(element.getNamespaceURI()) && element.getLocalName().equals(localName);
    }
 
    /**
@@ -497,7 +504,7 @@ public class XMLUtils {
 
              	for (int i = 0; i < attributesLength; i++) {
              		Attr currentAttr = (Attr) attributes.item(i); 
-             		if (namespaceNs!=currentAttr.getNamespaceURI())
+             		if (!namespaceNs.equals(currentAttr.getNamespaceURI()))
              			continue;
              		if (childElement.hasAttributeNS(namespaceNs,
     							currentAttr.getLocalName())) {
@@ -538,7 +545,7 @@ public class XMLUtils {
     */
    public static Element selectDsNode(Node sibling, String nodeName, int number) {
 	while (sibling!=null) {
-		if (ElementProxy.checker.isNamespaceElement(sibling, nodeName, Constants.SignatureSpecNS )) {
+		if (Constants.SignatureSpecNS.equals(sibling.getNamespaceURI()) && sibling.getLocalName().equals(nodeName)) {
 			if (number==0){
 				return (Element)sibling;
 			}
@@ -558,7 +565,7 @@ public class XMLUtils {
 
    public static Element selectXencNode(Node sibling, String nodeName, int number) {
 	while (sibling!=null) {
-		if (ElementProxy.checker.isNamespaceElement(sibling, nodeName, EncryptionConstants.EncryptionSpecNS )) {
+		if (EncryptionConstants.EncryptionSpecNS.equals(sibling.getNamespaceURI()) && sibling.getLocalName().equals(nodeName)) {
 			if (number==0){
 				return (Element)sibling;
 			}
@@ -616,7 +623,7 @@ public class XMLUtils {
     */
    public static Element selectNode(Node sibling, String uri,String nodeName, int number) {
 	while (sibling!=null) {
-		if (ElementProxy.checker.isNamespaceElement(sibling, nodeName, uri)) {
+		if (sibling.getNamespaceURI() != null && sibling.getNamespaceURI().equals(uri) && sibling.getLocalName().equals(nodeName)) {
 			if (number==0){
 				return (Element)sibling;
 			}
@@ -647,7 +654,7 @@ public class XMLUtils {
     	int curr=0;
     	//List list=new ArrayList();
     	while (sibling!=null) {
-    		if (ElementProxy.checker.isNamespaceElement(sibling, nodeName, uri)) {
+    		if (sibling.getNamespaceURI() != null && sibling.getNamespaceURI().equals(uri) && sibling.getLocalName().equals(nodeName)) {
     			a[curr++]=(Element)sibling;
     			if (size<=curr) {
     				int cursize= size<<2;

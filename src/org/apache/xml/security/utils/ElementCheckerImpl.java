@@ -20,6 +20,7 @@ import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+/**@deprecated*/
 public abstract class ElementCheckerImpl implements ElementChecker {
 	public boolean isNamespaceElement(Node el, String type, String ns) {
 		if ((el == null) ||

@@ -20,6 +20,7 @@ import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+/**@deprecated*/
 public interface ElementChecker {
 	 /**
 	  * Check that the elemnt is the one expect

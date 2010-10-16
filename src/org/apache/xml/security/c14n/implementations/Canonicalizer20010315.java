@@ -173,7 +173,7 @@ public abstract class Canonicalizer20010315 extends CanonicalizerBase {
          Attr N = (Attr) attrs.item(i);
          String NUri =N.getNamespaceURI();
 
-         if (XMLNS_URI!=NUri) {
+         if (!XMLNS_URI.equals(NUri)) {
          	//It's not a namespace attr node. Add to the result and continue.
             result.add(N);
             continue;
@@ -243,9 +243,9 @@ public abstract class Canonicalizer20010315 extends CanonicalizerBase {
        Attr N = (Attr) attrs.item(i);
        String NUri =N.getNamespaceURI();
        
-       if (XMLNS_URI!=NUri) {
+       if (!XMLNS_URI.equals(NUri)) {
        	  //A non namespace definition node.
-    	   if (XML_LANG_URI==NUri) {
+    	   if (XML_LANG_URI.equals(NUri)) {
         		  xmlattrStack.addXmlnsAttr(N);
            } else if (isRealVisible){
        		//The node is visible add the attribute to the list of output attributes.
@@ -282,7 +282,7 @@ public abstract class Canonicalizer20010315 extends CanonicalizerBase {
                    }
 		 	 }
     	} else {
-    		if (isRealVisible && NName!=XMLNS) {
+    		if (isRealVisible && !XMLNS.equals(NName)) {
     			ns.removeMapping(NName);	
     		} else {
     			ns.addMapping(NName,NValue,N);
@@ -367,9 +367,9 @@ public abstract class Canonicalizer20010315 extends CanonicalizerBase {
 	   int attrsLength = attrs.getLength();
 	   for (int i = 0; i < attrsLength; i++) {
 		   Attr N = (Attr) attrs.item(i);
-		   if (Constants.NamespaceSpecNS!=N.getNamespaceURI()) {			   
+		   if (!Constants.NamespaceSpecNS.equals(N.getNamespaceURI())) {
 			   //Not a namespace definition, ignore.
-			   if (XML_LANG_URI==N.getNamespaceURI()) {
+			   if (XML_LANG_URI.equals(N.getNamespaceURI())) {
 				   xmlattrStack.addXmlnsAttr(N);
 			   }
 			   continue;

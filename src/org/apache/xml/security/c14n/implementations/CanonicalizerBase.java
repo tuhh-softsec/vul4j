@@ -564,7 +564,7 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
 		int attrsLength = attrs.getLength();
 		for (int i = 0; i < attrsLength; i++) {
 			Attr N = (Attr) attrs.item(i);
-			if (Constants.NamespaceSpecNS!=N.getNamespaceURI()) {
+			if (!Constants.NamespaceSpecNS.equals(N.getNamespaceURI())) {
 				//Not a namespace definition, ignore.
 				continue;
 			}

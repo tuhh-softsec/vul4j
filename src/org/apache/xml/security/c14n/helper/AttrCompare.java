@@ -72,8 +72,8 @@ public class AttrCompare implements Comparator, Serializable {
         String namespaceURI0 = attr0.getNamespaceURI();      
         String namespaceURI1 = attr1.getNamespaceURI();
       
-        boolean isNamespaceAttr0 = XMLNS==namespaceURI0;
-        boolean isNamespaceAttr1 = XMLNS==namespaceURI1;
+        boolean isNamespaceAttr0 = XMLNS.equals(namespaceURI0);
+        boolean isNamespaceAttr1 = XMLNS.equals(namespaceURI1);
 
         if (isNamespaceAttr0) {
             if (isNamespaceAttr1) {
@@ -81,11 +81,11 @@ public class AttrCompare implements Comparator, Serializable {
                 String localname0 = attr0.getLocalName();
                 String localname1 = attr1.getLocalName();
 
-                if (localname0.equals("xmlns")) {
+                if ("xmlns".equals(localname0)) {
                     localname0 = "";
                 }
 
-                if (localname1.equals("xmlns")) {
+                if ("xmlns".equals(localname1)) {
                     localname1 = "";
                 }
 
