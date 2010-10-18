@@ -20,6 +20,11 @@
 package org.apache.directory.shared.ldap.schema.parser;
 
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
@@ -36,11 +41,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 
 /**
@@ -201,6 +201,51 @@ public class OpenLdapSchemaParserTest
     }
 
 
+
+
+    @Test
+    public void testObjectClassWithExtensionsParse() throws Exception
+    {
+        String objectClassData = "objectclass ( 2.5.6.6 NAME 'person'\n" 
+            + "        DESC 'RFC2256: a person'\n"
+            + "        SUP top STRUCTURAL\n" 
+            + "        MUST ( sn $ cn )\n"
+            + "        MAY ( userPassword $ telephoneNumber $ seeAlso $ description ) \n"
+            + "        X-extension 'test' X-otherExtension ( 'test1' 'test2' ) )";
+        parser.parse( objectClassData );
+        List<ObjectClass> objectClassesList = parser.getObjectClassTypes();
+        Map<String, ObjectClass> objectClasses = mapObjectClasses( objectClassesList );
+        ObjectClass objectClass = objectClasses.get( "2.5.6.6" );
+
+        assertNotNull( objectClass );
+        assertEquals( "2.5.6.6", objectClass.getOid() );
+        assertEquals( "person", objectClass.getName() );
+        assertEquals( "RFC2256: a person", objectClass.getDescription() );
+        assertEquals( ObjectClassTypeEnum.STRUCTURAL, objectClass.getType() );
+        assertEquals( "sn", objectClass.getMustAttributeTypeOids().get(0) );
+        assertEquals( "cn", objectClass.getMustAttributeTypeOids().get(1) );
+        assertEquals( "userPassword", objectClass.getMayAttributeTypeOids().get(0) );
+        assertEquals( "telephoneNumber", objectClass.getMayAttributeTypeOids().get(1) );
+        assertEquals( "seeAlso", objectClass.getMayAttributeTypeOids().get(2) );
+        assertEquals( "description", objectClass.getMayAttributeTypeOids().get(3) );
+        Map<String, List<String>> extensions = objectClass.getExtensions();
+
+        assertNotNull( extensions );
+        
+        List<String> ext1 = extensions.get( "X-extension" );
+        assertNotNull( ext1 );
+        assertEquals( 1, ext1.size() );
+        assertTrue( ext1.contains( "test" ) );
+        
+        List<String> ext2 = extensions.get( "X-otherExtension" );
+        assertNotNull( ext2 );
+        assertEquals( 2, ext2.size() );
+        assertTrue( ext2.contains( "test1" ) );
+        assertTrue( ext2.contains( "test2" ) );
+        
+    }
+
+    
     @Test
     public void testObjectClassMultipleNames() throws Exception
     {
