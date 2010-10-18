@@ -21,6 +21,7 @@ package org.apache.directory.shared.converter.schema;
 
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.directory.shared.ldap.exception.LdapException;
 
@@ -84,14 +85,21 @@ public interface SchemaElement
     /**
      * @return The list of extensions for the schemaElement
      */
-    List<String> getExtensions();
+    Map<String, List<String>> getExtensions();
+
+
+    /**
+     * @param key the Extension key
+     * @return The list of a values for a given extension
+     */
+    List<String> getExtension( String key );
 
 
     /**
      * Set a list of extensions for a schemaElement
      * @param extensions The list of extensions of this schemaElement
      */
-    void setExtensions( List<String> extensions );
+    void setExtensions( Map<String, List<String>> extensions );
 
 
     /**
