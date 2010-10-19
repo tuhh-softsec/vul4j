@@ -50,7 +50,7 @@ import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.schema.normalizers.DeepTrimToLowerNormalizer;
 import org.apache.directory.shared.ldap.schema.normalizers.OidNormalizer;
 import org.apache.directory.shared.ldap.util.StringTools;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -65,15 +65,15 @@ import org.junit.runner.RunWith;
 @Concurrent()
 public class DNTest
 {
-    private Map<String, OidNormalizer> oids;
-    private Map<String, OidNormalizer> oidOids;
+    private static Map<String, OidNormalizer> oids;
+    private static Map<String, OidNormalizer> oidOids;
 
 
     /**
      * Initialize OIDs maps for normalization
      */
-    @Before
-    public void initMapOids()
+    @BeforeClass
+    public static void initMapOids()
     {
         oids = new HashMap<String, OidNormalizer>();
 
