@@ -526,10 +526,11 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
             return this;
         }
 
-        if ( normalized.get() )
-        {
-            return this;
-        }
+        // this breaks the RenameReferralIgnoreIT
+        //if ( normalized.get() )
+        //{
+        //    return this;
+        //}
 
         synchronized ( this )
         {
