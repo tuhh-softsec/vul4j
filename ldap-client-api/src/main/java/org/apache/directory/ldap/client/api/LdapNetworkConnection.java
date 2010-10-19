@@ -3125,6 +3125,14 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
         try
         {
             JarLdifSchemaLoader jarSchemaLoader = new JarLdifSchemaLoader();
+
+            // we enable all the schemas so that need not check with server for enabled schemas
+            Collection<Schema> schemas = jarSchemaLoader.getAllSchemas();
+            for ( Schema s : schemas )
+            {
+                s.enable();
+            }
+
             loadSchema( jarSchemaLoader );
         }
         catch( LdapException e )
@@ -3150,13 +3158,6 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
         try
         {
             SchemaManager tmp = new DefaultSchemaManager( loader );
-
-            // we enable all the schemas so that need not check with server for enabled schemas
-            Collection<Schema> schemas = tmp.getLoader().getAllSchemas();
-            for ( Schema s : schemas )
-            {
-                //s.enable();
-            }
 
             tmp.loadAllEnabled();
 

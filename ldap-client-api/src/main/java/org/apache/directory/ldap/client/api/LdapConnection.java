@@ -702,8 +702,8 @@ public interface LdapConnection
 
 
     /**
-     * Loads the default schema that is bundled in the API.
-     *
+     * Loads all the default schemas that are bundled with the API.<br><br>
+     * <b>Note:</b> This method enables <b>all</b> schemas prior to loading
      * @throws LdapException in case of problems while loading the schema
      */
     void loadSchema() throws LdapException;
