@@ -22,4 +22,5 @@ m-may: ads-certificatePassword
 m-may: ads-replProvider
 m-may: ads-replConsumer
 m-may: ads-saslMechHandlers
+m-may: ads-extendedOpHandlers
 m-may: ads-enableReplProvider
