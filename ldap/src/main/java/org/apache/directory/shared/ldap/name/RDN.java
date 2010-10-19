@@ -506,13 +506,7 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
      */
     public RDN normalize( SchemaManager sm ) throws LdapInvalidDnException
     {
-        String savedUpName = getName();
-        DN.rdnOidToName( this, sm.getNormalizerMapping() );
-        normalize();
-        this.upName = savedUpName;
-        normalized = true;
-
-        return this;
+        return normalize( sm.getNormalizerMapping() );
     }
 
 
