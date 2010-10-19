@@ -15,3 +15,4 @@ entrycsn: 20100111202217.958000Z#000000#000#000000
 m-must: ads-partitionId
 m-must: ads-partitionSuffix
 m-may: ads-partitionSyncOnWrite
+m-may: ads-indexes

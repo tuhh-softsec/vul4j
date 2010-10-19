@@ -1,10 +1,10 @@
 version: 1
-dn: m-oid=1.3.6.1.4.1.18060.0.4.1.3.1, ou=objectClasses, cn=adsconfig, ou=schema
+dn: m-oid=1.3.6.1.4.1.18060.0.4.1.3.0, ou=objectClasses, cn=adsconfig, ou=schema
 objectclass: metaObjectClass
 objectclass: metaTop
 objectclass: top
 m-name: ads-base
-m-oid: 1.3.6.1.4.1.18060.0.4.1.3.1
+m-oid: 1.3.6.1.4.1.18060.0.4.1.3.0
 m-description: The base bean
 m-typeobjectclass: ABSTRACT
 createtimestamp: 20100111145217Z
