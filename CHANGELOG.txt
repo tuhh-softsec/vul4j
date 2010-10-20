@@ -1,5 +1,6 @@
 Changelog for "Apache xml-security" <http://santuario.apache.org/>
 New in v1.4.4-SNAPSHOT
+    Fixed Bug 50122: JSR 105 TransformService classloading issue
     Fixed Bug 40897: String comparisons using '==' causes validation errors with some parsers.
     Fixed Bug 50050: UnsyncByteArrayOutputStream throws ArrayIndexOutOfBoundsException if array length > internal buffer expansion size.
     Fixed Bug 50036: IdResolver Java API extension. Thanks to Stefan Vladov.

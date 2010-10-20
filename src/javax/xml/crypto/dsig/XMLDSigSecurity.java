@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2009 The Apache Software Foundation.
+ * Copyright 2005-2010 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -173,10 +173,8 @@ final class XMLDSigSecurity {
 
     	try {
             // Load the implementation class using the class loader of 
-	    // typeClass. This insures checkSuperClass won't fail due to
-	    // typeClass and the implementation class being loaded from
-	    // two different class loaders.
-	    ClassLoader cl = typeClass.getClassLoader();
+	    // the provider.
+	    ClassLoader cl = pp.provider.getClass().getClassLoader();
 	    Class implClass;
 	    if (cl != null) {
 		implClass = cl.loadClass(className);
