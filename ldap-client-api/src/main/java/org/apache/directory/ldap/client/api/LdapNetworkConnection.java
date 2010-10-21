@@ -1592,6 +1592,8 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
      */
     public void exceptionCaught( IoSession session, Throwable cause ) throws Exception
     {
+        LOG.warn( cause.getMessage(), cause );
+
         if ( cause instanceof ProtocolEncoderException )
         {
             Throwable realCause = ( ( ProtocolEncoderException ) cause ).getCause();
