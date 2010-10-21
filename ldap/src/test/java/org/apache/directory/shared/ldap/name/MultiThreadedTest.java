@@ -46,7 +46,6 @@ import org.junit.runner.RunWith;
  */
 @RunWith(ConcurrentJunitRunner.class)
 @Concurrent()
-@Ignore
 public class MultiThreadedTest
 {
     @Rule

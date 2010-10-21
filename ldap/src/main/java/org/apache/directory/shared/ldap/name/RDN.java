@@ -189,7 +189,7 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
     public static final int EQUAL = 0;
 
     /** A flag used to tell if the RDN has been normalized */
-    private final AtomicBoolean normalized = new AtomicBoolean();
+    private AtomicBoolean normalized = new AtomicBoolean();
 
     /** the schema manager */
     private transient SchemaManager schemaManager;
@@ -526,11 +526,10 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
             return this;
         }
 
-        // this breaks the RenameReferralIgnoreIT
-        //if ( normalized.get() )
-        //{
-        //    return this;
-        //}
+        if ( normalized.get() )
+        {
+            return this;
+        }
 
         synchronized ( this )
         {
@@ -856,6 +855,7 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
         try
         {
             RDN rdn = ( RDN ) super.clone();
+            rdn.normalized = new AtomicBoolean( normalized.get() );
 
             // The AttributeTypeAndValue is immutable. We won't clone it
 
