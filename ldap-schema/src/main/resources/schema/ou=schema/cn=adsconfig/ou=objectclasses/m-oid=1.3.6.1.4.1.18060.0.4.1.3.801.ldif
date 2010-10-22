@@ -4,7 +4,7 @@ dn: m-oid=1.3.6.1.4.1.18060.0.4.1.3.801, ou=objectClasses, cn=adsconfig, ou=sche
 objectclass: metaObjectClass
 objectclass: metaTop
 objectclass: top
-m-name: ads-saslMechanismHandler
+m-name: ads-saslMechHandler
 m-description: SASL mechanism handler
 m-oid: 1.3.6.1.4.1.18060.0.4.1.3.801
 createtimestamp: 20100111145218Z
