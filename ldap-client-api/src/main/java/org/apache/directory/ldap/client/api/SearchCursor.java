@@ -151,7 +151,7 @@ public class SearchCursor extends AbstractCursor<Response>
      * 
      * @return the SearchResultDone message, null if the search operation fails for any reason 
      */
-    public SearchResultDone getSearchDone()
+    public SearchResultDone getSearchResultDone()
     {
         return searchDoneResp;
     }
