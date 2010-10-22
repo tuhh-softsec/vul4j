@@ -4,7 +4,7 @@ dn: m-oid=1.3.6.1.4.1.18060.0.4.1.2.811, ou=attributeTypes, cn=adsconfig, ou=sch
 objectclass: top
 objectclass: metaTop
 objectclass: metaAttributeType
-m-name: ads-extendedOpHandlerClassName
+m-name: ads-extendedOpHandlerClass
 m-description: Fully qualified class name of the extended operation handler
 m-oid: 1.3.6.1.4.1.18060.0.4.1.2.811
 m-syntax: 1.3.6.1.4.1.1466.115.121.1.44
