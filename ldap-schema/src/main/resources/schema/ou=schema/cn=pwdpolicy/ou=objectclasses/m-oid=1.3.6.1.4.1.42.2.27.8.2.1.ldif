@@ -31,4 +31,3 @@ m-may: pwdSafeModify
 m-may: pwdMinDelay
 m-may: pwdMaxDelay
 m-may: pwdMaxIdle
-m-may: passwordPolicyEnabled
