@@ -145,14 +145,36 @@ public:
 
 	const XMLCh * getKeyName(void) const;
 	
-	/**
-	 * \brief Get the IssuerSerialName
-	 *
-	 * Get the name of the Issuer (stored in the X509IssuerSerial element).
-	 *
-	 * @returns A pointer to the buffer containing the issuer name.
-	 * (0 if not set.)
-	 */
+    /**
+     * \brief Get the X509Digest Algorithm
+     *
+     * Get the Algorithm for the X509Digest.
+     *
+     * @returns A pointer to the buffer containing the algorithm
+     * (0 if not set.)
+     */
+
+	const XMLCh* getX509DigestAlgorithm(void) const;
+
+    /**
+     * \brief Get the X509Digest value
+     *
+     * Get the value for the X509Digest.
+     *
+     * @returns A pointer to the buffer containing the digest
+     * (0 if not set.)
+     */
+
+	const XMLCh* getX509DigestValue(void) const;
+
+    /**
+     * \brief Get the IssuerSerialName
+     *
+     * Get the name of the Issuer (stored in the X509IssuerSerial element).
+     *
+     * @returns A pointer to the buffer containing the issuer name.
+     * (0 if not set.)
+     */
 
 	const XMLCh * getX509IssuerName(void) const;
 
@@ -323,6 +345,18 @@ public:
 
 	void setX509IssuerSerial(const XMLCh * name, const XMLCh * serial);
 
+    /**
+     * \brief Set the dsig11:X509Digest element
+     *
+     * If a dsig11:X509Digest exists, replace the values with those provided,
+     * otherwise create a new element and set the values appropriately.
+     *
+     * @param algorithm The algorithm type
+     * @param value The digest value
+     */
+
+    void setX509Digest(const XMLCh * algorithm, const XMLCh * value);
+
 	/**
      * \brief Add a CRL.
 	 *
@@ -406,6 +440,7 @@ private:
 	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode	* mp_X509IssuerNameTextNode;
 	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode	* mp_X509SerialNumberTextNode;
 	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode	* mp_X509SKITextNode;
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode  * mp_X509DigestTextNode;
 
 };
 

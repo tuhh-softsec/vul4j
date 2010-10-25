@@ -50,7 +50,8 @@ mp_rawRetrievalURI(NULL),
 mp_X509SubjectNameTextNode(0),
 mp_X509IssuerNameTextNode(0),
 mp_X509SerialNumberTextNode(0),
-mp_X509SKITextNode(0) {
+mp_X509SKITextNode(0),
+mp_X509DigestTextNode(0) {
 
 	mp_keyInfoDOMNode = X509Data;
 	m_X509List.clear();
@@ -67,7 +68,8 @@ mp_rawRetrievalURI(NULL),
 mp_X509SubjectNameTextNode(0),
 mp_X509IssuerNameTextNode(0),
 mp_X509SerialNumberTextNode(0),
-mp_X509SKITextNode(0) {
+mp_X509SKITextNode(0),
+mp_X509DigestTextNode(0){
 
 	mp_keyInfoDOMNode = 0;
 	m_X509List.clear();
@@ -267,6 +269,20 @@ void DSIGKeyInfoX509::load(void) {
 				mp_X509SKI = child->getNodeValue();
 
 			}
+            else if (strEquals(getDSIG11LocalName(tmpElt), "X509Digest")) {
+
+                child = findFirstChildOfType(tmpElt, DOMNode::TEXT_NODE);
+
+                if (child == NULL) {
+
+                    throw XSECException(XSECException::ExpectedDSIGChildNotFound,
+                        "Expected TEXT_NODE child of <X509Digest>");
+
+                }
+
+                mp_X509DigestTextNode = child;
+
+            }
 		}
 
 		// Go to next data element to load if we understand
@@ -292,9 +308,29 @@ const XMLCh * DSIGKeyInfoX509::getX509SubjectName(void) const {
 
 }
 
+const XMLCh * DSIGKeyInfoX509::getX509DigestAlgorithm(void) const {
+
+    return mp_X509DigestTextNode ?
+        static_cast<DOMElement*>(mp_X509DigestTextNode->getParentNode())->getAttributeNS(NULL, DSIGConstants::s_unicodeStrAlgorithm) :
+            NULL;
+
+}
+
+const XMLCh * DSIGKeyInfoX509::getX509DigestValue(void) const {
+
+    return mp_X509DigestTextNode ? mp_X509DigestTextNode->getNodeValue() : NULL;
+
+}
+
 const XMLCh * DSIGKeyInfoX509::getX509IssuerName(void) const {
 
 	return mp_X509IssuerName;
+
+}
+
+const XMLCh * DSIGKeyInfoX509::getX509IssuerSerialNumber(void) const {
+
+    return mp_X509SerialNumber;
 
 }
 
@@ -323,12 +359,6 @@ const XMLCh * DSIGKeyInfoX509::getX509CRLItem(int item) const {
 const XMLCh * DSIGKeyInfoX509::getX509SKI(void) const {
 
 	return mp_X509SKI;
-
-}
-
-const XMLCh * DSIGKeyInfoX509::getX509IssuerSerialNumber(void) const {
-
-	return mp_X509SerialNumber;
 
 }
 
@@ -540,6 +570,44 @@ void DSIGKeyInfoX509::setX509IssuerSerial(const XMLCh * name, const XMLCh * seri
 	}
 
 	XSEC_RELEASE_XMLCH(encodedName);
+}
+
+void DSIGKeyInfoX509::setX509Digest(const XMLCh * algorithm, const XMLCh * value) {
+
+    if (mp_X509DigestTextNode == 0) {
+
+        // Does not yet exist in the DOM
+
+        safeBuffer str;
+        DOMDocument *doc = mp_env->getParentDocument();
+        const XMLCh * prefix = mp_env->getDSIG11NSPrefix();
+
+        makeQName(str, prefix, "X509Digest");
+
+        DOMElement * s = doc->createElementNS(DSIGConstants::s_unicodeStrURIDSIG11, str.rawXMLChBuffer());
+        s->setAttributeNS(NULL, DSIGConstants::s_unicodeStrAlgorithm, algorithm);
+
+        // Create the text node with the contents
+
+        mp_X509DigestTextNode = doc->createTextNode(value);
+        s->appendChild(mp_X509DigestTextNode);
+
+        mp_env->doPrettyPrint(s);
+
+        // Add to the over-arching X509Data
+
+        mp_keyInfoDOMNode->appendChild(s);
+        mp_env->doPrettyPrint(mp_keyInfoDOMNode);
+
+    }
+
+    else {
+
+        mp_X509DigestTextNode->setNodeValue(value);
+        static_cast<DOMElement*>(mp_X509DigestTextNode->getParentNode())->setAttributeNS(NULL, DSIGConstants::s_unicodeStrAlgorithm, algorithm);
+
+    }
+
 }
 
 void DSIGKeyInfoX509::setRawRetrievalURI(const XMLCh * uri) {
