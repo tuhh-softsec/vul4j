@@ -18,13 +18,13 @@
 #
 
 # Process this file with autoreconf
-AC_PREREQ(2.60)
+AC_PREREQ(2.50)
 AC_INIT([[XML-Security-C]],[1.6.0],[santuario-dev@apache.org],[xml-security-c])
 AC_CONFIG_SRCDIR(xsec)
 AC_CONFIG_AUX_DIR(build-aux)
 AC_CONFIG_MACRO_DIR(m4)
 AM_INIT_AUTOMAKE
-LT_INIT
+AC_PROG_LIBTOOL
 
 AC_ARG_ENABLE(debug,
     AS_HELP_STRING([--enable-debug],[Have GCC compile with symbols (Default = no)]),
