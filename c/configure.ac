@@ -42,7 +42,7 @@ fi
 # Define the files we wish to generate
 
 AC_CONFIG_FILES([Makefile xsec/Makefile])
-AC_CONFIG_HEADERS([xsec/framework/XSECConfig.hpp])
+AC_CONFIG_HEADERS([config.h xsec/framework/XSECConfig.hpp])
 AH_BOTTOM([#include <xsec/framework/XSECVersion.hpp>])
 
 # Check for basic programs
