@@ -47,13 +47,13 @@ public final class PagedResultsControlStatesEnum implements States
     public static final int PAGED_SEARCH_SEQUENCE_STATE = 1;
 
     /** Size Value */
-    public static final int SIZE_STATE = 3;
+    public static final int SIZE_STATE = 2;
     
     /** Cookie Value */
-    public static final int COOKIE_STATE = 5;
+    public static final int COOKIE_STATE = 3;
 
     /** terminal state */
-    public static final int LAST_PAGED_SEARCH_STATE = 8;
+    public static final int LAST_PAGED_SEARCH_STATE = 4;
 
     // =========================================================================
     // States debug strings
