@@ -699,6 +699,10 @@ DSIGReference * DSIGSignature::createReference(
 
 }
 
+DSIGReference * DSIGSignature::removeReference(DSIGReferenceList::size_type index) {
+    return mp_signedInfo ? mp_signedInfo->removeReference(index) : NULL;
+}
+
 // --------------------------------------------------------------------------------
 //           Manipulation of KeyInfo elements
 // --------------------------------------------------------------------------------

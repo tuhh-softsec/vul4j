@@ -45,6 +45,7 @@ class DSIGTransformXPath;
 class DSIGTransformXPathFilter;
 class DSIGTransformXSL;
 class DSIGSignature;
+class DSIGSignedInfo;
 
 class TXFMBase;
 class TXFMChain;
@@ -569,6 +570,8 @@ private:
 	DSIGReference();
 
 	/*\@}*/
+
+	friend class DSIGSignedInfo;
 };
 
 

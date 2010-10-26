@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2005 The Apache Software Foundation.
+ * Copyright 2002-2010 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -219,6 +219,22 @@ public:
 		const XMLCh * hashAlgorithmURI, 
 		const XMLCh * type
 	);
+
+    /**
+     * \brief Remove a reference from the list
+     *
+     * Removes the reference at the index point and returns a pointer
+     * to the reference removed.
+     *
+     * @note This also releases ownership.  It is the responsibility of
+     * the caller to ensure the reference is deleted.
+     *
+     * @note This removes the reference from the Signature
+     *
+     * @param index Point in the list to remove
+     */
+
+    DSIGReference * removeReference(DSIGReferenceList::size_type index);
 
 	//@}
 

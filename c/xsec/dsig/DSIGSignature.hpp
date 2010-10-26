@@ -390,6 +390,22 @@ public:
 		const XMLCh * hashAlgorithmURI, 
 		const XMLCh * type = NULL
 	);
+
+    /**
+     * \brief Remove a reference from the signature
+     *
+     * Removes the reference at the index point and returns a pointer
+     * to the reference removed.
+     *
+     * @note This also releases ownership.  It is the responsibility of
+     * the caller to ensure the reference is deleted.
+     *
+     * @note This removes the reference from the Signature
+     *
+     * @param index Point in the list to remove
+     */
+
+    DSIGReference * removeReference(DSIGReferenceList::size_type index);
 	//@}
 
 	/** @name General and Information functions. */

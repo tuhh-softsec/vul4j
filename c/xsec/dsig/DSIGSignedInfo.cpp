@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2005 The Apache Software Foundation.
+ * Copyright 2002-2010 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -173,6 +173,18 @@ DSIGReference * DSIGSignedInfo::createReference(
 	mp_referenceList->addReference(ref);
 
 	return ref;
+}
+
+DSIGReference * DSIGSignedInfo::removeReference(DSIGReferenceList::size_type index) {
+
+    DSIGReference* ret = mp_referenceList ? mp_referenceList->removeReference(index): NULL;
+    if (ret && mp_signedInfoNode) {
+        mp_signedInfoNode->removeChild(ret->mp_referenceNode);
+        mp_env->doPrettyPrint(mp_signedInfoNode);
+    }
+
+    return ret;
+
 }
 
 
