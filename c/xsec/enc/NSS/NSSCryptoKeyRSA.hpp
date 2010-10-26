@@ -30,9 +30,9 @@
 
 #if defined (XSEC_HAVE_NSS)
 
-#include <nss3/pk11func.h>
-#include <nss3/keyhi.h>
-#include <nss3/nss.h>
+#include <pk11func.h>
+#include <keyhi.h>
+#include <nss.h>
 
 class NSSCryptoProvider;
 

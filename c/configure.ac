@@ -481,9 +481,10 @@ if test x"$use_nss" != "xno" ; then
         fi
     else
         if test x_$use_nss != x_/usr; then
-            NSSFLAGS="-I${use_nss}/include"
             NSSLIBS="-L${use_nss}/lib"
         fi
+        # NSS is broken and doesn't use a standard include path.
+        NSSFLAGS="-I${use_nss}/include/nss3 -I${use_nss}/include/nss"
         NSSLIBS="$NSSLIBS -lssl3 -lsmime3 -lnss3 -lplds4 -lplc4 -lnspr4"
     fi
     
@@ -491,7 +492,7 @@ if test x"$use_nss" != "xno" ; then
     AC_MSG_RESULT($NSSFLAGS)
     CPPFLAGS="$CPPFLAGS $NSSFLAGS"
     
-    AC_PREPROC_IFELSE([AC_LANG_SOURCE([[#include <nss3/nss.h>]])],
+    AC_PREPROC_IFELSE([AC_LANG_SOURCE([[#include <nss.h>]])],
         [AC_DEFINE([XSEC_HAVE_NSS],[1],[Define if NSS is in use.])],
         [AC_MSG_ERROR([Unable to find NSS headers])])
     
@@ -499,7 +500,7 @@ if test x"$use_nss" != "xno" ; then
     AC_MSG_RESULT($NSSLIBS)
     LIBS="$LIBS $NSSLIBS"
     
-    AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <nss3/nss.h>]], [[NSS_NoDB_Init(NULL);]])],,
+    AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <nss.h>]], [[NSS_NoDB_Init(NULL);]])],,
         [AC_MSG_ERROR([Unable to link with NSS])])
 fi
 

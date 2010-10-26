@@ -32,8 +32,8 @@
 
 #if defined (XSEC_HAVE_NSS)
 
-#include <nss3/pk11func.h>
-#include <nss3/nss.h>
+#include <pk11func.h>
+#include <nss.h>
 
 #define NSS_MAX_BLOCK_SIZE		32
 

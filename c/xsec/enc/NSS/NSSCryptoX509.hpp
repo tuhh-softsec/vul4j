@@ -31,7 +31,7 @@
 
 #if defined (XSEC_HAVE_NSS)
 
-#include <nss3/cert.h>
+#include <cert.h>
 
 class NSSCryptoProvider;
 
