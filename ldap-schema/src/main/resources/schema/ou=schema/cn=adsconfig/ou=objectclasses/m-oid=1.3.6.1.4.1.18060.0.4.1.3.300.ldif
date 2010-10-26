@@ -24,4 +24,3 @@ m-may: ads-replConsumer
 m-may: ads-saslMechHandlers
 m-may: ads-extendedOpHandlers
 m-may: ads-enableReplProvider
-m-may: ads-passwordPolicy
