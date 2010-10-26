@@ -336,7 +336,7 @@ void XENCEncryptionMethodImpl::setDigestMethod(const XMLCh * method) {
 
 		e->setAttributeNS(DSIGConstants::s_unicodeStrURIXMLNS, 
 								str.rawXMLChBuffer(), 
-								DSIGConstants::s_unicodeStrURIXENC);
+								DSIGConstants::unicodeStrURIDSIG);
 
 		// Now retrieve for later use
 		mp_digestAlgorithmAttr =
