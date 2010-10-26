@@ -272,9 +272,59 @@ bool NSSCryptoKeyRSA::verifySHA1PKCS1Base64Signature(const unsigned char * hashB
   signature.len = rawSigLen;
 
   SECItem data; 
-  data.type = siBuffer;
-  data.data = (unsigned char *)hashBuf;
-  data.len = hashLen;
+  data.data = 0;
+  data.len = 0;
+  SECOidTag hashalg;
+  PRArenaPool * arena = 0;
+  SGNDigestInfo *di = 0;
+  SECItem * res;
+
+  switch (hm) {
+
+  case (HASH_MD5):
+      hashalg = SEC_OID_MD5;
+      break;
+  case (HASH_SHA1):
+      hashalg = SEC_OID_SHA1;
+      break;
+  case (HASH_SHA256):
+      hashalg = SEC_OID_SHA256;
+      break;
+  case (HASH_SHA384):
+      hashalg = SEC_OID_SHA384;
+      break;
+  case (HASH_SHA512):
+      hashalg = SEC_OID_SHA512;
+      break;
+  default:
+      throw XSECCryptoException(XSECCryptoException::RSAError,
+          "NSS:RSA - Unsupported hash algorithm in RSA sign");
+  }
+
+  arena = PORT_NewArena(DER_DEFAULT_CHUNKSIZE);
+  if (!arena) {
+      throw XSECCryptoException(XSECCryptoException::RSAError,
+          "NSS:RSA - Error creating arena");
+  }
+
+  di = SGN_CreateDigestInfo(hashalg, (unsigned char * )hashBuf, hashLen);
+  if (di == NULL) {
+
+      PORT_FreeArena(arena, PR_FALSE);
+
+      throw XSECCryptoException(XSECCryptoException::RSAError,
+          "NSS:RSA - Error creating digest info");
+  }
+
+  res = SEC_ASN1EncodeItem(arena, &data, di, NSS_Get_sgn_DigestInfoTemplate(NULL, 0));
+
+  if (!res) {
+      SGN_DestroyDigestInfo(di);
+      PORT_FreeArena(arena, PR_FALSE);
+
+      throw XSECCryptoException(XSECCryptoException::RSAError,
+          "NSS:RSA - Error encoding digest info for RSA sign");
+  }
 
 	// Verify signature
 	SECStatus s = PK11_Verify(mp_pubkey, &signature, &data, NULL);
