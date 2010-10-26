@@ -48,11 +48,11 @@ limitations under the License.
       </p>
       <p>
 		This project's SVN repository can be checked out directly from
-		https://svn.apache.org/repos/asf/xml/security/trunk/c
+		https://svn.apache.org/repos/asf/santuario/trunk/c
       </p>
       <p>
 		A HTTP interface to browse the sources online is available via 
-		<jump href="site:getting-involved/SVN">http://svn.apache.org/viewvc/xml/security/trunk/c/</jump>
+		<jump href="site:getting-involved/SVN">http://svn.apache.org/viewvc/santuario/trunk/c/</jump>
       </p>
     </section>
     

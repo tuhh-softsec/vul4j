@@ -76,14 +76,14 @@ limitations under the License.
 	This project's Subversion repository can be checked out anonymously
 	via HTTP as follows. You will need a Subversion client. 
       </p>
-      <source>svn checkout https://svn.apache.org/repos/asf/xml/security/trunk xml-security
+      <source>svn checkout https://svn.apache.org/repos/asf/santuario/trunk xml-security
       </source>
       <p>This will check out the code into a subdirectory named "xml-security". 
 	 The checkout will contain both the Java and the C++ source.
       </p>
       <p>
 	A HTTP interface to browse the sources online is available via 
-	<jump href="site:getting-involved/SVN">http://svn.apache.org/viewvc/xml/security/trunk/</jump>
+	<jump href="site:getting-involved/SVN">http://svn.apache.org/viewvc/santuario/trunk/</jump>
       </p>
     </section>
     
