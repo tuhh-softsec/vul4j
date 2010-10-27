@@ -28,13 +28,85 @@ limitations under the License.
     <person name="Sean Mullan" email="sean.mullan@sun.com" id="SM"/>
     <person name="Scott Cantor" email="cantor.2@osu.edu" id="SC"/>
     <person name="Colm O hEigeartaigh" email="coheigea@apache.org" id="CO"/>
+    <person name="Chad La Joie" email="lajoie@apache.org" id="CL"/>
     <!-- Add more people here -->
   </developers>
   
   <changes>
     <!-- Add new releases here; action attributes: type:(add | fix | update); -->
     <!-- context:(docs | java_something | c_something ) -->
-
+    
+    <release version="Java 1.4.4" date="November 2010">    
+      <action dev="SM" type="fix" fixes-bug="50122" context="java_general">
+        JSR 105 TransformService classloading issue
+      </action>
+      <action dev="CL" type="fix" fixes-bug="40897" context="java_general">
+        String comparisons using '==' causes validation errors with some parsers.
+      </action>
+      <action dev="SM" type="fix" fixes-bug="50050" context="java_general">
+	     UnsyncByteArrayOutputStream throws ArrayIndexOutOfBoundsException if
+	     array length > internal buffer expansion size.
+      </action>
+      <action dev="CO" type="fix" fixes-bug="50036" context="java_general" 
+	due-to="Stefan Vladov">
+	     IdResolver Java API extension.
+      </action>
+      <action dev="CO" type="fix" fixes-bug="49493" context="java_general" 
+	due-to="Clement Pellerin">
+	     Cannot resolve PrivateKeys used in Key Transport algorithms.
+      </action>
+      <action dev="CO" type="fix" fixes-bug="49577" context="java_general">
+	     DOMSubTreeData allows for only one iteration over referenced data.
+      </action>
+      <action dev="CO" type="fix" fixes-bug="49692" context="java_general">
+	      Xmlsec 1.4.3 not compatible with xmlbeans 2.4.0.
+      </action>
+      <action dev="CO" type="fix" fixes-bug="49629" context="java_general">
+	      Some changes to the build system.
+      </action>
+      <action dev="CO" type="fix" fixes-bug="49483" context="java_general" 
+	due-to="Clement Pellerin">
+	     KeyResolver.registerAtStart() leads to ClassCastException
+      </action>
+      <action dev="CO" type="fix" fixes-bug="49458" context="java_general" 
+	due-to="Clement Pellerin">
+	     StorageResolver always exhausted after first use.
+      </action>
+      <action dev="CO" type="fix" fixes-bug="49456" context="java_general" 
+	due-to="Clement Pellerin">
+	     StorageResolver.next() gives ClassCastException.
+      </action>
+      <action dev="CO" type="fix" fixes-bug="49450" context="java_general" 
+	due-to="Clement Pellerin">
+	     KeyStoreResolver always exhausted after first use.
+      </action>
+      <action dev="CO" type="fix" fixes-bug="49447" context="java_general" 
+	due-to="Clement Pellerin">
+	     KeyStoreResolver iterator returns null for symmetric keys.
+      </action>
+      <action dev="SM" type="fix" fixes-bug="48368" context="java_general">
+	     Digest Value of References inside Manifest - calculation order problem
+      </action>
+      <action dev="CO" type="fix" fixes-bug="47779" context="java_general">
+	     ConcurrentModificationException in XMLUtils.
+      </action>
+      <action dev="SC" type="fix" fixes-bug="47761" context="java_general">
+        xmlns:xml namespace improperly emitted during excl c14n. 
+      </action>
+      <action dev="SM" type="fix" fixes-bug="36526" context="java_general" 
+    due-to="Agnes Juhasz">
+        Out of memory error when signing or verifying big files. 
+      </action>
+      <action dev="CO" type="fix" fixes-bug="47784" context="java_general" 
+    due-to="Willem Jiang">
+        ClassNotFoundException when init the xml security in OSGi plateform.
+      </action>
+      <action dev="CO" type="fix" fixes-bug="47762" context="java_general" 
+    due-to="Julien Pasquier">
+        contextChild parameter of Transform.getInstance may be null 
+      </action>
+    </release>
+    
     <release version="Java 1.4.3" date="July 2009">    
       <action dev="SM" type="fix" fixes-bug="47526" context="java_general" 
 	due-to="Sean Mullan">

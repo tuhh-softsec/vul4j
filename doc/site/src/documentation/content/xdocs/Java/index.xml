@@ -26,6 +26,15 @@ limitations under the License.
   </header> 
   <body> 
     <section>
+      <title>Version 1.4.4 Released</title> 
+      <p>
+        Version 1.4.4 of the Java library has been released. This release
+        contains some enhancements to the resolver API's. It also fixes
+        some longstanding issues with interned Strings, as well as a number
+        of bug fixes.
+      </p>
+    </section>
+    <section>
       <title>Version 1.4.3 Released</title> 
       <p>
         Version 1.4.3 of the Java library has been released. This is mainly

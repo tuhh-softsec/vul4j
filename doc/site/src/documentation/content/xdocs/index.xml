@@ -23,6 +23,19 @@ limitations under the License.
     <section>
       <title>News</title>
       <section>      
+        <title>November 2010</title>
+        <p>
+         The Apache Santuario team are pleased to announce the release
+         of version 1.4.4 of the Java library. This release contains some 
+         enhancements to the resolver API's. It also fixes some longstanding
+         issues with interned Strings, as well as a number of bug fixes.
+        </p>
+        <p>
+         Please see the <link href="site:changes">changelog</link> for more 
+         information.
+        </p>
+      </section>
+      <section>      
         <title>July 2009</title>
         <p>
          The Apache Santuario team are pleased to announce the release
