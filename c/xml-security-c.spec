@@ -2,18 +2,18 @@ Name:           xml-security-c
 Version:        1.6.0
 Release:        1
 Summary:        Apache XML security C++ library
-Group:          System Environment/Libraries
+Group:          Development/Libraries/C and C++
 License:        Apache Software License
 URL:            http://santuario.apache.org/dist/c-library/
 Source:         %{name}-%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 
-%if 0%{?suse_version} > 1030
+%if 0%{?suse_version} > 1030 && 0%{?suse_version} < 1120
 BuildRequires:  libXerces-c-devel >= 2.8
-%{?_with_xalan:BuildRequires: Xalan-c-devel >= 1.6}
+%{?_with_xalan:BuildRequires: libXalan-c-devel >= 1.6}
 %else
 BuildRequires:  libxerces-c-devel >= 2.8
-%{?_with_xalan:BuildRequires: xalan-c-devel >= 1.6}
+%{?_with_xalan:BuildRequires: libxalan-c-devel >= 1.6}
 %endif
 BuildRequires:  openssl-devel gcc-c++ pkgconfig
 %if "%{_vendor}" == "redhat"
@@ -28,7 +28,7 @@ XPath and XSLT transforms.
 
 %package -n xml-security-c-bin
 Summary:    Utilities for XML security C++ library
-Group:      Development/Libraries
+Group:      Development/Libraries/C and C++
 
 %description -n xml-security-c-bin
 The xml-security-c library is a C++ implementation of the XML Digital Signature
@@ -40,7 +40,7 @@ This package contains the utility programs.
 
 %package -n libxml-security-c16
 Summary:    Apache XML security C++ library
-Group:      Development/Libraries
+Group:      Development/Libraries/C and C++
 Provides:   xml-security-c = %{version}-%{release}
 Obsoletes:  xml-security-c < %{version}-%{release}
 
@@ -54,15 +54,15 @@ This package contains just the shared library.
 
 %package -n libxml-security-c-devel
 Summary:	Development files for the Apache C++ XML security library
-Group:		Development/Libraries
+Group:		Development/Libraries/C and C++
 Requires:	libxml-security-c16 = %{version}-%{release}
 Requires:	openssl-devel
-%if 0%{?suse_version} > 1030
+%if 0%{?suse_version} > 1030 && 0%{?suse_version} < 1120
 Requires:	libXerces-c-devel
-%{?_with_xalan:Requires: Xalan-c-devel}
+%{?_with_xalan:Requires: libXalan-c-devel}
 %else
 Requires:	libxerces-c-devel
-%{?_with_xalan:Requires: xalan-c-devel}
+%{?_with_xalan:Requires: libxalan-c-devel}
 %endif
 Provides:   xml-security-c-devel = %{version}-%{release}
 Obsoletes:  xml-security-c-devel < %{version}-%{release}
@@ -112,8 +112,9 @@ This package includes files needed for development with xml-security-c.
 %{_libdir}/*.a
 
 %changelog
-* Wed Feb 3 2010 Scott Cantor <cantor.2@osu.edu> 1.6.0-1
+* Tue Oct 26 2010 Scott Cantor <cantor.2@osu.edu> 1.6.0-1
 - update to 1.6.0
+- fix package dependencies for OpenSUSE 11.3+ and Xalan
 
 * Mon Dec 28 2009 Scott Cantor <cantor.2@osu.edu> 1.5.1-2
 - Sync package names for side by side installation
