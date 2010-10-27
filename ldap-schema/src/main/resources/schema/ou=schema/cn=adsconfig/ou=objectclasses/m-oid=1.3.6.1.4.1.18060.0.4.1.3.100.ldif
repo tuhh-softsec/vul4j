@@ -14,7 +14,6 @@ m-must: ads-directoryServiceId
 m-must: ads-dsReplicaId
 m-must: ads-interceptors
 m-must: ads-partitions
-m-must: ads-dsWorkingDirectory
 m-may: ads-servers
 m-may: ads-dsAccessControlEnabled
 m-may: ads-dsAllowAnonymousAccess
