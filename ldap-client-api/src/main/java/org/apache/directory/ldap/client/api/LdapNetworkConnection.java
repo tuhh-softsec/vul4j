@@ -65,6 +65,7 @@ import org.apache.directory.shared.ldap.codec.controls.ControlImpl;
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.constants.SupportedSaslMechanisms;
 import org.apache.directory.shared.ldap.cursor.Cursor;
+import org.apache.directory.shared.ldap.cursor.SearchCursor;
 import org.apache.directory.shared.ldap.entry.DefaultEntry;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
@@ -1311,13 +1312,14 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
      * @throws IOException if an IO exception occurred
      * @see #bindGssApi(String, byte[], String, String, int, Control...)
      */
-    public BindResponse bindGssApi( String name, String credentials, String realmName, String kdcHost, int kdcPort, Control... ctrls )
-    throws LdapException, IOException
+    public BindResponse bindGssApi( String name, String credentials, String realmName, String kdcHost, int kdcPort,
+        Control... ctrls )
+        throws LdapException, IOException
     {
         return bindGssApi( name, StringTools.getBytesUtf8( credentials ), realmName, kdcHost, kdcPort, ctrls );
     }
-    
-    
+
+
     /**
      * Bind to the LDAP server using GSSAPI SASL mechanism.
      *
@@ -1331,11 +1333,12 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
      * @throws LdapException if an LDAP error occurred during bind
      * @throws IOException if an IO exception occurred
      */
-    public BindResponse bindGssApi( String name, byte[] credentials, String realmName, String kdcHost, int kdcPort, Control... ctrls )
+    public BindResponse bindGssApi( String name, byte[] credentials, String realmName, String kdcHost, int kdcPort,
+        Control... ctrls )
         throws LdapException, IOException
     {
         BindRequest bindRequest = createBindRequest( name, credentials, SupportedSaslMechanisms.GSSAPI, ctrls );
-        
+
         String krbConfPath = createKrbConfFile( realmName, kdcHost, kdcPort );
         System.setProperty( "java.security.krb5.conf", krbConfPath );
 
@@ -1372,7 +1375,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
     /**
      * {@inheritDoc}
      */
-    public Cursor<Response> search( DN baseDn, String filter, SearchScope scope, String... attributes )
+    public SearchCursor search( DN baseDn, String filter, SearchScope scope, String... attributes )
         throws LdapException
     {
         if ( baseDn == null )
@@ -1398,7 +1401,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
     /**
      * {@inheritDoc}
      */
-    public Cursor<Response> search( String baseDn, String filter, SearchScope scope, String... attributes )
+    public SearchCursor search( String baseDn, String filter, SearchScope scope, String... attributes )
         throws LdapException
     {
         return search( new DN( baseDn ), filter, scope, attributes );
@@ -1486,7 +1489,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
     /**
      * {@inheritDoc}
      */
-    public Cursor<Response> search( SearchRequest searchRequest ) throws LdapException
+    public SearchCursor search( SearchRequest searchRequest ) throws LdapException
     {
         if ( searchRequest == null )
         {
@@ -1499,7 +1502,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
 
         long timeout = getTimeout( searchRequest.getTimeLimit() );
 
-        return new SearchCursor( searchFuture, timeout, TimeUnit.MILLISECONDS );
+        return new SearchCursorImpl( searchFuture, timeout, TimeUnit.MILLISECONDS );
     }
 
 
@@ -1525,7 +1528,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
         LOG.debug( "Sending Unbind request \n{}", unbindRequest );
 
         // Send the request to the server
-       // Use this for logging instead: WriteFuture unbindFuture = ldapSession.write( unbindRequest );
+        // Use this for logging instead: WriteFuture unbindFuture = ldapSession.write( unbindRequest );
         ldapSession.write( unbindRequest );
 
         //LOG.debug( "waiting for unbindFuture" );
@@ -3137,18 +3140,18 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
 
             loadSchema( jarSchemaLoader );
         }
-        catch( LdapException e )
+        catch ( LdapException e )
         {
             throw e;
         }
-        catch( Exception e )
+        catch ( Exception e )
         {
             LOG.error( "failed to load the schema using JarLdifSchemaLoader", e );
             throw new LdapException( e );
         }
     }
-    
-    
+
+
     /**
      * loads schema using the specified schema loader
      * 
@@ -3169,7 +3172,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
                 LOG.error( msg + " {}", schemaManager.getErrors() );
                 throw new LdapException( msg );
             }
-            
+
             schemaManager = tmp;
         }
         catch ( LdapException le )

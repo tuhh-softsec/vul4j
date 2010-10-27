@@ -26,6 +26,7 @@ import java.util.concurrent.TimeUnit;
 import org.apache.directory.ldap.client.api.future.SearchFuture;
 import org.apache.directory.shared.ldap.cursor.AbstractCursor;
 import org.apache.directory.shared.ldap.cursor.InvalidCursorPositionException;
+import org.apache.directory.shared.ldap.cursor.SearchCursor;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.message.Response;
 import org.apache.directory.shared.ldap.message.SearchResultDone;
@@ -38,9 +39,8 @@ import org.apache.directory.shared.ldap.message.SearchResultDone;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class SearchCursor extends AbstractCursor<Response>
+public class SearchCursorImpl extends AbstractCursor<Response> implements SearchCursor
 {
-
     /** the search future */
     private SearchFuture future;
 
@@ -67,7 +67,7 @@ public class SearchCursor extends AbstractCursor<Response>
      * @param timeout the timeout
      * @param timeUnit the time unit
      */
-    public SearchCursor( SearchFuture future, long timeout, TimeUnit timeUnit )
+    public SearchCursorImpl( SearchFuture future, long timeout, TimeUnit timeUnit )
     {
         this.future = future;
         this.timeout = timeout;
@@ -147,11 +147,9 @@ public class SearchCursor extends AbstractCursor<Response>
 
 
     /**
-     * gives the SearchResultDone message received at the end of search results
-     * 
-     * @return the SearchResultDone message, null if the search operation fails for any reason 
+     * {@inheritDoc}
      */
-    public SearchResultDone getSearchDone()
+    public SearchResultDone getSearchResultDone()
     {
         return searchDoneResp;
     }
