@@ -231,9 +231,8 @@ public final class DigesterLoader {
     private static <T> T run(PrivilegedAction<T> action) {
         if (System.getSecurityManager() != null) {
             return AccessController.doPrivileged(action);
-        } else {
-            return action.run();
         }
+        return action.run();
     }
 
 }
