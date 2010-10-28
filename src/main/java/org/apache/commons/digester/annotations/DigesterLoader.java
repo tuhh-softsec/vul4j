@@ -21,11 +21,15 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 
 import org.apache.commons.digester.Digester;
 import org.apache.commons.digester.Rule;
 import org.apache.commons.digester.RuleSet;
 import org.apache.commons.digester.annotations.handlers.DefaultLoaderHandler;
+import org.apache.commons.digester.annotations.internal.GetDeclaredFieldsPrivilegedAction;
+import org.apache.commons.digester.annotations.internal.GetDeclaredMethodsPrivilegedAction;
 import org.apache.commons.digester.annotations.internal.RuleSetCache;
 import org.apache.commons.digester.annotations.reflect.MethodArgument;
 import org.apache.commons.digester.annotations.spi.AnnotationRuleProviderFactory;
@@ -142,12 +146,12 @@ public final class DigesterLoader {
         handle(target, ruleSet);
 
         // class fields
-        for (Field field : target.getDeclaredFields()) {
+        for (Field field : run(new GetDeclaredFieldsPrivilegedAction(target))) {
             handle(field, ruleSet);
         }
 
         // class methods
-        for (Method method : target.getDeclaredMethods()) {
+        for (Method method : run(new GetDeclaredMethodsPrivilegedAction(target))) {
             handle(method, ruleSet);
 
             // method args
@@ -215,6 +219,20 @@ public final class DigesterLoader {
                 // run!
                 handler.handle(annotation, element, ruleSet);
             }
+        }
+    }
+
+    /**
+     * Perform action with AccessController.doPrivileged() if possible.
+     *
+     * @param action - the action to run
+     * @return result of running the action
+     */
+    private static <T> T run(PrivilegedAction<T> action) {
+        if (System.getSecurityManager() != null) {
+            return AccessController.doPrivileged(action);
+        } else {
+            return action.run();
         }
     }
 
