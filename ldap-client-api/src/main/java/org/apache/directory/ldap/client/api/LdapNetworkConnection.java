@@ -620,7 +620,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
         }
 
         // And close the connector if it has been created locally
-        if ( localConnector )
+        if ( localConnector && ( connector != null ) )
         {
             // Release the connector
             connector.dispose();
