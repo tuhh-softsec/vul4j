@@ -173,7 +173,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
     private long timeout = LdapConnectionConfig.DEFAULT_TIMEOUT;
 
     /** configuration object for the connection */
-    private LdapConnectionConfig config = new LdapConnectionConfig();
+    private LdapConnectionConfig config;
 
     /** The connector open with the remote server */
     private IoConnector connector;
@@ -330,6 +330,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
      */
     public LdapNetworkConnection()
     {
+        config = new LdapConnectionConfig();
         config.setUseSsl( false );
         config.setLdapPort( config.getDefaultLdapPort() );
         config.setLdapHost( config.getDefaultLdapHost() );
@@ -359,6 +360,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
      */
     public LdapNetworkConnection( boolean useSsl )
     {
+        config = new LdapConnectionConfig();
         config.setUseSsl( useSsl );
         config.setLdapPort( useSsl ? config.getDefaultLdapsPort() : config.getDefaultLdapPort() );
         config.setLdapHost( config.getDefaultLdapHost() );
@@ -375,6 +377,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
      */
     public LdapNetworkConnection( String server )
     {
+        config = new LdapConnectionConfig();
         config.setUseSsl( false );
         config.setLdapPort( config.getDefaultLdapPort() );
 
@@ -403,6 +406,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
      */
     public LdapNetworkConnection( String server, boolean useSsl )
     {
+        config = new LdapConnectionConfig();
         config.setUseSsl( useSsl );
         config.setLdapPort( useSsl ? config.getDefaultLdapsPort() : config.getDefaultLdapPort() );
 
@@ -445,6 +449,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
      */
     public LdapNetworkConnection( String server, int port, boolean useSsl )
     {
+        config = new LdapConnectionConfig();
         config.setUseSsl( useSsl );
         config.setLdapPort( port );
 
